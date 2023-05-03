@@ -106,41 +106,6 @@ describe("Testing ATATSearch Component", () => {
       })
     })
 
-    it("search() - supplies $props.searchType === `EDA` and successfully " +
-    " displays success alert", async () => {    
-      // craft mock search
-      jest.spyOn(api.edaApi, 'search').mockImplementation(
-        ()=>Promise.resolve({
-          success: true,
-          message: "success",
-        }
-        ));
-
-      await wrapper.setProps({ 
-        searchType: "EDA",
-      })
-      await wrapper.vm.search();
-      await expect(wrapper.vm.$data.showSuccessAlert).toBe(true);
-    })
-
-    it("search() - supplies $props.searchType === `EDA` and successfully " +
-    " displays error alert", async () => {    
-      // craft mock search
-      jest.spyOn(api.edaApi, 'search').mockImplementation(
-        ()=>Promise.resolve({
-          success: false,
-          message: "error",
-        }
-        ));
-
-      await wrapper.setProps({ 
-        searchType: "EDA",
-      })
-      await wrapper.vm.search();
-      await expect(wrapper.vm.$data.showErrorAlert).toBe(true);
-    });
-
-
     it("setErrorMessage() - provides search.$data.errorBucket automatically to ensure " +
         "$data.errorMessage === search.$data.errorBucket ", async () => {
       const errorMessages = ["error Message 001"]

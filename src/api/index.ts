@@ -30,6 +30,7 @@ import { FundingRequestFSFormApi } from "./fundingRequestFSForm";
 import { FundingRequestMIPRFormApi } from "./fundingRequestMIPRForm";
 import {ClinAPi, ClinDisplayAPi} from "./clin";
 import { EDAApi } from "./eda";
+// import { EDAApi } from "./provisioning";
 import { CurrentEnvironmentApi } from "@/api/currentEnvironment";
 import { AggregateApi } from "./aggregate";
 import { EnvironmentInstanceAPI } from "@/api/EnvironmentInstance";
@@ -61,6 +62,7 @@ import { RegionsAPI } from "./regions";
 import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
 import { AddressApi } from "@/api/address";
+import { CostEstimateApi } from "@/api/costEstimate";
 
 
 export const api = {
@@ -98,6 +100,7 @@ export const api = {
   countriesTable: new CountriesApi(),
   taskOrderTable: new TaskOrderApi(),
   costsTable: new CostsApi(),
+  costEstimateTable: new CostEstimateApi(),
   clinTable: new ClinAPi(),
   clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),

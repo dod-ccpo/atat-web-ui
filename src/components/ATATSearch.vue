@@ -1,5 +1,5 @@
 <template>
-  <div id="SearchWrapper" :style="'width: ' + wrapperWidth">
+  <div id="SearchWrapper" :style="'width: ' + wrapperWidth + '; max-width: ' + wrapperWidth">
 
     <div class="d-flex align-center mb-2" v-if="label">
       <label
@@ -21,7 +21,7 @@
       :style="'width: ' + width"
     >
       <v-text-field
-        ref="atatSearchInput"
+        :ref="isModal ? 'atatSearchInputModal' : 'atatSearchInput'"
         :id="id + '_SearchInput'"
         class="_search-input"
         clearable
@@ -34,7 +34,7 @@
         :rules="rules"
         :validate-on-blur="validateOnBlur"
         @update:error="setErrorMessage"
-        @click:clear="clear"
+        @click:clear="clearErrorMessages"
         @blur="onBlur"
         autocomplete="off"
         @keydown.enter="search"
@@ -45,6 +45,7 @@
         @click="search"
         @keydown.enter="search"
         @keydown.space="search"
+        :disabled="searchButtonDisabled || searchDisabled"
       >
         <ATATSVGIcon 
           v-if="!buttonText"
@@ -129,6 +130,7 @@ import api from "@/api";
 
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components: {
@@ -148,6 +150,13 @@ export default class ATATSearch extends Vue {
       resetValidation(): void;
       value: string;
     };
+    atatSearchInputModal: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      resetValidation(): void;
+      value: string;
+    };
+
   }; 
 
   @Prop({ default: "Search" }) private id!: string;
@@ -165,11 +174,11 @@ export default class ATATSearch extends Vue {
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop({ default: "" }) private searchType?: string;
   @Prop({ default: "" }) private buttonText?: string;
+  @Prop({ default: false }) private searchButtonDisabled?: boolean;
+  @Prop({ default: false }) private isModal?: boolean;
 
   @PropSync("value", { default: "" }) public _value!: string;
-
-  // remove isSimulation and all other simulation code when G-Invoicing search is actual
-  @Prop({ default: false} ) private isSimulation?: boolean;
+  @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
 
   private error = false;
   private errorMessages: string[] = [];
@@ -177,10 +186,31 @@ export default class ATATSearch extends Vue {
   private showHelpText = true;
   private showLoader = false;
   
-  private searchCount = 0;          // for search simulation
-  private showSuccessAlert = false; // for search simulation
-  private showErrorAlert = false;   // for search simulation
+  private showSuccessAlert = false;
+  private showErrorAlert = false;
   private maskObj: mask = {};
+
+  private searchDisabled = true;
+
+  @Watch("_resetValidationNow")
+  public async resetValidationNowChange(newVal: boolean): Promise<void> {
+    if (newVal) {
+      await this.resetValidation();
+      this.clearErrorMessages();
+      this.$nextTick(() => {
+        this._resetValidationNow = false;
+      });
+    }
+  }
+
+  @Watch("_value")
+  public valueChanged(newVal: string): void {
+    const hasErrors = !this.isModal 
+      ? this.$refs.atatSearchInput?.errorBucket.length > 0
+      : this.$refs.atatSearchInputModal?.errorBucket.length > 0
+    const hasContent = newVal && newVal.length > 0;
+    this.searchDisabled = hasErrors || !hasContent;
+  }
 
   @Watch("errorMessages")
   private errorMessagesChanged(newVal: Array<unknown>): void {
@@ -190,7 +220,7 @@ export default class ATATSearch extends Vue {
   public onInput(v: string): void {
     this._value = v;
     if (this.errorMessages.length > 0) {
-      this.clear();
+      this.clearErrorMessages();
     }
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
@@ -198,83 +228,63 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    if (this.isSimulation && this.errorMessages.length === 0 && this._value) {
-
-      // simulate success on first search, error on second.
-      this.showLoader = true;
-      this.showSuccessAlert = false;
-      this.showErrorAlert = false;
-      this.showHelpText = false;
-      this.searchCount = this.searchCount + 1;
-
-      setTimeout(() => {
-        this.showLoader = false;
-        this.showSuccessAlert = this.searchCount % 2 !== 0;
-        this.showErrorAlert = !this.showSuccessAlert;
-      }, 3000);
-    }
+    this.showLoader = true;
+    this.showSuccessAlert = false;
+    this.showErrorAlert = false;
+    this.showHelpText = false;
     
     if(this.searchType === "EDA"){
-
       try {
-
-        this.showLoader = true;
-        this.showSuccessAlert = false;
-        this.showErrorAlert = false;
-        this.showHelpText = false;
-
+        await PortfolioStore.reset();
         const response = await api.edaApi.search(this._value);
-        if(response.success){
-          this.showSuccessAlert = true;
+        if (response.success !== undefined && !response.success) {
+          if (!this.isModal) {
+            this.$refs.atatSearchInput.errorBucket = [response.message || "Unknown error"];
+          } else {
+            this.$refs.atatSearchInputModal.errorBucket = [response.message || "Unknown error"];
+          }
+        } else {
+          await PortfolioStore.setPortfolioProvisioning(response);
+          this.$emit("search");
         }
-        else{
-          this.showErrorAlert = true;
-        }
-        
       } catch (error) {
         this.showErrorAlert = true;
-      }finally{
-
+      } finally {
         this.showLoader = false;
       }
     } else if (this.searchType === "G-Invoicing") {
       try {
-
-        this.showLoader = true;
-        this.showSuccessAlert = false;
-        this.showErrorAlert = false;
-        this.showHelpText = false;
-
         const gInvoicingResponse = await api.gInvoicingApi.search(this._value);
-        if(gInvoicingResponse.valid){
+        if (gInvoicingResponse.valid){
           this.showSuccessAlert = true;
-        }
-        else{
+        } else {
           this.showErrorAlert = true;
         }
-
       } catch (error) {
         this.showErrorAlert = true;
-      }finally{
-
+      } finally {
         this.showLoader = false;
+        this.$emit("search");
       }
-
     }
-
-    this.$emit("search");
 
   }
 
   private setErrorMessage(): void {
     Vue.nextTick(()=>{
-      this.errorMessages = this.$refs.atatSearchInput.errorBucket;
+      this.errorMessages = !this.isModal 
+        ? this.$refs.atatSearchInput.errorBucket
+        : this.$refs.atatSearchInputModal.errorBucket;
     });
   }
 
-  private clear(): void {
+  private clearErrorMessages(): void {
     Vue.nextTick(()=>{
-      this.$refs.atatSearchInput.errorBucket = [];
+      if (!this.isModal) {
+        this.$refs.atatSearchInput.errorBucket = [];
+      } else {
+        this.$refs.atatSearchInputModal.errorBucket = []; 
+      }
       this.errorMessages = [];
     });
     this.$emit("clear");
@@ -286,9 +296,14 @@ export default class ATATSearch extends Vue {
     this.$emit('blur', input.value);
   }
 
-  public resetValidation(): void {
-    this.$refs.atatSearchInput.errorBucket = [];
-    this.$refs.atatSearchInput.resetValidation();
+  public async resetValidation(): Promise<void> {
+    if (!this.isModal) {
+      this.$refs.atatSearchInput.errorBucket = [];
+      this.$refs.atatSearchInput.resetValidation();
+    } else {
+      this.$refs.atatSearchInputModal.errorBucket = [];
+      this.$refs.atatSearchInputModal.resetValidation();
+    }
   }
 
   private setMask(): void {

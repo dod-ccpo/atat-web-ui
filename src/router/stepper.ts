@@ -195,6 +195,7 @@ import {
   FeeChargedResolver,
   showDITCOPageResolver,
   ContractingInfoResolver,
+  CrossDomainResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -739,6 +740,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: CrossDomain,
+        routeResolver: CrossDomainResolver
       },
     ]
   },
@@ -1205,14 +1207,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: FeeCharged,
         routeResolver: FeeChargedResolver,
       },
-      // {
-      //   menuText: "Cost Summary",
-      //   excludeFromMenu: true,
-      //   path: "cost-summary",
-      //   name: routeNames.CostSummary,
-      //   completePercentageWeight: 1,
-      //   component: CostSummary
-      // },
+      {
+        menuText: "Cost Summary",
+        excludeFromMenu: true,
+        path: "cost-summary",
+        name: routeNames.CostSummary,
+        completePercentageWeight: 1,
+        component: CostSummary
+      },
       {
         menuText: "Estimates Developed",
         excludeFromMenu: true,

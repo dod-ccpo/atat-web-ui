@@ -45,13 +45,13 @@
                         <h2>Training #{{trainingIndex + 1}}</h2>
                       </div>
                     </div>
-                    <div class="h3 text-base-light">
+                    <div class="h3 text-base">
                       {{trainingIndex + 1}} of {{trainingCount}}
                     </div>
                   </div>
 
                   <div class="h3">{{trainingTitle}}</div>
-                  <p class="text-base-light mb-0">
+                  <p class="text-base-darkest mb-0">
                     {{trainingLocation}}
                   </p>
 

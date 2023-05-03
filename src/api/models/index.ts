@@ -87,6 +87,7 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   classification: string;
   classification_level?: ReferenceColumn | string;
   display?: string;
+  dow_task_number_component?: number
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -358,6 +359,8 @@ export interface ServiceOfferingDTO extends BaseTableDTO {
   other?: string;
   service_offering_group: string;
   sequence: string;
+  dow_task_number_component: number;
+  offering_type?: string;
 }
 
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {
@@ -562,6 +565,11 @@ export interface CostsDTO extends BaseTableDTO {
   value: string;
 }
 
+export interface CostEstimateDTO extends BaseTableDTO {
+  packageId: string
+  payload: Record<string, any>
+}
+
 export interface CostGroupDTO {
   totalActual: number;
   totalProjected: number;
@@ -598,8 +606,22 @@ export interface ClinDisplayDTO {
 }
 
 export interface EDAResponse {
-  success: boolean;
-  message: string;
+  success?: boolean;
+  // if 400 error, will have code and message
+  code?: string;
+  message?: string;
+  // if 200 success, will have data below
+  taskOrderNumber?: string;
+  contractor?: string; // "Microsoft Corporation",
+  csp?: string; // "Azure",
+  cspLong?: string; // "Microsoft Azure"
+  contractIssuingOffice?: string; // "DITCO",
+  totalObligatedAmount?: number | null;
+  totalAmount?: number | null;
+  popStartDate?: string; // "2021-07-01",
+  popEndDate?: string; // "2026-07-01",
+  classificationLevels?: string[]; //  ["Unclassified", "Secret"] or sysIds?
+
 }
 
 
@@ -663,6 +685,7 @@ export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceD
   training_requirement_title?: string;
   training_time_zone?: string;
   ts_contractor_clearance_type?: string;
+  instance_number?:number;
 }
 
 export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
@@ -689,6 +712,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   csp: ReferenceColumn;
   active_task_order: ReferenceColumn;
   csp_display: string; // "<<cloud_service_package.name >>"
+  vendor: CSP;
   dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
@@ -702,6 +726,8 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];
+  title?: string;
+  description?: string;
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {
@@ -741,7 +767,7 @@ export interface PackageSummaryDTO { // TODO: delete this interface after acq pa
 
 export interface AcquisitionPackageSummarySearchDTO {
   acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER" | // open
-  "TASK_ORDER_AWARDED" | "ARCHIVED" |
+  "TASK_ORDER_AWARDED" | "ARCHIVED" | "WAITING_FOR_TASK_ORDER" |
   "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED";
   sort: "project_overview" | "DESCsys_updated_on"; // one of these two values should always exist
   searchString?: string;
@@ -836,6 +862,7 @@ export interface TrainingEstimateDTO extends BaseTableDTO{
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
   cloud_support_environment_instance: ReferenceColumn | string;
+  dow_task_number?: string;
 }
 
 export interface EstimateOptionValueDTO {

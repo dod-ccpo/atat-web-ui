@@ -14,6 +14,7 @@ const portfolios: PortfolioSummaryDTO[] = [
     csp: { link: "", value: ""},
     /* eslint-disable camelcase */
     csp_display: "CSP_A",
+    vendor: "AWS",
     dod_component: "ARMY",
     task_order_number: "123456",
     sys_updated_on: "2022-09-26 15:50:20", 
@@ -38,6 +39,7 @@ const portfolios: PortfolioSummaryDTO[] = [
     csp: { link: "", value: ""},
     /* eslint-disable camelcase */
     csp_display: "CSP_B",
+    vendor: "AWS",
     dod_component: "ARMY",
     task_order_number: "123456",
     sys_updated_on: "2022-09-26 15:50:20", 

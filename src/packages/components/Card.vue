@@ -20,25 +20,23 @@
             {{ modifiedData.projectOverview || 'Untitled package'}}
           </a>
         </div>
-          <v-chip
-            :id="'StatusChip' + index"
-            :class="statusChipBgColor"
-            class="_status-chip"
-            label
-          >
-            {{ modifiedData.packageStatus }}
-          </v-chip>
+        <v-chip
+          :id="'StatusChip' + index"
+          :class="statusChipBgColor"
+          label
+        >
+          {{modifiedData.packageStatus}}
+        </v-chip>
       </div>
       <div class="text-base -size-14 d-flex align-center">
+        <!-- 
+        TODO: Add back in when saving progress to snow  
         <div
           :id="'Percentage'+ index"
           v-if="modifiedData.packageStatus.toLowerCase() === 'draft' ||
            modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
           class=" d-flex align-center _percent-complete"
         >
-          <!-- 
-          TODO: Add back in when saving progress to snow  
-
           <ATATSVGIcon
             name="taskAlt"
             width="16"
@@ -58,11 +56,11 @@
             :width="9"
             :height="9"
             class="d-inline-block mx-1"
-          /> -->
-        </div>
-        
-        <!-- 
-          ATAT TODO - REPLACE HARDCODED TO# when working ATAT tickets
+          /> 
+        </div> 
+        -->
+
+        <!-- ATAT TODO - REPLACE HARDCODED TO# when working ATAT tickets 
         <div
           v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
           class=" d-flex align-center">
@@ -99,7 +97,7 @@
           {{lastModifiedStr}}
         </div>
       </div>
-      </div>
+    </div>
     <ATATMeatballMenu
       :id="'CardMenu' + index"
       :left="true"
@@ -136,6 +134,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
+import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
+
 import UserStore from "@/store/user";
 import {
   AcquisitionPackageSummaryDTO, UserDTO,
@@ -153,7 +153,8 @@ import Steps from "@/store/steps";
     ATATSVGIcon,
     ATATMeatballMenu,
     DeletePackageModal,
-    ArchiveModal
+    ArchiveModal,
+    TaskOrderSearchModal,
   }
 })
 export default class Card extends Vue {
@@ -311,7 +312,11 @@ export default class Card extends Vue {
     case "Restore package to draft":
       this.updateStatus('DRAFT')
       break;
+    case "Add awarded task order":
+      this.$emit("openTOSearchModal", this.cardData.sys_id);
+      break;
     }
+
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -368,8 +373,8 @@ export default class Card extends Vue {
         {
           title: "Add awarded task order",
           action: "Add awarded task order",
-          disabled:true
-        },{
+        },
+        {
           title: "View completed package",
           action: "View completed package",
         },

@@ -23,6 +23,7 @@ import DocumentReview from "@/documentReview/Index.vue";
 import Portfolios from "@/portfolios/Index.vue";
 import Packages from "@/packages/Index.vue";
 import Home from "@/home/Index.vue";
+import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
 import CurrentUserStore from "./store/user";
 import AcquisitionPackage from "./store/acquisitionPackage";
 
@@ -41,6 +42,9 @@ export default class App extends Vue {
     switch (newActiveSection) {
     case this.sectionTitles.Home:
       AppSections.setAppContentComponent(Home);
+      break;
+    case this.sectionTitles.ProvisionWorkflow:
+      AppSections.setAppContentComponent(ProvisionWorkflow);
       break;
     case this.sectionTitles.AcquisitionPackage:
       AppSections.setAppContentComponent(AppPackageBuilder);

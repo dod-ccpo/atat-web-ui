@@ -34,7 +34,6 @@
         <div v-show="useGInvoicing === 'YES'">
           <hr class="mt-5" />
             <ATATSearch
-              :isSimulation="false"
               id="OrderNumber"
               placeHolder="Find your order in G-Invoicing"
               label="Order Number"

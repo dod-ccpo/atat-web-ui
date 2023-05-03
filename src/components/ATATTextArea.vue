@@ -55,7 +55,7 @@
         :counter="maxChars"
       >
       </v-textarea>
-      <ATATErrorValidation 
+      <ATATErrorValidation
         :errorMessages="errorMessages" 
         :textAreaWithCounter="maxChars !== ''"
         :id="id"
@@ -78,7 +78,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ATATTextArea extends Vue {
   // refs
   $refs!: {
-    atatTextArea: Vue & { 
+    atatTextArea: Vue & {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
@@ -128,6 +128,11 @@ export default class ATATTextArea extends Vue {
   public validateNowChange(): void {
     if(!this.$refs.atatTextArea.validate())
       this.setErrorMessage();
+  }
+
+  @Watch('rules')
+  public rulesChanged(): void {
+    this.$refs.atatTextArea.validate();
   }
 
   //@Events
