@@ -41,10 +41,10 @@ export class UserManagementStore extends VuexModule {
         searchQuery = `^email=${searchStr}^active=true`;
       } else if (searchStr.includes("@")) {
         // incomplete email - search email starts with
-        searchQuery = `^emailSTARTSWITH${searchStr}`;
+        searchQuery = `^emailSTARTSWITH${searchStr}^active=true`;
       } else if (searchStr.includes(" ")) {
         // likely first and last name - search name starts with
-        searchQuery = `^nameSTARTSWITH${searchStr}`;
+        searchQuery = `^nameSTARTSWITH${searchStr}^active=true`;
       }
       const userSearchRequestConfig: AxiosRequestConfig = {
         signal: this.controller.signal,
