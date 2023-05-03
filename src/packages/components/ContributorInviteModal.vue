@@ -197,7 +197,7 @@ export default class ContributorInviteModal extends Vue {
   public async clearResults(): Promise<void> {
     this.searchObj.isLoading = false;
     this.searchObj.searchResults = [];      
-    await UserManagement.doResetAbortController();
+    UserManagement.triggerAbort();
   }
 
   /**
@@ -206,6 +206,7 @@ export default class ContributorInviteModal extends Vue {
    */
   public onUserSearchValueChange = _.debounce(async (newValue: string) => {
     if (!this.isSearching) {
+      await UserManagement.doResetAbortController();
       this.isSearching = true;
       await this.clearResults();
       this.searchObj.isLoading = true;
