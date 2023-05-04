@@ -273,7 +273,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
         && storeData.cause_govt_engineers_training_certified === "NO"
         && storeData.cause_product_feature_peculiar_to_csp === "NO";
 
-      this.writeOwnExplanation = storeData.write_own_sole_source_cause === "YES";
+      this.writeOwnExplanation = storeData.cause_write_own_explanation === "YES";
       if (!this.writeOwnExplanation) {
         this.generateSuggestion();
       }

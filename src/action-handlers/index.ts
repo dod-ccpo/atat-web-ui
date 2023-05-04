@@ -50,7 +50,7 @@ function sampleAdditionalButtonAction(actionArgs: string[]) {
 
 async function writeOwnSoleSourceCause() {
   // eslint-disable-next-line camelcase
-  const fairOpp: FairOpportunityDTO = { write_own_sole_source_cause: "YES" };
+  const fairOpp: FairOpportunityDTO = { cause_write_own_explanation: "YES" };
   await AcquisitionPackage.setFairOpportunity(fairOpp);
   router.push({
     name: routeNames.SoleSourceReview,
