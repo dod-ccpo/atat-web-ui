@@ -22,6 +22,7 @@ export class UserManagementStore extends VuexModule {
   @Action({rawError: true})
   public async triggerAbort(): Promise<void> {
     this.controller.abort();
+    await this.doResetAbortController();
   }
   
   /**
