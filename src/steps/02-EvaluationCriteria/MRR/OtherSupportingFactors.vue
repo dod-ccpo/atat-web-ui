@@ -43,7 +43,7 @@ import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
 import _ from "lodash";
-import { RadioButton } from "../../../../types/Global";
+import { RadioButton, YesNo } from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
@@ -55,47 +55,50 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 })
 
 export default class OtherSupportingFactors extends Vue {
+  /* eslint-disable camelcase */
   public exceptionDiscussion =""
   public exceptionChoices :RadioButton[] = getYesNoRadioOptions("Exception")
   public selectedException = ""
 
 
-  // private get currentData(): FairOpportunityDTO {
-  //   return {
-  //     min_govt_requirements: this.minGovReqExplanation,
-  //   } as FairOpportunityDTO;
-  // }
-  //
-  // private get savedData(): FairOpportunityDTO {
-  //   return {
-  //     min_govt_requirements: AcquisitionPackage.fairOpportunity?.min_govt_requirements || "",
-  //   } as FairOpportunityDTO;
-  // }
-  //
-  // private hasChanged(): boolean {
-  //   return hasChanges(this.currentData, this.savedData);
-  // }
-  //
-  // public async loadOnEnter(): Promise<void> {
-  //   const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
-  //   if (storeData) {
-  //     const minReq = storeData.min_govt_requirements as string;
-  //     this.minGovReqExplanation = minReq && minReq.trim().length > 0
-  //       ? minReq : this.suggestedText;
-  //   }
-  // }
-  //
-  // protected async saveOnLeave(): Promise<boolean> {
-  //   this.turnRulesOff = false;
-  //   try {
-  //     if (this.hasChanged()) {
-  //       await AcquisitionPackage.setFairOpportunity(this.currentData)
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   return true;
-  // }
+  private get currentData(): FairOpportunityDTO {
+    return {
+      other_facts_to_support_logical_follow_on: this.selectedException,
+      other_facts_to_support_logical_follow_on_details: this.exceptionDiscussion,
+    } as FairOpportunityDTO;
+  }
+
+  private get savedData(): FairOpportunityDTO {
+    return {
+      other_facts_to_support_logical_follow_on: AcquisitionPackage.fairOpportunity?.
+        other_facts_to_support_logical_follow_on || "",
+      other_facts_to_support_logical_follow_on_details: AcquisitionPackage.fairOpportunity?.
+        other_facts_to_support_logical_follow_on_details || "",
+    } as FairOpportunityDTO;
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
+    if (storeData) {
+      this.selectedException = storeData.other_facts_to_support_logical_follow_on
+      this.exceptionDiscussion = storeData.other_facts_to_support_logical_follow_on_details
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
 
   public async mounted(): Promise<void> {
     // await this.loadOnEnter();
