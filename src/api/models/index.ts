@@ -223,12 +223,16 @@ export interface FairOpportunityDTO extends BaseTableDTO {
 
   // 2.1.1
   exception_to_fair_opportunity?: string;
+
   // 2.2
   proposed_csp?: CSP;
+
   // 2.3a
   justification?: string;
+
   // 2.4
   min_govt_requirements?: string;
+  
   // 2.5.1
   // cause of sole source form fields
   cause_migration_addl_time_cost?: YesNo;
@@ -245,19 +249,26 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   cause_product_feature_why_others_inadequate?: string;
   cause_write_own_explanation?: YesNo;
   // END cause of sole source form fields 
+
   // 2.5.2
-  cause_of_sole_source_situation?: string; // summary of cause fields
-  cause_of_sole_source_situation_is_custom?: YesNo;
+  cause_of_sole_source_generated?: string; // innitially generated from form responses
+  cause_of_sole_source_custom?: string; // user-entered by clicking "I want to write my own..."
+  cause_of_sole_source_for_docgen?: "" | "GENERATED" | "CUSTOM";
+
   // 2.6a
   why_csp_is_only_capable_source?: string;
+
   // 2.7
   procurement_discussion?: string;
   procurement_has_existing_env?: YesNo;
   procurement_previous_impact?: string;
+
   // 2.8
   requirement_impact?: string;
+
   // 2.9.1
   contract_action?: "" | "UCA " | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE";
+  
   // 2.9.2
   // market research efforts form
   research_is_csp_only_source_capable?: YesNo;
@@ -275,14 +286,19 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   research_techniques_summary?: string;
   research_write_own_explanation?: YesNo;
   // END market research efforts form
+
   // 2.9.3
-  market_research_details?: string; // summary of research fields
-  market_research_details_is_custom?: YesNo;
+  research_details_generated?: string; // innitially generated from form responses
+  research_details_custom?: string; // user-entered by clicking "I want to write my own..."
+  research_details_for_docgen?: "" | "GENERATED" | "CUSTOM";
+
   // 2.9.4
   market_research_conducted_by?: string; // JSON object - array of name, title, organization
+
   // 2.10
   other_facts_to_support_logical_follow_on?: YesNo;
   other_facts_to_support_logical_follow_on_details?: string;
+
   // 2.11.1
   barriers_follow_on_requirement?: YesNo;
   barriers_follow_on_expected_date?: string;
@@ -291,9 +307,12 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   barriers_j_a_prepared?: YesNo
   barriers_j_a_prepared_results?: string;
   barriers_write_own_explanation?: YesNo;
+
   // 2.11.2
-  barriers_plans_to_remove_barriers?: string; // summary of barriers fields
-  barriers_plans_to_remove_barriers_is_custom?: YesNo;
+  barriers_plans_to_remove_generated?: string; // innitially generated from form responses
+  barriers_plans_to_remove_custom?: string; // user-entered by clicking "I want to write my own..."
+  barriers_plans_to_remove_for_docgen?: "" | "GENERATED" | "CUSTOM";
+
   // 2.12
   technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
   technical_poc_sys_id?: string;

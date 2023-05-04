@@ -247,7 +247,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
     const formData: FairOpportunityDTO = {
       // eslint-disable-next-line camelcase
-      cause_of_sole_source_situation: this.soleSourceCause as string,
+      cause_of_sole_source_generated: this.soleSourceCause as string,
     }
     return Object.assign(fairOppSaved, formData);
   }
@@ -267,7 +267,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.soleSourceCause = storeData.cause_of_sole_source_situation as string;
+      this.soleSourceCause = storeData.cause_of_sole_source_generated as string;
 
       this.allSectionsNO = storeData.cause_migration_addl_time_cost === "NO"
         && storeData.cause_govt_engineers_training_certified === "NO"
