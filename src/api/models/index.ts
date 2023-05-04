@@ -245,7 +245,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   why_csp_is_only_capable_source?: string;
   procurement_discussion?: string;
   requirement_impact?: string;
-  contract_action?: "" | "UCA" | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE";
+  contract_action?: "" | "UCA" | "BCA" | "OES" | "NONE";
 
   // market research efforts form
   research_is_csp_only_source_capable?: YesNo;
