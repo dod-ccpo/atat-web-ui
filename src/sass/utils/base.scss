@@ -104,6 +104,7 @@ body {
 }
 
 .v-menu__content {
+  background-color: white;
   &::-webkit-scrollbar-track {
     background: white !important;
   }  
@@ -225,7 +226,9 @@ textarea {
   }
 }
 
-._instances-table.v-data-table, ._offering-instances.v-data-table {
+._base-table-style.v-data-table,
+._instances-table.v-data-table, 
+._offering-instances.v-data-table {
   > .v-data-table__wrapper > table > thead > tr {
     background-color: $base-lightest;
     & > th {
@@ -236,6 +239,37 @@ textarea {
       white-space: nowrap;
       padding: 8px;
     } 
+  }
+}
+
+._base-table-style.v-data-table {
+  border-collapse: collapse;
+  border: 1px solid $base-lighter;
+  border-radius: 4px;
+  > .v-data-table__wrapper > table > thead > tr {
+    & > th {
+      height: 40px;
+      background: $base-lightest;
+      border-bottom: 1px solid $base-lighter !important;
+      &:first-of-type {
+        padding-left: 24px;
+        border-top-left-radius: 3px;
+      }
+      &:last-of-type {
+        border-top-right-radius: 3px;
+      }
+    }
+  }
+  > .v-data-table__wrapper > table > tbody > tr {
+    & > td {
+      padding-top: 16px;
+      padding-bottom: 16px;
+      vertical-align: top;
+      &:first-of-type {
+        padding-left: 24px;
+        font-weight: normal;
+      }
+    }
   }
 }
 
@@ -476,4 +510,24 @@ textarea {
   }
 }
 
+._center-page-content {
+  // use left and right specifically to not override top/bottom
+  margin-right: auto;
+  margin-left: auto;
+  .stepper-nav, ._page-content, .atat-page-footer {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
 
+._provisioning {
+  .stepper-nav, ._page-content {
+    width: 100%;
+    max-width: 1040px;
+  }
+  .v-main__wrap {
+    padding-top: 68px;
+    height: 100vh !important;
+    max-height: calc(100vh - 56px);
+  }
+}

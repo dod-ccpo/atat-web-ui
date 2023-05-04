@@ -45,6 +45,7 @@ import sac from '../selectors/standComp.sel';
 import occ from '../selectors/occ.sel';
 import fd from '../selectors/financialDetails.sel'
 import performanceReqs from '../selectors/performanceReqs.sel';
+import 'cypress-wait-until';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -131,64 +132,63 @@ Cypress.Commands.add("findElement", (selector) => {
   }
 });
 
+Cypress.Commands.add('waitUntilModalNotVisible', () => {
+  cy.waitUntil(() => {
+    return Cypress.$('#LoadingModalTitle').is(":visible") === true;
+  }).then(() => {
+    cy.waitUntil(() => {
+      return Cypress.$('#LoadingModalTitle').is(":hidden") === true;
+    }, { timeout: 30000 }).then(() => {
+      cy.verifyPageHeader(
+        "Are you using the Defense Information Technology Contracting Organization (DITCO)" +
+        " for processing your JWCC task order?"
+      );
+    });
+  });
+});
+
 Cypress.Commands.add('homePageClickAcquisitionPackBtn', () => {
   
   cy.findElement(lp.welcomeBarText).should("exist");
   cy.textExists(lp.startAcqWelcome, "Start a new acquisition").should("be.enabled").click();
-  cy.verifyPageHeader("Let’s start with basic info about your new acquisition");
-  cy.textExists("#developerToggleButton", "Toggle Developer Navigation ON").click().then(() => {
-    cy.textExists("#developerToggleButton", "Toggle Developer Navigation OFF");
-  });
-  cy.window()
-    .its("sessionStorage")
-    .invoke("getItem", "ATAT_CONTACT_DATA_KEY")
-    .should("exist");
-  cy.window()
-    .its("sessionStorage")
-    .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
-    .should("exist");
-  cy.window()
-    .its("sessionStorage")
-    .invoke("getItem", "ATAT_DESCRIPTION_OF_WORK_KEY")
-    .should("exist");
-  cy.window()
-    .its("sessionStorage")
-    .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
-    .should("exist");
+  cy.verifyPageHeader("Before you get started");
 
-  // ==========================================================================
-  // KEEP FOR LOCAL TESTING TO NOT LOG DATA IN CYPRESS RUNNER
-  // UNCOMMENT THIS BLOCK AND COMMENT OUT THE sessionStorage CODE ABOVE
-  // ==========================================================================
-  // //eslint-disable-next-line cypress/no-unnecessary-waiting
-  // cy.window().wait(1000)
-  //   .its("sessionStorage").invoke("getItem", "ATAT_CONTACT_DATA_KEY")
-  //   .then(data => {
-  //     cy.wrap(JSON.parse(data)).its("branchChoices").should("exist")
-  //       // eslint-disable-next-line cypress/no-unnecessary-waiting
-  //       .then(() => cy.window().wait(1000).its("sessionStorage")
-  //         .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
-  //         .then(data => {
-  //           cy.wrap(JSON.parse(data)).its("agency_data").should("exist")
-  //             // eslint-disable-next-line cypress/no-unnecessary-waiting
-  //             .then(() => cy.window().wait(1000).its("sessionStorage")
-  //               .invoke("getItem", "ATAT_DESCRIPTION_OF_WORK_KEY")
-  //               .then(data => {
-  //                 cy.wrap(JSON.parse(data)).its("serviceOfferings").should("exist")
-  //                   // eslint-disable-next-line cypress/no-unnecessary-waiting
-  //                   .then(() => cy.window().wait(1000).its("sessionStorage")
-  //                     .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
-  //                     .then(data => {
-  //                       cy.wrap(JSON.parse(data)).its("acorInfo").should("exist")
-  //                     })
-  //                   )
-  //               })
-  //             )
-  //         })
-  //       )
-  //   })
+  cy.findElement("#stepperNavigation").scrollIntoView()
+    .should("be.visible");
+  cy.findElement(common.continueBtn).click();   
+  cy.waitUntilModalNotVisible(); 
+  
 });
 
+Cypress.Commands.add('selectDitcoOption', (selector, text) => {
+  cy.radioBtn(selector, text).click({ force: true });
+  cy.waitUntil(function () {
+    return Cypress.$(selector).is(":checked") === true
+  })
+  cy.btnExists(common.continueBtn, " Continue ").click();
+  cy.waitUntil(function () {
+    return Cypress.$(common.continueBtn).is(":hidden") === true;
+  }, { timeout: 30000 }).then(() => {
+    cy.verifyPageHeader("Let’s start with basic info about your new acquisition");
+  })
+});
+
+Cypress.Commands.add('clickDevToggleBtn', () => {
+  const toggleSel="#developerToggleButton"
+  cy.findElement(".atat-page-footer").scrollIntoView();  
+  cy.waitUntil(function () {
+    return Cypress.$(toggleSel).attr('aria-checked') == 'false' 
+  }) 
+  cy.findElement(toggleSel).click({force: true}).then(() => {
+    cy.waitUntil(function () {
+      return Cypress.$(toggleSel).attr('aria-checked') == 'true'
+    });    
+    cy.waitUntil(function () {
+      return cy.findElement(common.stepEvaluationCriteriaLink).not("have.class", "step disabled")
+    });
+  });
+});
+    
 Cypress.Commands.add('textExists', (selector, expectedText) => {
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(100);
@@ -251,7 +251,36 @@ Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
 });
 
 Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
-  cy.findElement(selector).should("contain.text", errorMessage);  
+  cy.findElement(selector).scrollIntoView().then(($el) => {
+    let actualTxt = $el.text();
+    const actualErrorMessage = cleanText(actualTxt);
+    cy.log(actualErrorMessage);
+    const errorMessageCleaned = cleanText(errorMessage);
+    expect(actualErrorMessage).contains(errorMessageCleaned);
+  });;  
+});
+
+Cypress.Commands.add("verifyEnteredInputTxt", (selector,it) => {
+  cy.findElement(selector).then(($inputText) => {
+    const text = $inputText.val()
+    cy.log(text);
+    expect(text).contain(it);
+  })
+  
+});
+
+Cypress.Commands.add("verifySelectedRadioOption", (selector,radioOption) => {
+  cy.findElement(selector).then(($radioOption) => {
+    const text = $radioOption.text()
+    cy.log(text);
+    expect(text).contain(radioOption);
+  })
+  
+});
+
+Cypress.Commands.add("verifySelectedCheckBoxOption", (selector) => {
+  cy.findElement(selector).should("be.checked");
+  
 });
 
 Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,errorMessage) => {
@@ -479,12 +508,32 @@ Cypress.Commands.add("completePercent", () => {
     });
 });
 
+Cypress.Commands.add("verifyAcqPackageName", (pt) => {
+  cy.enterTextInTextField(projectOverview.projectTitleTxtBox, pt)
+    .blur({ force: true })
+    .then(($el) => {
+      cy.log($el.val());
+      const enteredText = $el.val();
+      if (enteredText === "") {
+        cy.textExists(common.packageNameHeader, "New Acquisition");
+      } else {
+        cy.textExists(common.packageNameHeader, pt);
+      };
+    });
+  
+});
+
 Cypress.Commands.add("fillNewAcquisition", (projectTitle, scope) => {    
   cy.enterTextInTextField(projectOverview.projectTitleTxtBox, projectTitle);
   cy.enterTextInTextField(projectOverview.scopeTxtBox, scope);
   cy.findElement(projectOverview.radioBtnYes).should("have.value", "YES")
     .click({ force: true });
-  cy.btnExists(common.continueBtn, " Continue ").click();  
+  cy.findElement(projectOverview.projDisChxkBox).scrollIntoView()
+  cy.checkBoxOption(projectOverview.projDisChxkBox, "YES")
+    .click({ force: true })
+  cy.btnExists(common.continueBtn, " Continue ").click(); 
+  cy.waitUntilElementIsGone(projectOverview.projDisChxkBox); 
+  cy.verifyPageHeader(" Next, we’ll gather information about your organization ");
 });
 
 Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
@@ -622,15 +671,7 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value,sbSelector) =>
             cy.findElement(contact.gradeAutoCompleteWrapper)
               .should("not.exist");
           });        
-      }
-      if (selectedOption === "radio_button_checkedContractor") {
-        cy.findElement(contact.salutationDropDownLabel)
-          .should("exist")
-          .and("be.visible")
-          .and("contain", "Salutation");
-        cy.findElement(contact.gradeAutoCompleteWrapper)
-          .should("not.exist");
-      }
+      }      
       if (selectedOption === "radio_button_checkedCivilian") {
         cy.findElement(contact.gradeAutoCompleteWrapper)
           .should("exist")
@@ -660,7 +701,7 @@ Cypress.Commands.add("enterContactInformation", (contactInformation, prefix) => 
         
     const expectedText =
         "A DoDAAC is a 6-character code that uniquely identifies a unit," +
-        " activity, or organization that has the authority to requisition," +
+        " activity, or organization that has the authority to request," +
         " contract for, or fund/pay bills for materials and services.";
 
     const tooltipButton = prefix === "COR_" 
@@ -670,27 +711,12 @@ Cypress.Commands.add("enterContactInformation", (contactInformation, prefix) => 
       ? commonCorAcor.toolTipTxtDodaacCOR 
       : commonCorAcor.toolTipTxtDodaacACOR;
 
-    console.log("TOOLTIP SELECTOR", selector);
+    cy.log("TOOLTIP SELECTOR", selector);
     cy.hoverToolTip(tooltipButton, tooltipText, expectedText);
-
-    //Assert the labels
-    selector = prefixId(commonCorAcor.dodaacLabel, prefix);
-    cy.textExists(selector, " DoD Activity Address Code (DoDAAC) ");
-    const accessEditText = "Does this individual need access to help" +
-          " you create this acquisition package in ATAT?"
-    cy.findElement(commonCorAcor.accessRadioGroup).then(($e) => {
-      let actualTxt = $e.text();
-      cy.log(actualTxt);
-      const formattedTxt = cleanText(actualTxt)
-      expect(formattedTxt).equal(accessEditText);
-    });
-
     //enter DoDAAC
     selector = prefixId(commonCorAcor.dodaacTxtBox, prefix);
     cy.enterTextInTextField(selector, contactInformation.dodText);
-    //radio buttons
-    cy.radioBtn(commonCorAcor.accessYesRadioBtn, "YES");
-    cy.radioBtn(commonCorAcor.accessNoRadioBtn, "NO");
+    
   }
 });
 
@@ -734,8 +760,7 @@ Cypress.Commands.add("checkIfCorOrAcor", (headerSelector, headerText, contactNam
 });
 
 Cypress.Commands.add("manuallyEnterContactInformation",
-  (corOrAcor, manualEnterText, nameText, contactAffiliationText, radioSelector, radioValue) => {
-    cy.btnExists(commonCorAcor.contactFormToggle, manualEnterText).click();
+  (corOrAcor,nameText, contactAffiliationText, radioSelector, radioValue) => {    
     let selector = prefixId(commonCorAcor.contactHeaderTxt, corOrAcor);
     cy.textExists(selector, nameText);
     cy.textExists(commonCorAcor.contactAffRadioGroupTxt, contactAffiliationText)
@@ -765,7 +790,7 @@ Cypress.Commands.add("manuallyEnterContactInformation",
           selector = prefixId(commonCorAcor.rankAutoCompleteList, corOrAcor);
           cy.findElement(selector)
             .first().click({ force: true });
-        } else if (selectedOption === "radio_button_checkedContractor") {
+        } else if (selectedOption === "radio_button_checkedCivilian") {
           selector = prefixId(commonCorAcor.salutationDropDownControl, corOrAcor);
           cy.findElement(selector)
             .should("exist")
@@ -809,14 +834,18 @@ Cypress.Commands.add("acorOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
   cy.findElement(acor.activeRadioOption)
     .then(($radioBtn) => {
-      const selectedOption = $radioBtn.text();
+      const selectedOption = cleanText($radioBtn.text());
       cy.log(selectedOption);
       cy.btnExists(common.continueBtn, ' Continue ').click();
-      if (selectedOption === "radio_button_checkedYes") {
+      cy.waitUntilElementIsGone(radioSelector);
+      const yesOption = "radio_button_checkedYes";
+      if (selectedOption === yesOption) {
         //naviagtes to ACOR
-        cy.textExists(common.header, " Let’s gather info about your ACOR ");
+        cy.verifyPageHeader(" Let’s gather info about your ACOR ");
       } else {
-        cy.findElement("div").contains("Summary");
+        cy.verifyPageHeader(
+          "Let’s see if you qualify for an exception to fair opportunity"
+        );
       }
     });
 
@@ -863,6 +892,27 @@ Cypress.Commands.add("popLengthOptionYearExists", () => {
       }
     });
 
+});
+
+Cypress.Commands.add("defaultPoPLengthValue", (inputSelector,dropdownSelector) => {
+  cy.findElement(inputSelector).invoke('val').should('be.equal', "1");          
+  cy.findElement(dropdownSelector).then(($option) => {
+    const defaultOption = $option.text();    
+    cy.log(defaultOption)
+  }).should('have.text', "Year");      
+})
+
+Cypress.Commands.add("selectDatefromDatePicker", (ciSel,nmSel,selDateSel,calDate,dpSel) => {
+  cy.findElement(ciSel).click();
+  cy.findElement(nmSel).click({ force: true }).then(() => {
+    cy.findElement(selDateSel).each(($el) => {
+      const dateName = $el.text()
+      if (dateName == calDate) {
+        cy.wrap($el).click({ force: true })
+      }
+    });
+    cy.findElement(dpSel).should("not.visible");  
+  });
 });
 
 Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
@@ -1217,4 +1267,8 @@ Cypress.Commands.add("EditRequirement", (editSelector, text) => {
 Cypress.Commands.add("addAnotherRequirement", (addSelector, text) => {
   cy.findElement(addSelector).click();  
   cy.verifyPageHeader(" Let’s gather some details for " +  text )
+});
+
+Cypress.Commands.add("waitUntilElementIsGone", (selector) => {
+  cy.waitUntil(() => Cypress.$(selector).length === 0)   
 });

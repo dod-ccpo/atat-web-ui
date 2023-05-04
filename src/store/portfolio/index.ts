@@ -7,14 +7,17 @@ import {
   MemberInvites, 
   Portfolio, 
   PortfolioCardData, 
+  PortfolioProvisioning, 
   PortfolioSummaryQueryParams, 
   User,
 } from "../../../types/Global"
 
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
-import { AlertDTO } from "@/api/models";
+import {AlertDTO, PortfolioSummaryDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
+import {api} from "@/api";
+import CurrentUserStore from "../user";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -56,14 +59,148 @@ export const cspConsoleURLs: Record<string, string> = {
   oracle: "https://console.oraclecloud.com",
 }
 
+const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
+  return {
+    taskOrderNumber: "",
+    contractor: "",
+    csp: "",
+    cspLong: "",
+    contractIssuingOffice: "",
+    totalObligatedAmount: null,
+    totalAmount: null,
+    popStartDate: "",
+    popEndDate: "",
+    classificationLevels: [],
+    portfolioTitle: "",
+    serviceOrAgency: "",
+    admins: [],  
+  }
+
+}
 
 @Module({
-  name: "PortfolioData",
+  name: "PortfolioStore",
   namespaced: true,
   dynamic: true,
   store: rootStore,
 })
+
 export class PortfolioDataStore extends VuexModule {
+
+  public showTOPackageSelection = true;
+  @Action({rawError: true})
+  public async setShowTOPackageSelection(bool: boolean): Promise<void> {
+    this.doSetShowTOPackageSelection(bool);
+  }
+  @Mutation
+  public doSetShowTOPackageSelection(bool: boolean): void {
+    this.showTOPackageSelection = bool;
+  }
+
+
+  public didNotUseDAPPS = false;
+  @Action({rawError: true})
+  public async setDidNotUseDAPPS(bool: boolean): Promise<void> {
+    this.doSetDidNotUseDAPPS(bool);
+    if (bool) {
+      await AcquisitionPackage.setDisableContinue(false);
+    }
+  }
+  @Mutation
+  public doSetDidNotUseDAPPS(bool: boolean): void {
+    this.didNotUseDAPPS = bool;
+  }
+
+  public selectedAcquisitionPackageSysId = "";
+  @Action({rawError: true})
+  public async setSelectedAcquisitionPackageSysId(sysId: string): Promise<void> {
+    this.doSetSelectedAcquisitionPackageSysId(sysId);
+  }
+  @Mutation
+  public doSetSelectedAcquisitionPackageSysId(sysId: string): void {
+    this.selectedAcquisitionPackageSysId = sysId;
+  }
+  public get getSelectedAcquisitionPackageSysId(): string {
+    return this.selectedAcquisitionPackageSysId;
+  }
+  
+
+  public portfolioProvisioningObj: PortfolioProvisioning 
+    = _.cloneDeep(initialPortfolioProvisioningObj());
+ 
+  @Action({rawError: true})
+  public async getPortfolioProvisioningObj(): Promise<PortfolioProvisioning> {
+    return this.portfolioProvisioningObj;
+  }
+
+  @Action({rawError: true})
+  public async startProvisioning(): Promise<void> {
+    const unclassifiedOperators: Record<string, string>[] = [];
+    const scrtOperators: Record<string, string>[] = [] 
+    this.portfolioProvisioningObj.admins?.forEach(admin => {
+      if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
+        unclassifiedOperators.push({ dodId: admin.DoDId, email: admin.unclassifiedEmail });
+      }
+      if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
+        scrtOperators.push({ dodId: admin.DoDId, email: admin.scrtEmail });
+      }
+    });
+
+    const provisioningPostObj = {
+      portfolioName: this.portfolioProvisioningObj.portfolioTitle,
+      portfolioAgency: this.portfolioProvisioningObj.serviceOrAgency,
+      environments: {
+        Unclassified: {
+          operators: unclassifiedOperators
+        },
+        Secret: {
+          operators: scrtOperators
+        }
+      }
+    }
+
+    // const 
+
+    await api.edaApi.provisionPortfolio(
+      provisioningPostObj,
+      this.portfolioProvisioningObj.taskOrderNumber as string,
+      this.selectedAcquisitionPackageSysId)
+  }
+
+  /**
+   * Updates just the "title" (name) property of the portfolio record
+   */
+  @Action({rawError: true})
+  public async updatePortfolioTitle(title: string | undefined): Promise<void> {
+    await api.portfolioTable.update(this.currentPortfolio.sysId as string,
+      {name: title} as unknown as PortfolioSummaryDTO
+    )
+    this.currentPortfolio.title = title;
+  }
+
+  /**
+   * Updates just the description property of the portfolio record
+   */
+  @Action({rawError: true})
+  public async updatePortfolioDescription(description: string | undefined): Promise<void> {
+    await api.portfolioTable.update(this.currentPortfolio.sysId as string,
+      {description: description} as unknown as PortfolioSummaryDTO
+    )
+    this.currentPortfolio.description = description;
+  }
+
+  public openTOSearchPortfolio = false;
+
+  @Action({rawError: true})
+  public async setOpenTOSearchModal(val: boolean): Promise<void> {
+    this.setShowTOPackageSelection(true);
+    this.doSetOpenTOSearchModal(val);
+  }
+  @Mutation
+  public doSetOpenTOSearchModal(val: boolean): void {
+    this.openTOSearchPortfolio = val;
+  }
+
   private alertService = new AlertService();
   public activeTaskOrderNumber = "";
   
@@ -168,6 +305,18 @@ export class PortfolioDataStore extends VuexModule {
     return this.portfolioSummaryQueryParams;
   }
 
+  @Action({rawError: true}) 
+  public async setPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
+    this.doSetPortfolioProvisioning(data);
+  }
+
+  @Mutation
+  public async doSetPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
+    this.portfolioProvisioningObj = this.portfolioProvisioningObj
+      ? Object.assign(this.portfolioProvisioningObj, data)
+      : data; 
+  }
+
   @Action
   public async resetFilters(): Promise<void> {
     await this.setPortfolioSummaryQueryParams(
@@ -224,6 +373,7 @@ export class PortfolioDataStore extends VuexModule {
     const dataFromSummaryCard = {
       sysId: portfolioData.sysId,
       title: portfolioData.title,
+      description: portfolioData.description,
       status: portfolioData.status,
       csp: portfolioData.csp,
       agency: portfolioData.agency,
@@ -269,17 +419,6 @@ export class PortfolioDataStore extends VuexModule {
     this.alerts = value;
   }
 
-  public placeholderMember = {
-    firstName:"Maria",
-    lastName: "Missionowner",
-    email:"maria.missionowner.civ@mail.mil",
-    role: "Manager",
-    phoneNumber:"5555555555",
-    phoneExt:"1234",
-    designation: "Civilian",
-    agency: "U.S. Army"
-  };
-
   @Action({rawError: true})
   public async saveMembers(newMembers: MemberInvites): Promise<void> {
     newMembers.emails.forEach((email) => {
@@ -290,13 +429,29 @@ export class PortfolioDataStore extends VuexModule {
         role: newMembers.role,
       };
       this.currentPortfolio.members?.push(newMember);
+      // TODO: AT-8747 - CREATE/UPDATE USER TO SNOW
+      // in x_g_dis_atat_portfolio - either portfolio_managers or portfolio_viewers
+      // depending on role
     });
   }
 
   @Action({rawError: true})
   public async getPortfolioData(): Promise<Portfolio> {
+    // TODO: can likely remove logic below to add current user as Manager if no members
+    // after AT-8747 is completed
     if (this.currentPortfolio.members?.length === 0) {
-      this.currentPortfolio.members = [this.placeholderMember];
+      const currentUser = await CurrentUserStore.getCurrentUser();
+      const placeholderMember = {
+        firstName: currentUser.first_name,
+        lastName: currentUser.last_name,
+        email: currentUser.email,
+        role: "Manager",
+        phoneNumber: "5555555555",
+        phoneExt: "1234",
+        designation: "Civilian",
+        agency: "U.S. Army"
+      };
+      this.currentPortfolio.members = [placeholderMember];
     }
     return this.currentPortfolio;
   }
@@ -397,7 +552,18 @@ export class PortfolioDataStore extends VuexModule {
     return fundingAlertData;
   }
 
+  @Action({rawError: true})
+  public async reset(): Promise<void> {
+    this.doReset();
+  }
+  @Mutation
+  public async doReset(): Promise<void> {
+    this.portfolioProvisioningObj = _.cloneDeep(initialPortfolioProvisioningObj());
+    this.didNotUseDAPPS = false;
+    this.showTOPackageSelection = true;
+  }
+
 }
 
-const PortfolioData = getModule(PortfolioDataStore);
-export default PortfolioData;
+const PortfolioStore = getModule(PortfolioDataStore);
+export default PortfolioStore;

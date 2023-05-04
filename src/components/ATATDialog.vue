@@ -4,16 +4,18 @@
     v-model="_showDialog"
     eager
     role="alertdialog"
-    aria-labelledby="modalDialogTitle"
-    aria-describedby="modalDialogMessage"
-    id="ATATDialog"
+    :aria-labelledby="modalTitleId"
+    :aria-describedby="modalMessageId"
+    :id="'ATATDialog_' + id"
     ref="atatDialog"
+    :persistent="disableClickingOutside"
+    @click:outside="outsideClicked"
   >
-    <v-card :id="id">
-      <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
+    <v-card :id="id" :class="modalClass">
+      <v-card-title class="h2 text-break" :id="modalTitleId" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
-      <v-card-text class="body-lg black--text px-10" id="modalDialogMessage">
+      <v-card-text class="body-lg black--text px-10" :id="modalMessageId">
         <slot name="content"></slot>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
@@ -21,16 +23,17 @@
           class="link-button no-focus-shift"
           :ripple="false"
           @click="onCancel"
-          id="dialog_cancel"
+          :id="cancelButtonId"
           name="cancelDialog"
         >{{ cancelText }}
         </v-btn>
         <v-btn
+          v-if="!hideOkButton"
           :color="buttonColor"
           :ripple="false"
-          id="dialog_ok"
+          :id="okButtonId"
           :disabled="OKDisabled"
-          @click="onOK"
+          @click="onOK"          
         >
           {{ okText }}
         </v-btn>
@@ -100,11 +103,13 @@ export default class ATATDialog extends Vue {
   @Prop() private focusOnCancel!: string;
   @Prop() private focusOnOk!: string;
   @Prop({ default: false }) private OKDisabled!: boolean;
+  @Prop({ default: false }) private hideOkButton!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
   @Prop({ default: "primary" }) private buttonColor?: string;
-
+  @Prop({ default: false }) private disableClickingOutside?: boolean;
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;
+  @Prop() modalClass?: string;
 
   @PropSync("showDialog") private _showDialog!: boolean;
   @PropSync("modalDrawerIsOpen") public _modalDrawerIsOpen!: boolean;
@@ -118,6 +123,14 @@ export default class ATATDialog extends Vue {
     return this.title;
   }
 
+  public get modalTitleId(): string {
+    return this.id + "Title";
+  }
+
+  public get modalMessageId(): string {
+    return this.id + "Message";
+  }
+
   private onCancel() {
     this.$emit("cancelClicked");
     this._showDialog = false;
@@ -128,6 +141,12 @@ export default class ATATDialog extends Vue {
     this.$emit("ok");
     this._showDialog = false;
     this.returnFocus(this.focusOnOk);
+  }
+
+  private outsideClicked() {
+    if(!this.disableClickingOutside){
+      this.onCancel();
+    }
   }
 
   private returnFocus(elementId: string): void {

@@ -7,12 +7,13 @@ import {
   ReferenceColumn, 
   SystemChoiceDTO 
 } from "@/api/models";
-import { Checkbox, SelectData, User } from "types/Global";
+import { Checkbox, RadioButton, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import { Statuses } from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
 import { differenceInDays, differenceInMonths, parseISO } from "date-fns";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -76,10 +77,6 @@ export const buildClassificationCheckboxList = (
   const labelType = !labelLength || labelLength === "long" ? "long" : labelLength;
   const arr: Checkbox[] = [];
 
-  if (!includeTS) {
-    data = data.filter(obj => obj.classification !== "TS");
-  }
-
   data.forEach((classLevel) => {
     if (classLevel.classification
     && classLevel.sys_id
@@ -112,12 +109,15 @@ export const buildClassificationLabel
       const classificationString = classLevel.classification === "U"
         ? "Unclassified"
         : "Secret";
-      const IL = classLevel.impact_level;
-      const ILNo = IL.charAt(IL.length - 1);
-      const ILString = "Impact Level " + ILNo + " (" + IL + ")";
+
       if (classLevel.classification === "TS") {
         return "Top Secret"
       }
+
+      const IL = classLevel.impact_level;
+      const ILNo = IL.charAt(IL.length - 1) || "";
+      const ILString = "Impact Level " + ILNo + " (" + IL + ")";
+     
       if (type === "long") {
         return classificationString + " / " + ILString;
       }
@@ -146,6 +146,20 @@ export const buildClassificationDescription
       }
     }
 
+/**
+ * 
+ * @param classLevelSysId - Classification Level Sys Id
+ * @returns the number of existing instances (both Xaas and Cloud Support) that have
+ *          the classLevelSysId
+ */
+export const getDOWOfferingsWithClassLevelTotal = (
+  classLevelSysId: string
+): number => {
+  const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
+  const re = new RegExp(classLevelSysId, 'g');
+  return dowStringified.match(re)?.length || 0;
+};
+
 //strips whitespace, and special characters
 export const sanitizeOfferingName = (offeringName: string): string => {
   return offeringName.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>{\\}[\]\\/]/gi, "_")
@@ -156,9 +170,10 @@ export const sanitizeOfferingName = (offeringName: string): string => {
 export const toCurrencyString = (num: number, decimals?: boolean): string => {
   const d = decimals === false ? 0 : 2;
   if (!isNaN(num)) {
-    return num.toLocaleString(
-      undefined, {minimumFractionDigits: d, maximumFractionDigits: d}
-    );
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: d, 
+      maximumFractionDigits: d, 
+    }).format(num);
   }
   return "";
 }
@@ -299,17 +314,27 @@ export function getStatusChipBgColor(status: string): string {
 }
 
 const monthAbbreviations = ATATCharts.monthAbbreviations;
+const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
-export function createDateStr(dateStr: string, period: boolean): string {
+export function createDateStr(dateStr: string, period: boolean, hours?: boolean): string {
+  hours = hours ? hours : false;
   const parsedDate = parseISO(dateStr, { additionalDigits: 1 });
-  const date = new Date(parsedDate.setHours(0, 0, 0, 0));
+  const date = hours? new Date(parsedDate) : new Date(parsedDate.setHours(0, 0, 0, 0));
   const m = monthAbbreviations[date.getMonth()];
   const y = date.getFullYear();
   const d = date.getUTCDate();
-  const neverPeriodMonths = ["March", "April", "May", "June", "July"];
-  const noPeriodMonth = neverPeriodMonths.indexOf(m) !== -1;
+  const noPeriodMonth = monthsNotAbbreviated.indexOf(m) !== -1;
   const p = period && !noPeriodMonth ? "." : "";
-  return m + p + " " + d + ", " + y;
+  let formattedDate = m + p + " " + d + ", " + y;
+  if (hours) {
+    let h = (date.getHours()).toString();
+    h = h.length === 1 ? "0" + h : h;
+    let m = (date.getMinutes()).toString();
+    m = m.length === 1 ? "0" + m : m;
+    formattedDate += " " + h + m;
+  }
+  return formattedDate;
+
 }
 
 export function differenceInDaysOrMonths(
@@ -385,3 +410,34 @@ export function convertEstimateData(sysIdArray: Record<string, string>[]): strin
   return "{" + records.substring(0,records.length - 1) + "}";
 }
 
+/**
+ * @param arr 
+ * @param conjunction 'and | or' 
+ * @returns comma separated list with conjunction
+ *    eg. ['apple'] => "apple"
+ *    eg. (['apple', 'orange']) => "apple and orange"
+ *    eg. (['apple', 'orange', 'pear'], 'or') => "apple, orange or pear"
+ */
+export function convertStringArrayToCommaList(arr: string[], conjunction?: string): string {
+  conjunction = conjunction || 'and';
+  let commaList = arr[0] || "";
+  if (arr.length > 1){
+    commaList = arr.slice(0, -1).join(", ") + " "  + conjunction + " " + arr.slice(-1);
+  }
+  return commaList;
+}
+
+export function getYesNoRadioOptions(groupId: string): RadioButton[] {
+  return [
+    {
+      id: groupId + "Yes",
+      label: "Yes",
+      value: "YES"
+    },
+    {
+      id: groupId + "No",
+      label: "No",
+      value: "NO"
+    },
+  ];
+}

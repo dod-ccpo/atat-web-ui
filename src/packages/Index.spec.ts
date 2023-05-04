@@ -49,7 +49,7 @@ describe("Testing Packages Component", () => {
     it("toAcquisitions() - tests back to home", async () => {
       wrapper.vm.$data.altBackDestination = "Home";
       await wrapper.vm.toAcquisitions();
-      expect(router.app.$route.name).toBe("Contracting_Shop");
+      expect(router.app.$route.name).toBe("DAPPSChecklist");
     });
 
     it("test tabIndex changes",()=>{

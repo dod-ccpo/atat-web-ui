@@ -5,7 +5,7 @@ import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CurrentContractDTO,
-  FairOpportunityDTO, // EJY
+  FairOpportunityDTO,
   EvaluationPlanDTO,
   GFEOverviewDTO,
   OrganizationDTO,
@@ -16,7 +16,9 @@ import {
   SensitiveInformationDTO,
   CurrentEnvironmentDTO,
   EnvironmentInstanceDTO,
-  RegionsDTO
+  RegionsDTO,
+  PackageDocumentsSignedDTO,
+  AddressDTO
 } from "@/api/models";
 
 export interface SessionData {
@@ -28,7 +30,7 @@ export interface SessionData {
   corInfo: ContactDTO;
   contractType: ContractTypeDTO;
   currentContract: CurrentContractDTO;
-  fairOpportunity: FairOpportunityDTO; // EJY
+  fairOpportunity: FairOpportunityDTO;
   evaluationPlan: EvaluationPlanDTO;
   gfeOverview: GFEOverviewDTO;
   organization: OrganizationDTO;
@@ -41,5 +43,7 @@ export interface SessionData {
   currentEnvironment:CurrentEnvironmentDTO;
   environmentInstance:EnvironmentInstanceDTO;
   allowDeveloperNavigation: boolean;
-  regions: RegionsDTO[]
+  regions: RegionsDTO[];
+  packageDocumentsSigned:PackageDocumentsSignedDTO
+  contractingShopNonDitcoAddress:AddressDTO
 }

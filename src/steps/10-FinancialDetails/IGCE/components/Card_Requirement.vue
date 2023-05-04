@@ -92,6 +92,8 @@ export default class CardRequirement extends Vue {
     if(this.description !== ""){
       // eslint-disable-next-line camelcase
       this._cardData.description = this.description;
+      // eslint-disable-next-line camelcase
+      this._cardData.updated_description = "YES";
     }else{
       this.description = this._cardData.description;
     }
@@ -99,27 +101,25 @@ export default class CardRequirement extends Vue {
 
   public checkMonthlyValue(): void {
     // eslint-disable-next-line camelcase
-    this._cardData.unit_price = parseFloat(this.estimate)|| 0;
-    this.noMonthlyValue = this.moneyNumber < 1;
+    this._cardData.unit_price = currencyStringToNumber(this.estimate);
+    if(this._cardData.unit_price !== null){
+      this.noMonthlyValue = this._cardData.unit_price < 1;
+    }
   }
   public async loadOnEnter(): Promise<void> {
-    
-    Vue.nextTick(() => {
-      this.title = this._cardData.title
-      this.description = this._cardData.description;
-      this.type = "/" + this._cardData.unit.toLowerCase();
-      this.moneyNumber = this._cardData.unit_price || 0;
-      this.estimate = this.moneyNumber >0 
-        ? toCurrencyString(this.moneyNumber, true) 
-        : "";
-    })
+    this.title = this._cardData.title
+    this.description = this._cardData.description;
+    this.type = "/" + this._cardData.unit.toLowerCase();
+    this.moneyNumber = this._cardData.unit_price || 0;
+    this.estimate = await this.moneyNumber > 0
+      ? toCurrencyString(this.moneyNumber, true) 
+      : "" ;
   }
 
   @Watch("estimate")
   protected monthlyPriceChange(newVal: string): void {
-    this.moneyNumber = currencyStringToNumber(newVal);
     // eslint-disable-next-line camelcase
-    this._cardData.unit_price = this.moneyNumber;
+    this._cardData.unit_price =  currencyStringToNumber(newVal);
   }
 
   public async mounted(): Promise<void> {

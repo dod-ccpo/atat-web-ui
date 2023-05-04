@@ -73,7 +73,7 @@
         <hr v-if="hasTellUsAboutInstanceHeading" />
 
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "2." : "1." }}
+          {{getCurrentUsageAndUsersSequenceNum}}
           Current usage and users
         </h2>
 
@@ -101,7 +101,7 @@
         <hr />
 
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "3." : "2." }}
+          {{getInstanceConfigurationsSequenceNum}}
           Instance configurations
         </h2>
 
@@ -117,17 +117,19 @@
 
         <hr />
 
+        <span v-if="showPricingDetails">
+          <h2 class="mb-4">
+            {{getPricingDetailsSequenceNum}}
+            Pricing details
+          </h2>
+
+          <PricingDetails :pricingDetails.sync="pricingDetails" />
+
+          <hr />
+        </span>
+
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "4." : "3." }}
-          Pricing details
-        </h2>
-
-        <PricingDetails :pricingDetails.sync="pricingDetails" />
-
-        <hr />
-
-        <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "5." : "4." }}
+          {{getAdditionalInfoSequenceNum}}
           Additional information 
           <span class="text-base font-weight-400">(Optional)</span>
         </h2>
@@ -204,6 +206,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   public isValid = true;
 
   public get currentData(): CurrentEnvironmentInstanceDTO {
+
     return this.instanceData;
   }
   public savedData: CurrentEnvironmentInstanceDTO = _.cloneDeep(defaultCurrentEnvironmentInstance);
@@ -270,13 +273,18 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     // if instance location is on-premise AND only one classification was selected.
     // classification radio options will show if either NO (ZERO) classification
     // levels were selected, or more than one was selected.
-    return !(this.instanceData.instance_location === 'ON_PREM' 
+    return !(this.currEnvData.env_location === 'ON_PREM'
       && this.currEnvData.env_classifications_onprem.length === 1);
   }
 
   public selectedDeployedRegionsOnLoad: string[] = [];
   public regionsDeployedUpdate(selected: string[]): void {
-    this.instanceData.deployed_regions = selected;
+    const santized = selected.map(
+      element => element.replaceAll("[", "").replaceAll("]","")
+    )
+    this.instanceData.deployed_regions = santized.length>0 
+      ? santized.join(",")
+      : ""
   }
 
   public regionUsersOnLoad = "";
@@ -429,14 +437,25 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     this.instanceNumber = CurrentEnvironment.currentEnvInstanceNumber + 1;
     const envStoreData = await CurrentEnvironment.getCurrentEnvironment();
     if (envStoreData) {
+      this.selectedDeployedRegionsOnLoad = [];
       this.currEnvData = envStoreData;
       this.envLocation = envStoreData.env_location;
       const instanceStoreData = await CurrentEnvironment.getCurrentEnvInstance();
       if (instanceStoreData) {
         this.instanceData = _.cloneDeep(instanceStoreData);
         this.savedData = _.cloneDeep(instanceStoreData);
+        if (typeof this.instanceData.deployed_regions === "string") {
+          let deployedRegionIds = this.instanceData.deployed_regions?.split(',')
+          if(deployedRegionIds.length != this.instanceData.deployed_regions?.length){
+            deployedRegionIds.forEach((instanceId) => {
+              this.selectedDeployedRegionsOnLoad.push(instanceId)
+            })
+          }
+          
+        } else {
+          console.log("error")
+        }
         
-        this.selectedDeployedRegionsOnLoad = this.instanceData.deployed_regions || [];
         this.regionUsersOnLoad = this.instanceData.users_per_region;
 
         if (this.instanceData.is_traffic_spike_event_based === "YES") {
@@ -506,6 +525,46 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     }
 
     return isValid;
+  }
+  /**
+   * Processes the instance location 
+   * returns false if the instance location is on_prem
+   * returns true otherwise
+   */
+  public get showPricingDetails(): boolean {
+    return this.instanceData.instance_location === "ON_PREM" ? false:true 
+  }
+
+  /**
+   * Compiles and returns the sequence number for current usage & user section
+   */
+  public get getCurrentUsageAndUsersSequenceNum(): string {
+    return this.hasTellUsAboutInstanceHeading ? "2." : "1.";
+  }
+
+  /**
+   * Compiles and returns the sequence number for instance configurations section
+   */
+  public get getInstanceConfigurationsSequenceNum(): string {
+    return this.hasTellUsAboutInstanceHeading ? "3." : "2.";
+  }
+
+  /**
+   * Compiles and returns the sequence number for pricing details section
+   */
+  public get getPricingDetailsSequenceNum(): string {
+    return this.hasTellUsAboutInstanceHeading ? "4." : "3.";
+  }
+
+  /**
+   * Compiles and returns the sequence number for additional information section
+   */
+  public get getAdditionalInfoSequenceNum(): string {
+    if (this.hasTellUsAboutInstanceHeading) {
+      return this.instanceData.instance_location === "ON_PREM" ? "4." : "5.";
+    } else {
+      return this.instanceData.instance_location === "ON_PREM" ? "3." : "4.";
+    }
   }
 
 }

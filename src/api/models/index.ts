@@ -15,7 +15,9 @@ import {
   SingleMultiple,
   EstimateOptionValue,
   TrainingEstimate,
-  EstimateOptionValueObjectArray
+  EstimateOptionValueObjectArray,
+  CSP,
+  UnitOfTime
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -77,6 +79,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   funding_requirement: ReferenceColumn | string;
   contracting_shop?: string;
   funding_request?: ReferenceColumn | string;
+  contracting_shop_non_ditco_address?: ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -84,6 +87,7 @@ export interface ClassificationLevelDTO extends BaseTableDTO {
   classification: string;
   classification_level?: ReferenceColumn | string;
   display?: string;
+  dow_task_number_component?: number
 }
 
 export interface ClassifiedInformationTypeDTO extends BaseTableDTO {
@@ -105,6 +109,7 @@ export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
   data_increase?: YesNo;
   data_growth_estimate_type?: SingleMultiple;
   data_growth_estimate_percentage?: string[];
+  isValid?:boolean;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -144,7 +149,7 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   instance_location: EnvironmentInstanceLocation;
   instance_number: number,
   instance_name: string,
-  deployed_regions?: string[];
+  deployed_regions?: string[] | string;
   classification_level: string; // classification level sys_id
   current_usage_description: EnvironmentInstanceUsage;
   is_traffic_spike_event_based: YesNo;
@@ -212,8 +217,78 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {
-  exception_to_fair_opportunity: string;
+  exception_to_fair_opportunity?: string;
+  proposed_csp?: CSP;
+  justification?: string;
+  min_govt_requirements?: string;
+
+  // cause of sole source form fields
+  cause_migration_addl_time_cost?: YesNo;
+  cause_migration_estimated_cost?: string;
+  cause_migration_estimated_delay_amount?: string;
+  cause_migration_estimated_delay_unit?: UnitOfTime;
+
+  cause_govt_engineers_training_certified?: YesNo;
+  cause_govt_engineers_platform_name?: string;
+  cause_govt_engineers_insufficient_time_reason?: string;
+  
+  cause_product_feature_peculiar_to_csp?: YesNo;
+  cause_product_feature_type?: "" | "PRODUCT" | "FEATURE";
+  cause_product_feature_name?: string;
+  cause_product_feature_why_essential?: string;
+  cause_product_feature_why_others_inadequate?: string;
+  // END cause of sole source form fields 
+
+  write_own_sole_source_cause?: YesNo; // TODO: ADD TO SNOW
+  cause_of_sole_source_situation?: string; // summary of cause fields
+
+  why_csp_is_only_capable_source?: string;
+  procurement_discussion?: string;
+  requirement_impact?: string;
+  contract_action?: "" | "UCA " | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE";
+
+  // market research efforts form
+  research_is_csp_only_source_capable?: YesNo;
+  research_start_date?: string;
+  research_end_date?: string;
+  research_supporting_data?: string;
+  
+  research_review_catalogs_reviewed?: YesNo;
+  research_review_catalogs_same_research_date?: YesNo;
+  research_review_catalogs_start_date?: string;
+  research_review_catalogs_end_date?: string;
+  research_review_catalogs_review_results?: string;
+  
+  research_other_techniques_used?: string; // array of sys_ids
+  research_other_technique?: string;
+  research_personal_knowledge_person_or_position?: string;
+  research_techniques_summary?: string;
+  // END market research efforts form
+  
+  market_research_details?: string; // summary of research fields
+  
+  market_research_conducted_by?: string; // JSON object - array of name, title, organization
+  
+  other_facts_to_support_logical_follow_on?: YesNo;
+  other_facts_to_support_logical_follow_on_details?: string;
+
+  barriers_follow_on_requirement?: YesNo;
+  barriers_follow_on_expected_date?: string;
+  barriers_agency_pursuing_training_or_certs?: YesNo;
+  barriers_planning_future_development?: YesNo; 
+  barriers_j_a_prepared?: YesNo
+  barriers_j_a_prepared_results?: string;
+
+  barriers_plans_to_remove_barriers?: string; // summary of barriers fields
+
+  technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  technical_poc_sys_id?: string;
+  requirements_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  requirements_poc_sys_id?: string;
+
 }
+
+
 
 export interface OrganizationDTO extends BaseTableDTO {
   street_address_1?: string;
@@ -233,6 +308,7 @@ export interface ProjectOverviewDTO extends BaseTableDTO {
   title: string;
   scope: string;
   emergency_declaration: string;
+  project_disclaimer: YesNo;
 }
 
 export interface MilitaryRankDTO extends BaseTableDTO {
@@ -254,6 +330,7 @@ export interface SystemPropertiesDTO extends BaseTableDTO {
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
+  acquisition_package?: ReferenceColumn | string;
   pii_present?: string;
   system_of_record_name?: string;
   work_to_be_performed?: string;
@@ -282,6 +359,8 @@ export interface ServiceOfferingDTO extends BaseTableDTO {
   other?: string;
   service_offering_group: string;
   sequence: string;
+  dow_task_number_component: number;
+  offering_type?: string;
 }
 
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {
@@ -415,6 +494,7 @@ export interface SelectedServiceOfferingDTO extends BaseTableDTO {
 }
 
 export interface ClassificationInstanceDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   selected_periods: string;
   classification_level: string;
   usage_description: string;
@@ -423,6 +503,7 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
   type_of_delivery?: "" | "SHIPPED" | "PICK_UP";
   type_of_mobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   type_of_mobility_other?: string;
+  ts_contractor_clearance_type?: string;
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {
@@ -484,6 +565,11 @@ export interface CostsDTO extends BaseTableDTO {
   value: string;
 }
 
+export interface CostEstimateDTO extends BaseTableDTO {
+  packageId: string
+  payload: Record<string, any>
+}
+
 export interface CostGroupDTO {
   totalActual: number;
   totalProjected: number;
@@ -520,8 +606,22 @@ export interface ClinDisplayDTO {
 }
 
 export interface EDAResponse {
-  success: boolean;
-  message: string;
+  success?: boolean;
+  // if 400 error, will have code and message
+  code?: string;
+  message?: string;
+  // if 200 success, will have data below
+  taskOrderNumber?: string;
+  contractor?: string; // "Microsoft Corporation",
+  csp?: string; // "Azure",
+  cspLong?: string; // "Microsoft Azure"
+  contractIssuingOffice?: string; // "DITCO",
+  totalObligatedAmount?: number | null;
+  totalAmount?: number | null;
+  popStartDate?: string; // "2021-07-01",
+  popEndDate?: string; // "2026-07-01",
+  classificationLevels?: string[]; //  ["Unclassified", "Secret"] or sysIds?
+
 }
 
 
@@ -585,15 +685,17 @@ export interface CloudSupportEnvironmentInstanceDTO extends EnvironmentInstanceD
   training_requirement_title?: string;
   training_time_zone?: string;
   ts_contractor_clearance_type?: string;
+  instance_number?:number;
 }
 
 export interface ArchitecturalDesignRequirementDTO extends BaseTableDTO {
   acquisition_package: ReferenceColumn | string;
   source: "" | "CURRENT_ENVIRONMENT" | "DOW";
   applications_needing_design: string;
-  data_classification_levels: string;
+  data_classification_levels: string | string[];
   external_factors: string;
   statement: string;
+  needs_architectural_design_services: string;
 }
 
 export interface TravelRequirementDTO extends BaseTableDTO {
@@ -610,6 +712,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   csp: ReferenceColumn;
   active_task_order: ReferenceColumn;
   csp_display: string; // "<<cloud_service_package.name >>"
+  vendor: CSP;
   dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
@@ -623,6 +726,8 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];
+  title?: string;
+  description?: string;
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {
@@ -662,7 +767,7 @@ export interface PackageSummaryDTO { // TODO: delete this interface after acq pa
 
 export interface AcquisitionPackageSummarySearchDTO {
   acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER" | // open
-  "TASK_ORDER_AWARDED" | "ARCHIVED" |
+  "TASK_ORDER_AWARDED" | "ARCHIVED" | "WAITING_FOR_TASK_ORDER" |
   "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED";
   sort: "project_overview" | "DESCsys_updated_on"; // one of these two values should always exist
   searchString?: string;
@@ -680,6 +785,7 @@ export interface AcquisitionPackageSummaryDisplay{
   mission_owners?: DisplayColumn;
   contract_award?: DisplayColumn;
   contributors?: DisplayColumn;
+  contracting_shop?: DisplayColumn;
 }
 
 export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
@@ -689,6 +795,7 @@ export interface AcquisitionPackageSummaryDTO extends BaseTableDTO{
   mission_owners?: DisplayColumn;
   contract_award?: DisplayColumn;
   contributors?: DisplayColumn;
+  contracting_shop?: DisplayColumn;
 }
 
 export interface AcquisitionPackageSummaryMetadataAndDataDTO {
@@ -725,6 +832,27 @@ export interface UserDTO extends BaseTableDTO {
   last_name?: string;
   user_name?: string;
   email?: string;
+  company?: string;
+  mobile_phone?: string;
+  phone?: string;
+  home_phone?: string;
+  title?: string;
+}
+
+// used for User Profile cards - "Company" is the "Agency"
+export interface CompanyDTO extends BaseTableDTO {
+  name?: string;
+  long_name?: string;
+  u_short_name?: string;
+}
+
+export interface UserSearchResultDTO extends BaseTableDTO {
+  first_name?: string;
+  last_name?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  department?: DisplayColumn;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{
@@ -734,6 +862,7 @@ export interface TrainingEstimateDTO extends BaseTableDTO{
   training_option: string; //SINGLE or MULTIPLE
   training_unit: string; //PER_PERSON, PER_SESSION, or SUBSCRIPTION
   cloud_support_environment_instance: ReferenceColumn | string;
+  dow_task_number?: string;
 }
 
 export interface EstimateOptionValueDTO {
@@ -746,7 +875,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   has_DOW_and_PoP: YesNo;
   optimize_replicate: EstimateOptionValue;
   architectural_design_current_environment: EstimateOptionValue;
-  architectural_design_performance_requirements: EstimateOptionValue;
+  architectural_design_performance_requirements: EstimateOptionValueDTO;
   training: TrainingEstimateDTO[];
   travel: EstimateOptionValueObjectArray;
   surge_requirements: {
@@ -842,7 +971,8 @@ export interface IgceEstimateDTO extends BaseTableDTO {
   unit_quantity?: string;
   dow_task_number?: string;
   classification_display?: string;
-  idiq_clin_type?: string
+  idiq_clin_type?: string;
+  updated_description?:"YES"|"NO"
 }
 
 export interface RegionsDTO extends BaseTableDTO {
@@ -857,4 +987,40 @@ export interface RegionsDTO extends BaseTableDTO {
   sys_tags: string
   sys_created_by: string
   group: string
+}
+export interface PackageDocumentsSignedDTO extends BaseTableDTO {
+  sys_id?: string
+  sys_updated_by?: string
+  sys_created_on?: string
+  sys_mod_count?: string
+  acquisition_package?: string
+  sys_updated_on?: string
+  sys_tags?: string
+  sys_created_by?: string
+}
+
+export interface PackageDocumentsUnsignedDTO extends BaseTableDTO {
+  sys_id?: string
+  sys_updated_by?: string
+  sys_created_on?: string
+  sys_mod_count?: string
+  acquisition_package?: string
+  sys_updated_on?: string
+  sys_tags?: string
+  sys_created_by?: string
+}
+export interface AddressDTO extends BaseTableDTO {
+  apo_fpo_cpo?: string
+  country?: string
+  address_type?: string
+  category?: "" | "CONTRACTING_OFFICE" | "FOIA" | "ORGANIZATION";
+  city?: string
+  zip_postal_code?: string
+  acquisition_package?: string
+  street_address_1?: string
+  street_address_2?: string
+  unit?: string
+  state_province_state_code?: string
+  name?: string
+  aa_ae_ap?: string
 }

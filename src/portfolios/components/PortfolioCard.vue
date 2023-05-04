@@ -6,7 +6,7 @@
   >
 
     <div class="pr-5">
-      <div class="_csp-icon-wrap" :data-csp="CSPs[cardData.csp].title">
+      <div class="_csp-icon-wrap" :data-csp="CSPs[cspKey].title">
         <v-tooltip
           transition="slide-y-reverse-transition"
           color="rgba(0,0,0,1)"
@@ -20,14 +20,14 @@
               v-on="on"
             >
               <ATATSVGIcon 
-                :name="CSPs[cardData.csp].img.name" 
-                :width="CSPs[cardData.csp].img.width" 
-                :height="CSPs[cardData.csp].img.height" 
+                :name="CSPs[cspKey].img.name" 
+                :width="CSPs[cspKey].img.width" 
+                :height="CSPs[cspKey].img.height" 
               />
             </span>
           </template>
           <div class="_tooltip-content-wrap">
-            {{ CSPs[cardData.csp].title }}
+            {{ CSPs[cspKey].title }}
           </div>
         </v-tooltip>
       </div>
@@ -35,13 +35,18 @@
     <div class="pr-8 flex-grow-1">
       <div class="d-flex">
         <div class="card-header flex-grow-1">
+          <!-- 
+          ----------------------------------------------------------
+            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
+          ----------------------------------------------------------
           <a
             :id="'PortfolioName' + index"
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _portfolio-name"
             @click="cardMenuClick(portfolioCardMenuItems[0])"
-          >
+          > -->
+          <span class="h3 text-base-darker d-flex align-center _portfolio-name">
             {{ cardData.title }}
             <ATATSVGIcon 
               v-if="cardData.isManager"
@@ -51,7 +56,9 @@
               color="base"
               class="ml-3"
             />
-          </a>
+          </span>
+
+          <!-- </a> -->
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
           <v-chip
@@ -65,6 +72,7 @@
         </div>
       </div>
       <div class="text-base-dark mb-3">
+        <!-- ATAT TODO -- REINSTATE WHEN NOT HARD-CODING dod_component
         <span class="_agency">{{ cardData.agency }}</span>
         <ATATSVGIcon 
           name="bullet" 
@@ -73,6 +81,7 @@
           :height="9" 
           class="d-inline-block mx-1 _last-modified" 
         />
+        -->
         {{ cardData.lastModifiedStr }}
       </div>
 
@@ -156,13 +165,17 @@
       </div>
     </div>
 
-    <ATATMeatballMenu 
+    <!-- 
+      ------------------------------------------------------------
+      -- ATAT TODO -  UNHIDE MEATBALL when Portfolio Mgmt added -- 
+      ------------------------------------------------------------
+      <ATATMeatballMenu 
       :id="'PortfolioCardMenu' + index"
       :left="true"
-      :menuIndex="index"
+      :index="index"
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
-    />
+    /> -->
 
     <LeavePortfolioModal
       :showModal.sync="showLeavePortfolioModal" 
@@ -181,7 +194,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
 
 import { MeatballMenuItem, PortfolioCardData } from "types/Global";
-import PortfolioData, { cspConsoleURLs } from "@/store/portfolio";
+import PortfolioStore, { cspConsoleURLs } from "@/store/portfolio";
 import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
@@ -251,6 +264,10 @@ export default class PortfolioCard extends Vue {
     return this.cardData.fundingStatus === Statuses.Delinquent.value;
   }
 
+  public get cspKey(): string {
+    return this.cardData.csp?.toLowerCase() as string;
+  }
+
   public getCSPConsoleURL(): string {
     return this.cardData.csp ? cspConsoleURLs[this.cardData.csp] : "";
   }
@@ -258,7 +275,7 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
-    await PortfolioData.setCurrentPortfolio(this.cardData);
+    await PortfolioStore.setCurrentPortfolio(this.cardData);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
       await AppSections.setActiveTabIndex(0);
@@ -316,8 +333,8 @@ export default class PortfolioCard extends Vue {
         height:"31",
       }
     },
-    google: {
-      title: "Google Cloud Platform",
+    gcp: {
+      title: "Google Cloud",
       img: {
         name:"gcp",
         width:"40",
@@ -325,7 +342,7 @@ export default class PortfolioCard extends Vue {
       }
     },
     oracle: {
-      title: "Oracle",
+      title: "Oracle Cloud",
       img: {
         name:"oracle",
         width:"40",

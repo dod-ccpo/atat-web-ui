@@ -22,18 +22,6 @@
             icon="arrow_drop_down"
           />
 
-          <!-- TODO: add link when functionality completed in future ticket
-          <a
-            role="button"
-            id="RequestAgencyAdded"
-            class="_text-link"
-            :class="{ 'mb-10 d-inline-block': !selectedAgency }"
-            @click="showDialog = true"
-          >
-            Request to have your agency added
-          </a>
-          -->
-
           <div v-if="selectedAgency" class="mt-10">
             <hr />
             <section id="Section1">
@@ -42,10 +30,7 @@
               </h2>
               <ATATAutoComplete
                 id="DisaOrg"
-                v-if="
-                  selectedAgency &&
-                  selectedAgency.value === this.DisaOrgId
-                "
+                v-if="isAgencyDisa"
                 class="_input-max-width mb-10"
                 label="DISA Organization"
                 :label-sr-only="false"
@@ -60,10 +45,7 @@
 
               <ATATTextField
                 id="OrgName"
-                v-if="
-                  selectedAgency &&
-                  selectedAgency.value !== this.DisaOrgId
-                "
+                v-if="!isAgencyDisa"
                 label="Organization name"
                 class="_input-max-width mb-10"
                 :value.sync="organizationName"
@@ -213,8 +195,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // data
   private emptySelectData: SelectData = { text: "", value: "" };
 
-  private DisaOrgId = "fdd5245e875a9910bc86b889cebb35e3";
-
+ 
   private addressTypes = {
     USA: "US",
     MIL: "MILITARY",
@@ -310,6 +291,10 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   }
 
   // getters
+  get isAgencyDisa(): boolean{
+    return (this.selectedAgency.text as string)?.toUpperCase().indexOf("DISA")> -1
+  }
+ 
   private get currentData(): OrganizationDTO {
     let state = "";
     let city = this.city;
@@ -356,6 +341,10 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   @Watch("selectedAgency")
   protected agencyChanged(newVal: SelectData): void {
     AcquisitionPackage.setSelectedAgency(newVal);
+    
+    //reset two attribs below depending on agency dropdown update
+    this.selectedDisaOrg = this.isAgencyDisa ? this.selectedDisaOrg :  { text: "", value: ""};
+    this.organizationName = this.isAgencyDisa ? "" : this.organizationName;
   }
 
   // methods
@@ -397,13 +386,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
           this.agencyData[selectedAgencyIndex];
       }
 
-      const selectedDisaOrgIndx = this.disaOrgData.findIndex(
-        (org) => org.value === storeData.disa_organization
-      );
-
-      if (selectedDisaOrgIndx > -1) {
-        this.selectedDisaOrg = this.disaOrgData[selectedDisaOrgIndx];
-      }
+      this.selectedDisaOrg = this.disaOrgData.find(
+        (disaOrg) => disaOrg.value === storeData.disa_organization
+      ) as SelectData
 
       this.organizationName = storeData.organization_name;
       this.dodAddressCode = storeData.dodaac;

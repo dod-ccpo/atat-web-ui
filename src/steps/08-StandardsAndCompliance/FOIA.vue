@@ -140,6 +140,7 @@ export default class FOIA extends Mixins(SaveOnLeave) {
   private get currentData(): SensitiveInformationDTO {
     return {
       potential_to_be_harmful: this.potentialToBeHarmful || "",
+      acquisition_package: AcquisitionPackage.packageId
     };
   }
 

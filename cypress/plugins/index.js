@@ -28,7 +28,7 @@ module.exports = (on, config) => {
   require('cypress-grep/src/plugin')(on,config)
   
   config.env.testURL = process.env.testURL;
-  config.env.localTestURL = process.env.localTestURL;
+  config.env.localTestURL = "http://localhost:8080/";
   config.env.isTestingLocally = process.env.isTestingLocally;
   config.env.BASE_API_URL = process.env.BASE_API_URL;
   config.env.isolatedTestingURL = process.env.isolatedTestingURL;

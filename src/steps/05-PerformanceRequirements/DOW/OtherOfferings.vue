@@ -2,17 +2,15 @@
   <div>
 
     <h1 class="page-header mb-3" tabindex="-1">
-      <span v-if="firstTimeHere">
+      <span v-if="firstTimeHere || isPortabilityPlan ">
         Let’s gather your requirements for {{ serviceGroupVerbiageInfo.offeringName }}
       </span>
       <span v-else>
-        Let’s gather some details 
-        for {{ serviceGroupVerbiageInfo.heading2 }} #{{ _serviceOfferingData.instanceNumber }}
+        Let’s gather some details for 
+        {{ serviceGroupVerbiageInfo.heading2 }} #{{ _serviceOfferingData.instanceNumber }}
       </span>
     </h1>
-    <p
-      v-if="isPortabilityPlan"
-    >
+    <p v-if="isPortabilityPlan">
       Refer to the JWCC Contract Performance Work 
       Statement (PWS) for the definition of a Portability Plan.
     </p>
@@ -230,6 +228,7 @@ import {
   buildClassificationCheckboxList, 
   buildClassificationLabel,
   createPeriodCheckboxItems,
+  setItemToPlural,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {
@@ -301,6 +300,7 @@ export default class OtherOfferings extends Vue {
   public isSupport = false;
   public isTraining = false;
   public isPortabilityPlan = false;
+  public itemSysIdsDeleted:string[] = [];
 
   public serviceGroupVerbiageInfo: Record<string, string> = {};
 
@@ -320,13 +320,7 @@ export default class OtherOfferings extends Vue {
     return subhead;
   }
 
-  public classificationLevelToast: ToastObj = {
-    type: "success",
-    message: "Classification requirements updated",
-    isOpen: true,
-    hasUndo: false,
-    hasIcon: true,
-  };
+  
   public introOfferingString = "";
 
   public storageUnits: SelectData[] = [
@@ -381,23 +375,32 @@ export default class OtherOfferings extends Vue {
     this.showDialog = false;
     const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
         this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
+     
     await classificationRequirements.saveSelectedClassificationLevels(currentData)
-    await classificationRequirements.loadSelectedClassificationLevelsByAqId(
-        this.acquisitionPackage?.sys_id as string);
-    await this.setAvailableClassificationLevels()
-    this.setAvlClassificationLevels();
-    if (this.selectedClassificationLevelList.length === 1) {
-      this.checkSingleClassification();
-    } else if (this._serviceOfferingData.classificationLevel) {
+    // await classificationRequirements.loadSelectedClassificationLevelsByAqId(
+    //     this.acquisitionPackage?.sys_id as string);
+    setTimeout(async () => {
+      this.selectedClassificationLevelList = 
+        await ClassificationRequirements.getSelectedClassificationLevels();
+    
+      await this.setAvailableClassificationLevels()
+      this.setAvlClassificationLevels();
+      if (this.selectedClassificationLevelList.length === 1) {
+        this.checkSingleClassification();
+      } else if (this._serviceOfferingData.classificationLevel) {
       // if the classification level that was selected was removed via the modal,
       // clear out this._serviceOfferingData.classificationLevel
-      const selectedSysId = this._serviceOfferingData.classificationLevel;
-      if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
-        this._serviceOfferingData.classificationLevel = "";
+        const selectedSysId = this._serviceOfferingData.classificationLevel;
+        if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
+          this._serviceOfferingData.classificationLevel = "";
+        }
       }
-    }
-    Toast.setToast(this.classificationLevelToast);
+      ClassificationRequirements.createToast();
+     
+    }, 1000);
   }
+
+ 
 
   private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
@@ -462,7 +465,13 @@ export default class OtherOfferings extends Vue {
   }
 
   public async setComponentSpecificData(): Promise<void> {
-    if (this.isCompute || this.isGeneralXaaS) {
+    if (this.isStorage   || 
+      this.isCompute   ||
+      this.isDatabase  ||
+      this.isSupport   ||
+      this.isTraining  ||
+      this.isPortabilityPlan || 
+      this.isGeneralXaaS) {
       this.formHasBeenTouched 
         = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }
@@ -505,13 +514,16 @@ export default class OtherOfferings extends Vue {
       this.Form.validate();
     });
   }
-
+    
   private setErrorMessages(): void {
     if (!this.$refs.form) {
       return;
     }
     this.errorBagValues = Object.values(this.$refs.form.errorBag);
-    const formChildren = this.$refs.form.$children[0].$children;
+    let formChildren = this.$refs.form.$children;
+    this.$refs.form.$children.forEach(children => {
+      formChildren = formChildren.concat(children.$children);
+    });
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
     ];
@@ -519,7 +531,6 @@ export default class OtherOfferings extends Vue {
     formChildren.forEach((child: any) => {
       const refs = child.$refs;
       const keys = Object.keys(refs);
-
       keys.forEach((key: string) => {
         if (inputRefs.indexOf(key) > -1 || customComponentRefs.indexOf(key) > -1) {
           const childRef: any = child.$refs[key];
@@ -537,8 +548,8 @@ export default class OtherOfferings extends Vue {
               }
             }
           }
-          if (this.isCompute) {
-            if (key === "radioButtonGroup" 
+          if (!this.isPortabilityPlan) {
+            if (this.isCompute && key === "radioButtonGroup"
               && child.$el.attributes.id.value.indexOf("PerformanceTier")
               && this._serviceOfferingData.performanceTier === this.otherPerformanceTierValue
             ) {
@@ -565,14 +576,15 @@ export default class OtherOfferings extends Vue {
                     && this._serviceOfferingData.entireDuration.toLowerCase() === "no"
                     && this._serviceOfferingData.periodsNeeded.length === 0
                   ) {
-                    child.$children[i].errorMessages.push(`Please select at least one base 
-                      or option period to specify your requirement’s duration level.`);
+                    child.$children[i].errorMessages.push(
+                      `Please select at least one base or option period.`
+                    );
                   }                
                 })
               }
             }
           }
-
+          
           if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
             const errorBucket: string[] = childRef.errorBucket;
             if (errorBucket.length) {

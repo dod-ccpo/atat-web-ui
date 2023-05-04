@@ -50,6 +50,22 @@ export class ValidationPlugin {
  * @returns {function(*=): boolean}
  */
 
+  allowedLengths(
+    lengths: number[], 
+    message?: string
+  ): ((v: string) => string | true | undefined) {
+
+    let lengthsStr: string = lengths.length > 1 
+      ? lengths.join(", ")
+      : lengths[0].toString();
+    lengthsStr = lengthsStr.replace(/,(?=[^,]+$)/, ' or');
+
+    message = message || `Must be ${lengthsStr} characters.`;
+    return (v: string) => {
+      return v && !lengths.includes(v.length) ? message : true;
+    };
+  };
+
   required(
     message?: string, isCurrency?: string
   ): ((v: string) => string | true | undefined) {
@@ -63,7 +79,7 @@ export class ValidationPlugin {
         // array of strings
         return v && Object.values(v).length > 0 || message;
       } else if (typeof (v) === "string") {
-        return (v !== "") || message;
+        return (v.trim() !== "") || message;
       } else if ( typeof (v) === "undefined"){ //validates file upload
         return message;
       } else if (isCurrency) {
@@ -74,6 +90,15 @@ export class ValidationPlugin {
       }
     };
   };
+
+  notSameAsDefault(
+    message?: string, defaultValue?: string
+  ): ((v: string) => string | true | undefined) {
+    message = message || "Text cannot be the same as the default text";
+    return (v: string) => {
+      return v && v.trim() !== defaultValue?.trim() || message;
+    }
+  }
 
   /**
  * Validator ensures that field only contains integers
@@ -187,14 +212,22 @@ export class ValidationPlugin {
   /**
   * @returns {function(*): (boolean|string)}
   */
-  isEmail = (): ((v: string) => string | true | undefined) => {
+  isEmail = (
+    message?: string,
+    isScrt?: boolean
+  ): ((v: string) => string | true | undefined) => {
+    isScrt = isScrt === undefined ? false : isScrt;
     return (v: string) => {
       if (v && v !== "") {
-        if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/i.test(v) === false) {
+        if (/[a-z0-9]+@[a-z-_.0-9]+\.[a-z]{3}/i.test(v) === false) {
           return "Please use standard domain format, like ‘@mail.mil’"
-        } else if (/^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i.test(v) === false) {
-          return "Please use your .mil or .gov email address."
-        }
+        } else if (!isScrt && /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i.test(v) === false) {
+          return message || "Please use your .mil or .gov email address."
+        } else if (isScrt && 
+          /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v) === false
+        ) {
+          return message || "Please use your .smil or .sgov email address."
+        }      
       }
       return true;
     };
@@ -261,7 +294,8 @@ export class ValidationPlugin {
    * @param doesFileExist
    * @param SNOWError
    * @param statusCode
-   * @param restrictNames
+   * @param restrictedNames
+   * @param maxFileNumber
    */
 
   isFileValid = (
@@ -290,7 +324,7 @@ export class ValidationPlugin {
       }
       // list of names that a file can not have
       if(restrictedNames?.includes(file.name)){
-        return "File name already exist. Please rename the file."
+        return "'" + file.name + "' already exists. Please rename the file<br />and upload again."
       }
 
       // does file aleady exist?
