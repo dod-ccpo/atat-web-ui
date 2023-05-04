@@ -25,7 +25,7 @@
               :rules="[$validators.required('Please select an option')]"
           />
           <ATATAlert
-              v-if="selectedMRRNeed !== ''"
+              v-if="displayNotNoneAlert || displayNoneApplyAlert"
               id="MRRNeedInfoAlert"
               :type="mrrNeedInfoAlertType"
               :showIcon="false"
@@ -47,7 +47,7 @@
           </ATATAlert>
         </v-col>
       </v-row>
-    </v-container>    
+    </v-container>
   </v-form>
 </template>
 
@@ -70,55 +70,71 @@ import {hasChanges} from "@/helpers";
 })
 
 export default class MRRNeed extends Mixins(SaveOnLeave) {
-  private selectedMRRNeed = "";
+  private selectedMRRNeed:
+      "" | "UCA" | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE" | undefined = "";
   private mrrNeedOptions: RadioButton[] = [
     {
       id: "UndefinitizedContractAction",
       label: `Undefinitized contract action (UCA)`,
-      value: "1" // TODO
+      value: "UCA"
     },
     {
       id: "BridgeContractAction",
       label: `Bridge contract action`,
-      value: "2" // TODO
+      value: "BCA"
     },
     {
       id: "OptionToExtend",
-      label: `Option to Extend Services (<a href="https://www.acquisition.gov/far/52.217-8"
-        id="OptionToExtendLink" class="_external-link" target="_blank">FAR 52.217-8</a>)`,
-      value: "3" // TODO
+      label: `Option to Extend Services (<a href=""
+        id="OptionToExtendLink"
+        onclick="window.open('https://www.acquisition.gov/far/52.217-8')"
+         class="_text-link" target="_blank">
+        <span class="_external-link">FAR 52.217-8</span></a>)`,
+      value: "OPTION_TO_EXTEND_SERVICES"
     },
     {
       id: "NoneApply",
       label: "None of these contract actions apply to this acquisition",
-      value: "NO_NONE" // TODO
+      value: "NONE"
     },
   ];
 
+  /**
+   * Runs the rules and returns a boolean on when to display not none alert based
+   * on the option the user selects.
+   */
   public get displayNotNoneAlert(): boolean {
-    return this.selectedMRRNeed === "1"
-        || this.selectedMRRNeed === "2"
-        || this.selectedMRRNeed === "3";
+    return this.selectedMRRNeed === "UCA"
+        || this.selectedMRRNeed === "BCA"
+        || this.selectedMRRNeed === "OPTION_TO_EXTEND_SERVICES";
   }
 
+  /**
+   * Runs the rules and returns a boolean on when to display none alert based
+   * on the option the user selects.
+   */
   public get displayNoneApplyAlert(): boolean {
-    return this.selectedMRRNeed === "NO_NONE";
+    return this.selectedMRRNeed === "NONE";
   }
 
+  /**
+   * Compiles and returns the type of alert that needs to be displayed based
+   * on the user's selection of the option.
+   */
   public get mrrNeedInfoAlertType(): string {
     return this.displayNotNoneAlert ? "info" : "warning";
   }
 
   private get currentData(): FairOpportunityDTO {
     return {
-      exception_to_fair_opportunity: this.selectedMRRNeed // TODO
+      contract_action: this.selectedMRRNeed
     };
   }
 
   private get savedData(): FairOpportunityDTO {
     return {
-      exception_to_fair_opportunity: AcquisitionPackage // TODO
-        .fairOpportunity?.exception_to_fair_opportunity || "" // TODO
+      contract_action: AcquisitionPackage
+        .fairOpportunity?.contract_action || ""
     };
   }
 
@@ -129,7 +145,8 @@ export default class MRRNeed extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage.fairOpportunity;
     if (storeData) {
-      this.selectedMRRNeed = storeData.exception_to_fair_opportunity as string; // TODO
+      this.selectedMRRNeed =
+          storeData.contract_action;
     }
   }
 
