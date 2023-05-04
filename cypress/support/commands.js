@@ -362,9 +362,13 @@ Cypress.Commands.add("verifyCheckBoxLabels", (selector,expectedLabels) => {
     .each(($checkbox) => {
       cy.findElement(`label[for=${$checkbox.attr('id')}]`)        
         .invoke('text')
-        .then((text) => foundLabels.push(cleanText(text)))     
+        .then((text) =>{
+          foundLabels.push(cleanText(text))
+          cy.log(text)
+        } )     
     })
     .then(() => {
+      cy.log(foundLabels)
       expect(foundLabels).to.deep.equal(expectedLabels)
     })
   

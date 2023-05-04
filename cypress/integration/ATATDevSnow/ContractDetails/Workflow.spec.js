@@ -73,4 +73,26 @@ describe("Test suite: Contract Details: E2E work flow",  () => {
     );
   }); 
 
+  it("TC2: If both unclassified & Secret Class Level selected ", () => {  
+    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
+      .check({ force: true });    
+    cy.btnClick(common.continueBtn, " Continue ");
+    cy.waitUntilElementIsGone(contractDetails.ffpCheckBox, "FFP");
+    cy.verifyPageHeader(
+      " What classification level(s) will be required for your cloud resources and/or services? "
+    );
+    cy.selectCheckBoxes([contractDetails.level5, contractDetails.level6]);
+    const expectedLabels = [
+      "Unclassified / Impact Level 5 (IL5)" +
+      " Accommodates DoD CUI and National Security Systems",
+      "Secret / Impact Level 6 (IL6)"
+    ]
+    cy.verifyCheckBoxLabels(contractDetails.checkedClassCheckBoxes,expectedLabels);    
+    cy.btnClick(common.continueBtn, " Continue ");    
+    cy.waitUntilElementIsGone(contractDetails.level4);
+    cy.verifyPageHeader(     
+      "Let’s find out more about your security requirements"
+    );
+  }); 
+
 });
