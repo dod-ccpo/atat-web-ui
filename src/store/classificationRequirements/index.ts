@@ -430,6 +430,9 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeCdsSolution(): Promise<void> {
+    
+    const cdsIGCESysId = await this.getCDSInIGCEEstimateTable(this.cdsSolution?.sys_id as string)
+    await this.delectCDSInIGCEEstimateTable(cdsIGCESysId)
 
     const cdsSolution: CrossDomainSolution = {
       crossDomainSolutionRequired: "NO",
@@ -441,6 +444,22 @@ export class ClassificationRequirementsStore extends VuexModule {
 
     }
     await this.setCdsSolution(cdsSolution)
+  }
+
+  @Action({rawError: true})
+  public async getCDSInIGCEEstimateTable(sys_id: string): Promise<string> {
+    const requestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "GOTOcross_domain_solution.sys_id<=" + sys_id
+      }
+    }
+    const cdsRecordInIGCE = await api.igceEstimateTable.getQuery(requestConfig);
+    return cdsRecordInIGCE[0].sys_id as string;
+  }
+
+  @Action({rawError: true})
+  public async delectCDSInIGCEEstimateTable(sys_id: string): Promise<void> {
+    await api.igceEstimateTable.remove(sys_id);
   }
 
   @Mutation
