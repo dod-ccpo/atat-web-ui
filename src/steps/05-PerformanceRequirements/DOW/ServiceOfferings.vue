@@ -69,6 +69,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
@@ -277,7 +278,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       }
     }
     //find sys_id for otherValue
-    let otherCheckBoxIndex = this.checkboxItems.findIndex((item) =>item.label === "Other")
+    const otherCheckBoxIndex = this.checkboxItems.findIndex((item) =>item.label === "Other")
     this.otherValue = this.checkboxItems[otherCheckBoxIndex]?.value || ""
 
     const periods = await Periods.loadPeriods();

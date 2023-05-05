@@ -142,6 +142,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -445,7 +446,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         this.instanceData = _.cloneDeep(instanceStoreData);
         this.savedData = _.cloneDeep(instanceStoreData);
         if (typeof this.instanceData.deployed_regions === "string") {
-          let deployedRegionIds = this.instanceData.deployed_regions?.split(',')
+          const deployedRegionIds = this.instanceData.deployed_regions?.split(',')
           if(deployedRegionIds.length != this.instanceData.deployed_regions?.length){
             deployedRegionIds.forEach((instanceId) => {
               this.selectedDeployedRegionsOnLoad.push(instanceId)

@@ -150,6 +150,7 @@
   </v-form>
 </template>
 <script lang="ts">
+/*eslint vue/no-child-content: 1 */
 import Vue from "vue";
 
 import { Component, Watch } from "vue-property-decorator";
@@ -216,10 +217,10 @@ export default class EnvironmentSummary extends Vue {
         unclassifiedILs.push(cl.impact_level);
       }
     });
-    let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
+    const uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
 
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
-      let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
+      const uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
       const unclassifiedIndex = uniqueClassifications.indexOf("Unclassified");
       uniqueClassifications.splice(unclassifiedIndex, 1);
       uniqueClassifications.unshift("Unclassified (" + uniqueILs + ")");
@@ -389,7 +390,7 @@ export default class EnvironmentSummary extends Vue {
       this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
 
       this.envInstances.forEach(async (instance, index) => {
-        let isValid = await this.validateInstance(instance);
+        const isValid = await this.validateInstance(instance);
         let storage = "";
         if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
           const storageType = toTitleCase(instance.storage_type);
@@ -405,7 +406,7 @@ export default class EnvironmentSummary extends Vue {
         if (instance.instance_location === "ON_PREM") {
           location = "On-premise";
         } else {
-          let instances: string[] = []
+          const instances: string[] = []
           if (typeof instance.deployed_regions === "string") {
             const regionsSysIds = instance.deployed_regions?.split(',')
             regionsSysIds.forEach((instanceId) => {
@@ -442,7 +443,7 @@ export default class EnvironmentSummary extends Vue {
           } 
         }
 
-        let instanceData: EnvInstanceSummaryTableData = { 
+        const instanceData: EnvInstanceSummaryTableData = { 
           instanceSysId: instance.sys_id,
           instanceNumber: index + 1,
           location,

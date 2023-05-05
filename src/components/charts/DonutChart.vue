@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Chart, { ChartData } from "chart.js/auto";
@@ -52,7 +53,7 @@ export default class DonutChart extends Vue {
     const centertext = this.centertext(this);
     if (this.chartId) {
 
-      let plugins: any = [centertext];
+      const plugins: any = [centertext];
       if (this.useChartDataLabels) {
         plugins.push(ChartDataLabels);
       }

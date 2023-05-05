@@ -175,7 +175,7 @@ export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
         });
         //
         this.currEnvDTO.system_documentation?.splice(
-            this.currEnvDTO.system_documentation?.indexOf(attachmentId), 1);
+          this.currEnvDTO.system_documentation?.indexOf(attachmentId), 1);
         // console.log(this.currEnvDTO);
         // the updated system_documentation will need to be saved
         await CurrentEnvironment.saveCurrentEnvironment();

@@ -36,7 +36,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 })
 export default class ProjectTitle extends Vue {
   @PropSync("currentTitle", {default: "title goes here"}) 
-    private _currentTitle!: string;
+  private _currentTitle!: string;
   @Prop({default: "ProjectTitle"}) private id!: string;
   @Prop() private label!: string;
   @Prop({ default: "title goes here" }) private helpText!: string;

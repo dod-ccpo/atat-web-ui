@@ -282,7 +282,7 @@
 </template>
 
 <script lang="ts">
-
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
@@ -440,7 +440,7 @@ export default class JWCCDashboard extends Vue {
 
       this.agencySpendData[agency] = agencyMonthlySpendTotals;
 
-      let lineChartDataSet = _.clone(this.lineChartCommonDataSet);
+      const lineChartDataSet = _.clone(this.lineChartCommonDataSet);
       const color = this.chartDataColorSequence[i];
       const dataSetProps = {
         dataSetId: agency,
@@ -465,7 +465,7 @@ export default class JWCCDashboard extends Vue {
         spendLineChartTotals.push(monthTotal);
       }
     });
-    let totalLineChartDataSet = _.clone(this.lineChartCommonDataSet);
+    const totalLineChartDataSet = _.clone(this.lineChartCommonDataSet);
     const dataSetProps = {
       dataSetId: "Total",
       label: "Total JWCC funds spent",

@@ -71,6 +71,7 @@
   </div>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
@@ -228,7 +229,7 @@ export default class ClassificationLevelForm extends Vue {
     await this.setSecretSysIds();
     await this.setOnPremImpactLevelSysId();
 
-    let onlyUnclassifiedILs = this.allClassificationLevels
+    const onlyUnclassifiedILs = this.allClassificationLevels
       .filter(classification => classification.classification === "U" );
     this.cloudImpactLevelOptions = buildClassificationCheckboxList(
       onlyUnclassifiedILs, "", true, true

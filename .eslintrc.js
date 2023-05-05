@@ -17,7 +17,7 @@ module.exports = {
     "plugin:cypress/recommended"
   ],
   parserOptions: {
-    ecmaVersion: "es2020",
+    ecmaVersion: "latest",
   },
   ignorePatterns: ["**/*.min.js",  "**/*.config.js","**/*.postbuild.js"],
   rules: {

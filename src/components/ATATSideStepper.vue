@@ -87,6 +87,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import { StepperStep } from "../../types/Global";
@@ -151,7 +152,7 @@ export default class ATATSideStepper extends Vue {
   private calculatePercentComplete() {
     this.percentComplete = 0;
 
-    for(let [key, value] of Steps.stepMap){
+    for(const [key, value] of Steps.stepMap){
       if(value.completed)
         this.percentComplete += value.completePercentageWeight as number;
     }

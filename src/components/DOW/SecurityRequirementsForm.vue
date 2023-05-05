@@ -52,7 +52,7 @@ export default class SecurityRequirementsForm extends vue {
   // eslint-disable-next-line max-len
   @PropSync("selectedTopSecretSecurityRequirements") private _selectedTopSecretSecurityRequirements!: string[];
   @PropSync("selectedClearanceLevel", { default: "" }) 
-    private _selectedClearanceLevel!: string | null;
+  private _selectedClearanceLevel!: string | null;
   // pragma: allowlist secret
   @Prop() private hasSecret!: boolean;
   // pragma: allowlist secret

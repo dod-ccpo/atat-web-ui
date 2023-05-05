@@ -183,7 +183,7 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   }
 
   private getRulesArray(): ((v: string) => string|true|undefined)[] {
-    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+    const rulesArr: ((v: string) => string | true | undefined)[] = [];
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(
         this.$validators.isFileValid(

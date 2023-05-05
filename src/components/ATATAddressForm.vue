@@ -142,6 +142,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
@@ -173,7 +174,7 @@ import {
 })
 
 export default class ATATAddressForm extends Vue {
-   $refs!: {
+  $refs!: {
     atatAddressForm: Vue & {
       resetValidation: () => void;
       reset: () => void;
@@ -215,7 +216,7 @@ export default class ATATAddressForm extends Vue {
   }
 
   private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
-    let rulesArr: ((v:string)=>string | true | undefined)[]  = [];
+    const rulesArr: ((v:string)=>string | true | undefined)[]  = [];
     if (this.requiredFields) {
 
       const result = this.requiredFields.filter(obj => {

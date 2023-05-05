@@ -119,6 +119,7 @@
   </v-container>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { Component } from "vue-property-decorator";

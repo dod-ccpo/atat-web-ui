@@ -77,6 +77,7 @@
   </fieldset>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -133,7 +134,7 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
       const existingKeyIndex = this._sysIdValueArray.findIndex(
         obj => Object.keys(obj)[0] === sysId);
 
-      let obj:Record<string, string>= {};
+      const obj:Record<string, string>= {};
       obj[sysId] = val;
       
       existingKeyIndex>-1 

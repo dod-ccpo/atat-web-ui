@@ -132,7 +132,7 @@ export default class ValidatatorsExample extends Vue {
     hasUndo: boolean, 
     longMessage: boolean,
   ): void {
-    let message = longMessage 
+    const message = longMessage 
       ? `My toast with a long message to check the timing of the toast - one extra 
         second for every 120 characters so this message should add one second. `
       : "My toast message ";

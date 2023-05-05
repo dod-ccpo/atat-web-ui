@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
+/* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -102,7 +102,7 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        let pops: PeriodOfPerformanceDTO  = {  
+        const pops: PeriodOfPerformanceDTO  = {  
           ...this.popDTO,
           recurring_requirement: this.currentData.recurring_requirement || "",
         }

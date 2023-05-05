@@ -830,6 +830,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { DashboardService, PortFolioDashBoardDTO } from "../../services/dashboards";
@@ -1011,7 +1012,7 @@ export default class PortfolioDashboard extends Vue {
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
 
-    let timeUnit = useMonths
+    const timeUnit = useMonths
       ? singular ? "month" : "months"
       : singular ? "day" : "days";
     this.timeToExpiration = unitsRemaining + " " + timeUnit;
@@ -1049,9 +1050,9 @@ export default class PortfolioDashboard extends Vue {
       ...new Set(this.idiqClins.map((clin) => clin.idiq_clin)),
     ].sort();
 
-    let clinCosts: Record<string, Record<string, string>> = {};
+    const clinCosts: Record<string, Record<string, string>> = {};
     uniqueCostClins.forEach((clinNo) => {
-      let clinValues: Record<string, string> = {};
+      const clinValues: Record<string, string> = {};
       uniqueDates.forEach((date) => {
         const clin = this.costs.find(
           (cost) => cost.clin === clinNo && cost.year_month === date
@@ -1096,7 +1097,7 @@ export default class PortfolioDashboard extends Vue {
     const popEndDate = parseISO(popEndISO);
 
     let month = popStartDate;
-    let monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
+    const monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
 
     for (let i = 0; i < monthsToAdd; i++) {
       month = add(popStartDate, { months: i + 1 });
@@ -1121,8 +1122,8 @@ export default class PortfolioDashboard extends Vue {
       this.burnChartXLabels.push(monthAbbr);
     }
 
-    let actualBurn: Record<string, (number | null)[]> = {};
-    let projectedBurn: Record<string, (number | null)[]> = {};
+    const actualBurn: Record<string, (number | null)[]> = {};
+    const projectedBurn: Record<string, (number | null)[]> = {};
     const totalActualBurnData: (number | null)[] = [this.totalPortfolioFunds];
     const totalProjectedBurnData: (number | null)[] = [null];
 
@@ -1135,7 +1136,7 @@ export default class PortfolioDashboard extends Vue {
       );
       if (thisIdiqClin) {
         const costClinNo = thisIdiqClin.clin_number;
-        let fundsObligated = thisIdiqClin.funds_obligated;
+        const fundsObligated = thisIdiqClin.funds_obligated;
         let fundsAvailable = !isNaN(parseInt(fundsObligated))
           ? parseInt(fundsObligated)
           : 0;
@@ -1250,9 +1251,9 @@ export default class PortfolioDashboard extends Vue {
 
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
-    let burnChartDataSets: lineChartDataSet[] = [];
+    const burnChartDataSets: lineChartDataSet[] = [];
 
-    let clinTotalActualDataSet: lineChartDataSet =
+    const clinTotalActualDataSet: lineChartDataSet =
       this.burnChartActualCommonDataSet;
     const totalActualData = {
       dataSetId: "TotalCLINsActual",
@@ -1263,7 +1264,7 @@ export default class PortfolioDashboard extends Vue {
     burnChartDataSets.push(clinTotalActualDataSet);
     this.checked.push(true);
 
-    let clinTotalProjectedDataSet: lineChartDataSet =
+    const clinTotalProjectedDataSet: lineChartDataSet =
       this.burnChartProjectedCommonDataSet;
     const totalProjectedData = {
       dataSetId: "TotalClinsProjected",
@@ -1286,7 +1287,7 @@ export default class PortfolioDashboard extends Vue {
             : idiqClinNo + "Data",
           data: actualBurn[idiqClinNo],
         };
-        let clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
+        const clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
         clinActualDataSet.borderColor = color;
         clinActualDataSet.pointBackgroundColor = color;
         clinActualDataSet.pointHoverBackgroundColor = color;
@@ -1303,7 +1304,7 @@ export default class PortfolioDashboard extends Vue {
             : idiqClinNo + "DataProjected",
           data: projectedBurn[idiqClinNo],
         };
-        let clinProjectedDataSet: lineChartDataSet = _.clone(
+        const clinProjectedDataSet: lineChartDataSet = _.clone(
           this.burnChartProjectedCommonDataSet
         );
         clinProjectedDataSet.borderColor = color;
@@ -1334,16 +1335,16 @@ export default class PortfolioDashboard extends Vue {
     clinAverage: number;
     spendTrend: number;
   } = {
-    totalFundsSpent: 0,
-    totalFundsObligated: 0,
-    lastMonthSpent: 0,
-    clinAverage: 0,
-    spendTrend: 0,
-  };
+      totalFundsSpent: 0,
+      totalFundsObligated: 0,
+      lastMonthSpent: 0,
+      clinAverage: 0,
+      spendTrend: 0,
+    };
 
   public createTableItems(): void {
     this.idiqClins.forEach((idiqClin) => {
-      let obj: {
+      const obj: {
         costClinNumber: string;
         clinStatus: string;
         clinLabel: string;
@@ -1434,7 +1435,7 @@ export default class PortfolioDashboard extends Vue {
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
 
-    let timeUnit = useMonths
+    const timeUnit = useMonths
       ? singular
         ? "month"
         : "months"

@@ -31,6 +31,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import { Component, Mixins } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -76,7 +77,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
   public isCloudSupportService = false;
 
   public get currentData(): SecurityRequirement[] {
-    let requirements:SecurityRequirement[] = []
+    const requirements:SecurityRequirement[] = []
     if(this.hasSecret){
       requirements.push({
         type:"SECRET",

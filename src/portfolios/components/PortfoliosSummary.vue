@@ -109,6 +109,7 @@
   </div>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
@@ -411,7 +412,7 @@ export default class PortfoliosSummary extends Vue {
       // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
       // from portfolio_managers and portfolio_viewers sysIds lists
 
-      let cardData: PortfolioCardData = {};
+      const cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       
       cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";

@@ -118,7 +118,7 @@ export class FinancialDetailsStore extends VuexModule {
     }
 
     return this.fundingRequest.funding_request_type.length > 0 ?
-    this.fundingRequest?.funding_request_type : "";
+      this.fundingRequest?.funding_request_type : "";
   }
 
   public get gInvoicingData(): baseGInvoiceData {
