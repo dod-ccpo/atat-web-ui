@@ -352,6 +352,7 @@ export default class PortfolioCard extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    debugger;
     if (this.cardData.fundingStatus && this.cardData.fundingStatus !== Statuses.OnTrack.value) {
       switch(this.cardData.fundingStatus) {
       case Statuses.AtRisk.value:
