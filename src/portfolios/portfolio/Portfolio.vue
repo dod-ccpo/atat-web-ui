@@ -1256,7 +1256,7 @@ export default class PortfolioDashboard extends Vue {
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
     //eslint-disable-next-line prefer-const
-    const burnChartDataSets: lineChartDataSet[] = [];
+    let burnChartDataSets: lineChartDataSet[] = [];
     //eslint-disable-next-line prefer-const
     let clinTotalActualDataSet: lineChartDataSet =
       this.burnChartActualCommonDataSet;

@@ -129,7 +129,8 @@ export default class SecurityRequirements extends Mixins(SaveOnLeave) {
         this.hasSecret = true
       }
     })
-    const storeData = classificationRequirements.securityRequirements
+    //eslint-disable-next-line prefer-const
+    let storeData = classificationRequirements.securityRequirements
     if(storeData){
       storeData.forEach((requirement)=>{
         if(requirement.type === "SECRET"){

@@ -217,10 +217,12 @@ export default class EnvironmentSummary extends Vue {
         unclassifiedILs.push(cl.impact_level);
       }
     });
-    const uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
+    //eslint-disable-next-line prefer-const
+    let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
 
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
-      const uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
+      //eslint-disable-next-line prefer-const
+      let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
       const unclassifiedIndex = uniqueClassifications.indexOf("Unclassified");
       uniqueClassifications.splice(unclassifiedIndex, 1);
       uniqueClassifications.unshift("Unclassified (" + uniqueILs + ")");

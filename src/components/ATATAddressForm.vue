@@ -217,7 +217,7 @@ export default class ATATAddressForm extends Vue {
 
   private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
     //eslint-disable-next-line prefer-const 
-    const rulesArr: ((v:string)=>string | true | undefined)[]  = [];
+    let rulesArr: ((v:string)=>string | true | undefined)[]  = [];
     if (this.requiredFields) {
 
       const result = this.requiredFields.filter(obj => {
