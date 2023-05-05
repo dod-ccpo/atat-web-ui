@@ -101,9 +101,7 @@
             </div>
           </template>
           <template v-else v-slot:label>
-            <div class="d-flex">
               <span v-html="item.label"></span>
-            </div>
           </template>
 
         </v-radio>
