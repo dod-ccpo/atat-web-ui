@@ -397,7 +397,8 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         instanceClone.periodsNeeded.forEach((sysId) => {
           const periodObj = allPeriods.find((obj) => obj.sys_id === sysId);
           if (periodObj) {
-            const periodText = periodObj?.period_type.indexOf("BASE") > -1 
+            //eslint-disable-next-line prefer-const
+            let periodText = periodObj?.period_type.indexOf("BASE") > -1 
               ? "Base period" : "Option period " + (parseInt(periodObj.option_order) - 1);
             periodsNeeded.push(periodText);
           }

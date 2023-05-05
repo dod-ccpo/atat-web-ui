@@ -447,7 +447,9 @@ export default class TaskOrderDetails extends Vue {
         fundsRemaining: ""
       }
     }
+    //eslint-disable-next-line prefer-const
     const percent = Math.round((Number(fundsSpent) / Number(obligatedFunds)) * 100);
+    //eslint-disable-next-line prefer-const
     const remaining = Number(obligatedFunds) - Number(fundsSpent);
     return {
       percent: String(percent),

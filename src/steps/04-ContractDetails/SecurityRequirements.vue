@@ -77,7 +77,8 @@ export default class SecurityRequirements extends Mixins(SaveOnLeave) {
   public savedData: SecurityRequirement[] = []
 
   public get currentData(): SecurityRequirement[] {
-    const requirements:SecurityRequirement[] = []
+    //eslint-disable-next-line prefer-const
+    let requirements:SecurityRequirement[] = []
     if(this.hasSecret){
       requirements.push({
         type:"SECRET",

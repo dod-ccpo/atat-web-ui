@@ -259,7 +259,8 @@ export default class ATATTextField extends Vue  {
 
   public filterNumbers(evt: KeyboardEvent): void {
     if (this.type === "number") {
-      const keyPressed = evt.key.toString();
+      //eslint-disable-next-line prefer-const 
+      let keyPressed = evt.key.toString();
       const regex = this.allowDecimals
         ? /^[0-9]*\.?[0-9]*$/
         : /^[0-9]+$/

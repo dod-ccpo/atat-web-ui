@@ -31,7 +31,8 @@ export default class BarChart extends Vue {
 
   public createChart(): void {
     if (this.chartId) {
-      const plugins: any = [];
+      //eslint-disable-next-line prefer-const 
+      let plugins: any = [];
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
       if (this.useChartDataLabels) {
         plugins.push(ChartDataLabels);

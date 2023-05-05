@@ -163,7 +163,8 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   // files returned from the child component
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
-    const rulesArr: ((v: string) => string | true | undefined)[] = [];
+    //eslint-disable-next-line prefer-const
+    let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredMessage));
 
@@ -274,7 +275,8 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         this.loaded = await FinancialDetails.loadFundingRequestFSForm();
-        const data: FundingRequestFSFormDTO = {
+        //eslint-disable-next-line prefer-const
+        let data: FundingRequestFSFormDTO = {
           ...this.loaded || initialFundingRequestFSForm,
           order_number: this.current.orderNumber,
           gt_c_number: this.current.gtcNumber,

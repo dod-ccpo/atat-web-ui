@@ -52,8 +52,8 @@ export default class DonutChart extends Vue {
   public async createChart(): Promise<void> {
     const centertext = this.centertext(this);
     if (this.chartId) {
-
-      const plugins: any = [centertext];
+      //eslint-disable-next-line prefer-const 
+      let plugins: any = [centertext];
       if (this.useChartDataLabels) {
         plugins.push(ChartDataLabels);
       }

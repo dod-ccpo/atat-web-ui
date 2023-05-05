@@ -446,7 +446,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         this.instanceData = _.cloneDeep(instanceStoreData);
         this.savedData = _.cloneDeep(instanceStoreData);
         if (typeof this.instanceData.deployed_regions === "string") {
-          const deployedRegionIds = this.instanceData.deployed_regions?.split(',')
+          //eslint-disable-next-line prefer-const
+          let deployedRegionIds = this.instanceData.deployed_regions?.split(',')
           if(deployedRegionIds.length != this.instanceData.deployed_regions?.length){
             deployedRegionIds.forEach((instanceId) => {
               this.selectedDeployedRegionsOnLoad.push(instanceId)

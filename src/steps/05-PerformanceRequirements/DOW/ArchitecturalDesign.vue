@@ -176,7 +176,8 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         if(this.currentData.needs_architectural_design_services === "NO"){
-          const data = Object.assign(this.currentData, emptyArchObject)
+          //eslint-disable-next-line prefer-const
+          let data = Object.assign(this.currentData, emptyArchObject)
           await DescriptionOfWork.setDOWArchitecturalDesign(data);
         }else{
           await DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);

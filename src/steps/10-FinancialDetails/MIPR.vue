@@ -174,7 +174,8 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
 
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => string|true|undefined)[] {
-    const rulesArr: ((v: string) => string | true | undefined)[] = [];
+    //eslint-disable-next-line prefer-const
+    let rulesArr: ((v: string) => string | true | undefined)[] = [];
   
     rulesArr.push(this.$validators.required(this.requiredMessage));
     this.invalidFiles.forEach((iFile) => {

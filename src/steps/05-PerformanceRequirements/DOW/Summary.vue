@@ -358,9 +358,11 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public setSelectedGroupsMissingData(value: DOWServiceOfferingGroup[]): void {
-    const outputArr :string[] = [];
+    //eslint-disable-next-line prefer-const
+    let outputArr :string[] = [];
     value.forEach((obj)=>{
-      const id = obj.serviceOfferingGroupId;
+      //eslint-disable-next-line prefer-const
+      let id = obj.serviceOfferingGroupId;
       if (this.isClassificationDataMissing || 
         (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
         (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {

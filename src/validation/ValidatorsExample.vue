@@ -132,7 +132,8 @@ export default class ValidatatorsExample extends Vue {
     hasUndo: boolean, 
     longMessage: boolean,
   ): void {
-    const message = longMessage 
+    //eslint-disable-next-line prefer-const
+    let message = longMessage 
       ? `My toast with a long message to check the timing of the toast - one extra 
         second for every 120 characters so this message should add one second. `
       : "My toast message ";

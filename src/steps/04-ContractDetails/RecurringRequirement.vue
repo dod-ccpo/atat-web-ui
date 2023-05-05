@@ -102,7 +102,8 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        const pops: PeriodOfPerformanceDTO  = {  
+        //eslint-disable-next-line prefer-const
+        let pops: PeriodOfPerformanceDTO  = {  
           ...this.popDTO,
           recurring_requirement: this.currentData.recurring_requirement || "",
         }

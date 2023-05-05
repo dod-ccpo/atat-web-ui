@@ -271,7 +271,8 @@ export default class CSPPortalAccess extends Vue {
         createdBy:"",
         created:""
       };
-      const idx = i;
+      //eslint-disable-next-line prefer-const
+      let idx = i;
       admin.email = this.emails[idx];
       admin.status = this.statuses[idx];
       admin.createdBy = this.createdBy[idx];

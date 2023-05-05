@@ -324,7 +324,8 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     if (this.currentData.option?.toLowerCase()==="single"){
       this.sysIdValueArray = [];
-      const obj:Record<string, string>= {};
+      //eslint-disable-next-line prefer-const
+      let obj:Record<string, string>= {};
       obj["PER_PERIOD"] = this.valueArray[0];
       this.sysIdValueArray.push(obj);
     }

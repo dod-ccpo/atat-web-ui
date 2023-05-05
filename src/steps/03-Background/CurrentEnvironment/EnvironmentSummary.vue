@@ -390,7 +390,8 @@ export default class EnvironmentSummary extends Vue {
       this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
 
       this.envInstances.forEach(async (instance, index) => {
-        const isValid = await this.validateInstance(instance);
+        //eslint-disable-next-line prefer-const
+        let isValid = await this.validateInstance(instance);
         let storage = "";
         if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
           const storageType = toTitleCase(instance.storage_type);
@@ -406,7 +407,8 @@ export default class EnvironmentSummary extends Vue {
         if (instance.instance_location === "ON_PREM") {
           location = "On-premise";
         } else {
-          const instances: string[] = []
+          //eslint-disable-next-line prefer-const
+          let instances: string[] = []
           if (typeof instance.deployed_regions === "string") {
             const regionsSysIds = instance.deployed_regions?.split(',')
             regionsSysIds.forEach((instanceId) => {
@@ -442,8 +444,8 @@ export default class EnvironmentSummary extends Vue {
             classification = buildClassificationLabel(classificationLevel, "short");
           } 
         }
-
-        const instanceData: EnvInstanceSummaryTableData = { 
+        //eslint-disable-next-line prefer-const
+        let instanceData: EnvInstanceSummaryTableData = { 
           instanceSysId: instance.sys_id,
           instanceNumber: index + 1,
           location,

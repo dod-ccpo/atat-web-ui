@@ -133,8 +133,8 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
     if (val && parseInt(val)>0 ){
       const existingKeyIndex = this._sysIdValueArray.findIndex(
         obj => Object.keys(obj)[0] === sysId);
-
-      const obj:Record<string, string>= {};
+      //eslint-disable-next-line prefer-const 
+      let obj:Record<string, string>= {};
       obj[sysId] = val;
       
       existingKeyIndex>-1 

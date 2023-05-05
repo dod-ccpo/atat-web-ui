@@ -439,8 +439,8 @@ export default class JWCCDashboard extends Vue {
       });
 
       this.agencySpendData[agency] = agencyMonthlySpendTotals;
-
-      const lineChartDataSet = _.clone(this.lineChartCommonDataSet);
+      //eslint-disable-next-line prefer-const 
+      let lineChartDataSet = _.clone(this.lineChartCommonDataSet);
       const color = this.chartDataColorSequence[i];
       const dataSetProps = {
         dataSetId: agency,
@@ -465,7 +465,8 @@ export default class JWCCDashboard extends Vue {
         spendLineChartTotals.push(monthTotal);
       }
     });
-    const totalLineChartDataSet = _.clone(this.lineChartCommonDataSet);
+    //eslint-disable-next-line prefer-const 
+    let totalLineChartDataSet = _.clone(this.lineChartCommonDataSet);
     const dataSetProps = {
       dataSetId: "Total",
       label: "Total JWCC funds spent",

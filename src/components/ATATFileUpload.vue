@@ -126,7 +126,8 @@
 </template>
 
 <script lang="ts">
-/* eslint camelcase: 0, prefer-const: 1 */
+/* eslint camelcase: 0 */
+
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -204,7 +205,8 @@ export default class ATATFileUpload extends Vue {
     return this.maxFileSizeInBytes / 1073741824
   }
   get formatFileTypes(): string {
-    const formatted = this.validFileFormats.map((file) =>{
+    //eslint-disable-next-line prefer-const 
+    let formatted = this.validFileFormats.map((file) =>{
       return ` .${file}`
     })
     return formatted.join(',')
@@ -392,7 +394,8 @@ export default class ATATFileUpload extends Vue {
   private uploadFiles(): void {
     for (let i = 0; i < this._validFiles.length; i++) {
       //wire up file upload here
-      const uploadingFileObj = this._validFiles[i] as uploadingFile;
+      //eslint-disable-next-line prefer-const 
+      let uploadingFileObj = this._validFiles[i] as uploadingFile;
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
         window.setTimeout(() => {
@@ -400,7 +403,8 @@ export default class ATATFileUpload extends Vue {
             ?.upload(uploadingFileObj.file, (total, current) => {
               current = 0;
               total = Math.ceil(total / 1000);
-              const progress = window.setInterval(() => {
+              //eslint-disable-next-line prefer-const 
+              let progress = window.setInterval(() => {
                 if (current < total) {
                   current = current + Math.floor(Math.random() * total);
                   uploadingFileObj.progressStatus = (current / total) * 100;

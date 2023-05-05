@@ -228,8 +228,8 @@ export default class ClassificationLevelForm extends Vue {
 
     await this.setSecretSysIds();
     await this.setOnPremImpactLevelSysId();
-
-    const onlyUnclassifiedILs = this.allClassificationLevels
+    //eslint-disable-next-line prefer-const
+    let onlyUnclassifiedILs = this.allClassificationLevels
       .filter(classification => classification.classification === "U" );
     this.cloudImpactLevelOptions = buildClassificationCheckboxList(
       onlyUnclassifiedILs, "", true, true

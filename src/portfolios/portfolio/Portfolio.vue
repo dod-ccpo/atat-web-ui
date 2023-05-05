@@ -1011,8 +1011,8 @@ export default class PortfolioDashboard extends Vue {
       daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
-
-    const timeUnit = useMonths
+    //eslint-disable-next-line prefer-const 
+    let timeUnit = useMonths
       ? singular ? "month" : "months"
       : singular ? "day" : "days";
     this.timeToExpiration = unitsRemaining + " " + timeUnit;
@@ -1049,10 +1049,11 @@ export default class PortfolioDashboard extends Vue {
     const uniqueIdiqClins = [
       ...new Set(this.idiqClins.map((clin) => clin.idiq_clin)),
     ].sort();
-
-    const clinCosts: Record<string, Record<string, string>> = {};
+    //eslint-disable-next-line prefer-const 
+    let clinCosts: Record<string, Record<string, string>> = {};
     uniqueCostClins.forEach((clinNo) => {
-      const clinValues: Record<string, string> = {};
+      //eslint-disable-next-line prefer-const 
+      let clinValues: Record<string, string> = {};
       uniqueDates.forEach((date) => {
         const clin = this.costs.find(
           (cost) => cost.clin === clinNo && cost.year_month === date
@@ -1097,7 +1098,8 @@ export default class PortfolioDashboard extends Vue {
     const popEndDate = parseISO(popEndISO);
 
     let month = popStartDate;
-    const monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
+    //eslint-disable-next-line prefer-const 
+    let monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
 
     for (let i = 0; i < monthsToAdd; i++) {
       month = add(popStartDate, { months: i + 1 });
@@ -1121,9 +1123,10 @@ export default class PortfolioDashboard extends Vue {
       }
       this.burnChartXLabels.push(monthAbbr);
     }
-
-    const actualBurn: Record<string, (number | null)[]> = {};
-    const projectedBurn: Record<string, (number | null)[]> = {};
+    //eslint-disable-next-line prefer-const 
+    let actualBurn: Record<string, (number | null)[]> = {};
+    //eslint-disable-next-line prefer-const 
+    let projectedBurn: Record<string, (number | null)[]> = {};
     const totalActualBurnData: (number | null)[] = [this.totalPortfolioFunds];
     const totalProjectedBurnData: (number | null)[] = [null];
 
@@ -1136,7 +1139,8 @@ export default class PortfolioDashboard extends Vue {
       );
       if (thisIdiqClin) {
         const costClinNo = thisIdiqClin.clin_number;
-        const fundsObligated = thisIdiqClin.funds_obligated;
+        //eslint-disable-next-line prefer-const 
+        let fundsObligated = thisIdiqClin.funds_obligated;
         let fundsAvailable = !isNaN(parseInt(fundsObligated))
           ? parseInt(fundsObligated)
           : 0;
@@ -1251,9 +1255,10 @@ export default class PortfolioDashboard extends Vue {
 
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
+    //eslint-disable-next-line prefer-const
     const burnChartDataSets: lineChartDataSet[] = [];
-
-    const clinTotalActualDataSet: lineChartDataSet =
+    //eslint-disable-next-line prefer-const
+    let clinTotalActualDataSet: lineChartDataSet =
       this.burnChartActualCommonDataSet;
     const totalActualData = {
       dataSetId: "TotalCLINsActual",
@@ -1263,8 +1268,8 @@ export default class PortfolioDashboard extends Vue {
     Object.assign(clinTotalActualDataSet, totalActualData);
     burnChartDataSets.push(clinTotalActualDataSet);
     this.checked.push(true);
-
-    const clinTotalProjectedDataSet: lineChartDataSet =
+    //eslint-disable-next-line prefer-const
+    let clinTotalProjectedDataSet: lineChartDataSet =
       this.burnChartProjectedCommonDataSet;
     const totalProjectedData = {
       dataSetId: "TotalClinsProjected",
@@ -1287,7 +1292,8 @@ export default class PortfolioDashboard extends Vue {
             : idiqClinNo + "Data",
           data: actualBurn[idiqClinNo],
         };
-        const clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
+        //eslint-disable-next-line prefer-const
+        let clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
         clinActualDataSet.borderColor = color;
         clinActualDataSet.pointBackgroundColor = color;
         clinActualDataSet.pointHoverBackgroundColor = color;
@@ -1304,7 +1310,8 @@ export default class PortfolioDashboard extends Vue {
             : idiqClinNo + "DataProjected",
           data: projectedBurn[idiqClinNo],
         };
-        const clinProjectedDataSet: lineChartDataSet = _.clone(
+        //eslint-disable-next-line prefer-const
+        let clinProjectedDataSet: lineChartDataSet = _.clone(
           this.burnChartProjectedCommonDataSet
         );
         clinProjectedDataSet.borderColor = color;
@@ -1344,7 +1351,8 @@ export default class PortfolioDashboard extends Vue {
 
   public createTableItems(): void {
     this.idiqClins.forEach((idiqClin) => {
-      const obj: {
+      //eslint-disable-next-line prefer-const
+      let obj: {
         costClinNumber: string;
         clinStatus: string;
         clinLabel: string;
@@ -1434,8 +1442,8 @@ export default class PortfolioDashboard extends Vue {
       daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
-
-    const timeUnit = useMonths
+    //eslint-disable-next-line prefer-const
+    let timeUnit = useMonths
       ? singular
         ? "month"
         : "months"

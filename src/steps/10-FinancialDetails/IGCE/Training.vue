@@ -435,7 +435,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     try{
       if (this.instanceData.trainingOption.toLowerCase()==="single"){
         this.sysIdValueArray = [];
-        const obj:Record<string, string>= {};
+        //eslint-disable-next-line prefer-const
+        let obj:Record<string, string>= {};
         obj["PER_PERIOD"] = this.valueArray[0];
         this.sysIdValueArray.push(obj);
       }

@@ -97,10 +97,12 @@ export default class RegionsDeployedAndUserCount extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    const regionsData = acquisitionPackage.regions
+    //eslint-disable-next-line prefer-const 
+    let regionsData = acquisitionPackage.regions
     regionsData?.sort((a, b) => a.sequence > b.sequence ? 1 : -1)
       .forEach(region => {
-        const item = {
+        //eslint-disable-next-line prefer-const 
+        let item = {
           id : region.name,
           label : region.name,
           value : region.sys_id,

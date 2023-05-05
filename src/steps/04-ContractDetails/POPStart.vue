@@ -179,8 +179,8 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-
-        const pops: PeriodOfPerformanceDTO  = {  
+        //eslint-disable-next-line prefer-const
+        let pops: PeriodOfPerformanceDTO  = {  
           ...this.loaded,
           time_frame: this.currentData.time_frame || "",
           pop_start_request: this.currentData.pop_start_request || "",

@@ -464,7 +464,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           this.durationLabelEl.classList.add("d-none");
 
           // create a fake drag ghost image to use instead of default and hide it
-          const elem = document.createElement("div") as HTMLElement;
+          //eslint-disable-next-line prefer-const
+          let elem = document.createElement("div") as HTMLElement;
           elem.classList.add("drag-img-fake");
           elem.setAttribute("id", "DragImgFaker");
           // must include some text or it won't hide

@@ -499,7 +499,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public addIncrement(): void {
     const lastFundingIncrement = this.fundingIncrements.at(-1);
     const lastSelectedQtr = lastFundingIncrement?.text;
-    const selectedQtrIndex = this.fiscalQuarters.findIndex(
+    //eslint-disable-next-line prefer-const
+    let selectedQtrIndex = this.fiscalQuarters.findIndex(
       (p) => p.text === lastSelectedQtr
     );
 
@@ -567,7 +568,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public isFundingMet = false;
 
   public calcAmounts(field: string): void {
-    const incrementsTotal = this.fundingIncrements.reduce(
+    //eslint-disable-next-line prefer-const
+    let incrementsTotal = this.fundingIncrements.reduce(
       (accumulator, current) =>
         accumulator + Number(currencyStringToNumber(current.amt)),
       0
@@ -777,7 +779,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
       if (this.allowContinue) {
         // Set chronological order of fiscal quarters in fundingIncrements
-        const sortedIncrements: fundingIncrement[] = [];
+        //eslint-disable-next-line prefer-const
+        let sortedIncrements: fundingIncrement[] = [];
         this.fundingIncrements.forEach((incr) => {
           incr.order =
             this.fiscalQuarters.findIndex((q) => q.text === incr.text) + 1;
