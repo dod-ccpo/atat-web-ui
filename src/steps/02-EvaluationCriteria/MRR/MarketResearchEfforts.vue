@@ -18,10 +18,74 @@
               id="OnlyCapableSource"
               name="OnlyCapableSource"
               :legend="onlySourceCapableLegend"
-              :value.sync="currentData.research_is_csp_only_source_capable"
+              :value.sync="cspIsOnlySourceCapable"
               :items="onlySourceCapableOptions"
               :rules="[$validators.required('Please select an option.')]"
             />
+            <v-expand-transition>
+              <div v-if="isCspOnlySourceCapable" class="mt-8">
+                <div style="line-height: 1.3">
+                  <span class="font-weight-500">When did you conduct this research?</span><br />
+                  <span class="font-size-14 text-base">
+                    Research must have been conducted within the previous 12 months. 
+                  </span>
+                </div>
+                <div class="d-flex">
+                  <div style="width: 270px; max-width: 270px;">
+                    <ATATDatePicker
+                      id="ResearchStartDate"
+                      class="mt-8 mr-10"
+                      :rules="[
+                        $validators.required(
+                          'Enter a start date using the format MM/DD/YYYY.'
+                        ),
+                        $validators.isDateValid('Please enter a valid date.'),
+                      ]"
+                      :value.sync="researchStartDate"
+                      label="Start date"
+                      placeHolder="MM/DD/YYYY"
+                    />
+                    <v-btn 
+                      @click="toggleResearchEndDate()"
+                      @keydown.space="toggleResearchEndDate()"
+                      @keydown.enter="toggleResearchEndDate()"
+                      class="_quaternary mt-1 px-2" >
+                      <ATATSVGIcon 
+                        color="primary" 
+                        height="18" 
+                        width="18" 
+                        :name="researchButtonIconName" 
+                        class="mr-2"
+                      />
+                      {{ researchEndDateBtnText }} 
+                    </v-btn>
+
+                  </div>
+                  <ATATDatePicker
+                  id="ResearchEndDate"
+                  v-if="showResearchEndDate"
+                  class="mt-8 mr-10"
+                  :rules="[
+                    $validators.required(
+                      'Enter an end date using the format MM/DD/YYYY.'
+                    ),
+                    $validators.isDateValid('Please enter a valid date.'),
+                  ]"
+                  :value.sync="researchEndDate"
+                  label="End date"
+                  placeHolder="MM/DD/YYYY"
+                />
+
+                </div>
+
+              </div>
+            </v-expand-transition>
+
+
+
+
+            <hr />
+
 
           </div>
         </v-col>
@@ -35,9 +99,11 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
@@ -50,9 +116,11 @@ import { getYesNoRadioOptions } from "@/helpers";
 @Component({
   components: {
     ATATCheckboxGroup,
+    ATATDatePicker,
     ATATErrorValidation,
     ATATRadioGroup,
     ATATSelect,
+    ATATSVGIcon,
     ATATTextArea,
     ATATTextField,
   }
@@ -63,13 +131,30 @@ export default class MarketResearchEfforts extends Vue {
   public writeOwnCause: YesNo = "";
   public isLoading = false;
 
-  // public cspIsOnlySourceCapable: YesNo = "";
+  public showResearchEndDate = false;
+  public get researchEndDateBtnText(): string {
+    return this.showResearchEndDate ? "Remove end date" : "Add an end date";
+  } 
+  public get researchButtonIconName(): string {
+    return this.showResearchEndDate ? "remove-circle" : "control-point";
+  }
+  public toggleResearchEndDate(): void {
+    this.showResearchEndDate = !this.showResearchEndDate;
+    if (!this.showResearchEndDate) {
+      this.researchEndDate = "";
+    }
+
+  }
+
+  public get isCspOnlySourceCapable(): boolean {
+    return this.cspIsOnlySourceCapable === "YES"
+  }
 
   public get introText(): string {
     return this.currentData.contract_action !== "NONE"
-      ? `Answer a series of questions below about market research conducted to 
-        identify all qualified sources. Based on your responses, we’ll suggest 
-        language to help you complete this portion of your J&A and MRR.`
+      ? `While you are not required to complete a Sole Source MRR, we need some 
+        information for your J&A. Based on your responses below, we’ll suggest 
+        language  to help you explain the market research conducted.`
       : `Answer a series of questions below about market research conducted to 
         identify all qualified sources. Based on your responses, we’ll suggest 
         language to help you complete this portion of your J&A and MRR.`;
@@ -87,37 +172,38 @@ export default class MarketResearchEfforts extends Vue {
   private get savedData(): FairOpportunityDTO | null {
     return AcquisitionPackage.getFairOpportunity;
   }
-  public currentData: FairOpportunityDTO = {};
-  // public researchStartDate = "";
-  // public researchEndDate = "";
+  public researchStartDate = "";
+  public researchEndDate = "";
 
-  // public get currentData(): FairOpportunityDTO {
-  //   const fairOppSaved: FairOpportunityDTO 
-  //     = _.cloneDeep(AcquisitionPackage.fairOpportunity) 
-  //     || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
-  //   const formData: FairOpportunityDTO = {
-  //     /* eslint-disable camelcase */
-  //     cause_write_own_explanation: this.writeOwnCause,
+  // public currentData: FairOpportunityDTO = {};
+  public cspIsOnlySourceCapable: YesNo = "";
+  public get currentData(): FairOpportunityDTO {
+    const fairOppSaved: FairOpportunityDTO 
+      = _.cloneDeep(AcquisitionPackage.fairOpportunity) 
+      || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
+    const formData: FairOpportunityDTO = {
+      /* eslint-disable camelcase */
+      cause_write_own_explanation: this.writeOwnCause,
 
-  //     research_is_csp_only_source_capable: this.cspIsOnlySourceCapable,
-  //     research_start_date: this.researchStartDate,
-  //     research_end_date: this.researchEndDate,
-  //     research_supporting_data?: string; 
-  //     research_review_catalogs_reviewed?: YesNo;
-  //     research_review_catalogs_same_research_date?: YesNo;
-  //     research_review_catalogs_start_date?: string;
-  //     research_review_catalogs_end_date?: string;
-  //     research_review_catalogs_review_results?: string;
-  //     research_other_techniques_used?: string; // array of sys_ids
-  //     research_other_technique?: string;
-  //     research_personal_knowledge_person_or_position?: string;
-  //     research_techniques_summary?: string;
-  //     research_write_own_explanation?: YesNo;
+      research_is_csp_only_source_capable: this.cspIsOnlySourceCapable,
+      research_start_date: this.researchStartDate,
+      research_end_date: this.researchEndDate,
+      // research_supporting_data?: string; 
+      // research_review_catalogs_reviewed?: YesNo;
+      // research_review_catalogs_same_research_date?: YesNo;
+      // research_review_catalogs_start_date?: string;
+      // research_review_catalogs_end_date?: string;
+      // research_review_catalogs_review_results?: string;
+      // research_other_techniques_used?: string; // array of sys_ids
+      // research_other_technique?: string;
+      // research_personal_knowledge_person_or_position?: string;
+      // research_techniques_summary?: string;
+      // research_write_own_explanation?: YesNo;
 
-  //   /* eslint-enable camelcase */
-  //   }
-  //   return Object.assign(fairOppSaved, formData);
-  // }
+    /* eslint-enable camelcase */
+    }
+    return Object.assign(fairOppSaved, formData);
+  }
 
 
 
