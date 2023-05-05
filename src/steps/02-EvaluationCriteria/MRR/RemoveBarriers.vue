@@ -19,7 +19,10 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+
 @Component({})
 
-export default class RemoveBarriers extends Vue {}
+export default class RemoveBarriers extends Vue {
+
+}
 </script>
