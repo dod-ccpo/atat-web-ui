@@ -23,7 +23,7 @@
               :rules="[$validators.required('Please select an option.')]"
             />
             <v-expand-transition>
-              <div v-if="isCspOnlySourceCapable" class="mt-8">
+              <div v-if="showCspOnlySourceCapableFields" class="mt-8">
                 <div style="line-height: 1.3">
                   <span class="font-weight-500">When did you conduct this research?</span><br />
                   <span class="font-size-14 text-base">
@@ -74,7 +74,7 @@
                 </div>
 
                 <ATATTextArea 
-                  id="InsufficientTimeReason"
+                  id="SupportingData"
                   class="mt-10"
                   label="Briefly discuss the market research data that supports your 
                     sole source determination"
@@ -89,22 +89,109 @@
                   ]"
                 />
 
-
               </div>
             </v-expand-transition>
 
-            <hr />
 
-            <ATATRadioGroup 
-              id="ReviewedCatalogs"
-              name="ReviewedCatalogs"
-              :legend="reviewedCatalogsLegend"
-              :value.sync="reviewedCatalogs"
-              :items="reviewedCatalogsOptions"
-              :rules="[$validators.required('Please select an option.')]"
-            />
+            <section id="ReviewCatalogSection" v-if="cspHasPeculiarFeature">
+              <hr />
+
+              <ATATRadioGroup 
+                id="ReviewedCatalogs"
+                name="ReviewedCatalogs"
+                :legend="reviewedCatalogsLegend"
+                :value.sync="reviewedCatalogs"
+                :items="reviewedCatalogsOptions"
+                :rules="[$validators.required('Please select an option.')]"
+              />
+
+              <v-expand-transition>
+                <div v-if="wereCatalogsReviewed" class="mt-8">
+                  <ATATRadioGroup 
+                    id="ReviewedCatalogs"
+                    name="ReviewedCatalogs"
+                    v-if="researchDatesEntered"
+                    legend="Was this research conducted on the same date or date range 
+                      as indicated above?"
+                    :value.sync="sameAsResearchDate"
+                    :items="sameDatesOptions"
+                    :rules="[$validators.required('Please select an option.')]"
+                  />
+
+                  <div class="d-flex mt-4" v-if="showCatalogReviewDates">
+                    <div style="width: 270px; max-width: 270px;">
+                      <ATATDatePicker
+                        id="CatalogReviewStartDate"
+                        class="mr-10"
+                        :rules="[
+                          $validators.required('Enter a start date using the format MM/DD/YYYY.'),
+                          $validators.isDateValid('Please enter a valid date.'),
+                        ]"
+                        :value.sync="catalogReviewStartDate"
+                        label="Start date"
+                        placeHolder="MM/DD/YYYY"
+                      />
+                      <v-btn 
+                        @click="toggleCatalogReviewEndDate()"
+                        @keydown.space="toggleCatalogReviewEndDate()"
+                        @keydown.enter="toggleCatalogReviewEndDate()"
+                        class="_quaternary mt-1 px-2" >
+                        <ATATSVGIcon 
+                          color="primary" 
+                          height="18" 
+                          width="18" 
+                          :name="catalogReviewButtonIconName" 
+                          class="mr-2"
+                        />
+                        {{ catalogReviewEndDateBtnText }} 
+                      </v-btn>
+
+                    </div>
+
+                    <ATATDatePicker
+                      id="CatalogReviewEndDate"
+                      v-if="showCatalogReviewEndDate"
+                      :rules="[
+                        $validators.required('Enter an end date using the format MM/DD/YYYY.'),
+                        $validators.isDateValid('Please enter a valid date.'),
+                      ]"
+                      :value.sync="catalogReviewEndDate"
+                      label="End date"
+                      placeHolder="MM/DD/YYYY"
+                    />
+
+                  </div>
+
+                  <ATATTextArea 
+                    id="CatalogReviewResults"
+                    class="mt-10"
+                    label="Briefly discuss the results from your JWCC catalog review"
+                    helpText="Fill in the blank to complete the suggested sentence below 
+                      or write your own description."
+                    :value.sync="catalogReviewResults"
+                    :maxChars="1000"
+                    :rows="6"
+                    :validateItOnBlur="true"
+                    :rules="[
+                      $validators.required('Describe the results of your JWCC catalog review.'),
+                      $validators.maxLength(1000)
+                    ]"
+                  />
+
+                </div>
+              </v-expand-transition>
+            </section>
 
 
+            <section id="OtherTechniquesSection" v-if="needsMRR">
+              <hr />
+              <ATATCheckboxGroup 
+                id="OtherTechniques"
+                groupLabel="What other techniques did you use?"
+                :optional="true"
+                :items="otherTechniquesOptions"
+              />
+            </section>
 
           </div>
         </v-col>
@@ -129,7 +216,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { RadioButton, YesNo } from "types/Global";
+import { Checkbox, RadioButton, YesNo } from "types/Global";
 import { getYesNoRadioOptions } from "@/helpers";
 
 @Component({
@@ -150,6 +237,9 @@ export default class MarketResearchEfforts extends Vue {
   public writeOwnCause: YesNo = "";
   public isLoading = false;
 
+  public needsMRR = false;
+  public cspHasPeculiarFeature = true;
+
   public get introText(): string {
     return this.currentData.contract_action !== "NONE"
       ? `While you are not required to complete a Sole Source MRR, we need some 
@@ -161,8 +251,10 @@ export default class MarketResearchEfforts extends Vue {
   }
 
 
+  // ========== FORM SECTION 1 - CSP IS ONLY SOURCE CAPABLE ==========
+
   public onlySourceCapableOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
-  public get isCspOnlySourceCapable(): boolean {
+  public get showCspOnlySourceCapableFields(): boolean {
     return this.cspIsOnlySourceCapable === "YES";
   }
 
@@ -186,6 +278,8 @@ export default class MarketResearchEfforts extends Vue {
     }
   }
  
+  // ========== FORM SECTION 2 - CATALOG REVIEW ==========
+
   public get productOrFeature(): string {
     return this.currentData.cause_product_feature_type === "PRODUCT" ? "product" : "feature";
   }
@@ -196,6 +290,41 @@ export default class MarketResearchEfforts extends Vue {
       if other similar offerings meet or can be modified to satisfy your requirements?`;
   }
   public reviewedCatalogsOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
+  public get wereCatalogsReviewed(): boolean {
+    return this.reviewedCatalogs === "YES";
+  }
+  public sameDatesOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
+
+  public get researchDatesEntered(): boolean {
+    return this.researchStartDate !== "";
+  }
+  public get showCatalogReviewDates(): boolean {
+    return (this.researchDatesEntered && this.sameAsResearchDate === "NO") 
+      || !this.researchDatesEntered;
+  }
+  public showCatalogReviewEndDate = false;
+  public get catalogReviewEndDateBtnText(): string {
+    return this.showCatalogReviewEndDate ? "Remove end date" : "Add an end date";
+  } 
+  public get catalogReviewButtonIconName(): string {
+    return this.showCatalogReviewEndDate ? "remove-circle" : "control-point";
+  }
+  public toggleCatalogReviewEndDate(): void {
+    this.showCatalogReviewEndDate = !this.showCatalogReviewEndDate;
+    if (!this.showCatalogReviewEndDate) {
+      this.catalogReviewEndDate = "";
+    }
+  }
+
+  // SECTION 3
+  public otherTechniquesOptions: Checkbox[] = [
+    {
+      id: "PK", 
+      value: "PK", 
+      label: "Personal knowledge in procuring supplies/services of this type"
+    }
+  ]
+
 
 
   private get savedData(): FairOpportunityDTO | null {
@@ -205,8 +334,11 @@ export default class MarketResearchEfforts extends Vue {
   public researchStartDate = "";
   public researchEndDate = "";
   public supportingData = "";
+  public sameAsResearchDate: YesNo = "";
+  public catalogReviewStartDate = "";
+  public catalogReviewEndDate = "";
+  public catalogReviewResults = "";
 
-  // public currentData: FairOpportunityDTO = {};
   public cspIsOnlySourceCapable: YesNo = "";
   public get currentData(): FairOpportunityDTO {
     const fairOppSaved: FairOpportunityDTO 
@@ -221,10 +353,11 @@ export default class MarketResearchEfforts extends Vue {
       research_end_date: this.researchEndDate,
       research_supporting_data: this.supportingData, 
       research_review_catalogs_reviewed: this.reviewedCatalogs,
-      // research_review_catalogs_same_research_date?: YesNo;
-      // research_review_catalogs_start_date?: string;
-      // research_review_catalogs_end_date?: string;
-      // research_review_catalogs_review_results?: string;
+      research_review_catalogs_same_research_date: this.sameAsResearchDate,
+      research_review_catalogs_start_date: this.catalogReviewStartDate,
+      research_review_catalogs_end_date: this.catalogReviewEndDate,
+      research_review_catalogs_review_results: this.catalogReviewResults,
+
       // research_other_techniques_used?: string; // array of sys_ids
       // research_other_technique?: string;
       // research_personal_knowledge_person_or_position?: string;
@@ -241,6 +374,13 @@ export default class MarketResearchEfforts extends Vue {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
+
+      this.needsMRR = storeData.contract_action === "NONE";
+      this.cspHasPeculiarFeature = storeData.cause_product_feature_peculiar_to_csp === "YES";
+
+      // set catalogReviewResults to blank on saveOnLeave if reviewedCatalogs === "NO"
+      this.catalogReviewResults = storeData.research_review_catalogs_review_results ||
+        "The results have determined that no other offering is suitable as follows...";
 
       const cspNames = {
         AWS: "Amazon",
