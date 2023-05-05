@@ -19,6 +19,7 @@
           <div v-if="selectedException === 'YES'">
             <hr />
             <ATATTextArea
+              class="textarea-max-width"
               id="ExceptionTextArea"
               label="Briefly discuss any other
               facts or details supporting the use of this exception"

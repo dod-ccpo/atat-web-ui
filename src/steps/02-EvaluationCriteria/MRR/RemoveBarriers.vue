@@ -18,23 +18,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { RadioButton } from "../../../../types/Global";
-import { getYesNoRadioOptions, hasChanges } from "@/helpers";
-import { FairOpportunityDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import _ from "lodash";
+
 
 @Component({})
 
 export default class RemoveBarriers extends Vue {
-  /* eslint-disable camelcase */
 
-  // public async loadOnEnter(): Promise<void> {
-  // }
-  //
-  //
-  // public async mounted(): Promise<void> {
-  //   await this.loadOnEnter();
-  // }
 }
 </script>
