@@ -30,15 +30,13 @@
                     Research must have been conducted within the previous 12 months. 
                   </span>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex mt-4">
                   <div style="width: 270px; max-width: 270px;">
                     <ATATDatePicker
                       id="ResearchStartDate"
-                      class="mt-8 mr-10"
+                      class="mr-10"
                       :rules="[
-                        $validators.required(
-                          'Enter a start date using the format MM/DD/YYYY.'
-                        ),
+                        $validators.required('Enter a start date using the format MM/DD/YYYY.'),
                         $validators.isDateValid('Please enter a valid date.'),
                       ]"
                       :value.sync="researchStartDate"
@@ -62,29 +60,50 @@
 
                   </div>
                   <ATATDatePicker
-                  id="ResearchEndDate"
-                  v-if="showResearchEndDate"
-                  class="mt-8 mr-10"
-                  :rules="[
-                    $validators.required(
-                      'Enter an end date using the format MM/DD/YYYY.'
-                    ),
-                    $validators.isDateValid('Please enter a valid date.'),
-                  ]"
-                  :value.sync="researchEndDate"
-                  label="End date"
-                  placeHolder="MM/DD/YYYY"
-                />
+                    id="ResearchEndDate"
+                    v-if="showResearchEndDate"
+                    :rules="[
+                      $validators.required('Enter an end date using the format MM/DD/YYYY.'),
+                      $validators.isDateValid('Please enter a valid date.'),
+                    ]"
+                    :value.sync="researchEndDate"
+                    label="End date"
+                    placeHolder="MM/DD/YYYY"
+                  />
 
                 </div>
+
+                <ATATTextArea 
+                  id="InsufficientTimeReason"
+                  class="mt-10"
+                  label="Briefly discuss the market research data that supports your 
+                    sole source determination"
+                  helpText="Include the who, what, when, where, why, and outcome of your research."
+                  :value.sync="supportingData"
+                  :maxChars="1000"
+                  :rows="6"
+                  :validateItOnBlur="true"
+                  :rules="[
+                    $validators.required('Describe the results of your JWCC Contracts review.'),
+                    $validators.maxLength(1000)
+                  ]"
+                />
+
 
               </div>
             </v-expand-transition>
 
-
-
-
             <hr />
+
+            <ATATRadioGroup 
+              id="ReviewedCatalogs"
+              name="ReviewedCatalogs"
+              :legend="reviewedCatalogsLegend"
+              :value.sync="reviewedCatalogs"
+              :items="reviewedCatalogsOptions"
+              :rules="[$validators.required('Please select an option.')]"
+            />
+
 
 
           </div>
@@ -131,6 +150,28 @@ export default class MarketResearchEfforts extends Vue {
   public writeOwnCause: YesNo = "";
   public isLoading = false;
 
+  public get introText(): string {
+    return this.currentData.contract_action !== "NONE"
+      ? `While you are not required to complete a Sole Source MRR, we need some 
+        information for your J&A. Based on your responses below, we’ll suggest 
+        language  to help you explain the market research conducted.`
+      : `Answer a series of questions below about market research conducted to 
+        identify all qualified sources. Based on your responses, we’ll suggest 
+        language to help you complete this portion of your J&A and MRR.`;
+  }
+
+
+  public onlySourceCapableOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
+  public get isCspOnlySourceCapable(): boolean {
+    return this.cspIsOnlySourceCapable === "YES";
+  }
+
+  public get onlySourceCapableLegend(): string {
+    return `Did you review the specific capabilities in the JWCC Contracts to 
+    determine that ${this.cspName} is the only source capable of fulfilling the 
+    Government’s minimum needs in the manner and time frame required?`;
+  }
+
   public showResearchEndDate = false;
   public get researchEndDateBtnText(): string {
     return this.showResearchEndDate ? "Remove end date" : "Add an end date";
@@ -143,37 +184,27 @@ export default class MarketResearchEfforts extends Vue {
     if (!this.showResearchEndDate) {
       this.researchEndDate = "";
     }
-
   }
-
-  public get isCspOnlySourceCapable(): boolean {
-    return this.cspIsOnlySourceCapable === "YES"
+ 
+  public get productOrFeature(): string {
+    return this.currentData.cause_product_feature_type === "PRODUCT" ? "product" : "feature";
   }
-
-  public get introText(): string {
-    return this.currentData.contract_action !== "NONE"
-      ? `While you are not required to complete a Sole Source MRR, we need some 
-        information for your J&A. Based on your responses below, we’ll suggest 
-        language  to help you explain the market research conducted.`
-      : `Answer a series of questions below about market research conducted to 
-        identify all qualified sources. Based on your responses, we’ll suggest 
-        language to help you complete this portion of your J&A and MRR.`;
+  public reviewedCatalogs: YesNo = "";
+  public get reviewedCatalogsLegend(): string {
+    return `Thinking of the unique ${this.productOrFeature} that you previously 
+      told us about, did you review the JWCC contractor’s catalogs to determine 
+      if other similar offerings meet or can be modified to satisfy your requirements?`;
   }
-
-  public get onlySourceCapableLegend(): string {
-    return `Did you review the specific capabilities in the JWCC Contracts to 
-    determine that ${this.cspName} is the only source capable of fulfilling the 
-    Government’s minimum needs in the manner and time frame required?`
-  }
-
-  public onlySourceCapableOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
+  public reviewedCatalogsOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
 
 
   private get savedData(): FairOpportunityDTO | null {
     return AcquisitionPackage.getFairOpportunity;
   }
+  // EJY move data vars up to top
   public researchStartDate = "";
   public researchEndDate = "";
+  public supportingData = "";
 
   // public currentData: FairOpportunityDTO = {};
   public cspIsOnlySourceCapable: YesNo = "";
@@ -188,8 +219,8 @@ export default class MarketResearchEfforts extends Vue {
       research_is_csp_only_source_capable: this.cspIsOnlySourceCapable,
       research_start_date: this.researchStartDate,
       research_end_date: this.researchEndDate,
-      // research_supporting_data?: string; 
-      // research_review_catalogs_reviewed?: YesNo;
+      research_supporting_data: this.supportingData, 
+      research_review_catalogs_reviewed: this.reviewedCatalogs,
       // research_review_catalogs_same_research_date?: YesNo;
       // research_review_catalogs_start_date?: string;
       // research_review_catalogs_end_date?: string;
@@ -210,7 +241,6 @@ export default class MarketResearchEfforts extends Vue {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.currentData = storeData;
 
       const cspNames = {
         AWS: "Amazon",
