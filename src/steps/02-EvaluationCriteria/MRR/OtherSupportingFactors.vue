@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
@@ -46,6 +46,7 @@ import _ from "lodash";
 import { RadioButton, YesNo } from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -54,7 +55,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
   }
 })
 
-export default class OtherSupportingFactors extends Vue {
+export default class OtherSupportingFactors extends Mixins(SaveOnLeave) {
   /* eslint-disable camelcase */
   public exceptionDiscussion =""
   public exceptionChoices :RadioButton[] = getYesNoRadioOptions("Exception")
@@ -84,8 +85,8 @@ export default class OtherSupportingFactors extends Vue {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.selectedException = storeData.other_facts_to_support_logical_follow_on
-      this.exceptionDiscussion = storeData.other_facts_to_support_logical_follow_on_details
+      this.selectedException = storeData.other_facts_to_support_logical_follow_on||""
+      this.exceptionDiscussion = storeData.other_facts_to_support_logical_follow_on_details||""
     }
   }
 
@@ -101,7 +102,7 @@ export default class OtherSupportingFactors extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    // await this.loadOnEnter();
+    await this.loadOnEnter();
   }
 }
 </script>

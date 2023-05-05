@@ -195,7 +195,7 @@ import {
   FeeChargedResolver,
   showDITCOPageResolver,
   ContractingInfoResolver,
-  CrossDomainResolver,
+  CrossDomainResolver, removeBarriersRouteResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -600,6 +600,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver:removeBarriersRouteResolver
       },      
       {
         menuText: "Review Barriers",
