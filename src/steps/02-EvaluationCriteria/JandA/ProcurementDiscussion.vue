@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
 import _ from "lodash";
@@ -69,6 +69,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "../../../../types/Global";
 import { FairOpportunityDTO } from "@/api/models";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components:{
@@ -77,7 +78,7 @@ import { FairOpportunityDTO } from "@/api/models";
   }
 })
 
-export default class ProcurementDiscussion extends Vue {
+export default class ProcurementDiscussion extends Mixins(SaveOnLeave) {
   public procurementParagraphText = ""
   public procurementText = "";
   public suggestedImpactText = ""
@@ -86,19 +87,22 @@ export default class ProcurementDiscussion extends Vue {
   public existingEnv = ""
   public existingEnvOptions: RadioButton[] = getYesNoRadioOptions("existingEnvOptions")
 
-
   private get currentData(): FairOpportunityDTO {
     return {
       /* eslint-disable camelcase */
       procurement_discussion: this.procurementText,
-      requirement_impact: this.procurementImpact
+      procurement_has_existing_env: this.existingEnv,
+      procurement_previous_impact: this.procurementImpact
     } as FairOpportunityDTO;
   }
 
   private get savedData(): FairOpportunityDTO {
     return {
       procurement_discussion: AcquisitionPackage.fairOpportunity?.procurement_discussion || "",
-      requirement_impact: AcquisitionPackage.fairOpportunity?.requirement_impact || "",
+      procurement_has_existing_env: AcquisitionPackage.fairOpportunity?.
+        procurement_has_existing_env || "",
+      procurement_previous_impact: AcquisitionPackage.fairOpportunity?.
+        procurement_previous_impact || "",
     } as FairOpportunityDTO;
   }
 
@@ -108,7 +112,6 @@ export default class ProcurementDiscussion extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
-    debugger
     if (storeData) {
       const farSelected = storeData.exception_to_fair_opportunity
       if(farSelected === "YES_FAR_16_505_B_2_I_A"){
@@ -134,22 +137,25 @@ export default class ProcurementDiscussion extends Vue {
         " to date to most efficiently meet the objectives of the task order for " +
         "the anticipated PoP."
       this.procurementText = storeData.procurement_discussion || ""
-      this.procurementImpact = storeData.requirement_impact || this.suggestedImpactText
-
+      this.procurementImpact = storeData.procurement_previous_impact || this.suggestedImpactText
+      this.existingEnv = storeData.procurement_has_existing_env || ""
     }
   }
 
-  // protected async saveOnLeave(): Promise<boolean> {
-  //   this.turnRulesOff = false;
-  //   try {
-  //     if (this.hasChanged()) {
-  //       await AcquisitionPackage.setFairOpportunity(this.currentData)
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   return true;
-  // }
+  protected async saveOnLeave(): Promise<boolean> {
+    debugger
+    if(this.currentData.procurement_has_existing_env === "NO"){
+      this.currentData.procurement_previous_impact = ""
+    }
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
