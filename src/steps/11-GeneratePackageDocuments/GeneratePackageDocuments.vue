@@ -26,6 +26,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocuments from "./components/GeneratingDocuments.vue";
 import ReviewDocuments from "./components/ReviewDocuments.vue";
 import Vue from "Vue" ;
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 @Component({
   components: {
     GeneratingDocuments,
@@ -110,12 +111,12 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
   public async saveOnLeave(): Promise<boolean> {
     this.isGenerating = false; //to restore bottom navigation
     await AcquisitionPackage.setValidateNow(true);
-    // if(this.isDitco){
-    //   await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
-    //     acquisitionPackageSysId: AcquisitionPackage.packageId,
-    //     newStatus: "WAITING_FOR_SIGNATURES"
-    //   })
-    // }
+    if(this.isDitco){
+      await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
+        acquisitionPackageSysId: AcquisitionPackage.packageId,
+        newStatus: "WAITING_FOR_SIGNATURES"
+      })
+    }
     return true;
   }
 }
