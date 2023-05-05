@@ -101,7 +101,7 @@
             </div>
           </template>
           <template v-else v-slot:label>
-            <span v-html="item.label"></span>
+              <span v-html="item.label"></span>
           </template>
 
         </v-radio>
