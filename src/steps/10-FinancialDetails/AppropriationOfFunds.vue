@@ -41,6 +41,7 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
+import { FundingRequestDTO } from "@/api/models";
 
 
 @Component({
@@ -49,7 +50,8 @@ import { RadioButton } from "types/Global";
   },
 })
 export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
-  private selectedFundType = "";
+  private fundingRequest: 
+  private selectedFundType: "" | "O_M" | "RDT_E" | "PROCUREMENT" = "";
   private fundTypes: RadioButton[] = [
     {
       id: "O&M",
@@ -64,7 +66,7 @@ export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
     {
       id: "Procurement",
       label: "Procurement",
-      value: "Procurement",
+      value: "PROCUREMENT",
     },
   ];
 
@@ -88,6 +90,36 @@ export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
     }
     return fiscalYears;
 
+  }
+
+  private savedData: {
+    appropriation_fiscal_year: "",
+    // eslint-disable-next-line camelcase
+    appropriation_funds_type: ""
+  }FundingRequestDTO = {
+    // eslint-disable-next-line camelcase
+    fs_form: "",
+    // eslint-disable-next-line camelcase
+    funding_request_type: "",
+    mipr: "",
+    // eslint-disable-next-line camelcase
+    appropriation_fiscal_year: "",
+    // eslint-disable-next-line camelcase
+    appropriation_funds_type: ""
+  }
+
+  private get currentData(): FundingRequestDTO {
+    return {
+      // eslint-disable-next-line camelcase
+      fs_form: "",
+      // eslint-disable-next-line camelcase
+      funding_request_type: "",
+      mipr: "",
+      // eslint-disable-next-line camelcase
+      appropriation_fiscal_year: this.selectedFiscalYear,
+      // eslint-disable-next-line camelcase
+      appropriation_funds_type: this.selectedFundType
+    }
   }
 
   protected async saveOnLeave(): Promise<boolean> {
