@@ -101,10 +101,7 @@
             </div>
           </template>
           <template v-else v-slot:label>
-            <div class="d-flex">
               <span v-html="item.label"></span>
-              <a href="http://google.com">Google</a>
-            </div>
           </template>
 
         </v-radio>
