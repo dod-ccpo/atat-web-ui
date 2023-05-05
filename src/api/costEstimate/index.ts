@@ -25,7 +25,7 @@ export class CostEstimateApi extends ApiBase{
         const { result } = response.data;
         const CostEstimateDTO: CostEstimateDTO = {
           packageId: result.packageId,
-          payload: JSON.parse(result.payload)
+          payload: result.payload
         }
         return CostEstimateDTO;
       } else {
