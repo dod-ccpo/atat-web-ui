@@ -10,9 +10,7 @@
             id="procurementText"
             class="max-width-740"
             label="Discuss the constraints of your procurement"
-            helpText="Identify any schedule requirements, unique features and mandatory
-             requirements, or the existence of proprietary data, copyrighted information
-              or a patent which restrict competition."
+            :helpText=procurementParagraphText
             :rows="11"
             :value.sync="procurementText"
             maxChars="2500"
@@ -80,7 +78,7 @@ import { FairOpportunityDTO } from "@/api/models";
 })
 
 export default class ProcurementDiscussion extends Vue {
-  public suggestedProcurementText = ""
+  public procurementParagraphText = ""
   public procurementText = "";
   public suggestedImpactText = ""
   public procurementImpact = "";
@@ -114,7 +112,7 @@ export default class ProcurementDiscussion extends Vue {
     if (storeData) {
       const farSelected = storeData.exception_to_fair_opportunity
       if(farSelected === "YES_FAR_16_505_B_2_I_A"){
-        this.suggestedProcurementText = "Identify any schedule requirements, unique" +
+        this.procurementParagraphText = "Identify any schedule requirements, unique" +
           " features and mandatory requirements, or the existence of" +
           " proprietary data, copyrighted information or a patent which" +
           " restrict competition. Since you cited the “unusual and compelling" +
@@ -122,7 +120,7 @@ export default class ProcurementDiscussion extends Vue {
           " quantity or period of performance. These milestones should be" +
           " as realistic, firm, and proactive as possible."
       }else if(farSelected === "YES_FAR_16_505_B_2_I_B"){
-        this.suggestedProcurementText = "Identify any schedule requirements, unique" +
+        this.procurementParagraphText = "Identify any schedule requirements, unique" +
           " features and mandatory requirements, or the existence of" +
           " proprietary data, copyrighted information or a patent which" +
           " restrict competition. "
@@ -135,7 +133,7 @@ export default class ProcurementDiscussion extends Vue {
         " another contractor would not be positioned to leverage investments made" +
         " to date to most efficiently meet the objectives of the task order for " +
         "the anticipated PoP."
-      this.procurementText = storeData.procurement_discussion || this.suggestedProcurementText
+      this.procurementText = storeData.procurement_discussion || ""
       this.procurementImpact = storeData.requirement_impact || this.suggestedImpactText
 
     }
