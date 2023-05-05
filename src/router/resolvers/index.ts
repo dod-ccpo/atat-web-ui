@@ -120,6 +120,15 @@ export const removeBarriersRouteResolver = (current: string): string => {
     : routeNames.RemoveBarriers
 };
 
+const needContractAction = ():boolean =>{
+  return AcquisitionPackage.fairOpportunity?.contract_action !=='NONE'
+}
+export const conductedResearchRouteResolver = (current: string): string => {
+  return current === routeNames.OtherSupportingFactors && needContractAction()
+    ? routeNames.MarketResearchReview
+    : routeNames.WhoConductedResearch
+};
+
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
@@ -1428,6 +1437,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
   removeBarriersRouteResolver,
+  conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   CurrentEnvRouteResolver,
