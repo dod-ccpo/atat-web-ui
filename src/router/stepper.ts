@@ -195,7 +195,8 @@ import {
   FeeChargedResolver,
   showDITCOPageResolver,
   ContractingInfoResolver,
-  CrossDomainResolver, removeBarriersRouteResolver,
+  CrossDomainResolver,
+  removeBarriersRouteResolver,
 } from "./resolvers";
 
 export const routeNames = {

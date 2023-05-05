@@ -16,20 +16,22 @@
             :items="exceptionChoices"
             :rules="[$validators.required('Please select an option.')]"
           />
-          <hr />
-          <ATATTextArea
-            id="ExceptionTextArea"
-            label="Briefly discuss any other facts or details supporting the use of this exception"
-            :value.sync="exceptionDiscussion"
-            :maxChars="1000"
-            :rows="6"
-            :validateItOnBlur="true"
-            :rules="[
+          <div v-if="selectedException === 'YES'">
+            <hr />
+            <ATATTextArea
+              id="ExceptionTextArea"
+              label="Briefly discuss any other
+              facts or details supporting the use of this exception"
+              :value.sync="exceptionDiscussion"
+              :maxChars="1000"
+              :rows="6"
+              :validateItOnBlur="true"
+              :rules="[
                 $validators.required('Enter a description for your other supporting factors.'),
                 $validators.maxLength(1000)
             ]"
-          />
-
+            />
+          </div>
         </v-col>
       </v-row>
     </v-container>    
@@ -37,13 +39,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
 import _ from "lodash";
-import { RadioButton, YesNo } from "../../../../types/Global";
+import { RadioButton } from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -91,6 +92,9 @@ export default class OtherSupportingFactors extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    if(this.currentData.other_facts_to_support_logical_follow_on === 'NO'){
+      this.currentData.other_facts_to_support_logical_follow_on_details = ""
+    }
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

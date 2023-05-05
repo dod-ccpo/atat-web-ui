@@ -108,8 +108,7 @@ export const CertificationPOCsRouteResolver = (current: string): string => {
     ? routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
-//storeData.barriers_plans_to_remove_custom !== "" &&
-//       storeData.barriers_plans_to_remove_generated !== ""
+
 const plansToRemoveBarriers = ():boolean =>{
   const generated = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_generated
   const custom = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_custom
