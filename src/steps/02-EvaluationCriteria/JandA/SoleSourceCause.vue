@@ -379,7 +379,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
     const formData: FairOpportunityDTO = {
       /* eslint-disable camelcase */
-      write_own_sole_source_cause: this.writeOwnCause,
+      cause_write_own_explanation: this.writeOwnCause,
 
       cause_migration_addl_time_cost: this.migrAddlTimeCost,
       cause_migration_estimated_cost: this.migrEstCost,
@@ -410,7 +410,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     // eslint-disable-next-line camelcase
-    await AcquisitionPackage.setFairOpportunity({write_own_sole_source_cause: "NO"})
+    await AcquisitionPackage.setFairOpportunity({cause_write_own_explanation: "NO"})
 
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
@@ -475,7 +475,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
           sectionsWithNoSelectedCount++;
         }
         this.writeOwnCause 
-          = AcquisitionPackage.fairOpportunity?.write_own_sole_source_cause as YesNo;
+          = AcquisitionPackage.fairOpportunity?.cause_write_own_explanation as YesNo;
         if (this.writeOwnCause !== "YES") {
           // if it's already "YES" (set from action handler when "I want to write 
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 
