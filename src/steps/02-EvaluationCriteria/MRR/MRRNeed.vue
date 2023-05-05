@@ -71,7 +71,7 @@ import {hasChanges} from "@/helpers";
 
 export default class MRRNeed extends Mixins(SaveOnLeave) {
   private selectedMRRNeed:
-      "" | "UCA" | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE" | undefined = "";
+      "" | "UCA" | "BCA" | "OES" | "NONE" | undefined = "";
   private mrrNeedOptions: RadioButton[] = [
     {
       id: "UndefinitizedContractAction",
@@ -90,7 +90,7 @@ export default class MRRNeed extends Mixins(SaveOnLeave) {
         onclick="window.open('https://www.acquisition.gov/far/52.217-8')"
          class="_text-link" target="_blank">
         <span class="_external-link">FAR 52.217-8</span></a>)`,
-      value: "OPTION_TO_EXTEND_SERVICES"
+      value: "OES"
     },
     {
       id: "NoneApply",
@@ -106,7 +106,7 @@ export default class MRRNeed extends Mixins(SaveOnLeave) {
   public get displayNotNoneAlert(): boolean {
     return this.selectedMRRNeed === "UCA"
         || this.selectedMRRNeed === "BCA"
-        || this.selectedMRRNeed === "OPTION_TO_EXTEND_SERVICES";
+        || this.selectedMRRNeed === "OES";
   }
 
   /**

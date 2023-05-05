@@ -267,7 +267,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   requirement_impact?: string;
 
   // 2.9.1
-  contract_action?: "" | "UCA " | "BCA" | "OPTION_TO_EXTEND_SERVICES" | "NONE";
+  contract_action?: "" | "UCA" | "BCA" | "OES" | "NONE";
   
   // 2.9.2
   // market research efforts form

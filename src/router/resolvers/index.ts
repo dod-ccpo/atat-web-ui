@@ -117,6 +117,26 @@ export const CertificationPOCsRouteResolver = (current: string): string => {
     : routeNames.CertificationPOCs
 }
 
+const plansToRemoveBarriers = ():boolean =>{
+  const generated = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_generated
+  const custom = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_custom
+  return (generated !== "" || custom !== "")
+} 
+export const removeBarriersRouteResolver = (current: string): string => {
+  return current === routeNames.OtherSupportingFactors && plansToRemoveBarriers()
+    ? routeNames.ReviewBarriers
+    : routeNames.RemoveBarriers
+};
+
+const needContractAction = ():boolean =>{
+  return AcquisitionPackage.fairOpportunity?.contract_action !=='NONE'
+}
+export const conductedResearchRouteResolver = (current: string): string => {
+  return current === routeNames.OtherSupportingFactors && needContractAction()
+    ? routeNames.MarketResearchReview
+    : routeNames.WhoConductedResearch
+};
+
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
@@ -1440,6 +1460,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
+  removeBarriersRouteResolver,
+  conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   CurrentEnvRouteResolver,
