@@ -370,7 +370,7 @@ import { ClinDTO } from "@/api/models";
 })
 
 export default class TaskOrderDetails extends Vue {
-  @Prop() private selectedTaskOrder!: TaskOrderCardData;
+  @Prop() private selectedTaskOrder: TaskOrderCardData = {};
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
   public clins: ClinDTO[] = this.selectedTaskOrder.clins || [];
