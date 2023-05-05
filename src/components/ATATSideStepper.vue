@@ -104,7 +104,8 @@ export default class ATATSideStepper extends Vue {
     this.calculatePercentComplete();
   }
 
-  private getCurrentStepperStep(): StepInfo {
+  private get getCurrentStepperStep(): StepInfo {
+    this.activeStep = Steps.currentStep?.stepNumber||"";
     return Steps.currentStep as StepInfo;
   }
 

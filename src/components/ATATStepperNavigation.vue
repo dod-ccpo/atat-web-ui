@@ -31,36 +31,27 @@
         </span>
 
         <v-btn 
-          @click="$emit('next')" 
+          @click="continueClicked()" 
           v-if="!hideContinueButton"
           depressed 
-          :color="this.continueButtonText == 'Continue'? 'primary' : 'secondary'"
+          :color="continueButtonColor
+            || this.continueButtonText === 'Continue'? 'primary' : 'secondary'"
           role="link" 
           class="ml-4"
           id="ContinueButton"
+          :disabled="disableContinue"
         >
           {{ continueButtonText }}
         </v-btn>
       </span>
     </div>
-
-    <v-btn
-      id="developerToggleButton"
-      v-if="allowDeveloperNavigation()"
-      @click="toggleDeveloperNavigation()"
-      role="button"
-      class="mt-10"
-    >
-      <span>Toggle Developer Navigation {{ developerNavState }}</span>
-    </v-btn>    
   </nav>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { AdditionalButton } from "@/store/steps/types";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({})
 
@@ -71,21 +62,21 @@ export default class ATATStepperNavigation extends Vue {
   @Prop({ default: false }) private noPrevious?: boolean;
   @Prop({ default: "stepperNavigation" }) private id?: string;
   @Prop({ default: false }) private hideContinueButton?: boolean;
+  @Prop({ default: false }) private disableContinue!: boolean;
+  @Prop({ default: "" }) private continueButtonColor?: string;
+  @Prop({ default: "" }) private altContinueAction?: string;
 
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass || "secondary";
   }
 
-  private allowDeveloperNavigation(): boolean {
-    return process.env.VUE_APP_allowDeveloperNavigation === 'true' || false;
-  }
 
-  private get developerNavState(): string {
-    return AcquisitionPackage.getAllowDeveloperNavigation ? "OFF" : "ON";
-  }
-
-  private toggleDeveloperNavigation(): void {
-    AcquisitionPackage.setAllowDeveloperNavigation(!AcquisitionPackage.getAllowDeveloperNavigation);
+  private continueClicked(): void {
+    if (!this.altContinueAction) {
+      this.$emit("next");
+    } else {
+      this.$emit("takeAltContinueAction");
+    }
   }
 
 }

@@ -8,6 +8,18 @@
 ._checkbox-group-label {
   font-weight: 500;
   margin-bottom: 1.6rem !important;
+  font-size: 1.6rem !important;
+}
+
+._checkboxes {
+  &._inline {
+    display: flex;
+    .v-input--checkbox {
+      margin-right: 12px !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+  }
 }
 
 ._checkbox {
@@ -44,10 +56,22 @@
     margin-top: 0;
     padding-top: 0;
   }
+  &._big-bold-label {
+    label {
+      color: $base-darkest !important;
+      font-size: 20px !important;
+      font-weight: 500 !important;
+      &.error--text {
+        color: $error-dark !important;
+      }
+    }
+    .v-input__slot {
+      align-items: center;
+    }
+  }
 
   label {
     color: $base-darkest !important;
-
     &.error--text {
       color: $error-dark !important;
     }
@@ -188,7 +212,7 @@
     border: solid 1px $error;
     outline: solid 1px $error;
     border-radius: 4px !important;
-    padding: 12px 0px 0px 12px; // EJY HERE
+    padding: 12px 0px 0px 12px;
     &:hover {
       outline: solid 1px $primary;
     }
@@ -220,6 +244,7 @@
     padding-top: 2px;
   }
 }
+
 ._checkbox-focus {
   background: $primary-lighter !important;
   transform: scale(1) !important;

@@ -1,6 +1,6 @@
 <template>
   <ATATDialog
-    id="ArchivePackageModal"
+    :id="id"
     :showDialog.sync="_showModal"
     title="Archive this acquisition package?"
     no-click-animation
@@ -44,6 +44,7 @@ export default class ArchiveModal extends Vue {
   @Prop() public packageName!: string;
   @Prop() public hasContributor!: boolean;
   @Prop() public waitingForSignature!: boolean;
+  @Prop({ default: "ArchivePackageModal"}) public id?: string;
 
 
   public okClicked(): void {

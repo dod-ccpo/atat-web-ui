@@ -10,7 +10,7 @@ import rootStore from "../index";
 
 import api from "@/api";
 import ContactData from "@/store/contactData";
-import OrganiationData from "../organizationData";
+import OrganizationData from "../organizationData";
 import { TableApiBase } from "@/api/tableApiBase";
 import {
   AcquisitionPackageDTO,
@@ -31,15 +31,26 @@ import {
   ReferenceColumn,
   FundingRequirementDTO,
   RegionsDTO,
+  PackageDocumentsSignedDTO,
+  AddressDTO
 } from "@/api/models";
 
-import { SelectData, EvalPlanSourceSelection, EvalPlanMethod } from "types/Global";
+import { 
+  SelectData, 
+  EvalPlanSourceSelection, 
+  EvalPlanMethod, 
+  uploadingFile, 
+  signedDocument,
+  YesNo, 
+  User,
+} from "types/Global";
 import { SessionData } from "./models";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
 import Periods from "../periods";
+import Steps from "../steps";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
@@ -48,8 +59,8 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import { homedir } from "os";
-
+import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
+import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
@@ -65,7 +76,9 @@ export const StoreProperties = {
   ClassificationLevel: "ClassificationRequirements",
   CurrentEnvironment: "currentEnvironment",
   ContractConsiderations: "contractConsiderations",
-  Regions:"regions"
+  Regions:"regions",
+  PackageDocumentsSigned:"packageDocumentsSigned",
+  ContractingShopNonDitcoAddress:"contractingShopNonDitcoAddress"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -101,11 +114,13 @@ export const initialCurrentContract = (): CurrentContractDTO => {
 }
 
 const initialProjectOverview = () => {
+  const disclaimer:YesNo = "";
   return {
     sys_id: "",
     title: "",
     scope: "",
     emergency_declaration: "",
+    project_disclaimer: disclaimer,
   };
 };
 
@@ -123,6 +138,18 @@ const initialOrganization = () => {
     organization_name: "",
     agency: "",
     state: "",
+  };
+};
+const initialNonDitcoAddress = ():AddressDTO => {
+  return {
+    name: "",
+    address_type: "US",
+    street_address_1: "",
+    unit: "",
+    city: "",
+    zip_postal_code: "",
+    state_province_state_code: "",
+    country: "",
   };
 };
 
@@ -246,11 +273,13 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       contractType: store.contractType,
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
+      packageDocumentsSigned:store.packageDocumentsSigned,
       evaluationPlan: store.evaluationPlan,
       // periods: store.periods,
       // periodOfPerformance: store.periodOfPerformance,
       sensitiveInformation: store.sensitiveInformation,
-      allowDeveloperNavigation: store.allowDeveloperNavigation
+      allowDeveloperNavigation: store.allowDeveloperNavigation,
+      contractingShopNonDitcoAddress: store.contractingShopNonDitcoAddress
     })
   );
 };
@@ -298,6 +327,7 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
+  packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
@@ -315,10 +345,234 @@ export class AcquisitionPackageStore extends VuexModule {
 
   validateNow = false;
   allowDeveloperNavigation = false;
-
+  generatedDocumentNames: string[] = [
+    "DescriptionOfWork.docx",
+    "IncrementalFundingPlan.docx",
+    "RequirementsChecklist.docx",
+    "IGCE.xlsx",
+    "EvaluationPlan.docx",
+  ]
   contractingShop = "";
-
+  attachmentNames: string[] = []
+  anticipatedUsersAndDataNeedsVisited = false
+  disableContinue = false
+  hideNavigation = false
+  hideSideNavigation = false
+  firstTimeVisit = false
   fundingRequestType: string | null =  null;
+
+  currentUser: User = {};
+  currentUserIsMissionOwner = false;
+  currentUserIsContributor = false;
+
+  isProdEnv: boolean | null = null;
+  @Action({rawError: true})
+  public async setIsProdEnv(): Promise<void> {
+    await this.doSetIsProdEnv();
+  }
+  @Mutation
+  public async doSetIsProdEnv(): Promise<void> {
+    this.isProdEnv = window.location.hostname === "services.disa.mil";
+  }
+  
+  emulateProdNav = false;
+  @Action({rawError: true})
+  public async setEmulateProdNav(bool: boolean): Promise<void> {
+    await this.doToggleEmulateProdEnv(bool);
+  }
+  @Mutation
+  public async doToggleEmulateProdEnv(bool: boolean): Promise<void> {
+    this.emulateProdNav = bool;
+  }
+
+  packageCreator: User = {};
+  contractingShopNonDitcoAddress: AddressDTO | null = null;
+  @Mutation
+  public doSetPackageCreator(user: User): void {
+    this.packageCreator = user;
+  }
+  public get getPackageCreator(): User {
+    return this.packageCreator;
+  }
+
+  packageMissionOwner: User = {};
+  @Mutation
+  public doSetPackageMissionOwner(user: User): void {
+    this.packageMissionOwner = user;
+  }
+  public get getPackageMissionOwner(): User {
+    return this.packageMissionOwner;
+  }
+
+  public get getPackageStatus(): string {
+    return this.acquisitionPackage?.package_status as string;
+  }
+
+  /* ===============================================
+  /* ===============================================
+  /* CONTRIBUTOR DISPLAY/INVITE/REMOVE ETC LOGIC
+  /* ===============================================
+  /* =============================================== */
+
+  public packageContributors: User[] = [];
+
+  public get getPackageContributors(): User[] {
+    return this.packageContributors;
+  }
+
+  @Action({rawError: true})
+  public async setPackageContributors(contributorSysIds: string): Promise<void> {
+    // can be used for single or multiple - send csv string for multiple
+    const sysIds = contributorSysIds.split(",");
+    sysIds.forEach(async sysId => {
+      const contributor = await UserStore.getUserRecord(
+        {s: sysId, field: "sys_id"}
+      );        
+      if (contributor) {
+        this.doAddPackageContributor(contributor);
+      }
+    });
+  }
+
+  @Mutation
+  public doAddPackageContributor(user: User): void {
+    this.packageContributors.push(user);
+  }
+
+  @Mutation
+  public async removeContributorFromStore(sysId: string): Promise<void> {
+    this.packageContributors = this.packageContributors.filter(obj => obj.sys_id !== sysId);
+  }
+
+  @Mutation
+  public async sortPackageContributors(): Promise<void> {
+    this.packageContributors = this.packageContributors.sort((a,b) => {
+      return a.fullNameForSort && b.fullNameForSort 
+        ? a.fullNameForSort > b.fullNameForSort ? 1: -1
+        : -1;
+    });
+  }
+
+  @Action({rawError: true}) 
+  public async removeContributor(sysId: string): Promise<void> {
+    const contributorSysIds = this.packageContributors.map(obj => obj.sys_id);
+    const newContributorSysIds = contributorSysIds.filter(id => id !== sysId).join(",");
+    await this.doRemoveContributor({sysId: sysId, sysIds: newContributorSysIds});
+    await this.updateAcquisitionPackage();
+  }
+
+  @Mutation
+  public async doRemoveContributor(data: { sysId: string, sysIds: string}): Promise<void> {
+    this.packageContributors = this.packageContributors.filter(obj => obj.sys_id !== data.sysId);
+    if (this.acquisitionPackage) {
+      this.acquisitionPackage.contributors = data.sysIds;
+    }
+  }
+
+  @Action({rawError: true})
+  public async transferOwnership(newOwnerSysId: string): Promise<void> {
+    const currentUserSysId = this.currentUser.sys_id;
+    if (currentUserSysId && this.acquisitionPackage && this.acquisitionPackage.contributors) {
+      this.doAddPackageContributor(this.packageMissionOwner);
+      const newOwnerUser = this.packageContributors.find(obj => obj.sys_id === newOwnerSysId);
+      if (newOwnerUser) {
+        this.doSetPackageMissionOwner(newOwnerUser);
+      }
+      await this.removeContributorFromStore(newOwnerSysId);
+      
+      let contributors = this.acquisitionPackage.contributors.split(","); 
+      contributors.push(currentUserSysId);
+      // remove new mission owner from contributors list
+      contributors = contributors.filter(id => id !== newOwnerSysId);
+      const newContributorsList = contributors?.join(",");
+
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        contributors: newContributorsList,
+        mission_owners: newOwnerSysId,
+      } as AcquisitionPackageDTO);
+
+      await this.updateAcquisitionPackage();
+    }
+  }
+
+  public showInviteContributorsModal = false;
+  public get getShowInviteContributorsModal(): boolean {
+    return this.showInviteContributorsModal;
+  }
+  @Action
+  public setShowInviteContributorsModal(show: boolean): void {
+    this.doSetShowInviteContributorsModal(show);
+  }
+  @Mutation
+  public doSetShowInviteContributorsModal(show: boolean): void {
+    this.showInviteContributorsModal = show;
+  }
+
+  @Action({rawError: true})
+  public async inviteContributors(sysIds: string): Promise<void> {
+    const currentContributors = this.acquisitionPackage?.contributors?.split(",");
+    const newContributors = sysIds.split(",");
+    // double-check new contributor sys_id not in current contributors
+    const uniqueNewContributors = newContributors.filter(
+      n => !currentContributors?.includes(n)
+    );
+    const allContributors = currentContributors
+      ? [...currentContributors, uniqueNewContributors]
+      : uniqueNewContributors;
+
+    this.setAcquisitionPackage({
+      ...this.acquisitionPackage,
+      contributors: allContributors.join(",") as string,
+    } as AcquisitionPackageDTO);
+
+    await this.updateAcquisitionPackage();
+    await this.setPackageContributors(uniqueNewContributors.join(","));
+    await this.sortPackageContributors();
+  }
+
+  /* ===============================================
+  /* ===============================================
+  /* END CONTRIBUTOR DISPLAY/INVITE/REMOVE ETC LOGIC
+  /* ===============================================
+  /* =============================================== */
+
+
+  @Action({rawError: true})
+  public async setCurrentUser(): Promise<void> {
+    const currentUser = await UserStore.getCurrentUser();
+    await this.doSetCurrentUser(currentUser);
+
+    const isOwner = this.acquisitionPackage?.mission_owners && this.currentUser.sys_id
+      ? this.acquisitionPackage.mission_owners.includes(this.currentUser.sys_id)
+      : false;
+    await this.doSetCurrentUserIsOwner(isOwner);
+
+    const isContributor = this.acquisitionPackage?.contributors && this.currentUser.sys_id
+      ? this.acquisitionPackage.contributors.includes(this.currentUser.sys_id)
+      : false;
+    await this.doSetCurrentUserIsContributor(isContributor);
+  }
+
+  @Mutation
+  public async doSetCurrentUser(currentUser: User): Promise<void> {
+    this.currentUser = currentUser;
+  }
+
+  @Mutation async doSetCurrentUserIsOwner(val: boolean): Promise<void> {
+    this.currentUserIsMissionOwner = val;
+  }
+  @Mutation async doSetCurrentUserIsContributor(val: boolean): Promise<void> {
+    this.currentUserIsContributor = val;
+  }
+
+  public get getCurrentUserIsMissionOwner(): boolean {
+    return this.currentUserIsMissionOwner;
+  }
+
+  public get getCurrentUserIsContributor(): boolean {
+    return this.currentUserIsContributor;
+  }
 
   public initContact: ContactDTO = initialContact()
 
@@ -372,6 +626,49 @@ export class AcquisitionPackageStore extends VuexModule {
       this.acquisitionPackage.contracting_shop = value;
   }
 
+  @Action({rawError: false})
+  public async setAttachmentNames(value: string[]): Promise<void> {
+    this.doSetAttachmentNames(value);
+  }
+  @Mutation
+  private doSetAttachmentNames(value: string[]): void {
+    this.attachmentNames = value;
+  }
+
+  @Action({rawError: false})
+  public async setAnticipatedUsersAndDataNeedsVisited(value: boolean): Promise<void> {
+    this.doSetAnticipatedUsersAndDataNeedsVisited(value);
+  }
+  @Mutation
+  private doSetAnticipatedUsersAndDataNeedsVisited(value: boolean): void {
+    this.anticipatedUsersAndDataNeedsVisited = value;
+  }
+
+  @Action({rawError: false})
+  public async setHideNavigation(value: boolean): Promise<void> {
+    this.doSetHideNavigation(value);
+  }
+  @Mutation
+  private doSetHideNavigation(value: boolean): void {
+    this.hideNavigation = value;
+  }
+  @Action({rawError: false})
+  public async setHideSideNavigation(value: boolean): Promise<void> {
+    this.doSetHideSideNavigation(value);
+  }
+  @Mutation
+  private doSetHideSideNavigation(value: boolean): void {
+    this.hideSideNavigation = value;
+  }
+
+  @Action({rawError: false})
+  public async setFirstTimeVisit(value: boolean): Promise<void> {
+    this.doSetFirstTimeVisit(value);
+  }
+  @Mutation
+  private doSetFirstTimeVisit(value: boolean): void {
+    this.firstTimeVisit = value;
+  }
   @Action
   public async setValidateNow(value: boolean): Promise<void> {
     this.doSetValidateNow(value);
@@ -382,10 +679,19 @@ export class AcquisitionPackageStore extends VuexModule {
     this.validateNow = value;
   }
 
+  @Action({rawError: false})
+  public async setDisableContinue(value: boolean): Promise<void> {
+    this.doSetDisableContinue(value);
+  }
+
+  @Mutation
+  private doSetDisableContinue(value: boolean): void {
+    this.disableContinue = value;
+  }
+
   public get getAllowDeveloperNavigation(): boolean {
     return this.allowDeveloperNavigation;
   }
-
   @Mutation
   public setAllowDeveloperNavigation(value: boolean): void{
     this.allowDeveloperNavigation = value;
@@ -411,12 +717,16 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setAcquisitionPackage(value: AcquisitionPackageDTO): void {
+  public async setAcquisitionPackage(value: AcquisitionPackageDTO): Promise<void> {
     this.acquisitionPackage = value;
     saveSessionData(this);
   }
   @Action
   public async getAcquisitionPackage(): Promise<AcquisitionPackageDTO | null> {
+    return this.acquisitionPackage;
+  }
+
+  public get getAcquisitionPackageData(): AcquisitionPackageDTO | null {
     return this.acquisitionPackage;
   }
 
@@ -437,7 +747,9 @@ export class AcquisitionPackageStore extends VuexModule {
       }
     };
     attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    return document.location.origin + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || "";
+    return attachment.length 
+      ? this.getDomain + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || ""
+      : "";    
   }
 
   @Action
@@ -456,8 +768,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public getInitialFairOpportunity() {
+  public getInitialFairOpportunity(): FairOpportunityDTO {
     return initialFairOpportunity();
+  }
+  @Mutation
+  public getInitialPackageDocumentsSigned() {
+    return this.packageDocumentsSigned;
   }
 
   @Mutation
@@ -508,6 +824,12 @@ export class AcquisitionPackageStore extends VuexModule {
       ? Object.assign(this.sensitiveInformation, value)
       : value;
   }
+  @Mutation
+  public setContractingShopNonDitcoAddress(value: AddressDTO): void {
+    this.contractingShopNonDitcoAddress = this.contractingShopNonDitcoAddress
+      ? Object.assign(this.contractingShopNonDitcoAddress, value)
+      : value;
+  }
 
   // @Mutation
   // public setPeriods(value: PeriodDTO[]): void {
@@ -555,10 +877,47 @@ export class AcquisitionPackageStore extends VuexModule {
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
   }
+  public get getProjectTitle(): string {
+    return this.projectTitle;
+  }
+
+  @Action({rawError: true})
+  public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+    this.doSetFairOpportunity(value);
+    if (this.initialized) {
+      if (this.fairOpportunity && this.fairOpportunity.sys_id) {
+        await api.fairOpportunityTable.update(
+          this.fairOpportunity.sys_id,
+          this.fairOpportunity
+        );
+        await this.doSetFairOpportunity(value);
+      } else if (this.fairOpportunity && !this.fairOpportunity.sys_id) {
+        const savedObj = await api.fairOpportunityTable.create(this.fairOpportunity);
+        if (savedObj.sys_id) {
+          await this.doSetFairOpportunity(savedObj);
+          await this.updateAcquisitionPackage();
+        }
+      }
+    }
+  }
+  @Mutation
+  public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+    this.fairOpportunity = this.fairOpportunity
+      ? Object.assign(this.fairOpportunity, value)
+      : value;
+    if (value.sys_id && this.acquisitionPackage && !this.acquisitionPackage.fair_opportunity) {
+      this.acquisitionPackage.fair_opportunity = value.sys_id as string;
+    }  
+  }
 
   @Mutation
-  public setFairOpportunity(value: FairOpportunityDTO): void {
-    this.fairOpportunity = value;
+  public setPackageDocumentsSigned(value: PackageDocumentsSignedDTO): void {
+    const acquisition_package = typeof value.acquisition_package === "object"
+      ? (value.acquisition_package as ReferenceColumn).value as string
+      : value.acquisition_package as string;
+    value.acquisition_package = acquisition_package
+
+    this.packageDocumentsSigned = value;
   }
 
   public get exceptionToFairOpportunity(): string | undefined {
@@ -578,16 +937,24 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.evaluationPlan || initialEvaluationPlan();
   }
 
+  public get getFairOpportunity(): FairOpportunityDTO | null {
+    return this.fairOpportunity || null;
+  }
+  
+  // @Action({rawError: true})
+  // public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
+  //   return this.fairOpportunity;
+  // }
   @Action({rawError: true})
-  public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
-    return this.fairOpportunity;
+  public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
+    return this.packageDocumentsSigned;
   }
 
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);
   }
-  @Action
+  @Action ({rawError: true})
   public async getDocGenStatus(packageId: string): Promise<string> {
     if(this.acquisitionPackage){
       this.acquisitionPackage.docgen_job_status = 
@@ -596,14 +963,11 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.acquisitionPackage?.docgen_job_status || "";
   }
 
-  @Action
+  @Action ({rawError: true})
   public async saveDocGenStatus(newDocGenStatus: string): Promise<void> {
-    if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
+    if(this.acquisitionPackage && AcquisitionPackage.packageId){
       this.acquisitionPackage.docgen_job_status = newDocGenStatus;
-      await api.acquisitionPackageTable.update(
-        this.acquisitionPackage.sys_id,
-        this.acquisitionPackage
-      );
+      await this.updateAcquisitionPackage();
     }
   }
 
@@ -617,35 +981,54 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contractType = sessionData.contractType;
     this.currentContract = sessionData.currentContract;
     this.fairOpportunity = sessionData.fairOpportunity;
+    this.packageDocumentsSigned = sessionData.packageDocumentsSigned;
     this.evaluationPlan = sessionData.evaluationPlan;
     this.organization = sessionData.organization;
-    // this.periods = sessionData.periods;
     this.projectOverview = sessionData.projectOverview;
-    // this.periodOfPerformance = sessionData.periodOfPerformance;
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.classificationLevel = sessionData.classificationLevel;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
     this.regions = sessionData.regions
+    this.contractingShopNonDitcoAddress = sessionData.contractingShopNonDitcoAddress;
   }
 
   @Action({rawError: true})
   public async loadPackageFromId(packageId: string): Promise<void> {
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
+    Steps.clearAltBackButtonText();
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
       await ContactData.initialize();
       this.setPackagePercentLoaded(5);
-      await OrganiationData.initialize();
+      await OrganizationData.initialize();
       this.setPackagePercentLoaded(10);
       await DescriptionOfWork.initialize();
       this.setPackagePercentLoaded(15);
       await Attachments.initialize();
       this.setPackagePercentLoaded(20);
       await FinancialDetails.initialize();
-      await this.setRegions()
-      this.setPackagePercentLoaded(25);
+      await this.setRegions();
+      this.setPackagePercentLoaded(22);
+      if (acquisitionPackage.sys_created_by) {
+        const creator 
+          = await UserStore.getUserRecord(
+            {s: acquisitionPackage.sys_created_by, field: "user_name"}
+          );
+        this.doSetPackageCreator(creator);
+        this.setPackagePercentLoaded(25);
+      }
+      if (acquisitionPackage.mission_owners) {
+        // there should only be one mission owner, but the field in servicenow is a list,
+        // to be on the safe side, split the csv string of sysIds, take the first
+        const missionOwnerSysId = (acquisitionPackage.mission_owners.split(","))[0];
+        const missionOwner = await UserStore.getUserRecord(
+          {s: missionOwnerSysId, field: "sys_id"}
+        );      
+        this.doSetPackageMissionOwner(missionOwner);  
+        this.setPackagePercentLoaded(28);
+      }
 
       const currentEnvironmentSysId = acquisitionPackage.current_environment as string;
       const projectOverviewSysId = acquisitionPackage.project_overview as string;
@@ -662,6 +1045,8 @@ export class AcquisitionPackageStore extends VuexModule {
       const corSysId = acquisitionPackage.cor as string;
       const aCorSysId = acquisitionPackage.acor as string;
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
+      const ContractingShopNonDitcoAddressID =
+          acquisitionPackage.contracting_shop_non_ditco_address as string;
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -678,10 +1063,15 @@ export class AcquisitionPackageStore extends VuexModule {
         cor: corSysId,
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
+        contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
       });
 
+      if (acquisitionPackage.contributors) {
+        await this.setPackageContributors(acquisitionPackage.contributors);
+      }
+
       await ClassificationRequirements.getAllClassificationLevels();
-      this.setPackagePercentLoaded(30);
+      this.setPackagePercentLoaded(32);
 
       // load selected call will take care of loading or setting an empty array
       await ClassificationRequirements
@@ -723,11 +1113,17 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(45);
 
       if(organizationSysId) {
-        const organization = await api.organizationTable.retrieve(
+        const organization: OrganizationDTO = await api.organizationTable.retrieve(
           organizationSysId
         );
-        if(organization)
-          this.setOrganization(organization);
+        if(organization) {
+          const orgData = convertColumnReferencesToValues(organization); 
+          this.setOrganization(orgData);
+          if (organization.agency) {
+            await this.setSelectedAgencyById(organization.agency);
+          }
+        }
+
       } else {
         this.setOrganization(
           initialOrganization()
@@ -753,7 +1149,6 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
       this.setPackagePercentLoaded(55);
-
       if(fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(
           fairOppSysId
@@ -790,6 +1185,16 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setSensitiveInformation(
           initialSensitiveInformation()
         );
+      }
+      if(ContractingShopNonDitcoAddressID){
+        const contractingShopNonDitcoAddress = await api.addressTable.retrieve(
+          ContractingShopNonDitcoAddressID
+        );
+        if(contractingShopNonDitcoAddress){
+          this.setContractingShopNonDitcoAddress(contractingShopNonDitcoAddress);
+        }
+      }else{
+        this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
       }
       this.setPackagePercentLoaded(70);
 
@@ -851,6 +1256,8 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: acorInfo, type: "ACOR"});
           this.setHasAlternateCOR(true);
         }
+      } else {
+        this.setHasAlternateCOR(false);
       }
 
       if(primaryContactSysId){
@@ -865,6 +1272,21 @@ export class AcquisitionPackageStore extends VuexModule {
           });
         }
       }
+      const query: AxiosRequestConfig = {
+        params: {
+          sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
+        }
+      };
+      const signedDocuments = await api.packageDocumentsSignedTable
+        .getQuery(query);
+      if(signedDocuments.length <= 0){
+        const packageDocumentsSigned = await api.packageDocumentsSignedTable
+          .create({acquisition_package:acquisitionPackage.sys_id})
+        this.setPackageDocumentsSigned(packageDocumentsSigned)
+      }else{
+        this.setPackageDocumentsSigned(signedDocuments[0])
+      }
+
       this.setPackagePercentLoaded(90);
 
       await FinancialDetails.loadFundingRequirement();
@@ -877,7 +1299,13 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(96);
       await IGCE.loadTrainingEstimatesFromPackage(packageId);
       this.setPackagePercentLoaded(98);
+      await this.setCurrentUser();
       await DescriptionOfWork.loadTravel();
+
+      if (this.packageContributors.length) {
+        this.sortPackageContributors();
+      }
+  
       this.setPackagePercentLoaded(100);
 
       this.setInitialized(true);
@@ -901,12 +1329,12 @@ export class AcquisitionPackageStore extends VuexModule {
     }
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
+    Steps.clearAltBackButtonText();
 
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
-    await OrganiationData.initialize();
+    await OrganizationData.initialize();
     this.setPackagePercentLoaded(10);
-    await DescriptionOfWork.initialize();
     this.setPackagePercentLoaded(15);
     await Attachments.initialize();
     this.setPackagePercentLoaded(20);
@@ -917,8 +1345,15 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-
     const loggedInUser = await UserStore.getCurrentUser();
+
+    if (loggedInUser && loggedInUser.user_name) {
+      const creator = await UserStore.getUserRecord(
+        {s: loggedInUser.user_name, field: "user_name"}
+      );      
+      this.doSetPackageCreator(creator);
+      this.doSetPackageMissionOwner(creator);
+    }
 
     if (storedSessionData && storedSessionData.length > 0) {
       const parsedData = JSON.parse(storedSessionData) as SessionData;
@@ -946,7 +1381,7 @@ export class AcquisitionPackageStore extends VuexModule {
             acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
           }
           this.setPackagePercentLoaded(50);
-
+          this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
           // this.setPeriods([]);
           // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
@@ -960,11 +1395,19 @@ export class AcquisitionPackageStore extends VuexModule {
           const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
           this.setPackagePercentLoaded(80);
           acquisitionPackage.period_of_performance = periodOfPerformanceDTO.sys_id as string;
-          acquisitionPackage.mission_owners = loggedInUser.sys_id as string;
+          acquisitionPackage.mission_owners = loggedInUser.sys_id as string;          
           this.setPackagePercentLoaded(90);
 
           this.setAcquisitionPackage(acquisitionPackage);
+          this.setPackagePercentLoaded(93);
+
           saveAcquisitionPackage(acquisitionPackage);
+          const packageDocumentsSigned = await api.packageDocumentsSignedTable
+            .create({acquisition_package:acquisitionPackage.sys_id})
+          this.setPackageDocumentsSigned(packageDocumentsSigned)
+          this.setPackagePercentLoaded(96);
+          await this.setCurrentUser();
+          this.setPackagePercentLoaded(100);
 
           this.setInitialized(true);
         }
@@ -972,6 +1415,7 @@ export class AcquisitionPackageStore extends VuexModule {
         console.log(`error creating acquisition package ${error}`);
       }
     }
+    await DescriptionOfWork.initialize();
     this.setPackagePercentLoaded(95);
     await Periods.initialize();
     this.setPackagePercentLoaded(100);
@@ -980,14 +1424,41 @@ export class AcquisitionPackageStore extends VuexModule {
 
   // service or agency selected on Organiation page
   selectedAgency: SelectData = { text: "", value: "" };
+  selectedAgencyAcronym = "";
 
+  public get getSelectedAgencyAcronym(): string {
+    return this.selectedAgencyAcronym;
+  }
+
+  @Action({rawError: true})
+  public async setSelectedAgencyById(sysId: string): Promise<void> {
+    const agencyData = OrganizationData.agencyData.find(obj => obj.sys_id === sysId);
+    if (agencyData) {
+      const agencySelectData: SelectData = {
+        text: agencyData.label,
+        value: agencyData.sys_id as string,
+      }    
+      this.doSetSelectedAgency(agencySelectData);
+      this.doSetSelectedAgencyAcronym(agencyData.acronym);
+    }
+  }
+
+  @Mutation
+  public doSetSelectedAgencyAcronym(str: string): void {
+    this.selectedAgencyAcronym = str;
+  }
+  
   public getSelectedAgency(): SelectData {
     return this.selectedAgency;
   }
 
   @Action({ rawError: true })
-  public setSelectedAgency(value: SelectData): void {
-    this.doSetSelectedAgency(value);
+  public async setSelectedAgency(agencySelectData: SelectData): Promise<void> {
+    this.doSetSelectedAgency(agencySelectData);
+    const agencyData = OrganizationData.agencyData.find(
+      obj => obj.sys_id === agencySelectData.value
+    );
+    if (agencyData) this.doSetSelectedAgencyAcronym(agencyData.acronym);   
   }
 
   @Mutation
@@ -1022,6 +1493,9 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
     [StoreProperties.ContractConsiderations]: api.contractConsiderationsTable,
     [StoreProperties.Regions]:api.regionsTable,
+    [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
+    [StoreProperties.ContractingShopNonDitcoAddress]:api.addressTable,
+
   }
 
   //mapping store propertties name to acquisition package properties
@@ -1039,6 +1513,9 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.CurrentEnvironment]: "current_environment",
     [StoreProperties.ContractConsiderations]: "contract_considerations",
     [StoreProperties.Regions]: "regions",
+    [StoreProperties.PackageDocumentsSigned]: "package_documents_signed",
+    [StoreProperties.ContractingShopNonDitcoAddress]: "contracting_shop_non_ditco_address",
+
   }
 
   @Action({ rawError: true })
@@ -1151,7 +1628,7 @@ export class AcquisitionPackageStore extends VuexModule {
           primary_contact: savedContact.sys_id as string,
         } as AcquisitionPackageDTO);
       }
-      await this.saveAcquisitionPackage();
+      await this.updateAcquisitionPackage();
     } catch (error) {
       throw new Error(`error occurred saving contact info ${error}`);
     }
@@ -1255,15 +1732,15 @@ export class AcquisitionPackageStore extends VuexModule {
     } catch (error) {
       throw new Error(`error occurred saving store data ${storeProperty}`);
     } finally {
-      await this.saveAcquisitionPackage();
+      await this.updateAcquisitionPackage();
     }
   }
 
   @Action({rawError: true})
-  public async saveAcquisitionPackage(): Promise<void>{
+  public async updateAcquisitionPackage(): Promise<void>{
     if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
       await api.acquisitionPackageTable.update(
-        this.acquisitionPackage.sys_id,
+        this.packageId,
         this.acquisitionPackage
       );
     }
@@ -1310,8 +1787,8 @@ export class AcquisitionPackageStore extends VuexModule {
           : await api.sensitiveInformationTable.create(data);
       this.setSensitiveInformation(savedSensitiveInformation);
       this.setAcquisitionPackage({
-        ...this.sensitiveInformation,
-        sensitive_information: {value: sys_id}
+        ...this.acquisitionPackage,
+        sensitive_information: sys_id
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving sensitive info data ${error}`);
@@ -1391,6 +1868,159 @@ export class AcquisitionPackageStore extends VuexModule {
     this.doSetPackageId(value);
   }
 
+  /**
+   * @param isDocumentTypeSigned 
+   * @returns link to download unsigned or signed documents 
+   */
+  @Action({rawError: true})
+  public async setDownloadPackageLink(isDocumentTypeSigned: boolean): Promise<string> {
+    const getdocumentsSysIDQuery: AxiosRequestConfig = {
+      params: {
+        sysparm_fields: "sys_id",
+        sysparm_query: "acquisition_package=" + this.packageId
+      }
+    };
+    const sysID = (isDocumentTypeSigned
+      ? await api.packageDocumentsSignedTable.getQuery(getdocumentsSysIDQuery)
+      : await api.packageDocumentsUnsignedTable.getQuery(getdocumentsSysIDQuery))[0]?.sys_id || "";
+    return this.getDomain + '/download_all_attachments.do?sysparm_sys_id=' + sysID;
+  }
+
+  @Action({rawError: true})
+  public async removeACORInformation(): Promise<void>{
+    try{
+      await api.contactsTable.remove(this.acorInfo?.sys_id as string)
+      this.setContact({ data: initialContact(), type: "ACOR" });
+    } catch (error){
+      throw new Error(`error removing Alternate Contracting Officers data ${error}`);
+    }
+    
+  }
+
+  public get getDomain(): string {
+    // return document.location.origin.indexOf("localhost") > -1
+    //   ? 'https://services-dev.disa.mil'
+    //   : document.location.origin
+
+    return document.location.origin
+  }
+
+  @Action({rawError: true})
+  public async getDocuments(isSigned:boolean): Promise<uploadingFile[]> {
+    const query: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "acquisition_package.sys_id=" + this.packageId
+      }
+    };
+    const sysId = (isSigned 
+      ? await api.packageDocumentsSignedTable.getQuery(query)
+      : await api.packageDocumentsUnsignedTable.getQuery(query))[0].sys_id;
+
+    if(sysId !== ""){
+      try {
+        const attachments = await Attachments.getAttachmentsByTableSysIds({
+          serviceKey: isSigned ? PACKAGE_DOCUMENTS_SIGNED : PACKAGE_DOCUMENTS_UNSIGNED, 
+          tableSysId: sysId || ""
+        });
+        const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
+          const file = new File([], attachment.file_name, {
+            lastModified: Date.parse(attachment.sys_created_on || "")
+          });
+          const upload: uploadingFile = {
+            attachmentId: attachment.sys_id || "",
+            fileName: attachment.file_name,
+            file: file,
+            created: file.lastModified,
+            progressStatus: 100,
+            link: attachment.download_link || "",
+            recordId: attachment.table_sys_id,
+            isErrored: false,
+            isUploaded: true
+          }
+          return upload;
+        });
+        return [...uploadedFiles];
+      } catch (error) {
+        throw new Error("an error occurred loading Package " + 
+          (isSigned ? 'Signed' : 'Unsigned') + " Documents data");
+      }
+    }
+    return [];
+  }
+
+
+  @Action({rawError: true})
+  public async getSignedDocumentsList(): Promise<signedDocument[]> {
+    const fairOpportunity = 
+     AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
+    
+    const incrementallyFunded =    
+      FinancialDetails.fundingRequirement?.incrementally_funded || "";
+    
+    return [
+      {
+        itemName:"Requirements Checklist",
+        requiresSignature:true,
+        alertText:"Requires signatures",
+        show:true
+      },
+      {
+        itemName:"Independent Government Cost Estimate",
+        requiresSignature:true,
+        alertText:"Requires signatures",
+        show:true
+      },
+      {
+        itemName:"Incremental Funding Plan",
+        requiresSignature:true,
+        alertText:"Requires signatures",
+        show:incrementallyFunded === "YES"
+      },
+      {
+        itemName:"Justification and Approval",
+        requiresSignature:true,
+        alertText:"Complete and sign",
+        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+      },
+      {
+        itemName:"Sole Source Market Research Report",
+        requiresSignature:true,
+        alertText:"Complete and sign",
+        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+      },
+      {
+        itemName:"Description of Work",
+        requiresSignature:false,
+        show:true
+      },
+      {
+        itemName:"Evaluation Plan",
+        requiresSignature:false,
+        show:fairOpportunity === "NO_NONE"
+      }
+    ] as signedDocument[]
+  }
+
+  @Action({rawError: true})
+  public async getCompletedPackageList(): Promise<string[]> {
+    const signedDocs = (await this.getSignedDocumentsList()).filter(
+      signedDoc => signedDoc.show
+    ).map(signedDoc => signedDoc.itemName.replace("(Template)", ""));
+
+    const unsignedDocs = (await this.getDocuments(false)).filter(
+      /**
+       * removes duplicated names of generated docs from the docs retrieved
+       * from package documents unsigned table
+       * (eg. `DocumentOfWork.pdf` is already accounted for in this list in
+       *       signedDocs list as `Document Of Work`)
+      **/
+      unsignedDoc => 
+        this.generatedDocumentNames.every(docName => docName !== unsignedDoc.fileName)
+    )
+    const supportingDocuments = ['Supporting Documents (' + unsignedDocs.length + ')'];
+    return signedDocs.concat(supportingDocuments)
+  }
+
   @Mutation
   public doSetPackageId(value: string): void {
     this.packageId = value;
@@ -1399,7 +2029,7 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async reset(): Promise<void>{
     await ContactData.reset();
-    await OrganiationData.reset();
+    await OrganizationData.reset();
     await DescriptionOfWork.reset();
     await Attachments.reset();
     await FinancialDetails.reset();
@@ -1409,7 +2039,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await TaskOrder.reset();
     await ClassificationRequirements.reset();
     await EvaluationPlan.reset();
-
+    Steps.clearAltBackButtonText();
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
 
     this.doReset();
@@ -1418,6 +2048,7 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   private doReset(): void {
     this.initialized = false;
+    this.packagePercentLoaded = 0;
     this.projectTitle = "";
     this.acquisitionPackage = null;
     this.projectOverview = null;
@@ -1429,6 +2060,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.financialPocInfo = null;
     this.hasAlternativeContactRep = null;
     this.fairOpportunity = null;
+    this.packageDocumentsSigned = null;
     this.evaluationPlan = null;
     this.currentContract = null;
     this.sensitiveInformation = null;
@@ -1444,6 +2076,13 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fundingRequestType =  null;
     this.fundingRequirement = null;
     this.contractingShop = "";
+    this.packageContributors = [];
+    this.packageCreator = {};
+    this.packageMissionOwner = {};
+    this.selectedAgency = { text: "", value: "" };
+    this.selectedAgencyAcronym = "";
+    this.showInviteContributorsModal = false;
+    this.contractingShopNonDitcoAddress = null;
   }
 }
 

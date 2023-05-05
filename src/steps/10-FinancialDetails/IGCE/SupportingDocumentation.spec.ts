@@ -59,7 +59,7 @@ describe("Testing SupportingDocumentation Component", () => {
       training: [],
       travel: {
         option: "",
-        estimated_values: []
+        estimated_values:""
       }
     }
   });

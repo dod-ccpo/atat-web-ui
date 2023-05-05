@@ -4,6 +4,7 @@
       <label
         :id="id + '_text_field_label'"
         class="form-field-label mr-1"
+        :class="{ 'd-sr-only': labelSrOnly }"
         :for="id + '_text_field'"
       > 
         <span v-html="label"></span>
@@ -138,8 +139,9 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: true }) private allowDecimals?: boolean;
   @Prop({ default: false }) private appendDropdown?: boolean;
   @Prop() private dropdownOptions?: SelectData[];
-  @PropSync("selectedDropdownValue") private _selectedDropdownValue?: string;
+  @Prop( {default: false }) private labelSrOnly?: boolean;
 
+  @PropSync("selectedDropdownValue") private _selectedDropdownValue?: string;
   @PropSync("value", { default: "" }) private _value!: string;
 
   public get validateFormNow(): boolean {

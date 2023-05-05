@@ -15,6 +15,8 @@ import {
   ContactDTO,
   BaseTableDTO,
   ClinDTO,
+  EDAResponse,
+  ReferenceColumn,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -80,6 +82,7 @@ export interface StepperStep {
   additionalButtons?: AdditionalButton[];
   backButtonText?: string;
   continueButtonText?:string;
+  altContinueAction?: string;
   lastStep?: boolean;
 }
 
@@ -96,6 +99,8 @@ export interface SelectData {
   header?: string;
   divider?: boolean;
   isSelectable?: boolean;
+  sys_id?: string;
+  name?:string;
 }
 
 /**
@@ -130,6 +135,8 @@ interface StepperRouteBase {
   additionalButtons?: AdditionalButton[];
   backButtonText?: string;
   continueButtonText?: string;
+  altContinueAction?: string;
+  continueButtonColor?: string;
   stepCompleteOnEnter?: string;
   stepCompleteOnLeave?: string;
 }
@@ -208,6 +215,7 @@ export interface stringObj {
   [key: string]: string;
 }
 
+
 export interface PoP {
   duration: number | null;
   unitOfTime: string;
@@ -265,6 +273,15 @@ export interface uploadingFile{
   isUploaded: boolean;
 }
 
+export interface signedDocument{
+  itemName:string,
+  requiresSignature:boolean,
+  alertText?:string,
+  show:boolean
+}
+
+
+
 export interface invalidFile{
   file: File;
   doesFileExist: boolean;
@@ -272,7 +289,20 @@ export interface invalidFile{
   statusCode?: number;
 }
 
+export interface DOWCardData {
+  title: string;
+  label: string;
+  icon: string;
+  learnMore: string,
+  route: string;
+  defineRequirements: boolean,
+  section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
+  isComplete: boolean,
+  buttonLabel?: string
+}
+
 export interface DOWClassificationInstance {
+  acquisitionPackage: ReferenceColumn | string;
   sysId?: string;
   impactLevel: string; // for sorting
   classificationLevelSysId: string;
@@ -282,18 +312,21 @@ export interface DOWClassificationInstance {
   labelLong?: string;
   labelShort?: string;
   classifiedInformationTypes?: string;
+  tsContractorClearanceType?: string;
   typeOfDelivery?: "" | "SHIPPED" | "PICK_UP";
   typeOfMobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   typeOfMobilityOther?: string;
+  ts_contractor_clearance_type?: string;
+  updated_description?: "YES" | "NO"
 }
 
 export interface DOWServiceOffering {
   name: string;
   acquisitionPackageSysId: string;
   otherOfferingName?: string;
-  "sys_id": string; //service offering sys id
+  sys_id: string;
   serviceId: string; // id of the service
-  description: string;
+  description?: string;
   classificationInstances?: DOWClassificationInstance[];
   sequence: string;
 }
@@ -390,6 +423,12 @@ export interface OtherServiceOfferingData {
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
   classifiedInformationTypes?: string;
+  isComplete?: boolean;
+}
+
+export interface totalClassLevelsInDOWObject {
+  classLevelSysId: string,
+  DOWObjectTotal: number
 }
 
 export interface OtherServiceSummaryTableData {
@@ -406,6 +445,7 @@ export interface OtherServiceSummaryTableData {
   duration?: string;
   personnelOnsiteAccess?: string;
   trainingType?: string;
+  sysId?:string;
 }
 
 export interface TravelSummaryTableData {
@@ -442,12 +482,20 @@ export interface EnvInstanceSummaryTableData {
 export interface User {
   firstName?: string;
   lastName?: string;
+  fullName?: string;
+  fullNameForSort?: string;
   email?: string;
   role?: string;
   phoneNumber?: string;
   phoneExt?: string;
   designation?: string;
+  salutation?: string;
   agency?: string;
+  department?: string;
+  officePhone?: string; // labeled as "Commercial phone" field is "phone" in SNOW sys_user table
+  mobilePhone?: string;
+  dsnPhone?: string; // field is "home_phone" in SNOW sys_user table
+  userName?: string;
   sys_id?: string;
 }
 
@@ -489,6 +537,20 @@ export interface PortfolioSummaryQueryParams {
   searchString?: string;
 }
 
+export interface PortfolioAdmin {
+  DoDId?: string;
+  hasUnclassifiedAccess?: YesNo;
+  unclassifiedEmail?: string;
+  hasScrtAccess?: YesNo;
+  scrtEmail?: string;
+}
+
+export interface PortfolioProvisioning extends EDAResponse {
+  portfolioTitle?: string;
+  serviceOrAgency?: string;
+  admins?: PortfolioAdmin[];  
+}
+
 export interface EmailEntry {
   key: string;
   email: string;
@@ -515,6 +577,18 @@ export interface TaskOrderCardData {
   status?: string,
   sys_id?: string,
   clins?:ClinDTO[],
+}
+
+export interface AwardedTaskOrderDetails {
+  taskOrderNumber: string,
+  contractor: string,
+  csp: string,
+  cspLong: string,
+  contractIssuingOffice: string,
+  periodOfPerformance: string,
+  totalObligatedAmount: number,
+  totalAmount: number,
+  classificationLevel: string
 }
 
 export interface ClinTableRowData {
@@ -570,6 +644,9 @@ export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL"
 export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
 export type SingleMultiple = "SINGLE" | "MULTIPLE" | "";
+
+export type UnitOfTime = undefined | "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
+export type ProductOrType = undefined | "" | "PRODUCT" | "FEATURE";
 
 export interface CurrEnvInstanceUsage {
   currentUsageDescription?: EnvironmentInstanceUsage;
@@ -651,7 +728,8 @@ export interface CurrentEnvironmentInstance {
 }
 export interface SecurityRequirement {
   type: SecurityClassification;
-  classification_information_type: string[]
+  classification_information_type: string[],
+  ts_contractor_clearance_type?: string,
 }
 
 export interface CrossDomainSolution {
@@ -683,4 +761,14 @@ export interface TrainingEstimate {
   estimate: EstimateOptionValueObjectArray;
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
+  cloudSupportEnvironmentInstance: ReferenceColumn | string;
+  dow_task_number?: string;
+}
+
+export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+
+export enum ClassificationLevels {
+  UNCL = "Unclassified",
+  SCRT = "Secret",
+  TSCRT = "Top Secret"
 }

@@ -60,62 +60,41 @@
       </v-row>
     </v-container>
 
-    <v-dialog
-      v-model="isLoading"
-      :max-width="'640px'"
-      persistent
-      id="LoadingDialog"
-    >
-      <v-card style="padding: 80px 100px">
-        <div class="text-center">
-          <div class="h1 mb-4" id="LoadingModalTitle">
-            Loading your package details<span class="ellipsis"></span>
-          </div>
-          <p>Please wait while we finish getting your package ready.</p>
-          <div class="px-4">
-            <v-progress-linear
-              :value="packagePercentLoaded"
-              color="#544496"
-              class="mb-6 _progress-bar"
-              height="16"
-              rounded  
-            />
-          </div>
-          <v-btn 
-            id="CancelLoadingButton" 
-            @click="cancelLoad" 
-            class="_quaternary mx-auto"
-          >
-            Go back
-          </v-btn>
-        </div>
-      </v-card>
-    </v-dialog>
-
+    <ATATLoadingPackageModal 
+      :isLoading="isLoading"
+    />
 
   </v-form>
 </template>
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
+import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
+
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { SlideoutPanelContent, RadioButton } from "../../../types/Global";
 import ContractingShopLearnMore from "./ContractingShopLearnMore.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ProjectOverviewDTO } from "@/api/models";
-import AppSections from "@/store/appSections";
+// import AppSections from "@/store/appSections";
+import { routeNames } from "@/router/stepper";
+import acquisitionPackage from "@/store/acquisitionPackage";
+
 
 @Component({
   components: {
     ATATRadioGroup,
     ATATAlert,
+    ATATLoadingPackageModal,
     ContractingShopLearnMore
   }
 })
 export default class ContractingShop extends Mixins(SaveOnLeave) {
   public isPageLoading = false;
+  public packageNotInitialized = false;
   public contractingShopOptions: RadioButton[] = [
     {
       id: "DITCO",
@@ -131,21 +110,11 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
 
   public contractingShop = "";
 
-  public cancelLoad(): void {
-    AcquisitionPackage.setInitialized(false);
-    const dest = AcquisitionPackage.getCancelLoadDest;
-    AppSections.changeActiveSection(dest);
-  }
-
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
-  }
-
-  public get packagePercentLoaded(): number {
-    return AcquisitionPackage.getPackagePercentLoaded;
   }
 
   public get isLoading(): boolean {
@@ -157,23 +126,41 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
   }
 
   private async loadOnEnter(): Promise<void> {
-    this.isPageLoading = true;
-
+    await acquisitionPackage.setHideSideNavigation(false);
     const packageId = this.$route.query['packageId'] || "";
 
     if(packageId){
+      this.isPageLoading = true;
       await AcquisitionPackage.reset();
       await AcquisitionPackage.setPackageId(packageId as string);
       await AcquisitionPackage.loadPackageFromId(packageId as string);
     }
     // make sure package is initialized
-    const storeData = AcquisitionPackage.projectOverview
-      || await AcquisitionPackage.loadData<ProjectOverviewDTO>({
+    this.packageNotInitialized = !AcquisitionPackage.initialized;
+    if (this.packageNotInitialized) {
+      this.isPageLoading = true;
+      await AcquisitionPackage.loadData<ProjectOverviewDTO>({
         storeProperty: StoreProperties.ProjectOverview,
       });
+    }
 
     this.contractingShop = AcquisitionPackage.contractingShop || "";
     this.isPageLoading = false;
+  }
+  
+  public async skipPage(): Promise<void> {
+    if(AcquisitionPackage.acquisitionPackage?.package_status === "WAITING_FOR_TASK_ORDER"){
+      this.$router.replace({
+        name: routeNames.UnderReview,
+        replace: true,
+        params: {
+          direction: "next"
+        },
+        query: {
+          packageId: AcquisitionPackage.packageId
+        }
+      }).catch(() => console.log("avoiding redundant navigation"));
+    }
   }
 
   public async mounted(): Promise<void> {
@@ -184,11 +171,12 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
+    await this.skipPage();
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setContractingShop(this.contractingShop);
-    await AcquisitionPackage.saveAcquisitionPackage();
+    await AcquisitionPackage.updateAcquisitionPackage();
     return true;
   }
 }

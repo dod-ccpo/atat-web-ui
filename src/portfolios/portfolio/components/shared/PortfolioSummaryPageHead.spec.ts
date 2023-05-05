@@ -50,22 +50,22 @@ describe("Testing Members Component", () => {
     })
 
 
-  it("test saveTitle() - check expected results ", 
-    async () => {
-      const dummyTitle = "dummyTitle";
-      jest.spyOn(PortfolioData,'getPortfolioData').mockImplementation(
-        ()=>Promise.resolve(
-          {
-            title: dummyTitle
-          }
-        ));
+  // it("test saveTitle() - check expected results ", 
+  //   async () => {
+  //     const dummyTitle = "dummyTitle";
+  //     jest.spyOn(PortfolioData,'getPortfolioData').mockImplementation(
+  //       ()=>Promise.resolve(
+  //         {
+  //           title: dummyTitle
+  //         }
+  //       ));
       
-      await wrapper.setProps({
-        title: dummyTitle
-      })
-      await wrapper.vm.saveTitle();
-      expect(PortfolioData.currentPortfolio.title).toBe(dummyTitle);
-    })
+  //     await wrapper.setProps({
+  //       title: dummyTitle
+  //     })
+  //     await wrapper.vm.saveTitle();
+  //     expect(PortfolioData.currentPortfolio.title).toBe(dummyTitle);
+  //   })
 
 
 

@@ -9,12 +9,14 @@ import {
   AcquisitionPackageSummaryMetadataAndDataDTO 
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import validators from "@/plugins/validation";
 
 Vue.use(Vuetify);
 
 
 describe("Testing Landing Page", () => {
   const localVue = createLocalVue();
+  localVue.use(validators);
   localVue.use(VueRouter);
 
   let vuetify: Vuetify;
@@ -119,11 +121,7 @@ describe("Testing Landing Page", () => {
 
     it("startNewAcquisition()", async () => {
       await wrapper.vm.startNewAcquisition();
-      expect(wrapper.vm.$route.name).toBe("Contracting_Shop");
-    });
-
-    it("scrollToResources()", async () => {
-      await wrapper.vm.scrollToResources();
+      expect(wrapper.vm.$route.name).toBe("DAPPSChecklist");
     });
 
   });

@@ -6,6 +6,7 @@ import {
 import common from '../selectors/common.sel';
 import 'cypress-iframe';
 import performanceReq from '../selectors/performanceReqs.sel';
+import contractDetails from "../selectors/contractDetails.sel";
 
 //This command is to verify the checkbox label and header for the ServiceOffering Page
 Cypress.Commands.add("verifyServiceOfferingHeader", (categoryObj) => {
@@ -155,4 +156,21 @@ Cypress.Commands.add("selectGeneralXaaSOption", (categoryObj,serviceOfferingGrou
   });
   cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);  
   cy.verifyGeneralXaaSHeader(categoryObj);
+});
+
+Cypress.Commands.add("selectSecretLevel", (secretSelector, alertMessage) => {
+  cy.findElement(secretSelector).should("not.be.checked")
+    .check({ force: true })
+    .then(() => {
+      cy.messageDisplays(contractDetails.alertMessage, alertMessage);
+          
+    });
+});
+
+Cypress.Commands.add("unselectSecretLevel", (secretSelector) => {
+  cy.findElement(secretSelector).should("be.checked")
+    .uncheck({ force: true })
+    .then(() => {      
+      cy.findElement(contractDetails.alertMessage).should("not.exist");      
+    });
 });

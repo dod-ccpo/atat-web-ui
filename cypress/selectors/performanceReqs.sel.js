@@ -104,7 +104,7 @@ module.exports = {
   instanceTwoEditBtn: "#EditButton_2",
   instanceTwoDeleteBtn: "#DeleteButton_2",
   dialogModal:".v-dialog",
-  dialogTitle: "#modalDialogTitle",
+  dialogTitle: "#DeleteInstanceModalTitle",
   deleteInstBtn: "#dialog_ok",
   
   //Let’s gather your requirements for general IaaS, PaaS and SaaS
@@ -159,8 +159,8 @@ module.exports = {
   
   //Update classification model
   updateModal: ".v-dialog",
-  modaltitle: "#modalDialogTitle",
-  modalMessage: ".v-dialog #modalDialogMessage > :nth-child(1)",
+  modaltitle: "#ClassificationLevelCheckboxesModalTitle",
+  modalMessage: "#ClassificationLevelCheckboxesModalMessage > :nth-child(1)",
   modalCheckboxes: "#ClassificationLevelCheckboxesModal input[type=checkbox]:checked",
   level2: "#Checkbox_IL2Modal",
   level4: "#Checkbox_IL4Modal",

@@ -3,13 +3,11 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Your Performance Requirements
+          {{ heading }}
         </h1>
         <div class="copy-max-width">
           <p class="mb-10">
-            We need some more details for this section. You can add info now, or come back to make
-            edits at any time. When you are ready to wrap up this section, we will move on to
-            other contract considerations.
+            {{ introText }}
           </p>
         </div>
         <div class="container-max-width">
@@ -21,7 +19,42 @@
           />
         </div>
         <div id="SelectedGroups">
+          <div v-if="isXaaS">
+            <div class=" d-flex justify-space-between">
+              <div>
+                <h3 class="mb-1" id=" AnticipatedUsersAndDataNeeds_Heading">
+                  Anticipated users and data
+                </h3>
+              </div>
+              <div class="d-flex align-start">
+                <div class="d-flex align-center">
+                  <div 
+                    v-if="isAnticipatedUsersAndDataInvalid" 
+                    class="d-flex align-start nowrap ml-5"
+                  >
+                    <v-icon
+                      class="icon-20 text-warning-dark2 pr-2"
+                    >warning</v-icon>
+                    <p class="_missing-info mb-0 pr-4 _semibold">Missing info</p>
+                  </div>
+                  <v-btn
+                    width="111"
+                    :class="[
+                      isAnticipatedUsersAndDataInvalid ? 'primary': 'secondary',
+                      '_' + getIdText('AnticipatedUsersAndData') + '-button'
+                    ]"
+                    @click="routeToAnticipatedUsersAndDataNeeds()"
+                    @keydown.enter="routeToAnticipatedUsersAndDataNeeds()"
+                    @keydown.space="routeToAnticipatedUsersAndDataNeeds()"
+                  >
+                    View/Edit
+                  </v-btn>
 
+                </div>
+              </div>
+            </div>
+            <hr/>
+          </div>
           <div 
             class="container-max-width"
             :id="getIdText(item.serviceOfferingGroupId )+ '_Wrapper'"
@@ -31,7 +64,7 @@
             <div class=" d-flex justify-space-between">
               <div>
                 <h3 class="mb-1" :id="getIdText(item.serviceOfferingGroupId) + '_Heading'">
-                  {{getFormattedNames(item.serviceOfferingGroupId)}}
+                  {{getFormattedName(item.serviceOfferingGroupId)}}
                 </h3>
                 <p 
                   class="mb-0 _selectedOfferings" 
@@ -142,7 +175,7 @@
 import { routeNames } from "../../../router/stepper"
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-
+import _ from "lodash";
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
@@ -153,6 +186,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 import { getIdText, toTitleCase } from "@/helpers";
+import ClassificationRequirements from "@/store/classificationRequirements";
 // import router from "@/router";
 
 @Component({
@@ -174,6 +208,10 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public selectedServiceGroups: DOWServiceOfferingGroup[] = [];
   public showMore = false;
   public isDataComplete = true;
+  public heading = "";
+  public introText = "";
+  public showAnticipatedUserAndDataNeeds = false;
+  public isXaaS = false;
 
   public alternateGroupNames = [
     {
@@ -181,13 +219,13 @@ export default class Summary extends Mixins(SaveOnLeave) {
       label: "Machine Learning",
     },
     {
-      value: "EDGE_COMPUTING",
-      label: "Edge Computing and Tactical Edge",
-    },
-    {
       value: "IOT",
       label: "Internet of Things",
     },
+    {
+      value: "GENERAL_XAAS",
+      label: "General IaaS, PaaS, and SaaS"
+    }
   ];
 
   public tooltipText = [
@@ -252,6 +290,12 @@ export default class Summary extends Mixins(SaveOnLeave) {
     },
   ];
 
+  get isAnticipatedUsersAndDataInvalid():boolean{
+    return ClassificationRequirements.selectedClassificationLevels.some(
+      cl => cl.isValid === undefined || cl.isValid === false
+    )
+  }
+
   public getTooltipText(value: string): string {
     const tooltipObj =  this.tooltipText.find(e => e.value === value);
     return tooltipObj ? tooltipObj.text : "";
@@ -260,7 +304,17 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public getIdText(val: string): string {
     return getIdText(toTitleCase(val));
   }
-
+  public async routeToAnticipatedUsersAndDataNeeds(): Promise<void> {
+    DescriptionOfWork.setReturnToDOWSummary(true);
+    DescriptionOfWork.setFromAnticipatedUsersAndData(true);
+    DescriptionOfWork.setReviewGroupFromSummary(true);
+    this.$router.push({
+      name: routeNames.AnticipatedUserAndDataNeeds,
+      params: {
+        direction: "next"
+      },
+    }).catch((error) => console.log("Routing error:" + error));
+  }
   public async routeToSelection(groupID: string, addToStore:boolean ): Promise<void> {
     DescriptionOfWork.setCurrentOfferingGroupId(groupID);
     if (addToStore){
@@ -271,6 +325,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     }
 
     DescriptionOfWork.setReturnToDOWSummary(true);
+    DescriptionOfWork.setFromAnticipatedUsersAndData(false);
 
     this.$router.push({
       name: "pathResolver",
@@ -278,18 +333,26 @@ export default class Summary extends Mixins(SaveOnLeave) {
         resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
-    })
-      .catch((error) => console.log("Routing error:" + error));
+    }).catch((error) => console.log("Routing error:" + error));
   };
 
-  public getFormattedNames(value: string): string {
-    let avlOfferings = DescriptionOfWork.serviceOfferingGroups;
-    const filtered = avlOfferings.filter(obj => obj.value == value);
-    return filtered.length > 0 ? filtered[0].label : "";
+  public getFormattedName(value: string): string {
+    const altNameIndex = this.alternateGroupNames.findIndex((altObj) => {
+      return altObj.value === value;
+    });
+    if (altNameIndex > -1) {
+      return this.alternateGroupNames[altNameIndex].label;
+    }
+    const filtered = this.allServiceGroups.find(obj => obj.value == value);
+    return filtered ? filtered.label : "";
   };
 
   public formattedOfferings(value: DOWServiceOffering[]): string {
-    const serviceArr = value.map(obj => ` <span class="_selectedOffering">${obj.name}</span>`);
+    const serviceArr = value
+      .map(obj => obj.name === "Other"?
+        ` <span class="_selectedOffering">${obj.otherOfferingName}</span>`:
+        ` <span class="_selectedOffering">${obj.name}</span>`);
+    
     return serviceArr.join();
   };
 
@@ -301,6 +364,13 @@ export default class Summary extends Mixins(SaveOnLeave) {
         (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
         (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {
         outputArr.push(id);
+      } else if (obj.otherOfferingData && obj.otherOfferingData.length >0){
+        const isIncomplete = obj.otherOfferingData.some(
+          ood => !ood.isComplete
+        )
+        if (isIncomplete){
+          outputArr.push(id);
+        }
       } else {
         obj.serviceOfferings.forEach((offering)=>{
           if(offering.classificationInstances && offering.classificationInstances.length === 0) {
@@ -331,14 +401,17 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    if (DescriptionOfWork.summaryBackToContractDetails) {
-      Steps.setAltBackButtonText("Back to Background");
-    } else {
-      Steps.clearAltBackButtonText();
-    }
+    this.isXaaS = DescriptionOfWork.currentDOWSection === "XaaS";
+    this.heading = this.isXaaS ? "Your XaaS Summary" : "Your Cloud Support Package";
+    const introTextSubstr = this.isXaaS ? "XaaS requirements" : "support services";
+    this.introText = `You are all done with your ${introTextSubstr}, but you can 
+        come back at any time to edit details. When you are ready, we’ll review 
+        your performance requirements summary.`;
+
     DescriptionOfWork.setCurrentGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
+    DescriptionOfWork.setFromAnticipatedUsersAndData(false);
     DescriptionOfWork.setLastGroupRemoved(false);
 
     const periods = await Periods.loadPeriods();
@@ -352,8 +425,14 @@ export default class Summary extends Mixins(SaveOnLeave) {
       this.isClassificationDataMissing = true;
     };
 
-    const selectedOfferingGroups: string[] = DescriptionOfWork.selectedServiceOfferingGroups;
-    this.allServiceGroups = DescriptionOfWork.serviceOfferingGroups;
+    let selectedOfferingGroups: string[] = _.clone(DescriptionOfWork.selectedServiceOfferingGroups);
+    const sectionServices = this.isXaaS 
+      ? DescriptionOfWork.xaasServices : DescriptionOfWork.cloudSupportServices;
+    selectedOfferingGroups = selectedOfferingGroups.filter(id => sectionServices.includes(id));
+
+    this.allServiceGroups = _.cloneDeep(DescriptionOfWork.serviceOfferingGroups).filter(
+      obj => sectionServices.includes(obj.value));
+
     this.availableServiceGroups = this.allServiceGroups.filter((serviceGroup) => {
       return selectedOfferingGroups.indexOf(serviceGroup.value) === -1;
     });
@@ -365,9 +444,9 @@ export default class Summary extends Mixins(SaveOnLeave) {
         group.label = this.alternateGroupNames[altNameIndex].label;
       }
     });
-
     this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
-      e => e.serviceOfferingGroupId.indexOf("NONE") === -1
+      e => e.serviceOfferingGroupId.indexOf("NONE") === -1 
+      && sectionServices.includes(e.serviceOfferingGroupId) 
     );
 
     this.setSelectedGroupsMissingData(this.selectedServiceGroups);

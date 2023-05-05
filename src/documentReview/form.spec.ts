@@ -41,7 +41,8 @@ describe("Testing index Component", () => {
     projectOverview:{
       title: "title",
       scope: "scope",
-      emergency_declaration: "Yes"
+      emergency_declaration: "Yes",
+      project_disclaimer: "YES"
     },
     organization: {},
     fairOpportunity: {

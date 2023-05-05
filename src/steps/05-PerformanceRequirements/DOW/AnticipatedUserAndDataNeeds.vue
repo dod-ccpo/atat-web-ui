@@ -1,12 +1,25 @@
 <template>
+  <v-form ref="form" lazy-validation>
   <v-container fluid class="container-max-width _anticipated-users-accordion">
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header">
-          First, tell us about your anticipated users and data needs
+          <span v-if="!comingFromReview">
+            First, tell
+          </span>
+          <span v-else>
+            Tell
+          </span>
+           us about your anticipated users and data needs
         </h1>
         <p class="page-intro">
-          Before we walk through each of your selected XaaS categories, we need
+          <span v-if="!comingFromReview">
+            Before we walk through each of your selected XaaS categories, we
+          </span>
+          <span v-else>
+            We
+          </span>
+            need
           to know some basic information about your users and data within each
           classification level.
         </p>
@@ -64,21 +77,23 @@
       </v-col>
     </v-row>
   </v-container>
+</v-form>
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
 
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { ClassificationLevelDTO, PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
+import { PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import Periods from "@/store/periods";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import classificationRequirements from "@/store/classificationRequirements";
 import _ from "lodash";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import Vue from "vue";
 
 @Component({
   components: {
@@ -87,11 +102,22 @@ import _ from "lodash";
   },
 })
 export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
+  
+  $refs!: {
+    form: Vue & { validate: () => boolean};
+  }
+
   private periods: PeriodDTO[] | null = [];
   public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
   public savedData: SelectedClassificationLevelDTO[] = []
+  public get comingFromReview():boolean {
+    return DescriptionOfWork.returnToDOWSummary === true
+  }
 
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.form as Vue & { validate: () => boolean };
+  }
 
   private async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -123,9 +149,11 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
+    await AcquisitionPackage.setAnticipatedUsersAndDataNeedsVisited(true);
     try {
       if (this.hasChanged()) {
         for(const classification of this.currentData){
+          classification.isValid = this.$refs.form.validate();
           await this.updateSnowSelected(classification);
         }
       }

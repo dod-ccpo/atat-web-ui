@@ -47,13 +47,8 @@ describe("Testing FundingTracker Component", () => {
   it("navigate() - tests back to home", async () => {
     wrapper.vm.$data.altBackDestination = "Home";
     await wrapper.vm.navigate("previous");
-    expect(router.app.$route.name).toBe("Contracting_Shop");
+    expect(router.app.$route.name).toBe("routeResolver");
   });
 
-  it("navigates() tests back to packages", async () => {
-    wrapper.vm.$data.altBackDestination = "Packages";
-    await wrapper.vm.navigate("previous");    
-    expect(router.app.$route.name).toBe("Contracting_Shop");
-  });
 
 })

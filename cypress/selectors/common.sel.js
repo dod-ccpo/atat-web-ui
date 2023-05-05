@@ -4,6 +4,7 @@ module.exports = {
   packageNameHeader: "header.v-toolbar div.h3",
   wrap:".v-main__wrap",
   header: "h1.page-header",
+  sideNavBar:"#GlobalSideNavBar",
   sideBarList: ".global-side-nav-bar .v-list",
   stepperProgressBarTextPrimary: "._stepper-progress-bar .text-primary",
   stepperProgressBarText: "._stepper-progress-bar .text-base",
@@ -17,7 +18,6 @@ module.exports = {
   //common id for modal button
   commonOkBtn: "#dialog_ok",
   dialogModal: ".v-dialog",
-  modalTitle:"#modalDialogTitle",
   
   //toast 
   toastText:".v-snack__content",

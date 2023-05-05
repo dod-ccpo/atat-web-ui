@@ -23,7 +23,9 @@ import DocumentReview from "@/documentReview/Index.vue";
 import Portfolios from "@/portfolios/Index.vue";
 import Packages from "@/packages/Index.vue";
 import Home from "@/home/Index.vue";
+import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
 import CurrentUserStore from "./store/user";
+import AcquisitionPackage from "./store/acquisitionPackage";
 
 @Component({
   components: {
@@ -40,6 +42,9 @@ export default class App extends Vue {
     switch (newActiveSection) {
     case this.sectionTitles.Home:
       AppSections.setAppContentComponent(Home);
+      break;
+    case this.sectionTitles.ProvisionWorkflow:
+      AppSections.setAppContentComponent(ProvisionWorkflow);
       break;
     case this.sectionTitles.AcquisitionPackage:
       AppSections.setAppContentComponent(AppPackageBuilder);
@@ -82,6 +87,7 @@ export default class App extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await AcquisitionPackage.setIsProdEnv();
     if (process.env.NODE_ENV === "development") {
       // NOTE: add `userId` to .env file with your snow sys_id to view 
       // your packages etc. when running locally

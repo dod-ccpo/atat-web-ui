@@ -7,15 +7,16 @@
             Your {{ serviceGroupVerbiageInfo.headingSummary }}
           </h1>
           <p>
-            If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. 
-            You can also edit or delete any info from the 
-            {{ serviceGroupVerbiageInfo.typeForText }}s that 
-            you have already entered. When you’re done, click "Continue" and we will 
-            move on to your 
-            <span v-if="nextOfferingGroupStr && !returnToDOWSummary">
-              {{ nextOfferingGroupStr }} requirements.
-            </span> 
-            <span v-else>performance requirements summary.</span>
+            If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. You can
+            also edit or delete any info from the {{ serviceGroupVerbiageInfo.typeForText }}s
+            ssss that you have already entered. When you’re done, click “Continue” and we will
+            <span v-if="showSecurityNote">
+              find out about your security requirements for these services.
+            </span>
+            <span v-else-if="nextOfferingGroupStr && !returnToDOWSummary">
+              move on to your {{ nextOfferingGroupStr }} requirements.
+            </span>
+            <span v-else>wrap up this category.</span>
           </p>
 
           <div 
@@ -160,6 +161,11 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public isDatabase = false;
   public isStorage = false;
   public isTraining = false;
+  public isGeneralCloudSupport = false;
+  public isHelpDesk = false;
+  public isAdvisoryAssistance = false;
+  public isDocumentation = false;
+  
   public hasOnSiteColumn = false;
   public hasStatementColumn = false;
 
@@ -180,6 +186,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public currentGroupId = "";
 
   public serviceGroupVerbiageInfo: Record<string, string> = {};
+  public showSecurityNote = false;
 
   get confirmOfferingDelete(): boolean {
     return DescriptionOfWork.confirmOtherOfferingDeleteVal;
@@ -211,6 +218,21 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
   public async addInstance(): Promise<void> {
     const lastInstanceNumber = await DescriptionOfWork.getLastOtherOfferingInstanceNumber();
     await DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(lastInstanceNumber + 1);
+
+    /**
+     * if user manually deleted all instances on the summary page and 
+     * clicked to `add instance`
+     * 
+     * 1 - Craft necessary DOWObject
+     * 2 - set necessary setReturnToDOWSummary to ensure listing appears as expected
+     *     on summary 
+     */
+    if (lastInstanceNumber === 1){
+      DescriptionOfWork.addOfferingGroup(this.currentGroupId.toUpperCase());
+      DescriptionOfWork.setAddGroupFromSummary(true);
+      DescriptionOfWork.setReturnToDOWSummary(true);
+      DescriptionOfWork.setFromAnticipatedUsersAndData(false);
+    }
     this.navigate();
   }
 
@@ -248,10 +270,11 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
   public async buildTableData(): Promise<void> {
     this.tableData = [];
+    this.showSecurityNote = false;
     const allPeriods = await Periods.getAllPeriods();
     const classificationLevels = ClassificationRequirements.selectedClassificationLevels;
-
     this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
+    
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
@@ -307,11 +330,12 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
       } else if (this.isStorage) {
         this.tableHeaders = [    
           { text: "", value: "instanceNumber", width: "50" },
+          { text: "Storage Type", value: "typeOrTitle", width: "50%" },
           { text: "Classification", value: "classification" },
-          { text: "Storage Type", value: "storageType", width: "50%" },
           { text: "Storage Size", value: "storageAmount", width: "50%" },
           { text: "", value: "actions", width: "75" },
         ];
+        typeOrTitle = instanceClone.storageType || "";
       // -----------------------------------------------------------------
       // TRAINING
       // -----------------------------------------------------------------
@@ -358,7 +382,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           ? `<div class="text-error font-weight-500">Unknown</div>`
           : instanceClone.descriptionOfNeed;
       }
-
       isValid = await this.validateInstance(instanceClone);
       if (!isValid) {
         typeOrTitle += this.rowErrorMessage
@@ -393,6 +416,15 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
         if (classificationObj) {
           classificationLevel = buildClassificationLabel(classificationObj, "short");
+          if ((this.isAdvisoryAssistance ||
+              this.isHelpDesk ||
+              this.isTraining ||
+              this.isDocumentation ||
+              this.isGeneralCloudSupport) &&
+              (classificationLevel === "Top Secret" ||
+              classificationLevel === "Secret/IL6")) {
+            this.showSecurityNote = true;
+          }
         }
       } else {
         this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
@@ -418,12 +450,21 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         performance,
         personnelOnsiteAccess,
         trainingType,
+        sysId: instanceClone.sysId
       };
 
       this.tableData.push(instanceData);
     })
+
     // ensure sorted by instance number
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
+  }
+
+  public async logInstanceCompletion(): Promise<void>{
+    this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
+    this.offeringInstances.forEach(async i => {
+      i.isComplete = await this.validateInstance(i)
+    });
   }
 
   public async validateInstance(instance: OtherServiceOfferingData): Promise<boolean> {
@@ -434,10 +475,9 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     if (this.isCompute) {
       requiredFields = [
         "environmentType",
-        "classificationLevel",
         "entireDuration",
         "memoryAmount",
-        "anticipatedNeedUsage",
+        "descriptionOfNeed",
         "numberOfInstances",
         "numberOfVCPUs",
         "operatingSystem",
@@ -445,26 +485,102 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "performanceTier",
         "storageAmount",
         "storageType",
-      ];
-
-    } else if (this.isGeneralXaaS) {
-      requiredFields = [
-        "classificationLevel",
-        "anticipatedNeedUsage",
         "entireDuration",
+        "periodsNeeded"
       ];
-      if (instanceData.entireDuration === "NO" && !instanceData.periodsNeeded.length) {
-        isValid = false;
-      }
     }
 
-    requiredFields.forEach((field) => {
-      if (instanceData[field] === "") {
-        isValid = false;
-      }
-    });
+    else if (this.isDatabase) {
+      requiredFields = [
+        "databaseType",
+        "databaseLicensing",
+        "licensing",
+        "memoryAmount",
+        "memoryUnit",
+        "networkPerformance",
+        "numberOfVCPUs",
+        "numberOfInstances",
+        "operatingSystem",
+        "databaseLicensing",
+        "operatingSystemLicense",
+        "storageType",
+        "storageAmount",
+        "storageUnit",
+        "descriptionOfNeed",
+        "entireDuration",
+        "periodsNeeded"
+      ]
+    }
+    
+    else if(this.isStorage){
+      requiredFields = [
+        "numberOfInstances",
+        "storageAmount",
+        "storageType",
+        "storageUnit",
+        "entireDuration",
+        "descriptionOfNeed",
+        "periodsNeeded"
+      ]
+    }
+    else if(this.isTraining){
 
+      const commonFields = [
+        "trainingRequirementTitle",
+        "trainingType",
+        "trainingPersonnel",
+        "entireDuration",
+        "anticipatedNeedUsage",
+        "periodsNeeded"
+      ]
+
+      let additionalFields:string[] = [];
+      switch(instance.trainingType?.toUpperCase()){
+      case "ONSITE_INSTRUCTOR_CONUS":
+        additionalFields = ["trainingFacilityType","trainingLocation"];
+        break;
+      case "ONSITE_INSTRUCTOR_OCONUS":
+        additionalFields = ["trainingLocation"];
+        break;
+      case "VIRTUAL_INSTRUCTOR":
+        additionalFields = ["trainingTimeZone"];
+        break;
+      default:
+        break;
+      }
+      requiredFields = commonFields.concat(additionalFields);
+    }
+
+    //soo, on-site access, duration
+    else if(this.isAdvisoryAssistance || this.isDocumentation || 
+    this.isHelpDesk || this.isGeneralCloudSupport){
+      requiredFields = [
+        "statementOfObjectives",
+        "personnelOnsiteAccess",
+        "entireDuration",
+        "periodsNeeded"
+      ]
+    }
+    else if (this.isGeneralXaaS) {
+      requiredFields = [
+        "descriptionOfNeed",
+        "entireDuration",
+        "periodsNeeded"
+      ];
+    }
+    requiredFields.push("classificationLevel");
+    isValid = requiredFields.every(f => {
+      return f === "periodsNeeded"
+        ? this.isPeriodsNeededValid(instanceData)
+        : instanceData[f] !== ""
+    })
     return isValid;
+  }
+
+  public isPeriodsNeededValid(instanceData: Record<string, any>): boolean {
+    return instanceData["entireDuration"] === "NO"
+      ? instanceData.periodsNeeded.length > 0
+      : true
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -474,10 +590,14 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.currentGroupId = await (await DescriptionOfWork.getCurrentOfferingGroupId()).toLowerCase();
     const offering = this.currentGroupId.toLowerCase();
     this.isCompute = offering === "compute";
-    this.isGeneralXaaS = offering === "general_xaas";
+    this.isGeneralXaaS = offering === "general_xaas"; 
     this.isDatabase = offering === "database";
     this.isStorage = offering === "storage";
     this.isTraining = offering === "training";
+    this.isAdvisoryAssistance = offering === "advisory_assistance";
+    this.isHelpDesk = offering === "help_desk_services";
+    this.isDocumentation = offering === "documentation_support";
+    this.isGeneralCloudSupport = offering === "general_cloud_support";
     this.hasOnSiteColumn 
       = ["documentation_support", "help_desk_services", "advisory_assistance"].includes(offering);
     this.hasStatementColumn = this.hasOnSiteColumn || offering.indexOf("general") > -1;
@@ -508,6 +628,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await DescriptionOfWork.setNeedsSecurityRequirements();
+    await this.logInstanceCompletion();
     return true;
   }
 

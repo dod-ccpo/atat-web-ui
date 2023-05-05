@@ -12,6 +12,7 @@
             this individual for approval and signature.
           </p>
           <ATATContactForm
+            type="financialPOCForm"
             :email.sync="email"
             :firstName.sync="firstName"
             :lastName.sync="lastName"

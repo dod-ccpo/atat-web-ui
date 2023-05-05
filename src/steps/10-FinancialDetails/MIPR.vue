@@ -1,4 +1,4 @@
-<template>
+ <template>
   <v-container class="container-max-width mb-7" fluid>
     <v-row>
       <v-col class="col-12">
@@ -88,24 +88,26 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
     try {
       this.saved = await FinancialDetails.loadFundingRequestMIPRForm();
       this.MIPRNumber = this.saved.mipr_number;
-      const attachment = await Attachments.getAttachmentById({
-        serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: this.saved.mipr_attachment});
-      if (attachment) {
-        const file = new File([], attachment.file_name, {
-          lastModified: Date.parse(attachment.sys_created_on || "")
-        });
-        const upload: uploadingFile = {
-          attachmentId: attachment.sys_id || "",
-          fileName: attachment.file_name,
-          file: file,
-          created: file.lastModified,
-          progressStatus: 100,
-          link: attachment.download_link || "",
-          recordId: attachment.table_sys_id,
-          isErrored: false,
-          isUploaded: true
+      if(this.saved.mipr_attachment){
+        const attachment = await Attachments.getAttachmentById({
+          serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: this.saved.mipr_attachment});
+        if (attachment) {
+          const file = new File([], attachment.file_name, {
+            lastModified: Date.parse(attachment.sys_created_on || "")
+          });
+          const upload: uploadingFile = {
+            attachmentId: attachment.sys_id || "",
+            fileName: attachment.file_name,
+            file: file,
+            created: file.lastModified,
+            progressStatus: 100,
+            link: attachment.download_link || "",
+            recordId: attachment.table_sys_id,
+            isErrored: false,
+            isUploaded: true
+          }
+          this.uploadedFiles = [upload];
         }
-        this.uploadedFiles = [upload];
       }
     } catch (error) {
       throw new Error("an error occurred loading MIPR data");

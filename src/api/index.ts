@@ -30,6 +30,7 @@ import { FundingRequestFSFormApi } from "./fundingRequestFSForm";
 import { FundingRequestMIPRFormApi } from "./fundingRequestMIPRForm";
 import {ClinAPi, ClinDisplayAPi} from "./clin";
 import { EDAApi } from "./eda";
+// import { EDAApi } from "./provisioning";
 import { CurrentEnvironmentApi } from "@/api/currentEnvironment";
 import { AggregateApi } from "./aggregate";
 import { EnvironmentInstanceAPI } from "@/api/EnvironmentInstance";
@@ -38,6 +39,7 @@ import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
+import { CompanyApi } from "./companies";
 import {EvaluationPlanApi} from "@/api/evaluationPlan";
 import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
 import {EvalPlanAssessmentAreaApi} from "@/api/evalPlanAssessmentArea";
@@ -57,6 +59,10 @@ import { TrainingEstimateAPI } from "@/api/trainingEstimate";
 import {IgceEstimateApi} from "@/api/igceEstimate";
 import { travelRequirementApi } from "./travelRequirement";
 import { RegionsAPI } from "./regions";
+import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
+import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
+import { AddressApi } from "@/api/address";
+import { CostEstimateApi } from "@/api/costEstimate";
 
 
 export const api = {
@@ -94,6 +100,7 @@ export const api = {
   countriesTable: new CountriesApi(),
   taskOrderTable: new TaskOrderApi(),
   costsTable: new CostsApi(),
+  costEstimateTable: new CostEstimateApi(),
   clinTable: new ClinAPi(),
   clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),
@@ -105,6 +112,7 @@ export const api = {
   portfolioTable: new PortfolioApi(),
   cloudServiceProviderTable: new CloudServiceProviderApi(),
   userTable: new UserApi(),
+  companyTable: new CompanyApi(),
   evaluationPlanTable: new EvaluationPlanApi(),
   evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
   evalPlanDifferentiatorTable: new EvalPlanDifferentiatorApi(),
@@ -120,7 +128,10 @@ export const api = {
   crossDomainSolutionTable: new CrossDomainSolutionAPI(),
   travelRequirementTable: new travelRequirementApi(),
   trainingEstimateTable: new TrainingEstimateAPI(),
-  regionsTable: new RegionsAPI()
+  regionsTable: new RegionsAPI(),
+  packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
+  packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
+  addressTable: new AddressApi(),
 }
 
 export default {

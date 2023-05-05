@@ -45,13 +45,13 @@
                         <h2>Training #{{trainingIndex + 1}}</h2>
                       </div>
                     </div>
-                    <div class="h3 text-base-light">
+                    <div class="h3 text-base">
                       {{trainingIndex + 1}} of {{trainingCount}}
                     </div>
                   </div>
 
                   <div class="h3">{{trainingTitle}}</div>
-                  <p class="text-base-light mb-0">
+                  <p class="text-base-darkest mb-0">
                     {{trainingLocation}}
                   </p>
 
@@ -205,6 +205,7 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
 
   public trainingIndex = 0;
   public trainingCount = 0;
+  public cloudSupportEnvironmentInstance = "";
 
   public trainingTitle = "[User's training title]";
   public trainingLocation = `On-site instructor led CONUS 
@@ -217,7 +218,6 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
   @Watch("instanceData.trainingOption")
   protected trainingOptions(val: SingleMultiple): void {
     this.instanceData.estimate.option = val;
-    
   }
 
   @Watch("instanceData.costEstimateType")
@@ -309,13 +309,14 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     const dowTrainingItems = DescriptionOfWork.DOWObject.find(
       item => item.serviceOfferingGroupId === "TRAINING"
     );
-
     if(dowTrainingItems && dowTrainingItems.otherOfferingData){
+
       this.trainingCount = dowTrainingItems.otherOfferingData.length;
       const trainingItem = dowTrainingItems.otherOfferingData[this.trainingIndex];
+      this.cloudSupportEnvironmentInstance = trainingItem.sysId || "";
 
       if(trainingItem){
-        this.trainingTitle = trainingItem.requirementTitle as string;
+        this.trainingTitle = trainingItem.trainingRequirementTitle as string;
 
         const trainingType = TRAINING_TYPE[trainingItem.trainingType as keyof typeof TRAINING_TYPE];
 
@@ -333,6 +334,8 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     if(this.trainingIndex > -1 && 
       this.trainingIndex < IGCE.trainingItems.length
     ){
+      IGCE.trainingItems[this.trainingIndex].cloudSupportEnvironmentInstance = 
+        this.cloudSupportEnvironmentInstance;
       this.instanceData = _.cloneDeep(IGCE.trainingItems[this.trainingIndex]);
       this.savedData = _.cloneDeep(IGCE.trainingItems[this.trainingIndex]);
 
@@ -437,7 +440,9 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         this.sysIdValueArray.push(obj);
       }
       this.currentData.estimate.estimated_values = 
-          convertEstimateData(this.sysIdValueArray);
+        convertEstimateData(this.sysIdValueArray);
+      this.currentData.cloudSupportEnvironmentInstance = 
+        this.cloudSupportEnvironmentInstance;
       
       if(this.hasChanged()){  
         await IGCE.setTrainingEstimate(this.currentData);
