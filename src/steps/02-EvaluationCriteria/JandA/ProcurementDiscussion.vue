@@ -60,7 +60,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
@@ -118,10 +117,7 @@ export default class ProcurementDiscussion extends Mixins(SaveOnLeave) {
     if (storeData) {
       const farSelected = storeData.exception_to_fair_opportunity
       if(farSelected === "YES_FAR_16_505_B_2_I_A"){
-        this.procurementParagraphText = "Identify any schedule requirements, unique" +
-          " features and mandatory requirements, or the existence of" +
-          " proprietary data, copyrighted information or a patent which" +
-          " restrict competition. Since you cited the “unusual and compelling" +
+        this.procurementParagraphText += "Since you cited the “unusual and compelling" +
           " urgency” authority, include a justification for the minimum" +
           " quantity or period of performance. These milestones should be" +
           " as realistic, firm, and proactive as possible."
