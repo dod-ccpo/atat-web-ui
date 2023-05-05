@@ -79,7 +79,10 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class ProcurementDiscussion extends Mixins(SaveOnLeave) {
-  public procurementParagraphText = ""
+  public procurementParagraphText = "Identify any schedule requirements, unique" +
+    " features and mandatory requirements, or the existence of" +
+    " proprietary data, copyrighted information or a patent which" +
+    " restrict competition. "
   public procurementText = "";
   public suggestedImpactText = ""
   public procurementImpact = "";
@@ -122,15 +125,9 @@ export default class ProcurementDiscussion extends Mixins(SaveOnLeave) {
           " urgency” authority, include a justification for the minimum" +
           " quantity or period of performance. These milestones should be" +
           " as realistic, firm, and proactive as possible."
-      }else if(farSelected === "YES_FAR_16_505_B_2_I_B"){
-        this.procurementParagraphText = "Identify any schedule requirements, unique" +
-          " features and mandatory requirements, or the existence of" +
-          " proprietary data, copyrighted information or a patent which" +
-          " restrict competition. "
       }
-      this.cspName = storeData.proposed_csp ||""
       this.suggestedImpactText = "Since there is already an existing" +
-        " environment, the "+ this.cspName + " is immediately able to shift to" +
+        " environment, the CSP is immediately able to shift to" +
         " supporting the resultant award associated with this contract action, it" +
         " would minimize any associated transition costs for the Government. In addition," +
         " another contractor would not be positioned to leverage investments made" +
@@ -143,7 +140,6 @@ export default class ProcurementDiscussion extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger
     if(this.currentData.procurement_has_existing_env === "NO"){
       this.currentData.procurement_previous_impact = ""
     }
