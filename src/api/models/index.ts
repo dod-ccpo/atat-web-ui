@@ -217,75 +217,107 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {
-  exception_to_fair_opportunity?: string;
-  proposed_csp?: CSP;
-  justification?: string;
-  min_govt_requirements?: string;
+  // numbers correspond to frame/page titles in Figma starting here:
+  // eslint-disable-next-line max-len
+  // https://www.figma.com/file/DhwLh5B4y6pFbeLgMY63Rp/DAPPS-Wizard?node-id=22179-387058&t=8XIyje7f85yoH4Fz-4
 
+  // 2.1.1
+  exception_to_fair_opportunity?: string;
+
+  // 2.2
+  proposed_csp?: CSP;
+
+  // 2.3a
+  justification?: string;
+
+  // 2.4
+  min_govt_requirements?: string;
+  
+  // 2.5.1
   // cause of sole source form fields
   cause_migration_addl_time_cost?: YesNo;
   cause_migration_estimated_cost?: string;
   cause_migration_estimated_delay_amount?: string;
   cause_migration_estimated_delay_unit?: UnitOfTime;
-
   cause_govt_engineers_training_certified?: YesNo;
   cause_govt_engineers_platform_name?: string;
   cause_govt_engineers_insufficient_time_reason?: string;
-  
   cause_product_feature_peculiar_to_csp?: YesNo;
   cause_product_feature_type?: "" | "PRODUCT" | "FEATURE";
   cause_product_feature_name?: string;
   cause_product_feature_why_essential?: string;
   cause_product_feature_why_others_inadequate?: string;
+  cause_write_own_explanation?: YesNo;
   // END cause of sole source form fields 
 
-  write_own_sole_source_cause?: YesNo; // TODO: ADD TO SNOW
-  cause_of_sole_source_situation?: string; // summary of cause fields
+  // 2.5.2
+  cause_of_sole_source_generated?: string; // innitially generated from form responses
+  cause_of_sole_source_custom?: string; // user-entered by clicking "I want to write my own..."
+  cause_of_sole_source_for_docgen?: "" | "GENERATED" | "CUSTOM";
 
+  // 2.6a
   why_csp_is_only_capable_source?: string;
-  procurement_discussion?: string;
-  requirement_impact?: string;
-  contract_action?: "" | "UCA" | "BCA" | "OES" | "NONE";
 
+  // 2.7
+  procurement_discussion?: string;
+  procurement_has_existing_env?: YesNo;
+  procurement_previous_impact?: string;
+
+  // 2.8
+  requirement_impact?: string;
+
+  // 2.9.1
+  contract_action?: "" | "UCA" | "BCA" | "OES" | "NONE";
+  
+  // 2.9.2
   // market research efforts form
   research_is_csp_only_source_capable?: YesNo;
   research_start_date?: string;
   research_end_date?: string;
-  research_supporting_data?: string;
-  
+  research_supporting_data?: string; 
   research_review_catalogs_reviewed?: YesNo;
   research_review_catalogs_same_research_date?: YesNo;
   research_review_catalogs_start_date?: string;
   research_review_catalogs_end_date?: string;
   research_review_catalogs_review_results?: string;
-  
   research_other_techniques_used?: string; // array of sys_ids
   research_other_technique?: string;
   research_personal_knowledge_person_or_position?: string;
   research_techniques_summary?: string;
+  research_write_own_explanation?: YesNo;
   // END market research efforts form
-  
-  market_research_details?: string; // summary of research fields
-  
+
+  // 2.9.3
+  research_details_generated?: string; // innitially generated from form responses
+  research_details_custom?: string; // user-entered by clicking "I want to write my own..."
+  research_details_for_docgen?: "" | "GENERATED" | "CUSTOM";
+
+  // 2.9.4
   market_research_conducted_by?: string; // JSON object - array of name, title, organization
-  
+
+  // 2.10
   other_facts_to_support_logical_follow_on?: YesNo;
   other_facts_to_support_logical_follow_on_details?: string;
 
+  // 2.11.1
   barriers_follow_on_requirement?: YesNo;
   barriers_follow_on_expected_date?: string;
   barriers_agency_pursuing_training_or_certs?: YesNo;
   barriers_planning_future_development?: YesNo; 
   barriers_j_a_prepared?: YesNo
   barriers_j_a_prepared_results?: string;
+  barriers_write_own_explanation?: YesNo;
 
-  barriers_plans_to_remove_barriers?: string; // summary of barriers fields
+  // 2.11.2
+  barriers_plans_to_remove_generated?: string; // innitially generated from form responses
+  barriers_plans_to_remove_custom?: string; // user-entered by clicking "I want to write my own..."
+  barriers_plans_to_remove_for_docgen?: "" | "GENERATED" | "CUSTOM";
 
+  // 2.12
   technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
   technical_poc_sys_id?: string;
   requirements_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
   requirements_poc_sys_id?: string;
-
 }
 
 
