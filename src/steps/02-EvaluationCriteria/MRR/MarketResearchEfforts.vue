@@ -6,12 +6,24 @@
           <h1 class="mb-3">
             Let’s find out more about your market research efforts
           </h1>
-          <p>
+          <p class="copy-max-width">
             {{ introText }} 
             If you would rather skip these questions, click the “I want to write my 
             own explanation” button below. 
+            <!-- TODO - make text below link for opening slideout - AT-9006 -->
             Learn more about market research for the JWCC Contract 
           </p>
+          <div class="max-width-740">
+            <ATATRadioGroup 
+              id="OnlyCapableSource"
+              name="OnlyCapableSource"
+              :legend="onlySourceCapableLegend"
+              :value.sync="currentData.research_is_csp_only_source_capable"
+              :items="onlySourceCapableOptions"
+              :rules="[$validators.required('Please select an option.')]"
+            />
+
+          </div>
         </v-col>
       </v-row>
     </v-container>    
@@ -19,21 +31,39 @@
 </template>
 
 <script lang="ts">
-import { FairOpportunityDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import _ from "lodash";
-import { YesNo } from "types/Global";
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-@Component({})
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATSelect from "@/components/ATATSelect.vue";
+import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
+
+import { FairOpportunityDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import _ from "lodash";
+import { RadioButton, YesNo } from "types/Global";
+import { getYesNoRadioOptions } from "@/helpers";
+
+@Component({
+  components: {
+    ATATCheckboxGroup,
+    ATATErrorValidation,
+    ATATRadioGroup,
+    ATATSelect,
+    ATATTextArea,
+    ATATTextField,
+  }
+})
 
 export default class MarketResearchEfforts extends Vue {
   public cspName = "";
   public writeOwnCause: YesNo = "";
   public isLoading = false;
 
-  public cspIsOnlySourceCapable: YesNo = "";
+  // public cspIsOnlySourceCapable: YesNo = "";
 
   public get introText(): string {
     return this.currentData.contract_action !== "NONE"
@@ -44,6 +74,15 @@ export default class MarketResearchEfforts extends Vue {
         identify all qualified sources. Based on your responses, we’ll suggest 
         language to help you complete this portion of your J&A and MRR.`;
   }
+
+  public get onlySourceCapableLegend(): string {
+    return `Did you review the specific capabilities in the JWCC Contracts to 
+    determine that ${this.cspName} is the only source capable of fulfilling the 
+    Government’s minimum needs in the manner and time frame required?`
+  }
+
+  public onlySourceCapableOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
+
 
   private get savedData(): FairOpportunityDTO | null {
     return AcquisitionPackage.getFairOpportunity;
@@ -86,6 +125,15 @@ export default class MarketResearchEfforts extends Vue {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.currentData = storeData;
+
+      const cspNames = {
+        AWS: "Amazon",
+        GCP: "Google",
+        AZURE: "Microsoft",
+        ORACLE: "Oracle",
+      }      
+      this.cspName = storeData.proposed_csp ? cspNames[storeData.proposed_csp] : "your CSP";
+
 
     }
 
