@@ -2695,7 +2695,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       }
     }
     this.checkServiceOfferingTypesSelected();
-    await DescriptionOfWork.saveDOWArchitecturalDesign(this.DOWArchitectureNeeds)
     await DescriptionOfWork.loadArchitecturalDesignByPackageId()
   }
 
