@@ -25,8 +25,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocuments from "./components/GeneratingDocuments.vue";
 import ReviewDocuments from "./components/ReviewDocuments.vue";
-import Vue from "Vue" ;
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import Vue from "Vue" ;
 @Component({
   components: {
     GeneratingDocuments,

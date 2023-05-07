@@ -372,8 +372,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
   @Mutation
   public async doSetIsProdEnv(): Promise<void> {
-    this.isProdEnv = window.location.hostname === "services.disa.mil"
-      || window.location.hostname === "services-test.disa.mil";
+    this.isProdEnv = window.location.hostname === "services.disa.mil";
   }
   
   emulateProdNav = false;

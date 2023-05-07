@@ -161,8 +161,6 @@ export default class Home extends Vue {
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await acquisitionPackage.setFirstTimeVisit(true)
-    await AcquisitionPackage.reset();
-    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router.push({
       name: routeNames.DAPPSChecklist,
       params: {
