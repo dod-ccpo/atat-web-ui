@@ -154,7 +154,7 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
     });
     const selectedIndex = this.packageData.findIndex(obj => obj.isSelected === true);
     if (selectedIndex > -1) {
-      AcquisitionPackage.setDisableContinue(false);
+      await AcquisitionPackage.setDisableContinue(false);
     }
 
   }

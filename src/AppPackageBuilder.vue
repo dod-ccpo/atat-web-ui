@@ -260,8 +260,8 @@ export default class AppPackageBuilder extends Vue {
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
-    this.hideContinueButton = 
-      step.stepName === routeNames.GeneratingPackageDocuments && !this.isDitcoUser 
+    this.hideContinueButton =
+        step.stepName === routeNames.GeneratingPackageDocuments && !this.isDitcoUser
       || step.stepName === routeNames.ReadyToSubmit && AcquisitionPackage.currentUserIsContributor;
   }
 

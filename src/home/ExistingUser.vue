@@ -288,7 +288,6 @@ export default class ExistingUser extends Vue {
   public async loadPackageData(): Promise<void> {
     const packageData = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO);
-    
     this.packageData = packageData.acquisitionPackageSummaryList;
     this.packageCount = packageData.total_count;
     const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
