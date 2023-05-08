@@ -196,6 +196,8 @@ import {
   showDITCOPageResolver,
   ContractingInfoResolver,
   CrossDomainResolver,
+  removeBarriersRouteResolver,
+  conductedResearchRouteResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -580,6 +582,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver:conductedResearchRouteResolver
       },      
       {
         menuText: "Other Supporting Factors",
@@ -590,7 +593,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-      },      
+      },
       {
         menuText: "Remove Barriers",
         path: "remove-barriers",
@@ -600,6 +603,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver:removeBarriersRouteResolver
       },      
       {
         menuText: "Review Barriers",
