@@ -222,7 +222,6 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private validateOnLoad?: boolean;
   @Prop({ default: false }) private inline?: boolean;
 
-
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
   private prevSelected: string[] = [];
@@ -232,6 +231,13 @@ export default class ATATCheckboxGroup extends Vue {
   private totalRequirementsInDOW: totalClassLevelsInDOWObject[] = []
 
   public checkboxRules: Array<unknown> = [];
+
+  @Watch("rules", {deep: true})
+  public rulesChanged(): void {
+    debugger;
+    this.clearErrorMessage();
+    // this.setErrorMessage();
+  }
 
   @Watch("validateCheckboxesNow")
   protected setCheckboxValidation(): void {

@@ -320,6 +320,11 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   requirements_poc_sys_id?: string;
 }
 
+export interface MarketResearchTechniquesDTO extends BaseTableDTO {
+  technique_label: string;
+  technique_value: string;
+  sequence: number;
+}
 
 
 export interface OrganizationDTO extends BaseTableDTO {

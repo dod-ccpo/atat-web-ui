@@ -190,6 +190,9 @@
                 groupLabel="What other techniques did you use?"
                 :optional="true"
                 :items="otherTechniquesOptions"
+                :value.sync="techniquesUsed"
+                :rules="techniquesRules"
+
               />
             </section>
 
@@ -201,8 +204,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
@@ -213,11 +215,12 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import { FairOpportunityDTO } from "@/api/models";
+import { FairOpportunityDTO, MarketResearchTechniquesDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { Checkbox, RadioButton, YesNo } from "types/Global";
-import { getYesNoRadioOptions } from "@/helpers";
+import { getYesNoRadioOptions, hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -232,9 +235,9 @@ import { getYesNoRadioOptions } from "@/helpers";
   }
 })
 
-export default class MarketResearchEfforts extends Vue {
+export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public cspName = "";
-  public writeOwnCause: YesNo = "";
+  public writeOwnExplanation: YesNo = "";
   public isLoading = false;
 
   public needsMRR = false;
@@ -317,15 +320,18 @@ export default class MarketResearchEfforts extends Vue {
   }
 
   // SECTION 3
-  public otherTechniquesOptions: Checkbox[] = [
-    {
-      id: "PK", 
-      value: "PK", 
-      label: "Personal knowledge in procuring supplies/services of this type"
-    }
-  ]
+  public otherTechniquesOptions: Checkbox[] = [];
 
-
+  public get techniquesRules(): unknown[] {
+    const rulesOn = this.needsMRR && this.cspIsOnlySourceCapable === "NO"
+      && !this.wereCatalogsReviewed;
+    debugger;
+    return rulesOn ?
+      [ this.$validators.required(
+        "Please select at least one technique used to conduct market research."
+      ) ] : [];
+      
+  }
 
   private get savedData(): FairOpportunityDTO | null {
     return AcquisitionPackage.getFairOpportunity;
@@ -334,10 +340,16 @@ export default class MarketResearchEfforts extends Vue {
   public researchStartDate = "";
   public researchEndDate = "";
   public supportingData = "";
+
   public sameAsResearchDate: YesNo = "";
   public catalogReviewStartDate = "";
   public catalogReviewEndDate = "";
   public catalogReviewResults = "";
+
+  public techniquesUsed = "";
+  public otherTechnique = "";
+  public personalKnowledgePerson = "";
+  public techniquesSummary = "";
 
   public cspIsOnlySourceCapable: YesNo = "";
   public get currentData(): FairOpportunityDTO {
@@ -346,8 +358,6 @@ export default class MarketResearchEfforts extends Vue {
       || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
     const formData: FairOpportunityDTO = {
       /* eslint-disable camelcase */
-      cause_write_own_explanation: this.writeOwnCause,
-
       research_is_csp_only_source_capable: this.cspIsOnlySourceCapable,
       research_start_date: this.researchStartDate,
       research_end_date: this.researchEndDate,
@@ -357,12 +367,11 @@ export default class MarketResearchEfforts extends Vue {
       research_review_catalogs_start_date: this.catalogReviewStartDate,
       research_review_catalogs_end_date: this.catalogReviewEndDate,
       research_review_catalogs_review_results: this.catalogReviewResults,
-
-      // research_other_techniques_used?: string; // array of sys_ids
-      // research_other_technique?: string;
-      // research_personal_knowledge_person_or_position?: string;
-      // research_techniques_summary?: string;
-      // research_write_own_explanation?: YesNo;
+      research_other_techniques_used: this.techniquesUsed, // array of sys_ids
+      research_other_technique: this.otherTechnique,
+      research_personal_knowledge_person_or_position: this.personalKnowledgePerson,
+      research_techniques_summary: this.techniquesSummary,
+      research_write_own_explanation: this.writeOwnExplanation,
 
     /* eslint-enable camelcase */
     }
@@ -390,8 +399,21 @@ export default class MarketResearchEfforts extends Vue {
       }      
       this.cspName = storeData.proposed_csp ? cspNames[storeData.proposed_csp] : "your CSP";
 
+    }
+    const techniques: MarketResearchTechniquesDTO[] | null  
+      = AcquisitionPackage.marketResearchTechniques;
+    if (techniques) {
+      this.otherTechniquesOptions = techniques.map((obj) => {
+        return {
+          id: obj.technique_value as string, 
+          value: obj.sys_id as string,
+          label: obj.technique_label as string,
+        }
+      })
+      debugger;
 
     }
+
 
   }
 
@@ -399,6 +421,38 @@ export default class MarketResearchEfforts extends Vue {
     this.isLoading = true;
     await this.loadOnEnter();
     this.isLoading = false;
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        // ensure data cleared if any section main question is "NO"
+        /* eslint-disable camelcase */
+
+        if (!this.needsMRR) {
+          this.techniquesUsed = "";
+          this.otherTechnique = "";
+          this.personalKnowledgePerson = "";
+          this.techniquesSummary = "";
+        }
+        if (!this.cspHasPeculiarFeature || this.reviewedCatalogs === "NO") {
+          this.sameAsResearchDate = "";
+          this.catalogReviewStartDate = "";
+          this.catalogReviewEndDate = "";
+          this.catalogReviewResults = "";
+        }
+        /* eslint-enable camelcase */
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
   }
 
 
