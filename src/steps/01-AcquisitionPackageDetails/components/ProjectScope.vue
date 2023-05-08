@@ -32,7 +32,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 })
 export default class ProjectScope extends Vue {
   @PropSync("projectScope", {default: "scope goes here"}) 
-    private _projectScope!: string;
+  private _projectScope!: string;
   @Prop({default: "ProjectScope"}) private id!: string;
   @Prop() private label!: string;
   @Prop({ default: "" }) private helpText!: string;

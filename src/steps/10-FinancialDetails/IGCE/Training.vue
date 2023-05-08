@@ -112,7 +112,7 @@
   </v-form>
 </template>
 <script lang="ts">
-/* eslint-disable camelcase */
+/* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { 
@@ -409,15 +409,15 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
         this.sysIdValueArray.push(estValues);
         this.valueArray.push(Object.values(estValues)[0])
       } else {
-      this.periods?.sort().forEach(
-        (p) => {
-          for(const estVal in estValues){ // retreiving multiple values
-            if (estVal === p.sys_id){
-              this.sysIdValueArray.push({[estVal] : estValues[estVal]});
-              this.valueArray.push(estValues[estVal])
+        this.periods?.sort().forEach(
+          (p) => {
+            for(const estVal in estValues){ // retreiving multiple values
+              if (estVal === p.sys_id){
+                this.sysIdValueArray.push({[estVal] : estValues[estVal]});
+                this.valueArray.push(estValues[estVal])
+              }
             }
-          }
-        })
+          })
       }
     }
   }
@@ -435,6 +435,7 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
     try{
       if (this.instanceData.trainingOption.toLowerCase()==="single"){
         this.sysIdValueArray = [];
+        //eslint-disable-next-line prefer-const
         let obj:Record<string, string>= {};
         obj["PER_PERIOD"] = this.valueArray[0];
         this.sysIdValueArray.push(obj);
