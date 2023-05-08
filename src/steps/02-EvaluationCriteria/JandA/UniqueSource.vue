@@ -90,7 +90,7 @@
                   height="18"
                   name="restore"
                   class="mr-1"
-                  :color="btnRestoreIconColor"
+                  :color="restoreIconColor"
               />
               Restore to suggestion
             </v-btn>
@@ -154,7 +154,7 @@ export default class UniqueSource extends Mixins(SaveOnLeave) {
   /**
    * Dynamically derives the restore button icon color based on the state.
    */
-  public get btnRestoreIconColor(): string {
+  public get restoreIconColor(): string {
     return this.isMinGovReqExpDefaultUnmodified ? "disabled" : "primary";
   }
 
@@ -162,7 +162,7 @@ export default class UniqueSource extends Mixins(SaveOnLeave) {
    * Restore button's state should be disabled if the user does not change the
    * default text or does a manual restore to default.
    */
-  public get isMinGovReqExpDefaultUnmodified(): boolean {
+  private get isMinGovReqExpDefaultUnmodified(): boolean {
     return this.suggestedText === this.uniqueSourceExplanation;
   }
 
