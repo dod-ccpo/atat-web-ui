@@ -192,8 +192,50 @@
                 :items="otherTechniquesOptions"
                 :value.sync="techniquesUsed"
                 :rules="techniquesRules"
-
+                :hasOtherValue="true"
+                :otherValueEntered.sync="otherTechnique"
+                otherValueRequiredMessage="Enter your other technique."
+                :validateOtherOnBlur="true"
+                :otherValue="getOtherTechniqueSysId"
               />
+              
+              <v-expand-transition>
+                <ATATTextField 
+                  v-if="showPersonalKnowledgePerson"
+                  id="PersonReliedUpon"
+                  class="mt-10"
+                  :value.sync="personalKnowledgePerson"
+                  label="Name and/or position of the person relied upon"
+                  tooltipText="This refers to the following technique you selected: 
+                    “Personal knowledge in procuring supplies/services of this type”"
+                  width="380"
+                  :rules="[
+                    $validators.required(`Enter the name and/or position of the person 
+                      that has knowledge in procuring supplies/services of this type.`)
+                  ]"
+
+                />
+              </v-expand-transition>
+              <v-expand-transition>
+                <ATATTextArea
+                  v-if="showTechniquesSummary"
+                  id="TechniquesSummary"
+                  class="mt-10"
+                  :value.sync="techniquesSummary"
+                  label="Summarize the market research performed using the technique(s) 
+                    selected above"
+                  helpText="Include the who, what, when, where, why, and outcome of your research."
+                  :maxChars="1000"
+                  rows="9"
+                  :validateItOnBlur="true"
+                  :noResize="false"
+                  :rules="[
+                    $validators.required('Enter a description of the research performed.'),
+                    $validators.maxLength(1000)
+                  ]"
+
+                />
+              </v-expand-transition>
             </section>
 
           </div>
@@ -204,7 +246,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
@@ -236,12 +278,31 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
-  public cspName = "";
+  public cspName = "";  
   public writeOwnExplanation: YesNo = "";
   public isLoading = false;
 
   public needsMRR = false;
   public cspHasPeculiarFeature = true;
+
+  public researchStartDate = "";
+  public researchEndDate = "";
+  public supportingData = "";
+
+  public sameAsResearchDate: YesNo = "";
+  public catalogReviewStartDate = "";
+  public catalogReviewEndDate = "";
+  public catalogReviewResults = "";
+
+  public techniquesUsed = "";
+  public otherTechnique = "";
+  public personalKnowledgePerson = "";
+  public personalKnowledgePersonSysId = "";
+  public techniquesSummary = "";
+  public showPersonalKnowledgePerson = false;
+  public showTechniquesSummary = false;
+
+  public cspIsOnlySourceCapable: YesNo = "";
 
   public get introText(): string {
     return this.currentData.contract_action !== "NONE"
@@ -333,25 +394,25 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       
   }
 
+  public get getOtherTechniqueSysId(): string {
+    const otherOptionObj = this.otherTechniquesOptions.find(obj => obj.label === "Other");
+    return otherOptionObj ? otherOptionObj.value : ""
+  }
+
+  @Watch("techniquesUsed")
+  public techniquesUsedChanged(newVal: string[]): void {
+    // check sys ids for selection of the "Personal knowledge in procuring... " option
+    this.showPersonalKnowledgePerson = newVal.includes(this.personalKnowledgePersonSysId);
+    this.showTechniquesSummary = newVal.length > 0;
+  }
+  
+
+  // END FORM SECTIONS
+
   private get savedData(): FairOpportunityDTO | null {
     return AcquisitionPackage.getFairOpportunity;
   }
-  // EJY move data vars up to top
-  public researchStartDate = "";
-  public researchEndDate = "";
-  public supportingData = "";
 
-  public sameAsResearchDate: YesNo = "";
-  public catalogReviewStartDate = "";
-  public catalogReviewEndDate = "";
-  public catalogReviewResults = "";
-
-  public techniquesUsed = "";
-  public otherTechnique = "";
-  public personalKnowledgePerson = "";
-  public techniquesSummary = "";
-
-  public cspIsOnlySourceCapable: YesNo = "";
   public get currentData(): FairOpportunityDTO {
     const fairOppSaved: FairOpportunityDTO 
       = _.cloneDeep(AcquisitionPackage.fairOpportunity) 
@@ -404,6 +465,9 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       = AcquisitionPackage.marketResearchTechniques;
     if (techniques) {
       this.otherTechniquesOptions = techniques.map((obj) => {
+        if (obj.technique_value === "PERSONAL_KNOWLEDGE") {
+          this.personalKnowledgePersonSysId = obj.sys_id as string;
+        }
         return {
           id: obj.technique_value as string, 
           value: obj.sys_id as string,
