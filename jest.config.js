@@ -17,7 +17,11 @@ module.exports = {
     "src/services/*.ts", 
     "src/main.ts"
   ],
-  
+  globals: {
+    "ts-jest": {
+      isolatedModules: true,
+    }
+  },
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [ ],
 
