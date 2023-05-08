@@ -1303,8 +1303,6 @@ export const Upload7600Resolver = (current: string): string => {
       : routeNames.Upload7600;
   }
 
-  
-
   return current === routeNames.SeverabilityAndIncrementalFunding ||
     current === routeNames.AppropriationOfFunds
     ? routeNames.GInvoicing
@@ -1323,7 +1321,6 @@ export const AppropriationOfFundsResolver = (current: string): string => {
     ? routeNames.Upload7600
     : routeNames.SeverabilityAndIncrementalFunding;
 }
-
 
 const cutOff = 270;
 export async function calcBasePeriod(): Promise<number> {

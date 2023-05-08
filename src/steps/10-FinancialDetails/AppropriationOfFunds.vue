@@ -75,6 +75,10 @@ export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
   ];
 
   private selectedFiscalYear = "";
+  /**
+   * using current date, the current fiscal year and previous 3 fiscal years 
+   * are calculated and returned in this format => `Fiscal Year 2020 (FY20)`
+   */
   get fiscalYearFunds():RadioButton[]{
     const thisMonth = (new Date()).getMonth();
     const thisYear = (new Date()).getUTCFullYear();
