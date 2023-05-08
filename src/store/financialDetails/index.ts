@@ -449,6 +449,21 @@ export class FinancialDetailsStore extends VuexModule {
     }
   }
 
+
+  /**
+   * removes the appropriation of funds values from the store
+   */
+  @Action({rawError: true})
+  public async deleteAppropriationOfFunds(): Promise<void> {
+    const fundingRequest = this.fundingRequest as FundingRequestDTO;
+    fundingRequest.appropriation_fiscal_year = "";
+    fundingRequest.appropriation_funds_type = "";
+    api.fundingRequestTable.update(
+      fundingRequest.sys_id as string, 
+      fundingRequest);
+    this.setFundingRequest(fundingRequest);
+  }
+
   /**
    * Gets the funding request. Then uses the fs_form reference value to load the 
    * FS Form data (FSF). If the FSF is null and tied to acquisition, then loads FSF.
