@@ -135,7 +135,7 @@ describe("Classification Requirements Store", ()=> {
   test('Test deleteCDSInIGCEEstimateTable removes CDS from IGCE', async () => {
     const removeIgceRecord = jest.spyOn(api.igceEstimateTable, 'remove')
       .mockImplementation(() => Promise.resolve())
-    await ClassificationStore.delectCDSInIGCEEstimateTable(igceDTO.sys_id as string)
+    await ClassificationStore.deleteCDSInIGCEEstimateTable(igceDTO.sys_id as string)
     expect(removeIgceRecord).toHaveBeenCalledTimes(1)
   })
 })
