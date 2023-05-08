@@ -456,12 +456,14 @@ export class FinancialDetailsStore extends VuexModule {
   @Action({rawError: true})
   public async deleteAppropriationOfFunds(): Promise<void> {
     const fundingRequest = this.fundingRequest as FundingRequestDTO;
-    fundingRequest.appropriation_fiscal_year = "";
-    fundingRequest.appropriation_funds_type = "";
-    api.fundingRequestTable.update(
+    if (fundingRequest.sys_id){
+      fundingRequest.appropriation_fiscal_year = "";
+      fundingRequest.appropriation_funds_type = "";
+      await api.fundingRequestTable.update(
       fundingRequest.sys_id as string, 
       fundingRequest);
-    this.setFundingRequest(fundingRequest);
+      this.setFundingRequest(fundingRequest);
+    }
   }
 
   /**

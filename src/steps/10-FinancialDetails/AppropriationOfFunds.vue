@@ -2,9 +2,9 @@
   <v-container class="container-max-width mb-7" fluid>
     <v-row>
       <v-col class="col-12">
-        <h1 class="page-header">Let’s find out more about your appropriation of funds</h1>
+        <h1 class="mb-3">Let’s find out more about your appropriation of funds</h1>
         <div class="copy-max-width">
-          <p>
+          <p class="mb-10">
             Based on what you told us about your exception to fair opportunity, we need to know
             more about where these funds will be coming from. Your responses below, along with
             your total estimated value generated in the Requirements Cost Estimate section,
@@ -59,12 +59,12 @@ export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
   private fundTypes: RadioButton[] = [
     {
       id: "O&M",
-      label: "Operations & Maintenance",
+      label: "Operations & Maintenance (O&M)",
       value: "O_M",
     },
     {
       id: "RDT_E",
-      label: "Research, Development, Test & Evaluation",
+      label: "Research, Development, Test & Evaluation (RDT&E)",
       value: "RDT_E",
     },
     {
