@@ -772,3 +772,16 @@ export enum ClassificationLevels {
   SCRT = "Secret",
   TSCRT = "Top Secret"
 }
+
+export interface SummaryItem {
+  title: string;
+  description: string;
+  isComplete: boolean;
+  isTouched: boolean;
+}
+
+export interface SummaryPage{
+  title: string;
+  description: string;
+  summaryItems: SummaryItem[]
+}
