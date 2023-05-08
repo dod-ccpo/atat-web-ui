@@ -66,7 +66,7 @@ export class EDAApi extends ApiBase{
         }
       }
       return edaResponse;
-    } catch (error) {
+    } catch (error:any) {
       return {
         success: false,
         message: errorMessages[error.response.data.result.code] || "Unknown error contacting EDA"

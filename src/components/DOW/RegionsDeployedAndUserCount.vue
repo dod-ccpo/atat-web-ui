@@ -22,6 +22,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
@@ -96,9 +97,11 @@ export default class RegionsDeployedAndUserCount extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    //eslint-disable-next-line prefer-const 
     let regionsData = acquisitionPackage.regions
     regionsData?.sort((a, b) => a.sequence > b.sequence ? 1 : -1)
       .forEach(region => {
+        //eslint-disable-next-line prefer-const 
         let item = {
           id : region.name,
           label : region.name,

@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
+/* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
@@ -163,6 +163,7 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   // files returned from the child component
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
+    //eslint-disable-next-line prefer-const
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredMessage));
@@ -274,6 +275,7 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         this.loaded = await FinancialDetails.loadFundingRequestFSForm();
+        //eslint-disable-next-line prefer-const
         let data: FundingRequestFSFormDTO = {
           ...this.loaded || initialFundingRequestFSForm,
           order_number: this.current.orderNumber,

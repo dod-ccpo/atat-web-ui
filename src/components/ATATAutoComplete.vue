@@ -59,6 +59,7 @@
 </template>
 
 <script lang="ts">
+/* eslint vue/no-v-text-v-html-on-component: 1 */
 import Vue from "vue";
 import { AutoCompleteItem } from "types/Global";
 

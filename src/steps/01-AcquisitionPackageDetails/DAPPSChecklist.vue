@@ -209,37 +209,37 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 
 export default class DAPPSChecklist extends Mixins(SaveOnLeave) {
- public requestAccessURL = "https://community.hacc.mil/s/jwcc/pricing-calculator-request"
- public openSlideoutPanel(e: Event): void {
-   if (e && e.currentTarget) {
-     const opener = e.currentTarget as HTMLElement;
-     SlideoutPanel.openSlideoutPanel(opener.id);
-   }
- }
- protected async saveOnLeave(): Promise<boolean> {
-   try {
-     await acquisitionPackage.setHideSideNavigation(false);
-   } catch (error) {
-     console.log(error);
-   }
-   return true;
- }
- async mounted(): Promise<void>{
-   const comingFrom = Steps.prevStepName;
-   if (comingFrom !== routeNames.ContractingShop
+  public requestAccessURL = "https://community.hacc.mil/s/jwcc/pricing-calculator-request"
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      await acquisitionPackage.setHideSideNavigation(false);
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
+  async mounted(): Promise<void>{
+    const comingFrom = Steps.prevStepName;
+    if (comingFrom !== routeNames.ContractingShop
     && AcquisitionPackage.packageId !== "") {
-     this.$router.push({
-       name: routeNames.ContractingShop,
-     }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
-   }
+      this.$router.push({
+        name: routeNames.ContractingShop,
+      }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+    }
     
-   await acquisitionPackage.setHideSideNavigation(true);
-   const slideoutPanelContent: SlideoutPanelContent = {
-     component: FundingRequestLearnMore,
-     title: "Learn More",
-   };
-   await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
- }
+    await acquisitionPackage.setHideSideNavigation(true);
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: FundingRequestLearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
 }
 
 </script>

@@ -253,6 +253,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -498,6 +499,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public addIncrement(): void {
     const lastFundingIncrement = this.fundingIncrements.at(-1);
     const lastSelectedQtr = lastFundingIncrement?.text;
+    //eslint-disable-next-line prefer-const
     let selectedQtrIndex = this.fiscalQuarters.findIndex(
       (p) => p.text === lastSelectedQtr
     );
@@ -566,6 +568,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public isFundingMet = false;
 
   public calcAmounts(field: string): void {
+    //eslint-disable-next-line prefer-const
     let incrementsTotal = this.fundingIncrements.reduce(
       (accumulator, current) =>
         accumulator + Number(currencyStringToNumber(current.amt)),
@@ -776,6 +779,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
       if (this.allowContinue) {
         // Set chronological order of fiscal quarters in fundingIncrements
+        //eslint-disable-next-line prefer-const
         let sortedIncrements: fundingIncrement[] = [];
         this.fundingIncrements.forEach((incr) => {
           incr.order =
