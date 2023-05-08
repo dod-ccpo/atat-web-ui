@@ -26,6 +26,7 @@
               :items="fiscalYearFunds" 
               :value.sync="selectedFiscalYear"
               class="mb-10" 
+              :rules="[$validators.required('Please select an option.')]"
               >
             </ATATRadioGroup>
           </div>
@@ -42,15 +43,18 @@ import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
 import { FundingRequestDTO } from "@/api/models";
-
+import FinancialDetails from "@/store/financialDetails";
+import { hasChanges } from "@/helpers";
+import _ from "lodash";
 
 @Component({
   components: {
     ATATRadioGroup,
   },
 })
+
 export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
-  private fundingRequest: 
+  private fundingRequest: FundingRequestDTO ={};
   private selectedFundType: "" | "O_M" | "RDT_E" | "PROCUREMENT" = "";
   private fundTypes: RadioButton[] = [
     {
@@ -92,29 +96,19 @@ export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
 
   }
 
-  private savedData: {
-    appropriation_fiscal_year: "",
+  private savedData: FundingRequestDTO = {
     // eslint-disable-next-line camelcase
-    appropriation_funds_type: ""
-  }FundingRequestDTO = {
+    appropriation_fiscal_year: FinancialDetails.fundingRequest?.appropriation_fiscal_year,
     // eslint-disable-next-line camelcase
-    fs_form: "",
-    // eslint-disable-next-line camelcase
-    funding_request_type: "",
-    mipr: "",
-    // eslint-disable-next-line camelcase
-    appropriation_fiscal_year: "",
-    // eslint-disable-next-line camelcase
-    appropriation_funds_type: ""
+    appropriation_funds_type: FinancialDetails.fundingRequest?.appropriation_funds_type
+  } as FundingRequestDTO
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
   }
 
   private get currentData(): FundingRequestDTO {
     return {
-      // eslint-disable-next-line camelcase
-      fs_form: "",
-      // eslint-disable-next-line camelcase
-      funding_request_type: "",
-      mipr: "",
       // eslint-disable-next-line camelcase
       appropriation_fiscal_year: this.selectedFiscalYear,
       // eslint-disable-next-line camelcase
@@ -122,22 +116,41 @@ export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
     }
   }
 
+  public async loadOnEnter(): Promise<void>{
+    await FinancialDetails.loadFundingRequest();
+    this.fundingRequest = 
+      _.cloneDeep(FinancialDetails.fundingRequest) as FundingRequestDTO;
+  
+    if (this.fundingRequest){
+      // eslint-disable-next-line camelcase
+      this.selectedFiscalYear = this.fundingRequest.appropriation_fiscal_year || "";
+      // eslint-disable-next-line camelcase
+      this.selectedFundType = this.fundingRequest.appropriation_funds_type || "";
+    }
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
-    // try {
-    //   if (this.hasChanged()) {
-    //     const updated: FundingRequestMIPRFormDTO = {
-    //     };
-    //     await FinancialDetails.saveFundingRequestMIPRForm(updated);
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      if (this.hasChanged()) {
+        // eslint-disable-next-line camelcase
+        this.fundingRequest.appropriation_fiscal_year 
+          // eslint-disable-next-line camelcase
+          = this.currentData.appropriation_fiscal_year;
+        // eslint-disable-next-line camelcase
+        this.fundingRequest.appropriation_funds_type 
+          // eslint-disable-next-line camelcase
+          = this.currentData.appropriation_funds_type;
+        await FinancialDetails.saveFundingRequestToDISA(this.fundingRequest);
+      }
+    } catch (error) {
+      console.log(error);
+    }
     return true;
   }
 
 
   public async mounted(): Promise<void> {
-    // await this.loadOnEnter();
+    await this.loadOnEnter();
 
 
   }
