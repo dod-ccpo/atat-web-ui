@@ -172,6 +172,7 @@
   </v-container>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import { routeNames } from "../../../router/stepper"
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -357,8 +358,10 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public setSelectedGroupsMissingData(value: DOWServiceOfferingGroup[]): void {
+    //eslint-disable-next-line prefer-const
     let outputArr :string[] = [];
     value.forEach((obj)=>{
+      //eslint-disable-next-line prefer-const
       let id = obj.serviceOfferingGroupId;
       if (this.isClassificationDataMissing || 
         (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||

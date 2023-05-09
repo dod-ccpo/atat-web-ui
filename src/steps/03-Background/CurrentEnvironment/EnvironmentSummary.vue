@@ -150,6 +150,7 @@
   </v-form>
 </template>
 <script lang="ts">
+/*eslint vue/no-child-content: 1 */
 import Vue from "vue";
 
 import { Component, Watch } from "vue-property-decorator";
@@ -216,9 +217,11 @@ export default class EnvironmentSummary extends Vue {
         unclassifiedILs.push(cl.impact_level);
       }
     });
+    //eslint-disable-next-line prefer-const
     let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
 
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
+      //eslint-disable-next-line prefer-const
       let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
       const unclassifiedIndex = uniqueClassifications.indexOf("Unclassified");
       uniqueClassifications.splice(unclassifiedIndex, 1);
@@ -389,6 +392,7 @@ export default class EnvironmentSummary extends Vue {
       this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
 
       this.envInstances.forEach(async (instance, index) => {
+        //eslint-disable-next-line prefer-const
         let isValid = await this.validateInstance(instance);
         let storage = "";
         if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
@@ -405,6 +409,7 @@ export default class EnvironmentSummary extends Vue {
         if (instance.instance_location === "ON_PREM") {
           location = "On-premise";
         } else {
+          //eslint-disable-next-line prefer-const
           let instances: string[] = []
           if (typeof instance.deployed_regions === "string") {
             const regionsSysIds = instance.deployed_regions?.split(',')
@@ -441,7 +446,7 @@ export default class EnvironmentSummary extends Vue {
             classification = buildClassificationLabel(classificationLevel, "short");
           } 
         }
-
+        //eslint-disable-next-line prefer-const
         let instanceData: EnvInstanceSummaryTableData = { 
           instanceSysId: instance.sys_id,
           instanceNumber: index + 1,
