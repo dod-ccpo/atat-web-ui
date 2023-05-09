@@ -261,7 +261,7 @@ import { FairOpportunityDTO, MarketResearchTechniquesDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { Checkbox, RadioButton, YesNo } from "types/Global";
-import { getYesNoRadioOptions, hasChanges } from "@/helpers";
+import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
@@ -452,13 +452,9 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.catalogReviewResults = storeData.research_review_catalogs_review_results ||
         "The results have determined that no other offering is suitable as follows...";
 
-      const cspNames = {
-        AWS: "Amazon",
-        GCP: "Google",
-        AZURE: "Microsoft",
-        ORACLE: "Oracle",
-      }      
-      this.cspName = storeData.proposed_csp ? cspNames[storeData.proposed_csp] : "your CSP";
+      this.cspName = storeData.proposed_csp 
+        ? getCSPCompanyName(storeData.proposed_csp) 
+        : "your CSP";
 
     }
     const techniques: MarketResearchTechniquesDTO[] | null  
