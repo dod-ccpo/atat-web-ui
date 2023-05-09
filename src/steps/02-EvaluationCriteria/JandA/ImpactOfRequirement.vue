@@ -7,7 +7,7 @@
             <h1 class="mb-3">
               Tell us about the impact of this requirement
             </h1>
-            <p>
+            <p class="copy-max-width mb-10">
               In the field below, describe the detrimental effects to the mission
               of the requesting activity or to the Government, if other than an
               exception to fair opportunity were pursued.
