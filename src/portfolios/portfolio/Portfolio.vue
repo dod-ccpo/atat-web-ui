@@ -830,6 +830,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { DashboardService, PortFolioDashBoardDTO } from "../../services/dashboards";
@@ -1010,7 +1011,7 @@ export default class PortfolioDashboard extends Vue {
       daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
-
+    //eslint-disable-next-line prefer-const 
     let timeUnit = useMonths
       ? singular ? "month" : "months"
       : singular ? "day" : "days";
@@ -1048,9 +1049,10 @@ export default class PortfolioDashboard extends Vue {
     const uniqueIdiqClins = [
       ...new Set(this.idiqClins.map((clin) => clin.idiq_clin)),
     ].sort();
-
+    //eslint-disable-next-line prefer-const 
     let clinCosts: Record<string, Record<string, string>> = {};
     uniqueCostClins.forEach((clinNo) => {
+      //eslint-disable-next-line prefer-const 
       let clinValues: Record<string, string> = {};
       uniqueDates.forEach((date) => {
         const clin = this.costs.find(
@@ -1096,6 +1098,7 @@ export default class PortfolioDashboard extends Vue {
     const popEndDate = parseISO(popEndISO);
 
     let month = popStartDate;
+    //eslint-disable-next-line prefer-const 
     let monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
 
     for (let i = 0; i < monthsToAdd; i++) {
@@ -1120,8 +1123,9 @@ export default class PortfolioDashboard extends Vue {
       }
       this.burnChartXLabels.push(monthAbbr);
     }
-
+    //eslint-disable-next-line prefer-const 
     let actualBurn: Record<string, (number | null)[]> = {};
+    //eslint-disable-next-line prefer-const 
     let projectedBurn: Record<string, (number | null)[]> = {};
     const totalActualBurnData: (number | null)[] = [this.totalPortfolioFunds];
     const totalProjectedBurnData: (number | null)[] = [null];
@@ -1135,6 +1139,7 @@ export default class PortfolioDashboard extends Vue {
       );
       if (thisIdiqClin) {
         const costClinNo = thisIdiqClin.clin_number;
+        //eslint-disable-next-line prefer-const 
         let fundsObligated = thisIdiqClin.funds_obligated;
         let fundsAvailable = !isNaN(parseInt(fundsObligated))
           ? parseInt(fundsObligated)
@@ -1250,8 +1255,9 @@ export default class PortfolioDashboard extends Vue {
 
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
+    //eslint-disable-next-line prefer-const
     let burnChartDataSets: lineChartDataSet[] = [];
-
+    //eslint-disable-next-line prefer-const
     let clinTotalActualDataSet: lineChartDataSet =
       this.burnChartActualCommonDataSet;
     const totalActualData = {
@@ -1262,7 +1268,7 @@ export default class PortfolioDashboard extends Vue {
     Object.assign(clinTotalActualDataSet, totalActualData);
     burnChartDataSets.push(clinTotalActualDataSet);
     this.checked.push(true);
-
+    //eslint-disable-next-line prefer-const
     let clinTotalProjectedDataSet: lineChartDataSet =
       this.burnChartProjectedCommonDataSet;
     const totalProjectedData = {
@@ -1286,6 +1292,7 @@ export default class PortfolioDashboard extends Vue {
             : idiqClinNo + "Data",
           data: actualBurn[idiqClinNo],
         };
+        //eslint-disable-next-line prefer-const
         let clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
         clinActualDataSet.borderColor = color;
         clinActualDataSet.pointBackgroundColor = color;
@@ -1303,6 +1310,7 @@ export default class PortfolioDashboard extends Vue {
             : idiqClinNo + "DataProjected",
           data: projectedBurn[idiqClinNo],
         };
+        //eslint-disable-next-line prefer-const
         let clinProjectedDataSet: lineChartDataSet = _.clone(
           this.burnChartProjectedCommonDataSet
         );
@@ -1334,15 +1342,16 @@ export default class PortfolioDashboard extends Vue {
     clinAverage: number;
     spendTrend: number;
   } = {
-    totalFundsSpent: 0,
-    totalFundsObligated: 0,
-    lastMonthSpent: 0,
-    clinAverage: 0,
-    spendTrend: 0,
-  };
+      totalFundsSpent: 0,
+      totalFundsObligated: 0,
+      lastMonthSpent: 0,
+      clinAverage: 0,
+      spendTrend: 0,
+    };
 
   public createTableItems(): void {
     this.idiqClins.forEach((idiqClin) => {
+      //eslint-disable-next-line prefer-const
       let obj: {
         costClinNumber: string;
         clinStatus: string;
@@ -1433,7 +1442,7 @@ export default class PortfolioDashboard extends Vue {
       daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
-
+    //eslint-disable-next-line prefer-const
     let timeUnit = useMonths
       ? singular
         ? "month"

@@ -126,7 +126,8 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
+/* eslint camelcase: 0 */
+
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -204,6 +205,7 @@ export default class ATATFileUpload extends Vue {
     return this.maxFileSizeInBytes / 1073741824
   }
   get formatFileTypes(): string {
+    //eslint-disable-next-line prefer-const 
     let formatted = this.validFileFormats.map((file) =>{
       return ` .${file}`
     })
@@ -392,6 +394,7 @@ export default class ATATFileUpload extends Vue {
   private uploadFiles(): void {
     for (let i = 0; i < this._validFiles.length; i++) {
       //wire up file upload here
+      //eslint-disable-next-line prefer-const 
       let uploadingFileObj = this._validFiles[i] as uploadingFile;
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
@@ -400,6 +403,7 @@ export default class ATATFileUpload extends Vue {
             ?.upload(uploadingFileObj.file, (total, current) => {
               current = 0;
               total = Math.ceil(total / 1000);
+              //eslint-disable-next-line prefer-const 
               let progress = window.setInterval(() => {
                 if (current < total) {
                   current = current + Math.floor(Math.random() * total);

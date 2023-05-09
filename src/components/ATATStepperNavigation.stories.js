@@ -1,3 +1,4 @@
+/* eslint vue/no-child-content: 1 */
 // The component I want to "storybook"
 import ATATStepperNavigation from "./ATATStepperNavigation.vue";
 

@@ -90,7 +90,7 @@ export default class ArchitectureDesignForm extends Vue {
   @Prop({ default: true }) isDOW?: boolean;
   @PropSync("statementArchitecturalDesign") public _statementArchitecturalDesign!: string;
   @PropSync("applicationsNeedArchitecturalDesign") 
-    public _applicationsNeedArchitecturalDesign!: string;
+  public _applicationsNeedArchitecturalDesign!: string;
   @PropSync("dataClassificationsImpactLevels") public _dataClassificationsImpactLevels!: string[];
   @PropSync("externalFactors") public _externalFactors!: string;
 
