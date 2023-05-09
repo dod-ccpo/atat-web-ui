@@ -539,9 +539,11 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {
-  fs_form: string;
-  funding_request_type: string;
-  mipr: string;
+  fs_form?: string;
+  funding_request_type?: string;
+  mipr?: string;
+  appropriation_fiscal_year?: string;
+  appropriation_funds_type?: "" | "O_M" | "RDT_E" | "PROCUREMENT";
 }
 
 export interface FundingIncrementDTO extends BaseTableDTO{
