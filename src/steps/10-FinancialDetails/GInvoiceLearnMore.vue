@@ -78,6 +78,6 @@ import { Component } from "vue-property-decorator";
 export default class GInvoiceLearnMore extends Vue {
   private fiscalServiceHref = "https://www.fiscal.treasury.gov/g-invoice/index.html";
   private gInvoiceLoginHref =
-    " https://www.igt.fiscal.treasury.gov";
+    "https://www.igt.fiscal.treasury.gov";
 }
 </script>
