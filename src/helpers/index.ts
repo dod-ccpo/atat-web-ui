@@ -441,3 +441,14 @@ export function getYesNoRadioOptions(groupId: string): RadioButton[] {
     },
   ];
 }
+
+export function getCSPCompanyName(cspId: string): string {
+  const cspCompanyNames: Record<string, string> = {
+    AWS: "AWS",
+    GCP: "Google",
+    AZURE: "Microsoft",
+    ORACLE: "Oracle",
+  }
+  return cspCompanyNames[cspId] || "";
+
+}
