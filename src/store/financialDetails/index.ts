@@ -459,6 +459,12 @@ export class FinancialDetailsStore extends VuexModule {
     if (fundingRequest.sys_id){
       fundingRequest.appropriation_fiscal_year = "";
       fundingRequest.appropriation_funds_type = "";
+      fundingRequest.fs_form = typeof this.fundingRequest?.fs_form !== "string" ? 
+        (this.fundingRequest?.fs_form as unknown as ReferenceColumn).value
+        : this.fundingRequest.fs_form;
+      fundingRequest.mipr = typeof this.fundingRequest?.mipr !== "string" ? 
+        (this.fundingRequest?.mipr as unknown as ReferenceColumn).value
+        : this.fundingRequest.mipr;
       await api.fundingRequestTable.update(
       fundingRequest.sys_id as string, 
       fundingRequest);
