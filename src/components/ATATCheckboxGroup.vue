@@ -22,7 +22,7 @@
       <v-checkbox
         v-for="(item, index) in _items"
         v-model="_selected"
-        :id="'Checkbox_' + getIdText(item.id) + '_' +labelSuffix"
+        :id="'Checkbox_' + getIdText(item.id) + checkboxLabelSuffix"
         :class="[
           card ? '_checkbox-card' : '_checkbox',
           color ? '_checkbox-' + color : '',
@@ -424,6 +424,10 @@ export default class ATATCheckboxGroup extends Vue {
 
   public get labelStyles(): string {
     return this.labelWidth ? `min-width: ${this.labelWidth}px;` : "";
+  }
+
+  public get checkboxLabelSuffix(): string {
+    return this.labelSuffix ? "_" + this.labelSuffix : "";
   }
 
   public async created(): Promise<void>{
