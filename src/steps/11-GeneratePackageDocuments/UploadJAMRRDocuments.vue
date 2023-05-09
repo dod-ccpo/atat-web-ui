@@ -183,6 +183,7 @@ export default class UploadJAMRRDocuments extends Mixins(SaveOnLeave) {
   }
 
   private getRulesArray(): ((v: string) => string|true|undefined)[] {
+    //eslint-disable-next-line prefer-const
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(

@@ -81,7 +81,7 @@ import {
 
 export default class PerformanceTier extends Vue {
   @PropSync("data") 
-    public offeringData!: CurrEnvInstancePerformance | OtherServiceOfferingData;
+  public offeringData!: CurrEnvInstancePerformance | OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
   @Prop({ default: false }) public isDOW?: boolean;
   @Prop({ default: false }) public isCompute?: boolean;

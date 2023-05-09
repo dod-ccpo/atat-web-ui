@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
+/* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
@@ -179,7 +179,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-
+        //eslint-disable-next-line prefer-const
         let pops: PeriodOfPerformanceDTO  = {  
           ...this.loaded,
           time_frame: this.currentData.time_frame || "",

@@ -191,7 +191,7 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
         });
         //
         this.currEnvDTO.migration_documentation?.splice(
-            this.currEnvDTO.migration_documentation?.indexOf(attachmentId), 1);
+          this.currEnvDTO.migration_documentation?.indexOf(attachmentId), 1);
         // console.log(this.currEnvDTO);
         // the updated migration_documentation will need to be saved
         await CurrentEnvironment.saveCurrentEnvironment();

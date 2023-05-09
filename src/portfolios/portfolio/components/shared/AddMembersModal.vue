@@ -90,6 +90,7 @@
 
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 
 import { Component, PropSync, Watch } from "vue-property-decorator";
@@ -278,6 +279,7 @@ export default class AddMembersModal extends Vue {
     const targetElement = e.target;
     const targetId = targetElement ? (targetElement as HTMLDivElement).id : "";
     this.pillboxFocused = true;
+    //eslint-disable-next-line prefer-const
     let len = this.enteredEmails.length;
     if (
       (targetId === "PillboxWrapper" || override === true) &&
@@ -293,6 +295,7 @@ export default class AddMembersModal extends Vue {
       });
 
       this.$nextTick().then(() => {
+        //eslint-disable-next-line prefer-const
         let newInput = document.querySelector(
           "[data-email-key='" + emailKey + "']"
         ) as HTMLInputElement;
@@ -410,7 +413,7 @@ export default class AddMembersModal extends Vue {
         this.duplicatedEmail = "";
       } else {
         this.enteredEmails[emailIndex].email = emailAddressEntered;
-
+        //eslint-disable-next-line prefer-const
         let isExistingEmail = this.existingMemberEmails.indexOf(
           emailAddressEntered.toLowerCase()
         ) > -1;
