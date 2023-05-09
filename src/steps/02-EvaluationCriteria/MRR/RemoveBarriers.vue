@@ -177,11 +177,11 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.selectedRequirement = storeData.barriers_follow_on_requirement||"",
-      this.followOnDate = storeData.barriers_follow_on_expected_date||"",
-      this.selectedTrainingRequirement = storeData.barriers_agency_pursuing_training_or_certs||"",
-      this.selectedIaaSRequirement = storeData.barriers_planning_future_development||"",
-      this.selectedProcurement = storeData.barriers_j_a_prepared||"",
+      this.selectedRequirement = storeData.barriers_follow_on_requirement||""
+      this.followOnDate = storeData.barriers_follow_on_expected_date||""
+      this.selectedTrainingRequirement = storeData.barriers_agency_pursuing_training_or_certs||""
+      this.selectedIaaSRequirement = storeData.barriers_planning_future_development||""
+      this.selectedProcurement = storeData.barriers_j_a_prepared||""
       this.procurementDiscussion = storeData.barriers_j_a_prepared_results||""
     }
   }
