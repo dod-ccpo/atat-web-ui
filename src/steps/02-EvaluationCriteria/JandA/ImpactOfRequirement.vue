@@ -13,7 +13,7 @@
               exception to fair opportunity were pursued.
             </p>
             <ATATTextArea
-                id="impactOfRequirementExplanation"
+                id="descriptionOfImpact"
                 class="max-width-740"
                 :rows="11"
                 :value.sync="impactOfRequirementExplanation"
@@ -24,7 +24,7 @@
                 ),
                 $validators.maxLength(
                   2500,
-                  'Please limit your description to 2500 characters or less'
+                  'Limit your description to 2,500 characters or less.'
                 ),
               ]
               "
@@ -39,10 +39,10 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import {Component, Mixins} from "vue-property-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import {FairOpportunityDTO} from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
 @Component({

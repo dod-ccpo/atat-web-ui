@@ -64,13 +64,11 @@ describe("Testing impactOfRequirement Component", () => {
 
   it("loadOnEnter() - should load the fair opportunity data and set " +
     "component data properties based on the loaded data", async () => {
-    await AcquisitionPackage.setFairOpportunity({
-      requirement_impact: undefined,
-    })
     const fairOpportunity = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
+    fairOpportunity.requirement_impact = undefined;
     await wrapper.vm.loadOnEnter();
     expect(wrapper.vm.$data.impactOfRequirementExplanation)
-      .toBe(""); // unchanged from initialization
+      .toBe(undefined); // unchanged from initialization
     fairOpportunity.requirement_impact =
       "Test impact of requirement description";
     await wrapper.vm.loadOnEnter();
