@@ -158,6 +158,7 @@
                       :value.sync="catalogReviewEndDate"
                       label="End date"
                       placeHolder="MM/DD/YYYY"
+                      :min="minResearchEndDate"
                     />
 
                   </div>
@@ -263,6 +264,7 @@ import _ from "lodash";
 import { Checkbox, RadioButton, YesNo } from "types/Global";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { format } from "date-fns";
 
 @Component({
   components: {
@@ -279,7 +281,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public cspName = "";  
-  public writeOwnExplanation: YesNo = "";
+  public writeOwnExplanation: YesNo | undefined = "";
   public isLoading = false;
 
   public needsMRR = false;
@@ -289,7 +291,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public researchEndDate = "";
   public supportingData = "";
 
-  public sameAsResearchDate: YesNo = "";
+  public sameAsResearchDate: YesNo | undefined = "";
   public catalogReviewStartDate = "";
   public catalogReviewEndDate = "";
   public catalogReviewResults = "";
@@ -302,7 +304,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public showPersonalKnowledgePerson = false;
   public showTechniquesSummary = false;
 
-  public cspIsOnlySourceCapable: YesNo = "";
+  public cspIsOnlySourceCapable: YesNo | undefined = "";
 
   public get introText(): string {
     return this.currentData.contract_action !== "NONE"
@@ -312,6 +314,16 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       : `Answer a series of questions below about market research conducted to 
         identify all qualified sources. Based on your responses, we’ll suggest 
         language to help you complete this portion of your J&A and MRR.`;
+  }
+
+  public minResearchStartDate = "";
+  public minResearchEndDate = "";
+
+  @Watch("researchStartDate")
+  public researchStartDateChanged(): void {
+    if (this.researchStartDate) {
+      this.minResearchEndDate = format(new Date(this.researchStartDate), "yyyy-MM-dd");
+    } 
   }
 
 
@@ -341,13 +353,13 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.researchEndDate = "";
     }
   }
- 
+
   // ========== FORM SECTION 2 - CATALOG REVIEW ==========
 
   public get productOrFeature(): string {
     return this.currentData.cause_product_feature_type === "PRODUCT" ? "product" : "feature";
   }
-  public reviewedCatalogs: YesNo = "";
+  public reviewedCatalogs: YesNo | undefined = "";
   public get reviewedCatalogsLegend(): string {
     return `Thinking of the unique ${this.productOrFeature} that you previously 
       told us about, did you review the JWCC contractor’s catalogs to determine 
@@ -380,18 +392,16 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
   }
 
-  // SECTION 3
+  // ========== FORM SECTION 3 - OTHER TECHNIQUES ==========
   public otherTechniquesOptions: Checkbox[] = [];
 
   public get techniquesRules(): unknown[] {
     const rulesOn = this.needsMRR && this.cspIsOnlySourceCapable === "NO"
       && !this.wereCatalogsReviewed;
-    debugger;
     return rulesOn ?
-      [ this.$validators.required(
+      [this.$validators.required(
         "Please select at least one technique used to conduct market research."
-      ) ] : [];
-      
+      )] : [];
   }
 
   public get getOtherTechniqueSysId(): string {
@@ -405,9 +415,8 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     this.showPersonalKnowledgePerson = newVal.includes(this.personalKnowledgePersonSysId);
     this.showTechniquesSummary = newVal.length > 0;
   }
-  
 
-  // END FORM SECTIONS
+  // ========== END FORM SECTIONS ==========
 
   private get savedData(): FairOpportunityDTO | null {
     return AcquisitionPackage.getFairOpportunity;
@@ -439,26 +448,37 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     return Object.assign(fairOppSaved, formData);
   }
 
-
-
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-
       this.needsMRR = storeData.contract_action === "NONE";
       this.cspHasPeculiarFeature = storeData.cause_product_feature_peculiar_to_csp === "YES";
 
-      // set catalogReviewResults to blank on saveOnLeave if reviewedCatalogs === "NO"
+      this.cspIsOnlySourceCapable = storeData.research_is_csp_only_source_capable;
+      this.researchStartDate = storeData.research_start_date as string;
+      this.researchEndDate = storeData.research_end_date as string;
+      this.supportingData = storeData.research_supporting_data as string; 
+      this.reviewedCatalogs = storeData.research_review_catalogs_reviewed;
+      this.sameAsResearchDate = storeData.research_review_catalogs_same_research_date;
+      this.catalogReviewStartDate = storeData.research_review_catalogs_start_date as string;
+      this.catalogReviewEndDate = storeData.research_review_catalogs_end_date as string;
       this.catalogReviewResults = storeData.research_review_catalogs_review_results ||
         "The results have determined that no other offering is suitable as follows...";
+      this.techniquesUsed = storeData.research_other_techniques_used as string; // array of sys_ids
+      this.otherTechnique = storeData.research_other_technique as string;
+      this.personalKnowledgePerson 
+        = storeData.research_personal_knowledge_person_or_position as string;
+      this.techniquesSummary = storeData.research_techniques_summary as string;
+      this.writeOwnExplanation = storeData.research_write_own_explanation;
 
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "your CSP";
-
     }
+
     const techniques: MarketResearchTechniquesDTO[] | null  
       = AcquisitionPackage.marketResearchTechniques;
+
     if (techniques) {
       this.otherTechniquesOptions = techniques.map((obj) => {
         if (obj.technique_value === "PERSONAL_KNOWLEDGE") {
@@ -470,11 +490,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
           label: obj.technique_label as string,
         }
       })
-      debugger;
-
     }
-
-
   }
 
   public async mounted(): Promise<void> {
@@ -492,12 +508,10 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         // ensure data cleared if any section main question is "NO"
         /* eslint-disable camelcase */
-
-        if (!this.needsMRR) {
-          this.techniquesUsed = "";
-          this.otherTechnique = "";
-          this.personalKnowledgePerson = "";
-          this.techniquesSummary = "";
+        if (this.cspIsOnlySourceCapable === "NO") {
+          this.researchStartDate = "";
+          this.researchEndDate = "";
+          this.supportingData = "";
         }
         if (!this.cspHasPeculiarFeature || this.reviewedCatalogs === "NO") {
           this.sameAsResearchDate = "";
@@ -505,6 +519,13 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
           this.catalogReviewEndDate = "";
           this.catalogReviewResults = "";
         }
+        if (!this.needsMRR) {
+          this.techniquesUsed = "";
+          this.otherTechnique = "";
+          this.personalKnowledgePerson = "";
+          this.techniquesSummary = "";
+        }
+
         /* eslint-enable camelcase */
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }

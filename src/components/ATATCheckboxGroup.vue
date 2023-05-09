@@ -234,10 +234,8 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("rules", {deep: true})
   public rulesChanged(): void {
-    debugger;
     this.checkboxRules = this.rules;
     this.clearErrorMessage();
-    // this.setErrorMessage();
   }
 
   @Watch("validateCheckboxesNow")

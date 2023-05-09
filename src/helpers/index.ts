@@ -444,7 +444,7 @@ export function getYesNoRadioOptions(groupId: string): RadioButton[] {
 
 export function getCSPCompanyName(cspId: string): string {
   const cspCompanyNames: Record<string, string> = {
-    AWS: "Amazon",
+    AWS: "AWS",
     GCP: "Google",
     AZURE: "Microsoft",
     ORACLE: "Oracle",

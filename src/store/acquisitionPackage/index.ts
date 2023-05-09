@@ -922,7 +922,6 @@ export class AcquisitionPackageStore extends VuexModule {
   ): Promise<void> {
     if (techniques && techniques.length) {
       this.marketResearchTechniques = techniques.sort((a,b) => a.sequence > b.sequence ? 1 : -1);
-      debugger; 
     }
   }
 
