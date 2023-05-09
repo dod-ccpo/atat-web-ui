@@ -69,7 +69,7 @@
                 :rules="[
                 $validators.required( //notSameAsDefault is not a requirement for this screen
                   'Explain why ' + csp + ' is the only CSP capable of ' +
-                   'performing the required work.', suggestedText
+                   'performing the required work.'
                 ),
                 $validators.maxLength(
                   2500,
