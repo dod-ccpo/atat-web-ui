@@ -43,8 +43,13 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {FairOpportunityDTO} from "@/api/models";
 import {hasChanges} from "@/helpers";
+import ATATTextArea from "@/components/ATATTextArea.vue";
 
-@Component({})
+@Component({
+  components: {
+    ATATTextArea
+  }
+})
 
 export default class ImpactOfRequirement extends Mixins(SaveOnLeave)  {
   public impactOfRequirementExplanation = "";
