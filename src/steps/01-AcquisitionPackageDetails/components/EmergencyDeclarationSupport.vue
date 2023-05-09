@@ -26,7 +26,7 @@ import { RadioButton } from "types/Global";
 })
 export default class EmergencyDeclarationSupport extends Vue {
   @PropSync("emergencyDeclaration", { default: "" })
-    private _emergencyDeclaration!: string | null;
+  private _emergencyDeclaration!: string | null;
   @Prop({default: "emergency-declaration-support-requirement"}) private id!: string;
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: ""}) private legend!: string;

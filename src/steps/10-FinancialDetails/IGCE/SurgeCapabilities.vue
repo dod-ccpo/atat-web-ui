@@ -66,7 +66,7 @@ import {YesNo} from "../../../../types/Global";
   },
 })
 export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
-   $refs!: {
+  $refs!: {
     PercentageTextbox: Vue & {
       errorMessages: [];
     };

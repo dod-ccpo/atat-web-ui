@@ -43,6 +43,14 @@ const evalPlanRequired = (): boolean => {
   return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
 }
 
+const hasExceptionToFairOpp = (): boolean =>{
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
+}
+
+const fundingRequestType = (): string =>{
+  return FinancialDetails.fundingRequestType;
+}
+
 const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   // if user selected either the required tech proposal (LPTA or BVTO options) or 
   // the set lump sum for one CSP ("best use" or "lowest risk" options), and
@@ -108,6 +116,26 @@ export const CertificationPOCsRouteResolver = (current: string): string => {
     ? routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
+
+const plansToRemoveBarriers = ():boolean =>{
+  const generated = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_generated
+  const custom = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_custom
+  return (generated !== "" || custom !== "")
+} 
+export const removeBarriersRouteResolver = (current: string): string => {
+  return current === routeNames.OtherSupportingFactors && plansToRemoveBarriers()
+    ? routeNames.ReviewBarriers
+    : routeNames.RemoveBarriers
+};
+
+const needContractAction = ():boolean =>{
+  return AcquisitionPackage.fairOpportunity?.contract_action !=='NONE'
+}
+export const conductedResearchRouteResolver = (current: string): string => {
+  return current === routeNames.OtherSupportingFactors && needContractAction()
+    ? routeNames.MarketResearchReview
+    : routeNames.WhoConductedResearch
+};
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
@@ -1255,29 +1283,45 @@ export const MIPRResolver = (current: string): string => {
 };
 
 export const GInvoicingResolver = (current: string): string => {
-  const fundingType = FinancialDetails.fundingRequestType;
-  if (fundingType === "FS_FORM") {
+  if (fundingRequestType() === "FS_FORM") {
     return routeNames.GInvoicing;
   }
   
   return current === routeNames.SeverabilityAndIncrementalFunding
     ? routeNames.MIPR
-    : routeNames.SeverabilityAndIncrementalFunding
+    : hasExceptionToFairOpp() 
+      ? routeNames.AppropriationOfFunds
+      : routeNames.SeverabilityAndIncrementalFunding;
 }
 
 export const Upload7600Resolver = (current: string): string => {
   const useGInvoicing = FinancialDetails.gInvoicingData.useGInvoicing === "YES";
+  
   if (!useGInvoicing) {
-    const fundingType = FinancialDetails.fundingRequestType;
-    return fundingType === "MIPR" 
+    return fundingRequestType() === "MIPR" 
       ? routeNames.MIPR
       : routeNames.Upload7600;
   }
 
-  return current === routeNames.SeverabilityAndIncrementalFunding
+  return current === routeNames.SeverabilityAndIncrementalFunding ||
+    current === routeNames.AppropriationOfFunds
     ? routeNames.GInvoicing
+    : hasExceptionToFairOpp() 
+      ? routeNames.AppropriationOfFunds
+      : routeNames.SeverabilityAndIncrementalFunding;
+}
+
+export const AppropriationOfFundsResolver = (current: string): string => {
+  
+  if (hasExceptionToFairOpp()){
+    return routeNames.AppropriationOfFunds
+  }
+  
+  return current === routeNames.SeverabilityAndIncrementalFunding
+    ? routeNames.Upload7600
     : routeNames.SeverabilityAndIncrementalFunding;
 }
+
 const cutOff = 270;
 export async function calcBasePeriod(): Promise<number> {
   const periods = await Periods.loadPeriods()
@@ -1416,6 +1460,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
   CurrentContractDetailsRouteResolver,
+  removeBarriersRouteResolver,
+  conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   CurrentEnvRouteResolver,
@@ -1434,6 +1480,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
+  AppropriationOfFundsResolver,
   BVTOResolver,
   EvalPlanDetailsRouteResolver,
   ProposedCSPRouteResolver,
