@@ -129,6 +129,7 @@
   </div>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import { Component, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -228,6 +229,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   }
 
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
+    //eslint-disable-next-line prefer-const
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
     this.invalidFiles.forEach((iFile) => {

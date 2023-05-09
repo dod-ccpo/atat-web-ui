@@ -9,6 +9,7 @@ import { Statuses } from "@/store/acquisitionPackage";
 
 Vue.use(Vuetify);
 
+//TODO fix tests logging "Error loading Task Order Details"
 describe("Testing TaskOrderDetails Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
@@ -132,19 +133,18 @@ describe("Testing TaskOrderDetails Component", () => {
       localVue,
       vuetify,
       propsData: {
-        selectedTaskOrder: [
+        selectedTaskOrder:
           {
             taskOrderNumber:"#HC1028-22-F-0141",
             periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
             totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
             totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
             status:"On Track"
-          },
-        ],
+          }
       }
     });
   });
-
+ 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });

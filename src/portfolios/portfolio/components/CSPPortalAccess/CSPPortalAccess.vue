@@ -157,6 +157,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
@@ -270,6 +271,7 @@ export default class CSPPortalAccess extends Vue {
         createdBy:"",
         created:""
       };
+      //eslint-disable-next-line prefer-const
       let idx = i;
       admin.email = this.emails[idx];
       admin.status = this.statuses[idx];
