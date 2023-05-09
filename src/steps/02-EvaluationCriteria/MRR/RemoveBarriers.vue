@@ -133,6 +133,7 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   public needProcurement = false
   public procurementDiscussion = ""
   public writeCustomRemove = ""
+  public removalPlan =""
 
   @Watch("selectedRequirement")
   public selectedRequirementChanged(newVal: YesNo): void {
@@ -151,7 +152,8 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
       barriers_planning_future_development:this.selectedIaaSRequirement,
       barriers_j_a_prepared:this.selectedProcurement,
       barriers_j_a_prepared_results:this.procurementDiscussion,
-      barriers_plans_to_remove_custom:this.writeCustomRemove,
+      barriers_write_own_explanation:this.writeCustomRemove,
+      barriers_plans_to_remove_for_docgen: this.removalPlan
     } as FairOpportunityDTO;
   }
 
@@ -169,6 +171,8 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
         barriers_j_a_prepared,
       barriers_j_a_prepared_results:AcquisitionPackage.fairOpportunity?.
         barriers_j_a_prepared_results,
+      barriers_plans_to_remove_for_docgen:AcquisitionPackage.fairOpportunity?.
+        barriers_plans_to_remove_for_docgen
     } as FairOpportunityDTO;
   }
 
@@ -179,20 +183,21 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.writeCustomRemove = "false"
+      this.writeCustomRemove = "NO"
       this.selectedRequirement = storeData.barriers_follow_on_requirement||""
       this.followOnDate = storeData.barriers_follow_on_expected_date_awarded||""
       this.selectedTrainingRequirement = storeData.barriers_agency_pursuing_training_or_certs||""
       this.selectedIaaSRequirement = storeData.barriers_planning_future_development||""
       this.selectedProcurement = storeData.barriers_j_a_prepared||""
       this.procurementDiscussion = storeData.barriers_j_a_prepared_results||""
+      this.removalPlan = storeData.barriers_plans_to_remove_for_docgen || ""
     }
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     let sectionsWithNoSelectedCount = 0;
     if(this.currentData.barriers_follow_on_requirement === 'NO'){
-      this.currentData.barriers_follow_on_expected_date_awarded = ''
+      this.followOnDate = ''
       sectionsWithNoSelectedCount++
     }
     if(this.currentData.barriers_agency_pursuing_training_or_certs === 'NO'){
@@ -202,15 +207,15 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
       sectionsWithNoSelectedCount++
     }
     if(this.currentData.barriers_j_a_prepared === 'NO'){
-      this.currentData.barriers_j_a_prepared_results = ''
+      this.procurementDiscussion = ''
       sectionsWithNoSelectedCount++
     }
     this.writeCustomRemove
-      = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_custom as YesNo
-    if(this.writeCustomRemove !== 'true'){
-      this.writeCustomRemove = sectionsWithNoSelectedCount === 4 ? "true": "false"
-      this.currentData.barriers_plans_to_remove_custom = this.writeCustomRemove
+      = AcquisitionPackage.fairOpportunity?.barriers_write_own_explanation as YesNo
+    if(this.writeCustomRemove !== 'YES'){
+      this.writeCustomRemove = sectionsWithNoSelectedCount === 4 ? "YES": "NO"
     }
+    this.removalPlan = this.writeCustomRemove === "YES" ? "CUSTOM" : "GENERATED"
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

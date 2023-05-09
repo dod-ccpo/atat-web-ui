@@ -611,9 +611,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",
-            buttonId: "WriteOwnBarriersCause",
+            buttonId: "WriteOwnBarriers",
             buttonClass: "secondary",
-            actionName: "WriteOwnBarriersCause",
+            actionName: "WriteOwnBarriers",
           },
         ]
       },      
