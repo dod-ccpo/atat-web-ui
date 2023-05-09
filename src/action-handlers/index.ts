@@ -64,7 +64,7 @@ async function writeOwnSoleSourceCause() {
 }
 async function WriteOwnBarriersCause() {
   // eslint-disable-next-line camelcase
-  const fairOpp: FairOpportunityDTO = { barriers_plans_to_remove_custom: "YES" };
+  const fairOpp: FairOpportunityDTO = { barriers_plans_to_remove_custom: "true" };
   await AcquisitionPackage.setFairOpportunity(fairOpp);
   router.push({
     name: routeNames.ReviewBarriers,

@@ -390,10 +390,10 @@ export default class TaskOrderDetails extends Vue {
     obligatedFunds:number,
     fundsSpent:number,
   } = {
-      CLINValue:0,
-      obligatedFunds:0,
-      fundsSpent:0,
-    }
+    CLINValue:0,
+    obligatedFunds:0,
+    fundsSpent:0,
+  }
 
   public taskOrderRemainingFunds = {percent:"",fundsRemaining:""}
   public totals = {percent:"",fundsRemaining:""}

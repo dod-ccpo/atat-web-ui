@@ -72,7 +72,7 @@
           <v-expand-transition>
             <div v-if="needProcurement">
               <ATATTextArea
-                class="textarea-max-width"
+                class="textarea-max-width mt-8"
                 id="ProcurementTextArea"
                 label="Briefly explain the results of any actions taken to remove barriers from
                  previous J&As"
@@ -132,6 +132,7 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   public selectedProcurement = ""
   public needProcurement = false
   public procurementDiscussion = ""
+  public writeCustomRemove = ""
 
   @Watch("selectedRequirement")
   public selectedRequirementChanged(newVal: YesNo): void {
@@ -145,11 +146,12 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   private get currentData(): FairOpportunityDTO {
     return {
       barriers_follow_on_requirement: this.selectedRequirement,
-      barriers_follow_on_expected_date: this.followOnDate,
+      barriers_follow_on_expected_date_awarded: this.followOnDate,
       barriers_agency_pursuing_training_or_certs:this.selectedTrainingRequirement,
       barriers_planning_future_development:this.selectedIaaSRequirement,
       barriers_j_a_prepared:this.selectedProcurement,
       barriers_j_a_prepared_results:this.procurementDiscussion,
+      barriers_plans_to_remove_custom:this.writeCustomRemove,
     } as FairOpportunityDTO;
   }
 
@@ -158,7 +160,7 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
       barriers_follow_on_requirement: AcquisitionPackage.fairOpportunity?.
         barriers_follow_on_requirement,
       barriers_follow_on_expected_date: AcquisitionPackage.fairOpportunity?.
-        barriers_follow_on_expected_date,
+        barriers_follow_on_expected_date_awarded,
       barriers_agency_pursuing_training_or_certs:AcquisitionPackage.fairOpportunity?.
         barriers_agency_pursuing_training_or_certs,
       barriers_planning_future_development:AcquisitionPackage.fairOpportunity?.
@@ -177,8 +179,9 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
+      this.writeCustomRemove = "false"
       this.selectedRequirement = storeData.barriers_follow_on_requirement||""
-      this.followOnDate = storeData.barriers_follow_on_expected_date||""
+      this.followOnDate = storeData.barriers_follow_on_expected_date_awarded||""
       this.selectedTrainingRequirement = storeData.barriers_agency_pursuing_training_or_certs||""
       this.selectedIaaSRequirement = storeData.barriers_planning_future_development||""
       this.selectedProcurement = storeData.barriers_j_a_prepared||""
@@ -187,13 +190,27 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    let sectionsWithNoSelectedCount = 0;
     if(this.currentData.barriers_follow_on_requirement === 'NO'){
-      this.currentData.barriers_follow_on_expected_date = ''
+      this.currentData.barriers_follow_on_expected_date_awarded = ''
+      sectionsWithNoSelectedCount++
+    }
+    if(this.currentData.barriers_agency_pursuing_training_or_certs === 'NO'){
+      sectionsWithNoSelectedCount++
+    }
+    if(this.currentData.barriers_planning_future_development === 'NO'){
+      sectionsWithNoSelectedCount++
     }
     if(this.currentData.barriers_j_a_prepared === 'NO'){
       this.currentData.barriers_j_a_prepared_results = ''
+      sectionsWithNoSelectedCount++
     }
-    this.currentData.barriers_plans_to_remove_custom =  "NO" ;
+    this.writeCustomRemove
+      = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_custom as YesNo
+    if(this.writeCustomRemove !== 'true'){
+      this.writeCustomRemove = sectionsWithNoSelectedCount === 4 ? "true": "false"
+      this.currentData.barriers_plans_to_remove_custom = this.writeCustomRemove
+    }
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
