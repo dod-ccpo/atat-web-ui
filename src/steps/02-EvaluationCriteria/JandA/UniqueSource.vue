@@ -73,7 +73,7 @@
                 ),
                 $validators.maxLength(
                   2500,
-                  'Please limit your description to 2500 characters or less'
+                  'Limit your description to 2,500 characters or less.'
                 ),
               ]
               "
@@ -125,7 +125,7 @@
 import {Component, Mixins} from "vue-property-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {hasChanges} from "@/helpers";
+import {getCSPCompanyName, hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -226,12 +226,12 @@ export default class UniqueSource extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = AcquisitionPackage.fairOpportunity;
     if (storeData) {
-      this.csp = storeData.proposed_csp ? storeData.proposed_csp : "this CSP";
+      this.csp = storeData.proposed_csp ? getCSPCompanyName(storeData.proposed_csp) : "this CSP";
       this.setSuggestedText();
       this.uniqueSourceExplanation = storeData.why_csp_is_only_capable_source ?
         storeData.why_csp_is_only_capable_source : this.suggestedText;
-      this.cspAdditionalInstructions = storeData.proposed_csp ? storeData.proposed_csp :
-        "the chosen source";
+      this.cspAdditionalInstructions = storeData.proposed_csp ?
+        getCSPCompanyName(storeData.proposed_csp) : "the chosen source";
       this.showLogicalFollowOnInstructions =
           (storeData.exception_to_fair_opportunity === "YES_FAR_16_505_B_2_I_C");
     }
