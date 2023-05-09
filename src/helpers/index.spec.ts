@@ -11,7 +11,7 @@ import {
   getCurrencyString,
   roundDecimal,
   toCurrencyString,
-  toTitleCase,
+  toTitleCase, getCSPCompanyName,
 } from "./index";
 import _ from "lodash";
 import Periods from "@/store/periods";
@@ -244,5 +244,18 @@ describe("testing src/helpers/index.ts", () => {
   ])("roundDecimal() - return rounded float number", async (input) => {
     const roundedNumber = parseFloat(input.amount.toFixed(input.decimalPlaces))
     expect(roundDecimal(input.amount, input.decimalPlaces)).toBe(roundedNumber)
+  })
+
+  it("Test getCSPCompanyName", async () => {
+    let value = getCSPCompanyName('AWS');
+    expect(value).toBe("AWS");
+    value = getCSPCompanyName('GCP');
+    expect(value).not.toBe("AWS");
+    value = getCSPCompanyName('AZURE');
+    expect(value).toBe("Microsoft");
+    value = getCSPCompanyName('ORACLE');
+    expect(value).toBe("Oracle");
+    value = getCSPCompanyName('UNKNOWN');
+    expect(value).toBe("");
   })
 });
