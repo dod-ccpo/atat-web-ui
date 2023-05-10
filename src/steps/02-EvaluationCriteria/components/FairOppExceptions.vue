@@ -52,7 +52,7 @@ export default class FairOppExceptions extends Vue {
         of quality required because the supplies or services ordered are unique or highly 
         specialized. <span class="text-base">FAR 16.505(b)(2)(i)(B)</span>`,
       value: "YES_FAR_16_505_B_2_I_B",
-      readonly: !!this.isForm,
+      readonly: !this.isForm,
     },
     {
       id: "AllFair",
@@ -61,7 +61,7 @@ export default class FairOppExceptions extends Vue {
         contract, provided that all awardees were given a fair opportunity to be considered for 
         the original order. <span class="text-base">FAR 16.505(b)(2)(i)(C)</span>`,
       value: "YES_FAR_16_505_B_2_I_C",
-      readonly: !!this.isForm,
+      readonly: !this.isForm,
     },
     {
       id: "Urgent",
@@ -70,13 +70,13 @@ export default class FairOppExceptions extends Vue {
         FAR 16.505(b)(2)(i)(A)</span><br /><span class="font-size-14 text-base">
         NOTE: This is an uncommon exception.<span>`,
       value: "YES_FAR_16_505_B_2_I_A",
-      readonly: !!this.isForm,
+      readonly: !this.isForm,
     },
     {
       id: "NoneApply",
       label: "None of these exceptions apply to this acquisition.",
       value: "NO_NONE",
-      readonly: !!this.isForm,
+      readonly: !this.isForm,
     },
   ];
 
