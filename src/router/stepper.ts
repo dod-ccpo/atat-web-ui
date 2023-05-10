@@ -144,6 +144,7 @@ import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
+import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
 import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 
 // step 10 - Generate Package Documents
@@ -175,6 +176,7 @@ import {
   MIPRResolver,
   GInvoicingResolver,
   Upload7600Resolver,
+  AppropriationOfFundsResolver,
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
@@ -196,6 +198,8 @@ import {
   showDITCOPageResolver,
   ContractingInfoResolver,
   CrossDomainResolver,
+  removeBarriersRouteResolver,
+  conductedResearchRouteResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -298,6 +302,7 @@ export const routeNames = {
   FeeCharged:"Fee_Charged",
   CostSummary:"Cost_Summary",
   EstimatesDeveloped:"Estimates_Developed",
+  AppropriationOfFunds: "Appropriation_Of_Funds",
   SupportingDocumentation:"Supporting_Documentation",
   UploadSystemDocuments:"Upload_Charts_Diagrams",
   UploadMigrationDocuments:"Upload_Process_Documents",
@@ -580,6 +585,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver:conductedResearchRouteResolver
       },      
       {
         menuText: "Other Supporting Factors",
@@ -590,7 +596,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-      },      
+      },
       {
         menuText: "Remove Barriers",
         path: "remove-barriers",
@@ -600,6 +606,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver:removeBarriersRouteResolver
       },      
       {
         menuText: "Review Barriers",
@@ -1267,6 +1274,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: Upload7600Resolver
       },
       {
+        menuText: "Appropriation of Funds",
+        excludeFromMenu: true,
+        path: "appropriation-of-funds",
+        name: routeNames.AppropriationOfFunds,
+        completePercentageWeight: 1,
+        component: AppropriationOfFunds,
+        routeResolver: AppropriationOfFundsResolver
+      }, 
+      {
         menuText: "Severability and Incremental Funding",
         path: "severability-and-incremental-funding",
         name: routeNames.SeverabilityAndIncrementalFunding,
@@ -1292,6 +1308,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
 
       },
+   
+
       // {
       //   menuText: "SummaryPage",
       //   excludeFromMenu: true,

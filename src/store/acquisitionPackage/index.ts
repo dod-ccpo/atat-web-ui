@@ -914,7 +914,12 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
     if (value.sys_id && this.acquisitionPackage && !this.acquisitionPackage.fair_opportunity) {
       this.acquisitionPackage.fair_opportunity = value.sys_id as string;
-    }  
+    } 
+
+    if (value.exception_to_fair_opportunity?.toLowerCase() === "no_none"){
+      //if exists, delete appropriation of funds data
+      await FinancialDetails.deleteAppropriationOfFunds();
+    }
   }
   @Mutation
   public async doSetMarketResearchTechniques(

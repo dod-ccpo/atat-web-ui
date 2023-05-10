@@ -41,6 +41,7 @@
   </v-form>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import { Component, Mixins } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -65,91 +66,93 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 export default class SecurityRequirements extends Mixins(SaveOnLeave) {
-private storedClassification: ClassificationLevelDTO[] = [];
-private selectedSecretSecurityRequirements: string[] = [];
-private selectedTopSecretSecurityRequirements: string[] = [];
-private selectedClearanceLevels: string[] = [];
-// pragma: allowlist secret
-private hasSecret = false;
-// pragma: allowlist secret
-private hasTopSecret = false;
-public savedData: SecurityRequirement[] = []
+  private storedClassification: ClassificationLevelDTO[] = [];
+  private selectedSecretSecurityRequirements: string[] = [];
+  private selectedTopSecretSecurityRequirements: string[] = [];
+  private selectedClearanceLevels: string[] = [];
+  // pragma: allowlist secret
+  private hasSecret = false;
+  // pragma: allowlist secret
+  private hasTopSecret = false;
+  public savedData: SecurityRequirement[] = []
 
-public get currentData(): SecurityRequirement[] {
-  let requirements:SecurityRequirement[] = []
-  if(this.hasSecret){
-    requirements.push({
-      type:"SECRET",
-      // eslint-disable-next-line camelcase
-      classification_information_type: this.selectedSecretSecurityRequirements
-    })
-  }
-  if(this.hasTopSecret){
-    requirements.push({
-      type:"TOPSECRET",
-      // eslint-disable-next-line camelcase
-      classification_information_type: this.selectedTopSecretSecurityRequirements
-    })
-  }
-  return requirements
-}
-
-
-private hasChanged(): boolean {
-  return hasChanges(this.currentData, this.savedData);
-}
-
-protected async saveOnLeave(): Promise<boolean> {
-  await AcquisitionPackage.setValidateNow(true);
-  try {
-    if (this.hasChanged()) {
-      await classificationRequirements.setSecurityRequirements(this.currentData);
-      await classificationRequirements.saveClassifiedInformationTypes();
+  public get currentData(): SecurityRequirement[] {
+    //eslint-disable-next-line prefer-const
+    let requirements:SecurityRequirement[] = []
+    if(this.hasSecret){
+      requirements.push({
+        type:"SECRET",
+        // eslint-disable-next-line camelcase
+        classification_information_type: this.selectedSecretSecurityRequirements
+      })
     }
-  } catch (error) {
-    console.log(error);
-  }
-  return true;
-}
-public openSlideoutPanel(e: Event): void {
-  if (e && e.currentTarget) {
-    const opener = e.currentTarget as HTMLElement;
-    SlideoutPanel.openSlideoutPanel(opener.id);
-  }
-}
-public async loadOnEnter(): Promise<boolean> {
-  this.storedClassification = classificationRequirements.selectedClassificationLevels;
-  this.storedClassification.forEach((classification) =>{
-    if(classification.classification === "TS"){
-      this.hasTopSecret = true
+    if(this.hasTopSecret){
+      requirements.push({
+        type:"TOPSECRET",
+        // eslint-disable-next-line camelcase
+        classification_information_type: this.selectedTopSecretSecurityRequirements
+      })
     }
-    if(classification.classification === "S"){
-      this.hasSecret = true
-    }
-  })
-  let storeData = classificationRequirements.securityRequirements
-  if(storeData){
-    storeData.forEach((requirement)=>{
-      if(requirement.type === "SECRET"){
-        this.selectedSecretSecurityRequirements = requirement.classification_information_type
+    return requirements
+  }
+
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
+    try {
+      if (this.hasChanged()) {
+        await classificationRequirements.setSecurityRequirements(this.currentData);
+        await classificationRequirements.saveClassifiedInformationTypes();
       }
-      if(requirement.type === "TOPSECRET"){
-        this.selectedTopSecretSecurityRequirements = requirement.classification_information_type
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+  public async loadOnEnter(): Promise<boolean> {
+    this.storedClassification = classificationRequirements.selectedClassificationLevels;
+    this.storedClassification.forEach((classification) =>{
+      if(classification.classification === "TS"){
+        this.hasTopSecret = true
+      }
+      if(classification.classification === "S"){
+        this.hasSecret = true
       }
     })
+    //eslint-disable-next-line prefer-const
+    let storeData = classificationRequirements.securityRequirements
+    if(storeData){
+      storeData.forEach((requirement)=>{
+        if(requirement.type === "SECRET"){
+          this.selectedSecretSecurityRequirements = requirement.classification_information_type
+        }
+        if(requirement.type === "TOPSECRET"){
+          this.selectedTopSecretSecurityRequirements = requirement.classification_information_type
+        }
+      })
+    }
+    return true;
   }
-  return true;
-}
 
 
-public async mounted(): Promise<void> {
-  const slideoutPanelContent: SlideoutPanelContent = {
-    component: SecurityRequirementsLearnMore,
-    title: "Learn More",
-  };
-  await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-  await this.loadOnEnter();
-}
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: SecurityRequirementsLearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await this.loadOnEnter();
+  }
 }
 </script>
 

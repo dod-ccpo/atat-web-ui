@@ -129,6 +129,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
@@ -396,6 +397,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         instanceClone.periodsNeeded.forEach((sysId) => {
           const periodObj = allPeriods.find((obj) => obj.sys_id === sysId);
           if (periodObj) {
+            //eslint-disable-next-line prefer-const
             let periodText = periodObj?.period_type.indexOf("BASE") > -1 
               ? "Base period" : "Option period " + (parseInt(periodObj.option_order) - 1);
             periodsNeeded.push(periodText);

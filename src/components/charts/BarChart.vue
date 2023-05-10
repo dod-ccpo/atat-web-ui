@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Chart, { ChartData, ChartOptions } from "chart.js/auto";
@@ -30,6 +31,7 @@ export default class BarChart extends Vue {
 
   public createChart(): void {
     if (this.chartId) {
+      //eslint-disable-next-line prefer-const 
       let plugins: any = [];
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
       if (this.useChartDataLabels) {
