@@ -167,7 +167,7 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
+/* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
@@ -464,7 +464,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           this.durationLabelEl.classList.add("d-none");
 
           // create a fake drag ghost image to use instead of default and hide it
-          var elem = document.createElement("div") as HTMLElement;
+          //eslint-disable-next-line prefer-const
+          let elem = document.createElement("div") as HTMLElement;
           elem.classList.add("drag-img-fake");
           elem.setAttribute("id", "DragImgFaker");
           // must include some text or it won't hide

@@ -39,7 +39,7 @@ import {
   })
 export default class ProjectDisclaimer extends Vue {
     @PropSync("projectDisclaimer", { default: "" })
-      private _selectedDisclaimer!: string | null;
+  private _selectedDisclaimer!: string | null;
     @Prop({default: "project-disclaimer"}) private groupLabelId!: string;
     @Prop({default: true}) private isForm!: boolean;
     @Prop({default: ""}) private groupLabel!: string;
@@ -48,14 +48,14 @@ export default class ProjectDisclaimer extends Vue {
 
     @Prop({ default: true }) private boldText!: boolean;
     
-public disclaimer: Checkbox[] = [ 
-  {
-    id: "Yes_ProjectDisclaimer",
-    label: `I acknowledge that I am in compliance with my Military 
+    public disclaimer: Checkbox[] = [ 
+      {
+        id: "Yes_ProjectDisclaimer",
+        label: `I acknowledge that I am in compliance with my Military 
     Service-specific policies related to cloud acquisition, as applicable.`,
-    value: "YES"
-  }
-];
+        value: "YES"
+      }
+    ];
 }
 </script>
   
