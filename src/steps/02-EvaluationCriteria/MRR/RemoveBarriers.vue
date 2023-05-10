@@ -133,7 +133,7 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   public needProcurement = false
   public procurementDiscussion = ""
   public writeCustomRemove = ""
-  public removalPlan =""
+  public removalPlanForDocGen =""
   public isNewPackage = AcquisitionPackage.isNewPackage
 
   @Watch("selectedRequirement")
@@ -154,7 +154,7 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
       barriers_j_a_prepared:this.selectedProcurement,
       barriers_j_a_prepared_results:this.procurementDiscussion,
       barriers_write_own_explanation:this.writeCustomRemove,
-      barriers_plans_to_remove_for_docgen: this.removalPlan
+      barriers_plans_to_remove_for_docgen: this.removalPlanForDocGen
     } as FairOpportunityDTO;
   }
 
@@ -185,13 +185,15 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.writeCustomRemove = "NO"
+      const fairOpp: FairOpportunityDTO = { barriers_write_own_explanation: "NO" };
+      await AcquisitionPackage.setFairOpportunity(fairOpp);
       this.selectedRequirement = storeData.barriers_follow_on_requirement||""
       this.followOnDate = storeData.barriers_follow_on_expected_date_awarded||""
       this.selectedTrainingRequirement = storeData.barriers_agency_pursuing_training_or_certs||""
       this.selectedIaaSRequirement = storeData.barriers_planning_future_development||""
       this.selectedProcurement = storeData.barriers_j_a_prepared||""
       this.procurementDiscussion = storeData.barriers_j_a_prepared_results||""
-      this.removalPlan = storeData.barriers_plans_to_remove_for_docgen || ""
+      this.removalPlanForDocGen = storeData.barriers_plans_to_remove_for_docgen || ""
     }
   }
 
@@ -213,10 +215,12 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
     }
     this.writeCustomRemove
       = AcquisitionPackage.fairOpportunity?.barriers_write_own_explanation as YesNo
-    if(this.writeCustomRemove !== 'YES'|| this.isNewPackage){
+    if(this.writeCustomRemove !== 'YES'){
       this.writeCustomRemove = sectionsWithNoSelectedCount === 4 ? "YES": "NO"
     }
-    this.removalPlan = this.writeCustomRemove === "YES" ? "CUSTOM" : "GENERATED"
+
+    this.removalPlanForDocGen = this.writeCustomRemove === "YES"
+      ? "CUSTOM" : "GENERATED"
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
