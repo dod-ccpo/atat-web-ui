@@ -326,7 +326,6 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     } 
   }
 
-
   // ========== FORM SECTION 1 - CSP IS ONLY SOURCE CAPABLE ==========
 
   public onlySourceCapableOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
