@@ -123,6 +123,10 @@ const plansToRemoveBarriers = ():boolean =>{
   return (generated !== "" || custom !== "")
 } 
 export const removeBarriersRouteResolver = (current: string): string => {
+
+  if(AcquisitionPackage.isNewPackage){
+    return routeNames.RemoveBarriers
+  }
   if(current === routeNames.ReviewBarriers){
     return plansToRemoveBarriers()
       ? routeNames.OtherSupportingFactors

@@ -134,6 +134,7 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   public procurementDiscussion = ""
   public writeCustomRemove = ""
   public removalPlan =""
+  public isNewPackage = AcquisitionPackage.isNewPackage
 
   @Watch("selectedRequirement")
   public selectedRequirementChanged(newVal: YesNo): void {
@@ -212,7 +213,7 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
     }
     this.writeCustomRemove
       = AcquisitionPackage.fairOpportunity?.barriers_write_own_explanation as YesNo
-    if(this.writeCustomRemove !== 'YES'){
+    if(this.writeCustomRemove !== 'YES'|| this.isNewPackage){
       this.writeCustomRemove = sectionsWithNoSelectedCount === 4 ? "YES": "NO"
     }
     this.removalPlan = this.writeCustomRemove === "YES" ? "CUSTOM" : "GENERATED"

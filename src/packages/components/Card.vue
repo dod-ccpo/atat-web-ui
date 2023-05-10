@@ -298,7 +298,7 @@ export default class Card extends Vue {
         }).catch(() => console.log("avoiding redundant navigation"));
       }
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
-      await acquisitionPackage.setFirstTimeVisit(false)
+      await acquisitionPackage.setIsNewPackage(false)
       break;
     case "View completed package":
       this.packageTitleClick("Waiting for Task Order");
