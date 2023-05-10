@@ -191,7 +191,7 @@
                 groupLabel="What other techniques did you use?"
                 :optional="true"
                 :items="otherTechniquesOptions"
-                :value.sync="techniquesUsed"
+                :value.sync="selectedTechniquesUsed"
                 :rules="techniquesRules"
                 :hasOtherValue="true"
                 :otherValueEntered.sync="otherTechnique"
@@ -204,7 +204,7 @@
                 <ATATTextField 
                   v-if="showPersonalKnowledgePerson"
                   id="PersonReliedUpon"
-                  class="mt-10"
+                  :class="personalKnowledgeInputClass"
                   :value.sync="personalKnowledgePerson"
                   label="Name and/or position of the person relied upon"
                   tooltipText="This refers to the following technique you selected: 
@@ -221,7 +221,7 @@
                 <ATATTextArea
                   v-if="showTechniquesSummary"
                   id="TechniquesSummary"
-                  class="mt-10"
+                  :class="techniquesSummaryInputClass"
                   :value.sync="techniquesSummary"
                   label="Summarize the market research performed using the technique(s) 
                     selected above"
@@ -301,10 +301,12 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public catalogReviewEndDate = "";
   public catalogReviewResults = "";
 
-  public techniquesUsed = "";
+  public techniquesUsed = ""; // csv string of sys ids for store/SNOW
+  public selectedTechniquesUsed: string[] = []; // array of sys ids for UI
   public otherTechnique = "";
   public personalKnowledgePerson = "";
   public personalKnowledgePersonSysId = "";
+  public otherTechniqueSysId = "";
   public techniquesSummary = "";
   public showPersonalKnowledgePerson = false;
   public showTechniquesSummary = false;
@@ -376,7 +378,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public sameDatesOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
 
   public get researchDatesEntered(): boolean {
-    return this.researchStartDate !== "";
+    return this.researchStartDate !== "" || this.researchEndDate !== "";
   }
   public get showCatalogReviewDates(): boolean {
     return (this.researchDatesEntered && this.sameAsResearchDate === "NO") 
@@ -413,12 +415,25 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     return otherOptionObj ? otherOptionObj.value : ""
   }
 
-  @Watch("techniquesUsed")
-  public techniquesUsedChanged(newVal: string[]): void {
+  @Watch("selectedTechniquesUsed")
+  public selectedTechniquesUsedChanged(newVal: string[]): void {
+    this.techniquesUsed = newVal.join(",");
     // check sys ids for selection of the "Personal knowledge in procuring... " option
     this.showPersonalKnowledgePerson = newVal.includes(this.personalKnowledgePersonSysId);
     this.showTechniquesSummary = newVal.length > 0;
   }
+
+  public get personalKnowledgeInputClass(): string {
+    return this.selectedTechniquesUsed.includes(this.otherTechniqueSysId) 
+      ? "mt-4" : "mt-10";
+  }
+  
+  public get techniquesSummaryInputClass(): string {
+    const otherTechniqueSelected = this.selectedTechniquesUsed.includes(this.otherTechniqueSysId);
+    const showPKP = this.showPersonalKnowledgePerson;
+    return showPKP ? "mt-10" : otherTechniqueSelected ? "mt-4" : "mt-10";
+  }
+
 
   // ========== END FORM SECTIONS ==========
 
@@ -436,15 +451,18 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       research_start_date: this.researchStartDate,
       research_end_date: this.researchEndDate,
       research_supporting_data: this.supportingData, 
+      
       research_review_catalogs_reviewed: this.reviewedCatalogs,
       research_review_catalogs_same_research_date: this.sameAsResearchDate,
       research_review_catalogs_start_date: this.catalogReviewStartDate,
       research_review_catalogs_end_date: this.catalogReviewEndDate,
       research_review_catalogs_review_results: this.catalogReviewResults,
-      research_other_techniques_used: this.techniquesUsed, // array of sys_ids
+
+      research_other_techniques_used: this.techniquesUsed, // csv string of sys_ids
       research_other_technique: this.otherTechnique,
       research_personal_knowledge_person_or_position: this.personalKnowledgePerson,
       research_techniques_summary: this.techniquesSummary,
+      
       research_write_own_explanation: this.writeOwnExplanation,
 
     /* eslint-enable camelcase */
@@ -452,7 +470,29 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     return Object.assign(fairOppSaved, formData);
   }
 
+  public async setOtherTechniquesOptions(): Promise<void> {
+    const techniques: MarketResearchTechniquesDTO[] | null  
+      = AcquisitionPackage.marketResearchTechniques;
+
+    if (techniques) {
+      this.otherTechniquesOptions = techniques.map((obj) => {
+        if (obj.technique_value === "PERSONAL_KNOWLEDGE") {
+          this.personalKnowledgePersonSysId = obj.sys_id as string;
+        } else if (obj.technique_value === "OTHER") {
+          this.otherTechniqueSysId = obj.sys_id as string;
+        }       
+        return {
+          id: obj.technique_value as string, 
+          value: obj.sys_id as string,
+          label: obj.technique_label as string,
+        }
+      })
+    }
+  }
+
   public async loadOnEnter(): Promise<void> {
+    await this.setOtherTechniquesOptions();
+
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.needsMRR = storeData.contract_action === "NONE";
@@ -461,18 +501,29 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.cspIsOnlySourceCapable = storeData.research_is_csp_only_source_capable;
       this.researchStartDate = storeData.research_start_date as string;
       this.researchEndDate = storeData.research_end_date as string;
+      this.showResearchEndDate = this.researchEndDate !== "";
       this.supportingData = storeData.research_supporting_data as string; 
+
       this.reviewedCatalogs = storeData.research_review_catalogs_reviewed;
       this.sameAsResearchDate = storeData.research_review_catalogs_same_research_date;
       this.catalogReviewStartDate = storeData.research_review_catalogs_start_date as string;
       this.catalogReviewEndDate = storeData.research_review_catalogs_end_date as string;
+      this.showCatalogReviewEndDate = this.catalogReviewEndDate !== "";
       this.catalogReviewResults = storeData.research_review_catalogs_review_results ||
         "The results have determined that no other offering is suitable as follows...";
-      this.techniquesUsed = storeData.research_other_techniques_used as string; // array of sys_ids
+
+      this.techniquesUsed = 
+        storeData.research_other_techniques_used as string; // csv string of sys_ids
+      this.selectedTechniquesUsed = this.techniquesUsed.split(",");
+
+      this.showPersonalKnowledgePerson = 
+        this.selectedTechniquesUsed.includes(this.personalKnowledgePersonSysId);
+
       this.otherTechnique = storeData.research_other_technique as string;
       this.personalKnowledgePerson 
         = storeData.research_personal_knowledge_person_or_position as string;
       this.techniquesSummary = storeData.research_techniques_summary as string;
+
       this.researchDetailsForDocGen = storeData.research_details_for_docgen;
 
       // if coming to form, always change to NO. Will change to YES if clicking "I want to write
@@ -484,24 +535,9 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
 
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
-        : "your CSP";
+        : "this proposed CSP";
     }
 
-    const techniques: MarketResearchTechniquesDTO[] | null  
-      = AcquisitionPackage.marketResearchTechniques;
-
-    if (techniques) {
-      this.otherTechniquesOptions = techniques.map((obj) => {
-        if (obj.technique_value === "PERSONAL_KNOWLEDGE") {
-          this.personalKnowledgePersonSysId = obj.sys_id as string;
-        }
-        return {
-          id: obj.technique_value as string, 
-          value: obj.sys_id as string,
-          label: obj.technique_label as string,
-        }
-      })
-    }
   }
 
   public async mounted(): Promise<void> {

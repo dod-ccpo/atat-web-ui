@@ -123,14 +123,16 @@ const hasMarketResearchDetails = (): boolean => {
 }
 
 export const MarketResearchEffortsRouteResolver = (current: string): string => {
-  // coming either direction
+  // if new package coming from either direction, go to form/questionnaire
   if (AcquisitionPackage.isNewPackage) {
     return routeNames.MarketResearchEfforts
   }
+  // editing existing package, does package have saved custom or generated research details?
   if (hasMarketResearchDetails()) {
+    // skip form/questionnaire
     return current === routeNames.MRRNeed
-      ? routeNames.MarketResearchReview
-      : routeNames.MRRNeed;
+      ? routeNames.MarketResearchReview // forward
+      : routeNames.MRRNeed; // backward
   }
   return routeNames.MarketResearchEfforts;
  

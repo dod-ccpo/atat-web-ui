@@ -277,15 +277,18 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   research_start_date?: string;
   research_end_date?: string;
   research_supporting_data?: string; 
+  
   research_review_catalogs_reviewed?: YesNo;
   research_review_catalogs_same_research_date?: YesNo;
   research_review_catalogs_start_date?: string;
   research_review_catalogs_end_date?: string;
   research_review_catalogs_review_results?: string;
+
   research_other_techniques_used?: string; // array of sys_ids
   research_other_technique?: string;
   research_personal_knowledge_person_or_position?: string;
   research_techniques_summary?: string;
+  
   research_write_own_explanation?: YesNo;
   // END market research efforts form
 
