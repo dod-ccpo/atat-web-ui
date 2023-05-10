@@ -117,8 +117,10 @@ export class FinancialDetailsStore extends VuexModule {
       return "";
     }
 
-    return this.fundingRequest.funding_request_type.length > 0 ?
-      this.fundingRequest?.funding_request_type : "";
+    return this.fundingRequest?.funding_request_type 
+      && this.fundingRequest?.funding_request_type?.length > 0
+      ? this.fundingRequest?.funding_request_type 
+      : "";
   }
 
   public get gInvoicingData(): baseGInvoiceData {
@@ -396,6 +398,7 @@ export class FinancialDetailsStore extends VuexModule {
      api.fundingRequestTable.update(data.sys_id, data) :
      api.fundingRequestTable.create(data);
    const savedFundingRequest = await saveFundingRequest;
+   this.setFundingRequest(savedFundingRequest);
    return savedFundingRequest;
  }
 
@@ -431,7 +434,9 @@ export class FinancialDetailsStore extends VuexModule {
         const defaultFundingRequest: FundingRequestDTO = {
           fs_form: "",
           funding_request_type: "",
-          mipr: ""
+          mipr: "",
+          appropriation_fiscal_year: "",
+          appropriation_funds_type: ""
         }
         const fundingRequest = await api.fundingRequestTable
           .create(defaultFundingRequest);
@@ -441,6 +446,29 @@ export class FinancialDetailsStore extends VuexModule {
       }
     } catch (error) {
       throw new Error(`Error occurred loading funding request ${error}`);
+    }
+  }
+
+
+  /**
+   * removes the appropriation of funds values from the store
+   */
+  @Action({rawError: true})
+  public async deleteAppropriationOfFunds(): Promise<void> {
+    const fundingRequest = this.fundingRequest as FundingRequestDTO;
+    if (fundingRequest.sys_id){
+      fundingRequest.appropriation_fiscal_year = "";
+      fundingRequest.appropriation_funds_type = "";
+      fundingRequest.fs_form = typeof this.fundingRequest?.fs_form !== "string" ? 
+        (this.fundingRequest?.fs_form as unknown as ReferenceColumn).value
+        : this.fundingRequest.fs_form;
+      fundingRequest.mipr = typeof this.fundingRequest?.mipr !== "string" ? 
+        (this.fundingRequest?.mipr as unknown as ReferenceColumn).value
+        : this.fundingRequest.mipr;
+      await api.fundingRequestTable.update(
+      fundingRequest.sys_id as string, 
+      fundingRequest);
+      this.setFundingRequest(fundingRequest);
     }
   }
 

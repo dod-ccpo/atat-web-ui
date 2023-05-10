@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <p id="Message" class="mb-5 font-weight-500">
+  <div :id="`Section${idSuffix}`">
+    <p :id="`Message${idSuffix}`" class="mb-5 font-weight-500">
       For your
       <span v-if="hasSecret">SECRET</span>
       <span v-if="hasTopSecret">TOP SECRET</span>
@@ -13,18 +13,19 @@
       </span>
     </p>
     
-    <p v-if="!isDOW" id="MessageNote" class="mb-5 ">
+    <p v-if="!isDOW" :id="`MessageNote${idSuffix}`" class="mb-5 ">
       Select all that apply to your
       <span v-if="hasSecret">SECRET</span>
       <span v-if="hasTopSecret">TOP SECRET</span>
       classification level.
     </p>
-    <p v-if="isDOW" id="DOWMessageNote" class="mb-5">
+    <p v-if="isDOW" :id="`DOWMessageNote${idSuffix}`" class="mb-5">
       Select all that apply to this support service.
     </p>
 
     <ATATCheckboxGroup
-      id="SecurityRequirements"
+      :id="`SecurityRequirements${idSuffix}`"
+      :labelSuffix="idSuffix"
       :value.sync="_selectedSecurityRequirements"
       :items="securityRequirementsCheckboxes"
       name="checkboxes"
@@ -57,6 +58,10 @@ export default class SecurityRequirementsCheckboxes extends vue {
   @Prop() private hasSecret!: boolean;
   @Prop() private hasTopSecret!: boolean;
   @Prop() private isDOW!: boolean;
+
+  private get idSuffix(): string {
+    return this.hasSecret ? "Secret" : "TopSecret";
+  }
 
   private selectedItem: string[] = []
   @Watch("selectedItem")
