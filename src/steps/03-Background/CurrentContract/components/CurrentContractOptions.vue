@@ -37,13 +37,13 @@ export default class CurrentContractOptions extends Vue {
       id: "Yes_CurrentContract",
       label: this.isWizard ? "Yes. There is a current contract for this effort." : "Yes.",
       value: "YES",
-      readonly: !this.isForm,
+      readonly: !!this.isForm,
     },
     {
       id: "No_CurrentContract",
       label: this.isWizard ? "No. This is a new requirement." : "No.",
       value: "NO",
-      readonly: !this.isForm,
+      readonly: !!this.isForm,
     },
   ];
 

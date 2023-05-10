@@ -32,18 +32,23 @@ export default class EmergencyDeclarationSupport extends Vue {
   @Prop({default: ""}) private legend!: string;
   @PropSync("rules") private _rules!: "";
 
+  //console.log(typeof isForm)
+  // public get emergencyDeclaration(): boolean {
+  //   return this.isForm;
+  // }
+
   private radioGroupItems: RadioButton[] = [
     {
       id: "Yes_EmergencyDeclaration",
       label: "Yes.",
       value: "YES",
-      readonly: !this.isForm,
+      readonly: !!this.isForm,
     },
     {
       id: "No_EmergencyDeclaration",
       label: "No.",
       value: "NO",
-      readonly: !this.isForm,
+      readonly: !!this.isForm,
     },
   ];
 }
