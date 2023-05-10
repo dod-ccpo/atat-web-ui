@@ -258,7 +258,11 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import { FairOpportunityDTO, MarketResearchTechniquesDTO } from "@/api/models";
+import { 
+  FairOpportunityDTO, 
+  FairOppDocGenType, 
+  MarketResearchTechniquesDTO 
+} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { Checkbox, RadioButton, YesNo } from "types/Global";
@@ -282,6 +286,7 @@ import { format } from "date-fns";
 export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public cspName = "";  
   public writeOwnExplanation: YesNo | undefined = "";
+  public researchDetailsForDocGen: FairOppDocGenType = "";
   public isLoading = false;
 
   public needsMRR = false;
@@ -468,7 +473,14 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.personalKnowledgePerson 
         = storeData.research_personal_knowledge_person_or_position as string;
       this.techniquesSummary = storeData.research_techniques_summary as string;
-      this.writeOwnExplanation = storeData.research_write_own_explanation;
+      this.researchDetailsForDocGen = storeData.research_details_for_docgen;
+
+      // if coming to form, always change to NO. Will change to YES if clicking "I want to write
+      // my own explanation" or if all form sections are answered "NO" (or nothing selected)
+      this.writeOwnExplanation = "NO"; 
+      // eslint-disable-next-line camelcase
+      const fairOpp: FairOpportunityDTO = { research_write_own_explanation: "NO" };
+      await AcquisitionPackage.setFairOpportunity(fairOpp);
 
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
@@ -503,28 +515,39 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    let sectionsWithNoSelectedCount = 0;
+
+    // ensure data cleared if any section main question is "NO"
+    /* eslint-disable camelcase */
+    if (this.cspIsOnlySourceCapable !== "YES") {
+      this.researchStartDate = "";
+      this.researchEndDate = "";
+      this.supportingData = "";
+      sectionsWithNoSelectedCount++;
+    }
+    if (!this.cspHasPeculiarFeature || this.reviewedCatalogs !== "YES") {
+      this.sameAsResearchDate = "";
+      this.catalogReviewStartDate = "";
+      this.catalogReviewEndDate = "";
+      this.catalogReviewResults = "";
+      sectionsWithNoSelectedCount++;
+    }
+    if (!this.needsMRR) {
+      this.techniquesUsed = "";
+      this.otherTechnique = "";
+      this.personalKnowledgePerson = "";
+      this.techniquesSummary = "";
+    }
+    this.writeOwnExplanation
+      = AcquisitionPackage.fairOpportunity?.research_write_own_explanation as YesNo
+    if (this.writeOwnExplanation !== "YES") {
+      this.writeOwnExplanation = 
+        sectionsWithNoSelectedCount === 2 ? "YES": "NO"
+    }
+    this.researchDetailsForDocGen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
+
     try {
       if (this.hasChanged()) {
-        // ensure data cleared if any section main question is "NO"
-        /* eslint-disable camelcase */
-        if (this.cspIsOnlySourceCapable === "NO") {
-          this.researchStartDate = "";
-          this.researchEndDate = "";
-          this.supportingData = "";
-        }
-        if (!this.cspHasPeculiarFeature || this.reviewedCatalogs === "NO") {
-          this.sameAsResearchDate = "";
-          this.catalogReviewStartDate = "";
-          this.catalogReviewEndDate = "";
-          this.catalogReviewResults = "";
-        }
-        if (!this.needsMRR) {
-          this.techniquesUsed = "";
-          this.otherTechnique = "";
-          this.personalKnowledgePerson = "";
-          this.techniquesSummary = "";
-        }
-
         /* eslint-enable camelcase */
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }

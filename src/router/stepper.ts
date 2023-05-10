@@ -189,6 +189,7 @@ import {
   IGCESupportingDocumentationResolver,
   BVTOResolver,
   ProposedCSPRouteResolver,
+  MarketResearchEffortsRouteResolver,
   CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
@@ -565,7 +566,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-      },      
+        routeResolver: MarketResearchEffortsRouteResolver,
+        additionalButtons: [
+          {
+            buttonText: "I want to write my own explanation",
+            buttonId: "WriteOwnMarketResearchDetails",
+            buttonClass: "secondary",
+            actionName: "writeOwnMarketResearchDetails",
+          },
+        ]
+      },
       {
         menuText: "Market Research Review",
         path: "market-research-review",
