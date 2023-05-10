@@ -3,6 +3,7 @@ import {
   randomAlphaNumeric,
   randomNumber,
   randomString,
+  suffixId,
 } from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import co from "../../../selectors/contractOffice.sel";
@@ -121,9 +122,11 @@ describe("Test suite: Contract Details: E2E work flow", () => {
       contractDetails.secretCheckbox,
       securityReqDetails.secret.checkboxes
     );
-    cy.selectCheckBoxes(["#Checkbox_4", "#Checkbox_6"]);
+    const secretcb_1Sel = suffixId(contractDetails.checkbox_1, "Secret");
+    const secretcb_2Sel = suffixId(contractDetails.checkbox_2, "Secret");
+    cy.selectCheckBoxes([secretcb_1Sel, secretcb_2Sel]);
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone("#Checkbox_4");
+    cy.waitUntilElementIsGone(secretcb_1Sel);
     cy.verifyPageHeader("Do you require a cross-domain solution (CDS)?");
     cy.findElement(contractDetails.cdsYesOption)
       .click({ force: true })
@@ -186,16 +189,18 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.waitUntilElementIsGone(contractDetails.level4);
     cy.verifyPageHeader("Let’s find out more about your security requirements");
     cy.verifyTextMatches(
-      contractDetails.secretLabel,
+      contractDetails.tsLabel,
       securityReqDetails.topSecret.label
     );
     cy.verifyCheckBoxLabels(
-      contractDetails.secretCheckbox,
+      contractDetails.tsCheckbox,
       securityReqDetails.topSecret.checkboxes
     );
-    cy.selectCheckBoxes(["#Checkbox_2", "#Checkbox_8"]);
+    const tscb_1Sel = suffixId(contractDetails.checkbox_1, "TopSecret");
+    const tscb_7Sel = suffixId(contractDetails.checkbox_7, "TopSecret");
+    cy.selectCheckBoxes([tscb_1Sel, tscb_7Sel]);
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone("#Checkbox_4");
+    cy.waitUntilElementIsGone(tscb_7Sel);
     cy.verifyPageHeader("Do you have a current contract for this effort?");
   });
 
@@ -218,23 +223,27 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.btnClick(common.continueBtn, " Continue ");
     cy.waitUntilElementIsGone(contractDetails.level4);
     cy.verifyPageHeader("Let’s find out more about your security requirements");
+    cy.findElement(contractDetails.secretSection).should("exist");
     cy.verifyTextMatches(
       contractDetails.secretLabel,
       securityReqDetails.secret.label
     );
+    cy.findElement(contractDetails.tsSection).should("exist");
     cy.findElement(contractDetails.tsLabel).scrollIntoView();
     cy.verifyTextMatches(
       contractDetails.tsLabel,
       securityReqDetails.topSecret.label
     );
-    //Temporarily commenting because need ids
-    // cy.verifyCheckBoxLabels(
-    //   contractDetails.tsCheckbox,
-    //   securityReqDetails.topSecret.checkboxes
-    // );
-    cy.selectCheckBoxes(["#Checkbox_5", "#Checkbox_9"]);
+    cy.verifyCheckBoxLabels(
+      contractDetails.tsCheckbox,
+      securityReqDetails.topSecret.checkboxes
+    );
+    const scb_3Sel = suffixId(contractDetails.checkbox_3, "Secret");
+    const tscb_2Sel = suffixId(contractDetails.checkbox_2, "TopSecret");
+    const tscb_4Sel = suffixId(contractDetails.checkbox_4, "TopSecret");
+    cy.selectCheckBoxes([scb_3Sel, tscb_2Sel, tscb_4Sel]);
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone("#Checkbox_4");
+    cy.waitUntilElementIsGone(tscb_2Sel);
     cy.wait(2000);
     cy.verifyPageHeader("Do you require a cross-domain solution (CDS)?");
     cy.findElement(contractDetails.cdsYesOption)
@@ -295,9 +304,12 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.btnClick(common.continueBtn, " Continue ");
     cy.waitUntilElementIsGone(contractDetails.level4);
     cy.verifyPageHeader("Let’s find out more about your security requirements");
-    cy.selectCheckBoxes(["#Checkbox_5", "#Checkbox_9"]);
+    const scb_5Sel = suffixId(contractDetails.checkbox_5, "Secret");
+    const tscb_6Sel = suffixId(contractDetails.checkbox_6, "TopSecret");
+    const tscb_9Sel = suffixId(contractDetails.checkbox_9, "TopSecret");
+    cy.selectCheckBoxes([scb_5Sel, tscb_6Sel, tscb_9Sel]);
     cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone("#Checkbox_4");
+    cy.waitUntilElementIsGone(tscb_9Sel);
     cy.verifyPageHeader("Do you require a cross-domain solution (CDS)?");
     cy.findElement(contractDetails.cdsYesOption)
       .click({ force: true })

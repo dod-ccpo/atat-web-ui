@@ -104,14 +104,25 @@ module.exports = {
   activeCheckBox: "#ClassificationLevelCheckboxes .v-input--is-label-active",
 
   //Security Requirements page
-  secretCheckbox: "#SecurityRequirements input[type=checkbox]",
-  secretCheckedbox: "#SecurityRequirements input[type=checkbox]:checked",
-  secretLabel: ":nth-child(1) > #MessageNote span",
-  tsLabel: ":nth-child(3) > #MessageNote span",
-  tsCheckbox: ":nth-child(2) #SecurityRequirements input[type=checkbox]",
+  secretCheckbox: "#SecurityRequirementsSecret input[type=checkbox]",
+  secretCheckedbox: "#SecurityRequirementsSecret input[type=checkbox]:checked",
+  secretLabel: "#MessageNoteSecret span",
+  secretSection: "#SectionSecret",
+  tsSection: "#SectionTopSecret",
+  tsLabel: "#MessageNoteTopSecret span",
+  tsCheckbox: "#SecurityRequirementsTopSecret input[type=checkbox]",
+  tsCheckedbox: "#SecurityRequirementsTopSecret input[type=checkbox]:checked",
   secretErrorCheckbox:
-    "#SecurityRequirements input[type=checkbox] .field-error",
-
+    "#SecurityRequirementsSecret input[type=checkbox] .field-error",
+  checkbox_1: "#Checkbox_1",
+  checkbox_2: "#Checkbox_2",
+  checkbox_3: "#Checkbox_3",
+  checkbox_4: "#Checkbox_4",
+  checkbox_5: "#Checkbox_5",
+  checkbox_6: "#Checkbox_6",
+  checkbox_7: "#Checkbox_7",
+  checkbox_8: "#Checkbox_8",
+  checkbox_9: "#Checkbox_9",
   //Cross Domain
   cdsRadiogroup: "#needsCDSGroup_radio_group_control",
   cdsYesOption: "#Radio_YesCdsSolution",
