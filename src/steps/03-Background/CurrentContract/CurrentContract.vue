@@ -4,13 +4,14 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Do you have a current contract for this effort?
+            Do you have a current or previous contract for this effort?
           </h1>
           <div class="copy-max-width">
             <p class="mb-8">
-              If your acquisition is a follow-on requirement, we’ll gather details 
-              about your contract. Your current contract will serve as a background 
-              on multiple documents within your final acquisition package, as applicable.
+              If your acquisition is a follow-on requirement,
+              we’ll gather details about your contract(s). Your current contract
+              will serve as a background on multiple documents within your final acquisition 
+              package, as applicable.
             </p>
             <CurrentContractOptions                                  
               :card="true"
