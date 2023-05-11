@@ -492,6 +492,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     this.techniquesUsed = newVal.join(",");
     // check sys ids for selection of the "Personal knowledge in procuring... " option
     this.showPersonalKnowledgePerson = newVal.includes(this.personalKnowledgePersonSysId);
+    debugger;
     this.showTechniquesSummary = newVal.length > 0;
   }
 
@@ -608,7 +609,8 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
 
       this.techniquesUsed = 
         storeData.research_other_techniques_used as string; // csv string of sys_ids
-      this.selectedTechniquesUsed = this.techniquesUsed.split(",");
+      this.selectedTechniquesUsed = this.techniquesUsed.length 
+        ? this.techniquesUsed.split(",") : [];
 
       this.showPersonalKnowledgePerson = 
         this.selectedTechniquesUsed.includes(this.personalKnowledgePersonSysId);
