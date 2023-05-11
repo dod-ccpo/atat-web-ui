@@ -1,0 +1,64 @@
+{
+  "secret": {
+    "label": "SECRET",
+    "checkboxes": [
+      "Communications Security (COMSEC) Information Includes accountable or non-accountable COMSEC information and controlled crytographic items (CCI)",
+      "Restricted Data",
+      "Critical Nuclear Weapon Design Information (CNWDI) If CNWDI access is required, then Restricted Data must also be selected.",
+      "Formerly Restricted Data",
+      "National Intelligence Information: Sensitive Compartmented Information (SCI)",
+      "National Intelligence Information: Non-SCI",
+      "Special Access Program (SAP) Information",
+      "North Atlantic Treaty Organization (NATO) Information",
+      "Foreign Government Information (FGI)",
+      "Alternative Compensatory Control Measures (ACCM) Information",
+      "Controlled Unclassified Information (CUI)",
+      "Other - Secure Internet Protocol Router Network (SIPRNET) / Joint Worldwide Intelligence Communciations System (JWICS)"
+    ]
+  },
+  "topSecret": {
+    "label": "TOP SECRET",
+    "checkboxes": [
+      "Communications Security (COMSEC) Information Includes accountable or non-accountable COMSEC information and controlled crytographic items (CCI)",
+      "Restricted Data",
+      "Critical Nuclear Weapon Design Information (CNWDI) If CNWDI access is required, then Restricted Data must also be selected.",
+      "Formerly Restricted Data",
+      "National Intelligence Information: Sensitive Compartmented Information (SCI)",
+      "National Intelligence Information: Non-SCI",
+      "Special Access Program (SAP) Information",
+      "North Atlantic Treaty Organization (NATO) Information",
+      "Foreign Government Information (FGI)",
+      "Alternative Compensatory Control Measures (ACCM) Information",
+      "Controlled Unclassified Information (CUI)",
+      "Other - Secure Internet Protocol Router Network (SIPRNET) / Joint Worldwide Intelligence Communciations System (JWICS)"
+    ]
+  },
+  "unClassTSCDS": {
+    "checkboxes": [
+      "Unclassified to Top Secret",
+      "Top Secret to Unclassified"
+    ]
+  },
+  "unClassSecretCDS": {
+    "checkboxes": [
+      "Unclassified to Secret",
+      "Secret to Unclassified"
+    ]
+  },
+  "secToTS": {
+    "checkboxes": [
+      "Secret to Top Secret",
+      "Top Secret to Secret"
+    ]
+  },
+  "classCDS": {
+    "checkboxes": [
+      "Unclassified to Secret",
+      "Unclassified to Top Secret",
+      "Secret to Unclassified",
+      "Secret to Top Secret",
+      "Top Secret to Unclassified",
+      "Top Secret to Secret"
+    ]
+  }
+}
