@@ -62,8 +62,8 @@
           <ATATRadioGroup
             id="PriorProcurement"
             name="PriorProcurement"
-            tooltip="If there are no previous contracts related to this effort, select “No.” We’ll
-             find out more about your procurement history in the Background section."
+            tooltipText="If there are no previous contracts related to this effort, select “No.”
+             We’ll find out more about your procurement history in the Background section."
             legend="Was a J&A prepared to support any prior procurements related to this effort?"
             :value.sync="selectedProcurement"
             :items="priorProcurement"
