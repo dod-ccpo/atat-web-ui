@@ -21,7 +21,7 @@
             :rules="[
                 $validators.required('Describe the actions proposed to remove barriers to fair' +
                  ' opportunity..'),
-                $validators.maxLength(2500)
+                $validators.maxLength(2500,'Limit your description to 2,500 characters or less.')
             ]"
           />
           <v-btn
