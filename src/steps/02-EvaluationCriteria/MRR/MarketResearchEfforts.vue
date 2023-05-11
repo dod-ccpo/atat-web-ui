@@ -89,7 +89,9 @@
                   :validateItOnBlur="true"
                   :rules="[
                     $validators.required('Describe the results of your JWCC Contracts review.'),
-                    $validators.maxLength(1000)
+                    $validators.maxLength(
+                      1000, 'Limit your description to 1,000 characters or less.'
+                    )
                   ]"
                 />
 
@@ -114,7 +116,7 @@
                   <ATATRadioGroup 
                     id="ReviewedCatalogs"
                     name="ReviewedCatalogs"
-                    v-if="researchDatesEntered"
+                    v-if="hasResearchDates"
                     legend="Was this research conducted on the same date or date range 
                       as indicated above?"
                     :value.sync="sameAsResearchDate"
@@ -133,6 +135,7 @@
                         ]"
                         :value.sync="catalogReviewStartDate"
                         :min="minResearchStartDate"
+                        :max="today"
                         label="Start date"
                         placeHolder="MM/DD/YYYY"
                       />
@@ -162,6 +165,7 @@
                       ]"
                       :value.sync="catalogReviewEndDate"
                       :min="minCatalogReviewEndDate"
+                      :max="today"
                       label="End date"
                       placeHolder="MM/DD/YYYY"
                     />
@@ -180,7 +184,9 @@
                     :validateItOnBlur="true"
                     :rules="[
                       $validators.required('Describe the results of your JWCC catalog review.'),
-                      $validators.maxLength(1000)
+                      $validators.maxLength(
+                        1000, 'Limit your description to 1,000 characters or less.'
+                      )
                     ]"
                   />
 
@@ -237,7 +243,9 @@
                   :noResize="false"
                   :rules="[
                     $validators.required('Enter a description of the research performed.'),
-                    $validators.maxLength(1000)
+                    $validators.maxLength(
+                      1000,'Limit your description to 1,000 characters or less.'
+                    )
                   ]"
 
                 />
@@ -273,7 +281,7 @@ import _ from "lodash";
 import { Checkbox, RadioButton, YesNo } from "types/Global";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { addDays, format, isAfter, isBefore, isSameDay, parseISO, sub } from "date-fns";
+import { addDays, format, formatISO, isAfter, isBefore, isSameDay, parseISO, sub } from "date-fns";
 
 @Component({
   components: {
@@ -334,6 +342,9 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public dayAfter(date: Date): string {
     return format(addDays(date, 1), "MM/dd/yyyy");
   }
+  public formatISOShort(date: Date): string {
+    return format(date, "yyyy-MM-dd");
+  }
 
   // =================================================================
   // ========== FORM SECTION 1 - CSP IS ONLY SOURCE CAPABLE ==========
@@ -363,11 +374,10 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
   }
 
+
   @Watch("researchStartDate")
   public researchStartDateChanged(): void {
-    debugger;
     if (this.researchStartDate) {
-      const today = new Date();
       const start = this.getDate(this.researchStartDate);
       if (this.researchEndDate) {
         // make sure end date is after start date
@@ -375,33 +385,16 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
         if (isAfter(start, end) || isSameDay(start, end)) {
           this.researchEndDate = this.dayAfter(start);
         }
-        if (isBefore(end, start)) {
-          this.minResearchEndDate = this.dayAfter(start);
-          debugger;
-        }
-      } else {
-        this.minResearchEndDate = this.dayAfter(start);
       }
+      this.minResearchEndDate = this.formatISOShort(new Date(this.dayAfter(start)));
     }
   }
   // min start date is 1 year ago
-  public minResearchStartDate = format(sub(new Date(), {years: 1}), "yyyy-MM-dd");
+  public minResearchStartDate = this.formatISOShort(sub(new Date(), {years: 1}));
   // default min start date is the day after 1 year ago
-  public minResearchEndDate = 
-    format(addDays(sub(new Date(), {years: 1}), 1), "yyyy-MM-dd");
-  public today = format(new Date(), "yyyy-MM-dd");
-
-  // min end date must be after start date
-  // public get minResearchEndDate(): string {   
-  //   const startDate = this.getDate(this.researchStartDate);
-  //   debugger;
-  //   const today = new Date();
-  //   const dayAfter = isBefore(startDate, today) 
-  //     ? format(today, "yyyy-MM-dd")
-  //     : this.dayAfter(startDate);
-  //   debugger
-  //   return this.researchStartDate && dayAfter ? dayAfter : "";
-  // }
+  public minResearchEndDate: string = 
+    this.formatISOShort(addDays(sub(new Date(), {years: 1}), 1));
+  public today = this.formatISOShort(new Date());
 
   // =====================================================
   // ========== FORM SECTION 2 - CATALOG REVIEW ==========
@@ -419,14 +412,17 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public get wereCatalogsReviewed(): boolean {
     return this.reviewedCatalogs === "YES";
   }
-  public sameDatesOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
+  public sameDatesOptions: RadioButton[] = [
+    { id: "YesSameDates", label: "Yes", value: "YES" },
+    { id: "NoSameDates", label: "No, I want to enter a new date or date range.", value: "NO" },
+  ];
 
-  public get researchDatesEntered(): boolean {
-    return this.researchStartDate !== "" || this.researchEndDate !== "";
+  public get hasResearchDates(): boolean {
+    return this.researchStartDate !== "";
   }
   public get showCatalogReviewDates(): boolean {
-    return (this.researchDatesEntered && this.sameAsResearchDate === "NO") 
-      || !this.researchDatesEntered;
+    return (this.hasResearchDates && this.sameAsResearchDate === "NO") 
+      || !this.hasResearchDates;
   }
   public showCatalogReviewEndDate = false;
   public get catalogReviewEndDateBtnText(): string {
@@ -441,6 +437,22 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.catalogReviewEndDate = "";
     }
   }
+  @Watch("catalogReviewStartDate")
+  public catalogReviewStartDateChanged(): void {
+    if (this.catalogReviewStartDate) {
+      const start = this.getDate(this.catalogReviewStartDate);
+      if (this.catalogReviewEndDate) {
+        const end = this.getDate(this.catalogReviewEndDate);
+        if (isAfter(start, end) || isSameDay(start, end)) {
+          this.catalogReviewEndDate = this.dayAfter(start);
+        }
+      }
+      this.minCatalogReviewEndDate = this.formatISOShort(new Date(this.dayAfter(start)));
+    }
+  }
+
+  public minCatalogReviewEndDate: string = 
+    this.formatISOShort(addDays(sub(new Date(), {years: 1}), 1));
 
   // =======================================================
   // ========== FORM SECTION 3 - OTHER TECHNIQUES ==========
@@ -617,10 +629,10 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.catalogReviewResults = "";
       sectionsWithNoSelectedCount++;
     }
-    debugger;
+
     if (this.sameAsResearchDate === "YES") {
-      this.catalogReviewStartDate = "";
-      this.catalogReviewEndDate = "";
+      this.catalogReviewStartDate = this.researchStartDate;
+      this.catalogReviewEndDate = this.researchEndDate;
     }
 
     if (!this.needsMRR) {
@@ -631,6 +643,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
     this.writeOwnExplanation
       = AcquisitionPackage.fairOpportunity?.research_write_own_explanation as YesNo
+    
     if (this.writeOwnExplanation !== "YES") {
       this.writeOwnExplanation = 
         sectionsWithNoSelectedCount === 2 ? "YES": "NO"

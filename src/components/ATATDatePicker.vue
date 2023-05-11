@@ -251,7 +251,6 @@ export default class ATATDatePicker extends Vue {
    */
   private addMasks(): void {
     [this.id + "DatePickerTextField"].forEach((tbId) => {
-      debugger;
       Inputmask({
         alias: "datetime",
         inputFormat: "mm/dd/yyyy",
