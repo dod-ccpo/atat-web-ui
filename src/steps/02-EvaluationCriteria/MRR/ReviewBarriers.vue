@@ -26,7 +26,7 @@
           />
           <v-btn
             id="RestoreSuggestionButton"
-            v-if="!writeOwnExplanation"
+            v-if="!writeOwnExplanation || this.docgenType === 'GENERATED' "
             class="secondary font-size-14 px-4 mb-1 mt-1"
             :disabled="isBarriersToOpportunityIsDefault"
             @click="confirmRestoreDefaultText"
@@ -83,6 +83,9 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
   public showRestoreModal = false;
   public writeOwnExplanation = false;
   public isBarriersToOpportunityIsDefault = false;
+  public docgenType = ""
+  public plansToRemoveCustom=""
+  public plansToRemoveGenerated=""
 
 
   public get getRowCount(): number {
@@ -101,24 +104,62 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
   public confirmRestoreDefaultText(): void {
     this.showRestoreModal = true;
   }
-  get btnRestoreIconColor(): string {
+  public get btnRestoreIconColor(): string {
     return this.isBarriersToOpportunityIsDefault ? "disabled" : "primary";
+  }
+
+  public get followOnP():string {
+    return "To overcome future barriers to competition," +
+      this.agency + " is preparing a fair opportunity competitive" +
+      " follow-on requirement. The follow-on is expected to be" +
+      " completed, solicited, and awarded by " + this.insertDate + "."
+  }
+  public get trainingCertP():string {
+    return "To overcome future barriers to competition," +
+      this.agency +" will pursue training and certification for" +
+      " Government engineers in other technologies."
+  }
+  public get futureDevelopmentP():string {
+    return "To overcome future barriers to competition," +
+      " future development and enhancement of IaaS components will include" +
+      " shifting to a containerized platform. This will enable multiple" +
+      " vendors to meet the requirements which will enable the flexibility" +
+      " to shift workload based on financial and mission requirements."
+  }
+
+  public generateSuggestion():void {
+    const followOn = this.savedData?.barriers_follow_on_requirement === "YES"
+    const training = this.savedData?.barriers_agency_pursuing_training_or_certs === "YES"
+    const development = this.savedData?.barriers_planning_future_development === "YES"
+    let suggestedText = ""
+    if(followOn){
+      suggestedText += this.followOnP
+      if(training || development || this.previousJA) suggestedText += "\n\n"
+    }
+    if(training){
+      suggestedText += this.trainingCertP
+      if(development || this.previousJA) suggestedText += "\n\n"
+    }
+    if(development){
+      suggestedText += this.futureDevelopmentP
+      if(this.previousJA) suggestedText += "\n\n"
+    }
+    if(this.previousJA){
+      suggestedText += this.previousJA
+    }
+    this.barriersToOpportunity = this.barriersToOpportunity || suggestedText
+    this.defaultSuggestion = suggestedText
   }
 
   private get currentData(): FairOpportunityDTO {
     return {
-      barriers_plans_to_remove_custom: this.barriersToOpportunity,
-      barriers_plans_to_remove_generated: this.defaultSuggestion
+      barriers_plans_to_remove_custom: this.plansToRemoveCustom,
+      barriers_plans_to_remove_generated: this.plansToRemoveGenerated
     } as FairOpportunityDTO;
   }
 
-  private get savedData(): FairOpportunityDTO {
-    return {
-      barriers_plans_to_remove_custom: AcquisitionPackage.fairOpportunity?.
-        barriers_plans_to_remove_custom,
-      barriers_plans_to_remove_generated: AcquisitionPackage.fairOpportunity?.
-        barriers_plans_to_remove_generated,
-    } as FairOpportunityDTO;
+  private get savedData(): FairOpportunityDTO | null {
+    return AcquisitionPackage.getFairOpportunity;
   }
 
   private hasChanged(): boolean {
@@ -141,41 +182,29 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
       this.insertDate = storeData.barriers_follow_on_expected_date_awarded||""
       this.previousJA = storeData.barriers_j_a_prepared_results||""
 
-      if(storeData.barriers_follow_on_requirement === "YES"){
-        this.defaultSuggestion += "To overcome future barriers to competition," +
-           this.agency + " is preparing a fair opportunity competitive" +
-          " follow-on requirement. The follow-on is expected to be" +
-          " completed, solicited, and awarded by " + this.insertDate + "."
-      }
-      if(storeData.barriers_agency_pursuing_training_or_certs === "YES"){
-        this.defaultSuggestion += "\n\n" + "To overcome future barriers to competition," +
-          this.agency +" will pursue training and certification for" +
-          " Government engineers in other technologies."
-      }
-      if(storeData.barriers_planning_future_development === "YES"){
-        this.defaultSuggestion += "\n\n" + "To overcome future barriers to competition," +
-          " future development and enhancement of IaaS components will include" +
-          " shifting to a containerized platform. This will enable multiple" +
-          " vendors to meet the requirements which will enable the flexibility" +
-          " to shift workload based on financial and mission requirements."
-      }
-
-      if(this.previousJA){
-        this.defaultSuggestion += this.previousJA
-      }
       this.writeOwnExplanation = storeData.cause_write_own_explanation === "YES";
       if (!this.writeOwnExplanation) {
-        this.barriersToOpportunity = this.defaultSuggestion
-      }
-      if(storeData.barriers_plans_to_remove_custom){
-        this.barriersToOpportunity = storeData.barriers_plans_to_remove_custom
+        this.generateSuggestion()
       }
 
+      this.plansToRemoveCustom = storeData.barriers_plans_to_remove_custom||""
+      this.plansToRemoveGenerated = storeData.barriers_plans_to_remove_generated
+        || this.defaultSuggestion
+      this.docgenType = storeData.barriers_plans_to_remove_for_docgen || ""
+      this.barriersToOpportunity = this.docgenType === "GENERATED"
+        ? this.plansToRemoveGenerated : this.plansToRemoveCustom
     }
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-
+    if(this.docgenType === "GENERATED"){
+      this.plansToRemoveGenerated = this.barriersToOpportunity
+      if(this.plansToRemoveGenerated === this.defaultSuggestion){
+        this.plansToRemoveGenerated = ""
+      }
+    }else{
+      this.plansToRemoveCustom = this.barriersToOpportunity
+    }
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
