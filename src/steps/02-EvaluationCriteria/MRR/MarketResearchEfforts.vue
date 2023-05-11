@@ -10,8 +10,14 @@
             {{ introText }} 
             If you would rather skip these questions, click the “I want to write my 
             own explanation” button below. 
-            <!-- TODO - make text below link for opening slideout - AT-9006 -->
-            Learn more about market research for the JWCC Contract 
+            <a id="LearnMoreIGCE"
+               role="button"
+               tabindex="0"
+               @click="openSlideoutPanel"
+               @keydown.enter="openSlideoutPanel"
+               @keydown.space="openSlideoutPanel">
+              <span class="">Learn more about market research for the JWCC Contract</span>
+            </a>
           </p>
           <div class="max-width-740">
             <ATATRadioGroup 
@@ -283,6 +289,12 @@ import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { addDays, format, formatISO, isAfter, isBefore, isSameDay, parseISO, sub } from "date-fns";
 
+import SlideoutPanel from "@/store/slideoutPanel";
+import {SlideoutPanelContent} from "../../../../types/Global";
+import MarketResearchEffortsLearnMore
+  from "@/steps/02-EvaluationCriteria/MRR/MarketResearchEffortsLearnMore.vue";
+
+
 @Component({
   components: {
     ATATCheckboxGroup,
@@ -293,6 +305,7 @@ import { addDays, format, formatISO, isAfter, isBefore, isSameDay, parseISO, sub
     ATATSVGIcon,
     ATATTextArea,
     ATATTextField,
+    MarketResearchEffortsLearnMore,
   }
 })
 
@@ -598,7 +611,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "this proposed CSP";
     }
-
+    await this.initializeSlideoutPanel();
   }
 
   public async mounted(): Promise<void> {
@@ -662,7 +675,24 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     return true;
   }
 
+  /**
+   * Opens the slideout panel assuming that the panel is already initialized.
+   */
+  public async openSlideoutPanel(e: Event): Promise<void> {
+    const opener = e.currentTarget as HTMLElement;
+    SlideoutPanel.openSlideoutPanel(opener.id);
+  };
 
+  /**
+   * Initializes the slideout panel by setting the slideout panel component.
+   */
+  public async initializeSlideoutPanel(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: MarketResearchEffortsLearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
 
 }
-</script>
+

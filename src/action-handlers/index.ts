@@ -17,6 +17,7 @@ const actionHandlerNames = {
   clearCurrentContractInfo: "clearCurrentContractInfo",
   confirmDeleteTravelAll: "confirmDeleteTravelAll",
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
+  WriteOwnBarriers: "WriteOwnBarriers",
   openTOSearchModal: "openTOSearchModal",
   startProvisioning: "startProvisioning",
   didNotUseDapps: "didNotUseDapps"
@@ -30,6 +31,7 @@ const actions =  {
   [actionHandlerNames.clearCurrentContractInfo]: clearCurrentContractInfo,
   [actionHandlerNames.confirmDeleteTravelAll]: confirmDeleteTravelAll,
   [actionHandlerNames.writeOwnSoleSourceCause]: writeOwnSoleSourceCause,
+  [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
   [actionHandlerNames.openTOSearchModal]: openTOSearchModal,
   [actionHandlerNames.startProvisioning]: startProvisioning,
   [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
@@ -54,6 +56,18 @@ async function writeOwnSoleSourceCause() {
   await AcquisitionPackage.setFairOpportunity(fairOpp);
   router.push({
     name: routeNames.SoleSourceReview,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));
+}
+async function WriteOwnBarriers() {
+  // eslint-disable-next-line camelcase
+  const fairOpp: FairOpportunityDTO = { barriers_write_own_explanation: "YES" };
+  await AcquisitionPackage.setFairOpportunity(fairOpp);
+  router.push({
+    name: routeNames.ReviewBarriers,
     params: {
       direction: "next"
     },

@@ -22,7 +22,7 @@
       <v-checkbox
         v-for="(item, index) in _items"
         v-model="_selected"
-        :id="'Checkbox_' + getIdText(item.id)"
+        :id="'Checkbox_' + getIdText(item.id) + checkboxLabelSuffix"
         :class="[
           card ? '_checkbox-card' : '_checkbox',
           color ? '_checkbox-' + color : '',
@@ -213,6 +213,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private cardNormal?: boolean;
   @Prop() private labelFontSize?: string;
   @Prop() private labelFontWeight?: string;
+  @Prop() private labelSuffix?: string;
   @Prop() private textFieldAppendText?: string;
   @Prop() private textFieldWidth?: number;
   @Prop({ default: "text" }) private textFieldType?: string;
@@ -428,6 +429,10 @@ export default class ATATCheckboxGroup extends Vue {
 
   public get labelStyles(): string {
     return this.labelWidth ? `min-width: ${this.labelWidth}px;` : "";
+  }
+
+  public get checkboxLabelSuffix(): string {
+    return this.labelSuffix ? "_" + this.labelSuffix : "";
   }
 
   public async created(): Promise<void>{
