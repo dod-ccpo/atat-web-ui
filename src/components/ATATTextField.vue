@@ -79,6 +79,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
@@ -258,6 +259,7 @@ export default class ATATTextField extends Vue  {
 
   public filterNumbers(evt: KeyboardEvent): void {
     if (this.type === "number") {
+      //eslint-disable-next-line prefer-const 
       let keyPressed = evt.key.toString();
       const regex = this.allowDecimals
         ? /^[0-9]*\.?[0-9]*$/

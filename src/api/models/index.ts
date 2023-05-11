@@ -301,7 +301,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
 
   // 2.11.1
   barriers_follow_on_requirement?: YesNo;
-  barriers_follow_on_expected_date?: string;
+  barriers_follow_on_expected_date_awarded?: string;
   barriers_agency_pursuing_training_or_certs?: YesNo;
   barriers_planning_future_development?: YesNo; 
   barriers_j_a_prepared?: YesNo
@@ -539,9 +539,11 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {
-  fs_form: string;
-  funding_request_type: string;
-  mipr: string;
+  fs_form?: string;
+  funding_request_type?: string;
+  mipr?: string;
+  appropriation_fiscal_year?: string;
+  appropriation_funds_type?: "" | "O_M" | "RDT_E" | "PROCUREMENT";
 }
 
 export interface FundingIncrementDTO extends BaseTableDTO{

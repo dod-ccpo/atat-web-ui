@@ -38,6 +38,7 @@
   </v-container>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 
 import { Component, Mixins } from "vue-property-decorator";
@@ -60,7 +61,7 @@ import { AttachmentServiceCallbacks } from "@/services/attachment";
   },
 })
 export default class MIPR extends Mixins(SaveOnLeave)  {
-    private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
+  private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
   private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
   private validFileFormats = ["xlsx", "xls", "pdf"];
@@ -173,6 +174,7 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
 
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => string|true|undefined)[] {
+    //eslint-disable-next-line prefer-const
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
   
     rulesArr.push(this.$validators.required(this.requiredMessage));
