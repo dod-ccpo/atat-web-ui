@@ -6,7 +6,7 @@
           <h1 class="mb-3">
             Let’s find out more about your market research efforts
           </h1>
-          <p class="copy-max-width">
+          <p class="copy-max-width mb-10">
             {{ introText }} 
             If you would rather skip these questions, click the “I want to write my 
             own explanation” button below. 
@@ -266,6 +266,7 @@
 </template>
 
 <script lang="ts">
+
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -561,6 +562,25 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
   }
 
+  /**
+   * Opens the slideout panel assuming that the panel is already initialized.
+   */
+  public async openSlideoutPanel(e: Event): Promise<void> {
+    const opener = e.currentTarget as HTMLElement;
+    SlideoutPanel.openSlideoutPanel(opener.id);
+  };
+
+  /**
+   * Initializes the slideout panel by setting the slideout panel component.
+   */
+  public async initializeSlideoutPanel(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: MarketResearchEffortsLearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
+
   public async loadOnEnter(): Promise<void> {
     await this.setOtherTechniquesOptions();
 
@@ -611,7 +631,9 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "this proposed CSP";
     }
+
     await this.initializeSlideoutPanel();
+
   }
 
   public async mounted(): Promise<void> {
@@ -675,24 +697,6 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     return true;
   }
 
-  /**
-   * Opens the slideout panel assuming that the panel is already initialized.
-   */
-  public async openSlideoutPanel(e: Event): Promise<void> {
-    const opener = e.currentTarget as HTMLElement;
-    SlideoutPanel.openSlideoutPanel(opener.id);
-  };
-
-  /**
-   * Initializes the slideout panel by setting the slideout panel component.
-   */
-  public async initializeSlideoutPanel(): Promise<void> {
-    const slideoutPanelContent: SlideoutPanelContent = {
-      component: MarketResearchEffortsLearnMore,
-      title: "Learn More",
-    };
-    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-  }
-
 }
 
+</script>
