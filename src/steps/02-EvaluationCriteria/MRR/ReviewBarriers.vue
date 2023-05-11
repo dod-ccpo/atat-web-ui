@@ -182,7 +182,8 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
       this.insertDate = storeData.barriers_follow_on_expected_date_awarded||""
       this.previousJA = storeData.barriers_j_a_prepared_results||""
 
-      this.writeOwnExplanation = storeData.cause_write_own_explanation === "YES";
+      this.writeOwnExplanation = storeData.barriers_write_own_explanation === "YES";
+      debugger
       if (!this.writeOwnExplanation) {
         this.generateSuggestion()
       }
