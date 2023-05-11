@@ -253,7 +253,7 @@ export default class ATATDatePicker extends Vue {
         outputFormat: "MM/DD/YYYY",
         nullable: true,
         min: format(new Date(this.min), "MM/dd/yyyy"),
-        max: format(add(new Date(this.max), { days: 1 }), "MM/dd/yyyy"),
+        max: format(new Date(this.max), "MM/dd/yyyy"),
       }).mask(document.getElementById(tbId) as HTMLElement);
     });
   }
