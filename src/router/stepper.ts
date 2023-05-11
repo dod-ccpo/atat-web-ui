@@ -532,6 +532,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+
       },      
       {
         menuText: "Impact of Requirement",
@@ -606,7 +607,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver:removeBarriersRouteResolver
+        routeResolver:removeBarriersRouteResolver,
+        additionalButtons: [
+          {
+            buttonText: "I want to write my own explanation",
+            buttonId: "WriteOwnBarriers",
+            buttonClass: "secondary",
+            actionName: "WriteOwnBarriers",
+          },
+        ]
       },      
       {
         menuText: "Review Barriers",

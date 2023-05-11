@@ -287,7 +287,7 @@ export default class Packages extends Vue {
  }
  public async toAcquisitions(): Promise<void> {
    await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
-   await acquisitionPackage.setFirstTimeVisit(true)
+   await acquisitionPackage.setIsNewPackage(true)
    await AcquisitionPackage.reset();
    this.$router.push({
      name: routeNames.DAPPSChecklist,

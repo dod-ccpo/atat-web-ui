@@ -358,7 +358,7 @@ export class AcquisitionPackageStore extends VuexModule {
   disableContinue = false
   hideNavigation = false
   hideSideNavigation = false
-  firstTimeVisit = false
+  isNewPackage = false
   fundingRequestType: string | null =  null;
 
   currentUser: User = {};
@@ -662,12 +662,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: false})
-  public async setFirstTimeVisit(value: boolean): Promise<void> {
-    this.doSetFirstTimeVisit(value);
+  public async setIsNewPackage(value: boolean): Promise<void> {
+    this.doSetIsNewPackage(value);
   }
   @Mutation
-  private doSetFirstTimeVisit(value: boolean): void {
-    this.firstTimeVisit = value;
+  private doSetIsNewPackage(value: boolean): void {
+    this.isNewPackage = value;
   }
   @Action
   public async setValidateNow(value: boolean): Promise<void> {
