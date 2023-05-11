@@ -492,7 +492,6 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     this.techniquesUsed = newVal.join(",");
     // check sys ids for selection of the "Personal knowledge in procuring... " option
     this.showPersonalKnowledgePerson = newVal.includes(this.personalKnowledgePersonSysId);
-    debugger;
     this.showTechniquesSummary = newVal.length > 0;
   }
 
