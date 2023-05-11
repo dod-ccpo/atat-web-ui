@@ -135,7 +135,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
-  @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: Date;
+  @Prop({ default: format(new Date(), "yyyy-MM-dd") }) public min!: Date;
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
   private max!: Date;
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
@@ -147,6 +147,11 @@ export default class ATATDatePicker extends Vue {
   @Watch("date")
   protected formatDateWatcher(): void {
     this.dateFormatted = this.reformatDate(this.date);
+  }
+
+  @Watch("value")
+  public valueChanged(): void {
+    this.setDateFromValue();
   }
 
   /**
@@ -246,6 +251,7 @@ export default class ATATDatePicker extends Vue {
    */
   private addMasks(): void {
     [this.id + "DatePickerTextField"].forEach((tbId) => {
+      debugger;
       Inputmask({
         alias: "datetime",
         inputFormat: "mm/dd/yyyy",
@@ -307,16 +313,19 @@ export default class ATATDatePicker extends Vue {
     this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
   }
 
-  /**
-   * LIFECYCLE HOOKS
-   */
-  private mounted(): void {
+  public async setDateFromValue(): Promise<void> {
     if (this.value && this.value.indexOf("-") > -1) {
       this.date = this.value;
     } else if (this.value && this.value.indexOf("/") > -1) {
       this.date = this.reformatDate(this.value);
     }
+  }
 
+  /**
+   * LIFECYCLE HOOKS
+   */
+  private async mounted(): Promise<void> {
+    await this.setDateFromValue();
     this.formatDateWatcher();
 
     this.$nextTick(() => {

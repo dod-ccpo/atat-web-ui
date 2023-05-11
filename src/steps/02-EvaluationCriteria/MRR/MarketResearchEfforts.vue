@@ -40,6 +40,8 @@
                         $validators.isDateValid('Please enter a valid date.'),
                       ]"
                       :value.sync="researchStartDate"
+                      :min="minResearchStartDate"
+                      :max="today"
                       label="Start date"
                       placeHolder="MM/DD/YYYY"
                     />
@@ -62,6 +64,8 @@
                   <ATATDatePicker
                     id="ResearchEndDate"
                     v-if="showResearchEndDate"
+                    :min="minResearchEndDate"
+                    :max="today"
                     :rules="[
                       $validators.required('Enter an end date using the format MM/DD/YYYY.'),
                       $validators.isDateValid('Please enter a valid date.'),
@@ -128,6 +132,7 @@
                           $validators.isDateValid('Please enter a valid date.'),
                         ]"
                         :value.sync="catalogReviewStartDate"
+                        :min="minResearchStartDate"
                         label="Start date"
                         placeHolder="MM/DD/YYYY"
                       />
@@ -156,9 +161,9 @@
                         $validators.isDateValid('Please enter a valid date.'),
                       ]"
                       :value.sync="catalogReviewEndDate"
+                      :min="minCatalogReviewEndDate"
                       label="End date"
                       placeHolder="MM/DD/YYYY"
-                      :min="minResearchEndDate"
                     />
 
                   </div>
@@ -268,7 +273,7 @@ import _ from "lodash";
 import { Checkbox, RadioButton, YesNo } from "types/Global";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { format } from "date-fns";
+import { addDays, format, isAfter, isBefore, isSameDay, parseISO, sub } from "date-fns";
 
 @Component({
   components: {
@@ -323,16 +328,14 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
         language to help you complete this portion of your J&A and MRR.`;
   }
 
-  public minResearchStartDate = "";
-  public minResearchEndDate = "";
-
-  @Watch("researchStartDate")
-  public researchStartDateChanged(): void {
-    if (this.researchStartDate) {
-      this.minResearchEndDate = format(new Date(this.researchStartDate), "yyyy-MM-dd");
-    } 
+  public getDate(dateStr: string): Date {
+    return dateStr.includes("-") ? parseISO(dateStr) : new Date(dateStr);
+  }
+  public dayAfter(date: Date): string {
+    return format(addDays(date, 1), "MM/dd/yyyy");
   }
 
+  // =================================================================
   // ========== FORM SECTION 1 - CSP IS ONLY SOURCE CAPABLE ==========
 
   public onlySourceCapableOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
@@ -360,6 +363,47 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
   }
 
+  @Watch("researchStartDate")
+  public researchStartDateChanged(): void {
+    debugger;
+    if (this.researchStartDate) {
+      const today = new Date();
+      const start = this.getDate(this.researchStartDate);
+      if (this.researchEndDate) {
+        // make sure end date is after start date
+        const end = this.getDate(this.researchEndDate)
+        if (isAfter(start, end) || isSameDay(start, end)) {
+          this.researchEndDate = this.dayAfter(start);
+        }
+        if (isBefore(end, start)) {
+          this.minResearchEndDate = this.dayAfter(start);
+          debugger;
+        }
+      } else {
+        this.minResearchEndDate = this.dayAfter(start);
+      }
+    }
+  }
+  // min start date is 1 year ago
+  public minResearchStartDate = format(sub(new Date(), {years: 1}), "yyyy-MM-dd");
+  // default min start date is the day after 1 year ago
+  public minResearchEndDate = 
+    format(addDays(sub(new Date(), {years: 1}), 1), "yyyy-MM-dd");
+  public today = format(new Date(), "yyyy-MM-dd");
+
+  // min end date must be after start date
+  // public get minResearchEndDate(): string {   
+  //   const startDate = this.getDate(this.researchStartDate);
+  //   debugger;
+  //   const today = new Date();
+  //   const dayAfter = isBefore(startDate, today) 
+  //     ? format(today, "yyyy-MM-dd")
+  //     : this.dayAfter(startDate);
+  //   debugger
+  //   return this.researchStartDate && dayAfter ? dayAfter : "";
+  // }
+
+  // =====================================================
   // ========== FORM SECTION 2 - CATALOG REVIEW ==========
 
   public get productOrFeature(): string {
@@ -398,7 +442,9 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
   }
 
+  // =======================================================
   // ========== FORM SECTION 3 - OTHER TECHNIQUES ==========
+
   public otherTechniquesOptions: Checkbox[] = [];
 
   public get techniquesRules(): unknown[] {
@@ -499,7 +545,10 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.cspHasPeculiarFeature = storeData.cause_product_feature_peculiar_to_csp === "YES";
 
       this.cspIsOnlySourceCapable = storeData.research_is_csp_only_source_capable;
+
       this.researchStartDate = storeData.research_start_date as string;
+      // format(new Date(storeData.research_start_date as string), "MM/dd/yyyy");
+
       this.researchEndDate = storeData.research_end_date as string;
       this.showResearchEndDate = this.researchEndDate !== "";
       this.supportingData = storeData.research_supporting_data as string; 
@@ -568,6 +617,12 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.catalogReviewResults = "";
       sectionsWithNoSelectedCount++;
     }
+    debugger;
+    if (this.sameAsResearchDate === "YES") {
+      this.catalogReviewStartDate = "";
+      this.catalogReviewEndDate = "";
+    }
+
     if (!this.needsMRR) {
       this.techniquesUsed = "";
       this.otherTechnique = "";
