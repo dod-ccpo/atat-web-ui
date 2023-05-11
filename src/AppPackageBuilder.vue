@@ -114,14 +114,14 @@ export default class AppPackageBuilder extends Vue {
   private disableContinueButton = false;
   private hideNavigation = false;
   private hideSideNavigation = false;
-  private firstTimeVisit = false
+  private isNewPackage = false
 
   async mounted(): Promise<void> {
     await Steps.setSteps(stepperRoutes);
     this.hideNavigation = AcquisitionPackage.hideNavigation;
     this.hideSideNavigation = AcquisitionPackage.hideSideNavigation;
     this.routeNames = routeNames;
-    this.firstTimeVisit = AcquisitionPackage.firstTimeVisit
+    this.isNewPackage = AcquisitionPackage.isNewPackage
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
@@ -157,7 +157,7 @@ export default class AppPackageBuilder extends Vue {
       : await Steps.getPrevious();
     if (nextStepName) {
       if(nextStepName === 'DAPPSChecklist'){
-        if(AcquisitionPackage.firstTimeVisit){
+        if(AcquisitionPackage.isNewPackage){
           await this.$router.push({name: nextStepName as string, params: {direction}});
           return
         }else {
@@ -199,8 +199,8 @@ export default class AppPackageBuilder extends Vue {
       this.$router.push({ name: nextStepName as string, params: { direction } });
 
     } else if (direction === "previous" && this.altBackDestination) { 
-      if (this.$route.name === this.routeNames.DAPPSChecklist && this.firstTimeVisit
-      || this.$route.name === this.routeNames.ContractingShop && !this.firstTimeVisit) {
+      if (this.$route.name === this.routeNames.DAPPSChecklist && this.isNewPackage
+      || this.$route.name === this.routeNames.ContractingShop && !this.isNewPackage) {
         await Steps.setAltBackDestination("");
         switch (this.altBackDestination) {
         case AppSections.sectionTitles.Home: {
