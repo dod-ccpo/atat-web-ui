@@ -128,6 +128,8 @@ import { FairOpportunityDTO } from "@/api/models";
 export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public projectTitle = AcquisitionPackage.projectTitle;
   public soleSourceCause = "";
+  public soleSourceCauseGenerated = "";
+  public soleSourceCauseCustom = "";
   public defaultSuggestion = "";
   public showRestoreModal = false;
 
@@ -198,7 +200,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       this.currentData.cause_product_feature_why_others_inadequate;
   }
 
-  public generateSuggestion(): void {
+  public async generateSuggestion(): Promise<void> {
     const needsMigrationP = this.savedData?.cause_migration_addl_time_cost === "YES";
     const needsGovtEngineersP = this.savedData?.cause_govt_engineers_training_certified === "YES";
     const needsProductFeatureP = this.savedData?.cause_product_feature_peculiar_to_csp === "YES";
@@ -214,7 +216,6 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     }
     if (needsProductFeatureP) suggestedText += this.getProductFeatureP;
     
-    this.soleSourceCause = this.soleSourceCause || suggestedText;
     this.defaultSuggestion = suggestedText;
   }
 
@@ -246,8 +247,11 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       = _.cloneDeep(AcquisitionPackage.fairOpportunity) 
       || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
     const formData: FairOpportunityDTO = {
-      // eslint-disable-next-line camelcase
-      cause_of_sole_source_generated: this.soleSourceCause as string,
+      /* eslint-disable camelcase */
+      cause_of_sole_source_generated: this.soleSourceCauseGenerated as string,
+      cause_of_sole_source_custom: this.soleSourceCauseCustom as string,
+      research_details_for_docgen: this.isCustom ? "CUSTOM" : "GENERATED"
+      /* eslint-enable camelcase */      
     }
     return Object.assign(fairOppSaved, formData);
   }
@@ -267,15 +271,21 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.soleSourceCause = storeData.cause_of_sole_source_generated as string;
+      await this.generateSuggestion();
 
       this.allSectionsNO = storeData.cause_migration_addl_time_cost === "NO"
         && storeData.cause_govt_engineers_training_certified === "NO"
         && storeData.cause_product_feature_peculiar_to_csp === "NO";
 
+      this.soleSourceCauseCustom = storeData.cause_of_sole_source_custom as string;
+      this.soleSourceCauseGenerated = storeData.cause_of_sole_source_generated as string;
+
       this.isCustom = storeData.cause_write_own_explanation === "YES";
       if (!this.isCustom) {
-        this.generateSuggestion();
+        this.soleSourceCause = storeData.cause_of_sole_source_generated as string
+          || this.defaultSuggestion;
+      } else {
+        this.soleSourceCause = storeData.cause_of_sole_source_custom as string;
       }
     }
   }
@@ -289,6 +299,11 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    if (this.isCustom) {
+      this.soleSourceCauseCustom = this.soleSourceCause;
+    } else {
+      this.soleSourceCauseGenerated = this.soleSourceCause;
+    }
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

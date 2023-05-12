@@ -69,18 +69,18 @@
 </template>
 
 <script lang="ts">
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ConfirmRestoreDefaultTextModal from "../components/ConfirmRestoreDefaultTextModal.vue";
 
 import { FairOpportunityDTO } from "@/api/models";
-import { getCSPCompanyName } from "@/helpers";
+import { getCSPCompanyName, hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { format, parseISO } from "date-fns";
 import _ from "lodash";
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -90,7 +90,7 @@ import { Component, Watch } from "vue-property-decorator";
   }
 })
 
-export default class MarketResearchReview extends Vue {
+export default class MarketResearchReview extends Mixins(SaveOnLeave) {
   public isCustom = false;
   public cspName = "";
   public generatedSuggestion = "";
@@ -119,12 +119,26 @@ export default class MarketResearchReview extends Vue {
     return this.isResearchReviewDefault ? "disabled" : "primary";
   }
 
-  private get savedData(): FairOpportunityDTO | null {
-    return AcquisitionPackage.getFairOpportunity;
-  }
-
   public get getRowCount(): number {
     return this.isCustom ? 12 : 19;
+  }
+
+  public get currentData(): FairOpportunityDTO {
+    const fairOppSaved: FairOpportunityDTO 
+      = _.cloneDeep(AcquisitionPackage.fairOpportunity) 
+      || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
+    const formData: FairOpportunityDTO = {
+      /* eslint-disable camelcase */
+      research_details_generated: this.researchDetailsGenerated as string,
+      research_details_custom: this.researchDetailsCustom as string,
+      research_details_for_docgen: this.isCustom ? "CUSTOM" : "GENERATED"
+      /* eslint-enable camelcase */
+    }
+    return Object.assign(fairOppSaved, formData);
+  }
+
+  private get savedData(): FairOpportunityDTO | null {
+    return AcquisitionPackage.getFairOpportunity;
   }
 
   public async generateSuggestion(): Promise<void> {
@@ -158,7 +172,7 @@ export default class MarketResearchReview extends Vue {
       } if (end) {
         suggestedText += "–" + format(new Date(parseISO(end)), "MM/dd/yyyy")
       }
-      suggestedText += "by reviewing the JWCC contractor's catalogs to determine " +
+      suggestedText += " by reviewing the JWCC contractor's catalogs to determine " +
         "if other similar offerings (to include: " + 
         this.savedData?.cause_product_feature_type + " " +
         "meet or can be modified to satisfy the Government’s requirements. The results " + 
@@ -175,20 +189,24 @@ export default class MarketResearchReview extends Vue {
       suggestedText += this.savedData?.research_techniques_summary;
     }
 
-    this.researchDetailsSuggested = suggestedText;
+    this.generatedSuggestion = suggestedText;
 
   }
 
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
+      await this.generateSuggestion();
+
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "this proposed CSP";
-
+      this.researchDetailsCustom = storeData.research_details_custom as string;
+      this.researchDetailsGenerated = storeData.research_details_generated 
+        || this.generatedSuggestion;
+      debugger;
       this.isCustom = storeData.research_write_own_explanation === "YES";
       if (!this.isCustom) {
-        await this.generateSuggestion();
         this.researchDetails = storeData.research_details_generated as string
           || this.researchDetailsGenerated;
       } else {
@@ -200,6 +218,29 @@ export default class MarketResearchReview extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    debugger;
+    if (this.isCustom) {
+      this.researchDetailsCustom = this.researchDetails;
+    } else {
+      this.researchDetailsGenerated = this.researchDetails;
+    }
+
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
+
 
 }
 </script>
