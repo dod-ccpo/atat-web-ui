@@ -149,8 +149,8 @@ export default class ATATDatePicker extends Vue {
   }
 
   @Watch("value")
-  public valueChanged(): void {
-    this.setDateFromValue();
+  public async valueChanged(): Promise<void> {
+    await this.setDateFromValue();
   }
 
   /**
