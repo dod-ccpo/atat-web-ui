@@ -771,7 +771,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: CrossDomain,
-        routeResolver: CrossDomainResolver // EJY need to look at this?
+        routeResolver: CrossDomainResolver 
       },
     ]
   },

@@ -48,7 +48,6 @@ import { CurrentContractRouteResolver } from "@/router/resolvers";
 })
 
 export default class CurrentContract extends Mixins(SaveOnLeave) {
-  public redirect = false;
   public currentContractExists = AcquisitionPackage.currentContract?.current_contract_exists;
   public headline = "";
 
