@@ -19,6 +19,38 @@
               Be sure to include any relevant details from the following instructions.
             </p>
 
+            <ATATExpandableLink aria-id="Instructions">
+              <template v-slot:header>
+                Instructions for this portion of the J&A
+              </template>
+              <template v-slot:content>
+                <ul class="_atat-ul">
+                  <li>
+                    Research must have been meaningful and conducted within the 
+                    previous 12 months.
+                  </li>
+                  <li>
+                    Include a detailed description and results of the market research 
+                    (including who, what, when, where, why and the outcome) or a 
+                    statement discussing why it was not conducted.
+                  </li>
+                  <li>
+                    Fully analyze any alternative strategies to using an exception
+                    to fair opportunity and indicate a good faith effort to consider 
+                    viable alternatives.
+                  </li>
+                  <li>
+                    For more information about market research procedures, reference 
+                    <a id="FARProceduresLink"
+                      href="https://www.acquisition.gov/far/10.002" 
+                      target="_blank" 
+                    >FAR <span class="_external-link">10.002</span></a>.
+                  </li>
+                </ul>
+              </template>
+            </ATATExpandableLink>
+
+
             <ATATTextArea 
               id="ResearchDetails"
               class="mt-6 textarea-max-width"
@@ -74,6 +106,7 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ConfirmRestoreDefaultTextModal from "../components/ConfirmRestoreDefaultTextModal.vue";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 
 import { FairOpportunityDTO } from "@/api/models";
 import { getCSPCompanyName, hasChanges } from "@/helpers";
@@ -84,6 +117,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
+    ATATExpandableLink,
     ATATSVGIcon,
     ATATTextArea,
     ConfirmRestoreDefaultTextModal,
@@ -93,6 +127,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 export default class MarketResearchReview extends Mixins(SaveOnLeave) {
   public isCustom = false;
   public cspName = "";
+  public needsMRR = false;
   public generatedSuggestion = "";
   public researchDetails = "";
   public researchDetailsGenerated = "";
@@ -141,6 +176,10 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
     return AcquisitionPackage.getFairOpportunity;
   }
 
+  public getDate(dateStr: string): Date {
+    return dateStr.includes("-") ? parseISO(dateStr) : new Date(dateStr);
+  }
+
   public async generateSuggestion(): Promise<void> {
     const needsResearchP = this.savedData?.research_is_csp_only_source_capable === "YES";
     const needsCatalogReviewP = this.savedData?.research_review_catalogs_reviewed === "YES";
@@ -152,10 +191,13 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
       suggestedText += "Additional research was conducted "
       const start = this.savedData?.research_start_date;
       const end = this.savedData?.research_end_date;
+
       if (start) {
-        suggestedText += format(new Date(parseISO(start)), "MM/dd/yyyy");
-      } if (end) {
-        suggestedText += "–" + format(new Date(parseISO(end)), "MM/dd/yyyy")
+        const prep = end ? "from " : "on "
+        suggestedText += prep + format(this.getDate(start), "MM/dd/yyyy");
+      } 
+      if (end) {
+        suggestedText += " to " + format(this.getDate(end), "MM/dd/yyyy")
       }
       suggestedText += " by reviewing the specific capabilities in the JWCC Contracts " +
         "and it was determined that " + this.cspName + " is the only source capable of " + 
@@ -168,13 +210,14 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
       const start = this.savedData?.research_review_catalogs_start_date;
       const end = this.savedData?.research_review_catalogs_end_date;
       if (start) {
-        suggestedText += format(new Date(parseISO(start)), "MM/dd/yyyy");
-      } if (end) {
-        suggestedText += "–" + format(new Date(parseISO(end)), "MM/dd/yyyy")
+        const prep = end ? "from " : "on "
+        suggestedText += prep + format(this.getDate(start), "MM/dd/yyyy");
+      } if (end !== "" && end !== undefined) {
+        suggestedText += " to " + format(this.getDate(end), "MM/dd/yyyy")
       }
       suggestedText += " by reviewing the JWCC contractor's catalogs to determine " +
         "if other similar offerings (to include: " + 
-        this.savedData?.cause_product_feature_type + " " +
+        this.savedData?.cause_product_feature_name + ") " +
         "meet or can be modified to satisfy the Government’s requirements. The results " + 
         "have determined that no other offering is suitable as follows: " +
         this.savedData?.research_review_catalogs_review_results + " " +
@@ -189,6 +232,16 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
       suggestedText += this.savedData?.research_techniques_summary;
     }
 
+    if (!this.needsMRR && this.savedData?.contract_action) {
+      const exceptionText: Record<string, string> = {
+        UCA: "UCA",
+        BCA: "a bridge extension",
+        OES: "-8 extension" 
+      }
+      suggestedText += "Additional market research was not completed for this effort " +
+        "because an exception applies (" + exceptionText[this.savedData.contract_action] + ").";
+    }
+
     this.generatedSuggestion = suggestedText;
 
   }
@@ -196,15 +249,16 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      await this.generateSuggestion();
-
+      this.needsMRR = storeData.contract_action === "NONE";
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "this proposed CSP";
+
+      await this.generateSuggestion();
+
       this.researchDetailsCustom = storeData.research_details_custom as string;
       this.researchDetailsGenerated = storeData.research_details_generated 
         || this.generatedSuggestion;
-      debugger;
       this.isCustom = storeData.research_write_own_explanation === "YES";
       if (!this.isCustom) {
         this.researchDetails = storeData.research_details_generated as string
@@ -224,7 +278,6 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger;
     if (this.isCustom) {
       this.researchDetailsCustom = this.researchDetails;
     } else {

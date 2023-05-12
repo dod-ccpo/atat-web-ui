@@ -206,7 +206,7 @@
               <ATATCheckboxGroup 
                 id="OtherTechniques"
                 groupLabel="What other techniques did you use?"
-                :optional="true"
+                :optional="otherTechniquesOptional"
                 :items="otherTechniquesOptions"
                 :value.sync="selectedTechniquesUsed"
                 :rules="techniquesRules"
@@ -328,6 +328,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public catalogReviewEndDate = "";
   public catalogReviewResults = "";
 
+  public otherTechniquesOptional = true;
   public techniquesUsed = ""; // csv string of sys ids for store/SNOW
   public selectedTechniquesUsed: string[] = []; // array of sys ids for UI
   public otherTechnique = "";
@@ -476,6 +477,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public get techniquesRules(): unknown[] {
     const rulesOn = this.needsMRR && this.cspIsOnlySourceCapable === "NO"
       && !this.wereCatalogsReviewed;
+    this.otherTechniquesOptional = !rulesOn;
     return rulesOn ?
       [this.$validators.required(
         "Please select at least one technique used to conduct market research."
@@ -648,6 +650,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true);
     let sectionsWithNoSelectedCount = 0;
 
     // ensure data cleared if any section main question is "NO"
@@ -671,7 +674,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.catalogReviewEndDate = this.researchEndDate;
     }
 
-    if (!this.needsMRR) {
+    if (!this.needsMRR || this.selectedTechniquesUsed.length === 0) {
       this.techniquesUsed = "";
       this.otherTechnique = "";
       this.personalKnowledgePerson = "";
@@ -679,10 +682,9 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
     this.writeOwnExplanation
       = AcquisitionPackage.fairOpportunity?.research_write_own_explanation as YesNo
-    
     if (this.writeOwnExplanation !== "YES") {
       this.writeOwnExplanation = 
-        sectionsWithNoSelectedCount === 2 ? "YES": "NO"
+        sectionsWithNoSelectedCount === 2 && !this.needsMRR ? "YES": "NO"
     }
     this.researchDetailsForDocGen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
 

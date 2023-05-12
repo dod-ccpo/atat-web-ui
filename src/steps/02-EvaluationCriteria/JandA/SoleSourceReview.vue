@@ -26,9 +26,8 @@
               to solicit only one source for this project. Be sure to include any 
               relevant details from the following instructions.
             </p>
-            <ATATExpandableLink 
-            aria-id="Instructions"
-            >
+
+            <ATATExpandableLink aria-id="Instructions">
               <template v-slot:header>
                 Instructions for this portion of the J&A
               </template>
