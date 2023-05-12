@@ -29,15 +29,14 @@ export default class CurrentContractOptions extends Vue {
   @Prop({default: false}) private isWizard!: boolean; 
   @Prop({default: ""}) private legend!: string;
   @Prop({default: ""}) private classes!: string;
+  @Prop({default: ""}) private hasExceptionToFairOpportunity!: boolean;
   @PropSync("selectedOption", { default: "" }) private _selectedOption!: string | null;
   @Prop() private rules?: [];
   
   private currentContractOptions: RadioButton[] = [
     {
       id: "Yes_CurrentContract",
-      label: this.isWizard 
-        ? "Yes. There is a current or previous contract for this effort." 
-        : "Yes.",
+      label: this.isWizard ? this.getYesLabel() : "Yes.",
       value: "YES",
       readonly: !this.isForm,
     },
@@ -48,6 +47,12 @@ export default class CurrentContractOptions extends Vue {
       readonly: !this.isForm, 
     },
   ];
+
+  public getYesLabel():string{
+    return "Yes. There is a current " + 
+      (this.hasExceptionToFairOpportunity ? " or previous " : "") +
+      "contract for this effort."
+  }
 
 }
 </script>
