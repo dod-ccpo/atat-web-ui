@@ -152,12 +152,10 @@ const hasLogicalFollowOn = (): boolean => {
 }
 
 export const CurrentContractRouteResolver = (current: string): string => {
-  debugger;
   if (hasLogicalFollowOn()) {
-    // Moving backward, skip "Do you have a current contract" page and 
-    // use get value from resolver for last step in step 3
-    // return CrossDomainResolver(current);
-    return routeNames.CurrentContractDetails
+    // if second option in step 2 Exception to Fair Opportunity is selected
+    // skip the "Do you have a current/previous contract" page
+    return current === routeNames.CurrentContractDetails
       ? CrossDomainResolver(current)
       : routeNames.CurrentContractDetails
   }
@@ -165,7 +163,6 @@ export const CurrentContractRouteResolver = (current: string): string => {
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
-  debugger;
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
   if (hasCurrentContract) {
@@ -1417,6 +1414,7 @@ export const FinancialPOCResolver =  (current: string): string => {
     ? routeNames.ReadyToGeneratePackage
     : routeNames.FinancialPOCForm
 }
+
 export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
   const onlyUnclassified = classifications
     .every(classification => classification.classification === "U")
@@ -1427,58 +1425,52 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
   return (onlySecret||onlyUnclassified||onlyTopSecret)
 }
 
-export const SecurityRequirementsResolver = (current: string): string => {
-  const classifications = ClassificationRequirements.selectedClassificationLevels
-  let secretOrTopSecret = false
-  classifications.forEach(classification => {
-    if(classification.classification === "S" || classification.classification === "TS"){
-      secretOrTopSecret = true
-    }
-  })
-  if(secretOrTopSecret){
-    return routeNames.SecurityRequirements
-  }
+export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): boolean => {
+  // "High Side" is jargon for Secret and higher
+  const highSideAbbrs = ["S", "TS"];
+  const highSideObjs = classifications.filter(obj => highSideAbbrs.includes(obj.classification));
+  return highSideObjs.length > 0;
+};
 
-  if(onlyOneClassification(classifications) &&
-      current === routeNames.ClassificationRequirements){
-    return routeNames.CurrentContract
+export const SecurityRequirementsResolver = (current: string): string => {
+  const classifications = ClassificationRequirements.selectedClassificationLevels;
+  const hasSorTS = hasHighSide(classifications);
+  // forward
+  if (current === routeNames.ClassificationRequirements) {
+    if (hasSorTS) {
+      return routeNames.SecurityRequirements;
+    }
+    return hasLogicalFollowOn()
+      ? routeNames.CurrentContractDetails
+      : routeNames.CurrentContract;
   }
-  return current === routeNames.ClassificationRequirements
-    ? routeNames.CrossDomain
+  // backward
+  return hasSorTS
+    ? routeNames.SecurityRequirements
     : routeNames.ClassificationRequirements
 }
   
 export const CrossDomainResolver = (current: string): string => {
-  debugger;
   //create function for this to be reused
-  const classifications = ClassificationRequirements.selectedClassificationLevels
-  onlyOneClassification(classifications)
+  const classifications = ClassificationRequirements.selectedClassificationLevels;
+  const hasSorTS = hasHighSide(classifications);
+  const singleClassification = onlyOneClassification(classifications)
 
-  //forward
-  if(onlyOneClassification(classifications) &&
-  current === routeNames.SecurityRequirements){
-    return routeNames.CurrentContract
-  }
-
-  //backwards
-  let secretOrTopSecret = false
-  classifications.forEach(classification => {
-    if(classification.classification === "S" || classification.classification === "TS"){
-      secretOrTopSecret = true
+  // backward
+  const navBackNames = [routeNames.CurrentContract, routeNames.CurrentContractDetails];
+  if (navBackNames.includes(current)) {
+    if (!singleClassification) {
+      return routeNames.CrossDomain;
     }
-  })
-  if(onlyOneClassification(classifications) &&
-      current === routeNames.CurrentContract && secretOrTopSecret){
-    return routeNames.SecurityRequirements
-  }
-  if(current === routeNames.CurrentContract && !onlyOneClassification(classifications)){
-    return routeNames.CrossDomain
-  }
+    return hasSorTS ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements;
 
-
-  return current === routeNames.SecurityRequirements
+  }
+  // forward
+  return !singleClassification 
     ? routeNames.CrossDomain
-    : routeNames.ClassificationRequirements
+    : hasLogicalFollowOn()
+      ? routeNames.CurrentContractDetails
+      : routeNames.CurrentContract;
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
