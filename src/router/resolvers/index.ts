@@ -167,6 +167,22 @@ export const conductedResearchRouteResolver = (current: string): string => {
     : routeNames.WhoConductedResearch
 };
 
+const hasLogicalFollowOn = (): boolean => {
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity 
+    === "YES_FAR_16_505_B_2_I_C"
+}
+
+export const CurrentContractRouteResolver = (current: string): string => {
+  if (hasLogicalFollowOn()) {
+    // if second option in step 2 Exception to Fair Opportunity is selected
+    // skip the "Do you have a current/previous contract" page
+    return current === routeNames.CurrentContractDetails
+      ? CrossDomainResolver(current)
+      : routeNames.CurrentContractDetails
+  }
+  return routeNames.CurrentContract
+};
+
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
@@ -177,11 +193,23 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     ? routeNames.DOWLandingPage
     : routeNames.CurrentContract;
 };
+
+export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
+  if (hasExceptionToFairOpp()){
+    return routeNames.ProcurementHistorySummary
+  }
+
+  return current === routeNames.CurrentContractDetails
+    ? routeNames.CurrentEnvironment
+    : routeNames.CurrentContractDetails;
+}
+
 export const ReplicateAndOptimizeResolver = (current: string): string => {
   return current === routeNames.DOWLandingPage || current === routeNames.ReplicateDetails
     ? routeNames.ReplicateAndOptimize
     : routeNames.DOWLandingPage;
 }
+
 
 export const ReplicateDetailsResolver = (current: string): string => {
   if (needsReplicateOrOptimize()&& current !== routeNames.ArchitecturalDesign) {
@@ -1407,6 +1435,7 @@ export const FinancialPOCResolver =  (current: string): string => {
     ? routeNames.ReadyToGeneratePackage
     : routeNames.FinancialPOCForm
 }
+
 export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
   const onlyUnclassified = classifications
     .every(classification => classification.classification === "U")
@@ -1417,57 +1446,47 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
   return (onlySecret||onlyUnclassified||onlyTopSecret)
 }
 
-export const SecurityRequirementsResolver = (current: string): string => {
-  const classifications = ClassificationRequirements.selectedClassificationLevels
-  let secretOrTopSecret = false
-  classifications.forEach(classification => {
-    if(classification.classification === "S" || classification.classification === "TS"){
-      secretOrTopSecret = true
-    }
-  })
-  if(secretOrTopSecret){
-    return routeNames.SecurityRequirements
-  }
+export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): boolean => {
+  // "High Side" is jargon for Secret and higher
+  const highSideAbbrs = ["S", "TS"];
+  const highSideObjs = classifications.filter(obj => highSideAbbrs.includes(obj.classification));
+  return highSideObjs.length > 0;
+};
 
-  if(onlyOneClassification(classifications) &&
-      current === routeNames.ClassificationRequirements){
-    return routeNames.CurrentContract
+export const SecurityRequirementsResolver = (current: string): string => {
+  const classifications = ClassificationRequirements.selectedClassificationLevels;
+  const hasHigh = hasHighSide(classifications); 
+  // forward
+  if (current === routeNames.ClassificationRequirements) {
+    if (hasHigh) {
+      return routeNames.SecurityRequirements;
+    }
+    return hasLogicalFollowOn() ? routeNames.CurrentContractDetails : routeNames.CurrentContract;
   }
-  return current === routeNames.ClassificationRequirements
-    ? routeNames.CrossDomain
-    : routeNames.ClassificationRequirements
+  // backward
+  return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements
 }
   
 export const CrossDomainResolver = (current: string): string => {
   //create function for this to be reused
-  const classifications = ClassificationRequirements.selectedClassificationLevels
-  onlyOneClassification(classifications)
+  const classifications = ClassificationRequirements.selectedClassificationLevels;
+  const hasHigh = hasHighSide(classifications);
+  const singleClassification = onlyOneClassification(classifications)
 
-  //forward
-  if(onlyOneClassification(classifications) &&
-  current === routeNames.SecurityRequirements){
-    return routeNames.CurrentContract
-  }
-
-  //backwards
-  let secretOrTopSecret = false
-  classifications.forEach(classification => {
-    if(classification.classification === "S" || classification.classification === "TS"){
-      secretOrTopSecret = true
+  // backward
+  const navBackNames = [routeNames.CurrentContract, routeNames.CurrentContractDetails];
+  if (navBackNames.includes(current)) {
+    if (!singleClassification) {
+      return routeNames.CrossDomain;
     }
-  })
-  if(onlyOneClassification(classifications) &&
-      current === routeNames.CurrentContract && secretOrTopSecret){
-    return routeNames.SecurityRequirements
-  }
-  if(current === routeNames.CurrentContract && !onlyOneClassification(classifications)){
-    return routeNames.CrossDomain
-  }
+    return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements;
 
-
-  return current === routeNames.SecurityRequirements
-    ? routeNames.CrossDomain
-    : routeNames.ClassificationRequirements
+  }
+  // forward
+  if (!singleClassification) {
+    routeNames.CrossDomain
+  }
+  return hasLogicalFollowOn() ? routeNames.CurrentContractDetails : routeNames.CurrentContract;
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
@@ -1489,7 +1508,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
+  CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
+  ProcurementHistorySummaryRouteResolver,
   removeBarriersRouteResolver,
   conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
