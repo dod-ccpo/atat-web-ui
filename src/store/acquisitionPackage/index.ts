@@ -22,6 +22,7 @@ import {
   ContractTypeDTO,
   CurrentContractDTO,
   FairOpportunityDTO,
+  MarketResearchTechniquesDTO,
   EvaluationPlanDTO,
   OrganizationDTO,
   // PeriodDTO,
@@ -70,6 +71,7 @@ export const StoreProperties = {
   ProjectOverview: "projectOverview",
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
+  MarketResearchTechniques: "marketResearchTechniques",
   EvaluationPlan: "evaluationPlan",
   // PeriodOfPerformance: "periodOfPerformance",
   SensitiveInformation: "sensitiveInformation",
@@ -327,6 +329,7 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
+  marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
@@ -898,6 +901,10 @@ export class AcquisitionPackageStore extends VuexModule {
           await this.updateAcquisitionPackage();
         }
       }
+    } else {
+      const techniques: MarketResearchTechniquesDTO[] 
+        = await api.marketResearchTechniquesTable.all();
+      await this.doSetMarketResearchTechniques(techniques);
     }
   }
   @Mutation
@@ -912,6 +919,14 @@ export class AcquisitionPackageStore extends VuexModule {
     if (value.exception_to_fair_opportunity?.toLowerCase() === "no_none"){
       //if exists, delete appropriation of funds data
       await FinancialDetails.deleteAppropriationOfFunds();
+    }
+  }
+  @Mutation
+  public async doSetMarketResearchTechniques(
+    techniques: MarketResearchTechniquesDTO[]
+  ): Promise<void> {
+    if (techniques && techniques.length) {
+      this.marketResearchTechniques = techniques.sort((a,b) => a.sequence > b.sequence ? 1 : -1);
     }
   }
 
@@ -1165,6 +1180,8 @@ export class AcquisitionPackageStore extends VuexModule {
           initialFairOpportunity()
         );
       }
+      // EJY HERE
+
       this.setPackagePercentLoaded(60);
 
       if(currContractSysId) {
@@ -1489,6 +1506,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractType]: api.contractTypeTable,
     [StoreProperties.CurrentContract]: api.currentContractTable,
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
+    [StoreProperties.MarketResearchTechniques]: api.marketResearchTechniquesTable,
     [StoreProperties.Organization]: api.organizationTable,
     // [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
@@ -1500,7 +1518,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Regions]:api.regionsTable,
     [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
     [StoreProperties.ContractingShopNonDitcoAddress]:api.addressTable,
-
   }
 
   //mapping store propertties name to acquisition package properties

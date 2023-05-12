@@ -1335,6 +1335,7 @@ export default class PortfolioDashboard extends Vue {
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
   }
+  /* eslint-disable indent */
   public totalSpendingObj: {
     totalFundsSpent: number;
     totalFundsObligated: number;
@@ -1348,6 +1349,7 @@ export default class PortfolioDashboard extends Vue {
     clinAverage: 0,
     spendTrend: 0,
   };
+  /* eslint-enable indent */
 
   public createTableItems(): void {
     this.idiqClins.forEach((idiqClin) => {

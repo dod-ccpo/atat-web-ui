@@ -4,9 +4,22 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="mb-3">
-            Let’s review your agency’s plans to remove barriers to fair opportunity
+            {{ pageHeaderIntro }} plans to remove barriers to fair opportunity
           </h1>
-          <p>
+          <p v-if="allSectionsNO">
+            Unfortunately, we were not able to suggest language to help you complete
+            this portion of the J&A. In the field below, briefly describe the actions
+            proposed to remove or overcome barriers that led to the exception to fair
+            opportunity. If a J&A was prepared to support any related prior procurements,
+            explain the results of any actions taken to remove barriers.
+          </p>
+          <p v-else-if="writeOwnExplanation">
+            In the field below, briefly describe the actions proposed to remove
+            or overcome barriers that led to the exception to fair opportunity.
+            If a J&A was prepared to support any related prior procurements,
+            explain the results of any actions taken to remove barriers.
+          </p>
+          <p v-else>
             Based on what you’ve told us, we’ve suggested language to describe the actions proposed
             to remove barriers to fair opportunity. You can edit any details to meet your
             requirements.
@@ -86,6 +99,7 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
   public docgenType = ""
   public plansToRemoveCustom=""
   public plansToRemoveGenerated=""
+  public allSectionsNO = false
 
 
   public get getRowCount(): number {
@@ -150,6 +164,9 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
     this.barriersToOpportunity = this.barriersToOpportunity || suggestedText
     this.defaultSuggestion = suggestedText
   }
+  public get pageHeaderIntro(): string {
+    return this.docgenType === "CUSTOM" ? "Tell us how your agency" : "Let’s review your agency’s";
+  }
 
   private get currentData(): FairOpportunityDTO {
     return {
@@ -193,6 +210,12 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
       this.docgenType = storeData.barriers_plans_to_remove_for_docgen || ""
       this.barriersToOpportunity = this.docgenType === "GENERATED"
         ? this.plansToRemoveGenerated : this.plansToRemoveCustom
+
+      this.allSectionsNO = storeData.barriers_follow_on_requirement === "NO" &&
+        storeData.barriers_agency_pursuing_training_or_certs === "NO" &&
+        storeData.barriers_planning_future_development === "NO"&&
+        storeData.barriers_j_a_prepared === "NO"
+
     }
   }
 
