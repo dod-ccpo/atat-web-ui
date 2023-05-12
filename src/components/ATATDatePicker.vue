@@ -84,10 +84,10 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import Vue from "vue";
 import Inputmask from "inputmask";
-import { add, format, isValid } from "date-fns";
+import { add, format, isValid, parseISO } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -135,9 +135,8 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
-  @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: Date;
-  @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
-  private max!: Date;
+  @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: string;
+  @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") }) private max!: string;
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: false }) private isRequired!: boolean;
 
@@ -252,10 +251,16 @@ export default class ATATDatePicker extends Vue {
         placeholder: "MM/DD/YYYY",
         outputFormat: "MM/DD/YYYY",
         nullable: true,
-        min: format(add(new Date(this.min), { days: 1 }), "MM/dd/yyyy"),
-        max: format(add(new Date(this.max), { days: 1 }), "MM/dd/yyyy"),
+        min: this.getMDY(this.min),
+        max: this.getMDY(this.max),
       }).mask(document.getElementById(tbId) as HTMLElement);
     });
+  }
+
+  public getMDY(dateStr: string): string {
+    return dateStr.includes("-")
+      ? format(new Date(parseISO(dateStr)), "MM/dd/yyyy")
+      : dateStr;
   }
 
   /**
