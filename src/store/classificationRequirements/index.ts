@@ -451,7 +451,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   public async getCDSInIGCEEstimateTable(sys_id: string): Promise<string> {
     const requestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_query: "GOTOcross_domain_solution.sys_id<=" + sys_id
+        sysparm_query: "cross_domain_solution.sys_idSTARTSWITH" + sys_id
       }
     }
     const cdsRecordInIGCE = await api.igceEstimateTable.getQuery(requestConfig);
