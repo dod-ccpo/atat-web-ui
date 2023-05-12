@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="mb-3">
-            {{ pagewHeaderIntro }} the cause of your sole source situation
+            {{ pageHeaderIntro }} the cause of your sole source situation
           </h1>
           <div class="copy-max-width">
             <p class="mb-4" v-if="!isCustom">
@@ -134,7 +134,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
   public isCustom = false;
   public allSectionsNO = false;
-  public get pagewHeaderIntro(): string {
+  public get pageHeaderIntro(): string {
     return this.isCustom ? "Tell us about" : "Let’s review";
   }
 
