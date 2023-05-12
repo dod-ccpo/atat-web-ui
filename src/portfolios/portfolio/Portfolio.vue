@@ -1349,6 +1349,7 @@ export default class PortfolioDashboard extends Vue {
     spendTrend: 0,
   };
 
+
   public createTableItems(): void {
     this.idiqClins.forEach((idiqClin) => {
       //eslint-disable-next-line prefer-const
