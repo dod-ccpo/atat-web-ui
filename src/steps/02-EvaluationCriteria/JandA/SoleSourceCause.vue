@@ -220,7 +220,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import { ProductOrType, RadioButton, SelectData, UnitOfTime, YesNo } from "types/Global";
 import { FairOpportunityDTO } from "@/api/models";
-import { getYesNoRadioOptions, hasChanges } from "@/helpers";
+import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -431,13 +431,10 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       this.pfName = storeData.cause_product_feature_name as string;
       this.pfWhyEssential = storeData.cause_product_feature_why_essential as string;
       this.pfWhyOthersInadequate = storeData.cause_product_feature_why_others_inadequate as string;
-      const cspNames = {
-        AWS: "Amazon",
-        GCP: "Google",
-        AZURE: "Microsoft",
-        ORACLE: "Oracle",
-      }      
-      this.cspName = storeData.proposed_csp ? cspNames[storeData.proposed_csp] : "your CSP";
+   
+      this.cspName = storeData.proposed_csp 
+        ? getCSPCompanyName(storeData.proposed_csp) 
+        : "your CSP";
     }
   }
 
