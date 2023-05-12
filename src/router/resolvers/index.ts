@@ -117,6 +117,27 @@ export const CertificationPOCsRouteResolver = (current: string): string => {
     : routeNames.CertificationPOCs
 }
 
+const hasMarketResearchDetails = (): boolean => {
+  return AcquisitionPackage.fairOpportunity?.research_details_custom !== ""
+    || AcquisitionPackage.fairOpportunity.research_details_generated !== "";
+}
+
+export const MarketResearchEffortsRouteResolver = (current: string): string => {
+  // if new package coming from either direction, go to form/questionnaire
+  if (AcquisitionPackage.isNewPackage) {
+    return routeNames.MarketResearchEfforts
+  }
+  // editing existing package, does package have saved custom or generated research details?
+  if (hasMarketResearchDetails()) {
+    // skip form/questionnaire
+    return current === routeNames.MRRNeed
+      ? routeNames.MarketResearchReview // forward
+      : routeNames.MRRNeed; // backward
+  }
+  return routeNames.MarketResearchEfforts;
+ 
+}
+
 const plansToRemoveBarriers = ():boolean =>{
   const generated = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_generated
   const custom = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_custom
@@ -1493,6 +1514,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   BVTOResolver,
   EvalPlanDetailsRouteResolver,
   ProposedCSPRouteResolver,
+  MarketResearchEffortsRouteResolver,
   CertificationPOCsRouteResolver,
   SecurityRequirementsResolver,
   CrossDomainResolver,

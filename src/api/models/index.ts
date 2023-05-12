@@ -216,6 +216,8 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
   traffic_per_domain_pair: string;
 }
 
+export type FairOppDocGenType = "" | "GENERATED" | "CUSTOM" | undefined;
+
 export interface FairOpportunityDTO extends BaseTableDTO {
   // numbers correspond to frame/page titles in Figma starting here:
   // eslint-disable-next-line max-len
@@ -253,7 +255,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   // 2.5.2
   cause_of_sole_source_generated?: string; // innitially generated from form responses
   cause_of_sole_source_custom?: string; // user-entered by clicking "I want to write my own..."
-  cause_of_sole_source_for_docgen?: "" | "GENERATED" | "CUSTOM";
+  cause_of_sole_source_for_docgen?: FairOppDocGenType;
 
   // 2.6a
   why_csp_is_only_capable_source?: string;
@@ -275,22 +277,25 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   research_start_date?: string;
   research_end_date?: string;
   research_supporting_data?: string; 
+  
   research_review_catalogs_reviewed?: YesNo;
   research_review_catalogs_same_research_date?: YesNo;
   research_review_catalogs_start_date?: string;
   research_review_catalogs_end_date?: string;
   research_review_catalogs_review_results?: string;
+
   research_other_techniques_used?: string; // array of sys_ids
   research_other_technique?: string;
   research_personal_knowledge_person_or_position?: string;
   research_techniques_summary?: string;
+  
   research_write_own_explanation?: YesNo;
   // END market research efforts form
 
   // 2.9.3
   research_details_generated?: string; // innitially generated from form responses
   research_details_custom?: string; // user-entered by clicking "I want to write my own..."
-  research_details_for_docgen?: "" | "GENERATED" | "CUSTOM";
+  research_details_for_docgen?: FairOppDocGenType;
 
   // 2.9.4
   market_research_conducted_by?: string; // JSON object - array of name, title, organization
@@ -311,7 +316,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   // 2.11.2
   barriers_plans_to_remove_generated?: string; // innitially generated from form responses
   barriers_plans_to_remove_custom?: string; // user-entered by clicking "I want to write my own..."
-  barriers_plans_to_remove_for_docgen?: "" | "GENERATED" | "CUSTOM";
+  barriers_plans_to_remove_for_docgen?: FairOppDocGenType;
 
   // 2.12
   technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
@@ -320,6 +325,11 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   requirements_poc_sys_id?: string;
 }
 
+export interface MarketResearchTechniquesDTO extends BaseTableDTO {
+  technique_label: string;
+  technique_value: string;
+  sequence: number;
+}
 
 
 export interface OrganizationDTO extends BaseTableDTO {
