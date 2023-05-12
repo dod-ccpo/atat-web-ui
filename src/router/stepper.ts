@@ -761,7 +761,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: CrossDomain,
-        routeResolver: CrossDomainResolver
+        routeResolver: CrossDomainResolver // EJY need to look at this?
       },
     ]
   },
@@ -776,7 +776,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     
     children: [
       {
-        menuText: "Current Contract",
+        menuText: "Procurement History",
         path: "current-contract",
         name: routeNames.CurrentContract,
         completePercentageWeight: 0,

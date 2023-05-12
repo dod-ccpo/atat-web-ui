@@ -37,7 +37,9 @@ import AcquisitionPackage,
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import router from "@/router";
+// import Steps from "@/store/steps";
+import { routeNames } from "@/router/stepper";
+// import { CurrentContractRouteResolver } from "@/router/resolvers";
 
 @Component({
   components: {
@@ -46,8 +48,8 @@ import router from "@/router";
 })
 
 export default class CurrentContract extends Mixins(SaveOnLeave) {
-
-  public currentContractExists = "";
+  public redirect = false;
+  public currentContractExists = AcquisitionPackage.currentContract?.current_contract_exists;
   public headline = "";
 
   private get currentData(): CurrentContractDTO {
@@ -77,17 +79,63 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     current_contract_exists: "" 
   };
 
-  public async created(): Promise<void>{
-    await this.$router.push({
-      name: nextStepName as string, 
-      params: {direction}
-    });
-         
+  public created(): void {
+    // const hasLogicalFollowOn = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity
+    //   === "YES_FAR_16_505_B_2_I_C";
+    // debugger;
+    // if (hasLogicalFollowOn) {
+    //   this.redirect = true;
+    //   // do not show this page, route resolver will not be hit when coming here directly
+    //   const comingFrom = Steps.prevStepName;
+    //   if (comingFrom === routeNames.CurrentContractDetails) {
+    //     // moving backward.
+    //     const routeName = CurrentContractRouteResolver(routeNames.CurrentContractDetails)
+    //     debugger;
+    //     this.$router.push({
+    //       name: routeName,
+    //     }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+    //   } else {
+    //     debugger
+    //     this.$router.push({
+    //       name: routeNames.CurrentContractDetails,
+    //     }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+    //   }
+    // }   
   }
 
   public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
+    debugger;
+    this.$router.push({
+      name: routeNames.CurrentContractDetails,
+    }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+
+    // const hasLogicalFollowOn = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity
+    //   === "YES_FAR_16_505_B_2_I_C";
+    // debugger;
+    // const foo = true;
+    // if (foo === true) {
+    //   this.redirect = true;
+    //   // do not show this page, route resolver will not be hit when coming here directly
+    //   const comingFrom = Steps.prevStepName;
+    //   if (comingFrom === routeNames.CurrentContractDetails) {
+    //     // moving backward.
+    //     const routeName = CurrentContractRouteResolver(routeNames.CurrentContractDetails)
+    //     debugger;
+    //     this.$router.push({
+    //       name: routeName,
+    //     }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+    //   } else {
+    //     debugger
+    //     this.$router.push({
+    //       name: routeNames.CurrentContractDetails,
+    //     }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+    //   }
+    // }   
+
+    // if (!this.redirect) { 
+    //   await this.loadOnEnter();     
+    // }
+  }  
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.

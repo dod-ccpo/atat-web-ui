@@ -122,22 +122,30 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = (await AcquisitionPackage.loadData<CurrentContractDTO>({
-      storeProperty: StoreProperties.CurrentContract,
-    })) as Record<string, string>;
+    // const storeData = (await AcquisitionPackage.loadData<CurrentContractDTO>({
+    //   storeProperty: StoreProperties.CurrentContract,
+    // })) as Record<string, string>;
+    const storeData = AcquisitionPackage.currentContract as unknown as CurrentContractDTO;
 
     if (storeData) {
-      const keys: string[] = [
-        "incumbent_contractor_name",
-        "contract_number",
-        "task_delivery_order_number",
-        "contract_order_expiration_date",
-      ];
-      keys.forEach((key: string) => {
-        if (Object.prototype.hasOwnProperty.call(storeData, key)) {
-          this.savedData[key] = storeData[key];
-        }
-      });
+      // const keys: string[] = [
+      //   "incumbent_contractor_name",
+      //   "contract_number",
+      //   "task_delivery_order_number",
+      //   "contract_order_expiration_date",
+      // ];
+
+      // this.savedData.current_contract_exists = storeData.current_contract_exists as string;
+      // this.savedData.incumbent_contractor_name?: string;
+      // this.savedData.contract_number?: string;
+      // this.savedData.task_delivery_order_number?: string;
+      // this.savedData.contract_order_expiration_date?: string;
+
+      // keys.forEach((key: string) => {
+      //   if (Object.prototype.hasOwnProperty.call(storeData, key)) {
+      //     this.savedData[key] = storeData[key];
+      //   }
+      // });
     } else {
       AcquisitionPackage.setCurrentContract(this.currentData);
     }

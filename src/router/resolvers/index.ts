@@ -146,20 +146,26 @@ export const conductedResearchRouteResolver = (current: string): string => {
     : routeNames.WhoConductedResearch
 };
 
+const hasLogicalFollowOn = (): boolean => {
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity 
+    === "YES_FAR_16_505_B_2_I_C"
+}
+
 export const CurrentContractRouteResolver = (current: string): string => {
   debugger;
-
-  const hasLogicalFollowOn
-    = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity==="YES_FAR_16_505_B_2_I_C";
-  if (!hasLogicalFollowOn){
-    return routeNames.CurrentContract;
+  if (hasLogicalFollowOn()) {
+    // Moving backward, skip "Do you have a current contract" page and 
+    // use get value from resolver for last step in step 3
+    // return CrossDomainResolver(current);
+    return routeNames.CurrentContractDetails
+      ? CrossDomainResolver(current)
+      : routeNames.CurrentContractDetails
   }
-  return current === routeNames.CurrentContractDetails
-    ? routeNames.DOWLandingPage
-    : routeNames.CurrentContract;
+  return routeNames.CurrentContract
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
+  debugger;
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
   if (hasCurrentContract) {
@@ -1443,6 +1449,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
 }
   
 export const CrossDomainResolver = (current: string): string => {
+  debugger;
   //create function for this to be reused
   const classifications = ClassificationRequirements.selectedClassificationLevels
   onlyOneClassification(classifications)
