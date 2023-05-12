@@ -1342,12 +1342,12 @@ export default class PortfolioDashboard extends Vue {
     clinAverage: number;
     spendTrend: number;
   } = {
-    totalFundsSpent: 0,
-    totalFundsObligated: 0,
-    lastMonthSpent: 0,
-    clinAverage: 0,
-    spendTrend: 0,
-  };
+      totalFundsSpent: 0,
+      totalFundsObligated: 0,
+      lastMonthSpent: 0,
+      clinAverage: 0,
+      spendTrend: 0,
+    };
 
   public createTableItems(): void {
     this.idiqClins.forEach((idiqClin) => {
