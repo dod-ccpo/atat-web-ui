@@ -6,17 +6,17 @@
           <h1 class="mb-3">
             {{ pagewHeaderIntro }} your agency’s plans to remove barriers to fair opportunity
           </h1>
-          <p v-if="writeOwnExplanation">
-            In the field below, briefly describe the actions proposed to remove
-            or overcome barriers that led to the exception to fair opportunity.
-            If a J&A was prepared to support any related prior procurements,
-            explain the results of any actions taken to remove barriers.
-          </p>
           <p v-if="allSectionsNO">
             Unfortunately, we were not able to suggest language to help you complete
             this portion of the J&A. In the field below, briefly describe the actions
             proposed to remove or overcome barriers that led to the exception to fair
             opportunity. If a J&A was prepared to support any related prior procurements,
+            explain the results of any actions taken to remove barriers.
+          </p>
+          <p v-else-if="writeOwnExplanation">
+            In the field below, briefly describe the actions proposed to remove
+            or overcome barriers that led to the exception to fair opportunity.
+            If a J&A was prepared to support any related prior procurements,
             explain the results of any actions taken to remove barriers.
           </p>
           <p v-else>
