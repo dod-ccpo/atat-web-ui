@@ -671,7 +671,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.catalogReviewEndDate = this.researchEndDate;
     }
 
-    if (!this.needsMRR) {
+    if (!this.needsMRR || this.selectedTechniquesUsed.length === 0) {
       this.techniquesUsed = "";
       this.otherTechnique = "";
       this.personalKnowledgePerson = "";
