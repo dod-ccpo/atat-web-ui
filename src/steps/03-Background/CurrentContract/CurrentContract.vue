@@ -37,6 +37,7 @@ import AcquisitionPackage,
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+import router from "@/router";
 
 @Component({
   components: {
@@ -57,6 +58,14 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private savedData: CurrentContractDTO = { 
     current_contract_exists: "" 
   };
+
+  public async created(): Promise<void>{
+    await this.$router.push({
+      name: nextStepName as string, 
+      params: {direction}
+    });
+         
+  }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
