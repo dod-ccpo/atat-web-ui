@@ -25,7 +25,6 @@
               <ATATDatePicker
                 id="FollowOnDate"
                 class="mt-8"
-                :min="minDate"
                 :rules="[
                   $validators.isDateValid(`Enter a date using the format 'MM/DD/YYYY`),
                 ]"
@@ -123,7 +122,6 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   public selectedRequirement = ""
   public needFollowOnDate = false
   public followOnDate = ""
-  private minDate: string = format(add(new Date(),({days:1})), "yyyy-MM-dd");
   public trainingRequirement = getYesNoRadioOptions("TrainingRequirement")
   public selectedTrainingRequirement = ""
   public IaaSRequirement = getYesNoRadioOptions("IaaSRequirement")
