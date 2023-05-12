@@ -49,6 +49,8 @@ import Background from "../steps/03-Background/Index.vue";
 import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
 import CurrentContractDetails
   from "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
+import ProcurementHistorySummary
+  from "../steps/03-Background/CurrentContract/ProcurementHistorySummary.vue";
 import HasCurrentEnvironment 
   from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
 import CurrentEnvironmentLocation
@@ -161,9 +163,11 @@ import {
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
+  CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
+  ProcurementHistorySummaryRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
@@ -244,6 +248,7 @@ export const routeNames = {
   Background: "Background",
   CurrentContract: "Current_Contract",
   CurrentContractDetails: "Current_Contract_Details",
+  ProcurementHistorySummary: "Procurement_History_Summary",
   CurrentEnvironment:"Current_Environment",
   DOWLandingPage: "DOW_Landing_Page",
   RequirementCategories: "Requirement_Categories",
@@ -768,12 +773,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: Background,
     stepCompleteOnEnter: routeNames.ClassificationRequirements,
     completed: false,
+    
     children: [
       {
         menuText: "Current Contract",
         path: "current-contract",
         name: routeNames.CurrentContract,
         completePercentageWeight: 0,
+        routeResolver: CurrentContractRouteResolver,
         component: CurrentContract,
         completed: false,
       },
@@ -796,6 +803,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             actionName: "clearCurrentContractInfo"
           },
         ],
+      },
+      {
+        menuText: "Procurement History Summary",
+        path: "procurement-history-summary",
+        name: routeNames.ProcurementHistorySummary,
+        completePercentageWeight: 0,
+        component: ProcurementHistorySummary,
+        routeResolver: ProcurementHistorySummaryRouteResolver,
+        completed: false,
       },
       {
         menuText: "Current Environment",

@@ -146,6 +146,19 @@ export const conductedResearchRouteResolver = (current: string): string => {
     : routeNames.WhoConductedResearch
 };
 
+export const CurrentContractRouteResolver = (current: string): string => {
+  debugger;
+
+  const hasLogicalFollowOn
+    = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity==="YES_FAR_16_505_B_2_I_C";
+  if (!hasLogicalFollowOn){
+    return routeNames.CurrentContract;
+  }
+  return current === routeNames.CurrentContractDetails
+    ? routeNames.DOWLandingPage
+    : routeNames.CurrentContract;
+};
+
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
@@ -156,11 +169,23 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     ? routeNames.DOWLandingPage
     : routeNames.CurrentContract;
 };
+
+export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
+  if (hasExceptionToFairOpp()){
+    return routeNames.ProcurementHistorySummary
+  }
+
+  return current === routeNames.CurrentContractDetails
+    ? routeNames.CurrentEnvironment
+    : routeNames.CurrentContractDetails;
+}
+
 export const ReplicateAndOptimizeResolver = (current: string): string => {
   return current === routeNames.DOWLandingPage || current === routeNames.ReplicateDetails
     ? routeNames.ReplicateAndOptimize
     : routeNames.DOWLandingPage;
 }
+
 
 export const ReplicateDetailsResolver = (current: string): string => {
   if (needsReplicateOrOptimize()&& current !== routeNames.ArchitecturalDesign) {
@@ -1468,7 +1493,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
+  CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
+  ProcurementHistorySummaryRouteResolver,
   removeBarriersRouteResolver,
   conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
