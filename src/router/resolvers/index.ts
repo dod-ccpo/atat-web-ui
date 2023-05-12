@@ -1455,26 +1455,22 @@ export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): 
 
 export const SecurityRequirementsResolver = (current: string): string => {
   const classifications = ClassificationRequirements.selectedClassificationLevels;
-  const hasSorTS = hasHighSide(classifications);
+  const hasHigh = hasHighSide(classifications); 
   // forward
   if (current === routeNames.ClassificationRequirements) {
-    if (hasSorTS) {
+    if (hasHigh) {
       return routeNames.SecurityRequirements;
     }
-    return hasLogicalFollowOn()
-      ? routeNames.CurrentContractDetails
-      : routeNames.CurrentContract;
+    return hasLogicalFollowOn() ? routeNames.CurrentContractDetails : routeNames.CurrentContract;
   }
   // backward
-  return hasSorTS
-    ? routeNames.SecurityRequirements
-    : routeNames.ClassificationRequirements
+  return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements
 }
   
 export const CrossDomainResolver = (current: string): string => {
   //create function for this to be reused
   const classifications = ClassificationRequirements.selectedClassificationLevels;
-  const hasSorTS = hasHighSide(classifications);
+  const hasHigh = hasHighSide(classifications);
   const singleClassification = onlyOneClassification(classifications)
 
   // backward
@@ -1483,15 +1479,14 @@ export const CrossDomainResolver = (current: string): string => {
     if (!singleClassification) {
       return routeNames.CrossDomain;
     }
-    return hasSorTS ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements;
+    return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements;
 
   }
   // forward
-  return !singleClassification 
-    ? routeNames.CrossDomain
-    : hasLogicalFollowOn()
-      ? routeNames.CurrentContractDetails
-      : routeNames.CurrentContract;
+  if (!singleClassification) {
+    routeNames.CrossDomain
+  }
+  return hasLogicalFollowOn() ? routeNames.CurrentContractDetails : routeNames.CurrentContract;
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
