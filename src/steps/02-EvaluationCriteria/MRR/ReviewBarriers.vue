@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="mb-3">
-            {{ pagewHeaderIntro }} your agency’s plans to remove barriers to fair opportunity
+            {{ pageHeaderIntro }} plans to remove barriers to fair opportunity
           </h1>
           <p v-if="allSectionsNO">
             Unfortunately, we were not able to suggest language to help you complete
@@ -164,7 +164,7 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
     this.barriersToOpportunity = this.barriersToOpportunity || suggestedText
     this.defaultSuggestion = suggestedText
   }
-  public get pagewHeaderIntro(): string {
+  public get pageHeaderIntro(): string {
     return this.docgenType === "CUSTOM" ? "Tell us how your agency" : "Let’s review your agency’s";
   }
 
