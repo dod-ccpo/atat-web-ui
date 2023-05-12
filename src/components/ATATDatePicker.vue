@@ -136,8 +136,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: string;
-  @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
-    private max!: string;
+  @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") }) private max!: string;
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: false }) private isRequired!: boolean;
 
