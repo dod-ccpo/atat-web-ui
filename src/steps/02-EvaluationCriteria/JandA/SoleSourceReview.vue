@@ -7,7 +7,7 @@
             {{ pagewHeaderIntro }} the cause of your sole source situation
           </h1>
           <div class="copy-max-width">
-            <p class="mb-4" v-if="!writeOwnExplanation">
+            <p class="mb-4" v-if="!isCustom">
               Based on what you’ve told us, we’ve suggested language to explain the 
               factors that led to your decision to solicit only one source for this 
               project. You can edit any details to meet your requirements, but be sure
@@ -73,9 +73,9 @@
 
             <v-btn
               id="RestoreSuggestionButton"
-              v-if="!writeOwnExplanation"
+              v-if="!isCustom"
               class="secondary font-size-14 px-4 mb-1 mt-1"
-              :disabled="isSoleSourceCauseIsDefault"
+              :disabled="isSoleSourceCauseDefault"
               @click="confirmRestoreDefaultText"
             >
               <ATATSVGIcon
@@ -131,10 +131,10 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public defaultSuggestion = "";
   public showRestoreModal = false;
 
-  public writeOwnExplanation = false;
+  public isCustom = false;
   public allSectionsNO = false;
   public get pagewHeaderIntro(): string {
-    return this.writeOwnExplanation ? "Tell us about" : "Let’s review";
+    return this.isCustom ? "Tell us about" : "Let’s review";
   }
 
   public get cspName(): string {
@@ -219,13 +219,13 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   }
 
   public get getRowCount(): number {
-    return this.writeOwnExplanation ? 12 : 19;
+    return this.isCustom ? 12 : 19;
   }
 
-  public isSoleSourceCauseIsDefault = false;
+  public isSoleSourceCauseDefault = false;
   @Watch("soleSourceCause")
   public soleSourceCauseChanged(): void {
-    this.isSoleSourceCauseIsDefault = this.soleSourceCause === this.defaultSuggestion;
+    this.isSoleSourceCauseDefault = this.soleSourceCause === this.defaultSuggestion;
   }
 
   public restoreSuggestion(): void {
@@ -238,7 +238,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   }
 
   get btnRestoreIconColor(): string {
-    return this.isSoleSourceCauseIsDefault ? "disabled" : "primary";
+    return this.isSoleSourceCauseDefault ? "disabled" : "primary";
   }
 
   public get currentData(): FairOpportunityDTO {
@@ -273,8 +273,8 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
         && storeData.cause_govt_engineers_training_certified === "NO"
         && storeData.cause_product_feature_peculiar_to_csp === "NO";
 
-      this.writeOwnExplanation = storeData.cause_write_own_explanation === "YES";
-      if (!this.writeOwnExplanation) {
+      this.isCustom = storeData.cause_write_own_explanation === "YES";
+      if (!this.isCustom) {
         this.generateSuggestion();
       }
     }
