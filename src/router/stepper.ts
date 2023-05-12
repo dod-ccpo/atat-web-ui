@@ -787,6 +787,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Procurement History",
+        excludeFromMenu: true,
         path: "current-contract",
         name: routeNames.CurrentContract,
         completePercentageWeight: 0,
