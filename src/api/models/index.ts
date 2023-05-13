@@ -118,6 +118,9 @@ export interface CurrentContractDTO extends BaseTableDTO {
   contract_number?: string;
   task_delivery_order_number?: string;
   contract_order_expiration_date?: string;
+  contract_order_start_date: string;
+  competitive_status: string;
+  business_size: string;
 }
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {
