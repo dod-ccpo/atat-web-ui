@@ -77,6 +77,7 @@
         :min="min"
         :max="max"
         @click:date="datePickerClicked"
+        @blur="datePickerBlurred"
         scrollable
       ></v-date-picker>
     </v-menu>
@@ -220,6 +221,10 @@ export default class ATATDatePicker extends Vue {
     Vue.nextTick(() => {
       this.updateDateValueProperty();
     });
+  }
+
+  private datePickerBlurred(): void{
+    this.$emit("datePickerBlurred");
   }
 
   /**

@@ -123,7 +123,7 @@ export class ValidationPlugin {
  */
   lessThan(
     max: number,
-    message?: string
+    message?: string,
   ): ((v: number) => string | true | undefined) {
     message = message || `Value must be less than ${max}`;
     return (v: number) => {
