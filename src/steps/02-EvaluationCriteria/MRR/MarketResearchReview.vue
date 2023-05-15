@@ -185,7 +185,7 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
     const needsCatalogReviewP = this.savedData?.research_review_catalogs_reviewed === "YES";
     const needsTechniquesP = this.savedData?.research_other_techniques_used !== ""
       && this.savedData?.research_techniques_summary !== "";
-
+    const dateFormat = "MMMM d, yyyy";
     let suggestedText = "";
     if (needsResearchP) {
       suggestedText += "Additional research was conducted "
@@ -194,10 +194,10 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
 
       if (start) {
         const prep = end ? "from " : "on "
-        suggestedText += prep + format(this.getDate(start), "MM/dd/yyyy");
+        suggestedText += prep + format(this.getDate(start), dateFormat);
       } 
       if (end) {
-        suggestedText += " to " + format(this.getDate(end), "MM/dd/yyyy")
+        suggestedText += " to " + format(this.getDate(end), dateFormat)
       }
       suggestedText += " by reviewing the specific capabilities in the JWCC Contracts " +
         "and it was determined that " + this.cspName + " is the only source capable of " + 
@@ -211,9 +211,9 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
       const end = this.savedData?.research_review_catalogs_end_date;
       if (start) {
         const prep = end ? "from " : "on "
-        suggestedText += prep + format(this.getDate(start), "MM/dd/yyyy");
+        suggestedText += prep + format(this.getDate(start), dateFormat);
       } if (end !== "" && end !== undefined) {
-        suggestedText += " to " + format(this.getDate(end), "MM/dd/yyyy")
+        suggestedText += " to " + format(this.getDate(end), dateFormat)
       }
       suggestedText += " by reviewing the JWCC contractor's catalogs to determine " +
         "if other similar offerings (to include: " + 
