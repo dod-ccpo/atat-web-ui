@@ -385,6 +385,7 @@ export default class TaskOrderDetails extends Vue {
     return this.showInactive? 'Hide':'Show'
   }
 
+  /* eslint-disable indent */
   public currentPeriodFundingTotals: {
     CLINValue:number,
     obligatedFunds:number,
@@ -394,6 +395,7 @@ export default class TaskOrderDetails extends Vue {
       obligatedFunds:0,
       fundsSpent:0,
     }
+  /* eslint-enable indent */
 
   public taskOrderRemainingFunds = {percent:"",fundsRemaining:""}
   public totals = {percent:"",fundsRemaining:""}
