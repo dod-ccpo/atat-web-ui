@@ -67,39 +67,41 @@
               <ATATDatePicker 
                 ref="startDatepicker"
                 id="Start" 
-                :rules="compareStartToEndRule" 
                 :value.sync="contractOrderStartDate" 
                 label="Start date" 
                 max="2024-01-01"
                 placeHolder="MM/DD/YYYY"
                 class="mr-5"
                 @isDatePickerValid="isStartDatePickerValid"
-                @update:value="validateForm"
-                @datePickerBlurred="datePickerBlurred"
-                />
-                <!-- [
+                :rules="[
                   $validators.required(
                     'Please enter your PoP start date.'
                   ),
                   $validators.isDateValid('Please enter a valid date.'),
-                  compareStartToEndRule
-                ] -->
+                  ...startDateRules
+                ]" 
+                />
+                
 
               <!-- NOTE: max date to be determined -->
               <ATATDatePicker id="Expiration" 
-                :rules="[
-                  $validators.required(
-                    'Please enter your contract/order expiration date.'
-                  ),
-                  $validators.isDateValid('Please enter a valid date.'),
-                ]" 
                 :value.sync="contractOrderExpirationDate" 
                 label="Expiration date" 
                 max="2024-01-01"
                 placeHolder="MM/DD/YYYY" 
-                @update:value="validateForm"
+                :rules="[
+                  $validators.required(
+                    'Please enter your PoP expiration date.'
+                  ),
+                  $validators.isDateValid('Please enter a valid date.'),
+                  ...expirationDateRules
+                ]"
                 />
             </div>
+            <ATATErrorValidation
+                  :errorMessages="[...startDatePickerRules, ...expirationDatePickerRules]"
+                  :showAllErrors="false"
+                ></ATATErrorValidation>
             <hr />
 
             <h2 class="mb-4">
@@ -174,6 +176,7 @@ import { Component, Mixins } from "vue-property-decorator";
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ContractNumber from "@/steps/03-Background/components/ContractNumber.vue";
 import IncumbentContractorName from "@/steps/03-Background/components/IncumbentContractorName.vue";
 import LevelOfCompetition from "@/steps/03-Background/components/LevelOfCompetition.vue";
@@ -184,7 +187,6 @@ import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { add, compareAsc, format } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
-import { deAT } from "date-fns/locale";
 
 @Component({
   components: {
@@ -195,6 +197,7 @@ import { deAT } from "date-fns/locale";
     LevelOfCompetition,
     BusinessSize,
     ATATTextField,
+    ATATErrorValidation
   },
 })
 export default class CurrentContract extends Mixins(SaveOnLeave) {
@@ -212,9 +215,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     };
   
   };
-  
-  private startDateRules: ((v: string) => string | true | undefined)[] = [];
-  
+
   private incumbentContractorName =
     AcquisitionPackage.currentContract?.incumbent_contractor_name || "";
 
@@ -223,7 +224,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private taskDeliveryOrderNumber =
     AcquisitionPackage.currentContract?.task_delivery_order_number || "";
-
+  
   private contractOrderStartDate =
     AcquisitionPackage.currentContract?.contract_order_start_date || "";
 
@@ -238,46 +239,46 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private isStartDatePickerValid = true;
 
+  private startDatePickerRules:string[] = [];
+  private expirationDatePickerRules: string[] = [];
+
   private get isExceptiontoFairOpp(): boolean {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
   }
-  private get compareStartToEndRule():((v:string)=> string | true | undefined) []{
+
+  private get startDateRules():((v:string)=> string | true | undefined) []{
+    
     const rulesArray: ((v: string) => string | true | undefined)[] = [];
-    const start = new Date(this.currentData.contract_order_start_date as string);
-    const expiration = new Date(this.currentData.contract_order_expiration_date as string);
-    debugger;
-    return [(v:string)=> v === "tony" || "expiration is before start"];
-
-
-    // return ((v:string) => {
-    //   return  new Date(v).getTime() < new Date(this.contractOrderExpirationDate).getTime() 
-    //     || 'errored Date'
-    // }) 
+    try{
+      this.startDatePickerRules=[];
+      const startDate = new Date(this.contractOrderStartDate as string);
+      const expirationDate = new Date(this.getDateTextboxValue("Expiration") as string);
+      if (compareAsc(startDate,expirationDate)>-1 && this.expirationDatePickerRules.length===0){
+        rulesArray.push((() => {return (false|| '')}))
+        this.startDatePickerRules.push(`The start date must be before the expiration date.`)
+      }} catch(ex:Error){
+        console.  
+    }
+    return rulesArray;
+  }
+ 
+  private get expirationDateRules():((v:string)=> string | true | undefined) []{
+    const rulesArray: ((v: string) => string | true | undefined)[] = [];
+    this.expirationDatePickerRules=[];
+    const startDate = new Date(this.getDateTextboxValue("Start") as string);
+    const expirationDate = new Date(this.contractOrderExpirationDate as string);
+    if (compareAsc(expirationDate,startDate) < 1 && this.startDatePickerRules.length===0){
+      rulesArray.push((() => {return (false|| '')}))
+      this.expirationDatePickerRules.push(`The expiration date must be after the start date.`)
+    } 
+    return rulesArray;
   }
 
-  private datePickerBlurred(): void{
-    debugger;
+  private getDateTextboxValue(dateType: string):string{
+    return (document.getElementById(dateType + "DatePickerTextField") as HTMLInputElement)?.value
+     || "";
   }
 
-  private async validateForm(): Promise<void>{
-    this.compareStartToEndRule;
-    // this.currentData.contract_order_expiration_date = "05/15/2023"
-    // // debugger;
-    // this.startDateRules = [];
-    // this.startDateRules.push((v:string) => v ==="tony" || "errored")
-    this.$nextTick(()=>{
-      // await this.$refs.startDatepicker.blur;
-      const startDatePicker = 
-        document.getElementById("StartDatePickerTextField") as HTMLInputElement
-  
-      startDatePicker.blur()
-      // this.startDateRules.push(()=> false || "errored")
-      // debugger;
-      console.log(this.startDateRules);
-    })
-    // // this.$refs.startDatePicker.blur();
-    // // this.compareStartToEndRule;
-  }
 
   private minDate: string = format(add(new Date(), { days: 1 }), "yyyy-MM-dd");
   private savedData = {
