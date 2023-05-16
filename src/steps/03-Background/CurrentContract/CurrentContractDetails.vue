@@ -99,7 +99,7 @@
                 />
             </div>
             <ATATErrorValidation
-                  :errorMessages="[...startDatePickerRules, ...expirationDatePickerRules]"
+                  :errorMessages="DPSharedErrorMessages"
                   :showAllErrors="false"
                 ></ATATErrorValidation>
             <hr />
@@ -187,6 +187,7 @@ import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { add, compareAsc, format } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
+import { JSDocUnknownType } from "typescript";
 
 @Component({
   components: {
@@ -240,8 +241,15 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private isStartDatePickerValid = true;
 
-  private startDatePickerRules:string[] = [];
-  private expirationDatePickerRules: string[] = [];
+  private startDPSharedErrorMessages:string[] = [];
+  private expirationDPSharedErrorMessages: string[] = [];
+  private get DPSharedErrorMessages():string[]{
+    const errorMessage = [
+      ...this.startDPSharedErrorMessages, 
+      ...this.expirationDPSharedErrorMessages
+    ].find(item => item !== "" || item !== undefined) as string;
+    return [errorMessage]
+  }
 
   private get isExceptiontoFairOpp(): boolean {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
@@ -251,27 +259,34 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     
     const rulesArray: ((v: string) => string | true | undefined)[] = [];
     try{
-      this.startDatePickerRules=[];
+      this.startDPSharedErrorMessages=[];
       const startDate = new Date(this.contractOrderStartDate as string);
       const expirationDate = new Date(this.getDateTextboxValue("Expiration") as string);
-      if (compareAsc(startDate,expirationDate)>-1 && this.expirationDatePickerRules.length===0){
+      if (compareAsc(startDate,expirationDate)>-1 
+          && this.expirationDPSharedErrorMessages.length===0){
         rulesArray.push((() => {return (false|| '')}))
-        this.startDatePickerRules.push(`The start date must be before the expiration date.`)
-      }} catch(ex:Error){
-        console.  
+        this.startDPSharedErrorMessages.push(`The start date must be before the expiration date.`)
+      }} catch(ex:unknown){
+      console.log("")
     }
     return rulesArray;
   }
  
   private get expirationDateRules():((v:string)=> string | true | undefined) []{
     const rulesArray: ((v: string) => string | true | undefined)[] = [];
-    this.expirationDatePickerRules=[];
-    const startDate = new Date(this.getDateTextboxValue("Start") as string);
-    const expirationDate = new Date(this.contractOrderExpirationDate as string);
-    if (compareAsc(expirationDate,startDate) < 1 && this.startDatePickerRules.length===0){
-      rulesArray.push((() => {return (false|| '')}))
-      this.expirationDatePickerRules.push(`The expiration date must be after the start date.`)
-    } 
+    try{
+      this.expirationDPSharedErrorMessages=[];
+      const startDate = new Date(this.getDateTextboxValue("Start") as string);
+      const expirationDate = new Date(this.contractOrderExpirationDate as string);
+      if (compareAsc(expirationDate,startDate) < 1 && this.startDPSharedErrorMessages.length===0){
+        rulesArray.push((() => 
+        {return (false|| '')}))
+        this.expirationDPSharedErrorMessages.push(
+          `The expiration date must be after the start date.`
+        )
+      }} catch(ex:unknown){
+      console.log("")
+    }
     return rulesArray;
   }
 
@@ -290,8 +305,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     competitive_status: "",
   } as Record<string, string>;
 
-
-  private savedData = {} as CurrentContractDTO;
   private get currentData(): CurrentContractDTO {
     return {
       incumbent_contractor_name: this.incumbentContractorName,
