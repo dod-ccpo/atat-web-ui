@@ -16,7 +16,8 @@ import {
   BaseTableDTO,
   ClinDTO,
   EDAResponse,
-  ReferenceColumn, EnvironmentDTO,
+  ReferenceColumn, 
+  EnvironmentDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -522,7 +523,7 @@ export interface Portfolio extends BaseTableDTO {
   title?: string;
   description?: string;
   status?: string;
-  csp?: string;
+  csp?: string; // EJY - DOUBLE-CHECK - this could be type CSP ?
   agency?: string;
   agencyDisplay?: string;
   createdBy?: string;
@@ -797,3 +798,9 @@ export enum ClassificationLevels {
   TSCRT = "Top Secret"
 }
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+
+export enum ClassificationLevels {
+  UNCL = "Unclassified",
+  SCRT = "Secret",
+  TSCRT = "Top Secret"
+}

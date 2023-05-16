@@ -74,7 +74,8 @@
                   class="row-item font-size-14 text-right"
                   :class="[{ 
                     '_subtotal' : item.CLINTypeClassAggregate === 'Subtotal',
-                    '_total' : item.CLINTypeClassAggregate === 'Total Price',
+                    '_total' : item.CLINTypeClassAggregate === 'Total Price' ||
+                    item.CLINTypeClassAggregate === 'Grand Total with Fee',
                     '_border-bottom' : item.isCLINAmount === 'true',
                   }]"
                 >
@@ -82,7 +83,8 @@
                     <div :class="[
                       'text-left py-4',
                       {'font-weight-bold text-right': 
-                        isItemAggregate(item.CLINTypeClassAggregate)}
+                        isItemAggregate(item.CLINTypeClassAggregate)},
+                        { 'text-right': isFee(item.CLINTypeClassAggregate)}
                       ]"
                     >
                       {{ item.CLINTypeClassAggregate }}
@@ -117,6 +119,7 @@
   </v-container>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { Component } from "vue-property-decorator";
@@ -151,6 +154,7 @@ export default class CostSummary extends Vue {
   public tableData: IGCECostSummaryItem[] = []
   public costData: CostEstimateDTO = {packageId:"",payload:{}}
   public surgePercentage = "";
+  public contractingOfficeFee = "";
   public periodsLength = Periods.periods.length
 
   public tableHeaders = [
@@ -174,7 +178,10 @@ export default class CostSummary extends Vue {
   }
 
   public createTableData(source:Record<string, any>, clinAmount:string,rowName:string):void{
-    let option1,option2,option3,option4
+    let basePeriod,option1,option2,option3,option4
+    if(source["Base Period"]){
+      basePeriod = getCurrencyString(source["Base Period"],true)
+    }
     if(source["Option 1"]){
       option1 = getCurrencyString(source["Option 1"],true)
     }if(source["Option 2"]){
@@ -186,7 +193,7 @@ export default class CostSummary extends Vue {
     }
     const tableItem = {
       CLINTypeClassAggregate: rowName,
-      BasePeriod: getCurrencyString(source["Base Period"] || 0,true),
+      BasePeriod: basePeriod,
       OptionOne:option1,
       OptionTwo:option2,
       OptionThree:option3,
@@ -195,6 +202,29 @@ export default class CostSummary extends Vue {
       isCLINAmount: clinAmount
     }
     this.tableData.push(tableItem)
+  }
+  public createFeeData(name:string, amount:number, isClinAmount:string):void{
+    const tableObject = {
+      CLINTypeClassAggregate: "",
+      BasePeriod:"",
+      OptionOne: "",
+      OptionTwo:"",
+      OptionThree:"",
+      OptionFour:"",
+      Total:amount,
+      isCLINAmount: isClinAmount
+    }
+
+    if(name === "ditcoFee"){
+      tableObject.CLINTypeClassAggregate = "DITCO Fee (2.25%)"
+    }
+    if(name === "contractingOffice"){
+      tableObject.CLINTypeClassAggregate = this.contractingOfficeFee
+    }
+    if(name === "grandTotal"){
+      tableObject.CLINTypeClassAggregate = "Grand Total with Fee"
+    }
+    this.createTableData(tableObject, isClinAmount,tableObject.CLINTypeClassAggregate)
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -217,10 +247,23 @@ export default class CostSummary extends Vue {
     const totalData = this.costData.payload.total_price
     const surgeData = this.costData.payload.surge
     const ditcoFee = this.costData.payload.ditco_fee
+    const contratingFee = this.costData.payload.contracting_office_fee
     const grandTotal = this.costData.payload.grand_total_with_fee
-    this.createTableData(subTotalData,"false","Subtotal")
-    this.createTableData(surgeData,"false",this.surgePercentage)
+    if(surgeData){
+      this.createTableData(subTotalData,"false","Subtotal")
+    }
+    if(surgeData){
+      this.createTableData(surgeData,"false",this.surgePercentage)
+    }
     this.createTableData(totalData,"false", "Total Price")
+    if(ditcoFee){
+      this.createFeeData("ditcoFee",ditcoFee,"false")
+    }else if(contratingFee){
+      this.createFeeData("contractingOffice",contratingFee,"false")
+    }
+    if(ditcoFee || contratingFee){
+      this.createFeeData("grandTotal", grandTotal, "false")
+    }
     // this.createTableData(ditcoFee,"false","Ditco FEE")
   }
 
@@ -228,11 +271,16 @@ export default class CostSummary extends Vue {
     this.costData = await api.costEstimateTable.search(acquisitionPackage.packageId)
     this.surgePercentage =
       `${IGCEStore.requirementsCostEstimate?.surge_requirements.capacity}% Surge`
+    this.contractingOfficeFee =
+      `Contracting Office Fee (${IGCEStore.requirementsCostEstimate?.fee_specs.percentage}%)`
     await this.loadOnEnter()
   }
 
   public isItemAggregate(label: string): boolean {
-    return ['total', 'surge'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+    return ['total'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+  }
+  public isFee(label: string): boolean {
+    return ['%'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
   }
 
 

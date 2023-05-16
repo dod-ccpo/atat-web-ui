@@ -15,6 +15,8 @@ const portfolios: PortfolioSummaryDTO[] = [
     /* eslint-disable camelcase */
     csp_display: "CSP_A",
     agency: "ARMY",
+    vendor: "AWS",
+    dod_component: "ARMY", // EJY - DOUBLE-CHECK this is still needed
     task_order_number: "123456",
     sys_updated_on: "2022-09-26 15:50:20", 
     task_order_status: "ACTIVE",
@@ -36,6 +38,8 @@ const portfolios: PortfolioSummaryDTO[] = [
     /* eslint-disable camelcase */
     csp_display: "CSP_B",
     agency: "ARMY",
+    vendor: "AWS",
+    dod_component: "ARMY", // EJY - DOUBLE-CHECK this is still needed
     task_order_number: "123456",
     sys_updated_on: "2022-09-26 15:50:20", 
     task_order_status: "ACTIVE",

@@ -57,10 +57,10 @@
             :height="9"
             class="d-inline-block mx-1"
           /> 
-        </div> -->
-   
-        <!-- 
-          ATAT TODO - REPLACE HARDCODED TO# when working ATAT tickets
+        </div> 
+        -->
+
+        <!-- ATAT TODO - REPLACE HARDCODED TO# when working ATAT tickets 
         <div
           v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
           class=" d-flex align-center">
@@ -296,7 +296,7 @@ export default class Card extends Vue {
         }).catch(() => console.log("avoiding redundant navigation"));
       }
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
-      await acquisitionPackage.setFirstTimeVisit(false)
+      await acquisitionPackage.setIsNewPackage(false)
       break;
     case "View completed package":
       this.packageTitleClick("Waiting for Task Order");

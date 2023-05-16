@@ -5,7 +5,8 @@ import rootStore from "../index";
 import {
   Environment,
   FilterOption,
-  MemberInvites, Operator,
+  MemberInvites, 
+  Operator,
   Portfolio,
   PortfolioCardData,
   PortfolioProvisioning,

@@ -206,6 +206,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
@@ -341,6 +342,26 @@ export default class CSPPortalAccess extends Vue {
     const starting = (this.page - 1) * this.maxPerPage + 1;
     return starting;
   }
+
+  // EJY DOUBLE-CHECK IF THIS IS NEEDED?
+  // public createTableData(): void {
+  //   for (let i = 0; i < this.emails.length; i++) {
+  //     const admin = {
+  //       email:"",
+  //       status:"",
+  //       createdBy:"",
+  //       created:""
+  //     };
+  //     //eslint-disable-next-line prefer-const
+  //     let idx = i;
+  //     admin.email = this.emails[idx];
+  //     admin.status = this.statuses[idx];
+  //     admin.createdBy = this.createdBy[idx];
+  //     admin.created = admin.status !== "Processing" 
+  // ? format(this.today,"MMM. dd, yyy hhmm") : "";
+  //     this.tableData.push(admin);
+  //   }
+  // }
 
   get okDisabled(): boolean {
     if (this.emailIsValid && this.formIsValid && this.dodID) {

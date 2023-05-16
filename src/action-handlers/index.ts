@@ -8,6 +8,10 @@ import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { FairOpportunityDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
+import PortfolioStore from "@/store/portfolio";
+import AppSections from "@/store/appSections";
+import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
+import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
@@ -20,6 +24,11 @@ const actionHandlerNames = {
   startProvisioning: "startProvisioning",
   didNotUseDapps: "didNotUseDapps",
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
+  writeOwnMarketResearchDetails: "writeOwnMarketResearchDetails",
+  WriteOwnBarriers: "WriteOwnBarriers",
+  openTOSearchModal: "openTOSearchModal",
+  startProvisioning: "startProvisioning",
+  didNotUseDapps: "didNotUseDapps"
 }
 
 const actions =  {
@@ -33,6 +42,11 @@ const actions =  {
   [actionHandlerNames.startProvisioning]: startProvisioning,
   [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
   [actionHandlerNames.writeOwnSoleSourceCause]: writeOwnSoleSourceCause,
+  [actionHandlerNames.writeOwnMarketResearchDetails]: writeOwnMarketResearchDetails,
+  [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
+  [actionHandlerNames.openTOSearchModal]: openTOSearchModal,
+  [actionHandlerNames.startProvisioning]: startProvisioning,
+  [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -50,7 +64,7 @@ function sampleAdditionalButtonAction(actionArgs: string[]) {
 
 async function writeOwnSoleSourceCause() {
   // eslint-disable-next-line camelcase
-  const fairOpp: FairOpportunityDTO = { write_own_sole_source_cause: "YES" };
+  const fairOpp: FairOpportunityDTO = { cause_write_own_explanation: "YES" };
   await AcquisitionPackage.setFairOpportunity(fairOpp);
   router.push({
     name: routeNames.SoleSourceReview,
@@ -60,6 +74,32 @@ async function writeOwnSoleSourceCause() {
     replace: true
   }).catch(() => console.log("avoiding redundant navigation"));
 }
+async function WriteOwnBarriers() {
+  // eslint-disable-next-line camelcase
+  const fairOpp: FairOpportunityDTO = { barriers_write_own_explanation: "YES" };
+  await AcquisitionPackage.setFairOpportunity(fairOpp);
+  router.push({
+    name: routeNames.ReviewBarriers,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));
+}
+
+async function writeOwnMarketResearchDetails() {
+  // eslint-disable-next-line camelcase
+  const fairOpp: FairOpportunityDTO = { research_write_own_explanation: "YES" };
+  await AcquisitionPackage.setFairOpportunity(fairOpp);
+  router.push({
+    name: routeNames.MarketResearchReview,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));
+}
+
 
 function clearCurrentContractInfo() {
   AcquisitionPackage.clearCurrentContractInfo();

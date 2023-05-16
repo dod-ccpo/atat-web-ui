@@ -326,12 +326,12 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     const classificationSelected = this.selectedClassificationLevels.length > 0;
     let unclassEmailValid = true;
     if (this.selectedClassificationLevels.includes(this.unclStr)) {
-      unclassEmailValid = /^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i
+      unclassEmailValid = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i
         .test(this.unclassifiedEmail);
     }
     let scrtEmailValid = true;
     if (this.selectedClassificationLevels.includes(this.scrtStr)) {
-      scrtEmailValid = /^\S[a-z-_.0-9]+@[a-z-]+\.(?:sgov|smil)+\.(?:gov|mil)$/i
+      scrtEmailValid = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i
         .test(this.scrtEmail);
     }
     return !idOK || !classificationSelected || !unclassEmailValid || !scrtEmailValid;

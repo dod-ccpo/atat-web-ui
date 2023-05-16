@@ -39,9 +39,10 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { User } from "../../../../../types/Global";
+
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import PortfolioStore from "@/store/portfolio";
 import ATATProfileCard from "@/components/ATATProfileCard.vue";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components: {

@@ -22,6 +22,7 @@ import {
   ContractTypeDTO,
   CurrentContractDTO,
   FairOpportunityDTO,
+  MarketResearchTechniquesDTO,
   EvaluationPlanDTO,
   OrganizationDTO,
   // PeriodDTO,
@@ -70,6 +71,7 @@ export const StoreProperties = {
   ProjectOverview: "projectOverview",
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
+  MarketResearchTechniques: "marketResearchTechniques",
   EvaluationPlan: "evaluationPlan",
   // PeriodOfPerformance: "periodOfPerformance",
   SensitiveInformation: "sensitiveInformation",
@@ -112,6 +114,9 @@ export const initialCurrentContract = (): CurrentContractDTO => {
     contract_number: "",
     task_delivery_order_number: "",
     contract_order_expiration_date: "",
+    contract_order_start_date: "",
+    competitive_status: "",
+    business_size: "",
   }
 }
 
@@ -329,6 +334,7 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
+  marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
@@ -360,7 +366,7 @@ export class AcquisitionPackageStore extends VuexModule {
   disableContinue = false
   hideNavigation = false
   hideSideNavigation = false
-  firstTimeVisit = false
+  isNewPackage = false
   fundingRequestType: string | null =  null;
 
   currentUser: User = {};
@@ -664,12 +670,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: false})
-  public async setFirstTimeVisit(value: boolean): Promise<void> {
-    this.doSetFirstTimeVisit(value);
+  public async setIsNewPackage(value: boolean): Promise<void> {
+    this.doSetIsNewPackage(value);
   }
   @Mutation
-  private doSetFirstTimeVisit(value: boolean): void {
-    this.firstTimeVisit = value;
+  private doSetIsNewPackage(value: boolean): void {
+    this.isNewPackage = value;
   }
   @Action
   public async setValidateNow(value: boolean): Promise<void> {
@@ -900,6 +906,10 @@ export class AcquisitionPackageStore extends VuexModule {
           await this.updateAcquisitionPackage();
         }
       }
+    } else {
+      const techniques: MarketResearchTechniquesDTO[] 
+        = await api.marketResearchTechniquesTable.all();
+      await this.doSetMarketResearchTechniques(techniques);
     }
   }
   @Mutation
@@ -909,7 +919,20 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
     if (value.sys_id && this.acquisitionPackage && !this.acquisitionPackage.fair_opportunity) {
       this.acquisitionPackage.fair_opportunity = value.sys_id as string;
-    }  
+    } 
+
+    if (value.exception_to_fair_opportunity?.toLowerCase() === "no_none"){
+      //if exists, delete appropriation of funds data
+      await FinancialDetails.deleteAppropriationOfFunds();
+    }
+  }
+  @Mutation
+  public async doSetMarketResearchTechniques(
+    techniques: MarketResearchTechniquesDTO[]
+  ): Promise<void> {
+    if (techniques && techniques.length) {
+      this.marketResearchTechniques = techniques.sort((a,b) => a.sequence > b.sequence ? 1 : -1);
+    }
   }
 
   @Mutation
@@ -1162,6 +1185,8 @@ export class AcquisitionPackageStore extends VuexModule {
           initialFairOpportunity()
         );
       }
+      // EJY HERE
+
       this.setPackagePercentLoaded(60);
 
       if(currContractSysId) {
@@ -1486,6 +1511,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractType]: api.contractTypeTable,
     [StoreProperties.CurrentContract]: api.currentContractTable,
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
+    [StoreProperties.MarketResearchTechniques]: api.marketResearchTechniquesTable,
     [StoreProperties.Organization]: api.organizationTable,
     // [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
@@ -1497,7 +1523,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Regions]:api.regionsTable,
     [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
     [StoreProperties.ContractingShopNonDitcoAddress]:api.addressTable,
-
   }
 
   //mapping store propertties name to acquisition package properties
@@ -2041,7 +2066,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await TaskOrder.reset();
     await ClassificationRequirements.reset();
     await EvaluationPlan.reset();
-
+    Steps.clearAltBackButtonText();
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
 
     this.doReset();

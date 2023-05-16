@@ -221,10 +221,10 @@ export class ValidationPlugin {
       if (v && v !== "") {
         if (/[a-z0-9]+@[a-z-_.0-9]+\.[a-z]{3}/i.test(v) === false) {
           return "Please use standard domain format, like ‘@mail.mil’"
-        } else if (!isScrt && /^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i.test(v) === false) {
+        } else if (!isScrt && /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i.test(v) === false) {
           return message || "Please use your .mil or .gov email address."
         } else if (isScrt && 
-          /^\S[a-z-_.0-9]+@[a-z-]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v) === false
+          /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v) === false
         ) {
           return message || "Please use your .smil or .sgov email address."
         }      

@@ -28,6 +28,23 @@
                 </a>
               </p>
             </div>
+            <ATATAlert 
+              v-if="isFairOpportunityUrgent"
+              id="UrgentFairOppAlert"
+              class="copy-max-width mb-9"
+              type="warning"
+              :showIcon="true"
+            >
+              <template v-slot:content>
+                <p class="mr-5 mb-0">
+                  <strong>Based on your exception to fair opportunity, we recommend that you 
+                  enter a base period only.</strong> Option periods are not allowed in a 
+                  Justification and Approval (J&A) document when “urgency” is cited as the 
+                  exception, unless it is an interim contract due to a protest.
+                </p>
+              </template>
+            </ATATAlert>
+
             <div class="mb-4 _semibold" style="padding-left: 101px">
               Period of Performance length
             </div>
@@ -150,7 +167,7 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
+/* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
@@ -158,6 +175,7 @@ import Vue from "vue";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
@@ -187,7 +205,8 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
     ATATSelect,
     draggable,
     PopLearnMore,
-    ATATErrorValidation
+    ATATErrorValidation,
+    ATATAlert
   },
 })
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
@@ -213,6 +232,14 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   public durationErrorIndices: number[] = [];
   
+  /**
+   * returns if the fair opportunity selection is urgent(YES_FAR_16_505_B_2_I_A)
+   */
+  get isFairOpportunityUrgent(): boolean{
+    return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity 
+      === "YES_FAR_16_505_B_2_I_A";
+  }
+
   public setDurationErrorMessages(errors: string[], idx: number): void {
     const optPeriod = this.optionPeriods[idx];
     const isErrored = !optPeriod.duration || optPeriod.unitOfTime === ''
@@ -437,7 +464,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           this.durationLabelEl.classList.add("d-none");
 
           // create a fake drag ghost image to use instead of default and hide it
-          var elem = document.createElement("div") as HTMLElement;
+          //eslint-disable-next-line prefer-const
+          let elem = document.createElement("div") as HTMLElement;
           elem.classList.add("drag-img-fake");
           elem.setAttribute("id", "DragImgFaker");
           // must include some text or it won't hide

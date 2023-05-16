@@ -112,6 +112,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
@@ -416,14 +417,12 @@ export default class PortfoliosSummary extends Vue {
       storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
     }
     storeData.portfolioSummaryList.forEach((portfolio) => {
-      
-      // ATAT TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
+      // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
       // from portfolio_managers and portfolio_viewers sysIds lists
-
-      let cardData: PortfolioCardData = {};
+      const cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
-      cardData.lastUpdated = portfolio.last_updated;
-      cardData.csp = portfolio.vendor;
+      cardData.lastUpdated = portfolio.last_updated;      
+      cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";
 
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;

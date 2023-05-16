@@ -15,6 +15,7 @@
     "alerts": [],
     "portfolio_funding_status": "EXPIRING_SOON",
     "csp_display": "CSP_A",
+    "vendor": "AWS",
     "task_order_number": "1000000008765",
     "task_order_status": "ACTIVE",
     "task_orders": [],

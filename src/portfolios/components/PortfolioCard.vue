@@ -35,13 +35,18 @@
     <div class="pr-8 flex-grow-1">
       <div class="d-flex">
         <div class="card-header flex-grow-1">
+          <!-- 
+          ----------------------------------------------------------
+            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
+          ----------------------------------------------------------
           <a
             :id="'PortfolioName' + index"
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _portfolio-name"
             @click="cardMenuClick(portfolioCardMenuItems[0])"
-          >
+          > -->
+          <span class="h3 text-base-darker d-flex align-center _portfolio-name">
             {{ cardData.title }}
             <ATATSVGIcon 
               v-if="cardData.isManager"
@@ -51,8 +56,9 @@
               color="base"
               class="ml-3"
             />
+          </span>
 
-          </a>
+          <!-- </a> -->
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
           <v-chip
@@ -66,7 +72,8 @@
         </div>
       </div>
       <div class="text-base-dark mb-3">
-        <span class="_agency">{{ cardData.agencyDisplay }}</span>
+        <!-- ATAT TODO -- REINSTATE WHEN NOT HARD-CODING dod_component
+        <span class="_agency">{{ cardData.agency }}</span>
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
@@ -74,6 +81,7 @@
           :height="9" 
           class="d-inline-block mx-1 _last-modified" 
         />
+        -->
         {{ cardData.lastModifiedStr }}
       </div>
 
@@ -156,13 +164,18 @@
 
       </div>
     </div>
+
+    <!-- 
+      ------------------------------------------------------------
+      -- ATAT TODO -  UNHIDE MEATBALL when Portfolio Mgmt added -- 
+      ------------------------------------------------------------
       <ATATMeatballMenu 
       :id="'PortfolioCardMenu' + index"
       :left="true"
       :index="index"
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
-    />
+    /> -->
 
     <LeavePortfolioModal
       :showModal.sync="showLeavePortfolioModal" 
@@ -252,12 +265,14 @@ export default class PortfolioCard extends Vue {
   }
 
   public get cspKey(): string {
-    return  this.cardData.csp.toLowerCase() as string;
+    return this.cardData.csp ? this.cardData.csp.toLowerCase() : "";
   }
 
   public get hasCSP(): boolean {
     const cspKeys = ["aws", "azure", "gcp", "oracle"];
-    return this.cardData.csp && cspKeys.indexOf(this.cardData.csp.toLowerCase()) > -1;
+    return this.cardData.csp !== undefined 
+      ? cspKeys.indexOf(this.cardData.csp.toLowerCase()) > -1 
+      : false;
   }
 
   public getCSPConsoleURL(): string {
@@ -267,7 +282,9 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
-    this.cardData = await PortfolioStore.populatePortfolioMembersDetail(this.cardData);
+    // EJY - DOUBLE-CHECK below line
+    this.cardData = await PortfolioStore.populatePortfolioMembersDetail(this.cardData); 
+    
     await PortfolioStore.setCurrentPortfolio(this.cardData);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:

@@ -4,6 +4,8 @@ import { OrganizationApi } from "./organization";
 import { AgencyApi } from "./agency";
 import { ContactsApi } from "./contacts";
 import { FairOpportunityApi } from "./fairOpportunity";
+import { MarketResearchTechniquesApi } from "./fairOpportunity";
+
 import { CurrentContractApi } from "./background";
 import { ContractConsiderationsApi } from "./contractConsiderations";
 import { SensitiveInformationApi } from "./sensitiveInformation";
@@ -66,7 +68,6 @@ import {OperatorAPI} from "@/api/operator";
 import { AddressApi } from "@/api/address";
 import { CostEstimateApi } from "@/api/costEstimate";
 
-
 export const api = {
 
   agencyTable: new AgencyApi(),
@@ -82,6 +83,7 @@ export const api = {
   contactsTable: new ContactsApi(),
   contractConsiderationsTable: new ContractConsiderationsApi(),
   fairOpportunityTable: new FairOpportunityApi(),
+  marketResearchTechniquesTable: new MarketResearchTechniquesApi(),
   fundingPlanTable :new FundingPlanApi(),
   fundingRequestTable: new FundingRequestApi(),
   fundingIncrementTable: new FundingIncrementApi(),

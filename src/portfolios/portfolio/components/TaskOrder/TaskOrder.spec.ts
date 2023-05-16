@@ -23,6 +23,8 @@ describe("Testing TaskOrder Component", () => {
       active_task_order: "01a",
       csp_display: "",
       agency: "",
+      vendor: "",
+      dod_component: "", // EJY - DOUBLE-CHECK
       task_order_number: "",
       sys_updated_on: "",
       task_order_status: "",
@@ -58,7 +60,7 @@ describe("Testing TaskOrder Component", () => {
   ];
 
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  PortfolioData.setActiveTaskOrderNumber("1234");
+  // PortfolioData.setActiveTaskOrderNumber("1234"); // EJY - DOUBLE-CHECK IF NEEDED
  
 
   beforeEach(() => {

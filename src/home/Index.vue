@@ -51,11 +51,9 @@
           v-else 
           class="mt-8" 
           @startNewAcquisition="startNewAcquisition" 
+          @allPackagesCleared="allPackagesCleared"
           @openTOSearchModal="openSearchTOModal"
           @startProvisionWorkflow="startProvisionWorkflow"
-          :userHasPackages="userHasPackages"
-          :userHasPortfolios="userHasPortfolios"
-          @allPackagesCleared="allPackagesCleared"
           @portfolioCountUpdated="portfolioCountUpdated"
         />      
 
@@ -86,8 +84,8 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 import ATATToast from "@/components/ATATToast.vue";
-import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
+import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
@@ -122,8 +120,6 @@ export default class Home extends Vue {
   public TONumber = "";
   public resetValidationNow = false;
   public selectedAcquisitionPackageSysId = "";
-  public userHasPackages = false;
-  public userHasPortfolios = false;
   
   public openSearchTOModal(acqPackageSysId: string): void {
     this.selectedAcquisitionPackageSysId = acqPackageSysId;
@@ -143,6 +139,9 @@ export default class Home extends Vue {
     return !this.userHasPackages && !this.userHasPortfolios;
   } 
 
+  public userHasPackages = false;
+  public userHasPortfolios = false;
+
   public allPackagesCleared(): void {
     this.userHasPackages = false;
   }
@@ -161,7 +160,7 @@ export default class Home extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
-    await acquisitionPackage.setFirstTimeVisit(true)
+    await acquisitionPackage.setIsNewPackage(true)
     await AcquisitionPackage.reset();
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router.push({
@@ -190,7 +189,7 @@ export default class Home extends Vue {
       },
       replace: true
     }).catch(() => console.log("avoiding redundant navigation"));
-    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);  
+    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
   }
 
   public portfolioCountUpdated(portfolioCount: string): void {

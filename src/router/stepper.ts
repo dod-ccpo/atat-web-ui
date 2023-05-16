@@ -49,6 +49,8 @@ import Background from "../steps/03-Background/Index.vue";
 import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
 import CurrentContractDetails
   from "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
+import ProcurementHistorySummary
+  from "../steps/03-Background/CurrentContract/ProcurementHistorySummary.vue";
 import HasCurrentEnvironment 
   from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
 import CurrentEnvironmentLocation
@@ -144,6 +146,7 @@ import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
+import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
 import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 
 // step 10 - Generate Package Documents
@@ -160,9 +163,11 @@ import {
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
+  CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
+  ProcurementHistorySummaryRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
@@ -175,6 +180,7 @@ import {
   MIPRResolver,
   GInvoicingResolver,
   Upload7600Resolver,
+  AppropriationOfFundsResolver,
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
@@ -187,6 +193,7 @@ import {
   IGCESupportingDocumentationResolver,
   BVTOResolver,
   ProposedCSPRouteResolver,
+  MarketResearchEffortsRouteResolver,
   CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
@@ -196,6 +203,8 @@ import {
   showDITCOPageResolver,
   ContractingInfoResolver,
   CrossDomainResolver,
+  removeBarriersRouteResolver,
+  conductedResearchRouteResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -240,6 +249,7 @@ export const routeNames = {
   Background: "Background",
   CurrentContract: "Current_Contract",
   CurrentContractDetails: "Current_Contract_Details",
+  ProcurementHistorySummary: "Procurement_History_Summary",
   CurrentEnvironment:"Current_Environment",
   DOWLandingPage: "DOW_Landing_Page",
   RequirementCategories: "Requirement_Categories",
@@ -298,6 +308,7 @@ export const routeNames = {
   FeeCharged:"Fee_Charged",
   CostSummary:"Cost_Summary",
   EstimatesDeveloped:"Estimates_Developed",
+  AppropriationOfFunds: "Appropriation_Of_Funds",
   SupportingDocumentation:"Supporting_Documentation",
   UploadSystemDocuments:"Upload_Charts_Diagrams",
   UploadMigrationDocuments:"Upload_Process_Documents",
@@ -527,6 +538,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+
       },      
       {
         menuText: "Impact of Requirement",
@@ -560,7 +572,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-      },      
+        routeResolver: MarketResearchEffortsRouteResolver,
+        additionalButtons: [
+          {
+            buttonText: "I want to write my own explanation",
+            buttonId: "WriteOwnMarketResearchDetails",
+            buttonClass: "secondary",
+            actionName: "writeOwnMarketResearchDetails",
+          },
+        ]
+      },
       {
         menuText: "Market Research Review",
         path: "market-research-review",
@@ -580,6 +601,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver:conductedResearchRouteResolver
       },      
       {
         menuText: "Other Supporting Factors",
@@ -590,7 +612,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-      },      
+      },
       {
         menuText: "Remove Barriers",
         path: "remove-barriers",
@@ -600,6 +622,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver:removeBarriersRouteResolver,
+        additionalButtons: [
+          {
+            buttonText: "I want to write my own explanation",
+            buttonId: "WriteOwnBarriers",
+            buttonClass: "secondary",
+            actionName: "WriteOwnBarriers",
+          },
+        ]
       },      
       {
         menuText: "Review Barriers",
@@ -740,7 +771,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: CrossDomain,
-        routeResolver: CrossDomainResolver
+        routeResolver: CrossDomainResolver 
       },
     ]
   },
@@ -752,12 +783,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: Background,
     stepCompleteOnEnter: routeNames.ClassificationRequirements,
     completed: false,
+    
     children: [
       {
-        menuText: "Current Contract",
+        menuText: "Procurement History",
         path: "current-contract",
         name: routeNames.CurrentContract,
         completePercentageWeight: 0,
+        routeResolver: CurrentContractRouteResolver,
         component: CurrentContract,
         completed: false,
       },
@@ -780,6 +813,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             actionName: "clearCurrentContractInfo"
           },
         ],
+      },
+      {
+        menuText: "Procurement History Summary",
+        path: "procurement-history-summary",
+        excludeFromMenu: true,
+        name: routeNames.ProcurementHistorySummary,
+        completePercentageWeight: 0,
+        component: ProcurementHistorySummary,
+        routeResolver: ProcurementHistorySummaryRouteResolver,
+        completed: false,
       },
       {
         menuText: "Current Environment",
@@ -1267,6 +1310,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: Upload7600Resolver
       },
       {
+        menuText: "Appropriation of Funds",
+        excludeFromMenu: true,
+        path: "appropriation-of-funds",
+        name: routeNames.AppropriationOfFunds,
+        completePercentageWeight: 1,
+        component: AppropriationOfFunds,
+        routeResolver: AppropriationOfFundsResolver
+      }, 
+      {
         menuText: "Severability and Incremental Funding",
         path: "severability-and-incremental-funding",
         name: routeNames.SeverabilityAndIncrementalFunding,
@@ -1292,6 +1344,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
 
       },
+   
+
       // {
       //   menuText: "SummaryPage",
       //   excludeFromMenu: true,
