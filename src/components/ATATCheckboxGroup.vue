@@ -230,13 +230,16 @@ export default class ATATCheckboxGroup extends Vue {
   public blurredCheckboxes: Record<string, string[]> = {};
   private validateCheckboxesNow = false;
   private totalRequirementsInDOW: totalClassLevelsInDOWObject[] = []
+  public isLoading = false;
 
   public checkboxRules: Array<unknown> = [];
 
   @Watch("rules", {deep: true})
   public rulesChanged(): void {
-    this.checkboxRules = this.rules;
-    this.clearErrorMessage();
+    if (!this.isLoading) {
+      this.checkboxRules = this.rules;
+      this.clearErrorMessage();
+    }
   }
 
   @Watch("validateCheckboxesNow")
@@ -379,6 +382,7 @@ export default class ATATCheckboxGroup extends Vue {
         }
       }, 0);
     }
+    this.isLoading = false;
   }
   private clearErrorMessage(): void {
     this.errorMessages = [];
@@ -438,10 +442,11 @@ export default class ATATCheckboxGroup extends Vue {
   public async created(): Promise<void>{
     // necessary prep to show getPerformanceRequirementTotal
     await ClassificationRequirements.getTotalClassLevelsInDOW();
-    this.totalRequirementsInDOW = await ClassificationRequirements.classLevelsInDOWTotal;
+    this.totalRequirementsInDOW = ClassificationRequirements.classLevelsInDOWTotal;
   } 
 
   public mounted(): void {
+    this.isLoading = true;
     this.setEventListeners();
    
     // if validateOnLoad, then validate checkboxes immediately
