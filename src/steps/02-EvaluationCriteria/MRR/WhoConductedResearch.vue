@@ -10,12 +10,6 @@
             Provide details for each individual who conducted research below.
             You can add or remove researchers as needed.
           </p>
-          <div class="d-flex copy-max-width mb-4">
-            <div></div>
-            <span>Name</span>
-            <span>Title</span>
-            <span>Organization</span>
-          </div>
           <transition-group name="funding-increments" tag="div">
             <div
               v-for="(researcher, index) in researchers"
@@ -24,13 +18,19 @@
               class="funding-increments-item"
             >
               <div class="mb-4">
-                <div class="d-flex justify-space-between align-center mb-4 position-relative">
-                  <span class="d-block font-weight-500 text-base mr-4 ml-1 font-size-14">
+                <div
+                  class="d-flex justify-space-between align-center mb-4 position-relative"
+                >
+                  <span
+                    class="d-block font-weight-500 text-base mr-4 ml-1 font-size-14"
+                    :class="index===0?'mt-6':''"
+                  >
                         {{ index + 1 }}
                   </span>
                   <ATATTextField
                     :id="'Name' + index"
                     :ref="'Name' + index"
+                    :label="index === 0?'Name':''"
                     :value.sync="researchers[index].name"
                     :showErrorMessages="false"
                     :validateOnBlur="false"
@@ -42,6 +42,7 @@
                   <ATATTextField
                     :id="'Title' + index"
                     :ref="'Title' + index"
+                    :label="index === 0?'Job title':''"
                     :value.sync="researchers[index].title"
                     :showErrorMessages="false"
                     :validateOnBlur="false"
@@ -53,6 +54,7 @@
                   <ATATTextField
                     :id="'Org' + index"
                     :ref="'Org' + index"
+                    :label="index === 0?'Organization':''"
                     :value.sync="researchers[index].org"
                     :showErrorMessages="false"
                     :validateOnBlur="false"
@@ -63,6 +65,7 @@
                   <v-btn
                     :id="'DeleteIncrement' + index"
                     class="_icon-only"
+                    :class="index===0?'mt-6':''"
                     @click="deleteResearcher(index)"
                     :disabled="researchers.length === 1"
                   >
@@ -70,21 +73,6 @@
                   </v-btn>
                 </div>
                 <div>
-<!--                  &lt;!&ndash; error validation for last quarter out of range &ndash;&gt;-->
-<!--                  <ATATErrorValidation-->
-<!--                    id="OutOfRangeAlert"-->
-<!--                    class="atat-text-field-error"-->
-<!--                    :errorMessages="[outOfRangeErrorMessage]"-->
-<!--                    v-if="outOfRangeIndex && index === outOfRangeIndex"-->
-<!--                  />-->
-
-<!--                  &lt;!&ndash; error validation for missing first increment &ndash;&gt;-->
-<!--                  <ATATErrorValidation-->
-<!--                    :id="'isDuplicated_' + index"-->
-<!--                    class="atat-text-field-error"-->
-<!--                    :errorMessages="[errorMissingFirstIncrementMessage]"-->
-<!--                    v-if="errorMissingFirstIncrement && index === 0"-->
-<!--                  />-->
                 </div>
               </div>
             </div>
@@ -98,7 +86,7 @@
             @click="addResearcher()"
           >
             <v-icon color="primary" class="mr-2">control_point</v-icon>
-            <span>Add funding increment</span>
+            <span>Add another researcher</span>
           </v-btn>
         </v-col>
       </v-row>
@@ -149,10 +137,7 @@ export default class WhoConductedResearch extends Vue {
     }
   }
   public isResearchDataComplete(researcher:{ name: string, title: string, org: string}):boolean{
-    if(researcher.org !== "" && researcher.title !== "" && researcher.org !== ""){
-      return true
-    }
-    return false
+    return researcher.org !== "" && researcher.title !== "" && researcher.org !== "";
   }
   private get currentData(): FairOpportunityDTO {
     return {
