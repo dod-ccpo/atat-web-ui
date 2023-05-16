@@ -231,6 +231,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private contractOrderExpirationDate =
     AcquisitionPackage.currentContract?.contract_order_expiration_date || "";
 
+
   private competitiveStatus =
     AcquisitionPackage.currentContract?.competitive_status || "";
 
@@ -289,6 +290,8 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     competitive_status: "",
   } as Record<string, string>;
 
+
+  private savedData = {} as CurrentContractDTO;
   private get currentData(): CurrentContractDTO {
     return {
       incumbent_contractor_name: this.incumbentContractorName,
@@ -306,6 +309,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+
     const storeData = (await AcquisitionPackage.loadData<CurrentContractDTO>({
       storeProperty: StoreProperties.CurrentContract,
     })) as CurrentContractDTO;
