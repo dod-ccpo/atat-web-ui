@@ -10,58 +10,68 @@
             Provide details for each individual who conducted research below.
             You can add or remove researchers as needed.
           </p>
+          <v-row>
+            <v-col>Name</v-col>
+            <v-col>Job title</v-col>
+            <v-col>Organization</v-col>
+          </v-row>
           <transition-group name="funding-increments" tag="div">
-            <div
+            <v-row
               v-for="(researcher, index) in researchers"
               :key="index"
               :id="'Researcher' + index"
-              class="funding-increments-item"
+              class="
+              researcher-table
+              pa-2
+              researcher-table-row"
             >
-              <div class="mb-4">
-                <div
-                  class="d-flex justify-space-between align-center mb-4 position-relative"
+                <v-col
+                  cols="1"
+                  class="d-block
+                  font-weight-500
+                  text-base
+                  mr-4
+                  ml-1
+                  col-1
+                  font-size-14"
+                  :class="index===0?'mt-6':''"
                 >
-                  <span
-                    class="d-block font-weight-500 text-base mr-4 ml-1 font-size-14"
-                    :class="index===0?'mt-6':''"
-                  >
-                        {{ index + 1 }}
-                  </span>
+                      {{ index + 1 }}
+                </v-col>
+                <v-col cols="3">
                   <ATATTextField
                     :id="'Name' + index"
                     :ref="'Name' + index"
                     :label="index === 0?'Name':''"
                     :value.sync="researchers[index].name"
-                    :showErrorMessages="false"
-                    :validateOnBlur="false"
                     width="190"
                     class="mr-7"
-                    :rules="[$validators.required(nameErrorText)]"
+                    :rules="index === 0?[$validators.required(nameErrorText)]:[]"
                   />
-
+                </v-col>
+                <v-col cols="3">
                   <ATATTextField
                     :id="'Title' + index"
                     :ref="'Title' + index"
                     :label="index === 0?'Job title':''"
                     :value.sync="researchers[index].title"
-                    :showErrorMessages="false"
-                    :validateOnBlur="false"
                     width="190"
                     class="mr-7"
-                    :rules="[$validators.required(titleErrorText)]"
+                    :rules="index === 0?[$validators.required(titleErrorText)]:[]"
                   />
-
+                </v-col>
+                <v-col cols="3">
                   <ATATTextField
                     :id="'Org' + index"
                     :ref="'Org' + index"
                     :label="index === 0?'Organization':''"
                     :value.sync="researchers[index].org"
-                    :showErrorMessages="false"
-                    :validateOnBlur="false"
                     width="190"
                     class="mr-7"
-                    :rules="[$validators.required(orgErrorText)]"
+                    :rules="index === 0?[$validators.required(orgErrorText)]:[]"
                   />
+                </v-col>
+                <v-col class="col-1">
                   <v-btn
                     :id="'DeleteIncrement' + index"
                     class="_icon-only"
@@ -71,11 +81,8 @@
                   >
                     <v-icon> delete </v-icon>
                   </v-btn>
-                </div>
-                <div>
-                </div>
-              </div>
-            </div>
+                </v-col>
+            </v-row>
           </transition-group>
           <v-btn
             id="AddIncrementButton"
