@@ -1502,19 +1502,6 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
     : provWorkflowRouteNames.PortfolioDetails;
 }
 
-export const GeneratedFromPackageRouteResolver = (current: string): string => {
-  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrder;
-  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
-  const showPackageSelection = PortfolioStore.showTOPackageSelection;
-  if (packageCount && (!acqPkgSysId || showPackageSelection)) {
-    return provWorkflowRouteNames.GeneratedFromPackage;
-  }
-  return current === provWorkflowRouteNames.PortfolioDetails
-    ? provWorkflowRouteNames.AwardedTaskOrder
-    : provWorkflowRouteNames.PortfolioDetails;
-}
-
-
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   showDITCOPageResolver,
@@ -1555,7 +1542,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AnticipatedUserAndDataNeedsResolver,
   GeneratedFromPackageRouteResolver,
   ContractingInfoResolver,
-  GeneratedFromPackageRouteResolver,
 };
 
 // add path resolvers here 

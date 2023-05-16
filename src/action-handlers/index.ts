@@ -8,10 +8,6 @@ import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { FairOpportunityDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
-import PortfolioStore from "@/store/portfolio";
-import AppSections from "@/store/appSections";
-import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
@@ -26,9 +22,6 @@ const actionHandlerNames = {
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
   writeOwnMarketResearchDetails: "writeOwnMarketResearchDetails",
   WriteOwnBarriers: "WriteOwnBarriers",
-  openTOSearchModal: "openTOSearchModal",
-  startProvisioning: "startProvisioning",
-  didNotUseDapps: "didNotUseDapps"
 }
 
 const actions =  {

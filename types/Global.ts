@@ -799,8 +799,3 @@ export enum ClassificationLevels {
 }
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
 
-export enum ClassificationLevels {
-  UNCL = "Unclassified",
-  SCRT = "Secret",
-  TSCRT = "Top Secret"
-}
