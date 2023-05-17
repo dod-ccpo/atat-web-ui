@@ -114,20 +114,20 @@ export class PortfolioSummaryStore extends VuexModule {
    * each search parameter, no need to check if the value exists since the value is mandatory.
    */
   @Action({rawError: true})
-  public async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
+  public async getMandatorySearchParameterQuery(searchDTO?: PortfolioSummarySearchDTO):
     Promise<string> {
     const currentUser = await CurrentUserStore.getCurrentUser();
     const userSysId = currentUser.sys_id;
     let query = "";
-    if (searchDTO.role === "ALL") {
+    if (searchDTO && searchDTO.role === "ALL") {
       query = query +
         `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
     } else { // "MANAGED"
       query = query +
         `^portfolio_managersLIKE${userSysId}`;
     }
-    query = query + "^portfolio_status!=ARCHIVED"
-    query = query + "^ORDERBY" + searchDTO.sort;
+    query = query + "^portfolio_status!=ARCHIVED";
+    if (searchDTO && searchDTO.sort) query = query + "^ORDERBY" + searchDTO.sort;
     return query;
   }
 
@@ -482,6 +482,7 @@ export class PortfolioSummaryStore extends VuexModule {
   public async searchPortfolioSummaryList(searchDTO: PortfolioSummarySearchDTO):
     Promise<PortfolioSummaryMetadataAndDataDTO> {
     try {
+      // EJY --- HERE LOADING PORTFOLIOS
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
       let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO)
       if (optionalSearchQuery.length > 0) {

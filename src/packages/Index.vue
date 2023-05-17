@@ -238,7 +238,7 @@ export default class Packages extends Vue {
 
     debugger;
     // packages/Index.vue
-
+    
     const packageResults = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO)
     this.packageData = packageResults?.acquisitionPackageSummaryList || [];

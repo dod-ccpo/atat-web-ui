@@ -77,8 +77,8 @@
                       active-tab="ALL" 
                       default-sort="DESCsys_updated_on"
                       :isHomeView="true" 
-                      @totalCount="updateTotalPortfolios"
                     />
+                      <!-- @totalCount="updateTotalPortfolios" -->
 
                   </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -211,11 +211,11 @@ import CurrentUserStore from "@/store/user";
 })
 
 export default class ExistingUser extends Vue {
-  @Prop({default: false}) public userHasPackages!: boolean;
-  @Prop({default: false}) public userHasPortfolios!: boolean;
+  // @Prop({default: false}) public userHasPackages!: boolean;
+  // @Prop({default: false}) public userHasPortfolios!: boolean;
 
   public packageData:AcquisitionPackageSummaryDTO[] = []
-  public draftPackageCount = 0;
+  // public draftPackageCount = 0;
 
   public reportIssueLink = "https://services.disa.mil/sp?id=sc_cat_item&sys_id=20e86845dbaf1914" +
     "8c045e8cd39619d9&sysparm_category=a30a5ca3db12a0508c045e8cd396197c";
@@ -224,21 +224,29 @@ export default class ExistingUser extends Vue {
     "and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"
     
   public packagesPanel = 0; // open by default
-  public packageCount = 0;
-  public get showPackagesPanel(): boolean {
-    return this.packageCount > 0;
-  }
+  public get packageCount(): number {
+    return CurrentUserStore.currentUserPackageCount;
+  };
 
   public portfolioPanel = 0; // open by default
-  public portfolioCount = 0;
+  public get portfolioCount(): number {
+    return CurrentUserStore.currentUserPortfolioCount;
+  }
+
+  public get userHasPackages(): boolean {
+    return CurrentUserStore.getUserHasPackages;
+  }
+  public get userHasPortfolios(): boolean {
+    return CurrentUserStore.getUserHasPortfolios;
+  }
 
   public TONumber = "";
   public async startProvisionWorkflow(): Promise<void> {
     this.$emit("startProvisionWorkflow");
   }
-  public get showAlert(): boolean {
-    return this.draftPackageCount > 0
-  }
+  // public get showAlert(): boolean {
+  //   return this.draftPackageCount > 0
+  // }
 
   public openTOSearchModal(acqPackageSysId: string): void {
     this.$emit("openTOSearchModal", acqPackageSysId);
@@ -248,10 +256,10 @@ export default class ExistingUser extends Vue {
     this.$emit("startNewAcquisition");
   }
 
-  public updateTotalPortfolios(totalCount: number): void {
-    this.portfolioCount = totalCount;
-    this.$emit("portfolioCountUpdated", totalCount);
-  } 
+  // public updateTotalPortfolios(totalCount: number): void {
+  //   this.portfolioCount = totalCount;
+  //   // this.$emit("portfolioCountUpdated", totalCount);
+  // } 
 
   public viewAllPortfolios(): void {
     AppSections.setAppContentComponent(Portfolios);
@@ -270,11 +278,15 @@ export default class ExistingUser extends Vue {
   };
   
   public get getCurrentUser(): UserDTO {
+    debugger;
+    // ExistingUser
     return CurrentUserStore.currentUser;
   }
 
   @Watch("getCurrentUser")
   public async currentUserChange(): Promise<void> {
+    // ExistingUser
+    debugger;
     await this.loadPackageData();
   }  
 
@@ -285,21 +297,23 @@ export default class ExistingUser extends Vue {
       .searchAcquisitionPackageSummaryList(this.searchDTO);
     
     this.packageData = packageData.acquisitionPackageSummaryList;
-    this.packageCount = packageData.total_count;
-    const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
-    this.draftPackageCount = draftPackages?.length || 0;
+    // this.packageCount = packageData.total_count;
+
+    // EJY why do we care about draft packages
+    // const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
+    // this.draftPackageCount = draftPackages?.length || 0;
     if (this.packageCount === 0) {
       this.$emit("allPackagesCleared");
     }
   }
 
   public async loadOnEnter(): Promise<void>{
-    try {
-      await this.loadPackageData();
-    }
-    catch {
-      console.log("Error loading acquisition package data");
-    }
+    // try {
+    //   await this.loadPackageData();
+    // }
+    // catch {
+    //   console.log("Error loading acquisition package data");
+    // }
   }
 
   public mounted():void{

@@ -22,14 +22,8 @@ import {
 import AcquisitionPackageSummaryStore from "../acquisitionPackageSummary";
 import PortfolioSummary from "../portfolioSummary";
 import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
-
-export interface AggregateCountResults {
-  result: {
-    stats: {
-      count: string;
-    };
-  };
-}
+import { TABLENAME as PortfolioTable } from "@/api/portfolio";
+import { getTableRecordCount } from "@/helpers";
 
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
@@ -57,8 +51,8 @@ export class UserStore extends VuexModule {
   initialized = false;
 
   currentUser: UserDTO = {};
-  currentUserPackageCount = 0;
-  currentUserPortfolioCount = 0;
+  public currentUserPackageCount = 0;
+  public currentUserPortfolioCount = 0;
 
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.currentUser)
@@ -108,61 +102,53 @@ export class UserStore extends VuexModule {
     this.currentUser = value;
   }
 
+  // @Action({rawError: true})
+  // public async getRecordCount(table: string, query: string ): Promise<number> {
+  //   // Use aggregate API to get count for number of records in a table
+  //   const config: AxiosRequestConfig = {
+  //     params: {
+  //       sysparm_query: query,
+  //       sysparm_count: true
+  //     },
+  //   };
+  //   const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;  
+  //   const count = parseInt(response.result.stats.count)
+  //   return count;
+  // }
+
   @Action({rawError: true})
-  public async setUserPackageCount(): Promise<boolean> {
+  public async setUserPackageCount(): Promise<void> {
     // SET TOTAL PACKAGE COUNT
     let query = "package_statusINDRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER";
     const userQuery = await AcquisitionPackageSummaryStore.getMandatorySearchParameterQuery();
     query += userQuery;
-    const aggregateRequestConfig: AxiosRequestConfig = {
-      params: {
-        sysparm_query: query,
-        sysparm_count: true
-      },
-    };
-    const response = await api.aggregate.makeRequest(
-      AcquisitionPackageTable,
-      aggregateRequestConfig
-    ) as AggregateCountResults;
-
-    const count = parseInt(response.result.stats.count)
+    const count = await getTableRecordCount(AcquisitionPackageTable, query)
     this.doSetPackageCount(count);
-    return this.currentUserPackageCount > 0;
-  }
-  public get getUserHasPackages(): boolean {
-    return this.currentUserPackageCount > 0;
   }
   @Mutation
   public doSetPackageCount(count: number): void {
     this.currentUserPackageCount = count;
   }
-
-  public userHasPortfolios = false;
+  public get getUserHasPackages(): boolean {
+    return this.currentUserPackageCount > 0;
+  }
  
   @Action({rawError: true})
-  public async hasPortfolios(): Promise<boolean> {
-    const searchDTO:PortfolioSummarySearchDTO = {
-      role: "ALL",
-      fundingStatuses: [],
-      csps: [],
-      portfolioStatus: "",
-      sort: "DESCsys_updated_on",
-      limit: 1,
-      offset: 0
-    };
-   
-    const portfolioData = await PortfolioSummary
-      .searchPortfolioSummaryList(searchDTO);
-    const hasPortfolios = portfolioData.total_count > 0;
-    await this.doSetUserHasPortfolios(hasPortfolios);
-    return this.userHasPortfolios;
+  public async setUserPortfolioCount(): Promise<void> {
+    debugger;
+    let query = "portfolio_statusINPROCESSING,PROVISIONING_ISSUE,ACTIVE,ARCHIVED";
+    const userQuery = await PortfolioSummary.getMandatorySearchParameterQuery();
+    query += userQuery;
+    const count = await getTableRecordCount(PortfolioTable, query)
+    this.doSetPortfolioCount(count);
   }
   @Mutation
-  public async doSetUserHasPortfolios(bool: boolean): Promise<void> {
-    this.userHasPortfolios = bool;
+  public async doSetPortfolioCount(count: number): Promise<void> {
+    this.currentUserPortfolioCount = count;
   }
   public get getUserHasPortfolios(): boolean {
-    return this.userHasPortfolios;
+    debugger;
+    return this.currentUserPortfolioCount > 0;
   }
 
 

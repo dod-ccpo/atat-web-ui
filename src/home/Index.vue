@@ -50,14 +50,16 @@
         <ExistingUser 
           v-else 
           class="mt-8" 
-          :userHasPackages="userHasPackages"
-          :userHasPortfolios="userHasPortfolios"
           @startNewAcquisition="startNewAcquisition" 
-          @allPackagesCleared="allPackagesCleared"
           @openTOSearchModal="openSearchTOModal"
           @startProvisionWorkflow="startProvisionWorkflow"
-          @portfolioCountUpdated="portfolioCountUpdated"
+
         />      
+          <!-- :userHasPackages.sync="userHasPackages"
+          :userHasPortfolios.sync="userHasPortfolios" -->
+
+          <!-- @allPackagesCleared="allPackagesCleared" -->
+          <!-- @portfolioCountUpdated="portfolioCountUpdated" -->
 
         <div class="bg-white">
           <ATATFooter class="mx-auto pt-10" />
@@ -97,9 +99,9 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 import { scrollToId } from "@/helpers";
 
-import UserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { UserDTO } from "@/api/models";
+// import UserStore from "@/store/user";
 import CurrentUserStore from "@/store/user";
 import PortfolioStore from "@/store/portfolio";
 import acquisitionPackage from "@/store/acquisitionPackage";
@@ -122,7 +124,8 @@ export default class Home extends Vue {
   public TONumber = "";
   public resetValidationNow = false;
   public selectedAcquisitionPackageSysId = "";
-  
+  public isLoading = false;
+
   public openSearchTOModal(acqPackageSysId: string): void {
     this.selectedAcquisitionPackageSysId = acqPackageSysId;
     this.showTOSearchModal = true;
@@ -138,27 +141,34 @@ export default class Home extends Vue {
   }
 
   public get isNewUser(): boolean {
+    debugger;
+    // HOME
     return !this.userHasPackages && !this.userHasPortfolios;
   } 
-
-  public userHasPackages = false;
-  public userHasPortfolios = false;
-
-  public allPackagesCleared(): void {
-    this.userHasPackages = false;
+  public get userHasPackages(): boolean {
+    return CurrentUserStore.getUserHasPackages;
+  }
+  public get userHasPortfolios(): boolean {
+    return CurrentUserStore.getUserHasPortfolios;
   }
 
-  private currentUser: UserDTO = {};
+  // public allPackagesCleared(): void {
+  //   this.userHasPackages = false;
+  // }
 
-  public get getCurrentUser(): UserDTO {
+  // private currentUser: UserDTO = {};
+
+  public get currentUser(): UserDTO {
     return CurrentUserStore.currentUser;
   }
 
-  @Watch("getCurrentUser")
-  public async currentUserChange(newVal: UserDTO): Promise<void> {
-    this.currentUser = newVal;
-    await this.checkIfIsNewUser();
-  }  
+  // @Watch("getCurrentUser")
+  // public async currentUserChange(newVal: UserDTO): Promise<void> {
+  //   debugger;
+  //   // HOME
+  //   this.currentUser = newVal;
+  //   // await this.checkIfIsNewUser();
+  // }  
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
@@ -194,28 +204,36 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
   }
 
-  public portfolioCountUpdated(portfolioCount: string): void {
-    this.userHasPortfolios = parseInt(portfolioCount) > 0;
-  }
+  // public portfolioCountUpdated(portfolioCount: string): void {
+  //   this.userHasPortfolios = parseInt(portfolioCount) > 0;
+  // }
 
-  public async checkIfIsNewUser(): Promise<void> {
-    debugger;
-    // home/Index.vue
-    this.userHasPackages = UserStore.getUserHasPackages;
-    await UserStore.hasPortfolios();
-    this.userHasPortfolios = UserStore.getUserHasPortfolios;
-  }
-
+  // public async checkIfIsNewUser(): Promise<void> {
+  //   debugger;
+  //   // home/Index.vue
+  //   this.userHasPackages = UserStore.getUserHasPackages;
+  //   this.userHasPortfolios = UserStore.getUserHasPortfolios;
+  // }
   public async mounted(): Promise<void> {
+    this.isLoading = true;
+    debugger;
+    // HOME
+
     await AcquisitionPackage.reset();
     await AcquisitionPackage.setHideNavigation(false);
-    this.currentUser = await UserStore.getCurrentUser();
+
+    await CurrentUserStore.setUserPackageCount();
+    await CurrentUserStore.setUserPortfolioCount();
+
+    // this.currentUser = await UserStore.getCurrentUser();
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     await PortfolioStore.setShowTOPackageSelection(true);
-    await UserStore.setUserPackageCount();
-    await this.checkIfIsNewUser();
+    
+
+    // await this.checkIfIsNewUser();
+    this.isLoading = false;
   }
 
 
