@@ -315,9 +315,9 @@ export interface FairOpportunityDTO extends BaseTableDTO {
 
   // 2.12
   technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
-  technical_poc_sys_id?: string;
+  technical_poc?: string;
   requirements_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
-  requirements_poc_sys_id?: string;
+  requirements_poc?: string;
 }
 
 

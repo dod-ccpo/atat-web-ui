@@ -883,7 +883,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
-    this.doSetFairOpportunity(value);
+    await this.doSetFairOpportunity(value);
     if (this.initialized) {
       if (this.fairOpportunity && this.fairOpportunity.sys_id) {
         await api.fairOpportunityTable.update(

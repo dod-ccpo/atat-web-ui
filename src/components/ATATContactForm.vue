@@ -210,17 +210,17 @@ export default class ATATContactForm extends Vue {
   private branchRanksData: AutoCompleteItemGroups = {};
   private selectedBranchRanksData: AutoCompleteItem[] = [];
   private salutationData: SelectData[] = [];
-  private contactRoles: RadioButton[] = [
-    {
-      id: "Military",
-      label: "Military",
-      value: "MILITARY",
-    },
+  private contactRoles: RadioButton[] = [ // Order reversed based on feedback provided on AT-8846
     {
       id: "Civilian",
       label: "Civilian",
       value: "CIVILIAN",
     },
+    {
+      id: "Military",
+      label: "Military",
+      value: "MILITARY",
+    }
   ];
   private setRankData(): void {
     if (this._selectedBranch && this._selectedBranch.value) {
