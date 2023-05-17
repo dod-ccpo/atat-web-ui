@@ -203,7 +203,7 @@ export class ValidationPlugin {
     message = message || `Invalid Date`;
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
-      if (dateToCompare !==""){
+      if (dateToCompare !=="" && v !=="" ){
         return (compareAsc(new Date(v),new Date(dateToCompare))=== 1) || message;
       };
       return true;

@@ -73,7 +73,7 @@
                 placeHolder="MM/DD/YYYY"
                 class="mr-5"
                 :showErrors="false"
-               
+                @isDatePickerValid="validateStartDatePicker"
                 :rules="[
                   $validators.required(
                     'Please enter your PoP start date.'
@@ -85,13 +85,13 @@
                   )
                 ]" 
                 />
-                <!-- @isDatePickerValid="validateStartDatePicker" -->
+                
                <!-- NOTE: max date to be determined -->
               <ATATDatePicker id="Expiration" 
                 :value.sync="contractOrderExpirationDate" 
                 label="Expiration date" 
                 max="2024-01-01"
-               
+                @isDatePickerValid="validateExpirationDatePicker"
                 placeHolder="MM/DD/YYYY" 
                 :showErrors="false"
                 :rules="[
@@ -105,7 +105,7 @@
                   )
                 ]"
                 />
-                <!-- @isDatePickerValid="validateExpirationDatePicker" -->
+                
                 
             </div>
             <ATATErrorValidation
@@ -227,6 +227,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       reset: () => void;
       validate: () => boolean;
       blur:() => void;
+      errorBucket: string[],
     };
   
   };
@@ -260,11 +261,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   };
 
   private isExpirationDatePickerValid:string[] = [];
-  private validateExpirationDatePicker(value:string[]): void{
+  private async validateExpirationDatePicker(value:string[]): Promise<void>{
     this.expirationDPSharedErrorMessages = value;
     this.isExpirationDatePickerValid = value;
-  };
-
+  }
+  
   private startDPSharedErrorMessages:string[] = [];
   private expirationDPSharedErrorMessages: string[] = [];
 

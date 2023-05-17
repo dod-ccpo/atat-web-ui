@@ -105,6 +105,7 @@ export default class ATATDatePicker extends Vue {
   $refs!: {
     atatDatePicker: Vue & { 
       errorBucket: string[]; 
+      errorMessages: string[];
       errorCount: number; 
       validate: () => boolean;
     };
@@ -188,7 +189,8 @@ export default class ATATDatePicker extends Vue {
       this.removeErrors();
     }
     Vue.nextTick(() => {
-      // this.setErrorMessage();
+      this.setErrorMessage();
+      this.additionalValidateActions();
     });
   }
 
@@ -237,9 +239,18 @@ export default class ATATDatePicker extends Vue {
   private updateDateValueProperty(): void {
     if (isValid(new Date(this.dateFormatted))) {
       this.$emit("update:value", this.dateFormatted);
-    }
-  
+    } 
+    this.additionalValidateActions();
   }
+
+  private additionalValidateActions(): void{
+    debugger;
+    this.$refs.atatDatePicker.validate()
+    this.$nextTick(()=>{
+      this.$emit("isDatePickerValid", this.$refs.atatDatePicker.errorBucket);
+    })
+  }
+
 
   /**
    * utility function that removes errors from
@@ -312,9 +323,8 @@ export default class ATATDatePicker extends Vue {
   @Watch('validateFormNow')
   public validateNowChange(): void {
     if(!this.$refs.atatDatePicker.validate()){
-      console.log('hi')
+      this.setDateFromValue();
     }
-    // this.setErrorMessage();
   }
 
   /**
@@ -324,9 +334,11 @@ export default class ATATDatePicker extends Vue {
     return this.label !== "" ? "80" : "40";
   }
 
-  private async setErrorMessage(): Promise<void> {
-    this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
-    this.$emit("isDatePickerValid", this.$refs.atatDatePicker.errorBucket);
+  private setErrorMessage(): void {
+    // this.$nextTick(async()=>{
+    this.errorMessages =  this.$refs.atatDatePicker.errorBucket;
+    
+    // });
   }
 
   public async setDateFromValue(): Promise<void> {
