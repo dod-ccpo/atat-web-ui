@@ -787,7 +787,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Procurement History",
-        excludeFromMenu: true,
         path: "current-contract",
         name: routeNames.CurrentContract,
         completePercentageWeight: 0,
@@ -818,6 +817,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Procurement History Summary",
         path: "procurement-history-summary",
+        excludeFromMenu: true,
         name: routeNames.ProcurementHistorySummary,
         completePercentageWeight: 0,
         component: ProcurementHistorySummary,

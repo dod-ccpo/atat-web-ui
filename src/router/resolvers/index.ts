@@ -1468,7 +1468,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
 }
   
 export const CrossDomainResolver = (current: string): string => {
-  //create function for this to be reused
+  //create function for this to be reused 
   const classifications = ClassificationRequirements.selectedClassificationLevels;
   const hasHigh = hasHighSide(classifications);
   const singleClassification = onlyOneClassification(classifications)
@@ -1482,9 +1482,10 @@ export const CrossDomainResolver = (current: string): string => {
     return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements;
 
   }
+
   // forward
   if (!singleClassification) {
-    routeNames.CrossDomain
+    return routeNames.CrossDomain
   }
   return hasLogicalFollowOn() ? routeNames.CurrentContractDetails : routeNames.CurrentContract;
 }
