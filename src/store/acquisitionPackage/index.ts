@@ -1194,8 +1194,10 @@ export class AcquisitionPackageStore extends VuexModule {
         const currentContract = await api.currentContractTable.retrieve(
           currContractSysId
         );
-        if(currentContract)
-          this.setCurrentContract(currentContract);
+        if(currentContract){
+          const contractData = convertColumnReferencesToValues(currentContract)
+          this.setCurrentContract(contractData);
+        }
       } else {
         this.setCurrentContract(
           initialCurrentContract()
