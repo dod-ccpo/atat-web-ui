@@ -115,15 +115,15 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
    * value is mandatory.
    */
   @Action({rawError: true})
-  private async getMandatorySearchParameterQuery(searchDTO: AcquisitionPackageSummarySearchDTO):
+  public async getMandatorySearchParameterQuery(searchDTO?: AcquisitionPackageSummarySearchDTO):
     Promise<string> {
-
+    // EJY get query here
     const currentUser = await CurrentUserStore.getCurrentUser();
     const userSysId = currentUser.sys_id;
 
     let query = "^mission_ownersLIKE" + userSysId + "^ORcontributorsLIKE" + userSysId;
     query = query + "^mission_ownersISNOTEMPTY"
-    query = query + "^ORDERBY" + searchDTO.sort;
+    if (searchDTO) query = query + "^ORDERBY" + searchDTO.sort;
     return query;
   }
 
@@ -142,8 +142,10 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
         sysparm_query: searchQuery
       }
     };
+    // EJY HERE HERE
     const acquisitionPackageList = await api.acquisitionPackagesSummaryTable
       .getQuery(acquisitionPackageSummaryListRequestConfig);
+    debugger;
     return acquisitionPackageList.length;
   }
 
@@ -195,6 +197,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   @Action({rawError: true})
   public async searchAcquisitionPackageSummaryList(searchDTO: AcquisitionPackageSummarySearchDTO):
     Promise<AcquisitionPackageSummaryMetadataAndDataDTO> {
+    debugger;
     try {
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
       let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO);

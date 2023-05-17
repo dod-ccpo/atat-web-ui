@@ -206,7 +206,7 @@ export default class Packages extends Vue {
     AcquisitionPackageSummary.setSelectedSort(newVal);
   }
 
- @Watch("page")
+  @Watch("page")
   public paged(): void {
     if (!this.isSearchSortFilter) {
       this.paging = true;
@@ -214,120 +214,123 @@ export default class Packages extends Vue {
     }
   }
 
- public searchDTO:AcquisitionPackageSummarySearchDTO = {
-   acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
-   searchString: "",
-   sort: this.selectedSort,
-   limit: this.recordsPerPage,
-   offset: this.offset
- };
+  public searchDTO:AcquisitionPackageSummarySearchDTO = {
+    acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
+    searchString: "",
+    sort: this.selectedSort,
+    limit: this.recordsPerPage,
+    offset: this.offset
+  };
 
- public async updateSearchDTO(key:string, value:string): Promise<void> {
-   this.searchDTO = Object.assign(this.searchDTO,{[key]:value})
-   this.paging = false;
-   this.isSearchSortFilter = true;    
-   await this.loadPackageData();
- }
+  public async updateSearchDTO(key:string, value:string): Promise<void> {
+    this.searchDTO = Object.assign(this.searchDTO,{[key]:value})
+    this.paging = false;
+    this.isSearchSortFilter = true;    
+    await this.loadPackageData();
+  }
 
- public async loadPackageData(): Promise<void> {
-   this.isLoading = true;
+  public async loadPackageData(): Promise<void> {
+    this.isLoading = true;
 
-   this.page = !this.paging ? 1 : this.page;
-   this.offset = (this.page - 1) * this.recordsPerPage;
-   this.searchDTO.offset = this.offset;
+    this.page = !this.paging ? 1 : this.page;
+    this.offset = (this.page - 1) * this.recordsPerPage;
+    this.searchDTO.offset = this.offset;
 
-   const packageResults = await AcquisitionPackageSummary
-     .searchAcquisitionPackageSummaryList(this.searchDTO)
-   this.packageData = packageResults?.acquisitionPackageSummaryList || [];
-   this.packageCount = packageResults?.total_count || 0;
+    debugger;
+    // packages/Index.vue
 
-   this.numberOfPages = Math.ceil(this.packageCount / this.recordsPerPage);
+    const packageResults = await AcquisitionPackageSummary
+      .searchAcquisitionPackageSummaryList(this.searchDTO)
+    this.packageData = packageResults?.acquisitionPackageSummaryList || [];
+    this.packageCount = packageResults?.total_count || 0;
 
-   scrollToMainTop();
+    this.numberOfPages = Math.ceil(this.packageCount / this.recordsPerPage);
 
-   this.paging = false;
-   this.isSearchSortFilter = false;
-   this.isLoading = false;
- }
+    scrollToMainTop();
 
- public get endingNumber(): number {
-   const ending = this.page * this.recordsPerPage;
-   if (ending > this.packageCount) {
-     return this.packageCount;
-   }
-   return ending;
- }
- public get startingNumber():number {
-   const starting = (this.page - 1) * this.recordsPerPage + 1;
-   return starting;
- }
+    this.paging = false;
+    this.isSearchSortFilter = false;
+    this.isLoading = false;
+  }
 
- public tabItems: Record<string, string>[] = [
-   {
-     type: "OPEN",
-     text: "Open packages",
-   },
-   {
-     type: "AWARDEDTASKORDERS",
-     text: "Awarded task orders",
-   },
-   {
-     type: "ARCHIVE",
-     text: "Archive",
-   },
-   {
-     type: "ALL",
-     text: "All packages",
-   },
- ];
- public activeTab = this.tabItems[0].type;
+  public get endingNumber(): number {
+    const ending = this.page * this.recordsPerPage;
+    if (ending > this.packageCount) {
+      return this.packageCount;
+    }
+    return ending;
+  }
+  public get startingNumber():number {
+    const starting = (this.page - 1) * this.recordsPerPage + 1;
+    return starting;
+  }
 
- public tabClicked(tabType: string): void {
-   this.activeTab = tabType;
- }
- public async toAcquisitions(): Promise<void> {
-   await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
-   await acquisitionPackage.setIsNewPackage(true)
-   await AcquisitionPackage.reset();
-   this.$router.push({
-     name: routeNames.DAPPSChecklist,
-     params: {
-       direction: "next"
-     },
-     replace: true
-   }).catch(() => console.log("avoiding redundant navigation"));
-   AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
- }
- private getIdText(string: string) {
-   return getIdText(string);
- }
+  public tabItems: Record<string, string>[] = [
+    {
+      type: "OPEN",
+      text: "Open packages",
+    },
+    {
+      type: "AWARDEDTASKORDERS",
+      text: "Awarded task orders",
+    },
+    {
+      type: "ARCHIVE",
+      text: "Archive",
+    },
+    {
+      type: "ALL",
+      text: "All packages",
+    },
+  ];
+  public activeTab = this.tabItems[0].type;
 
- public async updateStatus(): Promise<void> {
-   await this.updateSearchDTO("","")
- }
+  public tabClicked(tabType: string): void {
+    this.activeTab = tabType;
+  }
+  public async toAcquisitions(): Promise<void> {
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
+    await acquisitionPackage.setIsNewPackage(true)
+    await AcquisitionPackage.reset();
+    this.$router.push({
+      name: routeNames.DAPPSChecklist,
+      params: {
+        direction: "next"
+      },
+      replace: true
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
+  }
+  private getIdText(string: string) {
+    return getIdText(string);
+  }
 
- public async search(): Promise<void> {
-   await this.updateSearchDTO('searchString',this.searchString)
-   this.searchedString = this.searchString
- }
+  public async updateStatus(): Promise<void> {
+    await this.updateSearchDTO("","")
+  }
 
- public async clear(): Promise<void> {
-   this.searchString = "";
-   await this.updateSearchDTO('searchString',this.searchString)
- }
+  public async search(): Promise<void> {
+    await this.updateSearchDTO('searchString',this.searchString)
+    this.searchedString = this.searchString
+  }
 
- private async loadOnEnter(){
-   this.selectedSort = AcquisitionPackageSummary.selectedSort;
-   this.loadPackageData();
-   this.setNoRecordsText(0);
-   const sectionData = await AppSections.getSectionData();
-   AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Packages);
- }
+  public async clear(): Promise<void> {
+    this.searchString = "";
+    await this.updateSearchDTO('searchString',this.searchString)
+  }
 
- public async mounted():Promise<void>{
-   await AcquisitionPackage.setHideNavigation(false);
-   this.loadOnEnter();
- }
+  private async loadOnEnter(){
+    this.selectedSort = AcquisitionPackageSummary.selectedSort;
+    this.loadPackageData();
+    this.setNoRecordsText(0);
+    const sectionData = await AppSections.getSectionData();
+    AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Packages);
+  }
+
+  public async mounted():Promise<void>{
+    await AcquisitionPackage.setHideNavigation(false);
+    this.loadOnEnter();
+  }
 
 }
 </script>

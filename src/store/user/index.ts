@@ -19,8 +19,17 @@ import {
   PortfolioSummarySearchDTO, 
   UserDTO 
 } from "@/api/models";
-import AcquisitionPackageSummary from "../acquisitionPackageSummary";
+import AcquisitionPackageSummaryStore from "../acquisitionPackageSummary";
 import PortfolioSummary from "../portfolioSummary";
+import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
+
+export interface AggregateCountResults {
+  result: {
+    stats: {
+      count: string;
+    };
+  };
+}
 
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
@@ -48,6 +57,8 @@ export class UserStore extends VuexModule {
   initialized = false;
 
   currentUser: UserDTO = {};
+  currentUserPackageCount = 0;
+  currentUserPortfolioCount = 0;
 
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.currentUser)
@@ -98,24 +109,32 @@ export class UserStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async hasPackages(): Promise<boolean> {
-
-    let userHasPackages = false;
-
-    const searchDTO:AcquisitionPackageSummarySearchDTO = {
-      acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
-      searchString: "",
-      sort: "DESCsys_updated_on",
-      limit: 5,
-      offset: 0
+  public async setUserPackageCount(): Promise<boolean> {
+    // SET TOTAL PACKAGE COUNT
+    let query = "package_statusINDRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER";
+    const userQuery = await AcquisitionPackageSummaryStore.getMandatorySearchParameterQuery();
+    query += userQuery;
+    const aggregateRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: query,
+        sysparm_count: true
+      },
     };
+    const response = await api.aggregate.makeRequest(
+      AcquisitionPackageTable,
+      aggregateRequestConfig
+    ) as AggregateCountResults;
 
-    const packageData = await AcquisitionPackageSummary
-      .searchAcquisitionPackageSummaryList(searchDTO);
-
-    userHasPackages = packageData.total_count > 0;
-
-    return userHasPackages;
+    const count = parseInt(response.result.stats.count)
+    this.doSetPackageCount(count);
+    return this.currentUserPackageCount > 0;
+  }
+  public get getUserHasPackages(): boolean {
+    return this.currentUserPackageCount > 0;
+  }
+  @Mutation
+  public doSetPackageCount(count: number): void {
+    this.currentUserPackageCount = count;
   }
 
   public userHasPortfolios = false;

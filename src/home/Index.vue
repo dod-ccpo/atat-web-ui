@@ -50,6 +50,8 @@
         <ExistingUser 
           v-else 
           class="mt-8" 
+          :userHasPackages="userHasPackages"
+          :userHasPortfolios="userHasPortfolios"
           @startNewAcquisition="startNewAcquisition" 
           @allPackagesCleared="allPackagesCleared"
           @openTOSearchModal="openSearchTOModal"
@@ -197,7 +199,9 @@ export default class Home extends Vue {
   }
 
   public async checkIfIsNewUser(): Promise<void> {
-    this.userHasPackages = await UserStore.hasPackages();
+    debugger;
+    // home/Index.vue
+    this.userHasPackages = UserStore.getUserHasPackages;
     await UserStore.hasPortfolios();
     this.userHasPortfolios = UserStore.getUserHasPortfolios;
   }
@@ -210,6 +214,7 @@ export default class Home extends Vue {
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     await PortfolioStore.setShowTOPackageSelection(true);
+    await UserStore.setUserPackageCount();
     await this.checkIfIsNewUser();
   }
 

@@ -97,54 +97,6 @@
               </div>
             </div>
 
-          <v-expansion-panels 
-            id="PortfoliosAccordion" 
-            flat
-            v-model="portfolioPanel" 
-            v-show="userHasPortfolios"
-          >
-            <v-expansion-panel expand>
-              <v-expansion-panel-header>
-                <div class="d-flex justify-space-between">
-                  <div class="h3">
-                    Porfolios
-                  </div>
-                  <div class="h3 text-base-light _item-count pr-4">
-                    {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
-                  </div>
-                </div>
-
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-
-                <PortfoliosSummary 
-                  active-tab="ALL" 
-                  default-sort="DESCsys_updated_on"
-                  :isHomeView="true" 
-                  @totalCount="updateTotalPortfolios"
-                />
-
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
-          <!-- 
-            ---------------------------------------------------
-            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
-            ---------------------------------------------------
-            <div class="_view-all">
-            <a
-              id="ViewAllPortfoliosLink"
-              role="button"
-              @click="viewAllPortfolios"
-              @keydown.enter="viewAllPortfolios"
-              @keydown.space="viewAllPortfolios"
-            >
-              View all portfolios
-            </a>
-          </div> 
-          -->
-
           </v-col>
 
           <v-col class="col-sm-12 col-md-5 pl-5">
@@ -259,8 +211,8 @@ import CurrentUserStore from "@/store/user";
 })
 
 export default class ExistingUser extends Vue {
-  // @Prop({default: false}) public userHasPackages!: boolean;
-  // @Prop({default: false}) public userHasPortfolios!: boolean;
+  @Prop({default: false}) public userHasPackages!: boolean;
+  @Prop({default: false}) public userHasPortfolios!: boolean;
 
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public draftPackageCount = 0;
@@ -279,10 +231,6 @@ export default class ExistingUser extends Vue {
 
   public portfolioPanel = 0; // open by default
   public portfolioCount = 0;
-
-  public get userHasPortfolios(): boolean {
-    return this.portfolioCount > 0;
-  }
 
   public TONumber = "";
   public async startProvisionWorkflow(): Promise<void> {
@@ -304,7 +252,6 @@ export default class ExistingUser extends Vue {
     this.portfolioCount = totalCount;
     this.$emit("portfolioCountUpdated", totalCount);
   } 
-
 
   public viewAllPortfolios(): void {
     AppSections.setAppContentComponent(Portfolios);
@@ -332,6 +279,8 @@ export default class ExistingUser extends Vue {
   }  
 
   public async loadPackageData(): Promise<void> {
+    debugger;
+    // ExistingUser.vue
     const packageData = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO);
     
