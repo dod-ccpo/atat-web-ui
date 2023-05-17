@@ -65,7 +65,7 @@
             </span>
             <div class="d-flex mt-4">
               <ATATDatePicker 
-                ref="startDatepicker"
+                ref="startDatePicker"
                 id="Start" 
                 :value.sync="contractOrderStartDate" 
                 label="Start date" 
@@ -79,7 +79,7 @@
                     'Please enter your PoP start date.'
                   ),
                   $validators.isDateValid('Please enter a valid PoP start date.'),
-                  $validators.compareDates(
+                  $validators.compareDatesDesc(
                     contractOrderExpirationDate, 
                     `The start date must be before the expiration date.`
                   )
@@ -89,6 +89,7 @@
                <!-- NOTE: max date to be determined -->
               <ATATDatePicker id="Expiration" 
                 :value.sync="contractOrderExpirationDate" 
+                ref="expirationDatePicker"
                 label="Expiration date" 
                 max="2024-01-01"
                 @isDatePickerValid="validateExpirationDatePicker"
@@ -99,7 +100,7 @@
                     'Please enter your PoP expiration date.'
                   ),
                   $validators.isDateValid('Please enter a valid PoP expiration date.'),
-                  $validators.compareDates(
+                  $validators.compareDatesAsc(
                     contractOrderStartDate, 
                     `The expiration date must be after the start date.`
                   )
@@ -222,12 +223,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       reset: () => void;
       validate: () => boolean;
     };
-    startDatepicker: Vue & { 
-      resetValidation: () => void;
-      reset: () => void;
+    startDatePicker: Vue & { 
       validate: () => boolean;
-      blur:() => void;
-      errorBucket: string[],
+    };
+    expirationDatePicker: Vue & { 
+      validate: () => boolean;
     };
   
   };
@@ -254,141 +254,45 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private businessSize =
     AcquisitionPackage.currentContract?.business_size || "";
   
-  private isStartDatePickerValid:string[] = [];
-  private validateStartDatePicker(value:string[]): void{
-    this.startDPSharedErrorMessages = value;
-    this.isStartDatePickerValid = value;
-  };
-
-  private isExpirationDatePickerValid:string[] = [];
-  private async validateExpirationDatePicker(value:string[]): Promise<void>{
-    this.expirationDPSharedErrorMessages = value;
-    this.isExpirationDatePickerValid = value;
-  }
-  
   private startDPSharedErrorMessages:string[] = [];
   private expirationDPSharedErrorMessages: string[] = [];
+
+  private validateStartDatePicker(value:string[]): void{
+    this.removeSharedErrorMessages(true);
+    this.startDPSharedErrorMessages = value;
+  };
+
+  private validateExpirationDatePicker(value:string[]): void{
+    this.removeSharedErrorMessages(false);
+    this.expirationDPSharedErrorMessages = value;
+  }
+
+  private removeSharedErrorMessages(isStart: boolean):void{
+    const startTextBox = (this.$refs.startDatePicker as unknown as ATATDatePicker)
+      .$refs["atatDatePicker"];
+
+    const expirationTextBox = (this.$refs.expirationDatePicker as unknown as ATATDatePicker)
+      .$refs["atatDatePicker"];
+
+    if (isStart){
+      expirationTextBox.validate();
+      expirationTextBox.errorBucket = [];
+    } else {
+      startTextBox.validate();
+      startTextBox.errorBucket = [];
+    }
+    this.startDPSharedErrorMessages = [];
+    this.expirationDPSharedErrorMessages = [];
+  }
 
   private get isExceptiontoFairOpp(): boolean {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
   }
 
-  // private get startDateRule():((v:string)=> string | true | undefined)[]{
-  //   return [this.$validators.compareDates(
-  //     this.contractOrderExpirationDate, 
-  //     `The start date must be before the expiration date.`
-  //   )]
-  // }
-
-
-  // private get expirationDateRule():((v:string)=> string | true | undefined)[]{
-  //   return [this.$validators.compareDates(
-  //     this.contractOrderStartDate, 
-  //     `The expiration date must be after the start date.`
-  //   )]
-  // }
-
-  //   compareAsc(startDate, expirationDate) === -1;
-  //   this.startDPSharedErrorMessages=[];
-  //   if (!isValid && this.expirationDPSharedErrorMessages.length === 0) {
-  //     rulesArray.push((() => {return (isValid || '')}))
-  //     this.startDPSharedErrorMessages.push(`The start date must be before the expiration date.`)
-  //   }
-  //   return rulesArray;
-  // }
-
-  // private get startDateRules():((v:string)=> string | true | undefined) []{
-  //   const rulesArray: ((v: string) => string | true | undefined)[] = [];
-  //   const startDate = new Date(this.contractOrderStartDate as string);
-  //   const expirationDate = new Date(this.getDateTextboxValue("Expiration") as string);
-  //   const isValid = compareAsc(startDate, expirationDate) === -1;
-  //   this.startDPSharedErrorMessages=[];
-  //   if (!isValid && this.expirationDPSharedErrorMessages.length === 0) {
-  //     rulesArray.push((() => {return (isValid || '')}))
-  //     this.startDPSharedErrorMessages.push(`The start date must be before the expiration date.`)
-  //   }
-  //   return rulesArray;
-  // }
- 
-  // private get expirationDateRules():((v:string)=> string | true | undefined) []{
-  //   const rulesArray: ((v: string) => string | true | undefined)[] = [];
-  //   const startDate = new Date(this.getDateTextboxValue("Start") as string);
-  //   const expirationDate = new Date(this.contractOrderExpirationDate as string);
-  //   const isValid = compareAsc(expirationDate,startDate) === 1
-  //   this.expirationDPSharedErrorMessages=[];
-
-  //   if (!isValid && this.startDPSharedErrorMessages.length === 0){
-  //     rulesArray.push((() => {return (isValid || '')}))
-  //     this.expirationDPSharedErrorMessages.push(
-  //       `The expiration date must be after the start date.`
-  //     )
-  //   }
-  //   return rulesArray;
-
-  // }
-
   private getDateTextboxValue(dateType: string):string{
     return (document.getElementById(dateType + "DatePickerTextField") as HTMLInputElement)?.value
      || "";
   }
-
-  // private get startDatePickerRules():((v:string)=>string|true|undefined)[]{
-  //   debugger;
-  //   if (this.isDatePickersEmpty()){
-  //     return [()=>true]
-  //   }
-
-  //   this.startDPSharedErrorMessages = [];
-  //   const startVal = this.getDateTextboxValue("Start");
-  //   const expirationVal = this.getDateTextboxValue("Expiration");
-  //   const requiredErrorMessage = 'Please enter your PoP start date.';
-  //   const invalidDateErrorMessage = 'Please enter a valid date.';
-  //   const rules:((v:string)=>string|true|undefined)[] = [];
-  //   const isValid = compareAsc(new Date(startVal),new Date(expirationVal)) === -1
-  //   debugger;
-  //   if (!isValid && this.expirationDPSharedErrorMessages.length === 0){
-  //     rules.push((() => {return (isValid || '')}))
-  //     this.expirationDPSharedErrorMessages.push(
-  //       `The expiration date must be after the start date.`
-  //     )
-  //   } else if (startVal.trim() === ''){
-  //     rules.push(this.$validators.required(requiredErrorMessage))
-  //     this.startDPSharedErrorMessages.push(requiredErrorMessage)
-  //   } else if ((/^[0-9]*$/.test(startVal.replaceAll(/\//g, "")))){
-  //     rules.push(this.$validators.required(invalidDateErrorMessage))
-  //     this.startDPSharedErrorMessages.push(invalidDateErrorMessage)
-  //   }
-  //   return rules;
-  // }
-
-  // private get expirationDatePickerRules():((v:string)=>string|true|undefined)[]{
-  //   debugger;
-  //   if (this.isDatePickersEmpty()){
-  //     return [()=>true]
-  //   }
-
-  //   this.expirationDPSharedErrorMessages = [];
-  //   const startVal = this.getDateTextboxValue("Start");
-  //   const expirationVal = this.getDateTextboxValue("Expiration");
-  //   const requiredErrorMessage = 'Please enter your PoP start date.';
-  //   const invalidDateErrorMessage = 'Please enter a valid date.';
-  //   const rules:((v:string)=>string|true|undefined)[] = [];
-  //   const isValid = compareAsc(new Date(expirationVal),new Date(startVal)) === 1
-    
-  //   if (!isValid && this.startDPSharedErrorMessages.length === 0){
-  //     rules.push((() => {return (isValid || '')}))
-  //     this.expirationDPSharedErrorMessages.push(
-  //       `The expiration date must be after the start date.`
-  //     )
-  //   } else if (expirationVal.trim() === ''){
-  //     rules.push(this.$validators.required(requiredErrorMessage))
-  //     this.expirationDPSharedErrorMessages.push(requiredErrorMessage)
-  //   } else if ((/^[0-9]*$/.test(expirationVal.replaceAll(/\//g, "")))){
-  //     rules.push(this.$validators.required(invalidDateErrorMessage))
-  //     this.expirationDPSharedErrorMessages.push(invalidDateErrorMessage)
-  //   }
-  //   return rules;
-  // }
 
   private isDatePickersEmpty(): boolean {
     const startVal = this.getDateTextboxValue("Start");

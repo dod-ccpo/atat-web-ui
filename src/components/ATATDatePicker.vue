@@ -244,7 +244,6 @@ export default class ATATDatePicker extends Vue {
   }
 
   private additionalValidateActions(): void{
-    debugger;
     this.$refs.atatDatePicker.validate()
     this.$nextTick(()=>{
       this.$emit("isDatePickerValid", this.$refs.atatDatePicker.errorBucket);

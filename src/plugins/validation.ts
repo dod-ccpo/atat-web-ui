@@ -1,6 +1,6 @@
 import Vue from "vue"
 
-import { compareAsc, isValid } from "date-fns"
+import { compareAsc, compareDesc, isValid } from "date-fns"
 import { CountryObj, SelectData } from "types/Global";
 
 export class ValidationPlugin {
@@ -189,19 +189,16 @@ export class ValidationPlugin {
   };
 
   /**
- * Validator that validates if input is a valid Date
- * Returns the error message otherwise.
+ * Validator that validates inputted date is greater than 
  *
- * @param (string) date as "MM/dd/yyyy"
+ * @param {string} dateToCompare
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
-  compareDates(
+  compareDatesAsc(
     dateToCompare: string,
-    message?: string
+    message: string
   ): ((v: string) => string | true | undefined) {
-    message = message || `Invalid Date`;
-    // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
       if (dateToCompare !=="" && v !=="" ){
         return (compareAsc(new Date(v),new Date(dateToCompare))=== 1) || message;
@@ -209,6 +206,18 @@ export class ValidationPlugin {
       return true;
     } 
     
+  };
+
+  compareDatesDesc(
+    dateToCompare: string,
+    message: string
+  ): ((v: string) => string | true | undefined) {
+    return (v: string) => {
+      if (dateToCompare !=="" && v !=="" ){
+        return (compareDesc(new Date(v),new Date(dateToCompare))=== 1) || message;
+      };
+      return true;
+    } 
   };
 
 
