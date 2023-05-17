@@ -10,80 +10,67 @@
             Provide details for each individual who conducted research below.
             You can add or remove researchers as needed.
           </p>
-          <v-row>
-            <v-col>Name</v-col>
-            <v-col>Job title</v-col>
-            <v-col>Organization</v-col>
-          </v-row>
-          <transition-group name="funding-increments" tag="div">
-            <v-row
-              v-for="(researcher, index) in researchers"
-              :key="index"
-              :id="'Researcher' + index"
-              class="
-              researcher-table
-              pa-2
-              researcher-table-row"
-            >
-                <v-col
-                  cols="1"
-                  class="d-block
-                  font-weight-500
-                  text-base
-                  mr-4
-                  ml-1
-                  col-1
-                  font-size-14"
-                  :class="index===0?'mt-6':''"
+          <div class="d-flex width-100 pa-2">
+            <div style="min-width: 30px; max-width: 30px;">&nbsp;</div>
+            <div style="width: 33%" class="pl-2 font-weight-500">Name</div>
+            <div style="width: 33%" class="pl-2 font-weight-500">Job title</div>
+            <div style="width: 33%" class="pl-2 font-weight-500">Organization</div>
+            <div style="min-width: 40px; max-width: 40px;">&nbsp;</div>
+          </div>
+          <div class="researcher-table width-100">
+            <transition-group name="funding-increments" tag="div">
+              <div
+                v-for="(researcher, index) in researchers"
+                :key="index"
+                :id="'Researcher' + index"
+                class="d-flex width-100 researcher-table-row pa-2 pt-3"
+              >
+                <div
+                  class="font-weight-500 text-base font-size-14 d-flex justify-center"
+                  style="min-width: 30px; max-width: 30px;"
                 >
-                      {{ index + 1 }}
-                </v-col>
-                <v-col cols="3">
+                  <div class="mr-2" style="margin-top: 6px;">
+                    {{ index + 1 }}
+                  </div>
+                </div>
+
+                <div style="width: 33%" class="mr-6">
                   <ATATTextField
                     :id="'Name' + index"
                     :ref="'Name' + index"
-                    :label="index === 0?'Name':''"
                     :value.sync="researchers[index].name"
-                    width="190"
-                    class="mr-7"
                     :rules="index === 0?[$validators.required(nameErrorText)]:[]"
                   />
-                </v-col>
-                <v-col cols="3">
+                </div>
+                <div style="width: 33%" class="mr-6">
                   <ATATTextField
                     :id="'Title' + index"
                     :ref="'Title' + index"
-                    :label="index === 0?'Job title':''"
                     :value.sync="researchers[index].title"
-                    width="190"
-                    class="mr-7"
                     :rules="index === 0?[$validators.required(titleErrorText)]:[]"
                   />
-                </v-col>
-                <v-col cols="3">
+                </div>
+                <div style="width: 33%" class="mr-4">
                   <ATATTextField
                     :id="'Org' + index"
                     :ref="'Org' + index"
-                    :label="index === 0?'Organization':''"
                     :value.sync="researchers[index].org"
-                    width="190"
-                    class="mr-7"
                     :rules="index === 0?[$validators.required(orgErrorText)]:[]"
                   />
-                </v-col>
-                <v-col class="col-1">
+                </div>
+                <div style="min-width: 40px; max-width: 40px;">
                   <v-btn
                     :id="'DeleteIncrement' + index"
                     class="_icon-only"
-                    :class="index===0?'mt-6':''"
                     @click="deleteResearcher(index)"
                     :disabled="researchers.length === 1"
                   >
                     <v-icon> delete </v-icon>
                   </v-btn>
-                </v-col>
-            </v-row>
-          </transition-group>
+                </div>
+              </div>
+            </transition-group>
+          </div>
           <v-btn
             id="AddIncrementButton"
             plain
@@ -123,9 +110,9 @@ import _ from "lodash";
 export default class WhoConductedResearch extends Vue {
   /* eslint-disable camelcase */
   public researchers:{ name: string, title: string, org: string}[] = [];
-  public nameErrorText = `Enter your researcher's name.`
-  public titleErrorText = `Enter your researcher's job title.`
-  public orgErrorText = `Enter your researcher's organizations.`
+  public nameErrorText = `Enter your researcher’s name.`
+  public titleErrorText = `Enter your researcher’s job title.`
+  public orgErrorText = `Enter your researcher’s organizations.`
 
   public isIndexZero(index:number):boolean{
     return index === 0
