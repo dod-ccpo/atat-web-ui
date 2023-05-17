@@ -1,6 +1,6 @@
 import Vue from "vue"
 
-import { isValid } from "date-fns"
+import { compareAsc, isValid } from "date-fns"
 import { CountryObj, SelectData } from "types/Global";
 
 export class ValidationPlugin {
@@ -187,6 +187,30 @@ export class ValidationPlugin {
       return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message;
     };
   };
+
+  /**
+ * Validator that validates if input is a valid Date
+ * Returns the error message otherwise.
+ *
+ * @param (string) date as "MM/dd/yyyy"
+ * @param {string} message
+ * @returns {function(*): (boolean|string)}
+ */
+  compareDates(
+    dateToCompare: string,
+    message?: string
+  ): ((v: string) => string | true | undefined) {
+    message = message || `Invalid Date`;
+    // validate date isn't something like 12/DD/YYYY
+    return (v: string) => {
+      if (dateToCompare !==""){
+        return (compareAsc(new Date(v),new Date(dateToCompare))=== 1) || message;
+      };
+      return true;
+    } 
+    
+  };
+
 
   /**
  * Validator that validates if url is valid

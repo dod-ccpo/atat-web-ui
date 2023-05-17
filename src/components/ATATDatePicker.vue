@@ -11,6 +11,7 @@
       absolute
       :nudge-top="0"
       :nudge-left="0"
+      
     >
       <template v-slot:activator="{ on, attrs }">
         <div class="d-flex align-center mb-2" v-if="label">
@@ -81,7 +82,7 @@
         scrollable
       ></v-date-picker>
     </v-menu>
-    <ATATErrorValidation v-if="menu === false" :errorMessages="errorMessages" />
+    <ATATErrorValidation v-if="menu === false && showErrors" :errorMessages="errorMessages" />
   </div>
 </template>
 <script lang="ts">
@@ -140,6 +141,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") }) private max!: string;
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: false }) private isRequired!: boolean;
+  @Prop({ default: true }) private showErrors!: boolean;
 
   /**
    * WATCHERS
@@ -186,7 +188,7 @@ export default class ATATDatePicker extends Vue {
       this.removeErrors();
     }
     Vue.nextTick(() => {
-      this.setErrorMessage();
+      // this.setErrorMessage();
     });
   }
 
@@ -204,6 +206,7 @@ export default class ATATDatePicker extends Vue {
       this.date = "";
       this.menu = false;
     }
+  
   }
 
   /**
@@ -212,14 +215,14 @@ export default class ATATDatePicker extends Vue {
   private datePickerClicked(selectedDate: string): void {
     //must be set to false to prevent unnecessary validation
     // this.validateOnBlur = false;
-
-    this.removeErrors();
+    // this.removeErrors();
 
     // saves selectedDate to necessary atatDatePickerMenu attribs
     this.$refs.atatDatePickerMenu.save(selectedDate);
 
     Vue.nextTick(() => {
       this.updateDateValueProperty();
+      // this.setErrorMessage();
     });
   }
 
@@ -235,6 +238,7 @@ export default class ATATDatePicker extends Vue {
     if (isValid(new Date(this.dateFormatted))) {
       this.$emit("update:value", this.dateFormatted);
     }
+  
   }
 
   /**
@@ -307,8 +311,10 @@ export default class ATATDatePicker extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatDatePicker.validate())
-      this.setErrorMessage();
+    if(!this.$refs.atatDatePicker.validate()){
+      console.log('hi')
+    }
+    // this.setErrorMessage();
   }
 
   /**
@@ -320,6 +326,7 @@ export default class ATATDatePicker extends Vue {
 
   private async setErrorMessage(): Promise<void> {
     this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
+    this.$emit("isDatePickerValid", this.$refs.atatDatePicker.errorBucket);
   }
 
   public async setDateFromValue(): Promise<void> {
