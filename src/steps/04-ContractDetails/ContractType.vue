@@ -132,6 +132,7 @@ export default class ContractType extends Mixins(SaveOnLeave) {
       firm_fixed_price: this.firmFixedPriceSelected,
       time_and_materials: this.timeAndMaterialsSelected,
       contract_type_justification: this.justification,
+      acquisition_package:AcquisitionPackage.packageId
     };
   }
 

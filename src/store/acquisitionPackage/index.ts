@@ -115,6 +115,7 @@ export const initialCurrentContract = (): CurrentContractDTO => {
     contract_order_start_date: "",
     competitive_status: "",
     business_size: "",
+    acquisition_package:AcquisitionPackage.packageId
   }
 }
 
@@ -163,6 +164,7 @@ const initialContractType = ()=> {
     firm_fixed_price: "",
     time_and_materials: "",
     contract_type_justification: "",
+    acquisition_package:AcquisitionPackage.packageId
   }
 }
 
@@ -197,6 +199,7 @@ const initialContractConsiderations = ()=> {
     required_training_courses: "",
     packaging_shipping_none_apply: "",
     contractor_provided_transfer: "",
+    acquisition_package: AcquisitionPackage.packageId
   }
 }
 
@@ -1192,8 +1195,10 @@ export class AcquisitionPackageStore extends VuexModule {
         const currentContract = await api.currentContractTable.retrieve(
           currContractSysId
         );
-        if(currentContract)
-          this.setCurrentContract(currentContract);
+        if(currentContract){
+          const contractData = convertColumnReferencesToValues(currentContract)
+          this.setCurrentContract(contractData);
+        }
       } else {
         this.setCurrentContract(
           initialCurrentContract()
