@@ -90,7 +90,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -98,6 +98,7 @@ import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import _ from "lodash";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -107,16 +108,20 @@ import _ from "lodash";
   },
 })
 
-export default class WhoConductedResearch extends Vue {
+export default class WhoConductedResearch extends Mixins(SaveOnLeave) {
+  $refs!: {
+    form: Vue & {
+      resetValidation: () => void;
+      reset: () => void;
+      validate: () => boolean;
+    };
+  };
   /* eslint-disable camelcase */
   public researchers:{ name: string, title: string, org: string}[] = [];
   public nameErrorText = `Enter your researcher’s name.`
   public titleErrorText = `Enter your researcher’s job title.`
   public orgErrorText = `Enter your researcher’s organizations.`
 
-  public isIndexZero(index:number):boolean{
-    return index === 0
-  }
 
   public addResearcher():void{
     this.researchers.push({
@@ -128,6 +133,13 @@ export default class WhoConductedResearch extends Vue {
   public deleteResearcher(index: number):void{
     if(this.researchers[index]){
       this.researchers.splice(index,1)
+      if(index === 0){
+        this.$refs.form.resetValidation();
+        const formChildren = this.$refs.form.$children[0].$children;
+        formChildren.forEach(ref => {
+          ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+        })
+      }
     }
   }
   public isResearchDataComplete(researcher:{ name: string, title: string, org: string}):boolean{
@@ -165,8 +177,13 @@ export default class WhoConductedResearch extends Vue {
 
   protected async saveOnLeave(): Promise<boolean> {
     this.researchers.forEach((researcher,index) => {
-      debugger
-      if(!this.isResearchDataComplete(researcher)){
+      if(!this.isResearchDataComplete(researcher) && index === 0){
+        this.researchers[index] = {
+          name:"",
+          title:"",
+          org:""
+        }
+      }else if (!this.isResearchDataComplete(researcher)){
         this.deleteResearcher(index)
       }
     })
@@ -182,7 +199,6 @@ export default class WhoConductedResearch extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    console.log(this.researchers)
   }
 }
 </script>
