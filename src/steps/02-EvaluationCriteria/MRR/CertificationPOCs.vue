@@ -6,17 +6,18 @@
           <h1 class="mb-3">
             Lastly, let’s gather details about your certification POCs
           </h1>
-          <p>
+          <p class="copy-max-width mb-8">
             Prior to submitting your completed package to a Contracting Office, your J&A
             will need to be signed by your technical POC and your requirements POC. These
             individuals must have authority to certify that the supporting data, respective
             to their area of expertise, is accurate and complete.
           </p>
           <CertificationPOCTypeForm
-              POCType="Technical" :save-form.sync="saveForm">
+              POCType="Technical" sequence="1" :save-form.sync="saveTechForm">
           </CertificationPOCTypeForm>
+          <hr>
           <CertificationPOCTypeForm
-              POCType="Requirements" :save-form.sync="saveForm">
+              POCType="Requirements" sequence="2" :save-form.sync="saveReqForm">
           </CertificationPOCTypeForm>
         </v-col>
       </v-row>
@@ -37,14 +38,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class CertificationPOCs extends Mixins(SaveOnLeave) {
-  saveForm = false;
+  saveTechForm = false;
+  saveReqForm = false;
 
   /**
    * For child components saveOnLeave is not triggering automatically.
    * This is a workaround to save the state.
    */
   protected async saveOnLeave(): Promise<boolean> {
-    this.saveForm = true;
+    this.saveTechForm = true;
+    this.saveReqForm = true;
     return true;
   }
 }

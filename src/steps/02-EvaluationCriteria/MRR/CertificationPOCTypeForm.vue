@@ -3,7 +3,8 @@
     <ATATRadioGroup
         v-if="loaded"
         :id="POCType + 'certificationPOCType'"
-        :legend="'1. Tell us about your ' + POCType + ' POC'"
+        :legend="sequence + '. Tell us about your ' + POCType + ' POC'"
+        legend-as-subheader="true"
         :helpText="'Will any of these individuals serve as the '
               + POCType + ' Certifier for your J&A?'"
         :value.sync="certificationPOCType"
@@ -14,7 +15,6 @@
     />
     <ATATContactForm
         v-if="showContactForm"
-        type="financialPOCForm"
         :email.sync="email"
         :firstName.sync="firstName"
         :lastName.sync="lastName"
@@ -58,7 +58,9 @@ import {convertColumnReferencesToValues} from "@/api/helpers";
 
 export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
   @Prop({default: "Technical"}) private POCType!: "Technical" | "Requirements";
+  @Prop({default: "1"}) private sequence!: string;
   @PropSync("saveForm") private _saveForm!: boolean;
+
 
   private POCTypePropName: "technical_poc_type" | "requirements_poc_type" = "technical_poc_type";
   private POCPropName: "technical_poc" | "requirements_poc" = "technical_poc";
@@ -172,6 +174,18 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
     };
   }
 
+  /**
+   * Checks and returns if the fair opportunity data POC type data has changed.
+   */
+  private hasFairOpportunityDataChanged(): boolean {
+    const currentData = {} as FairOpportunityDTO;
+    currentData[this.POCTypePropName] = this.certificationPOCType;
+    const savedData = {} as FairOpportunityDTO;
+    const savedFairOpportunity = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
+    savedData[this.POCTypePropName] = savedFairOpportunity[this.POCTypePropName] || "";
+    return hasChanges(currentData, savedData);
+  }
+
   private hasCurrentContactFormChanged(): boolean {
     return hasChanges(this.currentContactFormData, this.certificationPOCContactDTO);
   }
@@ -195,12 +209,12 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
     try {
       const savedPOCType =
           (AcquisitionPackage.fairOpportunity as FairOpportunityDTO)[this.POCTypePropName];
-      const fairOpportunity =
-          _.cloneDeep(AcquisitionPackage.fairOpportunity as FairOpportunityDTO);
+      const fairOpportunity = {} as FairOpportunityDTO;
       if (this.certificationPOCType === "NEW") {
         // user changed from other types to NEW or could be first time filling the form.
         if (this.hasCurrentContactFormChanged()) {
-          const savedContact = await ContactData.saveContact(this.currentContactFormData);
+          let savedContact = await ContactData.saveContact(this.currentContactFormData);
+          savedContact = convertColumnReferencesToValues(savedContact);
           fairOpportunity[this.POCTypePropName] = this.certificationPOCType;
           fairOpportunity[this.POCPropName] = savedContact.sys_id;
           await AcquisitionPackage.setFairOpportunity(fairOpportunity);
@@ -212,8 +226,10 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
         fairOpportunity[this.POCPropName] = "";
         await AcquisitionPackage.setFairOpportunity(fairOpportunity);
       } else { // user has changed across one of the 3 existing contact types (NOT NEW)
-        fairOpportunity[this.POCTypePropName] = this.certificationPOCType;
-        await AcquisitionPackage.setFairOpportunity(fairOpportunity)
+        if (this.hasFairOpportunityDataChanged()) {
+          fairOpportunity[this.POCTypePropName] = this.certificationPOCType;
+          await AcquisitionPackage.setFairOpportunity(fairOpportunity)
+        }
       }
     } catch (error) {
       console.log(error);

@@ -31,8 +31,10 @@ describe("Testing CertificationPOCs Component", () => {
   });
 
   it("saveOnLeave() - should set the component property such that save is triggered", async () => {
-    expect(wrapper.vm.$data.saveForm).toBe(false);
+    expect(wrapper.vm.$data.saveTechForm).toBe(false);
+    expect(wrapper.vm.$data.saveReqForm).toBe(false);
     await wrapper.vm.saveOnLeave();
-    expect(wrapper.vm.$data.saveForm).toBe(true);
+    expect(wrapper.vm.$data.saveTechForm).toBe(true);
+    expect(wrapper.vm.$data.saveReqForm).toBe(true);
   });
 })
