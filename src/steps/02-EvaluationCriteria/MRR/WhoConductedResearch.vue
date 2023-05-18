@@ -118,6 +118,7 @@ export default class WhoConductedResearch extends Mixins(SaveOnLeave) {
   };
   /* eslint-disable camelcase */
   public researchers:{ name: string, title: string, org: string}[] = [];
+  public savedResearchers = ""
   public nameErrorText = `Enter your researcher’s name.`
   public titleErrorText = `Enter your researcher’s job title.`
   public orgErrorText = `Enter your researcher’s organizations.`
@@ -146,8 +147,10 @@ export default class WhoConductedResearch extends Mixins(SaveOnLeave) {
     return researcher.org !== "" && researcher.title !== "" && researcher.org !== "";
   }
   private get currentData(): FairOpportunityDTO {
+    const researchValue = this.researchers.length == 0 ? "":JSON.stringify(this.researchers)
+
     return {
-      market_research_conducted_by: JSON.stringify(this.researchers),
+      market_research_conducted_by: researchValue,
     } as FairOpportunityDTO;
   }
 
@@ -165,28 +168,26 @@ export default class WhoConductedResearch extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData?.market_research_conducted_by) {
-      this.researchers = JSON.parse(storeData.market_research_conducted_by||"")
+      this.researchers = JSON.parse(storeData.market_research_conducted_by)
     }else{
-      this.researchers.push({
-        name:"",
-        title:"",
-        org:""
-      })
-    }
-  }
-
-  protected async saveOnLeave(): Promise<boolean> {
-    this.researchers.forEach((researcher,index) => {
-      if(!this.isResearchDataComplete(researcher) && index === 0){
-        this.researchers[index] = {
+      this.researchers = [
+        {
           name:"",
           title:"",
           org:""
         }
-      }else if (!this.isResearchDataComplete(researcher)){
-        this.deleteResearcher(index)
-      }
-    })
+      ]
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    if(this.researchers.length > 1){
+      this.researchers.forEach((researcher,index) => {
+        if(!this.isResearchDataComplete(researcher)){
+          this.deleteResearcher(index)
+        }
+      })
+    }
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
