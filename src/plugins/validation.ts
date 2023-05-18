@@ -11,7 +11,7 @@ export class ValidationPlugin {
  *
  * @param {number} length The minimum length allowed for the field's value
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   minLength(
     length: number,
@@ -30,7 +30,7 @@ export class ValidationPlugin {
  *
  * @param {number} length The maximum length allowed for the field's value
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   maxLength(
     length: number,
@@ -47,7 +47,7 @@ export class ValidationPlugin {
  * Returns the error message otherwise.
  *
  * @param message
- * @returns {function(*=): boolean}
+ * @returns {() => string | true | undefined}
  */
 
   allowedLengths(
@@ -105,7 +105,7 @@ export class ValidationPlugin {
  * Returns the error message otherwise.
  *
  * @param message
- * @returns {function(*=): boolean}
+ * @returns {() => string | true | undefined}
  */
   integer(message?: string): ((v: string) => string | true | undefined) {
     message = message || "The value must be an integer number";
@@ -119,11 +119,11 @@ export class ValidationPlugin {
  *
  * @param {number} max Maximum number allowed
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   lessThan(
     max: number,
-    message?: string,
+    message?: string
   ): ((v: number) => string | true | undefined) {
     message = message || `Value must be less than ${max}`;
     return (v: number) => {
@@ -137,7 +137,7 @@ export class ValidationPlugin {
  *
  * @param {number} min Minimum number allowed
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   greaterThan(
     min: number,
@@ -157,7 +157,7 @@ export class ValidationPlugin {
  * @param {number} min Minimum number allowed
  * @param {number} max Maximum number allowed
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   isBetween(
     min: number,
@@ -176,7 +176,7 @@ export class ValidationPlugin {
  *
  * @param (string) date as "MM/dd/yyyy"
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   isDateValid(
     message?: string
@@ -184,16 +184,17 @@ export class ValidationPlugin {
     message = message || `Invalid Date`;
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
-      return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message;
+      const d = new Date(v);
+      return (d instanceof Date && !isNaN(d.getMilliseconds())) || message;
     };
   };
 
   /**
- * Validator that validates inputted date is greater than 
+ * Validator that validates inputted date is greater than than dateToCompare
  *
  * @param {string} dateToCompare
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   compareDatesAsc(
     dateToCompare: string,
@@ -208,6 +209,13 @@ export class ValidationPlugin {
     
   };
 
+  /**
+ * Validator that validates inputted date is less than than dateToCompare
+ *
+ * @param {string} dateToCompare
+ * @param {string} message
+ * @returns {function(*): (boolean|string)}
+ */
   compareDatesDesc(
     dateToCompare: string,
     message: string
@@ -226,7 +234,7 @@ export class ValidationPlugin {
  * Returns the error message otherwise.
  *
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   isURL(
     message?: string
@@ -243,7 +251,7 @@ export class ValidationPlugin {
   };
 
   /**
-  * @returns {function(*): (boolean|string)}
+  * @returns {() => string | true | undefined}
   */
   isEmail = (
     message?: string,
@@ -270,7 +278,7 @@ export class ValidationPlugin {
   * Returns the error message otherwise.
   *
   * @param {string} country country Abbreviation
-  * @returns {function(*): (boolean|string)}
+  * @returns {() => string | true | undefined}
   */
   isPhoneNumberValid = (country: CountryObj): ((v: string) => string | true | undefined) => {
     return (v: string) => {
@@ -295,7 +303,7 @@ export class ValidationPlugin {
    * @param {string} mask an Array of input mask ['99999',99999-9999]
    * @param {string} message text to be shown if false
    * @param {boolean} isMaskRegex true or false
-   * @returns {function(*): (boolean|string)}
+   * @returns {() => string | true | undefined}
    */
   isMaskValid = (mask: string[], message: string, isMaskRegex?: boolean):
     ((v: string) => string | true | undefined) => {
@@ -320,7 +328,7 @@ export class ValidationPlugin {
    * Validator that ensures the file is valid.
    * Returns the error message otherwise.
    *
-   * @returns {function(*): boolean}
+   * @returns {() => string | true | undefined}
    * @param file
    * @param validExtensions
    * @param maxFileSize

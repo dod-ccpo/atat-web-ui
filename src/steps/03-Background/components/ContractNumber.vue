@@ -3,8 +3,9 @@
     <ATATTextField
         :id="id"
         :label="label"
-        :rules="rules"
+        :rules="_rules"
         class="_input-max-width"
+        :tooltip-text="tooltipText"
         :value.sync="_value"
         :isMaskRegex="true"
         :mask="['^[a-zA-Z0-9]*$']"
@@ -37,5 +38,6 @@ export default class ContractNumber extends Vue {
   @Prop({default: "contract number goes here"}) private helpText!: string;
   @Prop({default: true}) private isForm!: boolean;
   @PropSync("rules") private _rules!: "";
+  @Prop({default: ""}) private tooltipText!: string;
 }
 </script>

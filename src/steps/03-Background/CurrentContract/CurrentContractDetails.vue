@@ -69,7 +69,7 @@
                 id="Start" 
                 :value.sync="contractOrderStartDate" 
                 label="Start date" 
-                max="2024-01-01"
+                :max="isoFormat(contractOrderExpirationDate, false)"
                 placeHolder="MM/DD/YYYY"
                 class="mr-5"
                 :showErrors="false"
@@ -91,9 +91,10 @@
                 :value.sync="contractOrderExpirationDate" 
                 ref="expirationDatePicker"
                 label="Expiration date" 
-                max="2024-01-01"
+                :min="isoFormat(contractOrderStartDate, true)"
+                :max="isoFormat('2028-06-30', true)"
                 @isDatePickerValid="validateExpirationDatePicker"
-                placeHolder="MM/DD/YYYY" 
+                placeHolder="MM/DD/YYYY"
                 :showErrors="false"
                 :rules="[
                   $validators.required(
@@ -114,7 +115,7 @@
                     ...startDPSharedErrorMessages, 
                     ...expirationDPSharedErrorMessages
                   ]"
-                  :showAllErrors="true"
+                  :showAllErrors="false"
                 ></ATATErrorValidation>
             <hr />
 
@@ -199,10 +200,9 @@ import AcquisitionPackage, { StoreProperties, } from "@/store/acquisitionPackage
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import { add, compareAsc, format } from "date-fns";
+import { add, format, formatISO, isValid } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
-import { JSDocUnknownType } from "typescript";
-import exp from "constants";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -229,7 +229,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     expirationDatePicker: Vue & { 
       validate: () => boolean;
     };
-  
   };
 
   private incumbentContractorName =
@@ -246,7 +245,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private contractOrderExpirationDate =
     AcquisitionPackage.currentContract?.contract_order_expiration_date || "";
-
 
   private competitiveStatus =
     AcquisitionPackage.currentContract?.competitive_status || "";
@@ -266,6 +264,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     this.removeSharedErrorMessages(false);
     this.expirationDPSharedErrorMessages = value;
   }
+
 
   private removeSharedErrorMessages(isStart: boolean):void{
     const startTextBox = (this.$refs.startDatePicker as unknown as ATATDatePicker)
@@ -289,15 +288,16 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
   }
 
-  private getDateTextboxValue(dateType: string):string{
-    return (document.getElementById(dateType + "DatePickerTextField") as HTMLInputElement)?.value
-     || "";
-  }
-
-  private isDatePickersEmpty(): boolean {
-    const startVal = this.getDateTextboxValue("Start");
-    const expirationVal = this.getDateTextboxValue("Expiration");
-    return startVal === "" && expirationVal === "";
+  private isoFormat(dt:string, isMin: boolean): string{
+    const d = isValid(dt) 
+      ? dt 
+      : isMin 
+        ? this.contractOrderStartDate 
+        : this.contractOrderExpirationDate
+    const newDate = add (new Date(d), {
+      days: isMin ? 1 : -1
+    })
+    return formatISO(new Date(newDate), { representation: 'date' })
   }
 
   private savedData = {
@@ -325,7 +325,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-
     const storeData = (await AcquisitionPackage.loadData<CurrentContractDTO>({
       storeProperty: StoreProperties.CurrentContract,
     })) as CurrentContractDTO;
