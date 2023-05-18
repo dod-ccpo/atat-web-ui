@@ -110,6 +110,7 @@ export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
     return {
       potential_conflict_of_interest: this.hasConflict || "",
       conflict_of_interest_explanation: this.explanation,
+      acquisition_package:AcquisitionPackage.packageId
     };
   }
 

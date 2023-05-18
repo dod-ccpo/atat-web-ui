@@ -148,6 +148,11 @@ export default class ATATDatePicker extends Vue {
     this.dateFormatted = this.reformatDate(this.date);
   }
 
+  @Watch("value")
+  public async valueChanged(): Promise<void> {
+    await this.setDateFromValue();
+  }
+
   /**
    * restores standar calendar view when popup menu is displayed
    * if previous view was month or year view
@@ -312,16 +317,19 @@ export default class ATATDatePicker extends Vue {
     this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
   }
 
-  /**
-   * LIFECYCLE HOOKS
-   */
-  private mounted(): void {
+  public async setDateFromValue(): Promise<void> {
     if (this.value && this.value.indexOf("-") > -1) {
       this.date = this.value;
     } else if (this.value && this.value.indexOf("/") > -1) {
       this.date = this.reformatDate(this.value);
     }
+  }
 
+  /**
+   * LIFECYCLE HOOKS
+   */
+  private async mounted(): Promise<void> {
+    await this.setDateFromValue();
     this.formatDateWatcher();
 
     this.$nextTick(() => {

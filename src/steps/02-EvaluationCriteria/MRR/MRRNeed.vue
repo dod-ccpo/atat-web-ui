@@ -6,7 +6,7 @@
           <h1 class="mb-3">
             Now let’s see if you need a Market Research Report (MRR)
           </h1>
-          <p>
+          <p class="mb-10 copy-max-width">
             There is a signed MRR that applies to all task orders issued
             under the JWCC Contract, except for those acquisitions with an
             exception to fair opportunity. This means that your final acquisition
@@ -14,22 +14,22 @@
             contract actions applies to this effort.
           </p>
           <ATATRadioGroup
-              id="MRRNeed"
-              legend="Do any of the following contract actions apply to this acquisition?"
-              tooltipText="DISA does not require MRRs for undefinitized contract actions (UCAs),
+            id="MRRNeed"
+            legend="Do any of the following contract actions apply to this acquisition?"
+            tooltipText="DISA does not require MRRs for undefinitized contract actions (UCAs),
               bridge contract actions, or FAR 52.217-8 Option to Extend Services."
-              :value.sync="selectedMRRNeed"
-              :items="mrrNeedOptions"
-              name="fair-opportunity-exceptions-radio-group"
-              class="copy-max-width mb-10 mt-3"
-              :rules="[$validators.required('Please select an option')]"
+            :value.sync="selectedMRRNeed"
+            :items="mrrNeedOptions"
+            name="fair-opportunity-exceptions-radio-group"
+            class="copy-max-width mb-10 mt-3"
+            :rules="[$validators.required('Please select an option')]"
           />
           <ATATAlert
-              v-if="displayNotNoneAlert || displayNoneApplyAlert"
-              id="MRRNeedInfoAlert"
-              :type="mrrNeedInfoAlertType"
-              :showIcon="false"
-              class="copy-max-width my-10"
+            v-if="displayNotNoneAlert || displayNoneApplyAlert"
+            id="MRRNeedInfoAlert"
+            :type="mrrNeedInfoAlertType"
+            :showIcon="false"
+            class="copy-max-width my-10"
           >
             <template v-slot:content>
               <p v-if="displayNotNoneAlert">

@@ -37,6 +37,9 @@ import AcquisitionPackage,
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+import Steps from "@/store/steps";
+import { routeNames } from "@/router/stepper";
+import { CurrentContractRouteResolver } from "@/router/resolvers";
 
 @Component({
   components: {
@@ -45,13 +48,13 @@ import { hasChanges } from "@/helpers";
 })
 
 export default class CurrentContract extends Mixins(SaveOnLeave) {
-
-  public currentContractExists = "";
+  public currentContractExists = AcquisitionPackage.currentContract?.current_contract_exists;
   public headline = "";
 
   private get currentData(): CurrentContractDTO {
     return {
       current_contract_exists: this.currentContractExists,
+      acquisition_package:AcquisitionPackage.packageId
     };
   }
 
@@ -77,8 +80,19 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   };
 
   public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
+    // if second option in step 2 Exception to Fair Opportunity is selected
+    // skip this page. Use route resolver to determine where to go
+    const hasLogicalFollowOn = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity
+      === "YES_FAR_16_505_B_2_I_C";
+    if (hasLogicalFollowOn) {
+      const routeName = CurrentContractRouteResolver(Steps.prevStepName)
+      this.$router.push({
+        name: routeName,
+      }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+    }   
+
+    await this.loadOnEnter();     
+  }  
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.

@@ -1335,6 +1335,7 @@ export default class PortfolioDashboard extends Vue {
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
   }
+  /* eslint-disable indent */
   public totalSpendingObj: {
     totalFundsSpent: number;
     totalFundsObligated: number;
@@ -1342,12 +1343,13 @@ export default class PortfolioDashboard extends Vue {
     clinAverage: number;
     spendTrend: number;
   } = {
-      totalFundsSpent: 0,
-      totalFundsObligated: 0,
-      lastMonthSpent: 0,
-      clinAverage: 0,
-      spendTrend: 0,
-    };
+    totalFundsSpent: 0,
+    totalFundsObligated: 0,
+    lastMonthSpent: 0,
+    clinAverage: 0,
+    spendTrend: 0,
+  };
+  /* eslint-enable indent */
 
   public createTableItems(): void {
     this.idiqClins.forEach((idiqClin) => {
