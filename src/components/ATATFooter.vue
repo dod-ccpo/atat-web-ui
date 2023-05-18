@@ -42,7 +42,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
-import UserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -50,12 +49,10 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({})
 
 export default class ATATFooter extends Vue {
-  private currentUser: UserDTO = {};
-
+  public currentUser: UserDTO = {};
   public get getCurrentUser(): UserDTO {
-    return CurrentUserStore.currentUser;
+    return CurrentUserStore.getCurrentUserData;
   }
-
   @Watch("getCurrentUser")
   public currentUserChange(newVal: UserDTO): void {
     this.currentUser = newVal;
@@ -76,14 +73,5 @@ export default class ATATFooter extends Vue {
   public async prodContentChanged(newVal: boolean): Promise<void> {
     await AcquisitionPackage.setEmulateProdNav(newVal);
   }
-
-  public async loadOnEnter(): Promise<void> {
-    this.currentUser = await UserStore.getCurrentUser();
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
-
 }
 </script>

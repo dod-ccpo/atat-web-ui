@@ -12,7 +12,7 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
-          <div class="_welcome-bar">
+          <div v-if="!isLoading" class="_welcome-bar">
             <div class="d-flex justify-start">
               <h1 class="text-primary">
                 Hi {{currentUser.first_name}}! How can we help you?
@@ -38,28 +38,25 @@
             </div>
           </div>
         </div>
+        <div v-if="!isLoading">
+          <NewUser 
+            v-if="isNewUser" 
+            class="mt-15" 
+            @startNewAcquisition="startNewAcquisition" 
+            @startProvisionWorkflow="startProvisionWorkflow"
+            @openTOSearchModal="openSearchTOModal"
+          />
 
-        <NewUser 
-          v-if="isNewUser" 
-          class="mt-15" 
-          @startNewAcquisition="startNewAcquisition" 
-          @startProvisionWorkflow="startProvisionWorkflow"
-          @openTOSearchModal="openSearchTOModal"
-        />
+          <ExistingUser 
+            v-else 
+            class="mt-8" 
+            @startNewAcquisition="startNewAcquisition" 
+            @openTOSearchModal="openSearchTOModal"
+            @startProvisionWorkflow="startProvisionWorkflow"
 
-        <ExistingUser 
-          v-else 
-          class="mt-8" 
-          @startNewAcquisition="startNewAcquisition" 
-          @openTOSearchModal="openSearchTOModal"
-          @startProvisionWorkflow="startProvisionWorkflow"
-
-        />      
-          <!-- :userHasPackages.sync="userHasPackages"
-          :userHasPortfolios.sync="userHasPortfolios" -->
-
-          <!-- @allPackagesCleared="allPackagesCleared" -->
-          <!-- @portfolioCountUpdated="portfolioCountUpdated" -->
+          />      
+            <!-- @allPackagesCleared="allPackagesCleared" -->
+        </div>
 
         <div class="bg-white">
           <ATATFooter class="mx-auto pt-10" />
@@ -124,7 +121,7 @@ export default class Home extends Vue {
   public TONumber = "";
   public resetValidationNow = false;
   public selectedAcquisitionPackageSysId = "";
-  public isLoading = false;
+  public isLoading = true;
 
   public openSearchTOModal(acqPackageSysId: string): void {
     this.selectedAcquisitionPackageSysId = acqPackageSysId;
@@ -162,14 +159,6 @@ export default class Home extends Vue {
     return CurrentUserStore.currentUser;
   }
 
-  // @Watch("getCurrentUser")
-  // public async currentUserChange(newVal: UserDTO): Promise<void> {
-  //   debugger;
-  //   // HOME
-  //   this.currentUser = newVal;
-  //   // await this.checkIfIsNewUser();
-  // }  
-
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await acquisitionPackage.setIsNewPackage(true)
@@ -204,16 +193,6 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
   }
 
-  // public portfolioCountUpdated(portfolioCount: string): void {
-  //   this.userHasPortfolios = parseInt(portfolioCount) > 0;
-  // }
-
-  // public async checkIfIsNewUser(): Promise<void> {
-  //   debugger;
-  //   // home/Index.vue
-  //   this.userHasPackages = UserStore.getUserHasPackages;
-  //   this.userHasPortfolios = UserStore.getUserHasPortfolios;
-  // }
   public async mounted(): Promise<void> {
     this.isLoading = true;
     debugger;
@@ -231,8 +210,6 @@ export default class Home extends Vue {
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     await PortfolioStore.setShowTOPackageSelection(true);
     
-
-    // await this.checkIfIsNewUser();
     this.isLoading = false;
   }
 

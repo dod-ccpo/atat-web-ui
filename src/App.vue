@@ -97,13 +97,17 @@ export default class App extends Vue {
 
     window.addEventListener("storage", async (e) => {
       if (e.storageArea === sessionStorage && e.key === "userId") {
+        debugger;
+        // APP VUE
         await CurrentUserStore.resetUser();
       }
     })
 
-    setTimeout(() => {
-      CurrentUserStore.resetUser();
-    }, 1000)
+    // setTimeout(() => {
+    //   debugger;
+    //   // APP VUE
+    //   CurrentUserStore.resetUser();
+    // }, 1000)
 
     await this.loadOnEnter();
   }

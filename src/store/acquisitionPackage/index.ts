@@ -548,6 +548,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
+    debugger;
+    // ACQUISITION PACKAGE STORE
     const currentUser = await UserStore.getCurrentUser();
     await this.doSetCurrentUser(currentUser);
 
@@ -1025,6 +1027,10 @@ export class AcquisitionPackageStore extends VuexModule {
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
+      debugger;
+      if (!this.currentUser) {
+        await this.setCurrentUser();
+      }  
       await ContactData.initialize();
       this.setPackagePercentLoaded(5);
       await OrganizationData.initialize();
@@ -1326,7 +1332,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(96);
       await IGCE.loadTrainingEstimatesFromPackage(packageId);
       this.setPackagePercentLoaded(98);
-      await this.setCurrentUser();
+      // await this.setCurrentUser();
       await DescriptionOfWork.loadTravel();
 
       if (this.packageContributors.length) {
@@ -1354,9 +1360,13 @@ export class AcquisitionPackageStore extends VuexModule {
     if (this.initialized) {
       return;
     }
+
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
     Steps.clearAltBackButtonText();
+    if (!this.currentUser) {
+      await this.setCurrentUser();
+    }
 
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
@@ -1372,6 +1382,8 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
+    debugger;
+    // ACQUISITION PACKAGE STORE
     const loggedInUser = await UserStore.getCurrentUser();
 
     if (loggedInUser && loggedInUser.user_name) {
@@ -1433,7 +1445,7 @@ export class AcquisitionPackageStore extends VuexModule {
             .create({acquisition_package:acquisitionPackage.sys_id})
           this.setPackageDocumentsSigned(packageDocumentsSigned)
           this.setPackagePercentLoaded(96);
-          await this.setCurrentUser();
+          // await this.setCurrentUser();
           this.setPackagePercentLoaded(100);
 
           this.setInitialized(true);

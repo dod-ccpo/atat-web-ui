@@ -121,6 +121,8 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   public async getMandatorySearchParameterQuery(searchDTO?: AcquisitionPackageSummarySearchDTO):
     Promise<string> {
     // EJY get query here
+    debugger;
+    // ACQ PKG SUMMARY STORE -- USE A GETTER
     const currentUser = await CurrentUserStore.getCurrentUser();
     const userSysId = currentUser.sys_id;
 

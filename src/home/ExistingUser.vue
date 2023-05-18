@@ -78,7 +78,6 @@
                       default-sort="DESCsys_updated_on"
                       :isHomeView="true" 
                     />
-                      <!-- @totalCount="updateTotalPortfolios" -->
 
                   </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -157,13 +156,13 @@
                 >
                   Report a bug or technical issue
                   <ATATSVGIcon
-                      id="ReportIssueButtonIcon"
-                      width="15"
-                      height="15"
-                      name="launch"
-                      class="ml-2"
-                      color="primary"
-                    />
+                    id="ReportIssueButtonIcon"
+                    width="15"
+                    height="15"
+                    name="launch"
+                    class="ml-2"
+                    color="primary"
+                  />
                 </v-btn>
             </v-card>
 
@@ -224,9 +223,20 @@ export default class ExistingUser extends Vue {
     "and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"
     
   public packagesPanel = 0; // open by default
+  // public packageCount = this.getPackageCount;
+
   public get packageCount(): number {
-    return CurrentUserStore.currentUserPackageCount;
+    debugger;
+    return CurrentUserStore.getCurrentUserPackageCount;
   };
+
+  // @Watch("packageCount")
+  // public async packageCountChange(newVal: number, oldVal: number): Promise<void> {
+  //   // ExistingUser
+  //   debugger;
+  //   await this.loadPackageData();
+  // }
+
 
   public portfolioPanel = 0; // open by default
   public get portfolioCount(): number {
@@ -256,11 +266,6 @@ export default class ExistingUser extends Vue {
     this.$emit("startNewAcquisition");
   }
 
-  // public updateTotalPortfolios(totalCount: number): void {
-  //   this.portfolioCount = totalCount;
-  //   // this.$emit("portfolioCountUpdated", totalCount);
-  // } 
-
   public viewAllPortfolios(): void {
     AppSections.setAppContentComponent(Portfolios);
   }
@@ -277,18 +282,13 @@ export default class ExistingUser extends Vue {
     offset: 0
   };
   
-  public get getCurrentUser(): UserDTO {
-    debugger;
-    // ExistingUser
-    return CurrentUserStore.currentUser;
-  }
+  // public get getCurrentUser(): UserDTO {
+  //   debugger;
+  //   // ExistingUser
+  //   return CurrentUserStore.currentUser;
+  // }
 
-  @Watch("getCurrentUser")
-  public async currentUserChange(): Promise<void> {
-    // ExistingUser
-    debugger;
-    await this.loadPackageData();
-  }  
+
 
   public async loadPackageData(): Promise<void> {
     debugger;
@@ -308,12 +308,14 @@ export default class ExistingUser extends Vue {
   }
 
   public async loadOnEnter(): Promise<void>{
-    // try {
-    //   await this.loadPackageData();
-    // }
-    // catch {
-    //   console.log("Error loading acquisition package data");
-    // }
+    // EXISTING USER
+    debugger;
+    try {
+      await this.loadPackageData();
+    }
+    catch {
+      console.log("Error loading acquisition package data");
+    }
   }
 
   public mounted():void{

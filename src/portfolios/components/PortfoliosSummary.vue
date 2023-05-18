@@ -388,7 +388,10 @@ export default class PortfoliosSummary extends Vue {
   public currentUserSysId = "";
 
   public async loadPortfolioData(): Promise<void> {
+    debugger;
+    // PORTFOLIO SUMMARY
     const currentUser = await CurrentUserStore.getCurrentUser();
+
     this.currentUserSysId = currentUser.sys_id as string;
     
     this.isLoading = true;
@@ -410,12 +413,11 @@ export default class PortfoliosSummary extends Vue {
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
 
     this.portfolioCount = storeData.total_count;
-    this.$emit("totalCount", storeData.total_count);
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
-    if (this.isHomeView) {
-      storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
-    }
+    // if (this.isHomeView) {
+    //   storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
+    // }
     storeData.portfolioSummaryList.forEach((portfolio) => {
       // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
       // from portfolio_managers and portfolio_viewers sysIds lists
