@@ -445,12 +445,9 @@ export class ClassificationRequirementsStore extends VuexModule {
 
     }
     await this.setCdsSolution(cdsSolution)
-    debugger
     const updateIGCE: IgceEstimateDTO[] = IGCEStore.igceEstimateList.filter( 
-      // === -1 removes all igce entries
       estimate => (estimate.title as string).indexOf("CDS") === -1
     )
-    //console.log(updateIGCE)
     await IGCEStore.setIgceEstimate(updateIGCE)
   }
 
