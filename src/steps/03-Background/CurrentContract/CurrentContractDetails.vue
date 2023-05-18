@@ -317,6 +317,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       contract_order_start_date: this.contractOrderStartDate,
       competitive_status: this.competitiveStatus,
       business_size: this.businessSize,
+      acquisition_package:AcquisitionPackage.packageId
     };
   }
 
