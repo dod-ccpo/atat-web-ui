@@ -26,7 +26,13 @@
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
 
+                    <ATATLoader 
+                      v-show="isLoadingPackages" 
+                      loadingText="Loading your packages" 
+                    />
+                  
                     <PackageCards
+                      v-show="!isLoadingPackages"                     
                       v-for="(cardData, index) in packageData"
                       :key="cardData.sys_id"
                       :cardData="cardData"
@@ -77,13 +83,15 @@
                       active-tab="ALL" 
                       default-sort="DESCsys_updated_on"
                       :isHomeView="true" 
+                      :isProdEnv="isProdEnv"
                     />
+                    <!-- ATAT TODO - remove isProdEnv when merged to develop -->
 
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
 
-              <div class="_view-all">
+              <div class="_view-all _portfolios" v-if="!isProdEnv">
                 <a
                   id="ViewAllPortfoliosLink"
                   role="button"
@@ -179,8 +187,9 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
+import ATATLoader from "@/components/ATATLoader.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
-import AppSections from "@/store/appSections";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import Packages from "@/packages/Index.vue";
 import Card from "@/packages/components/Card.vue";
@@ -195,12 +204,14 @@ import {
   UserDTO, 
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CurrentUserStore from "@/store/user";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {
     ATATAlert,
+    ATATLoader,
     ATATSearch,
     "PackageCards": Card,
     PortfoliosSummary,
@@ -211,6 +222,7 @@ import CurrentUserStore from "@/store/user";
 
 export default class ExistingUser extends Vue {
   public packageData:AcquisitionPackageSummaryDTO[] = []
+  public isLoadingPackages = true;
 
   public reportIssueLink = "https://services.disa.mil/sp?id=sc_cat_item&sys_id=20e86845dbaf1914" +
     "8c045e8cd39619d9&sysparm_category=a30a5ca3db12a0508c045e8cd396197c";
@@ -234,6 +246,10 @@ export default class ExistingUser extends Vue {
   }
   public get userHasPortfolios(): boolean {
     return CurrentUserStore.getUserHasPortfolios;
+  }
+
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
   }
 
   public TONumber = "";
@@ -266,9 +282,11 @@ export default class ExistingUser extends Vue {
   };
   
   public async loadPackageData(): Promise<void> {
+    this.isLoadingPackages = true;
     const packageData = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO);   
     this.packageData = packageData.acquisitionPackageSummaryList;
+    this.isLoadingPackages = false;
   }
 
   public async loadOnEnter(): Promise<void>{

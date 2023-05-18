@@ -55,6 +55,7 @@ export default class ATATFooter extends Vue {
   }
   @Watch("getCurrentUser")
   public currentUserChange(newVal: UserDTO): void {
+    debugger;
     this.currentUser = newVal;
   }  
 

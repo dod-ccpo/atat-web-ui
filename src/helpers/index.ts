@@ -464,14 +464,16 @@ export interface AggregateCountResults {
   };
 }
 
-export const getTableRecordCount = async (table: string, query: string ): Promise<number> {
+export const getTableRecordCount = async (table: string, query: string ): Promise<number> => {
   // Use aggregate API to get count for number of records in a table
+  /* eslint-disable camelcase */
   const config: AxiosRequestConfig = {
     params: {
       sysparm_query: query,
       sysparm_count: true
     },
   };
+  /* eslint-enable camelcase */
   const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;  
   const count = parseInt(response.result.stats.count)
   return count;

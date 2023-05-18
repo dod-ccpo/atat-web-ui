@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- ATAT TODO - reinstate after MVP when new single portfolio summary API is available
+                     that prevents multiple calls per portfolio
+
     <div v-if="!isHomeView" class="bg-base-lightest pa-4 border-rounded">
       <div class="d-flex justify-space-between align-center">
         <ATATSearch 
@@ -41,6 +44,7 @@
           </div>
         </div>
       </div>
+
       <div class="mt-3" v-show="hasFilters">
         <v-chip
           v-for="(chip, index) in filterChips"
@@ -66,14 +70,25 @@
           class="font-size-14 ml-2 _text-decoration-none _hover-underline"
         >Clear all filters</a>
       </div>
-    </div>
+    </div> 
     
+    -->
+
+    <ATATLoader 
+      v-show="isLoading" 
+      loadingText="Loading your portfolios" 
+    />
+
+
     <div 
-      :class="{ 'mt-10' : !isHomeView }" 
       id="PortfolioCards" 
-      v-show="portfolioCardData.length" 
+      v-show="portfolioCardData.length && !isLoading" 
       :style="{ 'margin-bottom: 200px;' : !isHomeView }"
     >
+    <!-- ATAT TODO - add back to div above after search is reinstated
+      :class="{ 'mt-10' : !isHomeView }"  
+    -->
+
       <PortfolioCard
         v-for="(cardData, index) in portfolioCardData"
         :key="index"
@@ -83,7 +98,9 @@
         :isHaCCAdmin="isHaCCAdmin"
         @leavePortfolio="leavePortfolio"
         :isHomeView="isHomeView"
+        :isProdEnv="isProdEnv"
       />
+      <!-- ATAT TODO - remove isProdEnv when merged to develop -->
 
       <div class="_table-pagination mt-5" 
         v-show="showPagination"
@@ -117,6 +134,7 @@ import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
 
+import ATATLoader from "@/components/ATATLoader.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import ATATSearch from "@/components/ATATSearch.vue"
 import ATATSelect from "@/components/ATATSelect.vue"
@@ -147,6 +165,7 @@ import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
+    ATATLoader,
     ATATNoResults,
     ATATSearch,
     ATATSelect,
@@ -159,6 +178,9 @@ export default class PortfoliosSummary extends Vue {
   @Prop({ default: "ALL" }) public activeTab!: "ALL" | "ACTIVE" | "PROCESSING";
   @Prop({ default: false }) public isHomeView?: boolean;
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
+  @Prop({ default: true}) public isProdEnv!: boolean;
+  // @PropSync("isLoadingPortfolios") public _isLoadingPortfolios!: boolean;
+  // public isLoadingPortfolios = false;
   public isHaCCAdmin = false;
 
   public page = 1;
@@ -482,11 +504,12 @@ export default class PortfoliosSummary extends Vue {
       this.portfolioCardData.push(cardData);
       this.isLoading = false;
       this.paging = false;
-      this. isSearchSortFilter = false;
+      this.isSearchSortFilter = false;
     });
 
     // ATAT TODO - future ticket - set isHaCCAdmin value with data from backend when implemented
     this.isHaCCAdmin = true;
+
   }
 }
 </script>

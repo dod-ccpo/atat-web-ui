@@ -93,11 +93,9 @@ import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
-import { scrollToId } from "@/helpers";
-
 import AcquisitionPackage from "@/store/acquisitionPackage";
+
 import { UserDTO } from "@/api/models";
-// import UserStore from "@/store/user";
 import CurrentUserStore from "@/store/user";
 import PortfolioStore from "@/store/portfolio";
 import acquisitionPackage from "@/store/acquisitionPackage";

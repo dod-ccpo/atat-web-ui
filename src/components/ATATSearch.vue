@@ -228,13 +228,13 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    this.showLoader = true;
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
     this.showHelpText = false;
     
     if(this.searchType === "EDA"){
       try {
+        this.showLoader = true;
         await PortfolioStore.reset();
         const response = await api.edaApi.search(this._value);
         if (response.success !== undefined && !response.success) {
@@ -254,6 +254,7 @@ export default class ATATSearch extends Vue {
       }
     } else if (this.searchType === "G-Invoicing") {
       try {
+        this.showLoader = true;
         const gInvoicingResponse = await api.gInvoicingApi.search(this._value);
         if (gInvoicingResponse.valid){
           this.showSuccessAlert = true;

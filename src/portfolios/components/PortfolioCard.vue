@@ -37,28 +37,28 @@
         <div class="card-header flex-grow-1">
           <!-- 
           ----------------------------------------------------------
-            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
+            -- ATAT TODO -  remove isProdEnv condition after merging into develop -- 
           ----------------------------------------------------------
-          <a
+          -->
+          <a v-if="!isProdEnv"
             :id="'PortfolioName' + index"
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _portfolio-name"
             @click="cardMenuClick(portfolioCardMenuItems[0])"
-          > -->
-          <span class="h3 text-base-darker d-flex align-center _portfolio-name">
+          > 
             {{ cardData.title }}
-            <ATATSVGIcon 
-              v-if="cardData.isManager"
-              name="manageAccount"
-              width="20"
-              height="17"
-              color="base"
-              class="ml-3"
+            <ATATSVGIcon v-if="cardData.isManager"
+              name="manageAccount" width="20" height="17" color="base" class="ml-3"
+            />
+          </a>
+          <span v-else class="h3 text-base-darker d-flex align-center _portfolio-name">
+            {{ cardData.title }}
+            <ATATSVGIcon v-if="cardData.isManager"
+              name="manageAccount" width="20" height="17" color="base" class="ml-3"
             />
           </span>
 
-          <!-- </a> -->
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
           <v-chip
@@ -167,15 +167,17 @@
 
     <!-- 
       ------------------------------------------------------------
-      -- ATAT TODO -  UNHIDE MEATBALL when Portfolio Mgmt added -- 
+      -- ATAT TODO -  remove isProdEnv condition after merging into develop -- 
       ------------------------------------------------------------
-      <ATATMeatballMenu 
+    -->
+    <ATATMeatballMenu 
+      v-if="!isProdEnv"
       :id="'PortfolioCardMenu' + index"
       :left="true"
       :index="index"
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
-    /> -->
+    />
 
     <LeavePortfolioModal
       :showModal.sync="showLeavePortfolioModal" 
@@ -214,6 +216,7 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
   @Prop({ default: false }) public isHomeView?: boolean;
+  @Prop({ default: true}) public isProdEnv!: boolean;
 
   public showLeavePortfolioModal = false;
 
