@@ -548,8 +548,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
-    debugger;
-    // ACQUISITION PACKAGE STORE
     const currentUser = await UserStore.getCurrentUser();
     await this.doSetCurrentUser(currentUser);
 
@@ -1027,7 +1025,7 @@ export class AcquisitionPackageStore extends VuexModule {
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
-      debugger;
+
       if (!this.currentUser) {
         await this.setCurrentUser();
       }  
@@ -1382,8 +1380,6 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-    debugger;
-    // ACQUISITION PACKAGE STORE
     const loggedInUser = await UserStore.getCurrentUser();
 
     if (loggedInUser && loggedInUser.user_name) {

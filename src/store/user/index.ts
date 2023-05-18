@@ -60,8 +60,6 @@ export class UserStore extends VuexModule {
 
   @Action({rawError: true})
   public async resetUser(): Promise<void> {
-    debugger;
-    // USER STORE
     this.setInitialized(false);
     sessionStorage.removeItem(ATAT_USER_KEY);
     this.setCurrentUser({});
@@ -74,8 +72,6 @@ export class UserStore extends VuexModule {
 
   @Action({rawError: true})
   public async getCurrentUser(): Promise<UserDTO> {
-    debugger;
-    // USER STORE
     await this.ensureInitialized();
     return this.currentUser as UserDTO;
   }
@@ -134,7 +130,6 @@ export class UserStore extends VuexModule {
     this.currentUserPackageCount = count;
   }
   public get getCurrentUserPackageCount(): number {
-    debugger;
     return this.currentUserPackageCount;
   }
   public get getUserHasPackages(): boolean {
@@ -143,7 +138,6 @@ export class UserStore extends VuexModule {
  
   @Action({rawError: true})
   public async setUserPortfolioCount(): Promise<void> {
-    debugger;
     let query = "portfolio_statusINPROCESSING,PROVISIONING_ISSUE,ACTIVE,ARCHIVED";
     const userQuery = await PortfolioSummary.getMandatorySearchParameterQuery();
     query += userQuery;
@@ -158,7 +152,6 @@ export class UserStore extends VuexModule {
     return this.currentUserPortfolioCount;
   }
   public get getUserHasPortfolios(): boolean {
-    debugger;
     return this.currentUserPortfolioCount > 0;
   }
 
@@ -170,10 +163,7 @@ export class UserStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-    debugger;
-    // USER STORE
-
-    if(this.initialized)
+    if (this.initialized)
       return;
 
     const sessionRestored = retrieveSession(ATAT_USER_KEY);

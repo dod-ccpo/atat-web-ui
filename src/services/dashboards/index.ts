@@ -222,8 +222,6 @@ export class DashboardService {
       return query;
     }, "");
     
-    debugger;
-
     const aggregateRequestConfig: AxiosRequestConfig = {
       params: {
         sysparm_sum_fields: "funds_obligated,funds_total",

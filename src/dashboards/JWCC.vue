@@ -509,8 +509,6 @@ export default class JWCCDashboard extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger;
-
     const data = await this.dashboardService.getTotals([
       "3000000000000",
       // '9999999999999',

@@ -49,13 +49,12 @@
 
           <ExistingUser 
             v-else 
-            class="mt-8" 
+            class="mt-5" 
             @startNewAcquisition="startNewAcquisition" 
             @openTOSearchModal="openSearchTOModal"
             @startProvisionWorkflow="startProvisionWorkflow"
 
           />      
-            <!-- @allPackagesCleared="allPackagesCleared" -->
         </div>
 
         <div class="bg-white">
@@ -138,8 +137,6 @@ export default class Home extends Vue {
   }
 
   public get isNewUser(): boolean {
-    debugger;
-    // HOME
     return !this.userHasPackages && !this.userHasPortfolios;
   } 
   public get userHasPackages(): boolean {
@@ -148,12 +145,6 @@ export default class Home extends Vue {
   public get userHasPortfolios(): boolean {
     return CurrentUserStore.getUserHasPortfolios;
   }
-
-  // public allPackagesCleared(): void {
-  //   this.userHasPackages = false;
-  // }
-
-  // private currentUser: UserDTO = {};
 
   public get currentUser(): UserDTO {
     return CurrentUserStore.currentUser;
@@ -195,9 +186,7 @@ export default class Home extends Vue {
 
   public async mounted(): Promise<void> {
     this.isLoading = true;
-    debugger;
-    // HOME
-
+    
     await AcquisitionPackage.reset();
     await AcquisitionPackage.setHideNavigation(false);
 
@@ -209,7 +198,7 @@ export default class Home extends Vue {
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     await PortfolioStore.setShowTOPackageSelection(true);
-    
+
     this.isLoading = false;
   }
 

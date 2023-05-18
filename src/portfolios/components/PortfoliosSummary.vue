@@ -388,8 +388,6 @@ export default class PortfoliosSummary extends Vue {
   public currentUserSysId = "";
 
   public async loadPortfolioData(): Promise<void> {
-    debugger;
-    // PORTFOLIO SUMMARY
     const currentUser = await CurrentUserStore.getCurrentUser();
 
     this.currentUserSysId = currentUser.sys_id as string;

@@ -120,9 +120,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   @Action({rawError: true})
   public async getMandatorySearchParameterQuery(searchDTO?: AcquisitionPackageSummarySearchDTO):
     Promise<string> {
-    // EJY get query here
-    debugger;
-    // ACQ PKG SUMMARY STORE -- USE A GETTER
     const currentUser = await CurrentUserStore.getCurrentUser();
     const userSysId = currentUser.sys_id;
 
@@ -131,28 +128,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     if (searchDTO) query = query + "^ORDERBY" + searchDTO.sort;
     return query;
   }
-
-  /**
-   * Returns the count of all acquisition packages WITHOUT using the offset and limit parameters BUT
-   * using all the other search parameters. This count is expected to be used for pagination.
-   *
-   * TODO: this call can be avoided if server exposes "x-Total-Count" from the backend
-   */
-  // @Action({rawError: true})
-  // private async getAcquisitionPackageSummaryCount(searchQuery: string): Promise<number> {
-  //   await this.ensureInitialized();
-  //   const acquisitionPackageSummaryListRequestConfig: AxiosRequestConfig = {
-  //     params: {
-  //       sysparm_fields: 'package_status',
-  //       sysparm_query: searchQuery
-  //     }
-  //   };
-  //   // EJY HERE HERE
-  //   const acquisitionPackageList = await api.acquisitionPackagesSummaryTable
-  //     .getQuery(acquisitionPackageSummaryListRequestConfig);
-  //   debugger;
-  //   return acquisitionPackageList.length;
-  // }
 
   /**
    * Returns a list of all acquisition packages that match the search query.
@@ -202,7 +177,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   @Action({rawError: true})
   public async searchAcquisitionPackageSummaryList(searchDTO: AcquisitionPackageSummarySearchDTO):
     Promise<AcquisitionPackageSummaryMetadataAndDataDTO> {
-    debugger;
     try {
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
       let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO);

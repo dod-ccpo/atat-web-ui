@@ -116,10 +116,8 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   public async getMandatorySearchParameterQuery(searchDTO?: PortfolioSummarySearchDTO):
     Promise<string> {
-    debugger;
-    // PORTFOLIO SUMMARY
-    // const currentUser = await CurrentUserStore.getCurrentUser();
-    const currentUser = CurrentUserStore.getCurrentUserData;
+    const currentUser = await CurrentUserStore.getCurrentUser();
+    // const currentUser = CurrentUserStore.getCurrentUserData;
     debugger;
     const userSysId = currentUser.sys_id;
     let query = "";
@@ -133,25 +131,6 @@ export class PortfolioSummaryStore extends VuexModule {
     query = query + "^portfolio_status!=ARCHIVED";
     if (searchDTO && searchDTO.sort) query = query + "^ORDERBY" + searchDTO.sort;
     return query;
-  }
-
-  /**
-   * Returns the count of all portfolios WITHOUT using the offset and limit parameters BUT
-   * using all the other search parameters. This count is expected to be used for pagination.
-   *
-   * ATAT TODO: this call can be avoided if server exposes "x-Total-Count" from the backend
-   */
-  @Action({rawError: true})
-  public async getPortfolioSummaryCount(searchQuery: string): Promise<number> {
-    await this.ensureInitialized();
-    const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
-      params: {
-        sysparm_fields: 'name,description',
-        sysparm_query: searchQuery
-      }
-    };
-    const portfolioList = await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
-    return portfolioList.length;
   }
 
   /**
@@ -493,7 +472,8 @@ export class PortfolioSummaryStore extends VuexModule {
         searchQuery = optionalSearchQuery + searchQuery;
       }
 
-      const portfolioSummaryCount = await this.getPortfolioSummaryCount(searchQuery);
+      const portfolioSummaryCount = CurrentUserStore.getCurrentUserPortfolioCount;
+
       let portfolioSummaryList: PortfolioSummaryDTO[];
       if (portfolioSummaryCount > 0) {
         portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});

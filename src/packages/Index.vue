@@ -235,10 +235,7 @@ export default class Packages extends Vue {
     this.page = !this.paging ? 1 : this.page;
     this.offset = (this.page - 1) * this.recordsPerPage;
     this.searchDTO.offset = this.offset;
-
-    debugger;
-    // packages/Index.vue
-    
+  
     const packageResults = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO)
     this.packageData = packageResults?.acquisitionPackageSummaryList || [];
