@@ -17,6 +17,7 @@ const actionHandlerNames = {
   clearCurrentContractInfo: "clearCurrentContractInfo",
   confirmDeleteTravelAll: "confirmDeleteTravelAll",
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
+  writeOwnMarketResearchDetails: "writeOwnMarketResearchDetails",
   WriteOwnBarriers: "WriteOwnBarriers",
   openTOSearchModal: "openTOSearchModal",
   startProvisioning: "startProvisioning",
@@ -31,6 +32,7 @@ const actions =  {
   [actionHandlerNames.clearCurrentContractInfo]: clearCurrentContractInfo,
   [actionHandlerNames.confirmDeleteTravelAll]: confirmDeleteTravelAll,
   [actionHandlerNames.writeOwnSoleSourceCause]: writeOwnSoleSourceCause,
+  [actionHandlerNames.writeOwnMarketResearchDetails]: writeOwnMarketResearchDetails,
   [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
   [actionHandlerNames.openTOSearchModal]: openTOSearchModal,
   [actionHandlerNames.startProvisioning]: startProvisioning,
@@ -74,6 +76,20 @@ async function WriteOwnBarriers() {
     replace: true
   }).catch(() => console.log("avoiding redundant navigation"));
 }
+
+async function writeOwnMarketResearchDetails() {
+  // eslint-disable-next-line camelcase
+  const fairOpp: FairOpportunityDTO = { research_write_own_explanation: "YES" };
+  await AcquisitionPackage.setFairOpportunity(fairOpp);
+  router.push({
+    name: routeNames.MarketResearchReview,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));
+}
+
 
 function clearCurrentContractInfo() {
   AcquisitionPackage.clearCurrentContractInfo();
