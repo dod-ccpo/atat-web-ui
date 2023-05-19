@@ -899,7 +899,7 @@ export interface UserSearchResultDTO extends BaseTableDTO {
   name?: string;
   email?: string;
   phone?: string;
-  department?: DisplayColumn;
+  company?: string;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{

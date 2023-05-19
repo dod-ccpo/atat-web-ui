@@ -185,14 +185,19 @@ export default class ContributorInviteModal extends Vue {
 
   @Watch("searchString")
   public async searchStringChanged(newVal: string, oldVal: string): Promise<void> {
-    if (newVal !== oldVal && newVal.trim().length > 2) {
-      this.searchObj.noResults = false;
-      this.searchObj.alreadyInvited = false
-      this.onUserSearchValueChange(newVal);
+    console.log("newVal:" + newVal)
+    this.searchObj.noResults = false;
+    this.searchObj.alreadyInvited = false
+    this.debouncedSearch(newVal, oldVal)
+  }
+
+  public debouncedSearch = _.debounce(async (newVal: string, oldVal: string) => {
+    if (newVal && newVal !== oldVal && newVal.trim().length > 2 && !this.isSearching) {
+      await this.onUserSearchValueChange(newVal);
     } else {  
       await this.clearResults();
     }
-  }
+  }, 1000)
 
   public async clearResults(): Promise<void> {
     this.searchObj.isLoading = false;
@@ -204,13 +209,13 @@ export default class ContributorInviteModal extends Vue {
    * Starts searching 1 second after user pauses when entering a search value.
    * Only searches if there are at least 3 characters in the newValue
    */
-  public onUserSearchValueChange = _.debounce(async (newValue: string) => {
-    if (!this.isSearching) {
+  public async onUserSearchValueChange(searchStr: string): Promise<void> {
+    if (!this.isSearching && searchStr) {
       await UserManagement.doResetAbortController();
-      this.isSearching = true;
       await this.clearResults();
+      this.isSearching = true;
       this.searchObj.isLoading = true;
-      const response = await UserManagement.searchUserByNameAndEmail(newValue)
+      const response = await UserManagement.searchUserByNameAndEmail(searchStr)
       this.searchObj.searchResults = response.map(userSearchDTO => {
         return {
           sys_id: userSearchDTO.sys_id,
@@ -219,7 +224,7 @@ export default class ContributorInviteModal extends Vue {
           fullName: userSearchDTO.name,
           email: userSearchDTO.email,
           phoneNumber: userSearchDTO.phone,
-          agency: userSearchDTO.department?.display_value
+          agency: userSearchDTO.company
         }
       });
       this.searchObj.noResults = this.searchObj.searchResults.length === 0;
@@ -231,9 +236,11 @@ export default class ContributorInviteModal extends Vue {
       this.searchObj.noResults = false;
       this.searchObj.alreadyInvited = false;         
       this.isSearching = false;
-      this.onUserSearchValueChange(newValue);
+      if (searchStr) {
+        this.onUserSearchValueChange(searchStr);
+      }
     }
-  }, 1000)
+  }
 
   public removeSelectedUser(index: number): void {
     this.userSelectedList.splice(index, 1);

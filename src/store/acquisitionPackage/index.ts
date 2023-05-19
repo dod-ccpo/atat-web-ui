@@ -431,9 +431,7 @@ export class AcquisitionPackageStore extends VuexModule {
     // can be used for single or multiple - send csv string for multiple
     const sysIds = contributorSysIds.split(",");
     sysIds.forEach(async sysId => {
-      const contributor = await UserStore.getUserRecord(
-        {s: sysId, field: "sys_id"}
-      );        
+      const contributor = await UserStore.getUserRecord(sysId);        
       if (contributor) {
         this.doAddPackageContributor(contributor);
       }
@@ -1036,9 +1034,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(22);
       if (acquisitionPackage.sys_created_by) {
         const creator 
-          = await UserStore.getUserRecord(
-            {s: acquisitionPackage.sys_created_by, field: "user_name"}
-          );
+          = await UserStore.getUserRecord(acquisitionPackage.sys_created_by);
         this.doSetPackageCreator(creator);
         this.setPackagePercentLoaded(25);
       }
@@ -1046,9 +1042,7 @@ export class AcquisitionPackageStore extends VuexModule {
         // there should only be one mission owner, but the field in servicenow is a list,
         // to be on the safe side, split the csv string of sysIds, take the first
         const missionOwnerSysId = (acquisitionPackage.mission_owners.split(","))[0];
-        const missionOwner = await UserStore.getUserRecord(
-          {s: missionOwnerSysId, field: "sys_id"}
-        );      
+        const missionOwner = await UserStore.getUserRecord(missionOwnerSysId);      
         this.doSetPackageMissionOwner(missionOwner);  
         this.setPackagePercentLoaded(28);
       }
@@ -1372,10 +1366,8 @@ export class AcquisitionPackageStore extends VuexModule {
     ) as string;
     const loggedInUser = await UserStore.getCurrentUser();
 
-    if (loggedInUser && loggedInUser.user_name) {
-      const creator = await UserStore.getUserRecord(
-        {s: loggedInUser.user_name, field: "user_name"}
-      );      
+    if (loggedInUser && loggedInUser.sys_id) {
+      const creator = await UserStore.getUserRecord(loggedInUser.sys_id);      
       this.doSetPackageCreator(creator);
       this.doSetPackageMissionOwner(creator);
     }
