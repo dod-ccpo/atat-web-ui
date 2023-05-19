@@ -158,22 +158,18 @@ export class UserStore extends VuexModule {
       return;
 
     const sessionRestored = retrieveSession(ATAT_USER_KEY);
+    const userId = sessionStorage.getItem('userId');
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
       this.setInitialized(true);
-    } else {
-      if(sessionStorage.getItem('userId')){
-        const response = await api.userTable.search(
-          sessionStorage.getItem('userId') as string
-        );
-
-        if (response) {
-          const userObj: UserDTO = response[0];
-          this.setCurrentUser(userObj);
-          storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
-          this.setInitialized(true);
-        }
-      }  
+    } else if (userId) {
+      const response = await api.userTable.search(userId);
+      if (response) {
+        const userObj: UserDTO = response[0];
+        this.setCurrentUser(userObj);
+        storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
+        this.setInitialized(true);
+      }
     }    
   }
 
