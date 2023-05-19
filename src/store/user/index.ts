@@ -184,8 +184,8 @@ export class UserStore extends VuexModule {
       const response = await api.userTable.search(searchStr);
       if (response.length) {
         const userRecord: UserDTO = convertColumnReferencesToValues(response[0]);
-        user.firstName = userRecord.first_name;
-        user.lastName = userRecord.last_name;
+        user.firstName = userRecord.first_name?.trim();
+        user.lastName = userRecord.last_name?.trim();
         user.salutation = userRecord.title?.trim();
         user.fullName = user.salutation 
           ? user.salutation + " " + user.firstName + " " + user.lastName
