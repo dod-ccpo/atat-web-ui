@@ -220,14 +220,16 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
           await AcquisitionPackage.setFairOpportunity(fairOpportunity);
         }
       } else if (savedPOCType === "NEW") {// user has changed from NEW to other type
-        await ContactData.deleteContactBySysId(
-            this.certificationPOCContactDTO.sys_id as string);
+        // should not delete the contact because the contact could have been linked to others.
         fairOpportunity[this.POCTypePropName] = this.certificationPOCType;
         fairOpportunity[this.POCPropName] = "";
         await AcquisitionPackage.setFairOpportunity(fairOpportunity);
       } else { // user has changed across one of the 3 existing contact types (NOT NEW)
         if (this.hasFairOpportunityDataChanged()) {
           fairOpportunity[this.POCTypePropName] = this.certificationPOCType;
+          const selectedOption = this.certificationPOCTypeOptions.find(certOption =>
+            certOption.value === this.certificationPOCType) as RadioButton;
+          fairOpportunity[this.POCPropName] = selectedOption.id
           await AcquisitionPackage.setFairOpportunity(fairOpportunity)
         }
       }
@@ -243,19 +245,19 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
   public initializeCertificationPOCTypeOptions() {
     this.certificationPOCTypeOptions.push(
       {
-        id: this.POCType + "PrimaryPOC",
+        id: this.pocPrimary.sys_id as string,
         label: this.pocPrimary.first_name as string + " " + this.pocPrimary.last_name,
         value: "PRIMARY"
       });
     this.certificationPOCTypeOptions.push(
       {
-        id: this.POCType + "CorPOC",
+        id: this.pocCor.sys_id as string,
         label: this.pocCor.first_name as string + " " + this.pocCor.last_name,
-        value: "COR"
+        value: "COR",
       });
     if (this.pocAcor) {
       this.certificationPOCTypeOptions.push({
-        id: this.POCType + "AcorPOC",
+        id: this.pocAcor.sys_id as string,
         label: this.pocAcor.first_name as string + " " + this.pocAcor.last_name,
         value: "ACOR"
       })
