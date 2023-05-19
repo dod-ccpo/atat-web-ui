@@ -69,9 +69,6 @@ export class ClassificationRequirementsStore extends VuexModule {
     }
   }
 
-
-
-
   @Action({ rawError: true })
   public async setSelectedClassificationLevels(
     value: SelectedClassificationLevelDTO[]
@@ -433,22 +430,24 @@ export class ClassificationRequirementsStore extends VuexModule {
   public async removeCdsSolution(): Promise<void> {
 
     const cdsIGCESysId = await this.getCDSInIGCEEstimateTable(this.cdsSolution?.sys_id as string)
-    await this.deleteCDSInIGCEEstimateTable(cdsIGCESysId)
+    if(cdsIGCESysId != ""){
+      await this.deleteCDSInIGCEEstimateTable(cdsIGCESysId)
 
-    const cdsSolution: CrossDomainSolution = {
-      crossDomainSolutionRequired: "NO",
-      entireDuration: "",
-      anticipatedNeedUsage: "",
-      solutionType: [],
-      projectedFileStream: "",
-      selectedPeriods: [""]
+      const cdsSolution: CrossDomainSolution = {
+        crossDomainSolutionRequired: "NO",
+        entireDuration: "",
+        anticipatedNeedUsage: "",
+        solutionType: [],
+        projectedFileStream: "",
+        selectedPeriods: [""]
 
+      }
+      await this.setCdsSolution(cdsSolution)
+      const updateIGCE: IgceEstimateDTO[] = IGCEStore.igceEstimateList.filter( 
+        estimate => (estimate.title as string).indexOf("CDS") === -1
+      )
+      await IGCEStore.setIgceEstimate(updateIGCE)
     }
-    await this.setCdsSolution(cdsSolution)
-    const updateIGCE: IgceEstimateDTO[] = IGCEStore.igceEstimateList.filter( 
-      estimate => (estimate.title as string).indexOf("CDS") === -1
-    )
-    await IGCEStore.setIgceEstimate(updateIGCE)
   }
 
   @Action({rawError: true})
@@ -458,8 +457,13 @@ export class ClassificationRequirementsStore extends VuexModule {
         sysparm_query: "cross_domain_solution.sys_idSTARTSWITH" + sys_id
       }
     }
-    const cdsRecordInIGCE = await api.igceEstimateTable.getQuery(requestConfig);
-    return cdsRecordInIGCE[0].sys_id as string;
+    try{
+      const cdsRecordInIGCE = await api.igceEstimateTable.getQuery(requestConfig);
+      return cdsRecordInIGCE[0].sys_id as string;
+    }
+    catch {
+      return ""
+    }
   }
 
   @Action({rawError: true})
@@ -593,23 +597,8 @@ export class ClassificationRequirementsStore extends VuexModule {
       const classToBeRemoved = await this.getClassLevelRecord(classToBeDeleted)
       const currentDomainPairs = JSON.parse(
         cdsSolution.traffic_per_domain_pair)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const newDomainPairs:Array<any> = []
-      
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      currentDomainPairs.forEach((item:any) => {
-        const classification: Array<string> = item.type.split('_')
-        let removeItem = false
+      const newDomainPairs = await this.filterDomainPairs(currentDomainPairs, classToBeRemoved)
 
-        classification.forEach((value) => {
-          if(value === classToBeRemoved.classification){
-            removeItem = true
-          }
-        })
-        if(!removeItem){
-          newDomainPairs.push(item)
-        }
-      })
       if(newDomainPairs.length > 0){
         cdsSolution.traffic_per_domain_pair = JSON.stringify(newDomainPairs)
             
@@ -623,6 +612,39 @@ export class ClassificationRequirementsStore extends VuexModule {
       return true
     } catch {
       return false
+    }
+  }
+
+  public async filterDomainPairs(
+    domainPairs: Array<any>, 
+    classToBeDeleted: ClassificationLevelDTO
+  ): Promise<Array<any>>{
+    const newDomainPairs:Array<any> = []
+      
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    domainPairs.forEach((item:any) => {
+      const classification: Array<string> = item.type.split('_')
+      let removeItem = false
+
+      classification.forEach((value) => {
+        if(value === classToBeDeleted.classification){
+          removeItem = true
+        }
+      })
+      if(!removeItem){
+        newDomainPairs.push(item)
+      }
+    })
+    return newDomainPairs
+  }
+
+  @Action({rawError: true})
+  public async updateDomainPairsInIGCEEstimateTable(domainPairs: Array<any>):Promise<void>{
+    const cdsInIGCESysId = await this.getCDSInIGCEEstimateTable(
+      this.cdsSolution?.sys_id as string)
+
+    if(cdsInIGCESysId != ""){
+      await this.updateCDSSolutionInIGCEEstimateTable(domainPairs)
     }
   }
   /**
@@ -671,7 +693,7 @@ export class ClassificationRequirementsStore extends VuexModule {
       updatedDescription = updatedDescription.substring(0,updatedDescription.lastIndexOf(','))
       await api.igceEstimateTable.update(cdsInIGCESysId, {description:updatedDescription})
     } catch (error) {
-      throw new Error("Error updating record in IGCE to display " + domainPairs )
+      throw new Error("Error updating record in IGCE to display " + domainPairs + ". " + error )
     }
   }
 
