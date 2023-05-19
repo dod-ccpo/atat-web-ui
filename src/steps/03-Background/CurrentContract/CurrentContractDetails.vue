@@ -73,7 +73,7 @@
                 placeHolder="MM/DD/YYYY"
                 class="mr-5"
                 :showErrors="false"
-                @isDatePickerValid="validateStartDatePicker"
+                @hasErrorMessages="setStartDateErrorMessages"
                 :rules="[
                   $validators.required(
                     'Please enter your PoP start date.'
@@ -92,8 +92,8 @@
                 ref="expirationDatePicker"
                 label="Expiration date" 
                 :min="isoFormat(contractOrderStartDate, true)"
-                :max="isoFormat('2028-06-30', true)"
-                @isDatePickerValid="validateExpirationDatePicker"
+                :max="JWCCMaxDate"
+                @hasErrorMessages="setExpirationDateErrorMessages"
                 placeHolder="MM/DD/YYYY"
                 :showErrors="false"
                 :rules="[
@@ -125,7 +125,7 @@
             <IncumbentContractorName 
             id="IncumbentContractorName" :rules="[
                 $validators.required(
-                  'Please enter the incumbent contractor’s name.'
+                  'Please enter the contractor’s name.'
                 ),
               ]" 
               :value.sync="incumbentContractorName" 
@@ -136,7 +136,7 @@
                 legend="What business size is this contractor?"
                 classes="copy-max-width mt-3" 
                 :businessSize.sync="businessSize"
-                :rules="[$validators.required('Please select an option')]">
+                :rules="[$validators.required('Please select a business size.')]">
               </BusinessSize>
 
           </div>
@@ -161,20 +161,21 @@
             <TaskOrderNumber id="TaskDeliveryOrderNumber" 
             :value.sync="taskDeliveryOrderNumber" 
             :optional="true"
-              class="_input-max-width mb-10" 
-              label="Task/Delivery order number" 
-              tooltipText="Leave this field empty if your previous acquisition
-              was only a contract, not an order placed under a contract." />
+            class="_input-max-width mb-10" 
+            label="Task/Delivery order number" 
+            tooltipText="Leave this field empty if your previous acquisition
+            was only a contract, not an order placed under a contract." />
 
-            <ATATDatePicker id="Expiration" :rules="[
+            <ATATDatePicker id="Expiration" 
+              :rules="[
                 $validators.required(
                   'Please enter your contract/order expiration date.'
                 ),
                 $validators.isDateValid('Please enter a valid date.'),
               ]" 
               :value.sync="contractOrderExpirationDate" 
-              abel="Contract/Order expiration date" 
-              max="2024-01-01"
+              label="Contract/Order expiration date" 
+              :max="JWCCMaxDate"
               placeHolder="MM/DD/YYYY" 
               tooltipText="Use the period of performance end date for your task order. If you
                   do not have a task order, use your contract end date." />
@@ -198,11 +199,12 @@ import LevelOfCompetition from "@/steps/03-Background/components/LevelOfCompetit
 import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 import AcquisitionPackage, { StoreProperties, } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { CurrentContractDTO } from "@/api/models";
+import { CurrentContractDTO, ReferenceColumn } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { add, format, formatISO, isValid } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 import _ from "lodash";
+import { thisExpression } from "@babel/types";
 
 @Component({
   components: {
@@ -231,38 +233,45 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     };
   };
 
-  private incumbentContractorName =
-    AcquisitionPackage.currentContract?.incumbent_contractor_name || "";
+  private currentContracts:CurrentContractDTO[] = [];
+  private currentContract:CurrentContractDTO = {};
 
-  private contractNumber =
-    AcquisitionPackage.currentContract?.contract_number || "";
+  private incumbentContractorName = "";
+  private contractNumber = "";
 
   private taskDeliveryOrderNumber =
-    AcquisitionPackage.currentContract?.task_delivery_order_number || "";
+    this.currentContract.task_delivery_order_number || "";
   
   private contractOrderStartDate =
-    AcquisitionPackage.currentContract?.contract_order_start_date || "";
+    this.currentContract.contract_order_start_date || "";
 
   private contractOrderExpirationDate =
-    AcquisitionPackage.currentContract?.contract_order_expiration_date || "";
+    this.currentContract.contract_order_expiration_date || "";
 
   private competitiveStatus =
-    AcquisitionPackage.currentContract?.competitive_status || "";
+    this.currentContract.competitive_status || "";
 
   private businessSize =
-    AcquisitionPackage.currentContract?.business_size || "";
+    this.currentContract.business_size || "";
   
   private startDPSharedErrorMessages:string[] = [];
   private expirationDPSharedErrorMessages: string[] = [];
+  private isDatePickersEmpty = false;
 
-  private validateStartDatePicker(value:string[]): void{
+  private JWCCMaxDate = "2028-06-30"
+
+  private setStartDateErrorMessages(value:string[]): void{
     this.removeSharedErrorMessages(true);
-    this.startDPSharedErrorMessages = value;
+    this.expirationDPSharedErrorMessages = this.isDatePickersEmpty 
+      ? ["Please enter your PoP start and expiration dates."]
+      : value;
   };
 
-  private validateExpirationDatePicker(value:string[]): void{
+  private setExpirationDateErrorMessages(value:string[]): void{
     this.removeSharedErrorMessages(false);
-    this.expirationDPSharedErrorMessages = value;
+    this.expirationDPSharedErrorMessages = this.isDatePickersEmpty 
+      ? ["Please enter your PoP start and expiration dates."]
+      : value;
   }
 
 
@@ -272,16 +281,23 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
     const expirationTextBox = (this.$refs.expirationDatePicker as unknown as ATATDatePicker)
       .$refs["atatDatePicker"];
-
-    if (isStart){
-      expirationTextBox.validate();
-      expirationTextBox.errorBucket = [];
-    } else {
+    
+    this.isDatePickersEmpty = startTextBox.value === "" && expirationTextBox.value === "";
+    
+    if (this.isDatePickersEmpty){
       startTextBox.validate();
-      startTextBox.errorBucket = [];
+      expirationTextBox.validate();
+    } else {
+      if (isStart){
+        expirationTextBox.validate();
+        expirationTextBox.errorBucket = [];
+      } else {
+        startTextBox.validate();
+        startTextBox.errorBucket = [];
+      }
+      this.startDPSharedErrorMessages = [];
+      this.expirationDPSharedErrorMessages = [];
     }
-    this.startDPSharedErrorMessages = [];
-    this.expirationDPSharedErrorMessages = [];
   }
 
   private get isExceptiontoFairOpp(): boolean {
@@ -297,7 +313,9 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     const newDate = add (new Date(d), {
       days: isMin ? 1 : -1
     })
-    return formatISO(new Date(newDate), { representation: 'date' })
+    return dt !== "" 
+      ? formatISO(new Date(newDate), { representation: 'date' }) 
+      : "";
   }
 
   private savedData = {
@@ -310,27 +328,37 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private get currentData(): CurrentContractDTO {
     return {
-      incumbent_contractor_name: this.incumbentContractorName,
-      contract_number: this.contractNumber,
+      incumbent_contractor_name: this.currentContract.incumbent_contractor_name || "",
+      contract_number: this.currentContract.contract_number || "",
       task_delivery_order_number: this.taskDeliveryOrderNumber,
       contract_order_expiration_date: this.contractOrderExpirationDate,
       contract_order_start_date: this.contractOrderStartDate,
       competitive_status: this.competitiveStatus,
       business_size: this.businessSize,
-      acquisition_package:AcquisitionPackage.packageId
+      instance_number: this.currentContract.instance_number,
+      sys_id: this.currentContract.sys_id
     };
   }
 
   public async mounted(): Promise<void> {
+    this.currentContracts = await AcquisitionPackage.currentContracts || [];
     await this.loadOnEnter();
   }
 
-  public async loadOnEnter(): Promise<void> {
-    const storeData = (await AcquisitionPackage.loadData<CurrentContractDTO>({
-      storeProperty: StoreProperties.CurrentContract,
-    })) as CurrentContractDTO;
+  public async loadContract(): Promise<void>{
+    // if (this.isExceptiontoFairOpp){
 
-    if (storeData) {
+    // } else {
+    this.currentContract = this.currentContracts[0];
+    // }
+
+
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    await this.loadContract();    
+    debugger;
+    if (this.currentContract) {
       const keys: string[] = [
         "incumbent_contractor_name",
         "contract_number",
@@ -338,11 +366,14 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         "contract_order_expiration_date",
         "contract_order_start_date",
         "competitive_status",
-        "business size"
+        "business_size",
+        "instance_number",
+        "sys_id",
       ];
-      keys.forEach((key: string) => {
-        if (Object.prototype.hasOwnProperty.call(storeData, key)) {
-          this.savedData[key] = storeData[key];
+      keys.forEach((key) => {
+        if (Object.prototype.hasOwnProperty.call(
+          this.currentContract, key as keyof CurrentContractDTO)){
+          this.savedData[key] = this.currentContract[key as keyof CurrentContractDTO];
         }
       });
     } else {
@@ -353,15 +384,13 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<CurrentContractDTO>({
-          data: this.currentData,
-          storeProperty: StoreProperties.CurrentContract,
-        });
+        AcquisitionPackage.updateCurrentContracts(
+          this.currentData
+        )
       }
     } catch (error) {
       console.log(error);
     }
-
     return true;
   }
 

@@ -184,8 +184,11 @@ export class ValidationPlugin {
     message = message || `Invalid Date`;
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
-      const d = new Date(v);
-      return (d instanceof Date && !isNaN(d.getMilliseconds())) || message;
+      if (v !== ""){
+        const d = new Date(v);
+        return (d instanceof Date && !isNaN(d.getMilliseconds())) || message;
+      }
+      return true;
     };
   };
 

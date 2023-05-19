@@ -29,12 +29,11 @@
             :label="label"
           />
         </div>
-        <!-- :placeholder="placeHolder" -->
         <v-text-field
           ref="atatDatePicker"
           :id="id + 'DatePickerTextField'"
           :height="42"
-        
+          :placeholder="placeHolder"
           class="text-primary _input-max-width d-flex align-center"
           :hide-details="true"
           outlined
@@ -87,7 +86,6 @@
 <script lang="ts">
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Vue from "vue";
-import Inputmask from "inputmask";
 import { add, format, formatISO, isValid, parseISO } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -106,6 +104,7 @@ export default class ATATDatePicker extends Vue {
       errorBucket: string[]; 
       errorCount: number; 
       validate: () => boolean;
+      value: string;
     };
     atatDatePickerMenu: Vue & {
       save: (selectedDate: string) => Record<string, never>;
@@ -239,7 +238,7 @@ export default class ATATDatePicker extends Vue {
   private additionalValidateActions(): void{
     this.$refs.atatDatePicker.validate()
     this.$nextTick(()=>{
-      this.$emit("isDatePickerValid", this.$refs.atatDatePicker.errorBucket);
+      this.$emit("hasErrorMessages", this.$refs.atatDatePicker.errorBucket);
     })
   }
 
@@ -258,18 +257,17 @@ export default class ATATDatePicker extends Vue {
    */
 
   private dateInputMask() {
-    const elm = document.getElementById(this.id + "DatePickerTextField") as HTMLInputElement;
-    elm.value = "MM/DD/YYYY"
-    elm.addEventListener('keypress', (e: KeyboardEvent)=>{
+    const dp = document.getElementById(this.id + "DatePickerTextField") as HTMLInputElement;
+    dp.addEventListener('keypress', (e: KeyboardEvent)=>{
       if(Number.isNaN(parseInt(e.key))) {
         e.preventDefault();
       }
       
-      let len = elm.value.length;
+      const len = dp.value.length;
       switch(len){
       case 2:
       case 5:
-        elm.value += '/';
+        dp.value += '/';
         break;
       case 10:
         e.preventDefault();
@@ -281,49 +279,15 @@ export default class ATATDatePicker extends Vue {
   };
 
   /**
-   * mask input date text boxes with MM/DD/YYYY, min/max
-   */
-  private addMasks(): void {
-    [this.id + "DatePickerTextField"].forEach((tbId) => {
-      Inputmask({
-        alias: "datetime",
-        inputFormat: "mm/dd/yyyy",
-        placeholder: "MM/DD/YYYY",
-        outputFormat: "MM/DD/YYYY",
-        nullable: true,
-        min: this.getMDY(this.min),
-        max: this.getMDY(this.max),
-      }).mask(document.getElementById(tbId) as HTMLElement);
-    });
-  }
-
-  public getMDY(dateStr: string): string {
-    return dateStr.includes("-")
-      ? format(new Date(parseISO(dateStr)), "MM/dd/yyyy")
-      : dateStr;
-  }
-
-  /**
    * @date (string)
    * returns formatted date as yyyy-MM-dd if date isValid
    */
-  private reformatDate(date: string): string {
+  private reformatDate(d: string): string {
     let formattedDate = "";
-    // if (isValid(new Date(d))) {
-    //   formattedDate = d.includes("-")
-    //     ? format(new Date(d+'T00:00:00'), 'P')
-    //     : formatISO(new Date(d), { representation: 'date' })
-    if (isValid(new Date(date))) {
-      let month = "",
-        day = "",
-        year = "";
-      if (date.indexOf("-") > 0) {
-        [year, month, day] = date.split("-");
-        formattedDate = `${month}/${day}/${year}`;
-      } else if (date.indexOf("/") > 0) {
-        [month, day, year] = date.split("/");
-        formattedDate = `${year}-${month}-${day}`;
-      }
+    if (isValid(new Date(d))) {
+      formattedDate = d.includes("-")
+        ? format(new Date(d+'T00:00:00'), 'P')
+        : formatISO(new Date(d), { representation: 'date' })
     }
     return formattedDate;
   }
@@ -341,8 +305,11 @@ export default class ATATDatePicker extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatDatePicker.validate())
+    if(!this.$refs.atatDatePicker.validate()){
       this.setErrorMessage();
+      this.additionalValidateActions();
+      // this.$emit("hasErrorMessages", this.$refs.atatDatePicker.errorBucket);
+    }
   }
 
   /**
@@ -352,8 +319,8 @@ export default class ATATDatePicker extends Vue {
     return this.label !== "" ? "80" : "40";
   }
 
-  private setErrorMessage(): void {
-    this.errorMessages =  this.$refs.atatDatePicker.errorBucket;
+  private async setErrorMessage(): Promise<void> {
+    this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
   }
 
   public async setDateFromValue(): Promise<void> {
@@ -371,9 +338,6 @@ export default class ATATDatePicker extends Vue {
     await this.setDateFromValue();
     this.formatDateWatcher();
     this.dateInputMask();
-    // this.$nextTick(() => {
-    //this.addMasks();
-    // });
     this.removeErrors();
   }
 

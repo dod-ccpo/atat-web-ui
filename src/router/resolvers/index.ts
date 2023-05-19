@@ -184,8 +184,8 @@ export const CurrentContractRouteResolver = (current: string): string => {
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
-  const hasCurrentContract 
-    = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+  const hasCurrentContract = 
+    AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
   if (hasCurrentContract) {
     return routeNames.CurrentContractDetails;
   }
@@ -914,8 +914,8 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if (current === routeNames.DOWLandingPage) {
-    const hasCurrentContract 
-      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+    const hasCurrentContract = 
+      AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
     if (hasCurrentContract) {
       return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
         && CurrentEnvironment.currentEnvInstances.length > 0
