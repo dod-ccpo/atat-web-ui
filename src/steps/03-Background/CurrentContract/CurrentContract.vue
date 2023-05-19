@@ -58,6 +58,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     };
   }
 
+  private savedData = {
+    current_contract_exists: "",
+    acquisition_package: AcquisitionPackage.packageId
+  };
+
   private hasExceptionToFairOpportunity(): boolean {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
   }
@@ -74,8 +79,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       contract + ". Your current contract will serve as a background on multiple documents " +
       "within your final acquisition package, as applicable."
   }
-
-  private savedData: CurrentContractDTO = {};
 
   public async mounted(): Promise<void> {
     // if second option in step 2 Exception to Fair Opportunity is selected
@@ -96,9 +99,8 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     const storeData = await AcquisitionPackage.currentContracts
     console.log(storeData);
     if (storeData) {
-      this.savedData = {
-        current_contract_exists: this.doesCurrentContractExist(storeData)
-      }
+      this.savedData.current_contract_exists =
+        this.doesCurrentContractExist(storeData)
       this.currentContractExists = this.savedData.current_contract_exists as string;
     } else {
       AcquisitionPackage.setCurrentContract(this.currentData);
@@ -120,6 +122,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
+      debugger;
       if (this.hasChanged()) {
         let data = this.currentData;
         await AcquisitionPackage.clearCurrentContractInfo();

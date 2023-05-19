@@ -25,7 +25,7 @@
                   true
                 ),
               ]" 
-              :value.sync="contractNumber" 
+              :value.sync="currentContract.contract_number" 
               class="_input-max-width mb-9" 
               label="Contract number" 
               tooltipText="This is a 13-character alphanumeric value (no hyphens, dashes or spaces) 
@@ -33,7 +33,7 @@
 
             <TaskOrderNumber 
             id="TaskOrderNumber" 
-            :value.sync="taskDeliveryOrderNumber" 
+            :value.sync="currentContract.task_delivery_order_number" 
             :optional="true"
             class="_input-max-width mb-10" 
             label="Task order number" 
@@ -50,7 +50,7 @@
 
             <LevelOfCompetition legend="What level of competition was used in this procurement?"
               classes="copy-max-width mb-4 mt-3" 
-              :competitiveStatus.sync="competitiveStatus"
+              :competitiveStatus.sync="currentContract.competitive_status"
               :rules="[$validators.required('Please select a level of competition.')]">
             </LevelOfCompetition>
 
@@ -67,7 +67,7 @@
               <ATATDatePicker 
                 ref="startDatePicker"
                 id="Start" 
-                :value.sync="contractOrderStartDate" 
+                :value.sync="currentContract.contract_order_start_date" 
                 label="Start date" 
                 :max="isoFormat(contractOrderExpirationDate, false)"
                 placeHolder="MM/DD/YYYY"
@@ -88,7 +88,7 @@
                 
                <!-- NOTE: max date to be determined -->
               <ATATDatePicker id="Expiration" 
-                :value.sync="contractOrderExpirationDate" 
+                :value.sync="currentContract.contract_order_expiration_date" 
                 ref="expirationDatePicker"
                 label="Expiration date" 
                 :min="isoFormat(contractOrderStartDate, true)"
@@ -128,14 +128,14 @@
                   'Please enter the contractor’s name.'
                 ),
               ]" 
-              :value.sync="incumbentContractorName" 
+              :value.sync="currentContract.incumbent_contractor_name" 
               class="_input-max-width mb-10"
               label="Contractor name" />
 
               <BusinessSize 
                 legend="What business size is this contractor?"
                 classes="copy-max-width mt-3" 
-                :businessSize.sync="businessSize"
+                :businessSize.sync="currentContract.business_size"
                 :rules="[$validators.required('Please select a business size.')]">
               </BusinessSize>
 
@@ -148,7 +148,7 @@
                   'Please enter the incumbent contractor’s name.'
                 ),
               ]" 
-              :value.sync="incumbentContractorName" 
+              :value.sync="currentContract.incumbent_contractor_name" 
               class="_input-max-width mb-10"
               label="Incumbent contractor name" />
 
@@ -159,7 +159,7 @@
               label="Contract number" />
 
             <TaskOrderNumber id="TaskDeliveryOrderNumber" 
-            :value.sync="taskDeliveryOrderNumber" 
+            :value.sync="currentContract.task_delivery_order_number" 
             :optional="true"
             class="_input-max-width mb-10" 
             label="Task/Delivery order number" 
@@ -173,7 +173,7 @@
                 ),
                 $validators.isDateValid('Please enter a valid date.'),
               ]" 
-              :value.sync="contractOrderExpirationDate" 
+              :value.sync="currentContract.contract_order_expiration_date" 
               label="Contract/Order expiration date" 
               :max="JWCCMaxDate"
               placeHolder="MM/DD/YYYY" 
@@ -283,7 +283,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       .$refs["atatDatePicker"];
     
     this.isDatePickersEmpty = startTextBox.value === "" && expirationTextBox.value === "";
-    
     if (this.isDatePickersEmpty){
       startTextBox.validate();
       expirationTextBox.validate();
@@ -327,16 +326,17 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   } as Record<string, string>;
 
   private get currentData(): CurrentContractDTO {
+    const contract = this.currentContract;
     return {
       incumbent_contractor_name: this.currentContract.incumbent_contractor_name || "",
       contract_number: this.currentContract.contract_number || "",
-      task_delivery_order_number: this.taskDeliveryOrderNumber,
-      contract_order_expiration_date: this.contractOrderExpirationDate,
-      contract_order_start_date: this.contractOrderStartDate,
-      competitive_status: this.competitiveStatus,
-      business_size: this.businessSize,
-      instance_number: this.currentContract.instance_number,
-      sys_id: this.currentContract.sys_id
+      task_delivery_order_number: contract.task_delivery_order_number || "",
+      contract_order_expiration_date: contract.contract_order_expiration_date || "",
+      contract_order_start_date: contract.contract_order_start_date || "",
+      competitive_status: contract.competitive_status || "",
+      business_size: contract.business_size || "",
+      instance_number: contract.instance_number || -1,
+      sys_id: contract.sys_id
     };
   }
 
@@ -357,7 +357,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     await this.loadContract();    
-    debugger;
     if (this.currentContract) {
       const keys: string[] = [
         "incumbent_contractor_name",

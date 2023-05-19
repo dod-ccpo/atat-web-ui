@@ -816,7 +816,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async loadCurrentContractsFromSNOW(): Promise<CurrentContractDTO[]> {
     return await api.currentContractTable.getQuery({
       params: {
-        sysparm_query: "acquisition_package.sys_id=" + AcquisitionPackage.packageId
+        sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId
       }
     });
   }
@@ -832,19 +832,17 @@ export class AcquisitionPackageStore extends VuexModule {
     const currContracts = await this.currentContracts || [];
     const existingContractIndex = currContracts.findIndex(
       (c) => {
-        debugger;
         return c.instance_number === contract.instance_number
       }
     );
-    debugger;
     existingContractIndex > -1 
       ? currContracts[existingContractIndex] = contract
       : this.currentContracts?.push(contract);
-    this.doSetCurrentContracts(currContracts);
+    await this.doSetCurrentContracts(currContracts);
   }
 
   @Mutation
-  public doSetCurrentContracts(value: CurrentContractDTO[]): void {
+  public async doSetCurrentContracts(value: CurrentContractDTO[]): Promise<void> {
     this.currentContracts = value
   }
 
@@ -857,7 +855,7 @@ export class AcquisitionPackageStore extends VuexModule {
       async (c)=> {await api.currentContractTable.remove(c as string)}
     )
     //remove STORE listings
-    this.doSetCurrentContracts([]);
+    await this.doSetCurrentContracts([]);
   }
 
   /**
@@ -1258,10 +1256,8 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(60);
       if(AcquisitionPackage.packageId) {
         const currentContracts = await this.loadCurrentContractsFromSNOW();
-        currentContracts.forEach((c)=>{
-          const contractData = convertColumnReferencesToValues(c);
-          this.setCurrentContract(contractData);
-        })
+        const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
+        await this.doSetCurrentContracts(tempArray);
       } else {
         this.setCurrentContract(
           initialCurrentContract()
