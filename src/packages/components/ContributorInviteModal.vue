@@ -238,7 +238,7 @@ export default class ContributorInviteModal extends Vue {
       this.searchObj.alreadyInvited = false;         
       this.isSearching = false;
       if (searchStr) {
-        this.onUserSearchValueChange(searchStr);
+        await this.onUserSearchValueChange(searchStr);
       }
     }
   }
