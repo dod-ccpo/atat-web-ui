@@ -189,7 +189,7 @@ export default class ContributorInviteModal extends Vue {
   public async searchStringChanged(newVal: string, oldVal: string): Promise<void> {
     this.searchObj.noResults = false;
     this.searchObj.alreadyInvited = false
-    this.debouncedSearch(newVal, oldVal)
+    await this.debouncedSearch(newVal, oldVal)
   }
 
   public debouncedSearch = _.debounce(async (newVal: string, oldVal: string) => {
