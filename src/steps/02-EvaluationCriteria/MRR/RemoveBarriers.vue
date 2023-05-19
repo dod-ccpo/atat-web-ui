@@ -26,6 +26,9 @@
                 id="FollowOnDate"
                 class="mt-8"
                 :rules="[
+                  $validators.required(
+                    `Enter a date using the format 'MM/DD/YYYY.`
+                  ),
                   $validators.isDateValid(`Enter a date using the format 'MM/DD/YYYY`),
                 ]"
                 :value.sync="followOnDate"
