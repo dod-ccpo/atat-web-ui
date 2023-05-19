@@ -55,6 +55,7 @@
                 <v-list-item-content>
                   <v-list-item-title class="font-weight-bolder font-size-16">
                     {{ user.firstName }} {{ user.lastName}}
+                    <span v-if="user.agency"> ({{ user.agency }})</span>
                   </v-list-item-title>
                   <v-list-item-subtitle class="font-size-14">
                     {{ user.email }}
@@ -87,6 +88,7 @@
             <v-list-item-content>
               <v-list-item-title class="font-weight-bolder font-size-16">
                 {{ user.firstName }} {{ user.lastName }}
+                <span v-if="user.agency"> ({{ user.agency }})</span>
               </v-list-item-title>
               <v-list-item-subtitle class="font-size-14">
                 {{ user.email }}
@@ -185,7 +187,6 @@ export default class ContributorInviteModal extends Vue {
 
   @Watch("searchString")
   public async searchStringChanged(newVal: string, oldVal: string): Promise<void> {
-    console.log("newVal:" + newVal)
     this.searchObj.noResults = false;
     this.searchObj.alreadyInvited = false
     this.debouncedSearch(newVal, oldVal)
