@@ -54,8 +54,7 @@
               >
                 <v-list-item-content>
                   <v-list-item-title class="font-weight-bolder font-size-16">
-                    {{ user.firstName }} {{ user.lastName}}
-                    <span v-if="user.agency"> ({{ user.agency }})</span>
+                    {{ user.firstName }} {{ user.lastName}} {{ user.agency }}
                   </v-list-item-title>
                   <v-list-item-subtitle class="font-size-14">
                     {{ user.email }}
@@ -87,8 +86,7 @@
           >
             <v-list-item-content>
               <v-list-item-title class="font-weight-bolder font-size-16">
-                {{ user.firstName }} {{ user.lastName }}
-                <span v-if="user.agency"> ({{ user.agency }})</span>
+                {{ user.firstName }} {{ user.lastName }} {{ user.agency }}
               </v-list-item-title>
               <v-list-item-subtitle class="font-size-14">
                 {{ user.email }}
@@ -225,9 +223,14 @@ export default class ContributorInviteModal extends Vue {
           fullName: userSearchDTO.name,
           email: userSearchDTO.email,
           phoneNumber: userSearchDTO.phone,
-          agency: userSearchDTO.company
+          agency: userSearchDTO.company ? "(" + userSearchDTO.company + ")" : "",
         }
       });
+      if (response.length === 100) {
+        this.searchObj.searchResults.push({
+          firstName: "More than 100 results. Please refine your search."
+        });
+      }
       this.searchObj.noResults = this.searchObj.searchResults.length === 0;
       this.searchObj.isLoading = false;
       this.isSearching = false;
@@ -253,26 +256,30 @@ export default class ContributorInviteModal extends Vue {
    * Then clears the search string and makes a function call out to clear the search results
    */
   public onUserSelection(newSelectedUser: User): void {
-    const alreadySelected = this.userSelectedList.find(u => u.sys_id === newSelectedUser.sys_id)
-    const alreadyInvited = this.alreadyInvitedUsers.find(u => u.sys_id === newSelectedUser.sys_id);
-    if (newSelectedUser && !alreadySelected && !alreadyInvited) {
-      this.searchObj.alreadyInvited = false;
-      this.userSelectedList.push(newSelectedUser);
-      this.userSelectedList.sort((a, b) => {
-        if (a.fullName && b.fullName) {
-          return a.fullName > b.fullName ? 1 : -1;
-        } else {
-          return 0;
-        }
-      })
-      this.searchString = "";
-      this.searchObj.alreadyInvited = false;
-      this.searchObj.searchResults = [];
-      this.searchObj.noResults = false;
-      this.searchObj.isLoading = false;
-    } else {
-      this.searchObj.alreadyInvited = true;
+    if (newSelectedUser.sys_id) {
+      const alreadySelected = this.userSelectedList.find(u => u.sys_id === newSelectedUser.sys_id)
+      const alreadyInvited 
+        = this.alreadyInvitedUsers.find(u => u.sys_id === newSelectedUser.sys_id);
+      if (newSelectedUser && !alreadySelected && !alreadyInvited) {
+        this.searchObj.alreadyInvited = false;
+        this.userSelectedList.push(newSelectedUser);
+        this.userSelectedList.sort((a, b) => {
+          if (a.fullName && b.fullName) {
+            return a.fullName > b.fullName ? 1 : -1;
+          } else {
+            return 0;
+          }
+        })
+        this.searchString = "";
+        this.searchObj.alreadyInvited = false;
+        this.searchObj.searchResults = [];
+        this.searchObj.noResults = false;
+        this.searchObj.isLoading = false;
+      } else {
+        this.searchObj.alreadyInvited = true;
+      }
     }
+
   }
 
   /**
