@@ -69,7 +69,7 @@
                 id="Start" 
                 :value.sync="currentContract.contract_order_start_date" 
                 label="Start date" 
-                :max="isoFormat(contractOrderExpirationDate, false)"
+                :max="maxDate"
                 placeHolder="MM/DD/YYYY"
                 class="mr-5"
                 :showErrors="false"
@@ -80,29 +80,30 @@
                   ),
                   $validators.isDateValid('Please enter a valid PoP start date.'),
                   $validators.compareDatesDesc(
-                    contractOrderExpirationDate, 
+                    getDateValue(false), 
                     `The start date must be before the expiration date.`
                   )
                 ]" 
                 />
                 
                <!-- NOTE: max date to be determined -->
-              <ATATDatePicker id="Expiration" 
+              <ATATDatePicker 
+                id="Expiration" 
                 :value.sync="currentContract.contract_order_expiration_date" 
-                ref="expirationDatePicker"
-                label="Expiration date" 
-                :min="isoFormat(contractOrderStartDate, true)"
-                :max="JWCCMaxDate"
-                @hasErrorMessages="setExpirationDateErrorMessages"
+                label="Expiration date"
+                :min="minDate"
+                :max="JWCCMaxDate" 
                 placeHolder="MM/DD/YYYY"
+                ref="expirationDatePicker"
                 :showErrors="false"
+                @hasErrorMessages="setExpirationDateErrorMessages"
                 :rules="[
                   $validators.required(
                     'Please enter your PoP expiration date.'
                   ),
                   $validators.isDateValid('Please enter a valid PoP expiration date.'),
                   $validators.compareDatesAsc(
-                    contractOrderStartDate, 
+                    getDateValue(true),
                     `The expiration date must be after the start date.`
                   )
                 ]"
@@ -154,7 +155,8 @@
 
             <ContractNumber id="ContractNumber" :rules="[
                 $validators.required('Please enter your contract number.'),
-              ]" :value.sync="contractNumber" 
+              ]" 
+              :value.sync="currentContract.contract_number" 
               class="_input-max-width mb-10" 
               label="Contract number" />
 
@@ -188,7 +190,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Vue } from "vue-property-decorator";
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -203,7 +205,7 @@ import { CurrentContractDTO, ReferenceColumn } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { add, format, formatISO, isValid } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
-import _ from "lodash";
+import _, { isString } from "lodash";
 import { thisExpression } from "@babel/types";
 
 @Component({
@@ -236,44 +238,52 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private currentContracts:CurrentContractDTO[] = [];
   private currentContract:CurrentContractDTO = {};
 
-  private incumbentContractorName = "";
-  private contractNumber = "";
+  get minDate():string{
+    const d = this.currentContract.contract_order_start_date 
+      || format(new Date(), 'P'); 
+    return formatISO(new Date(d), { representation: 'date' }) 
+  }
 
-  private taskDeliveryOrderNumber =
-    this.currentContract.task_delivery_order_number || "";
-  
-  private contractOrderStartDate =
-    this.currentContract.contract_order_start_date || "";
-
-  private contractOrderExpirationDate =
-    this.currentContract.contract_order_expiration_date || "";
-
-  private competitiveStatus =
-    this.currentContract.competitive_status || "";
-
-  private businessSize =
-    this.currentContract.business_size || "";
+  get maxDate():string{
+    const d = this.currentContract.contract_order_expiration_date 
+      || format(new Date(this.JWCCMaxDate), 'P');
+    return formatISO(new Date(d), { representation: 'date' }) 
+  }
   
   private startDPSharedErrorMessages:string[] = [];
   private expirationDPSharedErrorMessages: string[] = [];
-  private isDatePickersEmpty = false;
 
   private JWCCMaxDate = "2028-06-30"
 
   private setStartDateErrorMessages(value:string[]): void{
     this.removeSharedErrorMessages(true);
-    this.expirationDPSharedErrorMessages = this.isDatePickersEmpty 
-      ? ["Please enter your PoP start and expiration dates."]
-      : value;
+    setTimeout(()=>{
+      this.expirationDPSharedErrorMessages = this.isDatePickersEmpty && value.length>0
+        ? ["Please enter your PoP start and expiration datesl."]
+        : value;
+    })
   };
 
   private setExpirationDateErrorMessages(value:string[]): void{
     this.removeSharedErrorMessages(false);
-    this.expirationDPSharedErrorMessages = this.isDatePickersEmpty 
-      ? ["Please enter your PoP start and expiration dates."]
-      : value;
+    
+    setTimeout(()=>{
+      this.expirationDPSharedErrorMessages = this.isDatePickersEmpty && value.length>0
+        ? ["Please enter your PoP start and expiration datesr."]
+        : value;
+    })
   }
 
+  get isDatePickersEmpty():boolean{
+    return this.currentData.contract_order_start_date === "" 
+      && this.currentData.contract_order_expiration_date === "";
+  }
+
+  private getDateValue(isStart:boolean): string{
+    return isStart
+      ? this.currentContract.contract_order_start_date as string
+      : this.currentContract.contract_order_expiration_date as string
+  }
 
   private removeSharedErrorMessages(isStart: boolean):void{
     const startTextBox = (this.$refs.startDatePicker as unknown as ATATDatePicker)
@@ -282,7 +292,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     const expirationTextBox = (this.$refs.expirationDatePicker as unknown as ATATDatePicker)
       .$refs["atatDatePicker"];
     
-    this.isDatePickersEmpty = startTextBox.value === "" && expirationTextBox.value === "";
     if (this.isDatePickersEmpty){
       startTextBox.validate();
       expirationTextBox.validate();
@@ -304,12 +313,17 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   private isoFormat(dt:string, isMin: boolean): string{
+    if (!dt){
+      return isMin 
+        ? formatISO(new Date(), { representation: 'date' }) 
+        : formatISO(new Date(this.JWCCMaxDate), { representation: 'date' }) 
+    }
     const d = isValid(dt) 
       ? dt 
       : isMin 
-        ? this.contractOrderStartDate 
-        : this.contractOrderExpirationDate
-    const newDate = add (new Date(d), {
+        ? this.currentContract.contract_order_start_date
+        : this.currentContract.contract_order_expiration_date
+    const newDate = add (new Date(d as string), {
       days: isMin ? 1 : -1
     })
     return dt !== "" 
@@ -317,12 +331,16 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       : "";
   }
 
+
   private savedData = {
     incumbent_contractor_name: "",
     contract_number: "",
     task_delivery_order_number: "",
     contract_order_expiration_date: "",
+    contract_order_start_date: "",
     competitive_status: "",
+    business_size: "",
+    instance_number: "",
   } as Record<string, string>;
 
   private get currentData(): CurrentContractDTO {

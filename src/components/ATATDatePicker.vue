@@ -45,6 +45,7 @@
           v-on="on"
           :rules="rules"
           @blur="onBlur($event)"
+          @focus ="onFocus($event)"
           :validate-on-blur="validateOnBlur"
           autocomplete="off"
         >
@@ -105,6 +106,7 @@ export default class ATATDatePicker extends Vue {
       errorCount: number; 
       validate: () => boolean;
       value: string;
+      resetValidation: ()=> boolean;
     };
     atatDatePickerMenu: Vue & {
       save: (selectedDate: string) => Record<string, never>;
@@ -186,9 +188,16 @@ export default class ATATDatePicker extends Vue {
       this.removeErrors();
     }
     Vue.nextTick(() => {
-      this.setErrorMessage();
-      this.additionalValidateActions();
+      if (!this.$refs.atatDatePicker.validate()){
+        this.setErrorMessage();
+        this.additionalValidateActions("textbox");
+      }
+     
     });
+  }
+
+  private onFocus(): void {
+    this.menu = false;
   }
 
   /**
@@ -213,15 +222,16 @@ export default class ATATDatePicker extends Vue {
   private datePickerClicked(selectedDate: string): void {
     //must be set to false to prevent unnecessary validation
     // this.validateOnBlur = false;
-    console.log(selectedDate);
+   
     this.removeErrors();
 
     // saves selectedDate to necessary atatDatePickerMenu attribs
     this.$refs.atatDatePickerMenu.save(selectedDate);
 
-    Vue.nextTick(() => {
-      this.updateDateValueProperty();
-    });
+    // Vue.nextTick(() => {
+    this.updateDateValueProperty();
+    this.additionalValidateActions("datepicker");
+    // });
   }
 
   /**
@@ -232,14 +242,20 @@ export default class ATATDatePicker extends Vue {
     if (isValid(new Date(this.dateFormatted))) {
       this.$emit("update:value", this.dateFormatted);
     } 
-    this.additionalValidateActions();
   }
 
-  private additionalValidateActions(): void{
-    this.$refs.atatDatePicker.validate()
-    this.$nextTick(()=>{
-      this.$emit("hasErrorMessages", this.$refs.atatDatePicker.errorBucket);
-    })
+  private additionalValidateActions(src: string): void{
+    this.$refs.atatDatePicker.validate();
+    // this.$nextTick(()=>{
+    this.$emit("hasErrorMessages", 
+      this.menu ? []: this.$refs.atatDatePicker.errorBucket );
+    // this.$nextTick(()=>{
+    if (this.menu){
+      this.$refs.atatDatePicker.errorBucket =[];
+    }
+    // });
+   
+    // })
   }
 
 
@@ -307,8 +323,7 @@ export default class ATATDatePicker extends Vue {
   public validateNowChange(): void {
     if(!this.$refs.atatDatePicker.validate()){
       this.setErrorMessage();
-      this.additionalValidateActions();
-      // this.$emit("hasErrorMessages", this.$refs.atatDatePicker.errorBucket);
+      // this.additionalValidateActions("blur");
     }
   }
 

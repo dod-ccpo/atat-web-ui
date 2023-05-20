@@ -122,7 +122,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      debugger;
       if (this.hasChanged()) {
         let data = this.currentData;
         await AcquisitionPackage.clearCurrentContractInfo();
