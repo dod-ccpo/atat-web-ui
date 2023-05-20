@@ -138,4 +138,60 @@ describe("Classification Requirements Store", ()=> {
     await ClassificationStore.deleteCDSInIGCEEstimateTable(igceDTO.sys_id as string)
     expect(removeIgceRecord).toHaveBeenCalledTimes(1)
   })
+
+  test('should update the CDSSolution in IGCEEstimateTable with correct description', async () => {
+    const cdsInIGCESysId = 'cdsInIGCESysId';
+    const domainPairs = [
+      { type: 'U_TO_S', dataQuantity: '10' },
+      { type: 'U_TO_TS', dataQuantity: '20' },
+      { type: 'S_TO_TS', dataQuantity: '30' },
+      { type: 'TS_TO_U', dataQuantity: '40' },
+      { type: 'TS_TO_S', dataQuantity: '50' },
+      { type: 'S_TO_U', dataQuantity: '60' }
+    ];
+    /*eslint-disable max-len*/
+    const expectedDescription = `Unclassified to Secret(10GB/month), Unclassified to Top Secret(20GB/month), Secret to Top Secret(30GB/month), Top Secret to Unclassified(40GB/month), Top Secret to Secret(50GB/month), Secret to Unclassified(60GB/month)`;
+    const record:IgceEstimateDTO = {
+      classification_level: "",
+      environment_instance: "",
+      acquisition_package: {
+        link: "https://dapps.mil/",
+        value: "acqPkg123"
+      },
+      description: `Unclassified to Secret (5 GB/month)`,
+      cross_domain_solution: {
+        link: "https://dapps.mil/",
+        value: "abc123"
+      },
+    }
+    jest.spyOn(ClassificationStore, 'getCDSInIGCEEstimateTable').mockResolvedValue(cdsInIGCESysId);
+    jest.spyOn(api.igceEstimateTable, 'update').mockResolvedValue(record);
+
+    await ClassificationStore.updateCDSSolutionInIGCEEstimateTable(domainPairs);
+
+    expect(ClassificationStore.getCDSInIGCEEstimateTable)
+      .toHaveBeenCalledWith(ClassificationStore.cdsSolution?.sys_id);
+    expect(api.igceEstimateTable.update).toHaveBeenCalledWith(cdsInIGCESysId, 
+      { description: expectedDescription });
+  });
+
+  
+  test('should update the CDSSolution in IGCEEstimateTable when cdsInIGCESysId is not empty', 
+    async () => {
+      const cdsInIGCESysId = 'cdsInIGCESysId';
+      const domainPairs = [
+        { type: 'U_TO_S', dataQuantity: '10' },
+        { type: 'U_TO_TS', dataQuantity: '20' }
+      ];
+
+      jest.spyOn(ClassificationStore, 'getCDSInIGCEEstimateTable').mockResolvedValue(cdsInIGCESysId);
+      jest.spyOn(ClassificationStore, 'updateCDSSolutionInIGCEEstimateTable').mockResolvedValue();
+
+      await ClassificationStore.updateDomainPairsInIGCEEstimateTable(domainPairs);
+
+      expect(ClassificationStore.getCDSInIGCEEstimateTable)
+        .toHaveBeenCalledWith(ClassificationStore.cdsSolution?.sys_id);
+      expect(ClassificationStore.updateCDSSolutionInIGCEEstimateTable)
+        .toHaveBeenCalledWith(domainPairs);
+    });
 })
