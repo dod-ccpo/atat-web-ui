@@ -614,7 +614,7 @@ export class ClassificationRequirementsStore extends VuexModule {
       return false
     }
   }
-
+  @Action({rawError: true})
   public async filterDomainPairs(
     domainPairs: Array<any>, 
     classToBeDeleted: ClassificationLevelDTO
