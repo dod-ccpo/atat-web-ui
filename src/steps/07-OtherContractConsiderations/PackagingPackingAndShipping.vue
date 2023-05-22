@@ -116,6 +116,7 @@ export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
       packaging_shipping_other: this.otherSelected,
       packaging_shipping_other_explanation: this.otherValueEntered,
       packaging_shipping_none_apply: this.noneApplySelected,
+      acquisition_package:AcquisitionPackage.packageId
     };
   }
   

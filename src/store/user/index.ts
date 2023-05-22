@@ -158,64 +158,30 @@ export class UserStore extends VuexModule {
       return;
 
     const sessionRestored = retrieveSession(ATAT_USER_KEY);
+    const userId = sessionStorage.getItem('userId');
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
       this.setInitialized(true);
-    } else {
-      if(sessionStorage.getItem('userId')){
-        const user = await api.userTable.retrieve(
-          sessionStorage.getItem('userId') as string
-        );
-        if (user) {
-          const userObj: UserDTO = {
-            first_name: user.first_name,
-            last_name: user.last_name,
-            name: user.name,
-            email: user.email,
-            sys_id: user.sys_id,
-            user_name: user.user_name,
-            last_login_time: user.last_login_time,
-          };
-
-          this.setCurrentUser(userObj);
-          storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
-          this.setInitialized(true);
-        }
-      }  
+    } else if (userId) {
+      const response = await api.userTable.search(userId);
+      if (response) {
+        const userObj: UserDTO = response[0];
+        this.setCurrentUser(userObj);
+        storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
+        this.setInitialized(true);
+      }
     }    
   }
 
   @Action({rawError: true})
-  public async getUserRecord(userInfo: {s: string, field: string}): Promise<User> {
-    const field = userInfo.field || "sys_id";
+  public async getUserRecord(searchStr: string): Promise<User> {
     const user: User = {};
-    const fields = `first_name,last_name,email,title,phone,
-      mobile_phone,home_phone,company,user_name,sys_id`;
-    const query = `${field}=${userInfo.s}`;
     try {
-      const config: AxiosRequestConfig = {
-        params: {
-          sysparm_fields: fields,
-          sysparm_query: query,
-        },
-      };
-      const response = await api.userTable.getQuery(config);
+      const response = await api.userTable.search(searchStr);
       if (response.length) {
         const userRecord: UserDTO = convertColumnReferencesToValues(response[0]);
-        if (userRecord.company) {
-          const companyConfig: AxiosRequestConfig = {
-            params: {
-              sysparm_query: `sys_id=${userRecord.company}`
-            }
-          }
-          const companyResponse: CompanyDTO[] = await api.companyTable.getQuery(companyConfig)
-          if (companyResponse.length) {
-            const company = companyResponse[0];
-            user.agency = company.u_short_name || company.name;
-          }
-        }
-        user.firstName = userRecord.first_name;
-        user.lastName = userRecord.last_name;
+        user.firstName = userRecord.first_name?.trim();
+        user.lastName = userRecord.last_name?.trim();
         user.salutation = userRecord.title?.trim();
         user.fullName = user.salutation 
           ? user.salutation + " " + user.firstName + " " + user.lastName

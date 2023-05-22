@@ -277,7 +277,7 @@ textarea {
   vertical-align: top !important;
 }
 
-.funding-increments-item {
+.funding-increments-item, .researcher-table {
   transition: all 0.25s ease;
   display: inline-block;
 }
@@ -324,6 +324,11 @@ textarea {
     }
   }
 
+}
+.researcher-table-row {
+  &:hover {
+    background-color: $base-lightest
+  }
 }
 
 ._clin-table,
