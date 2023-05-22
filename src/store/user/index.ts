@@ -139,7 +139,10 @@ export class UserStore extends VuexModule {
   @Action({rawError: true})
   public async setUserPortfolioCount(): Promise<void> {
     let query = "portfolio_statusINPROCESSING,PROVISIONING_ISSUE,ACTIVE,ARCHIVED";
-    const userQuery = await PortfolioSummary.getMandatorySearchParameterQuery();
+    const searchDTO: PortfolioSummarySearchDTO = { 
+      role: "ALL" 
+    };
+    const userQuery = await PortfolioSummary.getMandatorySearchParameterQuery(searchDTO);
     query += userQuery;
     const count = await getTableRecordCount(PortfolioTable, query)
     this.doSetPortfolioCount(count);

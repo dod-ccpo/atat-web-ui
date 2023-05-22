@@ -209,7 +209,7 @@ export default class InviteMembersModal extends Vue {
           fullName: userSearchDTO.name,
           email: userSearchDTO.email,
           phoneNumber: userSearchDTO.phone,
-          agency: userSearchDTO.department?.display_value
+          agency: userSearchDTO.company
         }
       })
       this.searchObj.noResults = this.searchObj.searchResults.length === 0;

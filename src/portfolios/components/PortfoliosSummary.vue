@@ -376,7 +376,7 @@ export default class PortfoliosSummary extends Vue {
 
     // ATAT TODO - future ticket, remove member from portfolio table in snow
     // after removed, make new call to reload portfolio list if > 10 portfolios
-    // to ensure 10 listed on page
+    // to ensure 10 listed on page (or 5 on home page)
   }
 
   public async mounted(): Promise<void> {

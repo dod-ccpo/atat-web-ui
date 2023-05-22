@@ -95,7 +95,7 @@ export class PortfolioSummaryStore extends VuexModule {
     if (searchDTO.portfolioStatus) {
       query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
     }
-    if (searchDTO.fundingStatuses.length > 0) {
+    if (searchDTO.fundingStatuses && searchDTO.fundingStatuses.length > 0) {
       query = query + "^portfolio_funding_statusIN" + searchDTO.fundingStatuses;
     }
     if (searchDTO.searchString) {
@@ -121,7 +121,7 @@ export class PortfolioSummaryStore extends VuexModule {
     debugger;
     const userSysId = currentUser.sys_id;
     let query = "";
-    if (searchDTO && searchDTO.role === "ALL") {
+    if (searchDTO && (searchDTO.role === "ALL" || !searchDTO.role) || !searchDTO) {
       query = query +
         `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
     } else { // "MANAGED"
