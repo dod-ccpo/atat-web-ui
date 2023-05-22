@@ -435,9 +435,6 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioCount = storeData.total_count;
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
-    // if (this.isHomeView) {
-    //   storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
-    // }
     storeData.portfolioSummaryList.forEach((portfolio) => {
       // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
       // from portfolio_managers and portfolio_viewers sysIds lists

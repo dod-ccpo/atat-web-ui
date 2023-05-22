@@ -65,7 +65,7 @@ export class UserApi extends ApiBase {
       const requestConfig: AxiosRequestConfig = {
         params: {
           sysparm_fields: "sys_id,name,first_name,last_name,user_name,email," +
-            "mobile_phone,phone,home_phone,title",
+            "mobile_phone,phone,home_phone,title,last_login_time",
           sysparm_display_value: "company",
           sysparm_query: searchQuery
         }
