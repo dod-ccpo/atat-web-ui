@@ -95,7 +95,7 @@ export class PortfolioSummaryStore extends VuexModule {
     if (searchDTO.portfolioStatus) {
       query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
     }
-    if (searchDTO.fundingStatuses.length > 0) {
+    if (searchDTO.fundingStatuses && searchDTO.fundingStatuses.length > 0) {
       query = query + "^portfolio_funding_statusIN" + searchDTO.fundingStatuses;
     }
     if (searchDTO.searchString) {
