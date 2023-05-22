@@ -171,6 +171,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       classification_display:  "",
       classification_instance: "",
       classification_level: "",
+      idiq_clin_type: "",
     }
     
     const cdsRecord = existingCDSIGCERecord !== undefined 

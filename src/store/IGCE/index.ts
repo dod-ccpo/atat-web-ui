@@ -640,6 +640,7 @@ export class IGCEStore extends VuexModule {
       dowTaskNumber: string,
     }):
     Promise<void> {
+    debugger
     await this.createIgceEstimateRecord({
       ...defaultIgceEstimate(),
       environment_instance: envInstanceRef.environmentInstanceSysId,
