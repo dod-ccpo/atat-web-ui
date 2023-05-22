@@ -508,7 +508,7 @@ export default class PortfoliosSummary extends Vue {
     });
 
     // ATAT TODO - future ticket - set isHaCCAdmin value with data from backend when implemented
-    this.isHaCCAdmin = true;
+    // this.isHaCCAdmin = true;
 
   }
 }

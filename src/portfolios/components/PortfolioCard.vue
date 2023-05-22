@@ -392,42 +392,44 @@ export default class PortfolioCard extends Vue {
       },
     ]; 
 
-    if (this.isHaCCAdmin) {
+    // ATAT TODO -- add functionality in AT-9099?
+    // if (this.isHaCCAdmin) {
+    //   this.portfolioCardMenuItems.push(
+    //     { 
+    //       title: "Email portfolio managers",
+    //       action: this.menuActions.emailManagers,
+    //     },    
+    //   );
+    // }
+
+    if (!this.isHaCCAdmin && (this.cardData.isManager && this.cardData.portfolio_managers &&
+      this.cardData.portfolio_managers.split(",").length > 1) || !this.cardData.isManager
+    ) {
       this.portfolioCardMenuItems.push(
         { 
-          title: "Email portfolio managers",
-          action: this.menuActions.emailManagers,
-        },    
+          title: "Leave this portfolio",
+          action: this.menuActions.leavePortfolio
+        },
       );
     }
 
-    // ATAT TODO - future ticket - when have data from backend, only include the menu
-    // option below if user is 1) a viewer, or 2) is manager and at least
-    // one other manager exists for this portfolio. 
-    // NOTE: Do not show for HaCC admin. Included currently for testing.
-    this.portfolioCardMenuItems.push(
-      { 
-        title: "Leave this portfolio",
-        action: this.menuActions.leavePortfolio
-      },
-    );
-
-    if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
-      this.portfolioCardMenuItems.push(
-        { 
-          title: "Login to the CSP console",
-          action: this.menuActions.loginToCSP,
-          icon: {
-            name: "launch",
-            width: "15",
-            height: "15",
-            color: "primary",
-          },
-          url: this.getCSPConsoleURL(), 
-          separatorBefore: true,
-        }
-      );
-    }
+    // ATAT TODO - figure out if this menu option is valid now that multiple environments
+    // if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
+    //   this.portfolioCardMenuItems.push(
+    //     { 
+    //       title: "Login to the CSP console",
+    //       action: this.menuActions.loginToCSP,
+    //       icon: {
+    //         name: "launch",
+    //         width: "15",
+    //         height: "15",
+    //         color: "primary",
+    //       },
+    //       url: this.getCSPConsoleURL(), 
+    //       separatorBefore: true,
+    //     }
+    //   );
+    // }
   }
 
   public async mounted(): Promise<void> {
