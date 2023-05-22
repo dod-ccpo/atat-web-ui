@@ -206,7 +206,7 @@ import { hasChanges } from "@/helpers";
 import { add, format, formatISO, isValid } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 import _, { isString } from "lodash";
-import { thisExpression } from "@babel/types";
+import { thisExpression, throwStatement } from "@babel/types";
 
 @Component({
   components: {
@@ -344,18 +344,19 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   } as Record<string, string>;
 
   private get currentData(): CurrentContractDTO {
-    const contract = this.currentContract;
-    return {
-      incumbent_contractor_name: this.currentContract.incumbent_contractor_name || "",
-      contract_number: this.currentContract.contract_number || "",
-      task_delivery_order_number: contract.task_delivery_order_number || "",
-      contract_order_expiration_date: contract.contract_order_expiration_date || "",
-      contract_order_start_date: contract.contract_order_start_date || "",
-      competitive_status: contract.competitive_status || "",
-      business_size: contract.business_size || "",
-      instance_number: contract.instance_number || -1,
-      sys_id: contract.sys_id
-    };
+    return this.currentContract;
+    // const contract = this.currentContract;
+    // return {
+    //   incumbent_contractor_name: this.currentContract.incumbent_contractor_name || "",
+    //   contract_number: this.currentContract.contract_number || "",
+    //   task_delivery_order_number: contract.task_delivery_order_number || "",
+    //   contract_order_expiration_date: contract.contract_order_expiration_date || "",
+    //   contract_order_start_date: contract.contract_order_start_date || "",
+    //   competitive_status: contract.competitive_status || "",
+    //   business_size: contract.business_size || "",
+    //   instance_number: contract.instance_number || -1,
+    //   sys_id: contract.sys_id
+    // };
   }
 
   public async mounted(): Promise<void> {
@@ -365,14 +366,17 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   public async loadContract(): Promise<void>{
     const contractToLoadInstanceNumber = AcquisitionPackage.currentContractInstanceNumber;
-    debugger;
-    this.currentContract = this.currentContracts?.filter(
-      (c) => c.instance_number === contractToLoadInstanceNumber
-    ) as CurrentContractDTO
+    this.currentContracts = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
+    this.currentContract = this.currentContracts.filter(
+      (c) => {
+        return c.instance_number?.toString()=== contractToLoadInstanceNumber.toString()
+      }
+    )[0] as CurrentContractDTO
   }
 
   public async loadOnEnter(): Promise<void> {
     await this.loadContract();    
+    
     if (this.currentContract) {
       const keys: string[] = [
         "incumbent_contractor_name",
@@ -392,7 +396,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         }
       });
     } else {
-      AcquisitionPackage.setCurrentContract(this.currentContract);
+      AcquisitionPackage.setCurrentContract(this.currentData);
     }
   }
 
