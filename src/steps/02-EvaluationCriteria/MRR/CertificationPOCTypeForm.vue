@@ -1,13 +1,13 @@
 <template>
   <div>
+    <h2>{{ sequence }}. Tell us about your {{ POCType }} POC</h2>
     <ATATRadioGroup
         v-if="loaded"
         :id="POCType + 'certificationPOCType'"
-        :legend="sequence + '. Tell us about your ' + POCType + ' POC'"
-        legend-as-subheader="true"
-        :helpText="'Will any of these individuals serve as the '
+        :legend="'Will any of these individuals serve as the '
               + POCType + ' Certifier for your J&A?'"
-        :value.sync="certificationPOCType"
+        :legend-font-normal-weight="true"
+        :value.sync="certificationPOCSysId"
         :items="certificationPOCTypeOptions"
         :name="'certification-poc-' + POCType + '-radio-group'"
         class="copy-max-width mb-10 mt-3"
@@ -15,7 +15,11 @@
     />
     <ATATContactForm
         v-if="showContactForm"
-        :email.sync="email"
+        role-legend="What role best describes this individual's affiliation with the DOD?"
+        :role-legend-font-normal-weight="true"
+        :show-job-title="true"
+        :title.sync="title"
+        :show-email="false"
         :firstName.sync="firstName"
         :lastName.sync="lastName"
         :middleName.sync="middleName"
@@ -64,8 +68,7 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
 
   private POCTypePropName: "technical_poc_type" | "requirements_poc_type" = "technical_poc_type";
   private POCPropName: "technical_poc" | "requirements_poc" = "technical_poc";
-  private certificationPOCType:
-      "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined = "";
+  private certificationPOCSysId = "";
   private certificationPOCContactDTO: ContactDTO = {} as ContactDTO;
   private certificationPOCTypeOptions: RadioButton[] = [];
   private pocPrimary: ContactDTO = {} as ContactDTO;
@@ -80,7 +83,7 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
   private middleName = "";
   private lastName = "";
   private suffix = "";
-  private email = "";
+  private title = "";
   private phone = "";
   private phoneExt = "";
   private selectedBranch: SelectData = {text: "", value: ""};
@@ -116,10 +119,30 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
   ];
 
   /**
+   * Returns the selected option based on value that is synchronized with the
+   * ATATRadioGroup
+   */
+  private get selectedOption(): RadioButton {
+    return this.certificationPOCTypeOptions.find(certOption =>
+      certOption.value === this.certificationPOCSysId) as RadioButton
+  }
+
+  /**
+   * Returns the selected option type based on value that is synchronized with the
+   * ATATRadioGroup
+   */
+  private get selectedOptionType():  "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined {
+    return this.selectedOption
+      ? this.selectedOption.optionType as unknown as
+            "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined
+      : ""
+  }
+
+  /**
    * Getter function that checks if the contact form should be displayed or not
    */
   private get showContactForm(): boolean {
-    return this.certificationPOCType === "NEW";
+    return this.selectedOptionType === "NEW";
   }
 
   private get currentContactFormData(): ContactDTO {
@@ -150,9 +173,9 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
       phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
     }
     const phoneExt = this.phoneExt;
-    const email = this.email;
+    const email = "";
     const grade_civ ="";
-    const title = "";
+    const title = this.title;
     return {
       sys_id,
       first_name,
@@ -165,7 +188,7 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
       phone: phone || "",
       phone_extension: phoneExt || "", // not used on Mission Owner contact entry form
       email,
-      type: this.certificationPOCType as string,
+      type: this.selectedOptionType as string,
       dodaac: "",
       can_access_package: "true",
       grade_civ,
@@ -179,7 +202,7 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
    */
   private hasFairOpportunityDataChanged(): boolean {
     const currentData = {} as FairOpportunityDTO;
-    currentData[this.POCTypePropName] = this.certificationPOCType;
+    currentData[this.POCTypePropName] = this.selectedOptionType;
     const savedData = {} as FairOpportunityDTO;
     const savedFairOpportunity = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
     savedData[this.POCTypePropName] = savedFairOpportunity[this.POCTypePropName] || "";
@@ -191,7 +214,7 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
   }
 
   /**
-   * Checks to see if the @certificationPOCType changed and takes one of
+   * Checks to see if the certification POC type changed and takes one of
    * the actions below.
    * 1. If the user updates the POC type from "NEW" to one of the other 3 types, then
    *      DELETES the contact associated with "NEW" and updates the fair opportunity
@@ -207,29 +230,29 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
   @Watch('_saveForm')
   protected async saveOnLeave(): Promise<boolean> {
     try {
+      await AcquisitionPackage.setValidateNow(true);
       const savedPOCType =
           (AcquisitionPackage.fairOpportunity as FairOpportunityDTO)[this.POCTypePropName];
       const fairOpportunity = {} as FairOpportunityDTO;
-      if (this.certificationPOCType === "NEW") {
+      if (this.selectedOptionType === "NEW") {
         // user changed from other types to NEW or could be first time filling the form.
         if (this.hasCurrentContactFormChanged()) {
           let savedContact = await ContactData.saveContact(this.currentContactFormData);
           savedContact = convertColumnReferencesToValues(savedContact);
-          fairOpportunity[this.POCTypePropName] = this.certificationPOCType;
+          fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
           fairOpportunity[this.POCPropName] = savedContact.sys_id;
           await AcquisitionPackage.setFairOpportunity(fairOpportunity);
+          this.selectedOption.value = savedContact.sys_id as string;
         }
       } else if (savedPOCType === "NEW") {// user has changed from NEW to other type
         // should not delete the contact because the contact could have been linked to others.
-        fairOpportunity[this.POCTypePropName] = this.certificationPOCType;
-        fairOpportunity[this.POCPropName] = "";
+        fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
+        fairOpportunity[this.POCPropName] = this.selectedOption?.value;
         await AcquisitionPackage.setFairOpportunity(fairOpportunity);
       } else { // user has changed across one of the 3 existing contact types (NOT NEW)
         if (this.hasFairOpportunityDataChanged()) {
-          fairOpportunity[this.POCTypePropName] = this.certificationPOCType;
-          const selectedOption = this.certificationPOCTypeOptions.find(certOption =>
-            certOption.value === this.certificationPOCType) as RadioButton;
-          fairOpportunity[this.POCPropName] = selectedOption.id
+          fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
+          fairOpportunity[this.POCPropName] = this.selectedOption?.value;
           await AcquisitionPackage.setFairOpportunity(fairOpportunity)
         }
       }
@@ -245,27 +268,33 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
   public initializeCertificationPOCTypeOptions() {
     this.certificationPOCTypeOptions.push(
       {
-        id: this.pocPrimary.sys_id as string,
+        id: this.POCType + "PrimaryPOC",
         label: this.pocPrimary.first_name as string + " " + this.pocPrimary.last_name,
-        value: "PRIMARY"
+        value: this.pocPrimary.sys_id as string,
+        optionType: "PRIMARY"
       });
     this.certificationPOCTypeOptions.push(
       {
-        id: this.pocCor.sys_id as string,
+        id: this.POCType + "CorPOC",
         label: this.pocCor.first_name as string + " " + this.pocCor.last_name,
-        value: "COR",
+        value: this.pocCor.sys_id as string,
+        optionType: "COR"
       });
     if (this.pocAcor) {
       this.certificationPOCTypeOptions.push({
-        id: this.pocAcor.sys_id as string,
+        id: this.POCType + "AcorPOC",
         label: this.pocAcor.first_name as string + " " + this.pocAcor.last_name,
-        value: "ACOR"
+        value: this.pocAcor.sys_id as string,
+        optionType: "ACOR"
       })
     }
     this.certificationPOCTypeOptions.push({
       id: this.POCType + "NewPOC",
       label: "No, I need to enter my " + this.POCType + " POC’s contact information.",
-      value: "NEW"
+      value: (this.certificationPOCContactDTO.sys_id &&
+      this.certificationPOCContactDTO.sys_id.length > 0)
+        ? this.certificationPOCContactDTO.sys_id : "NEW",
+      optionType: "NEW"
     })
   }
 
@@ -319,7 +348,7 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
     this.middleName = savedContactDTO.middle_name;
     this.lastName = savedContactDTO.last_name;
     this.suffix = savedContactDTO.suffix;
-    this.email = savedContactDTO.email;
+    this.title = savedContactDTO.title;
     this.phoneExt = savedContactDTO.phone_extension;
     if (savedContactDTO.phone.length > 0) {
       const parsedPhone = parsePhoneNumber(savedContactDTO.phone);
@@ -361,18 +390,18 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
     this.pocCor = await AcquisitionPackage.getContact("COR");
     this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
       await AcquisitionPackage.getContact("ACOR") : undefined;
-    this.initializeCertificationPOCTypeOptions();
     let fairOpportunity = AcquisitionPackage.fairOpportunity;
     if (fairOpportunity) {
       fairOpportunity = convertColumnReferencesToValues(
-          _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO)
-      this.certificationPOCType = fairOpportunity[this.POCTypePropName];
-      if (this.certificationPOCType === "NEW" && fairOpportunity[this.POCPropName]) {
+          _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
+      this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
+      if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
         this.certificationPOCContactDTO =
             await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
       } else {
         this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
       }
+      this.initializeCertificationPOCTypeOptions();
       await this.setContactFormData(this.certificationPOCContactDTO);
     }
     this.loaded = true;

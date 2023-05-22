@@ -12,7 +12,7 @@
           <legend
             v-if="legend"
             class="form-field-label pb-0 mr-2"
-            :class="{ 'd-sr-only': legendSrOnly, 'pb-4 font-size-22': legendAsSubheader }"
+            :class="{ 'd-sr-only': legendSrOnly, 'font-weight-normal': legendFontNormalWeight }"
           >
             {{ legend }}
             <span v-if="legendLink">
@@ -175,7 +175,7 @@ export default class ATATRadioGroup extends Vue {
   @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
   @Prop() public legendLink?: LegendLink;
   @PropSync("clearErrorMessages") public _clearErrorMessages?: boolean;
-  @Prop({default: false}) public legendAsSubheader?: boolean;
+  @Prop({default: false}) public legendFontNormalWeight?: boolean;
 
   // data
   private errorMessages: string[] = [];

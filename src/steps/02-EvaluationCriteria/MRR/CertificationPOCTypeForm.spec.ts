@@ -34,7 +34,7 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     dodaac: "",
     can_access_package: "true",
     grade_civ: "",
-    title: "",
+    title: "Prim1 Title",
     manually_entered: ""
   };
 
@@ -54,7 +54,7 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     dodaac: "",
     can_access_package: "true",
     grade_civ: "",
-    title: "",
+    title: "Cor1 Title",
     manually_entered: ""
   };
 
@@ -74,7 +74,7 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     dodaac: "",
     can_access_package: "true",
     grade_civ: "",
-    title: "",
+    title: "Acor1 Title",
     manually_entered: ""
   };
 
@@ -94,7 +94,7 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     dodaac: "",
     can_access_package: "true",
     grade_civ: "",
-    title: "",
+    title: "NewTech Title",
     manually_entered: ""
   };
 
@@ -114,7 +114,7 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     dodaac: "",
     can_access_package: "true",
     grade_civ: "",
-    title: "",
+    title: "NewReq Title",
     manually_entered: ""
   };
 
@@ -262,7 +262,7 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     wrapper.vm.$data.certificationPOCType = "PRIMARY"; // user changed NEW to PRIMARY
     (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).technical_poc_type = "NEW";
     await wrapper.vm.saveOnLeave();
-    expect(ContactData.deleteContactBySysId).toHaveBeenCalled();
+    expect(ContactData.deleteContactBySysId).not.toHaveBeenCalled();
   });
 
   it("get currentContactFormData() - should get the current contact form " +

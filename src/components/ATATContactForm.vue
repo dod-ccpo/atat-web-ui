@@ -3,7 +3,8 @@
   <section class="mt-10">
     <ATATRadioGroup
       id="ContactAffiliation"
-      :legend="legendText"
+      :legend="roleLegend"
+      :legend-font-normal-weight="roleLegendFontNormalWeight"
       :items="contactRoles"
       :value.sync="_selectedRole"
       :rules="[
@@ -108,6 +109,19 @@
           </v-col>
         </v-row>
 
+        <ATATTextField
+            v-if="showJobTitle"
+            id="JobTitle"
+            label="Job Title"
+            class="_input-max-width mb-10"
+            :value.sync="_title"
+            :rules="[
+            $validators.required(
+              'Please enter job title.'
+            )
+          ]"
+        />
+
         <ATATPhoneInput
           id="PhoneNumber"
           label="Phone number"
@@ -124,6 +138,7 @@
         />
 
         <ATATTextField
+            v-if="showEmail"
           id="EmailAddress"
           label="Email address"
           class="_input-max-width mb-10"
@@ -180,9 +195,11 @@ export default class ATATContactForm extends Vue {
 
   //props
   @Prop() private loaded!: boolean
+  @Prop({default: "What role best describes your affiliation with the DoD?"})
+  private roleLegend?: string;
+  @Prop({default: false}) public roleLegendFontNormalWeight?: boolean;
   @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
-  @PropSync("type") private _type?: string;
   @PropSync("selectedRole") private _selectedRole?: string;
   @PropSync("selectedRank") private _selectedRank?: RankData;
   @PropSync("selectedBranch") private _selectedBranch?: SelectData;
@@ -191,7 +208,10 @@ export default class ATATContactForm extends Vue {
   @PropSync("middleName") private _middleName?: string;
   @PropSync("lastName") private _lastName?: string;
   @PropSync("suffix") private _suffix?: string;
+  @PropSync("title") private _title?: string;
+  @Prop({default: false}) private showJobTitle?: boolean;
   @PropSync("email") private _email?: string;
+  @Prop({default: true}) private showEmail?: boolean;
   @PropSync("phone") private _phone?: string;
   @PropSync("phoneExt") private _phoneExt?: string;
 
@@ -205,7 +225,6 @@ export default class ATATContactForm extends Vue {
   }
 
   // data
-  private legendText = "";
   private branchData: SelectData[] = [];
   private branchRanksData: AutoCompleteItemGroups = {};
   private selectedBranchRanksData: AutoCompleteItem[] = [];
@@ -262,9 +281,6 @@ export default class ATATContactForm extends Vue {
     });
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
     this.salutationData = convertSystemChoiceToSelect(ContactData.salutationChoices);
-    this.legendText = this._type === "financialPOCForm"?
-      'What role best describes your Financial POC\'s affiliation?':
-      'What role best describes your affiliation with the DoD?'
   }
 
   public async mounted(): Promise<void> {

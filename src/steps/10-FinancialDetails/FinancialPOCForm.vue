@@ -12,7 +12,7 @@
             this individual for approval and signature.
           </p>
           <ATATContactForm
-            type="financialPOCForm"
+            role-legend="What role best describes your Financial POC's affiliation?"
             :email.sync="email"
             :firstName.sync="firstName"
             :lastName.sync="lastName"
@@ -70,8 +70,8 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
     sysId: "",
   };
   private roleIndices = {
-    MILITARY: 0,
-    CIVILIAN: 1,
+    CIVILIAN: 0,
+    MILITARY: 1,
     CONTRACTOR: 3,
   };
 
@@ -86,15 +86,15 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
   private branchData: SelectData[] = []
   private contactRoles: RadioButton[] = [
     {
-      id: "Military",
-      label: "Military",
-      value: "MILITARY",
-    },
-    {
       id: "Civilian",
       label: "Civilian",
       value: "CIVILIAN",
     },
+    {
+      id: "Military",
+      label: "Military",
+      value: "MILITARY",
+    }
   ];
 
   public get currentData(): ContactDTO {
