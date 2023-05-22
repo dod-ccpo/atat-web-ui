@@ -55,7 +55,6 @@
                 <v-list-item-content>
                   <v-list-item-title class="font-weight-bolder font-size-16">
                     {{ user.firstName }} {{ user.lastName}} {{ user.agency }}
-                    <span v-if="user.agency"> ({{ user.agency }})</span>
                   </v-list-item-title>
                   <v-list-item-subtitle class="font-size-14">
                     {{ user.email }}
@@ -88,7 +87,6 @@
             <v-list-item-content>
               <v-list-item-title class="font-weight-bolder font-size-16">
                 {{ user.firstName }} {{ user.lastName }} {{ user.agency }}
-                <span v-if="user.agency"> ({{ user.agency }})</span>
               </v-list-item-title>
               <v-list-item-subtitle class="font-size-14">
                 {{ user.email }}
