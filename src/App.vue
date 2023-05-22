@@ -97,7 +97,6 @@ export default class App extends Vue {
 
     setTimeout(async () => {
       if (sessionStorage.getItem("userId")) {
-        debugger;
         await CurrentUserStore.resetUser();
       } else {
         window.addEventListener("storage", async (e) => {
@@ -107,11 +106,6 @@ export default class App extends Vue {
         })
       }
     }, 0);
-    // setTimeout(() => {
-    //   debugger;
-    //   // APP VUE
-    //   CurrentUserStore.resetUser();
-    // }, 1000)
 
     await this.loadOnEnter();
   }

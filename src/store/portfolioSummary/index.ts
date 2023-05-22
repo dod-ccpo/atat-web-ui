@@ -117,8 +117,6 @@ export class PortfolioSummaryStore extends VuexModule {
   public async getMandatorySearchParameterQuery(searchDTO?: PortfolioSummarySearchDTO):
     Promise<string> {
     const currentUser = await CurrentUserStore.getCurrentUser();
-    // const currentUser = CurrentUserStore.getCurrentUserData;
-    debugger;
     const userSysId = currentUser.sys_id;
     let query = "";
     if (searchDTO && (searchDTO.role === "ALL" || !searchDTO.role) || !searchDTO) {

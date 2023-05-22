@@ -469,7 +469,6 @@ export class PortfolioDataStore extends VuexModule {
   public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
     const userSysIds = portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
     const allMembersDetailListDTO = await api.userTable.getUsersBySysId(userSysIds);
-    debugger;
 
     const allMembersDetailList: User[] = 
       allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
