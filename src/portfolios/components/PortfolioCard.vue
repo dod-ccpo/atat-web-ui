@@ -228,9 +228,10 @@ export default class PortfolioCard extends Vue {
     loginToCSP: "loginToCSP",
   }
  
-  // DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
+  // ATAT TODO AT-9099?- replace DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
   public currentUserEmail = "sample-haac-admin@mail.mil";
   public get managerEmails(): string {
+    // ATAT TODO - can use user lookup to get email addresses (with AT-9099?)
     // Return dummy emails until API call wired up to get portfolio managers
     return "foo@mail.mil, bar@mail.mil";
   }
