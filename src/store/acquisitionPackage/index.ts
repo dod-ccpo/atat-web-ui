@@ -862,7 +862,12 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async deleteContract(sysId: string): Promise<void> {
     //remove SNOW listings
-    await api.currentContractTable.remove(sysId);
+    const existingContracts = (await this.loadCurrentContractsFromSNOW())
+      .map((c)=> c.sys_id);
+    debugger;
+    if (existingContracts.includes(sysId)){
+      await api.currentContractTable.remove(sysId as string)
+    }
 
     //remove STORE listing
     const updatedContracts = this.currentContracts?.filter(
@@ -904,9 +909,12 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async updateCurrentContracts(contract: CurrentContractDTO): Promise<void>{
     //create SNOW listing
-    await api.currentContractTable.update(
-      contract.sys_id as string,contract
-    );
+    debugger;
+    const sysID = contract.sys_id || "";
+    sysID !== ""
+      ? await api.currentContractTable.update(sysID, contract)
+      : await api.currentContractTable.create(contract);
+    
     //create STORE listing
     await this.setCurrentContract(contract);
   }

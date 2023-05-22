@@ -208,15 +208,15 @@ export default class ProcurementHistorySummary extends Vue {
 
   public async addInstance(): Promise<void> {
     const newContract:CurrentContractDTO = initialCurrentContract();
-    debugger;
-    const newContactInstanceNumber = 
-      ((this.dataSource.sort((a, b) => (
-        (a.instance_number || 0) < (b.instance_number || 0)) ? 1 : -1)[0].instance_number || 0)
-      || 0) + 1;
-    await AcquisitionPackage.setCurrentContractInstanceNumber(
-      newContactInstanceNumber  || 1
-    )
-    newContract.instance_number = newContactInstanceNumber;
+    const newContactInstanceNumber = this.dataSource
+      .map((c)=>c.instance_number)
+      .reduce(function(a, b) {
+        return Math.max((a||0), (b||0));
+      })|| 0;
+    
+    debugger
+    await AcquisitionPackage.setCurrentContractInstanceNumber(newContactInstanceNumber + 1)
+    newContract.instance_number = newContactInstanceNumber + 1; 
     await AcquisitionPackage.setCurrentContract(newContract);
     this.navigate();
   }

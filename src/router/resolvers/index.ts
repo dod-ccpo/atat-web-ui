@@ -183,7 +183,6 @@ const hasLogicalFollowOn = (): boolean => {
 
 
 export const CurrentContractRouteResolver = (current: string): string => {
-  
   if (hasLogicalFollowOn()) {
     // if second option in step 2 Exception to Fair Opportunity is selected
     // skip the "Do you have a current/previous contract" page
@@ -195,7 +194,12 @@ export const CurrentContractRouteResolver = (current: string): string => {
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
-  if (
+  const doesNotNeedContract = AcquisitionPackage.currentContracts?.every(
+    (c)=>c.current_contract_exists==="NO"
+  )
+  if (doesNotNeedContract){
+    return routeNames.CurrentEnvironment;
+  }else if (
     numberOfExistingContracts()>0 
     && hasNoExceptionToFairOpp()
   ) {
