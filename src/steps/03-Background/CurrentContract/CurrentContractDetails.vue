@@ -110,6 +110,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       contract_number: this.contractNumber,
       task_delivery_order_number: this.taskDeliveryOrderNumber,
       contract_order_expiration_date: this.contractOrderExpirationDate,
+      acquisition_package:AcquisitionPackage.packageId
     };
   }
 

@@ -119,9 +119,10 @@ export interface CurrentContractDTO extends BaseTableDTO {
   contract_number?: string;
   task_delivery_order_number?: string;
   contract_order_expiration_date?: string;
-  contract_order_start_date: string;
-  competitive_status: string;
-  business_size: string;
+  contract_order_start_date?: string;
+  competitive_status?: string;
+  business_size?: string;
+  acquisition_package?: ReferenceColumn | string;
 }
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {
@@ -208,6 +209,8 @@ export interface ContractConsiderationsDTO extends BaseTableDTO{
   required_training_courses?: string;
   packaging_shipping_none_apply?: string;
   contractor_provided_transfer?: string;
+  acquisition_package?: ReferenceColumn | string;
+
 }
 
 export interface CrossDomainSolutionDTO extends BaseTableDTO {
@@ -423,6 +426,7 @@ export interface ContractTypeDTO extends BaseTableDTO {
   firm_fixed_price: string;
   time_and_materials: string;
   contract_type_justification: string;
+  acquisition_package?: ReferenceColumn | string;
 }
 
 export interface RequiredServicesDTO extends BaseTableDTO {
@@ -925,7 +929,7 @@ export interface UserSearchResultDTO extends BaseTableDTO {
   name?: string;
   email?: string;
   phone?: string;
-  department?: DisplayColumn;
+  company?: string;
 }
 
 export interface OperatorDTO extends BaseTableDTO{

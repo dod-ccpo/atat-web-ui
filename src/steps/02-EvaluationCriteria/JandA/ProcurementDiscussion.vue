@@ -19,7 +19,7 @@
                     'Enter the constraints of your procurement.'
                   ),
                   $validators.maxLength(
-                    2500, 'Please limit your description to 1000 characters or less'
+                    2500, 'Please limit your description to 2500 characters or less'
                   ),
                 ]"
           />
