@@ -39,7 +39,7 @@ export const AcorsRouteResolver = (current: string): string => {
   return routeNames.AcorInformation;
 };
 
-const evalPlanRequired = (): boolean => {
+const hasNoExceptionToFairOpp = (): boolean => {
   return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
 }
 
@@ -62,7 +62,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
-  if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
+  if (!hasNoExceptionToFairOpp() || missingEvalPlanMethod(evalPlan)) {
     return routeNames.PeriodOfPerformance;
   }
   Steps.setAdditionalButtonText({
@@ -86,7 +86,7 @@ export const BVTOResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
     // moving backwards
-    if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
+    if (!hasNoExceptionToFairOpp() || missingEvalPlanMethod(evalPlan)) {
       return routeNames.CreateEvalPlan;
     }
   }
@@ -105,14 +105,14 @@ const isProdEnv = (): boolean | null => {
 
 export const ProposedCSPRouteResolver = (current: string): string => {
   // TODO - remove isProdEnv condition below when J&A/MRR ready for production
-  return current === routeNames.Exceptions && (isProdEnv() || evalPlanRequired()) 
+  return current === routeNames.Exceptions && (isProdEnv() || hasNoExceptionToFairOpp()) 
     ? routeNames.CreateEvalPlan
     : routeNames.ProposedCSP
 };
 
 export const CertificationPOCsRouteResolver = (current: string): string => {
   // TODO - remove isProdEnv condition below when J&A/MRR ready for production
-  return (isProdEnv() || evalPlanRequired()) && current === routeNames.CreateEvalPlan
+  return (isProdEnv() || hasNoExceptionToFairOpp()) && current === routeNames.CreateEvalPlan
     ? routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
@@ -172,27 +172,67 @@ const hasLogicalFollowOn = (): boolean => {
     === "YES_FAR_16_505_B_2_I_C"
 }
 
+
+// const hasNoException =(): boolean =>{
+//   const currentContracts = AcquisitionPackage.currentContracts;
+//   // if `no` is selected in step 2 Exception to Fair Opportunity
+//    const singleContract = currentContracts?.length === 1 
+//     && AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
+//   return currentContracts && currentContracts?.length > 0 || false;
+// }
+
+
 export const CurrentContractRouteResolver = (current: string): string => {
+  
   if (hasLogicalFollowOn()) {
     // if second option in step 2 Exception to Fair Opportunity is selected
     // skip the "Do you have a current/previous contract" page
     return current === routeNames.CurrentContractDetails
       ? CrossDomainResolver(current)
-      : routeNames.CurrentContractDetails
+      : routeNames.ProcurementHistorySummary
   }
   return routeNames.CurrentContract
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
-  const hasCurrentContract = 
-    AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
-  if (hasCurrentContract) {
+  if (
+    numberOfExistingContracts()>0 
+    && hasNoExceptionToFairOpp()
+  ) {
     return routeNames.CurrentContractDetails;
+  } else if (
+    current === routeNames.CurrentContract
+    && numberOfExistingContracts()=== 1
+    && hasExceptionToFairOpp() 
+    && current === routeNames.CurrentContract
+  ){
+    return routeNames.CurrentContractDetails;
+  }else if (
+    current !== routeNames.ProcurementHistorySummary
+    && numberOfExistingContracts()>0 
+    && hasExceptionToFairOpp() 
+  ){
+    return routeNames.ProcurementHistorySummary;
   }
-  return current === routeNames.CurrentContract
-    ? routeNames.DOWLandingPage
-    : routeNames.CurrentContract;
+  return routeNames.CurrentContractDetails;
+
+  // return current === routeNames.CurrentContract
+  //   ? routeNames.DOWLandingPage
+  //   : routeNames.CurrentContract;
 };
+
+//if hasNoException & existing_contract===yes then currentcontractDetails
+//if hasNoException & existing_contract===no then next substep
+//if hasException then procurementHistorySummary
+
+const numberOfExistingContracts =(): number =>{
+  const currentContracts = AcquisitionPackage.currentContracts; 
+  const isExistingCurrentContracts = currentContracts !== null
+    && currentContracts.every((c)=> c.current_contract_exists==="YES");
+  return isExistingCurrentContracts 
+    ? currentContracts?.length || 0
+    : 0;
+}
 
 export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
   if (hasExceptionToFairOpp()){

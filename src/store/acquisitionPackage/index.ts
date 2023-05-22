@@ -115,7 +115,7 @@ export const initialCurrentContract = (): CurrentContractDTO => {
     contract_order_start_date: "",
     competitive_status: "",
     business_size: "",
-    acquisition_package:AcquisitionPackage.packageId
+    acquisition_package:AcquisitionPackage.packageId,
   }
 }
 
@@ -339,6 +339,7 @@ export class AcquisitionPackageStore extends VuexModule {
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContracts: CurrentContractDTO[] | null = null;
+  currentContractInstanceNumber = 1;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   // periods: string | null = null;
   // periodOfPerformance: PeriodOfPerformanceDTO | null = null;
@@ -856,6 +857,28 @@ export class AcquisitionPackageStore extends VuexModule {
     )
     //remove STORE listings
     await this.doSetCurrentContracts([]);
+  }
+
+  @Action({rawError: true})
+  public async deleteContract(sysId: string): Promise<void> {
+    //remove SNOW listings
+    await api.currentContractTable.remove(sysId);
+
+    //remove STORE listing
+    const updatedContracts = this.currentContracts?.filter(
+      (c)=> c.sys_id !== sysId
+    ) as CurrentContractDTO[];
+
+    await this.doSetCurrentContracts(updatedContracts);
+  }
+
+  @Action
+  public async setCurrentContractInstanceNumber(num: number): Promise<void> {
+    await this.doSetCurrentContractInstanceNumber(num);
+  }
+  @Mutation
+  public async doSetCurrentContractInstanceNumber(num: number): Promise<void> {
+    this.currentContractInstanceNumber = num;
   }
 
   /**

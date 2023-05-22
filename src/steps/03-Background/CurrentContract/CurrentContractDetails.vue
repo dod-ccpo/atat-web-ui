@@ -364,13 +364,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadContract(): Promise<void>{
-    // if (this.isExceptiontoFairOpp){
-
-    // } else {
-    this.currentContract = this.currentContracts[0];
-    // }
-
-
+    const contractToLoadInstanceNumber = AcquisitionPackage.currentContractInstanceNumber;
+    debugger;
+    this.currentContract = this.currentContracts?.filter(
+      (c) => c.instance_number === contractToLoadInstanceNumber
+    ) as CurrentContractDTO
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -394,7 +392,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         }
       });
     } else {
-      AcquisitionPackage.setCurrentContract(this.currentData);
+      AcquisitionPackage.setCurrentContract(this.currentContract);
     }
   }
 
