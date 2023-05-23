@@ -54,6 +54,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private get currentData(): CurrentContractDTO {
     return {
       current_contract_exists: this.currentContractExists,
+      acquisition_package: AcquisitionPackage.packageId as string
     };
   }
 
@@ -75,7 +76,8 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   private savedData: CurrentContractDTO = { 
-    current_contract_exists: "" 
+    current_contract_exists: "",
+    acquisition_package: "",
   };
 
   public async mounted(): Promise<void> {

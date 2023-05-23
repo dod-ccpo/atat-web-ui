@@ -118,16 +118,14 @@ export interface CurrentContractDTO extends BaseTableDTO {
   contract_number?: string;
   task_delivery_order_number?: string;
   contract_order_expiration_date?: string;
-  contract_order_start_date: string;
-  competitive_status: string;
-  business_size: string;
+  acquisition_package?: string;
 }
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {
   current_environment_exists: YesNo;
   has_system_documentation: YesNo;
   system_documentation?: string[]; // List - sys_ids from sys_attachment table 
-  has_migration_documentation: YesNo;
+  has_migration_documentation: YesNo; 
   migration_documentation?: string[]; // List - sys_ids from sys_attachment table 
   env_location: EnvironmentLocation;
   env_classifications_cloud: string[]; // array of classification level sys_ids
