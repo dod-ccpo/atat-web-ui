@@ -51,7 +51,6 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ATATFooter extends Vue {
   public currentUser: UserDTO = {};
   public get getCurrentUser(): UserDTO {
-    this.currentUser = CurrentUserStore.getCurrentUserData;
     return CurrentUserStore.getCurrentUserData;
   }
   @Watch("getCurrentUser")

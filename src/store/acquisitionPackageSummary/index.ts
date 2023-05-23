@@ -190,7 +190,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
           await this.getAcquisitionPackageSummaryList({searchQuery, searchDTO});
       }
       this.setAcquisitionPackageSummaryList(acquisitionPackageSummaryList); // caches the list
-      await this.setPackagesWaitingForTaskOrderCount(); // EJY IS THIS NEEDED?
+      await this.setPackagesWaitingForTaskOrderCount();
       return {
         total_count: packageCount,
         acquisitionPackageSummaryList: acquisitionPackageSummaryList
