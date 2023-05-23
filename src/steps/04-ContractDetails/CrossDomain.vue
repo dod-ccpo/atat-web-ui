@@ -141,6 +141,8 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
 
   private removeCDS = false
 
+  private updateCds = false
+
   public selectedCDSCheckboxItems: Checkbox[] = [];
 
   public availablePeriodCheckboxItems: Checkbox[] = [];
@@ -173,7 +175,6 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
 
   @Watch("selectedCDSCheckboxItems")
   public updateSelectedCDSCheckboxItems(): void {
-
     const solutionTypeData: { type: string; dataQuantity: number; }[] = [];
 
     this.selectedCDSCheckboxItems.forEach(item => {
@@ -196,6 +197,7 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
     });
 
     this.domainInfo.solutionType = solutionTypeData;
+    this.updateCds = true;
   }
 
   public solutionTypeDataUpdate(data: Checkbox[]): void {
@@ -362,6 +364,10 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
       await ClassificationRequirements.removeCdsSolution()
     }else{
       await ClassificationRequirements.setCdsSolution(this.domainInfo);
+    }
+    if(this.updateCds){
+      await ClassificationRequirements
+        .updateDomainPairsInIGCEEstimateTable(this.domainInfo.solutionType)
     }
     return true;
   }
