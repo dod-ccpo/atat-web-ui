@@ -99,17 +99,17 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     const storeData = await AcquisitionPackage.currentContracts
     if (storeData) {
       this.savedData.current_contract_exists =
-        this.doesCurrentContractExist(storeData)
+        await this.doesCurrentContractExist(storeData)
       this.currentContractExists = this.savedData.current_contract_exists as string;
     } else {
       AcquisitionPackage.setCurrentContract(initialCurrentContract());
     }
   }
 
-  public doesCurrentContractExist(data?: CurrentContractDTO[]): string{
+  public async doesCurrentContractExist(data?: CurrentContractDTO[]): Promise<string>{
     const currentContracts = data
       ? data
-      : AcquisitionPackage.currentContracts;
+      : await AcquisitionPackage.currentContracts;
     return currentContracts && currentContracts.length>0 
       ? currentContracts.every(c=>c.current_contract_exists==="YES")?"YES":"NO"
       : ""

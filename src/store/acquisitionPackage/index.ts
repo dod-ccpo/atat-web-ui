@@ -117,6 +117,7 @@ export const initialCurrentContract = (): CurrentContractDTO => {
     business_size: "",
     instance_number: 1,
     acquisition_package:AcquisitionPackage.packageId,
+    is_valid: false,
   }
 }
 
@@ -832,6 +833,8 @@ export class AcquisitionPackageStore extends VuexModule {
         business_size: cc.business_size,
         acquisition_package: cc.acquisition_package as string,
         sys_id: cc.sys_id,
+        is_valid: true,
+        sys_created_on: cc.sys_created_on
       }
     })
 
@@ -918,31 +921,24 @@ export class AcquisitionPackageStore extends VuexModule {
     const currentContract = await initialCurrentContract();
     currentContract.current_contract_exists = exists;
     currentContract.instance_number = 1;
-    //create SNOW listing
-    //await api.currentContractTable.create(currentContract);
-    //get SNOW listing
-    //const updatedContract = await this.loadCurrentContractsFromSNOW();
-    //create STORE listing w/SNOW listing
     await this.doSetCurrentContracts([currentContract]);
   }
 
   @Action({rawError: true})
-  public async updateCurrentContracts(contract: CurrentContractDTO): Promise<void>{
-    //create SNOW listing
-    const sysID = contract.sys_id || "";
-    const isValid = contract.is_valid as boolean;
-   
-    //only save VALID contracts to SNOW
-    if (sysID !== "" && isValid){  
-      contract = await api.currentContractTable.update(sysID, contract)
-    } else if (isValid){
-      contract = await api.currentContractTable.create(contract);
-    }
-    contract.is_valid = isValid;
-    //create STORE listing
-    await this.setCurrentContract(contract);
+  public async updateCurrentContractsSNOW(contracts: CurrentContractDTO[]): Promise<void>{
+    contracts.forEach(async (c)=>{
+      const sysID = c.sys_id || "";
+      const isValid = c.is_valid as boolean;
+     
+      //only save VALID contracts to SNOW
+      if (sysID !== "" && isValid){  
+        c = await api.currentContractTable.update(sysID, c)
+      } else if (isValid){
+        c = await api.currentContractTable.create(c);
+      }
+    })
+    this.currentContracts = await this.loadCurrentContractsFromSNOW();
   }
-
 
 
   @Mutation

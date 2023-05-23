@@ -12,7 +12,7 @@ import _ from "lodash";
 import Periods from "@/store/periods";
 import { Statuses } from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
-import { differenceInDays, differenceInMonths, parseISO } from "date-fns";
+import { differenceInDays, differenceInMonths, format, formatISO, parse, parseISO } from "date-fns";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
@@ -335,6 +335,38 @@ export function createDateStr(dateStr: string, period: boolean, hours?: boolean)
   }
   return formattedDate;
 
+}
+
+/**
+ * @param d - date as string
+ * @param formatType "ISO" | "MMDDYYYY"
+ * @returns 
+ *    ISO => iso-date format `YYYY-MM-DD` (used in vuetify datapickers)
+ *    MMDDYYYY => `MM/dd/YYYY`
+ */
+
+export function formatDate(
+  d: string,
+  formatType: string
+): string {
+  let dt = new Date(d);
+  if (d.includes("-")){
+    dt = new Date(d.replace(/-/g, '/'))
+  }
+  debugger;
+  let formattedDate = "";
+  switch(formatType.toUpperCase()){
+  case "ISO":
+    formattedDate = formatISO(dt, { representation: 'date' });
+    break;
+  case "MMDDYYYY":
+    formattedDate = format(dt, 'P');
+    break;
+  default:
+    formattedDate = dt.toString();
+    break;
+  }
+  return formattedDate;
 }
 
 export function differenceInDaysOrMonths(

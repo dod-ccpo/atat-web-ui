@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Let’s gather some details about your current contract
+            {{ headline }}
           </h1>
           <div class="copy-max-width">
               <p class="mb-10">
@@ -20,7 +20,7 @@
               :rules="[
                 $validators.required('Please enter a contract number.'),
                 $validators.isMaskValid(
-                  ['^([0-9A-Z]{0,13})?$'],
+                  ['^([0-9A-Z]{13})?$'],
                   `Your contract number must be 13 alphanumeric characters.`,
                   true
                 ),
@@ -146,15 +146,21 @@
             id="IncumbentContractorName" 
               :rules="[
                 $validators.required(
-                  'Please enter the incumbent contractor’s name.'
+                  'Enter the contractor’s name.'
                 ),
               ]" 
               :value.sync="currentContract.incumbent_contractor_name" 
               class="_input-max-width mb-10"
               label="Incumbent contractor name" />
 
-            <ContractNumber id="ContractNumber" :rules="[
-                $validators.required('Please enter your contract number.'),
+            <ContractNumber id="ContractNumber" 
+              :rules="[
+                $validators.required('Enter your contract number.'),
+                $validators.isMaskValid(
+                  ['^([0-9A-Z]{0,13})?$'],
+                  `Your contract number must be 13 alphanumeric characters.`,
+                  true
+                ),
               ]" 
               :value.sync="currentContract.contract_number" 
               class="_input-max-width mb-10" 
@@ -165,6 +171,13 @@
             :optional="true"
             class="_input-max-width mb-10" 
             label="Task/Delivery order number" 
+            :rules="[
+                $validators.isMaskValid(
+                  ['^([0-9A-Z]{0,13})?$'],
+                  `Your task order number must be 13 alphanumeric characters.`,
+                  true
+                ),
+              ]"
             tooltipText="Leave this field empty if your previous acquisition
             was only a contract, not an order placed under a contract." />
 
@@ -177,6 +190,7 @@
               ]" 
               :value.sync="currentContract.contract_order_expiration_date" 
               label="Contract/Order expiration date" 
+              :min="tomorrowDate"
               :max="JWCCMaxDate"
               placeHolder="MM/DD/YYYY" 
               tooltipText="Use the period of performance end date for your task order. If you
@@ -238,6 +252,12 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private currentContracts:CurrentContractDTO[] = [];
   private currentContract:CurrentContractDTO = {};
 
+  get headline(): string{
+    return "Let’s gather some details about your "
+      + (this.currentContracts.length === 1 ? "current" : "previous")
+      + " contract";
+  }
+
   get minDate():string{
     const d = this.currentContract.contract_order_start_date 
       || format(new Date(), 'P'); 
@@ -248,6 +268,12 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     const d = this.currentContract.contract_order_expiration_date 
       || format(new Date(this.JWCCMaxDate), 'P');
     return formatISO(new Date(d), { representation: 'date' }) 
+  }
+
+  get tomorrowDate():string{
+    const tomorrow = add (new Date(), {days: 1})
+    const d = format(tomorrow, 'P');
+    return formatISO(tomorrow, { representation: 'date' }) 
   }
   
   private startDPSharedErrorMessages:string[] = [];
@@ -311,26 +337,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private get isExceptiontoFairOpp(): boolean {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
   }
-
-  private isoFormat(dt:string, isMin: boolean): string{
-    if (!dt){
-      return isMin 
-        ? formatISO(new Date(), { representation: 'date' }) 
-        : formatISO(new Date(this.JWCCMaxDate), { representation: 'date' }) 
-    }
-    const d = isValid(dt) 
-      ? dt 
-      : isMin 
-        ? this.currentContract.contract_order_start_date
-        : this.currentContract.contract_order_expiration_date
-    const newDate = add (new Date(d as string), {
-      days: isMin ? 1 : -1
-    })
-    return dt !== "" 
-      ? formatISO(new Date(newDate), { representation: 'date' }) 
-      : "";
-  }
-
 
   private savedData = {
     incumbent_contractor_name: "",
@@ -411,7 +417,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         this.currentData.acquisition_package = AcquisitionPackage.packageId;
         this.currentData.is_valid = await this.$refs.form.validate();
         this.currentContract.current_contract_exists = "YES"
-        AcquisitionPackage.updateCurrentContracts(
+        AcquisitionPackage.setCurrentContract(
           this.currentData
         )
       }

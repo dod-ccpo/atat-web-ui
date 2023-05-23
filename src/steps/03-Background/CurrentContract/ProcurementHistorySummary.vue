@@ -14,6 +14,7 @@
               current environment details.
             </p>
             <v-data-table
+              v-if="hasContractData"
               id="ProcurementHistoryDataTable"
               :headers="tableHeaders"
               :items="dataSource"
@@ -50,8 +51,8 @@
             </template>
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.contract_order_start_date="{ item }">
-              {{  item.contract_order_start_date }} - 
-              {{  item.contract_order_expiration_date }} 
+              {{  formatContractDate(item.contract_order_start_date) }} - 
+              {{  formatContractDate(item.contract_order_expiration_date) }} 
             </template>
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
@@ -74,10 +75,38 @@
               </button>
             </template>
             </v-data-table>
+            <div 
+              v-if="!hasContractData"
+              class=
+                "w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
+              >
+              <h3>
+                You have not added any past contracts yet.
+              </h3>
+              <div class="d-flex justify-center">
+                <v-btn
+                id="AddInstanceNoData"
+                type="button"
+                role="link" 
+                class="primary _normal _small-text mt-5"
+                :ripple="false"
+                @click="addInstance()"
+                >
+                <ATATSVGIcon 
+                    color="white"
+                    height="17" 
+                    width="18" 
+                    name="control-point" 
+                    class="mr-2"
+                  />
+                  Add a contract
+                </v-btn>
+              </div>  
+            </div>
             <hr class="mt-0" v-if="dataSource.length" /> 
 
           <v-btn
-            v-if="dataSource.length>0"
+            v-if="hasContractData"
             id="AddInstance"
             type="button"
             role="link" 
@@ -94,7 +123,7 @@
               class="mr-2"
             />
             Add 
-            <span v-if="dataSource.length">&nbsp;another&nbsp;</span> 
+            <span v-if="hasContractData">&nbsp;another&nbsp;</span> 
             instance
           </v-btn>  
 
@@ -125,16 +154,17 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import Vue from "vue";
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
 import CurrentContract from "./CurrentContract.vue";
 import { CurrentContractDTO } from "@/api/models";
-import { getIdText } from "@/helpers";
+import { formatDate, getIdText } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -142,8 +172,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
     ATATSVGIcon
   }  
 })
-export default class ProcurementHistorySummary extends Vue {
-  // [ ] todo - make stylized if no data view
+export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   // [ ] check for other todos
   // [ ] doublecheck navigation
 
@@ -159,13 +188,18 @@ export default class ProcurementHistorySummary extends Vue {
   public deleteInstanceModalTitle = "";
   public showDeleteInstanceDialog = false;
   public instanceToDeleteSysId = "";
+  public dataSource:CurrentContractDTO[] = [];
 
-  get dataSource():CurrentContractDTO[]{
-    return AcquisitionPackage.currentContracts as CurrentContractDTO[];
+  public formatContractDate(dt: string){
+    return dt !== "" ? formatDate(dt, "MMDDYYYY"): "";
+  }
+
+  get hasContractData(): boolean{
+    return this.dataSource.length > 0
   }
   
   public confirmDeleteInstance(item: CurrentContractDTO): void {
-    this.instanceNumberToDelete = item.instance_number || -1;
+    this.instanceNumberToDelete = (item.instance_number as number) || -1;
     this.deleteInstanceModalTitle = "Delete " + item.incumbent_contractor_name + "?";
     this.showDeleteInstanceDialog = true;
     this.instanceToDeleteSysId = item.sys_id as string;
@@ -176,6 +210,8 @@ export default class ProcurementHistorySummary extends Vue {
     this.$nextTick(async () => {
       this.showDeleteInstanceDialog = false;
       this.instanceToDeleteSysId = "";
+      await this.sortTable();
+      await this.setCurrentContractInstanceNumber();
     })
   }
 
@@ -186,11 +222,12 @@ export default class ProcurementHistorySummary extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    this.dataSource = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
+    await this.sortTable();
+    await this.setCurrentContractInstanceNumber();
     // debugger;
     // this.dataSource = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
   }
-
-
 
   public setHeaderId(column: string): string {
     return getIdText(column);
@@ -204,18 +241,23 @@ export default class ProcurementHistorySummary extends Vue {
 
   public async addInstance(): Promise<void> {
     const newContract:CurrentContractDTO = initialCurrentContract();
-    const newContactInstanceNumber = this.dataSource
-      .map((c)=>c.instance_number)
-      .reduce((a,b) => {
-        return Math.max(a as number, b as number);
-      }) as number;
-    
-    await AcquisitionPackage.setCurrentContractInstanceNumber(newContactInstanceNumber + 1)
-    newContract.instance_number = newContactInstanceNumber + 1; 
+    newContract.instance_number = AcquisitionPackage.currentContractInstanceNumber as number;
     await AcquisitionPackage.setCurrentContract(newContract);
     this.navigate();
   }
 
+  public async sortTable():Promise<void>{
+    await this.dataSource.sort((a,b)=> {
+      const createdA = new Date(a.sys_created_on as string);
+      const createdB = new Date(b.sys_created_on as string);
+      return createdB.getMilliseconds() - createdA.getMilliseconds();
+    })
+  }
+
+  public async setCurrentContractInstanceNumber():Promise<void>{
+    this.dataSource.forEach((c,idx)=> c.instance_number = idx)
+    await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
+  }
 
   public navigate(): void {
     // navigate to instance form
@@ -223,10 +265,18 @@ export default class ProcurementHistorySummary extends Vue {
       name: routeNames.CurrentContractDetails,
       params: {
         direction: "next"
-      }   
+      } 
     });
   }
-  
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      await AcquisitionPackage.updateCurrentContractsSNOW(this.dataSource)
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
 
 }
 </script>

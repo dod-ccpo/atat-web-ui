@@ -194,40 +194,45 @@ export const CurrentContractRouteResolver = (current: string): string => {
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
-  const doesNotNeedContract = AcquisitionPackage.currentContracts?.every(
+  const currentContracts =  AcquisitionPackage.currentContracts || [];
+  const fromCurrentContract =  current === routeNames.CurrentContract;
+  const doesNotNeedContract = currentContracts.every(
     (c)=>c.current_contract_exists==="NO"
   )
+  const hasExistingContracts = numberOfExistingContracts()>0;
+
+  const hasSingleInvalidContract = 
+    currentContracts.length === 1
+    && currentContracts[0].is_valid === false
+
   if (doesNotNeedContract){
     return routeNames.CurrentEnvironment;
-  }else if (
-    numberOfExistingContracts()>0 
-    && hasNoExceptionToFairOpp()
+  } else if (
+    hasNoExceptionToFairOpp()
   ) {
     return routeNames.CurrentContractDetails;
   } else if (
-    current === routeNames.CurrentContract
-    && numberOfExistingContracts()=== 1
-    && hasExceptionToFairOpp() 
-    && current === routeNames.CurrentContract
+    hasExceptionToFairOpp()
+    && hasSingleInvalidContract
+    && fromCurrentContract
   ){
     return routeNames.CurrentContractDetails;
-  }else if (
+  } else if (
+    hasExceptionToFairOpp()
+    && fromCurrentContract
+  ){
+    return routeNames.ProcurementHistorySummary;
+  } else if (
     current !== routeNames.ProcurementHistorySummary
-    && numberOfExistingContracts()>0 
+    && hasExistingContracts
     && hasExceptionToFairOpp() 
   ){
     return routeNames.ProcurementHistorySummary;
   }
   return routeNames.CurrentContractDetails;
 
-  // return current === routeNames.CurrentContract
-  //   ? routeNames.DOWLandingPage
-  //   : routeNames.CurrentContract;
 };
 
-//if hasNoException & existing_contract===yes then currentcontractDetails
-//if hasNoException & existing_contract===no then next substep
-//if hasException then procurementHistorySummary
 
 const numberOfExistingContracts =(): number =>{
   const currentContracts = AcquisitionPackage.currentContracts; 
