@@ -8,7 +8,8 @@ import {
   ReferenceColumn,
   CrossDomainSolutionDTO,
   SelectedClassificationLevelDTO,
-  BaseTableDTO
+  BaseTableDTO,
+  IgceEstimateDTO
 } from "@/api/models";
 import {
   CrossDomainSolution, 
@@ -67,9 +68,6 @@ export class ClassificationRequirementsStore extends VuexModule {
       this.classificationTopSecretSysId = topSecretObj.sys_id || "";
     }
   }
-
-
-
 
   @Action({ rawError: true })
   public async setSelectedClassificationLevels(
@@ -430,35 +428,46 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeCdsSolution(): Promise<void> {
-    
+
     const cdsIGCESysId = await this.getCDSInIGCEEstimateTable(this.cdsSolution?.sys_id as string)
-    await this.delectCDSInIGCEEstimateTable(cdsIGCESysId)
+    if(cdsIGCESysId != ""){
+      await this.deleteCDSInIGCEEstimateTable(cdsIGCESysId)
 
-    const cdsSolution: CrossDomainSolution = {
-      crossDomainSolutionRequired: "NO",
-      entireDuration: "",
-      anticipatedNeedUsage: "",
-      solutionType: [],
-      projectedFileStream: "",
-      selectedPeriods: [""]
+      const cdsSolution: CrossDomainSolution = {
+        crossDomainSolutionRequired: "NO",
+        entireDuration: "",
+        anticipatedNeedUsage: "",
+        solutionType: [],
+        projectedFileStream: "",
+        selectedPeriods: [""]
 
+      }
+      await this.setCdsSolution(cdsSolution)
+      const updateIGCE: IgceEstimateDTO[] = IGCEStore.igceEstimateList.filter( 
+        estimate => (estimate.title as string).indexOf("CDS") === -1
+      )
+      await IGCEStore.setIgceEstimate(updateIGCE)
     }
-    await this.setCdsSolution(cdsSolution)
   }
 
   @Action({rawError: true})
   public async getCDSInIGCEEstimateTable(sys_id: string): Promise<string> {
     const requestConfig: AxiosRequestConfig = {
       params: {
-        sysparm_query: "GOTOcross_domain_solution.sys_id<=" + sys_id
+        sysparm_query: "cross_domain_solution.sys_idSTARTSWITH" + sys_id
       }
     }
-    const cdsRecordInIGCE = await api.igceEstimateTable.getQuery(requestConfig);
-    return cdsRecordInIGCE[0].sys_id as string;
+    try{
+      const cdsRecordInIGCE = await api.igceEstimateTable.getQuery(requestConfig);
+      return cdsRecordInIGCE[0].sys_id as string;
+    }
+    catch {
+      return ""
+    }
   }
 
   @Action({rawError: true})
-  public async delectCDSInIGCEEstimateTable(sys_id: string): Promise<void> {
+  public async deleteCDSInIGCEEstimateTable(sys_id: string): Promise<void> {
     await api.igceEstimateTable.remove(sys_id);
   }
 
@@ -530,6 +539,9 @@ export class ClassificationRequirementsStore extends VuexModule {
     classLevelSysIdToBeDeleted: string
   ): Promise<boolean> {
     const success:boolean[] = []
+
+    success.push(await this.updateCDSForNewClassificationLevels(classLevelSysIdToBeDeleted))
+
     // delete classification_instances from classification_instance tbl
     success.push(await this.deleteClassificationLevels({
       tables: ["classificationInstanceTable"],
@@ -563,6 +575,127 @@ export class ClassificationRequirementsStore extends VuexModule {
     }));
     return await success.every(call => call);
   } 
+
+  @Action({rawError: true})
+  public async getClassLevelRecord(classLevelSysId: string): Promise<ClassificationLevelDTO>{
+    return await api.classificationLevelTable.retrieve(classLevelSysId)
+    
+  }
+  /**
+   * When a cascading delete for a classification level is triggered
+   * this will parse the CDS's domain pairs and update the database to remove 
+   * the pairs associated with the selected classification level
+   * returning true if successful and false otherwise
+   * @param classToBeDeleted 
+   * @returns `true` 
+   */
+  @Action({rawError: true})
+  public async updateCDSForNewClassificationLevels(classToBeDeleted: string):Promise<boolean>{
+    try {
+      // eslint-disable-next-line prefer-const
+      let cdsSolution:CrossDomainSolutionDTO = this.cdsSolution as CrossDomainSolutionDTO
+      const classToBeRemoved = await this.getClassLevelRecord(classToBeDeleted)
+      const currentDomainPairs = JSON.parse(
+        cdsSolution.traffic_per_domain_pair)
+      const newDomainPairs = await this.filterDomainPairs(currentDomainPairs, classToBeRemoved)
+
+      if(newDomainPairs.length > 0){
+        cdsSolution.traffic_per_domain_pair = JSON.stringify(newDomainPairs)
+            
+        await this.saveCdsSolution(cdsSolution)
+        await this.updateCDSSolutionInIGCEEstimateTable(
+          newDomainPairs
+        )
+      } else {
+        await this.removeCdsSolution()
+      }
+      return true
+    } catch {
+      return false
+    }
+  }
+  @Action({rawError: true})
+  public async filterDomainPairs(
+    domainPairs: Array<any>, 
+    classToBeDeleted: ClassificationLevelDTO
+  ): Promise<Array<any>>{
+    const newDomainPairs:Array<any> = []
+      
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    domainPairs.forEach((item:any) => {
+      const classification: Array<string> = item.type.split('_')
+      let removeItem = false
+
+      classification.forEach((value) => {
+        if(value === classToBeDeleted.classification){
+          removeItem = true
+        }
+      })
+      if(!removeItem){
+        newDomainPairs.push(item)
+      }
+    })
+    return newDomainPairs
+  }
+
+  @Action({rawError: true})
+  public async updateDomainPairsInIGCEEstimateTable(domainPairs: Array<any>):Promise<void>{
+    const cdsInIGCESysId = await this.getCDSInIGCEEstimateTable(
+      this.cdsSolution?.sys_id as string)
+
+    if(cdsInIGCESysId != ""){
+      await this.updateCDSSolutionInIGCEEstimateTable(domainPairs)
+    }
+  }
+  /**
+   * Accepts a domainPair array [type,dataQuantity] and converts the object 
+   * into a string to update the IGCE record description for CDS
+   * @param domainPairs 
+   */
+  @Action({rawError: true})
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public async updateCDSSolutionInIGCEEstimateTable(domainPairs:Array<any>):Promise<void>{
+    try{
+      const cdsInIGCESysId:string = await this.getCDSInIGCEEstimateTable(
+        this.cdsSolution?.sys_id as string)
+      let updatedDescription = ""
+      domainPairs.forEach((item) => {
+        let name = ""
+        switch(item.type) {
+        case "U_TO_S": {
+          name = "Unclassified to Secret"
+          break
+        }
+        case "U_TO_TS": {
+          name = "Unclassified to Top Secret"
+          break
+        }
+        case "S_TO_U": {
+          name = "Secret to Unclassified"
+          break
+        }
+        case "S_TO_TS": {
+          name = "Secret to Top Secret"
+          break
+        }
+        case "TS_TO_U": {
+          name = "Top Secret to Unclassified"
+          break
+        }
+        // "TS_TO_S"
+        default: {
+          name = "Top Secret to Secret"
+          break
+        }
+        }
+        updatedDescription += name + "(" + item.dataQuantity + "GB/month), "
+      })
+      updatedDescription = updatedDescription.substring(0,updatedDescription.lastIndexOf(','))
+      await api.igceEstimateTable.update(cdsInIGCESysId, {description:updatedDescription})
+    } catch (error) {
+      throw new Error("Error updating record in IGCE to display " + domainPairs + ". " + error )
+    }
+  }
 
   @Action({rawError: true})
   public async deleteClassificationLevels(

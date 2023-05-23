@@ -491,7 +491,7 @@ export interface User {
   designation?: string;
   salutation?: string;
   agency?: string;
-  department?: string;
+  company?: string;
   officePhone?: string; // labeled as "Commercial phone" field is "phone" in SNOW sys_user table
   mobilePhone?: string;
   dsnPhone?: string; // field is "home_phone" in SNOW sys_user table

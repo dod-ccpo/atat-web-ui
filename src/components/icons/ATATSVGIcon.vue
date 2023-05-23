@@ -61,6 +61,7 @@ import Processing from "@/components/icons/Processing.vue";
 import Provisioned from "@/components/icons/Provisioned.vue";
 import Role from "@/components/icons/Role.vue";
 import Remove from "@/components/icons/Remove.vue";
+import RemoveCircle from "@/components/icons/RemoveCircle.vue"
 import Restore from "@/components/icons/Restore.vue";
 import RequestQuote from "@/components/icons/RequestQuote.vue";
 import Search from "@/components/icons/Search.vue";
@@ -165,6 +166,7 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     RequestQuote,
     Role,
     Remove,
+    RemoveCircle,
     Restore,
     Search,
     SendEmail,

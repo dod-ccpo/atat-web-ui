@@ -77,6 +77,7 @@ import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { add, format } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -101,19 +102,15 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     AcquisitionPackage.currentContract?.contract_order_expiration_date || "";
 
   private minDate: string = format(add(new Date(), {days: 1}), "yyyy-MM-dd");
-  private savedData = {
-    incumbent_contractor_name: "",
-    contract_number: "",
-    task_delivery_order_number: "",
-    contract_order_expiration_date: "",
-  } as Record<string, string>;
 
+  private savedData = {} as CurrentContractDTO;
   private get currentData(): CurrentContractDTO {
     return {
       incumbent_contractor_name: this.incumbentContractorName,
       contract_number: this.contractNumber,
       task_delivery_order_number: this.taskDeliveryOrderNumber,
       contract_order_expiration_date: this.contractOrderExpirationDate,
+      acquisition_package:AcquisitionPackage.packageId
     };
   }
 
@@ -122,25 +119,15 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = (await AcquisitionPackage.loadData<CurrentContractDTO>({
-      storeProperty: StoreProperties.CurrentContract,
-    })) as Record<string, string>;
-
+    const storeData = _.cloneDeep(AcquisitionPackage.currentContract)
     if (storeData) {
-      const keys: string[] = [
-        "incumbent_contractor_name",
-        "contract_number",
-        "task_delivery_order_number",
-        "contract_order_expiration_date",
-      ];
-      keys.forEach((key: string) => {
-        if (Object.prototype.hasOwnProperty.call(storeData, key)) {
-          this.savedData[key] = storeData[key];
-        }
-      });
-    } else {
-      AcquisitionPackage.setCurrentContract(this.currentData);
-    }
+      this.savedData = storeData;
+      this.incumbentContractorName = storeData.incumbent_contractor_name as string;
+      this.contractNumber = storeData.contract_number as string;
+      this.taskDeliveryOrderNumber = storeData.task_delivery_order_number as string;
+      this.contractOrderExpirationDate = storeData.contract_order_expiration_date as string;
+
+    } 
   }
 
   protected async saveOnLeave(): Promise<boolean> {

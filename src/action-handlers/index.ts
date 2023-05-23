@@ -17,6 +17,8 @@ const actionHandlerNames = {
   clearCurrentContractInfo: "clearCurrentContractInfo",
   confirmDeleteTravelAll: "confirmDeleteTravelAll",
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
+  writeOwnMarketResearchDetails: "writeOwnMarketResearchDetails",
+  WriteOwnBarriers: "WriteOwnBarriers",
   openTOSearchModal: "openTOSearchModal",
   startProvisioning: "startProvisioning",
   didNotUseDapps: "didNotUseDapps"
@@ -30,6 +32,8 @@ const actions =  {
   [actionHandlerNames.clearCurrentContractInfo]: clearCurrentContractInfo,
   [actionHandlerNames.confirmDeleteTravelAll]: confirmDeleteTravelAll,
   [actionHandlerNames.writeOwnSoleSourceCause]: writeOwnSoleSourceCause,
+  [actionHandlerNames.writeOwnMarketResearchDetails]: writeOwnMarketResearchDetails,
+  [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
   [actionHandlerNames.openTOSearchModal]: openTOSearchModal,
   [actionHandlerNames.startProvisioning]: startProvisioning,
   [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
@@ -60,6 +64,32 @@ async function writeOwnSoleSourceCause() {
     replace: true
   }).catch(() => console.log("avoiding redundant navigation"));
 }
+async function WriteOwnBarriers() {
+  // eslint-disable-next-line camelcase
+  const fairOpp: FairOpportunityDTO = { barriers_write_own_explanation: "YES" };
+  await AcquisitionPackage.setFairOpportunity(fairOpp);
+  router.push({
+    name: routeNames.ReviewBarriers,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));
+}
+
+async function writeOwnMarketResearchDetails() {
+  // eslint-disable-next-line camelcase
+  const fairOpp: FairOpportunityDTO = { research_write_own_explanation: "YES" };
+  await AcquisitionPackage.setFairOpportunity(fairOpp);
+  router.push({
+    name: routeNames.MarketResearchReview,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));
+}
+
 
 function clearCurrentContractInfo() {
   AcquisitionPackage.clearCurrentContractInfo();

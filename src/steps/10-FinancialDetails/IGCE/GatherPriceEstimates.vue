@@ -150,6 +150,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
   async addCDSEntry():Promise<void>{
     this.cdsSNOWRecord = await IGCE.getCDSRecord();
+    if(this.cdsSNOWRecord?.cross_domain_solution_required === "NO"){
+      return;
+    }
     const existingCDSIGCERecord = await IGCE.igceEstimateList.find(
       ied => ied.title?.toLowerCase().indexOf("cross domain") !== -1
     )
