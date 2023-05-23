@@ -1309,15 +1309,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: Upload7600,
         routeResolver: Upload7600Resolver
       },
-      {
-        menuText: "Appropriation of Funds",
-        excludeFromMenu: true,
-        path: "appropriation-of-funds",
-        name: routeNames.AppropriationOfFunds,
-        completePercentageWeight: 1,
-        component: AppropriationOfFunds,
-        routeResolver: AppropriationOfFundsResolver
-      }, 
+      // {
+      //   menuText: "Appropriation of Funds",
+      //   excludeFromMenu: true,
+      //   path: "appropriation-of-funds",
+      //   name: routeNames.AppropriationOfFunds,
+      //   completePercentageWeight: 1,
+      //   component: AppropriationOfFunds,
+      //   routeResolver: AppropriationOfFundsResolver
+      // }, 
       {
         menuText: "Severability and Incremental Funding",
         path: "severability-and-incremental-funding",
