@@ -840,6 +840,7 @@ export class IGCEStore extends VuexModule {
   @Action({ rawError: true })
   public async saveIgceEstimates(costEstimateList: IgceEstimateDTO[][]): Promise<void> {
     const apiCallList: Promise<IgceEstimateDTO>[] = [];
+    debugger
     for (const estimate in costEstimateList) {
       costEstimateList[estimate].forEach(async offering => {
         const igceEstimateSysId = offering.sys_id as string;

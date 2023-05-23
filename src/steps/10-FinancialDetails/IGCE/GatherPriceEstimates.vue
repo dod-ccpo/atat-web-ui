@@ -159,6 +159,27 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     const existingClassLevels = Object.keys(this.tempEstimateDataSource);
     const doesTSExist = existingClassLevels.includes("Top Secret");
     const doesSecretExist = existingClassLevels.includes("Secret - IL6") && !doesTSExist;
+    const cdsTransfers = JSON.parse(this.cdsSNOWRecord?.traffic_per_domain_pair||"")
+    let hasTSTransfer = false
+    let hasSTransfer = false
+    const classificationLvl = ""
+    if(cdsTransfers){
+      console.log(cdsTransfers)
+      cdsTransfers.forEach((transfer:any) => {
+        const values = transfer.type.split("_")
+        const includesTS = values.includes('TS')
+        const includesS = values.includes('S')
+        if(!hasTSTransfer && includesTS){
+          hasTSTransfer = true
+        }
+        if(!hasSTransfer && includesS){
+          hasSTransfer = true
+        }
+      })
+    }
+    // if(hasSTransfer){
+    //   classificationLvl =
+    // }
     const blankRecord = {
       title: "Cross Domain Solution (CDS)",
       description: await this.formatCDSDescription(),
@@ -171,7 +192,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       classification_display:  "",
       classification_instance: "",
       classification_level: "",
-      idiq_clin_type: "",
+      idiq_clin_type: "CLOUD",
     }
     
     const cdsRecord = existingCDSIGCERecord !== undefined 
@@ -224,6 +245,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    debugger
     try {
       await IGCE.setCostEstimate(this.estimateDataSource);
     } catch (error) {
