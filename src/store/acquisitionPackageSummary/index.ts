@@ -183,8 +183,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
       }
-      // const acquisitionPackageSummaryCount =
-      //   await this.getAcquisitionPackageSummaryCount(searchQuery);
       let acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[] = [];
       const packageCount = CurrentUserStore.currentUserPackageCount;
       if (packageCount > 0) {
@@ -192,7 +190,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
           await this.getAcquisitionPackageSummaryList({searchQuery, searchDTO});
       }
       this.setAcquisitionPackageSummaryList(acquisitionPackageSummaryList); // caches the list
-      // await this.setPackagesWaitingForTaskOrderCount(); // EJY IS THIS NEEDED?
+      await this.setPackagesWaitingForTaskOrderCount(); // EJY IS THIS NEEDED?
       return {
         total_count: packageCount,
         acquisitionPackageSummaryList: acquisitionPackageSummaryList

@@ -1330,7 +1330,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(96);
       await IGCE.loadTrainingEstimatesFromPackage(packageId);
       this.setPackagePercentLoaded(98);
-      // await this.setCurrentUser();
+
       await DescriptionOfWork.loadTravel();
 
       if (this.packageContributors.length) {
@@ -1432,14 +1432,12 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPackagePercentLoaded(90);
 
           this.setAcquisitionPackage(acquisitionPackage);
-          this.setPackagePercentLoaded(93);
+          this.setPackagePercentLoaded(95);
 
           saveAcquisitionPackage(acquisitionPackage);
           const packageDocumentsSigned = await api.packageDocumentsSignedTable
             .create({acquisition_package:acquisitionPackage.sys_id})
           this.setPackageDocumentsSigned(packageDocumentsSigned)
-          this.setPackagePercentLoaded(96);
-          // await this.setCurrentUser();
           this.setPackagePercentLoaded(100);
 
           this.setInitialized(true);

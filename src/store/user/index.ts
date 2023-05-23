@@ -102,20 +102,6 @@ export class UserStore extends VuexModule {
     this.currentUser = value;
   }
 
-  // @Action({rawError: true})
-  // public async getRecordCount(table: string, query: string ): Promise<number> {
-  //   // Use aggregate API to get count for number of records in a table
-  //   const config: AxiosRequestConfig = {
-  //     params: {
-  //       sysparm_query: query,
-  //       sysparm_count: true
-  //     },
-  //   };
-  //   const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;  
-  //   const count = parseInt(response.result.stats.count)
-  //   return count;
-  // }
-
   @Action({rawError: true})
   public async setUserPackageCount(): Promise<void> {
     // SET TOTAL PACKAGE COUNT

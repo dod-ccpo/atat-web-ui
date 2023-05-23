@@ -191,7 +191,6 @@ export default class Home extends Vue {
     await CurrentUserStore.setUserPackageCount();
     await CurrentUserStore.setUserPortfolioCount();
 
-    // this.currentUser = await UserStore.getCurrentUser();
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
