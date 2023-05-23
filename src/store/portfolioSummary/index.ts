@@ -462,7 +462,6 @@ export class PortfolioSummaryStore extends VuexModule {
     Promise<PortfolioSummaryMetadataAndDataDTO> {
     try {
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
-      debugger;
       let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO)
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;

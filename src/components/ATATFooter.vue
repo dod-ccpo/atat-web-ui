@@ -9,7 +9,7 @@
         -->
       </div>
       <div>
-        Last login: {{currentUser.last_login_time}}
+        Last login: {{getCurrentUser.last_login_time}}
       </div>
     </v-footer>
     <div v-if="allowDeveloperNavigation()" class="container-max-width">
@@ -49,14 +49,9 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({})
 
 export default class ATATFooter extends Vue {
-  public currentUser: UserDTO = {};
   public get getCurrentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
   }
-  @Watch("getCurrentUser")
-  public currentUserChange(newVal: UserDTO): void {
-    this.currentUser = newVal;
-  }  
 
   private allowDeveloperNavigation(): boolean {
     return process.env.VUE_APP_allowDeveloperNavigation === 'true' || false;
