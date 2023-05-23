@@ -86,6 +86,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CrossDomainSolutionDTO, IgceEstimateDTO, ReferenceColumn } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import Periods from "@/store/periods";
 
 @Component({
   components: { 
@@ -138,7 +139,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
   
   // group by classification_display attrib
-  async groupByClassificationDisplay(): Promise<void>{
+  async groupByClassificationDisplay(): Promise<void> {
     this.tempEstimateDataSource = await this.igceEstimateData.filter(
       estimate => estimate.classification_level !== ""
     ).reduce(function (acc, current) {
@@ -146,6 +147,17 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       acc[current.classification_display || ""].push(current);
       return acc;
     }, Object.create(null));
+  }
+
+  public async createPopString(): Promise<string> {
+    const selectedPeriods: Record<string, string> = {}
+    Periods.periods.forEach(period => {
+      const sysId = period.sys_id
+      if(sysId){
+        selectedPeriods[sysId] = "1"
+      }
+    })
+    return JSON.stringify(selectedPeriods)
   }
 
   async addCDSEntry():Promise<void>{
@@ -162,9 +174,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     const cdsTransfers = JSON.parse(this.cdsSNOWRecord?.traffic_per_domain_pair||"")
     let hasTSTransfer = false
     let hasSTransfer = false
-    const classificationLvl = ""
+    let classificationLvl = ""
     if(cdsTransfers){
-      console.log(cdsTransfers)
       cdsTransfers.forEach((transfer:any) => {
         const values = transfer.type.split("_")
         const includesTS = values.includes('TS')
@@ -177,27 +188,35 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
         }
       })
     }
-    // if(hasSTransfer){
-    //   classificationLvl =
-    // }
+    if(hasTSTransfer){
+      classificationLvl = "Top Secret"
+    }
+    if(hasSTransfer && !hasTSTransfer){
+      classificationLvl = "Secret - IL6"
+    }
     const blankRecord = {
       title: "Cross Domain Solution (CDS)",
       description: await this.formatCDSDescription(),
       unit: "MONTH", 
       unit_price: 0,
-      unit_quantity: "",
+      unit_quantity: await this.createPopString(),
       cross_domain_solution: this.cdsSNOWRecord?.sys_id,
       cross_domain_pair: this.cdsSNOWRecord?.traffic_per_domain_pair,
       acquisition_package: AcquisitionPackage.packageId,
       classification_display:  "",
       classification_instance: "",
-      classification_level: "",
+      classification_level: classificationLvl,
       idiq_clin_type: "CLOUD",
     }
-    
+    if(existingCDSIGCERecord){
+      existingCDSIGCERecord.classification_level = classificationLvl
+      existingCDSIGCERecord.unit_quantity = await this.createPopString()
+    }
     const cdsRecord = existingCDSIGCERecord !== undefined 
       ? existingCDSIGCERecord
       : blankRecord
+
+
 
     // add item to the highest class level 
     for (const classLevel in this.tempEstimateDataSource){
