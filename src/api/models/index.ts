@@ -125,6 +125,7 @@ export interface CurrentContractDTO extends BaseTableDTO {
   acquisition_package?: ReferenceColumn | string;
   sys_id?: string;
   is_valid?:boolean;
+  sys_created_on?: string;
 }
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {

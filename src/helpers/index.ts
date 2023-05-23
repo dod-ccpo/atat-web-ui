@@ -353,7 +353,6 @@ export function formatDate(
   if (d.includes("-")){
     dt = new Date(d.replace(/-/g, '/'))
   }
-  debugger;
   let formattedDate = "";
   switch(formatType.toUpperCase()){
   case "ISO":

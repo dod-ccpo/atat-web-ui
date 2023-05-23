@@ -207,6 +207,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
 
   public async deleteInstance(): Promise<void> {
     await AcquisitionPackage.deleteContract(this.instanceToDeleteSysId);
+    await this.setDataSource();
     this.$nextTick(async () => {
       this.showDeleteInstanceDialog = false;
       this.instanceToDeleteSysId = "";
@@ -215,18 +216,19 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
     })
   }
 
-
   
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.dataSource = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
+    await this.setDataSource();
     await this.sortTable();
     await this.setCurrentContractInstanceNumber();
-    // debugger;
-    // this.dataSource = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
+  }
+
+  public async setDataSource():Promise<void>{
+    this.dataSource = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
   }
 
   public setHeaderId(column: string): string {
@@ -246,11 +248,16 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
     this.navigate();
   }
 
+  /**
+   * sorts sys_created_on ASC as the first one created is to be 
+   * current contract
+   */
+
   public async sortTable():Promise<void>{
-    await this.dataSource.sort((a,b)=> {
-      const createdA = new Date(a.sys_created_on as string);
-      const createdB = new Date(b.sys_created_on as string);
-      return createdB.getMilliseconds() - createdA.getMilliseconds();
+    this.dataSource.sort((a,b)=> {
+      const dateA = new Date(a.sys_created_on || "");
+      const dateB = new Date(b.sys_created_on || "");
+      return dateA.getTime()-dateB.getTime()
     })
   }
 

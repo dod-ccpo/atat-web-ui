@@ -349,7 +349,8 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     instance_number: 0,
     current_contract_exists: "",
     acquisition_package: "",
-    is_valid: true
+    is_valid: true, 
+    sys_created_by: ""
   } as CurrentContractDTO;
 
   private get currentData(): CurrentContractDTO {
@@ -381,7 +382,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       (c) => {
         return c.instance_number?.toString()=== contractToLoadInstanceNumber.toString()
       }
-    )[0] as CurrentContractDTO
+    )[0] || initialCurrentContract();
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -399,6 +400,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         "instance_number",
         "current_contract_exists",
         "sys_id",
+        "sys_created_by",
       ];
       keys.forEach((key) => {
         if (Object.prototype.hasOwnProperty.call(

@@ -61,7 +61,7 @@ export default class BusinessSize extends Vue {
     {
       id: "SMALL_BA",
       label: `8(a) small business`,
-      value: "SMALL_BA",
+      value: "SMALL_8A",
       readonly: !this.isForm,
     },
     {
