@@ -414,7 +414,9 @@ export default class PortfolioCard extends Vue {
       );
     }
 
-    // ATAT TODO - figure out if this menu option is valid now that multiple environments
+    // ATAT TODO - future ticket - provide link to each unclassified environment portal
+    // eslint-disable-next-line max-len
+    // Figma link: https://www.figma.com/file/6zwE1QbRrJZ3yFuA0bo7he/ATAT-Portfolio?type=design&node-id=5306-158321&t=zF6Xkw2a7VNDX232-4
     // if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
     //   this.portfolioCardMenuItems.push(
     //     { 

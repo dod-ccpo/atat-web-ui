@@ -179,8 +179,7 @@ export default class PortfoliosSummary extends Vue {
   @Prop({ default: false }) public isHomeView?: boolean;
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
   @Prop({ default: true}) public isProdEnv!: boolean;
-  // @PropSync("isLoadingPortfolios") public _isLoadingPortfolios!: boolean;
-  // public isLoadingPortfolios = false;
+
   public isHaCCAdmin = false;
 
   public page = 1;
