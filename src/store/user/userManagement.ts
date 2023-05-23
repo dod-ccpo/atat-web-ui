@@ -33,29 +33,11 @@ export class UserManagementStore extends VuexModule {
   public async searchUserByNameAndEmail(searchStr: string):
     Promise<UserSearchResultDTO[]> {
     try {
-      // default - search email, first, and last name fields
-      // eslint-disable-next-line max-len
-      let searchQuery = `^first_nameSTARTSWITH${searchStr}^ORlast_nameSTARTSWITH${searchStr}^ORemailSTARTSWITH${searchStr}^emailISNOTEMPTY^active=true`;
-      
-      if (/^[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+$/i.test(searchStr)) {
-        // complete valid email -- search email equals
-        searchQuery = `^email=${searchStr}^active=true`;
-      } else if (searchStr.includes("@")) {
-        // incomplete email - search email starts with
-        searchQuery = `^emailSTARTSWITH${searchStr}^active=true`;
-      } else if (searchStr.includes(" ")) {
-        // likely first and last name - search name starts with
-        searchQuery = `^nameSTARTSWITH${searchStr}^active=true`;
+      if (searchStr) {
+        const response = await api.userTable.search(searchStr);
+        return response;  
       }
-      const userSearchRequestConfig: AxiosRequestConfig = {
-        signal: this.controller.signal,
-        params: {
-          sysparm_fields: 'sys_id,name,first_name,last_name,email,department',
-          sysparm_display_value: "department",
-          sysparm_query: searchQuery
-        },
-      };
-      return await api.userTable.getQuery(userSearchRequestConfig);
+      return [];
     } catch (error) {
       await this.doResetAbortController();
       throw new Error("error occurred searching for users :" + error);
