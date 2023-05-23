@@ -1347,9 +1347,7 @@ export const GInvoicingResolver = (current: string): string => {
   
   return current === routeNames.SeverabilityAndIncrementalFunding
     ? routeNames.MIPR
-    : hasExceptionToFairOpp() 
-      ? routeNames.AppropriationOfFunds
-      : routeNames.SeverabilityAndIncrementalFunding;
+    : routeNames.SeverabilityAndIncrementalFunding;
 }
 
 export const Upload7600Resolver = (current: string): string => {
@@ -1361,12 +1359,9 @@ export const Upload7600Resolver = (current: string): string => {
       : routeNames.Upload7600;
   }
 
-  return current === routeNames.SeverabilityAndIncrementalFunding ||
-    current === routeNames.AppropriationOfFunds
+  return current === routeNames.SeverabilityAndIncrementalFunding 
     ? routeNames.GInvoicing
-    : hasExceptionToFairOpp() 
-      ? routeNames.AppropriationOfFunds
-      : routeNames.SeverabilityAndIncrementalFunding;
+    : routeNames.SeverabilityAndIncrementalFunding;
 }
 
 export const AppropriationOfFundsResolver = (current: string): string => {
