@@ -112,9 +112,6 @@ export const initialCurrentContract = (): CurrentContractDTO => {
     contract_number: "",
     task_delivery_order_number: "",
     contract_order_expiration_date: "",
-    contract_order_start_date: "",
-    competitive_status: "",
-    business_size: "",
   }
 }
 
