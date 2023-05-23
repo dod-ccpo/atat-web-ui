@@ -143,6 +143,9 @@ import ATATDialog from "@/components/ATATDialog.vue";
   }  
 })
 export default class ProcurementHistorySummary extends Vue {
+  // [ ] todo - make stylized if no data view
+  // [ ] check for other todos
+  // [ ] doublecheck navigation
 
   public currentContractExists = "";
   public tableHeaders = [
