@@ -228,10 +228,10 @@ export default class ATATDatePicker extends Vue {
     // saves selectedDate to necessary atatDatePickerMenu attribs
     this.$refs.atatDatePickerMenu.save(selectedDate);
 
-    // Vue.nextTick(() => {
-    this.updateDateValueProperty();
-    this.additionalValidateActions("datepicker");
-    // });
+    Vue.nextTick(() => {
+      this.updateDateValueProperty();
+      this.additionalValidateActions("datepicker");
+    });
   }
 
   /**

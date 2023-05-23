@@ -113,7 +113,7 @@ export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
-  instance_number?: number, 
+  instance_number?: number | string, 
   current_contract_exists?: string;
   incumbent_contractor_name?: string;
   contract_number?: string;
@@ -124,6 +124,7 @@ export interface CurrentContractDTO extends BaseTableDTO {
   business_size?: string;
   acquisition_package?: ReferenceColumn | string;
   sys_id?: string;
+  is_valid?:boolean;
 }
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {

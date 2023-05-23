@@ -26,10 +26,10 @@
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.incumbent_contractor_name="{ item }">
               <span
-                :class="[{'text-error font-weight-500': !item.isValid }]">
+                :class="[{'text-error font-weight-500': !item.is_valid}]">
                 {{ item.incumbent_contractor_name }}
               </span>
-              <div v-if="!item.isValid" class="d-flex align-center nowrap">
+              <div v-if="!item.is_valid" class="d-flex align-center nowrap">
                 <ATATSVGIcon 
                   name="errorFilled"
                   width="13"
@@ -176,13 +176,6 @@ export default class ProcurementHistorySummary extends Vue {
     })
   }
 
-  public isRowValid(item:CurrentContractDTO): boolean{
-    return item.incumbent_contractor_name !== ""
-      && item.contract_number !== ""
-      && item.task_delivery_order_number !== ""
-      && item.contract_order_start_date !== ""
-      && item.contract_order_expiration_date !== ""
-  }
 
   
   public async mounted(): Promise<void> {
@@ -210,11 +203,10 @@ export default class ProcurementHistorySummary extends Vue {
     const newContract:CurrentContractDTO = initialCurrentContract();
     const newContactInstanceNumber = this.dataSource
       .map((c)=>c.instance_number)
-      .reduce(function(a, b) {
-        return Math.max((a||0), (b||0));
-      })|| 0;
+      .reduce((a,b) => {
+        return Math.max(a as number, b as number);
+      }) as number;
     
-    debugger
     await AcquisitionPackage.setCurrentContractInstanceNumber(newContactInstanceNumber + 1)
     newContract.instance_number = newContactInstanceNumber + 1; 
     await AcquisitionPackage.setCurrentContract(newContract);

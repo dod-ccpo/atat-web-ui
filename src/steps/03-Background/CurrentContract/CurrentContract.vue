@@ -97,13 +97,12 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.currentContracts
-    console.log(storeData);
     if (storeData) {
       this.savedData.current_contract_exists =
         this.doesCurrentContractExist(storeData)
       this.currentContractExists = this.savedData.current_contract_exists as string;
     } else {
-      AcquisitionPackage.setCurrentContract(this.currentData);
+      AcquisitionPackage.setCurrentContract(initialCurrentContract());
     }
   }
 
@@ -125,7 +124,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         let data = this.currentData;
         await AcquisitionPackage.clearCurrentContractInfo();
-        await AcquisitionPackage.initializeCurrentContracts(
+        await AcquisitionPackage.initializeCurrentContract(
           data.current_contract_exists as string,
         );
       }

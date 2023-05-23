@@ -340,24 +340,27 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     contract_order_start_date: "",
     competitive_status: "",
     business_size: "",
-    instance_number: "",
-  } as Record<string, string>;
+    instance_number: 0,
+    current_contract_exists: "",
+    acquisition_package: "",
+    is_valid: true
+  } as CurrentContractDTO;
 
   private get currentData(): CurrentContractDTO {
-    debugger;
-    const contract = 
-       this.currentContract ? this.currentContract : initialCurrentContract();
-    return {
-      incumbent_contractor_name: contract?.incumbent_contractor_name || "",
-      contract_number: contract?.contract_number || "",
-      task_delivery_order_number: contract?.task_delivery_order_number || "",
-      contract_order_expiration_date: contract?.contract_order_expiration_date || "",
-      contract_order_start_date: contract?.contract_order_start_date || "",
-      competitive_status: contract?.competitive_status || "",
-      business_size: contract?.business_size || "",
-      instance_number: contract?.instance_number || 1,
-      sys_id: contract?.sys_id || ""
-    };
+    // const contract = 
+    return this.currentContract ? this.currentContract : initialCurrentContract();
+    // return {
+    //   incumbent_contractor_name: contract?.incumbent_contractor_name || "",
+    //   contract_number: contract?.contract_number || "",
+    //   task_delivery_order_number: contract?.task_delivery_order_number || "",
+    //   contract_order_expiration_date: contract?.contract_order_expiration_date || "",
+    //   contract_order_start_date: contract?.contract_order_start_date || "",
+    //   competitive_status: contract?.competitive_status || "",
+    //   business_size: contract?.business_size || "",
+    //   instance_number: contract?.instance_number || 1,
+    //   current_contract_exists: contract?.current_contract_exists || "",
+    //   sys_id: contract?.sys_id || ""
+    // };
   }
 
   public async mounted(): Promise<void> {
@@ -388,6 +391,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         "competitive_status",
         "business_size",
         "instance_number",
+        "current_contract_exists",
         "sys_id",
       ];
       keys.forEach((key) => {
@@ -405,6 +409,8 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         this.currentData.acquisition_package = AcquisitionPackage.packageId;
+        this.currentData.is_valid = await this.$refs.form.validate();
+        this.currentContract.current_contract_exists = "YES"
         AcquisitionPackage.updateCurrentContracts(
           this.currentData
         )

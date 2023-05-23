@@ -115,6 +115,7 @@ export const initialCurrentContract = (): CurrentContractDTO => {
     contract_order_start_date: "",
     competitive_status: "",
     business_size: "",
+    instance_number: 1,
     acquisition_package:AcquisitionPackage.packageId,
   }
 }
@@ -815,11 +816,28 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async loadCurrentContractsFromSNOW(): Promise<CurrentContractDTO[]> {
-    return await api.currentContractTable.getQuery({
+    const contractsFromSNOW: CurrentContractDTO[] = await api.currentContractTable.getQuery({
       params: {
         sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId
       }
-    });
+    }) || [];
+    const contracts = contractsFromSNOW.map((cc, index)=>{
+      return{
+        instance_number: parseInt(cc.instance_number as unknown as string), 
+        current_contract_exists: cc.current_contract_exists,
+        incumbent_contractor_name: cc.incumbent_contractor_name,
+        contract_number: cc.contract_number,
+        task_delivery_order_number: cc.task_delivery_order_number,
+        contract_order_expiration_date: cc.contract_order_expiration_date,
+        contract_order_start_date: cc.contract_order_start_date,
+        competitive_status: cc.competitive_status,
+        business_size: cc.business_size,
+        acquisition_package: cc.acquisition_package as string,
+        sys_id: cc.sys_id,
+      }
+    })
+
+    return contracts;
   }
 
   @Action({rawError: true})
@@ -830,16 +848,21 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentContract(contract: CurrentContractDTO): Promise<void> {
-    const currContracts = await this.currentContracts || [];
-    const existingContractIndex = currContracts.findIndex(
+    const currentContracts = await this.currentContracts || [];
+    const sysId = contract.sys_id || ""
+    const existingContractIndex = currentContracts.findIndex(
       (c) => {
-        return c.instance_number === contract.instance_number
+        debugger;
+        // const existingContractSysId = c.sys_id || ""
+        return c.sys_id 
+          ? c.sys_id === sysId
+          : c.instance_number?.toString() === contract.instance_number?.toString();
       }
     );
     existingContractIndex > -1 
-      ? currContracts[existingContractIndex] = contract
-      : this.currentContracts?.push(contract);
-    await this.doSetCurrentContracts(currContracts);
+      ? currentContracts[existingContractIndex] = contract
+      : currentContracts.push(contract);
+    await this.doSetCurrentContracts(currentContracts);
   }
 
   @Mutation
@@ -864,7 +887,6 @@ export class AcquisitionPackageStore extends VuexModule {
     //remove SNOW listings
     const existingContracts = (await this.loadCurrentContractsFromSNOW())
       .map((c)=> c.sys_id);
-    debugger;
     if (existingContracts.includes(sysId)){
       await api.currentContractTable.remove(sysId as string)
     }
@@ -892,29 +914,33 @@ export class AcquisitionPackageStore extends VuexModule {
    */
 
   @Action({rawError: true})
-  public async initializeCurrentContracts(
+  public async initializeCurrentContract(
     exists: string
   ): Promise<void>{
     const currentContract = await initialCurrentContract();
-    currentContract.current_contract_exists = exists
-    currentContract.instance_number = (this.currentContracts?.length || 0) + 1
+    currentContract.current_contract_exists = exists;
+    currentContract.instance_number = 1;
     //create SNOW listing
-    await api.currentContractTable.create(currentContract);
+    //await api.currentContractTable.create(currentContract);
     //get SNOW listing
-    const updatedContract = await this.loadCurrentContractsFromSNOW();
+    //const updatedContract = await this.loadCurrentContractsFromSNOW();
     //create STORE listing w/SNOW listing
-    await this.doSetCurrentContracts([updatedContract[0]]);
+    await this.doSetCurrentContracts([currentContract]);
   }
 
   @Action({rawError: true})
   public async updateCurrentContracts(contract: CurrentContractDTO): Promise<void>{
     //create SNOW listing
-    debugger;
     const sysID = contract.sys_id || "";
-    sysID !== ""
-      ? await api.currentContractTable.update(sysID, contract)
-      : await api.currentContractTable.create(contract);
-    
+    const isValid = contract.is_valid as boolean;
+   
+    //only save VALID contracts to SNOW
+    if (sysID !== "" && isValid){  
+      contract = await api.currentContractTable.update(sysID, contract)
+    } else if (isValid){
+      contract = await api.currentContractTable.create(contract);
+    }
+    contract.is_valid = isValid;
     //create STORE listing
     await this.setCurrentContract(contract);
   }
