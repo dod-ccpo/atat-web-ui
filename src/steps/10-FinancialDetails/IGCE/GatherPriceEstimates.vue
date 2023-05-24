@@ -99,6 +99,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   tempEstimateDataSource: IgceEstimateDTO[][] = [];
   estimateDataSource: IgceEstimateDTO[][] = [];
   classLevels = ClassificationRequirements.selectedClassificationLevels;
+  cdsClassifications = ClassificationRequirements.cdsSolution?.selected_periods
   isPanelOpen = [0]; //0 is open; 1 is closed.
   cdsSNOWRecord: CrossDomainSolutionDTO|null|undefined ;
 
@@ -150,6 +151,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
 
   public async createPopString(): Promise<string> {
+    // if(this.cdsClassifications){}
+    const selectedCDSPeriods = this.cdsClassifications?.split(",")
+    console.log(selectedCDSPeriods)
     const selectedPeriods: Record<string, string> = {}
     Periods.periods.forEach(period => {
       const sysId = period.sys_id
