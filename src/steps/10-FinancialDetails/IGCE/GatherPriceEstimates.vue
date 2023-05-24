@@ -151,16 +151,26 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
 
   public async createPopString(): Promise<string> {
-    // if(this.cdsClassifications){}
-    const selectedCDSPeriods = this.cdsClassifications?.split(",")
-    console.log(selectedCDSPeriods)
     const selectedPeriods: Record<string, string> = {}
-    Periods.periods.forEach(period => {
-      const sysId = period.sys_id
-      if(sysId){
-        selectedPeriods[sysId] = period.period_unit_count
-      }
-    })
+
+    if(this.cdsClassifications){
+      const selectedCDSPeriods = this.cdsClassifications?.split(",")
+      selectedCDSPeriods.forEach((cds)=>{
+        Periods.periods.forEach(period => {
+          const sysId = period.sys_id
+          if(cds === sysId){
+            selectedPeriods[sysId] = period.period_unit_count
+          }
+        })
+      })
+    }else{
+      Periods.periods.forEach(period => {
+        const sysId = period.sys_id
+        if(sysId){
+          selectedPeriods[sysId] = period.period_unit_count
+        }
+      })
+    }
     return JSON.stringify(selectedPeriods)
   }
 
