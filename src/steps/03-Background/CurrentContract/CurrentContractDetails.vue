@@ -132,7 +132,9 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        this.currentData.current_contract_exists="YES"
+        this.currentData.current_contract_exists = "YES"
+        this.currentData.acquisition_package =
+          AcquisitionPackage.packageId as string;
         await AcquisitionPackage.saveData<CurrentContractDTO>({
           data: this.currentData,
           storeProperty: StoreProperties.CurrentContract,
