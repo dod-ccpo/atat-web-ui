@@ -26,6 +26,7 @@
             :selectedSalutation.sync="selectedSalutation"
             :suffix.sync="suffix"
             :loaded="loaded"
+            :validation-msg-custom="'your Financial POC’s'"
           />
         </div>
       </v-col>

@@ -15,7 +15,8 @@
     />
     <ATATContactForm
         v-if="showContactForm"
-        role-legend="What role best describes this individual's affiliation with the DOD?"
+        :id-prefix="POCType"
+        role-legend="What role best describes this individual’s affiliation with the DOD?"
         :role-legend-font-normal-weight="true"
         :show-job-title="true"
         :title.sync="title"
@@ -33,6 +34,7 @@
         :suffix.sync="suffix"
         :loaded="loaded"
         :roles.sync="contactRoles"
+        :validation-msg-custom="'your ' + POCType + ' POC’s'"
     />
   </div>
 </template>
@@ -216,45 +218,37 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
   /**
    * Checks to see if the certification POC type changed and takes one of
    * the actions below.
-   * 1. If the user updates the POC type from "NEW" to one of the other 3 types, then
-   *      DELETES the contact associated with "NEW" and updates the fair opportunity
-   *      properties accordingly
-   * 2. If the user changes the POC type from one of the other 3 types to "NEW",
+   * 1. If the user changes the POC type from one of the other 3 types to "NEW",
    *      then creates a NEW contact and updates the fair opportunity
    *      properties accordingly
-   * 3. If the user changes the POC type among one of the 3 existing contact types,
+   * 2. If the user changes the POC type among one of the 3 existing contact types,
    *      then just updates the fair opportunity properties.
-   * 4. If the POC type has not changed, then checks if any of the form data has changed
+   * 3. If the POC type has not changed, then checks if any of the form data has changed
    *      and makes a call to save the changed data.
    */
   @Watch('_saveForm')
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      await AcquisitionPackage.setValidateNow(true);
-      const savedPOCType =
-          (AcquisitionPackage.fairOpportunity as FairOpportunityDTO)[this.POCTypePropName];
       const fairOpportunity = {} as FairOpportunityDTO;
+      let setFairOpportunity = false;
+      let contactSysId = "";
       if (this.selectedOptionType === "NEW") {
         // user changed from other types to NEW or could be first time filling the form.
         if (this.hasCurrentContactFormChanged()) {
-          let savedContact = await ContactData.saveContact(this.currentContactFormData);
-          savedContact = convertColumnReferencesToValues(savedContact);
-          fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
-          fairOpportunity[this.POCPropName] = savedContact.sys_id;
-          await AcquisitionPackage.setFairOpportunity(fairOpportunity);
-          this.selectedOption.value = savedContact.sys_id as string;
+          setFairOpportunity = true;
+          const savedContact = await ContactData.saveContact(this.currentContactFormData);
+          contactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
         }
-      } else if (savedPOCType === "NEW") {// user has changed from NEW to other type
-        // should not delete the contact because the contact could have been linked to others.
-        fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
-        fairOpportunity[this.POCPropName] = this.selectedOption?.value;
-        await AcquisitionPackage.setFairOpportunity(fairOpportunity);
       } else { // user has changed across one of the 3 existing contact types (NOT NEW)
         if (this.hasFairOpportunityDataChanged()) {
-          fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
-          fairOpportunity[this.POCPropName] = this.selectedOption?.value;
-          await AcquisitionPackage.setFairOpportunity(fairOpportunity)
+          setFairOpportunity = true;
+          contactSysId = this.selectedOption?.value;
         }
+      }
+      if (setFairOpportunity) {
+        fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
+        fairOpportunity[this.POCPropName] = contactSysId;
+        await AcquisitionPackage.setFairOpportunity(fairOpportunity);
       }
     } catch (error) {
       console.log(error);

@@ -47,8 +47,13 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
    * This is a workaround to save the state.
    */
   protected async saveOnLeave(): Promise<boolean> {
-    this.saveTechForm = true;
-    this.saveReqForm = true;
+    await AcquisitionPackage.setValidateNow(true);
+    const isValid = this.$refs.form.validate();
+    console.log("Is valid: " + isValid)
+    if (isValid) {
+      this.saveTechForm = true;
+      this.saveReqForm = true;
+    }
     return true;
   }
 }

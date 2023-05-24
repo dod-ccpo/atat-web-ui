@@ -2,13 +2,13 @@
 <template>
   <section class="mt-10">
     <ATATRadioGroup
-      id="ContactAffiliation"
+      :id="idPrefix + 'ContactAffiliation'"
       :legend="roleLegend"
       :legend-font-normal-weight="roleLegendFontNormalWeight"
       :items="contactRoles"
       :value.sync="_selectedRole"
       :rules="[
-        $validators.required('Please enter your role.'),
+        $validators.required('Enter ' + validationMsgCustom + ' role.'),
       ]"
       class="mb-10"
       @radioButtonSelected="contactTypeChange"
@@ -16,7 +16,7 @@
 
     <v-form ref="atatGlobalContact">
       <ATATSelect
-        id="Branch"
+        :id="idPrefix + 'Branch'"
         v-show="_selectedRole === 'MILITARY'"
         v-model="_selectedBranch"
         class="_input-max-width mb-10"
@@ -28,14 +28,14 @@
         :returnObject="true"
         :rules="[
           $validators.required(
-            'Please select your service branch.'
+            'Select ' + validationMsgCustom + ' service branch.'
           ),
         ]"
       />
 
       <div v-show="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
         <ATATAutoComplete
-          id="Rank"
+          :id="idPrefix + 'Rank'"
           v-show="_selectedRole === 'MILITARY'"
           label="Rank"
           titleKey="name"
@@ -44,7 +44,7 @@
           :selectedItem.sync="_selectedRank"
           :rules="[
             $validators.required(
-              'Please select your rank.'
+              'Select ' + validationMsgCustom + ' rank.'
             ),
           ]"
           class="_input-max-width mb-7"
@@ -52,7 +52,7 @@
         />
 
         <ATATSelect
-          id="Salutation"
+          :id="idPrefix + 'Salutation'"
           v-show="_selectedRole === 'CIVILIAN'"
           class="_input-max-width mb-7"
           label="Salutation"
@@ -66,12 +66,12 @@
           <v-col class="col-12 col-lg-3">
             <ATATTextField
               label="First name"
-              id="FirstName"
+              :id="idPrefix + 'FirstName'"
               class="_input-max-width"
               :value.sync="_firstName"
               :rules="[
                 $validators.required(
-                  'Please enter your first name.'
+                  'Enter ' + validationMsgCustom + ' first name.'
                 ),
               ]"
             />
@@ -79,7 +79,7 @@
           <v-col class="col-12 col-lg-3">
             <ATATTextField
               label="Middle name"
-              id="MiddleName"
+              :id="idPrefix + 'MiddleName'"
               :optional="true"
               class="_input-max-width"
               :value.sync="_middleName"
@@ -88,12 +88,12 @@
           <v-col class="col-12 col-lg-3">
             <ATATTextField
               label="Last name"
-              id="LastName"
+              :id="idPrefix + 'LastName'"
               class="_input-max-width"
               :value.sync="_lastName"
               :rules="[
                 $validators.required(
-                  'Please enter your last name.'
+                  'Enter ' + validationMsgCustom + ' last name.'
                 ),
               ]"
             />
@@ -101,7 +101,7 @@
           <v-col class="col-12 col-lg-3">
             <ATATTextField
               label="Suffix"
-              id="Suffix"
+              :id="idPrefix + 'Suffix'"
               :optional="true"
               width="80"
               :value.sync="_suffix"
@@ -111,19 +111,19 @@
 
         <ATATTextField
             v-if="showJobTitle"
-            id="JobTitle"
+            :id="idPrefix + 'JobTitle'"
             label="Job Title"
             class="_input-max-width mb-10"
             :value.sync="_title"
             :rules="[
             $validators.required(
-              'Please enter job title.'
+              'Enter ' + validationMsgCustom + ' job title.'
             )
           ]"
         />
 
         <ATATPhoneInput
-          id="PhoneNumber"
+          :id="idPrefix + 'PhoneNumber'"
           label="Phone number"
           class="width-100 mb-10"
           :value.sync="_phone"
@@ -131,7 +131,7 @@
           :extensionValue.sync="_phoneExt"
           :rules="[
             $validators.required(
-              'Please enter your phone number'
+              'Enter ' + validationMsgCustom + ' phone number.'
             ),
             $validators.isPhoneNumberValid(this._selectedPhoneCountry),
           ]"
@@ -139,14 +139,14 @@
 
         <ATATTextField
             v-if="showEmail"
-          id="EmailAddress"
+          :id="idPrefix + 'EmailAddress'"
           label="Email address"
           class="_input-max-width mb-10"
           helpText="Enter a .mil or .gov email address."
           :value.sync="_email"
           :rules="[
             $validators.required(
-              'Please enter your email address.'
+              'Enter ' + validationMsgCustom + ' email address.'
             ),
             $validators.isEmail(),
           ]"
@@ -214,6 +214,8 @@ export default class ATATContactForm extends Vue {
   @Prop({default: true}) private showEmail?: boolean;
   @PropSync("phone") private _phone?: string;
   @PropSync("phoneExt") private _phoneExt?: string;
+  @Prop({default: "contactForm"}) public idPrefix?: string;
+  @Prop({default: "a"}) public validationMsgCustom?: string;
 
   // watchers
 
