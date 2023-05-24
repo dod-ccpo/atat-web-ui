@@ -925,6 +925,9 @@ export class AcquisitionPackageStore extends VuexModule {
       //only save VALID contracts to SNOW
       if (sysID !== "" && isValid){  
         await api.currentContractTable.update(sysID, contract)
+      } else if ( // if current_contract_exists === NO
+        contract.current_contract_exists?.toUpperCase()==="NO"){
+        await api.currentContractTable.create(contract);
       } else if (isValid){
         await api.currentContractTable.create(contract);
       } 

@@ -248,13 +248,19 @@ const numberOfExistingContracts =(): number =>{
 }
 
 export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
-  if (hasExceptionToFairOpp()){
-    return routeNames.ProcurementHistorySummary
-  }
+  const currentContracts =  AcquisitionPackage.currentContracts || [];
+  const doesNotNeedContract = currentContracts.every(
+    (c)=>c.current_contract_exists==="NO"
+  )
+  const fromCurrentEnviroment =  current === routeNames.CurrentEnvironment;
 
-  return current === routeNames.CurrentContractDetails
-    ? routeNames.CurrentEnvironment
-    : routeNames.CurrentContractDetails;
+  if (
+    doesNotNeedContract
+    && fromCurrentEnviroment
+  ){
+    return routeNames.CurrentContract;
+  } 
+  return routeNames.ProcurementHistorySummary
 }
 
 export const ReplicateAndOptimizeResolver = (current: string): string => {
