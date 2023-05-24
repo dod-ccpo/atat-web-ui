@@ -845,8 +845,6 @@ export class AcquisitionPackageStore extends VuexModule {
     existingContractIndex > -1 
       ? currentContracts[existingContractIndex] = contract
       : currentContracts.push(contract);
-    console.log("setCurrentContract")
-    console.log(currentContracts)
     await this.doSetCurrentContracts(currentContracts);
   }
 
@@ -864,8 +862,7 @@ export class AcquisitionPackageStore extends VuexModule {
       async (c)=> {await api.currentContractTable.remove(c as string)}
     )
     //remove STORE listings
-    console.log("clearCurrentContractInfo[]")
-    await this.doSetCurrentContracts([]);
+    this.doSetCurrentContracts([]);
   }
 
   @Action({rawError: true})
@@ -881,8 +878,6 @@ export class AcquisitionPackageStore extends VuexModule {
     const updatedContracts = this.currentContracts?.filter(
       (c)=> c.sys_id !== sysId
     ) as CurrentContractDTO[];
-    console.log('deleteContract')
-    console.log(updatedContracts)
     await this.doSetCurrentContracts(updatedContracts);
   }
 
@@ -907,8 +902,6 @@ export class AcquisitionPackageStore extends VuexModule {
     const currentContract = await initialCurrentContract();
     currentContract.current_contract_exists = exists;
     currentContract.instance_number = 1;
-    console.log('initializeCurrentContract')
-    console.log([currentContract]);
     await this.doSetCurrentContracts([currentContract]);
   }
 
@@ -936,9 +929,6 @@ export class AcquisitionPackageStore extends VuexModule {
     const invalidContracts = await this.currentContracts?.filter(
       (c)=>c.is_valid === false
     ) as CurrentContractDTO[]
-    console.log('udpateCurrentContractsSNOW')
-    
-    console.log([...updatedContracts, ...invalidContracts])
     await this.doSetCurrentContracts([...updatedContracts, ...invalidContracts]);
   }
 
@@ -1022,8 +1012,6 @@ export class AcquisitionPackageStore extends VuexModule {
           await this.updateAcquisitionPackage();
         }
       }
-
-      this.clearCurrentContractInfo();
     } else {
       const techniques: MarketResearchTechniquesDTO[] 
         = await api.marketResearchTechniquesTable.all();
@@ -1308,7 +1296,6 @@ export class AcquisitionPackageStore extends VuexModule {
           const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
           await this.doSetCurrentContracts(tempArray);
         }
-     
       } else {
         this.setCurrentContract(
           initialCurrentContract()

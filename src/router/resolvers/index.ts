@@ -39,7 +39,7 @@ export const AcorsRouteResolver = (current: string): string => {
   return routeNames.AcorInformation;
 };
 
-const hasNoExceptionToFairOpp = (): boolean => {
+const evalPlanRequired = (): boolean => {
   return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
 }
 
@@ -62,7 +62,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
-  if (!hasNoExceptionToFairOpp() || missingEvalPlanMethod(evalPlan)) {
+  if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
     return routeNames.PeriodOfPerformance;
   }
   Steps.setAdditionalButtonText({
@@ -86,7 +86,7 @@ export const BVTOResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
     // moving backwards
-    if (!hasNoExceptionToFairOpp() || missingEvalPlanMethod(evalPlan)) {
+    if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
       return routeNames.CreateEvalPlan;
     }
   }
@@ -105,14 +105,14 @@ const isProdEnv = (): boolean | null => {
 
 export const ProposedCSPRouteResolver = (current: string): string => {
   // TODO - remove isProdEnv condition below when J&A/MRR ready for production
-  return current === routeNames.Exceptions && (isProdEnv() || hasNoExceptionToFairOpp()) 
+  return current === routeNames.Exceptions && (isProdEnv() || evalPlanRequired()) 
     ? routeNames.CreateEvalPlan
     : routeNames.ProposedCSP
 };
 
 export const CertificationPOCsRouteResolver = (current: string): string => {
   // TODO - remove isProdEnv condition below when J&A/MRR ready for production
-  return (isProdEnv() || hasNoExceptionToFairOpp()) && current === routeNames.CreateEvalPlan
+  return (isProdEnv() || evalPlanRequired()) && current === routeNames.CreateEvalPlan
     ? routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
@@ -172,16 +172,6 @@ const hasLogicalFollowOn = (): boolean => {
     === "YES_FAR_16_505_B_2_I_C"
 }
 
-
-// const hasNoException =(): boolean =>{
-//   const currentContracts = AcquisitionPackage.currentContracts;
-//   // if `no` is selected in step 2 Exception to Fair Opportunity
-//    const singleContract = currentContracts?.length === 1 
-//     && AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
-//   return currentContracts && currentContracts?.length > 0 || false;
-// }
-
-
 export const CurrentContractRouteResolver = (current: string): string => {
   if (hasLogicalFollowOn()) {
     // if second option in step 2 Exception to Fair Opportunity is selected
@@ -208,7 +198,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
   if (doesNotNeedContract){
     return routeNames.CurrentEnvironment;
   } else if (
-    hasNoExceptionToFairOpp()
+    !hasExceptionToFairOpp()
   ) {
     return routeNames.CurrentContractDetails;
   } else if (
@@ -252,14 +242,20 @@ export const ProcurementHistorySummaryRouteResolver = (current: string): string 
   const doesNotNeedContract = currentContracts.every(
     (c)=>c.current_contract_exists==="NO"
   )
-  const fromCurrentEnviroment =  current === routeNames.CurrentEnvironment;
-
+  const fromCurrentEnvironment =  current === routeNames.CurrentEnvironment;
+  
   if (
     doesNotNeedContract
-    && fromCurrentEnviroment
+    && fromCurrentEnvironment
   ){
     return routeNames.CurrentContract;
-  } 
+  } else if (
+    !hasExceptionToFairOpp()
+  ){
+    return !fromCurrentEnvironment
+      ? routeNames.CurrentEnvironment
+      : routeNames.CurrentContractDetails
+  }
   return routeNames.ProcurementHistorySummary
 }
 

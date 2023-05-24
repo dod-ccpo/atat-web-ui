@@ -85,8 +85,9 @@
                     `The start date must be before the expiration date.`
                   ),
                   $validators.compareDatesAsc(
-                    minDate,
-                    `The start date must be after the start minimum date.`
+                    todaysDateISO,
+                    `The start date must be after the start minimum date `
+                      + todaysDateMMDDYYYY + `.`
                   )
                 ]" 
                 />
@@ -108,8 +109,9 @@
                   ),
                   $validators.isDateValid('Please enter a valid PoP expiration date.'),
                   $validators.compareDatesAsc(
-                    startDate,
-                    `The expiration date must be after the start date.`
+                    todaysDateISO,
+                    `The expiration date must be after the start minimum date ` 
+                        + todaysDateMMDDYYYY + `.`
                   ),
                 ]"  
                 />
@@ -273,8 +275,12 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     return formatISO(new Date(d), { representation: 'date' }) 
   }
 
-  get startDate():string{
+  get todaysDateISO():string{
     return formatISO(new Date(new Date()), { representation: 'date' }) 
+  }
+
+  get todaysDateMMDDYYYY():string{
+    return format(new Date(new Date()), 'P');
   }
 
   get expirationDate():string{
@@ -317,24 +323,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       && this.currentData.contract_order_expiration_date === "";
   }
 
-  // private compareDate(type:string): string {
-  //   let date = "";
-  //   switch(type){
-  //   case "START":
-  //     date = this.currentData.contract_order_start_date as string;
-  //     break;
-  //   case "EXPIRATION":
-  //     date = this.currentData.contract_order_expiration_date as string;
-  //     break;
-  //   case "MIN":
-  //     date = this.minDate as string;
-  //     break;
-  //   }
-  //   console.log(date)
-  //   return date ? formatDate(date, "ISO") : "";
-  // }
-
-
   private removeSharedErrorMessages(isStart: boolean):void{
     const startTextBox = (this.$refs.startDatePicker as unknown as ATATDatePicker)
       .$refs["atatDatePicker"];
@@ -342,20 +330,8 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     const expirationTextBox = (this.$refs.expirationDatePicker as unknown as ATATDatePicker)
       .$refs["atatDatePicker"];
     
-    //if (this.isDatePickersEmpty){
-    // startTextBox.validate();
-    // expirationTextBox.validate();
-    //} //else {
-    //   if (isStart){
-    //     expirationTextBox.validate();
-    //     expirationTextBox.errorBucket = [];
-    //   } else {
-    //     startTextBox.validate();
-    //     startTextBox.errorBucket = [];
-    //   }
     this.startDPSharedErrorMessages = [];
     this.expirationDPSharedErrorMessages = [];
-    // }
   }
 
   private get isExceptiontoFairOpp(): boolean {
@@ -430,9 +406,16 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         this.currentData.acquisition_package = AcquisitionPackage.packageId;
         this.currentData.is_valid = await this.$refs.form.validate();
         this.currentContract.current_contract_exists = "YES"
+        // if this.isExceptiontoFairOpp save to Store now &&
+        // save to SNOW on next page > ProcurementHistory page
         AcquisitionPackage.setCurrentContract(
           this.currentData
         )
+        // if !this.isExceptiontoFairOpp save to Store/SNOW now
+        if (!this.isExceptiontoFairOpp){
+          const currentContracts = await AcquisitionPackage.currentContracts || [];
+          AcquisitionPackage.updateCurrentContractsSNOW(currentContracts);
+        }
       }
     } catch (error) {
       console.log(error);

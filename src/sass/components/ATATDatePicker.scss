@@ -76,8 +76,7 @@
                 width: 39px;
                 height: 38px;
                 &.v-btn--disabled {
-                    color: $white !important;
-
+                    color: $disabled-dark !important;
                 }
                 &.v-btn--active.accent,
                 &.v-btn--active.accent:hover,

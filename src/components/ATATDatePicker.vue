@@ -190,7 +190,6 @@ export default class ATATDatePicker extends Vue {
       this.date = this.reformatDate(this.dateFormatted);
       this.updateDateValueProperty();
       this.removeErrors();
-      
     }
     Vue.nextTick(() => {
       this.$refs.atatDatePicker.validate()
@@ -200,11 +199,6 @@ export default class ATATDatePicker extends Vue {
   }
 
   private onFocus(): void {
-    this.menu = false;
-  }
-
-  public change(): void{
-    console.log('hi there')
     this.menu = false;
   }
 
@@ -261,7 +255,6 @@ export default class ATATDatePicker extends Vue {
       this.$refs.atatDatePicker.errorBucket = !this.menu 
         ? errors
         : [];
-      console.log(errors)
       this.$emit("hasErrorMessages", errors );
     })
   }
@@ -283,6 +276,9 @@ export default class ATATDatePicker extends Vue {
   private dateInputMask() {
     const dp = document.getElementById(this.id + "DatePickerTextField") as HTMLInputElement;
     dp.addEventListener('keypress', (e: KeyboardEvent)=>{
+      
+      /// don't show menu when user is typing date
+      // makes validation hard to manage
       this.menu=false;
       if (e.key.toLowerCase()==="enter"){
         this.$refs.atatDatePicker.validate();
@@ -340,7 +336,6 @@ export default class ATATDatePicker extends Vue {
   public validateNowChange(): void {
     if(!this.$refs.atatDatePicker.validate()){
       this.setErrorMessage();
-      // this.additionalValidateActions("blur");
     }
   }
 
@@ -371,16 +366,7 @@ export default class ATATDatePicker extends Vue {
     this.formatDateWatcher();
     this.dateInputMask();
     this.removeErrors();
-    // this.addEvents();
   }
-
-  // private addEvents():void{
-  //   dp.addEventListener('keypress', (e: KeyboardEvent)=>{
-      
-
-  //     this.menu=false;
-  //   });
-  //}
 
 }
 </script>

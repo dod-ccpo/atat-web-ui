@@ -123,11 +123,12 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         let data = this.currentData;
+        // update store
         await AcquisitionPackage.clearCurrentContractInfo();
         await AcquisitionPackage.initializeCurrentContract(
           data.current_contract_exists as string,
         );
-        // save record if NO is selected
+        // update SNOW if NO is selected
         if (data.current_contract_exists?.toUpperCase()==="NO")
         {
           const currentContracts = await AcquisitionPackage.currentContracts || [];
