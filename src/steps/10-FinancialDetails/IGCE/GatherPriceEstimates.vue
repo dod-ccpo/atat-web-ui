@@ -154,7 +154,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     Periods.periods.forEach(period => {
       const sysId = period.sys_id
       if(sysId){
-        selectedPeriods[sysId] = "1"
+        selectedPeriods[sysId] = period.period_unit_count
       }
     })
     return JSON.stringify(selectedPeriods)
