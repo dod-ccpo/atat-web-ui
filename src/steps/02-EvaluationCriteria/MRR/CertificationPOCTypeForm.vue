@@ -148,17 +148,6 @@ export default class CertificationPOCTypeForm extends Vue {
   }
 
   private get currentContactFormData(): ContactDTO {
-    const sys_id = this.sysId;
-    const role = this.selectedRole;
-    const rank_components = this?.selectedRank ? this.selectedRank?.sysId: "";
-    const suffix = this.suffix;
-    const salutation = this.selectedSalutation;
-    const first_name = this.firstName;
-    const last_name = this.lastName;
-    const middle_name = this.middleName;
-    const email = "";
-    const grade_civ ="";
-    const title = this.title;
     const countryCode = this.selectedPhoneCountry
       ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
       : undefined;
@@ -179,23 +168,23 @@ export default class CertificationPOCTypeForm extends Vue {
     }
     const phoneExt = this.phoneExt;
     return {
-      sys_id,
-      first_name,
-      last_name,
-      middle_name,
-      role,
-      rank_components,
-      suffix,
-      salutation,
+      sys_id: this.sysId,
+      first_name: this.firstName,
+      last_name: this.lastName,
+      middle_name: this.middleName,
+      role: this.selectedRole,
+      rank_components: this?.selectedRank ? this.selectedRank?.sysId: "",
+      suffix: this.suffix,
+      salutation: this.selectedSalutation,
       phone: phone || "",
-      phone_extension: phoneExt || "", // not used on Mission Owner contact entry form
-      email,
+      phone_extension: phoneExt || "",
+      email: "",
       type: this.selectedOptionType as string,
       dodaac: "",
       can_access_package: "true",
-      grade_civ,
-      title,
-      manually_entered: "", // not used on Mission Owner contact entry form
+      grade_civ: "",
+      title: this.title,
+      manually_entered: ""
     };
   }
 
