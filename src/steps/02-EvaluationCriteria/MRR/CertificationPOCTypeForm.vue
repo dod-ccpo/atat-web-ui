@@ -41,10 +41,9 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins, Prop, PropSync, Watch} from "vue-property-decorator";
+import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
 import {CountryObj, RadioButton, RankData, SelectData} from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {ContactDTO, FairOpportunityDTO} from "@/api/models";
 import ContactData from "@/store/contactData";
@@ -54,6 +53,7 @@ import _ from "lodash";
 import {Countries} from "@/components/ATATPhoneInput.vue";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import {convertColumnReferencesToValues} from "@/api/helpers";
+import Vue from "vue";
 
 @Component({
   components: {
@@ -62,7 +62,7 @@ import {convertColumnReferencesToValues} from "@/api/helpers";
   }
 })
 
-export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
+export default class CertificationPOCTypeForm extends Vue {
   @Prop({default: "Technical"}) private POCType!: "Technical" | "Requirements";
   @Prop({default: "1"}) private sequence!: string;
   @PropSync("saveForm") private _saveForm!: boolean;
@@ -149,13 +149,16 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
 
   private get currentContactFormData(): ContactDTO {
     const sys_id = this.sysId;
-    const first_name = this.firstName;
-    const last_name = this.lastName;
-    const middle_name = this.middleName;
     const role = this.selectedRole;
     const rank_components = this?.selectedRank ? this.selectedRank?.sysId: "";
     const suffix = this.suffix;
     const salutation = this.selectedSalutation;
+    const first_name = this.firstName;
+    const last_name = this.lastName;
+    const middle_name = this.middleName;
+    const email = "";
+    const grade_civ ="";
+    const title = this.title;
     const countryCode = this.selectedPhoneCountry
       ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
       : undefined;
@@ -175,9 +178,6 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
       phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
     }
     const phoneExt = this.phoneExt;
-    const email = "";
-    const grade_civ ="";
-    const title = this.title;
     return {
       sys_id,
       first_name,
@@ -227,7 +227,7 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
    *      and makes a call to save the changed data.
    */
   @Watch('_saveForm')
-  protected async saveOnLeave(): Promise<boolean> {
+  protected async save(): Promise<void> {
     try {
       const fairOpportunity = {} as FairOpportunityDTO;
       let setFairOpportunity = false;
@@ -253,7 +253,6 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
     } catch (error) {
       console.log(error);
     }
-    return true;
   }
 
   /**
@@ -301,6 +300,12 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
     this.sysId = savedContactDTO.sys_id as string;
     this.certificationPOCContactDTO.can_access_package = "true";
     const branches = await ContactData.LoadMilitaryBranches();
+    this.selectedSalutation = savedContactDTO.salutation;
+    this.firstName = savedContactDTO.first_name;
+    this.middleName = savedContactDTO.middle_name;
+    this.lastName = savedContactDTO.last_name;
+    this.suffix = savedContactDTO.suffix;
+    this.title = savedContactDTO.title;
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
       const {value} = choice;
@@ -337,12 +342,6 @@ export default class CertificationPOCTypeForm extends Mixins(SaveOnLeave) {
             }
             : { grade: "", name: "", sysId: "" };
     }
-    this.selectedSalutation = savedContactDTO.salutation;
-    this.firstName = savedContactDTO.first_name;
-    this.middleName = savedContactDTO.middle_name;
-    this.lastName = savedContactDTO.last_name;
-    this.suffix = savedContactDTO.suffix;
-    this.title = savedContactDTO.title;
     this.phoneExt = savedContactDTO.phone_extension;
     if (savedContactDTO.phone.length > 0) {
       const parsedPhone = parsePhoneNumber(savedContactDTO.phone);

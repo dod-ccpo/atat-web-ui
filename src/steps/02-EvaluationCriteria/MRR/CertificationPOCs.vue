@@ -12,11 +12,11 @@
             individuals must have authority to certify that the supporting data, respective
             to their area of expertise, is accurate and complete.
           </p>
-          <CertificationPOCTypeForm
+          <CertificationPOCTypeForm id="technicalForm"
               POCType="Technical" sequence="1" :save-form.sync="saveTechForm">
           </CertificationPOCTypeForm>
           <hr>
-          <CertificationPOCTypeForm
+          <CertificationPOCTypeForm id="requirementsForm"
               POCType="Requirements" sequence="2" :save-form.sync="saveReqForm">
           </CertificationPOCTypeForm>
         </v-col>

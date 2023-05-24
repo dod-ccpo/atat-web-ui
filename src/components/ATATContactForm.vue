@@ -1,6 +1,6 @@
 
 <template>
-  <section class="mt-10">
+  <section :id="idPrefix + 'contactForm'" class="mt-10">
     <ATATRadioGroup
       :id="idPrefix + 'ContactAffiliation'"
       :legend="roleLegend"
