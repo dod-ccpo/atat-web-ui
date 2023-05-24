@@ -69,9 +69,10 @@
                 id="Start" 
                 :value.sync="currentContract.contract_order_start_date" 
                 label="Start date" 
-                :max="maxDate"
                 placeHolder="MM/DD/YYYY"
-                class="mr-5"
+                :class="[
+                    {'error--text':startDPSharedErrorMessages.length>0 },
+                    'mr-5']"
                 :showErrors="false"
                 @hasErrorMessages="setStartDateErrorMessages"
                 :rules="[
@@ -80,8 +81,12 @@
                   ),
                   $validators.isDateValid('Please enter a valid PoP start date.'),
                   $validators.compareDatesDesc(
-                    getDateValue(false), 
+                    expirationDate,
                     `The start date must be before the expiration date.`
+                  ),
+                  $validators.compareDatesAsc(
+                    minDate,
+                    `The start date must be after the start minimum date.`
                   )
                 ]" 
                 />
@@ -92,8 +97,8 @@
                 :value.sync="currentContract.contract_order_expiration_date" 
                 label="Expiration date"
                 :min="minDate"
-                :max="JWCCMaxDate" 
                 placeHolder="MM/DD/YYYY"
+                :class="{'error--text':expirationDPSharedErrorMessages.length>0}"
                 ref="expirationDatePicker"
                 :showErrors="false"
                 @hasErrorMessages="setExpirationDateErrorMessages"
@@ -103,10 +108,10 @@
                   ),
                   $validators.isDateValid('Please enter a valid PoP expiration date.'),
                   $validators.compareDatesAsc(
-                    getDateValue(true),
+                    startDate,
                     `The expiration date must be after the start date.`
-                  )
-                ]"
+                  ),
+                ]"  
                 />
                 
                 
@@ -191,7 +196,6 @@
               :value.sync="currentContract.contract_order_expiration_date" 
               label="Contract/Order expiration date" 
               :min="tomorrowDate"
-              :max="JWCCMaxDate"
               placeHolder="MM/DD/YYYY" 
               tooltipText="Use the period of performance end date for your task order. If you
                   do not have a task order, use your contract end date." />
@@ -216,8 +220,8 @@ import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 import AcquisitionPackage, {initialCurrentContract, } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO, ReferenceColumn } from "@/api/models";
-import { hasChanges } from "@/helpers";
-import { add, format, formatISO, isValid } from "date-fns";
+import { formatDate, hasChanges } from "@/helpers";
+import { add, compareAsc, format, formatISO, isValid } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 import _, { isString } from "lodash";
 import { thisExpression, throwStatement } from "@babel/types";
@@ -266,8 +270,16 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   get maxDate():string{
     const d = this.currentContract.contract_order_expiration_date 
-      || format(new Date(this.JWCCMaxDate), 'P');
     return formatISO(new Date(d), { representation: 'date' }) 
+  }
+
+  get startDate():string{
+    return formatISO(new Date(new Date()), { representation: 'date' }) 
+  }
+
+  get expirationDate():string{
+    const d = this.currentContract.contract_order_expiration_date || "";
+    return d !=="" ? formatISO(new Date(d), { representation: 'date' }) : "" 
   }
 
   get tomorrowDate():string{
@@ -275,7 +287,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     const d = format(tomorrow, 'P');
     return formatISO(tomorrow, { representation: 'date' }) 
   }
-  
+
   private startDPSharedErrorMessages:string[] = [];
   private expirationDPSharedErrorMessages: string[] = [];
 
@@ -305,11 +317,23 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       && this.currentData.contract_order_expiration_date === "";
   }
 
-  private getDateValue(isStart:boolean): string{
-    return isStart
-      ? this.currentContract.contract_order_start_date as string
-      : this.currentContract.contract_order_expiration_date as string
-  }
+  // private compareDate(type:string): string {
+  //   let date = "";
+  //   switch(type){
+  //   case "START":
+  //     date = this.currentData.contract_order_start_date as string;
+  //     break;
+  //   case "EXPIRATION":
+  //     date = this.currentData.contract_order_expiration_date as string;
+  //     break;
+  //   case "MIN":
+  //     date = this.minDate as string;
+  //     break;
+  //   }
+  //   console.log(date)
+  //   return date ? formatDate(date, "ISO") : "";
+  // }
+
 
   private removeSharedErrorMessages(isStart: boolean):void{
     const startTextBox = (this.$refs.startDatePicker as unknown as ATATDatePicker)
@@ -318,20 +342,20 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     const expirationTextBox = (this.$refs.expirationDatePicker as unknown as ATATDatePicker)
       .$refs["atatDatePicker"];
     
-    if (this.isDatePickersEmpty){
-      startTextBox.validate();
-      expirationTextBox.validate();
-    } else {
-      if (isStart){
-        expirationTextBox.validate();
-        expirationTextBox.errorBucket = [];
-      } else {
-        startTextBox.validate();
-        startTextBox.errorBucket = [];
-      }
-      this.startDPSharedErrorMessages = [];
-      this.expirationDPSharedErrorMessages = [];
-    }
+    //if (this.isDatePickersEmpty){
+    // startTextBox.validate();
+    // expirationTextBox.validate();
+    //} //else {
+    //   if (isStart){
+    //     expirationTextBox.validate();
+    //     expirationTextBox.errorBucket = [];
+    //   } else {
+    //     startTextBox.validate();
+    //     startTextBox.errorBucket = [];
+    //   }
+    this.startDPSharedErrorMessages = [];
+    this.expirationDPSharedErrorMessages = [];
+    // }
   }
 
   private get isExceptiontoFairOpp(): boolean {
@@ -354,20 +378,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   } as CurrentContractDTO;
 
   private get currentData(): CurrentContractDTO {
-    // const contract = 
     return this.currentContract ? this.currentContract : initialCurrentContract();
-    // return {
-    //   incumbent_contractor_name: contract?.incumbent_contractor_name || "",
-    //   contract_number: contract?.contract_number || "",
-    //   task_delivery_order_number: contract?.task_delivery_order_number || "",
-    //   contract_order_expiration_date: contract?.contract_order_expiration_date || "",
-    //   contract_order_start_date: contract?.contract_order_start_date || "",
-    //   competitive_status: contract?.competitive_status || "",
-    //   business_size: contract?.business_size || "",
-    //   instance_number: contract?.instance_number || 1,
-    //   current_contract_exists: contract?.current_contract_exists || "",
-    //   sys_id: contract?.sys_id || ""
-    // };
   }
 
   public async mounted(): Promise<void> {

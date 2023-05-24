@@ -4,13 +4,13 @@
     <v-menu
       ref="atatDatePickerMenu"
       v-model="menu"
-      :close-on-content-click="false"
       min-width="auto"
       nudge-bottom="getMenuTop"
       :attach="'#' + id + 'DatePickerContainer'"
       absolute
       :nudge-top="0"
       :nudge-left="0"
+      
     >
       <template v-slot:activator="{ on, attrs }">
         <div class="d-flex align-center mb-2" v-if="label">
@@ -46,6 +46,7 @@
           :rules="rules"
           @blur="onBlur($event)"
           @focus ="onFocus($event)"
+          @keypress:enter="menu=false"
           :validate-on-blur="validateOnBlur"
           autocomplete="off"
         >
@@ -78,6 +79,7 @@
         :min="min"
         :max="max"
         @click:date="datePickerClicked"
+        @keypress:enter="onBlur()"
         scrollable
       ></v-date-picker>
     </v-menu>
@@ -165,6 +167,8 @@ export default class ATATDatePicker extends Vue {
   protected showStandardCalendar(val: boolean): void {
     if (val) {
       setTimeout(()=>(this.activePicker = "DATE"));
+    } else {
+      this.$refs.atatDatePicker.validate();
     }
   }
 
@@ -186,17 +190,21 @@ export default class ATATDatePicker extends Vue {
       this.date = this.reformatDate(this.dateFormatted);
       this.updateDateValueProperty();
       this.removeErrors();
+      
     }
     Vue.nextTick(() => {
-      if (!this.$refs.atatDatePicker.validate()){
-        this.setErrorMessage();
-        this.additionalValidateActions("textbox");
-      }
-     
+      this.$refs.atatDatePicker.validate()
+      this.setErrorMessage();
+      this.additionalValidateActions("textbox");
     });
   }
 
   private onFocus(): void {
+    this.menu = false;
+  }
+
+  public change(): void{
+    console.log('hi there')
     this.menu = false;
   }
 
@@ -246,16 +254,16 @@ export default class ATATDatePicker extends Vue {
 
   private additionalValidateActions(src: string): void{
     this.$refs.atatDatePicker.validate();
-    // this.$nextTick(()=>{
-    this.$emit("hasErrorMessages", 
-      this.menu ? []: this.$refs.atatDatePicker.errorBucket );
-    // this.$nextTick(()=>{
-    if (this.menu){
-      this.$refs.atatDatePicker.errorBucket =[];
-    }
-    // });
-   
-    // })
+    this.$nextTick(()=>{
+      // no errors are to be generated from clicking on the 
+      // datepicker picker/menu
+      const errors = this.$refs.atatDatePicker.errorBucket
+      this.$refs.atatDatePicker.errorBucket = !this.menu 
+        ? errors
+        : [];
+      console.log(errors)
+      this.$emit("hasErrorMessages", errors );
+    })
   }
 
 
@@ -275,6 +283,11 @@ export default class ATATDatePicker extends Vue {
   private dateInputMask() {
     const dp = document.getElementById(this.id + "DatePickerTextField") as HTMLInputElement;
     dp.addEventListener('keypress', (e: KeyboardEvent)=>{
+      this.menu=false;
+      if (e.key.toLowerCase()==="enter"){
+        this.$refs.atatDatePicker.validate();
+      }
+     
       if(Number.isNaN(parseInt(e.key))) {
         e.preventDefault();
       }
@@ -291,8 +304,12 @@ export default class ATATDatePicker extends Vue {
       default:
         break;
       }
+
+      
     });
   };
+
+
 
   /**
    * @date (string)
@@ -354,7 +371,16 @@ export default class ATATDatePicker extends Vue {
     this.formatDateWatcher();
     this.dateInputMask();
     this.removeErrors();
+    // this.addEvents();
   }
+
+  // private addEvents():void{
+  //   dp.addEventListener('keypress', (e: KeyboardEvent)=>{
+      
+
+  //     this.menu=false;
+  //   });
+  //}
 
 }
 </script>

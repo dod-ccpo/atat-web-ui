@@ -833,7 +833,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentContract(contract: CurrentContractDTO): Promise<void> {
-    debugger;
     const currentContracts = await this.currentContracts || [];
     const sysId = contract.sys_id || ""
     const existingContractIndex = currentContracts.findIndex(

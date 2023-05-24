@@ -4,7 +4,14 @@
 }
 
 .atat-date-picker{
-
+  &.error--text{
+    &.error--text{
+      label{
+        color: $base-darkest !important;
+      }
+    }
+  }
+  
   .v-input__append-outer{
     margin: 0px !important;
   }
@@ -69,7 +76,8 @@
                 width: 39px;
                 height: 38px;
                 &.v-btn--disabled {
-                    color: $disabled-dark !important;
+                    color: $white !important;
+
                 }
                 &.v-btn--active.accent,
                 &.v-btn--active.accent:hover,
