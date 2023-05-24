@@ -437,6 +437,7 @@ export default class CSPPortalAccess extends Vue {
     return this.selectedEnvironment.environmentStatus as string;
   }
 
+  /* eslint-disable indent */
   public alertContent: {
     heading: string;
     message: string;
@@ -456,6 +457,7 @@ export default class CSPPortalAccess extends Vue {
     iconColor: "",
     iconBgColor: "",
   };
+  /* eslint-ensable indent */
 
   public buildAlertContent(): void {
     const csp = this.serviceProvider[this.selectedEnvironment.csp_display as string];

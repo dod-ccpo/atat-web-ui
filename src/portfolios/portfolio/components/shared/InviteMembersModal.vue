@@ -60,11 +60,11 @@
                 @click="onUserSelection(user)"
                 class="pointer">
                 <v-list-item-content>
-                  <v-list-item-title
-                      class="font-weight-bolder font-size-16"
-                      v-text="user.firstName + ' ' + user.lastName">
+                  <v-list-item-title class="font-weight-bolder font-size-16">
+                    {{ user.firstName }} {{ user.lastName}}
                   </v-list-item-title>
-                  <v-list-item-subtitle class="font-size-14" v-text="user.email">
+                  <v-list-item-subtitle class="font-size-14">
+                    {{ user.email }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -85,11 +85,11 @@
               class="_search-results-list"
               v-for="(member, index) in userSelectedList" :key="member.sys_id">
             <v-list-item-content>
-              <v-list-item-title
-                  class="font-weight-bolder font-size-16"
-                  v-text="member.firstName + ' ' + member.lastName">
+              <v-list-item-title class="font-weight-bolder font-size-16">
+                    {{ user.firstName }} {{ user.lastName}}
               </v-list-item-title>
-              <v-list-item-subtitle class="font-size-14" v-text="member.email">
+              <v-list-item-subtitle class="font-size-14">
+                    {{ user.email }}
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
@@ -147,6 +147,7 @@ export default class InviteMembersModal extends Vue {
   @PropSync("showModal") public _showModal?: boolean;
   public portfolioData: Portfolio | null = null;
   public projectTitle = "";
+  /* eslint-disable indent */
   public searchObj: {
     value: string;
     isLoading: boolean;
@@ -160,6 +161,8 @@ export default class InviteMembersModal extends Vue {
     noResults: false,
     alreadyInvited: false
   };
+  /* eslint-enable indent */
+
   public isSearching = false;
   public memberMenuItems: SelectData[] = [
     { header: "Roles" },
