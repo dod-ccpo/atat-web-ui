@@ -205,7 +205,6 @@ export class ValidationPlugin {
   ): ((v: string) => string | true | undefined) {
     return (v: string) => {
       if (dateToCompare !=="" && v !=="" ){
-        debugger;
         return (compareAsc(new Date(v),new Date(dateToCompare))=== 1) || message;
       };
       return true;
