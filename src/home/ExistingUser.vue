@@ -91,7 +91,7 @@
                 </v-expansion-panel>
               </v-expansion-panels>
 
-              <div class="_view-all _portfolios" v-if="!isProdEnv">
+              <div class="_view-all _portfolios bg-white" v-if="!isProdEnv">
                 <a
                   id="ViewAllPortfoliosLink"
                   role="button"
