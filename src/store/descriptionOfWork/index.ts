@@ -161,6 +161,7 @@ const saveOrUpdateClassificationInstance =
       tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
       tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
       tempObject.ts_contractor_clearance_type = classificationInstance.tsContractorClearanceType;
+      
       const dowTaskNumber = await createDOWTaskNumber(
         classificationInstance.classificationLevelSysId as string, 
         title, 
@@ -174,6 +175,7 @@ const saveOrUpdateClassificationInstance =
           tempObject.sys_id,
             tempObject as ClassificationInstanceDTO
         );
+
         await IGCEStore.updateIgceEstimateRecord({
           classificationInstanceSysId: objSysId,
           classificationLevelSysId: classificationLevel,
@@ -260,7 +262,6 @@ export const saveOrUpdateOtherServiceOffering =
       tempObject.storage_unit = serviceOffering.storageUnit;
       tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
       tempObject.instance_number = serviceOffering.instanceNumber;
-
       const dowTaskNumber = await createDOWTaskNumber(
           serviceOffering.classificationLevel as string, 
           offeringType, 
@@ -509,6 +510,9 @@ export const saveOrUpdateOtherServiceOffering =
       return objSysId;
     };
 
+//TODO add support for NOT changing the DOW task number 
+//changes DOW task number on editing of a package
+//changes DOW task number on editing a classification listing
 export const createDOWTaskNumber = async(
   classificationLevel: string,
   offeringType: string,
@@ -521,6 +525,9 @@ export const createDOWTaskNumber = async(
   const offeringInfo = DescriptionOfWork.serviceOfferings.find(
     so => so.service_offering_group.toUpperCase() === offeringType.toUpperCase()
   )
+
+  const serviceOfferingInstanceNumber = await dowToNumber(classificationLevel, 
+    offeringInfo as ServiceOfferingDTO, instanceNumber);
   const isXaas = offeringInfo?.offering_type === "XAAS_SERVICE";
 
   let dow_task_number_component = offeringInfo?.dow_task_number_component
@@ -534,7 +541,50 @@ export const createDOWTaskNumber = async(
   return section +
     "." + classification?.dow_task_number_component +
     "." + dow_task_number_component +
-    "." + (isXaas ? "1" : instanceNumber);    
+    "." + (isXaas && serviceOfferingInstanceNumber ? serviceOfferingInstanceNumber : instanceNumber)
+  //(isXaas ? "1" : instanceNumber || serviceOfferingInstanceNumber);
+}
+
+
+const dowToNumber = async(classificationLevel: string, 
+  offeringInfo: ServiceOfferingDTO, instanceNumber?:number ):Promise<number> =>{
+  let serviceOfferingInstanceNumber = instanceNumber || -1;
+  if (serviceOfferingInstanceNumber === -1){ 
+    const serviceOfferings = DescriptionOfWork.DOWObject.find(
+      (dowObj) => {return dowObj.serviceOfferingGroupId === offeringInfo?.service_offering_group}
+    )
+    if(serviceOfferings){
+
+      const regexString = new RegExp(classificationLevel, "g")
+      const totalExistingClassLevels = 
+        JSON.stringify(serviceOfferings).matchAll(regexString)
+      const existingClasses = [...totalExistingClassLevels]
+      const appsInIgce = await IGCEStore.getAppsDOWTaskNumber()
+      let flag = false;
+      appsInIgce.forEach((app) => {
+        debugger
+        console.log(offeringInfo.name) //==> ALWAYS Discrete Platform as a Service (PaaS)
+        if(app.title?.toLowerCase().includes("applications") && 
+            app.title.search(offeringInfo.name) > -1 &&
+            (app.classification_level as ReferenceColumn)
+              .value === classificationLevel){
+          flag = true;
+          return app.dow_task_number
+        }
+        else {
+          console.log("classLevel",(app.classification_level as ReferenceColumn).value)
+        }
+      })
+      if(!flag){
+        serviceOfferingInstanceNumber = existingClasses.length + 1
+        return serviceOfferingInstanceNumber;
+      }
+    }
+    return 1
+  }
+  else {
+    return serviceOfferingInstanceNumber;
+  }
 }
 
 const mapClassificationInstanceFromDTO = (

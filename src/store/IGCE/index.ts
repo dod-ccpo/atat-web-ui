@@ -320,6 +320,19 @@ export class IGCEStore extends VuexModule {
     return dowTaskNumber;
   }
 
+  @Action({rawError: true})
+  public async getAppsDOWTaskNumber():Promise<IgceEstimateDTO[]>{
+
+    const query: AxiosRequestConfig = {
+      params: { 
+        sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId +
+          "^titleLIKEApplication"
+      },
+    }
+    const apps = await api.igceEstimateTable.getQuery(query);
+    return apps;
+  }
+
   @Action
   public async getRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
     return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -547,7 +560,7 @@ export class IGCEStore extends VuexModule {
       classificationInstanceSysId?: string, 
       unit_quantity: string,
       description:string,
-      dow_task_number: string
+      dow_task_number?: string
     }
   ): Promise<void> {
     const isClassificationInstance = instanceRef.classificationInstanceSysId !== undefined;
