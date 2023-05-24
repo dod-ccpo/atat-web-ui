@@ -13,20 +13,23 @@ export class UserApi extends ApiBase {
     try {
 
       // eslint-disable-next-line max-len
-      let searchQuery = `^first_nameSTARTSWITH${searchStr}^ORlast_nameSTARTSWITH${searchStr}^ORemailSTARTSWITH${searchStr}^emailISNOTEMPTY^active=true`;
+      let searchQuery = `^first_nameSTARTSWITH${searchStr}^ORlast_nameSTARTSWITH${searchStr}^ORemailSTARTSWITH${searchStr}^emailISNOTEMPTY`;
       
       if (/^[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+$/i.test(searchStr)) {
         // complete valid email -- search email equals
-        searchQuery = `^email=${searchStr}^active=true`;
+        searchQuery = `^email=${searchStr}`;
       } else if (/\d/.test(searchStr)) {
         searchQuery = `^emailSTARTSWITH${searchStr}^ORsys_idSTARTSWITH${searchStr}`
-      } else if (searchStr.includes("@") || searchStr.includes(".") || searchStr.includes("_")) {
+      } else if (searchStr.includes("@")) {
         // incomplete email - search email starts with
-        searchQuery = `^emailSTARTSWITH${searchStr}^active=true`;
-      } else if (searchStr.includes(" ")) {
+        searchQuery = `^emailSTARTSWITH${searchStr}`;
+      } else if (searchStr.includes(".") || searchStr.includes("_") && !searchStr.includes(" ")) {
+        searchQuery = `^emailSTARTSWITH${searchStr}^ORuser_nameSTARTSWITH${searchStr}` 
+      } else if (searchStr.includes(".") || searchStr.includes(" ")) {
         // likely first and last name - search name starts with
-        searchQuery = `^nameSTARTSWITH${searchStr}^active=true`;
+        searchQuery = `^nameSTARTSWITH${searchStr}`;
       }
+      searchQuery += `^active=true`;
 
       /* eslint-disable camelcase */
       const requestConfig: AxiosRequestConfig = {
