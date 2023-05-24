@@ -98,7 +98,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   igceEstimateData: IgceEstimateDTO[] = [];
   tempEstimateDataSource: IgceEstimateDTO[][] = [];
   estimateDataSource: IgceEstimateDTO[][] = [];
-  classLevels = ClassificationRequirements.classificationLevels;
+  classLevels = ClassificationRequirements.selectedClassificationLevels;
   isPanelOpen = [0]; //0 is open; 1 is closed.
   cdsSNOWRecord: CrossDomainSolutionDTO|null|undefined ;
 
@@ -189,10 +189,20 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
       })
     }
     if(hasTSTransfer){
-      classificationLvl = "Top Secret"
+      const topSecret = this.classLevels.find((cl)=>{
+        return cl.classification === "TS"
+      })
+      classificationLvl = typeof topSecret?.classification_level === "object"?
+        topSecret?.classification_level.value as string
+        :topSecret?.classification_level as string
     }
     if(hasSTransfer && !hasTSTransfer){
-      classificationLvl = "Secret - IL6"
+      const secret = this.classLevels.find((cl)=>{
+        return cl.classification === "S"
+      })
+      classificationLvl = typeof secret?.classification_level === "object"?
+        secret?.classification_level.value as string
+        :secret?.classification_level as string
     }
     const blankRecord = {
       title: "Cross Domain Solution (CDS)",
