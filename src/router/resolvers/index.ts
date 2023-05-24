@@ -228,6 +228,10 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     && hasExceptionToFairOpp() 
   ){
     return routeNames.ProcurementHistorySummary;
+  } else if (
+    current === routeNames.ProcurementHistorySummary
+  ){
+    return routeNames.CurrentContract;
   }
   return routeNames.CurrentContractDetails;
 

@@ -1302,8 +1302,11 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(60);
       if(AcquisitionPackage.packageId) {
         const currentContracts = await this.loadCurrentContractsFromSNOW();
-        const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
-        await this.doSetCurrentContracts(tempArray);
+        if (currentContracts.length>0){
+          const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
+          await this.doSetCurrentContracts(tempArray);
+        }
+     
       } else {
         this.setCurrentContract(
           initialCurrentContract()

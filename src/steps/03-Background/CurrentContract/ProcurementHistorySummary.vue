@@ -242,9 +242,9 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   public async addInstance(): Promise<void> {
-    const newContract:CurrentContractDTO = initialCurrentContract();
-    newContract.instance_number = AcquisitionPackage.currentContractInstanceNumber as number;
-    await AcquisitionPackage.setCurrentContract(newContract);
+    // const newContract:CurrentContractDTO = initialCurrentContract();
+    // newContract.instance_number = AcquisitionPackage.currentContractInstanceNumber as number;
+    // await AcquisitionPackage.setCurrentContract(newContract);
     this.navigate();
   }
 
