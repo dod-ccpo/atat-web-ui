@@ -640,7 +640,6 @@ export class IGCEStore extends VuexModule {
       dowTaskNumber: string,
     }):
     Promise<void> {
-    debugger
     await this.createIgceEstimateRecord({
       ...defaultIgceEstimate(),
       environment_instance: envInstanceRef.environmentInstanceSysId,
@@ -808,7 +807,6 @@ export class IGCEStore extends VuexModule {
    */
   @Action({ rawError: true })
   public async setCostEstimate(costEstimatList: IgceEstimateDTO[][]): Promise<void> {
-    debugger
     await this.saveIgceEstimates(costEstimatList);
     const aqPackageSysId = AcquisitionPackage.acquisitionPackage?.sys_id as string;
     await this.loadIgceEstimateByPackageId(aqPackageSysId);
@@ -841,7 +839,6 @@ export class IGCEStore extends VuexModule {
   @Action({ rawError: true })
   public async saveIgceEstimates(costEstimateList: IgceEstimateDTO[][]): Promise<void> {
     const apiCallList: Promise<IgceEstimateDTO>[] = [];
-    debugger
     for (const estimate in costEstimateList) {
       costEstimateList[estimate].forEach(async offering => {
         const igceEstimateSysId = offering.sys_id as string;
