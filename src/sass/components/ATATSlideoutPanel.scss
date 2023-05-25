@@ -80,7 +80,6 @@
       }
 
       .v-input__slot {
-        font-size: 14px !important;
         padding: 2px;
         &::before {
           display: none
@@ -94,6 +93,8 @@
         }
         textarea {
           padding-top: 0px;
+          min-height: 22px;
+          font-size: 1.4rem !important;
         }
       }
     }

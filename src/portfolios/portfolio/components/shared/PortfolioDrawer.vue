@@ -1,28 +1,28 @@
 <template>
   <div class="_portfolio-drawer">
     <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding pb-8">
-      <!-- <h3 id="AboutSectionHeader" class="mb-4">About Portfolio</h3> -->
       <div>
-        <v-textarea
-          id="DrawerTextArea"
-          v-model="portfolio.description"
-          auto-grow
-          autocomplete="off"
-          class="_drawer-text-area pt-0 mb-4 ml-n1"
-          dense
-          hide-details
-          placeholder="Add a description"
-          rows="1"
-          @blur="saveDescription"
-        >
-        </v-textarea>
+        <div class="mx-n3 mt-n4">
+          <v-textarea
+            id="DrawerTextArea"
+            v-model="portfolio.description"
+            auto-grow
+            autocomplete="off"
+            class="_drawer-text-area pa-2 mb-2 font-size-14"
+            dense
+            hide-details
+            placeholder="Add a description"
+            rows="1"
+            @blur="saveDescription"
+          />
+        </div>
         <div class="d-flex justify-space-between pb-2">
           <span id="StatusLabel">Status</span>
           <v-chip id="StatusChip" :color="getBgColor()" label>
             {{ portfolioStatus }}
           </v-chip>
         </div>
-        <div class="d-flex align-center justify-space-between pb-4">
+        <div class="d-flex align-center justify-space-between pb-2">
           <span id="CSPLabel">Cloud Service Provider</span>
           <div id="CSP" class="d-flex align-center">
             <ATATSVGIcon
@@ -46,7 +46,8 @@
           <span id="CreatedByLabel">Created by</span>
           <!-- ATAT TODO: AT-8747 - get actual created_by user -->
           <!-- code below simply puts first member in portfolio members array as creator -->
-          <!-- <MemberCard id="CreatedBy" :index="0" /> -->
+          <!-- <MemberCard id="CreatedBy" :member="getCreatedByUser"/> -->
+
         </div>
       </div>
     </div>
@@ -103,7 +104,7 @@
       >
         <div 
           class="d-flex flex-columm justify-space-between"
-          v-for="(member, index) in getPortfolioMembers()"
+          v-for="(member, index) in portfolioMembers"
           :key="member.sys_id"
         >
           <MemberCard :id="'MemberName' + index" :member="member" />
@@ -298,6 +299,11 @@ export default class PortfolioDrawer extends Vue {
     return this.csp ? this.csp.toLowerCase() : "aws";
   }
 
+  // public createdByUser: User = {};
+  // public get getCreatedByUser(): User {
+  //   const user = await api.userTable.search();
+  // }
+
   public cspData = {
     aws: { displayName: "AWS", svgName: "aws", height: "18", width: "30" },
     azure: { displayName: "Azure", svgName: "azure", height: "23", width: "30" },
@@ -475,9 +481,9 @@ export default class PortfolioDrawer extends Vue {
       : 0;
   }
 
-  public getPortfolioMembers(): User[] {
-    return this.portfolio?.members ? this.portfolio?.members : [];
-  }
+  // public getPortfolioMembers(): User[] {
+  //   return this.portfolio?.members ? this.portfolio?.members : [];
+  // }
 
   public get managerCount(): number {
     const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager")

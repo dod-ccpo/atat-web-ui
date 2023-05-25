@@ -503,8 +503,19 @@ export class PortfolioDataStore extends VuexModule {
       } else {
         return 0;
       }
-    })
+    });
+    if (portfolio.createdBy) {
+      const createdByUser = await api.userTable.search(portfolio.createdBy);
+      debugger;
+      this.doSetPortfolioCreator(createdByUser[0]);
+    }
     return portfolio;
+  }
+
+  public portfolioCreator: User = {};
+  @Mutation
+  public doSetPortfolioCreator(user: User): void {
+    this.portfolioCreator = user;
   }
 
   /**
