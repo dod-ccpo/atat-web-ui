@@ -55,6 +55,7 @@
 
     <hr class="my-0" />
 
+    <!-- ATAT TODO - restore in future ticket
     <div id="PortfolioMembersSection" class="_portfolio-panel _panel-padding pb-8">
       <div
         id="PortfolioMembersHeader"
@@ -147,8 +148,9 @@
         </div>
       </div>
     </div>
-
+    
     <hr class="my-0" />
+    -->
 
     <div id="EnvironmentsSection" class="_portfolio-panel _panel-padding pb-4">
       <div id="EnvironmentsTitle" class="d-flex">
