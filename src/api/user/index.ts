@@ -53,14 +53,18 @@ export class UserApi extends ApiBase {
       if (/^[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+$/i.test(searchStr)) {
         // complete valid email -- search email equals
         searchQuery = `^email=${searchStr}`;
-      } else if (/\d/.test(searchStr)) {
-        searchQuery = `^emailSTARTSWITH${searchStr}^ORsys_idSTARTSWITH${searchStr}`
       } else if (searchStr.includes("@")) {
         // incomplete email - search email starts with
         searchQuery = `^emailSTARTSWITH${searchStr}`;
-      } else if (searchStr.includes(".") || searchStr.includes("_") && !searchStr.includes(" ")) {
+      } else if (/\d/.test(searchStr)) {
+        // contains a number, could be email, sys_id, or user_name
+        // eslint-disable-next-line max-len
+        searchQuery = `^emailSTARTSWITH${searchStr}^ORsys_idSTARTSWITH${searchStr}^ORuser_nameSTARTSWITH${searchStr}`
+      } else if ((searchStr.includes(".") || searchStr.includes("_")) && !searchStr.includes(" ")) {
+        // has . or _ but not an empty space, could be email or user_name
         searchQuery = `^emailSTARTSWITH${searchStr}^ORuser_nameSTARTSWITH${searchStr}` 
-      } else if (searchStr.includes(".") || searchStr.includes(" ")) {
+      } else if (searchStr.includes(" ")) {
+        // no other fields have a space, search full name
         // likely first and last name - search name starts with
         searchQuery = `^nameSTARTSWITH${searchStr}`;
       }
