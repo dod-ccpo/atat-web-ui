@@ -159,12 +159,15 @@ export const removeBarriersRouteResolver = (current: string): string => {
 };
 
 const needContractAction = ():boolean =>{
-  return AcquisitionPackage.fairOpportunity?.contract_action !=='NONE'
+  return AcquisitionPackage.fairOpportunity?.contract_action ==='NONE'
 }
 export const conductedResearchRouteResolver = (current: string): string => {
-  return current === routeNames.OtherSupportingFactors && needContractAction()
-    ? routeNames.MarketResearchReview
-    : routeNames.WhoConductedResearch
+  if(needContractAction()){
+    return routeNames.WhoConductedResearch
+  }
+  return current === routeNames.MarketResearchReview
+    ? routeNames.OtherSupportingFactors
+    : routeNames.MarketResearchReview
 };
 
 const hasLogicalFollowOn = (): boolean => {
