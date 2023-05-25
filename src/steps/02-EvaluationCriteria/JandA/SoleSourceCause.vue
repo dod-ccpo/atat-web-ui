@@ -14,6 +14,24 @@
               rather skip these questions, click the “I want to write my own explanation” 
               button below.
             </p>
+
+            <ATATAlert
+              id="AutomaticallyOverwriteWarning"
+              type="warning"
+              v-show="isSoleSourceGeneratedTextBeenEdited"
+              maxWidth="900"
+              class="mt-5 mb-14"
+            >
+              <template v-slot:content>
+                <p>
+                  Any changes below will not automatically overwrite your edits to the previous 
+                  suggested language. You can update your current explanation to a new suggestion 
+                  on the next screen, if needed.
+                </p>
+              </template>
+            </ATATAlert>
+
+
             <div class="max-width-740">
 
               <ATATRadioGroup 
@@ -217,7 +235,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-
+import ATATAlert from "@/components/ATATAlert.vue";
 import { ProductOrType, RadioButton, SelectData, UnitOfTime, YesNo } from "types/Global";
 import { FairOpportunityDTO } from "@/api/models";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
@@ -232,6 +250,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     ATATSelect,
     ATATTextArea,
     ATATTextField,
+    ATATAlert
   }
 })
 
@@ -435,12 +454,22 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "your CSP";
+
     }
+  }
+
+  get isSoleSourceGeneratedTextBeenEdited():boolean{
+    return AcquisitionPackage.hasSoleSourceGeneratedTextBeenEdited;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     this.whyEssentialRulesOff = false;
     this.whyInadequateRulesOff = false;
+    
+    AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(
+      this.hasChanged()
+    )
+
 
     if (this.migrAddlTimeCost === "YES") {
       this.validateMigrationEstimate();

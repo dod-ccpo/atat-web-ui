@@ -87,8 +87,22 @@
               />
               Restore to suggestion
             </v-btn>
-
+            <ATATAlert
+              id="ReviewQuestionnaireResponses"
+              type="warning"
+              v-if="isSoleSourceCauseFormEdited"
+              maxWidth="750"
+              class="mt-9 mb-2"
+            >
+              <template v-slot:content>
+                <p>
+                  To view suggested language based on your updated responses to the previous 
+                  questionnaire, click “Restore default suggestion” above.
+                </p>
+              </template>
+            </ATATAlert>
           </div>
+          
         </v-col>
       </v-row>
     </v-container>    
@@ -106,6 +120,7 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 import ConfirmRestoreDefaultTextModal from "../components/ConfirmRestoreDefaultTextModal.vue";
 
 
@@ -121,6 +136,7 @@ import { FairOpportunityDTO } from "@/api/models";
     ATATExpandableLink,
     ATATTextArea,
     ConfirmRestoreDefaultTextModal,
+    ATATAlert
   }
 })
 
@@ -137,6 +153,9 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public get pageHeaderIntro(): string {
     return this.isCustom ? "Tell us about" : "Let’s review";
   }
+
+  public isSoleSourceCauseFormEdited = false;
+  public isSoleSourceTextOriginal = false;
 
   public get cspName(): string {
     return this.csps[this.currentData.proposed_csp as string]
@@ -286,7 +305,11 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       } else {
         this.soleSourceCause = storeData.cause_of_sole_source_custom as string;
       }
+
     }
+    this.isSoleSourceCauseFormEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
+    this.isSoleSourceTextOriginal = AcquisitionPackage.isSoleSourceTextOriginal
+    
   }
 
   public async mounted(): Promise<void> {
@@ -297,12 +320,23 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 
+  private setAcquisitionPackageSoleSourceVariables(){
+    AcquisitionPackage.setHasSoleSourceGeneratedTextBeenEdited(
+      !this.isSoleSourceCauseDefault
+    )
+    AcquisitionPackage.setIsSoleSourceTextOriginal(
+      this.isSoleSourceTextOriginal
+    )
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
     if (this.isCustom) {
       this.soleSourceCauseCustom = this.soleSourceCause;
     } else {
       this.soleSourceCauseGenerated = this.soleSourceCause;
     }
+    this.setAcquisitionPackageSoleSourceVariables();
+
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

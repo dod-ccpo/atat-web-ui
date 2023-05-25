@@ -351,6 +351,15 @@ export class AcquisitionPackageStore extends VuexModule {
   packageId = "";
   regions: RegionsDTO[] | null = null;
   isLoading = false;
+  // Sole Source
+  // monitoring user interactions re: 
+  // 1 - generated text
+  hasSoleSourceGeneratedTextBeenEdited = false;
+  // 2 - has form been edited
+  hasSoleSourceCauseFormBeenEdited = false;
+  // 3 - has user entered original text
+  isSoleSourceTextOriginal=false
+
 
   validateNow = false;
   allowDeveloperNavigation = false;
@@ -965,11 +974,37 @@ export class AcquisitionPackageStore extends VuexModule {
   public get getFairOpportunity(): FairOpportunityDTO | null {
     return this.fairOpportunity || null;
   }
+
+  @Action({rawError: true})
+  public async setHasSoleSourceGeneratedTextBeenEdited(edited: boolean):Promise<void>{
+    this.doSetHasSoleSourceGeneratedTextBeenEdited(edited);
+  }
+
+  @Mutation
+  public async doSetHasSoleSourceGeneratedTextBeenEdited(edited:boolean):Promise<void>{
+    this.hasSoleSourceGeneratedTextBeenEdited = edited;
+  }
+
+  @Action({rawError: true})
+  public async setHasSoleSourceCauseFormBeenEdited(edited: boolean):Promise<void>{
+    this.doSetHasSoleSourceCauseFormBeenEdited(edited);
+  }
+
+  @Mutation
+  public async doSetHasSoleSourceCauseFormBeenEdited(edited:boolean):Promise<void>{
+    this.hasSoleSourceCauseFormBeenEdited = edited;
+  }
+
+  @Action({rawError: true})
+  public async setIsSoleSourceTextOriginal(edited: boolean):Promise<void>{
+    this.doSetIsSoleSourceTextOriginal(edited);
+  }
+
+  @Mutation
+  public async doSetIsSoleSourceTextOriginal(edited:boolean):Promise<void>{
+    this.isSoleSourceTextOriginal = edited;
+  }
   
-  // @Action({rawError: true})
-  // public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
-  //   return this.fairOpportunity;
-  // }
   @Action({rawError: true})
   public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
     return this.packageDocumentsSigned;
