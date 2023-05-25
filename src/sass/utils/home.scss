@@ -175,7 +175,7 @@
   ._hero-banner {
     background-image: url("./assets/images/jedi-banner.png");
     background-size: cover;
-    background-position: center top;
+    background-position: center -170px;
     height: 300px;
     max-height: 300px;
     width: 100%;
@@ -185,7 +185,7 @@
   
   &._is-new-user {
     ._home-content {
-      
+      background-position: center top;      
     }
     ._hero-banner {
       height: 600px;

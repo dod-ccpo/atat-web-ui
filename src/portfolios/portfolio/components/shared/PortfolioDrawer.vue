@@ -1,7 +1,7 @@
 <template>
   <div class="_portfolio-drawer">
     <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding pb-8">
-      <h3 id="AboutSectionHeader" class="mb-4">About Portfolio</h3>
+      <!-- <h3 id="AboutSectionHeader" class="mb-4">About Portfolio</h3> -->
       <div>
         <v-textarea
           id="DrawerTextArea"
@@ -46,7 +46,7 @@
           <span id="CreatedByLabel">Created by</span>
           <!-- ATAT TODO: AT-8747 - get actual created_by user -->
           <!-- code below simply puts first member in portfolio members array as creator -->
-          <MemberCard id="CreatedBy" :index="0" />
+          <!-- <MemberCard id="CreatedBy" :index="0" /> -->
         </div>
       </div>
     </div>
@@ -106,7 +106,8 @@
           v-for="(member, index) in getPortfolioMembers()"
           :key="member.sys_id"
         >
-          <MemberCard :id="'MemberName' + index" :index="index" />
+          <MemberCard :id="'MemberName' + index" :member="member" />
+
           <div v-if="managerCount === 1 && member.role.toLowerCase() === 'manager'">
             <v-tooltip left nudge-right="30">
             <template v-slot:activator="{ on }">

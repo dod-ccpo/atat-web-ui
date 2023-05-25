@@ -465,8 +465,12 @@ export default class PortfoliosSummary extends Vue {
 
         cardData.lastModifiedStr = "Started " + agoString + " ago";
       } else {
-        const updatedDate = createDateStr(portfolio.sys_updated_on, true);
-        cardData.lastModifiedStr = "Last modified " + updatedDate;
+        // ATAT TODO - 
+        debugger;
+        if (portfolio.last_updated) {
+          const updatedDate = createDateStr(portfolio.last_updated, true);
+          cardData.lastModifiedStr = "Last modified " + updatedDate;
+        }
 
         if (portfolio.task_orders && portfolio.task_orders.length) {
           cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;

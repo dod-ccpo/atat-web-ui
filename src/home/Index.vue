@@ -2,8 +2,8 @@
   <div 
     class="_home-wrapper"
     :class="[
-      {'_is-new-user' : isNewUser },
-      {'_is-existing-user' : !isNewUser }
+      {'_is-new-user' : isNewUser && !isLoading },
+      {'_is-existing-user' : !isNewUser || isLoading }
     ]"  
   >
     <ATATToast />
@@ -12,6 +12,17 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
+          <div v-if="isLoading" class="width-100 text-center" style="height: 1000px;">
+            <div class="_welcome-bar" style="height: 92px">
+              <div class="d-flex align-center" style="margin: 0 auto">
+                <v-progress-circular 
+                  indeterminate color="#544496" size="24" width="3" class="mr-2" />
+                <span class="h3">Loading...</span>
+              </div>
+            </div>
+            
+          </div>
+
           <div v-if="!isLoading" class="_welcome-bar">
             <div class="d-flex justify-start">
               <h1 class="text-primary">
@@ -84,6 +95,7 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 import ATATToast from "@/components/ATATToast.vue";
+import ATATLoader from "@/components/ATATLoader.vue";
 import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
@@ -103,6 +115,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
     ATATFooter,
+    ATATLoader,
     ATATLoadingPackageModal,
     ATATToast,
     ExistingUser,

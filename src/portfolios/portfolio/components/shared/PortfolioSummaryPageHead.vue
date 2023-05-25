@@ -190,6 +190,7 @@ export default class PortfolioSummaryPageHead extends Vue {
         const opener = e.currentTarget as HTMLElement;
         const slideoutPanelContent: SlideoutPanelContent = {
           component: PortfolioDrawer,
+          title: "About Portfolio"
         }
         await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
         this.showDrawer = true;

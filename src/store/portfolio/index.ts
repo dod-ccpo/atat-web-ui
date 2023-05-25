@@ -430,6 +430,7 @@ export class PortfolioDataStore extends VuexModule {
       members: portfolioData.members,
       environments: portfolioData.environments,
       lastUpdated: portfolioData.lastUpdated,
+      createdBy: portfolioData.createdBy
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
     this.activeTaskOrderNumber = portfolioData.taskOrderNumber 
