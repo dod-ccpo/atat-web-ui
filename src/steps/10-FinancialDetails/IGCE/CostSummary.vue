@@ -23,15 +23,7 @@
            </v-btn>
           </div>
           <ATATAlert
-            v-if="
-            needContractingOfficeFee
-            ||needSurgeCapabilities
-            ||needPerformanceRequirement
-            ||needTravelPricing
-            ||needArchitecturalDesign
-            ||needTrainingPricing
-            ||needsReplicateAndOptimize
-            "
+            v-if="showAlert"
             id="ClassificationRequirementsAlert"
             type="warning"
             class="copy-max-width my-10"
@@ -237,6 +229,16 @@ export default class CostSummary extends Vue {
     return getIdText(str);
   }
 
+  public get showAlert():boolean {
+    return this.needContractingOfficeFee
+      || this.needSurgeCapabilities
+      || this.needPerformanceRequirement
+      || this.needTravelPricing
+      || this.needArchitecturalDesign
+      || this.needTrainingPricing
+      || this.needsReplicateAndOptimize
+  }
+
   public createTableData(source:Record<string, any>, clinAmount:string,rowName:string):void{
     let basePeriod,option1,option2,option3,option4
     if(source["Base Period"]){
@@ -378,31 +380,21 @@ export default class CostSummary extends Vue {
     await this.findMissingEstimates()
   }
   public editRoute():void {
+    let name = routeNames.GatherPriceEstimates
     if(this.hasCurrentEnv){
-      this.$router.push({
-        name: routeNames.OptimizeOrReplicate,
-        params: {
-          direction: "next"
-        }
-      });
+      name = routeNames.OptimizeOrReplicate
     }
-    else if(this.hasArchDesign){
-      this.$router.push({
-        name: routeNames.ArchitecturalDesignSolutions,
-        params: {
-          direction: "next"
-        }
-      });
+    if(this.hasArchDesign){
+      name = routeNames.ArchitecturalDesignSolutions
     }
-    else{
-      this.$router.push({
-        name: routeNames.GatherPriceEstimates,
-        params: {
-          direction: "next"
-        }
-      });
-    }
+    this.$router.push({
+      name: name,
+      params: {
+        direction: "next"
+      }
+    });
   }
+
   public async mounted(): Promise<void> {
     this.costData = await api.costEstimateTable.search(acquisitionPackage.packageId)
     this.surgePercentage =
