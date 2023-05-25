@@ -193,19 +193,24 @@ export class ValidationPlugin {
   };
 
   /**
- * Validator that validates inputted date is greater than than dateToCompare
+ * Validator that validates inputted date after the dateToCompare
  *
  * @param {string} dateToCompare
  * @param {string} message
- * @returns {() => string | true | undefined}
+ * @param {boolean} canEqual can dates be equal
+ *  @returns (v: string) => string | true | undefined)
  */
   compareDatesAsc(
     dateToCompare: string,
-    message: string
+    message: string,
+    canEqual: boolean,
   ): ((v: string) => string | true | undefined) {
     return (v: string) => {
       if (dateToCompare !=="" && v !=="" ){
-        return (compareAsc(new Date(v),new Date(dateToCompare))=== 1) || message;
+        const condition = canEqual
+          ? compareAsc(new Date(v),new Date(dateToCompare)) > -1
+          : compareAsc(new Date(v),new Date(dateToCompare))=== 1
+        return condition || message;
       };
       return true;
     } 
@@ -213,19 +218,24 @@ export class ValidationPlugin {
   };
 
   /**
- * Validator that validates inputted date is less than than dateToCompare
+ * Validator that validates inputted date is before the dateToCompare
  *
  * @param {string} dateToCompare
- * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @param {string} message - error Message
+ * @param {boolean} canEqual - can dates be equal
+ * @returns (v: string) => string | true | undefined)
  */
   compareDatesDesc(
     dateToCompare: string,
-    message: string
+    message: string,
+    canEqual: boolean
   ): ((v: string) => string | true | undefined) {
     return (v: string) => {
       if (dateToCompare !=="" && v !=="" ){
-        return (compareDesc(new Date(v),new Date(dateToCompare))=== 1) || message;
+        const condition = canEqual
+          ? compareDesc(new Date(v),new Date(dateToCompare)) > 1
+          : compareDesc(new Date(v),new Date(dateToCompare))=== 1
+        return condition || message;
       };
       return true;
     } 

@@ -20,7 +20,7 @@
               :rules="[
                 $validators.required('Please enter a contract number.'),
                 $validators.isMaskValid(
-                  ['^([0-9A-Z]{13})?$'],
+                  ['^([0-9a-zA-Z]{13})?$'],
                   `Your contract number must be 13 alphanumeric characters.`,
                   true
                 ),
@@ -39,7 +39,7 @@
             label="Task order number" 
             :rules="[
                 $validators.isMaskValid(
-                  ['^([0-9A-Z]{13})?$'],
+                  ['^([0-9a-zA-Z]{13})?$'],
                   `Your contract number must be 13 alphanumeric characters.`,
                   true
                 ),
@@ -70,6 +70,8 @@
                 :value.sync="currentContract.contract_order_start_date" 
                 label="Start date" 
                 placeHolder="MM/DD/YYYY"
+                :min = "startMinDate"
+                :max = "startMaxDate"
                 :class="[
                     {'error--text':startDPSharedErrorMessages.length>0 },
                     'mr-5']"
@@ -82,12 +84,8 @@
                   $validators.isDateValid('Please enter a valid PoP start date.'),
                   $validators.compareDatesDesc(
                     expirationDate,
-                    `The start date must be before the expiration date.`
-                  ),
-                  $validators.compareDatesAsc(
-                    todaysDateISO,
-                    `The start date must be after the start minimum date `
-                      + todaysDateMMDDYYYY + `.`
+                    `The start date must be before the expiration date.`,
+                    false
                   )
                 ]" 
                 />
@@ -97,7 +95,8 @@
                 id="Expiration" 
                 :value.sync="currentContract.contract_order_expiration_date" 
                 label="Expiration date"
-                :min="minDate"
+                :min = "expMinDate"
+                :max = "expMaxDate"
                 placeHolder="MM/DD/YYYY"
                 :class="{'error--text':expirationDPSharedErrorMessages.length>0}"
                 ref="expirationDatePicker"
@@ -109,10 +108,10 @@
                   ),
                   $validators.isDateValid('Please enter a valid PoP expiration date.'),
                   $validators.compareDatesAsc(
-                    todaysDateISO,
-                    `The expiration date must be after the start minimum date ` 
-                        + todaysDateMMDDYYYY + `.`
-                  ),
+                    startDate,
+                    `The start date must be before the expiration date.`,
+                    false
+                  )
                 ]"  
                 />
                 
@@ -164,7 +163,7 @@
               :rules="[
                 $validators.required('Enter your contract number.'),
                 $validators.isMaskValid(
-                  ['^([0-9A-Z]{13})?$'],
+                  ['^([0-9a-zA-Z]{13})?$'],
                  `Your contract number must be 13 alphanumeric characters.`,
                   true
                 ),
@@ -180,7 +179,7 @@
             label="Task/Delivery order number" 
             :rules="[
                 $validators.isMaskValid(
-                  ['^([0-9A-Z]{13})?$'],
+                  ['^([0-9a-zA-Z]{13})?$'],
                   `Your task order number must be 13 alphanumeric characters.`,
                   true
                 ),
@@ -197,7 +196,7 @@
               ]" 
               :value.sync="currentContract.contract_order_expiration_date" 
               label="Contract/Order expiration date" 
-              :min="tomorrowDate"
+              :min="tomorrowDateISO"
               placeHolder="MM/DD/YYYY" 
               tooltipText="Use the period of performance end date for your task order. If you
                   do not have a task order, use your contract end date." />
@@ -257,22 +256,20 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private currentContracts:CurrentContractDTO[] = [];
   private currentContract:CurrentContractDTO = {};
+  private startMinDate = "";
+  private startMaxDate = "";
+  private expMinDate = "";
+  private expMaxDate = "";
 
   get headline(): string{
     return "Let’s gather some details about your "
-      + (this.currentContracts.length === 0 ? "current" : "previous")
+      + (this.isCurrent ? "current" : "previous")
       + " contract";
   }
 
-  get minDate():string{
-    const d = this.currentContract.contract_order_start_date 
-      || format(new Date(), 'P'); 
-    return formatISO(new Date(d), { representation: 'date' }) 
-  }
-
-  get maxDate():string{
-    const d = this.currentContract.contract_order_expiration_date 
-    return formatISO(new Date(d), { representation: 'date' }) 
+  get isCurrent(): boolean{
+    return this.currentContracts[0] === this.currentContract 
+      || this.currentContracts.length <= 1
   }
 
   get todaysDateISO():string{
@@ -283,12 +280,17 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     return format(new Date(new Date()), 'P');
   }
 
+  get startDate():string{
+    const d = this.currentContract.contract_order_start_date || "";
+    return d !=="" ? formatISO(new Date(d), { representation: 'date' }) : "" 
+  }
+
   get expirationDate():string{
     const d = this.currentContract.contract_order_expiration_date || "";
     return d !=="" ? formatISO(new Date(d), { representation: 'date' }) : "" 
   }
 
-  get tomorrowDate():string{
+  get tomorrowDateISO():string{
     const tomorrow = add (new Date(), {days: 1})
     const d = format(tomorrow, 'P');
     return formatISO(tomorrow, { representation: 'date' }) 
@@ -297,13 +299,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private startDPSharedErrorMessages:string[] = [];
   private expirationDPSharedErrorMessages: string[] = [];
 
-  private JWCCMaxDate = "2028-06-30"
-
   private setStartDateErrorMessages(value:string[]): void{
     this.removeSharedErrorMessages(true);
     setTimeout(()=>{
       this.expirationDPSharedErrorMessages = this.isDatePickersEmpty && value.length>0
-        ? ["Please enter your PoP start and expiration datesl."]
+        ? ["Please enter your PoP start and expiration dates."]
         : value;
     })
   };
@@ -313,7 +313,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     
     setTimeout(()=>{
       this.expirationDPSharedErrorMessages = this.isDatePickersEmpty && value.length>0
-        ? ["Please enter your PoP start and expiration datesr."]
+        ? ["Please enter your PoP start and expiration dates."]
         : value;
     })
   }
@@ -370,6 +370,17 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         return c.instance_number?.toString()=== contractToLoadInstanceNumber.toString()
       }
     )[0] || initialCurrentContract();
+
+    this.setMinAndMaxDates();
+  }
+
+  public setMinAndMaxDates():void{
+    this.startMinDate = "";
+    this.startMaxDate = this.todaysDateISO;
+    this.expMinDate = "";
+    this.expMaxDate = this.isCurrent
+      ? "" 
+      : this.todaysDateISO
   }
 
   public async loadOnEnter(): Promise<void> {

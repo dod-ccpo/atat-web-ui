@@ -124,7 +124,7 @@
             />
             Add 
             <span v-if="hasContractData">&nbsp;another&nbsp;</span> 
-            instance
+            contract
           </v-btn>  
 
           </div>
