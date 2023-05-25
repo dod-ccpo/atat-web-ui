@@ -16,13 +16,15 @@
             @blur="saveDescription"
           />
         </div>
-        <div class="d-flex justify-space-between pb-2">
+
+        <div class="d-flex justify-space-between pb-3">
           <span id="StatusLabel">Status</span>
           <v-chip id="StatusChip" :color="getBgColor()" label>
             {{ portfolioStatus }}
           </v-chip>
         </div>
-        <div class="d-flex align-center justify-space-between pb-2">
+
+        <div class="d-flex align-center justify-space-between pb-3">
           <span id="CSPLabel">Cloud Service Provider</span>
           <div id="CSP" class="d-flex align-center">
             <ATATSVGIcon
@@ -36,18 +38,17 @@
             </div>
           </div>
         </div>
+
         <div class="d-flex justify-space-between pb-2">
           <span id="AgencyLabel">Agency</span>
           <div id="Agency">
             {{ portfolio.agencyDisplay }}
           </div>
         </div>
+
         <div class="d-flex justify-space-between align-center">
           <span id="CreatedByLabel">Created by</span>
-          <!-- ATAT TODO: AT-8747 - get actual created_by user -->
-          <!-- code below simply puts first member in portfolio members array as creator -->
           <MemberCard id="CreatedBy" :member="portfolioCreator"/>
-
         </div>
       </div>
     </div>
@@ -64,9 +65,9 @@
           <div
             id="MemberCount"
             class="color-base font-size-20 _condensed-font"
-            v-if="getPortfolioMembersCount() > 0"
+            v-if="showMemberCount"
           >
-            ({{ getPortfolioMembersCount() }})
+            ({{ getPortfolioMembersCount }})
           </div>
         </div>
         <v-tooltip left nudge-right="20">
@@ -155,9 +156,9 @@
         <div
           id="EnvironmentsCount"
           class="color-base font-size-20 _condensed-font"
-          v-if="getEnironmentCount() > 0"
+          v-if="showEnvCount"
         >
-          ({{ getEnironmentCount() }})
+          ({{ getEnironmentCount }})
         </div>
       </div>
     </div>
@@ -428,9 +429,13 @@ export default class PortfolioDrawer extends Vue {
       : member.email || "";
   }
 
-  public getEnironmentCount(): number {
+  public get showEnvCount(): boolean {
+    return this.getEnironmentCount > 0; 
+  }
+  public get getEnironmentCount(): number {
     return this.portfolio.environments?.length || 0;
   }
+
   public classificationLevels: Record<string, string> = {
     U: "Unclassified",
     S: "Secret",
@@ -476,15 +481,14 @@ export default class PortfolioDrawer extends Vue {
 
   public portfolioMembers: User[] = [];
 
-  public getPortfolioMembersCount(): number {
+  public get showMemberCount(): boolean {
+    return this.getPortfolioMembersCount > 0;
+  }
+  public get getPortfolioMembersCount(): number {
     return this.portfolio?.members?.length
       ? this.portfolio?.members?.length
       : 0;
   }
-
-  // public getPortfolioMembers(): User[] {
-  //   return this.portfolio?.members ? this.portfolio?.members : [];
-  // }
 
   public get managerCount(): number {
     const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager")

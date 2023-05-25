@@ -32,7 +32,7 @@
       </v-btn>
     </div>
 
-    <div id="PanelWrap" class="_panel-content-wrap">
+    <div id="PanelWrap" class="_panel-content-wrap _portfolio">
       <slot v-if="currentPanelDefined"></slot>
     </div>
 

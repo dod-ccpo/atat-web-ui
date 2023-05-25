@@ -41,6 +41,10 @@
     overflow-y: auto;
     max-height: calc(100vh - 120px);
     height: calc(100vh - 120px);
+    &._portfolio {
+      max-height: calc(100vh - 180px);
+      height: calc(100vh - 180px);  
+    }
   }
 
   ._panel-padding {
