@@ -92,6 +92,7 @@ import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
 import XaasCircle from "@/components/icons/XaasCircle.vue"
 import Update from "@/components/icons/Update.vue";
 import Download from "@/components/icons/Download.vue";
+import DynamicForm from "@/components/icons/DynamicForm.vue";
 import CertifiedDocumentsForTransferringFunds
   from "@/components/icons/CertifiedDocumentsForTransferringFunds.vue";
 import OtherCommonDocumentation from "@/components/icons/OtherCommonDocumentation.vue";
@@ -128,6 +129,7 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     CurrentFunctionsCircle,
     DisaLogo,
     Download,
+    DynamicForm,
     Edit,
     Email,
     ErrorFilled,
