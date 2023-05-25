@@ -101,6 +101,40 @@
                 </p>
               </template>
             </ATATAlert>
+
+            <ATATExpandableLink v-if="displayHelpSoleSourceLink" aria-id="HelpSoleSource"
+              class="mt-5">
+              <template v-slot:header>
+                I need help generating a response for this portion of the J&A. What do I do?
+              </template>
+              <template v-slot:content>
+                <p class="copy-max-width">
+                  Although you previously wrote a custom explanation, DAPPS can provide suggested
+                  language for the cause of your sole source situation, based on your responses
+                  to a short questionnaire. You’ll be able to edit to our suggestion to meet your
+                  requirements, or choose to restore your custom explanation.
+                </p>
+                <router-link
+                    :id="'SoleSourceQuestionnaire'"
+                    :to="{ name: routeNames.SoleSourceCause }"
+                    tag="button">
+                  <v-btn
+                      id="FillOutQuestionnaireButton"
+                      class="secondary font-size-14 px-3 mb-1 mt-1"
+                  >
+                    <ATATSVGIcon
+                        id="FillOutQuestionnaireButtonIcon"
+                        width="19"
+                        height="15"
+                        name="dynamicForm"
+                        class="mr-1"
+                        color="primary"
+                    />
+                    Fill out the questionnaire
+                  </v-btn>
+                </router-link>
+              </template>
+            </ATATExpandableLink>
           </div>
           
         </v-col>
@@ -116,19 +150,17 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from "vue-property-decorator";
-
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ConfirmRestoreDefaultTextModal from "../components/ConfirmRestoreDefaultTextModal.vue";
-
-
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { currencyStringToNumber, hasChanges, toCurrencyString } from "@/helpers";
 import { FairOpportunityDTO } from "@/api/models";
+import {routeNames} from "@/router/stepper";
 
 @Component({
   components: {
@@ -150,6 +182,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
   public isCustom = false;
   public allSectionsNO = false;
+  public routeNames = routeNames;
   public get pageHeaderIntro(): string {
     return this.isCustom ? "Tell us about" : "Let’s review";
   }
@@ -159,6 +192,21 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
   public get cspName(): string {
     return this.csps[this.currentData.proposed_csp as string]
+  }
+
+  /**
+   * This function returns 'true' if the following conditions are met
+   * 1. If the user choose to write custom explanation
+   * 2. AND If the user had filled out the custom explanation and navigates
+   *    back to this screen
+   */
+  public get displayHelpSoleSourceLink(): boolean {
+    // using 'why_csp_is_only_capable_source' as the indicator to determine if the user
+    // has revisited this page since it is the next page. May not be the best way to determine
+    const isUserRevisitingPage =
+        (AcquisitionPackage.fairOpportunity?.why_csp_is_only_capable_source as string)
+          .trim().length > 0;
+    return this.isCustom && isUserRevisitingPage;
   }
 
   public csps: Record<string, string> = {
