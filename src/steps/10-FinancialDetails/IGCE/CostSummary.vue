@@ -225,6 +225,8 @@ export default class CostSummary extends Vue {
   public needTravelPricing = false
   public needSurgeCapabilities = false
   public needContractingOfficeFee = false
+  public hasCurrentEnv = false
+  public hasArchDesign = false
 
   public tableHeaders = [
     { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate"},
@@ -344,6 +346,9 @@ export default class CostSummary extends Vue {
     for(let i = 0; i < this.periodsLength ; i++){
       this.tableHeaders.push(headers[i])
     }
+    this.hasCurrentEnv = CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
+    this.hasArchDesign = DescriptionOfWork.DOWArchitectureNeeds
+      .needs_architectural_design_services === "YES"
 
     this.tableHeaders.push({ text: "Total", value: "Total"})
     this.costData.payload.data.forEach((CLIN:Record<string, any>) => {
@@ -373,7 +378,7 @@ export default class CostSummary extends Vue {
     await this.findMissingEstimates()
   }
   public editRoute():void {
-    if(this.needsReplicateAndOptimize){
+    if(this.hasCurrentEnv){
       this.$router.push({
         name: routeNames.OptimizeOrReplicate,
         params: {
@@ -381,7 +386,7 @@ export default class CostSummary extends Vue {
         }
       });
     }
-    else if(this.needArchitecturalDesign){
+    else if(this.hasArchDesign){
       this.$router.push({
         name: routeNames.ArchitecturalDesignSolutions,
         params: {
