@@ -18,15 +18,13 @@
             <ATATAlert
               id="AutomaticallyOverwriteWarning"
               type="warning"
-              v-show="isSoleSourceGeneratedTextBeenEdited"
+              v-show=""
               maxWidth="900"
               class="mt-5 mb-14"
             >
               <template v-slot:content>
                 <p>
-                  Any changes below will not automatically overwrite your edits to the previous 
-                  suggested language. You can update your current explanation to a new suggestion 
-                  on the next screen, if needed.
+                 {{ alertText }}
                 </p>
               </template>
             </ATATAlert>
@@ -258,6 +256,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public cspName = "";
   public writeOwnCause: YesNo = "";
   public isLoading = false;
+  public isSoleSourceCauseDefault = false;
+  public isSoleSourceTextOriginal = false;
 
   // MIGRATION SECTION
   public migrAddlTimeCost: YesNo = "";
@@ -379,6 +379,12 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     return this.currentData.cause_migration_estimated_delay_amount as string;
   }
 
+  public get alertText(): string{
+    return " Any changes below will not automatically overwrite your edits to the previous "
+           + "suggested language. You can update your current explanation to a new suggestion "
+           + "on the next screen, if needed."
+  }
+
   public validateMigrationEstimate(): void {
     this.migrationError = false;
     this.migrationErrorMessage = "";
@@ -453,9 +459,15 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
    
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
-        : "your CSP";
-
+        : "your CSP"
     }
+  }
+
+  private loadAcquisitionPackageSoleSourceVariables(): void{
+    this.isSoleSourceCauseDefault = 
+      AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
+    this.isSoleSourceTextOriginal = 
+      AcquisitionPackage.isSoleSourceTextOriginal;
   }
 
   get isSoleSourceGeneratedTextBeenEdited():boolean{
