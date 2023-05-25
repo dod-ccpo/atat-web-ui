@@ -506,7 +506,6 @@ export class PortfolioDataStore extends VuexModule {
     });
     if (portfolio.createdBy) {
       const createdByUser = await api.userTable.search(portfolio.createdBy);
-      debugger;
       this.doSetPortfolioCreator(createdByUser[0]);
     }
     return portfolio;
@@ -514,8 +513,16 @@ export class PortfolioDataStore extends VuexModule {
 
   public portfolioCreator: User = {};
   @Mutation
-  public doSetPortfolioCreator(user: User): void {
-    this.portfolioCreator = user;
+  public doSetPortfolioCreator(user: UserSearchResultDTO): void {
+    this.portfolioCreator = {
+      sys_id: user.sys_id,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      fullName: user.name,
+      email: user.email,
+      phoneNumber: user.phone,
+      agency: user.company
+    }
   }
 
   /**
@@ -809,6 +816,7 @@ export class PortfolioDataStore extends VuexModule {
     this.portfolioProvisioningObj = _.cloneDeep(initialPortfolioProvisioningObj());
     this.didNotUseDAPPS = false;
     this.showTOPackageSelection = true;
+    this.portfolioCreator = {};
   }
 
 }

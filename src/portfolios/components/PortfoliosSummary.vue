@@ -435,9 +435,6 @@ export default class PortfoliosSummary extends Vue {
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
     storeData.portfolioSummaryList.forEach((portfolio) => {
-      // EJY where are members being set currently?
-      // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
-      // from portfolio_managers and portfolio_viewers sysIds lists
       const cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       cardData.lastUpdated = portfolio.last_updated;      

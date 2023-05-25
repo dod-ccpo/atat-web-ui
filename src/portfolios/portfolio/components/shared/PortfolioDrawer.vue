@@ -46,7 +46,7 @@
           <span id="CreatedByLabel">Created by</span>
           <!-- ATAT TODO: AT-8747 - get actual created_by user -->
           <!-- code below simply puts first member in portfolio members array as creator -->
-          <!-- <MemberCard id="CreatedBy" :member="getCreatedByUser"/> -->
+          <MemberCard id="CreatedBy" :member="portfolioCreator"/>
 
         </div>
       </div>
@@ -294,6 +294,7 @@ export default class PortfolioDrawer extends Vue {
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
+  public portfolioCreator = PortfolioStore.portfolioCreator;
 
   public get cspKey(): string {
     return this.csp ? this.csp.toLowerCase() : "aws";
