@@ -95,7 +95,7 @@ export default class App extends Vue {
       sessionStorage.setItem("userId", snowUserSysId)
     }
 
-    setTimeout(async () => {
+    setTimeout(async (): Promise<void> => {
       if (sessionStorage.getItem("userId")) {
         await CurrentUserStore.resetUser();
       } else {

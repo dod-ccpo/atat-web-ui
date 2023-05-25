@@ -131,7 +131,7 @@ export class UserStore extends VuexModule {
     const userQuery = await PortfolioSummary.getMandatorySearchParameterQuery(searchDTO);
     query += userQuery;
     const count = await getTableRecordCount(PortfolioTable, query)
-    this.doSetPortfolioCount(count);
+    await this.doSetPortfolioCount(count);
   }
   @Mutation
   public async doSetPortfolioCount(count: number): Promise<void> {
