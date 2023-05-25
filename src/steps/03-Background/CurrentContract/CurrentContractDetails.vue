@@ -164,8 +164,8 @@
               :rules="[
                 $validators.required('Enter your contract number.'),
                 $validators.isMaskValid(
-                  ['^([0-9A-Z]{0,13})?$'],
-                  `Your contract number must be 13 alphanumeric characters.`,
+                  ['^([0-9A-Z]{13})?$'],
+                 `Your contract number must be 13 alphanumeric characters.`,
                   true
                 ),
               ]" 
@@ -180,7 +180,7 @@
             label="Task/Delivery order number" 
             :rules="[
                 $validators.isMaskValid(
-                  ['^([0-9A-Z]{0,13})?$'],
+                  ['^([0-9A-Z]{13})?$'],
                   `Your task order number must be 13 alphanumeric characters.`,
                   true
                 ),
@@ -260,7 +260,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   get headline(): string{
     return "Let’s gather some details about your "
-      + (this.currentContracts.length === 1 ? "current" : "previous")
+      + (this.currentContracts.length === 0 ? "current" : "previous")
       + " contract";
   }
 
