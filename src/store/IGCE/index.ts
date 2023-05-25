@@ -850,7 +850,11 @@ export class IGCEStore extends VuexModule {
           unit_price: offering.unit_price as number,
           unit_quantity: offering.unit_quantity as string,
           updated_description: offering.updated_description,
-          dow_task_number:  await this.getCDSDowTaskNumber(offering)
+          dow_task_number:  await this.getCDSDowTaskNumber(offering),
+          classification_level: typeof offering.classification_level === "object"?
+              offering.classification_level.value as string
+            : offering.classification_level as string,
+          idiq_clin_type: offering.idiq_clin_type,
         }
         igceEstimateSysId !== undefined
           ? apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate))
