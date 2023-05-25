@@ -88,6 +88,7 @@ import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -107,7 +108,7 @@ export default class PortfolioSummary extends Vue {
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
   }
-  public isPortfolioProvisioning = false;
+  public isPortfolioProvisioning = true;
   public tabIndex = 0;
   public tabItems = [
     "Funding Tracker",
@@ -146,8 +147,9 @@ export default class PortfolioSummary extends Vue {
   }
 
   public async loadOnEnter(): Promise<void>  {
-    const portfolio = PortfolioStore.currentPortfolio;
+    const portfolio = _.cloneDeep(PortfolioStore.currentPortfolio);
     if(portfolio.sysId){
+      this.isPortfolioProvisioning = false;
       this.title = portfolio.title || "";
       this.portfolioStatus = portfolio.status || "";
       this.portfolioDescription = portfolio.description || "";

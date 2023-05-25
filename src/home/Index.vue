@@ -12,7 +12,7 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
-          <div class="_welcome-bar">
+          <div v-if="!isLoading" class="_welcome-bar">
             <div class="d-flex justify-start">
               <h1 class="text-primary">
                 Hi {{currentUser.first_name}}! How can we help you?
@@ -38,24 +38,24 @@
             </div>
           </div>
         </div>
+        <div v-if="!isLoading">
+          <NewUser 
+            v-if="isNewUser" 
+            class="mt-15" 
+            @startNewAcquisition="startNewAcquisition" 
+            @startProvisionWorkflow="startProvisionWorkflow"
+            @openTOSearchModal="openSearchTOModal"
+          />
 
-        <NewUser 
-          v-if="isNewUser" 
-          class="mt-15" 
-          @startNewAcquisition="startNewAcquisition" 
-          @startProvisionWorkflow="startProvisionWorkflow"
-          @openTOSearchModal="openSearchTOModal"
-        />
+          <ExistingUser 
+            v-else 
+            class="mt-5" 
+            @startNewAcquisition="startNewAcquisition" 
+            @openTOSearchModal="openSearchTOModal"
+            @startProvisionWorkflow="startProvisionWorkflow"
 
-        <ExistingUser 
-          v-else 
-          class="mt-8" 
-          @startNewAcquisition="startNewAcquisition" 
-          @allPackagesCleared="allPackagesCleared"
-          @openTOSearchModal="openSearchTOModal"
-          @startProvisionWorkflow="startProvisionWorkflow"
-          @portfolioCountUpdated="portfolioCountUpdated"
-        />      
+          />      
+        </div>
 
         <div class="bg-white">
           <ATATFooter class="mx-auto pt-10" />
@@ -93,10 +93,8 @@ import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
-import { scrollToId } from "@/helpers";
-
-import UserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import PortfolioStore from "@/store/portfolio";
@@ -120,7 +118,8 @@ export default class Home extends Vue {
   public TONumber = "";
   public resetValidationNow = false;
   public selectedAcquisitionPackageSysId = "";
-  
+  public isLoading = true;
+
   public openSearchTOModal(acqPackageSysId: string): void {
     this.selectedAcquisitionPackageSysId = acqPackageSysId;
     this.showTOSearchModal = true;
@@ -138,25 +137,16 @@ export default class Home extends Vue {
   public get isNewUser(): boolean {
     return !this.userHasPackages && !this.userHasPortfolios;
   } 
-
-  public userHasPackages = false;
-  public userHasPortfolios = false;
-
-  public allPackagesCleared(): void {
-    this.userHasPackages = false;
+  public get userHasPackages(): boolean {
+    return CurrentUserStore.getUserHasPackages;
+  }
+  public get userHasPortfolios(): boolean {
+    return CurrentUserStore.getUserHasPortfolios;
   }
 
-  private currentUser: UserDTO = {};
-
-  public get getCurrentUser(): UserDTO {
+  public get currentUser(): UserDTO {
     return CurrentUserStore.currentUser;
   }
-
-  @Watch("getCurrentUser")
-  public async currentUserChange(newVal: UserDTO): Promise<void> {
-    this.currentUser = newVal;
-    await this.checkIfIsNewUser();
-  }  
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
@@ -192,25 +182,21 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
   }
 
-  public portfolioCountUpdated(portfolioCount: string): void {
-    this.userHasPortfolios = parseInt(portfolioCount) > 0;
-  }
-
-  public async checkIfIsNewUser(): Promise<void> {
-    this.userHasPackages = await UserStore.hasPackages();
-    await UserStore.hasPortfolios();
-    this.userHasPortfolios = UserStore.getUserHasPortfolios;
-  }
-
   public async mounted(): Promise<void> {
+    this.isLoading = true;
+    
     await AcquisitionPackage.reset();
     await AcquisitionPackage.setHideNavigation(false);
-    this.currentUser = await UserStore.getCurrentUser();
+
+    await CurrentUserStore.setUserPackageCount();
+    await CurrentUserStore.setUserPortfolioCount();
+
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     await PortfolioStore.setShowTOPackageSelection(true);
-    await this.checkIfIsNewUser();
+
+    this.isLoading = false;
   }
 
 

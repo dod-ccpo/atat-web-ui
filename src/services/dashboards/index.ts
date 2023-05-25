@@ -221,7 +221,7 @@ export class DashboardService {
         : `task_order_number=${current}`;
       return query;
     }, "");
-
+    
     const aggregateRequestConfig: AxiosRequestConfig = {
       params: {
         sysparm_sum_fields: "funds_obligated,funds_total",

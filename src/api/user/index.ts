@@ -8,6 +8,41 @@ export class UserApi extends ApiBase {
   constructor() {
     super(ENDPOINTNAME);
   }
+
+  public userFields = "sys_id,name,first_name,last_name,user_name,email," +
+  "mobile_phone,phone,home_phone,title,last_login_time";
+  
+  public async getUsersBySysId(sysIds: string | string[]): Promise<UserDTO[]> {
+    try {
+      if (Array.isArray(sysIds)) {
+        sysIds = sysIds.join(",");
+      }
+      /* eslint-disable camelcase */
+      const requestConfig: AxiosRequestConfig = {
+        params: {
+          sysparm_fields: this.userFields,
+          sysparm_display_value: "company",
+          sysparm_query: "sys_idIN" + sysIds
+        }
+      };
+      /* eslint-enable camelcase */
+  
+      const response = await this.instance.get(this.endPoint, requestConfig);
+      if (response.status === 200) {
+        const { result } = response.data;
+        return result;
+      } else {
+        const { error } = response.data;
+        return error;
+      }
+    } catch(error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response !== undefined && axiosError.response.status === 404) {
+        return [];
+      }
+      throw new Error(error as string)
+    }
+  }
   
   public async search(searchStr: string): Promise<UserDTO[]> {
     try {
@@ -31,8 +66,7 @@ export class UserApi extends ApiBase {
       /* eslint-disable camelcase */
       const requestConfig: AxiosRequestConfig = {
         params: {
-          sysparm_fields: "sys_id,name,first_name,last_name,user_name,email," +
-            "mobile_phone,phone,home_phone,title",
+          sysparm_fields: this.userFields,
           sysparm_display_value: "company",
           sysparm_query: searchQuery
         }

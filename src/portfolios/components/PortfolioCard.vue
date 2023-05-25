@@ -37,28 +37,28 @@
         <div class="card-header flex-grow-1">
           <!-- 
           ----------------------------------------------------------
-            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
+            -- ATAT TODO -  remove isProdEnv condition after merging into develop -- 
           ----------------------------------------------------------
-          <a
+          -->
+          <a v-if="!isProdEnv"
             :id="'PortfolioName' + index"
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _portfolio-name"
             @click="cardMenuClick(portfolioCardMenuItems[0])"
-          > -->
-          <span class="h3 text-base-darker d-flex align-center _portfolio-name">
+          > 
             {{ cardData.title }}
-            <ATATSVGIcon 
-              v-if="cardData.isManager"
-              name="manageAccount"
-              width="20"
-              height="17"
-              color="base"
-              class="ml-3"
+            <ATATSVGIcon v-if="cardData.isManager"
+              name="manageAccount" width="20" height="17" color="base" class="ml-3"
+            />
+          </a>
+          <span v-else class="h3 text-base-darker d-flex align-center _portfolio-name">
+            {{ cardData.title }}
+            <ATATSVGIcon v-if="cardData.isManager"
+              name="manageAccount" width="20" height="17" color="base" class="ml-3"
             />
           </span>
 
-          <!-- </a> -->
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
           <v-chip
@@ -167,15 +167,17 @@
 
     <!-- 
       ------------------------------------------------------------
-      -- ATAT TODO -  UNHIDE MEATBALL when Portfolio Mgmt added -- 
+      -- ATAT TODO -  remove isProdEnv condition after merging into develop -- 
       ------------------------------------------------------------
-      <ATATMeatballMenu 
+    -->
+    <ATATMeatballMenu 
+      v-if="!isProdEnv"
       :id="'PortfolioCardMenu' + index"
       :left="true"
       :index="index"
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
-    /> -->
+    />
 
     <LeavePortfolioModal
       :showModal.sync="showLeavePortfolioModal" 
@@ -214,6 +216,7 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
   @Prop({ default: false }) public isHomeView?: boolean;
+  @Prop({ default: true}) public isProdEnv!: boolean;
 
   public showLeavePortfolioModal = false;
 
@@ -225,9 +228,10 @@ export default class PortfolioCard extends Vue {
     loginToCSP: "loginToCSP",
   }
  
-  // DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
+  // ATAT TODO AT-9099?- replace DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
   public currentUserEmail = "sample-haac-admin@mail.mil";
   public get managerEmails(): string {
+    // ATAT TODO - can use user lookup to get email addresses (with AT-9099?)
     // Return dummy emails until API call wired up to get portfolio managers
     return "foo@mail.mil, bar@mail.mil";
   }
@@ -389,42 +393,46 @@ export default class PortfolioCard extends Vue {
       },
     ]; 
 
-    if (this.isHaCCAdmin) {
+    // ATAT TODO -- add functionality in AT-9099?
+    // if (this.isHaCCAdmin) {
+    //   this.portfolioCardMenuItems.push(
+    //     { 
+    //       title: "Email portfolio managers",
+    //       action: this.menuActions.emailManagers,
+    //     },    
+    //   );
+    // }
+
+    if (!this.isHaCCAdmin && (this.cardData.isManager && this.cardData.portfolio_managers &&
+      this.cardData.portfolio_managers.split(",").length > 1) || !this.cardData.isManager
+    ) {
       this.portfolioCardMenuItems.push(
         { 
-          title: "Email portfolio managers",
-          action: this.menuActions.emailManagers,
-        },    
+          title: "Leave this portfolio",
+          action: this.menuActions.leavePortfolio
+        },
       );
     }
 
-    // ATAT TODO - future ticket - when have data from backend, only include the menu
-    // option below if user is 1) a viewer, or 2) is manager and at least
-    // one other manager exists for this portfolio. 
-    // NOTE: Do not show for HaCC admin. Included currently for testing.
-    this.portfolioCardMenuItems.push(
-      { 
-        title: "Leave this portfolio",
-        action: this.menuActions.leavePortfolio
-      },
-    );
-
-    if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
-      this.portfolioCardMenuItems.push(
-        { 
-          title: "Login to the CSP console",
-          action: this.menuActions.loginToCSP,
-          icon: {
-            name: "launch",
-            width: "15",
-            height: "15",
-            color: "primary",
-          },
-          url: this.getCSPConsoleURL(), 
-          separatorBefore: true,
-        }
-      );
-    }
+    // ATAT TODO - future ticket - provide link to each unclassified environment portal
+    // eslint-disable-next-line max-len
+    // Figma link: https://www.figma.com/file/6zwE1QbRrJZ3yFuA0bo7he/ATAT-Portfolio?type=design&node-id=5306-158321&t=zF6Xkw2a7VNDX232-4
+    // if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
+    //   this.portfolioCardMenuItems.push(
+    //     { 
+    //       title: "Login to the CSP console",
+    //       action: this.menuActions.loginToCSP,
+    //       icon: {
+    //         name: "launch",
+    //         width: "15",
+    //         height: "15",
+    //         color: "primary",
+    //       },
+    //       url: this.getCSPConsoleURL(), 
+    //       separatorBefore: true,
+    //     }
+    //   );
+    // }
   }
 
   public async mounted(): Promise<void> {

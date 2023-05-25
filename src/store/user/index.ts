@@ -19,8 +19,11 @@ import {
   PortfolioSummarySearchDTO, 
   UserDTO 
 } from "@/api/models";
-import AcquisitionPackageSummary from "../acquisitionPackageSummary";
+import AcquisitionPackageSummaryStore from "../acquisitionPackageSummary";
 import PortfolioSummary from "../portfolioSummary";
+import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
+import { TABLENAME as PortfolioTable } from "@/api/portfolio";
+import { getTableRecordCount } from "@/helpers";
 
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
@@ -48,6 +51,8 @@ export class UserStore extends VuexModule {
   initialized = false;
 
   currentUser: UserDTO = {};
+  public currentUserPackageCount = 0;
+  public currentUserPortfolioCount = 0;
 
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.currentUser)
@@ -98,52 +103,45 @@ export class UserStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async hasPackages(): Promise<boolean> {
-
-    let userHasPackages = false;
-
-    const searchDTO:AcquisitionPackageSummarySearchDTO = {
-      acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER",
-      searchString: "",
-      sort: "DESCsys_updated_on",
-      limit: 5,
-      offset: 0
-    };
-
-    const packageData = await AcquisitionPackageSummary
-      .searchAcquisitionPackageSummaryList(searchDTO);
-
-    userHasPackages = packageData.total_count > 0;
-
-    return userHasPackages;
-  }
-
-  public userHasPortfolios = false;
- 
-  @Action({rawError: true})
-  public async hasPortfolios(): Promise<boolean> {
-    const searchDTO:PortfolioSummarySearchDTO = {
-      role: "ALL",
-      fundingStatuses: [],
-      csps: [],
-      portfolioStatus: "",
-      sort: "DESCsys_updated_on",
-      limit: 1,
-      offset: 0
-    };
-   
-    const portfolioData = await PortfolioSummary
-      .searchPortfolioSummaryList(searchDTO);
-    const hasPortfolios = portfolioData.total_count > 0;
-    await this.doSetUserHasPortfolios(hasPortfolios);
-    return this.userHasPortfolios;
+  public async setUserPackageCount(): Promise<void> {
+    // SET TOTAL PACKAGE COUNT
+    let query = "package_statusINDRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER";
+    const userQuery = await AcquisitionPackageSummaryStore.getMandatorySearchParameterQuery();
+    query += userQuery;
+    const count = await getTableRecordCount(AcquisitionPackageTable, query)
+    this.doSetPackageCount(count);
   }
   @Mutation
-  public async doSetUserHasPortfolios(bool: boolean): Promise<void> {
-    this.userHasPortfolios = bool;
+  public doSetPackageCount(count: number): void {
+    this.currentUserPackageCount = count;
+  }
+  public get getCurrentUserPackageCount(): number {
+    return this.currentUserPackageCount;
+  }
+  public get getUserHasPackages(): boolean {
+    return this.currentUserPackageCount > 0;
+  }
+ 
+  @Action({rawError: true})
+  public async setUserPortfolioCount(): Promise<void> {
+    let query = "portfolio_statusINPROCESSING,PROVISIONING_ISSUE,ACTIVE,ARCHIVED";
+    const searchDTO: PortfolioSummarySearchDTO = { 
+      role: "ALL" 
+    };
+    const userQuery = await PortfolioSummary.getMandatorySearchParameterQuery(searchDTO);
+    query += userQuery;
+    const count = await getTableRecordCount(PortfolioTable, query)
+    await this.doSetPortfolioCount(count);
+  }
+  @Mutation
+  public async doSetPortfolioCount(count: number): Promise<void> {
+    this.currentUserPortfolioCount = count;
+  }
+  public get getCurrentUserPortfolioCount(): number {
+    return this.currentUserPortfolioCount;
   }
   public get getUserHasPortfolios(): boolean {
-    return this.userHasPortfolios;
+    return this.currentUserPortfolioCount > 0;
   }
 
 
@@ -154,7 +152,7 @@ export class UserStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-    if(this.initialized)
+    if (this.initialized)
       return;
 
     const sessionRestored = retrieveSession(ATAT_USER_KEY);

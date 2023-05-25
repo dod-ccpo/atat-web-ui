@@ -398,6 +398,7 @@ export default class PortfolioDrawer extends Vue {
           : "";
       }
     }
+    
     this.currentUser = await CurrentUserStore.getCurrentUser();
     // ATAT TODO AT-8747 - check if current user is Manager or Viewer
     // TEMP HARDCODE ROLE

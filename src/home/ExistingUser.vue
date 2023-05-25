@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-8 pb-10">
+  <div class="pt-5 pb-10">
     <section class="_learn-more-section">
       <div class="container-max-width">
         <v-row>    
@@ -26,7 +26,13 @@
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
 
+                    <ATATLoader 
+                      v-show="isLoadingPackages" 
+                      loadingText="Loading your packages" 
+                    />
+                  
                     <PackageCards
+                      v-show="!isLoadingPackages"                     
                       v-for="(cardData, index) in packageData"
                       :key="cardData.sys_id"
                       :cardData="cardData"
@@ -77,14 +83,15 @@
                       active-tab="ALL" 
                       default-sort="DESCsys_updated_on"
                       :isHomeView="true" 
-                      @totalCount="updateTotalPortfolios"
+                      :isProdEnv="isProdEnv"
                     />
+                    <!-- ATAT TODO - remove isProdEnv when merged to develop -->
 
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
 
-              <div class="_view-all">
+              <div class="_view-all _portfolios bg-white" v-if="!isProdEnv">
                 <a
                   id="ViewAllPortfoliosLink"
                   role="button"
@@ -96,54 +103,6 @@
                 </a>
               </div>
             </div>
-
-          <v-expansion-panels 
-            id="PortfoliosAccordion" 
-            flat
-            v-model="portfolioPanel" 
-            v-show="userHasPortfolios"
-          >
-            <v-expansion-panel expand>
-              <v-expansion-panel-header>
-                <div class="d-flex justify-space-between">
-                  <div class="h3">
-                    Porfolios
-                  </div>
-                  <div class="h3 text-base-light _item-count pr-4">
-                    {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
-                  </div>
-                </div>
-
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-
-                <PortfoliosSummary 
-                  active-tab="ALL" 
-                  default-sort="DESCsys_updated_on"
-                  :isHomeView="true" 
-                  @totalCount="updateTotalPortfolios"
-                />
-
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
-          <!-- 
-            ---------------------------------------------------
-            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
-            ---------------------------------------------------
-            <div class="_view-all">
-            <a
-              id="ViewAllPortfoliosLink"
-              role="button"
-              @click="viewAllPortfolios"
-              @keydown.enter="viewAllPortfolios"
-              @keydown.space="viewAllPortfolios"
-            >
-              View all portfolios
-            </a>
-          </div> 
-          -->
 
           </v-col>
 
@@ -205,13 +164,13 @@
                 >
                   Report a bug or technical issue
                   <ATATSVGIcon
-                      id="ReportIssueButtonIcon"
-                      width="15"
-                      height="15"
-                      name="launch"
-                      class="ml-2"
-                      color="primary"
-                    />
+                    id="ReportIssueButtonIcon"
+                    width="15"
+                    height="15"
+                    name="launch"
+                    class="ml-2"
+                    color="primary"
+                  />
                 </v-btn>
             </v-card>
 
@@ -228,8 +187,9 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
+import ATATLoader from "@/components/ATATLoader.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
-import AppSections from "@/store/appSections";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import Packages from "@/packages/Index.vue";
 import Card from "@/packages/components/Card.vue";
@@ -244,12 +204,14 @@ import {
   UserDTO, 
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CurrentUserStore from "@/store/user";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {
     ATATAlert,
+    ATATLoader,
     ATATSearch,
     "PackageCards": Card,
     PortfoliosSummary,
@@ -259,11 +221,8 @@ import CurrentUserStore from "@/store/user";
 })
 
 export default class ExistingUser extends Vue {
-  // @Prop({default: false}) public userHasPackages!: boolean;
-  // @Prop({default: false}) public userHasPortfolios!: boolean;
-
   public packageData:AcquisitionPackageSummaryDTO[] = []
-  public draftPackageCount = 0;
+  public isLoadingPackages = true;
 
   public reportIssueLink = "https://services.disa.mil/sp?id=sc_cat_item&sys_id=20e86845dbaf1914" +
     "8c045e8cd39619d9&sysparm_category=a30a5ca3db12a0508c045e8cd396197c";
@@ -272,24 +231,30 @@ export default class ExistingUser extends Vue {
     "and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"
     
   public packagesPanel = 0; // open by default
-  public packageCount = 0;
-  public get showPackagesPanel(): boolean {
-    return this.packageCount > 0;
-  }
+
+  public get packageCount(): number {
+    return CurrentUserStore.getCurrentUserPackageCount;
+  };
 
   public portfolioPanel = 0; // open by default
-  public portfolioCount = 0;
+  public get portfolioCount(): number {
+    return CurrentUserStore.currentUserPortfolioCount;
+  }
 
+  public get userHasPackages(): boolean {
+    return CurrentUserStore.getUserHasPackages;
+  }
   public get userHasPortfolios(): boolean {
-    return this.portfolioCount > 0;
+    return CurrentUserStore.getUserHasPortfolios;
+  }
+
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
   }
 
   public TONumber = "";
   public async startProvisionWorkflow(): Promise<void> {
     this.$emit("startProvisionWorkflow");
-  }
-  public get showAlert(): boolean {
-    return this.draftPackageCount > 0
   }
 
   public openTOSearchModal(acqPackageSysId: string): void {
@@ -299,12 +264,6 @@ export default class ExistingUser extends Vue {
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
   }
-
-  public updateTotalPortfolios(totalCount: number): void {
-    this.portfolioCount = totalCount;
-    this.$emit("portfolioCountUpdated", totalCount);
-  } 
-
 
   public viewAllPortfolios(): void {
     AppSections.setAppContentComponent(Portfolios);
@@ -322,26 +281,12 @@ export default class ExistingUser extends Vue {
     offset: 0
   };
   
-  public get getCurrentUser(): UserDTO {
-    return CurrentUserStore.currentUser;
-  }
-
-  @Watch("getCurrentUser")
-  public async currentUserChange(): Promise<void> {
-    await this.loadPackageData();
-  }  
-
   public async loadPackageData(): Promise<void> {
+    this.isLoadingPackages = true;
     const packageData = await AcquisitionPackageSummary
-      .searchAcquisitionPackageSummaryList(this.searchDTO);
-    
+      .searchAcquisitionPackageSummaryList(this.searchDTO);   
     this.packageData = packageData.acquisitionPackageSummaryList;
-    this.packageCount = packageData.total_count;
-    const draftPackages = this.packageData.filter(obj => obj.package_status?.value === "DRAFT");
-    this.draftPackageCount = draftPackages?.length || 0;
-    if (this.packageCount === 0) {
-      this.$emit("allPackagesCleared");
-    }
+    this.isLoadingPackages = false;
   }
 
   public async loadOnEnter(): Promise<void>{

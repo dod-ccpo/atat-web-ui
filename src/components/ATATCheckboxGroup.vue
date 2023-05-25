@@ -222,7 +222,6 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private showPerformanceRequirementTotal?: boolean;
   @Prop({ default: false }) private inline?: boolean;
   @Prop({ default: false }) private validateOnLoad?: boolean;
-  @Prop({ default: false }) private inline?: boolean;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;

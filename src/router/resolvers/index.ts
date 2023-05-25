@@ -1491,7 +1491,7 @@ export const CrossDomainResolver = (current: string): string => {
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
-  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrder;
+  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
   const showPackageSelection = PortfolioStore.showTOPackageSelection;
   if (packageCount && (!acqPkgSysId || showPackageSelection)) {

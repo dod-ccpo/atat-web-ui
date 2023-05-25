@@ -468,16 +468,8 @@ export class PortfolioDataStore extends VuexModule {
   @Action({rawError: true})
   public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
     const userSysIds = portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
-    const allMembersDetailListDTO = await api.userTable.getQuery(
-      {
-        params:
-          {
-            sysparm_fields: 'sys_id,name,first_name,last_name,email,department',
-            sysparm_display_value: "department",
-            sysparm_query: "sys_idIN" + userSysIds
-          }
-      }
-    )
+    const allMembersDetailListDTO = await api.userTable.getUsersBySysId(userSysIds);
+
     const allMembersDetailList: User[] = 
       allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
         return {
@@ -487,7 +479,7 @@ export class PortfolioDataStore extends VuexModule {
           fullName: userSearchDTO.name,
           email: userSearchDTO.email,
           phoneNumber: userSearchDTO.phone,
-          agency: userSearchDTO.department?.display_value
+          agency: userSearchDTO.company
         }
       })
     portfolio.portfolio_managers_detail = [];

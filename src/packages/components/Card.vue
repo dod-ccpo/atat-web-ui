@@ -319,6 +319,7 @@ export default class Card extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.currentUser = await UserStore.getCurrentUser();
+    
     this.isDitco = this.cardData.contracting_shop?.value === "DITCO"
     this.reformatData(this.cardData)
     if(this.cardData.package_status?.value === 'DRAFT'){

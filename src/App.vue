@@ -95,15 +95,17 @@ export default class App extends Vue {
       sessionStorage.setItem("userId", snowUserSysId)
     }
 
-    window.addEventListener("storage", async (e) => {
-      if (e.storageArea === sessionStorage && e.key === "userId") {
+    setTimeout(async (): Promise<void> => {
+      if (sessionStorage.getItem("userId")) {
         await CurrentUserStore.resetUser();
+      } else {
+        window.addEventListener("storage", async (e) => {
+          if (e.storageArea === sessionStorage && e.key === "userId") {
+            await CurrentUserStore.resetUser();
+          }
+        })
       }
-    })
-
-    setTimeout(() => {
-      CurrentUserStore.resetUser();
-    }, 1000)
+    }, 0);
 
     await this.loadOnEnter();
   }

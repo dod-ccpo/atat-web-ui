@@ -95,7 +95,7 @@ export class PortfolioSummaryStore extends VuexModule {
     if (searchDTO.portfolioStatus) {
       query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
     }
-    if (searchDTO.fundingStatuses.length > 0) {
+    if (searchDTO.fundingStatuses && searchDTO.fundingStatuses.length > 0) {
       query = query + "^portfolio_funding_statusIN" + searchDTO.fundingStatuses;
     }
     if (searchDTO.searchString) {
@@ -114,40 +114,19 @@ export class PortfolioSummaryStore extends VuexModule {
    * each search parameter, no need to check if the value exists since the value is mandatory.
    */
   @Action({rawError: true})
-  public async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
+  public async getMandatorySearchParameterQuery(searchDTO?: PortfolioSummarySearchDTO):
     Promise<string> {
     const currentUser = await CurrentUserStore.getCurrentUser();
     const userSysId = currentUser.sys_id;
     let query = "";
-    if (searchDTO.role === "ALL") {
-      query = query +
-        `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
-    } else { // "MANAGED"
-      query = query +
-        `^portfolio_managersLIKE${userSysId}`;
+    if (searchDTO && searchDTO.role === "MANAGED") {
+      query += `^portfolio_managersLIKE${userSysId}`;
+    } else {
+      query += `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
     }
-    query = query + "^portfolio_status!=ARCHIVED"
-    query = query + "^ORDERBY" + searchDTO.sort;
+    query += "^portfolio_status!=ARCHIVED";
+    if (searchDTO && searchDTO.sort) query += "^ORDERBY" + searchDTO.sort;
     return query;
-  }
-
-  /**
-   * Returns the count of all portfolios WITHOUT using the offset and limit parameters BUT
-   * using all the other search parameters. This count is expected to be used for pagination.
-   *
-   * ATAT TODO: this call can be avoided if server exposes "x-Total-Count" from the backend
-   */
-  @Action({rawError: true})
-  public async getPortfolioSummaryCount(searchQuery: string): Promise<number> {
-    await this.ensureInitialized();
-    const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
-      params: {
-        sysparm_fields: 'name,description',
-        sysparm_query: searchQuery
-      }
-    };
-    const portfolioList = await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
-    return portfolioList.length;
   }
 
   /**
@@ -488,7 +467,8 @@ export class PortfolioSummaryStore extends VuexModule {
         searchQuery = optionalSearchQuery + searchQuery;
       }
 
-      const portfolioSummaryCount = await this.getPortfolioSummaryCount(searchQuery);
+      const portfolioSummaryCount = CurrentUserStore.getCurrentUserPortfolioCount;
+
       let portfolioSummaryList: PortfolioSummaryDTO[];
       if (portfolioSummaryCount > 0) {
         portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});

@@ -314,16 +314,21 @@ export default class CSPPortalAccess extends Vue {
   }
   @Watch("envSysId")
   public async envSysIdChanged(newVal: string): Promise<void> {
-    const envIndex = this.environments.findIndex(obj => obj.sys_id === newVal);
-    this._environmentIndex = envIndex;
-    this.selectedEnvironment = this.environments[envIndex];
-    if (this.showAlert) {
-      this.buildAlertContent();
+    try {
+      const envIndex = this.environments.findIndex(obj => obj.sys_id === newVal);
+      this._environmentIndex = envIndex;
+      this.selectedEnvironment = this.environments[envIndex];
+      if (this.showAlert) {
+        this.buildAlertContent();
+      }
+      if (!this.selectedEnvironment.csp_admins) {
+        await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
+      }
+      this.tableData = this.selectedEnvironment.csp_admins as Operator[];
     }
-    if (!this.selectedEnvironment.csp_admins) {
-      await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
+    catch(error) {
+      console.log(error)
     }
-    this.tableData = this.selectedEnvironment.csp_admins as Operator[];
   }
 
   @Watch("tableData")
@@ -437,6 +442,7 @@ export default class CSPPortalAccess extends Vue {
     return this.selectedEnvironment.environmentStatus as string;
   }
 
+  /* eslint-disable indent */
   public alertContent: {
     heading: string;
     message: string;
@@ -456,6 +462,7 @@ export default class CSPPortalAccess extends Vue {
     iconColor: "",
     iconBgColor: "",
   };
+  /* eslint-ensable indent */
 
   public buildAlertContent(): void {
     const csp = this.serviceProvider[this.selectedEnvironment.csp_display as string];
@@ -534,37 +541,43 @@ export default class CSPPortalAccess extends Vue {
   }
 
   public async validateEmail(): Promise<boolean> {
-    const email = this.adminEmail;
-    if (!email) {
-      this.invalidEmailMessage = "Please enter your administrator’s email address."
-      this.emailIsValid = false;
-      this.showEmailErrorMessage = true;
-      return false;
-    }
-
-    const domain = email.slice(-3).toLowerCase();
-    const isGovtDomain = domain === "mil" || domain === "gov";
-    const missingAtSymbol = email.indexOf("@") === -1;
-    const validEmail = this.emailRegex.test(email);
-
-    const isValid = isGovtDomain && !missingAtSymbol && validEmail;
-    this.$nextTick(() => {
-      this.emailIsValid = true;
-      this.invalidEmailMessage = "";
-      if (!isGovtDomain || missingAtSymbol || !validEmail) {
+    try {
+      const email = this.adminEmail;
+      if (!email) {
+        this.invalidEmailMessage = "Please enter your administrator’s email address."
         this.emailIsValid = false;
+        this.showEmailErrorMessage = true;
+        return false;
       }
-      if (!validEmail && missingAtSymbol && !isGovtDomain) {
-        this.invalidEmailMessage = this.invalidEmailFormat;
-      } else if (!isGovtDomain) {
-        this.invalidEmailMessage = this.invalidEmailDomain;
-      } else if (missingAtSymbol) {
-        this.invalidEmailMessage = this.invalidEmailMissingAtSymbol;
-      }
-      this.showEmailErrorMessage = !this.emailIsValid;
 
-    });
-    return isValid;
+      const domain = email.slice(-3).toLowerCase();
+      const isGovtDomain = domain === "mil" || domain === "gov";
+      const missingAtSymbol = email.indexOf("@") === -1;
+      const validEmail = this.emailRegex.test(email);
+
+      const isValid = isGovtDomain && !missingAtSymbol && validEmail;
+      this.$nextTick(() => {
+        this.emailIsValid = true;
+        this.invalidEmailMessage = "";
+        if (!isGovtDomain || missingAtSymbol || !validEmail) {
+          this.emailIsValid = false;
+        }
+        if (!validEmail && missingAtSymbol && !isGovtDomain) {
+          this.invalidEmailMessage = this.invalidEmailFormat;
+        } else if (!isGovtDomain) {
+          this.invalidEmailMessage = this.invalidEmailDomain;
+        } else if (missingAtSymbol) {
+          this.invalidEmailMessage = this.invalidEmailMissingAtSymbol;
+        }
+        this.showEmailErrorMessage = !this.emailIsValid;
+
+      });
+      return isValid;
+    }
+    catch(error) {
+      console.log(error)
+      return false;
+    }         
   }
   
   public formatDate(item: Operator): string {
@@ -574,40 +587,51 @@ export default class CSPPortalAccess extends Vue {
   }
 
   public async openSlideoutPanel(e: Event): Promise<void> {
-    if (e && e.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      const slideoutPanelContent: SlideoutPanelContent = {
-        component: AccessingCSPLearnMore,
-        title: "Learn More",
-      }
-      await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    try { 
+      if (e && e.currentTarget) {
+        const opener = e.currentTarget as HTMLElement;
+        const slideoutPanelContent: SlideoutPanelContent = {
+          component: AccessingCSPLearnMore,
+          title: "Learn More",
+        }
+        await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
 
-      SlideoutPanel.openSlideoutPanel(opener.id);
+        SlideoutPanel.openSlideoutPanel(opener.id);
+      }
     }
+    catch(error) {
+      console.log(error)
+    }        
   }
 
 
   public async loadOnEnter(): Promise<void> {
-    this.isLoading = true;  
-    this.environments = Portfolio.currentPortfolio.environments || [];
-    this.showEnvTabs = this.environments.length > 1;
+    try {
+      
+      this.isLoading = true;  
+      this.environments = Portfolio.currentPortfolio.environments || [];
+      this.showEnvTabs = this.environments.length > 1;
 
-    if (Portfolio.currentPortfolio.environments) {
-      const selectedEnvSysId = Portfolio.currentPortfolioEnvSysId;
-      const envIndex = this.environments.findIndex(obj => obj.sys_id === selectedEnvSysId);
-      const idx = envIndex > -1 ? envIndex : 0;
-      this.selectedEnvironment = Portfolio.currentPortfolio.environments[idx] as Environment;
-      if (this.showAlert) {
-        this.buildAlertContent();
+      if (Portfolio.currentPortfolio.environments) {
+        const selectedEnvSysId = Portfolio.currentPortfolioEnvSysId;
+        const envIndex = this.environments.findIndex(obj => obj.sys_id === selectedEnvSysId);
+        const idx = envIndex > -1 ? envIndex : 0;
+        this.selectedEnvironment = Portfolio.currentPortfolio.environments[idx] as Environment;
+        if (this.showAlert) {
+          this.buildAlertContent();
+        }
+
       }
-
+      if (!this.selectedEnvironment.csp_admins) {
+        await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
+      }
+      this.tableData = this.selectedEnvironment.csp_admins as Operator[];
+      this.isLoading = false;
+      this.transitionGroup = "transition-group";
     }
-    if (!this.selectedEnvironment.csp_admins) {
-      await Portfolio.loadAllOperatorsOfPortfolioEnvironment(this.selectedEnvironment);
-    }
-    this.tableData = this.selectedEnvironment.csp_admins as Operator[];
-    this.isLoading = false;
-    this.transitionGroup = "transition-group";
+    catch(error) {
+      console.log(error)
+    }      
   }
   public  mounted(): void {
     this.loadOnEnter();
