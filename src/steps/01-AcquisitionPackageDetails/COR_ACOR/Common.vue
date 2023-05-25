@@ -229,22 +229,22 @@ export default class CommonCorAcor extends Vue {
   private branchRanksData: AutoCompleteItemGroups = {};
 
   private roleIndices = {
-    MILITARY: 0,
-    CIVILIAN: 1,
+    CIVILIAN: 0,
+    MILITARY: 1,
     CONTRACTOR: 3,
   };
 
   private contactRoles: RadioButton[] = [
     {
-      id: "Military",
-      label: "Military",
-      value: "MILITARY",
-    },
-    {
       id: "Civilian",
       label: "Civilian",
       value: "CIVILIAN",
     },
+    {
+      id: "Military",
+      label: "Military",
+      value: "MILITARY",
+    }
   ];
 
   private selectedRole = "";
