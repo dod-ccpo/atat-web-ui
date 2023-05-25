@@ -75,6 +75,10 @@
               </v-list-item>
             </v-list>
           </v-card>
+          <div v-show="showRefineSearchMessage" class="_refine-search-message">
+            <span class="font-weight-500">Top 100 results</span> 
+            &ndash; Refine your search to view more.
+          </div>
         </div>
       </div>
 
@@ -177,6 +181,10 @@ export default class ContributorInviteModal extends Vue {
     return this.searchObj.searchResults.length > 0;
   }
 
+  public get showRefineSearchMessage(): boolean {
+    return this.searchObj.searchResults.length === 100;
+  }
+
   public async clearSearch(): Promise<void> {
     this.searchString = "";
     this.searchObj.alreadyInvited = false;
@@ -226,11 +234,7 @@ export default class ContributorInviteModal extends Vue {
           agency: userSearchDTO.company ? "(" + userSearchDTO.company + ")" : "",
         }
       });
-      if (response.length === 100) {
-        this.searchObj.searchResults.push({
-          firstName: "More than 100 results. Please refine your search."
-        });
-      }
+  
       this.searchObj.noResults = this.searchObj.searchResults.length === 0;
       this.searchObj.isLoading = false;
       this.isSearching = false;
