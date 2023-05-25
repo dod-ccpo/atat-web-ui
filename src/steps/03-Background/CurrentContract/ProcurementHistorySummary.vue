@@ -198,7 +198,10 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   
   public confirmDeleteInstance(item: CurrentContractDTO): void {
     this.instanceNumberToDelete = (item.instance_number as number) || -1;
-    this.deleteInstanceModalTitle = "Delete " + item.incumbent_contractor_name + "?";
+    this.deleteInstanceModalTitle = 
+      "Delete " + 
+        (item.incumbent_contractor_name !== "" ? item.incumbent_contractor_name : "this contract")+ 
+      "?";
     this.showDeleteInstanceDialog = true;
     this.instanceToDeleteSysId = item.sys_id as string;
   }
