@@ -448,7 +448,6 @@ export default class PortfoliosSummary extends Vue {
       cardData.portfolio_managers = portfolio.portfolio_managers;
       cardData.portfolio_viewers = portfolio.portfolio_viewers;
       cardData.createdBy = portfolio.sys_created_by;
-      debugger;
 
       cardData.agency = portfolio.agency;
       cardData.agencyDisplay = portfolio.agency_display;
@@ -465,8 +464,6 @@ export default class PortfoliosSummary extends Vue {
 
         cardData.lastModifiedStr = "Started " + agoString + " ago";
       } else {
-        // ATAT TODO - 
-        debugger;
         if (portfolio.last_updated) {
           const updatedDate = createDateStr(portfolio.last_updated, true);
           cardData.lastModifiedStr = "Last modified " + updatedDate;
