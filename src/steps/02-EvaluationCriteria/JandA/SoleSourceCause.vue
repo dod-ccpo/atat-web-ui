@@ -18,7 +18,6 @@
             <ATATAlert
               id="AutomaticallyOverwriteWarning"
               type="warning"
-              v-show=""
               maxWidth="900"
               class="mt-5 mb-14"
             >
