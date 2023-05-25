@@ -115,7 +115,7 @@ export const initialCurrentContract = (): CurrentContractDTO => {
     contract_order_start_date: "",
     competitive_status: "",
     business_size: "",
-    instance_number: 1,
+    instance_number: AcquisitionPackage.currentContractInstanceNumber || -1,
     acquisition_package:AcquisitionPackage.packageId,
     is_valid: false,
   }
@@ -866,17 +866,20 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async deleteContract(sysId: string): Promise<void> {
-    //remove SNOW listings
-    const existingContracts = (await this.loadCurrentContractsFromSNOW())
-      .map((c)=> c.sys_id);
-    if (existingContracts.includes(sysId)){
-      await api.currentContractTable.remove(sysId as string)
+  public async deleteContract(contract: CurrentContractDTO): Promise<void> {
+    const sysId = contract.sys_id ? contract.sys_id : "";
+    // remove SNOW listings, if necessary
+    if (sysId !== ""){
+      const existingContracts = (await this.loadCurrentContractsFromSNOW())
+        .map((c)=> c.sys_id);
+      if (existingContracts.includes(sysId)){
+        await api.currentContractTable.remove(sysId as string)
+      }
     }
 
     //remove STORE listing
     const updatedContracts = this.currentContracts?.filter(
-      (c)=> c.sys_id !== sysId
+      (c)=> c.instance_number !== contract.instance_number
     ) as CurrentContractDTO[];
     await this.doSetCurrentContracts(updatedContracts);
   }

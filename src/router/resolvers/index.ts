@@ -193,6 +193,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     (c)=>c.current_contract_exists==="NO"
   )
   const hasExistingContracts = numberOfExistingContracts()>0;
+  const fromProcurementHistory = current === routeNames.ProcurementHistorySummary;
 
   const hasSingleInvalidContract = 
     currentContracts.length === 1
@@ -222,10 +223,11 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
   ){
     return routeNames.ProcurementHistorySummary;
   } else if (
-    current === routeNames.ProcurementHistorySummary
-    && hasLogicalFollowOn()
+    fromProcurementHistory
   ){
-    return CrossDomainResolver(routeNames.CurrentContract)
+    return hasLogicalFollowOn()
+      ? CrossDomainResolver(routeNames.CurrentContract)
+      : routeNames.CurrentContract
   }
   return routeNames.CurrentContractDetails;
 

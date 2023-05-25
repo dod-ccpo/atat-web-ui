@@ -6,12 +6,6 @@
           <h1 class="page-header mb-3">
             {{ headline }}
           </h1>
-          <div class="copy-max-width">
-              <p class="mb-10">
-                If you have more than one contract for this effort, 
-                we will walk through them one at a time.
-              </p>
-            </div>
           <div v-if="isExceptiontoFairOpp" class="copy-max-width">
             <h2 class="mb-5">
               1. Contract overview
@@ -360,14 +354,14 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   public async loadContract(): Promise<void>{
     const contractToLoadInstanceNumber = await AcquisitionPackage.currentContractInstanceNumber;
     this.currentContracts = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
-    this.sortDataSource();
+    await this.sortDataSource();
     this.currentContract = this.currentContracts.filter(
       (c) => {
         return c.instance_number?.toString()=== contractToLoadInstanceNumber.toString()
       }
     )[0] || initialCurrentContract();
-    this.isCurrent = this.currentContracts[0] === this.currentContract 
-      || this.currentContracts.length <= 1
+    this.isCurrent = this.currentContracts[0] === this.currentContract
+      || !this.isExceptiontoFairOpp
 
     this.setMinAndMaxDates();
   }
