@@ -599,11 +599,13 @@ export class PortfolioDataStore extends VuexModule {
       );
       allOperatorsOfPortfolioEnv = allOperatorsOfPortfolioEnv
         .map(operator => convertColumnReferencesToValues(operator));
-      allOperatorsOfPortfolioEnv.forEach(operator =>
-        this.transformAndAddOperatorToPortfolioEnvironment({
+      allOperatorsOfPortfolioEnv.forEach(async (operator) => {
+        await this.transformAndAddOperatorToPortfolioEnvironment({
           environment: environment,
           operatorDTO: operator
-        }))
+        })
+      }, this)
+
       await this.sortPortfolioEnvironmentOperators(environment);
     }
   }

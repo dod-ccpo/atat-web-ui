@@ -219,12 +219,12 @@ export default class InviteMembersModal extends Vue {
       this.searchObj.isLoading = false;
       this.isSearching = false;
     } else {
-      UserManagement.triggerAbort();
+      await UserManagement.triggerAbort();
       this.searchObj.searchResults = [];
       this.searchObj.noResults = false;
       this.searchObj.alreadyInvited = false;         
       this.isSearching = false;
-      this.onUserSearchValueChange(newValue);
+      await this.onUserSearchValueChange(newValue);
     }
   }, 500)
 
@@ -261,13 +261,13 @@ export default class InviteMembersModal extends Vue {
   /**
    * Resets the state of the modal and all the properties.
    */
-  onCancel(): void {
+  async onCancel(): Promise<void> {
     this.searchObj.value = "";
     this.searchObj.alreadyInvited = false;
     this.searchObj.searchResults = [];
     this.searchObj.noResults = false;
     this.searchObj.isLoading = false;
-    UserManagement.triggerAbort();    
+    await UserManagement.triggerAbort();    
   }
 
   @Watch("_showModal")

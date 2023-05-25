@@ -448,7 +448,7 @@ export default class PortfolioDrawer extends Vue {
   public async goToCSPAdmin(envSysId: string): Promise<void> {
     // go to CSP Admin page showing correct environment tab    
     await PortfolioStore.setCurrentEnvSysId(envSysId);
-    AppSections.setActiveTabIndex(2);
+    await AppSections.setActiveTabIndex(2);
   }
   public getEnvStatus(env: Environment): string {
     if (env.environmentStatus) {

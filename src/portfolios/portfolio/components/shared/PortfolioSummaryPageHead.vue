@@ -169,8 +169,8 @@ export default class PortfolioSummaryPageHead extends Vue {
   public openModal():void {
     PortfolioStore.setShowAddMembersModal(true);
   }
-  public tabClicked(index: number): void {0
-    AppSections.setActiveTabIndex(index);
+  public async tabClicked(index: number): Promise<void> {
+    await AppSections.setActiveTabIndex(index);
   }
   public saveTitle(): void {
     if(hasChanges(PortfolioStore.currentPortfolio.title, this._title)) {
