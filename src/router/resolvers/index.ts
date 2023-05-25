@@ -181,30 +181,88 @@ export const CurrentContractRouteResolver = (current: string): string => {
     // skip the "Do you have a current/previous contract" page
     return current === routeNames.CurrentContractDetails
       ? CrossDomainResolver(current)
-      : routeNames.CurrentContractDetails
+      : routeNames.ProcurementHistorySummary
   }
   return routeNames.CurrentContract
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
-  const hasCurrentContract 
-    = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
-  if (hasCurrentContract) {
+  const currentContracts =  AcquisitionPackage.currentContracts || [];
+  const fromCurrentContract =  current === routeNames.CurrentContract;
+  const doesNotNeedContract = currentContracts.every(
+    (c)=>c.current_contract_exists==="NO"
+  )
+  const hasExistingContracts = numberOfExistingContracts()>0;
+  const fromProcurementHistory = current === routeNames.ProcurementHistorySummary;
+
+  const hasSingleInvalidContract = 
+    currentContracts.length === 1
+    && currentContracts[0].is_valid === false
+
+  if (doesNotNeedContract){
+    return routeNames.CurrentEnvironment;
+  } else if (
+    !hasExceptionToFairOpp()
+  ) {
     return routeNames.CurrentContractDetails;
+  } else if (
+    hasExceptionToFairOpp()
+    && hasSingleInvalidContract
+    && fromCurrentContract
+  ){
+    return routeNames.CurrentContractDetails;
+  } else if (
+    hasExceptionToFairOpp()
+    && fromCurrentContract
+  ){
+    return routeNames.ProcurementHistorySummary;
+  } else if (
+    current !== routeNames.ProcurementHistorySummary
+    && hasExistingContracts
+    && hasExceptionToFairOpp() 
+  ){
+    return routeNames.ProcurementHistorySummary;
+  } else if (
+    fromProcurementHistory
+  ){
+    return hasLogicalFollowOn()
+      ? CrossDomainResolver(routeNames.CurrentContract)
+      : routeNames.CurrentContract
   }
-  return current === routeNames.CurrentContract
-    ? routeNames.DOWLandingPage
-    : routeNames.CurrentContract;
+  return routeNames.CurrentContractDetails;
+
 };
 
-export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
-  if (hasExceptionToFairOpp()){
-    return routeNames.ProcurementHistorySummary
-  }
 
-  return current === routeNames.CurrentContractDetails
-    ? routeNames.CurrentEnvironment
-    : routeNames.CurrentContractDetails;
+const numberOfExistingContracts =(): number =>{
+  const currentContracts = AcquisitionPackage.currentContracts; 
+  const isExistingCurrentContracts = currentContracts !== null
+    && currentContracts.every((c)=> c.current_contract_exists==="YES");
+  return isExistingCurrentContracts 
+    ? currentContracts?.length || 0
+    : 0;
+}
+
+export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
+  const currentContracts =  AcquisitionPackage.currentContracts || [];
+  const doesNotNeedContract = currentContracts.every(
+    (c)=>c.current_contract_exists==="NO"
+  )
+  const fromCurrentEnvironment =  current === routeNames.CurrentEnvironment;
+  
+  if (
+    doesNotNeedContract
+    && fromCurrentEnvironment
+  ){
+    return routeNames.CurrentContract;
+  } else if (
+    !hasExceptionToFairOpp()
+  ){
+    return !fromCurrentEnvironment
+      ? routeNames.CurrentEnvironment
+      : routeNames.CurrentContractDetails
+  }
+  return routeNames.ProcurementHistorySummary
 }
 
 export const ReplicateAndOptimizeResolver = (current: string): string => {
@@ -917,8 +975,8 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if (current === routeNames.DOWLandingPage) {
-    const hasCurrentContract 
-      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+    const hasCurrentContract = 
+      AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
     if (hasCurrentContract) {
       return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
         && CurrentEnvironment.currentEnvInstances.length > 0
