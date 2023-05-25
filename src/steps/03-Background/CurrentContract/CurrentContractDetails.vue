@@ -222,7 +222,7 @@ import AcquisitionPackage, {initialCurrentContract, } from "@/store/acquisitionP
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO, ReferenceColumn } from "@/api/models";
 import { formatDate, hasChanges } from "@/helpers";
-import { add, compareAsc, format, formatISO, isValid } from "date-fns";
+import { add, compareAsc, format, formatISO, isValid, subDays } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 import _, { isString } from "lodash";
 import { thisExpression, throwStatement } from "@babel/types";
@@ -260,16 +260,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private startMaxDate = "";
   private expMinDate = "";
   private expMaxDate = "";
-
+  private isCurrent = false;
   get headline(): string{
     return "Let’s gather some details about your "
       + (this.isCurrent ? "current" : "previous")
       + " contract";
-  }
-
-  get isCurrent(): boolean{
-    return this.currentContracts[0] === this.currentContract 
-      || this.currentContracts.length <= 1
   }
 
   get todaysDateISO():string{
@@ -365,18 +360,29 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   public async loadContract(): Promise<void>{
     const contractToLoadInstanceNumber = await AcquisitionPackage.currentContractInstanceNumber;
     this.currentContracts = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
+    this.sortDataSource();
     this.currentContract = this.currentContracts.filter(
       (c) => {
         return c.instance_number?.toString()=== contractToLoadInstanceNumber.toString()
       }
     )[0] || initialCurrentContract();
+    this.isCurrent = this.currentContracts[0] === this.currentContract 
+      || this.currentContracts.length <= 1
 
     this.setMinAndMaxDates();
   }
 
+  public async sortDataSource():Promise<void>{
+    this.currentContracts.sort((a,b)=> {
+      const dateA = new Date(a.sys_created_on || "");
+      const dateB = new Date(b.sys_created_on || "");
+      return dateA.getTime()-dateB.getTime()
+    })
+  }
+
   public setMinAndMaxDates():void{
     this.startMinDate = "";
-    this.startMaxDate = this.todaysDateISO;
+    this.startMaxDate = formatISO(subDays(new Date(),1), { representation: 'date' });
     this.expMinDate = "";
     this.expMaxDate = this.isCurrent
       ? "" 

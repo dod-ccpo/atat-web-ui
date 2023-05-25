@@ -137,7 +137,7 @@
       :showDialog="showDeleteInstanceDialog"
       :title="deleteInstanceModalTitle"
       no-click-animation
-      okText="Delete instance"
+      okText="Delete contract"
       width="450"
       @ok="deleteInstance"
       @cancelClicked="showDeleteInstanceDialog = false"
@@ -209,7 +209,6 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
     this.$nextTick(async () => {
       this.showDeleteInstanceDialog = false;
       this.instanceToDeleteSysId = "";
-      await this.sortTable();
       await this.setCurrentContractInstanceNumber();
     })
   }
@@ -221,12 +220,12 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     await this.setDataSource();
-    await this.sortTable();
     await this.setCurrentContractInstanceNumber();
   }
 
   public async setDataSource():Promise<void>{
     this.dataSource = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
+    await this.sortDataSource();
   }
 
   public setHeaderId(column: string): string {
@@ -236,10 +235,14 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   public async editInstance(contract: CurrentContractDTO): Promise<void> {
     await AcquisitionPackage.setCurrentContractInstanceNumber(
         contract.instance_number as number);
+    this.sortDataSource();
+    await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
     this.navigate();
   }
 
   public async addInstance(): Promise<void> {
+    this.sortDataSource();
+    await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
     this.navigate();
   }
 
@@ -248,7 +251,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
    * current contract
    */
 
-  public async sortTable():Promise<void>{
+  public async sortDataSource():Promise<void>{
     this.dataSource.sort((a,b)=> {
       const dateA = new Date(a.sys_created_on || "");
       const dateB = new Date(b.sys_created_on || "");
@@ -273,6 +276,8 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
+      this.sortDataSource();
+      await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
       await AcquisitionPackage.updateCurrentContractsSNOW(this.dataSource)
     } catch (error) {
       console.log(error);

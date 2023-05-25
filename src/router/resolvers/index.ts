@@ -223,8 +223,9 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.ProcurementHistorySummary;
   } else if (
     current === routeNames.ProcurementHistorySummary
+    && hasLogicalFollowOn()
   ){
-    return routeNames.CurrentContract;
+    return CrossDomainResolver(routeNames.CurrentContract)
   }
   return routeNames.CurrentContractDetails;
 
