@@ -19,6 +19,7 @@
               id="AutomaticallyOverwriteWarning"
               type="warning"
               maxWidth="900"
+              v-if="showAlert"
               class="mt-5 mb-14"
             >
               <template v-slot:content>
@@ -258,6 +259,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public SoleSourceCauseFormBeenEdited = false;
   public SoleSourceGeneratedTextBeenEdited = false;
   public isSoleSourceTextOriginal = false;
+  public alertText = "";
 
   // MIGRATION SECTION
   public migrAddlTimeCost: YesNo = "";
@@ -379,14 +381,14 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     return this.currentData.cause_migration_estimated_delay_amount as string;
   }
 
-  public get alertText(): string {
+
+  get showAlert(): boolean{
     if (this.SoleSourceGeneratedTextBeenEdited){
-      return "Any changes below will not automatically overwrite your edits to the previous "
-           + "suggested language. You can update your current explanation to a new suggestion "
-           + "on the next screen, if needed."
+      this.alertText = "Any changes below will not automatically overwrite your edits "
+           + "to the previous suggested language. You can update your current explanation "
+           + "to a new suggestion on the next screen, if needed."
     }
-    return "";
-    
+    return this.alertText !== "";
   }
 
   public validateMigrationEstimate(): void {
@@ -465,6 +467,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "your CSP"
     }
+    this.loadAcquisitionPackageSoleSourceVariables();
   }
 
   private loadAcquisitionPackageSoleSourceVariables(): void{
@@ -483,7 +486,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     this.whyEssentialRulesOff = false;
     this.whyInadequateRulesOff = false;
-    
+    debugger;
     AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(
       this.hasChanged()
     )
