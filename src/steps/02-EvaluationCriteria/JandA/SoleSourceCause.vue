@@ -383,7 +383,11 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
 
   get showAlert(): boolean{
-    if (this.SoleSourceGeneratedTextBeenEdited){
+    if (!this.isSoleSourceTextOriginal){
+      this.alertText = "If you update any responses below, we’ll replace your custom " 
+          + "explanation with suggested language based on your responses. You will be " 
+          + "able to restore your custom explanation, if needed.";
+    } else if (this.SoleSourceGeneratedTextBeenEdited){
       this.alertText = "Any changes below will not automatically overwrite your edits "
            + "to the previous suggested language. You can update your current explanation "
            + "to a new suggestion on the next screen, if needed."
@@ -486,7 +490,6 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     this.whyEssentialRulesOff = false;
     this.whyInadequateRulesOff = false;
-    debugger;
     AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(
       this.hasChanged()
     )

@@ -69,39 +69,58 @@
                 this.$validators.maxLength(2500)
               ]"
             />
-
+            <div class="d-flex justify-start">
             <v-btn
-              id="RestoreSuggestionButton"
+              id="ChangeToCustomExplanationButton"
               v-if="!isCustom"
               class="secondary font-size-14 px-4 mb-1 mt-1"
-              :disabled="isSoleSourceCauseDefault"
-              @click="confirmRestoreDefaultText"
+              :disabled="isSoleSourceTextOriginal"
+              @click="changeToCustomExplanation"
             >
               <ATATSVGIcon
-                id="RestoreSuggestionButtonIcon"
+                id="ChangeToCustomExplanationIcon"
                 width="19"
                 height="15"
-                name="restore"
+                name="SwapVertical"
                 class="mr-1"
-                :color="btnRestoreIconColor"
+                :color="getIconColor(isSoleSourceTextOriginal)"
               />
-              Restore to suggestion
+              Change to custom explanation
             </v-btn>
-            <ATATAlert
-              id="ReviewQuestionnaireResponses"
-              type="warning"
-              v-if="isSoleSourceCauseFormEdited"
-              maxWidth="750"
-              class="mt-9 mb-2"
-            >
-              <template v-slot:content>
-                <p>
-                  To view suggested language based on your updated responses to the previous 
-                  questionnaire, click “Restore default suggestion” above.
-                </p>
-              </template>
-            </ATATAlert>
-
+            
+              <v-btn
+                id="RestoreSuggestionButton"
+                v-if="!isCustom"
+                class="secondary font-size-14 px-4 mb-1 mt-1 ml-5"
+                :disabled="isSoleSourceCauseDefault"
+                @click="confirmRestoreDefaultText"
+              >
+                <ATATSVGIcon
+                  id="RestoreSuggestionButtonIcon"
+                  width="19"
+                  height="15"
+                  name="restore"
+                  class="mr-1"
+                  :color="getIconColor(isSoleSourceCauseDefault)"
+                />
+                Restore to suggestion
+              </v-btn>
+            </div>
+              <ATATAlert
+                id="ReviewQuestionnaireResponses"
+                type="warning"
+                v-if="isSoleSourceCauseFormEdited"
+                maxWidth="750"
+                class="mt-9 mb-2"
+              >
+                <template v-slot:content>
+                  <p>
+                    To view suggested language based on your updated responses to the previous 
+                    questionnaire, click “Restore default suggestion” above.
+                  </p>
+                </template>
+              </ATATAlert>
+           
             <ATATExpandableLink v-if="displayHelpSoleSourceLink" aria-id="HelpSoleSource"
               class="mt-5">
               <template v-slot:header>
@@ -161,6 +180,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { currencyStringToNumber, hasChanges, toCurrencyString } from "@/helpers";
 import { FairOpportunityDTO } from "@/api/models";
 import {routeNames} from "@/router/stepper";
+import FairOppExceptions from "../components/FairOppExceptions.vue";
 
 @Component({
   components: {
@@ -179,6 +199,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public soleSourceCauseCustom = "";
   public defaultSuggestion = "";
   public showRestoreModal = false;
+  public showConfirmToCustomExplanationModal = false;
 
   public isCustom = false;
   public allSectionsNO = false;
@@ -201,12 +222,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
    *    back to this screen
    */
   public get displayHelpSoleSourceLink(): boolean {
-    // using 'why_csp_is_only_capable_source' as the indicator to determine if the user
-    // has revisited this page since it is the next page. May not be the best way to determine
-    const isUserRevisitingPage =
-        (AcquisitionPackage.fairOpportunity?.why_csp_is_only_capable_source as string)
-          .trim().length > 0;
-    return this.isCustom && isUserRevisitingPage;
+    return !this.isSoleSourceTextOriginal;
   }
 
   public csps: Record<string, string> = {
@@ -304,8 +320,12 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     this.showRestoreModal = true;
   }
 
-  get btnRestoreIconColor(): string {
-    return this.isSoleSourceCauseDefault ? "disabled" : "primary";
+  public changeToCustomExplanation():void{
+    this.soleSourceCause = AcquisitionPackage.fairOpportunity?.cause_of_sole_source_custom || "";
+  }
+
+  private getIconColor(condition: boolean):string {
+    return condition ? 'disabled': 'primary';
   }
 
   public get currentData(): FairOpportunityDTO {
