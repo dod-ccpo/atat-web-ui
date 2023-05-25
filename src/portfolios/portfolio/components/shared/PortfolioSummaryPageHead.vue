@@ -132,7 +132,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -165,6 +165,14 @@ export default class PortfolioSummaryPageHead extends Vue {
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public showDrawer = false;
+
+  public get slideoutPanelIsOpen(): boolean {
+    return SlideoutPanel.getSlideoutPanelIsOpen;
+  }
+  @Watch("slideoutPanelIsOpen")
+  public slideoutPanelIsOpenChanged(newVal: boolean): void {
+    this.showDrawer = newVal;
+  }
 
   public openModal():void {
     PortfolioStore.setShowAddMembersModal(true);

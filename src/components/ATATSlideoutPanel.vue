@@ -23,6 +23,8 @@
         text
         small
         @click.stop="closeSlideoutPanel"
+        @keydown.enter="closeSlideoutPanel"
+        @keydown.space="closeSlideoutPanel"
         ref="panelCloserRef"
         id="PanelCloser"
         :ripple="false"
