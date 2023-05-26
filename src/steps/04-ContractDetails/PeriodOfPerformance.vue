@@ -29,7 +29,7 @@
               </p>
             </div>
             <ATATAlert 
-              v-if="isFairOpportunityUrgent"
+              v-if="showAlert"
               id="UrgentFairOppAlert"
               class="copy-max-width mb-9"
               type="warning"
@@ -37,10 +37,7 @@
             >
               <template v-slot:content>
                 <p class="mr-5 mb-0">
-                  <strong>Based on your exception to fair opportunity, we recommend that you 
-                  enter a base period only.</strong> Option periods are not allowed in a 
-                  Justification and Approval (J&A) document when “urgency” is cited as the 
-                  exception, unless it is an interim contract due to a protest.
+                  <span v-html="alertText"></span>
                 </p>
               </template>
             </ATATAlert>
@@ -220,6 +217,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public durationErrorMessage = "Please provide a valid period length."
   public optionPeriodCount = 1;
   private removed: PeriodDTO[] = [];
+  private showAlert = false;
+  private alertText = "";
 
   public optionPeriods: PoP[] = [
     {
@@ -238,6 +237,29 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   get isFairOpportunityUrgent(): boolean{
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity 
       === "YES_FAR_16_505_B_2_I_A";
+  }
+
+  public setAlertText(): void{
+    const fairOpp = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
+    this.alertText = "";
+    switch (fairOpp){
+    case "YES_FAR_16_505_B_2_I_A":
+      this.alertText = "<strong>Based on your exception to fair opportunity, we recommend that you "
+        + "enter a base period only.</strong>  Option periods are not allowed in a "
+        + "Justification and Approval (J&A) document when “urgency” is cited as the "
+        + "exception, unless it is an interim contract due to a protest."
+      break;
+    case "YES_FAR_16_505_B_2_I_B":
+    case "YES_FAR_16_505_B_2_I_C":
+      this.alertText = "<strong>Based on your exception to fair opportunity, we recommend that "
+        + "your period of performance to the shortest time possible.</strong>  A Justification "
+        + "you limit and Approval (J&A) should be used to provide support while overcoming "
+        + "any barriers that limit competition."
+      break;
+    default:
+      break;
+    }
+    this.showAlert = this.alertText !== "";
   }
 
   public setDurationErrorMessages(errors: string[], idx: number): void {
@@ -581,6 +603,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
 
     this.setTotalPoP();
+    this.setAlertText();
   }
 
   protected async saveOnLeave(): Promise<boolean> {
