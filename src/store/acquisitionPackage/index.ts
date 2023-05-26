@@ -334,7 +334,15 @@ export class AcquisitionPackageStore extends VuexModule {
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
+
   fairOpportunity: FairOpportunityDTO | null = null;
+  // used for routing
+  hasFairOppExplanationsOnLoad: Record<string, boolean> = {
+    soleSourceCause: false,
+    researchDetails: false,
+    barriersPlansToRemove: false,
+  }
+
   marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
@@ -915,6 +923,29 @@ export class AcquisitionPackageStore extends VuexModule {
           await this.updateAcquisitionPackage();
         }
       }
+      const hasExplanationOnLoad: Record<string, boolean> = {
+        soleSourceCause: false,
+        researchDetails: false,
+        barriersPlansToRemove: false,
+      }
+    
+      if (this.fairOpportunity?.cause_of_sole_source_generated
+        || this.fairOpportunity?.cause_of_sole_source_custom
+      ) {
+        hasExplanationOnLoad.soleSourceCause = true;
+      }
+      if (this.fairOpportunity?.research_details_generated
+        || this.fairOpportunity?.research_details_custom
+      ) {
+        hasExplanationOnLoad.researchDetails = true;
+      }
+      if (this.fairOpportunity?.barriers_plans_to_remove_generated
+        || this.fairOpportunity?.barriers_plans_to_remove_custom
+      ) {
+        hasExplanationOnLoad.barriersPlansToRemove = true;
+      }
+      await this.doSetHasFairOppExplanationsOnLoad(hasExplanationOnLoad);
+
     } else {
       const techniques: MarketResearchTechniquesDTO[] 
         = await api.marketResearchTechniquesTable.all();
@@ -935,6 +966,12 @@ export class AcquisitionPackageStore extends VuexModule {
       await FinancialDetails.deleteAppropriationOfFunds();
     }
   }
+
+  @Mutation
+  public async doSetHasFairOppExplanationsOnLoad(val: Record<string, boolean>): Promise<void> {
+    this.hasFairOppExplanationsOnLoad = val;
+  }
+
   @Mutation
   public async doSetMarketResearchTechniques(
     techniques: MarketResearchTechniquesDTO[]
@@ -1205,16 +1242,11 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
       this.setPackagePercentLoaded(55);
-      if(fairOppSysId) {
-        const fairOpportunity = await api.fairOpportunityTable.retrieve(
-          fairOppSysId
-        );
-        if(fairOpportunity)
-          this.setFairOpportunity(fairOpportunity);
+      if (fairOppSysId) {
+        const fairOpportunity = await api.fairOpportunityTable.retrieve(fairOppSysId);
+        if (fairOpportunity) this.setFairOpportunity(fairOpportunity);
       } else {
-        this.setFairOpportunity(
-          initialFairOpportunity()
-        );
+        this.setFairOpportunity(initialFairOpportunity());
       }
       // EJY HERE
 

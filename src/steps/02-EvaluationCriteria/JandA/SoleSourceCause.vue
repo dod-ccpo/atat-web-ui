@@ -259,6 +259,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public SoleSourceCauseFormBeenEdited = false;
   public SoleSourceGeneratedTextBeenEdited = false;
   public isSoleSourceTextOriginal = false;
+  public hasSoleSourceExplanation = false;
   public alertText = "";
 
   // MIGRATION SECTION
@@ -383,11 +384,11 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
 
   get showAlert(): boolean{
-    if (!this.isSoleSourceTextOriginal){
+    if (this.hasSoleSourceExplanation && !this.isSoleSourceTextOriginal){
       this.alertText = "If you update any responses below, we’ll replace your custom " 
           + "explanation with suggested language based on your responses. You will be " 
           + "able to restore your custom explanation, if needed.";
-    } else if (this.SoleSourceGeneratedTextBeenEdited){
+    } else if (this.hasSoleSourceExplanation && this.SoleSourceGeneratedTextBeenEdited){
       this.alertText = "Any changes below will not automatically overwrite your edits "
            + "to the previous suggested language. You can update your current explanation "
            + "to a new suggestion on the next screen, if needed."
@@ -470,6 +471,10 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "your CSP"
+
+      if (storeData.cause_of_sole_source_generated || storeData.cause_of_sole_source_custom) {
+        this.hasSoleSourceExplanation = true;
+      }
     }
     this.loadAcquisitionPackageSoleSourceVariables();
   }
@@ -479,8 +484,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
     this.SoleSourceGeneratedTextBeenEdited = 
       AcquisitionPackage.hasSoleSourceGeneratedTextBeenEdited;
-    this.isSoleSourceTextOriginal = 
-      AcquisitionPackage.isSoleSourceTextOriginal;
+    this.isSoleSourceTextOriginal = AcquisitionPackage.isSoleSourceTextOriginal;
   }
 
   get isSoleSourceGeneratedTextBeenEdited():boolean{
