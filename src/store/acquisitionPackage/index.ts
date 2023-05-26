@@ -337,11 +337,13 @@ export class AcquisitionPackageStore extends VuexModule {
 
   fairOpportunity: FairOpportunityDTO | null = null;
   // used for routing
-  hasFairOppExplanationsOnLoad: Record<string, boolean> = {
+  hasCustomExplanationsOnLoad: Record<string, boolean> = {
     soleSourceCause: false,
     researchDetails: false,
     barriersPlansToRemove: false,
   }
+  // used for routing
+  fairOppBackToExplanationReview = false;
 
   marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
@@ -909,6 +911,7 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
     await this.doSetFairOpportunity(value);
+    debugger;
     if (this.initialized) {
       if (this.fairOpportunity && this.fairOpportunity.sys_id) {
         await api.fairOpportunityTable.update(
@@ -923,34 +926,36 @@ export class AcquisitionPackageStore extends VuexModule {
           await this.updateAcquisitionPackage();
         }
       }
-      const hasExplanationOnLoad: Record<string, boolean> = {
-        soleSourceCause: false,
-        researchDetails: false,
-        barriersPlansToRemove: false,
-      }
-    
-      if (this.fairOpportunity?.cause_of_sole_source_generated
-        || this.fairOpportunity?.cause_of_sole_source_custom
-      ) {
-        hasExplanationOnLoad.soleSourceCause = true;
-      }
-      if (this.fairOpportunity?.research_details_generated
-        || this.fairOpportunity?.research_details_custom
-      ) {
-        hasExplanationOnLoad.researchDetails = true;
-      }
-      if (this.fairOpportunity?.barriers_plans_to_remove_generated
-        || this.fairOpportunity?.barriers_plans_to_remove_custom
-      ) {
-        hasExplanationOnLoad.barriersPlansToRemove = true;
-      }
-      await this.doSetHasFairOppExplanationsOnLoad(hasExplanationOnLoad);
-
     } else {
       const techniques: MarketResearchTechniquesDTO[] 
         = await api.marketResearchTechniquesTable.all();
       await this.doSetMarketResearchTechniques(techniques);
     }
+
+    const hasExplanationOnLoad: Record<string, boolean> = {
+      soleSourceCause: false,
+      researchDetails: false,
+      barriersPlansToRemove: false,
+    }
+  
+    if (this.fairOpportunity?.cause_of_sole_source_generated
+      || this.fairOpportunity?.cause_of_sole_source_custom
+    ) {
+      hasExplanationOnLoad.soleSourceCause = true;
+    }
+    if (this.fairOpportunity?.research_details_generated
+      || this.fairOpportunity?.research_details_custom
+    ) {
+      hasExplanationOnLoad.researchDetails = true;
+    }
+    if (this.fairOpportunity?.barriers_plans_to_remove_generated
+      || this.fairOpportunity?.barriers_plans_to_remove_custom
+    ) {
+      hasExplanationOnLoad.barriersPlansToRemove = true;
+    }
+    debugger;
+    await this.doSetHasCustomExplanationsOnLoad(hasExplanationOnLoad);
+
   }
   @Mutation
   public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
@@ -968,8 +973,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public async doSetHasFairOppExplanationsOnLoad(val: Record<string, boolean>): Promise<void> {
-    this.hasFairOppExplanationsOnLoad = val;
+  public async doSetHasCustomExplanationsOnLoad(val: Record<string, boolean>): Promise<void> {
+    this.hasCustomExplanationsOnLoad = val;
+  }
+  @Mutation
+  public doSetFairOppBackToExplanationReview(val: boolean): void {
+    this.fairOppBackToExplanationReview = val;
   }
 
   @Mutation
@@ -1242,6 +1251,7 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
       this.setPackagePercentLoaded(55);
+      debugger;
       if (fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(fairOppSysId);
         if (fairOpportunity) this.setFairOpportunity(fairOpportunity);
@@ -1464,6 +1474,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "Financial POC" })
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
+          debugger;
           this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){

@@ -110,6 +110,28 @@ export const ProposedCSPRouteResolver = (current: string): string => {
     : routeNames.ProposedCSP
 };
 
+export const MinimumRequirementsRouteResolver = (current: string): string => {
+  const backToReview = AcquisitionPackage.fairOppBackToExplanationReview;
+  if (routeNames.SoleSourceCause && backToReview) {
+    AcquisitionPackage.doSetFairOppBackToExplanationReview(false);
+    return routeNames.SoleSourceReview;
+  }
+  return current === routeNames.SoleSourceCause
+    ? routeNames.SoleSourceReview
+    : routeNames.MinimumRequirements;
+}
+
+export const SoleSourceRouteResolver = (current: string): string => {
+  debugger;
+  const skipForm = AcquisitionPackage.hasCustomExplanationsOnLoad.soleSourceCause;
+  // backward
+  if (current === routeNames.SoleSourceReview) {
+    return skipForm ? routeNames.MinimumRequirements : routeNames.SoleSourceCause;
+  }
+  // forward
+  return skipForm ? routeNames.SoleSourceReview : routeNames.SoleSourceCause;
+}
+
 export const CertificationPOCsRouteResolver = (current: string): string => {
   // TODO - remove isProdEnv condition below when J&A/MRR ready for production
   return (isProdEnv() || evalPlanRequired()) && current === routeNames.CreateEvalPlan
@@ -1539,6 +1561,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   BVTOResolver,
   EvalPlanDetailsRouteResolver,
   ProposedCSPRouteResolver,
+  MinimumRequirementsRouteResolver,
+  SoleSourceRouteResolver,
   MarketResearchEffortsRouteResolver,
   CertificationPOCsRouteResolver,
   SecurityRequirementsResolver,

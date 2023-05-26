@@ -193,6 +193,8 @@ import {
   IGCESupportingDocumentationResolver,
   BVTOResolver,
   ProposedCSPRouteResolver,
+  MinimumRequirementsRouteResolver,
+  SoleSourceRouteResolver,
   MarketResearchEffortsRouteResolver,
   CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
@@ -490,6 +492,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: MinimumRequirementsRouteResolver,
       },
       {
         menuText: "Cause of Sole Source",
@@ -500,6 +503,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: SoleSourceRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",

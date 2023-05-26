@@ -72,7 +72,7 @@
             <div class="d-flex justify-start">
             <v-btn
               id="ChangeToCustomExplanationButton"
-              v-if="!isCustom"
+              v-if="showChangeToCustomButton"
               class="secondary font-size-14 px-4 mb-1 mt-1"
               :disabled="isSoleSourceTextOriginal"
               @click="changeToCustomExplanation"
@@ -91,7 +91,8 @@
               <v-btn
                 id="RestoreSuggestionButton"
                 v-if="!isCustom"
-                class="secondary font-size-14 px-4 mb-1 mt-1 ml-5"
+                class="secondary font-size-14 px-4 mb-1 mt-1"
+                :class="{'ml-5' : showChangeToCustomButton}"
                 :disabled="isSoleSourceCauseDefault"
                 @click="confirmRestoreDefaultText"
               >
@@ -133,25 +134,27 @@
                   to a short questionnaire. You’ll be able to edit to our suggestion to meet your
                   requirements, or choose to restore your custom explanation.
                 </p>
-                <router-link
-                    :id="'SoleSourceQuestionnaire'"
-                    :to="{ name: routeNames.SoleSourceCause }"
-                    tag="button">
+                <a
+                  id="SoleSourceQuestionnaire"
+                  @click="goToQuestionnaire"
+                  @keydown.enter="goToQuestionnaire"
+                  @keydown.space="goToQuestionnaire"
+                >
                   <v-btn
-                      id="FillOutQuestionnaireButton"
-                      class="secondary font-size-14 px-3 mb-1 mt-1"
+                    id="FillOutQuestionnaireButton"
+                    class="secondary font-size-14 px-3 mb-1 mt-1"
                   >
                     <ATATSVGIcon
-                        id="FillOutQuestionnaireButtonIcon"
-                        width="19"
-                        height="15"
-                        name="dynamicForm"
-                        class="mr-1"
-                        color="primary"
+                      id="FillOutQuestionnaireButtonIcon"
+                      width="19"
+                      height="15"
+                      name="dynamicForm"
+                      class="mr-1"
+                      color="primary"
                     />
                     Fill out the questionnaire
                   </v-btn>
-                </router-link>
+                </a>
               </template>
             </ATATExpandableLink>
           </div>
@@ -210,6 +213,10 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
   public isSoleSourceCauseFormEdited = false;
   public isSoleSourceTextOriginal = false;
+
+  public get showChangeToCustomButton(): boolean {
+    return !this.isCustom && this.soleSourceCauseCustom.length > 0;
+  }
 
   public get cspName(): string {
     return this.csps[this.currentData.proposed_csp as string]
@@ -321,11 +328,21 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   }
 
   public changeToCustomExplanation():void{
-    this.soleSourceCause = AcquisitionPackage.fairOpportunity?.cause_of_sole_source_custom || "";
+    this.soleSourceCause = this.soleSourceCauseCustom || "";
   }
 
   private getIconColor(condition: boolean):string {
     return condition ? 'disabled': 'primary';
+  }
+
+  public goToQuestionnaire(): void {
+    AcquisitionPackage.doSetFairOppBackToExplanationReview(true);
+    this.$router.push({
+      name: routeNames.SoleSourceCause,
+      params: {
+        direction: "next"
+      }   
+    });
   }
 
   public get currentData(): FairOpportunityDTO {
