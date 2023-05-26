@@ -597,9 +597,8 @@ export class PortfolioDataStore extends VuexModule {
       let allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
         queryForAllOperatorsOfPortfolio
       );
-      allOperatorsOfPortfolioEnv = allOperatorsOfPortfolioEnv
-        .map(operator => convertColumnReferencesToValues(operator));
-      allOperatorsOfPortfolioEnv.forEach(async (operator) => {
+      allOperatorsOfPortfolioEnv.forEach(async (operator: OperatorDTO): Promise<void> => {
+        operator = convertColumnReferencesToValues(operator)        
         await this.transformAndAddOperatorToPortfolioEnvironment({
           environment: environment,
           operatorDTO: operator
