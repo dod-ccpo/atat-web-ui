@@ -311,17 +311,17 @@ export default class CostSummary extends Vue {
     })
     if(currentEnvReplicateOrOptimize !== "NO"
       && currentEnvReplicateOrOptimize !== ""
-      && IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values === []){
+      && IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.length === 0){
       this.needsReplicateAndOptimize = true
     }
     if(archDesign === "YES" && IGCEStore.requirementsCostEstimate?.
-      architectural_design_performance_requirements.estimated_values === []){
+      architectural_design_performance_requirements.estimated_values.length === 0){
       this.needArchitecturalDesign = true
     }
     if(dowObject.length > 0 && missingCostEstimates){
       this.needPerformanceRequirement = true
     }
-    if(hasTraining && IGCEStore.requirementsCostEstimate?.training === []){
+    if(hasTraining && IGCEStore.requirementsCostEstimate?.training.length === 0){
       this.needTrainingPricing = true
     }
     if(travel && IGCEStore.requirementsCostEstimate?.travel.estimated_values === ""){
