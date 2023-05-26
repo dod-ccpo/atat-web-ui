@@ -48,15 +48,20 @@ import { CurrentContractRouteResolver } from "@/router/resolvers";
 })
 
 export default class CurrentContract extends Mixins(SaveOnLeave) {
-  public currentContractExists = AcquisitionPackage.currentContract?.current_contract_exists;
   public headline = "";
+  public currentContractExists = "";
 
   private get currentData(): CurrentContractDTO {
     return {
       current_contract_exists: this.currentContractExists,
-      acquisition_package:AcquisitionPackage.packageId
+      acquisition_package: AcquisitionPackage.packageId
     };
   }
+
+  private savedData = {
+    current_contract_exists: "",
+    acquisition_package: AcquisitionPackage.packageId
+  };
 
   private hasExceptionToFairOpportunity(): boolean {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
@@ -75,10 +80,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       "within your final acquisition package, as applicable."
   }
 
-  private savedData: CurrentContractDTO = { 
-    current_contract_exists: "" 
-  };
-
   public async mounted(): Promise<void> {
     // if second option in step 2 Exception to Fair Opportunity is selected
     // skip this page. Use route resolver to determine where to go
@@ -95,18 +96,23 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }  
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.
-      loadData<CurrentContractDTO>({storeProperty: StoreProperties.CurrentContract})
+    const storeData = await AcquisitionPackage.currentContracts
     if (storeData) {
-      if (Object.prototype.hasOwnProperty.call(storeData, 'current_contract_exists')) {
-        this.savedData = {
-          current_contract_exists: storeData.current_contract_exists,
-        }
-        this.currentContractExists = storeData.current_contract_exists || "";
-      }
+      this.savedData.current_contract_exists =
+        await this.doesCurrentContractExist(storeData)
+      this.currentContractExists = this.savedData.current_contract_exists as string;
     } else {
-      AcquisitionPackage.setCurrentContract(this.currentData);
+      AcquisitionPackage.setCurrentContract(initialCurrentContract());
     }
+  }
+
+  public async doesCurrentContractExist(data?: CurrentContractDTO[]): Promise<string>{
+    const currentContracts = data
+      ? data
+      : await AcquisitionPackage.currentContracts;
+    return currentContracts && currentContracts.length>0 
+      ? currentContracts.every(c=>c.current_contract_exists==="YES")?"YES":"NO"
+      : ""
   }
 
   private hasChanged(): boolean {
@@ -117,12 +123,17 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         let data = this.currentData;
-        if (data.current_contract_exists === "NO") {
-          data = initialCurrentContract();
-          data.current_contract_exists = "NO"
+        // update store
+        await AcquisitionPackage.clearCurrentContractInfo();
+        await AcquisitionPackage.initializeCurrentContract(
+          data.current_contract_exists as string,
+        );
+        // update SNOW if NO is selected
+        if (data.current_contract_exists?.toUpperCase()==="NO")
+        {
+          const currentContracts = await AcquisitionPackage.currentContracts || [];
+          AcquisitionPackage.updateCurrentContractsSNOW(currentContracts);
         }
-        await AcquisitionPackage.saveData<CurrentContractDTO>({data,
-          storeProperty: StoreProperties.CurrentContract});
       }
     } catch (error) {
       console.log(error);
