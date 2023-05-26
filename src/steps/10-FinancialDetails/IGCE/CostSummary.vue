@@ -384,7 +384,7 @@ export default class CostSummary extends Vue {
     if(this.hasCurrentEnv){
       name = routeNames.OptimizeOrReplicate
     }
-    if(this.hasArchDesign){
+    else if(this.hasArchDesign){
       name = routeNames.ArchitecturalDesignSolutions
     }
     this.$router.push({
