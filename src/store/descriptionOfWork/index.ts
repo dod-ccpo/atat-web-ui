@@ -56,6 +56,7 @@ import {
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import { TableApiBase } from "@/api/tableApiBase";
+import { cspConsoleURLs } from "../portfolio";
 
 
 // Classification Proxy helps keep track of saved
@@ -541,47 +542,46 @@ export const createDOWTaskNumber = async(
   return section +
     "." + classification?.dow_task_number_component +
     "." + dow_task_number_component +
-    "." + (isXaas && serviceOfferingInstanceNumber ? serviceOfferingInstanceNumber : instanceNumber)
-  //(isXaas ? "1" : instanceNumber || serviceOfferingInstanceNumber);
+  "." + (isXaas && serviceOfferingInstanceNumber ? serviceOfferingInstanceNumber : instanceNumber)
 }
 
 
 const dowToNumber = async(classificationLevel: string, 
   offeringInfo: ServiceOfferingDTO, instanceNumber?:number ):Promise<number> =>{
-  let serviceOfferingInstanceNumber = instanceNumber || -1;
+  const serviceOfferingInstanceNumber = instanceNumber || -1;
   if (serviceOfferingInstanceNumber === -1){ 
-    const serviceOfferings = DescriptionOfWork.DOWObject.find(
-      (dowObj) => {return dowObj.serviceOfferingGroupId === offeringInfo?.service_offering_group}
+    const serviceOfferings = DescriptionOfWork.DOWObject.filter(
+      (dowObj) => {
+        return dowObj.serviceOfferingGroupId === offeringInfo.service_offering_group
+      }
     )
     if(serviceOfferings){
-
-      const regexString = new RegExp(classificationLevel, "g")
-      const totalExistingClassLevels = 
-        JSON.stringify(serviceOfferings).matchAll(regexString)
-      const existingClasses = [...totalExistingClassLevels]
-      const appsInIgce = await IGCEStore.getAppsDOWTaskNumber()
-      let flag = false;
-      appsInIgce.forEach((app) => {
-        debugger
-        console.log(offeringInfo.name) //==> ALWAYS Discrete Platform as a Service (PaaS)
-        if(app.title?.toLowerCase().includes("applications") && 
-            app.title.search(offeringInfo.name) > -1 &&
-            (app.classification_level as ReferenceColumn)
-              .value === classificationLevel){
-          flag = true;
-          return app.dow_task_number
-        }
-        else {
-          console.log("classLevel",(app.classification_level as ReferenceColumn).value)
-        }
+      const appsInIgce = await IGCEStore.getAppsDOWTaskNumber(classificationLevel)
+      let num = 1;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const tmp:any[] = [];
+      serviceOfferings.forEach((serviceOffering)=>{
+        serviceOffering.serviceOfferings.forEach((so) => {
+          tmp.push(so);
+        })
       })
-      if(!flag){
-        serviceOfferingInstanceNumber = existingClasses.length + 1
-        return serviceOfferingInstanceNumber;
-      }
-    }
-    return 1
-  }
+      appsInIgce.forEach((app) => {
+        const str:string = (app.title?.substring(app.title?.lastIndexOf("-")+1) as string)
+        if(tmp.find(so => so.name === str) ){
+          num = app.dow_task_number?.substring(app.dow_task_number.length-1) as unknown as number
+          return num
+        }
+        else{
+          num = appsInIgce.length + 1
+        }
+      }) 
+      return num
+    } 
+    // if no records in serviceOfferings
+    else { 
+      return 1
+    }  
+  } 
   else {
     return serviceOfferingInstanceNumber;
   }
@@ -2165,7 +2165,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
     const updatedInstancesData: DOWClassificationInstance[] = [];
 

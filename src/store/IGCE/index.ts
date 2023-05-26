@@ -19,6 +19,7 @@ import {
   TrainingEstimateDTO, ReferenceColumn, CrossDomainSolutionDTO
 } from "@/api/models";
 import { currencyStringToNumber } from "@/helpers";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
@@ -321,15 +322,18 @@ export class IGCEStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async getAppsDOWTaskNumber():Promise<IgceEstimateDTO[]>{
+  public async getAppsDOWTaskNumber(classId:string):Promise<IgceEstimateDTO[]>{
 
     const query: AxiosRequestConfig = {
       params: { 
         sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId +
-          "^titleLIKEApplication"
+          "^titleLIKEApplication" + "^classification_level=" + classId,
       },
     }
     const apps = await api.igceEstimateTable.getQuery(query);
+    apps.forEach(app => {
+      app = convertColumnReferencesToValues(app);
+    });
     return apps;
   }
 
