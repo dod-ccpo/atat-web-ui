@@ -235,6 +235,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     if(existingCDSIGCERecord){
       existingCDSIGCERecord.classification_level = classificationLvl
       existingCDSIGCERecord.unit_quantity = await this.createPopString()
+      existingCDSIGCERecord.idiq_clin_type = "CLOUD"
     }
     const cdsRecord = existingCDSIGCERecord !== undefined 
       ? existingCDSIGCERecord
