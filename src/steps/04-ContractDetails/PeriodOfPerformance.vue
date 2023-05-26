@@ -252,8 +252,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     case "YES_FAR_16_505_B_2_I_B":
     case "YES_FAR_16_505_B_2_I_C":
       this.alertText = "<strong>Based on your exception to fair opportunity, we recommend that "
-        + "your period of performance to the shortest time possible.</strong>  A Justification "
-        + "you limit and Approval (J&A) should be used to provide support while overcoming "
+        + "you limit your period of performance to the shortest time possible.</strong> "
+        + "A Justification and Approval (J&A) should be used to provide support while overcoming "
         + "any barriers that limit competition."
       break;
     default:
