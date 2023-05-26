@@ -56,7 +56,6 @@ import {
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import { TableApiBase } from "@/api/tableApiBase";
-import { cspConsoleURLs } from "../portfolio";
 
 
 // Classification Proxy helps keep track of saved
@@ -511,9 +510,6 @@ export const saveOrUpdateOtherServiceOffering =
       return objSysId;
     };
 
-//TODO add support for NOT changing the DOW task number 
-//changes DOW task number on editing of a package
-//changes DOW task number on editing a classification listing
 export const createDOWTaskNumber = async(
   classificationLevel: string,
   offeringType: string,
