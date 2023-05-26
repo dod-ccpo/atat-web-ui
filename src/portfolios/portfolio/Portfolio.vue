@@ -215,7 +215,7 @@
                   </ATATAlert>
                 </v-col>
               </v-row>
-
+              <!-- ATAT TODO - restore in future ticket 
               <v-row id="BurndownChartWrap">
                 <v-col>
                   <v-card class="_no-shadow v-sheet--outlined pa-8">
@@ -283,6 +283,7 @@
                   </v-card>
                 </v-col>
               </v-row>
+              -->
 
               <v-row>
                 <v-col>

@@ -430,6 +430,7 @@ export class PortfolioDataStore extends VuexModule {
       members: portfolioData.members,
       environments: portfolioData.environments,
       lastUpdated: portfolioData.lastUpdated,
+      createdBy: portfolioData.createdBy
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
     this.activeTaskOrderNumber = portfolioData.taskOrderNumber 
@@ -502,8 +503,26 @@ export class PortfolioDataStore extends VuexModule {
       } else {
         return 0;
       }
-    })
+    });
+    if (portfolio.createdBy) {
+      const createdByUser = await api.userTable.search(portfolio.createdBy);
+      this.doSetPortfolioCreator(createdByUser[0]);
+    }
     return portfolio;
+  }
+
+  public portfolioCreator: User = {};
+  @Mutation
+  public doSetPortfolioCreator(user: UserSearchResultDTO): void {
+    this.portfolioCreator = {
+      sys_id: user.sys_id,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      fullName: user.name,
+      email: user.email,
+      phoneNumber: user.phone,
+      agency: user.company
+    }
   }
 
   /**
@@ -578,13 +597,14 @@ export class PortfolioDataStore extends VuexModule {
       let allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
         queryForAllOperatorsOfPortfolio
       );
-      allOperatorsOfPortfolioEnv = allOperatorsOfPortfolioEnv
-        .map(operator => convertColumnReferencesToValues(operator));
-      allOperatorsOfPortfolioEnv.forEach(operator =>
-        this.transformAndAddOperatorToPortfolioEnvironment({
+      allOperatorsOfPortfolioEnv.forEach(async (operator: OperatorDTO): Promise<void> => {
+        operator = convertColumnReferencesToValues(operator)        
+        await this.transformAndAddOperatorToPortfolioEnvironment({
           environment: environment,
           operatorDTO: operator
-        }))
+        })
+      }, this)
+
       await this.sortPortfolioEnvironmentOperators(environment);
     }
   }
@@ -797,6 +817,7 @@ export class PortfolioDataStore extends VuexModule {
     this.portfolioProvisioningObj = _.cloneDeep(initialPortfolioProvisioningObj());
     this.didNotUseDAPPS = false;
     this.showTOPackageSelection = true;
+    this.portfolioCreator = {};
   }
 
 }

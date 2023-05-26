@@ -1,28 +1,30 @@
 <template>
   <div class="_portfolio-drawer">
     <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding pb-8">
-      <h3 id="AboutSectionHeader" class="mb-4">About Portfolio</h3>
       <div>
-        <v-textarea
-          id="DrawerTextArea"
-          v-model="portfolio.description"
-          auto-grow
-          autocomplete="off"
-          class="_drawer-text-area pt-0 mb-4 ml-n1"
-          dense
-          hide-details
-          placeholder="Add a description"
-          rows="1"
-          @blur="saveDescription"
-        >
-        </v-textarea>
-        <div class="d-flex justify-space-between pb-2">
+        <div class="mx-n3 mt-n4">
+          <v-textarea
+            id="DrawerTextArea"
+            v-model="portfolio.description"
+            auto-grow
+            autocomplete="off"
+            class="_drawer-text-area pa-2 mb-2 font-size-14"
+            dense
+            hide-details
+            placeholder="Add a description"
+            rows="1"
+            @blur="saveDescription"
+          />
+        </div>
+
+        <div class="d-flex justify-space-between pb-3">
           <span id="StatusLabel">Status</span>
           <v-chip id="StatusChip" :color="getBgColor()" label>
             {{ portfolioStatus }}
           </v-chip>
         </div>
-        <div class="d-flex align-center justify-space-between pb-4">
+
+        <div class="d-flex align-center justify-space-between pb-3">
           <span id="CSPLabel">Cloud Service Provider</span>
           <div id="CSP" class="d-flex align-center">
             <ATATSVGIcon
@@ -36,23 +38,24 @@
             </div>
           </div>
         </div>
+
         <div class="d-flex justify-space-between pb-2">
           <span id="AgencyLabel">Agency</span>
           <div id="Agency">
             {{ portfolio.agencyDisplay }}
           </div>
         </div>
+
         <div class="d-flex justify-space-between align-center">
           <span id="CreatedByLabel">Created by</span>
-          <!-- ATAT TODO: AT-8747 - get actual created_by user -->
-          <!-- code below simply puts first member in portfolio members array as creator -->
-          <MemberCard id="CreatedBy" :index="0" />
+          <MemberCard id="CreatedBy" :member="portfolioCreator"/>
         </div>
       </div>
     </div>
 
     <hr class="my-0" />
 
+    <!-- ATAT TODO - restore in future ticket
     <div id="PortfolioMembersSection" class="_portfolio-panel _panel-padding pb-8">
       <div
         id="PortfolioMembersHeader"
@@ -63,9 +66,9 @@
           <div
             id="MemberCount"
             class="color-base font-size-20 _condensed-font"
-            v-if="getPortfolioMembersCount() > 0"
+            v-if="showMemberCount"
           >
-            ({{ getPortfolioMembersCount() }})
+            ({{ getPortfolioMembersCount }})
           </div>
         </div>
         <v-tooltip left nudge-right="20">
@@ -103,10 +106,11 @@
       >
         <div 
           class="d-flex flex-columm justify-space-between"
-          v-for="(member, index) in getPortfolioMembers()"
+          v-for="(member, index) in portfolioMembers"
           :key="member.sys_id"
         >
-          <MemberCard :id="'MemberName' + index" :index="index" />
+          <MemberCard :id="'MemberName' + index" :member="member" />
+
           <div v-if="managerCount === 1 && member.role.toLowerCase() === 'manager'">
             <v-tooltip left nudge-right="30">
             <template v-slot:activator="{ on }">
@@ -144,8 +148,9 @@
         </div>
       </div>
     </div>
-
+    
     <hr class="my-0" />
+    -->
 
     <div id="EnvironmentsSection" class="_portfolio-panel _panel-padding pb-4">
       <div id="EnvironmentsTitle" class="d-flex">
@@ -153,9 +158,9 @@
         <div
           id="EnvironmentsCount"
           class="color-base font-size-20 _condensed-font"
-          v-if="getEnironmentCount() > 0"
+          v-if="showEnvCount"
         >
-          ({{ getEnironmentCount() }})
+          ({{ getEnironmentCount }})
         </div>
       </div>
     </div>
@@ -292,10 +297,16 @@ export default class PortfolioDrawer extends Vue {
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
+  public portfolioCreator = PortfolioStore.portfolioCreator;
 
   public get cspKey(): string {
     return this.csp ? this.csp.toLowerCase() : "aws";
   }
+
+  // public createdByUser: User = {};
+  // public get getCreatedByUser(): User {
+  //   const user = await api.userTable.search();
+  // }
 
   public cspData = {
     aws: { displayName: "AWS", svgName: "aws", height: "18", width: "30" },
@@ -420,9 +431,13 @@ export default class PortfolioDrawer extends Vue {
       : member.email || "";
   }
 
-  public getEnironmentCount(): number {
+  public get showEnvCount(): boolean {
+    return this.getEnironmentCount > 0; 
+  }
+  public get getEnironmentCount(): number {
     return this.portfolio.environments?.length || 0;
   }
+
   public classificationLevels: Record<string, string> = {
     U: "Unclassified",
     S: "Secret",
@@ -435,7 +450,7 @@ export default class PortfolioDrawer extends Vue {
   public async goToCSPAdmin(envSysId: string): Promise<void> {
     // go to CSP Admin page showing correct environment tab    
     await PortfolioStore.setCurrentEnvSysId(envSysId);
-    AppSections.setActiveTabIndex(2);
+    await AppSections.setActiveTabIndex(2);
   }
   public getEnvStatus(env: Environment): string {
     if (env.environmentStatus) {
@@ -468,14 +483,13 @@ export default class PortfolioDrawer extends Vue {
 
   public portfolioMembers: User[] = [];
 
-  public getPortfolioMembersCount(): number {
+  public get showMemberCount(): boolean {
+    return this.getPortfolioMembersCount > 0;
+  }
+  public get getPortfolioMembersCount(): number {
     return this.portfolio?.members?.length
       ? this.portfolio?.members?.length
       : 0;
-  }
-
-  public getPortfolioMembers(): User[] {
-    return this.portfolio?.members ? this.portfolio?.members : [];
   }
 
   public get managerCount(): number {

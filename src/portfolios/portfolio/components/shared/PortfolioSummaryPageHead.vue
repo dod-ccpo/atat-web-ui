@@ -132,7 +132,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -166,11 +166,19 @@ export default class PortfolioSummaryPageHead extends Vue {
   public activeAppSection = AppSections.activeAppSection;
   public showDrawer = false;
 
+  public get slideoutPanelIsOpen(): boolean {
+    return SlideoutPanel.getSlideoutPanelIsOpen;
+  }
+  @Watch("slideoutPanelIsOpen")
+  public slideoutPanelIsOpenChanged(newVal: boolean): void {
+    this.showDrawer = newVal;
+  }
+
   public openModal():void {
     PortfolioStore.setShowAddMembersModal(true);
   }
-  public tabClicked(index: number): void {0
-    AppSections.setActiveTabIndex(index);
+  public async tabClicked(index: number): Promise<void> {
+    await AppSections.setActiveTabIndex(index);
   }
   public saveTitle(): void {
     if(hasChanges(PortfolioStore.currentPortfolio.title, this._title)) {
@@ -190,6 +198,7 @@ export default class PortfolioSummaryPageHead extends Vue {
         const opener = e.currentTarget as HTMLElement;
         const slideoutPanelContent: SlideoutPanelContent = {
           component: PortfolioDrawer,
+          title: "About Portfolio"
         }
         await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
         this.showDrawer = true;

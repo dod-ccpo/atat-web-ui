@@ -435,8 +435,6 @@ export default class PortfoliosSummary extends Vue {
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
     storeData.portfolioSummaryList.forEach((portfolio) => {
-      // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
-      // from portfolio_managers and portfolio_viewers sysIds lists
       const cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       cardData.lastUpdated = portfolio.last_updated;      
@@ -449,6 +447,7 @@ export default class PortfoliosSummary extends Vue {
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.portfolio_managers = portfolio.portfolio_managers;
       cardData.portfolio_viewers = portfolio.portfolio_viewers;
+      cardData.createdBy = portfolio.sys_created_by;
 
       cardData.agency = portfolio.agency;
       cardData.agencyDisplay = portfolio.agency_display;
@@ -465,8 +464,10 @@ export default class PortfoliosSummary extends Vue {
 
         cardData.lastModifiedStr = "Started " + agoString + " ago";
       } else {
-        const updatedDate = createDateStr(portfolio.sys_updated_on, true);
-        cardData.lastModifiedStr = "Last modified " + updatedDate;
+        if (portfolio.last_updated) {
+          const updatedDate = createDateStr(portfolio.last_updated, true);
+          cardData.lastModifiedStr = "Last modified " + updatedDate;
+        }
 
         if (portfolio.task_orders && portfolio.task_orders.length) {
           cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;

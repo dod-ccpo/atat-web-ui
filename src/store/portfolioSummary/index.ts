@@ -219,6 +219,8 @@ export class PortfolioSummaryStore extends VuexModule {
             : hasProcessing 
               ? Statuses.Processing.value 
               : portfolio.portfolio_status;
+          env.classification_level = env.name.toLowerCase().includes("- unclassified")
+            ? "U" : env.name.toLowerCase().includes("- secret") ? "S" : "TS"
         });
       }
     });

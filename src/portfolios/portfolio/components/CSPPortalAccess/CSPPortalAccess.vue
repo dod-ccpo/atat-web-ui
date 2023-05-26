@@ -300,9 +300,9 @@ export default class CSPPortalAccess extends Vue {
   public numberOfPages = Math.ceil(this.tableData.length/this.maxPerPage);
 
   @Watch("environmentIndex")
-  public envIndexChanged(newVal: number): void {
+  public async envIndexChanged(newVal: number): Promise<void> {
     const envSysId = this.environments[newVal].sys_id;
-    if (envSysId) Portfolio.setCurrentEnvSysId(envSysId);
+    if (envSysId) await Portfolio.setCurrentEnvSysId(envSysId);
   }
 
   public get needsExtraTopMargin(): boolean {
@@ -514,7 +514,7 @@ export default class CSPPortalAccess extends Vue {
     return this.selectedEnvironment.environmentStatus === Statuses.Provisioned.value;
   }
 
-  public addCSPMember():void {
+  public async addCSPMember():Promise<void> {
     const existingOperator = this.selectedEnvironment.csp_admins
       ?.find(cspAdmin => cspAdmin.email === this.adminEmail);
     if (!existingOperator) {
@@ -523,7 +523,7 @@ export default class CSPPortalAccess extends Vue {
         email:this.adminEmail,
         dodId: this.dodID
       };
-      Portfolio.addCSPOperator({
+      await Portfolio.addCSPOperator({
         environment: this.selectedEnvironment,
         operator: operator
       })
