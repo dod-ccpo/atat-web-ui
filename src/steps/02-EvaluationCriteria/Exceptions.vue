@@ -110,7 +110,7 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
    * Returns whether the ATATAlert should be displayed or not
    */
   get evalAlertDisplay(): boolean {
-      return this.selectedException !== "";
+    return this.selectedException !== "";
   }
 
   /**
