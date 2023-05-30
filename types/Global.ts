@@ -772,3 +772,9 @@ export enum ClassificationLevels {
   SCRT = "Secret",
   TSCRT = "Top Secret"
 }
+
+export enum ClassificationLevels {
+  UNCL = "Unclassified",
+  SCRT = "Secret",
+  TSCRT = "Top Secret"
+}
