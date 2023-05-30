@@ -293,9 +293,8 @@ export default class CostSummary extends Vue {
     let missingCostEstimates = false
     let hasTraining = false
     IGCEStore.igceEstimateList.forEach(estimate=>{
-      if(estimate.unit_price === 0
-        ||estimate.unit_price === null
-        ||estimate.unit_price === undefined){
+      //eslint-disable-next-line
+      if(!Boolean(parseInt(String(estimate.unit_price)))){
         missingCostEstimates = true
       }
     })
@@ -310,30 +309,67 @@ export default class CostSummary extends Vue {
       }
     })
     if(currentEnvReplicateOrOptimize !== "NO"
-      && currentEnvReplicateOrOptimize !== ""
-      && IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.length === 0){
-      this.needsReplicateAndOptimize = true
+      && currentEnvReplicateOrOptimize !== ""){
+      if(IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.length === 0){
+        this.needsReplicateAndOptimize = true
+      }else{
+        IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.forEach(value => {
+          //eslint-disable-next-line
+          if(!Boolean(parseInt(String(value)))){
+            this.needsReplicateAndOptimize = true
+          }
+        })
+      }
     }
-    if(archDesign === "YES" && IGCEStore.requirementsCostEstimate?.
-      architectural_design_performance_requirements.estimated_values.length === 0){
-      this.needArchitecturalDesign = true
+    if(archDesign === "YES"){
+      if(IGCEStore.requirementsCostEstimate?.architectural_design_performance_requirements
+        .estimated_values.length === 0){
+        this.needArchitecturalDesign = true
+
+      }else{
+        IGCEStore.requirementsCostEstimate?.architectural_design_performance_requirements
+          .estimated_values.forEach(value =>{
+          //eslint-disable-next-line
+          if(!Boolean(parseInt(value))){
+              this.needArchitecturalDesign = true
+            }
+          })
+      }
     }
     if(dowObject.length > 0 && missingCostEstimates){
       this.needPerformanceRequirement = true
     }
-    if(hasTraining && IGCEStore.requirementsCostEstimate?.training.length === 0){
-      this.needTrainingPricing = true
+    if(hasTraining && IGCEStore.trainingItems){
+      IGCEStore.trainingItems.forEach(item =>{
+        //eslint-disable-next-line
+        if(!Boolean(parseInt(item.estimatedTrainingPrice))){
+          this.needTrainingPricing = true
+        }
+      })
     }
-    if(travel && IGCEStore.requirementsCostEstimate?.travel.estimated_values === ""){
-      this.needTravelPricing = true
+    if(travel && IGCEStore.requirementsCostEstimate?.travel.estimated_values){
+      const values:string[] =
+        Object.values(JSON.parse(IGCEStore.requirementsCostEstimate?.travel.estimated_values))
+      values.forEach(value =>{
+        //eslint-disable-next-line
+        if(!Boolean(parseInt(value))){
+          this.needTravelPricing = true
+        }
+      })
     }
-    if(IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities === "YES"
-      && IGCEStore.requirementsCostEstimate?.surge_requirements.capacity === 0){
-      this.needSurgeCapabilities = true
+    if(IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities === "YES"){
+      const capacity = IGCEStore.requirementsCostEstimate?.surge_requirements.capacity
+      //eslint-disable-next-line
+      if(!Boolean(parseInt(String(capacity)))){
+        this.needSurgeCapabilities = true
+      }
     }
-    if(IGCEStore.requirementsCostEstimate?.fee_specs.is_charged === "YES"
-      && IGCEStore.requirementsCostEstimate?.fee_specs.percentage === 0){
-      this.needContractingOfficeFee = true
+    if(IGCEStore.requirementsCostEstimate?.fee_specs.is_charged === "YES"){
+      const percentage = IGCEStore.requirementsCostEstimate?.fee_specs.percentage
+      //eslint-disable-next-line
+      if(!Boolean(parseInt(String(percentage)))){
+        this.needContractingOfficeFee = true
+      }
     }
   }
 
