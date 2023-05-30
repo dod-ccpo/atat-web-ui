@@ -510,23 +510,42 @@ export const saveOrUpdateOtherServiceOffering =
       return objSysId;
     };
 
+
 export const createDOWTaskNumber = async(
   classificationLevel: string,
   offeringType: string,
   instanceNumber?: number
 ): Promise<string> =>{
-  const classification = ClassificationRequirements.classificationLevels.find(
+  // get DOW Task Number associated with selected classification
+  const classificationDOWTaskNumberComponent = 
+  ClassificationRequirements.classificationLevels.find(
     cr => cr.sys_id === classificationLevel
-  )
+  )?.dow_task_number_component
 
+  // get the offering from the store
   const offeringInfo = DescriptionOfWork.serviceOfferings.find(
     so => so.service_offering_group.toUpperCase() === offeringType.toUpperCase()
   )
-
-  const serviceOfferingInstanceNumber = await dowToNumber(classificationLevel, 
-    offeringInfo as ServiceOfferingDTO, instanceNumber);
   const isXaas = offeringInfo?.offering_type === "XAAS_SERVICE";
 
+  /**
+   * Business Rule: for XAAS service offerings WITHOUT instance numbers
+   * increment the instance numbers based on classification levels 
+   * examples
+   * Applications - Web App      - IL2 -> 4.2.1.3.1
+   * Applications - Monit. Tools - IL5 -> 4.2.3.3.1
+   * Applications - Database     - IL5 -> 4.2.3.3.2
+   * Applications - SaaS         - IL5 -> 4.2.3.3.3
+  */ 
+  if (instanceNumber === undefined && isXaas){
+    const serviceOfferings = DescriptionOfWork.DOWObject.find(
+      dow => dow.serviceOfferingGroupId === offeringType
+    )?.serviceOfferings
+    const totalExistingClassLevels = 
+      (JSON.stringify(serviceOfferings))
+        .match(new RegExp( classificationLevel, 'g' ))?.length || 0
+    instanceNumber = totalExistingClassLevels + 1;
+  }
   let dow_task_number_component = offeringInfo?.dow_task_number_component
   let section = isXaas ? "4.2" : "4.3";
 
@@ -536,52 +555,11 @@ export const createDOWTaskNumber = async(
   }
   
   return section +
-    "." + classification?.dow_task_number_component +
+    "." + classificationDOWTaskNumberComponent +
     "." + dow_task_number_component +
-  "." + (isXaas && serviceOfferingInstanceNumber ? serviceOfferingInstanceNumber : instanceNumber)
+    "." + instanceNumber
 }
 
-
-const dowToNumber = async(classificationLevel: string, 
-  offeringInfo: ServiceOfferingDTO, instanceNumber?:number ):Promise<number> =>{
-  const serviceOfferingInstanceNumber = instanceNumber || -1;
-  if (serviceOfferingInstanceNumber === -1){ 
-    const serviceOfferings = DescriptionOfWork.DOWObject.filter(
-      (dowObj) => {
-        return dowObj.serviceOfferingGroupId === offeringInfo.service_offering_group
-      }
-    )
-    if(serviceOfferings){
-      const appsInIgce = await IGCEStore.getAppsDOWTaskNumber(classificationLevel)
-      let num = 1;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const tmp:any[] = [];
-      serviceOfferings.forEach((serviceOffering)=>{
-        serviceOffering.serviceOfferings.forEach((so) => {
-          tmp.push(so);
-        })
-      })
-      appsInIgce.forEach((app) => {
-        const str:string = (app.title?.substring(app.title?.lastIndexOf("-")+1) as string)
-        if(tmp.find(so => so.name === str) ){
-          num = app.dow_task_number?.substring(app.dow_task_number.length-1) as unknown as number
-          return num
-        }
-        else{
-          num = appsInIgce.length + 1
-        }
-      }) 
-      return num
-    } 
-    // if no records in serviceOfferings
-    else { 
-      return 1
-    }  
-  } 
-  else {
-    return serviceOfferingInstanceNumber;
-  }
-}
 
 const mapClassificationInstanceFromDTO = (
   value: ClassificationInstanceDTO
