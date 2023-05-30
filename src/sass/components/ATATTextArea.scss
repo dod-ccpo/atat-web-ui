@@ -34,4 +34,8 @@
   label {
     font-weight: 500 !important;
   }
+  textarea {
+    max-height: 450px;
+    overflow-y: scroll;
+  }
 }

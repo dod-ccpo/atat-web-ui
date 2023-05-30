@@ -60,6 +60,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { currencyStringToNumber, toCurrencyString } from "@/helpers";
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -337,13 +338,13 @@ export class AcquisitionPackageStore extends VuexModule {
 
   fairOpportunity: FairOpportunityDTO | null = null;
   // used for routing
-  hasCustomExplanationsOnLoad: Record<string, boolean> = {
+  hasExplanationOnLoad: Record<string, boolean> = {
     soleSourceCause: false,
     researchDetails: false,
-    barriersPlansToRemove: false,
+    plansToRemoveBarriers: false,
   }
   // used for routing
-  fairOppBackToExplanationReview = false;
+  fairOppBackToReview = false;
 
   marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
@@ -361,15 +362,15 @@ export class AcquisitionPackageStore extends VuexModule {
   packageId = "";
   regions: RegionsDTO[] | null = null;
   isLoading = false;
+  
   // Sole Source
   // monitoring user interactions re: 
-  // 1 - generated text
-  hasSoleSourceGeneratedTextBeenEdited = false;
+  // 1 - generated text edited
+  hasSoleSourceSuggestedTextBeenEdited = false;
   // 2 - has form been edited
   hasSoleSourceCauseFormBeenEdited = false;
-  // 3 - has user entered original text
-  isSoleSourceTextOriginal=false
-
+  // 3 - has user entered custom text
+  isSoleSourceTextCustom = false;
 
   validateNow = false;
   allowDeveloperNavigation = false;
@@ -930,32 +931,32 @@ export class AcquisitionPackageStore extends VuexModule {
       const techniques: MarketResearchTechniquesDTO[] 
         = await api.marketResearchTechniquesTable.all();
       await this.doSetMarketResearchTechniques(techniques);
+      
+      const hasExplanationOnLoad: Record<string, boolean> = {
+        soleSourceCause: false,
+        researchDetails: false,
+        plansToRemoveBarriers: false,
+      }
+      hasExplanationOnLoad.soleSourceCause 
+        = this.fairOpportunity?.cause_of_sole_source_custom !== undefined
+        && this.fairOpportunity.cause_of_sole_source_custom.length > 0
+        && this.fairOpportunity?.cause_of_sole_source_generated !== undefined
+        && this.fairOpportunity.cause_of_sole_source_generated.length > 0;
+        hasExplanationOnLoad.researchDetails
+        = this.fairOpportunity?.research_details_custom !== undefined
+        && this.fairOpportunity.research_details_custom.length > 0
+        && this.fairOpportunity?.research_details_generated !== undefined
+        && this.fairOpportunity.research_details_generated.length > 0;
+        hasExplanationOnLoad.plansToRemoveBarriers
+        = this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_custom.length > 0
+        && this.fairOpportunity?.barriers_plans_to_remove_generated !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_generated.length > 0;
+        await this.doSetHasExplanationOnLoad(hasExplanationOnLoad);  
     }
 
-    const hasExplanationOnLoad: Record<string, boolean> = {
-      soleSourceCause: false,
-      researchDetails: false,
-      barriersPlansToRemove: false,
-    }
-  
-    if (this.fairOpportunity?.cause_of_sole_source_generated
-      || this.fairOpportunity?.cause_of_sole_source_custom
-    ) {
-      hasExplanationOnLoad.soleSourceCause = true;
-    }
-    if (this.fairOpportunity?.research_details_generated
-      || this.fairOpportunity?.research_details_custom
-    ) {
-      hasExplanationOnLoad.researchDetails = true;
-    }
-    if (this.fairOpportunity?.barriers_plans_to_remove_generated
-      || this.fairOpportunity?.barriers_plans_to_remove_custom
-    ) {
-      hasExplanationOnLoad.barriersPlansToRemove = true;
-    }
     debugger;
-    await this.doSetHasCustomExplanationsOnLoad(hasExplanationOnLoad);
-
+    await this.generateFairOpportunitySuggestions();
   }
   @Mutation
   public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
@@ -973,12 +974,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public async doSetHasCustomExplanationsOnLoad(val: Record<string, boolean>): Promise<void> {
-    this.hasCustomExplanationsOnLoad = val;
+  public async doSetHasExplanationOnLoad(val: Record<string, boolean>): Promise<void> {
+    this.hasExplanationOnLoad = val;
   }
   @Mutation
-  public doSetFairOppBackToExplanationReview(val: boolean): void {
-    this.fairOppBackToExplanationReview = val;
+  public doSetFairOppBackToReview(val: boolean): void {
+    this.fairOppBackToReview = val;
   }
 
   @Mutation
@@ -1021,14 +1022,103 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.fairOpportunity || null;
   }
 
+
+  public csps: Record<string, string> = {
+    AWS: "AWS",
+    GCP: "Google Cloud",
+    AZURE: "Microsoft Azure",
+    ORACLE: "Oracle Cloud",
+  }
+
+  public fairOppDefaultSuggestions: Record<string, string> = {
+    soleSourceCause: "",
+    researchDetails: "",
+    plansToRemoveBarriers: "",
+  }
+
   @Action({rawError: true})
-  public async setHasSoleSourceGeneratedTextBeenEdited(edited: boolean):Promise<void>{
-    this.doSetHasSoleSourceGeneratedTextBeenEdited(edited);
+  public async generateFairOpportunitySuggestions(): Promise<void> {
+    await this.generateSoleSourceSuggestion();
+    // TODO: ADD methods to generate the other "mad-lib" default text.
+    // await this.generateResearchDetailsSuggestion();
+    // await this.generatePlansToRemoveBarriersSuggestion();
+  }
+
+  @Action({rawError: true})
+  public async generateSoleSourceSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const needsMigrationP = this.fairOpportunity.cause_migration_addl_time_cost === "YES";
+      const needsGovtEngineersP = this.fairOpportunity.cause_govt_engineers_training_certified === "YES";
+      const needsProductFeatureP = this.fairOpportunity.cause_product_feature_peculiar_to_csp === "YES";
+  
+      const cspName = this.csps[this.fairOpportunity.proposed_csp as string]
+      let text = "";
+
+      if (needsMigrationP) {
+        const estCost = parseFloat(this.fairOpportunity.cause_migration_estimated_cost as string);
+        const hasEstCost = !isNaN(estCost) && estCost > 0;
+        const hasEstDelay = this.fairOpportunity.cause_migration_estimated_delay_amount 
+          && this.fairOpportunity.cause_migration_estimated_delay_amount !== "0";
+    
+        text = "The only source capable of performing the " + this.projectTitle + 
+        " at the level of quality required is the incumbent contractor, " + cspName +
+        ". The refactoring of the current environment from the "  + cspName + 
+        " environment to another CSP would result in additional ";
+        if (hasEstCost) text += "cost";
+        if (hasEstCost && hasEstDelay) text += " and ";
+        if (hasEstDelay) text +="time"
+        text += ". Migration from one platform to another platform would ";
+        if (hasEstCost && this.fairOpportunity.cause_migration_estimated_cost) {
+          const amt = currencyStringToNumber(this.fairOpportunity.cause_migration_estimated_cost)
+          if (amt) text += "cost $" + toCurrencyString(amt, true)
+        }
+        if (hasEstDelay) {
+          if (estCost) {
+            text += " and ";
+          }
+          const estDelayAmt
+            = parseInt(this.fairOpportunity.cause_migration_estimated_delay_amount as string);
+          let estDelayUnit 
+            = (this.fairOpportunity.cause_migration_estimated_delay_unit as string).toLowerCase();
+          estDelayUnit = estDelayAmt > 1 ? estDelayUnit : estDelayUnit.slice(0,-1);
+    
+          text += "delay the project " + estDelayAmt + " " + estDelayUnit;
+        }
+        text += ". In addition, there would be a duplication of costs of having " +
+          "to keep the solution running on one platform while refactoring it on another platform."
+        if (needsGovtEngineersP || needsProductFeatureP) text += "\n\n";
+      }
+
+      if (needsGovtEngineersP) {
+        text += "Further, the only source capable of performing the " + this.projectTitle +
+        " at the level and quality required is " + cspName + " based on Government engineers " +
+        "being trained and certified in " + 
+        this.fairOpportunity.cause_govt_engineers_platform_name + ". " + 
+        this.fairOpportunity.cause_govt_engineers_insufficient_time_reason;   
+        if (needsProductFeatureP) text += "\n\n";
+      }
+
+      if (needsProductFeatureP) {
+        text += "The only source capable of performing the "  + this.projectTitle +
+        " at the level and quality required is " + cspName + " based on "
+        + this.fairOpportunity.cause_product_feature_name + " that is peculiar to " + cspName +
+        ". " + this.fairOpportunity.cause_product_feature_why_essential + " " + 
+        this.fairOpportunity.cause_product_feature_why_others_inadequate;
+      }
+      this.fairOppDefaultSuggestions.soleSourceCause = text;
+      const isEdited = text !== this.fairOpportunity.cause_of_sole_source_generated;
+      await this.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
+    }
+  }
+
+  @Action({rawError: true})
+  public async setHasSoleSourceSuggestedTextBeenEdited(edited: boolean):Promise<void>{
+    this.doSetHasSoleSourceSuggestedTextBeenEdited(edited);
   }
 
   @Mutation
-  public async doSetHasSoleSourceGeneratedTextBeenEdited(edited:boolean):Promise<void>{
-    this.hasSoleSourceGeneratedTextBeenEdited = edited;
+  public async doSetHasSoleSourceSuggestedTextBeenEdited(edited:boolean):Promise<void>{
+    this.hasSoleSourceSuggestedTextBeenEdited = edited;
   }
 
   @Action({rawError: true})
@@ -1042,13 +1132,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async setIsSoleSourceTextOriginal(edited: boolean):Promise<void>{
-    this.doSetIsSoleSourceTextOriginal(edited);
+  public async setIsSoleSourceTextCustom(edited: boolean):Promise<void>{
+    this.doSetIsSoleSourceTextCustom(edited);
   }
 
   @Mutation
-  public async doSetIsSoleSourceTextOriginal(edited:boolean):Promise<void>{
-    this.isSoleSourceTextOriginal = edited;
+  public async doSetIsSoleSourceTextCustom(edited:boolean):Promise<void>{
+    this.isSoleSourceTextCustom = edited;
   }
   
   @Action({rawError: true})

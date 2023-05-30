@@ -235,7 +235,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { ProductOrType, RadioButton, SelectData, UnitOfTime, YesNo } from "types/Global";
-import { FairOpportunityDTO } from "@/api/models";
+import { FairOppDocGenType, FairOpportunityDTO } from "@/api/models";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
@@ -257,10 +257,11 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public writeOwnCause: YesNo = "";
   public isLoading = false;
   public SoleSourceCauseFormBeenEdited = false;
-  public SoleSourceGeneratedTextBeenEdited = false;
-  public isSoleSourceTextOriginal = false;
+  public SoleSourceSuggestedTextBeenEdited = false;
+  public isSoleSourceTextCustom = false;
   public hasSoleSourceExplanation = false;
   public alertText = "";
+  public soleSourceForDocgen: FairOppDocGenType = "";
 
   // MIGRATION SECTION
   public migrAddlTimeCost: YesNo = "";
@@ -384,14 +385,14 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
 
   get showAlert(): boolean{
-    if (this.hasSoleSourceExplanation && !this.isSoleSourceTextOriginal){
+    if (this.hasSoleSourceExplanation && this.isSoleSourceTextCustom){
       this.alertText = "If you update any responses below, we’ll replace your custom " 
-          + "explanation with suggested language based on your responses. You will be " 
-          + "able to restore your custom explanation, if needed.";
-    } else if (this.hasSoleSourceExplanation && this.SoleSourceGeneratedTextBeenEdited){
+        + "explanation with suggested language based on your responses. You will be " 
+        + "able to restore your custom explanation, if needed.";
+    } else if (this.hasSoleSourceExplanation && this.SoleSourceSuggestedTextBeenEdited){
       this.alertText = "Any changes below will not automatically overwrite your edits "
-           + "to the previous suggested language. You can update your current explanation "
-           + "to a new suggestion on the next screen, if needed."
+        + "to the previous suggested language. You can update your current explanation "
+        + "to a new suggestion on the next screen, if needed."
     }
     return this.alertText !== "";
   }
@@ -431,6 +432,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       cause_product_feature_name: this.pfName,
       cause_product_feature_why_essential: this.pfWhyEssential,
       cause_product_feature_why_others_inadequate: this.pfWhyOthersInadequate,
+
+      cause_of_sole_source_for_docgen: this.soleSourceForDocgen,
       /* eslint-enable camelcase */
     }
     return Object.assign(fairOppSaved, formData);
@@ -451,7 +454,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.writeOwnCause = "NO";
-
+      this.soleSourceForDocgen = storeData.cause_of_sole_source_for_docgen;
       this.migrAddlTimeCost = storeData.cause_migration_addl_time_cost as YesNo;
       this.migrEstCost = storeData.cause_migration_estimated_cost as string;
       this.migrEstDelayAmt = storeData.cause_migration_estimated_delay_amount as string;
@@ -482,22 +485,18 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   private loadAcquisitionPackageSoleSourceVariables(): void{
     this.SoleSourceCauseFormBeenEdited = 
       AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
-    this.SoleSourceGeneratedTextBeenEdited = 
-      AcquisitionPackage.hasSoleSourceGeneratedTextBeenEdited;
-    this.isSoleSourceTextOriginal = AcquisitionPackage.isSoleSourceTextOriginal;
+    this.SoleSourceSuggestedTextBeenEdited = 
+      AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
+    this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom;
   }
 
-  get isSoleSourceGeneratedTextBeenEdited():boolean{
-    return AcquisitionPackage.hasSoleSourceGeneratedTextBeenEdited;
+  get isSoleSourceSuggestedTextBeenEdited():boolean{
+    return AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     this.whyEssentialRulesOff = false;
     this.whyInadequateRulesOff = false;
-    AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(
-      this.hasChanged()
-    )
-
 
     if (this.migrAddlTimeCost === "YES") {
       this.validateMigrationEstimate();
@@ -507,6 +506,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     }
     try {
       if (this.hasChanged()) {
+        AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(true);
         // ensure data cleared if any section main question is "NO"
         /* eslint-disable camelcase */
         let sectionsWithNoSelectedCount = 0;
@@ -535,7 +535,11 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 
           // check if user answered "NO" to all 3 sections 
           this.writeOwnCause = sectionsWithNoSelectedCount === 3 ? "YES" : "NO";
+          this.soleSourceForDocgen = "GENERATED"
+        } else {
+          this.soleSourceForDocgen = "CUSTOM"
         }
+
         /* eslint-enable camelcase */
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }

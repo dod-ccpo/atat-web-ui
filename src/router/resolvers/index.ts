@@ -111,9 +111,9 @@ export const ProposedCSPRouteResolver = (current: string): string => {
 };
 
 export const MinimumRequirementsRouteResolver = (current: string): string => {
-  const backToReview = AcquisitionPackage.fairOppBackToExplanationReview;
+  const backToReview = AcquisitionPackage.fairOppBackToReview;
   if (routeNames.SoleSourceCause && backToReview) {
-    AcquisitionPackage.doSetFairOppBackToExplanationReview(false);
+    AcquisitionPackage.doSetFairOppBackToReview(false);
     return routeNames.SoleSourceReview;
   }
   return current === routeNames.SoleSourceCause
@@ -123,7 +123,7 @@ export const MinimumRequirementsRouteResolver = (current: string): string => {
 
 export const SoleSourceRouteResolver = (current: string): string => {
   debugger;
-  const skipForm = AcquisitionPackage.hasCustomExplanationsOnLoad.soleSourceCause;
+  const skipForm = AcquisitionPackage.hasExplanationOnLoad.soleSourceCause;
   // backward
   if (current === routeNames.SoleSourceReview) {
     return skipForm ? routeNames.MinimumRequirements : routeNames.SoleSourceCause;

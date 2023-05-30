@@ -84,7 +84,7 @@
                 class="mr-1"
                 :color="btnRestoreIconColor"
               />
-              Restore to suggestion
+              Restore default suggestion
             </v-btn>
 
           </div>

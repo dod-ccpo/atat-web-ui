@@ -92,7 +92,7 @@
                   class="mr-1"
                   :color="restoreIconColor"
               />
-              Restore to suggestion
+              Restore default suggestion
             </v-btn>
           </v-col>
         </v-row>
