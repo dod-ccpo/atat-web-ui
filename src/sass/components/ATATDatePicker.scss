@@ -4,7 +4,14 @@
 }
 
 .atat-date-picker{
-
+  &.error--text{
+    &.error--text{
+      label{
+        color: $base-darkest !important;
+      }
+    }
+  }
+  
   .v-input__append-outer{
     margin: 0px !important;
   }

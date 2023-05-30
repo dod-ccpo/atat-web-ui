@@ -194,7 +194,7 @@ import Vue from "vue";
 })
 export default class ContactInfo extends Mixins(SaveOnLeave) {
   $refs!: {
-    form: Vue & {
+    form: Vue & { 
       resetValidation: () => void;
       reset: () => void;
       validate: () => boolean;
@@ -272,22 +272,22 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private selectedRole = "";
 
   private roleIndices = {
-    MILITARY: 0,
-    CIVILIAN: 1,
+    CIVILIAN: 0,
+    MILITARY: 1,
     CONTRACTOR: 3,
   };
 
   private contactRoles: RadioButton[] = [
     {
-      id: "Military",
-      label: "Military",
-      value: "MILITARY",
-    },
-    {
       id: "Civilian",
       label: "Civilian",
       value: "CIVILIAN",
     },
+    {
+      id: "Military",
+      label: "Military",
+      value: "MILITARY",
+    }
   ];
 
   private selectedGrade: {grade: string, label: string} = {grade: "", label: ""};
