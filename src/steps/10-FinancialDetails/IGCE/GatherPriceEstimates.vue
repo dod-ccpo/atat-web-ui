@@ -176,7 +176,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
   async addCDSEntry():Promise<void>{
     this.cdsSNOWRecord = await IGCE.getCDSRecord();
-    if(this.cdsSNOWRecord?.cross_domain_solution_required === "NO"){
+    if(this.cdsSNOWRecord?.cross_domain_solution_required !== "YES"
+      || ClassificationRequirements.cdsSolution === null){
       return;
     }
     const existingCDSIGCERecord = await IGCE.igceEstimateList.find(
