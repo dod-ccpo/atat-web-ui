@@ -115,7 +115,9 @@ export const initialCurrentContract = (): CurrentContractDTO => {
     contract_order_start_date: "",
     competitive_status: "",
     business_size: "",
-    acquisition_package:AcquisitionPackage.packageId
+    instance_number: AcquisitionPackage.currentContractInstanceNumber || -1,
+    acquisition_package:AcquisitionPackage.packageId,
+    is_valid: false,
   }
 }
 
@@ -279,7 +281,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       corInfo: store.corInfo,
       acorInfo: store.acorInfo,
       contractType: store.contractType,
-      currentContract: store.currentContract,
+      currentContract: store.currentContracts,
       fairOpportunity: store.fairOpportunity,
       packageDocumentsSigned:store.packageDocumentsSigned,
       evaluationPlan: store.evaluationPlan,
@@ -338,7 +340,8 @@ export class AcquisitionPackageStore extends VuexModule {
   marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
-  currentContract: CurrentContractDTO | null = null;
+  currentContracts: CurrentContractDTO[] | null = null;
+  currentContractInstanceNumber = 1;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   // periods: string | null = null;
   // periodOfPerformance: PeriodOfPerformanceDTO | null = null;
@@ -810,20 +813,126 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.contactInfo as ContactDTO;
   }
 
+  @Action({rawError: true})
+  public async loadCurrentContractsFromSNOW(): Promise<CurrentContractDTO[]> {
+    const contractsFromSNOW: CurrentContractDTO[] = await api.currentContractTable.getQuery({
+      params: {
+        sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId
+      }
+    }) || [];
+
+    const contracts = contractsFromSNOW.map((cc, index)=>{
+      return{
+        acquisition_package: AcquisitionPackage.packageId,
+        is_valid: true,
+        ...cc
+      }
+    }) as CurrentContractDTO[];
+    return contracts;
+  }
+
+  @Action({rawError: true})
+  public async setCurrentContract(contract: CurrentContractDTO): Promise<void> {
+    const currentContracts = await this.currentContracts || [];
+    const sysId = contract.sys_id || ""
+    const existingContractIndex = currentContracts.findIndex(
+      (c) => {
+        return c.sys_id 
+          ? c.sys_id === sysId
+          : c.instance_number?.toString() === contract.instance_number?.toString();
+      }
+    );
+    existingContractIndex > -1 
+      ? currentContracts[existingContractIndex] = contract
+      : currentContracts.push(contract);
+    await this.doSetCurrentContracts(currentContracts);
+  }
+
   @Mutation
-  public setCurrentContract(value: CurrentContractDTO): void {
-    this.currentContract = this.currentContract
-      ? Object.assign(this.currentContract, value)
-      : value;
+  public async doSetCurrentContracts(value: CurrentContractDTO[]): Promise<void> {
+    this.currentContracts = value
+  }
+
+  @Action({rawError: true})
+  public async clearCurrentContractInfo(): Promise<void> {
+    //remove SNOW listings
+    const existingContracts = (await this.loadCurrentContractsFromSNOW())
+      .map((c)=> c.sys_id);
+    existingContracts.forEach(
+      async (c)=> {await api.currentContractTable.remove(c as string)}
+    )
+    //remove STORE listings
+    this.doSetCurrentContracts([]);
+  }
+
+  @Action({rawError: true})
+  public async deleteContract(contract: CurrentContractDTO): Promise<void> {
+    const sysId = contract.sys_id ? contract.sys_id : "";
+    // remove SNOW listings, if necessary
+    if (sysId !== ""){
+      const existingContracts = (await this.loadCurrentContractsFromSNOW())
+        .map((c)=> c.sys_id);
+      if (existingContracts.includes(sysId)){
+        await api.currentContractTable.remove(sysId as string)
+      }
+    }
+
+    //remove STORE listing
+    const updatedContracts = this.currentContracts?.filter(
+      (c)=> c.instance_number !== contract.instance_number
+    ) as CurrentContractDTO[];
+    await this.doSetCurrentContracts(updatedContracts);
   }
 
   @Action
-  public async clearCurrentContractInfo(): Promise<void> {
-    const data = initialCurrentContract();
-    data.current_contract_exists = "NO";
-    this.setCurrentContract(data);
-    this.saveData<CurrentContractDTO>({data,
-      storeProperty: StoreProperties.CurrentContract});
+  public async setCurrentContractInstanceNumber(num: number): Promise<void> {
+    await this.doSetCurrentContractInstanceNumber(num);
+  }
+  @Mutation
+  public async doSetCurrentContractInstanceNumber(num: number): Promise<void> {
+    this.currentContractInstanceNumber = num;
+  }
+
+  /**
+   * 
+   * @param exists "YES" or "NO"
+   */
+
+  @Action({rawError: true})
+  public async initializeCurrentContract(
+    exists: string
+  ): Promise<void>{
+    const currentContract = await initialCurrentContract();
+    currentContract.current_contract_exists = exists;
+    currentContract.instance_number = 1;
+    await this.doSetCurrentContracts([currentContract]);
+  }
+
+  @Action({rawError: true})
+  public async updateCurrentContractsSNOW(contracts: CurrentContractDTO[]): Promise<void>{
+
+    for (let i=0;i<contracts.length;i++){
+      const contract = contracts[i];
+      const sysID = contract.sys_id || "";
+      const isValid = contract.is_valid as boolean;
+      contract.acquisition_package = AcquisitionPackage.packageId;
+
+      //only save VALID contracts to SNOW
+      if (sysID !== "" && isValid){  
+        await api.currentContractTable.update(sysID, contract)
+      } else if ( // if current_contract_exists === NO
+        contract.current_contract_exists?.toUpperCase()==="NO"){
+        await api.currentContractTable.create(contract);
+      } else if (isValid){
+        await api.currentContractTable.create(contract);
+      } 
+    }
+
+    const updatedContracts = await this.loadCurrentContractsFromSNOW();
+    const invalidContracts = await this.currentContracts?.filter(
+      (c)=>c.is_valid === false
+    ) as CurrentContractDTO[]
+    await this.doSetCurrentContracts([...updatedContracts, ...invalidContracts]);
   }
 
   @Mutation
@@ -891,7 +1000,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
-    this.doSetFairOpportunity(value);
+    await this.doSetFairOpportunity(value);
     if (this.initialized) {
       if (this.fairOpportunity && this.fairOpportunity.sys_id) {
         await api.fairOpportunityTable.update(
@@ -1004,7 +1113,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contractConsiderations = sessionData.contractConsiderations;
     this.corInfo = sessionData.corInfo;
     this.contractType = sessionData.contractType;
-    this.currentContract = sessionData.currentContract;
+    this.currentContracts = sessionData.currentContracts;
     this.fairOpportunity = sessionData.fairOpportunity;
     this.packageDocumentsSigned = sessionData.packageDocumentsSigned;
     this.evaluationPlan = sessionData.evaluationPlan;
@@ -1184,14 +1293,11 @@ export class AcquisitionPackageStore extends VuexModule {
       // EJY HERE
 
       this.setPackagePercentLoaded(60);
-
-      if(currContractSysId) {
-        const currentContract = await api.currentContractTable.retrieve(
-          currContractSysId
-        );
-        if(currentContract){
-          const contractData = convertColumnReferencesToValues(currentContract)
-          this.setCurrentContract(contractData);
+      if(AcquisitionPackage.packageId) {
+        const currentContracts = await this.loadCurrentContractsFromSNOW();
+        if (currentContracts.length>0){
+          const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
+          await this.doSetCurrentContracts(tempArray);
         }
       } else {
         this.setCurrentContract(
@@ -2085,7 +2191,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = null;
     this.packageDocumentsSigned = null;
     this.evaluationPlan = null;
-    this.currentContract = null;
+    this.currentContracts = null;
     this.sensitiveInformation = null;
     // this.periods = null;
     // this.periodOfPerformance = null;

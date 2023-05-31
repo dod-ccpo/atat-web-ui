@@ -209,12 +209,23 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
+      // if user changed from `NO_NONE` OR to `NO_NONE`
+      // clear current contract info from STORE & SNOW
+      if (this.hasChangedFromToNoNone()){
+        await AcquisitionPackage.clearCurrentContractInfo();
+      }
     } catch (error) {
       console.log(error);
     }
 
     return true;
   }
+
+  public hasChangedFromToNoNone():boolean{
+    return this.savedData.exception_to_fair_opportunity === "NO_NONE" ||
+      this.currentData.exception_to_fair_opportunity === "NO_NONE";
+  }
+
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
