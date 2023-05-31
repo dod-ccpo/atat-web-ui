@@ -11,25 +11,23 @@ export class GInvoicingApi extends ApiBase{
     super(ENDPOINTNAME);
   }
 
-  public async search(orderNumber: string): Promise<GInvoicingResponse> {
+  public async search(orderNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
     try {
 
       const requestConfig: AxiosRequestConfig = {
         params: {
-          orderNumber: orderNumber
+          orderNumber: orderNumber,
+          acquisitionPackageId: acqPackageId
         }
       };
 
       const apiResponse = await this.instance.get(this.endPoint,
         requestConfig
       );
-
       if(apiResponse.status === 200){
-        const { result } = apiResponse.data;
-
         const response: GInvoicingResponse = {
-          valid: result.valid,
-          message: result.message
+          valid: true,
+          message: apiResponse.data.result
         };
 
         return response;
