@@ -21,6 +21,7 @@
     "cypress:isolated-tests": "npx cypress run --env grepTags=-@iso-ignore"
   },
   "dependencies": {
+    "@cypress/grep": "^3.1.5",
     "@types/inputmask": "^5.0.3",
     "@types/node": "^17.0.16",
     "@vue/vue2-jest": "^27.0.0-alpha.4",
@@ -61,7 +62,6 @@
     "@babel/core": "7.17.9",
     "@babel/eslint-parser": "^7.18.2",
     "@babel/generator": "7.17.9",
-    "@cypress/code-coverage": "^3.10.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@types/inputmask": "^5.0.3",
     "@types/jest": "^24.0.19",
@@ -79,9 +79,8 @@
     "babel-eslint": "^10.1.0",
     "babel-plugin-istanbul": "^6.1.1",
     "closure-webpack-plugin": "^2.5.0",
-    "cypress": "^9.5.4",
+    "cypress": "^10.1.0",
     "cypress-file-upload": "^5.0.8",
-    "cypress-grep": "^3.0.2",
     "cypress-iframe": "^1.0.1",
     "cypress-plugin-tab": "^1.0.5",
     "cypress-real-events": "^1.7.0",

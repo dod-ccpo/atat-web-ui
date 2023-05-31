@@ -1,5 +1,4 @@
-import {
-  bootstrapMockApis,
+import {  
   randomNumber,
   randomString,
   randomAlphaNumeric,
@@ -18,9 +17,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
   let pt = "TC-Step-1-ContactInfo-" + randomAlphaNumeric(5);
   let scope = "Project Scope-" + randomString(5);  
 
-  beforeEach(() => {
-    bootstrapMockApis();
-    
+  beforeEach(() => {    
     cy.fixture("orgAddressType").then((types) => {
       orgAddressType = types;
     });

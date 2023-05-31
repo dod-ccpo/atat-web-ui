@@ -1,4 +1,4 @@
-import { bootstrapMockApis, randomNumber, randomString, prefixId,randomAlphaNumeric }
+import { randomNumber, randomString, prefixId,randomAlphaNumeric }
   from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import co from "../../../selectors/contractOffice.sel";
@@ -12,8 +12,7 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
   let pt = "TC-Step-1-COR-" + randomAlphaNumeric(5);
   let scope = "Project Scope-" + randomString(5);  
     
-  beforeEach(() => {
-    bootstrapMockApis();
+  beforeEach(() => {    
 
     cy.fixture("contactInfo").then((info) => {
       contactInfo = info;
