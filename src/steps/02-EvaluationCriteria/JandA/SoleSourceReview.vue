@@ -296,7 +296,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       /* eslint-disable camelcase */
       cause_of_sole_source_generated: this.soleSourceCauseGenerated as string,
       cause_of_sole_source_custom: this.soleSourceCauseCustom as string,
-      research_details_for_docgen: this.isCustom ? "CUSTOM" : "GENERATED"
+      cause_of_sole_source_for_docgen: this.isCustom ? "CUSTOM" : "GENERATED"
       /* eslint-enable camelcase */      
     }
     return Object.assign(fairOppSaved, formData);
