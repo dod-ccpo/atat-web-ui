@@ -11,12 +11,13 @@ export class GInvoicingApi extends ApiBase{
     super(ENDPOINTNAME);
   }
 
-  public async search(orderNumber: string): Promise<GInvoicingResponse> {
+  public async search(orderNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
     try {
 
       const requestConfig: AxiosRequestConfig = {
         params: {
-          orderNumber: orderNumber
+          orderNumber: orderNumber,
+          acquisitionPackageId: acqPackageId
         }
       };
 
