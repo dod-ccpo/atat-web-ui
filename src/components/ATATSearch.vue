@@ -131,6 +131,7 @@ import api from "@/api";
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -254,7 +255,9 @@ export default class ATATSearch extends Vue {
       }
     } else if (this.searchType === "G-Invoicing") {
       try {
-        const gInvoicingResponse = await api.gInvoicingApi.search(this._value);
+        const gInvoicingResponse = await api.gInvoicingApi.search(
+          this._value, AcquisitionPackage.packageId
+        );
         if (gInvoicingResponse.valid){
           this.showSuccessAlert = true;
         } else {
