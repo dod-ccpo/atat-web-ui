@@ -18,7 +18,8 @@ import {
   ContractTypeDTO,
   TrainingEstimateDTO, ReferenceColumn, CrossDomainSolutionDTO
 } from "@/api/models";
-import { currencyStringToNumber } from "@/helpers";
+import { currencyStringToNumber, toTitleCase } from "@/helpers";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
@@ -320,6 +321,22 @@ export class IGCEStore extends VuexModule {
     return dowTaskNumber;
   }
 
+  @Action({rawError: true})
+  public async getAppsDOWTaskNumber(classId:string):Promise<IgceEstimateDTO[]>{
+
+    const query: AxiosRequestConfig = {
+      params: { 
+        sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId +
+          "^titleLIKEApplication" + "^classification_level=" + classId,
+      },
+    }
+    const apps = await api.igceEstimateTable.getQuery(query);
+    apps.forEach(app => {
+      app = convertColumnReferencesToValues(app);
+    });
+    return apps;
+  }
+
   @Action
   public async getRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
     return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
@@ -547,7 +564,7 @@ export class IGCEStore extends VuexModule {
       classificationInstanceSysId?: string, 
       unit_quantity: string,
       description:string,
-      dow_task_number: string
+      dow_task_number?: string
     }
   ): Promise<void> {
     const isClassificationInstance = instanceRef.classificationInstanceSysId !== undefined;
@@ -709,15 +726,55 @@ export class IGCEStore extends VuexModule {
   @Action({ rawError: true })
   public async deleteIgceEstimateByRequestConfig(deleteRequestConfig: AxiosRequestConfig):
     Promise<void> {
-    const igceEstimateList = await api.igceEstimateTable.getQuery(deleteRequestConfig);
+    const igceEstimateList = await api.igceEstimateTable.getQuery(deleteRequestConfig);   
     if (igceEstimateList?.length > 0) {
-      // TODO: double check which option is better. For CDS there could be multiple records
-      //  per cross domain. So, may need to delete more than one record when user toggles from
-      //  "YES" to a "NO"
       igceEstimateList.forEach(async igceEstimate => {
-        api.igceEstimateTable.remove(igceEstimate.sys_id as string);
+        await api.igceEstimateTable.remove(igceEstimate.sys_id as string);
+        this.reorderInstanceNumbersInSNOW(igceEstimate)
       })
     }
+  }
+
+  /**
+   * reorders instance numbers for both `IGCE Estimate` table columns 
+   * 1) `DOW Task Number` - items with NO environmental instance 
+   * 2) `Title` = items with enviornmental instance
+   * 
+   * @param igceEstimate IGCEEstimateDTO
+   */
+  @Action({ rawError: true })
+  public async reorderInstanceNumbersInSNOW(igceEstimate: IgceEstimateDTO):Promise<void>{
+    const serviceOfferingGroup = igceEstimate.title?.substring(
+      0, igceEstimate.title.indexOf(" -")
+    ) || "";
+    const igceEstimateListToBeReordered = await api.igceEstimateTable.getQuery({
+      params: {
+        sysparm_query: "titleLIKE" + serviceOfferingGroup 
+          + "^acquisition_package=" + AcquisitionPackage.packageId 
+          + "^ORDERBYsys_created_on"
+      }
+    });
+    igceEstimateListToBeReordered.forEach(
+      async (est, idx)=>{
+        if (est.sys_id){
+          // create NEW DOW task order number
+          const reorderedDOWTaskNumber = (est.dow_task_number?.substring(
+            0 ,est.dow_task_number?.lastIndexOf(".") + 1
+          ) || "") + (idx + 1);
+
+          // create new title 
+          const reorderedTitle = (est.title?.substring(
+            0 ,est.title.lastIndexOf("#") + 1
+          ) || "") + (idx + 1);
+          const hasEnvironmentInstances = est.environment_instance !=="";
+
+          await api.igceEstimateTable.update(est.sys_id,{
+            title: hasEnvironmentInstances ? reorderedTitle : est.title,
+            dow_task_number: reorderedDOWTaskNumber
+          }) 
+        }
+      }
+    )
   }
 
   /**
