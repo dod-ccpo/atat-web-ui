@@ -185,7 +185,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     const existingClassLevels = Object.keys(this.tempEstimateDataSource);
     const doesTSExist = existingClassLevels.includes("Top Secret");
     const doesSecretExist = existingClassLevels.includes("Secret - IL6") && !doesTSExist;
-    const cdsTransfers = JSON.parse(this.cdsSNOWRecord?.traffic_per_domain_pair||"")
+    const cdsTransfers = this.cdsSNOWRecord?.traffic_per_domain_pair !== undefined  
+      ? JSON.parse(this.cdsSNOWRecord?.traffic_per_domain_pair)
+      : undefined
     let hasTSTransfer = false
     let hasSTransfer = false
     let classificationLvl = ""
