@@ -23,13 +23,10 @@ export class GInvoicingApi extends ApiBase{
       const apiResponse = await this.instance.get(this.endPoint,
         requestConfig
       );
-
       if(apiResponse.status === 200){
-        const { result } = apiResponse.data;
-
         const response: GInvoicingResponse = {
-          valid: result.valid,
-          message: result.message
+          valid: true,
+          message: apiResponse.data.result
         };
 
         return response;
