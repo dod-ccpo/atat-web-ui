@@ -69,8 +69,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
         
     //Assert radio options
     cy.radioBtn(contact.militaryRadioBtn, "MILITARY").not("[disabled]");
-    cy.radioBtn(contact.civilianRadioBtn,"CIVILIAN").not("[disabled]");
-    //cy.radioBtn(contact.contractorRadioBtn,"CONTRACTOR").not("[disabled]");
+    cy.radioBtn(contact.civilianRadioBtn,"CIVILIAN").not("[disabled]");    
 
     //select radio button
     cy.contactRoleRadioBtnOption(
