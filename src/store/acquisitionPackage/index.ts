@@ -912,7 +912,6 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
     await this.doSetFairOpportunity(value);
-    debugger;
     if (this.initialized) {
       if (this.fairOpportunity && this.fairOpportunity.sys_id) {
         await api.fairOpportunityTable.update(
@@ -955,7 +954,6 @@ export class AcquisitionPackageStore extends VuexModule {
         await this.doSetHasExplanationOnLoad(hasExplanationOnLoad);  
     }
 
-    debugger;
     await this.generateFairOpportunitySuggestions();
   }
   @Mutation
@@ -1341,7 +1339,6 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
       this.setPackagePercentLoaded(55);
-      debugger;
       if (fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(fairOppSysId);
         if (fairOpportunity) this.setFairOpportunity(fairOpportunity);
@@ -1564,7 +1561,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "Financial POC" })
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
-          debugger;
+
           this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){

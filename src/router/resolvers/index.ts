@@ -122,7 +122,6 @@ export const MinimumRequirementsRouteResolver = (current: string): string => {
 }
 
 export const SoleSourceRouteResolver = (current: string): string => {
-  debugger;
   const skipForm = AcquisitionPackage.hasExplanationOnLoad.soleSourceCause;
   // backward
   if (current === routeNames.SoleSourceReview) {

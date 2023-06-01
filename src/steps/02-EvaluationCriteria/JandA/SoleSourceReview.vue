@@ -209,6 +209,7 @@ import { currencyStringToNumber, hasChanges, toCurrencyString } from "@/helpers"
 import { FairOpportunityDTO } from "@/api/models";
 import {routeNames} from "@/router/stepper";
 import FairOppExceptions from "../components/FairOppExceptions.vue";
+import Steps from "@/store/steps";
 
 @Component({
   components: {
@@ -298,8 +299,13 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     return condition ? 'disabled': 'primary';
   }
 
-  public goToQuestionnaire(): void {
+  public async goToQuestionnaire(): Promise<void> {
     AcquisitionPackage.doSetFairOppBackToReview(true);
+
+    // hide "I want to write my own explanation" button if either generated or custom
+    // explanation exists on initialization
+    await Steps.setAdditionalButtonHide(true);
+
     this.$router.push({
       name: routeNames.SoleSourceCause,
       params: {
@@ -349,9 +355,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
     }
     this.isSoleSourceCauseFormEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
-    debugger;
-    this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom
-    
+    this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom   
   }
 
   public async mounted(): Promise<void> {
@@ -375,10 +379,8 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     } else {
       this.soleSourceCauseGenerated = this.soleSourceCause;
     }
-    debugger;
     
     this.setAcquisitionPackageSoleSourceVariables();
-    debugger;
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

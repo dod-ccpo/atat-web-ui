@@ -256,7 +256,6 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public cspName = "";
   public writeOwnCause: YesNo = "";
   public isLoading = false;
-  public SoleSourceCauseFormBeenEdited = false;
   public SoleSourceSuggestedTextBeenEdited = false;
   public isSoleSourceTextCustom = false;
   public hasSoleSourceExplanation = false;
@@ -483,10 +482,9 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
 
   private loadAcquisitionPackageSoleSourceVariables(): void{
-    this.SoleSourceCauseFormBeenEdited = 
-      AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
     this.SoleSourceSuggestedTextBeenEdited = 
       AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
+    
     this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom;
   }
 
