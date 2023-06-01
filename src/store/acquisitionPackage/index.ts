@@ -220,17 +220,6 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
   }
 }
 
-const initialPeriodOfPerformance = ()=> {
-
-  return     { 
-    pop_start_request: "",
-    requested_pop_start_date: "",
-    time_frame: "",
-    recurring_requirement: "",
-    base_and_options: "",
-    
-  }}
-
 const initialSensitiveInformation = ()=> {
 
   return {
@@ -800,7 +789,7 @@ export class AcquisitionPackageStore extends VuexModule {
     return initialFairOpportunity();
   }
   @Mutation
-  public getInitialPackageDocumentsSigned() {
+  public getInitialPackageDocumentsSigned(): PackageDocumentsSignedDTO | null {
     return this.packageDocumentsSigned;
   }
 
@@ -859,24 +848,12 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  // @Mutation
-  // public setPeriods(value: PeriodDTO[]): void {
-  //   this.periods = value.map(period=> period.sys_id).join(',');
-  // }
-
   @Mutation
   public setClassificationLevel(value: ClassificationLevelDTO): void {
     this.classificationLevel = this.classificationLevel
       ? Object.assign(this.classificationLevel, value)
       : value;
   }
-
-  // @Mutation
-  // public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
-  //   this.periodOfPerformance = this.periodOfPerformance
-  //     ? Object.assign(this.periodOfPerformance, value)
-  //     : value;
-  // }
 
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
@@ -936,22 +913,25 @@ export class AcquisitionPackageStore extends VuexModule {
         researchDetails: false,
         plansToRemoveBarriers: false,
       }
-      hasExplanationOnLoad.soleSourceCause 
-        = this.fairOpportunity?.cause_of_sole_source_custom !== undefined
+      hasExplanationOnLoad.soleSourceCause = 
+        this.fairOpportunity?.cause_of_sole_source_custom !== undefined
         && this.fairOpportunity.cause_of_sole_source_custom.length > 0
         && this.fairOpportunity?.cause_of_sole_source_generated !== undefined
         && this.fairOpportunity.cause_of_sole_source_generated.length > 0;
-        hasExplanationOnLoad.researchDetails
-        = this.fairOpportunity?.research_details_custom !== undefined
+
+      hasExplanationOnLoad.researchDetails = 
+        this.fairOpportunity?.research_details_custom !== undefined
         && this.fairOpportunity.research_details_custom.length > 0
         && this.fairOpportunity?.research_details_generated !== undefined
         && this.fairOpportunity.research_details_generated.length > 0;
-        hasExplanationOnLoad.plansToRemoveBarriers
-        = this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
+      
+      hasExplanationOnLoad.plansToRemoveBarriers = 
+        this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
         && this.fairOpportunity.barriers_plans_to_remove_custom.length > 0
         && this.fairOpportunity?.barriers_plans_to_remove_generated !== undefined
         && this.fairOpportunity.barriers_plans_to_remove_generated.length > 0;
-        await this.doSetHasExplanationOnLoad(hasExplanationOnLoad);  
+      
+      await this.doSetHasExplanationOnLoad(hasExplanationOnLoad);  
     }
 
     await this.generateFairOpportunitySuggestions();
@@ -1046,8 +1026,10 @@ export class AcquisitionPackageStore extends VuexModule {
   public async generateSoleSourceSuggestion(): Promise<void> {
     if (this.fairOpportunity) {
       const needsMigrationP = this.fairOpportunity.cause_migration_addl_time_cost === "YES";
-      const needsGovtEngineersP = this.fairOpportunity.cause_govt_engineers_training_certified === "YES";
-      const needsProductFeatureP = this.fairOpportunity.cause_product_feature_peculiar_to_csp === "YES";
+      const needsGovtEngineersP = 
+        this.fairOpportunity.cause_govt_engineers_training_certified === "YES";
+      const needsProductFeatureP = 
+        this.fairOpportunity.cause_product_feature_peculiar_to_csp === "YES";
   
       const cspName = this.csps[this.fairOpportunity.proposed_csp as string]
       let text = "";
@@ -1570,8 +1552,6 @@ export class AcquisitionPackageStore extends VuexModule {
           }
           this.setPackagePercentLoaded(50);
           this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
-          // this.setPeriods([]);
-          // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initializeCurrentEnvironment();
