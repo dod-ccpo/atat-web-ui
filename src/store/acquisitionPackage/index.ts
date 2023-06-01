@@ -1087,6 +1087,7 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       this.fairOppDefaultSuggestions.soleSourceCause = text;
       const isEdited = text !== this.fairOpportunity.cause_of_sole_source_generated;
+      debugger;
       await this.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
     }
   }

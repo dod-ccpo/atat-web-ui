@@ -123,18 +123,18 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
   }
 
   public get followOnP():string {
-    return "To overcome future barriers to competition," +
+    return "To overcome future barriers to competition, " +
       this.agency + " is preparing a fair opportunity competitive" +
       " follow-on requirement. The follow-on is expected to be" +
       " completed, solicited, and awarded by " + this.insertDate + "."
-  }
+  } // EJY UPDATE DATES TO SPELLED OUT VERSION e.g., June 6, 2023 instead of MM/DD/YYYY
   public get trainingCertP():string {
-    return "To overcome future barriers to competition," +
-      this.agency +" will pursue training and certification for" +
+    return "To overcome future barriers to competition, " +
+      this.agency + " will pursue training and certification for" +
       " Government engineers in other technologies."
   }
   public get futureDevelopmentP():string {
-    return "To overcome future barriers to competition," +
+    return "To overcome future barriers to competition, " +
       " future development and enhancement of IaaS components will include" +
       " shifting to a containerized platform. This will enable multiple" +
       " vendors to meet the requirements which will enable the flexibility" +

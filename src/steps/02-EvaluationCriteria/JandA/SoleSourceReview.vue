@@ -58,7 +58,7 @@
               <ATATAlert
                 id="ReviewQuestionnaireResponses"
                 type="warning"
-                v-if="isSoleSourceCauseFormEdited"
+                v-if="hasSoleSourceCauseFormBeenEdited"
                 maxWidth="750"
                 class="mt-9 mb-2"
               >
@@ -84,6 +84,7 @@
               :maxChars="2500"
               :validateItOnBlur="true"
               :noResize="false"
+              @blur="checkIfSuggestionChanged"
               :rules="[
                 this.$validators.required(`Enter an explanation for the cause of 
                   your sole source situation.`),
@@ -238,7 +239,8 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     return this.isCustomOnLoad ? "Tell us about" : "Let’s review";
   }
 
-  public isSoleSourceCauseFormEdited = false;
+  public hasSoleSourceCauseFormBeenEdited = false;
+  public hasSoleSourceSuggestedTextBeenEdited = false;
   public isSoleSourceTextCustom = false;
 
   public get showChangeToCustomButton(): boolean {
@@ -270,11 +272,18 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     this.isSoleSourceCauseDefault = this.soleSourceCause === this.defaultSuggestion;
   }
 
+  public checkIfSuggestionChanged(): void { 
+    debugger;
+    AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(this.isSoleSourceCauseDefault);
+  }
+
   public async restoreSuggestion(): Promise<void> {
     this.soleSourceCause = this.defaultSuggestion;
     this.soleSourceCauseGenerated = this.defaultSuggestion;
-    this.isSoleSourceCauseFormEdited = false;
+    this.hasSoleSourceCauseFormBeenEdited = false;
     await AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(false);
+    debugger;
+    await AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(false);
     this.showRestoreModal = false;
     this.isCustom = false;
   }
@@ -346,16 +355,28 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
       this.isCustom = storeData.cause_of_sole_source_for_docgen === "CUSTOM";
       this.isCustomOnLoad = storeData.cause_of_sole_source_for_docgen === "CUSTOM";
+      
+      this.hasSoleSourceSuggestedTextBeenEdited = 
+        AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
+              
+      debugger;
+      
       if (!this.isCustom) {
-        this.soleSourceCause = storeData.cause_of_sole_source_generated as string
-          || this.defaultSuggestion;
+        if (!this.hasSoleSourceSuggestedTextBeenEdited) {
+          // if suggested text hasn't been edited, automatically set to the suggestion
+          this.soleSourceCause = this.defaultSuggestion;
+        } else {
+          // since user edited the default suggestion, user is shown alert and must click
+          // the "Restore default suggestion" to view the new suggested text
+          this.soleSourceCause = storeData.cause_of_sole_source_generated as string;
+        }
       } else {
         this.soleSourceCause = storeData.cause_of_sole_source_custom as string;
       }
 
     }
-    this.isSoleSourceCauseFormEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
-    this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom   
+    this.hasSoleSourceCauseFormBeenEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
+    this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom;
   }
 
   public async mounted(): Promise<void> {
@@ -367,6 +388,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   }
 
   private setAcquisitionPackageSoleSourceVariables(){
+    debugger;
     AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(
       !this.isSoleSourceCauseDefault
     );

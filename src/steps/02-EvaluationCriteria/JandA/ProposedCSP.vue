@@ -13,29 +13,32 @@
             :rules="[$validators.required('Please select a CSP.')]"
             v-model="selectedCSP"
           >
-            <v-radio
-              v-for="(csp, index) in cspOptions"
-              :key="index"
-              :value="csp.value"
-              :id="csp.value + 'Button'"
-              name="cspRadios"
-              class="_csp-card d-flex inline pb-6"
-              @click="onClick"
-              @blur="onBlur"
-            >
-              <template v-slot:label>
-                <div class="_svg-icon-div">
-                  <ATATSVGIcon 
-                    :id="csp.value + 'Icon'" 
-                    :name="csp.iconName"
-                    class="svg-icon"
-                    :width="csp.width" 
-                    :height="csp.height" 
-                  />
-                </div>
-                <h3 class="_csp-name"> {{ csp.name }}</h3>
-              </template>
-            </v-radio>
+            <div style="display: table; width: 100%;">
+              <v-radio
+                v-for="(csp, index) in cspOptions"
+                :key="index"
+                :value="csp.value"
+                :id="csp.value + 'Button'"
+                name="cspRadios"
+                class="_csp-card d-flex inline pb-6"
+                @click="onClick"
+                @blur="onBlur"
+                style="display: table-cell"
+              >
+                <template v-slot:label>
+                  <div class="_svg-icon-div">
+                    <ATATSVGIcon 
+                      :id="csp.value + 'Icon'" 
+                      :name="csp.iconName"
+                      class="svg-icon"
+                      :width="csp.width" 
+                      :height="csp.height" 
+                    />
+                  </div>
+                  <h3 class="_csp-name"> {{ csp.name }}</h3>
+                </template>
+              </v-radio>
+            </div>
           </v-radio-group>
           <ATATErrorValidation :errorMessages="errorMessages" />
 
