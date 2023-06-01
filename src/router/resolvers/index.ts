@@ -104,15 +104,13 @@ const isProdEnv = (): boolean | null => {
 }
 
 export const ProposedCSPRouteResolver = (current: string): string => {
-  // TODO - remove isProdEnv condition below when J&A/MRR ready for production
-  return current === routeNames.Exceptions && (isProdEnv() || evalPlanRequired()) 
+  return current === routeNames.Exceptions && evalPlanRequired() 
     ? routeNames.CreateEvalPlan
     : routeNames.ProposedCSP
 };
 
 export const CertificationPOCsRouteResolver = (current: string): string => {
-  // TODO - remove isProdEnv condition below when J&A/MRR ready for production
-  return (isProdEnv() || evalPlanRequired()) && current === routeNames.CreateEvalPlan
+  return evalPlanRequired() && current === routeNames.CreateEvalPlan
     ? routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
