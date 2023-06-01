@@ -820,9 +820,17 @@ Cypress.Commands.add(
     );
     cy.radioBtn(radioSelector, radioValue).click({ force: true });
     selector = prefixId(commonCorAcor.serviceBranchDropdown, corOrAcor);
-    cy.findElement(selector).click({ force: true });
+    cy.findElement(selector).click({ force: true }).then(()=>{
+      cy.waitUntil(() => {
+      return Cypress.$(selector).is(":visible") === true;
+    },{ timeout: 30000 })
+  });
     selector = prefixId(commonCorAcor.serviceBranchDropdownList, corOrAcor);
-    cy.findElement(selector).first().click();
+    cy.findElement(selector).first().click().then(()=>{      
+      cy.waitUntil(() => {
+          return Cypress.$(selector).is(":hidden") === true;
+        },{ timeout: 30000 })
+    });
     cy.findElement(commonCorAcor.contactAffRadioActive).then(($radioBtn) => {
       cy.log($radioBtn.text());
       const selectedOption = $radioBtn.text();
@@ -1330,5 +1338,5 @@ Cypress.Commands.add("addAnotherRequirement", (addSelector, text) => {
 });
 
 Cypress.Commands.add("waitUntilElementIsGone", (selector) => {
-  cy.waitUntil(() => Cypress.$(selector).length === 0);
-});
+  cy.waitUntil(() => Cypress.$(selector).length === 0);  
+},{timeout:2000});

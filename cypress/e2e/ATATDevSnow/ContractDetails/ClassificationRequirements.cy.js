@@ -1,4 +1,4 @@
-import { bootstrapMockApis,
+import { 
   randomString,
   randomAlphaNumeric}from "../../../helpers";
 import common from "../../../selectors/common.sel";
@@ -12,7 +12,7 @@ describe("Test suite: Contract Details Step:Classification Requirements substep"
   let scope = "Project Scope-" + randomString(5);  
 
   beforeEach(() => {
-    bootstrapMockApis();
+    
     cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
     cy.selectDitcoOption(co.radioDITCO, "DITCO");
@@ -92,7 +92,7 @@ describe("Test suite: Contract Details Step:Classification Requirements substep"
       .check({ force: true });     
     cy.btnClick(common.continueBtn, " Continue ");
     cy.waitUntilElementIsGone(contractDetails.ts);
-    cy.verifyPageHeader("Do you have a current contract for this effort?"); 
+    cy.verifyPageHeader("Do you have a current or previous contract for this effort?"); 
     cy.waitUntilElementIsGone(contractDetails.ts);
     cy.btnClick(common.backBtn, "Back");
     cy.waitUntilElementIsGone(background.currentYesRadioOption,);
