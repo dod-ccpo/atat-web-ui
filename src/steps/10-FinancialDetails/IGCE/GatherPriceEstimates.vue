@@ -176,7 +176,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
 
   async addCDSEntry():Promise<void>{
     this.cdsSNOWRecord = await IGCE.getCDSRecord();
-    if(this.cdsSNOWRecord?.cross_domain_solution_required === "NO"){
+    if(this.cdsSNOWRecord?.cross_domain_solution_required !== "YES"
+      || ClassificationRequirements.cdsSolution === null){
       return;
     }
     const existingCDSIGCERecord = await IGCE.igceEstimateList.find(
@@ -185,7 +186,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     const existingClassLevels = Object.keys(this.tempEstimateDataSource);
     const doesTSExist = existingClassLevels.includes("Top Secret");
     const doesSecretExist = existingClassLevels.includes("Secret - IL6") && !doesTSExist;
-    const cdsTransfers = JSON.parse(this.cdsSNOWRecord?.traffic_per_domain_pair||"")
+    const cdsTransfers = this.cdsSNOWRecord?.traffic_per_domain_pair !== undefined  
+      ? JSON.parse(this.cdsSNOWRecord?.traffic_per_domain_pair)
+      : undefined
     let hasTSTransfer = false
     let hasSTransfer = false
     let classificationLvl = ""
@@ -235,6 +238,7 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
     if(existingCDSIGCERecord){
       existingCDSIGCERecord.classification_level = classificationLvl
       existingCDSIGCERecord.unit_quantity = await this.createPopString()
+      existingCDSIGCERecord.idiq_clin_type = "CLOUD"
     }
     const cdsRecord = existingCDSIGCERecord !== undefined 
       ? existingCDSIGCERecord

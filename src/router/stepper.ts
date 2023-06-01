@@ -808,15 +808,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         stepCompleteOnLeave: routeNames.CurrentContract,
         routeResolver: CurrentContractDetailsRouteResolver,
-        additionalButtons: [
-          {
-            buttonText: "I don’t have an existing contract",
-            buttonId: "NoExistingContract",
-            buttonClass: "secondary",
-            name: routeNames.RequirementCategories,
-            actionName: "clearCurrentContractInfo"
-          },
-        ],
+        // additionalButtons: [
+        //   {
+        //     buttonText: "I don’t have an existing contract",
+        //     buttonId: "NoExistingContract",
+        //     buttonClass: "secondary",
+        //     name: routeNames.RequirementCategories,
+        //     actionName: "clearCurrentContractInfo"
+        //   },
+        // ],
       },
       {
         menuText: "Procurement History Summary",
