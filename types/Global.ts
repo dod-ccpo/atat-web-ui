@@ -766,6 +766,14 @@ export interface TrainingEstimate {
   dow_task_number?: string;
 }
 
+export interface SummaryItem {
+  title: string,
+  description: string,
+  isComplete: boolean;
+  isTouched: boolean;
+  routeName: string
+}
+
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
 
 export enum ClassificationLevels {
@@ -773,3 +781,4 @@ export enum ClassificationLevels {
   SCRT = "Secret",
   TSCRT = "Top Secret"
 }
+

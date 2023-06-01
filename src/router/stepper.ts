@@ -66,7 +66,7 @@ import UploadMigrationDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.vue";
 import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
 import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/EnvironmentSummary.vue";
-
+import SummaryStepFour from "@/steps/04-ContractDetails/SummaryStepFour.vue";
 // Step 4 - Contract Details
 /* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
 /* 4.1.1 */ import PeriodOfPerformance from "../steps/04-ContractDetails/PeriodOfPerformance.vue";
@@ -263,6 +263,7 @@ export const routeNames = {
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
   CloudSupportPackages: "Cloud_Support_Packages",
   PeriodOfPerformance: "Period_Of_Performance",
+  SummaryStepFour: "SummaryStepFour",
   RecurringRequirement: "Recurring_Requirement",
   ContractType: "Contract_Type",
   ConflictOfInterest: "Conflict_of_Interest",
@@ -771,7 +772,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: CrossDomain,
-        routeResolver: CrossDomainResolver 
+        // routeResolver: CrossDomainResolver 
+      },
+      {
+        menuText: "SummaryStepFour",
+        path:"summary-step-four",
+        name: routeNames.SummaryStepFour,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepFour,
       },
     ]
   },
@@ -790,7 +799,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "current-contract",
         name: routeNames.CurrentContract,
         completePercentageWeight: 0,
-        routeResolver: CurrentContractRouteResolver,
+        // routeResolver: CurrentContractRouteResolver,
         component: CurrentContract,
         completed: false,
       },
