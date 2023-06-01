@@ -6,7 +6,6 @@ import lp from "../selectors/landingPage.sel";
 import projectOverview from "../selectors/projectOverview.sel.js";
 import contact from "../selectors/contact.sel";
 import org from "../selectors/org.sel";
-import financialDetail from "../selectors/financialDetails.sel";
 import commonCorAcor from "../selectors/commonCorAcor.sel";
 import acor from "../selectors/acor.sel";
 import background from "../selectors/background.sel";
@@ -551,7 +550,7 @@ Cypress.Commands.add("fillNewAcquisition", (projectTitle, scope) => {
 });
 
 Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
-  cy.findElement(financialDetail.contractPricePercentageTxtBox)
+  cy.findElement(fd.contractPricePercentageTxtBox)
     .should("be.visible")
     .clear()
     .type(percentage)
@@ -560,7 +559,7 @@ Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
       cy.log($el.val());
       const enteredText = $el.val();
       const showError = () => {
-        cy.findElement(financialDetail.contractPriceError).should(
+        cy.findElement(fd.contractPriceError).should(
           "contain.text",
           "Please enter a number between 1-50"
         );
@@ -571,7 +570,7 @@ Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
       } else if (isNaN(parseInt(enteredText))) {
         showError();
       } else {
-        cy.findElement(financialDetail.contractPriceControl).should(
+        cy.findElement(fd.contractPriceControl).should(
           "not.contain",
           "Please enter a number between 1-50"
         );
