@@ -504,7 +504,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     this.geInsufficientTimeReason = this.geInsufficientTimeReason.trim();
     this.pfWhyEssential = this.pfWhyEssential.trim();
     this.pfWhyOthersInadequate = this.pfWhyOthersInadequate.trim();
-
+    debugger;
     try {
       // only save changes on "Continue" when coming from the Review page
       // i.e., when user clicks "Back" to return to Review page, don't save changes

@@ -1116,10 +1116,40 @@ export class AcquisitionPackageStore extends VuexModule {
     ORACLE: "Oracle Cloud",
   }
 
+  // EJY use something like this instead of individual objects (below)?
+  public fairOppExplanations: Record<string, Record<string, string | boolean>> = {
+    soleSourceCause: {
+      defaultSuggestion: "",
+      defaultSuggestionEdited: false,
+      useCustomExplanation: false,
+    },
+    researchDetails: {
+      defaultSuggestion: "",
+      defaultSuggestionEdited: false,
+      useCustomExplanation: false,
+    },
+    plansToRemoveBarriers: {
+      defaultSuggestion: "",
+      defaultSuggestionEdited: false,
+      useCustomExplanation: false,
+    },
+  }
+
   public fairOppDefaultSuggestions: Record<string, string> = {
     soleSourceCause: "",
     researchDetails: "",
     plansToRemoveBarriers: "",
+  }
+  // EJY use something like this instead of one nested object (above)
+  public fairOppDefaultSuggestionEdited: Record<string, boolean> = {
+    soleSourceCause: false,
+    researchDetails: false,
+    plansToRemoveBarriers: false,
+  }
+  public fairOppCustomExplanation: Record<string, boolean> = {
+    soleSourceCause: false,
+    researchDetails: false,
+    plansToRemoveBarriers: false,
   }
 
   @Action({rawError: true})

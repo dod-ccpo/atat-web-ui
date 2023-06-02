@@ -273,7 +273,10 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
   public checkIfSuggestionChanged(): void { 
     debugger;
-    AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(this.isSoleSourceCauseDefault);
+    // EJY come back here and use getter, change var name to not be soleSource specific
+    // make sure to check if isCustom ?
+    const isEdited = this.isSoleSourceCauseDefault && !this.isCustom;
+    AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
   }
 
   public async restoreSuggestion(): Promise<void> {
