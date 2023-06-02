@@ -83,8 +83,7 @@ describe("Test suite: SAC step: BAA", () => {
         });
       
       });
-    cy.findElement(common.continueBtn).scrollIntoView();
-    //cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
+    cy.findElement(common.continueBtn).scrollIntoView();    
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
