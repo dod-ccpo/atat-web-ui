@@ -7,7 +7,7 @@
             {{ pageHeaderIntro }} the cause of your sole source situation
           </h1>
           <div class="copy-max-width">
-            <p class="mb-4" v-if="!isCustomOnLoad">
+            <p class="mb-4" v-if="!useCustomTextOnLoad">
               Based on what you’ve told us, we’ve suggested language to explain the 
               factors that led to your decision to solicit only one source for this 
               project. You can edit any details to meet your requirements, but be sure
@@ -84,20 +84,20 @@
               :maxChars="2500"
               :validateItOnBlur="true"
               :noResize="false"
-              @blur="checkIfSuggestionChanged"
               :rules="[
                 this.$validators.required(`Enter an explanation for the cause of 
                   your sole source situation.`),
                 this.$validators.maxLength(2500)
               ]"
             />
+            <!-- @blur="checkIfSuggestionChanged" -->
 
             <div class="d-flex justify-start">
               <v-btn
                 id="ChangeToCustomExplanationButton"
                 v-if="showChangeToCustomButton"
                 class="secondary font-size-14 px-4 mb-1 mt-1"
-                :disabled="isCustom"
+                :disabled="useCustomText"
                 @click="changeToCustomExplanation"
               >
                 <ATATSVGIcon
@@ -133,7 +133,7 @@
                 v-if="showRestoreSuggestionButton"
                 class="secondary font-size-14 px-4 mb-1 mt-1"
                 :class="{'ml-5' : restoreButtonNeedsMargin}"
-                :disabled="isSoleSourceCauseDefault"
+                :disabled="!userEditedDefault"
                 @click="confirmRestoreDefaultText"
               >
                 <ATATSVGIcon
@@ -142,7 +142,7 @@
                   height="15"
                   name="restore"
                   class="mr-1"
-                  :color="getIconColor(isSoleSourceCauseDefault)"
+                  :color="getIconColor(!userEditedDefault)"
                 />
                 Restore default suggestion
               </v-btn>
@@ -224,60 +224,64 @@ import Steps from "@/store/steps";
 
 export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public projectTitle = AcquisitionPackage.projectTitle;
+  
   public soleSourceCause = "";
   public soleSourceCauseGenerated = "";
   public soleSourceCauseCustom = "";
   public defaultSuggestion = "";
+
   public showRestoreModal = false;
   public showConfirmToCustomExplanationModal = false;
 
-  public isCustom = false;
-  public isCustomOnLoad = false;
+  public useCustomText = false;
+  public useCustomTextOnLoad = false;
   public allSectionsNO = false;
   public routeNames = routeNames;
-  public get pageHeaderIntro(): string {
-    return this.isCustomOnLoad ? "Tell us about" : "Let’s review";
-  }
+
   public showAlert = false;
   public hasFormBeenEdited = false;
   public hasSuggestedTextBeenEdited = false;
 
+  public get pageHeaderIntro(): string {
+    return this.useCustomTextOnLoad ? "Tell us about" : "Let’s review";
+  } 
   public get showChangeToCustomButton(): boolean {
-    return !this.isCustom && this.soleSourceCauseCustom.length > 0;
+    return !this.useCustomText && this.soleSourceCauseCustom.length > 0;
   }
   public get showChangeToDAPPSButton(): boolean {
-    return this.isCustom && this.soleSourceCauseGenerated.length > 0;
+    return this.useCustomText && this.soleSourceCauseGenerated.length > 0;
   }
-
   public get showRestoreSuggestionButton(): boolean {
     return this.soleSourceCauseGenerated !== undefined && this.soleSourceCauseGenerated.length > 0;
   }
-
-  public restoreButtonNeedsMargin(): boolean {
+  public get restoreButtonNeedsMargin(): boolean {
     return this.showChangeToCustomButton || this.showChangeToDAPPSButton;
   }
-
   public get displayHelpSoleSourceLink(): boolean {
     return AcquisitionPackage.hasExplanationOnLoad.soleSourceCause;
   }
-
   public get getRowCount(): number {
-    return this.isCustom ? 12 : 19;
+    return this.useCustomText ? 12 : 19;
+  }
+  public get userEditedDefault(): boolean {
+    return this.useCustomText 
+      ? this.soleSourceCause !== this.defaultSuggestion
+      : this.soleSourceCauseGenerated !== this.defaultSuggestion;
   }
 
-  public isSoleSourceCauseDefault = false;
-  @Watch("soleSourceCause")
-  public soleSourceCauseChanged(): void {
-    this.isSoleSourceCauseDefault = this.soleSourceCause === this.defaultSuggestion;
-  }
+  // public isDefaultText = false;
+  // @Watch("soleSourceCause")
+  // public soleSourceCauseChanged(): void {
+  //   this.isDefaultText = this.soleSourceCause === this.defaultSuggestion;
+  // }
 
-  public checkIfSuggestionChanged(): void { 
-    debugger;
-    // EJY come back here and use getter, change var name to not be soleSource specific
-    // make sure to check if isCustom ?
-    const isEdited = this.isSoleSourceCauseDefault && !this.isCustom;
-    AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
-  }
+  // public checkIfSuggestionChanged(): void { 
+  //   debugger;
+  //   // EJY come back here and use getter, change var name to not be soleSource specific
+  //   // make sure to check if useCustomText ?
+  //   const isEdited = this.isDefaultText && !this.useCustomText;
+  //   AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
+  // }
 
   public async restoreSuggestion(): Promise<void> {
     this.soleSourceCause = this.defaultSuggestion;
@@ -287,7 +291,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     debugger;
     await AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(false);
     this.showRestoreModal = false;
-    this.isCustom = false;
+    this.useCustomText = false;
     this.showAlert = false;
   }
 
@@ -298,14 +302,14 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public async changeToDAPPSExplanation(): Promise<void> {
     this.soleSourceCauseCustom = this.soleSourceCause;
     this.soleSourceCause = this.soleSourceCauseGenerated;
-    this.isCustom = false;
+    this.useCustomText = false;
     await AcquisitionPackage.setIsSoleSourceTextCustom(false);
   }
 
   public async changeToCustomExplanation(): Promise<void> {
     this.soleSourceCauseGenerated = this.soleSourceCause;
     this.soleSourceCause = this.soleSourceCauseCustom || "";
-    this.isCustom = true;
+    this.useCustomText = true;
     await AcquisitionPackage.setIsSoleSourceTextCustom(true);
   }
 
@@ -336,7 +340,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       /* eslint-disable camelcase */
       cause_of_sole_source_generated: this.soleSourceCauseGenerated as string,
       cause_of_sole_source_custom: this.soleSourceCauseCustom as string,
-      cause_of_sole_source_for_docgen: this.isCustom ? "CUSTOM" : "GENERATED"
+      cause_of_sole_source_for_docgen: this.useCustomText ? "CUSTOM" : "GENERATED"
       /* eslint-enable camelcase */      
     }
     return Object.assign(fairOppSaved, formData);
@@ -359,12 +363,14 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       this.soleSourceCauseCustom = storeData.cause_of_sole_source_custom as string;
       this.soleSourceCauseGenerated = storeData.cause_of_sole_source_generated as string;
 
-      this.isCustom = AcquisitionPackage.isSoleSourceTextCustom;
-      this.isCustomOnLoad = AcquisitionPackage.isSoleSourceTextCustom;
+      this.useCustomText = AcquisitionPackage.isSoleSourceTextCustom;
+      this.useCustomTextOnLoad = AcquisitionPackage.isSoleSourceTextCustom;
       
       this.hasSuggestedTextBeenEdited = 
         AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
       this.hasFormBeenEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
+      // EJY SHOW ALERT NOT WORKING IF TEXT HAS BEEN EDITED
+      // RETURN HERE WHEN RESUMING
       this.showAlert = this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
 
       await AcquisitionPackage.generateFairOpportunitySuggestion("SoleSource");
@@ -372,7 +378,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
       debugger;
       
-      if (!this.isCustom) {
+      if (!this.useCustomText) {
         if (!this.hasSuggestedTextBeenEdited) {
           // if suggested text hasn't been edited, automatically set to the suggestion
           this.soleSourceCause = this.defaultSuggestion;
@@ -398,12 +404,12 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
   private setAcquisitionPackageSoleSourceVariables(){
     debugger;
-    AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(!this.isSoleSourceCauseDefault);
-    AcquisitionPackage.setIsSoleSourceTextCustom(this.isCustom);
+    AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(this.userEditedDefault);
+    AcquisitionPackage.setIsSoleSourceTextCustom(this.useCustomText);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    if (this.isCustom) {
+    if (this.useCustomText) {
       this.soleSourceCauseCustom = this.soleSourceCause;
     } else {
       this.soleSourceCauseGenerated = this.soleSourceCause;
