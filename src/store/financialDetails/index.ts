@@ -641,11 +641,11 @@ export class FinancialDetailsStore extends VuexModule {
      const getFundingRequestFSForm = await api.fundingRequestFSFormTable.getQuery(
        {
          params: {
-           sysparm_query: "^sys_Id=" + data.sys_id
+           sysparm_query: "^sys_id=" + data.sys_id
          }
        }
      )
-
+     const isUsingGInvoicing = data.use_g_invoicing === "YES";
      const savedFundingRequestFSForm =
       await api.fundingRequestFSFormTable.update(data.sys_id as string, 
         {
@@ -654,8 +654,12 @@ export class FinancialDetailsStore extends VuexModule {
           fs_form_7600b_attachment: data.fs_form_7600b_attachment,
           fs_form_7600b_filename: data.fs_form_7600b_filename,
           use_g_invoicing: data.use_g_invoicing,
-          order_number: getFundingRequestFSForm[0].order_number,
-          gt_c_number: getFundingRequestFSForm[0].gt_c_number
+          order_number: isUsingGInvoicing 
+            ? getFundingRequestFSForm[0].order_number
+            : "",
+          gt_c_number:  isUsingGInvoicing 
+            ? getFundingRequestFSForm[0].gt_c_number
+            : "",
         });
      this.setFundingRequestFSForm(savedFundingRequestFSForm);
      return savedFundingRequestFSForm;
