@@ -50,6 +50,7 @@
                     label="Estimated cost to migrate"
                     :isCurrency="true"
                     :width="400"
+                    :allowZeroDefault="false"
                     :rules="[$validators.required('Enter the estimated cost to migrate.')]"
                     @blur="validateMigrationEstimate"
                   />
@@ -502,6 +503,12 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         return false;
       }
     }
+
+    this.geInsufficientTimeReason = this.geInsufficientTimeReason.trim();
+    this.pfWhyEssential = this.pfWhyEssential.trim();
+    this.pfWhyOthersInadequate = this.pfWhyOthersInadequate.trim();
+
+
     try {
       if (this.hasChanged()) {
         AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(true);

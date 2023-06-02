@@ -141,7 +141,8 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: false }) private appendDropdown?: boolean;
   @Prop() private dropdownOptions?: SelectData[];
   @Prop( {default: false }) private labelSrOnly?: boolean;
-
+  @Prop({ default: true }) private allowZeroDefault?: boolean;
+  
   @PropSync("selectedDropdownValue") private _selectedDropdownValue?: string;
   @PropSync("value", { default: "" }) private _value!: string;
 
@@ -179,8 +180,9 @@ export default class ATATTextField extends Vue  {
     if (this.validateOnBlur) {
       this.setErrorMessage();
       if (this.isCurrency) {
-        this._value = toCurrencyString(currencyStringToNumber(input.value) || 0);
-      }   
+        const currStr = toCurrencyString(currencyStringToNumber(input.value) || 0);
+        this._value = currStr === "0.00" && !this.allowZeroDefault ? "" : currStr;
+      }
     } else {
       this.resetValidation();
     }

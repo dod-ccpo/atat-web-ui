@@ -88,8 +88,8 @@ export default class MRRNeed extends Mixins(SaveOnLeave) {
       label: `Option to Extend Services (<a href=""
         id="OptionToExtendLink"
         onclick="window.open('https://www.acquisition.gov/far/52.217-8')"
-         class="_text-link" target="_blank">
-        FAR <span class="_external-link">52.217-8</span></a>)`,
+         class="_text-link" target="_blank">FAR 
+         <span class="_external-link">52.217-8</span></a>)`,
       value: "OES"
     },
     {
