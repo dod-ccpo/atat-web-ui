@@ -771,7 +771,9 @@ export interface SummaryItem {
   description: string,
   isComplete: boolean;
   isTouched: boolean;
-  routeName: string
+  routeName: string;
+  step: number;
+  substep: number;
 }
 
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";

@@ -10,13 +10,15 @@ type Component = ComponentOptions<Vue> | typeof Vue | AsyncComponent
   namespaced: true,
   dynamic: true,
   store: rootStore
-})
+  })
 // // Step 4 - Contract Details
 // /* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
-/* 4.1.1 */ import PeriodOfPerformance from "../steps/04-ContractDetails/PeriodOfPerformance.vue";
+/* 4.1.1 */ 
+import PeriodOfPerformance from "../steps/04-ContractDetails/PeriodOfPerformance.vue";
 import Periods from "../periods";
 // /* 4.1.2 */ import POPStart from "@/steps/04-ContractDetails/POPStart.vue";
-// /* 4.1.2 */ import RecurringRequirement from "../steps/04-ContractDetails/RecurringRequirement.vue";
+// /* 4.1.2 */ 
+//import RecurringRequirement from "../steps/04-ContractDetails/RecurringRequirement.vue";
 // /* 4.2 */   import ContractType from "../steps/04-ContractDetails/ContractType.vue";
 // /* 4.3 */   import ClassificationRequirements
 // from "../steps/04-ContractDetails/ClassificationRequirements.vue";
@@ -25,20 +27,18 @@ import Periods from "../periods";
 
 export class SummaryStore extends VuexModule {
 
-  public isPoPComplete = false;
   
   summaryItem: SummaryItem ={
     title: "",
     description: "",
     isComplete: false,
     isTouched: false,
-    routeName: ""
+    routeName: "",
+    step: 0,
+    substep: 0
   }
-  summaryItems: SummaryItem[] = []
+  public summaryItems: SummaryItem[] = []
 
-  /// step 4
-  // PoP: Component = PeriodOfPerformance.call(PeriodOfPerformance, validatePop);
-  // PoP.
   @Action({rawError: true})
   public async assessPeriodOfPerformance(): Promise<void>{
     const selectedPeriods = Periods.periods;
@@ -52,13 +52,17 @@ export class SummaryStore extends VuexModule {
       description: " 1-year base period with two 1-year options",
       isComplete,
       isTouched,
-      routeName: ""
+      routeName: "",
+      step: 4,
+      substep: 1
     }
-    this.doSetPOPSummaryItem(POPSummaryItem)
+    this.doSetSummaryItem(POPSummaryItem)
   }
+
   @Mutation
-  public async doSetPOPSummaryItem(summaryItem:SummaryItem):Promise<void>{
-    const existingIndex = this.summaryItems.findIndex(si=>si.title === summaryItem.title);
+  public async doSetSummaryItem(summaryItem:SummaryItem):Promise<void>{
+    const existingIndex = this.summaryItems.findIndex(
+      si=>(si.step === summaryItem.step) && (si.substep === summaryItem.substep));
     this.summaryItems[existingIndex] = summaryItem;
   }
 }

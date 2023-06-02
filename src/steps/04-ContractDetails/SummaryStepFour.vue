@@ -58,6 +58,7 @@
               <hr v-if="index<summaryItems.length-1" />
           </div>
           </div>
+          <component :is="componentToValidate"></component>
       </v-col>
     </v-row>
    
@@ -70,8 +71,11 @@ import { Component, Mixins} from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { SummaryItem } from "types/Global";
 import { getIdText } from "@/helpers";
+import {Component as VueComponent} from "vue";
 import PeriodOfPerformance from "./PeriodOfPerformance.vue";
+import { SummaryStore } from "@/store/summary";
 import Vue from "vue";
+import Summary from "../Summary.vue";
 
 @Component({
   components: {
@@ -79,6 +83,11 @@ import Vue from "vue";
   },
 })
 export default class SummaryStepFour extends Vue{
+
+  public steps: VueComponent[] = [
+    PeriodOfPerformance
+  ]
+  public componentToValidate: VueComponent = {};
   
   public isPopValid = true;
   public summaryItems: SummaryItem[] = [];
@@ -87,7 +96,9 @@ export default class SummaryStepFour extends Vue{
     description: "",
     isComplete: false,
     isTouched: false,
-    routeName: ""
+    routeName: "",
+    step: 0,
+    substep: 0
   }
 
   public getIdText(id: string): string{
@@ -98,24 +109,29 @@ export default class SummaryStepFour extends Vue{
     return !summaryItem.isComplete && summaryItem.isTouched;
   }
 
+
   public async mounted():Promise<void> {
+    // debugger;
+    // const step: Vue = this.$refs.POP;
     debugger;
-    this.summaryItems = [
-      {
-        title: "Period of Performance (PoP)",
-        description: " 1-year base period with two 1-year options",
-        isComplete: false,
-        isTouched: true,
-        routeName: ""
-      },
-      {
-        title: "Period of Performance (PoP)",
-        description: " 1-year base period with two 1-year options",
-        isComplete: this.isPopValid,
-        isTouched: true,
-        routeName: ""
-      }
-    ]
-  }
+    // this.componentToValidate = PeriodOfPerformance;
+    // const isValid = this.$root.$emit('validatePOP',
+    //   (summaryItem: SummaryItem)=>{
+    //     this.summaryItems.push(summaryItem)
+    //     debugger;
+    //   });
+
+    this.steps.forEach(
+      async (step) => {
+        this.componentToValidate = await step;
+        debugger;
+       
+      }, this
+    )
+    // debugger;
+    // this.summaryItems = SummaryStore.summaryItems.find(
+    //   (si) => si
+    // )
+  } 
 }
 </script>
