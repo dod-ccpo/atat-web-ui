@@ -17,7 +17,7 @@
     "test-file:watch": "jest --watch --no-cache src/components/DOW/PricingDetails.spec.ts",
     "test:coverage": "jest --coverage",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
-    "cypress:single-test": "npm run test:e2e --  --spec 'cypress/integration/ATATDevSnow/OtherContractConsiderations/Trainin*.spec.js'",
+    "cypress:single-test": "npm run test:e2e --  --spec 'cypress/e2e/ATATDevSnow/OtherContractConsiderations/Trainin*.spec.js'",
     "cypress:isolated-tests": "npx cypress run --env grepTags=-@iso-ignore"
   },
   "dependencies": {
