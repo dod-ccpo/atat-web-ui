@@ -1,5 +1,4 @@
 import {
-  bootstrapMockApis,
   randomNumberBetween,
   randomAlphaNumeric,
   randomString
@@ -14,8 +13,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
   let scope = "Project Scope-" + randomString(5);  
 
 
-  beforeEach(() => {
-    bootstrapMockApis();
+  beforeEach(() => {    
     cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
     cy.selectDitcoOption(co.radioDITCO, "DITCO");
@@ -297,8 +295,8 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.waitUntilElementIsGone(contractDetails.yesRadioOption);
     cy.verifyPageHeader("Which contract type(s) apply to this acquisition?");    
     cy.btnExists(common.backBtn, "Back").not("[disabled]").click();
-    cy.verifyPageHeader("  Will this be a recurring requirement? ");
     cy.waitUntilElementIsGone(contractDetails.ffpCheckBox);
+    cy.verifyPageHeader("  Will this be a recurring requirement? ");    
     cy.verifySelectedRadioOption(contractDetails.activeRadioOption, "No");
   });    
 

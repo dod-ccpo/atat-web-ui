@@ -1,5 +1,4 @@
-import {
-  bootstrapMockApis,
+import {  
   randomString,
   randomAlphaNumeric,
   capitalizeFirstLetter
@@ -21,8 +20,7 @@ describe("Test suite: Acquisition Package Details: Organization ", () => {
   const expectedFirstName = expectedNames[0];
   const firstName = capitalizeFirstLetter(expectedFirstName);
       
-  beforeEach(() => {
-    bootstrapMockApis();
+  beforeEach(() => {   
     
     cy.fixture("orgAddressType").then((types) => {
       orgAddressType = types;
