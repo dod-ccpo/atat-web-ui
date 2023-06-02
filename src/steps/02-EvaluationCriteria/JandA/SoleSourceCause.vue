@@ -257,7 +257,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public cspName = "";
   public writeOwnCause: YesNo = "";
   public isLoading = false;
-  public SoleSourceSuggestedTextBeenEdited = false;
+  public hasSoleSourceSuggestedTextBeenEdited = false;
   public isSoleSourceTextCustom = false;
   public hasSoleSourceExplanation = false;
   public alertText = "";
@@ -384,12 +384,13 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
 
 
-  get showAlert(): boolean{
+  public get showAlert(): boolean{
+    debugger;
     if (this.hasSoleSourceExplanation && this.isSoleSourceTextCustom){
       this.alertText = "If you update any responses below, we’ll replace your custom " 
         + "explanation with suggested language based on your responses. You will be " 
         + "able to restore your custom explanation, if needed.";
-    } else if (this.hasSoleSourceExplanation && this.SoleSourceSuggestedTextBeenEdited){
+    } else if (this.hasSoleSourceExplanation && this.hasSoleSourceSuggestedTextBeenEdited){
       this.alertText = "Any changes below will not automatically overwrite your edits "
         + "to the previous suggested language. You can update your current explanation "
         + "to a new suggestion on the next screen, if needed."
@@ -483,14 +484,10 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
 
   private loadAcquisitionPackageSoleSourceVariables(): void{
-    this.SoleSourceSuggestedTextBeenEdited = 
+    this.hasSoleSourceSuggestedTextBeenEdited = 
       AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
-    
+    debugger;
     this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom;
-  }
-
-  get isSoleSourceSuggestedTextBeenEdited():boolean{
-    return AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -508,9 +505,10 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     this.pfWhyEssential = this.pfWhyEssential.trim();
     this.pfWhyOthersInadequate = this.pfWhyOthersInadequate.trim();
 
-
     try {
-      if (this.hasChanged()) {
+      // only save changes on "Continue" when coming from the Review page
+      // i.e., when user clicks "Back" to return to Review page, don't save changes
+      if (this.hasChanged() && !AcquisitionPackage.fairOppBackToReview) {
         AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(true);
         // ensure data cleared if any section main question is "NO"
         /* eslint-disable camelcase */
@@ -535,15 +533,17 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         }
         this.writeOwnCause 
           = AcquisitionPackage.fairOpportunity?.cause_write_own_explanation as YesNo;
-        if (this.writeOwnCause !== "YES") {
+        debugger;
+        if (this.writeOwnCause === "NO") {
           // if it's already "YES" (set from action handler when "I want to write 
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 
           // check if user answered "NO" to all 3 sections 
           this.writeOwnCause = sectionsWithNoSelectedCount === 3 ? "YES" : "NO";
-          this.soleSourceForDocgen = "GENERATED"
-        } else {
-          this.soleSourceForDocgen = "CUSTOM"
+          this.soleSourceForDocgen = this.writeOwnCause === "YES" ? "CUSTOM" : "GENERATED";
+
         }
+        AcquisitionPackage.setIsSoleSourceTextCustom(this.soleSourceForDocgen === "CUSTOM");
+
 
         /* eslint-enable camelcase */
         await AcquisitionPackage.setFairOpportunity(this.currentData)

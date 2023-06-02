@@ -1042,9 +1042,8 @@ export class AcquisitionPackageStore extends VuexModule {
       
       await this.doSetHasExplanationOnLoad(hasExplanationOnLoad);  
     }
-
-    await this.generateFairOpportunitySuggestions();
   }
+  
   @Mutation
   public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
     this.fairOpportunity = this.fairOpportunity
@@ -1124,11 +1123,40 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async generateFairOpportunitySuggestions(): Promise<void> {
-    await this.generateSoleSourceSuggestion();
-    // TODO: ADD methods to generate the other "mad-lib" default text.
-    // await this.generateResearchDetailsSuggestion();
-    // await this.generatePlansToRemoveBarriersSuggestion();
+  public async initializeAllFairOppSuggestions(): Promise<void> {
+    await this.generateFairOpportunitySuggestion("SoleSource");
+    if (this.fairOpportunity?.cause_of_sole_source_for_docgen === "CUSTOM") {
+      await this.doSetIsSoleSourceTextCustom(true);
+    }
+
+    // TODO: ADD methods to generate the other "mad-lib" default suggestions
+    // and set if using Custom explanation for each section
+
+    // await this.generateFairOpportunitySuggestion("ResearchDetails");
+    // if (this.fairOpportunity?.research_details_for_docgen === "CUSTOM") {
+    //   await this.doSetIsResearchDetailsTextCustom(true);
+    // }
+    // await this.generateFairOpportunitySuggestion("RemoveBarriers");
+    // if (this.fairOpportunity?.barriers_plans_to_remove_for_docgen === "CUSTOM") {
+    //   await this.doSetIsPlansToRemoveBarriersTextCustom(true);
+    // }
+
+  }
+
+  @Action({rawError: true})
+  public async generateFairOpportunitySuggestion(section: string): Promise<void> {
+    switch (section) {
+    case "SoleSource": 
+      await this.generateSoleSourceSuggestion();
+      break;
+    // TODO: ADD methods to generate the other "mad-lib" default suggestions.
+    case "ResearchDetails":
+      // await this.generateResearchDetailsSuggestion();
+      break;
+    case "RemoveBarriers":
+      // await this.generatePlansToRemoveBarriersSuggestion();
+      break;
+    }
   }
 
   @Action({rawError: true})
@@ -1433,7 +1461,10 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(55);
       if (fairOppSysId) {
         const fairOpportunity = await api.fairOpportunityTable.retrieve(fairOppSysId);
-        if (fairOpportunity) this.setFairOpportunity(fairOpportunity);
+        if (fairOpportunity) {
+          await this.setFairOpportunity(fairOpportunity);
+          await this.initializeAllFairOppSuggestions();
+        }
       } else {
         this.setFairOpportunity(initialFairOpportunity());
       }

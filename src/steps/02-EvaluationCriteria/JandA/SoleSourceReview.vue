@@ -58,7 +58,7 @@
               <ATATAlert
                 id="ReviewQuestionnaireResponses"
                 type="warning"
-                v-if="hasSoleSourceCauseFormBeenEdited"
+                v-if="showAlert"
                 maxWidth="750"
                 class="mt-9 mb-2"
               >
@@ -97,7 +97,7 @@
                 id="ChangeToCustomExplanationButton"
                 v-if="showChangeToCustomButton"
                 class="secondary font-size-14 px-4 mb-1 mt-1"
-                :disabled="isSoleSourceTextCustom"
+                :disabled="isCustom"
                 @click="changeToCustomExplanation"
               >
                 <ATATSVGIcon
@@ -238,10 +238,9 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public get pageHeaderIntro(): string {
     return this.isCustomOnLoad ? "Tell us about" : "Let’s review";
   }
-
-  public hasSoleSourceCauseFormBeenEdited = false;
-  public hasSoleSourceSuggestedTextBeenEdited = false;
-  public isSoleSourceTextCustom = false;
+  public showAlert = false;
+  public hasFormBeenEdited = false;
+  public hasSuggestedTextBeenEdited = false;
 
   public get showChangeToCustomButton(): boolean {
     return !this.isCustom && this.soleSourceCauseCustom.length > 0;
@@ -280,28 +279,31 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public async restoreSuggestion(): Promise<void> {
     this.soleSourceCause = this.defaultSuggestion;
     this.soleSourceCauseGenerated = this.defaultSuggestion;
-    this.hasSoleSourceCauseFormBeenEdited = false;
+    this.hasFormBeenEdited = false;
     await AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(false);
     debugger;
     await AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(false);
     this.showRestoreModal = false;
     this.isCustom = false;
+    this.showAlert = false;
   }
 
   public confirmRestoreDefaultText(): void {
     this.showRestoreModal = true;
   }
 
-  public changeToDAPPSExplanation(): void {
+  public async changeToDAPPSExplanation(): Promise<void> {
     this.soleSourceCauseCustom = this.soleSourceCause;
     this.soleSourceCause = this.soleSourceCauseGenerated;
     this.isCustom = false;
+    await AcquisitionPackage.setIsSoleSourceTextCustom(false);
   }
 
-  public changeToCustomExplanation(): void {
+  public async changeToCustomExplanation(): Promise<void> {
     this.soleSourceCauseGenerated = this.soleSourceCause;
     this.soleSourceCause = this.soleSourceCauseCustom || "";
     this.isCustom = true;
+    await AcquisitionPackage.setIsSoleSourceTextCustom(true);
   }
 
   private getIconColor(condition: boolean):string {
@@ -342,9 +344,10 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    AcquisitionPackage.doSetFairOppBackToReview(false);
+
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.defaultSuggestion = AcquisitionPackage.fairOppDefaultSuggestions.soleSourceCause;
 
       this.allSectionsNO = storeData.cause_migration_addl_time_cost === "NO"
         && storeData.cause_govt_engineers_training_certified === "NO"
@@ -353,16 +356,21 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       this.soleSourceCauseCustom = storeData.cause_of_sole_source_custom as string;
       this.soleSourceCauseGenerated = storeData.cause_of_sole_source_generated as string;
 
-      this.isCustom = storeData.cause_of_sole_source_for_docgen === "CUSTOM";
-      this.isCustomOnLoad = storeData.cause_of_sole_source_for_docgen === "CUSTOM";
+      this.isCustom = AcquisitionPackage.isSoleSourceTextCustom;
+      this.isCustomOnLoad = AcquisitionPackage.isSoleSourceTextCustom;
       
-      this.hasSoleSourceSuggestedTextBeenEdited = 
+      this.hasSuggestedTextBeenEdited = 
         AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
-              
+      this.hasFormBeenEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
+      this.showAlert = this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
+
+      await AcquisitionPackage.generateFairOpportunitySuggestion("SoleSource");
+      this.defaultSuggestion = AcquisitionPackage.fairOppDefaultSuggestions.soleSourceCause;
+
       debugger;
       
       if (!this.isCustom) {
-        if (!this.hasSoleSourceSuggestedTextBeenEdited) {
+        if (!this.hasSuggestedTextBeenEdited) {
           // if suggested text hasn't been edited, automatically set to the suggestion
           this.soleSourceCause = this.defaultSuggestion;
         } else {
@@ -375,8 +383,6 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       }
 
     }
-    this.hasSoleSourceCauseFormBeenEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
-    this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom;
   }
 
   public async mounted(): Promise<void> {
@@ -389,10 +395,8 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
   private setAcquisitionPackageSoleSourceVariables(){
     debugger;
-    AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(
-      !this.isSoleSourceCauseDefault
-    );
-    AcquisitionPackage.setIsSoleSourceTextCustom(this.isSoleSourceTextCustom);
+    AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(!this.isSoleSourceCauseDefault);
+    AcquisitionPackage.setIsSoleSourceTextCustom(this.isCustom);
   }
 
   protected async saveOnLeave(): Promise<boolean> {

@@ -120,7 +120,7 @@ export const MinimumRequirementsRouteResolver = (current: string): string => {
     : routeNames.MinimumRequirements;
 }
 
-export const SoleSourceRouteResolver = (current: string): string => {
+export const SoleSourceFormRouteResolver = (current: string): string => {
   const skipForm = AcquisitionPackage.hasExplanationOnLoad.soleSourceCause;
   // backward
   if (current === routeNames.SoleSourceReview) {
@@ -1617,7 +1617,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   EvalPlanDetailsRouteResolver,
   ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,
-  SoleSourceRouteResolver,
+  SoleSourceFormRouteResolver,
   MarketResearchEffortsRouteResolver,
   CertificationPOCsRouteResolver,
   SecurityRequirementsResolver,

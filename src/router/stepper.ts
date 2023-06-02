@@ -194,7 +194,7 @@ import {
   BVTOResolver,
   ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,
-  SoleSourceRouteResolver,
+  SoleSourceFormRouteResolver,
   MarketResearchEffortsRouteResolver,
   CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
@@ -503,7 +503,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver: SoleSourceRouteResolver,
+        routeResolver: SoleSourceFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",
