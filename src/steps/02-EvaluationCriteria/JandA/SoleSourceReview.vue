@@ -114,17 +114,17 @@
                 id="ChangeToDAPPSSuggestionButton"
                 v-if="showChangeToDAPPSButton"
                 class="secondary font-size-14 px-4 mb-1 mt-1"
-                @click="changeToDAPPSExplanation"
+                @click="changeToDAPPSSuggestion"
               >
                 <ATATSVGIcon
-                  id="ChangeToDAPPSExplanationIcon"
+                  id="changeToDAPPSSuggestionIcon"
                   width="19"
                   height="15"
                   name="SwapVertical"
                   class="mr-1"
                   color="primary"
                 />
-                Change to DAPPS explanation
+                Change to DAPPS suggestion
               </v-btn>
 
               <v-btn
@@ -284,7 +284,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     this.showRestoreModal = true;
   }
 
-  public async changeToDAPPSExplanation(): Promise<void> {
+  public async changeToDAPPSSuggestion(): Promise<void> {
     this.soleSourceCauseCustom = this.soleSourceCause;
     this.soleSourceCause = this.soleSourceCauseGenerated;
     this.useCustomText = false;
