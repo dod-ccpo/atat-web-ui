@@ -1025,22 +1025,22 @@ export class AcquisitionPackageStore extends VuexModule {
         plansToRemoveBarriers: false,
       }
       hasExplanationOnLoad.soleSourceCause = 
-        this.fairOpportunity?.cause_of_sole_source_custom !== undefined
-        && this.fairOpportunity.cause_of_sole_source_custom.length > 0
-        && this.fairOpportunity?.cause_of_sole_source_generated !== undefined
-        && this.fairOpportunity.cause_of_sole_source_generated.length > 0;
+        (this.fairOpportunity?.cause_of_sole_source_custom !== undefined
+        && this.fairOpportunity.cause_of_sole_source_custom.length > 0)
+        || (this.fairOpportunity?.cause_of_sole_source_generated !== undefined
+        && this.fairOpportunity.cause_of_sole_source_generated.length > 0);
 
       hasExplanationOnLoad.researchDetails = 
-        this.fairOpportunity?.research_details_custom !== undefined
-        && this.fairOpportunity.research_details_custom.length > 0
-        && this.fairOpportunity?.research_details_generated !== undefined
-        && this.fairOpportunity.research_details_generated.length > 0;
+        (this.fairOpportunity?.research_details_custom !== undefined
+        && this.fairOpportunity.research_details_custom.length > 0)
+        || (this.fairOpportunity?.research_details_generated !== undefined
+        && this.fairOpportunity.research_details_generated.length > 0);
       
       hasExplanationOnLoad.plansToRemoveBarriers = 
-        this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
-        && this.fairOpportunity.barriers_plans_to_remove_custom.length > 0
-        && this.fairOpportunity?.barriers_plans_to_remove_generated !== undefined
-        && this.fairOpportunity.barriers_plans_to_remove_generated.length > 0;
+        (this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_custom.length > 0)
+        || (this.fairOpportunity?.barriers_plans_to_remove_generated !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_generated.length > 0);
       
       await this.doSetHasExplanationOnLoad(hasExplanationOnLoad);  
     }
