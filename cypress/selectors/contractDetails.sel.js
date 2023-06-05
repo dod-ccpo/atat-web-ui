@@ -44,6 +44,7 @@ module.exports = {
   //Do you want to request a PoP start date?
   popStartDateYesRadioOption: "#Radio_YesStartDate",
   popStartDateNoRadioOption: "#Radio_NoStartDate",
+  activePoPStartDate:"#PoPStartDate_radio_group_control .v-item--active",
   requestedStartDate: "p.mb-2",
   requestedStartDropdownIcon:
     "#RequestDateOption_dropdown_field_control" +

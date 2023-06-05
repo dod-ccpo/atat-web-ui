@@ -20,74 +20,22 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     " JWCC provides a DD Form 254 at the contract level that covers access to all" +
     " classification levels for the task orders ordered within it.";
   let cdsLabelTxt = "What type of cross-domain solution do you need?";
+  const inputText = randomAlphaNumeric(8);
 
   beforeEach(() => {
     cy.fixture("securityRequirement").then((sr) => {
       securityReqDetails = sr;
     });
-    cy.launchATAT(true);
-    cy.homePageClickAcquisitionPackBtn();
-    cy.selectDitcoOption(co.radioDITCO, "DITCO");
-    cy.textExists(common.stepAcquisitionText, " Acquisition Package Details ");
-    //Verify the Substeps are  visible
-    cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");
-    cy.fillNewAcquisition(pt, scope);
-    cy.clickDevToggleBtn();
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.activeStep(common.stepContractDetailsText);
-    cy.verifyPageHeader(
-      "Let’s gather details about the duration of your task order"
-    );
-    cy.findElement(contractDetails.addOptionLink).click();
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.waitUntilElementIsGone(contractDetails.baseInputTxtBox);
-    cy.verifyPageHeader(" Do you want to request a PoP start date? ");
-    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").click({
-      force: true,
-    });
-    cy.findElement(contractDetails.requestedStartDate).should("exist");
-    cy.selectDatefromDatePicker(
-      contractDetails.calendarIcon,
-      contractDetails.navigateNextMonth,
-      contractDetails.selectDate,
-      "13",
-      contractDetails.datePicker
-    );
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.waitUntilElementIsGone(contractDetails.popStartDateYesRadioOption);
-    cy.verifyPageHeader("Will this be a recurring requirement?");
-    cy.radioBtn(contractDetails.yesRadioOption, "YES")
-      .not("[disabled]")
-      .click({ force: true });
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.waitUntilElementIsGone(contractDetails.yesRadioOption);
-    cy.verifyPageHeader("Which contract type(s) apply to this acquisition?");
+
+    cy.goToContractDetailsStep(
+      pt,scope,
+      contractDetails.popStartDateYesRadioOption,
+      "YES",      
+      inputText
+      )
   });
 
-  it("TC1: If unclassified Class Level selected ", () => {
-    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP")
-      .should("not.be.checked")
-      .check({ force: true });
-    cy.findCheckBox(contractDetails.tmCheckBox, "T&M")
-      .should("not.be.checked")
-      .check({ force: true })
-      .then(() => {
-        cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
-        cy.textExists(
-          contractDetails.tmTextFieldLabel,
-          "Please provide justification for your T&M contract type."
-        );
-        cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should(
-          "exist"
-        );
-        const inputText = randomAlphaNumeric(8);
-        cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
-      });
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone(contractDetails.ffpCheckBox, "FFP");
-    cy.verifyPageHeader(
-      " What classification level(s) will be required for your cloud resources and/or services? "
-    );
+  it("TC1: If unclassified Class Level selected ", () => {    
     cy.selectCheckBoxes([contractDetails.level2]);
     cy.btnClick(common.continueBtn, " Continue ");
     // Cross domain page& security req page  is skipped
@@ -95,15 +43,7 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
   });
 
-  it("TC2: If both unclassified & Secret Class Level selected ", () => {
-    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP")
-      .should("not.be.checked")
-      .check({ force: true });
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone(contractDetails.ffpCheckBox, "FFP");
-    cy.verifyPageHeader(
-      " What classification level(s) will be required for your cloud resources and/or services? "
-    );
+  it("TC2: If both unclassified & Secret Class Level selected ", () => {    
     cy.selectCheckBoxes([contractDetails.level5, contractDetails.level6]);
     const expectedLabels = [
       "Unclassified / Impact Level 5 (IL5)" +
@@ -158,26 +98,6 @@ describe("Test suite: Contract Details: E2E work flow", () => {
   });
 
   it("TC3: If Top Secret Class Level selected", () => {
-    cy.findCheckBox(contractDetails.tmCheckBox, "T&M")
-      .should("not.be.checked")
-      .check({ force: true })
-      .then(() => {
-        cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
-        cy.textExists(
-          contractDetails.tmTextFieldLabel,
-          "Please provide justification for your T&M contract type."
-        );
-        cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should(
-          "exist"
-        );
-        const inputText = randomAlphaNumeric(8);
-        cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
-      });
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone(contractDetails.ffpCheckBox, "FFP");
-    cy.verifyPageHeader(
-      " What classification level(s) will be required for your cloud resources and/or services? "
-    );
     cy.selectSecretLevel(contractDetails.ts, alertMessage);
     const expectedLabels = ["Top Secret"];
     cy.verifyCheckBoxLabels(
@@ -204,15 +124,7 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
   });
 
-  it.only("TC4: If Secret & Top Secret Class Level selected,no unclassified ", () => {
-    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP")
-      .should("not.be.checked")
-      .check({ force: true });
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone(contractDetails.ffpCheckBox, "FFP");
-    cy.verifyPageHeader(
-      " What classification level(s) will be required for your cloud resources and/or services? "
-    );
+  it("TC4: If Secret & Top Secret Class Level selected,no unclassified ", () => {
     cy.selectCheckBoxes([contractDetails.level6, contractDetails.ts]);
     const expectedLabels = ["Secret / Impact Level 6 (IL6)", "Top Secret"];
     cy.verifyCheckBoxLabels(
@@ -275,15 +187,7 @@ describe("Test suite: Contract Details: E2E work flow", () => {
       });
   });
 
-  it("TC5: If unclassified, Secret & Top Secret Class Level selected", () => {
-    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP")
-      .should("not.be.checked")
-      .check({ force: true });
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone(contractDetails.ffpCheckBox, "FFP");
-    cy.verifyPageHeader(
-      " What classification level(s) will be required for your cloud resources and/or services? "
-    );
+  it("TC5: If unclassified, Secret & Top Secret Class Level selected", () => {    
     cy.selectCheckBoxes([
       contractDetails.level2,
       contractDetails.level6,
