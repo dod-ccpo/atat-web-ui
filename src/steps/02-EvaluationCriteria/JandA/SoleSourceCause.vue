@@ -473,7 +473,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
    
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
-        : "your CSP"
+        : "your CSP";
 
       if (storeData.cause_of_sole_source_generated || storeData.cause_of_sole_source_custom) {
         this.hasSoleSourceExplanation = true;
@@ -533,7 +533,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         if (this.soleSourceForDocgen === "CUSTOM") {
           await AcquisitionPackage.setReplaceCustomWithGenerated(true);
         }
-        debugger;
+
         if (this.writeOwnCause === "NO") {
           // if it's already "YES" (set from action handler when "I want to write 
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 

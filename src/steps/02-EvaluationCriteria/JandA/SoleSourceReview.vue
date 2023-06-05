@@ -90,7 +90,6 @@
                 this.$validators.maxLength(2500)
               ]"
             />
-            <!-- @blur="checkIfSuggestionChanged" -->
 
             <div class="d-flex justify-start">
               <v-btn
@@ -405,7 +404,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     } else {
       this.soleSourceCauseGenerated = this.soleSourceCause.trim();
     }
-    
+    AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(false);
     await this.setAcquisitionPackageSoleSourceVariables();
     try {
       if (this.hasChanged()) {
