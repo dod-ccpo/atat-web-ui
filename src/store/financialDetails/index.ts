@@ -174,8 +174,7 @@ export class FinancialDetailsStore extends VuexModule {
 
     const formToSave = {
       ...fsForm,
-      use_g_invoicing: data.useGInvoicing,
-      gt_c_number: data.gInvoiceNumber,
+      use_g_invoicing: data.useGInvoicing
     }
 
     const savedForm = await this.saveFundingRequestFSForm(formToSave);
@@ -639,8 +638,29 @@ export class FinancialDetailsStore extends VuexModule {
  public async saveFundingRequestFSForm(data:
   FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
    try {
+     const getFundingRequestFSForm = await api.fundingRequestFSFormTable.getQuery(
+       {
+         params: {
+           sysparm_query: "^sys_id=" + data.sys_id
+         }
+       }
+     )
+     const isUsingGInvoicing = data.use_g_invoicing === "YES";
      const savedFundingRequestFSForm =
-       await api.fundingRequestFSFormTable.update(data.sys_id as string, data);
+      await api.fundingRequestFSFormTable.update(data.sys_id as string, 
+        {
+          fs_form_7600a_filename: data.fs_form_7600a_filename,
+          fs_form_7600a_attachment: data.fs_form_7600a_attachment,
+          fs_form_7600b_attachment: data.fs_form_7600b_attachment,
+          fs_form_7600b_filename: data.fs_form_7600b_filename,
+          use_g_invoicing: data.use_g_invoicing,
+          order_number: isUsingGInvoicing 
+            ? getFundingRequestFSForm[0].order_number
+            : "",
+          gt_c_number:  isUsingGInvoicing 
+            ? getFundingRequestFSForm[0].gt_c_number
+            : "",
+        });
      this.setFundingRequestFSForm(savedFundingRequestFSForm);
      return savedFundingRequestFSForm;
    } catch (error) {
