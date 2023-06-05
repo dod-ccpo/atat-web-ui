@@ -401,9 +401,9 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     if (this.useCustomText) {
-      this.soleSourceCauseCustom = this.soleSourceCause;
+      this.soleSourceCauseCustom = this.soleSourceCause.trim();
     } else {
-      this.soleSourceCauseGenerated = this.soleSourceCause;
+      this.soleSourceCauseGenerated = this.soleSourceCause.trim();
     }
     
     await this.setAcquisitionPackageSoleSourceVariables();

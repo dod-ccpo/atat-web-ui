@@ -239,6 +239,7 @@ export default class UniqueSource extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     this.turnRulesOff = false;
+    this.uniqueSourceExplanation = this.uniqueSourceExplanation.trim();
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

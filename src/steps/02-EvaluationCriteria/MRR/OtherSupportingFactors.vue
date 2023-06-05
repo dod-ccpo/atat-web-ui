@@ -96,6 +96,7 @@ export default class OtherSupportingFactors extends Mixins(SaveOnLeave) {
     if(this.currentData.other_facts_to_support_logical_follow_on === 'NO'){
       this.currentData.other_facts_to_support_logical_follow_on_details = ""
     }
+    this.exceptionDiscussion = this.exceptionDiscussion.trim();
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

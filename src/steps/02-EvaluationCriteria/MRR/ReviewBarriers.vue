@@ -221,12 +221,9 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
 
   protected async saveOnLeave(): Promise<boolean> {
     if(this.docgenType === "GENERATED"){
-      this.plansToRemoveGenerated = this.barriersToOpportunity
-      // if(this.plansToRemoveGenerated === this.defaultSuggestion){
-      //   this.plansToRemoveGenerated = ""
-      // }
+      this.plansToRemoveGenerated = this.barriersToOpportunity.trim();
     }else{
-      this.plansToRemoveCustom = this.barriersToOpportunity
+      this.plansToRemoveCustom = this.barriersToOpportunity.trim();
     }
     try {
       if (this.hasChanged()) {

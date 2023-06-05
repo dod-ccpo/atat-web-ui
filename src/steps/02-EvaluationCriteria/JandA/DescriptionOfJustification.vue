@@ -157,6 +157,7 @@ export default class DescriptionOfJustification extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    this.justficationDescription = this.justficationDescription.trim();
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

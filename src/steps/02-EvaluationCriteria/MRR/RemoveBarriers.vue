@@ -217,11 +217,12 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
     this.writeCustomRemove
       = AcquisitionPackage.fairOpportunity?.barriers_write_own_explanation as YesNo
     if(this.writeCustomRemove !== 'YES'){
-      this.writeCustomRemove = sectionsWithNoSelectedCount === 4 ? "YES": "NO"
+      this.writeCustomRemove = sectionsWithNoSelectedCount === 4 ? "YES": "NO";
     }
 
-    this.removalPlanForDocGen = this.writeCustomRemove === "YES"
-      ? "CUSTOM" : "GENERATED"
+    this.removalPlanForDocGen = this.writeCustomRemove === "YES" ? "CUSTOM" : "GENERATED";
+    this.procurementDiscussion = this.procurementDiscussion.trim();
+    
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

@@ -166,6 +166,7 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     this.turnRulesOff = false;
+    this.minGovReqExplanation = this.minGovReqExplanation.trim();
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
