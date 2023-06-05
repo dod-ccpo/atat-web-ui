@@ -228,7 +228,7 @@ export default class CostSummary extends Vue {
     }
     this.tableData.push(tableItem)
   }
-  public createFeeData(name:string, amount:number, isClinAmount:string):void{
+  public createFeeData(name:string, amount:number, isClinAmount:string, fees = false):void{
     const tableObject = {
       CLINTypeClassAggregate: "",
       BasePeriod:"",
@@ -237,8 +237,9 @@ export default class CostSummary extends Vue {
       OptionThree:"",
       OptionFour:"",
       Total:amount,
-      isCLINAmount: isClinAmount
+      isCLINAmount: isClinAmount,
     }
+    debugger
 
     if(name === "ditcoFee"){
       tableObject.CLINTypeClassAggregate = "DITCO Fee (2.25%)"
@@ -249,7 +250,7 @@ export default class CostSummary extends Vue {
     if(name === "grandTotal"){
       tableObject.CLINTypeClassAggregate = "Grand Total with Fee"
     }
-    this.createTableData(tableObject, isClinAmount,tableObject.CLINTypeClassAggregate)
+    this.createTableData(tableObject, isClinAmount,tableObject.CLINTypeClassAggregate,fees)
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -285,11 +286,11 @@ export default class CostSummary extends Vue {
     if(surgeData){
       this.createTableData(surgeData,"false",this.surgePercentage,true)
     }
-    this.createTableData(totalData,"false", "Total with Surge")
+    this.createTableData(totalData,"false", "Total with Surge", true)
     if(ditcoFee){
-      this.createFeeData("ditcoFee",ditcoFee,"false")
+      this.createFeeData("ditcoFee",ditcoFee,"false",true)
     }else if(contratingFee){
-      this.createFeeData("contractingOffice",contratingFee,"false")
+      this.createFeeData("contractingOffice",contratingFee,"false",true)
     }
     if(ditcoFee || contratingFee){
       this.createFeeData("grandTotal", grandTotal, "false")
@@ -315,8 +316,8 @@ export default class CostSummary extends Vue {
   public isFee(label: string): boolean {
     return ['%'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
   }
-  public showSurgeAndFees(label: boolean): boolean {
-    return !this.showSurgeAndFeeRows && label
+  public showSurgeAndFees(isFee: boolean): boolean {
+    return !this.showSurgeAndFeeRows && isFee
   }
 
 
