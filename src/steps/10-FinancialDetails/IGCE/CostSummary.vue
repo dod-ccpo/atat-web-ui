@@ -67,8 +67,6 @@
                   </th>
                 </tr>
               </template>
-
-
               <template v-slot:body="props">
                 <tr v-for="(item,rowIdx) in props.items" :key="rowIdx"
                   class="row-item font-size-14 text-right"
@@ -77,16 +75,35 @@
                     '_total' : item.CLINTypeClassAggregate === 'Total Price' ||
                     item.CLINTypeClassAggregate === 'Grand Total with Fee',
                     '_border-bottom' : item.isCLINAmount === 'true',
-                  }]"
+                  },
+                  {'_fees-row': showSurgeAndFees(item.isFees)}
+                  ]"
                 >
                   <td>
                     <div :class="[
                       'text-left py-4',
                       {'font-weight-bold text-right': 
                         isItemAggregate(item.CLINTypeClassAggregate)},
-                        { 'text-right': isFee(item.CLINTypeClassAggregate)}
+                        { 'text-right': isFee(item.CLINTypeClassAggregate)},
+                        {'_accordion-container':itemNeedsIcon(item.CLINTypeClassAggregate)},
                       ]"
                     >
+                      <v-btn
+                        v-if="itemNeedsIcon(item.CLINTypeClassAggregate)"
+                        icon
+                        @click="toggle()"
+                        @keydown.enter="toggle()"
+                        @keydown.space="toggle()"
+                      >
+                          <ATATSVGIcon
+                            name="ChevronRight"
+                            class="toggle pb-2"
+                            :class="{'_rotate-down':showSurgeAndFeeRows}"
+                            color="base"
+                            :width="7.41"
+                            :height="12"
+                          />
+                      </v-btn>
                       {{ item.CLINTypeClassAggregate }}
                     </div>
                   </td>
@@ -131,6 +148,7 @@ import { CostEstimateDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import IGCEStore from "@/store/IGCE";
 import Periods from "@/store/periods";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 
 export interface IGCECostSummaryItem {
@@ -146,6 +164,7 @@ export interface IGCECostSummaryItem {
 
 @Component({
   components: {
+    ATATSVGIcon,
     ATATAlert,
   },
 })
@@ -156,7 +175,11 @@ export default class CostSummary extends Vue {
   public surgePercentage = "";
   public contractingOfficeFee = "";
   public periodsLength = Periods.periods.length
+  public showSurgeAndFeeRows = false
 
+  public toggle():void{
+    this.showSurgeAndFeeRows = !this.showSurgeAndFeeRows
+  }
   public tableHeaders = [
     { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate"},
 
@@ -177,7 +200,8 @@ export default class CostSummary extends Vue {
     })
   }
 
-  public createTableData(source:Record<string, any>, clinAmount:string,rowName:string):void{
+  public createTableData(source:Record<string, any>, clinAmount:string,rowName:string,fees = false)
+    :void{
     let basePeriod,option1,option2,option3,option4
     if(source["Base Period"]){
       basePeriod = getCurrencyString(source["Base Period"],true)
@@ -199,7 +223,8 @@ export default class CostSummary extends Vue {
       OptionThree:option3,
       OptionFour:option4,
       Total:getCurrencyString(source["Total"],true),
-      isCLINAmount: clinAmount
+      isCLINAmount: clinAmount,
+      isFees:fees
     }
     this.tableData.push(tableItem)
   }
@@ -253,9 +278,14 @@ export default class CostSummary extends Vue {
       this.createTableData(subTotalData,"false","Subtotal")
     }
     if(surgeData){
-      this.createTableData(surgeData,"false",this.surgePercentage)
+      this.createTableData(subTotalData,"false","Surge and Fees")
+    }else{
+      this.createTableData(subTotalData,"false","Fees")
     }
-    this.createTableData(totalData,"false", "Total Price")
+    if(surgeData){
+      this.createTableData(surgeData,"false",this.surgePercentage,true)
+    }
+    this.createTableData(totalData,"false", "Total with Surge")
     if(ditcoFee){
       this.createFeeData("ditcoFee",ditcoFee,"false")
     }else if(contratingFee){
@@ -277,10 +307,16 @@ export default class CostSummary extends Vue {
   }
 
   public isItemAggregate(label: string): boolean {
-    return ['total'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+    return ['total','fees'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+  }
+  public itemNeedsIcon(label: string): boolean {
+    return ['Surge and Fees','fees'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
   }
   public isFee(label: string): boolean {
     return ['%'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+  }
+  public showSurgeAndFees(label: boolean): boolean {
+    return !this.showSurgeAndFeeRows && label
   }
 
 

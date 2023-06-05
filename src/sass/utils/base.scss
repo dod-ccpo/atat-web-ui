@@ -485,6 +485,9 @@ textarea {
     &._total {
       border-top: 4px solid $base-lighter;
     }
+    &._fees-row {
+      display: none;
+    }
   }
 
   th, td {
@@ -506,6 +509,17 @@ textarea {
     th:last-of-type {
       background-color: rgb(236 236 240) !important;
 
+    }
+  }
+  ._accordion-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .toggle {
+    transition: transform .3s ease-in-out !important;
+    &._rotate-down {
+      transform: rotate(90deg) !important;
     }
   }
 }
