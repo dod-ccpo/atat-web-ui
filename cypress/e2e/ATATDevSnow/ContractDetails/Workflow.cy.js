@@ -6,7 +6,6 @@ import {
   suffixId,
 } from "../../../helpers";
 import common from "../../../selectors/common.sel";
-import co from "../../../selectors/contractOffice.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
 describe("Test suite: Contract Details: E2E work flow", () => {
