@@ -1482,7 +1482,6 @@ export class AcquisitionPackageStore extends VuexModule {
       } else {
         this.setFairOpportunity(initialFairOpportunity());
       }
-      // EJY HERE
 
       this.setPackagePercentLoaded(60);
       if(AcquisitionPackage.packageId) {
@@ -2384,8 +2383,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.evaluationPlan = null;
     this.currentContracts = null;
     this.sensitiveInformation = null;
-    // this.periods = null;
-    // this.periodOfPerformance = null;
     this.contractType = null;
     this.classificationLevel = null;
     this.totalBasePoPDuration = 0;
@@ -2403,6 +2400,23 @@ export class AcquisitionPackageStore extends VuexModule {
     this.selectedAgencyAcronym = "";
     this.showInviteContributorsModal = false;
     this.contractingShopNonDitcoAddress = null;
+
+    this.fairOppDefaultSuggestions = {
+      soleSourceCause: "",
+      researchDetails: "",
+      plansToRemoveBarriers: "",
+    }
+    this.hasExplanationOnLoad = {
+      soleSourceCause: false,
+      researchDetails: false,
+      plansToRemoveBarriers: false,
+    };
+    this.fairOppBackToReview = false;
+    this.replaceCustomWithGenerated = false;
+    this.hasSoleSourceSuggestedTextBeenEdited = false;
+    this.hasSoleSourceCauseFormBeenEdited = false;
+    this.isSoleSourceTextCustom = false;
+  
   }
 }
 
