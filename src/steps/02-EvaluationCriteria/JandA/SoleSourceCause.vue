@@ -509,18 +509,18 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         // ensure data cleared if any section main question is "NO"
         /* eslint-disable camelcase */
         let sectionsWithNoSelectedCount = 0;
-        if (this.migrAddlTimeCost === "NO") {
+        if (this.migrAddlTimeCost !== "YES") {
           this.migrEstCost = "";
           this.migrEstDelayAmt = "";
           this.migrEstDelayUnit = "";
           sectionsWithNoSelectedCount++;
         }
-        if (this.geCertified === "NO") {
+        if (this.geCertified !== "YES") {
           this.gePlatformName = "";
           this.geInsufficientTimeReason = "";
           sectionsWithNoSelectedCount++;
         }
-        if (this.pfPeculiarToCSP === "NO") {
+        if (this.pfPeculiarToCSP !== "YES") {
           this.pfType = "";
           this.pfName = "";
           this.pfWhyEssential = "";
@@ -533,17 +533,17 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         if (this.soleSourceForDocgen === "CUSTOM") {
           await AcquisitionPackage.setReplaceCustomWithGenerated(true);
         }
-
+        debugger;
         if (this.writeOwnCause === "NO") {
           // if it's already "YES" (set from action handler when "I want to write 
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 
           // check if user answered "NO" to all 3 sections 
           this.writeOwnCause = sectionsWithNoSelectedCount === 3 ? "YES" : "NO";
           this.soleSourceForDocgen = this.writeOwnCause === "YES" ? "CUSTOM" : "GENERATED";
-
+        } else {
+          this.soleSourceForDocgen = "CUSTOM";
         }
         await AcquisitionPackage.setIsSoleSourceTextCustom(this.soleSourceForDocgen === "CUSTOM");
-
 
         /* eslint-enable camelcase */
         await AcquisitionPackage.setFairOpportunity(this.currentData)
