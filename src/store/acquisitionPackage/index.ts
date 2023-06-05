@@ -60,7 +60,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import { currencyStringToNumber, toCurrencyString } from "@/helpers";
+import { convertAgencyRecordToSelect, createDateStr, currencyStringToNumber, toCurrencyString } from "@/helpers";
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -1151,10 +1151,10 @@ export class AcquisitionPackageStore extends VuexModule {
     // if (this.fairOpportunity?.research_details_for_docgen === "CUSTOM") {
     //   await this.doSetIsResearchDetailsTextCustom(true);
     // }
-    // await this.generateFairOpportunitySuggestion("RemoveBarriers");
-    // if (this.fairOpportunity?.barriers_plans_to_remove_for_docgen === "CUSTOM") {
-    //   await this.doSetIsPlansToRemoveBarriersTextCustom(true);
-    // }
+    await this.generateFairOpportunitySuggestion("RemoveBarriers");
+    if (this.fairOpportunity?.barriers_plans_to_remove_for_docgen === "CUSTOM") {
+      await this.doSetIsPlansToRemoveBarriersTextCustom(true);
+    }
 
   }
 
@@ -1169,7 +1169,7 @@ export class AcquisitionPackageStore extends VuexModule {
       // await this.generateResearchDetailsSuggestion();
       break;
     case "RemoveBarriers":
-      // await this.generatePlansToRemoveBarriersSuggestion();
+      await this.generatePlansToRemoveBarriersSuggestion();
       break;
     }
   }
@@ -1240,6 +1240,28 @@ export class AcquisitionPackageStore extends VuexModule {
       this.fairOppDefaultSuggestions.soleSourceCause = text;
       const isEdited = text !== this.fairOpportunity.cause_of_sole_source_generated;
       await this.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
+    }
+  }
+
+  @Action({rawError: true})
+  public async generatePlansToRemoveBarriersSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const followOn = this.fairOpportunity.barriers_follow_on_requirement === "YES";
+      const training = this.fairOpportunity.barriers_agency_pursuing_training_or_certs === "YES";
+      const development = this.fairOpportunity.barriers_planning_future_development === "YES";
+      const agency = this.selectedAgency.text;
+      let dateStr = "";
+      if (this.fairOpportunity.barriers_follow_on_expected_date_awarded)
+      const dateStr = createDateStr()
+      let text = ""
+      if(followOn){
+        text += "To overcome future barriers to competition, " +
+        agency + " is preparing a fair opportunity competitive" +
+        " follow-on requirement. The follow-on is expected to be" +
+        " completed, solicited, and awarded by " + insertDate + "."
+        // if(training || development || this.previousJA) suggestedText += "\n\n"
+      }
+        
     }
   }
 

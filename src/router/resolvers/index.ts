@@ -109,6 +109,7 @@ export const ProposedCSPRouteResolver = (current: string): string => {
     : routeNames.ProposedCSP
 };
 
+// EJY use similar for OtherSupportingFactors
 export const MinimumRequirementsRouteResolver = (current: string): string => {
   const backToReview = AcquisitionPackage.fairOppBackToReview;
   if (routeNames.SoleSourceCause && backToReview) {
@@ -129,6 +130,50 @@ export const SoleSourceFormRouteResolver = (current: string): string => {
   // forward
   return skipForm ? routeNames.SoleSourceReview : routeNames.SoleSourceCause;
 }
+
+// EJY HERE
+export const OtherSupportingFactorsRouteResolver = (current: string): string => {
+  const backToReview = AcquisitionPackage.fairOppBackToReview;
+  if (routeNames.RemoveBarriers && backToReview) {
+    AcquisitionPackage.doSetFairOppBackToReview(false);
+    return routeNames.ReviewBarriers;
+  }
+  return current === routeNames.RemoveBarriers
+    ? routeNames.ReviewBarriers
+    : routeNames.OtherSupportingFactors;
+
+}
+
+// const plansToRemoveBarriers = ():boolean =>{
+//   const generated = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_generated
+//   const custom = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_custom
+//   return (generated !== "" || custom !== "")
+// } 
+export const RemoveBarriersFormRouteResolver = (current: string): string => {
+
+  const skipForm = AcquisitionPackage.hasExplanationOnLoad.plansToRemoveBarriers;
+  // backward
+  if (current === routeNames.ReviewBarriers) {
+    return skipForm ? routeNames.OtherSupportingFactors : routeNames.RemoveBarriers;
+  }
+  // forward
+  return skipForm ? routeNames.ReviewBarriers : routeNames.RemoveBarriers;
+
+
+  // if(AcquisitionPackage.isNewPackage){
+  //   return routeNames.RemoveBarriers
+  // }
+  // if(current === routeNames.ReviewBarriers){
+  //   return plansToRemoveBarriers()
+  //     ? routeNames.OtherSupportingFactors
+  //     : routeNames.RemoveBarriers
+  // }
+  // return plansToRemoveBarriers()
+  //   ? routeNames.ReviewBarriers
+  //   : routeNames.RemoveBarriers
+};
+
+
 
 export const CertificationPOCsRouteResolver = (current: string): string => {
   return evalPlanRequired() && current === routeNames.CreateEvalPlan
@@ -156,26 +201,6 @@ export const MarketResearchEffortsRouteResolver = (current: string): string => {
   return routeNames.MarketResearchEfforts;
  
 }
-
-const plansToRemoveBarriers = ():boolean =>{
-  const generated = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_generated
-  const custom = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_custom
-  return (generated !== "" || custom !== "")
-} 
-export const removeBarriersRouteResolver = (current: string): string => {
-
-  if(AcquisitionPackage.isNewPackage){
-    return routeNames.RemoveBarriers
-  }
-  if(current === routeNames.ReviewBarriers){
-    return plansToRemoveBarriers()
-      ? routeNames.OtherSupportingFactors
-      : routeNames.RemoveBarriers
-  }
-  return plansToRemoveBarriers()
-    ? routeNames.ReviewBarriers
-    : routeNames.RemoveBarriers
-};
 
 const needContractAction = ():boolean =>{
   return AcquisitionPackage.fairOpportunity?.contract_action ==='NONE'
@@ -1592,7 +1617,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   ProcurementHistorySummaryRouteResolver,
-  removeBarriersRouteResolver,
+  RemoveBarriersFormRouteResolver,
   conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
@@ -1618,6 +1643,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,
   SoleSourceFormRouteResolver,
+  OtherSupportingFactorsRouteResolver,
   MarketResearchEffortsRouteResolver,
   CertificationPOCsRouteResolver,
   SecurityRequirementsResolver,

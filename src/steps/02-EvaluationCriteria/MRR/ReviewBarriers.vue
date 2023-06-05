@@ -184,6 +184,7 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
   }
 
   public async loadOnEnter(): Promise<void> {
+    await AcquisitionPackage.doSetFairOppBackToReview(false);
     const agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data);
     const organizationStore = await AcquisitionPackage
       .loadData<OrganizationDTO>({storeProperty:
@@ -215,6 +216,9 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
         storeData.barriers_agency_pursuing_training_or_certs === "NO" &&
         storeData.barriers_planning_future_development === "NO"&&
         storeData.barriers_j_a_prepared === "NO"
+
+
+      AcquisitionPackage.generateFairOpportunitySuggestion("RemoveBarriers");
 
     }
   }
