@@ -258,7 +258,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     return this.showChangeToCustomButton || this.showChangeToDAPPSButton;
   }
   public get displayHelpSoleSourceLink(): boolean {
-    return AcquisitionPackage.hasExplanationOnLoad.soleSourceCause;
+    return AcquisitionPackage.fairOppExplanations.soleSource.hasExplanationOnLoad as boolean;
   }
   public get getRowCount(): number {
     return this.useCustomText ? 12 : 19;
@@ -273,8 +273,8 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     this.soleSourceCause = this.defaultSuggestion;
     this.soleSourceCauseGenerated = this.defaultSuggestion;
     this.hasFormBeenEdited = false;
-    await AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(false);
-    await AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(false);
+    AcquisitionPackage.fairOppExplanations.soleSource.formEdited = false;
+    AcquisitionPackage.fairOppExplanations.soleSource.defaultSuggestionEdited = false;
     this.showRestoreModal = false;
     this.useCustomText = false;
     this.showAlert = false;
@@ -288,14 +288,15 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     this.soleSourceCauseCustom = this.soleSourceCause;
     this.soleSourceCause = this.soleSourceCauseGenerated;
     this.useCustomText = false;
-    await AcquisitionPackage.setIsSoleSourceTextCustom(false);
+    AcquisitionPackage.fairOppExplanations.soleSource.useCustomText = false;
+
   }
 
   public async changeToCustomExplanation(): Promise<void> {
     this.soleSourceCauseGenerated = this.soleSourceCause;
     this.soleSourceCause = this.soleSourceCauseCustom || "";
     this.useCustomText = true;
-    await AcquisitionPackage.setIsSoleSourceTextCustom(true);
+    AcquisitionPackage.fairOppExplanations.soleSource.useCustomText = true;
   }
 
   private getIconColor(condition: boolean):string {
@@ -348,18 +349,22 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       this.soleSourceCauseCustom = storeData.cause_of_sole_source_custom as string;
       this.soleSourceCauseGenerated = storeData.cause_of_sole_source_generated as string;
 
-      this.useCustomText = AcquisitionPackage.isSoleSourceTextCustom;
-      this.useCustomTextOnLoad = AcquisitionPackage.isSoleSourceTextCustom;
+      this.useCustomText = 
+        AcquisitionPackage.fairOppExplanations.soleSource.useCustomText as boolean;
+      this.useCustomTextOnLoad =
+        AcquisitionPackage.fairOppExplanations.soleSource.useCustomText as boolean;
       this.replaceCustomWithDefault = AcquisitionPackage.replaceCustomWithGenerated;
       
       this.hasSuggestedTextBeenEdited = 
-        AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
-      this.hasFormBeenEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
+        AcquisitionPackage.fairOppExplanations.soleSource.defaultSuggestionEdited as boolean;
+      this.hasFormBeenEdited = 
+        AcquisitionPackage.fairOppExplanations.soleSource.formEdited as boolean;
       this.showAlert = !this.replaceCustomWithDefault 
         && this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
 
       await AcquisitionPackage.generateFairOpportunitySuggestion("SoleSource");
-      this.defaultSuggestion = AcquisitionPackage.fairOppDefaultSuggestions.soleSourceCause;
+      this.defaultSuggestion 
+        = AcquisitionPackage.fairOppExplanations.soleSource.defaultSuggestion as string;
       
       if (!this.useCustomText) {
         if (!this.hasSuggestedTextBeenEdited || this.replaceCustomWithDefault) {
@@ -378,7 +383,9 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
         this.soleSourceCause = storeData.cause_of_sole_source_custom as string;
       }
 
-      await AcquisitionPackage.setReplaceCustomWithGenerated(false);
+      await AcquisitionPackage.setReplaceCustomWithGenerated(
+        { section: "soleSource", val: false }
+      );
 
     }
   }
@@ -392,10 +399,9 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   }
 
   private async setAcquisitionPackageSoleSourceVariables(): Promise<void>{
-    await AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(
-      this.userEditedDefaultSuggestion
-    );
-    await AcquisitionPackage.setIsSoleSourceTextCustom(this.useCustomText);
+    AcquisitionPackage.fairOppExplanations.soleSource.defaultSuggestionEdited 
+      = this.userEditedDefaultSuggestion
+    AcquisitionPackage.fairOppExplanations.soleSource.useCustomText = this.useCustomText;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -404,7 +410,8 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     } else {
       this.soleSourceCauseGenerated = this.soleSourceCause.trim();
     }
-    AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(false);
+    AcquisitionPackage.fairOppExplanations.soleSource.formEdited = false;
+
     await this.setAcquisitionPackageSoleSourceVariables();
     try {
       if (this.hasChanged()) {

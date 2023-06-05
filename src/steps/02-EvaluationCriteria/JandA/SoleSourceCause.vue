@@ -484,8 +484,9 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
   private loadAcquisitionPackageSoleSourceVariables(): void{
     this.hasSoleSourceSuggestedTextBeenEdited = 
-      AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
-    this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom;
+      AcquisitionPackage.fairOppExplanations.soleSource.defaultSuggestionEdited as boolean;
+    this.isSoleSourceTextCustom = 
+      AcquisitionPackage.fairOppExplanations.soleSource.useCustomText as boolean;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -505,7 +506,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
     try {
       if (this.hasChanged()) {
-        AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(true);
+        AcquisitionPackage.fairOppExplanations.soleSource.formEdited = true;
         // ensure data cleared if any section main question is "NO"
         /* eslint-disable camelcase */
         let sectionsWithNoSelectedCount = 0;
@@ -531,7 +532,9 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
           = AcquisitionPackage.fairOpportunity?.cause_write_own_explanation as YesNo;
 
         if (this.soleSourceForDocgen === "CUSTOM") {
-          await AcquisitionPackage.setReplaceCustomWithGenerated(true);
+          await AcquisitionPackage.setReplaceCustomWithGenerated(
+            {section: "soleSource", val: true }
+          );
         }
 
         if (this.writeOwnCause === "NO") {
@@ -543,7 +546,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         } else {
           this.soleSourceForDocgen = "CUSTOM";
         }
-        await AcquisitionPackage.setIsSoleSourceTextCustom(this.soleSourceForDocgen === "CUSTOM");
+        AcquisitionPackage.fairOppExplanations.soleSource.useCustomText 
+          = this.soleSourceForDocgen === "CUSTOM";
 
         /* eslint-enable camelcase */
         await AcquisitionPackage.setFairOpportunity(this.currentData)

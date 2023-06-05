@@ -197,8 +197,8 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
     }
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if(storeData){
-      this.insertDate = storeData.barriers_follow_on_expected_date_awarded||""
-      this.previousJA = storeData.barriers_j_a_prepared_results||""
+      this.insertDate = storeData.barriers_follow_on_expected_date_awarded || ""
+      this.previousJA = storeData.barriers_j_a_prepared_results || ""
 
       this.writeOwnExplanation = storeData.barriers_write_own_explanation === "YES";
       if (!this.writeOwnExplanation) {
