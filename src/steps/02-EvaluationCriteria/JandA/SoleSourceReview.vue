@@ -133,7 +133,7 @@
                 v-if="showRestoreSuggestionButton"
                 class="secondary font-size-14 px-4 mb-1 mt-1"
                 :class="{'ml-5' : restoreButtonNeedsMargin}"
-                :disabled="!userEditedDefault"
+                :disabled="!userEditedDefaultSuggestion"
                 @click="confirmRestoreDefaultText"
               >
                 <ATATSVGIcon
@@ -142,7 +142,7 @@
                   height="15"
                   name="restore"
                   class="mr-1"
-                  :color="getIconColor(!userEditedDefault)"
+                  :color="getIconColor(!userEditedDefaultSuggestion)"
                 />
                 Restore default suggestion
               </v-btn>
@@ -235,6 +235,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
   public useCustomText = false;
   public useCustomTextOnLoad = false;
+  public replaceCustomWithDefault = false;
   public allSectionsNO = false;
   public routeNames = routeNames;
 
@@ -263,32 +264,17 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public get getRowCount(): number {
     return this.useCustomText ? 12 : 19;
   }
-  public get userEditedDefault(): boolean {
+  public get userEditedDefaultSuggestion(): boolean {
     return this.useCustomText 
-      ? this.soleSourceCause !== this.defaultSuggestion
-      : this.soleSourceCauseGenerated !== this.defaultSuggestion;
+      ? this.soleSourceCauseGenerated !== this.defaultSuggestion
+      : this.soleSourceCause !== this.defaultSuggestion;
   }
-
-  // public isDefaultText = false;
-  // @Watch("soleSourceCause")
-  // public soleSourceCauseChanged(): void {
-  //   this.isDefaultText = this.soleSourceCause === this.defaultSuggestion;
-  // }
-
-  // public checkIfSuggestionChanged(): void { 
-  //   debugger;
-  //   // EJY come back here and use getter, change var name to not be soleSource specific
-  //   // make sure to check if useCustomText ?
-  //   const isEdited = this.isDefaultText && !this.useCustomText;
-  //   AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
-  // }
 
   public async restoreSuggestion(): Promise<void> {
     this.soleSourceCause = this.defaultSuggestion;
     this.soleSourceCauseGenerated = this.defaultSuggestion;
     this.hasFormBeenEdited = false;
     await AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(false);
-    debugger;
     await AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(false);
     this.showRestoreModal = false;
     this.useCustomText = false;
@@ -351,7 +337,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    AcquisitionPackage.doSetFairOppBackToReview(false);
+    await AcquisitionPackage.doSetFairOppBackToReview(false);
 
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
@@ -365,23 +351,25 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
       this.useCustomText = AcquisitionPackage.isSoleSourceTextCustom;
       this.useCustomTextOnLoad = AcquisitionPackage.isSoleSourceTextCustom;
+      this.replaceCustomWithDefault = AcquisitionPackage.replaceCustomWithGenerated;
       
       this.hasSuggestedTextBeenEdited = 
         AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
       this.hasFormBeenEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
-      // EJY SHOW ALERT NOT WORKING IF TEXT HAS BEEN EDITED
-      // RETURN HERE WHEN RESUMING
-      this.showAlert = this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
+      this.showAlert = !this.replaceCustomWithDefault 
+        && this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
 
       await AcquisitionPackage.generateFairOpportunitySuggestion("SoleSource");
       this.defaultSuggestion = AcquisitionPackage.fairOppDefaultSuggestions.soleSourceCause;
-
-      debugger;
       
       if (!this.useCustomText) {
-        if (!this.hasSuggestedTextBeenEdited) {
-          // if suggested text hasn't been edited, automatically set to the suggestion
+        if (!this.hasSuggestedTextBeenEdited || this.replaceCustomWithDefault) {
+          // if suggested text hasn't been edited, or user navigated to the form
+          // while using "custom" text, automatically set to the default generated suggestion
           this.soleSourceCause = this.defaultSuggestion;
+          if (this.replaceCustomWithDefault) {
+            this.soleSourceCauseGenerated = this.defaultSuggestion;
+          }
         } else {
           // since user edited the default suggestion, user is shown alert and must click
           // the "Restore default suggestion" to view the new suggested text
@@ -390,6 +378,8 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       } else {
         this.soleSourceCause = storeData.cause_of_sole_source_custom as string;
       }
+
+      await AcquisitionPackage.setReplaceCustomWithGenerated(false);
 
     }
   }
@@ -402,10 +392,11 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 
-  private setAcquisitionPackageSoleSourceVariables(){
-    debugger;
-    AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(this.userEditedDefault);
-    AcquisitionPackage.setIsSoleSourceTextCustom(this.useCustomText);
+  private async setAcquisitionPackageSoleSourceVariables(): Promise<void>{
+    await AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(
+      this.userEditedDefaultSuggestion
+    );
+    await AcquisitionPackage.setIsSoleSourceTextCustom(this.useCustomText);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -415,7 +406,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       this.soleSourceCauseGenerated = this.soleSourceCause;
     }
     
-    this.setAcquisitionPackageSoleSourceVariables();
+    await this.setAcquisitionPackageSoleSourceVariables();
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

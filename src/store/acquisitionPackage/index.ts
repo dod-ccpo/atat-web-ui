@@ -334,8 +334,10 @@ export class AcquisitionPackageStore extends VuexModule {
     researchDetails: false,
     plansToRemoveBarriers: false,
   }
+  
   // used for routing
   fairOppBackToReview = false;
+  replaceCustomWithGenerated = false;
 
   marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
@@ -1059,14 +1061,27 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  // use below mutations for all three Fair Opportunity madlibs forms
   @Mutation
   public async doSetHasExplanationOnLoad(val: Record<string, boolean>): Promise<void> {
     this.hasExplanationOnLoad = val;
   }
   @Mutation
-  public doSetFairOppBackToReview(val: boolean): void {
+  public async doSetFairOppBackToReview(val: boolean): Promise<void> {
     this.fairOppBackToReview = val;
+  } 
+  @Action({rawError: true})
+  public async setReplaceCustomWithGenerated(val: boolean): Promise<void> {
+    await this.doSetReplaceCustomWithGenerated(val);
+    if (val) {
+      await this.setHasSoleSourceSuggestedTextBeenEdited(false);
+    }
   }
+  @Mutation
+  public async doSetReplaceCustomWithGenerated(val: boolean): Promise<void> {
+    this.replaceCustomWithGenerated = val;
+  }
+
 
   @Mutation
   public async doSetMarketResearchTechniques(
@@ -1116,40 +1131,10 @@ export class AcquisitionPackageStore extends VuexModule {
     ORACLE: "Oracle Cloud",
   }
 
-  // EJY use something like this instead of individual objects (below)?
-  public fairOppExplanations: Record<string, Record<string, string | boolean>> = {
-    soleSourceCause: {
-      defaultSuggestion: "",
-      defaultSuggestionEdited: false,
-      useCustomExplanation: false,
-    },
-    researchDetails: {
-      defaultSuggestion: "",
-      defaultSuggestionEdited: false,
-      useCustomExplanation: false,
-    },
-    plansToRemoveBarriers: {
-      defaultSuggestion: "",
-      defaultSuggestionEdited: false,
-      useCustomExplanation: false,
-    },
-  }
-
   public fairOppDefaultSuggestions: Record<string, string> = {
     soleSourceCause: "",
     researchDetails: "",
     plansToRemoveBarriers: "",
-  }
-  // EJY use something like this instead of one nested object (above)
-  public fairOppDefaultSuggestionEdited: Record<string, boolean> = {
-    soleSourceCause: false,
-    researchDetails: false,
-    plansToRemoveBarriers: false,
-  }
-  public fairOppCustomExplanation: Record<string, boolean> = {
-    soleSourceCause: false,
-    researchDetails: false,
-    plansToRemoveBarriers: false,
   }
 
   @Action({rawError: true})
@@ -1254,7 +1239,6 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       this.fairOppDefaultSuggestions.soleSourceCause = text;
       const isEdited = text !== this.fairOpportunity.cause_of_sole_source_generated;
-      debugger;
       await this.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
     }
   }

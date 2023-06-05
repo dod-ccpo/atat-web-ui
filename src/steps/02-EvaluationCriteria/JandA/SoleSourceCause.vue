@@ -385,7 +385,6 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
 
   public get showAlert(): boolean{
-    debugger;
     if (this.hasSoleSourceExplanation && this.isSoleSourceTextCustom){
       this.alertText = "If you update any responses below, we’ll replace your custom " 
         + "explanation with suggested language based on your responses. You will be " 
@@ -486,7 +485,6 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   private loadAcquisitionPackageSoleSourceVariables(): void{
     this.hasSoleSourceSuggestedTextBeenEdited = 
       AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
-    debugger;
     this.isSoleSourceTextCustom = AcquisitionPackage.isSoleSourceTextCustom;
   }
 
@@ -504,11 +502,9 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     this.geInsufficientTimeReason = this.geInsufficientTimeReason.trim();
     this.pfWhyEssential = this.pfWhyEssential.trim();
     this.pfWhyOthersInadequate = this.pfWhyOthersInadequate.trim();
-    debugger;
+
     try {
-      // only save changes on "Continue" when coming from the Review page
-      // i.e., when user clicks "Back" to return to Review page, don't save changes
-      if (this.hasChanged() && !AcquisitionPackage.fairOppBackToReview) {
+      if (this.hasChanged()) {
         AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(true);
         // ensure data cleared if any section main question is "NO"
         /* eslint-disable camelcase */
@@ -533,7 +529,11 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
         }
         this.writeOwnCause 
           = AcquisitionPackage.fairOpportunity?.cause_write_own_explanation as YesNo;
-        debugger;
+
+        if (this.soleSourceForDocgen === "CUSTOM") {
+          await AcquisitionPackage.setReplaceCustomWithGenerated(true);
+        }
+
         if (this.writeOwnCause === "NO") {
           // if it's already "YES" (set from action handler when "I want to write 
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 
@@ -542,7 +542,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
           this.soleSourceForDocgen = this.writeOwnCause === "YES" ? "CUSTOM" : "GENERATED";
 
         }
-        AcquisitionPackage.setIsSoleSourceTextCustom(this.soleSourceForDocgen === "CUSTOM");
+        await AcquisitionPackage.setIsSoleSourceTextCustom(this.soleSourceForDocgen === "CUSTOM");
 
 
         /* eslint-enable camelcase */
