@@ -31,7 +31,7 @@ describe("Testing ATATStepperNavigation", () => {
           maxHeight: "100px"
         });
         const _getClasses = await wrapper.vm.getClasses;
-        expect(_getClasses).toBe("_callout _scrollable py-0 pr-0 bg-info-lighter");
+        expect(_getClasses).toBe("_callout _scrollable py-0 pr-0 bg-primary-lighter");
       });
 
     it("getClasses() set $props.type to retrieve certain class", 
@@ -40,7 +40,7 @@ describe("Testing ATATStepperNavigation", () => {
           type: "callout",
         });
         const _getClasses = await wrapper.vm.getClasses;
-        expect(_getClasses).toBe("_callout bg-info-lighter");
+        expect(_getClasses).toBe("_callout bg-primary-lighter");
       });
 
     it("getClasses() set $props.borderLeft to retrieve certain class(es)", 

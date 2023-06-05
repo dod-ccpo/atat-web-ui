@@ -44,7 +44,7 @@
                   class="mr-1"
                   :color="btnRestoreIconColor"
               />
-              Restore to suggestion
+              Restore default suggestion
             </v-btn>
           </v-col>
         </v-row>
@@ -166,6 +166,7 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     this.turnRulesOff = false;
+    this.minGovReqExplanation = this.minGovReqExplanation.trim();
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

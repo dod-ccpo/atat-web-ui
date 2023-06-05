@@ -4,7 +4,7 @@
       <v-container fluid class="container-max-width">
         <v-row>
           <v-col class="col-12">
-            <h1 class="page-header mb-3">
+            <h1 class="page-header">
               Do you require a cross-domain solution (CDS)?
             </h1>
 

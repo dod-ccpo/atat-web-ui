@@ -4,12 +4,12 @@
       <v-container fluid class="container-max-width">
         <v-row>
           <v-col class="col-12">
-            <h1 class="page-header">
+            <h1 class="page-header mb-3">
               Will this be a recurring requirement?
             </h1>
             <div class="copy-max-width">
-              <p class="mb-10">
-                DISA has developed a tracking system for expiring contracts. Responding "YES" 
+              <p class="mb-8">
+                DISA has developed a tracking system for expiring contracts. Responding “YES” 
                 below will enable DITCO to notify you of expiring contracts in sufficient time 
                 to prepare your follow-on acquisition package.
               </p>
