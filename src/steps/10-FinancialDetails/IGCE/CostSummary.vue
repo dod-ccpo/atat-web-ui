@@ -239,7 +239,6 @@ export default class CostSummary extends Vue {
       Total:amount,
       isCLINAmount: isClinAmount,
     }
-    debugger
 
     if(name === "ditcoFee"){
       tableObject.CLINTypeClassAggregate = "DITCO Fee (2.25%)"
