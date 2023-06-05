@@ -1,4 +1,4 @@
-import { bootstrapMockApis,randomAlphaNumeric,capitalizeFirstLetter } from "../../../helpers";
+import {randomAlphaNumeric,capitalizeFirstLetter } from "../../../helpers";
 import projectOverview from "../../../selectors/projectOverview.sel";
 import common from "../../../selectors/common.sel";
 import co from "../../../selectors/contractOffice.sel";
@@ -13,8 +13,7 @@ describe("Test suite: Acquisition Package: Project Overview ", () => {
   const firstName = capitalizeFirstLetter(expectedFirstName);    
   let projectDetails;   
   beforeEach(() => {
-    bootstrapMockApis();
-
+    
     cy.fixture("projectOverview").then((details) => {
       projectDetails = details;
     });

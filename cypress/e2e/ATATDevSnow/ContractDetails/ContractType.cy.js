@@ -1,4 +1,4 @@
-import { bootstrapMockApis,randomAlphaNumeric,randomString} from "../../../helpers";
+import {randomAlphaNumeric,randomString} from "../../../helpers";
 import common from "../../../selectors/common.sel"
 import contractDetails from "../../../selectors/contractDetails.sel";
 import co from "../../../selectors/contractOffice.sel";
@@ -8,7 +8,7 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
   let scope = "Project Scope-" + randomString(5); 
 
   beforeEach(() => {
-    bootstrapMockApis();
+    
     cy.launchATAT(true);   
     cy.homePageClickAcquisitionPackBtn(true);
     cy.selectDitcoOption(co.radioDITCO, "DITCO");

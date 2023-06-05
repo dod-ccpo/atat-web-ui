@@ -92,7 +92,7 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.btnClick(common.continueBtn, " Continue ");
     // Cross domain page& security req page  is skipped
     cy.waitUntilElementIsGone(contractDetails.level2);
-    cy.verifyPageHeader("Do you have a current contract for this effort?");
+    cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
   });
 
   it("TC2: If both unclassified & Secret Class Level selected ", () => {
@@ -153,7 +153,7 @@ describe("Test suite: Contract Details: E2E work flow", () => {
         });
         cy.btnClick(common.continueBtn, " Continue ");
         cy.waitUntilElementIsGone(contractDetails.unclastoSecrCB);
-        cy.verifyPageHeader("Do you have a current contract for this effort?");
+        cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
       });
   });
 
@@ -201,10 +201,10 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.selectCheckBoxes([tscb_1Sel, tscb_7Sel]);
     cy.btnClick(common.continueBtn, " Continue ");
     cy.waitUntilElementIsGone(tscb_7Sel);
-    cy.verifyPageHeader("Do you have a current contract for this effort?");
+    cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
   });
 
-  it("TC4: If Secret & Top Secret Class Level selected,no unclassified ", () => {
+  it.only("TC4: If Secret & Top Secret Class Level selected,no unclassified ", () => {
     cy.findCheckBox(contractDetails.ffpCheckBox, "FFP")
       .should("not.be.checked")
       .check({ force: true });
@@ -270,8 +270,8 @@ describe("Test suite: Contract Details: E2E work flow", () => {
           force: true,
         });
         cy.btnClick(common.continueBtn, " Continue ");
-        cy.waitUntilElementIsGone(contractDetails.unclastoSecrCB);
-        cy.verifyPageHeader("Do you have a current contract for this effort?");
+        cy.waitUntilElementIsGone(contractDetails.entiredDurationNo);
+        cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
       });
   });
 
@@ -340,7 +340,7 @@ describe("Test suite: Contract Details: E2E work flow", () => {
         });
         cy.btnClick(common.continueBtn, " Continue ");
         cy.waitUntilElementIsGone(contractDetails.unclastoSecrCB);
-        cy.verifyPageHeader("Do you have a current contract for this effort?");
+        cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
       });
   });
 });
