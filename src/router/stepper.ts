@@ -205,7 +205,8 @@ import {
   showDITCOPageResolver,
   ContractingInfoResolver,
   CrossDomainResolver,
-  removeBarriersRouteResolver,
+  RemoveBarriersFormRouteResolver,
+  OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
 } from "./resolvers";
 
@@ -616,6 +617,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: OtherSupportingFactorsRouteResolver,
       },
       {
         menuText: "Remove Barriers",
@@ -626,7 +628,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver:removeBarriersRouteResolver,
+        routeResolver: RemoveBarriersFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",

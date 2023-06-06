@@ -268,11 +268,12 @@ export default class AppPackageBuilder extends Vue {
 
     this.hideAdditionalButtons = 
       (step.stepName === routeNames.SoleSourceCause 
-        && AcquisitionPackage.hasExplanationOnLoad.soleSourceCause)
+        && AcquisitionPackage.fairOppExplanations.soleSource.hadExplanationOnLoad as boolean)
       || (step.stepName === routeNames.MarketResearchEfforts 
-        && AcquisitionPackage.hasExplanationOnLoad.researchDetails)
+        && AcquisitionPackage.fairOppExplanations.researchDetails.hadExplanationOnLoad as boolean)
       || (step.stepName === routeNames.RemoveBarriers 
-        && AcquisitionPackage.hasExplanationOnLoad.plansToRemoveBarriers);
+      // eslint-disable-next-line max-len
+        && AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad as boolean);
   }
 
   private async additionalButtonClick(button: AdditionalButton) {

@@ -988,6 +988,49 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add("selectPoPStartDate", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(contractDetails.activePoPStartDate).then(($radioBtn) => {
+    const selectedOption = cleanText($radioBtn.text());
+    cy.log(selectedOption);
+    
+    if (
+      selectedOption ===
+      "radio_button_checkedYes." 
+        
+    ) {
+      cy.findElement(contractDetails.requestedStartDate).should("exist");
+      cy.selectDatefromDatePicker(
+          contractDetails.calendarIcon,
+          contractDetails.navigateNextMonth,
+          contractDetails.selectDate,
+          13,
+          contractDetails.datePicker
+        );
+    } else {
+      cy.findElement(contractDetails.requestedStartDate).should("not.exist");
+    }
+    cy.btnExists(common.continueBtn, " Continue ").click();
+  });
+});
+
+Cypress.Commands.add("selectTMCheckbox", (inputText) => {
+  cy.findCheckBox(contractDetails.tmCheckBox, "T&M")
+  .should("not.be.checked")
+  .check({ force: true })
+  .then(() => {
+    cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
+    cy.textExists(
+      contractDetails.tmTextFieldLabel,
+      "Please provide justification for your T&M contract type."
+    );
+    cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should(
+      "exist"
+    );    
+    cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
+  });
+})
+
 Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
   cy.findElement(sac.piiRadioOtionActive).then(($radioBtn) => {
