@@ -123,13 +123,13 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
   public showAlert = false;
   public hasFormBeenEdited = false;
   public hasSuggestedTextBeenEdited = false;
+  public explanation = AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers;
 
   public get userEditedDefaultSuggestion(): boolean {
     return this.useCustomText 
       ? this.plansToRemoveGenerated !== this.defaultSuggestion
       : this.barriersToOpportunity !== this.defaultSuggestion;
   }
-
 
   public get showChangeToCustomButton(): boolean {
     return !this.useCustomText && this.plansToRemoveCustom.length > 0;
@@ -145,15 +145,15 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
   }
   public get displayHelpLink(): boolean {
     // eslint-disable-next-line max-len 
-    return AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hasExplanationOnLoad as boolean;
+    return this.explanation.hadExplanationOnLoad as boolean;
   }
 
   public restoreSuggestion(): void {
     this.barriersToOpportunity = this.defaultSuggestion;
     this.plansToRemoveGenerated = this.defaultSuggestion;
     this.hasFormBeenEdited = false;
-    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.formEdited = false;
-    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited = false;
+    this.explanation.formEdited = false;
+    this.explanation.defaultSuggestionEdited = false;
     this.showRestoreModal = false;
     this.useCustomText = false;
     this.showAlert = false;
@@ -171,14 +171,14 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
     this.plansToRemoveCustom = this.barriersToOpportunity;
     this.barriersToOpportunity = this.plansToRemoveGenerated;
     this.useCustomText = false;
-    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.useCustomText = false;
+    this.explanation.useCustomText = false;
   }
 
   public async changeToCustomExplanation(): Promise<void> {
     this.plansToRemoveGenerated = this.barriersToOpportunity;
     this.barriersToOpportunity = this.plansToRemoveCustom || "";
     this.useCustomText = true;
-    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.useCustomText = true;
+    this.explanation.useCustomText = true;
   }
 
   public async goToQuestionnaire(): Promise<void> {
@@ -226,25 +226,21 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
       this.plansToRemoveCustom = storeData.barriers_plans_to_remove_custom as string;
       this.plansToRemoveGenerated = storeData.barriers_plans_to_remove_generated as string;
 
-      this.useCustomText = 
-        AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.useCustomText as boolean;
-      this.useCustomTextOnLoad =
-        AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.useCustomText as boolean;
+      this.useCustomText = this.explanation.useCustomText as boolean;
+      this.useCustomTextOnLoad = this.explanation.useCustomText as boolean;
       this.replaceCustomWithDefault = AcquisitionPackage.replaceCustomWithGenerated;
 
       /* eslint-disable max-len */
-      this.hasSuggestedTextBeenEdited = 
-        AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited as boolean;
-      this.hasFormBeenEdited = 
-        AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.formEdited as boolean;
+      this.hasSuggestedTextBeenEdited = this.explanation.defaultSuggestionEdited as boolean;
+      this.hasFormBeenEdited = this.explanation.formEdited as boolean;
       /* eslint-enable max-len */
+
       this.showAlert = !this.replaceCustomWithDefault 
         && this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
 
 
       AcquisitionPackage.generateFairOpportunitySuggestion("RemoveBarriers");
-      this.defaultSuggestion 
-        = AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.defaultSuggestion as string;
+      this.defaultSuggestion = this.explanation.defaultSuggestion as string;
 
       if (!this.useCustomText) {
         if (!this.hasSuggestedTextBeenEdited || this.replaceCustomWithDefault) {
@@ -277,7 +273,7 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
     } else {
       this.plansToRemoveGenerated = this.barriersToOpportunity.trim();
     }
-    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.formEdited = false;
+    this.explanation.formEdited = false;
 
     try {
       if (this.hasChanged()) {

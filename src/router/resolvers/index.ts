@@ -122,7 +122,7 @@ export const MinimumRequirementsRouteResolver = (current: string): string => {
 }
 
 export const SoleSourceFormRouteResolver = (current: string): string => {
-  const skipForm = AcquisitionPackage.fairOppExplanations.soleSource.hasExplanationOnLoad;
+  const skipForm = AcquisitionPackage.fairOppExplanations.soleSource.hadExplanationOnLoad;
   // backward
   if (current === routeNames.SoleSourceReview) {
     return skipForm ? routeNames.MinimumRequirements : routeNames.SoleSourceCause;
@@ -151,7 +151,7 @@ export const OtherSupportingFactorsRouteResolver = (current: string): string => 
 // } 
 export const RemoveBarriersFormRouteResolver = (current: string): string => {
   const skipForm = 
-    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hasExplanationOnLoad;
+    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad;
   // backward
   if (current === routeNames.ReviewBarriers) {
     return skipForm ? routeNames.OtherSupportingFactors : routeNames.RemoveBarriers;

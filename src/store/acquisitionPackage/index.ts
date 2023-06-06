@@ -260,7 +260,7 @@ const initialFairOppExplanationOptions = () => {
     defaultSuggestionEdited: false,
     formEdited: false,
     useCustomText: false,
-    hasExplanationOnLoad: false,
+    hadExplanationOnLoad: false,
   };
 }
 
@@ -1021,19 +1021,19 @@ export class AcquisitionPackageStore extends VuexModule {
         = await api.marketResearchTechniquesTable.all();
       await this.doSetMarketResearchTechniques(techniques);
       
-      this.fairOppExplanations.soleSource.hasExplanationOnLoad = 
+      this.fairOppExplanations.soleSource.hadExplanationOnLoad = 
         (this.fairOpportunity?.cause_of_sole_source_custom !== undefined
         && this.fairOpportunity.cause_of_sole_source_custom.length > 0)
         || (this.fairOpportunity?.cause_of_sole_source_generated !== undefined
         && this.fairOpportunity.cause_of_sole_source_generated.length > 0);
 
-      this.fairOppExplanations.researchDetails.hasExplanationOnLoad = 
+      this.fairOppExplanations.researchDetails.hadExplanationOnLoad = 
         (this.fairOpportunity?.research_details_custom !== undefined
         && this.fairOpportunity.research_details_custom.length > 0)
         || (this.fairOpportunity?.research_details_generated !== undefined
         && this.fairOpportunity.research_details_generated.length > 0);
       
-      this.fairOppExplanations.plansToRemoveBarriers.hasExplanationOnLoad = 
+      this.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad = 
         (this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
         && this.fairOpportunity.barriers_plans_to_remove_custom.length > 0)
         || (this.fairOpportunity?.barriers_plans_to_remove_generated !== undefined

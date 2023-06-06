@@ -9,9 +9,17 @@
           <p>
             Answer the series of questions below. Based on your responses, we’ll suggest
             language to help you complete this portion of your J&A. You’ll be able to edit
-            our suggestions to meet your requirements. If you would rather skip these
-            questions, click the “I want to write my own explanation” button below.
+            our suggestions to meet your requirements. 
+            <span v-if="!hadExplanationOnLoad">
+              If you would rather skip these questions, click the “I want to write 
+              my own explanation” button below.
+            </span>
           </p>
+
+          <v-expand-transition>
+            <AlertForForms  v-if="showAlert" :alertType="alertType" />
+          </v-expand-transition>
+
           <ATATRadioGroup
             id="FairOpportunityFollowOn"
             name="FairOpportunityFollowOn"
@@ -97,21 +105,25 @@
 </template>
 
 <script lang="ts">
+import SaveOnLeave from "@/mixins/saveOnLeave";
 import { Component, Mixins, Watch } from "vue-property-decorator";
+
+import AlertForForms from "../components/AlertForForms.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { getYesNoRadioOptions, hasChanges } from "@/helpers";
-import { YesNo } from "../../../../types/Global";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
-import { add, format } from "date-fns";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import { FairOpportunityDTO } from "@/api/models";
+
+import { add, format } from "date-fns";
+import { FairOppDocGenType, FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { getYesNoRadioOptions, hasChanges } from "@/helpers";
+import { YesNo } from "../../../../types/Global";
 
 
 @Component({
   components: {
+    AlertForForms,
     ATATTextArea,
     ATATDatePicker,
     ATATRadioGroup,
@@ -133,9 +145,16 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   public selectedProcurement = ""
   public needProcurement = false
   public procurementDiscussion = ""
-  public writeCustomRemove = ""
-  public removalPlanForDocGen =""
+  public writeOwnExplanation = ""
   public isNewPackage = AcquisitionPackage.isNewPackage
+
+  public hasSuggestedTextBeenEdited = false;
+  public isCustomExplanation = false;
+  public hasExplanation = false;
+  public explanationForDocgen: FairOppDocGenType = ""
+  public hadExplanationOnLoad = false;
+
+  public explanation = AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers;
 
   @Watch("selectedRequirement")
   public selectedRequirementChanged(newVal: YesNo): void {
@@ -146,6 +165,18 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
     this.needProcurement = newVal === "YES";
   }
 
+  public get showAlert(): boolean{
+    return this.hasExplanation && 
+      (this.isCustomExplanation || this.hasSuggestedTextBeenEdited);
+  }
+  public get alertType(): string {
+    if (this.hasExplanation) {
+      if (this.isCustomExplanation) return "custom";
+      if (this.hasSuggestedTextBeenEdited) return "suggestion";
+    }
+    return "";
+  }
+
   private get currentData(): FairOpportunityDTO {
     return {
       barriers_follow_on_requirement: this.selectedRequirement,
@@ -154,8 +185,8 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
       barriers_planning_future_development:this.selectedIaaSRequirement,
       barriers_j_a_prepared:this.selectedProcurement,
       barriers_j_a_prepared_results:this.procurementDiscussion,
-      barriers_write_own_explanation:this.writeCustomRemove,
-      barriers_plans_to_remove_for_docgen: this.removalPlanForDocGen
+      barriers_write_own_explanation:this.writeOwnExplanation,
+      barriers_plans_to_remove_for_docgen: this.explanationForDocgen
     } as FairOpportunityDTO;
   }
 
@@ -187,15 +218,23 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
 
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.writeCustomRemove = "NO"
-      this.selectedRequirement = storeData.barriers_follow_on_requirement||""
-      this.followOnDate = storeData.barriers_follow_on_expected_date_awarded||""
-      this.selectedTrainingRequirement = storeData.barriers_agency_pursuing_training_or_certs||""
-      this.selectedIaaSRequirement = storeData.barriers_planning_future_development||""
-      this.selectedProcurement = storeData.barriers_j_a_prepared||""
-      this.procurementDiscussion = storeData.barriers_j_a_prepared_results||""
-      this.removalPlanForDocGen = storeData.barriers_plans_to_remove_for_docgen || ""
+      this.writeOwnExplanation = "NO"
+      this.selectedRequirement = storeData.barriers_follow_on_requirement || "";
+      this.followOnDate = storeData.barriers_follow_on_expected_date_awarded || "";
+      this.selectedTrainingRequirement = storeData.barriers_agency_pursuing_training_or_certs || "";
+      this.selectedIaaSRequirement = storeData.barriers_planning_future_development || "";
+      this.selectedProcurement = storeData.barriers_j_a_prepared || "";
+      this.procurementDiscussion = storeData.barriers_j_a_prepared_results || "";
+      this.explanationForDocgen = storeData.barriers_plans_to_remove_for_docgen || "";
+      
+      this.hasExplanation = storeData.barriers_plans_to_remove_generated !== ""
+        || storeData.barriers_plans_to_remove_custom !== "";
     }
+
+    this.hadExplanationOnLoad = this.explanation.hadExplanationOnLoad as boolean;
+    debugger;
+    this.hasSuggestedTextBeenEdited = this.explanation.defaultSuggestionEdited as boolean;
+    this.isCustomExplanation = this.explanation.useCustomText as boolean;
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -214,17 +253,40 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
       this.procurementDiscussion = ''
       sectionsWithNoSelectedCount++
     }
-    this.writeCustomRemove
+    this.writeOwnExplanation
       = AcquisitionPackage.fairOpportunity?.barriers_write_own_explanation as YesNo
-    if(this.writeCustomRemove !== 'YES'){
-      this.writeCustomRemove = sectionsWithNoSelectedCount === 4 ? "YES": "NO";
+    if(this.writeOwnExplanation !== 'YES'){
+      this.writeOwnExplanation = sectionsWithNoSelectedCount === 4 ? "YES": "NO";
     }
 
-    this.removalPlanForDocGen = this.writeCustomRemove === "YES" ? "CUSTOM" : "GENERATED";
+    this.explanationForDocgen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
     this.procurementDiscussion = this.procurementDiscussion.trim();
     
     try {
       if (this.hasChanged()) {
+        this.explanation.formEdited = true;
+
+        this.writeOwnExplanation 
+          = AcquisitionPackage.fairOpportunity?.cause_write_own_explanation as YesNo;
+
+        if (this.explanationForDocgen === "CUSTOM") {
+          await AcquisitionPackage.setReplaceCustomWithGenerated(
+            {section: "plansToRemoveBarriers", val: true }
+          );
+        }
+
+        if (this.writeOwnExplanation === "NO") {
+          // if it's already "YES" (set from action handler when "I want to write 
+          //  my own explanation" button, don't change it, but if it's NO as set on page load, 
+          // check if user answered "NO" to all 3 sections 
+          this.writeOwnExplanation = sectionsWithNoSelectedCount === 4 ? "YES" : "NO";
+          this.explanationForDocgen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
+        } else {
+          this.explanationForDocgen = "CUSTOM";
+        }
+        this.explanation.useCustomText = this.explanationForDocgen === "CUSTOM";
+
+
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
     } catch (error) {

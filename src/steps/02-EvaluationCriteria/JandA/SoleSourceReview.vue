@@ -175,7 +175,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     return this.showChangeToCustomButton || this.showChangeToDAPPSButton;
   }
   public get displayHelpLink(): boolean {
-    return AcquisitionPackage.fairOppExplanations.soleSource.hasExplanationOnLoad as boolean;
+    return AcquisitionPackage.fairOppExplanations.soleSource.hadExplanationOnLoad as boolean;
   }
   public get userEditedDefaultSuggestion(): boolean {
     return this.useCustomText 
