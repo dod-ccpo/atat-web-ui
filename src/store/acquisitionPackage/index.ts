@@ -60,7 +60,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import { currencyStringToNumber, toCurrencyString } from "@/helpers";
+import { createDateStr, currencyStringToNumber, toCurrencyString } from "@/helpers";
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -254,6 +254,24 @@ const initialClassificationLevel = () => {
   }
 }
 
+const initialFairOppExplanationOptions = () => {
+  return {
+    defaultSuggestion: "",
+    defaultSuggestionEdited: false,
+    formEdited: false,
+    useCustomText: false,
+    hadExplanationOnLoad: false,
+  };
+}
+
+const initialFairOppExplanations = () => {
+  return {
+    soleSource: initialFairOppExplanationOptions(),
+    researchDetails: initialFairOppExplanationOptions(),
+    plansToRemoveBarriers: initialFairOppExplanationOptions(),
+  }  
+}
+
 const saveAcquisitionPackage = (value: AcquisitionPackageDTO) => {
   api.acquisitionPackageTable.update(value.sys_id as string, value);
 };
@@ -328,12 +346,6 @@ export class AcquisitionPackageStore extends VuexModule {
   hasAlternativeContactRep: boolean | null = null;
 
   fairOpportunity: FairOpportunityDTO | null = null;
-  // used for routing
-  hasExplanationOnLoad: Record<string, boolean> = {
-    soleSourceCause: false,
-    researchDetails: false,
-    plansToRemoveBarriers: false,
-  }
   
   // used for routing
   fairOppBackToReview = false;
@@ -345,8 +357,6 @@ export class AcquisitionPackageStore extends VuexModule {
   currentContracts: CurrentContractDTO[] | null = null;
   currentContractInstanceNumber = 1;
   sensitiveInformation: SensitiveInformationDTO | null = null;
-  // periods: string | null = null;
-  // periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   fundingRequirement: FundingRequirementDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
@@ -357,14 +367,6 @@ export class AcquisitionPackageStore extends VuexModule {
   regions: RegionsDTO[] | null = null;
   isLoading = false;
   
-  // Sole Source
-  // monitoring user interactions re: 
-  // 1 - generated text edited
-  hasSoleSourceSuggestedTextBeenEdited = false;
-  // 2 - has form been edited
-  hasSoleSourceCauseFormBeenEdited = false;
-  // 3 - has user entered custom text
-  isSoleSourceTextCustom = false;
 
   validateNow = false;
   allowDeveloperNavigation = false;
@@ -1019,30 +1021,24 @@ export class AcquisitionPackageStore extends VuexModule {
         = await api.marketResearchTechniquesTable.all();
       await this.doSetMarketResearchTechniques(techniques);
       
-      const hasExplanationOnLoad: Record<string, boolean> = {
-        soleSourceCause: false,
-        researchDetails: false,
-        plansToRemoveBarriers: false,
-      }
-      hasExplanationOnLoad.soleSourceCause = 
+      this.fairOppExplanations.soleSource.hadExplanationOnLoad = 
         (this.fairOpportunity?.cause_of_sole_source_custom !== undefined
         && this.fairOpportunity.cause_of_sole_source_custom.length > 0)
         || (this.fairOpportunity?.cause_of_sole_source_generated !== undefined
         && this.fairOpportunity.cause_of_sole_source_generated.length > 0);
 
-      hasExplanationOnLoad.researchDetails = 
+      this.fairOppExplanations.researchDetails.hadExplanationOnLoad = 
         (this.fairOpportunity?.research_details_custom !== undefined
         && this.fairOpportunity.research_details_custom.length > 0)
         || (this.fairOpportunity?.research_details_generated !== undefined
         && this.fairOpportunity.research_details_generated.length > 0);
       
-      hasExplanationOnLoad.plansToRemoveBarriers = 
+      this.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad = 
         (this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
         && this.fairOpportunity.barriers_plans_to_remove_custom.length > 0)
         || (this.fairOpportunity?.barriers_plans_to_remove_generated !== undefined
         && this.fairOpportunity.barriers_plans_to_remove_generated.length > 0);
       
-      await this.doSetHasExplanationOnLoad(hasExplanationOnLoad);  
     }
   }
   
@@ -1061,20 +1057,17 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  // use below mutations for all three Fair Opportunity madlibs forms
-  @Mutation
-  public async doSetHasExplanationOnLoad(val: Record<string, boolean>): Promise<void> {
-    this.hasExplanationOnLoad = val;
-  }
   @Mutation
   public async doSetFairOppBackToReview(val: boolean): Promise<void> {
     this.fairOppBackToReview = val;
   } 
   @Action({rawError: true})
-  public async setReplaceCustomWithGenerated(val: boolean): Promise<void> {
-    await this.doSetReplaceCustomWithGenerated(val);
-    if (val) {
-      await this.setHasSoleSourceSuggestedTextBeenEdited(false);
+  public async setReplaceCustomWithGenerated(
+    data: { section: string, val: boolean }
+  ): Promise<void> {
+    await this.doSetReplaceCustomWithGenerated(data.val);
+    if (data.val) {
+      this.fairOppExplanations[data.section].defaultSuggestionEdited = false;
     }
   }
   @Mutation
@@ -1131,17 +1124,15 @@ export class AcquisitionPackageStore extends VuexModule {
     ORACLE: "Oracle Cloud",
   }
 
-  public fairOppDefaultSuggestions: Record<string, string> = {
-    soleSourceCause: "",
-    researchDetails: "",
-    plansToRemoveBarriers: "",
-  }
+  public fairOppExplanations: Record<string, Record<string, string | boolean>> = 
+    initialFairOppExplanations();
 
   @Action({rawError: true})
   public async initializeAllFairOppSuggestions(): Promise<void> {
     await this.generateFairOpportunitySuggestion("SoleSource");
     if (this.fairOpportunity?.cause_of_sole_source_for_docgen === "CUSTOM") {
-      await this.doSetIsSoleSourceTextCustom(true);
+      AcquisitionPackage.fairOppExplanations.soleSource.useCustomText = true;
+
     }
 
     // TODO: ADD methods to generate the other "mad-lib" default suggestions
@@ -1151,7 +1142,7 @@ export class AcquisitionPackageStore extends VuexModule {
     // if (this.fairOpportunity?.research_details_for_docgen === "CUSTOM") {
     //   await this.doSetIsResearchDetailsTextCustom(true);
     // }
-    // await this.generateFairOpportunitySuggestion("RemoveBarriers");
+    await this.generateFairOpportunitySuggestion("RemoveBarriers");
     // if (this.fairOpportunity?.barriers_plans_to_remove_for_docgen === "CUSTOM") {
     //   await this.doSetIsPlansToRemoveBarriersTextCustom(true);
     // }
@@ -1169,7 +1160,7 @@ export class AcquisitionPackageStore extends VuexModule {
       // await this.generateResearchDetailsSuggestion();
       break;
     case "RemoveBarriers":
-      // await this.generatePlansToRemoveBarriersSuggestion();
+      await this.generatePlansToRemoveBarriersSuggestion();
       break;
     }
   }
@@ -1237,41 +1228,63 @@ export class AcquisitionPackageStore extends VuexModule {
         ". " + this.fairOpportunity.cause_product_feature_why_essential + " " + 
         this.fairOpportunity.cause_product_feature_why_others_inadequate;
       }
-      this.fairOppDefaultSuggestions.soleSourceCause = text;
-      const isEdited = text !== this.fairOpportunity.cause_of_sole_source_generated;
-      await this.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
+      this.fairOppExplanations.soleSource.defaultSuggestion = text;
+
+      const isEdited = this.fairOpportunity.cause_of_sole_source_generated !== "" 
+        && text !== this.fairOpportunity.cause_of_sole_source_generated;
+      this.fairOppExplanations.soleSource.defaultSuggestionEdited = isEdited;
     }
   }
 
   @Action({rawError: true})
-  public async setHasSoleSourceSuggestedTextBeenEdited(edited: boolean):Promise<void>{
-    this.doSetHasSoleSourceSuggestedTextBeenEdited(edited);
+  public async generatePlansToRemoveBarriersSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const followOn = this.fairOpportunity.barriers_follow_on_requirement === "YES";
+      const training = this.fairOpportunity.barriers_agency_pursuing_training_or_certs === "YES";
+      const development = this.fairOpportunity.barriers_planning_future_development === "YES";
+      const hasPrevJA = this.fairOpportunity.barriers_j_a_prepared_results !== "";
+      const agency = this.selectedAgency.text;
+
+      let text = ""
+
+      if (followOn) {
+        let dateStr = "";
+        if (this.fairOpportunity.barriers_follow_on_expected_date_awarded) {
+          dateStr = createDateStr(
+            this.fairOpportunity.barriers_follow_on_expected_date_awarded, true
+          )
+        }
+  
+        text += "To overcome future barriers to competition, " +
+        agency + " is preparing a fair opportunity competitive" +
+        " follow-on requirement. The follow-on is expected to be" +
+        " completed, solicited, and awarded by " + dateStr + ".";
+        if (training || development || hasPrevJA) text += "\n\n";
+      }
+      if (training) {
+        text += "To overcome future barriers to competition, " +
+        agency + " will pursue training and certification for" +
+        " Government engineers in other technologies.";
+        if (development || hasPrevJA) text += "\n\n";
+      }
+      if (development) {
+        text += "To overcome future barriers to competition, " +
+        " future development and enhancement of IaaS components will include" +
+        " shifting to a containerized platform. This will enable multiple" +
+        " vendors to meet the requirements which will enable the flexibility" +
+        " to shift workload based on financial and mission requirements.";
+        if (hasPrevJA) text += "\n\n";
+      }
+      if (hasPrevJA) text += this.fairOpportunity.barriers_j_a_prepared_results;
+
+      this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestion = text;
+      const isEdited = this.fairOpportunity.barriers_plans_to_remove_generated !== ""
+        && text !== this.fairOpportunity.barriers_plans_to_remove_generated;
+      this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited = isEdited;
+    }
   }
 
-  @Mutation
-  public async doSetHasSoleSourceSuggestedTextBeenEdited(edited:boolean):Promise<void>{
-    this.hasSoleSourceSuggestedTextBeenEdited = edited;
-  }
 
-  @Action({rawError: true})
-  public async setHasSoleSourceCauseFormBeenEdited(edited: boolean):Promise<void>{
-    this.doSetHasSoleSourceCauseFormBeenEdited(edited);
-  }
-
-  @Mutation
-  public async doSetHasSoleSourceCauseFormBeenEdited(edited:boolean):Promise<void>{
-    this.hasSoleSourceCauseFormBeenEdited = edited;
-  }
-
-  @Action({rawError: true})
-  public async setIsSoleSourceTextCustom(edited: boolean):Promise<void>{
-    this.doSetIsSoleSourceTextCustom(edited);
-  }
-
-  @Mutation
-  public async doSetIsSoleSourceTextCustom(edited:boolean):Promise<void>{
-    this.isSoleSourceTextCustom = edited;
-  }
   
   @Action({rawError: true})
   public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
@@ -1480,7 +1493,7 @@ export class AcquisitionPackageStore extends VuexModule {
           await this.initializeAllFairOppSuggestions();
         }
       } else {
-        this.setFairOpportunity(initialFairOpportunity());
+        await this.setFairOpportunity(initialFairOpportunity());
       }
 
       this.setPackagePercentLoaded(60);
@@ -1695,7 +1708,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
 
-          this.setFairOpportunity(initialFairOpportunity());
+          await this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){
             this.setEvaluationPlan(evaluationPlanDTO);
@@ -2401,22 +2414,10 @@ export class AcquisitionPackageStore extends VuexModule {
     this.showInviteContributorsModal = false;
     this.contractingShopNonDitcoAddress = null;
 
-    this.fairOppDefaultSuggestions = {
-      soleSourceCause: "",
-      researchDetails: "",
-      plansToRemoveBarriers: "",
-    }
-    this.hasExplanationOnLoad = {
-      soleSourceCause: false,
-      researchDetails: false,
-      plansToRemoveBarriers: false,
-    };
+    this.fairOppExplanations = initialFairOppExplanations();
+    
     this.fairOppBackToReview = false;
     this.replaceCustomWithGenerated = false;
-    this.hasSoleSourceSuggestedTextBeenEdited = false;
-    this.hasSoleSourceCauseFormBeenEdited = false;
-    this.isSoleSourceTextCustom = false;
-  
   }
 }
 
