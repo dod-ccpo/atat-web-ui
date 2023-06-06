@@ -1065,7 +1065,6 @@ export class AcquisitionPackageStore extends VuexModule {
   public async setReplaceCustomWithGenerated(
     data: { section: string, val: boolean }
   ): Promise<void> {
-    debugger;
     await this.doSetReplaceCustomWithGenerated(data.val);
     if (data.val) {
       this.fairOppExplanations[data.section].defaultSuggestionEdited = false;

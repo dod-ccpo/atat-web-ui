@@ -318,7 +318,6 @@ const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
 export function createDateStr(dateStr: string, period: boolean, hours?: boolean): string {
   hours = hours ? hours : false;
-  debugger;
   if (dateStr.indexOf("/")) {
     dateStr = formatISO(new Date(dateStr)); 
   }

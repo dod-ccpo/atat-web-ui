@@ -232,7 +232,6 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
     }
 
     this.hadExplanationOnLoad = this.explanation.hadExplanationOnLoad as boolean;
-    debugger;
     this.hasSuggestedTextBeenEdited = this.explanation.defaultSuggestionEdited as boolean;
     this.isCustomExplanation = this.explanation.useCustomText as boolean;
   }
