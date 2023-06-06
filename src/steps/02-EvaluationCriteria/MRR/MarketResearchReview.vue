@@ -84,7 +84,7 @@
                 class="mr-1"
                 :color="btnRestoreIconColor"
               />
-              Restore to suggestion
+              Restore default suggestion
             </v-btn>
 
           </div>
@@ -279,9 +279,9 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     if (this.isCustom) {
-      this.researchDetailsCustom = this.researchDetails;
+      this.researchDetailsCustom = this.researchDetails.trim();
     } else {
-      this.researchDetailsGenerated = this.researchDetails;
+      this.researchDetailsGenerated = this.researchDetails.trim();
     }
 
     try {

@@ -688,6 +688,10 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
     this.researchDetailsForDocGen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
 
+    this.supportingData = this.supportingData.trim();
+    this.catalogReviewResults = this.catalogReviewResults.trim();
+    this.techniquesSummary = this.techniquesSummary.trim();
+
     try {
       if (this.hasChanged()) {
         /* eslint-enable camelcase */
