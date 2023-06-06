@@ -71,9 +71,9 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
   });
 
   if (evalPlan.source_selection === "SET_LUMP_SUM") {
-    Steps.setAdditionalButtonHide(false);
+    Steps.setAdditionalButtonHide(false).catch((e) => console.error(e));
   } else {
-    Steps.setAdditionalButtonHide(true);
+    Steps.setAdditionalButtonHide(true).catch((e) => console.error(e));
   }
 
   return current === routeNames.CreateEvalPlan || routeNames.Differentiators
@@ -122,7 +122,7 @@ export const MinimumRequirementsRouteResolver = (current: string): string => {
 }
 
 export const SoleSourceFormRouteResolver = (current: string): string => {
-  const skipForm = AcquisitionPackage.fairOppExplanations.soleSource.hadExplanationOnLoad;
+  const skipForm = AcquisitionPackage.fairOppExplanations.soleSource.hasExplanationOnLoad;
   // backward
   if (current === routeNames.SoleSourceReview) {
     return skipForm ? routeNames.MinimumRequirements : routeNames.SoleSourceCause;
@@ -151,7 +151,7 @@ export const OtherSupportingFactorsRouteResolver = (current: string): string => 
 // } 
 export const RemoveBarriersFormRouteResolver = (current: string): string => {
   const skipForm = 
-    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad;
+    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hasExplanationOnLoad;
   // backward
   if (current === routeNames.ReviewBarriers) {
     return skipForm ? routeNames.OtherSupportingFactors : routeNames.RemoveBarriers;
