@@ -628,7 +628,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver:RemoveBarriersFormRouteResolver,
+        routeResolver: RemoveBarriersFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",

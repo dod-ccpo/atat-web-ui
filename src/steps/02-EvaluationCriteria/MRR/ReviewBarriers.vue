@@ -274,6 +274,8 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
       this.plansToRemoveGenerated = this.barriersToOpportunity.trim();
     }
     this.explanation.formEdited = false;
+    this.explanation.defaultSuggestionEdited = this.userEditedDefaultSuggestion
+    this.explanation.useCustomText = this.useCustomText;
 
     try {
       if (this.hasChanged()) {
