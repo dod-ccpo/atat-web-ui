@@ -80,6 +80,7 @@ export default class ImpactOfRequirement extends Mixins(SaveOnLeave)  {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    this.impactOfRequirementExplanation = this.impactOfRequirementExplanation.trim();
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

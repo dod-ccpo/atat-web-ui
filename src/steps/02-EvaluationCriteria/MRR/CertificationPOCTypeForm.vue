@@ -16,7 +16,7 @@
     <ATATContactForm
         v-if="showContactForm"
         :id-prefix="POCType"
-        role-legend="What role best describes this individual’s affiliation with the DOD?"
+        role-legend="What role best describes this individual’s affiliation with the DoD?"
         :role-legend-font-normal-weight="true"
         :show-job-title="true"
         :title.sync="title"

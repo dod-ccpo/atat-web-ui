@@ -53,9 +53,14 @@ function sampleAdditionalButtonAction(actionArgs: string[]) {
 }
 
 async function writeOwnSoleSourceCause() {
-  // eslint-disable-next-line camelcase
-  const fairOpp: FairOpportunityDTO = { cause_write_own_explanation: "YES" };
+  /* eslint-disable camelcase */
+  const fairOpp: FairOpportunityDTO = { 
+    cause_write_own_explanation: "YES",
+    cause_of_sole_source_for_docgen: "CUSTOM" 
+  };
+  /* eslint-enable camelcase */
   await AcquisitionPackage.setFairOpportunity(fairOpp);
+  await AcquisitionPackage.setIsSoleSourceTextCustom(true);
   router.push({
     name: routeNames.SoleSourceReview,
     params: {

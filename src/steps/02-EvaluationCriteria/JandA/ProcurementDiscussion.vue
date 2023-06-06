@@ -10,7 +10,7 @@
             id="procurementText"
             class="max-width-740"
             label="Discuss the constraints of your procurement"
-            :helpText=procurementParagraphText
+            :helpText="procurementParagraphText"
             :rows="11"
             :value.sync="procurementText"
             maxChars="2500"
@@ -139,6 +139,9 @@ export default class ProcurementDiscussion extends Mixins(SaveOnLeave) {
     if(this.currentData.procurement_has_existing_env === "NO"){
       this.currentData.procurement_previous_impact = ""
     }
+    this.procurementText = this.procurementText.trim();
+    this.procurementImpact = this.procurementImpact.trim();
+    
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

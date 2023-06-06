@@ -15,7 +15,7 @@
       </v-btn>
 
       <span class="ml-auto d-flex">
-        <span v-if="additionalButtons.length" class="d-flex">
+        <span v-if="additionalButtons.length && !hideAdditionalButtons" class="d-flex">
           <v-btn 
             v-for="button in additionalButtons"
             :key="button.id"
@@ -62,6 +62,7 @@ export default class ATATStepperNavigation extends Vue {
   @Prop({ default: false }) private noPrevious?: boolean;
   @Prop({ default: "stepperNavigation" }) private id?: string;
   @Prop({ default: false }) private hideContinueButton?: boolean;
+  @Prop({ default: false }) private hideAdditionalButtons?: boolean;
   @Prop({ default: false }) private disableContinue!: boolean;
   @Prop({ default: "" }) private continueButtonColor?: string;
   @Prop({ default: "" }) private altContinueAction?: string;
