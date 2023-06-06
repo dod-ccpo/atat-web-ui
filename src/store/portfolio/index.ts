@@ -135,6 +135,14 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   public async startProvisioning(): Promise<void> {
+    const portfolioName=""
+    const portfolioAgency = ""
+    // if(this.selectedAcquisitionPackageSysId){
+    //   const acqPackage = await api.acquisitionPackageTable
+    //     .retrieve(this.selectedAcquisitionPackageSysId)
+    //
+    // }
+
     const unclassifiedOperators: Record<string, string>[] = [];
     const scrtOperators: Record<string, string>[] = [] 
     this.portfolioProvisioningObj.admins?.forEach(admin => {

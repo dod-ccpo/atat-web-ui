@@ -549,7 +549,8 @@ export interface PortfolioAdmin {
 export interface PortfolioProvisioning extends EDAResponse {
   portfolioTitle?: string;
   serviceOrAgency?: string;
-  admins?: PortfolioAdmin[];  
+  admins?: PortfolioAdmin[];
+  selectedILs?: string[];
 }
 
 export interface EmailEntry {

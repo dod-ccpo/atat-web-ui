@@ -1573,15 +1573,42 @@ export const CrossDomainResolver = (current: string): string => {
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
   const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrder;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
+  const selectedCSP = PortfolioStore.portfolioProvisioningObj.csp
   const showPackageSelection = PortfolioStore.showTOPackageSelection;
   if (packageCount && (!acqPkgSysId || showPackageSelection)) {
     return provWorkflowRouteNames.GeneratedFromPackage;
+  }
+  if(current !== provWorkflowRouteNames.PortfolioDetails
+      && acqPkgSysId){
+    if(selectedCSP === 'Azure'){
+      return provWorkflowRouteNames.PortfolioDetails
+    }else{
+      return provWorkflowRouteNames.AddCSPAdmin
+    }
   }
   return current === provWorkflowRouteNames.PortfolioDetails
     ? provWorkflowRouteNames.AwardedTaskOrder
     : provWorkflowRouteNames.PortfolioDetails;
 }
 
+export const PortfolioDetailsRouteResolver = (current: string): string => {
+  debugger
+  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
+  const azureCSP = PortfolioStore.portfolioProvisioningObj.csp === 'Azure'
+  if(azureCSP || !acqPkgSysId ){
+    return provWorkflowRouteNames.PortfolioDetails
+  }
+  if(current === provWorkflowRouteNames.AddCSPAdmin && azureCSP) {
+    return provWorkflowRouteNames.PortfolioDetails
+  }
+  if(current === provWorkflowRouteNames.AddCSPAdmin && !acqPkgSysId && !azureCSP){
+    return provWorkflowRouteNames.AwardedTaskOrder;
+  }
+
+  return current === provWorkflowRouteNames.GeneratedFromPackage
+    ? provWorkflowRouteNames.AddCSPAdmin
+    : provWorkflowRouteNames.GeneratedFromPackage;
+}
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
@@ -1625,6 +1652,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AnticipatedUserAndDataNeedsResolver,
   ContractingInfoResolver,
   GeneratedFromPackageRouteResolver,
+  PortfolioDetailsRouteResolver
 };
 
 // add path resolvers here 
