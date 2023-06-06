@@ -18,7 +18,7 @@ import {
   ContractTypeDTO,
   TrainingEstimateDTO, ReferenceColumn, CrossDomainSolutionDTO
 } from "@/api/models";
-import { currencyStringToNumber, toTitleCase } from "@/helpers";
+import { currencyStringToNumber, getStringFromReferenceColumn, toTitleCase } from "@/helpers";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
@@ -321,21 +321,6 @@ export class IGCEStore extends VuexModule {
     return dowTaskNumber;
   }
 
-  @Action({rawError: true})
-  public async getAppsDOWTaskNumber(classId:string):Promise<IgceEstimateDTO[]>{
-
-    const query: AxiosRequestConfig = {
-      params: { 
-        sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId +
-          "^titleLIKEApplication" + "^classification_level=" + classId,
-      },
-    }
-    const apps = await api.igceEstimateTable.getQuery(query);
-    apps.forEach(app => {
-      app = convertColumnReferencesToValues(app);
-    });
-    return apps;
-  }
 
   @Action
   public async getRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
@@ -580,15 +565,17 @@ export class IGCEStore extends VuexModule {
     const costEstimateSysId = costEstimateRowData[0]?.sys_id || "";
 
     if (costEstimateSysId) {
-      await api.igceEstimateTable.update(
-        costEstimateSysId, {
-          classification_level: instanceRef.classificationLevelSysId,
-          contract_type: getContractType(),
-          unit_quantity: instanceRef.unit_quantity,
-          description: costEstimateRowData[0].updated_description !== "YES"? instanceRef.description
-            : costEstimateRowData[0].description,
-          dow_task_number: instanceRef.dow_task_number
-        });
+      const estimateToBeUpdated: IgceEstimateDTO = {
+        classification_level: instanceRef.classificationLevelSysId,
+        contract_type: getContractType(),
+        unit_quantity: instanceRef.unit_quantity,
+        description: costEstimateRowData[0].updated_description !== "YES"? instanceRef.description
+          : costEstimateRowData[0].description,
+        dow_task_number: instanceRef.dow_task_number,
+        title: costEstimateRowData[0].title
+      }
+      await api.igceEstimateTable.update(costEstimateSysId, estimateToBeUpdated);
+      await this.reorderInstanceNumbersInSNOW(estimateToBeUpdated)
     }
   }
 
@@ -716,22 +703,22 @@ export class IGCEStore extends VuexModule {
     return cdsRecord.length>0 ? cdsRecord[0] : null
   }
 
-
   /**
-   * Performs a query on the request config and deletes the first match from the IGCE Estimate
-   * table. It is expected to always have a single match at most. If there are more than
-   * one matching records, then there is an issue else where, that is creating multiple
-   * records of the same instance
+   *  1) deletes item from the IGCEEstimate table
+   *  2) reorders instance numbers in IGCEEstimate table
+   *  @param deleteRequestConfig query to delete item with environmentInstance
+   *                            or classification instance
    */
   @Action({ rawError: true })
   public async deleteIgceEstimateByRequestConfig(deleteRequestConfig: AxiosRequestConfig):
     Promise<void> {
-    const igceEstimateList = await api.igceEstimateTable.getQuery(deleteRequestConfig);   
-    if (igceEstimateList?.length > 0) {
-      igceEstimateList.forEach(async igceEstimate => {
-        await api.igceEstimateTable.remove(igceEstimate.sys_id as string);
-        this.reorderInstanceNumbersInSNOW(igceEstimate)
-      })
+    const igceEstimate = 
+      (await api.igceEstimateTable.getQuery(deleteRequestConfig))[0];   
+    if (igceEstimate) {
+      // delete IGCE row from the database
+      await api.igceEstimateTable.remove(igceEstimate.sys_id as string);
+      // reorder Instance numbers in IGCE table after deletion
+      await this.reorderInstanceNumbersInSNOW(igceEstimate);
     }
   }
 
@@ -743,14 +730,16 @@ export class IGCEStore extends VuexModule {
    * @param igceEstimate IGCEEstimateDTO
    */
   @Action({ rawError: true })
-  public async reorderInstanceNumbersInSNOW(igceEstimate: IgceEstimateDTO):Promise<void>{
-    const serviceOfferingGroup = igceEstimate.title?.substring(
-      0, igceEstimate.title.indexOf(" -")
+  public async reorderInstanceNumbersInSNOW(estimate: IgceEstimateDTO):Promise<void>{
+    const serviceOfferingGroup = estimate.title?.substring(
+      0, estimate.title?.indexOf(" -")
     ) || "";
+    const classificationLevel = getStringFromReferenceColumn(estimate.classification_level)
     const igceEstimateListToBeReordered = await api.igceEstimateTable.getQuery({
       params: {
         sysparm_query: "titleLIKE" + serviceOfferingGroup 
           + "^acquisition_package=" + AcquisitionPackage.packageId 
+          + "^classification_level=" + classificationLevel
           + "^ORDERBYsys_created_on"
       }
     });

@@ -178,6 +178,17 @@ export const toCurrencyString = (num: number, decimals?: boolean): string => {
   return "";
 }
 
+export const getStringFromReferenceColumn = (
+  column: ReferenceColumn | string | undefined
+): string =>{
+  if (column){
+    return typeof column === "object" 
+      ? (column as ReferenceColumn).value as string 
+      : column as string; 
+  }
+  return "";
+}
+
 // converts a formatted currency string back to a number
 export const currencyStringToNumber = (str: string): number | null => {
   if (str && typeof str === "string") {
