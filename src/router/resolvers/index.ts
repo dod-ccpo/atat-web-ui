@@ -112,7 +112,7 @@ export const ProposedCSPRouteResolver = (current: string): string => {
 export const MinimumRequirementsRouteResolver = (current: string): string => {
   const backToReview = AcquisitionPackage.fairOppBackToReview;
   if (routeNames.SoleSourceCause && backToReview) {
-    AcquisitionPackage.doSetFairOppBackToReview(false);
+    AcquisitionPackage.doSetFairOppBackToReview(false).catch((e: Error) => console.error(e));
     return routeNames.SoleSourceReview;
   }
   return current === routeNames.SoleSourceCause
@@ -133,7 +133,7 @@ export const SoleSourceFormRouteResolver = (current: string): string => {
 export const OtherSupportingFactorsRouteResolver = (current: string): string => {
   const backToReview = AcquisitionPackage.fairOppBackToReview;
   if (routeNames.RemoveBarriers && backToReview) {
-    AcquisitionPackage.doSetFairOppBackToReview(false);
+    AcquisitionPackage.doSetFairOppBackToReview(false).catch((e: Error) => console.error(e));
     return routeNames.ReviewBarriers;
   }
   return current === routeNames.RemoveBarriers
@@ -772,7 +772,7 @@ export const ServiceOfferingsPathResolver = (
 
   setDontNeedButton(currentGroupId);
 
-  Steps.setAdditionalButtonHide(false);
+  Steps.setAdditionalButtonHide(false).catch((e: Error) => console.error(e));
 
   if (isOtherOffering) {
     const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
@@ -786,7 +786,7 @@ export const ServiceOfferingsPathResolver = (
     ) {
       // if more than one "Other" offering (Compute, General XaaS, Database) 
       // instance/requirement, hide the "I don't need ____ resources" button
-      Steps.setAdditionalButtonHide(true);
+      Steps.setAdditionalButtonHide(true).catch((e: Error) => console.error(e));
     }
   }
   //default  
@@ -807,7 +807,7 @@ export const ServiceOfferingsPathResolver = (
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   Steps.clearAltBackButtonText();
-  Steps.setAdditionalButtonHide(false);
+  Steps.setAdditionalButtonHide(false).catch((e: Error) => console.error(e));
   const groupId = DescriptionOfWork.currentGroupId;
   setDontNeedButton(groupId);
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;

@@ -218,13 +218,13 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   }
 
   public async goToQuestionnaire(): Promise<void> {
-    AcquisitionPackage.doSetFairOppBackToReview(true);
+    await AcquisitionPackage.doSetFairOppBackToReview(true);
     this.$router.push({
       name: routeNames.SoleSourceCause,
       params: {
         direction: "next"
       }   
-    });
+    }).catch((e: Error) => console.error(e));
   }
 
   public get currentData(): FairOpportunityDTO {

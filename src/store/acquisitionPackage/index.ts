@@ -1493,7 +1493,7 @@ export class AcquisitionPackageStore extends VuexModule {
           await this.initializeAllFairOppSuggestions();
         }
       } else {
-        this.setFairOpportunity(initialFairOpportunity());
+        await this.setFairOpportunity(initialFairOpportunity());
       }
 
       this.setPackagePercentLoaded(60);
@@ -1708,7 +1708,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
 
-          this.setFairOpportunity(initialFairOpportunity());
+          await this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){
             this.setEvaluationPlan(evaluationPlanDTO);

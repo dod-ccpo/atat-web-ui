@@ -182,13 +182,13 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
   }
 
   public async goToQuestionnaire(): Promise<void> {
-    AcquisitionPackage.doSetFairOppBackToReview(true);
+    await AcquisitionPackage.doSetFairOppBackToReview(true);
     this.$router.push({
       name: routeNames.RemoveBarriers,
       params: {
         direction: "next"
       }   
-    });
+    }).catch((e: Error) => console.error(e));
   }
 
   public get pageHeaderIntro(): string {
@@ -239,7 +239,7 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
         && this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
 
 
-      AcquisitionPackage.generateFairOpportunitySuggestion("RemoveBarriers");
+      await AcquisitionPackage.generateFairOpportunitySuggestion("RemoveBarriers");
       this.defaultSuggestion = this.explanation.defaultSuggestion as string;
 
       if (!this.useCustomText) {
