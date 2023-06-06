@@ -2,10 +2,10 @@
   <v-container fluid class="container-max-width _anticipated-users-accordion">
     <v-row>
       <v-col class="col-12">
-        <h1 class="page-header">
+        <h1 class="page-header mb-3">
           Let’s work on price estimates for your performance requirements
         </h1>
-        <p class="page-paragraph">
+        <p class="page-paragraph mb-10">
           Using the report generated from the previous screen, specify the
           projected price for each of your cloud service and support
           requirements. Edit any pre-filled details, as needed, to provide a
