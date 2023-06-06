@@ -120,7 +120,7 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
     },
   ];
 
-  public showCheckbox():boolean {
+  public get showCheckbox():boolean {
     return this.selectedCSPProvider === 'Azure' && this.containsUnclassified
   }
   public get currentData(): PortfolioProvisioning {

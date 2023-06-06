@@ -1592,7 +1592,6 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
 }
 
 export const PortfolioDetailsRouteResolver = (current: string): string => {
-  debugger
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
   const azureCSP = PortfolioStore.portfolioProvisioningObj.csp === 'Azure'
   if(azureCSP || !acqPkgSysId ){
