@@ -183,11 +183,11 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    await AcquisitionPackage.setFairOpportunity({ barriers_write_own_explanation: "NO" });
+
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.writeCustomRemove = "NO"
-      const fairOpp: FairOpportunityDTO = { barriers_write_own_explanation: "NO" };
-      await AcquisitionPackage.setFairOpportunity(fairOpp);
       this.selectedRequirement = storeData.barriers_follow_on_requirement||""
       this.followOnDate = storeData.barriers_follow_on_expected_date_awarded||""
       this.selectedTrainingRequirement = storeData.barriers_agency_pursuing_training_or_certs||""

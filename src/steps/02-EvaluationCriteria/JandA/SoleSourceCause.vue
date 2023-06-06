@@ -492,7 +492,6 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     this.whyEssentialRulesOff = false;
     this.whyInadequateRulesOff = false;
-
     if (this.migrAddlTimeCost === "YES") {
       this.validateMigrationEstimate();
       if (this.migrationError === true) {
@@ -504,30 +503,31 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     this.pfWhyEssential = this.pfWhyEssential.trim();
     this.pfWhyOthersInadequate = this.pfWhyOthersInadequate.trim();
 
+    // ensure data cleared if any section main question is "NO"
+    /* eslint-disable camelcase */
+    let sectionsWithNoSelectedCount = 0;
+    if (this.migrAddlTimeCost !== "YES") {
+      this.migrEstCost = "";
+      this.migrEstDelayAmt = "";
+      this.migrEstDelayUnit = "";
+      sectionsWithNoSelectedCount++;
+    }
+    if (this.geCertified !== "YES") {
+      this.gePlatformName = "";
+      this.geInsufficientTimeReason = "";
+      sectionsWithNoSelectedCount++;
+    }
+    if (this.pfPeculiarToCSP !== "YES") {
+      this.pfType = "";
+      this.pfName = "";
+      this.pfWhyEssential = "";
+      this.pfWhyOthersInadequate = "";
+      sectionsWithNoSelectedCount++;
+    }
+
     try {
       if (this.hasChanged()) {
         AcquisitionPackage.fairOppExplanations.soleSource.formEdited = true;
-        // ensure data cleared if any section main question is "NO"
-        /* eslint-disable camelcase */
-        let sectionsWithNoSelectedCount = 0;
-        if (this.migrAddlTimeCost !== "YES") {
-          this.migrEstCost = "";
-          this.migrEstDelayAmt = "";
-          this.migrEstDelayUnit = "";
-          sectionsWithNoSelectedCount++;
-        }
-        if (this.geCertified !== "YES") {
-          this.gePlatformName = "";
-          this.geInsufficientTimeReason = "";
-          sectionsWithNoSelectedCount++;
-        }
-        if (this.pfPeculiarToCSP !== "YES") {
-          this.pfType = "";
-          this.pfName = "";
-          this.pfWhyEssential = "";
-          this.pfWhyOthersInadequate = "";
-          sectionsWithNoSelectedCount++;
-        }
         this.writeOwnCause 
           = AcquisitionPackage.fairOpportunity?.cause_write_own_explanation as YesNo;
 
