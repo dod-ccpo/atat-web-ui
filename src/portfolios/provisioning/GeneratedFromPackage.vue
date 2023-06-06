@@ -129,6 +129,7 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   }  
 
   public packageSelected(index: number): void {
+    debugger
     this.packageData.forEach(pkg => pkg.isSelected = false);
     this.packageData[index].isSelected = true;
     this.selectedPackageSysId = this.packageData[index].sysId as string;
@@ -136,6 +137,7 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    debugger
     await AcquisitionPackage.setDisableContinue(true);
     const selectedPackageSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
     const packageData = await AcquisitionPackageSummary
@@ -165,6 +167,7 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   }
 
   public async saveOnLeave(): Promise<boolean> {
+    debugger
     try {
       const sysId = PortfolioStore.didNotUseDAPPS ? "" : this.selectedPackageSysId;
       await PortfolioStore.setSelectedAcquisitionPackageSysId(sysId);

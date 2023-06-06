@@ -43,7 +43,7 @@
           />
           </div>
           <ATATCheckboxGroup
-            v-if="showCheckbox()"
+            v-if="showCheckbox"
             :groupLabel="checkboxLabel"
             :groupLabelHelpText="checkboxHelpText"
             id="ImpactLevelCheckboxes"
@@ -91,7 +91,6 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   public checkboxLabel = ""
   public checkboxHelpText = ""
   public containsUnclassified = false
-  public selectedPackage = ""
 
 
   private agencyData: SelectData[] = [];
@@ -120,6 +119,10 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
     },
   ];
 
+  public get selectedPackage():string {
+    return PortfolioStore.selectedAcquisitionPackageSysId
+  }
+
   public get showCheckbox():boolean {
     return this.selectedCSPProvider === 'Azure' && this.containsUnclassified
   }
@@ -139,7 +142,6 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
 
   public async setTaskOrderData(): Promise<void> {
     const storeData = PortfolioStore.portfolioProvisioningObj;
-    this.selectedPackage = PortfolioStore.selectedAcquisitionPackageSysId
     this.pageHeaderText = this.selectedPackage !== ""? "What impact level(s) do you need to" +
       " provision?":"Now, let’s gather details about your portfolio."
     if (storeData) {
