@@ -74,7 +74,7 @@
               groupLabel="What type of XaaS resources, tools, and services do you need?"
               groupLabelId="XaaSLabel"
             />
-            <hr/>
+
             <ATATCheckboxGroup
               v-if="currentDOWSection === 'CloudSupport'"
               id="CloudSupportCheckboxes"

@@ -7,7 +7,7 @@
             {{ pageHeaderIntro }} the cause of your sole source situation
           </h1>
           <div class="copy-max-width">
-            <p class="mb-4" v-if="!isCustom">
+            <p class="mb-4" v-if="!useCustomTextOnLoad">
               Based on what you’ve told us, we’ve suggested language to explain the 
               factors that led to your decision to solicit only one source for this 
               project. You can edit any details to meet your requirements, but be sure
@@ -54,15 +54,36 @@
               </template>
             </ATATExpandableLink>
 
+            <v-expand-transition>
+              <ATATAlert
+                id="ReviewQuestionnaireResponses"
+                type="warning"
+                v-if="showAlert"
+                maxWidth="750"
+                class="mt-9 mb-2"
+              >
+                <template v-slot:content>
+                  <p>
+                    To view suggested language based on your updated responses to the previous 
+                    questionnaire, click “Restore default suggestion” below.
+                  </p>
+                </template>
+              </ATATAlert>
+            </v-expand-transition>
+
+
             <ATATTextArea 
               id="SoleSourceSituation"
               class="mt-6 textarea-max-width"
               label="Cause of your sole source situation"
               :labelSrOnly="true"
               :value.sync="soleSourceCause"
-              :rows="getRowCount"
+              :autoGrow="true"
+              :rows="10"
+              minHeight="200"
               :maxChars="2500"
               :validateItOnBlur="true"
+              :noResize="false"
               :rules="[
                 this.$validators.required(`Enter an explanation for the cause of 
                   your sole source situation.`),
@@ -70,24 +91,62 @@
               ]"
             />
 
-            <v-btn
-              id="RestoreSuggestionButton"
-              v-if="!isCustom"
-              class="secondary font-size-14 px-4 mb-1 mt-1"
-              :disabled="isSoleSourceCauseDefault"
-              @click="confirmRestoreDefaultText"
-            >
-              <ATATSVGIcon
-                id="RestoreSuggestionButtonIcon"
-                width="19"
-                height="15"
-                name="restore"
-                class="mr-1"
-                :color="btnRestoreIconColor"
-              />
-              Restore to suggestion
-            </v-btn>
+            <div class="d-flex justify-start">
+              <v-btn
+                id="ChangeToCustomExplanationButton"
+                v-if="showChangeToCustomButton"
+                class="secondary font-size-14 px-4 mb-1 mt-1"
+                :disabled="useCustomText"
+                @click="changeToCustomExplanation"
+              >
+                <ATATSVGIcon
+                  id="ChangeToCustomExplanationIcon"
+                  width="19"
+                  height="15"
+                  name="SwapVertical"
+                  class="mr-1"
+                  color="primary"
+                />
+                Change to custom explanation
+              </v-btn>
 
+              <v-btn
+                id="ChangeToDAPPSSuggestionButton"
+                v-if="showChangeToDAPPSButton"
+                class="secondary font-size-14 px-4 mb-1 mt-1"
+                @click="changeToDAPPSSuggestion"
+              >
+                <ATATSVGIcon
+                  id="changeToDAPPSSuggestionIcon"
+                  width="19"
+                  height="15"
+                  name="SwapVertical"
+                  class="mr-1"
+                  color="primary"
+                />
+                Change to DAPPS suggestion
+              </v-btn>
+
+              <v-btn
+                id="RestoreSuggestionButton"
+                v-if="showRestoreSuggestionButton"
+                class="secondary font-size-14 px-4 mb-1 mt-1"
+                :class="{'ml-5' : restoreButtonNeedsMargin}"
+                :disabled="!userEditedDefaultSuggestion"
+                @click="confirmRestoreDefaultText"
+              >
+                <ATATSVGIcon
+                  id="RestoreSuggestionButtonIcon"
+                  width="19"
+                  height="15"
+                  name="restore"
+                  class="mr-1"
+                  :color="getIconColor(!userEditedDefaultSuggestion)"
+                />
+                Restore default suggestion
+              </v-btn>
+            </div>
+           
             <ATATExpandableLink v-if="displayHelpSoleSourceLink" aria-id="HelpSoleSource"
               class="mt-5">
               <template v-slot:header>
@@ -100,28 +159,31 @@
                   to a short questionnaire. You’ll be able to edit to our suggestion to meet your
                   requirements, or choose to restore your custom explanation.
                 </p>
-                <router-link
-                    :id="'SoleSourceQuestionnaire'"
-                    :to="{ name: routeNames.SoleSourceCause }"
-                    tag="button">
+                <a
+                  id="SoleSourceQuestionnaire"
+                  @click="goToQuestionnaire"
+                  @keydown.enter="goToQuestionnaire"
+                  @keydown.space="goToQuestionnaire"
+                >
                   <v-btn
-                      id="FillOutQuestionnaireButton"
-                      class="secondary font-size-14 px-3 mb-1 mt-1"
+                    id="FillOutQuestionnaireButton"
+                    class="secondary font-size-14 px-3 mb-1 mt-1"
                   >
                     <ATATSVGIcon
-                        id="FillOutQuestionnaireButtonIcon"
-                        width="19"
-                        height="15"
-                        name="dynamicForm"
-                        class="mr-1"
-                        color="primary"
+                      id="FillOutQuestionnaireButtonIcon"
+                      width="19"
+                      height="15"
+                      name="dynamicForm"
+                      class="mr-1"
+                      color="primary"
                     />
                     Fill out the questionnaire
                   </v-btn>
-                </router-link>
+                </a>
               </template>
             </ATATExpandableLink>
           </div>
+          
         </v-col>
       </v-row>
     </v-container>    
@@ -138,6 +200,7 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 import ConfirmRestoreDefaultTextModal from "../components/ConfirmRestoreDefaultTextModal.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
@@ -145,6 +208,8 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { currencyStringToNumber, hasChanges, toCurrencyString } from "@/helpers";
 import { FairOpportunityDTO } from "@/api/models";
 import {routeNames} from "@/router/stepper";
+import FairOppExceptions from "../components/FairOppExceptions.vue";
+import Steps from "@/store/steps";
 
 @Component({
   components: {
@@ -152,140 +217,104 @@ import {routeNames} from "@/router/stepper";
     ATATExpandableLink,
     ATATTextArea,
     ConfirmRestoreDefaultTextModal,
+    ATATAlert
   }
 })
 
 export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public projectTitle = AcquisitionPackage.projectTitle;
+  
   public soleSourceCause = "";
   public soleSourceCauseGenerated = "";
   public soleSourceCauseCustom = "";
   public defaultSuggestion = "";
-  public showRestoreModal = false;
 
-  public isCustom = false;
+  public showRestoreModal = false;
+  public showConfirmToCustomExplanationModal = false;
+
+  public useCustomText = false;
+  public useCustomTextOnLoad = false;
+  public replaceCustomWithDefault = false;
   public allSectionsNO = false;
   public routeNames = routeNames;
+
+  public showAlert = false;
+  public hasFormBeenEdited = false;
+  public hasSuggestedTextBeenEdited = false;
+
   public get pageHeaderIntro(): string {
-    return this.isCustom ? "Tell us about" : "Let’s review";
+    return this.useCustomTextOnLoad ? "Tell us about" : "Let’s review";
+  } 
+  public get showChangeToCustomButton(): boolean {
+    return !this.useCustomText && this.soleSourceCauseCustom.length > 0;
   }
-
-  public get cspName(): string {
-    return this.csps[this.currentData.proposed_csp as string]
+  public get showChangeToDAPPSButton(): boolean {
+    return this.useCustomText && this.soleSourceCauseGenerated.length > 0;
   }
-
-  /**
-   * This function returns 'true' if the following conditions are met
-   * 1. If the user choose to write custom explanation
-   * 2. AND If the user had filled out the custom explanation and navigates
-   *    back to this screen
-   */
+  public get showRestoreSuggestionButton(): boolean {
+    return this.soleSourceCauseGenerated !== undefined && this.soleSourceCauseGenerated.length > 0;
+  }
+  public get restoreButtonNeedsMargin(): boolean {
+    return this.showChangeToCustomButton || this.showChangeToDAPPSButton;
+  }
   public get displayHelpSoleSourceLink(): boolean {
-    // using 'why_csp_is_only_capable_source' as the indicator to determine if the user
-    // has revisited this page since it is the next page. May not be the best way to determine
-    const isUserRevisitingPage =
-        (AcquisitionPackage.fairOpportunity?.why_csp_is_only_capable_source as string)
-          .trim().length > 0;
-    return this.isCustom && isUserRevisitingPage;
+    return AcquisitionPackage.hasExplanationOnLoad.soleSourceCause;
   }
-
-  public csps: Record<string, string> = {
-    AWS: "AWS",
-    GCP: "Google Cloud",
-    AZURE: "Microsoft Azure",
-    ORACLE: "Oracle Cloud",
-  }
-
-  public get getMigrationP(): string {
-    const estCost = parseFloat(this.currentData.cause_migration_estimated_cost as string);
-    const hasEstCost = !isNaN(estCost) && estCost > 0;
-    const hasEstDelay = this.currentData.cause_migration_estimated_delay_amount 
-      && this.currentData.cause_migration_estimated_delay_amount !== "0";
-
-    let migrationP =  "The only source capable of performing the " + this.projectTitle + 
-    " at the level of quality required is the incumbent contractor, " + this.cspName +
-    ". The refactoring of the current environment from the "  + this.cspName + 
-    " environment to another CSP would result in additional ";
-    if (hasEstCost) migrationP += "cost";
-    if (hasEstCost && hasEstDelay) migrationP += " and ";
-    if (hasEstDelay) migrationP +="time"
-    migrationP += ". Migration from one platform to another platform would ";
-    if (hasEstCost) {
-      migrationP += "cost " + this.getCostAmount
-    }
-    if (hasEstDelay) {
-      if (estCost) {
-        migrationP += " and ";
-      }
-      const estDelayAmt
-        = parseInt(this.currentData.cause_migration_estimated_delay_amount as string);
-      let estDelayUnit 
-        = (this.currentData.cause_migration_estimated_delay_unit as string).toLowerCase();
-      estDelayUnit = estDelayAmt > 1 ? estDelayUnit : estDelayUnit.slice(0,-1);
-
-      migrationP += "delay the project " + estDelayAmt + " " + estDelayUnit;
-    }
-    migrationP += ". In addition, there would be a duplication of costs of having " +
-      "to keep the solution running on one platform while refactoring it on another platform."
-
-    return migrationP;
-  }
-
-  public get getEngineersP(): string {
-    return "Further, the only source capable of performing the " + this.projectTitle +
-      " at the level and quality required is " + this.cspName + " based on Government engineers " +
-      "being trained and certified in " + this.currentData.cause_govt_engineers_platform_name + 
-      ". " + this.currentData.cause_govt_engineers_insufficient_time_reason;   
-  }
-
-  public get getProductFeatureP(): string {
-    return "The only source capable of performing the "  + this.projectTitle +
-      " at the level and quality required is " + this.cspName + " based on "
-      + this.currentData.cause_product_feature_name + " that is peculiar to " + this.cspName +
-      ". " + this.currentData.cause_product_feature_why_essential + " " + 
-      this.currentData.cause_product_feature_why_others_inadequate;
-  }
-
-  public async generateSuggestion(): Promise<void> {
-    const needsMigrationP = this.savedData?.cause_migration_addl_time_cost === "YES";
-    const needsGovtEngineersP = this.savedData?.cause_govt_engineers_training_certified === "YES";
-    const needsProductFeatureP = this.savedData?.cause_product_feature_peculiar_to_csp === "YES";
-
-    let suggestedText = "";
-    if (needsMigrationP) {
-      suggestedText += this.getMigrationP;
-      if (needsGovtEngineersP || needsProductFeatureP) suggestedText += "\n\n";
-    }
-    if (needsGovtEngineersP) {
-      suggestedText += this.getEngineersP;
-      if (needsProductFeatureP) suggestedText += "\n\n";
-    }
-    if (needsProductFeatureP) suggestedText += this.getProductFeatureP;
-    
-    this.defaultSuggestion = suggestedText;
-  }
-
   public get getRowCount(): number {
-    return this.isCustom ? 12 : 19;
+    return this.useCustomText ? 12 : 19;
+  }
+  public get userEditedDefaultSuggestion(): boolean {
+    return this.useCustomText 
+      ? this.soleSourceCauseGenerated !== this.defaultSuggestion
+      : this.soleSourceCause !== this.defaultSuggestion;
   }
 
-  public isSoleSourceCauseDefault = false;
-  @Watch("soleSourceCause")
-  public soleSourceCauseChanged(): void {
-    this.isSoleSourceCauseDefault = this.soleSourceCause === this.defaultSuggestion;
-  }
-
-  public restoreSuggestion(): void {
+  public async restoreSuggestion(): Promise<void> {
     this.soleSourceCause = this.defaultSuggestion;
+    this.soleSourceCauseGenerated = this.defaultSuggestion;
+    this.hasFormBeenEdited = false;
+    await AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(false);
+    await AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(false);
     this.showRestoreModal = false;
+    this.useCustomText = false;
+    this.showAlert = false;
   }
 
   public confirmRestoreDefaultText(): void {
     this.showRestoreModal = true;
   }
 
-  get btnRestoreIconColor(): string {
-    return this.isSoleSourceCauseDefault ? "disabled" : "primary";
+  public async changeToDAPPSSuggestion(): Promise<void> {
+    this.soleSourceCauseCustom = this.soleSourceCause;
+    this.soleSourceCause = this.soleSourceCauseGenerated;
+    this.useCustomText = false;
+    await AcquisitionPackage.setIsSoleSourceTextCustom(false);
+  }
+
+  public async changeToCustomExplanation(): Promise<void> {
+    this.soleSourceCauseGenerated = this.soleSourceCause;
+    this.soleSourceCause = this.soleSourceCauseCustom || "";
+    this.useCustomText = true;
+    await AcquisitionPackage.setIsSoleSourceTextCustom(true);
+  }
+
+  private getIconColor(condition: boolean):string {
+    return condition ? 'disabled': 'primary';
+  }
+
+  public async goToQuestionnaire(): Promise<void> {
+    AcquisitionPackage.doSetFairOppBackToReview(true);
+
+    // hide "I want to write my own explanation" button if either generated or custom
+    // explanation exists on initialization
+    await Steps.setAdditionalButtonHide(true);
+
+    this.$router.push({
+      name: routeNames.SoleSourceCause,
+      params: {
+        direction: "next"
+      }   
+    });
   }
 
   public get currentData(): FairOpportunityDTO {
@@ -296,7 +325,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       /* eslint-disable camelcase */
       cause_of_sole_source_generated: this.soleSourceCauseGenerated as string,
       cause_of_sole_source_custom: this.soleSourceCauseCustom as string,
-      cause_of_sole_source_for_docgen: this.isCustom ? "CUSTOM" : "GENERATED"
+      cause_of_sole_source_for_docgen: this.useCustomText ? "CUSTOM" : "GENERATED"
       /* eslint-enable camelcase */      
     }
     return Object.assign(fairOppSaved, formData);
@@ -306,18 +335,11 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     return AcquisitionPackage.getFairOpportunity;
   }
 
-  public get getCostAmount(): string {
-    if (this.currentData.cause_migration_estimated_cost) {
-      const amt = currencyStringToNumber(this.currentData.cause_migration_estimated_cost)
-      if (amt) return "$" + toCurrencyString(amt, true);
-    }
-    return "";
-  }
-
   public async loadOnEnter(): Promise<void> {
+    await AcquisitionPackage.doSetFairOppBackToReview(false);
+
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      await this.generateSuggestion();
 
       this.allSectionsNO = storeData.cause_migration_addl_time_cost === "NO"
         && storeData.cause_govt_engineers_training_certified === "NO"
@@ -326,13 +348,38 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       this.soleSourceCauseCustom = storeData.cause_of_sole_source_custom as string;
       this.soleSourceCauseGenerated = storeData.cause_of_sole_source_generated as string;
 
-      this.isCustom = storeData.cause_write_own_explanation === "YES";
-      if (!this.isCustom) {
-        this.soleSourceCause = storeData.cause_of_sole_source_generated as string
-          || this.defaultSuggestion;
+      this.useCustomText = AcquisitionPackage.isSoleSourceTextCustom;
+      this.useCustomTextOnLoad = AcquisitionPackage.isSoleSourceTextCustom;
+      this.replaceCustomWithDefault = AcquisitionPackage.replaceCustomWithGenerated;
+      
+      this.hasSuggestedTextBeenEdited = 
+        AcquisitionPackage.hasSoleSourceSuggestedTextBeenEdited;
+      this.hasFormBeenEdited = AcquisitionPackage.hasSoleSourceCauseFormBeenEdited;
+      this.showAlert = !this.replaceCustomWithDefault 
+        && this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
+
+      await AcquisitionPackage.generateFairOpportunitySuggestion("SoleSource");
+      this.defaultSuggestion = AcquisitionPackage.fairOppDefaultSuggestions.soleSourceCause;
+      
+      if (!this.useCustomText) {
+        if (!this.hasSuggestedTextBeenEdited || this.replaceCustomWithDefault) {
+          // if suggested text hasn't been edited, or user navigated to the form
+          // while using "custom" text, automatically set to the default generated suggestion
+          this.soleSourceCause = this.defaultSuggestion;
+          if (this.replaceCustomWithDefault) {
+            this.soleSourceCauseGenerated = this.defaultSuggestion;
+          }
+        } else {
+          // since user edited the default suggestion, user is shown alert and must click
+          // the "Restore default suggestion" to view the new suggested text
+          this.soleSourceCause = storeData.cause_of_sole_source_generated as string;
+        }
       } else {
         this.soleSourceCause = storeData.cause_of_sole_source_custom as string;
       }
+
+      await AcquisitionPackage.setReplaceCustomWithGenerated(false);
+
     }
   }
 
@@ -344,12 +391,21 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 
+  private async setAcquisitionPackageSoleSourceVariables(): Promise<void>{
+    await AcquisitionPackage.setHasSoleSourceSuggestedTextBeenEdited(
+      this.userEditedDefaultSuggestion
+    );
+    await AcquisitionPackage.setIsSoleSourceTextCustom(this.useCustomText);
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
-    if (this.isCustom) {
-      this.soleSourceCauseCustom = this.soleSourceCause;
+    if (this.useCustomText) {
+      this.soleSourceCauseCustom = this.soleSourceCause.trim();
     } else {
-      this.soleSourceCauseGenerated = this.soleSourceCause;
+      this.soleSourceCauseGenerated = this.soleSourceCause.trim();
     }
+    AcquisitionPackage.setHasSoleSourceCauseFormBeenEdited(false);
+    await this.setAcquisitionPackageSoleSourceVariables();
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

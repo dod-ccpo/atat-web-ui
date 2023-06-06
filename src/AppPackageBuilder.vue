@@ -28,6 +28,7 @@
           :continueButtonText="continueButtonText"
           :altContinueAction="altContinueAction"
           :hideContinueButton="hideContinueButton"
+          :hideAdditionalButtons="hideAdditionalButtons"
           :disableContinue="disableContinueButton"
           :noPrevious="noPrevious"
           class="mb-8"
@@ -111,6 +112,7 @@ export default class AppPackageBuilder extends Vue {
   private altContinueAction = "";
   private altBackDestination = "";
   private hideContinueButton = false;
+  private hideAdditionalButtons = false;
   private disableContinueButton = false;
   private hideNavigation = false;
   private hideSideNavigation = false;
@@ -263,6 +265,14 @@ export default class AppPackageBuilder extends Vue {
     this.hideContinueButton = 
       step.stepName === routeNames.GeneratingPackageDocuments && !this.isDitcoUser 
       || step.stepName === routeNames.ReadyToSubmit && AcquisitionPackage.currentUserIsContributor;
+
+    this.hideAdditionalButtons = 
+      (step.stepName === routeNames.SoleSourceCause 
+        && AcquisitionPackage.hasExplanationOnLoad.soleSourceCause)
+      || (step.stepName === routeNames.MarketResearchEfforts 
+        && AcquisitionPackage.hasExplanationOnLoad.researchDetails)
+      || (step.stepName === routeNames.RemoveBarriers 
+        && AcquisitionPackage.hasExplanationOnLoad.plansToRemoveBarriers);
   }
 
   private async additionalButtonClick(button: AdditionalButton) {

@@ -4,11 +4,11 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
-          <h1 class="page-header">
+          <h1 class="page-header mb-3">
             Tell us more about your Contracting Office
           </h1>
           <div class="copy-max-width">
-            <p class="mb-6">
+            <p class="mb-10">
               We’ll use your responses below to pre-fill your Contracting
               Office’s information on documents, where applicable.
             </p>

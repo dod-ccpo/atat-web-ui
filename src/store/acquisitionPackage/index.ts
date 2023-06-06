@@ -60,6 +60,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { currencyStringToNumber, toCurrencyString } from "@/helpers";
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -221,17 +222,6 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
   }
 }
 
-const initialPeriodOfPerformance = ()=> {
-
-  return     { 
-    pop_start_request: "",
-    requested_pop_start_date: "",
-    time_frame: "",
-    recurring_requirement: "",
-    base_and_options: "",
-    
-  }}
-
 const initialSensitiveInformation = ()=> {
 
   return {
@@ -336,7 +326,19 @@ export class AcquisitionPackageStore extends VuexModule {
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
+
   fairOpportunity: FairOpportunityDTO | null = null;
+  // used for routing
+  hasExplanationOnLoad: Record<string, boolean> = {
+    soleSourceCause: false,
+    researchDetails: false,
+    plansToRemoveBarriers: false,
+  }
+  
+  // used for routing
+  fairOppBackToReview = false;
+  replaceCustomWithGenerated = false;
+
   marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
@@ -354,6 +356,15 @@ export class AcquisitionPackageStore extends VuexModule {
   packageId = "";
   regions: RegionsDTO[] | null = null;
   isLoading = false;
+  
+  // Sole Source
+  // monitoring user interactions re: 
+  // 1 - generated text edited
+  hasSoleSourceSuggestedTextBeenEdited = false;
+  // 2 - has form been edited
+  hasSoleSourceCauseFormBeenEdited = false;
+  // 3 - has user entered custom text
+  isSoleSourceTextCustom = false;
 
   validateNow = false;
   allowDeveloperNavigation = false;
@@ -783,7 +794,7 @@ export class AcquisitionPackageStore extends VuexModule {
     return initialFairOpportunity();
   }
   @Mutation
-  public getInitialPackageDocumentsSigned() {
+  public getInitialPackageDocumentsSigned(): PackageDocumentsSignedDTO | null {
     return this.packageDocumentsSigned;
   }
 
@@ -948,24 +959,12 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  // @Mutation
-  // public setPeriods(value: PeriodDTO[]): void {
-  //   this.periods = value.map(period=> period.sys_id).join(',');
-  // }
-
   @Mutation
   public setClassificationLevel(value: ClassificationLevelDTO): void {
     this.classificationLevel = this.classificationLevel
       ? Object.assign(this.classificationLevel, value)
       : value;
   }
-
-  // @Mutation
-  // public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
-  //   this.periodOfPerformance = this.periodOfPerformance
-  //     ? Object.assign(this.periodOfPerformance, value)
-  //     : value;
-  // }
 
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
@@ -1019,8 +1018,34 @@ export class AcquisitionPackageStore extends VuexModule {
       const techniques: MarketResearchTechniquesDTO[] 
         = await api.marketResearchTechniquesTable.all();
       await this.doSetMarketResearchTechniques(techniques);
+      
+      const hasExplanationOnLoad: Record<string, boolean> = {
+        soleSourceCause: false,
+        researchDetails: false,
+        plansToRemoveBarriers: false,
+      }
+      hasExplanationOnLoad.soleSourceCause = 
+        (this.fairOpportunity?.cause_of_sole_source_custom !== undefined
+        && this.fairOpportunity.cause_of_sole_source_custom.length > 0)
+        || (this.fairOpportunity?.cause_of_sole_source_generated !== undefined
+        && this.fairOpportunity.cause_of_sole_source_generated.length > 0);
+
+      hasExplanationOnLoad.researchDetails = 
+        (this.fairOpportunity?.research_details_custom !== undefined
+        && this.fairOpportunity.research_details_custom.length > 0)
+        || (this.fairOpportunity?.research_details_generated !== undefined
+        && this.fairOpportunity.research_details_generated.length > 0);
+      
+      hasExplanationOnLoad.plansToRemoveBarriers = 
+        (this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_custom.length > 0)
+        || (this.fairOpportunity?.barriers_plans_to_remove_generated !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_generated.length > 0);
+      
+      await this.doSetHasExplanationOnLoad(hasExplanationOnLoad);  
     }
   }
+  
   @Mutation
   public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
     this.fairOpportunity = this.fairOpportunity
@@ -1035,6 +1060,29 @@ export class AcquisitionPackageStore extends VuexModule {
       await FinancialDetails.deleteAppropriationOfFunds();
     }
   }
+
+  // use below mutations for all three Fair Opportunity madlibs forms
+  @Mutation
+  public async doSetHasExplanationOnLoad(val: Record<string, boolean>): Promise<void> {
+    this.hasExplanationOnLoad = val;
+  }
+  @Mutation
+  public async doSetFairOppBackToReview(val: boolean): Promise<void> {
+    this.fairOppBackToReview = val;
+  } 
+  @Action({rawError: true})
+  public async setReplaceCustomWithGenerated(val: boolean): Promise<void> {
+    await this.doSetReplaceCustomWithGenerated(val);
+    if (val) {
+      await this.setHasSoleSourceSuggestedTextBeenEdited(false);
+    }
+  }
+  @Mutation
+  public async doSetReplaceCustomWithGenerated(val: boolean): Promise<void> {
+    this.replaceCustomWithGenerated = val;
+  }
+
+
   @Mutation
   public async doSetMarketResearchTechniques(
     techniques: MarketResearchTechniquesDTO[]
@@ -1074,11 +1122,157 @@ export class AcquisitionPackageStore extends VuexModule {
   public get getFairOpportunity(): FairOpportunityDTO | null {
     return this.fairOpportunity || null;
   }
+
+
+  public csps: Record<string, string> = {
+    AWS: "AWS",
+    GCP: "Google Cloud",
+    AZURE: "Microsoft Azure",
+    ORACLE: "Oracle Cloud",
+  }
+
+  public fairOppDefaultSuggestions: Record<string, string> = {
+    soleSourceCause: "",
+    researchDetails: "",
+    plansToRemoveBarriers: "",
+  }
+
+  @Action({rawError: true})
+  public async initializeAllFairOppSuggestions(): Promise<void> {
+    await this.generateFairOpportunitySuggestion("SoleSource");
+    if (this.fairOpportunity?.cause_of_sole_source_for_docgen === "CUSTOM") {
+      await this.doSetIsSoleSourceTextCustom(true);
+    }
+
+    // TODO: ADD methods to generate the other "mad-lib" default suggestions
+    // and set if using Custom explanation for each section
+
+    // await this.generateFairOpportunitySuggestion("ResearchDetails");
+    // if (this.fairOpportunity?.research_details_for_docgen === "CUSTOM") {
+    //   await this.doSetIsResearchDetailsTextCustom(true);
+    // }
+    // await this.generateFairOpportunitySuggestion("RemoveBarriers");
+    // if (this.fairOpportunity?.barriers_plans_to_remove_for_docgen === "CUSTOM") {
+    //   await this.doSetIsPlansToRemoveBarriersTextCustom(true);
+    // }
+
+  }
+
+  @Action({rawError: true})
+  public async generateFairOpportunitySuggestion(section: string): Promise<void> {
+    switch (section) {
+    case "SoleSource": 
+      await this.generateSoleSourceSuggestion();
+      break;
+    // TODO: ADD methods to generate the other "mad-lib" default suggestions.
+    case "ResearchDetails":
+      // await this.generateResearchDetailsSuggestion();
+      break;
+    case "RemoveBarriers":
+      // await this.generatePlansToRemoveBarriersSuggestion();
+      break;
+    }
+  }
+
+  @Action({rawError: true})
+  public async generateSoleSourceSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const needsMigrationP = this.fairOpportunity.cause_migration_addl_time_cost === "YES";
+      const needsGovtEngineersP = 
+        this.fairOpportunity.cause_govt_engineers_training_certified === "YES";
+      const needsProductFeatureP = 
+        this.fairOpportunity.cause_product_feature_peculiar_to_csp === "YES";
   
-  // @Action({rawError: true})
-  // public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
-  //   return this.fairOpportunity;
-  // }
+      const cspName = this.csps[this.fairOpportunity.proposed_csp as string]
+      let text = "";
+
+      if (needsMigrationP) {
+        const estCost = parseFloat(this.fairOpportunity.cause_migration_estimated_cost as string);
+        const hasEstCost = !isNaN(estCost) && estCost > 0;
+        const hasEstDelay = this.fairOpportunity.cause_migration_estimated_delay_amount 
+          && this.fairOpportunity.cause_migration_estimated_delay_amount !== "0";
+    
+        text = "The only source capable of performing the " + this.projectTitle + 
+        " at the level of quality required is the incumbent contractor, " + cspName +
+        ". The refactoring of the current environment from the "  + cspName + 
+        " environment to another CSP would result in additional ";
+        if (hasEstCost) text += "cost";
+        if (hasEstCost && hasEstDelay) text += " and ";
+        if (hasEstDelay) text +="time"
+        text += ". Migration from one platform to another platform would ";
+        if (hasEstCost && this.fairOpportunity.cause_migration_estimated_cost) {
+          const amt = currencyStringToNumber(this.fairOpportunity.cause_migration_estimated_cost)
+          if (amt) text += "cost $" + toCurrencyString(amt, true)
+        }
+        if (hasEstDelay) {
+          if (estCost) {
+            text += " and ";
+          }
+          const estDelayAmt
+            = parseInt(this.fairOpportunity.cause_migration_estimated_delay_amount as string);
+          let estDelayUnit 
+            = (this.fairOpportunity.cause_migration_estimated_delay_unit as string).toLowerCase();
+          estDelayUnit = estDelayAmt > 1 ? estDelayUnit : estDelayUnit.slice(0,-1);
+    
+          text += "delay the project " + estDelayAmt + " " + estDelayUnit;
+        }
+        text += ". In addition, there would be a duplication of costs of having " +
+          "to keep the solution running on one platform while refactoring it on another platform."
+        if (needsGovtEngineersP || needsProductFeatureP) text += "\n\n";
+      }
+
+      if (needsGovtEngineersP) {
+        text += "Further, the only source capable of performing the " + this.projectTitle +
+        " at the level and quality required is " + cspName + " based on Government engineers " +
+        "being trained and certified in " + 
+        this.fairOpportunity.cause_govt_engineers_platform_name + ". " + 
+        this.fairOpportunity.cause_govt_engineers_insufficient_time_reason;   
+        if (needsProductFeatureP) text += "\n\n";
+      }
+
+      if (needsProductFeatureP) {
+        text += "The only source capable of performing the "  + this.projectTitle +
+        " at the level and quality required is " + cspName + " based on "
+        + this.fairOpportunity.cause_product_feature_name + " that is peculiar to " + cspName +
+        ". " + this.fairOpportunity.cause_product_feature_why_essential + " " + 
+        this.fairOpportunity.cause_product_feature_why_others_inadequate;
+      }
+      this.fairOppDefaultSuggestions.soleSourceCause = text;
+      const isEdited = text !== this.fairOpportunity.cause_of_sole_source_generated;
+      await this.setHasSoleSourceSuggestedTextBeenEdited(isEdited);
+    }
+  }
+
+  @Action({rawError: true})
+  public async setHasSoleSourceSuggestedTextBeenEdited(edited: boolean):Promise<void>{
+    this.doSetHasSoleSourceSuggestedTextBeenEdited(edited);
+  }
+
+  @Mutation
+  public async doSetHasSoleSourceSuggestedTextBeenEdited(edited:boolean):Promise<void>{
+    this.hasSoleSourceSuggestedTextBeenEdited = edited;
+  }
+
+  @Action({rawError: true})
+  public async setHasSoleSourceCauseFormBeenEdited(edited: boolean):Promise<void>{
+    this.doSetHasSoleSourceCauseFormBeenEdited(edited);
+  }
+
+  @Mutation
+  public async doSetHasSoleSourceCauseFormBeenEdited(edited:boolean):Promise<void>{
+    this.hasSoleSourceCauseFormBeenEdited = edited;
+  }
+
+  @Action({rawError: true})
+  public async setIsSoleSourceTextCustom(edited: boolean):Promise<void>{
+    this.doSetIsSoleSourceTextCustom(edited);
+  }
+
+  @Mutation
+  public async doSetIsSoleSourceTextCustom(edited:boolean):Promise<void>{
+    this.isSoleSourceTextCustom = edited;
+  }
+  
   @Action({rawError: true})
   public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
     return this.packageDocumentsSigned;
@@ -1279,18 +1473,15 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
       this.setPackagePercentLoaded(55);
-      if(fairOppSysId) {
-        const fairOpportunity = await api.fairOpportunityTable.retrieve(
-          fairOppSysId
-        );
-        if(fairOpportunity)
-          this.setFairOpportunity(fairOpportunity);
+      if (fairOppSysId) {
+        const fairOpportunity = await api.fairOpportunityTable.retrieve(fairOppSysId);
+        if (fairOpportunity) {
+          await this.setFairOpportunity(fairOpportunity);
+          await this.initializeAllFairOppSuggestions();
+        }
       } else {
-        this.setFairOpportunity(
-          initialFairOpportunity()
-        );
+        this.setFairOpportunity(initialFairOpportunity());
       }
-      // EJY HERE
 
       this.setPackagePercentLoaded(60);
       if(AcquisitionPackage.packageId) {
@@ -1503,6 +1694,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "Financial POC" })
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
+
           this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){
@@ -1511,8 +1703,6 @@ export class AcquisitionPackageStore extends VuexModule {
           }
           this.setPackagePercentLoaded(50);
           this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
-          // this.setPeriods([]);
-          // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initializeCurrentEnvironment();
@@ -2193,8 +2383,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.evaluationPlan = null;
     this.currentContracts = null;
     this.sensitiveInformation = null;
-    // this.periods = null;
-    // this.periodOfPerformance = null;
     this.contractType = null;
     this.classificationLevel = null;
     this.totalBasePoPDuration = 0;
@@ -2212,6 +2400,23 @@ export class AcquisitionPackageStore extends VuexModule {
     this.selectedAgencyAcronym = "";
     this.showInviteContributorsModal = false;
     this.contractingShopNonDitcoAddress = null;
+
+    this.fairOppDefaultSuggestions = {
+      soleSourceCause: "",
+      researchDetails: "",
+      plansToRemoveBarriers: "",
+    }
+    this.hasExplanationOnLoad = {
+      soleSourceCause: false,
+      researchDetails: false,
+      plansToRemoveBarriers: false,
+    };
+    this.fairOppBackToReview = false;
+    this.replaceCustomWithGenerated = false;
+    this.hasSoleSourceSuggestedTextBeenEdited = false;
+    this.hasSoleSourceCauseFormBeenEdited = false;
+    this.isSoleSourceTextCustom = false;
+  
   }
 }
 
