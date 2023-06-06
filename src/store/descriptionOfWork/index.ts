@@ -52,6 +52,7 @@ import {
   buildClassificationLabel, 
   toTitleCase, 
   capitalizeEachWord,
+  getStringFromReferenceColumn,
 } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
@@ -849,8 +850,13 @@ const deleteOtherOfferingInstanceFromSNOW = (sysId: string, groupId: string) => 
 
 const deleteOtherOfferingInstanceFromIGCECostEstimate = (
   envSysId: string,
-  serviceOfferingGroupId: string) => {
-  IGCEStore.deleteIgceEstimateEnvironmentInstance({envSysId, serviceOfferingGroupId});
+  serviceOfferingGroupId: string,
+  classLevel: string) => {
+  IGCEStore.deleteIgceEstimateEnvironmentInstance({
+    envSysId, 
+    serviceOfferingGroupId,
+    classLevel
+  });
 }
 
 
@@ -2413,7 +2419,8 @@ export class DescriptionOfWorkStore extends VuexModule {
         if (instanceToDelete && instanceToDelete.sysId) {
           const sysId = instanceToDelete.sysId as string;
           deleteOtherOfferingInstanceFromIGCECostEstimate(
-            sysId, otherOfferingObj.serviceOfferingGroupId
+            sysId, otherOfferingObj.serviceOfferingGroupId, 
+            getStringFromReferenceColumn(instanceToDelete.classificationLevel)
           );
 
           setTimeout(()=>
@@ -2516,7 +2523,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       offeringToDelete.otherOfferingData?.forEach((instance) => {
         deleteOtherOfferingInstanceFromIGCECostEstimate(
             instance.sysId as string,
-            serviceOfferingGroupId
+            serviceOfferingGroupId,
+            getStringFromReferenceColumn(instance.classificationLevel)
         );
       })
 

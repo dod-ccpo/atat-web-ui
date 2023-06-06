@@ -767,6 +767,69 @@ export class IGCEStore extends VuexModule {
   }
 
   /**
+   * reorders instance numbers for both `IGCE Estimate` table columns 
+   * 1) `DOW Task Number` - items with NO environmental instance 
+   * 2) `Title` = items with enviornmental instance
+   * 
+   * @param igceEstimate IGCEEstimateDTO
+   */
+  @Action({ rawError: true })
+  public async reorderTrainingInstanceNumbers(classLevel: string):Promise<void>{
+
+    // get training instance
+    // const trainingEnvironmentInstance = await api.cloudSupportEnvironmentInstanceTable.getQuery({
+    //   params: {sysparm_query: "^sys_id=" + 
+    //     getStringFromReferenceColumn(estimate.cloud_support_environment_instance)
+    //   }
+    // });
+
+    // get training instances sysIds with same classification level 
+    // from cloudSupportEnvironmentInstanceTable
+    const query = "^acquisition_package=" + AcquisitionPackage.packageId
+      + "^service_type='training'"
+      + "^classification_level=" + classLevel
+      + "^ORDERBYsys_created_on";
+    console.log(query)
+    const instancesWithSameClassLevel = await api.cloudSupportEnvironmentInstanceTable.getQuery({
+      params: {
+        sysparm_query: "^acquisition_package=" + AcquisitionPackage.packageId
+          + "^service_type=TRAINING"
+          + "^classification_level=" + classLevel
+          + "^ORDERBYsys_created_on",
+        sysparm_fields: "sys_id"
+      }
+    })
+    
+    if (instancesWithSameClassLevel.length>0){
+      // get training items that needs to be reordered from trainingEstimateTable
+      const stringifiedSysIds = 
+        instancesWithSameClassLevel.map(d=>d.sys_id).join(",")//.slice(0,-1);
+      const trainingInstancesToBeReordered = await api.trainingEstimateTable.getQuery({
+        params: {
+          sysparm_query: "^cloud_support_environment_instanceIN" + stringifiedSysIds
+        }
+      })
+
+      trainingInstancesToBeReordered.forEach(
+        async (est, idx)=>{
+          if (est){
+            // create NEW DOW task order number
+            const reorderedDOWTaskNumber = (est.dow_task_number?.substring(
+              0 ,est.dow_task_number?.lastIndexOf(".") + 1
+            ) || "") + (idx + 1);
+
+            await api.igceEstimateTable.update(
+              est.sys_id as string,{
+                dow_task_number: reorderedDOWTaskNumber
+              }
+            ) 
+          }
+        }
+      )
+    }
+  }
+
+  /**
    * This is expected to be called whenever a record gets deleted from Environment Instance
    * table and its child tables.
    */
@@ -774,12 +837,16 @@ export class IGCEStore extends VuexModule {
   public async deleteIgceEstimateEnvironmentInstance(
     instance:{
       envSysId: string, 
-      serviceOfferingGroupId: string
+      serviceOfferingGroupId: string,
+      classLevel: string
     }
   ):
     Promise<void> {
     if (instance.serviceOfferingGroupId.toLowerCase() === "training"){
-      await this.deleteIgceEstimateTrainingInstance (instance.envSysId);
+      await this.deleteIgceEstimateTrainingInstance ({
+        environmentInstanceSysId: instance.envSysId,
+        classLevel: instance.classLevel
+      });
     } else {
       await this.deleteIgceEstimateByRequestConfig({
         params: {
@@ -809,24 +876,31 @@ export class IGCEStore extends VuexModule {
   * table and its child tables.
   */
   @Action({ rawError: true })
-  public async deleteIgceEstimateTrainingInstance(environmentInstanceSysId: string):
+  public async deleteIgceEstimateTrainingInstance(
+    instance:{
+      environmentInstanceSysId: string
+      classLevel: string
+    }):
     Promise<void> {
-      
+   
     // delete from IGCEStore.trainingItems
     const itemIdx = this.trainingItems.findIndex(
-      trainingItem => trainingItem.cloudSupportEnvironmentInstance === environmentInstanceSysId
+      trainingItem => trainingItem.cloudSupportEnvironmentInstance === 
+        instance.environmentInstanceSysId
     )
-    this.trainingItems.splice(itemIdx, 1);
+    await this.trainingItems.splice(itemIdx, 1);
 
     // delete from SNOW
     const query = {
       params: {
-        sysparm_query: "cloud_support_environment_instance=" + environmentInstanceSysId
+        sysparm_query: "cloud_support_environment_instance=" + instance.environmentInstanceSysId
       }
     };
     const trainingEstimateRecord = await api.trainingEstimateTable.getQuery(query)
     if (trainingEstimateRecord.length>0){
       await api.trainingEstimateTable.remove(trainingEstimateRecord[0].sys_id as string);
+      await this.reorderTrainingInstanceNumbers(
+        getStringFromReferenceColumn(instance.classLevel));
     }
   }
 
