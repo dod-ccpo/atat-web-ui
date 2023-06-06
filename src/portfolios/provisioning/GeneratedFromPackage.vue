@@ -129,7 +129,6 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   }  
 
   public packageSelected(index: number): void {
-    debugger
     this.packageData.forEach(pkg => pkg.isSelected = false);
     this.packageData[index].isSelected = true;
     this.selectedPackageSysId = this.packageData[index].sysId as string;
@@ -137,15 +136,15 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger
     await AcquisitionPackage.setDisableContinue(true);
-    const selectedPackageSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
+    this.selectedPackageSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
     const packageData = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO);
     packageData.acquisitionPackageSummaryList.forEach(pkg => {
       const updatedDate = createDateStr(pkg.sys_updated_on as string, true);     
       const cardData: packageCardData = {
-        isSelected: selectedPackageSysId !== undefined && pkg.sys_id === selectedPackageSysId,
+        isSelected: this.selectedPackageSysId !== undefined
+          && pkg.sys_id === this.selectedPackageSysId,
         packageStatus: pkg.package_status?.display_value as string,
         createdBy: pkg.mission_owners?.display_value as string,
         updated: "Last modified " + updatedDate,
