@@ -164,6 +164,8 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
       this.checkboxHelpText = this.selectedPackage? "":"Select all that apply"
       this.checkboxLabel = this.selectedPackage? "":"What impact level(s) do you need to" +
       " provision?"
+
+      this.selectedILs = storeData.selectedILs||[]
     }
   }
 
