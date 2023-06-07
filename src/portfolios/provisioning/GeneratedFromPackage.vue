@@ -166,7 +166,6 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   }
 
   public async saveOnLeave(): Promise<boolean> {
-    debugger
     try {
       const sysId = PortfolioStore.didNotUseDAPPS ? "" : this.selectedPackageSysId;
       await PortfolioStore.setSelectedAcquisitionPackageSysId(sysId);
