@@ -49,6 +49,7 @@
             id="ImpactLevelCheckboxes"
             :value.sync="selectedILs"
             :items="checkboxItems"
+            :descriptionNormal="true"
             name="checkbox-card"
             :card="true"
             cardWidth="800"
