@@ -294,7 +294,8 @@ export default class CostSummary extends Vue {
     let hasTraining = false
     IGCEStore.igceEstimateList.forEach(estimate=>{
       //eslint-disable-next-line
-      if(!Boolean(parseInt(String(estimate.unit_price)))){
+      const legitVal = !!parseInt(String(estimate.unit_price))
+      if(!legitVal){
         missingCostEstimates = true
       }
     })
@@ -315,7 +316,8 @@ export default class CostSummary extends Vue {
       }else{
         IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.forEach(value => {
           //eslint-disable-next-line
-          if(!Boolean(parseInt(String(value)))){
+          const legitVal = !!parseInt(String(value))
+          if(!legitVal){
             this.needsReplicateAndOptimize = true
           }
         })
@@ -330,7 +332,8 @@ export default class CostSummary extends Vue {
         IGCEStore.requirementsCostEstimate?.architectural_design_performance_requirements
           .estimated_values.forEach(value =>{
           //eslint-disable-next-line
-          if(!Boolean(parseInt(value))){
+          const legitVal = !!parseInt(value)
+            if(!legitVal){
               this.needArchitecturalDesign = true
             }
           })
@@ -342,7 +345,8 @@ export default class CostSummary extends Vue {
     if(hasTraining && IGCEStore.trainingItems){
       IGCEStore.trainingItems.forEach(item =>{
         //eslint-disable-next-line
-        if(!Boolean(parseInt(item.estimatedTrainingPrice))){
+        const legitVal = !!parseInt(item.estimatedTrainingPrice)
+        if(!legitVal){
           this.needTrainingPricing = true
         }
       })
@@ -352,7 +356,8 @@ export default class CostSummary extends Vue {
         Object.values(JSON.parse(IGCEStore.requirementsCostEstimate?.travel.estimated_values))
       values.forEach(value =>{
         //eslint-disable-next-line
-        if(!Boolean(parseInt(value))){
+        const legitVal = !!parseInt(value)
+        if(!legitVal){
           this.needTravelPricing = true
         }
       })
@@ -360,14 +365,16 @@ export default class CostSummary extends Vue {
     if(IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities === "YES"){
       const capacity = IGCEStore.requirementsCostEstimate?.surge_requirements.capacity
       //eslint-disable-next-line
-      if(!Boolean(parseInt(String(capacity)))){
+      const legitVal = !!parseInt(String(capacity))
+      if(!legitVal){
         this.needSurgeCapabilities = true
       }
     }
     if(IGCEStore.requirementsCostEstimate?.fee_specs.is_charged === "YES"){
       const percentage = IGCEStore.requirementsCostEstimate?.fee_specs.percentage
       //eslint-disable-next-line
-      if(!Boolean(parseInt(String(percentage)))){
+      const legitVal = !!parseInt(String(percentage))
+      if(!legitVal){
         this.needContractingOfficeFee = true
       }
     }
