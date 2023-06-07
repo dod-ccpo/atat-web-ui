@@ -6,7 +6,7 @@
           <h1 class="page-header mb-1 py-0">
             {{pageHeaderText}}
           </h1>
-
+          <div class="copy-max-width">
             <p v-if="!selectedPackage">
               The following information will be used to refer to this project throughout ATAT and
               will be sent to your CSP during provisioning.<strong>
@@ -17,6 +17,7 @@
             <p v-else>
               Select all that apply
             </p>
+          </div>
           <div v-if="!selectedPackage" class="copy-max-width">
           <ATATTextField 
             label="Portfolio title"
