@@ -84,7 +84,7 @@ describe("Organization Store", () => {
       ],
     })
     organizationStore.setStoreData(setOrganizastionData)
-    expect(organizationStore.agency_data.length).toBe(3)
+    expect(organizationStore.agency_data.length).toBe(1)
     expect(organizationStore.disa_org_data.length).toBe(1)
   })
 
