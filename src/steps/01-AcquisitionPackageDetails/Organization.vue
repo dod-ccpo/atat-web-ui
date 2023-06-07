@@ -158,7 +158,11 @@
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import {convertSystemChoiceToSelect, convertAgencyRecordToSelect } from "@/helpers";
+import {
+  convertSystemChoiceToSelect,
+  convertAgencyRecordToSelect,
+  convertDisaOrgToSelect
+} from "@/helpers";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -308,7 +312,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     }
 
     return {
-      disa_organization: this.selectedDisaOrg.value as string,
+      disa_organization_reference: this.selectedDisaOrg.value as string,
       organization_name: this.organizationName,
       dodaac: this.dodAddressCode,
       agency: this.selectedAgency.value as string,
@@ -324,6 +328,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
   private savedData = {
     disa_organization: "",
+    disa_organization_reference:"",
     organization_name: "",
     dodaac: "",
     agency: "",
@@ -351,7 +356,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data);
-    this.disaOrgData = convertSystemChoiceToSelect(OrganizationData.disa_org_data);
+    this.disaOrgData = convertDisaOrgToSelect(OrganizationData.disa_org_data);
     this.stateListData = ContactData.stateChoices;
     const storeData = await AcquisitionPackage
       .loadData<OrganizationDTO>({storeProperty: 
@@ -361,6 +366,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       const keys: string[] = [
         "disa_organization",
         "organization_name",
+        "disa_organization_reference",
         "dodaac",
         "agency",
         "address_type",
@@ -385,9 +391,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
         this.selectedAgency =
           this.agencyData[selectedAgencyIndex];
       }
-
       this.selectedDisaOrg = this.disaOrgData.find(
-        (disaOrg) => disaOrg.value === storeData.disa_organization
+        (disaOrg) => disaOrg.value === storeData.disa_organization_reference.value
       ) as SelectData
 
       this.organizationName = storeData.organization_name;

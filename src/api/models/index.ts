@@ -347,6 +347,7 @@ export interface OrganizationDTO extends BaseTableDTO {
   street_address_2?: string;
   organization_name?: string;
   disa_organization?: string;
+  disa_organization_reference?: ReferenceColumn | string;
   agency?: string;
   state?: string;
   zip_code?: string;
@@ -1078,4 +1079,9 @@ export interface AddressDTO extends BaseTableDTO {
   state_province_state_code?: string
   name?: string
   aa_ae_ap?: string
+}
+export interface DisaOrganizationDTO extends BaseTableDTO {
+  full_name: string;
+  abbreviation: string;
+  css_id: number;
 }

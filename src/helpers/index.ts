@@ -1,11 +1,11 @@
-import { 
-  AgencyDTO, 
-  ClassificationLevelDTO, 
-  EvalPlanAssessmentAreaDTO, 
-  EvalPlanDifferentiatorDTO, 
-  PeriodDTO, 
-  ReferenceColumn, 
-  SystemChoiceDTO 
+import {
+  AgencyDTO,
+  ClassificationLevelDTO, DisaOrganizationDTO,
+  EvalPlanAssessmentAreaDTO,
+  EvalPlanDifferentiatorDTO,
+  PeriodDTO,
+  ReferenceColumn,
+  SystemChoiceDTO
 } from "@/api/models";
 import { Checkbox, RadioButton, SelectData, User } from "types/Global";
 import _ from "lodash";
@@ -42,6 +42,14 @@ export const convertSystemChoiceToSelect =
       const {value} = choice;
       return {
         text: choice.label,
+        value
+      }
+    });
+export const convertDisaOrgToSelect =
+    (data: DisaOrganizationDTO[]): SelectData[] => data.map(choice => {
+      const value = choice.sys_id;
+      return {
+        text: choice.full_name,
         value
       }
     });

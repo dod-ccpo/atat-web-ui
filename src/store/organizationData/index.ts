@@ -5,7 +5,7 @@ import rootStore from "../index";
 import api from "@/api";
 import { AxiosRequestConfig } from "axios"
 import {TABLENAME as OrganizationTable} from "@/api/organization";
-import { AgencyDTO, SystemChoiceDTO } from "@/api/models";
+import { AgencyDTO, DisaOrganizationDTO, SystemChoiceDTO } from "@/api/models";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
 import Vue from "vue";
 
@@ -27,7 +27,7 @@ export class OrganizationDataStore extends VuexModule {
   initialized = false;
   //keeps track of project title for global display
   public agency_data: AgencyDTO[] = [];
-  public disa_org_data: SystemChoiceDTO[] = [];
+  public disa_org_data: DisaOrganizationDTO[] = [];
 
   public get agencyData(): AgencyDTO[] {
     return this.agency_data;
@@ -63,16 +63,23 @@ export class OrganizationDataStore extends VuexModule {
   }
 
   @Mutation
-  public setDisOrgData(value: SystemChoiceDTO[]): void {
+  public setDisOrgData(value: DisaOrganizationDTO[]): void {
     this.disa_org_data = value;
   }
 
   @Action({rawError: true})
   private async getDisaOrgData():Promise<void> {
-    const disa_org_data = await api.systemChoices.getChoices(
-      OrganizationTable,
-      "disa_organization"
-    );
+    // const disa_org_data = await api.systemChoices.getChoices(
+    //   OrganizationTable,
+    //   "disa_organization"
+    // );
+    const disaOrgRequestConfig: AxiosRequestConfig = {
+      params: {
+        sysparm_query: "ORDERBYfull_name",
+        sysparm_fields: "full_name,abbreviation,css_id,sys_id",
+      },
+    };
+    const disa_org_data = await api.disaOrganizationTable.all(disaOrgRequestConfig)
     this.setDisOrgData(disa_org_data);
   }
 

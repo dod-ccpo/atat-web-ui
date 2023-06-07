@@ -65,6 +65,7 @@ import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
 import { AddressApi } from "@/api/address";
 import { CostEstimateApi } from "@/api/costEstimate";
+import { DisaOrganizationApi } from "@/api/disaOrganization";
 
 export const api = {
 
@@ -134,6 +135,7 @@ export const api = {
   packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
   packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
   addressTable: new AddressApi(),
+  disaOrganizationTable: new DisaOrganizationApi(),
 }
 
 export default {
