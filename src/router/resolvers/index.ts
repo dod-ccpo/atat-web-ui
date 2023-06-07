@@ -164,7 +164,6 @@ export const CertificationPOCsRouteResolver = (current: string): string => {
 }
 
 export const MRRNeedRouteResolver = (current: string): string => {
-  debugger;
   const backToReview = AcquisitionPackage.fairOppBackToReview;
   if (current === routeNames.MarketResearchEfforts && backToReview) {
     try {
@@ -178,7 +177,6 @@ export const MRRNeedRouteResolver = (current: string): string => {
 }
 
 export const MarketResearchFormRouteResolver = (current: string): string => {
-  debugger;
   const skipForm = AcquisitionPackage.fairOppExplanations.researchDetails.hadExplanationOnLoad;
   // backward
   if (current === routeNames.MarketResearchReview) {

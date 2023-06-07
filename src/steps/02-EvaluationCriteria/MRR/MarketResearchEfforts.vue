@@ -683,7 +683,6 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    debugger;
     return hasChanges(this.currentData, this.savedData);
   }
 
@@ -728,7 +727,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.writeOwnExplanation = 
         sectionsWithNoSelectedCount === 2 && !this.needsMRR ? "YES": "NO"
     }
-    debugger;
+
     try {
       if (this.hasChanged()) {
         this.explanation.formEdited = true;
