@@ -144,7 +144,7 @@ export class PortfolioDataStore extends VuexModule {
         await api.acquisitionPackageTable.retrieve(packageId)
       );
       if(acquisitionPackage.project_overview){
-        const overviewId = typeof acquisitionPackage.project_overview as string
+        const overviewId = acquisitionPackage.project_overview as string
         const projectOverview = await api.projectOverviewTable.retrieve(
           overviewId
         );
@@ -153,7 +153,7 @@ export class PortfolioDataStore extends VuexModule {
         }
       }
       if(acquisitionPackage.organization){
-        const organizationId = typeof acquisitionPackage.organization as string
+        const organizationId = acquisitionPackage.organization as string
         const organizationInfo = convertColumnReferencesToValues(await api.organizationTable
           .retrieve(organizationId));
         if(organizationInfo){
