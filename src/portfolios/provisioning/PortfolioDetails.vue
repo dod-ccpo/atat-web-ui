@@ -87,7 +87,6 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   public portfolioTitle = "";
   public serviceOrAgency: SelectData = { text: "", value: "" };
   public selectedCSPProvider = "";
-  public pageHeaderText = "";
   public checkboxLabel = ""
   public checkboxHelpText = ""
   public containsUnclassified = false
@@ -133,6 +132,11 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
       selectedILs: this.selectedILs,
     }
   }
+  public get pageHeaderText():string{
+    return this.selectedPackage !== ""
+      ? "What impact level(s) do you need to provision?"
+      : "Now, let's gather details about your portfolio."
+  }
 
   public savedData: PortfolioProvisioning = {
     portfolioTitle: "",
@@ -142,9 +146,6 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
 
   public async setTaskOrderData(): Promise<void> {
     const storeData = PortfolioStore.portfolioProvisioningObj;
-    this.pageHeaderText = this.selectedPackage !== ""
-      ? "What impact level(s) do you need to provision?"
-      : "Now, let's gather details about your portfolio."
     if (storeData) {
       this.portfolioTitle = storeData.portfolioTitle as string;
       const selectedServiceOrAgency 
