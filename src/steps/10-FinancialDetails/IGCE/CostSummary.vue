@@ -80,7 +80,7 @@
                 </li>
                 <li v-if="needContractingOfficeFee" class="text-primary mt-2">
                   <router-link
-                    :to="{name:routes.ContractingOfficeInfo}"
+                    :to="{name:routes.FeeCharged}"
                   >
                     Contracting Office Fee
                   </router-link>
