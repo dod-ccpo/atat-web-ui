@@ -142,8 +142,9 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
 
   public async setTaskOrderData(): Promise<void> {
     const storeData = PortfolioStore.portfolioProvisioningObj;
-    this.pageHeaderText = this.selectedPackage !== ""? "What impact level(s) do you need to" +
-      " provision?":"Now, let’s gather details about your portfolio."
+    this.pageHeaderText = this.selectedPackage !== ""
+      ? "What impact level(s) do you need to provision?"
+      : "Now, let's gather details about your portfolio."
     if (storeData) {
       this.portfolioTitle = storeData.portfolioTitle as string;
       const selectedServiceOrAgency 
