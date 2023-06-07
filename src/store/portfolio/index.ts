@@ -154,9 +154,8 @@ export class PortfolioDataStore extends VuexModule {
       }
       if(acquisitionPackage.organization){
         const organizationId = typeof acquisitionPackage.organization as string
-        const organizationInfo = await api.organizationTable.retrieve(
-          organizationId
-        );
+        const organizationInfo = convertColumnReferencesToValues(await api.organizationTable
+          .retrieve(organizationId));
         if(organizationInfo){
           portfolioAgency = organizationInfo.agency || ""
         }
