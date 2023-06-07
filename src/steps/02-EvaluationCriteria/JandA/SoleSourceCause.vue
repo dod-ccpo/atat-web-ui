@@ -392,7 +392,6 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     return "";
   }
 
-
   public validateMigrationEstimate(): void {
     this.migrationError = false;
     this.migrationErrorMessage = "";
@@ -519,6 +518,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         this.explanation.formEdited = true;
+        /* eslint-disable camelcase */
         this.writeOwnExplanation 
           = AcquisitionPackage.fairOpportunity?.cause_write_own_explanation as YesNo;
 

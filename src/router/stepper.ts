@@ -195,7 +195,8 @@ import {
   ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,
   SoleSourceFormRouteResolver,
-  MarketResearchEffortsRouteResolver,
+  MRRNeedRouteResolver,
+  MarketResearchFormRouteResolver,
   CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
@@ -567,6 +568,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: MRRNeedRouteResolver,
       },
       {
         menuText: "Market Research Efforts",
@@ -577,7 +579,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver: MarketResearchEffortsRouteResolver,
+        routeResolver: MarketResearchFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",

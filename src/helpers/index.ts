@@ -324,12 +324,15 @@ export function getStatusChipBgColor(status: string): string {
   }
 }
 
+export function getDateObj(dateStr: string): Date {
+  return dateStr.includes("-") ? parseISO(dateStr) : new Date(dateStr);
+}
+
 const monthAbbreviations = ATATCharts.monthAbbreviations;
 const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
 export function createDateStr(dateStr: string, period: boolean, hours?: boolean): string {
   hours = hours ? hours : false;
-  console.log("dateStr", dateStr);
   if (dateStr.indexOf("/") > -1) {
     dateStr = formatISO(new Date(dateStr)); 
   }

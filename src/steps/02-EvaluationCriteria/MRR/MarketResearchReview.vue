@@ -7,7 +7,7 @@
             {{ pagewHeaderIntro }} your market research details
           </h1>
           <div class="copy-max-width">
-            <p class="mb-4" v-if="!isCustom">
+            <p class="mb-4" v-if="!useCustomTextOnLoad">
               Based on what you’ve told us, we’ve suggested language to describe the 
               extent of the market research you conducted to identify all qualified 
               sources. You can edit any details to meet your requirements, but be 
@@ -50,6 +50,7 @@
               </template>
             </ATATExpandableLink>
 
+            <RestoreSuggestionAlert :showAlert="showAlert" />
 
             <ATATTextArea 
               id="ResearchDetails"
@@ -57,9 +58,12 @@
               label="Market research details"
               :labelSrOnly="true"
               :value.sync="researchDetails"
-              :rows="getRowCount"
+              :autoGrow="true"
+              :rows="10"
+              minHeight="200"
               :maxChars="4000"
               :validateItOnBlur="true"
+              :noResize="false"
               :rules="[
                 this.$validators.required(`Describe the market research that was 
                   conducted for this effort.`),
@@ -69,23 +73,23 @@
               ]"
             />
 
-            <v-btn
-              id="RestoreSuggestionButton"
-              v-if="!isCustom"
-              class="secondary font-size-14 px-4 mb-1 mt-1"
-              :disabled="isResearchReviewDefault"
-              @click="confirmRestoreDefaultText"
-            >
-              <ATATSVGIcon
-                id="RestoreSuggestionButtonIcon"
-                width="19"
-                height="15"
-                name="restore"
-                class="mr-1"
-                :color="btnRestoreIconColor"
-              />
-              Restore default suggestion
-            </v-btn>
+            <ExplanationButtons 
+              :showChangeToCustomButton="showChangeToCustomButton"
+              :showChangeToDAPPSButton="showChangeToDAPPSButton"
+              :showRestoreSuggestionButton="showRestoreSuggestionButton"
+              :isRestoreDisabled="!userEditedDefaultSuggestion"
+              :btnRestoreIconColor="getIconColor"
+              :restoreButtonNeedsMargin="restoreButtonNeedsMargin"
+              @changeToCustomExplanation="changeToCustomExplanation"
+              @changeToDAPPSSuggestion="changeToDAPPSSuggestion"
+              @confirmRestoreDefaultText="confirmRestoreDefaultText"
+            />
+
+            <GoToQuestionnaire 
+              v-if="displayHelpLink"
+              section="researchDetails"
+              @goToQuestionnaire="goToQuestionnaire"
+            />          
 
           </div>
         </v-col>
@@ -107,55 +111,114 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ConfirmRestoreDefaultTextModal from "../components/ConfirmRestoreDefaultTextModal.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
+import ATATAlert from "@/components/ATATAlert.vue";
+import ExplanationButtons from "../components/ExplanationButtons.vue";
+import GoToQuestionnaire from "../components/GoToQuestionnaire.vue";
+import RestoreSuggestionAlert from "../components/RestoreSuggestionAlert.vue"
 
 import { FairOpportunityDTO } from "@/api/models";
-import { getCSPCompanyName, hasChanges } from "@/helpers";
+import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { format, parseISO } from "date-fns";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { routeNames } from "@/router/stepper";
 
 @Component({
   components: {
+    ATATAlert,
     ATATExpandableLink,
     ATATSVGIcon,
     ATATTextArea,
     ConfirmRestoreDefaultTextModal,
+    ExplanationButtons,
+    GoToQuestionnaire,
+    RestoreSuggestionAlert,
   }
 })
 
 export default class MarketResearchReview extends Mixins(SaveOnLeave) {
-  public isCustom = false;
-  public cspName = "";
-  public needsMRR = false;
-  public generatedSuggestion = "";
+  public defaultSuggestion = "";
   public researchDetails = "";
   public researchDetailsGenerated = "";
   public researchDetailsCustom = "";
   public showRestoreModal = false;
 
+  public useCustomText = false;
+  public useCustomTextOnLoad = false;
+  public replaceCustomWithDefault = false;
+  public allSectionsNO = false;
+  public routeNames = routeNames;
+  public showAlert = false;
+  public hasFormBeenEdited = false;
+  public hasSuggestedTextBeenEdited = false;
+  public explanation = AcquisitionPackage.fairOppExplanations.researchDetails;
+
   public get pagewHeaderIntro(): string {
-    return this.isCustom ? "Tell us about" : "Let’s review";
+    return this.useCustomTextOnLoad ? "Tell us about" : "Let’s review";
   }
 
-  public isResearchReviewDefault = false;
-  @Watch("researchDetails")
-  public researchDetailsChanged(): void {
-    this.isResearchReviewDefault = this.researchDetails === this.generatedSuggestion;
+  public get showChangeToCustomButton(): boolean {
+    return !this.useCustomText && this.researchDetailsCustom.length > 0;
   }
+  public get showChangeToDAPPSButton(): boolean {
+    return this.useCustomText && this.researchDetailsGenerated.length > 0;
+  }
+  public get showRestoreSuggestionButton(): boolean {
+    return this.researchDetailsGenerated !== undefined && this.researchDetailsGenerated.length > 0;
+  }
+  public get restoreButtonNeedsMargin(): boolean {
+    return this.showChangeToCustomButton || this.showChangeToDAPPSButton;
+  }
+  public get displayHelpLink(): boolean {
+    return this.explanation.hadExplanationOnLoad as boolean;
+  }
+  public get userEditedDefaultSuggestion(): boolean {
+    return this.useCustomText 
+      ? this.researchDetailsGenerated !== this.defaultSuggestion
+      : this.researchDetails !== this.defaultSuggestion;
+  }
+
+  public restoreSuggestion(): void {
+    this.researchDetails = this.defaultSuggestion;
+    this.researchDetailsGenerated = this.defaultSuggestion;
+    this.hasFormBeenEdited = false;
+    this.explanation.formEdited = false;
+    this.explanation.defaultSuggestionEdited = false;
+    this.showRestoreModal = false;
+    this.useCustomText = false;
+    this.showAlert = false;
+  }
+
   public confirmRestoreDefaultText(): void {
     this.showRestoreModal = true;
   }
-  public restoreSuggestion(): void {
-    this.researchDetails = this.generatedSuggestion;
-    this.showRestoreModal = false;
-  }
-  get btnRestoreIconColor(): string {
-    return this.isResearchReviewDefault ? "disabled" : "primary";
+
+  public async changeToDAPPSSuggestion(): Promise<void> {
+    this.researchDetailsCustom = this.researchDetails;
+    this.researchDetails = this.researchDetailsGenerated;
+    this.useCustomText = false;
+    this.explanation.useCustomText = false;
   }
 
-  public get getRowCount(): number {
-    return this.isCustom ? 12 : 19;
+  public async changeToCustomExplanation(): Promise<void> {
+    this.researchDetailsGenerated = this.researchDetails;
+    this.researchDetails = this.researchDetailsCustom || "";
+    this.useCustomText = true;
+    this.explanation.useCustomText = true;
+  }
+
+  private get getIconColor():string {
+    return this.userEditedDefaultSuggestion ? "primary" : "disabled";
+  }
+
+  public async goToQuestionnaire(): Promise<void> {
+    await AcquisitionPackage.doSetFairOppBackToReview(true);
+    this.$router.push({
+      name: routeNames.MarketResearchEfforts,
+      params: {
+        direction: "next"
+      }   
+    }).catch((e: Error) => console.error(e));
   }
 
   public get currentData(): FairOpportunityDTO {
@@ -166,7 +229,7 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
       /* eslint-disable camelcase */
       research_details_generated: this.researchDetailsGenerated as string,
       research_details_custom: this.researchDetailsCustom as string,
-      research_details_for_docgen: this.isCustom ? "CUSTOM" : "GENERATED"
+      research_details_for_docgen: this.useCustomText ? "CUSTOM" : "GENERATED"
       /* eslint-enable camelcase */
     }
     return Object.assign(fairOppSaved, formData);
@@ -176,96 +239,51 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
     return AcquisitionPackage.getFairOpportunity;
   }
 
-  public getDate(dateStr: string): Date {
-    return dateStr.includes("-") ? parseISO(dateStr) : new Date(dateStr);
-  }
-
-  public async generateSuggestion(): Promise<void> {
-    const needsResearchP = this.savedData?.research_is_csp_only_source_capable === "YES";
-    const needsCatalogReviewP = this.savedData?.research_review_catalogs_reviewed === "YES";
-    const needsTechniquesP = this.savedData?.research_other_techniques_used !== ""
-      && this.savedData?.research_techniques_summary !== "";
-    const dateFormat = "MMMM d, yyyy";
-    let suggestedText = "";
-    if (needsResearchP) {
-      suggestedText += "Additional research was conducted "
-      const start = this.savedData?.research_start_date;
-      const end = this.savedData?.research_end_date;
-
-      if (start) {
-        const prep = end ? "from " : "on "
-        suggestedText += prep + format(this.getDate(start), dateFormat);
-      } 
-      if (end) {
-        suggestedText += " to " + format(this.getDate(end), dateFormat)
-      }
-      suggestedText += " by reviewing the specific capabilities in the JWCC Contracts " +
-        "and it was determined that " + this.cspName + " is the only source capable of " + 
-        "fulfilling the Government’s minimum needs in the manner and time frame required. " +
-        this.savedData?.research_supporting_data + "\n\n"; 
-    }
-
-    if (needsCatalogReviewP) {
-      suggestedText += "Further research was conducted "
-      const start = this.savedData?.research_review_catalogs_start_date;
-      const end = this.savedData?.research_review_catalogs_end_date;
-      if (start) {
-        const prep = end ? "from " : "on "
-        suggestedText += prep + format(this.getDate(start), dateFormat);
-      } if (end !== "" && end !== undefined) {
-        suggestedText += " to " + format(this.getDate(end), dateFormat)
-      }
-      suggestedText += " by reviewing the JWCC contractor's catalogs to determine " +
-        "if other similar offerings (to include: " + 
-        this.savedData?.cause_product_feature_name + ") " +
-        "meet or can be modified to satisfy the Government’s requirements. The results " + 
-        "have determined that no other offering is suitable as follows: " +
-        this.savedData?.research_review_catalogs_review_results + " " +
-        "Therefore, it was determined the " + 
-        this.savedData?.cause_product_feature_name + " " +
-        "is essential to the Government’s requirements and " + this.cspName + " " +
-        "is the only source capable of fulfilling the Government’s minimum needs in " +
-        "the manner and time frame required. \n\n"
-    }
-
-    if (needsTechniquesP) {
-      suggestedText += this.savedData?.research_techniques_summary;
-    }
-
-    if (!this.needsMRR && this.savedData?.contract_action) {
-      const exceptionText: Record<string, string> = {
-        UCA: "UCA",
-        BCA: "a bridge extension",
-        OES: "-8 extension" 
-      }
-      suggestedText += "Additional market research was not completed for this effort " +
-        "because an exception applies (" + exceptionText[this.savedData.contract_action] + ").";
-    }
-
-    this.generatedSuggestion = suggestedText;
-
-  }
-
   public async loadOnEnter(): Promise<void> {
+    await AcquisitionPackage.doSetFairOppBackToReview(false);
+
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.needsMRR = storeData.contract_action === "NONE";
-      this.cspName = storeData.proposed_csp 
-        ? getCSPCompanyName(storeData.proposed_csp) 
-        : "this proposed CSP";
 
-      await this.generateSuggestion();
+      this.allSectionsNO = storeData.research_is_csp_only_source_capable === "NO" 
+        && storeData.research_review_catalogs_reviewed !== "YES"
 
       this.researchDetailsCustom = storeData.research_details_custom as string;
-      this.researchDetailsGenerated = storeData.research_details_generated 
-        || this.generatedSuggestion;
-      this.isCustom = storeData.research_write_own_explanation === "YES";
-      if (!this.isCustom) {
-        this.researchDetails = storeData.research_details_generated as string
-          || this.researchDetailsGenerated;
+      this.researchDetailsGenerated = storeData.research_details_generated as string;
+
+      this.useCustomText = this.explanation.useCustomText as boolean;
+      this.useCustomTextOnLoad = this.explanation.useCustomText as boolean;
+      this.replaceCustomWithDefault = AcquisitionPackage.replaceCustomWithGenerated;
+
+      this.hasSuggestedTextBeenEdited = this.explanation.defaultSuggestionEdited as boolean;
+      this.hasFormBeenEdited = this.explanation.formEdited as boolean;
+      this.showAlert = !this.replaceCustomWithDefault 
+        && this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
+
+      await AcquisitionPackage.generateFairOpportunitySuggestion("ResearchDetails");
+      
+      this.defaultSuggestion = this.explanation.defaultSuggestion as string;
+
+      if (!this.useCustomText) {
+        if (!this.hasSuggestedTextBeenEdited || this.replaceCustomWithDefault) {
+          // if suggested text hasn't been edited, or user navigated to the form
+          // while using "custom" text, automatically set to the default generated suggestion
+          this.researchDetails = this.defaultSuggestion;
+          if (this.replaceCustomWithDefault) {
+            this.researchDetailsGenerated = this.defaultSuggestion;
+          }
+        } else {
+          // since user edited the default suggestion, user is shown alert and must click
+          // the "Restore default suggestion" to view the new suggested text
+          this.researchDetails = this.researchDetailsGenerated as string;
+        }
       } else {
-        this.researchDetails = storeData.research_details_custom as string;
+        this.researchDetails = this.researchDetailsCustom as string;
       }
+
+      await AcquisitionPackage.setReplaceCustomWithGenerated(
+        { section: "researchDetails", val: false }
+      );
     }
   }
 
@@ -278,11 +296,15 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    if (this.isCustom) {
+    if (this.useCustomText) {
       this.researchDetailsCustom = this.researchDetails.trim();
     } else {
       this.researchDetailsGenerated = this.researchDetails.trim();
     }
+
+    this.explanation.formEdited = false;
+    this.explanation.defaultSuggestionEdited = this.userEditedDefaultSuggestion
+    this.explanation.useCustomText = this.useCustomText;
 
     try {
       if (this.hasChanged()) {
