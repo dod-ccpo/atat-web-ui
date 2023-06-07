@@ -135,7 +135,7 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   public get pageHeaderText():string{
     return this.selectedPackage !== ""
       ? "What impact level(s) do you need to provision?"
-      : "Now, let's gather details about your portfolio."
+      : "Now, let’s gather details about your portfolio."
   }
 
   public savedData: PortfolioProvisioning = {
