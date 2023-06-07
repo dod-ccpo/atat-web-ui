@@ -16,27 +16,78 @@
            <v-btn
              class="secondary align-self-end"
              role="link"
-             @click="toRequirementsCostEstimates"
-             @keydown.enter="toRequirementsCostEstimates"
-             @keydown.space="toRequirementsCostEstimates">
+             @click="editRoute"
+             @keydown.enter="editRoute"
+             @keydown.space="editRoute">
              View/Edit estimates
            </v-btn>
           </div>
-<!--          <ATATAlert-->
-<!--            id="ClassificationRequirementsAlert"-->
-<!--            type="warning"-->
-<!--            class="copy-max-width my-10"-->
-<!--          >-->
-<!--            <template v-slot:content>-->
-<!--              <span class="h2 font-size-20">Missing price estimate details</span>-->
-<!--              <p class="mb-0">-->
-<!--                Your summary reflects the projected prices that you’ve told us about so far,
-                     but-->
-<!--                totals may change after you add this missing info. We recommend going back to-->
-<!--                complete your price estimates before proceeding.-->
-<!--              </p>-->
-<!--            </template>-->
-<!--          </ATATAlert>-->
+          <ATATAlert
+            v-if="showAlert"
+            id="ClassificationRequirementsAlert"
+            type="warning"
+            class="copy-max-width my-10"
+          >
+            <template v-slot:content>
+              <span class="h2 font-size-20">Missing price estimate details</span>
+              <p class="mb-0">
+                Your summary reflects the projected prices that you’ve told us about so far, but
+                totals may change after you add this missing info. We recommend going back to
+                complete the following price estimates before proceeding:
+              </p>
+              <ul class="mt-4">
+                <li v-if="needsReplicateAndOptimize" class="text-primary">
+                  <router-link
+                    :to="{name:routes.OptimizeOrReplicate}"
+                  >
+                    Replicate/Optimize your current environment
+                  </router-link>
+                </li>
+                <li v-if="needArchitecturalDesign" class="text-primary mt-2">
+                  <router-link
+                    :to="{name:routes.ArchitecturalDesignSolutions}"
+                  >
+                    Architectural Design Solution pricing
+                  </router-link>
+                </li>
+                <li v-if="needPerformanceRequirement" class="text-primary mt-2">
+                  <router-link
+                    :to="{name:routes.GatherPriceEstimates}"
+                  >
+                    Performance requirement pricing
+                  </router-link>
+                </li>
+                <li v-if="needTrainingPricing" class="text-primary mt-2">
+                  <router-link
+                    :to="{name:routes.IGCETraining}"
+                  >
+                    Training pricing
+                  </router-link>
+                </li>
+                <li v-if="needTravelPricing" class="text-primary mt-2">
+                  <router-link
+                    :to="{name:routes.TravelEstimates}"
+                  >
+                    Travel pricing
+                  </router-link>
+                </li>
+                <li v-if="needSurgeCapabilities" class="text-primary mt-2">
+                  <router-link
+                    :to="{name:routes.SurgeCapabilities}"
+                  >
+                    Surge capabilities
+                  </router-link>
+                </li>
+                <li v-if="needContractingOfficeFee" class="text-primary mt-2">
+                  <router-link
+                    :to="{name:routes.ContractingOfficeInfo}"
+                  >
+                    Contracting Office Fee
+                  </router-link>
+                </li>
+              </ul>
+            </template>
+          </ATATAlert>
             <v-data-table
               id="CostEstimateDataTable"
               :headers="tableHeaders"
@@ -131,6 +182,8 @@ import { CostEstimateDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import IGCEStore from "@/store/IGCE";
 import Periods from "@/store/periods";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 
 export interface IGCECostSummaryItem {
@@ -156,6 +209,16 @@ export default class CostSummary extends Vue {
   public surgePercentage = "";
   public contractingOfficeFee = "";
   public periodsLength = Periods.periods.length
+  public routes = routeNames
+  public needsReplicateAndOptimize = false
+  public needArchitecturalDesign = false
+  public needPerformanceRequirement = false
+  public needTrainingPricing = false
+  public needTravelPricing = false
+  public needSurgeCapabilities = false
+  public needContractingOfficeFee = false
+  public hasCurrentEnv = false
+  public hasArchDesign = false
 
   public tableHeaders = [
     { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate"},
@@ -166,15 +229,14 @@ export default class CostSummary extends Vue {
     return getIdText(str);
   }
 
-  public async toRequirementsCostEstimates(): Promise<void> {
-    this.$nextTick(()=>{
-      this.$router.push({
-        name: routeNames.GatherPriceEstimates,
-        params: {
-          direction: "next"
-        }
-      });
-    })
+  public get showAlert():boolean {
+    return this.needContractingOfficeFee
+      || this.needSurgeCapabilities
+      || this.needPerformanceRequirement
+      || this.needTravelPricing
+      || this.needArchitecturalDesign
+      || this.needTrainingPricing
+      || this.needsReplicateAndOptimize
   }
 
   public createTableData(source:Record<string, any>, clinAmount:string,rowName:string):void{
@@ -227,6 +289,101 @@ export default class CostSummary extends Vue {
     this.createTableData(tableObject, isClinAmount,tableObject.CLINTypeClassAggregate)
   }
 
+  public async findMissingEstimates(): Promise<void>{
+    let missingCostEstimates = false
+    let hasTraining = false
+    IGCEStore.igceEstimateList.forEach(estimate=>{
+      //eslint-disable-next-line
+      const legitVal = !!parseInt(String(estimate.unit_price))
+      if(!legitVal){
+        missingCostEstimates = true
+      }
+    })
+    const currentEnvReplicateOrOptimize = CurrentEnvironment.currentEnvironment
+      .current_environment_replicated_optimized;
+    const archDesign = DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services;
+    const dowObject = DescriptionOfWork.DOWObject;
+    const travel = DescriptionOfWork.travelSummaryInstances;
+    dowObject.forEach(service => {
+      if(service.serviceOfferingGroupId === "TRAINING"){
+        hasTraining = true
+      }
+    })
+    if(currentEnvReplicateOrOptimize !== "NO"
+      && currentEnvReplicateOrOptimize !== ""){
+      if(IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.length === 0){
+        this.needsReplicateAndOptimize = true
+      }else{
+        IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.forEach(value => {
+          //eslint-disable-next-line
+          const legitVal = !!parseInt(String(value))
+          if(!legitVal){
+            this.needsReplicateAndOptimize = true
+          }
+        })
+      }
+    }
+    if(archDesign === "YES"){
+      if(IGCEStore.requirementsCostEstimate?.architectural_design_performance_requirements
+        .estimated_values.length === 0){
+        this.needArchitecturalDesign = true
+
+      }else{
+        IGCEStore.requirementsCostEstimate?.architectural_design_performance_requirements
+          .estimated_values.forEach(value =>{
+          //eslint-disable-next-line
+          const legitVal = !!parseInt(value)
+            if(!legitVal){
+              this.needArchitecturalDesign = true
+            }
+          })
+      }
+    }
+    if(dowObject.length > 0 && missingCostEstimates){
+      this.needPerformanceRequirement = true
+    }
+    if(hasTraining && IGCEStore.trainingItems){
+      IGCEStore.trainingItems.forEach(item =>{
+        //eslint-disable-next-line
+        const legitVal = !!parseInt(item.estimatedTrainingPrice)
+        if(!legitVal){
+          this.needTrainingPricing = true
+        }
+      })
+    }
+    if(travel && IGCEStore.requirementsCostEstimate?.travel.estimated_values){
+      const values:string[] =
+        Object.values(JSON.parse(IGCEStore.requirementsCostEstimate?.travel.estimated_values))
+      if(values.length === 0){
+        this.needTravelPricing = true
+      }else{
+        values.forEach(value =>{
+          //eslint-disable-next-line
+          const legitVal = !!parseInt(value)
+          if(!legitVal){
+            this.needTravelPricing = true
+          }
+        })
+      }
+    }
+    if(IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities === "YES"){
+      const capacity = IGCEStore.requirementsCostEstimate?.surge_requirements.capacity
+      //eslint-disable-next-line
+      const legitVal = !!parseInt(String(capacity))
+      if(!legitVal){
+        this.needSurgeCapabilities = true
+      }
+    }
+    if(IGCEStore.requirementsCostEstimate?.fee_specs.is_charged === "YES"){
+      const percentage = IGCEStore.requirementsCostEstimate?.fee_specs.percentage
+      //eslint-disable-next-line
+      const legitVal = !!parseInt(String(percentage))
+      if(!legitVal){
+        this.needContractingOfficeFee = true
+      }
+    }
+  }
+
   public async loadOnEnter(): Promise<void> {
     const headers = [
       { text: "Base Period", value: "BasePeriod"},
@@ -238,6 +395,9 @@ export default class CostSummary extends Vue {
     for(let i = 0; i < this.periodsLength ; i++){
       this.tableHeaders.push(headers[i])
     }
+    this.hasCurrentEnv = CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
+    this.hasArchDesign = DescriptionOfWork.DOWArchitectureNeeds
+      .needs_architectural_design_services === "YES"
 
     this.tableHeaders.push({ text: "Total", value: "Total"})
     this.costData.payload.data.forEach((CLIN:Record<string, any>) => {
@@ -264,7 +424,22 @@ export default class CostSummary extends Vue {
     if(ditcoFee || contratingFee){
       this.createFeeData("grandTotal", grandTotal, "false")
     }
-    // this.createTableData(ditcoFee,"false","Ditco FEE")
+    await this.findMissingEstimates()
+  }
+  public editRoute():void {
+    let name = routeNames.GatherPriceEstimates
+    if(this.hasCurrentEnv){
+      name = routeNames.OptimizeOrReplicate
+    }
+    else if(this.hasArchDesign){
+      name = routeNames.ArchitecturalDesignSolutions
+    }
+    this.$router.push({
+      name: name,
+      params: {
+        direction: "next"
+      }
+    });
   }
 
   public async mounted(): Promise<void> {
