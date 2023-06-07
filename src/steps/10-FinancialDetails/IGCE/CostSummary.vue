@@ -354,13 +354,17 @@ export default class CostSummary extends Vue {
     if(travel && IGCEStore.requirementsCostEstimate?.travel.estimated_values){
       const values:string[] =
         Object.values(JSON.parse(IGCEStore.requirementsCostEstimate?.travel.estimated_values))
-      values.forEach(value =>{
-        //eslint-disable-next-line
-        const legitVal = !!parseInt(value)
-        if(!legitVal){
-          this.needTravelPricing = true
-        }
-      })
+      if(values.length === 0){
+        this.needTravelPricing = true
+      }else{
+        values.forEach(value =>{
+          //eslint-disable-next-line
+          const legitVal = !!parseInt(value)
+          if(!legitVal){
+            this.needTravelPricing = true
+          }
+        })
+      }
     }
     if(IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities === "YES"){
       const capacity = IGCEStore.requirementsCostEstimate?.surge_requirements.capacity
