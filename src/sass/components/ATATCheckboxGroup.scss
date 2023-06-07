@@ -25,7 +25,7 @@
 ._checkbox {
   margin-bottom: 12px;
 
-  ._description {
+  ._description:not(._normal) {
     font-size: 1.4rem;
     color: $base;  
   }
