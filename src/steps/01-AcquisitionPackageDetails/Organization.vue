@@ -391,9 +391,11 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
         this.selectedAgency =
           this.agencyData[selectedAgencyIndex];
       }
-      this.selectedDisaOrg = this.disaOrgData.find(
-        (disaOrg) => disaOrg.value === storeData.disa_organization_reference.value
-      ) as SelectData
+      if(storeData.disa_organization_reference){
+        this.selectedDisaOrg = this.disaOrgData.find(
+          (disaOrg) => disaOrg.value === storeData.disa_organization_reference.value
+        ) as SelectData
+      }
 
       this.organizationName = storeData.organization_name;
       this.dodAddressCode = storeData.dodaac;
