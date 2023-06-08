@@ -69,10 +69,6 @@ export class OrganizationDataStore extends VuexModule {
 
   @Action({rawError: true})
   private async getDisaOrgData():Promise<void> {
-    // const disa_org_data = await api.systemChoices.getChoices(
-    //   OrganizationTable,
-    //   "disa_organization"
-    // );
     const disaOrgRequestConfig: AxiosRequestConfig = {
       params: {
         sysparm_query: "ORDERBYfull_name",
