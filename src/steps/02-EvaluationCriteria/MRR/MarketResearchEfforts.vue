@@ -737,7 +737,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
         if (this.writeOwnExplanation === "NO") {
           // if it's already "YES" (set from action handler when "I want to write 
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 
-          // check if user answered "NO" to all 3 sections 
+          // check if user answered "NO" to both sections 
           this.writeOwnExplanation = sectionsWithNoSelectedCount === 2 ? "YES" : "NO";
           this.explanationForDocgen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
         } else {
