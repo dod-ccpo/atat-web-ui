@@ -74,7 +74,9 @@
                     '_subtotal' : item.CLINTypeClassAggregate === 'Subtotal',
                     '_total' : item.CLINTypeClassAggregate === 'Total Price' ||
                     item.CLINTypeClassAggregate === 'Grand Total with Fee',
-                    '_border-bottom' : item.isCLINAmount === 'true',
+                    '_border-bottom' : item.isCLINAmount === 'true' ||
+                    item.CLINTypeClassAggregate === 'Fees'||
+                    item.CLINTypeClassAggregate === 'Surge and Fees',
                   },
                   {'_fees-row': showSurgeAndFees(item.isFees)}
                   ]"
