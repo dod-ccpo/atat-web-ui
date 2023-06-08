@@ -60,9 +60,18 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import { createDateStr, currencyStringToNumber, toCurrencyString } from "@/helpers";
+
+import { 
+  createDateStr, 
+  currencyStringToNumber, 
+  toCurrencyString, 
+  getDateObj, 
+  getCSPCompanyName 
+} from "@/helpers";
+
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
+import { format } from "date-fns";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
@@ -1130,22 +1139,16 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public async initializeAllFairOppSuggestions(): Promise<void> {
     await this.generateFairOpportunitySuggestion("SoleSource");
-    if (this.fairOpportunity?.cause_of_sole_source_for_docgen === "CUSTOM") {
-      AcquisitionPackage.fairOppExplanations.soleSource.useCustomText = true;
+    AcquisitionPackage.fairOppExplanations.soleSource.useCustomText =   
+      this.fairOpportunity?.cause_of_sole_source_for_docgen === "CUSTOM";
 
-    }
+    await this.generateFairOpportunitySuggestion("ResearchDetails");
+    AcquisitionPackage.fairOppExplanations.researchDetails.useCustomText = 
+      this.fairOpportunity?.research_details_for_docgen === "CUSTOM"
 
-    // TODO: ADD methods to generate the other "mad-lib" default suggestions
-    // and set if using Custom explanation for each section
-
-    // await this.generateFairOpportunitySuggestion("ResearchDetails");
-    // if (this.fairOpportunity?.research_details_for_docgen === "CUSTOM") {
-    //   await this.doSetIsResearchDetailsTextCustom(true);
-    // }
     await this.generateFairOpportunitySuggestion("RemoveBarriers");
-    // if (this.fairOpportunity?.barriers_plans_to_remove_for_docgen === "CUSTOM") {
-    //   await this.doSetIsPlansToRemoveBarriersTextCustom(true);
-    // }
+    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.useCustomText = 
+      this.fairOpportunity?.barriers_plans_to_remove_for_docgen === "CUSTOM";   
 
   }
 
@@ -1155,9 +1158,8 @@ export class AcquisitionPackageStore extends VuexModule {
     case "SoleSource": 
       await this.generateSoleSourceSuggestion();
       break;
-    // TODO: ADD methods to generate the other "mad-lib" default suggestions.
     case "ResearchDetails":
-      // await this.generateResearchDetailsSuggestion();
+      await this.generateResearchDetailsSuggestion();
       break;
     case "RemoveBarriers":
       await this.generatePlansToRemoveBarriersSuggestion();
@@ -1228,11 +1230,92 @@ export class AcquisitionPackageStore extends VuexModule {
         ". " + this.fairOpportunity.cause_product_feature_why_essential + " " + 
         this.fairOpportunity.cause_product_feature_why_others_inadequate;
       }
-      this.fairOppExplanations.soleSource.defaultSuggestion = text;
 
+      this.fairOppExplanations.soleSource.defaultSuggestion = text;
       const isEdited = this.fairOpportunity.cause_of_sole_source_generated !== "" 
         && text !== this.fairOpportunity.cause_of_sole_source_generated;
       this.fairOppExplanations.soleSource.defaultSuggestionEdited = isEdited;
+    }
+  }
+
+  // EJY HERE
+
+  @Action({rawError: true})
+  public async generateResearchDetailsSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const needsResearchP = this.fairOpportunity.research_is_csp_only_source_capable === "YES";
+      const needsCatalogReviewP = this.fairOpportunity.research_review_catalogs_reviewed === "YES";
+      const needsTechniquesP = this.fairOpportunity.research_other_techniques_used !== ""
+        && this.fairOpportunity.research_techniques_summary !== "";
+      const dateFormat = "MMMM d, yyyy";
+
+      const cspName = this.fairOpportunity.proposed_csp 
+        ? getCSPCompanyName(this.fairOpportunity.proposed_csp) 
+        : "this proposed CSP";
+      const needsMRR = this.fairOpportunity.contract_action === "NONE";
+
+      let text = "";
+
+      if (needsResearchP) {
+        text += "Additional research was conducted "
+        const start = this.fairOpportunity.research_start_date;
+        const end = this.fairOpportunity.research_end_date;
+  
+        if (start) {
+          const prep = end ? "from " : "on "
+          text += prep + format(getDateObj(start), dateFormat);
+        } 
+        if (end) {
+          text += " to " + format(getDateObj(end), dateFormat)
+        }
+        text += " by reviewing the specific capabilities in the JWCC Contracts " +
+          "and it was determined that " + cspName + " is the only source capable of " + 
+          "fulfilling the Government’s minimum needs in the manner and time frame required. " +
+          this.fairOpportunity.research_supporting_data + "\n\n"; 
+      }
+
+      if (needsCatalogReviewP) {
+        text += "Further research was conducted "
+        const start = this.fairOpportunity.research_review_catalogs_start_date;
+        const end = this.fairOpportunity.research_review_catalogs_end_date;
+        if (start) {
+          const prep = end ? "from " : "on "
+          text += prep + format(getDateObj(start), dateFormat);
+        } if (end !== "" && end !== undefined) {
+          text += " to " + format(getDateObj(end), dateFormat)
+        }
+        text += " by reviewing the JWCC contractor's catalogs to determine " +
+          "if other similar offerings (to include: " + 
+          this.fairOpportunity.cause_product_feature_name + ") " +
+          "meet or can be modified to satisfy the Government’s requirements. The results " + 
+          "have determined that no other offering is suitable as follows: " +
+          this.fairOpportunity.research_review_catalogs_review_results + " " +
+          "Therefore, it was determined the " + 
+          this.fairOpportunity.cause_product_feature_name + " " +
+          "is essential to the Government’s requirements and " + cspName + " " +
+          "is the only source capable of fulfilling the Government’s minimum needs in " +
+          "the manner and time frame required. \n\n"
+      }
+
+      if (needsTechniquesP) {
+        text += this.fairOpportunity.research_techniques_summary;
+      }
+  
+      if (!needsMRR && this.fairOpportunity.contract_action) {
+        const exceptionText: Record<string, string> = {
+          UCA: "UCA",
+          BCA: "a bridge extension",
+          OES: "-8 extension" 
+        }
+        text += "Additional market research was not completed for this effort " +
+          "because an exception applies (" + 
+          exceptionText[this.fairOpportunity.contract_action] + ").";
+      }        
+
+      this.fairOppExplanations.researchDetails.defaultSuggestion = text;
+      const isEdited = this.fairOpportunity.research_details_generated !== "" 
+        && text !== this.fairOpportunity.research_details_generated;
+      this.fairOppExplanations.researchDetails.defaultSuggestionEdited = isEdited;
     }
   }
 

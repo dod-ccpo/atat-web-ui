@@ -94,7 +94,6 @@
             />
 
           </div>
-          
         </v-col>
       </v-row>
     </v-container>    
@@ -147,14 +146,12 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
   public defaultSuggestion = "";
 
   public showRestoreModal = false;
-  public showConfirmToCustomExplanationModal = false;
 
   public useCustomText = false;
   public useCustomTextOnLoad = false;
   public replaceCustomWithDefault = false;
   public allSectionsNO = false;
   public routeNames = routeNames;
-
   public showAlert = false;
   public hasFormBeenEdited = false;
   public hasSuggestedTextBeenEdited = false;

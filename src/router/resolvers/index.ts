@@ -69,12 +69,13 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
     buttonText: "I don’t need other assessment areas", 
     buttonId: "NoOtherAssessmentAreas"
   });
-
-  if (evalPlan.source_selection === "SET_LUMP_SUM") {
-    Steps.setAdditionalButtonHide(false).catch((e) => console.error(e));
-  } else {
-    Steps.setAdditionalButtonHide(true).catch((e) => console.error(e));
-  }
+  try {
+    if (evalPlan.source_selection === "SET_LUMP_SUM") {
+      Steps.setAdditionalButtonHide(false);
+    } else {
+      Steps.setAdditionalButtonHide(true);
+    }  
+  } catch (error) { console.error(error) }
 
   return current === routeNames.CreateEvalPlan || routeNames.Differentiators
     ? routeNames.EvalPlanDetails
@@ -112,8 +113,10 @@ export const ProposedCSPRouteResolver = (current: string): string => {
 export const MinimumRequirementsRouteResolver = (current: string): string => {
   const backToReview = AcquisitionPackage.fairOppBackToReview;
   if (routeNames.SoleSourceCause && backToReview) {
-    AcquisitionPackage.doSetFairOppBackToReview(false).catch((e: Error) => console.error(e));
-    return routeNames.SoleSourceReview;
+    try {
+      AcquisitionPackage.doSetFairOppBackToReview(false);
+      return routeNames.SoleSourceReview;
+    } catch (error) { console.error(error) } 
   }
   return current === routeNames.SoleSourceCause
     ? routeNames.SoleSourceReview
@@ -133,13 +136,14 @@ export const SoleSourceFormRouteResolver = (current: string): string => {
 export const OtherSupportingFactorsRouteResolver = (current: string): string => {
   const backToReview = AcquisitionPackage.fairOppBackToReview;
   if (routeNames.RemoveBarriers && backToReview) {
-    AcquisitionPackage.doSetFairOppBackToReview(false).catch((e: Error) => console.error(e));
-    return routeNames.ReviewBarriers;
+    try {
+      AcquisitionPackage.doSetFairOppBackToReview(false);
+      return routeNames.ReviewBarriers;        
+    } catch (error) { console.error(error) }
   }
   return current === routeNames.RemoveBarriers
     ? routeNames.ReviewBarriers
     : routeNames.OtherSupportingFactors;
-
 }
 
 export const RemoveBarriersFormRouteResolver = (current: string): string => {
@@ -159,25 +163,27 @@ export const CertificationPOCsRouteResolver = (current: string): string => {
     : routeNames.CertificationPOCs
 }
 
-const hasMarketResearchDetails = (): boolean => {
-  return AcquisitionPackage.fairOpportunity?.research_details_custom !== ""
-    || AcquisitionPackage.fairOpportunity.research_details_generated !== "";
+export const MRRNeedRouteResolver = (current: string): string => {
+  const backToReview = AcquisitionPackage.fairOppBackToReview;
+  if (current === routeNames.MarketResearchEfforts && backToReview) {
+    try {
+      AcquisitionPackage.doSetFairOppBackToReview(false);
+      return routeNames.MarketResearchReview;  
+    } catch (error) { console.error(error) }
+  }
+  return current === routeNames.MarketResearchEfforts
+    ? routeNames.MRRNeed
+    : routeNames.MarketResearchReview;
 }
 
-export const MarketResearchEffortsRouteResolver = (current: string): string => {
-  // if new package coming from either direction, go to form/questionnaire
-  if (AcquisitionPackage.isNewPackage) {
-    return routeNames.MarketResearchEfforts
+export const MarketResearchFormRouteResolver = (current: string): string => {
+  const skipForm = AcquisitionPackage.fairOppExplanations.researchDetails.hadExplanationOnLoad;
+  // backward
+  if (current === routeNames.MarketResearchReview) {
+    return skipForm ? routeNames.MRRNeed : routeNames.MarketResearchEfforts;
   }
-  // editing existing package, does package have saved custom or generated research details?
-  if (hasMarketResearchDetails()) {
-    // skip form/questionnaire
-    return current === routeNames.MRRNeed
-      ? routeNames.MarketResearchReview // forward
-      : routeNames.MRRNeed; // backward
-  }
-  return routeNames.MarketResearchEfforts;
- 
+  // forward
+  return skipForm ? routeNames.MarketResearchReview : routeNames.MarketResearchEfforts; 
 }
 
 const needContractAction = ():boolean =>{
@@ -771,8 +777,9 @@ export const ServiceOfferingsPathResolver = (
   }
 
   setDontNeedButton(currentGroupId);
-
-  Steps.setAdditionalButtonHide(false).catch((e: Error) => console.error(e));
+  try {
+    Steps.setAdditionalButtonHide(false);
+  } catch (error) { console.error(error) }
 
   if (isOtherOffering) {
     const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
@@ -786,7 +793,9 @@ export const ServiceOfferingsPathResolver = (
     ) {
       // if more than one "Other" offering (Compute, General XaaS, Database) 
       // instance/requirement, hide the "I don't need ____ resources" button
-      Steps.setAdditionalButtonHide(true).catch((e: Error) => console.error(e));
+      try {
+        Steps.setAdditionalButtonHide(true);
+      } catch (error) { console.error(error) }
     }
   }
   //default  
@@ -807,7 +816,10 @@ export const ServiceOfferingsPathResolver = (
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   Steps.clearAltBackButtonText();
-  Steps.setAdditionalButtonHide(false).catch((e: Error) => console.error(e));
+  try {
+    Steps.setAdditionalButtonHide(false);
+  } catch (error) { console.error(error) }
+
   const groupId = DescriptionOfWork.currentGroupId;
   setDontNeedButton(groupId);
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
@@ -1648,8 +1660,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   MinimumRequirementsRouteResolver,
   SoleSourceFormRouteResolver,
   OtherSupportingFactorsRouteResolver,
-  MarketResearchEffortsRouteResolver,
+  MarketResearchFormRouteResolver,
   CertificationPOCsRouteResolver,
+  MRRNeedRouteResolver,
   SecurityRequirementsResolver,
   CrossDomainResolver,
   AnticipatedUserAndDataNeedsResolver,

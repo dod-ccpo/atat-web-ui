@@ -8,8 +8,10 @@
           </h1>
           <p class="copy-max-width mb-10">
             {{ introText }} 
-            If you would rather skip these questions, click the “I want to write my 
-            own explanation” button below. 
+            <span v-if="!hadExplanationOnLoad">
+              If you would rather skip these questions, click the “I want to write 
+              my own explanation” button below.
+            </span>
             <a id="LearnMoreIGCE"
                role="button"
                tabindex="0"
@@ -19,6 +21,11 @@
               <span class="">Learn more about market research for the JWCC Contract</span>
             </a>
           </p>
+
+          <v-expand-transition>
+            <AlertForForms  v-if="showAlert" :alertType="alertType" />
+          </v-expand-transition>
+
           <div class="max-width-740">
             <ATATRadioGroup 
               id="OnlyCapableSource"
@@ -269,6 +276,7 @@
 
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
+import AlertForForms from "../components/AlertForForms.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -288,7 +296,7 @@ import _ from "lodash";
 import { Checkbox, RadioButton, YesNo } from "types/Global";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { addDays, format, formatISO, isAfter, isBefore, isSameDay, parseISO, sub } from "date-fns";
+import { addDays, format, isAfter, isSameDay, parseISO, sub } from "date-fns";
 
 import SlideoutPanel from "@/store/slideoutPanel";
 import {SlideoutPanelContent} from "../../../../types/Global";
@@ -298,6 +306,7 @@ import MarketResearchEffortsLearnMore
 
 @Component({
   components: {
+    AlertForForms,
     ATATCheckboxGroup,
     ATATDatePicker,
     ATATErrorValidation,
@@ -312,9 +321,16 @@ import MarketResearchEffortsLearnMore
 
 export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public cspName = "";  
-  public writeOwnExplanation: YesNo | undefined = "";
-  public researchDetailsForDocGen: FairOppDocGenType = "";
+  public writeOwnExplanation: YesNo = "";
   public isLoading = false;
+
+  public hasSuggestedTextBeenEdited = false;
+  public isCustomExplanation = false;
+  public hasExplanation = false;
+  public explanationForDocgen: FairOppDocGenType = "";
+  public hadExplanationOnLoad = false;
+
+  public explanation = AcquisitionPackage.fairOppExplanations.researchDetails;
 
   public needsMRR = false;
   public cspHasPeculiarFeature = true;
@@ -511,6 +527,18 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
 
   // ========== END FORM SECTIONS ==========
 
+  public get showAlert(): boolean{
+    return this.hasExplanation && 
+      (this.isCustomExplanation || this.hasSuggestedTextBeenEdited);
+  }
+  public get alertType(): string {
+    if (this.hasExplanation) {
+      if (this.isCustomExplanation) return "custom";
+      if (this.hasSuggestedTextBeenEdited) return "suggestion";
+    }
+    return "";
+  }
+
   private get savedData(): FairOpportunityDTO | null {
     return AcquisitionPackage.getFairOpportunity;
   }
@@ -521,6 +549,8 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
     const formData: FairOpportunityDTO = {
       /* eslint-disable camelcase */
+      research_write_own_explanation: this.writeOwnExplanation,
+
       research_is_csp_only_source_capable: this.cspIsOnlySourceCapable,
       research_start_date: this.researchStartDate,
       research_end_date: this.researchEndDate,
@@ -536,9 +566,8 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       research_other_technique: this.otherTechnique,
       research_personal_knowledge_person_or_position: this.personalKnowledgePerson,
       research_techniques_summary: this.techniquesSummary,
-      
-      research_write_own_explanation: this.writeOwnExplanation,
 
+      research_details_for_docgen: this.explanationForDocgen,
     /* eslint-enable camelcase */
     }
     return Object.assign(fairOppSaved, formData);
@@ -584,10 +613,16 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    // eslint-disable-next-line camelcase
+    await AcquisitionPackage.setFairOpportunity({research_write_own_explanation: "NO"})
+
     await this.setOtherTechniquesOptions();
 
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
+      this.writeOwnExplanation = "NO";
+      this.explanationForDocgen = storeData.research_details_for_docgen;
+
       this.needsMRR = storeData.contract_action === "NONE";
       this.cspHasPeculiarFeature = storeData.cause_product_feature_peculiar_to_csp === "YES";
 
@@ -621,11 +656,6 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
         = storeData.research_personal_knowledge_person_or_position as string;
       this.techniquesSummary = storeData.research_techniques_summary as string;
 
-      this.researchDetailsForDocGen = storeData.research_details_for_docgen;
-
-      // if coming to form, always change to NO. Will change to YES if clicking "I want to write
-      // my own explanation" or if all form sections are answered "NO" (or nothing selected)
-      this.writeOwnExplanation = "NO"; 
       // eslint-disable-next-line camelcase
       const fairOpp: FairOpportunityDTO = { research_write_own_explanation: "NO" };
       await AcquisitionPackage.setFairOpportunity(fairOpp);
@@ -633,7 +663,14 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "this proposed CSP";
+
+      this.hasExplanation = storeData.research_details_generated !== ""
+        || storeData.research_details_custom !== "";
     }
+
+    this.hadExplanationOnLoad = this.explanation.hadExplanationOnLoad as boolean;
+    this.hasSuggestedTextBeenEdited = this.explanation.defaultSuggestionEdited as boolean;
+    this.isCustomExplanation = this.explanation.useCustomText as boolean;
 
     await this.initializeSlideoutPanel();
 
@@ -651,10 +688,14 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
+    
+    this.supportingData = this.supportingData.trim();
+    this.catalogReviewResults = this.catalogReviewResults.trim();
+    this.techniquesSummary = this.techniquesSummary.trim();
+
     let sectionsWithNoSelectedCount = 0;
 
     // ensure data cleared if any section main question is "NO"
-    /* eslint-disable camelcase */
     if (this.cspIsOnlySourceCapable !== "YES") {
       this.researchStartDate = "";
       this.researchEndDate = "";
@@ -686,14 +727,30 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.writeOwnExplanation = 
         sectionsWithNoSelectedCount === 2 && !this.needsMRR ? "YES": "NO"
     }
-    this.researchDetailsForDocGen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
-
-    this.supportingData = this.supportingData.trim();
-    this.catalogReviewResults = this.catalogReviewResults.trim();
-    this.techniquesSummary = this.techniquesSummary.trim();
 
     try {
       if (this.hasChanged()) {
+        this.explanation.formEdited = true;
+        this.writeOwnExplanation 
+          = AcquisitionPackage.fairOpportunity?.research_write_own_explanation as YesNo;
+
+        if (this.explanationForDocgen === "CUSTOM") {
+          await AcquisitionPackage.setReplaceCustomWithGenerated(
+            {section: "researchDetails", val: true }
+          );
+        }
+
+        if (this.writeOwnExplanation === "NO") {
+          // if it's already "YES" (set from action handler when "I want to write 
+          //  my own explanation" button, don't change it, but if it's NO as set on page load, 
+          // check if user answered "NO" to all 3 sections 
+          this.writeOwnExplanation = sectionsWithNoSelectedCount === 3 ? "YES" : "NO";
+          this.explanationForDocgen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
+        } else {
+          this.explanationForDocgen = "CUSTOM";
+        }
+        this.explanation.useCustomText = this.explanationForDocgen === "CUSTOM";
+
         /* eslint-enable camelcase */
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
