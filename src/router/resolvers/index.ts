@@ -171,7 +171,8 @@ export const MRRNeedRouteResolver = (current: string): string => {
       return routeNames.MarketResearchReview;  
     } catch (error) { console.error(error) }
   }
-  return current === routeNames.MarketResearchEfforts
+
+  return current === routeNames.MarketResearchEfforts || current === routeNames.ImpactOfRequirement
     ? routeNames.MRRNeed
     : routeNames.MarketResearchReview;
 }

@@ -1231,14 +1231,17 @@ export class AcquisitionPackageStore extends VuexModule {
         this.fairOpportunity.cause_product_feature_why_others_inadequate;
       }
 
+      text = text.trim();
       this.fairOppExplanations.soleSource.defaultSuggestion = text;
-      const isEdited = this.fairOpportunity.cause_of_sole_source_generated !== "" 
-        && text !== this.fairOpportunity.cause_of_sole_source_generated;
-      this.fairOppExplanations.soleSource.defaultSuggestionEdited = isEdited;
+      if (text !== "" && this.fairOpportunity.cause_of_sole_source_generated === "") {
+        this.fairOpportunity.cause_of_sole_source_generated = text;
+        this.fairOppExplanations.soleSource.defaultSuggestionEdited = false;
+      } else {
+        const isEdited = text !== this.fairOpportunity.cause_of_sole_source_generated;
+        this.fairOppExplanations.soleSource.defaultSuggestionEdited = isEdited;  
+      }
     }
   }
-
-  // EJY HERE
 
   @Action({rawError: true})
   public async generateResearchDetailsSuggestion(): Promise<void> {
@@ -1312,10 +1315,15 @@ export class AcquisitionPackageStore extends VuexModule {
           exceptionText[this.fairOpportunity.contract_action] + ").";
       }        
 
+      text = text.trim();
       this.fairOppExplanations.researchDetails.defaultSuggestion = text;
-      const isEdited = this.fairOpportunity.research_details_generated !== "" 
-        && text !== this.fairOpportunity.research_details_generated;
-      this.fairOppExplanations.researchDetails.defaultSuggestionEdited = isEdited;
+      if (text !== "" && this.fairOpportunity.research_details_generated === "") {
+        this.fairOpportunity.research_details_generated = text;
+        this.fairOppExplanations.researchDetails.defaultSuggestionEdited = false;
+      } else {
+        const isEdited = text !== this.fairOpportunity.research_details_generated;
+        this.fairOppExplanations.researchDetails.defaultSuggestionEdited = isEdited;  
+      }
     }
   }
 
@@ -1360,10 +1368,15 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       if (hasPrevJA) text += this.fairOpportunity.barriers_j_a_prepared_results;
 
+      text = text.trim();
       this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestion = text;
-      const isEdited = this.fairOpportunity.barriers_plans_to_remove_generated !== ""
-        && text !== this.fairOpportunity.barriers_plans_to_remove_generated;
-      this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited = isEdited;
+      if (text !== "" && this.fairOpportunity.barriers_plans_to_remove_generated === "") {
+        this.fairOpportunity.barriers_plans_to_remove_generated = text;
+        this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited = false;
+      } else {
+        const isEdited = text !== this.fairOpportunity.barriers_plans_to_remove_generated;
+        this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited = isEdited;  
+      }
     }
   }
 

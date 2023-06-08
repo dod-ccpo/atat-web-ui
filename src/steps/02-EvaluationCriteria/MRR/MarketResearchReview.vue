@@ -261,8 +261,11 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
         && this.hasSuggestedTextBeenEdited && this.hasFormBeenEdited;
 
       await AcquisitionPackage.generateFairOpportunitySuggestion("ResearchDetails");
-      
       this.defaultSuggestion = this.explanation.defaultSuggestion as string;
+
+      const saveGeneratedSuggestion = this.researchDetailsGenerated === "";
+      this.researchDetailsGenerated = this.researchDetailsGenerated === ""
+        ? this.defaultSuggestion : this.researchDetailsGenerated;
 
       if (!this.useCustomText) {
         if (!this.hasSuggestedTextBeenEdited || this.replaceCustomWithDefault) {
@@ -284,6 +287,11 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
       await AcquisitionPackage.setReplaceCustomWithGenerated(
         { section: "researchDetails", val: false }
       );
+
+      if (saveGeneratedSuggestion) {
+        await AcquisitionPackage.setFairOpportunity(this.currentData);
+      }
+
     }
   }
 

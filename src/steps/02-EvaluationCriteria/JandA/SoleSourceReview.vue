@@ -265,6 +265,10 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
 
       await AcquisitionPackage.generateFairOpportunitySuggestion("SoleSource");
       this.defaultSuggestion = this.explanation.defaultSuggestion as string;
+
+      const saveGeneratedSuggestion = this.soleSourceCauseGenerated === "";
+      this.soleSourceCauseGenerated = this.soleSourceCauseGenerated === ""
+        ? this.defaultSuggestion : this.soleSourceCauseGenerated;
       
       if (!this.useCustomText) {
         if (!this.hasSuggestedTextBeenEdited || this.replaceCustomWithDefault) {
@@ -286,6 +290,10 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       await AcquisitionPackage.setReplaceCustomWithGenerated(
         { section: "soleSource", val: false }
       );
+
+      if (saveGeneratedSuggestion) {
+        await AcquisitionPackage.setFairOpportunity(this.currentData);
+      }
 
     }
   }

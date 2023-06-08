@@ -721,12 +721,6 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.personalKnowledgePerson = "";
       this.techniquesSummary = "";
     }
-    this.writeOwnExplanation
-      = AcquisitionPackage.fairOpportunity?.research_write_own_explanation as YesNo
-    if (this.writeOwnExplanation !== "YES") {
-      this.writeOwnExplanation = 
-        sectionsWithNoSelectedCount === 2 && !this.needsMRR ? "YES": "NO"
-    }
 
     try {
       if (this.hasChanged()) {
@@ -743,8 +737,8 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
         if (this.writeOwnExplanation === "NO") {
           // if it's already "YES" (set from action handler when "I want to write 
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 
-          // check if user answered "NO" to all 3 sections 
-          this.writeOwnExplanation = sectionsWithNoSelectedCount === 3 ? "YES" : "NO";
+          // check if user answered "NO" to both sections 
+          this.writeOwnExplanation = sectionsWithNoSelectedCount === 2 ? "YES" : "NO";
           this.explanationForDocgen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
         } else {
           this.explanationForDocgen = "CUSTOM";
