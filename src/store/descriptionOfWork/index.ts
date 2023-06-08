@@ -161,6 +161,7 @@ const saveOrUpdateClassificationInstance =
       tempObject.type_of_mobility_other = classificationInstance.typeOfMobilityOther;
       tempObject.classified_information_types = classificationInstance.classifiedInformationTypes;
       tempObject.ts_contractor_clearance_type = classificationInstance.tsContractorClearanceType;
+      
       const dowTaskNumber = await createDOWTaskNumber(
         classificationInstance.classificationLevelSysId as string, 
         title, 
@@ -174,6 +175,7 @@ const saveOrUpdateClassificationInstance =
           tempObject.sys_id,
             tempObject as ClassificationInstanceDTO
         );
+
         await IGCEStore.updateIgceEstimateRecord({
           classificationInstanceSysId: objSysId,
           classificationLevelSysId: classificationLevel,
@@ -260,7 +262,6 @@ export const saveOrUpdateOtherServiceOffering =
       tempObject.storage_unit = serviceOffering.storageUnit;
       tempObject.classified_information_types = serviceOffering.classifiedInformationTypes;
       tempObject.instance_number = serviceOffering.instanceNumber;
-
       const dowTaskNumber = await createDOWTaskNumber(
           serviceOffering.classificationLevel as string, 
           offeringType, 
@@ -509,20 +510,42 @@ export const saveOrUpdateOtherServiceOffering =
       return objSysId;
     };
 
+
 export const createDOWTaskNumber = async(
   classificationLevel: string,
   offeringType: string,
   instanceNumber?: number
 ): Promise<string> =>{
-  const classification = ClassificationRequirements.classificationLevels.find(
+  // get DOW Task Number associated with selected classification
+  const classificationDOWTaskNumberComponent = 
+  ClassificationRequirements.classificationLevels.find(
     cr => cr.sys_id === classificationLevel
-  )
+  )?.dow_task_number_component
 
+  // get the offering from the store
   const offeringInfo = DescriptionOfWork.serviceOfferings.find(
     so => so.service_offering_group.toUpperCase() === offeringType.toUpperCase()
   )
   const isXaas = offeringInfo?.offering_type === "XAAS_SERVICE";
 
+  /**
+   * Business Rule: for XAAS service offerings WITHOUT instance numbers
+   * increment the instance numbers based on classification levels 
+   * examples
+   * Applications - Web App      - IL2 -> 4.2.1.3.1
+   * Applications - Monit. Tools - IL5 -> 4.2.3.3.1
+   * Applications - Database     - IL5 -> 4.2.3.3.2
+   * Applications - SaaS         - IL5 -> 4.2.3.3.3
+  */ 
+  if (instanceNumber === undefined && isXaas){
+    const serviceOfferings = DescriptionOfWork.DOWObject.find(
+      dow => dow.serviceOfferingGroupId === offeringType
+    )?.serviceOfferings
+    const totalExistingClassLevels = 
+      (JSON.stringify(serviceOfferings))
+        .match(new RegExp( classificationLevel, 'g' ))?.length || 0
+    instanceNumber = totalExistingClassLevels + 1;
+  }
   let dow_task_number_component = offeringInfo?.dow_task_number_component
   let section = isXaas ? "4.2" : "4.3";
 
@@ -532,10 +555,11 @@ export const createDOWTaskNumber = async(
   }
   
   return section +
-    "." + classification?.dow_task_number_component +
+    "." + classificationDOWTaskNumberComponent +
     "." + dow_task_number_component +
-    "." + (isXaas ? "1" : instanceNumber);    
+    "." + instanceNumber
 }
+
 
 const mapClassificationInstanceFromDTO = (
   value: ClassificationInstanceDTO
@@ -2115,7 +2139,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
     const updatedInstancesData: DOWClassificationInstance[] = [];
 
@@ -2733,11 +2757,6 @@ export class DescriptionOfWorkStore extends VuexModule {
           calls.push(api.classificationInstanceTable.remove(instance))
         }
       })
-      // TODO: igce estimate records need to be deleted first. But the below code still
-      //  seems to be executing out of order. Not all IGCE estimates are deleting before
-      //  classification instance records. Out of sequence will not work because once the
-      //  CI record gets deleted, IGCE Estimate record will loose the reference, which is
-      //  needed for deletion.
       await Promise.all(calls);
     } catch (error) {
       //do nothing here we'll delete optimistically

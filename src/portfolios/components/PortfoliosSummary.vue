@@ -180,7 +180,7 @@ export default class PortfoliosSummary extends Vue {
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
   @Prop({ default: true}) public isProdEnv!: boolean;
 
-  public isHaCCAdmin = false;
+  public isHaCCAdmin = CurrentUserStore.currentUserIsHaCCAdmin;
 
   public page = 1;
   public get recordsPerPage(): number {
@@ -503,9 +503,6 @@ export default class PortfoliosSummary extends Vue {
       this.paging = false;
       this.isSearchSortFilter = false;
     });
-
-    // ATAT TODO - future ticket - set isHaCCAdmin value with data from backend when implemented
-    // this.isHaCCAdmin = true;
 
   }
 }

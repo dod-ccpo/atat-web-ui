@@ -1,11 +1,11 @@
-import { 
-  AgencyDTO, 
-  ClassificationLevelDTO, 
-  EvalPlanAssessmentAreaDTO, 
-  EvalPlanDifferentiatorDTO, 
-  PeriodDTO, 
-  ReferenceColumn, 
-  SystemChoiceDTO 
+import {
+  AgencyDTO,
+  ClassificationLevelDTO, DisaOrganizationDTO,
+  EvalPlanAssessmentAreaDTO,
+  EvalPlanDifferentiatorDTO,
+  PeriodDTO,
+  ReferenceColumn,
+  SystemChoiceDTO
 } from "@/api/models";
 import { Checkbox, RadioButton, SelectData, User } from "types/Global";
 import _ from "lodash";
@@ -44,6 +44,14 @@ export const convertSystemChoiceToSelect =
       const {value} = choice;
       return {
         text: choice.label,
+        value
+      }
+    });
+export const convertDisaOrgToSelect =
+    (data: DisaOrganizationDTO[]): SelectData[] => data.map(choice => {
+      const value = choice.sys_id;
+      return {
+        text: choice.full_name,
         value
       }
     });
@@ -176,6 +184,17 @@ export const toCurrencyString = (num: number, decimals?: boolean): string => {
       minimumFractionDigits: d, 
       maximumFractionDigits: d, 
     }).format(num);
+  }
+  return "";
+}
+
+export const getStringFromReferenceColumn = (
+  column: ReferenceColumn | string | undefined
+): string =>{
+  if (column){
+    return typeof column === "object" 
+      ? (column as ReferenceColumn).value as string 
+      : column as string; 
   }
   return "";
 }
@@ -316,11 +335,18 @@ export function getStatusChipBgColor(status: string): string {
   }
 }
 
+export function getDateObj(dateStr: string): Date {
+  return dateStr.includes("-") ? parseISO(dateStr) : new Date(dateStr);
+}
+
 const monthAbbreviations = ATATCharts.monthAbbreviations;
 const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
 export function createDateStr(dateStr: string, period: boolean, hours?: boolean): string {
   hours = hours ? hours : false;
+  if (dateStr.indexOf("/") > -1) {
+    dateStr = formatISO(new Date(dateStr)); 
+  }
   const parsedDate = parseISO(dateStr, { additionalDigits: 1 });
   const date = hours? new Date(parsedDate) : new Date(parsedDate.setHours(0, 0, 0, 0));
   const m = monthAbbreviations[date.getMonth()];

@@ -714,6 +714,9 @@ export class ClassificationRequirementsStore extends VuexModule {
       }
     };
 
+    //todo check to ensure the dowtask # behaves as expected for training
+
+
     deleteItem.tables.forEach(async (tblName)=>{
       // retrieve the property dynamically from the api object.  
       // (Note: the api object does NOT have an interface)
@@ -729,6 +732,9 @@ export class ClassificationRequirementsStore extends VuexModule {
           }
           sysIds.forEach(async (itemToBeDeleted)=>{
             await tbl.remove(itemToBeDeleted.sys_id as string);
+            await IGCEStore.deleteIgceEstimateClassificationInstance(
+              itemToBeDeleted.sys_id as string
+            );
           })
         }
       } catch (error){

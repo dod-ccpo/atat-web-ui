@@ -201,6 +201,8 @@ import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
 import { Statuses } from "@/store/acquisitionPackage";
+import CurrentUserStore from "@/store/user";
+import { UserDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -227,12 +229,12 @@ export default class PortfolioCard extends Vue {
     emailManagers: "emailManagers",
     loginToCSP: "loginToCSP",
   }
- 
-  // ATAT TODO AT-9099?- replace DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
-  public currentUserEmail = "sample-haac-admin@mail.mil";
+  public get currentUser(): UserDTO {
+    return CurrentUserStore.getCurrentUserData;
+  }
+  public currentUserEmail = this.currentUser.email;
   public get managerEmails(): string {
-    // ATAT TODO - can use user lookup to get email addresses (with AT-9099?)
-    // Return dummy emails until API call wired up to get portfolio managers
+    // ATAT TODO: Return dummy emails until API call wired up to get portfolio managers
     return "foo@mail.mil, bar@mail.mil";
   }
 

@@ -192,8 +192,8 @@
               :mask="['^[0-9]{10}$']"
               :isMaskRegex="true"
               :rules="[
-                $validators.required('Please enter your administrator’s 10-digit DOD ID'),
-                 $validators.minLength(10, 'The DOD ID must be 10 digits')
+                $validators.required('Please enter your administrator’s 10-digit DoD ID'),
+                 $validators.minLength(10, 'The DoD ID must be 10 digits')
                ]"
             />
           </div>

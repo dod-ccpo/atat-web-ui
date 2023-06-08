@@ -10,6 +10,9 @@ import ReadyToProvision from "@/portfolios/provisioning/ReadyToProvision.vue";
 const GeneratedFromPackageRouteResolver = (): string => {
   return "";
 }
+const PortfolioDetailsRouteResolver = (): string => {
+  return "";
+}
 
 export const provWorkflowRouteNames = {
   ProvisioningIndex: "Provisioning_Index",
@@ -68,6 +71,7 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
         name: provWorkflowRouteNames.PortfolioDetails,
         path: "/portfolio-details",
         component: PortfolioDetails,
+        routeResolver: PortfolioDetailsRouteResolver,
       },
       {
         name: provWorkflowRouteNames.AddCSPAdmin,
