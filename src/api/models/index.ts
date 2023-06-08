@@ -894,6 +894,10 @@ export interface UserDTO extends BaseTableDTO {
   title?: string;
 }
 
+export interface UserRolesDTO extends BaseTableDTO {
+  role: string;
+}
+
 // used for User Profile cards - "Company" is the "Agency"
 export interface CompanyDTO extends BaseTableDTO {
   name?: string;

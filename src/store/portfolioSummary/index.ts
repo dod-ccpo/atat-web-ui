@@ -112,15 +112,19 @@ export class PortfolioSummaryStore extends VuexModule {
   private async getMandatorySearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
     Promise<string> {
     const currentUser = await CurrentUserStore.getCurrentUser();
+    const isHaCCAdmin = CurrentUserStore.currentUserIsHaCCAdmin;
     const userSysId = currentUser.sys_id;
     let query = "";
-    if (searchDTO.role === "ALL") {
-      query = query +
-        `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
-    } else { // "MANAGED"
-      query = query +
-        `^portfolio_managersLIKE${userSysId}`;
+    if (!isHaCCAdmin) {
+      if (searchDTO.role === "ALL") {
+        query = query +
+          `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
+      } else { // "MANAGED"
+        query = query +
+          `^portfolio_managersLIKE${userSysId}`;
+      }
     }
+
     query = query + "^portfolio_status!=ARCHIVED"
     query = query + "^ORDERBY" + searchDTO.sort;
     return query;
