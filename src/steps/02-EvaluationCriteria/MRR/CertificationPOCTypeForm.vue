@@ -88,6 +88,7 @@ export default class CertificationPOCTypeForm extends Vue {
   private title = "";
   private phone = "";
   private phoneExt = "";
+  private acquisition_package = "";
   private selectedBranch: SelectData = {text: "", value: ""};
   private selectedRank: RankData = {
     grade: "",
@@ -166,6 +167,9 @@ export default class CertificationPOCTypeForm extends Vue {
       const formatted = asyoutype.input(this.phone);
       phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
     }
+    this.acquisition_package = (AcquisitionPackage.acquisitionPackage) ?
+      (AcquisitionPackage.acquisitionPackage.sys_id) ?
+        AcquisitionPackage.acquisitionPackage.sys_id : "" : ""
     const phoneExt = this.phoneExt;
     return {
       sys_id: this.sysId,
@@ -184,7 +188,8 @@ export default class CertificationPOCTypeForm extends Vue {
       can_access_package: "true",
       grade_civ: "",
       title: this.title,
-      manually_entered: ""
+      manually_entered: "",
+      acquisition_package: this.acquisition_package
     };
   }
 
