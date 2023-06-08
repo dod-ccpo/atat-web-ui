@@ -241,7 +241,7 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     await AcquisitionPackage.doSetFairOppBackToReview(false);
-    debugger;
+
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
 

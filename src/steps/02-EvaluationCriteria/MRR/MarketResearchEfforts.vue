@@ -721,13 +721,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.personalKnowledgePerson = "";
       this.techniquesSummary = "";
     }
-    // this.writeOwnExplanation
-    //   = AcquisitionPackage.fairOpportunity?.research_write_own_explanation as YesNo
-    // if (this.writeOwnExplanation !== "YES") {
-    //   this.writeOwnExplanation = 
-    //     sectionsWithNoSelectedCount === 2 && !this.needsMRR ? "YES": "NO"
-    // }
-    debugger;
+
     try {
       if (this.hasChanged()) {
         this.explanation.formEdited = true;

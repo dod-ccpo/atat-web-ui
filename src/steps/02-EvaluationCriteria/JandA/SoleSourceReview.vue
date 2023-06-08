@@ -252,7 +252,6 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
         && storeData.cause_product_feature_peculiar_to_csp === "NO";
 
       this.soleSourceCauseCustom = storeData.cause_of_sole_source_custom as string;
-      debugger;
       this.soleSourceCauseGenerated = storeData.cause_of_sole_source_generated as string;
 
       this.useCustomText = this.explanation.useCustomText as boolean;
@@ -291,7 +290,7 @@ export default class SoleSourceReview extends Mixins(SaveOnLeave) {
       await AcquisitionPackage.setReplaceCustomWithGenerated(
         { section: "soleSource", val: false }
       );
-      
+
       if (saveGeneratedSuggestion) {
         await AcquisitionPackage.setFairOpportunity(this.currentData);
       }

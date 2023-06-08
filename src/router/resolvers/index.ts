@@ -164,7 +164,6 @@ export const CertificationPOCsRouteResolver = (current: string): string => {
 }
 
 export const MRRNeedRouteResolver = (current: string): string => {
-  debugger;
   const backToReview = AcquisitionPackage.fairOppBackToReview;
   if (current === routeNames.MarketResearchEfforts && backToReview) {
     try {

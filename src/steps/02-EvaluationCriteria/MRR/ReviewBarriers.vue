@@ -215,7 +215,7 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
 
   public async loadOnEnter(): Promise<void> {
     await AcquisitionPackage.doSetFairOppBackToReview(false);
-    debugger;
+
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
       this.allSectionsNO = storeData.barriers_follow_on_requirement === "NO" &&

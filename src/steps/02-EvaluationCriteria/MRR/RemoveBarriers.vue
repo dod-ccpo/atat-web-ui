@@ -266,7 +266,6 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
         this.explanation.formEdited = true;
         this.writeOwnExplanation 
           = AcquisitionPackage.fairOpportunity?.barriers_write_own_explanation as YesNo;
-        debugger;
 
         if (this.explanationForDocgen === "CUSTOM") {
           await AcquisitionPackage.setReplaceCustomWithGenerated(
