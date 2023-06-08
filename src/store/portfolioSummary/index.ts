@@ -121,7 +121,7 @@ export class PortfolioSummaryStore extends VuexModule {
     const userSysId = currentUser.sys_id;
     let query = "";
     if (!isHaCCAdmin) {
-      if (searchDTO.role === "ALL") {
+      if (searchDTO && searchDTO.role === "ALL") {
         query = query +
           `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
       } else { // "MANAGED"
