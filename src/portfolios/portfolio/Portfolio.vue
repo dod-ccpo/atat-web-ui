@@ -983,8 +983,8 @@ export default class PortfolioDashboard extends Vue {
     idiqClin: string;
   }[] = [];
 
-  public calculateTimeToExpiration(endDate: string): void {
-    const popEndDate = parseISO(endDate, {
+  public calculateTimeToExpiration(): void {
+    const popEndDate = parseISO(this.currentPoPEndISO, {
       additionalDigits: 1,
     });
 
@@ -1544,9 +1544,11 @@ export default class PortfolioDashboard extends Vue {
 
     // all CLINs should run the entire duration of the current period, so use
     // the first one to set PoP start and end dates
-    this.currentPoPStartStr = createDateStr(this.idiqClins[0].pop_start_date, true);
-    this.currentPoPEndStr = createDateStr(this.idiqClins[0].pop_end_date, true);
-    this.calculateTimeToExpiration(this.idiqClins[0].pop_end_date);
+    this.currentPoPStartISO = this.idiqClins[0].pop_start_date;
+    this.currentPoPStartStr = createDateStr(this.currentPoPStartISO, true);
+    this.currentPoPEndISO = this.idiqClins[0].pop_end_date;
+    this.currentPoPEndStr = createDateStr(this.currentPoPEndISO, true);
+    this.calculateTimeToExpiration();
 
     this.calculateBurnDown();
     this.createTableItems();
