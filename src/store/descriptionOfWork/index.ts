@@ -2757,11 +2757,6 @@ export class DescriptionOfWorkStore extends VuexModule {
           calls.push(api.classificationInstanceTable.remove(instance))
         }
       })
-      // TODO: igce estimate records need to be deleted first. But the below code still
-      //  seems to be executing out of order. Not all IGCE estimates are deleting before
-      //  classification instance records. Out of sequence will not work because once the
-      //  CI record gets deleted, IGCE Estimate record will loose the reference, which is
-      //  needed for deletion.
       await Promise.all(calls);
     } catch (error) {
       //do nothing here we'll delete optimistically

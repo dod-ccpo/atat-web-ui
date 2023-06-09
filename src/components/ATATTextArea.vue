@@ -53,6 +53,8 @@
         @update:error="setErrorMessage"
         :hide-details="maxChars === ''"
         :counter="maxChars"
+        :auto-grow="autoGrow"
+        :style="getStyles"
       >
       </v-textarea>
       <ATATErrorValidation
@@ -102,6 +104,10 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: false }) private optional?: boolean;
   @PropSync("turnRulesOff", { default: false }) private _turnRulesOff?: boolean;
   @Prop( {default: false }) private labelSrOnly?: boolean;
+  @Prop( {default: false }) private autoGrow?: boolean;
+  @Prop({ default: "" }) private minHeight!: string;
+  @Prop({ default: "" }) private maxHeight!: string;
+  
 
   //data
   private placeHolder = "";
@@ -133,6 +139,18 @@ export default class ATATTextArea extends Vue {
   @Watch('rules')
   public rulesChanged(): void {
     this.$refs.atatTextArea.validate();
+  }
+
+  public get getStyles(): string {
+    let styles = "";
+    if (this.minHeight) {
+      styles += "min-height: " + this.minHeight + "px;"
+    }
+    if (this.maxHeight) {
+      styles += "max-height: " + this.maxHeight + "px;"
+    }
+
+    return styles;
   }
 
   //@Events

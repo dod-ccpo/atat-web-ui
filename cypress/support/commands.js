@@ -1,28 +1,3 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import "cypress-iframe";
 import "@4tw/cypress-drag-drop";
 import "cypress-file-upload";
@@ -31,7 +6,6 @@ import lp from "../selectors/landingPage.sel";
 import projectOverview from "../selectors/projectOverview.sel.js";
 import contact from "../selectors/contact.sel";
 import org from "../selectors/org.sel";
-import financialDetail from "../selectors/financialDetails.sel";
 import commonCorAcor from "../selectors/commonCorAcor.sel";
 import acor from "../selectors/acor.sel";
 import background from "../selectors/background.sel";
@@ -576,7 +550,7 @@ Cypress.Commands.add("fillNewAcquisition", (projectTitle, scope) => {
 });
 
 Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
-  cy.findElement(financialDetail.contractPricePercentageTxtBox)
+  cy.findElement(fd.contractPricePercentageTxtBox)
     .should("be.visible")
     .clear()
     .type(percentage)
@@ -585,7 +559,7 @@ Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
       cy.log($el.val());
       const enteredText = $el.val();
       const showError = () => {
-        cy.findElement(financialDetail.contractPriceError).should(
+        cy.findElement(fd.contractPriceError).should(
           "contain.text",
           "Please enter a number between 1-50"
         );
@@ -596,7 +570,7 @@ Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
       } else if (isNaN(parseInt(enteredText))) {
         showError();
       } else {
-        cy.findElement(financialDetail.contractPriceControl).should(
+        cy.findElement(fd.contractPriceControl).should(
           "not.contain",
           "Please enter a number between 1-50"
         );
@@ -845,9 +819,17 @@ Cypress.Commands.add(
     );
     cy.radioBtn(radioSelector, radioValue).click({ force: true });
     selector = prefixId(commonCorAcor.serviceBranchDropdown, corOrAcor);
-    cy.findElement(selector).click({ force: true });
+    cy.findElement(selector).click({ force: true }).then(()=>{
+      cy.waitUntil(() => {
+      return Cypress.$(selector).is(":visible") === true;
+    },{ timeout: 30000 })
+  });
     selector = prefixId(commonCorAcor.serviceBranchDropdownList, corOrAcor);
-    cy.findElement(selector).first().click();
+    cy.findElement(selector).first().click().then(()=>{      
+      cy.waitUntil(() => {
+          return Cypress.$(selector).is(":hidden") === true;
+        },{ timeout: 30000 })
+    });
     cy.findElement(commonCorAcor.contactAffRadioActive).then(($radioBtn) => {
       cy.log($radioBtn.text());
       const selectedOption = $radioBtn.text();
@@ -1005,6 +987,49 @@ Cypress.Commands.add(
       });
   }
 );
+
+Cypress.Commands.add("selectPoPStartDate", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(contractDetails.activePoPStartDate).then(($radioBtn) => {
+    const selectedOption = cleanText($radioBtn.text());
+    cy.log(selectedOption);
+    
+    if (
+      selectedOption ===
+      "radio_button_checkedYes." 
+        
+    ) {
+      cy.findElement(contractDetails.requestedStartDate).should("exist");
+      cy.selectDatefromDatePicker(
+          contractDetails.calendarIcon,
+          contractDetails.navigateNextMonth,
+          contractDetails.selectDate,
+          13,
+          contractDetails.datePicker
+        );
+    } else {
+      cy.findElement(contractDetails.requestedStartDate).should("not.exist");
+    }
+    cy.btnExists(common.continueBtn, " Continue ").click();
+  });
+});
+
+Cypress.Commands.add("selectTMCheckbox", (inputText) => {
+  cy.findCheckBox(contractDetails.tmCheckBox, "T&M")
+  .should("not.be.checked")
+  .check({ force: true })
+  .then(() => {
+    cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
+    cy.textExists(
+      contractDetails.tmTextFieldLabel,
+      "Please provide justification for your T&M contract type."
+    );
+    cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should(
+      "exist"
+    );    
+    cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
+  });
+})
 
 Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
@@ -1355,5 +1380,5 @@ Cypress.Commands.add("addAnotherRequirement", (addSelector, text) => {
 });
 
 Cypress.Commands.add("waitUntilElementIsGone", (selector) => {
-  cy.waitUntil(() => Cypress.$(selector).length === 0);
-});
+  cy.waitUntil(() => Cypress.$(selector).length === 0);  
+},{timeout:2000});

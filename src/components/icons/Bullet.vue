@@ -10,7 +10,7 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
-export default class Close extends Vue {
+export default class Bullet extends Vue {
   @Prop({ default: "959A9D", required: false }) private color?: string;
 }
 </script>

@@ -18,6 +18,7 @@ import AlertService from "@/services/alerts";
 import _ from "lodash";
 import {api} from "@/api";
 import CurrentUserStore from "../user";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -135,6 +136,32 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   public async startProvisioning(): Promise<void> {
+    let portfolioName=""
+    let portfolioAgency = ""
+    if (this.selectedAcquisitionPackageSysId) {
+      const packageId = this.selectedAcquisitionPackageSysId;
+      const acquisitionPackage = convertColumnReferencesToValues(
+        await api.acquisitionPackageTable.retrieve(packageId)
+      );
+      if(acquisitionPackage.project_overview){
+        const overviewId = acquisitionPackage.project_overview as string
+        const projectOverview = await api.projectOverviewTable.retrieve(
+          overviewId
+        );
+        if(projectOverview){
+          portfolioName = projectOverview.title
+        }
+      }
+      if(acquisitionPackage.organization){
+        const organizationId = acquisitionPackage.organization as string
+        const organizationInfo = convertColumnReferencesToValues(await api.organizationTable
+          .retrieve(organizationId));
+        if(organizationInfo){
+          portfolioAgency = organizationInfo.agency || ""
+        }
+      }
+
+    }
     const unclassifiedOperators: Record<string, string>[] = [];
     const scrtOperators: Record<string, string>[] = [] 
     this.portfolioProvisioningObj.admins?.forEach(admin => {
@@ -147,8 +174,8 @@ export class PortfolioDataStore extends VuexModule {
     });
 
     const provisioningPostObj = {
-      portfolioName: this.portfolioProvisioningObj.portfolioTitle,
-      portfolioAgency: this.portfolioProvisioningObj.serviceOrAgency,
+      portfolioName: portfolioName || this.portfolioProvisioningObj.portfolioTitle,
+      portfolioAgency: portfolioAgency || this.portfolioProvisioningObj.serviceOrAgency,
       environments: {
         Unclassified: {
           operators: unclassifiedOperators

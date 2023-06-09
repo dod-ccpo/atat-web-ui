@@ -48,7 +48,11 @@ export class UserStore extends VuexModule {
   initialized = false;
 
   currentUser: UserDTO = {};
-
+  
+  public currentUserRoles: string[] = [];
+  public get currentUserIsHaCCAdmin(): boolean {
+    return this.currentUserRoles.includes("x_g_dis_atat.hacc_admin");
+  }
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.currentUser)
   ];
@@ -146,7 +150,6 @@ export class UserStore extends VuexModule {
     return this.userHasPortfolios;
   }
 
-
   @Action({rawError: true})
   async ensureInitialized(): Promise<void> {
     await this.initialize();
@@ -167,10 +170,29 @@ export class UserStore extends VuexModule {
       if (response) {
         const userObj: UserDTO = response[0];
         this.setCurrentUser(userObj);
+        
+        const roles = await this.getUserRoles(userObj.sys_id as string);
+        await this.doSetCurrentUserRoles(roles);
+
         storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
         this.setInitialized(true);
       }
     }    
+  }
+
+  @Mutation
+  public async doSetCurrentUserRoles(roles: string[]): Promise<void> {
+    this.currentUserRoles = roles;
+  }
+
+  @Action({rawError: true})
+  public async getUserRoles(sysId: string): Promise<string[]> {
+    try {
+      const response = await api.userRolesTable.getUserRoles(sysId);
+      return response.map(obj => obj.role);
+    } catch(error) {
+      throw new Error(`error retrieving alert data ${error}`);
+    }
   }
 
   @Action({rawError: true})

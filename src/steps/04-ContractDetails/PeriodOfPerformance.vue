@@ -4,7 +4,7 @@
       <v-container fluid class="container-max-width">
         <v-row>
           <v-col class="col-12">
-            <h1 class="page-header">
+            <h1 class="page-header mb-3">
               Let’s gather details about the duration of your task order
             </h1>
             <div class="copy-max-width">

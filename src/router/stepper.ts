@@ -194,7 +194,10 @@ import {
   IGCESupportingDocumentationResolver,
   BVTOResolver,
   ProposedCSPRouteResolver,
-  MarketResearchEffortsRouteResolver,
+  MinimumRequirementsRouteResolver,
+  SoleSourceFormRouteResolver,
+  MRRNeedRouteResolver,
+  MarketResearchFormRouteResolver,
   CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
@@ -204,7 +207,8 @@ import {
   showDITCOPageResolver,
   ContractingInfoResolver,
   CrossDomainResolver,
-  removeBarriersRouteResolver,
+  RemoveBarriersFormRouteResolver,
+  OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
 } from "./resolvers";
 
@@ -492,6 +496,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: MinimumRequirementsRouteResolver,
       },
       {
         menuText: "Cause of Sole Source",
@@ -502,6 +507,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: SoleSourceFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",
@@ -564,6 +570,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: MRRNeedRouteResolver,
       },
       {
         menuText: "Market Research Efforts",
@@ -574,7 +581,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver: MarketResearchEffortsRouteResolver,
+        routeResolver: MarketResearchFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",
@@ -614,6 +621,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: OtherSupportingFactorsRouteResolver,
       },
       {
         menuText: "Remove Barriers",
@@ -624,7 +632,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver:removeBarriersRouteResolver,
+        routeResolver: RemoveBarriersFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",

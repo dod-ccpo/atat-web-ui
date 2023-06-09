@@ -124,7 +124,7 @@ export class StepsStore extends VuexModule implements StepsState {
     }
 
     @Action
-    public setAdditionalButtonHide(bool: boolean): void {
+    public async setAdditionalButtonHide(bool: boolean): Promise<void> {
       this.doSetAdditioinalButtonHide(bool);
     }
 
@@ -143,7 +143,7 @@ export class StepsStore extends VuexModule implements StepsState {
         this.currentStep.backButtonText = this.altBackButtonText 
           ? this.altBackButtonText 
           : "Back";
-
+        
         if (
           this.currentStep.additionalButtons.length > 0
           && ((this.altAdditionalButtonText && this.additionalButtonId) 

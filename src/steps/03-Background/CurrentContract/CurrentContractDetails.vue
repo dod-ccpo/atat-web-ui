@@ -3,7 +3,10 @@
     <v-container class="container-max-width" fluid>
       <v-row>
         <v-col class="col-12">
-          <h1 class="page-header mb-3">
+          <h1 
+            class="page-header"
+            :class="{'mb-3' : !isExceptiontoFairOpp}"
+          >
             {{ headline }}
           </h1>
           <div v-if="isExceptiontoFairOpp" class="copy-max-width">
@@ -48,7 +51,7 @@
               :rules="[$validators.required('Please select a level of competition.')]">
             </LevelOfCompetition>
 
-            <hr class="ma-8" />
+            <hr />
 
             <h2 class=" mt-10">
               2. Period of Performance (PoP)

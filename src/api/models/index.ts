@@ -347,6 +347,7 @@ export interface OrganizationDTO extends BaseTableDTO {
   street_address_2?: string;
   organization_name?: string;
   disa_organization?: string;
+  disa_organization_reference?: ReferenceColumn | string;
   agency?: string;
   state?: string;
   zip_code?: string;
@@ -894,6 +895,10 @@ export interface UserDTO extends BaseTableDTO {
   title?: string;
 }
 
+export interface UserRolesDTO extends BaseTableDTO {
+  role: string;
+}
+
 // used for User Profile cards - "Company" is the "Agency"
 export interface CompanyDTO extends BaseTableDTO {
   name?: string;
@@ -1078,4 +1083,9 @@ export interface AddressDTO extends BaseTableDTO {
   state_province_state_code?: string
   name?: string
   aa_ae_ap?: string
+}
+export interface DisaOrganizationDTO extends BaseTableDTO {
+  full_name: string;
+  abbreviation: string;
+  css_id: number;
 }

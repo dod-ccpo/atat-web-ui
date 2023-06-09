@@ -10,10 +10,17 @@
             <p>
               Answer the series of questions below. Based on your responses, we’ll 
               suggest language to help you complete this portion of your J&A. You’ll 
-              be able to edit our suggestions to meet your requirements. If you would 
-              rather skip these questions, click the “I want to write my own explanation” 
-              button below.
+              be able to edit our suggestions to meet your requirements. 
+              <span v-if="!hadExplanationOnLoad">
+                If you would rather skip these questions, click the “I want to write 
+                my own explanation” button below.
+              </span>
             </p>
+            
+            <v-expand-transition>
+              <AlertForForms  v-if="showAlert" :alertType="alertType" />
+            </v-expand-transition>
+
             <div class="max-width-740">
 
               <ATATRadioGroup 
@@ -34,6 +41,7 @@
                     label="Estimated cost to migrate"
                     :isCurrency="true"
                     :width="400"
+                    :allowZeroDefault="false"
                     :rules="[$validators.required('Enter the estimated cost to migrate.')]"
                     @blur="validateMigrationEstimate"
                   />
@@ -212,14 +220,16 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
+import AlertForForms from "../components/AlertForForms.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 import { ProductOrType, RadioButton, SelectData, UnitOfTime, YesNo } from "types/Global";
-import { FairOpportunityDTO } from "@/api/models";
+import { FairOppDocGenType, FairOpportunityDTO } from "@/api/models";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
@@ -227,18 +237,28 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
+    AlertForForms,
     ATATErrorValidation,
     ATATRadioGroup,
     ATATSelect,
     ATATTextArea,
     ATATTextField,
+    ATATAlert
   }
 })
 
 export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public cspName = "";
-  public writeOwnCause: YesNo = "";
+  public writeOwnExplanation: YesNo = "";
   public isLoading = false;
+
+  public hasSuggestedTextBeenEdited = false;
+  public isCustomExplanation = false;
+  public hasExplanation = false;
+  public explanationForDocgen: FairOppDocGenType = "";
+  public hadExplanationOnLoad = false;
+
+  public explanation = AcquisitionPackage.fairOppExplanations.soleSource;
 
   // MIGRATION SECTION
   public migrAddlTimeCost: YesNo = "";
@@ -360,6 +380,18 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
     return this.currentData.cause_migration_estimated_delay_amount as string;
   }
 
+  public get showAlert(): boolean{
+    return this.hasExplanation && 
+      (this.isCustomExplanation || this.hasSuggestedTextBeenEdited);
+  }
+  public get alertType(): string {
+    if (this.hasExplanation) {
+      if (this.isCustomExplanation) return "custom";
+      if (this.hasSuggestedTextBeenEdited) return "suggestion";
+    }
+    return "";
+  }
+
   public validateMigrationEstimate(): void {
     this.migrationError = false;
     this.migrationErrorMessage = "";
@@ -379,7 +411,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
     const formData: FairOpportunityDTO = {
       /* eslint-disable camelcase */
-      cause_write_own_explanation: this.writeOwnCause,
+      cause_write_own_explanation: this.writeOwnExplanation,
 
       cause_migration_addl_time_cost: this.migrAddlTimeCost,
       cause_migration_estimated_cost: this.migrEstCost,
@@ -395,6 +427,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       cause_product_feature_name: this.pfName,
       cause_product_feature_why_essential: this.pfWhyEssential,
       cause_product_feature_why_others_inadequate: this.pfWhyOthersInadequate,
+
+      cause_of_sole_source_for_docgen: this.explanationForDocgen,
       /* eslint-enable camelcase */
     }
     return Object.assign(fairOppSaved, formData);
@@ -414,8 +448,8 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
 
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData) {
-      this.writeOwnCause = "NO";
-
+      this.writeOwnExplanation = "NO";
+      this.explanationForDocgen = storeData.cause_of_sole_source_for_docgen;
       this.migrAddlTimeCost = storeData.cause_migration_addl_time_cost as YesNo;
       this.migrEstCost = storeData.cause_migration_estimated_cost as string;
       this.migrEstDelayAmt = storeData.cause_migration_estimated_delay_amount as string;
@@ -435,51 +469,76 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
       this.cspName = storeData.proposed_csp 
         ? getCSPCompanyName(storeData.proposed_csp) 
         : "your CSP";
+
+      this.hasExplanation = storeData.cause_of_sole_source_generated !== ""
+        || storeData.cause_of_sole_source_custom !== "";
     }
+    
+    this.hadExplanationOnLoad = this.explanation.hadExplanationOnLoad as boolean;
+    this.hasSuggestedTextBeenEdited = this.explanation.defaultSuggestionEdited as boolean;
+    this.isCustomExplanation = this.explanation.useCustomText as boolean;
+
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     this.whyEssentialRulesOff = false;
     this.whyInadequateRulesOff = false;
-
     if (this.migrAddlTimeCost === "YES") {
       this.validateMigrationEstimate();
       if (this.migrationError === true) {
         return false;
       }
     }
+
+    this.geInsufficientTimeReason = this.geInsufficientTimeReason.trim();
+    this.pfWhyEssential = this.pfWhyEssential.trim();
+    this.pfWhyOthersInadequate = this.pfWhyOthersInadequate.trim();
+
+    // ensure data cleared if any section main question is "NO"
+    let sectionsWithNoSelectedCount = 0;
+    if (this.migrAddlTimeCost !== "YES") {
+      this.migrEstCost = "";
+      this.migrEstDelayAmt = "";
+      this.migrEstDelayUnit = "";
+      sectionsWithNoSelectedCount++;
+    }
+    if (this.geCertified !== "YES") {
+      this.gePlatformName = "";
+      this.geInsufficientTimeReason = "";
+      sectionsWithNoSelectedCount++;
+    }
+    if (this.pfPeculiarToCSP !== "YES") {
+      this.pfType = "";
+      this.pfName = "";
+      this.pfWhyEssential = "";
+      this.pfWhyOthersInadequate = "";
+      sectionsWithNoSelectedCount++;
+    }
+
     try {
       if (this.hasChanged()) {
-        // ensure data cleared if any section main question is "NO"
+        this.explanation.formEdited = true;
         /* eslint-disable camelcase */
-        let sectionsWithNoSelectedCount = 0;
-        if (this.migrAddlTimeCost === "NO") {
-          this.migrEstCost = "";
-          this.migrEstDelayAmt = "";
-          this.migrEstDelayUnit = "";
-          sectionsWithNoSelectedCount++;
-        }
-        if (this.geCertified === "NO") {
-          this.gePlatformName = "";
-          this.geInsufficientTimeReason = "";
-          sectionsWithNoSelectedCount++;
-        }
-        if (this.pfPeculiarToCSP === "NO") {
-          this.pfType = "";
-          this.pfName = "";
-          this.pfWhyEssential = "";
-          this.pfWhyOthersInadequate = "";
-          sectionsWithNoSelectedCount++;
-        }
-        this.writeOwnCause 
+        this.writeOwnExplanation 
           = AcquisitionPackage.fairOpportunity?.cause_write_own_explanation as YesNo;
-        if (this.writeOwnCause !== "YES") {
+
+        if (this.explanationForDocgen === "CUSTOM") {
+          await AcquisitionPackage.setReplaceCustomWithGenerated(
+            {section: "soleSource", val: true }
+          );
+        }
+
+        if (this.writeOwnExplanation === "NO") {
           // if it's already "YES" (set from action handler when "I want to write 
           //  my own explanation" button, don't change it, but if it's NO as set on page load, 
           // check if user answered "NO" to all 3 sections 
-          this.writeOwnCause = sectionsWithNoSelectedCount === 3 ? "YES" : "NO";
+          this.writeOwnExplanation = sectionsWithNoSelectedCount === 3 ? "YES" : "NO";
+          this.explanationForDocgen = this.writeOwnExplanation === "YES" ? "CUSTOM" : "GENERATED";
+        } else {
+          this.explanationForDocgen = "CUSTOM";
         }
-        /* eslint-enable camelcase */
+        this.explanation.useCustomText = this.explanationForDocgen === "CUSTOM";
+
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
     } catch (error) {

@@ -19,7 +19,7 @@
               :value="csp.value"
               :id="csp.value + 'Button'"
               name="cspRadios"
-              class="_csp-card d-flex inline"
+              class="_csp-card d-flex inline pb-6"
               @click="onClick"
               @blur="onBlur"
             >
