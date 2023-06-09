@@ -71,6 +71,7 @@ import {
 
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
+import Summary from "../summary";
 import { format } from "date-fns";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -1741,6 +1742,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       this.setInitialized(true);
       this.setIsLoading(false);
+      Summary.validateStepThree();
 
     } else {
       await this.initialize();

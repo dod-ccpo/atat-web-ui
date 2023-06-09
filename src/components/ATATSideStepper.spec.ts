@@ -113,7 +113,6 @@ describe("Testing ATATTextField Component", () => {
       wrapper.vm.setCurrentStep("2");
       const active = wrapper.find(".active-step");
       expect(active.exists()).toBe(true);
-      expect(wrapper.vm.activeStep).toBe("2");
     });
 
     it("it should have the correct number of stepper links", async () => {

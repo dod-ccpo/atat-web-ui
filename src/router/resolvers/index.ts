@@ -16,6 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import Summary from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -255,7 +256,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     fromProcurementHistory
   ){
     return hasLogicalFollowOn()
-      ? CrossDomainResolver(routeNames.CurrentContract)
+      ? routeNames.SummaryStepThree
       : routeNames.CurrentContract
   }
   return routeNames.CurrentContractDetails;
@@ -1550,6 +1551,7 @@ export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): 
 };
 
 export const SecurityRequirementsResolver = (current: string): string => {
+  
   const classifications = ClassificationRequirements.selectedClassificationLevels;
   const hasHigh = hasHighSide(classifications); 
   // forward
@@ -1557,7 +1559,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
     if (hasHigh) {
       return routeNames.SecurityRequirements;
     }
-    return hasLogicalFollowOn() ? routeNames.CurrentContractDetails : routeNames.CurrentContract;
+    return routeNames.SummaryStepThree
   }
   // backward
   return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements
@@ -1570,20 +1572,30 @@ export const CrossDomainResolver = (current: string): string => {
   const singleClassification = onlyOneClassification(classifications)
 
   // backward
-  const navBackNames = [routeNames.CurrentContract, routeNames.CurrentContractDetails];
-  if (navBackNames.includes(current)) {
+  if (current===routeNames.SummaryStepThree) {
     if (!singleClassification) {
       return routeNames.CrossDomain;
     }
     return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements;
-
   }
+  else if(current===routeNames.ClassificationRequirements
+      || current===routeNames.SecurityRequirements){
+    return hasHigh
+      ? routeNames.CrossDomain
+      : routeNames.SummaryStepThree
+  }
+  return routeNames.CrossDomain;
+ 
+}
 
+export const SummaryStepThreeRouteResolver = (current:string): string => {
   // forward
-  if (!singleClassification) {
-    return routeNames.CrossDomain
+  
+  const navBackNames = [routeNames.CurrentContract, routeNames.CurrentContractDetails];
+  if (navBackNames.includes(current)) {
+    return routeNames.SummaryStepThree
   }
-  return hasLogicalFollowOn() ? routeNames.CurrentContractDetails : routeNames.CurrentContract;
+  return routeNames.SummaryStepThree
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
@@ -1669,6 +1681,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AnticipatedUserAndDataNeedsResolver,
   ContractingInfoResolver,
   GeneratedFromPackageRouteResolver,
+  SummaryStepThreeRouteResolver,
   PortfolioDetailsRouteResolver
 };
 
