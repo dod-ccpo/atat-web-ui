@@ -1511,6 +1511,7 @@ export default class PortfolioDashboard extends Vue {
 
     const currentClins = 
       await this.dashboardService.getCLINsInCurrentPeriod(this.activeTaskOrderSysId);
+    // EJY  set start and end dates from clin 0
     const clinSysIds = currentClins.map(obj => obj.sys_id);
     const costs = 
       await this.dashboardService.getCostsInCurrentPeriod(clinSysIds);
