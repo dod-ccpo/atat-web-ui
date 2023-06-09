@@ -196,7 +196,7 @@
                 />
               </div>
 
-              <ATATTextField 
+              <ATATTextField
                 id="UnclassifiedEmail"
                 v-if="selectedClassificationLevels.includes('Unclassified')"
                 :value.sync="unclassifiedEmail"
@@ -207,11 +207,11 @@
                 :rules="[
                   $validators.required(
                     'Please enter your administrator’s email address.'
-                  ),              
+                  ),
                   $validators.isEmail('Please use a .mil or .gov email address')
                 ]"
               />
-              <ATATTextField 
+              <ATATTextField
                 id="ScrtEmail"
                 v-if="scrtSelected"
                 :value.sync="scrtEmail"
@@ -222,7 +222,7 @@
                 :rules="[
                   $validators.required(
                     'Please enter your administrator’s email address.'
-                  ),              
+                  ),
                   $validators.isEmail('Please use a .smil or .sgov email address', true)
                 ]"
               />
@@ -250,12 +250,12 @@ import CSPAdminLearnMore from "./AddCSPAdminLearnMore.vue";
 import CSPAdminLearnMoreText from "./AddCSPAdminLearnMoreText.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel";
-import { 
-  Checkbox, 
-  ClassificationLevels, 
-  PortfolioAdmin, 
-  PortfolioProvisioning, 
-  SlideoutPanelContent 
+import {
+  Checkbox,
+  ClassificationLevels,
+  PortfolioAdmin,
+  PortfolioProvisioning,
+  SlideoutPanelContent
 } from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
@@ -336,13 +336,12 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     const missingUnclass = (this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES")) === -1;
     const missingScrt = (this.admins.findIndex(a => a.hasScrtAccess === "YES")) === -1;
     const needsILs = this.csp === 'Azure'
-    debugger
     const missingILs = this.impactLevelCompareArray
       .filter(il=> !this.selectedImpactLevels.includes(il))
 
-    if (this.classificationLevels.length > 1 
-      && this.admins.length > 0 
-      && (missingUnclass || missingScrt || needsILs && missingILs)
+    if (this.classificationLevels.length > 1
+      && this.admins.length > 0
+      && (missingUnclass || missingScrt || needsILs && missingILs.length > 0)
     ) {
       if(needsILs){
         const unclassifiedIL = missingILs.map(il => `Unclassified/${il}`)
@@ -396,7 +395,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
   public get currentData(): PortfolioAdmin[] {
     return this.admins;
-  } 
+  }
   public savedData: PortfolioAdmin[] = [];
 
   public openSlideoutPanel(e: Event): void {
@@ -414,7 +413,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   }
 
   public async AddCSPAdmin(): Promise<void> {
-    const hasUnclassifiedAccess 
+    const hasUnclassifiedAccess
       = this.selectedClassificationLevels.includes(this.unclStr) ? "YES" : "NO";
     const hasScrtAccess = this.selectedClassificationLevels.includes(this.scrtStr) ? "YES" : "NO";
     const admin: PortfolioAdmin = {
@@ -445,7 +444,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public async setDisableContinue(): Promise<void> {
     await this.setShowMissingAdminAlert();
     const disableContinue = this.admins.length === 0 || this.showMissingAdminAlert;
-    await AcquisitionPackage.setDisableContinue(disableContinue);    
+    await AcquisitionPackage.setDisableContinue(disableContinue);
   }
 
   public isEdit = false;
@@ -461,7 +460,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.unclassifiedEmail = admin.unclassifiedEmail as string;
       this.hasScrtAccess = admin.hasScrtAccess as string;
       this.scrtEmail = admin.scrtEmail as string;
-      
+
       if (this.hasUnclassifiedAccess === "YES")
         this.selectedClassificationLevels.push(this.unclStr);
       if (this.hasScrtAccess === "YES")
@@ -530,13 +529,18 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
           classificationLevels.push(this.unclStr);
         }
       }
-      debugger
       if (admin.hasScrtAccess === "YES") classificationLevels.push(this.scrtStr);
       const adminClassificationLevels = classificationLevels.join("<br />");
       const emails = [];
+      const count = this.selectedImpactLevels.length - 1
+      debugger
+      const lineBreaks = count <= 0 ?"":"\n".repeat(count)
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
         if(this.csp ==='Azure'){
           emails.push(admin.unclassifiedEmail);
+          if(lineBreaks){
+            emails.push(lineBreaks)
+          }
         }else{
           emails.push(admin.unclassifiedEmail);
         }
