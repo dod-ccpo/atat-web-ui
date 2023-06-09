@@ -5,7 +5,7 @@ import { AxiosRequestConfig } from "axios";
 import { TABLENAME as ClinTable } from "@/api/clin";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
-import { format } from "date-fns";
+import { format, isBefore, parseISO } from "date-fns";
 
 export interface PortFolioDashBoardDTO {
   taskOrder: TaskOrderDTO;
@@ -98,12 +98,23 @@ const getEntityTotals = (
 
 export class DashboardService {
 
-  public async getCLINsInCurrentPeriod(taskOrderSysId: string): Promise<ClinDTO[]> {
+  public async getCLINsInCurrentPeriod(
+    taskOrderSysId: string, 
+    taskOrder: TaskOrderDTO
+  ): Promise<ClinDTO[]> {
     const today = format(new Date().setHours(0,0,0,0), "yyyy-MM-dd")
-    
+
     let query = "task_order=" + taskOrderSysId;
-    query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
-    query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
+    const taskOrderStart = parseISO(taskOrder.pop_start_date);
+    const taskOrderNotStarted = isBefore(parseISO(today), taskOrderStart);
+    if (taskOrderNotStarted) {
+      query +="^clin_numberSTARTSWITH0";
+    } else {
+      // ATAT TODO - CHECK IF TODAY IS PAST TASK ORDER END DATE AND RETRIEVE 
+      // OPTION PERIOD CLINS IF SO
+      query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
+      query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
+    }
 
     const fields = "clin_number,clin_status,funds_obligated,funds_total,"
       + "pop_end_date,pop_start_date,sys_id";
@@ -154,7 +165,7 @@ export class DashboardService {
       }
       
       // get sys_ids for all clins in current period
-      const currentCLINs = await this.getCLINsInCurrentPeriod(taskOrderSysId);
+      const currentCLINs = await this.getCLINsInCurrentPeriod(taskOrderSysId, taskOrder);
       const clinSysIds = currentCLINs.map(obj => obj.sys_id);
 
       const clinRequests = clinSysIds.map((clin) => api.clinTable.retrieve(clin));
