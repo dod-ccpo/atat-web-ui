@@ -235,10 +235,11 @@ export class ClassificationRequirementsStore extends VuexModule {
           selectedClassLevel.user_growth_estimate_percentage
               = userGrowth.split(",").filter(nonEmptyVal => nonEmptyVal);
           if (["TS", "S"].includes(selectedClassLevel.classification)){
+            let classInfoTypes = 
+              selectedClassLevel.classified_information_types?.split(",") as string[]
             this.securityRequirements.push(
               {
-                classification_information_type: 
-                  selectedClassLevel.classified_information_types?.split(",") as string[],
+                classification_information_type: classInfoTypes.filter(cit => cit !== ""),
                 type: selectedClassLevel.classification === "S" ? "SECRET" : "TOPSECRET"
               }
             )

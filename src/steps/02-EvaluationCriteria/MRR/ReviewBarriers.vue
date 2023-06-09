@@ -242,6 +242,11 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
       await AcquisitionPackage.generateFairOpportunitySuggestion("RemoveBarriers");
       this.defaultSuggestion = this.explanation.defaultSuggestion as string;
 
+      const saveGeneratedSuggestion = this.plansToRemoveGenerated === "";
+      this.plansToRemoveGenerated = this.plansToRemoveGenerated === ""
+        ? this.defaultSuggestion : this.plansToRemoveGenerated;
+
+
       if (!this.useCustomText) {
         if (!this.hasSuggestedTextBeenEdited || this.replaceCustomWithDefault) {
           // if suggested text hasn't been edited, or user navigated to the form
@@ -263,6 +268,9 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
         { section: "plansToRemoveBarriers", val: false }
       );
 
+      if (saveGeneratedSuggestion) {
+        await AcquisitionPackage.setFairOpportunity(this.currentData);
+      }
 
     }
   }

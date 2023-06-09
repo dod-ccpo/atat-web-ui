@@ -26,6 +26,7 @@
           :additionalButtons="additionalButtons"
           :backButtonText="backButtonText"
           :continueButtonText="continueButtonText"
+          :continueButtonColor="continueButtonColor"
           :altContinueAction="altContinueAction"
           :hideContinueButton="hideContinueButton"
           :hideAdditionalButtons="hideAdditionalButtons"
@@ -109,6 +110,7 @@ export default class AppPackageBuilder extends Vue {
   private noPrevious = false;
   private backButtonText = "Back";
   private continueButtonText = "Continue";
+  private continueButtonColor = "";
   private altContinueAction = "";
   private altBackDestination = "";
   private hideContinueButton = false;
@@ -254,6 +256,7 @@ export default class AppPackageBuilder extends Vue {
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
+    this.continueButtonColor = step.continueButtonColor || "";
     this.altContinueAction = step.altContinueAction || "";
     if (step.stepName === routeNames.DOWSummary) {
       this.continueButtonText = DescriptionOfWork.currentDOWSection === "XaaS"
