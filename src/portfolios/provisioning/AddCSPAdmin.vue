@@ -353,7 +353,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       && (missingUnclass || missingScrt || needsILs && missingILs.length > 0)
     ) {
       if(needsILs){
-        debugger
         const unclassifiedIL = missingILs.map(il => `Unclassified/${il}`)
         if(missingScrt) unclassifiedIL.push("Secret")
         const newStr = unclassifiedIL.join(", ")
