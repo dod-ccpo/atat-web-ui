@@ -32,7 +32,10 @@
             'disabled': !isStepComplete(step.stepNumber) && !canNavigate() 
           }"
           class="step"
-          @click.native="setCurrentStep(step.stepNumber)"
+          @click.native ="setCurrentStep(
+            step.stepNumber, 
+            step,
+            false)"
         >
           <span class="step-circle">
             {{ step.stepNumber }}
@@ -61,6 +64,11 @@
                   'disabled': !isSubstepComplete(subStep.name) && !canNavigate() 
                 }"
                 class="substep"
+                @click="setCurrentStep(
+                  subStep.stepNumber, 
+                  subStep,
+                  false
+                )"
               >
                 <span class="substep-circle">
                   <span
@@ -102,18 +110,24 @@ import { routeNames } from "@/router/stepper";
 export default class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
-  public setCurrentStep(stepNumber: string): void {
+  public setCurrentStep(
+    stepNumber: string, 
+    step: StepperStep, 
+    isSubStep: boolean
+  ): void {
     this.activeStep = stepNumber;
     this.calculatePercentComplete();
-    this.navigateToSummary(stepNumber);
+    if (step){
+      this.navigateToSummary(step, isSubStep);
+    }
   }
 
-  public navigateToSummary(stepNumber: string): void {
-    const step = this.stepperData.find(step=>step.stepNumber === stepNumber);
-    const lastSubStep = step?.subSteps?.slice(-1)[0];
-    const hasSummary = lastSubStep?.name.toLowerCase().startsWith("summary") || false;
+  public navigateToSummary(step: StepperStep, isSubStep: boolean): void {
+    const primaryStep = this.stepperData.find(s=>s.stepNumber === step.stepNumber);
     const isTouched = isStepTouched(parseInt(step?.stepNumber as string));
-    if (isTouched && hasSummary) {
+    const lastSubStep = primaryStep?.subSteps?.slice(-1)[0];
+    const hasSummary = lastSubStep?.name.toLowerCase().startsWith("summary") || false;
+    if (isTouched && hasSummary && !isSubStep) {
       this.$router.push({
         path: step?.route + "/" + lastSubStep?.route,
         params: {

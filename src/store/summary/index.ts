@@ -64,6 +64,7 @@ export class SummaryStore extends VuexModule {
     const isComplete =  selectedPeriods.length>0
       && PoP?.pop_start_request !== ""
       && PoP?.recurring_requirement !== ""
+      && PoP?.requested_pop_start_date !== ""
     const POPSummaryItem: SummaryItem = {
       title: "Period of Performance (PoP)",
       description,
