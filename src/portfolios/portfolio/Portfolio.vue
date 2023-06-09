@@ -1016,15 +1016,21 @@ export default class PortfolioDashboard extends Vue {
 
 
     let runOutISODate = "";
+    debugger;
     if (this.monthsIntoPoP > 0) {
       let endOfSpending = startOfMonth(today);
       endOfSpending = subDays(endOfSpending, 1);
       const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
+      debugger;
       if (daysSinceStartDate > 0 && this.fundsSpent) {
         const dailySpend = this.fundsSpent / daysSinceStartDate;
         const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
         const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
         runOutISODate = formatISO(runOutOfFundsDate, {
+          representation: "date",
+        });
+      } else {
+        runOutISODate = formatISO(popEndDate, {
           representation: "date",
         });
       }
