@@ -385,7 +385,6 @@ export class PeriodsStore extends VuexModule {
 
     const extractFromOptionGroup = (group: PeriodDTO[], prefix: string): string => {
       let section = "";
-      //section += formattedPop.includes("option") ? " and " : "";
       section += prefix;
       section += converter.toWords(group.length);
       section += " ";

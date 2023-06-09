@@ -150,8 +150,8 @@ export class SummaryStore extends VuexModule {
     const description = await this.setClassificationRequirementsDesc(
       hasSecretOrTS);
     const isTouched = await this.isClassificationRequirementTouchedOrComplete(classReqs)
-      && await this.isSecurityRequirementsTouched(hasSecretOrTS)
-      && await this.isCDSTouched(hasSecretOrTS)
+      || await this.isSecurityRequirementsTouched(hasSecretOrTS)
+      || await this.isCDSTouched(hasSecretOrTS)
     const isComplete = await this.isClassificationRequirementTouchedOrComplete(classReqs)
       && await this.isSecurityRequirementsComplete(hasSecretOrTS)
       && await this.isCDSComplete(hasSecretOrTS);
@@ -218,6 +218,7 @@ export class SummaryStore extends VuexModule {
       "sys_",
       "acquisition_package"
     ]
+
     return hasSecretOrTS 
       ? await this.isTouched({
         object: ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO,
@@ -277,7 +278,7 @@ export class SummaryStore extends VuexModule {
     object: object
     keysToIgnore: string[]
   }): Promise<boolean>{
-    return  config.object && Object.keys(config.object).filter((key: string) => {
+    return  config.object && await Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
         let dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];

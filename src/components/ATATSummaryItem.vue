@@ -12,7 +12,7 @@
             :id="getIdText(item.title) + '_Heading'">
               {{ item.title }}
             </h3>
-            <p class="mb-0 _selectedOfferings" 
+            <p class="mb-0" 
               v-html="item.description">
             </p>
           </div>

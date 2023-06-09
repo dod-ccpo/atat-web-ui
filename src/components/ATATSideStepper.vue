@@ -32,7 +32,7 @@
             'disabled': !isStepComplete(step.stepNumber) && !canNavigate() 
           }"
           class="step"
-          @click.native="setCurrentStep(step)"
+          @click.native="setCurrentStep(step.stepNumber)"
         >
           <span class="step-circle">
             {{ step.stepNumber }}
@@ -102,19 +102,20 @@ import { routeNames } from "@/router/stepper";
 export default class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
-  public setCurrentStep(step: StepperStep): void {
-    this.activeStep = step.stepNumber as string;
+  public setCurrentStep(stepNumber: string): void {
+    this.activeStep = stepNumber;
     this.calculatePercentComplete();
-    this.navigateToSummary(step);
+    this.navigateToSummary(stepNumber);
   }
 
-  public navigateToSummary(step: StepperStep): void {
-    const lastSubStep = step.subSteps?.slice(-1)[0];
+  public navigateToSummary(stepNumber: string): void {
+    const step = this.stepperData.find(step=>step.stepNumber === stepNumber);
+    const lastSubStep = step?.subSteps?.slice(-1)[0];
     const hasSummary = lastSubStep?.name.toLowerCase().startsWith("summary") || false;
-    const isTouched = isStepTouched(parseInt(step.stepNumber as string));
+    const isTouched = isStepTouched(parseInt(step?.stepNumber as string));
     if (isTouched && hasSummary) {
       this.$router.push({
-        path: step.route + "/" + lastSubStep?.route,
+        path: step?.route + "/" + lastSubStep?.route,
         params: {
           direction: "next"
         },
