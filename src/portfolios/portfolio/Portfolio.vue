@@ -1514,7 +1514,8 @@ export default class PortfolioDashboard extends Vue {
     const clinSysIds = currentClins.map(obj => obj.sys_id);
     const costs = 
       await this.dashboardService.getCostsInCurrentPeriod(clinSysIds);
-
+    // EJY return here!!!
+    
     const data = await this.getDashboardData();
     
     // ATAT TODO - account for no cost data in AT-8734
