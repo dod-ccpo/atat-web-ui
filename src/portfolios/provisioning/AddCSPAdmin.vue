@@ -353,10 +353,11 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       && (missingUnclass || missingScrt || needsILs && missingILs.length > 0)
     ) {
       if(needsILs){
+        debugger
         const unclassifiedIL = missingILs.map(il => `Unclassified/${il}`)
-        this.missingEnv = unclassifiedIL.length === 1 ?
-          unclassifiedIL[0]
-          :unclassifiedIL.join(" ").toString()
+        if(missingScrt) unclassifiedIL.push("Secret")
+        const newStr = unclassifiedIL.join(", ")
+        this.missingEnv = newStr.replace(/,(?=[^,]+$)/, ' and');
         this.showMissingAdminAlert = true;
       }else{
         this.missingEnv = missingUnclass ? "unclassified" : "secret";
