@@ -181,6 +181,19 @@
                   cardWidth="180"
                   :noDescriptions="true"
                 />
+                <ATATCheckboxGroup
+                  v-if="selectedClassificationLevels.includes('Unclassified')
+                  && showUnclassifiedILs"
+                  id="ImpactLevelSelection"
+                  class="mt-10"
+                  groupLabel="What impact level should this individual have access to?"
+                  :value.sync="selectedImpactLevels"
+                  :items="impactLevelOptions"
+                  :card="true"
+                  :inline="true"
+                  cardWidth="180"
+                  :noDescriptions="true"
+                />
               </div>
 
               <ATATTextField 
@@ -188,9 +201,7 @@
                 v-if="selectedClassificationLevels.includes('Unclassified')"
                 :value.sync="unclassifiedEmail"
                 label="Unclassified email address"
-                tooltipText="Use a Non-classified Internet Protocol Router Network (NIPRNet) 
-                  email address. This is where the CSP will send instructions for accessing
-                  the Unclassified/IL5 cloud console."
+                :tooltipText="unclassifiedTooltip"
                 class="_input-max-width mt-10"
                 helpText="Must use a .mil or .gov email address."
                 :rules="[
@@ -205,9 +216,7 @@
                 v-if="scrtSelected"
                 :value.sync="scrtEmail"
                 label="SIPRNet email address"
-                tooltipText="Use a Secure Internet Protocol Router Network (SIPRNet) 
-                  email address. This is where the CSP will send instructions for 
-                  accessing the Secret/IL6 cloud console."
+                :tooltipText="secretToolTip"
                 class="_input-max-width mt-10"
                 helpText="Must use a .smil or .sgov email address."
                 :rules="[
@@ -268,6 +277,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public admins: PortfolioAdmin[] = [];
   public cspLong = "";
+  public csp = "";
   public classificationLevels: string[] = [];
   public openModal = false;
   public modalSlideoutComponent = CSPAdminLearnMoreText;
@@ -278,6 +288,8 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public unclassifiedEmail = "";
   public hasScrtAccess = ""; // YES/NO
   public scrtEmail = "";
+  public impactLevels:string[] = [];
+  public impactLevelCompareArray:string[] = [];
 
   public scrtStr = ClassificationLevels.SCRT;
   public unclStr = ClassificationLevels.UNCL;
@@ -289,18 +301,57 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     { id: this.scrtStr, label: this.scrtStr, value: this.scrtStr }
   ];
 
+  public selectedImpactLevels: string[] = [];
+  public impactLevelOptions: Checkbox[] = [
+  ];
+
   public tableData: Record<string, string>[] = [];
+  public showUnclassifiedILs = false;
+  public get unclassifiedTooltip():string{
+    let txt = ""
+    if(this.csp !== 'Azure'){
+      txt = `<span class="font-weight-500">Unclassified</span> cloud console.`
+    }else{
+      txt+=`<span class="font-weight-500">Unclassified</span>`
+      if(this.impactLevels.length === 1){
+        txt += `<span class="font-weight-500">/${this.selectedImpactLevels[0]}</span>
+            cloud console.`
+      }else{
+        txt += " cloud console for any ILs selected above."
+      }
+    }
+    return "Use a Non-classified Internet Protocol Router Network (NIPRNet)\n" +
+      "email address. This is where the CSP will send instructions for accessing the " +
+      txt
+  }
+
+  public get secretToolTip():string {
+    return  `Use a Secure Internet Protocol Router Network (SIPRNet)
+     email address. This is where the CSP will send instructions for
+      accessing the <span class="font-weight-500">Secret</span> cloud console.`
+  }
 
   public showMissingAdminAlert = false;
   public async setShowMissingAdminAlert(): Promise<void> {
     const missingUnclass = (this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES")) === -1;
     const missingScrt = (this.admins.findIndex(a => a.hasScrtAccess === "YES")) === -1;
+    const needsILs = this.csp === 'Azure'
+    debugger
+    const missingILs = this.impactLevelCompareArray
+      .filter(il=> !this.selectedImpactLevels.includes(il))
+
     if (this.classificationLevels.length > 1 
       && this.admins.length > 0 
-      && (missingUnclass || missingScrt)
+      && (missingUnclass || missingScrt || needsILs && missingILs)
     ) {
-      this.missingEnv = missingUnclass ? "unclassified" : "secret";
-      this.showMissingAdminAlert = true;
+      if(needsILs){
+        const unclassifiedIL = missingILs.map(il => `Unclassified/${il}`)
+        this.missingEnv = unclassifiedIL.length === 1? unclassifiedIL[0]:unclassifiedIL.toString()
+        this.showMissingAdminAlert = true;
+      }else{
+        this.missingEnv = missingUnclass ? "unclassified" : "secret";
+        this.showMissingAdminAlert = true;
+      }
     } else {
       this.showMissingAdminAlert = false;
     }
@@ -373,7 +424,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       unclassifiedEmail: hasUnclassifiedAccess ? this.unclassifiedEmail : "",
       scrtEmail: hasScrtAccess ? this.scrtEmail : "",
     };
-
+    debugger
     const adminIndex = this.admins.findIndex(obj => obj.DoDId === this.adminDoDId);
     if (this.isEdit && this.editAdminIndex > -1) {
       this.admins[this.editAdminIndex] = admin;
@@ -411,7 +462,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.hasScrtAccess = admin.hasScrtAccess as string;
       this.scrtEmail = admin.scrtEmail as string;
       
-      if (this.hasUnclassifiedAccess === "YES") 
+      if (this.hasUnclassifiedAccess === "YES")
         this.selectedClassificationLevels.push(this.unclStr);
       if (this.hasScrtAccess === "YES")
         this.selectedClassificationLevels.push(this.scrtStr);
@@ -429,6 +480,22 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.editAdminIndex = -1;
       this.resetAdminData();
     }
+  }
+
+  public createILCheckbox(impactLevels:string[]):void{
+    impactLevels.forEach(value => {
+      const checkboxItem = {
+        id: "",
+        label: "",
+        value: ""
+      }
+      const il = value.split('_')[1]
+      checkboxItem.id = il.toUpperCase()
+      checkboxItem.label = il.toUpperCase()
+      checkboxItem.value = il.toUpperCase()
+      this.impactLevelCompareArray.push(checkboxItem.value)
+      this.impactLevelOptions.push(checkboxItem)
+    })
   }
 
   public resetAdminData(): void {
@@ -454,12 +521,25 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.tableData = [];
     this.admins.forEach((admin, index) => {
       const classificationLevels = []
-      if (admin.hasUnclassifiedAccess === "YES") classificationLevels.push(this.unclStr);
+      if (admin.hasUnclassifiedAccess === "YES"){
+        if(this.csp === 'Azure'){
+          this.selectedImpactLevels.forEach(il=>{
+            classificationLevels.push(this.unclStr + '/'+il);
+          })
+        }else{
+          classificationLevels.push(this.unclStr);
+        }
+      }
+      debugger
       if (admin.hasScrtAccess === "YES") classificationLevels.push(this.scrtStr);
       const adminClassificationLevels = classificationLevels.join("<br />");
       const emails = [];
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
-        emails.push(admin.unclassifiedEmail);
+        if(this.csp ==='Azure'){
+          emails.push(admin.unclassifiedEmail);
+        }else{
+          emails.push(admin.unclassifiedEmail);
+        }
       }
       if (admin.hasScrtAccess === "YES" && admin.scrtEmail) {
         emails.push(admin.scrtEmail);
@@ -496,7 +576,18 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
           this.hasScrtAccess = "YES";
           this.hasUnclassifiedAccess = "NO";
         }
-      } 
+      }
+      this.impactLevels = storeData.selectedILs ||[]
+      if(storeData.selectedILs && storeData.selectedILs.length > 1){
+        this.showUnclassifiedILs = true
+        this.createILCheckbox(storeData.selectedILs)
+      }else if(storeData.selectedILs && storeData.selectedILs.length === 1){
+        const il = storeData.selectedILs[0].split('_')[1].toUpperCase()
+        this.selectedImpactLevels.push(il)
+      }
+      this.csp = storeData.csp||""
+      // if(this.csp === )
+
       this.buildTableData();
     } 
     await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
