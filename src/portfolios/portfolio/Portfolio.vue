@@ -1008,14 +1008,13 @@ export default class PortfolioDashboard extends Vue {
     this.timeToExpiration = unitsRemaining + " " + timeUnit;
 
     // calculate when will run out of funds based on current rate of spending
-    const popStartDate = parseISO(this.taskOrder.pop_start_date, {
+    const popStartDate = parseISO(this.currentPoPStartISO, {
       additionalDigits: 1,
     });
     const start = new Date(popStartDate.setHours(0, 0, 0, 0));
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
 
 
-    // EJY - DOUBLE-CHECK which of these 2 blocks? OR if still needs work either way.
     let runOutISODate = "";
     if (this.monthsIntoPoP > 0) {
       let endOfSpending = startOfMonth(today);
@@ -1035,21 +1034,6 @@ export default class PortfolioDashboard extends Vue {
       });
     }
     this.runOutOfFundsDate = createDateStr(runOutISODate, true);
-
-    // EJY - DOUBLE-CHECK which of these 2 blocks? OR if still needs work either way.
-    // let endOfSpending = startOfMonth(today);
-    // endOfSpending = subDays(endOfSpending, 1);
-    // const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
-    // if (daysSinceStartDate > -1) {
-    //   const dailySpend = this.fundsSpent / daysSinceStartDate;
-    //   const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
-    //   const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
-    //   const runOutISODate = formatISO(runOutOfFundsDate, {
-    //     representation: "date",
-    //   });
-    //   this.runOutOfFundsDate = createDateStr(runOutISODate, true);
-    // }
-
   }
 
   public donutChartPercentages: number[] = [];
@@ -1113,13 +1097,11 @@ export default class PortfolioDashboard extends Vue {
       true
     );
 
-    const popStartISO = this.taskOrder.pop_start_date;
-    const popStartDate = parseISO(popStartISO);
-    const periodDatesISO = [popStartISO];
+    const popStartDate = parseISO(this.currentPoPStartISO);
+    const periodDatesISO = [this.currentPoPStartISO];
     const periodDates = [popStartDate];
 
-    const popEndISO = this.taskOrder.pop_end_date;
-    const popEndDate = parseISO(popEndISO);
+    const popEndDate = parseISO(this.currentPoPEndISO);
 
     let month = popStartDate;
     //eslint-disable-next-line prefer-const 
