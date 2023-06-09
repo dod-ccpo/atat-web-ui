@@ -32,7 +32,10 @@
             'disabled': !isStepComplete(step.stepNumber) && !canNavigate() 
           }"
           class="step"
-          @click.native="setCurrentStep(step)"
+          @click.native ="setCurrentStep(
+            step.stepNumber, 
+            step,
+            false)"
         >
           <span class="step-circle">
             {{ step.stepNumber }}
@@ -61,6 +64,11 @@
                   'disabled': !isSubstepComplete(subStep.name) && !canNavigate() 
                 }"
                 class="substep"
+                @click="setCurrentStep(
+                  subStep.stepNumber, 
+                  subStep,
+                  false
+                )"
               >
                 <span class="substep-circle">
                   <span
@@ -102,19 +110,26 @@ import { routeNames } from "@/router/stepper";
 export default class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
-  public setCurrentStep(step: StepperStep): void {
-    this.activeStep = step.stepNumber as string;
+  public setCurrentStep(
+    stepNumber: string, 
+    step: StepperStep, 
+    isSubStep: boolean
+  ): void {
+    this.activeStep = stepNumber;
     this.calculatePercentComplete();
-    this.navigateToSummary(step);
+    if (step){
+      this.navigateToSummary(step, isSubStep);
+    }
   }
 
-  public navigateToSummary(step: StepperStep): void {
-    const lastSubStep = step.subSteps?.slice(-1)[0];
+  public navigateToSummary(step: StepperStep, isSubStep: boolean): void {
+    const primaryStep = this.stepperData.find(s=>s.stepNumber === step.stepNumber);
+    const isTouched = isStepTouched(parseInt(step?.stepNumber as string));
+    const lastSubStep = primaryStep?.subSteps?.slice(-1)[0];
     const hasSummary = lastSubStep?.name.toLowerCase().startsWith("summary") || false;
-    const isTouched = isStepTouched(parseInt(step.stepNumber as string));
-    if (isTouched && hasSummary) {
+    if (isTouched && hasSummary && !isSubStep) {
       this.$router.push({
-        path: step.route + "/" + lastSubStep?.route,
+        path: step?.route + "/" + lastSubStep?.route,
         params: {
           direction: "next"
         },

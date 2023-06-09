@@ -16,7 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import Summary from "@/store/summary";
+import Summary, { isStepTouched } from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -64,7 +64,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-    return routeNames.PeriodOfPerformance;
+    return (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
@@ -97,7 +97,7 @@ export const BVTOResolver = (current: string): string => {
   }
 
   return current === routeNames.EvalPlanDetails
-    ? routeNames.PeriodOfPerformance
+    ? (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
     : routeNames.EvalPlanDetails;
 };
 

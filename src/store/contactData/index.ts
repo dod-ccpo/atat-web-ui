@@ -34,7 +34,7 @@ const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
 export class ContactDataStore extends VuexModule {
   private initialized = false;
   public branchChoices: SystemChoiceDTO[] = [];
-  public civilianGradeChoices :SystemChoiceDTO[] = [];
+  public civilianGradeChoices: SystemChoiceDTO[] = [];
   public countries:CountryDTO[] = [];
   public militaryRanks: MilitaryRankDTO[] = [];
   public militaryAutoCompleteGroups: AutoCompleteItemGroups = {};

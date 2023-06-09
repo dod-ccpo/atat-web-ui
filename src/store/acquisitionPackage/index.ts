@@ -174,12 +174,12 @@ const initialNonDitcoAddress = ():AddressDTO => {
   };
 };
 
-const initialContractType = ()=> {
+const initialContractType = () => {
   return {
     firm_fixed_price: "",
     time_and_materials: "",
     contract_type_justification: "",
-    acquisition_package:AcquisitionPackage.packageId
+    acquisition_package: AcquisitionPackage.packageId
   }
 }
 
@@ -201,6 +201,7 @@ const initialContact = () => {
     email: "",
     title: "",
     manually_entered: "",
+    acquisition_package: ""
   };
 };
 
@@ -2036,6 +2037,15 @@ export class AcquisitionPackageStore extends VuexModule {
               : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
+
+      /**
+       * Saves acq package sys_id to Contact (if acq package is not null and sys_id is not 
+       * undefined)
+       */ 
+      saveData.data.acquisition_package = (this.acquisitionPackage) ? 
+        (this.acquisitionPackage.sys_id) ? this.acquisitionPackage.sys_id : "" 
+        : "";
+      
       const savedContact =
         sys_id.length > 0
           ? await api.contactsTable.update(sys_id, { ...saveData.data, sys_id })
