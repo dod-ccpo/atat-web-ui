@@ -5,6 +5,7 @@ import { AxiosRequestConfig } from "axios";
 import { TABLENAME as ClinTable } from "@/api/clin";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
+import { add, endOfDay, format, startOfDay, sub } from "date-fns";
 
 export interface PortFolioDashBoardDTO {
   taskOrder: TaskOrderDTO;
@@ -96,6 +97,34 @@ const getEntityTotals = (
 };
 
 export class DashboardService {
+
+  public async getCLINsInCurrentPeriod(taskOrderSysId: string): Promise<ClinDTO[]> {
+    const today = format(new Date().setHours(0,0,0,0), "yyyy-MM-dd")
+    
+    let query = "task_order=" + taskOrderSysId;
+    query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '00:00:00')";
+    query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '00:00:00')";
+
+    const fields = "clin_number,clin_status,funds_obligated,funds_total,"
+      + "pop_end_date,pop_start_date,sys_id";
+    const config: AxiosRequestConfig = {
+      params: {
+        sysparm_query: query,
+        sysparm_fields: fields,
+      },
+    };
+
+    const clins = await api.clinTable.all(config);
+    return clins;
+  }
+
+  public async getCostsInCurrentPeriod(clins: string[]): Promise<CostsDTO[]> {
+    const costFields =
+      "clin,csp,csp.name,year_month," +
+      "task_order_number,portfolio,organization,agency.title,is_actual,value";
+    // EJY RETURN HERE!!!!
+    return [];
+  }
 
   /**
    * Data returned by this function has no impact in the context of relocation of funding related

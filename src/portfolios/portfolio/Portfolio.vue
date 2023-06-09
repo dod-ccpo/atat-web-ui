@@ -1507,9 +1507,18 @@ export default class PortfolioDashboard extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
-    this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId; // EJY - DOUBLE-CHECK this
+    this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId;
+
+    const currentClins = 
+      await this.dashboardService.getCLINsInCurrentPeriod(this.activeTaskOrderSysId);
+    const clinSysIds = currentClins.map(obj => obj.sys_id);
+    const costs = 
+      await this.dashboardService.getCostsInCurrentPeriod(clinSysIds);
+
     const data = await this.getDashboardData();
-    // TODO - account for no cost data in AT-8734
+    
+    // ATAT TODO - account for no cost data in AT-8734
+
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
