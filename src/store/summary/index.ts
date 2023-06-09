@@ -218,7 +218,6 @@ export class SummaryStore extends VuexModule {
       "sys_",
       "acquisition_package"
     ]
-
     return hasSecretOrTS 
       ? await this.isTouched({
         object: ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO,

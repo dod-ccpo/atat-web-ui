@@ -95,7 +95,7 @@ export const BVTOResolver = (current: string): string => {
   if (evalPlan?.method === "BVTO") {
     return routeNames.Differentiators;
   }
-  debugger;
+
   return current === routeNames.EvalPlanDetails
     ? (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
     : routeNames.EvalPlanDetails;
