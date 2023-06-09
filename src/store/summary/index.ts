@@ -55,15 +55,18 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   // step 4 periodOfPerformance
   public async assessPeriodOfPerformance(): Promise<void>{
+    const PoP = Periods.periodOfPerformance;
+    const description = await Periods.formatPeriodOfPerformance();
     const selectedPeriods = Periods.periods;
-    const isTouched = (selectedPeriods.length>0)
-    const isComplete =  (!isTouched)
-      || (selectedPeriods.length >0 && selectedPeriods.every(
-        sp => sp.period_unit_count !== ""
-      ));
+    const isTouched = selectedPeriods.length>0
+      || PoP?.pop_start_request !== ""
+      || PoP?.recurring_requirement !== ""
+    const isComplete =  selectedPeriods.length>0
+      && PoP?.pop_start_request !== ""
+      && PoP?.recurring_requirement !== ""
     const POPSummaryItem: SummaryItem = {
       title: "Period of Performance (PoP)",
-      description: " 1-year base period with two 1-year options",
+      description,
       isComplete,
       isTouched,
       routeName: "PeriodOfPerformance",
@@ -313,66 +316,3 @@ export class SummaryStore extends VuexModule {
 const Summary = getModule(SummaryStore);
 export default Summary;
 
-
-// export const formatPeriodOfPerformance = (
-//   basePeriod: PeriodOfPerformanceDTO, 
-//   optionPeriods: PeriodOfPerformanceDTO[]): 
-// string => {
-//   let formattedPop = "";
-//   formattedPop += basePeriod.periodUnitCount;
-//   formattedPop += " ";
-//   formattedPop += basePeriod.periodUnit.toLowerCase();
-//   formattedPop += " base period";
-//   formattedPop += optionPeriods.length > 0 ? ", plus " : "";
-
-//   const extractFromOptionGroup = (group: PeriodOfPerformanceDTO[], prefix: string): string => {
-//     let section = "";
-//     // section += formattedPop.includes("option") ? " and " : "";
-//     section += prefix;
-//     section += converter.toWords(group.length);
-//     section += " ";
-//     section += group[0].periodUnitCount;
-//     section += "-";
-//     section += group[0].periodUnit.toLowerCase();
-//     section += " option period";
-//     section += group.length > 1 ? "s" : "";
-//     return section;
-//   };
-
-//   const orderedPeriods: PeriodOfPerformanceDTO[] = 
-//      [...optionPeriods].sort((a, b) => a.optionOrder - b.optionOrder);
-//   let previousPeriod!: PeriodOfPerformanceDTO;
-//   let currentGroup: PeriodOfPerformanceDTO[] = [];
-//   const allGroups: PeriodOfPerformanceDTO[][] = [];
-//   for (const period of orderedPeriods) {
-//     if (
-//       previousPeriod &&
-//       (previousPeriod.periodUnit !== period.periodUnit || 
-//        previousPeriod.periodUnitCount !== period.periodUnitCount)
-//     ) {
-//       // If the current period is different from the last one, 
-//        extract the current group and reset the array
-//       allGroups.push(currentGroup);
-//       currentGroup = [];
-//     }
-//     currentGroup.push(period);
-//     previousPeriod = period;
-//   }
-
-//   // Extract the final remaining group when we're done
-//   if (currentGroup.length > 0) {
-//     allGroups.push(currentGroup);
-//   }
-
-//   // Now that we've assembled all the groups, extract the text from them
-//   for (const [index, group] of allGroups.entries()) {
-//     if (index === 0) {
-//       formattedPop += extractFromOptionGroup(group, "");
-//     } else if (index === allGroups.length - 1) {
-//       formattedPop += extractFromOptionGroup(group, " and ");
-//     } else {
-//       formattedPop += extractFromOptionGroup(group, ", ");
-//     }
-//   }
-//   return formattedPop;
-// };
