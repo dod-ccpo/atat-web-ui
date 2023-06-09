@@ -794,6 +794,16 @@ export interface TrainingEstimate {
   dow_task_number?: string;
 }
 
+export interface SummaryItem {
+  title: string,
+  description: string,
+  isComplete: boolean;
+  isTouched: boolean;
+  routeName: string;
+  step: number;
+  substep: number;
+}
+
 export enum ClassificationLevels {
   UNCL = "Unclassified",
   SCRT = "Secret",
