@@ -19,7 +19,7 @@
           <div class="d-flex align-start">
             <div class="d-flex align-center">
               <div 
-                v-if="!item.isComplete" 
+                v-if="item.isTouched && !item.isComplete" 
                 class="d-flex align-start nowrap ml-5">
                   <v-icon class="icon-20 text-warning-dark2 pr-2">warning</v-icon>
                   <p class="_missing-info mb-0 pr-4 _semibold">Missing info</p>
@@ -32,7 +32,7 @@
                 @click="navigate(item.routeName)"
                 @keydown.enter="navigate(item.routeName)"
                 @keydown.space="navigate(item.routeName)">
-              {{ item.isComplete ? 'View/Edit' : 'Review' }}
+                {{ getButtonText(item)  }}
               </v-btn>
             </div>
           </div>
@@ -66,6 +66,12 @@ export default class ATATSummaryItem extends Vue {
         direction: "next"
       },
     })
+  }
+
+  public getButtonText(item:SummaryItem):string{
+    return !item.isTouched
+      ? "Start"
+      : item.isComplete ? 'View/Edit' : 'Review'
   }
 
 }

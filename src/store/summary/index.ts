@@ -4,19 +4,22 @@ import { SummaryItem } from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
-import { ClassificationLevelDTO, ContractTypeDTO, CrossDomainSolutionDTO } from "@/api/models";
+import { 
+  ContractTypeDTO, 
+  CrossDomainSolutionDTO,
+  SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
 
 export const isStepTouched = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.some(
-    si => si.step === stepNumber && si.isTouched 
+    (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
 } 
 
 export const isStepComplete = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.every(
-    si => si.step === stepNumber && si.isComplete 
+    (si: SummaryItem) => si.step === stepNumber && si.isComplete 
   ))
 }
 
@@ -75,16 +78,16 @@ export class SummaryStore extends VuexModule {
     const title = "Contract Type";
     const contractType = AcquisitionPackage.contractType as ContractTypeDTO;
 
-    const ffp = contractType.firm_fixed_price.toLowerCase() === "true";
-    const tm = contractType.time_and_materials.toLowerCase() === "true";
+    const isFfp = contractType.firm_fixed_price.toLowerCase() === "true";
+    const isTm = contractType.time_and_materials.toLowerCase() === "true";
     const hasJustification = contractType?.contract_type_justification.trim() !== "";
 
-    const description = await this.setContractTypeDescription({ffp, tm});
+    const description = await this.setContractTypeDescription({isFfp, isTm});
 
-    const isTouched = ffp || tm;
+    const isTouched = isFfp || isTm;
   
     const isComplete = await this.setContractTypeIsComplete({
-      ffp, tm, hasJustification
+      isFfp, isTm, hasJustification
     });
     const POPSummaryItem: SummaryItem = {
       title,
@@ -101,17 +104,17 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setContractTypeIsComplete(
     contractType:{
-        ffp:boolean, 
-        tm:boolean,
+        isFfp:boolean, 
+        isTm:boolean,
         hasJustification: boolean
     }): Promise<boolean>{
-    if (contractType.ffp && contractType.tm && contractType.hasJustification){
+    if (contractType.isFfp && contractType.isTm && contractType.hasJustification){
       return true;
     }
-    else if (contractType.tm && contractType.hasJustification){
+    else if (contractType.isTm && contractType.hasJustification){
       return true;
     }
-    else if (contractType.ffp && !contractType.tm){
+    else if (contractType.isFfp && !contractType.isTm){
       return true;
     }
     return false;
@@ -120,16 +123,16 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setContractTypeDescription(
     contractType:{
-        ffp:boolean, 
-        tm:boolean
+        isFfp:boolean, 
+        isTm:boolean
     }): Promise<string>{
-    if (contractType.ffp && contractType.tm){
+    if (contractType.isFfp && contractType.isTm){
       return "Firm-fixed-price (FFP) and Time-and-materials (T&M)"
     }
-    else if (contractType.ffp){
+    else if (contractType.isFfp){
       return "Firm-fixed-price (FFP)"
     }
-    else if (contractType.tm){
+    else if (contractType.isTm){
       return "Time-and-materials (T&M)"
     }
     return "";
@@ -141,7 +144,8 @@ export class SummaryStore extends VuexModule {
     const title = "Classification Requirements";
     const classReqs  = ClassificationRequirements.selectedClassificationLevels;
     const hasSecretOrTS = classReqs.some(cr => cr.classification !== "U");
-    const description = await this.setClassificationRequirementsDesc(classReqs);
+    const description = await this.setClassificationRequirementsDesc(
+      hasSecretOrTS);
     const isTouched = await this.isClassificationRequirementTouchedOrComplete(classReqs)
       && await this.isSecurityRequirementsTouched(hasSecretOrTS)
       && await this.isCDSTouched(hasSecretOrTS)
@@ -162,20 +166,26 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async setClassificationRequirementsDesc(
-    classReqs: ClassificationLevelDTO[]): Promise<string>{
+    hasSecretOrTS: boolean
+  ): Promise<string>{
+    const cds = ClassificationRequirements.cdsSolution;
+    const classReqs  = ClassificationRequirements.selectedClassificationLevels;
     const selectClassLevelsSysIds = classReqs.map(cr => cr.classification_level);
     const classLevelDisplayNames = ClassificationRequirements.classificationLevels.filter(
-      cl => selectClassLevelsSysIds.includes(cl.sys_id)
+      cl => selectClassLevelsSysIds.includes(cl.sys_id as string)
     ).map(cl => cl.display?.replaceAll(" - ", "/")).sort();
+    const missingCDSVerbiage = !(await this.isCDSComplete(hasSecretOrTS))
+      ? "<br />(Cross Domain Solution Required)" : ""
 
     return classReqs.length > 0
-      ? convertStringArrayToCommaList(classLevelDisplayNames as string[], "and")
+      ? convertStringArrayToCommaList(classLevelDisplayNames as string[], "and") 
+        + missingCDSVerbiage
       : "";
   }
 
   @Action({rawError: true})
   public async isClassificationRequirementTouchedOrComplete(
-    classReqs: ClassificationLevelDTO[]): Promise<boolean>{
+    classReqs: SelectedClassificationLevelDTO[]): Promise<boolean>{
     return classReqs.length > 0;
   }
 
@@ -201,11 +211,14 @@ export class SummaryStore extends VuexModule {
   public async isCDSTouched(
     hasSecretOrTS: boolean
   ): Promise<boolean>{
-
+    const keysToIgnore = [
+      "sys_",
+      "acquisition_package"
+    ]
     return hasSecretOrTS 
       ? await this.isTouched({
         object: ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO,
-        keysToIgnore:[""], 
+        keysToIgnore, 
       }) 
       : true;
   }
@@ -215,22 +228,29 @@ export class SummaryStore extends VuexModule {
     hasSecretOrTS: boolean
   ): Promise<boolean>{
     // validate CDS
+    let isCDSComplete = false;
+    let isCDSDurationValid = false;
+    const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
     const keysToIgnore = [
       "sys_",
       "duration",
       "selected_periods"
     ]
-    const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
-    const isCDSComplete = await this.isComplete({
-      object: cds,
-      keysToIgnore, 
-    })
 
-    // validate duration
-    const isCDSDurationValid = await this.isDurationValid({
-      isNeeded: cds.need_for_entire_task_order_duration,
-      selectedPeriods: cds.selected_periods
-    })
+    if (cds){
+      isCDSComplete = cds && cds.cross_domain_solution_required !== "NO"
+        ? await this.isComplete({
+          object: cds,
+          keysToIgnore, 
+        })
+        : true
+
+      // validate duration
+      isCDSDurationValid = await this.isDurationValid({
+        isNeeded: cds.need_for_entire_task_order_duration,
+        selectedPeriods: cds.selected_periods
+      })
+    }
 
     return hasSecretOrTS 
       ? isCDSComplete && isCDSDurationValid
@@ -257,7 +277,8 @@ export class SummaryStore extends VuexModule {
     return  config.object && Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
         let dynamicKey = key as keyof unknown;
-        return config.object[dynamicKey] !== "" && config.object[dynamicKey] !== "[]"
+        const objAttrib = config.object[dynamicKey];
+        return objAttrib !== "" && objAttrib !== "[]"
       }
     }).length > 0;
   }
@@ -272,7 +293,7 @@ export class SummaryStore extends VuexModule {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
         let dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
-        return  objAttrib === "" && config.object[dynamicKey] !== "[]"
+        return objAttrib === "" && objAttrib !== "[]"
       }
     }).length === 0;
   }

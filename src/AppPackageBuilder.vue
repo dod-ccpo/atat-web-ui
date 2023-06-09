@@ -254,7 +254,7 @@ export default class AppPackageBuilder extends Vue {
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
-    this.continueButtonColor = step.continueButtonColor || "primary";
+    this.continueButtonColor = step.continueButtonColor || "";
     this.altContinueAction = step.altContinueAction || "";
     if (step.stepName === routeNames.DOWSummary) {
       this.continueButtonText = DescriptionOfWork.currentDOWSection === "XaaS"
