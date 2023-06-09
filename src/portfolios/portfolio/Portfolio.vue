@@ -59,7 +59,7 @@
                           Current Period of Performance
                         </p>
                         <span id="PoPDates" class="h3 mb-0">
-                          {{ popStart }}&ndash;{{ popEnd }}
+                          {{ currentPoPStartStr }}&ndash;{{ currentPoPEndStr }}
                         </span>
                         <p
                           class="text-base-dark mb-0 font-size-14"
@@ -869,8 +869,11 @@ export default class PortfolioDashboard extends Vue {
   public availableFunds = 0;
   public fundsSpentPercent = 0;
 
-  public popStart = "";
-  public popEnd = "";
+  public currentPoPStartStr = "";
+  public currentPoPStartISO = "";
+  public currentPoPEndStr = "";
+  public currentPoPEndISO = "";
+
   public timeToExpiration = "";
   public runOutOfFundsDate = "";
   public monthlySpendAverage = 0;
@@ -980,8 +983,8 @@ export default class PortfolioDashboard extends Vue {
     idiqClin: string;
   }[] = [];
 
-  public calculateTimeToExpiration(): void {
-    const popEndDate = parseISO(this.taskOrder.pop_end_date, {
+  public calculateTimeToExpiration(endDate: string): void {
+    const popEndDate = parseISO(endDate, {
       additionalDigits: 1,
     });
 
@@ -1509,18 +1512,8 @@ export default class PortfolioDashboard extends Vue {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId;
 
-    const currentClins = 
-      await this.dashboardService.getCLINsInCurrentPeriod(this.activeTaskOrderSysId);
-    // EJY  set start and end dates from clin 0
-    const clinSysIds = currentClins.map(obj => obj.sys_id);
-    const costs = 
-      await this.dashboardService.getCostsInCurrentPeriod(clinSysIds);
-    // EJY return here!!!
-    
     const data = await this.getDashboardData();
     
-    // ATAT TODO - account for no cost data in AT-8734
-
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
@@ -1548,9 +1541,11 @@ export default class PortfolioDashboard extends Vue {
       100 - this.fundsSpentPercent,
     ];
 
-    this.popStart = createDateStr(this.taskOrder.pop_start_date, true);
-    this.popEnd = createDateStr(this.taskOrder.pop_end_date, true);
-    this.calculateTimeToExpiration();
+
+    // all CLINs should run the entire duration of the current period
+    this.currentPoPStartStr = createDateStr(this.idiqClins[0].pop_start_date, true);
+    this.currentPoPEndStr = createDateStr(this.idiqClins[0].pop_end_date, true);
+    this.calculateTimeToExpiration(this.idiqClins[0].pop_end_date);
 
     this.calculateBurnDown();
     this.createTableItems();

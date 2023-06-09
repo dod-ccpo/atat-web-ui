@@ -102,8 +102,8 @@ export class DashboardService {
     const today = format(new Date().setHours(0,0,0,0), "yyyy-MM-dd")
     
     let query = "task_order=" + taskOrderSysId;
-    query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '00:00:00')";
-    query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '00:00:00')";
+    query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
+    query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
 
     const fields = "clin_number,clin_status,funds_obligated,funds_total,"
       + "pop_end_date,pop_start_date,sys_id";
@@ -119,11 +119,20 @@ export class DashboardService {
   }
 
   public async getCostsInCurrentPeriod(clins: string[]): Promise<CostsDTO[]> {
-    const costFields =
+    let query = "clinIN" + clins.join(",");
+    const fields =
       "clin,csp,csp.name,year_month," +
       "task_order_number,portfolio,organization,agency.title,is_actual,value";
-    // EJY RETURN HERE!!!!
-    return [];
+
+    const config: AxiosRequestConfig = {
+      params: {
+        sysparm_query: query,
+        sysparm_fields: fields,
+      },
+    };
+
+    const costs = await api.costsTable.all(config);
+    return costs;
   }
 
   /**
@@ -143,10 +152,12 @@ export class DashboardService {
           `unable to retrieve task order with number ${taskOrderNumber}`
         );
       }
+      
+      // get sys_ids for all clins in current period
+      const currentCLINs = await this.getCLINsInCurrentPeriod(taskOrderSysId);
+      const clinSysIds = currentCLINs.map(obj => obj.sys_id);
 
-      //grab all of the task order clins
-      const clinIds = taskOrder.clins.split(",");
-      const clinRequests = clinIds.map((clin) => api.clinTable.retrieve(clin));
+      const clinRequests = clinSysIds.map((clin) => api.clinTable.retrieve(clin));
       let clins = await Promise.all(clinRequests);
 
       const clin_labels = await api.systemChoices.getChoices(
@@ -165,25 +176,27 @@ export class DashboardService {
         return clin;
       });
 
-      const popStartDate = taskOrder.pop_start_date;
-      const popEndDate = taskOrder.pop_end_date;
+      const costs = await this.getCostsInCurrentPeriod(clinSysIds)
 
-      let costsQuery = `task_order_number=${taskOrderNumber}`;
-      costsQuery += `^year_monthBETWEENjavascript:gs.dateGenerate('${popStartDate}','start')`;
-      costsQuery += `@javascript:gs.dateGenerate('${popEndDate}','end')`;
+      // const popStartDate = taskOrder.pop_start_date;
+      // const popEndDate = taskOrder.pop_end_date;
 
-      const fields =
-        "clin,csp,csp.name,year_month," +
-        "task_order_number,portfolio,organization,agency.title,is_actual,value";
+      // let costsQuery = `task_order_number=${taskOrderNumber}`;
+      // costsQuery += `^year_monthBETWEENjavascript:gs.dateGenerate('${popStartDate}','start')`;
+      // costsQuery += `@javascript:gs.dateGenerate('${popEndDate}','end')`;
 
-      const costsRequestConfig: AxiosRequestConfig = {
-        params: {
-          sysparm_query: costsQuery,
-          sysparm_fields: fields,
-        },
-      };
+      // const fields =
+      //   "clin,csp,csp.name,year_month," +
+      //   "task_order_number,portfolio,organization,agency.title,is_actual,value";
 
-      const costs = await api.costsTable.all(costsRequestConfig);
+      // const costsRequestConfig: AxiosRequestConfig = {
+      //   params: {
+      //     sysparm_query: costsQuery,
+      //     sysparm_fields: fields,
+      //   },
+      // };
+
+      // const costs = await api.costsTable.all(costsRequestConfig);
       return {
         taskOrder,
         clins,
@@ -195,7 +208,6 @@ export class DashboardService {
   }
 
   public async getCostsData(taskOrders: TaskOrderDTO[]): Promise<CostsDTO[]> {
-    //grab the earliest and the latest pop-start date available
     const earliestPopStart = taskOrders.reduce((prev, current) => {
       const currentPoPStart = Date.parse(current.pop_start_date);
       const prevPopStart = Date.parse(prev);
