@@ -211,6 +211,7 @@ import {
   OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
 } from "./resolvers";
+import { isStepComplete } from "@/store/summary";
 
 export const routeNames = {
   ContractingShop: "Contracting_Shop",
@@ -781,7 +782,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepThree,
         continueButtonText: "Wrap up this section",
-        continueButtonColor: "primary",
+        continueButtonColor: isStepComplete(3) ? "primary" : "secondary",
         routeResolver: SummaryStepThreeRouteResolver
       },
     ]
