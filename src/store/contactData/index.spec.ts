@@ -36,7 +36,8 @@ describe("ContactData Store",
         can_access_package: "true",
         grade_civ: "",
         title: "",
-        manually_entered: ""
+        manually_entered: "",
+        acquisition_package: ""
       };
     })
     afterEach(() => {
