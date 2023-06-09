@@ -5,7 +5,7 @@ import { AxiosRequestConfig } from "axios";
 import { TABLENAME as ClinTable } from "@/api/clin";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
-import { add, endOfDay, format, startOfDay, sub } from "date-fns";
+import { format } from "date-fns";
 
 export interface PortFolioDashBoardDTO {
   taskOrder: TaskOrderDTO;
@@ -178,25 +178,6 @@ export class DashboardService {
 
       const costs = await this.getCostsInCurrentPeriod(clinSysIds)
 
-      // const popStartDate = taskOrder.pop_start_date;
-      // const popEndDate = taskOrder.pop_end_date;
-
-      // let costsQuery = `task_order_number=${taskOrderNumber}`;
-      // costsQuery += `^year_monthBETWEENjavascript:gs.dateGenerate('${popStartDate}','start')`;
-      // costsQuery += `@javascript:gs.dateGenerate('${popEndDate}','end')`;
-
-      // const fields =
-      //   "clin,csp,csp.name,year_month," +
-      //   "task_order_number,portfolio,organization,agency.title,is_actual,value";
-
-      // const costsRequestConfig: AxiosRequestConfig = {
-      //   params: {
-      //     sysparm_query: costsQuery,
-      //     sysparm_fields: fields,
-      //   },
-      // };
-
-      // const costs = await api.costsTable.all(costsRequestConfig);
       return {
         taskOrder,
         clins,
@@ -256,6 +237,7 @@ export class DashboardService {
    * and transforms the data as needed by the JWCCDashboard component.
    */
   public async getTotals(taskOrderNumbers: string[]): Promise<any> {
+    //grab the earliest and the latest pop-start date available
     const taskOrderQuery = taskOrderNumbers.reduce((prev, current) => {
       const query = prev
         ? `${prev}^ORtask_order_number=${current}`
