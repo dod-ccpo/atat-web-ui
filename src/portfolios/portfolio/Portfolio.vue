@@ -59,7 +59,7 @@
                           Current Period of Performance
                         </p>
                         <span id="PoPDates" class="h3 mb-0">
-                          {{ popStart }}&ndash;{{ popEnd }}
+                          {{ currentPoPStartStr }}&ndash;{{ currentPoPEndStr }}
                         </span>
                         <p
                           class="text-base-dark mb-0 font-size-14"
@@ -869,8 +869,11 @@ export default class PortfolioDashboard extends Vue {
   public availableFunds = 0;
   public fundsSpentPercent = 0;
 
-  public popStart = "";
-  public popEnd = "";
+  public currentPoPStartStr = "";
+  public currentPoPStartISO = "";
+  public currentPoPEndStr = "";
+  public currentPoPEndISO = "";
+
   public timeToExpiration = "";
   public runOutOfFundsDate = "";
   public monthlySpendAverage = 0;
@@ -981,7 +984,7 @@ export default class PortfolioDashboard extends Vue {
   }[] = [];
 
   public calculateTimeToExpiration(): void {
-    const popEndDate = parseISO(this.taskOrder.pop_end_date, {
+    const popEndDate = parseISO(this.currentPoPEndISO, {
       additionalDigits: 1,
     });
 
@@ -1005,14 +1008,13 @@ export default class PortfolioDashboard extends Vue {
     this.timeToExpiration = unitsRemaining + " " + timeUnit;
 
     // calculate when will run out of funds based on current rate of spending
-    const popStartDate = parseISO(this.taskOrder.pop_start_date, {
+    const popStartDate = parseISO(this.currentPoPStartISO, {
       additionalDigits: 1,
     });
     const start = new Date(popStartDate.setHours(0, 0, 0, 0));
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
 
 
-    // EJY - DOUBLE-CHECK which of these 2 blocks? OR if still needs work either way.
     let runOutISODate = "";
     if (this.monthsIntoPoP > 0) {
       let endOfSpending = startOfMonth(today);
@@ -1032,21 +1034,6 @@ export default class PortfolioDashboard extends Vue {
       });
     }
     this.runOutOfFundsDate = createDateStr(runOutISODate, true);
-
-    // EJY - DOUBLE-CHECK which of these 2 blocks? OR if still needs work either way.
-    // let endOfSpending = startOfMonth(today);
-    // endOfSpending = subDays(endOfSpending, 1);
-    // const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
-    // if (daysSinceStartDate > -1) {
-    //   const dailySpend = this.fundsSpent / daysSinceStartDate;
-    //   const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
-    //   const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
-    //   const runOutISODate = formatISO(runOutOfFundsDate, {
-    //     representation: "date",
-    //   });
-    //   this.runOutOfFundsDate = createDateStr(runOutISODate, true);
-    // }
-
   }
 
   public donutChartPercentages: number[] = [];
@@ -1110,13 +1097,11 @@ export default class PortfolioDashboard extends Vue {
       true
     );
 
-    const popStartISO = this.taskOrder.pop_start_date;
-    const popStartDate = parseISO(popStartISO);
-    const periodDatesISO = [popStartISO];
+    const popStartDate = parseISO(this.currentPoPStartISO);
+    const periodDatesISO = [this.currentPoPStartISO];
     const periodDates = [popStartDate];
 
-    const popEndISO = this.taskOrder.pop_end_date;
-    const popEndDate = parseISO(popEndISO);
+    const popEndDate = parseISO(this.currentPoPEndISO);
 
     let month = popStartDate;
     //eslint-disable-next-line prefer-const 
@@ -1507,9 +1492,10 @@ export default class PortfolioDashboard extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
-    this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId; // EJY - DOUBLE-CHECK this
+    this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId;
+
     const data = await this.getDashboardData();
-    // TODO - account for no cost data in AT-8734
+    
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
@@ -1537,8 +1523,13 @@ export default class PortfolioDashboard extends Vue {
       100 - this.fundsSpentPercent,
     ];
 
-    this.popStart = createDateStr(this.taskOrder.pop_start_date, true);
-    this.popEnd = createDateStr(this.taskOrder.pop_end_date, true);
+
+    // all CLINs should run the entire duration of the current period, so use
+    // the first one to set PoP start and end dates
+    this.currentPoPStartISO = this.idiqClins[0].pop_start_date;
+    this.currentPoPStartStr = createDateStr(this.currentPoPStartISO, true);
+    this.currentPoPEndISO = this.idiqClins[0].pop_end_date;
+    this.currentPoPEndStr = createDateStr(this.currentPoPEndISO, true);
     this.calculateTimeToExpiration();
 
     this.calculateBurnDown();

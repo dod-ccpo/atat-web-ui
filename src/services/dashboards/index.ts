@@ -5,6 +5,7 @@ import { AxiosRequestConfig } from "axios";
 import { TABLENAME as ClinTable } from "@/api/clin";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
+import { format } from "date-fns";
 
 export interface PortFolioDashBoardDTO {
   taskOrder: TaskOrderDTO;
@@ -97,6 +98,43 @@ const getEntityTotals = (
 
 export class DashboardService {
 
+  public async getCLINsInCurrentPeriod(taskOrderSysId: string): Promise<ClinDTO[]> {
+    const today = format(new Date().setHours(0,0,0,0), "yyyy-MM-dd")
+    
+    let query = "task_order=" + taskOrderSysId;
+    query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
+    query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
+
+    const fields = "clin_number,clin_status,funds_obligated,funds_total,"
+      + "pop_end_date,pop_start_date,sys_id";
+    const config: AxiosRequestConfig = {
+      params: {
+        sysparm_query: query,
+        sysparm_fields: fields,
+      },
+    };
+
+    const clins = await api.clinTable.all(config);
+    return clins;
+  }
+
+  public async getCostsInCurrentPeriod(clins: string[]): Promise<CostsDTO[]> {
+    let query = "clinIN" + clins.join(",");
+    const fields =
+      "clin,csp,csp.name,year_month," +
+      "task_order_number,portfolio,organization,agency.title,is_actual,value";
+
+    const config: AxiosRequestConfig = {
+      params: {
+        sysparm_query: query,
+        sysparm_fields: fields,
+      },
+    };
+
+    const costs = await api.costsTable.all(config);
+    return costs;
+  }
+
   /**
    * Data returned by this function has no impact in the context of relocation of funding related
    * columns to "funding_requirement" table. All the funding related data that is displayed on
@@ -114,10 +152,12 @@ export class DashboardService {
           `unable to retrieve task order with number ${taskOrderNumber}`
         );
       }
+      
+      // get sys_ids for all clins in current period
+      const currentCLINs = await this.getCLINsInCurrentPeriod(taskOrderSysId);
+      const clinSysIds = currentCLINs.map(obj => obj.sys_id);
 
-      //grab all of the task order clins
-      const clinIds = taskOrder.clins.split(",");
-      const clinRequests = clinIds.map((clin) => api.clinTable.retrieve(clin));
+      const clinRequests = clinSysIds.map((clin) => api.clinTable.retrieve(clin));
       let clins = await Promise.all(clinRequests);
 
       const clin_labels = await api.systemChoices.getChoices(
@@ -136,25 +176,8 @@ export class DashboardService {
         return clin;
       });
 
-      const popStartDate = taskOrder.pop_start_date;
-      const popEndDate = taskOrder.pop_end_date;
+      const costs = await this.getCostsInCurrentPeriod(clinSysIds)
 
-      let costsQuery = `task_order_number=${taskOrderNumber}`;
-      costsQuery += `^year_monthBETWEENjavascript:gs.dateGenerate('${popStartDate}','start')`;
-      costsQuery += `@javascript:gs.dateGenerate('${popEndDate}','end')`;
-
-      const fields =
-        "clin,csp,csp.name,year_month," +
-        "task_order_number,portfolio,organization,agency.title,is_actual,value";
-
-      const costsRequestConfig: AxiosRequestConfig = {
-        params: {
-          sysparm_query: costsQuery,
-          sysparm_fields: fields,
-        },
-      };
-
-      const costs = await api.costsTable.all(costsRequestConfig);
       return {
         taskOrder,
         clins,
@@ -166,7 +189,6 @@ export class DashboardService {
   }
 
   public async getCostsData(taskOrders: TaskOrderDTO[]): Promise<CostsDTO[]> {
-    //grab the earliest and the latest pop-start date available
     const earliestPopStart = taskOrders.reduce((prev, current) => {
       const currentPoPStart = Date.parse(current.pop_start_date);
       const prevPopStart = Date.parse(prev);
@@ -215,6 +237,7 @@ export class DashboardService {
    * and transforms the data as needed by the JWCCDashboard component.
    */
   public async getTotals(taskOrderNumbers: string[]): Promise<any> {
+    //grab the earliest and the latest pop-start date available
     const taskOrderQuery = taskOrderNumbers.reduce((prev, current) => {
       const query = prev
         ? `${prev}^ORtask_order_number=${current}`
