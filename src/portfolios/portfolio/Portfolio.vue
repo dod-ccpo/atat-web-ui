@@ -1523,12 +1523,18 @@ export default class PortfolioDashboard extends Vue {
       100 - this.fundsSpentPercent,
     ];
 
-
     // all CLINs should run the entire duration of the current period, so use
     // the first one to set PoP start and end dates
-    this.currentPoPStartISO = this.idiqClins[0].pop_start_date;
+    debugger;
+    if (this.idiqClins.length > 0) {
+      this.currentPoPStartISO = this.idiqClins[0].pop_start_date;
+      this.currentPoPEndISO = this.idiqClins[0].pop_end_date;
+    } else {
+      this.currentPoPStartISO = this.taskOrder.pop_start_date;
+      this.currentPoPEndISO = this.taskOrder.pop_end_date;
+    }
+
     this.currentPoPStartStr = createDateStr(this.currentPoPStartISO, true);
-    this.currentPoPEndISO = this.idiqClins[0].pop_end_date;
     this.currentPoPEndStr = createDateStr(this.currentPoPEndISO, true);
     this.calculateTimeToExpiration();
 
