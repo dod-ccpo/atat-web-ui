@@ -235,10 +235,11 @@ export class ClassificationRequirementsStore extends VuexModule {
           selectedClassLevel.user_growth_estimate_percentage
               = userGrowth.split(",").filter(nonEmptyVal => nonEmptyVal);
           if (["TS", "S"].includes(selectedClassLevel.classification)){
+            let classInfoTypes = 
+              selectedClassLevel.classified_information_types?.split(",") as string[]
             this.securityRequirements.push(
               {
-                classification_information_type: 
-                  selectedClassLevel.classified_information_types?.split(",") as string[],
+                classification_information_type: classInfoTypes.filter(cit => cit !== ""),
                 type: selectedClassLevel.classification === "S" ? "SECRET" : "TOPSECRET"
               }
             )
@@ -714,6 +715,9 @@ export class ClassificationRequirementsStore extends VuexModule {
       }
     };
 
+    //todo check to ensure the dowtask # behaves as expected for training
+
+
     deleteItem.tables.forEach(async (tblName)=>{
       // retrieve the property dynamically from the api object.  
       // (Note: the api object does NOT have an interface)
@@ -729,6 +733,9 @@ export class ClassificationRequirementsStore extends VuexModule {
           }
           sysIds.forEach(async (itemToBeDeleted)=>{
             await tbl.remove(itemToBeDeleted.sys_id as string);
+            await IGCEStore.deleteIgceEstimateClassificationInstance(
+              itemToBeDeleted.sys_id as string
+            );
           })
         }
       } catch (error){

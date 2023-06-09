@@ -16,6 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import Summary, { isStepTouched } from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -63,18 +64,19 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-    return routeNames.PeriodOfPerformance;
+    return (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
     buttonId: "NoOtherAssessmentAreas"
   });
-
-  if (evalPlan.source_selection === "SET_LUMP_SUM") {
-    Steps.setAdditionalButtonHide(false);
-  } else {
-    Steps.setAdditionalButtonHide(true);
-  }
+  try {
+    if (evalPlan.source_selection === "SET_LUMP_SUM") {
+      Steps.setAdditionalButtonHide(false);
+    } else {
+      Steps.setAdditionalButtonHide(true);
+    }  
+  } catch (error) { console.error(error) }
 
   return current === routeNames.CreateEvalPlan || routeNames.Differentiators
     ? routeNames.EvalPlanDetails
@@ -95,7 +97,7 @@ export const BVTOResolver = (current: string): string => {
   }
 
   return current === routeNames.EvalPlanDetails
-    ? routeNames.PeriodOfPerformance
+    ? (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
     : routeNames.EvalPlanDetails;
 };
 
@@ -109,52 +111,82 @@ export const ProposedCSPRouteResolver = (current: string): string => {
     : routeNames.ProposedCSP
 };
 
+export const MinimumRequirementsRouteResolver = (current: string): string => {
+  const backToReview = AcquisitionPackage.fairOppBackToReview;
+  if (routeNames.SoleSourceCause && backToReview) {
+    try {
+      AcquisitionPackage.doSetFairOppBackToReview(false);
+      return routeNames.SoleSourceReview;
+    } catch (error) { console.error(error) } 
+  }
+  return current === routeNames.SoleSourceCause
+    ? routeNames.SoleSourceReview
+    : routeNames.MinimumRequirements;
+}
+
+export const SoleSourceFormRouteResolver = (current: string): string => {
+  const skipForm = AcquisitionPackage.fairOppExplanations.soleSource.hadExplanationOnLoad;
+  // backward
+  if (current === routeNames.SoleSourceReview) {
+    return skipForm ? routeNames.MinimumRequirements : routeNames.SoleSourceCause;
+  }
+  // forward
+  return skipForm ? routeNames.SoleSourceReview : routeNames.SoleSourceCause;
+}
+
+export const OtherSupportingFactorsRouteResolver = (current: string): string => {
+  const backToReview = AcquisitionPackage.fairOppBackToReview;
+  if (routeNames.RemoveBarriers && backToReview) {
+    try {
+      AcquisitionPackage.doSetFairOppBackToReview(false);
+      return routeNames.ReviewBarriers;        
+    } catch (error) { console.error(error) }
+  }
+  return current === routeNames.RemoveBarriers
+    ? routeNames.ReviewBarriers
+    : routeNames.OtherSupportingFactors;
+}
+
+export const RemoveBarriersFormRouteResolver = (current: string): string => {
+  const skipForm = 
+    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad;
+  // backward
+  if (current === routeNames.ReviewBarriers) {
+    return skipForm ? routeNames.OtherSupportingFactors : routeNames.RemoveBarriers;
+  }
+  // forward
+  return skipForm ? routeNames.ReviewBarriers : routeNames.RemoveBarriers;
+};
+
 export const CertificationPOCsRouteResolver = (current: string): string => {
   return evalPlanRequired() && current === routeNames.CreateEvalPlan
     ? routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
 
-const hasMarketResearchDetails = (): boolean => {
-  return AcquisitionPackage.fairOpportunity?.research_details_custom !== ""
-    || AcquisitionPackage.fairOpportunity.research_details_generated !== "";
+export const MRRNeedRouteResolver = (current: string): string => {
+  const backToReview = AcquisitionPackage.fairOppBackToReview;
+  if (current === routeNames.MarketResearchEfforts && backToReview) {
+    try {
+      AcquisitionPackage.doSetFairOppBackToReview(false);
+      return routeNames.MarketResearchReview;  
+    } catch (error) { console.error(error) }
+  }
+
+  return current === routeNames.MarketResearchEfforts || current === routeNames.ImpactOfRequirement
+    ? routeNames.MRRNeed
+    : routeNames.MarketResearchReview;
 }
 
-export const MarketResearchEffortsRouteResolver = (current: string): string => {
-  // if new package coming from either direction, go to form/questionnaire
-  if (AcquisitionPackage.isNewPackage) {
-    return routeNames.MarketResearchEfforts
+export const MarketResearchFormRouteResolver = (current: string): string => {
+  const skipForm = AcquisitionPackage.fairOppExplanations.researchDetails.hadExplanationOnLoad;
+  // backward
+  if (current === routeNames.MarketResearchReview) {
+    return skipForm ? routeNames.MRRNeed : routeNames.MarketResearchEfforts;
   }
-  // editing existing package, does package have saved custom or generated research details?
-  if (hasMarketResearchDetails()) {
-    // skip form/questionnaire
-    return current === routeNames.MRRNeed
-      ? routeNames.MarketResearchReview // forward
-      : routeNames.MRRNeed; // backward
-  }
-  return routeNames.MarketResearchEfforts;
- 
+  // forward
+  return skipForm ? routeNames.MarketResearchReview : routeNames.MarketResearchEfforts; 
 }
-
-const plansToRemoveBarriers = ():boolean =>{
-  const generated = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_generated
-  const custom = AcquisitionPackage.fairOpportunity?.barriers_plans_to_remove_custom
-  return (generated !== "" || custom !== "")
-} 
-export const removeBarriersRouteResolver = (current: string): string => {
-
-  if(AcquisitionPackage.isNewPackage){
-    return routeNames.RemoveBarriers
-  }
-  if(current === routeNames.ReviewBarriers){
-    return plansToRemoveBarriers()
-      ? routeNames.OtherSupportingFactors
-      : routeNames.RemoveBarriers
-  }
-  return plansToRemoveBarriers()
-    ? routeNames.ReviewBarriers
-    : routeNames.RemoveBarriers
-};
 
 const needContractAction = ():boolean =>{
   return AcquisitionPackage.fairOpportunity?.contract_action ==='NONE'
@@ -224,7 +256,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     fromProcurementHistory
   ){
     return hasLogicalFollowOn()
-      ? CrossDomainResolver(routeNames.CurrentContract)
+      ? routeNames.SummaryStepThree
       : routeNames.CurrentContract
   }
   return routeNames.CurrentContractDetails;
@@ -747,8 +779,9 @@ export const ServiceOfferingsPathResolver = (
   }
 
   setDontNeedButton(currentGroupId);
-
-  Steps.setAdditionalButtonHide(false);
+  try {
+    Steps.setAdditionalButtonHide(false);
+  } catch (error) { console.error(error) }
 
   if (isOtherOffering) {
     const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
@@ -762,7 +795,9 @@ export const ServiceOfferingsPathResolver = (
     ) {
       // if more than one "Other" offering (Compute, General XaaS, Database) 
       // instance/requirement, hide the "I don't need ____ resources" button
-      Steps.setAdditionalButtonHide(true);
+      try {
+        Steps.setAdditionalButtonHide(true);
+      } catch (error) { console.error(error) }
     }
   }
   //default  
@@ -783,7 +818,10 @@ export const ServiceOfferingsPathResolver = (
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   Steps.clearAltBackButtonText();
-  Steps.setAdditionalButtonHide(false);
+  try {
+    Steps.setAdditionalButtonHide(false);
+  } catch (error) { console.error(error) }
+
   const groupId = DescriptionOfWork.currentGroupId;
   setDontNeedButton(groupId);
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
@@ -1513,6 +1551,7 @@ export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): 
 };
 
 export const SecurityRequirementsResolver = (current: string): string => {
+  
   const classifications = ClassificationRequirements.selectedClassificationLevels;
   const hasHigh = hasHighSide(classifications); 
   // forward
@@ -1520,7 +1559,7 @@ export const SecurityRequirementsResolver = (current: string): string => {
     if (hasHigh) {
       return routeNames.SecurityRequirements;
     }
-    return hasLogicalFollowOn() ? routeNames.CurrentContractDetails : routeNames.CurrentContract;
+    return routeNames.SummaryStepThree
   }
   // backward
   return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements
@@ -1533,34 +1572,70 @@ export const CrossDomainResolver = (current: string): string => {
   const singleClassification = onlyOneClassification(classifications)
 
   // backward
-  const navBackNames = [routeNames.CurrentContract, routeNames.CurrentContractDetails];
-  if (navBackNames.includes(current)) {
+  if (current===routeNames.SummaryStepThree) {
     if (!singleClassification) {
       return routeNames.CrossDomain;
     }
     return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements;
-
   }
+  else if(current===routeNames.ClassificationRequirements
+      || current===routeNames.SecurityRequirements){
+    return hasHigh
+      ? routeNames.CrossDomain
+      : routeNames.SummaryStepThree
+  }
+  return routeNames.CrossDomain;
+ 
+}
 
+export const SummaryStepThreeRouteResolver = (current:string): string => {
   // forward
-  if (!singleClassification) {
-    return routeNames.CrossDomain
+  
+  const navBackNames = [routeNames.CurrentContract, routeNames.CurrentContractDetails];
+  if (navBackNames.includes(current)) {
+    return routeNames.SummaryStepThree
   }
-  return hasLogicalFollowOn() ? routeNames.CurrentContractDetails : routeNames.CurrentContract;
+  return routeNames.SummaryStepThree
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
   const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrder;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
+  const selectedCSP = PortfolioStore.portfolioProvisioningObj.csp
   const showPackageSelection = PortfolioStore.showTOPackageSelection;
   if (packageCount && (!acqPkgSysId || showPackageSelection)) {
     return provWorkflowRouteNames.GeneratedFromPackage;
+  }
+  if(current !== provWorkflowRouteNames.PortfolioDetails
+      && acqPkgSysId){
+    if(selectedCSP === 'Azure'){
+      return provWorkflowRouteNames.PortfolioDetails
+    }else{
+      return provWorkflowRouteNames.AddCSPAdmin
+    }
   }
   return current === provWorkflowRouteNames.PortfolioDetails
     ? provWorkflowRouteNames.AwardedTaskOrder
     : provWorkflowRouteNames.PortfolioDetails;
 }
 
+export const PortfolioDetailsRouteResolver = (current: string): string => {
+  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
+  const azureCSP = PortfolioStore.portfolioProvisioningObj.csp === 'Azure'
+  if(azureCSP || !acqPkgSysId ){
+    return provWorkflowRouteNames.PortfolioDetails
+  }
+  if(current === provWorkflowRouteNames.AddCSPAdmin && azureCSP) {
+    return provWorkflowRouteNames.PortfolioDetails
+  }
+  if(current === provWorkflowRouteNames.AddCSPAdmin && !acqPkgSysId && !azureCSP){
+    return provWorkflowRouteNames.AwardedTaskOrder;
+  }
+
+  return current === provWorkflowRouteNames.GeneratedFromPackage
+    ? provWorkflowRouteNames.AddCSPAdmin
+    : provWorkflowRouteNames.GeneratedFromPackage;
+}
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
@@ -1571,7 +1646,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   ProcurementHistorySummaryRouteResolver,
-  removeBarriersRouteResolver,
+  RemoveBarriersFormRouteResolver,
   conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
@@ -1595,13 +1670,19 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   BVTOResolver,
   EvalPlanDetailsRouteResolver,
   ProposedCSPRouteResolver,
-  MarketResearchEffortsRouteResolver,
+  MinimumRequirementsRouteResolver,
+  SoleSourceFormRouteResolver,
+  OtherSupportingFactorsRouteResolver,
+  MarketResearchFormRouteResolver,
   CertificationPOCsRouteResolver,
+  MRRNeedRouteResolver,
   SecurityRequirementsResolver,
   CrossDomainResolver,
   AnticipatedUserAndDataNeedsResolver,
   ContractingInfoResolver,
   GeneratedFromPackageRouteResolver,
+  SummaryStepThreeRouteResolver,
+  PortfolioDetailsRouteResolver
 };
 
 // add path resolvers here 

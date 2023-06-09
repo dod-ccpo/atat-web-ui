@@ -298,9 +298,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     await classificationRequirements.saveSelectedClassificationLevels(currentData);
     setTimeout(async () => {
      
-      // await classificationRequirements.loadSelectedClassificationLevelsByAqId(
-      //     this.acquisitionPackage?.sys_id as string);
-      
       this.selectedClassificationLevelList = 
           await ClassificationRequirements.getSelectedClassificationLevels();
     
@@ -338,8 +335,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public classificationInstances: DOWClassificationInstance[] = [];
 
   public async setAvailableClassificationLevels(): Promise<void> {
-    // this.selectedClassificationLevelList 
-    //  = await ClassificationRequirements.selectedClassificationLevels;
     this.selectedInstancesLength = await this.selectedClassificationLevelList.length;
 
     this.selectedClassificationLevelSysIds = [];

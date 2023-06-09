@@ -41,6 +41,7 @@ import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
+import { UserRolesApi } from "./userRoles";
 import { CompanyApi } from "./companies";
 import {EvaluationPlanApi} from "@/api/evaluationPlan";
 import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
@@ -65,6 +66,7 @@ import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
 import { AddressApi } from "@/api/address";
 import { CostEstimateApi } from "@/api/costEstimate";
+import { DisaOrganizationApi } from "@/api/disaOrganization";
 
 export const api = {
 
@@ -114,6 +116,7 @@ export const api = {
   portfolioTable: new PortfolioApi(),
   cloudServiceProviderTable: new CloudServiceProviderApi(),
   userTable: new UserApi(),
+  userRolesTable: new UserRolesApi(),
   companyTable: new CompanyApi(),
   evaluationPlanTable: new EvaluationPlanApi(),
   evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
@@ -134,6 +137,7 @@ export const api = {
   packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
   packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
   addressTable: new AddressApi(),
+  disaOrganizationTable: new DisaOrganizationApi(),
 }
 
 export default {

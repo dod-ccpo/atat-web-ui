@@ -32,7 +32,10 @@
             'disabled': !isStepComplete(step.stepNumber) && !canNavigate() 
           }"
           class="step"
-          @click.native="setCurrentStep(step.stepNumber)"
+          @click.native ="setCurrentStep(
+            step.stepNumber, 
+            step,
+            false)"
         >
           <span class="step-circle">
             {{ step.stepNumber }}
@@ -61,6 +64,11 @@
                   'disabled': !isSubstepComplete(subStep.name) && !canNavigate() 
                 }"
                 class="substep"
+                @click="setCurrentStep(
+                  subStep.stepNumber, 
+                  subStep,
+                  false
+                )"
               >
                 <span class="substep-circle">
                   <span
@@ -95,14 +103,39 @@ import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
 import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import Summary, { isStepTouched } from "@/store/summary";
+import { routeNames } from "@/router/stepper";
 
 @Component({})
 export default class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
-  public setCurrentStep(stepNumber: string): void {
+  public setCurrentStep(
+    stepNumber: string, 
+    step: StepperStep, 
+    isSubStep: boolean
+  ): void {
     this.activeStep = stepNumber;
     this.calculatePercentComplete();
+    if (step){
+      this.navigateToSummary(step, isSubStep);
+    }
+  }
+
+  public navigateToSummary(step: StepperStep, isSubStep: boolean): void {
+    const primaryStep = this.stepperData.find(s=>s.stepNumber === step.stepNumber);
+    const isTouched = isStepTouched(parseInt(step?.stepNumber as string));
+    const lastSubStep = primaryStep?.subSteps?.slice(-1)[0];
+    const hasSummary = lastSubStep?.name.toLowerCase().startsWith("summary") || false;
+    if (isTouched && hasSummary && !isSubStep) {
+      this.$router.push({
+        path: step?.route + "/" + lastSubStep?.route,
+        params: {
+          direction: "next"
+        },
+      })
+    }
+    
   }
 
   private get getCurrentStepperStep(): StepInfo {

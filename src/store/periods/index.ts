@@ -21,6 +21,7 @@ import {
   retrieveSession,
   storeDataToSession,
 } from "../helpers";
+import * as converter from "number-to-words"
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 
@@ -41,7 +42,7 @@ const savePeriod = async (period: PeriodDTO): Promise<PeriodDTO> => {
 };
 
 export const defaultPeriodOfPerformance: PeriodOfPerformanceDTO = {
-  pop_start_request:"",
+  pop_start_request: "",
   requested_pop_start_date: "",
   time_frame: "",
   recurring_requirement: "",
@@ -365,6 +366,75 @@ export class PeriodsStore extends VuexModule {
     this.periods = [];
     this.periodOfPerformance = null;
   }
+
+  @Action({rawError:true})
+  public formatPeriodOfPerformance(): string {
+    if (this.periods.length === 0){
+      return "";
+    }
+
+    const basePeriod = this.periods.filter(p=>p.period_type.toLowerCase()==="base")[0]
+    const optionPeriods = this.periods.filter(p=>p.period_type.toLowerCase()!=="base");
+  
+    let formattedPop = "";
+    formattedPop += basePeriod.period_unit_count
+    formattedPop += " ";
+    formattedPop += basePeriod.period_unit.toLowerCase();
+    formattedPop += " base period";
+    formattedPop += optionPeriods.length > 0 ? ", plus " : "";
+
+    const extractFromOptionGroup = (group: PeriodDTO[], prefix: string): string => {
+      let section = "";
+      section += prefix;
+      section += converter.toWords(group.length);
+      section += " ";
+      section += group[0].period_unit_count;
+      section += "-";
+      section += group[0].period_unit.toLowerCase();
+      section += " option period";
+      section += group.length > 1 ? "s" : "";
+      return section;
+    };
+
+    // costs.sort((a, b) => Date.parse(a.year_month) - Date.parse(b.year_month));
+    const orderedPeriods: PeriodDTO[] = 
+      [...optionPeriods].sort(
+        (a, b) => parseInt(a.option_order) - parseInt(b.option_order));
+    let previousPeriod!: PeriodDTO;
+    let currentGroup: PeriodDTO[] = [];
+    const allGroups: PeriodDTO[][] = [];
+    for (const period of orderedPeriods) {
+      if (
+        previousPeriod &&
+        (previousPeriod.period_unit !== period.period_unit || 
+        previousPeriod.period_unit_count !== period.period_unit_count)
+      ) {
+        // If the current period is different from the last one, 
+        // extract the current group and reset the array
+        allGroups.push(currentGroup);
+        currentGroup = [];
+      }
+      currentGroup.push(period);
+      previousPeriod = period;
+    }
+
+    // Extract the final remaining group when we're done
+    if (currentGroup.length > 0) {
+      allGroups.push(currentGroup);
+    }
+
+    // Now that we've assembled all the groups, extract the text from them
+    for (const [index, group] of allGroups.entries()) {
+      if (index === 0) {
+        formattedPop += extractFromOptionGroup(group, "");
+      } else if (index === allGroups.length - 1) {
+        formattedPop += extractFromOptionGroup(group, " and ");
+      } else {
+        formattedPop += extractFromOptionGroup(group, ", ");
+      }
+    }
+    return formattedPop;
+  };
 }
 
 const Periods = getModule(PeriodsStore);

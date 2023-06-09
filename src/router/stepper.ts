@@ -66,7 +66,7 @@ import UploadMigrationDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.vue";
 import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
 import EnvironmentSummary from "@/steps/03-Background/CurrentEnvironment/EnvironmentSummary.vue";
-
+import SummaryStepThree from "@/steps/04-ContractDetails/SummaryStepThree.vue";
 // Step 4 - Contract Details
 /* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
 /* 4.1.1 */ import PeriodOfPerformance from "../steps/04-ContractDetails/PeriodOfPerformance.vue";
@@ -164,6 +164,7 @@ import {
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
   CurrentContractRouteResolver,
+  SummaryStepThreeRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
@@ -193,7 +194,10 @@ import {
   IGCESupportingDocumentationResolver,
   BVTOResolver,
   ProposedCSPRouteResolver,
-  MarketResearchEffortsRouteResolver,
+  MinimumRequirementsRouteResolver,
+  SoleSourceFormRouteResolver,
+  MRRNeedRouteResolver,
+  MarketResearchFormRouteResolver,
   CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
@@ -203,9 +207,11 @@ import {
   showDITCOPageResolver,
   ContractingInfoResolver,
   CrossDomainResolver,
-  removeBarriersRouteResolver,
+  RemoveBarriersFormRouteResolver,
+  OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
 } from "./resolvers";
+import { isStepComplete } from "@/store/summary";
 
 export const routeNames = {
   ContractingShop: "Contracting_Shop",
@@ -263,6 +269,7 @@ export const routeNames = {
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
   CloudSupportPackages: "Cloud_Support_Packages",
   PeriodOfPerformance: "Period_Of_Performance",
+  SummaryStepThree: "SummaryStepThree",
   RecurringRequirement: "Recurring_Requirement",
   ContractType: "Contract_Type",
   ConflictOfInterest: "Conflict_of_Interest",
@@ -490,6 +497,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: MinimumRequirementsRouteResolver,
       },
       {
         menuText: "Cause of Sole Source",
@@ -500,6 +508,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: SoleSourceFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",
@@ -562,6 +571,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: MRRNeedRouteResolver,
       },
       {
         menuText: "Market Research Efforts",
@@ -572,7 +582,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver: MarketResearchEffortsRouteResolver,
+        routeResolver: MarketResearchFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",
@@ -612,6 +622,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: OtherSupportingFactorsRouteResolver,
       },
       {
         menuText: "Remove Barriers",
@@ -622,7 +633,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver:removeBarriersRouteResolver,
+        routeResolver: RemoveBarriersFormRouteResolver,
         additionalButtons: [
           {
             buttonText: "I want to write my own explanation",
@@ -695,16 +706,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         routeResolver: BVTOResolver,
       },   
-      // {
-      //   menuText: "Evaluation Plan Summary",
-      //   path: "eval-plan-summary",
-      //   name: routeNames.EvalPlanSummary,
-      //   component: EvalPlanSummary,
-      //   completePercentageWeight: 0,
-      //   completed: false,
-      //   stepCompleteOnEnter: routeNames.CreateEvalPlan,
-      //   excludeFromMenu: true,
-      // },
     ],
   },
   {
@@ -772,6 +773,17 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: CrossDomain,
         routeResolver: CrossDomainResolver 
+      },
+      {
+        menuText: "SummaryStepThree",
+        path:"summary-step-three",
+        name: routeNames.SummaryStepThree,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepThree,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor: isStepComplete(3) ? "primary" : "secondary",
+        routeResolver: SummaryStepThreeRouteResolver
       },
     ]
   },

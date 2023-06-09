@@ -549,7 +549,8 @@ export interface PortfolioAdmin {
 export interface PortfolioProvisioning extends EDAResponse {
   portfolioTitle?: string;
   serviceOrAgency?: string;
-  admins?: PortfolioAdmin[];  
+  admins?: PortfolioAdmin[];
+  selectedILs?: string[];
 }
 
 export interface EmailEntry {
@@ -766,6 +767,16 @@ export interface TrainingEstimate {
   dow_task_number?: string;
 }
 
+export interface SummaryItem {
+  title: string,
+  description: string,
+  isComplete: boolean;
+  isTouched: boolean;
+  routeName: string;
+  step: number;
+  substep: number;
+}
+
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
 
 export enum ClassificationLevels {
@@ -773,3 +784,4 @@ export enum ClassificationLevels {
   SCRT = "Secret",
   TSCRT = "Top Secret"
 }
+

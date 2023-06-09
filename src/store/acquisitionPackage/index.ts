@@ -60,8 +60,19 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+
+import { 
+  createDateStr, 
+  currencyStringToNumber, 
+  toCurrencyString, 
+  getDateObj, 
+  getCSPCompanyName 
+} from "@/helpers";
+
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
+import Summary from "../summary";
+import { format } from "date-fns";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
@@ -222,17 +233,6 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
   }
 }
 
-const initialPeriodOfPerformance = ()=> {
-
-  return     { 
-    pop_start_request: "",
-    requested_pop_start_date: "",
-    time_frame: "",
-    recurring_requirement: "",
-    base_and_options: "",
-    
-  }}
-
 const initialSensitiveInformation = ()=> {
 
   return {
@@ -263,6 +263,24 @@ const initialClassificationLevel = () => {
     impact_level: "",
     classification: "",
   }
+}
+
+const initialFairOppExplanationOptions = () => {
+  return {
+    defaultSuggestion: "",
+    defaultSuggestionEdited: false,
+    formEdited: false,
+    useCustomText: false,
+    hadExplanationOnLoad: false,
+  };
+}
+
+const initialFairOppExplanations = () => {
+  return {
+    soleSource: initialFairOppExplanationOptions(),
+    researchDetails: initialFairOppExplanationOptions(),
+    plansToRemoveBarriers: initialFairOppExplanationOptions(),
+  }  
 }
 
 const saveAcquisitionPackage = (value: AcquisitionPackageDTO) => {
@@ -337,15 +355,19 @@ export class AcquisitionPackageStore extends VuexModule {
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
+
   fairOpportunity: FairOpportunityDTO | null = null;
+  
+  // used for routing
+  fairOppBackToReview = false;
+  replaceCustomWithGenerated = false;
+
   marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContracts: CurrentContractDTO[] | null = null;
   currentContractInstanceNumber = 1;
   sensitiveInformation: SensitiveInformationDTO | null = null;
-  // periods: string | null = null;
-  // periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   fundingRequirement: FundingRequirementDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
@@ -355,6 +377,7 @@ export class AcquisitionPackageStore extends VuexModule {
   packageId = "";
   regions: RegionsDTO[] | null = null;
   isLoading = false;
+  
 
   validateNow = false;
   allowDeveloperNavigation = false;
@@ -784,7 +807,7 @@ export class AcquisitionPackageStore extends VuexModule {
     return initialFairOpportunity();
   }
   @Mutation
-  public getInitialPackageDocumentsSigned() {
+  public getInitialPackageDocumentsSigned(): PackageDocumentsSignedDTO | null {
     return this.packageDocumentsSigned;
   }
 
@@ -949,24 +972,12 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  // @Mutation
-  // public setPeriods(value: PeriodDTO[]): void {
-  //   this.periods = value.map(period=> period.sys_id).join(',');
-  // }
-
   @Mutation
   public setClassificationLevel(value: ClassificationLevelDTO): void {
     this.classificationLevel = this.classificationLevel
       ? Object.assign(this.classificationLevel, value)
       : value;
   }
-
-  // @Mutation
-  // public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
-  //   this.periodOfPerformance = this.periodOfPerformance
-  //     ? Object.assign(this.periodOfPerformance, value)
-  //     : value;
-  // }
 
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
@@ -1020,8 +1031,28 @@ export class AcquisitionPackageStore extends VuexModule {
       const techniques: MarketResearchTechniquesDTO[] 
         = await api.marketResearchTechniquesTable.all();
       await this.doSetMarketResearchTechniques(techniques);
+      
+      this.fairOppExplanations.soleSource.hadExplanationOnLoad = 
+        (this.fairOpportunity?.cause_of_sole_source_custom !== undefined
+        && this.fairOpportunity.cause_of_sole_source_custom.length > 0)
+        || (this.fairOpportunity?.cause_of_sole_source_generated !== undefined
+        && this.fairOpportunity.cause_of_sole_source_generated.length > 0);
+
+      this.fairOppExplanations.researchDetails.hadExplanationOnLoad = 
+        (this.fairOpportunity?.research_details_custom !== undefined
+        && this.fairOpportunity.research_details_custom.length > 0)
+        || (this.fairOpportunity?.research_details_generated !== undefined
+        && this.fairOpportunity.research_details_generated.length > 0);
+      
+      this.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad = 
+        (this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_custom.length > 0)
+        || (this.fairOpportunity?.barriers_plans_to_remove_generated !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_generated.length > 0);
+      
     }
   }
+  
   @Mutation
   public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
     this.fairOpportunity = this.fairOpportunity
@@ -1036,6 +1067,26 @@ export class AcquisitionPackageStore extends VuexModule {
       await FinancialDetails.deleteAppropriationOfFunds();
     }
   }
+
+  @Mutation
+  public async doSetFairOppBackToReview(val: boolean): Promise<void> {
+    this.fairOppBackToReview = val;
+  } 
+  @Action({rawError: true})
+  public async setReplaceCustomWithGenerated(
+    data: { section: string, val: boolean }
+  ): Promise<void> {
+    await this.doSetReplaceCustomWithGenerated(data.val);
+    if (data.val) {
+      this.fairOppExplanations[data.section].defaultSuggestionEdited = false;
+    }
+  }
+  @Mutation
+  public async doSetReplaceCustomWithGenerated(val: boolean): Promise<void> {
+    this.replaceCustomWithGenerated = val;
+  }
+
+
   @Mutation
   public async doSetMarketResearchTechniques(
     techniques: MarketResearchTechniquesDTO[]
@@ -1075,11 +1126,264 @@ export class AcquisitionPackageStore extends VuexModule {
   public get getFairOpportunity(): FairOpportunityDTO | null {
     return this.fairOpportunity || null;
   }
+
+
+  public csps: Record<string, string> = {
+    AWS: "AWS",
+    GCP: "Google Cloud",
+    AZURE: "Microsoft Azure",
+    ORACLE: "Oracle Cloud",
+  }
+
+  public fairOppExplanations: Record<string, Record<string, string | boolean>> = 
+    initialFairOppExplanations();
+
+  @Action({rawError: true})
+  public async initializeAllFairOppSuggestions(): Promise<void> {
+    await this.generateFairOpportunitySuggestion("SoleSource");
+    AcquisitionPackage.fairOppExplanations.soleSource.useCustomText =   
+      this.fairOpportunity?.cause_of_sole_source_for_docgen === "CUSTOM";
+
+    await this.generateFairOpportunitySuggestion("ResearchDetails");
+    AcquisitionPackage.fairOppExplanations.researchDetails.useCustomText = 
+      this.fairOpportunity?.research_details_for_docgen === "CUSTOM"
+
+    await this.generateFairOpportunitySuggestion("RemoveBarriers");
+    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.useCustomText = 
+      this.fairOpportunity?.barriers_plans_to_remove_for_docgen === "CUSTOM";   
+
+  }
+
+  @Action({rawError: true})
+  public async generateFairOpportunitySuggestion(section: string): Promise<void> {
+    switch (section) {
+    case "SoleSource": 
+      await this.generateSoleSourceSuggestion();
+      break;
+    case "ResearchDetails":
+      await this.generateResearchDetailsSuggestion();
+      break;
+    case "RemoveBarriers":
+      await this.generatePlansToRemoveBarriersSuggestion();
+      break;
+    }
+  }
+
+  @Action({rawError: true})
+  public async generateSoleSourceSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const needsMigrationP = this.fairOpportunity.cause_migration_addl_time_cost === "YES";
+      const needsGovtEngineersP = 
+        this.fairOpportunity.cause_govt_engineers_training_certified === "YES";
+      const needsProductFeatureP = 
+        this.fairOpportunity.cause_product_feature_peculiar_to_csp === "YES";
   
-  // @Action({rawError: true})
-  // public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
-  //   return this.fairOpportunity;
-  // }
+      const cspName = this.csps[this.fairOpportunity.proposed_csp as string]
+      let text = "";
+
+      if (needsMigrationP) {
+        const estCost = parseFloat(this.fairOpportunity.cause_migration_estimated_cost as string);
+        const hasEstCost = !isNaN(estCost) && estCost > 0;
+        const hasEstDelay = this.fairOpportunity.cause_migration_estimated_delay_amount 
+          && this.fairOpportunity.cause_migration_estimated_delay_amount !== "0";
+    
+        text = "The only source capable of performing the " + this.projectTitle + 
+        " at the level of quality required is the incumbent contractor, " + cspName +
+        ". The refactoring of the current environment from the "  + cspName + 
+        " environment to another CSP would result in additional ";
+        if (hasEstCost) text += "cost";
+        if (hasEstCost && hasEstDelay) text += " and ";
+        if (hasEstDelay) text +="time"
+        text += ". Migration from one platform to another platform would ";
+        if (hasEstCost && this.fairOpportunity.cause_migration_estimated_cost) {
+          const amt = currencyStringToNumber(this.fairOpportunity.cause_migration_estimated_cost)
+          if (amt) text += "cost $" + toCurrencyString(amt, true)
+        }
+        if (hasEstDelay) {
+          if (estCost) {
+            text += " and ";
+          }
+          const estDelayAmt
+            = parseInt(this.fairOpportunity.cause_migration_estimated_delay_amount as string);
+          let estDelayUnit 
+            = (this.fairOpportunity.cause_migration_estimated_delay_unit as string).toLowerCase();
+          estDelayUnit = estDelayAmt > 1 ? estDelayUnit : estDelayUnit.slice(0,-1);
+    
+          text += "delay the project " + estDelayAmt + " " + estDelayUnit;
+        }
+        text += ". In addition, there would be a duplication of costs of having " +
+          "to keep the solution running on one platform while refactoring it on another platform."
+        if (needsGovtEngineersP || needsProductFeatureP) text += "\n\n";
+      }
+
+      if (needsGovtEngineersP) {
+        text += "Further, the only source capable of performing the " + this.projectTitle +
+        " at the level and quality required is " + cspName + " based on Government engineers " +
+        "being trained and certified in " + 
+        this.fairOpportunity.cause_govt_engineers_platform_name + ". " + 
+        this.fairOpportunity.cause_govt_engineers_insufficient_time_reason;   
+        if (needsProductFeatureP) text += "\n\n";
+      }
+
+      if (needsProductFeatureP) {
+        text += "The only source capable of performing the "  + this.projectTitle +
+        " at the level and quality required is " + cspName + " based on "
+        + this.fairOpportunity.cause_product_feature_name + " that is peculiar to " + cspName +
+        ". " + this.fairOpportunity.cause_product_feature_why_essential + " " + 
+        this.fairOpportunity.cause_product_feature_why_others_inadequate;
+      }
+
+      text = text.trim();
+      this.fairOppExplanations.soleSource.defaultSuggestion = text;
+      if (text !== "" && this.fairOpportunity.cause_of_sole_source_generated === "") {
+        this.fairOpportunity.cause_of_sole_source_generated = text;
+        this.fairOppExplanations.soleSource.defaultSuggestionEdited = false;
+      } else {
+        const isEdited = text !== this.fairOpportunity.cause_of_sole_source_generated;
+        this.fairOppExplanations.soleSource.defaultSuggestionEdited = isEdited;  
+      }
+    }
+  }
+
+  @Action({rawError: true})
+  public async generateResearchDetailsSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const needsResearchP = this.fairOpportunity.research_is_csp_only_source_capable === "YES";
+      const needsCatalogReviewP = this.fairOpportunity.research_review_catalogs_reviewed === "YES";
+      const needsTechniquesP = this.fairOpportunity.research_other_techniques_used !== ""
+        && this.fairOpportunity.research_techniques_summary !== "";
+      const dateFormat = "MMMM d, yyyy";
+
+      const cspName = this.fairOpportunity.proposed_csp 
+        ? getCSPCompanyName(this.fairOpportunity.proposed_csp) 
+        : "this proposed CSP";
+      const needsMRR = this.fairOpportunity.contract_action === "NONE";
+
+      let text = "";
+
+      if (needsResearchP) {
+        text += "Additional research was conducted "
+        const start = this.fairOpportunity.research_start_date;
+        const end = this.fairOpportunity.research_end_date;
+  
+        if (start) {
+          const prep = end ? "from " : "on "
+          text += prep + format(getDateObj(start), dateFormat);
+        } 
+        if (end) {
+          text += " to " + format(getDateObj(end), dateFormat)
+        }
+        text += " by reviewing the specific capabilities in the JWCC Contracts " +
+          "and it was determined that " + cspName + " is the only source capable of " + 
+          "fulfilling the Government’s minimum needs in the manner and time frame required. " +
+          this.fairOpportunity.research_supporting_data + "\n\n"; 
+      }
+
+      if (needsCatalogReviewP) {
+        text += "Further research was conducted "
+        const start = this.fairOpportunity.research_review_catalogs_start_date;
+        const end = this.fairOpportunity.research_review_catalogs_end_date;
+        if (start) {
+          const prep = end ? "from " : "on "
+          text += prep + format(getDateObj(start), dateFormat);
+        } if (end !== "" && end !== undefined) {
+          text += " to " + format(getDateObj(end), dateFormat)
+        }
+        text += " by reviewing the JWCC contractor's catalogs to determine " +
+          "if other similar offerings (to include: " + 
+          this.fairOpportunity.cause_product_feature_name + ") " +
+          "meet or can be modified to satisfy the Government’s requirements. The results " + 
+          "have determined that no other offering is suitable as follows: " +
+          this.fairOpportunity.research_review_catalogs_review_results + " " +
+          "Therefore, it was determined the " + 
+          this.fairOpportunity.cause_product_feature_name + " " +
+          "is essential to the Government’s requirements and " + cspName + " " +
+          "is the only source capable of fulfilling the Government’s minimum needs in " +
+          "the manner and time frame required. \n\n"
+      }
+
+      if (needsTechniquesP) {
+        text += this.fairOpportunity.research_techniques_summary;
+      }
+  
+      if (!needsMRR && this.fairOpportunity.contract_action) {
+        const exceptionText: Record<string, string> = {
+          UCA: "UCA",
+          BCA: "a bridge extension",
+          OES: "-8 extension" 
+        }
+        text += "Additional market research was not completed for this effort " +
+          "because an exception applies (" + 
+          exceptionText[this.fairOpportunity.contract_action] + ").";
+      }        
+
+      text = text.trim();
+      this.fairOppExplanations.researchDetails.defaultSuggestion = text;
+      if (text !== "" && this.fairOpportunity.research_details_generated === "") {
+        this.fairOpportunity.research_details_generated = text;
+        this.fairOppExplanations.researchDetails.defaultSuggestionEdited = false;
+      } else {
+        const isEdited = text !== this.fairOpportunity.research_details_generated;
+        this.fairOppExplanations.researchDetails.defaultSuggestionEdited = isEdited;  
+      }
+    }
+  }
+
+  @Action({rawError: true})
+  public async generatePlansToRemoveBarriersSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const followOn = this.fairOpportunity.barriers_follow_on_requirement === "YES";
+      const training = this.fairOpportunity.barriers_agency_pursuing_training_or_certs === "YES";
+      const development = this.fairOpportunity.barriers_planning_future_development === "YES";
+      const hasPrevJA = this.fairOpportunity.barriers_j_a_prepared_results !== "";
+      const agency = this.selectedAgency.text;
+
+      let text = ""
+
+      if (followOn) {
+        let dateStr = "";
+        if (this.fairOpportunity.barriers_follow_on_expected_date_awarded) {
+          dateStr = createDateStr(
+            this.fairOpportunity.barriers_follow_on_expected_date_awarded, true
+          )
+        }
+  
+        text += "To overcome future barriers to competition, " +
+        agency + " is preparing a fair opportunity competitive" +
+        " follow-on requirement. The follow-on is expected to be" +
+        " completed, solicited, and awarded by " + dateStr + ".";
+        if (training || development || hasPrevJA) text += "\n\n";
+      }
+      if (training) {
+        text += "To overcome future barriers to competition, " +
+        agency + " will pursue training and certification for" +
+        " Government engineers in other technologies.";
+        if (development || hasPrevJA) text += "\n\n";
+      }
+      if (development) {
+        text += "To overcome future barriers to competition, " +
+        " future development and enhancement of IaaS components will include" +
+        " shifting to a containerized platform. This will enable multiple" +
+        " vendors to meet the requirements which will enable the flexibility" +
+        " to shift workload based on financial and mission requirements.";
+        if (hasPrevJA) text += "\n\n";
+      }
+      if (hasPrevJA) text += this.fairOpportunity.barriers_j_a_prepared_results;
+
+      text = text.trim();
+      this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestion = text;
+      if (text !== "" && this.fairOpportunity.barriers_plans_to_remove_generated === "") {
+        this.fairOpportunity.barriers_plans_to_remove_generated = text;
+        this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited = false;
+      } else {
+        const isEdited = text !== this.fairOpportunity.barriers_plans_to_remove_generated;
+        this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited = isEdited;  
+      }
+    }
+  }
+
+
+  
   @Action({rawError: true})
   public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
     return this.packageDocumentsSigned;
@@ -1280,18 +1584,15 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
       this.setPackagePercentLoaded(55);
-      if(fairOppSysId) {
-        const fairOpportunity = await api.fairOpportunityTable.retrieve(
-          fairOppSysId
-        );
-        if(fairOpportunity)
-          this.setFairOpportunity(fairOpportunity);
+      if (fairOppSysId) {
+        const fairOpportunity = await api.fairOpportunityTable.retrieve(fairOppSysId);
+        if (fairOpportunity) {
+          await this.setFairOpportunity(fairOpportunity);
+          await this.initializeAllFairOppSuggestions();
+        }
       } else {
-        this.setFairOpportunity(
-          initialFairOpportunity()
-        );
+        await this.setFairOpportunity(initialFairOpportunity());
       }
-      // EJY HERE
 
       this.setPackagePercentLoaded(60);
       if(AcquisitionPackage.packageId) {
@@ -1442,6 +1743,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       this.setInitialized(true);
       this.setIsLoading(false);
+      Summary.validateStepThree();
 
     } else {
       await this.initialize();
@@ -1504,7 +1806,8 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "Financial POC" })
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
-          this.setFairOpportunity(initialFairOpportunity());
+
+          await this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){
             this.setEvaluationPlan(evaluationPlanDTO);
@@ -1512,8 +1815,6 @@ export class AcquisitionPackageStore extends VuexModule {
           }
           this.setPackagePercentLoaded(50);
           this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
-          // this.setPeriods([]);
-          // this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initializeCurrentEnvironment();
@@ -2203,8 +2504,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.evaluationPlan = null;
     this.currentContracts = null;
     this.sensitiveInformation = null;
-    // this.periods = null;
-    // this.periodOfPerformance = null;
     this.contractType = null;
     this.classificationLevel = null;
     this.totalBasePoPDuration = 0;
@@ -2222,6 +2521,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.selectedAgencyAcronym = "";
     this.showInviteContributorsModal = false;
     this.contractingShopNonDitcoAddress = null;
+
+    this.fairOppExplanations = initialFairOppExplanations();
+    
+    this.fairOppBackToReview = false;
+    this.replaceCustomWithGenerated = false;
   }
 }
 

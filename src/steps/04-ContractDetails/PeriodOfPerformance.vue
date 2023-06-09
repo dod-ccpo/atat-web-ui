@@ -4,7 +4,7 @@
       <v-container fluid class="container-max-width">
         <v-row>
           <v-col class="col-12">
-            <h1 class="page-header">
+            <h1 class="page-header mb-3">
               Let’s gather details about the duration of your task order
             </h1>
             <div class="copy-max-width">
@@ -175,7 +175,7 @@ import ATATSelect from "@/components/ATATSelect.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
+import { PoP, SelectData, SlideoutPanelContent, SummaryItem } from "../../../types/Global";
 import { getIdText } from "@/helpers";
 import { PeriodDTO } from "@/api/models";
 import Periods from "@/store/periods";
@@ -451,6 +451,16 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     this.setDragEventListeners();
     await this.loadOnEnter();
+    this.$root.$on('validatePOP', (summaryItem: SummaryItem) => {
+      debugger;
+      // your code goes here
+      summaryItem.title="Period Of Performance"
+      summaryItem.isTouched = hasChanges(this.savedData, this.currentData);
+      summaryItem.isComplete = this.hasErrors;
+      summaryItem.step = 4
+      summaryItem.substep = 1
+      return summaryItem;
+    })
   }
 
   public durationLabelEl = document.getElementsByClassName("duration")[0] as HTMLElement;
