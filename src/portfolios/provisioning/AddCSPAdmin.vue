@@ -336,8 +336,17 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     const missingUnclass = (this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES")) === -1;
     const missingScrt = (this.admins.findIndex(a => a.hasScrtAccess === "YES")) === -1;
     const needsILs = this.csp === 'Azure'
-    const missingILs = this.impactLevelCompareArray
-      .filter(il=> !this.selectedImpactLevels.includes(il))
+    const missingILs = [...this.impactLevelCompareArray]
+    if(this.admins.length > 0){
+      if(needsILs){
+        this.admins.forEach(admin=>{
+          admin.impactLevels?.forEach(il =>{
+            const idx = missingILs.findIndex(value => value === il)
+            missingILs.splice(idx, 1)
+          })
+        })
+      }
+    }
 
     if (this.classificationLevels.length > 1
       && this.admins.length > 0
@@ -345,7 +354,9 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     ) {
       if(needsILs){
         const unclassifiedIL = missingILs.map(il => `Unclassified/${il}`)
-        this.missingEnv = unclassifiedIL.length === 1? unclassifiedIL[0]:unclassifiedIL.toString()
+        this.missingEnv = unclassifiedIL.length === 1 ?
+          unclassifiedIL[0]
+          :unclassifiedIL.join(" ").toString()
         this.showMissingAdminAlert = true;
       }else{
         this.missingEnv = missingUnclass ? "unclassified" : "secret";
@@ -422,8 +433,8 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       hasScrtAccess,
       unclassifiedEmail: hasUnclassifiedAccess ? this.unclassifiedEmail : "",
       scrtEmail: hasScrtAccess ? this.scrtEmail : "",
+      impactLevels:this.selectedImpactLevels
     };
-    debugger
     const adminIndex = this.admins.findIndex(obj => obj.DoDId === this.adminDoDId);
     if (this.isEdit && this.editAdminIndex > -1) {
       this.admins[this.editAdminIndex] = admin;
@@ -437,6 +448,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
     this.resetAdminData();
     this.buildTableData();
+    this.selectedImpactLevels = []
     this.isEdit = false;
     this.editAdminIndex = -1;
   }
@@ -460,6 +472,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.unclassifiedEmail = admin.unclassifiedEmail as string;
       this.hasScrtAccess = admin.hasScrtAccess as string;
       this.scrtEmail = admin.scrtEmail as string;
+      this.selectedImpactLevels = admin.impactLevels||[];
 
       if (this.hasUnclassifiedAccess === "YES")
         this.selectedClassificationLevels.push(this.unclStr);
@@ -520,9 +533,11 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.tableData = [];
     this.admins.forEach((admin, index) => {
       const classificationLevels = []
+      let count = 1
       if (admin.hasUnclassifiedAccess === "YES"){
-        if(this.csp === 'Azure'){
-          this.selectedImpactLevels.forEach(il=>{
+        if(this.csp === 'Azure' && admin.impactLevels){
+          count = admin.impactLevels.length - 1
+          admin.impactLevels.forEach(il=>{
             classificationLevels.push(this.unclStr + '/'+il);
           })
         }else{
@@ -532,7 +547,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       if (admin.hasScrtAccess === "YES") classificationLevels.push(this.scrtStr);
       const adminClassificationLevels = classificationLevels.join("<br />");
       const emails = [];
-      const count = this.selectedImpactLevels.length - 1
       const lineBreaks = count <= 0 ?"":"\n".repeat(count)
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
         if(this.csp ==='Azure'){
@@ -566,7 +580,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
     if (storeData) {
       this.admins = _.cloneDeep(storeData.admins) || [];
-
       this.savedData = _.cloneDeep(this.admins);
       this.cspLong = storeData.cspLong as string;
       this.classificationLevels = storeData.classificationLevels || [];

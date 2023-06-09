@@ -544,6 +544,7 @@ export interface PortfolioAdmin {
   unclassifiedEmail?: string;
   hasScrtAccess?: YesNo;
   scrtEmail?: string;
+  impactLevels?:string[]
 }
 
 export interface PortfolioProvisioning extends EDAResponse {
