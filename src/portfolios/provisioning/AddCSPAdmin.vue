@@ -551,8 +551,10 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
         if(this.csp ==='Azure'){
           emails.push(admin.unclassifiedEmail);
-          if(lineBreaks){
-            emails.push(lineBreaks)
+          if(count){
+            for(let i = 0; i < count;i++){
+              emails.push("\n")
+            }
           }
         }else{
           emails.push(admin.unclassifiedEmail);
