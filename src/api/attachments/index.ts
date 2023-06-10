@@ -21,18 +21,16 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
     
           
     const formData = new FormData();
-    formData.append('file', file);
     
     const {table_name, table_sys_id, file_name} = data;
 
+    formData.append('table_name',table_name)
+    formData.append('table_sys_id',table_sys_id)
+    formData.append('uploadFile',file_name)
+    formData.append('file', file);
     const config:AxiosRequestConfig ={
       headers:{
-        'Content-Type': '*/*',
-      },
-      params:{
-        file_name,
-        table_name,
-        table_sys_id
+        'Content-Type': 'multipart/form-data',
       },
       onUploadProgress:(progressEvent: ProgressEvent)=> {
 
@@ -42,7 +40,7 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
         }
       }
     }
-    const response =  await this.instance.post(`${this.endPoint}/file`, formData, config);
+    const response =  await this.instance.post(`${this.endPoint}/upload`, formData, config);
 
     if(response.status !== 201){
       throw new Error(response.statusText);
