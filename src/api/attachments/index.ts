@@ -21,18 +21,22 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
     
           
     const formData = new FormData();
-    formData.append('file', file);
     
     const {table_name, table_sys_id, file_name} = data;
+    // SNOW offers two file upload APIs:
+    //    /file, which uses query parameters and whose POST body is the raw bytes of the file and
+    //    /upload, which consumes a multipart/form-data POST body
+    // We are using the latter here. See the following link for API documentation:
+    // eslint-disable-next-line max-len
+    // https://docs.servicenow.com/en-US/bundle/rome-application-development/page/integrate/inbound-rest/concept/c_AttachmentAPI.html#title_attachment-POST-upload
 
+    formData.append('table_name',table_name)
+    formData.append('table_sys_id',table_sys_id)
+    formData.append('uploadFile',file_name)
+    formData.append('file', file);
     const config:AxiosRequestConfig ={
       headers:{
-        'Content-Type': '*/*',
-      },
-      params:{
-        file_name,
-        table_name,
-        table_sys_id
+        'Content-Type': 'multipart/form-data',
       },
       onUploadProgress:(progressEvent: ProgressEvent)=> {
 
@@ -42,7 +46,7 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
         }
       }
     }
-    const response =  await this.instance.post(`${this.endPoint}/file`, formData, config);
+    const response =  await this.instance.post(`${this.endPoint}/upload`, formData, config);
 
     if(response.status !== 201){
       throw new Error(response.statusText);

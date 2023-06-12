@@ -36,6 +36,7 @@ describe("Testing ContactInfo Component", () => {
     grade_civ: "",
     title: "",
     manually_entered: "", // not used on Primary Contact contact entry form
+    acquisition_package: ""
   }; 
 
   const mockLoadedContactDTO: ContactDTO = {
@@ -55,6 +56,7 @@ describe("Testing ContactInfo Component", () => {
     phone: "+15719998888",
     salutation: "",
     rank_components: "sys_id-here", // part of value from rank_components below
+    acquisition_package: ""
 
     // appears that the rank_components changes from an object to a string 
     // not sure if this is intended since in SNOW if empty it is a string, but if populated it

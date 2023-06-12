@@ -201,6 +201,7 @@ export interface ContactDTO extends BaseTableDTO {
   dodaac: string;
   can_access_package: string;
   manually_entered: string;
+  acquisition_package: string;
 }
 
 export interface ContractConsiderationsDTO extends BaseTableDTO{

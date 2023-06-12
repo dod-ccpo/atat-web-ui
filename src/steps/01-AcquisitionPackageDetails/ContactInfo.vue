@@ -349,6 +349,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       grade_civ,
       title,
       manually_entered: "", // not used on Primary Contact contact entry form
+      acquisition_package: ""
     };
   }
 
