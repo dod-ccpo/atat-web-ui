@@ -244,7 +244,19 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   public async addInstance(): Promise<void> {
+    await this.initializeDataSource();
     this.navigate();
+  }
+
+  /**
+   * initializes data source if data source is empty
+   */
+  public async initializeDataSource(): Promise<void>{
+    if (!this.dataSource){ 
+      await AcquisitionPackage.setCurrentContractInstanceNumber(1);
+      this.dataSource=[];
+      this.dataSource.push(initialCurrentContract())
+    }
   }
 
   /**
@@ -267,7 +279,8 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
     await this.dataSource.forEach((c,idx)=> c.instance_number = idx)
     // set current contract instance number
     await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
-    // set current contracts instore
+    this.dataSource = this.dataSource.length > 0 || null;
+        // set current contracts instore
     await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
   }
 

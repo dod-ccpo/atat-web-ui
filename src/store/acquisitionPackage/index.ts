@@ -857,19 +857,21 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentContract(contract: CurrentContractDTO): Promise<void> {
-    const currentContracts = await this.currentContracts || [];
-    const sysId = contract.sys_id || ""
-    const existingContractIndex = currentContracts.findIndex(
-      (c) => {
-        return c.sys_id 
-          ? c.sys_id === sysId
-          : c.instance_number?.toString() === contract.instance_number?.toString();
-      }
-    );
-    existingContractIndex > -1 
-      ? currentContracts[existingContractIndex] = contract
-      : currentContracts.push(contract);
-    await this.doSetCurrentContracts(currentContracts);
+    const currentContracts = await this.currentContracts as CurrentContractDTO[];
+    if (currentContracts){
+      const sysId = contract.sys_id || ""
+      const existingContractIndex = currentContracts.findIndex(
+        (c) => {
+          return c.sys_id 
+            ? c.sys_id === sysId
+            : c.instance_number?.toString() === contract.instance_number?.toString();
+        }
+      );
+      existingContractIndex > -1 
+        ? currentContracts[existingContractIndex] = contract
+        : currentContracts.push(contract);
+      await this.doSetCurrentContracts(currentContracts);
+    }
   }
 
   @Mutation
@@ -1027,6 +1029,7 @@ export class AcquisitionPackageStore extends VuexModule {
           await this.updateAcquisitionPackage();
         }
       }
+      
     } else {
       const techniques: MarketResearchTechniquesDTO[] 
         = await api.marketResearchTechniquesTable.all();
@@ -1601,10 +1604,6 @@ export class AcquisitionPackageStore extends VuexModule {
           const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
           await this.doSetCurrentContracts(tempArray);
         }
-      } else {
-        this.setCurrentContract(
-          initialCurrentContract()
-        );
       }
       this.setPackagePercentLoaded(65);
 
@@ -1804,7 +1803,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setContact({ data: initialContact(), type: "Financial POC" })
-          this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
 
           await this.setFairOpportunity(initialFairOpportunity());
