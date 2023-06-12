@@ -765,28 +765,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action
-  public async getJamrrTemplateSysID(type: string): Promise<string>{
-    let attachment: AttachmentDTO[] = [{
-      file_name: "",
-      table_sys_id: ""
-    }];
-    const name = (type === 'ja') 
-      ? "JWCC J&A Template_Template.docx" 
-      : "JWCC Market Research Report (Sole Source)_Template.docx";
-
-    const getAttachmentSysIDQuery: AxiosRequestConfig = {
-      params: {
-        sysparm_fields: "sys_id",
-        sysparm_query: "file_name=" + name + "^table_name=sys_ws_operation"
-      }
-    };
-    attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    return attachment.length 
-      ? this.getDomain + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || ""
-      : "";    
-  }
-
-  @Action
   public getAcquisitionPackageSysId(): string {
     return this.acquisitionPackage?.sys_id || "";
   }
