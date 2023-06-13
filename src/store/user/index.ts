@@ -45,6 +45,9 @@ const initialUser = ()=> {
 })
 export class UserStore extends VuexModule {
   initialized = false;
+  public get isInitialized(): boolean {
+    return this.initialized;
+  }
 
   currentUser: UserDTO = {};
   public currentUserPackageCount = 0;
@@ -62,11 +65,12 @@ export class UserStore extends VuexModule {
     return this.currentUser;
   }
 
-  @Action({rawError: true})
-  public async getCurrentUser(): Promise<UserDTO> {
-    await this.ensureInitialized();
-    return this.currentUser as UserDTO;
-  }
+  // @Action({rawError: true})
+  // public async getCurrentUser(): Promise<UserDTO> {
+  //   debugger;
+  //   await this.ensureInitialized();
+  //   return this.currentUser as UserDTO;
+  // }
 
   public get getInitialUser(): UserDTO {
     return initialUser();
@@ -74,6 +78,7 @@ export class UserStore extends VuexModule {
 
   @Mutation
   public setStoreData(sessionData: string): void {
+    debugger;
     try {
       const sessionDataObject = JSON.parse(sessionData);
       Object.keys(sessionDataObject).forEach((property) => {
@@ -96,13 +101,18 @@ export class UserStore extends VuexModule {
 
   @Action({rawError: true})
   public async setUserPackageCount(): Promise<void> {
-    // SET TOTAL PACKAGE COUNT
-    let query = "package_statusINDRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER";
-    const userQuery = await AcquisitionPackageSummaryStore.getMandatorySearchParameterQuery();
-    query += userQuery;
-    const count = await getTableRecordCount(AcquisitionPackageTable, query)
-    this.doSetPackageCount(count);
-    await this.setUserPortfolioCount();
+    if (!this.initialized) {
+      // SET TOTAL PACKAGE COUNT
+      debugger;
+      let query = "package_statusINDRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER";
+      const userQuery = await AcquisitionPackageSummaryStore.getMandatorySearchParameterQuery();
+      query += userQuery;
+      const count = await getTableRecordCount(AcquisitionPackageTable, query)
+      this.doSetPackageCount(count);
+      debugger;
+      await this.setUserPortfolioCount();
+    }
+
   }
   @Mutation
   public doSetPackageCount(count: number): void {
@@ -118,6 +128,7 @@ export class UserStore extends VuexModule {
   @Action({rawError: true})
   public async setUserPortfolioCount(): Promise<void> {
     // SET TOTAL PORTFOLIO COUNT
+    debugger;
     let query = "portfolio_statusINPROCESSING,PROVISIONING_ISSUE,ACTIVE,ARCHIVED";
     const searchDTO: PortfolioSummarySearchDTO = { 
       role: "ALL" 
@@ -140,18 +151,23 @@ export class UserStore extends VuexModule {
 
   @Action({rawError: true})
   async ensureInitialized(): Promise<void> {
+    debugger;
     if (this.initialized) return;
     await this.initialize();
   }
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
+    debugger;
     const sessionRestored = retrieveSession(ATAT_USER_KEY);
     const userId = sessionStorage.getItem('userId');
     if (sessionRestored) {
+      debugger;
+      this.setInitialized(false);
       this.setStoreData(sessionRestored);
-      this.setInitialized(true);
+      await this.setUserRoles(this.currentUser.sys_id as string);
       await this.setUserPackageCount();
+      this.setInitialized(true);
     } else if (userId && 
       (this.currentUser.sys_id === "" || this.currentUser.sys_id === undefined)
     ) {
@@ -159,19 +175,23 @@ export class UserStore extends VuexModule {
       if (response) {
         const userObj: UserDTO = response[0];
         this.setCurrentUser(userObj);
-        
-        const roles = await this.getUserRoles(userObj.sys_id as string);
-        await this.doSetCurrentUserRoles(roles);
-
+        await this.setUserRoles(userObj.sys_id as string);
+        debugger;
+        await this.setUserPackageCount();
         storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
         this.setInitialized(true);
-        await this.setUserPackageCount();
       }
     } else {
       setTimeout(async () => { 
         await this.initialize() 
       }, 500)
     } 
+  }
+
+  @Action({ rawError: true })
+  public async setUserRoles(sysId: string): Promise<void> {
+    const roles = await this.getUserRoles(sysId);
+    await this.doSetCurrentUserRoles(roles);
   }
 
   @Mutation
@@ -190,10 +210,10 @@ export class UserStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async getUserRecord(searchStr: string): Promise<User> {
+  public async getUserRecord(data: {searchStr: string, searchCol?: string}): Promise<User> {
     const user: User = {};
     try {
-      const response = await api.userTable.search(searchStr);
+      const response = await api.userTable.search(data.searchStr, data.searchCol);
       if (response.length) {
         const userRecord: UserDTO = convertColumnReferencesToValues(response[0]);
         user.firstName = userRecord.first_name?.trim();

@@ -135,7 +135,6 @@ import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
-import UserStore from "@/store/user";
 import {
   AcquisitionPackageSummaryDTO, UserDTO,
 } from "@/api/models";
@@ -179,15 +178,12 @@ export default class Card extends Vue {
     contributors:"",
   }
 
-  private currentUser: UserDTO = {};
-
-  public get getCurrentUser(): UserDTO {
-    return CurrentUserStore.currentUser;
+  public get currentUser(): UserDTO {
+    return CurrentUserStore.getCurrentUserData;
   }
-
-  @Watch("getCurrentUser")
-  public currentUserChange(newVal: UserDTO): void {
-    this.currentUser = newVal;
+  @Watch("currentUser")
+  public currentUserChange(): void {
+    this.reformatData();
   }  
 
   public cardMenuItems: MeatballMenuItem[] = [];
@@ -197,7 +193,8 @@ export default class Card extends Vue {
     return getStatusChipBgColor(status ? status : "");
   }
 
-  public reformatData(cardData:AcquisitionPackageSummaryDTO): void {
+  public reformatData(): void {
+    const cardData = this.cardData;
     if(cardData && cardData.contributors){
       this.hasContributor = cardData.contributors?.value.length > 0
     }
@@ -317,11 +314,9 @@ export default class Card extends Vue {
 
   }
 
-  public async loadOnEnter(): Promise<void> {
-    this.currentUser = await UserStore.getCurrentUser();
-    
+  public async loadOnEnter(): Promise<void> {   
     this.isDitco = this.cardData.contracting_shop?.value === "DITCO"
-    this.reformatData(this.cardData)
+    this.reformatData()
     if(this.cardData.package_status?.value === 'DRAFT'){
       this.cardMenuItems = [
         {

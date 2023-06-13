@@ -241,7 +241,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -272,7 +272,7 @@ import {createDateStr, getStatusChipBgColor, hasChanges} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
-import { EnvironmentDTO } from "@/api/models";
+import { EnvironmentDTO, UserDTO } from "@/api/models";
 import AppSections from "@/store/appSections";
 
 @Component({
@@ -292,21 +292,25 @@ export default class PortfolioDrawer extends Vue {
   public portfolioStatus = "";
   public updateTime = "";
   public csp = "";
-  public currentUser: User = {};
+  
+  public currentUserIsManager = true; // ATAT TODO - get if manager from roles
 
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
   public portfolioCreator = PortfolioStore.portfolioCreator;
 
+  public get currentUser(): UserDTO {
+    return CurrentUserStore.getCurrentUserData;
+  }
+  @Watch("currentUser")
+  public currentUserChange(): void {
+    // ATAT TODO - get if current user is manager -- set this.currentUserIsManager
+  }  
+
   public get cspKey(): string {
     return this.csp ? this.csp.toLowerCase() : "aws";
   }
-
-  // public createdByUser: User = {};
-  // public get getCreatedByUser(): User {
-  //   const user = await api.userTable.search();
-  // }
 
   public cspData = {
     aws: { displayName: "AWS", svgName: "aws", height: "18", width: "30" },
@@ -355,7 +359,6 @@ export default class PortfolioDrawer extends Vue {
       bgColor:"bg-info-lighter"
     }
   };
-
 
   public get showMembersModal(): boolean {
     return PortfolioStore.getShowAddMembersModal;
@@ -409,11 +412,6 @@ export default class PortfolioDrawer extends Vue {
           : "";
       }
     }
-    
-    this.currentUser = await CurrentUserStore.getCurrentUser();
-    // ATAT TODO AT-8747 - check if current user is Manager or Viewer
-    // TEMP HARDCODE ROLE
-    this.currentUser.role = "Manager";
   }
 
   public async mounted(): Promise<void> {

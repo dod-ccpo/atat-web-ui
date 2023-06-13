@@ -94,7 +94,7 @@ export default class App extends Vue {
       const snowUserSysId = process.env.SNOW_USER_SYSID || "";
       sessionStorage.setItem("userId", snowUserSysId)
     }
-    await CurrentUserStore.initialize();
+    // await CurrentUserStore.initialize();
     
     await this.loadOnEnter();
   }

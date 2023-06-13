@@ -133,6 +133,18 @@ export default class Home extends Vue {
   public selectedAcquisitionPackageSysId = "";
   public isLoading = true;
 
+  public get userIsInitialized(): boolean {
+    return CurrentUserStore.isInitialized;
+  }  
+  @Watch("userIsInitialized")
+  public async userIsInitializedChanged(newVal: boolean): Promise<void> {
+    debugger;
+    this.isLoading = !newVal;
+    if (newVal === true) {
+      await this.loadDashboard();  
+    }
+  }
+
   public openSearchTOModal(acqPackageSysId: string): void {
     this.selectedAcquisitionPackageSysId = acqPackageSysId;
     this.showTOSearchModal = true;
@@ -194,18 +206,18 @@ export default class Home extends Vue {
     AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
   }
 
-  public async mounted(): Promise<void> {
-    this.isLoading = true;
-    
+  public async loadDashboard(): Promise<void> {
     await AcquisitionPackage.reset();
     await AcquisitionPackage.setHideNavigation(false);
-
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     await PortfolioStore.setShowTOPackageSelection(true);
+  }
 
-    this.isLoading = false;
+  public async mounted(): Promise<void> {
+    this.isLoading = true;
+    await CurrentUserStore.initialize();
   }
 
 
