@@ -873,6 +873,7 @@ export class AcquisitionPackageStore extends VuexModule {
       await this.doSetCurrentContracts(currentContracts);
     }
   }
+  //todo change logic for current or previous contract   
 
   @Mutation
   public async doSetCurrentContracts(value: CurrentContractDTO[]): Promise<void> {
