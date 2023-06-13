@@ -105,12 +105,6 @@ const isProdEnv = (): boolean | null => {
   return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
 }
 
-export const ProposedCSPRouteResolver = (current: string): string => {
-  return current === routeNames.Exceptions && evalPlanRequired() 
-    ? routeNames.CreateEvalPlan
-    : routeNames.ProposedCSP
-};
-
 export const MinimumRequirementsRouteResolver = (current: string): string => {
   const backToReview = AcquisitionPackage.fairOppBackToReview;
   if (routeNames.SoleSourceCause && backToReview) {
@@ -157,12 +151,6 @@ export const RemoveBarriersFormRouteResolver = (current: string): string => {
   // forward
   return skipForm ? routeNames.ReviewBarriers : routeNames.RemoveBarriers;
 };
-
-export const CertificationPOCsRouteResolver = (current: string): string => {
-  return evalPlanRequired() && current === routeNames.CreateEvalPlan
-    ? routeNames.Exceptions
-    : routeNames.CertificationPOCs
-}
 
 export const MRRNeedRouteResolver = (current: string): string => {
   const backToReview = AcquisitionPackage.fairOppBackToReview;
@@ -1669,12 +1657,10 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AppropriationOfFundsResolver,
   BVTOResolver,
   EvalPlanDetailsRouteResolver,
-  ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,
   SoleSourceFormRouteResolver,
   OtherSupportingFactorsRouteResolver,
   MarketResearchFormRouteResolver,
-  CertificationPOCsRouteResolver,
   MRRNeedRouteResolver,
   SecurityRequirementsResolver,
   CrossDomainResolver,
