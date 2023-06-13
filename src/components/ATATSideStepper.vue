@@ -103,7 +103,7 @@ import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
 import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import Summary, { isStepTouched } from "@/store/summary";
+import Summary, { isStepTouched, validateStep } from "@/store/summary";
 import { routeNames } from "@/router/stepper";
 
 @Component({})
@@ -117,7 +117,8 @@ export default class ATATSideStepper extends Vue {
   ): void {
     this.activeStep = stepNumber;
     this.calculatePercentComplete();
-    if (step){
+    validateStep(parseInt(stepNumber))
+    if (stepNumber && !isSubStep && step && isStepTouched(parseInt(stepNumber))){
       this.navigateToSummary(step, isSubStep);
     }
   }
