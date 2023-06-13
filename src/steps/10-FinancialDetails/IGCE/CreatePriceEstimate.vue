@@ -42,7 +42,8 @@
                     <v-card 
                       v-for="(csp,idx) in csps" 
                       :key="idx" 
-                      class="_csp-card _calculator-card"
+                      class="_csp-card _calculator-card d-flex flex-column"
+                      :class="{'_recommended': recommended === csp.iconName}"
                      >
                       <div class="_svg-icon-div">
                       <ATATSVGIcon 
@@ -73,6 +74,12 @@
                           />
                           </span>
                         </a>
+                      </div>
+                      <div
+                        v-if="recommended === csp.iconName"
+                        class="_recommended-banner mt-auto"
+                      >
+                        RECOMMENDED
                       </div>
                     </v-card>
                   </v-list-item-content>
@@ -127,6 +134,8 @@ import { Component } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { SlideoutPanelContent } from "types/Global";
 import IGCELearnMore from "./components/ICGELearnMore.vue";
+import _ from "lodash";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
     ATATAlert,
@@ -136,6 +145,7 @@ import IGCELearnMore from "./components/ICGELearnMore.vue";
 })
 export default class CreatePriceEstimate extends Vue {
   public selectedCSP = "";
+  public recommended = ""
   public csps = [
     {
       name: "Amazon Web Services (AWS)",
@@ -204,7 +214,15 @@ export default class CreatePriceEstimate extends Vue {
     SlideoutPanel.openSlideoutPanel(opener.id);
   };
 
+  public async loadOnEnter(): Promise<void> {
+    const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
+    if (storeData) {
+      this.recommended = storeData.proposed_csp?.toLowerCase() || "";
+    }
+  }
+
   public async mounted(): Promise<void> {
+    await this.loadOnEnter();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: IGCELearnMore,
       title: "Learn More",

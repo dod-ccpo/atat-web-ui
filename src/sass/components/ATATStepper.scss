@@ -64,6 +64,17 @@
     height: 245px;
     width: 169px !important;
     max-width: 169px;
+    &._recommended {
+      height: 270px;
+      padding-bottom: 0px;
+      ._recommended-banner {
+        background-color: $primary;
+        width: 169px !important;
+        height:24px;
+        padding: 4px;
+        color:$white;
+      }
+    }
   }
 
   margin: 10px 16px 20px 0px;
