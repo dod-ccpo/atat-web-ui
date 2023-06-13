@@ -138,7 +138,6 @@ export default class Home extends Vue {
   }  
   @Watch("userIsInitialized")
   public async userIsInitializedChanged(newVal: boolean): Promise<void> {
-    debugger;
     this.isLoading = !newVal;
     if (newVal === true) {
       await this.loadDashboard();  

@@ -45,7 +45,6 @@ export class UserApi extends ApiBase {
   }
   
   public async search(searchStr: string, searchCol?: string): Promise<UserDTO[]> {
-    debugger;
     try {
       let searchQuery = "";
       if (searchCol) {

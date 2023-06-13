@@ -417,8 +417,6 @@ export default class PortfoliosSummary extends Vue {
   }  
 
   public async loadPortfolioData(): Promise<void> {
-    debugger;
-
     this.currentUserSysId = this.currentUser.sys_id as string;
     
     this.isLoading = true;

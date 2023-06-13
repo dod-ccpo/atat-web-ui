@@ -120,7 +120,6 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   @Action({rawError: true})
   public async getMandatorySearchParameterQuery(searchDTO?: AcquisitionPackageSummarySearchDTO):
     Promise<string> {
-    debugger;
     const currentUser = CurrentUserStore.getCurrentUserData;
     const userSysId = currentUser.sys_id;
 

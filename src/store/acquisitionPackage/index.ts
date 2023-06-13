@@ -579,7 +579,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
-    debugger;
     const currentUser = UserStore.getCurrentUserData;
     await this.doSetCurrentUser(currentUser);
 
@@ -1796,7 +1795,6 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-    debugger;
     const loggedInUser = await UserStore.getCurrentUserData;
 
     if (loggedInUser && loggedInUser.sys_id) {
