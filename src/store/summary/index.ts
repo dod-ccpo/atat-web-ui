@@ -23,6 +23,16 @@ export const isStepComplete = (stepNumber: number): boolean =>{
   ))
 }
 
+export const validateStep = async(stepNumber: number): Promise<void> =>{
+  switch(stepNumber){
+  case 3:
+    Summary.validateStepThree();
+    break;
+  default:
+    break;
+  }
+}
+
 @Module({
   name: 'SummaryStore',
   namespaced: true,
@@ -42,6 +52,13 @@ export class SummaryStore extends VuexModule {
   }
   public summaryItems: SummaryItem[] = []
 
+  /**
+   * assess all 3 substeps in Step 3 to determine 
+   * if substep is touched and/or completed
+   * 
+   * The function creates 3 summary step objects for each
+   * substep in step 3 
+   */
 
   @Action({rawError: true})
   public async validateStepThree(): Promise<void> {
@@ -51,9 +68,7 @@ export class SummaryStore extends VuexModule {
   }
 
   
-  
   @Action({rawError: true})
-  // step 4 periodOfPerformance
   public async assessPeriodOfPerformance(): Promise<void>{
     const PoP = Periods.periodOfPerformance;
     const description = await Periods.formatPeriodOfPerformance();
@@ -198,7 +213,7 @@ export class SummaryStore extends VuexModule {
     hasSecretOrTS: boolean): Promise<boolean>{
     return hasSecretOrTS 
       ? ClassificationRequirements.securityRequirements?.length>0
-      : true
+      : false
   }
 
   @Action({rawError: true})
@@ -208,7 +223,7 @@ export class SummaryStore extends VuexModule {
       ? ClassificationRequirements.securityRequirements?.every(
         sr => sr.classification_information_type.length > 0
       )
-      : true
+      : false
   }
 
   @Action({rawError: true})
@@ -224,7 +239,7 @@ export class SummaryStore extends VuexModule {
         object: ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO,
         keysToIgnore, 
       }) 
-      : true;
+      : false;
   }
 
   @Action({rawError: true})
