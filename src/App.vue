@@ -94,19 +94,8 @@ export default class App extends Vue {
       const snowUserSysId = process.env.SNOW_USER_SYSID || "";
       sessionStorage.setItem("userId", snowUserSysId)
     }
-
-    setTimeout(async (): Promise<void> => {
-      if (sessionStorage.getItem("userId")) {
-        await CurrentUserStore.resetUser();
-      } else {
-        window.addEventListener("storage", async (e) => {
-          if (e.storageArea === sessionStorage && e.key === "userId") {
-            await CurrentUserStore.resetUser();
-          }
-        })
-      }
-    }, 0);
-
+    await CurrentUserStore.initialize();
+    
     await this.loadOnEnter();
   }
 

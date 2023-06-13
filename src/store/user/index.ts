@@ -10,12 +10,9 @@ import rootStore from "../index";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import api from "@/api";
 import Vue from "vue";
-import { AxiosRequestConfig } from "axios";
 import { User } from "types/Global";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import {
-  AcquisitionPackageSummarySearchDTO, 
-  CompanyDTO,
   PortfolioSummarySearchDTO, 
   UserDTO 
 } from "@/api/models";
@@ -24,7 +21,6 @@ import PortfolioSummary from "../portfolioSummary";
 import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
 import { TABLENAME as PortfolioTable } from "@/api/portfolio";
 import { getTableRecordCount } from "@/helpers";
-
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
 
@@ -53,7 +49,6 @@ export class UserStore extends VuexModule {
   currentUser: UserDTO = {};
   public currentUserPackageCount = 0;
   public currentUserPortfolioCount = 0;
-
   
   public currentUserRoles: string[] = [];
   public get currentUserIsHaCCAdmin(): boolean {
@@ -62,14 +57,6 @@ export class UserStore extends VuexModule {
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.currentUser)
   ];
-
-  @Action({rawError: true})
-  public async resetUser(): Promise<void> {
-    this.setInitialized(false);
-    sessionStorage.removeItem(ATAT_USER_KEY);
-    this.setCurrentUser({});
-    await this.ensureInitialized();
-  }
 
   public get getCurrentUserData(): UserDTO {
     return this.currentUser;
@@ -115,6 +102,7 @@ export class UserStore extends VuexModule {
     query += userQuery;
     const count = await getTableRecordCount(AcquisitionPackageTable, query)
     this.doSetPackageCount(count);
+    await this.setUserPortfolioCount();
   }
   @Mutation
   public doSetPackageCount(count: number): void {
@@ -129,6 +117,7 @@ export class UserStore extends VuexModule {
  
   @Action({rawError: true})
   public async setUserPortfolioCount(): Promise<void> {
+    // SET TOTAL PORTFOLIO COUNT
     let query = "portfolio_statusINPROCESSING,PROVISIONING_ISSUE,ACTIVE,ARCHIVED";
     const searchDTO: PortfolioSummarySearchDTO = { 
       role: "ALL" 
@@ -151,20 +140,21 @@ export class UserStore extends VuexModule {
 
   @Action({rawError: true})
   async ensureInitialized(): Promise<void> {
+    if (this.initialized) return;
     await this.initialize();
   }
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-    if (this.initialized)
-      return;
-
     const sessionRestored = retrieveSession(ATAT_USER_KEY);
     const userId = sessionStorage.getItem('userId');
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
       this.setInitialized(true);
-    } else if (userId) {
+      await this.setUserPackageCount();
+    } else if (userId && 
+      (this.currentUser.sys_id === "" || this.currentUser.sys_id === undefined)
+    ) {
       const response = await api.userTable.search(userId);
       if (response) {
         const userObj: UserDTO = response[0];
@@ -175,8 +165,13 @@ export class UserStore extends VuexModule {
 
         storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
         this.setInitialized(true);
+        await this.setUserPackageCount();
       }
-    }    
+    } else {
+      setTimeout(async () => { 
+        await this.initialize() 
+      }, 500)
+    } 
   }
 
   @Mutation

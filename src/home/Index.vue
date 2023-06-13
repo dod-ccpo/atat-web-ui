@@ -158,7 +158,7 @@ export default class Home extends Vue {
   }
 
   public get currentUser(): UserDTO {
-    return CurrentUserStore.currentUser;
+    return CurrentUserStore.getCurrentUserData;
   }
 
   public async startNewAcquisition(): Promise<void> {
@@ -184,7 +184,6 @@ export default class Home extends Vue {
     }
     await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedAcquisitionPackageSysId);
 
-
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,
       params: {
@@ -200,9 +199,6 @@ export default class Home extends Vue {
     
     await AcquisitionPackage.reset();
     await AcquisitionPackage.setHideNavigation(false);
-
-    await CurrentUserStore.setUserPackageCount();
-    await CurrentUserStore.setUserPortfolioCount();
 
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
