@@ -100,7 +100,7 @@
         :isHomeView="isHomeView"
         :isProdEnv="isProdEnv"
       />
-      <!-- ATAT TODO - remove isProdEnv when merged to develop -->
+      <!-- ATAT TODO - remove isProdEnv when ATAT ready for PROD -->
 
       <div class="_table-pagination mt-5" 
         v-show="showPagination"
