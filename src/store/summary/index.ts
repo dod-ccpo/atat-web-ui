@@ -184,9 +184,9 @@ export class SummaryStore extends VuexModule {
     const isTouched = await this.isClassificationRequirementTouchedOrComplete(classReqs)
       || await this.isSecurityRequirementsTouched(hasSecretOrTS)
       || await this.isCDSTouched(hasSecretOrTS)
-    const isComplete = await this.isClassificationRequirementTouchedOrComplete(classReqs)
-      && await this.isSecurityRequirementsComplete(hasSecretOrTS)
-      && await this.isCDSComplete(hasSecretOrTS);
+    const isComplete = await this.isClassificationRequirementsComplete(
+      {hasSecretOrTS, classReqs}
+    )
     const POPSummaryItem: SummaryItem = {
       title,
       description,
@@ -197,6 +197,22 @@ export class SummaryStore extends VuexModule {
       substep: 3
     }
     await this.doSetSummaryItem(POPSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async isClassificationRequirementsComplete( 
+    config:{
+      hasSecretOrTS: boolean
+      classReqs:SelectedClassificationLevelDTO[]
+  }): Promise<boolean>{
+    const hasSelectedClassLevels = config.classReqs.length>0;
+    if (!config.hasSecretOrTS){
+      return hasSelectedClassLevels;
+    }
+
+    return await hasSelectedClassLevels
+      && await this.isSecurityRequirementsComplete(config.hasSecretOrTS)
+      && await this.isCDSComplete(config.hasSecretOrTS);
   }
 
   @Action({rawError: true})
