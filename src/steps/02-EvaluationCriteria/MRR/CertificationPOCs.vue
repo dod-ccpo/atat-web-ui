@@ -12,12 +12,17 @@
             individuals must have authority to certify that the supporting data, respective
             to their area of expertise, is accurate and complete.
           </p>
-          <CertificationPOCTypeForm id="technicalForm"
-              POCType="Technical" sequence="1" :save-form.sync="saveTechForm">
-          </CertificationPOCTypeForm>
+          <CertificationPOCTypeForm
+            id="technicalForm"
+            POCType="Technical"
+            sequence="1"
+            :save-form.sync="saveTechForm" />
           <hr>
-          <CertificationPOCTypeForm id="requirementsForm"
-              POCType="Requirements" sequence="2" :save-form.sync="saveReqForm">
+          <CertificationPOCTypeForm
+            id="requirementsForm"
+            POCType="Requirements"
+            sequence="2"
+            :save-form.sync="saveReqForm">
           </CertificationPOCTypeForm>
         </v-col>
       </v-row>
@@ -31,6 +36,10 @@ import CertificationPOCTypeForm
   from "@/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { convertColumnReferencesToValues } from "@/api/helpers";
+import _ from "lodash";
+import { FairOpportunityDTO } from "@/api/models";
+import ContactData from "@/store/contactData";
 
 @Component({
   components: {
@@ -54,6 +63,32 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
       this.saveReqForm = true;
     }
     return true;
+  }
+  public async loadOnEnter(): Promise<void> {
+    // this.setPOCPropertyNames();
+    // this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
+    // this.pocCor = await AcquisitionPackage.getContact("COR");
+    // this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
+    //   await AcquisitionPackage.getContact("ACOR") : undefined;
+    // let fairOpportunity = AcquisitionPackage.fairOpportunity;
+    // if (fairOpportunity) {
+    //   fairOpportunity = convertColumnReferencesToValues(
+    //     _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
+    //   this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
+    //   if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
+    //     this.certificationPOCContactDTO =
+    //       await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
+    //   } else {
+    //     this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
+    //   }
+    //   this.initializeCertificationPOCTypeOptions();
+    //   await this.setContactFormData(this.certificationPOCContactDTO);
+    // }
+    // this.loaded = true;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter()
   }
 }
 </script>
