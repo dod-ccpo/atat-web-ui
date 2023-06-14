@@ -7,6 +7,8 @@ import { ContractTypeApi } from "@/api/contractDetails";
 import { 
   ContractTypeDTO, 
   CrossDomainSolutionDTO,
+  PeriodDTO,
+  PeriodOfPerformanceDTO,
   SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
@@ -21,6 +23,16 @@ export const isStepComplete = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.every(
     (si: SummaryItem) => si.step === stepNumber && si.isComplete 
   ))
+}
+
+export const validateStep = async(stepNumber: number): Promise<void> =>{
+  switch(stepNumber){
+  case 3:
+    Summary.validateStepThree();
+    break;
+  default:
+    break;
+  }
 }
 
 @Module({
@@ -42,6 +54,13 @@ export class SummaryStore extends VuexModule {
   }
   public summaryItems: SummaryItem[] = []
 
+  /**
+   * assess all 3 substeps in Step 3 to determine 
+   * if substep is touched and/or completed
+   * 
+   * The function creates 3 summary step objects for each
+   * substep in step 3 
+   */
 
   @Action({rawError: true})
   public async validateStepThree(): Promise<void> {
@@ -51,9 +70,7 @@ export class SummaryStore extends VuexModule {
   }
 
   
-  
   @Action({rawError: true})
-  // step 4 periodOfPerformance
   public async assessPeriodOfPerformance(): Promise<void>{
     const PoP = Periods.periodOfPerformance;
     const description = await Periods.formatPeriodOfPerformance();
@@ -61,10 +78,7 @@ export class SummaryStore extends VuexModule {
     const isTouched = selectedPeriods.length>0
       || PoP?.pop_start_request !== ""
       || PoP?.recurring_requirement !== ""
-    const isComplete =  selectedPeriods.length>0
-      && PoP?.pop_start_request !== ""
-      && PoP?.recurring_requirement !== ""
-      && PoP?.requested_pop_start_date !== ""
+    const isComplete = await this.isPOPComplete(selectedPeriods);
     const POPSummaryItem: SummaryItem = {
       title: "Period of Performance (PoP)",
       description,
@@ -75,6 +89,23 @@ export class SummaryStore extends VuexModule {
       substep: 1
     }
     await this.doSetSummaryItem(POPSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async isPOPComplete(
+    selectedPeriods: PeriodDTO[]
+  ): Promise<boolean>{
+    const PoP = Periods.periodOfPerformance as PeriodOfPerformanceDTO;
+    const hasRequestedStartDate = PoP?.pop_start_request;
+    if (hasRequestedStartDate === "YES"){
+      return selectedPeriods.length>0
+        && PoP?.recurring_requirement !== ""
+        && PoP?.requested_pop_start_date !== ""
+    } else if (hasRequestedStartDate === "NO"){
+      return selectedPeriods.length>0
+        && PoP?.recurring_requirement !== ""
+    }
+    return false;
   }
 
   @Action({rawError: true})
@@ -198,7 +229,7 @@ export class SummaryStore extends VuexModule {
     hasSecretOrTS: boolean): Promise<boolean>{
     return hasSecretOrTS 
       ? ClassificationRequirements.securityRequirements?.length>0
-      : true
+      : false
   }
 
   @Action({rawError: true})
@@ -208,7 +239,7 @@ export class SummaryStore extends VuexModule {
       ? ClassificationRequirements.securityRequirements?.every(
         sr => sr.classification_information_type.length > 0
       )
-      : true
+      : false
   }
 
   @Action({rawError: true})
@@ -224,7 +255,7 @@ export class SummaryStore extends VuexModule {
         object: ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO,
         keysToIgnore, 
       }) 
-      : true;
+      : false;
   }
 
   @Action({rawError: true})

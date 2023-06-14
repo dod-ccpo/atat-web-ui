@@ -192,10 +192,12 @@ import {
   IGCEArchitecturalDesignSolutionsResolver,
   IGCESupportingDocumentationResolver,
   BVTOResolver,
+  ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,
   SoleSourceFormRouteResolver,
   MRRNeedRouteResolver,
   MarketResearchFormRouteResolver,
+  CertificationPOCsRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
@@ -472,6 +474,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: ProposedCSPRouteResolver,
       },
       {
         menuText: "Description of Justification",
@@ -657,7 +660,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
-
+        routeResolver: CertificationPOCsRouteResolver,
       },      
       // END MRR
       // ===================================
