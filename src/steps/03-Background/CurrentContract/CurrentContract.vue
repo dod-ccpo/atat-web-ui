@@ -102,6 +102,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         await this.doesCurrentContractExist(storeData)
       this.currentContractExists = this.savedData.current_contract_exists as string;
     } else {
+      debugger;
       AcquisitionPackage.setCurrentContract(initialCurrentContract());
     }
   }

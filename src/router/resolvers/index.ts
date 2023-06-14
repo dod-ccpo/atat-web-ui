@@ -7,7 +7,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import { EvaluationPlanDTO, SelectedClassificationLevelDTO } from "@/api/models";
+import {EvaluationPlanDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
@@ -219,7 +219,7 @@ export const CurrentContractRouteResolver = (current: string): string => {
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const currentContracts =  AcquisitionPackage.currentContracts || [];
   const fromCurrentContract =  current === routeNames.CurrentContract;
-  const doesNotNeedContract = currentContracts.every(
+  const doesNotNeedContract = currentContracts && currentContracts.every(
     (c)=>c.current_contract_exists==="NO"
   )
   const hasExistingContracts = numberOfExistingContracts()>0;
@@ -247,9 +247,8 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
   ){
     return routeNames.ProcurementHistorySummary;
   } else if (
-    current !== routeNames.ProcurementHistorySummary
+    fromCurrentContract
     && hasExistingContracts
-    && hasExceptionToFairOpp() 
   ){
     return routeNames.ProcurementHistorySummary;
   } else if (

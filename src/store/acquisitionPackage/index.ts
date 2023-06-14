@@ -857,23 +857,20 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentContract(contract: CurrentContractDTO): Promise<void> {
-    const currentContracts = await this.currentContracts as CurrentContractDTO[];
-    if (currentContracts){
-      const sysId = contract.sys_id || ""
-      const existingContractIndex = currentContracts.findIndex(
-        (c) => {
-          return c.sys_id 
-            ? c.sys_id === sysId
-            : c.instance_number?.toString() === contract.instance_number?.toString();
-        }
-      );
-      existingContractIndex > -1 
-        ? currentContracts[existingContractIndex] = contract
-        : currentContracts.push(contract);
-      await this.doSetCurrentContracts(currentContracts);
-    }
+    const currentContracts = await this.currentContracts || [];
+    const sysId = contract.sys_id || ""
+    const existingContractIndex = currentContracts.findIndex(
+      (c) => {
+        return c.sys_id 
+          ? c.sys_id === sysId
+          : c.instance_number?.toString() === contract.instance_number?.toString();
+      }
+    );
+    existingContractIndex > -1 
+      ? currentContracts[existingContractIndex] = contract
+      : currentContracts.push(contract);
+    await this.doSetCurrentContracts(currentContracts);
   }
-  //todo change logic for current or previous contract   
 
   @Mutation
   public async doSetCurrentContracts(value: CurrentContractDTO[]): Promise<void> {
@@ -931,7 +928,7 @@ export class AcquisitionPackageStore extends VuexModule {
   ): Promise<void>{
     const currentContract = await initialCurrentContract();
     currentContract.current_contract_exists = exists;
-    currentContract.instance_number = 1;
+    currentContract.instance_number = this.currentContracts?.length || 0;
     await this.doSetCurrentContracts([currentContract]);
   }
 

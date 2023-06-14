@@ -1,4 +1,4 @@
-<template>
+f<template>
   <v-form ref="form" lazy-validation>
     <v-container fluid class="container-max-width">
       <v-row>
@@ -253,7 +253,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
    */
   public async initializeDataSource(): Promise<void>{
     if (!this.dataSource){ 
-      await AcquisitionPackage.setCurrentContractInstanceNumber(1);
+      await AcquisitionPackage.setCurrentContractInstanceNumber(0);
       this.dataSource=[];
       this.dataSource.push(initialCurrentContract())
     }
@@ -279,8 +279,8 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
     await this.dataSource.forEach((c,idx)=> c.instance_number = idx)
     // set current contract instance number
     await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
-    this.dataSource = this.dataSource.length > 0 || null;
-        // set current contracts instore
+    // this.dataSource = this.dataSource.length > 0 || null;
+    // set current contracts instore
     await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
   }
 
