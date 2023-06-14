@@ -7,6 +7,8 @@ import { ContractTypeApi } from "@/api/contractDetails";
 import { 
   ContractTypeDTO, 
   CrossDomainSolutionDTO,
+  PeriodDTO,
+  PeriodOfPerformanceDTO,
   SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
@@ -76,10 +78,7 @@ export class SummaryStore extends VuexModule {
     const isTouched = selectedPeriods.length>0
       || PoP?.pop_start_request !== ""
       || PoP?.recurring_requirement !== ""
-    const isComplete =  selectedPeriods.length>0
-      && PoP?.pop_start_request !== ""
-      && PoP?.recurring_requirement !== ""
-      && PoP?.requested_pop_start_date !== ""
+    const isComplete = await this.isPOPComplete(selectedPeriods);
     const POPSummaryItem: SummaryItem = {
       title: "Period of Performance (PoP)",
       description,
@@ -90,6 +89,23 @@ export class SummaryStore extends VuexModule {
       substep: 1
     }
     await this.doSetSummaryItem(POPSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async isPOPComplete(
+    selectedPeriods: PeriodDTO[]
+  ): Promise<boolean>{
+    const PoP = Periods.periodOfPerformance as PeriodOfPerformanceDTO;
+    const hasRequestedStartDate = PoP?.pop_start_request;
+    if (hasRequestedStartDate === "YES"){
+      return selectedPeriods.length>0
+        && PoP?.recurring_requirement !== ""
+        && PoP?.requested_pop_start_date !== ""
+    } else if (hasRequestedStartDate === "NO"){
+      return selectedPeriods.length>0
+        && PoP?.recurring_requirement !== ""
+    }
+    return false;
   }
 
   @Action({rawError: true})
