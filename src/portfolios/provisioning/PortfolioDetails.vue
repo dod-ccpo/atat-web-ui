@@ -93,7 +93,6 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   public checkboxHelpText = ""
   public containsUnclassified = false
 
-
   private agencyData: SelectData[] = [];
   private selectedILs: string[] = [];
   private checkboxItems: Checkbox[] = [
