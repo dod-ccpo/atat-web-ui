@@ -39,50 +39,54 @@
                     calculators below to help you calculate your estimated price 
                     for JWCC cloud services and support. Depending on your selection, 
                     you may need to register for an account to view the pricing calculator.
-                    <v-card 
-                      v-for="(csp,idx) in csps" 
-                      :key="idx" 
-                      class="_csp-card _calculator-card d-flex flex-column"
-                      :class="{'_recommended': recommended === csp.iconName}"
-                     >
-                      <div class="_svg-icon-div">
-                      <ATATSVGIcon 
-                        id="Azure" 
-                        :name="csp.iconName"
-                        class="svg-icon"
-                        :width="csp.width" 
-                        :height="csp.height" />
-                      </div>
-                      <h3 class="_csp-name"> {{ csp.name }}</h3>
-                      <div class="_csp-link-div">
-
-                        <a v-for="(link, index) in csp.links"
-                          :key="index" 
-                          :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
-                          class="_csp-link d-block"
-                          :href="link.url"
-                          target="_blank"
+                    <div class="d-flex">
+                      <div v-for="(csp,idx) in csps" :key="idx">
+                        <v-card
+                          class="_csp-card _calculator-card justify-space-between"
+                          :class="{'_recommended-card' : recommended === csp.iconName}"
                         >
-                          {{ link.text }}
-                          <span class="_text-decoration-none ml-1">
-                          <ATATSVGIcon
-                            :id="csp.iconName.toUpperCase() + 'LaunchIcon'"
-                            width="15"
-                            height="15"
-                            name="launch"
-                            color="primary"
-                          />
-                          </span>
-                        </a>
+                          <div>
+                            <div class="_svg-icon-div">
+                              <ATATSVGIcon
+                                id="Azure"
+                                :name="csp.iconName"
+                                class="svg-icon"
+                                :width="csp.width"
+                                :height="csp.height" />
+                            </div>
+                            <h3 class="_csp-name"> {{ csp.name }}</h3>
+                          </div>
+
+                          <div class="_csp-link-div">
+
+                            <a v-for="(link, index) in csp.links"
+                               :key="index"
+                               :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
+                               class="_csp-link d-block mt-4 font-size-14"
+                               :href="link.url"
+                               target="_blank"
+                            >
+                              {{ link.text }}
+                              <span class="_text-decoration-none ml-1">
+                              <ATATSVGIcon
+                                :id="csp.iconName.toUpperCase() + 'LaunchIcon'"
+                                width="15"
+                                height="15"
+                                name="launch"
+                                color="primary"
+                              />
+                              </span>
+                            </a>
+                          </div>
+                        </v-card>
+                        <div
+                          v-if="recommended === csp.iconName"
+                          class="_recommended-banner"
+                        >
+                          RECOMMENDED
+                        </div>
                       </div>
-                      <div
-                        id="Recommended"
-                        v-if="recommended === csp.iconName"
-                        class="_recommended-banner mt-auto"
-                      >
-                        RECOMMENDED
-                      </div>
-                    </v-card>
+                    </div>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
