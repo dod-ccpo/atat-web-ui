@@ -76,6 +76,7 @@
                         </a>
                       </div>
                       <div
+                        id="Recommended"
                         v-if="recommended === csp.iconName"
                         class="_recommended-banner mt-auto"
                       >
