@@ -221,7 +221,7 @@ export default class CreatePriceEstimate extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
-    if (storeData) {
+    if (storeData && storeData.exception_to_fair_opportunity !== 'NO_NONE') {
       this.recommended = storeData.proposed_csp?.toLowerCase() || "";
     }
   }
