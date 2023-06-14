@@ -250,6 +250,7 @@ export class PortfolioSummaryStore extends VuexModule {
           }
       }
     )
+    debugger;
     portfolioSummaryList.forEach(portfolio => {
       portfolio.environments?.forEach(environment => {
         environment.csp_display =

@@ -40,6 +40,15 @@ export const FundingAlertTypes = {
   POPExpired: "POPExpired",
 };
 
+interface CSPAdmin {
+  dodId: string,
+  email: string,
+}
+interface EnvironmentOperators {
+  cspName: string;
+  operators: CSPAdmin[]
+}
+
 export interface FundingAlertData {
   alerts: AlertDTO[],
   daysRemaining: number,
@@ -141,6 +150,13 @@ export class PortfolioDataStore extends VuexModule {
     return this.portfolioProvisioningObj;
   }
 
+  public impactLevels: Record<string, string> = {};
+
+  @Action({ rawError: true})
+  public async setImpactLevels(): Promise<void> {
+    //  EJY come back here.
+  }
+
   @Action({rawError: true})
   public async startProvisioning(): Promise<void> {
     let portfolioName=""
@@ -167,16 +183,22 @@ export class PortfolioDataStore extends VuexModule {
           portfolioAgency = organizationInfo.agency || ""
         }
       }
-
     }
+
+    
+    // const environments: EnvironmentOperators = []
+
+
     const unclassifiedOperators: Record<string, string>[] = [];
     const scrtOperators: Record<string, string>[] = [] 
     this.portfolioProvisioningObj.admins?.forEach(admin => {
+
+
       if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
-        unclassifiedOperators.push({ dodId: admin.DoDId, email: admin.unclassifiedEmail });
+        // unclassifiedOperators.push({ dodId: admin.DoDId, email: admin.unclassifiedEmail });
       }
       if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
-        scrtOperators.push({ dodId: admin.DoDId, email: admin.scrtEmail });
+        // scrtOperators.push({ dodId: admin.DoDId, email: admin.scrtEmail });
       }
     });
 
@@ -372,6 +394,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true}) 
   public async setPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
+    debugger;
     this.doSetPortfolioProvisioning(data);
   }
 
