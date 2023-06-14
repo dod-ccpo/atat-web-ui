@@ -464,7 +464,9 @@ export class AcquisitionPackageStore extends VuexModule {
     // can be used for single or multiple - send csv string for multiple
     const sysIds = contributorSysIds.split(",");
     sysIds.forEach(async sysId => {
-      const contributor = await UserStore.getUserRecord(sysId);        
+      const contributor = await UserStore.getUserRecord(
+        { searchStr: sysId, searchCol: "sys_id"}
+      );        
       if (contributor) {
         this.doAddPackageContributor(contributor);
       }
@@ -577,7 +579,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
-    const currentUser = await UserStore.getCurrentUser();
+    const currentUser = UserStore.getCurrentUserData;
     await this.doSetCurrentUser(currentUser);
 
     const isOwner = this.acquisitionPackage?.mission_owners && this.currentUser.sys_id
@@ -1436,7 +1438,9 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(22);
       if (acquisitionPackage.sys_created_by) {
         const creator 
-          = await UserStore.getUserRecord(acquisitionPackage.sys_created_by);
+          = await UserStore.getUserRecord(
+            { searchStr: acquisitionPackage.sys_created_by, searchCol: "user_name" }
+          );
         this.doSetPackageCreator(creator);
         this.setPackagePercentLoaded(25);
       }
@@ -1444,7 +1448,9 @@ export class AcquisitionPackageStore extends VuexModule {
         // there should only be one mission owner, but the field in servicenow is a list,
         // to be on the safe side, split the csv string of sysIds, take the first
         const missionOwnerSysId = (acquisitionPackage.mission_owners.split(","))[0];
-        const missionOwner = await UserStore.getUserRecord(missionOwnerSysId);      
+        const missionOwner = await UserStore.getUserRecord(
+          { searchStr: missionOwnerSysId, searchCol: "sys_id" }
+        );      
         this.doSetPackageMissionOwner(missionOwner);  
         this.setPackagePercentLoaded(28);
       }
@@ -1767,10 +1773,12 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-    const loggedInUser = await UserStore.getCurrentUser();
+    const loggedInUser = await UserStore.getCurrentUserData;
 
     if (loggedInUser && loggedInUser.sys_id) {
-      const creator = await UserStore.getUserRecord(loggedInUser.sys_id);      
+      const creator = await UserStore.getUserRecord(
+        { searchStr: loggedInUser.sys_id, searchCol: "sys_id" }
+      );      
       this.doSetPackageCreator(creator);
       this.doSetPackageMissionOwner(creator);
     }

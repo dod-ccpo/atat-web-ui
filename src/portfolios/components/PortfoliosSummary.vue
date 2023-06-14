@@ -100,7 +100,7 @@
         :isHomeView="isHomeView"
         :isProdEnv="isProdEnv"
       />
-      <!-- ATAT TODO - remove isProdEnv when merged to develop -->
+      <!-- ATAT TODO - remove isProdEnv when ATAT ready for PROD -->
 
       <div class="_table-pagination mt-5" 
         v-show="showPagination"
@@ -159,7 +159,7 @@ import PortfolioStore from "@/store/portfolio";
 import { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
-import { PortfolioSummarySearchDTO } from "@/api/models";
+import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
 import _ from "lodash";
 import CurrentUserStore from "@/store/user";
 
@@ -408,10 +408,16 @@ export default class PortfoliosSummary extends Vue {
    
   public currentUserSysId = "";
 
-  public async loadPortfolioData(): Promise<void> {
-    const currentUser = await CurrentUserStore.getCurrentUser();
+  public get currentUser(): UserDTO {
+    return CurrentUserStore.getCurrentUserData;
+  }
+  @Watch("currentUser")
+  public currentUserChange(): void {
+    this.loadPortfolioData();
+  }  
 
-    this.currentUserSysId = currentUser.sys_id as string;
+  public async loadPortfolioData(): Promise<void> {
+    this.currentUserSysId = this.currentUser.sys_id as string;
     
     this.isLoading = true;
     this.portfolioCardData = [];

@@ -37,7 +37,7 @@
         <div class="card-header flex-grow-1">
           <!-- 
           ----------------------------------------------------------
-            -- ATAT TODO -  remove isProdEnv condition after merging into develop -- 
+            -- ATAT TODO -  remove isProdEnv when ATAT ready for PROD -- 
           ----------------------------------------------------------
           -->
           <a v-if="!isProdEnv"
@@ -167,7 +167,7 @@
 
     <!-- 
       ------------------------------------------------------------
-      -- ATAT TODO -  remove isProdEnv condition after merging into develop -- 
+      -- ATAT TODO -  remove isProdEnv when ATAT ready for PROD -- 
       ------------------------------------------------------------
     -->
     <ATATMeatballMenu 

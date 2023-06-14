@@ -120,7 +120,7 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   @Action({rawError: true})
   public async getMandatorySearchParameterQuery(searchDTO?: AcquisitionPackageSummarySearchDTO):
     Promise<string> {
-    const currentUser = await CurrentUserStore.getCurrentUser();
+    const currentUser = CurrentUserStore.getCurrentUserData;
     const userSysId = currentUser.sys_id;
 
     let query = "^mission_ownersLIKE" + userSysId + "^ORcontributorsLIKE" + userSysId;

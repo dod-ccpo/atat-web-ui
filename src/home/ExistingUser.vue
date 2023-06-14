@@ -85,7 +85,7 @@
                       :isHomeView="true" 
                       :isProdEnv="isProdEnv"
                     />
-                    <!-- ATAT TODO - remove isProdEnv when merged to develop -->
+                    <!-- ATAT TODO - remove isProdEnv when ATAT ready for PROD -->
 
                   </v-expansion-panel-content>
                 </v-expansion-panel>
