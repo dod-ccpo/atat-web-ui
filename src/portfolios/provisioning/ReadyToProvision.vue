@@ -179,26 +179,26 @@ export default class ReadyToProvision extends Mixins(SaveOnLeave) {
     const hasILs = 
       this.provisioningData.selectedILs && this.provisioningData.selectedILs.length > 0;
 
-    this.provisioningData.admins?.forEach(admin => {
+    this.provisioningData.admins?.forEach(async admin => {
       if (admin.hasUnclassifiedAccess === "YES") {
         if (hasILs) {
-          admin.impactLevels?.forEach(il => {
+          admin.impactLevels?.forEach(async il => {
             const i = this.cspAdmins.findIndex(obj => obj.env === "Unclassified/" + il);
             const sort = parseInt(il.replace(/\D/g, "")); // get the number from the IL string
-            this.addCSPAdminToEnv(i, "Unclassified/" + il, sort);
+            await this.addCSPAdminToEnv(i, "Unclassified/" + il, sort);
           });
         } else {
           const i = this.cspAdmins.findIndex(obj => obj.env === this.unclStr);
-          this.addCSPAdminToEnv(i, this.unclStr, 1);
+          await this.addCSPAdminToEnv(i, this.unclStr, 1);
         }
       }
       if (admin.hasScrtAccess === "YES") {
         const i = this.cspAdmins.findIndex(obj => obj.env === this.scrtStr);
-        this.addCSPAdminToEnv(i, this.scrtStr, 10);
+        await this.addCSPAdminToEnv(i, this.scrtStr, 10);
       }      
       if (admin.hasTSAccess === "YES") {
         const i = this.cspAdmins.findIndex(obj => obj.env === this.tsStr);
-        this.addCSPAdminToEnv(i, this.tsStr, 20);
+        await this.addCSPAdminToEnv(i, this.tsStr, 20);
       }
     });
     
