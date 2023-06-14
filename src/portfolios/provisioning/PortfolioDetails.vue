@@ -166,7 +166,7 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
       this.checkboxLabel = this.selectedPackage? "":"What impact level(s) do you need to" +
       " provision?"
 
-      this.selectedILs = storeData.selectedILs||[]
+      this.selectedILs = storeData.selectedILs || [];
     }
   }
 
@@ -187,6 +187,7 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
 
   public async saveOnLeave(): Promise<boolean> {
     try {
+      this.selectedILs.sort(); // ensure correct order e.g., IL2, IL4, IL5
       await PortfolioStore.setPortfolioProvisioning(this.currentData);
     } catch (error) {
       console.error(error);
