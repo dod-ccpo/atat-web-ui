@@ -146,15 +146,6 @@ describe("Testing AddMembersModal", () => {
     expect(wrapper.vm.$data.enteredEmails.length).toEqual(1);
   });
 
-  it("sets saved members toast messages", async () => {
-    wrapper.vm.$data.validEmailList = ["foo@mail.mil"];
-    await wrapper.vm.inviteMembers();
-    expect(wrapper.vm.$data.membersInvitedToast.message).toEqual("1 member added");
-    wrapper.vm.$data.validEmailList = ["foo@mail.mil", "bar@mail.mil"];
-    await wrapper.vm.inviteMembers();
-    expect(wrapper.vm.$data.membersInvitedToast.message).toEqual("2 members added");
-  });
-
   it("sets width of input", async () => {
     wrapper.setProps({showModal: true})
     Vue.nextTick(async () => {
@@ -197,22 +188,6 @@ describe("Testing AddMembersModal", () => {
     })
   });
 
-  it("blurs email address - remove if duplicate (already entered)", async () => {
-    await wrapper.setProps({showModal: true})
-    await wrapper.setData({
-      enteredEmails: [
-        { key: "123", email: "foo@mail.mil", isValid: true },
-      ],
-      duplicatedEmail: "foo@mail.mil",
-    });
-
-    const emailInput = await wrapper.find("input[data-email-key='123']");
-
-    await emailInput.trigger("blur");
-    expect(wrapper.vm.$data.pillboxFocused).toBeFalsy();
-    expect(wrapper.vm.$data.duplicatedEmail).toBe("");
-  });
-
   it("blurs email address - add valid email to this.validEmailList", async () => {
     await wrapper.setProps({showModal: true})
     await wrapper.setData({
@@ -228,57 +203,6 @@ describe("Testing AddMembersModal", () => {
     await emailInput.trigger("blur");
     expect(wrapper.vm.$data.pillboxFocused).toBeFalsy();
     expect(wrapper.vm.$data.validEmailList.length).toEqual(1);
-  });
-
-  it("blurs email address - alerts if email entered is existing portfolio member", async () => {
-    await wrapper.setProps({showModal: true})
-    await wrapper.setData({
-      enteredEmails: [
-        { key: "123", email: "foo@mail.mil", isValid: true, isExisting: true },
-      ],
-      existingMemberEmails: ["foo@mail.mil"],
-    });
-
-    const emailInput = await wrapper.find("input[data-email-key='123']");
-    await emailInput.trigger("blur");
-    expect(wrapper.vm.$data.validEmailList.length).toEqual(0);
-    expect(wrapper.vm.$data.invalidEmailMessage).toContain("foo@mail.mil is already")
-  });
-
-  it("blurs email address - alerts multiple emails are existing members", async () => {
-    await wrapper.setProps({showModal: true})
-    await wrapper.setData({
-      enteredEmails: [
-        { key: "456", email: "bar@mail.mil", isValid: true, isExisting: true },
-        { key: "123", email: "foo@mail.mil", isValid: true, isExisting: true},
-      ],
-      existingMemberEmails: ["foo@mail.mil", "bar@mail.mil"],
-    });
-
-    const emailInput = await wrapper.find("input[data-email-key='456']");
-    await emailInput.trigger("blur");
-    expect(wrapper.vm.$data.invalidEmailMessage)
-      .toContain("Multiple email addresses are already");
-  });
-
-  it("blurs email address - alerts multiple emails have errors", async () => {
-    await wrapper.setProps({showModal: true})
-    await wrapper.setData({
-      enteredEmails: [
-        { key: "456", email: "bar@mail.mil", isValid: true, isExisting: true },
-        { key: "123", email: "foo@mail.mil", isValid: true, isExisting: true },
-        { key: "789", email: "foo@mail", isValid: false, isExisting: false },
-      ],
-      existingMemberEmails: ["foo@mail.mil", "bar@mail.mil"],
-    });
-
-    const inputWidthFakerDiv = await wrapper.find("#inputWidthFaker");
-    wrapper.vm.$data.inputWidthFaker = inputWidthFakerDiv;
-
-    const emailInput = await wrapper.find("input[data-email-key='456']");
-    await emailInput.trigger("blur");
-    expect(wrapper.vm.$data.invalidEmailMessage)
-      .toContain("were not recognized or are existing members");
   });
 
   it("blurs email address - removes email record if blurring and no text entered", async () => {

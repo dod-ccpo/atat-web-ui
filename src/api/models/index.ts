@@ -16,8 +16,9 @@ import {
   EstimateOptionValue,
   TrainingEstimate,
   EstimateOptionValueObjectArray,
+  Environment,
   CSP,
-  UnitOfTime
+  UnitOfTime,
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -42,7 +43,7 @@ export interface AlertDTO extends BaseTableDTO {
   alert_type: string;
   clin: string;
   last_notification_date: string;
-  portfolio: string | ReferenceColumn;
+  portfolio: string;
   task_order: string;
   threshold_violation_amount: string;
 }
@@ -600,7 +601,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
 
     task_order_number: string;
     task_order_status: string;
-    portfolio: string | ReferenceColumn;
+    portfolio: string;
     pop_end_date: string;
     pop_start_date: string;
     total_task_order_value?: number; // total clin values that don't have expired/ option pending
@@ -610,13 +611,13 @@ export interface TaskOrderDTO extends BaseTableDTO {
 }
 
 export interface CostsDTO extends BaseTableDTO {
-  clin: ReferenceColumn["value"];
-  csp: ReferenceColumn | string;
+  clin: string;
+  csp: string;
   "csp.name"?:string;
   year_month: string;
   task_order_number: string;
-  portfolio: ReferenceColumn | string;
-  organization: ReferenceColumn | string;
+  portfolio: string;
+  organization: string;
   "agency.title"?: string;
   is_actual: string;
   value: string;
@@ -766,11 +767,15 @@ export interface TravelRequirementDTO extends BaseTableDTO {
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
-  csp: ReferenceColumn;
-  active_task_order: ReferenceColumn;
+  csp: string;
   csp_display: string; // "<<cloud_service_package.name >>"
   vendor: CSP;
-  dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
+  active_task_order: string;
+  agency: string;
+  agency_display?: string;
+  
+  dod_component: string; // {{ this is coming }} for now, stub in 'ARMY' - EJY DOUBLE-CHECK NEEDED?
+
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
   task_order_status: string; // "EXPIRED << task_order.task_order_status >>",
@@ -780,16 +785,37 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
   portfolio_funding_status: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
+  portfolio_managers_detail?: UserSearchResultDTO[];
+  portfolio_viewers?: string;
+  portfolio_viewers_detail?: UserSearchResultDTO[];
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];
   title?: string;
   description?: string;
+
+  environments?: Environment[]; // EJY - DOUBLE-CHECK
+  last_updated?: string; // EJY - DOUBLE-CHECK
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {
   total_count: number;
   portfolioSummaryList: PortfolioSummaryDTO[];
+}
+
+export interface EnvironmentDTO extends BaseTableDTO {
+  csp: string;
+  csp_id: string;
+  csp_display: string;
+  name: string;
+  dashboard_link: string;
+  pending_operators: string[];
+  portfolio: string;
+  provisioned: string;
+  provisioned_date: string;
+  provisioning_failure_cause: string;
+  provisioning_request_date: string;
+  csp_admins?: OperatorDTO[];
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
@@ -798,11 +824,11 @@ export interface CloudServiceProviderDTO extends BaseTableDTO{
 }
 
 export interface PortfolioSummarySearchDTO {
-  role: "ALL" | "MANAGED"; // one of these two values should always exist
-  fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
-  csps: string[]; // to not search for specific csps, send empty array
-  portfolioStatus: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
-  sort: "name" | "DESCsys_updated_on"; // one of these two values should always exist
+  role?: "ALL" | "MANAGED"; 
+  fundingStatuses?: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
+  csps?: string[]; // to not search for specific csps, send empty array
+  portfolioStatus?: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
+  sort?: "name" | "DESCsys_updated_on";
   searchString?: string;
   limit?: number;
   offset?: number;
@@ -914,6 +940,17 @@ export interface UserSearchResultDTO extends BaseTableDTO {
   email?: string;
   phone?: string;
   company?: string;
+}
+
+export interface OperatorDTO extends BaseTableDTO{
+  environment?: string;
+  email?: string;
+  dod_id?: string;
+  added_by?: string;
+  provisioned_date?: string;
+  provisioned?: string;
+  provisioning_failure_cause?: string;
+  provisioning_request_date?: string;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{

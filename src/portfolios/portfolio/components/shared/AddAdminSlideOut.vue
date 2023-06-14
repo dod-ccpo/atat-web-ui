@@ -19,15 +19,28 @@
       Once processed, your administrator will receive an email from the CSP with login credentials.
     </p>
     <p class="mb-4">
-      Portfolio managers will not be able to cancel this process or revoke access from within ATAT.
-      CSP accounts can only be changed or revoked by another administrator directly within the
-      cloud console.
+      <strong>Portfolio managers will not be able to cancel this process or revoke access from 
+      within ATAT.</strong> CSP accounts can only be changed or revoked by another administrator 
+      directly within the cloud console.
     </p>
     <p class="mb-4">
       Please note that ATAT is not a system of record. We keep a log of the administrators granted
       CSP access within the system, but any changes to users accounts made directly in the cloud
       portal are not reflected within your ATAT portfolio details.
     </p>
+
+    <ATATAlert
+      id="AdminAlert"
+      type="info"
+    > 
+      <template v-slot:content>
+        Administrators will only be granted access to the cloud provider’s console. 
+        In order to view portfolio details or track funding within ATAT, you can 
+        invite people as portfolio members and assign user roles.
+      </template>
+
+    </ATATAlert>
+
   </div>
 </template>
 

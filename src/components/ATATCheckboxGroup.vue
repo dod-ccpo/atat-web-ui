@@ -221,8 +221,8 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private isFormattedNumber?: boolean;
   @Prop({ default: false }) private showIconWithMessage?: boolean;
   @Prop({ default: false }) private showPerformanceRequirementTotal?: boolean;
-  @Prop({ default: false }) private validateOnLoad?: boolean;
   @Prop({ default: false }) private inline?: boolean;
+  @Prop({ default: false }) private validateOnLoad?: boolean;
   @Prop({ default: false }) private descriptionNormal?: boolean;
 
   // data, methods, watchers, etc.

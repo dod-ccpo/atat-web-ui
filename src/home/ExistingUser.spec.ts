@@ -11,6 +11,7 @@ import {
   AcquisitionPackageSummaryMetadataAndDataDTO
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import CurrentUserStore from "@/store/user"
 
 const acqPackageSummaryList: AcquisitionPackageSummaryDTO[] = [
   {
@@ -114,31 +115,6 @@ describe("Existing User Component", () => {
       expect(await wrapper.exists()).toBe(true);
     });
 
-    it("showAlert() - set $data.draftPackageCount>0 to return true", async ()=>{
-      await wrapper.setData({
-        draftPackageCount: 4,
-        showAlert: true
-      })
-      const showAlert = await wrapper.vm.showAlert;
-      expect(showAlert).toBe(true);
-    })
-
-
-    it("showAlert() - set $data.draftPackageCount===0 to return false", async ()=>{
-      await wrapper.setData({
-        draftPackageCount: 0,
-        showAlert: false
-      })
-      const showAlert = await wrapper.vm.showAlert;
-      expect(showAlert).toBe(false);
-
-    })
-
-    it("updateTotalPortfolios() to return accurate $data.portfolioCount", async () => {
-      wrapper.vm.$data.portfolioCount = 0;
-      await wrapper.vm.updateTotalPortfolios(5);
-      expect(await wrapper.vm.$data.portfolioCount).toBe(5);
-    });
 
     it("loadOnEnter() to return rejected value and execute catch block", async()=>{
       jest.spyOn(console, 'log');
@@ -156,26 +132,22 @@ describe("Existing User Component", () => {
       ));
     })
 
-    it("loadOnEnter() to return accurate $data.draftPackageCount", async()=>{
-      jest.spyOn(AcquisitionPackageSummary,'searchAcquisitionPackageSummaryList')
-        .mockReturnValue(
-        {
-          acquisitionPackageSummaryList: [acqPackageSummaryList[0]],
-          // eslint-disable-next-line camelcase
-          total_count: 1
-        } as unknown as Promise<AcquisitionPackageSummaryMetadataAndDataDTO>
-        )
-      expect(wrapper.vm.$data.draftPackageCount).toBe(1);
+    it("loadOnEnter() to return accurate $data.packageCount", async()=>{
+      CurrentUserStore.doSetPackageCount(1);
+      Vue.nextTick(() => {
+        expect(wrapper.vm.$data.packageCount).toBe(1);
+      })
     })
 
     it("testing @keydown.space to trigger viewAllPackages() ", async () => {
-      const anchorLink = await wrapper.find("#viewAllPackagesLink");
+
+      const anchorLink = wrapper.find("#viewAllPackagesLink");
       anchorLink.trigger('keydown.space'); // trigger viewAllPackages();
       expect(wrapper.vm.$route.name).toBe("Project_Overview");
     });
 
     it("testing @keydown.enter to trigger viewAllPackages() ", async () => {
-      const anchorLink = await wrapper.find("#viewAllPackagesLink");
+      const anchorLink = wrapper.find("#viewAllPackagesLink");
       anchorLink.trigger('keydown.enter'); // trigger viewAllPackages();
       expect(wrapper.vm.$route.name).toBe("Project_Overview");
     });

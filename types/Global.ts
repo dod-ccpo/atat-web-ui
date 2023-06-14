@@ -16,7 +16,8 @@ import {
   BaseTableDTO,
   ClinDTO,
   EDAResponse,
-  ReferenceColumn,
+  ReferenceColumn, 
+  EnvironmentDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -500,18 +501,44 @@ export interface User {
   sys_id?: string;
 }
 
+export interface Operator {
+  sysId?: string;
+  environment?: string;
+  email?: string;
+  dodId?: string;
+  status?: "Processing" | "Failed" | "Provisioned" | "";
+  addedBy?: string;
+  provisionedDate?: string;
+  provisioned?: string;
+  provisioningFailureCause?: string;
+  provisioningRequestDate?: string;
+}
+
+export interface Environment extends EnvironmentDTO {
+  environmentStatus?: string;
+  classification_level?: string;
+}
+
 export interface Portfolio extends BaseTableDTO {
   sysId?: string;
   title?: string;
   description?: string;
   status?: string;
-  csp?: string;
+  csp?: string; // EJY - DOUBLE-CHECK - this could be type CSP ?
   agency?: string;
+  agencyDisplay?: string;
   createdBy?: string;
   provisioned?: string;
   members?: User[];
+  portfolio_managers?: string
+  portfolio_managers_detail?: User[];
+  portfolio_viewers?: string;
+  portfolio_viewers_detail?: User[];
   updated?: string;
   taskOrderNumber?: string;
+  environments?: Environment[];
+  taskOrderSysId?: string;
+  lastUpdated?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {
@@ -778,11 +805,10 @@ export interface SummaryItem {
   substep: number;
 }
 
-export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
-
 export enum ClassificationLevels {
   UNCL = "Unclassified",
   SCRT = "Secret",
   TSCRT = "Top Secret"
 }
+export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
 

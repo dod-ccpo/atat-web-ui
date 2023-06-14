@@ -2,10 +2,7 @@
   {
     "clins": "31",
     "sys_id": "21",
-    "portfolio": {
-      "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_portfolio/11",
-      "value": "11"
-    },
+    "portfolio": "11",
     "task_order_number": "1000000008765",
     "pop_end_date": "2022-12-31",
     "pop_start_date": "2022-01-01",

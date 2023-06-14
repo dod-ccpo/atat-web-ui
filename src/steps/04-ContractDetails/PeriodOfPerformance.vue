@@ -452,7 +452,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     this.setDragEventListeners();
     await this.loadOnEnter();
     this.$root.$on('validatePOP', (summaryItem: SummaryItem) => {
-      debugger;
       // your code goes here
       summaryItem.title="Period Of Performance"
       summaryItem.isTouched = hasChanges(this.savedData, this.currentData);
