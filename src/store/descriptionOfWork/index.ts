@@ -968,6 +968,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async setNeedsSecurityRequirements(): Promise<void> {
     const needsSecurityRequirements
         = this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId);
+    debugger;
     await this.doSetNeedsSecurityRequirements(needsSecurityRequirements);
     await this.setShowSecurityRequirements();
   }
@@ -995,32 +996,45 @@ export class DescriptionOfWorkStore extends VuexModule {
     // "high side" is secret or above
     const highSideSysIds = ClassificationRequirements.highSideSysIds;
     let highSideInstances = undefined;
-
-    if (this.offeringsThatNeedSecurityRequirements.includes(this.currentGroupId)) {
+    debugger;
+    let showSecurityReqs = false;
+    if (this.serviceNeedsSecurityRequirements) {
       const offeringGroupObj = this.DOWObject.find(
         obj => obj.serviceOfferingGroupId === this.currentGroupId
       );
 
       if (offeringGroupObj) {
         if (!this.otherServiceOfferings.includes(this.currentGroupId)) {
+          // Tactical Edge
           // check classificationInstances object
-          const offering = offeringGroupObj.serviceOfferings.find(
+          // const offering = offeringGroupObj.serviceOfferings.find(
+          //   obj => obj.name === this.currentOfferingName
+          // );
+          const i = offeringGroupObj.serviceOfferings.findIndex(
             obj => obj.name === this.currentOfferingName
           );
-          if (offering) {
-            highSideInstances = offering.classificationInstances?.filter(
-              obj => highSideSysIds.includes(obj.classificationLevelSysId)
-            );
+          const isLastOfferingInGroup = i === offeringGroupObj.serviceOfferings.length - 1;
+          // show security requirements if any offering has S or TS AND leaving the last offering
+          if (isLastOfferingInGroup) {
+            for (const offering of offeringGroupObj.serviceOfferings) {
+              const highSideInstances = offering.classificationInstances?.filter(
+                obj => highSideSysIds.includes(obj.classificationLevelSysId)
+              );
+              if (highSideInstances && highSideInstances.length > 0) {
+                showSecurityReqs = true;
+                break;
+              }
+            }
           }
         } else {
           // check otherOfferingData object
           highSideInstances = offeringGroupObj.otherOfferingData?.filter(
             obj => highSideSysIds.includes(obj.classificationLevel as string)
           );
+          showSecurityReqs = highSideInstances !== undefined && highSideInstances.length > 0;
         }
       }
     }
-    const showSecurityReqs = highSideInstances !== undefined && highSideInstances.length > 0;
     this.doSetShowSecurityRequirements(showSecurityReqs);
   }
   @Mutation

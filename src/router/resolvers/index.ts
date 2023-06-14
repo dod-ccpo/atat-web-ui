@@ -940,14 +940,20 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 /****************************************************************************/
 
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
+  debugger;
   const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
   const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
-  if (packageHasSecretOrHigher && showSecurityRequirements) {
+  const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup 
+    ? DescriptionOfWork.lastOfferingForGroup.name.toLowerCase() : "";
+  const currentOffering = DescriptionOfWork.currentOfferingName.toLowerCase();
+  const isLastSelectedOfferingInGroup = currentOffering === lastServiceOfferingForGroup;
+  if (packageHasSecretOrHigher && showSecurityRequirements && isLastSelectedOfferingInGroup) {
     DescriptionOfWork.doSetNeedsSecurityRequirements(false);
     return DOWSecurityRequitementsPath;  
   }
 
   const groupId = DescriptionOfWork.currentGroupId;
+  debugger;
   if (otherServiceOfferings.indexOf(groupId) > -1) {
     return otherServiceOfferingSummaryPath; 
   }
