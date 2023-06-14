@@ -179,6 +179,11 @@ export default class ReviewDocuments extends Vue {
   get ditcoUser():boolean {
     return AcquisitionPackage.acquisitionPackage?.contracting_shop === "DITCO"
   }
+
+  get isMRRToBeGenerated(): boolean{
+    return AcquisitionPackage.fairOpportunity?.contract_action === "NONE";
+  }
+
   private async update(): Promise<void> {
     this._isGenerating = true;
   }
@@ -202,7 +207,9 @@ export default class ReviewDocuments extends Vue {
     }
 
     this.packageCheckList = (await AcquisitionPackage.getSignedDocumentsList()).filter(
-      signedDoc => signedDoc.show === true
+      signedDoc => {
+        return signedDoc.show === true
+      }
     )
 
     this.needsSignatureLength = 

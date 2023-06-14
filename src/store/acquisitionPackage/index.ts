@@ -2401,31 +2401,31 @@ export class AcquisitionPackageStore extends VuexModule {
       {
         itemName:"Requirements Checklist",
         requiresSignature:true,
-        alertText:"Requires signatures",
+        alertText:"Requires signature",
         show:true
       },
       {
         itemName:"Independent Government Cost Estimate",
         requiresSignature:true,
-        alertText:"Requires signatures",
+        alertText:"Requires signature",
         show:true
       },
       {
         itemName:"Incremental Funding Plan",
         requiresSignature:true,
-        alertText:"Requires signatures",
+        alertText:"Requires signature",
         show:incrementallyFunded === "YES"
       },
       {
         itemName:"Justification and Approval",
         requiresSignature:true,
-        alertText:"Complete and sign",
+        alertText:"Requires signature",
         show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
       },
       {
         itemName:"Sole Source Market Research Report",
         requiresSignature:true,
-        alertText:"Complete and sign",
+        alertText:"Requires signature",
         show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
       },
       {
@@ -2445,7 +2445,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async getCompletedPackageList(): Promise<string[]> {
     const signedDocs = (await this.getSignedDocumentsList()).filter(
       signedDoc => signedDoc.show
-    ).map(signedDoc => signedDoc.itemName.replace("(Template)", ""));
+    ).map(signedDoc => signedDoc.itemName);
 
     const unsignedDocs = (await this.getDocuments(false)).filter(
       /**
