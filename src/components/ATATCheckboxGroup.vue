@@ -389,9 +389,7 @@ export default class ATATCheckboxGroup extends Vue {
     this.isLoading = false;
   }
   private clearErrorMessage(): void {
-    this.$nextTick(() => {
-      this.errorMessages = [];
-    })
+    this.errorMessages = [];
   }
 
   private setEventListeners(): void {
@@ -430,7 +428,6 @@ export default class ATATCheckboxGroup extends Vue {
       this.$nextTick(() => {
         this.setEventListeners();
       });
-      this.clearErrorMessage();
     }
   }
   
