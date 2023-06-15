@@ -40,7 +40,7 @@ interface CSPAdmin {
   email: string,
 }
 interface EnvironmentForProvisioning {
-  csp_name: string;
+  cspName: string;
   operators: CSPAdmin[]
 }
 
@@ -203,14 +203,14 @@ export class PortfolioDataStore extends VuexModule {
   public envsForProvisioning: EnvironmentForProvisioning[] = [];
   @Mutation
   public addEnvForProvisioning(data: { 
-    csp_name: string, admin: CSPAdmin}
+    cspName: string, admin: CSPAdmin}
   ): void {
-    const i = this.envsForProvisioning.findIndex(obj => obj.csp_name === data.csp_name);
+    const i = this.envsForProvisioning.findIndex(obj => obj.cspName === data.cspName);
     if (i > -1) {
       this.envsForProvisioning[i].operators.push(data.admin);
     } else {
       this.envsForProvisioning.push(
-        {csp_name: data.csp_name, operators: [data.admin]}
+        {cspName: data.cspName, operators: [data.admin]}
       );
     }
   }
@@ -255,16 +255,16 @@ export class PortfolioDataStore extends VuexModule {
           const email = admin.unclassifiedEmail;
           admin.impactLevels.forEach(il => {
             const adm: CSPAdmin = { dodId, email }
-            this.addEnvForProvisioning({ csp_name: il, admin: adm });
+            this.addEnvForProvisioning({ cspName: il, admin: adm });
           });
         } else {
           const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.unclassifiedEmail};
-          this.addEnvForProvisioning({ csp_name: unclassName, admin: adm });
+          this.addEnvForProvisioning({ cspName: unclassName, admin: adm });
         }      
       }
       if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
         const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.scrtEmail};
-        this.addEnvForProvisioning({ csp_name: scrtName, admin: adm });
+        this.addEnvForProvisioning({ cspName: scrtName, admin: adm });
       }
     });
 
