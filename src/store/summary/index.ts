@@ -11,6 +11,7 @@ import {
 import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
 
+
 export const isStepTouched = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
@@ -21,6 +22,16 @@ export const isStepComplete = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.every(
     (si: SummaryItem) => si.step === stepNumber && si.isComplete 
   ))
+}
+
+export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
+  const onlyUnclassified = classifications
+    .every(classification => classification.classification === "U")
+  const onlySecret = classifications
+    .every(classification => classification.classification === "S")
+  const onlyTopSecret = classifications
+    .every(classification => classification.classification === "TS")
+  return (onlySecret||onlyUnclassified||onlyTopSecret)
 }
 
 @Module({
@@ -233,8 +244,14 @@ export class SummaryStore extends VuexModule {
   ): Promise<boolean>{
     // validate CDS
     let isCDSComplete = false;
+    const oneClassification =
+        onlyOneClassification(ClassificationRequirements.selectedClassificationLevels)
+
     let isCDSDurationValid = false;
     const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
+    if(oneClassification || cds.cross_domain_solution_required === "NO"){
+      return true
+    }
     const keysToIgnore = [
       "sys_",
       "duration",
@@ -265,10 +282,10 @@ export class SummaryStore extends VuexModule {
   public async isDurationValid(
     duration: {
       isNeeded: string, 
-      selectedPeriods: string
+      selectedPeriods: string | string[]
   }): Promise<boolean>{
     return duration.isNeeded.toUpperCase() === "NO"
-      ? duration.selectedPeriods !== ""
+      ? duration.selectedPeriods.length !== 0
       : true
   }
 
@@ -280,7 +297,7 @@ export class SummaryStore extends VuexModule {
   }): Promise<boolean>{
     return  config.object && await Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
-        let dynamicKey = key as keyof unknown;
+        const dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
         return objAttrib !== "" && objAttrib !== "[]"
       }
@@ -291,11 +308,11 @@ export class SummaryStore extends VuexModule {
   public async isComplete(
     config:{
       object: object
-      keysToIgnore: string[], 
+      keysToIgnore: string[],
     }): Promise<boolean>{
     return  config.object && Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
-        let dynamicKey = key as keyof unknown;
+        const dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
         return objAttrib === "" && objAttrib !== "[]"
       }
