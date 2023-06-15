@@ -44,8 +44,8 @@ interface CSPAdmin {
   dodId: string,
   email: string,
 }
-interface EnvironmentOperators {
-  cspName: string;
+interface EnvironmentForProvisioning {
+  csp_name: string;
   operators: CSPAdmin[]
 }
 
@@ -171,7 +171,6 @@ export class PortfolioDataStore extends VuexModule {
       let cspData: CSPProvisioningData[] = [];
       let hasCloudDistinguishers = false;
       const csp = this.portfolioProvisioningObj.csp?.toUpperCase();
-      debugger;
       const response = await api.cloudServiceProviderTable.getQuery({
         params: {
           sysparm_fields: "name,cloud_distinguisher,classification_level",
@@ -208,6 +207,21 @@ export class PortfolioDataStore extends VuexModule {
     this.CSPHasImpactLevels = data.hasCloudDistinguishers;
   }
 
+  public envsForProvisioning: EnvironmentForProvisioning[] = [];
+  @Mutation
+  public addEnvForProvisioning(data: { 
+    csp_name: string, admin: CSPAdmin}
+  ): void {
+    const i = this.envsForProvisioning.findIndex(obj => obj.csp_name === data.csp_name);
+    if (i > -1) {
+      this.envsForProvisioning[i].operators.push(data.admin);
+    } else {
+      this.envsForProvisioning.push(
+        {csp_name: data.csp_name, operators: [data.admin]}
+      );
+    }
+  }
+
   @Action({rawError: true})
   public async startProvisioning(): Promise<void> {
     let portfolioName=""
@@ -236,42 +250,42 @@ export class PortfolioDataStore extends VuexModule {
       }
     }
 
-    
-    // const environments: EnvironmentOperators = []
-
-
-    const unclassifiedOperators: Record<string, string>[] = [];
-    const scrtOperators: Record<string, string>[] = [] 
+    const unclassCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "U");
+    const unclassName = unclassCSP?.name as string;
+    const scrtCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "S");
+    const scrtName = scrtCSP?.name as string;
+    debugger;
     this.portfolioProvisioningObj.admins?.forEach(admin => {
-
-
       if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
-        // unclassifiedOperators.push({ dodId: admin.DoDId, email: admin.unclassifiedEmail });
+        if (admin.impactLevels && admin.impactLevels.length) {
+          const dodId = admin.DoDId;
+          const email = admin.unclassifiedEmail;
+          admin.impactLevels.forEach(il => {
+            const adm: CSPAdmin = { dodId, email }
+            this.addEnvForProvisioning({ csp_name: il, admin: adm });
+          });
+        } else {
+          const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.unclassifiedEmail};
+          this.addEnvForProvisioning({ csp_name: unclassName, admin: adm });
+        }      
       }
       if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
-        // scrtOperators.push({ dodId: admin.DoDId, email: admin.scrtEmail });
+        const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.scrtEmail};
+        this.addEnvForProvisioning({ csp_name: scrtName, admin: adm });
       }
     });
-
+    debugger;
     const provisioningPostObj = {
       portfolioName: portfolioName || this.portfolioProvisioningObj.portfolioTitle,
       portfolioAgency: portfolioAgency || this.portfolioProvisioningObj.serviceOrAgency,
-      environments: {
-        Unclassified: {
-          operators: unclassifiedOperators
-        },
-        Secret: {
-          operators: scrtOperators
-        }
-      }
+      environments: this.envsForProvisioning
     }
 
-    // const 
-
-    await api.edaApi.provisionPortfolio(
-      provisioningPostObj,
-      this.portfolioProvisioningObj.taskOrderNumber as string,
-      this.selectedAcquisitionPackageSysId)
+    // await api.edaApi.provisionPortfolio(
+    //   provisioningPostObj,
+    //   this.portfolioProvisioningObj.taskOrderNumber as string,
+    //   this.selectedAcquisitionPackageSysId
+    // );
   }
 
   /**

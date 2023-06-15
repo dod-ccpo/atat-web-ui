@@ -302,8 +302,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   ];
 
   public selectedImpactLevels: string[] = [];
-  public impactLevelOptions: Checkbox[] = [
-  ];
+  public impactLevelOptions: Checkbox[] = [];
 
   public tableData: Record<string, string>[] = [];
   public showUnclassifiedILs = false;
@@ -509,7 +508,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       const il = value.split('_')[1]
       checkboxItem.id = il.toUpperCase()
       checkboxItem.label = il.toUpperCase()
-      checkboxItem.value = il.toUpperCase()
+      checkboxItem.value = value
       this.impactLevelCompareArray.push(checkboxItem.value)
       this.impactLevelOptions.push(checkboxItem)
     })
@@ -600,11 +599,12 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
           this.hasUnclassifiedAccess = "NO";
         }
       }
-      this.impactLevels = storeData.selectedILs ||[]
-      if(storeData.selectedILs && storeData.selectedILs.length > 1){
+      this.impactLevels = storeData.selectedILs || [];
+      debugger;
+      if (storeData.selectedILs && storeData.selectedILs.length > 1) {
         this.showUnclassifiedILs = true
         this.createILCheckbox(storeData.selectedILs)
-      }else if(storeData.selectedILs && storeData.selectedILs.length === 1){
+      } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {
         const il = storeData.selectedILs[0].split('_')[1].toUpperCase()
         this.selectedImpactLevels.push(il)
       }

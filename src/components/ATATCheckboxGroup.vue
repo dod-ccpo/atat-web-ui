@@ -238,17 +238,14 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("rules", {deep: true})
   public rulesChanged(): void {
-    debugger;
     if (!this.isLoading) {
       this.checkboxRules = this.rules;
-      debugger;
       this.clearErrorMessage();
     }
   }
 
   @Watch("validateCheckboxesNow")
   protected setCheckboxValidation(): void {
-    debugger;
     this.checkboxRules = this.rules;
   }
 
@@ -286,7 +283,6 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
-    debugger;
     if (!oldVal || newVal.length > oldVal.length) {
       // new checkbox checked - get the index, push to this.selectedIndices
       const newCheckedVals = newVal.filter((val) => !oldVal.includes(val));
@@ -333,7 +329,6 @@ export default class ATATCheckboxGroup extends Vue {
     Vue.nextTick(() => {
       this.prevSelected = [...this._selected];
     });
-    debugger;
     if (newVal.length || oldVal.length) {
       this.setErrorMessage();
     }
@@ -381,7 +376,6 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   private setErrorMessage(): void {
-    debugger;
     if (this._selected.length) {
       this.clearErrorMessage();
     } else {
@@ -395,9 +389,7 @@ export default class ATATCheckboxGroup extends Vue {
     this.isLoading = false;
   }
   private clearErrorMessage(): void {
-    debugger;
     this.$nextTick(() => {
-      debugger;
       this.errorMessages = [];
     })
   }
@@ -429,7 +421,6 @@ export default class ATATCheckboxGroup extends Vue {
     if ((!this.validateCheckboxesNow && this.rules.length) || this.validateOnLoad) {
       this.validateCheckboxesNow = true;
     }
-    debugger;
     this.setErrorMessage();
   }
 
@@ -467,7 +458,6 @@ export default class ATATCheckboxGroup extends Vue {
    
     // if validateOnLoad, then validate checkboxes immediately
     if (this.validateOnLoad){
-      debugger;
       this.validateCheckboxesNow = true;
       setTimeout(()=>{
         this.setErrorMessage();
@@ -497,7 +487,6 @@ export default class ATATCheckboxGroup extends Vue {
         if (this.checkboxRules.length === 0) {
           this.validateCheckboxesNow = true;
         }
-        debugger;
         this.setErrorMessage();
       }
     }
