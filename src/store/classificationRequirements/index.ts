@@ -235,7 +235,7 @@ export class ClassificationRequirementsStore extends VuexModule {
           selectedClassLevel.user_growth_estimate_percentage
               = userGrowth.split(",").filter(nonEmptyVal => nonEmptyVal);
           if (["TS", "S"].includes(selectedClassLevel.classification)){
-            const classInfoTypes = 
+            const classInfoTypes =
               selectedClassLevel.classified_information_types?.split(",") as string[]
             this.securityRequirements.push(
               {
