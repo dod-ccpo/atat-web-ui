@@ -5,7 +5,6 @@ import {
 } from "../helpers";
 import common from '../selectors/common.sel';
 import 'cypress-iframe';
-import co from "../selectors/contractOffice.sel";
 import performanceReq from '../selectors/performanceReqs.sel';
 import contractDetails from "../selectors/contractDetails.sel";
 
