@@ -589,6 +589,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.savedData = _.cloneDeep(this.admins);
       this.cspLong = storeData.cspLong as string;
       this.classificationLevels = storeData.classificationLevels || [];
+      debugger;
       if (this.classificationLevels.length === 1) {
         this.selectedClassificationLevels.push(this.classificationLevels[0])
         if (this.classificationLevels[0] === this.unclStr) {
@@ -604,11 +605,9 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
         this.showUnclassifiedILs = true
         this.createILCheckbox(storeData.selectedILs)
       } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {
-        const il = storeData.selectedILs[0].split('_')[1].toUpperCase()
-        this.selectedImpactLevels.push(il)
+        this.selectedImpactLevels.push(storeData.selectedILs[0]);
       }
-      this.csp = storeData.csp||""
-      // if(this.csp === )
+      this.csp = storeData.csp || "";
 
       this.buildTableData();
     } 
