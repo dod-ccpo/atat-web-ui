@@ -12,6 +12,7 @@ import {
   SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
+import { onlyOneClassification } from "@/router/resolvers"
 
 export const isStepTouched = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.some(
@@ -280,8 +281,14 @@ export class SummaryStore extends VuexModule {
   ): Promise<boolean>{
     // validate CDS
     let isCDSComplete = false;
-    let isCDSDurationValid = false;
     const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
+    const oneClassification =
+      onlyOneClassification(ClassificationRequirements.selectedClassificationLevels)
+
+    let isCDSDurationValid = false;
+    if(oneClassification || cds.cross_domain_solution_required === "NO"){
+      return true
+    }
     const keysToIgnore = [
       "sys_",
       "duration",
@@ -312,10 +319,10 @@ export class SummaryStore extends VuexModule {
   public async isDurationValid(
     duration: {
       isNeeded: string, 
-      selectedPeriods: string
+      selectedPeriods: string | string[]
   }): Promise<boolean>{
     return duration.isNeeded.toUpperCase() === "NO"
-      ? duration.selectedPeriods !== ""
+      ? duration.selectedPeriods.length !== 0
       : true
   }
 
@@ -327,7 +334,7 @@ export class SummaryStore extends VuexModule {
   }): Promise<boolean>{
     return  config.object && await Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
-        let dynamicKey = key as keyof unknown;
+        const dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
         return objAttrib !== "" && objAttrib !== "[]"
       }
@@ -342,7 +349,7 @@ export class SummaryStore extends VuexModule {
     }): Promise<boolean>{
     return  config.object && Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
-        let dynamicKey = key as keyof unknown;
+        const dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
         return objAttrib === "" && objAttrib !== "[]"
       }
