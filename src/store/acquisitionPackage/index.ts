@@ -313,6 +313,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
   );
 };
 
+
+
 const getStoreDataTableProperty = (
   storeProperty: string,
   store: AcquisitionPackageStore
@@ -325,10 +327,22 @@ const getStoreDataTableProperty = (
   if (!dataProperty) {
     throw new Error(`unable to locate store property : ${storeProperty}`);
   }
-
   return dataProperty;
 };
 
+export const isDitcoUser = (): boolean =>{
+  return AcquisitionPackage.acquisitionPackage?.contracting_shop === "DITCO"
+}
+
+export const isMRRToBeGenerated = (): boolean =>{ 
+  return AcquisitionPackage.fairOpportunity?.contract_action === "NONE";
+}
+
+export const hasFairOpportunity = (): boolean =>{
+  return ["NO_NONE", ""].every(
+    fo=>fo !== AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity?.toUpperCase()
+  )
+}
 
 @Module({
   name: "AcquisitionPackage",
@@ -2420,13 +2434,13 @@ export class AcquisitionPackageStore extends VuexModule {
         itemName:"Justification and Approval",
         requiresSignature:true,
         alertText:"Requires signature",
-        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+        show: hasFairOpportunity()
       },
       {
         itemName:"Sole Source Market Research Report",
         requiresSignature:true,
         alertText:"Requires signature",
-        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+        show: hasFairOpportunity() && isMRRToBeGenerated() && isDitcoUser()
       },
       {
         itemName:"Description of Work",
@@ -2436,7 +2450,7 @@ export class AcquisitionPackageStore extends VuexModule {
       {
         itemName:"Evaluation Plan",
         requiresSignature:false,
-        show:fairOpportunity === "NO_NONE"
+        show:!hasFairOpportunity()
       }
     ] as signedDocument[]
   }
