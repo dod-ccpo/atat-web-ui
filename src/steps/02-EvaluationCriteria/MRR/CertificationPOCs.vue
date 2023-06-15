@@ -38,8 +38,9 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import _ from "lodash";
-import { FairOpportunityDTO } from "@/api/models";
+import { ContactDTO, FairOpportunityDTO } from "@/api/models";
 import ContactData from "@/store/contactData";
+import { RadioButton } from "../../../../types/Global";
 
 @Component({
   components: {
@@ -48,43 +49,99 @@ import ContactData from "@/store/contactData";
 })
 
 export default class CertificationPOCs extends Mixins(SaveOnLeave) {
-  saveTechForm = false;
-  saveReqForm = false;
+  private POCTypePropName: "technical_poc_type" | "requirements_poc_type" = "technical_poc_type";
+  private POCPropName: "technical_poc" | "requirements_poc" = "technical_poc";
+  private certificationPOCSysId = "";
+  private certificationPOCContactDTO: ContactDTO = {} as ContactDTO;
+  private certificationPOCTypeOptions: RadioButton[] = [];
+  private pocPrimary: ContactDTO = {} as ContactDTO;
+  private pocCor: ContactDTO = {} as ContactDTO;
+  private pocAcor: ContactDTO | undefined = undefined;
 
-  /**
-   * For child components saveOnLeave is not triggering automatically.
-   * This is a workaround to save the state.
-   */
-  protected async saveOnLeave(): Promise<boolean> {
-    await AcquisitionPackage.setValidateNow(true);
-    const isValid = this.$refs.form.validate();
-    if (isValid) {
-      this.saveTechForm = true;
-      this.saveReqForm = true;
+
+  public initializeCertificationPOCTypeOptions() {
+    this.certificationPOCTypeOptions.push(
+      {
+        id: this.POCType + "PrimaryPOC",
+        label: this.pocPrimary.first_name as string + " " + this.pocPrimary.last_name,
+        value: this.pocPrimary.sys_id as string,
+        optionType: "PRIMARY"
+      });
+    this.certificationPOCTypeOptions.push(
+      {
+        id: this.POCType + "CorPOC",
+        label: this.pocCor.first_name as string + " " + this.pocCor.last_name,
+        value: this.pocCor.sys_id as string,
+        optionType: "COR"
+      });
+    if (this.pocAcor) {
+      this.certificationPOCTypeOptions.push({
+        id: this.POCType + "AcorPOC",
+        label: this.pocAcor.first_name as string + " " + this.pocAcor.last_name,
+        value: this.pocAcor.sys_id as string,
+        optionType: "ACOR"
+      })
     }
-    return true;
+    this.certificationPOCTypeOptions.push({
+      id: this.POCType + "NewPOC",
+      label: "No, I need to enter my " + this.POCType + " POC’s contact information.",
+      value: (this.certificationPOCContactDTO.sys_id &&
+        this.certificationPOCContactDTO.sys_id.length > 0)
+        ? this.certificationPOCContactDTO.sys_id : "NEW",
+      optionType: "NEW"
+    })
   }
+
+  // protected async saveOnLeave(): Promise<boolean> {
+  //   try {
+  //     debugger
+  //     const fairOpportunity = {} as FairOpportunityDTO;
+  //     let setFairOpportunity = false;
+  //     let contactSysId = "";
+  //     if (this.selectedOptionType === "NEW") {
+  //       // user changed from other types to NEW or could be first time filling the form.
+  //       if (this.hasCurrentContactFormChanged()) {
+  //         setFairOpportunity = true;
+  //         const savedContact = await ContactData.saveContact(this.currentContactFormData);
+  //         contactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
+  //       }
+  //     } else { // user has changed across one of the 3 existing contact types (NOT NEW)
+  //       if (this.hasFairOpportunityDataChanged()) {
+  //         setFairOpportunity = true;
+  //         contactSysId = this.selectedOption?.value;
+  //       }
+  //     }
+  //     if (setFairOpportunity) {
+  //       fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
+  //       fairOpportunity[this.POCPropName] = contactSysId;
+  //       await AcquisitionPackage.setFairOpportunity(fairOpportunity);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  //   return true;
+  // }
   public async loadOnEnter(): Promise<void> {
-    // this.setPOCPropertyNames();
-    // this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
-    // this.pocCor = await AcquisitionPackage.getContact("COR");
-    // this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
-    //   await AcquisitionPackage.getContact("ACOR") : undefined;
-    // let fairOpportunity = AcquisitionPackage.fairOpportunity;
-    // if (fairOpportunity) {
-    //   fairOpportunity = convertColumnReferencesToValues(
-    //     _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
-    //   this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
-    //   if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
-    //     this.certificationPOCContactDTO =
-    //       await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
-    //   } else {
-    //     this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
-    //   }
-    //   this.initializeCertificationPOCTypeOptions();
-    //   await this.setContactFormData(this.certificationPOCContactDTO);
-    // }
-    // this.loaded = true;
+    this.setPOCPropertyNames();
+    this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
+    this.pocCor = await AcquisitionPackage.getContact("COR");
+    this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
+      await AcquisitionPackage.getContact("ACOR") : undefined;
+    let fairOpportunity = AcquisitionPackage.fairOpportunity;
+    if (fairOpportunity) {
+      fairOpportunity = convertColumnReferencesToValues(
+        _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
+      this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
+      if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
+        this.certificationPOCContactDTO =
+          await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
+      } else {
+        this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
+      }
+      this.initializeCertificationPOCTypeOptions();
+      await this.setContactFormData(this.certificationPOCContactDTO);
+    }
+    this.loaded = true;
   }
 
   public async mounted(): Promise<void> {
