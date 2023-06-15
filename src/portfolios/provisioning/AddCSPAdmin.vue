@@ -589,7 +589,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.savedData = _.cloneDeep(this.admins);
       this.cspLong = storeData.cspLong as string;
       this.classificationLevels = storeData.classificationLevels || [];
-      debugger;
       if (this.classificationLevels.length === 1) {
         this.selectedClassificationLevels.push(this.classificationLevels[0])
         if (this.classificationLevels[0] === this.unclStr) {
