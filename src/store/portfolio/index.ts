@@ -254,7 +254,7 @@ export class PortfolioDataStore extends VuexModule {
     const unclassName = unclassCSP?.name as string;
     const scrtCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "S");
     const scrtName = scrtCSP?.name as string;
-    debugger;
+
     this.portfolioProvisioningObj.admins?.forEach(admin => {
       if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
         if (admin.impactLevels && admin.impactLevels.length) {
@@ -274,18 +274,18 @@ export class PortfolioDataStore extends VuexModule {
         this.addEnvForProvisioning({ csp_name: scrtName, admin: adm });
       }
     });
-    debugger;
+
     const provisioningPostObj = {
       portfolioName: portfolioName || this.portfolioProvisioningObj.portfolioTitle,
       portfolioAgency: portfolioAgency || this.portfolioProvisioningObj.serviceOrAgency,
       environments: this.envsForProvisioning
     }
 
-    // await api.edaApi.provisionPortfolio(
-    //   provisioningPostObj,
-    //   this.portfolioProvisioningObj.taskOrderNumber as string,
-    //   this.selectedAcquisitionPackageSysId
-    // );
+    await api.edaApi.provisionPortfolio(
+      provisioningPostObj,
+      this.portfolioProvisioningObj.taskOrderNumber as string,
+      this.selectedAcquisitionPackageSysId
+    );
   }
 
   /**

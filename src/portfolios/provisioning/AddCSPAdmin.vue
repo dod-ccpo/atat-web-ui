@@ -600,7 +600,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
         }
       }
       this.impactLevels = storeData.selectedILs || [];
-      debugger;
       if (storeData.selectedILs && storeData.selectedILs.length > 1) {
         this.showUnclassifiedILs = true
         this.createILCheckbox(storeData.selectedILs)
