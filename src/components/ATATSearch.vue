@@ -246,7 +246,6 @@ export default class ATATSearch extends Vue {
           }
         } else {
           await PortfolioStore.setPortfolioProvisioning(response);
-          await PortfolioStore.setImpactLevels();
           this.$emit("search");
         }
       } catch (error) {

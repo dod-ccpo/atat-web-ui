@@ -44,6 +44,18 @@ interface EnvironmentOperators {
   operators: CSPAdmin[]
 }
 
+export interface CSPProvisioningData {
+  name: string;
+  classification_level?: string;
+  cloud_distinguisher?: CloudDistinguisher;
+}
+
+interface CloudDistinguisher {
+  description?: string;
+  display_name?: string;
+  name?: string;
+}
+
 export interface FundingAlertData {
   alerts: AlertDTO[],
   daysRemaining: number,
@@ -107,7 +119,6 @@ export class PortfolioDataStore extends VuexModule {
     this.showTOPackageSelection = bool;
   }
 
-
   public didNotUseDAPPS = false;
   @Action({rawError: true})
   public async setDidNotUseDAPPS(bool: boolean): Promise<void> {
@@ -134,7 +145,6 @@ export class PortfolioDataStore extends VuexModule {
     return this.selectedAcquisitionPackageSysId;
   }
   
-
   public portfolioProvisioningObj: PortfolioProvisioning 
     = _.cloneDeep(initialPortfolioProvisioningObj());
  
@@ -143,11 +153,52 @@ export class PortfolioDataStore extends VuexModule {
     return this.portfolioProvisioningObj;
   }
 
-  public impactLevels: Record<string, string> = {};
-
+  public CSPProvisioningData: CSPProvisioningData[] = [];
+  public CSPHasImpactLevels = false;
+  public get doesCSPHaveImpactLevels(): boolean {
+    return this.CSPHasImpactLevels;
+  }
   @Action({ rawError: true})
-  public async setImpactLevels(): Promise<void> {
-    //  EJY come back here.
+  public async setCSPProvisioningData(): Promise<void> {
+    try {
+      let cspData: CSPProvisioningData[] = [];
+      let hasCloudDistinguishers = false;
+      const csp = this.portfolioProvisioningObj.csp?.toUpperCase();
+      debugger;
+      const response = await api.cloudServiceProviderTable.getQuery({
+        params: {
+          sysparm_fields: "name,cloud_distinguisher,classification_level",
+          sysparm_query: "vendorIN" + csp
+        }
+      });
+      response.forEach(obj => {
+        let csp: CSPProvisioningData = { 
+          name: obj.name, 
+          classification_level: obj.classification_level,
+          cloud_distinguisher: {} 
+        };
+        const cd = obj.cloud_distinguisher;
+        if (cd && cd.length) {
+          const cdObj = JSON.parse(cd);
+          csp.cloud_distinguisher = cdObj;
+          hasCloudDistinguishers = true;
+        }
+        cspData.push(csp);
+      });
+      cspData = cspData.sort((a,b) => a.name > b.name ? 1 : -1)
+      await this.doSetCSPProvisioningData({cspData, hasCloudDistinguishers});
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  @Mutation
+  public async doSetCSPProvisioningData(data: {
+    cspData: CSPProvisioningData[],
+    hasCloudDistinguishers: boolean
+  }
+  ): Promise<void> {
+    this.CSPProvisioningData = data.cspData;
+    this.CSPHasImpactLevels = data.hasCloudDistinguishers;
   }
 
   @Action({rawError: true})
@@ -356,8 +407,8 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true}) 
   public async setPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
-    debugger;
-    this.doSetPortfolioProvisioning(data);
+    await this.doSetPortfolioProvisioning(data);
+    await this.setCSPProvisioningData();
   }
 
   @Mutation
@@ -376,7 +427,6 @@ export class PortfolioDataStore extends VuexModule {
         csps: [],
       }
     );  
-
   }
 
   @Action
