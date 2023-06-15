@@ -129,7 +129,6 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   }  
 
   public packageSelected(index: number): void {
-    debugger
     this.packageData.forEach(pkg => pkg.isSelected = false);
     this.packageData[index].isSelected = true;
     this.selectedPackageSysId = this.packageData[index].sysId as string;
