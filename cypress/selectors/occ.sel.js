@@ -36,7 +36,7 @@ module.exports = {
   noTravelMessage:"#NoTravelMessage",
   addTrip:"#AddInstance",
   travelDialogTitle:"#travelFormDialogTitle",
-  tablewrapper:".v-data-table__wrapper",
+  tablewrapper:".v-data-table__wrapper table tbody tr",
   travelDialog:"#travelFormDialog",
   btnClassDisabled:"v-btn--disabled",
   btnClassenabled:"v-btn--is-elevated",

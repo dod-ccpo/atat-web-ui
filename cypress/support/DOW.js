@@ -177,14 +177,7 @@ Cypress.Commands.add("unselectSecretLevel", (secretSelector) => {
 });
 
 Cypress.Commands.add("goToContractDetailsStep",(pt, scope,radioSelector, value,input)=>{
-  cy.launchATAT(true);
-  cy.homePageClickAcquisitionPackBtn();
-  cy.selectDitcoOption(co.radioDITCO, "DITCO");
-  cy.textExists(common.stepAcquisitionText, " Acquisition Package Details ");
-  //Verify the Substeps are  visible
-  cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");
-  cy.fillNewAcquisition(pt, scope);
-  cy.clickDevToggleBtn();
+  cy.goToAcqPackageStepOne(pt, scope);  
   cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
   cy.activeStep(common.stepContractDetailsText);
   cy.verifyPageHeader(
