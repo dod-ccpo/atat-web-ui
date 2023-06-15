@@ -158,6 +158,46 @@ export default class ReadyToProvision extends Mixins(SaveOnLeave) {
     }
   }
 
+  public async addCSPAdminToEnv(i: number, env: string, sort: number): Promise<void> {
+    if (i > -1) {
+      this.cspAdmins[i].admins = this.cspAdmins[i].admins + 1;
+    } else {
+      this.cspAdmins.push({ env, admins: 1, sort });
+    }
+  }
+
+  public async configureCSPAdminData(): Promise<void> {
+    const hasILs = 
+      this.provisioningData.selectedILs && this.provisioningData.selectedILs.length > 0;
+
+    this.provisioningData.admins?.forEach(async admin => {
+      if (admin.hasUnclassifiedAccess === "YES") {
+        if (hasILs) {
+          admin.impactLevels?.forEach(async value => {
+            const il = value.split('_')[1].toUpperCase();
+            const i = this.cspAdmins.findIndex(obj => obj.env === "Unclassified/" + il);
+            const sort = parseInt(il.replace(/\D/g, "")); // get the number from the IL string
+            await this.addCSPAdminToEnv(i, "Unclassified/" + il, sort);
+          });
+        } else {
+          const i = this.cspAdmins.findIndex(obj => obj.env === this.unclStr);
+          await this.addCSPAdminToEnv(i, this.unclStr, 1);
+        }
+      }
+      if (admin.hasScrtAccess === "YES") {
+        const i = this.cspAdmins.findIndex(obj => obj.env === this.scrtStr);
+        await this.addCSPAdminToEnv(i, this.scrtStr, 10);
+      }      
+      if (admin.hasTSAccess === "YES") {
+        const i = this.cspAdmins.findIndex(obj => obj.env === this.tsStr);
+        await this.addCSPAdminToEnv(i, this.tsStr, 20);
+      }
+    });
+    
+    this.cspAdmins.sort((a,b) => a.sort - b.sort);
+    
+  }
+
   public async loadOnEnter(): Promise<void> {
     const storeData = await PortfolioStore.getPortfolioProvisioningObj();
     if (storeData) {
