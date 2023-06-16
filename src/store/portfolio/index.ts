@@ -280,12 +280,11 @@ export class PortfolioDataStore extends VuexModule {
         portfolioAgency: portfolioAgency || this.portfolioProvisioningObj.serviceOrAgency,
         environments: this.envsForProvisioning
       }
-      debugger;
-      // await api.edaApi.provisionPortfolio(
-      //   provisioningPostObj,
-      //   this.portfolioProvisioningObj.taskOrderNumber as string,
-      //   this.selectedAcquisitionPackageSysId
-      // );
+      await api.edaApi.provisionPortfolio(
+        provisioningPostObj,
+        this.portfolioProvisioningObj.taskOrderNumber as string,
+        this.selectedAcquisitionPackageSysId
+      );
     } 
     catch(error) {
       // ATAT TODO - add graceful fail message to user in UI

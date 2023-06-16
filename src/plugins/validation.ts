@@ -268,18 +268,32 @@ export class ValidationPlugin {
   */
   isEmail = (
     message?: string,
-    isScrt?: boolean
+    highSide?: "S" | "TS"
   ): ((v: string) => string | true | undefined) => {
-    isScrt = isScrt === undefined ? false : isScrt;
+    const isScrt = highSide === "S" ? true : false;
+    const isTS = highSide === "TS" ? true : false;
     return (v: string) => {
       if (v && v !== "") {
+        const validStructure = /[a-z0-9]+@[a-z-_.0-9]+\.[a-z]{3}/i.test(v);
+        if (!validStructure) return "Please use standard domain format, like ‘@mail.mil’";
+
+        const validScrt = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v);
+        if (!validScrt) 
+        // EJY COME BACK HERE
+        const validGovOrMil = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i.test(v);
+        const validTS = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:ic)+\.(?:gov|mil)$/i.test(v)
+
+        debugger;
+
         if (/[a-z0-9]+@[a-z-_.0-9]+\.[a-z]{3}/i.test(v) === false) {
+          // tests for very basic email structure
           return "Please use standard domain format, like ‘@mail.mil’"
         } else if (!isScrt && /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i.test(v) === false) {
+          // tests for @___.mil or @___.gov 
           return message || "Please use your .mil or .gov email address."
         } else if (isScrt && 
-          /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v) === false
-        ) {
+          /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v) === false) {
+          // tests for @___.smil.mil or @___.sgov.gov 
           return message || "Please use your .smil or .sgov email address."
         }      
       }

@@ -223,7 +223,7 @@
                   $validators.required(
                     'Please enter your administrator’s email address.'
                   ),
-                  $validators.isEmail('Please use a .smil or .sgov email address', true)
+                  $validators.isEmail('Please use a .smil or .sgov email address', 'S')
                 ]"
               />
 
@@ -242,6 +242,9 @@
                   $validators.isEmail('Please use a .mil or .gov email address', true)
                 ]"
               />
+              <div v-if="tsEmailWarning">
+                warning
+              </div>
 
 
             </form>
@@ -307,6 +310,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public scrtEmail = "";
   public hasTSAccess = "NO"; // YES/NO
   public tsEmail = "";
+  public tsEmailWarning = false;
 
   public impactLevels:string[] = [];
   public impactLevelCompareArray:string[] = [];
