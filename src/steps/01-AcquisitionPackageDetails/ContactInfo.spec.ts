@@ -86,9 +86,13 @@ describe("Testing ContactInfo Component", () => {
     jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
       () => Promise.resolve(mockContactDTO)
     );
-      
+
     jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
       () => Promise.resolve()
+    );
+
+    jest.spyOn(AcquisitionPackage, 'getContact').mockImplementation(
+      () => Promise.resolve(mockLoadedContactDTO)
     );
         
     jest.spyOn(AcquisitionPackage, 'loadContactInfo').mockImplementation(
@@ -175,21 +179,37 @@ describe("Testing ContactInfo Component", () => {
   });
 
   it("loadOnEnter() - returns storeData successfully", async () => {
+    await wrapper.setData({
+      savedData: mockLoadedContactDTO,
+    })
     await wrapper.vm.loadOnEnter()
-    expect(await wrapper.vm.$data.selectedBranch.value).toBe("NAVY")
+    expect(await wrapper.vm.$data.branchData).toHaveLength(3)
   })
 
   it("branchChange() - update selected branch", async () =>  {
+  
+    const rank: MilitaryRankDTO = { name: "this", grade: "that", branch: "other" };     
     jest.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
-      new Promise(resolve => resolve({
-        name: "Captain",
-        grade: "O-3",
-        branch: "AIR_FORCE"
-      } as MilitaryRankDTO))
+      new Promise(resolve => resolve(rank))
     );
+
     await wrapper.vm.loadOnEnter(); 
-    expect(await wrapper.vm.$data.selectedBranch.value).toBe("AIR_FORCE")
+    expect(await wrapper.vm.$data.selectedRank["name"]).toBe("this")
   })
+
+  it("branchChange() - update selected branch with empty object", async () =>  {
+  
+    const rank: MilitaryRankDTO = { name: "", grade: "", branch: "" };     
+    jest.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
+      new Promise(resolve => resolve(rank))
+    );
+
+    await wrapper.vm.loadOnEnter(); 
+    expect(await wrapper.vm.$data.selectedRank["name"]).toBe("")
+  })
+
+
+
   it("hasChanged() - change input contactInfo data", async () =>  {
     await wrapper.setData({
       currentData: {
