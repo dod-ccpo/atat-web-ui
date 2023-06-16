@@ -546,7 +546,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
           count = admin.impactLevels.length - 1
           admin.impactLevels.forEach(il => {
             classificationLevels.push(this.unclStr + '/'+il.split("_")[1].toUpperCase());
-          })0
+          })
         }else{
           classificationLevels.push(this.unclStr);
         }

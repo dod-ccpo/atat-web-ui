@@ -931,6 +931,9 @@ export class PortfolioDataStore extends VuexModule {
     this.didNotUseDAPPS = false;
     this.showTOPackageSelection = true;
     this.portfolioCreator = {};
+    this.selectedAcquisitionPackageSysId = "";
+    this.CSPProvisioningData = [];
+    this.CSPHasImpactLevels = false;
   }
 
 }
