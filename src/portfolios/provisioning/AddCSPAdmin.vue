@@ -234,18 +234,24 @@
                 label="JWICS email address"
                 :tooltipText="tsToolTip"
                 class="_input-max-width mt-10"
-                helpText="We recommend using an .ic.gov email address."
+                :helpText="tsEmailHelpText"
+                @blur="checkTSEmail"
                 :rules="[
                   $validators.required(
                     'Please enter your administrator’s email address.'
                   ),
-                  $validators.isEmail('Please use a .mil or .gov email address', true)
+                  $validators.isEmail('Please use a .mil or .gov email address', 'TS')
                 ]"
               />
-              <div v-if="tsEmailWarning">
-                warning
+              <div v-if="showTSEmailWarning" class="d-flex _input-max-width mt-2">
+                <div style="margin-top: 2px;">
+                  <ATATSVGIcon name="warning" width="18" height="16" color="warning-dark2" />
+                </div>
+                <div class="body ml-2">
+                  This doesn’t look like a valid email. Please ensure the address can 
+                  be accessed from JWICS.
+                </div>
               </div>
-
 
             </form>
           </template>
@@ -258,7 +264,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -310,7 +316,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public scrtEmail = "";
   public hasTSAccess = "NO"; // YES/NO
   public tsEmail = "";
-  public tsEmailWarning = false;
+  public showTSEmailWarning = false;
 
   public impactLevels:string[] = [];
   public impactLevelCompareArray:string[] = [];
@@ -417,25 +423,47 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     return this.$refs.CSPAdminForm as Vue & { validate: () => boolean };
   }
 
+  public get tsEmailHelpText(): string {
+    return this.showTSEmailWarning ? "" : "Must use a valid JWICS email, such as .ic.gov.";
+  }
+
+  public checkTSEmail(val: string): void {
+    const tsValid = this.isValidGovOrMilEmail(val);
+    this.showTSEmailWarning = tsValid && val.slice(-7) !== ".ic.gov";
+  }
+
+  public isValidGovOrMilEmail(val: string): boolean {
+    const govOrMilEmail = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i
+    return govOrMilEmail.test(val);
+  }
+
   public get ModalOKDisabled(): boolean {
     const idOK = this.adminDoDId.length === 10;
     const classificationSelected = this.selectedClassificationLevels.length > 0;
     let unclassEmailValid = true;
     if (this.selectedClassificationLevels.includes(this.unclStr)) {
-      unclassEmailValid = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i
-        .test(this.unclassifiedEmail);
+      unclassEmailValid = this.isValidGovOrMilEmail(this.unclassifiedEmail);
     }
     let scrtEmailValid = true;
     if (this.selectedClassificationLevels.includes(this.scrtStr)) {
       scrtEmailValid = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i
         .test(this.scrtEmail);
     }
+
+    let tsEmailValid = true;
+    if (this.selectedClassificationLevels.includes(this.tsStr)) {
+      // same as unclass - needs to end in .gov or .mil
+      tsEmailValid = this.isValidGovOrMilEmail(this.tsEmail);
+      // but also if does not end with ".ic.gov" show a warning - use a watcher
+    }
+
     let ilsOK = true;
     if (this.impactLevels.length > 0) {
       const unclassChecked = this.selectedClassificationLevels.includes("Unclassified");
       ilsOK = !unclassChecked || unclassChecked && this.selectedImpactLevels.length > 0;
     }
-    return !idOK || !classificationSelected || !unclassEmailValid || !scrtEmailValid || !ilsOK;
+    return !idOK || !classificationSelected || !ilsOK
+      || !unclassEmailValid || !scrtEmailValid || !tsEmailValid;
   };
 
   public async validate(): Promise<void> {
@@ -541,6 +569,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public createClassificationCheckboxes(): void {
     this.classificationLevels.forEach(cl => {     
       const id = cl.replace(" ", "_");
+      debugger;
       this.classificationLevelOptions.push({ id, label: cl, value: cl });
     })
   }
