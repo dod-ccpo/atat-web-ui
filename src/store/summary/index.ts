@@ -12,7 +12,6 @@ import {
   SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
-import { onlyOneClassification } from "@/router/resolvers"
 
 export const isStepTouched = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.some(
@@ -24,6 +23,16 @@ export const isStepComplete = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.every(
     (si: SummaryItem) => si.step === stepNumber && si.isComplete 
   ))
+}
+
+export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
+  const onlyUnclassified = classifications
+    .every(classification => classification.classification === "U")
+  const onlySecret = classifications
+    .every(classification => classification.classification === "S")
+  const onlyTopSecret = classifications
+    .every(classification => classification.classification === "TS")
+  return (onlySecret||onlyUnclassified||onlyTopSecret)
 }
 
 export const validateStep = async(stepNumber: number): Promise<void> =>{
