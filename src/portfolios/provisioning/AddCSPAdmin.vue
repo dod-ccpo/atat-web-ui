@@ -463,12 +463,16 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     const hasUnclassifiedAccess
       = this.selectedClassificationLevels.includes(this.unclStr) ? "YES" : "NO";
     const hasScrtAccess = this.selectedClassificationLevels.includes(this.scrtStr) ? "YES" : "NO";
+    const hasTSAccess = this.selectedClassificationLevels.includes(this.tsStr) ? "YES" : "NO";
+
     const admin: PortfolioAdmin = {
       DoDId: this.adminDoDId,
       hasUnclassifiedAccess,
       hasScrtAccess,
+      hasTSAccess,
       unclassifiedEmail: hasUnclassifiedAccess ? this.unclassifiedEmail : "",
       scrtEmail: hasScrtAccess ? this.scrtEmail : "",
+      tsEmail: hasTSAccess ? this.tsEmail : "",
       impactLevels:this.selectedImpactLevels
     };
     const adminIndex = this.admins.findIndex(obj => obj.DoDId === this.adminDoDId);
@@ -549,6 +553,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.adminDoDId = "";
     this.unclassifiedEmail = "";
     this.scrtEmail = "";
+    this.tsEmail = "";
     if (this.classificationLevels.length > 1) this.selectedClassificationLevels = [];
     this.resetAccess();
   }
@@ -566,6 +571,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public buildTableData(): void {
     this.tableData = [];
     this.admins.forEach((admin, index) => {
+      // build classification level cell data
       const classificationLevels = []
       let count = 1
       if (admin.hasUnclassifiedAccess === "YES"){
@@ -579,7 +585,10 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
         }
       }
       if (admin.hasScrtAccess === "YES") classificationLevels.push(this.scrtStr);
+      if (admin.hasTSAccess === "YES") classificationLevels.push(this.tsStr);
       const adminClassificationLevels = classificationLevels.join("<br />");
+
+      // build email cell data
       const emails = [];
       const lineBreaks = count <= 0 ?"":"\n".repeat(count)
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
@@ -597,7 +606,12 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       if (admin.hasScrtAccess === "YES" && admin.scrtEmail) {
         emails.push(admin.scrtEmail);
       }
+      if (admin.hasTSAccess === "YES" && admin.tsEmail) {
+        emails.push(admin.tsEmail);
+      }
       const adminEmails = emails.join("<br />");
+
+      // assemble data table object
       const record: Record<string, string> = {
         index: index.toString(),
         DoDId: admin.DoDId as string,
@@ -605,6 +619,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
         adminClassificationLevels,
         status: "In queue",
       }
+      // add to table data
       this.tableData.push(record);
     });
 
