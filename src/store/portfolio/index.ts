@@ -933,7 +933,9 @@ export class PortfolioDataStore extends VuexModule {
     this.portfolioCreator = {};
     this.selectedAcquisitionPackageSysId = "";
     this.CSPProvisioningData = [];
-    this.CSPHasImpactLevels = false;
+    this.CSPHasImpactLevels = false;    
+    this.envsForProvisioning = [];
+    this.activeTaskOrderNumber = "";
   }
 
 }
