@@ -25,6 +25,16 @@ export const isStepComplete = (stepNumber: number): boolean =>{
   ))
 }
 
+export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
+  const onlyUnclassified = classifications
+    .every(classification => classification.classification === "U")
+  const onlySecret = classifications
+    .every(classification => classification.classification === "S")
+  const onlyTopSecret = classifications
+    .every(classification => classification.classification === "TS")
+  return (onlySecret||onlyUnclassified||onlyTopSecret)
+}
+
 export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
   case 3:
@@ -184,9 +194,9 @@ export class SummaryStore extends VuexModule {
     const isTouched = await this.isClassificationRequirementTouchedOrComplete(classReqs)
       || await this.isSecurityRequirementsTouched(hasSecretOrTS)
       || await this.isCDSTouched(hasSecretOrTS)
-    const isComplete = await this.isClassificationRequirementTouchedOrComplete(classReqs)
-      && await this.isSecurityRequirementsComplete(hasSecretOrTS)
-      && await this.isCDSComplete(hasSecretOrTS);
+    const isComplete = await this.isClassificationRequirementsComplete(
+      {hasSecretOrTS, classReqs}
+    )
     const POPSummaryItem: SummaryItem = {
       title,
       description,
@@ -197,6 +207,22 @@ export class SummaryStore extends VuexModule {
       substep: 3
     }
     await this.doSetSummaryItem(POPSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async isClassificationRequirementsComplete( 
+    config:{
+      hasSecretOrTS: boolean
+      classReqs:SelectedClassificationLevelDTO[]
+  }): Promise<boolean>{
+    const hasSelectedClassLevels = config.classReqs.length>0;
+    if (!config.hasSecretOrTS){
+      return hasSelectedClassLevels;
+    }
+
+    return await hasSelectedClassLevels
+      && await this.isSecurityRequirementsComplete(config.hasSecretOrTS)
+      && await this.isCDSComplete(config.hasSecretOrTS);
   }
 
   @Action({rawError: true})
@@ -264,8 +290,14 @@ export class SummaryStore extends VuexModule {
   ): Promise<boolean>{
     // validate CDS
     let isCDSComplete = false;
-    let isCDSDurationValid = false;
     const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
+    const oneClassification =
+      onlyOneClassification(ClassificationRequirements.selectedClassificationLevels)
+
+    let isCDSDurationValid = false;
+    if(oneClassification || cds.cross_domain_solution_required === "NO"){
+      return true
+    }
     const keysToIgnore = [
       "sys_",
       "duration",
@@ -296,10 +328,10 @@ export class SummaryStore extends VuexModule {
   public async isDurationValid(
     duration: {
       isNeeded: string, 
-      selectedPeriods: string
+      selectedPeriods: string | string[]
   }): Promise<boolean>{
     return duration.isNeeded.toUpperCase() === "NO"
-      ? duration.selectedPeriods !== ""
+      ? duration.selectedPeriods.length !== 0
       : true
   }
 
@@ -311,7 +343,7 @@ export class SummaryStore extends VuexModule {
   }): Promise<boolean>{
     return  config.object && await Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
-        let dynamicKey = key as keyof unknown;
+        const dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
         return objAttrib !== "" && objAttrib !== "[]"
       }
@@ -326,7 +358,7 @@ export class SummaryStore extends VuexModule {
     }): Promise<boolean>{
     return  config.object && Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
-        let dynamicKey = key as keyof unknown;
+        const dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
         return objAttrib === "" && objAttrib !== "[]"
       }
