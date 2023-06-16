@@ -14,6 +14,7 @@ module.exports = {
   continueBtn:"#ContinueButton",
   backBtn: "#BackButton span span",
   introText: "p.mb-10",
+  introMessage:"#IntroP",
   
   //common id for modal button
   commonOkBtn: "#dialog_ok",

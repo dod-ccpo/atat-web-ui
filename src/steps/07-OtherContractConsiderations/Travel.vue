@@ -19,16 +19,17 @@
           </div>
           <div v-if="!isLoading">
             <div
-                v-if="!hasListings"
-                class="
-              w-100
-              py-10
-              border1
-              border-rounded border-base-lighter
-              text-center
-              mb-10
-              mt-10
-            "
+              id="NoTravelMessage"
+              v-if="!hasListings"
+              class="
+                w-100
+                py-10
+                border1
+                border-rounded border-base-lighter
+                text-center
+                mb-10
+                mt-10
+              "
             >
               You do not have any travel requirements yet.
             </div>
@@ -134,6 +135,7 @@
     </v-container>
     <ATATDialog
       id="travelFormDialog"
+      okButtonId="AddTrip"
       :showDialog="showTravelFormDialog"
       title="Add Trip Details"
       no-click-animation
@@ -213,6 +215,7 @@
 
     <ATATDialog
       id="DeleteInstanceModal"
+      okButtonId="DeleteTrip"
       :showDialog="showDeleteInstanceDialog"
       :title="deleteInstanceModalTitle"
       no-click-animation
