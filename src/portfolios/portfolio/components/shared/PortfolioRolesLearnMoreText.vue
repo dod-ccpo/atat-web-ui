@@ -3,8 +3,7 @@
     <p class="mb-4">
       There are two levels of permissions for an ATAT portfolio: <strong>Manager</strong>
       and <strong>Viewer.</strong> The user who creates a portfolio is automatically 
-      set as a manager. Anyone can be invited to a portfolio, but individuals must 
-      be able to authenticate with a CAC to access ATAT.
+      set as a manager.
     </p>
     <ul>
       <li class="mb-2">

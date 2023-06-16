@@ -162,10 +162,12 @@
   ._view-all {
     //background-color: $base-lightest;
     border: 1px solid $base-lighter;
-    //border-top: none;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     padding: 12px 24px;
+    &._portfolios {
+      border-top: none;
+    }
   }
 }
 
@@ -173,7 +175,7 @@
   ._hero-banner {
     background-image: url("./assets/images/jedi-banner.png");
     background-size: cover;
-    background-position: center top;
+    background-position: center -170px;
     height: 300px;
     max-height: 300px;
     width: 100%;
@@ -183,7 +185,7 @@
   
   &._is-new-user {
     ._home-content {
-      
+      background-position: center top;      
     }
     ._hero-banner {
       height: 600px;

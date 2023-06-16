@@ -14,6 +14,8 @@ import { Statuses } from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
 import { differenceInDays, differenceInMonths, format, formatISO, parse, parseISO } from "date-fns";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import { AxiosRequestConfig } from "axios";
+import api from "@/api";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -250,7 +252,6 @@ export const roundTo100 = (numberArr: number[], withTenths?: boolean): number[] 
   return output;
 }
 
-
 export const createPeriodCheckboxItems = async (): Promise<Checkbox[]> => {
   const periods: PeriodDTO[] = await Periods.loadPeriods();
   // ensure sort order is correct
@@ -320,6 +321,8 @@ export function getStatusChipBgColor(status: string): string {
   case Statuses.ExpiringPop.label.toLowerCase():
   case Statuses.FundingAtRisk.value.toLowerCase():
   case Statuses.FundingAtRisk.label.toLowerCase():
+  case Statuses.ProvisioningIssue.value.toLowerCase():
+  case Statuses.ProvisioningIssue.label.toLowerCase():
     return "bg-warning";
   case Statuses.Deleted.value.toLowerCase():
   case Statuses.Delinquent.value.toLowerCase():
@@ -508,4 +511,27 @@ export function getCSPCompanyName(cspId: string): string {
   }
   return cspCompanyNames[cspId] || "";
 
+}
+
+export interface AggregateCountResults {
+  result: {
+    stats: {
+      count: string;
+    };
+  };
+}
+
+export const getTableRecordCount = async (table: string, query: string ): Promise<number> => {
+  // Use aggregate API to get count for number of records in a table
+  /* eslint-disable camelcase */
+  const config: AxiosRequestConfig = {
+    params: {
+      sysparm_query: query,
+      sysparm_count: true
+    },
+  };
+  /* eslint-enable camelcase */
+  const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;  
+  const count = parseInt(response.result.stats.count)
+  return count;
 }

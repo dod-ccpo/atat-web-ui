@@ -253,7 +253,7 @@ Cypress.Commands.add("verifyEnteredInputTxt", (selector, it) => {
 
 Cypress.Commands.add("verifySelectedRadioOption", (selector, radioOption) => {
   cy.findElement(selector).then(($radioOption) => {
-    const text = $radioOption.text();
+    const text = cleanText($radioOption.text());
     cy.log(text);
     expect(text).contain(radioOption);
   });
@@ -465,7 +465,11 @@ Cypress.Commands.add("clickSideStepper", (stepperSelector, stepperText) => {
     .should("be.visible")
     .and("have.length", 1)
     .and("contain", stepperText)
-    .click();
+    .click().then(()=>{
+      cy.waitUntil(function () {
+        return cy.findElement(stepperSelector).should("have.class", "router-link-active");
+      });
+    });
 });
 
 Cypress.Commands.add("activeStep", (selector) => {
@@ -1074,23 +1078,6 @@ Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
   });
 });
 
-Cypress.Commands.add(
-  "ppsCheckBoxOptionSelected",
-  (selector, value, otherTxt) => {
-    cy.checkBoxOption(selector, value).check({ force: true });
-    cy.findElement(occ.checkBoxActive).then(($checkedOption) => {
-      const selectedOption = cleanText($checkedOption.text());
-      cy.log(selectedOption);
-      if (selectedOption === "check_box Other") {
-        cy.log("display Other is selected:", selectedOption);
-        cy.findElement(occ.otherTextBox).should("exist").and("be.visible");
-        cy.enterTextInTextField(occ.otherTextBox, otherTxt);
-      } else {
-        cy.findElement(occ.otherTextBox).should("not.exist");
-      }
-    });
-  }
-);
 
 Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true }).should("be.checked");

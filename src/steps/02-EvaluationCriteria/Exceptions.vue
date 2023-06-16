@@ -46,7 +46,7 @@
               v-if="evalAlertDisplay"
               id="JandAMMRWarningAlert"
               :type="evalAlertType"
-              :showIcon="false"
+              :showIcon="true"
               class="copy-max-width my-10"
             >
               <template v-slot:content>
@@ -100,8 +100,6 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class Exceptions extends Mixins(SaveOnLeave) {
-  private jaTemplateUrl = "";
-  private mrrTemplateUrl = "";
 
   private selectedException 
     = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
@@ -151,8 +149,6 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity as string;
     }
-    this.jaTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('ja');
-    this.mrrTemplateUrl = await AcquisitionPackage.getJamrrTemplateSysID('mrr');
 
   }
 

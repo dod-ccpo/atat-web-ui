@@ -170,7 +170,10 @@ export default class AwardedTaskOrder extends Vue {
   public async mounted(): Promise<void> {
     await AcquisitionPackage.setDisableContinue(false);
     await this.setTaskOrderData();
-    await AcquisitionPackageSummary.setPackagesWaitingForTaskOrder();
+
+    // Set packages with status WAITING_FOR_TASK_ORDER in the Acq Pkg store
+    // for use in route resolver when continuing from this page
+    await AcquisitionPackageSummary.setPackagesWaitingForTaskOrderCount();
   }
 
 }
