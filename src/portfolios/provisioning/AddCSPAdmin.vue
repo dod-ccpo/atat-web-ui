@@ -302,14 +302,14 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   ];
 
   public selectedImpactLevels: string[] = [];
-  public impactLevelOptions: Checkbox[] = [
-  ];
+  public impactLevelOptions: Checkbox[] = [];
+  public hasImpactLevels = PortfolioStore.CSPHasImpactLevels;
 
   public tableData: Record<string, string>[] = [];
   public showUnclassifiedILs = false;
   public get unclassifiedTooltip():string{
     let txt = ""
-    if(this.csp !== 'Azure'){
+    if(!this.hasImpactLevels){
       txt = `<span class="font-weight-500">Unclassified</span> cloud console.`
     }else{
       txt+=`<span class="font-weight-500">Unclassified</span>`
@@ -335,7 +335,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public async setShowMissingAdminAlert(): Promise<void> {
     const missingUnclass = (this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES")) === -1;
     const missingScrt = (this.admins.findIndex(a => a.hasScrtAccess === "YES")) === -1;
-    const needsILs = this.csp === 'Azure'
+    const needsILs = this.hasImpactLevels;
     const missingILs = [...this.impactLevelCompareArray]
     if(this.admins.length > 0){
       if(needsILs){
@@ -353,7 +353,9 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       && (missingUnclass || missingScrt || needsILs && missingILs.length > 0)
     ) {
       if(needsILs){
-        const unclassifiedIL = missingILs.map(il => `Unclassified/${il}`)
+        const unclassifiedIL = missingILs.map(
+          il => `Unclassified/${il.split('_')[1].toUpperCase()}`
+        );
         if(missingScrt) unclassifiedIL.push("Secret")
         const newStr = unclassifiedIL.join(", ")
         this.missingEnv = newStr.replace(/,(?=[^,]+$)/, ' and');
@@ -509,7 +511,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       const il = value.split('_')[1]
       checkboxItem.id = il.toUpperCase()
       checkboxItem.label = il.toUpperCase()
-      checkboxItem.value = il.toUpperCase()
+      checkboxItem.value = value
       this.impactLevelCompareArray.push(checkboxItem.value)
       this.impactLevelOptions.push(checkboxItem)
     })
@@ -540,11 +542,11 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       const classificationLevels = []
       let count = 1
       if (admin.hasUnclassifiedAccess === "YES"){
-        if(this.csp === 'Azure' && admin.impactLevels){
+        if(this.hasImpactLevels && admin.impactLevels){
           count = admin.impactLevels.length - 1
-          admin.impactLevels.forEach(il=>{
-            classificationLevels.push(this.unclStr + '/'+il);
-          })
+          admin.impactLevels.forEach(il => {
+            classificationLevels.push(this.unclStr + '/'+il.split("_")[1].toUpperCase());
+          })0
         }else{
           classificationLevels.push(this.unclStr);
         }
@@ -554,7 +556,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       const emails = [];
       const lineBreaks = count <= 0 ?"":"\n".repeat(count)
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
-        if(this.csp ==='Azure'){
+        if(this.hasImpactLevels){
           emails.push(admin.unclassifiedEmail);
           if(count){
             for(let i = 0; i < count;i++){
@@ -600,16 +602,14 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
           this.hasUnclassifiedAccess = "NO";
         }
       }
-      this.impactLevels = storeData.selectedILs ||[]
-      if(storeData.selectedILs && storeData.selectedILs.length > 1){
+      this.impactLevels = storeData.selectedILs || [];
+      if (storeData.selectedILs && storeData.selectedILs.length > 1) {
         this.showUnclassifiedILs = true
         this.createILCheckbox(storeData.selectedILs)
-      }else if(storeData.selectedILs && storeData.selectedILs.length === 1){
-        const il = storeData.selectedILs[0].split('_')[1].toUpperCase()
-        this.selectedImpactLevels.push(il)
+      } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {
+        this.selectedImpactLevels.push(storeData.selectedILs[0]);
       }
-      this.csp = storeData.csp||""
-      // if(this.csp === )
+      this.csp = storeData.csp || "";
 
       this.buildTableData();
     } 

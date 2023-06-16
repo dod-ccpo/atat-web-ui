@@ -235,7 +235,7 @@ export class ClassificationRequirementsStore extends VuexModule {
           selectedClassLevel.user_growth_estimate_percentage
               = userGrowth.split(",").filter(nonEmptyVal => nonEmptyVal);
           if (["TS", "S"].includes(selectedClassLevel.classification)){
-            let classInfoTypes = 
+            const classInfoTypes =
               selectedClassLevel.classified_information_types?.split(",") as string[]
             this.securityRequirements.push(
               {
@@ -429,26 +429,24 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeCdsSolution(): Promise<void> {
-
     const cdsIGCESysId = await this.getCDSInIGCEEstimateTable(this.cdsSolution?.sys_id as string)
     if(cdsIGCESysId != ""){
       await this.deleteCDSInIGCEEstimateTable(cdsIGCESysId)
-
-      const cdsSolution: CrossDomainSolution = {
-        crossDomainSolutionRequired: "NO",
-        entireDuration: "",
-        anticipatedNeedUsage: "",
-        solutionType: [],
-        projectedFileStream: "",
-        selectedPeriods: [""]
-
-      }
-      await this.setCdsSolution(cdsSolution)
       const updateIGCE: IgceEstimateDTO[] = IGCEStore.igceEstimateList.filter( 
         estimate => (estimate.title as string).indexOf("CDS") === -1
       )
       await IGCEStore.setIgceEstimate(updateIGCE)
     }
+    const cdsSolution: CrossDomainSolution = {
+      crossDomainSolutionRequired: "NO",
+      entireDuration: "",
+      anticipatedNeedUsage: "",
+      solutionType: [],
+      projectedFileStream: "",
+      selectedPeriods: []
+
+    }
+    await this.setCdsSolution(cdsSolution)
   }
 
   @Action({rawError: true})
