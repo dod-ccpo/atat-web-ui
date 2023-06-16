@@ -140,6 +140,7 @@
           width="632"
           :OKDisabled="ModalOKDisabled"
           @ok="AddCSPAdmin"
+          @cancelClicked="resetAdmin"
           :modalSlideoutComponent="modalSlideoutComponent"
           modalSlideoutTitle="Learn more about CSP administrators"
           :modalDrawerIsOpen.sync="modalDrawerIsOpen"
@@ -368,6 +369,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public async setShowMissingAdminAlert(): Promise<void> {
     const missingUnclass = (this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES")) === -1;
     const missingScrt = (this.admins.findIndex(a => a.hasScrtAccess === "YES")) === -1;
+    const missingTS = (this.admins.findIndex(a => a.hasTSAccess === "YES")) === -1;
     const needsILs = this.hasImpactLevels;
     const missingILs = [...this.impactLevelCompareArray]
     if(this.admins.length > 0){
@@ -383,20 +385,23 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
     if (this.classificationLevels.length > 1
       && this.admins.length > 0
-      && (missingUnclass || missingScrt || needsILs && missingILs.length > 0)
+      && (missingUnclass || missingScrt || missingTS || needsILs && missingILs.length > 0)
     ) {
-      if(needsILs){
-        const unclassifiedIL = missingILs.map(
+      const missingEnvs = [];
+      if (needsILs && this.impactLevels.length > 1) {
+        const missingEnvs = missingILs.map(
           il => `Unclassified/${il.split('_')[1].toUpperCase()}`
         );
-        if(missingScrt) unclassifiedIL.push("Secret")
-        const newStr = unclassifiedIL.join(", ")
-        this.missingEnv = newStr.replace(/,(?=[^,]+$)/, ' and');
-        this.showMissingAdminAlert = true;
-      }else{
-        this.missingEnv = missingUnclass ? "unclassified" : "secret";
-        this.showMissingAdminAlert = true;
+      } else if (missingUnclass) {
+        if (missingUnclass) missingEnvs.push("Unclassified");
       }
+
+      if (missingScrt) missingEnvs.push("Secret");
+      if (missingTS) missingEnvs.push("Top Secret");
+      const str = missingEnvs.join(", ");
+      this.missingEnv = str.replace(/,(?=[^,]+$)/, ' and');
+
+      this.showMissingAdminAlert = true;
     } else {
       this.showMissingAdminAlert = false;
     }
@@ -449,7 +454,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       scrtEmailValid = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i
         .test(this.scrtEmail);
     }
-
     let tsEmailValid = true;
     if (this.selectedClassificationLevels.includes(this.tsStr)) {
       // same as unclass - needs to end in .gov or .mil
@@ -458,7 +462,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     }
 
     let ilsOK = true;
-    if (this.impactLevels.length > 0) {
+    if (this.impactLevels.length > 1) {
       const unclassChecked = this.selectedClassificationLevels.includes("Unclassified");
       ilsOK = !unclassChecked || unclassChecked && this.selectedImpactLevels.length > 0;
     }
@@ -518,11 +522,17 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       }
     }
 
-    this.resetAdminData();
+    this.resetAdmin();
     this.buildTableData();
+  }
+
+  public resetAdmin(): void {
+    this.resetAccess();
+    this.resetAdminData();
     this.selectedImpactLevels = []
     this.isEdit = false;
     this.editAdminIndex = -1;
+    this.showTSEmailWarning = false;
   }
 
   public async setDisableContinue(): Promise<void> {
@@ -544,13 +554,20 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.unclassifiedEmail = admin.unclassifiedEmail as string;
       this.hasScrtAccess = admin.hasScrtAccess as string;
       this.scrtEmail = admin.scrtEmail as string;
+      this.hasTSAccess = admin.hasTSAccess as string;
+      this.tsEmail = admin.tsEmail as string;
       this.selectedImpactLevels = admin.impactLevels||[];
 
       if (this.hasUnclassifiedAccess === "YES")
         this.selectedClassificationLevels.push(this.unclStr);
       if (this.hasScrtAccess === "YES")
         this.selectedClassificationLevels.push(this.scrtStr);
-
+      if (this.hasTSAccess === "YES") {
+        this.selectedClassificationLevels.push(this.tsStr);
+        this.checkTSEmail(this.tsEmail);
+      } else {
+        this.showTSEmailWarning = false;
+      }
       this.openAddCSPModal();
     }
   }
@@ -569,7 +586,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public createClassificationCheckboxes(): void {
     this.classificationLevels.forEach(cl => {     
       const id = cl.replace(" ", "_");
-      debugger;
       this.classificationLevelOptions.push({ id, label: cl, value: cl });
     })
   }
@@ -606,9 +622,9 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.admins.forEach((admin, index) => {
       // build classification level cell data
       const classificationLevels = []
-      let count = 1
+      let count = 0
       if (admin.hasUnclassifiedAccess === "YES"){
-        if(this.hasImpactLevels && admin.impactLevels){
+        if(this.hasImpactLevels && admin.impactLevels && this.impactLevels.length > 1) {
           count = admin.impactLevels.length - 1
           admin.impactLevels.forEach(il => {
             classificationLevels.push(this.unclStr + '/'+il.split("_")[1].toUpperCase());
@@ -623,7 +639,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
       // build email cell data
       const emails = [];
-      const lineBreaks = count <= 0 ?"":"\n".repeat(count)
+      const lineBreaks = count === 0 ? "" : "\n".repeat(count)
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
         if(this.hasImpactLevels){
           emails.push(admin.unclassifiedEmail);

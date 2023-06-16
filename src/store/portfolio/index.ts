@@ -430,10 +430,19 @@ export class PortfolioDataStore extends VuexModule {
     return this.portfolioSummaryQueryParams;
   }
 
+  @Action({rawError: true})
+  public async initProvisioningFromResponse(data: PortfolioProvisioning): Promise<void> {
+    await this.doInitProvisioningFromResponse(data);
+    await this.setCSPProvisioningData();
+  }
+  @Mutation
+  public async doInitProvisioningFromResponse(data: PortfolioProvisioning): Promise<void> {
+    this.portfolioProvisioningObj = data;
+  }
+  
   @Action({rawError: true}) 
   public async setPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
     await this.doSetPortfolioProvisioning(data);
-    await this.setCSPProvisioningData();
   }
 
   @Mutation
