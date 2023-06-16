@@ -284,22 +284,23 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public modalDrawerIsOpen = false;
 
   public adminDoDId = "";
-  public hasUnclassifiedAccess = ""; // YES/NO
+  public hasUnclassifiedAccess = "NO"; // YES/NO
   public unclassifiedEmail = "";
-  public hasScrtAccess = ""; // YES/NO
+  public hasScrtAccess = "NO"; // YES/NO
   public scrtEmail = "";
+  public hasTSAccess = "NO"; // YES/NO
+  public tsEmail = "";
+
   public impactLevels:string[] = [];
   public impactLevelCompareArray:string[] = [];
 
   public scrtStr = ClassificationLevels.SCRT;
   public unclStr = ClassificationLevels.UNCL;
+  public tsStr = ClassificationLevels.TSCRT;
   public missingEnv = "";
 
   public selectedClassificationLevels: string[] = [];
-  public classificationLevelOptions: Checkbox[] = [
-    { id: this.unclStr, label: this.unclStr, value: this.unclStr },
-    { id: this.scrtStr, label: this.scrtStr, value: this.scrtStr }
-  ];
+  public classificationLevelOptions: Checkbox[] = [];
 
   public selectedImpactLevels: string[] = [];
   public impactLevelOptions: Checkbox[] = [];
@@ -501,7 +502,23 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     }
   }
 
-  public createILCheckbox(impactLevels:string[]):void{
+  public createClassificationCheckboxes(): void {
+    this.classificationLevels.forEach(level => {
+      switch (level) {
+      case "Unclassified":
+        this.classificationLevelOptions.push(
+          { id: this.unclStr, label: this.unclStr, value: this.unclStr }
+        );
+        break;
+      case "Secret":
+        this.classificationLevelOptions.push(
+          { id: this.unclStr, label: this.unclStr, value: this.unclStr }
+        );
+      }
+    })
+  }
+
+  public createILCheckbox(impactLevels:string[]): void {
     impactLevels.forEach(value => {
       const checkboxItem = {
         id: "",
@@ -592,16 +609,25 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.savedData = _.cloneDeep(this.admins);
       this.cspLong = storeData.cspLong as string;
       this.classificationLevels = storeData.classificationLevels || [];
+      // if only one classification level available on the task order,
+      // automatically set user to only have access to that classification level
       if (this.classificationLevels.length === 1) {
         this.selectedClassificationLevels.push(this.classificationLevels[0])
-        if (this.classificationLevels[0] === this.unclStr) {
+        switch(this.classificationLevels[0]) {
+        case this.unclStr:
           this.hasUnclassifiedAccess = "YES";
-          this.hasScrtAccess = "NO";
-        } else if (this.classificationLevels[0] === this.scrtStr) {
-          this.hasScrtAccess = "YES";
-          this.hasUnclassifiedAccess = "NO";
+          break;
+        case this.scrtStr: 
+          this.hasScrtAccess = "YES"
+          break;
+        case this.tsStr:
+          this.hasTSAccess = "YES"
         }
+      } else {
+        // more than one classification level - create checkboxes
+        this.createClassificationCheckboxes();
       }
+
       this.impactLevels = storeData.selectedILs || [];
       if (storeData.selectedILs && storeData.selectedILs.length > 1) {
         this.showUnclassifiedILs = true
@@ -612,7 +638,9 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.csp = storeData.csp || "";
 
       this.buildTableData();
+
     } 
+    
     await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
   }
 
