@@ -217,68 +217,80 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   public async startProvisioning(): Promise<void> {
-    let portfolioName=""
-    let portfolioAgency = ""
-    if (this.selectedAcquisitionPackageSysId) {
-      const packageId = this.selectedAcquisitionPackageSysId;
-      const acquisitionPackage = convertColumnReferencesToValues(
-        await api.acquisitionPackageTable.retrieve(packageId)
-      );
-      if(acquisitionPackage.project_overview){
-        const overviewId = acquisitionPackage.project_overview as string
-        const projectOverview = await api.projectOverviewTable.retrieve(
-          overviewId
+    try {
+      let portfolioName=""
+      let portfolioAgency = ""
+      if (this.selectedAcquisitionPackageSysId) {
+        const packageId = this.selectedAcquisitionPackageSysId;
+        const acquisitionPackage = convertColumnReferencesToValues(
+          await api.acquisitionPackageTable.retrieve(packageId)
         );
-        if(projectOverview){
-          portfolioName = projectOverview.title
+        if(acquisitionPackage.project_overview){
+          const overviewId = acquisitionPackage.project_overview as string
+          const projectOverview = await api.projectOverviewTable.retrieve(
+            overviewId
+          );
+          if(projectOverview){
+            portfolioName = projectOverview.title
+          }
+        }
+        if(acquisitionPackage.organization){
+          const organizationId = acquisitionPackage.organization as string
+          const organizationInfo = convertColumnReferencesToValues(await api.organizationTable
+            .retrieve(organizationId));
+          if(organizationInfo){
+            portfolioAgency = organizationInfo.agency || ""
+          }
         }
       }
-      if(acquisitionPackage.organization){
-        const organizationId = acquisitionPackage.organization as string
-        const organizationInfo = convertColumnReferencesToValues(await api.organizationTable
-          .retrieve(organizationId));
-        if(organizationInfo){
-          portfolioAgency = organizationInfo.agency || ""
+
+      const unclassCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "U");
+      const unclassName = unclassCSP?.name as string;
+      const scrtCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "S");
+      const scrtName = scrtCSP?.name as string;
+      const tsCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "TS");
+      const tsName = tsCSP?.name as string;
+
+      this.portfolioProvisioningObj.admins?.forEach(admin => {
+        if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
+          if (admin.impactLevels && admin.impactLevels.length) {
+            const dodId = admin.DoDId;
+            const email = admin.unclassifiedEmail;
+            admin.impactLevels.forEach(il => {
+              const adm: CSPAdmin = { dodId, email }
+              this.addEnvForProvisioning({ cspName: il, admin: adm });
+            });
+          } else {
+            const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.unclassifiedEmail};
+            this.addEnvForProvisioning({ cspName: unclassName, admin: adm });
+          }      
         }
+        if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
+          const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.scrtEmail};
+          this.addEnvForProvisioning({ cspName: scrtName, admin: adm });
+        }
+        if (admin.hasTSAccess && admin.tsEmail && admin.DoDId) {
+          const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.tsEmail};
+          this.addEnvForProvisioning({ cspName: tsName, admin: adm });
+        }
+      });
+
+      const provisioningPostObj = {
+        portfolioName: portfolioName || this.portfolioProvisioningObj.portfolioTitle,
+        portfolioAgency: portfolioAgency || this.portfolioProvisioningObj.serviceOrAgency,
+        environments: this.envsForProvisioning
       }
+      debugger;
+      // await api.edaApi.provisionPortfolio(
+      //   provisioningPostObj,
+      //   this.portfolioProvisioningObj.taskOrderNumber as string,
+      //   this.selectedAcquisitionPackageSysId
+      // );
+    } 
+    catch(error) {
+      // ATAT TODO - add graceful fail message to user in UI
+      throw new Error(`Error provisioning portfolio: ${error}`);
     }
-
-    const unclassCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "U");
-    const unclassName = unclassCSP?.name as string;
-    const scrtCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "S");
-    const scrtName = scrtCSP?.name as string;
-
-    this.portfolioProvisioningObj.admins?.forEach(admin => {
-      if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
-        if (admin.impactLevels && admin.impactLevels.length) {
-          const dodId = admin.DoDId;
-          const email = admin.unclassifiedEmail;
-          admin.impactLevels.forEach(il => {
-            const adm: CSPAdmin = { dodId, email }
-            this.addEnvForProvisioning({ cspName: il, admin: adm });
-          });
-        } else {
-          const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.unclassifiedEmail};
-          this.addEnvForProvisioning({ cspName: unclassName, admin: adm });
-        }      
-      }
-      if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
-        const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.scrtEmail};
-        this.addEnvForProvisioning({ cspName: scrtName, admin: adm });
-      }
-    });
-
-    const provisioningPostObj = {
-      portfolioName: portfolioName || this.portfolioProvisioningObj.portfolioTitle,
-      portfolioAgency: portfolioAgency || this.portfolioProvisioningObj.serviceOrAgency,
-      environments: this.envsForProvisioning
-    }
-
-    await api.edaApi.provisionPortfolio(
-      provisioningPostObj,
-      this.portfolioProvisioningObj.taskOrderNumber as string,
-      this.selectedAcquisitionPackageSysId
-    );
   }
 
   /**

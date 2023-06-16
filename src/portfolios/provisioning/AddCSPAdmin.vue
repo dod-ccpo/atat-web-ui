@@ -198,7 +198,7 @@
 
               <ATATTextField
                 id="UnclassifiedEmail"
-                v-if="selectedClassificationLevels.includes('Unclassified')"
+                v-if="unclassifiedSelected"
                 :value.sync="unclassifiedEmail"
                 label="Unclassified email address"
                 :tooltipText="unclassifiedTooltip"
@@ -226,6 +226,23 @@
                   $validators.isEmail('Please use a .smil or .sgov email address', true)
                 ]"
               />
+
+              <ATATTextField
+                id="TSEmail"
+                v-if="tsSelected"
+                :value.sync="tsEmail"
+                label="JWICS email address"
+                :tooltipText="tsToolTip"
+                class="_input-max-width mt-10"
+                helpText="We recommend using an .ic.gov email address."
+                :rules="[
+                  $validators.required(
+                    'Please enter your administrator’s email address.'
+                  ),
+                  $validators.isEmail('Please use a .mil or .gov email address', true)
+                ]"
+              />
+
 
             </form>
           </template>
@@ -326,10 +343,15 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       txt
   }
 
-  public get secretToolTip():string {
+  public get secretToolTip(): string {
     return  `Use a Secure Internet Protocol Router Network (SIPRNet)
      email address. This is where the CSP will send instructions for
       accessing the <span class="font-weight-500">Secret</span> cloud console.`
+  }
+  public get tsToolTip(): string {
+    return `Use a Joint Worldwide Intelligence Communications System (JWICS) 
+      email address. This is where the CSP will send instructions for accessing 
+      the <span class="font-weight-500">Top Secret</span> cloud console.`
   }
 
   public showMissingAdminAlert = false;
@@ -370,8 +392,14 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     }
   }
 
+  public get unclassifiedSelected(): boolean {  
+    return this.selectedClassificationLevels.includes(this.unclStr);    
+  }
   public get scrtSelected(): boolean {
     return this.selectedClassificationLevels.includes(this.scrtStr);
+  }
+  public get tsSelected(): boolean {
+    return this.selectedClassificationLevels.includes(this.tsStr);
   }
 
   public DoDIdRules = [
@@ -503,44 +531,26 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   }
 
   public createClassificationCheckboxes(): void {
-    this.classificationLevels.forEach(level => {
-      switch (level) {
-      case "Unclassified":
-        this.classificationLevelOptions.push(
-          { id: this.unclStr, label: this.unclStr, value: this.unclStr }
-        );
-        break;
-      case "Secret":
-        this.classificationLevelOptions.push(
-          { id: this.unclStr, label: this.unclStr, value: this.unclStr }
-        );
-      }
+    this.classificationLevels.forEach(cl => {     
+      const id = cl.replace(" ", "_");
+      this.classificationLevelOptions.push({ id, label: cl, value: cl });
     })
   }
 
-  public createILCheckbox(impactLevels:string[]): void {
+  public createILCheckboxes(impactLevels:string[]): void {
     impactLevels.forEach(value => {
-      const checkboxItem = {
-        id: "",
-        label: "",
-        value: ""
-      }
-      const il = value.split('_')[1]
-      checkboxItem.id = il.toUpperCase()
-      checkboxItem.label = il.toUpperCase()
-      checkboxItem.value = value
-      this.impactLevelCompareArray.push(checkboxItem.value)
-      this.impactLevelOptions.push(checkboxItem)
+      const il = value.split('_')[1].toUpperCase();
+      this.impactLevelCompareArray.push(value)
+      this.impactLevelOptions.push({id: il, label: il, value});
     })
   }
 
   public resetAdminData(): void {
     this.adminDoDId = "";
-    this.hasUnclassifiedAccess = ""; // YES/NO
     this.unclassifiedEmail = "";
-    this.hasScrtAccess = ""; // YES/NO
     this.scrtEmail = "";
     if (this.classificationLevels.length > 1) this.selectedClassificationLevels = [];
+    this.resetAccess();
   }
 
   public get tableHeaders(): Record<string, string>[] {
@@ -601,6 +611,25 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.setDisableContinue();
   }
 
+  public resetAccess(): void {
+    this.hasUnclassifiedAccess = "NO";
+    this.hasScrtAccess = "NO";
+    this.hasTSAccess = "NO";
+
+    if (this.classificationLevels.length === 1) {
+      switch(this.classificationLevels[0]) {
+      case this.unclStr:
+        this.hasUnclassifiedAccess = "YES";
+        break;
+      case this.scrtStr: 
+        this.hasScrtAccess = "YES";
+        break;
+      case this.tsStr:
+        this.hasTSAccess = "YES";
+      }
+    }
+  }
+
   public async loadOnEnter(): Promise<void> {
     const storeData = PortfolioStore.portfolioProvisioningObj;
 
@@ -613,16 +642,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       // automatically set user to only have access to that classification level
       if (this.classificationLevels.length === 1) {
         this.selectedClassificationLevels.push(this.classificationLevels[0])
-        switch(this.classificationLevels[0]) {
-        case this.unclStr:
-          this.hasUnclassifiedAccess = "YES";
-          break;
-        case this.scrtStr: 
-          this.hasScrtAccess = "YES"
-          break;
-        case this.tsStr:
-          this.hasTSAccess = "YES"
-        }
+        this.resetAccess();
       } else {
         // more than one classification level - create checkboxes
         this.createClassificationCheckboxes();
@@ -631,7 +651,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.impactLevels = storeData.selectedILs || [];
       if (storeData.selectedILs && storeData.selectedILs.length > 1) {
         this.showUnclassifiedILs = true
-        this.createILCheckbox(storeData.selectedILs)
+        this.createILCheckboxes(storeData.selectedILs)
       } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {
         this.selectedImpactLevels.push(storeData.selectedILs[0]);
       }
