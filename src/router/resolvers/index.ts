@@ -1598,7 +1598,7 @@ export const SummaryStepThreeRouteResolver = (current:string): string => {
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
-  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrder;
+  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
   const selectedCSP = PortfolioStore.portfolioProvisioningObj.csp
   const showPackageSelection = PortfolioStore.showTOPackageSelection;
@@ -1678,8 +1678,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SecurityRequirementsResolver,
   CrossDomainResolver,
   AnticipatedUserAndDataNeedsResolver,
-  ContractingInfoResolver,
   GeneratedFromPackageRouteResolver,
+  ContractingInfoResolver,
   SummaryStepThreeRouteResolver,
   PortfolioDetailsRouteResolver
 };
