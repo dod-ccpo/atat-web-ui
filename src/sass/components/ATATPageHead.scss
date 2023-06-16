@@ -1,3 +1,37 @@
+._header-tab-styles {
+  .v-tabs-slider-wrapper{
+    height: 4px !important;
+    padding-left:4px;
+    padding-right:4px;
+    .v-tabs-slider{
+      background-color: $primary !important;
+    }
+  }
+  .v-tab{
+    color: $base-dark !important;
+    border: 1px solid transparent !important;
+    text-transform: none !important;
+    letter-spacing: .025rem !important;
+    min-width: unset;
+    &:before{
+      background-color: transparent !important;
+    }
+    &:focus-visible {
+      background-color: transparent !important;
+      border: 1px solid $primary !important;
+      border-radius: 4px 4px 0 0;
+    }
+    &:hover{
+      &:before{
+        background-color: transparent !important;
+      }
+    }
+    &.v-tab--active{
+      color: $primary !important;
+    }
+  }  
+}
+
 header._atat-page-header {
   height: 6rem !important;
   background-color: $white !important;
@@ -15,37 +49,7 @@ header._atat-page-header {
 
   &._portfolio-summary, &._portfolios, &._acquisitions {
     ._header-tab {
-      .v-tabs-slider-wrapper{
-        height: 4px !important;
-        padding-left:4px;
-        padding-right:4px;
-        .v-tabs-slider{
-          background-color: $primary !important;
-        }
-      }
-      .v-tab{
-        color: $base-dark !important;
-        border: 1px solid transparent !important;
-        text-transform: none !important;
-        letter-spacing: .025rem !important;
-        min-width: unset;
-        &:before{
-          background-color: transparent !important;
-        }
-        &:focus-visible {
-          background-color: transparent !important;
-          border: 1px solid $primary !important;
-          border-radius: 4px 4px 0 0;
-        }
-        &:hover{
-          &:before{
-            background-color: transparent !important;
-          }
-        }
-        &.v-tab--active{
-          color: $primary !important;
-        }
-      }
+      @extend ._header-tab-styles;
     }
   }
 
@@ -174,4 +178,43 @@ header._atat-page-header {
     }
   }
 
+}
+
+._page-header {
+  margin-left: -56px;
+  padding-left: 56px;
+  margin-right: -84px;
+  padding-right: 84px;
+  margin-top: -40px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid $base-lighter;
+  background-color: $base-lightest;
+  .v-tabs-bar {
+    background-color: transparent !important;
+  }
+
+}
+
+._secondary-page-tabs {
+  top: 140px;
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+
+  @extend ._header-tab-styles;
+  .v-tabs-bar {
+    background-color: $base-lightest !important;
+    border-bottom: 1px solid $base-lighter;
+    padding-left: 56px;
+    height: 45px;
+    .v-tabs-slider-wrapper {
+      padding: 0 !important;
+    }
+    .v-tab {
+      min-width: 0;
+      padding: 0 !important;
+      margin-right: 24px;
+      font-size: 1.4rem;
+    }
+  }
 }

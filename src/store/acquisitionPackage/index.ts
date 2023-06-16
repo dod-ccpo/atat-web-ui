@@ -109,6 +109,8 @@ export const Statuses: Record<string, Record<string, string>> = {
   OptionExercised: { label: "Option Exercised", value: "OPTION_EXERCISED" }, // CLIN
   OptionPending: { label: "Option Pending", value: "OPTION_PENDING" }, // CLIN  
   Processing: { label: "Processing", value: "PROCESSING" }, // PORT
+  Provisioned: { label: "Provisioned", value: "PROVISIONED" }, // ENV
+  ProvisioningIssue: { label: "Provisioning issue", value: "PROVISIONING_ISSUE" }, // PORT, ENV  
   TaskOrderAwarded: { label: "Task Order Awarded", value: "TASK_ORDER_AWARDED" }, // ACQ
   Upcoming: { label: "Upcoming", value: "UPCOMING" }, // TO
   WaitingForSignatures: { label: "Waiting For Signatures", value: "WAITING_FOR_SIGNATURES" }, // ACQ
@@ -462,7 +464,9 @@ export class AcquisitionPackageStore extends VuexModule {
     // can be used for single or multiple - send csv string for multiple
     const sysIds = contributorSysIds.split(",");
     sysIds.forEach(async sysId => {
-      const contributor = await UserStore.getUserRecord(sysId);        
+      const contributor = await UserStore.getUserRecord(
+        { searchStr: sysId, searchCol: "sys_id"}
+      );        
       if (contributor) {
         this.doAddPackageContributor(contributor);
       }
@@ -575,7 +579,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
-    const currentUser = await UserStore.getCurrentUser();
+    const currentUser = UserStore.getCurrentUserData;
     await this.doSetCurrentUser(currentUser);
 
     const isOwner = this.acquisitionPackage?.mission_owners && this.currentUser.sys_id
@@ -763,28 +767,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   public get getAcquisitionPackageData(): AcquisitionPackageDTO | null {
     return this.acquisitionPackage;
-  }
-
-  @Action
-  public async getJamrrTemplateSysID(type: string): Promise<string>{
-    let attachment: AttachmentDTO[] = [{
-      file_name: "",
-      table_sys_id: ""
-    }];
-    const name = (type === 'ja') 
-      ? "JWCC J&A Template_Template.docx" 
-      : "JWCC Market Research Report (Sole Source)_Template.docx";
-
-    const getAttachmentSysIDQuery: AxiosRequestConfig = {
-      params: {
-        sysparm_fields: "sys_id",
-        sysparm_query: "file_name=" + name + "^table_name=sys_ws_operation"
-      }
-    };
-    attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    return attachment.length 
-      ? this.getDomain + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || ""
-      : "";    
   }
 
   @Action
@@ -1439,6 +1421,10 @@ export class AcquisitionPackageStore extends VuexModule {
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
+
+      if (!this.currentUser) {
+        await this.setCurrentUser();
+      }  
       await ContactData.initialize();
       this.setPackagePercentLoaded(5);
       await OrganizationData.initialize();
@@ -1452,7 +1438,9 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(22);
       if (acquisitionPackage.sys_created_by) {
         const creator 
-          = await UserStore.getUserRecord(acquisitionPackage.sys_created_by);
+          = await UserStore.getUserRecord(
+            { searchStr: acquisitionPackage.sys_created_by, searchCol: "user_name" }
+          );
         this.doSetPackageCreator(creator);
         this.setPackagePercentLoaded(25);
       }
@@ -1460,7 +1448,9 @@ export class AcquisitionPackageStore extends VuexModule {
         // there should only be one mission owner, but the field in servicenow is a list,
         // to be on the safe side, split the csv string of sysIds, take the first
         const missionOwnerSysId = (acquisitionPackage.mission_owners.split(","))[0];
-        const missionOwner = await UserStore.getUserRecord(missionOwnerSysId);      
+        const missionOwner = await UserStore.getUserRecord(
+          { searchStr: missionOwnerSysId, searchCol: "sys_id" }
+        );      
         this.doSetPackageMissionOwner(missionOwner);  
         this.setPackagePercentLoaded(28);
       }
@@ -1732,7 +1722,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(96);
       await IGCE.loadTrainingEstimatesFromPackage(packageId);
       this.setPackagePercentLoaded(98);
-      await this.setCurrentUser();
+
       await DescriptionOfWork.loadTravel();
 
       if (this.packageContributors.length) {
@@ -1761,9 +1751,13 @@ export class AcquisitionPackageStore extends VuexModule {
     if (this.initialized) {
       return;
     }
+
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
     Steps.clearAltBackButtonText();
+    if (!this.currentUser) {
+      await this.setCurrentUser();
+    }
 
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
@@ -1779,10 +1773,12 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-    const loggedInUser = await UserStore.getCurrentUser();
+    const loggedInUser = await UserStore.getCurrentUserData;
 
     if (loggedInUser && loggedInUser.sys_id) {
-      const creator = await UserStore.getUserRecord(loggedInUser.sys_id);      
+      const creator = await UserStore.getUserRecord(
+        { searchStr: loggedInUser.sys_id, searchCol: "sys_id" }
+      );      
       this.doSetPackageCreator(creator);
       this.doSetPackageMissionOwner(creator);
     }
@@ -1830,14 +1826,12 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPackagePercentLoaded(90);
 
           this.setAcquisitionPackage(acquisitionPackage);
-          this.setPackagePercentLoaded(93);
+          this.setPackagePercentLoaded(95);
 
           saveAcquisitionPackage(acquisitionPackage);
           const packageDocumentsSigned = await api.packageDocumentsSignedTable
             .create({acquisition_package:acquisitionPackage.sys_id})
           this.setPackageDocumentsSigned(packageDocumentsSigned)
-          this.setPackagePercentLoaded(96);
-          await this.setCurrentUser();
           this.setPackagePercentLoaded(100);
 
           this.setInitialized(true);

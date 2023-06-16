@@ -1,9 +1,6 @@
 [
   {
-    "clin": {
-      "link": "",
-      "value": "31"
-    },
+    "clin": "31",
     "sys_id": "41",
     "task_order_number": "1000000008765",
     "is_actual": "true",
@@ -14,10 +11,7 @@
     "organization": "Test Org"
   },
   {
-    "clin": {
-      "link": "",
-      "value": "31"
-    },
+    "clin": "31",
     "sys_id": "42",
     "task_order_number": "1000000008765",
     "is_actual": "true",

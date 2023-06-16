@@ -1,62 +1,51 @@
 <template>
-  <v-card class="border1 border-base-lighter" elevation="0">
-    <div class="d-flex pa-8">
-      <div class="pr-6">
-        <ATATSVGIcon
-          id="CSPIcon"
-          class="d-flex align-center"
-          :name="providers[cloudServiceProvider.toLowerCase()].img.name"
-          :width="providers[cloudServiceProvider.toLowerCase()].img.width"
-          :height="providers[cloudServiceProvider.toLowerCase()].img.height"
-        />
-      </div>
+  <div class="d-flex justify-space-between align-center">
+    <div>
+      <h1 class="h2 font-weight-500">
+        {{ envClassificationLevel }} Environment
+      </h1>
+    </div>
+    <div
+      class="_faux-button d-flex align-center " 
+      :class="{'_faux-button--disabled': CSPButtonDisabled}"
+      :tabindex="CSPButtonDisabled ? -1 : 0" 
+      :role="CSPButtonDisabled ? 'display' : 'button'"
+      :aria-label="CSPButtonDisabled ? 'Visit CSP portal' : 'CSP info'"
+      id="CSPButton" 
+      @click="goToPortal(providers[cloudServiceProvider.toLowerCase()].url)"
+      @keydown.enter="goToPortal(providers[cloudServiceProvider.toLowerCase()].url)"
+      @keydown.space="goToPortal(providers[cloudServiceProvider.toLowerCase()].url)"
+    >
+      <ATATSVGIcon
+        id="CSPIcon"
+        class="d-flex align-center mr-2"
+        :name="providers[cloudServiceProvider.toLowerCase()].img.name"
+        :width="providers[cloudServiceProvider.toLowerCase()].img.width"
+        :height="providers[cloudServiceProvider.toLowerCase()].img.height"
+      />
       <div>
-        <div>
-          <div class="h3" id="CSPTitle">
-            Accessing your {{providers[cloudServiceProvider.toLowerCase()].title}}:
-          </div>
-          <div class="d-flex align-center">
-            <a id="CSPLink">
-              {{providers[cloudServiceProvider.toLowerCase()].link}}
-            </a>
-            <span class="pl-2 d-flex">
-            <ATATSVGIcon
-              id="LinkIcon"
-              width="15"
-              height="15"
-              name="launch"
-              color="primary"
-            />
+        <span class="font-weight-700 d-block" style="line-height: 1.33">
+          {{ providers[cloudServiceProvider.toLowerCase()].title }}
+        </span>
+        <span 
+          class="d-block font-size-12 font-weight-500 text-base-dark" 
+          style="line-height: 1.33"
+        >
+          <span v-if="CSPButtonDisabled">
+            Cloud Service Provider
           </span>
-          </div>
-
-        </div>
-        <hr class="my-4" />
-        <div>
-          <p
-            class="font-size-14 mb-0 text-base"
-            id="CSPDescription"
-          >
-            To login to your cloud resources, you must have
-            {{providers[cloudServiceProvider.toLowerCase()].accountName}} account.
-            As a portfolio manager, you can add administrators to grant full
-            access to your CSP portal. Administrators will be able to manage
-            all user access and permissions directly within
-            {{providers[cloudServiceProvider.toLowerCase()].withinName}}.
-            <a role="button" id="LearnMoreLink"
-               tabindex="0"
-               @click="openSlideoutPanel"
-               @keydown.enter="openSlideoutPanel"
-               @keydown.space="openSlideoutPanel"
-            >
-              Learn more about accessing your CSP portal
-            </a>
-          </p>
-        </div>
+          <span v-else class="text-primary">
+            Login to your <span class="_external-link _external-link--small">portal</span>
+          </span>
+        </span>
       </div>
+
 
     </div>
-  </v-card>
+
+  </div>
+
+
 </template>
 
 <script lang="ts">
@@ -69,6 +58,7 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import AccessingCSPLearnMore from
   "@/portfolios/portfolio/components/shared/AccessingCSPLearnMore.vue";
 import { cspConsoleURLs } from "@/store/portfolio";
+import { Statuses } from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -79,53 +69,59 @@ import { cspConsoleURLs } from "@/store/portfolio";
 
 export default class CSPCard extends Vue {
   @Prop() private cloudServiceProvider!: string;
+  @Prop() private envClassificationLevel!: string;
+  @Prop() private envStatus!: string;
+
+  public get CSPButtonDisabled(): boolean {
+    return this.envClassificationLevel === "Secret" 
+      || this.envStatus !== Statuses.Provisioned.value;
+  }
+
+  public goToPortal(url: string): void {
+    if (!this.CSPButtonDisabled) {
+      window.open(url, "_blank");
+    }
+  }
 
   public providers = {
     "azure":{
-      title: "Azure Portal",
-      link: cspConsoleURLs.azure,
-      accountName:"an Azure",
-      withinName:"Azure",
+      title: "Microsoft Azure",
+      url: cspConsoleURLs.azure,
       img: {
         name:"azure",
-        width:"80",
-        height:"62",
+        width:"40",
+        height:"31",
       }
     },
     "aws":{
-      title: "AWS Management Console",
-      link: cspConsoleURLs.aws,
-      accountName:"an AWS",
-      withinName:"AWS",
+      title: "Amazon Web Services",
+      url: cspConsoleURLs.aws,
       img: {
         name:"aws",
-        width:"80",
-        height:"48"
+        width:"40",
+        height:"24"
       }
     },
-    "google":{
-      title: "Google Cloud Console",
-      link: cspConsoleURLs.google,
-      accountName:"a Google Cloud",
-      withinName:"GCP",
+    "gcp":{
+      title: "Google Cloud",
+      url: cspConsoleURLs.google,
       img: {
         name:"gcp",
-        width:"80",
-        height:"71"
+        width:"40",
+        height:"35"
       }
     },
     "oracle":{
-      title: "Oracle Cloud Console",
-      link: cspConsoleURLs.oracle,
-      accountName:"an OCI",
-      withinName:"Oracle",
+      title: "Oracle Cloud",
+      url: cspConsoleURLs.oracle,
       img: {
         name:"oracle",
-        width:"80",
-        height:"50"
+        width:"40",
+        height:"25"
       }
     },
   }
+
   public async openSlideoutPanel(e: Event): Promise<void> {
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;

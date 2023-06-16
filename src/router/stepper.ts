@@ -151,7 +151,6 @@ import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 
 // step 10 - Generate Package Documents
 import GeneratePackageDocuments from "../steps/11-GeneratePackageDocuments/Index.vue";
-import UploadJAMRRDocuments from "@/steps/11-GeneratePackageDocuments/UploadJAMRRDocuments.vue";
 import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToGeneratePackage.vue";
 import GeneratingPackageDocuments
   from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
@@ -326,7 +325,6 @@ export const routeNames = {
   EnvironmentSummary:"Environment_Summary",
   SecurityRequirements:"Security_Requirements",
   CrossDomain:"Cross_Domain",
-  UploadJAMRRDocuments:"JA_MRR_Documents",
   ReadyToGeneratePackage:"Ready_To_Generate_Package",
   GeneratePackageDocuments: "Generate_Package_Documents",
   AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs",
@@ -663,7 +661,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
         routeResolver: CertificationPOCsRouteResolver,
-
       },      
       // END MRR
       // ===================================

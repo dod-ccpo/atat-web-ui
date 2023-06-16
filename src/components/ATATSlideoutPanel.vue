@@ -23,6 +23,8 @@
         text
         small
         @click.stop="closeSlideoutPanel"
+        @keydown.enter="closeSlideoutPanel"
+        @keydown.space="closeSlideoutPanel"
         ref="panelCloserRef"
         id="PanelCloser"
         :ripple="false"
@@ -32,7 +34,7 @@
       </v-btn>
     </div>
 
-    <div id="PanelWrap" class="_panel-content-wrap">
+    <div id="PanelWrap" class="_panel-content-wrap _portfolio">
       <slot v-if="currentPanelDefined"></slot>
     </div>
 
