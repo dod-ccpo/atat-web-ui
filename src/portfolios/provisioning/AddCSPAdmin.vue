@@ -458,7 +458,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     if (this.selectedClassificationLevels.includes(this.tsStr)) {
       // same as unclass - needs to end in .gov or .mil
       tsEmailValid = this.isValidGovOrMilEmail(this.tsEmail);
-      // but also if does not end with ".ic.gov" show a warning - use a watcher
+      // but also if does not end with ".ic.gov" show a warning - set in this.checkTSEmail()
     }
 
     let ilsOK = true;
