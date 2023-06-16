@@ -329,7 +329,9 @@ export default class ATATCheckboxGroup extends Vue {
     Vue.nextTick(() => {
       this.prevSelected = [...this._selected];
     });
-    this.setErrorMessage();
+    if (newVal.length || oldVal.length) {
+      this.setErrorMessage();
+    }
   }
 
   private getIdText(string: string) {

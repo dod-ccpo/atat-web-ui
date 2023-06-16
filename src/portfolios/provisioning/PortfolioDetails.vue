@@ -54,9 +54,8 @@
             name="checkbox-card"
             :card="true"
             cardWidth="800"
-            :rules="[
-                $validators.required('Select at least one impact level')
-              ]"
+            :rules="checkboxRules"
+            :validateOnLoad="false"
           />
         </v-col>
       </v-row>
@@ -76,6 +75,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -91,41 +91,42 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   public selectedCSPProvider = "";
   public checkboxLabel = ""
   public checkboxHelpText = ""
-  public containsUnclassified = false
-
 
   private agencyData: SelectData[] = [];
   private selectedILs: string[] = [];
-  private checkboxItems: Checkbox[] = [
-    {
-      id: "IL2",
-      label: "IL2 - Azure Commercial ",
-      value: "azure_il2_dev",
-      description: "Microsoft Azure Commercial cloud meant for use by DoD organizations with" +
-        " IL2 workloads",
-    },
-    {
-      id: "IL4",
-      label: "IL4 - Azure Government ",
-      value: "azure_il4_dev",
-      description: "Microsoft Azure Government cloud meant for use by DoD organizations with" +
-        " IL4 workloads",
-    },
-    {
-      id: "IL5",
-      label: "IL5 - Azure Government ",
-      value: "azure_il5_dev",
-      description: "Microsoft Azure Government cloud meant for use by DoD organizations with" +
-        " IL5 workloads",
-    },
-  ];
+  
+  public CSPProvisioningData = PortfolioStore.CSPProvisioningData;
+
+  private checkboxItems: Checkbox[] = [];
+  private checkboxRulesOn = false;
+  public get checkboxRules(): unknown[] {
+    return this.checkboxRulesOn
+      ? [this.$validators.required('Select at least one impact level')]
+      : []
+  }
+
+  public async buildILCheckboxItems(): Promise<void> {
+    const cspData = PortfolioStore.CSPProvisioningData;
+    cspData.forEach(obj => {
+      if (obj.classification_level === "U" && obj.cloud_distinguisher) {
+        const checkboxItem: Checkbox = {
+          id: obj.cloud_distinguisher.name as string,
+          label: obj.cloud_distinguisher.name + " – " + obj.cloud_distinguisher.display_name,
+          value: obj.name,
+          description: obj.cloud_distinguisher.description,
+        }
+        this.checkboxItems.push(checkboxItem);
+      }
+    });
+    this.checkboxRulesOn = true;
+  }
 
   public get selectedPackage():string {
     return PortfolioStore.selectedAcquisitionPackageSysId
   }
 
   public get showCheckbox():boolean {
-    return this.selectedCSPProvider === 'Azure' && this.containsUnclassified
+    return PortfolioStore.doesCSPHaveImpactLevels;
   }
   public get currentData(): PortfolioProvisioning {
     return {
@@ -160,13 +161,12 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
         serviceOrAgency: this.serviceOrAgency.value,
         selectedILs: this.selectedILs,
       }
-      this.containsUnclassified = !!storeData.classificationLevels?.includes('Unclassified')
       this.selectedCSPProvider = storeData.csp || ""
       this.checkboxHelpText = this.selectedPackage? "":"Select all that apply"
       this.checkboxLabel = this.selectedPackage? "":"What impact level(s) do you need to" +
       " provision?"
 
-      this.selectedILs = storeData.selectedILs||[]
+      this.selectedILs = storeData.selectedILs || [];
     }
   }
 
@@ -176,6 +176,9 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
     }
     this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data); 
     await this.setTaskOrderData();
+    if (PortfolioStore.CSPHasImpactLevels) {
+      await this.buildILCheckboxItems();
+    }
   }
 
   public async mounted(): Promise<void> {
@@ -184,6 +187,7 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
 
   public async saveOnLeave(): Promise<boolean> {
     try {
+      this.selectedILs.sort(); // ensure correct order e.g., IL2, IL4, IL5
       await PortfolioStore.setPortfolioProvisioning(this.currentData);
     } catch (error) {
       console.error(error);
