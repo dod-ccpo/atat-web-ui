@@ -372,7 +372,7 @@ export class ValidationPlugin {
       )
 
       if (!isValidExtension){
-        return `'${fileName}' is not a valid format or has been corrupted. ` +
+        return `'${fileName}' is not a valid format or has been corrupted. <br />` +
                 `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
                 `.${validExtensions.slice(-1)} file.`
       }
