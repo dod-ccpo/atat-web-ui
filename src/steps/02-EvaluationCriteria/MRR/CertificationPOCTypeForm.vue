@@ -383,21 +383,6 @@ export default class CertificationPOCTypeForm extends Vue {
    */
   public async loadOnEnter(): Promise<void> {
     this.setPOCPropertyNames();
-    // this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
-    // this.pocCor = await AcquisitionPackage.getContact("COR");
-    // this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
-    //   await AcquisitionPackage.getContact("ACOR") : undefined;
-    // let fairOpportunity = AcquisitionPackage.fairOpportunity;
-    // if (fairOpportunity) {
-    //   fairOpportunity = convertColumnReferencesToValues(
-    //       _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
-    //   this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
-    //   if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
-    //     this.certificationPOCContactDTO =
-    //         await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
-    //   } else {
-    //     this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
-    //   }
     this.initializeCertificationPOCTypeOptions();
     await this.setContactFormData(this._newContactData);
     this.loaded = true;
