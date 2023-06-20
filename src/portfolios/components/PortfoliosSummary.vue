@@ -85,7 +85,7 @@
         :isHomeView="isHomeView"
       />
 
-      <div class="_table-pagination mt-5" v-show="portfolioCount > recordsPerPage">
+      <div class="_table-pagination mt-5" v-show="showPagination">
         <span class="mr-11 font-weight-400 font-size-14">
           Showing {{ startingNumber }}-{{ endingNumber }} of {{ portfolioCount }}
         </span>
@@ -201,6 +201,10 @@ export default class PortfoliosSummary extends Vue {
 
   public get hasFilters(): boolean {
     return this.filterChips.length > 0;
+  }
+
+  public get showPagination(): boolean {
+    return !this.isHomeView && (this.portfolioCount > this.recordsPerPage);
   }
 
   public async removeFilter(index: number): Promise<void> {
