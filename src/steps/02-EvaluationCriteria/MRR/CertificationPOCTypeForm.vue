@@ -65,17 +65,19 @@ import Vue from "vue";
 export default class CertificationPOCTypeForm extends Vue {
   @Prop({default: "Technical"}) private POCType!: "Technical" | "Requirements";
   @Prop({default: "1"}) private sequence!: string;
-  @PropSync("saveForm") private _saveForm!: boolean;
+  @Prop() private pocPrimary!: ContactDTO;
+  @Prop() private pocCor!: ContactDTO;
+  @Prop() private pocAcor!: ContactDTO;
+  @PropSync("newContactData") private _newContactData!: ContactDTO;
+  @PropSync("selectedSysId") private _selectedSysId?: string;
+  @PropSync("selectedPocType") private _selectedPocType?: string;
 
 
   private POCTypePropName: "technical_poc_type" | "requirements_poc_type" = "technical_poc_type";
   private POCPropName: "technical_poc" | "requirements_poc" = "technical_poc";
   private certificationPOCSysId = "";
-  private certificationPOCContactDTO: ContactDTO = {} as ContactDTO;
   private certificationPOCTypeOptions: RadioButton[] = [];
-  private pocPrimary: ContactDTO = {} as ContactDTO;
-  private pocCor: ContactDTO = {} as ContactDTO;
-  private pocAcor: ContactDTO | undefined = undefined;
+
 
   private loaded = false;
   private sysId = "";
@@ -126,8 +128,14 @@ export default class CertificationPOCTypeForm extends Vue {
    * ATATRadioGroup
    */
   private get selectedOption(): RadioButton {
-    return this.certificationPOCTypeOptions.find(certOption =>
+    debugger
+    const selectedOption = this.certificationPOCTypeOptions.find(certOption =>
       certOption.value === this.certificationPOCSysId) as RadioButton
+    if(selectedOption){
+      this._selectedSysId = selectedOption.value
+      this._selectedPocType = selectedOption.optionType
+    }
+    return selectedOption
   }
 
   /**
@@ -206,7 +214,7 @@ export default class CertificationPOCTypeForm extends Vue {
   }
 
   private hasCurrentContactFormChanged(): boolean {
-    return hasChanges(this.currentContactFormData, this.certificationPOCContactDTO);
+    return hasChanges(this.currentContactFormData, this._newContactData);
   }
 
   /**
@@ -279,9 +287,8 @@ export default class CertificationPOCTypeForm extends Vue {
     this.certificationPOCTypeOptions.push({
       id: this.POCType + "NewPOC",
       label: "No, I need to enter my " + this.POCType + " POC’s contact information.",
-      value: (this.certificationPOCContactDTO.sys_id &&
-      this.certificationPOCContactDTO.sys_id.length > 0)
-        ? this.certificationPOCContactDTO.sys_id : "NEW",
+      value: (this._newContactData.sys_id)
+        ? this._newContactData.sys_id : "NEW",
       optionType: "NEW"
     })
   }
@@ -293,7 +300,7 @@ export default class CertificationPOCTypeForm extends Vue {
    */
   async setContactFormData(savedContactDTO: ContactDTO) {
     this.sysId = savedContactDTO.sys_id as string;
-    this.certificationPOCContactDTO.can_access_package = "true";
+    this._newContactData.can_access_package = "true";
     const branches = await ContactData.LoadMilitaryBranches();
     this.selectedSalutation = savedContactDTO.salutation;
     this.firstName = savedContactDTO.first_name;
@@ -338,7 +345,7 @@ export default class CertificationPOCTypeForm extends Vue {
             : { grade: "", name: "", sysId: "" };
     }
     this.phoneExt = savedContactDTO.phone_extension;
-    if (savedContactDTO.phone.length > 0) {
+    if (savedContactDTO.phone) {
       const parsedPhone = parsePhoneNumber(savedContactDTO.phone);
       const country = Countries.find(
         (country) =>
@@ -374,24 +381,23 @@ export default class CertificationPOCTypeForm extends Vue {
    */
   public async loadOnEnter(): Promise<void> {
     this.setPOCPropertyNames();
-    this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
-    this.pocCor = await AcquisitionPackage.getContact("COR");
-    this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
-      await AcquisitionPackage.getContact("ACOR") : undefined;
-    let fairOpportunity = AcquisitionPackage.fairOpportunity;
-    if (fairOpportunity) {
-      fairOpportunity = convertColumnReferencesToValues(
-          _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
-      this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
-      if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
-        this.certificationPOCContactDTO =
-            await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
-      } else {
-        this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
-      }
-      this.initializeCertificationPOCTypeOptions();
-      await this.setContactFormData(this.certificationPOCContactDTO);
-    }
+    // this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
+    // this.pocCor = await AcquisitionPackage.getContact("COR");
+    // this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
+    //   await AcquisitionPackage.getContact("ACOR") : undefined;
+    // let fairOpportunity = AcquisitionPackage.fairOpportunity;
+    // if (fairOpportunity) {
+    //   fairOpportunity = convertColumnReferencesToValues(
+    //       _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
+    //   this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
+    //   if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
+    //     this.certificationPOCContactDTO =
+    //         await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
+    //   } else {
+    //     this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
+    //   }
+    this.initializeCertificationPOCTypeOptions();
+    await this.setContactFormData(this._newContactData);
     this.loaded = true;
   }
 

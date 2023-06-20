@@ -13,16 +13,30 @@
             to their area of expertise, is accurate and complete.
           </p>
           <CertificationPOCTypeForm
+            v-if="showChildren"
             id="technicalForm"
             POCType="Technical"
             sequence="1"
-            :save-form.sync="saveTechForm" />
+            :pocPrimary="pocPrimary"
+            :pocCor="pocCor"
+            :pocAcor="pocAcor"
+            :newContactData.sync="technicalContactData"
+            :selectedSysId.sync="technicalPOCId"
+            :selectedPocType.sync="technicalPOCType"
+          />
           <hr>
           <CertificationPOCTypeForm
+            v-if="showChildren"
             id="requirementsForm"
             POCType="Requirements"
             sequence="2"
-            :save-form.sync="saveReqForm">
+            :pocPrimary="pocPrimary"
+            :pocCor="pocCor"
+            :pocAcor="pocAcor"
+            :newContactData.sync="requirementContactData"
+            :selectedSysId.sync="requirementsPOCId"
+            :seletedPocType.sync="requirementsPOCType"
+          >
           </CertificationPOCTypeForm>
         </v-col>
       </v-row>
@@ -36,11 +50,7 @@ import CertificationPOCTypeForm
   from "@/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { convertColumnReferencesToValues } from "@/api/helpers";
-import _ from "lodash";
 import { ContactDTO, FairOpportunityDTO } from "@/api/models";
-import ContactData from "@/store/contactData";
-import { RadioButton } from "../../../../types/Global";
 
 @Component({
   components: {
@@ -49,48 +59,16 @@ import { RadioButton } from "../../../../types/Global";
 })
 
 export default class CertificationPOCs extends Mixins(SaveOnLeave) {
-  private POCTypePropName: "technical_poc_type" | "requirements_poc_type" = "technical_poc_type";
-  private POCPropName: "technical_poc" | "requirements_poc" = "technical_poc";
-  private certificationPOCSysId = "";
-  private certificationPOCContactDTO: ContactDTO = {} as ContactDTO;
-  private certificationPOCTypeOptions: RadioButton[] = [];
   private pocPrimary: ContactDTO = {} as ContactDTO;
   private pocCor: ContactDTO = {} as ContactDTO;
-  private pocAcor: ContactDTO | undefined = undefined;
-
-
-  public initializeCertificationPOCTypeOptions() {
-    this.certificationPOCTypeOptions.push(
-      {
-        id: this.POCType + "PrimaryPOC",
-        label: this.pocPrimary.first_name as string + " " + this.pocPrimary.last_name,
-        value: this.pocPrimary.sys_id as string,
-        optionType: "PRIMARY"
-      });
-    this.certificationPOCTypeOptions.push(
-      {
-        id: this.POCType + "CorPOC",
-        label: this.pocCor.first_name as string + " " + this.pocCor.last_name,
-        value: this.pocCor.sys_id as string,
-        optionType: "COR"
-      });
-    if (this.pocAcor) {
-      this.certificationPOCTypeOptions.push({
-        id: this.POCType + "AcorPOC",
-        label: this.pocAcor.first_name as string + " " + this.pocAcor.last_name,
-        value: this.pocAcor.sys_id as string,
-        optionType: "ACOR"
-      })
-    }
-    this.certificationPOCTypeOptions.push({
-      id: this.POCType + "NewPOC",
-      label: "No, I need to enter my " + this.POCType + " POC’s contact information.",
-      value: (this.certificationPOCContactDTO.sys_id &&
-        this.certificationPOCContactDTO.sys_id.length > 0)
-        ? this.certificationPOCContactDTO.sys_id : "NEW",
-      optionType: "NEW"
-    })
-  }
+  private technicalContactData: ContactDTO = {} as ContactDTO;
+  private requirementContactData: ContactDTO = {} as ContactDTO;
+  private pocAcor: ContactDTO | undefined = {} as ContactDTO;
+  private technicalPOCId = ""
+  private technicalPOCType = ""
+  private requirementsPOCId = ""
+  private requirementsPOCType = ""
+  private showChildren = false
 
   // protected async saveOnLeave(): Promise<boolean> {
   //   try {
@@ -122,29 +100,30 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
   //   return true;
   // }
   public async loadOnEnter(): Promise<void> {
-    this.setPOCPropertyNames();
+    debugger
     this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
     this.pocCor = await AcquisitionPackage.getContact("COR");
     this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
       await AcquisitionPackage.getContact("ACOR") : undefined;
-    let fairOpportunity = AcquisitionPackage.fairOpportunity;
-    if (fairOpportunity) {
-      fairOpportunity = convertColumnReferencesToValues(
-        _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
-      this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
-      if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
-        this.certificationPOCContactDTO =
-          await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
-      } else {
-        this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
-      }
-      this.initializeCertificationPOCTypeOptions();
-      await this.setContactFormData(this.certificationPOCContactDTO);
-    }
-    this.loaded = true;
+    this.showChildren = true
+    const fairOpportunity = AcquisitionPackage.fairOpportunity;
+    // if (fairOpportunity) {
+    //   fairOpportunity = convertColumnReferencesToValues(
+    //     _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
+    //   this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
+    //   if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
+    //     this.certificationPOCContactDTO =
+    //       await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
+    //   } else {
+    //     this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
+    //   }
+    //   this.initializeCertificationPOCTypeOptions();
+    //   await this.setContactFormData(this.certificationPOCContactDTO);
+    // }
   }
 
   public async mounted(): Promise<void> {
+    debugger
     await this.loadOnEnter()
   }
 }
