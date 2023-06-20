@@ -215,51 +215,6 @@ export default class CertificationPOCTypeForm extends Vue {
     return hasChanges(currentData, savedData);
   }
 
-  private hasCurrentContactFormChanged(): boolean {
-    return hasChanges(this.currentContactFormData, this._newContactData);
-  }
-
-  /**
-   * Checks to see if the certification POC type changed and takes one of
-   * the actions below.
-   * 1. If the user changes the POC type from one of the other 3 types to "NEW",
-   *      then creates a NEW contact and updates the fair opportunity
-   *      properties accordingly
-   * 2. If the user changes the POC type among one of the 3 existing contact types,
-   *      then just updates the fair opportunity properties.
-   * 3. If the POC type has not changed, then checks if any of the form data has changed
-   *      and makes a call to save the changed data.
-   */
-  @Watch('_saveForm')
-  protected async save(): Promise<void> {
-    try {
-      debugger
-      const fairOpportunity = {} as FairOpportunityDTO;
-      let setFairOpportunity = false;
-      let contactSysId = "";
-      if (this.selectedOptionType === "NEW") {
-        // user changed from other types to NEW or could be first time filling the form.
-        if (this.hasCurrentContactFormChanged()) {
-          setFairOpportunity = true;
-          const savedContact = await ContactData.saveContact(this.currentContactFormData);
-          contactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
-        }
-      } else { // user has changed across one of the 3 existing contact types (NOT NEW)
-        if (this.hasFairOpportunityDataChanged()) {
-          setFairOpportunity = true;
-          contactSysId = this.selectedOption?.value;
-        }
-      }
-      if (setFairOpportunity) {
-        fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
-        fairOpportunity[this.POCPropName] = contactSysId;
-        await AcquisitionPackage.setFairOpportunity(fairOpportunity);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   /**
    * Initializes appropriately based on ACOR information.
    */

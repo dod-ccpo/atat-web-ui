@@ -87,7 +87,6 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
 
   private savedData: FairOpportunityDTO = {}
 
-
   // protected async saveOnLeave(): Promise<boolean> {
   //   try {
   //     debugger
@@ -117,6 +116,7 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
   //   }
   //   return true;
   // }
+
   public async loadOnEnter(): Promise<void> {
     debugger
     this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
