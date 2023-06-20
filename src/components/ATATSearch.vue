@@ -245,7 +245,7 @@ export default class ATATSearch extends Vue {
             this.$refs.atatSearchInputModal.errorBucket = [response.message || "Unknown error"];
           }
         } else {
-          await PortfolioStore.setPortfolioProvisioning(response);
+          await PortfolioStore.initProvisioningFromResponse(response);
           this.$emit("search");
         }
       } catch (error) {
