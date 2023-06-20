@@ -2440,7 +2440,7 @@ export class AcquisitionPackageStore extends VuexModule {
         itemName:"Sole Source Market Research Report",
         requiresSignature:true,
         alertText:"Requires signature",
-        show: hasFairOpportunity() && isMRRToBeGenerated() && isDitcoUser()
+        show: hasFairOpportunity() && isMRRToBeGenerated()
       },
       {
         itemName:"Description of Work",
