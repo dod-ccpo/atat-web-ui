@@ -156,6 +156,7 @@ export default class CertificationPOCTypeForm extends Vue {
   }
 
   private get currentContactFormData(): ContactDTO {
+    debugger
     const countryCode = this.selectedPhoneCountry
       ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
       : undefined;
@@ -169,7 +170,7 @@ export default class CertificationPOCTypeForm extends Vue {
         countryCode
       )?.format("INTERNATIONAL")
       : "";
-    if(countryCode){
+    if(countryCode && phone){
       const asyoutype= new AsYouType(countryCode);
       const formatted = asyoutype.input(this.phone);
       phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
@@ -178,7 +179,7 @@ export default class CertificationPOCTypeForm extends Vue {
       (AcquisitionPackage.acquisitionPackage.sys_id) ?
         AcquisitionPackage.acquisitionPackage.sys_id : "" : ""
     const phoneExt = this.phoneExt;
-    return {
+    const formData = {
       sys_id: this.sysId,
       first_name: this.firstName,
       last_name: this.lastName,
@@ -198,6 +199,8 @@ export default class CertificationPOCTypeForm extends Vue {
       manually_entered: "",
       acquisition_package: this.acquisition_package
     };
+    this._newContactData = formData
+    return formData
   }
 
   /**
