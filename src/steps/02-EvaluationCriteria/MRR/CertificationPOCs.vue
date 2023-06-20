@@ -35,7 +35,7 @@
             :pocAcor="pocAcor"
             :newContactData.sync="requirementContactData"
             :selectedSysId.sync="requirementsPOCId"
-            :seletedPocType.sync="requirementsPOCType"
+            :selectedPocType.sync="requirementsPOCType"
           >
           </CertificationPOCTypeForm>
         </v-col>
@@ -51,6 +51,9 @@ import CertificationPOCTypeForm
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ContactDTO, FairOpportunityDTO } from "@/api/models";
+import { convertColumnReferencesToValues } from "@/api/helpers";
+import _ from "lodash";
+import ContactData from "@/store/contactData";
 
 @Component({
   components: {
@@ -59,6 +62,7 @@ import { ContactDTO, FairOpportunityDTO } from "@/api/models";
 })
 
 export default class CertificationPOCs extends Mixins(SaveOnLeave) {
+  /* eslint-disable camelcase */
   private pocPrimary: ContactDTO = {} as ContactDTO;
   private pocCor: ContactDTO = {} as ContactDTO;
   private technicalContactData: ContactDTO = {} as ContactDTO;
@@ -69,6 +73,20 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
   private requirementsPOCId = ""
   private requirementsPOCType = ""
   private showChildren = false
+
+  private get currentData(): FairOpportunityDTO {
+    return {
+      technical_poc: this.technicalPOCId,
+      technical_poc_type:this.technicalPOCType as unknown as
+        "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined,
+      requirements_poc:this.requirementsPOCId,
+      requirements_poc_type:this.requirementsPOCType as unknown as
+        "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined
+    };
+  }
+
+  private savedData: FairOpportunityDTO = {}
+
 
   // protected async saveOnLeave(): Promise<boolean> {
   //   try {
@@ -106,24 +124,29 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
     this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
       await AcquisitionPackage.getContact("ACOR") : undefined;
     this.showChildren = true
-    const fairOpportunity = AcquisitionPackage.fairOpportunity;
-    // if (fairOpportunity) {
-    //   fairOpportunity = convertColumnReferencesToValues(
-    //     _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
-    //   this.certificationPOCSysId = fairOpportunity[this.POCPropName] as string;
-    //   if (fairOpportunity[this.POCTypePropName] === "NEW" && fairOpportunity[this.POCPropName]) {
-    //     this.certificationPOCContactDTO =
-    //       await ContactData.getContactBySysId(fairOpportunity[this.POCPropName] as string);
-    //   } else {
-    //     this.certificationPOCContactDTO = _.cloneDeep(AcquisitionPackage.initContact);
-    //   }
-    //   this.initializeCertificationPOCTypeOptions();
-    //   await this.setContactFormData(this.certificationPOCContactDTO);
-    // }
+    let fairOpportunity = AcquisitionPackage.fairOpportunity;
+    if (fairOpportunity) {
+      fairOpportunity = convertColumnReferencesToValues(
+        _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
+      this.requirementsPOCId = fairOpportunity.requirements_poc as string;
+      if (fairOpportunity.requirements_poc_type === "NEW" && fairOpportunity.requirements_poc) {
+        this.requirementContactData =
+          await ContactData.getContactBySysId(fairOpportunity.requirements_poc as string);
+      } else {
+        this.requirementContactData = _.cloneDeep(AcquisitionPackage.initContact);
+      }
+      this.technicalPOCId = fairOpportunity.technical_poc as string;
+      if (fairOpportunity.technical_poc_type === "NEW" && fairOpportunity.technical_poc) {
+        this.technicalContactData =
+          await ContactData.getContactBySysId(fairOpportunity.technical_poc as string);
+      } else {
+        this.technicalContactData = _.cloneDeep(AcquisitionPackage.initContact);
+      }
+      this.savedData = fairOpportunity
+    }
   }
 
   public async mounted(): Promise<void> {
-    debugger
     await this.loadOnEnter()
   }
 }

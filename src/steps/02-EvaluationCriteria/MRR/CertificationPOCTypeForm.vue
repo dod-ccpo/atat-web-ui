@@ -7,7 +7,7 @@
         :legend="'Will any of these individuals serve as the '
               + POCType + ' Certifier for your J&A?'"
         :legend-font-normal-weight="true"
-        :value.sync="certificationPOCSysId"
+        :value.sync="_selectedSysId"
         :items="certificationPOCTypeOptions"
         :name="'certification-poc-' + POCType + '-radio-group'"
         class="copy-max-width mb-10 mt-3"
@@ -75,7 +75,6 @@ export default class CertificationPOCTypeForm extends Vue {
 
   private POCTypePropName: "technical_poc_type" | "requirements_poc_type" = "technical_poc_type";
   private POCPropName: "technical_poc" | "requirements_poc" = "technical_poc";
-  private certificationPOCSysId = "";
   private certificationPOCTypeOptions: RadioButton[] = [];
 
 
@@ -130,7 +129,7 @@ export default class CertificationPOCTypeForm extends Vue {
   private get selectedOption(): RadioButton {
     debugger
     const selectedOption = this.certificationPOCTypeOptions.find(certOption =>
-      certOption.value === this.certificationPOCSysId) as RadioButton
+      certOption.value === this._selectedSysId) as RadioButton
     if(selectedOption){
       this._selectedSysId = selectedOption.value
       this._selectedPocType = selectedOption.optionType
