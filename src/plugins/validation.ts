@@ -268,20 +268,29 @@ export class ValidationPlugin {
   */
   isEmail = (
     message?: string,
-    isScrt?: boolean
+    highSide?: "S" | "TS"
   ): ((v: string) => string | true | undefined) => {
-    isScrt = isScrt === undefined ? false : isScrt;
+    const isScrt = highSide === "S" ? true : false;
+    const isTS = highSide === "TS" ? true : false;
     return (v: string) => {
       if (v && v !== "") {
-        if (/[a-z0-9]+@[a-z-_.0-9]+\.[a-z]{3}/i.test(v) === false) {
-          return "Please use standard domain format, like ‘@mail.mil’"
-        } else if (!isScrt && /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i.test(v) === false) {
-          return message || "Please use your .mil or .gov email address."
-        } else if (isScrt && 
-          /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v) === false
-        ) {
+        const validStructure = /[a-z0-9]+@[a-z-_.0-9]+\.[a-z]{3}/i.test(v);
+        if (!validStructure) {
+          return "Please use standard domain format, like ‘@mail.mil’";
+        }
+        const validScrt = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v);
+        if (isScrt && !validScrt) {
           return message || "Please use your .smil or .sgov email address."
-        }      
+        } 
+        const validGovOrMil = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i.test(v);
+        if (!validGovOrMil) {
+          return message || "Please use your .mil or .gov email address."
+        }
+        // const validTS = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:ic)+\.(?:gov|mil)$/i.test(v)
+        // if (isTS && !validTS) {
+        //    TODO: determine if requiring only ".ic.gov" emails or if OK to show warning
+        //    in UI if ends in ".gov" or ".mil" but does not contain ".ic"
+        // }
       }
       return true;
     };
