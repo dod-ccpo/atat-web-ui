@@ -794,7 +794,8 @@ export interface PortfolioSummaryMetadataAndDataDTO {
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
   name:string;
-  // other columns as needed
+  classification_level?: string;
+  cloud_distinguisher?: string;
 }
 
 export interface PortfolioSummarySearchDTO {

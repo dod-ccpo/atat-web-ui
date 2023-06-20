@@ -62,12 +62,14 @@
                   <span class="_line-height-1 font-size-12 font-weight-700 text-base-light d-block">
                     ENVIRONMENTS AND ADMINISTRATORS
                   </span>
-                  <span class="mr-10">
-                    {{ classificationLevels }}
-                  </span>
-                  <span class="nowrap">
-                    {{ adminCount }}
-                  </span>
+                  <div v-for="(obj, i) in cspAdmins" :key="i">
+                    <span class="mr-10 d-inline-block mb-2" style="width: 140px;">
+                      {{ obj.env }}
+                    </span>
+                    <span class="nowrap">
+                      {{ obj.admins }} administrator<span v-if="obj.admins > 1">s</span>
+                    </span>
+                  </div>
 
                 </div>                
               </div>
@@ -118,12 +120,19 @@ import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
+interface CSPAdmins {
+  env: string;
+  admins: number;
+  sort: number;
+}
+
 @Component({
   components: {
     ATATExpandableLink,
     ATATSVGIcon,
   },
 })
+
 export default class ReadyToProvision extends Mixins(SaveOnLeave) {
   public provisioningData: PortfolioProvisioning = {};
   public cspLogoName = "";
@@ -131,8 +140,8 @@ export default class ReadyToProvision extends Mixins(SaveOnLeave) {
   public unclStr = ClassificationLevels.UNCL;
   public tsStr = ClassificationLevels.TSCRT;
   public processLength = "2 hours";
-  public classificationLevels = "";
-  public adminCount = "";
+  public cspAdmins: CSPAdmins[] = [];
+
 
   @Watch("provisioningData")
   public provisioningDataChanged(newVal: PortfolioProvisioning): void {
@@ -158,6 +167,46 @@ export default class ReadyToProvision extends Mixins(SaveOnLeave) {
     }
   }
 
+  public async addCSPAdminToEnv(i: number, env: string, sort: number): Promise<void> {
+    if (i > -1) {
+      this.cspAdmins[i].admins = this.cspAdmins[i].admins + 1;
+    } else {
+      this.cspAdmins.push({ env, admins: 1, sort });
+    }
+  }
+
+  public async configureCSPAdminData(): Promise<void> {
+    const hasILs = 
+      this.provisioningData.selectedILs && this.provisioningData.selectedILs.length > 0;
+
+    this.provisioningData.admins?.forEach(async admin => {
+      if (admin.hasUnclassifiedAccess === "YES") {
+        if (hasILs) {
+          admin.impactLevels?.forEach(async value => {
+            const il = value.split('_')[1].toUpperCase();
+            const i = this.cspAdmins.findIndex(obj => obj.env === "Unclassified/" + il);
+            const sort = parseInt(il.replace(/\D/g, "")); // get the number from the IL string
+            await this.addCSPAdminToEnv(i, "Unclassified/" + il, sort);
+          });
+        } else {
+          const i = this.cspAdmins.findIndex(obj => obj.env === this.unclStr);
+          await this.addCSPAdminToEnv(i, this.unclStr, 1);
+        }
+      }
+      if (admin.hasScrtAccess === "YES") {
+        const i = this.cspAdmins.findIndex(obj => obj.env === this.scrtStr);
+        await this.addCSPAdminToEnv(i, this.scrtStr, 10);
+      }      
+      if (admin.hasTSAccess === "YES") {
+        const i = this.cspAdmins.findIndex(obj => obj.env === this.tsStr);
+        await this.addCSPAdminToEnv(i, this.tsStr, 20);
+      }
+    });
+    
+    this.cspAdmins.sort((a,b) => a.sort - b.sort);
+    
+  }
+
   public async loadOnEnter(): Promise<void> {
     const storeData = await PortfolioStore.getPortfolioProvisioningObj();
     if (storeData) {
@@ -165,11 +214,9 @@ export default class ReadyToProvision extends Mixins(SaveOnLeave) {
       const cl = storeData.classificationLevels;
       this.processLength = cl && (cl.includes(this.scrtStr) || cl.includes(this.tsStr))
         ? "72 hours" : "2 hours";
-      this.classificationLevels = storeData.classificationLevels?.join(", ") as string;
-      const len = storeData.admins?.length;
-      this.adminCount = len && len > 1 ? len + " administrators" : "1 administrator";
+
+      await this.configureCSPAdminData();
     }
-    
   }
 
   public async mounted(): Promise<void> {
@@ -182,6 +229,7 @@ export default class ReadyToProvision extends Mixins(SaveOnLeave) {
    */
   public async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setDisableContinue(false);
+    // ATAT TODO - AT-9207 - prevent start provisioning when clicking BACK button.
     try {
       await PortfolioStore.startProvisioning();
     } catch (error) {
