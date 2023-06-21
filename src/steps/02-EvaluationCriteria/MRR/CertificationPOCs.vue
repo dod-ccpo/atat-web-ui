@@ -96,7 +96,6 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger
     if(this.requirementsPOCType === "NEW"){
       const savedContact = await ContactData.saveContact(this.requirementContactData)
       const newContactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
@@ -108,7 +107,6 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
       this.technicalPOCId = newContactSysId
     }
     try {
-      debugger
       if(this.hasChanged()){
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
@@ -119,7 +117,6 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger
     this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
     this.pocCor = await AcquisitionPackage.getContact("COR");
     this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
