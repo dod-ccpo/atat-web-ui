@@ -86,14 +86,19 @@ describe("Testing ContactInfo Component", () => {
     jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
       () => Promise.resolve(mockContactDTO)
     );
-      
+
     jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
       () => Promise.resolve()
+    );
+
+    jest.spyOn(AcquisitionPackage, 'getContact').mockImplementation(
+      () => Promise.resolve(mockLoadedContactDTO)
     );
         
     jest.spyOn(AcquisitionPackage, 'loadContactInfo').mockImplementation(
       () => Promise.resolve(mockLoadedContactDTO)
     );
+
     jest.spyOn(AcquisitionPackage, 'saveContactInfo').mockImplementation(
       () => Promise.resolve()
     );
@@ -104,7 +109,8 @@ describe("Testing ContactInfo Component", () => {
         { name: "x_g_dis_atat_military_rank", label: "Army", value: "ARMY" },
         { name: "x_g_dis_atat_military_rank", label: "Navy", value: "NAVY" },
       ] as SystemChoiceDTO[]
-    })
+    });
+
     jest.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
       new Promise(resolve => resolve({
         name: "Admiral",
@@ -112,33 +118,38 @@ describe("Testing ContactInfo Component", () => {
         branch: "NAVY"
       } as MilitaryRankDTO))
     );
+
     jest.spyOn(api.systemChoices, 'getChoices').mockImplementation(async () => {
       return [
         { name: "x_g_dis_atat_military_rank", label: "Air Force", value: "AIR_FORCE" },
         { name: "x_g_dis_atat_military_rank", label: "Army", value: "ARMY" },
         { name: "x_g_dis_atat_military_rank", label: "Navy", value: "NAVY" },
       ] as SystemChoiceDTO[]
-    })
+    });
+
     jest.spyOn(api.militaryRankTable, 'all').mockImplementation(async () => {
       return [
         { name: "Brigadier General (BG)", grade: "O-7", branch: "ARMY"},
         { name: "Admiral (ADM)", grade: "O-10", branch: "NAVY"},
         { name: "Captain (Capt)", grade: "O-3", branch: "AIR_FORCE"},
       ] as MilitaryRankDTO[]
-    })
+    });
+
     jest.spyOn(api.countriesTable, 'all').mockImplementation(async () => {
       return [
         { name: "Andorra", iso3166_2: "AD" },
         { name: "Bangladesh", iso3166_2: "BD" },
         { name: "Cyprus", iso3166_2: "CY" },
       ] as CountryDTO[]
-    })
+    });
+
     jest.spyOn(api.statesTable, 'all').mockImplementation(async () => {
       return [
         { name: "Alabama", key: "AL"},
         { name: "California", key: "CA"},
       ] as StateDTO[]
-    })
+    });
+
     jest.spyOn(api.agencyTable, 'all').mockImplementation(async () => {
       return [
         {
@@ -167,7 +178,6 @@ describe("Testing ContactInfo Component", () => {
 
   afterEach(()=>{
     jest.clearAllMocks();
-    
   })
 
   it("renders successfully", async () => {
@@ -175,21 +185,35 @@ describe("Testing ContactInfo Component", () => {
   });
 
   it("loadOnEnter() - returns storeData successfully", async () => {
+    await wrapper.setData({
+      savedData: mockLoadedContactDTO,
+    })
     await wrapper.vm.loadOnEnter()
-    expect(await wrapper.vm.$data.selectedBranch.value).toBe("NAVY")
+    expect(await wrapper.vm.$data.branchData).toHaveLength(3)
   })
 
   it("branchChange() - update selected branch", async () =>  {
+  
+    const rank: MilitaryRankDTO = { name: "this", grade: "that", branch: "other" };     
     jest.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
-      new Promise(resolve => resolve({
-        name: "Captain",
-        grade: "O-3",
-        branch: "AIR_FORCE"
-      } as MilitaryRankDTO))
+      new Promise(resolve => resolve(rank))
     );
+
     await wrapper.vm.loadOnEnter(); 
-    expect(await wrapper.vm.$data.selectedBranch.value).toBe("AIR_FORCE")
+    expect(await wrapper.vm.$data.selectedRank["name"]).toBe("this")
   })
+
+  it("branchChange() - update selected branch with empty object", async () =>  {
+  
+    const rank: MilitaryRankDTO = { name: "", grade: "", branch: "" };     
+    jest.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
+      new Promise(resolve => resolve(rank))
+    );
+
+    await wrapper.vm.loadOnEnter(); 
+    expect(await wrapper.vm.$data.selectedRank["name"]).toBe("")
+  })
+
   it("hasChanged() - change input contactInfo data", async () =>  {
     await wrapper.setData({
       currentData: {
@@ -199,10 +223,21 @@ describe("Testing ContactInfo Component", () => {
     const hasChanged = await wrapper.vm.hasChanged()
     expect(hasChanged).toBeTruthy()
   })
+
   it("saveOnLeave() - save contact data ", async () => {
     const saveOnLeave = await wrapper.vm.saveOnLeave()
     expect(saveOnLeave).toBeTruthy()
   })
+
+  it("saveOnLeave() - should catch and log error", async () => {
+    console.log = jest.fn();
+    jest.spyOn(AcquisitionPackage, 'saveContactInfo').mockImplementation(() => {
+      throw new Error("mock error");
+    });
+    const saveOnLeave = await wrapper.vm.saveOnLeave();
+    expect(console.log).toHaveBeenCalledWith(Error("mock error"));
+  })
+
   it("contactTypeChange() -  update contact type", async () => {
     await wrapper.setData({
       loaded: true,
