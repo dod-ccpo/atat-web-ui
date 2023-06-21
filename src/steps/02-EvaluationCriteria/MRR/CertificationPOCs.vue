@@ -54,6 +54,7 @@ import { ContactDTO, FairOpportunityDTO } from "@/api/models";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import _ from "lodash";
 import ContactData from "@/store/contactData";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -75,7 +76,9 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
   private showChildren = false
 
   private get currentData(): FairOpportunityDTO {
-    return {
+    const fairOppSaved: FairOpportunityDTO = _.cloneDeep(AcquisitionPackage.fairOpportunity)
+      || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
+    const formData: FairOpportunityDTO = {
       technical_poc: this.technicalPOCId,
       technical_poc_type:this.technicalPOCType as unknown as
         "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined,
@@ -83,39 +86,37 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
       requirements_poc_type:this.requirementsPOCType as unknown as
         "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined
     };
+    return Object.assign(fairOppSaved,formData)
   }
 
   private savedData: FairOpportunityDTO = {}
 
-  // protected async saveOnLeave(): Promise<boolean> {
-  //   try {
-  //     debugger
-  //     const fairOpportunity = {} as FairOpportunityDTO;
-  //     let setFairOpportunity = false;
-  //     let contactSysId = "";
-  //     if (this.selectedOptionType === "NEW") {
-  //       // user changed from other types to NEW or could be first time filling the form.
-  //       if (this.hasCurrentContactFormChanged()) {
-  //         setFairOpportunity = true;
-  //         const savedContact = await ContactData.saveContact(this.currentContactFormData);
-  //         contactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
-  //       }
-  //     } else { // user has changed across one of the 3 existing contact types (NOT NEW)
-  //       if (this.hasFairOpportunityDataChanged()) {
-  //         setFairOpportunity = true;
-  //         contactSysId = this.selectedOption?.value;
-  //       }
-  //     }
-  //     if (setFairOpportunity) {
-  //       fairOpportunity[this.POCTypePropName] = this.selectedOptionType;
-  //       fairOpportunity[this.POCPropName] = contactSysId;
-  //       await AcquisitionPackage.setFairOpportunity(fairOpportunity);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   return true;
-  // }
+  public hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    debugger
+    if(this.requirementsPOCType === "NEW"){
+      const savedContact = await ContactData.saveContact(this.requirementContactData)
+      const newContactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
+      this.requirementsPOCId = newContactSysId
+    }
+    if(this.technicalPOCType === "NEW"){
+      const savedContact = await ContactData.saveContact(this.technicalContactData)
+      const newContactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
+      this.technicalPOCId = newContactSysId
+    }
+    try {
+      debugger
+      if(this.hasChanged()){
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
 
   public async loadOnEnter(): Promise<void> {
     debugger

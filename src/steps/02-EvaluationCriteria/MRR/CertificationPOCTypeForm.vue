@@ -48,11 +48,8 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import {ContactDTO, FairOpportunityDTO} from "@/api/models";
 import ContactData from "@/store/contactData";
 import parsePhoneNumber, {AsYouType, CountryCode} from "libphonenumber-js";
-import {hasChanges} from "@/helpers";
-import _ from "lodash";
 import {Countries} from "@/components/ATATPhoneInput.vue";
 import ATATContactForm from "@/components/ATATContactForm.vue";
-import {convertColumnReferencesToValues} from "@/api/helpers";
 import Vue from "vue";
 
 @Component({
@@ -204,18 +201,6 @@ export default class CertificationPOCTypeForm extends Vue {
   }
 
   /**
-   * Checks and returns if the fair opportunity data POC type data has changed.
-   */
-  private hasFairOpportunityDataChanged(): boolean {
-    const currentData = {} as FairOpportunityDTO;
-    currentData[this.POCTypePropName] = this.selectedOptionType;
-    const savedData = {} as FairOpportunityDTO;
-    const savedFairOpportunity = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
-    savedData[this.POCTypePropName] = savedFairOpportunity[this.POCTypePropName] || "";
-    return hasChanges(currentData, savedData);
-  }
-
-  /**
    * Initializes appropriately based on ACOR information.
    */
   public initializeCertificationPOCTypeOptions() {
@@ -332,10 +317,6 @@ export default class CertificationPOCTypeForm extends Vue {
     }
   }
 
-  /**
-   * Loads the PRIMARY, COR and ACOR contacts from acquisition package store. If the user
-   * has selected NEW and saved it, then loads the contact from ContactsData store.
-   */
   public async loadOnEnter(): Promise<void> {
     this.setPOCPropertyNames();
     this.initializeCertificationPOCTypeOptions();
