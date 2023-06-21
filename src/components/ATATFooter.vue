@@ -9,7 +9,7 @@
         -->
       </div>
       <div>
-        Last login: {{currentUser.last_login_time}}
+        Last login: {{getCurrentUser.last_login_time}}
       </div>
     </v-footer>
     <div v-if="allowDeveloperNavigation()" class="container-max-width">
@@ -42,7 +42,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
-import UserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -50,16 +49,9 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({})
 
 export default class ATATFooter extends Vue {
-  private currentUser: UserDTO = {};
-
   public get getCurrentUser(): UserDTO {
-    return CurrentUserStore.currentUser;
+    return CurrentUserStore.getCurrentUserData;
   }
-
-  @Watch("getCurrentUser")
-  public currentUserChange(newVal: UserDTO): void {
-    this.currentUser = newVal;
-  }  
 
   private allowDeveloperNavigation(): boolean {
     return process.env.VUE_APP_allowDeveloperNavigation === 'true' || false;
@@ -76,14 +68,5 @@ export default class ATATFooter extends Vue {
   public async prodContentChanged(newVal: boolean): Promise<void> {
     await AcquisitionPackage.setEmulateProdNav(newVal);
   }
-
-  public async loadOnEnter(): Promise<void> {
-    this.currentUser = await UserStore.getCurrentUser();
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
-
 }
 </script>

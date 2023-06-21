@@ -395,7 +395,12 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       scrtEmailValid = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i
         .test(this.scrtEmail);
     }
-    return !idOK || !classificationSelected || !unclassEmailValid || !scrtEmailValid;
+    let ilsOK = true;
+    if (this.impactLevels.length > 0) {
+      const unclassChecked = this.selectedClassificationLevels.includes("Unclassified");
+      ilsOK = !unclassChecked || unclassChecked && this.selectedImpactLevels.length > 0;
+    }
+    return !idOK || !classificationSelected || !unclassEmailValid || !scrtEmailValid || !ilsOK;
   };
 
   public async validate(): Promise<void> {

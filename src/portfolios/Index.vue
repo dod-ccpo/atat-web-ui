@@ -17,6 +17,9 @@
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">
           <h1 class="mb-2 mt-5 pl-1">Portfolios</h1>
+          <!-- ATAT TODO - reinstate after MVP when new single portfolio summary API is available
+                     that prevents multiple calls per portfolio so can ABORT API calls in progress
+                     when switching between tabs
           <div>
             <v-tabs class="_header-tab "
               v-model="tabIndex">
@@ -28,14 +31,22 @@
                 class="font-size-14 pa-1 pt-2 pb-4 mr-3"
               >{{ tab.text }}</v-tab>
             </v-tabs>
-          </div>
+          </div> 
+
+          -->
+
         </div>
         <div class="d-flex justify-end align-center"></div>
       </v-app-bar>
       <v-container
         class="container-max-width"
       >
-        <PortfoliosSummary :active-tab="activeTab" default-sort="name" />
+        <PortfoliosSummary 
+          :active-tab="activeTab" 
+          default-sort="name" 
+          :isHomeView="false" 
+          :isProdEnv="isProdEnv"
+        />
 
       </v-container>
       <ATATFooter/>
@@ -52,6 +63,7 @@ import { getIdText } from "@/helpers";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATToast from "@/components/ATATToast.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -79,6 +91,10 @@ export default class Portfolios extends Vue {
     },
   ];
   public activeTab = this.tabItems[0].type;
+
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
+  }
 
   private getIdText(string: string) {
     return getIdText(string);

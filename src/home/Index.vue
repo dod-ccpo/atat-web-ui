@@ -2,8 +2,8 @@
   <div 
     class="_home-wrapper"
     :class="[
-      {'_is-new-user' : isNewUser },
-      {'_is-existing-user' : !isNewUser }
+      {'_is-new-user' : isNewUser && !isLoading },
+      {'_is-existing-user' : !isNewUser || isLoading }
     ]"  
   >
     <ATATToast />
@@ -12,7 +12,18 @@
     <v-main class="_home">
       <div class="_home-content">
         <div class="container-max-width">
-          <div class="_welcome-bar">
+          <div v-if="isLoading" class="width-100 text-center" style="height: 1000px;">
+            <div class="_welcome-bar" style="height: 92px">
+              <div class="d-flex align-center" style="margin: 0 auto">
+                <v-progress-circular 
+                  indeterminate color="#544496" size="24" width="3" class="mr-2" />
+                <span class="h3">Loading...</span>
+              </div>
+            </div>
+            
+          </div>
+
+          <div v-if="!isLoading" class="_welcome-bar">
             <div class="d-flex justify-start">
               <h1 class="text-primary">
                 Hi {{currentUser.first_name}}! How can we help you?
@@ -38,24 +49,24 @@
             </div>
           </div>
         </div>
+        <div v-if="!isLoading">
+          <NewUser 
+            v-if="isNewUser" 
+            class="mt-15" 
+            @startNewAcquisition="startNewAcquisition" 
+            @startProvisionWorkflow="startProvisionWorkflow"
+            @openTOSearchModal="openSearchTOModal"
+          />
 
-        <NewUser 
-          v-if="isNewUser" 
-          class="mt-15" 
-          @startNewAcquisition="startNewAcquisition" 
-          @startProvisionWorkflow="startProvisionWorkflow"
-          @openTOSearchModal="openSearchTOModal"
-        />
+          <ExistingUser 
+            v-else 
+            class="mt-5" 
+            @startNewAcquisition="startNewAcquisition" 
+            @openTOSearchModal="openSearchTOModal"
+            @startProvisionWorkflow="startProvisionWorkflow"
 
-        <ExistingUser 
-          v-else 
-          class="mt-8" 
-          @startNewAcquisition="startNewAcquisition" 
-          @allPackagesCleared="allPackagesCleared"
-          @openTOSearchModal="openSearchTOModal"
-          @startProvisionWorkflow="startProvisionWorkflow"
-          @portfolioCountUpdated="portfolioCountUpdated"
-        />      
+          />      
+        </div>
 
         <div class="bg-white">
           <ATATFooter class="mx-auto pt-10" />
@@ -84,6 +95,7 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
 import ATATToast from "@/components/ATATToast.vue";
+import ATATLoader from "@/components/ATATLoader.vue";
 import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
@@ -93,10 +105,8 @@ import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
-import { scrollToId } from "@/helpers";
-
-import UserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import PortfolioStore from "@/store/portfolio";
@@ -105,6 +115,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
     ATATFooter,
+    ATATLoader,
     ATATLoadingPackageModal,
     ATATToast,
     ExistingUser,
@@ -120,7 +131,19 @@ export default class Home extends Vue {
   public TONumber = "";
   public resetValidationNow = false;
   public selectedAcquisitionPackageSysId = "";
-  
+  public isLoading = true;
+
+  public get userIsInitialized(): boolean {
+    return CurrentUserStore.isInitialized;
+  }  
+  @Watch("userIsInitialized")
+  public async userIsInitializedChanged(newVal: boolean): Promise<void> {
+    this.isLoading = !newVal;
+    if (newVal === true) {
+      await this.loadDashboard();  
+    }
+  }
+
   public openSearchTOModal(acqPackageSysId: string): void {
     this.selectedAcquisitionPackageSysId = acqPackageSysId;
     this.showTOSearchModal = true;
@@ -138,29 +161,22 @@ export default class Home extends Vue {
   public get isNewUser(): boolean {
     return !this.userHasPackages && !this.userHasPortfolios;
   } 
-
-  public userHasPackages = false;
-  public userHasPortfolios = false;
-
-  public allPackagesCleared(): void {
-    this.userHasPackages = false;
+  public get userHasPackages(): boolean {
+    return CurrentUserStore.getUserHasPackages;
+  }
+  public get userHasPortfolios(): boolean {
+    return CurrentUserStore.getUserHasPortfolios;
   }
 
-  private currentUser: UserDTO = {};
-
-  public get getCurrentUser(): UserDTO {
-    return CurrentUserStore.currentUser;
+  public get currentUser(): UserDTO {
+    return CurrentUserStore.getCurrentUserData;
   }
-
-  @Watch("getCurrentUser")
-  public async currentUserChange(newVal: UserDTO): Promise<void> {
-    this.currentUser = newVal;
-    await this.checkIfIsNewUser();
-  }  
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await acquisitionPackage.setIsNewPackage(true)
+    await AcquisitionPackage.reset();
+    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router.push({
       name: routeNames.DAPPSChecklist,
       params: {
@@ -179,7 +195,6 @@ export default class Home extends Vue {
     }
     await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedAcquisitionPackageSysId);
 
-
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,
       params: {
@@ -188,29 +203,20 @@ export default class Home extends Vue {
       replace: true
     }).catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
-    
   }
 
-  public portfolioCountUpdated(portfolioCount: string): void {
-    this.userHasPortfolios = parseInt(portfolioCount) > 0;
-  }
-
-  public async checkIfIsNewUser(): Promise<void> {
-    this.userHasPackages = await UserStore.hasPackages();
-    await UserStore.hasPortfolios();
-    this.userHasPortfolios = UserStore.getUserHasPortfolios;
-  }
-
-  public async mounted(): Promise<void> {
+  public async loadDashboard(): Promise<void> {
     await AcquisitionPackage.reset();
     await AcquisitionPackage.setHideNavigation(false);
-    this.currentUser = await UserStore.getCurrentUser();
-    // await this.checkIfIsNewUser();
     const sectionData = await AppSections.getSectionData();
     AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     await PortfolioStore.setShowTOPackageSelection(true);
-    await this.checkIfIsNewUser();
+  }
+
+  public async mounted(): Promise<void> {
+    this.isLoading = true;
+    await CurrentUserStore.initialize();
   }
 
 
