@@ -63,7 +63,7 @@ describe("Test suite: SAC step: BAA", () => {
     
   });
 
-  it.only("TC4: BAA: Validations", () => {        
+  it("TC4: BAA: Validations", () => {        
     // radio options error
     cy.radioBtn(sac.yesBAARadioOption, "YES").focus()
     .focus();

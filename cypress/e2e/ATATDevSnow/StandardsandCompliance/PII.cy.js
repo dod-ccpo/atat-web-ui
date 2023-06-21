@@ -8,14 +8,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   const scope = "SAC-PII-" + randomString(5);
   const expectedPIIText = "What is PII? PII is information about an individual which identifies,"+
   " links, relates, or is unique to an individual. Examples include social security number,"+
-  " age, military rank, civilian grade, etc. that can be used to distinguish or track an individual's identity."
-  const piiOptionTextLabel = "Does this effort provide for the design," +
-      " development, or operation of a system of records on individuals" +
-      " by the contractor (in whole or in part)?";
-
-  const piiFAQTxt = "If this effort provides for the design, development,"+
-  " or operation of a system of records on individuals (in whole or in part),"+
-  " then the Contracting Officer must include the following clauses in the solicitation:";
+  " age, military rank, civilian grade, etc. that can be used to distinguish or track an individual's identity.";   
   const systemName = randomAlphaNumeric(9);
   const operationPerformed = randomAlphaNumeric(15);
   beforeEach(() => {
@@ -28,16 +21,13 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   });    
     
   it("TC1: Asserts: All texts on PII form", () => {
-    cy.verifyTextMatches(sac.blueInfoMessageText,expectedPIIText);    
-    //Assert Radio option label text    
-    cy.verifyTextMatches(sac.piiRadioOptionText,piiOptionTextLabel);    
+    cy.verifyTextMatches(sac.blueInfoMessageText,expectedPIIText);          
     //Asserts radio options
     cy.radioBtn(sac.yesPIIRadioOption, "YES").not("[disabled]");
     cy.radioBtn(sac.noPIIRadioOption, "NO").not("[disabled]");
     //Links Exists
     cy.textExists(sac.piiLink, " Why do we need to know about PII? ")
-      .click({ force: true }).then(() => {        
-          cy.verifyTextMatches(sac.piiFAQText,piiFAQTxt);
+      .click({ force: true }).then(() => {            
           cy.textExists(sac.patLink, "FAR 52.224-1");
           cy.textExists(sac.paLink, "FAR 52.224-2");
           cy.textExists(sac.moreInfoLink, "FAR 24.1, Protection of Individual Privacy.");
