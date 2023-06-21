@@ -124,7 +124,6 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
     this.pocCor = await AcquisitionPackage.getContact("COR");
     this.pocAcor = AcquisitionPackage.hasAlternativeContactRep ?
       await AcquisitionPackage.getContact("ACOR") : undefined;
-    this.showChildren = true
     let fairOpportunity = AcquisitionPackage.fairOpportunity;
     if (fairOpportunity) {
       fairOpportunity = convertColumnReferencesToValues(
@@ -144,6 +143,7 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
         this.technicalContactData = _.cloneDeep(AcquisitionPackage.initContact);
       }
       this.savedData = fairOpportunity
+      this.showChildren = true
     }
   }
 

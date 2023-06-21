@@ -124,7 +124,6 @@ export default class CertificationPOCTypeForm extends Vue {
    * ATATRadioGroup
    */
   private get selectedOption(): RadioButton {
-    debugger
     const selectedOption = this.certificationPOCTypeOptions.find(certOption =>
       certOption.value === this._selectedSysId) as RadioButton
     if(selectedOption){
@@ -153,7 +152,7 @@ export default class CertificationPOCTypeForm extends Vue {
   }
 
   private get currentContactFormData(): ContactDTO {
-    debugger
+
     const countryCode = this.selectedPhoneCountry
       ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
       : undefined;
@@ -241,6 +240,7 @@ export default class CertificationPOCTypeForm extends Vue {
    * @see src/components/ATATContactForm
    */
   async setContactFormData(savedContactDTO: ContactDTO) {
+    debugger
     this.sysId = savedContactDTO.sys_id as string;
     this._newContactData.can_access_package = "true";
     const branches = await ContactData.LoadMilitaryBranches();
@@ -318,6 +318,7 @@ export default class CertificationPOCTypeForm extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    debugger
     this.setPOCPropertyNames();
     this.initializeCertificationPOCTypeOptions();
     await this.setContactFormData(this._newContactData);
