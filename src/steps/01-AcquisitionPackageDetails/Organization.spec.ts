@@ -30,7 +30,10 @@ const agencyRecords: AgencyDTO[] = [
 const disaOrgsList: SelectData[] = [
   { text: "Assistant to the Director (DD)", value: "ASSISTANT_TO_THE_DIRECTOR" },
   { text: "Chief of Staff (DDC)", value: "CHIEF_OF_STAFF" },
-  { text: "Defense Information Systems Agency (DISA)", value: "DEFENSE INFORMATION SYSTEMS AGENCY (DISA)" }
+  { 
+    text: "Defense Information Systems Agency (DISA)", 
+    value: "DEFENSE INFORMATION SYSTEMS AGENCY (DISA)" 
+  }
 ]
 const statesList: SelectData[] = [
   { text: "Alabama", value: "AL"},
@@ -131,7 +134,7 @@ describe("Testing Organization Component", () => {
     expect(await wrapper.vm.$data.savedData['disa_organization']).toBe(disaOrgsList[0].value);
   });
 
-  it("agencyChanged() - should set selected org and org name correctly when DISA org selected", async () => {
+  it("agencyChanged() - should set selected org and clear org name for DISA org", async () => {
     wrapper.vm.$data.selectedDisaOrg = disaOrgsList[2];
     wrapper.vm.$data.selectedAgency = disaOrgsList[2];
 
@@ -140,7 +143,7 @@ describe("Testing Organization Component", () => {
     expect(await wrapper.vm.$data.organizationName).toBe("");
   });
 
-  it("agencyChanged() - should set selected org and org name correctly when non-DISA org selected", async () => {
+  it("agencyChanged() - should clear selected org and set org name for non-DISA org", async () => {
     wrapper.vm.$data.selectedDisaOrg = disaOrgsList[1];
     wrapper.vm.$data.selectedAgency = disaOrgsList[1];
     wrapper.vm.$data.organizationName = "mockOrg";
@@ -200,7 +203,7 @@ describe("Testing Organization Component", () => {
     jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(() => {
       throw new Error("mock error");
     });
-    const saveOnLeave = await wrapper.vm.saveOnLeave();
+    await wrapper.vm.saveOnLeave();
     expect(console.log).toHaveBeenCalledWith(Error("mock error"));
   });
 
