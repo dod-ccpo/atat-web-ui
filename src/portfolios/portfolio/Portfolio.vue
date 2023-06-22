@@ -1550,7 +1550,6 @@ export default class PortfolioDashboard extends Vue {
       this.currentPoPStartISO = this.taskOrder.pop_start_date;
       this.currentPoPEndISO = this.taskOrder.pop_end_date;
     }
-    debugger;
 
     this.currentPoPStartStr = createDateStr(this.currentPoPStartISO, true);
     this.currentPoPEndStr = createDateStr(this.currentPoPEndISO, true);
@@ -1790,7 +1789,6 @@ export default class PortfolioDashboard extends Vue {
 
   public async processAlerts(): Promise<void> {
     this.fundingAlertData = await this.getAlerts(this.hasObligatedFundsInUpcomingCLIN);
-    debugger;
     //some of this functionality is temporary until we get
     //live data that matches the alerts
     if (
