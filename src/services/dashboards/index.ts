@@ -130,11 +130,8 @@ export class DashboardService {
     return clins;
   }
 
-  public async getAllCLINs(
-    taskOrderSysId: string, 
-  ): Promise<ClinDTO[]> {
+  public async getAllCLINs(taskOrderSysId: string): Promise<ClinDTO[]> {
     let query = "task_order=" + taskOrderSysId;
-
     const fields = "clin_number,funds_obligated"
     const config: AxiosRequestConfig = {
       params: {
@@ -142,7 +139,6 @@ export class DashboardService {
         sysparm_fields: fields,
       },
     };
-
     const clins = await api.clinTable.all(config);
     return clins;
   }
