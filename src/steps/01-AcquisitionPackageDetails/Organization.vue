@@ -157,9 +157,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import {
-  convertSystemChoiceToSelect,
   convertAgencyRecordToSelect,
   convertDisaOrgToSelect
 } from "@/helpers";
@@ -176,6 +174,7 @@ import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 
 @Component({
