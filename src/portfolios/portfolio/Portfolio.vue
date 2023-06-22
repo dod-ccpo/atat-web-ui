@@ -1410,7 +1410,7 @@ export default class PortfolioDashboard extends Vue {
         true
       );
       obj.totalFundsObligated = toCurrencyString(
-        parseInt(idiqClin.funds_obligated)
+        parseInt(idiqClin.funds_obligated.toString())
       );
       obj.lastMonthSpent = toCurrencyString(
         this.idiqClinSpendData[idiqClinNo].lastMonthSpend
@@ -1434,7 +1434,7 @@ export default class PortfolioDashboard extends Vue {
       this.totalSpendingObj.totalFundsSpent +=
         this.idiqClinSpendData[idiqClinNo].idiqClinTotalSpend;
       this.totalSpendingObj.totalFundsObligated += parseInt(
-        idiqClin.funds_obligated
+        idiqClin.funds_obligated.toString()
       );
       this.totalSpendingObj.lastMonthSpent +=
         this.idiqClinSpendData[idiqClinNo].lastMonthSpend;
@@ -1477,7 +1477,7 @@ export default class PortfolioDashboard extends Vue {
     // total portfolio funds is sum of each IDIQ CLIN's funds obligated
     this.idiqClins.forEach((clin) => {
       this.totalPortfolioFunds =
-        this.totalPortfolioFunds + parseInt(clin.funds_obligated);
+        this.totalPortfolioFunds + parseInt(clin.funds_obligated.toString());
     });
     
     // ATAT TODO -  adjust step size and Y Max based on total funds amount
@@ -1494,18 +1494,31 @@ export default class PortfolioDashboard extends Vue {
   public activeTaskOrderNumber = "";
   public activeTaskOrderSysId = "";
   public lastSyncDate = "";
+  public hasObligatedFundsInUpcomingCLIN = false;
+
+  public async checkForUpcomingObligatedFunds(data: PortFolioDashBoardDTO): Promise<void> {
+    const currentPeriodPrefix = data.currentCLINs[0].clin_number.slice(0,2);
+    const nextPeriodNumber = parseInt(currentPeriodPrefix) + 1;
+    const nextPeriodPrefix = "0" + nextPeriodNumber;
+    const nextPeriodCLINsWithOblFunds = data.allCLINs.filter(clin => {
+      return clin.clin_number.indexOf(nextPeriodPrefix) === 0 
+        && clin.funds_obligated.toString() !== "0";
+    })
+    this.hasObligatedFundsInUpcomingCLIN = nextPeriodCLINsWithOblFunds.length > 0;
+  }
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId;
 
     const data = await this.getDashboardData();
+    await this.checkForUpcomingObligatedFunds(data);
     
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
     this.costs.sort((a, b) => (a.year_month > b.year_month ? 1 : -1));
-    this.idiqClins = data.clins;
+    this.idiqClins = data.currentCLINs;
     this.idiqClins.sort((a, b) => (a.idiq_clin > b.idiq_clin ? 1 : -1));
 
     await this.calculateTotalFunds();
@@ -1537,6 +1550,7 @@ export default class PortfolioDashboard extends Vue {
       this.currentPoPStartISO = this.taskOrder.pop_start_date;
       this.currentPoPEndISO = this.taskOrder.pop_end_date;
     }
+    debugger;
 
     this.currentPoPStartStr = createDateStr(this.currentPoPStartISO, true);
     this.currentPoPEndStr = createDateStr(this.currentPoPEndISO, true);
@@ -1768,12 +1782,15 @@ export default class PortfolioDashboard extends Vue {
     return "$" + toCurrencyString(value, decimals);
   }
 
-  public async getAlerts(): Promise<FundingAlertData> {
-    return Portfolio.getFundingTrackerAlert(this.activeTaskOrderNumber);
+  public async getAlerts(hasObligatedFundsInUpcomingCLIN: boolean): Promise<FundingAlertData> {
+    return Portfolio.getFundingTrackerAlert(
+      { taskOrderNumber: this.activeTaskOrderNumber, hasObligatedFundsInUpcomingCLIN }
+    );
   }
 
   public async processAlerts(): Promise<void> {
-    this.fundingAlertData = await this.getAlerts();
+    this.fundingAlertData = await this.getAlerts(this.hasObligatedFundsInUpcomingCLIN);
+    debugger;
     //some of this functionality is temporary until we get
     //live data that matches the alerts
     if (

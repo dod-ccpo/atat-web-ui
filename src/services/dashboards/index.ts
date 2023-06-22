@@ -9,8 +9,9 @@ import { format, isBefore, parseISO } from "date-fns";
 
 export interface PortFolioDashBoardDTO {
   taskOrder: TaskOrderDTO;
-  clins: ClinDTO[];
   costs: CostsDTO[];
+  currentCLINs: ClinDTO[];
+  allCLINs: ClinDTO[];
 }
 
 export interface TaskOrderAggregate {
@@ -129,6 +130,24 @@ export class DashboardService {
     return clins;
   }
 
+  public async getAllCLINs(
+    taskOrderSysId: string, 
+  ): Promise<ClinDTO[]> {
+    let query = "task_order=" + taskOrderSysId;
+
+    const fields = "clin_number,funds_obligated"
+    const config: AxiosRequestConfig = {
+      params: {
+        sysparm_query: query,
+        sysparm_fields: fields,
+      },
+    };
+
+    const clins = await api.clinTable.all(config);
+    return clins;
+  }
+
+
   public async getCostsInCurrentPeriod(clins: string[]): Promise<CostsDTO[]> {
     let query = "clinIN" + clins.join(",");
     const fields =
@@ -164,19 +183,22 @@ export class DashboardService {
         );
       }
       
+      const allCLINs = await this.getAllCLINs(taskOrderSysId);
+      allCLINs.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
       // get sys_ids for all clins in current period
-      const currentCLINs = await this.getCLINsInCurrentPeriod(taskOrderSysId, taskOrder);
-      const clinSysIds = currentCLINs.map(obj => obj.sys_id);
+      const clinsInPeriod = await this.getCLINsInCurrentPeriod(taskOrderSysId, taskOrder);
+      clinsInPeriod.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
+      const clinSysIds = clinsInPeriod.map(obj => obj.sys_id);
 
       const clinRequests = clinSysIds.map((clin) => api.clinTable.retrieve(clin));
-      let clins = await Promise.all(clinRequests);
+      let currentCLINs = await Promise.all(clinRequests);
 
       const clin_labels = await api.systemChoices.getChoices(
         ClinTable,
         "idiq_clin"
       );
 
-      clins = clins.map((clin) => {
+      currentCLINs = currentCLINs.map((clin) => {
         const label = clin_labels.find(
           (label) => label.value === clin.idiq_clin
         );
@@ -191,7 +213,8 @@ export class DashboardService {
 
       return {
         taskOrder,
-        clins,
+        currentCLINs,
+        allCLINs,
         costs,
       };
     } catch (error) {
