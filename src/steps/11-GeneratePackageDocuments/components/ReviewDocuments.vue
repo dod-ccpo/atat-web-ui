@@ -14,7 +14,7 @@
     </div>
 
     <ATATAlert
-      v-if="needsSignatureLength && ditcoUser"
+      v-if="needsSignatureLength && isDitcoUser"
       id="Callout"
       class="my-10"
       type="warning"
@@ -29,7 +29,7 @@
     </ATATAlert>
 
     <ATATAlert
-    v-if="!ditcoUser"
+    v-if="!isDitcoUser"
     id="DITCOWhatsNextInfo"
     class="my-10"
     type="info"
@@ -111,7 +111,7 @@
                 :requiresSignature="acPackage.requiresSignature"
                 :additionalInfo="acPackage.description"
                 :alertText="acPackage.alertText"
-                :ditcoUser="ditcoUser"
+                :ditcoUser="isDitcoUser"
                 v-show="acPackage.show"
               ></PackageItem>
               <PackageItem
@@ -129,7 +129,7 @@ import { Component, Mixins, Prop, PropSync } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PackageItem from "./PackageItem.vue";
 import ATATAlert from "@/components/ATATAlert.vue"
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { isDitcoUser } from "@/store/acquisitionPackage";
 import FinancialDetails from "@/store/financialDetails";
 import { createDateStr } from "@/helpers";
 import Attachments from "@/store/attachments";
@@ -176,9 +176,10 @@ export default class ReviewDocuments extends Vue {
   get incrementallyFunded():string {
     return FinancialDetails.fundingRequirement?.incrementally_funded || "";
   }
-  get ditcoUser():boolean {
-    return AcquisitionPackage.acquisitionPackage?.contracting_shop === "DITCO"
-  }
+  get isDitcoUser(): boolean {
+    return isDitcoUser();
+  } 
+
   private async update(): Promise<void> {
     this._isGenerating = true;
   }
@@ -200,7 +201,7 @@ export default class ReviewDocuments extends Vue {
       this.lastUpdatedString =
         `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`
     }
-
+    
     this.packageCheckList = (await AcquisitionPackage.getSignedDocumentsList()).filter(
       signedDoc => signedDoc.show === true
     )
