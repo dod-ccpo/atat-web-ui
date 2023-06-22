@@ -1579,7 +1579,7 @@ export const CrossDomainResolver = (current: string): string => {
   }
   else if(current===routeNames.ClassificationRequirements
       || current===routeNames.SecurityRequirements){
-    return hasHigh
+    return hasHigh && !singleClassification
       ? routeNames.CrossDomain
       : routeNames.SummaryStepThree
   }
