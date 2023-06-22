@@ -385,7 +385,7 @@ export interface OtherServiceOfferingData {
   acquisitionPackageSysId?: string;
   instanceNumber: number;
   environmentType?: string;
-  classificationLevel?: string;
+  classificationLevel?: string | string[];
   deployedRegions?: string[];
   deployedRegionsOther?: string;
   descriptionOfNeed: string;

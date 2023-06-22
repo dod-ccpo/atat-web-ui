@@ -272,7 +272,6 @@ export const saveOrUpdateOtherServiceOffering =
         tempObject.sys_id = serviceOffering.sysId;
       let title = serviceGroupVerbiageInfo[offeringType.toUpperCase()].offeringName;
       let instanceType = "Instance";
-
       switch(offeringType){
       case "compute":
         tempObject.instance_name = "Compute Instance #" + serviceOffering.instanceNumber;
@@ -445,6 +444,9 @@ export const saveOrUpdateOtherServiceOffering =
               toTitleCase(offeringType
                 .replaceAll("_", " ")) + " #" + serviceOffering.instanceNumber;
         tempObject.service_type = offeringType.toUpperCase();
+        if(offeringType === "portability_plan"){
+          tempObject.classification_level = tempObject.classification_level.toString()
+        }
 
         if (offeringType === "training"){
           tempObject.training_facility_type = serviceOffering.trainingFacilityType;
@@ -463,14 +465,12 @@ export const saveOrUpdateOtherServiceOffering =
                 ? " - " + instanceType + " #" + serviceOffering.instanceNumber
                 :"")
 
-
         if(tempObject.sys_id){
           objSysId = tempObject.sys_id;
           await api.cloudSupportEnvironmentInstanceTable.update(
             tempObject.sys_id,
                 tempObject as CloudSupportEnvironmentInstanceDTO
           );
-
           await IGCEStore.updateIgceEstimateRecord({
             environmentInstanceSysId: objSysId,
             classificationLevelSysId: tempObject.classification_level,

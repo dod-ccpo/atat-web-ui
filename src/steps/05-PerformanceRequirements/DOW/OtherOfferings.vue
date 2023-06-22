@@ -74,7 +74,20 @@
     <v-form ref="form" lazy-validation>
 
       <div v-if="selectedClassificationLevelList.length > 1" class="mb-10">
+        <ATATCheckboxGroup
+          v-if="isPortabilityPlan"
+          id="ClassificationLevel"
+          groupLabel="What classification level(s) do you need a Portability Plan for?"
+          :value.sync="_serviceOfferingData.classificationLevel"
+          :items="classificationRadioOptions"
+          name="ClassificationLevel"
+          class="mt-3 mb-2"
+          :tooltipText="classificationTooltipText"
+          tooltipLabel="Classification level for this instance"
+          :rules="[$validators.required('Please select a classification level.')]"
+        />
         <ATATRadioGroup
+          v-else
           id="ClassificationLevel"
           legend="What classification level is this instance deployed in?"
           :value.sync="_serviceOfferingData.classificationLevel"
@@ -236,9 +249,11 @@ import {
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import classificationRequirements from "@/store/classificationRequirements";
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 @Component({
   components: {
+    ATATCheckboxGroup,
     ClassificationsModal,
     ComputeFormElements,
     AnticipatedDurationandUsage,
@@ -391,8 +406,19 @@ export default class OtherOfferings extends Vue {
       // if the classification level that was selected was removed via the modal,
       // clear out this._serviceOfferingData.classificationLevel
         const selectedSysId = this._serviceOfferingData.classificationLevel;
-        if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
-          this._serviceOfferingData.classificationLevel = "";
+        if(typeof selectedSysId === 'string'){
+          if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
+            this._serviceOfferingData.classificationLevel = "";
+          }
+        }else if(Array.isArray(selectedSysId)){
+          debugger
+          selectedSysId.forEach((sysId:string,idx:number) => {
+            if(this.modalSelectedOptions.indexOf(sysId) === -1
+              && this._serviceOfferingData.classificationLevel
+              && Array.isArray(this._serviceOfferingData.classificationLevel)){
+              this._serviceOfferingData.classificationLevel.splice(idx,1)
+            }
+          })
         }
       }
       ClassificationRequirements.createToast();

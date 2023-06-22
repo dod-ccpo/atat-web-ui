@@ -298,7 +298,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-
       if (this.serviceGroupOnLoad) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
         if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
