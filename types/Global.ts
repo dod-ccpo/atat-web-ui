@@ -570,7 +570,6 @@ export interface PortfolioAdmin {
   hasUnclassifiedAccess?: YesNo;
   unclassifiedEmail?: string;
   hasScrtAccess?: YesNo;
-  hasTSAccess?: YesNo;
   scrtEmail?: string;
   hasTSAccess?: YesNo;
   tsEmail?: string;
