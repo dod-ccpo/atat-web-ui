@@ -803,13 +803,6 @@ export class PortfolioDataStore extends VuexModule {
           ? FundingAlertTypes.POPExpiresSoonWithTOClin
           : FundingAlertTypes.POPExpiresSoonNoTOClin;
       }
-      // fundingAlertData.fundingAlertType = fundingAlertData.daysRemaining <= 0 
-      //   ? FundingAlertTypes.POPExpired 
-      //   : fundingAlertData.daysRemaining > 60 
-      //     ? fundingAlertData.fundingAlertType 
-      //     : FundingAlertTypes.POPExpiresSoonNoTOClin;
-      // EJY here check if CLINs in next period have obligated funds?
-      // OR have backend flow handle this?
 
       if (fundingAlertData.daysRemaining <= 60){
         this.setStatus(Statuses.AtRisk.value);
