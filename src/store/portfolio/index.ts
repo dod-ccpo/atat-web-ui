@@ -40,6 +40,27 @@ export const FundingAlertTypes = {
   POPExpired: "POPExpired",
 };
 
+interface CSPAdmin {
+  dodId: string,
+  email: string,
+}
+interface EnvironmentForProvisioning {
+  cspName: string;
+  operators: CSPAdmin[]
+}
+
+export interface CSPProvisioningData {
+  name: string;
+  classification_level?: string;
+  cloud_distinguisher?: CloudDistinguisher;
+}
+
+interface CloudDistinguisher {
+  description?: string;
+  display_name?: string;
+  name?: string;
+}
+
 export interface FundingAlertData {
   alerts: AlertDTO[],
   daysRemaining: number,
@@ -105,7 +126,6 @@ export class PortfolioDataStore extends VuexModule {
     this.showTOPackageSelection = bool;
   }
 
-
   public didNotUseDAPPS = false;
   @Action({rawError: true})
   public async setDidNotUseDAPPS(bool: boolean): Promise<void> {
@@ -132,7 +152,6 @@ export class PortfolioDataStore extends VuexModule {
     return this.selectedAcquisitionPackageSysId;
   }
   
-
   public portfolioProvisioningObj: PortfolioProvisioning 
     = _.cloneDeep(initialPortfolioProvisioningObj());
  
@@ -141,64 +160,143 @@ export class PortfolioDataStore extends VuexModule {
     return this.portfolioProvisioningObj;
   }
 
+  public CSPProvisioningData: CSPProvisioningData[] = [];
+  public CSPHasImpactLevels = false;
+  public get doesCSPHaveImpactLevels(): boolean {
+    return this.CSPHasImpactLevels;
+  }
+  @Action({ rawError: true})
+  public async setCSPProvisioningData(): Promise<void> {
+    try {
+      let cspData: CSPProvisioningData[] = [];
+      let hasCloudDistinguishers = false;
+      const csp = this.portfolioProvisioningObj.csp?.toUpperCase();
+      const response = await api.cloudServiceProviderTable.getQuery({
+        params: {
+          sysparm_fields: "name,cloud_distinguisher,classification_level",
+          sysparm_query: "vendorIN" + csp
+        }
+      });
+      response.forEach(obj => {
+        let csp: CSPProvisioningData = { 
+          name: obj.name, 
+          classification_level: obj.classification_level,
+          cloud_distinguisher: {} 
+        };
+        const cd = obj.cloud_distinguisher;
+        if (cd && cd.length) {
+          const cdObj = JSON.parse(cd);
+          csp.cloud_distinguisher = cdObj;
+          hasCloudDistinguishers = true;
+        }
+        cspData.push(csp);
+      });
+      cspData = cspData.sort((a,b) => a.name > b.name ? 1 : -1)
+      await this.doSetCSPProvisioningData({cspData, hasCloudDistinguishers});
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  @Mutation
+  public async doSetCSPProvisioningData(data: {
+    cspData: CSPProvisioningData[],
+    hasCloudDistinguishers: boolean
+  }
+  ): Promise<void> {
+    this.CSPProvisioningData = data.cspData;
+    this.CSPHasImpactLevels = data.hasCloudDistinguishers;
+  }
+
+  public envsForProvisioning: EnvironmentForProvisioning[] = [];
+  @Mutation
+  public addEnvForProvisioning(data: { 
+    cspName: string, admin: CSPAdmin}
+  ): void {
+    const i = this.envsForProvisioning.findIndex(obj => obj.cspName === data.cspName);
+    if (i > -1) {
+      this.envsForProvisioning[i].operators.push(data.admin);
+    } else {
+      this.envsForProvisioning.push(
+        {cspName: data.cspName, operators: [data.admin]}
+      );
+    }
+  }
+
   @Action({rawError: true})
   public async startProvisioning(): Promise<void> {
-    let portfolioName=""
-    let portfolioAgency = ""
-    if (this.selectedAcquisitionPackageSysId) {
-      const packageId = this.selectedAcquisitionPackageSysId;
-      const acquisitionPackage = convertColumnReferencesToValues(
-        await api.acquisitionPackageTable.retrieve(packageId)
-      );
-      if(acquisitionPackage.project_overview){
-        const overviewId = acquisitionPackage.project_overview as string
-        const projectOverview = await api.projectOverviewTable.retrieve(
-          overviewId
+    try {
+      let portfolioName=""
+      let portfolioAgency = ""
+      if (this.selectedAcquisitionPackageSysId) {
+        const packageId = this.selectedAcquisitionPackageSysId;
+        const acquisitionPackage = convertColumnReferencesToValues(
+          await api.acquisitionPackageTable.retrieve(packageId)
         );
-        if(projectOverview){
-          portfolioName = projectOverview.title
+        if(acquisitionPackage.project_overview){
+          const overviewId = acquisitionPackage.project_overview as string
+          const projectOverview = await api.projectOverviewTable.retrieve(
+            overviewId
+          );
+          if(projectOverview){
+            portfolioName = projectOverview.title
+          }
         }
-      }
-      if(acquisitionPackage.organization){
-        const organizationId = acquisitionPackage.organization as string
-        const organizationInfo = convertColumnReferencesToValues(await api.organizationTable
-          .retrieve(organizationId));
-        if(organizationInfo){
-          portfolioAgency = organizationInfo.agency || ""
+        if(acquisitionPackage.organization){
+          const organizationId = acquisitionPackage.organization as string
+          const organizationInfo = convertColumnReferencesToValues(await api.organizationTable
+            .retrieve(organizationId));
+          if(organizationInfo){
+            portfolioAgency = organizationInfo.agency || ""
+          }
         }
       }
 
+      const unclassCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "U");
+      const unclassName = unclassCSP?.name as string;
+      const scrtCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "S");
+      const scrtName = scrtCSP?.name as string;
+      const tsCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "TS");
+      const tsName = tsCSP?.name as string;
+
+      this.portfolioProvisioningObj.admins?.forEach(admin => {
+        if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
+          if (admin.impactLevels && admin.impactLevels.length) {
+            const dodId = admin.DoDId;
+            const email = admin.unclassifiedEmail;
+            admin.impactLevels.forEach(il => {
+              const adm: CSPAdmin = { dodId, email }
+              this.addEnvForProvisioning({ cspName: il, admin: adm });
+            });
+          } else {
+            const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.unclassifiedEmail};
+            this.addEnvForProvisioning({ cspName: unclassName, admin: adm });
+          }      
+        }
+        if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
+          const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.scrtEmail};
+          this.addEnvForProvisioning({ cspName: scrtName, admin: adm });
+        }
+        if (admin.hasTSAccess && admin.tsEmail && admin.DoDId) {
+          const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.tsEmail};
+          this.addEnvForProvisioning({ cspName: tsName, admin: adm });
+        }
+      });
+
+      const provisioningPostObj = {
+        portfolioName: portfolioName || this.portfolioProvisioningObj.portfolioTitle,
+        portfolioAgency: portfolioAgency || this.portfolioProvisioningObj.serviceOrAgency,
+        environments: this.envsForProvisioning
+      }
+      await api.edaApi.provisionPortfolio(
+        provisioningPostObj,
+        this.portfolioProvisioningObj.taskOrderNumber as string,
+        this.selectedAcquisitionPackageSysId
+      );
+    } 
+    catch(error) {
+      // ATAT TODO - add graceful fail message to user in UI
+      throw new Error(`Error provisioning portfolio: ${error}`);
     }
-    const unclassifiedOperators: Record<string, string>[] = [];
-    const scrtOperators: Record<string, string>[] = [] 
-    this.portfolioProvisioningObj.admins?.forEach(admin => {
-      if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
-        unclassifiedOperators.push({ dodId: admin.DoDId, email: admin.unclassifiedEmail });
-      }
-      if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
-        scrtOperators.push({ dodId: admin.DoDId, email: admin.scrtEmail });
-      }
-    });
-
-    const provisioningPostObj = {
-      portfolioName: portfolioName || this.portfolioProvisioningObj.portfolioTitle,
-      portfolioAgency: portfolioAgency || this.portfolioProvisioningObj.serviceOrAgency,
-      environments: {
-        Unclassified: {
-          operators: unclassifiedOperators
-        },
-        Secret: {
-          operators: scrtOperators
-        }
-      }
-    }
-
-    // const 
-
-    await api.edaApi.provisionPortfolio(
-      provisioningPostObj,
-      this.portfolioProvisioningObj.taskOrderNumber as string,
-      this.selectedAcquisitionPackageSysId)
   }
 
   /**
@@ -370,9 +468,19 @@ export class PortfolioDataStore extends VuexModule {
     return this.portfolioSummaryQueryParams;
   }
 
+  @Action({rawError: true})
+  public async initProvisioningFromResponse(data: PortfolioProvisioning): Promise<void> {
+    await this.doInitProvisioningFromResponse(data);
+    await this.setCSPProvisioningData();
+  }
+  @Mutation
+  public async doInitProvisioningFromResponse(data: PortfolioProvisioning): Promise<void> {
+    this.portfolioProvisioningObj = data;
+  }
+  
   @Action({rawError: true}) 
   public async setPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
-    this.doSetPortfolioProvisioning(data);
+    await this.doSetPortfolioProvisioning(data);
   }
 
   @Mutation
@@ -391,7 +499,6 @@ export class PortfolioDataStore extends VuexModule {
         csps: [],
       }
     );  
-
   }
 
   @Action
@@ -844,6 +951,11 @@ export class PortfolioDataStore extends VuexModule {
     this.didNotUseDAPPS = false;
     this.showTOPackageSelection = true;
     this.portfolioCreator = {};
+    this.selectedAcquisitionPackageSysId = "";
+    this.CSPProvisioningData = [];
+    this.CSPHasImpactLevels = false;    
+    this.envsForProvisioning = [];
+    this.activeTaskOrderNumber = "";
   }
 
 }

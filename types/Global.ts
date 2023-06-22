@@ -572,6 +572,8 @@ export interface PortfolioAdmin {
   hasScrtAccess?: YesNo;
   hasTSAccess?: YesNo;
   scrtEmail?: string;
+  hasTSAccess?: YesNo;
+  tsEmail?: string;
   impactLevels?:string[]
 }
 
