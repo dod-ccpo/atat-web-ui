@@ -13,6 +13,7 @@ import {
 import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
 
+
 export const isStepTouched = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
@@ -290,11 +291,11 @@ export class SummaryStore extends VuexModule {
   ): Promise<boolean>{
     // validate CDS
     let isCDSComplete = false;
-    const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
     const oneClassification =
-      onlyOneClassification(ClassificationRequirements.selectedClassificationLevels)
+        onlyOneClassification(ClassificationRequirements.selectedClassificationLevels)
 
     let isCDSDurationValid = false;
+    const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
     if(oneClassification || cds.cross_domain_solution_required === "NO"){
       return true
     }
@@ -354,7 +355,7 @@ export class SummaryStore extends VuexModule {
   public async isComplete(
     config:{
       object: object
-      keysToIgnore: string[], 
+      keysToIgnore: string[],
     }): Promise<boolean>{
     return  config.object && Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
