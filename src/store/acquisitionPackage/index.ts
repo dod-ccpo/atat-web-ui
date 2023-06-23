@@ -382,6 +382,7 @@ export class AcquisitionPackageStore extends VuexModule {
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContracts: CurrentContractDTO[] | null = null;
+  hasCurrentOrPreviousContracts = "";
   currentContractInstanceNumber = 1;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   contractType: ContractTypeDTO | null = null;
@@ -852,6 +853,15 @@ export class AcquisitionPackageStore extends VuexModule {
       }
     }) as CurrentContractDTO[];
     return contracts;
+  }
+  @Action({rawError: true})
+  public async setHasCurrentOrPreviousContracts(hasContracts: string): Promise<void> {
+    await this.doSetHasCurrentOrPreviousContracts(hasContracts);
+  }
+
+  @Mutation
+  public async doSetHasCurrentOrPreviousContracts(value: string): Promise<void> {
+    this.hasCurrentOrPreviousContracts = value
   }
 
   @Action({rawError: true})
