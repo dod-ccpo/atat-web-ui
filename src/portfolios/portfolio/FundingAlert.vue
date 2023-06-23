@@ -13,6 +13,7 @@
         <a role="button">add a new task order</a>
         to continue working with this portfolio.
       </div>
+
       <div
         id="popExpiresSoonWithToClinAlert"
         class="mb-0"
@@ -23,6 +24,7 @@
         You have obligated funds in an upcoming CLIN, so there will be no gap in
         funding for this portfolio.
       </div>
+
       <div
         id="popExpiresSoonWithLowFundsAlert"
         class="mb-0"
@@ -34,6 +36,7 @@
         <a role="button">add a new task order</a>
         to ensure there are no gaps in funding for this portfolio.
       </div>
+
       <div
         id="popLowFundsAlert"
         class="mb-0"
@@ -45,6 +48,7 @@
         period of performance. You can request a modification
         or add a new task order, if necessary.
       </div>
+
       <div
         id="popFundsAt100Percent"
         class="mb-0"
@@ -59,6 +63,7 @@
           of the period of performance.
         </p>
       </div>
+
       <div
         id="popFundsDepleted"
         class="mb-0"
@@ -70,6 +75,7 @@
           soon as possible to continue working with this portfolio.
         </p>
       </div>
+
       <div id="popExpired" class="mb-0" v-if="fundingAlertType === popExpired">
         <div class="h3">
           This portfolio&#8217;s period of performance has expired.
@@ -81,6 +87,7 @@
           portfolio at the end of the most recent PoP.
         </p>
       </div>
+
     </template>
   </ATATAlert>
 </template>
@@ -96,10 +103,8 @@ import { FundingAlertTypes } from "@/store/portfolio";
   },
 })
 export default class FundingAlert extends Vue {
-  @Prop({ default: FundingAlertTypes.POPExpiresSoonNoTOClin })
-  private fundingAlertType?: string;
-  @Prop({ default: 0 })
-  private timeRemaining?: number;
+  @Prop({}) private fundingAlertType?: string;
+  @Prop({ default: 0 }) private timeRemaining?: number;
 
   private pOPExpiresSoonNoTOClin = FundingAlertTypes.POPExpiresSoonNoTOClin;
   private popExpiresSoonWithTOClin = FundingAlertTypes.POPExpiresSoonWithTOClin;

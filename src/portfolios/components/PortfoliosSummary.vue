@@ -102,9 +102,7 @@
       />
       <!-- ATAT TODO - remove isProdEnv when ATAT ready for PROD -->
 
-      <div class="_table-pagination mt-5" 
-        v-show="showPagination"
-      >
+      <div class="_table-pagination mt-5" v-show="showPagination">
         <span class="mr-11 font-weight-400 font-size-14">
           Showing {{ startingNumber }}-{{ endingNumber }} of {{ portfolioCount }}
         </span>
@@ -191,10 +189,6 @@ export default class PortfoliosSummary extends Vue {
   public offset = 0;
   public paging = false;
 
-  public get showPagination(): boolean {
-    return this.portfolioCount > this.recordsPerPage && !this.isHomeView;
-  }
-
   public portfolioCardData: PortfolioCardData[] = [];
   public isLoading = false;
   public searchString = "";
@@ -230,6 +224,10 @@ export default class PortfoliosSummary extends Vue {
 
   public get hasFilters(): boolean {
     return this.filterChips.length > 0;
+  }
+
+  public get showPagination(): boolean {
+    return !this.isHomeView && (this.portfolioCount > this.recordsPerPage);
   }
 
   public async removeFilter(index: number): Promise<void> {
