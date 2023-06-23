@@ -11,7 +11,6 @@ import acor from "../selectors/acor.sel";
 import background from "../selectors/background.sel";
 import contractDetails from "../selectors/contractDetails.sel";
 import { cleanText, colors, prefixId } from "../helpers";
-import sac from "../selectors/standComp.sel";
 import occ from "../selectors/occ.sel";
 import fd from "../selectors/financialDetails.sel";
 import performanceReqs from "../selectors/performanceReqs.sel";
@@ -210,6 +209,18 @@ Cypress.Commands.add("btnClick", (selector, text) => {
       .and("have.text", text)
       .click();
   });
+});
+
+Cypress.Commands.add("clickBackButton", (selector,headerText) => {
+  cy.btnClick(common.backBtn, "Back");
+  cy.waitUntilElementIsGone(selector);
+  cy.verifyPageHeader(headerText);
+});
+
+Cypress.Commands.add("clickContinueButton", (selector,headerText) => {
+  cy.btnClick(common.continueBtn, " Continue ");
+  cy.waitUntilElementIsGone(selector);
+  cy.verifyPageHeader(headerText);
 });
 
 Cypress.Commands.add("clickLink", (selector) => {
@@ -1033,51 +1044,7 @@ Cypress.Commands.add("selectTMCheckbox", (inputText) => {
     );    
     cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
   });
-})
-
-Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(sac.piiRadioOtionActive).then(($radioBtn) => {
-    const selectedOption = cleanText($radioBtn.text());
-    cy.log(selectedOption);
-    cy.btnExists(common.continueBtn, " Continue ").click();
-    if (
-      selectedOption ===
-      "radio_button_checkedYes." +
-        " This contract action will include a system of records with PII."
-    ) {
-      //naviagtes to "Tell us more about your system of records screen"
-      cy.textExists(
-        common.header,
-        " Tell us more about your system of records "
-      );
-    } else {
-      cy.textExists(
-        common.header,
-        "Let’s find out if you need a Business Associates Agreement"
-      );
-    }
-  });
 });
-
-Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(sac.foiaRadioOptionActive).then(($radioBtn) => {
-    const selectedOption = $radioBtn.text();
-    cy.log(selectedOption);
-    cy.btnExists(common.continueBtn, " Continue ").click();
-    if (selectedOption === "radio_button_checkedYes.") {
-      //naviagtes to "Tell us more about your FOIA Cordinator screen"
-      cy.textExists(common.header, " Tell us about your FOIA Coordinator ");
-    } else {
-      cy.textExists(
-        common.header,
-        "Let’s look into your Section 508 Accessibility requirements"
-      );
-    }
-  });
-});
-
 
 Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true }).should("be.checked");
@@ -1114,29 +1081,6 @@ Cypress.Commands.add("trainingCourseExists", () => {
   });
 });
 
-Cypress.Commands.add("select508Option", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(sac.sectionradioActive).then(($radioBtn) => {
-    const selectedOption = cleanText($radioBtn.text());
-    cy.log(selectedOption);
-    cy.findElement(common.continueBtn).scrollIntoView().click();
-    if (
-      selectedOption ===
-      "radio_button_checkedNo." +
-        " I need to customize the Section 508 Accessibility Standards in my Description of Work."
-    ) {
-      //Tell us more about your Section 508 Accessibility requirements"
-      cy.verifyPageHeader(
-        "Tell us more about your Section 508 Accessibility requirements"
-      );
-    } else {
-      //navigates to next step in the workflow
-      cy.findElement(common.stepFinancialDetailsText)
-        .should("be.visible")
-        .and("have.css", "color", colors.primary);
-    }
-  });
-});
 
 Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {
   cy.selectCheckBoxes(checkboxes);
