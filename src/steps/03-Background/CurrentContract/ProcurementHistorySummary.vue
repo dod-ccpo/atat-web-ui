@@ -244,7 +244,19 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   public async addInstance(): Promise<void> {
+    await this.initializeDataSource();
     this.navigate();
+  }
+
+  /**
+   * initializes data source if data source is empty
+   */
+  public async initializeDataSource(): Promise<void>{
+    if (!this.dataSource){ 
+      await AcquisitionPackage.setCurrentContractInstanceNumber(0);
+      this.dataSource=[];
+      this.dataSource.push(initialCurrentContract())
+    }
   }
 
   /**
@@ -283,9 +295,11 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      this.sortDataSource();
-      await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
-      await AcquisitionPackage.updateCurrentContractsSNOW(this.dataSource)
+      if (this.dataSource.length > 0){
+        this.sortDataSource();
+        await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
+        await AcquisitionPackage.updateCurrentContractsSNOW(this.dataSource)
+      }
     } catch (error) {
       console.log(error);
     }

@@ -127,6 +127,7 @@ export interface CurrentContractDTO extends BaseTableDTO {
   sys_id?: string;
   is_valid?:boolean;
   sys_created_on?: string;
+  is_current?: boolean;
 }
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {

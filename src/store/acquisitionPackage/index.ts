@@ -72,7 +72,7 @@ import {
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
 import Summary from "../summary";
-import { format } from "date-fns";
+import { compareAsc, format } from "date-fns";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
@@ -382,6 +382,7 @@ export class AcquisitionPackageStore extends VuexModule {
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContracts: CurrentContractDTO[] | null = null;
+  hasCurrentOrPreviousContracts = "";
   currentContractInstanceNumber = 1;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   contractType: ContractTypeDTO | null = null;
@@ -842,13 +843,25 @@ export class AcquisitionPackageStore extends VuexModule {
     }) || [];
 
     const contracts = contractsFromSNOW.map((cc, index)=>{
+      const is_current = cc.contract_order_expiration_date 
+        && compareAsc(new Date(),new Date(cc.contract_order_expiration_date))=== -1
       return{
         acquisition_package: AcquisitionPackage.packageId,
         is_valid: true,
+        is_current,
         ...cc
       }
     }) as CurrentContractDTO[];
     return contracts;
+  }
+  @Action({rawError: true})
+  public async setHasCurrentOrPreviousContracts(hasContracts: string): Promise<void> {
+    await this.doSetHasCurrentOrPreviousContracts(hasContracts);
+  }
+
+  @Mutation
+  public async doSetHasCurrentOrPreviousContracts(value: string): Promise<void> {
+    this.hasCurrentOrPreviousContracts = value
   }
 
   @Action({rawError: true})
@@ -1605,11 +1618,7 @@ export class AcquisitionPackageStore extends VuexModule {
           const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
           await this.doSetCurrentContracts(tempArray);
         }
-      } else {
-        this.setCurrentContract(
-          initialCurrentContract()
-        );
-      }
+      } 
       this.setPackagePercentLoaded(65);
 
       if(sensitiveInfoSysId){
@@ -1814,7 +1823,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setContact({ data: initialContact(), type: "Financial POC" })
-          this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
 
           await this.setFairOpportunity(initialFairOpportunity());
