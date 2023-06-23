@@ -295,9 +295,11 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      this.sortDataSource();
-      await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
-      await AcquisitionPackage.updateCurrentContractsSNOW(this.dataSource)
+      if (this.dataSource.length > 0){
+        this.sortDataSource();
+        await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
+        await AcquisitionPackage.updateCurrentContractsSNOW(this.dataSource)
+      }
     } catch (error) {
       console.log(error);
     }
