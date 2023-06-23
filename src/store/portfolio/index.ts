@@ -869,7 +869,7 @@ export class PortfolioDataStore extends VuexModule {
     }
 
     const alerts = await this.getAlerts(data.taskOrderNumber);
-   
+
     alerts.forEach(alert=>{
       if(alert.alert_type == AlertTypes.SPENDING_ACTUAL &&
         !fundingAlertData.alerts.some(alert=>alert.alert_type == AlertTypes.SPENDING_ACTUAL) ){
@@ -920,11 +920,9 @@ export class PortfolioDataStore extends VuexModule {
     }
 
     if(fundingAlertData){
-      fundingAlertData.fundingAlertType = fundingAlertData.spendingViolation < 100 
-        ? (fundingAlertData.spendingViolation < 90 
-            ? fundingAlertData.fundingAlertType 
-            : FundingAlertTypes.POPLowFunds)
-        : FundingAlertTypes.POPFundsDepleted;
+      fundingAlertData.fundingAlertType = fundingAlertData.spendingViolation >= 100 
+        ? FundingAlertTypes.POPFundsDepleted
+        : FundingAlertTypes.POPLowFunds;
 
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
         this.setStatus(Statuses.AtRisk.value);

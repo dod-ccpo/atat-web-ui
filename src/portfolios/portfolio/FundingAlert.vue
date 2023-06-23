@@ -6,7 +6,7 @@
         <h3 v-if="showAlertHeading">
           {{ getAlertHeading }}
         </h3>
-        {{ getAlertText }}
+        <p v-html="getAlertText" />
       </div>
 
     </template>
