@@ -31,7 +31,7 @@ export const AlertTypes =  {
 }
 
 export const FundingAlertTypes = {
-  POPExpiresSoonNoTOClin: "POPExpiresSoonDaysNoTOClin",
+  POPExpiresSoonNoTOClin: "POPExpiresSoonNoTOClin",
   POPExpiresSoonWithTOClin: "POPExpiresSoonWithTOClin",
   POPExpiresSoonWithLowFunds: "POPExpiresSoonWithLowFunds",
   POPLowFunds: "POPLowFunds",
@@ -869,7 +869,7 @@ export class PortfolioDataStore extends VuexModule {
     }
 
     const alerts = await this.getAlerts(data.taskOrderNumber);
-   
+
     alerts.forEach(alert=>{
       if(alert.alert_type == AlertTypes.SPENDING_ACTUAL &&
         !fundingAlertData.alerts.some(alert=>alert.alert_type == AlertTypes.SPENDING_ACTUAL) ){
@@ -901,7 +901,6 @@ export class PortfolioDataStore extends VuexModule {
 
     fundingAlertData.daysRemaining = timeRemainingAlert ? 
       Number(timeRemainingAlert.threshold_violation_amount.replace('days','')) : 0;
-    
     if (timeRemainingAlert) {
       if (fundingAlertData.daysRemaining <= 0) {
         fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpired;
@@ -911,20 +910,18 @@ export class PortfolioDataStore extends VuexModule {
           : FundingAlertTypes.POPExpiresSoonNoTOClin;
       }
 
-      if (fundingAlertData.daysRemaining <= 60){
-        this.setStatus(Statuses.AtRisk.value);
-      }
-      if (fundingAlertData.daysRemaining <=0 ) {
+      if (fundingAlertData.daysRemaining <= 0 ) {
         this.setStatus(Statuses.Expired.value);
+      } else if (fundingAlertData.daysRemaining <= 60){
+        this.setStatus(Statuses.AtRisk.value);
       }
   
     }
 
-    if(fundingAlertData){
-      fundingAlertData.fundingAlertType = 
-       fundingAlertData.spendingViolation < 100 ? 
-         (fundingAlertData.spendingViolation < 90 ? fundingAlertData.fundingAlertType :
-           FundingAlertTypes.POPLowFunds): FundingAlertTypes.POPFundsDepleted;
+    if(lowFundsAlert){
+      fundingAlertData.fundingAlertType = fundingAlertData.spendingViolation >= 100 
+        ? FundingAlertTypes.POPFundsDepleted
+        : FundingAlertTypes.POPLowFunds;
 
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
         this.setStatus(Statuses.AtRisk.value);
