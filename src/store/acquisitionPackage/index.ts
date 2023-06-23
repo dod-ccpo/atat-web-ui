@@ -1618,11 +1618,7 @@ export class AcquisitionPackageStore extends VuexModule {
           const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
           await this.doSetCurrentContracts(tempArray);
         }
-      } else {
-        this.setCurrentContract(
-          initialCurrentContract()
-        );
-      }
+      } 
       this.setPackagePercentLoaded(65);
 
       if(sensitiveInfoSysId){
@@ -1827,7 +1823,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setContact({ data: initialContact(), type: "Financial POC" })
-          this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
 
           await this.setFairOpportunity(initialFairOpportunity());
