@@ -7,7 +7,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import { EvaluationPlanDTO, SelectedClassificationLevelDTO } from "@/api/models";
+import {EvaluationPlanDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
@@ -219,10 +219,9 @@ export const CurrentContractRouteResolver = (current: string): string => {
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const currentContracts =  AcquisitionPackage.currentContracts || [];
   const fromCurrentContract =  current === routeNames.CurrentContract;
-  const doesNotNeedContract = currentContracts.every(
-    (c)=>c.current_contract_exists==="NO"
-  )
-  const hasExistingContracts = numberOfExistingContracts()>0;
+  const doesNotNeedContract = AcquisitionPackage.hasCurrentOrPreviousContracts === "NO"
+  const hasExistingContracts = AcquisitionPackage.hasCurrentOrPreviousContracts === "YES"
+    && currentContracts.length > 0
   const fromProcurementHistory = current === routeNames.ProcurementHistorySummary;
 
   const hasSingleInvalidContract = 
@@ -245,13 +244,9 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     hasExceptionToFairOpp()
     && fromCurrentContract
   ){
-    return routeNames.ProcurementHistorySummary;
-  } else if (
-    current !== routeNames.ProcurementHistorySummary
-    && hasExistingContracts
-    && hasExceptionToFairOpp() 
-  ){
-    return routeNames.ProcurementHistorySummary;
+    return hasExistingContracts
+      ? routeNames.ProcurementHistorySummary
+      : routeNames.CurrentContractDetails
   } else if (
     fromProcurementHistory
   ){
@@ -264,14 +259,6 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 };
 
 
-const numberOfExistingContracts =(): number =>{
-  const currentContracts = AcquisitionPackage.currentContracts; 
-  const isExistingCurrentContracts = currentContracts !== null
-    && currentContracts.every((c)=> c.current_contract_exists==="YES");
-  return isExistingCurrentContracts 
-    ? currentContracts?.length || 0
-    : 0;
-}
 
 export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
   const currentContracts =  AcquisitionPackage.currentContracts || [];

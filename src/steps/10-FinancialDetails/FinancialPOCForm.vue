@@ -134,6 +134,11 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
     const email = this.email;
     const grade_civ ="";
     const title = "";
+
+    const acqPkgId = AcquisitionPackage.acquisitionPackage
+      ? AcquisitionPackage.acquisitionPackage.sys_id as string
+      : "";
+
     return {
       first_name,
       last_name,
@@ -143,14 +148,15 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
       suffix,
       salutation,
       phone: phone || "",
-      phone_extension: phoneExt || "", // not used on Mission Owner contact entry form
+      phone_extension: phoneExt || "",
       email,
       type: "Financial POC",
       dodaac: "",
       can_access_package: "true",
       grade_civ,
       title,
-      manually_entered: "", // not used on Mission Owner contact entry form
+      manually_entered: "", 
+      acquisition_package: acqPkgId,
     };
   }
 
