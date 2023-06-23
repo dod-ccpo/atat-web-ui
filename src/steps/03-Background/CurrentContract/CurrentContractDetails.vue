@@ -387,7 +387,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     await this.loadContract();    
-    console.log(this.currentContract);
     if (this.currentContract) {
       const keys: string[] = [
         "incumbent_contractor_name",
@@ -409,7 +408,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         }
       });
     } else {
-      debugger;
       AcquisitionPackage.setCurrentContract(this.currentData);
     }
   }
