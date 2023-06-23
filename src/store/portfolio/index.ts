@@ -911,20 +911,20 @@ export class PortfolioDataStore extends VuexModule {
           : FundingAlertTypes.POPExpiresSoonNoTOClin;
       }
 
-      if (fundingAlertData.daysRemaining <= 60){
-        this.setStatus(Statuses.AtRisk.value);
-      }
-      if (fundingAlertData.daysRemaining <=0 ) {
+      if (fundingAlertData.daysRemaining <= 0 ) {
         this.setStatus(Statuses.Expired.value);
+      } else if (fundingAlertData.daysRemaining <= 60){
+        this.setStatus(Statuses.AtRisk.value);
       }
   
     }
 
     if(fundingAlertData){
-      fundingAlertData.fundingAlertType = 
-       fundingAlertData.spendingViolation < 100 ? 
-         (fundingAlertData.spendingViolation < 90 ? fundingAlertData.fundingAlertType :
-           FundingAlertTypes.POPLowFunds): FundingAlertTypes.POPFundsDepleted;
+      fundingAlertData.fundingAlertType = fundingAlertData.spendingViolation < 100 
+        ? (fundingAlertData.spendingViolation < 90 
+            ? fundingAlertData.fundingAlertType 
+            : FundingAlertTypes.POPLowFunds)
+        : FundingAlertTypes.POPFundsDepleted;
 
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
         this.setStatus(Statuses.AtRisk.value);
