@@ -289,6 +289,10 @@ export default class CommonCorAcor extends Vue {
       phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
     }
 
+    const acqPkgId = AcquisitionPackage.acquisitionPackage
+      ? AcquisitionPackage.acquisitionPackage.sys_id as string
+      : "";
+
     return {
       type: this.corOrAcor, // COR, ACOR
       role: this.selectedRole, // Military, Civilian
@@ -306,6 +310,7 @@ export default class CommonCorAcor extends Vue {
       dodaac: this.dodaac,
       can_access_package: this.selectedAccessToEdit,
       manually_entered: this.showContactForm ? "true" : "false",
+      acquisition_package: acqPkgId
     };
   }
 

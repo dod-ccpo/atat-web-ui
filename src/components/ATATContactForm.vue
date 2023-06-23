@@ -253,6 +253,7 @@ export default class ATATContactForm extends Vue {
   private contactTypeChange(): void {
     if(this.loaded){
       this.resetData();
+      this.$emit("resetContactForm");
     }
 
   }
