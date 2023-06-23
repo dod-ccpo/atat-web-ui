@@ -31,7 +31,7 @@ export const AlertTypes =  {
 }
 
 export const FundingAlertTypes = {
-  POPExpiresSoonNoTOClin: "POPExpiresSoonDaysNoTOClin",
+  POPExpiresSoonNoTOClin: "POPExpiresSoonNoTOClin",
   POPExpiresSoonWithTOClin: "POPExpiresSoonWithTOClin",
   POPExpiresSoonWithLowFunds: "POPExpiresSoonWithLowFunds",
   POPLowFunds: "POPLowFunds",
@@ -901,7 +901,7 @@ export class PortfolioDataStore extends VuexModule {
 
     fundingAlertData.daysRemaining = timeRemainingAlert ? 
       Number(timeRemainingAlert.threshold_violation_amount.replace('days','')) : 0;
-    
+    debugger;
     if (timeRemainingAlert) {
       if (fundingAlertData.daysRemaining <= 0) {
         fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpired;
@@ -919,7 +919,7 @@ export class PortfolioDataStore extends VuexModule {
   
     }
 
-    if(fundingAlertData){
+    if(lowFundsAlert){
       fundingAlertData.fundingAlertType = fundingAlertData.spendingViolation >= 100 
         ? FundingAlertTypes.POPFundsDepleted
         : FundingAlertTypes.POPLowFunds;
