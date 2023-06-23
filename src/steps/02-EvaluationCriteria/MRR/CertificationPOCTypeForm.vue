@@ -19,22 +19,23 @@
         role-legend="What role best describes this individual’s affiliation with the DoD?"
         :role-legend-font-normal-weight="true"
         :show-job-title="true"
-        :title.sync="title"
+        :title.sync="_newContactData.title"
         :show-email="false"
-        :firstName.sync="firstName"
-        :lastName.sync="lastName"
-        :middleName.sync="middleName"
+        :firstName.sync="_newContactData.first_name"
+        :lastName.sync="_newContactData.last_name"
+        :middleName.sync="_newContactData.middle_name"
         :phone.sync="phone"
-        :phoneExt.sync="phoneExt"
+        :phoneExt.sync="_newContactData.phone_extension"
         :selectedBranch.sync="selectedBranch"
         :selectedPhoneCountry.sync="selectedPhoneCountry"
         :selectedRank.sync="selectedRank"
-        :selectedRole.sync="selectedRole"
-        :selectedSalutation.sync="selectedSalutation"
-        :suffix.sync="suffix"
+        :selectedRole.sync="_newContactData.role"
+        :selectedSalutation.sync="_newContactData.salutation"
+        :suffix.sync="_newContactData.suffix"
         :loaded="loaded"
         :roles.sync="contactRoles"
         :validation-msg-custom="'your ' + POCType + ' POC’s'"
+        @resetContactForm="resetContactForm"
     />
   </div>
 </template>
@@ -44,8 +45,7 @@
 import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
 import {CountryObj, RadioButton, RankData, SelectData} from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import {ContactDTO, FairOpportunityDTO} from "@/api/models";
+import {ContactDTO, FinancialPOCType} from "@/api/models";
 import ContactData from "@/store/contactData";
 import parsePhoneNumber, {AsYouType, CountryCode} from "libphonenumber-js";
 import {Countries} from "@/components/ATATPhoneInput.vue";
@@ -69,30 +69,66 @@ export default class CertificationPOCTypeForm extends Vue {
   @PropSync("selectedSysId") private _selectedSysId?: string;
   @PropSync("selectedPocType") private _selectedPocType?: string;
 
-
   private POCTypePropName: "technical_poc_type" | "requirements_poc_type" = "technical_poc_type";
   private POCPropName: "technical_poc" | "requirements_poc" = "technical_poc";
   private certificationPOCTypeOptions: RadioButton[] = [];
 
-
   private loaded = false;
-  private sysId = "";
-  private selectedRole = "";
-  private selectedSalutation = "";
-  private firstName = "";
-  private middleName = "";
-  private lastName = "";
-  private suffix = "";
-  private title = "";
+
   private phone = "";
-  private phoneExt = "";
-  private acquisition_package = "";
-  private selectedBranch: SelectData = {text: "", value: ""};
-  private selectedRank: RankData = {
-    grade: "",
-    name: "",
-    sysId: "",
-  };
+  private selectedBranch: SelectData = {};
+  private selectedRank: RankData = {grade: "", name: "", sysId: ""};
+  
+  public resetContactForm(): void {
+    this.phone = "";
+    this.selectedBranch = {};
+    this.selectedRank = {grade: "", name: "", sysId: ""};
+  }
+
+  @Watch("selectedRank")
+  public rankChanged(newVal: RankData): void {
+    if (newVal && newVal.sysId) {
+      this._newContactData.rank_components = newVal.sysId;
+    } else {  
+      this._newContactData.rank_components = "";
+    }
+  }
+
+  @Watch("phone")
+  public phoneChanged(): void {
+    this.formatPhone();
+  }
+  @Watch("selectedPhoneCountry")
+  public phoneCountryChanged(): void {
+    this.formatPhone();
+  }
+
+  public formatPhone(): void {
+    if (this.phone) {
+      const countryCode = this.selectedPhoneCountry
+        ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
+        : undefined;
+
+      const parsedPhone = parsePhoneNumber(
+        this.phone,
+        countryCode
+      );
+
+      let phone = this.phone
+        ? parsePhoneNumber(this.phone, countryCode)?.format("INTERNATIONAL")
+        : "";
+
+      if (countryCode) {
+        const asyoutype = new AsYouType(countryCode);
+        const formatted = asyoutype.input(this.phone);
+        phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
+      }
+      this._newContactData.phone = phone as string;
+    } else {
+      this._newContactData.phone = "";
+    }
+  }
+
   private roleIndices = {
     CIVILIAN: 0,
     MILITARY: 1,
@@ -137,10 +173,9 @@ export default class CertificationPOCTypeForm extends Vue {
    * Returns the selected option type based on value that is synchronized with the
    * ATATRadioGroup
    */
-  private get selectedOptionType():  "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined {
+  private get selectedOptionType(): FinancialPOCType {
     return this.selectedOption
-      ? this.selectedOption.optionType as unknown as
-            "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined
+      ? this.selectedOption.optionType as FinancialPOCType
       : ""
   }
 
@@ -149,54 +184,6 @@ export default class CertificationPOCTypeForm extends Vue {
    */
   private get showContactForm(): boolean {
     return this.selectedOptionType === "NEW";
-  }
-
-  private get currentContactFormData(): ContactDTO {
-
-    const countryCode = this.selectedPhoneCountry
-      ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
-      : undefined;
-    const parsedPhone = parsePhoneNumber(
-      this.phone,
-      countryCode
-    );
-    let phone = this.phone
-      ? parsePhoneNumber(
-        this.phone,
-        countryCode
-      )?.format("INTERNATIONAL")
-      : "";
-    if(countryCode && phone){
-      const asyoutype= new AsYouType(countryCode);
-      const formatted = asyoutype.input(this.phone);
-      phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
-    }
-    this.acquisition_package = (AcquisitionPackage.acquisitionPackage) ?
-      (AcquisitionPackage.acquisitionPackage.sys_id) ?
-        AcquisitionPackage.acquisitionPackage.sys_id : "" : ""
-    const phoneExt = this.phoneExt;
-    const formData = {
-      sys_id: this.sysId,
-      first_name: this.firstName,
-      last_name: this.lastName,
-      middle_name: this.middleName,
-      role: this.selectedRole,
-      rank_components: this?.selectedRank ? this.selectedRank?.sysId: "",
-      suffix: this.suffix,
-      salutation: this.selectedSalutation,
-      phone: phone || "",
-      phone_extension: phoneExt || "",
-      email: "",
-      type: this.selectedOptionType as string,
-      dodaac: "",
-      can_access_package: "true",
-      grade_civ: "",
-      title: this.title,
-      manually_entered: "",
-      acquisition_package: this.acquisition_package
-    };
-    this._newContactData = formData
-    return formData
   }
 
   /**
@@ -235,78 +222,6 @@ export default class CertificationPOCTypeForm extends Vue {
   }
 
   /**
-   * Performs several lookups and transformation and sets up the contact form data that
-   * is needed to be passed into ATATContactForm component.
-   * @see src/components/ATATContactForm
-   */
-  async setContactFormData(savedContactDTO: ContactDTO) {
-    debugger
-    this.sysId = savedContactDTO.sys_id as string;
-    this._newContactData.can_access_package = "true";
-    const branches = await ContactData.LoadMilitaryBranches();
-    this.selectedSalutation = savedContactDTO.salutation;
-    this.firstName = savedContactDTO.first_name;
-    this.middleName = savedContactDTO.middle_name;
-    this.lastName = savedContactDTO.last_name;
-    this.suffix = savedContactDTO.suffix;
-    this.title = savedContactDTO.title;
-    this.branchData = branches.map((choice) => {
-      const text = `U.S. ${choice.label}`;
-      const {value} = choice;
-      return {
-        text,
-        value,
-      };
-    });
-    this.selectedRole = savedContactDTO.role;
-    if (
-      this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value
-    ) {
-      const rankComp = savedContactDTO.rank_components as unknown as {
-        link: string;
-        value: string;
-      };
-      if (rankComp) {
-        savedContactDTO.rank_components = rankComp.value;
-      }
-      const emptyBranch: { text: ""; value: "" } = { text: "", value: "" };
-      //retrieve selected Military Rank from rank component
-      const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
-      this.selectedBranch =
-          rank !== undefined
-            ? this.branchData.find((branch) => branch.value === rank.branch) ||
-              emptyBranch
-            : emptyBranch;
-      this.selectedRank =
-          rank !== undefined
-            ? {
-              name: rank.name || "",
-              grade: rank.grade || "",
-              sysId: rank.sys_id || "",
-            }
-            : { grade: "", name: "", sysId: "" };
-    }
-    this.phoneExt = savedContactDTO.phone_extension;
-    if (savedContactDTO.phone) {
-      const parsedPhone = parsePhoneNumber(savedContactDTO.phone);
-      const country = Countries.find(
-        (country) =>
-          country.countryCode === `+${parsedPhone?.countryCallingCode}`
-      );
-      this.selectedPhoneCountry = country || {
-        name: "",
-        countryCode: "",
-        abbreviation: "",
-        active: false,
-      };
-      const phoneNumber = parsedPhone ? parsedPhone?.
-        nationalNumber.toString().replace(/\D/g,'') : "";
-      this.phone = phoneNumber;
-      savedContactDTO.phone = phoneNumber;
-    }
-  }
-
-  /**
    * Since default mode is technical, just need to check and set if the form should
    * work in requirements POC contact mode.
    */
@@ -318,10 +233,50 @@ export default class CertificationPOCTypeForm extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger
     this.setPOCPropertyNames();
     this.initializeCertificationPOCTypeOptions();
-    await this.setContactFormData(this._newContactData);
+
+    // if contact is MILITARY, load branches, set selectedBranch and selectedRank based on 
+    // rank_components which is sys_id of selected rank
+    if (this._newContactData.role === this.contactRoles[this.roleIndices.MILITARY].value) {
+      const branches = await ContactData.LoadMilitaryBranches();
+      this.branchData = branches.map((choice) => {
+        const text = `U.S. ${choice.label}`;
+        const { value } = choice;
+        return {text, value};
+      });      
+      //retrieve selected Military Rank from rank component
+      const rank = await ContactData.GetMilitaryRank(this._newContactData.rank_components);
+      if (rank) {
+        const branch = this.branchData.find((branch) => branch.value === rank.branch);
+        this.selectedBranch = branch ?? { text: "", value: "" };
+        this.selectedRank = {
+          name: rank.name,
+          grade: rank.grade,
+          sysId: rank.sys_id as string,
+        }        
+      }
+    }
+
+    // parse phone number to remove country code and formatting for input
+    if (this._newContactData.phone.length > 0) {
+      const parsedPhone = parsePhoneNumber(this._newContactData.phone);
+      const country = Countries.find(
+        (country) =>
+          country.countryCode === `+${parsedPhone?.countryCallingCode}`
+      );
+      this.selectedPhoneCountry = country ?? {
+        name: "",
+        countryCode: "",
+        abbreviation: "",
+        active: false,
+      };
+      const phoneNumber = parsedPhone 
+        ? parsedPhone?.nationalNumber.toString().replace(/\D/g,'') 
+        : "";
+      this.phone = phoneNumber;
+    }
+
     this.loaded = true;
   }
 

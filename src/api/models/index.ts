@@ -229,6 +229,7 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
 }
 
 export type FairOppDocGenType = "" | "GENERATED" | "CUSTOM" | undefined;
+export type FinancialPOCType = "" | "PRIMARY" | "COR" | "ACOR" | "NEW";
 
 export interface FairOpportunityDTO extends BaseTableDTO {
   // numbers correspond to frame/page titles in Figma starting here:
@@ -331,9 +332,9 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   barriers_plans_to_remove_for_docgen?: FairOppDocGenType;
 
   // 2.12
-  technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  technical_poc_type?: FinancialPOCType,
   technical_poc?: string;
-  requirements_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  requirements_poc_type?: FinancialPOCType,
   requirements_poc?: string;
 }
 

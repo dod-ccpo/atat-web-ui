@@ -50,7 +50,7 @@ import CertificationPOCTypeForm
   from "@/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { ContactDTO, FairOpportunityDTO } from "@/api/models";
+import { ContactDTO, FairOpportunityDTO, FinancialPOCType } from "@/api/models";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import _ from "lodash";
 import ContactData from "@/store/contactData";
@@ -80,11 +80,9 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
       || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
     const formData: FairOpportunityDTO = {
       technical_poc: this.technicalPOCId,
-      technical_poc_type:this.technicalPOCType as unknown as
-        "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined,
-      requirements_poc:this.requirementsPOCId,
-      requirements_poc_type:this.requirementsPOCType as unknown as
-        "" | "PRIMARY" | "COR" | "ACOR" | "NEW" | undefined
+      technical_poc_type: this.technicalPOCType as FinancialPOCType,
+      requirements_poc: this.requirementsPOCId,
+      requirements_poc_type: this.requirementsPOCType as FinancialPOCType
     };
     return Object.assign(fairOppSaved,formData)
   }
@@ -116,6 +114,7 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
     return true;
   }
 
+
   public async loadOnEnter(): Promise<void> {
     this.pocPrimary = await AcquisitionPackage.getContact("PRIMARY");
     this.pocCor = await AcquisitionPackage.getContact("COR");
@@ -128,14 +127,18 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
       this.requirementsPOCId = fairOpportunity.requirements_poc as string;
       if (fairOpportunity.requirements_poc_type === "NEW" && fairOpportunity.requirements_poc) {
         this.requirementContactData =
-          await ContactData.getContactBySysId(fairOpportunity.requirements_poc as string);
+          convertColumnReferencesToValues(
+            await ContactData.getContactBySysId(fairOpportunity.requirements_poc as string)
+          );
       } else {
         this.requirementContactData = _.cloneDeep(AcquisitionPackage.initContact);
       }
       this.technicalPOCId = fairOpportunity.technical_poc as string;
       if (fairOpportunity.technical_poc_type === "NEW" && fairOpportunity.technical_poc) {
         this.technicalContactData =
-          await ContactData.getContactBySysId(fairOpportunity.technical_poc as string);
+          convertColumnReferencesToValues(
+            await ContactData.getContactBySysId(fairOpportunity.technical_poc as string)
+          );
       } else {
         this.technicalContactData = _.cloneDeep(AcquisitionPackage.initContact);
       }
