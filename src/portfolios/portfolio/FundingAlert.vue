@@ -80,7 +80,7 @@ export default class FundingAlert extends Vue {
     let str = "";
     if (this.expiresSoonWithCLIN || this.expiresSoonNoCLIN) {
       str = `The current period of performance is <strong>expiring in ${this.timeRemaining}
-        days<strong>`;
+        days</strong>`;
       str += this.expiresSoonWithCLIN
         ? `. You have obligated funds in an upcoming CLIN, so there will be no gap in
           funding for this portfolio.`
