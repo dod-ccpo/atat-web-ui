@@ -2,7 +2,7 @@ import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-dec
 import rootStore from "../index";
 import { SummaryItem } from "types/Global";
 import Periods from "../periods";
-import AcquisitionPackage from "../acquisitionPackage";
+import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
 import { 
   ContractTypeDTO, 
@@ -107,16 +107,18 @@ export class SummaryStore extends VuexModule {
     selectedPeriods: PeriodDTO[]
   ): Promise<boolean>{
     const PoP = Periods.periodOfPerformance as PeriodOfPerformanceDTO;
-    const hasRequestedStartDate = PoP?.pop_start_request;
-    if (hasRequestedStartDate === "YES"){
-      return selectedPeriods.length>0
-        && PoP?.recurring_requirement !== ""
-        && PoP?.requested_pop_start_date !== ""
-    } else if (hasRequestedStartDate === "NO"){
-      return selectedPeriods.length>0
-        && PoP?.recurring_requirement !== ""
-    }
-    return false;
+    const isRequestedStartDateValid = 
+      (PoP?.pop_start_request === "YES" && PoP?.requested_pop_start_date !== "")
+      || PoP?.pop_start_request === "NO"
+    debugger;
+    const isRecurringRequirementValid = 
+      (isMRRToBeGenerated() 
+        && PoP?.recurring_requirement === "YES"
+        && PoP?.is_requirement_follow_on_procurement_sole_sourced !== "")
+      || ( !isMRRToBeGenerated() 
+        && PoP?.recurring_requirement === "YES")
+      || PoP?.recurring_requirement === "NO";
+    return isRequestedStartDateValid && isRecurringRequirementValid;
   }
 
   @Action({rawError: true})
