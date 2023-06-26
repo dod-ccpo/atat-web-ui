@@ -78,7 +78,7 @@
           v-if="isPortabilityPlan"
           id="ClassificationLevel"
           groupLabel="What classification level(s) do you need a Portability Plan for?"
-          :value.sync="_serviceOfferingData.classificationLevel"
+          :value.sync="_portabilityClassificationLevels"
           :items="classificationRadioOptions"
           name="ClassificationLevel"
           class="mt-3 mb-2"
@@ -280,6 +280,7 @@ export default class OtherOfferings extends Vue {
   };
 
   @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
+  @PropSync("portabilityClassificationLevels") public _portabilityClassificationLevels!: string[];
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
   @Prop() public otherOfferingList!: string[];
@@ -387,6 +388,7 @@ export default class OtherOfferings extends Vue {
   }
 
   public async classificationLevelsChanged(): Promise<void> {
+    debugger
     this.showDialog = false;
     const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
         this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
@@ -461,7 +463,6 @@ export default class OtherOfferings extends Vue {
     const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
     this.firstTimeHere 
       = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
-
     // get classification levels selected in step 4 Contract Details
     this.selectedClassificationLevelList 
       = await ClassificationRequirements.getSelectedClassificationLevels();

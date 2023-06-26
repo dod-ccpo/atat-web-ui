@@ -49,6 +49,7 @@
             :serviceOfferingData.sync="otherOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
+            :portabilityClassificationLevels="portabilityClassificationLevels"
           />
         </v-col>
 
@@ -117,6 +118,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public previousSelectedOptions: string[] = [];
   public deselectedLabel = "";
   public deleteMode = "item";
+  portabilityClassificationLevels: string[] = [];
 
   @Watch("selectedOptions")
   public async selectedOptionsChange(newVal: string[]): Promise<void> {
@@ -208,13 +210,15 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public isServiceOfferingList = true;
 
-  public otherOfferingData = _.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance);
+  public otherOfferingData: OtherServiceOfferingData| OtherServiceOfferingData[] =
+    _.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance);
 
   public showSubtleAlert = false;
   public isPeriodsDataMissing = false;
   public isClassificationDataMissing = false;
 
   public async loadOnEnter(): Promise<void> {
+    debugger
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
     // all other categories have a similar workflow with checkbox list of service offerings
     this.isServiceOfferingList = !this.otherOfferingList.includes(
@@ -259,20 +263,34 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         const otherOfferingDataArray = 
           DescriptionOfWork.DOWObject[offeringIndex].otherOfferingData;
         if (otherOfferingDataArray && otherOfferingDataArray.length > 0) {
+          let otherOfferingData :OtherServiceOfferingData|OtherServiceOfferingData[]|undefined
           const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
-          const otherOfferingData = otherOfferingDataArray.find(
-            obj => obj.instanceNumber === currentInstanceNumber
-          );
+          if(this.requirementName === 'Portability plan'){
+            otherOfferingData = otherOfferingDataArray
+            otherOfferingData.forEach(offering=>{
+              if(offering.classificationLevel){
+                this.portabilityClassificationLevels.push(offering.classificationLevel)
+              }
+            })
+          }else{
+            otherOfferingData = otherOfferingDataArray.find(
+              obj => obj.instanceNumber === currentInstanceNumber
+            );
+          }
           if (otherOfferingData) {
             this.otherOfferingData = otherOfferingData;
           } else {
-            const newOtherOfferingData 
+            const newOtherOfferingData
               = await DescriptionOfWork.getOtherOfferingInstance(0);
             newOtherOfferingData.instanceNumber = currentInstanceNumber;
             this.otherOfferingData = newOtherOfferingData;
           }
         } else {
-          this.otherOfferingData.instanceNumber = 1;
+          if(Array.isArray(this.otherOfferingData)){
+            this.otherOfferingData.forEach(offering => offering.instanceNumber = 1)
+          }else{
+            this.otherOfferingData.instanceNumber = 1;
+          }
           DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(1);
         }
       }
@@ -310,7 +328,27 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             // if (this.otherOfferingData.sysId !== ""){
             //   await this.prepareCurrentOfferingToSave();
             // }
-            await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
+            if(this.requirementName === 'portability plan'){
+              debugger
+              if(Array.isArray(this.otherOfferingData)){
+                this.otherOfferingData.forEach((data, idx)=>{
+                  if(data.classificationLevel){
+                    const found = this.portabilityClassificationLevels
+                      .includes(data.classificationLevel)
+                    if(!found && Array.isArray(this.otherOfferingData)){
+                      this.otherOfferingData.splice(idx,1)
+                    }
+                  }
+                })
+                for(const offering of this.otherOfferingData){
+                  await DescriptionOfWork.setOtherOfferingData(offering);
+                }
+              }
+            }else{
+              if(!Array.isArray(this.otherOfferingData)){
+                await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
+              }
+            }
           }
         }
       }
@@ -342,17 +380,19 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           )
         }
       }
-    ) 
+    )
 
-    const displayedOtherOfferingHasNoClassLevel = existingOtherOfferings.some(
-      others => others.sysId !== this.otherOfferingData.sysId
-    ) 
+    if(!Array.isArray(this.otherOfferingData)){
+      debugger
+      const displayedOtherOfferingHasNoClassLevel = existingOtherOfferings.some(
+        others => others.sysId !== this.otherOfferingData.sysId
+      )
 
-    if (displayedOtherOfferingHasNoClassLevel){
-      this.otherOfferingData.sysId = "";
+      if (displayedOtherOfferingHasNoClassLevel){
+        this.otherOfferingData.sysId = "";
+      }
     }
-    
-    
+
   }
 
 }
