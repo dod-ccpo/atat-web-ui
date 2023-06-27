@@ -16,8 +16,9 @@ import {
   EstimateOptionValue,
   TrainingEstimate,
   EstimateOptionValueObjectArray,
+  Environment,
   CSP,
-  UnitOfTime
+  UnitOfTime,
 } from "../../../types/Global";
 
 export interface BaseTableDTO {
@@ -42,7 +43,7 @@ export interface AlertDTO extends BaseTableDTO {
   alert_type: string;
   clin: string;
   last_notification_date: string;
-  portfolio: string | ReferenceColumn;
+  portfolio: string;
   task_order: string;
   threshold_violation_amount: string;
 }
@@ -126,6 +127,7 @@ export interface CurrentContractDTO extends BaseTableDTO {
   sys_id?: string;
   is_valid?:boolean;
   sys_created_on?: string;
+  is_current?: boolean;
 }
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {
@@ -201,6 +203,7 @@ export interface ContactDTO extends BaseTableDTO {
   dodaac: string;
   can_access_package: string;
   manually_entered: string;
+  acquisition_package: string;
 }
 
 export interface ContractConsiderationsDTO extends BaseTableDTO{
@@ -227,6 +230,7 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
 }
 
 export type FairOppDocGenType = "" | "GENERATED" | "CUSTOM" | undefined;
+export type FinancialPOCType = "" | "PRIMARY" | "COR" | "ACOR" | "NEW";
 
 export interface FairOpportunityDTO extends BaseTableDTO {
   // numbers correspond to frame/page titles in Figma starting here:
@@ -329,9 +333,9 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   barriers_plans_to_remove_for_docgen?: FairOppDocGenType;
 
   // 2.12
-  technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  technical_poc_type?: FinancialPOCType,
   technical_poc?: string;
-  requirements_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  requirements_poc_type?: FinancialPOCType,
   requirements_poc?: string;
 }
 
@@ -347,6 +351,7 @@ export interface OrganizationDTO extends BaseTableDTO {
   street_address_2?: string;
   organization_name?: string;
   disa_organization?: string;
+  disa_organization_reference?: ReferenceColumn | string;
   agency?: string;
   state?: string;
   zip_code?: string;
@@ -598,7 +603,7 @@ export interface TaskOrderDTO extends BaseTableDTO {
 
     task_order_number: string;
     task_order_status: string;
-    portfolio: string | ReferenceColumn;
+    portfolio: string;
     pop_end_date: string;
     pop_start_date: string;
     total_task_order_value?: number; // total clin values that don't have expired/ option pending
@@ -608,13 +613,13 @@ export interface TaskOrderDTO extends BaseTableDTO {
 }
 
 export interface CostsDTO extends BaseTableDTO {
-  clin: ReferenceColumn["value"];
-  csp: ReferenceColumn | string;
+  clin: string;
+  csp: string;
   "csp.name"?:string;
   year_month: string;
   task_order_number: string;
-  portfolio: ReferenceColumn | string;
-  organization: ReferenceColumn | string;
+  portfolio: string;
+  organization: string;
   "agency.title"?: string;
   is_actual: string;
   value: string;
@@ -764,11 +769,15 @@ export interface TravelRequirementDTO extends BaseTableDTO {
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
-  csp: ReferenceColumn;
-  active_task_order: ReferenceColumn;
+  csp: string;
   csp_display: string; // "<<cloud_service_package.name >>"
   vendor: CSP;
-  dod_component: string; // "{{ this is coming }} for now, stub in 'ARMY'"
+  active_task_order: string;
+  agency: string;
+  agency_display?: string;
+  
+  dod_component: string; // {{ this is coming }} for now, stub in 'ARMY' - EJY DOUBLE-CHECK NEEDED?
+
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
   task_order_status: string; // "EXPIRED << task_order.task_order_status >>",
@@ -778,11 +787,17 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
   portfolio_funding_status: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
+  portfolio_managers_detail?: UserSearchResultDTO[];
+  portfolio_viewers?: string;
+  portfolio_viewers_detail?: UserSearchResultDTO[];
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];
   title?: string;
   description?: string;
+
+  environments?: Environment[]; // EJY - DOUBLE-CHECK
+  last_updated?: string; // EJY - DOUBLE-CHECK
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {
@@ -790,17 +805,33 @@ export interface PortfolioSummaryMetadataAndDataDTO {
   portfolioSummaryList: PortfolioSummaryDTO[];
 }
 
+export interface EnvironmentDTO extends BaseTableDTO {
+  csp: string;
+  csp_id: string;
+  csp_display: string;
+  name: string;
+  dashboard_link: string;
+  pending_operators: string[];
+  portfolio: string;
+  provisioned: string;
+  provisioned_date: string;
+  provisioning_failure_cause: string;
+  provisioning_request_date: string;
+  csp_admins?: OperatorDTO[];
+}
+
 export interface CloudServiceProviderDTO extends BaseTableDTO{
   name:string;
-  // other columns as needed
+  classification_level?: string;
+  cloud_distinguisher?: string;
 }
 
 export interface PortfolioSummarySearchDTO {
-  role: "ALL" | "MANAGED"; // one of these two values should always exist
-  fundingStatuses: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
-  csps: string[]; // to not search for specific csps, send empty array
-  portfolioStatus: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
-  sort: "name" | "DESCsys_updated_on"; // one of these two values should always exist
+  role?: "ALL" | "MANAGED"; 
+  fundingStatuses?: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
+  csps?: string[]; // to not search for specific csps, send empty array
+  portfolioStatus?: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
+  sort?: "name" | "DESCsys_updated_on";
   searchString?: string;
   limit?: number;
   offset?: number;
@@ -894,6 +925,10 @@ export interface UserDTO extends BaseTableDTO {
   title?: string;
 }
 
+export interface UserRolesDTO extends BaseTableDTO {
+  role: string;
+}
+
 // used for User Profile cards - "Company" is the "Agency"
 export interface CompanyDTO extends BaseTableDTO {
   name?: string;
@@ -908,6 +943,17 @@ export interface UserSearchResultDTO extends BaseTableDTO {
   email?: string;
   phone?: string;
   company?: string;
+}
+
+export interface OperatorDTO extends BaseTableDTO{
+  environment?: string;
+  email?: string;
+  dod_id?: string;
+  added_by?: string;
+  provisioned_date?: string;
+  provisioned?: string;
+  provisioning_failure_cause?: string;
+  provisioning_request_date?: string;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{
@@ -1078,4 +1124,9 @@ export interface AddressDTO extends BaseTableDTO {
   state_province_state_code?: string
   name?: string
   aa_ae_ap?: string
+}
+export interface DisaOrganizationDTO extends BaseTableDTO {
+  full_name: string;
+  abbreviation: string;
+  css_id: number;
 }

@@ -8,8 +8,9 @@ import { getModule } from 'vuex-module-decorators';
 import Vue from "vue";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import UserStore from "@/store/user";
-import { AlertDTO } from '@/api/models';
-import { MemberInvites, Portfolio } from 'types/Global';
+import {AlertDTO, PortfolioSummaryDTO} from '@/api/models';
+import {MemberInvites, Portfolio, User} from 'types/Global';
+import {api} from "@/api";
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -205,13 +206,23 @@ describe("Portfolio Store", () => {
   })
 
   it('saveMembers() add members to Portfolio.portflio.members', async()=>{
-    const memberInvites: MemberInvites = {
-      emails:["dummyemail01@mail.mil", "dummyemail02@mail.mil"],
-      role: "Viewer"
-    } 
+    const memberInvites: User[] = [{
+      firstName: "FN",
+      lastName: "LN",
+      fullName: "FN",
+      email: "testemail@mail.mil",
+      role: "Viewer",
+      phoneNumber: "",
+      phoneExt: "",
+      designation: "",
+      agency: "Test Agency",
+      sys_id: "mem_abc"
+    }]
     portfolioStore.currentPortfolio.members = [];
-    await portfolioStore.saveMembers(memberInvites)
-    expect(portfolioStore.currentPortfolio.members?.length).toBe(2)
+    jest.spyOn(api.portfolioTable, "update").mockImplementation(
+      ()=>Promise.resolve({} as unknown as PortfolioSummaryDTO));
+    await portfolioStore.inviteMembers(memberInvites)
+    expect(portfolioStore.currentPortfolio.members?.length).toBe(1)
   })
 
   it('getPortolioData()', async()=>{

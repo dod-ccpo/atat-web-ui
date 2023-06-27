@@ -16,7 +16,8 @@ import {
   BaseTableDTO,
   ClinDTO,
   EDAResponse,
-  ReferenceColumn,
+  ReferenceColumn, 
+  EnvironmentDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -500,18 +501,44 @@ export interface User {
   sys_id?: string;
 }
 
+export interface Operator {
+  sysId?: string;
+  environment?: string;
+  email?: string;
+  dodId?: string;
+  status?: "Processing" | "Failed" | "Provisioned" | "";
+  addedBy?: string;
+  provisionedDate?: string;
+  provisioned?: string;
+  provisioningFailureCause?: string;
+  provisioningRequestDate?: string;
+}
+
+export interface Environment extends EnvironmentDTO {
+  environmentStatus?: string;
+  classification_level?: string;
+}
+
 export interface Portfolio extends BaseTableDTO {
   sysId?: string;
   title?: string;
   description?: string;
   status?: string;
-  csp?: string;
+  csp?: string; // EJY - DOUBLE-CHECK - this could be type CSP ?
   agency?: string;
+  agencyDisplay?: string;
   createdBy?: string;
   provisioned?: string;
   members?: User[];
+  portfolio_managers?: string
+  portfolio_managers_detail?: User[];
+  portfolio_viewers?: string;
+  portfolio_viewers_detail?: User[];
   updated?: string;
   taskOrderNumber?: string;
+  environments?: Environment[];
+  taskOrderSysId?: string;
+  lastUpdated?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {
@@ -544,12 +571,16 @@ export interface PortfolioAdmin {
   unclassifiedEmail?: string;
   hasScrtAccess?: YesNo;
   scrtEmail?: string;
+  hasTSAccess?: YesNo;
+  tsEmail?: string;
+  impactLevels?:string[]
 }
 
 export interface PortfolioProvisioning extends EDAResponse {
   portfolioTitle?: string;
   serviceOrAgency?: string;
-  admins?: PortfolioAdmin[];  
+  admins?: PortfolioAdmin[];
+  selectedILs?: string[];
 }
 
 export interface EmailEntry {
@@ -766,10 +797,20 @@ export interface TrainingEstimate {
   dow_task_number?: string;
 }
 
-export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+export interface SummaryItem {
+  title: string,
+  description: string,
+  isComplete: boolean;
+  isTouched: boolean;
+  routeName: string;
+  step: number;
+  substep: number;
+}
 
 export enum ClassificationLevels {
   UNCL = "Unclassified",
   SCRT = "Secret",
   TSCRT = "Top Secret"
 }
+export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+

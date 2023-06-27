@@ -1,11 +1,11 @@
-import { 
-  AgencyDTO, 
-  ClassificationLevelDTO, 
-  EvalPlanAssessmentAreaDTO, 
-  EvalPlanDifferentiatorDTO, 
-  PeriodDTO, 
-  ReferenceColumn, 
-  SystemChoiceDTO 
+import {
+  AgencyDTO,
+  ClassificationLevelDTO, DisaOrganizationDTO,
+  EvalPlanAssessmentAreaDTO,
+  EvalPlanDifferentiatorDTO,
+  PeriodDTO,
+  ReferenceColumn,
+  SystemChoiceDTO
 } from "@/api/models";
 import { Checkbox, RadioButton, SelectData, User } from "types/Global";
 import _ from "lodash";
@@ -14,6 +14,8 @@ import { Statuses } from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
 import { differenceInDays, differenceInMonths, format, formatISO, parse, parseISO } from "date-fns";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import { AxiosRequestConfig } from "axios";
+import api from "@/api";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -42,6 +44,14 @@ export const convertSystemChoiceToSelect =
       const {value} = choice;
       return {
         text: choice.label,
+        value
+      }
+    });
+export const convertDisaOrgToSelect =
+    (data: DisaOrganizationDTO[]): SelectData[] => data.map(choice => {
+      const value = choice.sys_id;
+      return {
+        text: choice.full_name,
         value
       }
     });
@@ -178,6 +188,17 @@ export const toCurrencyString = (num: number, decimals?: boolean): string => {
   return "";
 }
 
+export const getStringFromReferenceColumn = (
+  column: ReferenceColumn | string | undefined
+): string =>{
+  if (column){
+    return typeof column === "object" 
+      ? (column as ReferenceColumn).value as string 
+      : column as string; 
+  }
+  return "";
+}
+
 // converts a formatted currency string back to a number
 export const currencyStringToNumber = (str: string): number | null => {
   if (str && typeof str === "string") {
@@ -230,7 +251,6 @@ export const roundTo100 = (numberArr: number[], withTenths?: boolean): number[] 
 
   return output;
 }
-
 
 export const createPeriodCheckboxItems = async (): Promise<Checkbox[]> => {
   const periods: PeriodDTO[] = await Periods.loadPeriods();
@@ -301,6 +321,8 @@ export function getStatusChipBgColor(status: string): string {
   case Statuses.ExpiringPop.label.toLowerCase():
   case Statuses.FundingAtRisk.value.toLowerCase():
   case Statuses.FundingAtRisk.label.toLowerCase():
+  case Statuses.ProvisioningIssue.value.toLowerCase():
+  case Statuses.ProvisioningIssue.label.toLowerCase():
     return "bg-warning";
   case Statuses.Deleted.value.toLowerCase():
   case Statuses.Delinquent.value.toLowerCase():
@@ -313,11 +335,18 @@ export function getStatusChipBgColor(status: string): string {
   }
 }
 
+export function getDateObj(dateStr: string): Date {
+  return dateStr.includes("-") ? parseISO(dateStr) : new Date(dateStr);
+}
+
 const monthAbbreviations = ATATCharts.monthAbbreviations;
 const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
 export function createDateStr(dateStr: string, period: boolean, hours?: boolean): string {
   hours = hours ? hours : false;
+  if (dateStr.indexOf("/") > -1) {
+    dateStr = formatISO(new Date(dateStr)); 
+  }
   const parsedDate = parseISO(dateStr, { additionalDigits: 1 });
   const date = hours? new Date(parsedDate) : new Date(parsedDate.setHours(0, 0, 0, 0));
   const m = monthAbbreviations[date.getMonth()];
@@ -482,4 +511,27 @@ export function getCSPCompanyName(cspId: string): string {
   }
   return cspCompanyNames[cspId] || "";
 
+}
+
+export interface AggregateCountResults {
+  result: {
+    stats: {
+      count: string;
+    };
+  };
+}
+
+export const getTableRecordCount = async (table: string, query: string ): Promise<number> => {
+  // Use aggregate API to get count for number of records in a table
+  /* eslint-disable camelcase */
+  const config: AxiosRequestConfig = {
+    params: {
+      sysparm_query: query,
+      sysparm_count: true
+    },
+  };
+  /* eslint-enable camelcase */
+  const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;  
+  const count = parseInt(response.result.stats.count)
+  return count;
 }

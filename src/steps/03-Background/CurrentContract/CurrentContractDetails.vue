@@ -6,6 +6,12 @@
           <h1 class="page-header mb-3">
             {{ headline }}
           </h1>
+          <div class="copy-max-width">
+            <p>
+              If you have more than one contract for this effort, 
+              we will walk through them one at a time.
+            </p>
+          </div>
           <div v-if="isExceptiontoFairOpp" class="copy-max-width">
             <h2 class="mb-5">
               1. Contract overview
@@ -48,7 +54,7 @@
               :rules="[$validators.required('Please select a level of competition.')]">
             </LevelOfCompetition>
 
-            <hr class="ma-8" />
+            <hr />
 
             <h2 class=" mt-10">
               2. Period of Performance (PoP)
@@ -360,9 +366,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         return c.instance_number?.toString()=== contractToLoadInstanceNumber.toString()
       }
     )[0] || initialCurrentContract();
-    this.isCurrent = this.currentContracts[0] === this.currentContract
-      || !this.isExceptiontoFairOpp
-
+    this.isCurrent = this.currentContract.is_current as boolean;
     this.setMinAndMaxDates();
   }
 
@@ -378,14 +382,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     this.startMinDate = "";
     this.startMaxDate = formatISO(subDays(new Date(),1), { representation: 'date' });
     this.expMinDate = "";
-    this.expMaxDate = this.isCurrent
-      ? "" 
-      : this.todaysDateISO
+    this.expMaxDate = "";
   }
 
   public async loadOnEnter(): Promise<void> {
     await this.loadContract();    
-    
     if (this.currentContract) {
       const keys: string[] = [
         "incumbent_contractor_name",
@@ -416,6 +417,12 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         this.currentData.acquisition_package = AcquisitionPackage.packageId;
         this.currentData.is_valid = await this.$refs.form.validate();
+        if (this.currentData.contract_order_expiration_date !== ""){
+          this.currentData.is_current = compareAsc(
+            new Date(),
+            new Date(this.currentData.contract_order_expiration_date as string)
+          )=== -1
+        }
         this.currentContract.current_contract_exists = "YES"
         // if this.isExceptiontoFairOpp save to Store now &&
         // save to SNOW on next page > ProcurementHistory page

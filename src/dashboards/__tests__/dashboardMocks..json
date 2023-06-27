@@ -19,7 +19,7 @@
     "funds_total": "200000",
     "sys_created_by": "julius.fitzhugh-ctr@ccpo.mil"
   },
-  "clins": [
+  "currentCLINs": [
     {
       "funds_obligated": "200000",
       "sys_mod_count": "10",
@@ -72,6 +72,115 @@
       "idiq_clin_label": "Ordering Agency Fee"
     }
   ],
+
+  "allCLINs": [
+    {
+      "funds_obligated": "200000",
+      "sys_mod_count": "10",
+      "sys_updated_on": "2022-07-12 19:39:24",
+      "sys_tags": "",
+      "sys_d":"123456",
+      "clin_number": "0001",
+      "sys_updated_by": "eric.youngquist-ctr@ccpo.mil",
+      "sys_created_on": "2022-06-30 14:25:12",
+      "idiq_clin": "0001",
+      "pop_end_date": "2022-12-31",
+      "pop_start_date": "2022-01-01",
+      "clin_status": "ACTIVE",
+      "funds_total": "220000",
+      "sys_created_by": "julius.fitzhugh-ctr@ccpo.mil",
+      "idiq_clin_label": "Unclassified XaaS"
+    },
+    {
+      "funds_obligated": "70000",
+      "sys_mod_count": "6",
+      "sys_updated_on": "2022-07-13 16:02:39",
+      "sys_tags": "",
+      "sys_d":"123456",
+      "clin_number": "0003",
+      "sys_updated_by": "eric.youngquist-ctr@ccpo.mil",
+      "sys_created_on": "2022-06-30 15:01:03",
+      "idiq_clin": "0002",
+      "pop_end_date": "2022-12-31",
+      "pop_start_date": "2022-01-01",
+      "clin_status": "ACTIVE",
+      "funds_total": "100000",
+      "sys_created_by": "julius.fitzhugh-ctr@ccpo.mil",
+      "idiq_clin_label": "Unclassified Cloud Support"
+    },
+    {
+      "funds_obligated": "20000",
+      "sys_mod_count": "7",
+      "sys_updated_on": "2022-07-13 16:02:54",
+      "sys_tags": "",
+      "sys_d":"123456",
+      "clin_number": "0002",
+      "sys_updated_by": "eric.youngquist-ctr@ccpo.mil",
+      "sys_created_on": "2022-06-30 14:53:05",
+      "idiq_clin": "0003",
+      "pop_end_date": "2022-12-31",
+      "pop_start_date": "2022-01-01",
+      "clin_status": "ACTIVE",
+      "funds_total": "30000",
+      "sys_created_by": "julius.fitzhugh-ctr@ccpo.mil",
+      "idiq_clin_label": "Ordering Agency Fee"
+    },
+    {
+      "funds_obligated": "200000",
+      "sys_mod_count": "10",
+      "sys_updated_on": "2022-07-12 19:39:24",
+      "sys_tags": "",
+      "sys_d":"123456",
+      "clin_number": "0101",
+      "sys_updated_by": "eric.youngquist-ctr@ccpo.mil",
+      "sys_created_on": "2022-06-30 14:25:12",
+      "idiq_clin": "0101",
+      "pop_end_date": "2022-12-31",
+      "pop_start_date": "2022-01-01",
+      "clin_status": "ACTIVE",
+      "funds_total": "220000",
+      "sys_created_by": "julius.fitzhugh-ctr@ccpo.mil",
+      "idiq_clin_label": "Unclassified XaaS"
+    },
+    {
+      "funds_obligated": "70000",
+      "sys_mod_count": "6",
+      "sys_updated_on": "2022-07-13 16:02:39",
+      "sys_tags": "",
+      "sys_d":"123456",
+      "clin_number": "0102",
+      "sys_updated_by": "eric.youngquist-ctr@ccpo.mil",
+      "sys_created_on": "2022-06-30 15:01:03",
+      "idiq_clin": "0102",
+      "pop_end_date": "2022-12-31",
+      "pop_start_date": "2022-01-01",
+      "clin_status": "ACTIVE",
+      "funds_total": "100000",
+      "sys_created_by": "julius.fitzhugh-ctr@ccpo.mil",
+      "idiq_clin_label": "Unclassified Cloud Support"
+    },
+    {
+      "funds_obligated": "20000",
+      "sys_mod_count": "7",
+      "sys_updated_on": "2022-07-13 16:02:54",
+      "sys_tags": "",
+      "sys_d":"123456",
+      "clin_number": "0103",
+      "sys_updated_by": "eric.youngquist-ctr@ccpo.mil",
+      "sys_created_on": "2022-06-30 14:53:05",
+      "idiq_clin": "0103",
+      "pop_end_date": "2022-12-31",
+      "pop_start_date": "2022-01-01",
+      "clin_status": "ACTIVE",
+      "funds_total": "30000",
+      "sys_created_by": "julius.fitzhugh-ctr@ccpo.mil",
+      "idiq_clin_label": "Ordering Agency Fee"
+    }
+
+  ],
+
+
+
   "costs": [
     {
       "clin": "0003",

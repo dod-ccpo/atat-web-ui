@@ -11,7 +11,6 @@ import acor from "../selectors/acor.sel";
 import background from "../selectors/background.sel";
 import contractDetails from "../selectors/contractDetails.sel";
 import { cleanText, colors, prefixId } from "../helpers";
-import sac from "../selectors/standComp.sel";
 import occ from "../selectors/occ.sel";
 import fd from "../selectors/financialDetails.sel";
 import performanceReqs from "../selectors/performanceReqs.sel";
@@ -212,6 +211,18 @@ Cypress.Commands.add("btnClick", (selector, text) => {
   });
 });
 
+Cypress.Commands.add("clickBackButton", (selector,headerText) => {
+  cy.btnClick(common.backBtn, "Back");
+  cy.waitUntilElementIsGone(selector);
+  cy.verifyPageHeader(headerText);
+});
+
+Cypress.Commands.add("clickContinueButton", (selector,headerText) => {
+  cy.btnClick(common.continueBtn, " Continue ");
+  cy.waitUntilElementIsGone(selector);
+  cy.verifyPageHeader(headerText);
+});
+
 Cypress.Commands.add("clickLink", (selector) => {
   cy.findElement(selector).scrollIntoView().click();
 });
@@ -253,7 +264,7 @@ Cypress.Commands.add("verifyEnteredInputTxt", (selector, it) => {
 
 Cypress.Commands.add("verifySelectedRadioOption", (selector, radioOption) => {
   cy.findElement(selector).then(($radioOption) => {
-    const text = $radioOption.text();
+    const text = cleanText($radioOption.text());
     cy.log(text);
     expect(text).contain(radioOption);
   });
@@ -465,7 +476,11 @@ Cypress.Commands.add("clickSideStepper", (stepperSelector, stepperText) => {
     .should("be.visible")
     .and("have.length", 1)
     .and("contain", stepperText)
-    .click();
+    .click().then(()=>{
+      cy.waitUntil(function () {
+        return cy.findElement(stepperSelector).should("have.class", "router-link-active");
+      });
+    });
 });
 
 Cypress.Commands.add("activeStep", (selector) => {
@@ -988,66 +1003,48 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
+Cypress.Commands.add("selectPoPStartDate", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(sac.piiRadioOtionActive).then(($radioBtn) => {
+  cy.findElement(contractDetails.activePoPStartDate).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    
     if (
       selectedOption ===
-      "radio_button_checkedYes." +
-        " This contract action will include a system of records with PII."
+      "radio_button_checkedYes." 
+        
     ) {
-      //naviagtes to "Tell us more about your system of records screen"
-      cy.textExists(
-        common.header,
-        " Tell us more about your system of records "
-      );
+      cy.findElement(contractDetails.requestedStartDate).should("exist");
+      cy.selectDatefromDatePicker(
+          contractDetails.calendarIcon,
+          contractDetails.navigateNextMonth,
+          contractDetails.selectDate,
+          13,
+          contractDetails.datePicker
+        );
     } else {
-      cy.textExists(
-        common.header,
-        "Let’s find out if you need a Business Associates Agreement"
-      );
+      cy.findElement(contractDetails.requestedStartDate).should("not.exist");
     }
-  });
-});
-
-Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(sac.foiaRadioOptionActive).then(($radioBtn) => {
-    const selectedOption = $radioBtn.text();
-    cy.log(selectedOption);
     cy.btnExists(common.continueBtn, " Continue ").click();
-    if (selectedOption === "radio_button_checkedYes.") {
-      //naviagtes to "Tell us more about your FOIA Cordinator screen"
-      cy.textExists(common.header, " Tell us about your FOIA Coordinator ");
-    } else {
-      cy.textExists(
-        common.header,
-        "Let’s look into your Section 508 Accessibility requirements"
-      );
-    }
   });
 });
 
-Cypress.Commands.add(
-  "ppsCheckBoxOptionSelected",
-  (selector, value, otherTxt) => {
-    cy.checkBoxOption(selector, value).check({ force: true });
-    cy.findElement(occ.checkBoxActive).then(($checkedOption) => {
-      const selectedOption = cleanText($checkedOption.text());
-      cy.log(selectedOption);
-      if (selectedOption === "check_box Other") {
-        cy.log("display Other is selected:", selectedOption);
-        cy.findElement(occ.otherTextBox).should("exist").and("be.visible");
-        cy.enterTextInTextField(occ.otherTextBox, otherTxt);
-      } else {
-        cy.findElement(occ.otherTextBox).should("not.exist");
-      }
-    });
-  }
-);
+Cypress.Commands.add("selectTMCheckbox", (inputText) => {
+  cy.findCheckBox(contractDetails.tmCheckBox, "T&M")
+  .should("not.be.checked")
+  .check({ force: true })
+  .then(() => {
+    cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
+    cy.textExists(
+      contractDetails.tmTextFieldLabel,
+      "Please provide justification for your T&M contract type."
+    );
+    cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should(
+      "exist"
+    );    
+    cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
+  });
+});
 
 Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true }).should("be.checked");
@@ -1084,29 +1081,6 @@ Cypress.Commands.add("trainingCourseExists", () => {
   });
 });
 
-Cypress.Commands.add("select508Option", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(sac.sectionradioActive).then(($radioBtn) => {
-    const selectedOption = cleanText($radioBtn.text());
-    cy.log(selectedOption);
-    cy.findElement(common.continueBtn).scrollIntoView().click();
-    if (
-      selectedOption ===
-      "radio_button_checkedNo." +
-        " I need to customize the Section 508 Accessibility Standards in my Description of Work."
-    ) {
-      //Tell us more about your Section 508 Accessibility requirements"
-      cy.verifyPageHeader(
-        "Tell us more about your Section 508 Accessibility requirements"
-      );
-    } else {
-      //navigates to next step in the workflow
-      cy.findElement(common.stepFinancialDetailsText)
-        .should("be.visible")
-        .and("have.css", "color", colors.primary);
-    }
-  });
-});
 
 Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {
   cy.selectCheckBoxes(checkboxes);

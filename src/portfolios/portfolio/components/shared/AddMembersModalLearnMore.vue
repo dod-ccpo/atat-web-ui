@@ -4,7 +4,7 @@
     <ATATAlert 
       id="ModalRolesLearnMore"
       type="info"
-      class="mt-5"
+      class="mt-5 mb-10"
     >
       <template v-slot:content>
         <p class="mb-0">

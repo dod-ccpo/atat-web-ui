@@ -110,7 +110,7 @@ export default class ATATDialog extends Vue {
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;
   @Prop() modalClass?: string;
-
+  
   @PropSync("showDialog") private _showDialog!: boolean;
   @PropSync("modalDrawerIsOpen") public _modalDrawerIsOpen!: boolean;
 

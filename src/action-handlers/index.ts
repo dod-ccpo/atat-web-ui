@@ -2,12 +2,12 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 import router from "@/router";
-import { FairOpportunityDTO } from "@/api/models";
-import { routeNames } from "@/router/stepper";
 import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
 import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import { FairOpportunityDTO } from "@/api/models";
+import { routeNames } from "@/router/stepper";
 
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
@@ -16,12 +16,12 @@ const actionHandlerNames = {
   confirmServiceDeletion: "confirmServiceDeletion",
   clearCurrentContractInfo: "clearCurrentContractInfo",
   confirmDeleteTravelAll: "confirmDeleteTravelAll",
+  openTOSearchModal: "openTOSearchModal",
+  startProvisioning: "startProvisioning",
+  didNotUseDapps: "didNotUseDapps",
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
   writeOwnMarketResearchDetails: "writeOwnMarketResearchDetails",
   WriteOwnBarriers: "WriteOwnBarriers",
-  openTOSearchModal: "openTOSearchModal",
-  startProvisioning: "startProvisioning",
-  didNotUseDapps: "didNotUseDapps"
 }
 
 const actions =  {
@@ -31,6 +31,9 @@ const actions =  {
   [actionHandlerNames.confirmServiceDeletion]: confirmServiceDeletion,
   [actionHandlerNames.clearCurrentContractInfo]: clearCurrentContractInfo,
   [actionHandlerNames.confirmDeleteTravelAll]: confirmDeleteTravelAll,
+  [actionHandlerNames.openTOSearchModal]: openTOSearchModal,
+  [actionHandlerNames.startProvisioning]: startProvisioning,
+  [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
   [actionHandlerNames.writeOwnSoleSourceCause]: writeOwnSoleSourceCause,
   [actionHandlerNames.writeOwnMarketResearchDetails]: writeOwnMarketResearchDetails,
   [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
@@ -53,9 +56,14 @@ function sampleAdditionalButtonAction(actionArgs: string[]) {
 }
 
 async function writeOwnSoleSourceCause() {
-  // eslint-disable-next-line camelcase
-  const fairOpp: FairOpportunityDTO = { cause_write_own_explanation: "YES" };
+  /* eslint-disable camelcase */
+  const fairOpp: FairOpportunityDTO = { 
+    cause_write_own_explanation: "YES",
+    cause_of_sole_source_for_docgen: "CUSTOM" 
+  };
+  /* eslint-enable camelcase */
   await AcquisitionPackage.setFairOpportunity(fairOpp);
+  AcquisitionPackage.fairOppExplanations.soleSource.useCustomText = true;
   router.push({
     name: routeNames.SoleSourceReview,
     params: {
