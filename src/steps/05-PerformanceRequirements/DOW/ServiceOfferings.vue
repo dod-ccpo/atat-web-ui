@@ -49,7 +49,7 @@
             :serviceOfferingData.sync="otherOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
-            :portabilityClassificationLevels="portabilityClassificationLevels"
+            :portabilityClassificationLevels.sync="portabilityClassificationLevels"
           />
         </v-col>
 
@@ -218,7 +218,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public isClassificationDataMissing = false;
 
   public async loadOnEnter(): Promise<void> {
-    debugger
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
     // all other categories have a similar workflow with checkbox list of service offerings
     this.isServiceOfferingList = !this.otherOfferingList.includes(
@@ -328,15 +327,48 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             // if (this.otherOfferingData.sysId !== ""){
             //   await this.prepareCurrentOfferingToSave();
             // }
-            if(this.requirementName === 'portability plan'){
-              debugger
+            if(this.requirementName === 'Portability plan'){
+              //first time coming through
+              if(!Array.isArray(this.otherOfferingData)){
+                this.otherOfferingData = []
+                this.portabilityClassificationLevels.forEach(cl=>{
+                  debugger
+                  const portabilityObj =
+                    // eslint-disable-next-line max-len
+                    Object.assign(_.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance),{classificationLevel:cl})
+                  if(Array.isArray(this.otherOfferingData)){
+                    this.otherOfferingData.push(portabilityObj)
+                  }
+                })
+              }
+              //on edit
               if(Array.isArray(this.otherOfferingData)){
+                //remove classification
                 this.otherOfferingData.forEach((data, idx)=>{
                   if(data.classificationLevel){
                     const found = this.portabilityClassificationLevels
                       .includes(data.classificationLevel)
                     if(!found && Array.isArray(this.otherOfferingData)){
                       this.otherOfferingData.splice(idx,1)
+                    }
+                  }
+                })
+                // on edit adding a classification
+                this.portabilityClassificationLevels.forEach(cl=>{
+                  if(Array.isArray(this.otherOfferingData)) {
+                    debugger
+                    let found = false
+                    this.otherOfferingData.forEach(offering =>{
+                      found = offering.classificationLevel === cl
+                      if(found) return
+                    })
+                    if(!found){
+                      const portabilityObj =
+                        // eslint-disable-next-line max-len
+                        Object.assign(_.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance),{classificationLevel:cl})
+                      if(Array.isArray(this.otherOfferingData)){
+                        this.otherOfferingData.push(portabilityObj)
+                      }
                     }
                   }
                 })
