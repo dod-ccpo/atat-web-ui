@@ -5,7 +5,7 @@
         <v-col class="col-12">
           <h1 class="page-header">
             Do you want to include any other facts to support the use of the 
-            “logical follow-on” exception?
+            “{{ fairOpportunitySelection }}” exception?
           </h1>
           <ATATRadioGroup
             id="ProductFeature"
@@ -63,6 +63,25 @@ export default class OtherSupportingFactors extends Mixins(SaveOnLeave) {
   public exceptionChoices :RadioButton[] = getYesNoRadioOptions("Exception")
   public selectedException = ""
 
+  private get fairOpportunitySelection(): string {
+    const fairOpp = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
+    let headline = "";
+    switch (fairOpp){
+    case "YES_FAR_16_505_B_2_I_A":
+      headline = "unusual and compelling urgency"
+      break;
+    case "YES_FAR_16_505_B_2_I_B":
+      headline = "unique or highly specialized capabilities"
+      break;
+    case "YES_FAR_16_505_B_2_I_C":
+      headline = "logical follow-on";
+      break;
+    default:
+      break;
+      
+    }
+    return headline;
+  }
 
   private get currentData(): FairOpportunityDTO {
     return {
