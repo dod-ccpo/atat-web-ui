@@ -127,6 +127,7 @@ export interface CurrentContractDTO extends BaseTableDTO {
   sys_id?: string;
   is_valid?:boolean;
   sys_created_on?: string;
+  is_current?: boolean;
 }
 
 export interface CurrentEnvironmentDTO extends BaseTableDTO {
@@ -229,6 +230,7 @@ export interface CrossDomainSolutionDTO extends BaseTableDTO {
 }
 
 export type FairOppDocGenType = "" | "GENERATED" | "CUSTOM" | undefined;
+export type FinancialPOCType = "" | "PRIMARY" | "COR" | "ACOR" | "NEW";
 
 export interface FairOpportunityDTO extends BaseTableDTO {
   // numbers correspond to frame/page titles in Figma starting here:
@@ -331,9 +333,9 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   barriers_plans_to_remove_for_docgen?: FairOppDocGenType;
 
   // 2.12
-  technical_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  technical_poc_type?: FinancialPOCType,
   technical_poc?: string;
-  requirements_poc_type?: "" | "PRIMARY" | "COR" | "ACOR" | "NEW",
+  requirements_poc_type?: FinancialPOCType,
   requirements_poc?: string;
 }
 
@@ -423,6 +425,7 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   requested_pop_start_date?: string;
   time_frame?: string;
   recurring_requirement?: string;
+  is_requirement_follow_on_procurement_sole_sourced?: string;
   base_and_options?: string; //deprecated
   option_periods?: string;
   base_period?: ReferenceColumn | string;

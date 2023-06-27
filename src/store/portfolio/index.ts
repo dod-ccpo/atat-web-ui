@@ -31,7 +31,7 @@ export const AlertTypes =  {
 }
 
 export const FundingAlertTypes = {
-  POPExpiresSoonNoTOClin: "POPExpiresSoonDaysNoTOClin",
+  POPExpiresSoonNoTOClin: "POPExpiresSoonNoTOClin",
   POPExpiresSoonWithTOClin: "POPExpiresSoonWithTOClin",
   POPExpiresSoonWithLowFunds: "POPExpiresSoonWithLowFunds",
   POPLowFunds: "POPLowFunds",
@@ -853,8 +853,9 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public async getFundingTrackerAlert(taskOrderNumber: string):Promise<FundingAlertData>{
-
+  public async getFundingTrackerAlert(
+    data: { taskOrderNumber: string, hasObligatedFundsInUpcomingCLIN: boolean } 
+  ):Promise<FundingAlertData>{
     //just set the status to active for now
     //in the future this logic will be more complex
     this.setStatus(Statuses.Active.value);
@@ -867,8 +868,8 @@ export class PortfolioDataStore extends VuexModule {
       hasLowFundingAlert: false,
     }
 
-    const alerts = await this.getAlerts(taskOrderNumber);
-   
+    const alerts = await this.getAlerts(data.taskOrderNumber);
+
     alerts.forEach(alert=>{
       if(alert.alert_type == AlertTypes.SPENDING_ACTUAL &&
         !fundingAlertData.alerts.some(alert=>alert.alert_type == AlertTypes.SPENDING_ACTUAL) ){
@@ -894,31 +895,33 @@ export class PortfolioDataStore extends VuexModule {
       ? currentSpendingViolation : 0;
 
     // does time remaining alert exist
-    const timeremainingalert = this.alerts.find(
+    const timeRemainingAlert = this.alerts.find(
       alert => alert.alert_type === AlertTypes.TIME_REMAINING
     );
 
-    fundingAlertData.daysRemaining = timeremainingalert ? 
-      Number(timeremainingalert.threshold_violation_amount.replace('days','')) : 0;
-
-    if(timeremainingalert){
-      fundingAlertData.fundingAlertType =  fundingAlertData.daysRemaining <=0 ?
-        FundingAlertTypes.POPExpired : (fundingAlertData.daysRemaining > 60 ? 
-          fundingAlertData.fundingAlertType : FundingAlertTypes.POPExpiresSoonNoTOClin);
-      if(fundingAlertData.daysRemaining <= 60){
-        this.setStatus(Statuses.AtRisk.value);
+    fundingAlertData.daysRemaining = timeRemainingAlert ? 
+      Number(timeRemainingAlert.threshold_violation_amount.replace('days','')) : 0;
+    if (timeRemainingAlert) {
+      if (fundingAlertData.daysRemaining <= 0) {
+        fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpired;
+      } else if (fundingAlertData.daysRemaining <= 60) {
+        fundingAlertData.fundingAlertType = data.hasObligatedFundsInUpcomingCLIN
+          ? FundingAlertTypes.POPExpiresSoonWithTOClin
+          : FundingAlertTypes.POPExpiresSoonNoTOClin;
       }
-      if(fundingAlertData.daysRemaining <=0){
+
+      if (fundingAlertData.daysRemaining <= 0 ) {
         this.setStatus(Statuses.Expired.value);
+      } else if (fundingAlertData.daysRemaining <= 60){
+        this.setStatus(Statuses.AtRisk.value);
       }
   
     }
 
-    if(fundingAlertData){
-      fundingAlertData.fundingAlertType = 
-       fundingAlertData.spendingViolation < 100 ? 
-         (fundingAlertData.spendingViolation < 90 ? fundingAlertData.fundingAlertType :
-           FundingAlertTypes.POPLowFunds): FundingAlertTypes.POPFundsDepleted;
+    if(lowFundsAlert){
+      fundingAlertData.fundingAlertType = fundingAlertData.spendingViolation >= 100 
+        ? FundingAlertTypes.POPFundsDepleted
+        : FundingAlertTypes.POPLowFunds;
 
       if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
         this.setStatus(Statuses.AtRisk.value);
@@ -928,8 +931,8 @@ export class PortfolioDataStore extends VuexModule {
       }
     }
     
-    if(timeremainingalert && lowFundsAlert){
-      if(fundingAlertData.daysRemaining > 0 && fundingAlertData.spendingViolation < 100){
+    if (timeRemainingAlert && lowFundsAlert) {
+      if (fundingAlertData.daysRemaining > 0 && fundingAlertData.spendingViolation < 100) {
         fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpiresSoonWithLowFunds;
 
         if (fundingAlertData.daysRemaining <= 60 || fundingAlertData.spendingViolation >= 90){
