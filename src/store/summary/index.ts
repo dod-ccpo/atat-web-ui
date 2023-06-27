@@ -110,7 +110,6 @@ export class SummaryStore extends VuexModule {
     const isRequestedStartDateValid = 
       (PoP?.pop_start_request === "YES" && PoP?.requested_pop_start_date !== "")
       || PoP?.pop_start_request === "NO"
-    debugger;
     const isRecurringRequirementValid = 
       (isMRRToBeGenerated() 
         && PoP?.recurring_requirement === "YES"
