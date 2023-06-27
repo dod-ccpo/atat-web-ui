@@ -259,19 +259,6 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
     }
   }
 
-  /**
-   * sorts sys_created_on ASC as the first one created is to be 
-   * current contract
-   */
-
-  public async sortDataSource():Promise<void>{
-    this.dataSource.sort((a,b)=> {
-      const dateA = new Date(a.sys_created_on || "");
-      const dateB = new Date(b.sys_created_on || "");
-      return dateA.getTime()-dateB.getTime()
-    })
-  }
-
   public async resetDataSource():Promise<void>{
     // sort
     await this.dataSource.sort();
@@ -296,7 +283,6 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.dataSource.length > 0){
-        this.sortDataSource();
         await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
         await AcquisitionPackage.updateCurrentContractsSNOW(this.dataSource)
       }
