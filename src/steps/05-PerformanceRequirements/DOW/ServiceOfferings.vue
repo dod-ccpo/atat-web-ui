@@ -332,7 +332,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
               if(!Array.isArray(this.otherOfferingData)){
                 this.otherOfferingData = []
                 this.portabilityClassificationLevels.forEach(cl=>{
-                  debugger
                   const portabilityObj =
                     // eslint-disable-next-line max-len
                     Object.assign(_.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance),{classificationLevel:cl})
@@ -349,6 +348,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
                     const found = this.portabilityClassificationLevels
                       .includes(data.classificationLevel)
                     if(!found && Array.isArray(this.otherOfferingData)){
+                      DescriptionOfWork
+                        .deleteOtherOfferingInstance(this.otherOfferingData[idx].instanceNumber)
                       this.otherOfferingData.splice(idx,1)
                     }
                   }
@@ -356,12 +357,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
                 // on edit adding a classification
                 this.portabilityClassificationLevels.forEach(cl=>{
                   if(Array.isArray(this.otherOfferingData)) {
-                    debugger
-                    let found = false
-                    this.otherOfferingData.forEach(offering =>{
-                      found = offering.classificationLevel === cl
-                      if(found) return
-                    })
+                    const found = this.otherOfferingData
+                      .some(offering => offering.classificationLevel === cl)
                     if(!found){
                       const portabilityObj =
                         // eslint-disable-next-line max-len
@@ -415,7 +412,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     )
 
     if(!Array.isArray(this.otherOfferingData)){
-      debugger
       const displayedOtherOfferingHasNoClassLevel = existingOtherOfferings.some(
         others => others.sysId !== this.otherOfferingData.sysId
       )

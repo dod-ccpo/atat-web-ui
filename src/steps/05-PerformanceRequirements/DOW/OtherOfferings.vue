@@ -382,13 +382,13 @@ export default class OtherOfferings extends Vue {
       const classificationObj = this.selectedClassificationLevelList[0];
       this._serviceOfferingData.classificationLevel
         = classificationObj.classification_level as string;
+      this._portabilityClassificationLevels.push(classificationObj.classification_level as string) ;
       this.singleClassificationLevelName 
         = buildClassificationLabel(classificationObj, "short");
     }
   }
 
   public async classificationLevelsChanged(): Promise<void> {
-    debugger
     this.showDialog = false;
     const currentData = buildCurrentSelectedClassLevelList(this.modalSelectedOptions,
         this.acquisitionPackage?.sys_id as string, this.selectedClassificationLevelList)
@@ -408,20 +408,14 @@ export default class OtherOfferings extends Vue {
       // if the classification level that was selected was removed via the modal,
       // clear out this._serviceOfferingData.classificationLevel
         const selectedSysId = this._serviceOfferingData.classificationLevel;
-        if(typeof selectedSysId === 'string'){
-          if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
-            this._serviceOfferingData.classificationLevel = "";
-          }
-        }else if(Array.isArray(selectedSysId)){
-          debugger
-          selectedSysId.forEach((sysId:string,idx:number) => {
-            if(this.modalSelectedOptions.indexOf(sysId) === -1
-              && this._serviceOfferingData.classificationLevel
-              && Array.isArray(this._serviceOfferingData.classificationLevel)){
-              this._serviceOfferingData.classificationLevel.splice(idx,1)
-            }
-          })
+        if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
+          this._serviceOfferingData.classificationLevel = "";
         }
+        this._portabilityClassificationLevels.forEach((sysId:string,idx:number) => {
+          if(this.modalSelectedOptions.indexOf(sysId) === -1){
+            this._portabilityClassificationLevels.splice(idx,1)
+          }
+        })
       }
       ClassificationRequirements.createToast();
      

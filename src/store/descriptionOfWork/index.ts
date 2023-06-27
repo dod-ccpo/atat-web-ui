@@ -461,46 +461,7 @@ export const saveOrUpdateOtherServiceOffering =
               (offeringType !== "portability_plan"
                 ? " - " + instanceType + " #" + serviceOffering.instanceNumber
                 :"")
-        if(offeringType === "portability_plan" 
-            && Array.isArray(serviceOffering.classificationLevel)){
-          debugger
-          for (const cl of serviceOffering.classificationLevel) {
-            tempObject.classification_level = cl
-            if(tempObject.sys_id){
-              objSysId = tempObject.sys_id;
-              await api.cloudSupportEnvironmentInstanceTable.update(
-                tempObject.sys_id,
-                  tempObject as CloudSupportEnvironmentInstanceDTO
-              );
-              await IGCEStore.updateIgceEstimateRecord({
-                environmentInstanceSysId: objSysId,
-                classificationLevelSysId: tempObject.classification_level,
-                unit_quantity,
-                description:tempObject.anticipated_need_or_usage,
-                dow_task_number: dowTaskNumber
-              });
-
-            } else {
-              const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
-                  tempObject as CloudSupportEnvironmentInstanceDTO
-              );
-              objSysId = savedObject.sys_id as string;
-              await IGCEStore.createIgceEstimateEnvironmentInstance({
-                environmentInstanceSysId: objSysId,
-                classificationLevelSysId: savedObject.classification_level,
-                title: title,
-                description: savedObject.anticipated_need_or_usage,
-                unit: "each",
-                otherServiceOfferingData: serviceOffering,
-                offeringType,
-                idiqClinType,
-                unit_quantity,
-                dowTaskNumber:"4.3.1"
-              });
-            }
-          }
-        }else{
-          debugger
+        if(offeringType === "portability_plan"){
           if(tempObject.sys_id){
             objSysId = tempObject.sys_id;
             await api.cloudSupportEnvironmentInstanceTable.update(
@@ -520,19 +481,51 @@ export const saveOrUpdateOtherServiceOffering =
                 tempObject as CloudSupportEnvironmentInstanceDTO
             );
             objSysId = savedObject.sys_id as string;
-            const isPortability = offeringType === "portability_plan";
+            await IGCEStore.createIgceEstimateEnvironmentInstance({
+              environmentInstanceSysId: objSysId,
+              classificationLevelSysId: savedObject.classification_level,
+              title: title,
+              description: savedObject.anticipated_need_or_usage,
+              unit: "each",
+              otherServiceOfferingData: serviceOffering,
+              offeringType,
+              idiqClinType,
+              unit_quantity,
+              dowTaskNumber:"4.3.1"
+            });
+          }
+        }else{
+          if(tempObject.sys_id){
+            objSysId = tempObject.sys_id;
+            await api.cloudSupportEnvironmentInstanceTable.update(
+              tempObject.sys_id,
+                tempObject as CloudSupportEnvironmentInstanceDTO
+            );
+            await IGCEStore.updateIgceEstimateRecord({
+              environmentInstanceSysId: objSysId,
+              classificationLevelSysId: tempObject.classification_level,
+              unit_quantity,
+              description:tempObject.anticipated_need_or_usage,
+              dow_task_number: dowTaskNumber
+            });
+
+          } else {
+            const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
+                tempObject as CloudSupportEnvironmentInstanceDTO
+            );
+            objSysId = savedObject.sys_id as string;
             if (offeringType !== "training"){
               await IGCEStore.createIgceEstimateEnvironmentInstance({
                 environmentInstanceSysId: objSysId,
                 classificationLevelSysId: savedObject.classification_level,
                 title: title,
                 description: savedObject.anticipated_need_or_usage,
-                unit: isPortability ? "each" : "month",
+                unit: "month",
                 otherServiceOfferingData: serviceOffering,
                 offeringType,
                 idiqClinType,
                 unit_quantity,
-                dowTaskNumber: isPortability ? "4.3.1" : dowTaskNumber
+                dowTaskNumber: dowTaskNumber
               });
             }
           }
