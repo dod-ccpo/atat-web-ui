@@ -60,13 +60,13 @@ interface CloudDistinguisher {
   name?: string;
 }
 
-export interface FundingAlertData {
-  alerts: AlertDTO[],
-  daysRemaining: number,
-  spendingViolation: number;
-  fundingAlertType: string;
-  hasLowFundingAlert: boolean;
-}
+// export interface FundingAlertData {
+//   alerts: AlertDTO[],
+//   daysRemaining: number,
+//   spendingViolation: number;
+//   fundingAlertType: string;
+//   hasLowFundingAlert: boolean;
+// }
 
 // export const getThresholdAmount = (value: string): number => {
 //   const stringVal = value.replace('%', '');

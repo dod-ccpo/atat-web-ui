@@ -1791,8 +1791,8 @@ export default class PortfolioDashboard extends Vue {
   //   );
   // }
 
-  public async processAlerts(): Promise<void> {
-    // this.fundingAlertData = await this.getAlerts(this.hasObligatedFundsInUpcomingCLIN);
-  }
+  // public async processAlerts(): Promise<void> {
+  //   // this.fundingAlertData = await this.getAlerts(this.hasObligatedFundsInUpcomingCLIN);
+  // }
 }
 </script>
