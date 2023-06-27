@@ -462,6 +462,7 @@ export const saveOrUpdateOtherServiceOffering =
                 ? " - " + instanceType + " #" + serviceOffering.instanceNumber
                 :"")
         if(offeringType === "portability_plan"){
+          debugger
           if(tempObject.sys_id){
             objSysId = tempObject.sys_id;
             await api.cloudSupportEnvironmentInstanceTable.update(
@@ -495,6 +496,7 @@ export const saveOrUpdateOtherServiceOffering =
             });
           }
         }else{
+          debugger //not Portability
           if(tempObject.sys_id){
             objSysId = tempObject.sys_id;
             await api.cloudSupportEnvironmentInstanceTable.update(
@@ -2345,7 +2347,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const offeringIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === this.currentGroupId.toLowerCase()
     );
-
     if (offeringIndex > -1) {
       const otherOfferingObj = this.DOWObject[offeringIndex];
       if (
@@ -2354,32 +2355,59 @@ export class DescriptionOfWorkStore extends VuexModule {
           && otherOfferingObj.serviceOfferingGroupId
       ) {
         const groupId: string = this.currentGroupId.toLowerCase();
-
-        if (!Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")) {
-          otherOfferingObj.otherOfferingData = [];
-          otherOfferingObj.otherOfferingData?.push(otherOfferingData);
-        } else {
-          const instanceNumber = otherOfferingData.instanceNumber;
-          const existingInstance = otherOfferingObj.otherOfferingData?.find(
-            o => o.instanceNumber === instanceNumber
-          );
-          if (existingInstance ) {
-            Object.assign(existingInstance, otherOfferingData);
-          } else {
+        if(groupId === 'portability_plan'){
+          if (!Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")) {
+            otherOfferingObj.otherOfferingData = [];
             otherOfferingObj.otherOfferingData?.push(otherOfferingData);
+          } else {
+            debugger
+            const instanceNumber = otherOfferingObj.otherOfferingData?.length;
+            const existingInstance = otherOfferingObj.otherOfferingData?.find(
+              o => o.instanceNumber === instanceNumber
+            );
+            if (existingInstance ) {
+              Object.assign(existingInstance, otherOfferingData);
+            } else {
+              otherOfferingObj.otherOfferingData?.push(otherOfferingData);
+            }
           }
+
+          if (!Object.prototype.hasOwnProperty.call(this.otherOfferingInstancesTouched, groupId)) {
+            this.otherOfferingInstancesTouched[groupId] = [];
+          }
+
+          if (this.otherOfferingInstancesTouched[groupId]
+            .indexOf(otherOfferingData.instanceNumber) === -1) {
+            this.otherOfferingInstancesTouched[groupId].push(otherOfferingData.instanceNumber);
+          }
+
+        }else{
+          if (!Object.prototype.hasOwnProperty.call(otherOfferingObj, "otherOfferingData")) {
+            otherOfferingObj.otherOfferingData = [];
+            otherOfferingObj.otherOfferingData?.push(otherOfferingData);
+          } else {
+            const instanceNumber = otherOfferingData.instanceNumber;
+            const existingInstance = otherOfferingObj.otherOfferingData?.find(
+              o => o.instanceNumber === instanceNumber
+            );
+            if (existingInstance ) {
+              Object.assign(existingInstance, otherOfferingData);
+            } else {
+              otherOfferingObj.otherOfferingData?.push(otherOfferingData);
+            }
+          }
+
+          if (!Object.prototype.hasOwnProperty.call(this.otherOfferingInstancesTouched, groupId)) {
+            this.otherOfferingInstancesTouched[groupId] = [];
+          }
+
+          if (this.otherOfferingInstancesTouched[groupId]
+            .indexOf(otherOfferingData.instanceNumber) === -1) {
+            this.otherOfferingInstancesTouched[groupId].push(otherOfferingData.instanceNumber);
+          }
+
         }
-
-        if (!Object.prototype.hasOwnProperty.call(this.otherOfferingInstancesTouched, groupId)) {
-          this.otherOfferingInstancesTouched[groupId] = [];
-        }
-
-        if (this.otherOfferingInstancesTouched[groupId]
-          .indexOf(otherOfferingData.instanceNumber) === -1) {
-          this.otherOfferingInstancesTouched[groupId].push(otherOfferingData.instanceNumber);
-        }
-
-
+       
       } else {
         throw new Error(`Error saving ${this.currentGroupId} data to store`);
       }

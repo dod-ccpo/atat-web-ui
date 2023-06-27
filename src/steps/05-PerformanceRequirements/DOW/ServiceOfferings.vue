@@ -264,6 +264,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         if (otherOfferingDataArray && otherOfferingDataArray.length > 0) {
           let otherOfferingData :OtherServiceOfferingData|OtherServiceOfferingData[]|undefined
           const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
+          debugger
           if(this.requirementName === 'Portability plan'){
             otherOfferingData = otherOfferingDataArray
             otherOfferingData.forEach(offering=>{
@@ -314,6 +315,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    debugger
     try {
       if (this.serviceGroupOnLoad) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
