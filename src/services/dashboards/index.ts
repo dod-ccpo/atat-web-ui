@@ -108,6 +108,8 @@ export class DashboardService {
     let query = "task_order=" + taskOrderSysId;
     const taskOrderStart = parseISO(taskOrder.pop_start_date);
     const taskOrderNotStarted = isBefore(parseISO(today), taskOrderStart);
+
+    debugger;
     if (taskOrderNotStarted) {
       query +="^clin_numberSTARTSWITH0";
     } else {
@@ -116,6 +118,7 @@ export class DashboardService {
       query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
       query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
     }
+    debugger;
 
     const fields = "clin_number,clin_status,funds_obligated,funds_total,"
       + "pop_end_date,pop_start_date,sys_id";
@@ -126,7 +129,8 @@ export class DashboardService {
       },
     };
 
-    const clins = await api.clinTable.all(config);
+    let clins = await api.clinTable.all(config);
+    clins = clins.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1)
     return clins;
   }
 

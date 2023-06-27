@@ -188,6 +188,7 @@ export class PortfolioSummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   private async setEnvironmentsForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    // EJY check timing of setting status
     // get all environments for all user portfolios
     const allEnvironmentsList = await api.environmentTable.getQuery(
       {
@@ -203,6 +204,7 @@ export class PortfolioSummaryStore extends VuexModule {
     );
 
     allEnvs.forEach(env => {
+      // ATAT TODO: env status should be set in SNOW
       if (env.provisioned === "true") {
         env.environmentStatus = Statuses.Provisioned.value;;
       } else {
@@ -482,6 +484,7 @@ export class PortfolioSummaryStore extends VuexModule {
         portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
         portfolioSummaryList = portfolioSummaryList
           .map(portfolioSummary => convertColumnReferencesToValues(portfolioSummary));
+        debugger;
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
         await this.setEnvironmentsForPortfolios(portfolioSummaryList);

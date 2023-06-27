@@ -28,15 +28,16 @@ export default class FundingAlert extends Vue {
   @Prop({ default: 0 }) private timeRemaining?: number;
 
   public get isErrorAlert(): boolean {
-    return this.fundsAt100Percent || this.fundsDepleted || this.popExpired;
+    return this.fundsDelinquent || this.popExpired;
   }
   public get showAlertHeading(): boolean {
-    return this.alertHeading !== "" && this.isErrorAlert;
+    return this.getAlertHeading !== "" && this.isErrorAlert;
   }
-  public get alertHeading(): string {
+  public get getAlertHeading(): string {
+    debugger;
     if (this.popExpired) {
       return "This portfolio’s period of performance has expired."
-    } else if (this.fundsAt100Percent || this.fundsDepleted) {
+    } else if (this.fundsDelinquent) {
       return "This portfolio is out of funds."
     }
     return "";
@@ -66,11 +67,8 @@ export default class FundingAlert extends Vue {
     return this.fundingAlertType === FundingAlertTypes.POPLowFunds;
   }
   // red
-  public get fundsAt100Percent(): boolean {
-    return this.fundingAlertType === FundingAlertTypes.POPFundsAt100Percent;
-  }
-  public get fundsDepleted(): boolean {
-    return this.fundingAlertType === FundingAlertTypes.POPFundsDepleted;
+  public get fundsDelinquent(): boolean {
+    return this.fundingAlertType === FundingAlertTypes.POPFundsDelinquent;
   }
   public get popExpired(): boolean {
     return this.fundingAlertType === FundingAlertTypes.POPExpired;
@@ -78,6 +76,7 @@ export default class FundingAlert extends Vue {
 
   public get getAlertText(): string {
     let str = "";
+    debugger;
     if (this.expiresSoonWithCLIN || this.expiresSoonNoCLIN) {
       str = `The current period of performance is <strong>expiring in ${this.timeRemaining}
         days</strong>`;
@@ -91,10 +90,12 @@ export default class FundingAlert extends Vue {
         ? `. Review your task order details to ensure your portfolio is funded until 
           the end of the period of performance.`
         : ` and will be <strong>expiring in ${this.timeRemaining} days.</strong>`;
-    } else if (this.fundsAt100Percent || this.lowFunds) {
-      str = ``;
+    } else if (this.fundsDelinquent) {
+      str = `Ensure your portfolio is funded until the end of the period of performance 
+        to avoid potential violation of the Antideficiency Act.`;
     } else if (this.popExpired) {
-      str = ``;
+      str = `Funding Tracker details below reflect the status of your portfolio at 
+        the end of the most recent PoP.`;
     }
     return str;
   }
