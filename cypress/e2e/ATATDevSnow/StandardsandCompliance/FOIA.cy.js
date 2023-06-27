@@ -1,49 +1,86 @@
-import {bootstrapMockApis,colors,randomString} from "../../../helpers";
-import common from "../../../selectors/common.sel";
+import {randomString,randomAlphaNumeric} from "../../../helpers";
+import orgAddressType from '../../../fixtures/orgAddressType.json';
 import sac from "../../../selectors/standComp.sel";
 import org from "../../../selectors/org.sel";
 
 describe("Test suite:SAC Step: FOIA sub step", () => {
-  let orgAddressType;
 
+  const pt = "TC-Step-6-SAC-FOIA-" + randomAlphaNumeric(5);
+  const scope = "SAC-FOIA-" + randomString(5);
+  const systemName = randomAlphaNumeric(9);
+  const operationPerformed = randomAlphaNumeric(15);  
+  const fullName = randomString(5);
+  const email = randomString(5) + "@mail.mil";
+  const militaryOption = "radio_button_checkedMilitary/Diplomatic (APO, FPO, or DPO)";
+  const milOrgAddress = {
+    streetAddress: orgAddressType.StreetAddress1,
+    unit: orgAddressType.Unit,
+    city: "",
+    state: "",
+    zipCode: orgAddressType.Zipcode,
+    apoFPOSelector: org.apoFpoDropDownListItemsArmy,
+    statecodeSelector: org.stateCodeAmerica,
+    stateProvince: orgAddressType.stateProvince2,
+    inputCountryName: orgAddressType.country          
+  };
+  const foreignOrgAddress = {
+    streetAddress: orgAddressType.StreetAddress,
+    unit: orgAddressType.Unit2,
+    city: orgAddressType.city2,
+    state: "",
+    zipCode: orgAddressType.postalCode1,
+    apoFPOSelector: "",
+    statecodeSelector: "",
+    stateProvince: orgAddressType.stateProvince2,
+    postalCode: orgAddressType.postalCode1,
+    inputCountryName: orgAddressType.country
+      
+  }; 
+  const usOrgAddress = {
+    streetAddress: orgAddressType.StreetAddress2,
+    unit: orgAddressType.Unit,
+    city: orgAddressType.City,
+    state: orgAddressType.State,
+    zipCode: orgAddressType.Zipcode,
+          
+  };
   beforeEach(() => {
-    bootstrapMockApis();
-    cy.fixture("orgAddressType").then((types) => {
-      orgAddressType = types;
-    });
-    cy.launchATAT(true);
-    cy.homePageClickAcquisitionPackBtn();    
+    
+    cy.goToSaCStep(
+      pt,
+      scope
+    );
+    cy.selectPiiOption(sac.yesPIIRadioOption, "YES"); 
+    cy.completeSystemRecordsForm(systemName,operationPerformed);
+    cy.selectBAAOption(sac.yesBAARadioOption, "YES");    
+    cy.selectFOIAOption(sac.foiaYesOption, "YES"); 
+    cy.enterTextInTextField(sac.fullNameTxtBox, fullName);   
+    cy.enterTextInTextField(sac.emailTxtbox, email); 
   });    
     
-  it("TC1: SAC: PDoI is active on Vertical stepper", () => {
-    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");  
-    //Verify the Substep is active
-    cy.textExists(common.substepPDOIText, " Public Disclosure of Information ").click();
-    cy.findElement(common.stepStandCompText)
-      .should("be.visible")
-      .and('have.css', 'color', colors.primary);
-    cy.findElement(common.substepPDOIText)
-      .should("be.visible")
-      .and('have.css', 'color', colors.primary)
-      .click();   
-      
-  });
-
-  it("TC2: Asserts: FOIA", () => {
-    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
-    //select radio option as yes
-    cy.selectPiiOption(sac.noPIIRadioOption, "NO");    
-    //select radio options
-    cy.radioBtn(sac.noBAARadioOption, "NO").click({ force: true });
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, "Let’s look into the Freedom of Information Act (FOIA)");
+  it("TC1: Asserts: FOIA", () => {
+    //asserts the labels
+    cy.findElement(sac.fullNameLabel).scrollIntoView();
+    cy.textExists(sac.fullNameLabel, " Full name ");
+    cy.textExists(sac.fullNameHelpTxt, " Include rank, if applicable ");
+    cy.textExists(sac.emailLabel, " Email address ");
+    cy.textExists(sac.emailHelpTxt, " Enter a .mil or .gov email address. ");  
+    cy.clickBackButton(
+      sac.emailTxtbox,
+      "Let’s look into the Freedom of Information Act (FOIA)"
+      );
+    cy.verifySelectedRadioOption(
+        sac.foiaRadioOptionActive,
+        "radio_button_checkedYes."
+        );
+    
     cy.textExists(sac.foiaLearnLink, " Learn more about FOIA. ").click()
       .then(() => {
         cy.findElement(sac.foiaLearnDrawer).should("exist");
         cy.textExists(sac.learnMoreDrawerLabel, " Learn More ");
         cy.textExists(sac.learnMoreHeaderTxt,
           "Understanding the Freedom of Information Act (FOIA)");
-        cy.textExists(sac.learnMoreFOIAUrl, "https://www.foia.gov");
+        cy.textExists(sac.learnMoreFOIAUrl, "FOIA.gov");
         //close the side panel
         cy.findElement(sac.learnMoreDrawerClose).should("be.visible").click();
         cy.findElement(sac.foiaLearnDrawer).not("be.visible");
@@ -52,155 +89,78 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
     cy.textExists(sac.foiaFAQLink, " How does FOIA impact my acquisition package? ").click()
       .then(() => {
         cy.findElement(sac.foiaFAQText).should("be.visible");
-        cy.findElement(sac.foiaFAQLink).click()
-      });
-    cy.radioBtn(sac.foiaYesOption, "YES").not("[disabled]");
-    cy.radioBtn(sac.foiaNoOption, "NO").not("[disabled]");    
-    //select No option
-    cy.selectFOIAOption(sac.foiaNoOption, "NO")
-    cy.textExists(sac.blueAlertLabel, " Section 508 Accessibility Standards for Cloud Computing ");
+        cy.findElement(sac.foiaFAQLink).click();
+      });         
       
   });
 
-  it("TC3: FOIA Coordinator: Foreign address", () => {
-    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
-    //select radio option as yes
-    cy.selectPiiOption(sac.noPIIRadioOption, "NO");    
-    //select radio options
-    cy.radioBtn(sac.noBAARadioOption, "NO").click({ force: true });
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, "Let’s look into the Freedom of Information Act (FOIA)");
-    cy.selectFOIAOption(sac.foiaYesOption, "YES");    
-    //asserts the labels
-    cy.textExists(sac.fullNameLabel, " Full name ");
-    cy.textExists(sac.fullNameHelpTxt, " Include rank, if applicable ");
-    cy.textExists(sac.emailLabel, " Email address ");
-    cy.textExists(sac.emailHelpTxt, " Enter a .mil or .gov email address. ");    
-    //enter the values in the text
-    const fullName = randomString(5)
-    cy.enterTextInTextField(sac.fullNameTxtBox, fullName);
-    const email = randomString(5) + "@mail.mil"
-    cy.enterTextInTextField(sac.emailTxtbox, email);    
-    //radio buttons
-    cy.radioBtn(org.usaRadioBtn, "US").not("[disabled]");
-    cy.radioBtn(org.militaryradioBtn, "MILITARY").not("[disabled]");
-    cy.radioBtn(org.foreignradioBtn, "FOREIGN").not("[disabled]");
-    // radio butotn is selected
-    cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");
-    const orgAddress = {
-      streetAddress: orgAddressType.StreetAddress,
-      unit: orgAddressType.Unit2,
-      city: orgAddressType.city2,
-      state: "",
-      zipCode: orgAddressType.postalCode1,
-      apoFPOSelector: "",
-      statecodeSelector: "",
-      stateProvince: orgAddressType.stateProvince2,
-      postalCode: orgAddressType.postalCode1,
-      inputCountryName: orgAddressType.country
-        
-    };    
+  it("TC2: FOIA Coordinator: Foreign address", () => {       
+    // radio button is selected
+    cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");       
     //enter the text in the text fields
-    cy.enterOrganizationAddress(orgAddress);
-
-  });
-
-  it("TC4: FOIA Coordinator: Military", () => {
-    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
-    cy.clickSideStepper(common.substepPDOIText, " Public Disclosure of Information ");    
-    //select radio option as yes
-    cy.selectFOIAOption(sac.foiaYesOption, "YES");    
-    //enter the values in the text
-    const fullName = randomString(5);
-    cy.enterTextInTextField(sac.fullNameTxtBox, fullName)
-    const email = randomString(5) + "@test.mil"
-    cy.enterTextInTextField(sac.emailTxtbox, email);    
-    //select Address type as Military
-    cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
-    const orgAddress = {
-      streetAddress: orgAddressType.StreetAddress1,
-      unit: orgAddressType.Unit,
-      city: "",
-      state: "",
-      zipCode: orgAddressType.Zipcode,
-      apoFPOSelector: org.apoFpoDropDownListItemsArmy,
-      statecodeSelector: org.stateCodeAmerica,
-      stateProvince: orgAddressType.stateProvince2,
-      inputCountryName: orgAddressType.country
-            
-    };
-    cy.enterOrganizationAddress(orgAddress);
-      
-  });
-
-  it("TC5: FOIA Coordinator: U.S Address", () => {
-    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
-    cy.clickSideStepper(common.substepPDOIText, " Public Disclosure of Information ");    
-    //select radio option as yes
-    cy.selectFOIAOption(sac.foiaYesOption, "YES");    
-    //enter the values in the text
-    const fullName = randomString(5)
-    cy.enterTextInTextField(sac.fullNameTxtBox, fullName);
-    const email = randomString(5) + "@test.mil"
-    cy.enterTextInTextField(sac.emailTxtbox, email);    
-    //select Address type as Military
-    cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
-    //Enter the Orgranization address details
-    const orgAddress = {
-      streetAddress: orgAddressType.StreetAddress2,
-      unit: orgAddressType.Unit,
-      city: orgAddressType.City,
-      state: orgAddressType.State,
-      zipCode: orgAddressType.Zipcode,
-            
-    };
-    cy.enterOrganizationAddress(orgAddress);        
-    //Click on Continue button
-    cy.btnExists(common.continueBtn, " Continue ").click();    
-    //navigates to next substep
-    cy.findElement(common.header).scrollIntoView();
-    cy.textExists(common.header, "Let’s look into your Section 508 Accessibility requirements");
+    cy.enterOrganizationAddress(foreignOrgAddress);
+    cy.clickContinueButton(
+      org.foreignradioBtn,
+      "Let’s look into your Section 508 Accessibility requirements"
+    );
+    cy.clickBackButton(
+      sac.sectionYesRadio,
+      "Tell us about your FOIA Coordinator"
+    );
+    cy.verifyEnteredInputTxt(sac.fullNameTxtBox, fullName);
+    cy.verifyEnteredInputTxt(sac.emailTxtbox, email);
+    cy.verifySelectedRadioOption(org.addressTypeRadioActive, "radio_button_checkedForeign address");
     
   });
 
-  it("TC6: Validations: FOIA", () => {
-    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
-    //select radio option as yes on PII screen
-    cy.selectPiiOption(sac.noPIIRadioOption, "NO");    
-    //select radio options on BAA screen
-    cy.radioBtn(sac.noBAARadioOption, "NO").click({ force: true });
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, "Let’s look into the Freedom of Information Act (FOIA)");
-    // radio option  is not selected 
-    cy.radioBtn(sac.foiaYesOption, "YES").focus();
-    cy.clickSomethingElse(sac.foiaRadioError)
-      .then(() => {
-        cy.checkErrorMessage(sac.foiaRadioError, "Please select an option");
-      })
-    cy.selectFOIAOption(sac.foiaYesOption, "YES");
+  it("TC3: FOIA Coordinator: Military", () => {        
+    //select Address type as Military
+    cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");   
+    cy.enterOrganizationAddress(milOrgAddress);
+    cy.clickContinueButton(
+      org.foreignradioBtn,
+      "Let’s look into your Section 508 Accessibility requirements"
+    );
+    cy.clickBackButton(
+      sac.sectionYesRadio,
+      "Tell us about your FOIA Coordinator"
+    );   
+    cy.verifySelectedRadioOption(org.addressTypeRadioActive, militaryOption );
   });
 
-  it("TC7: Military: Validations", () => {
-    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
-    //select radio option as yes on PII
-    cy.selectPiiOption(sac.noPIIRadioOption, "NO");    
-    //select radio option as no on BAA
-    cy.radioBtn(sac.noBAARadioOption, "NO").click({ force: true });
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, "Let’s look into the Freedom of Information Act (FOIA)");
-    cy.selectFOIAOption(sac.foiaYesOption, "YES");
+  it("TC4: FOIA Coordinator: U.S Address", () => {     
+    //select Address type as Military
+    cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
+    //Enter the Orgranization address details   
+    cy.enterOrganizationAddress(usOrgAddress);     
+    cy.clickContinueButton(
+      org.foreignradioBtn,
+      "Let’s look into your Section 508 Accessibility requirements"
+    );
+    cy.clickBackButton(
+      sac.sectionYesRadio,
+      "Tell us about your FOIA Coordinator"
+    );
+    cy.verifySelectedRadioOption(org.addressTypeRadioActive, "radio_button_checkedU.S. address");
+  });
+
+  it("TC5: Military: Validations", () => {    
     //select Address type as Military
     cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
     //APO/FPO/DPO dropdown is blank
     cy.findElement(org.apoFpoDropDown).should("be.visible").clear({force: true})
-      .focus().tab().then(() => {
-        cy.checkErrorMessage(
-          org.apoFpoDropDownError,
-          "Please select a military post office (APO or FPO).");
-      }); 
+      .focus();
+    cy.clickSomethingElse(org.apoFpoDropDownError).then(() => {
+      cy.checkErrorMessage(
+        org.apoFpoDropDownError,
+        "Please select a military post office (APO or FPO)."
+      );
+    }); 
     //AA/AE/AP dropdown is blank   
     cy.findElement(org.stateCodeDropDown).should("be.visible").clear({force: true})
-      .focus().tab().then(() => {
+      .focus();
+    cy.clickSomethingElse(org.apoFpoDropDownError)
+      .then(() => {
         cy.checkErrorMessage(
           org.aaAEError,
           "Please select a state code.");
@@ -208,16 +168,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
             
   });
 
-  it("TC8: US: Validations", () => {
-    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
-    //select radio option as yes on PII
-    cy.selectPiiOption(sac.noPIIRadioOption, "NO");    
-    //select radio option as no on BAA 
-    cy.radioBtn(sac.noBAARadioOption, "NO").click({ force: true });
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, "Let’s look into the Freedom of Information Act (FOIA)");    
-    //select yes on FOIA
-    cy.selectFOIAOption(sac.foiaYesOption, "YES");
+  it("TC6: US: Validations", () => {    
     //Full name is blank
     cy.verifyRequiredInput(
       sac.fullNameTxtBox,
@@ -228,11 +179,16 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
     cy.verifyRequiredInput(
       sac.emailTxtbox,
       sac.emailError,
-      "Please enter your email address.");    
-    //email isn't in sandard format
-    const email = randomString(5)+"@test.com"
+      "Please enter your email address.");      
+    cy.findElement(sac.emailTxtbox).type(email);
+      cy.clickSomethingElse(org.streetTxtBox).then(() => {
+        cy.findElement(org.streetTxtBox).scrollIntoView();
+        cy.findElement(sac.emailError).should("not.exist");      
+      });    
+    //email isn't in standard format
+    const invalidEmail = randomString(5)+"@test.com"
     cy.findElement(sac.emailTxtbox).should("be.visible").clear()
-      .type(email).blur({ force: true }).then(() => {
+      .type(invalidEmail).blur({ force: true }).then(() => {
         cy.checkErrorMessage(
           sac.emailError,
           "Please use your .mil or .gov email address.");
@@ -264,16 +220,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
     );
   });
 
-  it("TC9: Foreign address: Validations", () => {
-    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
-    //select radio option as yes on PII
-    cy.selectPiiOption(sac.noPIIRadioOption, "NO");    
-    //select radio option as no on BAA
-    cy.radioBtn(sac.noBAARadioOption, "NO").click({ force: true });
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, "Let’s look into the Freedom of Information Act (FOIA)");
-    cy.selectFOIAOption(sac.foiaYesOption, "YES");
-    //select Address type as Foreign address
+  it("TC7: Foreign address: Validations", () => {    
     cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");
     //State or Province is blank
     cy.verifyRequiredInput(

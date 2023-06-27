@@ -72,7 +72,7 @@ import {
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
 import Summary from "../summary";
-import { format } from "date-fns";
+import { compareAsc, format } from "date-fns";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
@@ -315,6 +315,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
   );
 };
 
+
+
 const getStoreDataTableProperty = (
   storeProperty: string,
   store: AcquisitionPackageStore
@@ -327,10 +329,22 @@ const getStoreDataTableProperty = (
   if (!dataProperty) {
     throw new Error(`unable to locate store property : ${storeProperty}`);
   }
-
   return dataProperty;
 };
 
+export const isDitcoUser = (): boolean =>{
+  return AcquisitionPackage.acquisitionPackage?.contracting_shop === "DITCO"
+}
+
+export const isMRRToBeGenerated = (): boolean =>{ 
+  return AcquisitionPackage.fairOpportunity?.contract_action === "NONE";
+}
+
+export const hasFairOpportunity = (): boolean =>{
+  return ["NO_NONE", ""].every(
+    fo=>fo !== AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity?.toUpperCase()
+  )
+}
 
 @Module({
   name: "AcquisitionPackage",
@@ -368,6 +382,7 @@ export class AcquisitionPackageStore extends VuexModule {
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
   currentContracts: CurrentContractDTO[] | null = null;
+  hasCurrentOrPreviousContracts = "";
   currentContractInstanceNumber = 1;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   contractType: ContractTypeDTO | null = null;
@@ -828,13 +843,25 @@ export class AcquisitionPackageStore extends VuexModule {
     }) || [];
 
     const contracts = contractsFromSNOW.map((cc, index)=>{
+      const is_current = cc.contract_order_expiration_date 
+        && compareAsc(new Date(),new Date(cc.contract_order_expiration_date))=== -1
       return{
         acquisition_package: AcquisitionPackage.packageId,
         is_valid: true,
+        is_current,
         ...cc
       }
     }) as CurrentContractDTO[];
     return contracts;
+  }
+  @Action({rawError: true})
+  public async setHasCurrentOrPreviousContracts(hasContracts: string): Promise<void> {
+    await this.doSetHasCurrentOrPreviousContracts(hasContracts);
+  }
+
+  @Mutation
+  public async doSetHasCurrentOrPreviousContracts(value: string): Promise<void> {
+    this.hasCurrentOrPreviousContracts = value
   }
 
   @Action({rawError: true})
@@ -1591,11 +1618,7 @@ export class AcquisitionPackageStore extends VuexModule {
           const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
           await this.doSetCurrentContracts(tempArray);
         }
-      } else {
-        this.setCurrentContract(
-          initialCurrentContract()
-        );
-      }
+      } 
       this.setPackagePercentLoaded(65);
 
       if(sensitiveInfoSysId){
@@ -1800,7 +1823,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setContact({ data: initialContact(), type: "Financial POC" })
-          this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
 
           await this.setFairOpportunity(initialFairOpportunity());
@@ -2395,32 +2417,32 @@ export class AcquisitionPackageStore extends VuexModule {
       {
         itemName:"Requirements Checklist",
         requiresSignature:true,
-        alertText:"Requires signatures",
+        alertText:"Requires signature",
         show:true
       },
       {
         itemName:"Independent Government Cost Estimate",
         requiresSignature:true,
-        alertText:"Requires signatures",
+        alertText:"Requires signature",
         show:true
       },
       {
         itemName:"Incremental Funding Plan",
         requiresSignature:true,
-        alertText:"Requires signatures",
+        alertText:"Requires signature",
         show:incrementallyFunded === "YES"
       },
       {
         itemName:"Justification and Approval",
         requiresSignature:true,
-        alertText:"Complete and sign",
-        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+        alertText:"Requires signature",
+        show: hasFairOpportunity()
       },
       {
         itemName:"Sole Source Market Research Report",
         requiresSignature:true,
-        alertText:"Complete and sign",
-        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+        alertText:"Requires signature",
+        show: hasFairOpportunity() && isMRRToBeGenerated()
       },
       {
         itemName:"Description of Work",
@@ -2430,7 +2452,7 @@ export class AcquisitionPackageStore extends VuexModule {
       {
         itemName:"Evaluation Plan",
         requiresSignature:false,
-        show:fairOpportunity === "NO_NONE"
+        show:!hasFairOpportunity()
       }
     ] as signedDocument[]
   }
@@ -2439,7 +2461,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async getCompletedPackageList(): Promise<string[]> {
     const signedDocs = (await this.getSignedDocumentsList()).filter(
       signedDoc => signedDoc.show
-    ).map(signedDoc => signedDoc.itemName.replace("(Template)", ""));
+    ).map(signedDoc => signedDoc.itemName);
 
     const unsignedDocs = (await this.getDocuments(false)).filter(
       /**

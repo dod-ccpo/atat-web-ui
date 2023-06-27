@@ -53,13 +53,13 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private get currentData(): CurrentContractDTO {
     return {
-      current_contract_exists: this.currentContractExists,
+      current_contract_exists: AcquisitionPackage.hasCurrentOrPreviousContracts,
       acquisition_package: AcquisitionPackage.packageId
     };
   }
 
   private savedData = {
-    current_contract_exists: "",
+    current_contract_exists:  AcquisitionPackage.hasCurrentOrPreviousContracts,
     acquisition_package: AcquisitionPackage.packageId
   };
 
@@ -101,9 +101,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       this.savedData.current_contract_exists =
         await this.doesCurrentContractExist(storeData)
       this.currentContractExists = this.savedData.current_contract_exists as string;
-    } else {
-      AcquisitionPackage.setCurrentContract(initialCurrentContract());
-    }
+    } 
   }
 
   public async doesCurrentContractExist(data?: CurrentContractDTO[]): Promise<string>{
@@ -125,9 +123,9 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         let data = this.currentData;
         // update store
         await AcquisitionPackage.clearCurrentContractInfo();
-        await AcquisitionPackage.initializeCurrentContract(
-          data.current_contract_exists as string,
-        );
+        await AcquisitionPackage.setHasCurrentOrPreviousContracts(
+          data.current_contract_exists?.toUpperCase() as string
+        )
         // update SNOW if NO is selected
         if (data.current_contract_exists?.toUpperCase()==="NO")
         {
