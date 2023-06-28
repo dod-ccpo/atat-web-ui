@@ -1,6 +1,6 @@
 module.exports = {
   //PII
-  blueInfoMessageText:"._atat-alert",
+  blueInfoMessageText:"#PIIAlert",
   piiRadioOptionText: "#PIIOptions_radio_group_control legend",
   piiRadioOtionActive: "#PIIOptions_radio_group_control .v-item--active",
   piiRadioError:"#PIIOptions_radio_group_control .field-error",
@@ -19,21 +19,21 @@ module.exports = {
   operationPerformedTextBox: "#OperationToBePerformed_text_area",
   operationPerformedError:"#OperationToBePerformed_text_field_control .field-error",
   //BAA
-  baaLabelText: "._atat-alert h2",
-  phiTextMessage: "._atat-alert._callout p",
+  baaAlertHeader: "#BAAAlert h2",
+  phiTextMessage: "#BAAAlert p strong",
   learnMoreBAALink: "#LearnMoreBAA",
   baaRadioOptionText: "#BAARadioOptions_radio_group_control legend",
-  baaRadioOptionActive: "#BAAOptions_radio_group_control .v-item--active",
+  baaRadioOptionActive: "#BAARadioOptions_radio_group_control .v-item--active",
   yesBAARadioOption: "#Radio_YesBAA",
   noBAARadioOption: "#Radio_NoBAA",
   aboutBALink: "#Button_AboutBusinessAssociates",
   contentAboutBA: "#Content_AboutBusinessAssociates",
   baaRadioError:"#BAARadioOptions_radio_group_control .field-error",
   moreInfoBAALink: "a._text-link._external-link",
-  infoAlert: "._atat-alert._info-alert p",
+  sampleBAAProvAlert: "#BAASampleProvisionsAlert p",
   //FOIA
-  foiaYesOption: "#Radio_Yes",
-  foiaNoOption: "#Radio_No",
+  foiaYesOption: "#FOIAOptions_radio_group_control #Radio_Yes",
+  foiaNoOption: "#FOIAOptions_radio_group_control #Radio_No",
   foiaRadioError:"#FOIAOptions_radio_group_control .field-error",
   foiaRadioOptionActive:"#FOIAOptions_radio_group_control .v-item--active",
   foiaLearnLink: "#FOIALearnMore",
@@ -58,8 +58,9 @@ module.exports = {
   blueAlertLabel: "._atat-alert h2",
   scrollBar: "div._atat-alert.mb-10._callout._scrollable.py-0.pr-0",
   secton508Text: "#Section508RadioGroup_radio_group_control legend",
-  sectionYesRadio: "#Radio_Yes",
-  sectionNoRadio: "#Radio_No",
+  section508RadioGroup:"#Section508RadioGroup_radio_group_control input[type=radio]",
+  sectionYesRadio: "#Section508RadioGroup_radio_group_control #Radio_Yes",
+  sectionNoRadio: "#Section508RadioGroup_radio_group_control #Radio_No",
   about508Link: "#Button_AboutBusinessAssociates",
   sectionradioActive: "#Section508RadioGroup_radio_group_control .v-item--active",
   sectionradioError: "#Section508RadioGroup_radio_group_control .field-error",
@@ -68,5 +69,7 @@ module.exports = {
   accessibilityLabelTxt: "#OperationToBePerformed_text_field_label",
   accessibilityHelpTxt: "#OperationToBePerformed_text_field_control .help-text",
   operationTxtBox: "#OperationToBePerformed_text_area",
-  operationTxtError:"#OperationToBePerformed_text_field_control .field-error",
+  operationTxtError:"#OperationToBePerformed_text_field_control .field-error",  
+  //priceestimate
+  priceEstimateAlert:"#EstimateAlert"
 }

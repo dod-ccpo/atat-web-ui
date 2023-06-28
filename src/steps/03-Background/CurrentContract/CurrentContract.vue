@@ -59,7 +59,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   private savedData = {
-    current_contract_exists: "",
+    current_contract_exists:  AcquisitionPackage.hasCurrentOrPreviousContracts,
     acquisition_package: AcquisitionPackage.packageId
   };
 
@@ -91,28 +91,13 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         name: routeName,
       }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
     }   
-
     await this.loadOnEnter();     
   }  
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.currentContracts
-    if (storeData) {
-      this.savedData.current_contract_exists =
-        await this.doesCurrentContractExist(storeData)
-      this.currentContractExists = this.savedData.current_contract_exists as string;
-    } else {
-      AcquisitionPackage.setCurrentContract(initialCurrentContract());
-    }
-  }
-
-  public async doesCurrentContractExist(data?: CurrentContractDTO[]): Promise<string>{
-    const currentContracts = data
-      ? data
-      : await AcquisitionPackage.currentContracts;
-    return currentContracts && currentContracts.length>0 
-      ? currentContracts.every(c=>c.current_contract_exists==="YES")?"YES":"NO"
-      : ""
+    this.savedData.current_contract_exists =
+      await AcquisitionPackage.hasCurrentOrPreviousContracts;
+    this.currentContractExists = this.savedData.current_contract_exists as string;
   }
 
   private hasChanged(): boolean {
@@ -121,18 +106,20 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
+      const hasCurrentContract = this.currentData.current_contract_exists as string;
+      await AcquisitionPackage.setHasCurrentOrPreviousContracts(
+        hasCurrentContract
+      )
       if (this.hasChanged()) {
-        let data = this.currentData;
-        // update store
+        // always clear existing Contracts if form value has changed
         await AcquisitionPackage.clearCurrentContractInfo();
-        await AcquisitionPackage.initializeCurrentContract(
-          data.current_contract_exists as string,
-        );
-        // update SNOW if NO is selected
-        if (data.current_contract_exists?.toUpperCase()==="NO")
-        {
-          const currentContracts = await AcquisitionPackage.currentContracts || [];
-          AcquisitionPackage.updateCurrentContractsSNOW(currentContracts);
+        if (hasCurrentContract==="NO"){
+          // update store && snow
+          const noContract = initialCurrentContract();
+          noContract.current_contract_exists = "NO";
+          noContract.instance_number= 0;
+          noContract.acquisition_package = AcquisitionPackage.packageId;
+          AcquisitionPackage.updateCurrentContractsSNOW([noContract]);
         }
       }
     } catch (error) {

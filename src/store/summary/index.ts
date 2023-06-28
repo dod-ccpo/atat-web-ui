@@ -2,7 +2,7 @@ import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-dec
 import rootStore from "../index";
 import { SummaryItem } from "types/Global";
 import Periods from "../periods";
-import AcquisitionPackage from "../acquisitionPackage";
+import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
 import { 
   ContractTypeDTO, 
@@ -12,6 +12,7 @@ import {
   SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
+
 
 export const isStepTouched = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.some(
@@ -106,16 +107,17 @@ export class SummaryStore extends VuexModule {
     selectedPeriods: PeriodDTO[]
   ): Promise<boolean>{
     const PoP = Periods.periodOfPerformance as PeriodOfPerformanceDTO;
-    const hasRequestedStartDate = PoP?.pop_start_request;
-    if (hasRequestedStartDate === "YES"){
-      return selectedPeriods.length>0
-        && PoP?.recurring_requirement !== ""
-        && PoP?.requested_pop_start_date !== ""
-    } else if (hasRequestedStartDate === "NO"){
-      return selectedPeriods.length>0
-        && PoP?.recurring_requirement !== ""
-    }
-    return false;
+    const isRequestedStartDateValid = 
+      (PoP?.pop_start_request === "YES" && PoP?.requested_pop_start_date !== "")
+      || PoP?.pop_start_request === "NO"
+    const isRecurringRequirementValid = 
+      (isMRRToBeGenerated() 
+        && PoP?.recurring_requirement === "YES"
+        && PoP?.is_requirement_follow_on_procurement_sole_sourced !== "")
+      || ( !isMRRToBeGenerated() 
+        && PoP?.recurring_requirement === "YES")
+      || PoP?.recurring_requirement === "NO";
+    return isRequestedStartDateValid && isRecurringRequirementValid;
   }
 
   @Action({rawError: true})
@@ -290,11 +292,11 @@ export class SummaryStore extends VuexModule {
   ): Promise<boolean>{
     // validate CDS
     let isCDSComplete = false;
-    const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
     const oneClassification =
-      onlyOneClassification(ClassificationRequirements.selectedClassificationLevels)
+        onlyOneClassification(ClassificationRequirements.selectedClassificationLevels)
 
     let isCDSDurationValid = false;
+    const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
     if(oneClassification || cds.cross_domain_solution_required === "NO"){
       return true
     }
@@ -354,7 +356,7 @@ export class SummaryStore extends VuexModule {
   public async isComplete(
     config:{
       object: object
-      keysToIgnore: string[], 
+      keysToIgnore: string[],
     }): Promise<boolean>{
     return  config.object && Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){

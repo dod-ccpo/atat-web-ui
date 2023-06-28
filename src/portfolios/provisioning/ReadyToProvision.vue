@@ -182,7 +182,8 @@ export default class ReadyToProvision extends Mixins(SaveOnLeave) {
     this.provisioningData.admins?.forEach(async admin => {
       if (admin.hasUnclassifiedAccess === "YES") {
         if (hasILs) {
-          admin.impactLevels?.forEach(async il => {
+          admin.impactLevels?.forEach(async value => {
+            const il = value.split('_')[1].toUpperCase();
             const i = this.cspAdmins.findIndex(obj => obj.env === "Unclassified/" + il);
             const sort = parseInt(il.replace(/\D/g, "")); // get the number from the IL string
             await this.addCSPAdminToEnv(i, "Unclassified/" + il, sort);
