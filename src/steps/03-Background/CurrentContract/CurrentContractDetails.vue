@@ -261,10 +261,16 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private expMinDate = "";
   private expMaxDate = "";
   private isCurrent = false;
-  get headline(): string{
-    return "Let’s gather some details about your "
-      + (this.isCurrent ? "current" : "previous")
-      + " contract";
+  private headline = "";
+
+  private setHeadline(): void {
+    let contractState = "previous or current";
+
+    if (this.currentContract.contract_order_expiration_date){
+      contractState = this.isCurrent ? "current" : "previous"
+    }
+
+    this.headline =  "Let’s gather some details about your " + contractState + " contract";
   }
 
   get todaysDateISO():string{
@@ -353,12 +359,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
-    this.currentContracts = await AcquisitionPackage.currentContracts || [];
     await this.loadOnEnter();
   }
 
   public async loadContract(): Promise<void>{
-    const contractToLoadInstanceNumber = await AcquisitionPackage.currentContractInstanceNumber;
+    const contractToLoadInstanceNumber = AcquisitionPackage.currentContractInstanceNumber;
     this.currentContracts = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
     await this.sortDataSource();
     this.currentContract = this.currentContracts.filter(
@@ -366,7 +371,9 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         return c.instance_number?.toString()=== contractToLoadInstanceNumber.toString()
       }
     )[0] || initialCurrentContract();
-    this.isCurrent = this.currentContract.is_current as boolean;
+    if (this.currentContract.is_current){
+      this.isCurrent = this.currentContract.is_current as boolean;
+    }
     this.setMinAndMaxDates();
   }
 
@@ -410,6 +417,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     } else {
       AcquisitionPackage.setCurrentContract(this.currentData);
     }
+    this.setHeadline();
   }
 
   protected async saveOnLeave(): Promise<boolean> {
