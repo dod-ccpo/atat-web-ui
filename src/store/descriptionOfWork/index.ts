@@ -436,13 +436,12 @@ export const saveOrUpdateOtherServiceOffering =
       case "documentation_support":
       case "general_cloud_support":
       case "training":
-      case "portability_plan":
         tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
         tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
         tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
         tempObject.instance_name =
-              toTitleCase(offeringType
-                .replaceAll("_", " ")) + " #" + serviceOffering.instanceNumber;
+            toTitleCase(offeringType
+              .replaceAll("_", " ")) + " #" + serviceOffering.instanceNumber;
         tempObject.service_type = offeringType.toUpperCase();
 
         if (offeringType === "training"){
@@ -457,80 +456,86 @@ export const saveOrUpdateOtherServiceOffering =
 
         instanceType = "Service";
         idiqClinType =  "CLOUD_SUPPORT"
-        title = title +
-              (offeringType !== "portability_plan"
-                ? " - " + instanceType + " #" + serviceOffering.instanceNumber
-                :"")
-        if(offeringType === "portability_plan"){
-          debugger
-          if(tempObject.sys_id){
-            objSysId = tempObject.sys_id;
-            await api.cloudSupportEnvironmentInstanceTable.update(
-              tempObject.sys_id,
-                tempObject as CloudSupportEnvironmentInstanceDTO
-            );
-            await IGCEStore.updateIgceEstimateRecord({
-              environmentInstanceSysId: objSysId,
-              classificationLevelSysId: tempObject.classification_level,
-              unit_quantity,
-              description:tempObject.anticipated_need_or_usage,
-              dow_task_number: dowTaskNumber
-            });
+        title = title + " - " + instanceType + " #" + serviceOffering.instanceNumber
+        if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
+          await api.cloudSupportEnvironmentInstanceTable.update(
+            tempObject.sys_id,
+              tempObject as CloudSupportEnvironmentInstanceDTO
+          );
+          await IGCEStore.updateIgceEstimateRecord({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: tempObject.classification_level,
+            unit_quantity,
+            description:tempObject.anticipated_need_or_usage,
+            dow_task_number: dowTaskNumber
+          });
 
-          } else {
-            const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
-                tempObject as CloudSupportEnvironmentInstanceDTO
-            );
-            objSysId = savedObject.sys_id as string;
+        } else {
+          const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
+              tempObject as CloudSupportEnvironmentInstanceDTO
+          );
+          objSysId = savedObject.sys_id as string;
+          if (offeringType !== "training"){
             await IGCEStore.createIgceEstimateEnvironmentInstance({
               environmentInstanceSysId: objSysId,
               classificationLevelSysId: savedObject.classification_level,
               title: title,
               description: savedObject.anticipated_need_or_usage,
-              unit: "each",
+              unit: "month",
               otherServiceOfferingData: serviceOffering,
               offeringType,
               idiqClinType,
               unit_quantity,
-              dowTaskNumber:"4.3.1"
+              dowTaskNumber: dowTaskNumber
             });
           }
-        }else{
-          debugger //not Portability
-          if(tempObject.sys_id){
-            objSysId = tempObject.sys_id;
-            await api.cloudSupportEnvironmentInstanceTable.update(
-              tempObject.sys_id,
-                tempObject as CloudSupportEnvironmentInstanceDTO
-            );
-            await IGCEStore.updateIgceEstimateRecord({
-              environmentInstanceSysId: objSysId,
-              classificationLevelSysId: tempObject.classification_level,
-              unit_quantity,
-              description:tempObject.anticipated_need_or_usage,
-              dow_task_number: dowTaskNumber
-            });
+        }
+        break;
+      case "portability_plan":
+        tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
+        tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
+        tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
+        tempObject.instance_name =
+              toTitleCase(offeringType
+                .replaceAll("_", " ")) + " #" + serviceOffering.instanceNumber;
+        tempObject.service_type = offeringType.toUpperCase();
 
-          } else {
-            const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
-                tempObject as CloudSupportEnvironmentInstanceDTO
-            );
-            objSysId = savedObject.sys_id as string;
-            if (offeringType !== "training"){
-              await IGCEStore.createIgceEstimateEnvironmentInstance({
-                environmentInstanceSysId: objSysId,
-                classificationLevelSysId: savedObject.classification_level,
-                title: title,
-                description: savedObject.anticipated_need_or_usage,
-                unit: "month",
-                otherServiceOfferingData: serviceOffering,
-                offeringType,
-                idiqClinType,
-                unit_quantity,
-                dowTaskNumber: dowTaskNumber
-              });
-            }
-          }
+        tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
+        title = tempObject.instance_name
+        instanceType = "Service";
+        idiqClinType =  "CLOUD_SUPPORT"
+        if(tempObject.sys_id){
+          objSysId = tempObject.sys_id;
+          await api.cloudSupportEnvironmentInstanceTable.update(
+            tempObject.sys_id,
+              tempObject as CloudSupportEnvironmentInstanceDTO
+          );
+          await IGCEStore.updateIgceEstimateRecord({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: tempObject.classification_level,
+            unit_quantity,
+            description:tempObject.anticipated_need_or_usage,
+            dow_task_number: dowTaskNumber
+          });
+
+        } else {
+          const savedObject = await api.cloudSupportEnvironmentInstanceTable.create(
+              tempObject as CloudSupportEnvironmentInstanceDTO
+          );
+          objSysId = savedObject.sys_id as string;
+          await IGCEStore.createIgceEstimateEnvironmentInstance({
+            environmentInstanceSysId: objSysId,
+            classificationLevelSysId: savedObject.classification_level,
+            title: title,
+            description: savedObject.anticipated_need_or_usage,
+            unit: "each",
+            otherServiceOfferingData: serviceOffering,
+            offeringType,
+            idiqClinType,
+            unit_quantity,
+            dowTaskNumber:"4.3.1"
+          });
         }
         break;
       default:
@@ -2360,10 +2365,9 @@ export class DescriptionOfWorkStore extends VuexModule {
             otherOfferingObj.otherOfferingData = [];
             otherOfferingObj.otherOfferingData?.push(otherOfferingData);
           } else {
-            debugger
-            const instanceNumber = otherOfferingObj.otherOfferingData?.length;
+            const classificationLevel = otherOfferingData.classificationLevel
             const existingInstance = otherOfferingObj.otherOfferingData?.find(
-              o => o.instanceNumber === instanceNumber
+              o => o.classificationLevel === classificationLevel
             );
             if (existingInstance ) {
               Object.assign(existingInstance, otherOfferingData);
