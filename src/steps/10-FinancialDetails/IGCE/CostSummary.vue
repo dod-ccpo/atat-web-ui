@@ -279,6 +279,10 @@ export default class CostSummary extends Vue {
     }if(source["Option 4"]){
       option4 = getCurrencyString(source["Option 4"],true)
     }
+    //TODO temporary fix for null title
+    if(rowName === null || rowName === undefined ){
+      rowName = 'Undefined'
+    }
     const tableItem = {
       CLINTypeClassAggregate: rowName,
       BasePeriod: basePeriod,
@@ -484,7 +488,6 @@ export default class CostSummary extends Vue {
   }
 
   public isItemAggregate(label: string): boolean {
-    debugger
     return ['total','fees'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
   }
   public itemNeedsIcon(label: string): boolean {
