@@ -58,9 +58,11 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import {RadioButton} from "../../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import {FairOpportunityDTO} from "@/api/models";
+import {FairOpportunityDTO, PeriodOfPerformanceDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
+import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
+import Periods  from "@/store/periods";
 
 @Component({
   components: {
@@ -150,10 +152,23 @@ export default class MRRNeed extends Mixins(SaveOnLeave) {
     }
   }
 
+  /**
+   * Business rule states that if `NONE` is selected, remove value from 
+   * `Periods.is_requirement_follow_on_procurement_sole_sourced`
+   */
+  public async updatePeriodOfPerformance(itemSelected: string):Promise<void>{
+    if (itemSelected === "NONE"){
+      let PoP = await Periods.getPeriodOfPerformance() as PeriodOfPerformanceDTO;
+      PoP.is_requirement_follow_on_procurement_sole_sourced = "";
+      await Periods.setPeriodOfPerformance(PoP);
+    }
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
+        this.updatePeriodOfPerformance(this.currentData.contract_action as string)
       }
     } catch (error) {
       console.log(error);

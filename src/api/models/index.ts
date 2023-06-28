@@ -425,6 +425,7 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   requested_pop_start_date?: string;
   time_frame?: string;
   recurring_requirement?: string;
+  is_requirement_follow_on_procurement_sole_sourced?: string;
   base_and_options?: string; //deprecated
   option_periods?: string;
   base_period?: ReferenceColumn | string;

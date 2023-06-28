@@ -48,6 +48,7 @@ export const defaultPeriodOfPerformance: PeriodOfPerformanceDTO = {
   recurring_requirement: "",
   option_periods: "",
   base_period: "",
+  is_requirement_follow_on_procurement_sole_sourced: ""
 }
 
 @Module({
