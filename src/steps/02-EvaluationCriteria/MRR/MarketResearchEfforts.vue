@@ -424,7 +424,9 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
      */
     if (this.sameAsResearchDate === "NO"){
       this.showCatalogReviewEndDate = this.showResearchEndDate;
-      this.catalogReviewEndDate = this.formatISOShort(new Date(this.researchEndDate));
+      this.catalogReviewEndDate = this.researchEndDate !== ""
+        ? this.formatISOShort(new Date(this.researchEndDate))
+        : ""
       this.catalogReviewStartDate = this.researchStartDate;
     }
   }
