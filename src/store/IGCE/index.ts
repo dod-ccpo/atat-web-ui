@@ -553,7 +553,6 @@ export class IGCEStore extends VuexModule {
     }
   ): Promise<void> {
     const isClassificationInstance = instanceRef.classificationInstanceSysId !== undefined;
-
     const instanceQueryString = isClassificationInstance
       ? "classification_instance=" + instanceRef.classificationInstanceSysId
       : "environment_instance=" + instanceRef.environmentInstanceSysId
