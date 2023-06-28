@@ -261,14 +261,16 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private expMinDate = "";
   private expMaxDate = "";
   private isCurrent = false;
-  get headline(): string{
+  private headline = "";
+
+  private setHeadline(): void {
     let contractState = "previous or current";
 
     if (this.currentContract.contract_order_expiration_date){
       contractState = this.isCurrent ? "current" : "previous"
     }
 
-    return "Let’s gather some details about your " + contractState + " contract";
+    this.headline =  "Let’s gather some details about your " + contractState + " contract";
   }
 
   get todaysDateISO():string{
@@ -415,6 +417,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     } else {
       AcquisitionPackage.setCurrentContract(this.currentData);
     }
+    this.setHeadline();
   }
 
   protected async saveOnLeave(): Promise<boolean> {
