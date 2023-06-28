@@ -238,8 +238,8 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("rules", {deep: true})
   public rulesChanged(): void {
+    this.checkboxRules = [];
     if (!this.isLoading) {
-      this.checkboxRules = this.rules;
       this.clearErrorMessage();
     }
   }
@@ -353,6 +353,7 @@ export default class ATATCheckboxGroup extends Vue {
 
   private checkBoxClicked(value: string): void {
     if (this.checkboxRules.length === 0) {
+      this.checkboxRules = this.rules;
       this.validateCheckboxesNow = true;
     }
     if (value === this.noneValue) {
@@ -482,6 +483,7 @@ export default class ATATCheckboxGroup extends Vue {
 
       if (this.blurredCheckboxes[groupId].length === this._items.length) {
         if (this.checkboxRules.length === 0) {
+          this.checkboxRules = this.rules;
           this.validateCheckboxesNow = true;
         }
         this.setErrorMessage();
