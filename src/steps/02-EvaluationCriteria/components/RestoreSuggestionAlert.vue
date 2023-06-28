@@ -14,7 +14,7 @@
         </p>
       </template>
     </ATATAlert>
-  </v-expand-transition>
+  </v-expand-transition>  
 </template>
 
 <script lang="ts">
