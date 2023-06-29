@@ -562,7 +562,6 @@ export class IGCEStore extends VuexModule {
     };
     const costEstimateRowData = await api.igceEstimateTable.getQuery(instanceQuery)
     const costEstimateSysId = costEstimateRowData[0]?.sys_id || "";
-
     if (costEstimateSysId) {
       const estimateToBeUpdated: IgceEstimateDTO = {
         classification_level: instanceRef.classificationLevelSysId,
@@ -730,6 +729,7 @@ export class IGCEStore extends VuexModule {
    */
   @Action({ rawError: true })
   public async reorderInstanceNumbersInSNOW(estimate: IgceEstimateDTO):Promise<void>{
+    if(estimate.title === 'Portability Plan') return
     const serviceOfferingGroup = estimate.title?.substring(
       0, estimate.title?.indexOf(" -")
     ) || "";

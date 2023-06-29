@@ -169,6 +169,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public async deleteServiceItem(): Promise<void> {
     if(this.deleteMode === "category"){
+      if(this.serviceGroupOnLoad === "PORTABILITY_PLAN"){
+        this.portabilityClassificationLevels = []
+      }
       await DescriptionOfWork.removeCurrentOfferingGroup();
       DescriptionOfWork.setConfirmServiceOfferingDelete(false);
       this.showDialog = false;
@@ -373,8 +376,10 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
                     }
                   }
                 })
-                for(const offering of this.otherOfferingData){
-                  await DescriptionOfWork.setOtherOfferingData(offering);
+                if(this.portabilityClassificationLevels.length){
+                  for(const offering of this.otherOfferingData){
+                    await DescriptionOfWork.setOtherOfferingData(offering);
+                  }
                 }
               }
             }else{

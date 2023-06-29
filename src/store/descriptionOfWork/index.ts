@@ -409,7 +409,7 @@ export const saveOrUpdateOtherServiceOffering =
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
             description:tempObject.anticipated_need_or_usage,
-            dow_task_number: dowTaskNumber
+            dow_task_number: dowTaskNumber,
           });
         } else {
           const savedObject = await api.xaaSEnvironmentInstanceTable.create(
@@ -493,16 +493,14 @@ export const saveOrUpdateOtherServiceOffering =
         }
         break;
       case "portability_plan":
+        title = toTitleCase(offeringType.replaceAll("_", " "));
         tempObject.can_train_in_unclass_env = serviceOffering.canTrainInUnclassEnv;
         tempObject.personnel_onsite_access = serviceOffering.personnelOnsiteAccess;
         tempObject.personnel_requiring_training = serviceOffering.trainingPersonnel;
-        tempObject.instance_name =
-              toTitleCase(offeringType
-                .replaceAll("_", " ")) + " #" + serviceOffering.instanceNumber;
+        tempObject.instance_name = title + " #" + serviceOffering.instanceNumber;
         tempObject.service_type = offeringType.toUpperCase();
 
         tempObject.ts_contractor_clearance_type = serviceOffering.tsContractorClearanceType;
-        title = tempObject.instance_name
         instanceType = "Service";
         idiqClinType =  "CLOUD_SUPPORT"
         if(tempObject.sys_id){
@@ -516,7 +514,7 @@ export const saveOrUpdateOtherServiceOffering =
             classificationLevelSysId: tempObject.classification_level,
             unit_quantity,
             description:tempObject.anticipated_need_or_usage,
-            dow_task_number: dowTaskNumber
+            dow_task_number: dowTaskNumber,
           });
 
         } else {
@@ -534,7 +532,7 @@ export const saveOrUpdateOtherServiceOffering =
             offeringType,
             idiqClinType,
             unit_quantity,
-            dowTaskNumber:"4.3.1"
+            dowTaskNumber:dowTaskNumber
           });
         }
         break;
@@ -589,6 +587,10 @@ export const createDOWTaskNumber = async(
   if (offeringType === "general_xaas"){
     dow_task_number_component = 11;
     section = "4.2";
+  }
+  if(offeringType === "portability_plan"){
+    return section +
+        "." + classificationDOWTaskNumberComponent
   }
   
   return section +
