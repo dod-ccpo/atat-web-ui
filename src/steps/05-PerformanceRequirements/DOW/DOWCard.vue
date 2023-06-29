@@ -31,9 +31,9 @@
             {{ cardData.learnMore }}
           </a>
         </div>
-        <div v-if="cardData.recommendedText && newPackage">
+        <div v-if="cardData.recommendedText && !cardData.isComplete">
           <div class="text-base pt-2">
-           <span class="_recommended-Chip">Recommended for:</span>
+           <span class="_recommended-Chip text-base-dark">Recommended for:</span>
             {{cardData.recommendedText}}
           </div>
         </div>
