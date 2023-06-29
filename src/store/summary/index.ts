@@ -489,7 +489,9 @@ export class SummaryStore extends VuexModule {
     );
     const standardsMonitor = {object: sensitiveInfo, keysToIgnore};
     const isTouched = await this.isTouched(standardsMonitor)
-    const isComplete = await this.isComplete(standardsMonitor)
+    const isComplete = (sensitiveInfo.section_508_sufficient === "NO" 
+      && sensitiveInfo.accessibility_reqs_508 !== "")
+      || sensitiveInfo.section_508_sufficient === "YES"
     const standardsAndComplianceSummaryItem: SummaryItem = {
       title: "Section 508 Standards",
       description,
