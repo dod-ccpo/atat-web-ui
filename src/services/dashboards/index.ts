@@ -5,7 +5,7 @@ import { AxiosRequestConfig } from "axios";
 import { TABLENAME as ClinTable } from "@/api/clin";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
-import { format, isBefore, parseISO } from "date-fns";
+import { format, isAfter, isBefore, parseISO } from "date-fns";
 
 export interface PortFolioDashBoardDTO {
   taskOrder: TaskOrderDTO;
@@ -108,17 +108,12 @@ export class DashboardService {
     let query = "task_order=" + taskOrderSysId;
     const taskOrderStart = parseISO(taskOrder.pop_start_date);
     const taskOrderNotStarted = isBefore(parseISO(today), taskOrderStart);
-
-    debugger;
     if (taskOrderNotStarted) {
       query +="^clin_numberSTARTSWITH0";
     } else {
-      // ATAT TODO - CHECK IF TODAY IS PAST TASK ORDER END DATE AND RETRIEVE 
-      // OPTION PERIOD CLINS IF SO
       query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
       query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
     }
-    debugger;
 
     const fields = "clin_number,clin_status,funds_obligated,funds_total,"
       + "pop_end_date,pop_start_date,sys_id";
@@ -136,7 +131,7 @@ export class DashboardService {
 
   public async getAllCLINs(taskOrderSysId: string): Promise<ClinDTO[]> {
     let query = "task_order=" + taskOrderSysId;
-    const fields = "clin_number,funds_obligated"
+    const fields = "clin_number,funds_obligated,sys_id"
     const config: AxiosRequestConfig = {
       params: {
         sysparm_query: query,
@@ -144,6 +139,7 @@ export class DashboardService {
       },
     };
     const clins = await api.clinTable.all(config);
+    clins.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
     return clins;
   }
 
@@ -184,12 +180,26 @@ export class DashboardService {
       }
       
       const allCLINs = await this.getAllCLINs(taskOrderSysId);
-      allCLINs.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
-      // get sys_ids for all clins in current period
-      const clinsInPeriod = await this.getCLINsInCurrentPeriod(taskOrderSysId, taskOrder);
-      clinsInPeriod.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
-      const clinSysIds = clinsInPeriod.map(obj => obj.sys_id);
 
+      const today = format(new Date().setHours(0,0,0,0), "yyyy-MM-dd")
+      const taskOrderEnd = parseISO(taskOrder.pop_end_date);
+      const taskOrderExpired = isAfter(parseISO(today), taskOrderEnd);
+      let clinsInPeriod: ClinDTO[] = [];
+      
+      if (!taskOrderExpired) {
+        // get sys_ids for all clins in current period
+        clinsInPeriod = await this.getCLINsInCurrentPeriod(taskOrderSysId, taskOrder);
+      } else {
+        // expired task order - get CLINs from last period
+        const lastPeriod = allCLINs[allCLINs.length - 1].clin_number.slice(0,2);
+        clinsInPeriod = allCLINs.filter(obj => obj.clin_number.indexOf(lastPeriod) === 0);
+      }
+
+      if (clinsInPeriod.length) {
+        clinsInPeriod.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
+      }
+     
+      const clinSysIds = clinsInPeriod.map(obj => obj.sys_id);
       const clinRequests = clinSysIds.map((clin) => api.clinTable.retrieve(clin));
       let currentCLINs = await Promise.all(clinRequests);
 

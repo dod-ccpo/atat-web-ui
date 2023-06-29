@@ -385,7 +385,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.admins.findIndex(a => a.hasTSAccess === "YES") === -1 && this.needsTSAdmin;
     const needsILs = this.hasImpactLevels;
     const missingILs = [...this.impactLevelCompareArray]
-    debugger;
 
     if(this.admins.length > 0){
       if(needsILs){

@@ -484,7 +484,7 @@ export class PortfolioSummaryStore extends VuexModule {
         portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
         portfolioSummaryList = portfolioSummaryList
           .map(portfolioSummary => convertColumnReferencesToValues(portfolioSummary));
-        debugger;
+
         // callouts to other functions to set data from other tables
         await this.setAlertsForPortfolios(portfolioSummaryList);
         await this.setEnvironmentsForPortfolios(portfolioSummaryList);

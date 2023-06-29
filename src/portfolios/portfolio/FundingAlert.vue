@@ -34,7 +34,6 @@ export default class FundingAlert extends Vue {
     return this.getAlertHeading !== "" && this.isErrorAlert;
   }
   public get getAlertHeading(): string {
-    debugger;
     if (this.popExpired) {
       return "This portfolio’s period of performance has expired."
     } else if (this.fundsDelinquent) {
@@ -76,7 +75,6 @@ export default class FundingAlert extends Vue {
 
   public get getAlertText(): string {
     let str = "";
-    debugger;
     if (this.expiresSoonWithCLIN || this.expiresSoonNoCLIN) {
       str = `The current period of performance is <strong>expiring in ${this.timeRemaining}
         days</strong>`;

@@ -134,7 +134,7 @@
                       :chart-data="arcGuageChartData"
                       :chart-options="arcGuageChartOptions"
                       :is-arc-gauge="true"
-                      :center-text1="roundDecimal(fundsSpentPercent, 0) + '%'"
+                      :center-text1="fundsSpentPercentWholeNumber + '%'"
                       center-text2="Funds Spent"
                       :aria-label="
                         'Chart displaying ' +
@@ -145,11 +145,15 @@
                       :isError="arePoPFundsDelinquent"
                     />
                     <v-divider class="my-4" />
+                    <p v-if="hasExpired" class="mb-0 font-size-14">
+                      The period of performance has <strong>expired.</strong>
+                      You spent {{ fundsSpentPercentWholeNumber }}% of your portfolio’s
+                      funds.
+                    </p>
                     <p
                       class="mb-0 font-size-14"
-                      v-if="arePoPFundsDelinquent"
+                      v-else-if="arePoPFundsDelinquent"
                     >
-                    <!-- EJY RESUME HERE - need to add "expired" text and logic -->
                       You’ve spent
                       <strong>{{ fundsSpentPercentWholeNumber }}%</strong>
                       of your portfolio’s funds and there are
@@ -907,6 +911,11 @@ export default class PortfolioDashboard extends Vue {
     return this.fundsSpentPercent >= 75 && this.fundsSpentPercent < 100;
   }
   private get arePoPFundsDelinquent(): boolean {
+    // niche case - if ALMOST 100%, due to rounding, don't flag as delinquent
+    // if at 99.5 to 99.99999 percent
+    if (this.fundsSpentPercent >= 99.5 && this.fundsSpentPercent < 100) {
+      return false;
+    }
     return this.fundsSpentPercent >= 100;
   }
   private get isExpiringSoon(): boolean {
@@ -923,28 +932,21 @@ export default class PortfolioDashboard extends Vue {
   private get fundingAlertType(): string {
     if (!this.isLoading) {
       if (this.hasExpired) {
-        // EJY - funding status should be set in SNOW
-        // PortfolioStore.setStatus(Statuses.Expired.value);
         return FundingAlertTypes.POPExpired;
       } 
       if (this.arePoPFundsDelinquent) {
-        // PortfolioStore.setStatus(Statuses.Delinquent.value);
         return FundingAlertTypes.POPFundsDelinquent;
       }      
+      if (this.isExpiringSoon && this.arePoPFundsLow) {
+        return FundingAlertTypes.POPExpiresSoonWithLowFunds;
+      }
       if (this.isExpiringSoon && this.hasObligatedFundsInUpcomingCLIN) {
-        // PortfolioStore.setStatus(Statuses.AtRisk.value);
         return FundingAlertTypes.POPExpiresSoonWithTOClin;
       }
       if (this.isExpiringSoon && !this.hasObligatedFundsInUpcomingCLIN) {
-        // PortfolioStore.setStatus(Statuses.ExpiringSoon.value);
         return FundingAlertTypes.POPExpiresSoonNoTOClin;
       }
-      if (this.isExpiringSoon && this.arePoPFundsLow) {
-        // PortfolioStore.setStatus(Statuses.AtRisk.value);
-        return FundingAlertTypes.POPExpiresSoonWithLowFunds;
-      }
       if (this.arePoPFundsLow) {
-        // PortfolioStore.setStatus(Statuses.AtRisk.value);
         return FundingAlertTypes.POPLowFunds;
       }
 
@@ -1513,7 +1515,6 @@ export default class PortfolioDashboard extends Vue {
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
     this.costs.sort((a, b) => (a.year_month > b.year_month ? 1 : -1));
     this.idiqClins = data.currentCLINs;
-    debugger;
     this.idiqClins.sort((a, b) => a.clin_number > b.clin_number ? 1 : -1);
 
     await this.calculateTotalFunds();
@@ -1531,7 +1532,14 @@ export default class PortfolioDashboard extends Vue {
     };
 
     this.fundsSpentPercent = (this.fundsSpent / this.totalPortfolioFunds) * 100;
-    this.fundsSpentPercentWholeNumber = Math.round(this.fundsSpentPercent);
+    
+    // niche case - if ALMOST 100%, due to rounding, don't set at 100% spent
+    // if at 99.5 to 99.99999 percent
+    if (this.fundsSpentPercent >= 99.5 && this.fundsSpentPercent < 100) {
+      this.fundsSpentPercentWholeNumber = 99;
+    } else {
+      this.fundsSpentPercentWholeNumber = Math.round(this.fundsSpentPercent);    
+    }
     this.arcGuageChartData.datasets[0].data = [
       this.fundsSpentPercentWholeNumber,
       100 - this.fundsSpentPercentWholeNumber,
@@ -1543,11 +1551,8 @@ export default class PortfolioDashboard extends Vue {
       this.arcGuageChartData.datasets[0].backgroundColor = [arcColor, this.chartDataColors.gray];
     }
 
-
-
     // all CLINs should run the entire duration of the current period, so use
     // the first one to set PoP start and end dates
-    debugger;
     if (this.idiqClins.length > 0) {
       this.currentPoPStartISO = this.idiqClins[0].pop_start_date;
       this.currentPoPEndISO = this.idiqClins[0].pop_end_date;
