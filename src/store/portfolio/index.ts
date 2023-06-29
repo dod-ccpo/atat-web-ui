@@ -35,8 +35,7 @@ export const FundingAlertTypes = {
   POPExpiresSoonWithTOClin: "POPExpiresSoonWithTOClin",
   POPExpiresSoonWithLowFunds: "POPExpiresSoonWithLowFunds",
   POPLowFunds: "POPLowFunds",
-  POPFundsAt100Percent: "POPFundsAt100Percent",
-  POPFundsDepleted: "POPFundsDepleted",
+  POPFundsDelinquent: "POPFundsDelinquent",
   POPExpired: "POPExpired",
 };
 
@@ -59,24 +58,6 @@ interface CloudDistinguisher {
   description?: string;
   display_name?: string;
   name?: string;
-}
-
-export interface FundingAlertData {
-  alerts: AlertDTO[],
-  daysRemaining: number,
-  spendingViolation: number;
-  fundingAlertType: string;
-  hasLowFundingAlert: boolean;
-}
-
-export const getThresholdAmount = (value: string): number => {
-  const stringVal = value.replace('%', '');
-  const numVal = Number(stringVal);
-  return numVal;
-}
-export const thresholdAtOrAbove = (value: string, threshold: number): boolean => {
-  const numVal = getThresholdAmount(value);
-  return !Number.isNaN(numVal) && numVal >=threshold;
 }
 
 // ATAT TODO - future ticket when implemented: get env specific url from 
@@ -850,98 +831,6 @@ export class PortfolioDataStore extends VuexModule {
     const alerts = await this.alertService.getAlerts(taskOrderNumber);
     this.setAlerts(alerts)
     return alerts;
-  }
-
-  @Action({ rawError: true })
-  public async getFundingTrackerAlert(
-    data: { taskOrderNumber: string, hasObligatedFundsInUpcomingCLIN: boolean } 
-  ):Promise<FundingAlertData>{
-    //just set the status to active for now
-    //in the future this logic will be more complex
-    this.setStatus(Statuses.Active.value);
-
-    const fundingAlertData: FundingAlertData = {
-      alerts: [],
-      daysRemaining: 0,
-      spendingViolation: 0,
-      fundingAlertType: "",
-      hasLowFundingAlert: false,
-    }
-
-    const alerts = await this.getAlerts(data.taskOrderNumber);
-
-    alerts.forEach(alert=>{
-      if(alert.alert_type == AlertTypes.SPENDING_ACTUAL &&
-        !fundingAlertData.alerts.some(alert=>alert.alert_type == AlertTypes.SPENDING_ACTUAL) ){
-        fundingAlertData.alerts.push(alert);
-      }
-      if(alert.alert_type == AlertTypes.TIME_REMAINING && 
-        !fundingAlertData.alerts.some(alert=>alert.alert_type == AlertTypes.TIME_REMAINING)){
-        fundingAlertData.alerts.push(alert);
-      }
-    });
-
-    // does alert type spending actual exist and if it does, does the threshold
-    // meet or exceeed 100% if spending alert and threshold is at or 
-    // above 100% show expiration alert
-    const lowFundsAlert = this.alerts.find(alert => alert.alert_type 
-      === AlertTypes.SPENDING_ACTUAL && thresholdAtOrAbove(alert.threshold_violation_amount, 75)
-    );
-    const currentSpendingViolation = lowFundsAlert ? 
-      getThresholdAmount(lowFundsAlert.threshold_violation_amount) : 0;
-
-    fundingAlertData.hasLowFundingAlert = lowFundsAlert !== undefined;
-    fundingAlertData.spendingViolation = lowFundsAlert !== undefined 
-      ? currentSpendingViolation : 0;
-
-    // does time remaining alert exist
-    const timeRemainingAlert = this.alerts.find(
-      alert => alert.alert_type === AlertTypes.TIME_REMAINING
-    );
-
-    fundingAlertData.daysRemaining = timeRemainingAlert ? 
-      Number(timeRemainingAlert.threshold_violation_amount.replace('days','')) : 0;
-    if (timeRemainingAlert) {
-      if (fundingAlertData.daysRemaining <= 0) {
-        fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpired;
-      } else if (fundingAlertData.daysRemaining <= 60) {
-        fundingAlertData.fundingAlertType = data.hasObligatedFundsInUpcomingCLIN
-          ? FundingAlertTypes.POPExpiresSoonWithTOClin
-          : FundingAlertTypes.POPExpiresSoonNoTOClin;
-      }
-
-      if (fundingAlertData.daysRemaining <= 0 ) {
-        this.setStatus(Statuses.Expired.value);
-      } else if (fundingAlertData.daysRemaining <= 60){
-        this.setStatus(Statuses.AtRisk.value);
-      }
-  
-    }
-
-    if(lowFundsAlert){
-      fundingAlertData.fundingAlertType = fundingAlertData.spendingViolation >= 100 
-        ? FundingAlertTypes.POPFundsDepleted
-        : FundingAlertTypes.POPLowFunds;
-
-      if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPLowFunds){
-        this.setStatus(Statuses.AtRisk.value);
-      }
-      if(fundingAlertData.fundingAlertType == FundingAlertTypes.POPFundsDepleted){
-        this.setStatus(Statuses.Delinquent.value);
-      }
-    }
-    
-    if (timeRemainingAlert && lowFundsAlert) {
-      if (fundingAlertData.daysRemaining > 0 && fundingAlertData.spendingViolation < 100) {
-        fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpiresSoonWithLowFunds;
-
-        if (fundingAlertData.daysRemaining <= 60 || fundingAlertData.spendingViolation >= 90){
-          this.setStatus(Statuses.AtRisk.value);
-        }
-      }
-    }
-
-    return fundingAlertData;
   }
 
   @Action({rawError: true})

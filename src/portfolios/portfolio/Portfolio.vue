@@ -1,11 +1,11 @@
 <template>
-  <div class="_dashboard bg-base-lightest">
-    <v-container class="container-max-width bg-base-lightest">
-      <v-row v-if="fundingAlertType().length > 0">
+  <div class="_dashboard">
+    <v-container class="container-max-width">
+      <v-row v-if="showFundingAlert">
         <v-col>
-          <funding-alert
-            :fundingAlertType="fundingAlertType()"
-            :timeRemaining="daysRemaining()"
+          <FundingAlert
+            :fundingAlertType="fundingAlertType"
+            :timeRemaining="daysRemaining"
           />
         </v-col>
       </v-row>
@@ -23,13 +23,13 @@
                 <v-col class="col-sm-6 col-md-8">
                   <v-card
                     id="PortfolioDetailsCard"
-                    class="_no-shadow v-sheet--outlined height-100 pa-8"
+                    class="_no-shadow v-sheet--outlined height-100 pa-8 d-flex flex-column"
                   >
                     <h3 class="mb-6">Portfolio Details</h3>
                     <v-row>
                       <v-col>
                         <div
-                          class="bg-info-lighter px-6 py-6"
+                          class="bg-primary-lighter px-6 py-6 height-100"
                           style="border-radius: 4px"
                         >
                           <span id="AvailableFunds" class="h1 mb-0">
@@ -56,45 +56,40 @@
                         </p>
                         <v-divider class="my-4" />
                         <p class="text-base-darkest mb-0 font-size-14">
-                          Current Period of Performance
+                          Current Period of Performance (PoP)
                         </p>
                         <span id="PoPDates" class="h3 mb-0">
                           {{ currentPoPStartStr }}&ndash;{{ currentPoPEndStr }}
                         </span>
-                        <p
+                        <!-- <p
                           class="text-base-dark mb-0 font-size-14"
-                          v-if="!hasTimeSensativeAlert()"
+                          v-if="!hasTimeSensitiveAlert"
                         >
-                          {{ timeToExpiration }} to expiration
-                        </p>
-                        <div
-                          class="d-flex justify-start align-top mb-0 font-size-14"
-                          v-if="
-                            hasTimeSensativeAlert() &&
-                            daysRemaining() <= 60 &&
-                            daysRemaining() > 0
-                          "
+                          {{ timeToExpiration }}
+                        </p> -->
+
+                        <div 
+                          class="d-flex justify-start align-center mb-0 font-size-14"
+                          v-if="!hasExpired"
                         >
-                          <strong
-                            >{{ daysRemaining() }} days to expiration</strong
-                          >
-                          <i
-                            aria-hidden="true"
-                            class="v-icon ml-2 text-warning-dark2
-                             notranslate material-icons theme--light"
-                          >
-                            warning
-                          </i>
+                          {{ timeToExpiration }}
+
+                          <ATATSVGIcon 
+                            v-if="hasTimeSensitiveAlert && !isLoading"
+                            name="warning"
+                            width="19"
+                            height="16"
+                            color="warning-dark2"
+                            class="ml-2"
+                          />
                         </div>
+
                         <div
                           class="d-flex justify-start align-top atat-text-field-error 
                           text-error mb-0 font-size-14"
-                          v-if="hasTimeSensativeAlert() && daysRemaining() <= 0"
+                          v-if="hasExpired && !isLoading"
                         >
-                          <strong
-                            >{{ daysPastExpiration() }} days past
-                            expiration</strong
-                          >
+                          {{ daysPastExpiration() }} days past expiration
                           <ATATSVGIcon
                             style="margin: 2px 0 0 8px"
                             name="exclamationMark"
@@ -117,25 +112,16 @@
                       class="d-flex justify-space-between"
                     >
                       <div class="mb-6 h3">Funding Status</div>
-                      <div
-                        v-if="
-                          fundsSpentPercent >= 75 && fundsSpentPercent < 100
-                        "
-                      >
-                        <i
-                          aria-hidden="true"
-                          class="v-icon ml-2 text-warning-dark2 notranslate 
-                          material-icons theme--light"
-                        >
-                          warning
-                        </i>
+                      <div v-if="arePoPFundsLow && !arePoPFundsDelinquent">
+                        <ATATSVGIcon 
+                          name="warning"
+                          width="22"
+                          height="19"
+                          color="warning-dark2"
+                          class="ml-2"
+                        />
                       </div>
-                      <div
-                        v-if="
-                          hasSpendingThresholdAlert() &&
-                          fundingAlertData.spendingViolation >= 100
-                        "
-                      >
+                      <div v-if="arePoPFundsDelinquent">
                         <ATATSVGIcon
                           style="margin: 2px 0 0 8px"
                           name="exclamationMark"
@@ -150,7 +136,7 @@
                       :chart-data="arcGuageChartData"
                       :chart-options="arcGuageChartOptions"
                       :is-arc-gauge="true"
-                      :center-text1="roundDecimal(fundsSpentPercent, 0) + '%'"
+                      :center-text1="fundsSpentPercentForArcChart + '%'"
                       center-text2="Funds Spent"
                       :aria-label="
                         'Chart displaying ' +
@@ -158,31 +144,35 @@
                         '% of Funds Spent'
                       "
                       :show-label-on-hover="false"
-                      :isError="
-                        hasSpendingThresholdAlert() &&
-                        fundingAlertData.spendingViolation >= 100
-                      "
+                      :isError="arePoPFundsDelinquent"
                     />
                     <v-divider class="my-4" />
+                    <p v-if="hasExpired && !isLoading" class="mb-0 font-size-14">
+                      The PoP has <strong>expired.</strong> You spent 
+                      {{ fundsSpentPercentForArcChart }}% of your portfolio’s available funds.
+                    </p>
                     <p
                       class="mb-0 font-size-14"
-                      v-if="
-                        hasSpendingThresholdAlert() &&
-                        fundingAlertData.spendingViolation >= 100
-                      "
+                      v-else-if="arePoPFundsDelinquent && !isLoading"
                     >
-                      You&#8217;ve spent
-                      <strong>{{ fundingAlertData.spendingViolation }}%</strong>
-                      of your portfolio&#8217;s funds and there are
-                      <strong>{{ daysRemaining() }} days remaining</strong>
-                      until your next period of performance.
+                      You’ve spent
+                      <strong>{{ fundsSpentPercentForArcChart }}%</strong>
+                      of your portfolio’s funds and there are
+                      <strong>{{ daysRemaining }} days remaining</strong>
+
+                      <span v-if="hasObligatedFundsInUpcomingCLIN">
+                        until your next PoP.
+                      </span>
+                      <span v-else>
+                        in this PoP.
+                      </span>
+
                     </p>
-                    <p class="mb-0 font-size-14" v-else>
-                      At your current rate of spending, you will run out of
-                      funds by
-                      <span class="nowrap font-weight-700"
-                        >{{ runOutOfFundsDate }}.</span
-                      >
+                    <p class="mb-0 font-size-14" v-else-if="!isLoading">
+                      At your current rate of spending, you will run out of funds by
+                      <span class="nowrap font-weight-700">{{ runOutOfFundsDate }}</span>
+                      <span v-if="isRunOutOfFundsDateFuture">, after the current PoP ends.</span>
+                      <span v-else>.</span>
                     </p>
                   </v-card>
                 </v-col>
@@ -222,7 +212,7 @@
                     <h3 class="mb-4">Actual and Projected Burn Rate</h3>
                     <p class="text-base-dark font-size-14">
                       Track your rate of spend and available funds throughout
-                      the current period of performance. Forecasted future costs
+                      the current PoP. Forecasted future costs
                       are based on historical trends and show approximately when
                       you are projected to exceed your portfolio’s budget.
                     </p>
@@ -405,15 +395,11 @@
                       The chart below shows the proportion of funds spent and
                       funds estimated to be invoiced compared to the total funds
                       available in this portfolio. The data includes money spent
-                      on all active task orders during this period of
-                      performance.
+                      on all active task orders during this PoP.
                     </p>
                     <funding-alert
-                      :fundingAlertType="popFundsAt100Percent"
-                      v-if="
-                        hasSpendingThresholdAlert() &&
-                        fundingAlertData.spendingViolation >= 100
-                      "
+                      :fundingAlertType="fundingAlertType"
+                      v-if="arePoPFundsDelinquent"
                     />
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
@@ -810,17 +796,14 @@ import DonutChart from "../../components/charts/DonutChart.vue";
 import LineChart from "../../components/charts/LineChart.vue";
 
 import ATATCharts from "@/store/charts";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
-import Portfolio, {
-  AlertTypes,
-  FundingAlertData,
-  FundingAlertTypes,
-} from "@/store/portfolio";
-import { createDateStr, toCurrencyString, getIdText, roundTo100 } from "@/helpers";
+import { FundingAlertTypes } from "@/store/portfolio";
+import { createDateStr, toCurrencyString, getCurrencyString, getIdText, roundTo100 } 
+  from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
-import { add, addDays, isBefore, isSameMonth, isThisMonth, startOfMonth, subDays } from "date-fns";
+import { add, addDays, isAfter, isBefore, isThisMonth, startOfMonth, subDays } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO";
 import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
@@ -850,12 +833,6 @@ import PortfolioStore from "@/store/portfolio";
   },
 })
 export default class PortfolioDashboard extends Vue {
-  private popExpiresSoonNoTOClin = FundingAlertTypes.POPExpiresSoonNoTOClin;
-  private popExpiresSoonWithTOClin = FundingAlertTypes.POPExpiresSoonWithTOClin;
-  private popExpired = FundingAlertTypes.POPExpired;
-  private popFundsDepleted = FundingAlertTypes.POPFundsDepleted;
-  private popFundsAt100Percent = FundingAlertTypes.POPFundsAt100Percent;
-
   dashboardService: DashboardService = new DashboardService();
 
   public get projectTitle(): string {
@@ -863,11 +840,12 @@ export default class PortfolioDashboard extends Vue {
       ? AcquisitionPackage.projectTitle
       : "New Acquisition";
   }
-
+  public isLoading = true;
   public totalPortfolioFunds = 0;
   public fundsSpent = 0;
   public availableFunds = 0;
   public fundsSpentPercent = 0;
+  public fundsSpentPercentForArcChart = 0;
 
   public currentPoPStartStr = "";
   public currentPoPStartISO = "";
@@ -875,7 +853,9 @@ export default class PortfolioDashboard extends Vue {
   public currentPoPEndISO = "";
 
   public timeToExpiration = "";
+  public daysUntilEndDate = 0;
   public runOutOfFundsDate = "";
+  public isRunOutOfFundsDateFuture = false;
   public monthlySpendAverage = 0;
   public lastMonthSpend = 0;
   public lastMonthSpendTrendPercent = 0;
@@ -928,38 +908,62 @@ export default class PortfolioDashboard extends Vue {
     return this.endOfMonthForecastTrendPercent > 0 ? 'text-error' : 'text-success-dark';
   }
 
-
-  // Alerts
-  private fundingAlertData: FundingAlertData = {
-    alerts: [],
-    daysRemaining: 0,
-    spendingViolation: 0,
-    fundingAlertType: "",
-    hasLowFundingAlert: false,
-  };
-
-  private hasTimeSensativeAlert(): boolean {
-    return this.fundingAlertData.alerts.some(
-      (alert) => alert.alert_type === AlertTypes.TIME_REMAINING
-    );
+  private get hasTimeSensitiveAlert(): boolean {
+    return this.daysUntilEndDate <= 60 && !this.hasObligatedFundsInUpcomingCLIN;
   }
-  private hasSpendingThresholdAlert(): boolean {
-    return this.fundingAlertData.alerts.some(
-      (alert) =>
-        alert.alert_type === AlertTypes.SPENDING_ACTUAL &&
-        this.fundingAlertData.spendingViolation >= 75
-    );
+  private get arePoPFundsLow(): boolean {
+    return this.fundsSpentPercent >= 75 && this.fundsSpentPercent < 100;
   }
+  private get arePoPFundsDelinquent(): boolean {
+    // niche case - if ALMOST 100%, due to rounding, don't flag as delinquent
+    // if at 99.5 to 99.99999 percent
+    if (this.fundsSpentPercent >= 99.5 && this.fundsSpentPercent < 100) {
+      return false;
+    }
+    return this.fundsSpentPercent >= 100;
+  }
+  private get isExpiringSoon(): boolean {
+    return this.daysRemaining <= 60 && this.daysRemaining > 0;
+  }
+  private get hasExpired(): boolean { 
+    return this.daysRemaining <= 0;  
+  }
+
   private daysPastExpiration(): number {
-    return Math.abs(this.fundingAlertData.daysRemaining);
+    return Math.abs(this.daysUntilEndDate);
   }
 
-  private fundingAlertType(): string {
-    return this.fundingAlertData.fundingAlertType;
+  public get showFundingAlert(): boolean {
+    return this.fundingAlertType.length > 0;
   }
 
-  private daysRemaining(): number {
-    return this.fundingAlertData.daysRemaining;
+  private get fundingAlertType(): string {
+    if (!this.isLoading) {
+      if (this.hasExpired) {
+        return FundingAlertTypes.POPExpired;
+      } 
+      if (this.arePoPFundsDelinquent) {
+        return FundingAlertTypes.POPFundsDelinquent;
+      }      
+      if (this.isExpiringSoon && this.arePoPFundsLow) {
+        return FundingAlertTypes.POPExpiresSoonWithLowFunds;
+      }
+      if (this.isExpiringSoon && this.hasObligatedFundsInUpcomingCLIN) {
+        return FundingAlertTypes.POPExpiresSoonWithTOClin;
+      }
+      if (this.isExpiringSoon && !this.hasObligatedFundsInUpcomingCLIN) {
+        return FundingAlertTypes.POPExpiresSoonNoTOClin;
+      }
+      if (this.arePoPFundsLow) {
+        return FundingAlertTypes.POPLowFunds;
+      }
+
+    }
+    return "";
+  }
+
+  private get daysRemaining(): number {
+    return this.daysUntilEndDate;
   }
 
   public async calculateFundsSpent(): Promise<void> {
@@ -992,20 +996,20 @@ export default class PortfolioDashboard extends Vue {
     const todayDate = new Date();
     const today = new Date(todayDate.setHours(0, 0, 0, 0));
 
-    const daysUntilEndDate = differenceInCalendarDays(end, today);
+    this.daysUntilEndDate = differenceInCalendarDays(end, today);
     const monthsUntilEndDate = differenceInCalendarMonths(end, today);
 
     this.monthsForEndOfPeriodForecast = monthsUntilEndDate - 1;
 
     const unitsRemaining =
-      daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
-    const useMonths = daysUntilEndDate > 90;
+      this.daysUntilEndDate <= 60 ? this.daysUntilEndDate : monthsUntilEndDate;
+    const useMonths = this.daysUntilEndDate > 60;
     const singular = unitsRemaining === 1;
-    //eslint-disable-next-line prefer-const 
-    let timeUnit = useMonths
+    const timeUnit = useMonths
       ? singular ? "month" : "months"
       : singular ? "day" : "days";
-    this.timeToExpiration = unitsRemaining + " " + timeUnit;
+    const untilText = this.hasObligatedFundsInUpcomingCLIN ? "until next period" : "to expiration";
+    this.timeToExpiration = unitsRemaining + " " + timeUnit + " " + untilText;
 
     // calculate when will run out of funds based on current rate of spending
     const popStartDate = parseISO(this.currentPoPStartISO, {
@@ -1025,6 +1029,8 @@ export default class PortfolioDashboard extends Vue {
         const dailySpend = this.fundsSpent / daysSinceStartDate;
         const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
         const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
+
+        this.isRunOutOfFundsDateFuture = isAfter(runOutOfFundsDate, end);
         runOutISODate = formatISO(runOutOfFundsDate, {
           representation: "date",
         });
@@ -1039,6 +1045,7 @@ export default class PortfolioDashboard extends Vue {
       });
     }
     this.runOutOfFundsDate = createDateStr(runOutISODate, true);
+
   }
 
   public donutChartPercentages: number[] = [];
@@ -1075,8 +1082,9 @@ export default class PortfolioDashboard extends Vue {
       this.estimatedFundsToBeInvoicedPercent =
         (this.endOfMonthForecast / this.totalPortfolioFunds) * 100;
 
-      this.estimatedRemainingPercent =
-        100 - this.fundsSpentPercent - this.estimatedFundsToBeInvoicedPercent;
+      this.estimatedRemainingPercent = this.fundsSpentPercent < 100
+        ? 100 - this.fundsSpentPercent - this.estimatedFundsToBeInvoicedPercent
+        : 0;
     } else {
       this.estimatedFundsToBeInvoicedPercent = 1 / 12 * 100;
       this.estimatedRemainingPercent = 11 / 12 * 100;
@@ -1519,7 +1527,7 @@ export default class PortfolioDashboard extends Vue {
     this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
     this.costs.sort((a, b) => (a.year_month > b.year_month ? 1 : -1));
     this.idiqClins = data.currentCLINs;
-    this.idiqClins.sort((a, b) => (a.idiq_clin > b.idiq_clin ? 1 : -1));
+    this.idiqClins.sort((a, b) => a.clin_number > b.clin_number ? 1 : -1);
 
     await this.calculateTotalFunds();
 
@@ -1536,10 +1544,27 @@ export default class PortfolioDashboard extends Vue {
     };
 
     this.fundsSpentPercent = (this.fundsSpent / this.totalPortfolioFunds) * 100;
-    this.arcGuageChartData.datasets[0].data = [
-      this.fundsSpentPercent,
-      100 - this.fundsSpentPercent,
-    ];
+    
+    if (this.fundsSpentPercent >= 99.9 && this.fundsSpentPercent < 100) {
+      // if ALMOST 100%, due to rounding, don't set at 100% spent
+      // if at 99.9 to 99.99999 percent    
+      this.fundsSpentPercentForArcChart = 99.9;
+    } else if (this.fundsSpentPercent < 75 || this.fundsSpentPercent >= 100) {
+      // use whole numbers below 75 and 100 and over
+      this.fundsSpentPercentForArcChart =  Math.round(this.fundsSpentPercent);    
+    } else {
+      // include 1 decimal place between 75 and 100
+      this.fundsSpentPercentForArcChart = Math.round(this.fundsSpentPercent * 10) / 10;
+    }
+    const remaining = this.fundsSpentPercentForArcChart > 100
+      ? 0 : 100 - this.fundsSpentPercentForArcChart;
+    this.arcGuageChartData.datasets[0].data = [this.fundsSpentPercentForArcChart, remaining];
+    if (this.fundsSpentPercent >= 75) {
+      const arcColor = this.fundsSpentPercent < 100
+        ? this.chartAuxColors.warning
+        : this.chartAuxColors.error;
+      this.arcGuageChartData.datasets[0].backgroundColor = [arcColor, this.chartDataColors.gray];
+    }
 
     // all CLINs should run the entire duration of the current period, so use
     // the first one to set PoP start and end dates
@@ -1557,12 +1582,11 @@ export default class PortfolioDashboard extends Vue {
 
     this.calculateBurnDown();
     this.createTableItems();
-
-    await this.processAlerts();
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    this.isLoading = false;
   }
 
   public arcGuageChartData = {
@@ -1763,7 +1787,7 @@ export default class PortfolioDashboard extends Vue {
     orders funding this portfolio`;
 
   public periodToDateTooltipText = `This is the total spend from the start of
-    the current period of performance through last month. It does not include
+    the current PoP through last month. It does not include
     funds that will be invoiced this month.`;
 
   public roundDecimal(value: number, decimals: number): number {
@@ -1778,41 +1802,8 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public getCurrencyString(value: number, decimals?: boolean): string {
-    return "$" + toCurrencyString(value, decimals);
+    return getCurrencyString(value, decimals);
   }
 
-  public async getAlerts(hasObligatedFundsInUpcomingCLIN: boolean): Promise<FundingAlertData> {
-    return Portfolio.getFundingTrackerAlert(
-      { taskOrderNumber: this.activeTaskOrderNumber, hasObligatedFundsInUpcomingCLIN }
-    );
-  }
-
-  public async processAlerts(): Promise<void> {
-    this.fundingAlertData = await this.getAlerts(this.hasObligatedFundsInUpcomingCLIN);
-    //some of this functionality is temporary until we get
-    //live data that matches the alerts
-    if (
-      this.fundingAlertData.hasLowFundingAlert &&
-      this.fundingAlertData.spendingViolation >= 75
-    ) {
-      this.fundsSpentPercent = this.fundingAlertData.spendingViolation;
-      const arcColor =
-        this.fundingAlertData.spendingViolation < 100
-          ? this.chartAuxColors.warning
-          : this.chartAuxColors.error;
-      this.arcGuageChartData.datasets[0].data = [
-        this.fundsSpentPercent,
-        100 - this.fundsSpentPercent,
-      ];
-      this.arcGuageChartData.datasets[0].backgroundColor = [
-        arcColor,
-        this.chartDataColors.gray,
-      ];
-
-      if (this.fundingAlertData.spendingViolation >= 100) {
-        this.arcGuageChartData.datasets[0].color = "#c60634";
-      }
-    }
-  }
 }
 </script>
