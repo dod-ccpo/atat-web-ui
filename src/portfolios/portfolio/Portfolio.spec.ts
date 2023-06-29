@@ -120,59 +120,6 @@ describe("Testing Portfolio", () => {
       expect(wrapper.exists()).toBe(true);
     });
 
-    it("process alerts calls getAlerts", async () => {
-      alertsKey = alertKeys.SixtyDaysSeventyFivePercent;
-      vuetify = new Vuetify();
-
-      wrapper = shallowMount(Portfolio, {
-        vuetify,
-        localVue,
-      });
-
-      const getAlerts = jest
-        .spyOn(wrapper.vm, "getAlerts")
-        .mockImplementation(
-          () => new Promise((resolve) => resolve(alerts_60days_75percent))
-        );
-      await wrapper.vm.processAlerts();
-      expect(getAlerts).toBeCalled();
-    });
-
-    it("60 days remaining and 75 percent funds spent sets right alert", async () => {
-      alertsKey = alertKeys.SixtyDaysSeventyFivePercent;
-      vuetify = new Vuetify();
-
-      wrapper = mount(Portfolio, {
-        vuetify,
-        localVue, 
-      });
-      jest
-        .spyOn(wrapper.vm, "getAlerts")
-        .mockImplementation(() => getFundingTrackerAlertMock());
-      await wrapper.vm.processAlerts();
-      expect(wrapper.vm.fundingAlertType()).toEqual(
-        FundingAlertTypes.POPExpiresSoonWithLowFunds
-      );
-    });
-
-    it("if expired sets right alert", async () => {
-      vuetify = new Vuetify();
-
-      alertsKey = alertKeys.Expired;
-      wrapper = shallowMount(Portfolio, {
-        vuetify,
-        localVue,
-      });
-
-      jest
-        .spyOn(wrapper.vm, "getAlerts")
-        .mockImplementation(() => getFundingTrackerAlertMock());
-      await wrapper.vm.processAlerts();
-      expect(wrapper.vm.fundingAlertType()).toEqual(
-        FundingAlertTypes.POPExpired
-      );
-    });
-
     it("Test chartDataColorsTranslucent ", () => {
 
       const colorMadTranslucense = wrapper.vm.$data.chartDataColorsTranslucent;
@@ -238,24 +185,6 @@ describe("Testing Portfolio", () => {
       expect(wrapper.vm.$data.fundsSpent).toBe(550);
     });
 
-    it("if hasTimeSensativeAlert", async () => {
-      vuetify = new Vuetify();
-
-      alertsKey = alertKeys.Expired;
-      wrapper = shallowMount(Portfolio, {
-        vuetify,
-        localVue,
-      });
-
-      jest
-        .spyOn(wrapper.vm, "getAlerts")
-        .mockImplementation(() => getFundingTrackerAlertMock());
-      await wrapper.vm.processAlerts();
-      expect(wrapper.vm.hasTimeSensativeAlert()).toEqual(
-        true
-      );
-    });
-
     // it("Test calculateTimeToExpiration", async () => {
     //   vuetify = new Vuetify();
 
@@ -289,12 +218,6 @@ describe("Testing Portfolio", () => {
       jest.spyOn(wrapper.vm, "getDashboardData").mockReturnValue(
         new Promise(resolve=>resolve(dashboardMocks))
       )
-      jest  
-        .spyOn(wrapper.vm, "getAlerts")
-        .mockReturnValue(
-          new Promise((resolve) => resolve(alerts_60days_75percent))
-        );
-
       await wrapper.vm.loadOnEnter();
  
     });

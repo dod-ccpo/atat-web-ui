@@ -210,7 +210,10 @@ export const currencyStringToNumber = (str: string): number | null => {
 
 
 export const getCurrencyString = (value: number, decimals?: boolean): string => {
-  return "$" + toCurrencyString(value, decimals);
+  const isNegative = value < 0;
+  value = isNegative ? Math.abs(value) : value;
+  const symbol = isNegative ? "-$" : "$";
+  return symbol + toCurrencyString(value, decimals);
 }
 
 export const roundDecimal = (value: number, decimals: number): number => {

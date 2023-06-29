@@ -95,22 +95,22 @@ export const StoreProperties = {
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
-  Active: { label: "Active", value: "ACTIVE" }, // PORT
+  Active: { label: "Active", value: "ACTIVE" }, // PORTFOLIO
   AtRisk: { label: "At-Risk", value: "AT_RISK" }, // CLIN, TO
-  Archived: { label: "Archived", value: "ARCHIVED" }, // ACQ, PORT
+  Archived: { label: "Archived", value: "ARCHIVED" }, // ACQ, PORTFOLIO
   Deleted: { label: "Deleted", value: "DELETED" }, // ACQ
-  Delinquent: { label: "Delinquent", value: "DELINQUENT" }, // CLIN
+  Delinquent: { label: "Delinquent", value: "DELINQUENT" }, // CLIN, PORTFOLIO
   Draft: { label: "Draft", value: "DRAFT" }, // ACQ
-  Expired: { label: "Expired", value: "EXPIRED" }, // CLIN, TO
+  Expired: { label: "Expired", value: "EXPIRED" }, // CLIN, TO, PORTFOLIO
   ExpiringPop: { label: "Expiring PoP", value: "EXPIRING_POP" }, // CLIN
-  ExpiringSoon: { label: "Expiring Soon", value: "EXPIRING_SOON" },
+  ExpiringSoon: { label: "Expiring Soon", value: "EXPIRING_SOON" }, // PORTFOLIO
   FundingAtRisk: { label: "Funding At-Risk", value: "FUNDING_AT_RISK" }, // CLIN
   OnTrack: { label: "On Track", value: "ON_TRACK" }, // CLIN, TO
   OptionExercised: { label: "Option Exercised", value: "OPTION_EXERCISED" }, // CLIN
   OptionPending: { label: "Option Pending", value: "OPTION_PENDING" }, // CLIN  
-  Processing: { label: "Processing", value: "PROCESSING" }, // PORT
+  Processing: { label: "Processing", value: "PROCESSING" }, // PORTFOLIO
   Provisioned: { label: "Provisioned", value: "PROVISIONED" }, // ENV
-  ProvisioningIssue: { label: "Provisioning issue", value: "PROVISIONING_ISSUE" }, // PORT, ENV  
+  ProvisioningIssue: { label: "Provisioning issue", value: "PROVISIONING_ISSUE" }, // PORTFOLIO, ENV
   TaskOrderAwarded: { label: "Task Order Awarded", value: "TASK_ORDER_AWARDED" }, // ACQ
   Upcoming: { label: "Upcoming", value: "UPCOMING" }, // TO
   WaitingForSignatures: { label: "Waiting For Signatures", value: "WAITING_FOR_SIGNATURES" }, // ACQ
@@ -1370,7 +1370,7 @@ export class AcquisitionPackageStore extends VuexModule {
         if (development || hasPrevJA) text += "\n\n";
       }
       if (development) {
-        text += "To overcome future barriers to competition, " +
+        text += "To overcome future barriers to competition," +
         " future development and enhancement of IaaS components will include" +
         " shifting to a containerized platform. This will enable multiple" +
         " vendors to meet the requirements which will enable the flexibility" +

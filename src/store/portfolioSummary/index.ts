@@ -203,6 +203,7 @@ export class PortfolioSummaryStore extends VuexModule {
     );
 
     allEnvs.forEach(env => {
+      // ATAT TODO: env status should be set in SNOW
       if (env.provisioned === "true") {
         env.environmentStatus = Statuses.Provisioned.value;;
       } else {
