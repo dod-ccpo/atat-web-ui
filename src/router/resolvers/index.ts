@@ -349,7 +349,7 @@ export const A11yRequirementResolver = (current: string): string => {
     return routeNames.Section508AccessibilityRequirements;
   }
   return current === routeNames.Section508Standards
-    ? routeNames.CreatePriceEstimate
+    ? routeNames.SummaryStepSeven
     : routeNames.Section508Standards;
 };
 

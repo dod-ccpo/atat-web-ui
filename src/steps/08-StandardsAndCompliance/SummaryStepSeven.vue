@@ -28,33 +28,36 @@ import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Vue from "vue";
 import Summary, { getSummaryItemsforStep, isStepComplete } from "@/store/summary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
     ATATSummaryItems
   },
 })
-export default class SummaryStepThree extends Mixins(SaveOnLeave){
+export default class SummaryStepSeven extends Mixins(SaveOnLeave){
   public summaryItems: SummaryItem[] = [];
-  
+
   get headline():string{
-    return (isStepComplete(3))
+    return (isStepComplete(7))
       ? "You are all done with this section, but you can come back at any time to edit "
-        + "details. When you are ready, we will move on to gather background information"
-      : "We need some more details for this section. You can add info now, or come back to "
-        + "make edits at any time. When you are ready to wrap up this section, we will move "
-        + "on to gather background information."
+        + "details. When you are ready, we will move on to your financial details."
+      : "We need some more details for this section. You can add info now, or come back "
+        + "to make edits at any time. When you are ready to wrap up this section, we will move "
+        + "on your financial details."
   }
 
-  public async mounted():Promise<void> {  
-    await Summary.validateStepThree();
-    this.summaryItems = await getSummaryItemsforStep(3);
-    await Summary.toggleButtonColor(3);
+  public async mounted(): Promise<void>{
+    await Summary.validateStepSeven();
+    this.summaryItems = await getSummaryItemsforStep(7);
+    await Summary.toggleButtonColor(7);
   }
+
 
   protected async saveOnLeave(): Promise<boolean> {
     await Summary.toggleButtonColor(-1);
     return true;
   }
+
 }
 </script>
