@@ -904,7 +904,7 @@ export default class PortfolioDashboard extends Vue {
   }
 
   private get hasTimeSensativeAlert(): boolean {
-    return this.daysUntilEndDate <= 60;
+    return this.daysUntilEndDate <= 60 && !this.hasObligatedFundsInUpcomingCLIN;
   }
   private get arePoPFundsLow(): boolean {
     return this.fundsSpentPercent >= 75 && this.fundsSpentPercent < 100;

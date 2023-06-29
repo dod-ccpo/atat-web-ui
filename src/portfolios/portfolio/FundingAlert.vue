@@ -89,7 +89,7 @@ export default class FundingAlert extends Vue {
           the end of the period of performance.`
         : ` and will be <strong>expiring in ${this.timeRemaining} days.</strong>`;
     } else if (this.fundsDelinquent) {
-      str = `Ensure your portfolio is funded until the end of the period of performance 
+      str = `Please ensure your portfolio is funded until the end of the period of performance 
         to avoid potential violation of the Antideficiency Act.`;
     } else if (this.popExpired) {
       str = `Funding Tracker details below reflect the status of your portfolio at 
