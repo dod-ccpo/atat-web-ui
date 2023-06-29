@@ -365,13 +365,27 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       the <span class="font-weight-500">Top Secret</span> cloud console.`
   }
 
+  public get needsUAdmin(): boolean {
+    return this.classificationLevels.includes(this.unclStr);
+  }
+  public get needsSAdmin(): boolean {
+    return this.classificationLevels.includes(this.scrtStr);
+  }
+  public get needsTSAdmin(): boolean {
+    return this.classificationLevels.includes(this.tsStr);
+  }
+
   public showMissingAdminAlert = false;
   public async setShowMissingAdminAlert(): Promise<void> {
-    const missingUnclass = (this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES")) === -1;
-    const missingScrt = (this.admins.findIndex(a => a.hasScrtAccess === "YES")) === -1;
-    const missingTS = (this.admins.findIndex(a => a.hasTSAccess === "YES")) === -1;
+    const missingUnclass = 
+      this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES") === -1 && this.needsUAdmin;
+    const missingScrt = 
+      this.admins.findIndex(a => a.hasScrtAccess === "YES") === -1 && this.needsSAdmin;
+    const missingTS = 
+      this.admins.findIndex(a => a.hasTSAccess === "YES") === -1 && this.needsTSAdmin;
     const needsILs = this.hasImpactLevels;
     const missingILs = [...this.impactLevelCompareArray]
+
     if(this.admins.length > 0){
       if(needsILs){
         this.admins.forEach(admin=>{
