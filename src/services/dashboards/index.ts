@@ -147,7 +147,7 @@ export class DashboardService {
   public async getCostsInCurrentPeriod(clins: string[]): Promise<CostsDTO[]> {
     let query = "clinIN" + clins.join(",");
     const fields =
-      "clin,csp,csp.name,year_month," +
+      "csp,csp.name,clin.clin_number,year_month," +
       "task_order_number,portfolio,organization,agency.title,is_actual,value";
 
     const config: AxiosRequestConfig = {
@@ -158,6 +158,8 @@ export class DashboardService {
     };
 
     const costs = await api.costsTable.all(config);
+    // costs.forEach(cost => cost.clin_number = cost["clin.clin_number"])
+    debugger;
     return costs;
   }
 
