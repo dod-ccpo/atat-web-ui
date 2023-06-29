@@ -90,9 +90,9 @@ export default class DonutChart extends Vue {
         let fontSize = (height / text1divisors.fontSize).toFixed(2);
         ctx.font = "bold " + fontSize + "em 'Roboto Condensed'";
         ctx.textBaseline = "middle";
-        let text = self.centerText1,
-          textX = Math.round((width - ctx.measureText(text).width) / 2),
-          textY = height / text1divisors.textY;
+        let text = self.centerText1;
+        let textX = Math.round((width - ctx.measureText(text).width) / 2);
+        let textY = height / text1divisors.textY;
 
         ctx.fillText(text, textX, textY);
         ctx.save();
