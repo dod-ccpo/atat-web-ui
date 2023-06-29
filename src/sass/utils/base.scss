@@ -502,6 +502,16 @@ textarea {
     &._total {
       border-top: 4px solid $base-lighter;
     }
+    &._fees-row {
+      border-bottom: 1px solid $base-lighter;
+      //transition: all .3s ease-in-out !important;
+      &:last-of-type {
+        border-bottom: none !important;
+      }
+      &._hide {
+        display: none !important;
+      }
+    }
   }
 
   th, td {
@@ -523,6 +533,17 @@ textarea {
     th:last-of-type {
       background-color: rgb(236 236 240) !important;
 
+    }
+  }
+  ._accordion-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .toggle {
+    transition: transform .3s ease-in-out !important;
+    &._rotate-down {
+      transform: rotate(90deg) !important;
     }
   }
 }
