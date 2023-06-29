@@ -82,7 +82,6 @@ export default class DOWCard extends Vue {
 
   private setPanelComponent: any = {};
   private slideoutPanelContent = {} as SlideoutPanelContent;
-  private newPackage = AcquisitionPackage.isNewPackage
   get setColor(): string{
     return this.cardData.isComplete ? "success" : "primary";
   }
