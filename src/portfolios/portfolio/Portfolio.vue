@@ -1031,7 +1031,6 @@ export default class PortfolioDashboard extends Vue {
         const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
 
         this.isRunOutOfFundsDateFuture = isAfter(runOutOfFundsDate, end);
-        debugger;
         runOutISODate = formatISO(runOutOfFundsDate, {
           representation: "date",
         });
