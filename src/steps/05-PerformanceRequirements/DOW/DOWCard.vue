@@ -31,6 +31,12 @@
             {{ cardData.learnMore }}
           </a>
         </div>
+        <div v-if="cardData.recommendedText && newPackage">
+          <div class="text-base pt-2">
+           <span class="_recommended-Chip">Recommended for:</span>
+            {{cardData.recommendedText}}
+          </div>
+        </div>
       </div>
       <div class="d-flex align-center justify-center flex-column ml-auto">
         <v-btn
@@ -63,6 +69,7 @@ import { DOWCardData, SlideoutPanelContent } from "../../../../types/Global";
 
 import Vue from "vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -75,7 +82,7 @@ export default class DOWCard extends Vue {
 
   private setPanelComponent: any = {};
   private slideoutPanelContent = {} as SlideoutPanelContent;
-
+  private newPackage = AcquisitionPackage.isNewPackage
   get setColor(): string{
     return this.cardData.isComplete ? "success" : "primary";
   }

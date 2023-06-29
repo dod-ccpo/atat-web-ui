@@ -574,3 +574,9 @@ textarea {
     max-height: calc(100vh - 56px);
   }
 }
+._recommended-Chip {
+  background-color: $primary-lighter;
+  padding: 4px;
+  border-radius:4px;
+  font-weight: 500;
+}
