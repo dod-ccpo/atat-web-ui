@@ -127,7 +127,7 @@
                     || item.CLINTypeClassAggregate === 'Total with Surge'
                     || item.CLINTypeClassAggregate === 'Total with Ordering Fee',
                     '_total' : item.CLINTypeClassAggregate === 'Total Price'
-                    || item.CLINTypeClassAggregate === 'Grand Total with Fee',
+                    || item.CLINTypeClassAggregate === 'Grand Total with Fees',
                     '_border-bottom' : item.isCLINAmount === 'true' ||
                     item.CLINTypeClassAggregate === 'Fees'||
                     item.CLINTypeClassAggregate === 'Surge and Fees',
@@ -322,7 +322,7 @@ export default class CostSummary extends Vue {
       tableObject.CLINTypeClassAggregate = this.contractingOfficeFee
     }
     if(name === "grandTotal"){
-      tableObject.CLINTypeClassAggregate = "Grand Total with Fee"
+      tableObject.CLINTypeClassAggregate = "Grand Total with Fees"
     }
     // eslint-disable-next-line max-len
     this.createTableData(tableObject, isClinAmount,tableObject.CLINTypeClassAggregate,isAccordionItem)
@@ -504,7 +504,8 @@ export default class CostSummary extends Vue {
     this.costData = await api.costEstimateTable.search(acquisitionPackage.packageId)
     this.surgePercentage =
       `Surge (${IGCEStore.requirementsCostEstimate?.surge_requirements.capacity}%)`
-    this.contractingOfficeFee =
+    this.contractingOfficeFee = IGCEStore.requirementsCostEstimate?.fee_specs.percentage === null?
+      `Contracting Office Fee (0%)`:
       `Contracting Office Fee (${IGCEStore.requirementsCostEstimate?.fee_specs.percentage}%)`
     this.orderingAgencyFee = `External Ordering Agency Fee (1%)`
     await this.loadOnEnter()
@@ -514,6 +515,7 @@ export default class CostSummary extends Vue {
     return ['total','fees'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
   }
   public itemNeedsIcon(label: string): boolean {
+    if(label === 'Grand Total with Fees') return false
     return ['Surge and Fees','fees'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
   }
   public isFee(label: string): boolean {
