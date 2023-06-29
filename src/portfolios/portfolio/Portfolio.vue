@@ -1,7 +1,7 @@
 <template>
   <div class="_dashboard bg-base-lightest">
     <v-container class="container-max-width bg-base-lightest">
-      <v-row v-if="fundingAlertType.length > 0">
+      <v-row v-if="showFundingAlert">
         <v-col>
           <FundingAlert
             :fundingAlertType="fundingAlertType"
@@ -85,7 +85,7 @@
                         <div
                           class="d-flex justify-start align-top atat-text-field-error 
                           text-error mb-0 font-size-14"
-                          v-if="hasExpired"
+                          v-if="hasExpired && !isLoading"
                         >
                           {{ daysPastExpiration() }} days past expiration
                           <ATATSVGIcon
@@ -794,7 +794,6 @@ import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
 import Portfolio, {
   AlertTypes,
-  // FundingAlertData,
   FundingAlertTypes,
 } from "@/store/portfolio";
 import { createDateStr, toCurrencyString, getIdText, roundTo100 } from "@/helpers";
@@ -927,6 +926,10 @@ export default class PortfolioDashboard extends Vue {
 
   private daysPastExpiration(): number {
     return Math.abs(this.daysUntilEndDate);
+  }
+
+  public get showFundingAlert(): boolean {
+    return this.fundingAlertType.length > 0;
   }
 
   private get fundingAlertType(): string {
@@ -1790,14 +1793,5 @@ export default class PortfolioDashboard extends Vue {
     return "$" + toCurrencyString(value, decimals);
   }
 
-  // public async getAlerts(hasObligatedFundsInUpcomingCLIN: boolean): Promise<FundingAlertData> {
-  //   return Portfolio.getFundingTrackerAlert(
-  //     { taskOrderNumber: this.activeTaskOrderNumber, hasObligatedFundsInUpcomingCLIN }
-  //   );
-  // }
-
-  // public async processAlerts(): Promise<void> {
-  //   // this.fundingAlertData = await this.getAlerts(this.hasObligatedFundsInUpcomingCLIN);
-  // }
 }
 </script>
