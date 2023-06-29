@@ -31,6 +31,7 @@
               id="OnlyCapableSource"
               name="OnlyCapableSource"
               :legend="onlySourceCapableLegend"
+              @radioButtonSelected="onlyCapableSourceClicked"
               :value.sync="cspIsOnlySourceCapable"
               :items="onlySourceCapableOptions"
               :rules="[$validators.required('Please select an option.')]"
@@ -129,6 +130,7 @@
                   <ATATRadioGroup 
                     id="ReviewedCatalogs"
                     name="ReviewedCatalogs"
+                    class="mb-8"
                     v-if="hasResearchDates"
                     legend="Was this research conducted on the same date or date range 
                       as indicated above?"
@@ -136,55 +138,63 @@
                     :items="sameDatesOptions"
                     :rules="[$validators.required('Please select an option.')]"
                   />
+                  
+                  <div class="mt-4" v-if="showCatalogReviewDates">
+                    <div style="line-height: 1.3">
+                      <span class="font-weight-500">When did you conduct this research?</span><br />
+                      <span class="font-size-14 text-base">
+                        Research must have been conducted within the previous 12 months. 
+                      </span>
+                    </div>
+                    <div class="d-flex mt-5">
+                      <div style="width: 270px; max-width: 270px;">
+                        <ATATDatePicker
+                          id="CatalogReviewStartDate"
+                          class="mr-10"
+                          :rules="[
+                            $validators.required(
+                              'Enter a start date using the format MM/DD/YYYY.'
+                            ),
+                            $validators.isDateValid('Please enter a valid date.'),
+                          ]"
+                          :value.sync="catalogReviewStartDate"
+                          :min="minResearchStartDate"
+                          :max="today"
+                          label="Start date"
+                          placeHolder="MM/DD/YYYY"
+                        />
+                        <v-btn 
+                          @click="toggleCatalogReviewEndDate()"
+                          @keydown.space="toggleCatalogReviewEndDate()"
+                          @keydown.enter="toggleCatalogReviewEndDate()"
+                          class="_quaternary mt-1 px-2" >
+                          <ATATSVGIcon 
+                            color="primary" 
+                            height="18" 
+                            width="18" 
+                            :name="catalogReviewButtonIconName" 
+                            class="mr-2"
+                          />
+                          {{ catalogReviewEndDateBtnText }} 
+                        </v-btn>
 
-                  <div class="d-flex mt-4" v-if="showCatalogReviewDates">
-                    <div style="width: 270px; max-width: 270px;">
+                      </div>
+
                       <ATATDatePicker
-                        id="CatalogReviewStartDate"
-                        class="mr-10"
+                        id="CatalogReviewEndDate"
+                        v-if="showCatalogReviewEndDate"
                         :rules="[
-                          $validators.required('Enter a start date using the format MM/DD/YYYY.'),
+                          $validators.required('Enter an end date using the format MM/DD/YYYY.'),
                           $validators.isDateValid('Please enter a valid date.'),
                         ]"
-                        :value.sync="catalogReviewStartDate"
-                        :min="minResearchStartDate"
+                        :value.sync="catalogReviewEndDate"
+                        :min="minCatalogReviewEndDate"
                         :max="today"
-                        label="Start date"
+                        label="End date"
                         placeHolder="MM/DD/YYYY"
                       />
-                      <v-btn 
-                        @click="toggleCatalogReviewEndDate()"
-                        @keydown.space="toggleCatalogReviewEndDate()"
-                        @keydown.enter="toggleCatalogReviewEndDate()"
-                        class="_quaternary mt-1 px-2" >
-                        <ATATSVGIcon 
-                          color="primary" 
-                          height="18" 
-                          width="18" 
-                          :name="catalogReviewButtonIconName" 
-                          class="mr-2"
-                        />
-                        {{ catalogReviewEndDateBtnText }} 
-                      </v-btn>
-
                     </div>
-
-                    <ATATDatePicker
-                      id="CatalogReviewEndDate"
-                      v-if="showCatalogReviewEndDate"
-                      :rules="[
-                        $validators.required('Enter an end date using the format MM/DD/YYYY.'),
-                        $validators.isDateValid('Please enter a valid date.'),
-                      ]"
-                      :value.sync="catalogReviewEndDate"
-                      :min="minCatalogReviewEndDate"
-                      :max="today"
-                      label="End date"
-                      placeHolder="MM/DD/YYYY"
-                    />
-
                   </div>
-
                   <ATATTextArea 
                     id="CatalogReviewResults"
                     class="mt-10"
@@ -405,6 +415,21 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
   }
 
+  public onlyCapableSourceClicked(itemSelected: string): void{
+    /**
+     * if user had entered research date/date range && selected NO 
+     * for `was tis research conducted on the same date or date as indicated above`
+     * then selects NO for the #OnlyCapableSource radio button list
+     * ensure that catalog dates match the research dates
+     */
+    if (this.sameAsResearchDate === "NO"){
+      this.showCatalogReviewEndDate = this.showResearchEndDate;
+      this.catalogReviewEndDate = this.researchEndDate !== ""
+        ? this.formatISOShort(new Date(this.researchEndDate))
+        : ""
+      this.catalogReviewStartDate = this.researchStartDate;
+    }
+  }
 
   @Watch("researchStartDate")
   public researchStartDateChanged(): void {
@@ -449,7 +474,8 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   ];
 
   public get hasResearchDates(): boolean {
-    return this.researchStartDate !== "";
+    return this.researchStartDate !== "" 
+      && this.cspIsOnlySourceCapable !== "NO";
   }
   public get showCatalogReviewDates(): boolean {
     return (this.hasResearchDates && this.sameAsResearchDate === "NO") 

@@ -118,26 +118,49 @@
                   </th>
                 </tr>
               </template>
-
-
               <template v-slot:body="props">
                 <tr v-for="(item,rowIdx) in props.items" :key="rowIdx"
                   class="row-item font-size-14 text-right"
-                  :class="[{ 
-                    '_subtotal' : item.CLINTypeClassAggregate === 'Subtotal',
-                    '_total' : item.CLINTypeClassAggregate === 'Total Price' ||
-                    item.CLINTypeClassAggregate === 'Grand Total with Fee',
-                    '_border-bottom' : item.isCLINAmount === 'true',
-                  }]"
+                  :class="[{
+                    '_subtotal' : item.CLINTypeClassAggregate === 'Subtotal'
+                    || item.CLINTypeClassAggregate === 'Total with Surge & Ordering Fee'
+                    || item.CLINTypeClassAggregate === 'Total with Surge'
+                    || item.CLINTypeClassAggregate === 'Total with Ordering Fee',
+                    '_total' : item.CLINTypeClassAggregate === 'Total Price'
+                    || item.CLINTypeClassAggregate === 'Grand Total with Fees',
+                    '_border-bottom' : item.isCLINAmount === 'true' ||
+                    item.CLINTypeClassAggregate === 'Fees'||
+                    item.CLINTypeClassAggregate === 'Surge and Fees',
+                  },
+                  {'_fees-row': isAccordionItem(item.isAccordionItem)},
+                  {'_hide': showSurgeAndFees(item.isAccordionItem)}
+                  ]"
                 >
                   <td>
                     <div :class="[
                       'text-left py-4',
-                      {'font-weight-bold text-right': 
+                      {'font-weight-bold text-right':
                         isItemAggregate(item.CLINTypeClassAggregate)},
-                        { 'text-right': isFee(item.CLINTypeClassAggregate)}
+                        { 'text-right': isFee(item.CLINTypeClassAggregate)},
+                        {'_accordion-container':itemNeedsIcon(item.CLINTypeClassAggregate)},
                       ]"
                     >
+                      <v-btn
+                        v-if="itemNeedsIcon(item.CLINTypeClassAggregate)"
+                        icon
+                        @click="toggle()"
+                        @keydown.enter="toggle()"
+                        @keydown.space="toggle()"
+                      >
+                          <ATATSVGIcon
+                            name="ChevronRight"
+                            class="toggle pb-2"
+                            :class="{'_rotate-down':showSurgeAndFeeRows}"
+                            color="base"
+                            :width="7.41"
+                            :height="12"
+                          />
+                      </v-btn>
                       {{ item.CLINTypeClassAggregate }}
                     </div>
                   </td>
@@ -182,6 +205,7 @@ import { CostEstimateDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import IGCEStore from "@/store/IGCE";
 import Periods from "@/store/periods";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
@@ -199,6 +223,7 @@ export interface IGCECostSummaryItem {
 
 @Component({
   components: {
+    ATATSVGIcon,
     ATATAlert,
   },
 })
@@ -219,7 +244,12 @@ export default class CostSummary extends Vue {
   public needContractingOfficeFee = false
   public hasCurrentEnv = false
   public hasArchDesign = false
+  public showSurgeAndFeeRows = false
+  public orderingAgencyFee = "";
 
+  public toggle():void{
+    this.showSurgeAndFeeRows = !this.showSurgeAndFeeRows
+  }
   public tableHeaders = [
     { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate"},
 
@@ -239,19 +269,25 @@ export default class CostSummary extends Vue {
       || this.needsReplicateAndOptimize
   }
 
-  public createTableData(source:Record<string, any>, clinAmount:string,rowName:string):void{
+  // eslint-disable-next-line max-len
+  public createTableData(source:Record<string, any>, clinAmount:string,rowName:string,isAccordionItem = false)
+    :void{
     let basePeriod,option1,option2,option3,option4
     if(source["Base Period"]){
       basePeriod = getCurrencyString(source["Base Period"],true)
     }
-    if(source["Option 1"]){
+    if(source["Option 1"] >= 0){
       option1 = getCurrencyString(source["Option 1"],true)
-    }if(source["Option 2"]){
+    }if(source["Option 2"] >= 0){
       option2 = getCurrencyString(source["Option 2"],true)
-    }if(source["Option 3"]){
+    }if(source["Option 3"] >= 0){
       option3 = getCurrencyString(source["Option 3"],true)
-    }if(source["Option 4"]){
+    }if(source["Option 4"] >= 0){
       option4 = getCurrencyString(source["Option 4"],true)
+    }
+    //TODO temporary fix for null title
+    if(rowName === null || rowName === undefined ){
+      rowName = 'Undefined'
     }
     const tableItem = {
       CLINTypeClassAggregate: rowName,
@@ -261,11 +297,13 @@ export default class CostSummary extends Vue {
       OptionThree:option3,
       OptionFour:option4,
       Total:getCurrencyString(source["Total"],true),
-      isCLINAmount: clinAmount
+      isCLINAmount: clinAmount,
+      isAccordionItem:isAccordionItem
     }
     this.tableData.push(tableItem)
   }
-  public createFeeData(name:string, amount:number, isClinAmount:string):void{
+  // eslint-disable-next-line max-len
+  public createFeeData(name:string, amount:number, isClinAmount:string, isAccordionItem = false):void{
     const tableObject = {
       CLINTypeClassAggregate: "",
       BasePeriod:"",
@@ -274,7 +312,7 @@ export default class CostSummary extends Vue {
       OptionThree:"",
       OptionFour:"",
       Total:amount,
-      isCLINAmount: isClinAmount
+      isCLINAmount: isClinAmount,
     }
 
     if(name === "ditcoFee"){
@@ -284,9 +322,10 @@ export default class CostSummary extends Vue {
       tableObject.CLINTypeClassAggregate = this.contractingOfficeFee
     }
     if(name === "grandTotal"){
-      tableObject.CLINTypeClassAggregate = "Grand Total with Fee"
+      tableObject.CLINTypeClassAggregate = "Grand Total with Fees"
     }
-    this.createTableData(tableObject, isClinAmount,tableObject.CLINTypeClassAggregate)
+    // eslint-disable-next-line max-len
+    this.createTableData(tableObject, isClinAmount,tableObject.CLINTypeClassAggregate,isAccordionItem)
   }
 
   public async findMissingEstimates(): Promise<void>{
@@ -404,25 +443,44 @@ export default class CostSummary extends Vue {
       this.createTableData(CLIN,"true",CLIN["CLIN Type & Classification"])
     })
     const subTotalData = this.costData.payload.subtotal
-    const totalData = this.costData.payload.total_price
     const surgeData = this.costData.payload.surge
+    const externalOrderingFee = this.costData.payload.external_ordering_agency_fee
+    const totalWithSurge = this.costData.payload.total_price
+    const totalWithSurgeAndOrdering = this.costData.payload.total_with_surge_and_ordering_fee
     const ditcoFee = this.costData.payload.ditco_fee
-    const contratingFee = this.costData.payload.contracting_office_fee
+    const contractingFee = this.costData.payload.other_contracting_office_fee
     const grandTotal = this.costData.payload.grand_total_with_fee
     if(surgeData){
       this.createTableData(subTotalData,"false","Subtotal")
     }
     if(surgeData){
-      this.createTableData(surgeData,"false",this.surgePercentage)
+      this.createTableData(subTotalData,"false","Surge and Fees")
+    }else{
+      this.createTableData(subTotalData,"false","Fees")
     }
-    this.createTableData(totalData,"false", "Total Price")
+    if(surgeData){
+      this.createTableData(surgeData,"false",this.surgePercentage,true)
+    }
+    if(surgeData && totalWithSurge){
+      this.createTableData(totalWithSurge,"false","Total with Surge", true)
+    }
+    if(externalOrderingFee){
+      this.createTableData(externalOrderingFee,"false",this.orderingAgencyFee,true)
+    }
+    if(totalWithSurgeAndOrdering && surgeData){
+      // eslint-disable-next-line max-len
+      this.createTableData(totalWithSurgeAndOrdering,"false","Total with Surge & Ordering Fee", true)
+    }else if(totalWithSurgeAndOrdering && !surgeData){
+      this.createTableData(totalWithSurgeAndOrdering,"false","Total with Ordering Fee", true)
+    }
     if(ditcoFee){
-      this.createFeeData("ditcoFee",ditcoFee,"false")
-    }else if(contratingFee){
-      this.createFeeData("contractingOffice",contratingFee,"false")
+      this.createFeeData("ditcoFee",ditcoFee.Total,"false",true)
+    }else if(contractingFee){
+      this.createFeeData("contractingOffice",contractingFee.Total,"false",true)
     }
-    if(ditcoFee || contratingFee){
-      this.createFeeData("grandTotal", grandTotal, "false")
+
+    if(ditcoFee || contractingFee){
+      this.createFeeData("grandTotal", grandTotal.Total, "false")
     }
     await this.findMissingEstimates()
   }
@@ -445,17 +503,29 @@ export default class CostSummary extends Vue {
   public async mounted(): Promise<void> {
     this.costData = await api.costEstimateTable.search(acquisitionPackage.packageId)
     this.surgePercentage =
-      `${IGCEStore.requirementsCostEstimate?.surge_requirements.capacity}% Surge`
-    this.contractingOfficeFee =
+      `Surge (${IGCEStore.requirementsCostEstimate?.surge_requirements.capacity}%)`
+    this.contractingOfficeFee = IGCEStore.requirementsCostEstimate?.fee_specs.percentage === null?
+      `Contracting Office Fee (0%)`:
       `Contracting Office Fee (${IGCEStore.requirementsCostEstimate?.fee_specs.percentage}%)`
+    this.orderingAgencyFee = `External Ordering Agency Fee (1%)`
     await this.loadOnEnter()
   }
 
   public isItemAggregate(label: string): boolean {
-    return ['total'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+    return ['total','fees'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+  }
+  public itemNeedsIcon(label: string): boolean {
+    if(label === 'Grand Total with Fees') return false
+    return ['Surge and Fees','fees'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
   }
   public isFee(label: string): boolean {
     return ['%'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+  }
+  public isAccordionItem(accordionItem:boolean):boolean{
+    return accordionItem
+  }
+  public showSurgeAndFees(isFee: boolean): boolean {
+    return !this.showSurgeAndFeeRows && isFee
   }
 
 
