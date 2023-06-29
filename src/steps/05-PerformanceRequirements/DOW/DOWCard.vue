@@ -32,7 +32,7 @@
           </a>
         </div>
         <div v-if="cardData.recommendedText && !cardData.isComplete">
-          <div class="text-base pt-2">
+          <div class="text-base pt-2 font-size-14">
            <span class="_recommended-Chip text-base-dark">Recommended for:</span>
             {{cardData.recommendedText}}
           </div>
@@ -69,7 +69,6 @@ import { DOWCardData, SlideoutPanelContent } from "../../../../types/Global";
 
 import Vue from "vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
