@@ -34,8 +34,7 @@
           @click="continueClicked()" 
           v-if="!hideContinueButton"
           depressed 
-          :color="continueButtonColor
-            || this.continueButtonText === 'Continue'? 'primary' : 'secondary'"
+          :color="getContinueButtonColor"
           role="link" 
           class="ml-4"
           id="ContinueButton"
@@ -70,6 +69,12 @@ export default class ATATStepperNavigation extends Vue {
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass || "secondary";
   }
+
+  get getContinueButtonColor():string{
+    return this.continueButtonColor !== ""
+      ? this.continueButtonColor as string
+      : this.continueButtonText === 'Continue'? 'primary' : 'secondary'
+  } 
 
 
   private continueClicked(): void {

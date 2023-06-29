@@ -232,6 +232,11 @@ export default class AppPackageBuilder extends Vue {
   public get disableContinue(): boolean {
     return AcquisitionPackage.disableContinue
   }
+
+  public get getContinueButtonColorFromStore(): string{
+    return AcquisitionPackage.continueButtonColor
+  }
+
   public get hideNav(): boolean {
     return AcquisitionPackage.hideNavigation
   }
@@ -243,6 +248,12 @@ export default class AppPackageBuilder extends Vue {
   public disableContinueChanged(newVal:boolean): void {
     this.disableContinueButton = newVal
   }
+
+  @Watch('getContinueButtonColorFromStore')
+  public getContinueButtonColorFromStoreChanged(newVal:string): void {
+    this.continueButtonColor = newVal
+  }
+
   @Watch('hideNav')
   public hideNavigationChanged(newVal:boolean): void {
     this.hideNavigation = newVal
@@ -256,7 +267,8 @@ export default class AppPackageBuilder extends Vue {
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText || "Back";
     this.continueButtonText = step.continueButtonText || "Continue";
-    this.continueButtonColor = step.continueButtonColor || "";
+    this.continueButtonColor = 
+      this.getContinueButtonColorFromStore || step.continueButtonColor || "";
     this.altContinueAction = step.altContinueAction || "";
     if (step.stepName === routeNames.DOWSummary) {
       this.continueButtonText = DescriptionOfWork.currentDOWSection === "XaaS"

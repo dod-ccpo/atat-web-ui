@@ -162,6 +162,7 @@
                 legend="Are the above Section 508 requirements sufficient for this acquisition?"
                 :value.sync="selected508Response"
                 :items="section508Options"
+                @radioButtonSelected = "radioButtonSelected"
                 name="Section508RadioGroup"
                 class="mt-3 mb-8"
                 :rules="[$validators.required('Please select an option')]"
@@ -230,6 +231,12 @@ export default class Section508Standards extends Mixins(SaveOnLeave) {
     return {
       section_508_sufficient: this.selected508Response || "",
     };
+  }
+
+  private radioButtonSelected(selectedItem: string): void {
+    if (selectedItem === "YES"){
+      this.currentData.accessibility_reqs_508 = "";
+    }
   }
 
   private savedData: SensitiveInformationDTO = {
