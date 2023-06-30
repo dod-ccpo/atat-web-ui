@@ -9,10 +9,16 @@ import {
   CrossDomainSolutionDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
-  SelectedClassificationLevelDTO } from "@/api/models";
+  SelectedClassificationLevelDTO, 
+  SensitiveInformationDTO} from "@/api/models";
 import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
 
+
+export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
+  await validateStep(stepNumber);
+  return isStepTouched(stepNumber)
+} 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.some(
@@ -20,10 +26,49 @@ export const isStepTouched = (stepNumber: number): boolean =>{
   ))
 } 
 
+export const isSubStepValidatedAndTouched = async (
+  stepNumber: number, 
+  subStepNumber: number
+): Promise<boolean> =>{
+  await validateStep(stepNumber);
+  return isSubStepComplete(stepNumber, subStepNumber)
+} 
+
+export const isSubStepTouched = (
+  stepNumber: number, 
+  subStepNumber: number
+): boolean =>{
+  return (Summary.summaryItems.filter(
+    (si: SummaryItem) => 
+      si.step === stepNumber && si.substep === subStepNumber
+  ))[0].isTouched;
+} 
+
+export const isStepValidatedAndComplete = async (stepNumber: number): Promise<boolean> =>{
+  await validateStep(stepNumber);
+  return isStepComplete(stepNumber);
+}
+
 export const isStepComplete = (stepNumber: number): boolean =>{
-  return (Summary.summaryItems.every(
-    (si: SummaryItem) => si.step === stepNumber && si.isComplete 
-  ))
+  return Summary.summaryItems.filter(
+    (si: SummaryItem) => si.step === stepNumber
+  ).every((si: SummaryItem)=> si.isComplete)
+}
+
+export const isSubStepVaidatedAndComplete = async (
+  stepNumber: number, 
+  subStepNumber: number): 
+Promise<boolean> =>{
+  await validateStep(stepNumber);
+  return isSubStepComplete(stepNumber, subStepNumber);
+}
+
+export const isSubStepComplete = (
+  stepNumber: number, 
+  subStepNumber: number): boolean =>{
+  return  Summary.summaryItems.filter(
+    (si: SummaryItem) => si.step === stepNumber && si.substep === subStepNumber
+  )[0].isComplete;
 }
 
 export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
@@ -39,12 +84,27 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
   case 3:
-    Summary.validateStepThree();
+    await Summary.validateStepThree();
+    break;
+  case 7:
+    await Summary.validateStepSeven();
     break;
   default:
     break;
   }
 }
+
+/**
+ * 
+ * @param stepNumber 
+ * @returns summaryItems for requested step and sosrted by substep
+ */
+export const getSummaryItemsforStep = async(stepNumber: number): Promise<SummaryItem[]> =>{
+  return Summary.summaryItems.filter(
+    si => si.step === stepNumber
+  ).sort((a,b) => (a.substep > b.substep) ? 1 : -1)
+}
+
 
 @Module({
   name: 'SummaryStore',
@@ -63,9 +123,19 @@ export class SummaryStore extends VuexModule {
     step: 0,
     substep: 0
   }
+
   public summaryItems: SummaryItem[] = []
 
-  /**
+  @Action({rawError:true})
+  public async toggleButtonColor(stepNumber: number):Promise<void>{
+    const color = stepNumber > 0
+      ? isStepComplete(stepNumber) ? "primary" : "secondary"
+      : ""
+    await AcquisitionPackage.setContinueButtonColor(color);
+  }
+
+  //#region STEP 3
+  /*
    * assess all 3 substeps in Step 3 to determine 
    * if substep is touched and/or completed
    * 
@@ -75,9 +145,9 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async validateStepThree(): Promise<void> {
-    await Summary.assessPeriodOfPerformance();
-    await Summary.assessContractType();
-    await Summary.assessClassificationRequirements();
+    await this.assessPeriodOfPerformance();
+    await this.assessContractType();
+    await this.assessClassificationRequirements();
   }
 
   
@@ -184,7 +254,6 @@ export class SummaryStore extends VuexModule {
     }
     return "";
   }
-
   
   @Action({rawError: true})
   public async assessClassificationRequirements(): Promise<void>{
@@ -297,7 +366,7 @@ export class SummaryStore extends VuexModule {
 
     let isCDSDurationValid = false;
     const cds = ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO;
-    if(oneClassification || cds.cross_domain_solution_required === "NO"){
+    if(oneClassification || (cds && cds.cross_domain_solution_required === "NO")){
       return true
     }
     const keysToIgnore = [
@@ -325,6 +394,173 @@ export class SummaryStore extends VuexModule {
       ? isCDSComplete && isCDSDurationValid
       : true;
   }
+  //#endregion
+
+  //#region STEP 7
+  @Action({rawError: true})
+  public async validateStepSeven(): Promise<void> {
+    const objectKeys = [
+      "baa_", 
+      "sys_", 
+      "pii_", 
+      "foia_", 
+      "potential_", 
+      "508", 
+      "acquisition", 
+      "record_name", 
+      "work_"
+    ];
+    await this.assessPII(objectKeys);
+    await this.assessBAA(objectKeys);
+    await this.assessFOIA(objectKeys);
+    await this.assess508Standards(objectKeys);
+   
+  }
+
+  
+  @Action({rawError: true})
+  public async assessPII(objectKeys: string[]): Promise<void>{
+    const sensitiveInfo = AcquisitionPackage.sensitiveInformation as SensitiveInformationDTO;
+    const description = await this.getPIIDescription(sensitiveInfo);
+    const keysToIgnore = objectKeys.filter(
+      x => ["pii_","record_name", "work_"].indexOf(x) === -1
+    );
+    const monitor = {object: sensitiveInfo, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
+    const isComplete =  monitor.object.pii_present === "NO" 
+      || await this.isComplete(monitor);
+    const standardsAndComplianceSummaryItem: SummaryItem = {
+      title: "Personally Identifiable Information (PII)",
+      description,
+      isComplete,
+      isTouched, 
+      routeName: "PII",
+      step:7,
+      substep: 1
+    }
+    await this.doSetSummaryItem(standardsAndComplianceSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async getPIIDescription(sensitiveInfo: SensitiveInformationDTO): Promise<string>{
+    let desc = "";
+    if (sensitiveInfo.pii_present === "YES"
+      && sensitiveInfo.system_of_record_name !== "" ){
+      desc = "System of records: [" + sensitiveInfo.system_of_record_name + "]"
+    } else if (sensitiveInfo.pii_present === "NO"){
+      desc = "Effort does not include a system of records on individuals."
+    }
+    return desc;
+  }
+
+  @Action({rawError: true})
+  public async assessBAA(objectKeys: string[]): Promise<void>{
+    const sensitiveInfo = AcquisitionPackage.sensitiveInformation as SensitiveInformationDTO;
+    const description = await this.getBAADescription(sensitiveInfo);
+    const keysToIgnore = objectKeys.filter(
+      x => ["baa_"].indexOf(x) === -1
+    );
+    const bAAMonitor = {object: sensitiveInfo, keysToIgnore};
+    const isTouched = await this.isTouched(bAAMonitor)
+    const isComplete = await this.isComplete(bAAMonitor)
+    const standardsAndComplianceSummaryItem: SummaryItem = {
+      title: "Business Associate Agreement (BAA)",
+      description,
+      isComplete,
+      isTouched, 
+      routeName: "BAA",
+      step:7,
+      substep: 2
+    }
+    await this.doSetSummaryItem(standardsAndComplianceSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async getBAADescription(sensitiveInfo: SensitiveInformationDTO): Promise<string>{
+    let desc = "";
+    if (sensitiveInfo.baa_required === "YES" ){
+      desc = "Effort requires a BAA to safeguard e-PHI."
+    } else if (sensitiveInfo.pii_present === "NO"){
+      desc = "Effort does not require a BAA to safeguard e-PHI."
+    }
+    return desc;
+  }
+
+  @Action({rawError: true})
+  public async assessFOIA(objectKeys: string[]): Promise<void>{
+    const sensitiveInfo = AcquisitionPackage.sensitiveInformation as SensitiveInformationDTO;
+    const description = await this.getFOIADescription(sensitiveInfo);
+    const keysToIgnore = objectKeys.filter(
+      x => ["foia_"].indexOf(x) === -1
+    );
+    keysToIgnore.push("foia_street_address_2");
+    const fOIAMonitor = {object: sensitiveInfo, keysToIgnore};
+    const isTouched = await this.isTouched(fOIAMonitor)
+    const isComplete = sensitiveInfo.potential_to_be_harmful === "NO"
+      || await this.isComplete(fOIAMonitor);
+    const standardsAndComplianceSummaryItem: SummaryItem = {
+      title: "Public Disclosure of Information",
+      description,
+      isComplete,
+      isTouched, 
+      routeName: "FOIA",
+      step:7,
+      substep: 3
+    }
+    await this.doSetSummaryItem(standardsAndComplianceSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async getFOIADescription(sensitiveInfo: SensitiveInformationDTO): Promise<string>{
+    let desc = "";
+    if (sensitiveInfo.potential_to_be_harmful === "YES"
+      && sensitiveInfo.foia_full_name !== "" 
+      && sensitiveInfo.foia_email !== "" ){
+      desc = "FOIA Coordinator: " + sensitiveInfo.foia_full_name + "<br />"  
+        + sensitiveInfo.foia_email 
+    } else if (sensitiveInfo.pii_present === "NO"){
+      desc = "Disclosure is not harmful to the government."
+    }
+    return desc;
+  }
+
+
+  @Action({rawError: true})
+  public async assess508Standards(objectKeys: string[]): Promise<void>{
+    const sensitiveInfo = AcquisitionPackage.sensitiveInformation as SensitiveInformationDTO;
+    const description = await this.get508StandardsDescription(sensitiveInfo);
+    const keysToIgnore = objectKeys.filter(
+      x => ["508"].indexOf(x) === -1
+    );
+    const standardsMonitor = {object: sensitiveInfo, keysToIgnore};
+    const isTouched = await this.isTouched(standardsMonitor)
+    const isComplete = (sensitiveInfo.section_508_sufficient === "NO" 
+      && sensitiveInfo.accessibility_reqs_508 !== "")
+      || sensitiveInfo.section_508_sufficient === "YES"
+    const standardsAndComplianceSummaryItem: SummaryItem = {
+      title: "Section 508 Standards",
+      description,
+      isComplete,
+      isTouched, 
+      routeName: "Section508Standards",
+      step:7,
+      substep: 4
+    }
+    await this.doSetSummaryItem(standardsAndComplianceSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async get508StandardsDescription(sensitiveInfo: SensitiveInformationDTO): Promise<string>{
+    let desc = "";
+    if (sensitiveInfo.section_508_sufficient === "YES"){
+      desc = "Accessibility standards in the JWCC contract are sufficient."
+    } else if (sensitiveInfo.section_508_sufficient === "NO"){
+      desc = "Custom accessibility standards are required."
+    }
+    return desc;
+  }
+
+  //#endregion
 
   @Action({rawError: true})
   public async isDurationValid(

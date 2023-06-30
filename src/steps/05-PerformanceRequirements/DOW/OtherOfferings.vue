@@ -74,7 +74,20 @@
     <v-form ref="form" lazy-validation>
 
       <div v-if="selectedClassificationLevelList.length > 1" class="mb-10">
+        <ATATCheckboxGroup
+          v-if="isPortabilityPlan"
+          id="ClassificationLevel"
+          groupLabel="What classification level(s) do you need a Portability Plan for?"
+          :value.sync="_portabilityClassificationLevels"
+          :items="classificationRadioOptions"
+          name="ClassificationLevel"
+          class="mt-3 mb-2"
+          :tooltipText="classificationTooltipText"
+          tooltipLabel="Classification level for this instance"
+          :rules="[$validators.required('Please select a classification level.')]"
+        />
         <ATATRadioGroup
+          v-else
           id="ClassificationLevel"
           legend="What classification level is this instance deployed in?"
           :value.sync="_serviceOfferingData.classificationLevel"
@@ -236,9 +249,11 @@ import {
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import classificationRequirements from "@/store/classificationRequirements";
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 @Component({
   components: {
+    ATATCheckboxGroup,
     ClassificationsModal,
     ComputeFormElements,
     AnticipatedDurationandUsage,
@@ -265,6 +280,7 @@ export default class OtherOfferings extends Vue {
   };
 
   @PropSync("serviceOfferingData") public _serviceOfferingData!: OtherServiceOfferingData;
+  @PropSync("portabilityClassificationLevels") public _portabilityClassificationLevels!: string[];
   @Prop() public isPeriodsDataMissing!: boolean;
   @Prop() public isClassificationDataMissing!: boolean;
   @Prop() public otherOfferingList!: string[];
@@ -366,6 +382,7 @@ export default class OtherOfferings extends Vue {
       const classificationObj = this.selectedClassificationLevelList[0];
       this._serviceOfferingData.classificationLevel
         = classificationObj.classification_level as string;
+      this._portabilityClassificationLevels.push(classificationObj.classification_level as string) ;
       this.singleClassificationLevelName 
         = buildClassificationLabel(classificationObj, "short");
     }
@@ -394,6 +411,11 @@ export default class OtherOfferings extends Vue {
         if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
           this._serviceOfferingData.classificationLevel = "";
         }
+        this._portabilityClassificationLevels.forEach((sysId:string,idx:number) => {
+          if(this.modalSelectedOptions.indexOf(sysId) === -1){
+            this._portabilityClassificationLevels.splice(idx,1)
+          }
+        })
       }
       ClassificationRequirements.createToast();
      
@@ -435,7 +457,6 @@ export default class OtherOfferings extends Vue {
     const otherOfferingObj = DescriptionOfWork.otherOfferingObject;
     this.firstTimeHere 
       = !otherOfferingObj.otherOfferingData || otherOfferingObj.otherOfferingData.length === 0;
-
     // get classification levels selected in step 4 Contract Details
     this.selectedClassificationLevelList 
       = await ClassificationRequirements.getSelectedClassificationLevels();
