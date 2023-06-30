@@ -422,12 +422,14 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
      * then selects NO for the #OnlyCapableSource radio button list
      * ensure that catalog dates match the research dates
      */
-    if (this.sameAsResearchDate === "NO"){
-      this.showCatalogReviewEndDate = this.showResearchEndDate;
-      this.catalogReviewEndDate = this.researchEndDate !== ""
-        ? this.formatISOShort(new Date(this.researchEndDate))
-        : ""
-      this.catalogReviewStartDate = this.researchStartDate;
+    if (itemSelected === "NO"){
+      if (this.sameAsResearchDate === "YES"){
+        this.showCatalogReviewEndDate = this.showResearchEndDate;
+        this.catalogReviewStartDate = this.researchStartDate;
+        this.catalogReviewEndDate = this.researchEndDate !== ""
+          ? this.formatISOShort(new Date(this.researchEndDate))
+          : ""
+      }
     }
   }
 
@@ -726,6 +728,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.researchStartDate = "";
       this.researchEndDate = "";
       this.supportingData = "";
+      this.sameAsResearchDate = ""
       sectionsWithNoSelectedCount++;
     }
     if (!this.cspHasPeculiarFeature || this.reviewedCatalogs !== "YES") {
