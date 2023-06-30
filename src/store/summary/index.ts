@@ -15,17 +15,60 @@ import ClassificationRequirements from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
 
 
+export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
+  await validateStep(stepNumber);
+  return isStepTouched(stepNumber)
+} 
+
 export const isStepTouched = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
 } 
 
+export const isSubStepValidatedAndTouched = async (
+  stepNumber: number, 
+  subStepNumber: number
+): Promise<boolean> =>{
+  await validateStep(stepNumber);
+  return isSubStepComplete(stepNumber, subStepNumber)
+} 
+
+export const isSubStepTouched = (
+  stepNumber: number, 
+  subStepNumber: number
+): boolean =>{
+  return (Summary.summaryItems.filter(
+    (si: SummaryItem) => 
+      si.step === stepNumber && si.substep === subStepNumber
+  ))[0].isTouched;
+} 
+
+export const isStepValidatedAndComplete = async (stepNumber: number): Promise<boolean> =>{
+  await validateStep(stepNumber);
+  return isStepComplete(stepNumber);
+}
+
 export const isStepComplete = (stepNumber: number): boolean =>{
-  const isComplete =  Summary.summaryItems.filter(
+  return Summary.summaryItems.filter(
     (si: SummaryItem) => si.step === stepNumber
   ).every((si: SummaryItem)=> si.isComplete)
-  return isComplete;
+}
+
+export const isSubStepVaidatedAndComplete = async (
+  stepNumber: number, 
+  subStepNumber: number): 
+Promise<boolean> =>{
+  await validateStep(stepNumber);
+  return isSubStepComplete(stepNumber, subStepNumber);
+}
+
+export const isSubStepComplete = (
+  stepNumber: number, 
+  subStepNumber: number): boolean =>{
+  return  Summary.summaryItems.filter(
+    (si: SummaryItem) => si.step === stepNumber && si.substep === subStepNumber
+  )[0].isComplete;
 }
 
 export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
@@ -41,7 +84,7 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
   case 3:
-    Summary.validateStepThree();
+    await Summary.validateStepThree();
     break;
   case 7:
     await Summary.validateStepSeven();
@@ -382,9 +425,10 @@ export class SummaryStore extends VuexModule {
     const keysToIgnore = objectKeys.filter(
       x => ["pii_","record_name", "work_"].indexOf(x) === -1
     );
-    const pIIMonitor = {object: sensitiveInfo, keysToIgnore};
-    const isTouched = await this.isTouched(pIIMonitor)
-    const isComplete = await this.isComplete(pIIMonitor)
+    const monitor = {object: sensitiveInfo, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
+    const isComplete =  monitor.object.pii_present === "NO" 
+      || await this.isComplete(monitor);
     const standardsAndComplianceSummaryItem: SummaryItem = {
       title: "Personally Identifiable Information (PII)",
       description,
@@ -452,7 +496,8 @@ export class SummaryStore extends VuexModule {
     keysToIgnore.push("foia_street_address_2");
     const fOIAMonitor = {object: sensitiveInfo, keysToIgnore};
     const isTouched = await this.isTouched(fOIAMonitor)
-    const isComplete = await this.isComplete(fOIAMonitor)
+    const isComplete = sensitiveInfo.potential_to_be_harmful === "NO"
+      || await this.isComplete(fOIAMonitor);
     const standardsAndComplianceSummaryItem: SummaryItem = {
       title: "Public Disclosure of Information",
       description,

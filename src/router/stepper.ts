@@ -165,6 +165,7 @@ import {
   ArchitecturalDesignDetailsResolver,
   CurrentContractRouteResolver,
   SummaryStepThreeRouteResolver,
+  SummaryStepSevenRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
@@ -211,7 +212,6 @@ import {
   OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
 } from "./resolvers";
-import { isStepComplete } from "@/store/summary";
 
 export const routeNames = {
   ContractingShop: "Contracting_Shop",
@@ -781,7 +781,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepThree,
         continueButtonText: "Wrap up this section",
-        continueButtonColor: isStepComplete(3) ? "primary" : "secondary",
         routeResolver: SummaryStepThreeRouteResolver
       },
     ]
@@ -1110,6 +1109,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.PII,
         completePercentageWeight: 2,
         component: PII,
+        routeResolver: SummaryStepSevenRouteResolver
       },
       {
         menuText: "system of record",
