@@ -1019,7 +1019,7 @@ export default class PortfolioDashboard extends Vue {
     const start = new Date(popStartDate.setHours(0, 0, 0, 0));
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
     this.monthsInPoP = differenceInCalendarMonths(end, start)
-    
+
     let runOutISODate = "";
 
     if (this.monthsIntoPoP > 0) {
@@ -1288,15 +1288,15 @@ export default class PortfolioDashboard extends Vue {
         ((this.endOfMonthForecast - this.monthlySpendAverage) / this.monthlySpendAverage) * 100;
 
       const months = this.numberOfMonthsToBeBilled - 1; // - 1 bc inlcuding the endOfMonthForecast
-
       this.endOfPeriodForecast =
         this.fundsSpent + this.endOfMonthForecast + this.monthlySpendAverage * months;
     } else if (len === 1) {
       this.monthlySpendAverage = this.fundsSpent;
       this.lastMonthSpend = this.fundsSpent;
-      const months = this.numberOfMonthsToBeBilled - 1; // - 1 bc inlcuding the endOfMonthForecast
-      this.endOfPeriodForecast =
-        this.endOfMonthForecast + this.monthlySpendAverage * months;
+      const months = this.numberOfMonthsToBeBilled;
+      this.endOfPeriodForecast = this.endOfMonthForecast
+        ? this.endOfMonthForecast + this.monthlySpendAverage * (months - 1)
+        : this.monthlySpendAverage * months; 
     } else if (monthsWithSpend.length === 0) {
       this.monthlySpendAverage = Math.round((this.availableFunds / this.monthsInPoP) * 100) / 100;
     }
