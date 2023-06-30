@@ -359,7 +359,7 @@
                               label="PeriodToDate"
                             />
                           </div>
-                          <span class="h1 d-block">
+                          <span class="h1 d-block mt-2">
                             <span v-if="fundsSpent">
                               {{ getCurrencyString(fundsSpent) }}
                             </span>
@@ -564,7 +564,7 @@
                                         }}
                                       </span>
                                       <span class="font-size-12 text-base">
-                                        {{ item.timeTilExpiration }} to
+                                        {{ item.timeUntilExpiration }} to
                                         expiration
                                       </span>
                                     </div>
@@ -851,6 +851,7 @@ export default class PortfolioDashboard extends Vue {
   public currentPoPStartISO = "";
   public currentPoPEndStr = "";
   public currentPoPEndISO = "";
+  public monthsInPoP = 0;
 
   public timeToExpiration = "";
   public daysUntilEndDate = 0;
@@ -865,7 +866,7 @@ export default class PortfolioDashboard extends Vue {
   public estimatedRemainingPercent = 0;
   public endOfPeriodForecast = 0;
   public monthsIntoPoP = 0;
-  public monthsForEndOfPeriodForecast = 0;
+  public numberOfMonthsRemainingToBeBilled = 0;
 
   public taskOrder: TaskOrderDTO = TaskOrder.value;
   public costs: CostsDTO[] = [];
@@ -973,6 +974,7 @@ export default class PortfolioDashboard extends Vue {
       }
     });
   }
+
   public tableItems: {
     costClinNumber: string;
     clinStatus: string;
@@ -997,12 +999,11 @@ export default class PortfolioDashboard extends Vue {
     const today = new Date(todayDate.setHours(0, 0, 0, 0));
 
     this.daysUntilEndDate = differenceInCalendarDays(end, today);
-    const monthsUntilEndDate = differenceInCalendarMonths(end, today);
-
-    this.monthsForEndOfPeriodForecast = monthsUntilEndDate - 1;
+    // number of whole months + the current month 
+    this.numberOfMonthsRemainingToBeBilled = differenceInCalendarMonths(end, today) + 1;
 
     const unitsRemaining =
-      this.daysUntilEndDate <= 60 ? this.daysUntilEndDate : monthsUntilEndDate;
+      this.daysUntilEndDate <= 60 ? this.daysUntilEndDate : this.numberOfMonthsRemainingToBeBilled;
     const useMonths = this.daysUntilEndDate > 60;
     const singular = unitsRemaining === 1;
     const timeUnit = useMonths
@@ -1017,18 +1018,21 @@ export default class PortfolioDashboard extends Vue {
     });
     const start = new Date(popStartDate.setHours(0, 0, 0, 0));
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
+    this.monthsInPoP = differenceInCalendarMonths(end, start)
 
     let runOutISODate = "";
 
     if (this.monthsIntoPoP > 0) {
-      let endOfSpending = startOfMonth(today);
-      endOfSpending = subDays(endOfSpending, 1);
-      const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
+      // get last day of month before this month
+      let endOfSpending = subDays(startOfMonth(today), 1);
+      // endOfSpending = subDays(endOfSpending, 1);
+      const daysInMonthsWithSpend = differenceInCalendarDays(endOfSpending, start);
 
-      if (daysSinceStartDate > 0 && this.fundsSpent) {
-        const dailySpend = this.fundsSpent / daysSinceStartDate;
+      if (daysInMonthsWithSpend > 0 && this.fundsSpent) {
+        const dailySpend = this.fundsSpent / daysInMonthsWithSpend;
+
         const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
-        const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent });
+        const runOutOfFundsDate = add(endOfSpending, { days: daysUntilAllFundsSpent });
 
         this.isRunOutOfFundsDateFuture = isAfter(runOutOfFundsDate, end);
         runOutISODate = formatISO(runOutOfFundsDate, {
@@ -1054,20 +1058,21 @@ export default class PortfolioDashboard extends Vue {
     const uniqueDates = [
       ...new Set(this.costs.map((cost) => cost.year_month)),
     ].sort();
-    const uniqueCostClins = [
-      ...new Set(this.costs.map((cost) => cost.clin)),
+    const uniqueClinNumbersInCostsData = [
+      ...new Set(this.costs.map((cost) => cost.clin_number)),
     ].sort();
-    const uniqueIdiqClins = [
-      ...new Set(this.idiqClins.map((clin) => clin.idiq_clin)),
+    const uniqueClinNumbers = [
+      ...new Set(this.idiqClins.map((clin) => clin.clin_number)),
     ].sort();
+    
     //eslint-disable-next-line prefer-const 
     let clinCosts: Record<string, Record<string, string>> = {};
-    uniqueCostClins.forEach((clinNo) => {
+    uniqueClinNumbersInCostsData.forEach((clinNo) => {
       //eslint-disable-next-line prefer-const 
       let clinValues: Record<string, string> = {};
       uniqueDates.forEach((date) => {
         const clin = this.costs.find(
-          (cost) => cost.clin === clinNo && cost.year_month === date
+          (cost) => cost.clin_number === clinNo && cost.year_month === date
         );
         if (clin && clin.is_actual === "true") {
           clinValues[date] = clin.value;
@@ -1078,16 +1083,30 @@ export default class PortfolioDashboard extends Vue {
       clinCosts[clinNo] = clinValues;
     });
 
-    if (uniqueCostClins.length && this.endOfMonthForecast) {
+    if (uniqueClinNumbersInCostsData.length && this.endOfMonthForecast) {
       this.estimatedFundsToBeInvoicedPercent =
         (this.endOfMonthForecast / this.totalPortfolioFunds) * 100;
 
       this.estimatedRemainingPercent = this.fundsSpentPercent < 100
         ? 100 - this.fundsSpentPercent - this.estimatedFundsToBeInvoicedPercent
         : 0;
+    } else if (uniqueClinNumbersInCostsData.length && this.monthsInPoP) {
+      this.estimatedFundsToBeInvoicedPercent = 1 / this.monthsInPoP * 100;
+      this.estimatedRemainingPercent = 100 - this.estimatedFundsToBeInvoicedPercent;
     } else {
-      this.estimatedFundsToBeInvoicedPercent = 1 / 12 * 100;
-      this.estimatedRemainingPercent = 11 / 12 * 100;
+      this.estimatedFundsToBeInvoicedPercent = 0;
+      this.estimatedRemainingPercent = 0;
+    }
+
+    let estimatedFundsToBeInvoiced = this.endOfMonthForecast
+      ? this.endOfMonthForecast
+      : this.totalPortfolioFunds / this.monthsInPoP;
+
+    let estimatedAvailable = (this.totalPortfolioFunds * this.estimatedRemainingPercent) / 100;
+    if (this.costs.length === 0) {
+      estimatedAvailable = this.totalPortfolioFunds;
+      this.estimatedRemainingPercent = 100;
+      estimatedFundsToBeInvoiced = 0;
     }
 
     this.donutChartPercentages = [
@@ -1095,15 +1114,11 @@ export default class PortfolioDashboard extends Vue {
       this.estimatedFundsToBeInvoicedPercent,
       this.estimatedRemainingPercent,
     ];
-    const estimatedFundsToBeInvoiced = this.endOfMonthForecast
-      ? this.endOfMonthForecast
-      : this.totalPortfolioFunds / 12;
 
     this.portfolioFundsObj = {
       "Funds spent": this.fundsSpent,
       "Estimated funds to be invoiced": estimatedFundsToBeInvoiced,
-      "Estimated funds available":
-        (this.totalPortfolioFunds * this.estimatedRemainingPercent) / 100,
+      "Estimated funds available": estimatedAvailable
     };
     this.donutChartData.datasets[0].data = roundTo100(
       this.donutChartPercentages,
@@ -1148,119 +1163,122 @@ export default class PortfolioDashboard extends Vue {
    
       this.burnChartXLabels.push(monthAbbr);
     }
-    //eslint-disable-next-line prefer-const 
-    let actualBurn: Record<string, (number | null)[]> = {};
-    //eslint-disable-next-line prefer-const 
-    let projectedBurn: Record<string, (number | null)[]> = {};
-    const totalActualBurnData: (number | null)[] = [] // [this.totalPortfolioFunds];
-    const totalProjectedBurnData: (number | null)[] = [];// [null];
-
-    const now = new Date();
+    const actualBurn: Record<string, (number | null)[]> = {};
+    const projectedBurn: Record<string, (number | null)[]> = {};
+    const totalActualBurnData: (number | null)[] = [];
+    const totalProjectedBurnData: (number | null)[] = [];
     
-    uniqueIdiqClins.forEach((idiqClinNo) => {
+    const now = new Date();
+
+    uniqueClinNumbers.forEach((clinNo) => {
       const thisIdiqClin = this.idiqClins.find(
-        (clin) => clin.idiq_clin === idiqClinNo
+        (clin) => clin.clin_number === clinNo
       );
       if (thisIdiqClin) {
         const costClinNo = thisIdiqClin.clin_number;
         //eslint-disable-next-line prefer-const 
-        let fundsObligated = thisIdiqClin.funds_obligated;
-        let fundsAvailable = !isNaN(parseInt(fundsObligated.toString()))
-          ? parseInt(fundsObligated.toString())
+        let fundsObligatedForCLIN = thisIdiqClin.funds_obligated;
+        let fundsAvailableForCLIN = !isNaN(parseFloat(fundsObligatedForCLIN.toString()))
+          ? parseFloat(fundsObligatedForCLIN.toString())
           : 0;
 
-        if (fundsAvailable) {
-          const thisclinCosts = _.cloneDeep(clinCosts);
+        if (fundsAvailableForCLIN) {
+          const thisClinCosts = _.cloneDeep(clinCosts);
           const actual: (number | null)[] = [];
-          //   parseFloat(thisIdiqClin.funds_obligated),
-          // ];
           const projected: (number | null)[] = [];
+          if (Object.keys(thisClinCosts).length > 0) {
+            periodDatesISO.forEach((monthISO, i) => {
+              const thisCost = this.costs.find(
+                cost => cost.clin_number === costClinNo && cost.year_month === monthISO
+              );
+              const isActual = thisCost ? thisCost.is_actual === "true" : false;
+              const value = thisClinCosts[costClinNo] !== undefined
+                && thisClinCosts[costClinNo][monthISO] !== undefined
+                ? parseFloat(thisClinCosts[costClinNo][monthISO]) 
+                : NaN;
+              const thisMonthAmount = !isNaN(value) ? value : null;
+              fundsAvailableForCLIN = thisMonthAmount
+                ? fundsAvailableForCLIN - thisMonthAmount
+                : fundsAvailableForCLIN;
+              let month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
+              const isCurrentMonth = isThisMonth(new Date(month)) 
 
-          periodDatesISO.forEach((monthISO, i) => {
-            const value = parseFloat(thisclinCosts[monthISO]);
-            const thisMonthAmount = !isNaN(value) ? value : null;
-            fundsAvailable = thisMonthAmount
-              ? fundsAvailable - thisMonthAmount
-              : fundsAvailable;
-            let month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
-            const isCurrentMonth = isThisMonth(new Date(month)) 
-            const isActual = isBefore(new Date(month), now);
+              const actualAvailable = isActual ? fundsAvailableForCLIN : null;
+              actual.push(actualAvailable);
 
-            const actualVal = isActual ? fundsAvailable : null;
-            actual.push(actualVal);
+              const projectedVal = isCurrentMonth ? fundsAvailableForCLIN : null;
+              projected.push(projectedVal);
+              const monthTotalActual = totalActualBurnData[i];
+              if (!monthTotalActual) {
+                totalActualBurnData[i] = actualAvailable;
+              } else if (actualAvailable) {
+                totalActualBurnData[i] = actualAvailable + monthTotalActual;
+              }
 
-            const projectedVal = isCurrentMonth ? fundsAvailable : null;
-            projected.push(projectedVal);
+              const monthTotalProjected = totalProjectedBurnData[i];
+              if (!monthTotalProjected) {
+                totalProjectedBurnData[i] = projectedVal;
+              } else if (projectedVal) {
+                totalProjectedBurnData[i] = projectedVal + monthTotalProjected;
+              }
+            });
 
-            const monthTotalActual = totalActualBurnData[i];
-            if (!monthTotalActual) {
-              totalActualBurnData[i] = actualVal;
-            } else if (actualVal) {
-              totalActualBurnData[i] = actualVal + monthTotalActual;
-            }
-
-            const monthTotalProjected = totalProjectedBurnData[i];
-            if (!monthTotalProjected) {
-              totalProjectedBurnData[i] = projectedVal;
-            } else if (projectedVal) {
-              totalProjectedBurnData[i] = projectedVal + monthTotalProjected;
-            }
-          });
-
-          actualBurn[idiqClinNo] = actual;
-          projected.push(0);
-          projectedBurn[idiqClinNo] = projected;
+            actualBurn[clinNo] = actual;
+            projected.push(0);
+            projectedBurn[clinNo] = projected;
+          }
         }
       }
-    });
+    }, this);
 
     totalProjectedBurnData.push(0);
+    
+    // MAYBE DON'T NEED 
+    const firstMonthSpend = 0;
 
-    uniqueIdiqClins.forEach((idiqClinNo) => {
+    uniqueClinNumbers.forEach((clinNo) => {
       const thisIdiqClin = this.idiqClins.find(
-        (obj) => obj.idiq_clin === idiqClinNo
+        (obj) => obj.clin_number === clinNo
       );
       const costClinNo = thisIdiqClin?.clin_number;
       const costClinsForThisIdiqClin = this.costs.filter((cost) => {
-        // ATAT TODO - cost.clin is reference object, not a clin number
-        // update logic accordingly at beginning of next release Q2 2023
         return (
-          cost.clin === costClinNo && cost.value && cost.is_actual === "true"
+          cost.clin_number === costClinNo && cost.value && cost.is_actual === "true"
         );
       });
       const thisIdiqClinSpending: number[] = [];
       costClinsForThisIdiqClin.forEach((obj) =>
         obj.value !== null
-          ? thisIdiqClinSpending.push(parseInt(obj.value))
+          ? thisIdiqClinSpending.push(parseFloat(obj.value))
           : null
       );
-      const idiqClinTotalSpend = thisIdiqClinSpending.reduce(
-        (partialSum, a) => partialSum + a,
-        0
-      );
+      const idiqClinTotalSpend = 
+        thisIdiqClinSpending.reduce((partialSum, a) => partialSum + a, 0);
 
-      const len = costClinsForThisIdiqClin.length;
+      const len = costClinsForThisIdiqClin.length;     
       const lastMonthSpend = len > 0 ? parseFloat(
         costClinsForThisIdiqClin[len - 1].value
       ) : 0;
+      // if ()
       const avgMonthlySpend =
-        Math.round((idiqClinTotalSpend / this.monthsIntoPoP) * 100) / 100;
+        Math.round((idiqClinTotalSpend / (this.monthsIntoPoP)) * 100) / 100;
+        // Math.round((idiqClinTotalSpend / (this.monthsIntoPoP + 1)) * 100) / 100;
 
       const idiqClinSpendData = {
         idiqClinTotalSpend,
-        lastMonthSpend,
+        lastMonthSpend, 
         avgMonthlySpend,
       };
-      this.idiqClinSpendData[idiqClinNo] = idiqClinSpendData;
+      this.idiqClinSpendData[clinNo] = idiqClinSpendData;
     }, this);
     const monthsWithSpend = totalActualBurnData.filter((amt) => amt !== null);
-    const len = monthsWithSpend.length - 1;
+
+    const len = monthsWithSpend.length ? monthsWithSpend.length : 1; // - 1; 
 
     this.monthlySpendAverage = Math.round((this.fundsSpent / len) * 100) / 100;
-
     if (len >= 2) {
-      const twoMoAgoAvl = monthsWithSpend[len - 1];
-      const lastMoAvl = monthsWithSpend[len];
+      const twoMoAgoAvl = monthsWithSpend[len - 2];
+      const lastMoAvl = monthsWithSpend[len - 1];
       if (twoMoAgoAvl && lastMoAvl) {
         this.lastMonthSpend = twoMoAgoAvl - lastMoAvl;
         this.lastMonthSpendTrendPercent =
@@ -1269,14 +1287,19 @@ export default class PortfolioDashboard extends Vue {
       this.endOfMonthForecastTrendPercent =
         ((this.endOfMonthForecast - this.monthlySpendAverage) / this.monthlySpendAverage) * 100;
 
-      const m = this.monthsForEndOfPeriodForecast;
+      // - 1 bc inlcuding the endOfMonthForecast
+      const months = this.numberOfMonthsRemainingToBeBilled - 1; 
       this.endOfPeriodForecast =
-        this.fundsSpent + this.endOfMonthForecast + this.monthlySpendAverage * m;
+        this.fundsSpent + this.endOfMonthForecast + this.monthlySpendAverage * months;
     } else if (len === 1) {
-      // ATAT TODO - set average to first month's actual spend
-      // see comment for cost.clin above
+      this.monthlySpendAverage = this.fundsSpent;
+      this.lastMonthSpend = this.fundsSpent;
+      const months = this.numberOfMonthsRemainingToBeBilled;
+      this.endOfPeriodForecast = this.endOfMonthForecast
+        ? this.endOfMonthForecast + this.monthlySpendAverage * (months - 1)
+        : this.monthlySpendAverage * months; 
     } else if (monthsWithSpend.length === 0) {
-      this.monthlySpendAverage = Math.round((this.availableFunds / 12) * 100) / 100;
+      this.monthlySpendAverage = Math.round((this.availableFunds / this.monthsInPoP) * 100) / 100;
     }
 
     this.burnChartData.labels = this.burnChartXLabels;
@@ -1305,18 +1328,19 @@ export default class PortfolioDashboard extends Vue {
     Object.assign(clinTotalProjectedDataSet, totalProjectedData);
     burnChartDataSets.push(clinTotalProjectedDataSet);
 
-    uniqueIdiqClins.forEach((idiqClinNo, i) => {
+    uniqueClinNumbers.forEach((clinNo, i) => {
       this.checked.push(true);
 
       const color = this.chartDataColorSequence[i + 1];
-      const clin = this.idiqClins.find((clin) => clin.idiq_clin === idiqClinNo);
+      const clin = this.idiqClins.find((clin) => clin.clin_number === clinNo);
       if (clin && this.burnChartData.datasets) {
+        // ATAT TODO - reinstate idiq_clin_labels - currently blank in data from SNOW
         const clinActualData = {
           label: clin.idiq_clin_label,
           dataSetId: clin.idiq_clin_label
             ? getIdText(clin.idiq_clin_label + "Actual")
-            : idiqClinNo + "Data",
-          data: actualBurn[idiqClinNo],
+            : clinNo + "Data",
+          data: actualBurn[clinNo],
         };
         //eslint-disable-next-line prefer-const
         let clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
@@ -1333,8 +1357,8 @@ export default class PortfolioDashboard extends Vue {
           label: clin.idiq_clin_label + " Projected",
           dataSetId: clin.idiq_clin_label
             ? getIdText(clin.idiq_clin_label + "Projected")
-            : idiqClinNo + "DataProjected",
-          data: projectedBurn[idiqClinNo],
+            : clinNo + "DataProjected",
+          data: projectedBurn[clinNo],
         };
         //eslint-disable-next-line prefer-const
         let clinProjectedDataSet: lineChartDataSet = _.clone(
@@ -1390,7 +1414,7 @@ export default class PortfolioDashboard extends Vue {
         totalFundsObligated: string;
         lastMonthSpent: string;
         clinAverage: number;
-        timeTilExpiration: string;
+        timeUntilExpiration: string;
         spendTrend: number;
         idiqClin: string;
       } = {
@@ -1403,36 +1427,36 @@ export default class PortfolioDashboard extends Vue {
         totalFundsObligated: "",
         lastMonthSpent: "",
         clinAverage: 0,
-        timeTilExpiration: "",
+        timeUntilExpiration: "",
         spendTrend: 0,
         idiqClin: "",
       };
-      const idiqClinNo = idiqClin.idiq_clin;
+      const clinNo = idiqClin.clin_number;
       obj.clinStatus = idiqClin.clin_status;
       obj.clinLabel = idiqClin.idiq_clin_label || "";
       obj.popStart = createDateStr(idiqClin.pop_start_date, true);
       obj.popEnd = createDateStr(idiqClin.pop_end_date, true);
 
       obj.totalFundsSpent = toCurrencyString(
-        this.idiqClinSpendData[idiqClinNo].idiqClinTotalSpend,
+        this.idiqClinSpendData[clinNo].idiqClinTotalSpend,
         true
       );
       obj.totalFundsObligated = toCurrencyString(
-        parseInt(idiqClin.funds_obligated.toString())
+        parseFloat(idiqClin.funds_obligated.toString())
       );
       obj.lastMonthSpent = toCurrencyString(
-        this.idiqClinSpendData[idiqClinNo].lastMonthSpend
+        this.idiqClinSpendData[clinNo].lastMonthSpend
       );
-      obj.idiqClin = idiqClinNo;
-      obj.clinAverage = this.idiqClinSpendData[idiqClinNo].avgMonthlySpend;
-      obj.timeTilExpiration = this.timeTilExpiration(idiqClin.pop_end_date);
+      obj.idiqClin = clinNo;
+      obj.clinAverage = this.idiqClinSpendData[clinNo].avgMonthlySpend;
+      obj.timeUntilExpiration = this.timeUntilExpiration(idiqClin.pop_end_date);
       obj.spendTrend =
-        ((this.idiqClinSpendData[idiqClinNo].lastMonthSpend -
-          this.idiqClinSpendData[idiqClinNo].avgMonthlySpend) /
-          this.idiqClinSpendData[idiqClinNo].avgMonthlySpend) *
+        ((this.idiqClinSpendData[clinNo].lastMonthSpend -
+          this.idiqClinSpendData[clinNo].avgMonthlySpend) /
+          this.idiqClinSpendData[clinNo].avgMonthlySpend) *
         100;
       const thisIdiqClin = this.idiqClins.find(
-        (obj) => obj.idiq_clin === idiqClinNo
+        (obj) => obj.clin_number === clinNo
       );
       if (thisIdiqClin) {
         obj.costClinNumber = thisIdiqClin.clin_number;
@@ -1440,14 +1464,14 @@ export default class PortfolioDashboard extends Vue {
       this.tableItems.push(obj);
       /// create object for totals
       this.totalSpendingObj.totalFundsSpent +=
-        this.idiqClinSpendData[idiqClinNo].idiqClinTotalSpend;
-      this.totalSpendingObj.totalFundsObligated += parseInt(
+        this.idiqClinSpendData[clinNo].idiqClinTotalSpend;
+      this.totalSpendingObj.totalFundsObligated += parseFloat(
         idiqClin.funds_obligated.toString()
       );
       this.totalSpendingObj.lastMonthSpent +=
-        this.idiqClinSpendData[idiqClinNo].lastMonthSpend;
+        this.idiqClinSpendData[clinNo].lastMonthSpend;
       this.totalSpendingObj.clinAverage +=
-        this.idiqClinSpendData[idiqClinNo].avgMonthlySpend;
+        this.idiqClinSpendData[clinNo].avgMonthlySpend;
       this.totalSpendingObj.spendTrend =
         ((this.totalSpendingObj.lastMonthSpent -
           this.totalSpendingObj.clinAverage) /
@@ -1456,15 +1480,13 @@ export default class PortfolioDashboard extends Vue {
     });
   }
 
-  public timeTilExpiration(endDate: string): string {
+  public timeUntilExpiration(endDate: string): string {
     const popEndDate = parseISO(endDate, { additionalDigits: 1 });
     const end = new Date(popEndDate.setHours(0, 0, 0, 0));
     const todayDate = new Date();
     const today = new Date(todayDate.setHours(0, 0, 0, 0));
     const daysUntilEndDate = differenceInCalendarDays(end, today);
     const monthsUntilEndDate = differenceInCalendarMonths(end, today);
-
-    this.monthsForEndOfPeriodForecast = monthsUntilEndDate - 1;
 
     const unitsRemaining =
       daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
@@ -1485,7 +1507,7 @@ export default class PortfolioDashboard extends Vue {
     // total portfolio funds is sum of each IDIQ CLIN's funds obligated
     this.idiqClins.forEach((clin) => {
       this.totalPortfolioFunds =
-        this.totalPortfolioFunds + parseInt(clin.funds_obligated.toString());
+        this.totalPortfolioFunds + parseFloat(clin.funds_obligated.toString());
     });
     
     // ATAT TODO -  adjust step size and Y Max based on total funds amount
@@ -1524,7 +1546,7 @@ export default class PortfolioDashboard extends Vue {
     
     this.taskOrder = data.taskOrder;
     this.costs = data.costs;
-    this.costs.sort((a, b) => (a.clin > b.clin ? 1 : -1));
+    this.costs.sort((a, b) => (a.clin_number > b.clin_number ? 1 : -1));
     this.costs.sort((a, b) => (a.year_month > b.year_month ? 1 : -1));
     this.idiqClins = data.currentCLINs;
     this.idiqClins.sort((a, b) => a.clin_number > b.clin_number ? 1 : -1);
@@ -1532,7 +1554,7 @@ export default class PortfolioDashboard extends Vue {
     await this.calculateTotalFunds();
 
     this.costs.forEach((cost) => {
-      cost.value = parseInt(cost.value).toString();
+      cost.value = parseFloat(cost.value).toString();
     });
     await this.calculateFundsSpent();
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;

@@ -615,6 +615,8 @@ export interface TaskOrderDTO extends BaseTableDTO {
 
 export interface CostsDTO extends BaseTableDTO {
   clin: string;
+  clin_number: string;
+  "clin.clin_number": string; 
   csp: string;
   "csp.name"?:string;
   year_month: string;
