@@ -1287,7 +1287,8 @@ export default class PortfolioDashboard extends Vue {
       this.endOfMonthForecastTrendPercent =
         ((this.endOfMonthForecast - this.monthlySpendAverage) / this.monthlySpendAverage) * 100;
 
-      const months = this.numberOfMonthsRemainingToBeBilled - 1; // - 1 bc inlcuding the endOfMonthForecast
+      // - 1 bc inlcuding the endOfMonthForecast
+      const months = this.numberOfMonthsRemainingToBeBilled - 1; 
       this.endOfPeriodForecast =
         this.fundsSpent + this.endOfMonthForecast + this.monthlySpendAverage * months;
     } else if (len === 1) {
