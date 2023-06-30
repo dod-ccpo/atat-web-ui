@@ -1082,7 +1082,7 @@ export default class PortfolioDashboard extends Vue {
       });
       clinCosts[clinNo] = clinValues;
     });
-
+    
     if (uniqueClinNumbersInCostsData.length && this.endOfMonthForecast) {
       this.estimatedFundsToBeInvoicedPercent =
         (this.endOfMonthForecast / this.totalPortfolioFunds) * 100;
@@ -1090,9 +1090,23 @@ export default class PortfolioDashboard extends Vue {
       this.estimatedRemainingPercent = this.fundsSpentPercent < 100
         ? 100 - this.fundsSpentPercent - this.estimatedFundsToBeInvoicedPercent
         : 0;
-    } else {
+    } else if (uniqueClinNumbersInCostsData.length && this.monthsInPoP) {
       this.estimatedFundsToBeInvoicedPercent = 1 / this.monthsInPoP * 100;
       this.estimatedRemainingPercent = 11 / this.monthsInPoP * 100;
+    } else {
+      this.estimatedFundsToBeInvoicedPercent = 0;
+      this.estimatedRemainingPercent = 0;
+    }
+
+    let estimatedFundsToBeInvoiced = this.endOfMonthForecast
+      ? this.endOfMonthForecast
+      : this.totalPortfolioFunds / this.monthsInPoP;
+
+    let estimatedAvailable = (this.totalPortfolioFunds * this.estimatedRemainingPercent) / 100;
+    if (this.costs.length === 0) {
+      estimatedAvailable = this.totalPortfolioFunds;
+      this.estimatedRemainingPercent = 100;
+      estimatedFundsToBeInvoiced = 0;
     }
 
     this.donutChartPercentages = [
@@ -1100,15 +1114,11 @@ export default class PortfolioDashboard extends Vue {
       this.estimatedFundsToBeInvoicedPercent,
       this.estimatedRemainingPercent,
     ];
-    const estimatedFundsToBeInvoiced = this.endOfMonthForecast
-      ? this.endOfMonthForecast
-      : this.totalPortfolioFunds / this.monthsInPoP;
 
     this.portfolioFundsObj = {
       "Funds spent": this.fundsSpent,
       "Estimated funds to be invoiced": estimatedFundsToBeInvoiced,
-      "Estimated funds available":
-        (this.totalPortfolioFunds * this.estimatedRemainingPercent) / 100,
+      "Estimated funds available": estimatedAvailable
     };
     this.donutChartData.datasets[0].data = roundTo100(
       this.donutChartPercentages,
@@ -1162,7 +1172,6 @@ export default class PortfolioDashboard extends Vue {
     const now = new Date();
 
     uniqueClinNumbers.forEach((clinNo) => {
-      // EJY HERE
       const thisIdiqClin = this.idiqClins.find(
         (clin) => clin.clin_number === clinNo
       );
@@ -1192,7 +1201,6 @@ export default class PortfolioDashboard extends Vue {
               : fundsAvailable;
             let month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
             const isCurrentMonth = isThisMonth(new Date(month)) 
-            // const isActual = isBefore(new Date(month), now);
 
             const actualVal = isActual ? fundsAvailable : null;
             actual.push(actualVal);
@@ -1260,16 +1268,14 @@ export default class PortfolioDashboard extends Vue {
       this.idiqClinSpendData[clinNo] = idiqClinSpendData;
     }, this);
     const monthsWithSpend = totalActualBurnData.filter((amt) => amt !== null);
-    // EJY was - 1 for something to do with zero % if no funds spent    
+
     const len = monthsWithSpend.length ? monthsWithSpend.length : 1; // - 1; 
-    debugger;
 
     this.monthlySpendAverage = Math.round((this.fundsSpent / len) * 100) / 100;
     if (len >= 2) {
       const twoMoAgoAvl = monthsWithSpend[len - 2];
       const lastMoAvl = monthsWithSpend[len - 1];
       if (twoMoAgoAvl && lastMoAvl) {
-        debugger;
         this.lastMonthSpend = twoMoAgoAvl - lastMoAvl;
         this.lastMonthSpendTrendPercent =
           ((this.lastMonthSpend - this.monthlySpendAverage) / this.monthlySpendAverage) * 100;
@@ -1278,7 +1284,6 @@ export default class PortfolioDashboard extends Vue {
         ((this.endOfMonthForecast - this.monthlySpendAverage) / this.monthlySpendAverage) * 100;
 
       const months = this.numberOfMonthsToBeBilled - 1; // - 1 bc inlcuding the endOfMonthForecast
-      debugger;
 
       this.endOfPeriodForecast =
         this.fundsSpent + this.endOfMonthForecast + this.monthlySpendAverage * months;
@@ -1475,8 +1480,6 @@ export default class PortfolioDashboard extends Vue {
     const daysUntilEndDate = differenceInCalendarDays(end, today);
     const monthsUntilEndDate = differenceInCalendarMonths(end, today);
 
-    // this.numberOfMonthsToBeBilled = monthsUntilEndDate + 1;
-    debugger;
     const unitsRemaining =
       daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
     const useMonths = daysUntilEndDate > 90;
