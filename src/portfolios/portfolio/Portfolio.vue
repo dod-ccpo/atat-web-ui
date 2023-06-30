@@ -1178,12 +1178,12 @@ export default class PortfolioDashboard extends Vue {
       if (thisIdiqClin) {
         const costClinNo = thisIdiqClin.clin_number;
         //eslint-disable-next-line prefer-const 
-        let fundsObligated = thisIdiqClin.funds_obligated;
-        let fundsAvailable = !isNaN(parseFloat(fundsObligated.toString()))
-          ? parseFloat(fundsObligated.toString())
+        let fundsObligatedForCLIN = thisIdiqClin.funds_obligated;
+        let fundsAvailableForCLIN = !isNaN(parseFloat(fundsObligatedForCLIN.toString()))
+          ? parseFloat(fundsObligatedForCLIN.toString())
           : 0;
 
-        if (fundsAvailable) {
+        if (fundsAvailableForCLIN) {
           const thisClinCosts = _.cloneDeep(clinCosts);
           const actual: (number | null)[] = [];
           const projected: (number | null)[] = [];
@@ -1194,30 +1194,27 @@ export default class PortfolioDashboard extends Vue {
                 cost => cost.clin_number === costClinNo && cost.year_month === monthISO
               );
               const isActual = thisCost ? thisCost.is_actual === "true" : false;
-              debugger;
               const value = thisClinCosts[costClinNo] !== undefined
                 && thisClinCosts[costClinNo][monthISO] !== undefined
                 ? parseFloat(thisClinCosts[costClinNo][monthISO]) 
                 : NaN;
               const thisMonthAmount = !isNaN(value) ? value : null;
-              debugger;
-              fundsAvailable = thisMonthAmount
-                ? fundsAvailable - thisMonthAmount
-                : fundsAvailable;
+              fundsAvailableForCLIN = thisMonthAmount
+                ? fundsAvailableForCLIN - thisMonthAmount
+                : fundsAvailableForCLIN;
               let month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
               const isCurrentMonth = isThisMonth(new Date(month)) 
 
-              const actualVal = isActual ? fundsAvailable : null;
-              actual.push(actualVal);
+              const actualAvailable = isActual ? fundsAvailableForCLIN : null;
+              actual.push(actualAvailable);
 
-              const projectedVal = isCurrentMonth ? fundsAvailable : null;
+              const projectedVal = isCurrentMonth ? fundsAvailableForCLIN : null;
               projected.push(projectedVal);
-
               const monthTotalActual = totalActualBurnData[i];
               if (!monthTotalActual) {
-                totalActualBurnData[i] = actualVal;
-              } else if (actualVal) {
-                totalActualBurnData[i] = actualVal + monthTotalActual;
+                totalActualBurnData[i] = actualAvailable;
+              } else if (actualAvailable) {
+                totalActualBurnData[i] = actualAvailable + monthTotalActual;
               }
 
               const monthTotalProjected = totalProjectedBurnData[i];
@@ -1237,6 +1234,9 @@ export default class PortfolioDashboard extends Vue {
     }, this);
 
     totalProjectedBurnData.push(0);
+    
+    // MAYBE DON'T NEED 
+    const firstMonthSpend = 0;
 
     uniqueClinNumbers.forEach((clinNo) => {
       const thisIdiqClin = this.idiqClins.find(
@@ -1261,8 +1261,10 @@ export default class PortfolioDashboard extends Vue {
       const lastMonthSpend = len > 0 ? parseFloat(
         costClinsForThisIdiqClin[len - 1].value
       ) : 0;
+      // if ()
       const avgMonthlySpend =
-        Math.round((idiqClinTotalSpend / (this.monthsIntoPoP + 1)) * 100) / 100;
+        Math.round((idiqClinTotalSpend / (this.monthsIntoPoP)) * 100) / 100;
+        // Math.round((idiqClinTotalSpend / (this.monthsIntoPoP + 1)) * 100) / 100;
 
       const idiqClinSpendData = {
         idiqClinTotalSpend,
@@ -1292,9 +1294,11 @@ export default class PortfolioDashboard extends Vue {
       this.endOfPeriodForecast =
         this.fundsSpent + this.endOfMonthForecast + this.monthlySpendAverage * months;
     } else if (len === 1) {
-      debugger;
-      // ATAT TODO - set average to first month's actual spend
-      // see comment for cost.clin above
+      this.monthlySpendAverage = this.fundsSpent;
+      this.lastMonthSpend = this.fundsSpent;
+      const months = this.numberOfMonthsToBeBilled - 1; // - 1 bc inlcuding the endOfMonthForecast
+      this.endOfPeriodForecast =
+        this.endOfMonthForecast + this.monthlySpendAverage * months;
     } else if (monthsWithSpend.length === 0) {
       this.monthlySpendAverage = Math.round((this.availableFunds / this.monthsInPoP) * 100) / 100;
     }
