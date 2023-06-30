@@ -1187,45 +1187,51 @@ export default class PortfolioDashboard extends Vue {
           const thisClinCosts = _.cloneDeep(clinCosts);
           const actual: (number | null)[] = [];
           const projected: (number | null)[] = [];
+          if (Object.keys(thisClinCosts).length > 0) {
+            periodDatesISO.forEach((monthISO, i) => {
+              const foo = this.costs;
+              const thisCost = this.costs.find(
+                cost => cost.clin_number === costClinNo && cost.year_month === monthISO
+              );
+              const isActual = thisCost ? thisCost.is_actual === "true" : false;
+              debugger;
+              const value = thisClinCosts[costClinNo] !== undefined
+                && thisClinCosts[costClinNo][monthISO] !== undefined
+                ? parseFloat(thisClinCosts[costClinNo][monthISO]) 
+                : NaN;
+              const thisMonthAmount = !isNaN(value) ? value : null;
+              debugger;
+              fundsAvailable = thisMonthAmount
+                ? fundsAvailable - thisMonthAmount
+                : fundsAvailable;
+              let month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
+              const isCurrentMonth = isThisMonth(new Date(month)) 
 
-          periodDatesISO.forEach((monthISO, i) => {
-            const foo = this.costs;
-            const thisCost = this.costs.find(
-              cost => cost.clin_number === costClinNo && cost.year_month === monthISO
-            );
-            const isActual = thisCost ? thisCost.is_actual === "true" : false;
-            const value = parseFloat(thisClinCosts[costClinNo][monthISO]);
-            const thisMonthAmount = !isNaN(value) ? value : null;
-            fundsAvailable = thisMonthAmount
-              ? fundsAvailable - thisMonthAmount
-              : fundsAvailable;
-            let month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
-            const isCurrentMonth = isThisMonth(new Date(month)) 
+              const actualVal = isActual ? fundsAvailable : null;
+              actual.push(actualVal);
 
-            const actualVal = isActual ? fundsAvailable : null;
-            actual.push(actualVal);
+              const projectedVal = isCurrentMonth ? fundsAvailable : null;
+              projected.push(projectedVal);
 
-            const projectedVal = isCurrentMonth ? fundsAvailable : null;
-            projected.push(projectedVal);
+              const monthTotalActual = totalActualBurnData[i];
+              if (!monthTotalActual) {
+                totalActualBurnData[i] = actualVal;
+              } else if (actualVal) {
+                totalActualBurnData[i] = actualVal + monthTotalActual;
+              }
 
-            const monthTotalActual = totalActualBurnData[i];
-            if (!monthTotalActual) {
-              totalActualBurnData[i] = actualVal;
-            } else if (actualVal) {
-              totalActualBurnData[i] = actualVal + monthTotalActual;
-            }
+              const monthTotalProjected = totalProjectedBurnData[i];
+              if (!monthTotalProjected) {
+                totalProjectedBurnData[i] = projectedVal;
+              } else if (projectedVal) {
+                totalProjectedBurnData[i] = projectedVal + monthTotalProjected;
+              }
+            });
 
-            const monthTotalProjected = totalProjectedBurnData[i];
-            if (!monthTotalProjected) {
-              totalProjectedBurnData[i] = projectedVal;
-            } else if (projectedVal) {
-              totalProjectedBurnData[i] = projectedVal + monthTotalProjected;
-            }
-          });
-
-          actualBurn[clinNo] = actual;
-          projected.push(0);
-          projectedBurn[clinNo] = projected;
+            actualBurn[clinNo] = actual;
+            projected.push(0);
+            projectedBurn[clinNo] = projected;
+          }
         }
       }
     }, this);
@@ -1248,10 +1254,8 @@ export default class PortfolioDashboard extends Vue {
           ? thisIdiqClinSpending.push(parseFloat(obj.value))
           : null
       );
-      const idiqClinTotalSpend = thisIdiqClinSpending.reduce(
-        (partialSum, a) => partialSum + a,
-        0
-      );
+      const idiqClinTotalSpend = 
+        thisIdiqClinSpending.reduce((partialSum, a) => partialSum + a, 0);
 
       const len = costClinsForThisIdiqClin.length;     
       const lastMonthSpend = len > 0 ? parseFloat(
@@ -1288,6 +1292,7 @@ export default class PortfolioDashboard extends Vue {
       this.endOfPeriodForecast =
         this.fundsSpent + this.endOfMonthForecast + this.monthlySpendAverage * months;
     } else if (len === 1) {
+      debugger;
       // ATAT TODO - set average to first month's actual spend
       // see comment for cost.clin above
     } else if (monthsWithSpend.length === 0) {
