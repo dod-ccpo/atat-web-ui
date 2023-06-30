@@ -75,9 +75,10 @@ export default class FundingAlert extends Vue {
 
   public get getAlertText(): string {
     let str = "";
+    const dayOrDays = this.timeRemaining === 1 ? "day" : "days";
     if (this.expiresSoonWithCLIN || this.expiresSoonNoCLIN) {
       str = `The current period of performance is <strong>expiring in ${this.timeRemaining}
-        days</strong>`;
+        ${dayOrDays}</strong>`;
       str += this.expiresSoonWithCLIN
         ? `. You have obligated funds in an upcoming CLIN, so there will be no gap in
           funding for this portfolio.`
@@ -87,7 +88,7 @@ export default class FundingAlert extends Vue {
       str += this.lowFunds
         ? `. Review your task order details to ensure your portfolio is funded until 
           the end of the period of performance.`
-        : ` and will be <strong>expiring in ${this.timeRemaining} days.</strong>`;
+        : ` and will be <strong>expiring in ${this.timeRemaining} ${dayOrDays}.</strong>`;
     } else if (this.fundsDelinquent) {
       str = `Please ensure your portfolio is funded until the end of the period of performance 
         to avoid potential violation of the Antideficiency Act.`;

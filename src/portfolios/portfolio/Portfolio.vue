@@ -970,7 +970,6 @@ export default class PortfolioDashboard extends Vue {
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
       if (cost.is_actual === "true") {
-        const foo = parseFloat(cost.value);
         this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
       }
     });
@@ -1189,7 +1188,6 @@ export default class PortfolioDashboard extends Vue {
           const projected: (number | null)[] = [];
           if (Object.keys(thisClinCosts).length > 0) {
             periodDatesISO.forEach((monthISO, i) => {
-              const foo = this.costs;
               const thisCost = this.costs.find(
                 cost => cost.clin_number === costClinNo && cost.year_month === monthISO
               );
