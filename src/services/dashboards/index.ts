@@ -6,6 +6,7 @@ import { TABLENAME as ClinTable } from "@/api/clin";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
 import { format, isAfter, isBefore, parseISO } from "date-fns";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export interface PortFolioDashBoardDTO {
   taskOrder: TaskOrderDTO;
@@ -147,7 +148,7 @@ export class DashboardService {
   public async getCostsInCurrentPeriod(clins: string[]): Promise<CostsDTO[]> {
     let query = "clinIN" + clins.join(",");
     const fields =
-      "csp,csp.name,clin.clin_number,year_month," +
+      "csp,csp.name,clin,clin.clin_number,year_month," +
       "task_order_number,portfolio,organization,agency.title,is_actual,value";
 
     const config: AxiosRequestConfig = {
@@ -158,8 +159,10 @@ export class DashboardService {
     };
 
     const costs = await api.costsTable.all(config);
-    // costs.forEach(cost => cost.clin_number = cost["clin.clin_number"])
-    debugger;
+    costs.forEach(cost => {
+      cost.clin_number = cost["clin.clin_number"];      
+      cost = convertColumnReferencesToValues(cost);
+    });    
     return costs;
   }
 
