@@ -85,7 +85,23 @@ const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
     serviceOrAgency: "",
     admins: [],  
   }
+}
 
+const initialCurrentPortfolio = (): Portfolio => {
+  return {
+    sysId: "",
+    title: "",
+    description: "",
+    status: "",
+    csp: "",
+    agency: "",
+    createdBy: "",
+    provisioned: "",
+    members: [],
+    taskOrderNumber: "",
+    environments: [],
+    lastUpdated: "",
+  }
 }
 
 @Module({
@@ -205,6 +221,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   public async startProvisioning(): Promise<void> {
+    await this.resetCurrentPortfolio();
     try {
       let portfolioName=""
       let portfolioAgency = ""
@@ -319,19 +336,15 @@ export class PortfolioDataStore extends VuexModule {
   public activeTaskOrderSysId = "";
   
   public alerts: AlertDTO[]= [];
-  currentPortfolio: Portfolio = { 
-    sysId: "",
-    title: "",
-    description: "",
-    status: "",
-    csp: "",
-    agency: "",
-    createdBy: "",
-    provisioned: "",
-    members: [],
-    taskOrderNumber: "",
-    environments: [],
-    lastUpdated: "",
+
+  public currentPortfolio: Portfolio = _.cloneDeep(initialCurrentPortfolio());
+  @Action({rawError: true})
+  public async resetCurrentPortfolio(): Promise<void> {
+    this.doResetCurrentPortfolio();
+  }
+  @Mutation
+  public async doResetCurrentPortfolio(): Promise<void> {
+    this.currentPortfolio = _.cloneDeep(initialCurrentPortfolio());
   }
 
   public blankEnvironment: Environment = {
