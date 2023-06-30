@@ -866,7 +866,7 @@ export default class PortfolioDashboard extends Vue {
   public estimatedRemainingPercent = 0;
   public endOfPeriodForecast = 0;
   public monthsIntoPoP = 0;
-  public numberOfMonthsToBeBilled = 0;
+  public numberOfMonthsRemainingToBeBilled = 0;
 
   public taskOrder: TaskOrderDTO = TaskOrder.value;
   public costs: CostsDTO[] = [];
@@ -1000,10 +1000,10 @@ export default class PortfolioDashboard extends Vue {
 
     this.daysUntilEndDate = differenceInCalendarDays(end, today);
     // number of whole months + the current month 
-    this.numberOfMonthsToBeBilled = differenceInCalendarMonths(end, today) + 1;
+    this.numberOfMonthsRemainingToBeBilled = differenceInCalendarMonths(end, today) + 1;
 
     const unitsRemaining =
-      this.daysUntilEndDate <= 60 ? this.daysUntilEndDate : this.numberOfMonthsToBeBilled;
+      this.daysUntilEndDate <= 60 ? this.daysUntilEndDate : this.numberOfMonthsRemainingToBeBilled;
     const useMonths = this.daysUntilEndDate > 60;
     const singular = unitsRemaining === 1;
     const timeUnit = useMonths
@@ -1287,13 +1287,13 @@ export default class PortfolioDashboard extends Vue {
       this.endOfMonthForecastTrendPercent =
         ((this.endOfMonthForecast - this.monthlySpendAverage) / this.monthlySpendAverage) * 100;
 
-      const months = this.numberOfMonthsToBeBilled - 1; // - 1 bc inlcuding the endOfMonthForecast
+      const months = this.numberOfMonthsRemainingToBeBilled - 1; // - 1 bc inlcuding the endOfMonthForecast
       this.endOfPeriodForecast =
         this.fundsSpent + this.endOfMonthForecast + this.monthlySpendAverage * months;
     } else if (len === 1) {
       this.monthlySpendAverage = this.fundsSpent;
       this.lastMonthSpend = this.fundsSpent;
-      const months = this.numberOfMonthsToBeBilled;
+      const months = this.numberOfMonthsRemainingToBeBilled;
       this.endOfPeriodForecast = this.endOfMonthForecast
         ? this.endOfMonthForecast + this.monthlySpendAverage * (months - 1)
         : this.monthlySpendAverage * months; 
