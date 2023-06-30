@@ -1018,7 +1018,8 @@ export default class PortfolioDashboard extends Vue {
     });
     const start = new Date(popStartDate.setHours(0, 0, 0, 0));
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
-
+    this.monthsInPoP = differenceInCalendarMonths(end, start)
+    
     let runOutISODate = "";
 
     if (this.monthsIntoPoP > 0) {
@@ -1081,7 +1082,7 @@ export default class PortfolioDashboard extends Vue {
       });
       clinCosts[clinNo] = clinValues;
     });
-    
+
     if (uniqueClinNumbersInCostsData.length && this.endOfMonthForecast) {
       this.estimatedFundsToBeInvoicedPercent =
         (this.endOfMonthForecast / this.totalPortfolioFunds) * 100;
@@ -1091,7 +1092,7 @@ export default class PortfolioDashboard extends Vue {
         : 0;
     } else if (uniqueClinNumbersInCostsData.length && this.monthsInPoP) {
       this.estimatedFundsToBeInvoicedPercent = 1 / this.monthsInPoP * 100;
-      this.estimatedRemainingPercent = 11 / this.monthsInPoP * 100;
+      this.estimatedRemainingPercent = 100 - this.estimatedFundsToBeInvoicedPercent;
     } else {
       this.estimatedFundsToBeInvoicedPercent = 0;
       this.estimatedRemainingPercent = 0;
@@ -1140,7 +1141,6 @@ export default class PortfolioDashboard extends Vue {
 
       periodDatesISO.push(formatISO(month, { representation: "date" }));
     }
-    this.monthsInPoP = periodDates.length + 1;
 
     const startMonthNo = popStartDate.getMonth();
     const popStartYear = popStartDate.getFullYear();
