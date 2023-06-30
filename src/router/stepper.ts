@@ -119,6 +119,7 @@ import FOIACoordinator from "../steps/08-StandardsAndCompliance/FOIACoordinator.
 import Section508Standards from "../steps/08-StandardsAndCompliance/Section508Standards.vue";
 import Section508AccessibilityRequirements
   from "../steps/08-StandardsAndCompliance/Section508AccessibilityRequirements.vue";
+import SummaryStepSeven from "../steps/08-StandardsAndCompliance/SummaryStepSeven.vue";
 
 // step 09 - Financial Details
 import IGCE from "@/steps/10-FinancialDetails/IGCE/Index.vue";
@@ -164,6 +165,7 @@ import {
   ArchitecturalDesignDetailsResolver,
   CurrentContractRouteResolver,
   SummaryStepThreeRouteResolver,
+  SummaryStepSevenRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
@@ -210,7 +212,6 @@ import {
   OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
 } from "./resolvers";
-import { isStepComplete } from "@/store/summary";
 
 export const routeNames = {
   ContractingShop: "Contracting_Shop",
@@ -284,6 +285,7 @@ export const routeNames = {
   FOIA: "FOIA",
   FOIACoordinator: "FOIA_Coordinator",
   Section508Standards: "Section_508_Standards",
+  SummaryStepSeven: "Summary_Step_Seven",
   ClassificationRequirements: "Classification_Requirements",
   SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
@@ -779,7 +781,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepThree,
         continueButtonText: "Wrap up this section",
-        continueButtonColor: isStepComplete(3) ? "primary" : "secondary",
         routeResolver: SummaryStepThreeRouteResolver
       },
     ]
@@ -1108,6 +1109,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.PII,
         completePercentageWeight: 2,
         component: PII,
+        routeResolver: SummaryStepSevenRouteResolver
       },
       {
         menuText: "system of record",
@@ -1162,6 +1164,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         component: Section508AccessibilityRequirements,
         routeResolver: A11yRequirementResolver
+      },
+      {
+        menuText: "SummaryStepSeven",
+        path:"summary-step-seven",
+        name: routeNames.SummaryStepSeven,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepSeven,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor:  "primary"
       },
     ]
   },

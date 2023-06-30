@@ -116,6 +116,7 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
       defineRequirements: true,
       section: "ArchitecturalDesign",
       isComplete: false,
+      recommendedText:"those who need a customized cloud solution to address their unique situation"
     },
     {
       title: "Anything as a Service (XaaS)",
@@ -126,6 +127,7 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
       defineRequirements: true,
       section: "XaaS",
       isComplete: false,
+      recommendedText:"those well-versed in cloud technology or with specific, known requirements"
     },
     {
       title: "Cloud Support Package",
@@ -300,6 +302,7 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
           defineRequirements: true,
           section: "ReplicateOptimize",
           isComplete: false,
+          recommendedText:"those with an existing environment (on-premise, cloud, or hybrid)"
         };
         this.requirementSections.unshift(currentEnvCardData)
       }

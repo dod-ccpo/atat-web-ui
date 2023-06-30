@@ -301,6 +301,7 @@ export interface DOWCardData {
   section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
   isComplete: boolean,
   buttonLabel?: string
+  recommendedText?: string
 }
 
 export interface DOWClassificationInstance {

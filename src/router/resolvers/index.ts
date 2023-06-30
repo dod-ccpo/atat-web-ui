@@ -16,7 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import Summary, { isStepTouched } from "@/store/summary";
+import { isStepTouched, isSubStepComplete } from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -64,7 +64,10 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-    return (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
+    return ( isStepTouched(3) 
+      ? routeNames.SummaryStepThree 
+      : routeNames.PeriodOfPerformance
+    )
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
@@ -319,6 +322,14 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
     : routeNames.EnvironmentSummary;
 }
 
+
+export const SummaryStepSevenRouteResolver = (current: string): string =>{
+  if (isStepTouched(7)){
+    return routeNames.SummaryStepSeven;
+  }
+  return current;
+}
+
 export const PIIRecordResolver = (current: string): string => {
   const hasSystemOfRecord = AcquisitionPackage.sensitiveInformation?.pii_present === "YES";
   // if system of record will be included, route to system of records page
@@ -349,7 +360,7 @@ export const A11yRequirementResolver = (current: string): string => {
     return routeNames.Section508AccessibilityRequirements;
   }
   return current === routeNames.Section508Standards
-    ? routeNames.CreatePriceEstimate
+    ? routeNames.SummaryStepSeven
     : routeNames.Section508Standards;
 };
 
@@ -1669,7 +1680,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   GeneratedFromPackageRouteResolver,
   ContractingInfoResolver,
   SummaryStepThreeRouteResolver,
-  PortfolioDetailsRouteResolver
+  PortfolioDetailsRouteResolver,
+  SummaryStepSevenRouteResolver
 };
 
 // add path resolvers here 

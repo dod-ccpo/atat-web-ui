@@ -409,6 +409,7 @@ export class AcquisitionPackageStore extends VuexModule {
   attachmentNames: string[] = []
   anticipatedUsersAndDataNeedsVisited = false
   disableContinue = false
+  continueButtonColor = "";
   hideNavigation = false
   hideSideNavigation = false
   isNewPackage = false
@@ -742,6 +743,17 @@ export class AcquisitionPackageStore extends VuexModule {
   private doSetDisableContinue(value: boolean): void {
     this.disableContinue = value;
   }
+
+  @Action({rawError: false})
+  public async setContinueButtonColor(value: string): Promise<void> {
+    this.doSetContinueButtonColor(value);
+  }
+
+  @Mutation
+  private doSetContinueButtonColor(value: string): void {
+    this.continueButtonColor = value;
+  }
+
 
   public get getAllowDeveloperNavigation(): boolean {
     return this.allowDeveloperNavigation;
@@ -1760,7 +1772,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
       this.setInitialized(true);
       this.setIsLoading(false);
-      Summary.validateStepThree();
+      await Summary.validateStepThree();
+      await Summary.validateStepSeven();
 
     } else {
       await this.initialize();
