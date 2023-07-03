@@ -4,7 +4,6 @@
     :class="{ '_first': index === 0, '_last': isLastCard }"
     elevation="0"
   >
-
     <div class="pr-5" v-if="hasCSP">
       <div class="_csp-icon-wrap" :data-csp="CSPs[cspKey].title">
         <v-tooltip
@@ -203,9 +202,11 @@ import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioMo
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
+    ATATAlert,
     ATATSVGIcon,
     ATATMeatballMenu,
     LeavePortfolioModal,
