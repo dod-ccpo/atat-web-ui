@@ -28,7 +28,7 @@
                   <template v-slot:content>
                     <h3 class="mb-6">Financial Details may be inaccurate</h3>
                     <p class="mb-0">
-                      We are currently experiencing an issue retrieving cost data from {{cspName}}
+                      We are currently experiencing an issue retrieving cost data from {{cspName}}.
                       In the meantime, administrators can login to your CSP console directly to
                       get detailed cost analyses and breakdowns.
                       We apologize for this inconvenience.
