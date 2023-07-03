@@ -388,10 +388,11 @@ export default class PortfolioCard extends Vue {
         title: "View funding tracker",
         action: this.menuActions.viewFundingTracker
       },
+      /*
       { 
         title: "View task orders",
         action: this.menuActions.viewTaskOrders
-      },
+      },*/
     ]; 
 
     // ATAT TODO -- add functionality in AT-9099?
