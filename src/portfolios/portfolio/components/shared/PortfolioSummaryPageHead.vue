@@ -59,7 +59,7 @@
         <!-- ATAT TODO: Reinstate menu in future ticket when functionality complete -->
         <v-menu
           :offset-y="true"
-          v-if="false"
+          v-if="true"
           left
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"

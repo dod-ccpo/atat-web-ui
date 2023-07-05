@@ -202,11 +202,9 @@ import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioMo
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
-import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
-    ATATAlert,
     ATATSVGIcon,
     ATATMeatballMenu,
     LeavePortfolioModal,

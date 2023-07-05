@@ -13,28 +13,28 @@
         <v-col>
           <div id="app-content" class="d-flex flex-column">
             <div class="mb-auto" style="padding-bottom: 80px">
-              <div class="d-flex justify-space-between width-100 mb-6">
+                <div class="d-flex justify-space-between width-100 mb-10">
+                  <ATATAlert
+                      id="InaccurateFinancialDetails"
+                      type="error"
+                      class="container-max-width my-10"
+                  >
+                    <template v-slot:content>
+                      <h3 class="mb-1">Financial Details may be inaccurate</h3>
+                      <p class="mb-0">
+                        We are currently experiencing an issue with retrieving cost data from
+                        {{ cspLongName() }}. In the meantime, administrators can login
+                        to your CSP console directly to get detailed cost analyses and breakdowns.
+                        We apologize for this inconvenience.
+                      </p>
+                    </template>
+                  </ATATAlert>
+                </div>
+              <div class="d-flex justify-space-between width-100 mb-10">
                 <h2>Overview</h2>
                 <!-- ATAT TODO - add sync date after have data
-                  <span class="text-base-dark">Last Sync: Nov. 15, 0100</span> 
+                  <span class="text-base-dark">Last Sync: Nov. 15, 0100</span>
                 -->
-              </div>
-              <div class="d-flex justify-space-between width-100 mb-6">
-                <ATATAlert
-                    id="InaccurateFinancialDetails"
-                    type="error"
-                    class="container-max-width my-10"
-                >
-                  <template v-slot:content>
-                    <h3 class="mb-6">Financial Details may be inaccurate</h3>
-                    <p class="mb-0">
-                      We are currently experiencing an issue retrieving cost data from {{cspName}}.
-                      In the meantime, administrators can login to your CSP console directly to
-                      get detailed cost analyses and breakdowns.
-                      We apologize for this inconvenience.
-                    </p>
-                  </template>
-                </ATATAlert>
               </div>
               <v-row>
                 <v-col class="col-sm-6 col-md-8">
@@ -815,7 +815,7 @@ import LineChart from "../../components/charts/LineChart.vue";
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
-import portfolio, { FundingAlertTypes } from "@/store/portfolio";
+import { FundingAlertTypes } from "@/store/portfolio";
 import { createDateStr, toCurrencyString, getCurrencyString, getIdText, roundTo100 } 
   from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
@@ -835,13 +835,9 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
 import PortfolioStore from "@/store/portfolio";
+import Portfolio from "@/store/portfolio";
 
 @Component({
-  methods: {
-    portfolio() {
-      return portfolio
-    }
-  },
   components: {
     ATATAlert,
     ATATFooter,
@@ -960,8 +956,15 @@ export default class PortfolioDashboard extends Vue {
     return this.fundingAlertType.length > 0;
   }
 
-  public get cspName(): string {
-    return PortfolioStore.currentPortfolio.csp ?? "";
+  private cspLongName(): string {
+    const cspName = PortfolioStore.currentPortfolio.csp ?? "";
+    switch(cspName.toLowerCase()) {
+    case 'aws': {return `Amazon Web Services`}
+    case 'azure': {return `Microsoft Azure`}
+    case 'gcp': {return `Google Cloud`}
+    case 'oracle': {return `Oracle Cloud`}
+    default: throw new Error(`Unrecognized cspName: ${cspName}`);
+    }
   }
 
   private get fundingAlertType(): string {
@@ -1050,7 +1053,7 @@ export default class PortfolioDashboard extends Vue {
 
     if (this.monthsIntoPoP > 0) {
       // get last day of month before this month
-      let endOfSpending = subDays(startOfMonth(today), 1);
+      const endOfSpending = subDays(startOfMonth(today), 1);
       // endOfSpending = subDays(endOfSpending, 1);
       const daysInMonthsWithSpend = differenceInCalendarDays(endOfSpending, start);
 
@@ -1226,7 +1229,7 @@ export default class PortfolioDashboard extends Vue {
               fundsAvailableForCLIN = thisMonthAmount
                 ? fundsAvailableForCLIN - thisMonthAmount
                 : fundsAvailableForCLIN;
-              let month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
+              const month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
               const isCurrentMonth = isThisMonth(new Date(month)) 
 
               const actualAvailable = isActual ? fundsAvailableForCLIN : null;
