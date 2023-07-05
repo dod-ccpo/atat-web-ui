@@ -78,7 +78,7 @@ import { User } from "types/Global";
 })
 
 export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
-  public currentUserIsMissionOwner = AcquisitionPackage.currentUserIsMissionOwner;
+  public currentUserIsMissionOwner = false;
   public get missionOwner(): User {
     return AcquisitionPackage.getPackageMissionOwner;
   }
@@ -111,8 +111,8 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     await acquisitionPackage.setCurrentUser();
+    this.currentUserIsMissionOwner = AcquisitionPackage.currentUserIsMissionOwner;
     await acquisitionPackage.setDisableContinue(true);
-    
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()
