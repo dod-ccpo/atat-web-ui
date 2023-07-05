@@ -20,7 +20,7 @@
                       class="container-max-width my-10"
                   >
                     <template v-slot:content>
-                      <h3 class="mb-1">Financial Details may be inaccurate</h3>
+                      <h3 class="mb-1">Financial details may be inaccurate</h3>
                       <p class="mb-0">
                         We are currently experiencing an issue with retrieving cost data from
                         {{ cspLongName() }}. In the meantime, administrators can login
