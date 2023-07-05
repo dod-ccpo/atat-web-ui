@@ -169,8 +169,7 @@
       -- ATAT TODO -  remove isProdEnv when ATAT ready for PROD -- 
       ------------------------------------------------------------
     -->
-    <ATATMeatballMenu 
-      v-if="!isProdEnv"
+    <ATATMeatballMenu
       :id="'PortfolioCardMenu' + index"
       :left="true"
       :index="index"

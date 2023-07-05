@@ -59,7 +59,7 @@
         <!-- ATAT TODO: Reinstate menu in future ticket when functionality complete -->
         <v-menu
           :offset-y="true"
-          v-if="true"
+          v-if="!isProdEnv"
           left
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
@@ -146,6 +146,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { SlideoutPanelContent } from "../../../../../types/Global";
 import {getIdText, hasChanges} from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -166,6 +167,10 @@ export default class PortfolioSummaryPageHead extends Vue {
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public showDrawer = false;
+
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv as boolean;
+  }
 
   public get slideoutPanelIsOpen(): boolean {
     return SlideoutPanel.getSlideoutPanelIsOpen;
