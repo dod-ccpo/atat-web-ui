@@ -59,7 +59,6 @@
         <!-- ATAT TODO: Reinstate menu in future ticket when functionality complete -->
         <v-menu
           :offset-y="true"
-          v-if="!isProdEnv"
           left
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
@@ -67,6 +66,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
+              v-if="!isProdEnv"
               v-bind="attrs"
               v-on="on"
               id="MoreMenuButton"
@@ -169,7 +169,7 @@ export default class PortfolioSummaryPageHead extends Vue {
   public showDrawer = false;
 
   public get isProdEnv(): boolean {
-    return AcquisitionPackage.isProdEnv as boolean;
+    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
   }
 
   public get slideoutPanelIsOpen(): boolean {
