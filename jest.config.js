@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: "jsdom",
 
   // Indicates whether the coverage information should be collected while executing the test
-  collectCoverage: true,
+  collectCoverage: false,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [ 
@@ -54,7 +54,7 @@ module.exports = {
     "<rootDir>/src/components/*.spec.ts",
     "<rootDir>/src/components/**/*.spec.ts",
     "<rootDir>/src/steps/01-AcquisitionPackageDetails/COR_ACOR/*.spec.ts",
-    "<rootDir>/src/steps/03-Background/components/*.spec.ts",
+    "<rootDir>/src/steps/03-Background/**/*.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",
