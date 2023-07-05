@@ -958,13 +958,24 @@ export default class PortfolioDashboard extends Vue {
 
   private cspLongName(): string {
     const cspName = PortfolioStore.currentPortfolio.csp ?? "";
+    let longName = "";
     switch(cspName.toLowerCase()) {
-    case 'aws': {return `Amazon Web Services`}
-    case 'azure': {return `Microsoft Azure`}
-    case 'gcp': {return `Google Cloud`}
-    case 'oracle': {return `Oracle Cloud`}
-    default: throw new Error(`Unrecognized cspName: ${cspName}`);
+    case 'aws':
+      longName = 'Amazon Web Services';
+      break;
+    case 'azure':
+      longName = "Microsoft Azure";
+      break;
+    case 'gcp':
+      longName = "Google Cloud";
+      break;
+    case 'oracle':
+      longName = "Oracle Cloud";
+      break;
+    default:
+      break;
     }
+    return longName;
   }
 
   private get fundingAlertType(): string {
