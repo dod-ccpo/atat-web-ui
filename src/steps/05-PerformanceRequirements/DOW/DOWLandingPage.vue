@@ -14,13 +14,14 @@
             id="DefiningRequirements"
             calloutBackground="primary-lighter"
             :showIcon="false"
-            class="copy-max-width my-10 pt-6"
+            class="container-max-width my-10 pt-6"
             type="callout"
         >
           <template v-slot:content>
             <ATATExpandableLink 
               :hasUnderline="false"
-              class="mb-n2"
+              :isCopyMaxWidth="false"
+              class="container-max-width mb-n2"
               aria-id="ExpandDefiningRequirements">
               
               <template v-slot:header>
@@ -30,7 +31,7 @@
                   v-slot:content
                   v-if="currentEnvironmentExists"
               >
-                <p class="mt-2 mb-0">
+                <p class="container-max-width mt-2 mb-0">
                   JWCC provides flexibility in the way you define your requirements. If you
                   have an existing environment (on-prem, cloud, or hybrid), you may choose to
                   either replicate or optimize your current environment and functions using

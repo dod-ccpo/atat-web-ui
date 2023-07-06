@@ -1,5 +1,10 @@
 <template>
-  <div class="mb-5 copy-max-width">
+  <div
+      class="mb-5"
+      :class="[
+        { 'copy-max-width': isCopyMaxWidth },
+      ]"
+  >
     <a
       @click="open = !open"
       @keydown.enter="open = !open"
@@ -34,7 +39,7 @@ export default class ExpandableLink extends Vue {
   private open = false;
 
   @Prop({ required: true }) ariaId!: string;
-  @Prop({ default: true }) hasUnderline!: boolean;
-  
+  @Prop({ default: true }) hasUnderline?: boolean;
+  @Prop({ default: true }) isCopyMaxWidth?: boolean;
 }
 </script>
