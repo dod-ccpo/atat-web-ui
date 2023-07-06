@@ -323,7 +323,10 @@ export const SummaryStepSevenRouteResolver = (current: string): string =>{
   if (isStepTouched(7)){
     return routeNames.SummaryStepSeven;
   }
-  return current;
+
+  return current === routeNames.Travel
+    ? routeNames.PII
+    : routeNames.Travel
 }
 
 export const PIIRecordResolver = (current: string): string => {

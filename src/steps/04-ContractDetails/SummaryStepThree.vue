@@ -40,7 +40,7 @@ export default class SummaryStepThree extends Mixins(SaveOnLeave){
   get headline():string{
     return (isStepComplete(3))
       ? "You are all done with this section, but you can come back at any time to edit "
-        + "details. When you are ready, we will move on to gather background information"
+        + "details. When you are ready, we will move on to gather background information."
       : "We need some more details for this section. You can add info now, or come back to "
         + "make edits at any time. When you are ready to wrap up this section, we will move "
         + "on to gather background information."
