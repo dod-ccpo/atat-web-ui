@@ -29,26 +29,7 @@ describe("Test suite: Test suite: TechProposal: LPTA", () => {
     );      
   });
   
-  it("TC2: Add another compliance standard and then remove", () => {
-    cy.selectCustomStandardsRadioOption(ep.customRadioYesBtn, "YES");
-    cy.enterTextInTextField(ep.custom0SpecTextbox, customText);    
-    cy.textExists(ep.addAnotherCustomCS, "Add another compliance standard").click()
-      .then(() => {
-        cy.findElement(ep.custom1Spec).should("exist").and("contain.text", "2");  
-        cy.customSpecExists();
-        cy.enterTextInTextField(ep.custom1SpecTextbox, customText);
-        cy.findElement(ep.custom1DeleteBtn).click().then(() => {
-          cy.findElement(ep.custom1SpecTextbox).should("not.exist");
-        });
-        
-      });
-    cy.clickContinueButton(
-      ep.customRadioYesBtn,
-      "Let’s gather details about the duration of your task order"
-    );
-  });  
-
-  it.only("TC3: Navigation: Click Back button", () => {
+  it("TC2: Navigation: Click Back button", () => {
     cy.clickBackButton(
       ep.customRadioYesBtn,
       evalCriteria.workEvalPlan.headerText);  

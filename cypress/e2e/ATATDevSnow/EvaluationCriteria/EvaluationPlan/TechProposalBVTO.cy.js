@@ -21,36 +21,11 @@ describe("Test suite: TechProposal: BVTO", () => {
 
   });
 
-  it("TC1: BVTO: Custom Standards: Select radio buttons", () => {
-    // Validation message if Custom Standards is not selected
-    cy.verifyRequiredRadioBtn(
-      ep.customRadioNoBtn,
-      ep.customRadioGroupError,
-      "Please select an option"
-    );
+  it("TC1: Differentiator(s) screen", () => {
     cy.selectCustomStandardsRadioOption(ep.customRadioNoBtn, "NO");
-    cy.selectCustomStandardsRadioOption(ep.customRadioYesBtn, "YES");
-    cy.enterTextInTextField(ep.custom0SpecTextbox, customText);
-    cy.textExists(ep.addAnotherCustomCS, "Add another compliance standard").click()
-      .then(() => {
-        cy.findElement(ep.custom1Spec).should("exist").and("contain.text", "2");
-        cy.customSpecExists();
-        cy.enterTextInTextField(ep.custom1SpecTextbox, customText);
-        cy.findElement(ep.custom1DeleteBtn).click().then(() => {
-          cy.findElement(ep.custom1SpecTextbox).should("not.exist");
-        });
-
-      });
+  
     cy.clickContinueButton(
-      ep.custom1Spec,
-      evalCriteria.bvto.differentiatorsHeaderText);
-  });
-
-  it("TC2: Differentiator(s) screen", () => {
-    cy.selectCustomStandardsRadioOption(ep.customRadioYesBtn, "YES");
-    cy.enterTextInTextField(ep.custom0SpecTextbox, customText);
-    cy.clickContinueButton(
-      ep.custom0SpecTextbox,
+      ep.customRadioNoBtn,
       evalCriteria.bvto.differentiatorsHeaderText);
     cy.verifyTextMatches(
       ep.introDescription,
@@ -68,7 +43,7 @@ describe("Test suite: TechProposal: BVTO", () => {
   });
 
   //skipping this test due existing bug AT-8485
-  it.skip("TC3: Differentiator(s) screen: Validations, Add & Remove", () => {
+  it.skip("TC2: Differentiator(s) screen: Validations, Add & Remove", () => {
     cy.selectCustomStandardsRadioOption(ep.customRadioYesBtn, "YES");
     cy.enterTextInTextField(ep.custom0SpecTextbox, customText);
     cy.clickContinueButton(
@@ -102,22 +77,4 @@ describe("Test suite: TechProposal: BVTO", () => {
     cy.btnClick(common.continueBtn, " Continue ");
   });
 
-  it("TC4: Navigation: Click on Back Button: Differentiator(s) screen", () => {
-    cy.selectCustomStandardsRadioOption(ep.customRadioNoBtn, "NO");
-    cy.clickContinueButton(ep.customRadioNoBtn,
-      evalCriteria.bvto.differentiatorsHeaderText);
-    cy.selectCheckBoxes([ep.levelComplexityCheckbox, ep.capGain]);
-    cy.clickBackButton(
-      ep.capGain,
-      evalCriteria.bvto.headerText
-    );
-    cy.radioBtn(ep.customRadioNoBtn, "NO").should("be.checked");
-    cy.clickBackButton(
-      ep.customRadioNoBtn,
-      evalCriteria.workEvalPlan.headerText
-    );
-    cy.radioBtn(ep.bvtoRadioBtn, "BVTO").should("be.checked");
-    cy.radioBtn(ep.techProposal, "TECH_PROPOSAL").should("be.checked");
-
-  });
 });

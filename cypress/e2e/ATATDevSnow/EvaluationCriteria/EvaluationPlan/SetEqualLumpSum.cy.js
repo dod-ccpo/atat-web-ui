@@ -5,7 +5,7 @@ import ep from "../../../../selectors/evaluationPlan.sel";
 import evalCriteria from '../../../../fixtures/evaluationCriteria.json';
 
 describe("Test suite: Option four on Create Evaluation Plan: Set Equal lump sum", () => {
-  const customText = randomString(5);
+  
   const pt = "TC-Step-2-EvalCriteria-FairOpp-None" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-None" + randomString(5);
   

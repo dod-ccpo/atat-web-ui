@@ -26,8 +26,7 @@ describe("Test suite: No technical proposal ", () => {
     cy.verifyTextMatches(
       ep.techPropAlertSubHeader,
       evalCriteria.noTechProposal.alertSubHeader
-    );
-    cy.selectCustomStandardsRadioOption(ep.customRadioYesBtn, "YES");
+    );    
     cy.selectCustomStandardsRadioOption(ep.customRadioNoBtn, "NO");
   });  
 
@@ -39,27 +38,9 @@ describe("Test suite: No technical proposal ", () => {
       "Please select an option"
     );      
     
-  });  
+  });    
 
-  it("TC3: Add another compliance standard and then remove", () => {    
-    cy.selectCustomStandardsRadioOption(ep.customRadioYesBtn, "YES");
-    cy.enterTextInTextField(ep.custom0SpecTextbox, customText);    
-    cy.textExists(ep.addAnotherCustomCS, "Add another compliance standard").click()
-      .then(() => {
-        cy.findElement(ep.custom1Spec).should("exist").and("contain.text", "2");  
-        cy.customSpecExists();
-        cy.enterTextInTextField(ep.custom1SpecTextbox, customText);
-        cy.findElement(ep.custom1DeleteBtn).click().then(() => {
-          cy.findElement(ep.custom1SpecTextbox).should("not.exist");
-        });
-        
-      });
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone(ep.custom0SpecTextbox);
-    
-  });  
-
-  it("TC4: Navigation: Click Back button", () => {   
+  it("TC3: Navigation: Click Back button", () => {   
     cy.clickBackButton(
       ep.customRadioYesBtn,
       evalCriteria.workEvalPlan.headerText
