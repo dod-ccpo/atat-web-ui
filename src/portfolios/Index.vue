@@ -45,7 +45,6 @@
           :active-tab="activeTab" 
           default-sort="name" 
           :isHomeView="false"
-          :isProdEnv="isProdEnv"
         />
 
       </v-container>
@@ -91,10 +90,6 @@ export default class Portfolios extends Vue {
     },
   ];
   public activeTab = this.tabItems[0].type;
-
-  public get isProdEnv(): boolean {
-    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
-  }
 
   private getIdText(string: string) {
     return getIdText(string);

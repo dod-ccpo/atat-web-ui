@@ -87,7 +87,7 @@ import Provisioned from "@/portfolios/provisioning/Provisioned.vue";
 import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
-import { Statuses } from "@/store/acquisitionPackage";
+import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import _ from "lodash";
 
 @Component({
@@ -112,8 +112,6 @@ export default class PortfolioSummary extends Vue {
   public tabIndex = 0;
   public tabItems = [
     "Funding Tracker",
-    //"Task Orders",
-    //"CSP Portal Access"
   ];
 
   private getIdText(string: string) {
@@ -147,6 +145,11 @@ export default class PortfolioSummary extends Vue {
   }
 
   public async loadOnEnter(): Promise<void>  {
+
+    if (!AcquisitionPackage.isProdEnv) {
+      this.tabItems.push("Task Orders", "CSP Portal Access");
+    }
+
     const portfolio = _.cloneDeep(PortfolioStore.currentPortfolio);
     if(portfolio.sysId){
       this.isPortfolioProvisioning = false;
