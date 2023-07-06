@@ -10,6 +10,14 @@
           v-if="(totalSections - totalSectionsComplete) !== totalSections">
           Your Performance Requirements Summary
         </h1>
+        <p class="mb-8"
+           v-if="totalSectionsComplete === 0">
+          Through JWCC, you have the ability to set objective-based requirements, and/or
+          you can procure specific cloud resources, tools, and support services. We’ll walk
+          you through each performance area below to gather details for your Description of
+          Work. You’ll have an opportunity to opt out of any areas that don’t apply to your
+          acquisition.
+        </p>
         <ATATAlert
             id="DefiningRequirements"
             calloutBackground="primary-lighter"
