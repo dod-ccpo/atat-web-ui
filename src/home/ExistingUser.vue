@@ -82,7 +82,7 @@
                     <PortfoliosSummary 
                       active-tab="ALL" 
                       default-sort="DESCsys_updated_on"
-                      :isHomeView="true" 
+                      :isHomeView="true"
                       :isProdEnv="isProdEnv"
                     />
                     <!-- ATAT TODO - remove isProdEnv when ATAT ready for PROD -->
@@ -91,7 +91,7 @@
                 </v-expansion-panel>
               </v-expansion-panels>
 
-              <div class="_view-all _portfolios bg-white" v-if="!isProdEnv">
+              <div class="_view-all _portfolios bg-white">
                 <a
                   id="ViewAllPortfoliosLink"
                   role="button"

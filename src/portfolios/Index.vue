@@ -44,7 +44,7 @@
         <PortfoliosSummary 
           :active-tab="activeTab" 
           default-sort="name" 
-          :isHomeView="false" 
+          :isHomeView="false"
           :isProdEnv="isProdEnv"
         />
 

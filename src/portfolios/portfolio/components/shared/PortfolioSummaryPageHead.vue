@@ -66,6 +66,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
+              v-if="!isProdEnv"
               v-bind="attrs"
               v-on="on"
               id="MoreMenuButton"
@@ -145,6 +146,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { SlideoutPanelContent } from "../../../../../types/Global";
 import {getIdText, hasChanges} from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -165,6 +167,10 @@ export default class PortfolioSummaryPageHead extends Vue {
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public showDrawer = false;
+
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
+  }
 
   public get slideoutPanelIsOpen(): boolean {
     return SlideoutPanel.getSlideoutPanelIsOpen;

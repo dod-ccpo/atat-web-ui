@@ -4,7 +4,6 @@
     :class="{ '_first': index === 0, '_last': isLastCard }"
     elevation="0"
   >
-
     <div class="pr-5" v-if="hasCSP">
       <div class="_csp-icon-wrap" :data-csp="CSPs[cspKey].title">
         <v-tooltip
@@ -170,8 +169,7 @@
       -- ATAT TODO -  remove isProdEnv when ATAT ready for PROD -- 
       ------------------------------------------------------------
     -->
-    <ATATMeatballMenu 
-      v-if="!isProdEnv"
+    <ATATMeatballMenu
       :id="'PortfolioCardMenu' + index"
       :left="true"
       :index="index"
@@ -388,10 +386,11 @@ export default class PortfolioCard extends Vue {
         title: "View funding tracker",
         action: this.menuActions.viewFundingTracker
       },
+      /*
       { 
         title: "View task orders",
         action: this.menuActions.viewTaskOrders
-      },
+      },*/
     ]; 
 
     // ATAT TODO -- add functionality in AT-9099?

@@ -112,8 +112,8 @@ export default class PortfolioSummary extends Vue {
   public tabIndex = 0;
   public tabItems = [
     "Funding Tracker",
-    "Task Orders",
-    "CSP Portal Access"
+    //"Task Orders",
+    //"CSP Portal Access"
   ];
 
   private getIdText(string: string) {
