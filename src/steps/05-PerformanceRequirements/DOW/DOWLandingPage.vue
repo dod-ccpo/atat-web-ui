@@ -10,14 +10,21 @@
           v-if="(totalSections - totalSectionsComplete) !== totalSections">
           Your Performance Requirements Summary
         </h1>
-        <p class="mb-8"
-           v-if="totalSectionsComplete === 0">
-          Through JWCC, you have the ability to set objective-based requirements, and/or
-          you can procure specific cloud resources, tools, and support services. We’ll walk
-          you through each performance area below to gather details for your Description of
-          Work. You’ll have an opportunity to opt out of any areas that don’t apply to your
-          acquisition.
-        </p>
+        <div class="copy-max-width">
+          <p class="mb-8"
+           v-if="displayWarning || (totalSectionsComplete > 0 &&
+              totalSectionsComplete < totalSections)">
+            We need some more details for this section. You can add info now, or come back to
+            make edits at any time. When you are ready to wrap up this section, we’ll check for
+            other contract considerations that may apply to your project.
+          </p>
+          <p class="mb-8"
+             v-if="!displayWarning && (totalSections === totalSectionsComplete)">
+            You are all done with this section, but you can come back at any time to edit
+            details. When you are ready, we’ll check for other contract considerations that
+            may apply to your project.
+          </p>
+        </div>
         <ATATAlert
             id="DefiningRequirements"
             calloutBackground="primary-lighter"
@@ -26,14 +33,14 @@
             type="callout"
         >
           <template v-slot:content>
-            <ATATExpandableLink 
-              :hasUnderline="false"
-              :isCopyMaxWidth="false"
-              class="container-max-width mb-n2"
-              aria-id="ExpandDefiningRequirements">
-              
+            <ATATExpandableLink
+                :hasUnderline="false"
+                :isCopyMaxWidth="false"
+                class="container-max-width mb-n2"
+                aria-id="ExpandDefiningRequirements">
+
               <template v-slot:header>
-                <span class="h2 pt-n1">Defining your requirements with JWCC</span> 
+                <span class="h2 pt-n1">Defining your requirements with JWCC</span>
               </template>
               <template
                   v-slot:content
@@ -72,21 +79,6 @@
             </ATATExpandableLink>
           </template>
         </ATATAlert>
-        <div class="copy-max-width">
-          <p class="mb-8"
-           v-if="displayWarning || (totalSectionsComplete > 0 &&
-              totalSectionsComplete < totalSections)">
-            We need some more details for this section. You can add info now, or come back to
-            make edits at any time. When you are ready to wrap up this section, we’ll check for
-            other contract considerations that may apply to your project.
-          </p>
-          <p class="mb-8"
-             v-if="!displayWarning && (totalSections === totalSectionsComplete)">
-            You are all done with this section, but you can come back at any time to edit
-            details. When you are ready, we’ll check for other contract considerations that
-            may apply to your project.
-          </p>
-        </div>
         <h2>
           Add requirements for each performance area
         </h2>
