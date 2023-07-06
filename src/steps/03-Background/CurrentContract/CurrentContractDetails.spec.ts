@@ -4,7 +4,8 @@ import {DefaultProps} from "vue/types/options";
 import Vue from "vue";
 import CurrentContractDetails from "@/steps/03-Background/CurrentContract/CurrentContractDetails.vue";
 import validators from "../../../plugins/validation";
-import { CurrentContractDTO } from "@/api/models";
+import AcquisitionPackage,{ StoreProperties}
+  from "@/store/acquisitionPackage";
 
 describe("Testing CurrentContractDetails Component", () => {
   const localVue = createLocalVue();
@@ -39,6 +40,13 @@ describe("Testing CurrentContractDetails Component", () => {
       },
       isCurrent: false
     }    
+
+    beforeEach(() => {
+      jest.spyOn(AcquisitionPackage, 'getFairOpportunity').mockImplementation(
+        ()=>Promise.resolve({
+          exception_to_fair_opportunity: "NO_NONE"
+        }));
+    });
 
     it("setHeadline()=> returns `current` headline ", async () => {
       wrapper.setData(isCurrent);
@@ -103,7 +111,18 @@ describe("Testing CurrentContractDetails Component", () => {
       });
       expect(wrapper.vm.isDatePickersEmpty).toEqual(false);
     });
+
+    it("isDatePickersEmpty() => returns false ", async () => {
+      wrapper.setData({
+        currentContract:{
+          contract_order_start_date: "12/31/2022",
+          contract_order_expiration_date: "12/31/2027"
+        },
+      });
+      expect(wrapper.vm.isDatePickersEmpty).toEqual(false);
+    });
   })
+  
 
   describe("Testing Getters...", () => {
 
