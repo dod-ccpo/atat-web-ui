@@ -29,19 +29,24 @@
               </template>
               <template
                   v-slot:content
-                  v-if="currentEnvironmentExists"
               >
-                <p class="container-max-width mt-2 mb-0">
+                <p
+                    v-if="currentEnvironmentExists"
+                    class="container-max-width mt-2 mb-0"
+                >
                   JWCC provides flexibility in the way you define your requirements. If you
                   have an existing environment (on-prem, cloud, or hybrid), you may choose to
                   either replicate or optimize your current environment and functions using
                   JWCC services by selecting <strong>“Your Current Functions”</strong> below.
                 </p>
                 <p class="mt-2 mb-0">
-                  You may instead choose to define your requirement by stating it in terms of an
-                  objective, use-case, or problem statement for which the CSPs will propose a
-                  solution; do this by selecting <strong>“Architectural Design Solution”</strong>
-                  below.
+                  <span v-if="!currentEnvironmentExists">
+                    JWCC provides flexibility in the way you define your requirements.
+                  </span>
+                  You may <span v-if="currentEnvironmentExists">instead </span>choose to define
+                  your requirement by stating it in terms of an objective, use-case, or problem
+                  statement for which the CSPs will propose a solution; do this by selecting
+                  <strong>“Architectural Design Solution”</strong> below.
                 </p>
                 <p class="mt-2 mb-0">
                   For those more versed in cloud technology or have known specific
@@ -51,30 +56,9 @@
                 </p>
                 <p class="mt-2 mb-0">
                   In addition to the above, you have the ability to add <strong>Cloud Support
-                  Packages</strong> to any of the performance areas selected. This is optional and
-                  ancillary to your selected performance areas.
-                </p>
-              </template>
-              <template
-                  v-slot:content
-                  v-else
-              >
-                <p class="mt-2 mb-0">
-                  JWCC provides flexibility in the way you define your requirements. You may
-                  choose to define your requirement by stating it in terms of an objective,
-                  use-case, or  problem statement for which the CSPs will propose a solution;
-                  do this by selecting <strong>“Architectural Design Solution”</strong> below.
-                </p>
-                <p class="mt-2 mb-0">
-                  For those more versed in cloud technology or have known specific requirements,
-                  you may define your needs by identifying the specific cloud resources and/or
-                  tools that you require by choosing <strong>“Anything as a Service (XaaS) ”
-                </strong> below.
-                </p>
-                <p class="mt-2 mb-0">
-                  In addition to the above, you have the ability to add <strong>Cloud Support
-                  Packages</strong> to any of the performance areas selected. This is optional and
-                  ancillary to your selected performance areas.
+                  Packages</strong><span v-if="currentEnvironmentExists"> to any of the performance
+                  areas selected</span>. This is optional and ancillary to your selected
+                  performance areas.
                 </p>
               </template>
             </ATATExpandableLink>
