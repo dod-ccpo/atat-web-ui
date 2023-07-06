@@ -14,13 +14,17 @@
             id="DefiningRequirements"
             calloutBackground="primary-lighter"
             :showIcon="false"
-            class="copy-max-width my-10"
+            class="copy-max-width my-10 pt-6"
             type="callout"
         >
           <template v-slot:content>
-            <ATATExpandableLink  aria-id="ExpandDefiningRequirements">
+            <ATATExpandableLink 
+              :hasUnderline="false"
+              class="mb-n2"
+              aria-id="ExpandDefiningRequirements">
+              
               <template v-slot:header>
-                Defining your requirements with JWCC
+                <span class="h2 pt-n1">Defining your requirements with JWCC</span> 
               </template>
               <template
                   v-slot:content

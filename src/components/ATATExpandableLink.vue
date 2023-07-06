@@ -5,7 +5,10 @@
       @keydown.enter="open = !open"
       @keydown.space="open = !open"
       class="expandable-content-opener pb-2"
-      :class="open ? 'open' : 'closed'"
+      :class="[
+        open ? 'open' : 'closed',
+        { 'no-text-decoration': !hasUnderline },
+      ]"
       role="button"
       tabindex="0"
       :aria-controls="'Content_' + ariaId"
@@ -31,5 +34,7 @@ export default class ExpandableLink extends Vue {
   private open = false;
 
   @Prop({ required: true }) ariaId!: string;
+  @Prop({ default: true }) hasUnderline!: boolean;
+  
 }
 </script>
