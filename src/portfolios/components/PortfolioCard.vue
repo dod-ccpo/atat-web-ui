@@ -34,13 +34,7 @@
     <div class="pr-8 flex-grow-1">
       <div class="d-flex">
         <div class="card-header flex-grow-1">
-          <!-- 
-          ----------------------------------------------------------
-            -- ATAT TODO -  remove isProdEnv when ATAT ready for PROD -- 
-          ----------------------------------------------------------
-          -->
-          <a v-if="!isProdEnv"
-            :id="'PortfolioName' + index"
+          <a :id="'PortfolioName' + index"
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _portfolio-name"
@@ -51,13 +45,6 @@
               name="manageAccount" width="20" height="17" color="base" class="ml-3"
             />
           </a>
-          <span v-else class="h3 text-base-darker d-flex align-center _portfolio-name">
-            {{ cardData.title }}
-            <ATATSVGIcon v-if="cardData.isManager"
-              name="manageAccount" width="20" height="17" color="base" class="ml-3"
-            />
-          </span>
-
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
           <v-chip
@@ -164,11 +151,6 @@
       </div>
     </div>
 
-    <!-- 
-      ------------------------------------------------------------
-      -- ATAT TODO -  remove isProdEnv when ATAT ready for PROD -- 
-      ------------------------------------------------------------
-    -->
     <ATATMeatballMenu
       :id="'PortfolioCardMenu' + index"
       :left="true"
@@ -216,7 +198,6 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
   @Prop({ default: false }) public isHomeView?: boolean;
-  @Prop({ default: true}) public isProdEnv!: boolean;
 
   public showLeavePortfolioModal = false;
 
@@ -403,16 +384,17 @@ export default class PortfolioCard extends Vue {
     //   );
     // }
 
-    if (!this.isHaCCAdmin && (this.cardData.isManager && this.cardData.portfolio_managers &&
-      this.cardData.portfolio_managers.split(",").length > 1) || !this.cardData.isManager
-    ) {
-      this.portfolioCardMenuItems.push(
-        { 
-          title: "Leave this portfolio",
-          action: this.menuActions.leavePortfolio
-        },
-      );
-    }
+    // ATAT TODO IN AT-9331
+    // if (!this.isHaCCAdmin && (this.cardData.isManager && this.cardData.portfolio_managers &&
+    //   this.cardData.portfolio_managers.split(",").length > 1) || !this.cardData.isManager
+    // ) {
+    //   this.portfolioCardMenuItems.push(
+    //     { 
+    //       title: "Leave this portfolio",
+    //       action: this.menuActions.leavePortfolio
+    //     },
+    //   );
+    // }
 
     // ATAT TODO - future ticket - provide link to each unclassified environment portal
     // eslint-disable-next-line max-len

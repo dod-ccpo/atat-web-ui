@@ -83,9 +83,7 @@
                       active-tab="ALL" 
                       default-sort="DESCsys_updated_on"
                       :isHomeView="true"
-                      :isProdEnv="isProdEnv"
                     />
-                    <!-- ATAT TODO - remove isProdEnv when ATAT ready for PROD -->
 
                   </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -246,10 +244,6 @@ export default class ExistingUser extends Vue {
   }
   public get userHasPortfolios(): boolean {
     return CurrentUserStore.getUserHasPortfolios;
-  }
-
-  public get isProdEnv(): boolean {
-    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
   }
 
   public TONumber = "";
