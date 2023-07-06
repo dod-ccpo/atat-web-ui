@@ -19,6 +19,7 @@
             autocomplete="off"
             v-model="_title"
             @blur="saveTitle()"
+            style="min-width:500px;"
           >
           </v-text-field>
 

@@ -144,12 +144,20 @@ export default class PortfolioSummary extends Vue {
     this.tabIndex = newVal;
   }
 
-  public async loadOnEnter(): Promise<void>  {
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
+  }
+  @Watch("isProdEnv")
+  public isProdEnvChanged(newVal: boolean): void {
+    this.tabItems = newVal 
+      ? ["Funding Tracker"]
+      : ["Funding Tracker","Task Orders", "CSP Portal Access"]
+  }
 
+  public async loadOnEnter(): Promise<void>  {
     if (!AcquisitionPackage.isProdEnv) {
       this.tabItems.push("Task Orders", "CSP Portal Access");
-    }
-
+    }    
     const portfolio = _.cloneDeep(PortfolioStore.currentPortfolio);
     if(portfolio.sysId){
       this.isPortfolioProvisioning = false;
