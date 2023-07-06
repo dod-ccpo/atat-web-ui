@@ -1,12 +1,9 @@
 import {randomString,randomAlphaNumeric} from "../../../../helpers";
-import common from "../../../../selectors/common.sel";
 import fo from "../../../../selectors/fairOpportunityProcess.sel";
 import ep from "../../../../selectors/evaluationPlan.sel";
 import evalCriteria from '../../../../fixtures/evaluationCriteria.json';
 
-describe("Test suite: No technical proposal ", () => {
-  
-  const customText = randomString(5);
+describe("Test suite: No technical proposal ", () => {  
   const pt = "TC-Step-2-EC-FairOpp-None-noTech" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-noTech" + randomString(5);
 

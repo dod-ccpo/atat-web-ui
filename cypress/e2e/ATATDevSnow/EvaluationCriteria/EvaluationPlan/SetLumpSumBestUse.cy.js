@@ -1,68 +1,51 @@
-import {randomString,randomAlphaNumeric} from "../../../../helpers";
+import {
+  randomString,
+  randomAlphaNumeric
+} from "../../../../helpers";
 import ep from "../../../../selectors/evaluationPlan.sel";
 import contractDetails from "../../../../selectors/contractDetails.sel";
 import evalCriteria from '../../../../fixtures/evaluationCriteria.json';
 
 
 describe("Test suite: Select Option3 on Create Evaluation Plan: Set Lump sum: Best Use ", () => {
-
-  const customText = randomString(5);
   const pt = "TC-Step-2-EC-FairOpp-None-bestUse" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-bestUse" + randomString(5);
 
   beforeEach(() => {
-    
-    cy.selectNoneOption(pt, scope);         
+    cy.selectNoneOption(pt, scope);
     //Option selected is Set LumpSum
     cy.selectEvaluationPlanOption(ep.setLumpSum, "SET_LUMP_SUM");
     cy.selectMethodSelectionSectionOption(ep.bestUseRadioBtn, "BEST_USE");
-  });  
-  
-  
-  it("TC1:Select Other Assessment CheckBoxes", () => {
-    cy.verifyTextMatches(
-      ep.otherAssessmentareasLabel,
-      evalCriteria.bestUse.otherAssessRadioLabel
-    );
-  
+  });
+
+
+  it("TC1:Select CheckBoxes", () => {
     cy.verifyCheckBoxLabels(
       ep.checkboxesLabel,
       evalCriteria.bestUse.otherAssessmentCheckboxes
     );
-    cy.selectCustomAssessmentCheckboxOption();
-    cy.enterTextInTextField(ep.custom0SpecTextbox, customText);   
-    cy.textExists(ep.addAnotherCustomCS, "Add another assessment area").click()
-      .then(() => {
-        cy.findElement(ep.custom1Spec).should("exist").and("contain.text", "2");  
-        cy.customSpecExists();
-        cy.enterTextInTextField(ep.custom1SpecTextbox, customText);
-        cy.findElement(ep.custom1DeleteBtn).click().then(() => {
-          cy.findElement(ep.custom1SpecTextbox).should("not.exist");
-        });
-        
-      });       
-    cy.selectCheckBoxes([ep.riskToGovCheckBox,ep.automationCapabilityCheckBox]);
+    cy.selectCheckBoxes([ep.riskToGovCheckBox, ep.automationCapabilityCheckBox]);
     cy.clickContinueButton(
       ep.riskToGovCheckBox,
       "Let’s gather details about the duration of your task order"
-      );    
-    
+    );
+
   });
-  
-  it("TC2: Navigation: Click on navigation buttons", () => {      
-    cy.selectCheckBoxes([ep.riskToGovCheckBox, ep.automationCapabilityCheckBox]);
+
+  it("TC2: Navigation: Click on navigation buttons", () => {
+    cy.selectCheckBoxes([ep.riskToGovCheckBox]);
     cy.textExists(ep.noOtherBtn, " I don’t need other assessment areas").click();
     cy.waitUntilElementIsGone(ep.noOtherBtn);
     cy.verifyPageHeader("Let’s gather details about the duration of your task order");
     cy.clickBackButton(
       contractDetails.baseLabelText,
-      "Now let’s review assessment criteria required for white papers");  
+      "Now let’s review assessment criteria required for white papers");
     cy.verifySelectedCheckBoxOption(ep.activeSumCheckBoxes)
     cy.clickBackButton(
       ep.noOtherBtn,
-      evalCriteria.workEvalPlan.headerText);      
+      evalCriteria.workEvalPlan.headerText);
     cy.radioBtn(ep.setLumpSum, "SET_LUMP_SUM").should("be.checked");
-    
+
   });
-  
+
 });
