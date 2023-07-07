@@ -7,7 +7,7 @@ import CurrentContractDetails from "@/steps/03-Background/CurrentContract/Curren
 import validators from "../../../plugins/validation";
 import AcquisitionPackage,{ StoreProperties}
   from "@/store/acquisitionPackage";
-import { FairOpportunityDTO } from "@/api/models";
+import { CurrentContractDTO } from "@/api/models";
 import { isDate } from "lodash";
 
 describe("Testing CurrentContractDetails Component", () => {
@@ -55,6 +55,13 @@ describe("Testing CurrentContractDetails Component", () => {
       vuetify,
       store
     });
+  });
+
+  afterEach(() => {
+    wrapper.vm.$data.currentData = null;
+    wrapper.vm.$data.savedData = null;
+    wrapper.vm.$data.currentContract = null;
+    wrapper.vm.$data.currentContracts = [];
   });
 
   it("renders successfully", async () => {
@@ -203,6 +210,7 @@ describe("Testing CurrentContractDetails Component", () => {
     })
 
     describe("loadContract()", () => {
+      currentContractDTO.instance_number = 1;
       it("returns current contract from contacts in store", async () =>{
         wrapper.setData({currentContract: currentContractDTO})
         await AcquisitionPackage.doSetCurrentContracts([currentContractDTO])
@@ -228,27 +236,89 @@ describe("Testing CurrentContractDetails Component", () => {
       })
     })
 
-    describe("loadOnEnter()", () => {
-      it("loads existing contract", async () =>{
-       wrapper.setData({currentContract: currentContractDTO})
-       await AcquisitionPackage.doSetCurrentContracts([currentContractDTO])
-       await wrapper.vm.loadOnEnter();
-       expect(Object.keys(wrapper.vm.savedData).sort())
-        .toEqual(Object.keys(wrapper.vm.currentContract).sort());
-      })
-      it("loads empty contract", async () =>{
-       wrapper.setData(
-        { currentData: 
-          {
-            instance_number: 23
-          },
-          currentContract: {}
-        });
-       await wrapper.vm.loadOnEnter();
-       console.log(wrapper.vm.$data.currentContract);
-       expect(wrapper.vm.$data.currentContract.instance_number).toBe(23);
-      })
+    it("loadOnEnter () => loads existing contract", async () =>{
+      wrapper.setData({currentContract: currentContractDTO})
+      await AcquisitionPackage.doSetCurrentContracts([currentContractDTO])
+      await wrapper.vm.loadOnEnter();
+      expect(Object.keys(wrapper.vm.savedData).sort())
+      .toEqual(Object.keys(wrapper.vm.currentContract).sort());
     })
+
+    describe("hasChanged()", () => {
+      const currentData = {instance_number: 12};
+      const savedData = {instance_number: 13};
+      
+      it("returns true", async () =>{
+        await wrapper.setData({currentData, savedData})
+        const hasChanged = await wrapper.vm.hasChanged();
+        expect(hasChanged).toBe(true)
+      }) 
+      
+      it("returns false", async () =>{
+        await wrapper.setData({currentData, savedData: currentData})
+        const hasChanged = await wrapper.vm.hasChanged();
+        expect(hasChanged).toBe(false)
+      })
+    });
+
+    describe("saveOnLeave()", () => {
+      const acqPkgId = "12345"
+      const currentData = {
+        instance_number: 12,
+        acquisition_package: acqPkgId
+      } as CurrentContractDTO;
+      const savedData = {instance_number: 13};
+      
+      beforeEach(()=>{
+        wrapper.setData({
+          currentData, 
+          savedData,
+      })
+        AcquisitionPackage.doSetPackageId(acqPkgId);
+       
+      })
+
+      afterEach(()=>{
+        savedData.instance_number = 1;
+      })
+      
+      it("if current and saved data has changed", async () =>{
+        await wrapper.vm.saveOnLeave();
+        expect(wrapper.vm.currentData.acquisition_package).toBe(acqPkgId);
+        expect(wrapper.vm.currentData.is_valid).toBe(false);
+      }) 
+
+      it("if current and saved data and sets $data.isCurrent", async () =>{
+        wrapper.setData({
+          currentContract:{
+            contract_order_expiration_date: "2019-12-31"
+          }
+        })
+        await wrapper.vm.saveOnLeave();
+        expect(wrapper.vm.$data.isCurrent).toBe(true);
+      }) 
+      
+      it("if current and saved data has changed and NO exception to fair opportunity", async () =>{
+        await AcquisitionPackage.doSetFairOpportunity(
+            {exception_to_fair_opportunity: "NO_NONE"}
+        )
+        const mockFunction = jest.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
+          .mockImplementation(([currenData])=>Promise.resolve())
+        await wrapper.vm.saveOnLeave();
+        expect(mockFunction).toHaveBeenCalled();
+      }) 
+
+      it("mocks an error", async () =>{
+        const errMessage = 'error occurred'
+        const mockFunction = jest.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
+          .mockRejectedValue(errMessage)
+        const saveOnLeave = await wrapper.vm.saveOnLeave();
+        expect(wrapper.vm.saveOnLeaveError).toBe(errMessage);
+      }) 
+
+
+  
+    });
 
     it("sortDataSource() => sorts data source items based on time created ", async () =>{
       const currentContracts = [
