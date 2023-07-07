@@ -1,13 +1,13 @@
 <template>
   <ATATDialog
       id="InviteMembersModal"
-      :showDialog.sync="_showModal"
+      :showDialog.sync="_showInviteModal"
       :title="'Invite people to “' + projectTitle + '”'"
       no-click-animation
       okText="Invite"
       width="632"
       @ok="inviteMembers"
-      @cancelClicked = "onCancel()"
+      @cancelClicked="onCancel()"
       :modalSlideoutComponent="modalSlideoutComponent"
       modalSlideoutTitle="Learn more about portfolio roles"
       :modalDrawerIsOpen.sync="modalDrawerIsOpen"
@@ -26,19 +26,20 @@
         <v-text-field
           ref="inviteMember"
           id="SearchMember"
-          v-model="searchObj.value"
+          v-model="searchString"
           clearable
           append-icon="search"
-          @keyup="onUserSearchValueChange(searchObj.value);searchObj.noResults=false;
-          searchObj.alreadyInvited=false"
-          @click:clear="onUserSearchValueChange('');searchObj.alreadyInvited=false"
+          @click:clear="clearSearch()"
           outlined
           dense
           :height="40"
           placeholder="Search by name or email address"
           autocomplete="off"
         />
+          <!-- @click:clear="onUserSearchValueChange('');searchObj.alreadyInvited=false" -->
 
+          <!-- @keyup="onUserSearchValueChange(searchObj.value);searchObj.noResults=false;
+          searchObj.alreadyInvited=false" -->
         <v-progress-circular v-show="searchObj.isLoading"
           indeterminate
           color="#544496"
@@ -55,7 +56,7 @@
               </v-list-item>
             </v-list>
 
-            <v-list v-if="searchObj.searchResults.length > 0">
+            <v-list v-if="showSearchResults">
               <v-list-item v-for="user of searchObj.searchResults" :key="user.sys_id"
                 @click="onUserSelection(user)"
                 class="pointer">
@@ -70,7 +71,7 @@
               </v-list-item>
             </v-list>
 
-            <v-list class="py-1" v-if="searchObj.noResults && searchObj.value">
+            <v-list class="py-1" v-if="showNoResults">
               <v-list-item class="font-weight-bolder font-size-16">
                 No results for "{{searchObj.value}}"
               </v-list-item>
@@ -130,6 +131,7 @@ import _ from "lodash";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import UserManagement from "@/store/user/userManagement";
 import portfolio from "@/store/portfolio";
+import { SearchObj } from "@/packages/components/ContributorInviteModal.vue";
 
 @Component({
   components: {
@@ -144,24 +146,17 @@ import portfolio from "@/store/portfolio";
 })
 
 export default class InviteMembersModal extends Vue {
-  @PropSync("showModal") public _showModal?: boolean;
+  @PropSync("showModal") public _showInviteModal?: boolean;
   public portfolioData: Portfolio | null = null;
   public projectTitle = "";
-  /* eslint-disable indent */
-  public searchObj: {
-    value: string;
-    isLoading: boolean;
-    searchResults: User[];
-    noResults: boolean;
-    alreadyInvited: boolean;
-  } = {
-    value: "",
+
+  public searchString = "";
+  public searchObj: SearchObj = {
     isLoading: false,
     searchResults: [],
     noResults: false,
     alreadyInvited: false
   };
-  /* eslint-enable indent */
 
   public isSearching = false;
   public memberMenuItems: SelectData[] = [
@@ -192,18 +187,53 @@ export default class InviteMembersModal extends Vue {
   public get OKDisabled(): boolean {
     return this.userSelectedList.length === 0;
   }
+  public get showNoResults(): boolean {
+    return this.searchObj.noResults && !!this.searchString
+  }  
+  public get showSearchResults(): boolean {
+    return this.searchObj.searchResults.length > 0;
+  }
+  public get showRefineSearchMessage(): boolean {
+    return this.searchObj.searchResults.length === 100;
+  }
+  public async clearSearch(): Promise<void> {
+    this.searchString = "";
+    this.searchObj.alreadyInvited = false;
+    await this.clearResults();
+  }
+
+  public async clearResults(): Promise<void> {
+    this.searchObj.isLoading = false;
+    this.searchObj.searchResults = [];      
+    await UserManagement.triggerAbort();
+  }
+
+  @Watch("searchString")
+  public async searchStringChanged(newVal: string, oldVal: string): Promise<void> {
+    this.searchObj.noResults = false;
+    this.searchObj.alreadyInvited = false
+    await this.debouncedSearch(newVal, oldVal)
+  }
+
+  public debouncedSearch = _.debounce(async (newVal: string, oldVal: string) => {
+    if (newVal && newVal !== oldVal && newVal.trim().length > 2 && !this.isSearching) {
+      await this.onUserSearchValueChange(newVal);
+    } else {  
+      await this.clearResults();
+    }
+  }, 1000)
 
   /**
-   * Starts searching 500 milliseconds after user changes the search value. Only
-   * searches if there are at least 3 characters in the newValue
+   * Starts searching 1 second after user pauses when entering a search value.
+   * Only searches if there are at least 3 characters in the newValue
    */
-  onUserSearchValueChange = _.debounce(async (newValue: string) => {
-    if (newValue && newValue?.trim().length > 2 && !this.isSearching) {
+  public async onUserSearchValueChange(searchStr: string): Promise<void> {
+    if (!this.isSearching && searchStr) {
       await UserManagement.doResetAbortController();
+      await this.clearResults();
       this.isSearching = true;
-      this.searchObj.searchResults = [];
       this.searchObj.isLoading = true;
-      const response = await UserManagement.searchUserByNameAndEmail(newValue)
+      const response = await UserManagement.searchUserByNameAndEmail(searchStr)
       this.searchObj.searchResults = response.map(userSearchDTO => {
         return {
           sys_id: userSearchDTO.sys_id,
@@ -212,9 +242,10 @@ export default class InviteMembersModal extends Vue {
           fullName: userSearchDTO.name,
           email: userSearchDTO.email,
           phoneNumber: userSearchDTO.phone,
-          agency: userSearchDTO.company
+          agency: userSearchDTO.company ? "(" + userSearchDTO.company + ")" : "",
         }
-      })
+      });
+  
       this.searchObj.noResults = this.searchObj.searchResults.length === 0;
       this.searchObj.isLoading = false;
       this.isSearching = false;
@@ -224,9 +255,11 @@ export default class InviteMembersModal extends Vue {
       this.searchObj.noResults = false;
       this.searchObj.alreadyInvited = false;         
       this.isSearching = false;
-      await this.onUserSearchValueChange(newValue);
+      if (searchStr) {
+        await this.onUserSearchValueChange(searchStr);
+      }
     }
-  }, 500)
+  }
 
   /**
    * Adds the selected user to the selected user list, if the selected user is not already in
@@ -234,6 +267,7 @@ export default class InviteMembersModal extends Vue {
    * Then clears the search string and makes a function call out to clear the search results
    */
   onUserSelection(newSelectedUser: User): void {
+    debugger;
     if(newSelectedUser && !this.userSelectedList.find(selectedUser =>
       selectedUser.sys_id === newSelectedUser.sys_id) &&
         !this.portfolioData?.members?.find(currentMember =>
@@ -248,7 +282,7 @@ export default class InviteMembersModal extends Vue {
           return 0;
         }
       })
-      this.searchObj.value = "";
+      this.searchString = "";
       this.searchObj.alreadyInvited = false;
       this.searchObj.searchResults = [];
       this.searchObj.noResults = false;
@@ -262,7 +296,7 @@ export default class InviteMembersModal extends Vue {
    * Resets the state of the modal and all the properties.
    */
   async onCancel(): Promise<void> {
-    this.searchObj.value = "";
+    this.searchString = "";
     this.searchObj.alreadyInvited = false;
     this.searchObj.searchResults = [];
     this.searchObj.noResults = false;
@@ -270,7 +304,7 @@ export default class InviteMembersModal extends Vue {
     await UserManagement.triggerAbort();    
   }
 
-  @Watch("_showModal")
+  @Watch("_showInviteModal")
   public async showModalChange(newVal: boolean): Promise<void> {
     if (newVal) {
       this.userSelectedList = [];
