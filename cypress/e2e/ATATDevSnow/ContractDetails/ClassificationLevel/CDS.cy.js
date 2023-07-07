@@ -4,10 +4,10 @@ import {
   randomNumberBetween,
   randomString,
   suffixId,
-} from "../../../helpers";
-import common from "../../../selectors/common.sel";
-import contractDetails from "../../../selectors/contractDetails.sel";
-import background from "../../../selectors/background.sel";
+} from "../../../../helpers";
+import common from "../../../../selectors/common.sel";
+import contractDetails from "../../../../selectors/contractDetails.sel";
+import background from "../../../../selectors/background.sel";
 
 describe("Test suite: Contract Details: CDS Form", () => {
   let pt = "TC-Step-3-ContractDetails-CDS-" + randomAlphaNumeric(5);

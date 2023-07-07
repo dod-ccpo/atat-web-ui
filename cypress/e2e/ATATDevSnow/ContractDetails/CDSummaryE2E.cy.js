@@ -13,7 +13,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
   let scope = "Project Scope-" + randomString(5);
 
   // Enter data here
-  let basePeriod = "41";
+  let basePeriod = "1";
   let dropDownOption = "Year"; // Year/Months/Weeks/Days
   // Note: dropDownOption and basePeriod should be: Year-1, Months<12, Weeks<52, Days<365
   let optionPeriod = "No" // Yes/No
@@ -25,15 +25,16 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
   let popStartDate = "11"
 
   let recurringRequirement = "Yes";
+  let contractType = "T&M"; // FFP/T&M
 
-  beforeEach(() => {
+  before(() => {
     cy.launchATAT(true);
     cy.homePageClickAcquisitionPackBtn();
     cy.selectDitcoOption(co.radioDITCO, "DITCO");
     cy.textExists(common.stepAcquisitionText, " Acquisition Package Details ");
     //Verify the Substeps are  visible
-    //cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");
-    //cy.fillNewAcquisition(pt, scope);
+    cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");
+    cy.fillNewAcquisition(pt, scope);
     cy.clickDevToggleBtn();
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.activeStep(common.stepContractDetailsText);
@@ -68,14 +69,8 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
       cy.findElement(contractDetails.optionDropdownYear).click();
       cy.findElement(contractDetails.optionalTextBox).clear().type(optPeriod);
     }
-
-    // Page#2 Request Pop Start Date
-    // cy.btnExists(common.continueBtn, " Continue ").click();
-    // cy.wait(2000); // waituntil recommended
-    // cy.verifyPageHeader(" Do you want to request a PoP start date? ");
-
+    // Page#2- request Pop start date
     cy.clickContinueButton(contractDetails.addOptionLink, " Do you want to request a PoP start date? ")
-
     if (popStart = "Yes") {
       cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").click({
         force: true
@@ -96,14 +91,10 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     } else if (popStart = "No") {
       cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO").click();
     }
-    // cy.btnExists(common.continueBtn, " Continue ").click();
-    // cy.wait(2000);
-    // // Page#3 Recurring Requirement-------------------
-    // cy.verifyPageHeader("Will this be a recurring requirement?")
 
-    
+    // Page#3 Recurring Requirement-------------------
     cy.clickContinueButton(contractDetails.popStartDateNoRadioOption, "Will this be a recurring requirement?")
-    //assert radio button options
+
     if (recurringRequirement = "Yes") {
       cy.radioBtn(contractDetails.yesRadioOption, "YES").click({
         force: true
@@ -112,8 +103,56 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
       cy.radioBtn(contractDetails.noRadioOption, "NO").click({
         force: true
       });
-    cy.btnExists(common.continueBtn, " Continue ").click();
+    cy.clickContinueButton(contractDetails.noRadioOption, "Which contract type(s) apply to this acquisition?")
   });
 
+  it.only("TC2: Contract Details: Step#2> Contract Type", () => {
+
+    if (contractType = "FFP") {
+
+      cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").check({
+        force: true
+      });
+
+    } else if (contractType = "T&M") {
+      cy.findCheckBox(contractDetails.tmCheckBox, "T&M").check({
+        force: true
+      });
+      cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
+    }
+    cy.clickContinueButton(contractDetails.tmCheckBox, " What classification level(s) will be required for your cloud resources and/or services? ");
+  });
+
+  it.only("TC3: Contract Details: Step#3> Classification Requirements", () => {
+
+    cy.findElement(contractDetails.level2).check({
+      force: true
+    });
+
+    cy.findElement(contractDetails.level4).check({
+      force: true
+    });
+
+    cy.findElement(contractDetails.level5).check({
+      force: true
+    });
+
+    cy.findElement(contractDetails.level6).uncheck({  // add rule when checked
+      force: true
+    });
+    
+    cy.clickContinueButton(contractDetails.level6, "Your Contract Details Summary");
+  });
+
+  it.only("TC4: Contract Details: Summary", () => {
+  
+    cy.textExists(contractDetails.popHeading, " Period of Performance (PoP)");
+    cy.textExists(contractDetails.contractTypeHeading, " Contract Type ");
+    cy.textExists(contractDetails.classReqHeading, " Classification Requirements ");
+    cy.log(" this is summary tab");
+    
+  
+
+  });
 
 });

@@ -150,5 +150,10 @@ module.exports = {
   entiredDurationNo: "#EntireDuration_01_radio_group_control #Radio_No",
   entiredDurationYes: "#EntireDuration_01_radio_group_control #Radio_Yes",
   entiredDurationError: "#EntireDuration_01_radio_group_control .field-error",
-  activeEntireDurtionOption:"#EntireDuration_01_radio_group_control .v-item--active"
+  activeEntireDurtionOption:"#EntireDuration_01_radio_group_control .v-item--active",
+
+// ContractDetails Summary
+popHeading: "#PeriodofPerformancePoP_Heading",
+contractTypeHeading: "#ContractType_Heading",
+classReqHeading: " #ClassificationRequirements_Heading"
 };
