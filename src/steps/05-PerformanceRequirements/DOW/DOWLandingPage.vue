@@ -29,33 +29,36 @@
             id="DOWSummaryAlert"
             calloutBackground="primary-lighter"
             :showIcon="false"
-            class="container-max-width my-10 pt-6"
+            class="container-max-width my-10"
             type="callout"
+            :hasExpandableHeader="true"
+            :expandableHeaderIsOpen="!isOpen"
         >
           <template v-slot:content>
             <ATATExpandableLink
                 :hasUnderline="false"
                 :isCopyMaxWidth="false"
                 :open.sync="isOpen"
-                class="container-max-width mb-n2"
+                :hoverableInAlert="true"
+                class="container-max-width"
                 aria-id="ExpandDefiningRequirements">
 
               <template v-slot:header>
-                <span class="h2 pt-n1">Defining your requirements with JWCC</span>
+                <span class="h2">Defining your requirements with JWCC</span>
               </template>
               <template
                   v-slot:content
               >
                 <p
                     v-if="currentEnvironmentExists"
-                    class="container-max-width mt-2 mb-0"
+                    class="mb-4"
                 >
                   JWCC provides flexibility in the way you define your requirements. If you
                   have an existing environment (on-prem, cloud, or hybrid), you may choose to
                   either replicate or optimize your current environment and functions using
                   JWCC services by selecting <strong>“Your Current Functions”</strong> below.
                 </p>
-                <p class="mt-2 mb-0">
+                <p class="mb-4">
                   <span v-if="!currentEnvironmentExists">
                     JWCC provides flexibility in the way you define your requirements.
                   </span>
@@ -64,13 +67,13 @@
                   statement for which the CSPs will propose a solution; do this by selecting
                   <strong>“Architectural Design Solution”</strong> below.
                 </p>
-                <p class="mt-2 mb-0">
+                <p class="mb-4">
                   For those more versed in cloud technology or have known specific
                   requirements, you may define your needs by identifying the specific cloud
                   resources and/or tools that you require by choosing <strong>“Anything as a
                   Service (XaaS)”</strong> below.
                 </p>
-                <p class="mt-2 mb-0">
+                <p :class="{ 'mb-4': !isOpen }">
                   In addition to the above, you have the ability to add <strong>Cloud Support
                   Packages</strong><span v-if="currentEnvironmentExists"> to any of the performance
                   areas selected</span>. This is optional and ancillary to your selected

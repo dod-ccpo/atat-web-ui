@@ -1,18 +1,21 @@
 <template>
   <div
-      class="mb-5"
       :class="[
         { 'copy-max-width': isCopyMaxWidth },
+        { 'mb-5': !hoverableInAlert },
+        { 'mb-n4': hoverableInAlert }
       ]"
   >
     <a
       @click="_open = !_open"
       @keydown.enter="_open = !_open"
       @keydown.space="_open = !_open"
-      class="expandable-content-opener pb-2"
+      class="expandable-content-opener"
       :class="[
         _open ? 'open' : 'closed',
         { 'no-text-decoration': !hasUnderline },
+        { '_hoverable-in-alert': hoverableInAlert },
+        { 'pb-2': !hoverableInAlert},
       ]"
       role="button"
       tabindex="0"
@@ -40,6 +43,7 @@ export default class ExpandableLink extends Vue {
   @Prop({ required: true }) ariaId!: string;
   @Prop({ default: true }) hasUnderline?: boolean;
   @Prop({ default: true }) isCopyMaxWidth?: boolean;
+  @Prop({ default: false }) hoverableInAlert?: boolean;
   @PropSync("open", { default: false }) _open?: boolean;
 }
 </script>
