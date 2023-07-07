@@ -2,6 +2,7 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import Vuetify from "vuetify";
 import {DefaultProps} from "vue/types/options";
 import Vue from "vue";
+import Vuex from "vuex";
 import CurrentContractDetails from "@/steps/03-Background/CurrentContract/CurrentContractDetails.vue";
 import validators from "../../../plugins/validation";
 import AcquisitionPackage,{ StoreProperties}
@@ -14,6 +15,7 @@ describe("Testing CurrentContractDetails Component", () => {
   localVue.use(validators);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue>;
+  const store = new Vuex.Store(AcquisitionPackage)
 
   const populatedCurrentContract = {
     currentContract:{
@@ -28,6 +30,22 @@ describe("Testing CurrentContractDetails Component", () => {
       contract_order_expiration_date: ""
     }
   }
+
+  const currentContractDTO = {
+    instance_number: 1,
+    current_contract_exists: "YES",
+    incumbent_contractor_name: "incumbent_contractor_name",
+    contract_number: "123",
+    task_delivery_order_number: "123",
+    contract_order_expiration_date: "10/12/2022",
+    contract_order_start_date: "10/12/2023",
+    competitive_status: "cs",
+    business_size: "bs",
+    acquisition_package: "123",
+    is_valid: true,
+    sys_created_by: "me",
+    is_current: true,
+  }
   
 
   beforeEach(() => {
@@ -35,6 +53,7 @@ describe("Testing CurrentContractDetails Component", () => {
     wrapper = mount(CurrentContractDetails, {
       localVue,
       vuetify,
+      store
     });
   });
 
@@ -42,7 +61,7 @@ describe("Testing CurrentContractDetails Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  describe("Testing Getters...", () => {
+  describe("GETTERS", () => {
   
     const isCurrent = {
       currentContract:{
@@ -129,53 +148,127 @@ describe("Testing CurrentContractDetails Component", () => {
     })
   })
   
-
-  describe("Testing Error Messages functions...", () => {
-    const value = ["Error Message 001"];
- 
-    beforeEach(() => {
-      jest.useFakeTimers();
-    });
-
-    afterEach(()=>{
-      jest.useRealTimers();
-      jest.clearAllTimers();
+  describe("FUNCTIONS", () => {
+    describe("Testing Error Messages functions()", () => {
+      const value = ["Error Message 001"];
+   
+      beforeEach(() => {
+        jest.useFakeTimers();
+      });
+  
+      afterEach(()=>{
+        jest.useRealTimers();
+        jest.clearAllTimers();
+      })
+  
+      describe("returns custom error message ...", () => {
+        beforeEach(() => {
+          wrapper.setData(emptyCurrentContract);
+        });
+        afterEach(()=>{
+          jest.advanceTimersByTime(3000);
+          expect(wrapper.vm.$data.expirationDPSharedErrorMessages[0])
+          .toContain('PoP start and expiration dates');
+        })
+  
+        it("setStartDateErrorMessages(value)", async () =>{
+          wrapper.vm.setStartDateErrorMessages(value)
+        })
+  
+        it("setExpirationDateErrorMessages(value)", async () =>{
+          wrapper.vm.setExpirationDateErrorMessages(value)
+        })
+      });
+  
+      describe("returns `value` param as error message ...", () => {
+        beforeEach(() => {
+          wrapper.setData(populatedCurrentContract);
+        });
+        afterEach(()=>{
+          jest.advanceTimersByTime(3000);
+          expect(wrapper.vm.$data.expirationDPSharedErrorMessages[0]).toEqual(value[0]);
+        })
+        it("setStartDateErrorMessages(value)", async () =>{
+          wrapper.vm.setStartDateErrorMessages(value)
+        })
+        it("setExpirationDateErrorMessages(value)", async () =>{
+          wrapper.vm.setExpirationDateErrorMessages(value)
+        })
+      });
+    })
+    it("removeSharedErrorMessages(value) => emptying errorMessages arrays", async () =>{
+      wrapper.vm.removeSharedErrorMessages(true)
+      expect(wrapper.vm.$data.startDPSharedErrorMessages).toEqual([]);
+      expect(wrapper.vm.$data.expirationDPSharedErrorMessages).toEqual([]);
     })
 
-    describe("returns custom error message ...", () => {
-      beforeEach(() => {
-        wrapper.setData(emptyCurrentContract);
-      });
-      afterEach(()=>{
-        jest.advanceTimersByTime(3000);
-        expect(wrapper.vm.$data.expirationDPSharedErrorMessages[0])
-        .toContain('PoP start and expiration dates');
+    describe("loadContract()", () => {
+      it("returns current contract from contacts in store", async () =>{
+        wrapper.setData({currentContract: currentContractDTO})
+        await AcquisitionPackage.doSetCurrentContracts([currentContractDTO])
+        await wrapper.vm.loadContract();
+        expect(wrapper.vm.$data.currentContract).toEqual(
+          wrapper.vm.$data.currentContracts[0]
+        )
       })
 
-      it("setStartDateErrorMessages(value)", async () =>{
-        wrapper.vm.setStartDateErrorMessages(value)
+      it("returns new blank contract", async () =>{
+        currentContractDTO.instance_number = 2;
+        await AcquisitionPackage.doSetCurrentContracts([currentContractDTO]);
+        await wrapper.vm.loadContract();
+        expect(Object.values(wrapper.vm.$data.currentContract).every(v=>v===""))
+       
       })
 
-      it("setExpirationDateErrorMessages(value)", async () =>{
-        wrapper.vm.setExpirationDateErrorMessages(value)
+      it("ensures $data.isCurrent is set as expected", async () =>{
+        currentContractDTO.instance_number = 2;
+        await AcquisitionPackage.doSetCurrentContracts([currentContractDTO]);
+        await wrapper.vm.loadContract();
+        expect(wrapper.vm.$data.isCurrent).not.toBe(true)
       })
-    });
+    })
 
-    describe("returns `value` param as error message ...", () => {
-      beforeEach(() => {
-        wrapper.setData(populatedCurrentContract);
-      });
-      afterEach(()=>{
-        jest.advanceTimersByTime(3000);
-        expect(wrapper.vm.$data.expirationDPSharedErrorMessages[0]).toEqual(value[0]);
+    describe("loadOnEnter()", () => {
+      it("loads existing contract", async () =>{
+       wrapper.setData({currentContract: currentContractDTO})
+       await AcquisitionPackage.doSetCurrentContracts([currentContractDTO])
+       await wrapper.vm.loadOnEnter();
+       expect(Object.keys(wrapper.vm.savedData).sort())
+        .toEqual(Object.keys(wrapper.vm.currentContract).sort());
       })
-      it("setStartDateErrorMessages(value) => returns value", async () =>{
-        wrapper.vm.setStartDateErrorMessages(value)
+      it("loads empty contract", async () =>{
+       wrapper.setData(
+        { currentData: 
+          {
+            instance_number: 23
+          },
+          currentContract: {}
+        });
+       await wrapper.vm.loadOnEnter();
+       console.log(wrapper.vm.$data.currentContract);
+       expect(wrapper.vm.$data.currentContract.instance_number).toBe(23);
       })
-      it("setExpirationDateErrorMessages(value) => returns custom error message", async () =>{
-        wrapper.vm.setExpirationDateErrorMessages(value)
-      })
-    });
-  })
+    })
 
+    it("sortDataSource() => sorts data source items based on time created ", async () =>{
+      const currentContracts = [
+        {instance_number: 1, sys_created_on: "10/12/2023"},
+        {instance_number: 2, sys_created_on: "10/12/2021"}
+      ]
+      wrapper.setData({currentContracts});
+      await wrapper.vm.sortDataSource();
+      expect(wrapper.vm.$data.currentContracts[0].sys_created_on).toBe("10/12/2021");
+    })
+
+    it("setMinAndMaxDates() => returns dates as expected ", async () =>{
+      await wrapper.vm.setMinAndMaxDates();
+      expect(wrapper.vm.$data.startMinDate).toBe("");
+      expect(wrapper.vm.$data.startMaxDate.substring(0,4))
+        .toBe((new Date()).getFullYear().toString());
+      expect(wrapper.vm.$data.expMinDate).toBe("");
+      expect(wrapper.vm.$data.expMaxDate).toBe("");
+    })
+
+
+  });
 });

@@ -351,7 +351,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     current_contract_exists: "",
     acquisition_package: "",
     is_valid: true, 
-    sys_created_by: ""
   } as CurrentContractDTO;
 
   private get currentData(): CurrentContractDTO {
@@ -415,7 +414,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         }
       });
     } else {
-      AcquisitionPackage.setCurrentContract(this.currentData);
+      await AcquisitionPackage.setCurrentContract(this.currentData);
     }
     this.setHeadline();
   }
