@@ -6,18 +6,18 @@
       ]"
   >
     <a
-      @click="open = !open"
-      @keydown.enter="open = !open"
-      @keydown.space="open = !open"
+      @click="_open = !_open"
+      @keydown.enter="_open = !_open"
+      @keydown.space="_open = !_open"
       class="expandable-content-opener pb-2"
       :class="[
-        open ? 'open' : 'closed',
+        _open ? 'open' : 'closed',
         { 'no-text-decoration': !hasUnderline },
       ]"
       role="button"
       tabindex="0"
       :aria-controls="'Content_' + ariaId"
-      :aria-expanded="open + ''"
+      :aria-expanded="_open + ''"
       :id="'Button_' + ariaId"
     >
       <slot name="header"></slot>
@@ -32,14 +32,14 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import {Component, Prop, PropSync} from "vue-property-decorator";
 
 @Component({})
 export default class ExpandableLink extends Vue {
-  private open = false;
 
   @Prop({ required: true }) ariaId!: string;
   @Prop({ default: true }) hasUnderline?: boolean;
   @Prop({ default: true }) isCopyMaxWidth?: boolean;
+  @PropSync("open", { default: false }) _open?: boolean;
 }
 </script>

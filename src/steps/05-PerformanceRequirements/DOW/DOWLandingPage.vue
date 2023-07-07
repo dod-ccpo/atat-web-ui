@@ -26,7 +26,7 @@
           </p>
         </div>
         <ATATAlert
-            id="DefiningRequirements"
+            id="DOWSummaryAlert"
             calloutBackground="primary-lighter"
             :showIcon="false"
             class="container-max-width my-10 pt-6"
@@ -36,6 +36,7 @@
             <ATATExpandableLink
                 :hasUnderline="false"
                 :isCopyMaxWidth="false"
+                :open.sync="isOpen"
                 class="container-max-width mb-n2"
                 aria-id="ExpandDefiningRequirements">
 
@@ -126,7 +127,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
@@ -155,6 +156,12 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
   totalSections = 3;
   totalSectionsComplete = 0;
   currentEnvironmentExists = this.doesCurrentEnvironmentExist();
+  isOpen = DescriptionOfWork.isDOWSummaryAlertOpen;
+
+  @Watch('isOpen')
+  public isOpenChanged(newVal: boolean): void {
+    DescriptionOfWork.setIsDOWSummaryAlertOpen(newVal);
+  }
 
   public requirementSections: DOWCardData[] = [
     {
