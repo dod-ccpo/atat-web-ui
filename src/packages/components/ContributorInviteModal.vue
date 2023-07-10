@@ -134,15 +134,8 @@ import {
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import _ from "lodash";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import UserManagement from "@/store/user/userManagement";
+import UserManagement, { UserSearchObj } from "@/store/user/userManagement";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-
-export interface SearchObj {
-  isLoading: boolean;
-  searchResults: User[];
-  noResults: boolean;
-  alreadyInvited: boolean;
-}
 
 @Component({
   components: {
@@ -159,12 +152,7 @@ export default class ContributorInviteModal extends Vue {
   @PropSync("showInviteModal") public _showInviteModal?: boolean;
 
   public searchString = "";
-  public searchObj: SearchObj = {
-    isLoading: false,
-    searchResults: [],
-    noResults: false,
-    alreadyInvited: false
-  };
+  public searchObj: UserSearchObj = UserManagement.resetSearchObj();
 
   public isSearching = false;
 
@@ -261,28 +249,17 @@ export default class ContributorInviteModal extends Vue {
    * Then clears the search string and makes a function call out to clear the search results
    */
   public onUserSelection(newSelectedUser: User): void {
-    if (newSelectedUser.sys_id) {
-      const alreadySelected = this.userSelectedList.find(u => u.sys_id === newSelectedUser.sys_id)
-      const alreadyInvited 
-        = this.alreadyInvitedUsers.find(u => u.sys_id === newSelectedUser.sys_id);
-      if (newSelectedUser && !alreadySelected && !alreadyInvited) {
-        this.searchObj.alreadyInvited = false;
-        this.userSelectedList.push(newSelectedUser);
-        this.userSelectedList.sort((a, b) => {
-          if (a.fullName && b.fullName) {
-            return a.fullName > b.fullName ? 1 : -1;
-          } else {
-            return 0;
-          }
-        })
-        this.searchString = "";
-        this.searchObj.alreadyInvited = false;
-        this.searchObj.searchResults = [];
-        this.searchObj.noResults = false;
-        this.searchObj.isLoading = false;
-      } else {
-        this.searchObj.alreadyInvited = true;
-      }
+    const isAlreadyListed = UserManagement.isAlreadyListed(
+      newSelectedUser.sys_id as string, this.userSelectedList, this.alreadyInvitedUsers
+    );
+
+    if (newSelectedUser && !isAlreadyListed) {
+      this.userSelectedList.push(newSelectedUser);
+      this.userSelectedList = UserManagement.sortUsersByFullName(this.userSelectedList);
+      this.searchString = "";
+      this.searchObj = UserManagement.resetSearchObj();
+    } else {
+      this.searchObj.alreadyInvited = true;
     }
 
   }
@@ -292,10 +269,7 @@ export default class ContributorInviteModal extends Vue {
    */
   public async onCancel(): Promise<void> {
     this.searchString = "";
-    this.searchObj.alreadyInvited = false;
-    this.searchObj.searchResults = [];
-    this.searchObj.noResults = false;
-    this.searchObj.isLoading = false;
+    this.searchObj = UserManagement.resetSearchObj();
     await UserManagement.triggerAbort();    
   }
 

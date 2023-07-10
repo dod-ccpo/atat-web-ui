@@ -129,9 +129,8 @@ import PortfolioStore from "@/store/portfolio";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import _ from "lodash";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import UserManagement from "@/store/user/userManagement";
+import UserManagement, { UserSearchObj } from "@/store/user/userManagement";
 import portfolio from "@/store/portfolio";
-import { SearchObj } from "@/packages/components/ContributorInviteModal.vue";
 
 @Component({
   components: {
@@ -151,12 +150,7 @@ export default class InviteMembersModal extends Vue {
   public projectTitle = "";
 
   public searchString = "";
-  public searchObj: SearchObj = {
-    isLoading: false,
-    searchResults: [],
-    noResults: false,
-    alreadyInvited: false
-  };
+  public searchObj: UserSearchObj = UserManagement.resetSearchObj();
 
   public isSearching = false;
   public memberMenuItems: SelectData[] = [
@@ -252,9 +246,7 @@ export default class InviteMembersModal extends Vue {
       this.isSearching = false;
     } else {
       await UserManagement.triggerAbort();
-      this.searchObj.searchResults = [];
-      this.searchObj.noResults = false;
-      this.searchObj.alreadyInvited = false;         
+      this.searchObj = UserManagement.resetSearchObj();       
       this.isSearching = false;
       if (searchStr) {
         await this.onUserSearchValueChange(searchStr);
@@ -268,29 +260,16 @@ export default class InviteMembersModal extends Vue {
    * Then clears the search string and makes a function call out to clear the search results
    */
   onUserSelection(newSelectedUser: User): void {
-    const isAlreadySelected = this.userSelectedList.find(
-      selectedUser => selectedUser.sys_id === newSelectedUser.sys_id
+    const isAlreadyListed = UserManagement.isAlreadyListed(
+      newSelectedUser.sys_id as string, this.userSelectedList, this.portfolioData?.members || []
     );
-    const isCurrentMember = this.portfolioData?.members?.find(
-      currentMember => currentMember.sys_id === newSelectedUser.sys_id
-    )
 
-    if(newSelectedUser && !isAlreadySelected && !isCurrentMember) {
-      this.searchObj.alreadyInvited = false;
+    if (newSelectedUser && !isAlreadyListed) {
       newSelectedUser.role = "Viewer"; // defaults to viewer
       this.userSelectedList.push(newSelectedUser);
-      this.userSelectedList.sort((a, b) => {
-        if (a.fullName && b && b.fullName) {
-          return a.fullName > b.fullName ? 1 : -1;
-        } else {
-          return 0;
-        }
-      })
+      this.userSelectedList = UserManagement.sortUsersByFullName(this.userSelectedList);
       this.searchString = "";
-      this.searchObj.alreadyInvited = false;
-      this.searchObj.searchResults = [];
-      this.searchObj.noResults = false;
-      this.searchObj.isLoading = false;
+      this.searchObj = UserManagement.resetSearchObj();
     } else {
       this.searchObj.alreadyInvited = true;
     }
@@ -301,10 +280,7 @@ export default class InviteMembersModal extends Vue {
    */
   async onCancel(): Promise<void> {
     this.searchString = "";
-    this.searchObj.alreadyInvited = false;
-    this.searchObj.searchResults = [];
-    this.searchObj.noResults = false;
-    this.searchObj.isLoading = false;
+    this.searchObj = UserManagement.resetSearchObj();
     await UserManagement.triggerAbort();    
   }
 
