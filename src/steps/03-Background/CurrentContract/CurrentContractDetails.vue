@@ -443,7 +443,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       }
     } catch (error) {
       this.saveOnLeaveError = error as string;
-       console.log(error);
+      console.log(error);
     }
     return true;
   }
