@@ -344,7 +344,7 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
     }
   }
 
-  private doesCurrentEnvironmentExist(): boolean {
+  public doesCurrentEnvironmentExist(): boolean {
     return (CurrentEnvironment.currentEnvironment
       ? CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" : false)
   }
