@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: "jsdom",
 
   // Indicates whether the coverage information should be collected while executing the test
-  collectCoverage: true,
+  collectCoverage: false,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [ 
