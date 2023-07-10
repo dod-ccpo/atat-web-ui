@@ -3,7 +3,7 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
-          <h1 class="mb-3">
+          <h1 class="page-header mb-3">
             Let’s work on your justification for this exception to fair opportunity
           </h1>
           <p>
