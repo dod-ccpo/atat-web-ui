@@ -167,7 +167,6 @@ export default class ContributorInviteModal extends UserSearch {
         users2: this.alreadyInvitedUsers
       }
     );
-    debugger;
 
     if (newSelectedUser && !isAlreadyListed) {
       this.userSelectedList.push(newSelectedUser);
