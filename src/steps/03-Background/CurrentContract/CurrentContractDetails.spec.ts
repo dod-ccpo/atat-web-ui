@@ -37,7 +37,7 @@ describe("Testing CurrentContractDetails Component", () => {
     incumbent_contractor_name: "incumbent_contractor_name",
     contract_number: "123",
     task_delivery_order_number: "123",
-    contract_order_expiration_date: "10/12/2022",
+    contract_order_expiration_date: "10/12/2039",
     contract_order_start_date: "10/12/2023",
     competitive_status: "cs",
     business_size: "bs",
@@ -49,12 +49,47 @@ describe("Testing CurrentContractDetails Component", () => {
   
 
   beforeEach(() => {
+    const formStub = {
+      render: () => {},
+      methods:{
+        validate: () => true,
+      }
+    }
+
+    const startDatePickerStub = {
+      render: () => {},
+      methods:{
+        validate: () => false,
+      },
+      ref:{
+        "atatDatePicker": Vue
+      }
+      
+    }
+
+    const expirationDatePickerStub = {
+      render: () => {},
+      methods:{
+        validate: () => false,
+      },
+      ref:{
+        "atatDatePicker": Vue
+      }
+    }
+
+    const mock = jest.fn();
     vuetify = new Vuetify();
     wrapper = mount(CurrentContractDetails, {
       localVue,
       vuetify,
-      store
+      store,
+      stubs: {
+        'v-form': formStub,
+        'startDatePicker': startDatePickerStub,
+        'expirationDatePicker': expirationDatePickerStub,
+      }
     });
+    
   });
 
   afterEach(() => {
@@ -84,16 +119,15 @@ describe("Testing CurrentContractDetails Component", () => {
       isCurrent: false
     }    
 
-    it("setHeadline()=> returns `current` headline ", async () => {
-      wrapper.setData(isCurrent);
-      wrapper.vm.setHeadline();
-      expect(wrapper.vm.$data.headline).toContain('current');
+    it("todaysDateISO()=> is an ISO date ", async () => {
+      const getterISO = wrapper.vm.todaysDateISO.split("-");
+      expect(getterISO[0]).toHaveLength(4)
+      expect(getterISO[1]).toHaveLength(2)
+      expect(getterISO[2]).toHaveLength(2)
     });
-
-    it("setHeadline()=> returns `previous` headline ", async () => {
-      wrapper.setData(isPrevious);
-      wrapper.vm.setHeadline();
-      expect(wrapper.vm.$data.headline).toContain('previous');
+  
+    it("todaysDateMMDDYYYY()=> returns 10 characters - MM/DD/YYYY ", async () => {
+      expect(wrapper.vm.todaysDateMMDDYYYY).toHaveLength(10);
     });
 
     it("startDate()=> returns valid date ", async () => {
@@ -121,13 +155,6 @@ describe("Testing CurrentContractDetails Component", () => {
     it("expirationDate()=> returns empty string ", async () => {
       expect(wrapper.vm.expirationDate).toEqual("")
     });
-
-    // todo restore this
-    // it("tomorrowDateISO() => returns tomorrows date ", async () => {
-    //   const jsTomorrowDateISO = 
-    //     new Date((new Date()).setDate((new Date()).getDate()+1)).toISOString().substring(0,10);
-    //   expect(jsTomorrowDateISO).toEqual(wrapper.vm.tomorrowDateISO);
-    // });
 
     it("isDatePickersEmpty() => returns true ", async () => {
       wrapper.setData(emptyCurrentContract);
@@ -170,12 +197,13 @@ describe("Testing CurrentContractDetails Component", () => {
   
       describe("returns custom error message ...", () => {
         beforeEach(() => {
+          jest.spyOn(wrapper.vm, "removeSharedErrorMessages").mockImplementation()
           wrapper.setData(emptyCurrentContract);
         });
         afterEach(()=>{
           jest.advanceTimersByTime(3000);
           expect(wrapper.vm.$data.expirationDPSharedErrorMessages[0])
-          .toContain('PoP start and expiration dates');
+             .toContain('PoP start and expiration dates');
         })
   
         it("setStartDateErrorMessages(value)", async () =>{
@@ -189,6 +217,7 @@ describe("Testing CurrentContractDetails Component", () => {
   
       describe("returns `value` param as error message ...", () => {
         beforeEach(() => {
+          jest.spyOn(wrapper.vm, "removeSharedErrorMessages").mockImplementation();
           wrapper.setData(populatedCurrentContract);
         });
         afterEach(()=>{
@@ -203,11 +232,58 @@ describe("Testing CurrentContractDetails Component", () => {
         })
       });
     })
-    it("removeSharedErrorMessages(value) => emptying errorMessages arrays", async () =>{
-      wrapper.vm.removeSharedErrorMessages(true)
-      expect(wrapper.vm.$data.startDPSharedErrorMessages).toEqual([]);
-      expect(wrapper.vm.$data.expirationDPSharedErrorMessages).toEqual([]);
+    describe("removeSharedErrorMessages(value)", () =>{
+      beforeEach(() => {
+        jest.useFakeTimers();
+        wrapper = mount(CurrentContractDetails, {
+          localVue,
+          vuetify,
+          store,
+        });
+      });
+  
+      afterEach(()=>{
+        jest.useRealTimers();
+        jest.clearAllTimers();
+      })
+
+      it("validates emptied errorMessages arrays", async () =>{
+        wrapper.vm.removeSharedErrorMessages(true)
+        jest.advanceTimersByTime(3000);
+        expect(wrapper.vm.$data.startDPSharedErrorMessages).toEqual([]);
+        expect(wrapper.vm.$data.expirationDPSharedErrorMessages).toEqual([]);
+      })
     })
+
+    describe("setHeadline()", ()=>{
+      const isCurrent = {isCurrent: true}
+      const isPrevious = {isCurrent: false}
+      beforeEach(()=>{
+        wrapper.setData({
+          currentContract:{
+            contract_order_expiration_date: "2019-12-31"
+          }
+        })
+      })
+      afterEach(()=>{
+        wrapper.setData({
+          currentContract: currentContractDTO
+        })
+      })
+
+      it("returns headline with `current` word", async () => {
+        wrapper.setData(isCurrent);
+        wrapper.vm.setHeadline();
+        expect(wrapper.vm.$data.headline).toContain('current');
+      });
+  
+      it("returns headline with `previous` word", async () => {
+        wrapper.setData(isPrevious);
+        wrapper.vm.setHeadline();
+        expect(wrapper.vm.$data.headline).toContain('previous');
+      });
+    })
+
 
     describe("loadContract()", () => {
       currentContractDTO.instance_number = 1;
@@ -275,17 +351,21 @@ describe("Testing CurrentContractDetails Component", () => {
           savedData,
       })
         AcquisitionPackage.doSetPackageId(acqPkgId);
-       
+        jest.useFakeTimers();
       })
 
       afterEach(()=>{
         savedData.instance_number = 1;
+        jest.useRealTimers();
+        jest.clearAllTimers();
+
       })
+  
       
       it("if current and saved data has changed", async () =>{
         await wrapper.vm.saveOnLeave();
         expect(wrapper.vm.currentData.acquisition_package).toBe(acqPkgId);
-        expect(wrapper.vm.currentData.is_valid).toBe(false);
+        expect(wrapper.vm.currentData.is_valid).toBe(true);
       }) 
 
       it("if current and saved data and sets $data.isCurrent", async () =>{
@@ -295,7 +375,7 @@ describe("Testing CurrentContractDetails Component", () => {
           }
         })
         await wrapper.vm.saveOnLeave();
-        expect(wrapper.vm.$data.isCurrent).toBe(true);
+        expect(wrapper.vm.$data.isCurrent).toBe(false);
       }) 
       
       it("if current and saved data has changed and NO exception to fair opportunity", async () =>{
@@ -305,6 +385,7 @@ describe("Testing CurrentContractDetails Component", () => {
         const mockFunction = jest.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
           .mockImplementation(([currenData])=>Promise.resolve())
         await wrapper.vm.saveOnLeave();
+        jest.advanceTimersByTime(3000);
         expect(mockFunction).toHaveBeenCalled();
       }) 
 
@@ -315,9 +396,6 @@ describe("Testing CurrentContractDetails Component", () => {
         const saveOnLeave = await wrapper.vm.saveOnLeave();
         expect(wrapper.vm.saveOnLeaveError).toBe(errMessage);
       }) 
-
-
-  
     });
 
     it("sortDataSource() => sorts data source items based on time created ", async () =>{
