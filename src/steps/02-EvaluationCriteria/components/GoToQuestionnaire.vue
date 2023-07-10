@@ -6,10 +6,9 @@
     </template>
     <template v-slot:content>
       <p class="copy-max-width">
-        Although you previously wrote a custom explanation, DAPPS can provide suggested
-        language for {{ forWhat }}, based on your responses
-        to a short questionnaire. You’ll be able to edit to our suggestion to meet your
-        requirements, or choose to restore your custom explanation.
+        DAPPS can provide suggested language for {{ forWhat }},
+        based on your responses to a short questionnaire. You’ll be able to edit our
+        suggestion to meet your requirements, if needed.
       </p>
       <v-btn
         class="secondary font-size-14 px-3 mb-1 mt-1"
