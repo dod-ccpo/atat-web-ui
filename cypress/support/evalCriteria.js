@@ -6,31 +6,38 @@ import fo from "../selectors/fairOpportunityProcess.sel";
 import ep from "../selectors/evaluationPlan.sel";
 
 
-Cypress.Commands.add("selectFairOppRadioOption", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(fo.fairOppRadioActiveBtn)
-    .then(($radioBtn) => {
-      const selectedOption = $radioBtn.text();
-      cy.log(selectedOption);       
-      const optionSelectedText = "radio_button_checkedNone" +
-        " of these exceptions apply to this acquisition."; 
-      if (selectedOption != optionSelectedText) {
-        cy.findElement("#JandAMMRWarningAlert").should("exist")
-      }      
-      cy.btnClick(common.continueBtn, " Continue ");
-      if (selectedOption === optionSelectedText) {
-        cy.wait(1000)
-        cy.textExists(common.header,"Let’s work on an evaluation plan for your requirement");
-      } else {
-        cy.wait(1000)        
-        cy.textExists(
-          common.header,
-          "Based on what you told us, you do not need an evaluation plan for this acquisition."
-        );
-      }
+
+Cypress.Commands.add("goToECStep",(pt, scope)=>{
+  cy.goToAcqPackageStepOne(pt, scope)
+  cy.clickSideStepper(common.stepEvaluationCriteriaLink ," Evaluation Criteria ");
+  cy.activeStep(common.stepEvaluationCriteriaText);
+  cy.verifyPageHeader(
+      "Let’s see if you qualify for an exception to fair opportunity"
+  );    
+  });
+
+  Cypress.Commands.add("selectFairOppRadioOption", (radioSelector, value) => {
+    cy.radioBtn(radioSelector, value).click({ force: true });
+    cy.findElement(fo.fairOppRadioActiveBtn)
+      .then(($radioBtn) => {
+        const selectedOption =cleanText($radioBtn.text());
+        cy.log(selectedOption); 
+        cy.btnClick(common.continueBtn, " Continue ");
+        cy.waitUntilElementIsGone(fo.radioOneCSP);              
+        const optionSelectedText = "radio_button_checkedNone of these exceptions apply to this acquisition."      
+        if (selectedOption === optionSelectedText) {
+            cy.verifyPageHeader("Let’s work on an evaluation plan for your requirement");
+        } else {
+          cy.verifyPageHeader("Which CSP does this exception to fair opportunity apply to?")
+        }
+        
+      });  
       
-    })  
-  
+  });
+
+Cypress.Commands.add("selectNoneOption", (pt, scope) => {
+  cy.goToECStep(pt, scope);  
+  cy.selectFairOppRadioOption(fo.radioNoneApply, "NO_NONE");    
 });
 
 Cypress.Commands.add("selectEvaluationPlanOption", (radioSelector, value) => {
@@ -103,8 +110,8 @@ Cypress.Commands.add("selectMethodSelectionSectionOption", (radioSelector, value
         } else {
           cy.verifyTextMatches(
             ep.techPropAlertSubHeader,
-            "Award will be made to the CSP providing the best value and meets the following" +
-            " compliance standards:"
+            "Award will be made to the Contractor providing the best value "+
+            "and meets the following compliance standards:"
           );
         }
       } else if (selectedOption === bestUse || selectedOption === lowestRisk) {
@@ -114,20 +121,21 @@ Cypress.Commands.add("selectMethodSelectionSectionOption", (radioSelector, value
         if (selectedOption === bestUse) {
           cy.verifyTextMatches(
             ep.techPropAlertSubHeader,
-            "Award will be made to the CSP whose white paper offers the “best use” solution" +
-            " and meets the following assessment areas:"
+            "Award will be made to the Contractor whose white paper offers"+
+            " the “best use” solution and meets the following assessment areas:"
           );
         } else {
           cy.verifyTextMatches(
             ep.techPropAlertSubHeader,
-            "Award will be made to the CSP whose white paper offers the “lowest risk” solution" +
-            " and meets the following assessment areas:"
+            "Award will be made to the Contractor whose white paper offers"+
+            " the “lowest risk” solution and meets the following assessment areas:"
           );
         }
       }
         
     });
 });
+
 
 Cypress.Commands.add("selectCustomStandardsRadioOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
@@ -169,16 +177,15 @@ Cypress.Commands.add("customSpecExists", () => {
 });
 
 Cypress.Commands.add("selectCustomAssessmentCheckboxOption", () => {
-  cy.checkBoxOption(ep.customAssessmentCheckBox, "CustomAssessment").click({ force: true })
+  cy.findElement(ep.customAssessmentCheckBox).click({ force: true })
     .then(() => {
       cy.findElement(ep.customSpecSection).should("exist");
       cy.findElement(ep.custom0SpecTextbox).should("be.visible").and("be.empty"); 
     })  
   
 });
-
-Cypress.Commands.add("selectOtherCheckboxOption", (checkBoxSelector,value,selector) => {
-  cy.checkBoxOption(checkBoxSelector,value ).click({ force: true })
+Cypress.Commands.add("selectOtherCheckboxOption", (checkBoxSelector,selector) => {
+  cy.findElement(checkBoxSelector).click({ force: true })
     .then(() => {
       cy.findElement(selector).should("exist");       
     })  

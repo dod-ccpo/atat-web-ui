@@ -12,7 +12,7 @@
             :id="getIdText(item.title) + '_Heading'">
               {{ item.title }}
             </h3>
-            <p class="mb-0" 
+            <p class="mb-0" :id="getIdText(item.title) + '_Description'" 
               v-html="item.description">
             </p>
           </div>
@@ -20,12 +20,13 @@
             <div class="d-flex align-center">
               <div 
                 v-if="item.isTouched && !item.isComplete" 
+                :id="getIdText(item.title) + '_MissingInfoLabel'" 
                 class="d-flex align-start nowrap ml-5">
                   <v-icon class="icon-20 text-warning-dark2 pr-2">warning</v-icon>
                   <p class="_missing-info mb-0 pr-4 _semibold">Missing info</p>
               </div>
               <v-btn width="111" 
-                :id="getIdText('MissingInfo_' + item.title)" 
+                :id="getButtonId(item)"
                 :class="[
                   item.isComplete ? 'secondary' : 'primary',
                 ]"
@@ -56,6 +57,18 @@ export default class ATATSummaryItem extends Vue {
   
   public getIdText(id: string): string{
     return getIdText(id);
+  }
+
+  public getButtonId(item:SummaryItem): string {
+    let buttonClass = "";
+    if (item.isComplete){
+      buttonClass = "_CompleteButton"
+    } else if (item.isTouched) {
+      buttonClass = "_MissingInfoButton"
+    } else if (!item.isTouched && !item.isComplete){
+      buttonClass = "_StartButton"
+    }
+    return this.getIdText(item.title) + buttonClass
   }
 
   public async navigate(routeName: string): Promise<void>{
