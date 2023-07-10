@@ -3,7 +3,11 @@
     v-if="show"
     :role="role"
     class="_atat-alert"
-    :class="getClasses"
+    :class="[
+      getClasses, 
+      { '_has-expandable-header' : getHasExpandableHeader },
+      { '_expandable-header-is-closed ' : getExpandableHeaderIsOpen }
+    ]"
     :id="id"
     :style="[{ 'max-width': maxWidth + 'px' }, { 'min-width' : minWidth + 'px' }]"
   >
@@ -87,6 +91,15 @@ export default class ATATAlert extends Vue {
   @Prop({default: ""}) private maxWidth?: string;
   @Prop({default: ""}) private minWidth?: string;
   @Prop({default: true}) private showIcon?: boolean;
+  @Prop() public hasExpandableHeader?: boolean;
+  @Prop() public expandableHeaderIsOpen?: boolean;
+
+  public get getHasExpandableHeader(): boolean {
+    return this.hasExpandableHeader || false;
+  }
+  public get getExpandableHeaderIsOpen(): boolean {
+    return this.expandableHeaderIsOpen || false;
+  }
 
   /**
    * type: 1) info (primary), 2) error, 3) warning, 4) success, 5) callout
