@@ -607,7 +607,8 @@ export class PortfolioDataStore extends VuexModule {
           fullName: userSearchDTO.name,
           email: userSearchDTO.email,
           phoneNumber: userSearchDTO.phone,
-          agency: userSearchDTO.company
+          agency: userSearchDTO.company,
+          title: userSearchDTO.title,
         }
       })
     portfolio.portfolio_managers_detail = [];

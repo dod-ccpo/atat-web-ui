@@ -62,7 +62,7 @@
                 class="pointer">
                 <v-list-item-content>
                   <v-list-item-title class="font-weight-bolder font-size-16">
-                    {{ user.firstName }} {{ user.lastName}}
+                    {{ user.firstName }} {{ user.lastName}}{{ user.title}} {{ user.agency}}
                   </v-list-item-title>
                   <v-list-item-subtitle class="font-size-14">
                     {{ user.email }}
@@ -84,24 +84,24 @@
         <v-list>
           <v-list-item
               class="_search-results-list"
-              v-for="(member, index) in userSelectedList" :key="member.sys_id">
+              v-for="(user, index) in userSelectedList" :key="user.sys_id">
             <v-list-item-content>
               <v-list-item-title class="font-weight-bolder font-size-16">
-                    {{ user.firstName }} {{ user.lastName}}
+                {{ user.firstName }} {{ user.lastName}}{{ user.title}}  {{ user.agency}}
               </v-list-item-title>
               <v-list-item-subtitle class="font-size-14">
-                    {{ user.email }}
+                {{ user.email }}
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
               <ATATSelect
-                  :id="'Role' + index"
-                  class="_small _alt-style-clean _invite-members-modal align-self-end"
-                  :items="memberMenuItems"
-                  width="105"
-                  :selectedValue.sync="member.role"
-                  @onChange="(value)=>dropdownChanged(value, index)"
-                  iconType="chevron"
+                :id="'Role' + index"
+                class="_small _alt-style-clean _invite-members-modal align-self-end"
+                :items="memberMenuItems"
+                width="105"
+                :selectedValue.sync="user.role"
+                @onChange="(value)=>dropdownChanged(value, index)"
+                iconType="chevron"
               />
             </v-list-item-action>
           </v-list-item>
@@ -243,6 +243,7 @@ export default class InviteMembersModal extends Vue {
           email: userSearchDTO.email,
           phoneNumber: userSearchDTO.phone,
           agency: userSearchDTO.company ? "(" + userSearchDTO.company + ")" : "",
+          title: userSearchDTO.title ? ", " + userSearchDTO.title : "",
         }
       });
   
@@ -267,16 +268,19 @@ export default class InviteMembersModal extends Vue {
    * Then clears the search string and makes a function call out to clear the search results
    */
   onUserSelection(newSelectedUser: User): void {
-    debugger;
-    if(newSelectedUser && !this.userSelectedList.find(selectedUser =>
-      selectedUser.sys_id === newSelectedUser.sys_id) &&
-        !this.portfolioData?.members?.find(currentMember =>
-          currentMember.sys_id === newSelectedUser.sys_id)) {
+    const isAlreadySelected = this.userSelectedList.find(
+      selectedUser => selectedUser.sys_id === newSelectedUser.sys_id
+    );
+    const isCurrentMember = this.portfolioData?.members?.find(
+      currentMember => currentMember.sys_id === newSelectedUser.sys_id
+    )
+
+    if(newSelectedUser && !isAlreadySelected && !isCurrentMember) {
       this.searchObj.alreadyInvited = false;
       newSelectedUser.role = "Viewer"; // defaults to viewer
       this.userSelectedList.push(newSelectedUser);
       this.userSelectedList.sort((a, b) => {
-        if (a.fullName && b.fullName) {
+        if (a.fullName && b && b.fullName) {
           return a.fullName > b.fullName ? 1 : -1;
         } else {
           return 0;

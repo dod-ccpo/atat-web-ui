@@ -946,6 +946,7 @@ export interface UserSearchResultDTO extends BaseTableDTO {
   email?: string;
   phone?: string;
   company?: string;
+  title?: string;
 }
 
 export interface OperatorDTO extends BaseTableDTO{

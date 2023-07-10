@@ -54,7 +54,7 @@
               >
                 <v-list-item-content>
                   <v-list-item-title class="font-weight-bolder font-size-16">
-                    {{ user.firstName }} {{ user.lastName}} {{ user.agency }}
+                    {{ user.firstName }} {{ user.lastName}}{{ user.title}} {{ user.agency }}
                   </v-list-item-title>
                   <v-list-item-subtitle class="font-size-14">
                     {{ user.email }}
@@ -90,7 +90,7 @@
           >
             <v-list-item-content>
               <v-list-item-title class="font-weight-bolder font-size-16">
-                {{ user.firstName }} {{ user.lastName }} {{ user.agency }}
+                {{ user.firstName }} {{ user.lastName }}{{ user.title}} {{ user.agency }}
               </v-list-item-title>
               <v-list-item-subtitle class="font-size-14">
                 {{ user.email }}
@@ -232,6 +232,7 @@ export default class ContributorInviteModal extends Vue {
           email: userSearchDTO.email,
           phoneNumber: userSearchDTO.phone,
           agency: userSearchDTO.company ? "(" + userSearchDTO.company + ")" : "",
+          title: userSearchDTO.title ? ", " + userSearchDTO.title : "",
         }
       });
   

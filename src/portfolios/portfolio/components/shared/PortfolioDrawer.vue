@@ -291,8 +291,7 @@ export default class PortfolioDrawer extends Vue {
   public updateTime = "";
   public csp = "";
   
-  public currentUserIsManager = true; // ATAT TODO - get if manager from roles
-
+  public currentUserIsManager = false; 
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
@@ -302,8 +301,12 @@ export default class PortfolioDrawer extends Vue {
     return CurrentUserStore.getCurrentUserData;
   }
   @Watch("currentUser")
-  public currentUserChange(): void {
-    // ATAT TODO - get if current user is manager -- set this.currentUserIsManager
+  public currentUserChange(newVal: UserDTO): void {
+    const currentUserSysId = newVal.sys_id;
+    const currentUserMember = this.portfolioMembers.find(obj => obj.sys_id === currentUserSysId);
+    if (currentUserMember && currentUserMember.role === "Manager") {
+      this.currentUserIsManager = true;
+    }
   }  
 
   public get cspKey(): string {
@@ -403,6 +406,7 @@ export default class PortfolioDrawer extends Vue {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
       this.portfolioMembers = storeData.members || [];
+      
       if (storeData.status) {
         const statusKey = this.getStatusKey(storeData.status);
         this.portfolioStatus = storeData.status 
@@ -489,7 +493,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public get managerCount(): number {
-    const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager")
+    const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager");
     return managers.length;
   }
 
