@@ -38,20 +38,14 @@ describe("Testing ProcurementHistorySummary Component", () => {
   });
 
   describe("Testing GETTERS", () => {
-    const localVue = createLocalVue();
-    let vuetify: Vuetify;
-    let wrapper: Wrapper<DefaultProps & Vue>;
-  
     beforeEach(() => {
-      vuetify = new Vuetify();
-      wrapper = mount(ProcurementHistorySummary, {
-        localVue,
-        vuetify,
-      });
+     wrapper.setData(
+      {dataSource: [currentContractDTO]}
+     )
     });
   
-    it("hasContractData()=> returns true", async () => {
-      expect(wrapper.exists()).toBe(true);
+    it("hasContractData() => returns boolean", async () => {
+      expect(wrapper.vm.hasContractData).toBe(true);
     });
   
    });
