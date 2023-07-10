@@ -926,6 +926,16 @@ export class DescriptionOfWorkStore extends VuexModule {
   reviewGroupFromSummary = false;
   addGroupFromSummary = false;
   isDOWComplete = false;
+  isDOWSummaryAlertOpen = true;
+  @Action
+  public setIsDOWSummaryAlertOpen(open: boolean): void {
+    this.doSetIsDOWSummaryAlertOpen(open);
+  }
+  @Mutation
+  public doSetIsDOWSummaryAlertOpen(open: boolean): void {
+    this.isDOWSummaryAlertOpen = open;
+  }
+
   @Action
   public async setIsDOWComplete(isComplete: boolean): Promise<void> {
     this.doSetIsDOWComplete(isComplete);

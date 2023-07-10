@@ -18,6 +18,22 @@
   &.open:after {
     transform: rotate(90deg);
   }
+
+  &._hoverable-in-alert {
+    margin: -16px -24px 0;
+    padding: 16px 24px;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    width: calc(100% + 48px) !important;
+
+    &:hover {
+      background-color: $primary-10;
+    }
+    
+    &.closed {
+      border-radius: 8px;
+    }
+  }
 }
 
 .v-expansion-panel-content__wrap {
