@@ -13,6 +13,15 @@ export interface UserSearchObj {
   alreadyInvited: boolean;
 }
 
+export const initialSearchObj = (): UserSearchObj => {
+  return {
+    alreadyInvited: false,
+    searchResults: [],
+    noResults: false,
+    isLoading: false,
+  }
+}
+
 /**
  * This module contains all the store and api support that is needed for searching the
  * user by various search parameters and across various use cases throughout the application.
@@ -26,6 +35,7 @@ export interface UserSearchObj {
 
 export class UserManagementStore extends VuexModule {
   public controller = new AbortController();
+  public initialSearchObj = initialSearchObj();
 
   @Action({rawError: true})
   public async triggerAbort(): Promise<void> {
@@ -58,7 +68,7 @@ export class UserManagementStore extends VuexModule {
   }
 
   @Action
-  public sortUsersByFullName(users: User[]): User[] {
+  public async sortUsersByFullName(users: User[]): Promise<User[]> {
     users.sort((a, b) => {
       if (a.fullName && b.fullName) {
         return a.fullName > b.fullName ? 1 : -1;
@@ -70,20 +80,19 @@ export class UserManagementStore extends VuexModule {
   }
 
   @Action
-  public resetSearchObj(): UserSearchObj {
-    return {
-      alreadyInvited: false,
-      searchResults: [],
-      noResults: false,
-      isLoading: false,
-    }
+  public async resetSearchObj(): Promise<UserSearchObj> {
+    return initialSearchObj();
   }
 
   @Action
-  public isAlreadyListed(sysId: string, selectedUsers: User[], currentUsers: User[]): boolean {
-    const isAlreadySelected = selectedUsers.find(usr => usr.sys_id === sysId);
-    const isCurrentMember = currentUsers.find(usr => usr.sys_id === sysId);
-    return isAlreadySelected !== undefined || isCurrentMember !== undefined;
+  public async isAlreadyListed(
+    data: {
+      sysId: string, users1: User[], users2: User[]
+    }
+  ): Promise<boolean> {
+    const found1 = data.users1.find(usr => usr.sys_id === data.sysId);
+    const found2 = data.users2.find(usr => usr.sys_id === data.sysId);
+    return found1 !== undefined || found2 !== undefined;
   }
 
 }

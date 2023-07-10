@@ -152,7 +152,7 @@ export default class ContributorInviteModal extends Vue {
   @PropSync("showInviteModal") public _showInviteModal?: boolean;
 
   public searchString = "";
-  public searchObj: UserSearchObj = UserManagement.resetSearchObj();
+  public searchObj: UserSearchObj = _.cloneDeep(UserManagement.initialSearchObj);
 
   public isSearching = false;
 
@@ -248,20 +248,26 @@ export default class ContributorInviteModal extends Vue {
    * the new selection list or the current user list.
    * Then clears the search string and makes a function call out to clear the search results
    */
-  public onUserSelection(newSelectedUser: User): void {
+  public async onUserSelection(newSelectedUser: User): Promise<void> {
     const isAlreadyListed = UserManagement.isAlreadyListed(
-      newSelectedUser.sys_id as string, this.userSelectedList, this.alreadyInvitedUsers
+      {
+        sysId: newSelectedUser.sys_id as string, 
+        users1: this.userSelectedList, 
+        users2: this.alreadyInvitedUsers
+      }
     );
 
     if (newSelectedUser && !isAlreadyListed) {
       this.userSelectedList.push(newSelectedUser);
-      this.userSelectedList = UserManagement.sortUsersByFullName(this.userSelectedList);
+      this.userSelectedList = await UserManagement.sortUsersByFullName(this.userSelectedList);
       this.searchString = "";
-      this.searchObj = UserManagement.resetSearchObj();
+      this.searchObj = await UserManagement.resetSearchObj();
     } else {
       this.searchObj.alreadyInvited = true;
+      this.searchObj.searchResults = this.searchObj.searchResults.filter(
+        s => s.sys_id === newSelectedUser.sys_id
+      );
     }
-
   }
 
   /**
@@ -269,7 +275,7 @@ export default class ContributorInviteModal extends Vue {
    */
   public async onCancel(): Promise<void> {
     this.searchString = "";
-    this.searchObj = UserManagement.resetSearchObj();
+    this.searchObj = await UserManagement.resetSearchObj();
     await UserManagement.triggerAbort();    
   }
 

@@ -649,7 +649,8 @@ export class PortfolioDataStore extends VuexModule {
       fullName: user.name,
       email: user.email,
       phoneNumber: user.phone,
-      agency: user.company
+      agency: user.company,
+      title: user.title,
     }
   }
 

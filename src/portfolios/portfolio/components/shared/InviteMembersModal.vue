@@ -36,10 +36,7 @@
           placeholder="Search by name or email address"
           autocomplete="off"
         />
-          <!-- @click:clear="onUserSearchValueChange('');searchObj.alreadyInvited=false" -->
 
-          <!-- @keyup="onUserSearchValueChange(searchObj.value);searchObj.noResults=false;
-          searchObj.alreadyInvited=false" -->
         <v-progress-circular v-show="searchObj.isLoading"
           indeterminate
           color="#544496"
@@ -122,7 +119,6 @@ import AddMembersModalLearnMore from "./AddMembersModalLearnMore.vue"
 import {
   Portfolio,
   SelectData,
-  ToastObj,
   User
 } from "../../../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
@@ -150,7 +146,7 @@ export default class InviteMembersModal extends Vue {
   public projectTitle = "";
 
   public searchString = "";
-  public searchObj: UserSearchObj = UserManagement.resetSearchObj();
+  public searchObj: UserSearchObj = _.cloneDeep(UserManagement.initialSearchObj);
 
   public isSearching = false;
   public memberMenuItems: SelectData[] = [
@@ -162,13 +158,6 @@ export default class InviteMembersModal extends Vue {
   ];
   public userSelectedList: User[] = [];
   public modalSlideoutComponent = AddMembersModalLearnMore;
-  public membersInvitedToast: ToastObj = {
-    type: "success",
-    message: "",
-    isOpen: true,
-    hasUndo: false,
-    hasIcon: true,
-  };
 
   private modalDrawerIsOpen = false;
 
@@ -246,7 +235,7 @@ export default class InviteMembersModal extends Vue {
       this.isSearching = false;
     } else {
       await UserManagement.triggerAbort();
-      this.searchObj = UserManagement.resetSearchObj();       
+      this.searchObj = await UserManagement.resetSearchObj();       
       this.isSearching = false;
       if (searchStr) {
         await this.onUserSearchValueChange(searchStr);
@@ -259,19 +248,27 @@ export default class InviteMembersModal extends Vue {
    * the new selection list or the current member list.
    * Then clears the search string and makes a function call out to clear the search results
    */
-  onUserSelection(newSelectedUser: User): void {
-    const isAlreadyListed = UserManagement.isAlreadyListed(
-      newSelectedUser.sys_id as string, this.userSelectedList, this.portfolioData?.members || []
+  public async onUserSelection(newSelectedUser: User): Promise<void> {
+    const isAlreadyListed = await UserManagement.isAlreadyListed(
+      {
+        sysId: newSelectedUser.sys_id as string, 
+        users1: this.userSelectedList, 
+        users2: this.portfolioData?.members || []
+      }
     );
 
     if (newSelectedUser && !isAlreadyListed) {
       newSelectedUser.role = "Viewer"; // defaults to viewer
       this.userSelectedList.push(newSelectedUser);
-      this.userSelectedList = UserManagement.sortUsersByFullName(this.userSelectedList);
+      this.userSelectedList = await UserManagement.sortUsersByFullName(this.userSelectedList);
       this.searchString = "";
-      this.searchObj = UserManagement.resetSearchObj();
+      this.searchObj = await UserManagement.resetSearchObj();
     } else {
       this.searchObj.alreadyInvited = true;
+      this.searchObj.searchResults = this.searchObj.searchResults.filter(
+        s => s.sys_id === newSelectedUser.sys_id
+      );
+
     }
   }
 
@@ -280,7 +277,7 @@ export default class InviteMembersModal extends Vue {
    */
   async onCancel(): Promise<void> {
     this.searchString = "";
-    this.searchObj = UserManagement.resetSearchObj();
+    this.searchObj = await UserManagement.resetSearchObj();
     await UserManagement.triggerAbort();    
   }
 
@@ -304,6 +301,7 @@ export default class InviteMembersModal extends Vue {
       (selectedUser.role === "Manager") || (selectedUser.role === "Viewer"))
     if (userSelectedNotRemovedList.length > 0) {
       await portfolio.inviteMembers(userSelectedNotRemovedList);
+      this.$emit("membersInvited");
     }
   }
 

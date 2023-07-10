@@ -208,7 +208,7 @@
 
     <InviteMembersModal
         :showModal.sync="showMembersModal"
-        @members-invited="membersInvited"
+        @membersInvited="membersInvited"
     />
 
     <ATATDialog
@@ -328,6 +328,14 @@ export default class PortfolioDrawer extends Vue {
     hasIcon: true,
   };
 
+  public membersInvitedToast: ToastObj = {
+    type: "success",
+    message: "Members invited",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  };
+
   public memberMenuItems: SelectData[] = [
     { header: "Roles" },
     { text: "Manager", value: "Manager" },
@@ -423,6 +431,7 @@ export default class PortfolioDrawer extends Vue {
   public async membersInvited(): Promise<void> {
     // update "Portfolio members" in side panel when invited from modal
     await this.loadPortfolio();
+    Toast.setToast(this.membersInvitedToast);
   }
 
   public displayName(member: User): string {
