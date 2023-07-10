@@ -36,7 +36,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
   let selectLevel4 = "Yes";
   let selectLevel5 = "No";
   let selectLevel6 = "Yes";
-  let selectTopSecret = "Yes";
+  let selectTS = "Yes";
 
   let cdsOption = "Yes";
   const fs = "TestFS - " + randomAlphaNumeric(3);
