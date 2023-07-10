@@ -2514,6 +2514,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await EvaluationPlan.reset();
     Steps.clearAltBackButtonText();
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
+    DescriptionOfWork.setIsDOWSummaryAlertOpen(true);
 
     this.doReset();
   }
