@@ -35,6 +35,19 @@ Cypress.Commands.add("goToECStep",(pt, scope)=>{
       
   });
 
+  Cypress.Commands.add("selectCSPSelctionOption", (btnSelector) => {
+    cy.findElement(btnSelector).click().then(($btnselected) => {
+      const selectedCSPCard = cleanText($btnselected.text());
+      cy.log(selectedCSPCard);
+      cy.clickContinueButton(
+        btnSelector,
+        "Let’s work on your justification for this exception to fair opportunity"
+      );
+  
+    });  
+  
+  });
+
 Cypress.Commands.add("selectNoneOption", (pt, scope) => {
   cy.goToECStep(pt, scope);  
   cy.selectFairOppRadioOption(fo.radioNoneApply, "NO_NONE");    
@@ -77,6 +90,46 @@ Cypress.Commands.add("selectEvaluationPlanOption", (radioSelector, value) => {
       }
     })
 })
+Cypress.Commands.add("messageForFairOppRadioOptions", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  });
+  cy.findElement(fo.fairOppRadioActiveBtn)
+    .then(($radioBtn) => {
+      const selectedOption = cleanText($radioBtn.text());
+      cy.log(selectedOption);
+      const radioOneCSP = "radio_button_checkedOnly one CSP is capable of providing" +
+        " the supplies or services required at the level of quality required because" +
+        " the supplies or services ordered are unique or highly specialized." +
+        " FAR 16.505(b)(2)(i)(B)";
+      const radioAllFair = "radio_button_checkedThe order must be issued on a" +
+        " sole-source basis in the interest of economy and efficiency because" +
+        " it is a logical follow-on to an order already issued under the contract," +
+        " provided that all awardees were given a fair opportunity to be considered" +
+        " for the original order. FAR 16.505(b)(2)(i)(C)";
+      const radioUrgent = "radio_button_checkedThe agency need for supplies or" +
+        " services is so urgent that providing a fair opportunity would result" +
+        " in unacceptable delays. FAR 16.505(b)(2)(i)(A)" +
+        " NOTE: This is an uncommon exception.";
+
+      const radioNoneApply = "radio_button_checkedNone" +
+        " of these exceptions apply to this acquisition.";
+      if (selectedOption === radioNoneApply) {
+        cy.findElement(fo.alertNone).should("exist")
+          .and("have.length", "2");
+      } else if (selectedOption === radioOneCSP || radioAllFair || radioUrgent) {
+        cy.findElement(fo.alertJAandMRR).should("exist")
+          .and("contain", "Justification & Approval (J&A).")
+          .and("have.length", "1");
+        if (selectedOption === radioUrgent) {
+          cy.findElement(fo.alertNone).should("exist")
+            .and("have.length", "2");
+        }
+
+      }
+    });
+
+});
 
 Cypress.Commands.add("selectMethodSelectionSectionOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
@@ -191,3 +244,17 @@ Cypress.Commands.add("selectOtherCheckboxOption", (checkBoxSelector,selector) =>
     })  
   
 });
+Cypress.Commands.add("selectTimePeriodDropdown", (selIcon,selList,selInput,value) => {
+  cy.dropDownClick(selIcon);
+  cy.findElement(selList).click();
+  cy.enterTextInTextField(selInput,value)
+});
+Cypress.Commands.add("clickContentLink", ()=>{
+cy.findElement(fo.instructionLink).click().then(()=>{
+  cy.waitUntil(function () {
+      return Cypress.$(fo.instructionLink).attr("aria-expanded") == "true";
+  });
+  cy.findElement(fo.instructionContentText).should("be.visible");  
+
+})
+})
