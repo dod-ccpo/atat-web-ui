@@ -187,6 +187,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   public showDeleteInstanceDialog = false;
   public instanceToDelete: CurrentContractDTO = {};
   public dataSource:CurrentContractDTO[] = [];
+  private saveOnLeaveError: string| unknown = "";
 
   public formatContractDate(dt: string){
     return dt !== "" ? formatDate(dt, "MMDDYYYY"): "";
@@ -291,6 +292,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
       }
     } catch (error) {
       console.log(error);
+      this.saveOnLeaveError = error as string;
     }
     return true;
   }

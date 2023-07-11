@@ -1,11 +1,12 @@
+/* eslint-disable camelcase */
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import Vuetify from "vuetify";
 import { DefaultProps } from "vue/types/options";
 import Vue from "vue";
-import ProcurementHistorySummary from "@/steps/03-Background/CurrentContract/ProcurementHistorySummary.vue";
+import ProcurementHistorySummary 
+  from "@/steps/03-Background/CurrentContract/ProcurementHistorySummary.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CurrentContractDTO } from "@/api/models";
-import { resolveAny, Resolver } from "dns";
 
 const  dataSource:CurrentContractDTO[] =[{
   instance_number: 1,
@@ -111,7 +112,7 @@ describe("Testing ProcurementHistorySummary Component", () => {
       jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
         .mockImplementation(()=>Promise.resolve());
       jest.spyOn(wrapper.vm, "navigate")
-        .mockImplementation(()=>{});
+        .mockImplementation(()=>{/**nothing returned*/});
       await wrapper.vm.editInstance(dataSource[0]);
       expect(AcquisitionPackage.setCurrentContractInstanceNumber).toHaveBeenCalled();
       expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalled();
@@ -120,9 +121,9 @@ describe("Testing ProcurementHistorySummary Component", () => {
 
     it("addInstance() => ensure methods are called", async()=>{
       jest.spyOn(wrapper.vm, "initializeDataSource")
-        .mockImplementation(()=>{});
+        .mockImplementation(()=>{/**nothing returned*/});
       jest.spyOn(wrapper.vm, "navigate")
-        .mockImplementation(()=>{});
+        .mockImplementation(()=>{/**nothing returned*/});
       await wrapper.vm.addInstance();
       expect(wrapper.vm.initializeDataSource).toHaveBeenCalled();
       expect(wrapper.vm.navigate).toHaveBeenCalled();
@@ -149,7 +150,7 @@ describe("Testing ProcurementHistorySummary Component", () => {
         expect(wrapper.vm.dataSource[1].instance_number).toBe(1);
         expect(AcquisitionPackage.setCurrentContractInstanceNumber).toHaveBeenCalled();
         expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalled();
-    })
+      })
 
     it("resetDataSource() => returns initialized datasource", async()=>{
       jest.spyOn(AcquisitionPackage, "setCurrentContractInstanceNumber")
@@ -188,6 +189,14 @@ describe("Testing ProcurementHistorySummary Component", () => {
           wrapper.vm.$data.dataSource
         )
       });
+
+      it("mocks an error", async () => {
+        const errMessage = 'errMessage'
+        const mockFunction = jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
+          .mockRejectedValue(errMessage)
+        await wrapper.vm.saveOnLeave();
+        expect(wrapper.vm.$data.saveOnLeaveError).not.toEqual("")
+      })
     });
 
     describe("confirmDeleteInstance() =>", () => {
