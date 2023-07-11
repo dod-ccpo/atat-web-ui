@@ -37,6 +37,21 @@ const  dataSource:CurrentContractDTO[] =[{
   is_current: false,
 }]
 
+const unsortedDataSource:CurrentContractDTO[] = [{
+  instance_number: 2,
+}, {
+  instance_number: 1,
+}]
+
+const mockRoute = {
+  params: {
+    id: 1
+  }
+}
+const mockRouter = {
+  push: jest.fn()
+}
+
 describe("Testing ProcurementHistorySummary Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
@@ -47,6 +62,10 @@ describe("Testing ProcurementHistorySummary Component", () => {
     wrapper = mount(ProcurementHistorySummary, {
       localVue,
       vuetify,
+      mocks: {
+        $route: mockRoute,
+        $router: mockRouter
+      }
     });
   });
 
@@ -71,51 +90,106 @@ describe("Testing ProcurementHistorySummary Component", () => {
     beforeEach(() => {
       wrapper.setData(dataSource)
     });
-
-    it("setHeaderId() => returns expected string", async()=>{
+    it("formatContractDate() => returns date in MM/DD/YYYY format", async()=>{
+      const formattedDate = wrapper.vm.formatContractDate("2022-12-31");
+      expect(formattedDate).toBe("12/31/2022")
+    })
+    it("formatContractDate() => returns ''", async()=>{
+      const formattedDate = wrapper.vm.formatContractDate("");
+      expect(formattedDate).toBe("")
+    })
+    
+    it("setHeaderId() => returns expected string with no spaces", async()=>{
       const columnHeader = "column header"
       expect(wrapper.vm.setHeaderId(columnHeader)).not.toContain(" ");
     })
-
-    describe("editInstance() =>", () => {
-      // let setCurrentContractInstanceNumber: jest.SpyInstance<Promise<void>, [num: number]>
-      //   = jest.fn();
-      // let doSetCurrentContracts: jest.SpyInstance<Promise<void>,[value: CurrentContractDTO[]]> 
-      //   = jest.fn();
-      // let navigate: jest.SpyInstance<any, unknown[]>
-      //   = jest.fn();
-
-      beforeEach(() => {
-        jest.clearAllMocks();
-        wrapper.setData({dataSource})
-        jest.spyOn(wrapper.vm, "navigate")
-          .mockImplementation(()=>{})
-        
-        
-      });
-      it("setCurrentContractInstanceNumber is called", async()=>{
-        const setCurrentContractInstanceNumber = 
-          jest.spyOn(AcquisitionPackage, "setCurrentContractInstanceNumber")
-            .mockImplementation(
-              ()=>Promise.resolve());
-         
-          jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
-            .mockImplementation(()=>Promise.resolve());
-        await wrapper.vm.editInstance(dataSource[0]);
-        expect(setCurrentContractInstanceNumber).toHaveBeenCalled();
-        // await Vue.nextTick();
-        // expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalled();
-        expect(wrapper.vm.navigate).toHaveBeenCalled();
-      })
-
-      // it("doSetCurrentContracts is called", async()=>{
-      //   const doSetCurrentContracts = 
-      //     jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
-      //       .mockImplementation((dataSource)=>Promise.resolve());
-      //   wrapper.vm.editInstance(dataSource[0]);
-      //   expect(doSetCurrentContracts).toHaveBeenCalled();
-      // })
+    
+    it("editInstance() => ensure store methods & navigation method are called", async()=>{
+      jest.spyOn(AcquisitionPackage, "setCurrentContractInstanceNumber")
+        .mockImplementation(
+          ()=>Promise.resolve());
+      jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
+        .mockImplementation(()=>Promise.resolve());
+      jest.spyOn(wrapper.vm, "navigate")
+        .mockImplementation(()=>{});
+      await wrapper.vm.editInstance(dataSource[0]);
+      expect(AcquisitionPackage.setCurrentContractInstanceNumber).toHaveBeenCalled();
+      expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalled();
+      expect(wrapper.vm.navigate).toHaveBeenCalled();
     })
+
+    it("addInstance() => ensure methods are called", async()=>{
+      jest.spyOn(wrapper.vm, "initializeDataSource")
+        .mockImplementation(()=>{});
+      jest.spyOn(wrapper.vm, "navigate")
+        .mockImplementation(()=>{});
+      await wrapper.vm.addInstance();
+      expect(wrapper.vm.initializeDataSource).toHaveBeenCalled();
+      expect(wrapper.vm.navigate).toHaveBeenCalled();
+    })
+
+    it("initializeDataSource() => returns initialized datasource", async()=>{
+      wrapper.setData({dataSource: undefined})
+      jest.spyOn(AcquisitionPackage, "setCurrentContractInstanceNumber")
+        .mockImplementation();
+      await wrapper.vm.initializeDataSource();
+      expect(wrapper.vm.$data.dataSource).toHaveLength(1)
+    })
+
+    it("resetDataSource() => ensures dataSource is sorted and expected methods are called", 
+      async()=>{
+        jest.spyOn(AcquisitionPackage, "setCurrentContractInstanceNumber")
+          .mockImplementation(
+            ()=>Promise.resolve());
+        jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
+          .mockImplementation(()=>Promise.resolve());
+        wrapper.setData({dataSource: unsortedDataSource});
+        await wrapper.vm.resetDataSource();
+        expect(wrapper.vm.dataSource[0].instance_number).toBe(0);
+        expect(wrapper.vm.dataSource[1].instance_number).toBe(1);
+        expect(AcquisitionPackage.setCurrentContractInstanceNumber).toHaveBeenCalled();
+        expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalled();
+    })
+
+    it("resetDataSource() => returns initialized datasource", async()=>{
+      jest.spyOn(AcquisitionPackage, "setCurrentContractInstanceNumber")
+        .mockImplementation(
+          ()=>Promise.resolve());
+      jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
+        .mockImplementation(()=>Promise.resolve());
+      wrapper.setData({dataSource: unsortedDataSource});
+      await wrapper.vm.resetDataSource();
+      expect(wrapper.vm.dataSource[0].instance_number).toBe(0);
+      expect(wrapper.vm.dataSource[1].instance_number).toBe(1);
+      expect(AcquisitionPackage.setCurrentContractInstanceNumber).toHaveBeenCalled();
+      expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalled();
+    })
+
+    it("navigate() => successfully mocks route", async()=>{
+      const expectedRouterActionObject = {
+        "name": "Current_Contract_Details", 
+        "params": {"direction": "next"}
+      }
+      await wrapper.vm.navigate();
+      expect(mockRouter.push).toHaveBeenCalledTimes(1)
+      expect(mockRouter.push).toHaveBeenCalledWith(expectedRouterActionObject);
+    })
+
+    describe("saveOnLeave() =>", () => {
+      
+      it("calls functions if dataSource has length > 0 ", async () => {
+        jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
+          .mockImplementation(()=>Promise.resolve());
+        jest.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
+          .mockImplementation(()=>Promise.resolve());
+        wrapper.setData({dataSource});
+        await wrapper.vm.saveOnLeave();
+        expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalledWith(
+          wrapper.vm.$data.dataSource
+        )
+      });
+    });
+
     describe("confirmDeleteInstance() =>", () => {
       
       it("sets modal title WITH contractor name", async () => {
