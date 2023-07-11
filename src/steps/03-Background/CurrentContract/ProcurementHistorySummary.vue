@@ -212,7 +212,9 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
       this.showDeleteInstanceDialog = false;
       this.instanceToDelete  = {};
       this.dataSource = this.dataSource.filter(
-        ds => ds.instance_number !== this.instanceNumberToDelete
+        ds => {
+          return ds.instance_number !== this.instanceNumberToDelete
+        }
       )
       await this.resetDataSource();
     })
@@ -237,6 +239,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   public async editInstance(contract: CurrentContractDTO): Promise<void> {
+
     await AcquisitionPackage.setCurrentContractInstanceNumber(
         contract.instance_number as number);
     await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
