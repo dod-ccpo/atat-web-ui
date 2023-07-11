@@ -20,8 +20,6 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     " classification levels for the task orders ordered within it.";
   let cdsLabelTxt = "What type of cross-domain solution do you need?";
   const inputText = randomAlphaNumeric(8);
-  const basePeriod = 1;
-  const optionalYear = 1;
 
   beforeEach(() => {
     cy.fixture("securityRequirement").then((sr) => {
@@ -38,14 +36,8 @@ describe("Test suite: Contract Details: E2E work flow", () => {
 
   it.only("TC1: If unclassified Class Level selected ", () => {    
     cy.selectCheckBoxes([contractDetails.level2]);
-    // cy.btnClick(common.continueBtn, " Continue ");
-    // // Cross domain page& security req page  is skipped
-    // cy.waitUntilElementIsGone(contractDetails.level2);
-    // cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
-
-    cy.clickContinueButton(contractDetails.level2, "Your Contract Details Summary" );
-    
-  });
+     cy.clickContinueButton(contractDetails.level2, "Your Contract Details Summary" );
+      });
 
   it("TC2: If both unclassified & Secret Class Level selected ", () => {    
     cy.selectCheckBoxes([contractDetails.level5, contractDetails.level6]);

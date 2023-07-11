@@ -1,78 +1,62 @@
 import {
-  randomNumberBetween,
   randomAlphaNumeric,
   randomNumber,
   randomString,
   suffixId,
 
-
 } from "../../../helpers";
 import common from "../../../selectors/common.sel";
-import co from "../../../selectors/contractOffice.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
-
 
 describe("Test suite: Contract Details Step:Summary - E2E", () => {
   let pt = "TC-Step-3-ContractDetails-E2E-" + randomAlphaNumeric(5);
   let scope = "Project Scope-" + randomString(5);
-
   let basePeriod = "42";
-  let dropDownOption = "Weeks"; // Year/Months/Weeks/Days
+  let dropDownOption = "week"; // Year/Month/Week/Day
   // Note: dropDownOption and basePeriod should be: Year=1, Months<12, Weeks<52, Days<365
-
   let optionPeriod = "No" // Yes/No
   let optPeriod = "1";
-  
   let popStart = "Yes"; //Yes/No
   let popStartOption = "Not later than"; // No Sooner than/Not later than
   let popStartDate = "11"
-
   let recurringRequirement = "Yes";
-  let contractType = "T&M"; // FFP/T&M
+  let contractType = "FFP"; // FFP/T&M
   let textTM = " Test123"
-
   // Step#3:Classification Requirements
-  let selectLevel2 = "No";
-  let selectLevel4 = "Yes";
-  let selectLevel5 = "No";
-  let selectLevel6 = "Yes";
-  let selectTS = "Yes";
-
+  let IL2 = "No";
+  let IL4 = "Yes";
+  let IL5 = "No";
+  let IL6 = "Yes";
+  let topSecret = "Yes";
+  let classSummary = "";
   let cdsOption = "Yes";
   const fs = "TestFS - " + randomAlphaNumeric(3);
   let classInput = randomNumber(2);
-  let anticipatedText = " Hello, this is test";
 
   before(() => {
-    cy.launchATAT(true);
-     cy.homePageClickAcquisitionPackBtn();
-    cy.selectDitcoOption(co.radioDITCO, "DITCO");
-    cy.textExists(common.stepAcquisitionText, " Acquisition Package Details ");
-      cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");
-    cy.fillNewAcquisition(pt, scope);
-    cy.clickDevToggleBtn();
+    cy.goToAcqPackageStepOne(pt, scope);
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.activeStep(common.stepContractDetailsText);
     cy.verifyPageHeader("Let’s gather details about the duration of your task order");
   });
 
 
-  it("TC1: Contract Details: Step#1> Period of Performance Page 1 to 3", () => { // Page#1 Duration of task year
-    
+  it.only("TC1: Contract Details: Step#1> Period of Performance Page 1 to 3", () => { // Page#1 Duration of task year
+
     cy.verifyPageHeader("Let’s gather details about the duration of your task order");
     if (dropDownOption == "Year") {
       cy.findElement(contractDetails.baseDropdownIcon).click()
       cy.findElement(contractDetails.baseDropdownYear).click()
       cy.findElement(contractDetails.baseInputTxtBox).clear().type(basePeriod)
-    } else if (dropDownOption == "Months") {
+    } else if (dropDownOption == "month") {
       cy.findElement(contractDetails.baseDropdownIcon).click()
       cy.findElement(contractDetails.baseDropdownMonth).click()
       cy.findElement(contractDetails.baseInputTxtBox).clear().type(basePeriod)
-    } else if (dropDownOption == "Weeks") {
+    } else if (dropDownOption == "week") {
       cy.findElement(contractDetails.baseDropdownIcon).click()
       cy.findElement(contractDetails.baseDropdownWeek).click()
       cy.findElement(contractDetails.baseInputTxtBox).clear().type(basePeriod)
-    } else if (dropDownOption == "Days") {
+    } else if (dropDownOption == "day") {
       cy.findElement(contractDetails.baseDropdownIcon).click()
       cy.findElement(contractDetails.baseDropdownDays).click()
       cy.findElement(contractDetails.baseInputTxtBox).clear().type(basePeriod)
@@ -120,7 +104,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     cy.clickContinueButton(contractDetails.noRadioOption, "Which contract type(s) apply to this acquisition?")
   });
 
-  it("TC2: Contract Details: Step#2> Contract Type", () => {
+  it.only("TC2: Contract Details: Step#2> Contract Type", () => {
 
     if (contractType == "FFP") {
       cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").check({
@@ -135,34 +119,90 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     cy.clickContinueButton(contractDetails.tmCheckBox, " What classification level(s) will be required for your cloud resources and/or services? ");
   });
 
-  it("TC3: Contract Details: Step#3> Classification Requirements", () => {
-    if (selectLevel2 == "Yes") {
+  it.only("TC3: Contract Details: Step#3> Classification Requirements", () => {
+    if (IL2 == "Yes") {
       cy.findElement(contractDetails.level2).check({
         force: true
       });
+      classSummary = "IL2";
     }
-    if (selectLevel4 == "Yes") {
+    if (IL4 == "Yes") {
       cy.findElement(contractDetails.level4).check({
         force: true
       });
+      classSummary = classSummary + " " + "Unclassified/IL4";;
     }
-    if (selectLevel5 == "Yes") {
+    if (IL5 == "Yes") {
       cy.findElement(contractDetails.level5).check({
         force: true
       });
+      classSummary = classSummary + " " + "IL5";;
     }
-    if (selectLevel6 == "Yes") {
+    if (IL6 == "Yes") {
       cy.findElement(contractDetails.level6).check({
         force: true
       });
+      classSummary = classSummary + " " + "Secret/IL6,";;
+    }
+    if (topSecret == "Yes") {
+      cy.findElement(contractDetails.ts).check({
+        force: true
+      });
+      classSummary = classSummary + " " + "Top Secret";;
+    }
+    cy.log(" Class summary is ", classSummary);
+    cy.wait(2000);
+    cy.clickContinueButton(contractDetails.level2, " Let’s find out more about your security requirements ");
+    const scb_5Sel = suffixId(contractDetails.checkbox_5, "Secret");
+    const tscb_6Sel = suffixId(contractDetails.checkbox_6, "TopSecret");
+    const tscb_9Sel = suffixId(contractDetails.checkbox_9, "TopSecret");
+    cy.selectCheckBoxes([scb_5Sel, tscb_6Sel, tscb_9Sel]);
+
+    cy.wait(4000);
+    cy.clickContinueButton(contractDetails.checkbox_1, "Do you require a cross-domain solution (CDS)?");
+    if (cdsOption = "Yes") {
+      cy.findElement(contractDetails.cdsYesOption)
+        .click({
+          force: true
+        });
+      cy.selectCheckBoxes([
+        contractDetails.unclastoSecrCB,
+        contractDetails.tsToS,
+      ]);
+      cy.enterTextInTextField(contractDetails.cdsUtoSTxtbox, classInput);
+      cy.enterTextInTextField(contractDetails.cdsTStoSTxtbox, classInput);
+      const checkedbox = ["Unclassified to Secret", "Top Secret to Secret"];
+      cy.verifyCheckBoxLabels(contractDetails.cdsCheckedbox, checkedbox);
+      cy.enterTextInTextField(contractDetails.projectedFSField, fs);
+      const anticipatedText = randomAlphaNumeric(17);
+      cy.enterTextInTextField(
+        contractDetails.anticipatedTxtbox,
+        anticipatedText
+      );
+      cy.findElement(contractDetails.entiredDurationNo).click({
+        force: true,
+      });
+      cy.clickContinueButton(contractDetails.entiredDurationNo, " Your Contract Details Summary ");
     }
   });
 
-  it("TC4: Contract Details: Summary", () => {
+  it.only("TC4: Contract Details: Summary", () => {
 
     cy.textExists(contractDetails.popHeading, " Period of Performance (PoP)");
+    cy.textExists(contractDetails.popDescription, basePeriod + " " + dropDownOption + " " + "base period");
+
     cy.textExists(contractDetails.contractTypeHeading, " Contract Type ");
+    cy.contains(contractDetails.contractTypeDescription, contractType);
+
     cy.textExists(contractDetails.classReqHeading, " Classification Requirements ");
+    cy.contains(contractDetails.classReqDescription, "Secret/IL6, Top Secret and Unclassified/IL4");
+    //cy.contains(contractDetails.classReqDescription, classSummary);
+
+    cy.btnExists(contractDetails.classReqComplete, " View/Edit ");
+    cy.btnExists(contractDetails.contractComplete, " View/Edit ");
+    cy.btnExists(contractDetails.popComplete, " View/Edit ").not("[disabled]").click();
+    cy.waitUntilElementIsGone(contractDetails.popComplete);
+    cy.verifyPageHeader(" Let’s gather details about the duration of your task order ");
 
   });
 

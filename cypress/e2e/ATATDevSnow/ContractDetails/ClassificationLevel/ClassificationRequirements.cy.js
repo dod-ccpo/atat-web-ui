@@ -2,32 +2,37 @@ import {
   randomString,
   randomAlphaNumeric}from "../../../../helpers";
 import common from "../../../../selectors/common.sel";
-import co from "../../../../selectors/contractOffice.sel";
 import contractDetails from "../../../../selectors/contractDetails.sel";
-import background from "../../../../selectors/background.sel";
-
 
 describe("Test suite: Contract Details Step:Classification Requirements substep", () => {
   let pt = "TC-Step-3-ContractDetails-ClassLevel-" + randomAlphaNumeric(5);
-  let scope = "Project Scope-" + randomString(5);  
+  let scope = "Project Scope-" + randomString(5); 
+  const inputText = randomAlphaNumeric(8); 
 
   beforeEach(() => {
     
-    cy.launchATAT(true);
-    cy.homePageClickAcquisitionPackBtn();
-    cy.selectDitcoOption(co.radioDITCO, "DITCO");
-    cy.textExists(common.stepAcquisitionText, " Acquisition Package Details ");
-    //Verify the Substeps are  visible
-    cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");    
-    cy.fillNewAcquisition(pt, scope);
-    cy.clickDevToggleBtn();
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    //Verify the Substeps are  visible
-    cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();
-    cy.activeStep(common.subStepClassReqsText);
-    cy.verifyPageHeader(
-      " What classification level(s) will be required for your cloud resources and/or services? "
-    );
+    // cy.launchATAT(true);
+    // cy.homePageClickAcquisitionPackBtn();
+    // cy.selectDitcoOption(co.radioDITCO, "DITCO");
+    // cy.textExists(common.stepAcquisitionText, " Acquisition Package Details ");
+    // //Verify the Substeps are  visible
+    // cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");    
+    // cy.fillNewAcquisition(pt, scope);
+    // cy.clickDevToggleBtn();
+    // cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    // //Verify the Substeps are  visible
+    // cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();
+    // cy.activeStep(common.subStepClassReqsText);
+    // cy.verifyPageHeader(
+    //   " What classification level(s) will be required for your cloud resources and/or services? "
+    // );
+
+    cy.goToContractDetailsStep(
+      pt,scope,
+      contractDetails.popStartDateYesRadioOption,
+      "YES",      
+      inputText
+      )
   });
     
   it("TC1: Asserts: Classification Levels", () => {   
@@ -92,10 +97,10 @@ describe("Test suite: Contract Details Step:Classification Requirements substep"
       .check({ force: true });     
     cy.btnClick(common.continueBtn, " Continue ");
     cy.waitUntilElementIsGone(contractDetails.ts);
-    cy.verifyPageHeader("Do you have a current or previous contract for this effort?"); 
+    cy.verifyPageHeader(" Your Contract Details Summary "); 
     cy.waitUntilElementIsGone(contractDetails.ts);
     cy.btnClick(common.backBtn, "Back");
-    cy.waitUntilElementIsGone(background.currentYesRadioOption,);
+    cy.waitUntilElementIsGone(contractDetails.popHeading);
     cy.verifyPageHeader(
       " What classification level(s) will be required for your cloud resources and/or services? "
     );    

@@ -1,7 +1,8 @@
 module.exports = {
   // Let’s gather some details about the duration of your task order
   popLearnMoreLink: "#PopLearnMore",
-  popText: "p.mb-10",
+  //popText: "p.mb-10",
+  popText: "//*[contains(@class, 'mb-10')]",
   popLengthLabelText: "div.mb-4._semibold",
   mainWrap: ".v-main__wrap",
   baseRow: "#BaseRow",
@@ -154,6 +155,14 @@ module.exports = {
 
 // ContractDetails Summary
 popHeading: "#PeriodofPerformancePoP_Heading",
+popDescription: "#PeriodofPerformancePoP_Description",
+popComplete: "#PeriodofPerformancePoP_CompleteButton",
+
 contractTypeHeading: "#ContractType_Heading",
-classReqHeading: " #ClassificationRequirements_Heading"
+contractTypeDescription: "#ContractType_Description",
+contractComplete: "#ContractType_CompleteButton",
+
+classReqHeading: " #ClassificationRequirements_Heading",
+classReqDescription: "#ClassificationRequirements_Description",
+classReqComplete: "#ContractType_CompleteButton"
 };
