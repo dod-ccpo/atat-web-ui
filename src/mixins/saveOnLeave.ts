@@ -18,7 +18,7 @@ export default class SaveOnLeave extends Vue {
   };
 
   /**
-   * Method that get's called before route leave
+   * Method that gets called before route leave
    * extending mixins must implement this method
    * the method should return true to proceed to the 
    * next route and false to remain on the current view
