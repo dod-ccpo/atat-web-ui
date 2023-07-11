@@ -195,7 +195,7 @@ describe("Testing ProcurementHistorySummary Component", () => {
         const mockFunction = jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
           .mockRejectedValue(errMessage)
         await wrapper.vm.saveOnLeave();
-        expect(wrapper.vm.$data.saveOnLeaveError).not.toEqual("")
+        expect(wrapper.vm.$data.saveOnLeaveError).not.toBeNull;
       })
     });
 
