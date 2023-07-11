@@ -4,7 +4,6 @@ import {
     randomAlphaNumeric,
     cleanText
 } from "../../../../helpers";
-import common from "../../../../selectors/common.sel";
 import fo from "../../../../selectors/fairOpportunityProcess.sel";
 
 
@@ -140,14 +139,3 @@ describe("Test suite: Proposed CSP", () => {
         })
 
     });
-
-
-
-
-
-
-    
-        
-    
-
-
