@@ -8,7 +8,8 @@
     height="83"
   >
     <div class=" d-flex justify-space-between width-100 align-center">
-
+        <div id="InputWidthFaker" ref="inputWidthFaker" class="._input-width-faker"></div>
+        
         <div id="NameHeader" tabindex="-1" class="mt-1">
           <v-text-field
             id="HeaderTextField"
@@ -18,7 +19,9 @@
             hide-details
             autocomplete="off"
             v-model="_title"
-            @blur="saveTitle()"
+            @blur="titleBlurred()"
+            @click="titleClicked"
+
           >
           </v-text-field>
 
@@ -180,7 +183,8 @@ export default class PortfolioSummaryPageHead extends Vue {
   public async tabClicked(index: number): Promise<void> {
     await AppSections.setActiveTabIndex(index);
   }
-  public saveTitle(): void {
+  public titleBlurred(): void {
+    // EJY also resize!
     if(hasChanges(PortfolioStore.currentPortfolio.title, this._title)) {
       PortfolioStore.updatePortfolioTitle(this._title);
     }
@@ -218,6 +222,31 @@ export default class PortfolioSummaryPageHead extends Vue {
 
   private getIdText(string: string) {
     return getIdText(string);
+  }
+
+  get inputWidthFaker(): HTMLElement {
+    return this.$refs.inputWidthFaker as HTMLElement;
+  }
+
+  public addInputEventListeners(vm: unknown, input: HTMLInputElement): void {
+    input.addEventListener("input", () => {
+      this.inputWidthFaker.innerHTML = input.value;
+      const w = this.inputWidthFaker.offsetWidth + "px";
+      input.style.width = w;
+    });
+
+  }
+
+  public titleEdit(e: Event): void {
+    e.preventDefault();
+    e.cancelBubble = true;
+    const input = e.currentTarget as HTMLInputElement;
+    const i = this.validEmailList.indexOf(input.value.toLowerCase());
+    if (i > -1) {
+      this.validEmailList.splice(i, 1);
+    }
+    this.pillboxFocused = true;
+    this.addInputEventListeners(this, input);
   }
 
   public async mounted(): Promise<void> {

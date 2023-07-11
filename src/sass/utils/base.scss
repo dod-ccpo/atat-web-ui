@@ -580,3 +580,13 @@ textarea {
   border-radius:4px;
   font-weight: 500;
 }
+
+
+._input-width-faker {
+  display: inline-block;
+  font-size: 16px;
+  letter-spacing: 0;
+  position: absolute;
+  left: -10000px;
+  top: -10000px;
+}
