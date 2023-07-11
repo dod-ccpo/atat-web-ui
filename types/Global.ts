@@ -500,6 +500,7 @@ export interface User {
   dsnPhone?: string; // field is "home_phone" in SNOW sys_user table
   userName?: string;
   sys_id?: string;
+  title?: string;
 }
 
 export interface Operator {
