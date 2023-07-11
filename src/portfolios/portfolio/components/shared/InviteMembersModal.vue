@@ -70,7 +70,7 @@
 
             <v-list class="py-1" v-if="showNoResults">
               <v-list-item class="font-weight-bolder font-size-16">
-                No results for "{{searchObj.value}}"
+                No results for “{{searchString}}”
               </v-list-item>
               <v-list-item>
                 <a href="https://community.hacc.mil/s/contact" target="_blank" class="body">
