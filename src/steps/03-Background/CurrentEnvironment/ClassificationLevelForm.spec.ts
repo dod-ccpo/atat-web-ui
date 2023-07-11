@@ -41,5 +41,15 @@ describe("Testing CurrentEnvironment Component", () => {
     const impactLevelId = wrapper.vm.impactLevelId
     expect(impactLevelId).toBe("OnPremClassificationCheckboxes");
   });
+  it("Get impact level error message when isCloud is true", async () => {
+    await wrapper.setProps({isCloud:true})
+    const impactLevelId = wrapper.vm.impactLevelId
+    expect(impactLevelId).toBe("Please select at least one impact level.");
+  });
+  it("Get impact level error message when isCloud is false", async () => {
+    await wrapper.setProps({isCloud:false})
+    const impactLevelId = wrapper.vm.impactLevelId
+    expect(impactLevelId).toBe("Please select at least one type of information that you are hosting.");
+  });
 
 })
