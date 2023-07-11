@@ -1,30 +1,30 @@
 <template>
-  <v-app-bar
-    id="PageHeader"
-    app
-    flat
-    class="_atat-page-header _portfolio-summary"
-    clipped-right
-    height="83"
-  >
-    <div class=" d-flex justify-space-between width-100 align-center">
-        <div id="InputWidthFaker" ref="inputWidthFaker" class="._input-width-faker"></div>
-        
+  <div>
+    <div id="InputWidthFaker" ref="inputWidthFaker" class="_input-width-faker">
+      {{ _title }}
+    </div>
+
+    <v-app-bar
+      id="PageHeader"
+      app
+      flat
+      class="_atat-page-header _portfolio-summary"
+      clipped-right
+      height="83"
+    >
+      <div class=" d-flex justify-space-between width-100 align-center">       
         <div id="NameHeader" tabindex="-1" class="mt-1">
           <v-text-field
-            id="HeaderTextField"
+            id="PortfolioTitleInput"
             dense
             placeholder="Portfolio Title"
-            class=" h2 _headerTextField my-1"
+            class=" h2 _portfolio-title-input my-1"
             hide-details
             autocomplete="off"
             v-model="_title"
             @blur="titleBlurred()"
-            @click="titleClicked"
-
-          >
-          </v-text-field>
-
+            maxlength="60"
+          />
         <div>
           <v-tabs 
             class="_header-tab "
@@ -131,6 +131,7 @@
       </div>
     </div>
   </v-app-bar>
+  </div>
 </template>
 
 <script lang="ts">
@@ -184,7 +185,6 @@ export default class PortfolioSummaryPageHead extends Vue {
     await AppSections.setActiveTabIndex(index);
   }
   public titleBlurred(): void {
-    // EJY also resize!
     if(hasChanges(PortfolioStore.currentPortfolio.title, this._title)) {
       PortfolioStore.updatePortfolioTitle(this._title);
     }
@@ -208,15 +208,15 @@ export default class PortfolioSummaryPageHead extends Vue {
         this.showDrawer = true;
         SlideoutPanel.openSlideoutPanel(opener.id);
       }
-    } else {
+    } else { 
       this.showDrawer = false
       SlideoutPanel.closeSlideoutPanel()
     }
   }
+
   public moveToInput(): void {
-    const input = document.getElementById('HeaderTextField');
-    if(input){
-      input.focus()
+    if (this.titleInput){
+      this.titleInput.focus()
     }
   }
 
@@ -230,26 +230,45 @@ export default class PortfolioSummaryPageHead extends Vue {
 
   public addInputEventListeners(vm: unknown, input: HTMLInputElement): void {
     input.addEventListener("input", () => {
-      this.inputWidthFaker.innerHTML = input.value;
-      const w = this.inputWidthFaker.offsetWidth + "px";
-      input.style.width = w;
+      this.setInputWidth(input);
     });
-
   }
 
   public titleEdit(e: Event): void {
     e.preventDefault();
     e.cancelBubble = true;
     const input = e.currentTarget as HTMLInputElement;
-    const i = this.validEmailList.indexOf(input.value.toLowerCase());
-    if (i > -1) {
-      this.validEmailList.splice(i, 1);
-    }
-    this.pillboxFocused = true;
-    this.addInputEventListeners(this, input);
+    // this.addInputEventListeners(this, input);
+  }
+
+  public setInputWidth(input: HTMLInputElement) {
+    this.inputWidthFaker.innerHTML = input.value;
+    const w = this.inputWidthFaker.offsetWidth + "px";
+    const ww = (this.inputWidthFaker.offsetWidth + 10) + "px"
+    input.style.width = w;
+    input.style.minWidth = w;
+    input.style.maxWidth = w;
+    this.titleInputWrap.style.width = ww;
+    this.titleInputWrap.style.minWidth = ww;
+    this.titleInputWrap.style.maxWidth = ww;
+  }
+
+  public get titleInput(): HTMLInputElement {
+    return document.getElementById("PortfolioTitleInput") as HTMLInputElement;
+  }
+  public get titleInputWrap(): HTMLElement {
+    const collection = document.getElementsByClassName("_portfolio-title-input");
+    return collection[0] as HTMLElement;
   }
 
   public async mounted(): Promise<void> {
+    if (this.titleInput) {
+      this.$nextTick(() => {
+        this.setInputWidth(this.titleInput);
+        this.addInputEventListeners(this, this.titleInput);
+      })
+    }
+  
     const slideoutPanelContent: SlideoutPanelContent = {
       component: PortfolioDrawer,
     }
