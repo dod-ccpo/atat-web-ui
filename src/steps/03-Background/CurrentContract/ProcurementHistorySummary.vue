@@ -194,7 +194,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   get hasContractData(): boolean{
-    return this.dataSource.length > 0
+    return this.dataSource && this.dataSource.length > 0
   }
   
   public confirmDeleteInstance(item: CurrentContractDTO): void {
@@ -232,7 +232,8 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   public async setDataSource():Promise<void>{
-    this.dataSource = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
+    this.dataSource = 
+      await AcquisitionPackage.currentContracts as CurrentContractDTO[] || [];
   }
 
   public setHeaderId(column: string): string {
@@ -264,14 +265,16 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   public async resetDataSource():Promise<void>{
-    // sort
-    await this.dataSource.sort();
-    // reconfigure instance numbers
-    await this.dataSource.forEach((c,idx)=> c.instance_number = idx)
-    // set current contract instance number
-    await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
-    // set current contracts instore
-    await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
+    if (this.dataSource && this.dataSource.length>0){
+      // sort
+      await this.dataSource.sort();
+      // reconfigure instance numbers
+      await this.dataSource.forEach((c,idx)=> c.instance_number = idx)
+      // set current contract instance number
+      await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
+      // set current contracts instore
+      await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
+    }
   }
 
   public navigate(): void {
