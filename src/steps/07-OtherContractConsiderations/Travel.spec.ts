@@ -4,7 +4,6 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import Travel from "@/steps/07-OtherContractConsiderations/Travel.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import VueRouter, {Route} from "vue-router";
 
 Vue.use(Vuetify);
 
