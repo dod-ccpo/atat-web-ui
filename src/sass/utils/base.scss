@@ -582,13 +582,17 @@ textarea {
 }
 
 
-._input-width-faker {
+._auto-input-width {
   display: inline-block;
-  font-size: 24px;
   letter-spacing: 0;
-  font-family: $heading-font;
-  font-weight: 500;
+  white-space: pre;
   position: absolute;
   left: -10000px;
   top: -10000px;
+
+  &._portfolio-title {
+    font-size: 24px;
+    font-family: $heading-font;
+    font-weight: 500;  
+  }
 }
