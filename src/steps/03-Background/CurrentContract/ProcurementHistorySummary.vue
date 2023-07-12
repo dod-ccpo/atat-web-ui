@@ -187,13 +187,14 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   public showDeleteInstanceDialog = false;
   public instanceToDelete: CurrentContractDTO = {};
   public dataSource:CurrentContractDTO[] = [];
+  private saveOnLeaveError: string| unknown = "";
 
   public formatContractDate(dt: string){
     return dt !== "" ? formatDate(dt, "MMDDYYYY"): "";
   }
 
   get hasContractData(): boolean{
-    return this.dataSource.length > 0
+    return this.dataSource && this.dataSource.length > 0
   }
   
   public confirmDeleteInstance(item: CurrentContractDTO): void {
@@ -212,7 +213,9 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
       this.showDeleteInstanceDialog = false;
       this.instanceToDelete  = {};
       this.dataSource = this.dataSource.filter(
-        ds => ds.instance_number !== this.instanceNumberToDelete
+        ds => {
+          return ds.instance_number !== this.instanceNumberToDelete
+        }
       )
       await this.resetDataSource();
     })
@@ -229,7 +232,8 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   public async setDataSource():Promise<void>{
-    this.dataSource = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
+    this.dataSource = 
+      await AcquisitionPackage.currentContracts as CurrentContractDTO[] || [];
   }
 
   public setHeaderId(column: string): string {
@@ -237,6 +241,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   public async editInstance(contract: CurrentContractDTO): Promise<void> {
+
     await AcquisitionPackage.setCurrentContractInstanceNumber(
         contract.instance_number as number);
     await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
@@ -260,14 +265,16 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
   public async resetDataSource():Promise<void>{
-    // sort
-    await this.dataSource.sort();
-    // reconfigure instance numbers
-    await this.dataSource.forEach((c,idx)=> c.instance_number = idx)
-    // set current contract instance number
-    await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
-    // set current contracts instore
-    await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
+    if (this.dataSource && this.dataSource.length>0){
+      // sort
+      await this.dataSource.sort();
+      // reconfigure instance numbers
+      await this.dataSource.forEach((c,idx)=> c.instance_number = idx)
+      // set current contract instance number
+      await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
+      // set current contracts instore
+      await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
+    }
   }
 
   public navigate(): void {
@@ -288,6 +295,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
       }
     } catch (error) {
       console.log(error);
+      this.saveOnLeaveError = error as string;
     }
     return true;
   }
