@@ -17,7 +17,7 @@
           <v-text-field
             id="PortfolioTitleInput"
             dense
-            placeholder="Portfolio Title"
+            placeholder="Portfolio title"
             class="h2 _portfolio-title-input my-1"
             hide-details
             autocomplete="off"
