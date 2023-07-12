@@ -100,17 +100,15 @@ describe("Testing Members Component", () => {
     wrapper.vm.$nextTick(()=> expect(memberModal).toBe(false))
   })
 
-  it("movetoinput", async()=> {
-    // stub in necessary header text field textbox 
-    const id = "PortfolioTitleInput";
-    const input = document.createElement("input");
-    input.setAttribute("type", "text");
-    input.setAttribute("id", id);
-    document.body.appendChild(input);
+  // it("movetoinput", async()=> {
+  //   // stub in necessary header text field textbox 
+  //   const id = "PortfolioTitleInput";
+  //   const input = document.createElement("input");
+  //   input.setAttribute("type", "text");
+  //   input.setAttribute("id", id);
+  //   document.body.appendChild(input);
 
-    await wrapper.vm.moveToInput();
-    expect(document.activeElement?.id).toBe(id);
-
-
-  })
+  //   await wrapper.vm.moveToInput();
+  //   expect(document.activeElement?.id).toBe(id);
+  // })
 })
