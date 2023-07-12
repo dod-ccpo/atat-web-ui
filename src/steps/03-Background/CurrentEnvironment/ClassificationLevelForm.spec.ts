@@ -3,13 +3,11 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import Vuetify from "vuetify";
 import { DefaultProps } from "vue/types/options";
 import Vue from "vue";
-import Vuex from "vuex";
 import ClassificationLevelForm
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.vue";
 import validators from "../../../plugins/validation";
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 
 
@@ -18,7 +16,6 @@ describe("Testing CurrentEnvironment Component", () => {
   localVue.use(validators);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue>;
-  const store = new Vuex.Store(AcquisitionPackage)
 
   const onPremImpactOptions =  [
     {
