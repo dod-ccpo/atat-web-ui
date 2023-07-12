@@ -54,7 +54,7 @@
               >
                 <v-list-item-content>
                   <v-list-item-title class="font-weight-bolder font-size-16">
-                    {{ user.firstName }} {{ user.lastName}} {{ user.agency }}
+                    {{ user.firstName }} {{ user.lastName}}{{ user.title}} {{ user.agency }}
                   </v-list-item-title>
                   <v-list-item-subtitle class="font-size-14">
                     {{ user.email }}
@@ -63,7 +63,7 @@
               </v-list-item>
             </v-list>
 
-            <v-list class="py-1" v-if="searchObj.noResults && searchString">
+            <v-list class="py-1" v-if="showNoResults">
               <v-list-item class="font-weight-bolder font-size-16">
                 No results for "{{searchString}}"
               </v-list-item>
@@ -90,7 +90,7 @@
           >
             <v-list-item-content>
               <v-list-item-title class="font-weight-bolder font-size-16">
-                {{ user.firstName }} {{ user.lastName }} {{ user.agency }}
+                {{ user.firstName }} {{ user.lastName }}{{ user.title}} {{ user.agency }}
               </v-list-item-title>
               <v-list-item-subtitle class="font-size-14">
                 {{ user.email }}
@@ -122,133 +122,33 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
 import { Component, PropSync, Watch } from "vue-property-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
-import ATATTextArea from "@/components/ATATTextArea.vue";
-import {
-  User
-} from "../../../types/Global";
-import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
+import { User } from "../../../types/Global";
 import _ from "lodash";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import UserManagement from "@/store/user/userManagement";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
-export interface SearchObj {
-  isLoading: boolean;
-  searchResults: User[];
-  noResults: boolean;
-  alreadyInvited: boolean;
-}
+import UserSearch from "@/mixins/userSearch";
 
 @Component({
   components: {
     ATATSVGIcon,
-    ATATAutoComplete,
     ATATDialog,
     ATATErrorValidation,
     ATATSelect,
-    ATATTextArea,
   }
 })
 
-export default class ContributorInviteModal extends Vue {
+export default class ContributorInviteModal extends UserSearch {
   @PropSync("showInviteModal") public _showInviteModal?: boolean;
 
-  public searchString = "";
-  public searchObj: SearchObj = {
-    isLoading: false,
-    searchResults: [],
-    noResults: false,
-    alreadyInvited: false
-  };
-
-  public isSearching = false;
-
-  public userSelectedList: User[] = [];
   public get alreadyInvitedUsers(): User[] {
     return AcquisitionPackage.getPackageContributors;
   };
-
-  public get OKDisabled(): boolean {
-    return this.userSelectedList.length === 0;
-  }
-
-  public get showSearchResults(): boolean {
-    return this.searchObj.searchResults.length > 0;
-  }
-
-  public get showRefineSearchMessage(): boolean {
-    return this.searchObj.searchResults.length === 100;
-  }
-
-  public async clearSearch(): Promise<void> {
-    this.searchString = "";
-    this.searchObj.alreadyInvited = false;
-    await this.clearResults();
-  }
-
-  @Watch("searchString")
-  public async searchStringChanged(newVal: string, oldVal: string): Promise<void> {
-    this.searchObj.noResults = false;
-    this.searchObj.alreadyInvited = false
-    await this.debouncedSearch(newVal, oldVal)
-  }
-
-  public debouncedSearch = _.debounce(async (newVal: string, oldVal: string) => {
-    if (newVal && newVal !== oldVal && newVal.trim().length > 2 && !this.isSearching) {
-      await this.onUserSearchValueChange(newVal);
-    } else {  
-      await this.clearResults();
-    }
-  }, 1000)
-
-  public async clearResults(): Promise<void> {
-    this.searchObj.isLoading = false;
-    this.searchObj.searchResults = [];      
-    await UserManagement.triggerAbort();
-  }
-
-  /**
-   * Starts searching 1 second after user pauses when entering a search value.
-   * Only searches if there are at least 3 characters in the newValue
-   */
-  public async onUserSearchValueChange(searchStr: string): Promise<void> {
-    if (!this.isSearching && searchStr) {
-      await UserManagement.doResetAbortController();
-      await this.clearResults();
-      this.isSearching = true;
-      this.searchObj.isLoading = true;
-      const response = await UserManagement.searchUserByNameAndEmail(searchStr)
-      this.searchObj.searchResults = response.map(userSearchDTO => {
-        return {
-          sys_id: userSearchDTO.sys_id,
-          firstName: userSearchDTO.first_name,
-          lastName: userSearchDTO.last_name,
-          fullName: userSearchDTO.name,
-          email: userSearchDTO.email,
-          phoneNumber: userSearchDTO.phone,
-          agency: userSearchDTO.company ? "(" + userSearchDTO.company + ")" : "",
-        }
-      });
-  
-      this.searchObj.noResults = this.searchObj.searchResults.length === 0;
-      this.searchObj.isLoading = false;
-      this.isSearching = false;
-    } else {
-      await UserManagement.triggerAbort();
-      this.searchObj.searchResults = [];
-      this.searchObj.noResults = false;
-      this.searchObj.alreadyInvited = false;         
-      this.isSearching = false;
-      if (searchStr) {
-        await this.onUserSearchValueChange(searchStr);
-      }
-    }
-  }
 
   public removeSelectedUser(index: number): void {
     this.userSelectedList.splice(index, 1);
@@ -259,43 +159,26 @@ export default class ContributorInviteModal extends Vue {
    * the new selection list or the current user list.
    * Then clears the search string and makes a function call out to clear the search results
    */
-  public onUserSelection(newSelectedUser: User): void {
-    if (newSelectedUser.sys_id) {
-      const alreadySelected = this.userSelectedList.find(u => u.sys_id === newSelectedUser.sys_id)
-      const alreadyInvited 
-        = this.alreadyInvitedUsers.find(u => u.sys_id === newSelectedUser.sys_id);
-      if (newSelectedUser && !alreadySelected && !alreadyInvited) {
-        this.searchObj.alreadyInvited = false;
-        this.userSelectedList.push(newSelectedUser);
-        this.userSelectedList.sort((a, b) => {
-          if (a.fullName && b.fullName) {
-            return a.fullName > b.fullName ? 1 : -1;
-          } else {
-            return 0;
-          }
-        })
-        this.searchString = "";
-        this.searchObj.alreadyInvited = false;
-        this.searchObj.searchResults = [];
-        this.searchObj.noResults = false;
-        this.searchObj.isLoading = false;
-      } else {
-        this.searchObj.alreadyInvited = true;
+  public async onUserSelection(newSelectedUser: User): Promise<void> {
+    const isAlreadyListed = await UserManagement.isAlreadyListed(
+      {
+        sysId: newSelectedUser.sys_id as string, 
+        users1: this.userSelectedList, 
+        users2: this.alreadyInvitedUsers
       }
+    );
+
+    if (newSelectedUser && !isAlreadyListed) {
+      this.userSelectedList.push(newSelectedUser);
+      this.userSelectedList = await UserManagement.sortUsersByFullName(this.userSelectedList);
+      this.searchString = "";
+      this.searchObj = await UserManagement.resetSearchObj();
+    } else {
+      this.searchObj.alreadyInvited = true;
+      this.searchObj.searchResults = this.searchObj.searchResults.filter(
+        s => s.sys_id === newSelectedUser.sys_id
+      );
     }
-
-  }
-
-  /**
-   * Resets the state of the modal and all the properties.
-   */
-  public async onCancel(): Promise<void> {
-    this.searchString = "";
-    this.searchObj.alreadyInvited = false;
-    this.searchObj.searchResults = [];
-    this.searchObj.noResults = false;
-    this.searchObj.isLoading = false;
-    await UserManagement.triggerAbort();    
   }
 
   @Watch("_showInviteModal")

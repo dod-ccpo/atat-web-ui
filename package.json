@@ -14,7 +14,7 @@
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest --no-cache",
-    "test-file:watch": "jest --watch --no-cache src/steps/03-Background/CurrentContract/CurrentContractDetails.spec.ts",
+    "test-file:watch": "jest --no-cache --watch src/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.spec.ts",
     "test-files": "jest --no-cache src/steps/03-Background/components/",
     "test:coverage": "jest --coverage",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
