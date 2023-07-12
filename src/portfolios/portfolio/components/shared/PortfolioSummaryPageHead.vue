@@ -151,7 +151,7 @@ import PortfolioStore from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { SlideoutPanelContent } from "../../../../../types/Global";
-import {getIdText, hasChanges} from "@/helpers";
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
