@@ -7,7 +7,7 @@ import {
 import fo from "../../../../selectors/fairOpportunityProcess.sel";
 
 
-describe("Test suite: Proposed CSP", () => {
+describe("Test suite: Unique Source", () => {
 
     const pt = "TC-Step-2-EvalCriteria-FairOpp-" + randomAlphaNumeric(5);
     const scope = "EvaluationCriteria-FairOpp-" + randomString(5);
@@ -47,7 +47,7 @@ describe("Test suite: Proposed CSP", () => {
 
 
 
-    before(() => {
+    beforeEach(() => {
 
         cy.goToECStep(pt, scope);
 
