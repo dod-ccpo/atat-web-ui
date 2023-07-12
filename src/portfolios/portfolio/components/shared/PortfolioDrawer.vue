@@ -2,7 +2,7 @@
   <div class="_portfolio-drawer">
     <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding pb-8">
       <div>
-        <div class="mx-n3 mt-n4">
+        <div class="mx-n3 mt-n4" v-if="showDescription">
           <v-textarea
             id="DrawerTextArea"
             v-model="portfolio.description"
@@ -14,6 +14,8 @@
             placeholder="Add a description"
             rows="1"
             @blur="saveDescription"
+            :readonly="currentUserIsViewer"
+            :disabled="currentUserIsViewer"
           />
         </div>
 
@@ -308,6 +310,16 @@ export default class PortfolioDrawer extends Vue {
       this.currentUserIsManager = true;
     }
   }  
+
+  public get currentUserIsViewer(): boolean {
+    return PortfolioStore.currentUserIsViewer;;
+  }
+
+  public get showDescription(): boolean {
+    const descr = this.portfolio.description;
+    return !this.currentUserIsViewer || 
+      this.currentUserIsViewer && descr !== undefined && descr.length > 0;
+  }
 
   public get cspKey(): string {
     return this.csp ? this.csp.toLowerCase() : "aws";

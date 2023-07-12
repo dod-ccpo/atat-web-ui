@@ -8,10 +8,9 @@ $total: 20;
     .max-height-#{$i*5} { max-height: ($i * 5%) !important}; 
 }
 
-$total: 900;
-@for $i from 400 through $total{
-    .font-weight-#{$i} { font-weight: ($i) !important};
-    $i: $i + 100;
+$total: 9;
+@for $i from 1 through $total{
+    .font-weight-#{$i*100} { font-weight: ($i*100) !important};
 } 
 
 .no-border{

@@ -24,9 +24,9 @@
                 <p class="mb-3">
                   Your explanation should clearly show that {{cspAdditionalInstructions}} is
                   the ONLY source capable of performing the required work. Do not indicate
-                  that your source is the "only known source” unless you fully describe the
+                  that your source is the “only known source” unless you fully describe the
                   process undertaken to make that determination (including items such
-                  as "sources sought" synopsis posted on the Federal Business Opportunities
+                  as “sources sought” synopsis posted on the Federal Business Opportunities
                   website.)
                 </p>
                 <span v-if="showLogicalFollowOnInstructions">

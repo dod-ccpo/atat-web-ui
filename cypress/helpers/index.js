@@ -151,3 +151,12 @@ export function numberWithoutPercentSign(str) {
   const toNumber = parseFloat(withoutPercentage);
   return toNumber;
 }
+
+export function noToCurrency(price){
+  let USDollar = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+})
+const val =USDollar.format(price);
+return val;
+}
