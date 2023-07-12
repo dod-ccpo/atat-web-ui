@@ -102,7 +102,7 @@ describe("Testing Members Component", () => {
 
   it("movetoinput", async()=> {
     // stub in necessary header text field textbox 
-    const id = "HeaderTextField";
+    const id = "PortfolioTitleInput";
     const input = document.createElement("input");
     input.setAttribute("type", "text");
     input.setAttribute("id", id);
