@@ -12,7 +12,7 @@
     />
   </div>
   <div v-else>
-    <dl>
+    <dl :id="id">
       <dt>{{ label }}:</dt>
       <dd>{{ _value }}</dd>
     </dl>

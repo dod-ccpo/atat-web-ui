@@ -340,6 +340,14 @@ Cypress.Commands.add("verifyTextMatches", (selector, expectedText) => {
   });
 });
 
+Cypress.Commands.add("reviewPageTxtMatches", (selector, it) => {
+  cy.findElement(selector).then(($inputVal) => {
+    const textReview =cleanText($inputVal.val());
+    cy.log(textReview);
+    expect(textReview).equal(it);
+  });
+});
+
 Cypress.Commands.add("findCheckBox", (selector, value) => {
   cy.findElement(selector).should("have.value", value);
 });

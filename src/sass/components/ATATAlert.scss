@@ -7,6 +7,18 @@
   padding: 16px 24px;
   position: relative;
 
+  &._has-expandable-header {
+    padding: 16px 24px 32px !important;
+   
+    &._expandable-header-is-closed {
+      padding-bottom: 16px !important;
+
+      .expandable-content-opener {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   &._attach-to-bottom-of-card {
     margin-top: 0 !important;
     border-radius: 8px;

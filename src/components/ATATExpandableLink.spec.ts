@@ -33,20 +33,18 @@ describe("Testing ATATSelect Component", () => {
 
   describe("EVENTS", () => {
     it("test click event to expand -- link class will contain open", async () => {
-      wrapper.setData({ "open": true });
-      wrapper.vm.$nextTick(async () => {
-        expect(expandLink.classes()).toContain("open");
-      });
+      wrapper.setData({ "isOpen": true });
+      await wrapper.vm.$nextTick();
+      expect(expandLink.classes()).toContain("open");
     });
 
     it("test click event to expand -- link class will contain closed", async () => {
-      wrapper.setData({ "open": true });
+      wrapper.setData({ "isOpen": true });
+      await wrapper.vm.$nextTick();
       expandLink.trigger("keydown.enter");
-      wrapper.vm.$nextTick(async () => {
-        expect(expandLink.classes()).toContain("closed");
-      });
+      await wrapper.vm.$nextTick();
+      expect(expandLink.classes()).toContain("closed");
     });
-
   });
 
 });
