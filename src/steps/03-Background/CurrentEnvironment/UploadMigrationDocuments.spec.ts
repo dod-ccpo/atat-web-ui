@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
@@ -99,7 +100,7 @@ describe("Testing UploadMigrationDocuments Component", () => {
         const errMessage = 'dummy Error Message'
         jest.spyOn(wrapper.vm, "hasChanged").mockResolvedValue(true);
         jest.spyOn(CurrentEnvironment, "saveCurrentEnvironment")
-        .mockRejectedValue(errMessage)
+          .mockRejectedValue(errMessage)
         await wrapper.vm.saveOnLeave()
         expect(wrapper.vm.$data.saveOnLeaveError).toEqual(errMessage)
       })
@@ -180,7 +181,7 @@ describe("Testing UploadMigrationDocuments Component", () => {
             .mockImplementation(async()=>{
               return currEnvironmentDTO as CurrentEnvironmentDTO
             }
-          )
+            )
           await wrapper.vm.loadOnEnter();
           expect(wrapper.vm.$data.currEnvDTO).toEqual(currEnvironmentDTO);
           expect(wrapper.vm.$data.hasMigrationDocumentation).toEqual(
@@ -194,27 +195,27 @@ describe("Testing UploadMigrationDocuments Component", () => {
 
 
     describe("onUpload(file: uploadingFile) => ", () => {
-        describe("ensure $data attributes are set as expected ", () => {
-          it("if wrapper.vm.currEnvDTO is empty ", async () => {
-            wrapper.setData({
-              currEnvDTO: {}
-            })
-            await wrapper.vm.onUpload(uploadingFile);
-            expect(wrapper.vm.currEnvDTO.migration_documentation).toHaveLength(1)
-          });
+      describe("ensure $data attributes are set as expected ", () => {
+        it("if wrapper.vm.currEnvDTO is empty ", async () => {
+          wrapper.setData({
+            currEnvDTO: {}
+          })
+          await wrapper.vm.onUpload(uploadingFile);
+          expect(wrapper.vm.currEnvDTO.migration_documentation).toHaveLength(1)
+        });
 
-          it("if wrapper.vm.currEnvDTO is populated ", async () => {
-            wrapper.setData({
-              currEnvDTO: {
-                migration_documentation: ['']
-              }
-            })
-            await wrapper.vm.onUpload(uploadingFile);
-            const isMigrationDocAdded = wrapper.vm.currEnvDTO.migration_documentation.some(
-              (f: string) => f === uploadingFile.attachmentId
-            )
-            expect(isMigrationDocAdded).toBe(true);
-          });
+        it("if wrapper.vm.currEnvDTO is populated ", async () => {
+          wrapper.setData({
+            currEnvDTO: {
+              migration_documentation: ['']
+            }
+          })
+          await wrapper.vm.onUpload(uploadingFile);
+          const isMigrationDocAdded = wrapper.vm.currEnvDTO.migration_documentation.some(
+            (f: string) => f === uploadingFile.attachmentId
+          )
+          expect(isMigrationDocAdded).toBe(true);
+        });
       })
       it("validates that store method was called ", async () => {
         const setCurrentEnvironment =
@@ -232,34 +233,34 @@ describe("Testing UploadMigrationDocuments Component", () => {
         await wrapper.vm.onUpload(uploadingFile);
         expect(wrapper.vm.$data.onUploadError).toEqual(errMessage);
       });
+    })
   })
-})
 
-describe("GETTERS", () => {
-  describe("currentData() => validates dataset with   ", () => {
-    it("POPULATED value", async () => {
-      let hasMigrationDocs = "YES"
-      wrapper.setData({ hasMigrationDocumentation: hasMigrationDocs })
-      const currentData = wrapper.vm.currentData;
-      expect(currentData.has_migration_documentation).toBe(hasMigrationDocs)
-    });
-    it("NO value", async () => {
-      let hasMigrationDocs = ""
-      wrapper.setData({ hasMigrationDocumentation: hasMigrationDocs })
-      const currentData = wrapper.vm.currentData;
-      expect(currentData.has_migration_documentation).toBe(hasMigrationDocs)
-    });
+  describe("GETTERS", () => {
+    describe("currentData() => validates dataset with   ", () => {
+      it("POPULATED value", async () => {
+        const hasMigrationDocs = "YES"
+        wrapper.setData({ hasMigrationDocumentation: hasMigrationDocs })
+        const currentData = wrapper.vm.currentData;
+        expect(currentData.has_migration_documentation).toBe(hasMigrationDocs)
+      });
+      it("NO value", async () => {
+        const hasMigrationDocs = ""
+        wrapper.setData({ hasMigrationDocumentation: hasMigrationDocs })
+        const currentData = wrapper.vm.currentData;
+        expect(currentData.has_migration_documentation).toBe(hasMigrationDocs)
+      });
+    })
   })
-})
 
-describe("WATCHERS", () => {
-  it("onValueChange() => sets $data attribs as expected", async () => {
-    wrapper.setData({ hasMigrationDocumentation: "YES" })
-    wrapper.vm.hasMigrationDocumentation = "NO";
-    await Vue.nextTick();
-    expect(wrapper.vm.$data.uploadedFiles).toHaveLength(0);
-    expect(wrapper.vm.$data.removeAll).toEqual(true);
-  });
+  describe("WATCHERS", () => {
+    it("onValueChange() => sets $data attribs as expected", async () => {
+      wrapper.setData({ hasMigrationDocumentation: "YES" })
+      wrapper.vm.hasMigrationDocumentation = "NO";
+      await Vue.nextTick();
+      expect(wrapper.vm.$data.uploadedFiles).toHaveLength(0);
+      expect(wrapper.vm.$data.removeAll).toEqual(true);
+    });
 
-})
+  })
 })
