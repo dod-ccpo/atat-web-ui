@@ -82,16 +82,14 @@
                     <PortfoliosSummary 
                       active-tab="ALL" 
                       default-sort="DESCsys_updated_on"
-                      :isHomeView="true" 
-                      :isProdEnv="isProdEnv"
+                      :isHomeView="true"
                     />
-                    <!-- ATAT TODO - remove isProdEnv when ATAT ready for PROD -->
 
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
 
-              <div class="_view-all _portfolios bg-white" v-if="!isProdEnv">
+              <div class="_view-all _portfolios bg-white">
                 <a
                   id="ViewAllPortfoliosLink"
                   role="button"
@@ -246,10 +244,6 @@ export default class ExistingUser extends Vue {
   }
   public get userHasPortfolios(): boolean {
     return CurrentUserStore.getUserHasPortfolios;
-  }
-
-  public get isProdEnv(): boolean {
-    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
   }
 
   public TONumber = "";

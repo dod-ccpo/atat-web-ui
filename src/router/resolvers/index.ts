@@ -104,10 +104,6 @@ export const BVTOResolver = (current: string): string => {
     : routeNames.EvalPlanDetails;
 };
 
-const isProdEnv = (): boolean | null => {
-  return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
-}
-
 export const ProposedCSPRouteResolver = (current: string): string => {
   return current === routeNames.Exceptions && evalPlanRequired() 
     ? routeNames.CreateEvalPlan
@@ -327,7 +323,10 @@ export const SummaryStepSevenRouteResolver = (current: string): string =>{
   if (isStepTouched(7)){
     return routeNames.SummaryStepSeven;
   }
-  return current;
+
+  return current === routeNames.Travel
+    ? routeNames.PII
+    : routeNames.Travel
 }
 
 export const PIIRecordResolver = (current: string): string => {
