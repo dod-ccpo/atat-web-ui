@@ -50,7 +50,6 @@
 /* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { invalidFile, RadioButton, uploadingFile, YesNo } from "../../../../types/Global";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AttachmentDTO} from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -61,6 +60,7 @@ import CurrentEnvironment,
 import Attachments from "@/store/attachments";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
 import {TABLENAME as CURRENT_ENVIRONMENT_TABLE} from "@/api/currentEnvironment";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -88,6 +88,8 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
   private maxFileSizeInBytes = 1073741824;
   private validFileFormats = ["csv","xlsx","pdf","jpg","png","docx"];
   private uploadedFiles: uploadingFile[] = [];
+  private saveOnLeaveError: string| unknown = "";
+  private onUploadError: string| unknown = "";
 
   public hasMigrationDocumentation: YesNo = "";
   private get currentData(): Record<string, string> {
@@ -123,35 +125,22 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
-        // TODO - which store to save to?
-        await CurrentEnvironment.saveCurrentEnvironment();
-        // AcquisitionPackage.setCurrentEnvironment(this.currEnvDTO); // TODO: not to this for now
-
-        // will be used when SNOW store has been wired
-        // await AcquisitionPackage.saveData<CurrentEnvironmentDTO>({
-        //   data: this.currentData,
-        //   storeProperty: StoreProperties.CurrentEnvironment
-        // });
+        const isCurrentEnvironmentSaved = 
+          await CurrentEnvironment.saveCurrentEnvironment();
+      
       }
     } catch (error) {
       console.log(error);
+      this.saveOnLeaveError = error as string;
     }
     return true;
-  }
-
-  @Watch('selectedUpload')
-  private selectedUploadChange(): void{
-    if(this.hasMigrationDocumentation === "NO"){
-      this.uploadedFiles = []
-      this.removeAll = true
-    }
   }
 
   /**
    * On file upload, once the file attachment gets uploaded to the proper place,
    * the current environment's migration_documentation array needs to be
    * updated with the sys_id of the newly added attachment. This function
-   * takes of this and follows up with a call-out to save the current environment.
+   * does this and follows up with a call-out to save the current environment.
    */
   public async onUpload(file: uploadingFile): Promise<void> {
     try {
@@ -165,10 +154,11 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
         }
         // console.log(this.currEnvDTO);
         // the updated migration_documentation will need to be saved
-        await CurrentEnvironment.setCurrentEnvironment();
+        await CurrentEnvironment.setCurrentEnvironment(this.currEnvDTO);
       }
     } catch (error) {
-      console.error(`error completing file upload with id ${file?.attachmentId}`);
+      this.onUploadError = `error completing file upload with id ${file?.attachmentId}`;
+      console.log(this.onUploadError)
     }
   }
 

@@ -177,13 +177,16 @@ describe("Testing ProcurementHistorySummary Component", () => {
     })
 
     describe("saveOnLeave() =>", () => {
+      beforeEach(()=>{
+        wrapper.setData({dataSource});
+      })
       
       it("calls functions if dataSource has length > 0 ", async () => {
         jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
           .mockImplementation(()=>Promise.resolve());
         jest.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
           .mockImplementation(()=>Promise.resolve());
-        wrapper.setData({dataSource});
+        
         await wrapper.vm.saveOnLeave();
         expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalledWith(
           wrapper.vm.$data.dataSource
@@ -192,10 +195,13 @@ describe("Testing ProcurementHistorySummary Component", () => {
 
       it("mocks an error", async () => {
         const errMessage = 'errMessage'
-        const mockFunction = jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
+
+        jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
+          .mockRejectedValue(errMessage)
+        jest.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
           .mockRejectedValue(errMessage)
         await wrapper.vm.saveOnLeave();
-        expect(wrapper.vm.$data.saveOnLeaveError).not.toBeNull;
+        expect(wrapper.vm.$data.saveOnLeaveError).toBe(errMessage)
       })
     });
 
