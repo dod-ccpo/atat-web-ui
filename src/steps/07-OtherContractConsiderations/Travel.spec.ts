@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
@@ -164,18 +166,18 @@ describe("Testing Travel Page", () => {
 
     it("creates number of trips text correctly", () => {
       wrapper.setData({travelItem: {
-          ...wrapper.vm.$data.travelItem,
-          number_of_trips: "1",
-          selected_periods: [ "BASE PERIOD" ]
-        }
+        ...wrapper.vm.$data.travelItem,
+        number_of_trips: "1",
+        selected_periods: [ "BASE PERIOD" ]
+      }
       });
       let numTripsText = wrapper.vm.createNumberOfTripsTexts(wrapper.vm.$data.travelItem);
       expect(numTripsText).toBe("1 total");
 
       wrapper.setData({travelItem: {
-          ...wrapper.vm.$data.travelItem,
-          number_of_trips: "2"
-        }
+        ...wrapper.vm.$data.travelItem,
+        number_of_trips: "2"
+      }
       });
       numTripsText = wrapper.vm.createNumberOfTripsTexts(wrapper.vm.$data.travelItem);
       expect(numTripsText).toBe("2 total (2 per period)");
