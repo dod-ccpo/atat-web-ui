@@ -57,6 +57,7 @@ module.exports = {
     "<rootDir>/src/steps/03-Background/components/*.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentContract/*.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.spec.ts",
+    "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.spec.ts",
     "<rootDir>/src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
