@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: "jsdom",
 
   // Indicates whether the coverage information should be collected while executing the test
-  collectCoverage: false,
+  collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [ 
@@ -58,6 +58,7 @@ module.exports = {
     "<rootDir>/src/steps/03-Background/CurrentContract/*.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironment.spec.ts",
+    "<rootDir>/src/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.spec.ts",
     "<rootDir>/src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
