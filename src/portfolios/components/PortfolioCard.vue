@@ -60,7 +60,7 @@
           </span>
 
         </div>
-        <div v-if="!isActive || cardData.fundingAlertChipString">
+        <div v-if="!isActive || cardData.fundingAlertChipString" class="ml-5">
           <v-chip
             :id="'StatusChip' + index" 
             :class="statusChipBgColor" 
