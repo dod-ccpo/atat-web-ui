@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
@@ -6,6 +7,9 @@ import ClassificationLevelsPage
 import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import { CurrentEnvironmentDTO } from "@/api/models";
+
 
 
 
@@ -20,59 +24,13 @@ describe("Testing Classification Level Page", () => {
   config.showDeprecationWarnings = false
   Vue.config.silent = true;
 
-  const allClassificationLevels = [
-
-    {
-      "sys_id": "class1",
-      "sys_mod_count": "0",
-      "impact_level": "IL4",
-      "classification": "U",
-    },
-    {
-      "sys_id": "class2",
-      "sys_mod_count": "0",
-      "impact_level": "",
-      "classification": "TS",
-    },
-    {
-      "sys_id": "class3",
-      "sys_mod_count": "0",
-      "impact_level": "IL6",
-      "classification": "S",
-    },
-    {
-      "sys_id": "class4",
-      "sys_mod_count": "0",
-      "impact_level": "IL2",
-      "classification": "U",
-    },
-    {
-      "sys_id": "class5",
-      "sys_mod_count": "0",
-      "impact_level": "IL5",
-      "classification": "U",
-    }
-  ]
-  const selectedClassifications = [
-    {
-      "classification": "U",
-      "impact_level": "IL4",
-      "sys_id": "class1",
-      "sys_mod_count": "0",
-    },
-    {
-      "classification": "U",
-      "impact_level": "IL5",
-      "sys_id": "class5",
-      "sys_mod_count": "0",
-    },
-    {
-      "classification": "U",
-      "impact_level": "IL2",
-      "sys_id": "class4",
-      "sys_mod_count": "0",
-    },
-  ]
+  const mockEnvironment:CurrentEnvironmentDTO = {
+    env_location: "HYBRID"
+  } as CurrentEnvironmentDTO
+  const mockCurrent = {
+    envClassificationsCloud: [],
+    envClassificationsOnPrem: [],
+  }
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -80,13 +38,27 @@ describe("Testing Classification Level Page", () => {
       localVue,
       vuetify,
     });
+    jest.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
+      () => Promise.resolve(mockEnvironment)
+    );
   });
 
-  describe("Initialization....", () => {
-    it("tests that component renders successfully", async () => {
+  describe("FUNCTIONS", () => {
+    beforeEach(() => {
+      wrapper.setData({})
+    })
+    it("test CurrentData()", async () => {
+
       expect(wrapper.exists()).toBe(true);
     });
-
+    it("saveOnLeave()", async () => {
+      wrapper.setData({
+        currentData: {env_location: "ON_PREM"},
+        savedData: {env_location: "CLOUD"}
+      })
+      const saveOnLeave = await wrapper.vm.saveOnLeave()
+      expect(saveOnLeave).toBeTruthy();
+    });
   });
 
 })
