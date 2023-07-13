@@ -338,6 +338,15 @@ export const PIIRecordResolver = (current: string): string => {
   return current === routeNames.PII ? routeNames.BAA : routeNames.PII;
 };
 
+export const BAARecordResolver = (current: string): string => {
+  const hasSystemOfRecord = AcquisitionPackage.sensitiveInformation?.pii_present === "YES";
+  // if system of record will be included, route to system of records page
+  if (hasSystemOfRecord) {
+    return routeNames.PIIRecord;
+  }
+  return current === routeNames.PII ? routeNames.BAA : routeNames.PII;
+};
+
 export const FOIARecordResolver = (current: string): string => {
   const needsFOIACoordinator 
     = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful === "YES";
@@ -1698,7 +1707,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PortfolioDetailsRouteResolver,
   SummaryStepSevenRouteResolver,
   ClassificationRequirementsResolver,
-  ContractTypeResolver
+  ContractTypeResolver,
+  BAARecordResolver
 };
 
 // add path resolvers here 

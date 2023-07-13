@@ -212,7 +212,8 @@ import {
   OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
   ClassificationRequirementsResolver,
-  ContractTypeResolver
+  ContractTypeResolver,
+  BAARecordResolver
 } from "./resolvers";
 
 export const routeNames = {
@@ -1133,6 +1134,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnLeave: routeNames.BAA,
         completePercentageWeight: 2,
         component: BAA,
+        routeResolver:BAAResolver
       },
       {
         menuText: "Public Disclosure of Information",
