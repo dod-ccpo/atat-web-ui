@@ -1,5 +1,5 @@
 
-.v-textarea{
+.v-textarea {
   fieldset{
     border: 1px solid $base;
     border-radius: 4px;
@@ -27,6 +27,15 @@
     display: flex;
     justify-content: flex-end;
     padding-right: 0 !important;
+  }
+  &.v-input--is-readonly {
+    border: none !important;
+    .v-input__control {
+      background-color: white !important;
+    }
+    textarea {
+      color: $base-darker;
+    }
   }
 }
 

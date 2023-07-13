@@ -4,7 +4,6 @@
     :class="{ '_first': index === 0, '_last': isLastCard }"
     elevation="0"
   >
-
     <div class="pr-5" v-if="hasCSP">
       <div class="_csp-icon-wrap" :data-csp="CSPs[cspKey].title">
         <v-tooltip
@@ -35,13 +34,7 @@
     <div class="pr-8 flex-grow-1">
       <div class="d-flex">
         <div class="card-header flex-grow-1">
-          <!-- 
-          ----------------------------------------------------------
-            -- ATAT TODO -  remove isProdEnv when ATAT ready for PROD -- 
-          ----------------------------------------------------------
-          -->
-          <a v-if="!isProdEnv"
-            :id="'PortfolioName' + index"
+          <a :id="'PortfolioName' + index"
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _portfolio-name"
@@ -58,9 +51,8 @@
               name="manageAccount" width="20" height="17" color="base" class="ml-3"
             />
           </span>
-
         </div>
-        <div v-if="!isActive || cardData.fundingAlertChipString">
+        <div v-if="!isActive || cardData.fundingAlertChipString" class="ml-5">
           <v-chip
             :id="'StatusChip' + index" 
             :class="statusChipBgColor" 
@@ -165,13 +157,7 @@
       </div>
     </div>
 
-    <!-- 
-      ------------------------------------------------------------
-      -- ATAT TODO -  remove isProdEnv when ATAT ready for PROD -- 
-      ------------------------------------------------------------
-    -->
-    <ATATMeatballMenu 
-      v-if="!isProdEnv"
+    <ATATMeatballMenu
       :id="'PortfolioCardMenu' + index"
       :left="true"
       :index="index"
@@ -218,7 +204,6 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
   @Prop({ default: false }) public isHomeView?: boolean;
-  @Prop({ default: true}) public isProdEnv!: boolean;
 
   public showLeavePortfolioModal = false;
 
@@ -388,10 +373,11 @@ export default class PortfolioCard extends Vue {
         title: "View funding tracker",
         action: this.menuActions.viewFundingTracker
       },
+      /*
       { 
         title: "View task orders",
         action: this.menuActions.viewTaskOrders
-      },
+      },*/
     ]; 
 
     // ATAT TODO -- add functionality in AT-9099?
@@ -404,16 +390,17 @@ export default class PortfolioCard extends Vue {
     //   );
     // }
 
-    if (!this.isHaCCAdmin && (this.cardData.isManager && this.cardData.portfolio_managers &&
-      this.cardData.portfolio_managers.split(",").length > 1) || !this.cardData.isManager
-    ) {
-      this.portfolioCardMenuItems.push(
-        { 
-          title: "Leave this portfolio",
-          action: this.menuActions.leavePortfolio
-        },
-      );
-    }
+    // ATAT TODO IN AT-9331
+    // if (!this.isHaCCAdmin && (this.cardData.isManager && this.cardData.portfolio_managers &&
+    //   this.cardData.portfolio_managers.split(",").length > 1) || !this.cardData.isManager
+    // ) {
+    //   this.portfolioCardMenuItems.push(
+    //     { 
+    //       title: "Leave this portfolio",
+    //       action: this.menuActions.leavePortfolio
+    //     },
+    //   );
+    // }
 
     // ATAT TODO - future ticket - provide link to each unclassified environment portal
     // eslint-disable-next-line max-len

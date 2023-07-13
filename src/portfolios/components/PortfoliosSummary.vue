@@ -98,9 +98,7 @@
         :isHaCCAdmin="isHaCCAdmin"
         @leavePortfolio="leavePortfolio"
         :isHomeView="isHomeView"
-        :isProdEnv="isProdEnv"
       />
-      <!-- ATAT TODO - remove isProdEnv when ATAT ready for PROD -->
 
       <div class="_table-pagination mt-5" v-show="showPagination">
         <span class="mr-11 font-weight-400 font-size-14">
@@ -176,7 +174,6 @@ export default class PortfoliosSummary extends Vue {
   @Prop({ default: "ALL" }) public activeTab!: "ALL" | "ACTIVE" | "PROCESSING";
   @Prop({ default: false }) public isHomeView?: boolean;
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
-  @Prop({ default: true}) public isProdEnv!: boolean;
 
   public isHaCCAdmin = CurrentUserStore.currentUserIsHaCCAdmin;
 

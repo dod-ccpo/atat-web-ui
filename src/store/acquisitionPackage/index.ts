@@ -1313,8 +1313,7 @@ export class AcquisitionPackageStore extends VuexModule {
         text += " by reviewing the JWCC contractor's catalogs to determine " +
           "if other similar offerings (to include: " + 
           this.fairOpportunity.cause_product_feature_name + ") " +
-          "meet or can be modified to satisfy the Government’s requirements. The results " + 
-          "have determined that no other offering is suitable as follows: " +
+          "meet or can be modified to satisfy the Government’s requirements. " +
           this.fairOpportunity.research_review_catalogs_review_results + " " +
           "Therefore, it was determined the " + 
           this.fairOpportunity.cause_product_feature_name + " " +
