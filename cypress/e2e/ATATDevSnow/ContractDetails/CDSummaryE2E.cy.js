@@ -160,7 +160,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     cy.selectCheckBoxes([scb_5Sel, tscb_6Sel, tscb_9Sel]);
     cy.wait(4000);
     cy.clickContinueButton(contractDetails.checkbox_1, "Do you require a cross-domain solution (CDS)?");
-    if (cdsOption = "Yes") {
+    if (cdsOption == "Yes") {
       cy.findElement(contractDetails.cdsYesOption)
         .click({
           force: true
@@ -170,7 +170,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
       cy.enterTextInTextField(contractDetails.cdsTStoSTxtbox, cdsText);
       cy.enterTextInTextField(contractDetails.projectedFSField, pfsText);
       cy.anticipatedNeedUsage(contractDetails.anticipatedTxtbox, soText, contractDetails.entiredDurationNo);
-    } else if (cdsOption = "No") {
+    } else if (cdsOption == "No") {
       cy.findElement(contractDetails.cdsNoOption)
         .click({
           force: true
