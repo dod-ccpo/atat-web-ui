@@ -500,6 +500,7 @@ export interface User {
   dsnPhone?: string; // field is "home_phone" in SNOW sys_user table
   userName?: string;
   sys_id?: string;
+  title?: string;
 }
 
 export interface Operator {
@@ -531,6 +532,8 @@ export interface Portfolio extends BaseTableDTO {
   createdBy?: string;
   provisioned?: string;
   members?: User[];
+  portfolio_owner?: string;
+  portfolio_owner_detail?: User;
   portfolio_managers?: string
   portfolio_managers_detail?: User[];
   portfolio_viewers?: string;
@@ -554,6 +557,7 @@ export interface PortfolioCardData extends Portfolio {
   fundsSpent?: string;
   fundsSpentPercent?: string;
   fundsRemaining?: string;
+  isOwner?: boolean;
   isManager?: boolean;
 }
 

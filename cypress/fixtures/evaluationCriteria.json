@@ -1,8 +1,8 @@
 {
   "fairOpportunity": {
-    "headerText": "Let’s see if you qualify for an exception to the fair opportunity process",
+    "headerText": "Let’s see if you qualify for an exception to fair opportunity",
     "alertHeaderText": "Fair opportunity",
-    "alertMessage": "Each Cloud Service Provider (CSP) available within the JWCC contract must be given a fair opportunity to be considered for task orders exceeding the micro-purchase threshold, unless a statutory exception applies. Any exceptions will require written justification, in accordance with FAR 16.505(b)(2). We will help you complete justification documentation, if needed.",
+    "alertMessage": "Let’s see if you qualify for an exception to fair opportunity",
     "radioGroupLabel": "Based on your market research, do any of the following exceptions to fair opportunity apply to your acquisition?"
   },
   "needEvalPlan": {

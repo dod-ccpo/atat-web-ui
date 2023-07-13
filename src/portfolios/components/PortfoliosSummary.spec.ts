@@ -24,6 +24,7 @@ const portfolios: PortfolioSummaryDTO[] = [
     pop_start_date: "2022-01-01",
     funds_obligated: 10000,
     portfolio_status: "PROCESSING",
+    portfolio_owner: "",
     portfolio_managers: "",
     funds_spent: 5000,
     task_orders: [],
@@ -47,6 +48,7 @@ const portfolios: PortfolioSummaryDTO[] = [
     pop_start_date: "2022-01-01",
     funds_obligated: 10000,
     portfolio_status: "ACTIVE",
+    portfolio_owner: "",
     portfolio_managers: "",
     funds_spent: 5000,
     task_orders: [
