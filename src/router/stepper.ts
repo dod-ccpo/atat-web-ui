@@ -211,6 +211,8 @@ import {
   RemoveBarriersFormRouteResolver,
   OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
+  ClassificationRequirementsResolver,
+  ContractTypeResolver
 } from "./resolvers";
 
 export const routeNames = {
@@ -746,6 +748,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.ContractType,
         component: ContractType,
+        routeResolver: ContractTypeResolver
       },
       {
         menuText: "Classification Requirements",
@@ -753,6 +756,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: ClassificationRequirements,
+        routeResolver: ClassificationRequirementsResolver
       },
       {
         menuText: "Security Requirements",

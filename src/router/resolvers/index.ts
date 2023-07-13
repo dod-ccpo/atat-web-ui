@@ -1547,6 +1547,22 @@ export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): 
   return highSideObjs.length > 0;
 };
 
+export const ContractTypeResolver = (current: string): string => {
+  const isFromRecurringRequirments = 
+    current === routeNames.RecurringRequirement;
+  return  isStepTouched(3) && isFromRecurringRequirments
+    ? routeNames.SummaryStepThree
+    : routeNames.ContractType
+}
+
+
+export const ClassificationRequirementsResolver = (current: string): string => {
+  const isFromContractType = current === routeNames.ContractType;
+  return isStepTouched(3) && isFromContractType
+    ? routeNames.SummaryStepThree
+    : routeNames.ClassificationRequirements
+}
+
 export const SecurityRequirementsResolver = (current: string): string => {
   
   const classifications = ClassificationRequirements.selectedClassificationLevels;
@@ -1680,7 +1696,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ContractingInfoResolver,
   SummaryStepThreeRouteResolver,
   PortfolioDetailsRouteResolver,
-  SummaryStepSevenRouteResolver
+  SummaryStepSevenRouteResolver,
+  ClassificationRequirementsResolver,
+  ContractTypeResolver
 };
 
 // add path resolvers here 
