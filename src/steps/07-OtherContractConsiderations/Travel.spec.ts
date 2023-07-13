@@ -103,7 +103,7 @@ describe("Testing Travel Page", () => {
       expect(wrapper.vm.$data.tableData).toHaveLength(1);
     });
 
-    it("constructs confirmDeleteModal as expected", () => {
+    it("constructs confirmDeleteModal for a delete all request", () => {
       jest.spyOn(wrapper.vm, "deleteAll", "get").mockReturnValue(true);
       wrapper.vm.confirmDeleteModal(testTravelItem);
       expect(wrapper.vm.$data.travelItem).toStrictEqual(testTravelItem);
@@ -111,20 +111,31 @@ describe("Testing Travel Page", () => {
       expect(wrapper.vm.$data.deleteInstanceModalTitle).toBe("Delete trips");
     });
 
+    it("constructs confirmDeleteModal for a single delete", () => {
+      jest.spyOn(wrapper.vm, "deleteAll", "get").mockReturnValue(false);
+      wrapper.setData({travelItem: {
+          ...wrapper.vm.$data.travelItem,
+         trip_location: "Bahamas"
+        }
+      });
+      wrapper.vm.confirmDeleteModal(wrapper.vm.$data.travelItem);
+      expect(wrapper.vm.$data.deleteInstanceModalTitle).toBe("Delete trip to Bahamas?");
+    });
+
     it("successfully deletes all instances if deleteAll is true", async () => {
       jest.spyOn(wrapper.vm, "deleteAll", "get").mockReturnValue(true);
       DescriptionOfWork.deleteTravelAll = jest.fn();
+      DescriptionOfWork.setConfirmTravelDeleteAll = jest.fn();
       await wrapper.vm.deleteInstance();
       expect(DescriptionOfWork.deleteTravelAll).toHaveBeenCalled();
+      expect(DescriptionOfWork.setConfirmTravelDeleteAll).toHaveBeenCalled();
       expect(wrapper.vm.$data.tableData).toStrictEqual([]);
       expect(mockRouter.push).toHaveBeenCalled();
-      expect(wrapper.vm.$data.tableData)
     });
 
     it("successfully deletes single instance if deleteAll is false", async () => {
       jest.spyOn(wrapper.vm, "deleteAll", "get").mockReturnValue(false);
       DescriptionOfWork.deleteTravelAll = jest.fn();
-      DescriptionOfWork.deleteTravelInstance = jest.fn();
       wrapper.vm.$data.tableData.push(wrapper.vm.createInstance());
       await wrapper.setData({
         travelItem: {
@@ -134,6 +145,20 @@ describe("Testing Travel Page", () => {
       await wrapper.vm.deleteInstance();
       expect(DescriptionOfWork.deleteTravelAll).toHaveBeenCalled();
       expect(wrapper.vm.$data.tableData).toStrictEqual([]);
+    });
+
+    it("successfully deletes single instance if deleteAll is false with multiple instances",
+        async () => {
+      jest.spyOn(wrapper.vm, "deleteAll", "get").mockReturnValue(false);
+      DescriptionOfWork.deleteTravelInstance = jest.fn();
+      wrapper.vm.$data.tableData.push(wrapper.vm.createInstance(), wrapper.vm.createInstance());
+      await wrapper.setData({
+        travelItem: {
+          ...wrapper.vm.$data.travelitem,
+          sys_id: "1" }
+      });
+      await wrapper.vm.deleteInstance();
+      expect(DescriptionOfWork.deleteTravelInstance).toHaveBeenCalled();
     });
 
     it("successfully cancels delete modal", () => {
@@ -162,6 +187,17 @@ describe("Testing Travel Page", () => {
       });
       const periodText = wrapper.vm.createPeriodText(wrapper.vm.$data.travelItem.selected_periods);
       expect(periodText).toBe("Base, OP1");
+    });
+
+    it("creates correct text based on period checkbox with no matching items", () => {
+      wrapper.setData({
+        travelItem: {
+          ...wrapper.vm.$data.travelItem,
+          selected_periods: ["BASE PERIOD", "OPTION PERIOD"]
+        }
+      });
+      const periodText = wrapper.vm.createPeriodText(wrapper.vm.$data.travelItem.selected_periods);
+      expect(periodText).toBe(", ");
     });
 
     it("creates number of trips text correctly", () => {
