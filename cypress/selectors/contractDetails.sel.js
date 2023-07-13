@@ -1,7 +1,7 @@
 module.exports = {
   // Let’s gather some details about the duration of your task order
   popLearnMoreLink: "#PopLearnMore",
-  popText: "p.mb-10",
+  popText: "#app-content p",
   popLengthLabelText: "div.mb-4._semibold",
   mainWrap: ".v-main__wrap",
   baseRow: "#BaseRow",
@@ -150,5 +150,18 @@ module.exports = {
   entiredDurationNo: "#EntireDuration_01_radio_group_control #Radio_No",
   entiredDurationYes: "#EntireDuration_01_radio_group_control #Radio_Yes",
   entiredDurationError: "#EntireDuration_01_radio_group_control .field-error",
-  activeEntireDurtionOption:"#EntireDuration_01_radio_group_control .v-item--active"
+  activeEntireDurtionOption:"#EntireDuration_01_radio_group_control .v-item--active",
+
+// ContractDetails Summary
+popHeading: "#PeriodofPerformancePoP_Heading",
+popDescription: "#PeriodofPerformancePoP_Description",
+popComplete: "#PeriodofPerformancePoP_CompleteButton",
+
+contractTypeHeading: "#ContractType_Heading",
+contractTypeDescription: "#ContractType_Description",
+contractComplete: "#ContractType_CompleteButton",
+
+classReqHeading: " #ClassificationRequirements_Heading",
+classReqDescription: "#ClassificationRequirements_Description",
+classReqComplete: "#ContractType_CompleteButton"
 };
