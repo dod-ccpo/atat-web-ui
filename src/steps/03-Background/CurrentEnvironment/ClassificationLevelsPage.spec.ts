@@ -11,8 +11,6 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { CurrentEnvironmentDTO } from "@/api/models";
 
 
-
-
 Vue.use(Vuetify);
 
 describe("Testing Classification Level Page", () => {
@@ -28,7 +26,12 @@ describe("Testing Classification Level Page", () => {
     env_location: "HYBRID"
   } as CurrentEnvironmentDTO
   const mockCurrent = {
-    envClassificationsCloud: [],
+    envClassificationsCloud: ["U","S"],
+    envClassificationsOnPrem: [],
+  }
+
+  const mockSaveData = {
+    envClassificationsCloud: ["U"],
     envClassificationsOnPrem: [],
   }
 
@@ -41,23 +44,31 @@ describe("Testing Classification Level Page", () => {
     jest.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
       () => Promise.resolve(mockEnvironment)
     );
+
   });
 
   describe("FUNCTIONS", () => {
     beforeEach(() => {
-      wrapper.setData({})
-    })
-    it("test CurrentData()", async () => {
-
-      expect(wrapper.exists()).toBe(true);
-    });
-    it("saveOnLeave()", async () => {
       wrapper.setData({
-        currentData: {env_location: "ON_PREM"},
-        savedData: {env_location: "CLOUD"}
+        currentData: mockCurrent,
+        savedData: mockSaveData
       })
+    })
+    it("test saveOnLeave() return true", async () => {
+      jest.spyOn(CurrentEnvironment, 'setCurrentEnvironment').mockImplementation(
+        () => Promise.resolve()
+      );
       const saveOnLeave = await wrapper.vm.saveOnLeave()
       expect(saveOnLeave).toBeTruthy();
+    });
+
+    it("test saveOnLeave() error state", async () => {
+      console.log = jest.fn();
+      jest.spyOn(CurrentEnvironment, 'setCurrentEnvironment').mockImplementation( () => {
+        throw new Error("mock error");
+      });
+      const saveOnLeave = await wrapper.vm.saveOnLeave();
+      expect(console.log).toHaveBeenCalledWith(Error("mock error"));
     });
   });
 
