@@ -20,9 +20,9 @@ describe("Testing CurrentEnvironment Component", () => {
   } as CurrentEnvironmentDTO
 
   const mockEnvInstances:CurrentEnvironmentInstanceDTO[] = [
-    {instance_location:"CLOUD"},
-    {instance_location:"ON_PREM"},
-    {instance_location:"HYBRID"}
+    {instance_location:"CLOUD", sys_id: "1"},
+    {instance_location:"ON_PREM", sys_id: "2"},
+    {instance_location:"HYBRID", sys_id: "3"}
   ] as CurrentEnvironmentInstanceDTO[]
 
   beforeEach(() => {
@@ -50,6 +50,16 @@ describe("Testing CurrentEnvironment Component", () => {
       const currentData = wrapper.vm.currentData
       expect(currentData).toStrictEqual({"env_location": ""})
     });
+    it("test get deleteInstanceType returns 'ON_PREM'",async () => {
+      wrapper.setData({changeToEnv: "CLOUD"})
+      expect(wrapper.vm.deleteInstanceType).toBe("ON_PREM")
+    });
+
+    it("test get deleteInstanceType returns 'CLOUD'",async () => {
+      wrapper.setData({changeToEnv: "DUMMY_ENV"})
+      expect(wrapper.vm.deleteInstanceType).toBe("CLOUD")
+    });
+    
 
 
   })
@@ -82,11 +92,40 @@ describe("Testing CurrentEnvironment Component", () => {
       wrapper.vm.cancelDeleteInstances()
       expect(confirmDialog).toBe(false);
     })
-    it("test deleteInstances()", async() => {
-      const confirmDialog = wrapper.vm.$data.showConfirmDialog
-      console.log(wrapper.vm.$data.envInstances)
-      wrapper.vm.deleteInstances()
-      expect(confirmDialog).toBe(false);
+    describe("deleteInstances() => ", () => {
+      it("ensure store functions get called", async() => {
+        const deleteEnvInstanceMock = 
+          jest.spyOn(CurrentEnvironment, "deleteEnvironmentInstance").mockImplementation(
+            async ()=>Promise.resolve()
+          );
+        const clearEnvClassificationsMock = 
+          jest.spyOn(CurrentEnvironment, "clearEnvClassifications").mockImplementation(
+            async ()=>Promise.resolve()
+          );
+
+        await CurrentEnvironment.setCurrentEnvironmentInstances(mockEnvInstances)
+        await wrapper.vm.deleteInstances()
+        expect(deleteEnvInstanceMock).toHaveBeenCalled();
+        expect(clearEnvClassificationsMock).toHaveBeenCalled();
+      })
+      it("sets $data.instanceRemovedToast.message to `On-premise`", async() => {
+        const dummyEnv = "CLOUD"
+        wrapper.vm.$data.changeToEnv = dummyEnv
+        await wrapper.vm.deleteInstances()
+        expect (wrapper.vm.$data.instanceRemovedToast.message).toContain("On-premise")
+      })
+      it("sets $data.instanceRemovedToast.message to `Cloud`", async() => {
+        const dummyEnv = ""
+        wrapper.vm.$data.changeToEnv = dummyEnv
+        await wrapper.vm.deleteInstances()
+        expect (wrapper.vm.$data.instanceRemovedToast.message).toContain("Cloud")
+      })
+    })
+
+    it("test hasInstances() return true", async() => {
+      await CurrentEnvironment.setCurrentEnvironmentInstances(mockEnvInstances)
+      console.log(wrapper.vm.envInstances);
+      expect(wrapper.vm.hasInstances('CLOUD')).toBe(true);
     })
 
 
