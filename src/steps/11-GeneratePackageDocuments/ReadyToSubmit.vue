@@ -110,9 +110,11 @@ export default class ReadyToSubmit extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    await acquisitionPackage.setCurrentUser();
+    this.currentUserIsMissionOwner = AcquisitionPackage.currentUserIsMissionOwner;
     await acquisitionPackage.setDisableContinue(true);
-    
   }
+  
   async mounted(): Promise<void>{
     await this.loadOnEnter()
   }

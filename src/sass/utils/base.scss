@@ -580,3 +580,19 @@ textarea {
   border-radius:4px;
   font-weight: 500;
 }
+
+
+._auto-input-width {
+  display: inline-block;
+  letter-spacing: 0;
+  white-space: pre;
+  position: absolute;
+  left: -10000px;
+  top: -10000px;
+
+  &._portfolio-title {
+    font-size: 24px;
+    font-family: $heading-font;
+    font-weight: 500;  
+  }
+}

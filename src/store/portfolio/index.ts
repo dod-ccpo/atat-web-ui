@@ -528,6 +528,9 @@ export class PortfolioDataStore extends VuexModule {
   public get getShowAddMembersModal(): boolean {
     return this.showAddMembersModal;
   }
+  public currentUserIsViewer = false;
+  public currentUserIsManager = false;
+  public currentUserIsOwner = false;
 
   @Action
   public async setCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
@@ -536,6 +539,7 @@ export class PortfolioDataStore extends VuexModule {
     if (env && env.sys_id) {
       await this.setCurrentEnvSysId(env.sys_id);
     }
+    await this.doSetCurrentUserRole();
   }
 
   @Mutation
@@ -563,6 +567,16 @@ export class PortfolioDataStore extends VuexModule {
     this.activeTaskOrderNumber = portfolioData.taskOrderNumber 
       ? portfolioData.taskOrderNumber : "";
     this.activeTaskOrderSysId = portfolioData.taskOrderSysId ? portfolioData.taskOrderSysId : "";
+  }
+
+  @Mutation
+  public async doSetCurrentUserRole(): Promise<void> {
+    const sysId = CurrentUserStore.currentUser.sys_id as string;
+    this.currentUserIsManager =
+      this.currentPortfolio.portfolio_managers?.includes(sysId) as boolean;
+    this.currentUserIsViewer =
+      this.currentPortfolio.portfolio_viewers?.includes(sysId) as boolean;
+    this.currentUserIsOwner = this.currentPortfolio.portfolio_owner === sysId;
   }
 
   @Action

@@ -1,20 +1,21 @@
 import {
   AgencyDTO,
-  ClassificationLevelDTO, DisaOrganizationDTO,
+  ClassificationLevelDTO,
+  DisaOrganizationDTO,
   EvalPlanAssessmentAreaDTO,
   EvalPlanDifferentiatorDTO,
   PeriodDTO,
   ReferenceColumn,
   SystemChoiceDTO
 } from "@/api/models";
-import { Checkbox, RadioButton, SelectData, User } from "types/Global";
+import {Checkbox, RadioButton, SelectData, User} from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
-import { Statuses } from "@/store/acquisitionPackage";
+import {Statuses} from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
-import { differenceInDays, differenceInMonths, format, formatISO, parse, parseISO } from "date-fns";
+import {differenceInDays, differenceInMonths, format, formatISO, parseISO} from "date-fns";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import { AxiosRequestConfig } from "axios";
+import {AxiosRequestConfig} from "axios";
 import api from "@/api";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
@@ -534,7 +535,6 @@ export const getTableRecordCount = async (table: string, query: string ): Promis
     },
   };
   /* eslint-enable camelcase */
-  const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;  
-  const count = parseInt(response.result.stats.count)
-  return count;
+  const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;
+  return parseInt(response.result.stats.count);
 }
