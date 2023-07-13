@@ -154,10 +154,7 @@ export class PortfolioSummaryStore extends VuexModule {
         sysparm_offset: searchDTO.offset
       }
     };
-    console.log(`req: ${JSON.stringify(portfolioSummaryListRequestConfig)}`);
-    const res = await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
-    console.log(`res: ${JSON.stringify(res)}`);
-    return res;
+    return await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
   }
 
   /**
