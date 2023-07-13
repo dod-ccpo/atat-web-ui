@@ -437,19 +437,19 @@ export default class PortfoliosSummary extends Vue {
 
     storeData.portfolioSummaryList.forEach((portfolio) => {
       const cardData: PortfolioCardData = {};
+      cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
       cardData.lastUpdated = portfolio.last_updated;      
       cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";
-
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
       cardData.description = portfolio.description;
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.portfolio_funding_status;
+      cardData.portfolio_owner = portfolio.portfolio_owner;
       cardData.portfolio_managers = portfolio.portfolio_managers;
       cardData.portfolio_viewers = portfolio.portfolio_viewers;
       cardData.createdBy = portfolio.sys_created_by;
-
       cardData.agency = portfolio.agency;
       cardData.agencyDisplay = portfolio.agency_display;
       cardData.environments = portfolio.environments;

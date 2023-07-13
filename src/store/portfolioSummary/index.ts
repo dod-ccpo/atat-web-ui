@@ -4,8 +4,7 @@ import {
   CloudServiceProviderDTO,
   PortfolioSummaryDTO,
   PortfolioSummaryMetadataAndDataDTO,
-  PortfolioSummarySearchDTO,
-  ReferenceColumn
+  PortfolioSummarySearchDTO
 } from "@/api/models";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
@@ -123,10 +122,11 @@ export class PortfolioSummaryStore extends VuexModule {
     if (!isHaCCAdmin) {
       if (searchDTO && searchDTO.role === "ALL") {
         query = query +
-          `^portfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`; 
+        // eslint-disable-next-line max-len
+          `^portfolio_owner=${userSysId}^ORportfolio_managersLIKE${userSysId}^ORportfolio_viewersLIKE${userSysId}`;
       } else { // "MANAGED"
         query = query +
-          `^portfolio_managersLIKE${userSysId}`;
+          `^portfolio_owner=${userSysId}^ORportfolio_managersLIKE${userSysId}`;
       }
     }
 
