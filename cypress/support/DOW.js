@@ -211,3 +211,11 @@ Cypress.Commands.add("goToContractDetailsStep", (pt, scope, radioSelector, value
     " What classification level(s) will be required for your cloud resources and/or services? ");
 
 })
+Cypress.Commands.add("anticipatedNeedUsage",(textSel, textVal, radioSel) => {
+  cy.enterTextInTextField(
+    textSel,textVal)
+  cy.findElement(radioSel).click({
+    force: true,
+  });
+
+})

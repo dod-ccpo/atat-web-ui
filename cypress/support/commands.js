@@ -281,6 +281,7 @@ Cypress.Commands.add(
       .scrollIntoView()
       .should("be.visible")
       .clear()
+      .click()
       .focus()
       .blur({ force: true })
       .then(() => {

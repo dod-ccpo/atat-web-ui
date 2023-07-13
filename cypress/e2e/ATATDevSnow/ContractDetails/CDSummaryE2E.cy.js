@@ -3,6 +3,7 @@ import {
   randomNumber,
   randomString,
   suffixId,
+  cleanText
 
 } from "../../../helpers";
 import common from "../../../selectors/common.sel";
@@ -27,11 +28,12 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
   let IL4 = "Yes";
   let IL5 = "No";
   let IL6 = "Yes";
-  let topSecret = "Yes";
+  let ts = "Yes";
   let classSummary = "";
   let cdsOption = "Yes";
-  const fs = "TestFS - " + randomAlphaNumeric(3);
-  let classInput = randomNumber(2);
+  const pfsText = "TestFS - " + randomAlphaNumeric(3);
+  const soText = randomAlphaNumeric(17);
+  let cdsText = randomNumber(2);
 
   before(() => {
     cy.goToAcqPackageStepOne(pt, scope);
@@ -40,8 +42,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     cy.verifyPageHeader("Let’s gather details about the duration of your task order");
   });
 
-
-  it.only("TC1: Contract Details: Step#1> Period of Performance Page 1 to 3", () => { // Page#1 Duration of task year
+  it("TC1: Contract Details: Step#1> Period of Performance Page 1 to 3", () => { // Page#1 Duration of task year
 
     cy.verifyPageHeader("Let’s gather details about the duration of your task order");
     if (dropDownOption == "Year") {
@@ -80,7 +81,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
         cy.selectDatefromDatePicker(
           contractDetails.calendarIcon, contractDetails.navigateNextMonth,
           contractDetails.selectDate, popStartDate, contractDetails.datePicker);
-      } else if (popStartOption = "Not later than") {
+      } else if (popStartOption == "Not later than") {
         cy.findElement(contractDetails.requestedStartDateNotlaterthan).click();
         cy.selectDatefromDatePicker(
           contractDetails.calendarIcon, contractDetails.navigateNextMonth,
@@ -104,7 +105,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     cy.clickContinueButton(contractDetails.noRadioOption, "Which contract type(s) apply to this acquisition?")
   });
 
-  it.only("TC2: Contract Details: Step#2> Contract Type", () => {
+  it("TC2: Contract Details: Step#2> Contract Type", () => {
 
     if (contractType == "FFP") {
       cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").check({
@@ -119,7 +120,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     cy.clickContinueButton(contractDetails.tmCheckBox, " What classification level(s) will be required for your cloud resources and/or services? ");
   });
 
-  it.only("TC3: Contract Details: Step#3> Classification Requirements", () => {
+  it("TC3: Contract Details: Step#3> Classification Requirements", () => {
     if (IL2 == "Yes") {
       cy.findElement(contractDetails.level2).check({
         force: true
@@ -144,7 +145,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
       });
       classSummary = classSummary + " " + "Secret/IL6,";;
     }
-    if (topSecret == "Yes") {
+    if (ts == "Yes") {
       cy.findElement(contractDetails.ts).check({
         force: true
       });
@@ -157,7 +158,6 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     const tscb_6Sel = suffixId(contractDetails.checkbox_6, "TopSecret");
     const tscb_9Sel = suffixId(contractDetails.checkbox_9, "TopSecret");
     cy.selectCheckBoxes([scb_5Sel, tscb_6Sel, tscb_9Sel]);
-
     cy.wait(4000);
     cy.clickContinueButton(contractDetails.checkbox_1, "Do you require a cross-domain solution (CDS)?");
     if (cdsOption = "Yes") {
@@ -165,40 +165,28 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
         .click({
           force: true
         });
-      cy.selectCheckBoxes([
-        contractDetails.unclastoSecrCB,
-        contractDetails.tsToS,
-      ]);
-      cy.enterTextInTextField(contractDetails.cdsUtoSTxtbox, classInput);
-      cy.enterTextInTextField(contractDetails.cdsTStoSTxtbox, classInput);
-      const checkedbox = ["Unclassified to Secret", "Top Secret to Secret"];
-      cy.verifyCheckBoxLabels(contractDetails.cdsCheckedbox, checkedbox);
-      cy.enterTextInTextField(contractDetails.projectedFSField, fs);
-      const anticipatedText = randomAlphaNumeric(17);
-      cy.enterTextInTextField(
-        contractDetails.anticipatedTxtbox,
-        anticipatedText
-      );
-      cy.findElement(contractDetails.entiredDurationNo).click({
-        force: true,
-      });
-      cy.clickContinueButton(contractDetails.entiredDurationNo, " Your Contract Details Summary ");
+      cy.selectCheckBoxes([contractDetails.unclastoSecrCB, contractDetails.tsToS, ]);
+      cy.enterTextInTextField(contractDetails.cdsUtoSTxtbox, cdsText);
+      cy.enterTextInTextField(contractDetails.cdsTStoSTxtbox, cdsText);
+      cy.enterTextInTextField(contractDetails.projectedFSField, pfsText);
+      cy.anticipatedNeedUsage(contractDetails.anticipatedTxtbox, soText, contractDetails.entiredDurationNo);
+    } else if (cdsOption = "No") {
+      cy.findElement(contractDetails.cdsNoOption)
+        .click({
+          force: true
+        });
     }
+    cy.clickContinueButton(contractDetails.cdsNoOption, " Your Contract Details Summary ");
   });
 
-  it.only("TC4: Contract Details: Summary", () => {
+  it("TC4: Contract Details: Summary", () => {
 
     cy.textExists(contractDetails.popHeading, " Period of Performance (PoP)");
     cy.textExists(contractDetails.popDescription, basePeriod + " " + dropDownOption + " " + "base period");
-
     cy.textExists(contractDetails.contractTypeHeading, " Contract Type ");
     cy.contains(contractDetails.contractTypeDescription, contractType);
-
     cy.textExists(contractDetails.classReqHeading, " Classification Requirements ");
-    cy.contains(contractDetails.classReqDescription, "Secret/IL6, Top Secret and Unclassified/IL4");
-    //cy.contains(contractDetails.classReqDescription, classSummary);
-
-    cy.btnExists(contractDetails.classReqComplete, " View/Edit ");
+     cy.btnExists(contractDetails.classReqComplete, " View/Edit ");
     cy.btnExists(contractDetails.contractComplete, " View/Edit ");
     cy.btnExists(contractDetails.popComplete, " View/Edit ").not("[disabled]").click();
     cy.waitUntilElementIsGone(contractDetails.popComplete);

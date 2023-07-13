@@ -154,7 +154,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.findElement(contractDetails.baseInputTxtBox).should("have.value", option2);
   });
 
-  it.only("TC5: Asserts: Do you want to request a PoP start date?", () => {
+  it("TC5: Asserts: Do you want to request a PoP start date?", () => {
     cy.findElement(contractDetails.addOptionLink).click();    
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.waitUntilElementIsGone(contractDetails.baseInputTxtBox);
