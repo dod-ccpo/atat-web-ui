@@ -41,7 +41,7 @@
             @click="cardMenuClick(portfolioCardMenuItems[0])"
           > 
             {{ cardData.title }}
-            <ATATSVGIcon v-if="cardData.isManager"
+            <ATATSVGIcon v-if="cardData.isOwner || cardData.isManager"
               name="manageAccount" width="20" height="17" color="base" class="ml-3"
             />
           </a>
