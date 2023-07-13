@@ -6,14 +6,14 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import ConflictOfInterest from "@/steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import validators from "@/plugins/validation";
-import {CountriesApi} from "@/api/countries";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 Vue.use(Vuetify);
 
+const localVue = createLocalVue();
+localVue.use(validators);
+
 describe("Testing Conflict of Interest Page", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue>;
 
