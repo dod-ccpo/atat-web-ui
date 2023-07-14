@@ -66,7 +66,6 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { EnvironmentLocation, RadioButton, ToastObj } from "../../../../types/Global";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -77,6 +76,7 @@ import Toast from "@/store/toast";
 
 import CurrentEnvironment,
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
