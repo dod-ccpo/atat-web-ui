@@ -4,8 +4,8 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import PackagingPackingAndShipping from "@/steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
 import validators from "@/plugins/validation";
-import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
-import {ContractConsiderationsDTO, ReferenceColumn} from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import {ContractConsiderationsDTO} from "@/api/models";
 
 Vue.use(Vuetify);
 
@@ -45,16 +45,16 @@ describe("Testing Packaging, Packing, and Shipping Page", () => {
 
 
       it("sets $data attributes as expected", async () => {
-        jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(contractConsiderations)
+        jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(contractConsiderations);
         await wrapper.vm.loadOnEnter();
         expect(wrapper.vm.$data.savedData.contractor_provided_transfer).toBe("true");
-        expect(wrapper.vm.$data.selectedOptions.length).toBeGreaterThan(0)
+        expect(wrapper.vm.$data.selectedOptions.length).toBeGreaterThan(0);
       });
 
       it("calls store function as expected", async () => {
-        jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(null)
-        const setCurrentContractMock = jest.spyOn(AcquisitionPackage, "setCurrentContract")
-          .mockImplementation()
+        jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(null);
+        const setCurrentContractMock = jest
+          .spyOn(AcquisitionPackage, "setCurrentContract").mockImplementation();
         await wrapper.vm.loadOnEnter();
         expect(setCurrentContractMock).toHaveBeenCalled();
       });
@@ -72,7 +72,8 @@ describe("Testing Packaging, Packing, and Shipping Page", () => {
           acquisition_package: ""
         }
         beforeEach(()=>{
-          jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(contractConsiderationsWithFalse)
+          jest.spyOn(AcquisitionPackage, "loadData")
+            .mockReturnValue(contractConsiderationsWithFalse);
         })
         it("sets wrapper.vm.$data as expected", async () => {
           await wrapper.vm.loadOnEnter();
@@ -81,8 +82,27 @@ describe("Testing Packaging, Packing, and Shipping Page", () => {
       });
     });
 
-    it("saves data on leave", async () => {
+    it("saves data on leave when data has changed", async () => {
+      AcquisitionPackage.saveData = jest.fn();
+      AcquisitionPackage.setValidateNow = jest.fn();
+      wrapper.setData({noneApplySelected: "true"});
+      const saveOnLeaveSpy = jest.spyOn(wrapper.vm, 'saveOnLeave');
+      const isChangedSpy = jest
+        .spyOn(wrapper.vm, 'isChanged').mockReturnValue(true);
       await wrapper.vm.saveOnLeave();
+      expect(wrapper.vm.$data.otherValueEntered).toBe("");
+      expect(isChangedSpy).toHaveBeenCalled();
+      expect(saveOnLeaveSpy).toHaveBeenCalled();
+    });
+
+    it("saveOnLeave should catch and log error", async () => {
+      console.log = jest.fn();
+      AcquisitionPackage.setValidateNow = jest.fn();
+      jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(() => {
+        throw new Error("mock error");
+      });
+      await wrapper.vm.saveOnLeave();
+      expect(console.log).toHaveBeenCalledWith(Error("mock error"));
     });
 
     it("updates selected options when they change", async () => {
