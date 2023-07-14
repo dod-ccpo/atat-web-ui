@@ -140,6 +140,7 @@ interface StepperRouteBase {
   continueButtonColor?: string;
   stepCompleteOnEnter?: string;
   stepCompleteOnLeave?: string;
+  canNavigateToSummary?:boolean;
 }
 
 /**
