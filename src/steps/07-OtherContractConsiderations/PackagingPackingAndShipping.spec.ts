@@ -1,8 +1,10 @@
+/* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
-import PackagingPackingAndShipping from "@/steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
+import PackagingPackingAndShipping 
+  from "@/steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
 import validators from "@/plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {ContractConsiderationsDTO} from "@/api/models";
