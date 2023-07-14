@@ -319,13 +319,9 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
 }
 
 
-export const SummaryStepSevenRouteResolver = (current: string): string =>{
-  if (isStepTouched(7)){
-    return routeNames.SummaryStepSeven;
-  }
-
+export const PIIResolver = (current: string): string =>{
   return current === routeNames.Travel
-    ? routeNames.PII
+    ? isStepTouched(7) ? routeNames.SummaryStepSeven : routeNames.PII
     : routeNames.Travel
 }
 
@@ -335,16 +331,21 @@ export const PIIRecordResolver = (current: string): string => {
   if (hasSystemOfRecord) {
     return routeNames.PIIRecord;
   }
-  return current === routeNames.PII ? routeNames.BAA : routeNames.PII;
+  return current === routeNames.PII 
+    ? PIIRecordSummaryResolver(current)
+    : routeNames.PII;
 };
 
-export const BAARecordResolver = (current: string): string => {
-  const hasSystemOfRecord = AcquisitionPackage.sensitiveInformation?.pii_present === "YES";
-  // if system of record will be included, route to system of records page
-  if (hasSystemOfRecord) {
-    return routeNames.PIIRecord;
-  }
-  return current === routeNames.PII ? routeNames.BAA : routeNames.PII;
+export const PIIRecordSummaryResolver = (current: string): string => {
+  return isStepTouched(7) && current.toLowerCase().includes("pii")
+    ? routeNames.SummaryStepSeven
+    : routeNames.BAA
+};
+
+export const BAARecordSummaryResolver = (current: string): string => {
+  return isStepTouched(7) && current === routeNames.BAA
+    ? routeNames.SummaryStepSeven
+    : routeNames.FOIA
 };
 
 export const FOIARecordResolver = (current: string): string => {
@@ -356,9 +357,16 @@ export const FOIARecordResolver = (current: string): string => {
     return routeNames.FOIACoordinator;
   }
   return current === routeNames.FOIA
-    ? routeNames.Section508Standards
+    ? FOIARecordSummaryResolver(current)
     : routeNames.FOIA;
 };
+
+export const FOIARecordSummaryResolver = (current: string): string => {
+  return isStepTouched(7) && current.toLowerCase().includes('foia')
+    ? routeNames.SummaryStepSeven
+    : routeNames.Section508Standards
+};
+
 export const A11yRequirementResolver = (current: string): string => {
   const needsA11yReqs
       = AcquisitionPackage.sensitiveInformation?.section_508_sufficient === "NO";
@@ -1705,10 +1713,12 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ContractingInfoResolver,
   SummaryStepThreeRouteResolver,
   PortfolioDetailsRouteResolver,
-  SummaryStepSevenRouteResolver,
   ClassificationRequirementsResolver,
   ContractTypeResolver,
-  BAARecordResolver
+  PIIRecordSummaryResolver,
+  BAARecordSummaryResolver,
+  FOIARecordSummaryResolver,
+  PIIResolver
 };
 
 // add path resolvers here 

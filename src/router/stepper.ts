@@ -165,7 +165,6 @@ import {
   ArchitecturalDesignDetailsResolver,
   CurrentContractRouteResolver,
   SummaryStepThreeRouteResolver,
-  SummaryStepSevenRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
@@ -213,7 +212,10 @@ import {
   conductedResearchRouteResolver,
   ClassificationRequirementsResolver,
   ContractTypeResolver,
-  BAARecordResolver
+  PIIRecordSummaryResolver,
+  BAARecordSummaryResolver,
+  FOIARecordSummaryResolver,
+  PIIResolver
 } from "./resolvers";
 
 export const routeNames = {
@@ -1114,7 +1116,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.PII,
         completePercentageWeight: 2,
         component: PII,
-        routeResolver: SummaryStepSevenRouteResolver
+        routeResolver: PIIResolver
       },
       {
         menuText: "system of record",
@@ -1134,7 +1136,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnLeave: routeNames.BAA,
         completePercentageWeight: 2,
         component: BAA,
-        routeResolver:BAAResolver
+        routeResolver:PIIRecordSummaryResolver
       },
       {
         menuText: "Public Disclosure of Information",
@@ -1142,6 +1144,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.FOIA,
         completePercentageWeight: 2,
         component: FOIA,
+        routeResolver: BAARecordSummaryResolver
       },
       {
         menuText: "FOIA Coordinator",
@@ -1160,6 +1163,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.FOIA,
         completePercentageWeight: 2,
         component: Section508Standards,
+        routeResolver: FOIARecordSummaryResolver
       },
       {
         menuText: "Section 508 Accessibility Requirements",
