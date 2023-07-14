@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
@@ -6,7 +7,8 @@ import ClassificationLevelsPage
 import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
-
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import { CurrentEnvironmentDTO } from "@/api/models";
 
 
 Vue.use(Vuetify);
@@ -20,59 +22,18 @@ describe("Testing Classification Level Page", () => {
   config.showDeprecationWarnings = false
   Vue.config.silent = true;
 
-  const allClassificationLevels = [
+  const mockEnvironment:CurrentEnvironmentDTO = {
+    env_location: "HYBRID"
+  } as CurrentEnvironmentDTO
+  const mockCurrent = {
+    envClassificationsCloud: ["U","S"],
+    envClassificationsOnPrem: [],
+  }
 
-    {
-      "sys_id": "class1",
-      "sys_mod_count": "0",
-      "impact_level": "IL4",
-      "classification": "U",
-    },
-    {
-      "sys_id": "class2",
-      "sys_mod_count": "0",
-      "impact_level": "",
-      "classification": "TS",
-    },
-    {
-      "sys_id": "class3",
-      "sys_mod_count": "0",
-      "impact_level": "IL6",
-      "classification": "S",
-    },
-    {
-      "sys_id": "class4",
-      "sys_mod_count": "0",
-      "impact_level": "IL2",
-      "classification": "U",
-    },
-    {
-      "sys_id": "class5",
-      "sys_mod_count": "0",
-      "impact_level": "IL5",
-      "classification": "U",
-    }
-  ]
-  const selectedClassifications = [
-    {
-      "classification": "U",
-      "impact_level": "IL4",
-      "sys_id": "class1",
-      "sys_mod_count": "0",
-    },
-    {
-      "classification": "U",
-      "impact_level": "IL5",
-      "sys_id": "class5",
-      "sys_mod_count": "0",
-    },
-    {
-      "classification": "U",
-      "impact_level": "IL2",
-      "sys_id": "class4",
-      "sys_mod_count": "0",
-    },
-  ]
+  const mockSaveData = {
+    envClassificationsCloud: ["U"],
+    envClassificationsOnPrem: [],
+  }
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -80,13 +41,35 @@ describe("Testing Classification Level Page", () => {
       localVue,
       vuetify,
     });
+    jest.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
+      () => Promise.resolve(mockEnvironment)
+    );
+
   });
 
-  describe("Initialization....", () => {
-    it("tests that component renders successfully", async () => {
-      expect(wrapper.exists()).toBe(true);
+  describe("FUNCTIONS", () => {
+    beforeEach(() => {
+      wrapper.setData({
+        currentData: mockCurrent,
+        savedData: mockSaveData
+      })
+    })
+    it("test saveOnLeave() return true", async () => {
+      jest.spyOn(CurrentEnvironment, 'setCurrentEnvironment').mockImplementation(
+        () => Promise.resolve()
+      );
+      const saveOnLeave = await wrapper.vm.saveOnLeave()
+      expect(saveOnLeave).toBeTruthy();
     });
 
+    it("test saveOnLeave() error state", async () => {
+      console.log = jest.fn();
+      jest.spyOn(CurrentEnvironment, 'setCurrentEnvironment').mockImplementation( () => {
+        throw new Error("mock error");
+      });
+      const saveOnLeave = await wrapper.vm.saveOnLeave();
+      expect(console.log).toHaveBeenCalledWith(Error("mock error"));
+    });
   });
 
 })
