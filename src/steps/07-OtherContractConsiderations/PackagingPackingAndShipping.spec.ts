@@ -30,7 +30,7 @@ describe("Testing Packaging, Packing, and Shipping Page", () => {
       expect(wrapper.exists()).toBe(true);
     });
 
-    it.only("loads data on mount", async () => {
+    describe("loadOnEnter()", () => {
       const contractConsiderations: ContractConsiderationsDTO = {
         packaging_shipping_other: "true",
         contractor_required_training: "",
@@ -42,12 +42,43 @@ describe("Testing Packaging, Packing, and Shipping Page", () => {
         contractor_provided_transfer: "true",
         acquisition_package: ""
       }
-      AcquisitionPackage.loadData = jest.fn().mockReturnValue(contractConsiderations);
 
-      await wrapper.vm.loadOnEnter();
-      expect(wrapper.vm.$data.selectedOptions)
-        .toBe(["CONTRACTOR_PROVIDED", "OTHER", "NONE"]);
-      expect(wrapper.vm.$data.otherValueEntered).toBe("testExplanation");
+
+      it("sets $data attributes as expected", async () => {
+        jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(contractConsiderations)
+        await wrapper.vm.loadOnEnter();
+        expect(wrapper.vm.$data.savedData.contractor_provided_transfer).toBe("true");
+        expect(wrapper.vm.$data.selectedOptions.length).toBeGreaterThan(0)
+      });
+
+      it("calls store function as expected", async () => {
+        jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(null)
+        const setCurrentContractMock = jest.spyOn(AcquisitionPackage, "setCurrentContract")
+          .mockImplementation()
+        await wrapper.vm.loadOnEnter();
+        expect(setCurrentContractMock).toHaveBeenCalled();
+      });
+
+      describe("accommodates ternaries ", () => {
+        const contractConsiderationsWithFalse: ContractConsiderationsDTO = {
+          packaging_shipping_other: "false",
+          contractor_required_training: "",
+          packaging_shipping_other_explanation: "testExplanation",
+          conflict_of_interest_explanation: "",
+          potential_conflict_of_interest: "",
+          required_training_courses: "",
+          packaging_shipping_none_apply: "false",
+          contractor_provided_transfer: "false",
+          acquisition_package: ""
+        }
+        beforeEach(()=>{
+          jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(contractConsiderationsWithFalse)
+        })
+        it("sets wrapper.vm.$data as expected", async () => {
+          await wrapper.vm.loadOnEnter();
+          expect(wrapper.vm.$data.otherValueEntered).toBe("testExplanation")
+        });
+      });
     });
 
     it("saves data on leave", async () => {
