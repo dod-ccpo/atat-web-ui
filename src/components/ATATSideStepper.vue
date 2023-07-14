@@ -103,40 +103,33 @@ import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
 import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import Summary, { isStepTouched, validateStep } from "@/store/summary";
-import { routeNames } from "@/router/stepper";
+import { isStepValidatedAndTouched} from "@/store/summary";
 
 @Component({})
 export default class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
-  public setCurrentStep(
+  public async setCurrentStep(
     stepNumber: string, 
     step: StepperStep, 
     isSubStep: boolean
-  ): void {
+  ): Promise<void> {
     this.activeStep = stepNumber;
     this.calculatePercentComplete();
-    validateStep(parseInt(stepNumber))
-    if (stepNumber && !isSubStep && step && isStepTouched(parseInt(stepNumber))){
+    const stepIsTouched = await isStepValidatedAndTouched(parseInt(stepNumber))
+    if (stepNumber && !isSubStep && step && stepIsTouched){
       this.navigateToSummary(step, isSubStep);
     }
   }
 
   public navigateToSummary(step: StepperStep, isSubStep: boolean): void {
-    const primaryStep = this.stepperData.find(s=>s.stepNumber === step.stepNumber);
-    const isTouched = isStepTouched(parseInt(step?.stepNumber as string));
-    const lastSubStep = primaryStep?.subSteps?.slice(-1)[0];
-    const hasSummary = lastSubStep?.name.toLowerCase().startsWith("summary") || false;
-    if (isTouched && hasSummary && !isSubStep) {
-      this.$router.push({
-        path: step?.route + "/" + lastSubStep?.route,
-        params: {
-          direction: "next"
-        },
-      })
-    }
-    
+    const lastSubStep = step.subSteps?.slice(-1)[0];
+    this.$router.push({
+      path: step?.route + "/" + lastSubStep?.route,
+      params: {
+        direction: "next"
+      },
+    })
   }
 
   private get getCurrentStepperStep(): StepInfo {
