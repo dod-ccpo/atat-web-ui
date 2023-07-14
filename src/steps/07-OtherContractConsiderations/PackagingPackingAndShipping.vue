@@ -133,7 +133,6 @@ export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
         packaging_shipping_other: storeData.packaging_shipping_other, 
         packaging_shipping_other_explanation: storeData.packaging_shipping_other_explanation,
         packaging_shipping_none_apply: storeData.packaging_shipping_none_apply
-
       }
 
       this.savedData.contractor_provided_transfer === "true" 
