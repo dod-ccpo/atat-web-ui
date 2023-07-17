@@ -1460,7 +1460,7 @@ export class AcquisitionPackageStore extends VuexModule {
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
 
-      if (!this.currentUser) {
+      if (Object.keys(this.currentUser).length === 0) {
         await this.setCurrentUser();
       }  
       await ContactData.initialize();
@@ -1794,7 +1794,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
     Steps.clearAltBackButtonText();
-    if (!this.currentUser) {
+    if (Object.keys(this.currentUser).length === 0) {
       await this.setCurrentUser();
     }
 
