@@ -539,7 +539,6 @@ export class PortfolioDataStore extends VuexModule {
     if (env && env.sys_id) {
       await this.setCurrentEnvSysId(env.sys_id);
     }
-    debugger;
     await this.doSetCurrentUserRole();
   }
 
@@ -555,6 +554,7 @@ export class PortfolioDataStore extends VuexModule {
       agencyDisplay: portfolioData.agencyDisplay,
       taskOrderNumber: portfolioData.taskOrderNumber,
       taskOrderSysId: portfolioData.taskOrderSysId,
+      portfolio_owner: portfolioData.portfolio_owner,
       portfolio_managers: portfolioData.portfolio_managers,
       portfolio_managers_detail: portfolioData.portfolio_managers_detail,
       portfolio_viewers: portfolioData.portfolio_viewers,
@@ -666,6 +666,10 @@ export class PortfolioDataStore extends VuexModule {
       const createdByUser = await api.userTable.search(portfolio.createdBy);
       this.doSetPortfolioCreator(createdByUser[0]);
     }
+
+    await this.setCurrentPortfolio(portfolio);
+    await this.doSetCurrentUserRole();
+
     return portfolio;
   }
 

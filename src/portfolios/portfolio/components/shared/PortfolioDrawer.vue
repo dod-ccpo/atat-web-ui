@@ -72,7 +72,7 @@
             ({{ getPortfolioMembersCount }})
           </div>
         </div>
-        <v-tooltip left nudge-right="20">
+        <v-tooltip left nudge-right="20" v-if="userCanInviteMembers">
           <template v-slot:activator="{ on, attrs }">
             <span
               v-bind="attrs"
@@ -95,9 +95,9 @@
               </v-btn>
             </span>
           </template>
-        <div class="_tooltip-content-wrap _left">
-          Add members
-        </div>
+          <div class="_tooltip-content-wrap _left">
+            Add members
+          </div>
         </v-tooltip>
 
       </div>
@@ -415,6 +415,10 @@ export default class PortfolioDrawer extends Vue {
 
   public getStatusKey(str: string): string {
     return _.startCase(str.toLowerCase().replaceAll("_", " ")).replaceAll(" ", "");
+  }
+
+  public get userCanInviteMembers(): boolean {
+    return this.currentUserIsManager || this.currentUserIsOwner;
   }
 
   public async loadPortfolio(): Promise<void> {
