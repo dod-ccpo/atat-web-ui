@@ -539,6 +539,7 @@ export class PortfolioDataStore extends VuexModule {
     if (env && env.sys_id) {
       await this.setCurrentEnvSysId(env.sys_id);
     }
+    debugger;
     await this.doSetCurrentUserRole();
   }
 
@@ -632,7 +633,8 @@ export class PortfolioDataStore extends VuexModule {
     portfolio.members = [];
     let portfolioOwner: User = {};
     let isOwner = false;
-    allMembersDetailList.forEach(member => {
+    allMembersDetailList.forEach(async member => {
+      debugger;
       isOwner = false;
       if (portfolio.portfolio_owner === member.sys_id) {
         portfolioOwner = member;
