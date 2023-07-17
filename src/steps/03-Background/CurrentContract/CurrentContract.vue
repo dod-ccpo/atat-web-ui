@@ -113,14 +113,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         // always clear existing Contracts if form value has changed
         await AcquisitionPackage.clearCurrentContractInfo();
-        if (hasCurrentContract==="NO"){
-          // update store && snow
-          const noContract = initialCurrentContract();
-          noContract.current_contract_exists = "NO";
-          noContract.instance_number= 0;
-          noContract.acquisition_package = AcquisitionPackage.packageId;
-          AcquisitionPackage.updateCurrentContractsSNOW([noContract]);
-        }
       }
     } catch (error) {
       console.log(error);
