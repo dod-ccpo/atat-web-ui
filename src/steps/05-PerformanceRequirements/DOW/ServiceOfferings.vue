@@ -378,6 +378,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
                 })
                 if(this.portabilityClassificationLevels.length){
                   for(const offering of this.otherOfferingData){
+                    offering.isComplete = true;
                     await DescriptionOfWork.setOtherOfferingData(offering);
                   }
                 }

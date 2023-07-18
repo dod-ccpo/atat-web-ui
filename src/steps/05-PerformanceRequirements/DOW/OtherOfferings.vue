@@ -73,39 +73,44 @@
 
     <v-form ref="form" lazy-validation>
 
-      <div v-if="selectedClassificationLevelList.length > 1" class="mb-10">
-        <ATATCheckboxGroup
-          v-if="isPortabilityPlan"
-          id="ClassificationLevel"
-          groupLabel="What classification level(s) do you need a Portability Plan for?"
-          :value.sync="_portabilityClassificationLevels"
-          :items="classificationRadioOptions"
-          name="ClassificationLevel"
-          class="mt-3 mb-2"
-          :tooltipText="classificationTooltipText"
-          tooltipLabel="Classification level for this instance"
-          :rules="[$validators.required('Please select a classification level.')]"
-        />
-        <ATATRadioGroup
-          v-else
-          id="ClassificationLevel"
-          legend="What classification level is this instance deployed in?"
-          :value.sync="_serviceOfferingData.classificationLevel"
-          :items="classificationRadioOptions"
-          name="ClassificationLevel"
-          class="mt-3 mb-2"
-          :tooltipText="classificationTooltipText"
-          tooltipLabel="Classification level for this instance"
-          :rules="[$validators.required('Please select a classification level.')]"
-        />
-        <a 
-          role="button" 
-          id="UpdateClassificationFromRadios"
-          tabindex="0"
-          @click="openModal"
-          @keydown.enter="openModal"
-          @keydown.space="openModal"
-        >Update your Classification Requirements</a>
+      <div class="mb-10">
+        <div v-if="selectedClassificationLevelList.length > 1"> 
+          <ATATRadioGroup
+            v-if="!isPortabilityPlan"
+            id="ClassificationLevel"
+            legend="What classification level is this instance deployed in?"
+            :value.sync="_serviceOfferingData.classificationLevel"
+            :items="classificationRadioOptions"
+            name="ClassificationLevel"
+            class="mt-3 mb-2"
+            :tooltipText="classificationTooltipText"
+            tooltipLabel="Classification level for this instance"
+            :rules="[$validators.required('Please select a classification level.')]"
+          />
+          <a 
+            role="button" 
+            id="UpdateClassificationFromRadios"
+            tabindex="0"
+            @click="openModal"
+            @keydown.enter="openModal"
+            @keydown.space="openModal"
+          >Update your Classification Requirements
+          </a>
+        </div>
+        <div else>
+          <ATATCheckboxGroup
+            v-if="isPortabilityPlan"
+            id="ClassificationLevel"
+            groupLabel="What classification level(s) do you need a Portability Plan for?"
+            :value.sync="_portabilityClassificationLevels"
+            :items="classificationRadioOptions"
+            name="ClassificationLevel"
+            class="mt-3 mb-2"
+            :tooltipText="classificationTooltipText"
+            tooltipLabel="Classification level for this instance"
+            :rules="[$validators.required('Please select a classification level.')]"
+          />
+        </div>
       </div>
 
       <ComputeFormElements
@@ -424,9 +429,15 @@ export default class OtherOfferings extends Vue {
 
  
 
-  private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
+  private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string)
+    : Checkbox[] {
     idSuffix = idSuffix || "";
-    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix, false, false) : [];
+    const hasValidData = 
+      this.isPortabilityPlan && data.length > 0
+      || data.length > 1
+    return hasValidData 
+      ? buildClassificationCheckboxList(data, idSuffix, false, false) 
+      : [];
   }
 
   public async setAvailableClassificationLevels(): Promise<void> {
