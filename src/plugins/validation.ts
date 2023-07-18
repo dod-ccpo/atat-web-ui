@@ -1,6 +1,6 @@
 import Vue from "vue"
 
-import { isValid } from "date-fns"
+import { compareAsc, compareDesc, isValid } from "date-fns"
 import { CountryObj, SelectData } from "types/Global";
 
 export class ValidationPlugin {
@@ -11,7 +11,7 @@ export class ValidationPlugin {
  *
  * @param {number} length The minimum length allowed for the field's value
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   minLength(
     length: number,
@@ -30,7 +30,7 @@ export class ValidationPlugin {
  *
  * @param {number} length The maximum length allowed for the field's value
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   maxLength(
     length: number,
@@ -47,7 +47,7 @@ export class ValidationPlugin {
  * Returns the error message otherwise.
  *
  * @param message
- * @returns {function(*=): boolean}
+ * @returns {() => string | true | undefined}
  */
 
   allowedLengths(
@@ -79,7 +79,7 @@ export class ValidationPlugin {
         // array of strings
         return v && Object.values(v).length > 0 || message;
       } else if (typeof (v) === "string") {
-        return (v !== "") || message;
+        return (v.trim() !== "") || message;
       } else if ( typeof (v) === "undefined"){ //validates file upload
         return message;
       } else if (isCurrency) {
@@ -91,12 +91,21 @@ export class ValidationPlugin {
     };
   };
 
+  notSameAsDefault(
+    message?: string, defaultValue?: string
+  ): ((v: string) => string | true | undefined) {
+    message = message || "Text cannot be the same as the default text";
+    return (v: string) => {
+      return v && v.trim() !== defaultValue?.trim() || message;
+    }
+  }
+
   /**
  * Validator ensures that field only contains integers
  * Returns the error message otherwise.
  *
  * @param message
- * @returns {function(*=): boolean}
+ * @returns {() => string | true | undefined}
  */
   integer(message?: string): ((v: string) => string | true | undefined) {
     message = message || "The value must be an integer number";
@@ -110,7 +119,7 @@ export class ValidationPlugin {
  *
  * @param {number} max Maximum number allowed
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   lessThan(
     max: number,
@@ -128,7 +137,7 @@ export class ValidationPlugin {
  *
  * @param {number} min Minimum number allowed
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   greaterThan(
     min: number,
@@ -148,7 +157,7 @@ export class ValidationPlugin {
  * @param {number} min Minimum number allowed
  * @param {number} max Maximum number allowed
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   isBetween(
     min: number,
@@ -167,7 +176,7 @@ export class ValidationPlugin {
  *
  * @param (string) date as "MM/dd/yyyy"
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   isDateValid(
     message?: string
@@ -175,16 +184,70 @@ export class ValidationPlugin {
     message = message || `Invalid Date`;
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
-      return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message;
+      if (v !== ""){
+        const d = new Date(v);
+        return (d instanceof Date && !isNaN(d.getMilliseconds())) || message;
+      }
+      return true;
     };
   };
+
+  /**
+ * Validator that validates inputted date after the dateToCompare
+ *
+ * @param {string} dateToCompare
+ * @param {string} message
+ * @param {boolean} canEqual can dates be equal
+ *  @returns (v: string) => string | true | undefined)
+ */
+  compareDatesAsc(
+    dateToCompare: string,
+    message: string,
+    canEqual: boolean,
+  ): ((v: string) => string | true | undefined) {
+    return (v: string) => {
+      if (dateToCompare !=="" && v !=="" ){
+        const condition = canEqual
+          ? compareAsc(new Date(v),new Date(dateToCompare)) > -1
+          : compareAsc(new Date(v),new Date(dateToCompare))=== 1
+        return condition || message;
+      };
+      return true;
+    } 
+    
+  };
+
+  /**
+ * Validator that validates inputted date is before the dateToCompare
+ *
+ * @param {string} dateToCompare
+ * @param {string} message - error Message
+ * @param {boolean} canEqual - can dates be equal
+ * @returns (v: string) => string | true | undefined)
+ */
+  compareDatesDesc(
+    dateToCompare: string,
+    message: string,
+    canEqual: boolean
+  ): ((v: string) => string | true | undefined) {
+    return (v: string) => {
+      if (dateToCompare !=="" && v !=="" ){
+        const condition = canEqual
+          ? compareDesc(new Date(v),new Date(dateToCompare)) > 1
+          : compareDesc(new Date(v),new Date(dateToCompare))=== 1
+        return condition || message;
+      };
+      return true;
+    } 
+  };
+
 
   /**
  * Validator that validates if url is valid
  * Returns the error message otherwise.
  *
  * @param {string} message
- * @returns {function(*): (boolean|string)}
+ * @returns {() => string | true | undefined}
  */
   isURL(
     message?: string
@@ -201,24 +264,33 @@ export class ValidationPlugin {
   };
 
   /**
-  * @returns {function(*): (boolean|string)}
+  * @returns {() => string | true | undefined}
   */
   isEmail = (
     message?: string,
-    isScrt?: boolean
+    highSide?: "S" | "TS"
   ): ((v: string) => string | true | undefined) => {
-    isScrt = isScrt === undefined ? false : isScrt;
+    const isScrt = highSide === "S" ? true : false;
+    const isTS = highSide === "TS" ? true : false;
     return (v: string) => {
       if (v && v !== "") {
-        if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/i.test(v) === false) {
-          return "Please use standard domain format, like ‘@mail.mil’"
-        } else if (!isScrt && /^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i.test(v) === false) {
-          return message || "Please use your .mil or .gov email address."
-        } else if (isScrt && 
-          /^\S[a-z-_.0-9]+@[a-z-]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v) === false
-        ) {
+        const validStructure = /[a-z0-9]+@[a-z-_.0-9]+\.[a-z]{3}/i.test(v);
+        if (!validStructure) {
+          return "Please use standard domain format, like ‘@mail.mil’";
+        }
+        const validScrt = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i.test(v);
+        if (isScrt && !validScrt) {
           return message || "Please use your .smil or .sgov email address."
-        }      
+        } 
+        const validGovOrMil = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i.test(v);
+        if (!validGovOrMil) {
+          return message || "Please use your .mil or .gov email address."
+        }
+        // const validTS = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:ic)+\.(?:gov|mil)$/i.test(v)
+        // if (isTS && !validTS) {
+        //    TODO: determine if requiring only ".ic.gov" emails or if OK to show warning
+        //    in UI if ends in ".gov" or ".mil" but does not contain ".ic"
+        // }
       }
       return true;
     };
@@ -228,7 +300,7 @@ export class ValidationPlugin {
   * Returns the error message otherwise.
   *
   * @param {string} country country Abbreviation
-  * @returns {function(*): (boolean|string)}
+  * @returns {() => string | true | undefined}
   */
   isPhoneNumberValid = (country: CountryObj): ((v: string) => string | true | undefined) => {
     return (v: string) => {
@@ -253,7 +325,7 @@ export class ValidationPlugin {
    * @param {string} mask an Array of input mask ['99999',99999-9999]
    * @param {string} message text to be shown if false
    * @param {boolean} isMaskRegex true or false
-   * @returns {function(*): (boolean|string)}
+   * @returns {() => string | true | undefined}
    */
   isMaskValid = (mask: string[], message: string, isMaskRegex?: boolean):
     ((v: string) => string | true | undefined) => {
@@ -278,7 +350,7 @@ export class ValidationPlugin {
    * Validator that ensures the file is valid.
    * Returns the error message otherwise.
    *
-   * @returns {function(*): boolean}
+   * @returns {() => string | true | undefined}
    * @param file
    * @param validExtensions
    * @param maxFileSize
@@ -309,7 +381,7 @@ export class ValidationPlugin {
       )
 
       if (!isValidExtension){
-        return `'${fileName}' is not a valid format or has been corrupted. ` +
+        return `'${fileName}' is not a valid format or has been corrupted. <br />` +
                 `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
                 `.${validExtensions.slice(-1)} file.`
       }

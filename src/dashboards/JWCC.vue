@@ -282,7 +282,7 @@
 </template>
 
 <script lang="ts">
-
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
@@ -439,7 +439,7 @@ export default class JWCCDashboard extends Vue {
       });
 
       this.agencySpendData[agency] = agencyMonthlySpendTotals;
-
+      //eslint-disable-next-line prefer-const 
       let lineChartDataSet = _.clone(this.lineChartCommonDataSet);
       const color = this.chartDataColorSequence[i];
       const dataSetProps = {
@@ -465,6 +465,7 @@ export default class JWCCDashboard extends Vue {
         spendLineChartTotals.push(monthTotal);
       }
     });
+    //eslint-disable-next-line prefer-const 
     let totalLineChartDataSet = _.clone(this.lineChartCommonDataSet);
     const dataSetProps = {
       dataSetId: "Total",
@@ -508,16 +509,16 @@ export default class JWCCDashboard extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-
     const data = await this.dashboardService.getTotals([
-      '9999999999999',
-      '1234567891234',
-      '1000000001234',
-      '1000000004321',
-      '1000000009999',
-      '1000000009876',
-      '1000000008888',
-      '1000000008765',
+      "3000000000000",
+      // '9999999999999',
+      // '1234567891234',
+      // '1000000001234',
+      // '1000000004321',
+      // '1000000009999',
+      // '1000000009876',
+      // '1000000008888',
+      // '1000000008765',
     ]);
 
     console.log ({data});

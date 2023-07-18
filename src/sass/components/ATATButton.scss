@@ -18,6 +18,8 @@
   justify-content: center !important;
   align-items: center !important;
   padding: 7px 20px 8px !important;
+  font-weight: 500 !important;
+  
   &.v-btn--icon {
     padding: 0 !important;
   }
@@ -45,6 +47,7 @@
     background-color: $white !important;
     border: 2px solid $primary !important;
     color: $primary;
+    font-weight: 500 !important;
 
     &:hover {
       background-color: rgba($primary, 10%) !important;
@@ -52,6 +55,11 @@
 
     &:active {
       background-color: rgba($primary, 20%) !important;
+    }
+
+    &.v-btn--disabled {
+      border-color: $disabled !important;
+      background-color: $white !important;
     }
   }
 
@@ -247,3 +255,11 @@
   }
 }
 
+._faux-button {
+  padding: 8px;
+  border-radius: 4px;
+  &:hover:not(._faux-button--disabled) {
+    background-color: $primary-10;
+    cursor: pointer;
+  }
+}

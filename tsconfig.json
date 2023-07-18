@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "commonjs",
     "strict": true,
+    "useDefineForClassFields": false,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -27,6 +28,12 @@
       "@/*": ["src/*"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+  },
+  "vueCompilerOptions": { 
+    //gets rid of the red squiggly lines in the vue component
+    // "target": 2.7,
+    "target": 2, // For Vue version <= 2.6.14
+    "experimentalUseElementAccessInTemplate": true
   },
   "include": [
     "src/**/*.ts",

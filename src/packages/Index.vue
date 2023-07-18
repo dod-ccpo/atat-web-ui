@@ -206,7 +206,7 @@ export default class Packages extends Vue {
     AcquisitionPackageSummary.setSelectedSort(newVal);
   }
 
- @Watch("page")
+  @Watch("page")
   public paged(): void {
     if (!this.isSearchSortFilter) {
       this.paging = true;
@@ -235,7 +235,7 @@ export default class Packages extends Vue {
     this.page = !this.paging ? 1 : this.page;
     this.offset = (this.page - 1) * this.recordsPerPage;
     this.searchDTO.offset = this.offset;
-
+  
     const packageResults = await AcquisitionPackageSummary
       .searchAcquisitionPackageSummaryList(this.searchDTO)
     this.packageData = packageResults?.acquisitionPackageSummaryList || [];
@@ -287,7 +287,7 @@ export default class Packages extends Vue {
   }
   public async toAcquisitions(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
-    await acquisitionPackage.setFirstTimeVisit(true)
+    await acquisitionPackage.setIsNewPackage(true)
     await AcquisitionPackage.reset();
     this.$router.push({
       name: routeNames.DAPPSChecklist,

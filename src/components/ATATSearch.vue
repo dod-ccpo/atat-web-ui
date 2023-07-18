@@ -131,6 +131,7 @@ import api from "@/api";
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -228,13 +229,13 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    this.showLoader = true;
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
     this.showHelpText = false;
     
     if(this.searchType === "EDA"){
       try {
+        this.showLoader = true;
         await PortfolioStore.reset();
         const response = await api.edaApi.search(this._value);
         if (response.success !== undefined && !response.success) {
@@ -244,7 +245,7 @@ export default class ATATSearch extends Vue {
             this.$refs.atatSearchInputModal.errorBucket = [response.message || "Unknown error"];
           }
         } else {
-          await PortfolioStore.setPortfolioProvisioning(response);
+          await PortfolioStore.initProvisioningFromResponse(response);
           this.$emit("search");
         }
       } catch (error) {
@@ -254,7 +255,10 @@ export default class ATATSearch extends Vue {
       }
     } else if (this.searchType === "G-Invoicing") {
       try {
-        const gInvoicingResponse = await api.gInvoicingApi.search(this._value);
+        this.showLoader = true;
+        const gInvoicingResponse = await api.gInvoicingApi.search(
+          this._value, AcquisitionPackage.packageId
+        );
         if (gInvoicingResponse.valid){
           this.showSuccessAlert = true;
         } else {

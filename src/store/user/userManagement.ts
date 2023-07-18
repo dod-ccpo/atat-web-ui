@@ -20,8 +20,9 @@ export class UserManagementStore extends VuexModule {
   public controller = new AbortController();
 
   @Action({rawError: true})
-  public triggerAbort(): void {
+  public async triggerAbort(): Promise<void> {
     this.controller.abort();
+    await this.doResetAbortController();
   }
   
   /**
@@ -29,20 +30,14 @@ export class UserManagementStore extends VuexModule {
    * for the use case instead of all the columns to protect user information.
    */
   @Action({rawError: true})
-  public async searchUserByNameAndEmail(searchBy: string):
+  public async searchUserByNameAndEmail(searchStr: string):
     Promise<UserSearchResultDTO[]> {
     try {
-      const searchQuery 
-        = `^nameLIKE${searchBy}^ORemailLIKE${searchBy}^emailISNOTEMPTY^active=true`;
-      const userSearchRequestConfig: AxiosRequestConfig = {
-        signal: this.controller.signal,
-        params: {
-          sysparm_fields: 'sys_id,name,first_name,last_name,email,department',
-          sysparm_display_value: "department",
-          sysparm_query: searchQuery
-        },
-      };
-      return await api.userTable.getQuery(userSearchRequestConfig);
+      if (searchStr) {
+        const response = await api.userTable.search(searchStr);
+        return response;  
+      }
+      return [];
     } catch (error) {
       await this.doResetAbortController();
       throw new Error("error occurred searching for users :" + error);

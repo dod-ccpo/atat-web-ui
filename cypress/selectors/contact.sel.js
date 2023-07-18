@@ -3,6 +3,7 @@ module.exports = {
   contactRadioBtnActive:"#ContactRole_radio_group_control .v-item--active",
   civilianRadioBtn: "#Radio_Civilian",
   militaryRadioBtn: "#Radio_Military",
+  roleError:"#ContactRole_radio_group_control .field-error",
   contractorRadioBtn: "#Radio_Contractor",
   serviceBranchControl: "#Branch_dropdown_field_control",
   serviceBranchDropdown:"#Branch_dropdown",

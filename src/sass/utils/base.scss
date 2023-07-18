@@ -82,8 +82,8 @@ body {
   margin-block: .5em;
 
   ._callout & {
-    background: $info-lighter;
-    border-color: $info-lighter;
+    background: $primary-lighter;
+    border-color: $primary-lighter;
   }
 }
 
@@ -94,7 +94,7 @@ body {
   border: 3px solid #fff;
 
   ._callout & {
-    border-color: $info-lighter;
+    border-color: $primary-lighter;
   }
 }
 
@@ -277,7 +277,7 @@ textarea {
   vertical-align: top !important;
 }
 
-.funding-increments-item {
+.funding-increments-item, .researcher-table {
   transition: all 0.25s ease;
   display: inline-block;
 }
@@ -324,6 +324,11 @@ textarea {
     }
   }
 
+}
+.researcher-table-row {
+  &:hover {
+    background-color: $base-lightest
+  }
 }
 
 ._clin-table,
@@ -393,6 +398,19 @@ textarea {
 
 }
 
+._border-top-square {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
+._table-topper {
+  padding: 24px;
+  border: 1px solid $base-lighter;
+  border-bottom: none !important;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+}
+
 ._table-pagination{
   display:flex;
   justify-content: flex-end;
@@ -457,6 +475,10 @@ textarea {
   align-items: center;
   justify-content: center;
   margin-right: 8px;
+  &._large {
+    width: 64px;
+    height: 64px;
+  }
 }
 
 .theme--light.v-application ._data-table {
@@ -480,6 +502,16 @@ textarea {
     &._total {
       border-top: 4px solid $base-lighter;
     }
+    &._fees-row {
+      border-bottom: 1px solid $base-lighter;
+      //transition: all .3s ease-in-out !important;
+      &:last-of-type {
+        border-bottom: none !important;
+      }
+      &._hide {
+        display: none !important;
+      }
+    }
   }
 
   th, td {
@@ -501,6 +533,17 @@ textarea {
     th:last-of-type {
       background-color: rgb(236 236 240) !important;
 
+    }
+  }
+  ._accordion-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .toggle {
+    transition: transform .3s ease-in-out !important;
+    &._rotate-down {
+      transform: rotate(90deg) !important;
     }
   }
 }
@@ -530,4 +573,10 @@ textarea {
     height: 100vh !important;
     max-height: calc(100vh - 56px);
   }
+}
+._recommended-Chip {
+  background-color: $primary-lighter;
+  padding: 4px;
+  border-radius:4px;
+  font-weight: 500;
 }

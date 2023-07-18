@@ -57,8 +57,10 @@
             :height="9"
             class="d-inline-block mx-1"
           /> 
-        </div> -->
-        <!-- ATAT TODO: ADD BACK IN WHEN HAVE ACTUAL TASK ORDER NUMBER
+        </div> 
+        -->
+
+        <!-- ATAT TODO - REPLACE HARDCODED TO# when working ATAT tickets 
         <div
           v-if="modifiedData.packageStatus.toLowerCase() === 'task order awarded'"
           class=" d-flex align-center">
@@ -134,7 +136,6 @@ import DeletePackageModal from "@/packages/components/DeletePackageModal.vue";
 import ArchiveModal from "@/packages/components/ArchiveModal.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
-import UserStore from "@/store/user";
 import {
   AcquisitionPackageSummaryDTO, UserDTO,
 } from "@/api/models";
@@ -178,26 +179,23 @@ export default class Card extends Vue {
     contributors:"",
   }
 
-  private currentUser: UserDTO = {};
-
-  public get getCurrentUser(): UserDTO {
-    return CurrentUserStore.currentUser;
+  public get currentUser(): UserDTO {
+    return CurrentUserStore.getCurrentUserData;
   }
-
-  @Watch("getCurrentUser")
-  public currentUserChange(newVal: UserDTO): void {
-    this.currentUser = newVal;
+  @Watch("currentUser")
+  public currentUserChange(): void {
+    this.reformatData();
   }  
 
   public cardMenuItems: MeatballMenuItem[] = [];
 
   public get statusChipBgColor(): string {
     const status = this.modifiedData.packageStatus
-
     return getStatusChipBgColor(status ? status : "");
   }
 
-  public reformatData(cardData:AcquisitionPackageSummaryDTO): void {
+  public reformatData(): void {
+    const cardData = this.cardData;
     if(cardData && cardData.contributors){
       this.hasContributor = cardData.contributors?.value.length > 0
     }
@@ -296,7 +294,7 @@ export default class Card extends Vue {
         }).catch(() => console.log("avoiding redundant navigation"));
       }
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
-      await acquisitionPackage.setFirstTimeVisit(false)
+      await acquisitionPackage.setIsNewPackage(false)
       break;
     case "View completed package":
       this.packageTitleClick("Waiting for Task Order");
@@ -317,10 +315,9 @@ export default class Card extends Vue {
 
   }
 
-  public async loadOnEnter(): Promise<void> {
-    this.currentUser = await UserStore.getCurrentUser();
+  public async loadOnEnter(): Promise<void> {   
     this.isDitco = this.cardData.contracting_shop?.value === "DITCO"
-    this.reformatData(this.cardData)
+    this.reformatData()
     if(this.cardData.package_status?.value === 'DRAFT'){
       this.cardMenuItems = [
         {

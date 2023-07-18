@@ -28,9 +28,21 @@
               </div>
               <div class="d-flex align-start">
                 <div class="d-flex align-center">
+                  <div 
+                    v-if="isAnticipatedUsersAndDataInvalid" 
+                    class="d-flex align-start nowrap ml-5"
+                  >
+                    <v-icon
+                      class="icon-20 text-warning-dark2 pr-2"
+                    >warning</v-icon>
+                    <p class="_missing-info mb-0 pr-4 _semibold">Missing info</p>
+                  </div>
                   <v-btn
                     width="111"
-                    class="secondary"
+                    :class="[
+                      isAnticipatedUsersAndDataInvalid ? 'primary': 'secondary',
+                      '_' + getIdText('AnticipatedUsersAndData') + '-button'
+                    ]"
                     @click="routeToAnticipatedUsersAndDataNeeds()"
                     @keydown.enter="routeToAnticipatedUsersAndDataNeeds()"
                     @keydown.space="routeToAnticipatedUsersAndDataNeeds()"
@@ -160,6 +172,7 @@
   </v-container>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import { routeNames } from "../../../router/stepper"
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -174,6 +187,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 import { getIdText, toTitleCase } from "@/helpers";
+import ClassificationRequirements from "@/store/classificationRequirements";
 // import router from "@/router";
 
 @Component({
@@ -277,6 +291,12 @@ export default class Summary extends Mixins(SaveOnLeave) {
     },
   ];
 
+  get isAnticipatedUsersAndDataInvalid():boolean{
+    return ClassificationRequirements.selectedClassificationLevels.some(
+      cl => cl.isValid === undefined || cl.isValid === false
+    )
+  }
+
   public getTooltipText(value: string): string {
     const tooltipObj =  this.tooltipText.find(e => e.value === value);
     return tooltipObj ? tooltipObj.text : "";
@@ -338,13 +358,22 @@ export default class Summary extends Mixins(SaveOnLeave) {
   };
 
   public setSelectedGroupsMissingData(value: DOWServiceOfferingGroup[]): void {
+    //eslint-disable-next-line prefer-const
     let outputArr :string[] = [];
     value.forEach((obj)=>{
+      //eslint-disable-next-line prefer-const
       let id = obj.serviceOfferingGroupId;
       if (this.isClassificationDataMissing || 
         (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
         (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {
         outputArr.push(id);
+      } else if (obj.otherOfferingData && obj.otherOfferingData.length >0){
+        const isIncomplete = obj.otherOfferingData.some(
+          ood => !ood.isComplete
+        )
+        if (isIncomplete){
+          outputArr.push(id);
+        }
       } else {
         obj.serviceOfferings.forEach((offering)=>{
           if(offering.classificationInstances && offering.classificationInstances.length === 0) {

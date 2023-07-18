@@ -341,6 +341,7 @@
   </div>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
@@ -369,7 +370,7 @@ import { ClinDTO } from "@/api/models";
 })
 
 export default class TaskOrderDetails extends Vue {
-  @Prop() private selectedTaskOrder!: TaskOrderCardData;
+  @Prop() private selectedTaskOrder: TaskOrderCardData = {};
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
   public clins: ClinDTO[] = this.selectedTaskOrder.clins || [];
@@ -384,15 +385,17 @@ export default class TaskOrderDetails extends Vue {
     return this.showInactive? 'Hide':'Show'
   }
 
+  /* eslint-disable indent */
   public currentPeriodFundingTotals: {
     CLINValue:number,
     obligatedFunds:number,
     fundsSpent:number,
   } = {
-    CLINValue:0,
-    obligatedFunds:0,
-    fundsSpent:0,
-  }
+      CLINValue:0,
+      obligatedFunds:0,
+      fundsSpent:0,
+    }
+  /* eslint-enable indent */
 
   public taskOrderRemainingFunds = {percent:"",fundsRemaining:""}
   public totals = {percent:"",fundsRemaining:""}
@@ -446,7 +449,9 @@ export default class TaskOrderDetails extends Vue {
         fundsRemaining: ""
       }
     }
+    //eslint-disable-next-line prefer-const
     let percent = Math.round((Number(fundsSpent) / Number(obligatedFunds)) * 100);
+    //eslint-disable-next-line prefer-const
     let remaining = Number(obligatedFunds) - Number(fundsSpent);
     return {
       percent: String(percent),

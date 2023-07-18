@@ -1,18 +1,14 @@
-import {
-  Action,
-  getModule,
-  Module,
-  Mutation,
-  VuexModule,
-} from "vuex-module-decorators";
+/* eslint-disable camelcase */
+import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
-import { CountryDTO, MilitaryRankDTO, StateDTO, SystemChoiceDTO } from "@/api/models";
+import {ContactDTO, CountryDTO, MilitaryRankDTO, StateDTO, SystemChoiceDTO} from "@/api/models";
 import api from "@/api";
 import {TABLENAME as ContactsTable} from "@/api/contacts";
-import { TABLENAME as MilitaryRanksTable } from "@/api/militaryRanks";
-import { AutoCompleteItem, AutoCompleteItemGroups, SelectData,  } from "types/Global";
-import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
+import {TABLENAME as MilitaryRanksTable} from "@/api/militaryRanks";
+import {AutoCompleteItem, AutoCompleteItemGroups, SelectData,} from "types/Global";
+import {nameofProperty, retrieveSession, storeDataToSession} from "../helpers"
 import Vue from "vue";
+import {convertColumnReferencesToValues} from "@/api/helpers";
 
 const ATAT_CONTACT_DATA_KEY = 'ATAT_CONTACT_DATA_KEY';
 
@@ -29,8 +25,6 @@ const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
     return a.grade > b.grade ? 1 : -1;
   }};
 
-
-
 @Module({
   name: "ContactData",
   namespaced: true,
@@ -40,7 +34,7 @@ const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
 export class ContactDataStore extends VuexModule {
   private initialized = false;
   public branchChoices: SystemChoiceDTO[] = [];
-  public civilianGradeChoices :SystemChoiceDTO[] = [];
+  public civilianGradeChoices: SystemChoiceDTO[] = [];
   public countries:CountryDTO[] = [];
   public militaryRanks: MilitaryRankDTO[] = [];
   public militaryAutoCompleteGroups: AutoCompleteItemGroups = {};
@@ -60,10 +54,8 @@ export class ContactDataStore extends VuexModule {
   ];
 
   public get stateChoices(): SelectData[] {
-
     return this.states.filter(state=>state.key !== 'us').map(state=> {
       return  {
-
         text: state.name,
         value: state.key.replace('us-', '').toUpperCase()
       }
@@ -71,12 +63,10 @@ export class ContactDataStore extends VuexModule {
   }
 
   public get countryChoices(): SelectData[] {
-
     return this.countries.map(country=> {
       return  {
-
         text: country.name,
-        value: country.iso3166_2,
+        value: country.sys_id,
       }
     })
   }
@@ -88,12 +78,9 @@ export class ContactDataStore extends VuexModule {
       Object.keys(sessionDataObject).forEach((property) => {
         Vue.set(this, property, sessionDataObject[property]);
       });
-
     } catch (error) {
       throw new Error('error restoring session for contact data store');
     }
-    
-
   }
 
   @Mutation
@@ -121,7 +108,6 @@ export class ContactDataStore extends VuexModule {
     this.civilianGradeChoices = value;
   }
 
-
   @Mutation
   public setMilitaryAutoCompleteGroups(): void {
     const autoCompleteItemGroups: { [key: string]: AutoCompleteItem[] } = {};
@@ -136,7 +122,6 @@ export class ContactDataStore extends VuexModule {
             sysId: rank.sys_id ||  "",
           };
         });
-
       autoCompleteItemGroups[branch.value] = branchRanks;
     });
     this.militaryAutoCompleteGroups = autoCompleteItemGroups;
@@ -147,7 +132,6 @@ export class ContactDataStore extends VuexModule {
     this.salutationChoices = value;
   } 
 
-
   @Mutation
   public setStates(value: StateDTO[]):void {
     this.states = value;
@@ -157,7 +141,6 @@ export class ContactDataStore extends VuexModule {
   public setCountries(value: CountryDTO[]):void {
     this.countries = value;
   }
-
 
   @Action({ rawError: true })
   public async ensureInitialized(): Promise<void> {
@@ -186,7 +169,6 @@ export class ContactDataStore extends VuexModule {
     this.setCivilianGrades(grades);
   }
 
-
   @Action({rawError: true})
   private async getContactRoleChoices():Promise<void>
   {
@@ -194,12 +176,9 @@ export class ContactDataStore extends VuexModule {
       ContactsTable,
       "role"
     );
-    
     this.setRoles(contactRoles);
   }
-  
 
-  
   @Action({rawError: true})
   private async getContactSalutationChoices():Promise<void>
   {
@@ -210,33 +189,27 @@ export class ContactDataStore extends VuexModule {
     this.setContactSalutations(salutations);
   }
 
-  
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
-
       const sessionRestored= retrieveSession(ATAT_CONTACT_DATA_KEY);
-
       if(sessionRestored){
         this.setStoreData(sessionRestored);
         this.setMilitaryAutoCompleteGroups();
       }
       else{
-
         await Promise.all([this.getBranchChoices(), 
           this.getCountries(),
           this.getCivilianGradeChoices(), 
           this.getContactRoleChoices(),
           this.getContactSalutationChoices(),
           this.getStates()]);
-    
         const ranks = await api.militaryRankTable.all();
         this.setRanks(ranks);
         this.setMilitaryAutoCompleteGroups();
         this.setInitialized(true);
         storeDataToSession(this, this.sessionProperties, ATAT_CONTACT_DATA_KEY);
       }
-
     } catch (error) {
       console.log(error);
       console.log("error loading military rank data");
@@ -256,23 +229,17 @@ export class ContactDataStore extends VuexModule {
 
   @Action({rawError: true})
   public async getStates():Promise<void>{
-
     const states = await api.statesTable.all();
     this.setStates(states);
-
   }
 
   @Action({rawError: true})
   public async getCountries():Promise<void>{
-
     const countries = await api.countriesTable.all();
     this.setCountries(countries);
-
   }
 
-
   public get countryListData(){
-
     return (removeCountries: string[] | null): SelectData[]=> {
       if (!removeCountries) {
         return this.countryChoices;
@@ -304,6 +271,28 @@ export class ContactDataStore extends VuexModule {
     this.roleChoices = [];
     this.salutationChoices = [];
     this.states = [];
+  }
+
+  @Action({rawError: true})
+  public async getContactBySysId(sysId: string): Promise<ContactDTO> {
+    return await api.contactsTable.retrieve(sysId);
+  }
+
+  @Action({rawError: true})
+  public async saveContact(contactDTO: ContactDTO): Promise<ContactDTO> {
+    try {
+      const sys_id = contactDTO.sys_id || "";
+      return sys_id.length > 0
+        ? await api.contactsTable.update(sys_id, contactDTO)
+        : await api.contactsTable.create(contactDTO);
+    } catch (error) {
+      throw new Error(`Error occurred saving contact ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
+  public async deleteContactBySysId(sysId: string): Promise<void> {
+    return await api.contactsTable.remove(sysId);
   }
 }
 

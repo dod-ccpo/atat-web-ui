@@ -5,7 +5,10 @@ import api from "@/api";
 import { OtherServiceOfferingData, SingleMultiple, TrainingEstimate } from "../../../types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
-import DescriptionOfWork, { stringifyPeriodsForIGCECostEstimates } from "@/store/descriptionOfWork";
+import DescriptionOfWork, { 
+  createDOWTaskNumber, 
+  stringifyPeriodsForIGCECostEstimates 
+} from "@/store/descriptionOfWork";
 import AcquisitionPackage from "../acquisitionPackage";
 import { AxiosRequestConfig } from "axios";
 import {
@@ -15,7 +18,8 @@ import {
   ContractTypeDTO,
   TrainingEstimateDTO, ReferenceColumn, CrossDomainSolutionDTO
 } from "@/api/models";
-import { currencyStringToNumber } from "@/helpers";
+import { currencyStringToNumber, getStringFromReferenceColumn, toTitleCase } from "@/helpers";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
@@ -66,7 +70,8 @@ export const defaultTrainingEstimate = (): TrainingEstimate => {
     },
     estimatedTrainingPrice: "",
     trainingOption: "",
-    cloudSupportEnvironmentInstance: ""
+    cloudSupportEnvironmentInstance: "",
+    dow_task_number: ""  
   };
 }
 
@@ -79,11 +84,13 @@ export const defaultIgceEstimate = (): IgceEstimateDTO => {
     cross_domain_solution: "",
     cross_domain_pair: "",
     description: "",
+    dow_task_number: "",
     environment_instance: "",
     title: "",
     unit: "",
     unit_price: null,
-    unit_quantity: ""
+    unit_quantity: "",
+    updated_description: "NO",
   }
 }
 
@@ -262,14 +269,14 @@ export class IGCEStore extends VuexModule {
   @Action({rawError: true})
   public async saveTrainingEstimate(value: TrainingEstimate): Promise<string> {
     let objSysId = "";
-
     const trainingDTOItem: TrainingEstimateDTO = {
       acquisition_package: AcquisitionPackage.packageId,
       estimated_price_per_training_unit: value.estimatedTrainingPrice,
       training_option: value.trainingOption,
       training_estimated_values: value.estimate.estimated_values || "",
       training_unit: value.costEstimateType,
-      cloud_support_environment_instance: value.cloudSupportEnvironmentInstance
+      cloud_support_environment_instance: value.cloudSupportEnvironmentInstance,
+      dow_task_number: await this.getDOWTaskNumber(value.cloudSupportEnvironmentInstance as string)
     };
 
     if(value.sysId){
@@ -291,6 +298,29 @@ export class IGCEStore extends VuexModule {
 
     return objSysId;
   }
+
+  @Action
+  public async getDOWTaskNumber(cloudSupportSysId: string): Promise<string>{
+    
+    const trainingEnvironmentInstance = await api.cloudSupportEnvironmentInstanceTable.getQuery({
+      params: {sysparm_query: "^sys_id=" + cloudSupportSysId}
+    });
+
+    let dowTaskNumber =  "";
+    if (trainingEnvironmentInstance.length>0){
+      const training = trainingEnvironmentInstance[0];
+      const classificationLevel = typeof training.classification_level === "object"
+        ? (training.classification_level as ReferenceColumn).value as string
+        : training.classification_level as string;
+      dowTaskNumber = await createDOWTaskNumber(
+        classificationLevel, 
+        "TRAINING", 
+        training.instance_number
+      )
+    }
+    return dowTaskNumber;
+  }
+
 
   @Action
   public async getRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
@@ -516,12 +546,13 @@ export class IGCEStore extends VuexModule {
     instanceRef: {
       environmentInstanceSysId?: string,
       classificationLevelSysId?: string,
-      classificationInstanceSysId?: string,
+      classificationInstanceSysId?: string, 
       unit_quantity: string,
+      description:string,
+      dow_task_number?: string
     }
   ): Promise<void> {
     const isClassificationInstance = instanceRef.classificationInstanceSysId !== undefined;
-
     const instanceQueryString = isClassificationInstance
       ? "classification_instance=" + instanceRef.classificationInstanceSysId
       : "environment_instance=" + instanceRef.environmentInstanceSysId
@@ -529,17 +560,20 @@ export class IGCEStore extends VuexModule {
     const instanceQuery: AxiosRequestConfig = {
       params: { sysparm_query: instanceQueryString },
     };
-
     const costEstimateRowData = await api.igceEstimateTable.getQuery(instanceQuery)
     const costEstimateSysId = costEstimateRowData[0]?.sys_id || "";
-
     if (costEstimateSysId) {
-      await api.igceEstimateTable.update(
-        costEstimateSysId, {
-          classification_level: instanceRef.classificationLevelSysId,
-          contract_type: getContractType(),
-          unit_quantity: instanceRef.unit_quantity
-        });
+      const estimateToBeUpdated: IgceEstimateDTO = {
+        classification_level: instanceRef.classificationLevelSysId,
+        contract_type: getContractType(),
+        unit_quantity: instanceRef.unit_quantity,
+        description: costEstimateRowData[0].updated_description !== "YES"? instanceRef.description
+          : costEstimateRowData[0].description,
+        dow_task_number: instanceRef.dow_task_number,
+        title: costEstimateRowData[0].title
+      }
+      await api.igceEstimateTable.update(costEstimateSysId, estimateToBeUpdated);
+      await this.reorderInstanceNumbersInSNOW(estimateToBeUpdated)
     }
   }
 
@@ -605,6 +639,7 @@ export class IGCEStore extends VuexModule {
       offeringType: string,
       idiqClinType: string,
       unit_quantity: string,
+      dowTaskNumber: string,
     }):
     Promise<void> {
     await this.createIgceEstimateRecord({
@@ -618,6 +653,7 @@ export class IGCEStore extends VuexModule {
         envInstanceRef.offeringType,
         envInstanceRef.otherServiceOfferingData
       ),
+      dow_task_number: envInstanceRef.dowTaskNumber,
       unit: envInstanceRef.unit,
       idiq_clin_type: envInstanceRef.idiqClinType,
       unit_quantity: envInstanceRef.unit_quantity
@@ -637,6 +673,7 @@ export class IGCEStore extends VuexModule {
       description: string,
       idiqClinType: string,
       unit_quantity: string
+      dow_task_number: string
     }):
     Promise<void> {
     await this.createIgceEstimateRecord({
@@ -647,9 +684,10 @@ export class IGCEStore extends VuexModule {
         : classInstanceRef.classificationLevelSysId as string,
       title: classInstanceRef.title,
       description: classInstanceRef.description,
+      dow_task_number: classInstanceRef.dow_task_number,
       unit: "month",
       idiq_clin_type: classInstanceRef.idiqClinType,
-      unit_quantity: classInstanceRef.unit_quantity
+      unit_quantity: classInstanceRef.unit_quantity,
     });
   }
 
@@ -663,25 +701,68 @@ export class IGCEStore extends VuexModule {
     return cdsRecord.length>0 ? cdsRecord[0] : null
   }
 
-
   /**
-   * Performs a query on the request config and deletes the first match from the IGCE Estimate
-   * table. It is expected to always have a single match at most. If there are more than
-   * one matching records, then there is an issue else where, that is creating multiple
-   * records of the same instance
+   *  1) deletes item from the IGCEEstimate table
+   *  2) reorders instance numbers in IGCEEstimate table
+   *  @param deleteRequestConfig query to delete item with environmentInstance
+   *                            or classification instance
    */
   @Action({ rawError: true })
   public async deleteIgceEstimateByRequestConfig(deleteRequestConfig: AxiosRequestConfig):
     Promise<void> {
-    const igceEstimateList = await api.igceEstimateTable.getQuery(deleteRequestConfig);
-    if (igceEstimateList?.length > 0) {
-      // TODO: double check which option is better. For CDS there could be multiple records
-      //  per cross domain. So, may need to delete more than one record when user toggles from
-      //  "YES" to a "NO"
-      igceEstimateList.forEach(async igceEstimate => {
-        api.igceEstimateTable.remove(igceEstimate.sys_id as string);
-      })
+    const igceEstimate = 
+      (await api.igceEstimateTable.getQuery(deleteRequestConfig))[0];   
+    if (igceEstimate) {
+      // delete IGCE row from the database
+      await api.igceEstimateTable.remove(igceEstimate.sys_id as string);
+      // reorder Instance numbers in IGCE table after deletion
+      await this.reorderInstanceNumbersInSNOW(igceEstimate);
     }
+  }
+
+  /**
+   * reorders instance numbers for both `IGCE Estimate` table columns 
+   * 1) `DOW Task Number` - items with NO environmental instance 
+   * 2) `Title` = items with enviornmental instance
+   * 
+   * @param igceEstimate IGCEEstimateDTO
+   */
+  @Action({ rawError: true })
+  public async reorderInstanceNumbersInSNOW(estimate: IgceEstimateDTO):Promise<void>{
+    if(estimate.title === 'Portability Plan') return
+    const serviceOfferingGroup = estimate.title?.substring(
+      0, estimate.title?.indexOf(" -")
+    ) || "";
+    const classificationLevel = getStringFromReferenceColumn(estimate.classification_level)
+    const igceEstimateListToBeReordered = await api.igceEstimateTable.getQuery({
+      params: {
+        sysparm_query: "titleLIKE" + serviceOfferingGroup 
+          + "^acquisition_package=" + AcquisitionPackage.packageId 
+          + "^classification_level=" + classificationLevel
+          + "^ORDERBYsys_created_on"
+      }
+    });
+    igceEstimateListToBeReordered.forEach(
+      async (est, idx)=>{
+        if (est.sys_id){
+          // create NEW DOW task order number
+          const reorderedDOWTaskNumber = (est.dow_task_number?.substring(
+            0 ,est.dow_task_number?.lastIndexOf(".") + 1
+          ) || "") + (idx + 1);
+
+          // create new title 
+          const reorderedTitle = (est.title?.substring(
+            0 ,est.title.lastIndexOf("#") + 1
+          ) || "") + (idx + 1);
+          const hasEnvironmentInstances = est.environment_instance !=="";
+
+          await api.igceEstimateTable.update(est.sys_id,{
+            title: hasEnvironmentInstances ? reorderedTitle : est.title,
+            dow_task_number: reorderedDOWTaskNumber
+          }) 
+        }
+      }
+    )
   }
 
   /**
@@ -804,14 +885,21 @@ export class IGCEStore extends VuexModule {
   public async saveIgceEstimates(costEstimateList: IgceEstimateDTO[][]): Promise<void> {
     const apiCallList: Promise<IgceEstimateDTO>[] = [];
     for (const estimate in costEstimateList) {
-      costEstimateList[estimate].forEach(offering => {
+      costEstimateList[estimate].forEach(async offering => {
         const igceEstimateSysId = offering.sys_id as string;
+        offering.dow_task_number = await this.getCDSDowTaskNumber(offering);
         const igceEstimate: IgceEstimateDTO = {
           description: offering.description as string,
           title: offering.title as string,
           unit: offering.unit as string,
           unit_price: offering.unit_price as number,
-          unit_quantity: offering.unit_quantity as string
+          unit_quantity: offering.unit_quantity as string,
+          updated_description: offering.updated_description,
+          dow_task_number:  await this.getCDSDowTaskNumber(offering),
+          classification_level: typeof offering.classification_level === "object"?
+              offering.classification_level.value as string
+            : offering.classification_level as string,
+          idiq_clin_type: offering.idiq_clin_type,
         }
         igceEstimateSysId !== undefined
           ? apiCallList.push(api.igceEstimateTable.update(igceEstimateSysId, igceEstimate))
@@ -820,6 +908,14 @@ export class IGCEStore extends VuexModule {
     }
     await Promise.all(apiCallList);
   }
+
+  @Action({ rawError: true })
+  public async getCDSDowTaskNumber(offering:IgceEstimateDTO):Promise<string>{
+    return await offering.title?.includes("Cross Domain Solution") 
+      ? "4.2.6"
+      : offering.dow_task_number as string;
+  }
+
 }
 
 const IGCE = getModule(IGCEStore);

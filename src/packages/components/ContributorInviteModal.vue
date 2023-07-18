@@ -54,7 +54,7 @@
               >
                 <v-list-item-content>
                   <v-list-item-title class="font-weight-bolder font-size-16">
-                    {{ user.firstName }} {{ user.lastName}}
+                    {{ user.firstName }} {{ user.lastName}} {{ user.agency }}
                   </v-list-item-title>
                   <v-list-item-subtitle class="font-size-14">
                     {{ user.email }}
@@ -75,6 +75,10 @@
               </v-list-item>
             </v-list>
           </v-card>
+          <div v-show="showRefineSearchMessage" class="_refine-search-message">
+            <span class="font-weight-500">Top 100 results</span> 
+            &ndash; Refine your search to view more.
+          </div>
         </div>
       </div>
 
@@ -86,7 +90,7 @@
           >
             <v-list-item-content>
               <v-list-item-title class="font-weight-bolder font-size-16">
-                {{ user.firstName }} {{ user.lastName }}
+                {{ user.firstName }} {{ user.lastName }} {{ user.agency }}
               </v-list-item-title>
               <v-list-item-subtitle class="font-size-14">
                 {{ user.email }}
@@ -177,31 +181,48 @@ export default class ContributorInviteModal extends Vue {
     return this.searchObj.searchResults.length > 0;
   }
 
-  public clearSearch(): void {
+  public get showRefineSearchMessage(): boolean {
+    return this.searchObj.searchResults.length === 100;
+  }
+
+  public async clearSearch(): Promise<void> {
     this.searchString = "";
     this.searchObj.alreadyInvited = false;
+    await this.clearResults();
   }
 
   @Watch("searchString")
-  public searchStringChanged(newVal: string, oldVal: string): void {
-    if (newVal !== oldVal && newVal.trim().length > 2) {
-      this.searchObj.noResults = false;
-      this.searchObj.alreadyInvited = false
-      this.onUserSearchValueChange(newVal);
+  public async searchStringChanged(newVal: string, oldVal: string): Promise<void> {
+    this.searchObj.noResults = false;
+    this.searchObj.alreadyInvited = false
+    await this.debouncedSearch(newVal, oldVal)
+  }
+
+  public debouncedSearch = _.debounce(async (newVal: string, oldVal: string) => {
+    if (newVal && newVal !== oldVal && newVal.trim().length > 2 && !this.isSearching) {
+      await this.onUserSearchValueChange(newVal);
+    } else {  
+      await this.clearResults();
     }
+  }, 1000)
+
+  public async clearResults(): Promise<void> {
+    this.searchObj.isLoading = false;
+    this.searchObj.searchResults = [];      
+    await UserManagement.triggerAbort();
   }
 
   /**
-   * Starts searching 500 milliseconds after user changes the search value. Only
-   * searches if there are at least 3 characters in the newValue
+   * Starts searching 1 second after user pauses when entering a search value.
+   * Only searches if there are at least 3 characters in the newValue
    */
-  public onUserSearchValueChange = _.debounce(async (newValue: string) => {
-    if (!this.isSearching) {
+  public async onUserSearchValueChange(searchStr: string): Promise<void> {
+    if (!this.isSearching && searchStr) {
       await UserManagement.doResetAbortController();
+      await this.clearResults();
       this.isSearching = true;
-      this.searchObj.searchResults = [];
       this.searchObj.isLoading = true;
-      const response = await UserManagement.searchUserByNameAndEmail(newValue)
+      const response = await UserManagement.searchUserByNameAndEmail(searchStr)
       this.searchObj.searchResults = response.map(userSearchDTO => {
         return {
           sys_id: userSearchDTO.sys_id,
@@ -210,21 +231,24 @@ export default class ContributorInviteModal extends Vue {
           fullName: userSearchDTO.name,
           email: userSearchDTO.email,
           phoneNumber: userSearchDTO.phone,
-          agency: userSearchDTO.department?.display_value
+          agency: userSearchDTO.company ? "(" + userSearchDTO.company + ")" : "",
         }
       });
+  
       this.searchObj.noResults = this.searchObj.searchResults.length === 0;
       this.searchObj.isLoading = false;
       this.isSearching = false;
     } else {
-      UserManagement.triggerAbort();
+      await UserManagement.triggerAbort();
       this.searchObj.searchResults = [];
       this.searchObj.noResults = false;
       this.searchObj.alreadyInvited = false;         
       this.isSearching = false;
-      this.onUserSearchValueChange(newValue);
+      if (searchStr) {
+        await this.onUserSearchValueChange(searchStr);
+      }
     }
-  }, 500)
+  }
 
   public removeSelectedUser(index: number): void {
     this.userSelectedList.splice(index, 1);
@@ -236,38 +260,42 @@ export default class ContributorInviteModal extends Vue {
    * Then clears the search string and makes a function call out to clear the search results
    */
   public onUserSelection(newSelectedUser: User): void {
-    const alreadySelected = this.userSelectedList.find(u => u.sys_id === newSelectedUser.sys_id)
-    const alreadyInvited = this.alreadyInvitedUsers.find(u => u.sys_id === newSelectedUser.sys_id);
-    if (newSelectedUser && !alreadySelected && !alreadyInvited) {
-      this.searchObj.alreadyInvited = false;
-      this.userSelectedList.push(newSelectedUser);
-      this.userSelectedList.sort((a, b) => {
-        if (a.fullName && b.fullName) {
-          return a.fullName > b.fullName ? 1 : -1;
-        } else {
-          return 0;
-        }
-      })
-      this.searchString = "";
-      this.searchObj.alreadyInvited = false;
-      this.searchObj.searchResults = [];
-      this.searchObj.noResults = false;
-      this.searchObj.isLoading = false;
-    } else {
-      this.searchObj.alreadyInvited = true;
+    if (newSelectedUser.sys_id) {
+      const alreadySelected = this.userSelectedList.find(u => u.sys_id === newSelectedUser.sys_id)
+      const alreadyInvited 
+        = this.alreadyInvitedUsers.find(u => u.sys_id === newSelectedUser.sys_id);
+      if (newSelectedUser && !alreadySelected && !alreadyInvited) {
+        this.searchObj.alreadyInvited = false;
+        this.userSelectedList.push(newSelectedUser);
+        this.userSelectedList.sort((a, b) => {
+          if (a.fullName && b.fullName) {
+            return a.fullName > b.fullName ? 1 : -1;
+          } else {
+            return 0;
+          }
+        })
+        this.searchString = "";
+        this.searchObj.alreadyInvited = false;
+        this.searchObj.searchResults = [];
+        this.searchObj.noResults = false;
+        this.searchObj.isLoading = false;
+      } else {
+        this.searchObj.alreadyInvited = true;
+      }
     }
+
   }
 
   /**
    * Resets the state of the modal and all the properties.
    */
-  public onCancel(): void {
+  public async onCancel(): Promise<void> {
     this.searchString = "";
     this.searchObj.alreadyInvited = false;
     this.searchObj.searchResults = [];
     this.searchObj.noResults = false;
     this.searchObj.isLoading = false;
-    UserManagement.triggerAbort();    
+    await UserManagement.triggerAbort();    
   }
 
   @Watch("_showInviteModal")

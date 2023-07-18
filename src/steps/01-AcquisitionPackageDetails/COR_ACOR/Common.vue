@@ -120,6 +120,7 @@ import {
   RankData,
   SelectData,
 } from "../../../../types/Global";
+import {convertColumnReferencesToValues} from "@/api/helpers";
 
 @Component({
   components: {
@@ -228,22 +229,22 @@ export default class CommonCorAcor extends Vue {
   private branchRanksData: AutoCompleteItemGroups = {};
 
   private roleIndices = {
-    MILITARY: 0,
-    CIVILIAN: 1,
+    CIVILIAN: 0,
+    MILITARY: 1,
     CONTRACTOR: 3,
   };
 
   private contactRoles: RadioButton[] = [
     {
-      id: "Military",
-      label: "Military",
-      value: "MILITARY",
-    },
-    {
       id: "Civilian",
       label: "Civilian",
       value: "CIVILIAN",
     },
+    {
+      id: "Military",
+      label: "Military",
+      value: "MILITARY",
+    }
   ];
 
   private selectedRole = "";
@@ -288,6 +289,10 @@ export default class CommonCorAcor extends Vue {
       phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
     }
 
+    const acqPkgId = AcquisitionPackage.acquisitionPackage
+      ? AcquisitionPackage.acquisitionPackage.sys_id as string
+      : "";
+
     return {
       type: this.corOrAcor, // COR, ACOR
       role: this.selectedRole, // Military, Civilian
@@ -305,6 +310,7 @@ export default class CommonCorAcor extends Vue {
       dodaac: this.dodaac,
       can_access_package: this.selectedAccessToEdit,
       manually_entered: this.showContactForm ? "true" : "false",
+      acquisition_package: acqPkgId
     };
   }
 
@@ -409,22 +415,23 @@ export default class CommonCorAcor extends Vue {
 
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
 
-    const storeData = await AcquisitionPackage.getContact(this.corOrAcor);
+    let storeData = await AcquisitionPackage.getContact(this.corOrAcor);
+    storeData = convertColumnReferencesToValues(storeData);
     this.savedData = storeData;
 
     if (storeData) {
       this.selectedRole = storeData.role;
 
       if (this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value) {
-        const rankComp = (storeData.rank_components as unknown) as { link: string, value: string };
+        const rankComp = storeData.rank_components;
         if (rankComp) {
-          this.savedData.rank_components = rankComp.value;
+          this.savedData.rank_components = rankComp;
         }
 
         const emptyBranch: Record<string, string> = {text: "", value: ""};
 
         //retrieve selected Military Rank from rank component
-        const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
+        const rank = await ContactData.GetMilitaryRank(rankComp || "");
 
         this.selectedBranch = rank !== undefined
           ? this.branchData.find((branch) => branch.value === rank.branch) || emptyBranch

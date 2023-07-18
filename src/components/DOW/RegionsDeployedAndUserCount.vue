@@ -22,6 +22,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
@@ -78,25 +79,29 @@ export default class RegionsDeployedAndUserCount extends Vue {
   }
 
   public updateRegionUsers(value:string): void {
-    const regionUsersArray = JSON.parse(value);
-    const selectedRegions: string[] = [];
-    regionUsersArray.forEach((regionUsers: Record<string, string>) => {
-      const region = Object.keys(regionUsers)[0];
-      selectedRegions.push(region);
-      const userCount = Object.values(regionUsers)[0];
-      const i = this.regions.findIndex(obj => obj.value === region);
-      this.regions[i].textfieldValue = userCount;
-    });
+    if(value) { // this check eliminates console errors when the user toggles between cloud/on-prem
+      const regionUsersArray = JSON.parse(value);
+      const selectedRegions: string[] = [];
+      regionUsersArray.forEach((regionUsers: Record<string, string>) => {
+        const region = Object.keys(regionUsers)[0];
+        selectedRegions.push(region);
+        const userCount = Object.values(regionUsers)[0];
+        const i = this.regions.findIndex(obj => obj.value === region);
+        this.regions[i].textfieldValue = userCount;
+      });
 
-    this.$nextTick(() => {
-      this.selectedRegions = selectedRegions;
-    })
+      this.$nextTick(() => {
+        this.selectedRegions = selectedRegions;
+      })
+    }
   }
 
   public async mounted(): Promise<void> {
+    //eslint-disable-next-line prefer-const 
     let regionsData = acquisitionPackage.regions
     regionsData?.sort((a, b) => a.sequence > b.sequence ? 1 : -1)
       .forEach(region => {
+        //eslint-disable-next-line prefer-const 
         let item = {
           id : region.name,
           label : region.name,

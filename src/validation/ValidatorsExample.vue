@@ -88,6 +88,14 @@
           label="Integers only"
           ref="integerField"
       /></v-col>
+      <v-col cols="7"
+        ><ATATTextField
+          :rules="[$validators.isEmail()]"
+          :value="emailValue"
+          label="Email only"
+          ref="emailField"
+          id='checkEmail'
+      /></v-col>
     </v-row>
   </v-form>
 </template>
@@ -116,6 +124,7 @@ export default class ValidatatorsExample extends Vue {
   private maxValue = "12345678910";
   private requiredValue = "";
   private integerValue = "y";
+  private emailValue = ""
 
   private setToast(
     type: "success" | "info", 
@@ -123,6 +132,7 @@ export default class ValidatatorsExample extends Vue {
     hasUndo: boolean, 
     longMessage: boolean,
   ): void {
+    //eslint-disable-next-line prefer-const
     let message = longMessage 
       ? `My toast with a long message to check the timing of the toast - one extra 
         second for every 120 characters so this message should add one second. `

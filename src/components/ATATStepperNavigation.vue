@@ -15,7 +15,7 @@
       </v-btn>
 
       <span class="ml-auto d-flex">
-        <span v-if="additionalButtons.length" class="d-flex">
+        <span v-if="additionalButtons.length && !hideAdditionalButtons" class="d-flex">
           <v-btn 
             v-for="button in additionalButtons"
             :key="button.id"
@@ -34,8 +34,7 @@
           @click="continueClicked()" 
           v-if="!hideContinueButton"
           depressed 
-          :color="continueButtonColor
-            || this.continueButtonText === 'Continue'? 'primary' : 'secondary'"
+          :color="getContinueButtonColor"
           role="link" 
           class="ml-4"
           id="ContinueButton"
@@ -45,24 +44,13 @@
         </v-btn>
       </span>
     </div>
-
-    <v-btn
-      id="developerToggleButton"
-      v-if="allowDeveloperNavigation()"
-      @click="toggleDeveloperNavigation()"
-      role="button"
-      class="mt-10"
-    >
-      <span>Turn Developer Navigation {{ developerNavState }}</span>
-    </v-btn>    
   </nav>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { AdditionalButton } from "@/store/steps/types";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({})
 
@@ -73,6 +61,7 @@ export default class ATATStepperNavigation extends Vue {
   @Prop({ default: false }) private noPrevious?: boolean;
   @Prop({ default: "stepperNavigation" }) private id?: string;
   @Prop({ default: false }) private hideContinueButton?: boolean;
+  @Prop({ default: false }) private hideAdditionalButtons?: boolean;
   @Prop({ default: false }) private disableContinue!: boolean;
   @Prop({ default: "" }) private continueButtonColor?: string;
   @Prop({ default: "" }) private altContinueAction?: string;
@@ -81,17 +70,12 @@ export default class ATATStepperNavigation extends Vue {
     return button.buttonClass || "secondary";
   }
 
-  private allowDeveloperNavigation(): boolean {
-    return process.env.VUE_APP_allowDeveloperNavigation === 'true' || false;
-  }
+  get getContinueButtonColor():string{
+    return this.continueButtonColor !== ""
+      ? this.continueButtonColor as string
+      : this.continueButtonText === 'Continue'? 'primary' : 'secondary'
+  } 
 
-  private get developerNavState(): string {
-    return AcquisitionPackage.getAllowDeveloperNavigation ? "OFF" : "ON";
-  }
-
-  private toggleDeveloperNavigation(): void {
-    AcquisitionPackage.setAllowDeveloperNavigation(!AcquisitionPackage.getAllowDeveloperNavigation);
-  }
 
   private continueClicked(): void {
     if (!this.altContinueAction) {
@@ -100,6 +84,5 @@ export default class ATATStepperNavigation extends Vue {
       this.$emit("takeAltContinueAction");
     }
   }
-
 }
 </script>

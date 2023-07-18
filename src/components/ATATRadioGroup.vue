@@ -1,6 +1,5 @@
 <template>
-  <div 
-    :id="id+'_radio_group_control'" >
+  <div :id="id+'_radio_group_control'">
     <v-radio-group
       class="_atat-radio-group"
       ref="radioButtonGroup"
@@ -13,7 +12,7 @@
           <legend
             v-if="legend"
             class="form-field-label pb-0 mr-2"
-            :class="{ 'd-sr-only': legendSrOnly }"
+            :class="{ 'd-sr-only': legendSrOnly, 'font-weight-normal': legendFontNormalWeight }"
           >
             {{ legend }}
             <span v-if="legendLink">
@@ -102,7 +101,7 @@
             </div>
           </template>
           <template v-else v-slot:label>
-            <span v-html="item.label"></span>
+              <span v-html="item.label"></span>
           </template>
 
         </v-radio>
@@ -176,6 +175,7 @@ export default class ATATRadioGroup extends Vue {
   @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
   @Prop() public legendLink?: LegendLink;
   @PropSync("clearErrorMessages") public _clearErrorMessages?: boolean;
+  @Prop({default: false}) public legendFontNormalWeight?: boolean;
 
   // data
   private errorMessages: string[] = [];

@@ -4,7 +4,7 @@
       <v-container fluid class="container-max-width">
         <v-row>
           <v-col class="col-12">
-            <h1 class="page-header">
+            <h1 class="page-header mb-3">
               Let’s gather details about the duration of your task order
             </h1>
             <div class="copy-max-width">
@@ -28,6 +28,20 @@
                 </a>
               </p>
             </div>
+            <ATATAlert 
+              v-if="showAlert"
+              id="UrgentFairOppAlert"
+              class="copy-max-width mb-9"
+              type="warning"
+              :showIcon="true"
+            >
+              <template v-slot:content>
+                <p class="mr-5 mb-0">
+                  <span v-html="alertText"></span>
+                </p>
+              </template>
+            </ATATAlert>
+
             <div class="mb-4 _semibold" style="padding-left: 101px">
               Period of Performance length
             </div>
@@ -150,7 +164,7 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
+/* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
@@ -158,9 +172,10 @@ import Vue from "vue";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
+import { PoP, SelectData, SlideoutPanelContent, SummaryItem } from "../../../types/Global";
 import { getIdText } from "@/helpers";
 import { PeriodDTO } from "@/api/models";
 import Periods from "@/store/periods";
@@ -187,7 +202,8 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
     ATATSelect,
     draggable,
     PopLearnMore,
-    ATATErrorValidation
+    ATATErrorValidation,
+    ATATAlert
   },
 })
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
@@ -201,6 +217,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public durationErrorMessage = "Please provide a valid period length."
   public optionPeriodCount = 1;
   private removed: PeriodDTO[] = [];
+  private showAlert = false;
+  private alertText = "";
 
   public optionPeriods: PoP[] = [
     {
@@ -213,6 +231,37 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   public durationErrorIndices: number[] = [];
   
+  /**
+   * returns if the fair opportunity selection is urgent(YES_FAR_16_505_B_2_I_A)
+   */
+  get isFairOpportunityUrgent(): boolean{
+    return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity 
+      === "YES_FAR_16_505_B_2_I_A";
+  }
+
+  public setAlertText(): void{
+    const fairOpp = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
+    this.alertText = "";
+    switch (fairOpp){
+    case "YES_FAR_16_505_B_2_I_A":
+      this.alertText = "<strong>Based on your exception to fair opportunity, we recommend that you "
+        + "enter a base period only.</strong>  Option periods are not allowed in a "
+        + "Justification and Approval (J&A) document when “urgency” is cited as the "
+        + "exception, unless it is an interim contract due to a protest."
+      break;
+    case "YES_FAR_16_505_B_2_I_B":
+    case "YES_FAR_16_505_B_2_I_C":
+      this.alertText = "<strong>Based on your exception to fair opportunity, we recommend that "
+        + "you limit your period of performance to the shortest time possible.</strong> "
+        + "A Justification and Approval (J&A) should be used to provide support while overcoming "
+        + "any barriers that limit competition."
+      break;
+    default:
+      break;
+    }
+    this.showAlert = this.alertText !== "";
+  }
+
   public setDurationErrorMessages(errors: string[], idx: number): void {
     const optPeriod = this.optionPeriods[idx];
     const isErrored = !optPeriod.duration || optPeriod.unitOfTime === ''
@@ -402,6 +451,15 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     this.setDragEventListeners();
     await this.loadOnEnter();
+    this.$root.$on('validatePOP', (summaryItem: SummaryItem) => {
+      // your code goes here
+      summaryItem.title="Period Of Performance"
+      summaryItem.isTouched = hasChanges(this.savedData, this.currentData);
+      summaryItem.isComplete = this.hasErrors;
+      summaryItem.step = 4
+      summaryItem.substep = 1
+      return summaryItem;
+    })
   }
 
   public durationLabelEl = document.getElementsByClassName("duration")[0] as HTMLElement;
@@ -437,7 +495,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           this.durationLabelEl.classList.add("d-none");
 
           // create a fake drag ghost image to use instead of default and hide it
-          var elem = document.createElement("div") as HTMLElement;
+          //eslint-disable-next-line prefer-const
+          let elem = document.createElement("div") as HTMLElement;
           elem.classList.add("drag-img-fake");
           elem.setAttribute("id", "DragImgFaker");
           // must include some text or it won't hide
@@ -553,6 +612,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
 
     this.setTotalPoP();
+    this.setAlertText();
   }
 
   protected async saveOnLeave(): Promise<boolean> {

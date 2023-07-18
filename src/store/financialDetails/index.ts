@@ -117,8 +117,10 @@ export class FinancialDetailsStore extends VuexModule {
       return "";
     }
 
-    return this.fundingRequest.funding_request_type.length > 0 ?
-    this.fundingRequest?.funding_request_type : "";
+    return this.fundingRequest?.funding_request_type 
+      && this.fundingRequest?.funding_request_type?.length > 0
+      ? this.fundingRequest?.funding_request_type 
+      : "";
   }
 
   public get gInvoicingData(): baseGInvoiceData {
@@ -172,8 +174,7 @@ export class FinancialDetailsStore extends VuexModule {
 
     const formToSave = {
       ...fsForm,
-      use_g_invoicing: data.useGInvoicing,
-      gt_c_number: data.gInvoiceNumber,
+      use_g_invoicing: data.useGInvoicing
     }
 
     const savedForm = await this.saveFundingRequestFSForm(formToSave);
@@ -396,6 +397,7 @@ export class FinancialDetailsStore extends VuexModule {
      api.fundingRequestTable.update(data.sys_id, data) :
      api.fundingRequestTable.create(data);
    const savedFundingRequest = await saveFundingRequest;
+   this.setFundingRequest(savedFundingRequest);
    return savedFundingRequest;
  }
 
@@ -431,7 +433,9 @@ export class FinancialDetailsStore extends VuexModule {
         const defaultFundingRequest: FundingRequestDTO = {
           fs_form: "",
           funding_request_type: "",
-          mipr: ""
+          mipr: "",
+          appropriation_fiscal_year: "",
+          appropriation_funds_type: ""
         }
         const fundingRequest = await api.fundingRequestTable
           .create(defaultFundingRequest);
@@ -441,6 +445,29 @@ export class FinancialDetailsStore extends VuexModule {
       }
     } catch (error) {
       throw new Error(`Error occurred loading funding request ${error}`);
+    }
+  }
+
+
+  /**
+   * removes the appropriation of funds values from the store
+   */
+  @Action({rawError: true})
+  public async deleteAppropriationOfFunds(): Promise<void> {
+    const fundingRequest = this.fundingRequest as FundingRequestDTO;
+    if (fundingRequest.sys_id){
+      fundingRequest.appropriation_fiscal_year = "";
+      fundingRequest.appropriation_funds_type = "";
+      fundingRequest.fs_form = typeof this.fundingRequest?.fs_form !== "string" ? 
+        (this.fundingRequest?.fs_form as unknown as ReferenceColumn).value
+        : this.fundingRequest.fs_form;
+      fundingRequest.mipr = typeof this.fundingRequest?.mipr !== "string" ? 
+        (this.fundingRequest?.mipr as unknown as ReferenceColumn).value
+        : this.fundingRequest.mipr;
+      await api.fundingRequestTable.update(
+      fundingRequest.sys_id as string, 
+      fundingRequest);
+      this.setFundingRequest(fundingRequest);
     }
   }
 
@@ -611,8 +638,29 @@ export class FinancialDetailsStore extends VuexModule {
  public async saveFundingRequestFSForm(data:
   FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
    try {
+     const getFundingRequestFSForm = await api.fundingRequestFSFormTable.getQuery(
+       {
+         params: {
+           sysparm_query: "^sys_id=" + data.sys_id
+         }
+       }
+     )
+     const isUsingGInvoicing = data.use_g_invoicing === "YES";
      const savedFundingRequestFSForm =
-       await api.fundingRequestFSFormTable.update(data.sys_id as string, data);
+      await api.fundingRequestFSFormTable.update(data.sys_id as string, 
+        {
+          fs_form_7600a_filename: data.fs_form_7600a_filename,
+          fs_form_7600a_attachment: data.fs_form_7600a_attachment,
+          fs_form_7600b_attachment: data.fs_form_7600b_attachment,
+          fs_form_7600b_filename: data.fs_form_7600b_filename,
+          use_g_invoicing: data.use_g_invoicing,
+          order_number: isUsingGInvoicing 
+            ? getFundingRequestFSForm[0].order_number
+            : "",
+          gt_c_number:  isUsingGInvoicing 
+            ? getFundingRequestFSForm[0].gt_c_number
+            : "",
+        });
      this.setFundingRequestFSForm(savedFundingRequestFSForm);
      return savedFundingRequestFSForm;
    } catch (error) {

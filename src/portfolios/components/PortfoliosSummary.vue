@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- ATAT TODO - reinstate after MVP when new single portfolio summary API is available
+                     that prevents multiple calls per portfolio
+
     <div v-if="!isHomeView" class="bg-base-lightest pa-4 border-rounded">
       <div class="d-flex justify-space-between align-center">
         <ATATSearch 
@@ -41,6 +44,7 @@
           </div>
         </div>
       </div>
+
       <div class="mt-3" v-show="hasFilters">
         <v-chip
           v-for="(chip, index) in filterChips"
@@ -66,14 +70,25 @@
           class="font-size-14 ml-2 _text-decoration-none _hover-underline"
         >Clear all filters</a>
       </div>
-    </div>
+    </div> 
     
+    -->
+
+    <ATATLoader 
+      v-show="isLoading" 
+      loadingText="Loading your portfolios" 
+    />
+
+
     <div 
-      :class="{ 'mt-10' : !isHomeView }" 
       id="PortfolioCards" 
-      v-show="portfolioCardData.length" 
+      v-show="portfolioCardData.length && !isLoading" 
       :style="{ 'margin-bottom: 200px;' : !isHomeView }"
     >
+    <!-- ATAT TODO - add back to div above after search is reinstated
+      :class="{ 'mt-10' : !isHomeView }"  
+    -->
+
       <PortfolioCard
         v-for="(cardData, index) in portfolioCardData"
         :key="index"
@@ -85,7 +100,7 @@
         :isHomeView="isHomeView"
       />
 
-      <div class="_table-pagination mt-5" v-show="portfolioCount > recordsPerPage">
+      <div class="_table-pagination mt-5" v-show="showPagination">
         <span class="mr-11 font-weight-400 font-size-14">
           Showing {{ startingNumber }}-{{ endingNumber }} of {{ portfolioCount }}
         </span>
@@ -109,10 +124,13 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable camelcase */
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
 
+import ATATLoader from "@/components/ATATLoader.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import ATATSearch from "@/components/ATATSearch.vue"
 import ATATSelect from "@/components/ATATSelect.vue"
@@ -137,12 +155,13 @@ import PortfolioStore from "@/store/portfolio";
 import { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
-import { PortfolioSummarySearchDTO } from "@/api/models";
+import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
 import _ from "lodash";
 import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
+    ATATLoader,
     ATATNoResults,
     ATATSearch,
     ATATSelect,
@@ -155,10 +174,13 @@ export default class PortfoliosSummary extends Vue {
   @Prop({ default: "ALL" }) public activeTab!: "ALL" | "ACTIVE" | "PROCESSING";
   @Prop({ default: false }) public isHomeView?: boolean;
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
-  public isHaCCAdmin = false;
+
+  public isHaCCAdmin = CurrentUserStore.currentUserIsHaCCAdmin;
 
   public page = 1;
-  public recordsPerPage = 5;
+  public get recordsPerPage(): number {
+    return this.isHomeView ? 5 : 10;
+  };
   public numberOfPages = 0;
   public portfolioCount = 0;
   public offset = 0;
@@ -199,6 +221,10 @@ export default class PortfoliosSummary extends Vue {
 
   public get hasFilters(): boolean {
     return this.filterChips.length > 0;
+  }
+
+  public get showPagination(): boolean {
+    return !this.isHomeView && (this.portfolioCount > this.recordsPerPage);
   }
 
   public async removeFilter(index: number): Promise<void> {
@@ -268,9 +294,9 @@ export default class PortfoliosSummary extends Vue {
     };
     Object.assign(this.portfolioSearchDTO, newQPs);
     this.paging = false;
-    this. isSearchSortFilter = true;
+    this.isSearchSortFilter = true;
     await this.loadPortfolioData(); // 
-    this. isSearchSortFilter = false;
+    this.isSearchSortFilter = false;
     this.isLoading = false;
     this.searchedString = this.searchString;
   }
@@ -342,9 +368,9 @@ export default class PortfoliosSummary extends Vue {
 
     Toast.setToast(accessRemovedToast);
 
-    // future ticket, remove member from portfolio table in snow
+    // ATAT TODO - future ticket, remove member from portfolio table in snow
     // after removed, make new call to reload portfolio list if > 10 portfolios
-    // to ensure 10 listed on page
+    // to ensure 10 listed on page (or 5 on home page)
   }
 
   public async mounted(): Promise<void> {
@@ -377,9 +403,16 @@ export default class PortfoliosSummary extends Vue {
    
   public currentUserSysId = "";
 
+  public get currentUser(): UserDTO {
+    return CurrentUserStore.getCurrentUserData;
+  }
+  @Watch("currentUser")
+  public currentUserChange(): void {
+    this.loadPortfolioData();
+  }  
+
   public async loadPortfolioData(): Promise<void> {
-    const currentUser = await CurrentUserStore.getCurrentUser();
-    this.currentUserSysId = currentUser.sys_id as string;
+    this.currentUserSysId = this.currentUser.sys_id as string;
     
     this.isLoading = true;
     this.portfolioCardData = [];
@@ -398,30 +431,32 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioSearchDTO.offset = this.offset;
 
     const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
-    debugger;
     this.portfolioCount = storeData.total_count;
-    this.$emit("totalCount", storeData.total_count);
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
-    if (this.isHomeView) {
-      storeData.portfolioSummaryList = storeData.portfolioSummaryList.slice(0,5);
-    }
     storeData.portfolioSummaryList.forEach((portfolio) => {
-      
-      // TODO AT-8747 - populate Portfolio Members (managers/viewers) for card
-      // from portfolio_managers and portfolio_viewers sysIds lists
-
-      let cardData: PortfolioCardData = {};
+      const cardData: PortfolioCardData = {};
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
-      
-      cardData.csp = portfolio.vendor;
+      cardData.lastUpdated = portfolio.last_updated;      
+      cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";
 
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
       cardData.description = portfolio.description;
       cardData.status = portfolio.portfolio_status;
       cardData.fundingStatus = portfolio.portfolio_funding_status;
-      cardData.agency = portfolio.dod_component;
+      cardData.portfolio_managers = portfolio.portfolio_managers;
+      cardData.portfolio_viewers = portfolio.portfolio_viewers;
+      cardData.createdBy = portfolio.sys_created_by;
+
+      cardData.agency = portfolio.agency;
+      cardData.agencyDisplay = portfolio.agency_display;
+      cardData.environments = portfolio.environments;
+      cardData.taskOrderSysId = portfolio.active_task_order;
+      const activeTaskOrder = portfolio.task_orders.find(
+        obj => obj.sys_id === cardData.taskOrderSysId
+      );
+      cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
 
       const activeTaskOrderSysId = portfolio.active_task_order.value as string;
       const activeTaskOrder = portfolio.task_orders.find(
@@ -436,8 +471,10 @@ export default class PortfoliosSummary extends Vue {
 
         cardData.lastModifiedStr = "Started " + agoString + " ago";
       } else {
-        const updatedDate = createDateStr(portfolio.sys_updated_on, true);
-        cardData.lastModifiedStr = "Last modified " + updatedDate;
+        if (portfolio.last_updated) {
+          const updatedDate = createDateStr(portfolio.last_updated, true);
+          cardData.lastModifiedStr = "Last modified " + updatedDate;
+        }
 
         if (portfolio.task_orders && portfolio.task_orders.length) {
           cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
@@ -459,9 +496,9 @@ export default class PortfoliosSummary extends Vue {
       if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
         cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
         cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
-        cardData.fundsSpentPercent = String(Math.round(
-          portfolio.funds_spent / portfolio.funds_obligated * 100
-        ));
+        cardData.fundsSpentPercent = portfolio.funds_spent ? 
+          String(Math.round(portfolio.funds_spent / portfolio.funds_obligated * 100))
+          : "0";
         const remainingAmt = portfolio.funds_obligated - portfolio.funds_spent;
         cardData.fundsRemaining 
           = "$" + toCurrencyString(Math.abs(remainingAmt)) 
@@ -471,11 +508,9 @@ export default class PortfoliosSummary extends Vue {
       this.portfolioCardData.push(cardData);
       this.isLoading = false;
       this.paging = false;
-      this. isSearchSortFilter = false;
+      this.isSearchSortFilter = false;
     });
 
-    // future ticket - set isHaCCAdmin value with data from backend when implemented
-    this.isHaCCAdmin = true;
   }
 }
 </script>

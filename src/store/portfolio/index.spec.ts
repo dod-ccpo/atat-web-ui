@@ -8,8 +8,9 @@ import { getModule } from 'vuex-module-decorators';
 import Vue from "vue";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import UserStore from "@/store/user";
-import { AlertDTO } from '@/api/models';
-import { MemberInvites, Portfolio } from 'types/Global';
+import {AlertDTO, PortfolioSummaryDTO} from '@/api/models';
+import {MemberInvites, Portfolio, User} from 'types/Global';
+import {api} from "@/api";
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -119,41 +120,6 @@ describe("Portfolio Store", () => {
     })
   })
 
-  it('Test getFundingTrackerAlerts', async () => {
-    const mockAlerts: AlertDTO[] = [
-      {
-        clin: "",
-        task_order: "tsk_12345678",
-        active: "true",
-        alert_type: "SPENDING_ACTUAL",
-        threshold_violation_amount: "75",
-        last_notification_date: "",
-        portfolio: "",
-      },
-      {
-        clin: "",
-        task_order: "tsk_12345678919",
-        active: "true",
-        alert_type: "TIME_REMAINING",
-        threshold_violation_amount: "60",
-        last_notification_date: "",
-        portfolio: "",
-      },
-    ];
-    
-    jest.spyOn(portfolioStore, "getAlerts").mockReturnValue(
-      new Promise(resolve=>resolve(mockAlerts))
-    );
-    const fundingAlertData = await portfolioStore.getFundingTrackerAlert('');
-    Vue.nextTick(() => {
-      expect(fundingAlertData.fundingAlertType).toBe(FundingAlertTypes.POPExpiresSoonWithLowFunds);
-      expect(fundingAlertData.hasLowFundingAlert).toBe(true);
-      expect(fundingAlertData.daysRemaining).toBe(60);
-      expect(fundingAlertData.spendingViolation).toBe(75);
-    })
-  })
-
-
   it('Test setAlerts- sets alerts to the passed in value', async () => {
     const mockAlerts: AlertDTO[] = [
       {
@@ -181,37 +147,25 @@ describe("Portfolio Store", () => {
     })
   })
 
-  it('Test getFundingTrackerAlerts Alerts Detect Delinquint', async () => {
-    const mockAlerts: AlertDTO[] = [
-      {
-        clin: "",
-        task_order: "tsk_12345678",
-        active: "true",
-        alert_type: "SPENDING_ACTUAL",
-        threshold_violation_amount: "100",
-        last_notification_date: "",
-        portfolio: "",
-      }
-    ];
-    
-    jest.spyOn(portfolioStore, "getAlerts").mockReturnValue(
-      new Promise(resolve=>resolve(mockAlerts))
-    );
-    const fundingAlertData = await portfolioStore.getFundingTrackerAlert('');
-    Vue.nextTick(() => {
-      expect(fundingAlertData.fundingAlertType).toBe(FundingAlertTypes.POPFundsAt100Percent);
-      expect(fundingAlertData.hasLowFundingAlert).toBe(true);
-    })
-  })
 
   it('saveMembers() add members to Portfolio.portflio.members', async()=>{
-    const memberInvites: MemberInvites = {
-      emails:["dummyemail01@mail.mil", "dummyemail02@mail.mil"],
-      role: "Viewer"
-    } 
+    const memberInvites: User[] = [{
+      firstName: "FN",
+      lastName: "LN",
+      fullName: "FN",
+      email: "testemail@mail.mil",
+      role: "Viewer",
+      phoneNumber: "",
+      phoneExt: "",
+      designation: "",
+      agency: "Test Agency",
+      sys_id: "mem_abc"
+    }]
     portfolioStore.currentPortfolio.members = [];
-    await portfolioStore.saveMembers(memberInvites)
-    expect(portfolioStore.currentPortfolio.members?.length).toBe(2)
+    jest.spyOn(api.portfolioTable, "update").mockImplementation(
+      ()=>Promise.resolve({} as unknown as PortfolioSummaryDTO));
+    await portfolioStore.inviteMembers(memberInvites)
+    expect(portfolioStore.currentPortfolio.members?.length).toBe(1)
   })
 
   it('getPortolioData()', async()=>{
@@ -223,42 +177,6 @@ describe("Portfolio Store", () => {
     )
     const portfolio = await portfolioStore.getPortfolioData();
     expect(portfolio.title).toBe(dummyTitle)
-  })
-
-  it('Test getFundingTrackerAlerts Alerts Detect Expired', async () => {
-    const mockAlerts: AlertDTO[] = [
-      {
-        clin: "",
-        task_order: "tsk_12345678919",
-        active: "true",
-        alert_type: "TIME_REMAINING",
-        threshold_violation_amount: "-30",
-        last_notification_date: "",
-        portfolio: "",
-      },
-    ];
-    
-    jest.spyOn(portfolioStore, "getAlerts").mockReturnValue(
-      new Promise(resolve=>resolve(mockAlerts))
-    );
-    const fundingAlertData = await portfolioStore.getFundingTrackerAlert('');
-    Vue.nextTick(() => {
-      expect(fundingAlertData.fundingAlertType).toBe(FundingAlertTypes.POPExpired);
-      expect(fundingAlertData.hasLowFundingAlert).toBe(true);
-    })
-  })
-
-  it('Test getThreshold Amount', async () => {
-    const spendingViolation = "75%";
-    const amount = getThresholdAmount(spendingViolation);
-    expect(amount).toBe(75);
-  })
-
-  
-  it('Test thresholdAtOrAbove or above Amount', async () => {
-    const spendingViolation = "75%";
-    const metThreshold = thresholdAtOrAbove(spendingViolation, 75);
-    expect(metThreshold).toBe(true);
   })
 
 })

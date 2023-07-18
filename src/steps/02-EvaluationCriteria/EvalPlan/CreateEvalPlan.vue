@@ -1,7 +1,11 @@
 
 <template>
-  <v-form ref="form" lazy-validation>
-    <div class="container-max-width">
+  <v-form ref="form" lazy-validation>   
+
+    <NoEvalPlan v-if="noEvalPlanNeeded" />
+
+    <div v-else class="container-max-width">
+
       <h1 class="page-header">
         Let’s work on an evaluation plan for your requirement
       </h1>
@@ -65,11 +69,14 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import { hasChanges } from "@/helpers";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import NoEvalPlan from "./NoEvalPlan.vue";
 
 @Component({
   components: {
     ATATRadioGroup,
     CreateEvalPlanSlideOut,
+    NoEvalPlan,
   }
 })
 
@@ -77,6 +84,8 @@ export default class CreateEvalPlan extends Mixins(LoadOnEnter,SaveOnLeave) {
   public isLoading = false;
   public sourceSelection: EvalPlanSourceSelection = "";
   public selectedMethod: EvalPlanMethod = "";
+
+  public noEvalPlanNeeded = AcquisitionPackage.exceptionToFairOpportunity !== "NO_NONE"
 
   public clearMethodErrors = false;
 

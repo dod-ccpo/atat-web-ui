@@ -16,7 +16,8 @@ import {
   BaseTableDTO,
   ClinDTO,
   EDAResponse,
-  ReferenceColumn,
+  ReferenceColumn, 
+  EnvironmentDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -99,6 +100,8 @@ export interface SelectData {
   header?: string;
   divider?: boolean;
   isSelectable?: boolean;
+  sys_id?: string;
+  name?:string;
 }
 
 /**
@@ -164,6 +167,7 @@ export interface Checkbox {
   value: string;
   description?: string;
   textfieldValue?: string;
+  optionType?: string;
 }
 
 export interface RadioButton extends Checkbox {
@@ -297,6 +301,7 @@ export interface DOWCardData {
   section: "ReplicateOptimize" | "ArchitecturalDesign" | "XaaS" | "CloudSupport";
   isComplete: boolean,
   buttonLabel?: string
+  recommendedText?: string
 }
 
 export interface DOWClassificationInstance {
@@ -315,6 +320,7 @@ export interface DOWClassificationInstance {
   typeOfMobility?: "" | "MAN_PORTABLE" | "MODULAR" | "OTHER" | "NO_PREFERENCE";
   typeOfMobilityOther?: string;
   ts_contractor_clearance_type?: string;
+  updated_description?: "YES" | "NO"
 }
 
 export interface DOWServiceOffering {
@@ -420,6 +426,7 @@ export interface OtherServiceOfferingData {
   canTrainInUnclassEnv?: string;
   trainingRequirementTitle?: string;
   classifiedInformationTypes?: string;
+  isComplete?: boolean;
 }
 
 export interface totalClassLevelsInDOWObject {
@@ -487,7 +494,7 @@ export interface User {
   designation?: string;
   salutation?: string;
   agency?: string;
-  department?: string;
+  company?: string;
   officePhone?: string; // labeled as "Commercial phone" field is "phone" in SNOW sys_user table
   mobilePhone?: string;
   dsnPhone?: string; // field is "home_phone" in SNOW sys_user table
@@ -495,18 +502,44 @@ export interface User {
   sys_id?: string;
 }
 
+export interface Operator {
+  sysId?: string;
+  environment?: string;
+  email?: string;
+  dodId?: string;
+  status?: "Processing" | "Failed" | "Provisioned" | "";
+  addedBy?: string;
+  provisionedDate?: string;
+  provisioned?: string;
+  provisioningFailureCause?: string;
+  provisioningRequestDate?: string;
+}
+
+export interface Environment extends EnvironmentDTO {
+  environmentStatus?: string;
+  classification_level?: string;
+}
+
 export interface Portfolio extends BaseTableDTO {
   sysId?: string;
   title?: string;
   description?: string;
   status?: string;
-  csp?: string;
+  csp?: string; // EJY - DOUBLE-CHECK - this could be type CSP ?
   agency?: string;
+  agencyDisplay?: string;
   createdBy?: string;
   provisioned?: string;
   members?: User[];
+  portfolio_managers?: string
+  portfolio_managers_detail?: User[];
+  portfolio_viewers?: string;
+  portfolio_viewers_detail?: User[];
   updated?: string;
   taskOrderNumber?: string;
+  environments?: Environment[];
+  taskOrderSysId?: string;
+  lastUpdated?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {
@@ -539,12 +572,16 @@ export interface PortfolioAdmin {
   unclassifiedEmail?: string;
   hasScrtAccess?: YesNo;
   scrtEmail?: string;
+  hasTSAccess?: YesNo;
+  tsEmail?: string;
+  impactLevels?:string[]
 }
 
 export interface PortfolioProvisioning extends EDAResponse {
   portfolioTitle?: string;
   serviceOrAgency?: string;
-  admins?: PortfolioAdmin[];  
+  admins?: PortfolioAdmin[];
+  selectedILs?: string[];
 }
 
 export interface EmailEntry {
@@ -640,6 +677,9 @@ export type EvalPlanSourceSelection = "" | "NO_TECH_PROPOSAL" | "TECH_PROPOSAL"
 export type StorageUnit = "" | "GB" | "TB" | "PB";
 export type YesNo = "" | "YES" | "NO";
 export type SingleMultiple = "SINGLE" | "MULTIPLE" | "";
+
+export type UnitOfTime = undefined | "" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
+export type ProductOrType = undefined | "" | "PRODUCT" | "FEATURE";
 
 export interface CurrEnvInstanceUsage {
   currentUsageDescription?: EnvironmentInstanceUsage;
@@ -755,6 +795,17 @@ export interface TrainingEstimate {
   estimatedTrainingPrice: string;
   trainingOption: SingleMultiple;
   cloudSupportEnvironmentInstance: ReferenceColumn | string;
+  dow_task_number?: string;
+}
+
+export interface SummaryItem {
+  title: string,
+  description: string,
+  isComplete: boolean;
+  isTouched: boolean;
+  routeName: string;
+  step: number;
+  substep: number;
 }
 
 export enum ClassificationLevels {
@@ -762,3 +813,5 @@ export enum ClassificationLevels {
   SCRT = "Secret",
   TSCRT = "Top Secret"
 }
+export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+

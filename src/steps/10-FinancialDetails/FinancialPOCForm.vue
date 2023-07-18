@@ -12,7 +12,7 @@
             this individual for approval and signature.
           </p>
           <ATATContactForm
-            type="financialPOCForm"
+            role-legend="What role best describes your Financial POC's affiliation?"
             :email.sync="email"
             :firstName.sync="firstName"
             :lastName.sync="lastName"
@@ -26,6 +26,7 @@
             :selectedSalutation.sync="selectedSalutation"
             :suffix.sync="suffix"
             :loaded="loaded"
+            :validation-msg-custom="'your Financial POC’s'"
           />
         </div>
       </v-col>
@@ -70,8 +71,8 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
     sysId: "",
   };
   private roleIndices = {
-    MILITARY: 0,
-    CIVILIAN: 1,
+    CIVILIAN: 0,
+    MILITARY: 1,
     CONTRACTOR: 3,
   };
 
@@ -86,15 +87,15 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
   private branchData: SelectData[] = []
   private contactRoles: RadioButton[] = [
     {
-      id: "Military",
-      label: "Military",
-      value: "MILITARY",
-    },
-    {
       id: "Civilian",
       label: "Civilian",
       value: "CIVILIAN",
     },
+    {
+      id: "Military",
+      label: "Military",
+      value: "MILITARY",
+    }
   ];
 
   public get currentData(): ContactDTO {
@@ -133,6 +134,11 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
     const email = this.email;
     const grade_civ ="";
     const title = "";
+
+    const acqPkgId = AcquisitionPackage.acquisitionPackage
+      ? AcquisitionPackage.acquisitionPackage.sys_id as string
+      : "";
+
     return {
       first_name,
       last_name,
@@ -142,14 +148,15 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
       suffix,
       salutation,
       phone: phone || "",
-      phone_extension: phoneExt || "", // not used on Mission Owner contact entry form
+      phone_extension: phoneExt || "",
       email,
       type: "Financial POC",
       dodaac: "",
       can_access_package: "true",
       grade_civ,
       title,
-      manually_entered: "", // not used on Mission Owner contact entry form
+      manually_entered: "", 
+      acquisition_package: acqPkgId,
     };
   }
 

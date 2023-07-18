@@ -39,42 +39,54 @@
                     calculators below to help you calculate your estimated price 
                     for JWCC cloud services and support. Depending on your selection, 
                     you may need to register for an account to view the pricing calculator.
-                    <v-card 
-                      v-for="(csp,idx) in csps" 
-                      :key="idx" 
-                      class="_calculator-card"
-                     >
-                      <div class="_svg-icon-div">
-                      <ATATSVGIcon 
-                        id="Azure" 
-                        :name="csp.iconName"
-                        class="svg-icon"
-                        :width="csp.width" 
-                        :height="csp.height" />
-                      </div>
-                      <h3 class="_csp-name"> {{ csp.name }}</h3>
-                      <div class="_csp-link-div">
-
-                        <a v-for="(link, index) in csp.links"
-                          :key="index" 
-                          :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
-                          class="_csp-link d-block"
-                          :href="link.url"
-                          target="_blank"
+                    <div class="d-flex">
+                      <div v-for="(csp,idx) in csps" :key="idx">
+                        <v-card
+                          class="_csp-card _calculator-card justify-space-between"
+                          :class="{'_recommended-card' : recommended === csp.iconName}"
                         >
-                          {{ link.text }}
-                          <span class="_text-decoration-none ml-1">
-                          <ATATSVGIcon
-                            :id="csp.iconName.toUpperCase() + 'LaunchIcon'"
-                            width="15"
-                            height="15"
-                            name="launch"
-                            color="primary"
-                          />
-                          </span>
-                        </a>
+                          <div>
+                            <div class="_svg-icon-div">
+                              <ATATSVGIcon
+                                id="Azure"
+                                :name="csp.iconName"
+                                class="svg-icon"
+                                :width="csp.width"
+                                :height="csp.height" />
+                            </div>
+                            <h3 class="_csp-name"> {{ csp.name }}</h3>
+                          </div>
+
+                          <div class="_csp-link-div">
+
+                            <a v-for="(link, index) in csp.links"
+                               :key="index"
+                               :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
+                               class="_csp-link d-block mt-4 font-size-14"
+                               :href="link.url"
+                               target="_blank"
+                            >
+                              {{ link.text }}
+                              <span class="_text-decoration-none ml-1">
+                              <ATATSVGIcon
+                                :id="csp.iconName.toUpperCase() + 'LaunchIcon'"
+                                width="15"
+                                height="15"
+                                name="launch"
+                                color="primary"
+                              />
+                              </span>
+                            </a>
+                          </div>
+                        </v-card>
+                        <div
+                          v-if="recommended === csp.iconName"
+                          class="_recommended-banner"
+                        >
+                          RECOMMENDED
+                        </div>
                       </div>
-                    </v-card>
+                    </div>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
@@ -127,6 +139,8 @@ import { Component } from "vue-property-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { SlideoutPanelContent } from "types/Global";
 import IGCELearnMore from "./components/ICGELearnMore.vue";
+import _ from "lodash";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
     ATATAlert,
@@ -136,6 +150,7 @@ import IGCELearnMore from "./components/ICGELearnMore.vue";
 })
 export default class CreatePriceEstimate extends Vue {
   public selectedCSP = "";
+  public recommended = ""
   public csps = [
     {
       name: "Amazon Web Services (AWS)",
@@ -150,10 +165,10 @@ export default class CreatePriceEstimate extends Vue {
       ]
     },
     {
-      name: "Google Cloud Platform (GCP)",
+      name: "Google Cloud",
       iconName: "gcp",
-      width: "64",
-      height: "57",
+      width: "62",
+      height: "50",
       links: [
         {
           text: "IL2 calculator",
@@ -172,8 +187,8 @@ export default class CreatePriceEstimate extends Vue {
     {
       name: "Microsoft Azure",
       iconName: "azure",
-      width: "64",
-      height: "50",
+      width: "60",
+      height: "56",
       links: [
         {
           text: "View calculator",
@@ -204,7 +219,15 @@ export default class CreatePriceEstimate extends Vue {
     SlideoutPanel.openSlideoutPanel(opener.id);
   };
 
+  public async loadOnEnter(): Promise<void> {
+    const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
+    if (storeData && storeData.exception_to_fair_opportunity !== 'NO_NONE') {
+      this.recommended = storeData.proposed_csp?.toLowerCase() || "";
+    }
+  }
+
   public async mounted(): Promise<void> {
+    await this.loadOnEnter();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: IGCELearnMore,
       title: "Learn More",

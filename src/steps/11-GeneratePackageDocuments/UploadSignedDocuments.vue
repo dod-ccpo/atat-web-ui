@@ -1,17 +1,12 @@
 <template>
   <div>
     <h1>
-      Upload your completed template and signed documents
+      Upload your signed documents
     </h1>
     <div class="copy-max-width">
       <p class="mt-2 mb-4">
-        To submit your package, all documents that require certification must
-        be signed by your approving officials and uploaded below.
-        <span v-if="fairOpportunity !=='NO_NONE'">
-        For the <span class="font-weight-500">Justification & Approval (J&A)</span>
-        and <span class="font-weight-500">Market Research Report</span>, you must also
-        upload the completed template in an editable format to help your
-        Contracting Office track changes during the review process.</span>
+        To submit your package, all documents that require certification must be signed by your 
+        approving officials. Upload your individually signed documents below.    
       </p>
       <hr class="base-lighter" />
       <div class="d-flex">
@@ -48,45 +43,11 @@
                 <p class="mt-1 mb-0">
                   <strong>
                     Missing {{ numberOfMissingFiles }} file{{ numberOfMissingFiles > 1 ? 's' : ''}}.
-                  </strong>Please upload any missing templates or signed documents.
+                  </strong>Please upload all of the signed documents listed below.
                 </p>
               </template>
             </ATATAlert>
-            <div
-              v-if="fairOpportunity !== 'NO_NONE'"
-              class="
-              border1
-              border-rounded-more
-              border-base-lighter
-              bg-primary-lighter
-              pa-6
-              mb-4"
-            >
-              <div class="d-flex align-center mb-4">
-                <ATATSVGIcon
-                  class="mr-2"
-                  name="checkedBag"
-                  width="39"
-                  height="35"
-                  color="primary"
-                />
-                <div class="d-flex flex-column">
-                  <h3>
-                    2 completed templates
-                  </h3>
-                  <span class="font-size-14 help-text">Upload .doc or .docx files</span>
-                </div>
-              </div>
-              <ol>
-                <li>
-                  Justification and Approval
-                </li>
-                <li>
-                  Sole Source Market Research Report
-                </li>
-              </ol>
-            </div>
-            <div
+            <div    
               class="
               border1
               border-rounded-more
@@ -129,6 +90,7 @@
   </div>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import { Component, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -182,9 +144,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   }
 
   get getMaxNumberOfFiles():number{
-    return this.fairOpportunity !== 'NO_NONE'
-      ?(this.filesNeeded.length + 2)
-      :this.filesNeeded.length
+    return this.filesNeeded.length;
   }
   
   private packages: signedDocument[] = [];
@@ -228,6 +188,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   }
 
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
+    //eslint-disable-next-line prefer-const
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
     this.invalidFiles.forEach((iFile) => {

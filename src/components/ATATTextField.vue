@@ -4,6 +4,7 @@
       <label
         :id="id + '_text_field_label'"
         class="form-field-label mr-1"
+        :class="{ 'd-sr-only': labelSrOnly }"
         :for="id + '_text_field'"
       > 
         <span v-html="label"></span>
@@ -49,7 +50,7 @@
           <ATATSVGIcon
             v-if="isCurrency"
             name="currency"
-            :color="iconColor"
+            :color="getIconColor"
             :width="9"
             :height="16"
             class="pt-1 mr-1"
@@ -78,6 +79,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
@@ -138,8 +140,10 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: true }) private allowDecimals?: boolean;
   @Prop({ default: false }) private appendDropdown?: boolean;
   @Prop() private dropdownOptions?: SelectData[];
+  @Prop( {default: false }) private labelSrOnly?: boolean;
+  @Prop({ default: true }) private allowZeroDefault?: boolean;
+  
   @PropSync("selectedDropdownValue") private _selectedDropdownValue?: string;
-
   @PropSync("value", { default: "" }) private _value!: string;
 
   public get validateFormNow(): boolean {
@@ -156,9 +160,6 @@ export default class ATATTextField extends Vue  {
   private errorMessages: string[] = [];
   private onInput(v: string) {
     this._value = v;
-    if (this.isCurrency) {
-      this.iconColor = v ? "base-darkest" : "base-light";
-    }
   }
 
   public async setErrorMessage(): Promise<void> {
@@ -172,7 +173,6 @@ export default class ATATTextField extends Vue  {
       await this.resetValidation();
     }
   }
-  private iconColor = "base-light";
 
   //@Events
   public onBlur(e: FocusEvent) : void{
@@ -180,8 +180,9 @@ export default class ATATTextField extends Vue  {
     if (this.validateOnBlur) {
       this.setErrorMessage();
       if (this.isCurrency) {
-        this._value = toCurrencyString(currencyStringToNumber(input.value) || 0);
-      }   
+        const currStr = toCurrencyString(currencyStringToNumber(input.value) || 0);
+        this._value = currStr === "0.00" && !this.allowZeroDefault ? "" : currStr;
+      }
     } else {
       this.resetValidation();
     }
@@ -209,7 +210,6 @@ export default class ATATTextField extends Vue  {
       maskObj.autoGroup = true;
       maskObj.digitsOptional = false;
       maskObj.rightAlign=false;
-
     } else if (this.isFormattedNumber) {
       maskObj.alias = "decimal";
       maskObj.groupSeparator = ",";
@@ -241,10 +241,8 @@ export default class ATATTextField extends Vue  {
     this.setMasks();
   }
 
-  private updated(): void{
-    if (this.isCurrency) {
-      this.iconColor = this._value || this.disabled ? "base-darkest" : "base-light";
-    }
+  private get getIconColor(): string {
+    return this._value || this.disabled ? "base-darkest" : "base-light";    
   }
 
   private showHelpText(): boolean {
@@ -256,6 +254,7 @@ export default class ATATTextField extends Vue  {
 
   public filterNumbers(evt: KeyboardEvent): void {
     if (this.type === "number") {
+      //eslint-disable-next-line prefer-const 
       let keyPressed = evt.key.toString();
       const regex = this.allowDecimals
         ? /^[0-9]*\.?[0-9]*$/

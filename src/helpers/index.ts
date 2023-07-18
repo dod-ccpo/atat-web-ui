@@ -1,19 +1,21 @@
-import { 
-  AgencyDTO, 
-  ClassificationLevelDTO, 
-  EvalPlanAssessmentAreaDTO, 
-  EvalPlanDifferentiatorDTO, 
-  PeriodDTO, 
-  ReferenceColumn, 
-  SystemChoiceDTO 
+import {
+  AgencyDTO,
+  ClassificationLevelDTO, DisaOrganizationDTO,
+  EvalPlanAssessmentAreaDTO,
+  EvalPlanDifferentiatorDTO,
+  PeriodDTO,
+  ReferenceColumn,
+  SystemChoiceDTO
 } from "@/api/models";
-import { Checkbox, SelectData, User } from "types/Global";
+import { Checkbox, RadioButton, SelectData, User } from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import { Statuses } from "@/store/acquisitionPackage";
 import ATATCharts from "@/store/charts";
-import { differenceInDays, differenceInMonths, parseISO } from "date-fns";
+import { differenceInDays, differenceInMonths, format, formatISO, parse, parseISO } from "date-fns";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import { AxiosRequestConfig } from "axios";
+import api from "@/api";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -42,6 +44,14 @@ export const convertSystemChoiceToSelect =
       const {value} = choice;
       return {
         text: choice.label,
+        value
+      }
+    });
+export const convertDisaOrgToSelect =
+    (data: DisaOrganizationDTO[]): SelectData[] => data.map(choice => {
+      const value = choice.sys_id;
+      return {
+        text: choice.full_name,
         value
       }
     });
@@ -178,6 +188,17 @@ export const toCurrencyString = (num: number, decimals?: boolean): string => {
   return "";
 }
 
+export const getStringFromReferenceColumn = (
+  column: ReferenceColumn | string | undefined
+): string =>{
+  if (column){
+    return typeof column === "object" 
+      ? (column as ReferenceColumn).value as string 
+      : column as string; 
+  }
+  return "";
+}
+
 // converts a formatted currency string back to a number
 export const currencyStringToNumber = (str: string): number | null => {
   if (str && typeof str === "string") {
@@ -189,7 +210,10 @@ export const currencyStringToNumber = (str: string): number | null => {
 
 
 export const getCurrencyString = (value: number, decimals?: boolean): string => {
-  return "$" + toCurrencyString(value, decimals);
+  const isNegative = value < 0;
+  value = isNegative ? Math.abs(value) : value;
+  const symbol = isNegative ? "-$" : "$";
+  return symbol + toCurrencyString(value, decimals);
 }
 
 export const roundDecimal = (value: number, decimals: number): number => {
@@ -230,7 +254,6 @@ export const roundTo100 = (numberArr: number[], withTenths?: boolean): number[] 
 
   return output;
 }
-
 
 export const createPeriodCheckboxItems = async (): Promise<Checkbox[]> => {
   const periods: PeriodDTO[] = await Periods.loadPeriods();
@@ -301,6 +324,8 @@ export function getStatusChipBgColor(status: string): string {
   case Statuses.ExpiringPop.label.toLowerCase():
   case Statuses.FundingAtRisk.value.toLowerCase():
   case Statuses.FundingAtRisk.label.toLowerCase():
+  case Statuses.ProvisioningIssue.value.toLowerCase():
+  case Statuses.ProvisioningIssue.label.toLowerCase():
     return "bg-warning";
   case Statuses.Deleted.value.toLowerCase():
   case Statuses.Delinquent.value.toLowerCase():
@@ -313,11 +338,18 @@ export function getStatusChipBgColor(status: string): string {
   }
 }
 
+export function getDateObj(dateStr: string): Date {
+  return dateStr.includes("-") ? parseISO(dateStr) : new Date(dateStr);
+}
+
 const monthAbbreviations = ATATCharts.monthAbbreviations;
 const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
 export function createDateStr(dateStr: string, period: boolean, hours?: boolean): string {
   hours = hours ? hours : false;
+  if (dateStr.indexOf("/") > -1) {
+    dateStr = formatISO(new Date(dateStr)); 
+  }
   const parsedDate = parseISO(dateStr, { additionalDigits: 1 });
   const date = hours? new Date(parsedDate) : new Date(parsedDate.setHours(0, 0, 0, 0));
   const m = monthAbbreviations[date.getMonth()];
@@ -335,6 +367,37 @@ export function createDateStr(dateStr: string, period: boolean, hours?: boolean)
   }
   return formattedDate;
 
+}
+
+/**
+ * @param d - date as string
+ * @param formatType "ISO" | "MMDDYYYY"
+ * @returns 
+ *    ISO => iso-date format `YYYY-MM-DD` (used in vuetify datapickers)
+ *    MMDDYYYY => `MM/dd/YYYY`
+ */
+
+export function formatDate(
+  d: string,
+  formatType: string
+): string {
+  let dt = new Date(d);
+  if (d.includes("-")){
+    dt = new Date(d.replace(/-/g, '/'))
+  }
+  let formattedDate = "";
+  switch(formatType.toUpperCase()){
+  case "ISO":
+    formattedDate = formatISO(dt, { representation: 'date' });
+    break;
+  case "MMDDYYYY":
+    formattedDate = format(dt, 'P');
+    break;
+  default:
+    formattedDate = dt.toString();
+    break;
+  }
+  return formattedDate;
 }
 
 export function differenceInDaysOrMonths(
@@ -427,3 +490,51 @@ export function convertStringArrayToCommaList(arr: string[], conjunction?: strin
   return commaList;
 }
 
+export function getYesNoRadioOptions(groupId: string): RadioButton[] {
+  return [
+    {
+      id: groupId + "Yes",
+      label: "Yes",
+      value: "YES"
+    },
+    {
+      id: groupId + "No",
+      label: "No",
+      value: "NO"
+    },
+  ];
+}
+
+export function getCSPCompanyName(cspId: string): string {
+  const cspCompanyNames: Record<string, string> = {
+    AWS: "AWS",
+    GCP: "Google",
+    AZURE: "Microsoft",
+    ORACLE: "Oracle",
+  }
+  return cspCompanyNames[cspId] || "";
+
+}
+
+export interface AggregateCountResults {
+  result: {
+    stats: {
+      count: string;
+    };
+  };
+}
+
+export const getTableRecordCount = async (table: string, query: string ): Promise<number> => {
+  // Use aggregate API to get count for number of records in a table
+  /* eslint-disable camelcase */
+  const config: AxiosRequestConfig = {
+    params: {
+      sysparm_query: query,
+      sysparm_count: true
+    },
+  };
+  /* eslint-enable camelcase */
+  const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;  
+  const count = parseInt(response.result.stats.count)
+  return count;
+}

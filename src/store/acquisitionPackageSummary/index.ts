@@ -11,6 +11,9 @@ import Vue from "vue"
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
 import CurrentUserStore from "@/store/user";
+import { UserApi } from "@/api/user";
+import { getTableRecordCount } from "@/helpers";
+import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
 
 const ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY = "ATAT_ACQUISITION_PACKAGE_SUMMARY_KEY";
 export type PackageSort = "DESCsys_updated_on" | "project_overview"
@@ -115,36 +118,15 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
    * value is mandatory.
    */
   @Action({rawError: true})
-  private async getMandatorySearchParameterQuery(searchDTO: AcquisitionPackageSummarySearchDTO):
+  public async getMandatorySearchParameterQuery(searchDTO?: AcquisitionPackageSummarySearchDTO):
     Promise<string> {
-
-    const currentUser = await CurrentUserStore.getCurrentUser();
+    const currentUser = CurrentUserStore.getCurrentUserData;
     const userSysId = currentUser.sys_id;
 
     let query = "^mission_ownersLIKE" + userSysId + "^ORcontributorsLIKE" + userSysId;
     query = query + "^mission_ownersISNOTEMPTY"
-    query = query + "^ORDERBY" + searchDTO.sort;
+    if (searchDTO) query = query + "^ORDERBY" + searchDTO.sort;
     return query;
-  }
-
-  /**
-   * Returns the count of all acquisition packages WITHOUT using the offset and limit parameters BUT
-   * using all the other search parameters. This count is expected to be used for pagination.
-   *
-   * TODO: this call can be avoided if server exposes "x-Total-Count" from the backend
-   */
-  @Action({rawError: true})
-  private async getAcquisitionPackageSummaryCount(searchQuery: string): Promise<number> {
-    await this.ensureInitialized();
-    const acquisitionPackageSummaryListRequestConfig: AxiosRequestConfig = {
-      params: {
-        sysparm_fields: 'package_status',
-        sysparm_query: searchQuery
-      }
-    };
-    const acquisitionPackageList = await api.acquisitionPackagesSummaryTable
-      .getQuery(acquisitionPackageSummaryListRequestConfig);
-    return acquisitionPackageList.length;
   }
 
   /**
@@ -201,19 +183,16 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
       }
-      const acquisitionPackageSummaryCount =
-        await this.getAcquisitionPackageSummaryCount(searchQuery);
-      let acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[];
-      if (acquisitionPackageSummaryCount > 0) {
+      let acquisitionPackageSummaryList: AcquisitionPackageSummaryDTO[] = [];
+      const packageCount = CurrentUserStore.currentUserPackageCount;
+      if (packageCount > 0) {
         acquisitionPackageSummaryList =
           await this.getAcquisitionPackageSummaryList({searchQuery, searchDTO});
-      } else {
-        acquisitionPackageSummaryList = [];
       }
       this.setAcquisitionPackageSummaryList(acquisitionPackageSummaryList); // caches the list
-      await this.setPackagesWaitingForTaskOrder();
+      await this.setPackagesWaitingForTaskOrderCount();
       return {
-        total_count: acquisitionPackageSummaryCount,
+        total_count: packageCount,
         acquisitionPackageSummaryList: acquisitionPackageSummaryList
       };
     } catch (error) {
@@ -221,27 +200,21 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     }
   }
 
-  public packagesWaitingForTaskOrder = 0;
+  public packagesWaitingForTaskOrderCount = 0;
   @Action({rawError: true})
-  public async setPackagesWaitingForTaskOrder(): Promise<void> {
-    const searchDTO:AcquisitionPackageSummarySearchDTO = {
-      acquisitionPackageStatus: "WAITING_FOR_TASK_ORDER",
-      searchString: "",
-      sort: "DESCsys_updated_on",
-      offset: 0
-    };
-    const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
-    let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO);
-    searchQuery = optionalSearchQuery + searchQuery;
-    const count = await this.getAcquisitionPackageSummaryCount(searchQuery);
-    this.doSetPackagesWaitingForTaskOrder(count);
+  public async setPackagesWaitingForTaskOrderCount(): Promise<void> {
+    let query = "package_statusINWAITING_FOR_TASK_ORDER";
+    const userQuery = await this.getMandatorySearchParameterQuery();
+    query += userQuery;
+    const count = await getTableRecordCount(AcquisitionPackageTable, query)
+    this.doSetPackagesWaitingForTaskOrderCount(count);
   }
   @Mutation
-  public doSetPackagesWaitingForTaskOrder(count: number): void {
-    this.packagesWaitingForTaskOrder = count;
+  public doSetPackagesWaitingForTaskOrderCount(count: number): void {
+    this.packagesWaitingForTaskOrderCount = count;
   }
   public get getPackagesWaitingForTaskOrderCount(): number {
-    return this.packagesWaitingForTaskOrder;
+    return this.packagesWaitingForTaskOrderCount;
   }
 
   /**

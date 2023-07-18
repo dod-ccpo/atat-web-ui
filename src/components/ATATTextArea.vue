@@ -4,6 +4,7 @@
       <label
         :id="id + '_text_field_label'"
         class="form-field-label width-100"
+        :class="{ 'd-sr-only': labelSrOnly }"
         :for="id + '_text_area'"
       >
         <span v-html="label"></span>
@@ -44,7 +45,7 @@
         :placeholder="placeHolder"
         @input="onInput"
         class="text-primary"
-        :rules="rules"
+        :rules="getRules"
         :rows="rows"
         :readonly="readOnly"
         :no-resize="noResize"
@@ -52,9 +53,11 @@
         @update:error="setErrorMessage"
         :hide-details="maxChars === ''"
         :counter="maxChars"
+        :auto-grow="autoGrow"
+        :style="getStyles"
       >
       </v-textarea>
-      <ATATErrorValidation 
+      <ATATErrorValidation
         :errorMessages="errorMessages" 
         :textAreaWithCounter="maxChars !== ''"
         :id="id"
@@ -77,7 +80,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ATATTextArea extends Vue {
   // refs
   $refs!: {
-    atatTextArea: Vue & { 
+    atatTextArea: Vue & {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
@@ -99,12 +102,24 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: "" }) private maxChars!: string;
   @Prop({ default: true }) private validateItOnBlur!: boolean;
   @Prop({ default: false }) private optional?: boolean;
+  @PropSync("turnRulesOff", { default: false }) private _turnRulesOff?: boolean;
+  @Prop( {default: false }) private labelSrOnly?: boolean;
+  @Prop( {default: false }) private autoGrow?: boolean;
+  @Prop({ default: "" }) private minHeight!: string;
+  @Prop({ default: "" }) private maxHeight!: string;
+  
 
   //data
   private placeHolder = "";
   private errorMessages: string[] = [];
   private onInput(v: string) {
     this._value = v;
+    this.$emit("input");
+    this._turnRulesOff = false;
+  }
+
+  public get getRules(): unknown[] {
+    return this._turnRulesOff ? [] : this.rules;
   }
 
   private setErrorMessage(): void {
@@ -121,8 +136,26 @@ export default class ATATTextArea extends Vue {
       this.setErrorMessage();
   }
 
+  @Watch('rules')
+  public rulesChanged(): void {
+    this.$refs.atatTextArea.validate();
+  }
+
+  public get getStyles(): string {
+    let styles = "";
+    if (this.minHeight) {
+      styles += "min-height: " + this.minHeight + "px;"
+    }
+    if (this.maxHeight) {
+      styles += "max-height: " + this.maxHeight + "px;"
+    }
+
+    return styles;
+  }
+
   //@Events
   private onBlur() : void{
+    this._turnRulesOff = false;
     if (this.validateItOnBlur) {
       Vue.nextTick(() => {
         this.setErrorMessage();

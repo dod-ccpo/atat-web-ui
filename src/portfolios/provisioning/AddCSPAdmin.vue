@@ -140,6 +140,7 @@
           width="632"
           :OKDisabled="ModalOKDisabled"
           @ok="AddCSPAdmin"
+          @cancelClicked="resetAdmin"
           :modalSlideoutComponent="modalSlideoutComponent"
           modalSlideoutTitle="Learn more about CSP administrators"
           :modalDrawerIsOpen.sync="modalDrawerIsOpen"
@@ -181,42 +182,77 @@
                   cardWidth="180"
                   :noDescriptions="true"
                 />
+                <ATATCheckboxGroup
+                  v-if="selectedClassificationLevels.includes('Unclassified')
+                  && showUnclassifiedILs"
+                  id="ImpactLevelSelection"
+                  class="mt-10"
+                  groupLabel="What impact level should this individual have access to?"
+                  :value.sync="selectedImpactLevels"
+                  :items="impactLevelOptions"
+                  :card="true"
+                  :inline="true"
+                  cardWidth="180"
+                  :noDescriptions="true"
+                />
               </div>
 
-              <ATATTextField 
+              <ATATTextField
                 id="UnclassifiedEmail"
-                v-if="selectedClassificationLevels.includes('Unclassified')"
+                v-if="unclassifiedSelected"
                 :value.sync="unclassifiedEmail"
                 label="Unclassified email address"
-                tooltipText="Use a Non-classified Internet Protocol Router Network (NIPRNet) 
-                  email address. This is where the CSP will send instructions for accessing
-                  the Unclassified/IL5 cloud console."
+                :tooltipText="unclassifiedTooltip"
                 class="_input-max-width mt-10"
                 helpText="Must use a .mil or .gov email address."
                 :rules="[
                   $validators.required(
                     'Please enter your administrator’s email address.'
-                  ),              
+                  ),
                   $validators.isEmail('Please use a .mil or .gov email address')
                 ]"
               />
-              <ATATTextField 
+              <ATATTextField
                 id="ScrtEmail"
                 v-if="scrtSelected"
                 :value.sync="scrtEmail"
                 label="SIPRNet email address"
-                tooltipText="Use a Secure Internet Protocol Router Network (SIPRNet) 
-                  email address. This is where the CSP will send instructions for 
-                  accessing the Secret/IL6 cloud console."
+                :tooltipText="secretToolTip"
                 class="_input-max-width mt-10"
                 helpText="Must use a .smil or .sgov email address."
                 :rules="[
                   $validators.required(
                     'Please enter your administrator’s email address.'
-                  ),              
-                  $validators.isEmail('Please use a .smil or .sgov email address', true)
+                  ),
+                  $validators.isEmail('Please use a .smil or .sgov email address', 'S')
                 ]"
               />
+
+              <ATATTextField
+                id="TSEmail"
+                v-if="tsSelected"
+                :value.sync="tsEmail"
+                label="JWICS email address"
+                :tooltipText="tsToolTip"
+                class="_input-max-width mt-10"
+                :helpText="tsEmailHelpText"
+                @blur="checkTSEmail"
+                :rules="[
+                  $validators.required(
+                    'Please enter your administrator’s email address.'
+                  ),
+                  $validators.isEmail('Please use a .mil or .gov email address', 'TS')
+                ]"
+              />
+              <div v-if="showTSEmailWarning" class="d-flex _input-max-width mt-2">
+                <div style="margin-top: 2px;">
+                  <ATATSVGIcon name="warning" width="18" height="16" color="warning-dark2" />
+                </div>
+                <div class="body ml-2">
+                  This doesn’t look like a valid email. Please ensure the address can 
+                  be accessed from JWICS.
+                </div>
+              </div>
 
             </form>
           </template>
@@ -229,7 +265,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -241,12 +277,12 @@ import CSPAdminLearnMore from "./AddCSPAdminLearnMore.vue";
 import CSPAdminLearnMoreText from "./AddCSPAdminLearnMoreText.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel";
-import { 
-  Checkbox, 
-  ClassificationLevels, 
-  PortfolioAdmin, 
-  PortfolioProvisioning, 
-  SlideoutPanelContent 
+import {
+  Checkbox,
+  ClassificationLevels,
+  PortfolioAdmin,
+  PortfolioProvisioning,
+  SlideoutPanelContent
 } from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
@@ -268,46 +304,131 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public admins: PortfolioAdmin[] = [];
   public cspLong = "";
+  public csp = "";
   public classificationLevels: string[] = [];
   public openModal = false;
   public modalSlideoutComponent = CSPAdminLearnMoreText;
   public modalDrawerIsOpen = false;
 
   public adminDoDId = "";
-  public hasUnclassifiedAccess = ""; // YES/NO
+  public hasUnclassifiedAccess = "NO"; // YES/NO
   public unclassifiedEmail = "";
-  public hasScrtAccess = ""; // YES/NO
+  public hasScrtAccess = "NO"; // YES/NO
   public scrtEmail = "";
+  public hasTSAccess = "NO"; // YES/NO
+  public tsEmail = "";
+  public showTSEmailWarning = false;
+
+  public impactLevels:string[] = [];
+  public impactLevelCompareArray:string[] = [];
 
   public scrtStr = ClassificationLevels.SCRT;
   public unclStr = ClassificationLevels.UNCL;
+  public tsStr = ClassificationLevels.TSCRT;
   public missingEnv = "";
 
   public selectedClassificationLevels: string[] = [];
-  public classificationLevelOptions: Checkbox[] = [
-    { id: this.unclStr, label: this.unclStr, value: this.unclStr },
-    { id: this.scrtStr, label: this.scrtStr, value: this.scrtStr }
-  ];
+  public classificationLevelOptions: Checkbox[] = [];
+
+  public selectedImpactLevels: string[] = [];
+  public impactLevelOptions: Checkbox[] = [];
+  public hasImpactLevels = PortfolioStore.CSPHasImpactLevels;
 
   public tableData: Record<string, string>[] = [];
+  public showUnclassifiedILs = false;
+  public get unclassifiedTooltip():string{
+    let txt = ""
+    if(!this.hasImpactLevels){
+      txt = `<span class="font-weight-500">Unclassified</span> cloud console.`
+    }else{
+      txt+=`<span class="font-weight-500">Unclassified</span>`
+      if(this.impactLevels.length === 1){
+        txt += `<span class="font-weight-500">/${this.selectedImpactLevels[0]}</span>
+            cloud console.`
+      }else{
+        txt += " cloud console for any ILs selected above."
+      }
+    }
+    return "Use a Non-classified Internet Protocol Router Network (NIPRNet)\n" +
+      "email address. This is where the CSP will send instructions for accessing the " +
+      txt
+  }
+
+  public get secretToolTip(): string {
+    return  `Use a Secure Internet Protocol Router Network (SIPRNet)
+     email address. This is where the CSP will send instructions for
+      accessing the <span class="font-weight-500">Secret</span> cloud console.`
+  }
+  public get tsToolTip(): string {
+    return `Use a Joint Worldwide Intelligence Communications System (JWICS) 
+      email address. This is where the CSP will send instructions for accessing 
+      the <span class="font-weight-500">Top Secret</span> cloud console.`
+  }
+
+  public get needsUAdmin(): boolean {
+    return this.classificationLevels.includes(this.unclStr);
+  }
+  public get needsSAdmin(): boolean {
+    return this.classificationLevels.includes(this.scrtStr);
+  }
+  public get needsTSAdmin(): boolean {
+    return this.classificationLevels.includes(this.tsStr);
+  }
 
   public showMissingAdminAlert = false;
   public async setShowMissingAdminAlert(): Promise<void> {
-    const missingUnclass = (this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES")) === -1;
-    const missingScrt = (this.admins.findIndex(a => a.hasScrtAccess === "YES")) === -1;
-    if (this.classificationLevels.length > 1 
-      && this.admins.length > 0 
-      && (missingUnclass || missingScrt)
+    const missingUnclass = 
+      this.admins.findIndex(a => a.hasUnclassifiedAccess === "YES") === -1 && this.needsUAdmin;
+    const missingScrt = 
+      this.admins.findIndex(a => a.hasScrtAccess === "YES") === -1 && this.needsSAdmin;
+    const missingTS = 
+      this.admins.findIndex(a => a.hasTSAccess === "YES") === -1 && this.needsTSAdmin;
+    const needsILs = this.hasImpactLevels;
+    const missingILs = [...this.impactLevelCompareArray]
+
+    if(this.admins.length > 0){
+      if(needsILs){
+        this.admins.forEach(admin=>{
+          admin.impactLevels?.forEach(il =>{
+            const idx = missingILs.findIndex(value => value === il)
+            missingILs.splice(idx, 1)
+          })
+        })
+      }
+    }
+
+    if (this.classificationLevels.length > 1
+      && this.admins.length > 0
+      && (missingUnclass || missingScrt || missingTS || needsILs && missingILs.length > 0)
     ) {
-      this.missingEnv = missingUnclass ? "unclassified" : "secret";
+      const missingEnvs = [];
+      if (needsILs && this.impactLevels.length > 1) {
+        const missingEnvs = missingILs.map(
+          il => `Unclassified/${il.split('_')[1].toUpperCase()}`
+        );
+      } else if (missingUnclass) {
+        if (missingUnclass) missingEnvs.push("Unclassified");
+      }
+
+      if (missingScrt) missingEnvs.push("Secret");
+      if (missingTS) missingEnvs.push("Top Secret");
+      const str = missingEnvs.join(", ");
+      this.missingEnv = str.replace(/,(?=[^,]+$)/, ' and');
+
       this.showMissingAdminAlert = true;
     } else {
       this.showMissingAdminAlert = false;
     }
   }
 
+  public get unclassifiedSelected(): boolean {  
+    return this.selectedClassificationLevels.includes(this.unclStr);    
+  }
   public get scrtSelected(): boolean {
     return this.selectedClassificationLevels.includes(this.scrtStr);
+  }
+  public get tsSelected(): boolean {
+    return this.selectedClassificationLevels.includes(this.tsStr);
   }
 
   public DoDIdRules = [
@@ -321,20 +442,46 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     return this.$refs.CSPAdminForm as Vue & { validate: () => boolean };
   }
 
+  public get tsEmailHelpText(): string {
+    return this.showTSEmailWarning ? "" : "Must use a valid JWICS email, such as .ic.gov.";
+  }
+
+  public checkTSEmail(val: string): void {
+    const tsValid = this.isValidGovOrMilEmail(val);
+    this.showTSEmailWarning = tsValid && val.slice(-7) !== ".ic.gov";
+  }
+
+  public isValidGovOrMilEmail(val: string): boolean {
+    const govOrMilEmail = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:gov|mil)$/i
+    return govOrMilEmail.test(val);
+  }
+
   public get ModalOKDisabled(): boolean {
     const idOK = this.adminDoDId.length === 10;
     const classificationSelected = this.selectedClassificationLevels.length > 0;
     let unclassEmailValid = true;
     if (this.selectedClassificationLevels.includes(this.unclStr)) {
-      unclassEmailValid = /^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i
-        .test(this.unclassifiedEmail);
+      unclassEmailValid = this.isValidGovOrMilEmail(this.unclassifiedEmail);
     }
     let scrtEmailValid = true;
     if (this.selectedClassificationLevels.includes(this.scrtStr)) {
-      scrtEmailValid = /^\S[a-z-_.0-9]+@[a-z-]+\.(?:sgov|smil)+\.(?:gov|mil)$/i
+      scrtEmailValid = /^\S[a-z-_.0-9]+@[a-z-_.0-9]+\.(?:sgov|smil)+\.(?:gov|mil)$/i
         .test(this.scrtEmail);
     }
-    return !idOK || !classificationSelected || !unclassEmailValid || !scrtEmailValid;
+    let tsEmailValid = true;
+    if (this.selectedClassificationLevels.includes(this.tsStr)) {
+      // same as unclass - needs to end in .gov or .mil
+      tsEmailValid = this.isValidGovOrMilEmail(this.tsEmail);
+      // but also if does not end with ".ic.gov" show a warning - set in this.checkTSEmail()
+    }
+
+    let ilsOK = true;
+    if (this.impactLevels.length > 1) {
+      const unclassChecked = this.selectedClassificationLevels.includes("Unclassified");
+      ilsOK = !unclassChecked || unclassChecked && this.selectedImpactLevels.length > 0;
+    }
+    return !idOK || !classificationSelected || !ilsOK
+      || !unclassEmailValid || !scrtEmailValid || !tsEmailValid;
   };
 
   public async validate(): Promise<void> {
@@ -345,7 +492,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
   public get currentData(): PortfolioAdmin[] {
     return this.admins;
-  } 
+  }
   public savedData: PortfolioAdmin[] = [];
 
   public openSlideoutPanel(e: Event): void {
@@ -363,17 +510,21 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   }
 
   public async AddCSPAdmin(): Promise<void> {
-    const hasUnclassifiedAccess 
+    const hasUnclassifiedAccess
       = this.selectedClassificationLevels.includes(this.unclStr) ? "YES" : "NO";
     const hasScrtAccess = this.selectedClassificationLevels.includes(this.scrtStr) ? "YES" : "NO";
+    const hasTSAccess = this.selectedClassificationLevels.includes(this.tsStr) ? "YES" : "NO";
+
     const admin: PortfolioAdmin = {
       DoDId: this.adminDoDId,
       hasUnclassifiedAccess,
       hasScrtAccess,
+      hasTSAccess,
       unclassifiedEmail: hasUnclassifiedAccess ? this.unclassifiedEmail : "",
       scrtEmail: hasScrtAccess ? this.scrtEmail : "",
+      tsEmail: hasTSAccess ? this.tsEmail : "",
+      impactLevels:this.selectedImpactLevels
     };
-
     const adminIndex = this.admins.findIndex(obj => obj.DoDId === this.adminDoDId);
     if (this.isEdit && this.editAdminIndex > -1) {
       this.admins[this.editAdminIndex] = admin;
@@ -385,16 +536,23 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       }
     }
 
-    this.resetAdminData();
+    this.resetAdmin();
     this.buildTableData();
+  }
+
+  public resetAdmin(): void {
+    this.resetAccess();
+    this.resetAdminData();
+    this.selectedImpactLevels = []
     this.isEdit = false;
     this.editAdminIndex = -1;
+    this.showTSEmailWarning = false;
   }
 
   public async setDisableContinue(): Promise<void> {
     await this.setShowMissingAdminAlert();
     const disableContinue = this.admins.length === 0 || this.showMissingAdminAlert;
-    await AcquisitionPackage.setDisableContinue(disableContinue);    
+    await AcquisitionPackage.setDisableContinue(disableContinue);
   }
 
   public isEdit = false;
@@ -410,12 +568,20 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.unclassifiedEmail = admin.unclassifiedEmail as string;
       this.hasScrtAccess = admin.hasScrtAccess as string;
       this.scrtEmail = admin.scrtEmail as string;
-      
-      if (this.hasUnclassifiedAccess === "YES") 
+      this.hasTSAccess = admin.hasTSAccess as string;
+      this.tsEmail = admin.tsEmail as string;
+      this.selectedImpactLevels = admin.impactLevels||[];
+
+      if (this.hasUnclassifiedAccess === "YES")
         this.selectedClassificationLevels.push(this.unclStr);
       if (this.hasScrtAccess === "YES")
         this.selectedClassificationLevels.push(this.scrtStr);
-
+      if (this.hasTSAccess === "YES") {
+        this.selectedClassificationLevels.push(this.tsStr);
+        this.checkTSEmail(this.tsEmail);
+      } else {
+        this.showTSEmailWarning = false;
+      }
       this.openAddCSPModal();
     }
   }
@@ -431,13 +597,28 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     }
   }
 
+  public createClassificationCheckboxes(): void {
+    this.classificationLevels.forEach(cl => {     
+      const id = cl.replace(" ", "_");
+      this.classificationLevelOptions.push({ id, label: cl, value: cl });
+    })
+  }
+
+  public createILCheckboxes(impactLevels:string[]): void {
+    impactLevels.forEach(value => {
+      const il = value.split('_')[1].toUpperCase();
+      this.impactLevelCompareArray.push(value)
+      this.impactLevelOptions.push({id: il, label: il, value});
+    })
+  }
+
   public resetAdminData(): void {
     this.adminDoDId = "";
-    this.hasUnclassifiedAccess = ""; // YES/NO
     this.unclassifiedEmail = "";
-    this.hasScrtAccess = ""; // YES/NO
     this.scrtEmail = "";
+    this.tsEmail = "";
     if (this.classificationLevels.length > 1) this.selectedClassificationLevels = [];
+    this.resetAccess();
   }
 
   public get tableHeaders(): Record<string, string>[] {
@@ -453,18 +634,47 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public buildTableData(): void {
     this.tableData = [];
     this.admins.forEach((admin, index) => {
+      // build classification level cell data
       const classificationLevels = []
-      if (admin.hasUnclassifiedAccess === "YES") classificationLevels.push(this.unclStr);
+      let count = 0
+      if (admin.hasUnclassifiedAccess === "YES"){
+        if(this.hasImpactLevels && admin.impactLevels && this.impactLevels.length > 1) {
+          count = admin.impactLevels.length - 1
+          admin.impactLevels.forEach(il => {
+            classificationLevels.push(this.unclStr + '/'+il.split("_")[1].toUpperCase());
+          })
+        }else{
+          classificationLevels.push(this.unclStr);
+        }
+      }
       if (admin.hasScrtAccess === "YES") classificationLevels.push(this.scrtStr);
+      if (admin.hasTSAccess === "YES") classificationLevels.push(this.tsStr);
       const adminClassificationLevels = classificationLevels.join("<br />");
+
+      // build email cell data
       const emails = [];
+      const lineBreaks = count === 0 ? "" : "\n".repeat(count)
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
-        emails.push(admin.unclassifiedEmail);
+        if(this.hasImpactLevels){
+          emails.push(admin.unclassifiedEmail);
+          if(count){
+            for(let i = 0; i < count;i++){
+              emails.push("\n")
+            }
+          }
+        }else{
+          emails.push(admin.unclassifiedEmail);
+        }
       }
       if (admin.hasScrtAccess === "YES" && admin.scrtEmail) {
         emails.push(admin.scrtEmail);
       }
+      if (admin.hasTSAccess === "YES" && admin.tsEmail) {
+        emails.push(admin.tsEmail);
+      }
       const adminEmails = emails.join("<br />");
+
+      // assemble data table object
       const record: Record<string, string> = {
         index: index.toString(),
         DoDId: admin.DoDId as string,
@@ -472,10 +682,30 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
         adminClassificationLevels,
         status: "In queue",
       }
+      // add to table data
       this.tableData.push(record);
     });
 
     this.setDisableContinue();
+  }
+
+  public resetAccess(): void {
+    this.hasUnclassifiedAccess = "NO";
+    this.hasScrtAccess = "NO";
+    this.hasTSAccess = "NO";
+
+    if (this.classificationLevels.length === 1) {
+      switch(this.classificationLevels[0]) {
+      case this.unclStr:
+        this.hasUnclassifiedAccess = "YES";
+        break;
+      case this.scrtStr: 
+        this.hasScrtAccess = "YES";
+        break;
+      case this.tsStr:
+        this.hasTSAccess = "YES";
+      }
+    }
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -483,22 +713,32 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
     if (storeData) {
       this.admins = _.cloneDeep(storeData.admins) || [];
-
       this.savedData = _.cloneDeep(this.admins);
       this.cspLong = storeData.cspLong as string;
       this.classificationLevels = storeData.classificationLevels || [];
+      // if only one classification level available on the task order,
+      // automatically set user to only have access to that classification level
       if (this.classificationLevels.length === 1) {
         this.selectedClassificationLevels.push(this.classificationLevels[0])
-        if (this.classificationLevels[0] === this.unclStr) {
-          this.hasUnclassifiedAccess = "YES";
-          this.hasScrtAccess = "NO";
-        } else if (this.classificationLevels[0] === this.scrtStr) {
-          this.hasScrtAccess = "YES";
-          this.hasUnclassifiedAccess = "NO";
-        }
-      } 
+        this.resetAccess();
+      } else {
+        // more than one classification level - create checkboxes
+        this.createClassificationCheckboxes();
+      }
+
+      this.impactLevels = storeData.selectedILs || [];
+      if (storeData.selectedILs && storeData.selectedILs.length > 1) {
+        this.showUnclassifiedILs = true
+        this.createILCheckboxes(storeData.selectedILs)
+      } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {
+        this.selectedImpactLevels.push(storeData.selectedILs[0]);
+      }
+      this.csp = storeData.csp || "";
+
       this.buildTableData();
+
     } 
+    
     await AcquisitionPackage.setDisableContinue(this.admins.length === 0);
   }
 

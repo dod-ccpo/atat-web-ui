@@ -18,6 +18,7 @@
       :value.sync="offeringData.trainingType"
       :items="trainingTypes"
       name="TrainingFormat"
+      @radioButtonSelected="clearData()"
       class="mb-10"
       :rules="[$validators.required('Select a training format.')]"
     />
@@ -77,7 +78,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync} from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
@@ -102,6 +103,18 @@ export default class TrainingFormElements extends Vue {
     const loc = this.offeringData.trainingType 
       && this.offeringData.trainingType?.indexOf("OCONUS") > -1 ? "OCONUS" : "CONUS"
     return "Location of " + loc + " training"
+  }
+
+  /**
+   * clears unwanted data from all form fields when new 
+   * offeringData.trainingType
+   * is selected
+   */
+  public clearData(): void{
+    this.offeringData.trainingFacilityType = "";
+    this.offeringData.trainingPersonnel = "";
+    this.offeringData.trainingTimeZone="";
+    this.offeringData.trainingLocation="";
   }
 
   public get showTrainingLocation(): boolean {

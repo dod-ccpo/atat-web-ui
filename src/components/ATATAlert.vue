@@ -13,7 +13,7 @@
       :class="{ 'pt-6 pr-6': maxHeight }"
     >
       <div
-        v-if="type !== 'callout'"
+        v-if="type !== 'callout' && showIcon"
         class="pr-4"
       >
         <i
@@ -86,9 +86,10 @@ export default class ATATAlert extends Vue {
   @Prop({default: ""}) private maxHeight?: string;
   @Prop({default: ""}) private maxWidth?: string;
   @Prop({default: ""}) private minWidth?: string;
+  @Prop({default: true}) private showIcon?: boolean;
 
   /**
-   * type: 1) info, 2) error, 3) warning, 4) success, 5) callout
+   * type: 1) info (primary), 2) error, 3) warning, 4) success, 5) callout
    * NOTE:
    * type "callout" will never have an icon or border - general info
    * all other types are alerts and will always have an icon and border
@@ -96,9 +97,9 @@ export default class ATATAlert extends Vue {
   @Prop({default: "error"}) private type?: string;
 
   /**
-   * default is info-lighter
+   * default is primary-lighter
    */
-  @Prop({default: "info-lighter"}) private calloutBackground?: string;
+  @Prop({default: "primary-lighter"}) private calloutBackground?: string;
 
   /**
    * size: 1) large or 2)small

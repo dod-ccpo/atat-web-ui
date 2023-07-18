@@ -61,6 +61,8 @@ import Processing from "@/components/icons/Processing.vue";
 import Provisioned from "@/components/icons/Provisioned.vue";
 import Role from "@/components/icons/Role.vue";
 import Remove from "@/components/icons/Remove.vue";
+import RemoveCircle from "@/components/icons/RemoveCircle.vue"
+import Restore from "@/components/icons/Restore.vue";
 import RequestQuote from "@/components/icons/RequestQuote.vue";
 import Search from "@/components/icons/Search.vue";
 import Service from "@/components/icons/Service.vue";
@@ -69,6 +71,7 @@ import Support from "@/components/icons/Support.vue";
 import SupportCircle from "@/components/icons/SupportCircle.vue";
 import Star from "@/components/icons/Star.vue";
 import StarInTriangle from "@/components/icons/StarInTriangle.vue";
+import SwapVertical from "@/components/icons/SwapVertical.vue";
 import TaskAlt from "@/components/icons/TaskAlt.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
@@ -90,6 +93,7 @@ import ProvisionGCP from "@/components/icons/ProvisionGCP.vue";
 import XaasCircle from "@/components/icons/XaasCircle.vue"
 import Update from "@/components/icons/Update.vue";
 import Download from "@/components/icons/Download.vue";
+import DynamicForm from "@/components/icons/DynamicForm.vue";
 import CertifiedDocumentsForTransferringFunds
   from "@/components/icons/CertifiedDocumentsForTransferringFunds.vue";
 import OtherCommonDocumentation from "@/components/icons/OtherCommonDocumentation.vue";
@@ -126,6 +130,7 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     CurrentFunctionsCircle,
     DisaLogo,
     Download,
+    DynamicForm,
     Edit,
     Email,
     ErrorFilled,
@@ -164,6 +169,8 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     RequestQuote,
     Role,
     Remove,
+    RemoveCircle,
+    Restore,
     Search,
     SendEmail,
     Service,
@@ -172,6 +179,7 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     StarInTriangle,
     Support,
     SupportCircle,
+    SwapVertical,
     TaskAlt,
     TriangleUp,
     TriangleDown,

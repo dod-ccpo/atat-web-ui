@@ -4,6 +4,8 @@ import { OrganizationApi } from "./organization";
 import { AgencyApi } from "./agency";
 import { ContactsApi } from "./contacts";
 import { FairOpportunityApi } from "./fairOpportunity";
+import { MarketResearchTechniquesApi } from "./fairOpportunity";
+
 import { CurrentContractApi } from "./background";
 import { ContractConsiderationsApi } from "./contractConsiderations";
 import { SensitiveInformationApi } from "./sensitiveInformation";
@@ -39,6 +41,7 @@ import {PortfolioApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
+import { UserRolesApi } from "./userRoles";
 import { CompanyApi } from "./companies";
 import {EvaluationPlanApi} from "@/api/evaluationPlan";
 import {CurrentEnvironmentInstanceAPI} from "@/api/currentEnvironmentInstance";
@@ -59,9 +62,13 @@ import { TrainingEstimateAPI } from "@/api/trainingEstimate";
 import {IgceEstimateApi} from "@/api/igceEstimate";
 import { travelRequirementApi } from "./travelRequirement";
 import { RegionsAPI } from "./regions";
+import {EnvironmentApi} from "@/api/environment";
 import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
-
+import {OperatorAPI} from "@/api/operator";
+import { AddressApi } from "@/api/address";
+import { CostEstimateApi } from "@/api/costEstimate";
+import { DisaOrganizationApi } from "@/api/disaOrganization";
 
 export const api = {
 
@@ -78,6 +85,7 @@ export const api = {
   contactsTable: new ContactsApi(),
   contractConsiderationsTable: new ContractConsiderationsApi(),
   fairOpportunityTable: new FairOpportunityApi(),
+  marketResearchTechniquesTable: new MarketResearchTechniquesApi(),
   fundingPlanTable :new FundingPlanApi(),
   fundingRequestTable: new FundingRequestApi(),
   fundingIncrementTable: new FundingIncrementApi(),
@@ -98,6 +106,7 @@ export const api = {
   countriesTable: new CountriesApi(),
   taskOrderTable: new TaskOrderApi(),
   costsTable: new CostsApi(),
+  costEstimateTable: new CostEstimateApi(),
   clinTable: new ClinAPi(),
   clinDisplayTable: new ClinDisplayAPi(),
   edaApi: new EDAApi(),
@@ -107,8 +116,10 @@ export const api = {
   aggregate: new AggregateApi(),
   environmentInstanceTable: new EnvironmentInstanceAPI(),
   portfolioTable: new PortfolioApi(),
+  environmentTable: new EnvironmentApi(),
   cloudServiceProviderTable: new CloudServiceProviderApi(),
   userTable: new UserApi(),
+  userRolesTable: new UserRolesApi(),
   companyTable: new CompanyApi(),
   evaluationPlanTable: new EvaluationPlanApi(),
   evalPlanAssessmentAreaTable: new EvalPlanAssessmentAreaApi(),
@@ -128,6 +139,9 @@ export const api = {
   regionsTable: new RegionsAPI(),
   packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
   packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
+  operatorTable: new OperatorAPI(),
+  addressTable: new AddressApi(),
+  disaOrganizationTable: new DisaOrganizationApi(),
 }
 
 export default {

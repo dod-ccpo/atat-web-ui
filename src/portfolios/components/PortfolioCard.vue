@@ -4,8 +4,7 @@
     :class="{ '_first': index === 0, '_last': isLastCard }"
     elevation="0"
   >
-
-    <div class="pr-5">
+    <div class="pr-5" v-if="hasCSP">
       <div class="_csp-icon-wrap" :data-csp="CSPs[cspKey].title">
         <v-tooltip
           transition="slide-y-reverse-transition"
@@ -35,26 +34,15 @@
     <div class="pr-8 flex-grow-1">
       <div class="d-flex">
         <div class="card-header flex-grow-1">
-          <!-- 
-          ----------------------------------------------------------
-            -- ATAT TODO -  UNHIDE LINK when Portfolio Mgmt added -- 
-          ----------------------------------------------------------
-          <a
-            :id="'PortfolioName' + index"
+          <a :id="'PortfolioName' + index"
             role="button"
             tabindex="0"
             class="h3 _text-decoration-none d-flex align-center _portfolio-name"
             @click="cardMenuClick(portfolioCardMenuItems[0])"
-          > -->
-          <span class="h3 text-base-darker d-flex align-center _portfolio-name">
+          > 
             {{ cardData.title }}
-            <ATATSVGIcon 
-              v-if="cardData.isManager"
-              name="manageAccount"
-              width="20"
-              height="17"
-              color="base"
-              class="ml-3"
+            <ATATSVGIcon v-if="cardData.isManager"
+              name="manageAccount" width="20" height="17" color="base" class="ml-3"
             />
           </span>
 
@@ -165,11 +153,7 @@
       </div>
     </div>
 
-    <!-- 
-      ------------------------------------------------------------
-      -- ATAT TODO -  UNHIDE MEATBALL when Portfolio Mgmt added -- 
-      ------------------------------------------------------------
-      <ATATMeatballMenu 
+    <ATATMeatballMenu
       :id="'PortfolioCardMenu' + index"
       :left="true"
       :index="index"
@@ -199,6 +183,8 @@ import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
 import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
 import { Statuses } from "@/store/acquisitionPackage";
+import CurrentUserStore from "@/store/user";
+import { UserDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -224,11 +210,12 @@ export default class PortfolioCard extends Vue {
     emailManagers: "emailManagers",
     loginToCSP: "loginToCSP",
   }
- 
-  // DUMMY HaCC EMAIL UNTIL ACTUAL DATA FROM BACKEND
-  public currentUserEmail = "sample-haac-admin@mail.mil";
+  public get currentUser(): UserDTO {
+    return CurrentUserStore.getCurrentUserData;
+  }
+  public currentUserEmail = this.currentUser.email;
   public get managerEmails(): string {
-    // Return dummy emails until API call wired up to get portfolio managers
+    // ATAT TODO: Return dummy emails until API call wired up to get portfolio managers
     return "foo@mail.mil, bar@mail.mil";
   }
 
@@ -265,7 +252,14 @@ export default class PortfolioCard extends Vue {
   }
 
   public get cspKey(): string {
-    return this.cardData.csp?.toLowerCase() as string;
+    return this.cardData.csp ? this.cardData.csp.toLowerCase() : "";
+  }
+
+  public get hasCSP(): boolean {
+    const cspKeys = ["aws", "azure", "gcp", "oracle"];
+    return this.cardData.csp !== undefined 
+      ? cspKeys.indexOf(this.cardData.csp.toLowerCase()) > -1 
+      : false;
   }
 
   public getCSPConsoleURL(): string {
@@ -275,6 +269,9 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
+    // EJY - DOUBLE-CHECK below line
+    this.cardData = await PortfolioStore.populatePortfolioMembersDetail(this.cardData); 
+    
     await PortfolioStore.setCurrentPortfolio(this.cardData);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
@@ -306,10 +303,11 @@ export default class PortfolioCard extends Vue {
   }
 
   public get statusChipBgColor(): string {
-    const status = this.cardData.status?.toLowerCase() === Statuses.Processing.value.toLowerCase()
-      ? this.cardData.status
-      : this.cardData.fundingAlertChipString;
-    return getStatusChipBgColor(status ? status : "");
+    const status = this.cardData.fundingStatus 
+      && this.cardData.fundingStatus !== Statuses.OnTrack.value
+      ? this.cardData.fundingStatus
+      : this.cardData.status;
+    return getStatusChipBgColor(status || "");
   }
 
   public leavePortfolio(): void {
@@ -372,48 +370,54 @@ export default class PortfolioCard extends Vue {
         title: "View funding tracker",
         action: this.menuActions.viewFundingTracker
       },
+      /*
       { 
         title: "View task orders",
         action: this.menuActions.viewTaskOrders
-      },
+      },*/
     ]; 
 
-    if (this.isHaCCAdmin) {
-      this.portfolioCardMenuItems.push(
-        { 
-          title: "Email portfolio managers",
-          action: this.menuActions.emailManagers,
-        },    
-      );
-    }
+    // ATAT TODO -- add functionality in AT-9099?
+    // if (this.isHaCCAdmin) {
+    //   this.portfolioCardMenuItems.push(
+    //     { 
+    //       title: "Email portfolio managers",
+    //       action: this.menuActions.emailManagers,
+    //     },    
+    //   );
+    // }
 
-    // future ticket - when have data from backend, only include the menu
-    // option below if user is 1) a viewer, or 2) is manager and at least
-    // one other manager exists for this portfolio. 
-    // NOTE: Do not show for HaCC admin. Included currently for testing.
-    this.portfolioCardMenuItems.push(
-      { 
-        title: "Leave this portfolio",
-        action: this.menuActions.leavePortfolio
-      },
-    );
+    // ATAT TODO IN AT-9331
+    // if (!this.isHaCCAdmin && (this.cardData.isManager && this.cardData.portfolio_managers &&
+    //   this.cardData.portfolio_managers.split(",").length > 1) || !this.cardData.isManager
+    // ) {
+    //   this.portfolioCardMenuItems.push(
+    //     { 
+    //       title: "Leave this portfolio",
+    //       action: this.menuActions.leavePortfolio
+    //     },
+    //   );
+    // }
 
-    if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
-      this.portfolioCardMenuItems.push(
-        { 
-          title: "Login to the CSP console",
-          action: this.menuActions.loginToCSP,
-          icon: {
-            name: "launch",
-            width: "15",
-            height: "15",
-            color: "primary",
-          },
-          url: this.getCSPConsoleURL(), 
-          separatorBefore: true,
-        }
-      );
-    }
+    // ATAT TODO - future ticket - provide link to each unclassified environment portal
+    // eslint-disable-next-line max-len
+    // Figma link: https://www.figma.com/file/6zwE1QbRrJZ3yFuA0bo7he/ATAT-Portfolio?type=design&node-id=5306-158321&t=zF6Xkw2a7VNDX232-4
+    // if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
+    //   this.portfolioCardMenuItems.push(
+    //     { 
+    //       title: "Login to the CSP console",
+    //       action: this.menuActions.loginToCSP,
+    //       icon: {
+    //         name: "launch",
+    //         width: "15",
+    //         height: "15",
+    //         color: "primary",
+    //       },
+    //       url: this.getCSPConsoleURL(), 
+    //       separatorBefore: true,
+    //     }
+    //   );
+    // }
   }
 
   public async mounted(): Promise<void> {

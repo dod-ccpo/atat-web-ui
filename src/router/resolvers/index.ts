@@ -5,12 +5,10 @@ import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
-import TaskOrder from "@/store/taskOrder";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import { ClassificationLevelDTO, EvaluationPlanDTO } from "@/api/models";
+import {EvaluationPlanDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import IGCE from "@/store/IGCE";
@@ -18,6 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import { isStepTouched, isSubStepComplete } from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -45,6 +44,14 @@ const evalPlanRequired = (): boolean => {
   return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity === "NO_NONE";
 }
 
+const hasExceptionToFairOpp = (): boolean =>{
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
+}
+
+const fundingRequestType = (): string =>{
+  return FinancialDetails.fundingRequestType;
+}
+
 const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   // if user selected either the required tech proposal (LPTA or BVTO options) or 
   // the set lump sum for one CSP ("best use" or "lowest risk" options), and
@@ -54,33 +61,25 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
 }
 
-export const CreateEvalPlanRouteResolver = (current: string): string => {
-  if (current === routeNames.NoEvalPlan) {
-    return routeNames.PeriodOfPerformance;
-  }
-  if(current === routeNames.EvalPlanDetails){
-    return routeNames.CreateEvalPlan
-  }
-  return current === routeNames.Exceptions
-    ? routeNames.CreateEvalPlan
-    : routeNames.Exceptions;
-};
-
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
-  if (missingEvalPlanMethod(evalPlan)) {
-    return routeNames.PeriodOfPerformance;
+  if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
+    return ( isStepTouched(3) 
+      ? routeNames.SummaryStepThree 
+      : routeNames.PeriodOfPerformance
+    )
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
     buttonId: "NoOtherAssessmentAreas"
   });
-
-  if (evalPlan.source_selection === "SET_LUMP_SUM") {
-    Steps.setAdditionalButtonHide(false);
-  } else {
-    Steps.setAdditionalButtonHide(true);
-  }
+  try {
+    if (evalPlan.source_selection === "SET_LUMP_SUM") {
+      Steps.setAdditionalButtonHide(false);
+    } else {
+      Steps.setAdditionalButtonHide(true);
+    }  
+  } catch (error) { console.error(error) }
 
   return current === routeNames.CreateEvalPlan || routeNames.Differentiators
     ? routeNames.EvalPlanDetails
@@ -88,52 +87,206 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 };
 
 export const BVTOResolver = (current: string): string => {
+
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
-    if (!evalPlanRequired()) {
-      return routeNames.NoEvalPlan;
-    }
-    if (missingEvalPlanMethod(evalPlan)) {
+    // moving backwards
+    if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
       return routeNames.CreateEvalPlan;
     }
   }
-
   if (evalPlan?.method === "BVTO") {
     return routeNames.Differentiators;
   }
 
   return current === routeNames.EvalPlanDetails
-    ? routeNames.PeriodOfPerformance
+    ? (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
     : routeNames.EvalPlanDetails;
 };
 
-export const NoEvalPlanRouteResolver = (current: string): string => {
-  if(current === routeNames.CreateEvalPlan){
-    return routeNames.Exceptions
+export const ProposedCSPRouteResolver = (current: string): string => {
+  return current === routeNames.Exceptions && evalPlanRequired() 
+    ? routeNames.CreateEvalPlan
+    : routeNames.ProposedCSP
+};
+
+export const MinimumRequirementsRouteResolver = (current: string): string => {
+  const backToReview = AcquisitionPackage.fairOppBackToReview;
+  if (routeNames.SoleSourceCause && backToReview) {
+    try {
+      AcquisitionPackage.doSetFairOppBackToReview(false);
+      return routeNames.SoleSourceReview;
+    } catch (error) { console.error(error) } 
   }
-  if (evalPlanRequired()) {
-    return routeNames.CreateEvalPlan;
+  return current === routeNames.SoleSourceCause
+    ? routeNames.SoleSourceReview
+    : routeNames.MinimumRequirements;
+}
+
+export const SoleSourceFormRouteResolver = (current: string): string => {
+  const skipForm = AcquisitionPackage.fairOppExplanations.soleSource.hadExplanationOnLoad;
+  // backward
+  if (current === routeNames.SoleSourceReview) {
+    return skipForm ? routeNames.MinimumRequirements : routeNames.SoleSourceCause;
   }
-  return current === routeNames.Exceptions
-    ? routeNames.NoEvalPlan
-    : routeNames.Exceptions;
+  // forward
+  return skipForm ? routeNames.SoleSourceReview : routeNames.SoleSourceCause;
+}
+
+export const OtherSupportingFactorsRouteResolver = (current: string): string => {
+  const backToReview = AcquisitionPackage.fairOppBackToReview;
+  if (routeNames.RemoveBarriers && backToReview) {
+    try {
+      AcquisitionPackage.doSetFairOppBackToReview(false);
+      return routeNames.ReviewBarriers;        
+    } catch (error) { console.error(error) }
+  }
+  return current === routeNames.RemoveBarriers
+    ? routeNames.ReviewBarriers
+    : routeNames.OtherSupportingFactors;
+}
+
+export const RemoveBarriersFormRouteResolver = (current: string): string => {
+  const skipForm = 
+    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad;
+  // backward
+  if (current === routeNames.ReviewBarriers) {
+    return skipForm ? routeNames.OtherSupportingFactors : routeNames.RemoveBarriers;
+  }
+  // forward
+  return skipForm ? routeNames.ReviewBarriers : routeNames.RemoveBarriers;
+};
+
+export const CertificationPOCsRouteResolver = (current: string): string => {
+  return evalPlanRequired() && current === routeNames.CreateEvalPlan
+    ? routeNames.Exceptions
+    : routeNames.CertificationPOCs
+}
+
+export const MRRNeedRouteResolver = (current: string): string => {
+  const backToReview = AcquisitionPackage.fairOppBackToReview;
+  if (current === routeNames.MarketResearchEfforts && backToReview) {
+    try {
+      AcquisitionPackage.doSetFairOppBackToReview(false);
+      return routeNames.MarketResearchReview;  
+    } catch (error) { console.error(error) }
+  }
+
+  return current === routeNames.MarketResearchEfforts || current === routeNames.ImpactOfRequirement
+    ? routeNames.MRRNeed
+    : routeNames.MarketResearchReview;
+}
+
+export const MarketResearchFormRouteResolver = (current: string): string => {
+  const skipForm = AcquisitionPackage.fairOppExplanations.researchDetails.hadExplanationOnLoad;
+  // backward
+  if (current === routeNames.MarketResearchReview) {
+    return skipForm ? routeNames.MRRNeed : routeNames.MarketResearchEfforts;
+  }
+  // forward
+  return skipForm ? routeNames.MarketResearchReview : routeNames.MarketResearchEfforts; 
+}
+
+const needContractAction = ():boolean =>{
+  return AcquisitionPackage.fairOpportunity?.contract_action ==='NONE'
+}
+export const conductedResearchRouteResolver = (current: string): string => {
+  if(needContractAction()){
+    return routeNames.WhoConductedResearch
+  }
+  return current === routeNames.MarketResearchReview
+    ? routeNames.OtherSupportingFactors
+    : routeNames.MarketResearchReview
+};
+
+const hasLogicalFollowOn = (): boolean => {
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity 
+    === "YES_FAR_16_505_B_2_I_C"
+}
+
+export const CurrentContractRouteResolver = (current: string): string => {
+  if (hasLogicalFollowOn()) {
+    // if second option in step 2 Exception to Fair Opportunity is selected
+    // skip the "Do you have a current/previous contract" page
+    return current === routeNames.CurrentContractDetails
+      ? CrossDomainResolver(current)
+      : routeNames.ProcurementHistorySummary
+  }
+  return routeNames.CurrentContract
 };
 
 export const CurrentContractDetailsRouteResolver = (current: string): string => {
-  const hasCurrentContract 
-    = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
-  if (hasCurrentContract) {
+  const currentContracts =  AcquisitionPackage.currentContracts || [];
+  const fromCurrentContract =  current === routeNames.CurrentContract;
+  const doesNotNeedContract = AcquisitionPackage.hasCurrentOrPreviousContracts === "NO"
+  const hasExistingContracts = AcquisitionPackage.hasCurrentOrPreviousContracts === "YES"
+    && currentContracts.length > 0
+  const fromProcurementHistory = current === routeNames.ProcurementHistorySummary;
+
+  const hasSingleInvalidContract = 
+    currentContracts.length === 1
+    && currentContracts[0].is_valid === false
+
+  if (doesNotNeedContract){
+    return routeNames.CurrentEnvironment;
+  } else if (
+    !hasExceptionToFairOpp()
+  ) {
     return routeNames.CurrentContractDetails;
+  } else if (
+    hasExceptionToFairOpp()
+    && hasSingleInvalidContract
+    && fromCurrentContract
+  ){
+    return routeNames.CurrentContractDetails;
+  } else if (
+    hasExceptionToFairOpp()
+    && fromCurrentContract
+  ){
+    return hasExistingContracts
+      ? routeNames.ProcurementHistorySummary
+      : routeNames.CurrentContractDetails
+  } else if (
+    fromProcurementHistory
+  ){
+    return hasLogicalFollowOn()
+      ? routeNames.SummaryStepThree
+      : routeNames.CurrentContract
   }
-  return current === routeNames.CurrentContract
-    ? routeNames.DOWLandingPage
-    : routeNames.CurrentContract;
+  return routeNames.CurrentContractDetails;
+
 };
+
+
+
+export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
+  const currentContracts =  AcquisitionPackage.currentContracts || [];
+  const doesNotNeedContract = currentContracts.every(
+    (c)=>c.current_contract_exists==="NO"
+  )
+  const fromCurrentEnvironment =  current === routeNames.CurrentEnvironment;
+  
+  if (
+    doesNotNeedContract
+    && fromCurrentEnvironment
+  ){
+    return routeNames.CurrentContract;
+  } else if (
+    !hasExceptionToFairOpp()
+  ){
+    return !fromCurrentEnvironment
+      ? routeNames.CurrentEnvironment
+      : routeNames.CurrentContractDetails
+  }
+  return routeNames.ProcurementHistorySummary
+}
+
 export const ReplicateAndOptimizeResolver = (current: string): string => {
   return current === routeNames.DOWLandingPage || current === routeNames.ReplicateDetails
     ? routeNames.ReplicateAndOptimize
     : routeNames.DOWLandingPage;
 }
+
 
 export const ReplicateDetailsResolver = (current: string): string => {
   if (needsReplicateOrOptimize()&& current !== routeNames.ArchitecturalDesign) {
@@ -163,6 +316,17 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
   return current === routeNames.ReplicateAndOptimize 
     ? routeNames.DOWLandingPage
     : routeNames.EnvironmentSummary;
+}
+
+
+export const SummaryStepSevenRouteResolver = (current: string): string =>{
+  if (isStepTouched(7)){
+    return routeNames.SummaryStepSeven;
+  }
+
+  return current === routeNames.Travel
+    ? routeNames.PII
+    : routeNames.Travel
 }
 
 export const PIIRecordResolver = (current: string): string => {
@@ -195,7 +359,7 @@ export const A11yRequirementResolver = (current: string): string => {
     return routeNames.Section508AccessibilityRequirements;
   }
   return current === routeNames.Section508Standards
-    ? routeNames.CreatePriceEstimate
+    ? routeNames.SummaryStepSeven
     : routeNames.Section508Standards;
 };
 
@@ -209,7 +373,16 @@ export const A11yRequirementResolver = (current: string): string => {
 //     ? routeNames.PII
 //     : routeNames.Training;
 // };
+export const ContractingInfoResolver = (current: string): string => {
+  const needsContractInformation =
+      AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
 
+  if (needsContractInformation) {
+    return routeNames.ContractingOfficeInfo;
+  }
+  return current === routeNames.ContractingShop 
+    ? routeNames.ProjectOverview : routeNames.ContractingShop;
+};
 
 /****************************************************************************/
 /****************************************************************************/
@@ -603,8 +776,9 @@ export const ServiceOfferingsPathResolver = (
   }
 
   setDontNeedButton(currentGroupId);
-
-  Steps.setAdditionalButtonHide(false);
+  try {
+    Steps.setAdditionalButtonHide(false);
+  } catch (error) { console.error(error) }
 
   if (isOtherOffering) {
     const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
@@ -618,7 +792,9 @@ export const ServiceOfferingsPathResolver = (
     ) {
       // if more than one "Other" offering (Compute, General XaaS, Database) 
       // instance/requirement, hide the "I don't need ____ resources" button
-      Steps.setAdditionalButtonHide(true);
+      try {
+        Steps.setAdditionalButtonHide(true);
+      } catch (error) { console.error(error) }
     }
   }
   //default  
@@ -639,7 +815,10 @@ export const ServiceOfferingsPathResolver = (
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   Steps.clearAltBackButtonText();
-  Steps.setAdditionalButtonHide(false);
+  try {
+    Steps.setAdditionalButtonHide(false);
+  } catch (error) { console.error(error) }
+
   const groupId = DescriptionOfWork.currentGroupId;
   setDontNeedButton(groupId);
   const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
@@ -829,8 +1008,8 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if (current === routeNames.DOWLandingPage) {
-    const hasCurrentContract 
-      = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+    const hasCurrentContract = 
+      AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
     if (hasCurrentContract) {
       return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
         && CurrentEnvironment.currentEnvInstances.length > 0
@@ -1121,7 +1300,7 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
     if (current === routeNames.SurgeCapacity){
       // TODO: change routeNames.EstimatesDeveloped below to routeNames.CostSummary
       // when cost summary page is reinstated
-      return contractingShopIsDitco() ? routeNames.EstimatesDeveloped : routeNames.FeeCharged;
+      return contractingShopIsDitco() ? routeNames.CostSummary : routeNames.FeeCharged;
     }
     if (current === routeNames.FeeCharged){
       return routeNames.SurgeCapacity;
@@ -1138,14 +1317,14 @@ export const FeeChargedResolver = (current: string): string => {
     return routeNames.FeeCharged
   }
 
-  if (current === routeNames.EstimatesDeveloped) {
+  if (current === routeNames.CostSummary) {
     return surgeCapacity === "YES" 
       ? routeNames.SurgeCapabilities
       : routeNames.SurgeCapacity;
   }
   // TODO: change routeNames.EstimatesDeveloped below to routeNames.CostSummary
   // when cost summary page is reinstated
-  return routeNames.EstimatesDeveloped;
+  return routeNames.CostSummary;
 }
 
 const contractingShopIsDitco = (): boolean => {
@@ -1256,29 +1435,45 @@ export const MIPRResolver = (current: string): string => {
 };
 
 export const GInvoicingResolver = (current: string): string => {
-  const fundingType = FinancialDetails.fundingRequestType;
-  if (fundingType === "FS_FORM") {
+  if (fundingRequestType() === "FS_FORM") {
     return routeNames.GInvoicing;
   }
   
   return current === routeNames.SeverabilityAndIncrementalFunding
     ? routeNames.MIPR
-    : routeNames.SeverabilityAndIncrementalFunding
+    : hasExceptionToFairOpp() 
+      ? routeNames.AppropriationOfFunds
+      : routeNames.SeverabilityAndIncrementalFunding;
 }
 
 export const Upload7600Resolver = (current: string): string => {
   const useGInvoicing = FinancialDetails.gInvoicingData.useGInvoicing === "YES";
+  
   if (!useGInvoicing) {
-    const fundingType = FinancialDetails.fundingRequestType;
-    return fundingType === "MIPR" 
+    return fundingRequestType() === "MIPR" 
       ? routeNames.MIPR
       : routeNames.Upload7600;
   }
 
-  return current === routeNames.SeverabilityAndIncrementalFunding
+  return current === routeNames.SeverabilityAndIncrementalFunding ||
+    current === routeNames.AppropriationOfFunds
     ? routeNames.GInvoicing
+    : hasExceptionToFairOpp() 
+      ? routeNames.AppropriationOfFunds
+      : routeNames.SeverabilityAndIncrementalFunding;
+}
+
+export const AppropriationOfFundsResolver = (current: string): string => {
+  
+  if (hasExceptionToFairOpp()){
+    return routeNames.AppropriationOfFunds
+  }
+  
+  return current === routeNames.SeverabilityAndIncrementalFunding
+    ? routeNames.Upload7600
     : routeNames.SeverabilityAndIncrementalFunding;
 }
+
 const cutOff = 270;
 export async function calcBasePeriod(): Promise<number> {
   const periods = await Periods.loadPeriods()
@@ -1335,35 +1530,109 @@ export const FinancialPOCResolver =  (current: string): string => {
     : routeNames.FinancialPOCForm
 }
 
-export const SecurityRequirementsResolver = (current: string): string => {
-  const classifications = ClassificationRequirements.selectedClassificationLevels
-  let secretOrTopSecret = false
-  classifications.forEach(classification => {
-    if(classification.classification === "S" || classification.classification === "TS"){
-      secretOrTopSecret = true
-    }
-  })
-  if(secretOrTopSecret){
-    return routeNames.SecurityRequirements
-  }
+export const onlyOneClassification = (classifications: SelectedClassificationLevelDTO[])=>{
+  const onlyUnclassified = classifications
+    .every(classification => classification.classification === "U")
+  const onlySecret = classifications
+    .every(classification => classification.classification === "S")
+  const onlyTopSecret = classifications
+    .every(classification => classification.classification === "TS")
+  return (onlySecret||onlyUnclassified||onlyTopSecret)
+}
 
-  return current === routeNames.ClassificationRequirements
-    ? routeNames.CrossDomain
-    : routeNames.ClassificationRequirements
+export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): boolean => {
+  // "High Side" is jargon for Secret and higher
+  const highSideAbbrs = ["S", "TS"];
+  const highSideObjs = classifications.filter(obj => highSideAbbrs.includes(obj.classification));
+  return highSideObjs.length > 0;
+};
+
+export const SecurityRequirementsResolver = (current: string): string => {
+  
+  const classifications = ClassificationRequirements.selectedClassificationLevels;
+  const hasHigh = hasHighSide(classifications); 
+  // forward
+  if (current === routeNames.ClassificationRequirements) {
+    if (hasHigh) {
+      return routeNames.SecurityRequirements;
+    }
+    return routeNames.SummaryStepThree
+  }
+  // backward
+  return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements
+}
+  
+export const CrossDomainResolver = (current: string): string => {
+  //create function for this to be reused 
+  const classifications = ClassificationRequirements.selectedClassificationLevels;
+  const hasHigh = hasHighSide(classifications);
+  const singleClassification = onlyOneClassification(classifications)
+
+  // backward
+  if (current===routeNames.SummaryStepThree) {
+    if (!singleClassification) {
+      return routeNames.CrossDomain;
+    }
+    return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements;
+  }
+  else if(current===routeNames.ClassificationRequirements
+      || current===routeNames.SecurityRequirements){
+    return hasHigh && !singleClassification
+      ? routeNames.CrossDomain
+      : routeNames.SummaryStepThree
+  }
+  return routeNames.CrossDomain;
+ 
+}
+
+export const SummaryStepThreeRouteResolver = (current:string): string => {
+  // forward
+  
+  const navBackNames = [routeNames.CurrentContract, routeNames.CurrentContractDetails];
+  if (navBackNames.includes(current)) {
+    return routeNames.SummaryStepThree
+  }
+  return routeNames.SummaryStepThree
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
-  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrder;
+  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
+  const selectedCSP = PortfolioStore.portfolioProvisioningObj.csp
   const showPackageSelection = PortfolioStore.showTOPackageSelection;
   if (packageCount && (!acqPkgSysId || showPackageSelection)) {
     return provWorkflowRouteNames.GeneratedFromPackage;
+  }
+  if(current !== provWorkflowRouteNames.PortfolioDetails
+      && acqPkgSysId){
+    if(selectedCSP === 'Azure'){
+      return provWorkflowRouteNames.PortfolioDetails
+    }else{
+      return provWorkflowRouteNames.AddCSPAdmin
+    }
   }
   return current === provWorkflowRouteNames.PortfolioDetails
     ? provWorkflowRouteNames.AwardedTaskOrder
     : provWorkflowRouteNames.PortfolioDetails;
 }
 
+export const PortfolioDetailsRouteResolver = (current: string): string => {
+  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
+  const azureCSP = PortfolioStore.portfolioProvisioningObj.csp === 'Azure'
+  if(azureCSP || !acqPkgSysId ){
+    return provWorkflowRouteNames.PortfolioDetails
+  }
+  if(current === provWorkflowRouteNames.AddCSPAdmin && azureCSP) {
+    return provWorkflowRouteNames.PortfolioDetails
+  }
+  if(current === provWorkflowRouteNames.AddCSPAdmin && !acqPkgSysId && !azureCSP){
+    return provWorkflowRouteNames.AwardedTaskOrder;
+  }
+
+  return current === provWorkflowRouteNames.GeneratedFromPackage
+    ? provWorkflowRouteNames.AddCSPAdmin
+    : provWorkflowRouteNames.GeneratedFromPackage;
+}
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
@@ -1371,7 +1640,11 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
+  CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
+  ProcurementHistorySummaryRouteResolver,
+  RemoveBarriersFormRouteResolver,
+  conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   CurrentEnvRouteResolver,
@@ -1390,13 +1663,24 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
-  CreateEvalPlanRouteResolver,
+  AppropriationOfFundsResolver,
   BVTOResolver,
-  NoEvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
+  ProposedCSPRouteResolver,
+  MinimumRequirementsRouteResolver,
+  SoleSourceFormRouteResolver,
+  OtherSupportingFactorsRouteResolver,
+  MarketResearchFormRouteResolver,
+  CertificationPOCsRouteResolver,
+  MRRNeedRouteResolver,
   SecurityRequirementsResolver,
+  CrossDomainResolver,
   AnticipatedUserAndDataNeedsResolver,
   GeneratedFromPackageRouteResolver,
+  ContractingInfoResolver,
+  SummaryStepThreeRouteResolver,
+  PortfolioDetailsRouteResolver,
+  SummaryStepSevenRouteResolver
 };
 
 // add path resolvers here 

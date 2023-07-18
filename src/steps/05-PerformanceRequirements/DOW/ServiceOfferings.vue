@@ -49,6 +49,7 @@
             :serviceOfferingData.sync="otherOfferingData" 
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
+            :portabilityClassificationLevels.sync="portabilityClassificationLevels"
           />
         </v-col>
 
@@ -69,6 +70,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
@@ -116,6 +118,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public previousSelectedOptions: string[] = [];
   public deselectedLabel = "";
   public deleteMode = "item";
+  portabilityClassificationLevels: string[] = [];
 
   @Watch("selectedOptions")
   public async selectedOptionsChange(newVal: string[]): Promise<void> {
@@ -166,6 +169,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public async deleteServiceItem(): Promise<void> {
     if(this.deleteMode === "category"){
+      if(this.serviceGroupOnLoad === "PORTABILITY_PLAN"){
+        this.portabilityClassificationLevels = []
+      }
       await DescriptionOfWork.removeCurrentOfferingGroup();
       DescriptionOfWork.setConfirmServiceOfferingDelete(false);
       this.showDialog = false;
@@ -207,7 +213,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   public isServiceOfferingList = true;
 
-  public otherOfferingData = _.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance);
+  public otherOfferingData: OtherServiceOfferingData| OtherServiceOfferingData[] =
+    _.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance);
 
   public showSubtleAlert = false;
   public isPeriodsDataMissing = false;
@@ -258,25 +265,40 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         const otherOfferingDataArray = 
           DescriptionOfWork.DOWObject[offeringIndex].otherOfferingData;
         if (otherOfferingDataArray && otherOfferingDataArray.length > 0) {
+          let otherOfferingData :OtherServiceOfferingData|OtherServiceOfferingData[]|undefined
           const currentInstanceNumber = DescriptionOfWork.currentOtherServiceInstanceNumber;
-          const otherOfferingData = otherOfferingDataArray.find(
-            obj => obj.instanceNumber === currentInstanceNumber
-          );
+          if(this.requirementName === 'Portability plan'){
+            otherOfferingData = otherOfferingDataArray
+            otherOfferingData.forEach(offering=>{
+              if(offering.classificationLevel){
+                this.portabilityClassificationLevels.push(offering.classificationLevel)
+              }
+            })
+          }else{
+            otherOfferingData = otherOfferingDataArray.find(
+              obj => obj.instanceNumber === currentInstanceNumber
+            );
+          }
           if (otherOfferingData) {
             this.otherOfferingData = otherOfferingData;
           } else {
-            const newOtherOfferingData 
+            const newOtherOfferingData
               = await DescriptionOfWork.getOtherOfferingInstance(0);
             newOtherOfferingData.instanceNumber = currentInstanceNumber;
             this.otherOfferingData = newOtherOfferingData;
           }
         } else {
-          this.otherOfferingData.instanceNumber = 1;
+          if(Array.isArray(this.otherOfferingData)){
+            this.otherOfferingData.forEach(offering => offering.instanceNumber = 1)
+          }else{
+            this.otherOfferingData.instanceNumber = 1;
+          }
           DescriptionOfWork.setCurrentOtherOfferingInstanceNumber(1);
         }
       }
     }
     //find sys_id for otherValue
+    //eslint-disable-next-line prefer-const
     let otherCheckBoxIndex = this.checkboxItems.findIndex((item) =>item.label === "Other")
     this.otherValue = this.checkboxItems[otherCheckBoxIndex]?.value || ""
 
@@ -296,7 +318,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-
       if (this.serviceGroupOnLoad) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
         if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
@@ -309,7 +330,63 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
             // if (this.otherOfferingData.sysId !== ""){
             //   await this.prepareCurrentOfferingToSave();
             // }
-            await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
+            if(this.requirementName === 'Portability plan'){
+              //first time coming through
+              if(!Array.isArray(this.otherOfferingData)){
+                this.otherOfferingData = []
+                this.portabilityClassificationLevels.forEach(cl=>{
+                  let instanceNumber = 1
+                  if(Array.isArray(this.otherOfferingData)){
+                    instanceNumber = this.otherOfferingData.length + 1
+                  }
+                  const portabilityObj =
+                    // eslint-disable-next-line max-len
+                    Object.assign(_.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance),{classificationLevel:cl, instanceNumber})
+                  if(Array.isArray(this.otherOfferingData)){
+                    this.otherOfferingData.push(portabilityObj)
+                  }
+                })
+              }
+              //on edit
+              if(Array.isArray(this.otherOfferingData)){
+                //remove classification
+                this.otherOfferingData.forEach((data, idx)=>{
+                  if(data.classificationLevel){
+                    const found = this.portabilityClassificationLevels
+                      .includes(data.classificationLevel)
+                    if(!found && Array.isArray(this.otherOfferingData)){
+                      DescriptionOfWork
+                        .deleteOtherOfferingInstance(this.otherOfferingData[idx].instanceNumber)
+                    }
+                  }
+                })
+                // on edit adding a classification
+                this.portabilityClassificationLevels.forEach(cl=>{
+                  if(Array.isArray(this.otherOfferingData)) {
+                    const found = this.otherOfferingData
+                      .some(offering => offering.classificationLevel === cl)
+                    if(!found){
+                      const instanceNumber = this.otherOfferingData.length + 1
+                      const portabilityObj =
+                        // eslint-disable-next-line max-len
+                        Object.assign(_.cloneDeep(DescriptionOfWork.emptyOtherOfferingInstance),{classificationLevel:cl, instanceNumber})
+                      if(Array.isArray(this.otherOfferingData)){
+                        this.otherOfferingData.push(portabilityObj)
+                      }
+                    }
+                  }
+                })
+                if(this.portabilityClassificationLevels.length){
+                  for(const offering of this.otherOfferingData){
+                    await DescriptionOfWork.setOtherOfferingData(offering);
+                  }
+                }
+              }
+            }else{
+              if(!Array.isArray(this.otherOfferingData)){
+                await DescriptionOfWork.setOtherOfferingData(this.otherOfferingData);
+              }
+            }
           }
         }
       }
@@ -341,17 +418,18 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           )
         }
       }
-    ) 
+    )
 
-    const displayedOtherOfferingHasNoClassLevel = existingOtherOfferings.some(
-      others => others.sysId !== this.otherOfferingData.sysId
-    ) 
+    if(!Array.isArray(this.otherOfferingData)){
+      const displayedOtherOfferingHasNoClassLevel = existingOtherOfferings.some(
+        others => others.sysId !== this.otherOfferingData.sysId
+      )
 
-    if (displayedOtherOfferingHasNoClassLevel){
-      this.otherOfferingData.sysId = "";
+      if (displayedOtherOfferingHasNoClassLevel){
+        this.otherOfferingData.sysId = "";
+      }
     }
-    
-    
+
   }
 
 }

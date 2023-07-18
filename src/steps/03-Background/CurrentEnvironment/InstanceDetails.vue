@@ -73,7 +73,7 @@
         <hr v-if="hasTellUsAboutInstanceHeading" />
 
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "2." : "1." }}
+          {{getCurrentUsageAndUsersSequenceNum}}
           Current usage and users
         </h2>
 
@@ -101,7 +101,7 @@
         <hr />
 
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "3." : "2." }}
+          {{getInstanceConfigurationsSequenceNum}}
           Instance configurations
         </h2>
 
@@ -117,17 +117,19 @@
 
         <hr />
 
+        <span v-if="showPricingDetails">
+          <h2 class="mb-4">
+            {{getPricingDetailsSequenceNum}}
+            Pricing details
+          </h2>
+
+          <PricingDetails :pricingDetails.sync="pricingDetails" />
+
+          <hr />
+        </span>
+
         <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "4." : "3." }}
-          Pricing details
-        </h2>
-
-        <PricingDetails :pricingDetails.sync="pricingDetails" />
-
-        <hr />
-
-        <h2 class="mb-4">
-          {{ hasTellUsAboutInstanceHeading ? "5." : "4." }}
+          {{getAdditionalInfoSequenceNum}}
           Additional information 
           <span class="text-base font-weight-400">(Optional)</span>
         </h2>
@@ -140,6 +142,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -271,7 +274,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     // if instance location is on-premise AND only one classification was selected.
     // classification radio options will show if either NO (ZERO) classification
     // levels were selected, or more than one was selected.
-    return !(this.instanceData.instance_location === 'ON_PREM' 
+    return !(this.currEnvData.env_location === 'ON_PREM'
       && this.currEnvData.env_classifications_onprem.length === 1);
   }
 
@@ -443,6 +446,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         this.instanceData = _.cloneDeep(instanceStoreData);
         this.savedData = _.cloneDeep(instanceStoreData);
         if (typeof this.instanceData.deployed_regions === "string") {
+          //eslint-disable-next-line prefer-const
           let deployedRegionIds = this.instanceData.deployed_regions?.split(',')
           if(deployedRegionIds.length != this.instanceData.deployed_regions?.length){
             deployedRegionIds.forEach((instanceId) => {
@@ -523,6 +527,46 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
     }
 
     return isValid;
+  }
+  /**
+   * Processes the instance location 
+   * returns false if the instance location is on_prem
+   * returns true otherwise
+   */
+  public get showPricingDetails(): boolean {
+    return this.instanceData.instance_location === "ON_PREM" ? false:true 
+  }
+
+  /**
+   * Compiles and returns the sequence number for current usage & user section
+   */
+  public get getCurrentUsageAndUsersSequenceNum(): string {
+    return this.hasTellUsAboutInstanceHeading ? "2." : "1.";
+  }
+
+  /**
+   * Compiles and returns the sequence number for instance configurations section
+   */
+  public get getInstanceConfigurationsSequenceNum(): string {
+    return this.hasTellUsAboutInstanceHeading ? "3." : "2.";
+  }
+
+  /**
+   * Compiles and returns the sequence number for pricing details section
+   */
+  public get getPricingDetailsSequenceNum(): string {
+    return this.hasTellUsAboutInstanceHeading ? "4." : "3.";
+  }
+
+  /**
+   * Compiles and returns the sequence number for additional information section
+   */
+  public get getAdditionalInfoSequenceNum(): string {
+    if (this.hasTellUsAboutInstanceHeading) {
+      return this.instanceData.instance_location === "ON_PREM" ? "4." : "5.";
+    } else {
+      return this.instanceData.instance_location === "ON_PREM" ? "3." : "4.";
+    }
   }
 
 }

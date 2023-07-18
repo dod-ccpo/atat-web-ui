@@ -4,9 +4,9 @@
       <v-container fluid class="container-max-width">
         <v-row>
           <v-col class="col-12">
-            <h1 class="page-header">Do you want to request a PoP start date?</h1>
+            <h1 class="page-header mb-3">Do you want to request a PoP start date?</h1>
             <div class="copy-max-width">
-              <p class="mb-10">
+              <p class="mb-8">
                 Due to project requirements and/or contractual obligations, your
                 PoP may need to start on a specific date. If no date is specified,
                 then your PoP will begin based upon the execution date of your
@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
+/* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
@@ -179,7 +179,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-
+        //eslint-disable-next-line prefer-const
         let pops: PeriodOfPerformanceDTO  = {  
           ...this.loaded,
           time_frame: this.currentData.time_frame || "",

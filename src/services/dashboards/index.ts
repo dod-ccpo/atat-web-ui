@@ -5,11 +5,14 @@ import { AxiosRequestConfig } from "axios";
 import { TABLENAME as ClinTable } from "@/api/clin";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
+import { format, isAfter, isBefore, parseISO } from "date-fns";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export interface PortFolioDashBoardDTO {
   taskOrder: TaskOrderDTO;
-  clins: ClinDTO[];
   costs: CostsDTO[];
+  currentCLINs: ClinDTO[];
+  allCLINs: ClinDTO[];
 }
 
 export interface TaskOrderAggregate {
@@ -97,34 +100,120 @@ const getEntityTotals = (
 
 export class DashboardService {
 
+  public async getCLINsInCurrentPeriod(
+    taskOrderSysId: string, 
+    taskOrder: TaskOrderDTO
+  ): Promise<ClinDTO[]> {
+    const today = format(new Date().setHours(0,0,0,0), "yyyy-MM-dd")
+
+    let query = "task_order=" + taskOrderSysId;
+    const taskOrderStart = parseISO(taskOrder.pop_start_date);
+    const taskOrderNotStarted = isBefore(parseISO(today), taskOrderStart);
+    if (taskOrderNotStarted) {
+      query +="^clin_numberSTARTSWITH0";
+    } else {
+      query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
+      query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
+    }
+
+    const fields = "clin_number,clin_status,funds_obligated,funds_total,"
+      + "pop_end_date,pop_start_date,sys_id";
+    const config: AxiosRequestConfig = {
+      params: {
+        sysparm_query: query,
+        sysparm_fields: fields,
+      },
+    };
+
+    let clins = await api.clinTable.all(config);
+    clins = clins.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1)
+    return clins;
+  }
+
+  public async getAllCLINs(taskOrderSysId: string): Promise<ClinDTO[]> {
+    let query = "task_order=" + taskOrderSysId;
+    const fields = "clin_number,funds_obligated,sys_id"
+    const config: AxiosRequestConfig = {
+      params: {
+        sysparm_query: query,
+        sysparm_fields: fields,
+      },
+    };
+    const clins = await api.clinTable.all(config);
+    clins.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
+    return clins;
+  }
+
+
+  public async getCostsInCurrentPeriod(clins: string[]): Promise<CostsDTO[]> {
+    let query = "clinIN" + clins.join(",");
+    const fields =
+      "csp,csp.name,clin,clin.clin_number,year_month," +
+      "task_order_number,portfolio,organization,agency.title,is_actual,value";
+
+    const config: AxiosRequestConfig = {
+      params: {
+        sysparm_query: query,
+        sysparm_fields: fields,
+      },
+    };
+
+    const costs = await api.costsTable.all(config);
+    costs.forEach(cost => {
+      cost.clin_number = cost["clin.clin_number"];      
+      cost = convertColumnReferencesToValues(cost);
+    });    
+    return costs;
+  }
+
   /**
    * Data returned by this function has no impact in the context of relocation of funding related
    * columns to "funding_requirement" table. All the funding related data that is displayed on
    * the UI, comes from the clins and costs table.
    */
   public async getdata(
-    taskOrderNumber: string
+    taskOrderNumber: string,
+    taskOrderSysId: string,
   ): Promise<PortFolioDashBoardDTO> {
     try {
-      const taskOrder = await api.taskOrderTable.retrieve(taskOrderNumber);
+      const taskOrder = await api.taskOrderTable.retrieve(taskOrderSysId);
 
       if (taskOrder === undefined) {
         throw new Error(
           `unable to retrieve task order with number ${taskOrderNumber}`
         );
       }
+      
+      const allCLINs = await this.getAllCLINs(taskOrderSysId);
 
-      //grab all of the task order clins
-      const clinIds = taskOrder.clins.split(",");
-      const clinRequests = clinIds.map((clin) => api.clinTable.retrieve(clin));
-      let clins = await Promise.all(clinRequests);
+      const today = format(new Date().setHours(0,0,0,0), "yyyy-MM-dd")
+      const taskOrderEnd = parseISO(taskOrder.pop_end_date);
+      const taskOrderExpired = isAfter(parseISO(today), taskOrderEnd);
+      let clinsInPeriod: ClinDTO[] = [];
+      
+      if (!taskOrderExpired) {
+        // get sys_ids for all clins in current period
+        clinsInPeriod = await this.getCLINsInCurrentPeriod(taskOrderSysId, taskOrder);
+      } else {
+        // expired task order - get CLINs from last period
+        const lastPeriod = allCLINs[allCLINs.length - 1].clin_number.slice(0,2);
+        clinsInPeriod = allCLINs.filter(obj => obj.clin_number.indexOf(lastPeriod) === 0);
+      }
+
+      if (clinsInPeriod.length) {
+        clinsInPeriod.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
+      }
+     
+      const clinSysIds = clinsInPeriod.map(obj => obj.sys_id);
+      const clinRequests = clinSysIds.map((clin) => api.clinTable.retrieve(clin));
+      let currentCLINs = await Promise.all(clinRequests);
 
       const clin_labels = await api.systemChoices.getChoices(
         ClinTable,
         "idiq_clin"
       );
 
-      clins = clins.map((clin) => {
+      currentCLINs = currentCLINs.map((clin) => {
         const label = clin_labels.find(
           (label) => label.value === clin.idiq_clin
         );
@@ -135,29 +224,12 @@ export class DashboardService {
         return clin;
       });
 
-      const popStartDate = taskOrder.pop_start_date;
-      const popEndDate = taskOrder.pop_end_date;
+      const costs = await this.getCostsInCurrentPeriod(clinSysIds)
 
-      let costsQuery = `task_order_number=${taskOrderNumber}`;
-      costsQuery += `^year_monthBETWEENjavascript:gs.dateGenerate('${popStartDate}','start')`;
-      costsQuery += `@javascript:gs.dateGenerate('${popEndDate}','end')`;
-
-      const fields =
-        "clin,csp,csp.name,year_month," +
-        "task_order_number,portfolio,organization,agency.title,is_actual,value";
-
-      const costsRequestConfig: AxiosRequestConfig = {
-        params: {
-          sysparm_query: costsQuery,
-          sysparm_fields: fields,
-        },
-      };
-
-      const costs = await api.costsTable.all(costsRequestConfig);
-      // TODO - account for no cost data in AT-8734
       return {
         taskOrder,
-        clins,
+        currentCLINs,
+        allCLINs,
         costs,
       };
     } catch (error) {
@@ -166,7 +238,6 @@ export class DashboardService {
   }
 
   public async getCostsData(taskOrders: TaskOrderDTO[]): Promise<CostsDTO[]> {
-    //grab the earliest and the latest pop-start date available
     const earliestPopStart = taskOrders.reduce((prev, current) => {
       const currentPoPStart = Date.parse(current.pop_start_date);
       const prevPopStart = Date.parse(prev);
@@ -215,13 +286,14 @@ export class DashboardService {
    * and transforms the data as needed by the JWCCDashboard component.
    */
   public async getTotals(taskOrderNumbers: string[]): Promise<any> {
+    //grab the earliest and the latest pop-start date available
     const taskOrderQuery = taskOrderNumbers.reduce((prev, current) => {
       const query = prev
         ? `${prev}^ORtask_order_number=${current}`
         : `task_order_number=${current}`;
       return query;
     }, "");
-
+    
     const aggregateRequestConfig: AxiosRequestConfig = {
       params: {
         sysparm_sum_fields: "funds_obligated,funds_total",

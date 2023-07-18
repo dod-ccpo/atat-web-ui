@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Chart, { ChartData } from "chart.js/auto";
@@ -51,7 +52,7 @@ export default class DonutChart extends Vue {
   public async createChart(): Promise<void> {
     const centertext = this.centertext(this);
     if (this.chartId) {
-
+      //eslint-disable-next-line prefer-const 
       let plugins: any = [centertext];
       if (this.useChartDataLabels) {
         plugins.push(ChartDataLabels);
@@ -89,9 +90,9 @@ export default class DonutChart extends Vue {
         let fontSize = (height / text1divisors.fontSize).toFixed(2);
         ctx.font = "bold " + fontSize + "em 'Roboto Condensed'";
         ctx.textBaseline = "middle";
-        let text = self.centerText1,
-          textX = Math.round((width - ctx.measureText(text).width) / 2),
-          textY = height / text1divisors.textY;
+        let text = self.centerText1;
+        let textX = Math.round((width - ctx.measureText(text).width) / 2);
+        let textY = height / text1divisors.textY;
 
         ctx.fillText(text, textX, textY);
         ctx.save();

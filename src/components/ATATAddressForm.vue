@@ -142,6 +142,7 @@
 </template>
 
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
@@ -153,7 +154,14 @@ import ATATTextField from "./ATATTextField.vue";
 import Inputmask from "inputmask/";
 
 
-import { isValidObj, mask, RadioButton, SelectData, stringObj } from "types/Global";
+import {
+  AutoCompleteItem,
+  isValidObj,
+  mask,
+  RadioButton,
+  SelectData,
+  stringObj
+} from "types/Global";
 
 @Component({
   components: {
@@ -166,7 +174,7 @@ import { isValidObj, mask, RadioButton, SelectData, stringObj } from "types/Glob
 })
 
 export default class ATATAddressForm extends Vue {
-   $refs!: {
+  $refs!: {
     atatAddressForm: Vue & {
       resetValidation: () => void;
       reset: () => void;
@@ -182,7 +190,7 @@ export default class ATATAddressForm extends Vue {
   @PropSync("selectedStateCode") public _selectedStateCode?: string;
   @PropSync("stateOrProvince") public _stateOrProvince?: string;
   @PropSync("zipCode") public _zipCode?: string;
-  @PropSync("selectedCountry") public _selectedCountry?: SelectData;
+  @PropSync("selectedCountry") public _selectedCountry?: AutoCompleteItem;
 
   @Prop({required: true}) public addressTypeOptions?: RadioButton[];
   @Prop({required: true}) public addressTypes?: stringObj;
@@ -208,6 +216,7 @@ export default class ATATAddressForm extends Vue {
   }
 
   private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
+    //eslint-disable-next-line prefer-const 
     let rulesArr: ((v:string)=>string | true | undefined)[]  = [];
     if (this.requiredFields) {
 

@@ -22,7 +22,7 @@
       <v-checkbox
         v-for="(item, index) in _items"
         v-model="_selected"
-        :id="'Checkbox_' + getIdText(item.id)"
+        :id="'Checkbox_' + getIdText(item.id) + checkboxLabelSuffix"
         :class="[
           card ? '_checkbox-card' : '_checkbox',
           color ? '_checkbox-' + color : '',
@@ -76,7 +76,8 @@
             <div
               v-if="item.description"
               class="mb-0 _description"
-              v-html="item.description"
+              :class="[{'_normal':descriptionNormal}]"
+            v-html="item.description"
             ></div>
           </div>
         </template>
@@ -213,15 +214,16 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private cardNormal?: boolean;
   @Prop() private labelFontSize?: string;
   @Prop() private labelFontWeight?: string;
+  @Prop() private labelSuffix?: string;
   @Prop() private textFieldAppendText?: string;
   @Prop() private textFieldWidth?: number;
   @Prop({ default: "text" }) private textFieldType?: string;
   @Prop({ default: false }) private isFormattedNumber?: boolean;
   @Prop({ default: false }) private showIconWithMessage?: boolean;
   @Prop({ default: false }) private showPerformanceRequirementTotal?: boolean;
-  @Prop({ default: false }) private validateOnLoad?: boolean;
   @Prop({ default: false }) private inline?: boolean;
-
+  @Prop({ default: false }) private validateOnLoad?: boolean;
+  @Prop({ default: false }) private descriptionNormal?: boolean;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -230,8 +232,17 @@ export default class ATATCheckboxGroup extends Vue {
   public blurredCheckboxes: Record<string, string[]> = {};
   private validateCheckboxesNow = false;
   private totalRequirementsInDOW: totalClassLevelsInDOWObject[] = []
+  public isLoading = false;
 
   public checkboxRules: Array<unknown> = [];
+
+  @Watch("rules", {deep: true})
+  public rulesChanged(): void {
+    this.checkboxRules = [];
+    if (!this.isLoading) {
+      this.clearErrorMessage();
+    }
+  }
 
   @Watch("validateCheckboxesNow")
   protected setCheckboxValidation(): void {
@@ -318,7 +329,9 @@ export default class ATATCheckboxGroup extends Vue {
     Vue.nextTick(() => {
       this.prevSelected = [...this._selected];
     });
-    this.setErrorMessage();
+    if (newVal.length || oldVal.length) {
+      this.setErrorMessage();
+    }
   }
 
   private getIdText(string: string) {
@@ -340,6 +353,7 @@ export default class ATATCheckboxGroup extends Vue {
 
   private checkBoxClicked(value: string): void {
     if (this.checkboxRules.length === 0) {
+      this.checkboxRules = this.rules;
       this.validateCheckboxesNow = true;
     }
     if (value === this.noneValue) {
@@ -373,6 +387,7 @@ export default class ATATCheckboxGroup extends Vue {
         }
       }, 0);
     }
+    this.isLoading = false;
   }
   private clearErrorMessage(): void {
     this.errorMessages = [];
@@ -425,13 +440,18 @@ export default class ATATCheckboxGroup extends Vue {
     return this.labelWidth ? `min-width: ${this.labelWidth}px;` : "";
   }
 
+  public get checkboxLabelSuffix(): string {
+    return this.labelSuffix ? "_" + this.labelSuffix : "";
+  }
+
   public async created(): Promise<void>{
     // necessary prep to show getPerformanceRequirementTotal
     await ClassificationRequirements.getTotalClassLevelsInDOW();
-    this.totalRequirementsInDOW = await ClassificationRequirements.classLevelsInDOWTotal;
+    this.totalRequirementsInDOW = ClassificationRequirements.classLevelsInDOWTotal;
   } 
 
   public mounted(): void {
+    this.isLoading = true;
     this.setEventListeners();
    
     // if validateOnLoad, then validate checkboxes immediately
@@ -463,6 +483,7 @@ export default class ATATCheckboxGroup extends Vue {
 
       if (this.blurredCheckboxes[groupId].length === this._items.length) {
         if (this.checkboxRules.length === 0) {
+          this.checkboxRules = this.rules;
           this.validateCheckboxesNow = true;
         }
         this.setErrorMessage();

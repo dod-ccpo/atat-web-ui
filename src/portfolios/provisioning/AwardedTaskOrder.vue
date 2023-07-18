@@ -90,7 +90,7 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
 import PortfolioStore from "@/store/portfolio";
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
@@ -148,9 +148,12 @@ export default class AwardedTaskOrder extends Vue {
   public async setTaskOrderData(): Promise<void> {
     const data = PortfolioStore.portfolioProvisioningObj;
     if (data) {
-      const popEnd = data.popEndDate ? format(new Date(data.popEndDate), "MM/dd/yyyy") : "";
-      const popStart = data.popStartDate ? format(new Date(data.popStartDate), "MM/dd/yyyy") : "";
-      const pop = popEnd && popStart ? popStart + " — " + popEnd : "";
+      const popEnd = data.popEndDate ? parseISO(data.popEndDate) : new Date();
+      const popEndDateStr = format(popEnd, "MM/dd/yyyy");
+      const popStart = data.popStartDate ? parseISO(data.popStartDate) : new Date();
+      const popStartDateStr = format(popStart, "MM/dd/yyyy");
+
+      const pop = `${popStartDateStr} — ${popEndDateStr}`;
 
       this.awardedTaskOrder = {
         taskOrderNumber: data.taskOrderNumber as string,
@@ -170,7 +173,10 @@ export default class AwardedTaskOrder extends Vue {
   public async mounted(): Promise<void> {
     await AcquisitionPackage.setDisableContinue(false);
     await this.setTaskOrderData();
-    await AcquisitionPackageSummary.setPackagesWaitingForTaskOrder();
+
+    // Set packages with status WAITING_FOR_TASK_ORDER in the Acq Pkg store
+    // for use in route resolver when continuing from this page
+    await AcquisitionPackageSummary.setPackagesWaitingForTaskOrderCount();
   }
 
 }

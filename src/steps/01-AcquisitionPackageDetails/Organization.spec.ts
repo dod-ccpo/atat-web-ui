@@ -30,6 +30,10 @@ const agencyRecords: AgencyDTO[] = [
 const disaOrgsList: SelectData[] = [
   { text: "Assistant to the Director (DD)", value: "ASSISTANT_TO_THE_DIRECTOR" },
   { text: "Chief of Staff (DDC)", value: "CHIEF_OF_STAFF" },
+  { 
+    text: "Defense Information Systems Agency (DISA)", 
+    value: "DEFENSE INFORMATION SYSTEMS AGENCY (DISA)" 
+  }
 ]
 const statesList: SelectData[] = [
   { text: "Alabama", value: "AL"},
@@ -86,7 +90,6 @@ describe("Testing Organization Component", () => {
       () => Promise.resolve()
     );
     
-
     jest.spyOn(helpers, 'convertAgencyRecordToSelect').mockImplementation((): SelectData[] => {
       return [
         {
@@ -99,9 +102,11 @@ describe("Testing Organization Component", () => {
         }
       ]
     })
+
     jest.spyOn(helpers, 'convertSystemChoiceToSelect').mockImplementation((): SelectData[] => {
       return disaOrgsList
     })
+
     jest.spyOn(api.statesTable, 'all').mockImplementation(async (): Promise<StateDTO[]> => {
       return [
         { name: "Alabama", key: "AL"},
@@ -114,7 +119,6 @@ describe("Testing Organization Component", () => {
       localVue,
       vuetify,
     });
-
   });
 
   afterEach(()=>{
@@ -128,6 +132,25 @@ describe("Testing Organization Component", () => {
   it("loadOnEnter() - returns storeData successfully", async () => {
     await wrapper.vm.loadOnEnter();  
     expect(await wrapper.vm.$data.savedData['disa_organization']).toBe(disaOrgsList[0].value);
+  });
+
+  it("agencyChanged() - should set selected org and clear org name for DISA org", async () => {
+    wrapper.vm.$data.selectedDisaOrg = disaOrgsList[2];
+    wrapper.vm.$data.selectedAgency = disaOrgsList[2];
+
+    await wrapper.vm.agencyChanged(disaOrgsList[0]);
+    expect(await wrapper.vm.$data.selectedDisaOrg).toMatchObject(disaOrgsList[2]);
+    expect(await wrapper.vm.$data.organizationName).toBe("");
+  });
+
+  it("agencyChanged() - should clear selected org and set org name for non-DISA org", async () => {
+    wrapper.vm.$data.selectedDisaOrg = disaOrgsList[1];
+    wrapper.vm.$data.selectedAgency = disaOrgsList[1];
+    wrapper.vm.$data.organizationName = "mockOrg";
+
+    await wrapper.vm.agencyChanged(disaOrgsList[0]);
+    expect(await wrapper.vm.$data.selectedDisaOrg).toMatchObject({ text: "", value: ""});
+    expect(await wrapper.vm.$data.organizationName).toBe("mockOrg");
   });
   
   it("selectedAgency - set agency to ensure currentData.selectedAgency updates", async () => {
@@ -162,7 +185,8 @@ describe("Testing Organization Component", () => {
     await wrapper.vm.hasChanged()
     expect(currentData.agency).not.toBe(savedData.agency)
     expect(currentData.disa_organization).not.toBe(savedData.disa_organization)
-  })
+  });
+
   it("saveOnLeave() -  save organization data", async () => {
     await wrapper.setData({
       currentData: {
@@ -172,7 +196,17 @@ describe("Testing Organization Component", () => {
     })
     const saveOnLeave = await wrapper.vm.saveOnLeave()
     expect(saveOnLeave).toBeTruthy()
-  })
+  });
+
+  it("saveOnLeave() - should catch and log error", async () => {
+    console.log = jest.fn();
+    jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(() => {
+      throw new Error("mock error");
+    });
+    await wrapper.vm.saveOnLeave();
+    expect(console.log).toHaveBeenCalledWith(Error("mock error"));
+  });
+
   it.each(["US", "MILITARY", "FOREIGN"])
   ("selected address data", async (addressType) => {
     await wrapper.setData({
@@ -190,15 +224,17 @@ describe("Testing Organization Component", () => {
     await wrapper.vm.setSelectedData()
     const saveOnLeave = await wrapper.vm.saveOnLeave()
     expect(saveOnLeave).toBeTruthy()
-  })
+  });
+
   it("inputClass() - setting $vuetify.breakpoint.mdAndDown false to retrieve class", async ()=>{
     wrapper.vm.$vuetify.breakpoint.mdAndDown = false;
     const inputClass = await wrapper.vm.inputClass;
     expect(inputClass).toBe("my-2");
-  })
+  });
+
   it("inputClass() - setting $vuetify.breakpoint.mdAndDown true to retrieve class", async ()=>{
     wrapper.vm.$vuetify.breakpoint.mdAndDown = true;
     const inputClass = await wrapper.vm.inputClass;
     expect(inputClass).toBe("_input-max-width my-2");
-  })
+  });
 })

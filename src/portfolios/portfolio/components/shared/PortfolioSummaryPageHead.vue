@@ -19,6 +19,7 @@
             autocomplete="off"
             v-model="_title"
             @blur="saveTitle()"
+            style="min-width:500px;"
           >
           </v-text-field>
 
@@ -29,11 +30,12 @@
             v-if="!isPortfolioProvisioning"
           >
             <v-tab
-              v-for="tab in items"
-              :key="tab"
+              v-for="(tab, index) in items"
+              :key="index"
               :id="getIdText(tab) + '_Tab'"
-              class="font-size-14 pa-1 pt-2  pb-5 mr-3">{{tab}}</v-tab>
-
+              class="font-size-14 pa-1 pt-2  pb-5 mr-3"
+              @click="tabClicked(index)"
+            >{{tab}}</v-tab>
           </v-tabs>
         </div>
       </div>
@@ -55,7 +57,7 @@
             color="base-dark"
           />
         </v-btn>
-        <!-- TODO: Reinstate menu in future ticket when functionality complete
+        <!-- ATAT TODO: Reinstate menu in future ticket when functionality complete -->
         <v-menu
           :offset-y="true"
           left
@@ -65,6 +67,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
+              v-if="!isProdEnv"
               v-bind="attrs"
               v-on="on"
               id="MoreMenuButton"
@@ -132,7 +135,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -145,6 +148,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { SlideoutPanelContent } from "../../../../../types/Global";
 import {getIdText, hasChanges} from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -166,10 +170,24 @@ export default class PortfolioSummaryPageHead extends Vue {
   public activeAppSection = AppSections.activeAppSection;
   public showDrawer = false;
 
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
+  }
+
+  public get slideoutPanelIsOpen(): boolean {
+    return SlideoutPanel.getSlideoutPanelIsOpen;
+  }
+  @Watch("slideoutPanelIsOpen")
+  public slideoutPanelIsOpenChanged(newVal: boolean): void {
+    this.showDrawer = newVal;
+  }
+
   public openModal():void {
     PortfolioStore.setShowAddMembersModal(true);
   }
-
+  public async tabClicked(index: number): Promise<void> {
+    await AppSections.setActiveTabIndex(index);
+  }
   public saveTitle(): void {
     if(hasChanges(PortfolioStore.currentPortfolio.title, this._title)) {
       PortfolioStore.updatePortfolioTitle(this._title);
@@ -188,6 +206,7 @@ export default class PortfolioSummaryPageHead extends Vue {
         const opener = e.currentTarget as HTMLElement;
         const slideoutPanelContent: SlideoutPanelContent = {
           component: PortfolioDrawer,
+          title: "About Portfolio"
         }
         await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
         this.showDrawer = true;

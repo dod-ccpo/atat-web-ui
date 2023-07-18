@@ -22,6 +22,7 @@ import {
   ContractTypeDTO,
   CurrentContractDTO,
   FairOpportunityDTO,
+  MarketResearchTechniquesDTO,
   EvaluationPlanDTO,
   OrganizationDTO,
   // PeriodDTO,
@@ -32,6 +33,7 @@ import {
   FundingRequirementDTO,
   RegionsDTO,
   PackageDocumentsSignedDTO,
+  AddressDTO
 } from "@/api/models";
 
 import { 
@@ -58,8 +60,19 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { AxiosRequestConfig } from "axios";
 import IGCE from "@/store/IGCE";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+
+import { 
+  createDateStr, 
+  currencyStringToNumber, 
+  toCurrencyString, 
+  getDateObj, 
+  getCSPCompanyName 
+} from "@/helpers";
+
 import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
+import Summary from "../summary";
+import { compareAsc, format } from "date-fns";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
@@ -69,6 +82,7 @@ export const StoreProperties = {
   ProjectOverview: "projectOverview",
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
+  MarketResearchTechniques: "marketResearchTechniques",
   EvaluationPlan: "evaluationPlan",
   // PeriodOfPerformance: "periodOfPerformance",
   SensitiveInformation: "sensitiveInformation",
@@ -76,24 +90,27 @@ export const StoreProperties = {
   CurrentEnvironment: "currentEnvironment",
   ContractConsiderations: "contractConsiderations",
   Regions:"regions",
-  PackageDocumentsSigned:"packageDocumentsSigned"
+  PackageDocumentsSigned:"packageDocumentsSigned",
+  ContractingShopNonDitcoAddress:"contractingShopNonDitcoAddress"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
-  Active: { label: "Active", value: "ACTIVE" }, // PORT
+  Active: { label: "Active", value: "ACTIVE" }, // PORTFOLIO
   AtRisk: { label: "At-Risk", value: "AT_RISK" }, // CLIN, TO
-  Archived: { label: "Archived", value: "ARCHIVED" }, // ACQ, PORT
+  Archived: { label: "Archived", value: "ARCHIVED" }, // ACQ, PORTFOLIO
   Deleted: { label: "Deleted", value: "DELETED" }, // ACQ
-  Delinquent: { label: "Delinquent", value: "DELINQUENT" }, // CLIN
+  Delinquent: { label: "Delinquent", value: "DELINQUENT" }, // CLIN, PORTFOLIO
   Draft: { label: "Draft", value: "DRAFT" }, // ACQ
-  Expired: { label: "Expired", value: "EXPIRED" }, // CLIN, TO
+  Expired: { label: "Expired", value: "EXPIRED" }, // CLIN, TO, PORTFOLIO
   ExpiringPop: { label: "Expiring PoP", value: "EXPIRING_POP" }, // CLIN
-  ExpiringSoon: { label: "Expiring Soon", value: "EXPIRING_SOON" },
+  ExpiringSoon: { label: "Expiring Soon", value: "EXPIRING_SOON" }, // PORTFOLIO
   FundingAtRisk: { label: "Funding At-Risk", value: "FUNDING_AT_RISK" }, // CLIN
   OnTrack: { label: "On Track", value: "ON_TRACK" }, // CLIN, TO
   OptionExercised: { label: "Option Exercised", value: "OPTION_EXERCISED" }, // CLIN
   OptionPending: { label: "Option Pending", value: "OPTION_PENDING" }, // CLIN  
-  Processing: { label: "Processing", value: "PROCESSING" }, // PORT
+  Processing: { label: "Processing", value: "PROCESSING" }, // PORTFOLIO
+  Provisioned: { label: "Provisioned", value: "PROVISIONED" }, // ENV
+  ProvisioningIssue: { label: "Provisioning issue", value: "PROVISIONING_ISSUE" }, // PORTFOLIO, ENV
   TaskOrderAwarded: { label: "Task Order Awarded", value: "TASK_ORDER_AWARDED" }, // ACQ
   Upcoming: { label: "Upcoming", value: "UPCOMING" }, // TO
   WaitingForSignatures: { label: "Waiting For Signatures", value: "WAITING_FOR_SIGNATURES" }, // ACQ
@@ -108,6 +125,12 @@ export const initialCurrentContract = (): CurrentContractDTO => {
     contract_number: "",
     task_delivery_order_number: "",
     contract_order_expiration_date: "",
+    contract_order_start_date: "",
+    competitive_status: "",
+    business_size: "",
+    instance_number: AcquisitionPackage.currentContractInstanceNumber || -1,
+    acquisition_package:AcquisitionPackage.packageId,
+    is_valid: false,
   }
 }
 
@@ -138,12 +161,25 @@ const initialOrganization = () => {
     state: "",
   };
 };
+const initialNonDitcoAddress = ():AddressDTO => {
+  return {
+    name: "",
+    address_type: "US",
+    street_address_1: "",
+    unit: "",
+    city: "",
+    zip_postal_code: "",
+    state_province_state_code: "",
+    country: "",
+  };
+};
 
-const initialContractType = ()=> {
+const initialContractType = () => {
   return {
     firm_fixed_price: "",
     time_and_materials: "",
     contract_type_justification: "",
+    acquisition_package: AcquisitionPackage.packageId
   }
 }
 
@@ -165,6 +201,7 @@ const initialContact = () => {
     email: "",
     title: "",
     manually_entered: "",
+    acquisition_package: ""
   };
 };
 
@@ -178,6 +215,7 @@ const initialContractConsiderations = ()=> {
     required_training_courses: "",
     packaging_shipping_none_apply: "",
     contractor_provided_transfer: "",
+    acquisition_package: AcquisitionPackage.packageId
   }
 }
 
@@ -196,17 +234,6 @@ export const initialEvaluationPlan = (): EvaluationPlanDTO => {
     custom_specifications: "",
   }
 }
-
-const initialPeriodOfPerformance = ()=> {
-
-  return     { 
-    pop_start_request: "",
-    requested_pop_start_date: "",
-    time_frame: "",
-    recurring_requirement: "",
-    base_and_options: "",
-    
-  }}
 
 const initialSensitiveInformation = ()=> {
 
@@ -240,6 +267,24 @@ const initialClassificationLevel = () => {
   }
 }
 
+const initialFairOppExplanationOptions = () => {
+  return {
+    defaultSuggestion: "",
+    defaultSuggestionEdited: false,
+    formEdited: false,
+    useCustomText: false,
+    hadExplanationOnLoad: false,
+  };
+}
+
+const initialFairOppExplanations = () => {
+  return {
+    soleSource: initialFairOppExplanationOptions(),
+    researchDetails: initialFairOppExplanationOptions(),
+    plansToRemoveBarriers: initialFairOppExplanationOptions(),
+  }  
+}
+
 const saveAcquisitionPackage = (value: AcquisitionPackageDTO) => {
   api.acquisitionPackageTable.update(value.sys_id as string, value);
 };
@@ -257,17 +302,20 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       corInfo: store.corInfo,
       acorInfo: store.acorInfo,
       contractType: store.contractType,
-      currentContract: store.currentContract,
+      currentContract: store.currentContracts,
       fairOpportunity: store.fairOpportunity,
       packageDocumentsSigned:store.packageDocumentsSigned,
       evaluationPlan: store.evaluationPlan,
       // periods: store.periods,
       // periodOfPerformance: store.periodOfPerformance,
       sensitiveInformation: store.sensitiveInformation,
-      allowDeveloperNavigation: store.allowDeveloperNavigation
+      allowDeveloperNavigation: store.allowDeveloperNavigation,
+      contractingShopNonDitcoAddress: store.contractingShopNonDitcoAddress
     })
   );
 };
+
+
 
 const getStoreDataTableProperty = (
   storeProperty: string,
@@ -281,10 +329,22 @@ const getStoreDataTableProperty = (
   if (!dataProperty) {
     throw new Error(`unable to locate store property : ${storeProperty}`);
   }
-
   return dataProperty;
 };
 
+export const isDitcoUser = (): boolean =>{
+  return AcquisitionPackage.acquisitionPackage?.contracting_shop === "DITCO"
+}
+
+export const isMRRToBeGenerated = (): boolean =>{ 
+  return AcquisitionPackage.fairOpportunity?.contract_action === "NONE";
+}
+
+export const hasFairOpportunity = (): boolean =>{
+  return ["NO_NONE", ""].every(
+    fo=>fo !== AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity?.toUpperCase()
+  )
+}
 
 @Module({
   name: "AcquisitionPackage",
@@ -311,13 +371,20 @@ export class AcquisitionPackageStore extends VuexModule {
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
+
   fairOpportunity: FairOpportunityDTO | null = null;
+  
+  // used for routing
+  fairOppBackToReview = false;
+  replaceCustomWithGenerated = false;
+
+  marketResearchTechniques: MarketResearchTechniquesDTO[] | null = null;
   packageDocumentsSigned: PackageDocumentsSignedDTO | null = null;
   evaluationPlan: EvaluationPlanDTO | null = null;
-  currentContract: CurrentContractDTO | null = null;
+  currentContracts: CurrentContractDTO[] | null = null;
+  hasCurrentOrPreviousContracts = "";
+  currentContractInstanceNumber = 1;
   sensitiveInformation: SensitiveInformationDTO | null = null;
-  // periods: string | null = null;
-  // periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   fundingRequirement: FundingRequirementDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
@@ -327,6 +394,7 @@ export class AcquisitionPackageStore extends VuexModule {
   packageId = "";
   regions: RegionsDTO[] | null = null;
   isLoading = false;
+  
 
   validateNow = false;
   allowDeveloperNavigation = false;
@@ -341,16 +409,39 @@ export class AcquisitionPackageStore extends VuexModule {
   attachmentNames: string[] = []
   anticipatedUsersAndDataNeedsVisited = false
   disableContinue = false
+  continueButtonColor = "";
   hideNavigation = false
   hideSideNavigation = false
-  firstTimeVisit = false
+  isNewPackage = false
   fundingRequestType: string | null =  null;
 
   currentUser: User = {};
   currentUserIsMissionOwner = false;
   currentUserIsContributor = false;
 
+  isProdEnv: boolean | null = null;
+  @Action({rawError: true})
+  public async setIsProdEnv(): Promise<void> {
+    await this.doSetIsProdEnv();
+  }
+  @Mutation
+  public async doSetIsProdEnv(): Promise<void> {
+    this.isProdEnv = window.location.hostname === "services.disa.mil"
+      || window.location.hostname === "services-test.disa.mil";
+  }
+  
+  emulateProdNav = false;
+  @Action({rawError: true})
+  public async setEmulateProdNav(bool: boolean): Promise<void> {
+    await this.doToggleEmulateProdEnv(bool);
+  }
+  @Mutation
+  public async doToggleEmulateProdEnv(bool: boolean): Promise<void> {
+    this.emulateProdNav = bool;
+  }
+
   packageCreator: User = {};
+  contractingShopNonDitcoAddress: AddressDTO | null = null;
   @Mutation
   public doSetPackageCreator(user: User): void {
     this.packageCreator = user;
@@ -390,7 +481,7 @@ export class AcquisitionPackageStore extends VuexModule {
     const sysIds = contributorSysIds.split(",");
     sysIds.forEach(async sysId => {
       const contributor = await UserStore.getUserRecord(
-        {s: sysId, field: "sys_id"}
+        { searchStr: sysId, searchCol: "sys_id"}
       );        
       if (contributor) {
         this.doAddPackageContributor(contributor);
@@ -504,7 +595,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async setCurrentUser(): Promise<void> {
-    const currentUser = await UserStore.getCurrentUser();
+    const currentUser = UserStore.getCurrentUserData;
     await this.doSetCurrentUser(currentUser);
 
     const isOwner = this.acquisitionPackage?.mission_owners && this.currentUser.sys_id
@@ -626,12 +717,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: false})
-  public async setFirstTimeVisit(value: boolean): Promise<void> {
-    this.doSetFirstTimeVisit(value);
+  public async setIsNewPackage(value: boolean): Promise<void> {
+    this.doSetIsNewPackage(value);
   }
   @Mutation
-  private doSetFirstTimeVisit(value: boolean): void {
-    this.firstTimeVisit = value;
+  private doSetIsNewPackage(value: boolean): void {
+    this.isNewPackage = value;
   }
   @Action
   public async setValidateNow(value: boolean): Promise<void> {
@@ -653,10 +744,20 @@ export class AcquisitionPackageStore extends VuexModule {
     this.disableContinue = value;
   }
 
+  @Action({rawError: false})
+  public async setContinueButtonColor(value: string): Promise<void> {
+    this.doSetContinueButtonColor(value);
+  }
+
+  @Mutation
+  private doSetContinueButtonColor(value: string): void {
+    this.continueButtonColor = value;
+  }
+
+
   public get getAllowDeveloperNavigation(): boolean {
     return this.allowDeveloperNavigation;
   }
-
   @Mutation
   public setAllowDeveloperNavigation(value: boolean): void{
     this.allowDeveloperNavigation = value;
@@ -696,26 +797,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action
-  public async getJamrrTemplateSysID(type: string): Promise<string>{
-    let attachment: AttachmentDTO[] = [{
-      file_name: "",
-      table_sys_id: ""
-    }];
-    const name = (type === 'ja') 
-      ? "JWCC J&A Template_Template.docx" 
-      : "JWCC Market Research Report (Sole Source)_Template.docx";
-
-    const getAttachmentSysIDQuery: AxiosRequestConfig = {
-      params: {
-        sysparm_fields: "sys_id",
-        sysparm_query: "file_name=" + name + "^table_name=sys_ws_operation"
-      }
-    };
-    attachment = await api.attachments.getQuery(getAttachmentSysIDQuery);
-    return this.getDomain + "/sys_attachment.do?sys_id=" + attachment[0].sys_id || "";
-  }
-
-  @Action
   public getAcquisitionPackageSysId(): string {
     return this.acquisitionPackage?.sys_id || "";
   }
@@ -731,11 +812,11 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public getInitialFairOpportunity() {
+  public getInitialFairOpportunity(): FairOpportunityDTO {
     return initialFairOpportunity();
   }
   @Mutation
-  public getInitialPackageDocumentsSigned() {
+  public getInitialPackageDocumentsSigned(): PackageDocumentsSignedDTO | null {
     return this.packageDocumentsSigned;
   }
 
@@ -765,20 +846,138 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.contactInfo as ContactDTO;
   }
 
+  @Action({rawError: true})
+  public async loadCurrentContractsFromSNOW(): Promise<CurrentContractDTO[]> {
+    const contractsFromSNOW: CurrentContractDTO[] = await api.currentContractTable.getQuery({
+      params: {
+        sysparm_query: "acquisition_package=" + AcquisitionPackage.packageId
+      }
+    }) || [];
+
+    const contracts = contractsFromSNOW.map((cc, index)=>{
+      const is_current = cc.contract_order_expiration_date 
+        && compareAsc(new Date(),new Date(cc.contract_order_expiration_date))=== -1
+      return{
+        acquisition_package: AcquisitionPackage.packageId,
+        is_valid: true,
+        is_current,
+        ...cc
+      }
+    }) as CurrentContractDTO[];
+    return contracts;
+  }
+  @Action({rawError: true})
+  public async setHasCurrentOrPreviousContracts(hasContracts: string): Promise<void> {
+    await this.doSetHasCurrentOrPreviousContracts(hasContracts);
+  }
+
   @Mutation
-  public setCurrentContract(value: CurrentContractDTO): void {
-    this.currentContract = this.currentContract
-      ? Object.assign(this.currentContract, value)
-      : value;
+  public async doSetHasCurrentOrPreviousContracts(value: string): Promise<void> {
+    this.hasCurrentOrPreviousContracts = value
+  }
+
+  @Action({rawError: true})
+  public async setCurrentContract(contract: CurrentContractDTO): Promise<void> {
+    const currentContracts = await this.currentContracts || [];
+    const sysId = contract.sys_id || ""
+    const existingContractIndex = currentContracts.findIndex(
+      (c) => {
+        return c.sys_id 
+          ? c.sys_id === sysId
+          : c.instance_number?.toString() === contract.instance_number?.toString();
+      }
+    );
+    existingContractIndex > -1 
+      ? currentContracts[existingContractIndex] = contract
+      : currentContracts.push(contract);
+    await this.doSetCurrentContracts(currentContracts);
+  }
+
+  @Mutation
+  public async doSetCurrentContracts(value: CurrentContractDTO[]): Promise<void> {
+    this.currentContracts = value
+  }
+
+  @Action({rawError: true})
+  public async clearCurrentContractInfo(): Promise<void> {
+    //remove SNOW listings
+    const existingContracts = (await this.loadCurrentContractsFromSNOW())
+      .map((c)=> c.sys_id);
+    existingContracts.forEach(
+      async (c)=> {await api.currentContractTable.remove(c as string)}
+    )
+    //remove STORE listings
+    this.doSetCurrentContracts([]);
+  }
+
+  @Action({rawError: true})
+  public async deleteContract(contract: CurrentContractDTO): Promise<void> {
+    const sysId = contract.sys_id ? contract.sys_id : "";
+    // remove SNOW listings, if necessary
+    if (sysId !== ""){
+      const existingContracts = (await this.loadCurrentContractsFromSNOW())
+        .map((c)=> c.sys_id);
+      if (existingContracts.includes(sysId)){
+        await api.currentContractTable.remove(sysId as string)
+      }
+    }
+
+    //remove STORE listing
+    const updatedContracts = this.currentContracts?.filter(
+      (c)=> c.instance_number !== contract.instance_number
+    ) as CurrentContractDTO[];
+    await this.doSetCurrentContracts(updatedContracts);
   }
 
   @Action
-  public async clearCurrentContractInfo(): Promise<void> {
-    const data = initialCurrentContract();
-    data.current_contract_exists = "NO";
-    this.setCurrentContract(data);
-    this.saveData<CurrentContractDTO>({data,
-      storeProperty: StoreProperties.CurrentContract});
+  public async setCurrentContractInstanceNumber(num: number): Promise<void> {
+    await this.doSetCurrentContractInstanceNumber(num);
+  }
+  @Mutation
+  public async doSetCurrentContractInstanceNumber(num: number): Promise<void> {
+    this.currentContractInstanceNumber = num;
+  }
+
+  /**
+   * 
+   * @param exists "YES" or "NO"
+   */
+
+  @Action({rawError: true})
+  public async initializeCurrentContract(
+    exists: string
+  ): Promise<void>{
+    const currentContract = await initialCurrentContract();
+    currentContract.current_contract_exists = exists;
+    currentContract.instance_number = 1;
+    await this.doSetCurrentContracts([currentContract]);
+  }
+
+  @Action({rawError: true})
+  public async updateCurrentContractsSNOW(contracts: CurrentContractDTO[]): Promise<void>{
+
+    for (let i=0;i<contracts.length;i++){
+      const contract = contracts[i];
+      const sysID = contract.sys_id || "";
+      const isValid = contract.is_valid as boolean;
+      contract.acquisition_package = AcquisitionPackage.packageId;
+
+      //only save VALID contracts to SNOW
+      if (sysID !== "" && isValid){  
+        await api.currentContractTable.update(sysID, contract)
+      } else if ( // if current_contract_exists === NO
+        contract.current_contract_exists?.toUpperCase()==="NO"){
+        await api.currentContractTable.create(contract);
+      } else if (isValid){
+        await api.currentContractTable.create(contract);
+      } 
+    }
+
+    const updatedContracts = await this.loadCurrentContractsFromSNOW();
+    const invalidContracts = await this.currentContracts?.filter(
+      (c)=>c.is_valid === false
+    ) as CurrentContractDTO[]
+    await this.doSetCurrentContracts([...updatedContracts, ...invalidContracts]);
   }
 
   @Mutation
@@ -787,11 +986,12 @@ export class AcquisitionPackageStore extends VuexModule {
       ? Object.assign(this.sensitiveInformation, value)
       : value;
   }
-
-  // @Mutation
-  // public setPeriods(value: PeriodDTO[]): void {
-  //   this.periods = value.map(period=> period.sys_id).join(',');
-  // }
+  @Mutation
+  public setContractingShopNonDitcoAddress(value: AddressDTO): void {
+    this.contractingShopNonDitcoAddress = this.contractingShopNonDitcoAddress
+      ? Object.assign(this.contractingShopNonDitcoAddress, value)
+      : value;
+  }
 
   @Mutation
   public setClassificationLevel(value: ClassificationLevelDTO): void {
@@ -799,13 +999,6 @@ export class AcquisitionPackageStore extends VuexModule {
       ? Object.assign(this.classificationLevel, value)
       : value;
   }
-
-  // @Mutation
-  // public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
-  //   this.periodOfPerformance = this.periodOfPerformance
-  //     ? Object.assign(this.periodOfPerformance, value)
-  //     : value;
-  // }
 
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
@@ -838,10 +1031,92 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.projectTitle;
   }
 
-  @Mutation
-  public setFairOpportunity(value: FairOpportunityDTO): void {
-    this.fairOpportunity = value;
+  @Action({rawError: true})
+  public async setFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+    await this.doSetFairOpportunity(value);
+    if (this.initialized) {
+      if (this.fairOpportunity && this.fairOpportunity.sys_id) {
+        await api.fairOpportunityTable.update(
+          this.fairOpportunity.sys_id,
+          this.fairOpportunity
+        );
+        await this.doSetFairOpportunity(value);
+      } else if (this.fairOpportunity && !this.fairOpportunity.sys_id) {
+        const savedObj = await api.fairOpportunityTable.create(this.fairOpportunity);
+        if (savedObj.sys_id) {
+          await this.doSetFairOpportunity(savedObj);
+          await this.updateAcquisitionPackage();
+        }
+      }
+    } else {
+      const techniques: MarketResearchTechniquesDTO[] 
+        = await api.marketResearchTechniquesTable.all();
+      await this.doSetMarketResearchTechniques(techniques);
+      
+      this.fairOppExplanations.soleSource.hadExplanationOnLoad = 
+        (this.fairOpportunity?.cause_of_sole_source_custom !== undefined
+        && this.fairOpportunity.cause_of_sole_source_custom.length > 0)
+        || (this.fairOpportunity?.cause_of_sole_source_generated !== undefined
+        && this.fairOpportunity.cause_of_sole_source_generated.length > 0);
+
+      this.fairOppExplanations.researchDetails.hadExplanationOnLoad = 
+        (this.fairOpportunity?.research_details_custom !== undefined
+        && this.fairOpportunity.research_details_custom.length > 0)
+        || (this.fairOpportunity?.research_details_generated !== undefined
+        && this.fairOpportunity.research_details_generated.length > 0);
+      
+      this.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad = 
+        (this.fairOpportunity?.barriers_plans_to_remove_custom !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_custom.length > 0)
+        || (this.fairOpportunity?.barriers_plans_to_remove_generated !== undefined
+        && this.fairOpportunity.barriers_plans_to_remove_generated.length > 0);
+      
+    }
   }
+  
+  @Mutation
+  public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+    this.fairOpportunity = this.fairOpportunity
+      ? Object.assign(this.fairOpportunity, value)
+      : value;
+    if (value.sys_id && this.acquisitionPackage && !this.acquisitionPackage.fair_opportunity) {
+      this.acquisitionPackage.fair_opportunity = value.sys_id as string;
+    } 
+
+    if (value.exception_to_fair_opportunity?.toLowerCase() === "no_none"){
+      //if exists, delete appropriation of funds data
+      await FinancialDetails.deleteAppropriationOfFunds();
+    }
+  }
+
+  @Mutation
+  public async doSetFairOppBackToReview(val: boolean): Promise<void> {
+    this.fairOppBackToReview = val;
+  } 
+  @Action({rawError: true})
+  public async setReplaceCustomWithGenerated(
+    data: { section: string, val: boolean }
+  ): Promise<void> {
+    await this.doSetReplaceCustomWithGenerated(data.val);
+    if (data.val) {
+      this.fairOppExplanations[data.section].defaultSuggestionEdited = false;
+    }
+  }
+  @Mutation
+  public async doSetReplaceCustomWithGenerated(val: boolean): Promise<void> {
+    this.replaceCustomWithGenerated = val;
+  }
+
+
+  @Mutation
+  public async doSetMarketResearchTechniques(
+    techniques: MarketResearchTechniquesDTO[]
+  ): Promise<void> {
+    if (techniques && techniques.length) {
+      this.marketResearchTechniques = techniques.sort((a,b) => a.sequence > b.sequence ? 1 : -1);
+    }
+  }
+
   @Mutation
   public setPackageDocumentsSigned(value: PackageDocumentsSignedDTO): void {
     const acquisition_package = typeof value.acquisition_package === "object"
@@ -869,10 +1144,266 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.evaluationPlan || initialEvaluationPlan();
   }
 
-  @Action({rawError: true})
-  public async getFairOpportunity(): Promise<FairOpportunityDTO | null>{
-    return this.fairOpportunity;
+  public get getFairOpportunity(): FairOpportunityDTO | null {
+    return this.fairOpportunity || null;
   }
+
+
+  public csps: Record<string, string> = {
+    AWS: "AWS",
+    GCP: "Google Cloud",
+    AZURE: "Microsoft Azure",
+    ORACLE: "Oracle Cloud",
+  }
+
+  public fairOppExplanations: Record<string, Record<string, string | boolean>> = 
+    initialFairOppExplanations();
+
+  @Action({rawError: true})
+  public async initializeAllFairOppSuggestions(): Promise<void> {
+    await this.generateFairOpportunitySuggestion("SoleSource");
+    AcquisitionPackage.fairOppExplanations.soleSource.useCustomText =   
+      this.fairOpportunity?.cause_of_sole_source_for_docgen === "CUSTOM";
+
+    await this.generateFairOpportunitySuggestion("ResearchDetails");
+    AcquisitionPackage.fairOppExplanations.researchDetails.useCustomText = 
+      this.fairOpportunity?.research_details_for_docgen === "CUSTOM"
+
+    await this.generateFairOpportunitySuggestion("RemoveBarriers");
+    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.useCustomText = 
+      this.fairOpportunity?.barriers_plans_to_remove_for_docgen === "CUSTOM";   
+
+  }
+
+  @Action({rawError: true})
+  public async generateFairOpportunitySuggestion(section: string): Promise<void> {
+    switch (section) {
+    case "SoleSource": 
+      await this.generateSoleSourceSuggestion();
+      break;
+    case "ResearchDetails":
+      await this.generateResearchDetailsSuggestion();
+      break;
+    case "RemoveBarriers":
+      await this.generatePlansToRemoveBarriersSuggestion();
+      break;
+    }
+  }
+
+  @Action({rawError: true})
+  public async generateSoleSourceSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const needsMigrationP = this.fairOpportunity.cause_migration_addl_time_cost === "YES";
+      const needsGovtEngineersP = 
+        this.fairOpportunity.cause_govt_engineers_training_certified === "YES";
+      const needsProductFeatureP = 
+        this.fairOpportunity.cause_product_feature_peculiar_to_csp === "YES";
+  
+      const cspName = this.csps[this.fairOpportunity.proposed_csp as string]
+      let text = "";
+
+      if (needsMigrationP) {
+        const estCost = parseFloat(this.fairOpportunity.cause_migration_estimated_cost as string);
+        const hasEstCost = !isNaN(estCost) && estCost > 0;
+        const hasEstDelay = this.fairOpportunity.cause_migration_estimated_delay_amount 
+          && this.fairOpportunity.cause_migration_estimated_delay_amount !== "0";
+    
+        text = "The only source capable of performing the " + this.projectTitle + 
+        " at the level of quality required is the incumbent contractor, " + cspName +
+        ". The refactoring of the current environment from the "  + cspName + 
+        " environment to another CSP would result in additional ";
+        if (hasEstCost) text += "cost";
+        if (hasEstCost && hasEstDelay) text += " and ";
+        if (hasEstDelay) text +="time"
+        text += ". Migration from one platform to another platform would ";
+        if (hasEstCost && this.fairOpportunity.cause_migration_estimated_cost) {
+          const amt = currencyStringToNumber(this.fairOpportunity.cause_migration_estimated_cost)
+          if (amt) text += "cost $" + toCurrencyString(amt, true)
+        }
+        if (hasEstDelay) {
+          if (estCost) {
+            text += " and ";
+          }
+          const estDelayAmt
+            = parseInt(this.fairOpportunity.cause_migration_estimated_delay_amount as string);
+          let estDelayUnit 
+            = (this.fairOpportunity.cause_migration_estimated_delay_unit as string).toLowerCase();
+          estDelayUnit = estDelayAmt > 1 ? estDelayUnit : estDelayUnit.slice(0,-1);
+    
+          text += "delay the project " + estDelayAmt + " " + estDelayUnit;
+        }
+        text += ". In addition, there would be a duplication of costs of having " +
+          "to keep the solution running on one platform while refactoring it on another platform."
+        if (needsGovtEngineersP || needsProductFeatureP) text += "\n\n";
+      }
+
+      if (needsGovtEngineersP) {
+        text += "Further, the only source capable of performing the " + this.projectTitle +
+        " at the level and quality required is " + cspName + " based on Government engineers " +
+        "being trained and certified in " + 
+        this.fairOpportunity.cause_govt_engineers_platform_name + ". " + 
+        this.fairOpportunity.cause_govt_engineers_insufficient_time_reason;   
+        if (needsProductFeatureP) text += "\n\n";
+      }
+
+      if (needsProductFeatureP) {
+        text += "The only source capable of performing the "  + this.projectTitle +
+        " at the level and quality required is " + cspName + " based on "
+        + this.fairOpportunity.cause_product_feature_name + " that is peculiar to " + cspName +
+        ". " + this.fairOpportunity.cause_product_feature_why_essential + " " + 
+        this.fairOpportunity.cause_product_feature_why_others_inadequate;
+      }
+
+      text = text.trim();
+      this.fairOppExplanations.soleSource.defaultSuggestion = text;
+      if (text !== "" && this.fairOpportunity.cause_of_sole_source_generated === "") {
+        this.fairOpportunity.cause_of_sole_source_generated = text;
+        this.fairOppExplanations.soleSource.defaultSuggestionEdited = false;
+      } else {
+        const isEdited = text !== this.fairOpportunity.cause_of_sole_source_generated;
+        this.fairOppExplanations.soleSource.defaultSuggestionEdited = isEdited;  
+      }
+    }
+  }
+
+  @Action({rawError: true})
+  public async generateResearchDetailsSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const needsResearchP = this.fairOpportunity.research_is_csp_only_source_capable === "YES";
+      const needsCatalogReviewP = this.fairOpportunity.research_review_catalogs_reviewed === "YES";
+      const needsTechniquesP = this.fairOpportunity.research_other_techniques_used !== ""
+        && this.fairOpportunity.research_techniques_summary !== "";
+      const dateFormat = "MMMM d, yyyy";
+
+      const cspName = this.fairOpportunity.proposed_csp 
+        ? getCSPCompanyName(this.fairOpportunity.proposed_csp) 
+        : "this proposed CSP";
+      const needsMRR = this.fairOpportunity.contract_action === "NONE";
+
+      let text = "";
+
+      if (needsResearchP) {
+        text += "Additional research was conducted "
+        const start = this.fairOpportunity.research_start_date;
+        const end = this.fairOpportunity.research_end_date;
+  
+        if (start) {
+          const prep = end ? "from " : "on "
+          text += prep + format(getDateObj(start), dateFormat);
+        } 
+        if (end) {
+          text += " to " + format(getDateObj(end), dateFormat)
+        }
+        text += " by reviewing the specific capabilities in the JWCC Contracts " +
+          "and it was determined that " + cspName + " is the only source capable of " + 
+          "fulfilling the Government’s minimum needs in the manner and time frame required. " +
+          this.fairOpportunity.research_supporting_data + "\n\n"; 
+      }
+
+      if (needsCatalogReviewP) {
+        text += "Further research was conducted "
+        const start = this.fairOpportunity.research_review_catalogs_start_date;
+        const end = this.fairOpportunity.research_review_catalogs_end_date;
+        if (start) {
+          const prep = end ? "from " : "on "
+          text += prep + format(getDateObj(start), dateFormat);
+        } if (end !== "" && end !== undefined) {
+          text += " to " + format(getDateObj(end), dateFormat)
+        }
+        text += " by reviewing the JWCC contractor's catalogs to determine " +
+          "if other similar offerings (to include: " + 
+          this.fairOpportunity.cause_product_feature_name + ") " +
+          "meet or can be modified to satisfy the Government’s requirements. " +
+          this.fairOpportunity.research_review_catalogs_review_results + " " +
+          "Therefore, it was determined the " + 
+          this.fairOpportunity.cause_product_feature_name + " " +
+          "is essential to the Government’s requirements and " + cspName + " " +
+          "is the only source capable of fulfilling the Government’s minimum needs in " +
+          "the manner and time frame required. \n\n"
+      }
+
+      if (needsTechniquesP) {
+        text += this.fairOpportunity.research_techniques_summary;
+      }
+  
+      if (!needsMRR && this.fairOpportunity.contract_action) {
+        const exceptionText: Record<string, string> = {
+          UCA: "UCA",
+          BCA: "a bridge extension",
+          OES: "-8 extension" 
+        }
+        text += "Additional market research was not completed for this effort " +
+          "because an exception applies (" + 
+          exceptionText[this.fairOpportunity.contract_action] + ").";
+      }        
+
+      text = text.trim();
+      this.fairOppExplanations.researchDetails.defaultSuggestion = text;
+      if (text !== "" && this.fairOpportunity.research_details_generated === "") {
+        this.fairOpportunity.research_details_generated = text;
+        this.fairOppExplanations.researchDetails.defaultSuggestionEdited = false;
+      } else {
+        const isEdited = text !== this.fairOpportunity.research_details_generated;
+        this.fairOppExplanations.researchDetails.defaultSuggestionEdited = isEdited;  
+      }
+    }
+  }
+
+  @Action({rawError: true})
+  public async generatePlansToRemoveBarriersSuggestion(): Promise<void> {
+    if (this.fairOpportunity) {
+      const followOn = this.fairOpportunity.barriers_follow_on_requirement === "YES";
+      const training = this.fairOpportunity.barriers_agency_pursuing_training_or_certs === "YES";
+      const development = this.fairOpportunity.barriers_planning_future_development === "YES";
+      const hasPrevJA = this.fairOpportunity.barriers_j_a_prepared_results !== "";
+      const agency = this.selectedAgency.text;
+
+      let text = ""
+
+      if (followOn) {
+        let dateStr = "";
+        if (this.fairOpportunity.barriers_follow_on_expected_date_awarded) {
+          dateStr = createDateStr(
+            this.fairOpportunity.barriers_follow_on_expected_date_awarded, true
+          )
+        }
+  
+        text += "To overcome future barriers to competition, " +
+        agency + " is preparing a fair opportunity competitive" +
+        " follow-on requirement. The follow-on is expected to be" +
+        " completed, solicited, and awarded by " + dateStr + ".";
+        if (training || development || hasPrevJA) text += "\n\n";
+      }
+      if (training) {
+        text += "To overcome future barriers to competition, " +
+        agency + " will pursue training and certification for" +
+        " Government engineers in other technologies.";
+        if (development || hasPrevJA) text += "\n\n";
+      }
+      if (development) {
+        text += "To overcome future barriers to competition," +
+        " future development and enhancement of IaaS components will include" +
+        " shifting to a containerized platform. This will enable multiple" +
+        " vendors to meet the requirements which will enable the flexibility" +
+        " to shift workload based on financial and mission requirements.";
+        if (hasPrevJA) text += "\n\n";
+      }
+      if (hasPrevJA) text += this.fairOpportunity.barriers_j_a_prepared_results;
+
+      text = text.trim();
+      this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestion = text;
+      if (text !== "" && this.fairOpportunity.barriers_plans_to_remove_generated === "") {
+        this.fairOpportunity.barriers_plans_to_remove_generated = text;
+        this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited = false;
+      } else {
+        const isEdited = text !== this.fairOpportunity.barriers_plans_to_remove_generated;
+        this.fairOppExplanations.plansToRemoveBarriers.defaultSuggestionEdited = isEdited;  
+      }
+    }
+  }
+
+
+  
   @Action({rawError: true})
   public async getPackageDocumentsSigned(): Promise<PackageDocumentsSignedDTO | null>{
     return this.packageDocumentsSigned;
@@ -907,7 +1438,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contractConsiderations = sessionData.contractConsiderations;
     this.corInfo = sessionData.corInfo;
     this.contractType = sessionData.contractType;
-    this.currentContract = sessionData.currentContract;
+    this.currentContracts = sessionData.currentContracts;
     this.fairOpportunity = sessionData.fairOpportunity;
     this.packageDocumentsSigned = sessionData.packageDocumentsSigned;
     this.evaluationPlan = sessionData.evaluationPlan;
@@ -917,6 +1448,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.classificationLevel = sessionData.classificationLevel;
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
     this.regions = sessionData.regions
+    this.contractingShopNonDitcoAddress = sessionData.contractingShopNonDitcoAddress;
   }
 
   @Action({rawError: true})
@@ -927,6 +1459,10 @@ export class AcquisitionPackageStore extends VuexModule {
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
+
+      if (!this.currentUser) {
+        await this.setCurrentUser();
+      }  
       await ContactData.initialize();
       this.setPackagePercentLoaded(5);
       await OrganizationData.initialize();
@@ -941,7 +1477,7 @@ export class AcquisitionPackageStore extends VuexModule {
       if (acquisitionPackage.sys_created_by) {
         const creator 
           = await UserStore.getUserRecord(
-            {s: acquisitionPackage.sys_created_by, field: "user_name"}
+            { searchStr: acquisitionPackage.sys_created_by, searchCol: "user_name" }
           );
         this.doSetPackageCreator(creator);
         this.setPackagePercentLoaded(25);
@@ -951,7 +1487,7 @@ export class AcquisitionPackageStore extends VuexModule {
         // to be on the safe side, split the csv string of sysIds, take the first
         const missionOwnerSysId = (acquisitionPackage.mission_owners.split(","))[0];
         const missionOwner = await UserStore.getUserRecord(
-          {s: missionOwnerSysId, field: "sys_id"}
+          { searchStr: missionOwnerSysId, searchCol: "sys_id" }
         );      
         this.doSetPackageMissionOwner(missionOwner);  
         this.setPackagePercentLoaded(28);
@@ -972,6 +1508,8 @@ export class AcquisitionPackageStore extends VuexModule {
       const corSysId = acquisitionPackage.cor as string;
       const aCorSysId = acquisitionPackage.acor as string;
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
+      const ContractingShopNonDitcoAddressID =
+          acquisitionPackage.contracting_shop_non_ditco_address as string;
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -988,6 +1526,7 @@ export class AcquisitionPackageStore extends VuexModule {
         cor: corSysId,
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
+        contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
       });
 
       if (acquisitionPackage.contributors) {
@@ -1073,31 +1612,28 @@ export class AcquisitionPackageStore extends VuexModule {
         )
       }
       this.setPackagePercentLoaded(55);
-
-      if(fairOppSysId) {
-        const fairOpportunity = await api.fairOpportunityTable.retrieve(
-          fairOppSysId
-        );
-        if(fairOpportunity)
-          this.setFairOpportunity(fairOpportunity);
+      if (fairOppSysId) {
+        const fairOpportunity = await api.fairOpportunityTable.retrieve(fairOppSysId);
+        if (fairOpportunity) {
+          await this.setFairOpportunity(fairOpportunity);
+          await this.initializeAllFairOppSuggestions();
+        }
       } else {
-        this.setFairOpportunity(
-          initialFairOpportunity()
-        );
+        await this.setFairOpportunity(initialFairOpportunity());
       }
+
       this.setPackagePercentLoaded(60);
-
-      if(currContractSysId) {
-        const currentContract = await api.currentContractTable.retrieve(
-          currContractSysId
-        );
-        if(currentContract)
-          this.setCurrentContract(currentContract);
-      } else {
-        this.setCurrentContract(
-          initialCurrentContract()
-        );
-      }
+      if(AcquisitionPackage.packageId) {
+        const currentContracts = await this.loadCurrentContractsFromSNOW();
+        const hasContracts = currentContracts.length > 0
+          ? currentContracts[0].current_contract_exists as string
+          : "";
+        if (currentContracts.length>0){
+          const tempArray = currentContracts.map((c)=>convertColumnReferencesToValues(c))
+          await this.doSetCurrentContracts(tempArray);
+        }
+        await this.setHasCurrentOrPreviousContracts(hasContracts);
+      } 
       this.setPackagePercentLoaded(65);
 
       if(sensitiveInfoSysId){
@@ -1110,6 +1646,16 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setSensitiveInformation(
           initialSensitiveInformation()
         );
+      }
+      if(ContractingShopNonDitcoAddressID){
+        const contractingShopNonDitcoAddress = await api.addressTable.retrieve(
+          ContractingShopNonDitcoAddressID
+        );
+        if(contractingShopNonDitcoAddress){
+          this.setContractingShopNonDitcoAddress(contractingShopNonDitcoAddress);
+        }
+      }else{
+        this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
       }
       this.setPackagePercentLoaded(70);
 
@@ -1214,7 +1760,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(96);
       await IGCE.loadTrainingEstimatesFromPackage(packageId);
       this.setPackagePercentLoaded(98);
-      await this.setCurrentUser();
+
       await DescriptionOfWork.loadTravel();
 
       if (this.packageContributors.length) {
@@ -1225,6 +1771,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
       this.setInitialized(true);
       this.setIsLoading(false);
+      await Summary.validateStepThree();
+      await Summary.validateStepSeven();
 
     } else {
       await this.initialize();
@@ -1242,9 +1790,13 @@ export class AcquisitionPackageStore extends VuexModule {
     if (this.initialized) {
       return;
     }
+
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
     Steps.clearAltBackButtonText();
+    if (!this.currentUser) {
+      await this.setCurrentUser();
+    }
 
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
@@ -1260,11 +1812,11 @@ export class AcquisitionPackageStore extends VuexModule {
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
-    const loggedInUser = await UserStore.getCurrentUser();
+    const loggedInUser = await UserStore.getCurrentUserData;
 
-    if (loggedInUser && loggedInUser.user_name) {
+    if (loggedInUser && loggedInUser.sys_id) {
       const creator = await UserStore.getUserRecord(
-        {s: loggedInUser.user_name, field: "user_name"}
+        { searchStr: loggedInUser.sys_id, searchCol: "sys_id" }
       );      
       this.doSetPackageCreator(creator);
       this.doSetPackageMissionOwner(creator);
@@ -1287,18 +1839,16 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setContact({ data: initialContact(), type: "Financial POC" })
-          this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
-          this.setFairOpportunity(initialFairOpportunity());
+
+          await this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){
             this.setEvaluationPlan(evaluationPlanDTO);
             acquisitionPackage.evaluation_plan = evaluationPlanDTO.sys_id as string;
           }
           this.setPackagePercentLoaded(50);
-
-          // this.setPeriods([]);
-          // this.setPeriodOfPerformance(initialPeriodOfPerformance());
+          this.setContractingShopNonDitcoAddress(initialNonDitcoAddress())
           this.setSensitiveInformation(initialSensitiveInformation());
           // sys_id from current environment will need to be saved to acquisition package
           const currentEnvironmentDTO = await CurrentEnvironment.initializeCurrentEnvironment();
@@ -1314,14 +1864,12 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPackagePercentLoaded(90);
 
           this.setAcquisitionPackage(acquisitionPackage);
-          this.setPackagePercentLoaded(93);
+          this.setPackagePercentLoaded(95);
 
           saveAcquisitionPackage(acquisitionPackage);
           const packageDocumentsSigned = await api.packageDocumentsSignedTable
             .create({acquisition_package:acquisitionPackage.sys_id})
           this.setPackageDocumentsSigned(packageDocumentsSigned)
-          this.setPackagePercentLoaded(96);
-          await this.setCurrentUser();
           this.setPackagePercentLoaded(100);
 
           this.setInitialized(true);
@@ -1399,6 +1947,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractType]: api.contractTypeTable,
     [StoreProperties.CurrentContract]: api.currentContractTable,
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
+    [StoreProperties.MarketResearchTechniques]: api.marketResearchTechniquesTable,
     [StoreProperties.Organization]: api.organizationTable,
     // [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
@@ -1409,6 +1958,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractConsiderations]: api.contractConsiderationsTable,
     [StoreProperties.Regions]:api.regionsTable,
     [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
+    [StoreProperties.ContractingShopNonDitcoAddress]:api.addressTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -1427,6 +1977,8 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ContractConsiderations]: "contract_considerations",
     [StoreProperties.Regions]: "regions",
     [StoreProperties.PackageDocumentsSigned]: "package_documents_signed",
+    [StoreProperties.ContractingShopNonDitcoAddress]: "contracting_shop_non_ditco_address",
+
   }
 
   @Action({ rawError: true })
@@ -1509,6 +2061,15 @@ export class AcquisitionPackageStore extends VuexModule {
               : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
+
+      /**
+       * Saves acq package sys_id to Contact (if acq package is not null and sys_id is not 
+       * undefined)
+       */ 
+      saveData.data.acquisition_package = (this.acquisitionPackage) ? 
+        (this.acquisitionPackage.sys_id) ? this.acquisitionPackage.sys_id : "" 
+        : "";
+      
       const savedContact =
         sys_id.length > 0
           ? await api.contactsTable.update(sys_id, { ...saveData.data, sys_id })
@@ -1872,32 +2433,32 @@ export class AcquisitionPackageStore extends VuexModule {
       {
         itemName:"Requirements Checklist",
         requiresSignature:true,
-        alertText:"Requires signatures",
+        alertText:"Requires signature",
         show:true
       },
       {
         itemName:"Independent Government Cost Estimate",
         requiresSignature:true,
-        alertText:"Requires signatures",
+        alertText:"Requires signature",
         show:true
       },
       {
         itemName:"Incremental Funding Plan",
         requiresSignature:true,
-        alertText:"Requires signatures",
+        alertText:"Requires signature",
         show:incrementallyFunded === "YES"
       },
       {
         itemName:"Justification and Approval",
         requiresSignature:true,
-        alertText:"Complete and sign",
-        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+        alertText:"Requires signature",
+        show: hasFairOpportunity()
       },
       {
         itemName:"Sole Source Market Research Report",
         requiresSignature:true,
-        alertText:"Complete and sign",
-        show:["NO_NONE", ""].every(fo=>fo !== fairOpportunity)
+        alertText:"Requires signature",
+        show: hasFairOpportunity() && isMRRToBeGenerated()
       },
       {
         itemName:"Description of Work",
@@ -1907,7 +2468,7 @@ export class AcquisitionPackageStore extends VuexModule {
       {
         itemName:"Evaluation Plan",
         requiresSignature:false,
-        show:fairOpportunity === "NO_NONE"
+        show:!hasFairOpportunity()
       }
     ] as signedDocument[]
   }
@@ -1916,7 +2477,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async getCompletedPackageList(): Promise<string[]> {
     const signedDocs = (await this.getSignedDocumentsList()).filter(
       signedDoc => signedDoc.show
-    ).map(signedDoc => signedDoc.itemName.replace("(Template)", ""));
+    ).map(signedDoc => signedDoc.itemName);
 
     const unsignedDocs = (await this.getDocuments(false)).filter(
       /**
@@ -1950,7 +2511,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await TaskOrder.reset();
     await ClassificationRequirements.reset();
     await EvaluationPlan.reset();
-
+    Steps.clearAltBackButtonText();
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
 
     this.doReset();
@@ -1973,10 +2534,8 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = null;
     this.packageDocumentsSigned = null;
     this.evaluationPlan = null;
-    this.currentContract = null;
+    this.currentContracts = null;
     this.sensitiveInformation = null;
-    // this.periods = null;
-    // this.periodOfPerformance = null;
     this.contractType = null;
     this.classificationLevel = null;
     this.totalBasePoPDuration = 0;
@@ -1993,7 +2552,12 @@ export class AcquisitionPackageStore extends VuexModule {
     this.selectedAgency = { text: "", value: "" };
     this.selectedAgencyAcronym = "";
     this.showInviteContributorsModal = false;
-  
+    this.contractingShopNonDitcoAddress = null;
+
+    this.fairOppExplanations = initialFairOppExplanations();
+    
+    this.fairOppBackToReview = false;
+    this.replaceCustomWithGenerated = false;
   }
 }
 

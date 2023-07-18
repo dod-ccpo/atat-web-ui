@@ -17,7 +17,7 @@ module.exports = {
     "plugin:cypress/recommended"
   ],
   parserOptions: {
-    ecmaVersion: "es2020",
+    ecmaVersion: "latest",
   },
   ignorePatterns: ["**/*.min.js",  "**/*.config.js","**/*.postbuild.js"],
   rules: {
@@ -27,6 +27,7 @@ module.exports = {
     "indent": ["error", 2],
     "camelcase": ["error", {}],
     "max-len": ["error", { "code": 100}],
+    'prefer-const': "warn"
   },
   overrides: [
     {
@@ -42,7 +43,8 @@ module.exports = {
         'cypress/**/*.js'
       ],
       rules: {
-        '@typescript-eslint/explicit-module-boundary-types': 0
+        '@typescript-eslint/explicit-module-boundary-types': 0,
+        'eslint prefer-const': 1 
       }
     },
     {

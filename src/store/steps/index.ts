@@ -9,46 +9,46 @@ import { StepperRouteConfig } from "types/Global";
 @Module({ name: 'Steps', namespaced: true, dynamic: true, store: rootStore })
 export class StepsStore extends VuexModule implements StepsState {
 
-    currentStep: StepInfo | undefined = {
-      stepName: '',
-      stepNumber: '',
-      stepLabel: '',
-      prev: undefined,
-      next: undefined,
-      resolver: undefined,
-      additionalButtons: [],
-      backButtonText: '',
-      continueButtonText:'',
-      altContinueAction: '',
-      continueButtonColor: '',
-      completed: false,
-      completePercentageWeight: 0,
-      stepCompleteOnEnter: undefined,
-      stepCompleteOnLeave: undefined
-    };
+  currentStep: StepInfo | undefined = {
+    stepName: '',
+    stepNumber: '',
+    stepLabel: '',
+    prev: undefined,
+    next: undefined,
+    resolver: undefined,
+    additionalButtons: [],
+    backButtonText: '',
+    continueButtonText:'',
+    altContinueAction: '',
+    continueButtonColor: '',
+    completed: false,
+    completePercentageWeight: 0,
+    stepCompleteOnEnter: undefined,
+    stepCompleteOnLeave: undefined
+  };
     
-    prevStepName = "";
+  prevStepName = "";
 
-    stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
+  stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
 
-    altBackButtonText = "";
-    altAdditionalButtonText = "";
-    additionalButtonId = "";
-    additionalButtonHide = false;
+  altBackButtonText = "";
+  altAdditionalButtonText = "";
+  additionalButtonId = "";
+  additionalButtonHide = false;
 
-    altBackDestination = "";
+  altBackDestination = "";
 
     @Mutation
-    public setEnterStepComplete(stepName: string): void {
-      const step = this.stepMap.get(stepName);
-      if(step && step.stepCompleteOnEnter){
-        const enterStep = this.stepMap.get(step.stepCompleteOnEnter);
-        if(enterStep){
-          enterStep.completed = true;
-          this.stepMap.set(step.stepCompleteOnEnter, enterStep);
-        }
+  public setEnterStepComplete(stepName: string): void {
+    const step = this.stepMap.get(stepName);
+    if(step && step.stepCompleteOnEnter){
+      const enterStep = this.stepMap.get(step.stepCompleteOnEnter);
+      if(enterStep){
+        enterStep.completed = true;
+        this.stepMap.set(step.stepCompleteOnEnter, enterStep);
       }
     }
+  }
 
     @Mutation
     public setLeaveStepComplete(stepName: string): void {
@@ -124,7 +124,7 @@ export class StepsStore extends VuexModule implements StepsState {
     }
 
     @Action
-    public setAdditionalButtonHide(bool: boolean): void {
+    public async setAdditionalButtonHide(bool: boolean): Promise<void> {
       this.doSetAdditioinalButtonHide(bool);
     }
 
@@ -143,7 +143,7 @@ export class StepsStore extends VuexModule implements StepsState {
         this.currentStep.backButtonText = this.altBackButtonText 
           ? this.altBackButtonText 
           : "Back";
-
+        
         if (
           this.currentStep.additionalButtons.length > 0
           && ((this.altAdditionalButtonText && this.additionalButtonId) 
