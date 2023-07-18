@@ -112,26 +112,45 @@
         >
           <MemberCard :id="'MemberName' + index" :member="member" />
 
-          <div v-if="managerCount === 1 && member.role.toLowerCase() === 'manager'">
+          <div v-if="isOwnerOrOnlyManager">
             <v-tooltip left nudge-right="30">
-            <template v-slot:activator="{ on }">
-              <div
-                v-on="on"
-                class="py-1 d-flex"
-                style="width: 105px; letter-spacing: normal; cursor: default;"
-              >
-                <div id="LastManager" class="width-100 text-right pr-4">Manager</div>
-                <div style="width: 24px; height: 20px;"></div>
+              <template v-slot:activator="{ on }">
+                <div
+                  v-on="on"
+                  class="py-1 d-flex"
+                  style="width: 105px; letter-spacing: normal; cursor: default;"
+                >
+                  <div id="LastManagerOrOwner" class="width-100 text-right">
+                    {{ member.role }}
+                  </div>
+                  
+                  <div style="width: 16px; height: 20px;"></div>
+                </div>
+              </template>
+              <div class="_tooltip-content-wrap _left" style="width: 250px;">
+                {{ managerTooltip }}
               </div>
-            </template>
-            <div class="_tooltip-content-wrap _left" style="width: 250px;">
-              <div>
-                You are the only manager of this portfolio. There must be at least
-                one other manager for you to leave this portfolio or change roles.
-              </div>
-            </div>
             </v-tooltip>
-
+          </div>
+          <div v-else-if="member.role.toLowerCase() === 'owner'">
+            <v-tooltip left nudge-right="30">
+              <template v-slot:activator="{ on }">
+                <div
+                  v-on="on"
+                  class="py-1 d-flex"
+                  style="width: 105px; letter-spacing: normal; cursor: default;"
+                >
+                  <div id="LastManager" class="width-100 text-right">Owner</div>
+                  <div style="width: 16px; height: 20px;"></div>
+                </div>
+              </template>
+              <div class="_tooltip-content-wrap _left" style="width: 250px;">
+                <div>
+                  As the owner, you will need to transfer ownership in order to 
+                  leave this portfolio.
+                </div>
+              </div>
+            </v-tooltip>
           </div>
           <div v-else>
             <ATATSelect
@@ -312,6 +331,18 @@ export default class PortfolioDrawer extends Vue {
     }
   }  
 
+  public get managerTooltip(): string {
+    const isMgr = this.currentUserIsManager;
+    const start = isMgr ? "You are" : "This is";
+    const end = isMgr ? "for you to leave this" : "to remove this user from the";
+    return `${start} the only manager of this portfolio. There must be at least
+        one other manager ${end} portfolio or change roles.`;
+  }
+
+  public isOwnerOrOnlyManager(member: User): boolean {
+    return member.role && (this.managerCount === 1 &&  member.role.toLowerCase() === "manager")
+      || member.role?.toLowerCase() === "owner";
+  }
   public get currentUserIsViewer(): boolean {
     return PortfolioStore.currentUserIsViewer;;
   }
@@ -422,8 +453,8 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async loadPortfolio(): Promise<void> {
-    const storeData = await PortfolioStore.currentPortfolio;
- 
+    const storeData = PortfolioStore.currentPortfolio;
+
     if (storeData) {
       this.portfolio = _.cloneDeep(storeData);
       this.csp = storeData.csp?.toLowerCase() as string;      
