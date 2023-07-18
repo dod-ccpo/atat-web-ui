@@ -609,13 +609,11 @@ export class PortfolioDataStore extends VuexModule {
    */
   @Action({rawError: true})
   public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
-    const userSysIds = portfolio.portfolio_owner + "," 
-      + portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
+    const userSysIds = portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
     const allMembersDetailListDTO = await api.userTable.getUsersBySysId(userSysIds);
-    debugger;
+
     const allMembersDetailList: User[] = 
       allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
-        // const isOwner = userSearchDTO.
         return {
           sys_id: userSearchDTO.sys_id,
           firstName: userSearchDTO.first_name,
@@ -630,24 +628,16 @@ export class PortfolioDataStore extends VuexModule {
     portfolio.portfolio_managers_detail = [];
     portfolio.portfolio_viewers_detail = [];
     portfolio.members = [];
-    let portfolioOwner: User = {};
-    let isOwner = false;
     allMembersDetailList.forEach(member => {
-      isOwner = false;
-      if (portfolio.portfolio_owner === member.sys_id) {
-        portfolioOwner = member;
-        portfolioOwner.role = "Owner";
-        isOwner = true;
-      } else if (portfolio.portfolio_managers?.indexOf(member.sys_id as string) !== -1) {
+      if (portfolio.portfolio_managers?.indexOf(member.sys_id as string) !== -1) {
         member.role = "Manager";
         portfolio.portfolio_managers_detail?.push(member);
+        
       } else {
         member.role = "Viewer";
         portfolio.portfolio_viewers_detail?.push(member);
       }
-      if (!isOwner) {
-        portfolio.members?.push(member);
-      }
+      portfolio.members?.push(member);
     })
     portfolio.members?.sort((a, b) => {
       if (a.fullName && b.fullName) {
@@ -656,10 +646,6 @@ export class PortfolioDataStore extends VuexModule {
         return 0;
       }
     });
-
-    // add portfolio owner to front of member list
-    portfolio.members.unshift(portfolioOwner);
-    debugger;
     if (portfolio.createdBy) {
       const createdByUser = await api.userTable.search(portfolio.createdBy);
       this.doSetPortfolioCreator(createdByUser[0]);
