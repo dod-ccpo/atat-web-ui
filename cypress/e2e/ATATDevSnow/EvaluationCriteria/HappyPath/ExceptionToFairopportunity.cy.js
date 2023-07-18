@@ -215,7 +215,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         }
     }
 
-    it("TC1: Prosposed CSP", () => {
+    it("TC1: Proposed CSP", () => {
         if (fairOpp === oneCSP) {
             cy.radioBtn(fo.radioOneCSP, oneCSP).click({
                 force: true
@@ -246,7 +246,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         );
     });
 
-    it("TC2: Cause solesource situation", () => {
+    it("TC2: Cause sole source situation", () => {
         handleTimeCost(addTimeCost, dropDownOption, estDelayVal);
         handleGovEngineer(govEngineer, pName, insuffInput);
         handleSpecificFeatureProduct(
