@@ -44,9 +44,7 @@
             <ATATSVGIcon v-if="cardData.isManager"
               name="manageAccount" width="20" height="17" color="base" class="ml-3"
             />
-          </span>
-
-          <!-- </a> -->
+          </a>
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString">
           <v-chip
@@ -159,7 +157,7 @@
       :index="index"
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
-    /> -->
+    />
 
     <LeavePortfolioModal
       :showModal.sync="showLeavePortfolioModal" 

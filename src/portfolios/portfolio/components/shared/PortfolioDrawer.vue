@@ -324,17 +324,6 @@ export default class PortfolioDrawer extends Vue {
     oracle: { displayName: "Oracle Cloud", svgName: "oracle", height: "19", width: "30" },
   }
 
-  public get cspKey(): string {
-    return this.csp ? this.csp.toLowerCase() : "aws";
-  }
-
-  public cspData = {
-    aws: { displayName: "AWS", svgName: "aws", height: "18", width: "30" },
-    azure: { displayName: "Azure", svgName: "azure", height: "23", width: "30" },
-    gcp: { displayName: "Google Cloud", svgName: "gcp", height: "27", width: "30" },
-    oracle: { displayName: "Oracle Cloud", svgName: "oracle", height: "19", width: "30" },
-  }
-
   public accessRemovedToast: ToastObj = {
     type: "success",
     message: "Access removed",

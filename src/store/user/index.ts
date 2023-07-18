@@ -134,9 +134,6 @@ export class UserStore extends VuexModule {
   public get getCurrentUserPortfolioCount(): number {
     return this.currentUserPortfolioCount;
   }
-  public get getUserHasPortfolios(): boolean {
-    return this.currentUserPortfolioCount > 0;
-  }
 
   public userHasPortfolios = false;
  
