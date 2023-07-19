@@ -455,7 +455,7 @@ export class FinancialDetailsStore extends VuexModule {
   @Action({rawError: true})
   public async deleteAppropriationOfFunds(): Promise<void> {
     const fundingRequest = this.fundingRequest as FundingRequestDTO;
-    if (fundingRequest.sys_id){
+    if (fundingRequest && fundingRequest.sys_id){
       fundingRequest.appropriation_fiscal_year = "";
       fundingRequest.appropriation_funds_type = "";
       fundingRequest.fs_form = typeof this.fundingRequest?.fs_form !== "string" ? 
@@ -656,10 +656,10 @@ export class FinancialDetailsStore extends VuexModule {
           use_g_invoicing: data.use_g_invoicing,
           order_number: isUsingGInvoicing 
             ? getFundingRequestFSForm[0].order_number
-            : "",
+            : data.order_number,
           gt_c_number:  isUsingGInvoicing 
             ? getFundingRequestFSForm[0].gt_c_number
-            : "",
+            : data.gt_c_number
         });
      this.setFundingRequestFSForm(savedFundingRequestFSForm);
      return savedFundingRequestFSForm;

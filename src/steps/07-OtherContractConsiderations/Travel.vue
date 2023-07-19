@@ -247,7 +247,6 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import { Checkbox, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -257,6 +256,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { createPeriodCheckboxItems } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {routeNames} from "@/router/stepper";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {

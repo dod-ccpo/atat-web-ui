@@ -1,8 +1,8 @@
 {
   "fairOpportunity": {
-    "headerText": "Let’s see if you qualify for an exception to the fair opportunity process",
+    "headerText": "Let’s see if you qualify for an exception to fair opportunity",
     "alertHeaderText": "Fair opportunity",
-    "alertMessage": "Each Cloud Service Provider (CSP) available within the JWCC contract must be given a fair opportunity to be considered for task orders exceeding the micro-purchase threshold, unless a statutory exception applies. Any exceptions will require written justification, in accordance with FAR 16.505(b)(2). We will help you complete justification documentation, if needed.",
+    "alertMessage": "Let’s see if you qualify for an exception to fair opportunity",
     "radioGroupLabel": "Based on your market research, do any of the following exceptions to fair opportunity apply to your acquisition?"
   },
   "needEvalPlan": {
@@ -26,7 +26,7 @@
     "headerText": "Based on your evaluation method, there are no required compliance standards, differentiators, or assessment areas.",
     "alertHeader": "Why are there no required standards?",
     "alertIntro": "Since you would like to purchase an equal dollar amount from each CSP, your Contracting Officer (KO) will issue a Request for Quote (RFQ) and ask CSPs to respond if they are “interested” or “not interested.” Task orders will be issued to all interested CSPs.",
-    "alertSubHeader": "Award will be made in equal parts to each CSP that responds to the RFQ as “interested.”"
+    "alertSubHeader": "Award will be made in equal parts to each Contractor that responds to the RFQ as “interested.”"
   },
   "bestUse": {
     "otherAssessRadioLabel": "In addition to the required criteria listed above, what other assessment areas would you like to evaluate?",

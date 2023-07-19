@@ -20,8 +20,9 @@
               :id="csp.value + 'Button'"
               name="cspRadios"
               class="_csp-card d-flex inline pb-6"
+              :class="'_' + csp.value + 'Button'"
               @click="onClick"
-              @blur="onBlur"
+              @blur="onBlur"              
             >
               <template v-slot:label>
                 <div class="_svg-icon-div">

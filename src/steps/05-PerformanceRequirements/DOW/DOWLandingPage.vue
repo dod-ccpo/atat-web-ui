@@ -12,14 +12,6 @@
         </h1>
         <div class="copy-max-width">
           <p class="mb-8"
-           v-if="totalSectionsComplete === 0">
-            Through JWCC, you have the ability to set objective-based requirements, and/or 
-            you can procure specific cloud resources, tools, and support services. We’ll walk 
-            you through each performance area below to gather details for your Description of
-            Work. You’ll have an opportunity to opt out of any areas that don’t apply to your
-            acquisition.
-          </p>
-          <p class="mb-8"
            v-if="displayWarning || (totalSectionsComplete > 0 &&
               totalSectionsComplete < totalSections)">
             We need some more details for this section. You can add info now, or come back to
@@ -33,6 +25,64 @@
             may apply to your project.
           </p>
         </div>
+        <ATATAlert
+            id="DOWSummaryAlert"
+            calloutBackground="primary-lighter"
+            :showIcon="false"
+            class="container-max-width my-10"
+            type="callout"
+            :hasExpandableHeader="true"
+            :expandableHeaderIsOpen="!isOpen"
+        >
+          <template v-slot:content>
+            <ATATExpandableLink
+                :hasUnderline="false"
+                :isCopyMaxWidth="false"
+                :open.sync="isOpen"
+                :hoverableInAlert="true"
+                class="container-max-width"
+                aria-id="ExpandDefiningRequirements">
+
+              <template v-slot:header>
+                <span class="h2">Defining your requirements with JWCC</span>
+              </template>
+              <template
+                  v-slot:content
+              >
+                <p
+                    v-if="currentEnvironmentExists"
+                    class="mb-4"
+                >
+                  JWCC provides flexibility in the way you define your requirements. If you
+                  have an existing environment (on-prem, cloud, or hybrid), you may choose to
+                  either replicate or optimize your current environment and functions using
+                  JWCC services by selecting <strong>“Your Current Functions”</strong> below.
+                </p>
+                <p class="mb-4">
+                  <span v-if="!currentEnvironmentExists">
+                    JWCC provides flexibility in the way you define your requirements.
+                  </span>
+                  You may <span v-if="currentEnvironmentExists">instead </span>choose to define
+                  your requirement by stating it in terms of an objective, use-case, or problem
+                  statement for which the CSPs will propose a solution; do this by selecting
+                  <strong>“Architectural Design Solution”</strong> below.
+                </p>
+                <p class="mb-4">
+                  For those more versed in cloud technology or have known specific
+                  requirements, you may define your needs by identifying the specific cloud
+                  resources and/or tools that you require by choosing <strong>“Anything as a
+                  Service (XaaS)”</strong> below.
+                </p>
+                <p :class="{ 'mb-4': !isOpen }">
+                  In addition to the above, you have the ability to add <strong>Cloud Support
+                  Packages</strong><span v-if="currentEnvironmentExists"> to any of the performance
+                  areas selected</span>. This is optional and ancillary to your selected
+                  performance areas.
+                </p>
+              </template>
+            </ATATExpandableLink>
+          </template>
+        </ATATAlert>
         <h2>
           Add requirements for each performance area
         </h2>
@@ -47,7 +97,8 @@
               class="d-inline-flex mr-1"
               />starred
           </strong>
-          areas.
+          areas below to include in your Description of Work. It is uncommon to select more than
+          one. You may opt out of any areas that don't apply.
         </p>
         <div v-if="displayWarning" class="mb-4">
           <ATATAlert
@@ -79,13 +130,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import {ClassificationLevelDTO} from "@/api/models";
 import classificationRequirements from "@/store/classificationRequirements";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { DOWCardData } from "types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -96,6 +148,7 @@ import {buildClassificationLabel} from "@/helpers";
 @Component({
   components: {
     ATATAlert,
+    ATATExpandableLink,
     ATATSVGIcon,
     DOWCard,
   }
@@ -105,6 +158,13 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
   displayWarning = false;
   totalSections = 3;
   totalSectionsComplete = 0;
+  currentEnvironmentExists = this.doesCurrentEnvironmentExist();
+  isOpen = DescriptionOfWork.isDOWSummaryAlertOpen;
+
+  @Watch('isOpen')
+  public isOpenChanged(newVal: boolean): void {
+    DescriptionOfWork.setIsDOWSummaryAlertOpen(newVal);
+  }
 
   public requirementSections: DOWCardData[] = [
     {
@@ -282,6 +342,11 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
     if (DescriptionOfWork.hasCloudService || DescriptionOfWork.cloudNoneSelected) {
       this.totalSectionsComplete = this.totalSectionsComplete + 1;
     }
+  }
+
+  public doesCurrentEnvironmentExist(): boolean {
+    return (CurrentEnvironment.currentEnvironment
+      ? CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" : false)
   }
 
   public async mounted(): Promise<void> {

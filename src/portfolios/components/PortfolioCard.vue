@@ -41,12 +41,12 @@
             @click="cardMenuClick(portfolioCardMenuItems[0])"
           > 
             {{ cardData.title }}
-            <ATATSVGIcon v-if="cardData.isManager"
+            <ATATSVGIcon v-if="cardData.isOwner || cardData.isManager"
               name="manageAccount" width="20" height="17" color="base" class="ml-3"
             />
           </a>
         </div>
-        <div v-if="!isActive || cardData.fundingAlertChipString">
+        <div v-if="!isActive || cardData.fundingAlertChipString" class="ml-5">
           <v-chip
             :id="'StatusChip' + index" 
             :class="statusChipBgColor" 

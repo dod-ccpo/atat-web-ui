@@ -2,7 +2,7 @@
   <div class="_portfolio-drawer">
     <div id="AboutPortfolioSection" class="_portfolio-panel _panel-padding pb-8">
       <div>
-        <div class="mx-n3 mt-n4">
+        <div class="mx-n3 mt-n4" v-if="showDescription">
           <v-textarea
             id="DrawerTextArea"
             v-model="portfolio.description"
@@ -14,6 +14,8 @@
             placeholder="Add a description"
             rows="1"
             @blur="saveDescription"
+            :readonly="currentUserIsViewer"
+            :disabled="currentUserIsViewer"
           />
         </div>
 
@@ -53,10 +55,13 @@
       </div>
     </div>
 
-    <hr class="my-0" />
-
-    <!-- ATAT TODO - restore in future ticket
-    <div id="PortfolioMembersSection" class="_portfolio-panel _panel-padding pb-8">
+    <hr class="my-0" v-if="!isProdEnv" />
+    
+    <div 
+      id="PortfolioMembersSection" 
+      v-if="!isProdEnv" 
+      class="_portfolio-panel _panel-padding pb-8"
+    >
       <div
         id="PortfolioMembersHeader"
         class="d-flex flex-columm justify-space-between"
@@ -150,7 +155,6 @@
     </div>
     
     <hr class="my-0" />
-    -->
 
     <div id="EnvironmentsSection" class="_portfolio-panel _panel-padding pb-4">
       <div id="EnvironmentsTitle" class="d-flex">
@@ -210,7 +214,7 @@
 
     <InviteMembersModal
         :showModal.sync="showMembersModal"
-        @members-invited="membersInvited"
+        @membersInvited="membersInvited"
     />
 
     <ATATDialog
@@ -269,7 +273,7 @@ import {
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import {createDateStr, getStatusChipBgColor, hasChanges} from "@/helpers";
-import { Statuses } from "@/store/acquisitionPackage";
+import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
 import { EnvironmentDTO, UserDTO } from "@/api/models";
@@ -287,26 +291,42 @@ import AppSections from "@/store/appSections";
 })
 
 export default class PortfolioDrawer extends Vue {
-
   public portfolio: Portfolio = {};
   public portfolioStatus = "";
   public updateTime = "";
   public csp = "";
   
-  public currentUserIsManager = true; // ATAT TODO - get if manager from roles
-
+  public currentUserIsManager = false; 
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
   public portfolioCreator = PortfolioStore.portfolioCreator;
 
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
+  }
+
   public get currentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
   }
   @Watch("currentUser")
-  public currentUserChange(): void {
-    // ATAT TODO - get if current user is manager -- set this.currentUserIsManager
+  public currentUserChange(newVal: UserDTO): void {
+    const currentUserSysId = newVal.sys_id;
+    const currentUserMember = this.portfolioMembers.find(obj => obj.sys_id === currentUserSysId);
+    if (currentUserMember && currentUserMember.role === "Manager") {
+      this.currentUserIsManager = true;
+    }
   }  
+
+  public get currentUserIsViewer(): boolean {
+    return PortfolioStore.currentUserIsViewer;;
+  }
+
+  public get showDescription(): boolean {
+    const descr = this.portfolio.description;
+    return !this.currentUserIsViewer || 
+      this.currentUserIsViewer && descr !== undefined && descr.length > 0;
+  }
 
   public get cspKey(): string {
     return this.csp ? this.csp.toLowerCase() : "aws";
@@ -322,6 +342,14 @@ export default class PortfolioDrawer extends Vue {
   public accessRemovedToast: ToastObj = {
     type: "success",
     message: "Access removed",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  };
+
+  public membersInvitedToast: ToastObj = {
+    type: "success",
+    message: "Members invited",
     isOpen: true,
     hasUndo: false,
     hasIcon: true,
@@ -405,6 +433,7 @@ export default class PortfolioDrawer extends Vue {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
       this.portfolioMembers = storeData.members || [];
+      
       if (storeData.status) {
         const statusKey = this.getStatusKey(storeData.status);
         this.portfolioStatus = storeData.status 
@@ -421,6 +450,7 @@ export default class PortfolioDrawer extends Vue {
   public async membersInvited(): Promise<void> {
     // update "Portfolio members" in side panel when invited from modal
     await this.loadPortfolio();
+    Toast.setToast(this.membersInvitedToast);
   }
 
   public displayName(member: User): string {
@@ -491,7 +521,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public get managerCount(): number {
-    const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager")
+    const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager");
     return managers.length;
   }
 

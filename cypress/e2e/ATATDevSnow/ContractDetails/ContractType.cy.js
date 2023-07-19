@@ -29,11 +29,11 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
         
     const expectedRecuringReqText = "Firm-fixed-price (FFP) is the standard contract type for" +
       " JWCC task orders. For JWCC, consumption-based line items are considered FFP." +
-      " You must provide justification for a time-and-material (T&M) or hybrid contract," +
+      " You must provide justification for a time-and-materials (T&M) or hybrid contract," +
       " in accordance with FAR 12.207. If you are considering a T&M contract," +
       " we suggest contacting your Contracting Office for further guidance."
     cy.verifyTextMatches(contractDetails.introPText,expectedRecuringReqText);    
-    cy.textExists(contractDetails.farLink, "FAR 12.207.");
+    cy.textExists(contractDetails.farLink, "FAR 12.207");
     cy.textExists(contractDetails.selectMessageText,
       "Select all that apply to your contracting effort.")
     //assert checkbox options
@@ -85,7 +85,7 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
       return cy.findElement("#JustificationEntry").should("be.visible"); 
     })
     const expectedLabels = ["Firm-fixed-price (FFP) RecommendedStandard contract type",
-      "Time-and-material (T&M) A justification is required for any contract line" +
+      "Time-and-materials (T&M) A justification is required for any contract line" +
       " item other than travel."      
     ]
     cy.verifyCheckBoxLabels(contractDetails.selectedContractTypeOption,expectedLabels);    

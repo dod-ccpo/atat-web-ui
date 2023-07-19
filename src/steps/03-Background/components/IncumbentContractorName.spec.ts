@@ -2,41 +2,40 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import Vuetify from "vuetify";
 import {DefaultProps} from "vue/types/options";
 import Vue from "vue";
-import validators from "@/plugins/validation";
-import ATATTextField from "@/components/ATATTextField.vue";
 import IncumbentContractorName from "@/steps/03-Background/components/IncumbentContractorName.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
 
-describe("Testing index Component", () => {
+describe("Testing IncumbentContractorName Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue>;
-  localVue.use(validators);
 
   beforeEach(() => {
-    // test
     vuetify = new Vuetify();
     wrapper = mount(IncumbentContractorName, {
       localVue,
       vuetify,
     });
   });
-  afterEach(() => {
-    jest.clearAllMocks();
+
+  describe("renders successfully in", () => {
+    const id = "testIncumbentContractorName";
+    beforeEach(() => {
+      wrapper.setProps({
+        id
+      })
+    });
+
+    it("review mode", async () => {
+      await wrapper.setData({isForm: false})
+      expect(wrapper.html()).toContain(id);
+    });
+
+    it("form mode", async () => {
+      await wrapper.setData({isForm: true})
+      const textField = wrapper.findComponent(ATATTextField);
+      expect(wrapper.findComponent(ATATTextField).exists());
+      expect(textField.attributes("id")).toContain(id);
+    });
   })
-
-  it("renders successfully", async () => {
-    expect(wrapper.exists()).toBe(true);
-  });
-
-  it("should work in a form input mode", async () => {
-    await wrapper.setData({isForm: true})
-    expect(wrapper.findComponent(ATATTextField).element).toBeInTheDOM();
-    expect(wrapper.find('dl').element).not.toBeInTheDOM();
-  });
-
-  it("should work in a review mode", async () => {
-    await wrapper.setData({isForm: false})
-    expect(wrapper.findComponent(ATATTextField).element).not.toBeInTheDOM();
-    expect(wrapper.find('dl').element).toBeInTheDOM();
-  });
 });

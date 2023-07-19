@@ -1,28 +1,33 @@
 <template>
-  <v-app-bar
-    id="PageHeader"
-    app
-    flat
-    class="_atat-page-header _portfolio-summary"
-    clipped-right
-    height="83"
-  >
-    <div class=" d-flex justify-space-between width-100 align-center">
+  <div>
+    <div id="AutoInputWidth" ref="autoInputWidth" class="_auto-input-width _portfolio-title">
+      {{ _title }}
+    </div>
 
+    <v-app-bar
+      id="PageHeader"
+      app
+      flat
+      class="_atat-page-header _portfolio-summary"
+      clipped-right
+      height="83"
+    > 
+      <div class=" d-flex justify-space-between width-100 align-center">       
         <div id="NameHeader" tabindex="-1" class="mt-1">
           <v-text-field
-            id="HeaderTextField"
+            id="PortfolioTitleInput"
             dense
-            placeholder="Portfolio Title"
-            class=" h2 _headerTextField my-1"
+            placeholder="Portfolio title"
+            class="h2 _portfolio-title-input my-1"
             hide-details
             autocomplete="off"
             v-model="_title"
-            @blur="saveTitle()"
-            style="min-width:500px;"
-          >
-          </v-text-field>
-
+            @blur="titleBlurred()"
+            @focus="setTitleBeforeEdit"
+            maxlength="60"
+            :readonly="titleIsReadOnly"
+            :disabled="titleIsReadOnly"
+          />
         <div>
           <v-tabs 
             class="_header-tab "
@@ -130,6 +135,7 @@
       </div>
     </div>
   </v-app-bar>
+  </div>
 </template>
 
 <script lang="ts">
@@ -146,7 +152,7 @@ import PortfolioStore from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { SlideoutPanelContent } from "../../../../../types/Global";
-import {getIdText, hasChanges} from "@/helpers";
+import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
@@ -164,6 +170,15 @@ export default class PortfolioSummaryPageHead extends Vue {
   @Prop({ default: [""], required: true }) private items!: string[];
   @PropSync("value") private _selectedTab!: number ;
   @PropSync("title") private _title!: string;
+
+  public get titleIsReadOnly(): boolean {
+    return PortfolioStore.currentUserIsViewer;;
+  }
+
+  public titleBeforeEdit = "";
+  public setTitleBeforeEdit(): void {
+    this.titleBeforeEdit = this._title;
+  }
 
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
@@ -187,9 +202,14 @@ export default class PortfolioSummaryPageHead extends Vue {
   public async tabClicked(index: number): Promise<void> {
     await AppSections.setActiveTabIndex(index);
   }
-  public saveTitle(): void {
-    if(hasChanges(PortfolioStore.currentPortfolio.title, this._title)) {
+  public titleBlurred(): void {
+    if (this._title !== this.titleBeforeEdit && this._title.length > 0) {
       PortfolioStore.updatePortfolioTitle(this._title);
+    } else {
+      this._title = this.titleBeforeEdit;
+      this.$nextTick(() => {
+        this.setInputWidth();
+      })
     }
   }
   
@@ -211,15 +231,15 @@ export default class PortfolioSummaryPageHead extends Vue {
         this.showDrawer = true;
         SlideoutPanel.openSlideoutPanel(opener.id);
       }
-    } else {
+    } else { 
       this.showDrawer = false
       SlideoutPanel.closeSlideoutPanel()
     }
   }
+
   public moveToInput(): void {
-    const input = document.getElementById('HeaderTextField');
-    if(input){
-      input.focus()
+    if (this.titleInput){
+      this.titleInput.focus()
     }
   }
 
@@ -227,7 +247,53 @@ export default class PortfolioSummaryPageHead extends Vue {
     return getIdText(string);
   }
 
+  get autoInputWidth(): HTMLElement {
+    return this.$refs.autoInputWidth as HTMLElement;
+  }
+
+  public addInputEventListeners(vm: unknown, input: HTMLInputElement): void {
+    input.addEventListener("input", () => {
+      this.setInputWidth();
+    });
+  }
+
+  /**
+   * AutoInputWidth notes: 
+   * Auto-grows and -shrinks input width as user types. Event listener addInputEventListeners
+   * calls this method on each keystroke on the Portfolio Title input. There is a div
+   * with id "AutoInputWidth" that is set to the same font size/weight with the html
+   * of this._title - the div is abs positioned off-screen, and the width grows/shrinks as 
+   * this._title is edited bc display inline-block. The width of this div is then set on
+   * the input, and the vuetify input wrapper.
+   */
+  public setInputWidth() {
+    this.autoInputWidth.innerHTML = this.titleInput.value;
+    const w = this.autoInputWidth.offsetWidth > 130 
+      ? this.autoInputWidth.offsetWidth : 130;
+    const inputWidth = w + "px";
+    const wrapperWidth = (w + 20) + "px"
+    this.titleInput.style.width = inputWidth;
+    this.titleInput.style.minWidth = inputWidth;
+    this.titleInputWrap.style.width = wrapperWidth;
+    this.titleInputWrap.style.minWidth = wrapperWidth;
+  }
+
+  public get titleInput(): HTMLInputElement {
+    return document.getElementById("PortfolioTitleInput") as HTMLInputElement;
+  }
+  public get titleInputWrap(): HTMLElement {
+    const collection = document.getElementsByClassName("_portfolio-title-input");
+    return collection[0] as HTMLElement;
+  }
+
   public async mounted(): Promise<void> {
+    if (this.titleInput) {
+      this.$nextTick(() => {
+        this.setInputWidth();
+        this.addInputEventListeners(this, this.titleInput);
+      })
+    }
+  
     const slideoutPanelContent: SlideoutPanelContent = {
       component: PortfolioDrawer,
     }
