@@ -56,8 +56,8 @@
                             Available Funds
                           </p>
                           <p class="mb-0 font-size-14">
-                            Your remaining portfolio balance from all of your
-                            active task orders
+                            Your remaining portfolio balance from all exercised contract line item
+                            numbers (CLINs) since the start of your current task order
                           </p>
                         </div>
                       </v-col>
@@ -69,7 +69,7 @@
                           {{ getCurrencyString(totalPortfolioFunds) }}
                         </span>
                         <p class="text-base-dark mb-0 font-size-14">
-                          Total value of your active task orders
+                          Total value of all exercised CLINs
                         </p>
                         <v-divider class="my-4" />
                         <p class="text-base-darkest mb-0 font-size-14">
@@ -409,10 +409,9 @@
                   <v-card class="_no-shadow v-sheet--outlined pa-8 pb-2">
                     <h3>Breakdown of Actual and Estimated Spend</h3>
                     <p class="font-size-14">
-                      The chart below shows the proportion of funds spent and
-                      funds estimated to be invoiced compared to the total funds
-                      available in this portfolio. The data includes money spent
-                      on all active task orders during this PoP.
+                      The chart below shows the proportion of funds spent and funds estimated to be
+                      invoiced compared to the total funds available in this portfolio. The data
+                      includes money spent on all exercised CLINs during this PoP.
                     </p>
                     <funding-alert
                       :fundingAlertType="fundingAlertType"
@@ -1845,8 +1844,8 @@ export default class PortfolioDashboard extends Vue {
     return SlideoutPanel.slideoutPanelComponent;
   }
 
-  public spendingTooltipText = `This is the total value of all active task
-    orders funding this portfolio`;
+  public spendingTooltipText = `This is the total value of all exercised CLINs funding this
+    portfolio.`;
 
   public periodToDateTooltipText = `This is the total spend from the start of
     the current PoP through last month. It does not include
