@@ -188,7 +188,6 @@ import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 import { getIdText, toTitleCase } from "@/helpers";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import { api, AttachmentTables } from "@/api";
 // import router from "@/router";
 
 @Component({
