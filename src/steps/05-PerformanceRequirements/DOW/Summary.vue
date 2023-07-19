@@ -188,6 +188,7 @@ import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 import { getIdText, toTitleCase } from "@/helpers";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import { api, AttachmentTables } from "@/api";
 // import router from "@/router";
 
 @Component({
@@ -213,6 +214,8 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public introText = "";
   public showAnticipatedUserAndDataNeeds = false;
   public isXaaS = false;
+  public hasSecret = false
+  public hasTopSecret = false
 
   public alternateGroupNames = [
     {
@@ -367,14 +370,54 @@ export default class Summary extends Mixins(SaveOnLeave) {
         (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
         (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {
         outputArr.push(id);
-      } else if (obj.otherOfferingData && obj.otherOfferingData.length >0){
-        const isIncomplete = obj.otherOfferingData.some(
-          ood => !ood.isComplete
-        )
-        if (isIncomplete){
-          outputArr.push(id);
-        }
-      } else {
+      }
+      else if (obj.otherOfferingData && obj.otherOfferingData.length >0){
+        obj.otherOfferingData.forEach(offering=>{
+          if(id !== "PORTABILITY_PLAN"){
+            if(offering.classificationLevel === ""){
+              outputArr.push(id);
+            }
+            else if(offering.descriptionOfNeed === ""){
+              outputArr.push(id)
+            }else if(offering.entireDuration === ""
+              || offering.entireDuration === 'NO' && !offering.periodsNeeded?.length){
+              outputArr.push(id)
+            }else if(id !== "TRAINING" && offering.personnelOnsiteAccess === ""){
+              outputArr.push(id)
+            }
+            if(id=== "HELP_DESK_SERVICES" || id=== "GENERAL_CLOUD_SUPPORT"){
+              if(this.hasSecret || this.hasTopSecret){
+                if(offering.classifiedInformationTypes === ""){
+                  outputArr.push(id)
+                }
+              }
+            }if(id=== "TRAINING"){
+              if(this.hasSecret || this.hasTopSecret){
+                if(offering.classifiedInformationTypes === ""){
+                  outputArr.push(id)
+                }
+              }
+              else if(offering.trainingRequirementTitle === ""){
+                outputArr.push(id)
+              }else if(offering.trainingFacilityType === ""){
+                outputArr.push(id)
+              }else if(offering.trainingType === ""){
+                outputArr.push(id)
+              }else if(offering.trainingLocation === ""){
+                outputArr.push(id)
+              }else if(offering.trainingPersonnel === ""){
+                outputArr.push(id)
+              }
+            }
+          }else{
+            if(offering.classificationLevel === ""){
+              outputArr.push(id);
+            }
+          }
+        })
+      }
+      else {
+
         obj.serviceOfferings.forEach((offering)=>{
           if(offering.classificationInstances && offering.classificationInstances.length === 0) {
             if(outputArr.indexOf(id) < 0){
@@ -396,6 +439,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
         });
       }
     });
+
     this.serviceGroupsMissingData = outputArr;
   };
 
@@ -427,6 +471,14 @@ export default class Summary extends Mixins(SaveOnLeave) {
       this.showAlert = true;
       this.isClassificationDataMissing = true;
     };
+    classifications.forEach((classification) =>{
+      if(classification.classification === "TS"){
+        this.hasTopSecret = true
+      }
+      if(classification.classification === "S"){
+        this.hasSecret = true
+      }
+    })
 
     let selectedOfferingGroups: string[] = _.clone(DescriptionOfWork.selectedServiceOfferingGroups);
     const sectionServices = this.isXaaS 
