@@ -446,8 +446,8 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
         this.savedData = _.cloneDeep(instanceStoreData);
 
         this.selectedDeployedRegionsOnLoad = typeof this.instanceData.deployed_regions === "string"
-            ? this.instanceData.deployed_regions?.split(',')
-            : this.instanceData.deployed_regions as string[];
+          ? this.instanceData.deployed_regions?.split(',')
+          : this.instanceData.deployed_regions as string[];
 
         this.regionUsersOnLoad = this.instanceData.users_per_region;
         if (this.instanceData.is_traffic_spike_event_based === "YES") {
