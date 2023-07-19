@@ -156,5 +156,4 @@ describe("Testing CurrentEnvironment Component", () => {
     expect(selectedImpactLevels).toStrictEqual(["1"]);
   });
 
-
 })
