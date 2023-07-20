@@ -112,7 +112,9 @@
         >
           <MemberCard :id="'MemberName' + index" :member="member" />
 
-          <div v-if="isOwnerOrOnlyManager">
+          <!-- NOT DROPDOWN - for owners and for manager if only one manager in portfolio -->
+          <div v-if="(member.role === 'Manager' && onlyOneManager) || member.role === 'Owner'">
+
             <v-tooltip left nudge-right="30">
               <template v-slot:activator="{ on }">
                 <div
@@ -128,30 +130,12 @@
                 </div>
               </template>
               <div class="_tooltip-content-wrap _left" style="width: 250px;">
-                {{ managerTooltip }}
+                {{ ownerOrOnlyManagerTooltip(member) }}
               </div>
             </v-tooltip>
           </div>
-          <div v-else-if="member.role.toLowerCase() === 'owner'">
-            <v-tooltip left nudge-right="30">
-              <template v-slot:activator="{ on }">
-                <div
-                  v-on="on"
-                  class="py-1 d-flex"
-                  style="width: 105px; letter-spacing: normal; cursor: default;"
-                >
-                  <div id="LastManager" class="width-100 text-right">Owner</div>
-                  <div style="width: 16px; height: 20px;"></div>
-                </div>
-              </template>
-              <div class="_tooltip-content-wrap _left" style="width: 250px;">
-                <div>
-                  As the owner, you will need to transfer ownership in order to 
-                  leave this portfolio.
-                </div>
-              </div>
-            </v-tooltip>
-          </div>
+
+          <!-- MEMBER DROPDOWN - for viewers and managers if > 1 manager in portfolio -->
           <div v-else>
             <ATATSelect
               :id="'Role' + index"
@@ -255,6 +239,30 @@
       </template>
     </ATATDialog>
 
+
+    <!-- <ATATDialog
+      id="ManagerDowngradeModal"
+      :showDialog="showDeleteMemberDialog"
+      :title="'Remove ' + deleteMemberName + ' from portfolio?'" 
+      no-click-animation
+      okText="Remove member"
+      width="450"
+      @ok="deleteMember"
+      @cancelClicked="cancelDeleteMember"
+    >    
+      <template #content>
+        <p class="body">
+          {{ deleteMemberName }} will be removed from your portfolio members list. 
+          This individual will no longer have access to view portfolio details or 
+          track funds spent. 
+        </p>
+        <p class="body">
+          NOTE: A portfolio manager can restore their access to this portfolio 
+          at any time.
+        </p>
+      </template>
+    </ATATDialog> -->
+
   </div>
 </template>
 
@@ -319,6 +327,10 @@ export default class PortfolioDrawer extends Vue {
   public deleteMemberIndex = -1;
   public portfolioCreator = PortfolioStore.portfolioCreator;
 
+  public get onlyOneManager(): boolean{
+    return this.managerCount === 1;
+  }
+
   public get currentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
   }
@@ -331,20 +343,25 @@ export default class PortfolioDrawer extends Vue {
     }
   }  
 
-  public get managerTooltip(): string {
-    const isMgr = this.currentUserIsManager;
-    const start = isMgr ? "You are" : "This is";
-    const end = isMgr ? "for you to leave this" : "to remove this user from the";
-    return `${start} the only manager of this portfolio. There must be at least
-        one other manager ${end} portfolio or change roles.`;
+  public ownerOrOnlyManagerTooltip(member: User): string {
+    if (member.role === "Manager") {
+      const isMgr = this.currentUserIsManager;
+      const start = isMgr ? "You are" : "This is";
+      const end = isMgr ? "for you to leave this" : "to remove this user from the";
+      return `${start} the only manager of this portfolio. There must be at least
+          one other manager ${end} portfolio or change roles.`;
+    }
+    return `As the owner, you will need to transfer ownership in order to leave this portfolio.`;
+
   }
 
-  public isOwnerOrOnlyManager(member: User): boolean {
-    return member.role && (this.managerCount === 1 &&  member.role.toLowerCase() === "manager")
-      || member.role?.toLowerCase() === "owner";
+  public async memberIsOwnerOrOnlyManager(member: User): Promise<boolean> {
+    if (member.role === "Viewer") return false;
+    return member.role && (this.managerCount === 1 && member.role === "manager")
+      || member.role === "owner";
   }
   public get currentUserIsViewer(): boolean {
-    return PortfolioStore.currentUserIsViewer;;
+    return PortfolioStore.currentUserIsViewer;
   }
 
   public get showDescription(): boolean {
@@ -386,8 +403,11 @@ export default class PortfolioDrawer extends Vue {
     { text: "Viewer", value: "Viewer" },
     { divider: true },
     { text: "Remove from portfolio", value: "Remove", isSelectable: false },
-    { text: "About Roles", value: "AboutRoles", isSelectable: false },
+    { text: "About roles", value: "AboutRoles", isSelectable: false },
   ];
+  public ownerMenuItems: SelectData[] = [
+    { text: "Transfer ownership", value: "XferOwner", isSelectable: false },
+  ]
 
   public statusImg = {
     [Statuses.ProvisioningIssue.value]: {
@@ -427,6 +447,11 @@ export default class PortfolioDrawer extends Vue {
       const removeIndex = menuItems.findIndex((obj) => obj.value === "Remove");
       menuItems[removeIndex].text = "Leave this portfolio";
     }
+
+    if (this.currentUserIsOwner) {
+      menuItems.push(...this.ownerMenuItems);
+    }
+
     return menuItems;
   }
 
@@ -453,15 +478,15 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async loadPortfolio(): Promise<void> {
-    const storeData = PortfolioStore.currentPortfolio;
+    const storeData = _.cloneDeep(PortfolioStore.currentPortfolio);
 
     if (storeData) {
-      this.portfolio = _.cloneDeep(storeData);
+      this.portfolio = storeData;
       this.csp = storeData.csp?.toLowerCase() as string;      
       if (storeData.lastUpdated) {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
-      this.portfolioMembers = storeData.members || [];
+      this.portfolioMembers = _.cloneDeep(storeData.members) || [];
 
       const managers = this.portfolioMembers?.filter(m => m.role === "Manager");
       if (managers) {
@@ -565,26 +590,42 @@ export default class PortfolioDrawer extends Vue {
   }
 
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
-    if (this.portfolio && this.portfolio.members ) {
+    const storeData = await PortfolioStore.getPortfolioData();
+    debugger;
+    if (this.portfolio && this.portfolio.members && storeData.members) {
+
       const memberMenuItems = ["Manager", "Viewer"]
       if (memberMenuItems.indexOf(val) > -1) {
+        // if current user is downgrading from Manager to Viewer, show confirm modal
+        const member = storeData.members[index];
+        if (val === "Viewer" && member.role === "Manager") {
+          debugger;
+        }
+
         this.portfolio.members[index].role = val;
+
+        // EJY need to make API call to change roles       
         PortfolioStore.setPortfolioData(this.portfolio);
       } else {
         // reset role back to saved value in store
-        const storeData = await PortfolioStore.getPortfolioData();
+
         this.portfolioMembers[index].role = storeData.members?.[index].role;
         if (val === "Remove" && this.portfolio.members && this.portfolio.members.length > 1) {
           this.deleteMemberName = this.displayName(this.portfolioMembers[index]);
           this.deleteMemberIndex = index;
           this.showDeleteMemberDialog = true;
         } else if (val === "AboutRoles") {
-          const panelContent: SlideoutPanelContent = {
-            component: PortfolioRolesLearnMore,
-            title: "Learn More",
-          }
-          SlideoutPanel.setSlideoutPanelComponent(panelContent);
+          this.$nextTick(() => {
+            const panelContent: SlideoutPanelContent = {
+              component: PortfolioRolesLearnMore,
+              title: "Learn More",
+            }
+            SlideoutPanel.setSlideoutPanelComponent(panelContent);
+          })
+        } else if (val === "XferOwner") {
+          // work to be completed in AT-9328 SPRINT 62
         }
+
       }
     }
   }
