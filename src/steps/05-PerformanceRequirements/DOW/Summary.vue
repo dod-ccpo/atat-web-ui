@@ -359,88 +359,78 @@ export default class Summary extends Mixins(SaveOnLeave) {
     return serviceArr.join();
   };
 
-  public setSelectedGroupsMissingData(value: DOWServiceOfferingGroup[]): void {
+  public setSelectedGroupsMissingData(dowObjects: DOWServiceOfferingGroup[]): void {
     //eslint-disable-next-line prefer-const
-    let outputArr :string[] = [];
-    value.forEach((obj)=>{
-      //eslint-disable-next-line prefer-const
-      let id = obj.serviceOfferingGroupId;
-      if (this.isClassificationDataMissing || 
-        (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
-        (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {
-        outputArr.push(id);
-      }
-      else if (obj.otherOfferingData && obj.otherOfferingData.length >0){
-        obj.otherOfferingData.forEach(offering=>{
-          if(id !== "PORTABILITY_PLAN"){
-            if(offering.classificationLevel === ""){
-              outputArr.push(id);
-            }
-            else if(offering.descriptionOfNeed === ""){
-              outputArr.push(id)
-            }else if(offering.entireDuration === ""
-              || offering.entireDuration === 'NO' && !offering.periodsNeeded?.length){
-              outputArr.push(id)
-            }else if(id !== "TRAINING" && offering.personnelOnsiteAccess === ""){
-              outputArr.push(id)
-            }
-            if(id=== "HELP_DESK_SERVICES" || id=== "GENERAL_CLOUD_SUPPORT"){
-              if(this.hasSecret || this.hasTopSecret){
-                if(offering.classifiedInformationTypes === ""){
-                  outputArr.push(id)
-                }
-              }
-            }if(id=== "TRAINING"){
-              if(this.hasSecret || this.hasTopSecret){
-                if(offering.classifiedInformationTypes === ""){
-                  outputArr.push(id)
-                }
-              }
-              else if(offering.trainingRequirementTitle === ""){
-                outputArr.push(id)
-              }else if(offering.trainingFacilityType === ""){
-                outputArr.push(id)
-              }else if(offering.trainingType === ""){
-                outputArr.push(id)
-              }else if(offering.trainingLocation === ""){
-                outputArr.push(id)
-              }else if(offering.trainingPersonnel === ""){
-                outputArr.push(id)
-              }
-            }
-          }else{
-            if(offering.classificationLevel === ""){
-              outputArr.push(id);
-            }
+    let incompleteOfferings = [""];
+    dowObjects.forEach(dow=>{
+      let requiredFields = [""];
+      const id = dow.serviceOfferingGroupId;
+      const isPortabilityPlan = id === "portability_plan";
+      const isTraining = id === "training";
+     
+      dow.otherOfferingData?.forEach(otherOffering =>{
+        const data: Record<string, any> = _.clone(otherOffering);
+        if (isTraining){
+          const commonFields = [
+            "trainingRequirementTitle",
+            "trainingType",
+            "trainingPersonnel",
+            "entireDuration",
+            "anticipatedNeedUsage",
+            "periodsNeeded",
+            "classificationLevel"
+          ]
+
+          let additionalFields:string[] = [];
+          switch(data.trainingType?.toUpperCase()){
+          case "ONSITE_INSTRUCTOR_CONUS":
+            additionalFields = ["trainingFacilityType","trainingLocation"];
+            break;
+          case "ONSITE_INSTRUCTOR_OCONUS":
+            additionalFields = ["trainingLocation"];
+            break;
+          case "VIRTUAL_INSTRUCTOR":
+            additionalFields = ["trainingTimeZone"];
+            break;
+          default:
+            break;
           }
+          requiredFields = commonFields.concat(additionalFields);
+    
+        } else if (isPortabilityPlan) {
+          requiredFields = [
+            "classificationLevel"
+          ]
+        } else {
+          requiredFields = [
+            "statementOfObjectives",
+            "personnelOnsiteAccess",
+            "entireDuration",
+            "periodsNeeded",
+            "classificationLevel"
+          ]
+        }
+        
+        const isValid = requiredFields.every(f => {
+          return f === "periodsNeeded"
+            ? this.isPeriodsNeededValid(dow)
+            : data[f] !== ""
         })
-      }
-      else {
+        if (!isValid && !incompleteOfferings.includes(id)){
+          incompleteOfferings.push(id)
+        }
 
-        obj.serviceOfferings.forEach((offering)=>{
-          if(offering.classificationInstances && offering.classificationInstances.length === 0) {
-            if(outputArr.indexOf(id) < 0){
-              outputArr.push(id);
-            };
-          } else {
-            offering.classificationInstances?.forEach((instance)=>{
-              if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
-                if(outputArr.indexOf(id) < 0){
-                  outputArr.push(id);
-                };
-              } else if (instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
-                if(outputArr.indexOf(id) < 0){
-                  outputArr.push(id);
-                }
-              };
-            });
-          }
-        });
-      }
-    });
-
-    this.serviceGroupsMissingData = outputArr;
+      })
+    })
+    console.log(incompleteOfferings);
+    this.serviceGroupsMissingData = incompleteOfferings;
   };
+
+  public isPeriodsNeededValid(instanceData: Record<string, any>): boolean {
+    return instanceData["entireDuration"] === "NO"
+      ? instanceData.periodsNeeded.length > 0
+      : true
+  }
 
   public missingData(value: string): boolean {
     return this.serviceGroupsMissingData.includes(value) ? true : false;
