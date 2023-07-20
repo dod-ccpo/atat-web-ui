@@ -294,6 +294,7 @@ export default class PortfolioDrawer extends Vue {
   public csp = "";
   
   public currentUserIsManager = false; 
+  public currentUserIsOwner = false;
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
@@ -426,7 +427,13 @@ export default class PortfolioDrawer extends Vue {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
       this.portfolioMembers = storeData.members || [];
-      
+
+      const managers = this.portfolioMembers?.filter(m => m.role === "Manager");
+      if (managers) {
+        this.currentUserIsManager = managers.some(m => m.sys_id === this.currentUser.sys_id);
+      }
+      this.currentUserIsOwner = storeData.portfolio_owner === this.currentUser.sys_id;
+
       if (storeData.status) {
         const statusKey = this.getStatusKey(storeData.status);
         this.portfolioStatus = storeData.status 
