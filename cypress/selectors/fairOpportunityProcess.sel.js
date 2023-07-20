@@ -62,6 +62,7 @@ module.exports = {
 
   //Let's review the cause of your sole source situation
   soleSourceSitInputBox:"#SoleSourceSituation_text_area",
+
   //why is the Only Source capable of meeting your requirement
   instructionLink:"#Button_UniqueSourceMoreInfo",
   instructionContentText:"#Content_UniqueSourceMoreInfo",
@@ -72,6 +73,12 @@ module.exports = {
 
   //Now let's find out more about procurement 
   procurementInput:"#procurementText_text_area",
+  exisitngEnvYesOption:"#Radio_existingEnvOptionsYes",
+  exisitngEnvNoOption:"#Radio_existingEnvOptionsNo",
+  procurementImpactInput:"#procurementImpact_text_area",
+  
+  //Tell us about the impact of this requirement
+  descImpactInput:"#descriptionOfImpact_text_area",
   
   //Based on what you told us, you do not need an evaluation plan for this acquisition.
   evalPlanAlert: "#Callout",
