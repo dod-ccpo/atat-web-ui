@@ -177,7 +177,8 @@ import { routeNames } from "../../../router/stepper"
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
-import classificationRequirements from "@/store/classificationRequirements";
+import classificationRequirements, { isClassLevelUnclass } 
+  from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
@@ -213,8 +214,6 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public introText = "";
   public showAnticipatedUserAndDataNeeds = false;
   public isXaaS = false;
-  public hasSecret = false
-  public hasTopSecret = false
 
   public alternateGroupNames = [
     {
@@ -359,29 +358,29 @@ export default class Summary extends Mixins(SaveOnLeave) {
     return serviceArr.join();
   };
 
-  public setSelectedGroupsMissingData(dowObjects: DOWServiceOfferingGroup[]): void {
+  public setSelectedGroupsMissingData(dowObjects: DOWServiceOfferingGroup[]): string[] {
     //eslint-disable-next-line prefer-const
     let incompleteOfferings = [""];
     dowObjects.forEach(dow=>{
       let requiredFields = [""];
       const id = dow.serviceOfferingGroupId;
-      const isPortabilityPlan = id === "portability_plan";
-      const isTraining = id === "training";
+      const isPortabilityPlan = id === "PORTABILITY_PLAN";
+      const isTraining = id === "TRAINING";
      
       dow.otherOfferingData?.forEach(otherOffering =>{
         const data: Record<string, any> = _.clone(otherOffering);
+        let additionalFields:string[] = [];
         if (isTraining){
-          const commonFields = [
+          requiredFields= [
             "trainingRequirementTitle",
             "trainingType",
             "trainingPersonnel",
             "entireDuration",
-            "anticipatedNeedUsage",
+            "descriptionOfNeed",
             "periodsNeeded",
             "classificationLevel"
           ]
 
-          let additionalFields:string[] = [];
           switch(data.trainingType?.toUpperCase()){
           case "ONSITE_INSTRUCTOR_CONUS":
             additionalFields = ["trainingFacilityType","trainingLocation"];
@@ -395,42 +394,40 @@ export default class Summary extends Mixins(SaveOnLeave) {
           default:
             break;
           }
-          requiredFields = commonFields.concat(additionalFields);
-    
         } else if (isPortabilityPlan) {
           requiredFields = [
             "classificationLevel"
           ]
         } else {
           requiredFields = [
-            "statementOfObjectives",
+            "descriptionOfNeed",
             "personnelOnsiteAccess",
             "entireDuration",
             "periodsNeeded",
             "classificationLevel"
           ]
+          // validate classifiedInformationTypes if classlevel is TS/S
+          if (!isClassLevelUnclass(data["classificationLevel"])){
+            additionalFields = ["classifiedInformationTypes"];
+          }
         }
+        requiredFields = requiredFields.concat(additionalFields);
         
         const isValid = requiredFields.every(f => {
-          return f === "periodsNeeded"
-            ? this.isPeriodsNeededValid(dow)
-            : data[f] !== ""
+          if (f === "periodsNeeded"){
+            return data.entireDuration === "NO"
+              ? data.periodsNeeded.length > 0
+              : true
+          }
+          return data[f] !== ""
         })
         if (!isValid && !incompleteOfferings.includes(id)){
           incompleteOfferings.push(id)
         }
-
       })
     })
-    console.log(incompleteOfferings);
-    this.serviceGroupsMissingData = incompleteOfferings;
+    return incompleteOfferings;
   };
-
-  public isPeriodsNeededValid(instanceData: Record<string, any>): boolean {
-    return instanceData["entireDuration"] === "NO"
-      ? instanceData.periodsNeeded.length > 0
-      : true
-  }
 
   public missingData(value: string): boolean {
     return this.serviceGroupsMissingData.includes(value) ? true : false;
@@ -460,14 +457,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
       this.showAlert = true;
       this.isClassificationDataMissing = true;
     };
-    classifications.forEach((classification) =>{
-      if(classification.classification === "TS"){
-        this.hasTopSecret = true
-      }
-      if(classification.classification === "S"){
-        this.hasSecret = true
-      }
-    })
+    
 
     let selectedOfferingGroups: string[] = _.clone(DescriptionOfWork.selectedServiceOfferingGroups);
     const sectionServices = this.isXaaS 
@@ -493,8 +483,8 @@ export default class Summary extends Mixins(SaveOnLeave) {
       && sectionServices.includes(e.serviceOfferingGroupId) 
     );
 
-    this.setSelectedGroupsMissingData(this.selectedServiceGroups);
-
+    this.serviceGroupsMissingData = 
+      this.setSelectedGroupsMissingData(this.selectedServiceGroups);
   };
 
   public async mounted(): Promise<void> {
