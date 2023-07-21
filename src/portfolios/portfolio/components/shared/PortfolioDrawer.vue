@@ -136,6 +136,12 @@
           </div>
 
           <!-- MEMBER DROPDOWN - for viewers and managers if > 1 manager in portfolio -->
+
+          <!--  EJY need to set menu items in this.portfolioMembers object so can update
+                menu options when Manager downgrades to Viewer. should keep as dropdown, 
+                just without ability to change back to Manager. only options should be
+                "Leave this portfolio" and "About roles"
+          --> 
           <div v-else>
             <ATATSelect
               :id="'Role' + index"
@@ -240,28 +246,23 @@
     </ATATDialog>
 
 
-    <!-- <ATATDialog
+    <ATATDialog
       id="ManagerDowngradeModal"
-      :showDialog="showDeleteMemberDialog"
-      :title="'Remove ' + deleteMemberName + ' from portfolio?'" 
+      :showDialog="showManagerDowngradeDialog"
+      title="Downgrade your user role?" 
       no-click-animation
-      okText="Remove member"
+      okText="Downgrade"
       width="450"
-      @ok="deleteMember"
-      @cancelClicked="cancelDeleteMember"
+      @ok="downgradeManager"
+      @cancelClicked="cancelDowngradeManager"
     >    
       <template #content>
         <p class="body">
-          {{ deleteMemberName }} will be removed from your portfolio members list. 
-          This individual will no longer have access to view portfolio details or 
-          track funds spent. 
-        </p>
-        <p class="body">
-          NOTE: A portfolio manager can restore their access to this portfolio 
-          at any time.
+          You will no longer have access to edit this portfolio. You can still track 
+          funds spent and view task order details.
         </p>
       </template>
-    </ATATDialog> -->
+    </ATATDialog>
 
   </div>
 </template>
@@ -326,6 +327,9 @@ export default class PortfolioDrawer extends Vue {
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
   public portfolioCreator = PortfolioStore.portfolioCreator;
+
+  public showManagerDowngradeDialog = false;
+  public downgradeMemberIndex = -1;
 
   public get onlyOneManager(): boolean{
     return this.managerCount === 1;
@@ -589,6 +593,30 @@ export default class PortfolioDrawer extends Vue {
     PortfolioStore.setShowAddMembersModal(true);
   }
 
+  public async downgradeManager(): Promise<void> {
+    this.showManagerDowngradeDialog = false;
+    if (this.portfolio.members) {
+      await this.updateMemberRole("Viewer", this.downgradeMemberIndex);
+    }
+  }
+
+  public cancelDowngradeManager(): void {
+    this.showManagerDowngradeDialog = false;
+    const i = this.downgradeMemberIndex;
+    this.portfolioMembers[i].role = "Manager";
+    if (this.portfolio.members) this.portfolio.members[i].role = "Manager";
+    this.downgradeMemberIndex = -1;
+  }
+  
+  public async updateMemberRole(val: string, index: number): Promise<void> {
+    if (this.portfolio.members) {
+      this.portfolio.members[index].role = val;
+      // EJY need to make API call to change roles       
+      await PortfolioStore.setPortfolioData(this.portfolio);
+      this.downgradeMemberIndex = -1;
+    }
+  }
+
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
     const storeData = await PortfolioStore.getPortfolioData();
     debugger;
@@ -600,12 +628,13 @@ export default class PortfolioDrawer extends Vue {
         const member = storeData.members[index];
         if (val === "Viewer" && member.role === "Manager") {
           debugger;
+          // OPEN THE MODAL - wait for confirmation yes or no to call this.updateMemberRole
+          this.downgradeMemberIndex = index;
+          this.showManagerDowngradeDialog = true;
+        } else {
+          await this.updateMemberRole(val, index);
         }
 
-        this.portfolio.members[index].role = val;
-
-        // EJY need to make API call to change roles       
-        PortfolioStore.setPortfolioData(this.portfolio);
       } else {
         // reset role back to saved value in store
 
