@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import Summary from "../DOW/Summary.vue"
+import Summary from "../DOW/SummaryStepFive.vue"
 import { DefaultProps } from "vue/types/options";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 Vue.use(Vuetify);

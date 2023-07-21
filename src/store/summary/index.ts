@@ -1,6 +1,6 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
-import { SummaryItem } from "types/Global";
+import { DOWServiceOfferingGroup, OtherServiceOfferingData, SummaryItem } from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
@@ -11,8 +11,10 @@ import {
   PeriodOfPerformanceDTO,
   SelectedClassificationLevelDTO, 
   SensitiveInformationDTO} from "@/api/models";
-import ClassificationRequirements from "../classificationRequirements";
+import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
 import { convertStringArrayToCommaList } from "@/helpers";
+import _ from "lodash";
+import { OtherOfferingSummaryPathResolver } from "@/router/resolvers";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -394,6 +396,166 @@ export class SummaryStore extends VuexModule {
       ? isCDSComplete && isCDSDurationValid
       : true;
   }
+  //#endregion
+
+  //#region Step 5
+
+  /**
+   * 
+   * @param dowObjects DOWServiceOfferingGroup[]
+   * @returns string[]
+   */
+  @Action({rawError: true})
+  public async isOtherOfferingsDataMissing(dowObjects: DOWServiceOfferingGroup[])
+    : Promise<string[]> {
+    //eslint-disable-next-line prefer-const
+    // validates dowObjects.otherOfferingData
+    await dowObjects.forEach(async (dow)=> 
+    {
+      const id = dow.serviceOfferingGroupId;
+      dow.otherOfferingData?.forEach(async (ood)=>{
+        return await this.isOtherOfferingDataComplete(
+          {
+            otherOfferingData: ood,
+            id: id
+          })
+      }) 
+    })
+    console.log(dowObjects)
+    return [""]
+  };
+
+  @Action({rawError: true})
+  public async isOtherOfferingDataComplete(
+    attribs: {
+      otherOfferingData: OtherServiceOfferingData
+      id: string
+    })
+    : Promise<OtherServiceOfferingData> {
+    //eslint-disable-next-line prefer-const
+    let incompleteOfferings = [""];
+    let requiredFields = [""];
+    const isCompute = attribs.id === "COMPUTE";
+    const isDatabase = attribs.id === "DATABASE";
+    const isStorage = attribs.id === "STORAGE";
+    const isPortabilityPlan = attribs.id === "PORTABILITY_PLAN";
+    const isTraining = attribs.id === "TRAINING";
+    const isGeneralXaas = attribs.id === "GENERAL_XAAS"; 
+    const isAdvisoryAssistance = attribs.id === "ADVISORY_ASSISTANCE";
+    const isHelpDesk = attribs.id === "HELP_DESK_SERVICES";
+    const isDocumentation = attribs.id === "DOCUMENTATION_SUPPORT";
+    const isGeneralCloudSupport = attribs.id === "GENERAL_CLOUD_SUPPORT";
+    
+    
+    const data: Record<string, any> = _.clone(attribs.otherOfferingData);
+    let additionalFields:string[] = [];
+    if(isCompute){
+      requiredFields = [
+        "environmentType",
+        "entireDuration",
+        "memoryAmount",
+        "descriptionOfNeed",
+        "numberOfInstances",
+        "numberOfVCPUs",
+        "operatingSystem",
+        "operatingSystemAndLicensing",
+        "performanceTier",
+        "storageAmount",
+        "storageType",
+        "entireDuration",
+        "periodsNeeded"
+      ];
+    } else if (isDatabase) {
+      requiredFields = [
+        "databaseType",
+        "databaseLicensing",
+        "licensing",
+        "memoryAmount",
+        "memoryUnit",
+        "networkPerformance",
+        "numberOfVCPUs",
+        "numberOfInstances",
+        "operatingSystem",
+        "databaseLicensing",
+        "operatingSystemLicense",
+        "storageType",
+        "storageAmount",
+        "storageUnit",
+        "descriptionOfNeed",
+        "entireDuration",
+        "periodsNeeded"
+      ]
+    } else if(isStorage){
+      requiredFields = [
+        "numberOfInstances",
+        "storageAmount",
+        "storageType",
+        "storageUnit",
+        "entireDuration",
+        "descriptionOfNeed",
+        "periodsNeeded"
+      ]
+    } else if (isGeneralXaas) {
+      requiredFields = [
+        "descriptionOfNeed",
+        "entireDuration",
+        "periodsNeeded"
+      ];
+    } else if (isTraining){
+      requiredFields= [
+        "trainingRequirementTitle",
+        "trainingType",
+        "trainingPersonnel",
+        "entireDuration",
+        "descriptionOfNeed",
+        "periodsNeeded",
+        "classificationLevel"
+      ]
+
+      switch(data.trainingType?.toUpperCase()){
+      case "ONSITE_INSTRUCTOR_CONUS":
+        additionalFields = ["trainingFacilityType","trainingLocation"];
+        break;
+      case "ONSITE_INSTRUCTOR_OCONUS":
+        additionalFields = ["trainingLocation"];
+        break;
+      case "VIRTUAL_INSTRUCTOR":
+        additionalFields = ["trainingTimeZone"];
+        break;
+      default:
+        break;
+      }
+    } else if (isPortabilityPlan) {
+      requiredFields = ["classificationLevel"]
+    } else if(
+      isAdvisoryAssistance 
+        || isDocumentation 
+        || isHelpDesk 
+        || isGeneralCloudSupport){
+      requiredFields = [
+        "descriptionOfNeed",
+        "personnelOnsiteAccess",
+        "entireDuration",
+        "periodsNeeded",
+        "classificationLevel"
+      ] 
+      // validate classifiedInformationTypes if classlevel is TS/S
+      if (!isClassLevelUnclass(data["classificationLevel"])){
+        additionalFields = ["classifiedInformationTypes"];
+      }
+    }
+    requiredFields = requiredFields.concat(additionalFields);
+    
+    attribs.otherOfferingData.isComplete = requiredFields.every(f => {
+      if (f === "periodsNeeded"){
+        return data.entireDuration === "NO"
+          ? data.periodsNeeded.length > 0
+          : true
+      }
+      return data[f] !== ""
+    })
+    return attribs.otherOfferingData;
+  };
   //#endregion
 
   //#region STEP 7

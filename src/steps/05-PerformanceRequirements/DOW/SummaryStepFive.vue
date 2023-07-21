@@ -189,6 +189,7 @@ import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 import { getIdText, toTitleCase } from "@/helpers";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import Summary from "@/store/summary";
 // import router from "@/router";
 
 @Component({
@@ -199,7 +200,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
   }
 })
 
-export default class Summary extends Mixins(SaveOnLeave) {
+export default class SummaryStepFive extends Mixins(SaveOnLeave) {
   private isPeriodsDataMissing = false;
   private isClassificationDataMissing = false;
   private showAlert = false;
@@ -358,76 +359,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     return serviceArr.join();
   };
 
-  public setSelectedGroupsMissingData(dowObjects: DOWServiceOfferingGroup[]): string[] {
-    //eslint-disable-next-line prefer-const
-    let incompleteOfferings = [""];
-    dowObjects.forEach(dow=>{
-      let requiredFields = [""];
-      const id = dow.serviceOfferingGroupId;
-      const isPortabilityPlan = id === "PORTABILITY_PLAN";
-      const isTraining = id === "TRAINING";
-     
-      dow.otherOfferingData?.forEach(otherOffering =>{
-        const data: Record<string, any> = _.clone(otherOffering);
-        let additionalFields:string[] = [];
-        if (isTraining){
-          requiredFields= [
-            "trainingRequirementTitle",
-            "trainingType",
-            "trainingPersonnel",
-            "entireDuration",
-            "descriptionOfNeed",
-            "periodsNeeded",
-            "classificationLevel"
-          ]
-
-          switch(data.trainingType?.toUpperCase()){
-          case "ONSITE_INSTRUCTOR_CONUS":
-            additionalFields = ["trainingFacilityType","trainingLocation"];
-            break;
-          case "ONSITE_INSTRUCTOR_OCONUS":
-            additionalFields = ["trainingLocation"];
-            break;
-          case "VIRTUAL_INSTRUCTOR":
-            additionalFields = ["trainingTimeZone"];
-            break;
-          default:
-            break;
-          }
-        } else if (isPortabilityPlan) {
-          requiredFields = [
-            "classificationLevel"
-          ]
-        } else {
-          requiredFields = [
-            "descriptionOfNeed",
-            "personnelOnsiteAccess",
-            "entireDuration",
-            "periodsNeeded",
-            "classificationLevel"
-          ]
-          // validate classifiedInformationTypes if classlevel is TS/S
-          if (!isClassLevelUnclass(data["classificationLevel"])){
-            additionalFields = ["classifiedInformationTypes"];
-          }
-        }
-        requiredFields = requiredFields.concat(additionalFields);
-        
-        const isValid = requiredFields.every(f => {
-          if (f === "periodsNeeded"){
-            return data.entireDuration === "NO"
-              ? data.periodsNeeded.length > 0
-              : true
-          }
-          return data[f] !== ""
-        })
-        if (!isValid && !incompleteOfferings.includes(id)){
-          incompleteOfferings.push(id)
-        }
-      })
-    })
-    return incompleteOfferings;
-  };
+  
 
   public missingData(value: string): boolean {
     return this.serviceGroupsMissingData.includes(value) ? true : false;
@@ -484,7 +416,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     );
 
     this.serviceGroupsMissingData = 
-      this.setSelectedGroupsMissingData(this.selectedServiceGroups);
+      await Summary.isOtherOfferingDataMissing(this.selectedServiceGroups);
   };
 
   public async mounted(): Promise<void> {

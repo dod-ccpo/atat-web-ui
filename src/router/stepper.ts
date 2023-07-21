@@ -96,7 +96,7 @@ import OtherOfferingSummary
 import DOWSecurityRequirements
   from "../steps/05-PerformanceRequirements/DOW/DOWSecurityRequirements.vue";
 import DOWSummary 
-  from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
+  from "../steps/05-PerformanceRequirements/DOW/SummaryStepFive.vue";
 import AnticipatedUserAndDataNeeds
   from "@/steps/05-PerformanceRequirements/DOW/AnticipatedUserAndDataNeeds.vue";
 import ReplicateAndOptimize
