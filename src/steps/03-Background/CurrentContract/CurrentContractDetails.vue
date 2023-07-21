@@ -262,6 +262,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private expMaxDate = "";
   private isCurrent = false;
   private headline = "";
+  private saveOnLeaveError: string| unknown = "";
 
   private setHeadline(): void {
     let contractState = "previous or current";
@@ -350,8 +351,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     instance_number: 0,
     current_contract_exists: "",
     acquisition_package: "",
-    is_valid: true, 
-    sys_created_by: ""
+    is_valid: false, 
   } as CurrentContractDTO;
 
   private get currentData(): CurrentContractDTO {
@@ -393,7 +393,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    await this.loadContract();    
+    await this.loadContract();
     if (this.currentContract) {
       const keys: string[] = [
         "incumbent_contractor_name",
@@ -414,9 +414,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
           this.savedData[key] = this.currentContract[key as keyof CurrentContractDTO];
         }
       });
-    } else {
-      AcquisitionPackage.setCurrentContract(this.currentData);
-    }
+    } 
     this.setHeadline();
   }
 
@@ -440,10 +438,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         // if !this.isExceptiontoFairOpp save to Store/SNOW now
         if (!this.isExceptiontoFairOpp){
           const currentContracts = await AcquisitionPackage.currentContracts || [];
-          AcquisitionPackage.updateCurrentContractsSNOW(currentContracts);
+          await AcquisitionPackage.updateCurrentContractsSNOW(currentContracts);
         }
       }
     } catch (error) {
+      this.saveOnLeaveError = error as string;
       console.log(error);
     }
     return true;

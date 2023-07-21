@@ -4,9 +4,9 @@ import {
   randomNumber,
   randomString,
   suffixId,
-} from "../../../helpers";
-import common from "../../../selectors/common.sel";
-import contractDetails from "../../../selectors/contractDetails.sel";
+} from "../../../../helpers";
+import common from "../../../../selectors/common.sel";
+import contractDetails from "../../../../selectors/contractDetails.sel";
 
 describe("Test suite: Contract Details: E2E work flow", () => {
   let pt = "TC-Step-3-ContractDetails-E2E-" + randomAlphaNumeric(5);
@@ -25,28 +25,24 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.fixture("securityRequirement").then((sr) => {
       securityReqDetails = sr;
     });
-
     cy.goToContractDetailsStep(
-      pt,scope,
+      pt, scope,
       contractDetails.popStartDateYesRadioOption,
-      "YES",      
+      "YES",
       inputText
-      )
+    )
   });
 
-  it("TC1: If unclassified Class Level selected ", () => {    
+  it("TC1: If unclassified Class Level selected ", () => {
     cy.selectCheckBoxes([contractDetails.level2]);
-    cy.btnClick(common.continueBtn, " Continue ");
-    // Cross domain page& security req page  is skipped
-    cy.waitUntilElementIsGone(contractDetails.level2);
-    cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
+    cy.clickContinueButton(contractDetails.level2, "Your Contract Details Summary");
   });
 
-  it("TC2: If both unclassified & Secret Class Level selected ", () => {    
+  it("TC2: If both unclassified & Secret Class Level selected ", () => {
     cy.selectCheckBoxes([contractDetails.level5, contractDetails.level6]);
     const expectedLabels = [
       "Unclassified / Impact Level 5 (IL5)" +
-        " Accommodates DoD CUI and National Security Systems",
+      " Accommodates DoD CUI and National Security Systems",
       "Secret / Impact Level 6 (IL6)",
     ];
     cy.verifyCheckBoxLabels(
@@ -68,7 +64,9 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.waitUntilElementIsGone(secretcb_1Sel);
     cy.verifyPageHeader("Do you require a cross-domain solution (CDS)?");
     cy.findElement(contractDetails.cdsYesOption)
-      .click({ force: true })
+      .click({
+        force: true
+      })
       .then(() => {
         cy.findElement(contractDetails.cds).should("be.visible");
         cy.textExists(contractDetails.cdsLabel, cdsLabelTxt);
@@ -83,16 +81,8 @@ describe("Test suite: Contract Details: E2E work flow", () => {
         const fs = "TestFS - " + randomAlphaNumeric(3);
         cy.enterTextInTextField(contractDetails.projectedFSField, fs);
         const anticipatedText = randomAlphaNumeric(17);
-        cy.enterTextInTextField(
-          contractDetails.anticipatedTxtbox,
-          anticipatedText
-        );
-        cy.findElement(contractDetails.entiredDurationNo).click({
-          force: true,
-        });
-        cy.btnClick(common.continueBtn, " Continue ");
-        cy.waitUntilElementIsGone(contractDetails.unclastoSecrCB);
-        cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
+        cy.anticipatedNeedUsage(contractDetails.anticipatedTxtbox, anticipatedText, contractDetails.entiredDurationNo);
+        cy.clickContinueButton(contractDetails.unclastoSecrCB, "Your Contract Details Summary");
       });
   });
 
@@ -118,9 +108,7 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     const tscb_1Sel = suffixId(contractDetails.checkbox_1, "TopSecret");
     const tscb_7Sel = suffixId(contractDetails.checkbox_7, "TopSecret");
     cy.selectCheckBoxes([tscb_1Sel, tscb_7Sel]);
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone(tscb_7Sel);
-    cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
+    cy.clickContinueButton(contractDetails.checkbox_7, "Your Contract Details Summary");
   });
 
   it("TC4: If Secret & Top Secret Class Level selected,no unclassified ", () => {
@@ -158,7 +146,9 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.wait(2000);
     cy.verifyPageHeader("Do you require a cross-domain solution (CDS)?");
     cy.findElement(contractDetails.cdsYesOption)
-      .click({ force: true })
+      .click({
+        force: true
+      })
       .then(() => {
         cy.findElement(contractDetails.cds).should("be.visible");
         cy.textExists(contractDetails.cdsLabel, cdsLabelTxt);
@@ -173,20 +163,12 @@ describe("Test suite: Contract Details: E2E work flow", () => {
         const fs = "TestFS - " + randomAlphaNumeric(3);
         cy.enterTextInTextField(contractDetails.projectedFSField, fs);
         const anticipatedText = randomAlphaNumeric(17);
-        cy.enterTextInTextField(
-          contractDetails.anticipatedTxtbox,
-          anticipatedText
-        );
-        cy.findElement(contractDetails.entiredDurationNo).click({
-          force: true,
-        });
-        cy.btnClick(common.continueBtn, " Continue ");
-        cy.waitUntilElementIsGone(contractDetails.entiredDurationNo);
-        cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
+        cy.anticipatedNeedUsage(contractDetails.anticipatedTxtbox, anticipatedText, contractDetails.entiredDurationNo);
+        cy.clickContinueButton(contractDetails.entiredDurationNo, "Your Contract Details Summary");
       });
   });
 
-  it("TC5: If unclassified, Secret & Top Secret Class Level selected", () => {    
+  it("TC5: If unclassified, Secret & Top Secret Class Level selected", () => {
     cy.selectCheckBoxes([
       contractDetails.level2,
       contractDetails.level6,
@@ -194,8 +176,8 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     ]);
     const expectedLabels = [
       "Unclassified / Impact Level 2 (IL2)" +
-        " Accommodates DoD information approved for public release" +
-        " (Low Confidentiality and Moderate Integrity)",
+      " Accommodates DoD information approved for public release" +
+      " (Low Confidentiality and Moderate Integrity)",
       "Secret / Impact Level 6 (IL6)",
       "Top Secret",
     ];
@@ -215,7 +197,9 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.waitUntilElementIsGone(tscb_9Sel);
     cy.verifyPageHeader("Do you require a cross-domain solution (CDS)?");
     cy.findElement(contractDetails.cdsYesOption)
-      .click({ force: true })
+      .click({
+        force: true
+      })
       .then(() => {
         cy.findElement(contractDetails.cds).should("be.visible");
         cy.textExists(contractDetails.cdsLabel, cdsLabelTxt);
@@ -234,16 +218,8 @@ describe("Test suite: Contract Details: E2E work flow", () => {
         const fs = "TestFS - " + randomAlphaNumeric(3);
         cy.enterTextInTextField(contractDetails.projectedFSField, fs);
         const anticipatedText = randomAlphaNumeric(17);
-        cy.enterTextInTextField(
-          contractDetails.anticipatedTxtbox,
-          anticipatedText
-        );
-        cy.findElement(contractDetails.entiredDurationNo).click({
-          force: true,
-        });
-        cy.btnClick(common.continueBtn, " Continue ");
-        cy.waitUntilElementIsGone(contractDetails.unclastoSecrCB);
-        cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
+        cy.anticipatedNeedUsage(contractDetails.anticipatedTxtbox, anticipatedText, contractDetails.entiredDurationNo);
+        cy.clickContinueButton(contractDetails.entiredDurationNo, "Your Contract Details Summary");
       });
   });
 });

@@ -16,7 +16,7 @@
           class="font-size-14 _profile-card__name-button"
         >
           <span v-if="member.firstName">
-            {{member.firstName}} {{ member.lastName}}
+            {{member.firstName}} {{ member.lastName}}{{ getMemberTitle }}
           </span>
           <span v-else>
             {{member.email}}
@@ -46,5 +46,11 @@ import ATATProfileCard from "@/components/ATATProfileCard.vue";
 
 export default class MemberCard extends Vue {
   @Prop({required: true}) private member!: User;
+
+  public get getMemberTitle(): string {
+    return this.member.title ? ", " + this.member.title : "";
+  }
+
+
 }
 </script>

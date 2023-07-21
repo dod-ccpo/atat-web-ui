@@ -1076,6 +1076,7 @@ export class AcquisitionPackageStore extends VuexModule {
   
   @Mutation
   public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+
     this.fairOpportunity = this.fairOpportunity
       ? Object.assign(this.fairOpportunity, value)
       : value;
@@ -1313,8 +1314,7 @@ export class AcquisitionPackageStore extends VuexModule {
         text += " by reviewing the JWCC contractor's catalogs to determine " +
           "if other similar offerings (to include: " + 
           this.fairOpportunity.cause_product_feature_name + ") " +
-          "meet or can be modified to satisfy the Government’s requirements. The results " + 
-          "have determined that no other offering is suitable as follows: " +
+          "meet or can be modified to satisfy the Government’s requirements. " +
           this.fairOpportunity.research_review_catalogs_review_results + " " +
           "Therefore, it was determined the " + 
           this.fairOpportunity.cause_product_feature_name + " " +
@@ -1461,7 +1461,7 @@ export class AcquisitionPackageStore extends VuexModule {
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
 
-      if (!this.currentUser) {
+      if (Object.keys(this.currentUser).length === 0) {
         await this.setCurrentUser();
       }  
       await ContactData.initialize();
@@ -1795,7 +1795,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
     Steps.clearAltBackButtonText();
-    if (!this.currentUser) {
+    if (Object.keys(this.currentUser).length === 0) {
       await this.setCurrentUser();
     }
 
@@ -2514,6 +2514,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await EvaluationPlan.reset();
     Steps.clearAltBackButtonText();
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
+    DescriptionOfWork.setIsDOWSummaryAlertOpen(true);
 
     this.doReset();
   }

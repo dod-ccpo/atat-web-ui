@@ -61,7 +61,6 @@
 /* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -71,6 +70,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ContractConsiderationsDTO } from "@/api/models";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {

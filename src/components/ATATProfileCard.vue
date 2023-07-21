@@ -7,7 +7,7 @@
           </div>
         <v-list-item-content class="ml-4">
           <v-list-item-title class="h3">
-            {{person.fullName}}
+            {{ person.title }} {{person.fullName}}
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>

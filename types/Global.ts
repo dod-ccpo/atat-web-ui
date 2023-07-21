@@ -140,6 +140,7 @@ interface StepperRouteBase {
   continueButtonColor?: string;
   stepCompleteOnEnter?: string;
   stepCompleteOnLeave?: string;
+  canNavigateToSummary?:boolean;
 }
 
 /**
@@ -449,6 +450,7 @@ export interface OtherServiceSummaryTableData {
   personnelOnsiteAccess?: string;
   trainingType?: string;
   sysId?:string;
+  isValid?:boolean;
 }
 
 export interface TravelSummaryTableData {
@@ -500,6 +502,7 @@ export interface User {
   dsnPhone?: string; // field is "home_phone" in SNOW sys_user table
   userName?: string;
   sys_id?: string;
+  title?: string;
 }
 
 export interface Operator {
@@ -531,6 +534,8 @@ export interface Portfolio extends BaseTableDTO {
   createdBy?: string;
   provisioned?: string;
   members?: User[];
+  portfolio_owner?: string;
+  portfolio_owner_detail?: User;
   portfolio_managers?: string
   portfolio_managers_detail?: User[];
   portfolio_viewers?: string;
@@ -554,6 +559,7 @@ export interface PortfolioCardData extends Portfolio {
   fundsSpent?: string;
   fundsSpentPercent?: string;
   fundsRemaining?: string;
+  isOwner?: boolean;
   isManager?: boolean;
 }
 

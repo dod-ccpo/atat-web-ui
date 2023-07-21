@@ -281,6 +281,7 @@ Cypress.Commands.add(
       .scrollIntoView()
       .should("be.visible")
       .clear()
+      .click()
       .focus()
       .blur({ force: true })
       .then(() => {
@@ -337,6 +338,14 @@ Cypress.Commands.add("verifyTextMatches", (selector, expectedText) => {
     cy.log(actualTxt);
     const formattedTxt = cleanText(actualTxt);
     expect(formattedTxt).equal(expectedText);
+  });
+});
+
+Cypress.Commands.add("reviewPageTxtMatches", (selector, it) => {
+  cy.findElement(selector).then(($inputVal) => {
+    const textReview =cleanText($inputVal.val());
+    cy.log(textReview);
+    expect(textReview).equal(it);
   });
 });
 

@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
-import { Tracing } from "trace_events";
-import { 
+import {
   EnvironmentInstanceLocation,
   EnvironmentInstanceUsage,
   EnvironmentLocation, 
@@ -14,7 +13,6 @@ import {
   YesNo,
   SingleMultiple,
   EstimateOptionValue,
-  TrainingEstimate,
   EstimateOptionValueObjectArray,
   Environment,
   CSP,
@@ -216,7 +214,6 @@ export interface ContractConsiderationsDTO extends BaseTableDTO{
   packaging_shipping_none_apply?: string;
   contractor_provided_transfer?: string;
   acquisition_package?: ReferenceColumn | string;
-
 }
 
 export interface CrossDomainSolutionDTO extends BaseTableDTO {
@@ -789,6 +786,8 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   funds_obligated: number; // "<< sum of obligated values in all qualifying clins >>",
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
   portfolio_funding_status: string;
+  portfolio_owner?: string;
+  portfolio_owner_detail?: UserSearchResultDTO;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
   portfolio_managers_detail?: UserSearchResultDTO[];
   portfolio_viewers?: string;
@@ -946,6 +945,7 @@ export interface UserSearchResultDTO extends BaseTableDTO {
   email?: string;
   phone?: string;
   company?: string;
+  title?: string;
 }
 
 export interface OperatorDTO extends BaseTableDTO{
