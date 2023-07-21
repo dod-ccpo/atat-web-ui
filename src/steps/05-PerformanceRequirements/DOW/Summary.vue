@@ -177,7 +177,8 @@ import { routeNames } from "../../../router/stepper"
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
-import classificationRequirements from "@/store/classificationRequirements";
+import classificationRequirements, { isClassLevelUnclass } 
+  from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
@@ -357,46 +358,75 @@ export default class Summary extends Mixins(SaveOnLeave) {
     return serviceArr.join();
   };
 
-  public setSelectedGroupsMissingData(value: DOWServiceOfferingGroup[]): void {
+  public setSelectedGroupsMissingData(dowObjects: DOWServiceOfferingGroup[]): string[] {
     //eslint-disable-next-line prefer-const
-    let outputArr :string[] = [];
-    value.forEach((obj)=>{
-      //eslint-disable-next-line prefer-const
-      let id = obj.serviceOfferingGroupId;
-      if (this.isClassificationDataMissing || 
-        (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
-        (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {
-        outputArr.push(id);
-      } else if (obj.otherOfferingData && obj.otherOfferingData.length >0){
-        const isIncomplete = obj.otherOfferingData.some(
-          ood => !ood.isComplete
-        )
-        if (isIncomplete){
-          outputArr.push(id);
-        }
-      } else {
-        obj.serviceOfferings.forEach((offering)=>{
-          if(offering.classificationInstances && offering.classificationInstances.length === 0) {
-            if(outputArr.indexOf(id) < 0){
-              outputArr.push(id);
-            };
-          } else {
-            offering.classificationInstances?.forEach((instance)=>{
-              if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
-                if(outputArr.indexOf(id) < 0){
-                  outputArr.push(id);
-                };
-              } else if (instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
-                if(outputArr.indexOf(id) < 0){
-                  outputArr.push(id);
-                }
-              };
-            });
+    let incompleteOfferings = [""];
+    dowObjects.forEach(dow=>{
+      let requiredFields = [""];
+      const id = dow.serviceOfferingGroupId;
+      const isPortabilityPlan = id === "PORTABILITY_PLAN";
+      const isTraining = id === "TRAINING";
+     
+      dow.otherOfferingData?.forEach(otherOffering =>{
+        const data: Record<string, any> = _.clone(otherOffering);
+        let additionalFields:string[] = [];
+        if (isTraining){
+          requiredFields= [
+            "trainingRequirementTitle",
+            "trainingType",
+            "trainingPersonnel",
+            "entireDuration",
+            "descriptionOfNeed",
+            "periodsNeeded",
+            "classificationLevel"
+          ]
+
+          switch(data.trainingType?.toUpperCase()){
+          case "ONSITE_INSTRUCTOR_CONUS":
+            additionalFields = ["trainingFacilityType","trainingLocation"];
+            break;
+          case "ONSITE_INSTRUCTOR_OCONUS":
+            additionalFields = ["trainingLocation"];
+            break;
+          case "VIRTUAL_INSTRUCTOR":
+            additionalFields = ["trainingTimeZone"];
+            break;
+          default:
+            break;
           }
-        });
-      }
-    });
-    this.serviceGroupsMissingData = outputArr;
+        } else if (isPortabilityPlan) {
+          requiredFields = [
+            "classificationLevel"
+          ]
+        } else {
+          requiredFields = [
+            "descriptionOfNeed",
+            "personnelOnsiteAccess",
+            "entireDuration",
+            "periodsNeeded",
+            "classificationLevel"
+          ]
+          // validate classifiedInformationTypes if classlevel is TS/S
+          if (!isClassLevelUnclass(data["classificationLevel"])){
+            additionalFields = ["classifiedInformationTypes"];
+          }
+        }
+        requiredFields = requiredFields.concat(additionalFields);
+        
+        const isValid = requiredFields.every(f => {
+          if (f === "periodsNeeded"){
+            return data.entireDuration === "NO"
+              ? data.periodsNeeded.length > 0
+              : true
+          }
+          return data[f] !== ""
+        })
+        if (!isValid && !incompleteOfferings.includes(id)){
+          incompleteOfferings.push(id)
+        }
+      })
+    })
+    return incompleteOfferings;
   };
 
   public missingData(value: string): boolean {
@@ -427,6 +457,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
       this.showAlert = true;
       this.isClassificationDataMissing = true;
     };
+    
 
     let selectedOfferingGroups: string[] = _.clone(DescriptionOfWork.selectedServiceOfferingGroups);
     const sectionServices = this.isXaaS 
@@ -452,8 +483,8 @@ export default class Summary extends Mixins(SaveOnLeave) {
       && sectionServices.includes(e.serviceOfferingGroupId) 
     );
 
-    this.setSelectedGroupsMissingData(this.selectedServiceGroups);
-
+    this.serviceGroupsMissingData = 
+      this.setSelectedGroupsMissingData(this.selectedServiceGroups);
   };
 
   public async mounted(): Promise<void> {

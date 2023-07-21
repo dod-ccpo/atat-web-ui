@@ -13,12 +13,13 @@
               my own explanation” button below.
             </span>
             <a id="LearnMoreIGCE"
-               role="button"
-               tabindex="0"
-               @click="openSlideoutPanel"
-               @keydown.enter="openSlideoutPanel"
-               @keydown.space="openSlideoutPanel">
-              <span class="">Learn more about market research for the JWCC Contract</span>
+              role="button"
+              tabindex="0"
+              @click="openSlideoutPanel"
+              @keydown.enter="openSlideoutPanel"
+              @keydown.space="openSlideoutPanel"
+            >
+              Learn more about market research for the JWCC Contract
             </a>
           </p>
 
@@ -37,14 +38,14 @@
               :rules="[$validators.required('Please select an option.')]"
             />
             <v-expand-transition>
-              <div v-if="showCspOnlySourceCapableFields" class="mt-8">
-                <div style="line-height: 1.3">
+              <div v-if="showCspOnlySourceCapableFields" id="ResearchDetailsForm" class="mt-8">
+                <div style="line-height: 1.3" id="ResearchSectionQuestion">
                   <span class="font-weight-500">When did you conduct this research?</span><br />
                   <span class="font-size-14 text-base">
                     Research must have been conducted within the previous 12 months. 
                   </span>
                 </div>
-                <div class="d-flex mt-4">
+                <div id="ResearchDatePickers" class="d-flex mt-4">
                   <div style="width: 270px; max-width: 270px;">
                     <ATATDatePicker
                       id="ResearchStartDate"
@@ -60,6 +61,7 @@
                       placeHolder="MM/DD/YYYY"
                     />
                     <v-btn 
+                      id="ResearchAddEndDate"
                       @click="toggleResearchEndDate()"
                       @keydown.space="toggleResearchEndDate()"
                       @keydown.enter="toggleResearchEndDate()"
@@ -113,7 +115,7 @@
             </v-expand-transition>
 
 
-            <section id="ReviewCatalogSection" v-if="cspHasPeculiarFeature">
+            <section id="ReviewCatalogsSection" v-if="cspHasPeculiarFeature">
               <hr />
 
               <ATATRadioGroup 
@@ -126,10 +128,10 @@
               />
 
               <v-expand-transition>
-                <div v-if="wereCatalogsReviewed" class="mt-8">
+                <div v-if="wereCatalogsReviewed" class="mt-8" id="ReviewedCatalogsForm">
                   <ATATRadioGroup 
-                    id="ReviewedCatalogs"
-                    name="ReviewedCatalogs"
+                    id="ReviewedCatalogsSameDates"
+                    name="ReviewedCatalogsSameDates"
                     class="mb-8"
                     v-if="hasResearchDates"
                     legend="Was this research conducted on the same date or date range 
@@ -139,14 +141,14 @@
                     :rules="[$validators.required('Please select an option.')]"
                   />
                   
-                  <div class="mt-4" v-if="showCatalogReviewDates">
-                    <div style="line-height: 1.3">
+                  <div class="mt-4" v-if="showCatalogReviewDates" id="ReviewedCatalogsDatesForm">
+                    <div style="line-height: 1.3" id="ReviewedCatalogsQuestion">
                       <span class="font-weight-500">When did you conduct this research?</span><br />
                       <span class="font-size-14 text-base">
                         Research must have been conducted within the previous 12 months. 
                       </span>
                     </div>
-                    <div class="d-flex mt-5">
+                    <div class="d-flex mt-5" id="ReviewedCatalogsDatePickers">
                       <div style="width: 270px; max-width: 270px;">
                         <ATATDatePicker
                           id="CatalogReviewStartDate"
@@ -164,6 +166,7 @@
                           placeHolder="MM/DD/YYYY"
                         />
                         <v-btn 
+                          id="CatalogReviewAddEndDate"
                           @click="toggleCatalogReviewEndDate()"
                           @keydown.space="toggleCatalogReviewEndDate()"
                           @keydown.enter="toggleCatalogReviewEndDate()"
@@ -390,7 +393,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   // =================================================================
   // ========== FORM SECTION 1 - CSP IS ONLY SOURCE CAPABLE ==========
 
-  public onlySourceCapableOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
+  public onlySourceCapableOptions: RadioButton[] = getYesNoRadioOptions("OnlySourceCapable");
   public get showCspOnlySourceCapableFields(): boolean {
     return this.cspIsOnlySourceCapable === "YES";
   }
@@ -466,7 +469,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       told us about, did you review the JWCC contractor’s catalogs to determine 
       if other similar offerings meet or can be modified to satisfy your requirements?`;
   }
-  public reviewedCatalogsOptions: RadioButton[] = getYesNoRadioOptions("AddlTimeCost");
+  public reviewedCatalogsOptions: RadioButton[] = getYesNoRadioOptions("ReviewedCatalogs");
   public get wereCatalogsReviewed(): boolean {
     return this.reviewedCatalogs === "YES";
   }
@@ -530,7 +533,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
 
   public get getOtherTechniqueSysId(): string {
     const otherOptionObj = this.otherTechniquesOptions.find(obj => obj.label === "Other");
-    return otherOptionObj ? otherOptionObj.value : ""
+    return otherOptionObj ? otherOptionObj.value : "OtherTechnique"
   }
 
   @Watch("selectedTechniquesUsed")
