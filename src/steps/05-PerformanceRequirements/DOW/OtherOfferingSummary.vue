@@ -38,9 +38,13 @@
           >
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.typeOrTitle="{ item }">
-              <div v-html="item.typeOrTitle" 
+              <div>
+                <span 
                 :class="{'text-clamp--1-line' : hasStatementColumn }"
-              ></div>
+                v-html="item.typeOrTitle">
+              </span>
+              <span v-if="!item.isValid" v-html=rowErrorMessage></span>
+              </div>
             </template>
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
@@ -384,9 +388,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           : instanceClone.descriptionOfNeed;
       }
       isValid = await this.validateInstance(instanceClone);
-      if (!isValid) {
-        typeOrTitle += this.rowErrorMessage
-      }
+      
 
       if (
         instanceClone.entireDuration === "NO" 
@@ -452,7 +454,8 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         performance,
         personnelOnsiteAccess,
         trainingType,
-        sysId: instanceClone.sysId
+        sysId: instanceClone.sysId,
+        isValid
       };
 
       this.tableData.push(instanceData);
@@ -532,7 +535,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         "trainingType",
         "trainingPersonnel",
         "entireDuration",
-        "anticipatedNeedUsage",
+        "descriptionOfNeed",
         "periodsNeeded"
       ]
 
@@ -557,7 +560,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     else if(this.isAdvisoryAssistance || this.isDocumentation || 
     this.isHelpDesk || this.isGeneralCloudSupport){
       requiredFields = [
-        "statementOfObjectives",
+        "descriptionOfNeed",
         "personnelOnsiteAccess",
         "entireDuration",
         "periodsNeeded"
