@@ -61,11 +61,9 @@ module.exports = {
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironment.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.spec.ts",
+    "<rootDir>/src/steps/03-Background/CurrentEnvironment/InstanceDetails.spec.ts",
     "<rootDir>/src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts",
-    "<rootDir>/src/steps/07-OtherContractConsiderations/Travel.spec.ts",
-    "<rootDir>/src/steps/07-OtherContractConsiderations/PackagingPackingAndShipping.spec.ts",
-    "<rootDir>/src/steps/07-OtherContractConsiderations/CoILearnMore.spec.ts",
-    "<rootDir>/src/steps/07-OtherContractConsiderations/ConflictOfInterest.spec.ts",
+    "<rootDir>/src/steps/07-OtherContractConsiderations/*.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",
