@@ -111,7 +111,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { User } from "../../types/Global";
 import { getUserInitials } from "../helpers";
@@ -127,6 +127,11 @@ export default class ATATProfileCard extends Vue {
   @Prop({required: true}) public person!: User;
   public initials = ""
   public emailLink = ""
+
+  @Watch("person")
+  public personupdated(newVal: User): void {
+    debugger;
+  }
 
   public getUserInitials(member:User): string {
     return getUserInitials(member)

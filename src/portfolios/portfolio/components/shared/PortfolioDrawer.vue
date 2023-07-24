@@ -113,7 +113,10 @@
           <MemberCard :id="'MemberName' + index" :member="member" />
 
           <!-- NOT DROPDOWN - for owners and for manager if only one manager in portfolio -->
-          <div v-if="(member.role === 'Manager' && onlyOneManager) || member.role === 'Owner'">
+          <div v-if="currentUserIsViewer && member.sys_id !== currentUser.sys_id
+            || (member.role === 'Manager' && onlyOneManager) 
+            || member.role === 'Owner'
+          ">
 
             <v-tooltip left nudge-right="30">
               <template v-slot:activator="{ on }">
@@ -129,24 +132,25 @@
                   <div style="width: 16px; height: 20px;"></div>
                 </div>
               </template>
-              <div class="_tooltip-content-wrap _left" style="width: 250px;">
+              <div 
+                v-if="!currentUserIsViewer && 
+                  ((member.role === 'Owner' && currentUserIsOwner
+                  || member.role === 'Manager' && currentUserIsManager))" 
+                class="_tooltip-content-wrap _left" 
+                style="width: 250px;"
+              >
                 {{ ownerOrOnlyManagerTooltip(member) }}
               </div>
             </v-tooltip>
           </div>
 
           <!-- MEMBER DROPDOWN - for viewers and managers if > 1 manager in portfolio -->
-
-          <!--  EJY need to set menu items in this.portfolioMembers object so can update
-                menu options when Manager downgrades to Viewer. should keep as dropdown, 
-                just without ability to change back to Manager. only options should be
-                "Leave this portfolio" and "About roles"
-          --> 
           <div v-else>
             <ATATSelect
               :id="'Role' + index"
+              :key="member.sys_id"
               class="_small _alt-style-clean _invite-members-modal align-self-end"
-              :items="getMemberMenuItems(member)"
+              :items="member.menuItems"
               width="105"
               :selectedValue.sync="member.role"
               iconType="chevron"
@@ -224,17 +228,17 @@
 
     <ATATDialog
       id="RemoveMemberModal"
-      :showDialog="showDeleteMemberDialog"
-      :title="'Remove ' + deleteMemberName + ' from portfolio?'" 
+      :showDialog="showRemoveMemberDialog"
+      :title="'Remove ' + removeMemberName + ' from portfolio?'" 
       no-click-animation
       okText="Remove member"
       width="450"
-      @ok="deleteMember"
-      @cancelClicked="cancelDeleteMember"
+      @ok="removeMember"
+      @cancelClicked="cancelRemoveMember"
     >    
       <template #content>
         <p class="body">
-          {{ deleteMemberName }} will be removed from your portfolio members list. 
+          {{ removeMemberName }} will be removed from your portfolio members list. 
           This individual will no longer have access to view portfolio details or 
           track funds spent. 
         </p>
@@ -244,7 +248,6 @@
         </p>
       </template>
     </ATATDialog>
-
 
     <ATATDialog
       id="ManagerDowngradeModal"
@@ -264,6 +267,14 @@
       </template>
     </ATATDialog>
 
+    <LeavePortfolioModal
+      :showModal.sync="showLeavePortfolioModal" 
+      :portfolioName="portfolio.title"
+      @okClicked="removeMember"
+      @cancelClicked="cancelRemoveMember"
+
+    />   
+
   </div>
 </template>
 
@@ -273,6 +284,9 @@ import { Component, Watch } from "vue-property-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+
+import LeavePortfolioModal from "../../../portfolio/components/shared/LeavePortfolioModal.vue";
+
 import PortfolioRolesLearnMore from
   "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
 import PortfolioStore from "@/store/portfolio";
@@ -303,13 +317,18 @@ import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteM
 import { EnvironmentDTO, UserDTO } from "@/api/models";
 import AppSections from "@/store/appSections";
 
+interface member extends User {
+  menuItems?: SelectData[];
+}
+
 @Component({
   components: {
-    InviteMembersModal,
     ATATDialog,
-    ATATSVGIcon,
     ATATSelect,
+    ATATSVGIcon,
+    InviteMembersModal,
     PortfolioRolesLearnMore,
+    LeavePortfolioModal,
     MemberCard,
   },
 })
@@ -323,9 +342,11 @@ export default class PortfolioDrawer extends Vue {
   
   public currentUserIsManager = false; 
   public currentUserIsOwner = false;
-  public showDeleteMemberDialog = false;
-  public deleteMemberName = "";
-  public deleteMemberIndex = -1;
+  public currentUserDowngradedToViewer = false;
+  public showRemoveMemberDialog = false;
+  public showLeavePortfolioModal = false;  
+  public removeMemberName = "";
+  public removeMemberIndex = -1;
   public portfolioCreator = PortfolioStore.portfolioCreator;
 
   public showManagerDowngradeDialog = false;
@@ -348,15 +369,16 @@ export default class PortfolioDrawer extends Vue {
   }  
 
   public ownerOrOnlyManagerTooltip(member: User): string {
-    if (member.role === "Manager") {
+    if (member.role === "Manager" && !this.currentUserIsViewer ) {
       const isMgr = this.currentUserIsManager;
       const start = isMgr ? "You are" : "This is";
       const end = isMgr ? "for you to leave this" : "to remove this user from the";
       return `${start} the only manager of this portfolio. There must be at least
           one other manager ${end} portfolio or change roles.`;
+    } else if (member.role === "Owner" && this.currentUserIsOwner) {
+      return `As the owner, you will need to transfer ownership in order to leave this portfolio.`;
     }
-    return `As the owner, you will need to transfer ownership in order to leave this portfolio.`;
-
+    return ""; 
   }
 
   public async memberIsOwnerOrOnlyManager(member: User): Promise<boolean> {
@@ -365,7 +387,7 @@ export default class PortfolioDrawer extends Vue {
       || member.role === "owner";
   }
   public get currentUserIsViewer(): boolean {
-    return PortfolioStore.currentUserIsViewer;
+    return PortfolioStore.currentUserIsViewer || this.currentUserDowngradedToViewer;
   }
 
   public get showDescription(): boolean {
@@ -387,7 +409,7 @@ export default class PortfolioDrawer extends Vue {
 
   public accessRemovedToast: ToastObj = {
     type: "success",
-    message: "Access removed",
+    message: "Portfolio access removed",
     isOpen: true,
     hasUndo: false,
     hasIcon: true,
@@ -396,6 +418,14 @@ export default class PortfolioDrawer extends Vue {
   public membersInvitedToast: ToastObj = {
     type: "success",
     message: "Members invited",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  };
+
+  public downgradedToast: ToastObj = {
+    type: "success",
+    message: "Role updated to Viewer",
     isOpen: true,
     hasUndo: false,
     hasIcon: true,
@@ -445,11 +475,17 @@ export default class PortfolioDrawer extends Vue {
     PortfolioStore.setShowAddMembersModal(value);
   }
 
-  public getMemberMenuItems(member: User): SelectData[] {
-    const menuItems = _.cloneDeep(this.memberMenuItems);
+  public getMemberMenuItems(member: member): SelectData[] {
+    let menuItems = _.cloneDeep(this.memberMenuItems);
     if (member.email === this.currentUser.email) {
       const removeIndex = menuItems.findIndex((obj) => obj.value === "Remove");
       menuItems[removeIndex].text = "Leave this portfolio";
+    }
+    if (member.role === "Viewer" && member.sys_id === this.currentUser.sys_id) {
+      const managerIndex = menuItems.findIndex(obj => obj.text === "Manager");
+      if (managerIndex > -1) {
+        menuItems.splice(managerIndex, 1);
+      }
     }
 
     if (this.currentUserIsOwner) {
@@ -490,13 +526,17 @@ export default class PortfolioDrawer extends Vue {
       if (storeData.lastUpdated) {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
-      this.portfolioMembers = _.cloneDeep(storeData.members) || [];
+
+      this.portfolioMembers = _.cloneDeep(storeData.members) ?? [];
 
       const managers = this.portfolioMembers?.filter(m => m.role === "Manager");
       if (managers) {
         this.currentUserIsManager = managers.some(m => m.sys_id === this.currentUser.sys_id);
       }
       this.currentUserIsOwner = storeData.portfolio_owner === this.currentUser.sys_id;
+      this.portfolioMembers.forEach((member) => {
+        member.menuItems = this.getMemberMenuItems(member);
+      });
 
       if (storeData.status) {
         const statusKey = this.getStatusKey(storeData.status);
@@ -573,7 +613,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
 
-  public portfolioMembers: User[] = [];
+  public portfolioMembers: member[] = [];
 
   public get showMemberCount(): boolean {
     return this.getPortfolioMembersCount > 0;
@@ -597,6 +637,8 @@ export default class PortfolioDrawer extends Vue {
     this.showManagerDowngradeDialog = false;
     if (this.portfolio.members) {
       await this.updateMemberRole("Viewer", this.downgradeMemberIndex);
+      this.currentUserDowngradedToViewer = true;
+      Toast.setToast(this.downgradedToast);
     }
   }
 
@@ -614,6 +656,11 @@ export default class PortfolioDrawer extends Vue {
       // EJY need to make API call to change roles       
       await PortfolioStore.setPortfolioData(this.portfolio);
       this.downgradeMemberIndex = -1;
+
+      const member = this.portfolioMembers[index];
+      member.menuItems = this.getMemberMenuItems(member);
+      this.$set(this.portfolioMembers, index, member);
+      this.$forceUpdate();
     }
   }
 
@@ -626,7 +673,9 @@ export default class PortfolioDrawer extends Vue {
       if (memberMenuItems.indexOf(val) > -1) {
         // if current user is downgrading from Manager to Viewer, show confirm modal
         const member = storeData.members[index];
-        if (val === "Viewer" && member.role === "Manager") {
+        if (val === "Viewer" && member.role === "Manager" 
+          && this.currentUser.sys_id === member.sys_id
+        ) {
           debugger;
           // OPEN THE MODAL - wait for confirmation yes or no to call this.updateMemberRole
           this.downgradeMemberIndex = index;
@@ -637,12 +686,17 @@ export default class PortfolioDrawer extends Vue {
 
       } else {
         // reset role back to saved value in store
-
-        this.portfolioMembers[index].role = storeData.members?.[index].role;
+        const member = this.portfolioMembers[index];
+        member.role = storeData.members?.[index].role;
         if (val === "Remove" && this.portfolio.members && this.portfolio.members.length > 1) {
-          this.deleteMemberName = this.displayName(this.portfolioMembers[index]);
-          this.deleteMemberIndex = index;
-          this.showDeleteMemberDialog = true;
+          this.removeMemberName = this.displayName(member);
+          this.removeMemberIndex = index;
+          if (this.currentUser.sys_id !== member.sys_id) {
+            this.showRemoveMemberDialog = true;
+          } else {
+            this.showLeavePortfolioModal = true;
+          }
+
         } else if (val === "AboutRoles") {
           this.$nextTick(() => {
             const panelContent: SlideoutPanelContent = {
@@ -659,19 +713,21 @@ export default class PortfolioDrawer extends Vue {
     }
   }
 
-  public async deleteMember(): Promise<void> {
-    this.showDeleteMemberDialog = false;
+  public async removeMember(): Promise<void> {
+    this.showRemoveMemberDialog = false;
+    this.showLeavePortfolioModal = false;
     if (this.portfolio.members) {
-      this.portfolio.members.splice(this.deleteMemberIndex, 1);
+      this.portfolio.members.splice(this.removeMemberIndex, 1);
       PortfolioStore.setPortfolioData(this.portfolio);
       await this.loadPortfolio();
       Toast.setToast(this.accessRemovedToast);
     }
   }
 
-  public cancelDeleteMember(): void {
-    this.showDeleteMemberDialog = false;
-    this.deleteMemberIndex = -1;
+  public cancelRemoveMember(): void {
+    this.showRemoveMemberDialog = false;
+    this.showLeavePortfolioModal = false;
+    this.removeMemberIndex = -1;
   }
 }
 </script>

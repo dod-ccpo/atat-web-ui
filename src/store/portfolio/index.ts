@@ -613,7 +613,6 @@ export class PortfolioDataStore extends VuexModule {
     const userSysIds = portfolio.portfolio_owner + "," 
       + portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
     const allMembersDetailListDTO = await api.userTable.getUsersBySysId(userSysIds);
-    debugger;
     const allMembersDetailList: User[] = 
       allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
         // const isOwner = userSearchDTO.
@@ -634,7 +633,6 @@ export class PortfolioDataStore extends VuexModule {
     let portfolioOwner: User = {};
     let isOwner = false;
     allMembersDetailList.forEach(async member => {
-      debugger;
       isOwner = false;
       if (portfolio.portfolio_owner === member.sys_id) {
         portfolioOwner = member;
@@ -661,7 +659,6 @@ export class PortfolioDataStore extends VuexModule {
 
     // add portfolio owner to front of member list
     portfolio.members.unshift(portfolioOwner);
-    debugger;
     if (portfolio.createdBy) {
       const createdByUser = await api.userTable.search(portfolio.createdBy);
       this.doSetPortfolioCreator(createdByUser[0]);
