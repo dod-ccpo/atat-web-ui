@@ -93,17 +93,17 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import ATATFooter from "../../components/ATATFooter.vue";
-import TaskOrderSearch from "../components/TaskOrderSearch.vue";
-import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import AppSections from "@/store/appSections";
-import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import AppSections from "@/store/appSections";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
+import ATATFooter from "../../components/ATATFooter.vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import { Component } from "vue-property-decorator";
 import PortfolioStore from "@/store/portfolio";
+import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { routeNames } from "@/router/stepper";
+import Steps from "@/store/steps";
+import TaskOrderSearch from "../components/TaskOrderSearch.vue";
 
 @Component({
   components: {
