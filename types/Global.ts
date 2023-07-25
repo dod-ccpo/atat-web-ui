@@ -333,6 +333,7 @@ export interface DOWServiceOffering {
   description?: string;
   classificationInstances?: DOWClassificationInstance[];
   sequence: string;
+  isComplete?: boolean;
 }
 
 export interface DOWServiceOfferingGroup {

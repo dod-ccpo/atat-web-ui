@@ -414,9 +414,9 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
       e => e.serviceOfferingGroupId.indexOf("NONE") === -1 
       && sectionServices.includes(e.serviceOfferingGroupId) 
     );
-
     this.serviceGroupsMissingData = 
-      await Summary.isOtherOfferingDataMissing(this.selectedServiceGroups);
+      await Summary.isServiceOfferingsCompleteOnSummaryPage(
+        this.selectedServiceGroups);
   };
 
   public async mounted(): Promise<void> {

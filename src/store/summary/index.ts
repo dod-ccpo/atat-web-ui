@@ -1,6 +1,10 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
-import { DOWServiceOfferingGroup, OtherServiceOfferingData, SummaryItem } from "types/Global";
+import { 
+  DOWServiceOffering, 
+  DOWServiceOfferingGroup, 
+  OtherServiceOfferingData, 
+  SummaryItem } from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
@@ -15,6 +19,7 @@ import ClassificationRequirements, { isClassLevelUnclass } from "../classificati
 import { convertStringArrayToCommaList } from "@/helpers";
 import _ from "lodash";
 import { OtherOfferingSummaryPathResolver } from "@/router/resolvers";
+import { ServiceOfferingApi } from "@/api/serviceOffering";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -406,30 +411,81 @@ export class SummaryStore extends VuexModule {
    * @returns string[]
    */
   @Action({rawError: true})
-  public async isOtherOfferingsDataMissing(dowObjects: DOWServiceOfferingGroup[])
+  public async isServiceOfferingsCompleteOnSummaryPage(
+    dowObjects: DOWServiceOfferingGroup[])
     : Promise<string[]> {
     //eslint-disable-next-line prefer-const
     // validates dowObjects.otherOfferingData
     await dowObjects.forEach(async (dow)=> 
     {
       const id = dow.serviceOfferingGroupId;
-      dow.otherOfferingData?.forEach(async (ood)=>{
-        return await this.isOtherOfferingDataComplete(
-          {
-            otherOfferingData: ood,
-            id: id
-          })
-      }) 
+      if (dow.serviceOfferings.length>0){
+        dow.serviceOfferings?.forEach(async (so)=>{
+          return await this.isServiceOfferingDataObjComplete(
+            {
+              serviceOfferingData: so,
+              id: id,
+            })
+        }) 
+      } else if ((dow.otherOfferingData as OtherServiceOfferingData[]).length >0){
+        dow.otherOfferingData?.forEach(async (ood)=>{
+          return await this.isOtherOfferingDataObjComplete(
+            {
+              otherOfferingData: ood,
+              id: id,
+              assessSecurityRequirements:true
+            })
+        }) 
+      }
     })
-    console.log(dowObjects)
-    return [""]
+    
+    //retrieves any serviceOfferings where 
+    //otherofferingdata[i].isComplete
+
+    const offeringsMissingData = [""];
+    dowObjects.filter(
+      dowObjs =>{
+        if (dowObjs.otherOfferingData?.some(ood => ood.isComplete === false)){
+          return offeringsMissingData.push(dowObjs.serviceOfferingGroupId);
+        }
+      }
+    )
+    return offeringsMissingData;
   };
 
   @Action({rawError: true})
-  public async isOtherOfferingDataComplete(
+  public async isServiceOfferingDataObjComplete(
+    attribs: {
+    serviceOfferingData: DOWServiceOffering
+    id: string
+  })
+  : Promise<DOWServiceOffering> {
+    const data: Record<string, any> = _.clone(attribs.serviceOfferingData);
+  
+    const requiredFields = [
+      "descriptionOfNeed",
+      "personnelOnsiteAccess",
+      "entireDuration",
+      "periodsNeeded",
+      "classificationLevel"
+    ] 
+    attribs.serviceOfferingData.isComplete = requiredFields.every(f => {
+      if (f === "periodsNeeded"){
+        return data.entireDuration === "NO"
+          ? data.periodsNeeded.length > 0
+          : true
+      }
+      return data[f] !== ""
+    })
+    return attribs.serviceOfferingData;
+  }
+
+  @Action({rawError: true})
+  public async isOtherOfferingDataObjComplete(
     attribs: {
       otherOfferingData: OtherServiceOfferingData
-      id: string
+      id: string,
+      assessSecurityRequirements: boolean
     })
     : Promise<OtherServiceOfferingData> {
     //eslint-disable-next-line prefer-const
@@ -445,7 +501,6 @@ export class SummaryStore extends VuexModule {
     const isHelpDesk = attribs.id === "HELP_DESK_SERVICES";
     const isDocumentation = attribs.id === "DOCUMENTATION_SUPPORT";
     const isGeneralCloudSupport = attribs.id === "GENERAL_CLOUD_SUPPORT";
-    
     
     const data: Record<string, any> = _.clone(attribs.otherOfferingData);
     let additionalFields:string[] = [];
@@ -540,12 +595,13 @@ export class SummaryStore extends VuexModule {
         "classificationLevel"
       ] 
       // validate classifiedInformationTypes if classlevel is TS/S
-      if (!isClassLevelUnclass(data["classificationLevel"])){
+      if (attribs.assessSecurityRequirements
+        && !isClassLevelUnclass(data["classificationLevel"])){
         additionalFields = ["classifiedInformationTypes"];
       }
     }
     requiredFields = requiredFields.concat(additionalFields);
-    
+    debugger;
     attribs.otherOfferingData.isComplete = requiredFields.every(f => {
       if (f === "periodsNeeded"){
         return data.entireDuration === "NO"

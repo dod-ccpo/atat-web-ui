@@ -389,17 +389,11 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           : instanceClone.descriptionOfNeed;
       }
 
-      console.log((await Summary.isOtherOfferingDataComplete(
+      isValid = (await Summary.isOtherOfferingDataObjComplete(
         {
           otherOfferingData: instanceClone,
-          id: (await DescriptionOfWork.getCurrentOfferingGroupId())
-        }
-      )))
-
-      isValid = (await Summary.isOtherOfferingDataComplete(
-        {
-          otherOfferingData: instanceClone,
-          id: (await DescriptionOfWork.getCurrentOfferingGroupId())
+          id: (await DescriptionOfWork.getCurrentOfferingGroupId()),
+          assessSecurityRequirements: false
         }
       )).isComplete as boolean;
 
@@ -478,17 +472,17 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
   }
 
-  public async logInstanceCompletion(): Promise<void>{
-    debugger;
-    const currentDOWObject = await DescriptionOfWork.otherOfferingObject;
-    // await Summary.isOtherOfferingDataComplete(
-    //   {
-    //     otherOfferingData: currentDOWObject.otherOfferingData,
-    //     id: currentDOWObject.serviceOfferingGroupId})
-    // this.offeringInstances = 
-    //   otherOfferingData.otherOfferingData as OtherServiceOfferingData[];
-    // console.log(this.offeringInstances)
-  }
+  // public async logInstanceCompletion(): Promise<void>{
+  //   debugger;
+  //   const currentDOWObject = await DescriptionOfWork.otherOfferingObject;
+  //   // await Summary.isOtherOfferingDataComplete(
+  //   //   {
+  //   //     otherOfferingData: currentDOWObject.otherOfferingData,
+  //   //     id: currentDOWObject.serviceOfferingGroupId})
+  //   // this.offeringInstances = 
+  //   //   otherOfferingData.otherOfferingData as OtherServiceOfferingData[];
+  //   // console.log(this.offeringInstances)
+  // }
 
 
 
@@ -537,7 +531,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await DescriptionOfWork.setNeedsSecurityRequirements();
-    await this.logInstanceCompletion();
+    // await this.logInstanceCompletion();
     return true;
   }
 
