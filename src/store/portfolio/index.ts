@@ -589,9 +589,27 @@ export class PortfolioDataStore extends VuexModule {
     this.showAddMembersModal = show;
   }
 
+  @Action({rawError: true})
+  public async setPortfolioData(portfolio: Portfolio): Promise<void> {
+    try {
+      if (portfolio.sysId) {
+        const members = {
+          portfolio_owner: portfolio.portfolio_owner,
+          portfolio_managers: portfolio.portfolio_managers,
+          portfolio_viewers: portfolio.portfolio_viewers,
+        } as unknown as PortfolioSummaryDTO;
+        let updatedPortfolio = await api.portfolioTable.update(portfolio.sysId, members);
+        await this.doSetPortfolioData(members);
+        await this.doSetCurrentUserRole();
+      }
+    } catch(error) {
+      console.error("Error updating portfolio members:" + error);
+    }
+  }
+
   @Mutation
-  public async setPortfolioData(value: Portfolio): Promise<void> {
-    Object.assign(this.currentPortfolio,value)
+  public async doSetPortfolioData(portfolio: Portfolio): Promise<void> {
+    Object.assign(this.currentPortfolio,portfolio)
   }
 
   @Mutation

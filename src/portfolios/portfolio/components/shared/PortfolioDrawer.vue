@@ -135,7 +135,7 @@
               <div 
                 v-if="!currentUserIsViewer && 
                   ((member.role === 'Owner' && currentUserIsOwner
-                  || member.role === 'Manager' && currentUserIsManager))" 
+                  || member.role === 'Manager'))" 
                 class="_tooltip-content-wrap _left" 
                 style="width: 250px;"
               >
@@ -653,20 +653,27 @@ export default class PortfolioDrawer extends Vue {
   public async updateMemberRole(val: string, index: number): Promise<void> {
     if (this.portfolio.members) {
       this.portfolio.members[index].role = val;
-      // EJY need to make API call to change roles       
+
+      const managers: string[] = [];
+      const viewers: string[] = [];
+      this.portfolio.members.forEach(member => {
+        if (member.role === "Viewer" && member.sys_id) viewers.push(member.sys_id);
+        if (member.role === "Manager" && member.sys_id) managers.push(member.sys_id);
+      });
+      this.portfolio.portfolio_viewers = viewers.join(",");
+      this.portfolio.portfolio_managers = managers.join(",");
+
       await PortfolioStore.setPortfolioData(this.portfolio);
       this.downgradeMemberIndex = -1;
 
       const member = this.portfolioMembers[index];
       member.menuItems = this.getMemberMenuItems(member);
       this.$set(this.portfolioMembers, index, member);
-      this.$forceUpdate();
     }
   }
 
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
     const storeData = await PortfolioStore.getPortfolioData();
-    debugger;
     if (this.portfolio && this.portfolio.members && storeData.members) {
 
       const memberMenuItems = ["Manager", "Viewer"]
@@ -676,7 +683,6 @@ export default class PortfolioDrawer extends Vue {
         if (val === "Viewer" && member.role === "Manager" 
           && this.currentUser.sys_id === member.sys_id
         ) {
-          debugger;
           // OPEN THE MODAL - wait for confirmation yes or no to call this.updateMemberRole
           this.downgradeMemberIndex = index;
           this.showManagerDowngradeDialog = true;
