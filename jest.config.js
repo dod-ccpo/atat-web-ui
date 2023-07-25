@@ -60,6 +60,8 @@ module.exports = {
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironment.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.spec.ts",
+    "<rootDir>/src/steps/03-Background/CurrentEnvironment/ReplicateDetails.spec.ts",
+    "<rootDir>/src/steps/03-Background/CurrentEnvironment/UploadSystemDocuments.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.spec.ts",
     "<rootDir>/src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts",
     "<rootDir>/src/steps/07-OtherContractConsiderations/Travel.spec.ts",
