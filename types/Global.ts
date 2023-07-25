@@ -41,6 +41,7 @@ export interface TopNavItem {
   parentTitle?: string;
   component?: Component;
   spaSectionTitle?: string;
+  spaAltSectionTitle?: string;
   externalUrl?: string;
   icon?: MenuIcon;
   link?: string;

@@ -5,6 +5,7 @@
       <label
         :id="id + '_Label'"
         class="form-field-label mr-1"
+        :class="labelClass"
         :for="id + '_SearchInput'"
       >
         {{ label }}
@@ -165,6 +166,7 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "320px" }) private width?: string;
   @Prop({ default: "auto" }) private wrapperWidth?: string;
   @Prop({ default: "" }) private label?: string;
+  @Prop({ default: "" }) private labelClass?: string;
   @Prop({ default: "" }) private tooltipTitle?: string;
   @Prop({ default: "" }) private tooltipText?: string;
   @Prop({ default: "" }) private helpText?: string;

@@ -21,6 +21,7 @@ import ATATTopNavBar from "./components/ATATTopNavBar.vue";
 import AppSections from "@/store/appSections";
 import DocumentReview from "@/documentReview/Index.vue";
 import Portfolios from "@/portfolios/Index.vue";
+import CreateNewPortfolio from '@/portfolios/portfolio/CreateNewPortfolio.vue';
 import Packages from "@/packages/Index.vue";
 import Home from "@/home/Index.vue";
 import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
@@ -60,6 +61,9 @@ export default class App extends Vue {
       break;
     case this.sectionTitles.Portfolios:
       AppSections.setAppContentComponent(Portfolios);
+      break;
+    case this.sectionTitles.CreateFirstPortfolio:
+      AppSections.setAppContentComponent(CreateNewPortfolio);
       break;
     case this.sectionTitles.PortfolioSummary:
       AppSections.setAppContentComponent(PortfolioSummary);

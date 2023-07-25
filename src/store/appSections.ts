@@ -26,6 +26,7 @@ export class AppSectionsStore extends VuexModule {
     JWCCDashboard: "JWCC Dashboard",
     TOLookup: "Lookup TO in EDA",
     Portfolios: "Portfolios",
+    CreateFirstPortfolio: 'Create First Portfolio',
     PortfolioSummary: "Portfolio Summary",
     DocumentReview: "Document Review",
     Packages: "Packages",
