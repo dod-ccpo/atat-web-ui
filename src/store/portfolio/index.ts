@@ -598,10 +598,11 @@ export class PortfolioDataStore extends VuexModule {
           portfolio_managers: portfolio.portfolio_managers,
           portfolio_viewers: portfolio.portfolio_viewers,
         } as unknown as PortfolioSummaryDTO;
-        let updatedPortfolio = await api.portfolioTable.update(portfolio.sysId, members);
-        await this.doSetPortfolioData(members);
-        await this.doSetCurrentUserRole();
+
+        await api.portfolioTable.update(portfolio.sysId, members);
       }
+      await this.doSetPortfolioData(portfolio);
+      await this.doSetCurrentUserRole();
     } catch(error) {
       console.error("Error updating portfolio members:" + error);
     }

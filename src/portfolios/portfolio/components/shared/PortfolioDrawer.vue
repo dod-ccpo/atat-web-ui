@@ -358,7 +358,7 @@ export default class PortfolioDrawer extends Vue {
   public get onlyOneManager(): boolean{
     return this.managerCount === 1;
   }
-  
+
   public get isProdEnv(): boolean {
     return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
   }
@@ -733,7 +733,7 @@ export default class PortfolioDrawer extends Vue {
     this.showLeavePortfolioModal = false;
     if (this.portfolio.members) {
       this.portfolio.members.splice(this.removeMemberIndex, 1);
-      PortfolioStore.setPortfolioData(this.portfolio);
+      await PortfolioStore.setPortfolioData(this.portfolio);
       await this.loadPortfolio();
       Toast.setToast(this.accessRemovedToast);
     }
