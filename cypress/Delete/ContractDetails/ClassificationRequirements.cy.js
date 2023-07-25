@@ -1,9 +1,9 @@
 import {
   randomString,
   randomAlphaNumeric
-} from "../../../../helpers";
-import common from "../../../../selectors/common.sel";
-import contractDetails from "../../../../selectors/contractDetails.sel";
+} from "../../helpers";
+import common from "../../selectors/common.sel";
+import contractDetails from "../../selectors/contractDetails.sel";
 
 describe("Test suite: Contract Details Step:Classification Requirements substep", () => {
   let pt = "TC-Step-3-ContractDetails-ClassLevel-" + randomAlphaNumeric(5);

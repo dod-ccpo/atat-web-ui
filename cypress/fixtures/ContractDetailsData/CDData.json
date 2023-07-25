@@ -1,0 +1,81 @@
+{
+  "POPPage1": {
+    "pageHeader1": "Let’s gather details about the duration of your task order",
+    "expectedPOPText": "Your Period of Performance (PoP) will begin based upon the execution date of your task order or on your requested start date, if applicable. It will extend through the length of the base period, plus any subsequent exercised option periods. In the fields below, specify the required length of time for each period. Add, duplicate or remove option periods as needed, not to exceed five calendar years total. Learn more about PoPs on the JWCC contract.",
+    "popLengthLabel": " Period of Performance length ",
+    "expectedOptions" : [
+      "Year",
+      "Month(s)",
+      "Week(s)",
+      "Day(s)"]
+  },
+
+  "POPPage2": {
+    "pageHeader2": "Do you want to request a PoP start date?",
+    "expectedPOPText": "Due to project requirements and/or contractual obligations, your PoP may need to start on a specific date. If no date is specified, then your PoP will begin based upon the execution date of your task order.",
+    "listOptions" : [
+        "No sooner than",
+        "Not later than"],
+
+    "expectedWarningMessageNLT" : "All efforts will be made to accommodate your requested period of performance start date. However, there is no guarantee that the award will be made by said date. Normal contracting lead times and/or complexity of requirements may prevent meeting the requested date.",
+    "popStartRadioError": "Please select an option",
+    "requestDatePickerError": "Please enter a valid date"
+  },
+
+  "POPPage3": {
+    "pageHeader3": " Will this be a recurring requirement? ",
+    "expectedstartTextPage3": "DISA has developed a tracking system for expiring contracts. Responding “YES” below will enable DITCO to notify you of expiring contracts in sufficient time to prepare your follow-on acquisition package.",
+    "expectedWarningMessageNLT" : "All efforts will be made to accommodate your requested period of performance start date. However, there is no guarantee that the award will be made by said date. Normal contracting lead times and/or complexity of requirements may prevent meeting the requested date."
+  },
+
+  "contractTypePage": {
+    "pageHeader4": " Which contract type(s) apply to this acquisition? ",
+    "expectedRecuringReqText" : "Firm-fixed-price (FFP) is the standard contract type for JWCC task orders. For JWCC, consumption-based line items are considered FFP. You must provide justification for a time-and-materials (T&M) or hybrid contract, in accordance with FAR 12.207. If you are considering a T&M contract, we suggest contacting your Contracting Office for further guidance.",
+    "contractEffortMsg":"Select all that apply to your contracting effort.",
+    "expectedLabels" : [
+      "Firm-fixed-price (FFP) RecommendedStandard contract type",
+        "Time-and-materials (T&M) A justification is required for any contract line item other than travel."
+    ],
+    "justificationTMMsg":"Please provide justification for your T&M contract type."
+  },
+
+  "classLevelPage1": {
+   "pageHeaderCL1": " What classification level(s) will be required for your cloud resources and/or services? ",
+   "expectedintroText": "In the next section, we will dive into the types of resources, tools, and services that you need for this acquisition. The classification level(s) that you select below will be applied to any performance requirements that you specify. If you need more than one level, we will walk you through what is required within each level later.",
+   "selectALLMsgCLPage": " Select all that apply to your project. ",
+   "expectedLabels" :[
+    "Unclassified / Impact Level 2 (IL2) Accommodates DoD information approved for public release (Low Confidentiality and Moderate Integrity)",
+    "Unclassified / Impact Level 4 (IL4) Accommodates DoD Controlled Unclassified Information (CUI)",
+    "Unclassified / Impact Level 5 (IL5) Accommodates DoD CUI and National Security Systems",
+    "Secret / Impact Level 6 (IL6)",
+    "Top Secret"
+     ],
+    "alertMessage": "You do not need to complete a DD Form 254, DoD Contract Security Classification Specification, for this task order. JWCC provides a DD Form 254 at the contract level that covers access to all classification levels for the task orders ordered within it."
+  },
+
+  "classLevelPage2": {
+   "pageHeaderCL2": " Let’s find out more about your security requirements ",
+   "cspMessage": "Based on what you told us, this project will require the CSP to access classified information. You are NOT required to complete a DD Form 254 for this task order. However, you will need to identify access requirements that will be included in your Description of Work. Learn more about JWCC security requirements",
+   "scSection": " For your SECRET cloud services and support, what type of classified information will be accessed? ",
+   "selectALLSecretMsg": " Select all that apply to your SECRET classification level. ",
+   "tsSection" : " For your TOP SECRET cloud services and support, what type of classified information will be accessed? ",
+   "selectALLTopSecretMsg": " Select all that apply to your TOP SECRET classification level. "
+  },
+
+  "classLevelPage3": {
+   "pageHeaderCL3": " Do you require a cross-domain solution (CDS)? ",
+   "cdsLabelTxt": "What type of cross-domain solution do you need?",
+   "cdsLabelTxt2": " For each selection, enter the approximate quantity of data that you expect to transfer between domains each month. ",
+   "projectFSFieldLabel": "Projected file stream/type",
+   "anticipatedLabel1":"Statement of objectives for the anticipated need or usage",
+   "anticipatedLabel2": "Use vendor-neutral language to describe the purpose and usage. Provide a functional description of the requirement without including any company names or vendor-unique brand, product, or titles.",
+   "baseLabel1" : "Do you need this requirement for the entire duration of your task order?",
+   "baseLabel2" : " In which base and/or option periods do you need this requirement? "
+  },
+
+ "classificationSummary": {
+  "pageHeaderSummary": " Your Contract Details Summary "
+
+ }
+
+}

@@ -4,9 +4,9 @@ import {
   randomNumber,
   randomString,
   suffixId,
-} from "../../../../helpers";
-import common from "../../../../selectors/common.sel";
-import contractDetails from "../../../../selectors/contractDetails.sel";
+} from "../../helpers";
+import common from "../../selectors/common.sel";
+import contractDetails from "../../selectors/contractDetails.sel";
 
 describe("Test suite: Contract Details: E2E work flow", () => {
   let pt = "TC-Step-3-ContractDetails-E2E-" + randomAlphaNumeric(5);

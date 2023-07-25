@@ -1,7 +1,7 @@
-import {randomAlphaNumeric,randomString} from "../../../helpers";
-import common from "../../../selectors/common.sel"
-import contractDetails from "../../../selectors/contractDetails.sel";
-import co from "../../../selectors/contractOffice.sel";
+import {randomAlphaNumeric,randomString} from "../../helpers";
+import common from "../../selectors/common.sel"
+import contractDetails from "../../selectors/contractDetails.sel";
+import co from "../../selectors/contractOffice.sel";
 
 describe("Test suite: Contract Details Step: Contract Type substep", () => {
   let pt = "TC-Step-3-ContractDetails-Contract Type-" + randomAlphaNumeric(5);

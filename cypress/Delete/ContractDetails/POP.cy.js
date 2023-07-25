@@ -2,10 +2,10 @@ import {
   randomNumberBetween,
   randomAlphaNumeric,
   randomString
-} from "../../../helpers";
-import common from "../../../selectors/common.sel";
-import co from "../../../selectors/contractOffice.sel";
-import contractDetails from "../../../selectors/contractDetails.sel";
+} from "../../helpers";
+import common from "../../selectors/common.sel";
+import co from "../../selectors/contractOffice.sel";
+import contractDetails from "../../selectors/contractDetails.sel";
 
 
 describe("Test suite: Contract Details Step:Period of Performance substep", () => {
@@ -126,7 +126,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.findElement(contractDetails.baseDeleteButton).click();    
   });
 
-  it("TC4: Duplicate: Drag and Drop", () => {       
+  it.only("TC4: Duplicate: Drag and Drop", () => {       
     cy.findElement(contractDetails.baseDropdownIcon).click();
     cy.findElement(contractDetails.baseDropdownMonth).click();
     //Enter the Value for Base
