@@ -114,7 +114,7 @@ import { routeNames } from "@/router/stepper";
     TaskOrderSearch,
   },
 })
-export default class CreateNewPortfolio extends Vue {
+export default class CreateFirstPortfolio extends Vue {
   public provisionStepsText = [
     `Provide a few details about your awarded task order and the individuals who 
       will administer your cloud resources.`,
