@@ -207,7 +207,6 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   public isValid = true;
 
   public get currentData(): CurrentEnvironmentInstanceDTO {
-
     return this.instanceData;
   }
   public savedData: CurrentEnvironmentInstanceDTO = _.cloneDeep(defaultCurrentEnvironmentInstance);
@@ -445,21 +444,12 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       if (instanceStoreData) {
         this.instanceData = _.cloneDeep(instanceStoreData);
         this.savedData = _.cloneDeep(instanceStoreData);
-        if (typeof this.instanceData.deployed_regions === "string") {
-          //eslint-disable-next-line prefer-const
-          let deployedRegionIds = this.instanceData.deployed_regions?.split(',')
-          if(deployedRegionIds.length != this.instanceData.deployed_regions?.length){
-            deployedRegionIds.forEach((instanceId) => {
-              this.selectedDeployedRegionsOnLoad.push(instanceId)
-            })
-          }
-          
-        } else {
-          console.log("error")
-        }
-        
-        this.regionUsersOnLoad = this.instanceData.users_per_region;
 
+        this.selectedDeployedRegionsOnLoad = typeof this.instanceData.deployed_regions === "string"
+          ? this.instanceData.deployed_regions?.split(',')
+          : this.instanceData.deployed_regions as string[];
+
+        this.regionUsersOnLoad = this.instanceData.users_per_region;
         if (this.instanceData.is_traffic_spike_event_based === "YES") {
           this.usageTrafficSpikeCauses.push("EVENT");
         }
@@ -534,7 +524,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
    * returns true otherwise
    */
   public get showPricingDetails(): boolean {
-    return this.instanceData.instance_location === "ON_PREM" ? false:true 
+    return this.instanceData.instance_location !== "ON_PREM";
   }
 
   /**
