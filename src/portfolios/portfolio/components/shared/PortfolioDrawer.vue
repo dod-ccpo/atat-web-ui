@@ -660,8 +660,10 @@ export default class PortfolioDrawer extends Vue {
         if (member.role === "Viewer" && member.sys_id) viewers.push(member.sys_id);
         if (member.role === "Manager" && member.sys_id) managers.push(member.sys_id);
       });
+      /* eslint-disable camelcase */
       this.portfolio.portfolio_viewers = viewers.join(",");
       this.portfolio.portfolio_managers = managers.join(",");
+      /* eslint-enable camelcase */
 
       await PortfolioStore.setPortfolioData(this.portfolio);
       this.downgradeMemberIndex = -1;
