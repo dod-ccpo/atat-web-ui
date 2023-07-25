@@ -628,7 +628,8 @@ export class PortfolioDataStore extends VuexModule {
    */
   @Action({rawError: true})
   public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
-    const userSysIds = portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
+    const userSysIds = portfolio.portfolio_owner + "," 
+      + portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
     const allMembersDetailListDTO = await api.userTable.getUsersBySysId(userSysIds);
     const allMembersDetailList: User[] = 
       allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
@@ -648,7 +649,7 @@ export class PortfolioDataStore extends VuexModule {
     portfolio.members = [];
     let portfolioOwner: User = {};
     let isOwner = false;
-    allMembersDetailList.forEach(async member => {
+    allMembersDetailList.forEach(member => {
       isOwner = false;
       if (portfolio.portfolio_owner === member.sys_id) {
         portfolioOwner = member;
