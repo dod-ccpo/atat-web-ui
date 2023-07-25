@@ -646,16 +646,24 @@ export class PortfolioDataStore extends VuexModule {
     portfolio.portfolio_managers_detail = [];
     portfolio.portfolio_viewers_detail = [];
     portfolio.members = [];
-    allMembersDetailList.forEach(member => {
-      if (portfolio.portfolio_managers?.indexOf(member.sys_id as string) !== -1) {
+    let portfolioOwner: User = {};
+    let isOwner = false;
+    allMembersDetailList.forEach(async member => {
+      isOwner = false;
+      if (portfolio.portfolio_owner === member.sys_id) {
+        portfolioOwner = member;
+        portfolioOwner.role = "Owner";
+        isOwner = true;
+      } else if (portfolio.portfolio_managers?.indexOf(member.sys_id as string) !== -1) {
         member.role = "Manager";
         portfolio.portfolio_managers_detail?.push(member);
-        
       } else {
         member.role = "Viewer";
         portfolio.portfolio_viewers_detail?.push(member);
       }
-      portfolio.members?.push(member);
+      if (!isOwner) {
+        portfolio.members?.push(member);
+      }
     })
     portfolio.members?.sort((a, b) => {
       if (a.fullName && b.fullName) {
@@ -666,8 +674,7 @@ export class PortfolioDataStore extends VuexModule {
     });
 
     // add portfolio owner to front of member list
-    portfolio.members.unshift(portfolioOwner);
-    if (portfolio.createdBy) {
+    portfolio.members.unshift(portfolioOwner);    if (portfolio.createdBy) {
       const createdByUser = await api.userTable.search(portfolio.createdBy);
       this.doSetPortfolioCreator(createdByUser[0]);
     }
