@@ -8,7 +8,6 @@ import {
     formatDateWithPeriod,
     formatDateWithoutPeriod
 } from "../../../../helpers";
-import projectOverview from "../../../../selectors/projectOverview.sel";
 import fo from "../../../../selectors/fairOpportunityProcess.sel";
 import org from "../../../../selectors/org.sel";
 import contact from "../../../../selectors/contact.sel";
@@ -16,6 +15,8 @@ import common from "../../../../selectors/common.sel";
 import contactInfo from "../../../../fixtures/contactInfo.json";
 import commonCorAcor from "../../../../selectors/commonCorAcor.sel";
 import ac from "../../../../selectors/acor.sel";
+import contractDetails from "../../../../selectors/contractDetails.sel";
+
 
 
 describe("Test suite: E2E-Exception to Fair Opportunity", () => {
@@ -103,7 +104,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
     const descImpactInputVal = "descImpactInput- " + randomString(5);
 
      //Selectionof MRR-Contract action
-     let contractAction = "none" //bridge,undefinitized,optionToExtend;
+     let contractAction = "optionToExtend" //none,bridge,undefinitized,optionToExtend;
     let techniques=["perKnowledge","reviewDB"]//disaMRR,contactKnowledge,reviewDB,reviewSorceList,reviewProdLit,reviewOtherContracts,reviewJWCCCatlog,other;
     const personReliedVal = "personReliedInput- " + randomString(5);
     const otherVal = "otherTechniques-" + randomString(5);
@@ -114,9 +115,14 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
     let researchSameDate="No"//Yes//No
     const supportDataVal = "supportdata- " + randomString(5);
     const cd = new Date()
-    const selectedDate = formatDateWithoutPeriod(cd,"previous");
-    const sameEndDate = formatDateWithoutPeriod(cd);
+    const selectedDate = formatDateWithoutPeriod(cd,13,"previous");
+    const sameEndDate = formatDateWithoutPeriod(cd,27,"previous");
+    
     const reviewResearchDetailsVal = cleanText(`Additional research was conducted on ${selectedDate} by reviewing the specific capabilities in the JWCC Contracts and it was determined that ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${supportDataVal} Further research was conducted on ${sameEndDate} by reviewing the JWCC contractor's catalogs to determine if other similar offerings (to include: ) meet or can be modified to satisfy the Government’s requirements. The results have determined that no other offering is suitable as follows...${crResultVal} Therefore, it was determined the is essential to the Government’s requirements and ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${techniquesSummaryInputVal}`);
+    const cAction = "-8 extension"// bridge extension,UCA,-8 extension
+    const reviewResearchDetailsValCase3 = cleanText(`Additional research was conducted on ${selectedDate} by reviewing the specific capabilities in the JWCC Contracts and it was determined that ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${supportDataVal} Further research was conducted on ${sameEndDate} by reviewing the JWCC contractor's catalogs to determine if other similar offerings (to include: ) meet or can be modified to satisfy the Government’s requirements. The results have determined that no other offering is suitable as follows...${crResultVal} Therefore, it was determined the is essential to the Government’s requirements and ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. Additional market research was not completed for this effort because an exception applies (${cAction}).`);
+    const reviewResearchDetailsValCase4= cleanText(`Additional research was conducted on ${selectedDate} by reviewing the specific capabilities in the JWCC Contracts and it was determined that ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${supportDataVal} Additional market research was not completed for this effort because an exception applies (${cAction}).`)
+    
     const researchDetailsVal = "test research details- "+ randomString(5);
 
     //Selection of Conducted,market research
@@ -142,66 +148,66 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
 
     before(() => {
         cy.goToAcqPackageStepOne(pt, scope);
-        // cy.clickContinueButton(
-        //     org.foreignradioBtn,
-        //     "Let’s find out about the primary point of contact for this requirement"
-        // );
-        // cy.contactRoleRadioBtnOption(contact.civilianRadioBtn, "CIVILIAN");
-        // cy.enterContactInformation(contactInformation);
-        // cy.enterPhoneNumber(
-        //     contact.phoneControlIcon,
-        //     contact.phoneDropdown,
-        //     "united",
-        //     contact.countryListItems,
-        //     contact.phoneInputBox,
-        //     "5127845362"
-        // );
-        // cy.clickContinueButton(
-        //     contact.emailTxtBox,
-        //     "Let’s gather info about your Contracting Officer’s Representative (COR)"
-        // );
-        // cy.findElement(contact.civilianRadioBtn).click({
-        //     force: true
-        // });
-        // cy.enterContactInformation(contactDetails, "COR_");
-        // cy.enterPhoneNumber(
-        //     contact.phoneControlIcon,
-        //     contact.phoneDropdown,
-        //     "Cro",
-        //     contact.countryListItems,
-        //     phoneInputSelector,
-        //     "521136541"
-        // );
-        // cy.clickContinueButton(
-        //     contact.civilianRadioBtn,
-        //     "Do you have an Alternate Contracting Officer’s Representative (ACOR)?"
-        // );
+        cy.clickContinueButton(
+            org.foreignradioBtn,
+            "Let’s find out about the primary point of contact for this requirement"
+        );
+        cy.contactRoleRadioBtnOption(contact.civilianRadioBtn, "CIVILIAN");
+        cy.enterContactInformation(contactInformation);
+        cy.enterPhoneNumber(
+            contact.phoneControlIcon,
+            contact.phoneDropdown,
+            "united",
+            contact.countryListItems,
+            contact.phoneInputBox,
+            "5127845362"
+        );
+        cy.clickContinueButton(
+            contact.emailTxtBox,
+            "Let’s gather info about your Contracting Officer’s Representative (COR)"
+        );
+        cy.findElement(contact.civilianRadioBtn).click({
+            force: true
+        });
+        cy.enterContactInformation(contactDetails, "COR_");
+        cy.enterPhoneNumber(
+            contact.phoneControlIcon,
+            contact.phoneDropdown,
+            "Cro",
+            contact.countryListItems,
+            phoneInputSelector,
+            "521136541"
+        );
+        cy.clickContinueButton(
+            contact.civilianRadioBtn,
+            "Do you have an Alternate Contracting Officer’s Representative (ACOR)?"
+        );
 
-        // if (acor==="Yes"){
-        //         cy.findElement(ac.yesRadioBtn).click({ force: true });
-        //         cy.clickContinueButton(
-        //             ac.yesRadioBtn,
-        //             "Let’s gather info about your ACOR"
-        //         );
-        //         cy.manuallyEnterContactInformation(
-        //             "ACOR_",
-        //             " Your ACOR’s Contact Information ",
-        //             " What role best describes your ACOR’s affiliation with the DoD? ",
-        //             contact.militaryRadioBtn,
-        //             "MILITARY"
-        //             );             
-        //         cy.enterContactInformation(acorDetails, "ACOR_");            
-        //         cy.enterPhoneNumber(
-        //             contact.phoneControlIcon,
-        //             contact.phoneDropdown,
-        //             "Cana",
-        //             contact.countryListItems,
-        //             phoneInputACORSelector ,
-        //             "56987412564"
-        //         );
-        //     }else{
-        //         cy.findElement(ac.noRadioBtn).click({ force: true });
-        //     }
+        if (acor==="Yes"){
+                cy.findElement(ac.yesRadioBtn).click({ force: true });
+                cy.clickContinueButton(
+                    ac.yesRadioBtn,
+                    "Let’s gather info about your ACOR"
+                );
+                cy.manuallyEnterContactInformation(
+                    "ACOR_",
+                    " Your ACOR’s Contact Information ",
+                    " What role best describes your ACOR’s affiliation with the DoD? ",
+                    contact.militaryRadioBtn,
+                    "MILITARY"
+                    );             
+                cy.enterContactInformation(acorDetails, "ACOR_");            
+                cy.enterPhoneNumber(
+                    contact.phoneControlIcon,
+                    contact.phoneDropdown,
+                    "Cana",
+                    contact.countryListItems,
+                    phoneInputACORSelector ,
+                    "56987412564"
+                );
+            }else{
+                cy.findElement(ac.noRadioBtn).click({ force: true });
+            }
         cy.clickSideStepper(
             common.stepEvaluationCriteriaLink,
             " Evaluation Criteria "
@@ -359,7 +365,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
                 fo.crStartDateBtn,
                 fo.crNavigatePreviousMonth,
                 fo.crSelectDate,
-                cd,
+                "27",
                 fo.crDatePicker
             );
             } else {
@@ -379,10 +385,10 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
     }      
 
     function handleOtherTechniques(
-            techniques,
-            personReliedVal,
-            otherVal,
-            techniquesSummaryInputVal
+        techniques,
+        personReliedVal,
+        otherVal,
+        techniquesSummaryInputVal
         ) {
             if (contractAction === "none") {
             const techniquesCBMap = {
@@ -414,37 +420,43 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
             }
         }
         
-    function handleMRREfforts(
-        capablesourceOption,
-        reviewCatalogSectionOption,
-        contractAction,            
-        reviewResearchDetailsVal,
-        researchDetailsVal
+        function handleMRREfforts(
+            capablesourceOption,
+            reviewCatalogSectionOption,
+            contractAction,
+            reviewResearchDetailsVal,
+            researchDetailsVal
         ) {
-            if (
-                capablesourceOption === "Yes" &&
-                reviewCatalogSectionOption === "Yes" &&
-                contractAction === "none"
-            ) {
-                cy.clickContinueButton(
-                    fo.capablesourceYesOption,
-                    "Let’s review your market research details"
-                );
+            const reviewPageHeaderText = "Let’s review your market research details";
+            const tellUsReviewText = "Tell us about your market research details";
+        
+            // Case 1: Capable Source - Yes, Review Catalog - Yes, Contract Action - None
+            if (capablesourceOption === "Yes" && reviewCatalogSectionOption === "Yes" && contractAction === "none") {
+                cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
                 cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsVal);
-            } else if (
-                capablesourceOption === "No" &&
-                reviewCatalogSectionOption === "No" &&
-                contractAction === "none"
-            ) {
-                cy.clickContinueButton(
-                    fo.capablesourceYesOption,
-                    "Tell us about your market research details"
-                );
+            }
+            
+            // Case 2: Capable Source - No or Contract Action - Not None
+            else if (capablesourceOption === "No" && contractAction !== "none") {
+                cy.clickContinueButton(fo.capablesourceYesOption, tellUsReviewText);
                 cy.findElement(fo.researchDetailsInput).should("be.empty");
                 cy.enterTextInTextField(fo.researchDetailsInput, researchDetailsVal);
             }
-    }
+            
+            // Case 3: Capable Source - Yes, Review Catalog - Yes, Contract Action - Not None
+            else if (capablesourceOption === "Yes" && reviewCatalogSectionOption === "Yes" && contractAction !== "none") {
+                cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
+                cy.reviewPageTxtMatches(fo.researchDetailsInput,reviewResearchDetailsValCase3);
+            }
 
+            // Case 4: Capable Source - Yes or Contract Action - Not None
+            else if (capablesourceOption === "Yes" && contractAction !== "none") {
+                cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
+                cy.findElement(fo.researchDetailsInput).should("be.empty");
+                cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsValCase4);
+            }
+        }              
+        
     function followOnUniqueOrSpecializedCapabilities() {
         cy.verifyPageHeader("Do you want to include any other facts to support the use of the “unique or highly specialized capabilities” exception?");
     }
@@ -645,7 +657,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         const contractActionsMap = {
             undefinitized: fo.undefinitizedRadioOption,
             bridge: fo.bridgeContractAction,
-            extendService: fo.optionToExtend,
+            optionToExtend: fo.optionToExtend,
             none: fo.noneContractOption
         };
         cy.findElement(contractActionsMap[contractAction]).click({
@@ -654,8 +666,11 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         cy.clickContinueButton(
             fo.noneContractOption,
             "Let’s find out more about your market research efforts"
-        );
-        
+        );        
+        cy.waitUntil(function () {
+            return Cypress.$(fo.capablesourceYesOption).attr("aria-checked") == "false";
+                
+        });
         handleOnlyCapableSource(supportDataVal);
         
         if(specificFeaProduct ==="Yes"){
@@ -674,17 +689,24 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
             reviewResearchDetailsVal,
             researchDetailsVal
         ); 
-        cy.clickContinueButton(
+        if (contractAction === "none"){
+            cy.clickContinueButton(
             fo.researchDetailsInput,
             "Who conducted market research for this effort?"
         );
-    });
-    it.skip("TC5: Exceptions", () => {
         cy.enterTextInTextField( fo.name0Txtfield,name);
         cy.enterTextInTextField( fo.title0Txtfield,jobTitle);
         cy.enterTextInTextField( fo.org0Txtfield,orgName);
         cy.btnClick(common.continueBtn, " Continue ");
         cy.waitUntilElementIsGone(fo.name0Txtfield);
+        }else{
+            cy.btnClick(common.continueBtn, " Continue ");
+        cy.waitUntilElementIsGone(fo.researchDetailsInput);
+        }
+        
+    });
+    it("TC5: Exceptions", () => {
+        
         followOnException();
         if(logicalException ==="Yes"){
             cy.radioBtn(fo.exceptionYesOption, "YES").click({
@@ -703,7 +725,8 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
             );
         
         });
-    it.skip("TC6: Remove Barriers", () => {
+
+    it("TC6: Remove Barriers", () => {
         handleFollowOn(followOn);
         const pursingTrainingMap = {
             Yes: fo.pursingYesOption,
@@ -737,9 +760,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         cy.clickContinueButton(
             fo.reqPrimaryPOC,
             "Based on what you told us, you do not need an evaluation plan for this acquisition."
-            );
-
-        
+            );        
             
     });
 });

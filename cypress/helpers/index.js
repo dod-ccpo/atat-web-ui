@@ -175,13 +175,13 @@ export function formatDateWithPeriod(date) {
   return `${formattedMonth} ${nextMonthDate.getDate()}, ${nextMonthDate.getFullYear()}`;
 }
 
-export function formatDateWithoutPeriod(date,direction = "next") {  
+export function formatDateWithoutPeriod(date,dayOfMonth,direction = "next") {  
   const newDate = new Date(date);
 
   if (direction === "next") {
-    newDate.setMonth(newDate.getMonth() + 1, 13);
+    newDate.setMonth(newDate.getMonth() + 1, dayOfMonth);
   } else if (direction === "previous") {
-    newDate.setMonth(newDate.getMonth() - 1, 13);
+    newDate.setMonth(newDate.getMonth() - 1, dayOfMonth);
   } else {
     throw new Error("Invalid direction. Use 'next' or 'previous'.");
   }
