@@ -322,6 +322,7 @@ export interface DOWClassificationInstance {
   typeOfMobilityOther?: string;
   ts_contractor_clearance_type?: string;
   updated_description?: "YES" | "NO"
+  isComplete?: boolean
 }
 
 export interface DOWServiceOffering {

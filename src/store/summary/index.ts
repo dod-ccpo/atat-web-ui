@@ -1,6 +1,7 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import { 
+  DOWClassificationInstance,
   DOWServiceOffering, 
   DOWServiceOfferingGroup, 
   OtherServiceOfferingData, 
@@ -9,6 +10,7 @@ import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
 import { 
+  ClassificationInstanceDTO,
   ContractTypeDTO, 
   CrossDomainSolutionDTO,
   PeriodDTO,
@@ -425,11 +427,7 @@ export class SummaryStore extends VuexModule {
       const id = dow.serviceOfferingGroupId;
       if (dow.serviceOfferings.length>0){
         dow.serviceOfferings?.forEach(async (so)=>{
-          await this.isServiceOfferingDataObjComplete(
-            {
-              serviceOfferingData: so,
-              id: id,
-            });
+          return await this.isServiceOfferingDataObjComplete(so);
         }) 
         dow.isComplete = dow.serviceOfferings.every(
           vso => vso.isComplete 
@@ -471,13 +469,20 @@ export class SummaryStore extends VuexModule {
   public async createServiceOfferingSummaryItem(dow: DOWServiceOfferingGroup): 
   Promise<SummaryItem>
   {
+    const verbiageInfo =  await DescriptionOfWork.getServiceGroupVerbiageInfoWithGroupId(
+      dow.serviceOfferingGroupId
+    );
+    const title = verbiageInfo 
+      ? verbiageInfo.offeringName
+      : toTitleCase(dow.serviceOfferingGroupId)
+
     return  {
-      title: toTitleCase(dow.serviceOfferingGroupId.replaceAll("_", " ")),
+      title,
       description: "",
       isComplete: dow.isComplete as boolean,
       isTouched: false,
-      routeName: "",
-      step:5,
+      routeName: dow.serviceOfferingGroupId,
+      step: 5,
       substep: await this.getServiceOfferingSubstep(dow.serviceOfferingGroupId)
     } as SummaryItem
   }
@@ -508,30 +513,31 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async isServiceOfferingDataObjComplete(
-    attribs: {
-    serviceOfferingData: DOWServiceOffering
-    id: string
-  })
+  public async isServiceOfferingDataObjComplete(serviceOffering: DOWServiceOffering)
   : Promise<DOWServiceOffering> {
-    const data: Record<string, any> = _.clone(attribs.serviceOfferingData);
-  
-    const requiredFields = [
-      "descriptionOfNeed",
-      "personnelOnsiteAccess",
-      "entireDuration",
-      "periodsNeeded",
-      "classificationLevel"
-    ] 
-    attribs.serviceOfferingData.isComplete = requiredFields.every(f => {
-      if (f === "periodsNeeded"){
-        return data.entireDuration === "NO"
-          ? data.periodsNeeded.length > 0
-          : true
-      }
-      return data[f] !== ""
-    })
-    return attribs.serviceOfferingData;
+    serviceOffering.classificationInstances?.forEach(
+      (instance) => {
+        const data: Record<string, any> = _.clone(instance);
+        const requiredFields = [
+          "anticipatedNeedUsage",
+          "entireDuration",
+          "selectedPeriods",
+          "classificationLevelSysId"
+        ] 
+        instance.isComplete = requiredFields.every(f => {
+          if (f === "selectedPeriods"){
+            return data.entireDuration === "NO"
+              ? data.selectedPeriods.length > 0
+              : true
+          }
+          return data[f] !== ""
+        })
+      });
+    serviceOffering.isComplete = 
+      serviceOffering.classificationInstances?.every(
+        (ci => ci.isComplete)
+      )
+    return serviceOffering;
   }
 
   @Action({rawError: true})

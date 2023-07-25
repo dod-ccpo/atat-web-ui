@@ -57,20 +57,15 @@
           </div>
           <div 
             class="container-max-width"
-            :id="getIdText(item.serviceOfferingGroupId )+ '_Wrapper'"
-            v-for="(item, index) in selectedServiceGroups"
-            :key="item.serviceOfferingGroupId"
+            :id="getIdText(item.title )+ '_Wrapper'"
+            v-for="(item, index) in summaryItems"
+            :key="index"
           >
             <div class=" d-flex justify-space-between">
               <div>
-                <h3 class="mb-1" :id="getIdText(item.serviceOfferingGroupId) + '_Heading'">
-                  {{getFormattedName(item.serviceOfferingGroupId)}}
+                <h3 class="mb-1" :id="getIdText(item.title ) + '_Heading'">
+                  {{ item.title }}
                 </h3>
-                <p 
-                  class="mb-0 _selectedOfferings" 
-                  v-html="formattedOfferings(item.serviceOfferings)"
-                >
-                </p>
               </div>
               <div class="d-flex align-start">
                 <div class="d-flex align-center">
@@ -87,11 +82,11 @@
                     width="111"
                     :class="[
                       item.isComplete === true ? 'secondary': 'primary',
-                      '_' + getIdText(item.serviceOfferingGroupId) + '-button'
+                      '_' + getIdText(item.title) + '-button'
                     ]"
-                    @click="routeToSelection(item.serviceOfferingGroupId,false)"
-                    @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
-                    @keydown.space="routeToSelection(item.serviceOfferingGroupId,false)"
+                    @click="routeToSelection(getRouteName(item.routeName),false)"
+                    @keydown.enter="routeToSelection(getRouteName(item.routeName),false)"
+                    @keydown.space="routeToSelection(getRouteName(item.routeName),false)"
                   >
                     {{ item.isComplete ? 'View/Edit': 'Review' }}
                   </v-btn>
@@ -182,14 +177,15 @@ import classificationRequirements, { isClassLevelUnclass }
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
-import { DOWServiceOffering, DOWServiceOfferingGroup } from "../../../../types/Global";
+import { DOWServiceOffering, DOWServiceOfferingGroup, SummaryItem } from "../../../../types/Global";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
-import { getIdText, toTitleCase } from "@/helpers";
+import { convertSystemChoiceToSelect, getIdText, toTitleCase } from "@/helpers";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import Summary from "@/store/summary";
+import Summary, { getSummaryItemsforStep } from "@/store/summary";
+import { title } from "process";
 // import router from "@/router";
 
 @Component({
@@ -208,6 +204,7 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
   public serviceGroupsMissingData: string[] =[]
   public availableServiceGroups: SystemChoiceDTO[] = [];
   public allServiceGroups: SystemChoiceDTO[] = [];
+  public summaryItems: SummaryItem[] = [];
   public selectedServiceGroups: DOWServiceOfferingGroup[] = [];
   public showMore = false;
   public isDataComplete = true;
@@ -307,6 +304,11 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
   public getIdText(val: string): string {
     return getIdText(toTitleCase(val));
   }
+
+  public getRouteName(title: string): string {
+    return title.replaceAll(" ", "_").toUpperCase();
+  }
+
   public async routeToAnticipatedUsersAndDataNeeds(): Promise<void> {
     DescriptionOfWork.setReturnToDOWSummary(true);
     DescriptionOfWork.setFromAnticipatedUsersAndData(true);
@@ -410,10 +412,26 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
         group.label = this.alternateGroupNames[altNameIndex].label;
       }
     });
+
+    await Summary.validateStepFive();
+
     this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
       e => e.serviceOfferingGroupId.indexOf("NONE") === -1 
       && sectionServices.includes(e.serviceOfferingGroupId) 
     );
+
+    const offeringGroupIds = this.selectedServiceGroups.map(
+      (summaryItem) => summaryItem.serviceOfferingGroupId
+    )
+
+    console.log(offeringGroupIds)
+    this.summaryItems = (await getSummaryItemsforStep(5)).filter(
+      summaryItem => offeringGroupIds.includes(summaryItem.routeName) && 
+        summaryItem.step === 5
+    ).sort((a,b)=>a.title<b.title? -1: 1);
+    await Summary.toggleButtonColor(5);
+
+    //todo remove this
     this.serviceGroupsMissingData = 
       await Summary.validateStepFive();
   };
@@ -431,6 +449,7 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     Steps.clearAltBackButtonText();
+    await Summary.toggleButtonColor(-1);
     return true;
   }
 

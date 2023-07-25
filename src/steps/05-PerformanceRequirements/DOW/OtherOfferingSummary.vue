@@ -472,20 +472,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
   }
 
-  // public async logInstanceCompletion(): Promise<void>{
-  //   debugger;
-  //   const currentDOWObject = await DescriptionOfWork.otherOfferingObject;
-  //   // await Summary.isOtherOfferingDataComplete(
-  //   //   {
-  //   //     otherOfferingData: currentDOWObject.otherOfferingData,
-  //   //     id: currentDOWObject.serviceOfferingGroupId})
-  //   // this.offeringInstances = 
-  //   //   otherOfferingData.otherOfferingData as OtherServiceOfferingData[];
-  //   // console.log(this.offeringInstances)
-  // }
-
-
-
   public async loadOnEnter(): Promise<void> {
     this.returnToDOWSummary = await DescriptionOfWork.getReturnToDOWSummary();
     this.serviceGroupVerbiageInfo = await DescriptionOfWork.getServiceGroupVerbiageInfo();
