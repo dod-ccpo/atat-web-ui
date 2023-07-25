@@ -3,7 +3,7 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Your Contract Details Summary
+          Your Standards and Compliance Summary
         </h1>
         <div class="copy-max-width">
           <p class="mb-10">

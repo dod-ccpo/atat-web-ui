@@ -1076,6 +1076,7 @@ export class AcquisitionPackageStore extends VuexModule {
   
   @Mutation
   public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+
     this.fairOpportunity = this.fairOpportunity
       ? Object.assign(this.fairOpportunity, value)
       : value;
