@@ -15,8 +15,6 @@ import common from "../../../../selectors/common.sel";
 import contactInfo from "../../../../fixtures/contactInfo.json";
 import commonCorAcor from "../../../../selectors/commonCorAcor.sel";
 import ac from "../../../../selectors/acor.sel";
-import contractDetails from "../../../../selectors/contractDetails.sel";
-
 
 
 describe("Test suite: E2E-Exception to Fair Opportunity", () => {
@@ -108,7 +106,9 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
     let techniques=["perKnowledge","reviewDB"]//disaMRR,contactKnowledge,reviewDB,reviewSorceList,reviewProdLit,reviewOtherContracts,reviewJWCCCatlog,other;
     const personReliedVal = "personReliedInput- " + randomString(5);
     const otherVal = "otherTechniques-" + randomString(5);
-    const techniquesSummaryInputVal = "summaryText- "+ randomString(5);    
+    const techniquesSummaryInputVal = "summaryText- "+ randomString(5); 
+    
+    //Selection  of Market research
     let capablesourceOption = "Yes";//Yes//No
     let reviewCatalogSectionOption ="Yes"; //Yes//No;
     const crResultVal = "Catalog Review Result- "+ randomString(5);
@@ -117,7 +117,8 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
     const cd = new Date()
     const selectedDate = formatDateWithoutPeriod(cd,13,"previous");
     const sameEndDate = formatDateWithoutPeriod(cd,27,"previous");
-    
+
+    //Review Market Research details
     const reviewResearchDetailsVal = cleanText(`Additional research was conducted on ${selectedDate} by reviewing the specific capabilities in the JWCC Contracts and it was determined that ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${supportDataVal} Further research was conducted on ${sameEndDate} by reviewing the JWCC contractor's catalogs to determine if other similar offerings (to include: ) meet or can be modified to satisfy the Government’s requirements. The results have determined that no other offering is suitable as follows...${crResultVal} Therefore, it was determined the is essential to the Government’s requirements and ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${techniquesSummaryInputVal}`);
     const cAction = "-8 extension"// bridge extension,UCA,-8 extension
     const reviewResearchDetailsValCase3 = cleanText(`Additional research was conducted on ${selectedDate} by reviewing the specific capabilities in the JWCC Contracts and it was determined that ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${supportDataVal} Further research was conducted on ${sameEndDate} by reviewing the JWCC contractor's catalogs to determine if other similar offerings (to include: ) meet or can be modified to satisfy the Government’s requirements. The results have determined that no other offering is suitable as follows...${crResultVal} Therefore, it was determined the is essential to the Government’s requirements and ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. Additional market research was not completed for this effort because an exception applies (${cAction}).`);
