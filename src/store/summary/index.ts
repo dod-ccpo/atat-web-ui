@@ -16,10 +16,12 @@ import {
   SelectedClassificationLevelDTO, 
   SensitiveInformationDTO} from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
-import { convertStringArrayToCommaList } from "@/helpers";
+import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
 import { OtherOfferingSummaryPathResolver } from "@/router/resolvers";
 import { ServiceOfferingApi } from "@/api/serviceOffering";
+import { title } from "process";
+import DescriptionOfWork from "../descriptionOfWork";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -92,6 +94,9 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
   case 3:
     await Summary.validateStepThree();
+    break;
+  case 5:
+    await Summary.validateStepFive();
     break;
   case 7:
     await Summary.validateStepSeven();
@@ -411,22 +416,24 @@ export class SummaryStore extends VuexModule {
    * @returns string[]
    */
   @Action({rawError: true})
-  public async isServiceOfferingsCompleteOnSummaryPage(
-    dowObjects: DOWServiceOfferingGroup[])
-    : Promise<string[]> {
+  public async validateStepFive(): Promise<string[]> {
     //eslint-disable-next-line prefer-const
     // validates dowObjects.otherOfferingData
+    const dowObjects = await DescriptionOfWork.getDOWObject();
     await dowObjects.forEach(async (dow)=> 
     {
       const id = dow.serviceOfferingGroupId;
       if (dow.serviceOfferings.length>0){
         dow.serviceOfferings?.forEach(async (so)=>{
-          return await this.isServiceOfferingDataObjComplete(
+          await this.isServiceOfferingDataObjComplete(
             {
               serviceOfferingData: so,
               id: id,
-            })
+            });
         }) 
+        dow.isComplete = dow.serviceOfferings.every(
+          vso => vso.isComplete 
+        )
       } else if ((dow.otherOfferingData as OtherServiceOfferingData[]).length >0){
         dow.otherOfferingData?.forEach(async (ood)=>{
           return await this.isOtherOfferingDataObjComplete(
@@ -436,7 +443,14 @@ export class SummaryStore extends VuexModule {
               assessSecurityRequirements:true
             })
         }) 
+        dow.isComplete = dow.otherOfferingData?.every(
+          vso => vso.isComplete 
+        ) || false
       }
+
+      await this.doSetSummaryItem(
+        await this.createServiceOfferingSummaryItem(dow)
+      );
     })
     
     //retrieves any serviceOfferings where 
@@ -452,6 +466,46 @@ export class SummaryStore extends VuexModule {
     )
     return offeringsMissingData;
   };
+
+  @Action({rawError: true})
+  public async createServiceOfferingSummaryItem(dow: DOWServiceOfferingGroup): 
+  Promise<SummaryItem>
+  {
+    return  {
+      title: toTitleCase(dow.serviceOfferingGroupId.replaceAll("_", " ")),
+      description: "",
+      isComplete: dow.isComplete as boolean,
+      isTouched: false,
+      routeName: "",
+      step:5,
+      substep: await this.getServiceOfferingSubstep(dow.serviceOfferingGroupId)
+    } as SummaryItem
+  }
+
+  @Action({rawError: true})
+  public async getServiceOfferingSubstep(
+    title: string)
+  : Promise<number> {
+    return [
+      'STORAGE',
+      'DATABASE',
+      'GENERAL_XAAS',
+      'IOT',
+      'EDGE_COMPUTING',
+      'SECURITY',
+      'NETWORKING',
+      'MACHINE_LEARNING',
+      'APPLICATIONS',
+      'DEVELOPER_TOOLS',
+      'COMPUTE',
+      'PORTABILITY_PLAN',
+      'ADVISORY_ASSISTANCE',
+      'HELP_DESK_SERVICES',
+      'TRAINING',
+      'DOCUMENTATION_SUPPORT',
+      'GENERAL_CLOUD_SUPPORT',
+    ].findIndex(serviceOfferingTitle => serviceOfferingTitle === title) + 1
+  }
 
   @Action({rawError: true})
   public async isServiceOfferingDataObjComplete(

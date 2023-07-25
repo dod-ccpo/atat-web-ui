@@ -1773,6 +1773,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setInitialized(true);
       this.setIsLoading(false);
       await Summary.validateStepThree();
+      await Summary.validateStepFive();
       await Summary.validateStepSeven();
 
     } else {

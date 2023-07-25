@@ -75,7 +75,7 @@
               <div class="d-flex align-start">
                 <div class="d-flex align-center">
                   <div 
-                    v-if="missingData(item.serviceOfferingGroupId)" 
+                    v-if="item.isComplete === false" 
                     class="d-flex align-start nowrap ml-5"
                   >
                     <v-icon
@@ -86,14 +86,14 @@
                   <v-btn
                     width="111"
                     :class="[
-                      missingData(item.serviceOfferingGroupId)? 'primary': 'secondary',
+                      item.isComplete === true ? 'secondary': 'primary',
                       '_' + getIdText(item.serviceOfferingGroupId) + '-button'
                     ]"
                     @click="routeToSelection(item.serviceOfferingGroupId,false)"
                     @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
                     @keydown.space="routeToSelection(item.serviceOfferingGroupId,false)"
                   >
-                    {{ missingData(item.serviceOfferingGroupId)? 'Review': 'View/Edit' }}
+                    {{ item.isComplete ? 'View/Edit': 'Review' }}
                   </v-btn>
                 </div>
               </div>
@@ -415,8 +415,7 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
       && sectionServices.includes(e.serviceOfferingGroupId) 
     );
     this.serviceGroupsMissingData = 
-      await Summary.isServiceOfferingsCompleteOnSummaryPage(
-        this.selectedServiceGroups);
+      await Summary.validateStepFive();
   };
 
   public async mounted(): Promise<void> {

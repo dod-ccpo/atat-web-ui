@@ -341,6 +341,7 @@ export interface DOWServiceOfferingGroup {
   sequence: number;
   serviceOfferings: DOWServiceOffering[];
   otherOfferingData?: OtherServiceOfferingData[];
+  isComplete?: boolean;
 }
 
 export interface fundingIncrement {
