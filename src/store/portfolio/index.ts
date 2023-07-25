@@ -650,7 +650,7 @@ export class PortfolioDataStore extends VuexModule {
     portfolio.members = [];
     let portfolioOwner: User = {};
     let isOwner = false;
-    allMembersDetailList.forEach(async member => {
+    allMembersDetailList.forEach(member => {
       isOwner = false;
       if (portfolio.portfolio_owner === member.sys_id) {
         portfolioOwner = member;

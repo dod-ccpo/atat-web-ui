@@ -128,11 +128,6 @@ export default class ATATProfileCard extends Vue {
   public initials = ""
   public emailLink = ""
 
-  @Watch("person")
-  public personupdated(newVal: User): void {
-    debugger;
-  }
-
   public getUserInitials(member:User): string {
     return getUserInitials(member)
   }
