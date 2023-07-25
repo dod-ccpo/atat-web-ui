@@ -55,9 +55,13 @@
       </div>
     </div>
 
-    <hr class="my-0" />
+    <hr class="my-0" v-if="!isProdEnv" />
     
-    <div id="PortfolioMembersSection" class="_portfolio-panel _panel-padding pb-8">
+    <div 
+      id="PortfolioMembersSection" 
+      v-if="!isProdEnv" 
+      class="_portfolio-panel _panel-padding pb-8"
+    >
       <div
         id="PortfolioMembersHeader"
         class="d-flex flex-columm justify-space-between"
@@ -269,7 +273,7 @@ import {
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import {createDateStr, getStatusChipBgColor, hasChanges} from "@/helpers";
-import { Statuses } from "@/store/acquisitionPackage";
+import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
 import { EnvironmentDTO, UserDTO } from "@/api/models";
@@ -287,17 +291,21 @@ import AppSections from "@/store/appSections";
 })
 
 export default class PortfolioDrawer extends Vue {
-
   public portfolio: Portfolio = {};
   public portfolioStatus = "";
   public updateTime = "";
   public csp = "";
   
   public currentUserIsManager = false; 
+  public currentUserIsOwner = false;
   public showDeleteMemberDialog = false;
   public deleteMemberName = "";
   public deleteMemberIndex = -1;
   public portfolioCreator = PortfolioStore.portfolioCreator;
+
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
+  }
 
   public get currentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
@@ -426,7 +434,13 @@ export default class PortfolioDrawer extends Vue {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
       this.portfolioMembers = storeData.members || [];
-      
+
+      const managers = this.portfolioMembers?.filter(m => m.role === "Manager");
+      if (managers) {
+        this.currentUserIsManager = managers.some(m => m.sys_id === this.currentUser.sys_id);
+      }
+      this.currentUserIsOwner = storeData.portfolio_owner === this.currentUser.sys_id;
+
       if (storeData.status) {
         const statusKey = this.getStatusKey(storeData.status);
         this.portfolioStatus = storeData.status 

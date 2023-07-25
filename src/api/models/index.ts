@@ -214,7 +214,6 @@ export interface ContractConsiderationsDTO extends BaseTableDTO{
   packaging_shipping_none_apply?: string;
   contractor_provided_transfer?: string;
   acquisition_package?: ReferenceColumn | string;
-
 }
 
 export interface CrossDomainSolutionDTO extends BaseTableDTO {

@@ -170,7 +170,7 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
   }
 
   public hasChangedFromToNoNone():boolean{
-    return this.savedData.exception_to_fair_opportunity === "NO_NONE" ||
+    return this.savedData.exception_to_fair_opportunity !== "NO_NONE" &&
       this.currentData.exception_to_fair_opportunity === "NO_NONE";
   }
 

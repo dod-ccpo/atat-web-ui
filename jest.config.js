@@ -57,10 +57,13 @@ module.exports = {
     "<rootDir>/src/steps/03-Background/components/*.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentContract/*.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.spec.ts",
+    "<rootDir>/src/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironment.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.spec.ts",
+    "<rootDir>/src/steps/03-Background/CurrentEnvironment/InstanceDetails.spec.ts",
     "<rootDir>/src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts",
+    "<rootDir>/src/steps/07-OtherContractConsiderations/*.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",

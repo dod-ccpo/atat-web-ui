@@ -393,7 +393,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    await this.loadContract();    
+    await this.loadContract();
     if (this.currentContract) {
       const keys: string[] = [
         "incumbent_contractor_name",

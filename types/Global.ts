@@ -140,6 +140,7 @@ interface StepperRouteBase {
   continueButtonColor?: string;
   stepCompleteOnEnter?: string;
   stepCompleteOnLeave?: string;
+  canNavigateToSummary?:boolean;
 }
 
 /**
@@ -449,6 +450,7 @@ export interface OtherServiceSummaryTableData {
   personnelOnsiteAccess?: string;
   trainingType?: string;
   sysId?:string;
+  isValid?:boolean;
 }
 
 export interface TravelSummaryTableData {
