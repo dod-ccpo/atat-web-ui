@@ -656,10 +656,10 @@ export class FinancialDetailsStore extends VuexModule {
           use_g_invoicing: data.use_g_invoicing,
           order_number: isUsingGInvoicing 
             ? getFundingRequestFSForm[0].order_number
-            : "",
+            : data.order_number,
           gt_c_number:  isUsingGInvoicing 
             ? getFundingRequestFSForm[0].gt_c_number
-            : "",
+            : data.gt_c_number
         });
      this.setFundingRequestFSForm(savedFundingRequestFSForm);
      return savedFundingRequestFSForm;
