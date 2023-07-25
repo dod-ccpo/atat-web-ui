@@ -102,7 +102,6 @@ import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
-import acquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
 import { routeNames } from "@/router/stepper";
 
@@ -114,7 +113,7 @@ import { routeNames } from "@/router/stepper";
     TaskOrderSearch,
   },
 })
-export default class CreateFirstPortfolio extends Vue {
+export default class CreatePortfolio extends Vue {
   public provisionStepsText = [
     `Provide a few details about your awarded task order and the individuals who 
       will administer your cloud resources.`,
@@ -152,7 +151,7 @@ export default class CreateFirstPortfolio extends Vue {
     await Steps.setAltBackDestination(
       AppSections.sectionTitles.CreateNewPortfolio
     );
-    await acquisitionPackage.setIsNewPackage(true);
+    await AcquisitionPackage.setIsNewPackage(true);
     await AcquisitionPackage.reset();
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router
