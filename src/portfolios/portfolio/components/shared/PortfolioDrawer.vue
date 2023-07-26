@@ -116,7 +116,7 @@
         >
           <MemberCard :id="'MemberName' + index" :member="member" />
 
-          <!-- NOT DROPDOWN - for owners and for manager if only one manager in portfolio -->
+          <!-- NOT DROPDOWN - for owner and if current user is Viewer -->
           <div v-if="currentUserIsViewer && member.sys_id !== currentUser.sys_id
             || member.role === 'Owner'
           ">
@@ -146,7 +146,7 @@
             </v-tooltip>
           </div>
 
-          <!-- MEMBER DROPDOWN - for viewers and managers if > 1 manager in portfolio -->
+          <!-- MEMBER DROPDOWN - for viewers and managers -->
           <div v-else>
             <ATATSelect
               :id="'Role' + index"
@@ -269,6 +269,25 @@
       </template>
     </ATATDialog>
 
+    <ATATDialog
+      id="TransferOwnerModal"
+      :showDialog="showTransferOwnerDialog"
+      :title="'Transfer ownership to ' + transferToUser.firstName" 
+      no-click-animation
+      okText="Transfer ownership"
+      width="450"
+      @ok="transferOwner"
+      @cancelClicked="closeTransferOwnerModal"
+    >    
+      <template #content>
+        <p class="body">
+          {{ transferToUser.fullName }} will become the primary contact of this 
+          portfolio. Your role will change to <strong>Manager</strong>, and you 
+          will lose the ability to archive the portfolio.
+        </p>
+      </template>
+    </ATATDialog>
+
     <LeavePortfolioModal
       :showModal.sync="showLeavePortfolioModal" 
       :portfolioName="portfolio.title"
@@ -344,10 +363,16 @@ export default class PortfolioDrawer extends Vue {
   public currentUserIsManager = false; 
   public currentUserIsOwner = false;
   public currentUserDowngradedToViewer = false;
+  
   public showRemoveMemberDialog = false;
-  public showLeavePortfolioModal = false;  
+  public showLeavePortfolioModal = false;
   public removeMemberName = "";
   public removeMemberIndex = -1;
+
+  public showTransferOwnerDialog = false;
+  public transferOwnershipIndex = -1;
+  public transferToUser: User = {};
+
   public portfolioCreator = PortfolioStore.portfolioCreator;
 
   public showManagerDowngradeDialog = false;
@@ -413,6 +438,14 @@ export default class PortfolioDrawer extends Vue {
     hasUndo: false,
     hasIcon: true,
   };
+
+  public ownershipTransferredToast: ToastObj = {
+    type: "success",
+    message: "Ownership transferred",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  }
 
   public memberMenuItems: SelectData[] = [
     { header: "Roles" },
@@ -616,6 +649,51 @@ export default class PortfolioDrawer extends Vue {
     PortfolioStore.setShowAddMembersModal(true);
   }
 
+  public async transferOwner(): Promise<void> {
+    /* eslint-disable camelcase */
+    const newOwner = this.portfolioMembers[this.transferOwnershipIndex];
+    this.portfolio.portfolio_owner = newOwner.sys_id;
+    const newOwnerPrevRole = newOwner.role;
+    newOwner.role = "Owner";
+
+    if (newOwner.sys_id) {
+      if (newOwnerPrevRole === "Manager" && this.portfolio.portfolio_managers) {
+        this.portfolio.portfolio_managers = this.removeItemFromArray(
+          this.portfolio.portfolio_managers, newOwner.sys_id
+        );
+      } else if (newOwnerPrevRole === "Viewer" && this.portfolio.portfolio_viewers) {
+        this.portfolio.portfolio_viewers = this.removeItemFromArray(
+          this.portfolio.portfolio_viewers, newOwner.sys_id
+        );
+      }
+    }
+    /* eslint-enable camelcase */
+
+    const prevOwnerIndex = this.portfolioMembers.findIndex(usr => usr.role === "Owner") ?? 0;
+    this.portfolioMembers[prevOwnerIndex].role = "Manager";
+    if (this.portfolio.members) {
+      this.portfolio.members[this.transferOwnershipIndex].role = "Owner"
+      this.portfolio.members[prevOwnerIndex].role = "Manager"
+    }
+
+    this.currentUserIsOwner = false;
+    await this.updateMemberRole("Manager", prevOwnerIndex);
+    this.closeTransferOwnerModal();
+    Toast.setToast(this.ownershipTransferredToast);
+  }
+
+  public removeItemFromArray(users: string, sysId: string): string {
+    const array = users.split(",");
+    const i = array.indexOf(sysId);
+    array.splice(i, 1);
+    return array.join(",");    
+  }
+
+  public async closeTransferOwnerModal(): Promise<void> {
+    this.showTransferOwnerDialog = false;
+    this.transferOwnershipIndex = -1;
+  }
+
   public async downgradeManager(): Promise<void> {
     this.showManagerDowngradeDialog = false;
     if (this.portfolio.members) {
@@ -651,9 +729,12 @@ export default class PortfolioDrawer extends Vue {
       await PortfolioStore.setPortfolioData(this.portfolio);
       this.downgradeMemberIndex = -1;
 
-      const member = this.portfolioMembers[index];
-      member.menuItems = this.getMemberMenuItems(member);
-      this.$set(this.portfolioMembers, index, member);
+      const thisMember = this.portfolioMembers[index];
+      // member.menuItems = this.getMemberMenuItems(member);
+      this.$set(this.portfolioMembers, index, thisMember);
+      this.portfolioMembers.forEach(member => {
+        member.menuItems = this.getMemberMenuItems(member);
+      })
     }
   }
 
@@ -697,7 +778,9 @@ export default class PortfolioDrawer extends Vue {
             SlideoutPanel.setSlideoutPanelComponent(panelContent);
           })
         } else if (val === "TransferOwner") {
-          debugger;
+          this.transferToUser = this.portfolioMembers[index];
+          this.transferOwnershipIndex = index;
+          this.showTransferOwnerDialog = true;
         }
 
       }
