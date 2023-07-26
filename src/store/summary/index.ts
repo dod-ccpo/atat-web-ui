@@ -426,14 +426,17 @@ export class SummaryStore extends VuexModule {
     await dowObjects.forEach(async (dow)=> 
     {
       const id = dow.serviceOfferingGroupId;
-      if (dow.serviceOfferings.length>0){
+      const hasServiceOfferings = dow.serviceOfferings?.length > 0;
+      const hasOtherOfferings = 
+        (dow.otherOfferingData as OtherServiceOfferingData[])?.length >0
+      if (hasServiceOfferings){
         dow.serviceOfferings?.forEach(async (so)=>{
           return await this.isServiceOfferingDataObjComplete(so);
         }) 
         dow.isComplete = dow.serviceOfferings.every(
           vso => vso.isComplete 
         )
-      } else if ((dow.otherOfferingData as OtherServiceOfferingData[]).length >0){
+      } else if (hasOtherOfferings){
         dow.otherOfferingData?.forEach(async (ood)=>{
           return await this.isOtherOfferingDataObjComplete(
             {
@@ -441,17 +444,20 @@ export class SummaryStore extends VuexModule {
               id: id,
               assessSecurityRequirements:true
             })
-        }) 
+        })
         dow.isComplete = dow.otherOfferingData?.every(
           vso => vso.isComplete 
         ) || false
+      } else {
+        dow.isComplete = false;
       }
-
+          
       await this.doSetSummaryItem(
         await this.createServiceOfferingSummaryItem(dow)
       );
     })
   };
+
 
   /**
    *
@@ -620,7 +626,7 @@ export class SummaryStore extends VuexModule {
     serviceOffering.isComplete = 
       serviceOffering.classificationInstances?.every(
         (ci => ci.isComplete)
-      )
+      ) && serviceOffering.classificationInstances.length>0
     return serviceOffering;
   }
 
