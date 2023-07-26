@@ -2,7 +2,6 @@ import {
     randomString,
     randomNumber,
     randomAlphaNumeric,
-    suffixId,
 
 } from "../../../../../helpers";
 import common from "../../../../../selectors/common.sel";
@@ -131,8 +130,8 @@ describe("Test suite: Functional Testing - 03 Contract Details> ClassificationRe
         //Page#2
         cy.btnClick(common.continueBtn, " Continue ");
         cy.checkErrorMessage(contractDetails.errorClassCheckBox, "Please select at least one classification level.");
-        //cy.selectCheckBoxes([scCheckbox1, scCheckbox4]);
-        //cy.selectCheckBoxes([tsCheckbox1, tsCheckbox3]);
+        cy.selectCheckBoxes([scCheckbox1, scCheckbox4]);
+        cy.selectCheckBoxes([tsCheckbox1, tsCheckbox3]);
         cy.clickContinueButton(contractDetails.ts, CDData.classLevelPage1.pageHeaderCL2);
 
         //Page#3

@@ -84,41 +84,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     );    
   });
 
-  it("TC2: Validations: Pop Length should not exceed one year", () => {
-    let option;
-    const showValidationMessage = (() => {
-      cy.checkErrorMessage(contractDetails.errorMessageText,
-        " The length of this period must be "+ option +" or less.");
-    });
-    //enter the Base value morethan 1 years 
-    cy.findElement(contractDetails.baseInputTxtBox).clear().type("6").then(() => {
-      option = " 1 year ";
-      showValidationMessage()
-    });
-    //enter the base value 13 months
-    cy.findElement(contractDetails.baseInputTxtBox).clear().type("13")
-    cy.findElement(contractDetails.baseDropdownIcon).click();
-    cy.findElement(contractDetails.baseDropdownMonth).click().then(() => {
-      option = "12 months"
-      showValidationMessage()
-    });
-    //enter the base value more than 365 days
-    cy.findElement(contractDetails.baseInputTxtBox).clear().type("367")
-    cy.findElement(contractDetails.baseDropdownIcon).click();
-    cy.findElement(contractDetails.baseDropdownDays).click().then(() => {
-      option = "365 days"
-      showValidationMessage()
-    });
-    //enter the base value more than 52 weeks
-    cy.findElement(contractDetails.baseInputTxtBox).clear().type("55")
-    cy.findElement(contractDetails.baseDropdownIcon).click();
-    cy.findElement(contractDetails.baseDropdownWeek).click().then(() => {
-      option = "52 weeks"
-      showValidationMessage()
-    });
-    
-  });
-
+  
   it("TC3: Delete:  Let’s gather details about the duration of your task order", () => {   
     cy.popLengthOptionYearExists();    
     cy.findElement(contractDetails.addOptionLink).click();

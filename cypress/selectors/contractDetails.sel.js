@@ -11,6 +11,8 @@ module.exports = {
     "#BaseDropdown_dropdown_field_control .v-input__control .v-input__append-inner",
   baseDropdownDefault:
     "#BaseDropdown_dropdown_field_control .v-select__selections",
+  baseDropdownListItems:
+    "#BaseDropdown_dropdown_field_control .v-menu__content",
   baseDropdownList: "#BaseDropdown_dropdown_field_control  .v-list",
   baseDropdownYear: "#BaseDropdown_DropdownListItem_Year",
   baseDropdownMonth: "#BaseDropdown_DropdownListItem_Months",
@@ -29,7 +31,9 @@ module.exports = {
     "#Option1Dropdown_dropdown_field_control .v-select__selections",
   optionDropdownList:
     "#Option1Dropdown_dropdown_dropdown_field_control .v-list",
-  optionDropdownYear: "#Option1Dropdown_DropdownListItem_Year",
+  optionDropdownListItems:
+    "#Option1Dropdown_dropdown_field_control .v-menu__content",
+   optionDropdownYear: "#Option1Dropdown_DropdownListItem_Year",
   optionDropdownMonth: "#Option1Dropdown_DropdownListItem_Months",
   optionDropdownWeek: "#Option1Dropdown_DropdownListItem_Weeks",
   optioneDropdownDays: "#Option1Dropdown_DropdownListItem_Days",
@@ -181,9 +185,11 @@ popComplete: "#PeriodofPerformancePoP_CompleteButton",
 
 contractTypeHeading: "#ContractType_Heading",
 contractTypeDescription: "#ContractType_Description",
+contractStart: "#ContractType_StartButton",
 contractComplete: "#ContractType_CompleteButton",
 
 classReqHeading: " #ClassificationRequirements_Heading",
 classReqDescription: "#ClassificationRequirements_Description",
-classReqComplete: "#ContractType_CompleteButton"
+classReqStart: "#ClassificationRequirements_StartButton",
+classReqComplete: "#ClassificationRequirements_CompleteButton"
 };

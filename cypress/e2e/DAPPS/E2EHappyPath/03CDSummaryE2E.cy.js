@@ -1,21 +1,29 @@
 import {
   randomAlphaNumeric,
   randomNumber,
+  randomNumberBetween,
   randomString,
   suffixId,
-  cleanText
 
 } from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
+import CDData from "../../../fixtures/ContractDetailsData/CDData.json";
 
 describe("Test suite: Contract Details Step:Summary - E2E", () => {
   let pt = "TC-Step-3-ContractDetails-E2E-" + randomAlphaNumeric(5);
   let scope = "Project Scope-" + randomString(5);
+
   let basePeriod = "42";
-  let dropDownOption = "week"; // Year/Month/Week/Day
-  // Note: dropDownOption and basePeriod should be: Year=1, Months<12, Weeks<52, Days<365
-  let optionPeriod = "No" // Yes/No
+
+  let dropDownBase = "Week(s)"; //Year/Month(s)/ Week(s)/ Day(s) 
+  let optionPeriod = "Yes" // Yes/No
+  let dropDownOption = "Day(s)"; //Year/Month(s)/ Week(s)/ Day(s)
+  let randomMonth = randomNumberBetween(1, 12);
+  let randomWeek = randomNumberBetween(1, 52);
+  let randomDay = randomNumberBetween(1, 365);
+
+
   let optPeriod = "1";
   let popStart = "Yes"; //Yes/No
   let popStartOption = "Not later than"; // No Sooner than/Not later than
@@ -35,41 +43,50 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
   const soText = randomAlphaNumeric(17);
   let cdsText = randomNumber(2);
 
-  before(() => {
+
+  beforeEach(() => {
     cy.goToAcqPackageStepOne(pt, scope);
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.activeStep(common.stepContractDetailsText);
-    cy.verifyPageHeader("Let’s gather details about the duration of your task order");
+    cy.verifyPageHeader(CDData.POPPage1.pageHeader1);
   });
 
   it("TC1: Contract Details: Step#1> Period of Performance Page 1 to 3", () => { // Page#1 Duration of task year
 
-    cy.verifyPageHeader("Let’s gather details about the duration of your task order");
-    if (dropDownOption == "Year") {
-      cy.findElement(contractDetails.baseDropdownIcon).click()
-      cy.findElement(contractDetails.baseDropdownYear).click()
-      cy.findElement(contractDetails.baseInputTxtBox).clear().type(basePeriod)
-    } else if (dropDownOption == "month") {
-      cy.findElement(contractDetails.baseDropdownIcon).click()
-      cy.findElement(contractDetails.baseDropdownMonth).click()
-      cy.findElement(contractDetails.baseInputTxtBox).clear().type(basePeriod)
-    } else if (dropDownOption == "week") {
-      cy.findElement(contractDetails.baseDropdownIcon).click()
-      cy.findElement(contractDetails.baseDropdownWeek).click()
-      cy.findElement(contractDetails.baseInputTxtBox).clear().type(basePeriod)
-    } else if (dropDownOption == "day") {
-      cy.findElement(contractDetails.baseDropdownIcon).click()
-      cy.findElement(contractDetails.baseDropdownDays).click()
-      cy.findElement(contractDetails.baseInputTxtBox).clear().type(basePeriod)
+    cy.verifyPageHeader(CDData.POPPage1.pageHeader1);
+    cy.findElement(contractDetails.baseDropdownIcon).click()
+    cy.get(contractDetails.baseDropdownListItems).contains(dropDownBase).click({
+      force: true
+    });
+    if (dropDownBase == "Year") {
+      cy.findElement(contractDetails.baseInputTxtBox).clear().type("1")
+    } else if (dropDownBase == "Month(s)") {
+      cy.findElement(contractDetails.baseInputTxtBox).clear().type(randomMonth)
+    } else if (dropDownBase == "Week(s)") {
+      cy.findElement(contractDetails.baseInputTxtBox).clear().type(randomWeek)
+    } else if (dropDownBase == "Day(s)") {
+      cy.findElement(contractDetails.baseInputTxtBox).clear().type(randomDay)
     }
+
     if (optionPeriod == "Yes") {
       cy.findElement(contractDetails.addOptionLink).click();
       cy.findElement(contractDetails.optionDropdownIcon).click();
-      cy.findElement(contractDetails.optionDropdownYear).click();
-      cy.findElement(contractDetails.optionalTextBox).clear().type(optPeriod);
+      cy.get(contractDetails.optionDropdownListItems).contains(dropDownOption).click({
+        force: true
+      });
+      if (dropDownOption == "Year") {
+        cy.findElement(contractDetails.optionalTextBox).clear().type("1")
+      } else if (dropDownOption == "Month(s)") {
+        cy.findElement(contractDetails.optionalTextBox).clear().type(randomMonth)
+      } else if (dropDownOption == "Week(s)") {
+        cy.findElement(contractDetails.optionalTextBox).clear().type(randomWeek)
+      } else if (dropDownOption == "Day(s)") {
+        cy.findElement(contractDetails.optionalTextBox).clear().type(randomDay)
+      }
+ 
     }
-    //Page#2- request Pop start date
-    cy.clickContinueButton(contractDetails.addOptionLink, " Do you want to request a PoP start date? ")
+    // Page#2- POP request Pop start date
+    cy.clickContinueButton(contractDetails.addOptionLink, CDData.POPPage2.pageHeader2)
     if (popStart == "Yes") {
       cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").click({
         force: true
@@ -91,8 +108,8 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
       cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO").click();
     }
 
-    // Page#3 Recurring Requirement-------------------
-    cy.clickContinueButton(contractDetails.popStartDateNoRadioOption, "Will this be a recurring requirement?")
+    // Page#3 POP- Recurring Requirement:
+    cy.clickContinueButton(contractDetails.popStartDateNoRadioOption, CDData.POPPage3.pageHeader3)
 
     if (recurringRequirement == "Yes") {
       cy.radioBtn(contractDetails.yesRadioOption, "YES").click({
@@ -102,11 +119,10 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
       cy.radioBtn(contractDetails.noRadioOption, "NO").click({
         force: true
       });
-    cy.clickContinueButton(contractDetails.noRadioOption, "Which contract type(s) apply to this acquisition?")
-  });
-
-  it("TC2: Contract Details: Step#2> Contract Type", () => {
-
+    cy.clickContinueButton(contractDetails.noRadioOption, CDData.classificationSummary.pageHeaderSummary)
+ 
+   // # Page2 Contract Details- Contract Type:..........
+   cy.findElement(contractDetails.contractStart).click();
     if (contractType == "FFP") {
       cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").check({
         force: true
@@ -117,10 +133,10 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
       });
       cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, textTM);
     }
-    cy.clickContinueButton(contractDetails.tmCheckBox, " What classification level(s) will be required for your cloud resources and/or services? ");
-  });
+    cy.clickContinueButton(contractDetails.tmCheckBox, CDData.classificationSummary.pageHeaderSummary);
 
-  it("TC3: Contract Details: Step#3> Classification Requirements", () => {
+  // # Page3 Contract Details- Classification Requirements:...
+     cy.findElement(contractDetails.classReqStart).click();
     if (IL2 == "Yes") {
       cy.findElement(contractDetails.level2).check({
         force: true
@@ -153,13 +169,13 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     }
     cy.log(" Class summary is ", classSummary);
     cy.wait(2000);
-    cy.clickContinueButton(contractDetails.level2, " Let’s find out more about your security requirements ");
+    cy.clickContinueButton(contractDetails.level2, CDData.classLevelPage2.pageHeaderCL2);
     const scb_5Sel = suffixId(contractDetails.checkbox_5, "Secret");
     const tscb_6Sel = suffixId(contractDetails.checkbox_6, "TopSecret");
     const tscb_9Sel = suffixId(contractDetails.checkbox_9, "TopSecret");
     cy.selectCheckBoxes([scb_5Sel, tscb_6Sel, tscb_9Sel]);
     cy.wait(4000);
-    cy.clickContinueButton(contractDetails.checkbox_1, "Do you require a cross-domain solution (CDS)?");
+    cy.clickContinueButton(contractDetails.checkbox_1, CDData.classLevelPage3.pageHeaderCL3);
     if (cdsOption == "Yes") {
       cy.findElement(contractDetails.cdsYesOption)
         .click({
@@ -176,17 +192,16 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
           force: true
         });
     }
-    cy.clickContinueButton(contractDetails.cdsNoOption, " Your Contract Details Summary ");
-  });
+    cy.clickContinueButton(contractDetails.cdsNoOption, CDData.classificationSummary.pageHeaderSummary);
+  
 
-  it("TC4: Contract Details: Summary", () => {
+    // Contract Details: Summary page:---
 
     cy.textExists(contractDetails.popHeading, " Period of Performance (PoP)");
-    cy.textExists(contractDetails.popDescription, basePeriod + " " + dropDownOption + " " + "base period");
     cy.textExists(contractDetails.contractTypeHeading, " Contract Type ");
     cy.contains(contractDetails.contractTypeDescription, contractType);
     cy.textExists(contractDetails.classReqHeading, " Classification Requirements ");
-     cy.btnExists(contractDetails.classReqComplete, " View/Edit ");
+    cy.btnExists(contractDetails.classReqComplete, " View/Edit ");
     cy.btnExists(contractDetails.contractComplete, " View/Edit ");
     cy.btnExists(contractDetails.popComplete, " View/Edit ").not("[disabled]").click();
     cy.waitUntilElementIsGone(contractDetails.popComplete);

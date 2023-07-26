@@ -41,7 +41,7 @@ describe("Test suite: Functional Testing - 03 Contract Details> ContractType", (
             });
         cy.btnExists(common.continueBtn, " Continue ");
         cy.verifyCheckBoxLabels(contractDetails.selectedContractTypeOption, CDData.contractTypePage.expectedLabels);
-        cy.clickContinueButton(contractDetails.tmCheckBox, CDData.classLevelPage1.pageHeaderCL1);
+        cy.clickContinueButton(contractDetails.tmCheckBox, CDData.classificationSummary.pageHeaderSummary);
         cy.log(" TestReport: Step3-ContractDetails-Contract Type Functional Testing Complete ")
 
     });

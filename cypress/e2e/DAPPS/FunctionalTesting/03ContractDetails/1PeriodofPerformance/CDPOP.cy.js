@@ -32,7 +32,6 @@ describe("Test suite: Functional Testing - 03 Contract Details> Period of Perfor
         cy.verifyTextMatches("p.mb-10", CDData.POPPage1.expectedPOPText);
         cy.findElement(contractDetails.popLearnMoreLink).should("exist");
         cy.textExists(contractDetails.popLengthLabelText, CDData.POPPage1.popLengthLabel);
-
         cy.log(" TestReport: Verify Base and dropdown fields");
         cy.textExists(contractDetails.baseLabelText, "Base");
         cy.findElement(contractDetails.baseInputTxtBox).should("exist");
@@ -132,7 +131,7 @@ describe("Test suite: Functional Testing - 03 Contract Details> Period of Perfor
         cy.radioBtn(contractDetails.noRadioOption, "NO").not("[disabled]").click({
             force: true
         });
-        cy.clickContinueButton(contractDetails.noRadioOption, CDData.contractTypePage.pageHeader4);
+        cy.clickContinueButton(contractDetails.noRadioOption, CDData.classificationSummary.pageHeaderSummary);
         cy.log(" TestReport: Step3-ContractDetails-Period of Performance Page# 3 Functional Testing complete ")
     });
 
