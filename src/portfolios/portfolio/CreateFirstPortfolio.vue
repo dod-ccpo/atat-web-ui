@@ -10,7 +10,7 @@
                   Ready to create your first ATAT portfolio?
                 </h1>
                 <v-row class="d-flex v-list">
-                  <v-col class="mr-15" style="max-width: 535px">
+                  <v-col class="mr-15" style="max-width: 545px">
                     <div class="copy-max-width">
                       <p>
                         We’ll guide you through steps to start provisioning
@@ -18,7 +18,7 @@
                         up, you’ll be provided a for viewing funding reports and
                         managing access to your cloud console.
                       </p>
-                      <p class="h3">You can expect to:</p>
+                      <p class="h4">You can expect to:</p>
                       <v-list class="_atat-stepper mb-10">
                         <v-list-item-group>
                           <v-list-item
@@ -148,7 +148,7 @@ export default class CreatePortfolio extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
     await Steps.setAltBackDestination(
-      AppSections.sectionTitles.CreateNewPortfolio
+      AppSections.sectionTitles.CreateFirstPortfolio
     );
     await AcquisitionPackage.setIsNewPackage(true);
     await AcquisitionPackage.reset();
