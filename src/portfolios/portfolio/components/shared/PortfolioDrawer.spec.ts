@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
@@ -123,7 +124,7 @@ describe("Testing Portfolio Drawer component", () => {
     const idx = 0
     await wrapper.setData({
       currentUser: {
-        sysId: "123456"
+        sys_id: "123456"
       },
       portfolio, 
       portfolioMembers: [{
@@ -131,7 +132,7 @@ describe("Testing Portfolio Drawer component", () => {
         lastName: "LastName",
         email: "firstNameLastName@mail.mil",
         role: "Manager",
-        sysId: "987654"
+        sys_id: "987654"
       }]
     })
 
@@ -143,7 +144,7 @@ describe("Testing Portfolio Drawer component", () => {
         lastName: "LastName",
         email: "firstNameLastName@mail.mil",
         role: "Manager",
-        sysId: "987654"
+        sys_id: "987654"
       }],
       provisioned: "2022-09-08 18:12:12",
       agency: "DISA",
