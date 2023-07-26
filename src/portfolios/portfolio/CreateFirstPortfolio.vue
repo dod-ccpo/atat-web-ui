@@ -141,7 +141,6 @@ export default class CreatePortfolio extends Vue {
         },
         replace: true,
       })
-      .catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(
       AppSections.sectionTitles.ProvisionWorkflow
     );
@@ -162,7 +161,6 @@ export default class CreatePortfolio extends Vue {
         },
         replace: true,
       })
-      .catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(
       AppSections.sectionTitles.AcquisitionPackage
     );
