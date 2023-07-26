@@ -10,7 +10,6 @@ import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
 import { 
-  ClassificationInstanceDTO,
   ContractTypeDTO, 
   CrossDomainSolutionDTO,
   PeriodDTO,
@@ -20,9 +19,6 @@ import {
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
 import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
-import { OtherOfferingSummaryPathResolver } from "@/router/resolvers";
-import { ServiceOfferingApi } from "@/api/serviceOffering";
-import { title } from "process";
 import DescriptionOfWork from "../descriptionOfWork";
 
 
@@ -412,6 +408,10 @@ export class SummaryStore extends VuexModule {
 
   //#region Step 5
 
+  /** assesses all selected service offerings and 
+   * Anticipated Users and Data object
+  */
+
   /**
    * 
    * @param dowObjects DOWServiceOfferingGroup[]
@@ -453,7 +453,13 @@ export class SummaryStore extends VuexModule {
     })
   };
 
-
+  /**
+   *
+   * validates Anticipated Users and Data data in 
+   * ClassificationRequirements.selectedClassificationLevels 
+   * store object & creates an Anticipated Users and Data summary item
+   * in the Summary store
+   */
   @Action({rawError: true})
   public async validateAnticipatedUsersAndData(): Promise<void>{
     const classLevels = 
@@ -496,6 +502,13 @@ export class SummaryStore extends VuexModule {
     );
   }
 
+  /**
+   * 
+   * @param classLevels SelectedClassificationLevelDTO[]
+   * @returns  Anticipated Users and Data summaryItem 
+   * 
+   * creates a summary item for Anticipated Users and Data
+   */
   @Action({rawError: true})
   public async createAnticipatedUsersAndDataSummaryItem(
     classLevels: SelectedClassificationLevelDTO[]
@@ -517,6 +530,11 @@ export class SummaryStore extends VuexModule {
     } as SummaryItem
   }
 
+  /**
+   * 
+   * @param dow DOWServiceOfferingGroup
+   * @returns Summary Item for the service offering
+   */
   @Action({rawError: true})
   public async createServiceOfferingSummaryItem(dow: DOWServiceOfferingGroup): 
   Promise<SummaryItem>
@@ -539,6 +557,11 @@ export class SummaryStore extends VuexModule {
     } as SummaryItem
   }
 
+  /**
+     * 
+     * @param title 
+     * @returns (index of title + 1) 
+     */
   @Action({rawError: true})
   public async getServiceOfferingSubstep(
     title: string)
@@ -563,7 +586,12 @@ export class SummaryStore extends VuexModule {
       'GENERAL_CLOUD_SUPPORT',
     ].findIndex(serviceOfferingTitle => serviceOfferingTitle === title) + 1
   }
-
+  /**
+   * validates the serviceOffering.classificationInstances 
+   * 
+   * @param serviceOffering 
+   * @returns DOWServiceOffering 
+   */
   @Action({rawError: true})
   public async isServiceOfferingDataObjComplete(serviceOffering: DOWServiceOffering)
   : Promise<DOWServiceOffering> {
@@ -592,6 +620,14 @@ export class SummaryStore extends VuexModule {
     return serviceOffering;
   }
 
+  /**
+   * validates the otherServiceOfferingData 
+   * 
+   * @param attribs.otherOfferingData: OtherServiceOfferingData
+   * @param attribs.id: string
+   * @param attribs.assessSecurityRequirements: boolean
+   * @returns 
+   */
   @Action({rawError: true})
   public async isOtherOfferingDataObjComplete(
     attribs: {

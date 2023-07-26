@@ -424,16 +424,11 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
       (summaryItem) => summaryItem.serviceOfferingGroupId
     )
 
-    console.log(offeringGroupIds)
     this.summaryItems = (await getSummaryItemsforStep(5)).filter(
       summaryItem => offeringGroupIds.includes(summaryItem.routeName) && 
         summaryItem.step === 5
     ).sort((a,b)=>a.title<b.title? -1: 1);
     await Summary.toggleButtonColor(5);
-
-    //todo remove this
-    this.serviceGroupsMissingData = 
-      await Summary.validateStepFive();
   };
 
   public async mounted(): Promise<void> {
