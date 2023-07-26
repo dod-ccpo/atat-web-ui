@@ -470,29 +470,33 @@ export class SummaryStore extends VuexModule {
       let requiredFields = [
         "data_egress_monthly_amount",
         "data_egress_monthly_unit",
-        "users_per_region"
+        "users_per_region",
+        "increase_in_users",
+        "data_increase"
       ] 
 
       if(data["increase_in_users"]==="YES"){
         additionalFields = [
           "user_growth_estimate_type",
-          "user_growth_estimate_percentage",// >0
+          "user_growth_estimate_percentage",
         ]
       }
       if(data["data_increase"]==="YES"){
         additionalFields = [
           "data_growth_estimate_type",
-          "data_growth_estimate_percentage",// >0
+          "data_growth_estimate_percentage",
         ]
       }
 
       requiredFields = requiredFields.concat(additionalFields);
       level.isAnticipatedUsersAndDataIsComplete = requiredFields.every(f => {
         if (f === "increase_in_users" && data.increase_in_users === "YES"){
-          return data.user_growth_estimate_percentage.length > 0
+          return data.user_growth_estimate_percentage.length > 0 &&
+            data.user_growth_estimate_percentage[0] !== ""
         }
         if (f === "data_increase" && data.data_increase === "YES"){
-          return data.data_growth_estimate_percentage.length > 0
+          return data.data_growth_estimate_percentage.length > 0 &&
+            data.data_growth_estimate_percentage[0] !== ""
         }
         return data[f] !== ""
       })

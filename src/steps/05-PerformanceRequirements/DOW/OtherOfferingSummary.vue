@@ -43,7 +43,7 @@
                 :class="{'text-clamp--1-line' : hasStatementColumn }"
                 v-html="item.typeOrTitle">
               </span>
-              <span v-if="!item.isValid" v-html=rowErrorMessage></span>
+              <span v-if="!item.isComplete" v-html=rowErrorMessage></span>
               </div>
             </template>
             <!-- eslint-disable vue/valid-v-slot -->
@@ -284,7 +284,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
-      let isValid = true;
+      let isComplete = true;
       let typeOrTitle = "";
       let classificationLevel = "";
       let duration = "";
@@ -389,7 +389,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           : instanceClone.descriptionOfNeed;
       }
 
-      isValid = (await Summary.isOtherOfferingDataObjComplete(
+      isComplete = (await Summary.isOtherOfferingDataObjComplete(
         {
           otherOfferingData: instanceClone,
           id: (await DescriptionOfWork.getCurrentOfferingGroupId()),
@@ -462,7 +462,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         personnelOnsiteAccess,
         trainingType,
         sysId: instanceClone.sysId,
-        isValid
+        isComplete
       };
 
       this.tableData.push(instanceData);

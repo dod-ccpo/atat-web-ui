@@ -123,7 +123,7 @@ describe("Testing Portfolio Drawer component", () => {
     const idx = 0
     await wrapper.setData({
       currentUser: {
-        sys_id: "123456"
+        sysId: "123456"
       },
       portfolio, 
       portfolioMembers: [{
@@ -131,7 +131,7 @@ describe("Testing Portfolio Drawer component", () => {
         lastName: "LastName",
         email: "firstNameLastName@mail.mil",
         role: "Manager",
-        sys_id: "987654"
+        sysId: "987654"
       }]
     })
 
@@ -143,7 +143,7 @@ describe("Testing Portfolio Drawer component", () => {
         lastName: "LastName",
         email: "firstNameLastName@mail.mil",
         role: "Manager",
-        sys_id: "987654"
+        sysId: "987654"
       }],
       provisioned: "2022-09-08 18:12:12",
       agency: "DISA",
@@ -218,6 +218,5 @@ describe("Testing Portfolio Drawer component", () => {
       expect(result).toBe("Sep. 8, 2022, 1812")
     })
   })
-
 })
 

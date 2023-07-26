@@ -23,13 +23,13 @@
             <div class=" d-flex justify-space-between">
               <div>
                 <h3 class="mb-1" id=" AnticipatedUsersAndDataNeeds_Heading">
-                  Anticipated users and data
+                  {{ AnticipatedUserAndDataSummaryItem.title }}
                 </h3>
               </div>
               <div class="d-flex align-start">
                 <div class="d-flex align-center">
                   <div 
-                    v-if="isAnticipatedUsersAndDataInvalid" 
+                    v-if="!AnticipatedUserAndDataSummaryItem.isComplete" 
                     class="d-flex align-start nowrap ml-5"
                   >
                     <v-icon
@@ -40,7 +40,9 @@
                   <v-btn
                     width="111"
                     :class="[
-                      isAnticipatedUsersAndDataInvalid ? 'primary': 'secondary',
+                      AnticipatedUserAndDataSummaryItem.isComplete
+                        ? 'secondary'
+                        : 'primary',
                       '_' + getIdText('AnticipatedUsersAndData') + '-button'
                     ]"
                     @click="routeToAnticipatedUsersAndDataNeeds()"
@@ -212,6 +214,15 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
   public introText = "";
   public showAnticipatedUserAndDataNeeds = false;
   public isXaaS = false;
+  public AnticipatedUserAndDataSummaryItem: SummaryItem = {
+    title: "",
+    description: "",
+    isComplete: false,
+    isTouched: false,
+    routeName: "",
+    step: 0,
+    substep: 0
+  };
 
   public alternateGroupNames = [
     {
@@ -290,11 +301,7 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
     },
   ];
 
-  get isAnticipatedUsersAndDataInvalid():boolean{
-    return ClassificationRequirements.selectedClassificationLevels.some(
-      cl => cl.isValid === undefined || cl.isValid === false
-    )
-  }
+  
 
   public getTooltipText(value: string): string {
     const tooltipObj =  this.tooltipText.find(e => e.value === value);
@@ -429,6 +436,10 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
         summaryItem.step === 5
     ).sort((a,b)=>a.title<b.title? -1: 1);
     await Summary.toggleButtonColor(5);
+
+    this.AnticipatedUserAndDataSummaryItem = Summary.summaryItems.find(
+      si => si.step === 5 && si.substep === 0
+    ) as SummaryItem
   };
 
   public async mounted(): Promise<void> {

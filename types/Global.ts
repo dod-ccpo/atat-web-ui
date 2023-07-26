@@ -453,7 +453,7 @@ export interface OtherServiceSummaryTableData {
   personnelOnsiteAccess?: string;
   trainingType?: string;
   sysId?:string;
-  isValid?:boolean;
+  isComplete?:boolean;
 }
 
 export interface TravelSummaryTableData {
