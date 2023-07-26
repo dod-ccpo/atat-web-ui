@@ -564,6 +564,16 @@ export class AcquisitionPackageStore extends VuexModule {
     this.showInviteContributorsModal = show;
   }
 
+  public showArchivePortfolioModal = false;
+
+  public get getShowArchivePortfolioModal(): boolean {
+    return this.showArchivePortfolioModal;
+  }
+
+  @Mutation
+  public doSetShowArchivePortfolioModal(show: boolean): void {
+    this.showArchivePortfolioModal = show;
+  }
   @Action({rawError: true})
   public async inviteContributors(sysIds: string): Promise<void> {
     const currentContributors = this.acquisitionPackage?.contributors?.split(",");

@@ -528,7 +528,7 @@
                                   </th>
                                   <th id="TotalFundsSpentHeader">
                                     <div
-                                      class="font-size-12 text-base-darker 
+                                      class="font-size-12 text-base-darker
                                       d-flex justify-end align-center"
                                       id="TotalFundsSpent"
                                     >
@@ -537,7 +537,7 @@
                                   </th>
                                   <th id="LastMonthsSpendHeader">
                                     <div
-                                      class="font-size-12 text-base-darker 
+                                      class="font-size-12 text-base-darker
                                       d-flex justify-end align-center"
                                       id="LastMonthsSpend"
                                     >
@@ -634,14 +634,14 @@
                                   <td id="ClinLastMonthSpent">
                                     <div class="d-flex flex-column">
                                       <span
-                                        class="font-size-14 text-base-darker 
+                                        class="font-size-14 text-base-darker
                                         d-flex justify-end"
                                       >
                                         ${{ item.lastMonthSpent }}
                                       </span>
                                       <span class="d-flex justify-end">
                                         <span
-                                          class="font-size-12 d-flex pr-1 align-center pr-1 
+                                          class="font-size-12 d-flex pr-1 align-center pr-1
                                           font-weight-700"
                                           :class="
                                             item.spendTrend > 0
@@ -691,7 +691,7 @@
                                   <td id="TotalSpent">
                                     <div class="d-flex flex-column">
                                       <span
-                                        class="font-size-14 text-base-darker 
+                                        class="font-size-14 text-base-darker
                                         font-weight-700 d-flex justify-end"
                                       >
                                         {{
@@ -729,7 +729,7 @@
                                   <td id="TotalLastMonthSpent">
                                     <div class="d-flex flex-column">
                                       <span
-                                        class="font-size-14 d-flex justify-end 
+                                        class="font-size-14 d-flex justify-end
                                         text-base-darker font-weight-700"
                                       >
                                         {{
@@ -740,7 +740,7 @@
                                       </span>
                                       <span class="d-flex justify-end">
                                         <span
-                                          class="font-size-12 d-flex pr-1 
+                                          class="font-size-12 d-flex pr-1
                                           align-center font-weight-700"
                                           :class="
                                             totalSpendingObj.spendTrend > 0

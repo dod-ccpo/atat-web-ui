@@ -62,7 +62,6 @@
             color="base-dark"
           />
         </v-btn>
-        <!-- ATAT TODO: Reinstate menu in future ticket when functionality complete -->
         <v-menu
           :offset-y="true"
           left
@@ -81,7 +80,6 @@
               <v-icon class="text-base-dark">more_horiz</v-icon>
             </v-btn>
           </template>
-
           <v-list>
             <v-list-item
               @click="openModal"
@@ -107,7 +105,7 @@
               </v-list-item-title>
             </v-list-item>
             <v-list-item
-              :disabled="portfolioStatus.toLowerCase() !== 'expired'"
+              @click="openArchivePortfolioModal"
               id="ArchivePortfolio_MenuItem"            
             >
               <v-list-item-title>
@@ -154,11 +152,14 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { SlideoutPanelContent } from "../../../../../types/Global";
 import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+// eslint-disable-next-line max-len
+import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
 
 @Component({
   components: {
     ATATTextField,
     AddMembersModal,
+    ArchivePortfolioModal,
     ATATSVGIcon
   }
 })
@@ -172,7 +173,7 @@ export default class PortfolioSummaryPageHead extends Vue {
   @PropSync("title") private _title!: string;
 
   public get titleIsReadOnly(): boolean {
-    return PortfolioStore.currentUserIsViewer;;
+    return PortfolioStore.currentUserIsViewer;
   }
 
   public titleBeforeEdit = "";
@@ -180,7 +181,6 @@ export default class PortfolioSummaryPageHead extends Vue {
     this.titleBeforeEdit = this._title;
   }
 
-  public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public showDrawer = false;
 
@@ -199,6 +199,12 @@ export default class PortfolioSummaryPageHead extends Vue {
   public openModal():void {
     PortfolioStore.setShowAddMembersModal(true);
   }
+
+  public openArchivePortfolioModal():void {
+    console.log(`Open Archive Portfolio Modal`);
+    PortfolioStore.setShowArchivePortfolioModal(true);
+  }
+
   public async tabClicked(index: number): Promise<void> {
     await AppSections.setActiveTabIndex(index);
   }

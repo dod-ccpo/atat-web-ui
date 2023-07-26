@@ -5,7 +5,7 @@ import rootStore from "../index";
 import {
   Environment,
   FilterOption,
-  MemberInvites, 
+  MemberInvites,
   Operator,
   Portfolio,
   PortfolioCardData,
@@ -528,6 +528,7 @@ export class PortfolioDataStore extends VuexModule {
   public get getShowAddMembersModal(): boolean {
     return this.showAddMembersModal;
   }
+  public showArchivePortfolioModal = false;
   public currentUserIsViewer = false;
   public currentUserIsManager = false;
   public currentUserIsOwner = false;
@@ -583,9 +584,22 @@ export class PortfolioDataStore extends VuexModule {
   public setShowAddMembersModal(show: boolean): void {
     this.doSetShowAddMembersModal(show);
   }
+
   @Mutation
   public doSetShowAddMembersModal(show: boolean): void {
     this.showAddMembersModal = show;
+  }
+
+  @Action
+  public setShowArchivePortfolioModal(show: boolean): void {
+    console.log(`Set Show Archive Portfolio Modal ${show}`);
+    this.doSetShowArchivePortfolioModal(show);
+  }
+
+  @Mutation
+  public doSetShowArchivePortfolioModal(show: boolean): void {
+    console.log(`Do Show Archive Portfolio Modal ${show}`);
+    this.showArchivePortfolioModal = show;
   }
 
   @Mutation
