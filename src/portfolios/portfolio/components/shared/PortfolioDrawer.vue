@@ -272,7 +272,7 @@
     <ATATDialog
       id="TransferOwnerModal"
       :showDialog="showTransferOwnerDialog"
-      :title="'Transfer ownership to ' + transferToUser.firstName" 
+      :title="'Transfer ownership to ' + transferToUser.firstName + '?'" 
       no-click-animation
       okText="Transfer ownership"
       width="450"
@@ -730,8 +730,8 @@ export default class PortfolioDrawer extends Vue {
       this.downgradeMemberIndex = -1;
 
       const thisMember = this.portfolioMembers[index];
-      // member.menuItems = this.getMemberMenuItems(member);
       this.$set(this.portfolioMembers, index, thisMember);
+
       this.portfolioMembers.forEach(member => {
         member.menuItems = this.getMemberMenuItems(member);
       })
