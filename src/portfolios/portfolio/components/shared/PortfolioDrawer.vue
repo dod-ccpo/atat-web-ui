@@ -118,7 +118,6 @@
 
           <!-- NOT DROPDOWN - for owners and for manager if only one manager in portfolio -->
           <div v-if="currentUserIsViewer && member.sys_id !== currentUser.sys_id
-            || (member.role === 'Manager' && onlyOneManager) 
             || member.role === 'Owner'
           ">
 
@@ -137,13 +136,12 @@
                 </div>
               </template>
               <div 
-                v-if="!currentUserIsViewer && 
-                  ((member.role === 'Owner' && currentUserIsOwner
-                  || member.role === 'Manager'))" 
+                v-if="member.role === 'Owner' && currentUserIsOwner" 
                 class="_tooltip-content-wrap _left" 
                 style="width: 250px;"
               >
-                {{ ownerOrOnlyManagerTooltip(member) }}
+                As the owner, you will need to transfer ownership in order to 
+                leave this portfolio.
               </div>
             </v-tooltip>
           </div>
@@ -355,10 +353,6 @@ export default class PortfolioDrawer extends Vue {
   public showManagerDowngradeDialog = false;
   public downgradeMemberIndex = -1;
 
-  public get onlyOneManager(): boolean{
-    return this.managerCount === 1;
-  }
-
   public get isProdEnv(): boolean {
     return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
   }
@@ -375,24 +369,6 @@ export default class PortfolioDrawer extends Vue {
     }
   }  
 
-  public ownerOrOnlyManagerTooltip(member: User): string {
-    if (member.role === "Manager" && !this.currentUserIsViewer ) {
-      const isMgr = this.currentUserIsManager;
-      const start = isMgr ? "You are" : "This is";
-      const end = isMgr ? "for you to leave this" : "to remove this user from the";
-      return `${start} the only manager of this portfolio. There must be at least
-          one other manager ${end} portfolio or change roles.`;
-    } else if (member.role === "Owner" && this.currentUserIsOwner) {
-      return `As the owner, you will need to transfer ownership in order to leave this portfolio.`;
-    }
-    return ""; 
-  }
-
-  public async memberIsOwnerOrOnlyManager(member: User): Promise<boolean> {
-    if (member.role === "Viewer") return false;
-    return member.role && (this.managerCount === 1 && member.role === "manager")
-      || member.role === "owner";
-  }
   public get currentUserIsViewer(): boolean {
     return PortfolioStore.currentUserIsViewer || this.currentUserDowngradedToViewer;
   }
@@ -447,7 +423,7 @@ export default class PortfolioDrawer extends Vue {
     { text: "About roles", value: "AboutRoles", isSelectable: false },
   ];
   public ownerMenuItems: SelectData[] = [
-    { text: "Transfer ownership", value: "XferOwner", isSelectable: false },
+    { text: "Transfer ownership", value: "TransferOwner", isSelectable: false },
   ]
 
   public statusImg = {
@@ -720,8 +696,8 @@ export default class PortfolioDrawer extends Vue {
             }
             SlideoutPanel.setSlideoutPanelComponent(panelContent);
           })
-        } else if (val === "XferOwner") {
-          // work to be completed in AT-9328 SPRINT 62
+        } else if (val === "TransferOwner") {
+          debugger;
         }
 
       }
