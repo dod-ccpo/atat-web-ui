@@ -113,7 +113,7 @@ import TaskOrderSearch from "../components/TaskOrderSearch.vue";
     TaskOrderSearch,
   },
 })
-export default class CreatePortfolio extends Vue {
+export default class CreateFirstPortfolio extends Vue {
   public provisionStepsText = [
     `Provide a few details about your awarded task order and the individuals who 
       will administer your cloud resources.`,
@@ -133,14 +133,13 @@ export default class CreatePortfolio extends Vue {
     );
     await AcquisitionPackage.reset();
 
-    this.$router
-      .push({
-        name: provWorkflowRouteNames.AwardedTaskOrder,
-        params: {
-          direction: "next",
-        },
-        replace: true,
-      })
+    this.$router.push({
+      name: provWorkflowRouteNames.AwardedTaskOrder,
+      params: {
+        direction: "next",
+      },
+      replace: true,
+    });
     AppSections.changeActiveSection(
       AppSections.sectionTitles.ProvisionWorkflow
     );
@@ -153,14 +152,13 @@ export default class CreatePortfolio extends Vue {
     await AcquisitionPackage.setIsNewPackage(true);
     await AcquisitionPackage.reset();
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
-    this.$router
-      .push({
-        name: routeNames.DAPPSChecklist,
-        params: {
-          direction: "next",
-        },
-        replace: true,
-      })
+    this.$router.push({
+      name: routeNames.DAPPSChecklist,
+      params: {
+        direction: "next",
+      },
+      replace: true,
+    });
     AppSections.changeActiveSection(
       AppSections.sectionTitles.AcquisitionPackage
     );
