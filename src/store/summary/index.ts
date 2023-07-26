@@ -749,7 +749,6 @@ export class SummaryStore extends VuexModule {
       }
     }
     requiredFields = requiredFields.concat(additionalFields);
-    debugger;
     attribs.otherOfferingData.isComplete = requiredFields.every(f => {
       if (f === "periodsNeeded"){
         return data.entireDuration === "NO"
