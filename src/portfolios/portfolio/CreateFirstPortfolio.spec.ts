@@ -77,6 +77,21 @@ describe("Testing CreateFirstPortfolio Component", () => {
         AppSections.sectionTitles.AcquisitionPackage
       );
     });
+    it("testing @keydown.space to trigger viewAllPackages() ", async () => {
+      const anchorLink = wrapper.find("#createAPackageLink");
+      anchorLink.trigger('keydown.space'); // trigger viewAllPackages();
+      expect(AppSections.changeActiveSection).toHaveBeenCalledWith(
+        AppSections.sectionTitles.AcquisitionPackage
+      );
+    });
+  
+    it("testing @keydown.enter to trigger viewAllPackages() ", async () => {
+      const anchorLink = wrapper.find("#createAPackageLink");
+      anchorLink.trigger('keydown.enter'); // trigger viewAllPackages();
+      expect(AppSections.changeActiveSection).toHaveBeenCalledWith(
+        AppSections.sectionTitles.AcquisitionPackage
+      );
+    });
   });
 
   describe("startProvisionWorkFlow() =>", () => {
