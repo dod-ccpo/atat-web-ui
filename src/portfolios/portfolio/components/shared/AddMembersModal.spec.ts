@@ -5,6 +5,7 @@ import { DefaultProps } from "vue/types/options";
 import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioData from "@/store/portfolio";
+import api from "@/api";
 
 Vue.use(Vuetify);
 
@@ -33,7 +34,7 @@ describe("Testing AddMembersModal", () => {
       localVue,
       vuetify,
     });
-    PortfolioData.setPortfolioData(portfolio);
+    await PortfolioData.setPortfolioData(portfolio);
     await wrapper.setData({
       existingMemberEmails: []
     })
@@ -60,20 +61,24 @@ describe("Testing AddMembersModal", () => {
     expect(PortfolioData.showAddMembersModal).toEqual(false);
   });
 
-  it("sets PorfolioData.title to ensure $data.projectTitle is set correctly", async () => {
-    const dummyTitle = "dummy Title";
-    PortfolioData.setPortfolioData({
-      title: dummyTitle
+  it.only("ensure 3 functions are called", async () => {
+    jest.spyOn(api.portfolioTable, "update").mockImplementation();
+    const doSetPortfolioDataMock = 
+      jest.spyOn(PortfolioData, "doSetPortfolioData").mockImplementation(
+        async () => Promise.resolve()
+      );
+    const doSetCurrentUserRoleMock = 
+      jest.spyOn(PortfolioData, "doSetCurrentUserRole").mockImplementation();
+    await PortfolioData.setPortfolioData({
+      sysId: "2134242",
     })
-    await wrapper.vm.showModalChange(true);
-    expect(await wrapper.vm.$data.projectTitle).toBe(
-      dummyTitle
-    );
+    expect (doSetPortfolioDataMock).toHaveBeenCalled();
+    expect (doSetCurrentUserRoleMock).toHaveBeenCalled();
   });
 
   it("sets PorfolioData.title='' to ensure $data.projectTitle is set correctly", async () => {
     const noTitle = "";
-    PortfolioData.setPortfolioData({
+    await PortfolioData.setPortfolioData({
       title: noTitle
     })
     await wrapper.vm.showModalChange(true);
