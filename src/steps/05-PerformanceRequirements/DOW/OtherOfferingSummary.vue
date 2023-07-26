@@ -9,7 +9,7 @@
           <p>
             If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. You can
             also edit or delete any info from the {{ serviceGroupVerbiageInfo.typeForText }}s
-            ssss that you have already entered. When you’re done, click “Continue” and we will
+            that you have already entered. When you’re done, click “Continue” and we will
             <span v-if="showSecurityNote">
               find out about your security requirements for these services.
             </span>

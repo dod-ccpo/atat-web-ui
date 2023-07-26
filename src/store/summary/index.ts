@@ -418,9 +418,10 @@ export class SummaryStore extends VuexModule {
    * @returns string[]
    */
   @Action({rawError: true})
-  public async validateStepFive(): Promise<string[]> {
+  public async validateStepFive(): Promise<void> {
     //eslint-disable-next-line prefer-const
     // validates dowObjects.otherOfferingData
+    await this.validateAnticipatedUsersAndData();
     const dowObjects = await DescriptionOfWork.getDOWObject();
     await dowObjects.forEach(async (dow)=> 
     {
@@ -450,20 +451,71 @@ export class SummaryStore extends VuexModule {
         await this.createServiceOfferingSummaryItem(dow)
       );
     })
-    
-    //retrieves any serviceOfferings where 
-    //otherofferingdata[i].isComplete
-
-    const offeringsMissingData = [""];
-    dowObjects.filter(
-      dowObjs =>{
-        if (dowObjs.otherOfferingData?.some(ood => ood.isComplete === false)){
-          return offeringsMissingData.push(dowObjs.serviceOfferingGroupId);
-        }
-      }
-    )
-    return offeringsMissingData;
   };
+
+
+  @Action({rawError: true})
+  public async validateAnticipatedUsersAndData(): Promise<void>{
+    const classLevels = 
+      await ClassificationRequirements.getSelectedClassificationLevels();
+    classLevels.forEach((level)=>{
+      const data: Record<string, any> = _.clone(level);
+      let additionalFields = [""]
+      let requiredFields = [
+        "data_egress_monthly_amount",
+        "data_egress_monthly_unit",
+        "users_per_region"
+      ] 
+
+      if(data["increase_in_users"]==="YES"){
+        additionalFields = [
+          "user_growth_estimate_type",
+          "user_growth_estimate_percentage",// >0
+        ]
+      }
+      if(data["data_increase"]==="YES"){
+        additionalFields = [
+          "data_growth_estimate_type",
+          "data_growth_estimate_percentage",// >0
+        ]
+      }
+
+      requiredFields = requiredFields.concat(additionalFields);
+      level.isAnticipatedUsersAndDataIsComplete = requiredFields.every(f => {
+        if (f === "increase_in_users" && data.increase_in_users === "YES"){
+          return data.user_growth_estimate_percentage.length > 0
+        }
+        if (f === "data_increase" && data.data_increase === "YES"){
+          return data.data_growth_estimate_percentage.length > 0
+        }
+        return data[f] !== ""
+      })
+    });
+    await this.doSetSummaryItem(
+      await this.createAnticipatedUsersAndDataSummaryItem(classLevels)
+    );
+  }
+
+  @Action({rawError: true})
+  public async createAnticipatedUsersAndDataSummaryItem(
+    classLevels: SelectedClassificationLevelDTO[]
+  ): 
+  Promise<SummaryItem>
+  {
+    const isComplete = classLevels.every(
+      cl => cl.isAnticipatedUsersAndDataIsComplete
+    )
+
+    return  {
+      title: "Anticipated users and data",
+      description: "",
+      isComplete,
+      isTouched: false,
+      routeName: "",
+      step: 5,
+      substep: 0
+    } as SummaryItem
+  }
 
   @Action({rawError: true})
   public async createServiceOfferingSummaryItem(dow: DOWServiceOfferingGroup): 
