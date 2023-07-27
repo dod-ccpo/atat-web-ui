@@ -554,6 +554,7 @@ export class PortfolioDataStore extends VuexModule {
       agencyDisplay: portfolioData.agencyDisplay,
       taskOrderNumber: portfolioData.taskOrderNumber,
       taskOrderSysId: portfolioData.taskOrderSysId,
+      portfolio_owner: portfolioData.portfolio_owner,
       portfolio_managers: portfolioData.portfolio_managers,
       portfolio_managers_detail: portfolioData.portfolio_managers_detail,
       portfolio_viewers: portfolioData.portfolio_viewers,
@@ -588,9 +589,28 @@ export class PortfolioDataStore extends VuexModule {
     this.showAddMembersModal = show;
   }
 
+  @Action({rawError: true})
+  public async setPortfolioData(portfolio: Portfolio): Promise<void> {
+    try {
+      if (portfolio.sysId) {
+        const members = {
+          portfolio_owner: portfolio.portfolio_owner,
+          portfolio_managers: portfolio.portfolio_managers,
+          portfolio_viewers: portfolio.portfolio_viewers,
+        } as unknown as PortfolioSummaryDTO;
+
+        await api.portfolioTable.update(portfolio.sysId, members);
+      }
+      await this.doSetPortfolioData(portfolio);
+      await this.doSetCurrentUserRole();
+    } catch(error) {
+      console.error("Error updating portfolio members:" + error);
+    }
+  }
+
   @Mutation
-  public async setPortfolioData(value: Portfolio): Promise<void> {
-    Object.assign(this.currentPortfolio,value)
+  public async doSetPortfolioData(portfolio: Portfolio): Promise<void> {
+    Object.assign(this.currentPortfolio,portfolio)
   }
 
   @Mutation
@@ -609,9 +629,9 @@ export class PortfolioDataStore extends VuexModule {
    */
   @Action({rawError: true})
   public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
-    const userSysIds = portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
+    const userSysIds = portfolio.portfolio_owner + "," 
+      + portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
     const allMembersDetailListDTO = await api.userTable.getUsersBySysId(userSysIds);
-
     const allMembersDetailList: User[] = 
       allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
         return {
@@ -628,16 +648,24 @@ export class PortfolioDataStore extends VuexModule {
     portfolio.portfolio_managers_detail = [];
     portfolio.portfolio_viewers_detail = [];
     portfolio.members = [];
+    let portfolioOwner: User = {};
+    let isOwner = false;
     allMembersDetailList.forEach(member => {
-      if (portfolio.portfolio_managers?.indexOf(member.sys_id as string) !== -1) {
+      isOwner = false;
+      if (portfolio.portfolio_owner === member.sys_id) {
+        portfolioOwner = member;
+        portfolioOwner.role = "Owner";
+        isOwner = true;
+      } else if (portfolio.portfolio_managers?.indexOf(member.sys_id as string) !== -1) {
         member.role = "Manager";
         portfolio.portfolio_managers_detail?.push(member);
-        
       } else {
         member.role = "Viewer";
         portfolio.portfolio_viewers_detail?.push(member);
       }
-      portfolio.members?.push(member);
+      if (!isOwner) {
+        portfolio.members?.push(member);
+      }
     })
     portfolio.members?.sort((a, b) => {
       if (a.fullName && b.fullName) {
@@ -646,10 +674,16 @@ export class PortfolioDataStore extends VuexModule {
         return 0;
       }
     });
-    if (portfolio.createdBy) {
+
+    // add portfolio owner to front of member list
+    portfolio.members.unshift(portfolioOwner);    if (portfolio.createdBy) {
       const createdByUser = await api.userTable.search(portfolio.createdBy);
       this.doSetPortfolioCreator(createdByUser[0]);
     }
+
+    await this.setCurrentPortfolio(portfolio);
+    await this.doSetCurrentUserRole();
+
     return portfolio;
   }
 
