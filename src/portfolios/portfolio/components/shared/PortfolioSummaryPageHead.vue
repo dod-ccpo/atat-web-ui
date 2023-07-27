@@ -108,6 +108,7 @@
               @click="openArchivePortfolioModal"
               id="ArchivePortfolio_MenuItem"            
             >
+              <ArchivePortfolioModal v-if="openArchivePortfolioModal" />
               <v-list-item-title>
                 Archive portfolio
               </v-list-item-title>
@@ -133,6 +134,9 @@
       </div>
     </div>
   </v-app-bar>
+    <ArchivePortfolioModal
+        :showArchivePortfolioModal="openArchivePortfolioModal"
+    />
   </div>
 </template>
 
@@ -154,9 +158,11 @@ import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 // eslint-disable-next-line max-len
 import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
+import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
 
 @Component({
   components: {
+    InviteMembersModal,
     ATATTextField,
     AddMembersModal,
     ArchivePortfolioModal,
@@ -305,6 +311,5 @@ export default class PortfolioSummaryPageHead extends Vue {
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
-
 }
 </script>
