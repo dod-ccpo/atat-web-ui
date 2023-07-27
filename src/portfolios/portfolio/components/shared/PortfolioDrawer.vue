@@ -231,9 +231,9 @@
     <ATATDialog
       id="RemoveMemberModal"
       :showDialog="showRemoveMemberDialog"
-      :title="'Remove ' + removeMemberName + ' from portfolio?'" 
+      :title="'Remove ' + memberToRemove.firstName + ' from portfolio?'" 
       no-click-animation
-      okText="Remove member"
+      okText="Remove from portfolio"
       width="450"
       :OKDisabled="ModalOKDisabled"
       @ok="removeMember"
@@ -241,13 +241,8 @@
     >    
       <template #content>
         <p class="body">
-          {{ removeMemberName }} will be removed from your portfolio members list. 
-          This individual will no longer have access to view portfolio details or 
-          track funds spent. 
-        </p>
-        <p class="body">
-          NOTE: A portfolio manager can restore their access to this portfolio 
-          at any time.
+          {{ memberToRemove.fullName }} will be removed from your portfolio member list. 
+          This individual will no longer have access to portfolio details.
         </p>
       </template>
     </ATATDialog>
@@ -369,7 +364,7 @@ export default class PortfolioDrawer extends Vue {
   
   public showRemoveMemberDialog = false;
   public showLeavePortfolioModal = false;
-  public removeMemberName = "";
+  public memberToRemove: User = {};
   public removeMemberIndex = -1;
 
   public showTransferOwnerDialog = false;
@@ -764,7 +759,7 @@ export default class PortfolioDrawer extends Vue {
         const member = this.portfolioMembers[index];
         member.role = storeData.members?.[index].role;
         if (val === "Remove" && this.portfolio.members && this.portfolio.members.length > 1) {
-          this.removeMemberName = this.displayName(member);
+          this.memberToRemove = member;
           this.removeMemberIndex = index;
           if (this.currentUser.sys_id !== member.sys_id) {
             this.showRemoveMemberDialog = true;
