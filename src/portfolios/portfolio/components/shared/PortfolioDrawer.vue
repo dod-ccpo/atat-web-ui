@@ -235,6 +235,7 @@
       no-click-animation
       okText="Remove member"
       width="450"
+      :OKDisabled="ModalOKDisabled"
       @ok="removeMember"
       @cancelClicked="cancelRemoveMember"
     >    
@@ -360,6 +361,8 @@ export default class PortfolioDrawer extends Vue {
   public updateTime = "";
   public csp = "";
   
+  public ModalOKDisabled = false;
+
   public currentUserIsManager = false; 
   public currentUserIsOwner = false;
   public currentUserDowngradedToViewer = false;
@@ -782,20 +785,33 @@ export default class PortfolioDrawer extends Vue {
           this.transferOwnershipIndex = index;
           this.showTransferOwnerDialog = true;
         }
-
       }
     }
   }
 
   public async removeMember(): Promise<void> {
-    this.showRemoveMemberDialog = false;
-    this.showLeavePortfolioModal = false;
+    this.ModalOKDisabled = true;
     if (this.portfolio.members) {
+      const role = this.portfolio.members[this.removeMemberIndex].role;
+      const sysId = this.portfolio.members[this.removeMemberIndex].sys_id as string;
+      /* eslint-disable camelcase */
+      if (role === "Manager" && this.portfolio.portfolio_managers) {
+        this.portfolio.portfolio_managers = 
+          this.removeItemFromArray(this.portfolio.portfolio_managers, sysId);
+      }
+      if (role === "Viewer" && this.portfolio.portfolio_viewers) {
+        this.portfolio.portfolio_viewers = 
+          this.removeItemFromArray(this.portfolio.portfolio_viewers, sysId);
+      } 
+      /* eslint-enable camelcase */
       this.portfolio.members.splice(this.removeMemberIndex, 1);
       await PortfolioStore.setPortfolioData(this.portfolio);
       await this.loadPortfolio();
-      Toast.setToast(this.accessRemovedToast);
     }
+    Toast.setToast(this.accessRemovedToast);
+    this.showRemoveMemberDialog = false;
+    this.showLeavePortfolioModal = false;
+    this.ModalOKDisabled = false;
   }
 
   public cancelRemoveMember(): void {
