@@ -9,7 +9,7 @@ export default defineConfig({
   defaultCommandTimeout: 10000,
   pageLoadTimeout: 90000,
   numTestsKeptInMemory: 1,
-  //retries: 2,
+  retries: 2,
   env: {
     BABEL_ENV: 'e2e',
   },
