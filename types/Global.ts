@@ -528,23 +528,21 @@ export interface Portfolio extends BaseTableDTO {
   title?: string;
   description?: string;
   status?: string;
-  csp?: string; // EJY - DOUBLE-CHECK - this could be type CSP ?
+  csp?: string; 
   agency?: string;
   agencyDisplay?: string;
   createdBy?: string;
   provisioned?: string;
   members?: User[];
   portfolio_owner?: string;
-  portfolio_owner_detail?: User;
   portfolio_managers?: string
-  portfolio_managers_detail?: User[];
   portfolio_viewers?: string;
-  portfolio_viewers_detail?: User[];
   updated?: string;
   taskOrderNumber?: string;
   environments?: Environment[];
   taskOrderSysId?: string;
   lastUpdated?: string;
+  vendor?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {

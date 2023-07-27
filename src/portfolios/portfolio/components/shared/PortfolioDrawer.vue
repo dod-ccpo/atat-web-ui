@@ -538,7 +538,7 @@ export default class PortfolioDrawer extends Vue {
 
     if (storeData) {
       this.portfolio = storeData;
-      this.csp = storeData.csp?.toLowerCase() as string;      
+      this.csp = storeData.vendor?.toLowerCase() as string;      
       if (storeData.lastUpdated) {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
@@ -726,7 +726,7 @@ export default class PortfolioDrawer extends Vue {
       this.portfolio.portfolio_managers = managers.join(",");
       /* eslint-enable camelcase */
 
-      await PortfolioStore.setPortfolioData(this.portfolio);
+      await PortfolioStore.setCurrentPortfolioMembers(this.portfolio);
       this.downgradeMemberIndex = -1;
 
       const thisMember = this.portfolioMembers[index];
@@ -792,7 +792,7 @@ export default class PortfolioDrawer extends Vue {
     this.showLeavePortfolioModal = false;
     if (this.portfolio.members) {
       this.portfolio.members.splice(this.removeMemberIndex, 1);
-      await PortfolioStore.setPortfolioData(this.portfolio);
+      await PortfolioStore.setCurrentPortfolioMembers(this.portfolio);
       await this.loadPortfolio();
       Toast.setToast(this.accessRemovedToast);
     }

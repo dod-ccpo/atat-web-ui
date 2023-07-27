@@ -68,7 +68,7 @@ describe("Portfolio Store", () => {
     jest.clearAllTimers();
   })
 
-  it('Test setPortfolioData- sets portfolio to the passed in value', async () => {
+  it('Test setCurrentPortfolio- sets portfolio to the passed in value', async () => {
     const mockData = {
       title: "some title to test",
       description: "a description",
@@ -82,7 +82,7 @@ describe("Portfolio Store", () => {
     const doSetCurrentUserRoleMock = 
       jest.spyOn(portfolioStore, "doSetCurrentUserRole").mockImplementation();
 
-    await portfolioStore.setPortfolioData(mockData);
+    await portfolioStore.setCurrentPortfolio(mockData);
     expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
     expect (doSetCurrentUserRoleMock).toHaveBeenCalled();
   })
@@ -112,7 +112,7 @@ describe("Portfolio Store", () => {
       members: []
     }
 
-    await portfolioStore.setPortfolioData(mockData);
+    await portfolioStore.setCurrentPortfolio(mockData);
     Vue.nextTick(() => {
       expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
     })
@@ -168,7 +168,7 @@ describe("Portfolio Store", () => {
 
   it('getPortolioData()', async()=>{
     const dummyTitle = "dummy Title";
-    await portfolioStore.setPortfolioData({
+    await portfolioStore.setCurrentPortfolio({
       title: dummyTitle
     });
     const portfolio = await portfolioStore.getPortfolioData();

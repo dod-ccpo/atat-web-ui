@@ -62,7 +62,7 @@ describe("Testing Portfolio Drawer component", () => {
       localVue,
       vuetify,
     });
-    PortfolioData.setPortfolioData(portfolio);
+    PortfolioData.setCurrentPortfolioMembers(portfolio);
   });
 
   afterEach(() => {

@@ -770,13 +770,13 @@ export interface TravelRequirementDTO extends BaseTableDTO {
 export interface PortfolioSummaryDTO extends BaseTableDTO{
   name: string; // "Porfolio Name << portfolio.name >>",
   csp: string;
-  csp_display: string; // "<<cloud_service_package.name >>"
+  csp_display: string;
   vendor: CSP;
   active_task_order: string;
   agency: string;
   agency_display?: string;
   
-  dod_component: string; // {{ this is coming }} for now, stub in 'ARMY' - EJY DOUBLE-CHECK NEEDED?
+  dod_component: string; 
 
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
@@ -787,19 +787,16 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_status: string; // "PROCESSING << portfolio.portfolio_status >>",
   portfolio_funding_status: string;
   portfolio_owner?: string;
-  portfolio_owner_detail?: UserSearchResultDTO;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
-  portfolio_managers_detail?: UserSearchResultDTO[];
   portfolio_viewers?: string;
-  portfolio_viewers_detail?: UserSearchResultDTO[];
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];
   title?: string;
   description?: string;
 
-  environments?: Environment[]; // EJY - DOUBLE-CHECK
-  last_updated?: string; // EJY - DOUBLE-CHECK
+  environments?: Environment[]; 
+  last_updated?: string; 
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {
