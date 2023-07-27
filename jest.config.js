@@ -62,6 +62,7 @@ module.exports = {
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/InstanceDetails.spec.ts",
+    "<rootDir>/src/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.spec.ts",
     "<rootDir>/src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts",
     "<rootDir>/src/steps/07-OtherContractConsiderations/*.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
