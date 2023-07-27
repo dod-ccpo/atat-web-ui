@@ -235,7 +235,8 @@
       no-click-animation
       okText="Remove from portfolio"
       width="450"
-      :OKDisabled="ModalOKDisabled"
+      :OKDisabled="modalOKDisabled"
+      :showOKSpinner="showOKSpinner"
       @ok="removeMember"
       @cancelClicked="cancelRemoveMember"
     >    
@@ -356,8 +357,9 @@ export default class PortfolioDrawer extends Vue {
   public updateTime = "";
   public csp = "";
   
-  public ModalOKDisabled = false;
-
+  public modalOKDisabled = false;
+  public showOKSpinner = false;
+  
   public currentUserIsManager = false; 
   public currentUserIsOwner = false;
   public currentUserDowngradedToViewer = false;
@@ -785,7 +787,8 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async removeMember(): Promise<void> {
-    this.ModalOKDisabled = true;
+    this.modalOKDisabled = true;
+    this.showOKSpinner = true;
     if (this.portfolio.members) {
       const role = this.portfolio.members[this.removeMemberIndex].role;
       const sysId = this.portfolio.members[this.removeMemberIndex].sys_id as string;
@@ -806,7 +809,8 @@ export default class PortfolioDrawer extends Vue {
     Toast.setToast(this.accessRemovedToast);
     this.showRemoveMemberDialog = false;
     this.showLeavePortfolioModal = false;
-    this.ModalOKDisabled = false;
+    this.modalOKDisabled = false;
+    this.showOKSpinner = false;
   }
 
   public cancelRemoveMember(): void {
