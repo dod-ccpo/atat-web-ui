@@ -23,13 +23,13 @@
             <div class=" d-flex justify-space-between">
               <div>
                 <h3 class="mb-1" id=" AnticipatedUsersAndDataNeeds_Heading">
-                  Anticipated users and data
+                  {{ AnticipatedUserAndDataSummaryItem.title }}
                 </h3>
               </div>
               <div class="d-flex align-start">
                 <div class="d-flex align-center">
                   <div 
-                    v-if="isAnticipatedUsersAndDataInvalid" 
+                    v-if="!AnticipatedUserAndDataSummaryItem.isComplete" 
                     class="d-flex align-start nowrap ml-5"
                   >
                     <v-icon
@@ -40,7 +40,9 @@
                   <v-btn
                     width="111"
                     :class="[
-                      isAnticipatedUsersAndDataInvalid ? 'primary': 'secondary',
+                      AnticipatedUserAndDataSummaryItem.isComplete
+                        ? 'secondary'
+                        : 'primary',
                       '_' + getIdText('AnticipatedUsersAndData') + '-button'
                     ]"
                     @click="routeToAnticipatedUsersAndDataNeeds()"
@@ -57,25 +59,20 @@
           </div>
           <div 
             class="container-max-width"
-            :id="getIdText(item.serviceOfferingGroupId )+ '_Wrapper'"
-            v-for="(item, index) in selectedServiceGroups"
-            :key="item.serviceOfferingGroupId"
+            :id="getIdText(item.title )+ '_Wrapper'"
+            v-for="(item, index) in summaryItems"
+            :key="index"
           >
             <div class=" d-flex justify-space-between">
               <div>
-                <h3 class="mb-1" :id="getIdText(item.serviceOfferingGroupId) + '_Heading'">
-                  {{getFormattedName(item.serviceOfferingGroupId)}}
+                <h3 class="mb-1" :id="getIdText(item.title ) + '_Heading'">
+                  {{ item.title }}
                 </h3>
-                <p 
-                  class="mb-0 _selectedOfferings" 
-                  v-html="formattedOfferings(item.serviceOfferings)"
-                >
-                </p>
               </div>
               <div class="d-flex align-start">
                 <div class="d-flex align-center">
                   <div 
-                    v-if="missingData(item.serviceOfferingGroupId)" 
+                    v-if="item.isComplete === false" 
                     class="d-flex align-start nowrap ml-5"
                   >
                     <v-icon
@@ -86,14 +83,14 @@
                   <v-btn
                     width="111"
                     :class="[
-                      missingData(item.serviceOfferingGroupId)? 'primary': 'secondary',
-                      '_' + getIdText(item.serviceOfferingGroupId) + '-button'
+                      item.isComplete === true ? 'secondary': 'primary',
+                      '_' + getIdText(item.title) + '-button'
                     ]"
-                    @click="routeToSelection(item.serviceOfferingGroupId,false)"
-                    @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
-                    @keydown.space="routeToSelection(item.serviceOfferingGroupId,false)"
+                    @click="routeToSelection(getRouteName(item.routeName),false)"
+                    @keydown.enter="routeToSelection(getRouteName(item.routeName),false)"
+                    @keydown.space="routeToSelection(getRouteName(item.routeName),false)"
                   >
-                    {{ missingData(item.serviceOfferingGroupId)? 'Review': 'View/Edit' }}
+                    {{ item.isComplete ? 'View/Edit': 'Review' }}
                   </v-btn>
                 </div>
               </div>
@@ -177,17 +174,20 @@ import { routeNames } from "../../../router/stepper"
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
-import classificationRequirements from "@/store/classificationRequirements";
+import classificationRequirements, { isClassLevelUnclass } 
+  from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
-import { DOWServiceOffering, DOWServiceOfferingGroup } from "../../../../types/Global";
+import { DOWServiceOffering, DOWServiceOfferingGroup, SummaryItem } from "../../../../types/Global";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
-import { getIdText, toTitleCase } from "@/helpers";
+import { convertSystemChoiceToSelect, getIdText, toTitleCase } from "@/helpers";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import Summary, { getSummaryItemsforStep } from "@/store/summary";
+import { title } from "process";
 // import router from "@/router";
 
 @Component({
@@ -198,7 +198,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
   }
 })
 
-export default class Summary extends Mixins(SaveOnLeave) {
+export default class SummaryStepFive extends Mixins(SaveOnLeave) {
   private isPeriodsDataMissing = false;
   private isClassificationDataMissing = false;
   private showAlert = false;
@@ -206,6 +206,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public serviceGroupsMissingData: string[] =[]
   public availableServiceGroups: SystemChoiceDTO[] = [];
   public allServiceGroups: SystemChoiceDTO[] = [];
+  public summaryItems: SummaryItem[] = [];
   public selectedServiceGroups: DOWServiceOfferingGroup[] = [];
   public showMore = false;
   public isDataComplete = true;
@@ -213,6 +214,15 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public introText = "";
   public showAnticipatedUserAndDataNeeds = false;
   public isXaaS = false;
+  public AnticipatedUserAndDataSummaryItem: SummaryItem = {
+    title: "",
+    description: "",
+    isComplete: false,
+    isTouched: false,
+    routeName: "",
+    step: 0,
+    substep: 0
+  };
 
   public alternateGroupNames = [
     {
@@ -291,11 +301,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     },
   ];
 
-  get isAnticipatedUsersAndDataInvalid():boolean{
-    return ClassificationRequirements.selectedClassificationLevels.some(
-      cl => cl.isValid === undefined || cl.isValid === false
-    )
-  }
+  
 
   public getTooltipText(value: string): string {
     const tooltipObj =  this.tooltipText.find(e => e.value === value);
@@ -305,6 +311,11 @@ export default class Summary extends Mixins(SaveOnLeave) {
   public getIdText(val: string): string {
     return getIdText(toTitleCase(val));
   }
+
+  public getRouteName(title: string): string {
+    return title.replaceAll(" ", "_").toUpperCase();
+  }
+
   public async routeToAnticipatedUsersAndDataNeeds(): Promise<void> {
     DescriptionOfWork.setReturnToDOWSummary(true);
     DescriptionOfWork.setFromAnticipatedUsersAndData(true);
@@ -357,47 +368,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
     return serviceArr.join();
   };
 
-  public setSelectedGroupsMissingData(value: DOWServiceOfferingGroup[]): void {
-    //eslint-disable-next-line prefer-const
-    let outputArr :string[] = [];
-    value.forEach((obj)=>{
-      //eslint-disable-next-line prefer-const
-      let id = obj.serviceOfferingGroupId;
-      if (this.isClassificationDataMissing || 
-        (obj.serviceOfferings.length === 0 && !obj.otherOfferingData) ||
-        (obj.otherOfferingData && obj.otherOfferingData.length === 0)) {
-        outputArr.push(id);
-      } else if (obj.otherOfferingData && obj.otherOfferingData.length >0){
-        const isIncomplete = obj.otherOfferingData.some(
-          ood => !ood.isComplete
-        )
-        if (isIncomplete){
-          outputArr.push(id);
-        }
-      } else {
-        obj.serviceOfferings.forEach((offering)=>{
-          if(offering.classificationInstances && offering.classificationInstances.length === 0) {
-            if(outputArr.indexOf(id) < 0){
-              outputArr.push(id);
-            };
-          } else {
-            offering.classificationInstances?.forEach((instance)=>{
-              if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
-                if(outputArr.indexOf(id) < 0){
-                  outputArr.push(id);
-                };
-              } else if (instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
-                if(outputArr.indexOf(id) < 0){
-                  outputArr.push(id);
-                }
-              };
-            });
-          }
-        });
-      }
-    });
-    this.serviceGroupsMissingData = outputArr;
-  };
+  
 
   public missingData(value: string): boolean {
     return this.serviceGroupsMissingData.includes(value) ? true : false;
@@ -427,6 +398,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
       this.showAlert = true;
       this.isClassificationDataMissing = true;
     };
+    
 
     let selectedOfferingGroups: string[] = _.clone(DescriptionOfWork.selectedServiceOfferingGroups);
     const sectionServices = this.isXaaS 
@@ -447,13 +419,27 @@ export default class Summary extends Mixins(SaveOnLeave) {
         group.label = this.alternateGroupNames[altNameIndex].label;
       }
     });
+
+    await Summary.validateStepFive();
+
     this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
       e => e.serviceOfferingGroupId.indexOf("NONE") === -1 
       && sectionServices.includes(e.serviceOfferingGroupId) 
     );
 
-    this.setSelectedGroupsMissingData(this.selectedServiceGroups);
+    const offeringGroupIds = this.selectedServiceGroups.map(
+      (summaryItem) => summaryItem.serviceOfferingGroupId
+    )
 
+    this.summaryItems = (await getSummaryItemsforStep(5)).filter(
+      summaryItem => offeringGroupIds.includes(summaryItem.routeName) && 
+        summaryItem.step === 5
+    ).sort((a,b)=>a.title<b.title? -1: 1);
+    await Summary.toggleButtonColor(5);
+
+    this.AnticipatedUserAndDataSummaryItem = Summary.summaryItems.find(
+      si => si.step === 5 && si.substep === 0
+    ) as SummaryItem
   };
 
   public async mounted(): Promise<void> {
@@ -469,6 +455,7 @@ export default class Summary extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     Steps.clearAltBackButtonText();
+    await Summary.toggleButtonColor(-1);
     return true;
   }
 

@@ -54,7 +54,7 @@ import { ContactDTO, FairOpportunityDTO, FinancialPOCType } from "@/api/models";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import _ from "lodash";
 import ContactData from "@/store/contactData";
-import { hasChanges } from "@/helpers";
+import { getStringFromReferenceColumn, hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -124,7 +124,7 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
     if (fairOpportunity) {
       fairOpportunity = convertColumnReferencesToValues(
         _.cloneDeep(AcquisitionPackage.fairOpportunity) as FairOpportunityDTO);
-      this.requirementsPOCId = fairOpportunity.requirements_poc as string;
+      this.requirementsPOCId = getStringFromReferenceColumn(fairOpportunity.requirements_poc);
       if (fairOpportunity.requirements_poc_type === "NEW" && fairOpportunity.requirements_poc) {
         this.requirementContactData =
           convertColumnReferencesToValues(
@@ -133,7 +133,7 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
       } else {
         this.requirementContactData = _.cloneDeep(AcquisitionPackage.initContact);
       }
-      this.technicalPOCId = fairOpportunity.technical_poc as string;
+      this.technicalPOCId = getStringFromReferenceColumn(fairOpportunity.technical_poc);
       if (fairOpportunity.technical_poc_type === "NEW" && fairOpportunity.technical_poc) {
         this.technicalContactData =
           convertColumnReferencesToValues(
