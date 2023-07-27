@@ -220,6 +220,5 @@ describe("Testing Portfolio Drawer component", () => {
       expect(result).toBe("Sep. 8, 2022, 1812")
     })
   })
-
 })
 
