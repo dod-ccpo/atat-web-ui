@@ -1608,6 +1608,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action
+  public async getServiceGroupVerbiageInfoWithGroupId(groupId: string): 
+    Promise<Record<string, string>> {
+    return serviceGroupVerbiageInfo[groupId];
+  }
+
+
+  @Action
   public async getDOWObject(): Promise<DOWServiceOfferingGroup[]> {
     return this.DOWObject;
   }

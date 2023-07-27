@@ -217,6 +217,11 @@ export default class AppPackageBuilder extends Vue {
           AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
           break;
         }
+        case AppSections.sectionTitles.CreateFirstPortfolio: {
+          this.$router.push({name: "home", params: { direction } })
+          AppSections.changeActiveSection(AppSections.sectionTitles.CreateFirstPortfolio);
+          break;
+        }
         }
 
       }
