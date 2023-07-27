@@ -24,7 +24,7 @@ const mockEnvironment:CurrentEnvironmentDTO = {
 const mockEnvInstance:CurrentEnvironmentInstanceDTO[] = [
   {
     storage_type:"BLOCK",
-    classification_level:"cc3b52af87970590ec3b777acebb3581",
+    classification_level:"2",
     performance_tier:"GENERAL",
     instance_location:"CLOUD",
     storage_amount:33,
