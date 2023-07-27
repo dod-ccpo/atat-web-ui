@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import Vue from "vue";
 import Vuetify from "vuetify";
 import {config, createLocalVue, mount, Wrapper} from "@vue/test-utils";
