@@ -114,9 +114,9 @@ describe("Testing Travel Page", () => {
     it("constructs confirmDeleteModal for a single delete", () => {
       jest.spyOn(wrapper.vm, "deleteAll", "get").mockReturnValue(false);
       wrapper.setData({travelItem: {
-          ...wrapper.vm.$data.travelItem,
-         trip_location: "Bahamas"
-        }
+        ...wrapper.vm.$data.travelItem,
+        trip_location: "Bahamas"
+      }
       });
       wrapper.vm.confirmDeleteModal(wrapper.vm.$data.travelItem);
       expect(wrapper.vm.$data.deleteInstanceModalTitle).toBe("Delete trip to Bahamas?");
@@ -148,18 +148,18 @@ describe("Testing Travel Page", () => {
     });
 
     it("successfully deletes single instance if deleteAll is false with multiple instances",
-        async () => {
-      jest.spyOn(wrapper.vm, "deleteAll", "get").mockReturnValue(false);
-      DescriptionOfWork.deleteTravelInstance = jest.fn();
-      wrapper.vm.$data.tableData.push(wrapper.vm.createInstance(), wrapper.vm.createInstance());
-      await wrapper.setData({
-        travelItem: {
-          ...wrapper.vm.$data.travelitem,
-          sys_id: "1" }
+      async () => {
+        jest.spyOn(wrapper.vm, "deleteAll", "get").mockReturnValue(false);
+        DescriptionOfWork.deleteTravelInstance = jest.fn();
+        wrapper.vm.$data.tableData.push(wrapper.vm.createInstance(), wrapper.vm.createInstance());
+        await wrapper.setData({
+          travelItem: {
+            ...wrapper.vm.$data.travelitem,
+            sys_id: "1" }
+        });
+        await wrapper.vm.deleteInstance();
+        expect(DescriptionOfWork.deleteTravelInstance).toHaveBeenCalled();
       });
-      await wrapper.vm.deleteInstance();
-      expect(DescriptionOfWork.deleteTravelInstance).toHaveBeenCalled();
-    });
 
     it("successfully cancels delete modal", () => {
       DescriptionOfWork.setConfirmTravelDeleteAll = jest.fn();

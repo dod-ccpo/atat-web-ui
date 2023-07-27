@@ -111,7 +111,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { User } from "../../types/Global";
 import { getUserInitials } from "../helpers";

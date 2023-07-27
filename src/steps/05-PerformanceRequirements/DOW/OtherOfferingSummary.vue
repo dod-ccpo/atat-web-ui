@@ -9,7 +9,7 @@
           <p>
             If you need more {{ serviceGroupVerbiageInfo.typeForText }}s, add them below. You can
             also edit or delete any info from the {{ serviceGroupVerbiageInfo.typeForText }}s
-            ssss that you have already entered. When you’re done, click “Continue” and we will
+            that you have already entered. When you’re done, click “Continue” and we will
             <span v-if="showSecurityNote">
               find out about your security requirements for these services.
             </span>
@@ -38,9 +38,13 @@
           >
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.typeOrTitle="{ item }">
-              <div v-html="item.typeOrTitle" 
+              <div>
+                <span 
                 :class="{'text-clamp--1-line' : hasStatementColumn }"
-              ></div>
+                v-html="item.typeOrTitle">
+              </span>
+              <span v-if="!item.isComplete" v-html=rowErrorMessage></span>
+              </div>
             </template>
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.actions="{ item }">
@@ -148,6 +152,7 @@ import { OtherServiceOfferingData, OtherServiceSummaryTableData } from "../../..
 import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import _ from 'lodash';
 import { ReferenceColumn } from "@/api/models";
+import Summary from "@/store/summary";
 
 @Component({
   components: {
@@ -279,7 +284,7 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
     this.offeringInstances.forEach(async (instance) => {
       const instanceClone = _.cloneDeep(instance);
       let instanceData: OtherServiceSummaryTableData = { instanceNumber: 1 };
-      let isValid = true;
+      let isComplete = true;
       let typeOrTitle = "";
       let classificationLevel = "";
       let duration = "";
@@ -383,10 +388,14 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
           ? `<div class="text-error font-weight-500">Unknown</div>`
           : instanceClone.descriptionOfNeed;
       }
-      isValid = await this.validateInstance(instanceClone);
-      if (!isValid) {
-        typeOrTitle += this.rowErrorMessage
-      }
+
+      isComplete = (await Summary.isOtherOfferingDataObjComplete(
+        {
+          otherOfferingData: instanceClone,
+          id: (await DescriptionOfWork.getCurrentOfferingGroupId()),
+          assessSecurityRequirements: false
+        }
+      )).isComplete as boolean;
 
       if (
         instanceClone.entireDuration === "NO" 
@@ -452,7 +461,8 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
         performance,
         personnelOnsiteAccess,
         trainingType,
-        sysId: instanceClone.sysId
+        sysId: instanceClone.sysId,
+        isComplete
       };
 
       this.tableData.push(instanceData);
@@ -460,129 +470,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
     // ensure sorted by instance number
     this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
-  }
-
-  public async logInstanceCompletion(): Promise<void>{
-    this.offeringInstances = await DescriptionOfWork.getOtherOfferingInstances();
-    this.offeringInstances.forEach(async i => {
-      i.isComplete = await this.validateInstance(i)
-    });
-  }
-
-  public async validateInstance(instance: OtherServiceOfferingData): Promise<boolean> {
-    const instanceData: Record<string, any> = _.clone(instance);
-    let isValid = true;
-    let requiredFields: string[] = [];
-
-    if (this.isCompute) {
-      requiredFields = [
-        "environmentType",
-        "entireDuration",
-        "memoryAmount",
-        "descriptionOfNeed",
-        "numberOfInstances",
-        "numberOfVCPUs",
-        "operatingSystem",
-        "operatingSystemAndLicensing",
-        "performanceTier",
-        "storageAmount",
-        "storageType",
-        "entireDuration",
-        "periodsNeeded"
-      ];
-    }
-
-    else if (this.isDatabase) {
-      requiredFields = [
-        "databaseType",
-        "databaseLicensing",
-        "licensing",
-        "memoryAmount",
-        "memoryUnit",
-        "networkPerformance",
-        "numberOfVCPUs",
-        "numberOfInstances",
-        "operatingSystem",
-        "databaseLicensing",
-        "operatingSystemLicense",
-        "storageType",
-        "storageAmount",
-        "storageUnit",
-        "descriptionOfNeed",
-        "entireDuration",
-        "periodsNeeded"
-      ]
-    }
-    
-    else if(this.isStorage){
-      requiredFields = [
-        "numberOfInstances",
-        "storageAmount",
-        "storageType",
-        "storageUnit",
-        "entireDuration",
-        "descriptionOfNeed",
-        "periodsNeeded"
-      ]
-    }
-    else if(this.isTraining){
-
-      const commonFields = [
-        "trainingRequirementTitle",
-        "trainingType",
-        "trainingPersonnel",
-        "entireDuration",
-        "anticipatedNeedUsage",
-        "periodsNeeded"
-      ]
-
-      let additionalFields:string[] = [];
-      switch(instance.trainingType?.toUpperCase()){
-      case "ONSITE_INSTRUCTOR_CONUS":
-        additionalFields = ["trainingFacilityType","trainingLocation"];
-        break;
-      case "ONSITE_INSTRUCTOR_OCONUS":
-        additionalFields = ["trainingLocation"];
-        break;
-      case "VIRTUAL_INSTRUCTOR":
-        additionalFields = ["trainingTimeZone"];
-        break;
-      default:
-        break;
-      }
-      requiredFields = commonFields.concat(additionalFields);
-    }
-
-    //soo, on-site access, duration
-    else if(this.isAdvisoryAssistance || this.isDocumentation || 
-    this.isHelpDesk || this.isGeneralCloudSupport){
-      requiredFields = [
-        "statementOfObjectives",
-        "personnelOnsiteAccess",
-        "entireDuration",
-        "periodsNeeded"
-      ]
-    }
-    else if (this.isGeneralXaaS) {
-      requiredFields = [
-        "descriptionOfNeed",
-        "entireDuration",
-        "periodsNeeded"
-      ];
-    }
-    requiredFields.push("classificationLevel");
-    isValid = requiredFields.every(f => {
-      return f === "periodsNeeded"
-        ? this.isPeriodsNeededValid(instanceData)
-        : instanceData[f] !== ""
-    })
-    return isValid;
-  }
-
-  public isPeriodsNeededValid(instanceData: Record<string, any>): boolean {
-    return instanceData["entireDuration"] === "NO"
-      ? instanceData.periodsNeeded.length > 0
-      : true
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -630,7 +517,6 @@ export default class OtherOfferingSummary extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await DescriptionOfWork.setNeedsSecurityRequirements();
-    await this.logInstanceCompletion();
     return true;
   }
 

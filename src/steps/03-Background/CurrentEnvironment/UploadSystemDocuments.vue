@@ -50,7 +50,6 @@
 /* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { invalidFile, RadioButton, uploadingFile, YesNo } from "../../../../types/Global";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AttachmentDTO} from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -61,6 +60,8 @@ import CurrentEnvironment,
 {defaultCurrentEnvironment} from "@/store/acquisitionPackage/currentEnvironment";
 import Attachments from "@/store/attachments";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+
 
 @Component({
   components: {
