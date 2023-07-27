@@ -226,6 +226,7 @@ export default class PortfolioSummaryPageHead extends Vue {
 
   public archivePortfolio():void {
     PortfolioStore.setStatus("Archived");
+    debugger;
     this.closeArchivePortfolioModal();
   }
 
