@@ -1,7 +1,7 @@
 <template>
   <ATATDialog
-    :id="id"
-    :showDialog.sync="_showArchivePortfolioModal"
+    :id="'id'"
+    :showDialog.sync="showArchivePortfolioModal"
     title="Archive portfolio"
     no-click-animation
     okText="Archive portfolio"
@@ -18,7 +18,7 @@
         reports.
         Your portfolio will become read-only, so you will no longer be able to add funding or
         team members.
-        NOTE: Archiving will NOT remove your portfolio from ddd's console.
+        NOTE: Archiving will NOT remove your portfolio from {{csp}} console.
         To avoid incurring unexpected costs, we recommend that your administrators delete
         this workspace from the cloud console before you archive it in ATAT.
       </div>
@@ -29,7 +29,7 @@
 <script lang="ts">
 import ATATDialog from "@/components/ATATDialog.vue";
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 @Component({
   components: {
@@ -38,16 +38,15 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 })
 
 export default class ArchivePortfolioModal extends Vue {
-  @PropSync("showArchivePortfolioModal") public _showArchivePortfolioModal?: boolean;
-  @Prop({ default: "ArchivePortfolioModal"}) public id?: string;
+  @Prop({ default: false }) public showArchivePortfolioModal!: boolean;
+  @Prop() public csp!: string;
 
   public okClicked(): void {
-    this._showArchivePortfolioModal = false;
-    this.$emit("okClicked", 'Archived');
+    this.$emit('okClicked');
   }
 
   public cancelClicked(): void {
-    this._showArchivePortfolioModal = false;
+    this.$emit("cancelClicked");
   }
 }
 

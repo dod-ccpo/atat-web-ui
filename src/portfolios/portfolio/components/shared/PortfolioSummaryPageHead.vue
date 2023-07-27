@@ -97,9 +97,7 @@
               >Rename portfolio
               </v-list-item-title>
             </v-list-item>
-            <v-list-item
-              id="LeavePortfolio_MenuItem"            
-            >
+            <v-list-item v-if="!isProdEnv" id="LeavePortfolio_MenuItem">
               <v-list-item-title>
                 Leave this portfolio
               </v-list-item-title>
@@ -108,12 +106,11 @@
               @click="openArchivePortfolioModal"
               id="ArchivePortfolio_MenuItem"            
             >
-              <ArchivePortfolioModal v-if="openArchivePortfolioModal" />
               <v-list-item-title>
                 Archive portfolio
               </v-list-item-title>
             </v-list-item>
-            <hr class="my-2" />
+            <hr class="my-2"/>
             <v-list-item
               id="LoginToCSPConsole_MenuItem"            
             >
@@ -135,7 +132,10 @@
     </div>
   </v-app-bar>
     <ArchivePortfolioModal
-        :showArchivePortfolioModal="openArchivePortfolioModal"
+        :showArchivePortfolioModal="showArchivePortfolioModal"
+        :csp="csp"
+        @okClicked="archivePortfolio"
+        @cancelClicked="closeArchivePortfolioModal"
     />
   </div>
 </template>
@@ -161,6 +161,11 @@ import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/Arch
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
 
 @Component({
+  methods: {
+    PortfolioStore() {
+      return PortfolioStore
+    }
+  },
   components: {
     InviteMembersModal,
     ATATTextField,
@@ -194,9 +199,14 @@ export default class PortfolioSummaryPageHead extends Vue {
     return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
   }
 
+  public get csp(): string | undefined {
+    return PortfolioStore.currentPortfolio.csp;
+  }
+
   public get slideoutPanelIsOpen(): boolean {
     return SlideoutPanel.getSlideoutPanelIsOpen;
   }
+
   @Watch("slideoutPanelIsOpen")
   public slideoutPanelIsOpenChanged(newVal: boolean): void {
     this.showDrawer = newVal;
@@ -206,14 +216,27 @@ export default class PortfolioSummaryPageHead extends Vue {
     PortfolioStore.setShowAddMembersModal(true);
   }
 
+  public get showArchivePortfolioModal(): boolean {
+    return PortfolioStore.showArchivePortfolioModal;
+  }
+
   public openArchivePortfolioModal():void {
-    console.log(`Open Archive Portfolio Modal`);
     PortfolioStore.setShowArchivePortfolioModal(true);
+  }
+
+  public archivePortfolio():void {
+    PortfolioStore.setStatus("Archived");
+    this.closeArchivePortfolioModal();
+  }
+
+  public closeArchivePortfolioModal(): void {
+    PortfolioStore.setShowArchivePortfolioModal(false);
   }
 
   public async tabClicked(index: number): Promise<void> {
     await AppSections.setActiveTabIndex(index);
   }
+
   public titleBlurred(): void {
     if (this._title !== this.titleBeforeEdit && this._title.length > 0) {
       PortfolioStore.updatePortfolioTitle(this._title);

@@ -373,8 +373,6 @@ export class PortfolioDataStore extends VuexModule {
     this.currentPortfolioEnvSysId = sysId;
   }
 
-
-
   public summaryFilterRoles: FilterOption[] = [
     {
       label: "All of my portfolios",
@@ -467,6 +465,7 @@ export class PortfolioDataStore extends VuexModule {
     await this.doInitProvisioningFromResponse(data);
     await this.setCSPProvisioningData();
   }
+
   @Mutation
   public async doInitProvisioningFromResponse(data: PortfolioProvisioning): Promise<void> {
     this.portfolioProvisioningObj = data;
@@ -592,13 +591,11 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action
   public setShowArchivePortfolioModal(show: boolean): void {
-    console.log(`Set Show Archive Portfolio Modal ${show}`);
     this.doSetShowArchivePortfolioModal(show);
   }
 
   @Mutation
   public doSetShowArchivePortfolioModal(show: boolean): void {
-    console.log(`Do Show Archive Portfolio Modal ${show}`);
     this.showArchivePortfolioModal = show;
   }
 
@@ -880,6 +877,17 @@ export class PortfolioDataStore extends VuexModule {
   public async reset(): Promise<void> {
     this.doReset();
   }
+
+  @Action({rawError: true})
+  public async setArchived(): Promise<void> {
+    await this.doSetArchived();
+  }
+
+  @Mutation
+  public async doSetArchived(): Promise<void> {
+    this.setStatus("ARCHIVED");
+  }
+
   @Mutation
   public async doReset(): Promise<void> {
     this.portfolioProvisioningObj = _.cloneDeep(initialPortfolioProvisioningObj());
