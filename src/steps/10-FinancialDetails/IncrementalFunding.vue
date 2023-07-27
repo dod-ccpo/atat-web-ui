@@ -163,7 +163,12 @@
 
               <hr class="my-6" />
 
-              <div class="d-flex justify-end align-center">
+              <div
+                class="d-flex justify-end align-center"
+                :class="[
+                {'error--text': this.isIFPOverfunded},
+                {'error--text': this.isIFPUnderfunded},
+                 ]">
                 <label for="TotalAmount" class="mr-4"> Total </label>
 
                 <ATATTextField
@@ -174,6 +179,7 @@
                   width="190"
                   style="margin-right: -10px;"
                   :disabled="true"
+                  :isManuallyErrored="isIFPUnderfunded||isIFPOverfunded"
                 />
                 <span class="d-block" style="width: 36px"></span>
               </div>
@@ -277,6 +283,7 @@ import formatISO from "date-fns/formatISO"
 import _ from "lodash";
 import { api } from "@/api";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -368,7 +375,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.calcAmounts("increment0");
     this.isUnderfunded();
     this.isOverfunded();
-    debugger
     if (!this.hasValidatedOnContinue && (this.outOfRangeIndex && this.outOfRangeIndex >= 0
       || this.isIFPUnderfunded || this.isIFPOverfunded)
     ) {
@@ -692,8 +698,12 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    const isDitco = AcquisitionPackage.contractingShop === "DITCO";
     if(this.costData.payload.subtotal["Base Period"]){
       this.baseYear = this.costData.payload.subtotal["Base Period"]
+      if(!isDitco){
+        this.baseYear = this.baseYear * 1.01
+      }
       this.costEstimate = this.baseYear;
       this.costEstimateStr = toCurrencyString(this.costEstimate);
     }
