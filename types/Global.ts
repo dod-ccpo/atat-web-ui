@@ -41,6 +41,7 @@ export interface TopNavItem {
   parentTitle?: string;
   component?: Component;
   spaSectionTitle?: string;
+  spaAltSectionTitle?: string;
   externalUrl?: string;
   icon?: MenuIcon;
   link?: string;
@@ -322,6 +323,7 @@ export interface DOWClassificationInstance {
   typeOfMobilityOther?: string;
   ts_contractor_clearance_type?: string;
   updated_description?: "YES" | "NO"
+  isComplete?: boolean
 }
 
 export interface DOWServiceOffering {
@@ -333,6 +335,7 @@ export interface DOWServiceOffering {
   description?: string;
   classificationInstances?: DOWClassificationInstance[];
   sequence: string;
+  isComplete?: boolean;
 }
 
 export interface DOWServiceOfferingGroup {
@@ -340,6 +343,7 @@ export interface DOWServiceOfferingGroup {
   sequence: number;
   serviceOfferings: DOWServiceOffering[];
   otherOfferingData?: OtherServiceOfferingData[];
+  isComplete?: boolean;
 }
 
 export interface fundingIncrement {
@@ -450,7 +454,7 @@ export interface OtherServiceSummaryTableData {
   personnelOnsiteAccess?: string;
   trainingType?: string;
   sysId?:string;
-  isValid?:boolean;
+  isComplete?:boolean;
 }
 
 export interface TravelSummaryTableData {
