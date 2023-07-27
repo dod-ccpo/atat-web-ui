@@ -174,10 +174,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   @Watch("uploadedFiles")
   private async filesUploaded(): Promise<void>{
     await this.setDisableContinue();
-    console.log("Is current user a contributor?", AcquisitionPackage.currentUserIsContributor);
-    console.log("is it the initial load", this.isInitialLoad)
     if(!this.isInitialLoad && AcquisitionPackage.currentUserIsContributor){
-      console.log("uploaded files has changed");
       this.haveFilesChanged = true;
     }
     this.isInitialLoad = false;
