@@ -196,8 +196,7 @@ export default class BAA extends Mixins(LoadOnEnter,SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
+    const storeData = AcquisitionPackage.sensitiveInformation;
     if (storeData) {
       this.savedData = {
         baa_required: storeData.baa_required,
