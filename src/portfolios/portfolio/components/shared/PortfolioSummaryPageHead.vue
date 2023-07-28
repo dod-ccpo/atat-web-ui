@@ -25,8 +25,8 @@
             @blur="titleBlurred()"
             @focus="setTitleBeforeEdit"
             maxlength="60"
-            :readonly="titleIsReadOnly"
-            :disabled="titleIsReadOnly"
+            :readonly="portfolioIsArchived"
+            :disabled="portfolioIsArchived"
           />
         <div>
           <v-tabs 
@@ -68,10 +68,10 @@
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
+          v-if="!portfolioIsArchived"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              v-if="!isProdEnv"
               v-bind="attrs"
               v-on="on"
               id="MoreMenuButton"
@@ -81,39 +81,34 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item
-              @click="openModal"
-              id="InviteMembers_MenuItem"
-            >
+            
+            <v-list-item @click="openModal" id="InviteMembers_MenuItem">
               <v-list-item-title
               >Invite members to portfolio
               </v-list-item-title>
             </v-list-item>
-            <v-list-item
-              @click="moveToInput()"
-              id="RenamePortfolio_MenuItem"            
-            >
+
+            <v-list-item @click="moveToInput()" id="RenamePortfolio_MenuItem">
               <v-list-item-title
               >Rename portfolio
               </v-list-item-title>
             </v-list-item>
+
             <v-list-item v-if="!isProdEnv" id="LeavePortfolio_MenuItem">
               <v-list-item-title>
                 Leave this portfolio
               </v-list-item-title>
             </v-list-item>
-            <v-list-item
-              @click="openArchivePortfolioModal"
-              id="ArchivePortfolio_MenuItem"            
-            >
+            
+            <v-list-item @click="openArchivePortfolioModal" id="ArchivePortfolio_MenuItem">
               <v-list-item-title>
                 Archive portfolio
               </v-list-item-title>
             </v-list-item>
-            <hr class="my-2"/>
-            <v-list-item
-              id="LoginToCSPConsole_MenuItem"            
-            >
+
+            <hr class="my-2"  v-if="!isProdEnv" />
+
+            <v-list-item id="LoginToCSPConsole_MenuItem" v-if="!isProdEnv">
               <v-list-item-title
                 class="d-flex align-center"
               > Login to the CSP console
@@ -186,7 +181,7 @@ export default class PortfolioSummaryPageHead extends Vue {
     return PortfolioStore.currentPortfolio.status as string;
   }
 
-  public get titleIsReadOnly(): boolean {
+  public get portfolioIsArchived(): boolean {
     return PortfolioStore.currentUserIsViewer || this.portfolioStatus === "ARCHIVED";
   }
 

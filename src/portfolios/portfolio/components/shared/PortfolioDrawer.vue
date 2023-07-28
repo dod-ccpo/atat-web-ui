@@ -118,7 +118,7 @@
 
           <!-- NOT DROPDOWN - for owner and if current user is Viewer -->
           <div v-if="currentUserIsViewer && member.sys_id !== currentUser.sys_id
-            || member.role === 'Owner'
+            || member.role === 'Owner' || portfolioIsArchived
           ">
 
             <v-tooltip left nudge-right="30">
