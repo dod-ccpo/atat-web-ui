@@ -847,8 +847,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
-  if(current === routeNames.OtherOfferingSummary && 
-    isOtherOffering && direction === "previous"){
+  if(current === routeNames.OtherOfferingSummary && isOtherOffering && direction === "previous"){
     if(DescriptionOfWork.returnToDOWSummary){
       return descriptionOfWorkSummaryPath;
     }

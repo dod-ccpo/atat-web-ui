@@ -104,6 +104,17 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
   }
 }
 
+export const getSelectedClassLevelsAsDescription = 
+  async(selectedClassLevels?: string[]): Promise<string> =>{
+    const classReqs = ClassificationRequirements.selectedClassificationLevels;
+    const selectClassLevelsSysIds = selectedClassLevels || 
+        classReqs.map(cr => cr.classification_level);
+    const classLevelDisplayNames = ClassificationRequirements.classificationLevels.filter(
+      cl => selectClassLevelsSysIds.includes(cl.sys_id as string)
+    ).map(cl => cl.display?.replaceAll(" - ", "/")).sort();
+    return convertStringArrayToCommaList(classLevelDisplayNames as string[], "and")
+  }
+
 /**
  * 
  * @param stepNumber 
@@ -311,17 +322,12 @@ export class SummaryStore extends VuexModule {
     hasSecretOrTS: boolean
   ): Promise<string>{
     const cds = ClassificationRequirements.cdsSolution;
-    const classReqs  = ClassificationRequirements.selectedClassificationLevels;
-    const selectClassLevelsSysIds = classReqs.map(cr => cr.classification_level);
-    const classLevelDisplayNames = ClassificationRequirements.classificationLevels.filter(
-      cl => selectClassLevelsSysIds.includes(cl.sys_id as string)
-    ).map(cl => cl.display?.replaceAll(" - ", "/")).sort();
+   
     const missingCDSVerbiage = !(await this.isCDSComplete(hasSecretOrTS))
       ? "<br />(Cross Domain Solution Required)" : ""
 
-    return classReqs.length > 0
-      ? convertStringArrayToCommaList(classLevelDisplayNames as string[], "and") 
-        + missingCDSVerbiage
+    return ClassificationRequirements.selectedClassificationLevels.length > 0
+      ? await getSelectedClassLevelsAsDescription() + missingCDSVerbiage
       : "";
   }
 
@@ -531,7 +537,7 @@ export class SummaryStore extends VuexModule {
 
     return  {
       title: "Anticipated users and data",
-      description: "",
+      description:"",
       isComplete,
       isTouched: false,
       routeName: "",
@@ -558,13 +564,31 @@ export class SummaryStore extends VuexModule {
 
     return  {
       title,
-      description: "",
+      description: await this.getDOWSummaryDescription(dow),
       isComplete: dow.isComplete as boolean,
       isTouched: false,
       routeName: dow.serviceOfferingGroupId,
       step: 5,
       substep: await this.getServiceOfferingSubstep(dow.serviceOfferingGroupId)
     } as SummaryItem
+  }
+
+
+  /**
+   * created description text for the summary item
+   * 
+   * @param serviceOfferingGroupId 
+   * @returns 
+   */  
+  @Action({rawError: true})
+  public async getDOWSummaryDescription(dow: DOWServiceOfferingGroup): Promise<string> {
+    const selectedClassLevelsForPP = dow.otherOfferingData?.map(
+      ood => ood.classificationLevel
+    )
+
+    return dow.serviceOfferingGroupId === "PORTABILITY_PLAN"
+      ? await getSelectedClassLevelsAsDescription(selectedClassLevelsForPP as string[])
+      : ""
   }
 
   /**
