@@ -219,7 +219,6 @@ export default class EnvironmentSummary extends Vue {
     });
     //eslint-disable-next-line prefer-const
     let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
-
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
       //eslint-disable-next-line prefer-const
       let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
@@ -264,14 +263,6 @@ export default class EnvironmentSummary extends Vue {
     this.navigate();
   }
 
-  @Watch("confirmInstanceDelete")
-  public confirmInstanceDeleteChanged(newVal: boolean): void {
-    if (newVal && this.tableData.length > 0) {
-      this.showDeleteInstanceDialog = newVal;
-    } else if (newVal) {
-      this.deleteInstance();
-    }
-  }
 
   public instanceToDeleteSysId = "";
 
