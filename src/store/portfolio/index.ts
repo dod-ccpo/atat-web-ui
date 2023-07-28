@@ -591,6 +591,12 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async removeMemberFromCurrentPortfolio(sysId: string): Promise<void> {
+    const members = this.currentPortfolio.members?.filter(m => m.sys_id !== sysId);
+    this.doSetCurrentPortfolio({members});
+  }
+
+  @Action({rawError: true})
   public async setCurrentPortfolioMembers(portfolio: Portfolio): Promise<void> {
     try {
       if (portfolio.sysId) {

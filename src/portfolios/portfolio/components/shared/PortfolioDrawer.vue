@@ -224,8 +224,8 @@
     </div>
 
     <InviteMembersModal
-        :showModal.sync="showMembersModal"
-        @membersInvited="membersInvited"
+      :showModal.sync="showMembersModal"
+      @membersInvited="membersInvited"
     />
 
     <ATATDialog
@@ -273,6 +273,8 @@
       no-click-animation
       okText="Transfer ownership"
       width="450"
+      :OKDisabled="modalOKDisabled"
+      :showOKSpinner="showOKSpinner"
       @ok="transferOwner"
       @cancelClicked="closeTransferOwnerModal"
     >    
@@ -650,6 +652,8 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async transferOwner(): Promise<void> {
+    this.modalOKDisabled = true;
+    this.showOKSpinner = true;
     /* eslint-disable camelcase */
     const newOwner = this.portfolioMembers[this.transferOwnershipIndex];
     this.portfolio.portfolio_owner = newOwner.sys_id;
@@ -680,6 +684,8 @@ export default class PortfolioDrawer extends Vue {
     await this.updateMemberRole("Manager", prevOwnerIndex);
     this.closeTransferOwnerModal();
     Toast.setToast(this.ownershipTransferredToast);
+    this.modalOKDisabled = false;
+    this.showOKSpinner = false;
   }
 
   public removeItemFromArray(users: string, sysId: string): string {
@@ -804,6 +810,7 @@ export default class PortfolioDrawer extends Vue {
       /* eslint-enable camelcase */
       this.portfolio.members.splice(this.removeMemberIndex, 1);
       await PortfolioStore.setCurrentPortfolioMembers(this.portfolio);
+      await PortfolioStore.removeMemberFromCurrentPortfolio(sysId);
       await this.loadPortfolio();
     }
     Toast.setToast(this.accessRemovedToast);
