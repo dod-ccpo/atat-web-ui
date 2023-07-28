@@ -162,7 +162,8 @@ describe("Testing Portfolio Drawer component", () => {
 
   it("removeMember() - pass params to successfully change roles ", async()=>{
     await wrapper.setData({
-      portfolio
+      portfolio,
+      removeMemberIndex: 0,
     })
     const currentNumberOfMembers = PortfolioData.currentPortfolio.members?.length || 1
     await wrapper.vm.removeMember();
