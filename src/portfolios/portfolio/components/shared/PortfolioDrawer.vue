@@ -224,8 +224,8 @@
     </div>
 
     <InviteMembersModal
-        :showModal.sync="showMembersModal"
-        @membersInvited="membersInvited"
+      :showModal.sync="showMembersModal"
+      @membersInvited="membersInvited"
     />
 
     <ATATDialog
@@ -273,6 +273,8 @@
       no-click-animation
       okText="Transfer ownership"
       width="450"
+      :OKDisabled="modalOKDisabled"
+      :showOKSpinner="showOKSpinner"
       @ok="transferOwner"
       @cancelClicked="closeTransferOwnerModal"
     >    
@@ -547,7 +549,7 @@ export default class PortfolioDrawer extends Vue {
 
     if (storeData) {
       this.portfolio = storeData;
-      this.csp = storeData.csp?.toLowerCase() as string;      
+      this.csp = storeData.vendor?.toLowerCase() as string;      
       if (storeData.lastUpdated) {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
@@ -653,6 +655,8 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async transferOwner(): Promise<void> {
+    this.modalOKDisabled = true;
+    this.showOKSpinner = true;
     /* eslint-disable camelcase */
     const newOwner = this.portfolioMembers[this.transferOwnershipIndex];
     this.portfolio.portfolio_owner = newOwner.sys_id;
@@ -683,6 +687,8 @@ export default class PortfolioDrawer extends Vue {
     await this.updateMemberRole("Manager", prevOwnerIndex);
     this.closeTransferOwnerModal();
     Toast.setToast(this.ownershipTransferredToast);
+    this.modalOKDisabled = false;
+    this.showOKSpinner = false;
   }
 
   public removeItemFromArray(users: string, sysId: string): string {
@@ -729,7 +735,7 @@ export default class PortfolioDrawer extends Vue {
       this.portfolio.portfolio_managers = managers.join(",");
       /* eslint-enable camelcase */
 
-      await PortfolioStore.setPortfolioData(this.portfolio);
+      await PortfolioStore.setCurrentPortfolioMembers(this.portfolio);
       this.downgradeMemberIndex = -1;
 
       const thisMember = this.portfolioMembers[index];
@@ -806,7 +812,9 @@ export default class PortfolioDrawer extends Vue {
       } 
       /* eslint-enable camelcase */
       this.portfolio.members.splice(this.removeMemberIndex, 1);
-      await PortfolioStore.setPortfolioData(this.portfolio);
+      await PortfolioStore.setCurrentPortfolioMembers(this.portfolio);
+      await PortfolioStore.removeMemberFromCurrentPortfolio(sysId);
+      
       if (sysId === this.currentUser.sys_id) {
         // current user left the portfolio - send to home page
         await PortfolioStore.setUserLeftPortfolio(true);

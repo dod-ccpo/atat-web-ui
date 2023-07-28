@@ -101,6 +101,7 @@ const initialCurrentPortfolio = (): Portfolio => {
     taskOrderNumber: "",
     environments: [],
     lastUpdated: "",
+    vendor: "",
   }
 }
 
@@ -537,9 +538,9 @@ export class PortfolioDataStore extends VuexModule {
   public currentUserIsOwner = false;
 
   @Action
-  public async setCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
-    await this.doSetCurrentPortfolio(portfolioData);
-    const env = portfolioData.environments ? portfolioData.environments[0] : null;
+  public async setCurrentPortfolioFromCard(portfolioCardData: PortfolioCardData): Promise<void> {
+    await this.doSetCurrentPortfolioFromCard(portfolioCardData);
+    const env = portfolioCardData.environments ? portfolioCardData.environments[0] : null;
     if (env && env.sys_id) {
       await this.setCurrentEnvSysId(env.sys_id);
     }
@@ -547,31 +548,31 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Mutation
-  public async doSetCurrentPortfolio(portfolioData: PortfolioCardData): Promise<void> {
+  public async doSetCurrentPortfolioFromCard(portfolioCardData: PortfolioCardData): Promise<void> {
     const dataFromSummaryCard = {
-      sysId: portfolioData.sysId,
-      title: portfolioData.title,
-      description: portfolioData.description,
-      status: portfolioData.status,
-      csp: portfolioData.csp,
-      agency: portfolioData.agency,
-      agencyDisplay: portfolioData.agencyDisplay,
-      taskOrderNumber: portfolioData.taskOrderNumber,
-      taskOrderSysId: portfolioData.taskOrderSysId,
-      portfolio_owner: portfolioData.portfolio_owner,
-      portfolio_managers: portfolioData.portfolio_managers,
-      portfolio_managers_detail: portfolioData.portfolio_managers_detail,
-      portfolio_viewers: portfolioData.portfolio_viewers,
-      portfolio_viewers_detail: portfolioData.portfolio_viewers_detail,
-      members: portfolioData.members,
-      environments: portfolioData.environments,
-      lastUpdated: portfolioData.lastUpdated,
-      createdBy: portfolioData.createdBy
+      sysId: portfolioCardData.sysId,
+      title: portfolioCardData.title,
+      description: portfolioCardData.description,
+      status: portfolioCardData.status,
+      csp: portfolioCardData.csp,
+      vendor: portfolioCardData.vendor,
+      agency: portfolioCardData.agency,
+      agencyDisplay: portfolioCardData.agencyDisplay,
+      taskOrderNumber: portfolioCardData.taskOrderNumber,
+      taskOrderSysId: portfolioCardData.taskOrderSysId,
+      portfolio_owner: portfolioCardData.portfolio_owner,
+      portfolio_managers: portfolioCardData.portfolio_managers,
+      portfolio_viewers: portfolioCardData.portfolio_viewers,
+      members: portfolioCardData.members,
+      environments: portfolioCardData.environments,
+      lastUpdated: portfolioCardData.lastUpdated,
+      createdBy: portfolioCardData.createdBy
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
-    this.activeTaskOrderNumber = portfolioData.taskOrderNumber 
-      ? portfolioData.taskOrderNumber : "";
-    this.activeTaskOrderSysId = portfolioData.taskOrderSysId ? portfolioData.taskOrderSysId : "";
+    this.activeTaskOrderNumber = portfolioCardData.taskOrderNumber 
+      ? portfolioCardData.taskOrderNumber : "";
+    this.activeTaskOrderSysId = portfolioCardData.taskOrderSysId 
+      ? portfolioCardData.taskOrderSysId : "";
   }
 
   @Mutation
@@ -605,7 +606,13 @@ export class PortfolioDataStore extends VuexModule {
   }
   
   @Action({rawError: true})
-  public async setPortfolioData(portfolio: Portfolio): Promise<void> {
+  public async removeMemberFromCurrentPortfolio(sysId: string): Promise<void> {
+    const members = this.currentPortfolio.members?.filter(m => m.sys_id !== sysId);
+    this.doSetCurrentPortfolio({members});
+  }
+
+  @Action({rawError: true})
+  public async setCurrentPortfolioMembers(portfolio: Portfolio): Promise<void> {
     try {
       if (portfolio.sysId) {
         const members = {
@@ -615,17 +622,22 @@ export class PortfolioDataStore extends VuexModule {
         } as unknown as PortfolioSummaryDTO;
 
         await api.portfolioTable.update(portfolio.sysId, members);
-      }
-      await this.doSetPortfolioData(portfolio);
-      await this.doSetCurrentUserRole();
+        await this.doSetCurrentPortfolio(members);
+        await this.doSetCurrentUserRole();
+        await this.populatePortfolioMembersDetail(portfolio);
+      }        
     } catch(error) {
       console.error("Error updating portfolio members:" + error);
     }
   }
+  @Action({rawError: true})
+  public async setCurrentPortfolio(portfolio: Portfolio): Promise<void> {
+    await this.doSetCurrentPortfolio(portfolio);
+  }
 
   @Mutation
-  public async doSetPortfolioData(portfolio: Portfolio): Promise<void> {
-    Object.assign(this.currentPortfolio,portfolio)
+  public async doSetCurrentPortfolio(portfolio: Portfolio): Promise<void> {
+    Object.assign(this.currentPortfolio, portfolio)
   }
 
   public userLeftPortfolio = false;
@@ -669,9 +681,7 @@ export class PortfolioDataStore extends VuexModule {
           agency: userSearchDTO.company,
           title: userSearchDTO.title,
         }
-      })
-    portfolio.portfolio_managers_detail = [];
-    portfolio.portfolio_viewers_detail = [];
+      });
     portfolio.members = [];
     let portfolioOwner: User = {};
     let isOwner = false;
@@ -683,10 +693,8 @@ export class PortfolioDataStore extends VuexModule {
         isOwner = true;
       } else if (portfolio.portfolio_managers?.indexOf(member.sys_id as string) !== -1) {
         member.role = "Manager";
-        portfolio.portfolio_managers_detail?.push(member);
       } else {
         member.role = "Viewer";
-        portfolio.portfolio_viewers_detail?.push(member);
       }
       if (!isOwner) {
         portfolio.members?.push(member);
@@ -701,12 +709,12 @@ export class PortfolioDataStore extends VuexModule {
     });
 
     // add portfolio owner to front of member list
-    portfolio.members.unshift(portfolioOwner);    if (portfolio.createdBy) {
-      const createdByUser = await api.userTable.search(portfolio.createdBy);
-      this.doSetPortfolioCreator(createdByUser[0]);
+    if (Object.keys(portfolioOwner).length > 0) {
+      portfolio.members.unshift(portfolioOwner);    if (portfolio.createdBy) {
+        const createdByUser = await api.userTable.search(portfolio.createdBy);
+        this.doSetPortfolioCreator(createdByUser[0]);
+      }  
     }
-
-    await this.setCurrentPortfolio(portfolio);
     await this.doSetCurrentUserRole();
 
     return portfolio;
@@ -727,61 +735,34 @@ export class PortfolioDataStore extends VuexModule {
     }
   }
 
-  /**
-   * By updating the new members to the current portfolio, all the screen where current
-   * portfolio is used for display, will get auto refreshed.
-   */
-  @Mutation
-  public async doUpdateCurrentPortfolioMembers(newMembers: User[]): Promise<void> {
-    this.currentPortfolio.portfolio_managers_detail =
-      this.currentPortfolio.portfolio_managers_detail?.concat(
-        newMembers.filter(newMember => newMember.role === "Manager"))
-    this.currentPortfolio.portfolio_viewers_detail =
-      this.currentPortfolio.portfolio_viewers_detail?.concat(
-        newMembers.filter(newMember => newMember.role === "Viewer"))
-    this.currentPortfolio.members = this.currentPortfolio.members?.concat(newMembers);
-    this.currentPortfolio.portfolio_managers =
-      this.currentPortfolio.portfolio_managers_detail?.map(
-        managerDetail => managerDetail.sys_id).toString();
-    this.currentPortfolio.portfolio_viewers =
-      this.currentPortfolio.portfolio_viewers_detail?.map(
-        viewerDetail => viewerDetail.sys_id).toString();
-    this.currentPortfolio.members?.sort((a, b) => {
-      if (a.fullName && b.fullName) {
-        return a.fullName > b.fullName ? 1 : -1;
-      } else {
-        return 0;
-      }
-    })
-  }
-
-  /**
-   * Compiles a comma separated list of managers and viewers that is a union
-   * of new and existing members. Then saves the members to the Portfolio and then
-   * updates the current portfolio with the new members.
-   */
   @Action({rawError: true})
   public async inviteMembers(newMembers: User[]): Promise<void> {
-    const managersList = this.currentPortfolio.portfolio_managers_detail ?
-      this.currentPortfolio.portfolio_managers_detail.map(
-        manager => manager.sys_id) : [];
-    const viewersList = this.currentPortfolio.portfolio_viewers_detail ?
-      this.currentPortfolio.portfolio_viewers_detail.map(
-        viewer => viewer.sys_id) : [];
+    let managersList = this.currentPortfolio.portfolio_managers?.split(",") ?? [];
+    let viewersList = this.currentPortfolio.portfolio_viewers?.split(",") ?? [];
+
     newMembers.forEach(newMember => {
-      if(newMember.role === "Manager") {
-        managersList.push(newMember.sys_id);
+      if (newMember.role === "Manager") {
+        managersList.push(newMember.sys_id as string);
       } else {
-        viewersList.push(newMember.sys_id);
+        viewersList.push(newMember.sys_id as string);
       }
-    })
+    });
     const membersPayload = {
       portfolio_managers: managersList.toString(),
       portfolio_viewers: viewersList.toString()
     }
-    await api.portfolioTable.update(this.currentPortfolio.sysId as string,
-      membersPayload as PortfolioSummaryDTO);
-    await this.doUpdateCurrentPortfolioMembers(newMembers);
+    const response = await api.portfolioTable.update(
+      this.currentPortfolio.sysId as string, membersPayload as PortfolioSummaryDTO
+    );
+    const portfolio = convertColumnReferencesToValues(response);
+    const members = {
+      portfolio_owner: portfolio.portfolio_owner,
+      portfolio_managers: portfolio.portfolio_managers,
+      portfolio_viewers: portfolio.portfolio_viewers,
+    }
+    await this.setCurrentPortfolio(members);
+
+    await this.populatePortfolioMembersDetail(this.currentPortfolio);
   }
 
   /**
