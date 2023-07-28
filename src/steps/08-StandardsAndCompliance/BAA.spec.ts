@@ -82,9 +82,9 @@ describe("Testing BAA Page", () => {
     //   expect(hasChanges).toBe(true)
     // })
 
-    // it("checks saveOnLeave", async () =>{
-    //   const hasChanges = await wrapper.vm.saveOnLeave()
-    //   expect(hasChanges).toBe(true)
-    // })
+    it("checks saveOnLeave", async () =>{
+      const hasChanges = await wrapper.vm.saveOnLeave()
+      expect(hasChanges).toBe(true)
+    })
   });
 });
