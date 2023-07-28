@@ -66,6 +66,7 @@ module.exports = {
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/InstanceDetails.spec.ts",
     "<rootDir>/src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts",
     "<rootDir>/src/steps/08-StandardsAndCompliance/BAA.spec.ts",
+    "<rootDir>/src/steps/08-StandardsAndCompliance/BAALearnMore.spec.ts",
     "<rootDir>/src/steps/07-OtherContractConsiderations/*.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
