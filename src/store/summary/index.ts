@@ -676,7 +676,8 @@ export class SummaryStore extends VuexModule {
         "storageAmount",
         "storageType",
         "entireDuration",
-        "periodsNeeded"
+        "periodsNeeded",
+        "classificationLevel"
       ];
     } else if (isDatabase) {
       requiredFields = [
@@ -696,7 +697,8 @@ export class SummaryStore extends VuexModule {
         "storageUnit",
         "descriptionOfNeed",
         "entireDuration",
-        "periodsNeeded"
+        "periodsNeeded",
+        "classificationLevel"
       ]
     } else if(isStorage){
       requiredFields = [
@@ -706,13 +708,15 @@ export class SummaryStore extends VuexModule {
         "storageUnit",
         "entireDuration",
         "descriptionOfNeed",
-        "periodsNeeded"
+        "periodsNeeded",
+        "classificationLevel"
       ]
     } else if (isGeneralXaas) {
       requiredFields = [
         "descriptionOfNeed",
         "entireDuration",
-        "periodsNeeded"
+        "periodsNeeded",
+        "classificationLevel"
       ];
     } else if (isTraining){
       requiredFields= [
