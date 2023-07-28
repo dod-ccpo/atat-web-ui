@@ -1,12 +1,12 @@
 <template>
   <ATATDialog
-    :id="'id'"
-    :showDialog.sync="showArchivePortfolioModal"
-    title="Archive portfolio"
+    id="ArchivePortfolioModal"
+    :showDialog="showArchivePortfolioModal"
+    :title="'Archive “' + portfolioName + '” portfolio?'"
     no-click-animation
     okText="Archive portfolio"
     cancelText="Cancel"
-    width="450"
+    width="632"
     @ok="okClicked"
     @cancelClicked="cancelClicked"
     okButtonId="ArchiveButton_OK"
@@ -14,13 +14,21 @@
   >
     <template #content>
       <div class="body">
-        After archiving, this portfolio will no longer appear in your ATAT dashboard and funding
-        reports.
-        Your portfolio will become read-only, so you will no longer be able to add funding or
-        team members.
-        NOTE: Archiving will NOT remove your portfolio from {{csp}} console.
-        To avoid incurring unexpected costs, we recommend that your administrators delete
-        this workspace from the cloud console before you archive it in ATAT.
+        <p>
+          After archiving, this portfolio will no longer appear in your ATAT 
+          dashboard and funding reports.
+        </p>
+        <ul class="_atat-ul">
+          <li>
+            Your portfolio will become read-only, so you will no longer be able to add funding or
+            team members.
+          </li>
+        </ul>
+        <p>
+          <strong>NOTE:</strong> Archiving will NOT remove your portfolio from {{csp}} console.
+          To avoid incurring unexpected costs, we recommend that your administrators delete
+          this workspace from the cloud console before you archive it in ATAT.
+        </p>
       </div>
     </template>
   </ATATDialog>
@@ -39,6 +47,7 @@ import { Component, Prop } from "vue-property-decorator";
 
 export default class ArchivePortfolioModal extends Vue {
   @Prop({ default: false }) public showArchivePortfolioModal!: boolean;
+  @Prop() public portfolioName!: string;
   @Prop() public csp!: string;
 
   public okClicked(): void {

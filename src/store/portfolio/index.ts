@@ -301,10 +301,14 @@ export class PortfolioDataStore extends VuexModule {
    * Updates just the "title" (name) property of the portfolio record
    */
   @Action({rawError: true})
-  public async updatePortfolioTitle(title: string | undefined): Promise<void> {
+  public async updatePortfolioTitle(title: string): Promise<void> {
     await api.portfolioTable.update(this.currentPortfolio.sysId as string,
       {name: title} as unknown as PortfolioSummaryDTO
     )
+    this.doUpdatePortfolioTitle(title);
+  }
+  @Mutation
+  public doUpdatePortfolioTitle(title: string): void {
     this.currentPortfolio.title = title;
   }
 
@@ -605,7 +609,7 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Mutation
-  public setStatus(value: string): void {
+  public doSetCurrentPortfolioStatus(value: string): void {
     this.currentPortfolio.status = value;
   }
 
@@ -873,21 +877,20 @@ export class PortfolioDataStore extends VuexModule {
     return alerts;
   }
 
+
+  @Action({rawError: true})
+  public async archivePortfolio(): Promise<void> {
+    await api.portfolioTable.update(this.currentPortfolio.sysId as string,
+      {portfolio_status: "ARCHIVED"} as unknown as PortfolioSummaryDTO
+    )
+    this.doSetCurrentPortfolioStatus("ARCHIVED");
+  }
+
+
   @Action({rawError: true})
   public async reset(): Promise<void> {
     this.doReset();
   }
-
-  @Action({rawError: true})
-  public async setArchived(): Promise<void> {
-    await this.doSetArchived();
-  }
-
-  @Mutation
-  public async doSetArchived(): Promise<void> {
-    this.setStatus("ARCHIVED");
-  }
-
   @Mutation
   public async doReset(): Promise<void> {
     this.portfolioProvisioningObj = _.cloneDeep(initialPortfolioProvisioningObj());

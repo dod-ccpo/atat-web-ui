@@ -14,8 +14,8 @@
             placeholder="Add a description"
             rows="1"
             @blur="saveDescription"
-            :readonly="currentUserIsViewer"
-            :disabled="currentUserIsViewer"
+            :readonly="portfolioIsArchived"
+            :disabled="portfolioIsArchived"
           />
         </div>
 
@@ -72,7 +72,7 @@
             ({{ getPortfolioMembersCount }})
           </div>
         </div>
-        <v-tooltip left nudge-right="20">
+        <v-tooltip v-if="!portfolioIsArchived" left nudge-right="20">
           <template v-slot:activator="{ on, attrs }">
             <span
               v-bind="attrs"
@@ -289,7 +289,6 @@ import AppSections from "@/store/appSections";
 export default class PortfolioDrawer extends Vue {
 
   public portfolio: Portfolio = {};
-  public portfolioStatus = "";
   public updateTime = "";
   public csp = "";
   
@@ -312,14 +311,19 @@ export default class PortfolioDrawer extends Vue {
     }
   }  
 
-  public get currentUserIsViewer(): boolean {
-    return PortfolioStore.currentUserIsViewer;;
+
+  public get portfolioStatus(): string {
+    return PortfolioStore.currentPortfolio.status as string;
+  }
+
+  public get portfolioIsArchived(): boolean {
+    return PortfolioStore.currentUserIsViewer || this.portfolioStatus === "ARCHIVED" ;
   }
 
   public get showDescription(): boolean {
     const descr = this.portfolio.description;
-    return !this.currentUserIsViewer || 
-      this.currentUserIsViewer && descr !== undefined && descr.length > 0;
+    return !this.portfolioIsArchived || 
+      this.portfolioIsArchived && descr !== undefined && descr.length > 0;
   }
 
   public get cspKey(): string {
@@ -434,12 +438,12 @@ export default class PortfolioDrawer extends Vue {
       }
       this.currentUserIsOwner = storeData.portfolio_owner === this.currentUser.sys_id;
 
-      if (storeData.status) {
-        const statusKey = this.getStatusKey(storeData.status);
-        this.portfolioStatus = storeData.status 
-          ? Statuses[statusKey].label
-          : "";
-      }
+      // if (storeData.status) {
+      //   const statusKey = this.getStatusKey(storeData.status);
+      //   this.portfolioStatus = storeData.status 
+      //     ? Statuses[statusKey].label
+      //     : "";
+      // }
     }
   }
 

@@ -40,7 +40,6 @@
           :items ="tabItems"
           :value.sync="tabIndex"
           :title.sync="title"
-          :portfolioStatus="portfolioStatus"
           :isPortfolioProvisioning="isPortfolioProvisioning"
         />
         
@@ -124,7 +123,6 @@ export default class PortfolioSummary extends Vue {
   public secondaryTabItems: Record<string, string>[] = [];
 
   public title = ""
-  public portfolioStatus = ""
   public portfolioDescription = ""
   public portfolioCSP = ""
 
@@ -162,7 +160,6 @@ export default class PortfolioSummary extends Vue {
     if(portfolio.sysId){
       this.isPortfolioProvisioning = false;
       this.title = portfolio.title || "";
-      this.portfolioStatus = portfolio.status || "";
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
 

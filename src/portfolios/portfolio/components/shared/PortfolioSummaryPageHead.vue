@@ -132,10 +132,11 @@
     </div>
   </v-app-bar>
     <ArchivePortfolioModal
-        :showArchivePortfolioModal="showArchivePortfolioModal"
-        :csp="csp"
-        @okClicked="archivePortfolio"
-        @cancelClicked="closeArchivePortfolioModal"
+      :portfolioName="_title"
+      :showArchivePortfolioModal="showArchivePortfolioModal"
+      :csp="csp"
+      @okClicked="archivePortfolio"
+      @cancelClicked="closeArchivePortfolioModal"
     />
   </div>
 </template>
@@ -176,15 +177,17 @@ import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteM
 })
 
 export default class PortfolioSummaryPageHead extends Vue {
-  @Prop({ default: "Headline" }) private headline!: string;
-  @Prop() private portfolioStatus!: string;
   @Prop() public isPortfolioProvisioning!: boolean;
   @Prop({ default: [""], required: true }) private items!: string[];
   @PropSync("value") private _selectedTab!: number ;
   @PropSync("title") private _title!: string;
 
+  public get portfolioStatus(): string {
+    return PortfolioStore.currentPortfolio.status as string;
+  }
+
   public get titleIsReadOnly(): boolean {
-    return PortfolioStore.currentUserIsViewer;
+    return PortfolioStore.currentUserIsViewer || this.portfolioStatus === "ARCHIVED";
   }
 
   public titleBeforeEdit = "";
@@ -199,8 +202,9 @@ export default class PortfolioSummaryPageHead extends Vue {
     return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
   }
 
-  public get csp(): string | undefined {
-    return PortfolioStore.currentPortfolio.csp;
+  public get csp(): string {
+    const csp = PortfolioStore.currentPortfolio.csp?.toUpperCase() as string;
+    return AcquisitionPackage.csps[csp];
   }
 
   public get slideoutPanelIsOpen(): boolean {
@@ -225,7 +229,8 @@ export default class PortfolioSummaryPageHead extends Vue {
   }
 
   public archivePortfolio():void {
-    PortfolioStore.setStatus("Archived");
+    debugger;
+    PortfolioStore.archivePortfolio();
     debugger;
     this.closeArchivePortfolioModal();
   }
