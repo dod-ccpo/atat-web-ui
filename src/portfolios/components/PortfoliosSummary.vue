@@ -171,7 +171,7 @@ import CurrentUserStore from "@/store/user";
 })
 
 export default class PortfoliosSummary extends Vue {
-  @Prop({ default: "ALL" }) public activeTab!: "ALL" | "ACTIVE" | "PROCESSING";
+  @Prop({ default: "ALL" }) public activeTab!: "ALL" | "ACTIVE" | "PROCESSING" | "ARCHIVED";
   @Prop({ default: false }) public isHomeView?: boolean;
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
 
@@ -430,7 +430,9 @@ export default class PortfoliosSummary extends Vue {
     this.offset = (this.page - 1) * this.recordsPerPage;
     this.portfolioSearchDTO.offset = this.offset;
 
-    const storeData = await PortfolioSummary.searchPortfolioSummaryList(this.portfolioSearchDTO);
+    const storeData = await PortfolioSummary.searchPortfolioSummaryList(
+      { searchDTO: this.portfolioSearchDTO, isHomeView: this.isHomeView }
+    );
 
     this.portfolioCount = storeData.total_count;
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);

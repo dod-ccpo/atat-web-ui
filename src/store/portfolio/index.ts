@@ -5,7 +5,7 @@ import rootStore from "../index";
 import {
   Environment,
   FilterOption,
-  MemberInvites, 
+  MemberInvites,
   Operator,
   Portfolio,
   PortfolioCardData,
@@ -23,7 +23,7 @@ import {api} from "@/api";
 import CurrentUserStore from "../user";
 import {AxiosRequestConfig} from "axios";
 import {convertColumnReferencesToValues} from "@/api/helpers";
-import { formatISO9075, startOfTomorrow } from "date-fns";
+import {format, formatISO9075, startOfTomorrow} from "date-fns";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -301,10 +301,14 @@ export class PortfolioDataStore extends VuexModule {
    * Updates just the "title" (name) property of the portfolio record
    */
   @Action({rawError: true})
-  public async updatePortfolioTitle(title: string | undefined): Promise<void> {
+  public async updatePortfolioTitle(title: string): Promise<void> {
     await api.portfolioTable.update(this.currentPortfolio.sysId as string,
       {name: title} as unknown as PortfolioSummaryDTO
     )
+    this.doUpdatePortfolioTitle(title);
+  }
+  @Mutation
+  public doUpdatePortfolioTitle(title: string): void {
     this.currentPortfolio.title = title;
   }
 
@@ -372,8 +376,6 @@ export class PortfolioDataStore extends VuexModule {
   public doSetCurrentEnvSysId(sysId: string): void {
     this.currentPortfolioEnvSysId = sysId;
   }
-
-
 
   public summaryFilterRoles: FilterOption[] = [
     {
@@ -467,6 +469,7 @@ export class PortfolioDataStore extends VuexModule {
     await this.doInitProvisioningFromResponse(data);
     await this.setCSPProvisioningData();
   }
+
   @Mutation
   public async doInitProvisioningFromResponse(data: PortfolioProvisioning): Promise<void> {
     this.portfolioProvisioningObj = data;
@@ -528,6 +531,7 @@ export class PortfolioDataStore extends VuexModule {
   public get getShowAddMembersModal(): boolean {
     return this.showAddMembersModal;
   }
+  public showArchivePortfolioModal = false;
   public currentUserIsViewer = false;
   public currentUserIsManager = false;
   public currentUserIsOwner = false;
@@ -584,11 +588,22 @@ export class PortfolioDataStore extends VuexModule {
   public setShowAddMembersModal(show: boolean): void {
     this.doSetShowAddMembersModal(show);
   }
+
   @Mutation
   public doSetShowAddMembersModal(show: boolean): void {
     this.showAddMembersModal = show;
   }
 
+  @Action
+  public setShowArchivePortfolioModal(show: boolean): void {
+    this.doSetShowArchivePortfolioModal(show);
+  }
+
+  @Mutation
+  public doSetShowArchivePortfolioModal(show: boolean): void {
+    this.showArchivePortfolioModal = show;
+  }
+  
   @Action({rawError: true})
   public async setPortfolioData(portfolio: Portfolio): Promise<void> {
     try {
@@ -624,7 +639,7 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Mutation
-  public setStatus(value: string): void {
+  public doSetCurrentPortfolioStatus(value: string): void {
     this.currentPortfolio.status = value;
   }
 
@@ -904,6 +919,16 @@ export class PortfolioDataStore extends VuexModule {
     const alerts = await this.alertService.getAlerts(taskOrderNumber);
     this.setAlerts(alerts)
     return alerts;
+  }
+
+
+  @Action({rawError: true})
+  public async archivePortfolio(): Promise<void> {
+    await api.portfolioTable.update(this.currentPortfolio.sysId as string,
+      // eslint-disable-next-line max-len
+      {portfolio_status: "ARCHIVED", last_updated: format(new Date(), "yyyy-MM-dd HH:mm:ss")} as unknown as PortfolioSummaryDTO
+    )
+    this.doSetCurrentPortfolioStatus("ARCHIVED");
   }
 
   @Action({rawError: true})

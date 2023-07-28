@@ -14,8 +14,8 @@
             placeholder="Add a description"
             rows="1"
             @blur="saveDescription"
-            :readonly="currentUserIsViewer"
-            :disabled="currentUserIsViewer"
+            :readonly="portfolioIsArchived"
+            :disabled="portfolioIsArchived"
           />
         </div>
 
@@ -76,7 +76,7 @@
             ({{ getPortfolioMembersCount }})
           </div>
         </div>
-        <v-tooltip left nudge-right="20" v-if="userCanInviteMembers">
+        <v-tooltip left nudge-right="20" v-if="userCanInviteMembers && !portfolioIsArchived">
           <template v-slot:activator="{ on, attrs }">
             <span
               v-bind="attrs"
@@ -118,7 +118,7 @@
 
           <!-- NOT DROPDOWN - for owner and if current user is Viewer -->
           <div v-if="currentUserIsViewer && member.sys_id !== currentUser.sys_id
-            || member.role === 'Owner'
+            || member.role === 'Owner' || portfolioIsArchived
           ">
 
             <v-tooltip left nudge-right="30">
@@ -136,7 +136,7 @@
                 </div>
               </template>
               <div 
-                v-if="member.role === 'Owner' && currentUserIsOwner" 
+                v-if="member.role === 'Owner' && currentUserIsOwner && !portfolioIsArchived" 
                 class="_tooltip-content-wrap _left" 
                 style="width: 250px;"
               >
@@ -355,7 +355,6 @@ interface member extends User {
 
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
-  public portfolioStatus = "";
   public updateTime = "";
   public csp = "";
   
@@ -400,10 +399,18 @@ export default class PortfolioDrawer extends Vue {
     return PortfolioStore.currentUserIsViewer || this.currentUserDowngradedToViewer;
   }
 
+  public get portfolioStatus(): string {
+    return PortfolioStore.currentPortfolio.status as string;
+  }
+
+  public get portfolioIsArchived(): boolean {
+    return this.currentUserIsViewer || this.portfolioStatus === "ARCHIVED" ;
+  }
+
   public get showDescription(): boolean {
     const descr = this.portfolio.description;
-    return !this.currentUserIsViewer || 
-      this.currentUserIsViewer && descr !== undefined && descr.length > 0;
+    return !this.portfolioIsArchived || 
+      this.portfolioIsArchived && descr !== undefined && descr.length > 0;
   }
 
   public get cspKey(): string {
@@ -556,12 +563,6 @@ export default class PortfolioDrawer extends Vue {
         member.menuItems = this.getMemberMenuItems(member);
       });
 
-      if (storeData.status) {
-        const statusKey = this.getStatusKey(storeData.status);
-        this.portfolioStatus = storeData.status 
-          ? Statuses[statusKey].label
-          : "";
-      }
     }
   }
 
