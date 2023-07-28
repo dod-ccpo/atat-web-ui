@@ -915,11 +915,11 @@ export class PortfolioDataStore extends VuexModule {
   @Action({rawError: true})
   public async archivePortfolio(): Promise<void> {
     await api.portfolioTable.update(this.currentPortfolio.sysId as string,
-      {portfolio_status: "ARCHIVED"} as unknown as PortfolioSummaryDTO
+      // eslint-disable-next-line max-len
+      {portfolio_status: "ARCHIVED", last_updated: new Date().toLocaleString()} as unknown as PortfolioSummaryDTO
     )
     this.doSetCurrentPortfolioStatus("ARCHIVED");
   }
-
 
   @Action({rawError: true})
   public async reset(): Promise<void> {
