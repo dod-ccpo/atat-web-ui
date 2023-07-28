@@ -20,6 +20,7 @@
           <!-- ATAT TODO - reinstate after MVP when new single portfolio summary API is available
                      that prevents multiple calls per portfolio so can ABORT API calls in progress
                      when switching between tabs
+          -->
           <div>
             <v-tabs class="_header-tab "
               v-model="tabIndex">
@@ -32,8 +33,6 @@
               >{{ tab.text }}</v-tab>
             </v-tabs>
           </div> 
-
-          -->
 
         </div>
         <div class="d-flex justify-end align-center"></div>
@@ -87,6 +86,10 @@ export default class Portfolios extends Vue {
     {
       type: "ACTIVE",
       text: "Active",
+    },
+    {
+      type: "ARCHIVED",
+      text: "Archived",
     },
   ];
   public activeTab = this.tabItems[0].type;

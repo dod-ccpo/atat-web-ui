@@ -13,11 +13,23 @@
         <v-col>
           <div id="app-content" class="d-flex flex-column">
             <div class="mb-auto" style="padding-bottom: 80px">
-                <div class="d-flex justify-space-between width-100 mb-10">
+                <div class="width-100 mb-10">
                   <ATATAlert
-                      id="InaccurateFinancialDetails"
-                      type="error"
-                      class="container-max-width my-10"
+                    id="ArchivedCallout"
+                    v-if="portfolioIsArchived"
+                    type="info"
+                    class="mb-10"
+                  >
+                    <template v-slot:content>
+                      This portfolio was archived on {{ lastUpdated }}
+                    </template>
+                  </ATATAlert>
+
+
+                  <ATATAlert
+                    id="InaccurateFinancialDetails"
+                    type="error"
+                    class="container-max-width my-10"
                   >
                     <template v-slot:content>
                       <h3 class="mb-1">Financial details may be inaccurate</h3>
@@ -528,7 +540,7 @@
                                   </th>
                                   <th id="TotalFundsSpentHeader">
                                     <div
-                                      class="font-size-12 text-base-darker 
+                                      class="font-size-12 text-base-darker
                                       d-flex justify-end align-center"
                                       id="TotalFundsSpent"
                                     >
@@ -537,7 +549,7 @@
                                   </th>
                                   <th id="LastMonthsSpendHeader">
                                     <div
-                                      class="font-size-12 text-base-darker 
+                                      class="font-size-12 text-base-darker
                                       d-flex justify-end align-center"
                                       id="LastMonthsSpend"
                                     >
@@ -634,14 +646,14 @@
                                   <td id="ClinLastMonthSpent">
                                     <div class="d-flex flex-column">
                                       <span
-                                        class="font-size-14 text-base-darker 
+                                        class="font-size-14 text-base-darker
                                         d-flex justify-end"
                                       >
                                         ${{ item.lastMonthSpent }}
                                       </span>
                                       <span class="d-flex justify-end">
                                         <span
-                                          class="font-size-12 d-flex pr-1 align-center pr-1 
+                                          class="font-size-12 d-flex pr-1 align-center pr-1
                                           font-weight-700"
                                           :class="
                                             item.spendTrend > 0
@@ -691,7 +703,7 @@
                                   <td id="TotalSpent">
                                     <div class="d-flex flex-column">
                                       <span
-                                        class="font-size-14 text-base-darker 
+                                        class="font-size-14 text-base-darker
                                         font-weight-700 d-flex justify-end"
                                       >
                                         {{
@@ -729,7 +741,7 @@
                                   <td id="TotalLastMonthSpent">
                                     <div class="d-flex flex-column">
                                       <span
-                                        class="font-size-14 d-flex justify-end 
+                                        class="font-size-14 d-flex justify-end
                                         text-base-darker font-weight-700"
                                       >
                                         {{
@@ -740,7 +752,7 @@
                                       </span>
                                       <span class="d-flex justify-end">
                                         <span
-                                          class="font-size-12 d-flex pr-1 
+                                          class="font-size-12 d-flex pr-1
                                           align-center font-weight-700"
                                           :class="
                                             totalSpendingObj.spendTrend > 0
@@ -905,6 +917,19 @@ export default class PortfolioDashboard extends Vue {
   public burnChartYStepSize = 0;
   public burnChartYLabelSuffix = "k";
   public tooltipHeaderData: Record<string, string> = {};
+
+  public get portfolioStatus(): string {
+    return PortfolioStore.currentPortfolio.status as string;
+  } 
+  public get portfolioIsArchived(): boolean {
+    return this.portfolioStatus === "ARCHIVED" ;
+  }
+  public get lastUpdated(): string {
+    if (PortfolioStore.currentPortfolio.lastUpdated) {
+      return createDateStr(PortfolioStore.currentPortfolio.lastUpdated, true);
+    }
+    return "";
+  }
 
   public get lastMonthTrendIconName(): string {
     return this.lastMonthSpendTrendPercent > 0 ? 'trendingUp' : 'trendingDown';

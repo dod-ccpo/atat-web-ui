@@ -62,7 +62,7 @@ describe("Testing Portfolio Drawer component", () => {
       localVue,
       vuetify,
     });
-    PortfolioData.setPortfolioData(portfolio);
+    PortfolioData.setCurrentPortfolioMembers(portfolio);
   });
 
   afterEach(() => {
@@ -186,34 +186,6 @@ describe("Testing Portfolio Drawer component", () => {
     expect(removeMenuItem.text).toBe("Leave this portfolio");
   });
 
-  describe("getTag function with different inputs",()=> {
-
-    it("Test getTag(processing)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = Statuses.Active.value;
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it("Test getTag(expiring pop)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = Statuses.AtRisk.value;
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it("Test getTag(expired)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus =  Statuses.Delinquent.value;
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it("Test getTag(archived)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = Statuses.Archived.value
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it("Test getTag()- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = ""
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBe(0)
-    })
-  })
   describe("formatDate()",()=> {
     it("should return the date provided in mmm. dd, yyyy, hhmm ", ()=>{
       const result = wrapper.vm.formatDate("2022-09-08 18:12:12")

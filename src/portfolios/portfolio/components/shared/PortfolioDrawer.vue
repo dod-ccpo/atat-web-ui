@@ -14,8 +14,8 @@
             placeholder="Add a description"
             rows="1"
             @blur="saveDescription"
-            :readonly="currentUserIsViewer"
-            :disabled="currentUserIsViewer"
+            :readonly="portfolioIsArchived"
+            :disabled="portfolioIsArchived"
           />
         </div>
 
@@ -76,7 +76,7 @@
             ({{ getPortfolioMembersCount }})
           </div>
         </div>
-        <v-tooltip left nudge-right="20" v-if="userCanInviteMembers">
+        <v-tooltip left nudge-right="20" v-if="userCanInviteMembers && !portfolioIsArchived">
           <template v-slot:activator="{ on, attrs }">
             <span
               v-bind="attrs"
@@ -118,7 +118,7 @@
 
           <!-- NOT DROPDOWN - for owner and if current user is Viewer -->
           <div v-if="currentUserIsViewer && member.sys_id !== currentUser.sys_id
-            || member.role === 'Owner'
+            || member.role === 'Owner' || portfolioIsArchived
           ">
 
             <v-tooltip left nudge-right="30">
@@ -136,7 +136,7 @@
                 </div>
               </template>
               <div 
-                v-if="member.role === 'Owner' && currentUserIsOwner" 
+                v-if="member.role === 'Owner' && currentUserIsOwner && !portfolioIsArchived" 
                 class="_tooltip-content-wrap _left" 
                 style="width: 250px;"
               >
@@ -224,8 +224,8 @@
     </div>
 
     <InviteMembersModal
-        :showModal.sync="showMembersModal"
-        @membersInvited="membersInvited"
+      :showModal.sync="showMembersModal"
+      @membersInvited="membersInvited"
     />
 
     <ATATDialog
@@ -273,6 +273,8 @@
       no-click-animation
       okText="Transfer ownership"
       width="450"
+      :OKDisabled="modalOKDisabled"
+      :showOKSpinner="showOKSpinner"
       @ok="transferOwner"
       @cancelClicked="closeTransferOwnerModal"
     >    
@@ -334,6 +336,8 @@ import CurrentUserStore from "@/store/user";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
 import { EnvironmentDTO, UserDTO } from "@/api/models";
 import AppSections from "@/store/appSections";
+import Home from "@/home/Index.vue";
+import Portfolios from "@/portfolios/Index.vue";
 
 interface member extends User {
   menuItems?: SelectData[];
@@ -353,7 +357,6 @@ interface member extends User {
 
 export default class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
-  public portfolioStatus = "";
   public updateTime = "";
   public csp = "";
   
@@ -398,10 +401,18 @@ export default class PortfolioDrawer extends Vue {
     return PortfolioStore.currentUserIsViewer || this.currentUserDowngradedToViewer;
   }
 
+  public get portfolioStatus(): string {
+    return PortfolioStore.currentPortfolio.status as string;
+  }
+
+  public get portfolioIsArchived(): boolean {
+    return this.currentUserIsViewer || this.portfolioStatus === "ARCHIVED" ;
+  }
+
   public get showDescription(): boolean {
     const descr = this.portfolio.description;
-    return !this.currentUserIsViewer || 
-      this.currentUserIsViewer && descr !== undefined && descr.length > 0;
+    return !this.portfolioIsArchived || 
+      this.portfolioIsArchived && descr !== undefined && descr.length > 0;
   }
 
   public get cspKey(): string {
@@ -538,7 +549,7 @@ export default class PortfolioDrawer extends Vue {
 
     if (storeData) {
       this.portfolio = storeData;
-      this.csp = storeData.csp?.toLowerCase() as string;      
+      this.csp = storeData.vendor?.toLowerCase() as string;      
       if (storeData.lastUpdated) {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
       }
@@ -554,12 +565,6 @@ export default class PortfolioDrawer extends Vue {
         member.menuItems = this.getMemberMenuItems(member);
       });
 
-      if (storeData.status) {
-        const statusKey = this.getStatusKey(storeData.status);
-        this.portfolioStatus = storeData.status 
-          ? Statuses[statusKey].label
-          : "";
-      }
     }
   }
 
@@ -650,6 +655,8 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async transferOwner(): Promise<void> {
+    this.modalOKDisabled = true;
+    this.showOKSpinner = true;
     /* eslint-disable camelcase */
     const newOwner = this.portfolioMembers[this.transferOwnershipIndex];
     this.portfolio.portfolio_owner = newOwner.sys_id;
@@ -680,6 +687,8 @@ export default class PortfolioDrawer extends Vue {
     await this.updateMemberRole("Manager", prevOwnerIndex);
     this.closeTransferOwnerModal();
     Toast.setToast(this.ownershipTransferredToast);
+    this.modalOKDisabled = false;
+    this.showOKSpinner = false;
   }
 
   public removeItemFromArray(users: string, sysId: string): string {
@@ -726,7 +735,7 @@ export default class PortfolioDrawer extends Vue {
       this.portfolio.portfolio_managers = managers.join(",");
       /* eslint-enable camelcase */
 
-      await PortfolioStore.setPortfolioData(this.portfolio);
+      await PortfolioStore.setCurrentPortfolioMembers(this.portfolio);
       this.downgradeMemberIndex = -1;
 
       const thisMember = this.portfolioMembers[index];
@@ -803,14 +812,23 @@ export default class PortfolioDrawer extends Vue {
       } 
       /* eslint-enable camelcase */
       this.portfolio.members.splice(this.removeMemberIndex, 1);
-      await PortfolioStore.setPortfolioData(this.portfolio);
-      await this.loadPortfolio();
+      await PortfolioStore.setCurrentPortfolioMembers(this.portfolio);
+      await PortfolioStore.removeMemberFromCurrentPortfolio(sysId);
+      
+      if (sysId === this.currentUser.sys_id) {
+        // current user left the portfolio - send to home page
+        await PortfolioStore.setUserLeftPortfolio(true);
+        AppSections.setAppContentComponent(Home);
+
+      } else {
+        await this.loadPortfolio();
+        Toast.setToast(this.accessRemovedToast);
+      }
     }
-    Toast.setToast(this.accessRemovedToast);
     this.showRemoveMemberDialog = false;
     this.showLeavePortfolioModal = false;
     this.modalOKDisabled = false;
-    this.showOKSpinner = false;
+    this.showOKSpinner = false;        
   }
 
   public cancelRemoveMember(): void {

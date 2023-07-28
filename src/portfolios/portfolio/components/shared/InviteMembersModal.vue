@@ -206,7 +206,8 @@ export default class InviteMembersModal extends UserSearch {
    */
   public async inviteMembers(): Promise<void> {
     const userSelectedNotRemovedList = this.userSelectedList.filter(selectedUser =>
-      (selectedUser.role === "Manager") || (selectedUser.role === "Viewer"))
+      (selectedUser.role === "Manager") || (selectedUser.role === "Viewer")
+    );
     if (userSelectedNotRemovedList.length > 0) {
       await portfolio.inviteMembers(userSelectedNotRemovedList);
       this.$emit("membersInvited");
