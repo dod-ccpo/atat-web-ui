@@ -162,7 +162,8 @@ describe("Testing Portfolio Drawer component", () => {
 
   it("removeMember() - pass params to successfully change roles ", async()=>{
     await wrapper.setData({
-      portfolio
+      portfolio,
+      removeMemberIndex: 0,
     })
     const currentNumberOfMembers = PortfolioData.currentPortfolio.members?.length || 1
     await wrapper.vm.removeMember();
@@ -219,6 +220,5 @@ describe("Testing Portfolio Drawer component", () => {
       expect(result).toBe("Sep. 8, 2022, 1812")
     })
   })
-
 })
 

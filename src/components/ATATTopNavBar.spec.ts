@@ -2,6 +2,8 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
 import ATATTopNavBar from "@/components/ATATTopNavBar.vue";
+import CurrentUserStore from "@/store/user";
+import AppSections from "@/store/appSections";
 Vue.use(Vuetify);
 
 describe("Testing ATATTopNavBar Component", () => {
@@ -22,58 +24,79 @@ describe("Testing ATATTopNavBar Component", () => {
 
   it("checks if menu item is active or not", async () => {
     await wrapper.setData({
-      activeMenuItems: ["foo"]
+      activeMenuItems: ["foo"],
     });
-    let isActive = wrapper.vm.isMenuItemActive({title: "foo"});
+    let isActive = wrapper.vm.isMenuItemActive({ title: "foo" });
     expect(isActive).toBeTruthy();
-    isActive = wrapper.vm.isMenuItemActive({title: "bar"});
+    isActive = wrapper.vm.isMenuItemActive({ title: "bar" });
     expect(isActive).toBeFalsy();
   });
 
   it("sets current user initials for profile menu", async () => {
-    const currentUser ={
+    const currentUser = {
       firstName: "Foo",
-      lastName: "Bar"
-    }
+      lastName: "Bar",
+    };
     let initials = wrapper.vm.getUserInitials(currentUser);
     expect(initials).toEqual("FB");
 
     await wrapper.setData({
-      currentUser: {}
+      currentUser: {},
     });
     initials = wrapper.vm.getUserInitials({});
     expect(initials).toEqual("XX");
-
   });
 
   it("sets active menu item(s)", async () => {
     await wrapper.setData({
-      activeMenuItems: []
+      activeMenuItems: [],
     });
-    wrapper.vm.navClicked({title: 'foo'});
+    wrapper.vm.navClicked({ title: "foo" });
     expect(wrapper.vm.$data.activeMenuItems.length).toBe(0);
 
     await wrapper.setData({
-      activeMenuItems: []
+      activeMenuItems: [],
     });
 
-    wrapper.vm.navClicked({title: 'foo', spaSectionTitle: "spa section"});
+    wrapper.vm.navClicked({ title: "foo", spaSectionTitle: "spa section" });
     expect(wrapper.vm.$data.activeMenuItems.length).toBe(1);
 
     await wrapper.setData({
-      activeMenuItems: []
+      activeMenuItems: [],
     });
 
-    wrapper.vm.navClicked({title: 'foo', spaSectionTitle: "spa section", parentTitle: "bar"});
+    wrapper.vm.navClicked({
+      title: "foo",
+      spaSectionTitle: "spa section",
+      parentTitle: "bar",
+    });
     expect(wrapper.vm.$data.activeMenuItems.length).toBe(2);
 
     await wrapper.setData({
-      activeMenuItems: []
+      activeMenuItems: [],
     });
 
-    wrapper.vm.navClicked({title: 'foo', externalUrl: 'http://foo.com'});
+    wrapper.vm.navClicked({ title: "foo", externalUrl: "http://foo.com" });
     expect(wrapper.vm.$data.activeMenuItems.length).toBe(0);
-
   });
+  it("should test with no portfolios", async () => {
+    jest
+      .spyOn(AppSections, "changeActiveSection")
+      .mockImplementation(() => Promise.resolve());
+    CurrentUserStore.doSetPortfolioCount(0);
+    const mockData = {
+      title: "foo",
+      spaSectionTitle: "Portfolios",
+      spaAltSectionTitle: "bar",
+    };
+    wrapper.vm.navClicked(mockData);
+    expect(wrapper.vm.$data.activeMenuItems.length).toBe(1);
+    expect(AppSections.changeActiveSection).toHaveBeenCalledWith(
+      mockData.spaAltSectionTitle
+    );
 
+    await wrapper.setData({
+      activeMenuItems: [],
+    });
+  });
 });
