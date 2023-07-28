@@ -25,6 +25,7 @@ describe("Testing Classification Level Page", () => {
   const mockEnvironment:CurrentEnvironmentDTO = {
     env_location: "HYBRID"
   } as CurrentEnvironmentDTO
+
   const mockCurrent = {
     envClassificationsCloud: ["U","S"],
     envClassificationsOnPrem: [],
