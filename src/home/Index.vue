@@ -219,13 +219,12 @@ export default class Home extends Vue {
   public async mounted(): Promise<void> {
     this.isLoading = true;
     await CurrentUserStore.initialize();
-    debugger;
     if (PortfolioStore.userLeftPortfolio) {
       Toast.setToast(this.accessRemovedToast);
       await PortfolioStore.setUserLeftPortfolio(false);
     }
-
   }
+
   public accessRemovedToast: ToastObj = {
     type: "success",
     message: "Portfolio access removed",

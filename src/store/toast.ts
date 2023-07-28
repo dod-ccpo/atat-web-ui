@@ -21,7 +21,6 @@ export class ToastStore extends VuexModule {
 
   @Action
   public setToast(toast: ToastObj): void {
-    debugger;
     this.doSetToast(toast);
   }
 
@@ -32,7 +31,6 @@ export class ToastStore extends VuexModule {
 
   @Action
   setToastClosed(): void {
-    debugger;
     this.doSetToastClosed();
   }
 
