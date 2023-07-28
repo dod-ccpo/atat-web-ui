@@ -111,6 +111,8 @@ import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import PortfolioStore from "@/store/portfolio";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import Toast from "@/store/toast";
+import { ToastObj } from "types/Global";
 
 @Component({
   components: {
@@ -217,7 +219,20 @@ export default class Home extends Vue {
   public async mounted(): Promise<void> {
     this.isLoading = true;
     await CurrentUserStore.initialize();
+    debugger;
+    if (PortfolioStore.userLeftPortfolio) {
+      Toast.setToast(this.accessRemovedToast);
+      await PortfolioStore.setUserLeftPortfolio(false);
+    }
+
   }
+  public accessRemovedToast: ToastObj = {
+    type: "success",
+    message: "Portfolio access removed",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  };
 
 
 }
