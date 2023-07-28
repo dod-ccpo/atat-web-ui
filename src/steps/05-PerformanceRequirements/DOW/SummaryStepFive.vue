@@ -68,6 +68,9 @@
                 <h3 class="mb-1" :id="getIdText(item.title ) + '_Heading'">
                   {{ item.title }}
                 </h3>
+                <p class="mb-0" :id="getIdText(item.title) + '_Description'" 
+                  v-html="item.description">
+                </p>
               </div>
               <div class="d-flex align-start">
                 <div class="d-flex align-center">
