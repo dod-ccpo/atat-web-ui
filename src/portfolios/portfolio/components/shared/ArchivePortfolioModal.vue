@@ -25,7 +25,7 @@
           </li>
         </ul>
         <p>
-          <strong>NOTE:</strong> Archiving will NOT remove your portfolio from {{csp}} console.
+          <strong>NOTE:</strong> Archiving will NOT remove your portfolio from {{csp}}’s console.
           To avoid incurring unexpected costs, we recommend that your administrators delete
           this workspace from the cloud console before you archive it in ATAT.
         </p>
