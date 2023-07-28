@@ -122,7 +122,7 @@ export class UserStore extends VuexModule {
     const searchDTO: PortfolioSummarySearchDTO = { 
       role: "ALL" 
     };
-    const userQuery = await PortfolioSummary.getMandatorySearchParameterQuery(searchDTO);
+    const userQuery = await PortfolioSummary.getMandatorySearchParameterQuery({searchDTO});
     query += userQuery;
     const count = await getTableRecordCount(PortfolioTable, query)
     await this.doSetPortfolioCount(count);

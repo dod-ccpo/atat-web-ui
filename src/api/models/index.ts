@@ -834,7 +834,7 @@ export interface PortfolioSummarySearchDTO {
   role?: "ALL" | "MANAGED"; 
   fundingStatuses?: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
   csps?: string[]; // to not search for specific csps, send empty array
-  portfolioStatus?: "ACTIVE" | "PROCESSING" | ""; // empty string for both statuses
+  portfolioStatus?: "ACTIVE" | "PROCESSING" | "ARCHIVED" | ""; // empty string for both statuses
   sort?: "name" | "DESCsys_updated_on";
   searchString?: string;
   limit?: number;

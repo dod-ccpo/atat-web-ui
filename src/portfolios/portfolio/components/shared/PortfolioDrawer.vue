@@ -136,7 +136,7 @@
                 </div>
               </template>
               <div 
-                v-if="member.role === 'Owner' && currentUserIsOwner" 
+                v-if="member.role === 'Owner' && currentUserIsOwner && !portfolioIsArchived" 
                 class="_tooltip-content-wrap _left" 
                 style="width: 250px;"
               >
