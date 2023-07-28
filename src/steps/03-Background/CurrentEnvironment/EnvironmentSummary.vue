@@ -219,7 +219,6 @@ export default class EnvironmentSummary extends Vue {
     });
     //eslint-disable-next-line prefer-const
     let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
-    debugger
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
       //eslint-disable-next-line prefer-const
       let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
@@ -478,7 +477,6 @@ export default class EnvironmentSummary extends Vue {
       this.locationNames[location.sys_id] = location.name
     })
     this.classificationLevels = await classificationRequirements.getAllClassificationLevels();
-    debugger
     await this.buildTableData();
   }
 
