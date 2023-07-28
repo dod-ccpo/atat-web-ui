@@ -142,7 +142,8 @@ export default class ATATTextField extends Vue  {
   @Prop() private dropdownOptions?: SelectData[];
   @Prop( {default: false }) private labelSrOnly?: boolean;
   @Prop({ default: true }) private allowZeroDefault?: boolean;
-  
+  @Prop({ default: false }) private isManuallyErrored?: boolean;
+
   @PropSync("selectedDropdownValue") private _selectedDropdownValue?: string;
   @PropSync("value", { default: "" }) private _value!: string;
 
@@ -242,6 +243,9 @@ export default class ATATTextField extends Vue  {
   }
 
   private get getIconColor(): string {
+    if(this.isManuallyErrored){
+      return "error"
+    }
     return this._value || this.disabled ? "base-darkest" : "base-light";    
   }
 
