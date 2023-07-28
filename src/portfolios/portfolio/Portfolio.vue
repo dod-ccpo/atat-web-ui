@@ -13,11 +13,23 @@
         <v-col>
           <div id="app-content" class="d-flex flex-column">
             <div class="mb-auto" style="padding-bottom: 80px">
-                <div class="d-flex justify-space-between width-100 mb-10">
+                <div class="width-100 mb-10">
                   <ATATAlert
-                      id="InaccurateFinancialDetails"
-                      type="error"
-                      class="container-max-width my-10"
+                    id="ArchivedCallout"
+                    v-if="portfolioIsArchived"
+                    type="info"
+                    class="mb-10"
+                  >
+                    <template v-slot:content>
+                      This portfolio was archived on {{ lastUpdated }}
+                    </template>
+                  </ATATAlert>
+
+
+                  <ATATAlert
+                    id="InaccurateFinancialDetails"
+                    type="error"
+                    class="container-max-width my-10"
                   >
                     <template v-slot:content>
                       <h3 class="mb-1">Financial details may be inaccurate</h3>
@@ -905,6 +917,19 @@ export default class PortfolioDashboard extends Vue {
   public burnChartYStepSize = 0;
   public burnChartYLabelSuffix = "k";
   public tooltipHeaderData: Record<string, string> = {};
+
+  public get portfolioStatus(): string {
+    return PortfolioStore.currentPortfolio.status as string;
+  } 
+  public get portfolioIsArchived(): boolean {
+    return this.portfolioStatus === "ARCHIVED" ;
+  }
+  public get lastUpdated(): string {
+    if (PortfolioStore.currentPortfolio.lastUpdated) {
+      return createDateStr(PortfolioStore.currentPortfolio.lastUpdated, true);
+    }
+    return "";
+  }
 
   public get lastMonthTrendIconName(): string {
     return this.lastMonthSpendTrendPercent > 0 ? 'trendingUp' : 'trendingDown';

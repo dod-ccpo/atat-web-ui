@@ -561,12 +561,6 @@ export default class PortfolioDrawer extends Vue {
         member.menuItems = this.getMemberMenuItems(member);
       });
 
-      // if (storeData.status) {
-      //   const statusKey = this.getStatusKey(storeData.status);
-      //   this.portfolioStatus = storeData.status 
-      //     ? Statuses[statusKey].label
-      //     : "";
-      // }
     }
   }
 
