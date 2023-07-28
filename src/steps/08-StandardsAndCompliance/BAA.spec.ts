@@ -24,12 +24,22 @@ describe("Testing BAA Page", () => {
   });
 
   describe("testing BAA.vue", () => {
-    it("renders successfully", async () => {
-      expect(wrapper.exists()).toBe(true);
-    });
+    // it("renders successfully", async () => {
+    //   expect(wrapper.exists()).toBe(true);
+    // });
 
-    it("opens slideout panel", () => {
-      jest.spyOn(SlideoutPanel, "openSlideoutPanel").mockImplementation();
+    // it("opens slideout panel", () => {
+    //   jest.spyOn(SlideoutPanel, "openSlideoutPanel").mockImplementation();
+    //   const currentTargetId = 1;
+    //   wrapper.vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
+    //   expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
+    //     currentTargetId
+    //   );
+    // });
+
+    it("testing @keydown.space to trigger openSlideoutPanel ", async () => {
+      const anchorLink = wrapper.find("#LearnMoreBAA");
+      anchorLink.trigger('keydown.space'); // trigger openSlideoutPanel;
       const currentTargetId = 1;
       wrapper.vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
       expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
@@ -37,25 +47,15 @@ describe("Testing BAA Page", () => {
       );
     });
 
-    // it("testing @keydown.space to trigger openSlideoutPanel ", async () => {
-    //   const anchorLink = wrapper.find("#LearnMoreBAA");
-    //   anchorLink.trigger('keydown.space'); // trigger openSlideoutPanel;
-    //   const currentTargetId = 1;
-    //   wrapper.vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
-    //   expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
-    //     currentTargetId
-    //   );
-    // });
-
-    // it("testing @keydown.enter to trigger openSlideoutPanel ", async () => {
-    //   const anchorLink = wrapper.find("#LearnMoreBAA");
-    //   anchorLink.trigger('keydown.enter'); // trigger openSlideoutPanel;
-    //   const currentTargetId = 1;
-    //   wrapper.vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
-    //   expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
-    //     currentTargetId
-    //   );
-    // });
+    it("testing @keydown.enter to trigger openSlideoutPanel ", async () => {
+      const anchorLink = wrapper.find("#LearnMoreBAA");
+      anchorLink.trigger('keydown.enter'); // trigger openSlideoutPanel;
+      const currentTargetId = 1;
+      wrapper.vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
+      expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
+        currentTargetId
+      );
+    });
 
     it("gets current data", () => {
       const mockPackageId = "1";
