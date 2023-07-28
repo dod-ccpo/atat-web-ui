@@ -79,6 +79,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   contracting_shop?: string;
   funding_request?: ReferenceColumn | string;
   contracting_shop_non_ditco_address?: ReferenceColumn | string;
+  owner_needs_email_package_ready_to_submit: boolean;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -109,6 +110,7 @@ export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
   data_growth_estimate_type?: SingleMultiple;
   data_growth_estimate_percentage?: string[];
   isValid?:boolean;
+  isAnticipatedUsersAndDataIsComplete?: boolean;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {

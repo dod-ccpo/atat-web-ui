@@ -153,7 +153,7 @@ export default class PortfolioSummary extends Vue {
   }
 
   public async loadOnEnter(): Promise<void>  {
-    if (!AcquisitionPackage.isProdEnv) {
+    if (!this.isProdEnv) {
       this.tabItems.push("Task Orders", "CSP Portal Access");
     }    
     const portfolio = _.cloneDeep(PortfolioStore.currentPortfolio);

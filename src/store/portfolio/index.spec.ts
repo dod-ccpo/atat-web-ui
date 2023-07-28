@@ -2,8 +2,7 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
-import {FundingAlertTypes, PortfolioDataStore,
-  getThresholdAmount, thresholdAtOrAbove} from "@/store/portfolio/index";
+import {FundingAlertTypes, PortfolioDataStore} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import Vue from "vue";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
@@ -80,17 +79,16 @@ describe("Portfolio Store", () => {
       provisioned: "today",
       members: []
     }
-    const updateEmailObj = {
-      members:[{email:"testemail@test.mil"}]
-    }
-    
+    const doSetCurrentUserRoleMock = 
+      jest.spyOn(portfolioStore, "doSetCurrentUserRole").mockImplementation();
+
     await portfolioStore.setPortfolioData(mockData);
-    await portfolioStore.setPortfolioData(updateEmailObj);
     expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
+    expect (doSetCurrentUserRoleMock).toHaveBeenCalled();
   })
 
   it('getStatus() returns default result', async()=>{
-    expect(await portfolioStore.getStatus).toBe(Statuses.Active.value);
+    expect(portfolioStore.getStatus).toBe(Statuses.Active.value);
   })
 
   it('getShowAddMembersModal() returns default result', async()=>{
@@ -170,11 +168,9 @@ describe("Portfolio Store", () => {
 
   it('getPortolioData()', async()=>{
     const dummyTitle = "dummy Title";
-    portfolioStore.setPortfolioData(
-      {
-        title: dummyTitle
-      }
-    )
+    await portfolioStore.setPortfolioData({
+      title: dummyTitle
+    });
     const portfolio = await portfolioStore.getPortfolioData();
     expect(portfolio.title).toBe(dummyTitle)
   })
