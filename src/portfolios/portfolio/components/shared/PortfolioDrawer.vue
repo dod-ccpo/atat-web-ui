@@ -334,6 +334,8 @@ import CurrentUserStore from "@/store/user";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
 import { EnvironmentDTO, UserDTO } from "@/api/models";
 import AppSections from "@/store/appSections";
+import Home from "@/home/Index.vue";
+import Portfolios from "@/portfolios/Index.vue";
 
 interface member extends User {
   menuItems?: SelectData[];
@@ -804,13 +806,20 @@ export default class PortfolioDrawer extends Vue {
       /* eslint-enable camelcase */
       this.portfolio.members.splice(this.removeMemberIndex, 1);
       await PortfolioStore.setPortfolioData(this.portfolio);
-      await this.loadPortfolio();
+      if (sysId === this.currentUser.sys_id) {
+        // current user left the portfolio - send to home page
+        await PortfolioStore.setUserLeftPortfolio(true);
+        AppSections.setAppContentComponent(Home);
+
+      } else {
+        await this.loadPortfolio();
+        Toast.setToast(this.accessRemovedToast);
+      }
     }
-    Toast.setToast(this.accessRemovedToast);
     this.showRemoveMemberDialog = false;
     this.showLeavePortfolioModal = false;
     this.modalOKDisabled = false;
-    this.showOKSpinner = false;
+    this.showOKSpinner = false;        
   }
 
   public cancelRemoveMember(): void {
