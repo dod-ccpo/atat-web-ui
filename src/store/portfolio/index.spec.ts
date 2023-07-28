@@ -81,9 +81,8 @@ describe("Portfolio Store", () => {
     }
     const doSetCurrentUserRoleMock = 
       jest.spyOn(portfolioStore, "doSetCurrentUserRole").mockImplementation();
-
     await portfolioStore.setPortfolioData(mockData);
-    expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
+    expect(portfolioStore.currentPortfolio.title).toBe("some title to test")   
     expect (doSetCurrentUserRoleMock).toHaveBeenCalled();
   })
 
