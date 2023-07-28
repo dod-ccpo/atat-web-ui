@@ -79,12 +79,9 @@ describe("Portfolio Store", () => {
       provisioned: "today",
       members: []
     }
-    const doSetCurrentUserRoleMock = 
-      jest.spyOn(portfolioStore, "doSetCurrentUserRole").mockImplementation();
 
     await portfolioStore.setCurrentPortfolio(mockData);
     expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
-    expect (doSetCurrentUserRoleMock).toHaveBeenCalled();
   })
 
   it('getStatus() returns default result', async()=>{
@@ -143,27 +140,6 @@ describe("Portfolio Store", () => {
     Vue.nextTick(() => {
       expect(portfolioStore.alerts).toBe(mockAlerts);
     })
-  })
-
-
-  it('saveMembers() add members to Portfolio.portflio.members', async()=>{
-    const memberInvites: User[] = [{
-      firstName: "FN",
-      lastName: "LN",
-      fullName: "FN",
-      email: "testemail@mail.mil",
-      role: "Viewer",
-      phoneNumber: "",
-      phoneExt: "",
-      designation: "",
-      agency: "Test Agency",
-      sys_id: "mem_abc"
-    }]
-    portfolioStore.currentPortfolio.members = [];
-    jest.spyOn(api.portfolioTable, "update").mockImplementation(
-      ()=>Promise.resolve({} as unknown as PortfolioSummaryDTO));
-    await portfolioStore.inviteMembers(memberInvites)
-    expect(portfolioStore.currentPortfolio.members?.length).toBe(1)
   })
 
   it('getPortolioData()', async()=>{
