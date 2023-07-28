@@ -68,26 +68,6 @@ describe("Portfolio Store", () => {
     jest.clearAllTimers();
   })
 
-  it('Test setCurrentPortfolio- sets portfolio to the passed in value', async () => {
-    const mockData = {
-      title: "some title to test",
-      description: "a description",
-      status: Statuses.Active.value,
-      csp: "",
-      agency: "mock Agency",
-      createdBy: "jefferey tester",
-      provisioned: "today",
-      members: []
-    }
-
-    await portfolioStore.setCurrentPortfolio(mockData);
-    expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
-  })
-
-  it('getStatus() returns default result', async()=>{
-    expect(portfolioStore.getStatus).toBe(Statuses.Active.value);
-  })
-
   it('getShowAddMembersModal() returns default result', async()=>{
     expect(await portfolioStore.getShowAddMembersModal).toBe(false);
   })

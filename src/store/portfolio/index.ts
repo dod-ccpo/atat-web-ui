@@ -625,6 +625,16 @@ export class PortfolioDataStore extends VuexModule {
     Object.assign(this.currentPortfolio, portfolio)
   }
 
+  public userLeftPortfolio = false;
+  @Action({rawError: true})
+  public async setUserLeftPortfolio(value: boolean): Promise<void> {
+    this.doSetUserLeftPortfolio(value);
+  }
+  @Mutation
+  public async doSetUserLeftPortfolio(value: boolean): Promise<void> {
+    this.userLeftPortfolio = value;
+  }
+
   @Mutation
   public setStatus(value: string): void {
     this.currentPortfolio.status = value;
