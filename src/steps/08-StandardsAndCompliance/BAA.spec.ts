@@ -23,6 +23,7 @@ describe("Testing BAA Page", () => {
     });
   });
 
+  describe("testing BAA.vue", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
@@ -37,6 +38,7 @@ describe("Testing BAA Page", () => {
     });
 
     it("testing @keydown.space to trigger openSlideoutPanel ", async () => {
+      SlideoutPanel.openSlideoutPanel = jest.fn();
       const anchorLink = wrapper.find("#LearnMoreBAA");
       anchorLink.trigger('keydown.space'); // trigger openSlideoutPanel;
       const currentTargetId = 1;
@@ -47,6 +49,7 @@ describe("Testing BAA Page", () => {
     });
 
     it("testing @keydown.enter to trigger openSlideoutPanel ", async () => {
+      SlideoutPanel.openSlideoutPanel = jest.fn();
       const anchorLink = wrapper.find("#LearnMoreBAA");
       anchorLink.trigger('keydown.enter'); // trigger openSlideoutPanel;
       const currentTargetId = 1;
@@ -85,4 +88,5 @@ describe("Testing BAA Page", () => {
       const hasChanges = await wrapper.vm.saveOnLeave()
       expect(hasChanges).toBe(true)
     })
+  });
 });
