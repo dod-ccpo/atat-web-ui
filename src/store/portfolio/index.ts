@@ -23,7 +23,7 @@ import {api} from "@/api";
 import CurrentUserStore from "../user";
 import {AxiosRequestConfig} from "axios";
 import {convertColumnReferencesToValues} from "@/api/helpers";
-import { formatISO9075, startOfTomorrow } from "date-fns";
+import {format, formatISO9075, startOfTomorrow} from "date-fns";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -916,7 +916,7 @@ export class PortfolioDataStore extends VuexModule {
   public async archivePortfolio(): Promise<void> {
     await api.portfolioTable.update(this.currentPortfolio.sysId as string,
       // eslint-disable-next-line max-len
-      {portfolio_status: "ARCHIVED", last_updated: new Date().toLocaleString()} as unknown as PortfolioSummaryDTO
+      {portfolio_status: "ARCHIVED", last_updated: format(new Date(), "yyyy-MM-dd HH:mm:ss")} as unknown as PortfolioSummaryDTO
     )
     this.doSetCurrentPortfolioStatus("ARCHIVED");
   }
