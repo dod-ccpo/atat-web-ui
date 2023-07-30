@@ -138,8 +138,8 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       title: AcquisitionPackage.projectOverview?.title || "",
       scope: AcquisitionPackage.projectOverview?.scope || "",
       emergency_declaration: AcquisitionPackage.projectOverview?.emergency_declaration || "",
-      project_disclaimer: AcquisitionPackage.projectOverview?.project_disclaimer || "",
-      cjadc2: AcquisitionPackage.projectOverview?.cjadc2 || "",
+      project_disclaimer: AcquisitionPackage.projectOverview?.project_disclaimer ?? "",
+      cjadc2: AcquisitionPackage.projectOverview?.cjadc2 ?? "",
       cjadc2_percentage: AcquisitionPackage.projectOverview?.cjadc2_percentage as number 
     };
   }
