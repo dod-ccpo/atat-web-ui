@@ -41,6 +41,7 @@ export interface TopNavItem {
   parentTitle?: string;
   component?: Component;
   spaSectionTitle?: string;
+  spaAltSectionTitle?: string;
   externalUrl?: string;
   icon?: MenuIcon;
   link?: string;
@@ -322,6 +323,7 @@ export interface DOWClassificationInstance {
   typeOfMobilityOther?: string;
   ts_contractor_clearance_type?: string;
   updated_description?: "YES" | "NO"
+  isComplete?: boolean
 }
 
 export interface DOWServiceOffering {
@@ -333,6 +335,7 @@ export interface DOWServiceOffering {
   description?: string;
   classificationInstances?: DOWClassificationInstance[];
   sequence: string;
+  isComplete?: boolean;
 }
 
 export interface DOWServiceOfferingGroup {
@@ -340,6 +343,7 @@ export interface DOWServiceOfferingGroup {
   sequence: number;
   serviceOfferings: DOWServiceOffering[];
   otherOfferingData?: OtherServiceOfferingData[];
+  isComplete?: boolean;
 }
 
 export interface fundingIncrement {
@@ -450,6 +454,7 @@ export interface OtherServiceSummaryTableData {
   personnelOnsiteAccess?: string;
   trainingType?: string;
   sysId?:string;
+  isComplete?:boolean;
 }
 
 export interface TravelSummaryTableData {
@@ -527,23 +532,21 @@ export interface Portfolio extends BaseTableDTO {
   title?: string;
   description?: string;
   status?: string;
-  csp?: string; // EJY - DOUBLE-CHECK - this could be type CSP ?
+  csp?: string; 
   agency?: string;
   agencyDisplay?: string;
   createdBy?: string;
   provisioned?: string;
   members?: User[];
   portfolio_owner?: string;
-  portfolio_owner_detail?: User;
   portfolio_managers?: string
-  portfolio_managers_detail?: User[];
   portfolio_viewers?: string;
-  portfolio_viewers_detail?: User[];
   updated?: string;
   taskOrderNumber?: string;
   environments?: Environment[];
   taskOrderSysId?: string;
   lastUpdated?: string;
+  vendor?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {

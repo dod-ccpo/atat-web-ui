@@ -96,9 +96,7 @@
               :rules="otherRequiredRule"
             />
             <ATATTextField
-              v-if="
-                otherEntryType === 'textfield' && showOtherEntry(item.value)
-              "
+              v-if="otherEntryType === 'textfield' && showOtherEntry(item.value)"
               ref="atatTextInput"
               name="otherTextField"
               v-show="showOtherEntry(item.value)"
@@ -258,7 +256,7 @@ export default class ATATCheckboxGroup extends Vue {
     : [];
 
   get otherId(): string {
-    return getIdText(this.otherValue);
+    return "Other_" + getIdText(this.otherValue);
   }
 
   public textFieldBlur(index: number): void {

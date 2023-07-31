@@ -76,7 +76,7 @@ describe("Testing ATATSelect Component", () => {
         otherValue: _otherValue
       })
       const _otherId = await wrapper.vm.otherId;
-      expect(_otherId).toBe(_otherValue);
+      expect(_otherId).toBe("Other_" + _otherValue);
     })
 
     it("@Watch `selected` - sets $props.otherValue to ensure default " +

@@ -25,8 +25,8 @@
             @blur="titleBlurred()"
             @focus="setTitleBeforeEdit"
             maxlength="60"
-            :readonly="titleIsReadOnly"
-            :disabled="titleIsReadOnly"
+            :readonly="portfolioIsArchived"
+            :disabled="portfolioIsArchived"
           />
         <div>
           <v-tabs 
@@ -62,17 +62,16 @@
             color="base-dark"
           />
         </v-btn>
-        <!-- ATAT TODO: Reinstate menu in future ticket when functionality complete -->
         <v-menu
           :offset-y="true"
           left
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
+          v-if="!portfolioIsArchived"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              v-if="!isProdEnv"
               v-bind="attrs"
               v-on="on"
               id="MoreMenuButton"
@@ -81,43 +80,35 @@
               <v-icon class="text-base-dark">more_horiz</v-icon>
             </v-btn>
           </template>
-
           <v-list>
-            <v-list-item
-              @click="openModal"
-              id="InviteMembers_MenuItem"
-            >
+            
+            <v-list-item @click="openModal" id="InviteMembers_MenuItem">
               <v-list-item-title
               >Invite members to portfolio
               </v-list-item-title>
             </v-list-item>
-            <v-list-item
-              @click="moveToInput()"
-              id="RenamePortfolio_MenuItem"            
-            >
+
+            <v-list-item @click="moveToInput()" id="RenamePortfolio_MenuItem">
               <v-list-item-title
               >Rename portfolio
               </v-list-item-title>
             </v-list-item>
-            <v-list-item
-              id="LeavePortfolio_MenuItem"            
-            >
+
+            <v-list-item v-if="!isProdEnv" id="LeavePortfolio_MenuItem">
               <v-list-item-title>
                 Leave this portfolio
               </v-list-item-title>
             </v-list-item>
-            <v-list-item
-              :disabled="portfolioStatus.toLowerCase() !== 'expired'"
-              id="ArchivePortfolio_MenuItem"            
-            >
+            
+            <v-list-item @click="openArchivePortfolioModal" id="ArchivePortfolio_MenuItem">
               <v-list-item-title>
                 Archive portfolio
               </v-list-item-title>
             </v-list-item>
-            <hr class="my-2" />
-            <v-list-item
-              id="LoginToCSPConsole_MenuItem"            
-            >
+
+            <hr class="my-2"  v-if="!isProdEnv" />
+
+            <v-list-item id="LoginToCSPConsole_MenuItem" v-if="!isProdEnv">
               <v-list-item-title
                 class="d-flex align-center"
               > Login to the CSP console
@@ -135,6 +126,13 @@
       </div>
     </div>
   </v-app-bar>
+    <ArchivePortfolioModal
+      :portfolioName="_title"
+      :showArchivePortfolioModal="showArchivePortfolioModal"
+      :csp="csp"
+      @okClicked="archivePortfolio"
+      @cancelClicked="closeArchivePortfolioModal"
+    />
   </div>
 </template>
 
@@ -154,25 +152,37 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { SlideoutPanelContent } from "../../../../../types/Global";
 import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+// eslint-disable-next-line max-len
+import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
+import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
 
 @Component({
+  methods: {
+    PortfolioStore() {
+      return PortfolioStore
+    }
+  },
   components: {
+    InviteMembersModal,
     ATATTextField,
     AddMembersModal,
+    ArchivePortfolioModal,
     ATATSVGIcon
   }
 })
 
 export default class PortfolioSummaryPageHead extends Vue {
-  @Prop({ default: "Headline" }) private headline!: string;
-  @Prop() private portfolioStatus!: string;
   @Prop() public isPortfolioProvisioning!: boolean;
   @Prop({ default: [""], required: true }) private items!: string[];
   @PropSync("value") private _selectedTab!: number ;
   @PropSync("title") private _title!: string;
 
-  public get titleIsReadOnly(): boolean {
-    return PortfolioStore.currentUserIsViewer;;
+  public get portfolioStatus(): string {
+    return PortfolioStore.currentPortfolio.status as string;
+  }
+
+  public get portfolioIsArchived(): boolean {
+    return PortfolioStore.currentUserIsViewer || this.portfolioStatus === "ARCHIVED";
   }
 
   public titleBeforeEdit = "";
@@ -180,7 +190,6 @@ export default class PortfolioSummaryPageHead extends Vue {
     this.titleBeforeEdit = this._title;
   }
 
-  public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public showDrawer = false;
 
@@ -188,9 +197,15 @@ export default class PortfolioSummaryPageHead extends Vue {
     return AcquisitionPackage.isProdEnv as boolean || AcquisitionPackage.emulateProdNav;
   }
 
+  public get csp(): string {
+    const csp = PortfolioStore.currentPortfolio.csp?.toUpperCase() as string;
+    return AcquisitionPackage.csps[csp];
+  }
+
   public get slideoutPanelIsOpen(): boolean {
     return SlideoutPanel.getSlideoutPanelIsOpen;
   }
+
   @Watch("slideoutPanelIsOpen")
   public slideoutPanelIsOpenChanged(newVal: boolean): void {
     this.showDrawer = newVal;
@@ -199,9 +214,28 @@ export default class PortfolioSummaryPageHead extends Vue {
   public openModal():void {
     PortfolioStore.setShowAddMembersModal(true);
   }
+
+  public get showArchivePortfolioModal(): boolean {
+    return PortfolioStore.showArchivePortfolioModal;
+  }
+
+  public openArchivePortfolioModal():void {
+    PortfolioStore.setShowArchivePortfolioModal(true);
+  }
+
+  public archivePortfolio():void {
+    PortfolioStore.archivePortfolio();
+    this.closeArchivePortfolioModal();
+  }
+
+  public closeArchivePortfolioModal(): void {
+    PortfolioStore.setShowArchivePortfolioModal(false);
+  }
+
   public async tabClicked(index: number): Promise<void> {
     await AppSections.setActiveTabIndex(index);
   }
+
   public titleBlurred(): void {
     if (this._title !== this.titleBeforeEdit && this._title.length > 0) {
       PortfolioStore.updatePortfolioTitle(this._title);
@@ -299,6 +333,5 @@ export default class PortfolioSummaryPageHead extends Vue {
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
-
 }
 </script>

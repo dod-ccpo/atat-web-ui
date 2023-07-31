@@ -93,11 +93,11 @@ import CurrentEnvironment,
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import { routeNames } from "@/router/stepper";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "@/components/ATATAlert.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import Steps from "@/store/steps";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -170,7 +170,7 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
     if (comingFrom !== routeNames.DOWLandingPage && comingFrom !== routeNames.ReplicateDetails) {
       this.$router.push({
         name: routeNames.DOWLandingPage,
-      }).catch(() => console.log("error navigating to DOW Landing Page"));      
+      }).catch(() => console.log("error navigating to DOW Landing Page"));
     }
     await this.loadOnEnter();
   }

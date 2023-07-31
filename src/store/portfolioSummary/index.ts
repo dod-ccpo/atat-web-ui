@@ -113,8 +113,11 @@ export class PortfolioSummaryStore extends VuexModule {
    * each search parameter, no need to check if the value exists since the value is mandatory.
    */
   @Action({rawError: true})
-  public async getMandatorySearchParameterQuery(searchDTO?: PortfolioSummarySearchDTO):
-    Promise<string> {
+  public async getMandatorySearchParameterQuery(
+    data: { searchDTO?: PortfolioSummarySearchDTO, isHomeView?: boolean }
+  ): Promise<string> {
+    const searchDTO = data.searchDTO;
+    const isHomeView = data.isHomeView ?? false;
     const currentUser = CurrentUserStore.getCurrentUserData;
     const isHaCCAdmin = CurrentUserStore.currentUserIsHaCCAdmin;
     const userSysId = currentUser.sys_id;
@@ -130,7 +133,8 @@ export class PortfolioSummaryStore extends VuexModule {
       }
     }
 
-    query = query + "^portfolio_status!=ARCHIVED"
+    if (isHomeView) query = query + "^portfolio_status!=ARCHIVED"
+    
     if (searchDTO && searchDTO.sort) query += "^ORDERBY" + searchDTO.sort;
     return query;
   }
@@ -467,11 +471,14 @@ export class PortfolioSummaryStore extends VuexModule {
    *  of this story.
    */
   @Action({rawError: true})
-  public async searchPortfolioSummaryList(searchDTO: PortfolioSummarySearchDTO):
-    Promise<PortfolioSummaryMetadataAndDataDTO> {
+  public async searchPortfolioSummaryList(
+    data: { searchDTO: PortfolioSummarySearchDTO, isHomeView?: boolean }
+  ): Promise<PortfolioSummaryMetadataAndDataDTO> {
     try {
+      const searchDTO = data.searchDTO;
+      const isHomeView = data.isHomeView ?? false;
       const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
-      let searchQuery = await this.getMandatorySearchParameterQuery(searchDTO)
+      let searchQuery = await this.getMandatorySearchParameterQuery({searchDTO, isHomeView});
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
       }

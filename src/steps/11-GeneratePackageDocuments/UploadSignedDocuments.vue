@@ -123,7 +123,9 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   private invalidFiles: invalidFile[] = [];
   private uploadedFiles: uploadingFile[] = [];
   private needsSignatureLength = 0;
-  private allSignaturesLength = 0
+  private allSignaturesLength = 0;
+  private isInitialLoad = true;
+  private haveFilesChanged = false;
   private saved:PackageDocumentsSignedDTO | null = {
     /* eslint-disable camelcase */
     sys_id: "",
@@ -172,6 +174,10 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   @Watch("uploadedFiles")
   private async filesUploaded(): Promise<void>{
     await this.setDisableContinue();
+    if(!this.isInitialLoad && AcquisitionPackage.currentUserIsContributor){
+      this.haveFilesChanged = true;
+    }
+    this.isInitialLoad = false;
   }
 
   private async setDisableContinue(): Promise<void>{
@@ -235,6 +241,10 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   }
 
   async saveOnLeave(): Promise<boolean>{
+    if (this.haveFilesChanged)
+    {
+      await AcquisitionPackage.setOwnerNeedsNotification();
+    }
     return true;
   }
 

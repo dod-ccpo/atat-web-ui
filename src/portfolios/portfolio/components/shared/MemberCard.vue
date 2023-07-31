@@ -48,9 +48,11 @@ export default class MemberCard extends Vue {
   @Prop({required: true}) private member!: User;
 
   public get getMemberTitle(): string {
-    return this.member.title ? ", " + this.member.title : "";
+    if (this.member.title && this.member.title.trim().length > 0) {
+      return ", " + this.member.title;
+    }
+    return "";
   }
-
 
 }
 </script>

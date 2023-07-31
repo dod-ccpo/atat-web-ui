@@ -524,6 +524,19 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  @Action({rawError: true}) 
+  public async setOwnerNeedsNotification(): Promise<void> {
+    await this.doSetOwnerNeedsNotification();
+    await this.updateAcquisitionPackage();
+  }
+
+  @Mutation
+  public async doSetOwnerNeedsNotification(): Promise<void> {
+    if (this.acquisitionPackage) {
+      this.acquisitionPackage.owner_needs_email_package_ready_to_submit  = true;
+    }
+  }
+
   @Action({rawError: true})
   public async transferOwnership(newOwnerSysId: string): Promise<void> {
     const currentUserSysId = this.currentUser.sys_id;
@@ -564,6 +577,16 @@ export class AcquisitionPackageStore extends VuexModule {
     this.showInviteContributorsModal = show;
   }
 
+  public showArchivePortfolioModal = false;
+
+  public get getShowArchivePortfolioModal(): boolean {
+    return this.showArchivePortfolioModal;
+  }
+
+  @Mutation
+  public doSetShowArchivePortfolioModal(show: boolean): void {
+    this.showArchivePortfolioModal = show;
+  }
   @Action({rawError: true})
   public async inviteContributors(sysIds: string): Promise<void> {
     const currentContributors = this.acquisitionPackage?.contributors?.split(",");
@@ -1077,6 +1100,7 @@ export class AcquisitionPackageStore extends VuexModule {
   
   @Mutation
   public async doSetFairOpportunity(value: FairOpportunityDTO): Promise<void> {
+
     this.fairOpportunity = this.fairOpportunity
       ? Object.assign(this.fairOpportunity, value)
       : value;
@@ -1461,9 +1485,6 @@ export class AcquisitionPackageStore extends VuexModule {
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
 
-      if (!this.currentUser) {
-        await this.setCurrentUser();
-      }  
       await ContactData.initialize();
       this.setPackagePercentLoaded(5);
       await OrganizationData.initialize();
@@ -1529,6 +1550,7 @@ export class AcquisitionPackageStore extends VuexModule {
         primary_contact: primaryContactSysId,
         contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
       });
+      await this.setCurrentUser();
 
       if (acquisitionPackage.contributors) {
         await this.setPackageContributors(acquisitionPackage.contributors);
@@ -1773,6 +1795,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setInitialized(true);
       this.setIsLoading(false);
       await Summary.validateStepThree();
+      await Summary.validateStepFive();
       await Summary.validateStepSeven();
 
     } else {
@@ -1795,9 +1818,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
     Steps.clearAltBackButtonText();
-    if (!this.currentUser) {
-      await this.setCurrentUser();
-    }
 
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
@@ -1865,6 +1885,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPackagePercentLoaded(90);
 
           this.setAcquisitionPackage(acquisitionPackage);
+          await this.setCurrentUser();
           this.setPackagePercentLoaded(95);
 
           saveAcquisitionPackage(acquisitionPackage);

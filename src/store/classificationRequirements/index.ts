@@ -26,6 +26,12 @@ import DescriptionOfWork from "../descriptionOfWork";
 import { getDOWOfferingsWithClassLevelTotal, setItemToPlural } from "@/helpers";
 import Toast from "../toast";
 
+export const isClassLevelUnclass = (sysId: string): boolean =>{
+  return ClassificationRequirements.classificationLevels.some(
+    (cl) => cl.sys_id === sysId && cl.classification === "U"
+  )
+} 
+
 @Module({
   name: "ClassificationRequirements",
   namespaced: true,
@@ -53,6 +59,8 @@ export class ClassificationRequirementsStore extends VuexModule {
     );
     return found.length > 0;
   }
+
+  
 
   public cdsSolution: CrossDomainSolutionDTO | null = null;
 

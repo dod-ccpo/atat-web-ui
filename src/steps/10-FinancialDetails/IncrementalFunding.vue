@@ -163,7 +163,12 @@
 
               <hr class="my-6" />
 
-              <div class="d-flex justify-end align-center">
+              <div
+                class="d-flex justify-end align-center"
+                :class="[
+                {'error--text': this.isIFPOverfunded},
+                {'error--text': this.isIFPUnderfunded},
+                 ]">
                 <label for="TotalAmount" class="mr-4"> Total </label>
 
                 <ATATTextField
@@ -174,6 +179,7 @@
                   width="190"
                   style="margin-right: -10px;"
                   :disabled="true"
+                  :isManuallyErrored="isIFPUnderfunded||isIFPOverfunded"
                 />
                 <span class="d-block" style="width: 36px"></span>
               </div>
@@ -199,11 +205,10 @@
                     <p class="mb-0">
                       Your funding plan may not exceed this period.
                     </p>
-                    <!-- <hr class="base my-4" /> -->
+                     <hr class="base my-4" />
                   </div>
                 </div>
-
-                <!-- <div class="d-flex">
+                 <div class="d-flex">
                   <div class="pr-5">
                     <ATATSVGIcon
                       name="monetizationOn"
@@ -217,7 +222,7 @@
                       Total cost estimate: ${{ costEstimateStr }}
                     </span>
                     <p class="mb-0" v-if="!isFundingMet">
-                      
+
                       You need to add
                       <span id="AmountRemaining" class="bold">
                         ${{ amountRemainingStr }}
@@ -229,7 +234,7 @@
                       your base period.
                     </p>
                   </div>
-                </div> -->
+                </div>
               </div>
             </div>
           </div>
@@ -266,7 +271,7 @@ import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 import PeriodOfPerformance from "@/store/periods";
 
-import { PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models";
+import { CostEstimateDTO, PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models";
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
@@ -276,6 +281,9 @@ import { format } from "date-fns";
 import { parseISO } from "date-fns/fp";
 import formatISO from "date-fns/formatISO"
 import _ from "lodash";
+import { api } from "@/api";
+import acquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -306,7 +314,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
-  public costEstimate = 250000;
+  public costEstimate = 0;
   public costEstimateStr = toCurrencyString(this.costEstimate);
   public amountRemaining = 0;
   public amountRemainingStr = "";
@@ -315,6 +323,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   private currentSelectedValue = "";
   private isIFPUnderfunded = false;
   private isIFPOverfunded = false;
+  public costData: CostEstimateDTO = {packageId:"",payload:{}}
+  public baseYear = 0
 
   public totalAmount = 0;
 
@@ -363,16 +373,15 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public async validateOnContinue(): Promise<void> {
     this.calcAmounts("initialIncrement");
     this.calcAmounts("increment0");
-    // this.isUnderfunded(); 
-    // this.isOverfunded();
-
-    // if (!this.hasValidatedOnContinue && (this.outOfRangeIndex && this.outOfRangeIndex >= 0
-    //   || this.isIFPUnderfunded || this.isIFPOverfunded)
-    // ) {
-    //   this.allowContinue = false;
-    // } else {
-    //   this.allowContinue = true;
-    // }
+    this.isUnderfunded();
+    this.isOverfunded();
+    if (!this.hasValidatedOnContinue && (this.outOfRangeIndex && this.outOfRangeIndex >= 0
+      || this.isIFPUnderfunded || this.isIFPOverfunded)
+    ) {
+      this.allowContinue = false;
+    } else {
+      this.allowContinue = true;
+    }
   }
 
   public quarterChange(args: Record<string, SelectData>): void {
@@ -578,7 +587,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.totalAmount = this.initialAmount
       ? this.initialAmount + incrementsTotal
       : incrementsTotal;
-    // this.isFundingMet = this.totalAmount >= this.costEstimate;
+    this.isFundingMet = this.totalAmount >= this.costEstimate;
 
     this.amountRemaining = this.costEstimate - this.totalAmount;
     this.amountRemainingStr = this.amountRemaining
@@ -605,7 +614,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       amt = parseFloat(this.fundingIncrements[0].amt);
       this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
     }
-    // this.isOverfunded();
+    this.isOverfunded();
   }
 
   public checkIfHasPeriodGap(index: number): boolean {
@@ -689,10 +698,13 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const estimatedTOValue =
-      await FinancialDetails.getEstimatedTaskOrderValue();
-    if (estimatedTOValue) {
-      this.costEstimate = currencyStringToNumber(estimatedTOValue);
+    const isDitco = AcquisitionPackage.contractingShop === "DITCO";
+    if(this.costData.payload.subtotal["Base Period"]){
+      this.baseYear = this.costData.payload.subtotal["Base Period"]
+      if(!isDitco){
+        this.baseYear = this.baseYear * 1.01
+      }
+      this.costEstimate = this.baseYear;
       this.costEstimateStr = toCurrencyString(this.costEstimate);
     }
 
@@ -766,17 +778,16 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
+    this.costData = await api.costEstimateTable.search(acquisitionPackage.packageId)
     await this.loadOnEnter();
   }
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (!this.hasValidatedOnContinue) {
         await this.validateOnContinue();
-        this.hasValidatedOnContinue = true;
       } else {
         this.allowContinue = true;
       }
-
       if (this.allowContinue) {
         // Set chronological order of fiscal quarters in fundingIncrements
         //eslint-disable-next-line prefer-const
