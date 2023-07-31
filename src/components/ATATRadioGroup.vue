@@ -38,7 +38,20 @@
           />
         </div>
         <div v-if="helpText" class="font-size-14 text-base mb-3">
-          {{ helpText }}
+          {{ helpText }} 
+          <span v-if="helpTextLink">
+              <a 
+                role="button"
+                tabindex="0"
+                class="ml-1 font-weight-400"
+                :id="helpTextLink.id"
+                @click="helpTextLinkClicked"
+                @keydown.enter="helpTextLinkClicked"
+                @keydown.space="helpTextLinkClicked"
+              >
+                {{ helpTextLink.linkText }}
+              </a>
+            </span>
         </div>
 
         <v-radio
@@ -174,6 +187,7 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: false}) private clearOtherValidation?: boolean;
   @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
   @Prop() public legendLink?: LegendLink;
+  @Prop() public helpTextLink?: LegendLink;
   @PropSync("clearErrorMessages") public _clearErrorMessages?: boolean;
   @Prop({default: false}) public legendFontNormalWeight?: boolean;
 
@@ -296,6 +310,13 @@ export default class ATATRadioGroup extends Vue {
   public legendLinkClicked(e: Event): void {
     if (this.legendLink) {
       this.$emit(this.legendLink.emitText, e)
+    }
+  }
+
+  public helpTextLinkClicked(e: Event): void {
+    debugger;
+    if (this.helpTextLink) {
+      this.$emit(this.helpTextLink.emitText, e)
     }
   }
 

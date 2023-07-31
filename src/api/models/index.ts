@@ -366,7 +366,7 @@ export interface ProjectOverviewDTO extends BaseTableDTO {
   emergency_declaration: string;
   project_disclaimer: YesNo;
   cjadc2: string;
-  cjadc2_percentage?: number | null | string;
+  cjadc2_percentage?: string;
 }
 
 export interface MilitaryRankDTO extends BaseTableDTO {

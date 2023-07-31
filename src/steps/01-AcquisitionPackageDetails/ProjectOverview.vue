@@ -54,9 +54,8 @@
               legend='Is this requirement in support of the Combined Joint All Domain
               Command and Control (CJADC2) initiative?'
               :cjadc2Initiative.sync="cjadc2Initiative"
-              :rules="[$validators.required('Please select an option')]"
               :cjadc2Percentage.sync='cjadc2Percentage'
-              
+              :rules="[$validators.required('Please select an option')]"
             />
           </div>
           <hr/>
@@ -111,7 +110,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   private projectDisclaimer = "";
   private selectedDisclaimer: string[] = [];
   private cjadc2Initiative = "";
-  private cjadc2Percentage: number | null | string = null; 
+  private cjadc2Percentage = ""; 
 
   public get projectTitle(): string {
     return AcquisitionPackage.getTitle();
@@ -126,21 +125,21 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       title: this.currentTitle,
       scope: this.projectScope,
       emergency_declaration: this.emergencyDeclaration,
+      project_disclaimer: this.selectedDisclaimer[0] as YesNo,
       cjadc2: this.cjadc2Initiative,
-      cjadc2_percentage: this.cjadc2Percentage as number || "",
-      project_disclaimer: this.selectedDisclaimer[0] as YesNo
+      cjadc2_percentage: this.cjadc2Percentage || "",
     }
-    
   }
 
   private get savedData(): ProjectOverviewDTO {
+    const poObj = AcquisitionPackage.projectOverview as ProjectOverviewDTO;
     return {
-      title: AcquisitionPackage.projectOverview?.title || "",
-      scope: AcquisitionPackage.projectOverview?.scope || "",
-      emergency_declaration: AcquisitionPackage.projectOverview?.emergency_declaration || "",
-      project_disclaimer: AcquisitionPackage.projectOverview?.project_disclaimer ?? "",
-      cjadc2: AcquisitionPackage.projectOverview?.cjadc2 ?? "",
-      cjadc2_percentage: AcquisitionPackage.projectOverview?.cjadc2_percentage as number 
+      title: poObj.title,
+      scope: poObj.scope,
+      emergency_declaration: poObj.emergency_declaration,
+      project_disclaimer: poObj.project_disclaimer,
+      cjadc2: poObj.cjadc2,
+      cjadc2_percentage: poObj.cjadc2_percentage 
     };
   }
 
@@ -176,21 +175,16 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
           this.selectedDisclaimer.push("YES")
         }
       }
-      if( storeData.cjadc2 && storeData.cjadc2.length > 0){
+      if( storeData.cjadc2){
         this.cjadc2Initiative = storeData.cjadc2;
-        if(this.cjadc2Initiative === "YES"){
-          if( storeData.cjadc2_percentage !== null && storeData.cjadc2_percentage){
-            this.cjadc2Percentage = storeData.cjadc2_percentage
-          }
-        }
+        this.cjadc2Percentage = this.cjadc2Initiative === "YES"
+          ? storeData.cjadc2_percentage as string
+          : "";
       }
-      
-      
     }
   }
 
   private hasChanged(): boolean {
-    console.log(this.currentData)
     return hasChanges(this.currentData, this.savedData);
   }
 

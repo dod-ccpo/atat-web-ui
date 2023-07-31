@@ -9,7 +9,8 @@
         @radioButtonSelected='radioButtonSelected'
         name="cjadc2-initiative-radio-group"
         :rules="_rules"
-        tooltipText="Joint All-Domain Command and Control (JDAC2) is the Department 
+        :help-text-link="helpTextLink"
+        helpText="Joint All-Domain Command and Control (JDAC2) is the Department 
                 of Defense's (DoD's) concept to connect sensors from all of the military services-Air 
                 Force, Army, Marine Corps, Navy, and Space Force-into a single network."
       >
@@ -39,7 +40,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync} from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-import { RadioButton } from "types/Global";
+import { LegendLink, RadioButton } from "types/Global";
 
 @Component({
   components: {
@@ -54,6 +55,11 @@ export default class CJADC2Initiative extends Vue {
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: ""}) private legend!: string;
   @PropSync("rules") private _rules!: "";
+  public helpTextLink: LegendLink = {
+    id: "LearnMore",
+    linkText: "Learn more",
+    emitText: "helpTextLinkClicked"
+  }
 
   private radioGroupItems: RadioButton[] = [
     {
@@ -74,6 +80,11 @@ export default class CJADC2Initiative extends Vue {
     this._cjadc2Percentage = selectedValue === "NO"
       ? null
       : this._cjadc2Percentage
+  }
+
+  public helpTextLinkClicked(e:Event):void{
+    debugger;
+    alert('hi there')
   }
     
 }
