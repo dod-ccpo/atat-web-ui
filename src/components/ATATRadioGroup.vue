@@ -49,7 +49,9 @@
                 @keydown.enter="helpTextLinkClicked"
                 @keydown.space="helpTextLinkClicked"
               >
-                {{ helpTextLink.linkText }}
+                <span 
+                  :class="[{'_external-link': isHelpTextLinkExternal}]">
+                  {{ helpTextLink.linkText }}</span>
               </a>
             </span>
         </div>
@@ -188,6 +190,7 @@ export default class ATATRadioGroup extends Vue {
   @PropSync("validateOtherOnBlur") private _validateOtherOnBlur?: boolean;
   @Prop() public legendLink?: LegendLink;
   @Prop() public helpTextLink?: LegendLink;
+  @Prop() public isHelpTextLinkExternal?: boolean;
   @PropSync("clearErrorMessages") public _clearErrorMessages?: boolean;
   @Prop({default: false}) public legendFontNormalWeight?: boolean;
 
