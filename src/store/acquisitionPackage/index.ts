@@ -33,7 +33,9 @@ import {
   FundingRequirementDTO,
   RegionsDTO,
   PackageDocumentsSignedDTO,
-  AddressDTO
+  AddressDTO,
+  FeedbackOptionsDTO,
+  CustomerFeedbackDTO
 } from "@/api/models";
 
 import { 
@@ -394,6 +396,8 @@ export class AcquisitionPackageStore extends VuexModule {
   packageId = "";
   regions: RegionsDTO[] | null = null;
   isLoading = false;
+  feedbackOptions: FeedbackOptionsDTO[] | null = null;
+  feedback: CustomerFeedbackDTO | null = null;
   
 
   validateNow = false;
@@ -428,6 +432,21 @@ export class AcquisitionPackageStore extends VuexModule {
   public async doSetIsProdEnv(): Promise<void> {
     this.isProdEnv = window.location.hostname === "services.disa.mil"
       || window.location.hostname === "services-test.disa.mil";
+  }
+
+  @Action({rawError: true})
+  public async loadFeedbackOptions(): Promise<void> {
+    try {
+      const feedbackOptions = await api.feedbackOptionsTable.all();
+      await this.setFeedbackOptions(feedbackOptions);
+    } catch (error) {
+      throw new Error(`error loading feedback options ${error}`);
+    }
+  }
+
+  @Mutation
+  public async setFeedbackOptions(value:FeedbackOptionsDTO[]): Promise<void> {
+    this.feedbackOptions = value;
   }
   
   emulateProdNav = false;

@@ -18,7 +18,8 @@ import {
   EnvironmentInstanceDTO,
   RegionsDTO,
   PackageDocumentsSignedDTO,
-  AddressDTO
+  AddressDTO,
+  CustomerFeedbackDTO
 } from "@/api/models";
 
 export interface SessionData {
@@ -44,6 +45,7 @@ export interface SessionData {
   environmentInstance:EnvironmentInstanceDTO;
   allowDeveloperNavigation: boolean;
   regions: RegionsDTO[];
-  packageDocumentsSigned:PackageDocumentsSignedDTO
-  contractingShopNonDitcoAddress:AddressDTO
+  packageDocumentsSigned:PackageDocumentsSignedDTO;
+  contractingShopNonDitcoAddress:AddressDTO;
+  customerFeedback:CustomerFeedbackDTO;
 }
