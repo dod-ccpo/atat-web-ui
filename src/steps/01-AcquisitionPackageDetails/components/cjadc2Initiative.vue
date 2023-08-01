@@ -22,8 +22,8 @@
           id="CJADC2PricePercentage"
           :v-model='_cjadc2Percentage'
           :rules="[
-            $validators.isBetween(1, 100, 'Please enter a number between 1-100'),
-            $validators.required('Please enter a number between 1-100'),
+            $validators.isBetween(1, 100, percentageErrorMessage),
+            $validators.required(percentageErrorMessage),
           ]"
           placeHolder="1-100"
           suffix="%"
@@ -75,6 +75,8 @@ export default class CJADC2Initiative extends Vue {
       readonly: !this.isForm,
     },
   ];
+
+  public percentageErrorMessage = "Please enter a number between 1-100";
 
   public radioButtonSelected(selectedValue: string):void {
     this._cjadc2Percentage = selectedValue === "NO"

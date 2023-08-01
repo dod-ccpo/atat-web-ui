@@ -143,7 +143,7 @@ const initialProjectOverview = () => {
     emergency_declaration: "",
     project_disclaimer: disclaimer,
     cjadc2: "",
-    cjadc2_percentage: null
+    cjadc2_percentage: ""
   };
 };
 
