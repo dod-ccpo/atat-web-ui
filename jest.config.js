@@ -55,7 +55,7 @@ module.exports = {
     "<rootDir>/src/components/**/*.spec.ts",
     "<rootDir>/src/steps/01-AcquisitionPackageDetails/COR_ACOR/*.spec.ts",
     "<rootDir>/src/steps/03-Background/components/*.spec.ts",
-    "<rootDir>/src/steps/03-Background/CurrentContract/*.spec.ts",
+    "<rootDir>/src/steps/03-Background/CurrentContract/**/*.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/CurrentEnvironment.spec.ts",
