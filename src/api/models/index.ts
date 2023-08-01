@@ -80,7 +80,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   funding_request?: ReferenceColumn | string;
   contracting_shop_non_ditco_address?: ReferenceColumn | string;
   owner_needs_email_package_ready_to_submit: boolean;
-  feedback:ReferenceColumn | string;
+  customer_feedback:ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {

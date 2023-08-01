@@ -312,7 +312,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       // periodOfPerformance: store.periodOfPerformance,
       sensitiveInformation: store.sensitiveInformation,
       allowDeveloperNavigation: store.allowDeveloperNavigation,
-      contractingShopNonDitcoAddress: store.contractingShopNonDitcoAddress
+      contractingShopNonDitcoAddress: store.contractingShopNonDitcoAddress,
+      customerFeedback: store.customerFeedback,
     })
   );
 };
@@ -397,7 +398,7 @@ export class AcquisitionPackageStore extends VuexModule {
   regions: RegionsDTO[] | null = null;
   isLoading = false;
   feedbackOptions: FeedbackOptionsDTO[] | null = null;
-  feedback: CustomerFeedbackDTO | null = null;
+  customerFeedback: CustomerFeedbackDTO | null = null;
   
 
   validateNow = false;
@@ -1493,6 +1494,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
     this.regions = sessionData.regions
     this.contractingShopNonDitcoAddress = sessionData.contractingShopNonDitcoAddress;
+    this.customerFeedback = sessionData.customerFeedback
   }
 
   @Action({rawError: true})
@@ -1551,6 +1553,7 @@ export class AcquisitionPackageStore extends VuexModule {
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
       const ContractingShopNonDitcoAddressID =
           acquisitionPackage.contracting_shop_non_ditco_address as string;
+      const customerFeedback = acquisitionPackage.customer_feedback as string;
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -1568,11 +1571,17 @@ export class AcquisitionPackageStore extends VuexModule {
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
         contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
+        customer_feedback: customerFeedback
       });
       await this.setCurrentUser();
 
       if (acquisitionPackage.contributors) {
         await this.setPackageContributors(acquisitionPackage.contributors);
+      }
+
+      if (customerFeedback){
+        const feedback = await api.feedbackTable.retrieve(customerFeedback)
+        this.customerFeedback = feedback
       }
 
       await ClassificationRequirements.getAllClassificationLevels();
