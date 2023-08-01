@@ -37,13 +37,13 @@
             :label="getTooltipLabel()"
           />
         </div>
-        <div v-if="helpText" class="font-size-14 text-base mb-3">
-          {{ helpText }} 
+        <div v-if="helpText" class="font-size-14 text-base mb-3 max-width-740">
+          {{ helpText }} &nbsp;
           <span v-if="helpTextLink">
               <a 
                 role="button"
                 tabindex="0"
-                class="ml-1 font-weight-400"
+                class="font-weight-400"
                 :id="helpTextLink.id"
                 @click="helpTextLinkClicked"
                 @keydown.enter="helpTextLinkClicked"
@@ -317,7 +317,6 @@ export default class ATATRadioGroup extends Vue {
   }
 
   public helpTextLinkClicked(e: Event): void {
-    debugger;
     if (this.helpTextLink) {
       this.$emit(this.helpTextLink.emitText, e)
     }

@@ -17,7 +17,8 @@
       </ATATRadioGroup>
       <div v-if='_cjadc2Initiative=== "YES"' class="mt-4">
         <ATATTextField
-          label="Estimate the total percentage of funds that will go towards these efforts."
+          label="Estimate the percent of this package's total estimated funds that will go to 
+                CJADC2 programs or efforts."
           :value.sync='_cjadc2Percentage'
           id="CJADC2PricePercentage"
           :v-model='_cjadc2Percentage'
@@ -76,7 +77,7 @@ export default class CJADC2Initiative extends Vue {
     },
   ];
 
-  public percentageErrorMessage = "Please enter a number between 1-100";
+  public percentageErrorMessage = "Enter a number between 1-100.";
 
   public radioButtonSelected(selectedValue: string):void {
     this._cjadc2Percentage = selectedValue === "NO"

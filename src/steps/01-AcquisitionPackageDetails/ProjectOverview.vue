@@ -51,12 +51,11 @@
           </div>
           <div class="d-flex align-start flex-column mt-6">
             <CJADC2Initiative
-              legend='Is this requirement in support of the Combined Joint All Domain
-              Command and Control (CJADC2) initiative?'
-              helpText = "Joint All-Domain Command and Control (JDAC2) is the Department of
-                          Defense's (DoD's) concept to connect sensors from all of the military 
-                          services-Air Force, Army, Marine Corps, Navy, and Space Force-into a 
-                          single network."
+              legend='Is this package in support of the Combined Joint All-Domain Command and
+                       Control (CJADC2) initiative?'
+              helpText = "CJADC2 is the Department of Defense's (DoD's) concept to connect sensors 
+                          from all of the military services-Air Force, Army, Marine Corps, Navy, 
+                          and Space Force-into a single network."
               :cjadc2Initiative.sync="cjadc2Initiative"
               :cjadc2Percentage.sync='cjadc2Percentage'
               :rules="[$validators.required('Please select an option')]"
