@@ -171,9 +171,12 @@ describe("Testing CurrentContractDetails Component", () => {
       expect(wrapper.vm.isExceptiontoFairOpp).toBe(true);
     })
 
-    it("currentData() => returns currentData obj", async () => {
-      wrapper.setData(isCurrent);
-      expect(wrapper.vm.currentData).toEqual(isCurrent.currentContract);
+    it("currentData() => returns currentContract obj", async () => {
+      wrapper.setData(
+        {currentContract: isCurrent.currentContract
+      });
+      expect(wrapper.vm.currentData)
+        .toEqual(wrapper.vm.$data.currentContract);
     })
 
     it("currentData() => returns initialCurrentContract()", async () => {
