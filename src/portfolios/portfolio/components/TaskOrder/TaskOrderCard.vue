@@ -134,7 +134,7 @@ export default class TaskOrderCard extends Vue {
     if (status !== "Expired") {
       dropDownItems.splice(1,0, {
         title: "Request to modify task order",
-        hidden: false
+        hidden: true
       });
     }
     return dropDownItems;
