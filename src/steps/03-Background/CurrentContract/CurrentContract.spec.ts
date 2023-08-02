@@ -52,9 +52,6 @@ describe("Testing CurrentContract Component", () => {
 
   });
 
-  afterEach(() => {
-  });
-
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
@@ -160,17 +157,17 @@ describe("Testing CurrentContract Component", () => {
           await wrapper.vm.saveOnLeave();
           expect(wrapper.vm.$data.noContract.current_contract_exists).toEqual("NO");
           expect(wrapper.vm.$data.noContract.instance_number).toEqual(0);
-      });
+        });
 
       it ("initializes a current contract as expected if current_contract_exists==='NO'" +
         "&& expects function to be called",
-        async()=>{
-          const updateCurrentContractsSNOWMock = 
+      async()=>{
+        const updateCurrentContractsSNOWMock = 
           jest.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
             .mockImplementation(()=>Promise.resolve())
-          await wrapper.vm.saveOnLeave();
-          expect(updateCurrentContractsSNOWMock).toHaveBeenCalled();
-          expect(wrapper.vm.$data.noContract).toEqual({});
+        await wrapper.vm.saveOnLeave();
+        expect(updateCurrentContractsSNOWMock).toHaveBeenCalled();
+        expect(wrapper.vm.$data.noContract).toEqual({});
       });
 
     })
