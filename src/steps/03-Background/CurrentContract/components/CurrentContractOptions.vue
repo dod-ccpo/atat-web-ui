@@ -29,28 +29,30 @@ export default class CurrentContractOptions extends Vue {
   @Prop({default: false}) private isWizard!: boolean; 
   @Prop({default: ""}) private legend!: string;
   @Prop({default: ""}) private classes!: string;
-  @Prop({default: ""}) private hasExceptionToFairOpportunity!: boolean;
+  @Prop({default: false}) private hasExceptionToFairOpportunity!: boolean;
   @PropSync("selectedOption", { default: "" }) private _selectedOption!: string | null;
   @Prop() private rules?: [];
   
-  private currentContractOptions: RadioButton[] = [
-    {
-      id: "Yes_CurrentContract",
-      label: this.isWizard ? this.getYesLabel() : "Yes.",
-      value: "YES",
-      readonly: !this.isForm,
-    },
-    {
-      id: "No_CurrentContract",
-      label: this.isWizard ? "No. This is a new requirement." : "No.",
-      value: "NO",
-      readonly: !this.isForm, 
-    },
-  ];
+  get currentContractOptions(): RadioButton[]{
+    return [
+      {
+        id: "Yes_CurrentContract",
+        label: this.isWizard ? this.getYesLabel() : "Yes.",
+        value: "YES",
+        readonly: !this.isForm,
+      },
+      {
+        id: "No_CurrentContract",
+        label: this.isWizard ? "No. This is a new requirement." : "No.",
+        value: "NO",
+        readonly: !this.isForm, 
+      },
+    ];
+  }
 
   public getYesLabel():string{
-    return "Yes. There is a current " + 
-      (this.hasExceptionToFairOpportunity ? " or previous " : "") +
+    return "Yes. There is a current" + 
+      (this.hasExceptionToFairOpportunity ? " or previous " : " ") +
       "contract for this effort."
   }
 
