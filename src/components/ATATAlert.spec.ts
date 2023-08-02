@@ -25,7 +25,8 @@ describe("Testing ATATStepperNavigation", () => {
       expect(wrapper.exists()).toBe(true);
     });
 
-    it("getClasses() set $props.type & $props.maxHeight to retrieve certain class(es)", async () => {
+    it("getClasses() set $props.type & $props.maxHeight to retrieve certain class(es)",
+    async () => {
       await wrapper.setProps({
         type: "callout",
         maxHeight: "100px",
