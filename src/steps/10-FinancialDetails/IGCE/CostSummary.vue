@@ -89,6 +89,7 @@
             </template>
           </ATATAlert>
             <v-data-table
+              v-if="!isLoading"
               id="CostEstimateDataTable"
               :headers="tableHeaders"
               :items="tableData"
@@ -187,7 +188,24 @@
 
                 </tr>
               </template>
+             
+               
             </v-data-table>
+            <div v-if="isLoading" class="d-flex justify-space-around py-10 border1 
+                border-rounded border-base-lighter my-10 bg-offwhite max-width-740 
+                text-center"
+                  >
+                <div class="d-flex align-center" style="margin: 0 auto">
+                  <v-progress-circular
+                      indeterminate
+                      color="#544496"
+                      size="24"
+                      width="3"
+                      class="mr-2"
+                  />
+                  <span class="h3">Calculating your total projected costs</span>
+                </div>
+              </div>
       </v-col>
     </v-row>
   </v-container>
@@ -246,6 +264,7 @@ export default class CostSummary extends Vue {
   public hasArchDesign = false
   public showSurgeAndFeeRows = false
   public orderingAgencyFee = "";
+  public isLoading = true;
 
   public toggle():void{
     this.showSurgeAndFeeRows = !this.showSurgeAndFeeRows
@@ -431,6 +450,7 @@ export default class CostSummary extends Vue {
       { text: "Option 3", value: "OptionThree"},
       { text: "Option 4", value: "OptionFour"},
     ]
+    // this.isLoading = false;
     for(let i = 0; i < this.periodsLength ; i++){
       this.tableHeaders.push(headers[i])
     }
@@ -501,12 +521,16 @@ export default class CostSummary extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    this.isLoading = true;
     this.costData = await api.costEstimateTable.search(acquisitionPackage.packageId)
     this.surgePercentage =
       `Surge (${IGCEStore.requirementsCostEstimate?.surge_requirements.capacity}%)`
-    this.contractingOfficeFee = IGCEStore.requirementsCostEstimate?.fee_specs.percentage === null?
-      `Contracting Office Fee (0%)`:
-      `Contracting Office Fee (${IGCEStore.requirementsCostEstimate?.fee_specs.percentage}%)`
+    this.contractingOfficeFee = 
+      IGCEStore.requirementsCostEstimate?.fee_specs.percentage === null
+        ? `Contracting Office Fee (0%)`
+        : `Contracting Office Fee (
+          ${IGCEStore.requirementsCostEstimate?.fee_specs.percentage}%
+        )`
     this.orderingAgencyFee = `External Ordering Agency Fee (1%)`
     await this.loadOnEnter()
   }
