@@ -389,7 +389,6 @@ export class AcquisitionPackageStore extends VuexModule {
   fundingRequirement: FundingRequirementDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
   totalBasePoPDuration = 0;
-  taskOrderDetailsAlertClosed = false;
   docGenJobStatus = "";
   packageId = "";
   regions: RegionsDTO[] | null = null;
@@ -789,10 +788,6 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setBasePoPDuration(value: number): void {
     this.totalBasePoPDuration = value;
-  }
-  @Mutation
-  public setTaskOrderDetailsAlertClosed(value: boolean): void {
-    this.taskOrderDetailsAlertClosed = value;
   }
 
   @Mutation
@@ -2562,7 +2557,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contractType = null;
     this.classificationLevel = null;
     this.totalBasePoPDuration = 0;
-    this.taskOrderDetailsAlertClosed = false;
     this.packageId = "";
     this.validateNow = false;
     this.allowDeveloperNavigation = false;
