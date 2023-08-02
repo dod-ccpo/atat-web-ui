@@ -80,7 +80,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
 
 @Component({})

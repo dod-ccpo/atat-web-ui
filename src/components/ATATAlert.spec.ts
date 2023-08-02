@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
+import PortfolioStore from "@/store/portfolio";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 Vue.use(Vuetify);
@@ -113,6 +114,14 @@ describe("Testing ATATStepperNavigation", () => {
     it("close() - sets $prop.show to false and closes the alert",  async ()=> {
       await wrapper.vm.close();
       expect(wrapper.vm.$props.show).toBe(false);
+    })
+
+    it("close() - sets $prop.show to false and closes the alert from TaskOrderDetailsAlert",  async ()=> {
+      jest.spyOn(PortfolioStore, 'setTaskOrderDetailsAlertClosed').mockImplementation()
+      await wrapper.setData({id: 'TaskOrderDetailsAlert'})
+      await wrapper.vm.close();
+      expect(wrapper.vm.$props.show).toBe(false);
+      expect(PortfolioStore.setTaskOrderDetailsAlertClosed).toHaveBeenCalled()
     })
   
     
