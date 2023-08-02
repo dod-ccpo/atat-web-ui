@@ -20,7 +20,10 @@
     </div>
 
     <ATATLoadingPackageModal :isLoading="isLoading" />
-
+    <ATATFeedbackForm
+      selectedFeedbackOptions.sync="feedbackOptions"
+      otherFeedbackValue.sync="otherFeedbackValue"
+      />
   </div>
 </template>
 <script lang="ts">
@@ -33,9 +36,11 @@ import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 import CompletePackageCard 
   from "@/steps/11-GeneratePackageDocuments/components/CompletePackageCard.vue"
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
 
 @Component({
   components: {
+    ATATFeedbackForm,
     ATATSVGIcon,
     ATATLoadingPackageModal,
     CompletePackageCard
@@ -43,6 +48,8 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 export default class ReadyToSubmit extends Vue {
   public packageNotInitialized = false;
+  public feedbackOptions: string[] =[]
+  public otherFeedbackValue = ""
 
   public get isLoading(): boolean {
     return this.packageNotInitialized || this.isPackageLoading;

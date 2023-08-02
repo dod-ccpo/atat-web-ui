@@ -1,0 +1,51 @@
+._feedback-form {
+  //position: absolute;
+  //right: 0px;
+  //bottom: 0px;
+  //width: 460px !important;
+  display:flex;
+  flex-direction: row-reverse;
+
+  ._feedback-tab {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: $base-lightest;
+    padding: 8px 12px;
+    border-radius: 16px 16px 0 0;
+    position:relative;
+    width:207px;
+    right:-193px;
+    &:hover {
+      background-color: $primary-light;
+
+      &._open{
+        background-color: $primary-light;
+      }
+    }
+
+    .v-btn{
+      padding: 0px !important;
+      background-color: transparent;
+      &:hover {
+        background-color: $primary-light;
+        &._open{
+          background-color: $base-dark !important;
+        }
+      }
+      ._toggle {
+        transition: transform .3s ease-in-out !important;
+        transform: rotate(180deg);
+        &._open {
+          transform: rotate(360deg) !important;
+        }
+      }
+    }
+  }
+
+  ._feedback-body {
+    padding: 40px 40px 60px 40px;
+    background-color: $base-lightest;
+    border-radius: 16px 0 0 0;
+  }
+}
