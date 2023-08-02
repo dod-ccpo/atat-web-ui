@@ -15,22 +15,23 @@
     border-radius: 16px 16px 0 0;
     position:relative;
     width:207px;
-    right:-193px;
+    right:-188px;
     &:hover {
-      background-color: $primary-light;
+      background-color: $primary-10;
 
       &._open{
-        background-color: $primary-light;
+        background-color: $base-lightest;
       }
     }
 
     .v-btn{
-      padding: 0px !important;
+      padding: 4px !important;
       background-color: transparent;
+
       &:hover {
-        background-color: $primary-light;
+        background-color: transparent;
         &._open{
-          background-color: $base-dark !important;
+          background-color: $base-10;
         }
       }
       ._toggle {
@@ -47,5 +48,9 @@
     padding: 40px 40px 60px 40px;
     background-color: $base-lightest;
     border-radius: 16px 0 0 0;
+
+    .v-btn {
+
+    }
   }
 }

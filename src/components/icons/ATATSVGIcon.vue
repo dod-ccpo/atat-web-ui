@@ -214,15 +214,13 @@ export default class ATATSVGIcon extends Vue {
   @PropSync("width", {default: 0, required: true}) private _width!: number;
   @PropSync("height",{default: 0, required: true}) private _height!: number;
   @Prop({default: "", required: true}) private name!: string;
-  
-  private divStyle = "";
 
-  private setDivStyle(): void {
-    Vue.nextTick(()=>{
-      this.divStyle =  "width: " + this._width + "px;" +
+
+  private get divStyle(): string {
+    return "width: " + this._width + "px;" +
         "height: " + this._height + "px;" +
         "line-height: 0px";
-    });
+
   }
 
   private getColor(): string {

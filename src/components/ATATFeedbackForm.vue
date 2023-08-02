@@ -7,6 +7,7 @@
         @click="toggle()"
         @keydown.enter="toggle()"
         @keydown.space="toggle()"
+        :class="{'_open':open}"
         >
           <span class="text-base">
             Customer Feedback
@@ -14,53 +15,91 @@
           <ATATSVGIcon
             name="chevronDown"
             color="base"
-            class=" _toggle ml-2"
+            class=" _toggle mx-2"
             :class="{'_open':open}"
-            width="16"
-            height="16"
+            width="10"
+            height="6"
           />
         </v-btn>
       </div>
       <div class="_feedback-body">
-        <h3 class="text-base-dark font-weight-500 mb-4">How was your experience with DAPPS?</h3>
-        <div class="d-flex flex-row">
-          <ATATSVGIcon
-            name="veryDissatisfied"
-            color="primary"
-            class="ml-1"
-            width="60"
-            height="60"
-          />
-          <ATATSVGIcon
-            name="dissatisfied"
-            color="primary"
-            class="ml-1"
-            width="60"
-            height="60"
-          />
-          <ATATSVGIcon
-            name="neutral"
-            color="primary"
-            class="ml-1"
-            width="60"
-            height="60"
-          />
-          <ATATSVGIcon
-            name="satisfied"
-            color="primary"
-            class="ml-1"
-            width="60"
-            height="60"
-          />
-          <ATATSVGIcon
-          name="verySatisfied"
-          color="primary"
-          class="ml-1"
-          width="60"
-          height="60"
-        />
-        </div>
-
+        <v-expand-transition>
+          <div>
+            <h3 class="text-base-dark font-weight-500 mb-4">How was your experience with DAPPS?</h3>
+            <div class="d-flex flex-row justify-space-between">
+              <div class="mx-1">
+                <v-btn
+                  id="veryDissatisfied"
+                  icon
+                >
+                  <ATATSVGIcon
+                    name="veryDissatisfied"
+                    color="primary"
+                    class="mx-1 _feedback-icon"
+                    width="60"
+                    height="60"
+                  />
+                </v-btn>
+              </div>
+              <div class="mx-1">
+                <v-btn
+                  id="dissatisfied"
+                  icon
+                >
+                  <ATATSVGIcon
+                    name="dissatisfied"
+                    color="primary"
+                    class="ml-1 _feedback-icon"
+                    width="60"
+                    height="60"
+                  />
+                </v-btn>
+              </div>
+              <div class="mx-1">
+                <v-btn
+                  id="neutral"
+                  icon
+                >
+                  <ATATSVGIcon
+                    name="neutral"
+                    color="primary"
+                    class="ml-1 _feedback-icon"
+                    width="60"
+                    height="60"
+                  />
+                </v-btn>
+              </div>
+              <div class="mx-1">
+                <v-btn
+                  id="satisfied"
+                  icon
+                >
+                  <ATATSVGIcon
+                    name="satisfied"
+                    color="primary"
+                    class="ml-1 _feedback-icon"
+                    width="60"
+                    height="60"
+                  />
+                </v-btn>
+              </div>
+              <div class="mx-1">
+                <v-btn
+                  id="verySatisfied"
+                  icon
+                >
+                  <ATATSVGIcon
+                    name="verySatisfied"
+                    color="primary"
+                    class="ml-1 _feedback-icon"
+                    width="60"
+                    height="60"
+                  />
+                </v-btn>
+              </div>
+            </div>
+          </div>
+        </v-expand-transition>
       </div>
     </div>
   </div>
@@ -83,6 +122,7 @@ export default class ATATFeedbackForm extends Vue {
   @PropSync("otherFeedbackValue") private _otherFeedbackValue!: string;
 
   private open = true
+  private showForm = false
   public toggle():void{
     this.open = !this.open
   }
