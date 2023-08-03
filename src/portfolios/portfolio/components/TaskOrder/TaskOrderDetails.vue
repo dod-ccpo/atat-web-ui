@@ -467,7 +467,6 @@ export default class TaskOrderDetails extends Vue {
 
   public async collectTableData(): Promise<void> {
     const inactiveStatuses = [Statuses.OptionPending.value, Statuses.Expired.value]
-    console.log(this.selectedTaskOrder)
     this.clins.forEach((clin)=>{
       const isClinActive = !(inactiveStatuses.includes(clin.clin_status));
       const tableRowData: ClinTableRowData = {
@@ -513,8 +512,6 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async addSeparators() : Promise<void> {
-    console.log(this.optionPendingClins)
-    console.log(this.expiredClins)
     this.optionPendingClins[0].startNewClinGroup = true;
     this.expiredClins[0].startNewClinGroup = true;
   }
@@ -606,10 +603,6 @@ export default class TaskOrderDetails extends Vue {
       console.log("Error loading Task Order Details")
     }
   }
-
-  // public mounted(): void {
-  //   this.loadOnEnter();
-  // }
 }
 </script>
 

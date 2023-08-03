@@ -158,6 +158,23 @@ describe("Testing TaskOrderDetails Component", () => {
         expect(showDetails).toBe(true);
       })
     });
+    it("testing @keydown.space to trigger handleClick", async () => {
+      const anchorLink = wrapper.find("#LinkToTaskOrders");
+      anchorLink.trigger('keydown.space'); // trigger viewAllPackages();
+      const showDetails = wrapper.vm.$props.showDetails
+      Vue.nextTick(() => {
+        expect(showDetails).toBe(true);
+      })
+    });
+
+    it("testing @keydown.enter to trigger handleClick", async () => {
+      const anchorLink = wrapper.find("#LinkToTaskOrders");
+      anchorLink.trigger('keydown.enter'); // trigger viewAllPackages();
+      const showDetails = wrapper.vm.$props.showDetails
+      Vue.nextTick(() => {
+        expect(showDetails).toBe(true);
+      })
+    });
 
     it("toggles show/hide text value", async () => {
       await wrapper.setData({
@@ -251,8 +268,23 @@ describe("Testing TaskOrderDetails Component", () => {
         expect(wrapper.vm.$data.expiredClins[0].CLINNumber).toBe("0001");
       })
       
-    });    
+    });   
 
+    it("sets clins after prop is passed in", async () => {
+      expect(wrapper.vm.clins.length).toBe(0)
+      await wrapper.setData({
+        selectedTaskOrder: {
+            taskOrderNumber:"#HC1028-22-F-0141",
+            periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
+            totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
+            totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
+            status:"On Track",
+            clins: clins
+          }
+      });
+      expect(wrapper.vm.clins.length).toBe(4)
+    }); 
+  
     // it("xxx", async () => {
       
     // });    
