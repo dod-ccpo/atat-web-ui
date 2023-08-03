@@ -472,14 +472,14 @@ export default class TaskOrderDetails extends Vue {
       firstTwo = (parseInt(firstTwo) + 1).toString()
       expectedClin = firstTwo.padStart(2, '0') + lastTwo;
     } else {
+    // else just increment the number, string it and add them together
       firstTwo = (parseInt(firstTwo) + 1).toString()
       expectedClin = firstTwo + lastTwo
     }
-
+    // loop through all clins and if one matches the expected clin && status value return true
     const hasFollowOn = this.clins.some((clin) =>
       clin.clin_number === expectedClin && clin.clin_status === Statuses.OptionPending.value
-    )
-
+    );
     return hasFollowOn ? Statuses.ExpiringPopOK.value : Statuses.ExpiringPop.value;
   }
 
