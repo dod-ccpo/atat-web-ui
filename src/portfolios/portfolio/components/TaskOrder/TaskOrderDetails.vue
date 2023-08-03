@@ -452,7 +452,7 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public get getTaskOrderNumber(): string {
-    return this.selectedTaskOrder.taskOrderNumber != "" 
+    return this.selectedTaskOrder.taskOrderNumber !== "" 
       ? `#${this.selectedTaskOrder.taskOrderNumber}`
       : ""
   }
