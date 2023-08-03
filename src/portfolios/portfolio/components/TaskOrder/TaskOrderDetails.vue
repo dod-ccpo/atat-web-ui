@@ -19,11 +19,11 @@
         color="base"
       />
       <span class="text-base" id="TaskOrderNumber">
-        {{ `#${selectedTaskOrder.taskOrderNumber}` }}
+        {{ getTaskOrderNumber }}
       </span>
     </div>
     <div class="pt-3 d-flex justify-space-between pb-5">
-      <h1>{{ selectedTaskOrder.taskOrderNumber }}</h1>
+      <h1>{{ getTaskOrderNumber }}</h1>
       <!-- <v-btn
         id="ModifyTaskOrderButton"
         outlined
@@ -449,6 +449,12 @@ export default class TaskOrderDetails extends Vue {
     return item.isPending || (item.isExpired && !item.isOverspent)
       ? "middle"
       : "top";
+  }
+
+  public get getTaskOrderNumber(): string {
+    return this.selectedTaskOrder.taskOrderNumber != "" 
+      ? `#${this.selectedTaskOrder.taskOrderNumber}`
+      : ""
   }
 
   public handleClick(): void {
