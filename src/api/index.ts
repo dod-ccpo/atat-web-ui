@@ -69,6 +69,8 @@ import {OperatorAPI} from "@/api/operator";
 import { AddressApi } from "@/api/address";
 import { CostEstimateApi } from "@/api/costEstimate";
 import { DisaOrganizationApi } from "@/api/disaOrganization";
+import { FeedbackOptionsAPI } from "@/api/feedbackOptions";
+import { FeedbackAPI } from "@/api/feedback";
 
 export const api = {
 
@@ -142,6 +144,8 @@ export const api = {
   operatorTable: new OperatorAPI(),
   addressTable: new AddressApi(),
   disaOrganizationTable: new DisaOrganizationApi(),
+  feedbackOptionsTable: new FeedbackOptionsAPI(),
+  feedbackTable: new FeedbackAPI(),
 }
 
 export default {
