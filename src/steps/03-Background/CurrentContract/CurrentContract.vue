@@ -50,6 +50,8 @@ import { CurrentContractRouteResolver } from "@/router/resolvers";
 export default class CurrentContract extends Mixins(SaveOnLeave) {
   public headline = "";
   public currentContractExists = "";
+  public noContract: CurrentContractDTO = {};
+  private saveOnLeaveError: string| unknown = "";
 
   private get currentData(): CurrentContractDTO {
     return {
@@ -83,16 +85,24 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   public async mounted(): Promise<void> {
     // if second option in step 2 Exception to Fair Opportunity is selected
     // skip this page. Use route resolver to determine where to go
+    await this.addNavigation()
+    await this.loadOnEnter();     
+  }  
+
+  public async addNavigation(): Promise<void> {
     const hasLogicalFollowOn = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity
       === "YES_FAR_16_505_B_2_I_C";
     if (hasLogicalFollowOn) {
       const routeName = CurrentContractRouteResolver(Steps.prevStepName)
-      this.$router.push({
-        name: routeName,
-      }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+      try{
+        this.$router.push({
+          name: routeName,
+        })
+      }catch(error){
+        console.log("error Navigating to DAPPS Checklist")
+      };      
     }   
-    await this.loadOnEnter();     
-  }  
+  }
 
   public async loadOnEnter(): Promise<void> {
     this.savedData.current_contract_exists =
@@ -115,15 +125,17 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         await AcquisitionPackage.clearCurrentContractInfo();
         if (hasCurrentContract==="NO"){
           // update store && snow
-          const noContract = initialCurrentContract();
-          noContract.current_contract_exists = "NO";
-          noContract.instance_number= 0;
-          noContract.acquisition_package = AcquisitionPackage.packageId;
-          AcquisitionPackage.updateCurrentContractsSNOW([noContract]);
+          this.noContract = initialCurrentContract();
+          this.noContract.current_contract_exists = "NO";
+          this.noContract.instance_number= 0;
+          this.noContract.acquisition_package = AcquisitionPackage.packageId;
+          await AcquisitionPackage.updateCurrentContractsSNOW([this.noContract]);
+          this.noContract = {};
         }
       }
     } catch (error) {
       console.log(error);
+      this.saveOnLeaveError = error as string;
     }
 
     return true;

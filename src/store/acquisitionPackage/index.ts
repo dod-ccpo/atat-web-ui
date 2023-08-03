@@ -33,7 +33,9 @@ import {
   FundingRequirementDTO,
   RegionsDTO,
   PackageDocumentsSignedDTO,
-  AddressDTO
+  AddressDTO,
+  FeedbackOptionsDTO,
+  CustomerFeedbackDTO
 } from "@/api/models";
 
 import { 
@@ -310,7 +312,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       // periodOfPerformance: store.periodOfPerformance,
       sensitiveInformation: store.sensitiveInformation,
       allowDeveloperNavigation: store.allowDeveloperNavigation,
-      contractingShopNonDitcoAddress: store.contractingShopNonDitcoAddress
+      contractingShopNonDitcoAddress: store.contractingShopNonDitcoAddress,
+      customerFeedback: store.customerFeedback,
     })
   );
 };
@@ -394,6 +397,8 @@ export class AcquisitionPackageStore extends VuexModule {
   packageId = "";
   regions: RegionsDTO[] | null = null;
   isLoading = false;
+  feedbackOptions: FeedbackOptionsDTO[] | null = null;
+  customerFeedback: CustomerFeedbackDTO | null = null;
   
 
   validateNow = false;
@@ -428,6 +433,21 @@ export class AcquisitionPackageStore extends VuexModule {
   public async doSetIsProdEnv(): Promise<void> {
     this.isProdEnv = window.location.hostname === "services.disa.mil"
       || window.location.hostname === "services-test.disa.mil";
+  }
+
+  @Action({rawError: true})
+  public async loadFeedbackOptions(): Promise<void> {
+    try {
+      const feedbackOptions = await api.feedbackOptionsTable.all();
+      await this.setFeedbackOptions(feedbackOptions);
+    } catch (error) {
+      throw new Error(`error loading feedback options ${error}`);
+    }
+  }
+
+  @Mutation
+  public async setFeedbackOptions(value:FeedbackOptionsDTO[]): Promise<void> {
+    this.feedbackOptions = value;
   }
   
   emulateProdNav = false;
@@ -1474,6 +1494,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.allowDeveloperNavigation = sessionData.allowDeveloperNavigation;
     this.regions = sessionData.regions
     this.contractingShopNonDitcoAddress = sessionData.contractingShopNonDitcoAddress;
+    this.customerFeedback = sessionData.customerFeedback
   }
 
   @Action({rawError: true})
@@ -1532,6 +1553,7 @@ export class AcquisitionPackageStore extends VuexModule {
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
       const ContractingShopNonDitcoAddressID =
           acquisitionPackage.contracting_shop_non_ditco_address as string;
+      const customerFeedback = acquisitionPackage.customer_feedback as string;
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -1549,11 +1571,17 @@ export class AcquisitionPackageStore extends VuexModule {
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
         contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
+        customer_feedback: customerFeedback
       });
       await this.setCurrentUser();
 
       if (acquisitionPackage.contributors) {
         await this.setPackageContributors(acquisitionPackage.contributors);
+      }
+
+      if (customerFeedback){
+        const feedback = await api.feedbackTable.retrieve(customerFeedback)
+        this.customerFeedback = feedback
       }
 
       await ClassificationRequirements.getAllClassificationLevels();
