@@ -480,10 +480,10 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   get isOverfunded():boolean{
-    return this.costEstimate < roundDecimal(this.totalAmount,2)
+    return roundDecimal(this.costEstimate,2) < roundDecimal(this.totalAmount,2)
   }
   get isUnderfunded():boolean{
-    return this.costEstimate > roundDecimal(this.totalAmount,2)
+    return roundDecimal(this.costEstimate,2) > roundDecimal(this.totalAmount,2)
   }
 
   
