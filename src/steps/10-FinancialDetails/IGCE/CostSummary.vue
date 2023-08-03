@@ -3,209 +3,180 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-           Review your cost estimate summary
+          Review your cost estimate summary
         </h1>
-         <div class="copy-max-width d-flex mb-4">
-            <p id="IntroP" class="mb-10">
-              Based on your estimates for each requirement, we’ve calculated the total 
-              projected price for each period of your task order. Your completed IGCE 
-              spreadsheet will have a more detailed breakdown of requirement estimates 
-              within each period. When you’re done reviewing the summary, click Continue 
-              and we’ll gather details about how your price estimates were developed.
+        <div class="d-flex mb-4 justify-space-between">
+          <span id="IntroP" class="pr-10">
+            Based on your estimates for each requirement, we’ve calculated the total
+            projected price for each period of your task order. Your completed IGCE
+            spreadsheet will have a more detailed breakdown of requirement estimates
+            within each period. When you’re done reviewing the summary, click Continue
+            and we’ll gather details about how your price estimates were developed.
+          </span>
+          <v-btn 
+            class="secondary align-self-end" 
+            role="link" 
+            @click="editRoute" 
+            @keydown.enter="editRoute"
+            @keydown.space="editRoute">
+            View/Edit estimates
+          </v-btn>
+        </div>  
+        <ATATAlert 
+          v-if="showAlert" 
+          id="ClassificationRequirementsAlert" 
+          type="warning" 
+          class="copy-max-width my-10">
+          <template v-slot:content>
+            <span class="h2 font-size-20">Missing price estimate details</span>
+            <p class="mb-0">
+              Your summary reflects the projected prices that you’ve told us about so far, but
+              totals may change after you add this missing info. We recommend going back to
+              complete the following price estimates before proceeding:
             </p>
-           <v-btn
-             class="secondary align-self-end"
-             role="link"
-             @click="editRoute"
-             @keydown.enter="editRoute"
-             @keydown.space="editRoute">
-             View/Edit estimates
-           </v-btn>
+            <ul class="mt-4">
+              <li v-if="needsReplicateAndOptimize" class="text-primary">
+                <router-link :to="{ name: routes.OptimizeOrReplicate }">
+                  Replicate/Optimize your current environment
+                </router-link>
+              </li>
+              <li v-if="needArchitecturalDesign" class="text-primary mt-2">
+                <router-link :to="{ name: routes.ArchitecturalDesignSolutions }">
+                  Architectural Design Solution pricing
+                </router-link>
+              </li>
+              <li v-if="needPerformanceRequirement" class="text-primary mt-2">
+                <router-link :to="{ name: routes.GatherPriceEstimates }">
+                  Performance requirement pricing
+                </router-link>
+              </li>
+              <li v-if="needTrainingPricing" class="text-primary mt-2">
+                <router-link :to="{ name: routes.IGCETraining }">
+                  Training pricing
+                </router-link>
+              </li>
+              <li v-if="needTravelPricing" class="text-primary mt-2">
+                <router-link :to="{ name: routes.TravelEstimates }">
+                  Travel pricing
+                </router-link>
+              </li>
+              <li v-if="needSurgeCapabilities" class="text-primary mt-2">
+                <router-link :to="{ name: routes.SurgeCapabilities }">
+                  Surge capabilities
+                </router-link>
+              </li>
+              <li v-if="needContractingOfficeFee" class="text-primary mt-2">
+                <router-link :to="{ name: routes.FeeCharged }">
+                  Contracting Office Fee
+                </router-link>
+              </li>
+            </ul>
+          </template>
+        </ATATAlert>
+        <div v-if="isLoading" class="d-flex justify-space-around py-15 border1 
+              border-rounded border-base-lighter my-10 bg-offwhite width-100 
+              text-center">
+          <div class="d-flex align-center" style="margin: 0 auto">
+            <v-progress-circular 
+              indeterminate 
+              color="#544496" 
+              size="24" 
+              width="3" 
+              class="mr-2" />
+            <span class="h3">Calculating your total projected costs</span>
           </div>
-          <ATATAlert
-            v-if="showAlert"
-            id="ClassificationRequirementsAlert"
-            type="warning"
-            class="copy-max-width my-10"
-          >
-            <template v-slot:content>
-              <span class="h2 font-size-20">Missing price estimate details</span>
-              <p class="mb-0">
-                Your summary reflects the projected prices that you’ve told us about so far, but
-                totals may change after you add this missing info. We recommend going back to
-                complete the following price estimates before proceeding:
-              </p>
-              <ul class="mt-4">
-                <li v-if="needsReplicateAndOptimize" class="text-primary">
-                  <router-link
-                    :to="{name:routes.OptimizeOrReplicate}"
-                  >
-                    Replicate/Optimize your current environment
-                  </router-link>
-                </li>
-                <li v-if="needArchitecturalDesign" class="text-primary mt-2">
-                  <router-link
-                    :to="{name:routes.ArchitecturalDesignSolutions}"
-                  >
-                    Architectural Design Solution pricing
-                  </router-link>
-                </li>
-                <li v-if="needPerformanceRequirement" class="text-primary mt-2">
-                  <router-link
-                    :to="{name:routes.GatherPriceEstimates}"
-                  >
-                    Performance requirement pricing
-                  </router-link>
-                </li>
-                <li v-if="needTrainingPricing" class="text-primary mt-2">
-                  <router-link
-                    :to="{name:routes.IGCETraining}"
-                  >
-                    Training pricing
-                  </router-link>
-                </li>
-                <li v-if="needTravelPricing" class="text-primary mt-2">
-                  <router-link
-                    :to="{name:routes.TravelEstimates}"
-                  >
-                    Travel pricing
-                  </router-link>
-                </li>
-                <li v-if="needSurgeCapabilities" class="text-primary mt-2">
-                  <router-link
-                    :to="{name:routes.SurgeCapabilities}"
-                  >
-                    Surge capabilities
-                  </router-link>
-                </li>
-                <li v-if="needContractingOfficeFee" class="text-primary mt-2">
-                  <router-link
-                    :to="{name:routes.FeeCharged}"
-                  >
-                    Contracting Office Fee
-                  </router-link>
-                </li>
-              </ul>
-            </template>
-          </ATATAlert>
-            <v-data-table
-              v-if="!isLoading"
-              id="CostEstimateDataTable"
-              :headers="tableHeaders"
-              :items="tableData"
-              :disable-sort="true"
-              :items-per-page="-1"
-              hide-default-footer
-              hide-default-header
-              class="_data-table _has-total-col"
-            >
+        </div>
+        <v-data-table 
+          v-else 
+          id="CostEstimateDataTable" 
+          :headers="tableHeaders" 
+          :items="tableData" 
+          :disable-sort="true"
+          :items-per-page="-1" 
+          hide-default-footer 
+          hide-default-header 
+          class="_data-table _has-total-col width-100 my-10">
 
-              <template v-slot:header="{ props }">
-                <tr>
-                  <th 
-                    v-for="(header,hdrIdx) in props.headers" 
-                    :key="hdrIdx"
-                    :id="getIdText(header.text)"
-                  >
-                    <div 
-                      :class="[
-                        'py-4 d-flex font-size-14',
-                        {'align-left': hdrIdx === 0},
-                        {'justify-end': hdrIdx > 0},
-                        
-                      ] ">
-                    {{ header.text }}
-                    </div>
-                  </th>
-                </tr>
-              </template>
-              <template v-slot:body="props">
-                <tr v-for="(item,rowIdx) in props.items" :key="rowIdx"
-                  class="row-item font-size-14 text-right"
-                  :class="[{
-                    '_subtotal' : item.CLINTypeClassAggregate === 'Subtotal'
-                    || item.CLINTypeClassAggregate === 'Total with Surge & Ordering Fee'
-                    || item.CLINTypeClassAggregate === 'Total with Surge'
-                    || item.CLINTypeClassAggregate === 'Total with Ordering Fee',
-                    '_total' : item.CLINTypeClassAggregate === 'Total Price'
-                    || item.CLINTypeClassAggregate === 'Grand Total with Fees',
-                    '_border-bottom' : item.isCLINAmount === 'true' ||
-                    item.CLINTypeClassAggregate === 'Fees'||
-                    item.CLINTypeClassAggregate === 'Surge and Fees',
-                  },
-                  {'_fees-row': isAccordionItem(item.isAccordionItem)},
-                  {'_hide': showSurgeAndFees(item.isAccordionItem)}
-                  ]"
-                >
-                  <td>
-                    <div :class="[
-                      'text-left py-4',
-                      {'font-weight-bold text-right':
-                        isItemAggregate(item.CLINTypeClassAggregate)},
-                        { 'text-right': isFee(item.CLINTypeClassAggregate)},
-                        {'_accordion-container':itemNeedsIcon(item.CLINTypeClassAggregate)},
-                      ]"
-                    >
-                      <v-btn
-                        v-if="itemNeedsIcon(item.CLINTypeClassAggregate)"
-                        icon
-                        @click="toggle()"
-                        @keydown.enter="toggle()"
-                        @keydown.space="toggle()"
-                      >
-                          <ATATSVGIcon
-                            name="ChevronRight"
-                            class="toggle pb-2"
-                            :class="{'_rotate-down':showSurgeAndFeeRows}"
-                            color="base"
-                            :width="7.41"
-                            :height="12"
-                          />
-                      </v-btn>
-                      {{ item.CLINTypeClassAggregate }}
-                    </div>
-                  </td>
-                   <td>
-                    <div>{{ item.BasePeriod }}</div>
-                  </td>
-                  <td v-if="periodsLength > 1">
-                    <div>{{ item.OptionOne }}</div>
-                  </td>
-                  <td v-if="periodsLength > 2">
-                    <div>{{ item.OptionTwo }}</div>
-                  </td>
-                  <td v-if="periodsLength > 3">
-                    <div>{{ item.OptionThree }}</div>
-                  </td>
-                  <td v-if="periodsLength > 4">
-                    <div>{{ item.OptionFour }}</div>
-                  </td>
-                  <td>
-                    <div>{{ item.Total }}</div>
-                  </td>
-                </tr>
-                <tr>
+          <template v-slot:header="{ props }">
+            <tr>
+              <th 
+                v-for="(header, hdrIdx) in props.headers" 
+                :key="hdrIdx" 
+                :id="getIdText(header.text)">
+                <div :class="[
+                  'py-4 d-flex font-size-14',
+                  { 'align-left': hdrIdx === 0 },
+                  { 'justify-end': hdrIdx > 0 },
 
-                </tr>
-              </template>
-             
-               
-            </v-data-table>
-            <div v-if="isLoading" class="d-flex justify-space-around py-10 border1 
-                border-rounded border-base-lighter my-10 bg-offwhite max-width-740 
-                text-center"
-                  >
-                <div class="d-flex align-center" style="margin: 0 auto">
-                  <v-progress-circular
-                      indeterminate
-                      color="#544496"
-                      size="24"
-                      width="3"
-                      class="mr-2"
-                  />
-                  <span class="h3">Calculating your total projected costs</span>
+                ]">
+                  {{ header.text }}
                 </div>
-              </div>
+              </th>
+            </tr>
+          </template>
+          <template v-slot:body="props">
+            <tr 
+              v-for="(item, rowIdx) in props.items" 
+              :key="rowIdx" 
+              class="row-item font-size-14 text-right" :class="[{
+                '_subtotal': item.CLINTypeClassAggregate === 'Subtotal'
+                  || item.CLINTypeClassAggregate === 'Total with Surge & Ordering Fee'
+                  || item.CLINTypeClassAggregate === 'Total with Surge'
+                  || item.CLINTypeClassAggregate === 'Total with Ordering Fee',
+                '_total': item.CLINTypeClassAggregate === 'Total Price'
+                  || item.CLINTypeClassAggregate === 'Grand Total with Fees',
+                '_border-bottom': item.isCLINAmount === 'true' ||
+                  item.CLINTypeClassAggregate === 'Fees' ||
+                  item.CLINTypeClassAggregate === 'Surge and Fees',
+              },
+              { '_fees-row': isAccordionItem(item.isAccordionItem) },
+              { '_hide': showSurgeAndFees(item.isAccordionItem) }
+              ]"
+            >
+            <td>
+              <div :class="['text-left py-4',
+                  {
+                    'font-weight-bold text-right':
+                      isItemAggregate(item.CLINTypeClassAggregate)
+                  },
+                  { 'text-right': isFee(item.CLINTypeClassAggregate) },
+                  { '_accordion-container': itemNeedsIcon(item.CLINTypeClassAggregate) },
+                ]">
+                  <v-btn 
+                    v-if="itemNeedsIcon(item.CLINTypeClassAggregate)" 
+                    icon 
+                    @click="toggle()"
+                    @keydown.enter="toggle()" @keydown.space="toggle()">
+                    <ATATSVGIcon 
+                      name="ChevronRight" 
+                      class="toggle pb-2" 
+                      :class="{ '_rotate-down': showSurgeAndFeeRows }"
+                      color="base" :width="7.41" :height="12" />
+                  </v-btn>
+                  {{ item.CLINTypeClassAggregate }}
+                </div>
+              </td>
+              <td>
+                <div>{{ item.BasePeriod }}</div>
+              </td>
+              <td v-if="periodsLength > 1">
+                <div>{{ item.OptionOne }}</div>
+              </td>
+              <td v-if="periodsLength > 2">
+                <div>{{ item.OptionTwo }}</div>
+              </td>
+              <td v-if="periodsLength > 3">
+                <div>{{ item.OptionThree }}</div>
+              </td>
+              <td v-if="periodsLength > 4">
+                <div>{{ item.OptionFour }}</div>
+              </td>
+              <td>
+                <div>{{ item.Total }}</div>
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
       </v-col>
     </v-row>
   </v-container>
@@ -229,14 +200,14 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 
 
 export interface IGCECostSummaryItem {
-    CLINTypeClassAggregate:string,
-    BasePeriod?: string,
-    OptionOne?: string,
-    OptionTwo?: string,
-    OptionThree?: string,
-    OptionFour?: string,
-    Total?: string,
-    isCLINAmount?: string,
+  CLINTypeClassAggregate: string,
+  BasePeriod?: string,
+  OptionOne?: string,
+  OptionTwo?: string,
+  OptionThree?: string,
+  OptionFour?: string,
+  Total?: string,
+  isCLINAmount?: string,
 }
 
 @Component({
@@ -248,7 +219,7 @@ export interface IGCECostSummaryItem {
 
 export default class CostSummary extends Vue {
   public tableData: IGCECostSummaryItem[] = []
-  public costData: CostEstimateDTO = {packageId:"",payload:{}}
+  public costData: CostEstimateDTO = { packageId: "", payload: {} }
   public surgePercentage = "";
   public contractingOfficeFee = "";
   public periodsLength = Periods.periods.length
@@ -266,11 +237,11 @@ export default class CostSummary extends Vue {
   public orderingAgencyFee = "";
   public isLoading = true;
 
-  public toggle():void{
+  public toggle(): void {
     this.showSurgeAndFeeRows = !this.showSurgeAndFeeRows
   }
   public tableHeaders = [
-    { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate"},
+    { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate" },
 
   ];
 
@@ -278,7 +249,7 @@ export default class CostSummary extends Vue {
     return getIdText(str);
   }
 
-  public get showAlert():boolean {
+  public get showAlert(): boolean {
     return this.needContractingOfficeFee
       || this.needSurgeCapabilities
       || this.needPerformanceRequirement
@@ -289,71 +260,71 @@ export default class CostSummary extends Vue {
   }
 
   // eslint-disable-next-line max-len
-  public createTableData(source:Record<string, any>, clinAmount:string,rowName:string,isAccordionItem = false)
-    :void{
-    let basePeriod,option1,option2,option3,option4
-    if(source["Base Period"]){
-      basePeriod = getCurrencyString(source["Base Period"],true)
+  public createTableData(source: Record<string, any>, clinAmount: string, rowName: string, isAccordionItem = false)
+    : void {
+    let basePeriod, option1, option2, option3, option4
+    if (source["Base Period"]) {
+      basePeriod = getCurrencyString(source["Base Period"], true)
     }
-    if(source["Option 1"] >= 0){
-      option1 = getCurrencyString(source["Option 1"],true)
-    }if(source["Option 2"] >= 0){
-      option2 = getCurrencyString(source["Option 2"],true)
-    }if(source["Option 3"] >= 0){
-      option3 = getCurrencyString(source["Option 3"],true)
-    }if(source["Option 4"] >= 0){
-      option4 = getCurrencyString(source["Option 4"],true)
+    if (source["Option 1"] >= 0) {
+      option1 = getCurrencyString(source["Option 1"], true)
+    } if (source["Option 2"] >= 0) {
+      option2 = getCurrencyString(source["Option 2"], true)
+    } if (source["Option 3"] >= 0) {
+      option3 = getCurrencyString(source["Option 3"], true)
+    } if (source["Option 4"] >= 0) {
+      option4 = getCurrencyString(source["Option 4"], true)
     }
     //TODO temporary fix for null title
-    if(rowName === null || rowName === undefined ){
+    if (rowName === null || rowName === undefined) {
       rowName = 'Undefined'
     }
     const tableItem = {
       CLINTypeClassAggregate: rowName,
       BasePeriod: basePeriod,
-      OptionOne:option1,
-      OptionTwo:option2,
-      OptionThree:option3,
-      OptionFour:option4,
-      Total:getCurrencyString(source["Total"],true),
+      OptionOne: option1,
+      OptionTwo: option2,
+      OptionThree: option3,
+      OptionFour: option4,
+      Total: getCurrencyString(source["Total"], true),
       isCLINAmount: clinAmount,
-      isAccordionItem:isAccordionItem
+      isAccordionItem: isAccordionItem
     }
     this.tableData.push(tableItem)
   }
   // eslint-disable-next-line max-len
-  public createFeeData(name:string, amount:number, isClinAmount:string, isAccordionItem = false):void{
+  public createFeeData(name: string, amount: number, isClinAmount: string, isAccordionItem = false): void {
     const tableObject = {
       CLINTypeClassAggregate: "",
-      BasePeriod:"",
+      BasePeriod: "",
       OptionOne: "",
-      OptionTwo:"",
-      OptionThree:"",
-      OptionFour:"",
-      Total:amount,
+      OptionTwo: "",
+      OptionThree: "",
+      OptionFour: "",
+      Total: amount,
       isCLINAmount: isClinAmount,
     }
 
-    if(name === "ditcoFee"){
+    if (name === "ditcoFee") {
       tableObject.CLINTypeClassAggregate = "DITCO Fee (2.25%)"
     }
-    if(name === "contractingOffice"){
+    if (name === "contractingOffice") {
       tableObject.CLINTypeClassAggregate = this.contractingOfficeFee
     }
-    if(name === "grandTotal"){
+    if (name === "grandTotal") {
       tableObject.CLINTypeClassAggregate = "Grand Total with Fees"
     }
     // eslint-disable-next-line max-len
-    this.createTableData(tableObject, isClinAmount,tableObject.CLINTypeClassAggregate,isAccordionItem)
+    this.createTableData(tableObject, isClinAmount, tableObject.CLINTypeClassAggregate, isAccordionItem)
   }
 
-  public async findMissingEstimates(): Promise<void>{
+  public async findMissingEstimates(): Promise<void> {
     let missingCostEstimates = false
     let hasTraining = false
-    IGCEStore.igceEstimateList.forEach(estimate=>{
+    IGCEStore.igceEstimateList.forEach(estimate => {
       //eslint-disable-next-line
       const legitVal = !!parseInt(String(estimate.unit_price))
-      if(!legitVal){
+      if (!legitVal) {
         missingCostEstimates = true
       }
     })
@@ -363,80 +334,80 @@ export default class CostSummary extends Vue {
     const dowObject = DescriptionOfWork.DOWObject;
     const travel = DescriptionOfWork.travelSummaryInstances;
     dowObject.forEach(service => {
-      if(service.serviceOfferingGroupId === "TRAINING"){
+      if (service.serviceOfferingGroupId === "TRAINING") {
         hasTraining = true
       }
     })
-    if(currentEnvReplicateOrOptimize !== "NO"
-      && currentEnvReplicateOrOptimize !== ""){
-      if(IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.length === 0){
+    if (currentEnvReplicateOrOptimize !== "NO"
+      && currentEnvReplicateOrOptimize !== "") {
+      if (IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.length === 0) {
         this.needsReplicateAndOptimize = true
-      }else{
+      } else {
         IGCEStore.requirementsCostEstimate?.optimize_replicate.estimated_values.forEach(value => {
           //eslint-disable-next-line
           const legitVal = !!parseInt(String(value))
-          if(!legitVal){
+          if (!legitVal) {
             this.needsReplicateAndOptimize = true
           }
         })
       }
     }
-    if(archDesign === "YES"){
-      if(IGCEStore.requirementsCostEstimate?.architectural_design_performance_requirements
-        .estimated_values.length === 0){
+    if (archDesign === "YES") {
+      if (IGCEStore.requirementsCostEstimate?.architectural_design_performance_requirements
+        .estimated_values.length === 0) {
         this.needArchitecturalDesign = true
 
-      }else{
+      } else {
         IGCEStore.requirementsCostEstimate?.architectural_design_performance_requirements
-          .estimated_values.forEach(value =>{
-          //eslint-disable-next-line
-          const legitVal = !!parseInt(value)
-            if(!legitVal){
+          .estimated_values.forEach(value => {
+            //eslint-disable-next-line
+            const legitVal = !!parseInt(value)
+            if (!legitVal) {
               this.needArchitecturalDesign = true
             }
           })
       }
     }
-    if(dowObject.length > 0 && missingCostEstimates){
+    if (dowObject.length > 0 && missingCostEstimates) {
       this.needPerformanceRequirement = true
     }
-    if(hasTraining && IGCEStore.trainingItems){
-      IGCEStore.trainingItems.forEach(item =>{
+    if (hasTraining && IGCEStore.trainingItems) {
+      IGCEStore.trainingItems.forEach(item => {
         //eslint-disable-next-line
         const legitVal = !!parseInt(item.estimatedTrainingPrice)
-        if(!legitVal){
+        if (!legitVal) {
           this.needTrainingPricing = true
         }
       })
     }
-    if(travel && IGCEStore.requirementsCostEstimate?.travel.estimated_values){
-      const values:string[] =
+    if (travel && IGCEStore.requirementsCostEstimate?.travel.estimated_values) {
+      const values: string[] =
         Object.values(JSON.parse(IGCEStore.requirementsCostEstimate?.travel.estimated_values))
-      if(values.length === 0){
+      if (values.length === 0) {
         this.needTravelPricing = true
-      }else{
-        values.forEach(value =>{
+      } else {
+        values.forEach(value => {
           //eslint-disable-next-line
           const legitVal = !!parseInt(value)
-          if(!legitVal){
+          if (!legitVal) {
             this.needTravelPricing = true
           }
         })
       }
     }
-    if(IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities === "YES"){
+    if (IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities === "YES") {
       const capacity = IGCEStore.requirementsCostEstimate?.surge_requirements.capacity
       //eslint-disable-next-line
       const legitVal = !!parseInt(String(capacity))
-      if(!legitVal){
+      if (!legitVal) {
         this.needSurgeCapabilities = true
       }
     }
-    if(IGCEStore.requirementsCostEstimate?.fee_specs.is_charged === "YES"){
+    if (IGCEStore.requirementsCostEstimate?.fee_specs.is_charged === "YES") {
       const percentage = IGCEStore.requirementsCostEstimate?.fee_specs.percentage
       //eslint-disable-next-line
       const legitVal = !!parseInt(String(percentage))
-      if(!legitVal){
+      if (!legitVal) {
         this.needContractingOfficeFee = true
       }
     }
@@ -444,23 +415,23 @@ export default class CostSummary extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const headers = [
-      { text: "Base Period", value: "BasePeriod"},
-      { text: "Option 1", value: "OptionOne"},
-      { text: "Option 2", value: "OptionTwo"},
-      { text: "Option 3", value: "OptionThree"},
-      { text: "Option 4", value: "OptionFour"},
+      { text: "Base Period", value: "BasePeriod" },
+      { text: "Option 1", value: "OptionOne" },
+      { text: "Option 2", value: "OptionTwo" },
+      { text: "Option 3", value: "OptionThree" },
+      { text: "Option 4", value: "OptionFour" },
     ]
-    // this.isLoading = false;
-    for(let i = 0; i < this.periodsLength ; i++){
+    this.isLoading = false;
+    for (let i = 0; i < this.periodsLength; i++) {
       this.tableHeaders.push(headers[i])
     }
     this.hasCurrentEnv = CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
     this.hasArchDesign = DescriptionOfWork.DOWArchitectureNeeds
       .needs_architectural_design_services === "YES"
 
-    this.tableHeaders.push({ text: "Total", value: "Total"})
-    this.costData.payload.data.forEach((CLIN:Record<string, any>) => {
-      this.createTableData(CLIN,"true",CLIN["CLIN Type & Classification"])
+    this.tableHeaders.push({ text: "Total", value: "Total" })
+    this.costData.payload.data.forEach((CLIN: Record<string, any>) => {
+      this.createTableData(CLIN, "true", CLIN["CLIN Type & Classification"])
     })
     const subTotalData = this.costData.payload.subtotal
     const surgeData = this.costData.payload.surge
@@ -470,46 +441,46 @@ export default class CostSummary extends Vue {
     const ditcoFee = this.costData.payload.ditco_fee
     const contractingFee = this.costData.payload.other_contracting_office_fee
     const grandTotal = this.costData.payload.grand_total_with_fee
-    if(surgeData){
-      this.createTableData(subTotalData,"false","Subtotal")
+    if (surgeData) {
+      this.createTableData(subTotalData, "false", "Subtotal")
     }
-    if(surgeData){
-      this.createTableData(subTotalData,"false","Surge and Fees")
-    }else{
-      this.createTableData(subTotalData,"false","Fees")
+    if (surgeData) {
+      this.createTableData(subTotalData, "false", "Surge and Fees")
+    } else {
+      this.createTableData(subTotalData, "false", "Fees")
     }
-    if(surgeData){
-      this.createTableData(surgeData,"false",this.surgePercentage,true)
+    if (surgeData) {
+      this.createTableData(surgeData, "false", this.surgePercentage, true)
     }
-    if(surgeData && totalWithSurge){
-      this.createTableData(totalWithSurge,"false","Total with Surge", true)
+    if (surgeData && totalWithSurge) {
+      this.createTableData(totalWithSurge, "false", "Total with Surge", true)
     }
-    if(externalOrderingFee){
-      this.createTableData(externalOrderingFee,"false",this.orderingAgencyFee,true)
+    if (externalOrderingFee) {
+      this.createTableData(externalOrderingFee, "false", this.orderingAgencyFee, true)
     }
-    if(totalWithSurgeAndOrdering && surgeData){
+    if (totalWithSurgeAndOrdering && surgeData) {
       // eslint-disable-next-line max-len
-      this.createTableData(totalWithSurgeAndOrdering,"false","Total with Surge & Ordering Fee", true)
-    }else if(totalWithSurgeAndOrdering && !surgeData){
-      this.createTableData(totalWithSurgeAndOrdering,"false","Total with Ordering Fee", true)
+      this.createTableData(totalWithSurgeAndOrdering, "false", "Total with Surge & Ordering Fee", true)
+    } else if (totalWithSurgeAndOrdering && !surgeData) {
+      this.createTableData(totalWithSurgeAndOrdering, "false", "Total with Ordering Fee", true)
     }
-    if(ditcoFee){
-      this.createFeeData("ditcoFee",ditcoFee.Total,"false",true)
-    }else if(contractingFee){
-      this.createFeeData("contractingOffice",contractingFee.Total,"false",true)
+    if (ditcoFee) {
+      this.createFeeData("ditcoFee", ditcoFee.Total, "false", true)
+    } else if (contractingFee) {
+      this.createFeeData("contractingOffice", contractingFee.Total, "false", true)
     }
 
-    if(ditcoFee || contractingFee){
+    if (ditcoFee || contractingFee) {
       this.createFeeData("grandTotal", grandTotal.Total, "false")
     }
     await this.findMissingEstimates()
   }
-  public editRoute():void {
+  public editRoute(): void {
     let name = routeNames.GatherPriceEstimates
-    if(this.hasCurrentEnv){
+    if (this.hasCurrentEnv) {
       name = routeNames.OptimizeOrReplicate
     }
-    else if(this.hasArchDesign){
+    else if (this.hasArchDesign) {
       name = routeNames.ArchitecturalDesignSolutions
     }
     this.$router.push({
@@ -525,7 +496,7 @@ export default class CostSummary extends Vue {
     this.costData = await api.costEstimateTable.search(acquisitionPackage.packageId)
     this.surgePercentage =
       `Surge (${IGCEStore.requirementsCostEstimate?.surge_requirements.capacity}%)`
-    this.contractingOfficeFee = 
+    this.contractingOfficeFee =
       IGCEStore.requirementsCostEstimate?.fee_specs.percentage === null
         ? `Contracting Office Fee (0%)`
         : `Contracting Office Fee (
@@ -536,16 +507,16 @@ export default class CostSummary extends Vue {
   }
 
   public isItemAggregate(label: string): boolean {
-    return ['total','fees'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+    return ['total', 'fees'].some((itm) => label.toLowerCase().indexOf(itm) > -1)
   }
   public itemNeedsIcon(label: string): boolean {
-    if(label === 'Grand Total with Fees') return false
-    return ['Surge and Fees','fees'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+    if (label === 'Grand Total with Fees') return false
+    return ['Surge and Fees', 'fees'].some((itm) => label.toLowerCase().indexOf(itm) > -1)
   }
   public isFee(label: string): boolean {
-    return ['%'].some((itm)=> label.toLowerCase().indexOf(itm)>-1)
+    return ['%'].some((itm) => label.toLowerCase().indexOf(itm) > -1)
   }
-  public isAccordionItem(accordionItem:boolean):boolean{
+  public isAccordionItem(accordionItem: boolean): boolean {
     return accordionItem
   }
   public showSurgeAndFees(isFee: boolean): boolean {
