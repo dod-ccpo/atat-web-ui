@@ -109,6 +109,8 @@
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import acquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -125,6 +127,15 @@ export default class ATATFeedbackForm extends Vue {
   private showForm = false
   public toggle():void{
     this.open = !this.open
+  }
+
+  private async loadOnEnter(): Promise<void> {
+    const checkboxItems = [];
+    const feedbackOptions = AcquisitionPackage.feedbackOptions
+    console.log(feedbackOptions)
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 }
 </script>

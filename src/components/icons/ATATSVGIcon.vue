@@ -245,9 +245,6 @@ export default class ATATSVGIcon extends Vue {
     { "warning-dark2": "e9a514" },
   ]
 
-  private mounted(): void{
-    this.setDivStyle();
-  }
 
 }
 </script>
