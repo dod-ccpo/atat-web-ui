@@ -916,6 +916,14 @@ export class PortfolioDataStore extends VuexModule {
   public async reset(): Promise<void> {
     this.doReset();
   }
+
+  public taskOrderDetailsAlertClosed = false;
+
+  @Mutation
+  public setTaskOrderDetailsAlertClosed(value: boolean): void {
+    this.taskOrderDetailsAlertClosed = value;
+  }
+
   @Mutation
   public async doReset(): Promise<void> {
     this.portfolioProvisioningObj = _.cloneDeep(initialPortfolioProvisioningObj());
@@ -927,7 +935,10 @@ export class PortfolioDataStore extends VuexModule {
     this.CSPHasImpactLevels = false;    
     this.envsForProvisioning = [];
     this.activeTaskOrderNumber = "";
+    this.taskOrderDetailsAlertClosed = false;
   }
+
+ 
 
 }
 
