@@ -123,6 +123,15 @@ describe("Testing TaskOrderDetails Component", () => {
       funds_spent_clin: 200,
     },   
   ];
+
+  const defaultTaskOrder = {
+    taskOrderNumber:"#HC1028-22-F-0141",
+    periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
+    totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
+    totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
+    status:"On Track",
+    clins: clins
+  }
   /* eslint-enable camelcase */
 
   const allClins: ClinDTO[] = clins.concat(pendingClins, expiredClins);
@@ -133,14 +142,7 @@ describe("Testing TaskOrderDetails Component", () => {
       localVue,
       vuetify,
       propsData: {
-        selectedTaskOrder:
-          {
-            taskOrderNumber:"#HC1028-22-F-0141",
-            periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
-            totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
-            totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
-            status:"On Track"
-          }
+        selectedTaskOrder: defaultTaskOrder
       }
     });
   });
@@ -273,14 +275,7 @@ describe("Testing TaskOrderDetails Component", () => {
     it("sets clins after prop is passed in", async () => {
       expect(wrapper.vm.clins.length).toBe(0)
       await wrapper.setData({
-        selectedTaskOrder: {
-            taskOrderNumber:"#HC1028-22-F-0141",
-            periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
-            totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
-            totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
-            status:"On Track",
-            clins: clins
-          }
+        selectedTaskOrder: defaultTaskOrder
       });
       expect(wrapper.vm.clins.length).toBe(4)
     }); 
