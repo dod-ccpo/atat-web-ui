@@ -463,6 +463,26 @@ export default class TaskOrderDetails extends Vue {
       : ""
   }
 
+  public getExpiringStatus(CLINNumber: string): string {
+    let firstTwo = CLINNumber.slice(0,2);
+    const lastTwo = CLINNumber.slice(2, CLINNumber.length);
+    let expectedClin = '';
+    // if 2nd number in firstTwo is less than 9, increment the number and pad a 0
+    if(parseInt(firstTwo) < 10){
+      firstTwo = (parseInt(firstTwo) + 1).toString()
+      expectedClin = firstTwo.padStart(2, '0') + lastTwo;
+    } else {
+      firstTwo = (parseInt(firstTwo) + 1).toString()
+      expectedClin = firstTwo + lastTwo
+    }
+
+    const hasFollowOn = this.clins.some((clin) =>
+      clin.clin_number === expectedClin && clin.clin_status === Statuses.OptionPending.value
+    )
+
+    return hasFollowOn ? Statuses.ExpiringPopOK.value : Statuses.ExpiringPop.value;
+  }
+
   public handleClick(): void {
     this._showDetails = false;
   }
@@ -513,6 +533,7 @@ export default class TaskOrderDetails extends Vue {
     ];
 
     this.clins.forEach((clin) => {
+      console.log(clin, 'this is the clin')
       const isClinActive = !inactiveStatuses.includes(clin.clin_status);
       const tableRowData: ClinTableRowData = {
         isActive: isClinActive,
@@ -523,7 +544,9 @@ export default class TaskOrderDetails extends Vue {
         CLINTitle: clin.idiq_clin_display?.display_value,
         PoP: differenceInDaysOrMonths(clin.pop_start_date, clin.pop_end_date),
         popStartDate: clin.pop_start_date,
-        status: clin.clin_status,
+        status: clin.clin_status === Statuses.ExpiringPop.value 
+          ? this.getExpiringStatus(clin.clin_number) 
+          : clin.clin_status,
         statusLabel: getStatusLabelFromValue(clin.clin_status),
         obligatedFunds: "$" + toCurrencyString(clin.funds_obligated),
         totalCLINValue: "$" + toCurrencyString(clin.funds_total),
@@ -650,6 +673,14 @@ export default class TaskOrderDetails extends Vue {
         "15",
         "warning-dark2",
         "bg-warning-lighter",
+      ],
+      [
+        Statuses.ExpiringPopOK.value,
+        "taskAlt",
+        "17",
+        "17",
+        "success-dark",
+        "bg-success-lighter",
       ],
       [
         Statuses.FundingAtRisk.value,
