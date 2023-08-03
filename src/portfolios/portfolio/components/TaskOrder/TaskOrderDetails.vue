@@ -373,7 +373,7 @@ export default class TaskOrderDetails extends Vue {
   @Prop() private selectedTaskOrder: TaskOrderCardData = {};
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
 
-  public clins: ClinDTO[] = this.selectedTaskOrder.clins || [];
+  public clins: ClinDTO[] =  [];
   public tableData: ClinTableRowData[] = [];
   public expiredClins: ClinTableRowData[] = [];
   public optionPendingClins: ClinTableRowData[] = []
@@ -383,6 +383,12 @@ export default class TaskOrderDetails extends Vue {
   @Watch("showInactive")
   public showHide():string {
     return this.showInactive? 'Hide':'Show'
+  }
+
+  @Watch("selectedTaskOrder", {deep: true})
+  public async selectedTaskOrderChanged():Promise<void>{
+    this.clins = this.selectedTaskOrder.clins as ClinDTO[];
+    await this.loadOnEnter()
   }
 
   /* eslint-disable indent */
@@ -461,7 +467,7 @@ export default class TaskOrderDetails extends Vue {
 
   public async collectTableData(): Promise<void> {
     const inactiveStatuses = [Statuses.OptionPending.value, Statuses.Expired.value]
-
+    console.log(this.selectedTaskOrder)
     this.clins.forEach((clin)=>{
       const isClinActive = !(inactiveStatuses.includes(clin.clin_status));
       const tableRowData: ClinTableRowData = {
@@ -507,6 +513,8 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async addSeparators() : Promise<void> {
+    console.log(this.optionPendingClins)
+    console.log(this.expiredClins)
     this.optionPendingClins[0].startNewClinGroup = true;
     this.expiredClins[0].startNewClinGroup = true;
   }
@@ -599,9 +607,9 @@ export default class TaskOrderDetails extends Vue {
     }
   }
 
-  public mounted(): void {
-    this.loadOnEnter();
-  }
+  // public mounted(): void {
+  //   this.loadOnEnter();
+  // }
 }
 </script>
 
