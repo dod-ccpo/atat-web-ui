@@ -23,7 +23,7 @@
         :selectedTaskOrder.sync="selectedTaskOrder"
       />
     </div>
-    <div v-if="showDetails">
+    <div v-show="showDetails">
       <TaskOrderDetails
         :selectedTaskOrder="selectedTaskOrder"
         :showDetails.sync="showDetails"
