@@ -80,7 +80,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({})
 export default class ATATAlert extends Vue {
@@ -145,7 +145,7 @@ export default class ATATAlert extends Vue {
 
   private close(): void {
     if(this.id == "TaskOrderDetailsAlert"){
-      AcquisitionPackage.setTaskOrderDetailsAlertClosed(true)
+      PortfolioStore.setTaskOrderDetailsAlertClosed(true)
     }
     this.show = false;
   }

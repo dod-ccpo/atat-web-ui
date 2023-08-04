@@ -908,16 +908,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         routeResolver: CurrentEnvironmentSummaryResolver,
       },
-      // {
-      //   menuText: "Summary",
-      //   path: "background-summary",
-      //   excludeFromMenu: true,
-      //   name: routeNames.BackgroundSummary,
-      //   stepCompleteOnEnter: routeNames.CurrentEnvironment,
-      //   component: BackgroundSummary,
-      //   completePercentageWeight: 5,
-      //   completed: false,
-      // },
     ]
   },
   {
