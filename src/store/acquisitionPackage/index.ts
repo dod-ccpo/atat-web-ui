@@ -105,6 +105,7 @@ export const Statuses: Record<string, Record<string, string>> = {
   Draft: { label: "Draft", value: "DRAFT" }, // ACQ
   Expired: { label: "Expired", value: "EXPIRED" }, // CLIN, TO, PORTFOLIO
   ExpiringPop: { label: "Expiring PoP", value: "EXPIRING_POP" }, // CLIN
+  ExpiringPopOK: { label: "Expiring PoP", value: "EXPIRING_POP_OK" }, // CLIN
   ExpiringSoon: { label: "Expiring Soon", value: "EXPIRING_SOON" }, // PORTFOLIO
   FundingAtRisk: { label: "Funding At-Risk", value: "FUNDING_AT_RISK" }, // CLIN
   OnTrack: { label: "On Track", value: "ON_TRACK" }, // CLIN, TO

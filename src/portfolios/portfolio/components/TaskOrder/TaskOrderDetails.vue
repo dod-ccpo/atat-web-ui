@@ -398,7 +398,7 @@ export default class TaskOrderDetails extends Vue {
   @Prop() private selectedTaskOrder!: TaskOrderCardData;
   @PropSync("showDetails", { default: false }) private _showDetails!: boolean;
 
-  public clins: ClinDTO[] = this.selectedTaskOrder.clins || [];
+  public clins: ClinDTO[] =  [];
   public tableData: ClinTableRowData[] = [];
   public expiredClins: ClinTableRowData[] = [];
   public optionPendingClins: ClinTableRowData[] = [];
@@ -408,6 +408,12 @@ export default class TaskOrderDetails extends Vue {
   @Watch("showInactive")
   public showHide(): string {
     return this.showInactive ? "Hide" : "Show";
+  }
+
+  @Watch("selectedTaskOrder", {deep: true})
+  public async selectedTaskOrderChanged():Promise<void>{
+    this.clins = this.selectedTaskOrder.clins as ClinDTO[];
+    await this.loadOnEnter()
   }
 
   /* eslint-disable indent */
@@ -455,6 +461,26 @@ export default class TaskOrderDetails extends Vue {
     return this.selectedTaskOrder.taskOrderNumber !== "" 
       ? `#${this.selectedTaskOrder.taskOrderNumber}`
       : ""
+  }
+
+  public getExpiringStatus(CLINNumber: string): string {
+    let firstTwo = CLINNumber.slice(0,2);
+    const lastTwo = CLINNumber.slice(2, CLINNumber.length);
+    let expectedClin = '';
+    // if 2nd number in firstTwo is less than 9, increment the number and pad a 0
+    if(parseInt(firstTwo) < 10){
+      firstTwo = (parseInt(firstTwo) + 1).toString()
+      expectedClin = firstTwo.padStart(2, '0') + lastTwo;
+    } else {
+    // else just increment the number, string it and add them together
+      firstTwo = (parseInt(firstTwo) + 1).toString()
+      expectedClin = firstTwo + lastTwo
+    }
+    // loop through all clins and if one matches the expected clin && status value return true
+    const hasFollowOn = this.clins.some((clin) =>
+      clin.clin_number === expectedClin && clin.clin_status === Statuses.OptionExercised.value
+    );
+    return hasFollowOn ? Statuses.ExpiringPopOK.value : Statuses.ExpiringPop.value;
   }
 
   public handleClick(): void {
@@ -517,7 +543,9 @@ export default class TaskOrderDetails extends Vue {
         CLINTitle: clin.idiq_clin_display?.display_value,
         PoP: differenceInDaysOrMonths(clin.pop_start_date, clin.pop_end_date),
         popStartDate: clin.pop_start_date,
-        status: clin.clin_status,
+        status: clin.clin_status === Statuses.ExpiringPop.value 
+          ? this.getExpiringStatus(clin.clin_number) 
+          : clin.clin_status,
         statusLabel: getStatusLabelFromValue(clin.clin_status),
         obligatedFunds: "$" + toCurrencyString(clin.funds_obligated),
         totalCLINValue: "$" + toCurrencyString(clin.funds_total),
@@ -646,6 +674,14 @@ export default class TaskOrderDetails extends Vue {
         "bg-warning-lighter",
       ],
       [
+        Statuses.ExpiringPopOK.value,
+        "taskAlt",
+        "17",
+        "17",
+        "success-dark",
+        "bg-success-lighter",
+      ],
+      [
         Statuses.FundingAtRisk.value,
         "warningAmber",
         "18",
@@ -711,10 +747,6 @@ export default class TaskOrderDetails extends Vue {
         console.log("Error loading Task Order Details");
       }
     }
-  }
-
-  public mounted(): void {
-    this.loadOnEnter();
   }
 }
 </script>
