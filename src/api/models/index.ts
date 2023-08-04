@@ -80,6 +80,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   funding_request?: ReferenceColumn | string;
   contracting_shop_non_ditco_address?: ReferenceColumn | string;
   owner_needs_email_package_ready_to_submit: boolean;
+  customer_feedback:ReferenceColumn | string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -1133,4 +1134,15 @@ export interface DisaOrganizationDTO extends BaseTableDTO {
   full_name: string;
   abbreviation: string;
   css_id: number;
+}
+export interface CustomerFeedbackDTO extends BaseTableDTO {
+  acquisition_package: string,
+  dapps_experience: number
+  feedback_items: string[],
+  feedback_items_other: string
+  is_complete: boolean
+}
+export interface FeedbackOptionsDTO extends BaseTableDTO {
+  option: string,
+  is_feedback_positive: boolean
 }
