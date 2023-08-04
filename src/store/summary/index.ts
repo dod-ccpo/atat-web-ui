@@ -799,6 +799,8 @@ export class SummaryStore extends VuexModule {
   };
   //#endregion
 
+  //#region STEP 6
+
   //#region STEP 7
   @Action({rawError: true})
   public async validateStepSeven(): Promise<void> {
