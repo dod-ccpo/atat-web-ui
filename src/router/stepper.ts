@@ -108,6 +108,8 @@ import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
 import Travel
   from "../steps/07-OtherContractConsiderations/Travel.vue";
+import SummaryStepSix
+  from "../steps/07-OtherContractConsiderations/SummaryStepSix.vue";
 
 // Step 8 - Standards and Compliance
 import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
@@ -290,6 +292,7 @@ export const routeNames = {
   FOIA: "FOIA",
   FOIACoordinator: "FOIA_Coordinator",
   Section508Standards: "Section_508_Standards",
+  SummaryStepSix: "Summary_Step_Six",
   SummaryStepSeven: "Summary_Step_Seven",
   ClassificationRequirements: "Classification_Requirements",
   SurgeCapabilities: "SurgeCapabilities",
@@ -905,16 +908,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completed: false,
         routeResolver: CurrentEnvironmentSummaryResolver,
       },
-      // {
-      //   menuText: "Summary",
-      //   path: "background-summary",
-      //   excludeFromMenu: true,
-      //   name: routeNames.BackgroundSummary,
-      //   stepCompleteOnEnter: routeNames.CurrentEnvironment,
-      //   component: BackgroundSummary,
-      //   completePercentageWeight: 5,
-      //   completed: false,
-      // },
     ]
   },
   {
@@ -1099,6 +1092,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             emitText: "confirmDeleteTravel",
           },
         ]
+      },
+      {
+        menuText: "SummaryStepSix",
+        path:"summary-step-six",
+        name: routeNames.SummaryStepSix,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepSix,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor:  "primary"
       },
     ]
   },

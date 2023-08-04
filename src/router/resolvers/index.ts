@@ -320,9 +320,9 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
 
 
 export const PIIResolver = (current: string): string =>{
-  return current === routeNames.Travel
+  return current === routeNames.SummaryStepSix
     ? isStepTouched(7) ? routeNames.SummaryStepSeven : routeNames.PII
-    : routeNames.Travel
+    : routeNames.SummaryStepSix
 }
 
 export const PIIRecordResolver = (current: string): string => {
