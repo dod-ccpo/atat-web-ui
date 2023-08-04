@@ -96,6 +96,9 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
   case 5:
     await Summary.validateStepFive();
     break;
+  case 6:
+    await Summary.validateStepSix();
+    break;
   case 7:
     await Summary.validateStepSeven();
     break;
@@ -800,18 +803,60 @@ export class SummaryStore extends VuexModule {
   //#endregion
 
   //#region STEP 6
+  @Action({rawError: true})
+  public async validateStepSix(): Promise<void> {
+    const objectKeys = [
+      "baa_",
+      "sys_",
+      "pii_",
+      "foia_",
+      "potential_",
+      "508",
+      "acquisition",
+      "record_name",
+      "work_"
+    ];
+    await this.assessCOI();
+
+  }
+
+  @Action({rawError: true})
+  public async assessCOI(): Promise<void> {
+    // const sensitiveInfo = AcquisitionPackage.sensitiveInformation as SensitiveInformationDTO;
+    // const description = await this.getPIIDescription(sensitiveInfo);
+    // const keysToIgnore = objectKeys.filter(
+    //   x => ["pii_","record_name", "work_"].indexOf(x) === -1
+    // );
+    // const monitor = {object: sensitiveInfo, keysToIgnore};
+    // const isTouched = await this.isTouched(monitor)
+    // const isComplete =  monitor.object.pii_present === "NO"
+    //   || await this.isComplete(monitor);
+    const standardsAndComplianceSummaryItem: SummaryItem = {
+      title: "Conflict of Interest (COI)",
+      description: "Dummy",
+      isComplete: false,
+      isTouched: false,
+      routeName: "ConflictOfInterest",
+      step: 6,
+      substep: 1
+    }
+    await this.doSetSummaryItem(standardsAndComplianceSummaryItem)
+  }
+
+
+  //#endregion
 
   //#region STEP 7
   @Action({rawError: true})
   public async validateStepSeven(): Promise<void> {
     const objectKeys = [
-      "baa_", 
-      "sys_", 
-      "pii_", 
-      "foia_", 
-      "potential_", 
-      "508", 
-      "acquisition", 
+      "baa_",
+      "sys_",
+      "pii_",
+      "foia_",
+      "potential_",
+      "508",
+      "acquisition",
       "record_name", 
       "work_"
     ];
