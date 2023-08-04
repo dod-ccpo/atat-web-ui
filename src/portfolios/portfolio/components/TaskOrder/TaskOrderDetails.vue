@@ -478,7 +478,7 @@ export default class TaskOrderDetails extends Vue {
     }
     // loop through all clins and if one matches the expected clin && status value return true
     const hasFollowOn = this.clins.some((clin) =>
-      clin.clin_number === expectedClin && clin.clin_status === Statuses.OptionPending.value
+      clin.clin_number === expectedClin && clin.clin_status === Statuses.OptionExercised.value
     );
     return hasFollowOn ? Statuses.ExpiringPopOK.value : Statuses.ExpiringPop.value;
   }

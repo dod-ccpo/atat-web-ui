@@ -142,7 +142,7 @@ describe("Testing TaskOrderDetails Component", () => {
       idiq_clin: "",
       pop_end_date: "",
       pop_start_date: "2022-01-01",
-      clin_status: Statuses.OptionPending.value,
+      clin_status: Statuses.OptionExercised.value,
       funds_obligated: 100,
       funds_total: 200,
       funds_spent_clin: 200,
