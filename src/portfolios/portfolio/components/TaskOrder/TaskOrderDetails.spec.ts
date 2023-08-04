@@ -3,7 +3,7 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
-import { ClinTableRowData } from "types/Global";
+import { ClinTableRowData, TaskOrderCardData } from "types/Global";
 import { ClinDTO } from "@/api/models";
 import { Statuses } from "@/store/acquisitionPackage";
 
@@ -29,7 +29,7 @@ describe("Testing TaskOrderDetails Component", () => {
       funds_spent_clin: 50,
     },    
     {
-      sys_id: "1234",
+      sys_id: "2345",
       clin_number: "1002",
       idiq_clin: "",
       pop_end_date: "",
@@ -40,7 +40,7 @@ describe("Testing TaskOrderDetails Component", () => {
       funds_spent_clin: 0,
     },
     {
-      sys_id: "1234",
+      sys_id: "3456",
       clin_number: "1003",
       idiq_clin: "",
       pop_end_date: "",
@@ -51,7 +51,7 @@ describe("Testing TaskOrderDetails Component", () => {
       funds_spent_clin: 110,
     },
     {
-      sys_id: "2345",
+      sys_id: "4567",
       clin_number: "1004",
       idiq_clin: "",
       pop_end_date: "",
@@ -124,7 +124,32 @@ describe("Testing TaskOrderDetails Component", () => {
     },   
   ];
 
-  const defaultTaskOrder = {
+  const clinsWithFollowons: ClinDTO[] = [
+    {
+      sys_id: "4567",
+      clin_number: "0001",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "2022-01-01",
+      clin_status: Statuses.ExpiringPop.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 200,
+    },     
+    {
+      sys_id: "5678",
+      clin_number: "0101",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "2022-01-01",
+      clin_status: Statuses.OptionPending.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 200,
+    },   
+  ];
+
+  const defaultTaskOrder: TaskOrderCardData = {
     taskOrderNumber:"#HC1028-22-F-0141",
     periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
     totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
@@ -146,6 +171,11 @@ describe("Testing TaskOrderDetails Component", () => {
       }
     });
   });
+  afterEach( async ()=>{
+    await wrapper.setProps({
+      selectedTaskOrder: null
+    })
+  })
  
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
@@ -272,17 +302,13 @@ describe("Testing TaskOrderDetails Component", () => {
       
     });   
 
-    it("sets clins after prop is passed in", async () => {
-      expect(wrapper.vm.clins.length).toBe(0)
-      await wrapper.setData({
-        selectedTaskOrder: defaultTaskOrder
-      });
-      expect(wrapper.vm.clins.length).toBe(4)
+    it("Watcher SelectedTaskOrder() => sets clins after prop is passed in", async () => {
+      await wrapper.setProps({
+        selectedTaskOrder: {clins: clinsWithFollowons}
+      }) 
+      expect(wrapper.vm.$data.clins.length).toBeGreaterThan(0);
+      await wrapper.vm.collectTableData()
+      expect(wrapper.vm.$data.tableData[0].status).toBe(Statuses.ExpiringPopOK.value)
     }); 
-  
-    // it("xxx", async () => {
-      
-    // });    
-
   })
 })
