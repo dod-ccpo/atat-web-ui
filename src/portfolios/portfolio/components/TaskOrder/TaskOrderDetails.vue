@@ -23,7 +23,19 @@
       </span>
     </div>
     <div class="pt-3 d-flex justify-space-between pb-5">
-      <h1>{{ getTaskOrderNumber }}</h1>
+      <div class="d-flex flex-row align-center">
+        <h1>{{ getTaskOrderNumber }}</h1>
+        <v-chip 
+        v-if="isUpcomingTO"
+        id="StatusChip" 
+        :color="statusChipColor" 
+        style="height: 24px;" 
+        class="ml-6"
+        label
+        >
+          Upcoming
+        </v-chip>
+      </div>
       <!-- <v-btn
         id="ModifyTaskOrderButton"
         outlined
@@ -180,7 +192,7 @@
                     <div
                       :class="{
                         'text-error font-weight-500':
-                          item.status === 'Delinquent',
+                          item.status === statuses.Delinquent.value,
                       }"
                       class="d-flex align-center justify-end"
                     >
@@ -190,7 +202,7 @@
                       <span
                         :class="{
                           'text-error font-weight-500':
-                            item.status === 'Delinquent',
+                            item.status === statuses.Delinquent.value,
                         }"
                         class="font-size-12 text-base ml-3 _funds-spent-percent"
                       >
@@ -198,7 +210,7 @@
                       </span>
                     </div>
                     <div
-                      v-if="item.status === 'Delinquent' || item.isOverspent"
+                      v-if="item.status === statuses.Delinquent.value || item.isOverspent"
                       class="d-flex justify-end font-size-12 text-error
                       font-weight-500 align-center justify-end"
                     >
@@ -404,6 +416,8 @@ export default class TaskOrderDetails extends Vue {
   public optionPendingClins: ClinTableRowData[] = [];
   public showInactive = false;
   public statuses = Statuses;
+  public isUpcomingTO = false;
+  public statusChipColor = '#0076A6'
 
   @Watch("showInactive")
   public showHide(): string {
@@ -413,6 +427,9 @@ export default class TaskOrderDetails extends Vue {
   @Watch("selectedTaskOrder", {deep: true})
   public async selectedTaskOrderChanged():Promise<void>{
     this.clins = this.selectedTaskOrder.clins as ClinDTO[];
+    if(this.selectedTaskOrder.status === this.statuses.Upcoming.value){
+      this.isUpcomingTO = true;
+    }
     await this.loadOnEnter()
   }
 
@@ -581,6 +598,14 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async addSeparators(): Promise<void> {
+    // loop through the sorted table data and find the first IsExercised
+    // set that as a newClinGroup
+    for(let i = 0; i < this.tableData.length; i++){
+      if(this.tableData[i].isExercised){
+        this.tableData[i].startNewClinGroup = true;
+        break;
+      }
+    }
     this.optionPendingClins[0].startNewClinGroup = true;
     this.expiredClins[0].startNewClinGroup = true;
   }
