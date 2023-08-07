@@ -1,10 +1,11 @@
 ._feedback-form {
-  //position: absolute;
-  //right: 0px;
-  //bottom: 0px;
-  //width: 460px !important;
+  position: absolute;
+  right: 0px;
+  bottom: -250px;
+  max-width: 460px !important;
   display:flex;
   flex-direction: row-reverse;
+  z-index: 1;
 
   ._feedback-tab {
     display: flex;
@@ -15,14 +16,20 @@
     border-radius: 16px 16px 0 0;
     position:relative;
     width:207px;
-    right:-188px;
     &:hover {
       background-color: $primary-10;
-
-      &._open{
-        background-color: $base-lightest;
+    }
+    &._open{
+      background-color: $base-lightest;
+      right: -188px;
+      &._show-form {
+        right: -253px;
       }
     }
+    &._thank-you{
+      display: none;
+    }
+
 
     .v-btn{
       padding: 4px !important;
@@ -45,12 +52,21 @@
   }
 
   ._feedback-body {
+    display:flex;
     padding: 40px 40px 60px 40px;
     background-color: $base-lightest;
     border-radius: 16px 0 0 0;
 
-    .v-btn {
-
+    &._thank-you{
+      border-radius: 16px 16px 0 0;
+      justify-content: center;
+    }
+    ._feedback-icon {
+      &:hover {
+        border-radius:50%;
+        background-color: $primary-10;
+        box-shadow:$primary-10 0px 0px 0px 5px;
+      }
     }
   }
 }

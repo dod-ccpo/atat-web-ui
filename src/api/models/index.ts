@@ -1136,11 +1136,11 @@ export interface DisaOrganizationDTO extends BaseTableDTO {
 export interface CustomerFeedbackDTO extends BaseTableDTO {
   acquisition_package: string,
   dapps_experience: number
-  feedback_items: string[],
+  feedback_items: string,
   feedback_items_other: string
-  is_complete: boolean
+  is_complete: string
 }
 export interface FeedbackOptionsDTO extends BaseTableDTO {
   option: string,
-  is_feedback_positive: boolean
+  is_feedback_positive: string
 }

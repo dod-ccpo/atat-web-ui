@@ -108,6 +108,7 @@ import Dissatisfied from "./Dissatisfied.vue";
 import Neutral from "@/components/icons/Neutral.vue";
 import VerySatisfied from "@/components/icons/VerySatisfied.vue";
 import VeryDissatisfied from "@/components/icons/VeryDissatisfied.vue";
+import FeedbackThankYou from "@/components/icons/FeedbackThankYou.vue";
 
 
 @Component({
@@ -145,6 +146,7 @@ import VeryDissatisfied from "@/components/icons/VeryDissatisfied.vue";
     ExternalLink,
     Failed,
     Feedback,
+    FeedbackThankYou,
     FilePresent,
     FileSignature,
     Filters,

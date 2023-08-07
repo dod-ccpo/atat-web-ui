@@ -93,7 +93,8 @@ export const StoreProperties = {
   ContractConsiderations: "contractConsiderations",
   Regions:"regions",
   PackageDocumentsSigned:"packageDocumentsSigned",
-  ContractingShopNonDitcoAddress:"contractingShopNonDitcoAddress"
+  ContractingShopNonDitcoAddress:"contractingShopNonDitcoAddress",
+  CustomerFeedback:"customerFeedback"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -1019,6 +1020,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public setCustomerFeedback(value: CustomerFeedbackDTO): void {
+    this.customerFeedback = this.customerFeedback
+      ? Object.assign(this.customerFeedback, value)
+      : value;
+  }
+
+  @Mutation
   public setSensitiveInformation(value: SensitiveInformationDTO): void {
     this.sensitiveInformation = this.sensitiveInformation
       ? Object.assign(this.sensitiveInformation, value)
@@ -1576,7 +1584,12 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (customerFeedback){
         const feedback = await api.feedbackTable.retrieve(customerFeedback)
-        this.customerFeedback = feedback
+        if(feedback){
+          this.setCustomerFeedback(feedback)
+        }
+      }else{
+        const initialFeedback = {} as CustomerFeedbackDTO
+        this.setCustomerFeedback(initialFeedback)
       }
 
       await ClassificationRequirements.getAllClassificationLevels();
@@ -2003,6 +2016,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Regions]:api.regionsTable,
     [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
     [StoreProperties.ContractingShopNonDitcoAddress]:api.addressTable,
+    [StoreProperties.CustomerFeedback]:api.feedbackTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -2022,6 +2036,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Regions]: "regions",
     [StoreProperties.PackageDocumentsSigned]: "package_documents_signed",
     [StoreProperties.ContractingShopNonDitcoAddress]: "contracting_shop_non_ditco_address",
+    [StoreProperties.CustomerFeedback]: "customer_feedback",
 
   }
 
@@ -2228,6 +2243,7 @@ export class AcquisitionPackageStore extends VuexModule {
     storeProperty: string;
   }): Promise<void> {
     try {
+      debugger
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const apiEndPoint = await this.getApiEndPoint(storeProperty);
       const saveAction = (storeDataProperty.sys_id && storeDataProperty.sys_id.length > 0) ? 
