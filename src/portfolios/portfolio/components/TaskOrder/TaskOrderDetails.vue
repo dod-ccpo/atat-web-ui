@@ -395,14 +395,12 @@ import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrder
 import {
   currencyStringToNumber,
   differenceInDaysOrMonths,
-  getStatusLabelFromValue,
   toCurrencyString,
 } from "@/helpers";
 
 import { Statuses } from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
 import { ClinDTO } from "@/api/models";
-import { stat } from "fs";
 
 @Component({
   components: {

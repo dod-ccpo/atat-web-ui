@@ -147,6 +147,28 @@ describe("Testing TaskOrderDetails Component", () => {
       funds_total: 200,
       funds_spent_clin: 200,
     },   
+    {
+      sys_id: "4567",
+      clin_number: "1001",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "2022-01-01",
+      clin_status: Statuses.ExpiringPop.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 200,
+    },     
+    {
+      sys_id: "5678",
+      clin_number: "0012",
+      idiq_clin: "",
+      pop_end_date: "",
+      pop_start_date: "2022-01-01",
+      clin_status: Statuses.OptionExercised.value,
+      funds_obligated: 100,
+      funds_total: 200,
+      funds_spent_clin: 200,
+    },   
   ];
 
   const defaultTaskOrder: TaskOrderCardData = {
@@ -154,7 +176,7 @@ describe("Testing TaskOrderDetails Component", () => {
     periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
     totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
     totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
-    status:"On Track",
+    status:"On track",
     clins: clins
   }
   /* eslint-enable camelcase */
@@ -176,7 +198,7 @@ describe("Testing TaskOrderDetails Component", () => {
       selectedTaskOrder: null
     })
   })
- 
+
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
@@ -309,6 +331,18 @@ describe("Testing TaskOrderDetails Component", () => {
       expect(wrapper.vm.$data.clins.length).toBeGreaterThan(0);
       await wrapper.vm.collectTableData()
       expect(wrapper.vm.$data.tableData[0].status).toBe(Statuses.ExpiringPopOK.value)
+      expect(wrapper.vm.$data.tableData[2].status).toBe(Statuses.OptionExercised.value)
+    }); 
+
+    it("Should change the isUpcomingTO to true", async () => {
+      await wrapper.setProps({
+        selectedTaskOrder: {status: 'UPCOMING', clins: clins}
+      }) 
+      Vue.nextTick(() => {
+        expect(wrapper.vm.isUpcomingTO).toBe(true)
+        expect(wrapper.vm.$data.tableData[0].status).toBe('Upcoming')
+      })
+      
     }); 
   })
 })
