@@ -170,7 +170,12 @@
                         color="warning-dark2"
                         class="mr-1 _alert-icon"
                       />
-                      <span class="_expiration">{{ item.PoP.expiration }}</span>
+                      <span 
+                      class="_expiration"
+                      v-if="item.status !== statuses.OptionExercised.value"
+                      >
+                      {{ item.PoP.expiration }}
+                    </span>
                     </span>
                   </div>
                 </td>
@@ -224,7 +229,7 @@
                       <span class="_overspent">Overspent</span>
                     </div>
                     <div
-                      v-else-if="item.isActive"
+                      v-else-if="item.isActive && item.status !== statuses.OptionExercised.value"
                       class="d-flex font-size-12 align-center justify-end"
                       :class="[
                         'nowrap',
@@ -500,6 +505,16 @@ export default class TaskOrderDetails extends Vue {
     return hasFollowOn ? Statuses.ExpiringPopOK.value : Statuses.ExpiringPop.value;
   }
 
+  public getClinStatus(clin: ClinDTO){
+    if (this.isUpcomingTO) {
+      return Statuses.Upcoming.value
+    }
+    if(clin.clin_status === Statuses.ExpiringPop.value){
+      return this.getExpiringStatus(clin.clin_number) 
+    }
+    return clin.clin_status
+  }
+
   public handleClick(): void {
     this._showDetails = false;
   }
@@ -560,10 +575,10 @@ export default class TaskOrderDetails extends Vue {
         CLINTitle: clin.idiq_clin_display?.display_value,
         PoP: differenceInDaysOrMonths(clin.pop_start_date, clin.pop_end_date),
         popStartDate: clin.pop_start_date,
-        status: clin.clin_status === Statuses.ExpiringPop.value 
-          ? this.getExpiringStatus(clin.clin_number) 
-          : clin.clin_status,
-        statusLabel: getStatusLabelFromValue(clin.clin_status),
+        status: this.getClinStatus(clin),
+        statusLabel: this.isUpcomingTO 
+          ? Statuses.Upcoming.label 
+          : getStatusLabelFromValue(clin.clin_status),
         obligatedFunds: "$" + toCurrencyString(clin.funds_obligated),
         totalCLINValue: "$" + toCurrencyString(clin.funds_total),
         totalFundsSpent: "$" + toCurrencyString(clin.funds_spent_clin || 0),
@@ -606,8 +621,15 @@ export default class TaskOrderDetails extends Vue {
         break;
       }
     }
-    this.optionPendingClins[0].startNewClinGroup = true;
-    this.expiredClins[0].startNewClinGroup = true;
+
+    // check for values inside of the array first, 
+    // if you don't there is a case that errors out the frontend
+    if(this.optionPendingClins.length > 0){
+      this.optionPendingClins[0].startNewClinGroup = true;
+    }
+    if(this.expiredClins.length > 0){
+      this.expiredClins[0].startNewClinGroup = true;
+    }
   }
 
   public async sortRows(): Promise<void> {
@@ -732,6 +754,14 @@ export default class TaskOrderDetails extends Vue {
       ],
       [
         Statuses.OptionExercised.value,
+        "requestQuote",
+        "13",
+        "16",
+        "info-dark",
+        "bg-info-lighter",
+      ],
+      [
+        Statuses.Upcoming.value,
         "requestQuote",
         "13",
         "16",
