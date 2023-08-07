@@ -29,9 +29,9 @@ import {
 
         //procurement History Summary
         const date =new Date();
-        const dayOfMonthFormatted = formatDateInMMDDYYYY(date,11,"previous");
+        const startDayFormatted = formatDateInMMDDYYYY(date,11,"previous");
         const expiredDateFormatted  = formatDateInMMDDYYYY(date,11,"next");
-        const expectedPOP = dayOfMonthFormatted + " - " + expiredDateFormatted;
+        const expectedPOP = startDayFormatted + " - " + expiredDateFormatted;
         const expectedProcurementHistoryData=[        
         [ cName, contractNo, taskOrderNo, expectedPOP]
         ]
@@ -92,24 +92,28 @@ import {
         cy.findElement(businessSizeOptionMap[businessSizeOption]).click({force:true});
         };
 
+    function gatherContractDetails(contractNo,taskOrderNo,dayOfMonth,cName,expectedProcurementHistoryData){
+        contractOverview(contractNo,taskOrderNo);            
+            popStartEndDate(dayOfMonth);
+            contractorDetails(cName);
+            cy.clickContinueButton(
+                background.incumbentTxtBox,
+                "Your Procurement History"
+            ) ;
+            cy.verifyTableValues(background.procurementHistoryTable,expectedProcurementHistoryData,4);
+    }
     it("TC:1 Procurement History", () => {     
         
         if (fairOpp === "YES_FAR_16_505_B_2_I_C") {    
-        
+        //timingissue,so added a wait here
+        cy.wait(2000);
         cy.clickAndWaitForVisible(common.substepProcurementText, background.addInstanceNoDataBtn);        
         cy.verifyPageHeader("Your Procurement History");                    
         cy.clickAndWaitForVisible(background.addInstanceNoDataBtn,background.contractOverviewTitle ); 
         cy.verifyPageHeader(
             "Let’s gather some details about your previous or current contract"
         );
-        contractOverview(contractNo,taskOrderNo);            
-        popStartEndDate(dayOfMonth);
-        contractorDetails(cName);
-        cy.clickContinueButton(
-            background.incumbentTxtBox,
-            "Your Procurement History"
-        );
-        
+        gatherContractDetails(contractNo,taskOrderNo,dayOfMonth,cName,expectedProcurementHistoryData);       
         } else if (fairOpp === "YES_FAR_16_505_B_2_I_A" || fairOpp === "YES_FAR_16_505_B_2_I_B") {                
             
             cy.verifyPageHeader("Do you have a current or previous contract for this effort?");
@@ -119,14 +123,7 @@ import {
                     background.ccYesRadioOption,
                     "Let’s gather some details about your previous or current contract"
                 );
-            contractOverview(contractNo,taskOrderNo);            
-            popStartEndDate(dayOfMonth);
-            contractorDetails(cName);
-            cy.clickContinueButton(
-                background.incumbentTxtBox,
-                "Your Procurement History"
-            ) ;
-            cy.verifyTableValues(background.procurementHistoryTable,expectedProcurementHistoryData,4);          
+            gatherContractDetails(contractNo,taskOrderNo,dayOfMonth,cName,expectedProcurementHistoryData);               
             }else{
                 cy.findElement(background. ccNoRadioOption).click({ force: true });
                 cy.clickContinueButton(
