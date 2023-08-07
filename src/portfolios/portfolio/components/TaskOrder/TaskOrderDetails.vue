@@ -504,17 +504,19 @@ export default class TaskOrderDetails extends Vue {
       clin.clin_number === expectedClin && clin.clin_status === Statuses.OptionExercised.value
     );
     return hasFollowOn 
-      ? {value: Statuses.ExpiringPopOK.value, label: Statuses.ExpiringPopOK.label} 
-      : {value: Statuses.ExpiringPop.value, label: Statuses.ExpiringPop.label}
+      ? Statuses.ExpiringPopOK
+      : Statuses.ExpiringPop
   }
 
   public getClinStatus(clin: ClinDTO){
     if (this.isUpcomingTO) {
-      return {value: Statuses.Upcoming.value, label: Statuses.Upcoming.label}
+      return Statuses.Upcoming
     }
     if(clin.clin_status === Statuses.ExpiringPop.value){
       return this.getExpiringStatus(clin.clin_number);
     }
+
+    // find the values that match and send back based on the Statuses obj.
     const status = Object.keys(Statuses).find((s) =>
       Statuses[s].value === clin.clin_status) as string;
     
