@@ -579,20 +579,20 @@ export default class TaskOrderDetails extends Vue {
         isPending: clinStatus.value === Statuses.OptionPending.value,
         isExpired: clinStatus.value === Statuses.Expired.value,
         CLINNumber: clin.clin_number,
-        CLINTitle: clin.idiq_clin_display?.display_value,
+        CLINTitle: clin.idiq_clin,
         PoP: differenceInDaysOrMonths(clin.pop_start_date, clin.pop_end_date),
         popStartDate: clin.pop_start_date,
         status: clinStatus.value,
         statusLabel: clinStatus.label,
         obligatedFunds: "$" + toCurrencyString(clin.funds_obligated),
         totalCLINValue: "$" + toCurrencyString(clin.funds_total),
-        totalFundsSpent: "$" + toCurrencyString(clin.funds_spent_clin || 0),
-        isOverspent: clin.funds_spent_clin
-          ? clin.funds_spent_clin > clin.funds_obligated
+        totalFundsSpent: "$" + toCurrencyString(clin.actual_funds_spent || 0),
+        isOverspent: clin.actual_funds_spent
+          ? clin.actual_funds_spent > clin.funds_obligated
           : false,
         fundsRemaining: this.fundsRemaining(
           clin.funds_obligated,
-          String(clin.funds_spent_clin)
+          String(clin.actual_funds_spent)
         ),
         startNewClinGroup: false,
       };
@@ -672,9 +672,9 @@ export default class TaskOrderDetails extends Vue {
       const CLINValue = currencyStringToNumber(clin.totalCLINValue || "0");
       const obligatedFunds = currencyStringToNumber(clin.obligatedFunds || "0");
       const fundsSpent = currencyStringToNumber(clin.totalFundsSpent || "0");
-      this.currentPeriodFundingTotals.CLINValue += CLINValue;
-      this.currentPeriodFundingTotals.obligatedFunds += obligatedFunds;
-      this.currentPeriodFundingTotals.fundsSpent += fundsSpent;
+      this.currentPeriodFundingTotals.CLINValue += CLINValue ?? 0;
+      this.currentPeriodFundingTotals.obligatedFunds += obligatedFunds ?? 0;
+      this.currentPeriodFundingTotals.fundsSpent += fundsSpent ?? 0;
     }
   }
 
