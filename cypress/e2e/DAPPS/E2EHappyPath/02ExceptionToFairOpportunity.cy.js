@@ -7,14 +7,14 @@ import {
     cleanText,
     formatDateWithPeriod,
     formatDateWithoutPeriod
-} from "../../../../helpers";
-import fo from "../../../../selectors/fairOpportunityProcess.sel";
-import org from "../../../../selectors/org.sel";
-import contact from "../../../../selectors/contact.sel";
-import common from "../../../../selectors/common.sel";
-import contactInfo from "../../../../fixtures/contactInfo.json";
-import commonCorAcor from "../../../../selectors/commonCorAcor.sel";
-import ac from "../../../../selectors/acor.sel";
+} from "../../../helpers";
+import fo from "../../../selectors/fairOpportunityProcess.sel";
+import org from "../../../selectors/org.sel";
+import contact from "../../../selectors/contact.sel";
+import common from "../../../selectors/common.sel";
+import contactInfo from "../../../fixtures/contactInfo.json";
+import commonCorAcor from "../../../selectors/commonCorAcor.sel";
+import ac from "../../../selectors/acor.sel";
 
 
 describe("Test suite: E2E-Exception to Fair Opportunity", () => {
@@ -219,7 +219,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         );
     });
 
-    function handleTimeCost(addTimeCost, dropDownOption, estDelayVal) {
+    function selectTimeCost(addTimeCost, dropDownOption, estDelayVal) {
         if (addTimeCost === "Yes") {
             cy.radioBtn(fo.addTimeCostYesOption, "YES").click({
                 force: true
@@ -246,7 +246,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         }
     }
 
-    function handleGovEngineer(govEngineer, pName, insuffInput) {
+    function selectGovEngineer(govEngineer, pName, insuffInput) {
         if (govEngineer === "Yes") {
             cy.radioBtn(fo.govEngineersYesOption, "YES").click({
                 force: true
@@ -260,7 +260,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         }
     }
 
-    function handleSpecificFeatureProduct(
+    function selectSpecificFeatureProduct(
         specificFeaProduct,
         isProductOrFeature,
         productInputVal,
@@ -291,7 +291,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         }
     }
 
-    function handleSoleSourceSituation(
+    function soleSourceSituation(
         addTimeCost,
         govEngineer,
         specificFeaProduct,
@@ -322,7 +322,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         }
     }
 
-    function handleOnlyCapableSource(supportDataVal) {
+    function selectOnlyCapableSource(supportDataVal) {
         if (capablesourceOption === "Yes") {
             cy.findElement(fo.capablesourceYesOption).should("exist").should("be.enabled").click({ force: true }).should("be.checked");
             cy.findElement(fo.capablesourceActiveOption)
@@ -385,7 +385,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         }
     }      
 
-    function handleOtherTechniques(
+    function selectOtherTechniques(
         techniques,
         personReliedVal,
         otherVal,
@@ -421,7 +421,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
             }
         }
         
-        function handleMRREfforts(
+        function selectMRREfforts(
             capablesourceOption,
             reviewCatalogSectionOption,
             contractAction,
@@ -482,7 +482,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         }
     }
 
-    function handleFollowOn(followOn) {
+    function selectFollowOn(followOn) {
         if (followOn === "Yes") {
             cy.radioBtn(fo.followOnYesOption, "YES").click({
                 force: true
@@ -502,7 +502,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         }
         };
 
-    function handlePriorProcurement(priorProcurement,priorProcurementVal) {
+    function selectPriorProcurement(priorProcurement,priorProcurementVal) {
             if (priorProcurement === "Yes") {
                 cy.radioBtn(fo.priorProcurementYesOption, "YES").click({
                     force: true
@@ -516,7 +516,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
             }
             };
     
-    function handleRemoveBarriers(
+    function selectRemoveBarriers(
         followOn,
         purgeTraining,
         priorProcurement,
@@ -605,16 +605,16 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
     });
 
     it("TC2: Cause sole source situation", () => {
-        handleTimeCost(addTimeCost, dropDownOption, estDelayVal);
-        handleGovEngineer(govEngineer, pName, insuffInput);
-        handleSpecificFeatureProduct(
+        selectTimeCost(addTimeCost, dropDownOption, estDelayVal);
+        selectGovEngineer(govEngineer, pName, insuffInput);
+        selectSpecificFeatureProduct(
             specificFeaProduct,
             isProductOrFeature,
             productInputVal,
             whyEssInputVal,
             whyInadequateInputVal
         );
-        handleSoleSourceSituation(
+        soleSourceSituation(
             addTimeCost,
             govEngineer,
             specificFeaProduct,
@@ -672,18 +672,18 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
             return Cypress.$(fo.capablesourceYesOption).attr("aria-checked") == "false";
                 
         });
-        handleOnlyCapableSource(supportDataVal);
+        selectOnlyCapableSource(supportDataVal);
         
         if(specificFeaProduct ==="Yes"){
             reviewCatalogSection(crResultVal);
         }       
-        handleOtherTechniques(
+        selectOtherTechniques(
             techniques,
             personReliedVal,
             otherVal,
             techniquesSummaryInputVal
         );
-        handleMRREfforts(
+        selectMRREfforts(
             capablesourceOption,
             reviewCatalogSectionOption,
             contractAction,            
@@ -728,7 +728,7 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         });
 
     it("TC6: Remove Barriers", () => {
-        handleFollowOn(followOn);
+        selectFollowOn(followOn);
         const pursingTrainingMap = {
             Yes: fo.pursingYesOption,
             No: fo.pursingNoOption
@@ -743,9 +743,9 @@ describe("Test suite: E2E-Exception to Fair Opportunity", () => {
         cy.findElement(reqIaaSMap[reqIaaS]).click({
             force: true
         });
-        handlePriorProcurement(priorProcurement,priorProcurementVal);
+        selectPriorProcurement(priorProcurement,priorProcurementVal);
 
-        handleRemoveBarriers(
+        selectRemoveBarriers(
             followOn,
             purgeTraining,
             priorProcurement,
