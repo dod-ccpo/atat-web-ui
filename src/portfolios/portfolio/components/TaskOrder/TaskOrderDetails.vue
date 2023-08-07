@@ -402,6 +402,7 @@ import {
 import { Statuses } from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
 import { ClinDTO } from "@/api/models";
+import { stat } from "fs";
 
 @Component({
   components: {
@@ -485,7 +486,7 @@ export default class TaskOrderDetails extends Vue {
       : ""
   }
 
-  public getExpiringStatus(CLINNumber: string): string {
+  public getExpiringStatus(CLINNumber: string): Record<string, string> {
     let firstTwo = CLINNumber.slice(0,2);
     const lastTwo = CLINNumber.slice(2, CLINNumber.length);
     let expectedClin = '';
@@ -502,17 +503,22 @@ export default class TaskOrderDetails extends Vue {
     const hasFollowOn = this.clins.some((clin) =>
       clin.clin_number === expectedClin && clin.clin_status === Statuses.OptionExercised.value
     );
-    return hasFollowOn ? Statuses.ExpiringPopOK.value : Statuses.ExpiringPop.value;
+    return hasFollowOn 
+      ? {value: Statuses.ExpiringPopOK.value, label: Statuses.ExpiringPopOK.label} 
+      : {value: Statuses.ExpiringPop.value, label: Statuses.ExpiringPop.label}
   }
 
   public getClinStatus(clin: ClinDTO){
     if (this.isUpcomingTO) {
-      return Statuses.Upcoming.value
+      return {value: Statuses.Upcoming.value, label: Statuses.Upcoming.label}
     }
     if(clin.clin_status === Statuses.ExpiringPop.value){
-      return this.getExpiringStatus(clin.clin_number) 
+      return this.getExpiringStatus(clin.clin_number);
     }
-    return clin.clin_status
+    const status = Object.keys(Statuses).find((s) =>
+      Statuses[s].value === clin.clin_status) as string;
+    
+    return Statuses[status]
   }
 
   public handleClick(): void {
@@ -566,19 +572,18 @@ export default class TaskOrderDetails extends Vue {
 
     this.clins.forEach((clin) => {
       const isClinActive = !inactiveStatuses.includes(clin.clin_status);
+      const clinStatus = this.getClinStatus(clin);
       const tableRowData: ClinTableRowData = {
         isActive: isClinActive,
-        isExercised: clin.clin_status === Statuses.OptionExercised.value,
-        isPending: clin.clin_status === Statuses.OptionPending.value,
-        isExpired: clin.clin_status === Statuses.Expired.value,
+        isExercised: clinStatus.value === Statuses.OptionExercised.value,
+        isPending: clinStatus.value === Statuses.OptionPending.value,
+        isExpired: clinStatus.value === Statuses.Expired.value,
         CLINNumber: clin.clin_number,
         CLINTitle: clin.idiq_clin_display?.display_value,
         PoP: differenceInDaysOrMonths(clin.pop_start_date, clin.pop_end_date),
         popStartDate: clin.pop_start_date,
-        status: this.getClinStatus(clin),
-        statusLabel: this.isUpcomingTO 
-          ? Statuses.Upcoming.label 
-          : getStatusLabelFromValue(clin.clin_status),
+        status: clinStatus.value,
+        statusLabel: clinStatus.label,
         obligatedFunds: "$" + toCurrencyString(clin.funds_obligated),
         totalCLINValue: "$" + toCurrencyString(clin.funds_total),
         totalFundsSpent: "$" + toCurrencyString(clin.funds_spent_clin || 0),
