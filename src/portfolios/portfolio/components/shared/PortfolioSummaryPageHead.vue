@@ -25,8 +25,8 @@
             @blur="titleBlurred()"
             @focus="setTitleBeforeEdit"
             maxlength="60"
-            :readonly="portfolioIsArchived"
-            :disabled="portfolioIsArchived"
+            :readonly="portfolioIsReadOnly"
+            :disabled="portfolioIsReadOnly"
           />
         <div>
           <v-tabs 
@@ -68,7 +68,7 @@
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
-          v-if="!portfolioIsArchived"
+          v-if="!portfolioIsReadOnly"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -181,7 +181,7 @@ export default class PortfolioSummaryPageHead extends Vue {
     return PortfolioStore.currentPortfolio.status as string;
   }
 
-  public get portfolioIsArchived(): boolean {
+  public get portfolioIsReadOnly(): boolean {
     return PortfolioStore.currentUserIsViewer || this.portfolioStatus === "ARCHIVED";
   }
 
