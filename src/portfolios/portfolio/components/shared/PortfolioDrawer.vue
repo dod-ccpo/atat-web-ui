@@ -729,6 +729,13 @@ export default class PortfolioDrawer extends Vue {
         if (member.role === "Viewer" && member.sys_id) viewers.push(member.sys_id);
         if (member.role === "Manager" && member.sys_id) managers.push(member.sys_id);
       });
+      if (this.currentUserIsOwner) {
+        if (PortfolioStore.currentUserIsManager) {
+          managers.push(this.currentUser.sys_id as string);
+        } else if (PortfolioStore.currentUserIsViewer) {
+          viewers.push(this.currentUser.sys_id as string);
+        }
+      }
       /* eslint-disable camelcase */
       this.portfolio.portfolio_viewers = viewers.join(",");
       this.portfolio.portfolio_managers = managers.join(",");
