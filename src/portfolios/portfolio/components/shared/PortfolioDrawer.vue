@@ -55,11 +55,10 @@
       </div>
     </div>
 
-    <hr class="my-0" v-if="!isProdEnv" />
+    <hr class="my-0" />
     
     <div 
       id="PortfolioMembersSection" 
-      v-if="!isProdEnv" 
       class="_portfolio-panel _panel-padding pb-8"
     >
       <div
