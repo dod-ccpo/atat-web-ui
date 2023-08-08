@@ -166,8 +166,8 @@
               <div
                 class="d-flex justify-end align-center"
                 :class="[
-                {'error--text': this.isIFPOverfunded},
-                {'error--text': this.isIFPUnderfunded},
+                {'error--text': isOverfunded},
+                {'error--text': isUnderfunded},
                  ]">
                 <label for="TotalAmount" class="mr-4"> Total </label>
 
@@ -179,7 +179,7 @@
                   width="190"
                   style="margin-right: -10px;"
                   :disabled="true"
-                  :isManuallyErrored="isIFPUnderfunded||isIFPOverfunded"
+                  :isManuallyErrored="isUnderfunded || isOverfunded"
                 />
                 <span class="d-block" style="width: 36px"></span>
               </div>
@@ -242,12 +242,12 @@
         <ATATAlert
           id="OverUnderFundedAlert"
           class="width-70 mt-5"
-          v-if=" isIFPOverfunded|| isIFPUnderfunded "
+          v-if=" isOverfunded || isUnderfunded "
         >
           <template slot="content">
             <p class="mb-0">
               Based on your requirement’s cost estimate, your plan is
-              <strong>{{ isIFPOverfunded ? 'over' : 'under'}}funded</strong>. 
+              <strong>{{ isOverfunded ? 'over' : 'under'}}funded</strong>. 
               Please adjust your increments to ensure the total equals ${{ costEstimateStr }} 
             </p>
           </template>
@@ -273,7 +273,7 @@ import PeriodOfPerformance from "@/store/periods";
 
 import { CostEstimateDTO, PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models";
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
-import { toCurrencyString, currencyStringToNumber } from "@/helpers";
+import { toCurrencyString, currencyStringToNumber, roundDecimal } from "@/helpers";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
@@ -284,6 +284,7 @@ import _ from "lodash";
 import { api } from "@/api";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { MarketResearchTechniquesApi } from "@/api/fairOpportunity";
 
 @Component({
   components: {
@@ -321,8 +322,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public initialAmount = 0;
   public initialAmountStr = "";
   private currentSelectedValue = "";
-  private isIFPUnderfunded = false;
-  private isIFPOverfunded = false;
   public costData: CostEstimateDTO = {packageId:"",payload:{}}
   public baseYear = 0
 
@@ -373,10 +372,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public async validateOnContinue(): Promise<void> {
     this.calcAmounts("initialIncrement");
     this.calcAmounts("increment0");
-    this.isUnderfunded();
-    this.isOverfunded();
     if (!this.hasValidatedOnContinue && (this.outOfRangeIndex && this.outOfRangeIndex >= 0
-      || this.isIFPUnderfunded || this.isIFPOverfunded)
+      || this.isUnderfunded || this.isOverfunded)
     ) {
       this.allowContinue = false;
     } else {
@@ -482,14 +479,14 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.shouldShowAddIncrementButton();
   }
 
-  public isOverfunded():void{
-    this.isIFPOverfunded = this.costEstimate < this.totalAmount;
+  get isOverfunded():boolean{
+    return roundDecimal(this.costEstimate,2) < roundDecimal(this.totalAmount,2)
+  }
+  get isUnderfunded():boolean{
+    return roundDecimal(this.costEstimate,2) > roundDecimal(this.totalAmount,2)
   }
 
-  public isUnderfunded():void{
-    this.isIFPUnderfunded = this.costEstimate > this.totalAmount;
-  }
-
+  
   public showAddIncrementButton = true;
 
   public shouldShowAddIncrementButton(): void {
@@ -614,7 +611,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       amt = parseFloat(this.fundingIncrements[0].amt);
       this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
     }
-    this.isOverfunded();
   }
 
   public checkIfHasPeriodGap(index: number): boolean {

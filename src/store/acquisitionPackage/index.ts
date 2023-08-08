@@ -145,6 +145,8 @@ const initialProjectOverview = () => {
     scope: "",
     emergency_declaration: "",
     project_disclaimer: disclaimer,
+    cjadc2: "",
+    cjadc2_percentage: ""
   };
 };
 
