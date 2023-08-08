@@ -126,8 +126,7 @@ async function confirmServiceDeletion() {
 }
 
 async function confirmDeleteTravelAll() {
-  acquisitionPackage.setIsTravelNeeded("NO")
-  debugger
+  AcquisitionPackage.setIsTravelNeeded("NO")
   await DescriptionOfWork.setConfirmTravelDeleteAll(true);
   router.push({
     name: "Summary_Step_Six",

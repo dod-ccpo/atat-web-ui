@@ -847,8 +847,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessTravel(): Promise<void> {
     await DescriptionOfWork.loadTravel()
-    const isTravelSkipped = acquisitionPackage.isTravelNeeded === "NO"
-    debugger
+    const isTravelSkipped = AcquisitionPackage.isTravelNeeded === "NO"
     const travelInfo = await DescriptionOfWork.getTravel()
     const isTouched = isTravelSkipped||travelInfo.length > 0
     const isComplete =  isTravelSkipped
