@@ -16,7 +16,6 @@ import { Statuses } from "../acquisitionPackage";
 import CurrentUserStore from "../user";
 import {convertColumnReferencesToValues} from "@/api/helpers";
 import { Environment } from "types/Global";
-import { cli } from "cypress";
 import { currencyStringToNumber } from "@/helpers";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
