@@ -647,11 +647,18 @@ export default class TaskOrderDetails extends Vue {
         break;
       }
     }
-
     // check for values inside of the array first, 
     // if you don't there is a case that errors out the frontend
     if(this.optionPendingClins.length > 0){
       this.optionPendingClins[0].startNewClinGroup = true;
+      let firstTwo = this.optionPendingClins[0].CLINNumber?.slice(0,2);
+      for(let i = 0; i < this.optionPendingClins.length; i++){
+        const tempFirstTwo = this.optionPendingClins[i].CLINNumber?.slice(0,2)
+        if(firstTwo !== tempFirstTwo){
+          this.optionPendingClins[i].startNewClinGroup = true;
+          firstTwo = tempFirstTwo;
+        }
+      }
     }
     if(this.expiredClins.length > 0){
       this.expiredClins[0].startNewClinGroup = true;
@@ -659,20 +666,14 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async sortRows(): Promise<void> {
-    this.tableData.sort((a, b) =>
-      (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1
-    );
-    this.sortArrayByDateThenNumber(this.optionPendingClins);
-    this.sortArrayByDateThenNumber(this.expiredClins);
+    this.sortArrayByCLIN(this.tableData);
+    this.sortArrayByCLIN(this.optionPendingClins);
+    this.sortArrayByCLIN(this.expiredClins);
   }
 
-  public sortArrayByDateThenNumber(array: ClinTableRowData[]): void {
+  public sortArrayByCLIN(array: ClinTableRowData[]): void {
     array.sort((a, b) => {
-      if (a.popStartDate === b.popStartDate) {
-        return (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1;
-      } else {
-        return a.popStartDate > b.popStartDate ? -1 : 1;
-      }
+      return (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1;
     });
   }
 
