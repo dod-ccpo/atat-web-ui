@@ -39,7 +39,8 @@ describe("Testing index Component", () => {
       totalObligated: "",
       fundsSpent: "",
       fundsSpentPercent: "",
-      fundingAlertChipString: "expired"
+      fundingAlertChipString: "expired",
+      isOwner: true
     };
 
   beforeEach(() => {
@@ -60,6 +61,10 @@ describe("Testing index Component", () => {
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
+    const menuItemLength = wrapper.vm.$data.portfolioCardMenuItems.length
+    expect(
+      wrapper.vm.$data.portfolioCardMenuItems[menuItemLength - 1].title
+    ).toBe("Archive portfolio")
   });
 
   it("clicks meatball menu - emit to leave portfolio", async () => {
@@ -167,5 +172,7 @@ describe("Testing index Component", () => {
     expect(url).toBe(cspConsoleURLs[csp]);  
   })
 
-
+  it("tests getter - managerEmails", () =>{
+    expect(wrapper.vm.managerEmails).toBe("foo@mail.mil, bar@mail.mil")
+  })
 });
