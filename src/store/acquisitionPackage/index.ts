@@ -116,6 +116,7 @@ export const Statuses: Record<string, Record<string, string>> = {
   ProvisioningIssue: { label: "Provisioning issue", value: "PROVISIONING_ISSUE" }, // PORTFOLIO, ENV
   TaskOrderAwarded: { label: "Task Order Awarded", value: "TASK_ORDER_AWARDED" }, // ACQ
   Upcoming: { label: "Upcoming", value: "UPCOMING" }, // TO
+  UpcomingPeriod: { label: "Upcoming period", value: "UPCOMING_PERIOD" }, // TO
   WaitingForSignatures: { label: "Waiting For Signatures", value: "WAITING_FOR_SIGNATURES" }, // ACQ
   WaitingForTaskOrder: { label: "Waiting For Task Order", value: "WAITING_FOR_TASK_ORDER" }, // ACQ
 }

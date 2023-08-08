@@ -16,6 +16,8 @@ import { Statuses } from "../acquisitionPackage";
 import CurrentUserStore from "../user";
 import {convertColumnReferencesToValues} from "@/api/helpers";
 import { Environment } from "types/Global";
+import { cli } from "cypress";
+import { currencyStringToNumber } from "@/helpers";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -343,17 +345,25 @@ export class PortfolioSummaryStore extends VuexModule {
         taskOrder.clin_records =
           allClinList.filter(clin => (taskOrder.clins.indexOf(<string>clin.sys_id) !== -1))
             .map(clin => {
+              const fundsTotal = currencyStringToNumber(clin.funds_total as unknown as string)
+              const fundsObligated = currencyStringToNumber(
+                clin.funds_obligated as unknown as string
+              );
+              const actualFundsSpent = currencyStringToNumber(
+                clin.actual_funds_spent as unknown as string
+              );
+              const status = clin.clin_status.toUpperCase().replace(/[\W_]+/g,"_");
               return {
                 sys_id: clin.sys_id,
                 clin_number: clin.clin_number,
                 idiq_clin: clin.idiq_clin,
                 pop_end_date: clin.pop_end_date,
                 pop_start_date: clin.pop_start_date,
-                clin_status: clin.clin_status,
+                clin_status: status,
                 clin_status_display: clin.clin_status,
-                funds_obligated: Number(clin.funds_obligated),
-                funds_total: Number(clin.funds_total),
-                actual_funds_spent: Number(clin.actual_funds_spent)
+                funds_obligated: Number(fundsObligated),
+                funds_total: Number(fundsTotal),
+                actual_funds_spent: Number(actualFundsSpent)
               }
             });
       })

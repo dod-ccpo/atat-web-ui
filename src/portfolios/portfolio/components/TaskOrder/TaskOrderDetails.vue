@@ -26,14 +26,14 @@
       <div class="d-flex flex-row align-center">
         <h1>{{ getTaskOrderNumber }}</h1>
         <v-chip 
-        v-if="isUpcomingTO"
+        v-if="showStatusChip"
         id="StatusChip" 
         :color="statusChipColor" 
         style="height: 24px;" 
         class="ml-6"
         label
         >
-          Upcoming
+          {{statusChipText}}
         </v-chip>
       </div>
       <!-- <v-btn
@@ -396,6 +396,7 @@ import {
   currencyStringToNumber,
   differenceInDaysOrMonths,
   toCurrencyString,
+  getStatusChipBgColor
 } from "@/helpers";
 
 import { Statuses } from "@/store/acquisitionPackage";
@@ -421,7 +422,8 @@ export default class TaskOrderDetails extends Vue {
   public showInactive = false;
   public statuses = Statuses;
   public isUpcomingTO = false;
-  public statusChipColor = '#0076A6'
+  public statusChipColor = "";
+  public statusChipText = "";
 
   @Watch("showInactive")
   public showHide(): string {
@@ -434,7 +436,8 @@ export default class TaskOrderDetails extends Vue {
     if(this.selectedTaskOrder.status === this.statuses.Upcoming.value){
       this.isUpcomingTO = true;
     }
-    await this.loadOnEnter()
+    this.getBgColor();
+    await this.loadOnEnter();
   }
 
   /* eslint-disable indent */
@@ -507,8 +510,12 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public getClinStatus(clin: ClinDTO){
-    if (this.isUpcomingTO) {
-      return Statuses.Upcoming
+    if (
+      this.isUpcomingTO
+        && !(clin.clin_status === Statuses.Expired.value)
+        && !(clin.clin_status === Statuses.OptionPending.value)
+    ) {
+      return Statuses.UpcomingPeriod
     }
     if(clin.clin_status === Statuses.ExpiringPop.value){
       return this.getExpiringStatus(clin.clin_number);
@@ -519,6 +526,20 @@ export default class TaskOrderDetails extends Vue {
       Statuses[s].value === clin.clin_status) as string;
     
     return Statuses[status]
+  }
+
+  public getBgColor(): void {
+    this.statusChipColor = this.selectedTaskOrder.status 
+      ? getStatusChipBgColor(this.selectedTaskOrder.status) 
+      : "";
+  }
+
+  public get showStatusChip(): boolean{
+    const showChip = this.isUpcomingTO || this.selectedTaskOrder.status === Statuses.Expired.value
+    if(showChip){
+      this.statusChipText = this.selectedTaskOrder.status as string;
+    }
+    return showChip;
   }
 
   public handleClick(): void {
@@ -766,7 +787,7 @@ export default class TaskOrderDetails extends Vue {
         "bg-info-lighter",
       ],
       [
-        Statuses.Upcoming.value,
+        Statuses.UpcomingPeriod.value,
         "requestQuote",
         "13",
         "16",
