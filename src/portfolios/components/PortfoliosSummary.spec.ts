@@ -26,6 +26,7 @@ const portfolios: PortfolioSummaryDTO[] = [
     portfolio_status: "PROCESSING",
     portfolio_owner: "",
     portfolio_managers: "",
+    portfolio_viewers: "",
     funds_spent: 5000,
     task_orders: [],
     active_task_order: "",
@@ -50,6 +51,7 @@ const portfolios: PortfolioSummaryDTO[] = [
     portfolio_status: "ACTIVE",
     portfolio_owner: "",
     portfolio_managers: "",
+    portfolio_viewers: "",
     funds_spent: 5000,
     task_orders: [
       {
