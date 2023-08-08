@@ -7,6 +7,7 @@ import { PortfolioCardData } from "types/Global";
 import AppSections from "@/store/appSections";
 import PortfolioData from "@/store/portfolio";
 import PortfolioStore from "@/store/portfolio";
+import { cspConsoleURLs } from "@/store/portfolio";
 
 Vue.use(Vuetify);
 
@@ -95,6 +96,12 @@ describe("Testing index Component", () => {
     expect(window.open).toHaveBeenCalledWith("foo", "_blank");
   });
 
+  it("clicks meatball menu - Archive Portfolio", async () => {
+    window.open = jest.fn();
+    await wrapper.vm.cardMenuClick({action: menuActions.archivePortfolio});
+    expect(wrapper.emitted('openArchivePortfolioModal')).toBeTruthy();
+  });
+
   it("clicks meatball menu - no action taken", async () => {
     await wrapper.vm.cardMenuClick({action: "foo"});
   });
@@ -151,5 +158,14 @@ describe("Testing index Component", () => {
       expect(foo).toBeTruthy();  
     })
   })
+  it("tests getCSPConsoleURL () => ", async () =>{
+    const csp = 'azure'
+    await wrapper.setData({
+      cardData: {csp: csp}
+    })
+    const url = wrapper.vm.getCSPConsoleURL();
+    expect(url).toBe(cspConsoleURLs[csp]);  
+  })
+
 
 });
