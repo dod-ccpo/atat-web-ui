@@ -395,6 +395,7 @@ export class AcquisitionPackageStore extends VuexModule {
   totalBasePoPDuration = 0;
   docGenJobStatus = "";
   packageId = "";
+  isTravelNeeded = "";
   regions: RegionsDTO[] | null = null;
   isLoading = false;
   feedbackOptions: FeedbackOptionsDTO[] | null = null;
@@ -710,6 +711,14 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public doSetIsLoading(val: boolean): void {
     this.isLoading = val;
+  }
+  @Action({rawError: true})
+  public setIsTravelNeeded(val: string): void {
+    this.doSetIsTravelNeeded(val);
+  }
+  @Mutation
+  public doSetIsTravelNeeded(val: string): void {
+    this.isTravelNeeded = val;
   }
 
   @Action({rawError: false})

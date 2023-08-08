@@ -1,11 +1,12 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
-import { 
+import {
   DOWClassificationInstance,
-  DOWServiceOffering, 
-  DOWServiceOfferingGroup, 
-  OtherServiceOfferingData, 
-  SummaryItem } from "types/Global";
+  DOWServiceOffering,
+  DOWServiceOfferingGroup,
+  OtherServiceOfferingData,
+  SummaryItem, TravelSummaryTableData
+} from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
@@ -20,6 +21,7 @@ import ClassificationRequirements, { isClassLevelUnclass } from "../classificati
 import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
+import acquisitionPackage from "../acquisitionPackage";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -817,7 +819,7 @@ export class SummaryStore extends VuexModule {
       "work_"
     ];
     await this.assessCOI();
-
+    await this.assessTravel()
   }
 
   @Action({rawError: true})
@@ -841,6 +843,28 @@ export class SummaryStore extends VuexModule {
       substep: 1
     }
     await this.doSetSummaryItem(standardsAndComplianceSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async assessTravel(): Promise<void> {
+    await DescriptionOfWork.loadTravel()
+    const travelInfo = await DescriptionOfWork.getTravel()
+    const keysToIgnore = ["duration_","trip_","selected_","number_"]
+    const monitor = {object: travelInfo, keysToIgnore};
+    debugger
+    const isTouched = await this.isTouched(monitor)
+    const isComplete =  acquisitionPackage.isTravelNeeded === "NO"
+      || await this.isComplete(monitor);
+    const travelSummaryItem: SummaryItem = {
+      title: "Travel",
+      description: "",
+      isComplete,
+      isTouched,
+      routeName: "Travel",
+      step: 6,
+      substep: 3
+    }
+    await this.doSetSummaryItem(travelSummaryItem)
   }
 
 
@@ -876,6 +900,7 @@ export class SummaryStore extends VuexModule {
       x => ["pii_","record_name", "work_"].indexOf(x) === -1
     );
     const monitor = {object: sensitiveInfo, keysToIgnore};
+    debugger
     const isTouched = await this.isTouched(monitor)
     const isComplete =  monitor.object.pii_present === "NO" 
       || await this.isComplete(monitor);
