@@ -1559,7 +1559,7 @@ export class AcquisitionPackageStore extends VuexModule {
       const ContractingShopNonDitcoAddressID =
           acquisitionPackage.contracting_shop_non_ditco_address as string;
       const customerFeedback = acquisitionPackage.customer_feedback as string;
-
+      const travelNeeded = acquisitionPackage.is_travel_needed as string
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
         project_overview: projectOverviewSysId,
@@ -1579,7 +1579,9 @@ export class AcquisitionPackageStore extends VuexModule {
         customer_feedback: customerFeedback
       });
       await this.setCurrentUser();
-
+      if(travelNeeded){
+        this.setIsTravelNeeded(travelNeeded)
+      }
       if (acquisitionPackage.contributors) {
         await this.setPackageContributors(acquisitionPackage.contributors);
       }

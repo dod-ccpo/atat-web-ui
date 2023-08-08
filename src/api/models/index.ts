@@ -47,6 +47,7 @@ export interface AlertDTO extends BaseTableDTO {
 }
 
 export interface AcquisitionPackageDTO extends BaseTableDTO {
+  is_travel_needed: string;
   status: string;
   number: string;
   project_overview: ReferenceColumn | string;
