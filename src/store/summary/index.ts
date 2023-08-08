@@ -848,13 +848,12 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessTravel(): Promise<void> {
     await DescriptionOfWork.loadTravel()
-    const travelInfo = await DescriptionOfWork.getTravel()
-    const keysToIgnore = ["duration_","trip_","selected_","number_"]
-    const monitor = {object: travelInfo, keysToIgnore};
+    const isTravelSkipped = acquisitionPackage.isTravelNeeded === "NO"
     debugger
-    const isTouched = await this.isTouched(monitor)
-    const isComplete =  acquisitionPackage.isTravelNeeded === "NO"
-      || await this.isComplete(monitor);
+    const travelInfo = await DescriptionOfWork.getTravel()
+    const isTouched = isTravelSkipped||travelInfo.length > 0
+    const isComplete =  isTravelSkipped
+      || travelInfo.length > 0;
     const travelSummaryItem: SummaryItem = {
       title: "Travel",
       description: "",
@@ -900,7 +899,6 @@ export class SummaryStore extends VuexModule {
       x => ["pii_","record_name", "work_"].indexOf(x) === -1
     );
     const monitor = {object: sensitiveInfo, keysToIgnore};
-    debugger
     const isTouched = await this.isTouched(monitor)
     const isComplete =  monitor.object.pii_present === "NO" 
       || await this.isComplete(monitor);

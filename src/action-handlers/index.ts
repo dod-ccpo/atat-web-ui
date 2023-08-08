@@ -8,6 +8,7 @@ import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { FairOpportunityDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
@@ -126,7 +127,15 @@ async function confirmServiceDeletion() {
 }
 
 async function confirmDeleteTravelAll() {
+  acquisitionPackage.setIsTravelNeeded("NO")
+  debugger
   await DescriptionOfWork.setConfirmTravelDeleteAll(true);
+  router.push({
+    name: "Summary_Step_Six",
+    params: {
+      direction: "next"
+    },
+  }).catch(() => console.log("avoiding redundant navigation"));
 }
 
 async function openTOSearchModal() {
