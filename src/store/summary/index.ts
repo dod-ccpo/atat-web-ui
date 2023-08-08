@@ -5,7 +5,7 @@ import {
   DOWServiceOffering,
   DOWServiceOfferingGroup,
   OtherServiceOfferingData,
-  SummaryItem, TravelSummaryTableData
+  SummaryItem,
 } from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
@@ -21,7 +21,6 @@ import ClassificationRequirements, { isClassLevelUnclass } from "../classificati
 import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
-import acquisitionPackage from "../acquisitionPackage";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{

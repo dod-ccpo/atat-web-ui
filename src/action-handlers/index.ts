@@ -8,7 +8,6 @@ import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { FairOpportunityDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
-import acquisitionPackage from "@/store/acquisitionPackage";
 
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",

@@ -257,7 +257,6 @@ import { createPeriodCheckboxItems } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {routeNames} from "@/router/stepper";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
