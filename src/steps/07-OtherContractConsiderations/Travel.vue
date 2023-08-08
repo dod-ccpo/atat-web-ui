@@ -431,6 +431,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
     }
     this.showTravelFormDialog = false;
     acquisitionPackage.setIsTravelNeeded("YES")
+    acquisitionPackage.setIsTravelTouched(true)
   }
 
   public setTableData(): void {
