@@ -616,6 +616,7 @@ export interface TaskOrderCardData {
   totalLifeCycle?: string,
   totalFundsSpent?: string,
   status?: string,
+  statusLabel?: string,
   sys_id?: string,
   clins?:ClinDTO[],
 }
