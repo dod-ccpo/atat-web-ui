@@ -397,6 +397,8 @@ export class AcquisitionPackageStore extends VuexModule {
   totalBasePoPDuration = 0;
   docGenJobStatus = "";
   packageId = "";
+  isTravelNeeded = "";
+  isTravelTouched = false;
   regions: RegionsDTO[] | null = null;
   isLoading = false;
   feedbackOptions: FeedbackOptionsDTO[] | null = null;
@@ -712,6 +714,22 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public doSetIsLoading(val: boolean): void {
     this.isLoading = val;
+  }
+  @Action({rawError: true})
+  public setIsTravelNeeded(val: string): void {
+    this.doSetIsTravelNeeded(val);
+  }
+  @Mutation
+  public doSetIsTravelNeeded(val: string): void {
+    this.isTravelNeeded = val;
+  }
+  @Action({rawError: true})
+  public setIsTravelTouched(val: boolean): void {
+    this.doSetIsTravelTouched(val);
+  }
+  @Mutation
+  public doSetIsTravelTouched(val: boolean): void {
+    this.isTravelTouched = val;
   }
 
   @Action({rawError: false})
@@ -1552,7 +1570,7 @@ export class AcquisitionPackageStore extends VuexModule {
       const ContractingShopNonDitcoAddressID =
           acquisitionPackage.contracting_shop_non_ditco_address as string;
       const customerFeedback = acquisitionPackage.customer_feedback as string;
-
+      const travelNeeded = acquisitionPackage.is_travel_needed as string
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
         project_overview: projectOverviewSysId,
@@ -1572,7 +1590,10 @@ export class AcquisitionPackageStore extends VuexModule {
         customer_feedback: customerFeedback
       });
       await this.setCurrentUser();
-
+      if(travelNeeded){
+        this.setIsTravelNeeded(travelNeeded)
+        this.setIsTravelTouched(true)
+      }
       if (acquisitionPackage.contributors) {
         await this.setPackageContributors(acquisitionPackage.contributors);
       }
