@@ -1,5 +1,9 @@
 <template>
-  <div :style="divStyle" class="_svg-icon">
+  <div
+    @mouseenter="mouseEnter"
+    @mouseleave="mouseLeave"
+    :style="divStyle"
+    class="_svg-icon">
     <component :is="name" 
       :color="getColor()" 
       :height="_height" 
@@ -223,6 +227,13 @@ export default class ATATSVGIcon extends Vue {
         "height: " + this._height + "px;" +
         "line-height: 0px";
 
+  }
+
+  public mouseEnter():void {
+    this.$emit("mouseenter")
+  }
+  public mouseLeave():void {
+    this.$emit("mouseleave")
   }
 
   private getColor(): string {

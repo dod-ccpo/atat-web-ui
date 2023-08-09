@@ -1134,6 +1134,7 @@ export interface DisaOrganizationDTO extends BaseTableDTO {
   css_id: number;
 }
 export interface CustomerFeedbackDTO extends BaseTableDTO {
+  user_sys_id: ReferenceColumn | string;
   acquisition_package: string,
   dapps_experience: number
   feedback_items: string,

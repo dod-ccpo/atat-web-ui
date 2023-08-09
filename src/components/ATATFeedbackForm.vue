@@ -1,11 +1,12 @@
 <template>
-  <div v-if="!this.hide" class=" _feedback-form">
+  <div class=" _feedback-form">
     <div class="flex-column">
       <div
         class="_feedback-tab"
+        id="FeedbackTab"
          :class="[
            {'_open':open},
-           {'_show-form':DAPPSExperience > 0},
+           {'_show-form':showForm},
            {'_thank-you':showThankYou}
            ]"
       >
@@ -35,27 +36,20 @@
         v-if="open">
         <v-expand-transition>
           <div>
-            <div v-if="this.DAPPSExperience === 0">
+            <div v-if="!hideIcons">
               <h3 class="text-base-dark font-weight-500 mb-4">
                 How was your experience with DAPPS?
               </h3>
-              <div class="d-flex flex-row justify-space-between">
+              <div class="d-flex flex-row justify-space-between mb-5">
                 <div class="mx-1">
-                  <v-tooltip
-                    transition="slide-y-reverse-transition"
-                    :id="'Contributor_Tooltip'"
-                    max-width="250px"
-                    bottom
-                    eager
-                  >
-                    <template v-slot:activator="{ on }">
                   <v-btn
-                    v-on="on"
                     id="veryDissatisfied"
                     icon
                     @click="setFeedbackMood(1)"
                     @keydown.enter="setFeedbackMood(1)"
                     @keydown.space="setFeedbackMood(1)"
+                    @mouseenter="showMessage('bad')"
+                    @mouseleave="hideMessage()"
                   >
                     <ATATSVGIcon
                       name="veryDissatisfied"
@@ -65,9 +59,6 @@
                       height="60"
                     />
                   </v-btn>
-                    </template>
-                    hello
-                  </v-tooltip>
                 </div>
                 <div class="mx-1">
                   <v-btn
@@ -76,6 +67,8 @@
                     @click="setFeedbackMood(2)"
                     @keydown.enter="setFeedbackMood(2)"
                     @keydown.space="setFeedbackMood(2)"
+                    @mouseenter="showMessage('poor')"
+                    @mouseleave="hideMessage()"
                   >
                     <ATATSVGIcon
                       name="dissatisfied"
@@ -93,6 +86,8 @@
                     @click="setFeedbackMood(3)"
                     @keydown.enter="setFeedbackMood(3)"
                     @keydown.space="setFeedbackMood(3)"
+                    @mouseenter="showMessage('fair')"
+                    @mouseleave="hideMessage()"
                   >
                     <ATATSVGIcon
                       name="neutral"
@@ -110,6 +105,8 @@
                     @click="setFeedbackMood(4)"
                     @keydown.enter="setFeedbackMood(4)"
                     @keydown.space="setFeedbackMood(4)"
+                    @mouseenter="showMessage('good')"
+                    @mouseleave="hideMessage()"
                   >
                     <ATATSVGIcon
                       name="satisfied"
@@ -127,6 +124,8 @@
                     @click="setFeedbackMood(5)"
                     @keydown.enter="setFeedbackMood(5)"
                     @keydown.space="setFeedbackMood(5)"
+                    @mouseenter="showMessage('excellent')"
+                    @mouseleave="hideMessage()"
                   >
                     <ATATSVGIcon
                       name="verySatisfied"
@@ -138,8 +137,13 @@
                   </v-btn>
                 </div>
               </div>
+              <div class="d-flex justify-center">
+                <span class="_experience-text">
+                  {{experience}}
+                </span>
+              </div>
             </div>
-            <div v-else>
+            <div v-if="showForm">
               <div v-if="!showThankYou">
                 <h2 class="mb-3">
                   {{checkboxHeading}}
@@ -203,7 +207,7 @@
 /* eslint-disable camelcase */
 
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -211,6 +215,8 @@ import { Checkbox } from "../../types/Global";
 import { CustomerFeedbackDTO, FeedbackOptionsDTO } from "@/api/models";
 import ATATCheckboxGroup from "./ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import User, { UserStore } from "@/store/user";
+import { scrollToId } from "@/helpers";
 
 @Component({
   components: {
@@ -222,21 +228,27 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 
 export default class ATATFeedbackForm extends Vue {
   private open = true
-  private hide = false
   private showThankYou = false
+  private hideIcons = false
+  private showForm = false
   private positiveFeedbackOptions:Checkbox[] = []
   private negativeFeedbackOptions:Checkbox[] = []
   private DAPPSExperience = 0
   private otherFeedbackValue = ""
+  private experience = ""
   private selectedFeedbackOptions:string[] = []
+  private feedbackID = ""
 
   public toggle():void{
     this.open = !this.open
+    this.hideIcons = !this.hideIcons
   }
 
   private setFeedbackMood(value:number):void {
-    debugger
     this.DAPPSExperience = value
+    this.hideIcons = true
+    this.showForm = true
+    scrollToId("LoadingDialog")
   }
 
   private get checkboxHeading():string {
@@ -250,7 +262,9 @@ export default class ATATFeedbackForm extends Vue {
     return ""
   }
   public dismiss():void {
-    this.hide = true
+    this.open = false
+    this.showForm = false
+    this.showThankYou = false
   }
   public createCheckboxes(option:FeedbackOptionsDTO){
     const checkboxItem:Checkbox = {
@@ -265,6 +279,15 @@ export default class ATATFeedbackForm extends Vue {
     }
   }
 
+
+  public showMessage(value:string) {
+    this.experience =  `My experience was ${value}`
+  }
+  public hideMessage() {
+    this.experience = ""
+  }
+
+
   public get currentData(): CustomerFeedbackDTO {
 
     return {
@@ -272,15 +295,28 @@ export default class ATATFeedbackForm extends Vue {
       dapps_experience: this.DAPPSExperience,
       feedback_items: this.selectedFeedbackOptions.join(','),
       feedback_items_other: this.otherFeedbackValue,
-      is_complete: "true"
+      user_sys_id: User.currentUser.sys_id as string,
+      is_complete: "true",
+      sys_id: this.feedbackSysId
     }
   }
 
+  @Watch('DAPPSExperience')
+  public DappsExperienceChange(): void {
+    this.selectedFeedbackOptions = [];
+    this.otherFeedbackValue = "";
+  }
+
+
+  public get feedbackSysId():string{
+    return AcquisitionPackage.customerFeedback?.sys_id as string
+  }
+
+  public savedData:CustomerFeedbackDTO = {} as CustomerFeedbackDTO
+
   private async sendFeedback(): Promise<void> {
-    debugger
     try {
-      await AcquisitionPackage.saveData( {data: this.currentData,
-        storeProperty: StoreProperties.CustomerFeedback});
+      await AcquisitionPackage.saveFeedback(this.currentData);
       this.showThankYou = true
     } catch (error) {
       console.log(error);
@@ -296,13 +332,16 @@ export default class ATATFeedbackForm extends Vue {
     }
     const storeData = AcquisitionPackage.customerFeedback
     if(storeData?.acquisition_package){
-      debugger
-      this.hide = storeData?.is_complete === "true"
+      if(storeData.user_sys_id !== User.currentUser.sys_id
+      ||storeData?.is_complete === "true"){
+        this.open = false
+        this.hideIcons = true
+      }
+      this.feedbackID = storeData.sys_id as string
       this.DAPPSExperience = Number(storeData.dapps_experience)
       this.selectedFeedbackOptions = storeData.feedback_items.split(',')
       this.otherFeedbackValue = storeData.feedback_items_other
-
-      console.log(this.hide)
+      this.savedData = storeData
     }
 
   }

@@ -1556,7 +1556,6 @@ export class AcquisitionPackageStore extends VuexModule {
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
       const ContractingShopNonDitcoAddressID =
           acquisitionPackage.contracting_shop_non_ditco_address as string;
-      const customerFeedback = acquisitionPackage.customer_feedback as string;
 
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -1574,7 +1573,6 @@ export class AcquisitionPackageStore extends VuexModule {
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
         contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
-        customer_feedback: customerFeedback
       });
       await this.setCurrentUser();
 
@@ -1582,12 +1580,23 @@ export class AcquisitionPackageStore extends VuexModule {
         await this.setPackageContributors(acquisitionPackage.contributors);
       }
 
-      if (customerFeedback){
-        const feedback = await api.feedbackTable.retrieve(customerFeedback)
-        if(feedback){
-          this.setCustomerFeedback(feedback)
+      const feedbackQuery: AxiosRequestConfig = {
+        params: {
+          sysparm_query: "acquisition_package="
+              + AcquisitionPackage.acquisitionPackage?.sys_id
         }
-      }else{
+      };
+      const feedback = await api.feedbackTable.getQuery(feedbackQuery)
+      if(feedback){
+        debugger
+        const userIdx = feedback.findIndex(data =>{
+          data = convertColumnReferencesToValues(data)
+          return data.user_sys_id === UserStore.currentUser.sys_id
+        })
+        if(userIdx > -1){
+          this.setCustomerFeedback(feedback[userIdx])
+        }
+      } else{
         const initialFeedback = {} as CustomerFeedbackDTO
         this.setCustomerFeedback(initialFeedback)
       }
@@ -2243,7 +2252,6 @@ export class AcquisitionPackageStore extends VuexModule {
     storeProperty: string;
   }): Promise<void> {
     try {
-      debugger
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const apiEndPoint = await this.getApiEndPoint(storeProperty);
       const saveAction = (storeDataProperty.sys_id && storeDataProperty.sys_id.length > 0) ? 
@@ -2265,6 +2273,23 @@ export class AcquisitionPackageStore extends VuexModule {
       throw new Error(`error occurred saving store data ${storeProperty}`);
     } finally {
       await this.updateAcquisitionPackage();
+    }
+  }
+
+  @Action({rawError: true})
+  public async saveFeedback(value: CustomerFeedbackDTO): Promise<void> {
+    try {
+      const sys_id = value.sys_id || "";
+      debugger
+      if(sys_id.length === 0){
+        const feedbackData = await api.feedbackTable.create(value)
+        this.setCustomerFeedback(feedbackData)
+      }else{
+        const feedbackData = await api.feedbackTable.update(sys_id,value)
+        this.setCustomerFeedback(feedbackData)
+      }
+    } catch (error) {
+      throw new Error(`Error occurred saving feedback ${error}`);
     }
   }
 

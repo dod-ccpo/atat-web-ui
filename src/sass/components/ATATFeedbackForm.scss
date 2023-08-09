@@ -56,7 +56,6 @@
     padding: 40px 40px 60px 40px;
     background-color: $base-lightest;
     border-radius: 16px 0 0 0;
-
     &._thank-you{
       border-radius: 16px 16px 0 0;
       justify-content: center;
@@ -67,6 +66,9 @@
         background-color: $primary-10;
         box-shadow:$primary-10 0px 0px 0px 5px;
       }
+    }
+    ._experience-text {
+      height:16px;
     }
   }
 }
