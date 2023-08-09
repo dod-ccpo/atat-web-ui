@@ -259,7 +259,7 @@
             </template>
             <tr class="_section-divider">
               <td colspan="2" class="font-weight-400">
-                <span v-if="!showInactive">
+                <span v-if="!isExpiredTO">
                   <a
                     id="InactiveToggle"
                     @click="toggleInactive"
@@ -424,6 +424,7 @@ export default class TaskOrderDetails extends Vue {
   public showInactive = false;
   public statuses = Statuses;
   public isUpcomingTO = false;
+  public isExpiredTO = false;
   public statusChipColor = "";
   public statusChipText = "";
 
@@ -440,6 +441,7 @@ export default class TaskOrderDetails extends Vue {
     }
     if(this.selectedTaskOrder.status === this.statuses.Expired.value){
       this.showInactive = true;
+      this.isExpiredTO = true;
     }
     this.getBgColor();
     await this.loadOnEnter();
