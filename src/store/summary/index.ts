@@ -10,13 +10,15 @@ import {
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
-import { 
-  ContractTypeDTO, 
+import {
+  ContractConsiderationsDTO,
+  ContractTypeDTO,
   CrossDomainSolutionDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
-  SelectedClassificationLevelDTO, 
-  SensitiveInformationDTO} from "@/api/models";
+  SelectedClassificationLevelDTO,
+  SensitiveInformationDTO
+} from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
 import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
@@ -818,30 +820,60 @@ export class SummaryStore extends VuexModule {
       "work_"
     ];
     await this.assessCOI();
-    await this.assessTravel()
+    await this.assessPackagingPackingShipping();
+    await this.assessTravel();
   }
 
   @Action({rawError: true})
   public async assessCOI(): Promise<void> {
-    // const sensitiveInfo = AcquisitionPackage.sensitiveInformation as SensitiveInformationDTO;
-    // const description = await this.getPIIDescription(sensitiveInfo);
-    // const keysToIgnore = objectKeys.filter(
-    //   x => ["pii_","record_name", "work_"].indexOf(x) === -1
-    // );
-    // const monitor = {object: sensitiveInfo, keysToIgnore};
-    // const isTouched = await this.isTouched(monitor)
-    // const isComplete =  monitor.object.pii_present === "NO"
-    //   || await this.isComplete(monitor);
-    const standardsAndComplianceSummaryItem: SummaryItem = {
+    const contractConsiderations =
+      AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
+
+    const coi = contractConsiderations.potential_conflict_of_interest;
+    const coiInfo = contractConsiderations.conflict_of_interest_explanation;
+    const isTouched = coi === "YES" ? true : coi === "NO";
+    const isComplete =  coi === "NO" || (coiInfo !== undefined && coiInfo.length > 0);
+
+    const conflictOfInterestSummaryItem: SummaryItem = {
       title: "Conflict of Interest (COI)",
-      description: "Dummy",
-      isComplete: false,
-      isTouched: false,
+      description: "",
+      isComplete,
+      isTouched,
       routeName: "ConflictOfInterest",
       step: 6,
       substep: 1
     }
-    await this.doSetSummaryItem(standardsAndComplianceSummaryItem)
+
+    await this.doSetSummaryItem(conflictOfInterestSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async assessPackagingPackingShipping(): Promise<void> {
+    const contractConsiderations =
+      AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
+
+    const selections = [
+      contractConsiderations.contractor_provided_transfer,
+      contractConsiderations.packaging_shipping_other,
+      contractConsiderations.packaging_shipping_none_apply
+    ]
+    const isTouched = selections.includes('true');
+    const explanation = contractConsiderations.packaging_shipping_other_explanation;
+    const needsExplanation = selections[1] === 'true';
+    const isComplete = needsExplanation ?
+      (isTouched && explanation !== undefined && explanation.length > 0) : isTouched;
+
+    const packagingPackingShippingSummaryItem: SummaryItem = {
+      title: "Packaging, Packing, and Shipping",
+      description: "",
+      isComplete,
+      isTouched,
+      routeName: "PackagingPackingAndShipping",
+      step: 6,
+      substep: 2
+    }
+
+    await this.doSetSummaryItem(packagingPackingShippingSummaryItem)
   }
 
   @Action({rawError: true})
