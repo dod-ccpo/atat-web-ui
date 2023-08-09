@@ -103,7 +103,7 @@ export const Statuses: Record<string, Record<string, string>> = {
   Deleted: { label: "Deleted", value: "DELETED" }, // ACQ
   Delinquent: { label: "Delinquent", value: "DELINQUENT" }, // CLIN, PORTFOLIO
   Draft: { label: "Draft", value: "DRAFT" }, // ACQ
-  Expired: { label: "Expired", value: "EXPIRED" }, // CLIN, TO, PORTFOLIO
+  Expired: { label: "Expired PoP", value: "EXPIRED" }, // CLIN, TO, PORTFOLIO
   ExpiringPop: { label: "Expiring PoP", value: "EXPIRING_POP" }, // CLIN
   ExpiringPopOK: { label: "Expiring PoP", value: "EXPIRING_POP_OK" }, // CLIN
   ExpiringSoon: { label: "Expiring Soon", value: "EXPIRING_SOON" }, // PORTFOLIO
@@ -116,6 +116,7 @@ export const Statuses: Record<string, Record<string, string>> = {
   ProvisioningIssue: { label: "Provisioning issue", value: "PROVISIONING_ISSUE" }, // PORTFOLIO, ENV
   TaskOrderAwarded: { label: "Task Order Awarded", value: "TASK_ORDER_AWARDED" }, // ACQ
   Upcoming: { label: "Upcoming", value: "UPCOMING" }, // TO
+  UpcomingPeriod: { label: "Upcoming period", value: "UPCOMING_PERIOD" }, // TO
   WaitingForSignatures: { label: "Waiting For Signatures", value: "WAITING_FOR_SIGNATURES" }, // ACQ
   WaitingForTaskOrder: { label: "Waiting For Task Order", value: "WAITING_FOR_TASK_ORDER" }, // ACQ
 }
