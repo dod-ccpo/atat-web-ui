@@ -563,6 +563,7 @@ export interface PortfolioCardData extends Portfolio {
   fundsRemaining?: string;
   isOwner?: boolean;
   isManager?: boolean;
+  isViewer?: boolean;
 }
 
 export interface PortfolioSummaryQueryParams {
