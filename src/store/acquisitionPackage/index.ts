@@ -103,7 +103,7 @@ export const Statuses: Record<string, Record<string, string>> = {
   Deleted: { label: "Deleted", value: "DELETED" }, // ACQ
   Delinquent: { label: "Delinquent", value: "DELINQUENT" }, // CLIN, PORTFOLIO
   Draft: { label: "Draft", value: "DRAFT" }, // ACQ
-  Expired: { label: "Expired", value: "EXPIRED" }, // CLIN, TO, PORTFOLIO
+  Expired: { label: "Expired PoP", value: "EXPIRED" }, // CLIN, TO, PORTFOLIO
   ExpiringPop: { label: "Expiring PoP", value: "EXPIRING_POP" }, // CLIN
   ExpiringPopOK: { label: "Expiring PoP", value: "EXPIRING_POP_OK" }, // CLIN
   ExpiringSoon: { label: "Expiring Soon", value: "EXPIRING_SOON" }, // PORTFOLIO

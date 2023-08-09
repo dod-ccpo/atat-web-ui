@@ -436,6 +436,9 @@ export default class TaskOrderDetails extends Vue {
     if(this.selectedTaskOrder.status === this.statuses.Upcoming.value){
       this.isUpcomingTO = true;
     }
+    if(this.selectedTaskOrder.status === this.statuses.Expired.value){
+      this.showInactive = true;
+    }
     this.getBgColor();
     await this.loadOnEnter();
   }
