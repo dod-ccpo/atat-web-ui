@@ -1,11 +1,12 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
-import { 
+import {
   DOWClassificationInstance,
-  DOWServiceOffering, 
-  DOWServiceOfferingGroup, 
-  OtherServiceOfferingData, 
-  SummaryItem } from "types/Global";
+  DOWServiceOffering,
+  DOWServiceOfferingGroup,
+  OtherServiceOfferingData,
+  SummaryItem,
+} from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
@@ -817,7 +818,7 @@ export class SummaryStore extends VuexModule {
       "work_"
     ];
     await this.assessCOI();
-
+    await this.assessTravel()
   }
 
   @Action({rawError: true})
@@ -841,6 +842,27 @@ export class SummaryStore extends VuexModule {
       substep: 1
     }
     await this.doSetSummaryItem(standardsAndComplianceSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async assessTravel(): Promise<void> {
+    await DescriptionOfWork.loadTravel()
+    const isTravelSkipped = AcquisitionPackage.isTravelNeeded === "NO"
+    const isTravelTouched = AcquisitionPackage.isTravelTouched
+    const travelInfo = await DescriptionOfWork.getTravel()
+    const isTouched = isTravelTouched||travelInfo.length > 0
+    const isComplete =  isTravelSkipped
+      || travelInfo.length > 0;
+    const travelSummaryItem: SummaryItem = {
+      title: "Travel",
+      description: "",
+      isComplete,
+      isTouched,
+      routeName: "Travel",
+      step: 6,
+      substep: 3
+    }
+    await this.doSetSummaryItem(travelSummaryItem)
   }
 
 
