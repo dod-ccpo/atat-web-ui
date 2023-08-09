@@ -542,7 +542,7 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public get showStatusChip(): boolean{
-    const showChip = this.isUpcomingTO || this.selectedTaskOrder.status === Statuses.Expired.value
+    const showChip = this.isUpcomingTO || this.isExpiredTO
     if(showChip){
       this.statusChipText = this.selectedTaskOrder.status as string;
     }
