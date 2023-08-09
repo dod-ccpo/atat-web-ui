@@ -259,18 +259,20 @@
             </template>
             <tr class="_section-divider">
               <td colspan="2" class="font-weight-400">
-                <a
-                  id="InactiveToggle"
-                  @click="toggleInactive"
-                  @keydown.enter="toggleInactive"
-                  @keydown.space="toggleInactive"
-                  role="button"
-                >
-                  {{ showHide() }} inactive CLINs
-                </a>
-                <span class="font-size-14 text-base ml-2">
-                  ({{ inactiveCount }})
-                </span>
+                <span v-if="!showInactive">
+                  <a
+                    id="InactiveToggle"
+                    @click="toggleInactive"
+                    @keydown.enter="toggleInactive"
+                    @keydown.space="toggleInactive"
+                    role="button"
+                  >
+                    {{ showHide() }} inactive CLINs
+                  </a>
+                  <span class="font-size-14 text-base ml-2">
+                    ({{ inactiveCount }})
+                  </span>
+              </span>
               </td>
               <td align="right" class="font-weight-700">Total</td>
               <td align="right" class="font-weight-700 _grand-total-clin-value">
@@ -654,18 +656,24 @@ export default class TaskOrderDetails extends Vue {
     // if you don't there is a case that errors out the frontend
     if(this.optionPendingClins.length > 0){
       this.optionPendingClins[0].startNewClinGroup = true;
-      let firstTwo = this.optionPendingClins[0].CLINNumber?.slice(0,2);
-      for(let i = 0; i < this.optionPendingClins.length; i++){
-        const tempFirstTwo = this.optionPendingClins[i].CLINNumber?.slice(0,2)
-        if(firstTwo !== tempFirstTwo){
-          this.optionPendingClins[i].startNewClinGroup = true;
-          firstTwo = tempFirstTwo;
-        }
-      }
+      this.optionPendingClins = this.seperateByClin(this.optionPendingClins);
     }
     if(this.expiredClins.length > 0){
       this.expiredClins[0].startNewClinGroup = true;
+      this.expiredClins = this.seperateByClin(this.expiredClins);
     }
+  }
+
+  public seperateByClin(clinGroup: ClinTableRowData[]){
+    let firstTwo = clinGroup[0].CLINNumber?.slice(0,2);
+    for(let i = 0; i < clinGroup.length; i++){
+      const tempFirstTwo = clinGroup[i].CLINNumber?.slice(0,2)
+      if(firstTwo !== tempFirstTwo){
+        clinGroup[i].startNewClinGroup = true;
+        firstTwo = tempFirstTwo;
+      }
+    }
+    return clinGroup;
   }
 
   public async sortRows(): Promise<void> {
