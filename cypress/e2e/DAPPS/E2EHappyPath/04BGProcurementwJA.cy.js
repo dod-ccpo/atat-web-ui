@@ -94,13 +94,17 @@ import {
 
     function gatherContractDetails(contractNo,taskOrderNo,dayOfMonth,cName,expectedProcurementHistoryData){
         contractOverview(contractNo,taskOrderNo);            
-            popStartEndDate(dayOfMonth);
-            contractorDetails(cName);
-            cy.clickContinueButton(
-                background.incumbentTxtBox,
-                "Your Procurement History"
-            ) ;
-            cy.verifyTableValues(background.procurementHistoryTable,expectedProcurementHistoryData,4);
+        popStartEndDate(dayOfMonth);
+        contractorDetails(cName);
+        cy.clickContinueButton(
+            background.incumbentTxtBox,
+            "Your Procurement History"
+        ) ;
+        cy.verifyTableValues(background.procurementHistoryTable,expectedProcurementHistoryData,4);
+        cy.clickContinueButton(
+            background.procurementHistoryTable,
+            "Do you have a current environment to rehost?"
+        ) ;
     }
     it("TC:1 Procurement History", () => {     
         
