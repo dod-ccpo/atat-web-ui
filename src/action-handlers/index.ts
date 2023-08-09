@@ -63,7 +63,10 @@ async function writeOwnSoleSourceCause() {
   };
   /* eslint-enable camelcase */
   await AcquisitionPackage.setFairOpportunity(fairOpp);
+  await AcquisitionPackage.setSkipValidation(true);
+  
   AcquisitionPackage.fairOppExplanations.soleSource.useCustomText = true;
+  
   router.push({
     name: routeNames.SoleSourceReview,
     params: {

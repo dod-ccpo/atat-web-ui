@@ -395,11 +395,14 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   public validateMigrationEstimate(): void {
     this.migrationError = false;
     this.migrationErrorMessage = "";
-    if ((!this.mCost || this.mCost === "0.00") && (!this.mDelay || parseInt(this.mDelay) === 0)) {
+    const skipValidation = AcquisitionPackage.skipValidation;
+    if ((!this.mCost || this.mCost === "0.00")
+    && (!this.mDelay || parseInt(this.mDelay) === 0)
+    && !skipValidation) {
       this.migrationError = true;
       this.migrationErrorMessage = `Either your estimated cost or estimated delay 
         must be greater than 0.`;
-    } else if (!this.mDelay) {
+    } else if (!this.mDelay && !skipValidation) {
       this.migrationError = true;
       this.migrationErrorMessage = "Enter the estimated delay for a migration.";
     }
