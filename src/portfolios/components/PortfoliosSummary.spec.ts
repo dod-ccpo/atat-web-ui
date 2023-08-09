@@ -251,13 +251,15 @@ describe("Testing index Component", () => {
     expect(Toast.setToast).toBeCalled()
   });
 
-  it("openArchivePortfolioModal() => runs PortfolioStore.setShowArchivePortfolioModal", async () => {
+  it("openArchivePortfolioModal() => runs PortfolioStore.setShowArchivePortfolioModal",
+  async () => {
     jest.spyOn(PortfolioStore, 'setShowArchivePortfolioModal').mockImplementation();
     await wrapper.vm.openArchivePortfolioModal();
     expect(PortfolioStore.setShowArchivePortfolioModal).toBeCalled()
   });
 
-  it("closeArchivePortfolioModal() => runs PortfolioStore.setShowArchivePortfolioModal", async () => {
+  it("closeArchivePortfolioModal() => runs PortfolioStore.setShowArchivePortfolioModal",
+  async () => {
     jest.spyOn(PortfolioStore, 'setShowArchivePortfolioModal').mockImplementation();
     await wrapper.vm.closeArchivePortfolioModal();
     expect(PortfolioStore.setShowArchivePortfolioModal).toBeCalled()
