@@ -5,6 +5,8 @@ import { DefaultProps } from "vue/types/options";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import PortfolioSummaryStore from "@/store/portfolioSummary"
 import { PortfolioSummaryDTO } from "@/api/models";
+import Toast from "@/store/toast";
+import PortfolioStore from "@/store/portfolio";
 
 Vue.use(Vuetify);
 
@@ -231,6 +233,34 @@ describe("Testing index Component", () => {
     Vue.nextTick(async () => {
       expect(await wrapper.vm.$data.filterChips.length).toBe(0);
     })
+  });
+
+  it("leavePortfolio() sets a toast", async () => {
+    jest.spyOn(Toast, 'setToast').mockImplementation();
+    await wrapper.vm.leavePortfolio('1');
+    expect(Toast.setToast).toBeCalled()
+  });
+
+  it("archivePortfolio() sets a toast", async () => {
+    await wrapper.setData({
+      portfolioCardData: [{sysId: 1}],
+      currentPortfolio: {sysId: 1}
+    })
+    jest.spyOn(Toast, 'setToast').mockImplementation();
+    await wrapper.vm.archivePortfolio();
+    expect(Toast.setToast).toBeCalled()
+  });
+
+  it("openArchivePortfolioModal() => runs PortfolioStore.setShowArchivePortfolioModal", async () => {
+    jest.spyOn(PortfolioStore, 'setShowArchivePortfolioModal').mockImplementation();
+    await wrapper.vm.openArchivePortfolioModal();
+    expect(PortfolioStore.setShowArchivePortfolioModal).toBeCalled()
+  });
+
+  it("closeArchivePortfolioModal() => runs PortfolioStore.setShowArchivePortfolioModal", async () => {
+    jest.spyOn(PortfolioStore, 'setShowArchivePortfolioModal').mockImplementation();
+    await wrapper.vm.closeArchivePortfolioModal();
+    expect(PortfolioStore.setShowArchivePortfolioModal).toBeCalled()
   });
 
 });
