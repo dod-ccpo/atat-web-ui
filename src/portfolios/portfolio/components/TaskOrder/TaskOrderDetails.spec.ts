@@ -26,7 +26,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.OnTrack.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 50,
+      actual_funds_spent: 50,
     },    
     {
       sys_id: "2345",
@@ -37,7 +37,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.OnTrack.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 0,
+      actual_funds_spent: 0,
     },
     {
       sys_id: "3456",
@@ -48,7 +48,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.OnTrack.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 110,
+      actual_funds_spent: 110,
     },
     {
       sys_id: "4567",
@@ -59,7 +59,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.OptionExercised.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 50,
+      actual_funds_spent: 50,
     },
   ];
 
@@ -73,7 +73,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.OptionPending.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 50,
+      actual_funds_spent: 50,
     },
     {
       sys_id: "3456",
@@ -84,7 +84,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.OptionPending.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 50,
+      actual_funds_spent: 50,
     },
     {
       sys_id: "3456",
@@ -95,7 +95,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.OptionPending.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 50,
+      actual_funds_spent: 50,
     },
   ];
 
@@ -109,7 +109,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.Expired.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 200,
+      actual_funds_spent: 200,
     },     
     {
       sys_id: "4567",
@@ -120,7 +120,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.Expired.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 200,
+      actual_funds_spent: 200,
     },   
   ];
 
