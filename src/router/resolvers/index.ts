@@ -317,7 +317,24 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
     ? routeNames.DOWLandingPage
     : routeNames.EnvironmentSummary;
 }
+export const COIRouteResolver = (current: string): string => {
+  return current === routeNames.DOWLandingPage
+    ? isStepTouched(6)?routeNames.SummaryStepSix:routeNames.ConflictOfInterest
+    :routeNames.SummaryStepSix
+}
+export const PackagingPackingAndShippingResolver = (current: string): string => {
+  console.log(isStepTouched(6))
+  return isStepTouched(6) && current === routeNames.ConflictOfInterest
+    ? routeNames.SummaryStepSix
+    : routeNames.PackagingPackingAndShipping
+}
 
+export const TravelRouteResolver = (current: string): string => {
+  console.log(isStepTouched(6))
+  return isStepTouched(6) && current === routeNames.PackagingPackingAndShipping
+    ? routeNames.SummaryStepSix
+    : routeNames.Travel
+}
 
 export const PIIResolver = (current: string): string =>{
   return current === routeNames.SummaryStepSix
@@ -1717,7 +1734,10 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
   FOIARecordSummaryResolver,
-  PIIResolver
+  PIIResolver,
+  COIRouteResolver,
+  PackagingPackingAndShippingResolver,
+  TravelRouteResolver
 };
 
 // add path resolvers here 

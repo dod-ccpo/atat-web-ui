@@ -40,7 +40,8 @@ export default class SummaryStepSix extends Mixins(SaveOnLeave){
 
   get headline():string{
     return (isStepComplete(6))
-      ? "NEEDS COMPLETED PARAGRAPH"
+      ? "You are all done with this section, but you can come back at any time to edit details. " +
+      "When you are ready, we will move on to standards and compliance."
       : "We need some more details for this section. You can add info now, or come back to make " +
         "edits at any time. When you are ready to wrap up this section, we will move on to " +
         "standards and compliance."
