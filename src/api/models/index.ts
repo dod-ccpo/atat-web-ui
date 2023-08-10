@@ -47,6 +47,7 @@ export interface AlertDTO extends BaseTableDTO {
 }
 
 export interface AcquisitionPackageDTO extends BaseTableDTO {
+  is_travel_needed: string;
   status: string;
   number: string;
   project_overview: ReferenceColumn | string;
@@ -366,6 +367,8 @@ export interface ProjectOverviewDTO extends BaseTableDTO {
   scope: string;
   emergency_declaration: string;
   project_disclaimer: YesNo;
+  cjadc2: string;
+  cjadc2_percentage?: string;
 }
 
 export interface MilitaryRankDTO extends BaseTableDTO {
@@ -645,27 +648,14 @@ export interface ClinDTO extends BaseTableDTO {
   clin_number: string;
   idiq_clin: string;
   idiq_clin_label?: string;
-  idiq_clin_display?: DisplayColumn;
   pop_end_date: string;
   pop_start_date: string;
   clin_status: string;
-  clin_status_display?: DisplayColumn;
   funds_obligated: number;
   funds_total: number;
   cost_records?: CostsDTO[]
-  funds_spent_clin?: number; // total of all is_actual=true costs of the clin
+  actual_funds_spent?: number;
   clin_title?: string;
-}
-
-export interface ClinDisplayDTO {
-  sys_id: DisplayColumn;
-  clin_number: DisplayColumn;
-  idiq_clin: DisplayColumn;
-  pop_start_date: DisplayColumn;
-  pop_end_date: DisplayColumn;
-  clin_status: DisplayColumn;
-  funds_obligated: DisplayColumn;
-  funds_total: DisplayColumn;
 }
 
 export interface EDAResponse {
@@ -791,7 +781,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_funding_status: string;
   portfolio_owner?: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
-  portfolio_viewers?: string;
+  portfolio_viewers: string;
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];

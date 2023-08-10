@@ -7,6 +7,7 @@ import { PortfolioCardData } from "types/Global";
 import AppSections from "@/store/appSections";
 import PortfolioData from "@/store/portfolio";
 import PortfolioStore from "@/store/portfolio";
+import { cspConsoleURLs } from "@/store/portfolio";
 
 Vue.use(Vuetify);
 
@@ -38,7 +39,8 @@ describe("Testing index Component", () => {
       totalObligated: "",
       fundsSpent: "",
       fundsSpentPercent: "",
-      fundingAlertChipString: "expired"
+      fundingAlertChipString: "expired",
+      isOwner: true
     };
 
   beforeEach(() => {
@@ -59,6 +61,10 @@ describe("Testing index Component", () => {
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
+    const menuItemLength = wrapper.vm.$data.portfolioCardMenuItems.length
+    expect(
+      wrapper.vm.$data.portfolioCardMenuItems[menuItemLength - 1].title
+    ).toBe("Archive portfolio")
   });
 
   it("clicks meatball menu - emit to leave portfolio", async () => {
@@ -93,6 +99,12 @@ describe("Testing index Component", () => {
     window.open = jest.fn();
     await wrapper.vm.cardMenuClick({action: menuActions.loginToCSP, url: "foo"});
     expect(window.open).toHaveBeenCalledWith("foo", "_blank");
+  });
+
+  it("clicks meatball menu - Archive Portfolio", async () => {
+    window.open = jest.fn();
+    await wrapper.vm.cardMenuClick({action: menuActions.archivePortfolio});
+    expect(wrapper.emitted('openArchivePortfolioModal')).toBeTruthy();
   });
 
   it("clicks meatball menu - no action taken", async () => {
@@ -151,5 +163,16 @@ describe("Testing index Component", () => {
       expect(foo).toBeTruthy();  
     })
   })
+  it("tests getCSPConsoleURL () => ", async () =>{
+    const csp = 'azure'
+    await wrapper.setData({
+      cardData: {csp: csp}
+    })
+    const url = wrapper.vm.getCSPConsoleURL();
+    expect(url).toBe(cspConsoleURLs[csp]);  
+  })
 
+  it("tests getter - managerEmails", () =>{
+    expect(wrapper.vm.managerEmails).toBe("foo@mail.mil, bar@mail.mil")
+  })
 });

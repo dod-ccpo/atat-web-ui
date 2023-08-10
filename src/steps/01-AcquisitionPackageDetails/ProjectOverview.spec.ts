@@ -21,14 +21,17 @@ describe("Testing index Component", () => {
     "scope": "Scope From Store",
     "title": "Title From Store",
     "emergency_declaration": "yes",
-    "project_disclaimer": "YES"
+    "project_disclaimer": "YES",
+    "cjadc2": "YES",
+    "cjadc2_percentage": "57"
   }; 
 
   const mockProjectOverviewDTOCurrent = {
     "scope": "current scope",
     "title": "current title",
     "emergency_declaration": "yes",
-    "project_disclaimer": "YES"
+    "project_disclaimer": "YES",
+    "cjadc2": "NO"
   }; 
 
 
@@ -104,7 +107,9 @@ describe("Testing index Component", () => {
         "scope": "scope goes here",
         "title": title,
         "emergency_declaration": "yes",
-        "project_disclaimer": "YES"
+        "project_disclaimer": "YES",
+        "cjadc2": "YES",
+        "cjadc2_percentage": "12"
       }
     )
     const savedData =  await wrapper.vm.savedData;
@@ -120,13 +125,16 @@ describe("Testing index Component", () => {
           "scope": "currentScope",
           "title": "currentTitle",
           "emergency_declaration": "yes",
-          "project_disclaimer": "YES"
+          "project_disclaimer": "YES",
+          "cjadc2": "YES",
+          "cjadc2_percentage": "57"
         },
         savedData:{
           "scope": "savedScope",
           "title": "savedTitle",
           "emergency_declaration": "yes",
-          "project_disclaimer": "YES"
+          "project_disclaimer": "YES",
+          "cjadc2": "NO"
         }
       }
     )
