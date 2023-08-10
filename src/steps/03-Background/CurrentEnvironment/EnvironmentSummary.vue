@@ -18,11 +18,11 @@
             class="mt-4 _light-gray-card"
             v-if="environmentTypeText && classificationsText"
           >
-            <div class="d-flex">
+            <div class="d-flex" id="EnvironmentSummaryBox">
               <div>
-                <span class="font-weight-500">{{ environmentTypeText }}</span>
+                <span id="EnvironmentType" class="font-weight-500">{{ environmentTypeText }}</span>
                 <br />
-                {{ classificationsText }}
+                <span id="ClassificationText"> {{ classificationsText }}</span>
               </div>
               <div class="ml-6">
                 <button
