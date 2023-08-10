@@ -105,7 +105,9 @@ export const Statuses: Record<string, Record<string, string>> = {
   Delinquent: { label: "Delinquent", value: "DELINQUENT" }, // CLIN, PORTFOLIO
   Draft: { label: "Draft", value: "DRAFT" }, // ACQ
   Expired: { label: "Expired", value: "EXPIRED" }, // CLIN, TO, PORTFOLIO
+  ExpiredPoP: { label: "Expired PoP", value: "EXPIRED_POP"}, // CLIN
   ExpiringPop: { label: "Expiring PoP", value: "EXPIRING_POP" }, // CLIN
+  ExpiringPopOK: { label: "Expiring PoP", value: "EXPIRING_POP_OK" }, // CLIN
   ExpiringSoon: { label: "Expiring Soon", value: "EXPIRING_SOON" }, // PORTFOLIO
   FundingAtRisk: { label: "Funding At-Risk", value: "FUNDING_AT_RISK" }, // CLIN
   OnTrack: { label: "On Track", value: "ON_TRACK" }, // CLIN, TO
@@ -116,6 +118,7 @@ export const Statuses: Record<string, Record<string, string>> = {
   ProvisioningIssue: { label: "Provisioning issue", value: "PROVISIONING_ISSUE" }, // PORTFOLIO, ENV
   TaskOrderAwarded: { label: "Task Order Awarded", value: "TASK_ORDER_AWARDED" }, // ACQ
   Upcoming: { label: "Upcoming", value: "UPCOMING" }, // TO
+  UpcomingPeriod: { label: "Upcoming period", value: "UPCOMING_PERIOD" }, // TO
   WaitingForSignatures: { label: "Waiting For Signatures", value: "WAITING_FOR_SIGNATURES" }, // ACQ
   WaitingForTaskOrder: { label: "Waiting For Task Order", value: "WAITING_FOR_TASK_ORDER" }, // ACQ
 }
@@ -145,6 +148,8 @@ const initialProjectOverview = () => {
     scope: "",
     emergency_declaration: "",
     project_disclaimer: disclaimer,
+    cjadc2: "",
+    cjadc2_percentage: ""
   };
 };
 
@@ -395,6 +400,8 @@ export class AcquisitionPackageStore extends VuexModule {
   totalBasePoPDuration = 0;
   docGenJobStatus = "";
   packageId = "";
+  isTravelNeeded = "";
+  isTravelTouched = false;
   regions: RegionsDTO[] | null = null;
   isLoading = false;
   feedbackOptions: FeedbackOptionsDTO[] | null = null;
@@ -710,6 +717,22 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public doSetIsLoading(val: boolean): void {
     this.isLoading = val;
+  }
+  @Action({rawError: true})
+  public setIsTravelNeeded(val: string): void {
+    this.doSetIsTravelNeeded(val);
+  }
+  @Mutation
+  public doSetIsTravelNeeded(val: string): void {
+    this.isTravelNeeded = val;
+  }
+  @Action({rawError: true})
+  public setIsTravelTouched(val: boolean): void {
+    this.doSetIsTravelTouched(val);
+  }
+  @Mutation
+  public doSetIsTravelTouched(val: boolean): void {
+    this.isTravelTouched = val;
   }
 
   @Action({rawError: false})
@@ -1556,7 +1579,7 @@ export class AcquisitionPackageStore extends VuexModule {
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
       const ContractingShopNonDitcoAddressID =
           acquisitionPackage.contracting_shop_non_ditco_address as string;
-
+      const travelNeeded = acquisitionPackage.is_travel_needed as string
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
         project_overview: projectOverviewSysId,
@@ -1575,7 +1598,10 @@ export class AcquisitionPackageStore extends VuexModule {
         contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
       });
       await this.setCurrentUser();
-
+      if(travelNeeded){
+        this.setIsTravelNeeded(travelNeeded)
+        this.setIsTravelTouched(true)
+      }
       if (acquisitionPackage.contributors) {
         await this.setPackageContributors(acquisitionPackage.contributors);
       }

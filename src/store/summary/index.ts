@@ -1,21 +1,24 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
-import { 
+import {
   DOWClassificationInstance,
-  DOWServiceOffering, 
-  DOWServiceOfferingGroup, 
-  OtherServiceOfferingData, 
-  SummaryItem } from "types/Global";
+  DOWServiceOffering,
+  DOWServiceOfferingGroup,
+  OtherServiceOfferingData,
+  SummaryItem,
+} from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
-import { 
-  ContractTypeDTO, 
+import {
+  ContractConsiderationsDTO,
+  ContractTypeDTO,
   CrossDomainSolutionDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
-  SelectedClassificationLevelDTO, 
-  SensitiveInformationDTO} from "@/api/models";
+  SelectedClassificationLevelDTO,
+  SensitiveInformationDTO
+} from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
 import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
@@ -95,6 +98,9 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
     break;
   case 5:
     await Summary.validateStepFive();
+    break;
+  case 6:
+    await Summary.validateStepSix();
     break;
   case 7:
     await Summary.validateStepSeven();
@@ -799,17 +805,112 @@ export class SummaryStore extends VuexModule {
   };
   //#endregion
 
+  //#region STEP 6
+  @Action({rawError: true})
+  public async validateStepSix(): Promise<void> {
+    const objectKeys = [
+      "baa_",
+      "sys_",
+      "pii_",
+      "foia_",
+      "potential_",
+      "508",
+      "acquisition",
+      "record_name",
+      "work_"
+    ];
+    await this.assessCOI();
+    await this.assessPackagingPackingShipping();
+    await this.assessTravel();
+  }
+
+  @Action({rawError: true})
+  public async assessCOI(): Promise<void> {
+    const contractConsiderations =
+      AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
+
+    const coi = contractConsiderations.potential_conflict_of_interest;
+    const coiInfo = contractConsiderations.conflict_of_interest_explanation;
+    const isTouched = coi === "YES" ? true : coi === "NO";
+    const isComplete =  coi === "NO" || (coiInfo !== undefined && coiInfo.length > 0);
+
+    const conflictOfInterestSummaryItem: SummaryItem = {
+      title: "Conflict of Interest (COI)",
+      description: "",
+      isComplete,
+      isTouched,
+      routeName: "ConflictOfInterest",
+      step: 6,
+      substep: 1
+    }
+
+    await this.doSetSummaryItem(conflictOfInterestSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async assessPackagingPackingShipping(): Promise<void> {
+    const contractConsiderations =
+      AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
+
+    const selections = [
+      contractConsiderations.contractor_provided_transfer,
+      contractConsiderations.packaging_shipping_other,
+      contractConsiderations.packaging_shipping_none_apply
+    ]
+    const isTouched = selections.includes('true');
+    const explanation = contractConsiderations.packaging_shipping_other_explanation;
+    const needsExplanation = selections[1] === 'true';
+    const isComplete = needsExplanation ?
+      (isTouched && explanation !== undefined && explanation.length > 0) : isTouched;
+
+    const packagingPackingShippingSummaryItem: SummaryItem = {
+      title: "Packaging, Packing, and Shipping",
+      description: "",
+      isComplete,
+      isTouched,
+      routeName: "PackagingPackingAndShipping",
+      step: 6,
+      substep: 2
+    }
+
+    await this.doSetSummaryItem(packagingPackingShippingSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async assessTravel(): Promise<void> {
+    await DescriptionOfWork.loadTravel()
+    const isTravelSkipped = AcquisitionPackage.isTravelNeeded === "NO"
+    const isTravelTouched = AcquisitionPackage.isTravelTouched
+    const travelInfo = await DescriptionOfWork.getTravel()
+    const isTouched = isTravelTouched||travelInfo.length > 0
+    const isComplete =  isTravelSkipped
+      || travelInfo.length > 0;
+    const travelSummaryItem: SummaryItem = {
+      title: "Travel",
+      description: "",
+      isComplete,
+      isTouched,
+      routeName: "Travel",
+      step: 6,
+      substep: 3
+    }
+    await this.doSetSummaryItem(travelSummaryItem)
+  }
+
+
+  //#endregion
+
   //#region STEP 7
   @Action({rawError: true})
   public async validateStepSeven(): Promise<void> {
     const objectKeys = [
-      "baa_", 
-      "sys_", 
-      "pii_", 
-      "foia_", 
-      "potential_", 
-      "508", 
-      "acquisition", 
+      "baa_",
+      "sys_",
+      "pii_",
+      "foia_",
+      "potential_",
+      "508",
+      "acquisition",
       "record_name", 
       "work_"
     ];

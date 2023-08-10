@@ -194,3 +194,21 @@ export function formatDateWithoutPeriod(date,dayOfMonth,direction = "next") {
 
   return `${formattedMonth} ${newDate.getDate()}, ${newDate.getFullYear()}`;
 }
+
+export function formatDateInMMDDYYYY(date, dayOfMonth, direction = "next") {
+  const newDate = new Date(date);
+
+  if (direction === "next") {
+    newDate.setMonth(newDate.getMonth() + 1, dayOfMonth);
+  } else if (direction === "previous") {
+    newDate.setMonth(newDate.getMonth() - 1, dayOfMonth);
+  } else {
+    throw new Error("Invalid direction. Use 'next' or 'previous'.");
+  }
+
+  const month = (newDate.getMonth() + 1).toString().padStart(2, "0");
+  const day = newDate.getDate().toString().padStart(2, "0");
+  const year = newDate.getFullYear();
+
+  return `${month}/${day}/${year}`;
+}
