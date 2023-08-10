@@ -1,5 +1,5 @@
 <template>
-  <div  class=" _feedback-form">
+  <div v-if="this.hide" class=" _feedback-form">
     <div class="flex-column">
       <div
         class="_feedback-tab"
