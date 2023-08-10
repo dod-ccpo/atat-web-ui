@@ -21,10 +21,7 @@
     }
     &._open{
       background-color: $base-lightest;
-      right: -188px;
-      &._show-form {
-        right: -253px;
-      }
+      right: -253px;
     }
     &._thank-you{
       display: none;
@@ -60,15 +57,22 @@
       border-radius: 16px 16px 0 0;
       justify-content: center;
     }
-    ._feedback-icon {
+    ._experience-text {
+      height:16px;
+    }
+    ._mood-div {
+      display: flex;
+      height:62px;
+      width:62px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      align-content: center;
       &:hover {
         border-radius:50%;
         background-color: $primary-10;
         box-shadow:$primary-10 0px 0px 0px 5px;
       }
-    }
-    ._experience-text {
-      height:16px;
     }
   }
 }

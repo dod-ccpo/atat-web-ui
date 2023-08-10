@@ -1,5 +1,5 @@
 <template>
-  <div class=" _feedback-form">
+  <div v-if="!this.hide" class=" _feedback-form">
     <div class="flex-column">
       <div
         class="_feedback-tab"
@@ -37,11 +37,11 @@
         <v-expand-transition>
           <div>
             <div v-if="!hideIcons">
-              <h3 class="text-base-dark font-weight-500 mb-4">
+              <h2 class="text-base-dark mb-4">
                 How was your experience with DAPPS?
-              </h3>
+              </h2>
               <div class="d-flex flex-row justify-space-between mb-5">
-                <div class="mx-1">
+                <div class=" _mood-div">
                   <v-btn
                     id="veryDissatisfied"
                     icon
@@ -60,7 +60,7 @@
                     />
                   </v-btn>
                 </div>
-                <div class="mx-1">
+                <div class=" _mood-div">
                   <v-btn
                     id="dissatisfied"
                     icon
@@ -79,7 +79,7 @@
                     />
                   </v-btn>
                 </div>
-                <div class="mx-1">
+                <div class=" _mood-div">
                   <v-btn
                     id="neutral"
                     icon
@@ -98,7 +98,7 @@
                     />
                   </v-btn>
                 </div>
-                <div class="mx-1">
+                <div class=" _mood-div">
                   <v-btn
                     id="satisfied"
                     icon
@@ -117,7 +117,7 @@
                     />
                   </v-btn>
                 </div>
-                <div class="mx-1">
+                <div class=" _mood-div">
                   <v-btn
                     id="verySatisfied"
                     icon
@@ -138,14 +138,19 @@
                 </div>
               </div>
               <div class="d-flex justify-center">
-                <span class="_experience-text">
+                <span
+                  class="_experience-text"
+                  id="ExperienceText"
+                >
                   {{experience}}
                 </span>
               </div>
             </div>
             <div v-if="showForm">
               <div v-if="!showThankYou">
-                <h2 class="mb-3">
+                <h2
+                  id="CheckboxHeading"
+                  class="mb-3">
                   {{checkboxHeading}}
                 </h2>
                 <ATATCheckboxGroup
@@ -183,8 +188,11 @@
                 <div class="text-center">
                   <ATATSVGIcon width="360" height="192" name="FeedbackThankYou" class="mr-0"/>
                   <div class="d-flex flex-column">
-                    <p> We value your opinion and will keep working to improve your experience.</p>
+                    <p id="ThankYouP">
+                      We value your opinion and will keep working to improve your experience.
+                    </p>
                     <v-btn
+                      id="Dismiss"
                       class="secondary mx-auto"
                       @click="dismiss"
                       @keydown.enter="dismiss"
@@ -238,6 +246,7 @@ export default class ATATFeedbackForm extends Vue {
   private experience = ""
   private selectedFeedbackOptions:string[] = []
   private feedbackID = ""
+  public hide = false;
 
   public toggle():void{
     this.open = !this.open
@@ -318,6 +327,9 @@ export default class ATATFeedbackForm extends Vue {
     try {
       await AcquisitionPackage.saveFeedback(this.currentData);
       this.showThankYou = true
+      setTimeout(() =>{
+        this.dismiss()
+      },8000)
     } catch (error) {
       console.log(error);
     }
@@ -332,16 +344,17 @@ export default class ATATFeedbackForm extends Vue {
     }
     const storeData = AcquisitionPackage.customerFeedback
     if(storeData?.acquisition_package){
-      if(storeData.user_sys_id !== User.currentUser.sys_id
-      ||storeData?.is_complete === "true"){
-        this.open = false
-        this.hideIcons = true
-      }
-      this.feedbackID = storeData.sys_id as string
-      this.DAPPSExperience = Number(storeData.dapps_experience)
-      this.selectedFeedbackOptions = storeData.feedback_items.split(',')
-      this.otherFeedbackValue = storeData.feedback_items_other
-      this.savedData = storeData
+      this.hide = true
+      // if(storeData.user_sys_id !== User.currentUser.sys_id
+      // ||storeData?.is_complete === "true"){
+      //   this.open = false
+      //   this.hideIcons = true
+      // }
+      // this.feedbackID = storeData.sys_id as string
+      // this.DAPPSExperience = Number(storeData.dapps_experience)
+      // this.selectedFeedbackOptions = storeData.feedback_items.split(',')
+      // this.otherFeedbackValue = storeData.feedback_items_other
+      // this.savedData = storeData
     }
 
   }
