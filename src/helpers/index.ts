@@ -331,6 +331,7 @@ export function getStatusChipBgColor(status: string): string {
   case Statuses.Deleted.value.toLowerCase():
   case Statuses.Delinquent.value.toLowerCase():
   case Statuses.Expired.value.toLowerCase():
+  case Statuses.ExpiredPoP.value.toLowerCase():
     return "bg-error";
   case Statuses.Archived.value.toLowerCase():
     return "bg-base-dark";
