@@ -321,12 +321,12 @@ export default class Travel extends Mixins(SaveOnLeave) {
    */
   @Watch("deleteAll")
   public showDeleteAllModal(showModal: boolean): void {
+    acquisitionPackage.setIsTravelTouched(true)
     if (!this.isLoading && showModal) {
       if (this.hasListings){
         this.confirmDeleteModal();
       } else {
         DescriptionOfWork.setConfirmTravelDeleteAll(false);
-        acquisitionPackage.setIsTravelTouched(true)
         this.$router.push({
           name: routeNames.SummaryStepSix,
           params: {
@@ -392,6 +392,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
    * Otherwise, just deletes it from the component's table.
    */
   public async deleteInstance(): Promise<void>{
+    acquisitionPackage.setIsTravelTouched(true)
     if (this.deleteAll){
       await DescriptionOfWork.deleteTravelAll(
         this.tableData.filter(td => td.sys_id && td.sys_id.trim().length > 0)
@@ -399,7 +400,6 @@ export default class Travel extends Mixins(SaveOnLeave) {
       );
       this.tableData = [];
       DescriptionOfWork.setConfirmTravelDeleteAll(false);
-      acquisitionPackage.setIsTravelTouched(true)
       this.$router.push({
         name: routeNames.SummaryStepSix,
         params: {
