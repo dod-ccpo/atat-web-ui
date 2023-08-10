@@ -117,21 +117,24 @@ export default class ClassificationLevelForm extends Vue {
       ? this.cloudImpactLevelOptions 
       : this.onPremImpactLevelOptions;
   }
+  public get getCheckboxIdSuffix(): string {
+    return this.isCloud ? "Cloud" : "Prem";
+  }
 
   public selectedTopLevelClassifications: string[] = []
   private topLevelClassifications: Checkbox[] = [
     {
-      id: "Unclassified",
+      id: "Unclassified" + this.getCheckboxIdSuffix,
       label: "Unclassified",
       value: "U",
     },
     {
-      id: "Secret",
+      id: "Secret" + this.getCheckboxIdSuffix,
       label: "Secret",
       value: "S",
     },
     {
-      id: "TopSecret",
+      id: "TopSecret" + this.getCheckboxIdSuffix,
       label: "Top Secret",
       value: "TS",
     },

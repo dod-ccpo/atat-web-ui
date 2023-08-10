@@ -210,7 +210,7 @@ export class PortfolioSummaryStore extends VuexModule {
     allEnvs.forEach(env => {
       // ATAT TODO: env status should be set in SNOW
       if (env.provisioned === "true") {
-        env.environmentStatus = Statuses.Provisioned.value;;
+        env.environmentStatus = Statuses.Provisioned.value;
       } else {
         env.environmentStatus = env.provisioning_failure_cause  
           ? Statuses.ProvisioningIssue.value 
@@ -223,16 +223,15 @@ export class PortfolioSummaryStore extends VuexModule {
         // portfolio status based on environment statuses
         let hasProcessing = false;
         let hasIssue = false;
-    
+
         portfolio.environments.forEach(env => {
+          console.log(`Env: ${JSON.stringify(env)}`);
           if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
           if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
           portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
-            : hasProcessing 
-              ? Statuses.Processing.value 
+            : hasProcessing
+              ? Statuses.Processing.value
               : portfolio.portfolio_status;
-          env.classification_level = env.name.toLowerCase().includes("- unclassified")
-            ? "U" : env.name.toLowerCase().includes("- secret") ? "S" : "TS"
         });
       }
     });

@@ -124,7 +124,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     cy.get(inputBoxSelector).clear().type(text);
   }
 
-  it("TC1: Contract Details: Step#1> Period of Performance Page 1 to 3", () => {
+  it("TC1: Contract Details:Step#03 All Pages E2E Happy path", () => {
 
     // Page#1 Duration of task year
     cy.verifyPageHeader(CDData.POPPage1.pageHeader1);

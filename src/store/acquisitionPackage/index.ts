@@ -721,6 +721,13 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({rawError: true})
   public setIsTravelNeeded(val: string): void {
     this.doSetIsTravelNeeded(val);
+    this.setAcquisitionPackage({
+      ...this.acquisitionPackage,
+      is_travel_needed: val,
+    } as AcquisitionPackageDTO);
+    if(this.acquisitionPackage){
+      saveAcquisitionPackage(this.acquisitionPackage)
+    }
   }
   @Mutation
   public doSetIsTravelNeeded(val: string): void {
@@ -2664,7 +2671,8 @@ export class AcquisitionPackageStore extends VuexModule {
     this.selectedAgencyAcronym = "";
     this.showInviteContributorsModal = false;
     this.contractingShopNonDitcoAddress = null;
-
+    this.isTravelNeeded = "";
+    this.isTravelTouched = false;
     this.fairOppExplanations = initialFairOppExplanations();
     
     this.fairOppBackToReview = false;
