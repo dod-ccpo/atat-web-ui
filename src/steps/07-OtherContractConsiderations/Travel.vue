@@ -257,6 +257,7 @@ import { createPeriodCheckboxItems } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {routeNames} from "@/router/stepper";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -429,6 +430,8 @@ export default class Travel extends Mixins(SaveOnLeave) {
       this.setTableData();
     }
     this.showTravelFormDialog = false;
+    acquisitionPackage.setIsTravelNeeded("YES")
+    acquisitionPackage.setIsTravelTouched(true)
   }
 
   public setTableData(): void {

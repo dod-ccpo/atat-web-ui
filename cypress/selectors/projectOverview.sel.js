@@ -20,5 +20,8 @@ module.exports = {
   projDisAcknowledge: "#projectDisclaimer",
   projDisChxkBox: "#Checkbox_YesProjectDisclaimer",
   projDisBoxError:"#projectDisclaimer  .field-error",
-  projDisLabel:"h2.mb-5"
+  projDisLabel:"h2.mb-5",
+  cjadc2YesRadioOption:"#Radio_Yescjadc2Initiative",
+  cjadc2NoRadioOption:"#Radio_Nocjadc2Initiative",
+  cjadc2PricePercentage:"#CJADC2PricePercentage_text_field"
 }

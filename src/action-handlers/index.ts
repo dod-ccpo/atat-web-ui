@@ -126,7 +126,14 @@ async function confirmServiceDeletion() {
 }
 
 async function confirmDeleteTravelAll() {
+  AcquisitionPackage.setIsTravelNeeded("NO")
   await DescriptionOfWork.setConfirmTravelDeleteAll(true);
+  router.push({
+    name: "Summary_Step_Six",
+    params: {
+      direction: "next"
+    },
+  }).catch(() => console.log("avoiding redundant navigation"));
 }
 
 async function openTOSearchModal() {
