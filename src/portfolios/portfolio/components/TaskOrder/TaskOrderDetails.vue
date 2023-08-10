@@ -606,8 +606,7 @@ export default class TaskOrderDetails extends Vue {
         isActive: isClinActive,
         isExercised: clinStatus.value === Statuses.OptionExercised.value,
         isPending: clinStatus.value === Statuses.OptionPending.value,
-        isExpired: clinStatus.value === Statuses.Expired.value
-        || clinStatus.value === Statuses.ExpiredPoP.value,
+        isExpired: clinStatus.value === Statuses.ExpiredPoP.value,
         CLINNumber: clin.clin_number,
         CLINTitle: clin.idiq_clin,
         PoP: differenceInDaysOrMonths(clin.pop_start_date, clin.pop_end_date),
