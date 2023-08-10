@@ -31,6 +31,12 @@ export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boo
 } 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
+  if(stepNumber === 6){
+    const step6Items = Summary.summaryItems.filter((si)=>si.step === 6)
+    return (step6Items.every(
+      (si: SummaryItem) => si.isTouched
+    ))
+  }
   return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
@@ -808,17 +814,6 @@ export class SummaryStore extends VuexModule {
   //#region STEP 6
   @Action({rawError: true})
   public async validateStepSix(): Promise<void> {
-    const objectKeys = [
-      "baa_",
-      "sys_",
-      "pii_",
-      "foia_",
-      "potential_",
-      "508",
-      "acquisition",
-      "record_name",
-      "work_"
-    ];
     await this.assessCOI();
     await this.assessPackagingPackingShipping();
     await this.assessTravel();
@@ -902,7 +897,7 @@ export class SummaryStore extends VuexModule {
       })
       description = `${numberOfTrips} trips required within this task order:
        \n
-      ${tripInformation}`
+      ${convertStringArrayToCommaList(tripInformation,"and")}`
     }
     if(isTravelSkipped){
       description = "No travel requirements for contractor employees"

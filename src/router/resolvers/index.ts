@@ -323,14 +323,12 @@ export const COIRouteResolver = (current: string): string => {
     :routeNames.SummaryStepSix
 }
 export const PackagingPackingAndShippingResolver = (current: string): string => {
-  console.log(isStepTouched(6))
   return isStepTouched(6) && current === routeNames.ConflictOfInterest
     ? routeNames.SummaryStepSix
     : routeNames.PackagingPackingAndShipping
 }
 
 export const TravelRouteResolver = (current: string): string => {
-  console.log(isStepTouched(6))
   return isStepTouched(6) && current === routeNames.PackagingPackingAndShipping
     ? routeNames.SummaryStepSix
     : routeNames.Travel
