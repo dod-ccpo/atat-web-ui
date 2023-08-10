@@ -523,8 +523,9 @@ export default class TaskOrderDetails extends Vue {
         && !(clin.clin_status === Statuses.OptionPending.value)
     ) {
       return Statuses.UpcomingPeriod
-    }
-    if(clin.clin_status === Statuses.ExpiringPop.value){
+    } else if (clin.clin_status === Statuses.Expired.value) {
+      return Statuses.ExpiredPoP;
+    } else if (clin.clin_status === Statuses.ExpiringPop.value){
       return this.getExpiringStatus(clin.clin_number);
     }
 
@@ -532,7 +533,7 @@ export default class TaskOrderDetails extends Vue {
     const status = Object.keys(Statuses).find((s) =>
       Statuses[s].value === clin.clin_status) as string;
     
-    return Statuses[status]
+    return Statuses[status];
   }
 
   public getBgColor(): void {
@@ -724,7 +725,6 @@ export default class TaskOrderDetails extends Vue {
     bgColor?: string
   ): void {
     const imgKey = key || "";
-
     this.statusImgs[imgKey] = {
       svgName,
       width,
@@ -746,6 +746,14 @@ export default class TaskOrderDetails extends Vue {
       ],
       [
         Statuses.Expired.value,
+        "failed",
+        "16",
+        "16",
+        "error",
+        "bg-error-lighter",
+      ],
+      [
+        Statuses.ExpiredPoP.value,
         "failed",
         "16",
         "16",
