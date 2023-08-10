@@ -326,6 +326,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
         this.confirmDeleteModal();
       } else {
         DescriptionOfWork.setConfirmTravelDeleteAll(false);
+        acquisitionPackage.setIsTravelTouched(true)
         this.$router.push({
           name: routeNames.SummaryStepSix,
           params: {
@@ -398,6 +399,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
       );
       this.tableData = [];
       DescriptionOfWork.setConfirmTravelDeleteAll(false);
+      acquisitionPackage.setIsTravelTouched(true)
       this.$router.push({
         name: routeNames.SummaryStepSix,
         params: {
