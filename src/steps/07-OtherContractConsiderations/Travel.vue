@@ -327,7 +327,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
       } else {
         DescriptionOfWork.setConfirmTravelDeleteAll(false);
         this.$router.push({
-          name: routeNames.PII,
+          name: routeNames.SummaryStepSix,
           params: {
             direction: "next"
           },
@@ -399,7 +399,7 @@ export default class Travel extends Mixins(SaveOnLeave) {
       this.tableData = [];
       DescriptionOfWork.setConfirmTravelDeleteAll(false);
       this.$router.push({
-        name: routeNames.PII,
+        name: routeNames.SummaryStepSix,
         params: {
           direction: "next"
         },
