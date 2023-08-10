@@ -13,8 +13,8 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
     let scope = "Project Scope-" + randomString(5);
 
     // page#4
-    let currentEnvironment = "Hybrid"; // "Cloud", "Onpremise" , "Hybrid"
-    let hybridRadioboxes = "Onpremise"; // "Cloud", ,"Onpremise"
+    let currentEnvironment = "Cloud"; // "Cloud", "Onpremise" , "Hybrid"
+    let hybridRadioboxes = "Cloud"; // "Cloud", ,"Onpremise"
 
     // page#5
     let cloudClassLevelCheckboxes = [ // Cloud computing
@@ -41,25 +41,25 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
     let deployedRegionCheckboxes = [
         'conusEast',
         'conusCentral',
-        //'conusWest',
+        'conusWest',
         //'africom',
-        'centcom',
-        'eucom',
+        //'centcom',
+        //'eucom',
         //'indopacom',
         'southcom',
     ]
     let impactLevelCheckboxes = [ // accepts only one option
         // 'UnclassifiedIL2',
-        'UnclassifiedIL4',
+        //'UnclassifiedIL4',
         //'UnclassifiedIL5',
-        //'SecretIL6',
+        'SecretIL6',
         // 'TopSecret'
     ]
-    let currentUsage = "irregularUsage" //evenlyDistributed, irregularUsage
-    let spikesUsage = "eventBased" // eventBased, periodBased
-    let storageOptions = ['Archive' //Block, Object, File, Archive
+    let currentUsage = "evenlyDistributed" //evenlyDistributed, irregularUsage
+    let spikesUsage = "periodBased" // eventBased, periodBased
+    let storageOptions = ['Object' //Block, Object, File, Archive
     ]
-    let performanceTierOptions = ['memoryOptimized' //generalPurpose, computeOptimized, memoryOptimized, storageOptimized
+    let performanceTierOptions = ['computeOptimized' //generalPurpose, computeOptimized, memoryOptimized, storageOptimized
     ]
     let currentPayment = ['reserved' //reserved, payAsyouGo
     ]
@@ -272,7 +272,7 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
                 force: true
             });
             cy.selectDatefromDatePicker(
-                background.expirationDatePicker, background.navigateNextMonth,
+                background.reservedExpirationDatePicker, background.navigateNextMonth,
                 background.selectDate, expirationDate, background.datePicker
             );
         } else if (currentPayment == "payAsyouGo") {
@@ -284,10 +284,10 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
 
     function verifyTableData(columnHeader, expectedValue) {
         cy.get(background.summaryCETableHeader).each(($el, index, $list) => {
-            var text = $el.text();
+            const text = $el.text();
             if (text.includes(columnHeader)) {
                 cy.get(background.summaryCETableData).eq(index).then(function (value) {
-                    var actualValue = value.text().trim();
+                    const actualValue = value.text().trim();
                     if (isNaN(actualValue)) {
                         const trimmedActualValue = actualValue.toUpperCase().replace(/\s/g, '').replace(/[/()]/g, '')
                         expect(trimmedActualValue).to.equal(expectedValue)

@@ -149,7 +149,7 @@ module.exports = {
   //Section#4
   reservedRadiobox: "#Radio_Reserved",
   payAsYouGoRadiobox: "#Radio_PayAsYouGo",
-  expirationDatePicker: "#ExpirationDateDatePickerButtonIcon",
+  reservedExpirationDatePicker: "#ExpirationDateDatePickerButtonIcon",
   datePicker: "#ExpirationDateDatePicker",
 
  //Section#5
