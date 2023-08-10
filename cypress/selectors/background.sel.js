@@ -178,6 +178,7 @@ module.exports = {
   payAsYouGoRadiobox: "#Radio_PayAsYouGo",
   reservedExpirationDatePicker: "#ExpirationDateDatePickerButtonIcon",
   datePicker: "#ExpirationDateDatePicker",
+  reservedNavigateNextMonth: "#ExpirationDateDatePicker button[aria-label='Next month']",
 
  //Section#5
  additionalInfoTextbox: "#AdditionalInfo_text_area",

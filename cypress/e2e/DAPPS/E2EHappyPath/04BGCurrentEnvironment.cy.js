@@ -14,7 +14,8 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
 
     // page#4
     let currentEnvironment = "Cloud"; // "Cloud", "Onpremise" , "Hybrid"
-    let hybridRadioboxes = "Cloud"; // "Cloud", ,"Onpremise"
+    // when CurrentEnvironment is "Hybrid" choose below:
+    let hybridRadioboxes = "Cloud"; // "Cloud", ,"Onpremise"  
 
     // page#5
     let cloudClassLevelCheckboxes = [ // Cloud computing
@@ -156,10 +157,8 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
     }
 
     // Summary page:
-        const deployedRegionCheckboxesList = deployedRegionCheckboxes.join(' ,').toUpperCase().replace(/\s/g, '');
+    const deployedRegionCheckboxesList = deployedRegionCheckboxes.join(' ,').toUpperCase().replace(/\s/g, '');
     const impactLevelCheckboxesList = impactLevelCheckboxes.join(' ,').toUpperCase();
-    console.log("Quantity is ", noOfInstances)
-    console.log("vCPUs is ", noOfVCPUs)
     const expctedMemory = memory + "GB";
     const storageOptionsList = storageOptions.join(' ,').toUpperCase();
     const expctedStorage = storageOptionsList + ":" + storageSize + "GB";
@@ -254,7 +253,9 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
         cy.findElement(background.operatingSysTextbox).type(operatingSystemText);
         cy.findElement(background.memoryTextbox).type(memory);
         cy.findElement(background.storageTypeDropdown).click();
-        cy.wait(30);
+        cy.waitUntil(function () {
+            return cy.findElement("#StorageType_DropdownListItem_Blockstorage").should("exist");
+        })
         cy.findElement(storageTypeOptionsMap[storageOptions]).click({
             force: true
         });
@@ -272,7 +273,7 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
                 force: true
             });
             cy.selectDatefromDatePicker(
-                background.reservedExpirationDatePicker, background.navigateNextMonth,
+                background.reservedExpirationDatePicker, background.reservedNavigateNextMonth,
                 background.selectDate, expirationDate, background.datePicker
             );
         } else if (currentPayment == "payAsyouGo") {
@@ -400,7 +401,7 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
         if ((currentEnvironment === "Cloud")) {
             verifyTableData("Location", deployedRegionCheckboxesList);
         }
-        if ((currentEnvironment === "Hybrid") &&(hybridRadioboxes == "Cloud")) {
+        if ((currentEnvironment === "Hybrid") && (hybridRadioboxes == "Cloud")) {
             verifyTableData("Location", "CLOUD" + deployedRegionCheckboxesList);
         }
         verifyTableData("Classification", impactLevelCheckboxesList);
