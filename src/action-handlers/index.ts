@@ -79,6 +79,7 @@ async function WriteOwnBarriers() {
   // eslint-disable-next-line camelcase
   const fairOpp: FairOpportunityDTO = { barriers_write_own_explanation: "YES" };
   await AcquisitionPackage.setFairOpportunity(fairOpp);
+  await AcquisitionPackage.setSkipValidation(true);
   router.push({
     name: routeNames.ReviewBarriers,
     params: {
@@ -92,6 +93,7 @@ async function writeOwnMarketResearchDetails() {
   // eslint-disable-next-line camelcase
   const fairOpp: FairOpportunityDTO = { research_write_own_explanation: "YES" };
   await AcquisitionPackage.setFairOpportunity(fairOpp);
+  await AcquisitionPackage.setSkipValidation(true);
   router.push({
     name: routeNames.MarketResearchReview,
     params: {
