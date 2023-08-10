@@ -66,5 +66,128 @@ module.exports = {
   hceRadioButton: "#Radio_HybridCloudEnvironment",
   
   //What classification level(s) are your instances deployed in?
-  topSecret:"#Checkbox_TS"
+  topSecret:"#Checkbox_TS",
+
+
+  // new ones ............
+  recurringPageText:  "p.mb-8",
+  introPText: "#IntroP",
+  systemDocsNoRadioBtn:"#Radio_NoSystemDocs",
+  systemDocsYesRadioBtn: "#Radio_YesSystemDocs",
+
+  cloudComputingRadio : "#Radio_CloudComputingEnvironment",
+  onPremiseRadio : "#Radio_OnPremises",
+  hybridRadio : "#Radio_HybridCloudEnvironment",
+  uploadFileSysDiagram : "input[type='file']",
+
+  //page#5
+  classificationText : "#ClassificationLevelP",
+  classificationMessage : "#SelectMessage",
+
+  unClassificationText : "#DeployedP",
+  unClassificationMessage : "#SelectMessage2",
+
+  unClassCloudCheckbox: "#Checkbox_UnclassifiedCloud",
+  scCloudCheckbox: "#Checkbox_SecretCloud",
+  tsCloudCheckbox:   "#Checkbox_TopSecretCloud",
+  checkedunClassCloudCheckboxes:
+  "#ClassificationLevelCheckboxes input[type=checkbox]:checked",
+
+  unClassPremCheckbox: "#Checkbox_UnclassifiedPrem",
+  scPremCheckbox: "#Checkbox_SecretPrem",
+  tsPremCheckbox:   "#Checkbox_TopSecretPrem",
+
+  
+  level2Checkbox: "#Checkbox_IL2",
+  level4Checkbox: "#Checkbox_IL4",
+  level5Checkbox: "#Checkbox_IL5",
+  checkedCloudClassificationCheckboxes:
+  "#CloudClassificationCheckboxes input[type=checkbox]:checked",
+
+  //onpremise:
+  publicReleaseCheckbox: "#Checkbox_PublicRelease",
+  cUICheckbox: "#Checkbox_CUI",
+  nationalSecurityCheckbox: "#Checkbox_NationalSecuritySystems",
+
+  //Page#6 : Let’s start gathering details about each instance in your environment  
+  regionDeployedCheckboxes : "#RegionsDeployed ",
+  regionUsersCheckboxes : "#RegionsUsers ",
+  checkedregionDeployedCheckboxes:
+  "#RegionsDeployed input[type=checkbox]:checked",
+  checkedregionUsersCheckboxes:
+  "#RegionsUsers input[type=checkbox]:checked",
+
+ cloudRadiobox: "#Radio_Cloud",
+ onPremRadiobox: "#Radio_OnPremises",
+
+  conusEastCheckbox: "#Checkbox_CONUSEast",
+  conusCentralCheckbox: "#Checkbox_CONUSCentral",
+  conusWestCheckbox: "#Checkbox_CONUSWest",
+  africomCheckbox: "#Checkbox_AFRICOM",
+  centcomCheckbox: "#Checkbox_CENTCOM",
+  eucomCheckbox: "#Checkbox_EUCOM",
+  indopacomCheckbox: "#Checkbox_INDOPACOM",
+  southcomCheckbox: "#Checkbox_SOUTHCOM",
+
+  IL2Radiobox: "#Radio_IL2",
+  IL4Radiobox: "#Radio_IL4",
+  IL5Radiobox: "#Radio_IL5",
+  IL6Radiobox: "#Radio_IL6",
+  tsRadiobox: "#Radio_TS",
+
+  regularUsageRadiobox: "#Radio_RegularUsage",
+  irrregularUsageRadiobox: "#Radio_IrregularUsage",
+
+  eventBasedCheckbox: "#Checkbox_EventBased",
+  certainPeriodCheckbox: "#Checkbox_CertainPeriods",
+  highUsageTextbox: "#HighUsageEventDescription_text_field",
+  highUsagePeriodTextbox: "#HighUsagePeriodDescription_text_field",
+
+  conusEastTextbox: "#RegionsUsers_TextField0_text_field",
+  conusCentralTextbox: "#RegionsUsers_TextField1_text_field",
+  conusWestTextbox: "#RegionsUsers_TextField2_text_field",
+  africomTextbox: "#RegionsUsers_TextField3_text_field",
+  centcomTextbox: "#RegionsUsers_TextField4_text_field",
+  eucomTextbox: "#RegionsUsers_TextField5_text_field",
+  indopacomTextbox: "#RegionsUsers_TextField6_text_field",
+  southcomTextbox: "#RegionsUsers_TextField7_text_field",
+
+  licenseTextbox: "#Licensing_text_field",
+  numofVCPTextbox: "#NumberOfVCPUs_text_field",
+  processorSpeedTextbox: "#ProcessorSpeed_text_field",
+  operatingSysTextbox: "#OperatingSystem_text_field",
+  memoryTextbox: "#Memory_text_field",
+  storageTypeDropdown: "#StorageType_dropdown_field_control .v-input__control .v-input__append-inner",
+
+  blockStorageOption: "#StorageType_DropdownListItem_Blockstorage",
+  objectTypeStorageOption: "#StorageType_DropdownListItem_Objectstorage",
+  fileStorageOption: "#StorageType_DropdownListItem_Filestorage",
+  archiveStorageOption: "#StorageType_DropdownListItem_Archivestorage",
+  storageAmountTextbox: "#StorageAmount_text_field",
+
+  generalPurposeRadiobox: "#Radio_GeneralPurpose",
+  computeOptimRadiobox: "#Radio_ComputeOptimized",
+  memoryOptimizedRadiobox: "#Radio_MemoryOptimized",
+  storageOptimRadiobox: "#Radio_StorageOptimized",
+
+  instancesTextbox: "#NumberOfInstances_text_field",
+  dataegressTextbox: "#MonthlyDataEgress_text_field",
+
+  //Section#4
+  reservedRadiobox: "#Radio_Reserved",
+  payAsYouGoRadiobox: "#Radio_PayAsYouGo",
+  reservedExpirationDatePicker: "#ExpirationDateDatePickerButtonIcon",
+  datePicker: "#ExpirationDateDatePicker",
+  reservedNavigateNextMonth: "#ExpirationDateDatePicker button[aria-label='Next month']",
+
+ //Section#5
+ additionalInfoTextbox: "#AdditionalInfo_text_area",
+
+ // page#7
+ summaryEnvironmentType: "#EnvironmentType",
+ summaryClassificationText: "#ClassificationText",
+summaryCETableHeader: ".v-data-table tr th",
+ summaryCETableData: ".v-data-table tr td",
+
+
 }
