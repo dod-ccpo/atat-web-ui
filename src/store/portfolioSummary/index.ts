@@ -16,6 +16,7 @@ import { Statuses } from "../acquisitionPackage";
 import CurrentUserStore from "../user";
 import {convertColumnReferencesToValues} from "@/api/helpers";
 import { Environment } from "types/Global";
+import { currencyStringToNumber } from "@/helpers";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -209,7 +210,7 @@ export class PortfolioSummaryStore extends VuexModule {
     allEnvs.forEach(env => {
       // ATAT TODO: env status should be set in SNOW
       if (env.provisioned === "true") {
-        env.environmentStatus = Statuses.Provisioned.value;;
+        env.environmentStatus = Statuses.Provisioned.value;
       } else {
         env.environmentStatus = env.provisioning_failure_cause  
           ? Statuses.ProvisioningIssue.value 
@@ -222,16 +223,15 @@ export class PortfolioSummaryStore extends VuexModule {
         // portfolio status based on environment statuses
         let hasProcessing = false;
         let hasIssue = false;
-    
+
         portfolio.environments.forEach(env => {
+          console.log(`Env: ${JSON.stringify(env)}`);
           if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
           if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
           portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
-            : hasProcessing 
-              ? Statuses.Processing.value 
+            : hasProcessing
+              ? Statuses.Processing.value
               : portfolio.portfolio_status;
-          env.classification_level = env.name.toLowerCase().includes("- unclassified")
-            ? "U" : env.name.toLowerCase().includes("- secret") ? "S" : "TS"
         });
       }
     });
@@ -343,17 +343,25 @@ export class PortfolioSummaryStore extends VuexModule {
         taskOrder.clin_records =
           allClinList.filter(clin => (taskOrder.clins.indexOf(<string>clin.sys_id) !== -1))
             .map(clin => {
+              const fundsTotal = currencyStringToNumber(clin.funds_total as unknown as string)
+              const fundsObligated = currencyStringToNumber(
+                clin.funds_obligated as unknown as string
+              );
+              const actualFundsSpent = currencyStringToNumber(
+                clin.actual_funds_spent as unknown as string
+              );
+              const status = clin.clin_status.toUpperCase().replace(/[\W_]+/g,"_");
               return {
                 sys_id: clin.sys_id,
                 clin_number: clin.clin_number,
                 idiq_clin: clin.idiq_clin,
                 pop_end_date: clin.pop_end_date,
                 pop_start_date: clin.pop_start_date,
-                clin_status: clin.clin_status,
+                clin_status: status,
                 clin_status_display: clin.clin_status,
-                funds_obligated: Number(clin.funds_obligated),
-                funds_total: Number(clin.funds_total),
-                actual_funds_spent: Number(clin.actual_funds_spent)
+                funds_obligated: Number(fundsObligated),
+                funds_total: Number(fundsTotal),
+                actual_funds_spent: Number(actualFundsSpent)
               }
             });
       })

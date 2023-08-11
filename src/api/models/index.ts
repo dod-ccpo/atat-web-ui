@@ -47,6 +47,7 @@ export interface AlertDTO extends BaseTableDTO {
 }
 
 export interface AcquisitionPackageDTO extends BaseTableDTO {
+  is_travel_needed: string;
   status: string;
   number: string;
   project_overview: ReferenceColumn | string;
@@ -780,7 +781,7 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   portfolio_funding_status: string;
   portfolio_owner?: string;
   portfolio_managers: string; // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
-  portfolio_viewers?: string;
+  portfolio_viewers: string;
   funds_spent: number; // "<< sum of value in cost table queried with task order number >>"
   task_orders: TaskOrderDTO[];
   alerts: AlertDTO[];

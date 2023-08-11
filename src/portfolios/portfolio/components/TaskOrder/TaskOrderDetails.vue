@@ -23,7 +23,19 @@
       </span>
     </div>
     <div class="pt-3 d-flex justify-space-between pb-5">
-      <h1>{{ getTaskOrderNumber }}</h1>
+      <div class="d-flex flex-row align-center">
+        <h1>{{ getTaskOrderNumber }}</h1>
+        <v-chip 
+        v-if="showStatusChip"
+        id="StatusChip" 
+        :color="statusChipColor" 
+        style="height: 24px;" 
+        class="ml-6"
+        label
+        >
+          {{statusChipText}}
+        </v-chip>
+      </div>
       <!-- <v-btn
         id="ModifyTaskOrderButton"
         outlined
@@ -158,7 +170,12 @@
                         color="warning-dark2"
                         class="mr-1 _alert-icon"
                       />
-                      <span class="_expiration">{{ item.PoP.expiration }}</span>
+                      <span 
+                      class="_expiration"
+                      v-if="item.status !== statuses.OptionExercised.value"
+                      >
+                      {{ item.PoP.expiration }}
+                    </span>
                     </span>
                   </div>
                 </td>
@@ -180,7 +197,7 @@
                     <div
                       :class="{
                         'text-error font-weight-500':
-                          item.status === 'Delinquent',
+                          item.status === statuses.Delinquent.value,
                       }"
                       class="d-flex align-center justify-end"
                     >
@@ -190,7 +207,7 @@
                       <span
                         :class="{
                           'text-error font-weight-500':
-                            item.status === 'Delinquent',
+                            item.status === statuses.Delinquent.value,
                         }"
                         class="font-size-12 text-base ml-3 _funds-spent-percent"
                       >
@@ -198,7 +215,7 @@
                       </span>
                     </div>
                     <div
-                      v-if="item.status === 'Delinquent' || item.isOverspent"
+                      v-if="item.status === statuses.Delinquent.value || item.isOverspent"
                       class="d-flex justify-end font-size-12 text-error
                       font-weight-500 align-center justify-end"
                     >
@@ -212,7 +229,7 @@
                       <span class="_overspent">Overspent</span>
                     </div>
                     <div
-                      v-else-if="item.isActive"
+                      v-else-if="item.isActive && item.status !== statuses.OptionExercised.value"
                       class="d-flex font-size-12 align-center justify-end"
                       :class="[
                         'nowrap',
@@ -242,18 +259,20 @@
             </template>
             <tr class="_section-divider">
               <td colspan="2" class="font-weight-400">
-                <a
-                  id="InactiveToggle"
-                  @click="toggleInactive"
-                  @keydown.enter="toggleInactive"
-                  @keydown.space="toggleInactive"
-                  role="button"
-                >
-                  {{ showHide() }} inactive CLINs
-                </a>
-                <span class="font-size-14 text-base ml-2">
-                  ({{ inactiveCount }})
-                </span>
+                <span v-if="!isExpiredTO">
+                  <a
+                    id="InactiveToggle"
+                    @click="toggleInactive"
+                    @keydown.enter="toggleInactive"
+                    @keydown.space="toggleInactive"
+                    role="button"
+                  >
+                    {{ showHide() }} inactive CLINs
+                  </a>
+                  <span class="font-size-14 text-base ml-2">
+                    ({{ inactiveCount }})
+                  </span>
+              </span>
               </td>
               <td align="right" class="font-weight-700">Total</td>
               <td align="right" class="font-weight-700 _grand-total-clin-value">
@@ -378,8 +397,8 @@ import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrder
 import {
   currencyStringToNumber,
   differenceInDaysOrMonths,
-  getStatusLabelFromValue,
   toCurrencyString,
+  getStatusChipBgColor
 } from "@/helpers";
 
 import { Statuses } from "@/store/acquisitionPackage";
@@ -404,6 +423,10 @@ export default class TaskOrderDetails extends Vue {
   public optionPendingClins: ClinTableRowData[] = [];
   public showInactive = false;
   public statuses = Statuses;
+  public isUpcomingTO = false;
+  public isExpiredTO = false;
+  public statusChipColor = "";
+  public statusChipText = "";
 
   @Watch("showInactive")
   public showHide(): string {
@@ -413,7 +436,15 @@ export default class TaskOrderDetails extends Vue {
   @Watch("selectedTaskOrder", {deep: true})
   public async selectedTaskOrderChanged():Promise<void>{
     this.clins = this.selectedTaskOrder.clins as ClinDTO[];
-    await this.loadOnEnter()
+    if(this.selectedTaskOrder.status === this.statuses.Upcoming.value){
+      this.isUpcomingTO = true;
+    }
+    if(this.selectedTaskOrder.status === this.statuses.Expired.value){
+      this.showInactive = true;
+      this.isExpiredTO = true;
+    }
+    this.getBgColor();
+    await this.loadOnEnter();
   }
 
   /* eslint-disable indent */
@@ -463,7 +494,7 @@ export default class TaskOrderDetails extends Vue {
       : ""
   }
 
-  public getExpiringStatus(CLINNumber: string): string {
+  public getExpiringStatus(CLINNumber: string): Record<string, string> {
     let firstTwo = CLINNumber.slice(0,2);
     const lastTwo = CLINNumber.slice(2, CLINNumber.length);
     let expectedClin = '';
@@ -480,7 +511,43 @@ export default class TaskOrderDetails extends Vue {
     const hasFollowOn = this.clins.some((clin) =>
       clin.clin_number === expectedClin && clin.clin_status === Statuses.OptionExercised.value
     );
-    return hasFollowOn ? Statuses.ExpiringPopOK.value : Statuses.ExpiringPop.value;
+    return hasFollowOn 
+      ? Statuses.ExpiringPopOK
+      : Statuses.ExpiringPop
+  }
+
+  public getClinStatus(clin: ClinDTO){
+    if (
+      this.isUpcomingTO
+        && !(clin.clin_status === Statuses.Expired.value)
+        && !(clin.clin_status === Statuses.OptionPending.value)
+    ) {
+      return Statuses.UpcomingPeriod
+    } else if (clin.clin_status === Statuses.Expired.value) {
+      return Statuses.ExpiredPoP;
+    } else if (clin.clin_status === Statuses.ExpiringPop.value){
+      return this.getExpiringStatus(clin.clin_number);
+    }
+
+    // find the values that match and send back based on the Statuses obj.
+    const status = Object.keys(Statuses).find((s) =>
+      Statuses[s].value === clin.clin_status) as string;
+    
+    return Statuses[status];
+  }
+
+  public getBgColor(): void {
+    this.statusChipColor = this.selectedTaskOrder.status 
+      ? getStatusChipBgColor(this.selectedTaskOrder.status) 
+      : "";
+  }
+
+  public get showStatusChip(): boolean{
+    const showChip = this.isUpcomingTO || this.isExpiredTO
+    if(showChip){
+      this.statusChipText = this.selectedTaskOrder.status as string;
+    }
+    return showChip;
   }
 
   public handleClick(): void {
@@ -534,19 +601,18 @@ export default class TaskOrderDetails extends Vue {
 
     this.clins.forEach((clin) => {
       const isClinActive = !inactiveStatuses.includes(clin.clin_status);
+      const clinStatus = this.getClinStatus(clin);
       const tableRowData: ClinTableRowData = {
         isActive: isClinActive,
-        isExercised: clin.clin_status === Statuses.OptionExercised.value,
-        isPending: clin.clin_status === Statuses.OptionPending.value,
-        isExpired: clin.clin_status === Statuses.Expired.value,
+        isExercised: clinStatus.value === Statuses.OptionExercised.value,
+        isPending: clinStatus.value === Statuses.OptionPending.value,
+        isExpired: clinStatus.value === Statuses.ExpiredPoP.value,
         CLINNumber: clin.clin_number,
         CLINTitle: clin.idiq_clin,
         PoP: differenceInDaysOrMonths(clin.pop_start_date, clin.pop_end_date),
         popStartDate: clin.pop_start_date,
-        status: clin.clin_status === Statuses.ExpiringPop.value 
-          ? this.getExpiringStatus(clin.clin_number) 
-          : clin.clin_status,
-        statusLabel: getStatusLabelFromValue(clin.clin_status),
+        status: clinStatus.value,
+        statusLabel: clinStatus.label,
         obligatedFunds: "$" + toCurrencyString(clin.funds_obligated),
         totalCLINValue: "$" + toCurrencyString(clin.funds_total),
         totalFundsSpent: "$" + toCurrencyString(clin.actual_funds_spent || 0),
@@ -559,7 +625,6 @@ export default class TaskOrderDetails extends Vue {
         ),
         startNewClinGroup: false,
       };
-
       //add row to appropriate temporary table
       if (clin.clin_status === Statuses.Expired.value) {
         this.expiredClins.push(tableRowData);
@@ -568,7 +633,6 @@ export default class TaskOrderDetails extends Vue {
       } else {
         this.tableData.push(tableRowData);
       }
-
       this.calculateCurrentPeriodTotals(tableRowData);
 
       this.totals = this.fundsRemaining(
@@ -581,25 +645,47 @@ export default class TaskOrderDetails extends Vue {
   }
 
   public async addSeparators(): Promise<void> {
-    this.optionPendingClins[0].startNewClinGroup = true;
-    this.expiredClins[0].startNewClinGroup = true;
+    // loop through the sorted table data and find the first IsExercised
+    // set that as a newClinGroup
+    for(let i = 0; i < this.tableData.length; i++){
+      if(this.tableData[i].isExercised){
+        this.tableData[i].startNewClinGroup = true;
+        break;
+      }
+    }
+    // check for values inside of the array first, 
+    // if you don't there is a case that errors out the frontend
+    if(this.optionPendingClins.length > 0){
+      this.optionPendingClins[0].startNewClinGroup = true;
+      this.optionPendingClins = this.seperateByClin(this.optionPendingClins);
+    }
+    if(this.expiredClins.length > 0){
+      this.expiredClins[0].startNewClinGroup = true;
+      this.expiredClins = this.seperateByClin(this.expiredClins);
+    }
+  }
+
+  public seperateByClin(clinGroup: ClinTableRowData[]){
+    let firstTwo = clinGroup[0].CLINNumber?.slice(0,2);
+    for(let i = 0; i < clinGroup.length; i++){
+      const tempFirstTwo = clinGroup[i].CLINNumber?.slice(0,2)
+      if(firstTwo !== tempFirstTwo){
+        clinGroup[i].startNewClinGroup = true;
+        firstTwo = tempFirstTwo;
+      }
+    }
+    return clinGroup;
   }
 
   public async sortRows(): Promise<void> {
-    this.tableData.sort((a, b) =>
-      (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1
-    );
-    this.sortArrayByDateThenNumber(this.optionPendingClins);
-    this.sortArrayByDateThenNumber(this.expiredClins);
+    this.sortArrayByCLIN(this.tableData);
+    this.sortArrayByCLIN(this.optionPendingClins);
+    this.sortArrayByCLIN(this.expiredClins);
   }
 
-  public sortArrayByDateThenNumber(array: ClinTableRowData[]): void {
+  public sortArrayByCLIN(array: ClinTableRowData[]): void {
     array.sort((a, b) => {
-      if (a.popStartDate === b.popStartDate) {
-        return (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1;
-      } else {
-        return a.popStartDate > b.popStartDate ? -1 : 1;
-      }
+      return (a.CLINNumber || "") > (b.CLINNumber || "") ? 1 : -1;
     });
   }
 
@@ -637,7 +723,6 @@ export default class TaskOrderDetails extends Vue {
     bgColor?: string
   ): void {
     const imgKey = key || "";
-
     this.statusImgs[imgKey] = {
       svgName,
       width,
@@ -659,6 +744,14 @@ export default class TaskOrderDetails extends Vue {
       ],
       [
         Statuses.Expired.value,
+        "failed",
+        "16",
+        "16",
+        "error",
+        "bg-error-lighter",
+      ],
+      [
+        Statuses.ExpiredPoP.value,
         "failed",
         "16",
         "16",
@@ -707,6 +800,14 @@ export default class TaskOrderDetails extends Vue {
       ],
       [
         Statuses.OptionExercised.value,
+        "requestQuote",
+        "13",
+        "16",
+        "info-dark",
+        "bg-info-lighter",
+      ],
+      [
+        Statuses.UpcomingPeriod.value,
         "requestQuote",
         "13",
         "16",

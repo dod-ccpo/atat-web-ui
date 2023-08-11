@@ -131,6 +131,7 @@ async function confirmServiceDeletion() {
 }
 
 async function confirmDeleteTravelAll() {
+  AcquisitionPackage.setIsTravelNeeded("NO")
   await DescriptionOfWork.setConfirmTravelDeleteAll(true);
 }
 
