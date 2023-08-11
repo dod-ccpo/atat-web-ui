@@ -51,6 +51,8 @@ module.exports = {
   stepBackgroundLink: "#Step_Background",
   stepBackgroundText: "#Step_Background .step-text",
   stepBackgroundCircle: "#Step_Background .step-circle",
+  substepProcurementHistoryLink: "#SubStep_ProcurementHistory",
+  substepProcurementText: "#SubStep_ProcurementHistory  .step-text",
   substepCurrentContractLink: "#SubStep_CurrentContract",
   substepCurrentContractText: "#SubStep_CurrentContract .step-text",
   substepCurrentEnvironmentLink: "#SubStep_CurrentEnvironment",

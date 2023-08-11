@@ -41,9 +41,29 @@
             @click="cardMenuClick(portfolioCardMenuItems[0])"
           > 
             {{ cardData.title }}
-            <ATATSVGIcon v-if="cardData.isOwner || cardData.isManager"
-              name="manageAccount" width="20" height="17" color="base" class="ml-3"
-            />
+
+            <v-tooltip
+              transition="slide-y-reverse-transition"
+              color="rgba(0,0,0,1)"
+              top
+              :open-on-hover="true"
+              :open-delay="500"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <span
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <ATATSVGIcon v-if="cardData.isOwner || cardData.isManager"
+                    name="manageAccount" width="20" height="17" color="base" class="ml-3"
+                  />
+                </span>
+              </template>
+              <div class="_tooltip-content-wrap">
+                Portfolio manager
+              </div>
+            </v-tooltip>
+
           </a>
         </div>
         <div v-if="!isActive || cardData.fundingAlertChipString" class="ml-5">
@@ -207,6 +227,7 @@ export default class PortfolioCard extends Vue {
     leavePortfolio: "leavePortfolio",
     emailManagers: "emailManagers",
     loginToCSP: "loginToCSP",
+    archivePortfolio: "archivePortfolio",
   }
   public get currentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
@@ -267,10 +288,9 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
-    // EJY - DOUBLE-CHECK below line
     this.cardData = await PortfolioStore.populatePortfolioMembersDetail(this.cardData); 
     
-    await PortfolioStore.setCurrentPortfolio(this.cardData);
+    await PortfolioStore.setCurrentPortfolioFromCard(this.cardData);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
       await AppSections.setActiveTabIndex(0);
@@ -295,6 +315,9 @@ export default class PortfolioCard extends Vue {
       }
       break; 
     }
+    case this.menuActions.archivePortfolio: 
+      this.$emit("openArchivePortfolioModal");
+      break;
     default:
       break; 
     }
@@ -373,6 +396,15 @@ export default class PortfolioCard extends Vue {
         action: this.menuActions.viewTaskOrders
       },*/
     ]; 
+    if (this.cardData.isOwner && this.cardData.status !== Statuses.Archived.value) {
+      this.portfolioCardMenuItems.push(
+        { 
+          title: "Archive portfolio",
+          action: this.menuActions.archivePortfolio,
+        },    
+      );
+
+    }
 
     // ATAT TODO -- add functionality in AT-9099?
     // if (this.isHaCCAdmin) {

@@ -49,6 +49,18 @@
               :rules="[$validators.required('Please select an option')]"
             />
           </div>
+          <div class="d-flex align-start flex-column mt-6">
+            <CJADC2Initiative
+              legend='Is this package in support of the Combined Joint All-Domain Command and
+                       Control (CJADC2) initiative?'
+              helpText = "CJADC2 is the Department of Defense's (DoD's) concept to connect sensors 
+                          from all of the military services-Air Force, Army, Marine Corps, Navy, 
+                          and Space Force-into a single network."
+              :cjadc2Initiative.sync="cjadc2Initiative"
+              :cjadc2Percentage.sync='cjadc2Percentage'
+              :rules="[$validators.required('Please select an option')]"
+            />
+          </div>
           <hr/>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectDisclaimer
@@ -72,7 +84,9 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
 import EmergencyDeclarationSupport from "./components/EmergencyDeclarationSupport.vue";
+import CJADC2Initiative from "./components/cjadc2Initiative.vue";
 import ProjectDisclaimer from "./components/ProjectDisclaimer.vue"
+import ATATTextField from "@/components/ATATTextField.vue";
 
 import AcquisitionPackage, {
   StoreProperties,
@@ -87,7 +101,9 @@ import { YesNo } from "types/Global";
     ProjectTitle,
     ProjectScope,
     EmergencyDeclarationSupport,
-    ProjectDisclaimer
+    CJADC2Initiative,
+    ProjectDisclaimer,
+    ATATTextField
   },
 })
 export default class ProjectOverview extends Mixins(SaveOnLeave) {
@@ -96,6 +112,8 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   private emergencyDeclaration = "";
   private projectDisclaimer = "";
   private selectedDisclaimer: string[] = [];
+  private cjadc2Initiative = "";
+  private cjadc2Percentage = ""; 
 
   public get projectTitle(): string {
     return AcquisitionPackage.getTitle();
@@ -110,16 +128,21 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
       title: this.currentTitle,
       scope: this.projectScope,
       emergency_declaration: this.emergencyDeclaration,
-      project_disclaimer: this.selectedDisclaimer[0] as YesNo
-    };
+      project_disclaimer: this.selectedDisclaimer[0] as YesNo,
+      cjadc2: this.cjadc2Initiative,
+      cjadc2_percentage: this.cjadc2Percentage || "",
+    }
   }
 
   private get savedData(): ProjectOverviewDTO {
+    const poObj = AcquisitionPackage.projectOverview as ProjectOverviewDTO;
     return {
-      title: AcquisitionPackage.projectOverview?.title || "",
-      scope: AcquisitionPackage.projectOverview?.scope || "",
-      emergency_declaration: AcquisitionPackage.projectOverview?.emergency_declaration || "",
-      project_disclaimer: AcquisitionPackage.projectOverview?.project_disclaimer || ""
+      title: poObj.title,
+      scope: poObj.scope,
+      emergency_declaration: poObj.emergency_declaration,
+      project_disclaimer: poObj.project_disclaimer,
+      cjadc2: poObj.cjadc2,
+      cjadc2_percentage: poObj.cjadc2_percentage 
     };
   }
 
@@ -155,7 +178,12 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
           this.selectedDisclaimer.push("YES")
         }
       }
-      
+      if( storeData.cjadc2){
+        this.cjadc2Initiative = storeData.cjadc2;
+        this.cjadc2Percentage = this.cjadc2Initiative === "YES"
+          ? storeData.cjadc2_percentage as string
+          : "";
+      }
     }
   }
 

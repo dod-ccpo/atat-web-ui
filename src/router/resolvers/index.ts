@@ -317,12 +317,27 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
     ? routeNames.DOWLandingPage
     : routeNames.EnvironmentSummary;
 }
+export const COIRouteResolver = (current: string): string => {
+  return current === routeNames.DOWLandingPage
+    ? isStepTouched(6)?routeNames.SummaryStepSix:routeNames.ConflictOfInterest
+    :routeNames.SummaryStepSix
+}
+export const PackagingPackingAndShippingResolver = (current: string): string => {
+  return isStepTouched(6) && current === routeNames.ConflictOfInterest
+    ? routeNames.SummaryStepSix
+    : routeNames.PackagingPackingAndShipping
+}
 
+export const TravelRouteResolver = (current: string): string => {
+  return isStepTouched(6) && current === routeNames.PackagingPackingAndShipping
+    ? routeNames.SummaryStepSix
+    : routeNames.Travel
+}
 
 export const PIIResolver = (current: string): string =>{
-  return current === routeNames.Travel
+  return current === routeNames.SummaryStepSix
     ? isStepTouched(7) ? routeNames.SummaryStepSeven : routeNames.PII
-    : routeNames.Travel
+    : routeNames.SummaryStepSix
 }
 
 export const PIIRecordResolver = (current: string): string => {
@@ -847,8 +862,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
-  if(current === routeNames.OtherOfferingSummary && 
-    isOtherOffering && direction === "previous"){
+  if(current === routeNames.OtherOfferingSummary && isOtherOffering && direction === "previous"){
     if(DescriptionOfWork.returnToDOWSummary){
       return descriptionOfWorkSummaryPath;
     }
@@ -1718,7 +1732,10 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
   FOIARecordSummaryResolver,
-  PIIResolver
+  PIIResolver,
+  COIRouteResolver,
+  PackagingPackingAndShippingResolver,
+  TravelRouteResolver
 };
 
 // add path resolvers here 

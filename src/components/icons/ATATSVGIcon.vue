@@ -71,6 +71,7 @@ import Support from "@/components/icons/Support.vue";
 import SupportCircle from "@/components/icons/SupportCircle.vue";
 import Star from "@/components/icons/Star.vue";
 import StarInTriangle from "@/components/icons/StarInTriangle.vue";
+import StartProvisioning from "@/components/icons/StartProvisioning.vue"
 import SwapVertical from "@/components/icons/SwapVertical.vue";
 import TaskAlt from "@/components/icons/TaskAlt.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
@@ -177,6 +178,7 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     SignOut,
     Star,
     StarInTriangle,
+    StartProvisioning,
     Support,
     SupportCircle,
     SwapVertical,

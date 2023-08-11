@@ -2,8 +2,7 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
-import {FundingAlertTypes, PortfolioDataStore,
-  getThresholdAmount, thresholdAtOrAbove} from "@/store/portfolio/index";
+import {FundingAlertTypes, PortfolioDataStore} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import Vue from "vue";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
@@ -69,30 +68,6 @@ describe("Portfolio Store", () => {
     jest.clearAllTimers();
   })
 
-  it('Test setPortfolioData- sets portfolio to the passed in value', async () => {
-    const mockData = {
-      title: "some title to test",
-      description: "a description",
-      status: Statuses.Active.value,
-      csp: "",
-      agency: "mock Agency",
-      createdBy: "jefferey tester",
-      provisioned: "today",
-      members: []
-    }
-    const updateEmailObj = {
-      members:[{email:"testemail@test.mil"}]
-    }
-    
-    await portfolioStore.setPortfolioData(mockData);
-    await portfolioStore.setPortfolioData(updateEmailObj);
-    expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
-  })
-
-  it('getStatus() returns default result', async()=>{
-    expect(await portfolioStore.getStatus).toBe(Statuses.Active.value);
-  })
-
   it('getShowAddMembersModal() returns default result', async()=>{
     expect(await portfolioStore.getShowAddMembersModal).toBe(false);
   })
@@ -114,7 +89,7 @@ describe("Portfolio Store", () => {
       members: []
     }
 
-    await portfolioStore.setPortfolioData(mockData);
+    await portfolioStore.setCurrentPortfolio(mockData);
     Vue.nextTick(() => {
       expect(portfolioStore.currentPortfolio.title).toBe("some title to test")
     })
@@ -147,34 +122,11 @@ describe("Portfolio Store", () => {
     })
   })
 
-
-  it('saveMembers() add members to Portfolio.portflio.members', async()=>{
-    const memberInvites: User[] = [{
-      firstName: "FN",
-      lastName: "LN",
-      fullName: "FN",
-      email: "testemail@mail.mil",
-      role: "Viewer",
-      phoneNumber: "",
-      phoneExt: "",
-      designation: "",
-      agency: "Test Agency",
-      sys_id: "mem_abc"
-    }]
-    portfolioStore.currentPortfolio.members = [];
-    jest.spyOn(api.portfolioTable, "update").mockImplementation(
-      ()=>Promise.resolve({} as unknown as PortfolioSummaryDTO));
-    await portfolioStore.inviteMembers(memberInvites)
-    expect(portfolioStore.currentPortfolio.members?.length).toBe(1)
-  })
-
   it('getPortolioData()', async()=>{
     const dummyTitle = "dummy Title";
-    portfolioStore.setPortfolioData(
-      {
-        title: dummyTitle
-      }
-    )
+    await portfolioStore.setCurrentPortfolio({
+      title: dummyTitle
+    });
     const portfolio = await portfolioStore.getPortfolioData();
     expect(portfolio.title).toBe(dummyTitle)
   })

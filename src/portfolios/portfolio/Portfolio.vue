@@ -13,11 +13,23 @@
         <v-col>
           <div id="app-content" class="d-flex flex-column">
             <div class="mb-auto" style="padding-bottom: 80px">
-                <div class="d-flex justify-space-between width-100 mb-10">
+                <div class="width-100 mb-10">
                   <ATATAlert
-                      id="InaccurateFinancialDetails"
-                      type="error"
-                      class="container-max-width my-10"
+                    id="ArchivedCallout"
+                    v-if="portfolioIsArchived"
+                    type="info"
+                    class="mb-10"
+                  >
+                    <template v-slot:content>
+                      This portfolio was archived on {{ lastUpdated }}
+                    </template>
+                  </ATATAlert>
+
+
+                  <ATATAlert
+                    id="InaccurateFinancialDetails"
+                    type="error"
+                    class="container-max-width my-10"
                   >
                     <template v-slot:content>
                       <h3 class="mb-1">Financial details may be inaccurate</h3>
@@ -56,8 +68,8 @@
                             Available Funds
                           </p>
                           <p class="mb-0 font-size-14">
-                            Your remaining portfolio balance from all of your
-                            active task orders
+                            Your remaining portfolio balance from all exercised contract line item
+                            numbers (CLINs) since the start of your current task order
                           </p>
                         </div>
                       </v-col>
@@ -69,7 +81,7 @@
                           {{ getCurrencyString(totalPortfolioFunds) }}
                         </span>
                         <p class="text-base-dark mb-0 font-size-14">
-                          Total value of your active task orders
+                          Total value of all exercised CLINs
                         </p>
                         <v-divider class="my-4" />
                         <p class="text-base-darkest mb-0 font-size-14">
@@ -409,10 +421,9 @@
                   <v-card class="_no-shadow v-sheet--outlined pa-8 pb-2">
                     <h3>Breakdown of Actual and Estimated Spend</h3>
                     <p class="font-size-14">
-                      The chart below shows the proportion of funds spent and
-                      funds estimated to be invoiced compared to the total funds
-                      available in this portfolio. The data includes money spent
-                      on all active task orders during this PoP.
+                      The chart below shows the proportion of funds spent and funds estimated to be
+                      invoiced compared to the total funds available in this portfolio. The data
+                      includes money spent on all exercised CLINs during this PoP.
                     </p>
                     <funding-alert
                       :fundingAlertType="fundingAlertType"
@@ -529,7 +540,7 @@
                                   </th>
                                   <th id="TotalFundsSpentHeader">
                                     <div
-                                      class="font-size-12 text-base-darker 
+                                      class="font-size-12 text-base-darker
                                       d-flex justify-end align-center"
                                       id="TotalFundsSpent"
                                     >
@@ -538,7 +549,7 @@
                                   </th>
                                   <th id="LastMonthsSpendHeader">
                                     <div
-                                      class="font-size-12 text-base-darker 
+                                      class="font-size-12 text-base-darker
                                       d-flex justify-end align-center"
                                       id="LastMonthsSpend"
                                     >
@@ -635,14 +646,14 @@
                                   <td id="ClinLastMonthSpent">
                                     <div class="d-flex flex-column">
                                       <span
-                                        class="font-size-14 text-base-darker 
+                                        class="font-size-14 text-base-darker
                                         d-flex justify-end"
                                       >
                                         ${{ item.lastMonthSpent }}
                                       </span>
                                       <span class="d-flex justify-end">
                                         <span
-                                          class="font-size-12 d-flex pr-1 align-center pr-1 
+                                          class="font-size-12 d-flex pr-1 align-center pr-1
                                           font-weight-700"
                                           :class="
                                             item.spendTrend > 0
@@ -692,7 +703,7 @@
                                   <td id="TotalSpent">
                                     <div class="d-flex flex-column">
                                       <span
-                                        class="font-size-14 text-base-darker 
+                                        class="font-size-14 text-base-darker
                                         font-weight-700 d-flex justify-end"
                                       >
                                         {{
@@ -730,7 +741,7 @@
                                   <td id="TotalLastMonthSpent">
                                     <div class="d-flex flex-column">
                                       <span
-                                        class="font-size-14 d-flex justify-end 
+                                        class="font-size-14 d-flex justify-end
                                         text-base-darker font-weight-700"
                                       >
                                         {{
@@ -741,7 +752,7 @@
                                       </span>
                                       <span class="d-flex justify-end">
                                         <span
-                                          class="font-size-12 d-flex pr-1 
+                                          class="font-size-12 d-flex pr-1
                                           align-center font-weight-700"
                                           :class="
                                             totalSpendingObj.spendTrend > 0
@@ -906,6 +917,19 @@ export default class PortfolioDashboard extends Vue {
   public burnChartYStepSize = 0;
   public burnChartYLabelSuffix = "k";
   public tooltipHeaderData: Record<string, string> = {};
+
+  public get portfolioStatus(): string {
+    return PortfolioStore.currentPortfolio.status as string;
+  } 
+  public get portfolioIsArchived(): boolean {
+    return this.portfolioStatus === "ARCHIVED" ;
+  }
+  public get lastUpdated(): string {
+    if (PortfolioStore.currentPortfolio.lastUpdated) {
+      return createDateStr(PortfolioStore.currentPortfolio.lastUpdated, true);
+    }
+    return "";
+  }
 
   public get lastMonthTrendIconName(): string {
     return this.lastMonthSpendTrendPercent > 0 ? 'trendingUp' : 'trendingDown';
@@ -1845,8 +1869,8 @@ export default class PortfolioDashboard extends Vue {
     return SlideoutPanel.slideoutPanelComponent;
   }
 
-  public spendingTooltipText = `This is the total value of all active task
-    orders funding this portfolio`;
+  public spendingTooltipText = `This is the total value of all exercised CLINs funding this
+    portfolio.`;
 
   public periodToDateTooltipText = `This is the total spend from the start of
     the current PoP through last month. It does not include

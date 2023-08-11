@@ -1,18 +1,28 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
-import { SummaryItem } from "types/Global";
+import {
+  DOWClassificationInstance,
+  DOWServiceOffering,
+  DOWServiceOfferingGroup,
+  OtherServiceOfferingData,
+  SummaryItem,
+} from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
 import { ContractTypeApi } from "@/api/contractDetails";
-import { 
-  ContractTypeDTO, 
+import {
+  ContractConsiderationsDTO,
+  ContractTypeDTO,
   CrossDomainSolutionDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
-  SelectedClassificationLevelDTO, 
-  SensitiveInformationDTO} from "@/api/models";
-import ClassificationRequirements from "../classificationRequirements";
-import { convertStringArrayToCommaList } from "@/helpers";
+  SelectedClassificationLevelDTO,
+  SensitiveInformationDTO
+} from "@/api/models";
+import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
+import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
+import _ from "lodash";
+import DescriptionOfWork from "../descriptionOfWork";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -21,6 +31,12 @@ export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boo
 } 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
+  if(stepNumber === 6){
+    const step6Items = Summary.summaryItems.filter((si)=>si.step === 6)
+    return (step6Items.every(
+      (si: SummaryItem) => si.isTouched
+    ))
+  }
   return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
@@ -86,6 +102,12 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
   case 3:
     await Summary.validateStepThree();
     break;
+  case 5:
+    await Summary.validateStepFive();
+    break;
+  case 6:
+    await Summary.validateStepSix();
+    break;
   case 7:
     await Summary.validateStepSeven();
     break;
@@ -93,6 +115,17 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
     break;
   }
 }
+
+export const getSelectedClassLevelsAsDescription = 
+  async(selectedClassLevels?: string[]): Promise<string> =>{
+    const classReqs = ClassificationRequirements.selectedClassificationLevels;
+    const selectClassLevelsSysIds = selectedClassLevels || 
+        classReqs.map(cr => cr.classification_level);
+    const classLevelDisplayNames = ClassificationRequirements.classificationLevels.filter(
+      cl => selectClassLevelsSysIds.includes(cl.sys_id as string)
+    ).map(cl => cl.display?.replaceAll(" - ", "/")).sort();
+    return convertStringArrayToCommaList(classLevelDisplayNames as string[], "and")
+  }
 
 /**
  * 
@@ -301,17 +334,12 @@ export class SummaryStore extends VuexModule {
     hasSecretOrTS: boolean
   ): Promise<string>{
     const cds = ClassificationRequirements.cdsSolution;
-    const classReqs  = ClassificationRequirements.selectedClassificationLevels;
-    const selectClassLevelsSysIds = classReqs.map(cr => cr.classification_level);
-    const classLevelDisplayNames = ClassificationRequirements.classificationLevels.filter(
-      cl => selectClassLevelsSysIds.includes(cl.sys_id as string)
-    ).map(cl => cl.display?.replaceAll(" - ", "/")).sort();
+   
     const missingCDSVerbiage = !(await this.isCDSComplete(hasSecretOrTS))
       ? "<br />(Cross Domain Solution Required)" : ""
 
-    return classReqs.length > 0
-      ? convertStringArrayToCommaList(classLevelDisplayNames as string[], "and") 
-        + missingCDSVerbiage
+    return ClassificationRequirements.selectedClassificationLevels.length > 0
+      ? await getSelectedClassLevelsAsDescription() + missingCDSVerbiage
       : "";
   }
 
@@ -396,17 +424,513 @@ export class SummaryStore extends VuexModule {
   }
   //#endregion
 
+  //#region Step 5
+
+  /** assesses all selected service offerings and 
+   * Anticipated Users and Data object
+  */
+
+  /**
+   * 
+   * @param dowObjects DOWServiceOfferingGroup[]
+   * @returns string[]
+   */
+  @Action({rawError: true})
+  public async validateStepFive(): Promise<void> {
+    //eslint-disable-next-line prefer-const
+    // validates dowObjects.otherOfferingData
+    await this.validateAnticipatedUsersAndData();
+    const dowObjects = await DescriptionOfWork.getDOWObject();
+    await dowObjects.forEach(async (dow)=> 
+    {
+      const id = dow.serviceOfferingGroupId;
+      const hasServiceOfferings = dow.serviceOfferings?.length > 0;
+      const hasOtherOfferings = 
+        (dow.otherOfferingData as OtherServiceOfferingData[])?.length >0
+      if (hasServiceOfferings){
+        dow.serviceOfferings?.forEach(async (so)=>{
+          return await this.isServiceOfferingDataObjComplete(so);
+        }) 
+        dow.isComplete = dow.serviceOfferings.every(
+          vso => vso.isComplete 
+        )
+      } else if (hasOtherOfferings){
+        dow.otherOfferingData?.forEach(async (ood)=>{
+          return await this.isOtherOfferingDataObjComplete(
+            {
+              otherOfferingData: ood,
+              id: id,
+              assessSecurityRequirements:true
+            })
+        })
+        dow.isComplete = dow.otherOfferingData?.every(
+          vso => vso.isComplete 
+        ) || false
+      } else {
+        dow.isComplete = false;
+      }
+          
+      await this.doSetSummaryItem(
+        await this.createServiceOfferingSummaryItem(dow)
+      );
+    })
+  };
+
+
+  /**
+   *
+   * validates Anticipated Users and Data data in 
+   * ClassificationRequirements.selectedClassificationLevels 
+   * store object & creates an Anticipated Users and Data summary item
+   * in the Summary store
+   */
+  @Action({rawError: true})
+  public async validateAnticipatedUsersAndData(): Promise<void>{
+    const classLevels = 
+      await ClassificationRequirements.getSelectedClassificationLevels();
+    classLevels.forEach((level)=>{
+      const data: Record<string, any> = _.clone(level);
+      let additionalFields = [""]
+      let requiredFields = [
+        "data_egress_monthly_amount",
+        "data_egress_monthly_unit",
+        "users_per_region",
+        "increase_in_users",
+        "data_increase"
+      ] 
+
+      if(data["increase_in_users"]==="YES"){
+        additionalFields = [
+          "user_growth_estimate_type",
+          "user_growth_estimate_percentage",
+        ]
+      }
+      if(data["data_increase"]==="YES"){
+        additionalFields = [
+          "data_growth_estimate_type",
+          "data_growth_estimate_percentage",
+        ]
+      }
+
+      requiredFields = requiredFields.concat(additionalFields);
+      level.isAnticipatedUsersAndDataIsComplete = requiredFields.every(f => {
+        if (f === "increase_in_users" && data.increase_in_users === "YES"){
+          return data.user_growth_estimate_percentage.length > 0 &&
+            data.user_growth_estimate_percentage[0] !== ""
+        }
+        if (f === "data_increase" && data.data_increase === "YES"){
+          return data.data_growth_estimate_percentage.length > 0 &&
+            data.data_growth_estimate_percentage[0] !== ""
+        }
+        return data[f] !== ""
+      })
+    });
+    await this.doSetSummaryItem(
+      await this.createAnticipatedUsersAndDataSummaryItem(classLevels)
+    );
+  }
+
+  /**
+   * 
+   * @param classLevels SelectedClassificationLevelDTO[]
+   * @returns  Anticipated Users and Data summaryItem 
+   * 
+   * creates a summary item for Anticipated Users and Data
+   */
+  @Action({rawError: true})
+  public async createAnticipatedUsersAndDataSummaryItem(
+    classLevels: SelectedClassificationLevelDTO[]
+  ): 
+  Promise<SummaryItem>
+  {
+    const isComplete = classLevels.every(
+      cl => cl.isAnticipatedUsersAndDataIsComplete
+    )
+
+    return  {
+      title: "Anticipated users and data",
+      description:"",
+      isComplete,
+      isTouched: false,
+      routeName: "",
+      step: 5,
+      substep: 0
+    } as SummaryItem
+  }
+
+  /**
+   * 
+   * @param dow DOWServiceOfferingGroup
+   * @returns Summary Item for the service offering
+   */
+  @Action({rawError: true})
+  public async createServiceOfferingSummaryItem(dow: DOWServiceOfferingGroup): 
+  Promise<SummaryItem>
+  {
+    const verbiageInfo =  await DescriptionOfWork.getServiceGroupVerbiageInfoWithGroupId(
+      dow.serviceOfferingGroupId
+    );
+    const title = verbiageInfo 
+      ? verbiageInfo.offeringName
+      : toTitleCase(dow.serviceOfferingGroupId)
+
+    return  {
+      title,
+      description: await this.getDOWSummaryDescription(dow),
+      isComplete: dow.isComplete as boolean,
+      isTouched: false,
+      routeName: dow.serviceOfferingGroupId,
+      step: 5,
+      substep: await this.getServiceOfferingSubstep(dow.serviceOfferingGroupId)
+    } as SummaryItem
+  }
+
+
+  /**
+   * created description text for the summary item
+   * 
+   * @param serviceOfferingGroupId 
+   * @returns 
+   */  
+  @Action({rawError: true})
+  public async getDOWSummaryDescription(dow: DOWServiceOfferingGroup): Promise<string> {
+    const selectedClassLevelsForPP = dow.otherOfferingData?.map(
+      ood => ood.classificationLevel
+    )
+
+    return dow.serviceOfferingGroupId === "PORTABILITY_PLAN"
+      ? await getSelectedClassLevelsAsDescription(selectedClassLevelsForPP as string[])
+      : ""
+  }
+
+  /**
+     * 
+     * @param title 
+     * @returns (index of title + 1) 
+     */
+  @Action({rawError: true})
+  public async getServiceOfferingSubstep(
+    title: string)
+  : Promise<number> {
+    return [
+      'STORAGE',
+      'DATABASE',
+      'GENERAL_XAAS',
+      'IOT',
+      'EDGE_COMPUTING',
+      'SECURITY',
+      'NETWORKING',
+      'MACHINE_LEARNING',
+      'APPLICATIONS',
+      'DEVELOPER_TOOLS',
+      'COMPUTE',
+      'PORTABILITY_PLAN',
+      'ADVISORY_ASSISTANCE',
+      'HELP_DESK_SERVICES',
+      'TRAINING',
+      'DOCUMENTATION_SUPPORT',
+      'GENERAL_CLOUD_SUPPORT',
+    ].findIndex(serviceOfferingTitle => serviceOfferingTitle === title) + 1
+  }
+  /**
+   * validates the serviceOffering.classificationInstances 
+   * 
+   * @param serviceOffering 
+   * @returns DOWServiceOffering 
+   */
+  @Action({rawError: true})
+  public async isServiceOfferingDataObjComplete(serviceOffering: DOWServiceOffering)
+  : Promise<DOWServiceOffering> {
+    serviceOffering.classificationInstances?.forEach(
+      (instance) => {
+        const data: Record<string, any> = _.clone(instance);
+        const requiredFields = [
+          "anticipatedNeedUsage",
+          "entireDuration",
+          "selectedPeriods",
+          "classificationLevelSysId"
+        ] 
+        instance.isComplete = requiredFields.every(f => {
+          if (f === "selectedPeriods"){
+            return data.entireDuration === "NO"
+              ? data.selectedPeriods.length > 0
+              : true
+          }
+          return data[f] !== ""
+        })
+      });
+    serviceOffering.isComplete = 
+      serviceOffering.classificationInstances?.every(
+        (ci => ci.isComplete)
+      ) && serviceOffering.classificationInstances.length>0
+    return serviceOffering;
+  }
+
+  /**
+   * validates the otherServiceOfferingData 
+   * 
+   * @param attribs.otherOfferingData: OtherServiceOfferingData
+   * @param attribs.id: string
+   * @param attribs.assessSecurityRequirements: boolean
+   * @returns 
+   */
+  @Action({rawError: true})
+  public async isOtherOfferingDataObjComplete(
+    attribs: {
+      otherOfferingData: OtherServiceOfferingData
+      id: string,
+      assessSecurityRequirements: boolean
+    })
+    : Promise<OtherServiceOfferingData> {
+    //eslint-disable-next-line prefer-const
+    let incompleteOfferings = [""];
+    let requiredFields = [""];
+    const isCompute = attribs.id === "COMPUTE";
+    const isDatabase = attribs.id === "DATABASE";
+    const isStorage = attribs.id === "STORAGE";
+    const isPortabilityPlan = attribs.id === "PORTABILITY_PLAN";
+    const isTraining = attribs.id === "TRAINING";
+    const isGeneralXaas = attribs.id === "GENERAL_XAAS"; 
+    const isAdvisoryAssistance = attribs.id === "ADVISORY_ASSISTANCE";
+    const isHelpDesk = attribs.id === "HELP_DESK_SERVICES";
+    const isDocumentation = attribs.id === "DOCUMENTATION_SUPPORT";
+    const isGeneralCloudSupport = attribs.id === "GENERAL_CLOUD_SUPPORT";
+    
+    const data: Record<string, any> = _.clone(attribs.otherOfferingData);
+    let additionalFields:string[] = [];
+    if(isCompute){
+      requiredFields = [
+        "environmentType",
+        "entireDuration",
+        "memoryAmount",
+        "descriptionOfNeed",
+        "numberOfInstances",
+        "numberOfVCPUs",
+        "operatingSystem",
+        "operatingSystemAndLicensing",
+        "performanceTier",
+        "storageAmount",
+        "storageType",
+        "entireDuration",
+        "periodsNeeded",
+        "classificationLevel"
+      ];
+    } else if (isDatabase) {
+      requiredFields = [
+        "databaseType",
+        "databaseLicensing",
+        "licensing",
+        "memoryAmount",
+        "memoryUnit",
+        "networkPerformance",
+        "numberOfVCPUs",
+        "numberOfInstances",
+        "operatingSystem",
+        "databaseLicensing",
+        "operatingSystemLicense",
+        "storageType",
+        "storageAmount",
+        "storageUnit",
+        "descriptionOfNeed",
+        "entireDuration",
+        "periodsNeeded",
+        "classificationLevel"
+      ]
+    } else if(isStorage){
+      requiredFields = [
+        "numberOfInstances",
+        "storageAmount",
+        "storageType",
+        "storageUnit",
+        "entireDuration",
+        "descriptionOfNeed",
+        "periodsNeeded",
+        "classificationLevel"
+      ]
+    } else if (isGeneralXaas) {
+      requiredFields = [
+        "descriptionOfNeed",
+        "entireDuration",
+        "periodsNeeded",
+        "classificationLevel"
+      ];
+    } else if (isTraining){
+      requiredFields= [
+        "trainingRequirementTitle",
+        "trainingType",
+        "trainingPersonnel",
+        "entireDuration",
+        "descriptionOfNeed",
+        "periodsNeeded",
+        "classificationLevel"
+      ]
+
+      switch(data.trainingType?.toUpperCase()){
+      case "ONSITE_INSTRUCTOR_CONUS":
+        additionalFields = ["trainingFacilityType","trainingLocation"];
+        break;
+      case "ONSITE_INSTRUCTOR_OCONUS":
+        additionalFields = ["trainingLocation"];
+        break;
+      case "VIRTUAL_INSTRUCTOR":
+        additionalFields = ["trainingTimeZone"];
+        break;
+      default:
+        break;
+      }
+    } else if (isPortabilityPlan) {
+      requiredFields = ["classificationLevel"]
+    } else if(
+      isAdvisoryAssistance 
+        || isDocumentation 
+        || isHelpDesk 
+        || isGeneralCloudSupport){
+      requiredFields = [
+        "descriptionOfNeed",
+        "personnelOnsiteAccess",
+        "entireDuration",
+        "periodsNeeded",
+        "classificationLevel"
+      ] 
+      // validate classifiedInformationTypes if classlevel is TS/S
+      if (attribs.assessSecurityRequirements
+        && !isClassLevelUnclass(data["classificationLevel"])){
+        additionalFields = ["classifiedInformationTypes"];
+      }
+    }
+    requiredFields = requiredFields.concat(additionalFields);
+    attribs.otherOfferingData.isComplete = requiredFields.every(f => {
+      if (f === "periodsNeeded"){
+        return data.entireDuration === "NO"
+          ? data.periodsNeeded.length > 0
+          : true
+      }
+      return data[f] !== ""
+    })
+    return attribs.otherOfferingData;
+  };
+  //#endregion
+
+  //#region STEP 6
+  @Action({rawError: true})
+  public async validateStepSix(): Promise<void> {
+    await this.assessCOI();
+    await this.assessPackagingPackingShipping();
+    await this.assessTravel();
+  }
+
+  @Action({rawError: true})
+  public async assessCOI(): Promise<void> {
+    const contractConsiderations =
+      AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
+
+    const coi = contractConsiderations.potential_conflict_of_interest;
+    const coiInfo = contractConsiderations.conflict_of_interest_explanation;
+    const isTouched = coi === "YES" ? true : coi === "NO";
+    const isComplete =  coi === "NO" || (coiInfo !== undefined && coiInfo.length > 0);
+    let description = ""
+    if(isTouched && isComplete){
+      description = isComplete && coi !=="NO"? "Potential organizational COI exists."
+        :"No organizational COI"
+    }
+    const conflictOfInterestSummaryItem: SummaryItem = {
+      title: "Conflict of Interest (COI)",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "ConflictOfInterest",
+      step: 6,
+      substep: 1
+    }
+
+    await this.doSetSummaryItem(conflictOfInterestSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async assessPackagingPackingShipping(): Promise<void> {
+    const contractConsiderations =
+      AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
+
+    const selections = [
+      contractConsiderations.contractor_provided_transfer,
+      contractConsiderations.packaging_shipping_other,
+      contractConsiderations.packaging_shipping_none_apply
+    ]
+    const isTouched = selections.includes('true');
+    const explanation = contractConsiderations.packaging_shipping_other_explanation;
+    const needsExplanation = selections[1] === 'true';
+    let description = ""
+    if(isTouched){
+      description = selections[2] === 'true'?
+        'Effort does not require CSP to transfer physical media.'
+        :'Effort requires CSP to transfer physical media.'
+    }
+    const isComplete = needsExplanation ?
+      (isTouched && explanation !== undefined && explanation.length > 0) : isTouched;
+
+    const packagingPackingShippingSummaryItem: SummaryItem = {
+      title: "Packaging, Packing, and Shipping",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "PackagingPackingAndShipping",
+      step: 6,
+      substep: 2
+    }
+
+    await this.doSetSummaryItem(packagingPackingShippingSummaryItem)
+  }
+
+  @Action({rawError: true})
+  public async assessTravel(): Promise<void> {
+    await DescriptionOfWork.loadTravel()
+    const isTravelSkipped = AcquisitionPackage.isTravelNeeded === "NO"
+    const isTravelTouched = AcquisitionPackage.isTravelTouched
+    const travelInfo = await DescriptionOfWork.getTravel()
+    let description = ""
+    if(travelInfo.length > 0) {
+      let numberOfTrips = 0;
+      const tripInformation: string[] = []
+      travelInfo.forEach(instance =>{
+        tripInformation.push(`${instance.trip_location} (${instance.number_of_trips})`);
+        numberOfTrips += Number(instance.number_of_trips)
+      })
+      description = `${numberOfTrips} trips required within this task order:
+       \n
+      ${convertStringArrayToCommaList(tripInformation,"and")}`
+    }
+    if(isTravelSkipped){
+      description = "No travel requirements for contractor employees"
+    }
+    const isTouched = isTravelTouched||travelInfo.length > 0
+    const isComplete =  isTravelSkipped
+      || travelInfo.length > 0;
+    const travelSummaryItem: SummaryItem = {
+      title: "Travel",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "Travel",
+      step: 6,
+      substep: 3
+    }
+    await this.doSetSummaryItem(travelSummaryItem)
+  }
+
+
+  //#endregion
+
   //#region STEP 7
   @Action({rawError: true})
   public async validateStepSeven(): Promise<void> {
     const objectKeys = [
-      "baa_", 
-      "sys_", 
-      "pii_", 
-      "foia_", 
-      "potential_", 
-      "508", 
-      "acquisition", 
+      "baa_",
+      "sys_",
+      "pii_",
+      "foia_",
+      "potential_",
+      "508",
+      "acquisition",
       "record_name", 
       "work_"
     ];

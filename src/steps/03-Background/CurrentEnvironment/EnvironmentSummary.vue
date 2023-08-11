@@ -18,11 +18,11 @@
             class="mt-4 _light-gray-card"
             v-if="environmentTypeText && classificationsText"
           >
-            <div class="d-flex">
+            <div class="d-flex" id="EnvironmentSummaryBox">
               <div>
-                <span class="font-weight-500">{{ environmentTypeText }}</span>
+                <span id="EnvironmentType" class="font-weight-500">{{ environmentTypeText }}</span>
                 <br />
-                {{ classificationsText }}
+                <span id="ClassificationText"> {{ classificationsText }}</span>
               </div>
               <div class="ml-6">
                 <button
@@ -219,7 +219,6 @@ export default class EnvironmentSummary extends Vue {
     });
     //eslint-disable-next-line prefer-const
     let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
-
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
       //eslint-disable-next-line prefer-const
       let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
@@ -264,14 +263,6 @@ export default class EnvironmentSummary extends Vue {
     this.navigate();
   }
 
-  @Watch("confirmInstanceDelete")
-  public confirmInstanceDeleteChanged(newVal: boolean): void {
-    if (newVal && this.tableData.length > 0) {
-      this.showDeleteInstanceDialog = newVal;
-    } else if (newVal) {
-      this.deleteInstance();
-    }
-  }
 
   public instanceToDeleteSysId = "";
 

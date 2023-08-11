@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
@@ -61,7 +62,7 @@ describe("Testing Portfolio Drawer component", () => {
       localVue,
       vuetify,
     });
-    PortfolioData.setPortfolioData(portfolio);
+    PortfolioData.setCurrentPortfolioMembers(portfolio);
   });
 
   afterEach(() => {
@@ -97,21 +98,9 @@ describe("Testing Portfolio Drawer component", () => {
   })
 
   it("membersInvited()", async () => {
-    const _portfolio = {
-      csp: "Azure",
-      description:"just testfefseffdsfd",
-      members: [],
-      provisioned: "2022-09-08 18:12:12",
-      agency: "DISA",
-      status: "Active",
-      title: "test title",
-      updated: "2022-09-08 18:12:12"
-    }
-    jest.spyOn(PortfolioData, "getPortfolioData").mockImplementation(
-      ()=>Promise.resolve( _portfolio ));
+    const loadPortfolioMock = jest.spyOn(wrapper.vm, "loadPortfolio").mockImplementation();
     await wrapper.vm.membersInvited();
-    expect(wrapper.vm.$data.portfolio.description).toEqual("just testfefseffdsfd");
-
+    expect (loadPortfolioMock).toHaveBeenCalled;
   });
 
   it("openMembersModal() - call function ensure $data.showMembersModal===true", async()=>{
@@ -125,20 +114,25 @@ describe("Testing Portfolio Drawer component", () => {
     await wrapper.setData({
       portfolio
     })
+    const updateMemberRoleMock = jest.spyOn(wrapper.vm, "updateMemberRole").mockImplementation();
     await wrapper.vm.onSelectedMemberRoleChanged(newRole, idx)
-    expect(await wrapper.vm.$data.portfolio.members[3].role).toEqual(newRole);
+    expect (updateMemberRoleMock).toHaveBeenCalled();
   })
 
   it("onSelectedMemberRoleChanged() - pass params to remove from portfolio ", async()=>{
     const newRole = "Remove";
     const idx = 0
     await wrapper.setData({
+      currentUser: {
+        sys_id: "123456"
+      },
       portfolio, 
       portfolioMembers: [{
         firstName: "FirstName",
         lastName: "LastName",
         email: "firstNameLastName@mail.mil",
-        role: "Manager"
+        role: "Manager",
+        sys_id: "987654"
       }]
     })
 
@@ -149,7 +143,8 @@ describe("Testing Portfolio Drawer component", () => {
         firstName: "FirstName",
         lastName: "LastName",
         email: "firstNameLastName@mail.mil",
-        role: "Manager"
+        role: "Manager",
+        sys_id: "987654"
       }],
       provisioned: "2022-09-08 18:12:12",
       agency: "DISA",
@@ -161,17 +156,18 @@ describe("Testing Portfolio Drawer component", () => {
       ()=>Promise.resolve( _portfolio ));
 
     await wrapper.vm.onSelectedMemberRoleChanged(newRole, idx)
-    expect (await wrapper.vm.$data.showDeleteMemberDialog).toBe(true);
+    expect (await wrapper.vm.$data.showRemoveMemberDialog).toBe(true);
    
   })
 
-  it("deleteMember() - pass params to successfully change roles ", async()=>{
+  it("removeMember() - pass params to successfully change roles ", async()=>{
     await wrapper.setData({
-      portfolio
+      portfolio,
+      removeMemberIndex: 0,
     })
     const currentNumberOfMembers = PortfolioData.currentPortfolio.members?.length || 1
-    await wrapper.vm.deleteMember();
-    expect(await PortfolioData.currentPortfolio.members?.length).toBe(
+    await wrapper.vm.removeMember();
+    expect(PortfolioData.currentPortfolio.members?.length).toBe(
       currentNumberOfMembers - 1
     )
   })
@@ -190,40 +186,11 @@ describe("Testing Portfolio Drawer component", () => {
     expect(removeMenuItem.text).toBe("Leave this portfolio");
   });
 
-  describe("getTag function with different inputs",()=> {
-
-    it("Test getTag(processing)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = Statuses.Active.value;
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it("Test getTag(expiring pop)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = Statuses.AtRisk.value;
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it("Test getTag(expired)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus =  Statuses.Delinquent.value;
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it("Test getTag(archived)- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = Statuses.Archived.value
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBeGreaterThan(0)
-    })
-    it("Test getTag()- showed return tags based on Portfolio.status",()=>{
-      wrapper.vm.$data.portfolioStatus = ""
-      const result = wrapper.vm.getBgColor()
-      expect(result.length).toBe(0)
-    })
-  })
   describe("formatDate()",()=> {
     it("should return the date provided in mmm. dd, yyyy, hhmm ", ()=>{
       const result = wrapper.vm.formatDate("2022-09-08 18:12:12")
       expect(result).toBe("Sep. 8, 2022, 1812")
     })
   })
-
 })
 

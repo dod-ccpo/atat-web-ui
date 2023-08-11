@@ -181,6 +181,11 @@ export default class ATATTopNavBar extends Vue {
         if (item.parentTitle) {
           this.activeMenuItems.push(item.parentTitle);
         }
+        if(item.spaSectionTitle === 'Portfolios' &&
+        !CurrentUserStore.getUserHasPortfolios &&
+        item.spaAltSectionTitle){
+          return AppSections.changeActiveSection(item.spaAltSectionTitle)
+        }
         AppSections.changeActiveSection(item.spaSectionTitle);
       } else if (item.externalUrl) {
         // open external URL in new tab
@@ -235,6 +240,7 @@ export default class ATATTopNavBar extends Vue {
       {
         title: "Portfolios",
         spaSectionTitle: sectionData.sectionTitles.Portfolios,
+        spaAltSectionTitle: sectionData.sectionTitles.CreateFirstPortfolio
       },
       // {
       //   title: "Portals",

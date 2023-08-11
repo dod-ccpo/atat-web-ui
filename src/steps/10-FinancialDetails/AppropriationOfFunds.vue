@@ -87,7 +87,7 @@ export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
     
     for (let i=0;i<4;i++){
 
-      const fiscalYear = currentFiscalYear - i;
+      const fiscalYear = (currentFiscalYear + 1) - i;
       const FY = "FY"+ (fiscalYear-2000);
 
       fiscalYears.push({

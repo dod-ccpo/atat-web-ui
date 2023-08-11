@@ -366,7 +366,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     const contractToLoadInstanceNumber = AcquisitionPackage.currentContractInstanceNumber;
     this.currentContracts = await AcquisitionPackage.currentContracts as CurrentContractDTO[];
     await this.sortDataSource();
-    this.currentContract = this.currentContracts.filter(
+    this.currentContract = this.currentContracts?.filter(
       (c) => {
         return c.instance_number?.toString()=== contractToLoadInstanceNumber.toString()
       }
@@ -378,11 +378,13 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async sortDataSource():Promise<void>{
-    this.currentContracts.sort((a,b)=> {
-      const dateA = new Date(a.sys_created_on || "");
-      const dateB = new Date(b.sys_created_on || "");
-      return dateA.getTime()-dateB.getTime()
-    })
+    if (this.currentContracts){
+      this.currentContracts.sort((a,b)=> {
+        const dateA = new Date(a.sys_created_on || "");
+        const dateB = new Date(b.sys_created_on || "");
+        return dateA.getTime()-dateB.getTime()
+      })
+    }
   }
 
   public setMinAndMaxDates():void{
@@ -393,7 +395,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    await this.loadContract();    
+    await this.loadContract();
     if (this.currentContract) {
       const keys: string[] = [
         "incumbent_contractor_name",
