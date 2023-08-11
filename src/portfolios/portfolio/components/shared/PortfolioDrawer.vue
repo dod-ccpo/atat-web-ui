@@ -14,8 +14,8 @@
             placeholder="Add a description"
             rows="1"
             @blur="saveDescription"
-            :readonly="portfolioIsArchived"
-            :disabled="portfolioIsArchived"
+            :readonly="isReadOnly"
+            :disabled="isReadOnly"
           />
         </div>
 
@@ -75,7 +75,7 @@
             ({{ getPortfolioMembersCount }})
           </div>
         </div>
-        <v-tooltip left nudge-right="20" v-if="userCanInviteMembers && !portfolioIsArchived">
+        <v-tooltip left nudge-right="20" v-if="userCanInviteMembers">
           <template v-slot:activator="{ on, attrs }">
             <span
               v-bind="attrs"
@@ -115,10 +115,8 @@
         >
           <MemberCard :id="'MemberName' + index" :member="member" />
 
-          <!-- NOT DROPDOWN - for owner and if current user is Viewer -->
-          <div v-if="currentUserIsViewer && member.sys_id !== currentUser.sys_id
-            || member.role === 'Owner' || portfolioIsArchived
-          ">
+          <!-- NOT DROPDOWN - for owner and if current user is Viewer & member is someone else -->
+          <div v-if="isMemberDropdown(member)">
 
             <v-tooltip left nudge-right="30">
               <template v-slot:activator="{ on }">
@@ -396,6 +394,16 @@ export default class PortfolioDrawer extends Vue {
     }
   }  
 
+  public isMemberDropdown(member: User): boolean {
+    debugger;
+    return (this.currentUserIsViewer && member.sys_id !== this.currentUser.sys_id) 
+      || member.role === 'Owner' || this.portfolioIsArchived    
+  }
+
+  public get isReadOnly(): boolean {
+    return this.portfolioIsArchived || this.currentUserIsViewer
+  }
+
   public get currentUserIsViewer(): boolean {
     return PortfolioStore.currentUserIsViewer || this.currentUserDowngradedToViewer;
   }
@@ -405,7 +413,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public get portfolioIsArchived(): boolean {
-    return this.currentUserIsViewer || this.portfolioStatus === "ARCHIVED" ;
+    return this.portfolioStatus === "ARCHIVED" ;
   }
 
   public get showDescription(): boolean {
@@ -540,7 +548,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public get userCanInviteMembers(): boolean {
-    return this.currentUserIsManager || this.currentUserIsOwner;
+    return (this.currentUserIsManager || this.currentUserIsOwner) && !this.isReadOnly;
   }
 
   public async loadPortfolio(): Promise<void> {
