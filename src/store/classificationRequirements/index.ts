@@ -42,6 +42,7 @@ export const isClassLevelUnclass = (sysId: string): boolean =>{
 export class ClassificationRequirementsStore extends VuexModule {
   public classificationLevels: ClassificationLevelDTO[] = [];
   public selectedClassificationLevels: SelectedClassificationLevelDTO[] = [];
+  public isClassificationLevelsTouched = false;
   public securityRequirements: SecurityRequirement[] = [];
   public classifiedInformationTypes: ClassifiedInformationTypeDTO[] = [];
   public classificationSecretSysId = "";
@@ -92,6 +93,16 @@ export class ClassificationRequirementsStore extends VuexModule {
       val = convertColumnReferencesToValues(val);
     })
     this.selectedClassificationLevels = value;
+  }
+
+  @Action({rawError: true})
+  public async setIsClassificationLevelsTouched(value: boolean): Promise<void> {
+    this.doSetIsClassificationLevelsTouched(value);
+  }
+
+  @Mutation
+  private doSetIsClassificationLevelsTouched(value: boolean): void {
+    this.isClassificationLevelsTouched = value;
   }
 
   @Action({rawError: true})
@@ -537,6 +548,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   @Mutation
   public doReset(): void {
     this.selectedClassificationLevels = [];
+    this.isClassificationLevelsTouched = false;
     this.securityRequirements = [];
     this.cdsSolution = null;
   }
