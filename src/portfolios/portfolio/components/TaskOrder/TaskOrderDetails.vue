@@ -606,7 +606,7 @@ export default class TaskOrderDetails extends Vue {
         isActive: isClinActive,
         isExercised: clinStatus.value === Statuses.OptionExercised.value,
         isPending: clinStatus.value === Statuses.OptionPending.value,
-        isExpired: clinStatus.value === Statuses.Expired.value,
+        isExpired: clinStatus.value === Statuses.ExpiredPoP.value,
         CLINNumber: clin.clin_number,
         CLINTitle: clin.idiq_clin,
         PoP: differenceInDaysOrMonths(clin.pop_start_date, clin.pop_end_date),
@@ -625,7 +625,6 @@ export default class TaskOrderDetails extends Vue {
         ),
         startNewClinGroup: false,
       };
-
       //add row to appropriate temporary table
       if (clin.clin_status === Statuses.Expired.value) {
         this.expiredClins.push(tableRowData);
@@ -634,7 +633,6 @@ export default class TaskOrderDetails extends Vue {
       } else {
         this.tableData.push(tableRowData);
       }
-
       this.calculateCurrentPeriodTotals(tableRowData);
 
       this.totals = this.fundsRemaining(
