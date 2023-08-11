@@ -34,15 +34,17 @@ export default class SaveOnLeave extends Vue {
   ): Promise<void> {
     const goNext = await this.saveOnLeave();
     const formToValidate = this.$refs.form;
+    const skipValidation = AcquisitionPackage.skipValidation;
     let isValid = true;
     const direction = to.params.direction;
-    if(direction === "next" && formToValidate){
+    if(direction === "next" && formToValidate && !skipValidation){
       AcquisitionPackage.setValidateNow(true);
       isValid = this.$refs.form.validate();
     }
     
     this.$nextTick(()=> {
       AcquisitionPackage.setValidateNow(false);
+      AcquisitionPackage.setSkipValidation(false);
       if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
         const el = document.getElementsByClassName("error--text")[0];
         if (el) {
