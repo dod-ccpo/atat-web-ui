@@ -31,6 +31,12 @@ export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boo
 } 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
+  if(stepNumber === 6){
+    const step6Items = Summary.summaryItems.filter((si)=>si.step === 6)
+    return (step6Items.every(
+      (si: SummaryItem) => si.isTouched
+    ))
+  }
   return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
@@ -808,17 +814,6 @@ export class SummaryStore extends VuexModule {
   //#region STEP 6
   @Action({rawError: true})
   public async validateStepSix(): Promise<void> {
-    const objectKeys = [
-      "baa_",
-      "sys_",
-      "pii_",
-      "foia_",
-      "potential_",
-      "508",
-      "acquisition",
-      "record_name",
-      "work_"
-    ];
     await this.assessCOI();
     await this.assessPackagingPackingShipping();
     await this.assessTravel();
@@ -833,10 +828,14 @@ export class SummaryStore extends VuexModule {
     const coiInfo = contractConsiderations.conflict_of_interest_explanation;
     const isTouched = coi === "YES" ? true : coi === "NO";
     const isComplete =  coi === "NO" || (coiInfo !== undefined && coiInfo.length > 0);
-
+    let description = ""
+    if(isTouched && isComplete){
+      description = isComplete && coi !=="NO"? "Potential organizational COI exists."
+        :"No organizational COI"
+    }
     const conflictOfInterestSummaryItem: SummaryItem = {
       title: "Conflict of Interest (COI)",
-      description: "",
+      description,
       isComplete,
       isTouched,
       routeName: "ConflictOfInterest",
@@ -860,12 +859,18 @@ export class SummaryStore extends VuexModule {
     const isTouched = selections.includes('true');
     const explanation = contractConsiderations.packaging_shipping_other_explanation;
     const needsExplanation = selections[1] === 'true';
+    let description = ""
+    if(isTouched){
+      description = selections[2] === 'true'?
+        'Effort does not require CSP to transfer physical media.'
+        :'Effort requires CSP to transfer physical media.'
+    }
     const isComplete = needsExplanation ?
       (isTouched && explanation !== undefined && explanation.length > 0) : isTouched;
 
     const packagingPackingShippingSummaryItem: SummaryItem = {
       title: "Packaging, Packing, and Shipping",
-      description: "",
+      description,
       isComplete,
       isTouched,
       routeName: "PackagingPackingAndShipping",
@@ -882,12 +887,27 @@ export class SummaryStore extends VuexModule {
     const isTravelSkipped = AcquisitionPackage.isTravelNeeded === "NO"
     const isTravelTouched = AcquisitionPackage.isTravelTouched
     const travelInfo = await DescriptionOfWork.getTravel()
+    let description = ""
+    if(travelInfo.length > 0) {
+      let numberOfTrips = 0;
+      const tripInformation: string[] = []
+      travelInfo.forEach(instance =>{
+        tripInformation.push(`${instance.trip_location} (${instance.number_of_trips})`);
+        numberOfTrips += Number(instance.number_of_trips)
+      })
+      description = `${numberOfTrips} trips required within this task order:
+       \n
+      ${convertStringArrayToCommaList(tripInformation,"and")}`
+    }
+    if(isTravelSkipped){
+      description = "No travel requirements for contractor employees"
+    }
     const isTouched = isTravelTouched||travelInfo.length > 0
     const isComplete =  isTravelSkipped
       || travelInfo.length > 0;
     const travelSummaryItem: SummaryItem = {
       title: "Travel",
-      description: "",
+      description,
       isComplete,
       isTouched,
       routeName: "Travel",

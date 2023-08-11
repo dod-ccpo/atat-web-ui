@@ -432,6 +432,17 @@ export class AcquisitionPackageStore extends VuexModule {
   currentUserIsContributor = false;
 
   isProdEnv: boolean | null = null;
+  skipValidation = false;
+
+  @Action({rawError: true})
+  public async setSkipValidation(val: boolean): Promise<void> {
+    await this.doSetSkipValidation(val);
+  }
+  @Mutation
+  public async doSetSkipValidation(val: boolean): Promise<void> {
+    this.skipValidation = val;
+  }
+
   @Action({rawError: true})
   public async setIsProdEnv(): Promise<void> {
     await this.doSetIsProdEnv();
@@ -1873,6 +1884,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setIsLoading(false);
       await Summary.validateStepThree();
       await Summary.validateStepFive();
+      await Summary.validateStepSix();
       await Summary.validateStepSeven();
 
     } else {

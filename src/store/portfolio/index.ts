@@ -620,9 +620,10 @@ export class PortfolioDataStore extends VuexModule {
           portfolio_managers: portfolio.portfolio_managers,
           portfolio_viewers: portfolio.portfolio_viewers,
         } as unknown as PortfolioSummaryDTO;
+        let response = await api.portfolioTable.update(portfolio.sysId, members);
+        response = convertColumnReferencesToValues(response);
 
-        await api.portfolioTable.update(portfolio.sysId, members);
-        await this.doSetCurrentPortfolio(members);
+        await this.setCurrentPortfolio(response);
         await this.doSetCurrentUserRole();
         await this.populatePortfolioMembersDetail(portfolio);
       }        
@@ -716,6 +717,7 @@ export class PortfolioDataStore extends VuexModule {
       }  
     }
     await this.doSetCurrentUserRole();
+    await this.setCurrentPortfolio(portfolio);
 
     return portfolio;
   }
