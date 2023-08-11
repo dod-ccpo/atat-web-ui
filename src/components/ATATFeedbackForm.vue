@@ -349,16 +349,6 @@ export default class ATATFeedbackForm extends Vue {
     const storeData = AcquisitionPackage.customerFeedback
     if(storeData?.acquisition_package){
       this.hide = true
-      // if(storeData.user_sys_id !== User.currentUser.sys_id
-      // ||storeData?.is_complete === "true"){
-      //   this.open = false
-      //   this.hideIcons = true
-      // }
-      // this.feedbackID = storeData.sys_id as string
-      // this.DAPPSExperience = Number(storeData.dapps_experience)
-      // this.selectedFeedbackOptions = storeData.feedback_items.split(',')
-      // this.otherFeedbackValue = storeData.feedback_items_other
-      // this.savedData = storeData
     }
 
   }
