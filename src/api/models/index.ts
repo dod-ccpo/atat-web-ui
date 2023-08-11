@@ -2,14 +2,14 @@
 import {
   EnvironmentInstanceLocation,
   EnvironmentInstanceUsage,
-  EnvironmentLocation, 
-  EnvironmentReplicateOptimized, 
-  EvalPlanMethod, 
-  EvalPlanSourceSelection, 
-  PaymentArrangement, 
-  PerformanceTier, 
-  StorageType, 
-  StorageUnit, 
+  EnvironmentLocation,
+  EnvironmentReplicateOptimized,
+  EvalPlanMethod,
+  EvalPlanSourceSelection,
+  PaymentArrangement,
+  PerformanceTier,
+  StorageType,
+  StorageUnit,
   YesNo,
   SingleMultiple,
   EstimateOptionValue,
@@ -116,7 +116,7 @@ export interface SelectedClassificationLevelDTO extends ClassificationLevelDTO {
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
-  instance_number?: number | string, 
+  instance_number?: number | string,
   current_contract_exists?: string;
   incumbent_contractor_name?: string;
   contract_number?: string;
@@ -135,9 +135,9 @@ export interface CurrentContractDTO extends BaseTableDTO {
 export interface CurrentEnvironmentDTO extends BaseTableDTO {
   current_environment_exists: YesNo;
   has_system_documentation: YesNo;
-  system_documentation?: string[]; // List - sys_ids from sys_attachment table 
-  has_migration_documentation: YesNo; 
-  migration_documentation?: string[]; // List - sys_ids from sys_attachment table 
+  system_documentation?: string[]; // List - sys_ids from sys_attachment table
+  has_migration_documentation: YesNo;
+  migration_documentation?: string[]; // List - sys_ids from sys_attachment table
   env_location: EnvironmentLocation;
   env_classifications_cloud: string[]; // array of classification level sys_ids
   env_classifications_onprem: string[]; // array of classification level sys_ids
@@ -145,15 +145,15 @@ export interface CurrentEnvironmentDTO extends BaseTableDTO {
   current_environment_replicated_optimized: EnvironmentReplicateOptimized;
   statement_replicated_optimized: string;
   additional_growth: YesNo;
-  anticipated_yearly_additional_capacity: number | null; 
+  anticipated_yearly_additional_capacity: number | null;
   has_phased_approach: YesNo;
-  phased_approach_schedule: string; 
+  phased_approach_schedule: string;
   needs_architectural_design_services: YesNo;
   // EJY --- BELOW 4 ARE NOW IN THEIR OWN TABLE
-  statement_architectural_design: string; 
+  statement_architectural_design: string;
   applications_need_architectural_design: string;
   data_classifications_impact_levels: string[];
-  external_factors_architectural_design: string;          
+  external_factors_architectural_design: string;
 }
 
 export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
@@ -172,19 +172,19 @@ export interface CurrentEnvironmentInstanceDTO extends BaseTableDTO {
   operating_system: string;
   licensing: string;
   number_of_vcpus: number | null;
-  processor_speed: number | null; 
+  processor_speed: number | null;
   memory_amount: number | null;
   memory_unit: StorageUnit;
   storage_type: StorageType;
   storage_amount: number | null;
   storage_unit: StorageUnit;
   performance_tier: PerformanceTier;
-  number_of_instances: number | null; 
-  data_egress_monthly_amount: number | null;    
+  number_of_instances: number | null;
+  data_egress_monthly_amount: number | null;
   data_egress_monthly_unit: StorageUnit;
   pricing_model: PaymentArrangement;
   pricing_model_expiration?: string;
-  additional_information?: string; 
+  additional_information?: string;
 }
 
 export interface ContactDTO extends BaseTableDTO {
@@ -249,7 +249,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
 
   // 2.4
   min_govt_requirements?: string;
-  
+
   // 2.5.1
   // cause of sole source form fields
   cause_migration_addl_time_cost?: YesNo;
@@ -265,7 +265,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   cause_product_feature_why_essential?: string;
   cause_product_feature_why_others_inadequate?: string;
   cause_write_own_explanation?: YesNo;
-  // END cause of sole source form fields 
+  // END cause of sole source form fields
 
   // 2.5.2
   cause_of_sole_source_generated?: string; // innitially generated from form responses
@@ -285,14 +285,14 @@ export interface FairOpportunityDTO extends BaseTableDTO {
 
   // 2.9.1
   contract_action?: "" | "UCA" | "BCA" | "OES" | "NONE";
-  
+
   // 2.9.2
   // market research efforts form
   research_is_csp_only_source_capable?: YesNo;
   research_start_date?: string;
   research_end_date?: string;
-  research_supporting_data?: string; 
-  
+  research_supporting_data?: string;
+
   research_review_catalogs_reviewed?: YesNo;
   research_review_catalogs_same_research_date?: YesNo;
   research_review_catalogs_start_date?: string;
@@ -303,7 +303,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   research_other_technique?: string;
   research_personal_knowledge_person_or_position?: string;
   research_techniques_summary?: string;
-  
+
   research_write_own_explanation?: YesNo;
   // END market research efforts form
 
@@ -323,7 +323,7 @@ export interface FairOpportunityDTO extends BaseTableDTO {
   barriers_follow_on_requirement?: YesNo;
   barriers_follow_on_expected_date_awarded?: string;
   barriers_agency_pursuing_training_or_certs?: YesNo;
-  barriers_planning_future_development?: YesNo; 
+  barriers_planning_future_development?: YesNo;
   barriers_j_a_prepared?: YesNo
   barriers_j_a_prepared_results?: string;
   barriers_write_own_explanation?: YesNo;
@@ -459,8 +459,8 @@ export interface GFEOverviewDTO extends BaseTableDTO {
 }
 
 export interface StateDTO extends BaseTableDTO {
-   name: string;
-   key: string;
+  name: string;
+  key: string;
 }
 
 export interface CountryDTO extends BaseTableDTO {
@@ -502,19 +502,19 @@ export interface FundingPlanDTO extends BaseTableDTO {
 
 export interface FundingRequestFSFormDTO extends BaseTableDTO {
 
-      fs_form_7600a_filename: string;
-      fs_form_7600a_attachment: string;
-      fs_form_7600b_attachment: string;
-      fs_form_7600b_filename: string;
-      use_g_invoicing: string;
-      order_number: string;
-      gt_c_number: string;
+  fs_form_7600a_filename: string;
+  fs_form_7600a_attachment: string;
+  fs_form_7600b_attachment: string;
+  fs_form_7600b_filename: string;
+  use_g_invoicing: string;
+  order_number: string;
+  gt_c_number: string;
 }
 
 export interface FundingRequestMIPRFormDTO extends BaseTableDTO {
-      mipr_number: string;
-      mipr_filename: string;
-      mipr_attachment: string;
+  mipr_number: string;
+  mipr_filename: string;
+  mipr_attachment: string;
 }
 
 export interface FundingRequirementDTO extends BaseTableDTO {
@@ -582,44 +582,44 @@ export interface FundingIncrementDTO extends BaseTableDTO{
   order: string;
 }
 export interface TaskOrderDTO extends BaseTableDTO {
-    clins: string;
-    clin_records?: ClinDTO[],
-   /**
-   * @deprecated Will be deprecated: use the prop from funding_requirement
-   */
-    incrementally_funded: string; // will be deprecated: use the prop from funding_requirement
+  clins: string;
+  clin_records?: ClinDTO[],
   /**
    * @deprecated Will be deprecated: use the prop from funding_requirement
    */
-    funds_obligated: string; // do not delete. for portfolio sum, not in api call but calculated
+  incrementally_funded: string; // will be deprecated: use the prop from funding_requirement
   /**
    * @deprecated Will be deprecated: use the prop from funding_requirement
    */
-    acquisition_package: string; // will be deprecated: use the prop from funding_requirement
+  funds_obligated: string; // do not delete. for portfolio sum, not in api call but calculated
   /**
    * @deprecated Will be deprecated: use the prop from funding_requirement
    */
-    funding_plan: string; // will be deprecated: use the prop from funding_requirement
+  acquisition_package: string; // will be deprecated: use the prop from funding_requirement
   /**
    * @deprecated Will be deprecated: use the prop from funding_requirement
    */
-    funds_total: string; // do not delete. for portfolio sum, not in api call but calculated
+  funding_plan: string; // will be deprecated: use the prop from funding_requirement
+  /**
+   * @deprecated Will be deprecated: use the prop from funding_requirement
+   */
+  funds_total: string; // do not delete. for portfolio sum, not in api call but calculated
 
-    task_order_number: string;
-    task_order_status: string;
-    portfolio: string;
-    pop_end_date: string;
-    pop_start_date: string;
-    total_task_order_value?: number; // total clin values that don't have expired/ option pending
-    total_lifecycle_amount?: number; // total clin values irrespective of status
-    funds_spent_task_order?: number; // total of is_actual=true costs across all clins of task order
-    funding_requirement?: FundingRequirementDTO; //
+  task_order_number: string;
+  task_order_status: string;
+  portfolio: string;
+  pop_end_date: string;
+  pop_start_date: string;
+  total_task_order_value?: number; // total clin values that don't have expired/ option pending
+  total_lifecycle_amount?: number; // total clin values irrespective of status
+  funds_spent_task_order?: number; // total of is_actual=true costs across all clins of task order
+  funding_requirement?: FundingRequirementDTO; //
 }
 
 export interface CostsDTO extends BaseTableDTO {
   clin: string;
   clin_number: string;
-  "clin.clin_number": string; 
+  "clin.clin_number": string;
   csp: string;
   "csp.name"?:string;
   year_month: string;
@@ -768,8 +768,8 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   active_task_order: string;
   agency: string;
   agency_display?: string;
-  
-  dod_component: string; 
+
+  dod_component: string;
 
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
@@ -788,8 +788,8 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   title?: string;
   description?: string;
 
-  environments?: Environment[]; 
-  last_updated?: string; 
+  environments?: Environment[];
+  last_updated?: string;
 }
 
 export interface PortfolioSummaryMetadataAndDataDTO {
@@ -819,7 +819,7 @@ export interface CloudServiceProviderDTO extends BaseTableDTO{
 }
 
 export interface PortfolioSummarySearchDTO {
-  role?: "ALL" | "MANAGED"; 
+  role?: "ALL" | "MANAGED";
   fundingStatuses?: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
   csps?: string[]; // to not search for specific csps, send empty array
   portfolioStatus?: "ACTIVE" | "PROCESSING" | "ARCHIVED" | ""; // empty string for both statuses
@@ -830,23 +830,23 @@ export interface PortfolioSummarySearchDTO {
 }
 
 export interface PackageSummaryDTO { // TODO: delete this interface after acq package summary impl
-  
-    project_overview?: ReferenceColumn["value"]
-    title?: string, //proj overview
-    secondary_reviewers?: string[],
-    package_status?: string,
-    sys_updated_on?: string,
-    sys_created_by?: string,
-    mission_owners?: string,
-    contract_award?: ReferenceColumn["value"],
-    contributors?: string[],
-    sys_id?: string,
-  }
+
+  project_overview?: ReferenceColumn["value"]
+  title?: string, //proj overview
+  secondary_reviewers?: string[],
+  package_status?: string,
+  sys_updated_on?: string,
+  sys_created_by?: string,
+  mission_owners?: string,
+  contract_award?: ReferenceColumn["value"],
+  contributors?: string[],
+  sys_id?: string,
+}
 
 export interface AcquisitionPackageSummarySearchDTO {
   acquisitionPackageStatus: "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER" | // open
-  "TASK_ORDER_AWARDED" | "ARCHIVED" | "WAITING_FOR_TASK_ORDER" |
-  "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED";
+      "TASK_ORDER_AWARDED" | "ARCHIVED" | "WAITING_FOR_TASK_ORDER" |
+      "DRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER,TASK_ORDER_AWARDED,ARCHIVED";
   sort: "project_overview" | "DESCsys_updated_on"; // one of these two values should always exist
   searchString?: string;
   limit?: number;
@@ -1124,13 +1124,14 @@ export interface DisaOrganizationDTO extends BaseTableDTO {
   css_id: number;
 }
 export interface CustomerFeedbackDTO extends BaseTableDTO {
+  user_sys_id: ReferenceColumn | string;
   acquisition_package: string,
   dapps_experience: number
-  feedback_items: string[],
+  feedback_items: string,
   feedback_items_other: string
-  is_complete: boolean
+  is_complete: string
 }
 export interface FeedbackOptionsDTO extends BaseTableDTO {
   option: string,
-  is_feedback_positive: boolean
+  is_feedback_positive: string
 }
