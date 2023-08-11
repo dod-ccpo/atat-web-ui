@@ -14,8 +14,8 @@
             placeholder="Add a description"
             rows="1"
             @blur="saveDescription"
-            :readonly="isReadOnly"
-            :disabled="isReadOnly"
+            :readonly="isReadOnly || currentUserIsViewer"
+            :disabled="isReadOnly || currentUserIsViewer"
           />
         </div>
 
@@ -116,7 +116,7 @@
           <MemberCard :id="'MemberName' + index" :member="member" />
 
           <!-- NOT DROPDOWN - for owner and if current user is Viewer & member is someone else -->
-          <div v-if="isMemberDropdown(member)">
+          <div v-if="notMemberDropdown(member)">
 
             <v-tooltip left nudge-right="30">
               <template v-slot:activator="{ on }">
@@ -253,6 +253,8 @@
       okText="Downgrade"
       width="450"
       @ok="downgradeManager"
+      :OKDisabled="modalOKDisabled"
+      :showOKSpinner="showOKSpinner"
       @cancelClicked="cancelDowngradeManager"
     >    
       <template #content>
@@ -287,6 +289,7 @@
     <LeavePortfolioModal
       :showModal.sync="showLeavePortfolioModal" 
       :portfolioName="portfolio.title"
+      :showOKSpinner="showOKSpinner"
       @okClicked="removeMember"
       @cancelClicked="cancelRemoveMember"
 
@@ -394,14 +397,13 @@ export default class PortfolioDrawer extends Vue {
     }
   }  
 
-  public isMemberDropdown(member: User): boolean {
-    debugger;
+  public notMemberDropdown(member: User): boolean {
     return (this.currentUserIsViewer && member.sys_id !== this.currentUser.sys_id) 
-      || member.role === 'Owner' || this.portfolioIsArchived    
+      || member.role === 'Owner' || this.portfolioIsArchived
   }
 
   public get isReadOnly(): boolean {
-    return this.portfolioIsArchived || this.currentUserIsViewer
+    return this.portfolioIsArchived;
   }
 
   public get currentUserIsViewer(): boolean {
@@ -553,7 +555,6 @@ export default class PortfolioDrawer extends Vue {
 
   public async loadPortfolio(): Promise<void> {
     const storeData = _.cloneDeep(PortfolioStore.currentPortfolio);
-
     if (storeData) {
       this.portfolio = storeData;
       this.csp = storeData.vendor?.toLowerCase() as string;      
@@ -711,12 +712,16 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public async downgradeManager(): Promise<void> {
-    this.showManagerDowngradeDialog = false;
+    this.modalOKDisabled = true;
+    this.showOKSpinner = true;
     if (this.portfolio.members) {
+      this.currentUserDowngradedToViewer = true;      
       await this.updateMemberRole("Viewer", this.downgradeMemberIndex);
-      this.currentUserDowngradedToViewer = true;
       Toast.setToast(this.downgradedToast);
+      this.showManagerDowngradeDialog = false;
     }
+    this.modalOKDisabled = false;
+    this.showOKSpinner = false;
   }
 
   public cancelDowngradeManager(): void {
@@ -745,11 +750,8 @@ export default class PortfolioDrawer extends Vue {
       await PortfolioStore.setCurrentPortfolioMembers(this.portfolio);
       this.downgradeMemberIndex = -1;
 
-      const thisMember = this.portfolioMembers[index];
-      this.$set(this.portfolioMembers, index, thisMember);
-
-      this.portfolioMembers.forEach(member => {
-        member.menuItems = this.getMemberMenuItems(member);
+      this.$nextTick(async () => {
+        await this.loadPortfolio();
       })
     }
   }
@@ -757,7 +759,6 @@ export default class PortfolioDrawer extends Vue {
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
     const storeData = await PortfolioStore.getPortfolioData();
     if (this.portfolio && this.portfolio.members && storeData.members) {
-
       const memberMenuItems = ["Manager", "Viewer"]
       if (memberMenuItems.indexOf(val) > -1) {
         // if current user is downgrading from Manager to Viewer, show confirm modal
