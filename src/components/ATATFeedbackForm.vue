@@ -1,5 +1,5 @@
 <template>
-  <div v-if="this.hide" class=" _feedback-form">
+  <div v-if="!this.hide" class=" _feedback-form">
     <div class="flex-column">
       <div class="d-flex justify-end">
         <div
@@ -32,7 +32,6 @@
           </v-btn>
         </div>
       </div>
-      <v-expand-transition>
       <div
         class="_feedback-body"
         :class="[{'_thank-you':showThankYou}]"
@@ -211,7 +210,6 @@
               </div>
             </div>
       </div>
-      </v-expand-transition>
     </div>
   </div>
 </template>
