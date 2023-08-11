@@ -1621,7 +1621,6 @@ export class AcquisitionPackageStore extends VuexModule {
       };
       const feedback = await api.feedbackTable.getQuery(feedbackQuery)
       if(feedback){
-        debugger
         const userIdx = feedback.findIndex(data =>{
           data = convertColumnReferencesToValues(data)
           return data.user_sys_id === UserStore.currentUser.sys_id
@@ -2313,7 +2312,6 @@ export class AcquisitionPackageStore extends VuexModule {
   public async saveFeedback(value: CustomerFeedbackDTO): Promise<void> {
     try {
       const sys_id = value.sys_id || "";
-      debugger
       if(sys_id.length === 0){
         const feedbackData = await api.feedbackTable.create(value)
         this.setCustomerFeedback(feedbackData)

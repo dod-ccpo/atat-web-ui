@@ -1,41 +1,42 @@
 <template>
   <div v-if="this.hide" class=" _feedback-form">
     <div class="flex-column">
-      <div
-        class="_feedback-tab"
-        id="FeedbackTab"
-         :class="[
+      <div class="d-flex justify-end">
+        <div
+          class="_feedback-tab"
+          id="FeedbackTab"
+          :class="[
            {'_open':open},
            {'_show-form':showForm},
            {'_thank-you':showThankYou}
            ]"
-      >
-        <v-btn
-        rounded
-        @click="toggle()"
-        @keydown.enter="toggle()"
-        @keydown.space="toggle()"
-        :class="{'_open':open}"
         >
+          <v-btn
+            rounded
+            @click="toggle()"
+            @keydown.enter="toggle()"
+            @keydown.space="toggle()"
+            :class="{'_open':open}"
+          >
           <span class="text-base">
             Customer Feedback
           </span>
-          <ATATSVGIcon
-            name="chevronDown"
-            color="base"
-            class=" _toggle mx-2"
-            :class="{'_open':open}"
-            width="10"
-            height="6"
-          />
-        </v-btn>
+            <ATATSVGIcon
+              name="chevronDown"
+              color="base"
+              class=" _toggle mx-2"
+              :class="{'_open':open}"
+              width="10"
+              height="6"
+            />
+          </v-btn>
+        </div>
       </div>
+      <v-expand-transition>
       <div
         class="_feedback-body"
         :class="[{'_thank-you':showThankYou}]"
         v-if="open">
-        <v-expand-transition>
-          <div>
             <div v-if="!hideIcons">
               <h2 class="text-base-dark mb-4">
                 How was your experience with DAPPS?
@@ -186,7 +187,12 @@
               </div>
               <div v-else>
                 <div class="text-center">
-                  <ATATSVGIcon width="360" height="192" name="FeedbackThankYou" class="mr-0"/>
+                  <v-img
+                    eager
+                    max-width="360"
+                    max-height="192"
+                    src="@/assets/images/Feedback_sent_animation.gif"
+                  ></v-img>
                   <div class="d-flex flex-column">
                     <p id="ThankYouP">
                       We value your opinion and will keep working to improve your experience.
@@ -204,9 +210,8 @@
                 </div>
               </div>
             </div>
-          </div>
-        </v-expand-transition>
       </div>
+      </v-expand-transition>
     </div>
   </div>
 </template>
@@ -274,6 +279,7 @@ export default class ATATFeedbackForm extends Vue {
     this.open = false
     this.showForm = false
     this.showThankYou = false
+    this.hide = true
   }
   public createCheckboxes(option:FeedbackOptionsDTO){
     const checkboxItem:Checkbox = {
