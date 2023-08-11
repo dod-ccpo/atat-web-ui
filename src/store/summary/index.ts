@@ -829,8 +829,8 @@ export class SummaryStore extends VuexModule {
     const isTouched = coi === "YES" ? true : coi === "NO";
     const isComplete =  coi === "NO" || (coiInfo !== undefined && coiInfo.length > 0);
     let description = ""
-    if(isTouched){
-      description = isComplete && isTouched? "Potential organizational COI exists."
+    if(isTouched && isComplete){
+      description = isComplete && coi !=="NO"? "Potential organizational COI exists."
         :"No organizational COI"
     }
     const conflictOfInterestSummaryItem: SummaryItem = {
