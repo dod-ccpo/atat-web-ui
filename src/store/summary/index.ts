@@ -31,13 +31,7 @@ export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boo
 } 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
-  if(stepNumber === 6){
-    const step6Items = Summary.summaryItems.filter((si)=>si.step === 6)
-    return (step6Items.every(
-      (si: SummaryItem) => si.isTouched
-    ))
-  }
-  return (Summary.summaryItems.some(
+  return !AcquisitionPackage.isPackageNew && (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
 } 
@@ -859,12 +853,9 @@ export class SummaryStore extends VuexModule {
     const isTouched = selections.includes('true');
     const explanation = contractConsiderations.packaging_shipping_other_explanation;
     const needsExplanation = selections[1] === 'true';
-    let description = ""
-    if(isTouched){
-      description = selections[2] === 'true'?
-        'Effort does not require CSP to transfer physical media.'
-        :'Effort requires CSP to transfer physical media.'
-    }
+    const description = isTouched 
+      ? await this.getPackagingPackingShippingTitle(selections[2] === 'true') 
+      : "";
     const isComplete = needsExplanation ?
       (isTouched && explanation !== undefined && explanation.length > 0) : isTouched;
 
@@ -880,6 +871,14 @@ export class SummaryStore extends VuexModule {
 
     await this.doSetSummaryItem(packagingPackingShippingSummaryItem)
   }
+
+  @Action({rawError: true})
+  public async getPackagingPackingShippingTitle(isNone: boolean): Promise<string> {
+    return isNone 
+      ? 'No requirement for packaging, packing, and shipping.'
+      : 'Effort requires CSP to comply with packaging, packing, and shipping instructions.'
+  }
+
 
   @Action({rawError: true})
   public async assessTravel(): Promise<void> {

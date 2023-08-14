@@ -369,6 +369,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
   //has the store been initialized
   initialized = false;
+
+  isPackageNew = false;
   //keeps track of project title for global display
   projectTitle = "";
   acquisitionPackage: AcquisitionPackageDTO | null = null;
@@ -721,6 +723,16 @@ export class AcquisitionPackageStore extends VuexModule {
   public get getIsLoading(): boolean {
     return this.isLoading;
   }
+
+  @Action({rawError: true})
+  public setIsPackageNew(val: boolean): void {
+    this.doSetIsPackageNew(val);
+  }
+  @Mutation
+  public doSetIsPackageNew(val: boolean): void {
+    this.isPackageNew = val;
+  }
+
   @Action({rawError: true})
   public setIsLoading(val: boolean): void {
     this.doSetIsLoading(val);
