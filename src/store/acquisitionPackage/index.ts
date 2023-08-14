@@ -2696,7 +2696,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.isTravelNeeded = "";
     this.isTravelTouched = false;
     this.fairOppExplanations = initialFairOppExplanations();
-    
+    this.customerFeedback = null
     this.fairOppBackToReview = false;
     this.replaceCustomWithGenerated = false;
   }
