@@ -1,9 +1,9 @@
 <template>
   <div class="container-max-width">
-    <div v-if="!showDetails">
-      <div class="mb-10">
+    <div class="mb-10">
         <FinancialDetailsAlert />
-      </div>
+    </div>
+    <div v-if="!showDetails">
       <h2 class="pb-3">All task orders</h2>
       <div class="d-flex justify-space-between">
         <p class="mr-10">
