@@ -601,7 +601,6 @@ export default class TaskOrderDetails extends Vue {
     this.clins.forEach((clin) => {
       const isClinActive = !inactiveStatuses.includes(clin.clin_status);
       const clinStatus = this.getClinStatus(clin);
-      console.log(clin.idiq_clin)
       const tableRowData: ClinTableRowData = {
         isActive: isClinActive,
         isExercised: clinStatus.value === Statuses.OptionExercised.value,
