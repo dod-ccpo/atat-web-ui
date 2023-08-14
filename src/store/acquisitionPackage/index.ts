@@ -1549,7 +1549,6 @@ export class AcquisitionPackageStore extends VuexModule {
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
-      await this.loadFeedbackOptions()
       await ContactData.initialize();
       this.setPackagePercentLoaded(5);
       await OrganizationData.initialize();
@@ -1950,7 +1949,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setContact({ data: initialContact(), type: "Financial POC" })
           this.setContractConsiderations(initialContractConsiderations());
-          await this.loadFeedbackOptions()
           await this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){
