@@ -148,6 +148,7 @@ export default class TaskOrderCard extends Vue {
   };
   public async taskOrderClicked(e: Event, taskOrder:TaskOrderCardData): Promise<void> {
     e.preventDefault()
+    console.log(this.taskOrders, 'task')
     this._selectedTaskOrder = taskOrder
     this._showDetails = true
   };
