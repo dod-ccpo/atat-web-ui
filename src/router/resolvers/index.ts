@@ -308,13 +308,13 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment 
-    ? routeNames.DOWLandingPage
+    ? routeNames.SummaryStepFour
     : routeNames.CurrentEnvironment;
 };
 
 export const CurrentEnvironmentSummaryResolver = (current: string): string => {
   return current === routeNames.ReplicateAndOptimize 
-    ? routeNames.DOWLandingPage
+    ? routeNames.SummaryStepFour
     : routeNames.EnvironmentSummary;
 }
 export const COIRouteResolver = (current: string): string => {
@@ -1039,16 +1039,17 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if (current === routeNames.DOWLandingPage) {
-    const hasCurrentContract = 
-      AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
-    if (hasCurrentContract) {
-      return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
-        && CurrentEnvironment.currentEnvInstances.length > 0
-        ? "/current-contract/environment-summary"
-        : "/current-contract/current-environment"
-    } else {
-      return "/current-contract/current-contract"
-    }
+    // const hasCurrentContract =
+    //   AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
+    // if (hasCurrentContract) {
+    //   return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
+    //     && CurrentEnvironment.currentEnvInstances.length > 0
+    //     ? "/current-contract/environment-summary"
+    //     : "/current-contract/summary-step-four"
+    // } else {
+    //   return "/current-contract/current-contract"
+    // }
+    return "/current-contract/summary-step-four"
   }
 
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;

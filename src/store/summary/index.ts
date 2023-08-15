@@ -96,6 +96,9 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
   case 3:
     await Summary.validateStepThree();
     break;
+  case 4:
+    await Summary.validateStepFour();
+    break;
   case 5:
     await Summary.validateStepFive();
     break;
@@ -417,6 +420,57 @@ export class SummaryStore extends VuexModule {
       : true;
   }
   //#endregion
+
+  //#region step 4
+  /**
+   *  assess all substeps in Step 4 to determine
+   *  if substep is touched and/or completed
+   *
+   *  The function creates 4 summary step objects for each
+   *  substep in step 4
+   *
+   */
+  @Action({rawError: true})
+  public async validateStepFour(): Promise<void> {
+    await this.assessProcurementHistory();
+    await this.assessCurrentEnvironment();
+  }
+
+  @Action({rawError: true})
+  public async assessProcurementHistory(): Promise<void> {
+    const isTouched = false;
+    const isComplete =  false;
+    const description = ""
+    const procurementHistorySummaryItem: SummaryItem = {
+      title: "Procurement History",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "CurrentContract",
+      step: 4,
+      substep: 1
+    }
+
+    await this.doSetSummaryItem(procurementHistorySummaryItem)
+  }
+  @Action({rawError: true})
+  public async assessCurrentEnvironment(): Promise<void> {
+    const isTouched = false;
+    const isComplete =  false;
+    const description = ""
+    const currentEnvironmentSummaryItem: SummaryItem = {
+      title: "Current Environment",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "CurrentEnvironment",
+      step: 4,
+      substep: 2
+    }
+
+    await this.doSetSummaryItem(currentEnvironmentSummaryItem)
+  }
+
 
   //#region Step 5
 
