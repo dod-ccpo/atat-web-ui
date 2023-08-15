@@ -2,7 +2,6 @@
 import api from "@/api";
 import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
-import { TABLENAME as ClinTable } from "@/api/clin";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
 import { format, isAfter, isBefore, parseISO } from "date-fns";
