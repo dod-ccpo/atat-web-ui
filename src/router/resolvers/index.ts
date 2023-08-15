@@ -265,8 +265,14 @@ export const ProcurementHistorySummaryRouteResolver = (current: string): string 
     (c)=>c.current_contract_exists==="NO"
   )
   const fromCurrentEnvironment =  current === routeNames.CurrentEnvironment;
-  
   if (
+    doesNotNeedContract
+      && fromCurrentEnvironment
+      && isStepTouched(4)
+  ){
+    return routeNames.SummaryStepFour
+  }
+  else if (
     doesNotNeedContract
     && fromCurrentEnvironment
   ){
