@@ -31,7 +31,7 @@ export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boo
 } 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
-  return !AcquisitionPackage.isPackageNew && (Summary.summaryItems.some(
+  return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
 } 

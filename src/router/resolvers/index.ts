@@ -319,16 +319,18 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
 }
 export const COIRouteResolver = (current: string): string => {
   return current === routeNames.DOWLandingPage
-    ? isStepTouched(6)?routeNames.SummaryStepSix:routeNames.ConflictOfInterest
+    ? isStepTouched(6) ? routeNames.SummaryStepSix:routeNames.ConflictOfInterest
     :routeNames.SummaryStepSix
 }
 export const PackagingPackingAndShippingResolver = (current: string): string => {
+  debugger;
   return isStepTouched(6) && current === routeNames.ConflictOfInterest
     ? routeNames.SummaryStepSix
     : routeNames.PackagingPackingAndShipping
 }
 
 export const TravelRouteResolver = (current: string): string => {
+  debugger;
   return isStepTouched(6) && current === routeNames.PackagingPackingAndShipping
     ? routeNames.SummaryStepSix
     : routeNames.Travel
