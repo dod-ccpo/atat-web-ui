@@ -1361,7 +1361,6 @@ export default class PortfolioDashboard extends Vue {
       const color = this.chartDataColorSequence[i + 1];
       const clin = this.idiqClins.find((clin) => clin.clin_number === clinNo);
       if (clin && this.burnChartData.datasets) {
-        // ATAT TODO - reinstate idiq_clins - currently blank in data from SNOW
         const clinActualData = {
           label: clin.idiq_clin,
           dataSetId: clin.idiq_clin

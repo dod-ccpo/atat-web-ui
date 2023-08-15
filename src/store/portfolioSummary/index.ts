@@ -349,7 +349,6 @@ export class PortfolioSummaryStore extends VuexModule {
                 clin.actual_funds_spent as unknown as string
               );
               const status = clin.clin_status.toUpperCase().replace(/[\W_]+/g,"_");
-              console.log(clin, 'clin')
               return {
                 sys_id: clin.sys_id,
                 clin_number: clin.clin_number,
