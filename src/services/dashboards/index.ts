@@ -45,26 +45,6 @@ export interface AggregateResults {
   };
 }
 
-export interface ClinDTOAll {
-  sys_id: {value: string, display_value: string},
-  clin_number: {value: string, display_value: string},
-  idiq_clin: {value: string, display_value: string}
-  pop_end_date: {value: string, display_value: string},
-  pop_start_date: {value: string, display_value: string},
-  clin_status: {value: string, display_value: string},
-  funds_obligated: {value: string, display_value: string},
-  funds_total: {value: string, display_value: string},
-  actual_funds_spent: {value: string, display_value: string},
-  classification_level: {value: string, display_value: string},
-  sys_created_by: {value: string, display_value: string},
-  sys_mod_count: {value: string, display_value: string},
-  sys_tags: {value: string, display_value: string},
-  sys_updated_by:{value: string, display_value: string},
-  sys_updated_on: {value: string, display_value: string},
-  task_order: {value: string, display_value: string, link: string},
-  type: {value: string, display_value: string}
-}
-
 const buildCostGroups = (costs: CostsDTO[]): CostGroup[] => {
   costs.sort((a, b) => Date.parse(a.year_month) - Date.parse(b.year_month));
   const groups = groupBy(costs, "year_month");
