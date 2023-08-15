@@ -369,6 +369,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
   //has the store been initialized
   initialized = false;
+
+  isPackageNew = false;
   //keeps track of project title for global display
   projectTitle = "";
   acquisitionPackage: AcquisitionPackageDTO | null = null;
@@ -721,6 +723,16 @@ export class AcquisitionPackageStore extends VuexModule {
   public get getIsLoading(): boolean {
     return this.isLoading;
   }
+
+  @Action({rawError: true})
+  public setIsPackageNew(val: boolean): void {
+    this.doSetIsPackageNew(val);
+  }
+  @Mutation
+  public doSetIsPackageNew(val: boolean): void {
+    this.isPackageNew = val;
+  }
+
   @Action({rawError: true})
   public setIsLoading(val: boolean): void {
     this.doSetIsLoading(val);
@@ -1549,7 +1561,6 @@ export class AcquisitionPackageStore extends VuexModule {
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
-      await this.loadFeedbackOptions()
       await ContactData.initialize();
       this.setPackagePercentLoaded(5);
       await OrganizationData.initialize();
@@ -1950,7 +1961,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setContact({ data: initialContact(), type: "Financial POC" })
           this.setContractConsiderations(initialContractConsiderations());
-          await this.loadFeedbackOptions()
           await this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){

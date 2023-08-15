@@ -217,6 +217,7 @@ export default class Home extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await AcquisitionPackage.loadFeedbackOptions()
     this.isLoading = true;
     await CurrentUserStore.initialize();
     if (PortfolioStore.userLeftPortfolio) {
