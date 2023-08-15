@@ -23,6 +23,7 @@ import ClassificationRequirements, { isClassLevelUnclass } from "../classificati
 import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -438,8 +439,9 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessProcurementHistory(): Promise<void> {
-    const isTouched = false;
-    const isComplete =  false;
+    const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts
+    const isTouched = hasCurrentOrPreviousContract !== "";
+    const isComplete =  hasCurrentOrPreviousContract === "NO";
     const description = ""
     const procurementHistorySummaryItem: SummaryItem = {
       title: "Procurement History",
@@ -455,8 +457,9 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
-    const isTouched = false;
-    const isComplete =  false;
+    const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
+    const isTouched = currentEnvironment?.current_environment_exists !== "";
+    const isComplete =  currentEnvironment?.current_environment_exists === "NO";
     const description = ""
     const currentEnvironmentSummaryItem: SummaryItem = {
       title: "Current Environment",
