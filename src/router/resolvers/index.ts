@@ -227,7 +227,11 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     currentContracts.length === 1
     && currentContracts[0].is_valid === false
 
-  if (doesNotNeedContract){
+  if(doesNotNeedContract
+    && isStepTouched(4)){
+    return routeNames.SummaryStepFour
+  }
+  else if (doesNotNeedContract){
     return routeNames.CurrentEnvironment;
   } else if (
     !hasExceptionToFairOpp()
