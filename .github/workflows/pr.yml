@@ -67,8 +67,8 @@ jobs:
       - name: Build the project
         run: npm run build
         env:
-          testURL: "${{ secrets.VUE_BASE_API_URL }}/test"
-          BASE_API_URL: "${{ secrets.VUE_BASE_API_URL }}"
+          testURL: "%BASE_URL_PLACEHOLDER%/test"
+          BASE_API_URL: "%BASE_URL_PLACEHOLDER%"
           SNOWUSER: "${{ secrets.VUE_SNOW_USER }}"
           SNOWPASS: ""
       - name: Test the project
