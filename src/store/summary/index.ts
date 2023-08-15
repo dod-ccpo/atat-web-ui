@@ -100,6 +100,9 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
   case 3:
+    await Summary.validateStepTwo();
+    break;
+  case 3:
     await Summary.validateStepThree();
     break;
   case 5:
@@ -166,6 +169,40 @@ export class SummaryStore extends VuexModule {
       : ""
     await AcquisitionPackage.setContinueButtonColor(color);
   }
+
+  //#region STEP 2
+    /*
+   * assess all 2 substeps in Step 3 to determine 
+   * if substep is touched and/or completed
+   * 
+   * The function creates 3 summary step objects for each
+   * substep in step 2 
+   */
+  @Action({rawError: true})
+  public async validateStepTwo(): Promise<void> {
+    await this.assessFairOpportunity();
+  }
+
+  @Action({rawError: true})
+  public async assessFairOpportunity(): Promise<void>{
+
+    const POPSummaryItem: SummaryItem = {
+      title: "Period of Performance (PoP)",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "PeriodOfPerformance",
+      step:3,
+      substep: 1
+    }
+    await this.doSetSummaryItem(POPSummaryItem)
+  }
+
+
+  //#endregion
+
+
+
 
   //#region STEP 3
   /*
