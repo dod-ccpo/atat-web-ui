@@ -1,5 +1,5 @@
 <template>
-  <div class="container-max-width">
+  <div>
     <div class="mb-10">
         <FinancialDetailsAlert />
     </div>
