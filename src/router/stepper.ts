@@ -217,7 +217,7 @@ import {
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
   FOIARecordSummaryResolver,
-  PIIResolver
+  PIIResolver, COIRouteResolver, PackagingPackingAndShippingResolver, TravelRouteResolver
 } from "./resolvers";
 
 export const routeNames = {
@@ -1067,6 +1067,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.ConflictOfInterest,
         component: ConflictOfInterest,
+        routeResolver:COIRouteResolver
       },
       {
         name: routeNames.PackagingPackingAndShipping,
@@ -1075,6 +1076,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.PackagingPackingAndShipping,
         component: PackagingPackingAndShipping,
+        routeResolver:PackagingPackingAndShippingResolver
       },
       {
         name: routeNames.Travel,
@@ -1083,6 +1085,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.Travel,
         component: Travel,
+        routeResolver:TravelRouteResolver,
         additionalButtons: [
           {
             buttonText: "I don’t need CSP employees to travel",

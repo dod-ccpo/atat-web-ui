@@ -566,6 +566,9 @@ Cypress.Commands.add("fillNewAcquisition", (projectTitle, scope) => {
   cy.checkBoxOption(projectOverview.projDisChxkBox, "YES").click({
     force: true,
   });
+  cy.findElement(projectOverview.cjadc2NoRadioOption)
+  .should("have.value", "NO")
+  .click({ force: true });
   cy.btnExists(common.continueBtn, " Continue ").click();
   cy.waitUntilElementIsGone(projectOverview.projDisChxkBox);
   cy.verifyPageHeader(

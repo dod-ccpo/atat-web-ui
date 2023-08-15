@@ -16,6 +16,7 @@ import { Statuses } from "../acquisitionPackage";
 import CurrentUserStore from "../user";
 import {convertColumnReferencesToValues} from "@/api/helpers";
 import { Environment } from "types/Global";
+import { currencyStringToNumber } from "@/helpers";
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -209,7 +210,7 @@ export class PortfolioSummaryStore extends VuexModule {
     allEnvs.forEach(env => {
       // ATAT TODO: env status should be set in SNOW
       if (env.provisioned === "true") {
-        env.environmentStatus = Statuses.Provisioned.value;;
+        env.environmentStatus = Statuses.Provisioned.value;
       } else {
         env.environmentStatus = env.provisioning_failure_cause  
           ? Statuses.ProvisioningIssue.value 
@@ -222,16 +223,15 @@ export class PortfolioSummaryStore extends VuexModule {
         // portfolio status based on environment statuses
         let hasProcessing = false;
         let hasIssue = false;
-    
+
         portfolio.environments.forEach(env => {
+          console.log(`Env: ${JSON.stringify(env)}`);
           if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
           if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
           portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
-            : hasProcessing 
-              ? Statuses.Processing.value 
+            : hasProcessing
+              ? Statuses.Processing.value
               : portfolio.portfolio_status;
-          env.classification_level = env.name.toLowerCase().includes("- unclassified")
-            ? "U" : env.name.toLowerCase().includes("- secret") ? "S" : "TS"
         });
       }
     });
@@ -326,33 +326,42 @@ export class PortfolioSummaryStore extends VuexModule {
   private async setClinsToPortfolioTaskOrders(portfolioSummaryList: PortfolioSummaryDTO[]) {
     const clins = portfolioSummaryList.map(portfolio => portfolio.task_orders
       .map(taskOrder => taskOrder.clins));
-    const allClinList = await api.clinDisplayTable.getQuery(
+    const allClinList = await api.clinTable.getQuery(
       {
         params:
           {
             sysparm_fields: "sys_id,clin_number,idiq_clin,clin_status,funds_obligated," +
-              "funds_total,pop_start_date,pop_end_date",
-            sysparm_display_value: "all",
+              "funds_total,actual_funds_spent,pop_start_date,pop_end_date",
+            sysparm_display_value: true,
             sysparm_query: "sys_idIN" + clins
           }
       }
     )
+
     portfolioSummaryList.forEach(portfolio => {
       portfolio.task_orders.forEach(taskOrder => {
         taskOrder.clin_records =
-          allClinList.filter(clin => (taskOrder.clins.indexOf(<string>clin.sys_id.value) !== -1))
-            .map(clinDisplay => {
+          allClinList.filter(clin => (taskOrder.clins.indexOf(<string>clin.sys_id) !== -1))
+            .map(clin => {
+              const fundsTotal = currencyStringToNumber(clin.funds_total as unknown as string)
+              const fundsObligated = currencyStringToNumber(
+                clin.funds_obligated as unknown as string
+              );
+              const actualFundsSpent = currencyStringToNumber(
+                clin.actual_funds_spent as unknown as string
+              );
+              const status = clin.clin_status.toUpperCase().replace(/[\W_]+/g,"_");
               return {
-                sys_id: clinDisplay.sys_id.value,
-                clin_number: clinDisplay.clin_number.value,
-                idiq_clin: clinDisplay.idiq_clin.value,
-                idiq_clin_display: clinDisplay.idiq_clin,
-                pop_end_date: clinDisplay.pop_end_date.value,
-                pop_start_date: clinDisplay.pop_start_date.value,
-                clin_status: clinDisplay.clin_status.value,
-                clin_status_display: clinDisplay.clin_status,
-                funds_obligated: Number(clinDisplay.funds_obligated.value),
-                funds_total: Number(clinDisplay.funds_total.value)
+                sys_id: clin.sys_id,
+                clin_number: clin.clin_number,
+                idiq_clin: clin.idiq_clin,
+                pop_end_date: clin.pop_end_date,
+                pop_start_date: clin.pop_start_date,
+                clin_status: status,
+                clin_status_display: clin.clin_status,
+                funds_obligated: Number(fundsObligated),
+                funds_total: Number(fundsTotal),
+                actual_funds_spent: Number(actualFundsSpent)
               }
             });
       })
@@ -437,11 +446,9 @@ export class PortfolioSummaryStore extends VuexModule {
             if (costRecord.is_actual) { // only add up costs with is_actual=true towards total spent
               const costValue = Number(costRecord.value);
               fundsSpentForPortfolio = fundsSpentForPortfolio + costValue;
-              fundsSpentForClin = fundsSpentForClin + costValue;
               fundsSpentForTaskOrder = fundsSpentForTaskOrder + costValue;
             }
           });
-          clinRecord.funds_spent_clin = fundsSpentForClin;
         })
         if (taskOrder.sys_id === portfolio.active_task_order) { // uses dates of active task
           portfolio.pop_start_date = taskOrder.pop_start_date;

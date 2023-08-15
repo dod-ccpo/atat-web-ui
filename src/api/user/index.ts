@@ -64,7 +64,8 @@ export class UserApi extends ApiBase {
           // eslint-disable-next-line max-len
           searchQuery = `^emailSTARTSWITH${searchStr}^ORsys_idSTARTSWITH${searchStr}^ORuser_nameSTARTSWITH${searchStr}`
           // eslint-disable-next-line max-len
-        } else if ((searchStr.includes(".") || searchStr.includes("_")) && !searchStr.includes(" ")) {
+        } else if ((searchStr.includes(".") || searchStr.includes("_")  || searchStr.includes("-")) 
+          && !searchStr.includes(" ")) {
           // has . or _ but not an empty space, could be email or user_name
           searchQuery = `^emailSTARTSWITH${searchStr}^ORuser_nameSTARTSWITH${searchStr}` 
         } else if (searchStr.includes(" ")) {

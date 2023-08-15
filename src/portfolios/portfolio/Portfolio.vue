@@ -24,23 +24,7 @@
                       This portfolio was archived on {{ lastUpdated }}
                     </template>
                   </ATATAlert>
-
-
-                  <ATATAlert
-                    id="InaccurateFinancialDetails"
-                    type="error"
-                    class="container-max-width my-10"
-                  >
-                    <template v-slot:content>
-                      <h3 class="mb-1">Financial details may be inaccurate</h3>
-                      <p class="mb-0">
-                        We are currently experiencing an issue with retrieving cost data from
-                        {{ cspLongName() }}. In the meantime, administrators can login
-                        to your CSP console directly to get detailed cost analyses and breakdowns.
-                        We apologize for this inconvenience.
-                      </p>
-                    </template>
-                  </ATATAlert>
+                  <FinancialDetailsAlert />
                 </div>
               <div class="d-flex justify-space-between width-100 mb-10">
                 <h2>Overview</h2>
@@ -822,7 +806,7 @@ import ATATSVGIcon from "../../components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import DonutChart from "../../components/charts/DonutChart.vue";
 import LineChart from "../../components/charts/LineChart.vue";
-
+import FinancialDetailsAlert from "./FinancialDetailsAlert.vue";
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
@@ -859,6 +843,7 @@ import Portfolio from "@/store/portfolio";
     DonutChart,
     LineChart,
     FundingAlert,
+    FinancialDetailsAlert
   },
 })
 export default class PortfolioDashboard extends Vue {
@@ -978,28 +963,6 @@ export default class PortfolioDashboard extends Vue {
 
   public get showFundingAlert(): boolean {
     return this.fundingAlertType.length > 0;
-  }
-
-  private cspLongName(): string {
-    const cspName = PortfolioStore.currentPortfolio.csp ?? "";
-    let longName = "";
-    switch(cspName.toLowerCase()) {
-    case 'aws':
-      longName = 'Amazon Web Services';
-      break;
-    case 'azure':
-      longName = "Microsoft Azure";
-      break;
-    case 'gcp':
-      longName = "Google Cloud";
-      break;
-    case 'oracle':
-      longName = "Oracle Cloud";
-      break;
-    default:
-      break;
-    }
-    return longName;
   }
 
   private get fundingAlertType(): string {

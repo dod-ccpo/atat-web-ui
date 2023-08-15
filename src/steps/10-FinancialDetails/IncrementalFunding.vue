@@ -611,7 +611,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       amt = parseFloat(this.fundingIncrements[0].amt);
       this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
     }
-    this.isOverfunded;
   }
 
   public checkIfHasPeriodGap(index: number): boolean {

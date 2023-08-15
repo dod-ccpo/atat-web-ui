@@ -1,0 +1,73 @@
+{
+    "CEPage1": {
+      "pageHeader1": " Do you have a current environment to rehost? ",
+      "pageText1": "If you select “Yes” below, we’ll gather details about your current environment. This info will be included in your Description of Work to provide CSPs with a better understanding of what currently exists. This environment may not align with your current requirements that you outlined in Contract Details."
+    },
+  
+    "CEPage2": {
+      "pageHeader2": " Do you have system diagrams, data architecture diagrams, charts, or other relevant information for your current environment? ",
+      "pageText2": "If available, you can upload this supporting documentation, and we will attach it to your Description of Work to be shared with the CSPs for proposal purposes. Please do not upload any classified documents."
+          },
+
+    "CEPage3": {
+      "pageHeader3": " Have you completed a migration assessment, analysis, or process to identify the cloud services and tools needed? ",
+      "pageText3": "If available, you can upload this supporting documentation, and we will attach it to your Description of Work to be shared with the CSPs for proposal purposes. Please do not upload any classified documents."
+          },
+
+    "CEPage4": {
+      "pageHeader4": " Where is your current environment located? ",
+      "pageText4": "If you have instances in a hybrid environment, then we will gather details about the location for each instance later."
+      
+    },
+
+    "CEPage5": {
+      "pageHeader5": " Tell us about your current data classification and impact levels ",
+      "pageText5": "If you only have data within a single level, then we will apply your selection below to every instance within your current environment. If you have data within two or more levels, we will gather details about each instance next.",
+      "pageClassQuestion1": " What classification levels are your instances currently deployed in? ",
+      "pageselectALLMsg": " Select all that apply to your current environment. ",
+      "expectedLabelsCL" :[
+        "Unclassified",
+        "Secret",
+        "Top Secret"
+        ],
+        "pageClassQuestion2": " For your Unclassified instance(s), what impact levels are you currently deployed in? ",
+        "expectedLabelsUnCL" :[
+          " Unclassified / Impact Level 2 (IL2) ",
+          " Unclassified / Impact Level 4 (IL4) ",
+          " Unclassified / Impact Level 5 (IL5) "
+        ]
+
+      },
+
+      "CEPage6": {
+      "pageHeader6": " Let’s start gathering details about each instance in your environment ",
+      "pageText6": " An instance may be an isolated environment, an enclave, or a collection of components. Aggregate all virtual machines (VMs) with similar specifications into a single instance below. If you have multiple instances, we will walk through them one at a time. ",     
+      "section1Title": " For your Unclassified instance(s), what impact levels are you currently deployed in? ",
+      "section1Question1": "In which region(s) is this instance deployed?",
+      "section1Checkboxes1" :[
+          " Unclassified / Impact Level 2 (IL2) ",
+          " Unclassified / Impact Level 4 (IL4) ",
+          " Unclassified / Impact Level 5 (IL5) "
+        ],
+      "section1Question2": " What data classification and impact level is this instance deployed in? ",
+      "section1Checkboxes2" :[
+          " Unclassified /IL2 ",
+          " Unclassified /IL4",
+          " Unclassified /IL5 ",
+          "Secret /IL6",
+          "Top Secret"
+        ]
+
+    },
+
+    "CEPage7": {
+      "pageHeader7": " Current Environment Summary ",
+      "pageText7": " If you have more instances for this environment, add them below. You can also edit or delete any information from the instances that you have already entered. When you’re done, click the Continue button to wrap up this section. ",     
+      "section1Title": " For your Unclassified instance(s), what impact levels are you currently deployed in? ",
+      "section1Question1": "In which region(s) is this instance deployed?"
+    }
+  
+
+
+}
+  

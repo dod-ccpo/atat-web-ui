@@ -88,17 +88,19 @@
     <!-- ATAT TODO - add back to div above after search is reinstated
       :class="{ 'mt-10' : !isHomeView }"  
     -->
-
-      <PortfolioCard
-        v-for="(cardData, index) in portfolioCardData"
-        :key="index"
-        :cardData="cardData"
-        :index="index"
-        :isLastCard="index === portfolioCardData.length - 1"
-        :isHaCCAdmin="isHaCCAdmin"
-        @leavePortfolio="leavePortfolio"
-        :isHomeView="isHomeView"
-      />
+      <transition-group name="_portfolio-card" tag="div">
+        <PortfolioCard
+          v-for="(cardData, index) in portfolioCardData"
+          :key="cardData.sysId"
+          :cardData="cardData"
+          :index="index"
+          :isLastCard="index === portfolioCardData.length - 1"
+          :isHaCCAdmin="isHaCCAdmin"
+          @leavePortfolio="leavePortfolio"
+          @openArchivePortfolioModal="openArchivePortfolioModal"
+          :isHomeView="isHomeView"
+        />
+      </transition-group>
 
       <div class="_table-pagination mt-5" v-show="showPagination">
         <span class="mr-11 font-weight-400 font-size-14">
@@ -121,8 +123,17 @@
       @clear="clearSearchOrFilters"
     />
 
+    <ArchivePortfolioModal
+      :portfolioName="portfolioName"
+      :showArchivePortfolioModal="showArchivePortfolioModal"
+      :csp="csp"
+      @okClicked="archivePortfolio"
+      @cancelClicked="closeArchivePortfolioModal"
+    />
+
   </div>
 </template>
+
 <script lang="ts">
 /* eslint-disable camelcase */
 /*eslint prefer-const: 1 */
@@ -130,6 +141,8 @@ import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
 
+import ArchivePortfolioModal 
+  from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
 import ATATLoader from "@/components/ATATLoader.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import ATATSearch from "@/components/ATATSearch.vue"
@@ -140,6 +153,7 @@ import PortfolioCard from "./PortfolioCard.vue";
 
 import { 
   FilterOption,
+  Portfolio,
   PortfolioCardData,  
   PortfolioSummaryQueryParams,
   SelectData, 
@@ -152,7 +166,7 @@ import Toast from "@/store/toast";
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioStore from "@/store/portfolio";
 
-import { Statuses } from "@/store/acquisitionPackage";
+import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
 import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
 import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
@@ -161,6 +175,7 @@ import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
+    ArchivePortfolioModal,
     ATATLoader,
     ATATNoResults,
     ATATSearch,
@@ -373,6 +388,46 @@ export default class PortfoliosSummary extends Vue {
     // to ensure 10 listed on page (or 5 on home page)
   }
 
+  public get currentPortfolio(): Portfolio {
+    return PortfolioStore.currentPortfolio;
+  }
+  public get portfolioName(): string {
+    return this.currentPortfolio.title as string;
+  }
+  public get csp(): string {
+    const cspKey = this.currentPortfolio.csp?.toUpperCase() as string;
+    return AcquisitionPackage.csps[cspKey] as string;
+  }
+  public get showArchivePortfolioModal(): boolean {
+    return PortfolioStore.showArchivePortfolioModal;
+  }
+  public openArchivePortfolioModal():void {
+    PortfolioStore.setShowArchivePortfolioModal(true);
+  }
+  public async archivePortfolio():Promise<void> {
+    const index = this.portfolioCardData.findIndex(
+      obj => obj.sysId === this.currentPortfolio.sysId
+    );
+    this.portfolioCardData[index].status = "ARCHIVED";
+    const portfolioArchivedToast: ToastObj = {
+      type: "success",
+      message: "Portfolio archived",
+      isOpen: true,
+      hasUndo: false,
+      hasIcon: true,
+    };
+    Toast.setToast(portfolioArchivedToast);
+
+    PortfolioStore.archivePortfolio();
+    this.closeArchivePortfolioModal();
+    if (this.activeTab !== "ALL" || this.isHomeView) {
+      this.portfolioCardData.splice(index, 1);
+    }
+  }
+  public closeArchivePortfolioModal(): void {
+    PortfolioStore.setShowArchivePortfolioModal(false);
+  }
+
   public async mounted(): Promise<void> {
     await this.loadPortfolioData();
   }
@@ -441,6 +496,7 @@ export default class PortfoliosSummary extends Vue {
       const cardData: PortfolioCardData = {};
       cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
+      cardData.isViewer = portfolio.portfolio_viewers.indexOf(this.currentUserSysId) > -1;
       cardData.lastUpdated = portfolio.last_updated;      
       cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";
       cardData.vendor = portfolio.vendor?.toLowerCase();

@@ -128,6 +128,7 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
   private async loadOnEnter(): Promise<void> {
     await acquisitionPackage.setHideSideNavigation(false);
     const packageId = this.$route.query['packageId'] || "";
+    AcquisitionPackage.setIsPackageNew(packageId === "");
 
     if(packageId){
       this.isPageLoading = true;

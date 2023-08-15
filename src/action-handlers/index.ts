@@ -63,7 +63,10 @@ async function writeOwnSoleSourceCause() {
   };
   /* eslint-enable camelcase */
   await AcquisitionPackage.setFairOpportunity(fairOpp);
+  await AcquisitionPackage.setSkipValidation(true);
+  
   AcquisitionPackage.fairOppExplanations.soleSource.useCustomText = true;
+  
   router.push({
     name: routeNames.SoleSourceReview,
     params: {
@@ -76,6 +79,7 @@ async function WriteOwnBarriers() {
   // eslint-disable-next-line camelcase
   const fairOpp: FairOpportunityDTO = { barriers_write_own_explanation: "YES" };
   await AcquisitionPackage.setFairOpportunity(fairOpp);
+  await AcquisitionPackage.setSkipValidation(true);
   router.push({
     name: routeNames.ReviewBarriers,
     params: {
@@ -89,6 +93,7 @@ async function writeOwnMarketResearchDetails() {
   // eslint-disable-next-line camelcase
   const fairOpp: FairOpportunityDTO = { research_write_own_explanation: "YES" };
   await AcquisitionPackage.setFairOpportunity(fairOpp);
+  await AcquisitionPackage.setSkipValidation(true);
   router.push({
     name: routeNames.MarketResearchReview,
     params: {
@@ -126,6 +131,7 @@ async function confirmServiceDeletion() {
 }
 
 async function confirmDeleteTravelAll() {
+  AcquisitionPackage.setIsTravelNeeded("NO")
   await DescriptionOfWork.setConfirmTravelDeleteAll(true);
 }
 

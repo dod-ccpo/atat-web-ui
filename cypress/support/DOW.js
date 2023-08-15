@@ -219,3 +219,34 @@ Cypress.Commands.add("anticipatedNeedUsage",(textSel, textVal, radioSel) => {
   });
 
 })
+
+
+Cypress.Commands.add('verifyTableValues', (tableSel, expectedTableData,stopCellIndex) => {
+  stopCellIndex = stopCellIndex ?? 1000;
+  cy.findElement(tableSel).as('table');
+  cy.findElement('@table').find("tbody").find('tr').each(($row, rowIndex) => {
+    cy.wrap($row).find('td').each(($cell, cellIndex) => {
+      cy.wrap($cell).invoke('text').then((text) => {
+        if (cellIndex < stopCellIndex){
+          const expectedValue = expectedTableData[rowIndex][cellIndex];
+        
+          const trimmedText = text.trim().replace(/\s+/g, ' ');
+          cy.log('Expected Value:', expectedValue);
+          cy.log('Trimmed Text:', trimmedText);
+          cy.log('expected:', expectedValue);
+          expect(trimmedText).to.equal(expectedValue);
+        }        
+        
+      });
+    });
+  });
+});
+
+Cypress.Commands.add("clickAndWaitForVisible", (elementSelector, targetSelector) => {
+  cy.get(elementSelector)
+    .should("be.visible")
+    .click()
+    .then(() => {
+      cy.waitUntil(() => cy.findElement(targetSelector).should("be.visible"));
+    });
+});
