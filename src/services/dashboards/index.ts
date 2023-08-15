@@ -45,6 +45,26 @@ export interface AggregateResults {
   };
 }
 
+export interface ClinDTOAll {
+  sys_id: {value: string, display_value: string},
+  clin_number: {value: string, display_value: string},
+  idiq_clin: {value: string, display_value: string}
+  pop_end_date: {value: string, display_value: string},
+  pop_start_date: {value: string, display_value: string},
+  clin_status: {value: string, display_value: string},
+  funds_obligated: {value: string, display_value: string},
+  funds_total: {value: string, display_value: string},
+  actual_funds_spent: {value: string, display_value: string},
+  classification_level: {value: string, display_value: string},
+  sys_created_by: {value: string, display_value: string},
+  sys_mod_count: {value: string, display_value: string},
+  sys_tags: {value: string, display_value: string},
+  sys_updated_by:{value: string, display_value: string},
+  sys_updated_on: {value: string, display_value: string},
+  task_order: {value: string, display_value: string, link: string},
+  type: {value: string, display_value: string}
+}
+
 const buildCostGroups = (costs: CostsDTO[]): CostGroup[] => {
   costs.sort((a, b) => Date.parse(a.year_month) - Date.parse(b.year_month));
   const groups = groupBy(costs, "year_month");
@@ -204,11 +224,7 @@ export class DashboardService {
         clinsInPeriod.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
       }
       const clinSysIds = clinsInPeriod.map(obj => obj.sys_id);
-      const clinRequests = clinSysIds.map((clin) => api.clinTable.retrieve(clin));
-      
-      let currentCLINs = await Promise.all(clinRequests);
-      console.log(currentCLINs, 'current')
-      const allClinList = await api.clinTable.getQuery(
+      const currentCLINs = await api.clinTable.getQuery(
         {
           params:
             {
@@ -216,12 +232,34 @@ export class DashboardService {
               "funds_obligated,funds_total,idiq_clin,pop_end_date,pop_start_date,sys_created_by," +
               "sys_create_on,sys_id,sys_mod_count,sys_tags,sys_updated_by,sys_updated_on," +
               "task_order,type",
-              sysparm_display_value: true,
+              sysparm_display_value: 'all',
               sysparm_query: "sys_idIN" + clinSysIds
             }
         }
-      )
-      console.log(allClinList, 'all')
+      ).then((clinData)=>{
+        // remove any and type out once api is refactored
+        return clinData.map((clin: any) =>{
+          return{
+            sys_id: clin.sys_id.value,
+            clin_number: clin.clin_number.value,
+            idiq_clin: clin.idiq_clin.display_value,
+            pop_end_date: clin.pop_end_date.value,
+            pop_start_date: clin.pop_start_date.value,
+            clin_status: clin.clin_status.value,
+            funds_obligated: clin.funds_obligated.value,
+            funds_total: clin.funds_total.value,
+            actual_funds_spent: clin.actual_funds_spent.value,
+            classification_level: clin.classification_level.value,
+            sys_created_by: clin.sys_created_by.value,
+            sys_mod_count: clin.sys_mod_count.value,
+            sys_tags: clin.sys_tags.value,
+            sys_updated_by:clin.sys_updated_by.value,
+            sys_updated_on: clin.sys_updated_on.value,
+            task_order: {link: clin.task_order.link, value: clin.task_order.value},
+            type: clin.type.value
+          } as ClinDTO
+        })
+      })
       const costs = await this.getCostsInCurrentPeriod(clinSysIds)
 
       return {
