@@ -203,10 +203,26 @@ export class DashboardService {
       if (clinsInPeriod.length) {
         clinsInPeriod.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
       }
-
+     
       const clinSysIds = clinsInPeriod.map(obj => obj.sys_id);
       const clinRequests = clinSysIds.map((clin) => api.clinTable.retrieve(clin));
       let currentCLINs = await Promise.all(clinRequests);
+
+      const clin_labels = await api.systemChoices.getChoices(
+        ClinTable,
+        "idiq_clin"
+      );
+
+      currentCLINs = currentCLINs.map((clin) => {
+        const label = clin_labels.find(
+          (label) => label.value === clin.idiq_clin
+        );
+        if (label) {
+          clin.idiq_clin = label.label;
+        }
+
+        return clin;
+      });
 
       const costs = await this.getCostsInCurrentPeriod(clinSysIds)
 
