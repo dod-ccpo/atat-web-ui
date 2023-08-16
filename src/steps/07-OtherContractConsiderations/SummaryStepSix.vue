@@ -50,11 +50,9 @@ export default class SummaryStepSix extends Mixins(SaveOnLeave){
         "edits at any time. When you are ready to wrap up this section, we will move on to " +
         "standards and compliance."
   }
-  /*
-   */
-
+  
   public async mounted(): Promise<void>{
-    await Summary.setHasCurrentStepBeenVisited(
+    Summary.setHasCurrentStepBeenVisited(
       await isStepValidatedAndTouched(6)
     )
     this.summaryItems = await getSummaryItemsforStep(6);

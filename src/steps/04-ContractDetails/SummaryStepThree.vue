@@ -51,7 +51,7 @@ export default class SummaryStepThree extends Mixins(SaveOnLeave){
   }
 
   public async mounted():Promise<void> {  
-    await Summary.setHasCurrentStepBeenVisited(
+    Summary.setHasCurrentStepBeenVisited(
       await isStepValidatedAndTouched(3)
     )
     this.summaryItems = await getSummaryItemsforStep(3);

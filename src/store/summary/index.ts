@@ -155,12 +155,12 @@ export class SummaryStore extends VuexModule {
   public hasCurrentStepBeenVisited = false;
 
   @Action({rawError:true})
-  public async setHasCurrentStepBeenVisited(isVisited: boolean):Promise<void>{
+  public setHasCurrentStepBeenVisited(isVisited: boolean):void{
     this.doSetHasCurrentStepBeenVisited(isVisited);
   }
 
   @Mutation
-  public async doSetHasCurrentStepBeenVisited(isVisited: boolean):Promise<void>{
+  public doSetHasCurrentStepBeenVisited(isVisited: boolean):void{
     this.hasCurrentStepBeenVisited = isVisited;
   }
 

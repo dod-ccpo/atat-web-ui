@@ -28,18 +28,6 @@ export default class SaveOnLeave extends Vue {
     throw new Error("Not Implemented Error");
   }
 
-  /**
-   * if user makes the step untouched b/c of unchecking/unselecting values
-   * then set Summary.hasCurrentStepBeenVisited to `false`
-   * to restore navigation as if the step has NOT been touched
-   */
-  public async assessHasCurrentStepBeenVisited(): Promise<void>{
-    const currentStepNumber = parseInt(Steps.currentStep?.stepNumber as string);
-
-    if (currentStepNumber && !(await isStepValidatedAndTouched(currentStepNumber))){
-      await Summary.setHasCurrentStepBeenVisited(await isStepValidatedAndTouched(currentStepNumber))
-    }
-  }
   
   public async beforeRouteLeave(
     to: Route,
@@ -50,7 +38,6 @@ export default class SaveOnLeave extends Vue {
     const formToValidate = this.$refs.form;
     const skipValidation = AcquisitionPackage.skipValidation;
     let isValid = true;
-    await this.assessHasCurrentStepBeenVisited();
     const direction = to.params.direction;
     if(direction === "next" && formToValidate && !skipValidation){
       AcquisitionPackage.setValidateNow(true);

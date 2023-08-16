@@ -16,7 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import Summary from "@/store/summary";
+import Summary, { isStepTouched } from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -64,6 +64,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
+    Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
     return ( Summary.hasCurrentStepBeenVisited
       ? routeNames.SummaryStepThree 
       : routeNames.PeriodOfPerformance
@@ -320,8 +321,9 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
     : routeNames.EnvironmentSummary;
 }
 export const COIRouteResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(6));
   return current === routeNames.DOWLandingPage
-    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSix:routeNames.ConflictOfInterest
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSix: routeNames.ConflictOfInterest
     :routeNames.SummaryStepSix
 }
 export const PackagingPackingAndShippingResolver = (current: string): string => {
@@ -337,6 +339,7 @@ export const TravelRouteResolver = (current: string): string => {
 }
 
 export const PIIResolver = (current: string): string =>{
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(7));
   return current === routeNames.SummaryStepSix
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSeven : routeNames.PII
     : routeNames.SummaryStepSix
@@ -397,16 +400,7 @@ export const A11yRequirementResolver = (current: string): string => {
     : routeNames.Section508Standards;
 };
 
-// export const ContractTrainingReq = (current: string): string => {
-//   const contractTraining
-//       = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
-//   if (contractTraining) {
-//     return routeNames.TrainingCourses;
-//   }
-//   return current === routeNames.Training
-//     ? routeNames.PII
-//     : routeNames.Training;
-// };
+
 export const ContractingInfoResolver = (current: string): string => {
   const needsContractInformation =
       AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";

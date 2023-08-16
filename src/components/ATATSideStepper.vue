@@ -116,7 +116,7 @@ export default class ATATSideStepper extends Vue {
     this.activeStep = stepNumber;
     this.calculatePercentComplete();
     if (step){
-      await Summary.setHasCurrentStepBeenVisited(
+      Summary.setHasCurrentStepBeenVisited(
         await isStepValidatedAndTouched(parseInt(stepNumber))
       )
     }
