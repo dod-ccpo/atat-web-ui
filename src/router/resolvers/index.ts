@@ -227,7 +227,11 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     currentContracts.length === 1
     && currentContracts[0].is_valid === false
 
-  if (doesNotNeedContract){
+  if(doesNotNeedContract
+    && isStepTouched(4)){
+    return routeNames.SummaryStepFour
+  }
+  else if (doesNotNeedContract){
     return routeNames.CurrentEnvironment;
   } else if (
     !hasExceptionToFairOpp()
@@ -265,8 +269,14 @@ export const ProcurementHistorySummaryRouteResolver = (current: string): string 
     (c)=>c.current_contract_exists==="NO"
   )
   const fromCurrentEnvironment =  current === routeNames.CurrentEnvironment;
-  
   if (
+    doesNotNeedContract
+      && fromCurrentEnvironment
+      && isStepTouched(4)
+  ){
+    return routeNames.SummaryStepFour
+  }
+  else if (
     doesNotNeedContract
     && fromCurrentEnvironment
   ){
@@ -308,13 +318,13 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment 
-    ? routeNames.DOWLandingPage
+    ? routeNames.SummaryStepFour
     : routeNames.CurrentEnvironment;
 };
 
 export const CurrentEnvironmentSummaryResolver = (current: string): string => {
   return current === routeNames.ReplicateAndOptimize 
-    ? routeNames.DOWLandingPage
+    ? routeNames.SummaryStepFour
     : routeNames.EnvironmentSummary;
 }
 export const COIRouteResolver = (current: string): string => {
@@ -1039,16 +1049,17 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if (current === routeNames.DOWLandingPage) {
-    const hasCurrentContract = 
-      AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
-    if (hasCurrentContract) {
-      return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
-        && CurrentEnvironment.currentEnvInstances.length > 0
-        ? "/current-contract/environment-summary"
-        : "/current-contract/current-environment"
-    } else {
-      return "/current-contract/current-contract"
-    }
+    // const hasCurrentContract =
+    //   AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
+    // if (hasCurrentContract) {
+    //   return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
+    //     && CurrentEnvironment.currentEnvInstances.length > 0
+    //     ? "/current-contract/environment-summary"
+    //     : "/current-contract/summary-step-four"
+    // } else {
+    //   return "/current-contract/current-contract"
+    // }
+    return "/current-contract/summary-step-four"
   }
 
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
