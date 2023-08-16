@@ -33,9 +33,9 @@
           }"
           class="step"
           @click.native ="setCurrentStep(
-            false,
+            step.stepNumber, 
             step,
-            )"
+            false)"
         >
           <span class="step-circle">
             {{ step.stepNumber }}
@@ -65,7 +65,9 @@
                 }"
                 class="substep"
                 @click="setCurrentStep(
-                  true
+                  subStep.stepNumber, 
+                  subStep,
+                  false
                 )"
               >
                 <span class="substep-circle">
@@ -108,11 +110,10 @@ export default class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
   public async setCurrentStep(
-    isSubStep: boolean,
-    step?: StepperStep, 
+    stepNumber: string, 
+    step: StepperStep, 
+    isSubStep: boolean
   ): Promise<void> {
-    const isNewPackage = AcquisitionPackage.isPackageNew
-    const stepNumber = step?.stepNumber as string;
     this.activeStep = stepNumber;
     this.calculatePercentComplete();
     if (step){

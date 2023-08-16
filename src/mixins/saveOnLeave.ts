@@ -3,7 +3,6 @@ import { Route } from "vue-router";
 import { Component } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
-import Summary, { isStepTouched, isStepValidatedAndTouched, validateStep } from "@/store/summary";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
@@ -28,7 +27,6 @@ export default class SaveOnLeave extends Vue {
     throw new Error("Not Implemented Error");
   }
 
-  
   public async beforeRouteLeave(
     to: Route,
     from: Route,
@@ -45,8 +43,6 @@ export default class SaveOnLeave extends Vue {
     }
     
     this.$nextTick(()=> {
-      //validate step and update summary store item
-      
       AcquisitionPackage.setValidateNow(false);
       AcquisitionPackage.setSkipValidation(false);
       if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {

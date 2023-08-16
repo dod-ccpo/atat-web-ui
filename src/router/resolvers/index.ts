@@ -88,7 +88,7 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 };
 
 export const BVTOResolver = (current: string): string => {
-
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
     // moving backwards
