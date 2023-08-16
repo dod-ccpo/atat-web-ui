@@ -7,7 +7,7 @@
         </h1>
         <div class="copy-max-width">
           <p class="mb-10">
-           {{ headline }}
+           {{ introParagraph }}
           </p>
         </div>
 
@@ -38,7 +38,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class SummaryStepSeven extends Mixins(SaveOnLeave){
   public summaryItems: SummaryItem[] = [];
 
-  get headline():string{
+  get introParagraph():string{
     return (isStepComplete(7))
       ? "You are all done with this section, but you can come back at any time to edit "
         + "details. When you are ready, we will move on to your financial details."

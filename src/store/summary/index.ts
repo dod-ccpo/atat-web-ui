@@ -94,7 +94,7 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 
 export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
-  case 3:
+  case 2:
     await Summary.validateStepTwo();
     break;
   case 3:
@@ -169,7 +169,7 @@ export class SummaryStore extends VuexModule {
   }
 
   //#region STEP 2
-    /*
+  /*
    * assess all 2 substeps in Step 3 to determine 
    * if substep is touched and/or completed
    * 
@@ -179,21 +179,35 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async validateStepTwo(): Promise<void> {
     await this.assessFairOpportunity();
+    await this.assessEvalPlan();
   }
 
   @Action({rawError: true})
   public async assessFairOpportunity(): Promise<void>{
-
-    const POPSummaryItem: SummaryItem = {
-      title: "Period of Performance (PoP)",
-      description,
-      isComplete,
-      isTouched,
-      routeName: "PeriodOfPerformance",
-      step:3,
+    const FairOpportunityItem: SummaryItem = {
+      title: "Exception to Fair Opportunity",
+      description: "",
+      isComplete: false,
+      isTouched: true,
+      routeName: "Exceptions", 
+      step:2,
       substep: 1
     }
-    await this.doSetSummaryItem(POPSummaryItem)
+    await this.doSetSummaryItem(FairOpportunityItem)
+  }
+
+  @Action({rawError: true})
+  public async assessEvalPlan(): Promise<void>{
+    const evalPlan: SummaryItem = {
+      title: "Evaluation Plan",
+      description: "",
+      isComplete: false,
+      isTouched: true,
+      routeName: "CreateEvalPlan", 
+      step:2,
+      substep: 2
+    }
+    await this.doSetSummaryItem(evalPlan)
   }
 
 

@@ -46,8 +46,6 @@ export default class SummaryStepTwo extends Mixins(SaveOnLeave){
         "edits at any time. When you are ready to wrap up this section, we will move on to " +
         "gathering your background."
   }
-  /*
-   */
 
   public async mounted(): Promise<void>{
     await Summary.validateStepTwo();

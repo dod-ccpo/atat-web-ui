@@ -91,18 +91,25 @@ export const BVTOResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
     // moving backwards
-    if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-      return routeNames.CreateEvalPlan;
-    }
+    return isStepTouched(2)
+      ? routeNames.SummaryStepTwo
+      : routeNames.Exceptions
   }
   if (evalPlan?.method === "BVTO") {
     return routeNames.Differentiators;
   }
 
   return current === routeNames.EvalPlanDetails
-    ? (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
+    ? routeNames.SummaryStepTwo
     : routeNames.EvalPlanDetails;
 };
+
+export const SummaryStepTwoRouteResolver = (current: string): string =>{
+  return routeNames.SummaryStepTwo;
+  // return isStepTouched(3) 
+  //   ? routeNames.SummaryStepThree 
+  //   : routeNames.PeriodOfPerformance;
+}
 
 export const ProposedCSPRouteResolver = (current: string): string => {
   return current === routeNames.Exceptions && evalPlanRequired() 
@@ -159,7 +166,7 @@ export const RemoveBarriersFormRouteResolver = (current: string): string => {
 
 export const CertificationPOCsRouteResolver = (current: string): string => {
   return evalPlanRequired() && current === routeNames.CreateEvalPlan
-    ? routeNames.Exceptions
+    ? isStepTouched(2) ? routeNames.SummaryStepTwo : routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
 
@@ -1746,7 +1753,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PIIResolver,
   COIRouteResolver,
   PackagingPackingAndShippingResolver,
-  TravelRouteResolver
+  TravelRouteResolver,
+  SummaryStepTwoRouteResolver
 };
 
 // add path resolvers here 

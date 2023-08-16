@@ -43,7 +43,7 @@ import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPl
 import EvalPlanDetails from "../steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.vue";
 import Differentiators from "../steps/02-EvaluationCriteria/EvalPlan/Differentiators.vue";
 import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
-
+import SummaryStepTwo from "@/steps/02-EvaluationCriteria/SummaryStepTwo.vue"
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
 import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
@@ -168,6 +168,7 @@ import {
   ArchitecturalDesignDetailsResolver,
   CurrentContractRouteResolver,
   SummaryStepThreeRouteResolver,
+  SummaryStepTwoRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
@@ -218,7 +219,11 @@ import {
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
   FOIARecordSummaryResolver,
-  PIIResolver, COIRouteResolver, PackagingPackingAndShippingResolver, TravelRouteResolver
+  PIIResolver, 
+  COIRouteResolver, 
+  PackagingPackingAndShippingResolver, 
+  TravelRouteResolver,
+  
 } from "./resolvers";
 
 export const routeNames = {
@@ -258,6 +263,7 @@ export const routeNames = {
   RemoveBarriers: "Remove_Barriers",
   ReviewBarriers: "Review_Barriers",
   CertificationPOCs: "Certification_POCs",
+  SummaryStepTwo: "SummaryStepTwo",
   //-----------------------------------------
 
   Background: "Background",
@@ -715,6 +721,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         routeResolver: BVTOResolver,
       },   
+      {
+        menuText: "SummaryStepTwo",
+        path:"summary-step-two",  
+        name: routeNames.SummaryStepTwo,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepTwo,
+        continueButtonText: "Wrap up this section",
+        routeResolver: SummaryStepTwoRouteResolver
+      },
     ],
   },
   {
