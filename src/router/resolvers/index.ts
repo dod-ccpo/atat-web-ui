@@ -16,7 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import { isStepTouched, isSubStepComplete } from "@/store/summary";
+import Summary from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -64,7 +64,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-    return ( isStepTouched(3) 
+    return ( Summary.hasCurrentStepBeenVisited
       ? routeNames.SummaryStepThree 
       : routeNames.PeriodOfPerformance
     )
@@ -100,7 +100,9 @@ export const BVTOResolver = (current: string): string => {
   }
 
   return current === routeNames.EvalPlanDetails
-    ? (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
+    ? Summary.hasCurrentStepBeenVisited 
+      ? routeNames.SummaryStepThree 
+      : routeNames.PeriodOfPerformance
     : routeNames.EvalPlanDetails;
 };
 
@@ -319,26 +321,24 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
 }
 export const COIRouteResolver = (current: string): string => {
   return current === routeNames.DOWLandingPage
-    ? isStepTouched(6) ? routeNames.SummaryStepSix:routeNames.ConflictOfInterest
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSix:routeNames.ConflictOfInterest
     :routeNames.SummaryStepSix
 }
 export const PackagingPackingAndShippingResolver = (current: string): string => {
-  debugger;
-  return isStepTouched(6) && current === routeNames.ConflictOfInterest
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ConflictOfInterest
     ? routeNames.SummaryStepSix
     : routeNames.PackagingPackingAndShipping
 }
 
 export const TravelRouteResolver = (current: string): string => {
-  debugger;
-  return isStepTouched(6) && current === routeNames.PackagingPackingAndShipping
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.PackagingPackingAndShipping
     ? routeNames.SummaryStepSix
     : routeNames.Travel
 }
 
 export const PIIResolver = (current: string): string =>{
   return current === routeNames.SummaryStepSix
-    ? isStepTouched(7) ? routeNames.SummaryStepSeven : routeNames.PII
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSeven : routeNames.PII
     : routeNames.SummaryStepSix
 }
 
@@ -354,13 +354,13 @@ export const PIIRecordResolver = (current: string): string => {
 };
 
 export const PIIRecordSummaryResolver = (current: string): string => {
-  return isStepTouched(7) && current.toLowerCase().includes("pii")
+  return Summary.hasCurrentStepBeenVisited && current.toLowerCase().includes("pii")
     ? routeNames.SummaryStepSeven
     : routeNames.BAA
 };
 
 export const BAARecordSummaryResolver = (current: string): string => {
-  return isStepTouched(7) && current === routeNames.BAA
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.BAA
     ? routeNames.SummaryStepSeven
     : routeNames.FOIA
 };
@@ -379,7 +379,7 @@ export const FOIARecordResolver = (current: string): string => {
 };
 
 export const FOIARecordSummaryResolver = (current: string): string => {
-  return isStepTouched(7) && current.toLowerCase().includes('foia')
+  return Summary.hasCurrentStepBeenVisited && current.toLowerCase().includes('foia')
     ? routeNames.SummaryStepSeven
     : routeNames.Section508Standards
 };
@@ -1583,7 +1583,7 @@ export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): 
 export const ContractTypeResolver = (current: string): string => {
   const isFromRecurringRequirments = 
     current === routeNames.RecurringRequirement;
-  return  isStepTouched(3) && isFromRecurringRequirments
+  return  Summary.hasCurrentStepBeenVisited && isFromRecurringRequirments
     ? routeNames.SummaryStepThree
     : routeNames.ContractType
 }
@@ -1591,7 +1591,7 @@ export const ContractTypeResolver = (current: string): string => {
 
 export const ClassificationRequirementsResolver = (current: string): string => {
   const isFromContractType = current === routeNames.ContractType;
-  return isStepTouched(3) && isFromContractType
+  return Summary.hasCurrentStepBeenVisited && isFromContractType
     ? routeNames.SummaryStepThree
     : routeNames.ClassificationRequirements
 }

@@ -151,7 +151,18 @@ export class SummaryStore extends VuexModule {
     substep: 0
   }
 
-  public summaryItems: SummaryItem[] = []
+  public summaryItems: SummaryItem[] = [];
+  public hasCurrentStepBeenVisited = false;
+
+  @Action({rawError:true})
+  public async setHasCurrentStepBeenVisited(isVisited: boolean):Promise<void>{
+    this.doSetHasCurrentStepBeenVisited(isVisited);
+  }
+
+  @Mutation
+  public async doSetHasCurrentStepBeenVisited(isVisited: boolean):Promise<void>{
+    this.hasCurrentStepBeenVisited = isVisited;
+  }
 
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{

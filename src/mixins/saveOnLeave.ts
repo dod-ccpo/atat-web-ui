@@ -3,7 +3,7 @@ import { Route } from "vue-router";
 import { Component } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
-import Summary, { isStepTouched, validateStep } from "@/store/summary";
+import Summary, { isStepTouched, isStepValidatedAndTouched, validateStep } from "@/store/summary";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
@@ -27,6 +27,19 @@ export default class SaveOnLeave extends Vue {
   protected async saveOnLeave(): Promise<boolean> {
     throw new Error("Not Implemented Error");
   }
+
+  /**
+   * if user makes the step untouched b/c of unchecking/unselecting values
+   * then set Summary.hasCurrentStepBeenVisited to `false`
+   * to restore navigation as if the step has NOT been touched
+   */
+  public async assessHasCurrentStepBeenVisited(): Promise<void>{
+    const currentStepNumber = parseInt(Steps.currentStep?.stepNumber as string);
+
+    if (currentStepNumber && !(await isStepValidatedAndTouched(currentStepNumber))){
+      await Summary.setHasCurrentStepBeenVisited(await isStepValidatedAndTouched(currentStepNumber))
+    }
+  }
   
   public async beforeRouteLeave(
     to: Route,
@@ -37,11 +50,7 @@ export default class SaveOnLeave extends Vue {
     const formToValidate = this.$refs.form;
     const skipValidation = AcquisitionPackage.skipValidation;
     let isValid = true;
-    const currentStep = Steps.currentStep?.stepNumber as unknown as number
-    await validateStep(currentStep);
-    console.log(currentStep);
-    console.log(isStepTouched(currentStep));
-    // console.log(Summary.summaryItems)
+    await this.assessHasCurrentStepBeenVisited();
     const direction = to.params.direction;
     if(direction === "next" && formToValidate && !skipValidation){
       AcquisitionPackage.setValidateNow(true);

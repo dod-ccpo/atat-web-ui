@@ -33,9 +33,9 @@
           }"
           class="step"
           @click.native ="setCurrentStep(
-            step.stepNumber, 
+            false,
             step,
-            false)"
+            )"
         >
           <span class="step-circle">
             {{ step.stepNumber }}
@@ -65,9 +65,7 @@
                 }"
                 class="substep"
                 @click="setCurrentStep(
-                  subStep.stepNumber, 
-                  subStep,
-                  false
+                  true
                 )"
               >
                 <span class="substep-circle">
@@ -103,22 +101,27 @@ import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
 import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { isStepValidatedAndTouched} from "@/store/summary";
+import Summary, { isStepValidatedAndTouched} from "@/store/summary";
 
 @Component({})
 export default class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
   public async setCurrentStep(
-    stepNumber: string, 
-    step: StepperStep, 
-    isSubStep: boolean
+    isSubStep: boolean,
+    step?: StepperStep, 
   ): Promise<void> {
     const isNewPackage = AcquisitionPackage.isPackageNew
+    const stepNumber = step?.stepNumber as string;
     this.activeStep = stepNumber;
     this.calculatePercentComplete();
-    const stepIsTouched = await isStepValidatedAndTouched(parseInt(stepNumber))
-    if (stepNumber && !isSubStep && step && stepIsTouched){
+    if (step){
+      await Summary.setHasCurrentStepBeenVisited(
+        await isStepValidatedAndTouched(parseInt(stepNumber))
+      )
+    }
+    
+    if (stepNumber && !isSubStep && step && Summary.hasCurrentStepBeenVisited){
       this.navigateToSummary(step, isSubStep);
     }
   }
