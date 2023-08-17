@@ -31,7 +31,7 @@ export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boo
 } 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
-  return !AcquisitionPackage.isPackageNew && (Summary.summaryItems.some(
+  return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
 } 
@@ -151,7 +151,18 @@ export class SummaryStore extends VuexModule {
     substep: 0
   }
 
-  public summaryItems: SummaryItem[] = []
+  public summaryItems: SummaryItem[] = [];
+  public hasCurrentStepBeenVisited = false;
+
+  @Action({rawError:true})
+  public setHasCurrentStepBeenVisited(isVisited: boolean):void{
+    this.doSetHasCurrentStepBeenVisited(isVisited);
+  }
+
+  @Mutation
+  public doSetHasCurrentStepBeenVisited(isVisited: boolean):void{
+    this.hasCurrentStepBeenVisited = isVisited;
+  }
 
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
