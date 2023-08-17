@@ -469,6 +469,9 @@ export class SummaryStore extends VuexModule {
       "work_"
     ]
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
+    const hasSystemDocs = currentEnvironment?.has_system_documentation === "YES"
+    const systemDocs = currentEnvironment?.system_documentation
+    const hasMigrationDocs = currentEnvironment?.has_migration_documentation === "YES"
     const isTouched = currentEnvironment?.current_environment_exists !== "";
     const isComplete =  currentEnvironment?.current_environment_exists === "NO";
     const description = ""
