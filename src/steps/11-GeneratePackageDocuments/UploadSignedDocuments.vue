@@ -22,7 +22,7 @@
               <router-link 
                 class="my-2"
                 id="revisitFundingSection"
-                :to="{ name: routeNames.CreatePriceEstimate }"
+                :to="{ name: routeNames.FundingPlanType }"
                 >
                 revisiting the Funding section
                 </router-link>
