@@ -100,12 +100,13 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+
 import { SensitiveInformationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 import { RadioButton, SelectData } from "../../../types/Global";
 import ContactData from "@/store/contactData";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -190,8 +191,15 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     if (this.selectedAddressType === this.addressTypes.FOR) {
       this.selectedCountry =
         this.countryListData.find(
-          (c) => c.text === this.savedData?.foia_country
+          (c) => {
+            console.log(JSON.parse(JSON.stringify(c)));
+            console.log(this.savedData?.foia_country);
+            console.log("here's the evaluation", c.text === this.savedData?.foia_country);
+            return c.text === this.savedData?.foia_country
+          }
         ) || this.emptySelectData;
+        
+      console.log("Here's selected Country", JSON.parse(JSON.stringify(this.selectedCountry)));
     } else {
       // US or Military addreses - set country obj to USA
       this.selectedCountry = { text: "United States of America", value: "US" };
@@ -230,6 +238,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     let city = this.city;
 
     if (this.selectedAddressType == this.addressTypes.USA) {
+      //console.log("This is selectedState", this.selectedState.value);
       state = this.selectedState.value as string;
     } else if (this.selectedAddressType == this.addressTypes.FOR) {
       state = this.stateOrProvince;
