@@ -291,6 +291,17 @@ export const ProcurementHistorySummaryRouteResolver = (current: string): string 
   return routeNames.ProcurementHistorySummary
 }
 
+export const CurrentEnvironmentResolver = (current: string): string => {
+  const fromProcurementHistory =  current === routeNames.ProcurementHistorySummary;
+  if (
+    fromProcurementHistory
+      && isStepTouched(4)
+  ){
+    return routeNames.SummaryStepFour
+  }
+  return routeNames.CurrentEnvironment
+}
+
 export const ReplicateAndOptimizeResolver = (current: string): string => {
   return current === routeNames.DOWLandingPage || current === routeNames.ReplicateDetails
     ? routeNames.ReplicateAndOptimize
@@ -1701,6 +1712,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   ProcurementHistorySummaryRouteResolver,
+  CurrentEnvironmentResolver,
   RemoveBarriersFormRouteResolver,
   conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
