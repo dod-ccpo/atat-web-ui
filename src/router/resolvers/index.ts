@@ -61,13 +61,17 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
 }
 
+export const EvalPlanRouteResolver = (current: string): string => {
+  return isStepTouched(2) && current === routeNames.CertificationPOCs
+    ? routeNames.SummaryStepTwo
+    : routeNames.CreateEvalPlan
+}
+
+
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-    return ( isStepTouched(3) 
-      ? routeNames.SummaryStepThree 
-      : routeNames.PeriodOfPerformance
-    )
+    return routeNames.SummaryStepTwo
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
@@ -1730,6 +1734,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FinancialPOCResolver,
   AppropriationOfFundsResolver,
   BVTOResolver,
+  EvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,

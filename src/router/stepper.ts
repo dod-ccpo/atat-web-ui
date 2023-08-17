@@ -203,6 +203,7 @@ import {
   MRRNeedRouteResolver,
   MarketResearchFormRouteResolver,
   CertificationPOCsRouteResolver,
+  EvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
@@ -690,6 +691,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CreateEvalPlan,
         completePercentageWeight: 5,
         stepCompleteOnEnter: routeNames.Exceptions,
+        routeResolver: EvalPlanRouteResolver,
         completed: false,
       },
       {
