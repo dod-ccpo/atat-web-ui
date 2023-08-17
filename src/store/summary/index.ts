@@ -457,6 +457,17 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
+    const currentEnvironmentKeys = [
+      "baa_",
+      "sys_",
+      "pii_",
+      "foia_",
+      "potential_",
+      "508",
+      "acquisition",
+      "record_name",
+      "work_"
+    ]
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
     const isTouched = currentEnvironment?.current_environment_exists !== "";
     const isComplete =  currentEnvironment?.current_environment_exists === "NO";
