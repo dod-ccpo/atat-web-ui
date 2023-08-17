@@ -77,8 +77,8 @@ describe("Testing FOIA Coordinator Page", () => {
 
       describe("setSelectedData method", () => {
       
-        it.only("sets selectedCountry based on foreign address", async () => {
-          wrapper.setData({
+        it("sets selectedCountry based on foreign address", async () => {
+          await wrapper.setData({
             selectedAddressType: "FOREIGN",
             savedData: { foia_country: "Canada" },
             countryListData: [{ text: "Canada", value: "CA" }]
@@ -93,7 +93,7 @@ describe("Testing FOIA Coordinator Page", () => {
         });
       
         it("sets selectedCountry to USA for US or Military addresses", async () => {
-          wrapper.setData({
+          await wrapper.setData({
             selectedAddressType: wrapper.vm.addressTypes.USA,
           });
       
@@ -104,7 +104,7 @@ describe("Testing FOIA Coordinator Page", () => {
         });
       
         it("sets selectedStateCode and selectedMilitaryPO for military addresses", async () => {
-          wrapper.setData({
+          await wrapper.setData({
             selectedAddressType: wrapper.vm.addressTypes.MIL,
             stateOrProvince: "TX",
             city: "APO",
@@ -119,7 +119,7 @@ describe("Testing FOIA Coordinator Page", () => {
         });
       
         it("sets selectedState for US addresses", async () => {
-          wrapper.setData({
+          await wrapper.setData({
             selectedAddressType: wrapper.vm.addressTypes.USA,
             stateOrProvince: "CA",
             stateListData: [{ text: "California", value: "CA" }],
@@ -131,7 +131,7 @@ describe("Testing FOIA Coordinator Page", () => {
         });
       
         it("sets selectedCountry to emptySelectData if foreign country not found", async () => {
-          wrapper.setData({
+          await wrapper.setData({
             selectedAddressType: wrapper.vm.addressTypes.FOR,
             savedData: { foia_country: "NonExistentCountry" },
             countryListData: [{ text: "SomeCountry", value: "SC" }]
@@ -149,7 +149,7 @@ describe("Testing FOIA Coordinator Page", () => {
   
     describe("testing currentData method", () => {
       it("should set the state based on selectedAddressType", async () => {
-        wrapper.setData({ selectedAddressType: "USA", selectedState: { value: "CA" } });
+        await wrapper.setData({ selectedAddressType: "USA", selectedState: { value: "CA" } });
         expect(wrapper.vm.currentData.foia_state_province_state_code).toBe("CA");
         
         // You can add more scenarios
@@ -159,7 +159,7 @@ describe("Testing FOIA Coordinator Page", () => {
     describe("testing hasChanged method", () => {
       it("should detect changes", async () => {
         expect(wrapper.vm.hasChanged()).toBe(false);
-        wrapper.setData({ fullName: "New Name" });
+        await wrapper.setData({ fullName: "New Name" });
         expect(wrapper.vm.hasChanged()).toBe(true);
       });
     });
@@ -169,7 +169,7 @@ describe("Testing FOIA Coordinator Page", () => {
       it("should save changes on leave", async () => {
         const saveDataSpy = jest.spyOn(AcquisitionPackage, "saveData").mockResolvedValue(true);
   
-        wrapper.setData({ fullName: "New Name" });
+        await wrapper.setData({ fullName: "New Name" });
         await wrapper.vm.saveOnLeave();
         expect(saveDataSpy).toHaveBeenCalled();
       });
