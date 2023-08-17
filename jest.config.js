@@ -54,6 +54,7 @@ module.exports = {
     "<rootDir>/src/components/*.spec.ts",
     "<rootDir>/src/components/**/*.spec.ts",
     "<rootDir>/src/steps/01-AcquisitionPackageDetails/COR_ACOR/*.spec.ts",
+    "<rootDir>/src/steps/02-EvaluationCriteria/SummaryStepTwo.spec.ts",
     "<rootDir>/src/steps/03-Background/components/*.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentContract/**/*.spec.ts",
     "<rootDir>/src/steps/03-Background/CurrentEnvironment/*.spec.ts",
