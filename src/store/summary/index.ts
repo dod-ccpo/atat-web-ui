@@ -1014,7 +1014,7 @@ export class SummaryStore extends VuexModule {
     let desc = "";
     if (sensitiveInfo.baa_required === "YES" ){
       desc = "Effort requires a BAA to safeguard e-PHI."
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo.baa_required === "NO"){
       desc = "Effort does not require a BAA to safeguard e-PHI."
     }
     return desc;
@@ -1052,7 +1052,7 @@ export class SummaryStore extends VuexModule {
       && sensitiveInfo.foia_email !== "" ){
       desc = "FOIA Coordinator: " + sensitiveInfo.foia_full_name + "<br />"  
         + sensitiveInfo.foia_email 
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo.potential_to_be_harmful === "NO"){
       desc = "Disclosure is not harmful to the government."
     }
     return desc;
