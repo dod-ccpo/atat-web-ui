@@ -394,6 +394,12 @@ export default class PortfoliosSummary extends Vue {
   public get portfolioName(): string {
     return this.currentPortfolio.title as string;
   }
+  public getPortfolioStatus(portfolioStatus: string): string{
+    const status = Object.keys(Statuses).find((status) =>
+      Statuses[status].value === portfolioStatus
+    ) || portfolioStatus;
+    return Statuses[status].label
+  }
   public get csp(): string {
     const cspKey = this.currentPortfolio.csp?.toUpperCase() as string;
     return AcquisitionPackage.csps[cspKey] as string;
@@ -492,7 +498,7 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioCount = storeData.total_count;
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
-    storeData.portfolioSummaryList.forEach((portfolio) => {
+    storeData.portfolioSummaryList.forEach((portfolio) => {;
       const cardData: PortfolioCardData = {};
       cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
@@ -503,7 +509,7 @@ export default class PortfoliosSummary extends Vue {
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
       cardData.description = portfolio.description;
-      cardData.status = portfolio.portfolio_status;
+      cardData.status = this.getPortfolioStatus(portfolio.portfolio_status);
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.portfolio_owner = portfolio.portfolio_owner;
       cardData.portfolio_managers = portfolio.portfolio_managers;
@@ -517,7 +523,7 @@ export default class PortfoliosSummary extends Vue {
         obj => obj.sys_id === cardData.taskOrderSysId
       );
       cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
-
+      console.log(cardData, 'card data')
       // lastModified - if status is "Processing" use "Started ... ago" string
       if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
         const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
