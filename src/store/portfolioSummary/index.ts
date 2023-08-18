@@ -92,9 +92,9 @@ export class PortfolioSummaryStore extends VuexModule {
   private async getOptionalSearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
     Promise<string> {
     let query = "";
-    if (searchDTO.portfolioStatus) {
-      query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
-    }
+    // if (searchDTO.portfolioStatus) {
+    //   query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
+    // }
     if (searchDTO.fundingStatuses && searchDTO.fundingStatuses.length > 0) {
       query = query + "^portfolio_funding_statusIN" + searchDTO.fundingStatuses;
     }
@@ -219,22 +219,22 @@ export class PortfolioSummaryStore extends VuexModule {
     });
     portfolioSummaryList.forEach(portfolio => {
       portfolio.environments = allEnvs.filter(env => env.portfolio === portfolio.sys_id);
-      if (portfolio.portfolio_status !== Statuses.Archived.value) {
-        // portfolio status based on environment statuses
-        let hasProcessing = false;
-        let hasIssue = false;
+      // if (portfolio.portfolio_status !== Statuses.Archived.value) {
+      //   // portfolio status based on environment statuses
+      //   let hasProcessing = false;
+      //   let hasIssue = false;
 
-        portfolio.environments.forEach(env => {
-          console.log(`Env: ${JSON.stringify(env)}`);
-          if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
-          if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
-          portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
-            : hasProcessing
-              ? Statuses.Processing.value
-              : portfolio.portfolio_status;
-        });
-      }
+      //   portfolio.environments.forEach(env => {
+      //     if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
+      //     if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
+      //     portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
+      //       : hasProcessing
+      //         ? Statuses.Processing.value
+      //         : portfolio.portfolio_status;
+      //   });
+      // }
     });
+    console.log(portfolioSummaryList, 'list after')
     return portfolioSummaryList;
   }
 
@@ -495,6 +495,7 @@ export class PortfolioSummaryStore extends VuexModule {
       let portfolioSummaryList: PortfolioSummaryDTO[];
       if (portfolioSummaryCount > 0) {
         portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
+        console.log(portfolioSummaryList)
         portfolioSummaryList = portfolioSummaryList
           .map(portfolioSummary => convertColumnReferencesToValues(portfolioSummary));
         // callouts to other functions to set data from other tables
@@ -508,6 +509,7 @@ export class PortfolioSummaryStore extends VuexModule {
         // all asynchronous calls are done before this step & data is available for aggregation
         this.computeAllAggregationsAndPopRollup(portfolioSummaryList);
         this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
+        console.log(portfolioSummaryList, '2nd')
       } else {
         portfolioSummaryList = [];
       }

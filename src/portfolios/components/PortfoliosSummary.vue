@@ -493,6 +493,7 @@ export default class PortfoliosSummary extends Vue {
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
     storeData.portfolioSummaryList.forEach((portfolio) => {
+      console.log(portfolio, 'portfolio')
       const cardData: PortfolioCardData = {};
       cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
@@ -563,7 +564,6 @@ export default class PortfoliosSummary extends Vue {
       this.paging = false;
       this.isSearchSortFilter = false;
     });
-
   }
 }
 </script>
