@@ -18,7 +18,7 @@
     "test-files": "jest --no-cache src/steps/03-Background/components/",
     "test:coverage": "jest --coverage",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
-    "cypress:single-test": "npm run test:e2e --  --spec 'cypress/e2e/ATATDevSnow/OtherContractConsiderations/*.cy.js'",
+    "cypress:single-test": "npm run test:e2e --  --spec 'cypress/e2e/DAPPS/E2EHappyPath/04BGC*.cy.js'",
     "cypress:isolated-tests": "npx cypress run --env grepTags=-@iso-ignore"
   },
   "dependencies": {

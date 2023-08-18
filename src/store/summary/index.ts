@@ -23,6 +23,7 @@ import ClassificationRequirements, { isClassLevelUnclass } from "../classificati
 import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -95,6 +96,9 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
   case 3:
     await Summary.validateStepThree();
+    break;
+  case 4:
+    await Summary.validateStepFour();
     break;
   case 5:
     await Summary.validateStepFive();
@@ -428,6 +432,59 @@ export class SummaryStore extends VuexModule {
       : true;
   }
   //#endregion
+
+  //#region step 4
+  /**
+   *  assess all substeps in Step 4 to determine
+   *  if substep is touched and/or completed
+   *
+   *  The function creates 4 summary step objects for each
+   *  substep in step 4
+   *
+   */
+  @Action({rawError: true})
+  public async validateStepFour(): Promise<void> {
+    await this.assessProcurementHistory();
+    await this.assessCurrentEnvironment();
+  }
+
+  @Action({rawError: true})
+  public async assessProcurementHistory(): Promise<void> {
+    const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts
+    const isTouched = hasCurrentOrPreviousContract !== "";
+    const isComplete =  hasCurrentOrPreviousContract === "NO";
+    const description = ""
+    const procurementHistorySummaryItem: SummaryItem = {
+      title: "Procurement History",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "CurrentContract",
+      step: 4,
+      substep: 1
+    }
+
+    await this.doSetSummaryItem(procurementHistorySummaryItem)
+  }
+  @Action({rawError: true})
+  public async assessCurrentEnvironment(): Promise<void> {
+    const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
+    const isTouched = currentEnvironment?.current_environment_exists !== "";
+    const isComplete =  currentEnvironment?.current_environment_exists === "NO";
+    const description = ""
+    const currentEnvironmentSummaryItem: SummaryItem = {
+      title: "Current Environment",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "CurrentEnvironment",
+      step: 4,
+      substep: 2
+    }
+
+    await this.doSetSummaryItem(currentEnvironmentSummaryItem)
+  }
+
 
   //#region Step 5
 

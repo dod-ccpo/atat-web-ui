@@ -77,6 +77,7 @@ import SummaryStepThree from "@/steps/04-ContractDetails/SummaryStepThree.vue";
   from "../steps/04-ContractDetails/ClassificationRequirements.vue";
 import SecurityRequirements from "@/steps/04-ContractDetails/SecurityRequirements.vue";
 import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
+import SummaryStepFour from "@/steps/03-Background/SummaryStepFour.vue"
 
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
@@ -171,6 +172,7 @@ import {
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
   ProcurementHistorySummaryRouteResolver,
+  CurrentEnvironmentResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
@@ -292,6 +294,7 @@ export const routeNames = {
   FOIA: "FOIA",
   FOIACoordinator: "FOIA_Coordinator",
   Section508Standards: "Section_508_Standards",
+  SummaryStepFour: "Summary_Step_Four",
   SummaryStepSix: "Summary_Step_Six",
   SummaryStepSeven: "Summary_Step_Seven",
   ClassificationRequirements: "Classification_Requirements",
@@ -850,6 +853,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CurrentEnvironment,
         component: HasCurrentEnvironment,
         completePercentageWeight: 5,
+        routeResolver:CurrentEnvironmentResolver,
         completed: false,
       },
       {
@@ -907,6 +911,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         routeResolver: CurrentEnvironmentSummaryResolver,
+      },
+      {
+        menuText: "SummaryStepFour",
+        path:"summary-step-four",
+        name: routeNames.SummaryStepFour,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepFour,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor:  "primary"
       },
     ]
   },
