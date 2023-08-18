@@ -13,7 +13,7 @@ import { ContractTypeApi } from "@/api/contractDetails";
 import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO,
+  CrossDomainSolutionDTO, CurrentContractDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
   SelectedClassificationLevelDTO,
@@ -439,10 +439,33 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessProcurementHistory(): Promise<void> {
-    const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts
+    const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts;
+    const currentContracts = AcquisitionPackage.currentContracts;
+    let currentContractDetailsIsComplete = currentContracts?.length !== 0;
+
+    currentContracts?.forEach((contract) => {
+      if (contract.contract_number === "" ||
+        contract.competitive_status === "" ||
+        contract.contract_order_expiration_date === "" ||
+        contract.contract_order_start_date === "" ||
+        contract.incumbent_contractor_name === "" ||
+        contract.business_size === "") currentContractDetailsIsComplete = false;
+    });
+
     const isTouched = hasCurrentOrPreviousContract !== "";
-    const isComplete =  hasCurrentOrPreviousContract === "NO";
-    const description = ""
+    const isComplete =  currentContractDetailsIsComplete
+      || hasCurrentOrPreviousContract === "NO";
+
+    const taskOrderNumbers = currentContracts?.map(
+      (contract) => contract.task_delivery_order_number).join(", ");
+    const prevContracts = currentContracts?.length === 1
+      ? `${currentContracts?.length} previous contract:\n${taskOrderNumbers}`
+      : `${currentContracts?.length} previous contracts:\n${taskOrderNumbers}`
+
+    const description = hasCurrentOrPreviousContract === "YES"
+      ? prevContracts
+      : "No previous contracts";
+
     const procurementHistorySummaryItem: SummaryItem = {
       title: "Procurement History",
       description,
