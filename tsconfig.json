@@ -42,6 +42,7 @@
     "tests/**/*.ts",
     "src/**/*.spec.ts",
     "src/*.spec.ts",
+    "./tests/setup.ts"
   ],
   "exclude": [
     "node_modules",
