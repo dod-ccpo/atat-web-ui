@@ -1569,7 +1569,6 @@ export default class PortfolioDashboard extends Vue {
     this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId;
 
     const data = await this.getDashboardData();
-    console.log(data, 'data')
     await this.checkForUpcomingObligatedFunds(data);
     
     this.taskOrder = data.taskOrder;
