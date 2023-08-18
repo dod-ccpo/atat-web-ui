@@ -563,6 +563,7 @@ export default class PortfoliosSummary extends Vue {
       this.paging = false;
       this.isSearchSortFilter = false;
     });
+
   }
 }
 </script>
