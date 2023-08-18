@@ -26,7 +26,7 @@ module.exports = {
   // coveragePathIgnorePatterns: [ ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "babel",
+  coverageProvider: "jest",
 
   // A list of reporter names that Jest uses when writing coverage reports
   coverageReporters: [
@@ -39,14 +39,16 @@ module.exports = {
     "vue"
   ],
   moduleNameMapper:{
-    '.+\\.(css|styl|less|sass|scss|svg)$': "<rootDir>/empty-module.js"
+    '.+\\.(css|styl|less|sass|scss|svg)$': "<rootDir>/empty-module.js",
+    '^@/(.*)$': '<rootDir>/src/$1'
   },
   // A preset that is used as a base for Jest's configuration
-  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
+  //preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
+  preset: "ts-jest",
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: [
-    "<rootDir>/tests/setup.js"
+    "<rootDir>/tests/setup.ts"
   ],
   // The glob patterns Jest uses to detect test files
   testMatch: [
@@ -81,13 +83,17 @@ module.exports = {
   // testPathIgnorePatterns: [  "<rootDir>/node_modules" ],
  
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
-  testURL: "http://localhost/",
+  testEnvironmentOptions: {
+    customExportConditions: ["node","node-addon"],
+    url: "http://localhost/",
+
+  },
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+    //"^.+\\.js$": "<rootDir>/node_modules/babel-jest",
     "^.+\\.ts$": "ts-jest",
-    "^.+\\.vue$": ["@vue/vue2-jest", {"sourceMaps": "inline"}],
+    "^.+\\.vue$": ["@vue/vue2-jest", {sourceMaps: "inline"}],
   },
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
