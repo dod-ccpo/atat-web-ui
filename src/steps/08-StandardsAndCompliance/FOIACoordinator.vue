@@ -123,6 +123,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
   };
 
   private emptySelectData: SelectData = { text: "", value: "" };
+  private saveOnLeaveError: string | unknown = "";
 
   private fullName =
     AcquisitionPackage.sensitiveInformation?.foia_full_name || "";
@@ -192,14 +193,10 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
       this.selectedCountry =
         this.countryListData.find(
           (c) => {
-            console.log(JSON.parse(JSON.stringify(c)));
-            console.log(this.savedData?.foia_country);
-            console.log("here's the evaluation", c.text === this.savedData?.foia_country);
             return c.text === this.savedData?.foia_country
           }
         ) || this.emptySelectData;
         
-      console.log("Here's selected Country", JSON.parse(JSON.stringify(this.selectedCountry)));
     } else {
       // US or Military addreses - set country obj to USA
       this.selectedCountry = { text: "United States of America", value: "US" };
@@ -218,7 +215,6 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
           this.militaryPostOfficeOptions.find((p) => p.value === this.city) ||
           this.emptySelectData;
 
-        // US addresses - set selectedState
       } else if (
         this.selectedAddressType === this.addressTypes.USA &&
         this.stateListData
@@ -238,7 +234,6 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     let city = this.city;
 
     if (this.selectedAddressType == this.addressTypes.USA) {
-      //console.log("This is selectedState", this.selectedState.value);
       state = this.selectedState.value as string;
     } else if (this.selectedAddressType == this.addressTypes.FOR) {
       state = this.stateOrProvince;
@@ -325,6 +320,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
       }
     } catch (error) {
       console.log(error);
+      this.saveOnLeaveError = error as string;
     }
 
     return true;
