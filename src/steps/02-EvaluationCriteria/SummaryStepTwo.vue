@@ -25,10 +25,8 @@
 import { Component, Mixins} from "vue-property-decorator";
 import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
-import Vue from "vue";
 import Summary, { getSummaryItemsforStep, isStepComplete } from "@/store/summary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {

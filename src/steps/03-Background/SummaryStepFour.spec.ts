@@ -2,36 +2,25 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import SummaryStepTwo from "@/steps/02-EvaluationCriteria/SummaryStepTwo.vue"
-import { SummaryItem } from "types/Global";
+import SummaryStepFour from "@/steps/03-Background/SummaryStepFour.vue"
 import Summary from "@/store/summary";
 
 Vue.use(Vuetify);
 
-describe("Testing SummaryStepTwo Component", () => {
+describe("Testing SummaryStepFour Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
-  const touchedSummaryItem: SummaryItem[] = [{ 
-    "title": "TouchedSummaryItem", 
-    "description": "", 
-    "isComplete": true, 
-    "isTouched": true, 
-    "routeName": "touchedSummaryItem", 
-    "step": 2, 
-    "substep": 2 
-  }]
-
+  
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(SummaryStepTwo, {
+    wrapper = mount(SummaryStepFour, {
       vuetify,
       localVue
     });
   });
 
-  describe("testing SummaryStepTwo render", () => {
+  describe("testing SummaryStepFour render", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
@@ -39,9 +28,6 @@ describe("Testing SummaryStepTwo Component", () => {
 
   describe("GETTERS", () => {
     describe("introParagraph()=> ", () => {
-      // beforeEach(async()=>{
-      //   await Summary.validateStepSix();
-      // })
       it("returns `We need some more details` statement", async () => {
         await Summary.summaryItems.forEach((item)=>{
           item.isTouched = false;

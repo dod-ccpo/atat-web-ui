@@ -2,36 +2,50 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import SummaryStepTwo from "@/steps/02-EvaluationCriteria/SummaryStepTwo.vue"
+import SummaryStepSix from "@/steps/07-OtherContractConsiderations/SummaryStepSix.vue"
 import { SummaryItem } from "types/Global";
-import Summary from "@/store/summary";
+import Summary,  * as SummaryExportedFunctions from "@/store/summary";
+
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 Vue.use(Vuetify);
 
-describe("Testing SummaryStepTwo Component", () => {
+describe("Testing SummaryStepSix Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
+ 
 
   const touchedSummaryItem: SummaryItem[] = [{ 
     "title": "TouchedSummaryItem", 
     "description": "", 
-    "isComplete": true, 
+    "isComplete": false, 
     "isTouched": true, 
     "routeName": "touchedSummaryItem", 
-    "step": 2, 
-    "substep": 2 
+    "step": 6, 
+    "substep": 1 
   }]
 
+  const completedSummaryStep: SummaryItem[] = [{ 
+    "title": "CompletedSummaryItem", 
+    "description": "", 
+    "isComplete": true, 
+    "isTouched": true, 
+    "routeName": "CompletedSummaryItem", 
+    "step": 6, 
+    "substep": 1 
+  }]
+ 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(SummaryStepTwo, {
+    wrapper = mount(SummaryStepSix, {
       vuetify,
       localVue
     });
+    jest.spyOn(Summary, "validateStepSix").mockImplementation();
   });
 
-  describe("testing SummaryStepTwo render", () => {
+  describe("testing SummaryStepSix render", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
@@ -39,22 +53,15 @@ describe("Testing SummaryStepTwo Component", () => {
 
   describe("GETTERS", () => {
     describe("introParagraph()=> ", () => {
-      // beforeEach(async()=>{
-      //   await Summary.validateStepSix();
-      // })
       it("returns `We need some more details` statement", async () => {
-        await Summary.summaryItems.forEach((item)=>{
-          item.isTouched = false;
-          item.isComplete = false;
-        })
-        expect(wrapper.vm.introParagraph).toContain("We need some more details");
+        jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(false);
+        wrapper.vm.setIntroParagraph()
+        expect(wrapper.vm.$data.introParagraph).toContain("We need some more details");
       });
-      it("returns `you are all done` statement", async () => {
-        await Summary.summaryItems.forEach((item)=>{
-          item.isTouched = true;
-          item.isComplete = true;
-        })
-        expect(wrapper.vm.introParagraph).toContain("You are all done");
+      it("returns `You are all done` statement", async () => {
+        jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
+        wrapper.vm.setIntroParagraph()
+        expect(wrapper.vm.$data.introParagraph).toContain("You are all done");
       });
     })
   })
