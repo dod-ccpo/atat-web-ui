@@ -35,9 +35,10 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 export default class SummaryStepTwo extends Mixins(SaveOnLeave){
   public summaryItems: SummaryItem[] = [];
+  public introParagraph = "";
 
-  get introParagraph():string{
-    return (isStepComplete(2))
+  public setIntroParagraph():void {
+    this.introParagraph = (isStepComplete(2))
       ? "You are all done with this section, but you can come back at any time to edit details. " +
         " When you are ready, we will move on to gathering your background."
       : "We need some more details for this section. You can add info now, or come back to make " +

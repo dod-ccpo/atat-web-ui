@@ -2,25 +2,26 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import SummaryStepTwo from "@/steps/02-EvaluationCriteria/SummaryStepTwo.vue"
+import SummaryStepSeven from "@/steps/08-StandardsAndCompliance/SummaryStepSeven.vue"
 import Summary,  * as SummaryExportedFunctions from "@/store/summary";
 
 Vue.use(Vuetify);
 
-describe("Testing SummaryStepTwo Component", () => {
+describe("Testing SummaryStepSeven Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
+ 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(SummaryStepTwo, {
+    wrapper = mount(SummaryStepSeven, {
       vuetify,
       localVue
     });
+    jest.spyOn(Summary, "validateStepSeven").mockImplementation();
   });
 
-  describe("testing SummaryStepTwo render", () => {
+  describe("testing SummaryStepSeven render", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
@@ -50,5 +51,6 @@ describe("Testing SummaryStepTwo Component", () => {
       expect(toggleButtonColorMock).toHaveBeenCalled();
     });
   })
+
 
 })

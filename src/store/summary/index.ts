@@ -14,6 +14,8 @@ import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CrossDomainSolutionDTO, CurrentContractDTO,
+  EvaluationPlanDTO,
+  FairOpportunityDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
   SelectedClassificationLevelDTO,
@@ -24,6 +26,7 @@ import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -189,17 +192,46 @@ export class SummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   public async validateStepTwo(): Promise<void> {
-    await this.assessFairOpportunity();
-    await this.assessEvalPlan();
+    const fairOppObjectKeys = [
+      "barriers_",
+      "cause_",
+      "exception_",
+      "justification",
+      "market_research_",
+      "min_govt_",
+      "other_facts_",
+      "procurement_discussion_",
+      "proposed_csp",
+      "requirement_",
+      "research_",
+      "sys_",
+      "technical_",
+      "why_csp"
+    ];
+    const evalPlanObjectKeys = [
+      "custom_",
+      "method",
+      "source_",
+      "standard_",
+      "sys_"
+    ];
+    await this.assessFairOpportunity(fairOppObjectKeys);
+    await this.assessEvalPlan(evalPlanObjectKeys);
   }
 
   @Action({rawError: true})
-  public async assessFairOpportunity(): Promise<void>{
+  public async assessFairOpportunity(objectKeys: string[]): Promise<void>{
+    const fairOppStore = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
+    const keysToIgnore = objectKeys.filter(
+      x => x !== "sys_"
+    );
+    const monitor = {object: fairOppStore, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
     const FairOpportunityItem: SummaryItem = {
       title: "Exception to Fair Opportunity",
       description: "",
       isComplete: false,
-      isTouched: true,
+      isTouched,
       routeName: "Exceptions", 
       step:2,
       substep: 1
@@ -208,12 +240,18 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async assessEvalPlan(): Promise<void>{
+  public async assessEvalPlan(objectKeys: string[]): Promise<void>{
+    const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
+    const keysToIgnore = objectKeys.filter(
+      x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
+    );
+    const monitor = {object: evalPlanStore, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
       description: "",
       isComplete: false,
-      isTouched: true,
+      isTouched,
       routeName: "CreateEvalPlan", 
       step:2,
       substep: 2
