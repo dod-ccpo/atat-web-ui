@@ -19,9 +19,13 @@
           <template v-slot:content>
             <p class="mt-1 mb-0">
               Prior to proceeding, we recommend 
-              <a href="/#/requirements-cost-estimate/create-price-estimate">
+              <router-link 
+                class="my-2"
+                id="revisitFundingSection"
+                :to="{ name: routeNames.FundingPlanType }"
+                >
                 revisiting the Funding section
-              </a> 
+                </router-link>
               to ensure you uploaded either your Fiscal Service Forms (7600A and 7600B) or your 
               Military Interdepartmental Purchase Request (MIPR). If you already provided your 
               completed funding document(s), please ignore this message.
@@ -122,6 +126,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import Attachments from "@/store/attachments";
 import FinancialDetails from "@/store/financialDetails";
 import { PackageDocumentsSignedDTO } from "@/api/models";
+import { routeNames } from "../../router/stepper"
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
@@ -134,6 +139,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 export default class UploadSignedDocuments extends SaveOnLeave {
   public packageNotInitialized = false;
+  public routeNames = routeNames;
 
   private attachmentServiceName = PACKAGE_DOCUMENTS_SIGNED;
   private maxFileSizeInBytes = 1073741824;
