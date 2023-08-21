@@ -609,7 +609,10 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       = AcquisitionPackage.marketResearchTechniques;
 
     if (techniques) {
-      this.otherTechniquesOptions = techniques.map((obj) => {
+      const filteredList = techniques.filter((obj) => {
+        return (obj.technique_value !== "REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG")
+      })
+      this.otherTechniquesOptions = filteredList.map((obj) => {
         if (obj.technique_value === "PERSONAL_KNOWLEDGE") {
           this.personalKnowledgePersonSysId = obj.sys_id as string;
         } else if (obj.technique_value === "OTHER") {
@@ -741,6 +744,15 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.catalogReviewResults = "";
       sectionsWithNoSelectedCount++;
     }
+    if (this.cspIsOnlySourceCapable === "YES" 
+    || this.reviewedCatalogs === "YES"
+    && this.selectedTechniquesUsed.length !== 0 ) 
+    {
+      //if user selects yes to either question, adds sys id
+      // "Review of JWCC Contracts and/or contractor's catalog"
+      // to techniques used 
+      this.techniquesUsed += ",37ff43ee9763251044ecfbc71153af25"
+    }
 
     if (this.sameAsResearchDate === "YES") {
       this.catalogReviewStartDate = this.researchStartDate;
@@ -752,6 +764,10 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.otherTechnique = "";
       this.personalKnowledgePerson = "";
       this.techniquesSummary = "";
+      if (this.cspIsOnlySourceCapable === "YES" || this.reviewedCatalogs === "YES" ) 
+      {
+        this.techniquesUsed = "37ff43ee9763251044ecfbc71153af25"
+      }
     }
 
     try {
