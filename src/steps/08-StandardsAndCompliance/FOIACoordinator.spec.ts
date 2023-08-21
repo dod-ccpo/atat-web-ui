@@ -73,8 +73,6 @@ describe("Testing FOIA Coordinator Page", () => {
       
           await wrapper.vm.setSelectedData();
           await wrapper.vm.$nextTick();
-          console.log("here's inside the test",
-            JSON.parse(JSON.stringify(wrapper.vm.$data.selectedCountry)));
           expect(wrapper.vm.selectedCountry).toEqual({ text: "Canada", value: "CA" });
         });
       
@@ -195,7 +193,6 @@ describe("Testing FOIA Coordinator Page", () => {
   describe("testing FOIACoordinator.vue", () => {
 
     it("renders successfully", async () => {
-      console.log("this is the test file", wrapper.vm.$data.selectedState.value);
       expect(wrapper.exists()).toBe(true);
     });
   });

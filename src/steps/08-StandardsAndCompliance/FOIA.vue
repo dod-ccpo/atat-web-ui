@@ -181,7 +181,6 @@ export default class FOIA extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    console.log("current data then saved data", this.currentData, JSON.parse(JSON.stringify(this.savedData)))
     return hasChanges(this.currentData, this.savedData);
   }
 
