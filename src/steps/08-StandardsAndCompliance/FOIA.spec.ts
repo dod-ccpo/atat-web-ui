@@ -23,6 +23,7 @@ describe("Testing FOIA Page", () => {
       vuetify,
       localVue,
     });
+    jest.spyOn(AcquisitionPackage, "loadData").mockImplementation();
   });
 
   describe("testing rendered component", () => {

@@ -277,10 +277,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData =
-      (await AcquisitionPackage.loadSensitiveInformation()) as Record<
-        string,
-        string
-      >;
+      await AcquisitionPackage.loadSensitiveInformation() as SensitiveInformationDTO;
     this.stateListData = ContactData.stateChoices;
     this.countryListData = ContactData.countryListData(["US"]);
 
