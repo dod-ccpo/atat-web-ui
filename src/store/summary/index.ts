@@ -462,9 +462,11 @@ export class SummaryStore extends VuexModule {
       ? `${currentContracts?.length} previous contract:\n${taskOrderNumbers}`
       : `${currentContracts?.length} previous contracts:\n${taskOrderNumbers}`
 
-    const description = hasCurrentOrPreviousContract === "YES"
-      ? prevContracts
-      : "No previous contracts";
+    const description = isTouched ?
+      hasCurrentOrPreviousContract === "YES"
+        ? prevContracts
+        : "No previous contracts"
+      : "";
 
     const procurementHistorySummaryItem: SummaryItem = {
       title: "Procurement History",
