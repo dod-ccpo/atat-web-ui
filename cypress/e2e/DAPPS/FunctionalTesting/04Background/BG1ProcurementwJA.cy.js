@@ -143,7 +143,12 @@ describe("Test suite: Step04-Procurement History", () => {
         );
 
         cy.log("Validation error for contract number, if morethan 13 characters");
-        cy.findElement(background.contractNoTxtBox, ).type(invalidContractNo)
+        cy.findElement(background.contractNoTxtBox).type(validContractNo);
+        cy.clickSomethingElse(background.startDateTextField).then(() => {
+        cy.findElement(background.contractNoTxtBox).scrollIntoView();
+        cy.findElement(background.contractNoTxtError).should("not.exist");      
+        }); 
+        cy.findElement(background.contractNoTxtBox).type(invalidContractNo)
             .blur({
                 force: true
             })
@@ -193,7 +198,7 @@ describe("Test suite: Step04-Procurement History", () => {
         
         });
 
-    it("TC3:Procurement History Summary-Delete", () => {  
+    it("TC3:Procurement History Summary-Delete contract", () => {  
         cy.log(" TestReport:Procurement History-Delete Contract");    
         cy.findElement(background.deleteO)
             .should("be.visible").click()
@@ -227,7 +232,7 @@ describe("Test suite: Step04-Procurement History", () => {
         
         });
 
-    it("TC5:Procurement History Summary-Edit", () => {
+    it("TC5:Procurement History Summary-Edit contract details", () => {
 
         cy.log(" TestReport:Procurement History-Edit");
         cy.findElement(background.edit0).should("be.visible").click()

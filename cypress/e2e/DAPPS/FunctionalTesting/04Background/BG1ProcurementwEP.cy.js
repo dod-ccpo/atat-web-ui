@@ -17,6 +17,7 @@ describe("Test suite: Step04-Previous or Current Contract with EvaluationPlan", 
     const pt = "TC-Step-4-Background-evalplan-procurement" + randomString(5);
     const scope = "Background-Procurement-" + randomString(5);   
     const contractNo = randomNumber(14);
+    const validContractNo = randomNumber(13);
     
 
     before(() => {
@@ -108,9 +109,14 @@ describe("Test suite: Step04-Previous or Current Contract with EvaluationPlan", 
                 );
             });
         cy.log("Validation for Contract if more than 13 characters")
-        cy.findElement(background.contractNoTxtBox).type(contractNo)
-        .blur({ force: true }).then(() => {
-            cy.checkErrorMessage(
+        cy.findElement(background.contractNoTxtBox).type(validContractNo);
+        cy.clickSomethingElse(background.expirationDatePickerInputbox).then(() => {
+        cy.findElement(background.contractNoTxtBox).scrollIntoView();
+        cy.findElement(background.contractNoTxtError).should("not.exist");      
+        }); 
+        cy.findElement(background.contractNoTxtBox).type(validContractNo)
+            .blur({ force: true }).then(() => {
+                cy.checkErrorMessage(
                 background.contractNoTxtError,
                 "Your contract number must be 13 alphanumeric characters."
             );
