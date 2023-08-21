@@ -14,11 +14,11 @@
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest --no-cache",
-    "test-file:watch": "jest --no-cache --watch src/steps/03-Background/CurrentContract/components/CurrentContractOptions.spec.ts",
+    "test-file:watch": "jest --no-cache --watch src/steps/03-Background/CurrentContract/ProcurementHistorySummary.spec.ts",
     "test-files": "jest --no-cache src/steps/03-Background/components/",
     "test:coverage": "jest --coverage",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
-    "cypress:single-test": "npm run test:e2e --  --spec 'cypress/e2e/ATATDevSnow/OtherContractConsiderations/*.cy.js'",
+    "cypress:single-test": "npm run test:e2e --  --spec 'cypress/e2e/DAPPS/E2EHappyPath/04BGC*.cy.js'",
     "cypress:isolated-tests": "npx cypress run --env grepTags=-@iso-ignore"
   },
   "dependencies": {

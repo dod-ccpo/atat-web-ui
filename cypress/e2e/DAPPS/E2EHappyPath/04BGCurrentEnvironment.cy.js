@@ -4,14 +4,19 @@ import {
     randomNumberBetween,
     randomString,
 } from "../../../helpers";
-import common from "../../../selectors/common.sel";
 import background from "../../../selectors/background.sel";
 import bgCEData from "../../../fixtures/bgCEData.json";
 
-describe("Test suite: Background- Current Environment: Summary - E2E", () => {
-    let pt = "TC-Step-04-Background:Current Environment-E2E-" + randomAlphaNumeric(5);
-    let scope = "Project Scope-" + randomString(5);
+const fairOpp="none";//none,ja
 
+if(fairOpp==="none"){
+require("./04BGProcurementwEP.cy")
+}else{
+require("./04BGProcurementwJA.cy")
+}
+
+describe("Test suite: Step04-Background-Current Environment", () => {
+    
     // page#4
     let currentEnvironment = "Cloud"; // "Cloud", "Onpremise" , "Hybrid"
     // when CurrentEnvironment is "Hybrid" choose below:
@@ -165,11 +170,11 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
     const performanceTierOptionsList = performanceTierOptions.join(' ,').toUpperCase();
 
     before(() => {
-        cy.goToAcqPackageStepOne(pt, scope);
-        cy.clickSideStepper(common.stepBackgroundLink, " Background ");
-        cy.activeStep(common.stepBackgroundText);
-        cy.clickSideStepper(common.substepCurrentEnvironmentLink, " Current Environment ");
-        cy.activeStep(common.substepCurrentEnvironmentText);
+        //Page#1: Do you have a current environment to rehost? Yes No
+        cy.radioBtn(background.existYesRadioOption, "YES")
+            .click({
+                force: true
+            });
     });
 
     // functions for this page:
@@ -312,14 +317,7 @@ describe("Test suite: Background- Current Environment: Summary - E2E", () => {
         return environmentType;
     }
 
-    it("TC1: Current Environment: E2E Happy path", () => {
-
-        //Page#1: Do you have a current environment to rehost? Yes No
-        cy.verifyPageHeader(bgCEData.CEPage1.pageHeader1);
-        cy.radioBtn(background.existYesRadioOption, "YES")
-            .click({
-                force: true
-            });
+    it("TC1: Current Environment: E2E Happy path", () => {       
 
         // Page#2: Do you have system diagrams, data architecture diagrams, charts etc..? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage2.pageHeader2)

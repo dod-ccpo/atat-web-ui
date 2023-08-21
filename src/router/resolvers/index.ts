@@ -16,7 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import { isStepTouched, isSubStepComplete } from "@/store/summary";
+import Summary, { isStepTouched } from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -64,7 +64,8 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-    return ( isStepTouched(3) 
+    Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
+    return ( Summary.hasCurrentStepBeenVisited
       ? routeNames.SummaryStepThree 
       : routeNames.PeriodOfPerformance
     )
@@ -87,7 +88,7 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 };
 
 export const BVTOResolver = (current: string): string => {
-
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
     // moving backwards
@@ -100,7 +101,9 @@ export const BVTOResolver = (current: string): string => {
   }
 
   return current === routeNames.EvalPlanDetails
-    ? (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
+    ? Summary.hasCurrentStepBeenVisited 
+      ? routeNames.SummaryStepThree 
+      : routeNames.PeriodOfPerformance
     : routeNames.EvalPlanDetails;
 };
 
@@ -227,7 +230,11 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     currentContracts.length === 1
     && currentContracts[0].is_valid === false
 
-  if (doesNotNeedContract){
+  if(doesNotNeedContract
+    && isStepTouched(4)){
+    return routeNames.SummaryStepFour
+  }
+  else if (doesNotNeedContract){
     return routeNames.CurrentEnvironment;
   } else if (
     !hasExceptionToFairOpp()
@@ -265,8 +272,14 @@ export const ProcurementHistorySummaryRouteResolver = (current: string): string 
     (c)=>c.current_contract_exists==="NO"
   )
   const fromCurrentEnvironment =  current === routeNames.CurrentEnvironment;
-  
   if (
+    doesNotNeedContract
+      && fromCurrentEnvironment
+      && isStepTouched(4)
+  ){
+    return routeNames.SummaryStepFour
+  }
+  else if (
     doesNotNeedContract
     && fromCurrentEnvironment
   ){
@@ -279,6 +292,17 @@ export const ProcurementHistorySummaryRouteResolver = (current: string): string 
       : routeNames.CurrentContractDetails
   }
   return routeNames.ProcurementHistorySummary
+}
+
+export const CurrentEnvironmentResolver = (current: string): string => {
+  const fromProcurementHistory =  current === routeNames.ProcurementHistorySummary;
+  if (
+    fromProcurementHistory
+      && isStepTouched(4)
+  ){
+    return routeNames.SummaryStepFour
+  }
+  return routeNames.CurrentEnvironment
 }
 
 export const ReplicateAndOptimizeResolver = (current: string): string => {
@@ -308,35 +332,37 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment 
-    ? routeNames.DOWLandingPage
+    ? routeNames.SummaryStepFour
     : routeNames.CurrentEnvironment;
 };
 
 export const CurrentEnvironmentSummaryResolver = (current: string): string => {
   return current === routeNames.ReplicateAndOptimize 
-    ? routeNames.DOWLandingPage
+    ? routeNames.SummaryStepFour
     : routeNames.EnvironmentSummary;
 }
 export const COIRouteResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(6));
   return current === routeNames.DOWLandingPage
-    ? isStepTouched(6)?routeNames.SummaryStepSix:routeNames.ConflictOfInterest
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSix: routeNames.ConflictOfInterest
     :routeNames.SummaryStepSix
 }
 export const PackagingPackingAndShippingResolver = (current: string): string => {
-  return isStepTouched(6) && current === routeNames.ConflictOfInterest
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ConflictOfInterest
     ? routeNames.SummaryStepSix
     : routeNames.PackagingPackingAndShipping
 }
 
 export const TravelRouteResolver = (current: string): string => {
-  return isStepTouched(6) && current === routeNames.PackagingPackingAndShipping
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.PackagingPackingAndShipping
     ? routeNames.SummaryStepSix
     : routeNames.Travel
 }
 
 export const PIIResolver = (current: string): string =>{
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(7));
   return current === routeNames.SummaryStepSix
-    ? isStepTouched(7) ? routeNames.SummaryStepSeven : routeNames.PII
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSeven : routeNames.PII
     : routeNames.SummaryStepSix
 }
 
@@ -352,13 +378,13 @@ export const PIIRecordResolver = (current: string): string => {
 };
 
 export const PIIRecordSummaryResolver = (current: string): string => {
-  return isStepTouched(7) && current.toLowerCase().includes("pii")
+  return Summary.hasCurrentStepBeenVisited && current.toLowerCase().includes("pii")
     ? routeNames.SummaryStepSeven
     : routeNames.BAA
 };
 
 export const BAARecordSummaryResolver = (current: string): string => {
-  return isStepTouched(7) && current === routeNames.BAA
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.BAA
     ? routeNames.SummaryStepSeven
     : routeNames.FOIA
 };
@@ -377,7 +403,7 @@ export const FOIARecordResolver = (current: string): string => {
 };
 
 export const FOIARecordSummaryResolver = (current: string): string => {
-  return isStepTouched(7) && current.toLowerCase().includes('foia')
+  return Summary.hasCurrentStepBeenVisited && current.toLowerCase().includes('foia')
     ? routeNames.SummaryStepSeven
     : routeNames.Section508Standards
 };
@@ -395,16 +421,7 @@ export const A11yRequirementResolver = (current: string): string => {
     : routeNames.Section508Standards;
 };
 
-// export const ContractTrainingReq = (current: string): string => {
-//   const contractTraining
-//       = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
-//   if (contractTraining) {
-//     return routeNames.TrainingCourses;
-//   }
-//   return current === routeNames.Training
-//     ? routeNames.PII
-//     : routeNames.Training;
-// };
+
 export const ContractingInfoResolver = (current: string): string => {
   const needsContractInformation =
       AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
@@ -1039,16 +1056,17 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if (current === routeNames.DOWLandingPage) {
-    const hasCurrentContract = 
-      AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
-    if (hasCurrentContract) {
-      return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
-        && CurrentEnvironment.currentEnvInstances.length > 0
-        ? "/current-contract/environment-summary"
-        : "/current-contract/current-environment"
-    } else {
-      return "/current-contract/current-contract"
-    }
+    // const hasCurrentContract =
+    //   AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
+    // if (hasCurrentContract) {
+    //   return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
+    //     && CurrentEnvironment.currentEnvInstances.length > 0
+    //     ? "/current-contract/environment-summary"
+    //     : "/current-contract/summary-step-four"
+    // } else {
+    //   return "/current-contract/current-contract"
+    // }
+    return "/current-contract/summary-step-four"
   }
 
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
@@ -1581,7 +1599,7 @@ export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): 
 export const ContractTypeResolver = (current: string): string => {
   const isFromRecurringRequirments = 
     current === routeNames.RecurringRequirement;
-  return  isStepTouched(3) && isFromRecurringRequirments
+  return  Summary.hasCurrentStepBeenVisited && isFromRecurringRequirments
     ? routeNames.SummaryStepThree
     : routeNames.ContractType
 }
@@ -1589,7 +1607,7 @@ export const ContractTypeResolver = (current: string): string => {
 
 export const ClassificationRequirementsResolver = (current: string): string => {
   const isFromContractType = current === routeNames.ContractType;
-  return isStepTouched(3) && isFromContractType
+  return Summary.hasCurrentStepBeenVisited && isFromContractType
     ? routeNames.SummaryStepThree
     : routeNames.ClassificationRequirements
 }
@@ -1690,6 +1708,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   ProcurementHistorySummaryRouteResolver,
+  CurrentEnvironmentResolver,
   RemoveBarriersFormRouteResolver,
   conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,

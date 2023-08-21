@@ -23,6 +23,7 @@ import ClassificationRequirements, { isClassLevelUnclass } from "../classificati
 import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
+import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -31,7 +32,7 @@ export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boo
 } 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
-  return !AcquisitionPackage.isPackageNew && (Summary.summaryItems.some(
+  return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
 } 
@@ -96,6 +97,9 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
   case 3:
     await Summary.validateStepThree();
     break;
+  case 4:
+    await Summary.validateStepFour();
+    break;
   case 5:
     await Summary.validateStepFive();
     break;
@@ -151,7 +155,18 @@ export class SummaryStore extends VuexModule {
     substep: 0
   }
 
-  public summaryItems: SummaryItem[] = []
+  public summaryItems: SummaryItem[] = [];
+  public hasCurrentStepBeenVisited = false;
+
+  @Action({rawError:true})
+  public setHasCurrentStepBeenVisited(isVisited: boolean):void{
+    this.doSetHasCurrentStepBeenVisited(isVisited);
+  }
+
+  @Mutation
+  public doSetHasCurrentStepBeenVisited(isVisited: boolean):void{
+    this.hasCurrentStepBeenVisited = isVisited;
+  }
 
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
@@ -417,6 +432,59 @@ export class SummaryStore extends VuexModule {
       : true;
   }
   //#endregion
+
+  //#region step 4
+  /**
+   *  assess all substeps in Step 4 to determine
+   *  if substep is touched and/or completed
+   *
+   *  The function creates 4 summary step objects for each
+   *  substep in step 4
+   *
+   */
+  @Action({rawError: true})
+  public async validateStepFour(): Promise<void> {
+    await this.assessProcurementHistory();
+    await this.assessCurrentEnvironment();
+  }
+
+  @Action({rawError: true})
+  public async assessProcurementHistory(): Promise<void> {
+    const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts
+    const isTouched = hasCurrentOrPreviousContract !== "";
+    const isComplete =  hasCurrentOrPreviousContract === "NO";
+    const description = ""
+    const procurementHistorySummaryItem: SummaryItem = {
+      title: "Procurement History",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "CurrentContract",
+      step: 4,
+      substep: 1
+    }
+
+    await this.doSetSummaryItem(procurementHistorySummaryItem)
+  }
+  @Action({rawError: true})
+  public async assessCurrentEnvironment(): Promise<void> {
+    const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
+    const isTouched = currentEnvironment?.current_environment_exists !== "";
+    const isComplete =  currentEnvironment?.current_environment_exists === "NO";
+    const description = ""
+    const currentEnvironmentSummaryItem: SummaryItem = {
+      title: "Current Environment",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "CurrentEnvironment",
+      step: 4,
+      substep: 2
+    }
+
+    await this.doSetSummaryItem(currentEnvironmentSummaryItem)
+  }
+
 
   //#region Step 5
 
@@ -1003,7 +1071,7 @@ export class SummaryStore extends VuexModule {
     let desc = "";
     if (sensitiveInfo.baa_required === "YES" ){
       desc = "Effort requires a BAA to safeguard e-PHI."
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo.baa_required === "NO"){
       desc = "Effort does not require a BAA to safeguard e-PHI."
     }
     return desc;
@@ -1041,7 +1109,7 @@ export class SummaryStore extends VuexModule {
       && sensitiveInfo.foia_email !== "" ){
       desc = "FOIA Coordinator: " + sensitiveInfo.foia_full_name + "<br />"  
         + sensitiveInfo.foia_email 
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo.potential_to_be_harmful === "NO"){
       desc = "Disclosure is not harmful to the government."
     }
     return desc;
