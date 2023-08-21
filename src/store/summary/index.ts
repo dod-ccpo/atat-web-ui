@@ -954,16 +954,16 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async validateStepSix(): Promise<void> {
     await this.assessCOI();
-    // await this.assessPackagingPackingShipping();
-    // await this.assessTravel();
+    await this.assessPackagingPackingShipping();
+    await this.assessTravel();
   }
 
   @Action({rawError: true})
   public async assessCOI(): Promise<void> {
     const contractConsiderations =
       AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
-   
-    const coi = contractConsiderations["potential_conflict_of_interest"];
+
+    const coi = contractConsiderations.potential_conflict_of_interest;
     const coiInfo = contractConsiderations.conflict_of_interest_explanation;
     const isTouched = coi === "YES" ? true : coi === "NO";
     const isComplete =  coi === "NO" || (coiInfo !== undefined && coiInfo.length > 0);
@@ -974,9 +974,9 @@ export class SummaryStore extends VuexModule {
     }
     const conflictOfInterestSummaryItem: SummaryItem = {
       title: "Conflict of Interest (COI)",
-      description:"",
-      isComplete: true,
-      isTouched: true,
+      description,
+      isComplete,
+      isTouched,
       routeName: "ConflictOfInterest",
       step: 6,
       substep: 1

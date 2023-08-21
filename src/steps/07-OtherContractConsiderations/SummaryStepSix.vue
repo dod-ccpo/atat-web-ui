@@ -40,7 +40,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 export default class SummaryStepSix extends Mixins(SaveOnLeave){
   public summaryItems: SummaryItem[] = [];
-  public introParagraph: string = "";
+  public introParagraph = "";
 
   public setIntroParagraph():void {
     this.introParagraph =  isStepComplete(6)
