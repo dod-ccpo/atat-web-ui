@@ -221,7 +221,6 @@ export class PortfolioSummaryStore extends VuexModule {
     
     portfolioSummaryList.forEach(portfolio => {
       portfolio.environments = allEnvs.filter(env => env.portfolio === portfolio.sys_id);
-      console.log(portfolio.environments, 'envs')
     });
     
     return portfolioSummaryList;
