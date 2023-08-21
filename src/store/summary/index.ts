@@ -13,7 +13,7 @@ import { ContractTypeApi } from "@/api/contractDetails";
 import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO,
+  CrossDomainSolutionDTO, CurrentContractDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
   SelectedClassificationLevelDTO,
@@ -32,7 +32,7 @@ export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boo
 } 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
-  return !AcquisitionPackage.isPackageNew && (Summary.summaryItems.some(
+  return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
 } 
@@ -155,7 +155,18 @@ export class SummaryStore extends VuexModule {
     substep: 0
   }
 
-  public summaryItems: SummaryItem[] = []
+  public summaryItems: SummaryItem[] = [];
+  public hasCurrentStepBeenVisited = false;
+
+  @Action({rawError:true})
+  public setHasCurrentStepBeenVisited(isVisited: boolean):void{
+    this.doSetHasCurrentStepBeenVisited(isVisited);
+  }
+
+  @Mutation
+  public doSetHasCurrentStepBeenVisited(isVisited: boolean):void{
+    this.hasCurrentStepBeenVisited = isVisited;
+  }
 
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
@@ -439,10 +450,36 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessProcurementHistory(): Promise<void> {
-    const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts
-    const isTouched = hasCurrentOrPreviousContract !== "";
-    const isComplete =  hasCurrentOrPreviousContract === "NO";
-    const description = ""
+    const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts;
+    const currentContracts = AcquisitionPackage.currentContracts;
+    let currentContractDetailsIsComplete = currentContracts?.length !== 0;
+
+    currentContracts?.forEach((contract) => {
+      if (contract.contract_number === "" ||
+        contract.competitive_status === "" ||
+        contract.contract_order_expiration_date === "" ||
+        contract.contract_order_start_date === "" ||
+        contract.incumbent_contractor_name === "" ||
+        contract.business_size === "") currentContractDetailsIsComplete = false;
+    });
+
+    const isTouched = hasCurrentOrPreviousContract !== ""
+      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
+    const isComplete =  currentContractDetailsIsComplete
+      || hasCurrentOrPreviousContract === "NO";
+
+    const taskOrderNumbers = currentContracts?.map(
+      (contract) => contract.task_delivery_order_number).join(", ");
+    const prevContracts = currentContracts?.length === 1
+      ? `${currentContracts?.length} previous contract:\n${taskOrderNumbers}`
+      : `${currentContracts?.length} previous contracts:\n${taskOrderNumbers}`
+
+    const description = isTouched ?
+      hasCurrentOrPreviousContract === "YES"
+        ? prevContracts
+        : "No previous contracts"
+      : "";
+
     const procurementHistorySummaryItem: SummaryItem = {
       title: "Procurement History",
       description,
@@ -1086,7 +1123,7 @@ export class SummaryStore extends VuexModule {
     let desc = "";
     if (sensitiveInfo.baa_required === "YES" ){
       desc = "Effort requires a BAA to safeguard e-PHI."
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo.baa_required === "NO"){
       desc = "Effort does not require a BAA to safeguard e-PHI."
     }
     return desc;
@@ -1124,7 +1161,7 @@ export class SummaryStore extends VuexModule {
       && sensitiveInfo.foia_email !== "" ){
       desc = "FOIA Coordinator: " + sensitiveInfo.foia_full_name + "<br />"  
         + sensitiveInfo.foia_email 
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo.potential_to_be_harmful === "NO"){
       desc = "Disclosure is not harmful to the government."
     }
     return desc;
