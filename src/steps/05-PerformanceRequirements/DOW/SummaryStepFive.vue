@@ -423,8 +423,6 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
       }
     });
 
-    await Summary.validateStepFive();
-
     this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
       e => e.serviceOfferingGroupId.indexOf("NONE") === -1 
       && sectionServices.includes(e.serviceOfferingGroupId) 
@@ -446,6 +444,7 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
   };
 
   public async mounted(): Promise<void> {
+    await Summary.validateStepFive();
     await this.loadOnEnter();
     this.setIsIncomplete();
   };

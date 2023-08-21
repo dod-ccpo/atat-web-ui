@@ -26,7 +26,11 @@ import { Component, Mixins} from "vue-property-decorator";
 import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Vue from "vue";
-import Summary, { getSummaryItemsforStep, isStepComplete } from "@/store/summary";
+import Summary, { 
+  getSummaryItemsforStep,
+  isStepComplete, 
+  isStepValidatedAndTouched 
+} from "@/store/summary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
@@ -47,7 +51,9 @@ export default class SummaryStepThree extends Mixins(SaveOnLeave){
   }
 
   public async mounted():Promise<void> {  
-    await Summary.validateStepThree();
+    Summary.setHasCurrentStepBeenVisited(
+      await isStepValidatedAndTouched(3)
+    )
     this.summaryItems = await getSummaryItemsforStep(3);
     await Summary.toggleButtonColor(3);
   }
