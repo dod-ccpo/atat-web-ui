@@ -461,15 +461,19 @@ export class SummaryStore extends VuexModule {
 
     ]
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
-    const currentEnvironmentInstances = await  CurrentEnvironment.getCurrentEnvInstance()
+    const currentEnvironmentInstances = await  CurrentEnvironment.getCurrentEnvironmentInstances()
     const hasSystemDocs = currentEnvironment?.has_system_documentation === "YES"
-    const systemDocs = currentEnvironment?.system_documentation
+    const systemDocsLength = currentEnvironment?.system_documentation
+      ? currentEnvironment?.system_documentation.length : 0
     const hasMigrationDocs = currentEnvironment?.has_migration_documentation === "YES"
+    const migrationDocsLength = currentEnvironment?.migration_documentation
+      ? currentEnvironment?.migration_documentation.length : 0;
     const envLocation = currentEnvironment?.env_location
     const envOnPremClass = currentEnvironment?.env_classifications_onprem
     const envCloudClass = currentEnvironment?.env_classifications_cloud
     let locationHasClassification = false
-    debugger
+    const systemDocsComplete = !hasSystemDocs || (hasSystemDocs && systemDocsLength > 0)
+    const migrationDocsComplete = !hasMigrationDocs || (hasMigrationDocs && migrationDocsLength > 0)
     if(envLocation === "HYBRID" && envOnPremClass && envCloudClass){
       locationHasClassification = (envOnPremClass?.length > 0 && envCloudClass?.length > 0)
     }
@@ -480,7 +484,8 @@ export class SummaryStore extends VuexModule {
     }
     const isTouched = currentEnvironment?.current_environment_exists !== "";
     const isComplete =  currentEnvironment?.current_environment_exists === "NO"
-    // || !hasMigrationDocs &&   || !hasSystemDocs || ;
+    // eslint-disable-next-line max-len
+    || systemDocsComplete && migrationDocsComplete && locationHasClassification && currentEnvironmentInstances.length > 0;
     const description = ""
     const currentEnvironmentSummaryItem: SummaryItem = {
       title: "Current Environment",
