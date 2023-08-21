@@ -8,7 +8,7 @@
               Let’s look into the Freedom of Information Act (FOIA)
             </h1>
 
-            <ATATAlert
+             <ATATAlert
               id="FOIAAlert"
               type="callout"
               :showIcon="false"
@@ -32,14 +32,15 @@
                     tabindex="0"
                     @click="openSlideoutPanel"
                     @keydown.enter="openSlideoutPanel"
-                    @keydown.space="openSlideoutPanel">
+                    @keydown.space="openSlideoutPanel"
+                    >
                     Learn more about FOIA.
                   </a>
                 </p>
               </template>
-            </ATATAlert>
+            </ATATAlert> 
 
-            <ATATRadioGroup
+             <ATATRadioGroup
               class="copy-max-width mb-10"
               id="FOIAOptions"
               legend="Have you provided any CUI information in this acquisition package that, 
@@ -47,9 +48,9 @@
               :items="fOIAOptions"
               :value.sync="potentialToBeHarmful"
               :rules="[$validators.required('Please select an option')]"
-            />
+            /> 
 
-            <ATATExpandableLink aria-id="FOIAFAQ">
+             <ATATExpandableLink aria-id="FOIAFAQ">
               <template v-slot:header>
                 How does FOIA impact my acquisition package?
               </template>
@@ -85,7 +86,7 @@
                   is submitted as part of a complete requirements package.
                 </p>
               </template>
-            </ATATExpandableLink>
+            </ATATExpandableLink> 
           </v-col>
         </v-row>
       </v-container>
@@ -136,6 +137,7 @@ export default class FOIA extends Mixins(SaveOnLeave) {
       value: "NO",
     },
   ];
+  private saveOnLeaveError: string | unknown = "";
 
   private get currentData(): SensitiveInformationDTO {
     return {
@@ -191,6 +193,7 @@ export default class FOIA extends Mixins(SaveOnLeave) {
       }
     } catch (error) {
       console.log(error);
+      this.saveOnLeaveError = error as string;
     }
 
     return true;
