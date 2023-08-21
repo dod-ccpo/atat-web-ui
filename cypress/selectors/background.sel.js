@@ -13,15 +13,7 @@ module.exports = {
   ccNoRadioOption: "#Radio_NoCurrentContract",
   radioOptionError: "#currentContractOptions_radio_group_control .field-error",
 
-  //Let’s gather some details about your previous or current contract
-  contractOverviewTitle:"h2.mb-5",
-  contractNoTooltipBtn:"#TooltipButton_ContractNumber",
-  contractNoTootipText:"#TooltipText_ContractNumber",
-  taskOrderNumberTxtBox:"#TaskOrderNumber_text_field",
-  taskOrderNumberToolTipBtn:"#TooltipButton_TaskOrderNumber",
-  taskOrderNumberTooltipText:"#TooltipText_TaskOrderNumber",
-  competitionRadioGroup:"#CompetitiveStatusOptions_radio_group_control input[type=radio]",
-  popValidationError:"#PoPValidation .field-error",
+  //Let’s gather some details about your previous or current contract  
   incumbentLabel: "#IncumbentContractorName_text_field_label",
   incumbentTxtBox: "#IncumbentContractorName_text_field",
   incumbentError:"#IncumbentContractorName_text_field_control .field-error",
@@ -55,6 +47,7 @@ module.exports = {
   startDatePickerBtnIcon:"#StartDatePickerButtonIcon",
   startDatePreviousMonth:"#StartDatePicker button[aria-label='Previous month']",
   startDatepicker:"#StartDatePicker",
+  popValidationError:"#PoPValidation .field-error",
   businessSizeRadioOption:"#businessSizeOptions_radio_group_control input[type=radio]",
   businessSizeActiveRadioOption:"#businessSizeOptions_radio_group_control .v-item--active",
   businessSizeRadioOptionerror:"#businessSizeOptions_radio_group_control .field-error",
