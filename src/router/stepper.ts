@@ -173,6 +173,7 @@ import {
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
   ProcurementHistorySummaryRouteResolver,
+  CurrentEnvironmentResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
@@ -870,6 +871,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CurrentEnvironment,
         component: HasCurrentEnvironment,
         completePercentageWeight: 5,
+        routeResolver:CurrentEnvironmentResolver,
         completed: false,
       },
       {
