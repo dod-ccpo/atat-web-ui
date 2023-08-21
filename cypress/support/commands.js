@@ -448,7 +448,7 @@ Cypress.Commands.add(
       expect(headerText).equal(foundHeaderText);
     });
     cy.findElement("tbody td:nth-child(" + columnIndex + ")").then(($el) => {
-      const value = $el.text();
+      const value = cleanText($el.text());
       expect(value).equal(expectedValue);
     });
   }
