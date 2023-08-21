@@ -114,7 +114,7 @@ describe("Test suite: Step04-Previous or Current Contract with EvaluationPlan", 
         cy.findElement(background.contractNoTxtBox).scrollIntoView();
         cy.findElement(background.contractNoTxtError).should("not.exist");      
         }); 
-        cy.findElement(background.contractNoTxtBox).type(validContractNo)
+        cy.findElement(background.contractNoTxtBox).clear().type(contractNo)
             .blur({ force: true }).then(() => {
                 cy.checkErrorMessage(
                 background.contractNoTxtError,
