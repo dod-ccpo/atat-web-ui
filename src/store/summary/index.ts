@@ -452,7 +452,8 @@ export class SummaryStore extends VuexModule {
         contract.business_size === "") currentContractDetailsIsComplete = false;
     });
 
-    const isTouched = hasCurrentOrPreviousContract !== "";
+    const isTouched = hasCurrentOrPreviousContract !== ""
+      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
