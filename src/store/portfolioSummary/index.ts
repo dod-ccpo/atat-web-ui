@@ -225,7 +225,6 @@ export class PortfolioSummaryStore extends VuexModule {
         let hasIssue = false;
 
         portfolio.environments.forEach(env => {
-          console.log(`Env: ${JSON.stringify(env)}`);
           if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
           if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
           portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
@@ -337,7 +336,6 @@ export class PortfolioSummaryStore extends VuexModule {
           }
       }
     )
-
     portfolioSummaryList.forEach(portfolio => {
       portfolio.task_orders.forEach(taskOrder => {
         taskOrder.clin_records =
