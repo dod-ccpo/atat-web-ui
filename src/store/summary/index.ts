@@ -27,6 +27,7 @@ import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
+import { differenceInQuartersWithOptions } from "date-fns/fp";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -221,12 +222,13 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessFairOpportunity(objectKeys: string[]): Promise<void>{
-    const fairOppStore = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
+    const fairOpp = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
     const keysToIgnore = objectKeys.filter(
       x => x !== "sys_"
     );
-    const monitor = {object: fairOppStore, keysToIgnore};
+    const monitor = {object: fairOpp, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
+    const isComplete = await this.isFairOpportunityComplete(fairOpp);
     const FairOpportunityItem: SummaryItem = {
       title: "Exception to Fair Opportunity",
       description: "",
@@ -238,6 +240,54 @@ export class SummaryStore extends VuexModule {
     }
     await this.doSetSummaryItem(FairOpportunityItem)
   }
+
+  @Action({rawError: true})
+  public async isFairOpportunityComplete(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    const hasNoFairOpp = fairOpp.exception_to_fair_opportunity === "NO_NONE"
+    const hasProposedCSP = fairOpp.proposed_csp !== "";
+    const hasJustification = fairOpp.justification !== "";
+    const hasMinGovtRequirements = fairOpp.min_govt_requirements !== ""
+      && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
+        "current level in order to support...\n\nThese offerings include..."
+
+    return (hasNoFairOpp) ||
+      (hasJustification 
+      && hasMinGovtRequirements);
+  }
+
+  public async hasSoleSourceSituation(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    // assess first question
+    // 1. Would a fair opportunity competition require your project to migrate from 
+    //    one platform to another, resulting in additional time and cost?
+    const causeMigrationSelection = fairOpp.cause_migration_addl_time_cost;
+    let causeMigrationComplete = false;
+    if (causeMigrationSelection === "YES"){
+      causeMigrationComplete =  fairOpp.cause_migration_estimated_cost !== ""
+        && fairOpp.cause_migration_estimated_delay_amount !== ""
+        && fairOpp.cause_migration_estimated_delay_unit ! == ""
+    } else if (causeMigrationSelection === "NO"){
+      causeMigrationComplete =  true
+    } 
+
+    // assess second question
+    // 2. Are your Government engineers trained and certified in a specific cloud 
+    //    platform or technology that is unique to Microsoft?
+    // Due to ..., there is insufficient time to retrain and obtain certification 
+    // in another platform/technology.
+    const causeGovtEngineers = fairOpp.cause_govt_engineers_training_certified;
+    let isCauseGovtEngineersComplete = false;
+    if (causeGovtEngineers === "YES"){
+      isCauseGovtEngineersComplete = fairOpp.cause_govt_engineers_platform_name !==""
+        && fairOpp.cause_govt_engineers_insufficient_time_reason !== ""; 
+    } else if (causeGovtEngineers === "NO"){
+      return true
+    }
+
+
+    return causeMigrationComplete;
+  }
+
+
 
   @Action({rawError: true})
   public async assessEvalPlan(objectKeys: string[]): Promise<void>{
