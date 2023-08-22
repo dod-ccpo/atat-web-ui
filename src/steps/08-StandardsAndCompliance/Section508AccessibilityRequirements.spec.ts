@@ -53,7 +53,9 @@ describe("Testing Section508AccessibilityRequirements Page", () => {
     describe("testing business functions", () => {
       it("correctly determines if data has changed", async () => {
         wrapper.setData({ accessibilityReqs: "test requirements" });
-        AcquisitionPackage.setSensitiveInformation({ accessibility_reqs_508: "saved requirements" });
+        AcquisitionPackage.setSensitiveInformation({
+          accessibility_reqs_508: "saved requirements"
+        });
         expect(wrapper.vm.hasChanged()).toBe(true);
       });
 
