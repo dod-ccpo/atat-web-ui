@@ -13,7 +13,9 @@ import { ContractTypeApi } from "@/api/contractDetails";
 import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO,
+  CrossDomainSolutionDTO, CurrentContractDTO,
+  EvaluationPlanDTO,
+  FairOpportunityDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
   SelectedClassificationLevelDTO,
@@ -24,6 +26,7 @@ import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -32,7 +35,7 @@ export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boo
 } 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
-  return !AcquisitionPackage.isPackageNew && (Summary.summaryItems.some(
+  return (Summary.summaryItems.some(
     (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
 } 
@@ -94,6 +97,9 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 
 export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
+  case 2:
+    await Summary.validateStepTwo();
+    break;
   case 3:
     await Summary.validateStepThree();
     break;
@@ -155,7 +161,18 @@ export class SummaryStore extends VuexModule {
     substep: 0
   }
 
-  public summaryItems: SummaryItem[] = []
+  public summaryItems: SummaryItem[] = [];
+  public hasCurrentStepBeenVisited = false;
+
+  @Action({rawError:true})
+  public setHasCurrentStepBeenVisited(isVisited: boolean):void{
+    this.doSetHasCurrentStepBeenVisited(isVisited);
+  }
+
+  @Mutation
+  public doSetHasCurrentStepBeenVisited(isVisited: boolean):void{
+    this.hasCurrentStepBeenVisited = isVisited;
+  }
 
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
@@ -164,6 +181,89 @@ export class SummaryStore extends VuexModule {
       : ""
     await AcquisitionPackage.setContinueButtonColor(color);
   }
+
+  //#region STEP 2
+  /*
+   * assess all 2 substeps in Step 3 to determine 
+   * if substep is touched and/or completed
+   * 
+   * The function creates 3 summary step objects for each
+   * substep in step 2 
+   */
+  @Action({rawError: true})
+  public async validateStepTwo(): Promise<void> {
+    const fairOppObjectKeys = [
+      "barriers_",
+      "cause_",
+      "exception_",
+      "justification",
+      "market_research_",
+      "min_govt_",
+      "other_facts_",
+      "procurement_discussion_",
+      "proposed_csp",
+      "requirement_",
+      "research_",
+      "sys_",
+      "technical_",
+      "why_csp"
+    ];
+    const evalPlanObjectKeys = [
+      "custom_",
+      "method",
+      "source_",
+      "standard_",
+      "sys_"
+    ];
+    await this.assessFairOpportunity(fairOppObjectKeys);
+    await this.assessEvalPlan(evalPlanObjectKeys);
+  }
+
+  @Action({rawError: true})
+  public async assessFairOpportunity(objectKeys: string[]): Promise<void>{
+    const fairOppStore = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
+    const keysToIgnore = objectKeys.filter(
+      x => x !== "sys_"
+    );
+    const monitor = {object: fairOppStore, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
+    const FairOpportunityItem: SummaryItem = {
+      title: "Exception to Fair Opportunity",
+      description: "",
+      isComplete: false,
+      isTouched,
+      routeName: "Exceptions", 
+      step:2,
+      substep: 1
+    }
+    await this.doSetSummaryItem(FairOpportunityItem)
+  }
+
+  @Action({rawError: true})
+  public async assessEvalPlan(objectKeys: string[]): Promise<void>{
+    const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
+    const keysToIgnore = objectKeys.filter(
+      x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
+    );
+    const monitor = {object: evalPlanStore, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
+    const evalPlan: SummaryItem = {
+      title: "Evaluation Plan",
+      description: "",
+      isComplete: false,
+      isTouched,
+      routeName: "CreateEvalPlan", 
+      step:2,
+      substep: 2
+    }
+    await this.doSetSummaryItem(evalPlan)
+  }
+
+
+  //#endregion
+
+
+
 
   //#region STEP 3
   /*
@@ -439,10 +539,36 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessProcurementHistory(): Promise<void> {
-    const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts
-    const isTouched = hasCurrentOrPreviousContract !== "";
-    const isComplete =  hasCurrentOrPreviousContract === "NO";
-    const description = ""
+    const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts;
+    const currentContracts = AcquisitionPackage.currentContracts;
+    let currentContractDetailsIsComplete = currentContracts?.length !== 0;
+
+    currentContracts?.forEach((contract) => {
+      if (contract.contract_number === "" ||
+        contract.competitive_status === "" ||
+        contract.contract_order_expiration_date === "" ||
+        contract.contract_order_start_date === "" ||
+        contract.incumbent_contractor_name === "" ||
+        contract.business_size === "") currentContractDetailsIsComplete = false;
+    });
+
+    const isTouched = hasCurrentOrPreviousContract !== ""
+      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
+    const isComplete =  currentContractDetailsIsComplete
+      || hasCurrentOrPreviousContract === "NO";
+
+    const taskOrderNumbers = currentContracts?.map(
+      (contract) => contract.task_delivery_order_number).join(", ");
+    const prevContracts = currentContracts?.length === 1
+      ? `${currentContracts?.length} previous contract:\n${taskOrderNumbers}`
+      : `${currentContracts?.length} previous contracts:\n${taskOrderNumbers}`
+
+    const description = isTouched ?
+      hasCurrentOrPreviousContract === "YES"
+        ? prevContracts
+        : "No previous contracts"
+      : "";
+
     const procurementHistorySummaryItem: SummaryItem = {
       title: "Procurement History",
       description,
@@ -457,9 +583,35 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
+    const currentEnvironmentKeys = [
+
+    ]
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
+    const currentEnvironmentInstances = await  CurrentEnvironment.getCurrentEnvironmentInstances()
+    const hasSystemDocs = currentEnvironment?.has_system_documentation === "YES"
+    const systemDocsLength = currentEnvironment?.system_documentation
+      ? currentEnvironment?.system_documentation.length : 0
+    const hasMigrationDocs = currentEnvironment?.has_migration_documentation === "YES"
+    const migrationDocsLength = currentEnvironment?.migration_documentation
+      ? currentEnvironment?.migration_documentation.length : 0;
+    const envLocation = currentEnvironment?.env_location
+    const envOnPremClass = currentEnvironment?.env_classifications_onprem
+    const envCloudClass = currentEnvironment?.env_classifications_cloud
+    let locationHasClassification = false
+    const systemDocsComplete = !hasSystemDocs || (hasSystemDocs && systemDocsLength > 0)
+    const migrationDocsComplete = !hasMigrationDocs || (hasMigrationDocs && migrationDocsLength > 0)
+    if(envLocation === "HYBRID" && envOnPremClass && envCloudClass){
+      locationHasClassification = (envOnPremClass?.length > 0 && envCloudClass?.length > 0)
+    }
+    else if(envLocation === "ON_PREM" && envOnPremClass){
+      locationHasClassification = envOnPremClass?.length > 0
+    }else if(envLocation === "CLOUD" && envCloudClass){
+      locationHasClassification = envCloudClass?.length > 0
+    }
     const isTouched = currentEnvironment?.current_environment_exists !== "";
-    const isComplete =  currentEnvironment?.current_environment_exists === "NO";
+    const isComplete =  currentEnvironment?.current_environment_exists === "NO"
+    // eslint-disable-next-line max-len
+    || systemDocsComplete && migrationDocsComplete && locationHasClassification && currentEnvironmentInstances.length > 0;
     const description = ""
     const currentEnvironmentSummaryItem: SummaryItem = {
       title: "Current Environment",
@@ -1060,7 +1212,7 @@ export class SummaryStore extends VuexModule {
     let desc = "";
     if (sensitiveInfo.baa_required === "YES" ){
       desc = "Effort requires a BAA to safeguard e-PHI."
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo.baa_required === "NO"){
       desc = "Effort does not require a BAA to safeguard e-PHI."
     }
     return desc;
@@ -1098,7 +1250,7 @@ export class SummaryStore extends VuexModule {
       && sensitiveInfo.foia_email !== "" ){
       desc = "FOIA Coordinator: " + sensitiveInfo.foia_full_name + "<br />"  
         + sensitiveInfo.foia_email 
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo.potential_to_be_harmful === "NO"){
       desc = "Disclosure is not harmful to the government."
     }
     return desc;
