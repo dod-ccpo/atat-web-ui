@@ -751,7 +751,8 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     }
     if (this.cspIsOnlySourceCapable === "YES" 
     || this.reviewedCatalogs === "YES"
-    && this.selectedTechniquesUsed.length !== 0 ) 
+    && this.selectedTechniquesUsed.length !== 0
+    && !this.techniquesUsed.includes(this.techniqueJWCCSysId) ) 
     {
       //if user selects yes to either question, adds sys id
       // "Review of JWCC Contracts and/or contractor's catalog"
