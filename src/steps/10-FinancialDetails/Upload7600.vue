@@ -113,7 +113,7 @@ let orderNumberToolTips =
 orderNumberToolTips +=
   "You can find your Order Number in the top section of your <strong>FS Form 7600B.</strong>";
 
-const GTCMRegex = /A[0-9]{4}-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$/gm;
+const GTCMRegex = /A[0-9]{4}-[0-9]{3}-[0-9]{3}-[0-9]{6}$/gm;
 
 @Component({
   components: {
