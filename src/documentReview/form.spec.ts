@@ -34,7 +34,8 @@ describe("Testing index Component", () => {
     grade_civ: "",
     dodaac: "",
     can_access_package: "",
-    manually_entered: "",    
+    manually_entered: "",
+    acquisition_package: ""    
   };
 
   const docData: DocReviewData = {
@@ -42,7 +43,8 @@ describe("Testing index Component", () => {
       title: "title",
       scope: "scope",
       emergency_declaration: "Yes",
-      project_disclaimer: "YES"
+      project_disclaimer: "YES",
+      cjadc2: "No"
     },
     organization: {},
     fairOpportunity: {

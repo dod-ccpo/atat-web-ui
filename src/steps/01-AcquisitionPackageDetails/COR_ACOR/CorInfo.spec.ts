@@ -34,6 +34,7 @@ describe("Testing CorInfo Component", () => {
     email: "",
     title: "",
     manually_entered: "",
+    acquisition_package: ""
   }
 
   const mockSavedDontactData: ContactDTO = {
@@ -53,6 +54,7 @@ describe("Testing CorInfo Component", () => {
     email: "",
     title: "",
     manually_entered: "",
+    acquisition_package: ""
   }
 
   beforeEach(() => {
