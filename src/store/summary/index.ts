@@ -494,9 +494,35 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
+    const currentEnvironmentKeys = [
+
+    ]
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
+    const currentEnvironmentInstances = await  CurrentEnvironment.getCurrentEnvironmentInstances()
+    const hasSystemDocs = currentEnvironment?.has_system_documentation === "YES"
+    const systemDocsLength = currentEnvironment?.system_documentation
+      ? currentEnvironment?.system_documentation.length : 0
+    const hasMigrationDocs = currentEnvironment?.has_migration_documentation === "YES"
+    const migrationDocsLength = currentEnvironment?.migration_documentation
+      ? currentEnvironment?.migration_documentation.length : 0;
+    const envLocation = currentEnvironment?.env_location
+    const envOnPremClass = currentEnvironment?.env_classifications_onprem
+    const envCloudClass = currentEnvironment?.env_classifications_cloud
+    let locationHasClassification = false
+    const systemDocsComplete = !hasSystemDocs || (hasSystemDocs && systemDocsLength > 0)
+    const migrationDocsComplete = !hasMigrationDocs || (hasMigrationDocs && migrationDocsLength > 0)
+    if(envLocation === "HYBRID" && envOnPremClass && envCloudClass){
+      locationHasClassification = (envOnPremClass?.length > 0 && envCloudClass?.length > 0)
+    }
+    else if(envLocation === "ON_PREM" && envOnPremClass){
+      locationHasClassification = envOnPremClass?.length > 0
+    }else if(envLocation === "CLOUD" && envCloudClass){
+      locationHasClassification = envCloudClass?.length > 0
+    }
     const isTouched = currentEnvironment?.current_environment_exists !== "";
-    const isComplete =  currentEnvironment?.current_environment_exists === "NO";
+    const isComplete =  currentEnvironment?.current_environment_exists === "NO"
+    // eslint-disable-next-line max-len
+    || systemDocsComplete && migrationDocsComplete && locationHasClassification && currentEnvironmentInstances.length > 0;
     const description = ""
     const currentEnvironmentSummaryItem: SummaryItem = {
       title: "Current Environment",
