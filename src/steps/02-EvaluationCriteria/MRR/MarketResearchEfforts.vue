@@ -363,7 +363,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
   public otherTechnique = "";
   public personalKnowledgePerson = "";
   public personalKnowledgePersonSysId = "";
-  public techniqueJWCCsysId = "";
+  public techniqueJWCCSysId = "";
   public otherTechniqueSysId = "";
   public techniquesSummary = "";
   public showPersonalKnowledgePerson = false;
@@ -756,7 +756,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       //if user selects yes to either question, adds sys id
       // "Review of JWCC Contracts and/or contractor's catalog"
       // to techniques used 
-      this.techniquesUsed += "," + this.techniqueJWCCsysId;
+      this.techniquesUsed += "," + this.techniqueJWCCSysId;
     }
 
     if (this.sameAsResearchDate === "YES") {
@@ -771,7 +771,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.techniquesSummary = "";
       if (this.cspIsOnlySourceCapable === "YES" || this.reviewedCatalogs === "YES" ) 
       {
-        this.techniquesUsed = this.techniqueJWCCsysId;
+        this.techniquesUsed = this.techniqueJWCCSysId;
       }
     }
 
