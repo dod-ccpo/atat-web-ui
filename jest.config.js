@@ -63,9 +63,12 @@ module.exports = {
     "<rootDir>/src/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.spec.ts",
     "<rootDir>/src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts",
     "<rootDir>/src/steps/07-OtherContractConsiderations/*.spec.ts",
+    "<rootDir>/src/steps/07-OtherContractConsiderations/*.spec.ts",
     "<rootDir>/src/steps/08-StandardsAndCompliance/BAA.spec.ts",
     "<rootDir>/src/steps/08-StandardsAndCompliance/BAALearnMore.spec.ts",
     "<rootDir>/src/steps/08-StandardsAndCompliance/SummaryStepSeven.spec.ts",
+    "<rootDir>/src/steps/08-StandardsAndCompliance/FOIACoordinator.spec.ts",
+    "<rootDir>/src/steps/08-StandardsAndCompliance/FOIA.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",

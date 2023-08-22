@@ -2363,8 +2363,6 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({ rawError: true })
   async loadSensitiveInformation(): Promise<SensitiveInformationDTO> {
     try {
-      await this.ensureInitialized();
-
       const sys_id = this.sensitiveInformation?.sys_id || "";
 
       if (sys_id.length > 0) {
