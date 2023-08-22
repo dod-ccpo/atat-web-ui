@@ -35,7 +35,8 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     can_access_package: "true",
     grade_civ: "",
     title: "Prim1 Title",
-    manually_entered: ""
+    manually_entered: "",
+    acquisition_package: ""
   };
 
   const mockCorPOC: ContactDTO = {
@@ -55,7 +56,8 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     can_access_package: "true",
     grade_civ: "",
     title: "Cor1 Title",
-    manually_entered: ""
+    manually_entered: "",
+    acquisition_package: ""
   };
 
   const mockACorPOC: ContactDTO = {
@@ -75,7 +77,8 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     can_access_package: "true",
     grade_civ: "",
     title: "Acor1 Title",
-    manually_entered: ""
+    manually_entered: "",
+    acquisition_package: ""
   };
 
   const mockNewTech: ContactDTO = {
@@ -95,7 +98,8 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     can_access_package: "true",
     grade_civ: "",
     title: "NewTech Title",
-    manually_entered: ""
+    manually_entered: "",
+    acquisition_package: ""
   };
 
   const mockNewReq: ContactDTO = {
@@ -115,7 +119,8 @@ describe("Testing CertificationPOCTypeForm Component", () => {
     can_access_package: "true",
     grade_civ: "",
     title: "NewReq Title",
-    manually_entered: ""
+    manually_entered: "",
+    acquisition_package: ""
   };
 
   const mockMilitaryBranch1 = {

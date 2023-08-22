@@ -43,6 +43,7 @@ describe("Testing PersonCard Component", () => {
     email: "",
     title: "",
     manually_entered: "",
+    acquisition_package: ""
   }
 
   beforeEach(() => {

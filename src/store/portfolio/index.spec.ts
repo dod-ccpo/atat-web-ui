@@ -27,7 +27,8 @@ describe("Portfolio Store", () => {
       title: "",
       scope: "",
       emergency_declaration:"",
-      project_disclaimer: ""
+      project_disclaimer: "",
+      cjadc2: ""
     })
     AcquisitionPackage.setOrganization({})
     // AcquisitionPackage.setAcquisitionPackage({

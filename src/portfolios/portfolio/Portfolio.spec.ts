@@ -5,7 +5,8 @@ import { createLocalVue, mount, shallowMount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import Portfolio from "./Portfolio.vue";
 import { AlertDTO } from "@/api/models";
-import { FundingAlertData } from "@/store/portfolio";
+//@ericyoungquist-ccpo 
+//import { FundingAlertData } from "@/store/portfolio";
 import ATATCharts from "@/store/charts";
 import dashboardMocks from "@/dashboards/__tests__/dashboardMocks..json";
 
@@ -63,44 +64,44 @@ describe("Testing Portfolio", () => {
     },
   ];
 
-  const getFundingTrackerAlertMock = () => {
-    const fundingAlertData: FundingAlertData = {
-      alerts: [],
-      daysRemaining: 0,
-      spendingViolation: 0,
-      fundingAlertType: "",
-      hasLowFundingAlert: false,
-    };
+  // const getFundingTrackerAlertMock = () => {
+  //   const fundingAlertData: FundingAlertData = {
+  //     alerts: [],
+  //     daysRemaining: 0,
+  //     spendingViolation: 0,
+  //     fundingAlertType: "",
+  //     hasLowFundingAlert: false,
+  //   };
 
-    switch (alertsKey) {
-    case alertKeys.SixtyDaysSeventyFivePercent:
-      fundingAlertData.alerts = alerts_60days_75percent;
-      fundingAlertData.daysRemaining = 60;
-      fundingAlertData.spendingViolation = 75;
-      fundingAlertData.hasLowFundingAlert = true;
-      fundingAlertData.fundingAlertType =
-          FundingAlertTypes.POPExpiresSoonWithLowFunds;
-      break;
-    case alertKeys.Expired:
-      fundingAlertData.alerts = alerts_expired;
-      fundingAlertData.daysRemaining = -30;
-      fundingAlertData.spendingViolation = 0;
-      fundingAlertData.hasLowFundingAlert = false;
-      fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpired;
-    }
+  //   switch (alertsKey) {
+  //   case alertKeys.SixtyDaysSeventyFivePercent:
+  //     fundingAlertData.alerts = alerts_60days_75percent;
+  //     fundingAlertData.daysRemaining = 60;
+  //     fundingAlertData.spendingViolation = 75;
+  //     fundingAlertData.hasLowFundingAlert = true;
+  //     fundingAlertData.fundingAlertType =
+  //         FundingAlertTypes.POPExpiresSoonWithLowFunds;
+  //     break;
+  //   case alertKeys.Expired:
+  //     fundingAlertData.alerts = alerts_expired;
+  //     fundingAlertData.daysRemaining = -30;
+  //     fundingAlertData.spendingViolation = 0;
+  //     fundingAlertData.hasLowFundingAlert = false;
+  //     fundingAlertData.fundingAlertType = FundingAlertTypes.POPExpired;
+  //   }
 
-    return fundingAlertData;
-  };
+  //   return fundingAlertData;
+  // };
 
-  jest.mock("@/store/portfolio", () => ({
-    ...jest.requireMock("@/store/portfolio"),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    getFundingTrackerAlert: (
-      taskOrderNumber: string
-    ): Promise<FundingAlertData> => {
-      return new Promise((resolve) => resolve(getFundingTrackerAlertMock()));
-    },
-  }));
+  // jest.mock("@/store/portfolio", () => ({
+  //   ...jest.requireMock("@/store/portfolio"),
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   getFundingTrackerAlert: (
+  //     taskOrderNumber: string
+  //   ): Promise<FundingAlertData> => {
+  //     return new Promise((resolve) => resolve(getFundingTrackerAlertMock()));
+  //   },
+  // }));
 
   beforeEach(() => {
     vuetify = new Vuetify();
