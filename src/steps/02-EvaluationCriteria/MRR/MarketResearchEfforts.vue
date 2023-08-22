@@ -613,7 +613,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       const filteredList = techniques.filter((obj) => {
         if (obj.technique_value === "REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG")
         {
-          this.techniqueJWCCsysId = obj.sys_id as string;
+          this.techniqueJWCCSysId = obj.sys_id as string;
         }
         return (obj.technique_value !== "REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG")
       })
