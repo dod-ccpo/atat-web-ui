@@ -103,7 +103,7 @@ import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
 import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { isStepValidatedAndTouched} from "@/store/summary";
+import Summary, { isStepValidatedAndTouched} from "@/store/summary";
 
 @Component({})
 export default class ATATSideStepper extends Vue {
@@ -114,11 +114,15 @@ export default class ATATSideStepper extends Vue {
     step: StepperStep, 
     isSubStep: boolean
   ): Promise<void> {
-    const isNewPackage = AcquisitionPackage.isPackageNew
     this.activeStep = stepNumber;
     this.calculatePercentComplete();
-    const stepIsTouched = await isStepValidatedAndTouched(parseInt(stepNumber))
-    if (!isNewPackage && stepNumber && !isSubStep && step && stepIsTouched){
+    if (step){
+      Summary.setHasCurrentStepBeenVisited(
+        await isStepValidatedAndTouched(parseInt(stepNumber))
+      )
+    }
+    
+    if (stepNumber && !isSubStep && step && Summary.hasCurrentStepBeenVisited){
       this.navigateToSummary(step, isSubStep);
     }
   }
