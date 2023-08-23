@@ -203,7 +203,6 @@ export class PortfolioSummaryStore extends VuexModule {
           }
       }
     )
-    console.log(allEnvironmentsList, 'env list')
     const allEnvs: Environment[] = allEnvironmentsList.map(
       environment => convertColumnReferencesToValues(environment)
     );
@@ -221,23 +220,6 @@ export class PortfolioSummaryStore extends VuexModule {
     
     portfolioSummaryList.forEach(portfolio => {
       portfolio.environments = allEnvs.filter(env => env.portfolio === portfolio.sys_id);
-<<<<<<< HEAD
-=======
-      if (portfolio.portfolio_status !== Statuses.Archived.value) {
-        // portfolio status based on environment statuses
-        let hasProcessing = false;
-        let hasIssue = false;
-
-        portfolio.environments.forEach(env => {
-          if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
-          if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
-          portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
-            : hasProcessing
-              ? Statuses.Processing.value
-              : portfolio.portfolio_status;
-        });
-      }
->>>>>>> 305ddb94e6fe03b26ba60b2a9ef227106d185385
     });
     
     return portfolioSummaryList;
