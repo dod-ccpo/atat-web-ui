@@ -498,7 +498,7 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioCount = storeData.total_count;
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
 
-    storeData.portfolioSummaryList.forEach((portfolio) => {;
+    storeData.portfolioSummaryList.forEach((portfolio) => {
       const cardData: PortfolioCardData = {};
       cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
       cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
@@ -523,7 +523,7 @@ export default class PortfoliosSummary extends Vue {
         obj => obj.sys_id === cardData.taskOrderSysId
       );
       cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
-      console.log(cardData, 'card data')
+
       // lastModified - if status is "Processing" use "Started ... ago" string
       if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
         const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));

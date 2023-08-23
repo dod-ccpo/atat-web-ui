@@ -557,7 +557,6 @@ export default class PortfolioDrawer extends Vue {
     const storeData = _.cloneDeep(PortfolioStore.currentPortfolio);
     if (storeData) {
       this.portfolio = storeData;
-      console.log(this.portfolio.lastUpdated)
       this.csp = storeData.vendor?.toLowerCase() as string;      
       if (storeData.lastUpdated) {
         this.updateTime = createDateStr(storeData.lastUpdated, true, true);
