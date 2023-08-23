@@ -213,7 +213,8 @@ export class SummaryStore extends VuexModule {
       "method",
       "source_",
       "standard_",
-      "sys_"
+      "sys_",
+      "display",
     ];
     await this.assessFairOpportunity(fairOppObjectKeys);
     await this.assessEvalPlan(evalPlanObjectKeys);
@@ -242,17 +243,32 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessEvalPlan(objectKeys: string[]): Promise<void>{
     const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
+    debugger
     const keysToIgnore = objectKeys.filter(
       x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
     );
     const monitor = {object: evalPlanStore, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
+    let isComplete = false
+    if(evalPlanStore.source_selection=== "NO_TECH_PROPOSAL"
+        && evalPlanStore.has_custom_specifications !== ""){
+      isComplete = true
+    }else if(evalPlanStore.source_selection=== "TECH_PROPOSAL"
+        && evalPlanStore.method === "BVTO"
+        && evalPlanStore.standard_differentiators !== ""){
+      isComplete = true
+    }else if(evalPlanStore.source_selection=== "TECH_PROPOSAL"
+        && evalPlanStore.method === "LPTA"
+        && evalPlanStore.has_custom_specifications !== ""
+    ){
+      isComplete = true
+    }
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
       description: "",
-      isComplete: false,
+      isComplete,
       isTouched,
-      routeName: "CreateEvalPlan", 
+      routeName: "CreateEvalPlan",
       step:2,
       substep: 2
     }
