@@ -22,11 +22,12 @@ import {
   SensitiveInformationDTO
 } from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
-import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
+import { convertStringArrayToCommaList, toTitleCase, buildClassificationLabel } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
+
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -596,14 +597,14 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
-    const currentEnvironmentKeys = [
-
-    ]
+    const classificationLevels = await ClassificationRequirements.getAllClassificationLevels()
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
     const currentEnvironmentInstances = await  CurrentEnvironment.getCurrentEnvironmentInstances()
+    const systemDocs = currentEnvironment?.has_system_documentation !== ""
     const hasSystemDocs = currentEnvironment?.has_system_documentation === "YES"
     const systemDocsLength = currentEnvironment?.system_documentation
       ? currentEnvironment?.system_documentation.length : 0
+    const migrationDocs = currentEnvironment?.has_migration_documentation !== ""
     const hasMigrationDocs = currentEnvironment?.has_migration_documentation === "YES"
     const migrationDocsLength = currentEnvironment?.migration_documentation
       ? currentEnvironment?.migration_documentation.length : 0;
@@ -611,8 +612,10 @@ export class SummaryStore extends VuexModule {
     const envOnPremClass = currentEnvironment?.env_classifications_onprem
     const envCloudClass = currentEnvironment?.env_classifications_cloud
     let locationHasClassification = false
-    const systemDocsComplete = !hasSystemDocs || (hasSystemDocs && systemDocsLength > 0)
-    const migrationDocsComplete = !hasMigrationDocs || (hasMigrationDocs && migrationDocsLength > 0)
+    const systemDocsComplete = (systemDocs &&!hasSystemDocs)
+        || (hasSystemDocs && systemDocsLength > 0)
+    const migrationDocsComplete = (migrationDocs &&!hasMigrationDocs)
+        || (hasMigrationDocs && migrationDocsLength > 0)
     if(envLocation === "HYBRID" && envOnPremClass && envCloudClass){
       locationHasClassification = (envOnPremClass?.length > 0 && envCloudClass?.length > 0)
     }
@@ -625,7 +628,53 @@ export class SummaryStore extends VuexModule {
     const isComplete =  currentEnvironment?.current_environment_exists === "NO"
     // eslint-disable-next-line max-len
     || systemDocsComplete && migrationDocsComplete && locationHasClassification && currentEnvironmentInstances.length > 0;
-    const description = ""
+    let description = ""
+    if(currentEnvironmentInstances.length){
+      const onPremInstances:Record<string, number> = {}
+      const cloudInstances:Record<string, number> = {}
+      currentEnvironmentInstances.forEach(instance =>{
+        const classification = classificationLevels
+          .find(CL=> CL.sys_id === instance.classification_level)
+        if(classification){
+          const key = buildClassificationLabel(classification,"short")
+          if(instance.instance_location==="CLOUD"){
+            cloudInstances[key] = (cloudInstances[key] || 0) +1
+          }else{
+            onPremInstances[key] = (onPremInstances[key] || 0) +1
+          }
+        }
+      })
+
+      const envString = envLocation === "HYBRID"?"Hybrid"
+        :envLocation === "CLOUD"?"Cloud":"On-premise"
+      const startString = `${envString}`
+      const onPremString = Object.keys(onPremInstances).map(key => {
+        const instance = Number(onPremInstances[key]) > 1? "instances":"instance"
+        if(envString === "Hybrid"){
+          return `${onPremInstances[key]} on-premise ${instance} (${key})`
+        }
+        return `${onPremInstances[key]} ${instance} (${key})`
+      })
+      const cloudString = Object.keys(cloudInstances).map(key => {
+        const instance = Number(cloudInstances[key]) > 1? "instances":"instance"
+        if(envString === "Hybrid"){
+          return `${cloudInstances[key]} cloud ${instance} (${key})`
+        }
+        return `${cloudInstances[key]} ${instance} (${key})`
+      })
+      description += startString
+      if(envLocation === "HYBRID"){
+        description +=` environment:<br>${convertStringArrayToCommaList(cloudString,"and")}
+        ${convertStringArrayToCommaList(onPremString,"and")}`
+      }else if(envLocation === "ON_PREM"){
+        description +=` environment:<br>${convertStringArrayToCommaList(onPremString,"and")}`
+      }else if(envLocation === "CLOUD"){
+        description += ` environment:<br>${convertStringArrayToCommaList(cloudString,"and")}`
+      }
+    }
+    if(currentEnvironment?.current_environment_exists === "NO"){
+      description = "No existing environment"
+    }
     const currentEnvironmentSummaryItem: SummaryItem = {
       title: "Current Environment",
       description,
