@@ -662,6 +662,9 @@ export class SummaryStore extends VuexModule {
         description += ` environment:<br>${convertStringArrayToCommaList(cloudString,"and")}`
       }
     }
+    if(currentEnvironment?.current_environment_exists === "NO"){
+      description = "No existing environment"
+    }
     const currentEnvironmentSummaryItem: SummaryItem = {
       title: "Current Environment",
       description,
