@@ -51,6 +51,7 @@ export default class SummaryStepSix extends Mixins(SaveOnLeave){
   }
   
   public async mounted(): Promise<void>{
+    this.setIntroParagraph()
     Summary.setHasCurrentStepBeenVisited(
       await isStepValidatedAndTouched(6)
     )
