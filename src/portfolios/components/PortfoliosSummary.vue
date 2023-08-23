@@ -397,7 +397,7 @@ export default class PortfoliosSummary extends Vue {
   public getPortfolioStatus(portfolioStatus: string): string{
     const status = Object.keys(Statuses).find((status) =>
       Statuses[status].value === portfolioStatus
-    ) || portfolioStatus;
+    ) ?? portfolioStatus;
     return Statuses[status].label
   }
   public get csp(): string {
