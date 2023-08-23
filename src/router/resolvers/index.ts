@@ -275,6 +275,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 
 
 export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(4))
   const currentContracts =  AcquisitionPackage.currentContracts || [];
   const doesNotNeedContract = currentContracts.every(
     (c)=>c.current_contract_exists==="NO"
