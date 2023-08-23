@@ -749,21 +749,32 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
       this.catalogReviewResults = "";
       sectionsWithNoSelectedCount++;
     }
-    if (this.cspIsOnlySourceCapable === "YES" 
-    || this.reviewedCatalogs === "YES"
-    && this.selectedTechniquesUsed.length !== 0
-    && !this.techniquesUsed.includes(this.techniqueJWCCSysId) ) 
-    {
-      //if user selects yes to either question, adds sys id
-      // "Review of JWCC Contracts and/or contractor's catalog"
-      // to techniques used 
-      this.techniquesUsed += "," + this.techniqueJWCCSysId;
-    }
+
 
     if (this.sameAsResearchDate === "YES") {
       this.catalogReviewStartDate = this.researchStartDate;
       this.catalogReviewEndDate = this.researchEndDate;
     }
+    if (this.cspIsOnlySourceCapable === "YES" || this.reviewedCatalogs === "YES")
+    {
+      if (this.selectedTechniquesUsed.length !== 0)
+      {
+        //if user selects yes to either question, adds sys id
+        // "Review of JWCC Contracts and/or contractor's catalog"
+        // to techniques used
+        if (!this.techniquesUsed.includes(this.techniqueJWCCSysId))
+        {
+          this.techniquesUsed += "," + this.techniqueJWCCSysId;
+        }
+      } else {
+        this.techniquesUsed = this.techniqueJWCCSysId 
+      }
+    } else {
+      this.techniquesUsed = this.techniquesUsed.replace("," + this.techniqueJWCCSysId, "");
+      this.techniquesUsed = this.techniquesUsed.replace(this.techniqueJWCCSysId, "");
+    }
+
+
 
     if (!this.needsMRR || this.selectedTechniquesUsed.length === 0) {
       this.techniquesUsed = "";
@@ -805,7 +816,6 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
     } catch (error) {
       console.log(error);
     }
-
     return true;
   }
 
