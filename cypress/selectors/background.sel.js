@@ -24,6 +24,7 @@ module.exports = {
   expirationDatePicker:"#ExpirationDatePicker",   
   navigateNextMonth: "#ExpirationDatePicker button[aria-label='Next month']",
   selectDate:".v-date-picker-table button:not(.v-btn--disabled)",
+  expirationSelectDate:"#ExpirationDatePicker > .v-picker__body > :nth-child(1) >.v-date-picker-table button:not(.v-btn--disabled)",
   tNoTooltipBtn: "#TooltipButton_TaskDeliveryOrderNumber",
   tNoTooltipText:"#TooltipText_TaskDeliveryOrderNumber",
   expirationTooltipBtn:"#TooltipButton_Expiration",

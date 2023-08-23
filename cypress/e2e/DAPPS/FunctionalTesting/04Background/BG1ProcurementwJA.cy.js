@@ -76,13 +76,19 @@ describe("Test suite: Step04-Procurement History", () => {
             dayOfMonth,
             background.startDatepicker
         );
+        cy.waitUntil(function () {
+            return cy.findElement(background.startDateTextField).should("have.value",startDateFormatted);
+        });
         cy.selectDatefromDatePicker(
             background.expirationDatePickerIcon,
             background.navigateNextMonth,
-            background.selectDate,
+            background.expirationSelectDate,
             dayOfMonth,
             background.expirationDatePicker
         );
+        cy.waitUntil(function () {
+            return cy.findElement(background.expirationDatePickerInputbox).should("have.value",expiredDateFormatted);
+        });
         cy.enterTextInTextField(background.incumbentTxtBox, cName);
         cy.findElement(background.hubRadioOption).click({
             force: true
