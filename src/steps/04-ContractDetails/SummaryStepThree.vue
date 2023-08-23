@@ -50,7 +50,8 @@ export default class SummaryStepThree extends Mixins(SaveOnLeave){
         + "on to gather background information."
   }
 
-  public async mounted():Promise<void> {  
+  public async mounted():Promise<void> {
+    this.setIntroParagraph()
     Summary.setHasCurrentStepBeenVisited(
       await isStepValidatedAndTouched(3)
     )
