@@ -93,7 +93,8 @@ export const StoreProperties = {
   ContractConsiderations: "contractConsiderations",
   Regions:"regions",
   PackageDocumentsSigned:"packageDocumentsSigned",
-  ContractingShopNonDitcoAddress:"contractingShopNonDitcoAddress"
+  ContractingShopNonDitcoAddress:"contractingShopNonDitcoAddress",
+  CustomerFeedback:"customerFeedback"
 };
 
 export const Statuses: Record<string, Record<string, string>> = {
@@ -368,6 +369,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
   //has the store been initialized
   initialized = false;
+
+  isPackageNew = false;
   //keeps track of project title for global display
   projectTitle = "";
   acquisitionPackage: AcquisitionPackageDTO | null = null;
@@ -720,6 +723,16 @@ export class AcquisitionPackageStore extends VuexModule {
   public get getIsLoading(): boolean {
     return this.isLoading;
   }
+
+  @Action({rawError: true})
+  public setIsPackageNew(val: boolean): void {
+    this.doSetIsPackageNew(val);
+  }
+  @Mutation
+  public doSetIsPackageNew(val: boolean): void {
+    this.isPackageNew = val;
+  }
+
   @Action({rawError: true})
   public setIsLoading(val: boolean): void {
     this.doSetIsLoading(val);
@@ -1057,6 +1070,13 @@ export class AcquisitionPackageStore extends VuexModule {
       (c)=>c.is_valid === false
     ) as CurrentContractDTO[]
     await this.doSetCurrentContracts([...updatedContracts, ...invalidContracts]);
+  }
+
+  @Mutation
+  public setCustomerFeedback(value: CustomerFeedbackDTO): void {
+    this.customerFeedback = this.customerFeedback
+      ? Object.assign(this.customerFeedback, value)
+      : value;
   }
 
   @Mutation
@@ -1541,7 +1561,6 @@ export class AcquisitionPackageStore extends VuexModule {
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
-
       await ContactData.initialize();
       this.setPackagePercentLoaded(5);
       await OrganizationData.initialize();
@@ -1589,7 +1608,6 @@ export class AcquisitionPackageStore extends VuexModule {
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
       const ContractingShopNonDitcoAddressID =
           acquisitionPackage.contracting_shop_non_ditco_address as string;
-      const customerFeedback = acquisitionPackage.customer_feedback as string;
       const travelNeeded = acquisitionPackage.is_travel_needed as string
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -1607,7 +1625,6 @@ export class AcquisitionPackageStore extends VuexModule {
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
         contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
-        customer_feedback: customerFeedback
       });
       await this.setCurrentUser();
       if(travelNeeded){
@@ -1618,9 +1635,24 @@ export class AcquisitionPackageStore extends VuexModule {
         await this.setPackageContributors(acquisitionPackage.contributors);
       }
 
-      if (customerFeedback){
-        const feedback = await api.feedbackTable.retrieve(customerFeedback)
-        this.customerFeedback = feedback
+      const feedbackQuery: AxiosRequestConfig = {
+        params: {
+          sysparm_query: "acquisition_package="
+              + AcquisitionPackage.acquisitionPackage?.sys_id
+        }
+      };
+      const feedback = await api.feedbackTable.getQuery(feedbackQuery)
+      if(feedback){
+        const userIdx = feedback.findIndex(data =>{
+          data = convertColumnReferencesToValues(data)
+          return data.user_sys_id === UserStore.currentUser.sys_id
+        })
+        if(userIdx > -1){
+          this.setCustomerFeedback(feedback[userIdx])
+        }
+      } else{
+        const initialFeedback = {} as CustomerFeedbackDTO
+        this.setCustomerFeedback(initialFeedback)
       }
 
       await ClassificationRequirements.getAllClassificationLevels();
@@ -1861,6 +1893,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       this.setInitialized(true);
       this.setIsLoading(false);
+      await Summary.validateStepTwo();
       await Summary.validateStepThree();
       await Summary.validateStepFive();
       await Summary.validateStepSix();
@@ -1929,7 +1962,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setContact({ data: initialContact(), type: "Financial POC" })
           this.setContractConsiderations(initialContractConsiderations());
-
           await this.setFairOpportunity(initialFairOpportunity());
           const evaluationPlanDTO = await EvaluationPlan.getEvaluationPlan();
           if(evaluationPlanDTO){
@@ -1961,7 +1993,6 @@ export class AcquisitionPackageStore extends VuexModule {
             .create({acquisition_package:acquisitionPackage.sys_id})
           this.setPackageDocumentsSigned(packageDocumentsSigned)
           this.setPackagePercentLoaded(100);
-
           this.setInitialized(true);
         }
       } catch (error) {
@@ -2049,6 +2080,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Regions]:api.regionsTable,
     [StoreProperties.PackageDocumentsSigned]:api.packageDocumentsSignedTable,
     [StoreProperties.ContractingShopNonDitcoAddress]:api.addressTable,
+    [StoreProperties.CustomerFeedback]:api.feedbackTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -2068,6 +2100,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Regions]: "regions",
     [StoreProperties.PackageDocumentsSigned]: "package_documents_signed",
     [StoreProperties.ContractingShopNonDitcoAddress]: "contracting_shop_non_ditco_address",
+    [StoreProperties.CustomerFeedback]: "customer_feedback",
 
   }
 
@@ -2299,6 +2332,22 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async saveFeedback(value: CustomerFeedbackDTO): Promise<void> {
+    try {
+      const sys_id = value.sys_id || "";
+      if(sys_id.length === 0){
+        const feedbackData = await api.feedbackTable.create(value)
+        this.setCustomerFeedback(feedbackData)
+      }else{
+        const feedbackData = await api.feedbackTable.update(sys_id,value)
+        this.setCustomerFeedback(feedbackData)
+      }
+    } catch (error) {
+      throw new Error(`Error occurred saving feedback ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
   public async updateAcquisitionPackage(): Promise<void>{
     if(this.acquisitionPackage && this.acquisitionPackage.sys_id){
       await api.acquisitionPackageTable.update(
@@ -2314,8 +2363,6 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({ rawError: true })
   async loadSensitiveInformation(): Promise<SensitiveInformationDTO> {
     try {
-      await this.ensureInitialized();
-
       const sys_id = this.sensitiveInformation?.sys_id || "";
 
       if (sys_id.length > 0) {
@@ -2646,7 +2693,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.isTravelNeeded = "";
     this.isTravelTouched = false;
     this.fairOppExplanations = initialFairOppExplanations();
-    
+    this.customerFeedback = null
     this.fairOppBackToReview = false;
     this.replaceCustomWithGenerated = false;
   }

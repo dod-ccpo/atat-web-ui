@@ -7,7 +7,7 @@
         </h1>
         <div class="copy-max-width">
           <p class="mb-10">
-           {{ headline }}
+           {{ introParagraph }}
           </p>
         </div>
 
@@ -25,10 +25,12 @@
 import { Component, Mixins} from "vue-property-decorator";
 import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
-import Vue from "vue";
-import Summary, { getSummaryItemsforStep, isStepComplete } from "@/store/summary";
+import Summary, { 
+  getSummaryItemsforStep,
+  isStepComplete, 
+  isStepValidatedAndTouched 
+} from "@/store/summary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -38,8 +40,9 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class SummaryStepSeven extends Mixins(SaveOnLeave){
   public summaryItems: SummaryItem[] = [];
 
-  get headline():string{
-    return (isStepComplete(7))
+  public introParagraph = ""; 
+  public setIntroParagraph():void {
+    this.introParagraph = (isStepComplete(7))
       ? "You are all done with this section, but you can come back at any time to edit "
         + "details. When you are ready, we will move on to your financial details."
       : "We need some more details for this section. You can add info now, or come back "
@@ -48,7 +51,10 @@ export default class SummaryStepSeven extends Mixins(SaveOnLeave){
   }
 
   public async mounted(): Promise<void>{
-    await Summary.validateStepSeven();
+    this.setIntroParagraph()
+    Summary.setHasCurrentStepBeenVisited(
+      await isStepValidatedAndTouched(7)
+    )
     this.summaryItems = await getSummaryItemsforStep(7);
     await Summary.toggleButtonColor(7);
   }

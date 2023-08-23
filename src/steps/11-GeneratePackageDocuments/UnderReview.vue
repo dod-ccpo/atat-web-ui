@@ -1,5 +1,5 @@
 <template>
-  <div class="container-max-width ml-10">
+  <div class="container-max-width ml-10 position-relative pb-10">
     <h1>
       Your package is currently under review
     </h1>
@@ -20,7 +20,7 @@
     </div>
 
     <ATATLoadingPackageModal :isLoading="isLoading" />
-
+    <ATATFeedbackForm/>
   </div>
 </template>
 <script lang="ts">
@@ -33,9 +33,11 @@ import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 import CompletePackageCard 
   from "@/steps/11-GeneratePackageDocuments/components/CompletePackageCard.vue"
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
 
 @Component({
   components: {
+    ATATFeedbackForm,
     ATATSVGIcon,
     ATATLoadingPackageModal,
     CompletePackageCard
@@ -43,6 +45,9 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 export default class ReadyToSubmit extends Vue {
   public packageNotInitialized = false;
+  public feedbackOptions: string[] =[]
+  public otherFeedbackValue = ""
+  private DAPPSExperience = null
 
   public get isLoading(): boolean {
     return this.packageNotInitialized || this.isPackageLoading;

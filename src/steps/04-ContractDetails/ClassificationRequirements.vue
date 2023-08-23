@@ -126,6 +126,7 @@ import _ from "lodash";
 })
 
 export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
+
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public savedSelectedClassLevelList: SelectedClassificationLevelDTO[] = [];
@@ -144,6 +145,10 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return buildClassificationCheckboxList(data, "", true, true);
+  }
+
+  get getIsClassificationLevelsTouched():boolean {
+    return ClassificationReqs.isClassificationLevelsTouched;
   }
 
   get getServiceOfferingName():string {
@@ -179,6 +184,9 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
         this.getClassificationItem((updated.filter(x => current.indexOf(x) === -1))[0]);
       this.processNewSelectedItem();
     }
+    if (updated.length === 0 && this.getIsClassificationLevelsTouched) {
+      await AcquisitionPackage.setValidateNow(true);
+    }
   }
 
   public getClassificationItem(sysId: string): ClassificationLevelDTO {
@@ -191,6 +199,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   public processNewSelectedItem(): void {
+    ClassificationReqs.setIsClassificationLevelsTouched(true);
     ClassificationReqs.addCurrentSelectedClassLevelList(this.itemAdded.sys_id as string);
   }
 
@@ -302,7 +311,9 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     this.selectedOptions = (await ClassificationReqs.getSelectedClassificationLevels())
       .map(savedSelectedClassLevel =>
         savedSelectedClassLevel.classification_level) as string[];
-
+    if (this.selectedOptions.length > 0) {
+      await ClassificationReqs.setIsClassificationLevelsTouched(true);
+    }
     this.savedSelectedClassLevelList =  _.cloneDeep(selectedOptionsOnLoad);
 
     this.buildClassificationRequirementsAlert();

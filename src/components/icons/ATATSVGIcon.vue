@@ -1,5 +1,9 @@
 <template>
-  <div :style="divStyle" class="_svg-icon">
+  <div
+    @mouseenter="mouseEnter"
+    @mouseleave="mouseLeave"
+    :style="divStyle"
+    class="_svg-icon">
     <component :is="name" 
       :color="getColor()" 
       :height="_height" 
@@ -103,12 +107,18 @@ import CloudManagementOfficeAuthorization
 import ContactInformation from "@/components/icons/ContactInformation.vue";
 import JWCCPricingCalculator from "@/components/icons/JWCCPricingCalculator.vue";
 import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
+import Satisfied from "./Satisfied.vue";
+import Dissatisfied from "./Dissatisfied.vue";
+import Neutral from "@/components/icons/Neutral.vue";
+import VerySatisfied from "@/components/icons/VerySatisfied.vue";
+import VeryDissatisfied from "@/components/icons/VeryDissatisfied.vue";
+import FeedbackThankYou from "@/components/icons/FeedbackThankYou.vue";
 
 
 @Component({
   components: {
-    ArrowBack,
     ArchitectureCircle,
+    ArrowBack,
     Aws,
     Azure,
     BugReport,
@@ -120,16 +130,17 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     ChevronRight,
     Close,
     Cloud,
-    CloudUpload,
     CloudManagementOfficeAuthorization,
+    CloudUpload,
     CommentBubble,
-    ContactSupport,
     ContactInformation,
+    ContactSupport,
     ContentCopy,
     ControlPoint,
     Currency,
     CurrentFunctionsCircle,
     DisaLogo,
+    Dissatisfied,
     Download,
     DynamicForm,
     Edit,
@@ -138,10 +149,11 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     ExclamationMark,
     ExternalLink,
     Failed,
-    Filters,
     Feedback,
+    FeedbackThankYou,
     FilePresent,
     FileSignature,
+    Filters,
     Gcp,
     HelpOutline,
     InfoOutline,
@@ -150,16 +162,18 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     ManageAccount,
     MenuBook,
     MonetizationOn,
+    Neutral,
     OptionPending,
     Oracle,
     OtherCommonDocumentation,
     Pdf,
     People,
+    PeriodOfPerformance,
     Person,
     PersonAdd,
     PersonAddAlt,
-    PeriodOfPerformance,
     Phone,
+    Place,
     PlusSign,
     Processing,
     ProvisionAWS,
@@ -167,11 +181,13 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     Provisioned,
     ProvisionGCP,
     ProvisionOracle,
-    RequestQuote,
-    Role,
+    ReadyToGeneratePackage,
     Remove,
     RemoveCircle,
+    RequestQuote,
     Restore,
+    Role,
+    Satisfied,
     Search,
     SendEmail,
     Service,
@@ -183,17 +199,17 @@ import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
     SupportCircle,
     SwapVertical,
     TaskAlt,
-    TriangleUp,
-    TriangleDown,
     TrendingDown,
     TrendingUp,
+    TriangleDown,
+    TriangleUp,
     UnderReview,
-    UploadFile,
     Update,
+    UploadFile,
+    VeryDissatisfied,
+    VerySatisfied,
     Warning,
     WarningAmber,
-    ReadyToGeneratePackage,
-    Place,
     XaasCircle,
   }
 })
@@ -204,15 +220,20 @@ export default class ATATSVGIcon extends Vue {
   @PropSync("width", {default: 0, required: true}) private _width!: number;
   @PropSync("height",{default: 0, required: true}) private _height!: number;
   @Prop({default: "", required: true}) private name!: string;
-  
-  private divStyle = "";
 
-  private setDivStyle(): void {
-    Vue.nextTick(()=>{
-      this.divStyle =  "width: " + this._width + "px;" +
+
+  private get divStyle(): string {
+    return "width: " + this._width + "px;" +
         "height: " + this._height + "px;" +
         "line-height: 0px";
-    });
+
+  }
+
+  public mouseEnter():void {
+    this.$emit("mouseenter")
+  }
+  public mouseLeave():void {
+    this.$emit("mouseleave")
   }
 
   private getColor(): string {
@@ -237,9 +258,6 @@ export default class ATATSVGIcon extends Vue {
     { "warning-dark2": "e9a514" },
   ]
 
-  private mounted(): void{
-    this.setDivStyle();
-  }
 
 }
 </script>

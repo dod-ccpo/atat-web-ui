@@ -24,23 +24,7 @@
                       This portfolio was archived on {{ lastUpdated }}
                     </template>
                   </ATATAlert>
-
-
-                  <ATATAlert
-                    id="InaccurateFinancialDetails"
-                    type="error"
-                    class="container-max-width my-10"
-                  >
-                    <template v-slot:content>
-                      <h3 class="mb-1">Financial details may be inaccurate</h3>
-                      <p class="mb-0">
-                        We are currently experiencing an issue with retrieving cost data from
-                        {{ cspLongName() }}. In the meantime, administrators can login
-                        to your CSP console directly to get detailed cost analyses and breakdowns.
-                        We apologize for this inconvenience.
-                      </p>
-                    </template>
-                  </ATATAlert>
+                  <FinancialDetailsAlert />
                 </div>
               <div class="d-flex justify-space-between width-100 mb-10">
                 <h2>Overview</h2>
@@ -282,7 +266,7 @@
                           v-for="(idiqClin, index) in idiqClins"
                           :key="index"
                           v-model="checked[index + 1]"
-                          :label="idiqClins[index].idiq_clin_label"
+                          :label="idiqClins[index].idiq_clin"
                           :class="'color_chart_' + (index + 2)"
                           hide-details="true"
                           :ripple="false"
@@ -822,7 +806,7 @@ import ATATSVGIcon from "../../components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import DonutChart from "../../components/charts/DonutChart.vue";
 import LineChart from "../../components/charts/LineChart.vue";
-
+import FinancialDetailsAlert from "./FinancialDetailsAlert.vue";
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
@@ -859,6 +843,7 @@ import Portfolio from "@/store/portfolio";
     DonutChart,
     LineChart,
     FundingAlert,
+    FinancialDetailsAlert
   },
 })
 export default class PortfolioDashboard extends Vue {
@@ -978,28 +963,6 @@ export default class PortfolioDashboard extends Vue {
 
   public get showFundingAlert(): boolean {
     return this.fundingAlertType.length > 0;
-  }
-
-  private cspLongName(): string {
-    const cspName = PortfolioStore.currentPortfolio.csp ?? "";
-    let longName = "";
-    switch(cspName.toLowerCase()) {
-    case 'aws':
-      longName = 'Amazon Web Services';
-      break;
-    case 'azure':
-      longName = "Microsoft Azure";
-      break;
-    case 'gcp':
-      longName = "Google Cloud";
-      break;
-    case 'oracle':
-      longName = "Oracle Cloud";
-      break;
-    default:
-      break;
-    }
-    return longName;
   }
 
   private get fundingAlertType(): string {
@@ -1398,11 +1361,10 @@ export default class PortfolioDashboard extends Vue {
       const color = this.chartDataColorSequence[i + 1];
       const clin = this.idiqClins.find((clin) => clin.clin_number === clinNo);
       if (clin && this.burnChartData.datasets) {
-        // ATAT TODO - reinstate idiq_clin_labels - currently blank in data from SNOW
         const clinActualData = {
-          label: clin.idiq_clin_label,
-          dataSetId: clin.idiq_clin_label
-            ? getIdText(clin.idiq_clin_label + "Actual")
+          label: clin.idiq_clin,
+          dataSetId: clin.idiq_clin
+            ? getIdText(clin.idiq_clin + "Actual")
             : clinNo + "Data",
           data: actualBurn[clinNo],
         };
@@ -1418,9 +1380,9 @@ export default class PortfolioDashboard extends Vue {
         burnChartDataSets.push(clinActualDataSet);
 
         const clinProjectedData = {
-          label: clin.idiq_clin_label + " Projected",
-          dataSetId: clin.idiq_clin_label
-            ? getIdText(clin.idiq_clin_label + "Projected")
+          label: clin.idiq_clin + " Projected",
+          dataSetId: clin.idiq_clin
+            ? getIdText(clin.idiq_clin + "Projected")
             : clinNo + "DataProjected",
           data: projectedBurn[clinNo],
         };
@@ -1497,7 +1459,7 @@ export default class PortfolioDashboard extends Vue {
       };
       const clinNo = idiqClin.clin_number;
       obj.clinStatus = idiqClin.clin_status;
-      obj.clinLabel = idiqClin.idiq_clin_label || "";
+      obj.clinLabel = idiqClin.idiq_clin || "";
       obj.popStart = createDateStr(idiqClin.pop_start_date, true);
       obj.popEnd = createDateStr(idiqClin.pop_end_date, true);
 
