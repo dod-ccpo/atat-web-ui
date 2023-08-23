@@ -10,7 +10,11 @@ import commonCorAcor from "../selectors/commonCorAcor.sel";
 import acor from "../selectors/acor.sel";
 import background from "../selectors/background.sel";
 import contractDetails from "../selectors/contractDetails.sel";
-import { cleanText, colors, prefixId } from "../helpers";
+import {
+  cleanText,
+  colors,
+  prefixId
+} from "../helpers";
 import occ from "../selectors/occ.sel";
 import fd from "../selectors/financialDetails.sel";
 import performanceReqs from "../selectors/performanceReqs.sel";
@@ -111,12 +115,13 @@ Cypress.Commands.add("waitUntilModalNotVisible", () => {
     cy.waitUntil(
       () => {
         return Cypress.$("#LoadingModalTitle").is(":hidden") === true;
-      },
-      { timeout: 30000 }
+      }, {
+        timeout: 30000
+      }
     ).then(() => {
       cy.verifyPageHeader(
         "Are you using the Defense Information Technology Contracting Organization (DITCO)" +
-          " for processing your JWCC task order?"
+        " for processing your JWCC task order?"
       );
     });
   });
@@ -135,7 +140,9 @@ Cypress.Commands.add("homePageClickAcquisitionPackBtn", () => {
 });
 
 Cypress.Commands.add("selectDitcoOption", (selector, text) => {
-  cy.radioBtn(selector, text).click({ force: true });
+  cy.radioBtn(selector, text).click({
+    force: true
+  });
   cy.waitUntil(function () {
     return Cypress.$(selector).is(":checked") === true;
   });
@@ -143,8 +150,9 @@ Cypress.Commands.add("selectDitcoOption", (selector, text) => {
   cy.waitUntil(
     function () {
       return Cypress.$(common.continueBtn).is(":hidden") === true;
-    },
-    { timeout: 30000 }
+    }, {
+      timeout: 30000
+    }
   ).then(() => {
     cy.verifyPageHeader(
       "Let’s start with basic info about your new acquisition"
@@ -159,7 +167,9 @@ Cypress.Commands.add("clickDevToggleBtn", () => {
     return Cypress.$(toggleSel).attr("aria-checked") == "false";
   });
   cy.findElement(toggleSel)
-    .click({ force: true })
+    .click({
+      force: true
+    })
     .then(() => {
       cy.waitUntil(function () {
         return Cypress.$(toggleSel).attr("aria-checked") == "true";
@@ -211,13 +221,13 @@ Cypress.Commands.add("btnClick", (selector, text) => {
   });
 });
 
-Cypress.Commands.add("clickBackButton", (selector,headerText) => {
+Cypress.Commands.add("clickBackButton", (selector, headerText) => {
   cy.btnClick(common.backBtn, "Back");
   cy.waitUntilElementIsGone(selector);
   cy.verifyPageHeader(headerText);
 });
 
-Cypress.Commands.add("clickContinueButton", (selector,headerText) => {
+Cypress.Commands.add("clickContinueButton", (selector, headerText) => {
   cy.btnClick(common.continueBtn, " Continue ");
   cy.waitUntilElementIsGone(selector);
   cy.verifyPageHeader(headerText);
@@ -283,7 +293,9 @@ Cypress.Commands.add(
       .clear()
       .click()
       .focus()
-      .blur({ force: true })
+      .blur({
+        force: true
+      })
       .then(() => {
         cy.checkErrorMessage(errorSelector, errorMessage);
       });
@@ -293,7 +305,9 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   "verifyRequiredDropdown",
   (textboxSelector, errorSelector, errorMessage) => {
-    cy.findElement(textboxSelector).click({ force: true });
+    cy.findElement(textboxSelector).click({
+      force: true
+    });
     cy.clickSomethingElse(errorSelector).then(() => {
       cy.checkErrorMessage(errorSelector, errorMessage);
     });
@@ -304,8 +318,12 @@ Cypress.Commands.add(
   "verifyRequiredCheckbox",
   (checkboxSelector, errorSelector, errorMessage) => {
     cy.findElement(checkboxSelector)
-      .check({ force: true })
-      .uncheck({ force: true })
+      .check({
+        force: true
+      })
+      .uncheck({
+        force: true
+      })
       .then(() => {
         cy.checkErrorMessage(errorSelector, errorMessage);
       });
@@ -343,7 +361,7 @@ Cypress.Commands.add("verifyTextMatches", (selector, expectedText) => {
 
 Cypress.Commands.add("reviewPageTxtMatches", (selector, it) => {
   cy.findElement(selector).then(($inputVal) => {
-    const textReview =cleanText($inputVal.val());
+    const textReview = cleanText($inputVal.val());
     cy.log(textReview);
     expect(textReview).equal(it);
   });
@@ -360,20 +378,25 @@ Cypress.Commands.add("checkBoxOption", (selector, value) => {
 Cypress.Commands.add("selectCheckBoxes", (checkBoxesSelectors) => {
   checkBoxesSelectors.forEach((selector) => {
     cy.findElement(selector)
-      .click({ force: true })
+      .click({
+        force: true
+      })
       .then(() => {
         cy.waitUntil(
           () => {
             return Cypress.$(selector).is(":checked") === true;
-          },
-          { timeout: 30000 }
+          }, {
+            timeout: 30000
+          }
         );
       });
   });
 });
 
 Cypress.Commands.add("selectRadioBtn", (selector, value) => {
-  cy.radioBtn(selector, value).click({ force: true });
+  cy.radioBtn(selector, value).click({
+    force: true
+  });
 });
 Cypress.Commands.add("verifyCheckBoxLabels", (selector, expectedLabels) => {
   const foundLabels = [];
@@ -399,18 +422,27 @@ Cypress.Commands.add("verifyCheckBoxLabels", (selector, expectedLabels) => {
 });
 
 Cypress.Commands.add("verifyRadioGroupLabels", (selector, expectedLabels) => {
-  const foundLabels = [];
-  const length = expectedLabels.length;
+  const labels = []
+  const length = expectedLabels.length
   cy.findElement(selector)
-    .should("have.length", length)
-    .each(($radio) => {
-      cy.findElement(`label[for=${$radio.attr("id")}]`)
-        .invoke("text")
-        .then((text) => foundLabels.push(cleanText(text)));
+    .should('have.length', length)
+    .each(($radio, index) => {
+      cy.findElement(`label[for=${$radio.attr('id')}]`)
+        .invoke('text')
+        .then((text) => {
+          labels.push(cleanText(text))
+          cy.log(text)
+          if ((index + 1) === length) {
+            console.log("Actual:", labels)
+            console.log("Expected:", expectedLabels)
+          }
+        })
     })
     .then(() => {
-      expect(foundLabels).to.deep.equal(expectedLabels);
-    });
+      cy.log(labels)
+      expect(labels).to.deep.equal(expectedLabels)
+    })
+
 });
 
 Cypress.Commands.add("verifyElementTextArray", (selector, expectedText) => {
@@ -439,8 +471,8 @@ Cypress.Commands.add(
   "verifyColumnHeaders",
   (columnIndex, headerText, expectedValue) => {
     cy.findElement(
-      ".v-data-table-header  th:nth-child(" + columnIndex + ") span"
-    )
+        ".v-data-table-header  th:nth-child(" + columnIndex + ") span"
+      )
       .invoke("text")
       .as("foundHeaderText");
 
@@ -485,7 +517,7 @@ Cypress.Commands.add("clickSideStepper", (stepperSelector, stepperText) => {
     .should("be.visible")
     .and("have.length", 1)
     .and("contain", stepperText)
-    .click().then(()=>{
+    .click().then(() => {
       cy.waitUntil(function () {
         return cy.findElement(stepperSelector).should("have.class", "router-link-active");
       });
@@ -506,15 +538,21 @@ Cypress.Commands.add(
   "autoCompleteSelection",
   (selector, inputText, selector1) => {
     cy.findElement(selector).type(inputText);
-    cy.findElement(selector1).first().click({ force: true });
+    cy.findElement(selector1).first().click({
+      force: true
+    });
   }
 );
 
 Cypress.Commands.add(
   "autoCompletePhoneCountrySelection",
   (selector, inputText, selector1) => {
-    cy.findElement(selector).type(inputText, { force: true });
-    cy.findElement(selector1).first().click({ force: true });
+    cy.findElement(selector).type(inputText, {
+      force: true
+    });
+    cy.findElement(selector1).first().click({
+      force: true
+    });
   }
 );
 
@@ -544,7 +582,9 @@ Cypress.Commands.add("completePercent", () => {
 
 Cypress.Commands.add("verifyAcqPackageName", (pt) => {
   cy.enterTextInTextField(projectOverview.projectTitleTxtBox, pt)
-    .blur({ force: true })
+    .blur({
+      force: true
+    })
     .then(($el) => {
       cy.log($el.val());
       const enteredText = $el.val();
@@ -561,14 +601,18 @@ Cypress.Commands.add("fillNewAcquisition", (projectTitle, scope) => {
   cy.enterTextInTextField(projectOverview.scopeTxtBox, scope);
   cy.findElement(projectOverview.radioBtnYes)
     .should("have.value", "YES")
-    .click({ force: true });
+    .click({
+      force: true
+    });
   cy.findElement(projectOverview.projDisChxkBox).scrollIntoView();
   cy.checkBoxOption(projectOverview.projDisChxkBox, "YES").click({
     force: true,
   });
   cy.findElement(projectOverview.cjadc2NoRadioOption)
-  .should("have.value", "NO")
-  .click({ force: true });
+    .should("have.value", "NO")
+    .click({
+      force: true
+    });
   cy.btnExists(common.continueBtn, " Continue ").click();
   cy.waitUntilElementIsGone(projectOverview.projDisChxkBox);
   cy.verifyPageHeader(
@@ -581,7 +625,9 @@ Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
     .should("be.visible")
     .clear()
     .type(percentage)
-    .blur({ force: true })
+    .blur({
+      force: true
+    })
     .then(($el) => {
       cy.log($el.val());
       const enteredText = $el.val();
@@ -626,7 +672,9 @@ Cypress.Commands.add("agency", (inputText) => {
 });
 
 Cypress.Commands.add("selectTypeOfMailingAddress", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  });
   cy.findElement(org.addressTypeRadioActive).then(($radioBtn) => {
     const selectedOption = $radioBtn.text();
     cy.log(selectedOption);
@@ -680,9 +728,15 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress) => {
     ) {
       //Assert Organization's address labels
 
-      cy.findElement(org.apoFpoDropDown).click({ force: true });
-      cy.findElement(orgAddress.apoFPOSelector).click({ force: true });
-      cy.findElement(org.stateCodeDropDown).click({ force: true });
+      cy.findElement(org.apoFpoDropDown).click({
+        force: true
+      });
+      cy.findElement(orgAddress.apoFPOSelector).click({
+        force: true
+      });
+      cy.findElement(org.stateCodeDropDown).click({
+        force: true
+      });
       cy.findElement(orgAddress.statecodeSelector).click();
       cy.enterTextInTextField(org.zipCodeTxtBox, orgAddress.zipCode);
     }
@@ -706,7 +760,11 @@ Cypress.Commands.add(
   "contactRoleRadioBtnOption",
   (selector, value, sbSelector) => {
     cy.radioBtn(selector, value)
-      .click({ force: true }, { timeout: 1000 })
+      .click({
+        force: true
+      }, {
+        timeout: 1000
+      })
       .should("be.checked");
     cy.findElement(contact.contactRadioBtnActive).then(($radioBtn) => {
       cy.log($radioBtn.text());
@@ -764,13 +822,13 @@ Cypress.Commands.add(
         " contract for, or fund/pay bills for materials and services.";
 
       const tooltipButton =
-        prefix === "COR_"
-          ? commonCorAcor.toolTipBtnDodaacCOR
-          : commonCorAcor.toolTipBtnDodaacACOR;
+        prefix === "COR_" ?
+        commonCorAcor.toolTipBtnDodaacCOR :
+        commonCorAcor.toolTipBtnDodaacACOR;
       const tooltipText =
-        prefix === "COR_"
-          ? commonCorAcor.toolTipTxtDodaacCOR
-          : commonCorAcor.toolTipTxtDodaacACOR;
+        prefix === "COR_" ?
+        commonCorAcor.toolTipTxtDodaacCOR :
+        commonCorAcor.toolTipTxtDodaacACOR;
 
       cy.log("TOOLTIP SELECTOR", selector);
       cy.hoverToolTip(tooltipButton, tooltipText, expectedText);
@@ -825,7 +883,9 @@ Cypress.Commands.add(
       } else {
         cy.findElement(commonCorAcor.searchContactListItems)
           .first()
-          .click({ force: true });
+          .click({
+            force: true
+          });
         cy.findElement(commonCorAcor.selectedContactCard)
           .should("exist")
           .and("be.visible");
@@ -844,18 +904,26 @@ Cypress.Commands.add(
       commonCorAcor.contactAffRadioGroupTxt,
       contactAffiliationText
     );
-    cy.radioBtn(radioSelector, radioValue).click({ force: true });
+    cy.radioBtn(radioSelector, radioValue).click({
+      force: true
+    });
     selector = prefixId(commonCorAcor.serviceBranchDropdown, corOrAcor);
-    cy.findElement(selector).click({ force: true }).then(()=>{
+    cy.findElement(selector).click({
+      force: true
+    }).then(() => {
       cy.waitUntil(() => {
-      return Cypress.$(selector).is(":visible") === true;
-    },{ timeout: 30000 })
-  });
+        return Cypress.$(selector).is(":visible") === true;
+      }, {
+        timeout: 30000
+      })
+    });
     selector = prefixId(commonCorAcor.serviceBranchDropdownList, corOrAcor);
-    cy.findElement(selector).first().click().then(()=>{      
+    cy.findElement(selector).first().click().then(() => {
       cy.waitUntil(() => {
-          return Cypress.$(selector).is(":hidden") === true;
-        },{ timeout: 30000 })
+        return Cypress.$(selector).is(":hidden") === true;
+      }, {
+        timeout: 30000
+      })
     });
     cy.findElement(commonCorAcor.contactAffRadioActive).then(($radioBtn) => {
       cy.log($radioBtn.text());
@@ -873,7 +941,9 @@ Cypress.Commands.add(
         cy.dropDownClick(selector);
         //select the value from Rank Dropdown
         selector = prefixId(commonCorAcor.rankAutoCompleteList, corOrAcor);
-        cy.findElement(selector).first().click({ force: true });
+        cy.findElement(selector).first().click({
+          force: true
+        });
       } else if (selectedOption === "radio_button_checkedCivilian") {
         selector = prefixId(commonCorAcor.salutationDropDownControl, corOrAcor);
         cy.findElement(selector)
@@ -921,7 +991,9 @@ Cypress.Commands.add("acorOption", (radioSelector, value) => {
     common.header,
     " Do you have an Alternate Contracting Officer’s Representative (ACOR)? "
   );
-  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  });
   cy.findElement(acor.activeRadioOption).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
@@ -944,7 +1016,9 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
     common.header,
     " Do you have a current contract for this effort? "
   );
-  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  });
   cy.findElement(background.activeRadioOption).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
@@ -1002,12 +1076,16 @@ Cypress.Commands.add(
   (ciSel, nmSel, selDateSel, calDate, dpSel) => {
     cy.findElement(ciSel).click();
     cy.findElement(nmSel)
-      .click({ force: true })
+      .click({
+        force: true
+      })
       .then(() => {
         cy.findElement(selDateSel).each(($el) => {
           const dateName = $el.text();
           if (dateName == calDate) {
-            cy.wrap($el).click({ force: true });
+            cy.wrap($el).click({
+              force: true
+            });
           }
         });
         cy.findElement(dpSel).should("not.visible");
@@ -1016,24 +1094,26 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("selectPoPStartDate", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  });
   cy.findElement(contractDetails.activePoPStartDate).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
-    
+
     if (
       selectedOption ===
-      "radio_button_checkedYes." 
-        
+      "radio_button_checkedYes."
+
     ) {
       cy.findElement(contractDetails.requestedStartDate).should("exist");
       cy.selectDatefromDatePicker(
-          contractDetails.calendarIcon,
-          contractDetails.navigateNextMonth,
-          contractDetails.selectDate,
-          13,
-          contractDetails.datePicker
-        );
+        contractDetails.calendarIcon,
+        contractDetails.navigateNextMonth,
+        contractDetails.selectDate,
+        13,
+        contractDetails.datePicker
+      );
     } else {
       cy.findElement(contractDetails.requestedStartDate).should("not.exist");
     }
@@ -1043,23 +1123,27 @@ Cypress.Commands.add("selectPoPStartDate", (radioSelector, value) => {
 
 Cypress.Commands.add("selectTMCheckbox", (inputText) => {
   cy.findCheckBox(contractDetails.tmCheckBox, "T&M")
-  .should("not.be.checked")
-  .check({ force: true })
-  .then(() => {
-    cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
-    cy.textExists(
-      contractDetails.tmTextFieldLabel,
-      "Please provide justification for your T&M contract type."
-    );
-    cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should(
-      "exist"
-    );    
-    cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
-  });
+    .should("not.be.checked")
+    .check({
+      force: true
+    })
+    .then(() => {
+      cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
+      cy.textExists(
+        contractDetails.tmTextFieldLabel,
+        "Please provide justification for your T&M contract type."
+      );
+      cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should(
+        "exist"
+      );
+      cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
+    });
 });
 
 Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true }).should("be.checked");
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  }).should("be.checked");
   cy.findElement(occ.trainingRadioOptionActive).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
@@ -1100,13 +1184,17 @@ Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {
 });
 
 Cypress.Commands.add("deselectAllCheckboxes", () => {
-  cy.findElement("[type='checkbox']").uncheck({ force: true });
+  cy.findElement("[type='checkbox']").uncheck({
+    force: true
+  });
 });
 
 Cypress.Commands.add(
   "durationPeriodExists",
   (radioSelector, activeSelector, periodLabelSelector, value) => {
-    cy.radioBtn(radioSelector, value).click({ force: true });
+    cy.radioBtn(radioSelector, value).click({
+      force: true
+    });
     cy.findElement(activeSelector).then(($radioBtn) => {
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);
@@ -1127,7 +1215,9 @@ Cypress.Commands.add("periodCount", (count, checkBoxRowSelector) => {
 });
 
 Cypress.Commands.add("selectFundingRequest", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  });
   cy.findElement(fd.fundingRadioActive).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
@@ -1150,7 +1240,9 @@ Cypress.Commands.add("clickSomethingElse", (selectorToScrollToAfter) => {
   cy.findElement(common.somethingElse)
     .scrollIntoView()
     .should("be.visible")
-    .click({ force: true });
+    .click({
+      force: true
+    });
   if (selectorToScrollToAfter) {
     cy.findElement(selectorToScrollToAfter)
       .scrollIntoView()
@@ -1182,7 +1274,9 @@ Cypress.Commands.add("otherAvailableCategory", (categoryText) => {
 
 // This command is  used to select G-invoice for your funding request
 Cypress.Commands.add("selectGInvoiceFRequest", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  });
   cy.findElement(fd.gInvoiceActiveRadioOption).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
@@ -1220,7 +1314,9 @@ Cypress.Commands.add("incrementalFundingExists", () => {
 Cypress.Commands.add(
   "financialPOCAffiliation",
   (selector, value, sbSelector) => {
-    cy.radioBtn(selector, value).click({ force: true });
+    cy.radioBtn(selector, value).click({
+      force: true
+    });
     cy.findElement(fd.contactRadioBtnActive).then(($radioBtn) => {
       cy.log($radioBtn.text());
       const selectedOption = $radioBtn.text();
@@ -1255,7 +1351,9 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("selectIncrementalFundingPlan", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  });
   cy.findElement(fd.iFundActiveBtn).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
@@ -1275,7 +1373,9 @@ Cypress.Commands.add("selectIncrementalFundingPlan", (radioSelector, value) => {
 
 //This Command is used  to select the Exisitng Environment
 Cypress.Commands.add("selectExistingEnv", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.radioBtn(radioSelector, value).click({
+    force: true
+  });
   cy.findElement(background.ceActiveRadioOption).then(($radioBtn) => {
     const selectedOption = cleanText($radioBtn.text());
     cy.log(selectedOption);
@@ -1285,7 +1385,7 @@ Cypress.Commands.add("selectExistingEnv", (radioSelector, value) => {
       //naviagtes to "where is your Current Environment located?"
       cy.verifyPageHeader(
         "Do you have system diagrams, data architecture diagrams, charts," +
-          " or other relevant information for your current environment?"
+        " or other relevant information for your current environment?"
       );
     } else {
       //navigate to "Future Summary Page"
@@ -1323,5 +1423,7 @@ Cypress.Commands.add("addAnotherRequirement", (addSelector, text) => {
 });
 
 Cypress.Commands.add("waitUntilElementIsGone", (selector) => {
-  cy.waitUntil(() => Cypress.$(selector).length === 0);  
-},{timeout:2000});
+  cy.waitUntil(() => Cypress.$(selector).length === 0);
+}, {
+  timeout: 2000
+});
