@@ -16,7 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import { isStepTouched, isSubStepComplete } from "@/store/summary";
+import Summary, { isStepTouched } from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -61,13 +61,17 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
 }
 
+export const EvalPlanRouteResolver = (current: string): string => {
+  return isStepTouched(2) && current === routeNames.CertificationPOCs
+    ? routeNames.SummaryStepTwo
+    : routeNames.CreateEvalPlan
+}
+
+
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-    return ( isStepTouched(3) 
-      ? routeNames.SummaryStepThree 
-      : routeNames.PeriodOfPerformance
-    )
+    return routeNames.SummaryStepTwo
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
@@ -87,22 +91,29 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
 };
 
 export const BVTOResolver = (current: string): string => {
-
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
     // moving backwards
-    if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-      return routeNames.CreateEvalPlan;
-    }
+    return isStepTouched(2)
+      ? routeNames.SummaryStepTwo
+      : routeNames.Exceptions
   }
   if (evalPlan?.method === "BVTO") {
     return routeNames.Differentiators;
   }
 
   return current === routeNames.EvalPlanDetails
-    ? (isStepTouched(3) ? routeNames.SummaryStepThree : routeNames.PeriodOfPerformance)
+    ? routeNames.SummaryStepTwo
     : routeNames.EvalPlanDetails;
 };
+
+export const SummaryStepTwoRouteResolver = (current: string): string =>{
+  return routeNames.SummaryStepTwo;
+  // return isStepTouched(3) 
+  //   ? routeNames.SummaryStepThree 
+  //   : routeNames.PeriodOfPerformance;
+}
 
 export const ProposedCSPRouteResolver = (current: string): string => {
   return current === routeNames.Exceptions && evalPlanRequired() 
@@ -159,7 +170,7 @@ export const RemoveBarriersFormRouteResolver = (current: string): string => {
 
 export const CertificationPOCsRouteResolver = (current: string): string => {
   return evalPlanRequired() && current === routeNames.CreateEvalPlan
-    ? routeNames.Exceptions
+    ? isStepTouched(2) ? routeNames.SummaryStepTwo : routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
 
@@ -291,6 +302,17 @@ export const ProcurementHistorySummaryRouteResolver = (current: string): string 
   return routeNames.ProcurementHistorySummary
 }
 
+export const CurrentEnvironmentResolver = (current: string): string => {
+  const fromProcurementHistory =  current === routeNames.ProcurementHistorySummary;
+  if (
+    fromProcurementHistory
+      && isStepTouched(4)
+  ){
+    return routeNames.SummaryStepFour
+  }
+  return routeNames.CurrentEnvironment
+}
+
 export const ReplicateAndOptimizeResolver = (current: string): string => {
   return current === routeNames.DOWLandingPage || current === routeNames.ReplicateDetails
     ? routeNames.ReplicateAndOptimize
@@ -328,25 +350,27 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
     : routeNames.EnvironmentSummary;
 }
 export const COIRouteResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(6));
   return current === routeNames.DOWLandingPage
-    ? isStepTouched(6)?routeNames.SummaryStepSix:routeNames.ConflictOfInterest
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSix: routeNames.ConflictOfInterest
     :routeNames.SummaryStepSix
 }
 export const PackagingPackingAndShippingResolver = (current: string): string => {
-  return isStepTouched(6) && current === routeNames.ConflictOfInterest
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ConflictOfInterest
     ? routeNames.SummaryStepSix
     : routeNames.PackagingPackingAndShipping
 }
 
 export const TravelRouteResolver = (current: string): string => {
-  return isStepTouched(6) && current === routeNames.PackagingPackingAndShipping
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.PackagingPackingAndShipping
     ? routeNames.SummaryStepSix
     : routeNames.Travel
 }
 
 export const PIIResolver = (current: string): string =>{
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(7));
   return current === routeNames.SummaryStepSix
-    ? isStepTouched(7) ? routeNames.SummaryStepSeven : routeNames.PII
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSeven : routeNames.PII
     : routeNames.SummaryStepSix
 }
 
@@ -362,13 +386,13 @@ export const PIIRecordResolver = (current: string): string => {
 };
 
 export const PIIRecordSummaryResolver = (current: string): string => {
-  return isStepTouched(7) && current.toLowerCase().includes("pii")
+  return Summary.hasCurrentStepBeenVisited && current.toLowerCase().includes("pii")
     ? routeNames.SummaryStepSeven
     : routeNames.BAA
 };
 
 export const BAARecordSummaryResolver = (current: string): string => {
-  return isStepTouched(7) && current === routeNames.BAA
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.BAA
     ? routeNames.SummaryStepSeven
     : routeNames.FOIA
 };
@@ -387,7 +411,7 @@ export const FOIARecordResolver = (current: string): string => {
 };
 
 export const FOIARecordSummaryResolver = (current: string): string => {
-  return isStepTouched(7) && current.toLowerCase().includes('foia')
+  return Summary.hasCurrentStepBeenVisited && current.toLowerCase().includes('foia')
     ? routeNames.SummaryStepSeven
     : routeNames.Section508Standards
 };
@@ -405,16 +429,7 @@ export const A11yRequirementResolver = (current: string): string => {
     : routeNames.Section508Standards;
 };
 
-// export const ContractTrainingReq = (current: string): string => {
-//   const contractTraining
-//       = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
-//   if (contractTraining) {
-//     return routeNames.TrainingCourses;
-//   }
-//   return current === routeNames.Training
-//     ? routeNames.PII
-//     : routeNames.Training;
-// };
+
 export const ContractingInfoResolver = (current: string): string => {
   const needsContractInformation =
       AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
@@ -1592,7 +1607,7 @@ export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): 
 export const ContractTypeResolver = (current: string): string => {
   const isFromRecurringRequirments = 
     current === routeNames.RecurringRequirement;
-  return  isStepTouched(3) && isFromRecurringRequirments
+  return  Summary.hasCurrentStepBeenVisited && isFromRecurringRequirments
     ? routeNames.SummaryStepThree
     : routeNames.ContractType
 }
@@ -1600,7 +1615,7 @@ export const ContractTypeResolver = (current: string): string => {
 
 export const ClassificationRequirementsResolver = (current: string): string => {
   const isFromContractType = current === routeNames.ContractType;
-  return isStepTouched(3) && isFromContractType
+  return Summary.hasCurrentStepBeenVisited && isFromContractType
     ? routeNames.SummaryStepThree
     : routeNames.ClassificationRequirements
 }
@@ -1701,6 +1716,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   ProcurementHistorySummaryRouteResolver,
+  CurrentEnvironmentResolver,
   RemoveBarriersFormRouteResolver,
   conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
@@ -1723,6 +1739,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FinancialPOCResolver,
   AppropriationOfFundsResolver,
   BVTOResolver,
+  EvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,
@@ -1746,7 +1763,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PIIResolver,
   COIRouteResolver,
   PackagingPackingAndShippingResolver,
-  TravelRouteResolver
+  TravelRouteResolver,
+  SummaryStepTwoRouteResolver
 };
 
 // add path resolvers here 

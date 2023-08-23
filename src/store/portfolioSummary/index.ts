@@ -92,9 +92,9 @@ export class PortfolioSummaryStore extends VuexModule {
   private async getOptionalSearchParameterQuery(searchDTO: PortfolioSummarySearchDTO):
     Promise<string> {
     let query = "";
-    // if (searchDTO.portfolioStatus) {
-    //   query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
-    // }
+    if (searchDTO.portfolioStatus) {
+      query = query + "^portfolio_statusIN" + searchDTO.portfolioStatus;
+    }
     if (searchDTO.fundingStatuses && searchDTO.fundingStatuses.length > 0) {
       query = query + "^portfolio_funding_statusIN" + searchDTO.fundingStatuses;
     }
@@ -221,6 +221,23 @@ export class PortfolioSummaryStore extends VuexModule {
     
     portfolioSummaryList.forEach(portfolio => {
       portfolio.environments = allEnvs.filter(env => env.portfolio === portfolio.sys_id);
+<<<<<<< HEAD
+=======
+      if (portfolio.portfolio_status !== Statuses.Archived.value) {
+        // portfolio status based on environment statuses
+        let hasProcessing = false;
+        let hasIssue = false;
+
+        portfolio.environments.forEach(env => {
+          if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
+          if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
+          portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
+            : hasProcessing
+              ? Statuses.Processing.value
+              : portfolio.portfolio_status;
+        });
+      }
+>>>>>>> 305ddb94e6fe03b26ba60b2a9ef227106d185385
     });
     
     return portfolioSummaryList;
@@ -325,7 +342,6 @@ export class PortfolioSummaryStore extends VuexModule {
           }
       }
     )
-
     portfolioSummaryList.forEach(portfolio => {
       portfolio.task_orders.forEach(taskOrder => {
         taskOrder.clin_records =
