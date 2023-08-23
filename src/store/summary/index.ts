@@ -636,7 +636,6 @@ export class SummaryStore extends VuexModule {
         :envLocation === "CLOUD"?"Cloud":"On-premise"
       const startString = `${envString}`
       const onPremString = Object.keys(onPremInstances).map(key => {
-        debugger
         const instance = Number(onPremInstances[key]) > 1? "instances":"instance"
         if(envString === "Hybrid"){
           return `${onPremInstances[key]} on-premise ${instance} (${key})`
