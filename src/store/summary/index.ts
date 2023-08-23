@@ -541,16 +541,19 @@ export class SummaryStore extends VuexModule {
   public async assessProcurementHistory(): Promise<void> {
     const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts;
     const currentContracts = AcquisitionPackage.currentContracts;
-    let currentContractDetailsIsComplete = currentContracts?.length !== 0;
+    let currentContractDetailsIsComplete = !!currentContracts
+      && currentContracts.length !== 0;
 
-    currentContracts?.forEach((contract) => {
-      if (contract.contract_number === "" ||
-        contract.competitive_status === "" ||
-        contract.contract_order_expiration_date === "" ||
-        contract.contract_order_start_date === "" ||
-        contract.incumbent_contractor_name === "" ||
-        contract.business_size === "") currentContractDetailsIsComplete = false;
-    });
+    if (currentContracts) {
+      currentContracts?.forEach((contract) => {
+        if (contract.contract_number === "" ||
+          contract.competitive_status === "" ||
+          contract.contract_order_expiration_date === "" ||
+          contract.contract_order_start_date === "" ||
+          contract.incumbent_contractor_name === "" ||
+          contract.business_size === "") currentContractDetailsIsComplete = false;
+      });
+    }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
       || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
