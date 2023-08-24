@@ -684,6 +684,7 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
 
       this.techniquesUsed = 
         storeData.research_other_techniques_used as string; // csv string of sys_ids
+
       this.selectedTechniquesUsed = this.techniquesUsed.length 
         ? this.techniquesUsed.split(",") : [];
 
@@ -770,11 +771,11 @@ export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
         this.techniquesUsed = this.techniqueJWCCSysId 
       }
     } else {
+      this.techniquesUsed = this.techniquesUsed.replace("," + this.techniqueJWCCSysId + ",", "");
+      this.techniquesUsed = this.techniquesUsed.replace(this.techniqueJWCCSysId + ",", "");
       this.techniquesUsed = this.techniquesUsed.replace("," + this.techniqueJWCCSysId, "");
       this.techniquesUsed = this.techniquesUsed.replace(this.techniqueJWCCSysId, "");
     }
-
-
 
     if (!this.needsMRR || this.selectedTechniquesUsed.length === 0) {
       this.techniquesUsed = "";
