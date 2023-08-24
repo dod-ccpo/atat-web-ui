@@ -571,13 +571,13 @@ export class SummaryStore extends VuexModule {
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
-    const taskOrderNumbers = currentContracts?.map(
-      (contract) => contract.task_delivery_order_number).join(", ");
+    const contractNumbers = currentContracts?.map(
+      (contract) => contract.contract_number).join(", ");
     const prevContracts = currentContracts?.length === 1
-      ? `${currentContracts?.length} previous contract:\n${taskOrderNumbers}`
-      : `${currentContracts?.length} previous contracts:\n${taskOrderNumbers}`
+      ? `${currentContracts?.length} previous contract:\n${contractNumbers}`
+      : `${currentContracts?.length} previous contracts:\n${contractNumbers}`
 
-    const description = isTouched ?
+    const description = isTouched && currentContracts && currentContracts.length > 0 ?
       hasCurrentOrPreviousContract === "YES"
         ? prevContracts
         : "No previous contracts"
