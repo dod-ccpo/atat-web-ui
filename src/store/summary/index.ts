@@ -270,7 +270,6 @@ export class SummaryStore extends VuexModule {
     }
 
     const needsMRR = resources.fairOpp.contract_action === "NONE" ;
-    debugger;
     if (FARSelection !== "NONE"){
       MRRText = needsMRR
         ? "A J&A and Sole Source MRR are required in final acquisition package."
