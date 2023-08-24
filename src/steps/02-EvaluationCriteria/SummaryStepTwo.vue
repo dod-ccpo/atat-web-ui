@@ -47,6 +47,7 @@ export default class SummaryStepTwo extends Mixins(SaveOnLeave){
   }
 
   public async mounted(): Promise<void>{
+    this.setIntroParagraph()
     await Summary.validateStepTwo();
     this.summaryItems = await getSummaryItemsforStep(2);
     await Summary.toggleButtonColor(2);
