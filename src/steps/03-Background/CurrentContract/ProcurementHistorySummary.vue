@@ -58,7 +58,7 @@
             <template v-slot:item.actions="{ item }">
               <button
                 type="button"
-                :id="'EditButton_' + item.instanceNumber"
+                :id="'EditButton_' + item.instance_number"
                 @click="editInstance(item)"
                 class="mr-2"
               >
@@ -67,7 +67,7 @@
 
               <button
                 type="button"
-                :id="'DeleteButton_' + item.instanceNumber"
+                :id="'DeleteButton_' + item.instance_number"
                 @click="confirmDeleteInstance(item)"
                 class="ml-2"
               >

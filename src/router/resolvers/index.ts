@@ -61,14 +61,17 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
 }
 
+export const EvalPlanRouteResolver = (current: string): string => {
+  return isStepTouched(2) && current === routeNames.CertificationPOCs
+    ? routeNames.SummaryStepTwo
+    : routeNames.CreateEvalPlan
+}
+
+
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-    Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
-    return ( Summary.hasCurrentStepBeenVisited
-      ? routeNames.SummaryStepThree 
-      : routeNames.PeriodOfPerformance
-    )
+    return routeNames.SummaryStepTwo
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
@@ -92,20 +95,25 @@ export const BVTOResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
     // moving backwards
-    if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-      return routeNames.CreateEvalPlan;
-    }
+    return isStepTouched(2)
+      ? routeNames.SummaryStepTwo
+      : routeNames.Exceptions
   }
   if (evalPlan?.method === "BVTO") {
     return routeNames.Differentiators;
   }
 
   return current === routeNames.EvalPlanDetails
-    ? Summary.hasCurrentStepBeenVisited 
-      ? routeNames.SummaryStepThree 
-      : routeNames.PeriodOfPerformance
+    ? routeNames.SummaryStepTwo
     : routeNames.EvalPlanDetails;
 };
+
+export const SummaryStepTwoRouteResolver = (current: string): string =>{
+  return routeNames.SummaryStepTwo;
+  // return isStepTouched(3) 
+  //   ? routeNames.SummaryStepThree 
+  //   : routeNames.PeriodOfPerformance;
+}
 
 export const ProposedCSPRouteResolver = (current: string): string => {
   return current === routeNames.Exceptions && evalPlanRequired() 
@@ -162,7 +170,7 @@ export const RemoveBarriersFormRouteResolver = (current: string): string => {
 
 export const CertificationPOCsRouteResolver = (current: string): string => {
   return evalPlanRequired() && current === routeNames.CreateEvalPlan
-    ? routeNames.Exceptions
+    ? isStepTouched(2) ? routeNames.SummaryStepTwo : routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
 
@@ -267,6 +275,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 
 
 export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(4))
   const currentContracts =  AcquisitionPackage.currentContracts || [];
   const doesNotNeedContract = currentContracts.every(
     (c)=>c.current_contract_exists==="NO"
@@ -1731,6 +1740,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FinancialPOCResolver,
   AppropriationOfFundsResolver,
   BVTOResolver,
+  EvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,
@@ -1754,7 +1764,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PIIResolver,
   COIRouteResolver,
   PackagingPackingAndShippingResolver,
-  TravelRouteResolver
+  TravelRouteResolver,
+  SummaryStepTwoRouteResolver
 };
 
 // add path resolvers here 
