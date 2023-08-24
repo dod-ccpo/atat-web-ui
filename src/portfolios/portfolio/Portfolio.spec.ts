@@ -219,13 +219,20 @@ describe("Testing Portfolio", () => {
         new Promise(resolve=>resolve(dashboardMocks))
       )
       await wrapper.vm.loadOnEnter();
- 
+
     });
 
     it("Test portfolioSyncDate() => returns empty string",async () =>{
       const dateStr = wrapper.vm.portfolioSyncDate;
       expect(dateStr).toBe("")
     })
+
+    it("Test portfolioSyncDate() => returns date string",async () =>{
+      PortfolioStore.currentPortfolio.lastCostDataSync = "2023-08-23 01:44:18"
+      const dateStr = wrapper.vm.portfolioSyncDate;
+      expect(dateStr).toBe("Last Sync: Aug. 23,  at 0144")
+    })
+
   });
 
 });
