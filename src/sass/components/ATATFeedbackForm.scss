@@ -1,0 +1,77 @@
+._feedback-form {
+  position: absolute;
+  right: 0px;
+  bottom: -250px;
+  max-width: 461px !important;
+  display:flex;
+  flex-direction: row-reverse;
+  z-index: 1;
+
+  ._feedback-tab {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: $base-lightest;
+    padding: 8px 12px;
+    border-radius: 16px 16px 0 0;
+    position:relative;
+    width:207px;
+    &:hover {
+      background-color: $primary-10;
+    }
+    &._open{
+      background-color: $base-lightest;
+    }
+    &._thank-you{
+      display: none;
+    }
+
+
+    .v-btn{
+      padding: 4px !important;
+      background-color: transparent;
+
+      &:hover {
+        background-color: transparent;
+        &._open{
+          background-color: $base-10;
+        }
+      }
+      ._toggle {
+        transition: transform .3s ease-in-out !important;
+        transform: rotate(180deg);
+        &._open {
+          transform: rotate(360deg) !important;
+        }
+      }
+    }
+  }
+
+  ._feedback-body {
+    display:flex;
+    padding: 40px 40px 60px 40px;
+    background-color: $base-lightest;
+    border-radius: 16px 0 0 0;
+    &._thank-you{
+      border-radius: 16px 16px 0 0;
+      justify-content: center;
+    }
+    ._experience-text {
+      height:16px;
+    }
+    ._mood-div {
+      display: flex;
+      height:62px;
+      width:62px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      align-content: center;
+      &:hover {
+        border-radius:50%;
+        background-color: $primary-10;
+        box-shadow:$primary-10 0px 0px 0px 5px;
+      }
+    }
+  }
+}

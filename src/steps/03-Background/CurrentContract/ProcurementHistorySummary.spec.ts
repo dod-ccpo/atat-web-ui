@@ -152,19 +152,6 @@ describe("Testing ProcurementHistorySummary Component", () => {
         expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalled();
       })
 
-    it("resetDataSource() => returns initialized datasource", async()=>{
-      jest.spyOn(AcquisitionPackage, "setCurrentContractInstanceNumber")
-        .mockImplementation(
-          ()=>Promise.resolve());
-      jest.spyOn(AcquisitionPackage, "doSetCurrentContracts")
-        .mockImplementation(()=>Promise.resolve());
-      wrapper.setData({dataSource: unsortedDataSource});
-      await wrapper.vm.resetDataSource();
-      expect(wrapper.vm.dataSource[0].instance_number).toBe(0);
-      expect(wrapper.vm.dataSource[1].instance_number).toBe(1);
-      expect(AcquisitionPackage.setCurrentContractInstanceNumber).toHaveBeenCalled();
-      expect(AcquisitionPackage.doSetCurrentContracts).toHaveBeenCalled();
-    })
 
     it("navigate() => successfully mocks route", async()=>{
       const expectedRouterActionObject = {

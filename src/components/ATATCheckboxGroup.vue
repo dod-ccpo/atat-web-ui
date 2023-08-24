@@ -383,6 +383,7 @@ export default class ATATCheckboxGroup extends Vue {
         if (checkbox && checkbox.length) {
           this.errorMessages = checkbox[0].errorBucket;
         }
+        AcquisitionPackage.setValidateNow(false);
       }, 0);
     }
     this.isLoading = false;
@@ -418,6 +419,11 @@ export default class ATATCheckboxGroup extends Vue {
     if ((!this.validateCheckboxesNow && this.rules.length) || this.validateOnLoad) {
       this.validateCheckboxesNow = true;
     }
+
+    if (this.checkboxRules.length === 0) {
+      this.checkboxRules = this.rules;
+    }
+
     this.setErrorMessage();
   }
 
