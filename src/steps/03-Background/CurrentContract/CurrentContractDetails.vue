@@ -118,6 +118,7 @@
                 
             </div>
             <ATATErrorValidation
+                id="PoPValidation"
                   :errorMessages=" [
                     ...startDPSharedErrorMessages, 
                     ...expirationDPSharedErrorMessages
