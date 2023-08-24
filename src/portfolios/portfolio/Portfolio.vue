@@ -950,18 +950,13 @@ export default class PortfolioDashboard extends Vue {
     return this.fundsSpentPercent >= 75 && this.fundsSpentPercent < 100;
   }
   private get arePoPFundsDelinquent(): boolean {
-    // niche case - if ALMOST 100%, due to rounding, don't flag as delinquent
-    // if at 99.5 to 99.99999 percent
-    if (this.fundsSpentPercent >= 99.5 && this.fundsSpentPercent < 100) {
-      return false;
-    }
-    return this.fundsSpentPercent >= 100;
+    return PortfolioStore.currentPortfolio.fundingStatus === Statuses.Delinquent.value;
   }
   private get isExpiringSoon(): boolean {
-    return this.daysRemaining <= 60 && this.daysRemaining > 0;
+    return PortfolioStore.currentPortfolio.fundingStatus === Statuses.ExpiringSoon.value; 
   }
   private get hasExpired(): boolean { 
-    return this.daysRemaining <= 0;  
+    return PortfolioStore.currentPortfolio.fundingStatus === Statuses.Expired.value;  
   }
 
   private daysPastExpiration(): number {
@@ -1560,14 +1555,17 @@ export default class PortfolioDashboard extends Vue {
   public hasObligatedFundsInUpcomingCLIN = false;
 
   public async checkForUpcomingObligatedFunds(data: PortFolioDashBoardDTO): Promise<void> {
-    const currentPeriodPrefix = data.currentCLINs[0].clin_number.slice(0,2);
-    const nextPeriodNumber = parseInt(currentPeriodPrefix) + 1;
-    const nextPeriodPrefix = "0" + nextPeriodNumber;
-    const nextPeriodCLINsWithOblFunds = data.allCLINs.filter(clin => {
-      return clin.clin_number.indexOf(nextPeriodPrefix) === 0 
-        && clin.funds_obligated.toString() !== "0";
-    })
-    this.hasObligatedFundsInUpcomingCLIN = nextPeriodCLINsWithOblFunds.length > 0;
+    // if currentClins is empty i.e. Expired status, this errors. 
+    if(data.currentCLINs.length > 0){
+      const currentPeriodPrefix = data.currentCLINs[0].clin_number.slice(0,2);
+      const nextPeriodNumber = parseInt(currentPeriodPrefix) + 1;
+      const nextPeriodPrefix = "0" + nextPeriodNumber;
+      const nextPeriodCLINsWithOblFunds = data.allCLINs.filter(clin => {
+        return clin.clin_number.indexOf(nextPeriodPrefix) === 0 
+          && clin.funds_obligated.toString() !== "0";
+      })
+      this.hasObligatedFundsInUpcomingCLIN = nextPeriodCLINsWithOblFunds.length > 0;
+    }
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -1599,7 +1597,7 @@ export default class PortfolioDashboard extends Vue {
     };
 
     this.fundsSpentPercent = (this.fundsSpent / this.totalPortfolioFunds) * 100;
-    
+
     if (this.fundsSpentPercent >= 99.9 && this.fundsSpentPercent < 100) {
       // if ALMOST 100%, due to rounding, don't set at 100% spent
       // if at 99.9 to 99.99999 percent    
@@ -1613,7 +1611,9 @@ export default class PortfolioDashboard extends Vue {
     }
     const remaining = this.fundsSpentPercentForArcChart > 100
       ? 0 : 100 - this.fundsSpentPercentForArcChart;
+
     this.arcGuageChartData.datasets[0].data = [this.fundsSpentPercentForArcChart, remaining];
+
     if (this.fundsSpentPercent >= 75) {
       const arcColor = this.fundsSpentPercent < 100
         ? this.chartAuxColors.warning
