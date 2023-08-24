@@ -547,6 +547,7 @@ export interface Portfolio extends BaseTableDTO {
   taskOrderSysId?: string;
   lastUpdated?: string;
   vendor?: string;
+  fundingStatus?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {
