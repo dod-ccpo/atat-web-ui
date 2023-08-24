@@ -248,32 +248,37 @@ export class SummaryStore extends VuexModule {
       fairOpp: FairOpportunityDTO,
       isComplete:boolean
   }): Promise<string>{
+    let MRRText = "";
     const FARSelection = 
       resources.fairOpp.exception_to_fair_opportunity?.split("_").slice(-1).join()
     let FARText = "";
     switch(FARSelection){
     case "A": 
-      FARText = "FAR 16.505(b)(2)(i)(A) – Unusual and compelling urgency";
+      FARText = "FAR 16.505(b)(2)(i)(A) – Unusual and compelling urgency.";
       break;
     case "B": 
-      FARText = "FAR 16.505(b)(2)(i)(B) – Unique or highly specialized capabilities";
+      FARText = "FAR 16.505(b)(2)(i)(B) – Unique or highly specialized capabilities.";
       break;
     case "C": 
-      FARText = "FAR 16.505(b)(2)(i)(C) – Logical follow-on";
+      FARText = "FAR 16.505(b)(2)(i)(C) – Logical follow-on.";
       break;
     default:
+      FARText = "No exceptions apply to this acquisition.<br />" +
+      "A J&A and MRR are NOT required in your final acquisition package."
       break; 
     }
 
     const needsMRR = resources.fairOpp.contract_action === "NONE" ;
-    const MRRText = needsMRR 
-      ? "A J&A and Sole Source MRR are required in final acquisition package."
-      : "A J&A is required in final acquisition package.";
+    debugger;
+    if (FARSelection !== "NONE"){
+      MRRText = needsMRR
+        ? "A J&A and Sole Source MRR are required in final acquisition package."
+        : "A J&A is required in final acquisition package.";
+    }
 
-    return FARSelection === "NONE" && resources.isComplete
-      ? "No exceptions apply to this acquisition.<br />" +
-        "A J&A and MRR are NOT required in your final acquisition package."
-      : FARText + ".<br />" + MRRText;
+    return resources.isComplete
+      ? FARText + "<br />" + MRRText
+      : ""
     
   }
 
@@ -459,10 +464,13 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async hasMarketResearchConductors(fairOpp: FairOpportunityDTO): Promise<boolean>{
-    const conductors = 
-      JSON.parse(fairOpp.market_research_conducted_by as string) as Record<string, string>[];
-    return conductors.length>0
-      && conductors.every((c) => Object.values(c).every(c=>c!==""))
+    if (fairOpp.contract_action === "NONE"){
+      const conductors = 
+        JSON.parse(fairOpp.market_research_conducted_by as string) as Record<string, string>[];
+      return conductors.length>0
+        && conductors.every((c) => Object.values(c).every(c=>c!==""))
+    }
+    return true;
   }
   
   @Action({rawError: true})
