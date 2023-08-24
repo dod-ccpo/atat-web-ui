@@ -44,25 +44,25 @@ describe("Testing Section508Standards Page", () => {
 
     describe("testing business functions", () => {
       it("radioButtonSelected should update accessibility_reqs_508 if 'YES' is selected", () => {
-        (wrapper.vm as any).radioButtonSelected('YES');
-        expect((wrapper.vm as any).currentData.accessibility_reqs_508).toBe("");
+        wrapper.vm.radioButtonSelected('YES');
+        expect(wrapper.vm.currentData.accessibility_reqs_508).toBe("");
       });
 
       it("hasChanged should return false when currentData matches savedData", () => {
         const mockData = {
           section_508_sufficient: "YES"
         };
-        (wrapper.vm as any).savedData = mockData;
-        (wrapper.vm as any).selected508Response = mockData.section_508_sufficient;
-        expect((wrapper.vm as any).hasChanged()).toBe(false);
+        wrapper.vm.savedData = mockData;
+        wrapper.vm.selected508Response = mockData.section_508_sufficient;
+        expect(wrapper.vm.hasChanged()).toBe(false);
       });
 
       it("hasChanged should return true when currentData doesn't match savedData", () => {
-        (wrapper.vm as any).savedData = {
+        wrapper.vm.savedData = {
           section_508_sufficient: "NO"
         };
-        (wrapper.vm as any).selected508Response = "YES";
-        expect((wrapper.vm as any).hasChanged()).toBe(true);
+        wrapper.vm.selected508Response = "YES";
+        expect(wrapper.vm.hasChanged()).toBe(true);
       });
 
       it("loadOnEnter should load data if any exists", async () => {
