@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showError">
+  <div v-if="showError" :id="id">
     <div
       v-for="(em, idx) in _errorMsgs"
       :key="idx"
