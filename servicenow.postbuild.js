@@ -24,8 +24,11 @@ const scriptTagRegEx = /<script\b[^>]*>[\s\S\/]*?<\/script\b[^>]*>/g;
 const metaTagRegEx = /<\s*meta[^>]*(.*?)>/g;
 const materialIconsRegEx = /\s*fonts\/MaterialIcons-/g;
 const robotoFontsRegex = /\s*fonts\/roboto-/g;
+const materialIconsAssetsRegEx = /\s*other_assets\/MaterialIcons-/g;
+const robotoFontsAssetsRegex = /\s*other_assets\/roboto-/g;
 const imgRegex = /\s*img\//g;
 const buildMatches = {};
+const fileMapping = {};
 
 try {
   fs.renameSync(path.join(JS_DIR,'chunk-vendors-js'),path.join(JS_DIR,"vendor-js"))
@@ -33,14 +36,19 @@ try {
   console.error(err);
 }
 decorateIndexHTML(INDEX_HTML);
-updateAppAssetsPaths(JS_DIR);
-updateAssetPaths(JS_DIR, "vendor-");
 deleteFiles(FONTS_DIR, "-ttf");
 renameFiles(JS_DIR, ourFakeExtension);
 renameFiles(IMG_DIR, ourFakeExtension);
 renameFiles(FONTS_DIR, ourFakeExtension);
-reportMatchDiscrepancies();
+// Use kvp to update old filenames in *.js to new filenames
 moveFonts(FONTS_DIR, path.join(DIST_DIR,"other_assets"));
+updateResourceNames(JS_DIR,"app-");
+updateResourceNames(JS_DIR,"vendor-");
+
+updateAppAssetsPaths(JS_DIR);
+updateAssetPaths(JS_DIR, "vendor-");
+reportMatchDiscrepancies();
+
 outputResults();
 
 /**
@@ -199,6 +207,7 @@ function resolveRobotoFontsAndImagePaths(fileContent){
       const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
       console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
       fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
+      fileContent = fileContent.replace(robotoFontsAssetsRegex, newFontPath);
     }
   
     // image paths
@@ -210,6 +219,21 @@ function resolveRobotoFontsAndImagePaths(fileContent){
     }
 
     return fileContent;
+}
+
+/**
+ * Updates js files with the modified filenames of resources
+ */
+function updateResourceNames(directory, beginningPattern) {
+  const dir = fs.readdirSync(directory);
+  const filename = dir.find((file) => file.startsWith(beginningPattern));
+  const filePath = path.join(directory, filename);
+  let fileContent = fs.readFileSync(filePath, fileEncoding);
+  Object.keys(fileMapping).forEach((key) => {
+    fileContent = fileContent.replaceAll(key,fileMapping[key]);    
+  })
+
+  fs.writeFileSync(filePath, fileContent, fileEncoding);
 }
 
 /**
@@ -245,6 +269,7 @@ function updateAssetPaths(directory, filenameFilter) {
   const newIconPath = `${servicenowConfig.ASSETS_API_PATH}MaterialIcons-`;
   console.log(`Replacing the material icons paths with: ${newIconPath}`);
   fileContent = fileContent.replace(materialIconsRegEx, newIconPath);
+  fileContent = fileContent.replace(materialIconsAssetsRegEx, newIconPath);
   fileContent = resolveRobotoFontsAndImagePaths(fileContent);
 
   fs.writeFileSync(filePath, fileContent, fileEncoding);
@@ -278,16 +303,20 @@ function renameFiles(directory, extensionToAppend) {
   console.log(
     `\nRenaming files in ${directory} with extension ${extensionToAppend}`
   );
+
   const files = fs.readdirSync(directory);
   files.forEach((file) => {
     //ignore template (.docx) files
     if (file.toLowerCase().indexOf(".docx")===-1) {
-      const oldFilename = path.join(directory, file);
-      console.log("-- found: ", oldFilename);
       try {
-        const newFilename = oldFilename.replace(/\.([^\.]*)$/, '-' + '$1') + ourFakeExtension;
-        fs.renameSync(oldFilename, newFilename);
-        console.log("-- renamed: ", newFilename);
+        const oldFilePath = path.join(directory, file);
+        console.log("-- found: ", oldFilePath);
+        const newFilename = file.replace(/\.([^\.]*)$/, '-' + '$1') + ourFakeExtension;
+        const newFilePath = path.join(directory,newFilename);
+        // Add old filename and new filename to a key/value pair.  
+        fileMapping[file] = file.replace(/\.([^\.]*)$/, '-' + '$1') + ourFakeExtension;
+        fs.renameSync(oldFilePath, newFilePath);
+        console.log("-- renamed: ", newFilePath);
       } catch (err) {
         console.error(err);
       }
