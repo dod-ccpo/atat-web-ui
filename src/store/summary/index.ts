@@ -251,23 +251,16 @@ export class SummaryStore extends VuexModule {
     const isTouched = await this.isTouched(monitor)
     let isComplete = false
     if(evalPlanStore.source_selection=== "NO_TECH_PROPOSAL"
-        && evalPlanStore.has_custom_specifications !== ""){
-      isComplete = true
-    }else if(evalPlanStore.source_selection=== "TECH_PROPOSAL"
+        && evalPlanStore.has_custom_specifications !== ""
+      || evalPlanStore.source_selection=== "TECH_PROPOSAL"
         && evalPlanStore.method === "BVTO"
-        && evalPlanStore.standard_differentiators !== ""){
-      isComplete = true
-    }else if(evalPlanStore.source_selection=== "TECH_PROPOSAL"
+        && evalPlanStore.standard_differentiators !== ""
+      || evalPlanStore.source_selection=== "TECH_PROPOSAL"
         && evalPlanStore.method === "LPTA"
-    ){
-      isComplete = true
-    }else if(evalPlanStore.source_selection=== "SET_LUMP_SUM"
+      ||evalPlanStore.source_selection=== "SET_LUMP_SUM"
         && (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
         && evalPlanStore.standard_specifications !== ""
-    ){
-      isComplete = true
-    }else if(evalPlanStore.source_selection=== "EQUAL_SET_LUMP_SUM"
-    ){
+      ||evalPlanStore.source_selection=== "EQUAL_SET_LUMP_SUM"){
       isComplete = true
     }
     const evalPlan: SummaryItem = {
