@@ -207,7 +207,6 @@ function resolveRobotoFontsAndImagePaths(fileContent){
       const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
       console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
       fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
-      fileContent = fileContent.replace(robotoFontsAssetsRegex, newFontPath);
     }
   
     // image paths
@@ -230,8 +229,10 @@ function updateResourceNames(directory, beginningPattern) {
   const filePath = path.join(directory, filename);
   let fileContent = fs.readFileSync(filePath, fileEncoding);
   Object.keys(fileMapping).forEach((key) => {
-    fileContent = fileContent.replaceAll(key,fileMapping[key]);    
-  })
+    // Appending \" to the comparison to account for *woff.html and *woff2.html files both existing
+    fileContent = fileContent.replaceAll(key + "\"",fileMapping[key] + "\"");    
+    fileContent = fileContent.replaceAll(key + "'",fileMapping[key] + "'");    
+  });
 
   fs.writeFileSync(filePath, fileContent, fileEncoding);
 }
@@ -269,8 +270,9 @@ function updateAssetPaths(directory, filenameFilter) {
   const newIconPath = `${servicenowConfig.ASSETS_API_PATH}MaterialIcons-`;
   console.log(`Replacing the material icons paths with: ${newIconPath}`);
   fileContent = fileContent.replace(materialIconsRegEx, newIconPath);
-  fileContent = fileContent.replace(materialIconsAssetsRegEx, newIconPath);
-  fileContent = resolveRobotoFontsAndImagePaths(fileContent);
+  // Commented out because the vendor-js.html file contains no references to 
+  // roboto fonts or images.
+  // fileContent = resolveRobotoFontsAndImagePaths(fileContent);
 
   fs.writeFileSync(filePath, fileContent, fileEncoding);
 
