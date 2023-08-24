@@ -1,4 +1,28 @@
 {
+    "_comment1":"This is the data for procurement history substep",
+    "gatherDetails":{
+      "taskNoTooltipText":"Leave this field empty if your previous acquisition was only a contract, not an order placed under a contract.",
+      "orderExpTootipText":"Use the period of performance end date for your task order. If you do not have a task order, use your contract end date."
+    },
+    "procurementGatherDetails":{
+      "contractnumber":"This is a 13-character alphanumeric value (no hyphens, dashes or spaces) found on your awarded contract.",
+      "taskOrderNumber":"This is a 13-character alphanumeric value (no hyphens, dashes or spaces). Leave this field empty if your previous acquisition was only a contract, not an order placed under a contract."
+    },
+    "competitionRadioLabels":[
+      "Full and open competition",
+      "Small business (SB) set-aside",
+      "Other than full and open competition"
+    ],
+    "businessSizeRadioOptions":[
+      "Large business",
+      "Small business",
+      "8(a) small business",
+      "HUBZone",
+      "Service-Disabled Veteran-Owned Small Business (SDVOSB)",
+      "Women-Owned Small Business (WOSB)"
+    ],
+    "procsummaryIntroText":"If you have more past contracts for this effort, add them below. You can also edit or delete any information from the contracts that you have already entered. When you’re done, click “Continue” and we will move on to your current environment details.",
+    "_comment2":"From here, it is data for Current Environment substep",
     "CEPage1": {
       "pageHeader1": " Do you have a current environment to rehost? ",
       "pageText1": "If you select “Yes” below, we’ll gather details about your current environment. This info will be included in your Description of Work to provide CSPs with a better understanding of what currently exists. This environment may not align with your current requirements that you outlined in Contract Details."
