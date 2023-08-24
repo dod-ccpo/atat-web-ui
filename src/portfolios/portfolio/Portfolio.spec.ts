@@ -5,7 +5,7 @@ import { createLocalVue, mount, shallowMount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import Portfolio from "./Portfolio.vue";
 import { AlertDTO } from "@/api/models";
-import { FundingAlertData } from "@/store/portfolio";
+import PortfolioStore, { FundingAlertData } from "@/store/portfolio";
 import ATATCharts from "@/store/charts";
 import dashboardMocks from "@/dashboards/__tests__/dashboardMocks..json";
 
@@ -221,6 +221,11 @@ describe("Testing Portfolio", () => {
       await wrapper.vm.loadOnEnter();
  
     });
+
+    it("Test portfolioSyncDate() => returns empty string",async () =>{
+      const dateStr = wrapper.vm.portfolioSyncDate;
+      expect(dateStr).toBe("")
+    })
   });
 
 });
