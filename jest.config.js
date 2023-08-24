@@ -70,6 +70,8 @@ module.exports = {
     "<rootDir>/src/steps/08-StandardsAndCompliance/Section508Standards.spec.ts",
     "<rootDir>/src/steps/08-StandardsAndCompliance/FOIACoordinator.spec.ts",
     "<rootDir>/src/steps/08-StandardsAndCompliance/FOIA.spec.ts",
+    "<rootDir>/src/steps/08-StandardsAndCompliance/PII.spec.ts",
+    "<rootDir>/src/steps/08-StandardsAndCompliance/PIIRecord.spec.ts",
     "<rootDir>/src/steps/08-StandardsAndCompliance/SummaryStepSeven.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
