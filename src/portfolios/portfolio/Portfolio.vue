@@ -910,7 +910,7 @@ export default class PortfolioDashboard extends Vue {
   public get portfolioSyncDate(): string{
     const syncDate = PortfolioStore.currentPortfolio.lastCostDataSync as string;
 
-    if(syncDate !== ""){
+    if(syncDate && syncDate !== ""){
       return `Last Sync: ${createDateStr(syncDate, true, true, false)}`;
     }
 
