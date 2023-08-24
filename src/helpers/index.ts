@@ -360,11 +360,13 @@ export function createDateStr(
   const parsedDate = parseISO(dateStr, { additionalDigits: 1 });
   const date = hours? new Date(parsedDate) : new Date(parsedDate.setHours(0, 0, 0, 0));
   const m = monthAbbreviations[date.getMonth()];
-  const y = year ? date.getFullYear() : "";
+  const y = date.getFullYear();
   const d = date.getUTCDate();
   const noPeriodMonth = monthsNotAbbreviated.indexOf(m) !== -1;
   const p = period && !noPeriodMonth ? "." : "";
-  let formattedDate = m + p + " " + d + ", " +  y;
+  let formattedDate = year 
+    ? m + p + " " + d + ", " +  y
+    : m + p + " " + d;
   if (hours) {
     let h = (date.getHours()).toString();
     h = h.length === 1 ? "0" + h : h;
