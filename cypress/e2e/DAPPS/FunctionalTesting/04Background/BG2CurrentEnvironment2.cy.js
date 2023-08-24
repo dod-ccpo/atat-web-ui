@@ -16,21 +16,9 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
     const docFile = "cypress/fixtures/files/testFileSysDiagram.docx"
     const pdfFile = "cypress/fixtures/files/dd1155.pdf"
     const xlsFile = "cypress/fixtures/files/testMigration.xlsx"
-    const txtFile = "cypress/fixtures/files/textfile.txt"
 
-    // page#5
-    let cloudClassLevelCheckboxes = [ // Cloud computing
-        'UnClassifiedCloud',
-        'SecretCloud',
-        'TSCloud'
-    ]
-    let unClassLevelCheckboxes = [ //cloud Computing
-        'levelIL2',
-        //'levelIL4',
-        //'levelIL5'
-    ]
     // page#6
-    let deployedRegionCheckboxes = [
+    let deployedRegions = [
         'conusEast',
         'conusCentral',
         'conusWest',
@@ -47,35 +35,30 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         'SecretIL6',
         // 'TopSecret'
     ]
-    let currentUsage = "evenlyDistributed" //evenlyDistributed, irregularUsage
-    let spikesUsage = "periodBased" // eventBased, periodBased
     let storageOptions = ['Object' //Block, Object, File, Archive
     ]
-    let performanceTierOptions = ['computeOptimized' //generalPurpose, computeOptimized, memoryOptimized, storageOptimized
-    ]
-    let currentPayment = ['reserved' //reserved, payAsyouGo
+    let performanceTierOption = ['computeOptimized' //generalPurpose, computeOptimized, memoryOptimized, storageOptimized
     ]
 
     //section#2 data
-    const eventCauseText = "Event that causes a surge in usage for testing- " + randomString(3);
-    const periodCauseText = "period of the year surge in usage for testing- " + randomString(3);
-    const noOfUsers = randomNumber(2);
+    const eventCause = "Event Cause " + randomString(2);
+    const periodCause = "period Cause- " + randomString(2);
+    const users = randomNumber(1);
     //section#3 data
-    const licensingText = "LicensingTest--" + randomAlphaNumeric(3);
-    const noOfVCPUs = randomNumber(2);
-    const precessorSpeed = randomNumber(4);
-    const operatingSystemText = "OperatingSystemTest--" + randomString(3);
-    const memory = randomNumber(2);
-    const storageSize = randomNumber(3);
-    const noOfInstances = randomNumberBetween(1, 9);
-    const egressPerMonth = randomNumber(2);
+    const licensing = "License" + randomAlphaNumeric(3);
+    const noOfVCPU = randomNumber(2);
+    const precessSpeed = randomNumber(4);
+    const operatingSystem = "OS Test--" + randomString(3);
+    const memoryByte = randomNumber(2);
+    const storage = randomNumber(3);
+    const instances = randomNumberBetween(1, 9);
+    const egressMonth = randomNumber(2);
     //section#4 data
-    const expirationDate = randomNumberBetween(1, 30);
     //section#5 data
-    const additionalInformationText = "Optional Additional Information is--" + randomString(5);
+    const additionalInformation = "Additional Info is--" + randomString(5);
 
     // page#5
-     const impactLevelMap = {
+    const impactLevelMap = {
         UnclassifiedIL2: background.IL2Radiobox,
         UnclassifiedIL4: background.IL4Radiobox,
         UnclassifiedIL5: background.IL5Radiobox,
@@ -96,12 +79,12 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
     }
 
     // Summary page:
-    const deployedRegionCheckboxesList = deployedRegionCheckboxes.join(' ,').toUpperCase().replace(/\s/g, '');
+    const deployedRegionCheckboxesList = deployedRegions.join(' ,').toUpperCase().replace(/\s/g, '');
     const impactLevelCheckboxesList = impactLevelCheckboxes.join(' ,').toUpperCase();
-    const expctedMemory = memory + "GB";
+    const expctedMemory = memoryByte + "GB";
     const storageOptionsList = storageOptions.join(' ,').toUpperCase();
-    const expctedStorage = storageOptionsList + ":" + storageSize + "GB";
-    const performanceTierOptionsList = performanceTierOptions.join(' ,').toUpperCase();
+    const storageExpected = storageOptionsList + ":" + storage + "GB";
+    const performanceTierOptions = performanceTierOption.join(' ,').toUpperCase();
 
     beforeEach(() => {
         cy.goToAcqPackageStepOne(pt, scope);
@@ -111,8 +94,6 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.activeStep(common.substepCurrentEnvironmentText);
     });
 
-    // functions for this page:
-    //Page#6
 
     function cloudandPremiseDataClassification() { //cloud &onPremise
         impactLevelCheckboxes.forEach(impactLevelCheckbox => {
@@ -122,21 +103,98 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         });
     }
 
-    function verifyTableData(columnHeader, expectedValue) {
-        cy.get(background.summaryCETableHeader).each(($el, index, $list) => {
-            const text = $el.text();
-            if (text.includes(columnHeader)) {
-                cy.get(background.summaryCETableData).eq(index).then(function (value) {
-                    const actualValue = value.text().trim();
-                    if (isNaN(actualValue)) {
-                        const trimmedActualValue = actualValue.toUpperCase().replace(/\s/g, '').replace(/[/()]/g, '')
-                        expect(trimmedActualValue).to.equal(expectedValue)
-                    } else {
-                        expect(Number(actualValue)).to.equal(Number(expectedValue));
-                    }
-                })
-            }
+    function page5CLoudandOnpremiseInstances() {
+        //Cloud Instances
+        cy.findElement(background.unClassCloudCheckbox).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+        cy.findElement(background.scCloudCheckbox).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+        cy.findElement(background.tsCloudCheckbox).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+        cy.verifyCheckBoxLabels(background.CloudClassificationCheckboxes, bgCEData.CEPage5.expectedLabelsUnCL);
+        cy.findElement(background.CloudClassificationCheckboxes).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+
+        //Onpremise Instances
+        cy.findElement(background.unClassPremCheckbox).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+        cy.findElement(background.scPremCheckbox).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+        cy.findElement(background.tsPremCheckbox).should("not.be.checked").check({
+            force: true
+        }).should("be.checked")
+        cy.verifyCheckBoxLabels(background.onPremiseClassificationCheckboxes, bgCEData.CEPage5.expectedLabelsOnPrem);
+        cy.findElement(background.onPremiseClassificationCheckboxes).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+    }
+
+    function section3InstanceConfigurations() {
+        cy.findElement(background.licenseTextbox).type(licensing)
+        cy.findElement(background.numofVCPTextbox).type(noOfVCPU)
+        cy.findElement(background.licenseTextboxLable).scrollIntoView();
+        cy.findElement(background.processorSpeedTextbox).type(precessSpeed)
+        cy.findElement(background.licenseTextboxLable).scrollIntoView();
+        cy.findElement(background.operatingSysTextbox).type(operatingSystem)
+        cy.findElement(background.memoryTextbox).type(memoryByte)
+        cy.findElement(background.storageTypeDropdown).click();
+        cy.waitUntil(function () {
+            return cy.findElement(background.blockStorageOption).should("exist");
         })
+        cy.findElement(storageTypeOptionsMap[storageOptions]).click({
+            force: true
+        });
+        cy.findElement(background.storageSizeLable).scrollIntoView();
+        cy.textExists(background.storageSizeLable, bgCEData.CEPage6.storageSizeTextLable);
+        cy.findElement(background.storageSizeField + background.byteSizeDropdown).click();
+        cy.waitUntil(function () {
+            return cy.findElement(background.storageSizeField + background.gigabyteOption).should("exist");
+        })
+        cy.findElement(background.storageSizeField + background.gigabyteOption).click({
+            force: true
+        });
+        cy.findElement(background.storageAmountTextbox).type(storage)
+        cy.findElement(performanceTierOptionsMap[performanceTierOption]).click({
+            force: true
+        });
+        cy.findElement(background.instancesTextbox).clear().type(instances);
+        cy.findElement(background.dataegressTextbox).type(egressMonth);
+    }
+
+    function section2CurrentUsageandUsers() {
+        cy.verifyRadioGroupLabels(background.currentUsageRadioGroup, bgCEData.CEPage6.section2Radioboxes);
+        cy.radioBtn(background.regularUsageRadiobox, "EVEN_USAGE").click({
+            force: true
+        });
+        cy.radioBtn(background.irrregularUsageRadiobox, "IRREGULAR_USAGE").click({
+            force: true
+        });
+        cy.verifyCheckBoxLabels(background.spikesCheckboxes, bgCEData.CEPage6.spikesCheckboxes);
+        cy.findElement(background.spikesCheckboxes).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+        cy.findElement(background.highUsageEventTextbox).type(eventCause)
+        cy.findElement(background.highUsagePeriodTextbox).type(periodCause)
+        cy.findElement(background.regionUsersCheckboxes + background.conusWestCheckbox).check({
+            force: true
+        }).should("be.checked");
+        cy.findElement(background.conusWestTextbox).type(users);
+    }
+
+    function section7verifyTableData() {
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Classification", impactLevelCheckboxesList);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Quantity", instances);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "vCPU", noOfVCPU);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Memory", expctedMemory);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Storage", storageExpected);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Performance", performanceTierOptions);
+
     }
 
     it("TC1: Current Environment: Functional Testcase- Cloud Environment", () => {
@@ -194,7 +252,7 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         }).should("be.checked");
 
         // Page#6 : Let’s start gathering details about each instance in your environment 
-        cy.clickContinueButton(background.tsPremCheckbox, bgCEData.CEPage6.pageHeader6);
+        cy.clickContinueButton(background.tsCloudCheckbox, bgCEData.CEPage6.pageHeader6);
         //section#1:1. Tell us about Instance #1 
         cy.get(background.regionDeployedAllCheckboxes).should("not.be.checked").check({
             force: true
@@ -204,55 +262,10 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
         //Section#2: Current usage and users
         cy.findElement(background.section2Question1).scrollIntoView();
-        cy.textExists(background.section2Question1, bgCEData.CEPage6.section2Question1);
-        cy.verifyRadioGroupLabels(background.currentUsageRadioGroup, bgCEData.CEPage6.section2Radioboxes);
-        cy.radioBtn(background.regularUsageRadiobox, "EVEN_USAGE").click({
-            force: true
-        });
-        cy.radioBtn(background.irrregularUsageRadiobox, "IRREGULAR_USAGE").click({
-            force: true
-        });
-        cy.verifyCheckBoxLabels(background.spikesCheckboxes, bgCEData.CEPage6.spikesCheckboxes);
-        cy.findElement(background.spikesCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.highUsageEventTextbox).type(eventCauseText)
-        cy.findElement(background.highUsagePeriodTextbox).type(periodCauseText)
-        cy.findElement(background.regionUsersCheckboxes + background.conusWestCheckbox).check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.conusWestTextbox).type(noOfUsers);
+        section2CurrentUsageandUsers();
 
         //Section# 3. Instance configurations 
-        cy.findElement(background.licenseTextbox).type(licensingText) //Licensing Textbox
-        cy.findElement(background.numofVCPTextbox).type(noOfVCPUs) //numOfVCPUs Textbox
-        cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.findElement(background.processorSpeedTextbox).type(precessorSpeed) //Processor Speed Textbox
-        cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.findElement(background.operatingSysTextbox).type(operatingSystemText) //Operating System Textbox
-        cy.findElement(background.memoryTextbox).type(memory) //Memory Textbox
-        cy.findElement(background.storageTypeDropdown).click(); // storage type dropdown
-        cy.waitUntil(function () {
-            return cy.findElement(background.blockStorageOption).should("exist");
-        })
-        cy.findElement(storageTypeOptionsMap[storageOptions]).click({
-            force: true
-        });
-        cy.findElement(background.storageSizeLable).scrollIntoView();
-        cy.textExists(background.storageSizeLable, bgCEData.CEPage6.storageSizeTextLable); // storage size
-        cy.findElement(background.storageSizeField + background.byteSizeDropdown).click(); //dropdownGB
-        cy.waitUntil(function () {
-            return cy.findElement(background.storageSizeField + background.gigabyteOption).should("exist");
-        })
-        cy.findElement(background.storageSizeField + background.gigabyteOption).click({
-            force: true
-        });
-        cy.findElement(background.storageAmountTextbox).type(storageSize)
-        cy.findElement(performanceTierOptionsMap[performanceTierOptions]).click({ //Performance Tier
-            force: true
-        });
-        cy.findElement(background.instancesTextbox).clear().type(noOfInstances); //Instances Textbox
-        cy.findElement(background.dataegressTextbox).type(egressPerMonth); //data/Internet Textbox
+        section3InstanceConfigurations();
 
         //section#4: Pricing Details
         cy.textExists(background.section4Message, bgCEData.CEPage6.section4Legend);
@@ -264,18 +277,14 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
         //section#5: Additional Information
         cy.textExists(background.section5Question, bgCEData.CEPage6.section5Question);
-        cy.findElement(background.additionalInfoTextbox).click().type(additionalInformationText);
+        cy.findElement(background.additionalInfoTextbox).click().type(additionalInformation);
 
         // Page#7 : Current Environment Summary
         cy.clickContinueButton(background.additionalInfoTextbox, bgCEData.CEPage7.pageHeader7);
-        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7); 
-        verifyTableData("Location", deployedRegionCheckboxesList);
-        verifyTableData("Classification", impactLevelCheckboxesList);
-        verifyTableData("Quantity", noOfInstances);
-        verifyTableData("vCPU", noOfVCPUs);
-        verifyTableData("Memory", expctedMemory);
-        verifyTableData("Storage", expctedStorage);
-        verifyTableData("Performance", performanceTierOptionsList);
+        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Location", deployedRegionCheckboxesList);
+        section7verifyTableData();
+
     })
 
     it("TC2: Current Environment: Functional Testcase- OnPremise Environment", () => {
@@ -327,7 +336,7 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.textExists(background.unClassificationText, bgCEData.CEPage5.pageClassQuestion3);
         cy.textExists(background.unClassificationMessage, bgCEData.CEPage5.pageSelectALLMsg);
         cy.verifyCheckBoxLabels(background.onPremiseClassificationCheckboxes, bgCEData.CEPage5.expectedLabelsOnPrem);
-        cy.get(background.onPremiseClassificationCheckboxes).should("not.be.checked").check({
+        cy.findElement(background.onPremiseClassificationCheckboxes).should("not.be.checked").check({
             force: true
         }).should("be.checked");
 
@@ -341,77 +350,22 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         //Section#2: Current usage and users
         cy.textExists(background.section2Question1, bgCEData.CEPage6.section2Question1);
         cy.findElement(background.section2Question1).scrollIntoView();
-        cy.verifyRadioGroupLabels(background.currentUsageRadioGroup, bgCEData.CEPage6.section2Radioboxes);
-        cy.radioBtn(background.regularUsageRadiobox, "EVEN_USAGE").click({
-            force: true
-        });
-        cy.radioBtn(background.irrregularUsageRadiobox, "IRREGULAR_USAGE").click({
-            force: true
-        });
-        cy.textExists(background.section2Question2, bgCEData.CEPage6.section2Question2);
-        cy.verifyCheckBoxLabels(background.spikesCheckboxes, bgCEData.CEPage6.spikesCheckboxes);
-        cy.get(background.spikesCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.textExists(background.highUsageEventTextboxLable, bgCEData.CEPage6.eventMessage);
-        cy.findElement(background.highUsageEventTextbox).type(eventCauseText)
-        cy.textExists(background.highUsagePeriodTextboxLable, bgCEData.CEPage6.periodMessage);
-        cy.findElement(background.highUsagePeriodTextbox).type(periodCauseText)
-        cy.textExists(background.section2Question3, bgCEData.CEPage6.section2Question3);
-        cy.textExists(background.section2Message, bgCEData.CEPage6.section2Message);
-        cy.findElement(background.eucomCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.eucomTextbox).type(noOfUsers);
+        section2CurrentUsageandUsers();
 
         //Section# 3. Instance configurations 
-        cy.findElement(background.licenseTextbox).type(licensingText) //Licensing Textbox
-        cy.findElement(background.numofVCPTextbox).type(noOfVCPUs) //numOfVCPUs Textbox
-        cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.findElement(background.processorSpeedTextbox).type(precessorSpeed) //Processor Speed Textbox
-        cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.findElement(background.operatingSysTextbox).type(operatingSystemText) //Operating System Textbox
-        cy.findElement(background.memoryTextbox).type(memory) //Memory Textbox
-        cy.findElement(background.storageTypeDropdown).click(); // storage type dropdown
-        cy.waitUntil(function () {
-            return cy.findElement(background.blockStorageOption).should("exist");
-        })
-        cy.findElement(storageTypeOptionsMap[storageOptions]).click({
-            force: true
-        });
-
-        cy.findElement(background.storageSizeLable).scrollIntoView();
-        cy.textExists(background.storageSizeLable, bgCEData.CEPage6.storageSizeTextLable); // storage size
-        cy.findElement(background.storageSizeField + background.byteSizeDropdown).click(); //dropdownGB
-        cy.waitUntil(function () {
-            return cy.findElement(background.storageSizeField + background.gigabyteOption).should("exist");
-        })
-        cy.findElement(background.storageSizeField + background.gigabyteOption).click({
-            force: true
-        });
-        cy.findElement(background.storageAmountTextbox).type(storageSize)
-        cy.textExists(background.performanceTiertitle, bgCEData.CEPage6.performanceTierLable); //Performance Tier
-        cy.findElement(performanceTierOptionsMap[performanceTierOptions]).click({
-            force: true
-        });
-        cy.findElement(background.instancesTextbox).clear().type(noOfInstances); //Instances Textbox
-        cy.findElement(background.dataegressTextbox).type(egressPerMonth); //data/Internet Textbox
+        section3InstanceConfigurations();
 
         //section#4: Additional Information
         cy.textExists(background.section5Question, bgCEData.CEPage6.section5Question);
-        cy.findElement(background.additionalInfoTextbox).click().type(additionalInformationText);
+        cy.findElement(background.additionalInfoTextbox).click().type(additionalInformation);
 
         // Page#7 : Current Environment Summary
         cy.clickContinueButton(background.additionalInfoTextbox, bgCEData.CEPage7.pageHeader7);
         cy.textExists(background.page7Title, bgCEData.CEPage7.pageHeader7);
-        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7); 
-        verifyTableData("Location", deployedRegionCheckboxesList);
-        verifyTableData("Classification", impactLevelCheckboxesList);
-        verifyTableData("Quantity", noOfInstances);
-        verifyTableData("vCPU", noOfVCPUs);
-        verifyTableData("Memory", expctedMemory);
-        verifyTableData("Storage", expctedStorage);
-        verifyTableData("Performance", performanceTierOptionsList);
+        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Location", deployedRegionCheckboxesList);
+        section7verifyTableData();
+
     })
 
     it("TC3: Current Environment: Functional Testcase- Hybrid-Cloud Environment", () => {
@@ -462,35 +416,7 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
         // Page#5 :Tell us about your current data classification and impact levels 
         cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage5.pageHeader5);
-        //Cloud Instances
-        cy.findElement(background.unClassCloudCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.scCloudCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.tsCloudCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.verifyCheckBoxLabels(background.CloudClassificationCheckboxes, bgCEData.CEPage5.expectedLabelsUnCL);
-        cy.findElement(background.CloudClassificationCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-
-        //Onpremise Instances
-        cy.findElement(background.unClassPremCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.scPremCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.tsPremCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked")
-        cy.verifyCheckBoxLabels(background.onPremiseClassificationCheckboxes, bgCEData.CEPage5.expectedLabelsOnPrem);
-        cy.findElement(background.onPremiseClassificationCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
+        page5CLoudandOnpremiseInstances();
 
         // Page#6 : Let’s start gathering details about each instance in your environment 
         cy.clickContinueButton(background.tsPremCheckbox, bgCEData.CEPage6.pageHeader6);
@@ -510,54 +436,10 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         //Section#2: Current usage and users
         cy.findElement(background.section2Question1).scrollIntoView();
         cy.textExists(background.section2Question1, bgCEData.CEPage6.section2Question1);
-        cy.verifyRadioGroupLabels(background.currentUsageRadioGroup, bgCEData.CEPage6.section2Radioboxes);
-        cy.radioBtn(background.regularUsageRadiobox, "EVEN_USAGE").click({
-            force: true
-        });
-        cy.radioBtn(background.irrregularUsageRadiobox, "IRREGULAR_USAGE").click({
-            force: true
-        });
-        cy.verifyCheckBoxLabels(background.spikesCheckboxes, bgCEData.CEPage6.spikesCheckboxes);
-        cy.findElement(background.spikesCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.highUsageEventTextbox).type(eventCauseText)
-        cy.findElement(background.highUsagePeriodTextbox).type(periodCauseText)
-        cy.findElement(background.regionUsersCheckboxes + background.conusWestCheckbox).check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.conusWestTextbox).type(noOfUsers);
+        section2CurrentUsageandUsers();
 
         //Section# 3. Instance configurations 
-        cy.findElement(background.licenseTextbox).type(licensingText) //Licensing Textbox
-        cy.findElement(background.numofVCPTextbox).type(noOfVCPUs) //numOfVCPUs Textbox
-        cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.findElement(background.processorSpeedTextbox).type(precessorSpeed) //Processor Speed Textbox
-        cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.findElement(background.operatingSysTextbox).type(operatingSystemText) //Operating System Textbox
-        cy.findElement(background.memoryTextbox).type(memory) //Memory Textbox
-        cy.findElement(background.storageTypeDropdown).click(); // storage type dropdown
-        cy.waitUntil(function () {
-            return cy.findElement(background.blockStorageOption).should("exist");
-        })
-        cy.findElement(storageTypeOptionsMap[storageOptions]).click({
-            force: true
-        });
-        cy.findElement(background.storageSizeLable).scrollIntoView();
-        cy.textExists(background.storageSizeLable, bgCEData.CEPage6.storageSizeTextLable); // storage size
-        cy.findElement(background.storageSizeField + background.byteSizeDropdown).click(); //dropdownGB
-        cy.waitUntil(function () {
-            return cy.findElement(background.storageSizeField + background.gigabyteOption).should("exist");
-        })
-        cy.findElement(background.storageSizeField + background.gigabyteOption).click({
-            force: true
-        });
-        cy.findElement(background.storageAmountTextbox).type(storageSize)
-        cy.findElement(performanceTierOptionsMap[performanceTierOptions]).click({ //Performance Tier
-            force: true
-        });
-        cy.findElement(background.instancesTextbox).clear().type(noOfInstances); //Instances Textbox
-        cy.findElement(background.dataegressTextbox).type(egressPerMonth); //data/Internet Textbox
+        section3InstanceConfigurations();
 
         //section#4: Pricing Details
         cy.textExists(background.section4Message, bgCEData.CEPage6.section4Legend);
@@ -569,18 +451,13 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
         //section#5: Additional Information
         cy.textExists(background.section5Question, bgCEData.CEPage6.section5Question);
-        cy.findElement(background.additionalInfoTextbox).click().type(additionalInformationText);
+        cy.findElement(background.additionalInfoTextbox).click().type(additionalInformation);
 
         // Page#7 : Current Environment Summary
         cy.clickContinueButton(background.additionalInfoTextbox, bgCEData.CEPage7.pageHeader7);
-        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7); 
-        verifyTableData("Location", "CLOUD" + deployedRegionCheckboxesList);
-        verifyTableData("Classification", impactLevelCheckboxesList);
-        verifyTableData("Quantity", noOfInstances);
-        verifyTableData("vCPU", noOfVCPUs);
-        verifyTableData("Memory", expctedMemory);
-        verifyTableData("Storage", expctedStorage);
-        verifyTableData("Performance", performanceTierOptionsList);
+        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Location", "CLOUD" + deployedRegionCheckboxesList);
+        section7verifyTableData();
     })
 
     it("TC4: Current Environment: Functional Testcase- Hybrid-OnPremise Environment", () => {
@@ -625,34 +502,7 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
         // Page#5 :Tell us about your current data classification and impact levels 
         cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage5.pageHeader5);
-
-        //Cloud Instances
-        cy.findElement(background.unClassCloudCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.scCloudCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.tsCloudCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.CloudClassificationCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-
-        //Onpremise Instances
-        cy.findElement(background.unClassPremCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.scPremCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.tsPremCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked")
-        cy.findElement(background.onPremiseClassificationCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
+        page5CLoudandOnpremiseInstances();
 
         // Page#6 : Let’s start gathering details about each instance in your environment 
         cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage6.pageHeader6);
@@ -671,75 +521,20 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         //Section#2: Current usage and users
         cy.findElement(background.section2Question1).scrollIntoView();
         cy.textExists(background.section2Question1, bgCEData.CEPage6.section2Question1);
-        cy.verifyRadioGroupLabels(background.currentUsageRadioGroup, bgCEData.CEPage6.section2Radioboxes);
-        cy.radioBtn(background.regularUsageRadiobox, "EVEN_USAGE").click({
-            force: true
-        });
-        cy.radioBtn(background.irrregularUsageRadiobox, "IRREGULAR_USAGE").click({
-            force: true
-        });
-        cy.textExists(background.section2Question2, bgCEData.CEPage6.section2Question2);
-        cy.verifyCheckBoxLabels(background.spikesCheckboxes, bgCEData.CEPage6.spikesCheckboxes);
-        cy.findElement(background.spikesCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.textExists(background.highUsageEventTextboxLable, bgCEData.CEPage6.eventMessage);
-        cy.findElement(background.highUsageEventTextbox).type(eventCauseText)
-        cy.textExists(background.highUsagePeriodTextboxLable, bgCEData.CEPage6.periodMessage);
-        cy.findElement(background.highUsagePeriodTextbox).type(periodCauseText)
-        cy.textExists(background.section2Question3, bgCEData.CEPage6.section2Question3);
-        cy.textExists(background.section2Message, bgCEData.CEPage6.section2Message);
-        cy.findElement(background.conusEastCheckbox).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.conusEastTextbox).type(noOfUsers);
+        section2CurrentUsageandUsers();
 
         //Section# 3. Instance configurations 
-        cy.findElement(background.licenseTextbox).type(licensingText) //Licensing Textbox
-        cy.findElement(background.numofVCPTextbox).type(noOfVCPUs) //numOfVCPUs Textbox
-        cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.findElement(background.processorSpeedTextbox).type(precessorSpeed) //Processor Speed Textbox
-        cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.findElement(background.operatingSysTextbox).type(operatingSystemText) //Operating System Textbox
-        cy.findElement(background.memoryTextbox).type(memory) //Memory Textbox
-        cy.findElement(background.storageTypeDropdown).click(); // storage type dropdown
-        cy.waitUntil(function () {
-            return cy.findElement(background.blockStorageOption).should("exist");
-        })
-        cy.findElement(storageTypeOptionsMap[storageOptions]).click({
-            force: true
-        });
-        cy.findElement(background.storageSizeLable).scrollIntoView();
-        cy.textExists(background.storageSizeLable, bgCEData.CEPage6.storageSizeTextLable); // storage size
-        cy.findElement(background.storageSizeField + background.byteSizeDropdown).click(); //dropdownGB
-        cy.waitUntil(function () {
-            return cy.findElement(background.storageSizeField + background.gigabyteOption).should("exist");
-        })
-        cy.findElement(background.storageSizeField + background.gigabyteOption).click({
-            force: true
-        });
-        cy.findElement(background.storageAmountTextbox).type(storageSize)
-        cy.findElement(performanceTierOptionsMap[performanceTierOptions]).click({ //Performance Tier
-            force: true
-        });
-        cy.findElement(background.instancesTextbox).clear().type(noOfInstances); //Instances Textbox
-        cy.findElement(background.dataegressTextbox).type(egressPerMonth); //data/Internet Textbox
+        section3InstanceConfigurations();
 
         //section#4: Additional Information
-        cy.findElement(background.additionalInfoTextbox).click().type(additionalInformationText);
+        cy.findElement(background.additionalInfoTextbox).click().type(additionalInformation);
 
         // Page#7 : Current Environment Summary
         cy.clickContinueButton(background.additionalInfoTextbox, bgCEData.CEPage7.pageHeader7);
         cy.textExists(background.page7Title, bgCEData.CEPage7.pageHeader7);
-        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7); 
-        //verifyTableData("Location", "CLOUD" + deployedRegionCheckboxesList); //due to bug
-        verifyTableData("Location", "ON-PREMISEMISSINGINFO");
-        verifyTableData("Classification", impactLevelCheckboxesList);
-        verifyTableData("Quantity", noOfInstances);
-        verifyTableData("vCPU", noOfVCPUs);
-        verifyTableData("Memory", expctedMemory);
-        verifyTableData("Storage", expctedStorage);
-        verifyTableData("Performance", performanceTierOptionsList);
-    })
+        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Location", "ON-PREMISEMISSINGINFO");
+        section7verifyTableData();
 
+    })
 });

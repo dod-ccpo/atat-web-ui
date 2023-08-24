@@ -1039,6 +1039,24 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
   });
 });
 
+Cypress.Commands.add("verifyTableData",(tableHeader, tableData,columnHeader, expectedValue)=> {
+
+  cy.findElement(tableHeader).each(($el, index, $list) => {
+      const text = $el.text();
+      if (text.includes(columnHeader)) {
+          cy.findElement(tableData).eq(index).then(function (value) {
+              const actualValue = value.text().trim();
+              if (isNaN(actualValue)) {
+                  const trimmedActualValue = actualValue.toUpperCase().replace(/\s/g, '').replace(/[/()]/g, '')
+                  expect(trimmedActualValue).to.equal(expectedValue)
+              } else {
+                  expect(Number(actualValue)).to.equal(Number(expectedValue));
+              }
+          })
+      }
+  })
+});
+
 Cypress.Commands.add("popLengthOptionYearExists", () => {
   cy.findElement(contractDetails.mainWrap).then((main) => {
     if (main.find(contractDetails.optionRow).length > 0) {

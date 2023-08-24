@@ -7,46 +7,22 @@ module.exports = {
   taskDeliveryOrderNoTxtBox: "#TaskDeliveryOrderNumber_text_field",
 
   // Do you have a current contract for this effort?
-  activeRadioOption: "#currentContractOptions_radio_group_control .v-item--active",
+  activeRadioOption:"#currentContractOptions_radio_group_control .v-item--active",
   currentContractOptionsTxt: ".copy-max-width p",
-  ccYesRadioOption: "#Radio_YesCurrentContract",
+  ccYesRadioOption:"#Radio_YesCurrentContract",
   ccNoRadioOption: "#Radio_NoCurrentContract",
   radioOptionError: "#currentContractOptions_radio_group_control .field-error",
 
-  //Let’s gather some details about your previous or current contract  
+  //Let’s gather some details about your previous or current contract
   incumbentLabel: "#IncumbentContractorName_text_field_label",
   incumbentTxtBox: "#IncumbentContractorName_text_field",
-  incumbentError: "#IncumbentContractorName_text_field_control .field-error",
+  incumbentError:"#IncumbentContractorName_text_field_control .field-error",
   expirationDatePickerLabel: "#ExpirationDatePickerLabel",
-  expirationDatePickerError: "#ExpirationDatePickerContainer.atat-date-picker .field-error",
+  expirationDatePickerError:"#ExpirationDatePickerContainer.atat-date-picker .field-error",
   expirationDatePickerInputbox: "#ExpirationDatePickerTextField",
   expirationDatePickerIcon: "#ExpirationDatePickerButtonIcon",
-  expirationDatePicker: "#ExpirationDatePicker",
+  expirationDatePicker:"#ExpirationDatePicker",
   navigateNextMonth: "#ExpirationDatePicker button[aria-label='Next month']",
-
-  selectDate: ".v-date-picker-table button:not(.v-btn--disabled)",
-
-  //Let's gather some details about your previous or current contract
-  contractOverviewTitle: "h2.mb-5",
-  taskOrderNumberTxtBox: "#TaskOrderNumber_text_field",
-  fullRadioOption: "#Radio_FULLOPEN",
-  sbSetAsideRadioOption: "#Radio_SBSETASIDE",
-  otherThanRadioOption: "#Radio_OTHERTHANFULL",
-  competitiveStatusOptionError: "3CompetitiveStatusOptions_radio_group_control .field-error",
-  startDateTextField: "#StartDatePickerTextField",
-  startDatePickerBtnIcon: "#StartDatePickerButtonIcon",
-  startDatePreviousMonth: "#StartDatePicker button[aria-label='Previous month']",
-  startDatepicker: "#StartDatePicker",
-  largeRadioOption: "#Radio_LARGE",
-  smallRadioOption: "#Radio_SMALL",
-  smallBARadioOption: "#Radio_SMALLBA",
-  hubRadioOption: "#Radio_HUBZONE",
-  sdvobRadioOption: "#Radio_SDVOSB",
-  wosbRadioOption: "#Radio_WOSB",
-
-  //Your ProcurementHistory
-  procurementHistoryTable: "#ProcurementHistoryDataTable",
-
   selectDate:".v-date-picker-table button:not(.v-btn--disabled)",
   expirationSelectDate:"#ExpirationDatePicker > .v-picker__body > :nth-child(1) >.v-date-picker-table button:not(.v-btn--disabled)",
   tNoTooltipBtn: "#TooltipButton_TaskDeliveryOrderNumber",
@@ -60,7 +36,7 @@ module.exports = {
   contractNoTootipText:"#TooltipText_ContractNumber",
   taskOrderNumberTxtBox:"#TaskOrderNumber_text_field",
   taskOrderNumberToolTipBtn:"#TooltipButton_TaskOrderNumber",
-  taskOrderNumberTooltipText:"#TooltipText_TaskOrderNumber",  
+  taskOrderNumberTooltipText:"#TooltipText_TaskOrderNumber",
   fullRadioOption:"#Radio_FULLOPEN",
   sbSetAsideRadioOption:"#Radio_SBSETASIDE",
   otherThanRadioOption:"#Radio_OTHERTHANFULL",
@@ -90,7 +66,6 @@ module.exports = {
   deleteInstanceModal:"#DeleteInstanceModal",
   deleteInstanceTitle:"#DeleteInstanceModalTitle",
   deleteModalBtn:"#DeleteInstanceModal #dialog_ok",
-
   deletemodalMessage:"#DeleteInstanceModalMessage",
 
   //Current Environments
@@ -154,7 +129,6 @@ module.exports = {
   //page#5
   classificationText: "#ClassificationLevelP",
   classificationMessage: "#SelectMessage",
-
   unClassificationText: "#DeployedP",
   unClassificationMessage: "#SelectMessage2",
 
@@ -289,7 +263,6 @@ module.exports = {
   datePicker: "#ExpirationDateDatePicker",
   reservedNavigateNextMonth: "#ExpirationDateDatePicker button[aria-label='Next month']",
 
-
   //Section#5
   section5Question: "#AdditionalInfo_text_field_label span",
   section5Note: "#AdditionalInfo_text_field_control .mb-2",
@@ -325,18 +298,7 @@ module.exports = {
   summaryCETableData: ".v-data-table tr td",
 
   //Performance requirements:
-  backBtntoStep4: "#BackButton span span",
   dowSummaryAlert: "#DOWSummaryAlert",
-
- //Section#5
-  additionalInfoTextbox: "#AdditionalInfo_text_area",
-
- // page#7
-  summaryEnvironmentType: "#EnvironmentType",
-  summaryClassificationText: "#ClassificationText",
-  summaryCETableHeader: ".v-data-table tr th",
-  summaryCETableData: ".v-data-table tr td",
-
 
 
 }

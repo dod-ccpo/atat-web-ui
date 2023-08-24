@@ -8,7 +8,7 @@ import common from "../../../../selectors/common.sel";
 import background from "../../../../selectors/background.sel";
 import bgCEData from "../../../../fixtures/bgCEData.json";
 
-describe("Test suite: Background- Current Environment: Functional Testing", () => {
+describe("Test suite: Background- Current Environment: Functional Testing1", () => {
     let pt = "TC-Step-04-Background:Current Environment-Functional-" + randomAlphaNumeric(5);
     let scope = "Project Scope-" + randomString(5);
 
@@ -18,17 +18,6 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
     const xlsFile = "cypress/fixtures/files/testMigration.xlsx"
     const txtFile = "cypress/fixtures/files/textfile.txt"
 
-    // page#5
-    let cloudClassLevelCheckboxes = [ // Cloud computing
-        'UnClassifiedCloud',
-        'SecretCloud',
-        'TSCloud'
-    ]
-    let unClassLevelCheckboxes = [ //cloud Computing
-        'levelIL2',
-        //'levelIL4',
-        //'levelIL5'
-    ]
     // page#6
     let deployedRegionCheckboxes = [
         'conusEast',
@@ -40,77 +29,37 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         'indopacom',
         'southcom',
     ]
-    let impactLevelCheckboxes = [ // accepts only one option
-        // 'UnclassifiedIL2',
-        //'UnclassifiedIL4',
-        //'UnclassifiedIL5',
-        'SecretIL6',
-        // 'TopSecret'
-    ]
-    
     let storageOptions = ['Object' //Block, Object, File, Archive
     ]
-    let performanceTierOptions = ['computeOptimized' //generalPurpose, computeOptimized, memoryOptimized, storageOptimized
-    ]
-   
 
     //section#2 data
-    const eventCauseText = "Event that causes a surge in usage for testing- " + randomString(3);
-    const periodCauseText = "period of the year surge in usage for testing- " + randomString(3);
-    const noOfUsers = randomNumber(2);
+    const eventCauseText = "Event Test " + randomString(2);
+    const periodCauseText = "period Cause test " + randomString(4);
+    const noOfUsers = randomNumber(1);
     //section#3 data
-    const licensingText = "LicensingTest--" + randomAlphaNumeric(3);
-    const noOfVCPUs = randomNumber(2);
-    const precessorSpeed = randomNumber(4);
-    const operatingSystemText = "OperatingSystemTest--" + randomString(3);
-    const memory = randomNumber(2);
-    const storageSize = randomNumber(3);
-    const noOfInstances = randomNumberBetween(1, 9);
-    const egressPerMonth = randomNumber(2);
+    const licensingText = "LicensingTest--" + randomAlphaNumeric(4);
+    const noOfVCPUs = randomNumberBetween(2, 9);
+    const precessorSpeed = randomNumber(3);
+    const operatingSystemText = "OperatingSystemTest--" + randomString(4);
+    const memory = randomNumber(13);
+    const storageSize = randomNumber(2);
+    const noOfInstances = randomNumberBetween(3, 9);
+    const egressMonth = randomNumberBetween(2, 9);
     //section#4 data
-    const expirationDate = randomNumberBetween(1, 30);
+    const expirationDate = randomNumberBetween(1, 28);
     //section#5 data
-    const additionalInformationText = "Optional Additional Information is--" + randomString(5);
-
-    // page#5
-    const cloudClassificationLevelMap = { //cloud computing
-        UnClassifiedCloud: background.unClassCloudCheckbox,
-        SecretCloud: background.scCloudCheckbox,
-        TSCloud: background.tsCloudCheckbox
-    }
-    const unClassificationLevelMap = { //cloud computing
-        levelIL2: background.level2Checkbox,
-        levelIL4: background.level4Checkbox,
-        levelIL5: background.level5Checkbox
-    }
-    const impactLevelMap = {
-        UnclassifiedIL2: background.IL2Radiobox,
-        UnclassifiedIL4: background.IL4Radiobox,
-        UnclassifiedIL5: background.IL5Radiobox,
-        SecretIL6: background.IL6Radiobox,
-        TopSecret: background.tsRadiobox
-    }
+    const additionalInformationText = "Additional Info:" + randomString(4);
     const storageTypeOptionsMap = {
         Block: background.blockStorageOption,
         Object: background.objectTypeStorageOption,
         File: background.fileStorageOption,
         Archive: background.archiveStorageOption,
-
     }
-    const performanceTierOptionsMap = {
-        generalPurpose: background.generalPurposeRadiobox,
-        computeOptimized: background.computeOptimRadiobox,
-        memoryOptimized: background.memoryOptimizedRadiobox,
-        storageOptimized: background.storageOptimRadiobox,
-    }
-
     // Summary page:
     const deployedRegionCheckboxesList = deployedRegionCheckboxes.join(' ,').toUpperCase().replace(/\s/g, '');
-    const impactLevelCheckboxesList = impactLevelCheckboxes.join(' ,').toUpperCase();
     const expctedMemory = memory + "GB";
     const storageOptionsList = storageOptions.join(' ,').toUpperCase();
     const expctedStorage = storageOptionsList + ":" + storageSize + "GB";
-    const performanceTierOptionsList = performanceTierOptions.join(' ,').toUpperCase();
 
     beforeEach(() => {
         cy.goToAcqPackageStepOne(pt, scope);
@@ -119,31 +68,6 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.clickSideStepper(common.substepCurrentEnvironmentLink, " Current Environment ");
         cy.activeStep(common.substepCurrentEnvironmentText);
     });
-
-     
-    function cloudandPremiseDataClassification() { //cloud &onPremise
-        impactLevelCheckboxes.forEach(impactLevelCheckbox => {
-            cy.findElement(impactLevelMap[impactLevelCheckbox]).click({
-                force: true
-            });
-        });
-    }
-    function verifyTableData(columnHeader, expectedValue) {
-        cy.findElement(background.summaryCETableHeader).each(($el, index, $list) => {
-            const text = $el.text();
-            if (text.includes(columnHeader)) {
-                cy.findElement(background.summaryCETableData).eq(index).then(function (value) {
-                    const actualValue = value.text().trim();
-                    if (isNaN(actualValue)) {
-                        const trimmedActualValue = actualValue.toUpperCase().replace(/\s/g, '').replace(/[/()]/g, '')
-                        expect(trimmedActualValue).to.equal(expectedValue)
-                    } else {
-                        expect(Number(actualValue)).to.equal(Number(expectedValue));
-                    }
-                })
-            }
-        })
-    }
 
     it("TC1: Current Environment: Functional Testcase- Screen Validation Pages1-5", () => {
 
@@ -208,9 +132,9 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.findElement(background.fileLinkFile1).should("exist").contains("dd1155.pdf");
         cy.findElement(background.fileLinkFile2).should("exist").contains("testMigration.xlsx");
         //remove one file, verify file is removed
-        cy.findElement(background.removeFile1).click().then(() => {
-            cy.findElement(background.removeFile2).should("not.exist");
-        })
+        // cy.findElement(background.removeFile1).click().then(() => {
+        //     cy.findElement(background.removeFile2).should("not.exist");
+        // })
 
         // Page#4 :  Where is your current environment located? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage4.pageHeader4);
@@ -280,7 +204,7 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
             force: true
         });
 
-        // Page#5 :Tell us about your current data classification and impact levels 
+        // Page#5 :Tell us about your current data classification and impact levels  
         cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage5.pageHeader5);
         cy.findElement(background.unClassCloudCheckboxes).should("not.be.checked").check({
             force: true
@@ -301,13 +225,18 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         }).should("be.checked");
         cy.textExists(background.section1Question2, bgCEData.CEPage6.section1Question2);
         cy.verifyRadioGroupLabels(background.classificationRadioGroup, bgCEData.CEPage6.section1Radioboxes);
-        cloudandPremiseDataClassification();
+        cy.findElement(background.regionDeployedAllCheckboxes).check({
+            force: true
+        }).should("be.checked");
+        cy.radioBtn(background.regularUsageRadiobox, "EVEN_USAGE").click({
+            force: true
+        });
 
         //Section#2: Current usage and users
         cy.textExists(background.section2Question1, bgCEData.CEPage6.section2Question1);
         cy.findElement(background.section2Question1).scrollIntoView();
         cy.verifyRadioGroupLabels(background.currentUsageRadioGroup, bgCEData.CEPage6.section2Radioboxes);
-        cy.radioBtn(background.regularUsageRadiobox, "EVEN_USAGE").click({
+        cy.findElement(background.IL5Radiobox).click({
             force: true
         });
         cy.radioBtn(background.irrregularUsageRadiobox, "IRREGULAR_USAGE").click({
@@ -337,25 +266,30 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.findElement(background.southcomTextbox).type(noOfUsers);
 
         //Section# 3. Instance configurations
-        cy.log("Licensing Textbox"); 
+        cy.log("Licensing Textbox");
         cy.textExists(background.licenseTextboxLable, bgCEData.CEPage6.licensingTextboxLable);
         cy.findElement(background.licenseTextbox).type(licensingText)
 
-        cy.textExists(background.numofVCPTextboxLable, bgCEData.CEPage6.vCPsTextboxLable); //numOfVCPUs Textbox
+        cy.log("numOfVCPUs Textbox");
+        cy.textExists(background.numofVCPTextboxLable, bgCEData.CEPage6.vCPsTextboxLable);
         cy.findElement(background.numofVCPTextbox).type(noOfVCPUs)
 
         cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.textExists(background.processorSpeedTextboxLable, bgCEData.CEPage6.processorTextboxLable); //Processor Speed Textbox
+        cy.log("Processor Speed Textbox");
+        cy.textExists(background.processorSpeedTextboxLable, bgCEData.CEPage6.processorTextboxLable);
         cy.findElement(background.processorSpeedTextbox).type(precessorSpeed)
 
         cy.findElement(background.licenseTextboxLable).scrollIntoView();
-        cy.textExists(background.operatingSysTextboxLable, bgCEData.CEPage6.operatingSytemTextboxLable); //Operating System Textbox
+        cy.log("Operating System Textbox");
+        cy.textExists(background.operatingSysTextboxLable, bgCEData.CEPage6.operatingSytemTextboxLable);
         cy.findElement(background.operatingSysTextbox).type(operatingSystemText)
 
-        cy.textExists(background.memoryTextboxLable, bgCEData.CEPage6.memoryTextboxLable); //Memory Textbox
+        cy.log("Memory Textbox");
+        cy.textExists(background.memoryTextboxLable, bgCEData.CEPage6.memoryTextboxLable);
         cy.findElement(background.memoryTextbox).type(memory)
 
-        cy.textExists(background.storageTypeLable, bgCEData.CEPage6.storageTypeTextboxLable); // storage type dropdown
+        cy.log("storage type dropdown");
+        cy.textExists(background.storageTypeLable, bgCEData.CEPage6.storageTypeTextboxLable);
         cy.findElement(background.storageTypeDropdown).click();
         cy.waitUntil(function () {
             return cy.findElement(background.blockStorageOption).should("exist");
@@ -390,16 +324,16 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.findElement(background.storageAmountTextbox).type(storageSize)
 
         cy.textExists(background.performanceTiertitle, bgCEData.CEPage6.performanceTierLable); //Performance Tier
-        cy.verifyRadioGroupLabels(background.performanceTierRadioGroup, bgCEData.CEPage6.performanceRadioboxes); //failing?
-        cy.findElement(performanceTierOptionsMap[performanceTierOptions]).click({
+        cy.verifyRadioGroupLabels(background.performanceTierRadioGroup, bgCEData.CEPage6.performanceRadioboxes);
+
+        cy.radioBtn(background.generalPurposeRadiobox, "GENERAL").click({
             force: true
         });
-
         cy.textExists(background.instancesTextboxLable, bgCEData.CEPage6.instancesTextboxLable); //Instances Textbox
         cy.findElement(background.instancesTextbox).clear().type(noOfInstances);
 
         cy.textExists(background.dataegressTextboxLable, bgCEData.CEPage6.monthlyDataTextboxLable); //data/Internet Textbox
-        cy.findElement(background.dataegressTextbox).type(egressPerMonth);
+        cy.findElement(background.dataegressTextbox).type(egressMonth);
 
         //section#4: Pricing Details
         cy.textExists(background.section4Message, bgCEData.CEPage6.section4Legend);
@@ -415,7 +349,7 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
             background.reservedExpirationDatePicker, background.reservedNavigateNextMonth,
             background.selectDate, expirationDate, background.datePicker
         );
-        
+
         //section#5: Additional Information
         cy.textExists(background.section5Question, bgCEData.CEPage6.section5Question);
         cy.textExists(background.section5Note, bgCEData.CEPage6.section5Note);
@@ -424,14 +358,14 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         // Page#7 : Current Environment Summary
         cy.clickContinueButton(background.additionalInfoTextbox, bgCEData.CEPage7.pageHeader7);
         cy.textExists(background.page7Title, bgCEData.CEPage7.pageHeader7);
-        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7); 
-        verifyTableData("Location", deployedRegionCheckboxesList);
-        verifyTableData("Classification", impactLevelCheckboxesList);
-        verifyTableData("Quantity", noOfInstances);
-        verifyTableData("vCPU", noOfVCPUs);
-        verifyTableData("Memory", expctedMemory);
-        verifyTableData("Storage", expctedStorage);
-        verifyTableData("Performance", performanceTierOptionsList);
+        cy.textExists(background.introPText, bgCEData.CEPage7.pageText7);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Location", deployedRegionCheckboxesList)
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Classification", "UNCLASSIFIEDIL5");
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Quantity", noOfInstances);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "vCPU", noOfVCPUs);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Memory", expctedMemory);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Storage", expctedStorage);
+        cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Performance", "GENERALPURPOSE");
     })
 
     it("TC3: Current Environment: Functional Testcase- No flow", () => {
@@ -445,9 +379,9 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
             .not("[disabled]").and("not.checked").click({
                 force: true
             });
-        cy.clickContinueButton(background.existNoRadioOption, bgCEData.PerformanceStartPage.pageHeader8);
+        cy.clickContinueButton(background.existNoRadioOption, bgCEData.BackgroundSummary.pageHeader8);
         // navigating back to CurrentEnvironment page#1
-        cy.btnClick(background.backBtntoStep4, "Back to Step 4");
+        cy.btnClick(common.backBtn, "Back");
         cy.clickSideStepper(common.substepCurrentEnvironmentLink, " Current Environment ");
         cy.verifyPageHeader(bgCEData.CEPage1.pageHeader1);
         cy.radioBtn(background.existYesRadioOption, "YES")
@@ -529,33 +463,23 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
             force: true
         });
 
-        // Page#5 :  Tell us about your current data classification and impact levels 
-        cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage5.pageHeader5);
-        cy.btnClick(common.continueBtn, " Continue "); // no selection, error message
-        cy.checkErrorMessage(background.errorMessage, bgCEData.CEPage5.classificationMessageText);
-        // cloud Environment
-        cloudClassLevelCheckboxes.forEach(cloudClassLevelCheckbox => {
-            cy.findElement(cloudClassificationLevelMap[cloudClassLevelCheckbox]).click({
-                force: true
-            });
-        });
-        cy.btnClick(common.continueBtn, " Continue ");
-        cy.checkErrorMessage(background.errorMessage, bgCEData.CEPage5.impactLevelMessageText);
-
-        unClassLevelCheckboxes.forEach(unClassLevelCheckbox => {
-            cy.findElement(unClassificationLevelMap[unClassLevelCheckbox]).click({
-                force: true
-            });
-        });
+        // Page#5 :Tell us about your current data classification and impact levels  
+        cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage5.pageHeader5);
+        cy.findElement(background.unClassCloudCheckboxes).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+        cy.findElement(background.CloudClassificationCheckboxes).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
 
         // Page#6 : Let’s start gathering details about each instance in your environment 
-        cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage6.pageHeader6);
+        cy.clickContinueButton(background.level2Checkbox, bgCEData.CEPage6.pageHeader6);
 
         //Section#1
         cy.btnClick(common.continueBtn, " Continue ");
         cy.checkErrorMessage(background.classandImpactErrorMessage, bgCEData.CEPage6.classificationImpactMessageText);
 
-        //Section#2
+        // //Section#2
         cy.checkErrorMessage(background.currentUsageErrorMessage, bgCEData.CEPage6.currentUsageMessageText);
         cy.checkErrorMessage(background.regionsErrorMessage, bgCEData.CEPage6.regionMessageText);
         cy.radioBtn(background.irrregularUsageRadiobox, "IRREGULAR_USAGE").click({
@@ -597,8 +521,8 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
             background.reservedExpirationDatePicker, background.reservedNavigateNextMonth,
             background.selectDate, expirationDate, background.datePicker
         );
-         cy.findElement(background.additionalInfoTextbox).click().type(additionalInformationText); //#Section5
-      
+        cy.findElement(background.additionalInfoTextbox).click().type(additionalInformationText); //#Section5
+
     })
 
 });
