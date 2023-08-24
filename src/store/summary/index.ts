@@ -243,7 +243,6 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessEvalPlan(objectKeys: string[]): Promise<void>{
     const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
-    debugger
     const keysToIgnore = objectKeys.filter(
       x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
     );
