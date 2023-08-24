@@ -230,8 +230,8 @@ function updateResourceNames(directory, beginningPattern) {
   let fileContent = fs.readFileSync(filePath, fileEncoding);
   Object.keys(fileMapping).forEach((key) => {
     // Appending \" to the comparison to account for *woff.html and *woff2.html files both existing
-    fileContent = fileContent.replaceAll(key + "\"",fileMapping[key] + "\"");    
-    fileContent = fileContent.replaceAll(key + "'",fileMapping[key] + "'");    
+    fileContent = fileContent.replaceAll(key + "\"",fileMapping[key].substring(0,fileMapping[key].lastIndexOf(".html")) + "\"");    
+    fileContent = fileContent.replaceAll(key + "'",fileMapping[key].substring(0,fileMapping[key].lastIndexOf(".html")) + "'");    
   });
 
   fs.writeFileSync(filePath, fileContent, fileEncoding);
