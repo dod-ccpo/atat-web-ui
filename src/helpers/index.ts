@@ -347,7 +347,12 @@ export function getDateObj(dateStr: string): Date {
 const monthAbbreviations = ATATCharts.monthAbbreviations;
 const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
-export function createDateStr(dateStr: string, period: boolean, hours?: boolean): string {
+export function createDateStr(
+  dateStr: string,
+  period: boolean, 
+  hours?: boolean, 
+  year = true
+): string {
   hours = hours ? hours : false;
   if (dateStr.indexOf("/") > -1) {
     dateStr = formatISO(new Date(dateStr)); 
@@ -355,11 +360,11 @@ export function createDateStr(dateStr: string, period: boolean, hours?: boolean)
   const parsedDate = parseISO(dateStr, { additionalDigits: 1 });
   const date = hours? new Date(parsedDate) : new Date(parsedDate.setHours(0, 0, 0, 0));
   const m = monthAbbreviations[date.getMonth()];
-  const y = date.getFullYear();
+  const y = year ? date.getFullYear() : "";
   const d = date.getUTCDate();
   const noPeriodMonth = monthsNotAbbreviated.indexOf(m) !== -1;
   const p = period && !noPeriodMonth ? "." : "";
-  let formattedDate = m + p + " " + d + ", " + y;
+  let formattedDate = m + p + " " + d + ", " +  y;
   if (hours) {
     let h = (date.getHours()).toString();
     h = h.length === 1 ? "0" + h : h;
