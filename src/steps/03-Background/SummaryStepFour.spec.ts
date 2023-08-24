@@ -2,16 +2,16 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import SummaryStepFour from "@/steps/03-Background/SummaryStepFour.vue"
-import Summary from "@/store/summary";
+import SummaryStepFour from "@/steps/03-Background/SummaryStepFour.vue";
+import Summary,  * as SummaryExportedFunctions from "@/store/summary";
 
 Vue.use(Vuetify);
 
-describe("Testing SummaryStepFour Component", () => {
+describe("Testing SummaryStepTwo Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  
+
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(SummaryStepFour, {
@@ -26,21 +26,17 @@ describe("Testing SummaryStepFour Component", () => {
     });
   })
 
-  describe("GETTERS", () => {
+  describe("GETTERS!", () => {
     describe("introParagraph()=> ", () => {
       it("returns `We need some more details` statement", async () => {
-        await Summary.summaryItems.forEach((item)=>{
-          item.isTouched = false;
-          item.isComplete = false;
-        })
-        expect(wrapper.vm.introParagraph).toContain("We need some more details");
+        jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(false);
+        wrapper.vm.setIntroParagraph()
+        expect(wrapper.vm.$data.introParagraph).toContain("We need some more details");
       });
-      it("returns `you are all done` statement", async () => {
-        await Summary.summaryItems.forEach((item)=>{
-          item.isTouched = true;
-          item.isComplete = true;
-        })
-        expect(wrapper.vm.introParagraph).toContain("You are all done");
+      it("returns `You are all done` statement", async () => {
+        jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
+        wrapper.vm.setIntroParagraph()
+        expect(wrapper.vm.$data.introParagraph).toContain("You are all done");
       });
     })
   })
@@ -54,6 +50,5 @@ describe("Testing SummaryStepFour Component", () => {
       expect(toggleButtonColorMock).toHaveBeenCalled();
     });
   })
-
 
 })
