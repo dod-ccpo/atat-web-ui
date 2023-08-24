@@ -1,5 +1,4 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
-import truncate from "lodash";
 
 module.exports = {
   testEnvironment: "jsdom",
