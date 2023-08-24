@@ -28,7 +28,7 @@
                 </div>
               <div class="d-flex justify-space-between width-100 mb-10">
                 <h2>Overview</h2>
-                  <span class="text-base-dark">Last Sync: {{ portfolioSyncDate }}</span>
+                  <span class="text-base-dark">{{ portfolioSyncDate }}</span>
               </div>
               <v-row>
                 <v-col class="col-sm-6 col-md-8">
@@ -908,12 +908,13 @@ export default class PortfolioDashboard extends Vue {
     return this.portfolioStatus === "ARCHIVED" ;
   }
   public get portfolioSyncDate(): string{
-    return createDateStr(
-      PortfolioStore.currentPortfolio.lastCostDataSync  as string, 
-      true, 
-      true, 
-      false
-    );
+    const syncDate = PortfolioStore.currentPortfolio.lastCostDataSync as string;
+
+    if(syncDate !== ""){
+      return `Last Sync: ${createDateStr(syncDate, true, true, false)}`;
+    }
+
+    return "";
   }
   public get lastUpdated(): string {
     if (PortfolioStore.currentPortfolio.lastUpdated) {

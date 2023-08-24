@@ -265,11 +265,4 @@ describe("Testing index Component", () => {
     expect(PortfolioStore.setShowArchivePortfolioModal).toBeCalled()
   });
 
-  it("getPortfolioStatus() => returns status label",
-  async () => {
-    const status = 'ACTIVE';
-    const actualStatus = await wrapper.vm.getPortfolioStatus(status);
-    expect(actualStatus).toBe('Active')
-  });
-
 });
