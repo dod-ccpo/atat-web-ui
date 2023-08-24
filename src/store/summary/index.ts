@@ -232,7 +232,7 @@ export class SummaryStore extends VuexModule {
     const isComplete = await this.isFairOpportunityComplete(fairOpp);
     const FairOpportunityItem: SummaryItem = {
       title: "Exception to Fair Opportunity",
-      description: "",
+      description: await this.setFairOpportunityDescription({fairOpp, isComplete}),
       isComplete,
       isTouched,
       routeName: "Exceptions", 
@@ -243,6 +243,41 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async setFairOpportunityDescription(
+    resources:{
+      fairOpp: FairOpportunityDTO,
+      isComplete:boolean
+  }): Promise<string>{
+    const FARSelection = 
+      resources.fairOpp.exception_to_fair_opportunity?.split("_").slice(-1).join()
+    let FARText = "";
+    switch(FARSelection){
+    case "A": 
+      FARText = "FAR 16.505(b)(2)(i)(A) – Unusual and compelling urgency";
+      break;
+    case "B": 
+      FARText = "FAR 16.505(b)(2)(i)(B) – Unique or highly specialized capabilities";
+      break;
+    case "C": 
+      FARText = "FAR 16.505(b)(2)(i)(C) – Logical follow-on";
+      break;
+    default:
+      break; 
+    }
+
+    const needsMRR = resources.fairOpp.contract_action === "NONE" ;
+    const MRRText = needsMRR 
+      ? "A J&A and Sole Source MRR are required in final acquisition package."
+      : "A J&A is required in final acquisition package.";
+
+    return FARSelection === "NONE" && resources.isComplete
+      ? "No exceptions apply to this acquisition.<br />" +
+        "A J&A and MRR are NOT required in your final acquisition package."
+      : FARText + ".<br />" + MRRText;
+    
+  }
+
+  @Action({rawError: true})
   public async isFairOpportunityComplete(fairOpp: FairOpportunityDTO): Promise<boolean>{
     const hasNoFairOpp = fairOpp.exception_to_fair_opportunity === "NO_NONE"
     const hasProposedCSP = fairOpp.proposed_csp !== "";
@@ -250,19 +285,18 @@ export class SummaryStore extends VuexModule {
     const hasMinGovtRequirements = fairOpp.min_govt_requirements !== ""
       && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
-
     return (hasNoFairOpp) ||
       (hasJustification 
-      && hasMinGovtRequirements
-      && await this.hasSoleSourceSituation(fairOpp)
-      && await this.hasProcurement(fairOpp)
-      && fairOpp.requirement_impact !== ""
-      && fairOpp.contract_action !== ""
-      && await this.hasMarketResearchEfforts(fairOpp)
-      // && await this.hasMarketResearchConductors(fairOpp)
-      // && await this.hasOtherFactsToSupportLogicalFollowOn(fairOpp)
-      // && await this.hasActionsToRemoveBarriers(fairOpp)
-      // && await this.hasCertificationPOCS(fairOpp)
+        && hasMinGovtRequirements
+        && await this.hasSoleSourceSituation(fairOpp)
+        && await this.hasProcurement(fairOpp)
+        && fairOpp.requirement_impact !== ""
+        && fairOpp.contract_action !== ""
+        && await this.hasMarketResearchEfforts(fairOpp)
+        && await this.hasMarketResearchConductors(fairOpp)
+        && await this.hasOtherFactsToSupportLogicalFollowOn(fairOpp)
+        && await this.hasActionsToRemoveBarriers(fairOpp)
+        && await this.hasCertificationPOCS(fairOpp)
       );
   }
 
@@ -344,7 +378,6 @@ export class SummaryStore extends VuexModule {
     //  If the user selected 'Undefinitized contract aciton (UCA)', 'Bridge contract Action', or
     // 'Option to Extend Services' on the previous screen.
     const hasContractAction = fairOpp.contract_action !== "NONE"
-
     // assess first question
     // 1. Did you review the specific capabilities in the JWCC Contracts to 
     //    determine that Microsoft is the only source capable of fulfilling the Government’s 
@@ -379,7 +412,7 @@ export class SummaryStore extends VuexModule {
             fairOpp.research_review_catalogs_start_date !== ""
         hasSameResearchDate = sameResearchDate === "YES"
           ? true
-          : hasDates
+          : hasDates  
   
         hasReviewResults = 
           researchReviewCatalogsReviewResults !== ""
@@ -397,7 +430,18 @@ export class SummaryStore extends VuexModule {
       && researchIsCSPOnlySourceCapable === "NO" 
       && researchReviewCatalogsReviewed === "NO";
     const hasOtherTechniques = isOtherTechniquesRequired 
-      && fairOpp.research_other_techniques_used !== "";
+      ? fairOpp.research_other_techniques_used !== ""
+        && fairOpp.research_techniques_summary !== ""
+      : true;
+
+    // if `other` is selected, then validate the `other text box`
+    const otherOptionSysId = AcquisitionPackage.marketResearchTechniques?.find(
+      (option) => option.technique_label.toUpperCase() === "OTHER"
+    )?.sys_id as string;
+    const isOtherOptionSelected = 
+      fairOpp.research_other_techniques_used?.includes(otherOptionSysId) 
+        ? fairOpp.research_other_technique !== ""
+        : true
 
     // validates market research efforts is generated or custom
     let hasMarketResearchDetails = false;
@@ -408,14 +452,17 @@ export class SummaryStore extends VuexModule {
     //todo eval to true
     return hasResearchIsCSPOnlySourceCapable
       && hasResearchReviewCatalogsReviewed
+      && isOtherOptionSelected
+      && hasOtherTechniques
       && hasMarketResearchDetails;
   }
 
   @Action({rawError: true})
   public async hasMarketResearchConductors(fairOpp: FairOpportunityDTO): Promise<boolean>{
-    const conductors = JSON.parse(fairOpp.market_research_conducted_by as string);
+    const conductors = 
+      JSON.parse(fairOpp.market_research_conducted_by as string) as Record<string, string>[];
     return conductors.length>0
-      && conductors.every((c:string) => c !== "")
+      && conductors.every((c) => Object.values(c).every(c=>c!==""))
   }
   
   @Action({rawError: true})
@@ -450,7 +497,7 @@ export class SummaryStore extends VuexModule {
     // 4. Are you planning future development and enhancement of Infrastructure as a Service (IaaS)
     //    components that will shift to a containerized platform?
     const isJAPrepared = 
-      fairOpp.barriers_j_a_prepared !== "NO"
+      fairOpp.barriers_j_a_prepared === "NO"
         ? true
         : fairOpp.barriers_j_a_prepared_results !== "";
 
