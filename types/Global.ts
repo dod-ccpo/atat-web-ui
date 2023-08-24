@@ -548,6 +548,7 @@ export interface Portfolio extends BaseTableDTO {
   lastUpdated?: string;
   vendor?: string;
   lastCostDataSync?: string;
+  fundingStatus?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {
