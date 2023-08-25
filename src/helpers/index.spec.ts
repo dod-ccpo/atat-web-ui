@@ -221,7 +221,7 @@ describe("testing src/helpers/index.ts", () => {
 
   it("Test createDateStr with no year", async () => {
     const value = await createDateStr('2023-08-23 01:44:18', true, true, false);
-    expect(value).toBe("Aug. 23,  at 0144");
+    expect(value).toBe("Aug. 23 at 0144");
   })
   
   // TODO add logic for different length months 30/31/28/29 - or change test
