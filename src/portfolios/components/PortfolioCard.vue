@@ -324,10 +324,15 @@ export default class PortfolioCard extends Vue {
   }
 
   public get statusChipBgColor(): string {
-    const status = this.cardData.fundingStatus 
+    let status = "";
+    if(this.cardData.status === Statuses.Archived.label){
+      status = Statuses.Archived.value;
+    } else{
+      status = this.cardData.fundingStatus 
       && this.cardData.fundingStatus !== Statuses.OnTrack.value
-      ? this.cardData.fundingStatus
-      : this.cardData.status;
+        ? this.cardData.fundingStatus
+        : this.cardData.status as string;
+    }
     return getStatusChipBgColor(status || "");
   }
 
