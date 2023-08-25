@@ -235,7 +235,7 @@ describe("Test suite: Step04-Background-Current Environment", () => {
                 cy.findElement(background.eventBasedCheckbox).click({
                     force: true
                 });
-                cy.findElement(background.highUsageTextbox).type(eventCauseText)
+                cy.findElement(background.highUsageEventTextbox).type(eventCauseText)
             } else if (spikesUsage == "periodBased") {
                 cy.findElement(background.certainPeriodCheckbox).click({
                     force: true
@@ -259,7 +259,7 @@ describe("Test suite: Step04-Background-Current Environment", () => {
         cy.findElement(background.memoryTextbox).type(memory);
         cy.findElement(background.storageTypeDropdown).click();
         cy.waitUntil(function () {
-            return cy.findElement("#StorageType_DropdownListItem_Blockstorage").should("exist");
+            return cy.findElement(background.blockStorageOption).should("exist");
         })
         cy.findElement(storageTypeOptionsMap[storageOptions]).click({
             force: true
@@ -329,7 +329,7 @@ describe("Test suite: Step04-Background-Current Environment", () => {
             force: true
         });
         cy.waitUntil(function () {
-            return cy.findElement("#RemoveFile00").should("exist");
+            return cy.findElement(background.removeFile1).should("exist");
         })
 
         // Page#3: Have you completed a migration assessment, analysis, or process to identify the cloud services and tools needed?  
@@ -342,7 +342,7 @@ describe("Test suite: Step04-Background-Current Environment", () => {
             force: true
         });
         cy.waitUntil(function () {
-            return cy.findElement("#RemoveFile00").should("exist");
+            return cy.findElement(background.removeFile1).should("exist");
         });
 
         // Page#4 : Where is your current environment located? 
