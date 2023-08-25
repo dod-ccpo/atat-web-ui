@@ -132,10 +132,11 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
         cy.findElement(background.fileLinkFile1).should("exist").contains("dd1155.pdf");
         cy.findElement(background.fileLinkFile2).should("exist").contains("testMigration.xlsx");
         //remove one file, verify file is removed
-        // cy.findElement(background.removeFile1).click().then(() => {
-        //     cy.findElement(background.removeFile2).should("not.exist");
-        // })
-
+        cy.findElement(background.removeFile1).click({
+            force: true
+        }).then(() => {
+            cy.findElement(background.removeFile2).should("not.exist");
+        })
         // Page#4 :  Where is your current environment located? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage4.pageHeader4);
         cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage4.pageText4);
@@ -214,7 +215,7 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
         }).should("be.checked");
 
         // Page#6 : Let’s start gathering details about each instance in your environment 
-        cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage6.pageHeader6);
+        cy.clickContinueButton(background.unClassCloudCheckbox, bgCEData.CEPage6.pageHeader6);
         cy.verifyPageHeader(bgCEData.CEPage6.pageHeader6);
         cy.verifyTextMatches(background.page6TitleText, bgCEData.CEPage6.pageText6);
 

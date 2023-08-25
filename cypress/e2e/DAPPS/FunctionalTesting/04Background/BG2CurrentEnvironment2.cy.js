@@ -200,6 +200,7 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
     it("TC1: Current Environment: Functional Testcase- Hybrid-Cloud Environment", () => {
 
         //Page#1: Do you have a current environment to rehost? Yes No
+        cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage1.pageText1);
         cy.radioBtn(background.existYesRadioOption, "YES")
             .not("[disabled]").and("not.checked").click({
                 force: true
@@ -207,11 +208,12 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
         // Page#2:  Do you have system diagrams, data architecture diagrams, charts etc..? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage2.pageHeader2)
+        cy.verifyRadioGroupLabels(background.existingEnvNoRadioGroup, bgCEData.CEPage2.section1Radioboxes);
         cy.radioBtn(background.systemDocsYesRadioBtn, "YES")
             .click({
                 force: true
             });
-        cy.findElement(background.uploadFileSysDiagram).selectFile(docFile, {
+        cy.findElement(background.uploadFileSysDiagram).selectFile(pdfFile, {
             force: true
         });
         cy.waitUntil(function () {
@@ -220,11 +222,16 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
         // Page#3:  Have you completed a migration assessment, analysis, or process to identify the cloud services and tools needed?  
         cy.clickContinueButton(background.systemDocsYesRadioBtn, bgCEData.CEPage3.pageHeader3);
-        cy.radioBtn(background.existYesRadioOption, "YES").not("[disabled]").and("not.checked")
+        cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage3.pageText3);
+        cy.radioBtn(background.existNoRadioOption, "NO")
+        .click({
+            force: true
+        });
+        cy.radioBtn(background.existYesRadioOption, "YES").not("not.checked")
             .click({
                 force: true
             });
-        cy.findElement(background.uploadFileSysDiagram).selectFile(pdfFile, {
+        cy.findElement(background.uploadFileSysDiagram).selectFile(docFile, {
             force: true
         });
         cy.findElement(background.uploadFileSysDiagram).selectFile(xlsFile, {
@@ -290,13 +297,18 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
     it("TC2: Current Environment: Functional Testcase- Hybrid-OnPremise Environment", () => {
 
         //Page#1: Do you have a current environment to rehost? Yes No
-        cy.radioBtn(background.existYesRadioOption, "YES")
-            .not("[disabled]").and("not.checked").click({
+        cy.verifyRadioGroupLabels(background.existingEnvNoRadioGroup, bgCEData.CEPage1.section1Radioboxes);
+        cy.radioBtn(background.existYesRadioOption, "YES").not("not.checked").click({
                 force: true
             });
 
         // Page#2:  Do you have system diagrams, data architecture diagrams, charts etc..? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage2.pageHeader2)
+        cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage2.pageText2);
+        cy.radioBtn(background.systemDocsNoRadioBtn, "NO")
+            .click({
+                force: true
+            });
         cy.radioBtn(background.systemDocsYesRadioBtn, "YES")
             .click({
                 force: true
@@ -310,6 +322,7 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
         // Page#3:  Have you completed a migration assessment, analysis, or process to identify the cloud services and tools needed?  
         cy.clickContinueButton(background.systemDocsYesRadioBtn, bgCEData.CEPage3.pageHeader3);
+        cy.verifyRadioGroupLabels(background.existingEnvNoRadioGroup, bgCEData.CEPage2.section1Radioboxes);
         cy.radioBtn(background.existYesRadioOption, "YES").not("[disabled]").and("not.checked")
             .click({
                 force: true
