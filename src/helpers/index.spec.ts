@@ -213,6 +213,16 @@ describe("testing src/helpers/index.ts", () => {
     const value = await createDateStr('2022-12-31', true);
     expect(value).toBe("Dec. 31, 2022");
   })
+
+  it("Test createDateStr with hours", async () => {
+    const value = await createDateStr('2023-08-23 01:44:18', true, true);
+    expect(value).toBe("Aug. 23, 2023 at 0144");
+  })
+
+  it("Test createDateStr with no year", async () => {
+    const value = await createDateStr('2023-08-23 01:44:18', true, true, false);
+    expect(value).toBe("Aug. 23 at 0144");
+  })
   
   // TODO add logic for different length months 30/31/28/29 - or change test
   // it("differenceInDaysOrMonths() - creates string of days or months remaining", async () => {
