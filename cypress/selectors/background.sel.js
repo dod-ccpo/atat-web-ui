@@ -94,11 +94,6 @@ module.exports = {
 
   // new ones ............
   // Do you have system diagrams, data architecture diagrams, charts, or other relevant information for your current environment?
-  recurringPageText:  "p.mb-8",
-  introPText: "#IntroP",
-  systemDocsNoRadioBtn:"#Radio_NoSystemDocs",
-  systemDocsYesRadioBtn: "#Radio_YesSystemDocs",
-
   //Page#1:
   recurringPageText: "p.mb-8",
   introPText: "#IntroP",
