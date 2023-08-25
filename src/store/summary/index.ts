@@ -912,19 +912,29 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessProcurementHistory(): Promise<void> {
     const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts;
+    const isExceptionToFairOpp =
+      AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity;
     const currentContracts = AcquisitionPackage.currentContracts;
     let currentContractDetailsIsComplete = !!currentContracts
       && currentContracts.length !== 0;
 
     if (currentContracts) {
-      currentContracts?.forEach((contract) => {
-        if (contract.contract_number === "" ||
-          contract.competitive_status === "" ||
-          contract.contract_order_expiration_date === "" ||
-          contract.contract_order_start_date === "" ||
-          contract.incumbent_contractor_name === "" ||
-          contract.business_size === "") currentContractDetailsIsComplete = false;
-      });
+      if (isExceptionToFairOpp !== "NO_NONE") {
+        currentContracts?.forEach((contract) => {
+          if (contract.contract_number === "" ||
+            contract.competitive_status === "" ||
+            contract.contract_order_expiration_date === "" ||
+            contract.contract_order_start_date === "" ||
+            contract.incumbent_contractor_name === "" ||
+            contract.business_size === "") currentContractDetailsIsComplete = false;
+        });
+      } else {
+        currentContracts?.forEach((contract) => {
+          if (contract.contract_number === "" ||
+            contract.contract_order_expiration_date === "" ||
+            contract.incumbent_contractor_name === "") currentContractDetailsIsComplete = false;
+        });
+      }
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
@@ -932,13 +942,14 @@ export class SummaryStore extends VuexModule {
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
-    const taskOrderNumbers = currentContracts?.map(
-      (contract) => contract.task_delivery_order_number).join(", ");
+    const contractNumbers = currentContracts?.map(
+      (contract) => contract.contract_number).join(", ");
     const prevContracts = currentContracts?.length === 1
-      ? `${currentContracts?.length} previous contract:\n${taskOrderNumbers}`
-      : `${currentContracts?.length} previous contracts:\n${taskOrderNumbers}`
+      ? `${currentContracts?.length} previous contract:\n${contractNumbers}`
+      : `${currentContracts?.length} previous contracts:\n${contractNumbers}`
 
-    const description = isTouched ?
+    const description = isTouched && currentContracts && currentContracts.length > 0
+      && currentContracts[0].contract_number ?
       hasCurrentOrPreviousContract === "YES"
         ? prevContracts
         : "No previous contracts"
