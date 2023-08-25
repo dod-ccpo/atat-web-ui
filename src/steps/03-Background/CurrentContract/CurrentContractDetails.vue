@@ -40,7 +40,7 @@
             :rules="[
                 $validators.isMaskValid(
                   ['^([0-9a-zA-Z]{13})?$'],
-                  `Your contract number must be 13 alphanumeric characters.`,
+                  `Your task order number must be 13 alphanumeric characters.`,
                   true
                 ),
               ]" 
@@ -425,7 +425,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         this.currentData.acquisition_package = AcquisitionPackage.packageId;
-        this.currentData.is_valid = await this.$refs.form.validate();
+        this.currentData.is_valid = this.$refs.form.validate();
         if (this.currentData.contract_order_expiration_date !== ""){
           this.currentData.is_current = compareAsc(
             new Date(),
@@ -433,15 +433,19 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
           )=== -1
         }
         this.currentContract.current_contract_exists = "YES"
-        // if this.isExceptiontoFairOpp save to Store now &&
+        // if this.isExceptiontoFairOpp save valid data to Store &&
         // save to SNOW on next page > ProcurementHistory page
-        AcquisitionPackage.setCurrentContract(
-          this.currentData
-        )
-        // if !this.isExceptiontoFairOpp save to Store/SNOW now
-        if (!this.isExceptiontoFairOpp){
-          const currentContracts = await AcquisitionPackage.currentContracts || [];
-          await AcquisitionPackage.updateCurrentContractsSNOW(currentContracts);
+        // if !this.isExceptiontoFairOpp save to SNOW now
+        if (!this.isExceptiontoFairOpp) {
+          if (this.currentData.is_valid) {
+            await AcquisitionPackage.setSingleCurrentContract(this.currentData);
+            const currentContracts = AcquisitionPackage.currentContracts || [];
+            await AcquisitionPackage.updateCurrentContractsSNOW(currentContracts);
+          }
+        } else {
+          if (this.currentData.is_valid) {
+            await AcquisitionPackage.setCurrentContract(this.currentData);
+          }
         }
       }
     } catch (error) {
