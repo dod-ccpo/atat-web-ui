@@ -533,39 +533,58 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessEvalPlan(objectKeys: string[]): Promise<void>{
+    const isFairOpportunityTouched = this.summaryItems.find(
+      si => si.title.includes("Fair Opportunity")
+    )?.isTouched;
     const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
     const keysToIgnore = objectKeys.filter(
       x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
     );
     const monitor = {object: evalPlanStore, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
-    let isComplete = false
-    if(evalPlanStore.source_selection=== "NO_TECH_PROPOSAL"
-        && evalPlanStore.has_custom_specifications !== ""
-      || evalPlanStore.source_selection=== "TECH_PROPOSAL"
-        && evalPlanStore.method === "BVTO"
-        && evalPlanStore.standard_differentiators !== ""
-      || evalPlanStore.source_selection=== "TECH_PROPOSAL"
-        && evalPlanStore.method === "LPTA"
-      ||evalPlanStore.source_selection=== "SET_LUMP_SUM"
-        && (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
-        && evalPlanStore.standard_specifications !== ""
-      ||evalPlanStore.source_selection=== "EQUAL_SET_LUMP_SUM"){
-      isComplete = true
-    }
+    // let isComplete = false
+
+    //
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
       description: "",
-      isComplete,
+      isComplete: await this.isEvalPlanComplete(evalPlanStore),
       isTouched,
-      routeName: "CreateEvalPlan",
+      routeName:  "CreateEvalPlan",
       step:2,
       substep: 2
     }
     await this.doSetSummaryItem(evalPlan)
   }
 
-
+  @Action({rawError: true})
+  public async isEvalPlanComplete(evalPlanStore:EvaluationPlanDTO): Promise<boolean> {
+    const hasCustomSpecs = (evalPlanStore.has_custom_specifications ?? "") !== "";
+    const hasStandardDifferentiators = (evalPlanStore.standard_differentiators ?? "") !==  "";
+    const hasStandardSpecifications = (evalPlanStore.standard_specifications ?? "") !== "";
+    const hasBestUseOrLowestRiskMethod = 
+      (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
+    const hasLPTAMethod = evalPlanStore.method === "LPTA";
+    
+    let isComplete = false;
+    switch(evalPlanStore.source_selection){
+    case "NO_TECH_PROPOSAL":
+      isComplete = hasCustomSpecs;
+      break;
+    case "TECH_PROPOSAL":
+      isComplete = hasLPTAMethod
+        ? hasCustomSpecs 
+        : hasCustomSpecs && hasStandardDifferentiators
+      break;
+    case "SET_LUMP_SUM":
+      isComplete = hasBestUseOrLowestRiskMethod && hasStandardSpecifications;
+      break;
+    case "EQUAL_SET_LUMP_SUM":
+      isComplete = true;
+      break;
+    }
+    return isComplete;
+  }
   //#endregion
 
 
