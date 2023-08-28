@@ -109,7 +109,8 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins, Watch} from "vue-property-decorator";
+import Vue from "vue";
+import {Component, Watch} from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -117,7 +118,6 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import PortfolioStore from "@/store/portfolio";
 import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Global";
 import _ from "lodash";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 interface CSPAdmins {
@@ -133,7 +133,7 @@ interface CSPAdmins {
   },
 })
 
-export default class ReadyToProvision extends Mixins(SaveOnLeave) {
+export default class ReadyToProvision extends Vue {
   public provisioningData: PortfolioProvisioning = {};
   public cspLogoName = "";
   public scrtStr = ClassificationLevels.SCRT;
@@ -141,7 +141,6 @@ export default class ReadyToProvision extends Mixins(SaveOnLeave) {
   public tsStr = ClassificationLevels.TSCRT;
   public processLength = "2 hours";
   public cspAdmins: CSPAdmins[] = [];
-
 
   @Watch("provisioningData")
   public provisioningDataChanged(newVal: PortfolioProvisioning): void {
@@ -223,19 +222,5 @@ export default class ReadyToProvision extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 
-  /**
-   * By this step, all the data for provisioning of a portfolio had been collected from the user.
-   * This function simply makes a call to the store to start the provisioning process.
-   */
-  public async saveOnLeave(): Promise<boolean> {
-    await AcquisitionPackage.setDisableContinue(false);
-    // ATAT TODO - AT-9207 - prevent start provisioning when clicking BACK button.
-    try {
-      await PortfolioStore.startProvisioning();
-    } catch (error) {
-      console.error(error)
-    }
-    return true;
-  }
 }
 </script>
