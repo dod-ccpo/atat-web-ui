@@ -80,16 +80,7 @@
                   Only proceed if you wish to provision a completely new Azure Tenant. 
                   If you are partially or fully migrating an already existing environment, 
                   stop here and contact 
-                  <a href="mailto:JWCC-TO@microsoft.com">JWCC-TO@microsoft.com</a>, 
-                  or contact them by unclassified phone at:
-                  <ul class="_atat-ul mt-3 pb-0">
-                    <li>
-                      855-255-3054 (toll-free within the United States)
-                    </li>
-                    <li>
-                      206-802-6689, Access code: 07254 (outside the United States)
-                    </li>
-                  </ul>
+                  <a href="mailto:ATAT_Microsoft@microsoft.com">ATAT_Microsoft@microsoft.com</a>.
                 </p>
               </template>
             </ATATAlert>
