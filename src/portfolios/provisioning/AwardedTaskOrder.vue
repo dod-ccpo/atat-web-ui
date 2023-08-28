@@ -168,8 +168,7 @@ export default class AwardedTaskOrder extends Vue {
   };
 
   public get isAzure(): boolean {
-    debugger;
-    return this.awardedTaskOrder.csp === "Azure";
+    return this.awardedTaskOrder.csp.toLowerCase() === "azure";
   }
 
   public resetAwardedTaskOrderData(): void {
