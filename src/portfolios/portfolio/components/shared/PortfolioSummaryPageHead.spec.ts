@@ -6,6 +6,7 @@ import PortfolioSummaryPageHead from
   "@/portfolios/portfolio/components/shared/PortfolioSummaryPageHead.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
 Vue.use(Vuetify);
 
 describe("Testing Members Component", () => {
@@ -127,8 +128,29 @@ describe("Testing Members Component", () => {
       wrapper.vm, 
       'openArchivePortfolioModal'
     ).mockImplementation()
-    
+
     await wrapper.vm.handleMoreMenuClick('openArchivePortfolioModal')
     expect(openArchivePortfolioModalSpy).toHaveBeenCalled()
+  })
+
+  it("test getMoreMenuItems () => MeatballMenuItems[] as Owner", async () => {
+    const items =  wrapper.vm.getMoreMenuItems;
+    expect(items).toStrictEqual([
+      {
+        id: "InviteMembers_MenuItem",
+        title: "Invite members to portfolio",
+        action: 'openModal'
+      },
+      {
+        id: "RenamePortfolio_MenuItem",
+        title: "Rename portfolio",
+        action: "moveToInput"
+      },
+      {
+      id: "ArchivePortfolio_MenuItem",
+      title: "Archive portfolio",
+      action: "openArchivePortfolioModal"
+    }
+  ])
   })
 })
