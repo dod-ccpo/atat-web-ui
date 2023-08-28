@@ -230,7 +230,7 @@ describe("Testing Portfolio", () => {
     it("Test portfolioSyncDate() => returns date string",async () =>{
       PortfolioStore.currentPortfolio.lastCostDataSync = "2023-08-23 01:44:18"
       const dateStr = wrapper.vm.portfolioSyncDate;
-      expect(dateStr).toBe("Last Sync: Aug. 23 at 0144")
+      expect(dateStr).toBe("Last sync: Aug. 23 at 0144")
     })
 
   });
