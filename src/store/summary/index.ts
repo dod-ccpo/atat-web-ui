@@ -27,6 +27,7 @@ import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
+import { differenceInQuartersWithOptions } from "date-fns/fp";
 
 
 
@@ -214,7 +215,8 @@ export class SummaryStore extends VuexModule {
       "method",
       "source_",
       "standard_",
-      "sys_"
+      "sys_",
+      "display",
     ];
     await this.assessFairOpportunity(fairOppObjectKeys);
     await this.assessEvalPlan(evalPlanObjectKeys);
@@ -222,16 +224,17 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessFairOpportunity(objectKeys: string[]): Promise<void>{
-    const fairOppStore = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
+    const fairOpp = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
     const keysToIgnore = objectKeys.filter(
       x => x !== "sys_"
     );
-    const monitor = {object: fairOppStore, keysToIgnore};
+    const monitor = {object: fairOpp, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
+    const isComplete = await this.isFairOpportunityComplete(fairOpp);
     const FairOpportunityItem: SummaryItem = {
       title: "Exception to Fair Opportunity",
-      description: "",
-      isComplete: false,
+      description: await this.setFairOpportunityDescription({fairOpp, isComplete}),
+      isComplete,
       isTouched,
       routeName: "Exceptions", 
       step:2,
@@ -241,26 +244,347 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async setFairOpportunityDescription(
+    resources:{
+      fairOpp: FairOpportunityDTO,
+      isComplete:boolean
+  }): Promise<string>{
+    let MRRText = "";
+    const FARSelection = 
+      resources.fairOpp.exception_to_fair_opportunity?.split("_").slice(-1).join()
+    let FARText = "";
+    switch(FARSelection){
+    case "A": 
+      FARText = "FAR 16.505(b)(2)(i)(A) – Unusual and compelling urgency.";
+      break;
+    case "B": 
+      FARText = "FAR 16.505(b)(2)(i)(B) – Unique or highly specialized capabilities.";
+      break;
+    case "C": 
+      FARText = "FAR 16.505(b)(2)(i)(C) – Logical follow-on.";
+      break;
+    default:
+      FARText = "No exceptions apply to this acquisition.<br />" +
+      "A J&A and MRR are NOT required in your final acquisition package."
+      break; 
+    }
+
+    const needsMRR = resources.fairOpp.contract_action === "NONE" ;
+    if (FARSelection !== "NONE"){
+      MRRText = needsMRR
+        ? "A J&A and Sole Source MRR are required in final acquisition package."
+        : "A J&A is required in final acquisition package.";
+    }
+
+    return resources.isComplete
+      ? FARText + "<br />" + MRRText
+      : ""
+    
+  }
+
+  @Action({rawError: true})
+  public async isFairOpportunityComplete(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    const hasNoFairOpp = fairOpp.exception_to_fair_opportunity === "NO_NONE"
+    const hasProposedCSP = fairOpp.proposed_csp !== "";
+    const hasJustification = fairOpp.justification !== "";
+    const hasMinGovtRequirements = fairOpp.min_govt_requirements !== ""
+      && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
+        "current level in order to support...\n\nThese offerings include..."
+    return (hasNoFairOpp) ||
+      (hasJustification 
+        && hasMinGovtRequirements
+        && await this.hasSoleSourceSituation(fairOpp)
+        && await this.hasProcurement(fairOpp)
+        && fairOpp.requirement_impact !== ""
+        && fairOpp.contract_action !== ""
+        && await this.hasMarketResearchEfforts(fairOpp)
+        && await this.hasMarketResearchConductors(fairOpp)
+        && await this.hasOtherFactsToSupportLogicalFollowOn(fairOpp)
+        && await this.hasActionsToRemoveBarriers(fairOpp)
+        && await this.hasCertificationPOCS(fairOpp)
+      );
+  }
+
+  @Action({rawError: true})
+  public async hasSoleSourceSituation(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    // assess first question
+    // 1. Would a fair opportunity competition require your project to migrate from 
+    //    one platform to another, resulting in additional time and cost?
+    const causeMigrationSelection = fairOpp.cause_migration_addl_time_cost;
+    let isCauseMigrationSelection = false;
+    if (causeMigrationSelection === "YES"){
+      isCauseMigrationSelection =  fairOpp.cause_migration_estimated_cost !== ""
+        && fairOpp.cause_migration_estimated_delay_amount !== ""
+        && fairOpp.cause_migration_estimated_delay_unit !== ""
+    } else if (causeMigrationSelection === "NO"){
+      isCauseMigrationSelection =  true
+    } 
+
+    // assess second question
+    // 2. Are your Government engineers trained and certified in a specific cloud 
+    //    platform or technology that is unique to Microsoft?
+    const causeGovtEngineers = fairOpp.cause_govt_engineers_training_certified;
+    let isCauseGovtEngineersComplete = false;
+    if (causeGovtEngineers === "YES"){
+      isCauseGovtEngineersComplete = fairOpp.cause_govt_engineers_platform_name !==""
+        && fairOpp.cause_govt_engineers_insufficient_time_reason !== "" 
+        && fairOpp.cause_govt_engineers_insufficient_time_reason !== "Due to ..., there is "
+          + "insufficient time to retrain and obtain certification in another "
+          + "platform/technology."; 
+    } else if (causeGovtEngineers === "NO"){
+      isCauseGovtEngineersComplete = true
+    }
+    // assess third question
+    // 3. Is there a specific product or feature that is peculiar to Microsoft?
+    const causeProductFeaturePeculiarToCSP = fairOpp.cause_product_feature_peculiar_to_csp;
+    let isCauseProductFeaturePeculiarToCSP = false;
+    if (causeProductFeaturePeculiarToCSP === "YES"){
+      isCauseProductFeaturePeculiarToCSP = 
+        fairOpp.cause_product_feature_type !== "" 
+        && fairOpp.cause_product_feature_name !== ""
+        && fairOpp.cause_product_feature_why_essential !== ""
+        && fairOpp.cause_product_feature_why_essential !== "This product is essential to the "
+          +"Government’s requirements due to..."
+        && fairOpp.cause_product_feature_why_others_inadequate !== ""
+        && fairOpp.cause_product_feature_why_others_inadequate !== "Other similar products do not "
+          +"meet, nor can be modified to meet, the Government’s requirements due to..."
+    } else if (causeProductFeaturePeculiarToCSP === "NO"){
+      isCauseProductFeaturePeculiarToCSP = true
+    }
+
+    // validates if sole source cause is generated or custom
+    let isSoleSourceCause = false;
+    isSoleSourceCause = fairOpp.cause_of_sole_source_for_docgen === "GENERATED"
+      ? fairOpp.cause_of_sole_source_generated !== ""
+      : fairOpp.cause_of_sole_source_custom !== ""
+
+    // validates why CSP is only source capable
+    const whyCSPIsOnlyCapableSource = fairOpp.why_csp_is_only_capable_source !== "";
+
+    return isCauseMigrationSelection 
+      && isCauseGovtEngineersComplete
+      && isCauseProductFeaturePeculiarToCSP
+      && isSoleSourceCause
+      && whyCSPIsOnlyCapableSource;
+  }
+
+  @Action({rawError: true})
+  public async hasProcurement(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    const procurementDiscussion = fairOpp.procurement_discussion !== "";
+    const procurementHasExistingEnv = fairOpp.procurement_has_existing_env === "NO"
+      ? true
+      : fairOpp.procurement_previous_impact !== "";
+    return procurementDiscussion 
+      && procurementHasExistingEnv;
+  }
+
+  @Action({rawError: true})
+  public async hasMarketResearchEfforts(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    //  If the user selected 'Undefinitized contract aciton (UCA)', 'Bridge contract Action', or
+    // 'Option to Extend Services' on the previous screen.
+    const hasContractAction = fairOpp.contract_action !== "NONE"
+    // assess first question
+    // 1. Did you review the specific capabilities in the JWCC Contracts to 
+    //    determine that Microsoft is the only source capable of fulfilling the Government’s 
+    //    minimum needs in the manner and time frame required?
+    const researchIsCSPOnlySourceCapable = fairOpp.research_is_csp_only_source_capable;
+    let hasResearchIsCSPOnlySourceCapable = false;
+    if (researchIsCSPOnlySourceCapable === "YES"){
+      const hasDates = (fairOpp.research_start_date !== "" && fairOpp.research_end_date !== "")
+        || fairOpp.research_start_date !== ""
+      hasResearchIsCSPOnlySourceCapable = hasDates
+        && fairOpp.research_supporting_data !== ""
+    } else if (researchIsCSPOnlySourceCapable === "NO"){
+      hasResearchIsCSPOnlySourceCapable = true
+    }
+
+    // assess first question
+    // 2. Thinking of the unique product that you previously told us about, did you review the JWCC 
+    //    contractor’s catalogs to determine if other similar offerings meet or can be modified 
+    //    to satisfy your requirements?
+    let hasResearchReviewCatalogsReviewed = true;
+    const researchReviewCatalogsReviewed = fairOpp.research_review_catalogs_reviewed;
+    if (fairOpp.cause_product_feature_type !== ""){
+      const sameResearchDate  
+        = fairOpp.research_review_catalogs_same_research_date;
+      let hasSameResearchDate = false;
+      const researchReviewCatalogsReviewResults = fairOpp.research_review_catalogs_review_results;
+      let hasReviewResults = false;
+      if (researchReviewCatalogsReviewed === "YES"){
+        const hasDates = 
+          (fairOpp.research_review_catalogs_start_date !== "" 
+            && fairOpp.research_review_catalogs_end_date !== "") ||
+            fairOpp.research_review_catalogs_start_date !== ""
+        hasSameResearchDate = sameResearchDate === "YES"
+          ? true
+          : hasDates  
+  
+        hasReviewResults = 
+          researchReviewCatalogsReviewResults !== ""
+          && researchReviewCatalogsReviewResults !== "The results have determined that no other "
+            + "offering is suitable as follows..."
+  
+        hasResearchReviewCatalogsReviewed = 
+          hasSameResearchDate
+          && hasReviewResults
+      }
+    }
+    // if there is no contract action && both Q1 and Q2 === 'NO'
+    const isOtherTechniquesRequired = 
+      !hasContractAction
+      && researchIsCSPOnlySourceCapable === "NO" 
+      && researchReviewCatalogsReviewed === "NO";
+    const hasOtherTechniques = isOtherTechniquesRequired 
+      ? fairOpp.research_other_techniques_used !== ""
+        && fairOpp.research_techniques_summary !== ""
+      : true;
+
+    // if `other` is selected, then validate the `other text box`
+    const otherOptionSysId = AcquisitionPackage.marketResearchTechniques?.find(
+      (option) => option.technique_label.toUpperCase() === "OTHER"
+    )?.sys_id as string;
+    const isOtherOptionSelected = 
+      fairOpp.research_other_techniques_used?.includes(otherOptionSysId) 
+        ? fairOpp.research_other_technique !== ""
+        : true
+
+    // validates market research efforts is generated or custom
+    let hasMarketResearchDetails = false;
+    hasMarketResearchDetails = fairOpp.research_details_for_docgen === "GENERATED"
+      ? fairOpp.research_details_generated !== ""
+      : fairOpp.research_details_custom !== ""
+      
+    //todo eval to true
+    return hasResearchIsCSPOnlySourceCapable
+      && hasResearchReviewCatalogsReviewed
+      && isOtherOptionSelected
+      && hasOtherTechniques
+      && hasMarketResearchDetails;
+  }
+
+  @Action({rawError: true})
+  public async hasMarketResearchConductors(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    if (fairOpp.contract_action === "NONE"){
+      const conductors = 
+        JSON.parse(fairOpp.market_research_conducted_by as string) as Record<string, string>[];
+      return conductors.length>0
+        && conductors.every((c) => Object.values(c).every(c=>c!==""))
+    }
+    return true;
+  }
+  
+  @Action({rawError: true})
+  public async hasOtherFactsToSupportLogicalFollowOn(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    return fairOpp.other_facts_to_support_logical_follow_on === "NO"
+      ? true
+      : fairOpp.other_facts_to_support_logical_follow_on_details !== ""
+  }
+
+  @Action({rawError: true})
+  public async hasActionsToRemoveBarriers(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    // assess question one
+    // 1. Is your agency preparing a fair opportunity competitive follow-on requirement?
+    const followOnRequirement = fairOpp.barriers_follow_on_requirement;
+    const hasFollowOnRequirement = followOnRequirement === "NO"
+      ? true
+      : fairOpp.barriers_follow_on_expected_date_awarded !=="" ;
+     
+    //assess question two
+    // 2. Is your agency pursuing training and/or certifications for Government engineers 
+    //    in other technologies?
+    const isAgencyPursuingTrainingOrCerts = 
+      fairOpp.barriers_agency_pursuing_training_or_certs !== "";
+
+    //assess question three
+    // 3. Are you planning future development and enhancement of Infrastructure as a Service (IaaS)
+    //    components that will shift to a containerized platform?
+    const isPlanningFutureDevleopment = 
+      fairOpp.barriers_planning_future_development !== "";
+
+    //assess question three
+    // 4. Are you planning future development and enhancement of Infrastructure as a Service (IaaS)
+    //    components that will shift to a containerized platform?
+    const isJAPrepared = 
+      fairOpp.barriers_j_a_prepared === "NO"
+        ? true
+        : fairOpp.barriers_j_a_prepared_results !== "";
+
+
+    // validates market research efforts is generated or custom
+    let hasPlansToRemoveBarriers = false;
+    hasPlansToRemoveBarriers = fairOpp.barriers_plans_to_remove_for_docgen === "GENERATED"
+      ? fairOpp.barriers_plans_to_remove_generated!== ""
+      : fairOpp.barriers_plans_to_remove_custom !== ""
+
+    return hasFollowOnRequirement
+      && isAgencyPursuingTrainingOrCerts
+      && isPlanningFutureDevleopment
+      && isJAPrepared
+      && hasPlansToRemoveBarriers
+  }
+  
+  @Action({rawError: true})
+  public async hasCertificationPOCS(fairOpp: FairOpportunityDTO): Promise<boolean>{
+    return fairOpp.requirements_poc !== ""
+     && fairOpp.requirements_poc_type !== ""
+     && fairOpp.technical_poc !== ""
+     && fairOpp.technical_poc_type !== ""
+  }
+
+  @Action({rawError: true})
   public async assessEvalPlan(objectKeys: string[]): Promise<void>{
+    const isFairOpportunityTouched = this.summaryItems.find(
+      si => si.title.includes("Fair Opportunity")
+    )?.isTouched;
     const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
     const keysToIgnore = objectKeys.filter(
       x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
     );
     const monitor = {object: evalPlanStore, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
+    // let isComplete = false
+
+    //
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
       description: "",
-      isComplete: false,
+      isComplete: await this.isEvalPlanComplete(evalPlanStore),
       isTouched,
-      routeName: "CreateEvalPlan", 
+      routeName:  "CreateEvalPlan",
       step:2,
       substep: 2
     }
     await this.doSetSummaryItem(evalPlan)
   }
 
-
+  @Action({rawError: true})
+  public async isEvalPlanComplete(evalPlanStore:EvaluationPlanDTO): Promise<boolean> {
+    const hasCustomSpecs = (evalPlanStore.has_custom_specifications ?? "") !== "";
+    const hasStandardDifferentiators = (evalPlanStore.standard_differentiators ?? "") !==  "";
+    const hasStandardSpecifications = (evalPlanStore.standard_specifications ?? "") !== "";
+    const hasBestUseOrLowestRiskMethod = 
+      (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
+    const hasLPTAMethod = evalPlanStore.method === "LPTA";
+    
+    let isComplete = false;
+    switch(evalPlanStore.source_selection){
+    case "NO_TECH_PROPOSAL":
+      isComplete = hasCustomSpecs;
+      break;
+    case "TECH_PROPOSAL":
+      isComplete = hasLPTAMethod
+        ? hasCustomSpecs 
+        : hasCustomSpecs && hasStandardDifferentiators
+      break;
+    case "SET_LUMP_SUM":
+      isComplete = hasBestUseOrLowestRiskMethod && hasStandardSpecifications;
+      break;
+    case "EQUAL_SET_LUMP_SUM":
+      isComplete = true;
+      break;
+    }
+    return isComplete;
+  }
   //#endregion
 
 
@@ -541,19 +865,29 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessProcurementHistory(): Promise<void> {
     const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts;
+    const isExceptionToFairOpp =
+      AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity;
     const currentContracts = AcquisitionPackage.currentContracts;
     let currentContractDetailsIsComplete = !!currentContracts
       && currentContracts.length !== 0;
 
     if (currentContracts) {
-      currentContracts?.forEach((contract) => {
-        if (contract.contract_number === "" ||
-          contract.competitive_status === "" ||
-          contract.contract_order_expiration_date === "" ||
-          contract.contract_order_start_date === "" ||
-          contract.incumbent_contractor_name === "" ||
-          contract.business_size === "") currentContractDetailsIsComplete = false;
-      });
+      if (isExceptionToFairOpp !== "NO_NONE") {
+        currentContracts?.forEach((contract) => {
+          if (contract.contract_number === "" ||
+            contract.competitive_status === "" ||
+            contract.contract_order_expiration_date === "" ||
+            contract.contract_order_start_date === "" ||
+            contract.incumbent_contractor_name === "" ||
+            contract.business_size === "") currentContractDetailsIsComplete = false;
+        });
+      } else {
+        currentContracts?.forEach((contract) => {
+          if (contract.contract_number === "" ||
+            contract.contract_order_expiration_date === "" ||
+            contract.incumbent_contractor_name === "") currentContractDetailsIsComplete = false;
+        });
+      }
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
@@ -561,13 +895,14 @@ export class SummaryStore extends VuexModule {
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
-    const taskOrderNumbers = currentContracts?.map(
-      (contract) => contract.task_delivery_order_number).join(", ");
+    const contractNumbers = currentContracts?.map(
+      (contract) => contract.contract_number).join(", ");
     const prevContracts = currentContracts?.length === 1
-      ? `${currentContracts?.length} previous contract:\n${taskOrderNumbers}`
-      : `${currentContracts?.length} previous contracts:\n${taskOrderNumbers}`
+      ? `${currentContracts?.length} previous contract:\n${contractNumbers}`
+      : `${currentContracts?.length} previous contracts:\n${contractNumbers}`
 
-    const description = isTouched ?
+    const description = isTouched && currentContracts && currentContracts.length > 0
+      && currentContracts[0].contract_number ?
       hasCurrentOrPreviousContract === "YES"
         ? prevContracts
         : "No previous contracts"

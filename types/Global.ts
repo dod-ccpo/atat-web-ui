@@ -547,6 +547,8 @@ export interface Portfolio extends BaseTableDTO {
   taskOrderSysId?: string;
   lastUpdated?: string;
   vendor?: string;
+  lastCostDataSync?: string;
+  fundingStatus?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {
@@ -564,6 +566,7 @@ export interface PortfolioCardData extends Portfolio {
   isOwner?: boolean;
   isManager?: boolean;
   isViewer?: boolean;
+  lastCostDataSync?: string;
 }
 
 export interface PortfolioSummaryQueryParams {

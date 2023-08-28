@@ -102,6 +102,7 @@ const initialCurrentPortfolio = (): Portfolio => {
     environments: [],
     lastUpdated: "",
     vendor: "",
+    lastCostDataSync: ""
   }
 }
 

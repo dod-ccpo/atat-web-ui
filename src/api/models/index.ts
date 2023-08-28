@@ -767,9 +767,8 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   active_task_order: string;
   agency: string;
   agency_display?: string;
-
   dod_component: string;
-
+  last_cost_data_sync: string;
   task_order_number: string; // "1000000001234  << portfolio.active_task_order >>",
   sys_updated_on: string; // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
   task_order_status: string; // "EXPIRED << task_order.task_order_status >>",
@@ -786,7 +785,6 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   alerts: AlertDTO[];
   title?: string;
   description?: string;
-
   environments?: Environment[];
   last_updated?: string;
 }
@@ -821,7 +819,8 @@ export interface PortfolioSummarySearchDTO {
   role?: "ALL" | "MANAGED";
   fundingStatuses?: ('ON_TRACK' | 'EXPIRING_SOON' | 'AT_RISK' | 'DELINQUENT' | 'FUNDING_AT_RISK')[];
   csps?: string[]; // to not search for specific csps, send empty array
-  portfolioStatus?: "ACTIVE" | "PROCESSING" | "ARCHIVED" | ""; // empty string for both statuses
+  // empty string for both statuses
+  portfolioStatus?: "ACTIVE" | "PROCESSING" | "ARCHIVED" | "PROVISIONING_ISSUE" |""; 
   sort?: "name" | "DESCsys_updated_on";
   searchString?: string;
   limit?: number;
