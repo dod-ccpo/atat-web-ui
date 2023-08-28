@@ -111,4 +111,24 @@ describe("Testing Members Component", () => {
   //   await wrapper.vm.moveToInput();
   //   expect(document.activeElement?.id).toBe(id);
   // })
+
+  it("test handleMoreMenuClick() => moveToInput", async () => {
+    const moveToInputSpy = jest.spyOn(wrapper.vm, 'moveToInput').mockImplementation()
+    await wrapper.vm.handleMoreMenuClick('moveToInput')
+    expect(moveToInputSpy).toHaveBeenCalled()
+  })
+  it("test handleMoreMenuClick() => openModal", async () => {
+    const openModalSpy = jest.spyOn(wrapper.vm, 'openModal').mockImplementation()
+    await wrapper.vm.handleMoreMenuClick('openModal')
+    expect(openModalSpy).toHaveBeenCalled()
+  })
+  it("test handleMoreMenuClick() => openArchivePortfolioModal", async () => {
+    const openArchivePortfolioModalSpy = jest.spyOn(
+      wrapper.vm, 
+      'openArchivePortfolioModal'
+    ).mockImplementation()
+    
+    await wrapper.vm.handleMoreMenuClick('openArchivePortfolioModal')
+    expect(openArchivePortfolioModalSpy).toHaveBeenCalled()
+  })
 })
