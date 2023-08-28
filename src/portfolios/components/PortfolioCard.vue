@@ -395,6 +395,10 @@ export default class PortfolioCard extends Vue {
         title: "View funding tracker",
         action: this.menuActions.viewFundingTracker
       },
+      { 
+        title: "View task orders",
+        action: this.menuActions.viewTaskOrders
+      },
       /*
       { 
         title: "View task orders",

@@ -184,7 +184,6 @@ export default class PortfolioSummary extends Vue {
     const activeTabIndex = AppSections.activeTabIndex;
     if (activeTabIndex > 0) {
       this.tabIndex = activeTabIndex;
-      await AppSections.setActiveTabIndex(0);
     }
   }
 }

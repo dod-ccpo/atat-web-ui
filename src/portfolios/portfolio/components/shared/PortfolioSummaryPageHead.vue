@@ -82,13 +82,13 @@
           <v-list>
             
             <v-list-item 
-            v-for="(menuItem, index) in getMoreMenuItems()"  
-            @click=handleMoreMenuClick(menuItem.click)
-            id="menuItem.id"
+            v-for="(menuItem, index) in getMoreMenuItems"  
+            :id="menuItem.id"
             :key="index"
+            @click="handleMoreMenuClick(menuItem.action)"
             >
               <v-list-item-title>
-                {{ menuItem.text }}
+                {{ menuItem.title }}
               </v-list-item-title>
             </v-list-item>
             <hr class="my-2"  v-if="!isProdEnv" />
@@ -140,6 +140,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 // eslint-disable-next-line max-len
 import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
+import { MeatballMenuItem } from "../../../../../types/Global";
 
 @Component({
   methods: {
@@ -198,33 +199,39 @@ export default class PortfolioSummaryPageHead extends Vue {
     return SlideoutPanel.getSlideoutPanelIsOpen;
   }
 
-  public getMoreMenuItems(): {id: string, text: string, click: string}[]{
-    const menuItems: {id: string, text: string, click: string}[] = [];
+  public get getMoreMenuItems(): MeatballMenuItem[]{
+    const menuItems: MeatballMenuItem[] = [];
     const leavePortfolio = {
       id: "LeavePortfolio_MenuItem",
-      text: "Leave this portfolio",
-      click: 'leaveThisPortfolio'
+      title: "Leave this portfolio",
+      action: 'leaveThisPortfolio'
     };
     const inviteMemebers = {
       id: "InviteMembers_MenuItem",
-      text: "Invite members to portfolio",
-      click: 'openModal'
+      title: "Invite members to portfolio",
+      action: 'openModal'
     };
     const renamePortfolio = {
       id: "RenamePortfolio_MenuItem",
-      text: "Rename portfolio",
-      click: "moveToInput"
+      title: "Rename portfolio",
+      action: "moveToInput"
     }
     const archivePortfolio = {
       id: "ArchivePortfolio_MenuItem",
-      text: "Archive portfolio",
-      click: "openArchivePortfolioModal"
+      title: "Archive portfolio",
+      action: "openArchivePortfolioModal"
     }
+
     if(PortfolioStore.currentUserIsViewer){
       menuItems.push(leavePortfolio);
-    } else{
+    } else if(PortfolioStore.currentUserIsManager){
       menuItems.push(
         leavePortfolio, 
+        inviteMemebers, 
+        renamePortfolio
+      )
+    } else{
+      menuItems.push(
         inviteMemebers, 
         renamePortfolio,
         archivePortfolio
@@ -235,10 +242,10 @@ export default class PortfolioSummaryPageHead extends Vue {
     return menuItems;
   }
 
-  handleMoreMenuClick(menuItem: string){
+  public handleMoreMenuClick(menuItem: string | undefined):void{
     switch(menuItem){
     case this.moreMenuItemActions.leaveThisPortfolio:
-      console.log('leave');
+      // Leave portfolio 
       break;
     case this.moreMenuItemActions.moveToInput:
       this.moveToInput();
@@ -250,7 +257,7 @@ export default class PortfolioSummaryPageHead extends Vue {
       this.openModal();
       break;
     default: 
-      console.log('default')
+      break;
     }
   }
 
