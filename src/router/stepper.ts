@@ -1415,11 +1415,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "SummaryStepEight",
-        excludeFromMenu: true,
-        path: "summary-page",
+        path: "summary-step-eight",
         name: routeNames.SummaryStepEight,
+        excludeFromMenu: true,
         completePercentageWeight: 1,
         component: SummaryStepEight,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor: "primary"
       },
     ]
   },
