@@ -119,11 +119,13 @@ describe("Testing Members Component", () => {
     await wrapper.vm.handleMoreMenuClick('moveToInput')
     expect(moveToInputSpy).toHaveBeenCalled()
   })
+
   it("test handleMoreMenuClick() => openModal", async () => {
     const openModalSpy = jest.spyOn(wrapper.vm, 'openModal').mockImplementation()
     await wrapper.vm.handleMoreMenuClick('openModal')
     expect(openModalSpy).toHaveBeenCalled()
   })
+
   it("test handleMoreMenuClick() => openArchivePortfolioModal", async () => {
     const openArchivePortfolioModalSpy = jest.spyOn(
       wrapper.vm, 
@@ -132,6 +134,15 @@ describe("Testing Members Component", () => {
 
     await wrapper.vm.handleMoreMenuClick('openArchivePortfolioModal')
     expect(openArchivePortfolioModalSpy).toHaveBeenCalled()
+  })
+
+  it("test moreMenuItemActions data", async () => {
+    expect(wrapper.vm.$data.moreMenuItemActions).toStrictEqual({
+    openArchivePortfolioModal: "openArchivePortfolioModal",
+    moveToInput: "moveToInput",
+    openModal: "openModal",
+    leaveThisPortfolio: "leaveThisPortfolio"
+    })
   })
 
   it("test getMoreMenuItems () => MeatballMenuItems[] as Owner", async () => {
@@ -154,18 +165,12 @@ describe("Testing Members Component", () => {
     }
   ])
   })
-  it("test moreMenuItemActions data", async () => {
-    expect(wrapper.vm.$data.moreMenuItemActions).toStrictEqual({
-    openArchivePortfolioModal: "openArchivePortfolioModal",
-    moveToInput: "moveToInput",
-    openModal: "openModal",
-    leaveThisPortfolio: "leaveThisPortfolio"
-    })
-  })
 
   it("test getMoreMenuItems () => MeatballMenuItems[] as Manager", async () => {
-    const mockUser = {sys_id: '1234'}
+    /* eslint-disable camelcase */
+    const mockUser = {sys_id: '1234'} 
     const mockPortfolio = {portfolio_managers: '1234'};
+    /* eslint-enable camelcase */
     CurrentUserStore.setCurrentUser(mockUser);
     await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
     const items =  wrapper.vm.getMoreMenuItems;
@@ -187,9 +192,12 @@ describe("Testing Members Component", () => {
       }
   ])
   })
+
   it("test getMoreMenuItems () => MeatballMenuItems[] as Viewer", async () => {
+    /* eslint-disable camelcase */
     const mockUser = {sys_id: '1234'}
-    const mockPortfolio = {portfolio_viewers: '1234'};
+    const mockPortfolio = {portfolio_viewers: '1234'}; 
+    /* eslint-enable camelcase */
     CurrentUserStore.setCurrentUser(mockUser);
     await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
     const items =  wrapper.vm.getMoreMenuItems;
