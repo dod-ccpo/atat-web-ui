@@ -533,39 +533,58 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessEvalPlan(objectKeys: string[]): Promise<void>{
+    const isFairOpportunityTouched = this.summaryItems.find(
+      si => si.title.includes("Fair Opportunity")
+    )?.isTouched;
     const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
     const keysToIgnore = objectKeys.filter(
       x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
     );
     const monitor = {object: evalPlanStore, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
-    let isComplete = false
-    if(evalPlanStore.source_selection=== "NO_TECH_PROPOSAL"
-        && evalPlanStore.has_custom_specifications !== ""
-      || evalPlanStore.source_selection=== "TECH_PROPOSAL"
-        && evalPlanStore.method === "BVTO"
-        && evalPlanStore.standard_differentiators !== ""
-      || evalPlanStore.source_selection=== "TECH_PROPOSAL"
-        && evalPlanStore.method === "LPTA"
-      ||evalPlanStore.source_selection=== "SET_LUMP_SUM"
-        && (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
-        && evalPlanStore.standard_specifications !== ""
-      ||evalPlanStore.source_selection=== "EQUAL_SET_LUMP_SUM"){
-      isComplete = true
-    }
+    // let isComplete = false
+
+    //
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
       description: "",
-      isComplete,
+      isComplete: await this.isEvalPlanComplete(evalPlanStore),
       isTouched,
-      routeName: "CreateEvalPlan",
+      routeName:  "CreateEvalPlan",
       step:2,
       substep: 2
     }
     await this.doSetSummaryItem(evalPlan)
   }
 
-
+  @Action({rawError: true})
+  public async isEvalPlanComplete(evalPlanStore:EvaluationPlanDTO): Promise<boolean> {
+    const hasCustomSpecs = (evalPlanStore.has_custom_specifications ?? "") !== "";
+    const hasStandardDifferentiators = (evalPlanStore.standard_differentiators ?? "") !==  "";
+    const hasStandardSpecifications = (evalPlanStore.standard_specifications ?? "") !== "";
+    const hasBestUseOrLowestRiskMethod = 
+      (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
+    const hasLPTAMethod = evalPlanStore.method === "LPTA";
+    
+    let isComplete = false;
+    switch(evalPlanStore.source_selection){
+    case "NO_TECH_PROPOSAL":
+      isComplete = hasCustomSpecs;
+      break;
+    case "TECH_PROPOSAL":
+      isComplete = hasLPTAMethod
+        ? hasCustomSpecs 
+        : hasCustomSpecs && hasStandardDifferentiators
+      break;
+    case "SET_LUMP_SUM":
+      isComplete = hasBestUseOrLowestRiskMethod && hasStandardSpecifications;
+      break;
+    case "EQUAL_SET_LUMP_SUM":
+      isComplete = true;
+      break;
+    }
+    return isComplete;
+  }
   //#endregion
 
 
@@ -846,19 +865,29 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessProcurementHistory(): Promise<void> {
     const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts;
+    const isExceptionToFairOpp =
+      AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity;
     const currentContracts = AcquisitionPackage.currentContracts;
     let currentContractDetailsIsComplete = !!currentContracts
       && currentContracts.length !== 0;
 
     if (currentContracts) {
-      currentContracts?.forEach((contract) => {
-        if (contract.contract_number === "" ||
-          contract.competitive_status === "" ||
-          contract.contract_order_expiration_date === "" ||
-          contract.contract_order_start_date === "" ||
-          contract.incumbent_contractor_name === "" ||
-          contract.business_size === "") currentContractDetailsIsComplete = false;
-      });
+      if (isExceptionToFairOpp !== "NO_NONE") {
+        currentContracts?.forEach((contract) => {
+          if (contract.contract_number === "" ||
+            contract.competitive_status === "" ||
+            contract.contract_order_expiration_date === "" ||
+            contract.contract_order_start_date === "" ||
+            contract.incumbent_contractor_name === "" ||
+            contract.business_size === "") currentContractDetailsIsComplete = false;
+        });
+      } else {
+        currentContracts?.forEach((contract) => {
+          if (contract.contract_number === "" ||
+            contract.contract_order_expiration_date === "" ||
+            contract.incumbent_contractor_name === "") currentContractDetailsIsComplete = false;
+        });
+      }
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
@@ -866,13 +895,14 @@ export class SummaryStore extends VuexModule {
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
-    const taskOrderNumbers = currentContracts?.map(
-      (contract) => contract.task_delivery_order_number).join(", ");
+    const contractNumbers = currentContracts?.map(
+      (contract) => contract.contract_number).join(", ");
     const prevContracts = currentContracts?.length === 1
-      ? `${currentContracts?.length} previous contract:\n${taskOrderNumbers}`
-      : `${currentContracts?.length} previous contracts:\n${taskOrderNumbers}`
+      ? `${currentContracts?.length} previous contract:\n${contractNumbers}`
+      : `${currentContracts?.length} previous contracts:\n${contractNumbers}`
 
-    const description = isTouched ?
+    const description = isTouched && currentContracts && currentContracts.length > 0
+      && currentContracts[0].contract_number ?
       hasCurrentOrPreviousContract === "YES"
         ? prevContracts
         : "No previous contracts"

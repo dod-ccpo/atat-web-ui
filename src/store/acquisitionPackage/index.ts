@@ -985,6 +985,11 @@ export class AcquisitionPackageStore extends VuexModule {
     await this.doSetCurrentContracts(currentContracts);
   }
 
+  @Action({rawError: true})
+  public async setSingleCurrentContract(contract: CurrentContractDTO): Promise<void> {
+    await this.doSetCurrentContracts([contract]);
+  }
+
   @Mutation
   public async doSetCurrentContracts(value: CurrentContractDTO[]): Promise<void> {
     this.currentContracts = value

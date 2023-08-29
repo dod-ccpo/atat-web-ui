@@ -1669,21 +1669,19 @@ export const SummaryStepThreeRouteResolver = (current:string): string => {
   return routeNames.SummaryStepThree
 }
 
+const hasILs = (): boolean => {
+  return PortfolioStore.CSPHasImpactLevels;
+}
+
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
   const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
-  const selectedCSP = PortfolioStore.portfolioProvisioningObj.csp
   const showPackageSelection = PortfolioStore.showTOPackageSelection;
   if (packageCount && (!acqPkgSysId || showPackageSelection)) {
     return provWorkflowRouteNames.GeneratedFromPackage;
   }
-  if(current !== provWorkflowRouteNames.PortfolioDetails
-      && acqPkgSysId){
-    if(selectedCSP === 'Azure'){
-      return provWorkflowRouteNames.PortfolioDetails
-    }else{
-      return provWorkflowRouteNames.AddCSPAdmin
-    }
+  if (current !== provWorkflowRouteNames.PortfolioDetails && acqPkgSysId && !hasILs()) {
+    return provWorkflowRouteNames.AddCSPAdmin
   }
   return current === provWorkflowRouteNames.PortfolioDetails
     ? provWorkflowRouteNames.AwardedTaskOrder
@@ -1692,17 +1690,12 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
 
 export const PortfolioDetailsRouteResolver = (current: string): string => {
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
-  const azureCSP = PortfolioStore.portfolioProvisioningObj.csp === 'Azure'
-  if(azureCSP || !acqPkgSysId ){
-    return provWorkflowRouteNames.PortfolioDetails
+  if (!acqPkgSysId || current === provWorkflowRouteNames.AddCSPAdmin || hasILs()) {
+    return provWorkflowRouteNames.PortfolioDetails;
   }
-  if(current === provWorkflowRouteNames.AddCSPAdmin && azureCSP) {
-    return provWorkflowRouteNames.PortfolioDetails
-  }
-  if(current === provWorkflowRouteNames.AddCSPAdmin && !acqPkgSysId && !azureCSP){
+  if (current === provWorkflowRouteNames.AddCSPAdmin && !acqPkgSysId && !hasILs()) {
     return provWorkflowRouteNames.AwardedTaskOrder;
   }
-
   return current === provWorkflowRouteNames.GeneratedFromPackage
     ? provWorkflowRouteNames.AddCSPAdmin
     : provWorkflowRouteNames.GeneratedFromPackage;
