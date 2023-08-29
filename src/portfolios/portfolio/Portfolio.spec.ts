@@ -6,6 +6,7 @@ import { DefaultProps } from "vue/types/options";
 import Portfolio from "./Portfolio.vue";
 import ATATCharts from "@/store/charts";
 import dashboardMocks from "@/dashboards/__tests__/dashboardMocks..json";
+import PortfolioStore from "@/store/portfolio";
 
 Vue.use(Vuetify);
 
