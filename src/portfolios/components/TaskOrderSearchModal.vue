@@ -2,7 +2,7 @@
   <ATATDialog 
     id="TOSearchModal"
     :showDialog.sync="_showTOSearchModal"
-    title="Search for your task order"
+    :title="titleText"
     no-click-animation
     :hideOkButton="true"
     width="632"
@@ -13,8 +13,7 @@
     <template #content>
       <div class="body">
         <p>
-          To fund your ATAT portfolio, you will need an awarded task order. Enter 
-          your task order number and we’ll retrieve the funding information.
+          {{ bodyText }}
         </p>
         <TaskOrderSearch 
           label="Task order number"
@@ -35,8 +34,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
-
+import { Component, PropSync, Watch } from "vue-property-decorator";
+import PortfolioStore from "@/store/portfolio";
 import ATATDialog from "@/components/ATATDialog.vue";
 import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";
 
@@ -52,6 +51,13 @@ export default class TaskOrderSearchModal extends Vue {
   @PropSync("TONumber") public _TONumber?: string;
   @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
 
+  public isFollowOn = false;
+
+  public bodyText = `To fund your ATAT portfolio, you will need an awarded task order. Enter 
+          your task order number and we’ll retrieve the funding information.`
+  
+  public titleText = "Search for your task order"
+
   public async startProvisionWorkflow(): Promise<void> {
     this.$emit("startProvisionWorkflow");
   }
@@ -59,6 +65,18 @@ export default class TaskOrderSearchModal extends Vue {
   public async TOSearchCancelled(): Promise<void> {
     this.$emit("TOSearchCancelled");
   }
+
+  @Watch("_showTOSearchModal")
+  public async checkIfFollowOn(): Promise<void> {
+    this.isFollowOn = PortfolioStore.isProvisioningTOFollowOn;
+    if(this.isFollowOn){
+      this.bodyText = `To update funding associated with your ATAT portfolio, you will need an
+      awarded modification or follow-on task order. Enter your task order number and we’ll retrieve
+      the funding information.`
+      this.titleText = "Search for your modification or follow-on task order"
+    }
+  }
+
 
 }
 </script>

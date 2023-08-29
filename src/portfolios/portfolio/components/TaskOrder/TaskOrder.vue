@@ -16,9 +16,14 @@
           resources and support for this portfolio.
           -->
         </p>
-        <!-- 
-        <v-btn outlined class="ml-10 secondary"> Add a new task order </v-btn>
-        -->
+        
+        <v-btn 
+        outlined 
+        class="ml-10 secondary" 
+        @click="openSearchTOModal"
+        > 
+        Add follow-on task order 
+      </v-btn>
       </div>
       <TaskOrderCard
         :isHistory="false"
@@ -33,6 +38,13 @@
         :showDetails.sync="showDetails"
       />
     </div>
+    <TaskOrderSearchModal
+      :showTOSearchModal.sync="showTOSearchModal"
+      :TONumber.sync="TONumber"
+      :resetValidationNow.sync="resetValidationNow"
+      @TOSearchCancelled="TOSearchCancelled"
+      @startProvisionWorkflow="startProvisionWorkflow"
+    /> 
   </div>
 </template>
 <script lang="ts">
@@ -47,12 +59,17 @@ import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
 import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/helpers";
 import PortfolioStore from "@/store/portfolio";
+import Steps from "@/store/steps";
+import AppSections from "@/store/appSections";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
 @Component({
   components: {
     TaskOrderCard,
     TaskOrderDetails,
-    FinancialDetailsAlert
+    FinancialDetailsAlert,
+    TaskOrderSearchModal
   }
 })
 export default class TaskOrder extends Vue {
@@ -60,6 +77,47 @@ export default class TaskOrder extends Vue {
   public showDetails = false
   public taskOrders: TaskOrderCardData[] = [];
   public selectedTaskOrder:TaskOrderCardData ={};
+
+  public showTOSearchModal = false;
+  public TONumber = "";
+  public resetValidationNow = false;
+
+  public provWorkflowRouteNames = {
+    AwardedTaskOrder: "Awarded_Task_Order"
+  };
+
+  public async TOSearchCancelled(): Promise<void> {
+    this.TONumber = "";
+    this.resetValidationNow = true;
+    this.showTOSearchModal = false;
+    await PortfolioStore.setProvisioningTOFollowOn(false)
+  }
+
+  public async openSearchTOModal(): Promise<void> {
+    await PortfolioStore.setProvisioningTOFollowOn(true)
+    this.showTOSearchModal = true;
+  }
+
+  public async startProvisionWorkflow(): Promise<void>{
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await AcquisitionPackage.reset();
+    if (this.selectedTaskOrder.sys_id) {
+      await PortfolioStore.setShowTOPackageSelection(false);
+    }
+    await PortfolioStore.setSelectedAcquisitionPackageSysId(
+      this.selectedTaskOrder.sys_id as string
+    );
+
+    this.$router.push({
+      name: this.provWorkflowRouteNames.AwardedTaskOrder,
+      params: {
+        direction: "next"
+      },
+      replace: true
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
+  }
+
 
   /**
    * loadOnEnter retrieves necessary data from the store

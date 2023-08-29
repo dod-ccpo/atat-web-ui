@@ -114,7 +114,7 @@ const initialCurrentPortfolio = (): Portfolio => {
 })
 
 export class PortfolioDataStore extends VuexModule {
-
+  
   public showTOPackageSelection = true;
   @Action({rawError: true})
   public async setShowTOPackageSelection(bool: boolean): Promise<void> {
@@ -353,6 +353,15 @@ export class PortfolioDataStore extends VuexModule {
     this.currentPortfolio = _.cloneDeep(initialCurrentPortfolio());
   }
 
+  public isProvisioningTOFollowOn = false;
+  @Action({rawError: true})
+  public async setProvisioningTOFollowOn(state: boolean): Promise<void> {
+    await this.doSetProvisioningTOFollowOn(state)
+  }
+  @Mutation
+  public async doSetProvisioningTOFollowOn(state: boolean): Promise<void> {
+    this.isProvisioningTOFollowOn = state;
+  }
   public blankEnvironment: Environment = {
     csp: "",
     csp_id: "",

@@ -184,6 +184,13 @@
       :portfolioName="cardData.title"
       @okClicked="leavePortfolio"
     />
+    <TaskOrderSearchModal
+      :showTOSearchModal.sync="showTOSearchModal"
+      :TONumber.sync="TONumber"
+      :resetValidationNow.sync="resetValidationNow"
+      @TOSearchCancelled="TOSearchCancelled"
+      @startProvisionWorkflow="startProvisionWorkflow"
+    />  
 
   </v-card>
 </template>
@@ -203,12 +210,15 @@ import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioMo
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
-
+import TaskOrderSearchModal from "./TaskOrderSearchModal.vue";
+import Steps from "@/store/steps";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
   components: {
     ATATSVGIcon,
     ATATMeatballMenu,
     LeavePortfolioModal,
+    TaskOrderSearchModal
   }
 })
 
@@ -220,6 +230,43 @@ export default class PortfolioCard extends Vue {
   @Prop({ default: false }) public isHomeView?: boolean;
 
   public showLeavePortfolioModal = false;
+  public showTOSearchModal = false;
+  public TONumber = "";
+  public resetValidationNow = false;
+
+  public provWorkflowRouteNames = {
+    AwardedTaskOrder: "Awarded_Task_Order"
+  };
+
+  public async TOSearchCancelled(): Promise<void> {
+    this.TONumber = "";
+    this.resetValidationNow = true;
+    this.showTOSearchModal = false;
+    await PortfolioStore.setProvisioningTOFollowOn(false)
+  }
+
+  public async openSearchTOModal(): Promise<void> {
+    await PortfolioStore.setProvisioningTOFollowOn(true)
+    this.showTOSearchModal = true;
+  }
+
+  public async startProvisionWorkflow(): Promise<void>{
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await AcquisitionPackage.reset();
+    if (this.cardData.sysId) {
+      await PortfolioStore.setShowTOPackageSelection(false);
+    }
+    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.cardData.sysId as string);
+
+    this.$router.push({
+      name: this.provWorkflowRouteNames.AwardedTaskOrder,
+      params: {
+        direction: "next"
+      },
+      replace: true
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
+  }
 
   public menuActions = {
     viewFundingTracker: "navToFundingTracker",
@@ -228,6 +275,7 @@ export default class PortfolioCard extends Vue {
     emailManagers: "emailManagers",
     loginToCSP: "loginToCSP",
     archivePortfolio: "archivePortfolio",
+    addTaskOrder: 'addTaskOrder'
   }
   public get currentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
@@ -318,6 +366,9 @@ export default class PortfolioCard extends Vue {
     case this.menuActions.archivePortfolio: 
       this.$emit("openArchivePortfolioModal");
       break;
+    case this.menuActions.addTaskOrder:
+      this.openSearchTOModal();
+      break;
     default:
       break; 
     }
@@ -394,6 +445,10 @@ export default class PortfolioCard extends Vue {
       { 
         title: "View funding tracker",
         action: this.menuActions.viewFundingTracker
+      },
+      { 
+        title: "Add awarded task order or modification",
+        action: this.menuActions.addTaskOrder
       },
       /*
       { 
