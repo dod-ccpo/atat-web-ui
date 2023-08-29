@@ -101,7 +101,7 @@ export class PortfolioSummaryStore extends VuexModule {
     if (searchDTO.searchString) {
       query = query + "^nameLIKE" + searchDTO.searchString;
     }
-    // ATAT TODO: below block is commented out because "csp" column is moved to "environment" 
+    // ATAT TODO * below block is commented out because "csp" column is moved to "environment" 
     // table and cannot be part of the search for portfolio with offsets and limits for pagination.
     /*if (searchDTO.csps?.length > 0) {
       query = query + "^csp.nameIN" + searchDTO.csps;
