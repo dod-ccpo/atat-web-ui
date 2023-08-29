@@ -86,7 +86,8 @@ describe("Testing UploadMigrationDocuments Component", () => {
       })
       it("validates assigned Objects", async () => {
         jest.spyOn(wrapper.vm, "hasChanged").mockReturnValue(true);
-        jest.spyOn(CurrentEnvironment, "saveCurrentEnvironment").mockReturnValue(true)
+        jest.spyOn(CurrentEnvironment, "saveCurrentEnvironment")
+          .mockReturnValue(Promise.resolve(true))
         await wrapper.vm.saveOnLeave();
         //validating `Object.assign(this.currEnvDTO, this.currentData);`
         const matchedKeys = Object.keys(wrapper.vm.$data.currEnvDTO)

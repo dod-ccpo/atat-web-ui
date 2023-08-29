@@ -43,7 +43,7 @@ describe("Testing ATATDialog Component", () => {
       await wrapper.setProps({ showDialog: true });
       wrapper.find('#dialog_cancel').trigger("click");
       Vue.nextTick(() => {
-        expect(wrapper.emitted('cancelClicked')).tobeTruthy();
+        expect(wrapper.emitted('cancelClicked')).toBeTruthy();
       });
     });
 
@@ -61,7 +61,7 @@ describe("Testing ATATDialog Component", () => {
       await wrapper.setProps({ showDialog: true });
       wrapper.find('#dialog_ok').trigger("click");
       Vue.nextTick(() => {
-        expect(wrapper.emitted('ok')).tobeTruthy();
+        expect(wrapper.emitted('ok')).toBeTruthy();
       });
     });
 
