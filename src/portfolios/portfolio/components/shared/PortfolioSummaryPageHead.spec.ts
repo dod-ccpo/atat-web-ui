@@ -134,6 +134,7 @@ describe("Testing Members Component", () => {
   })
 
   it("test getMoreMenuItems () => MeatballMenuItems[] as Owner", async () => {
+    console.log(wrapper.vm.$data)
     const items =  wrapper.vm.getMoreMenuItems;
     expect(items).toStrictEqual([
       {
@@ -152,5 +153,14 @@ describe("Testing Members Component", () => {
       action: "openArchivePortfolioModal"
     }
   ])
+  })
+  it("test moreMenuItemActions data", async () => {
+    
+    expect(wrapper.vm.$data.moreMenuItemActions).toStrictEqual({
+    openArchivePortfolioModal: "openArchivePortfolioModal",
+    moveToInput: "moveToInput",
+    openModal: "openModal",
+    leaveThisPortfolio: "leaveThisPortfolio"
+    })
   })
 })

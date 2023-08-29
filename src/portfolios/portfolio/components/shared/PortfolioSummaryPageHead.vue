@@ -134,13 +134,12 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioStore from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import { SlideoutPanelContent } from "../../../../../types/Global";
+import { SlideoutPanelContent, MeatballMenuItem } from "../../../../../types/Global";
 import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 // eslint-disable-next-line max-len
 import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
-import { MeatballMenuItem } from "../../../../../types/Global";
 
 @Component({
   methods: {
