@@ -4,7 +4,7 @@ import {getModule} from "vuex-module-decorators";
 import {PortfolioSummaryStore} from "@/store/portfolioSummary/index";
 import {
   AlertDTO,
-  ClinDisplayDTO, CostsDTO, PortfolioSummaryDTO, PortfolioSummarySearchDTO,
+  CostsDTO, PortfolioSummaryDTO, PortfolioSummarySearchDTO,
   TaskOrderDTO
 } from "@/api/models";
 import Vue from "vue";

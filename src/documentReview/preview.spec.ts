@@ -45,7 +45,8 @@ describe("Testing index Component", () => {
       grade_civ: "",
       dodaac: "",
       can_access_package: "",
-      manually_entered: "",    
+      manually_entered: "",
+      acquisition_package: ""  
     }
 
     jest.spyOn(AcquisitionPackage, 'loadContactInfo').mockImplementation(
