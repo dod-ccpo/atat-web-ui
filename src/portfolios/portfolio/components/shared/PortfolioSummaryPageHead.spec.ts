@@ -7,6 +7,7 @@ import PortfolioSummaryPageHead from
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
 import PortfolioStore from "@/store/portfolio";
+import CurrentUserStore from "@/store/user";
 Vue.use(Vuetify);
 
 describe("Testing Members Component", () => {
@@ -134,7 +135,6 @@ describe("Testing Members Component", () => {
   })
 
   it("test getMoreMenuItems () => MeatballMenuItems[] as Owner", async () => {
-    console.log(wrapper.vm.$data)
     const items =  wrapper.vm.getMoreMenuItems;
     expect(items).toStrictEqual([
       {
@@ -161,5 +161,44 @@ describe("Testing Members Component", () => {
     openModal: "openModal",
     leaveThisPortfolio: "leaveThisPortfolio"
     })
+  })
+
+  it("test getMoreMenuItems () => MeatballMenuItems[] as Manager", async () => {
+    const mockUser = {sys_id: '1234'}
+    const mockPortfolio = {portfolio_managers: '1234'};
+    CurrentUserStore.setCurrentUser(mockUser);
+    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
+    const items =  wrapper.vm.getMoreMenuItems;
+    expect(items).toStrictEqual([
+      {
+        id: "LeavePortfolio_MenuItem",
+        title: "Leave this portfolio",
+        action: 'leaveThisPortfolio'
+      },
+      {
+        id: "InviteMembers_MenuItem",
+        title: "Invite members to portfolio",
+        action: 'openModal'
+      },
+      {
+        id: "RenamePortfolio_MenuItem",
+        title: "Rename portfolio",
+        action: "moveToInput"
+      }
+  ])
+  })
+  it("test getMoreMenuItems () => MeatballMenuItems[] as Viewer", async () => {
+    const mockUser = {sys_id: '1234'}
+    const mockPortfolio = {portfolio_viewers: '1234'};
+    CurrentUserStore.setCurrentUser(mockUser);
+    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
+    const items =  wrapper.vm.getMoreMenuItems;
+    expect(items).toStrictEqual([
+      {
+        id: "LeavePortfolio_MenuItem",
+        title: "Leave this portfolio",
+        action: 'leaveThisPortfolio'
+      }
+  ])
   })
 })
