@@ -155,7 +155,6 @@ describe("Testing Members Component", () => {
   ])
   })
   it("test moreMenuItemActions data", async () => {
-    
     expect(wrapper.vm.$data.moreMenuItemActions).toStrictEqual({
     openArchivePortfolioModal: "openArchivePortfolioModal",
     moveToInput: "moveToInput",
