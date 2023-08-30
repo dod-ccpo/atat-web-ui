@@ -5,7 +5,6 @@ import { DefaultProps } from "vue/types/options";
 import PortfolioCard from "@/portfolios/components/PortfolioCard.vue";
 import { PortfolioCardData } from "types/Global";
 import AppSections from "@/store/appSections";
-import PortfolioData from "@/store/portfolio";
 import PortfolioStore from "@/store/portfolio";
 import { cspConsoleURLs } from "@/store/portfolio";
 import validators from "@/plugins/validation";
@@ -20,6 +19,7 @@ const menuActions = {
   emailManagers: "emailManagers",
   archivePortfolio: "archivePortfolio",
   loginToCSP: "loginToCSP",
+  addTaskOrder: 'addTaskOrder'
 }
 const mockRouter = {
   push: jest.fn(),
@@ -118,6 +118,12 @@ describe("Testing index Component", () => {
     window.open = jest.fn();
     await wrapper.vm.cardMenuClick({action: menuActions.archivePortfolio});
     expect(wrapper.emitted('openArchivePortfolioModal')).toBeTruthy();
+  });
+
+  it("clicks meatball menu - Archive Portfolio", async () => {
+    const mockOpenSearchModal = jest.spyOn(wrapper.vm, 'openSearchTOModal')
+    await wrapper.vm.cardMenuClick({action: menuActions.addTaskOrder});
+    expect(mockOpenSearchModal).toHaveBeenCalled();
   });
 
   it("clicks meatball menu - no action taken", async () => {
