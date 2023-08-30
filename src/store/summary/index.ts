@@ -9,7 +9,6 @@ import {
 } from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
-import { ContractTypeApi } from "@/api/contractDetails";
 import {
   ContactDTO,
   ContractConsiderationsDTO,
@@ -28,7 +27,6 @@ import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
-import { differenceInQuartersWithOptions } from "date-fns/fp";
 import { AxiosRequestConfig } from "axios";
 import api from "@/api";
 
@@ -536,8 +534,6 @@ export class SummaryStore extends VuexModule {
     const technicalPOCId = fairOpp.technical_poc;
     const hasExistingTechPOC = technicalPOCId !== "" && technicalPOCType !=="";
     const hasExistingReqPOC = reqPOCId !="" && reqPOCType !="" ;
-    const hasNewPOC = false;
-    
     if (reqPOCType === "NEW"){
       if (await this.isNewPOCValid(reqPOCId as string) === false){
         return false;
@@ -548,34 +544,32 @@ export class SummaryStore extends VuexModule {
         return false;
       };
     } 
-
     return hasExistingReqPOC && hasExistingTechPOC
   }
 
   @Action({rawError: true})
   public async isNewPOCValid(sysID: string): Promise<boolean>{
-    const config: AxiosRequestConfig = {
+    const contactResponse: ContactDTO[] = await api.contactsTable.getQuery({
       params: {
         // eslint-disable-next-line camelcase
         sysparm_query: "sys_id=" + sysID
       }
-    };
-
-    const contact: ContactDTO[] = await api.contactsTable.getQuery(config);
-
-    const propsToValidate = [
-      "role",
-      "first_name",
-      "last_name",
-      "title",
-      "phone"
-    ]
-
-    const keysToIgnore = Object.keys(contact[0]).filter(
-      x => ["role","first_name", "last_name", "title", "phone"].indexOf(x) === -1
-    );
-    const monitor = {object: contact[0], keysToIgnore};
-    return  await this.isComplete(monitor)
+    });
+    if (contactResponse.length>0){
+      const contact = contactResponse[0];
+      const keysToIgnore = Object.keys(contact).filter(
+        x => ["role","first_name","last_name","title","phone"].indexOf(x) === -1
+      );
+      const monitor = {object: contact, keysToIgnore};
+      const isMilitary = contact.role.toUpperCase() === "MILITARY";
+      const hasRankComponents = contact.rank_components !== "" ;
+      const isComplete = await this.isComplete(monitor);
+      return isMilitary
+        ? isComplete && hasRankComponents
+        : isComplete;
+    } else {
+      return false;
+    }
   }
 
   @Action({rawError: true})
@@ -589,9 +583,6 @@ export class SummaryStore extends VuexModule {
     );
     const monitor = {object: evalPlanStore, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
-    // let isComplete = false
-
-    //
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
       description: "",
