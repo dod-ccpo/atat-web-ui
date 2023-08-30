@@ -33,7 +33,8 @@ const portfolios: PortfolioSummaryDTO[] = [
     task_orders: [],
     active_task_order: "",
     alerts: [],
-    portfolio_funding_status: ""
+    portfolio_funding_status: "",
+    last_cost_data_sync: ""
     /* eslint-enable camelcase */
   },
   {
@@ -73,7 +74,8 @@ const portfolios: PortfolioSummaryDTO[] = [
     ],
     active_task_order: "",
     alerts: [],
-    portfolio_funding_status: ""
+    portfolio_funding_status: "",
+    last_cost_data_sync: ""
     /* eslint-enable camelcase */
   }
 
@@ -252,24 +254,24 @@ describe("Testing index Component", () => {
   });
 
   it("openArchivePortfolioModal() => runs PortfolioStore.setShowArchivePortfolioModal",
-  async () => {
-    jest.spyOn(PortfolioStore, 'setShowArchivePortfolioModal').mockImplementation();
-    await wrapper.vm.openArchivePortfolioModal();
-    expect(PortfolioStore.setShowArchivePortfolioModal).toBeCalled()
-  });
+    async () => {
+      jest.spyOn(PortfolioStore, 'setShowArchivePortfolioModal').mockImplementation();
+      await wrapper.vm.openArchivePortfolioModal();
+      expect(PortfolioStore.setShowArchivePortfolioModal).toBeCalled()
+    });
 
   it("closeArchivePortfolioModal() => runs PortfolioStore.setShowArchivePortfolioModal",
-  async () => {
-    jest.spyOn(PortfolioStore, 'setShowArchivePortfolioModal').mockImplementation();
-    await wrapper.vm.closeArchivePortfolioModal();
-    expect(PortfolioStore.setShowArchivePortfolioModal).toBeCalled()
-  });
+    async () => {
+      jest.spyOn(PortfolioStore, 'setShowArchivePortfolioModal').mockImplementation();
+      await wrapper.vm.closeArchivePortfolioModal();
+      expect(PortfolioStore.setShowArchivePortfolioModal).toBeCalled()
+    });
 
   it("getPortfolioStatus() => returns status label",
-  async () => {
-    const status = 'ACTIVE';
-    const actualStatus = await wrapper.vm.getPortfolioStatus(status);
-    expect(actualStatus).toBe('Active')
-  });
+    async () => {
+      const status = 'ACTIVE';
+      const actualStatus = await wrapper.vm.getPortfolioStatus(status);
+      expect(actualStatus).toBe('Active')
+    });
 
 });

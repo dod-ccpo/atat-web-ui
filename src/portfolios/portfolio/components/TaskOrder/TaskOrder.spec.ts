@@ -55,7 +55,9 @@ describe("Testing TaskOrder Component", () => {
           "funds_total": ""
         }
       ],
-      alerts: []
+      portfolio_viewers: "",
+      alerts: [],
+      last_cost_data_sync: ""
     }
   ];
 

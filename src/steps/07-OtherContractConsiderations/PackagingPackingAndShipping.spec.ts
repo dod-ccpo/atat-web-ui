@@ -47,14 +47,15 @@ describe("Testing Packaging, Packing, and Shipping Page", () => {
 
 
       it("sets $data attributes as expected", async () => {
-        jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(contractConsiderations);
+        jest.spyOn(AcquisitionPackage, "loadData")
+          .mockReturnValue(Promise.resolve(contractConsiderations));
         await wrapper.vm.loadOnEnter();
         expect(wrapper.vm.$data.savedData.contractor_provided_transfer).toBe("true");
         expect(wrapper.vm.$data.selectedOptions.length).toBeGreaterThan(0);
       });
 
       it("calls store function as expected", async () => {
-        jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(null);
+        jest.spyOn(AcquisitionPackage, "loadData").mockReturnValue(Promise.resolve(null));
         const setCurrentContractMock = jest
           .spyOn(AcquisitionPackage, "setCurrentContract").mockImplementation();
         await wrapper.vm.loadOnEnter();
@@ -75,7 +76,7 @@ describe("Testing Packaging, Packing, and Shipping Page", () => {
         }
         beforeEach(()=>{
           jest.spyOn(AcquisitionPackage, "loadData")
-            .mockReturnValue(contractConsiderationsWithFalse);
+            .mockReturnValue(Promise.resolve(contractConsiderationsWithFalse));
         })
         it("sets wrapper.vm.$data as expected", async () => {
           await wrapper.vm.loadOnEnter();
