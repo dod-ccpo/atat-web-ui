@@ -12,6 +12,7 @@ import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/Alterna
 import DAPPSChecklist from "@/steps/01-AcquisitionPackageDetails/DAPPSChecklist.vue";
 import ContractingOfficeInfo from "@/steps/01-AcquisitionPackageDetails/ContractingOfficeInfo.vue";
 import Summary from "../steps/Summary.vue";
+import SummaryStepOne from "@/steps/01-AcquisitionPackageDetails/SummaryStepOne.vue";
 
 // Step 2 - Evaluation Criteria
 import FairOpportunityProcess from "../steps/02-EvaluationCriteria/Index.vue"
@@ -221,12 +222,17 @@ import {
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
   FOIARecordSummaryResolver,
-  PIIResolver, 
-  COIRouteResolver, 
-  PackagingPackingAndShippingResolver, 
+  PIIResolver,
+  COIRouteResolver,
+  PackagingPackingAndShippingResolver,
   TravelRouteResolver,
-  
+  ProjectOverviewResolver,
+  OrganizationResolver,
+  ContactInformationResolver,
+  CorInformationResolver, ACorInformationQuestionResolver,
+
 } from "./resolvers";
+
 
 export const routeNames = {
   ContractingShop: "Contracting_Shop",
@@ -238,6 +244,7 @@ export const routeNames = {
   AcorInformation: "Acor_Information",
   ExistingContractBackground: "Existing_Contract_Background",
   AcqPackageSummary: "Acquisition_Package_Summary",
+  SummaryStepOne: "SummaryStepOne",
   
   FairOpportunity: "Fair_Opportunity",
   Exceptions: "Exceptions",
@@ -406,6 +413,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Project Overview",
         path: "project-overview",
         name: routeNames.ProjectOverview,
+        routeResolver:ProjectOverviewResolver,
         completePercentageWeight: 4,
         completed: false,
         stepCompleteOnLeave: routeNames.ProjectOverview,
@@ -415,6 +423,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Organization",
         path: "organization-info",
         name: routeNames.OrganizationInfo,
+        routeResolver: OrganizationResolver,
         completed: false,
         stepCompleteOnLeave: routeNames.OrganizationInfo,
         completePercentageWeight: 5,
@@ -424,6 +433,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Contact Information",
         path: "contact-info",
         name: routeNames.ContactInformation,
+        routeResolver: ContactInformationResolver,
         completePercentageWeight: 5,
         completed: false,
         component: ContactInfo,
@@ -432,6 +442,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Cor Info",
         path: "cor-info",
         name: routeNames.CorInformation,
+        routeResolver: CorInformationResolver,
         excludeFromMenu: true,
         completePercentageWeight: 5,
         component: CorInfo,
@@ -440,6 +451,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Alternate COR",
         path: "alt-cor",
         name: routeNames.AlternateCor,
+        routeResolver:ACorInformationQuestionResolver,
         excludeFromMenu: true,
         component: AlternateCOR,
       },
@@ -452,16 +464,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: AcorInfo,
         routeResolver: AcorsRouteResolver,
       },
-      // {
-      //   menuText: "Summary",
-      //   path: "summary",
-      //   name: routeNames.AcqPackageSummary,
-      //   excludeFromMenu: true,
-      //   completePercentageWeight: 5,
-      //   stepCompleteOnEnter: routeNames.ContactInformation,
-      //   component: Summary,
-      //   backButtonText: "Sample different Back text",
-      // }
+      {
+        menuText: "SummaryStepOne",
+        path:"summary-step-one",
+        name: routeNames.SummaryStepOne,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepOne,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor:  "primary"
+      },
     ],
   },
   {

@@ -24,6 +24,34 @@ export const showDITCOPageResolver = (current: string): string => {
     : routeNames.ContractingShop;
 };
 
+export const ProjectOverviewResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ContractingOfficeInfo
+    ? routeNames.SummaryStepOne
+    : routeNames.ProjectOverview
+}
+
+export const OrganizationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ProjectOverview
+    ? routeNames.SummaryStepOne
+    : routeNames.OrganizationInfo
+}
+
+export const ContactInformationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.OrganizationInfo
+    ? routeNames.SummaryStepOne
+    : routeNames.ContactInformation
+}
+export const CorInformationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ContactInformation
+    ? routeNames.SummaryStepOne
+    : routeNames.CorInformation
+}
+export const ACorInformationQuestionResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.CorInformation
+    ? routeNames.SummaryStepOne
+    : routeNames.AlternateCor
+}
+
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
 

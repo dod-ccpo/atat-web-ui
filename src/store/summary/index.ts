@@ -184,13 +184,80 @@ export class SummaryStore extends VuexModule {
     await AcquisitionPackage.setContinueButtonColor(color);
   }
 
+  //#region STEP 1
+  /*
+   * assess all substeps in Step 1 to determine
+   * if substep is touched and/or completed
+   */
+  @Action({rawError: true})
+  public async validateStepOne(): Promise<void> {
+    await this.assessAcquisitionDetails();
+    await this.assessOrganizationDetails();
+    await this.assessPrimaryPOC();
+    await this.assessCOR();
+  }
+  @Action({rawError: true})
+  public async assessAcquisitionDetails(): Promise<void>{
+    const AcquisitionDetail: SummaryItem = {
+      title: "Acquisition Details",
+      description: "",
+      isComplete: false,
+      isTouched: false,
+      routeName: "Project_Overview",
+      step:1,
+      substep: 1
+    }
+    await this.doSetSummaryItem(AcquisitionDetail)
+  }
+  @Action({rawError: true})
+  public async assessOrganizationDetails(): Promise<void>{
+    const organizationDetails: SummaryItem = {
+      title: "Your Organization",
+      description: "",
+      isComplete: false,
+      isTouched: false,
+      routeName: "Organization_Info",
+      step:1,
+      substep: 1
+    }
+    await this.doSetSummaryItem(organizationDetails)
+  }
+  @Action({rawError: true})
+  public async assessPrimaryPOC(): Promise<void>{
+    const PrimaryPOC: SummaryItem = {
+      title: "Primary Point of Contact",
+      description: "",
+      isComplete: false,
+      isTouched: false,
+      routeName: "Contact_Information",
+      step:1,
+      substep: 1
+    }
+    await this.doSetSummaryItem(PrimaryPOC)
+  }
+  @Action({rawError: true})
+  public async assessCOR(): Promise<void>{
+    const CORDetails: SummaryItem = {
+      title: "Contracting Officer's Representative",
+      description: "",
+      isComplete: false,
+      isTouched: false,
+      routeName: "Cor_Information",
+      step:1,
+      substep: 1
+    }
+    await this.doSetSummaryItem(CORDetails)
+  }
+
+
+
   //#region STEP 2
   /*
-   * assess all 2 substeps in Step 3 to determine 
+   * assess all 2 substeps in Step 3 to determine
    * if substep is touched and/or completed
-   * 
+   *
    * The function creates 3 summary step objects for each
-   * substep in step 2 
+   * substep in step 2
    */
   @Action({rawError: true})
   public async validateStepTwo(): Promise<void> {
