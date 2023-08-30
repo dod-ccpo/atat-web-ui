@@ -183,7 +183,6 @@ export class StepsStore extends VuexModule implements StepsState {
       const nextStepName = direction === RouteDirection.NEXT 
         ? (this.currentStep?.next || '') 
         : (this.currentStep?.prev || '');
-
       const currentStepName = this.currentStep?.stepName;
 
       if (currentStepName === undefined || nextStepName.length === 0)

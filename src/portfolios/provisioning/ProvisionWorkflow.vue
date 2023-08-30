@@ -26,7 +26,7 @@
           :noPrevious="noPrevious"
           class="mb-8"
         />
-         <ATATFooter/>
+        <ATATFooter/>
       </div>
     </v-main>
   </div>
@@ -135,7 +135,6 @@ export default class ProvisionWorkflow extends Vue {
     const nextStepName = direction === "next" 
       ? await Steps.getNext() 
       : await Steps.getPrevious();
-
     if (nextStepName) {
       if (isRouteResolver(nextStepName)) {
         const routeResolver = nextStepName as StepRouteResolver;
@@ -183,6 +182,19 @@ export default class ProvisionWorkflow extends Vue {
         case AppSections.sectionTitles.CreateFirstPortfolio: {
           this.$router.push({name: "home", params: { direction } })
           AppSections.changeActiveSection(AppSections.sectionTitles.CreateFirstPortfolio);
+          break;
+        }
+        case AppSections.sectionTitles.Portfolios: {
+          this.$router.push({name: "home", params: { direction } })
+          AppSections.changeActiveSection(AppSections.sectionTitles.Portfolios);
+          break;
+        }
+        case AppSections.sectionTitles.PortfolioSummary: {
+          this.$router.push({name: "home", params: { direction } })
+          setTimeout(async () =>{
+            await AppSections.setActiveTabIndex(1)
+          }, 0)
+          AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
           break;
         }
         }

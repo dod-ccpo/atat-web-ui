@@ -251,7 +251,7 @@ export default class PortfolioCard extends Vue {
   }
 
   public async startProvisionWorkflow(): Promise<void>{
-    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    
     await AcquisitionPackage.reset();
     if (this.cardData.sysId) {
       await PortfolioStore.setShowTOPackageSelection(false);

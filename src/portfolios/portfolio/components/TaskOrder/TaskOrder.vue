@@ -50,7 +50,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Prop} from "vue-property-decorator";
 import FinancialDetailsAlert from "../../FinancialDetailsAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import {TaskOrderCardData} from "../../../../../types/Global";
@@ -61,7 +61,6 @@ import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/help
 import PortfolioStore from "@/store/portfolio";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
 @Component({
@@ -73,6 +72,7 @@ import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.v
   }
 })
 export default class TaskOrder extends Vue {
+  @Prop() private portfolioSysId!: string;
   public activeTaskOrderNumber = "";
   public showDetails = false
   public taskOrders: TaskOrderCardData[] = [];
@@ -99,8 +99,8 @@ export default class TaskOrder extends Vue {
   }
 
   public async startProvisionWorkflow(): Promise<void>{
-    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
-    await AcquisitionPackage.reset();
+    await Steps.setAltBackDestination(AppSections.sectionTitles.PortfolioSummary);
+    
     if (this.selectedTaskOrder.sys_id) {
       await PortfolioStore.setShowTOPackageSelection(false);
     }
@@ -130,7 +130,8 @@ export default class TaskOrder extends Vue {
     if (portfolioSummaryList !== null){
       this.taskOrders = portfolioSummaryList.flatMap(
         portfolio=>portfolio.task_orders.filter((
-          (taskOrder)=>taskOrder.task_order_number===this.activeTaskOrderNumber
+          (taskOrder)=> taskOrder.task_order_number===this.activeTaskOrderNumber
+          || taskOrder.portfolio === this.portfolioSysId
         )))
       
         .map((to)=>{

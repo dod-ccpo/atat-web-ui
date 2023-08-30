@@ -61,7 +61,8 @@ import { getIdText } from "@/helpers";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATToast from "@/components/ATATToast.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AppSections from "@/store/appSections";
+import Steps from "@/store/steps";
 
 @Component({
   components: {
@@ -104,6 +105,9 @@ export default class Portfolios extends Vue {
 
   public tabClicked(tabType: string): void {
     this.activeTab = tabType;
+  }
+  public async mounted(){
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Portfolios);
   }
 
 }
