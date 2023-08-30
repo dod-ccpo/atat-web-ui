@@ -229,7 +229,8 @@ import {
   ProjectOverviewResolver,
   OrganizationResolver,
   ContactInformationResolver,
-  CorInformationResolver, ACorInformationQuestionResolver,
+  CorInformationResolver,
+  ACorInformationQuestionResolver,
 
 } from "./resolvers";
 

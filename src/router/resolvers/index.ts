@@ -16,7 +16,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import Summary, { isStepTouched } from "@/store/summary";
+import Summary, { isStepTouched, isStepValidatedAndTouched } from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -25,11 +25,10 @@ export const showDITCOPageResolver = (current: string): string => {
 };
 
 export const ProjectOverviewResolver = (current: string): string => {
-  debugger
-  return Summary.hasCurrentStepBeenVisited
-  && (current === routeNames.ContractingOfficeInfo||current === routeNames.ContractingShop)
-    ? routeNames.SummaryStepOne
-    : routeNames.ProjectOverview
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
+  return (current === routeNames.ContractingOfficeInfo||current === routeNames.ContractingShop)
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ProjectOverview
+    :routeNames.SummaryStepOne
 }
 
 export const OrganizationResolver = (current: string): string => {
@@ -462,6 +461,7 @@ export const A11yRequirementResolver = (current: string): string => {
 
 
 export const ContractingInfoResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
   const needsContractInformation =
       AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
 
@@ -469,7 +469,8 @@ export const ContractingInfoResolver = (current: string): string => {
     return routeNames.ContractingOfficeInfo;
   }
   return current === routeNames.ContractingShop 
-    ? routeNames.ProjectOverview : routeNames.ContractingShop;
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne: routeNames.ProjectOverview 
+    : routeNames.SummaryStepOne;
 };
 
 /****************************************************************************/

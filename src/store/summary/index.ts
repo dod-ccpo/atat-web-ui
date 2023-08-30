@@ -32,7 +32,6 @@ import { differenceInQuartersWithOptions } from "date-fns/fp";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
-  debugger
   await validateStep(stepNumber);
   return isStepTouched(stepNumber)
 } 
@@ -67,7 +66,6 @@ export const isStepValidatedAndComplete = async (stepNumber: number): Promise<bo
 }
 
 export const isStepComplete = (stepNumber: number): boolean =>{
-  debugger
   return Summary.summaryItems.filter(
     (si: SummaryItem) => si.step === stepNumber
   ).every((si: SummaryItem)=> si.isComplete)
@@ -100,7 +98,6 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 }
 
 export const validateStep = async(stepNumber: number): Promise<void> =>{
-  debugger
   switch(stepNumber){
   case 1:
     await Summary.validateStepOne();
@@ -209,7 +206,7 @@ export class SummaryStore extends VuexModule {
       description: "",
       isComplete: false,
       isTouched: AcquisitionPackage.projectTitle !== "",
-      routeName: "Project_Overview",
+      routeName: "project-overview",
       step:1,
       substep: 1
     }
