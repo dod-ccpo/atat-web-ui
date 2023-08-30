@@ -134,7 +134,7 @@ describe("Testing FOIA Page", () => {
 
     describe("testing saveOnLeave method", () => {
       it("should save changes on leave", async () => {
-        const saveDataSpy = jest.spyOn(AcquisitionPackage, "saveData").mockResolvedValue(true);
+        const saveDataSpy = jest.spyOn(AcquisitionPackage, "saveData");
     
         await wrapper.setData({ fullName: "New Name" });
         await wrapper.vm.saveOnLeave();

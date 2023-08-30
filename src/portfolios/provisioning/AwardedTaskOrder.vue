@@ -65,6 +65,26 @@
                 </p>
               </template>
             </ATATExpandableLink>
+
+            <ATATAlert 
+              type="error" 
+              id="AzureAlert"
+              v-if="isAzure"
+              class="mt-8"
+            >
+              <template v-slot:content>
+                <h3 class="mb-2">
+                  ATAT does NOT support migrating existing Azure Tenants to JWCC billing.
+                </h3>
+                <p>
+                  Only proceed if you wish to provision a completely new Azure Tenant. 
+                  If you are partially or fully migrating an already existing environment, 
+                  stop here and contact 
+                  <a href="mailto:ATAT_Microsoft@microsoft.com">ATAT_Microsoft@microsoft.com</a>.
+                </p>
+              </template>
+            </ATATAlert>
+
         </v-col>
       </v-row>
 
@@ -86,6 +106,7 @@ import { Component, Watch } from "vue-property-decorator";
 import { AwardedTaskOrderDetails } from "types/Global";
 import { getCurrencyString } from "@/helpers";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
@@ -96,6 +117,7 @@ import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
 @Component({
   components:{
+    ATATAlert,
     ATATExpandableLink,
     TaskOrderSearchModal,
   }
@@ -135,6 +157,10 @@ export default class AwardedTaskOrder extends Vue {
     totalAmount: 0,
     classificationLevel: ""
   };
+
+  public get isAzure(): boolean {
+    return this.awardedTaskOrder.csp.toLowerCase() === "azure";
+  }
 
   public resetAwardedTaskOrderData(): void {
     this.setTaskOrderData();

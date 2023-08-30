@@ -28,7 +28,17 @@
                 </div>
               <div class="d-flex justify-space-between width-100 mb-10">
                 <h2>Overview</h2>
-                  <span class="text-base-dark">{{ portfolioSyncDate }}</span>
+                <div class="d-flex align-end" v-if="hasSyncDate">
+                  <span class="text-base-dark">
+                    {{ portfolioSyncDate }}
+                  </span>
+                  <ATATTooltip 
+                    class="mb-4"
+                    :tooltipText="syncTooltipText"
+                    buttonClass="mb-1 ml-1"
+                    id="SyncTooltip"
+                  />
+                </div>                  
               </div>
               <v-row>
                 <v-col class="col-sm-6 col-md-8">
@@ -907,11 +917,14 @@ export default class PortfolioDashboard extends Vue {
   public get portfolioIsArchived(): boolean {
     return this.portfolioStatus === "ARCHIVED" ;
   }
+  public get hasSyncDate(): boolean {
+    return PortfolioStore.currentPortfolio.lastCostDataSync as string !== "";
+  }
   public get portfolioSyncDate(): string{
     const syncDate = PortfolioStore.currentPortfolio.lastCostDataSync as string;
 
     if(syncDate && syncDate !== ""){
-      return `Last Sync: ${createDateStr(syncDate, true, true, false)}`;
+      return `Last sync: ${createDateStr(syncDate, true, true, false)}`;
     }
 
     return "";
@@ -922,6 +935,7 @@ export default class PortfolioDashboard extends Vue {
     }
     return "";
   }
+  public syncTooltipText = "Cost data is provided by your CSP on a monthly basis."
 
   public get lastMonthTrendIconName(): string {
     return this.lastMonthSpendTrendPercent > 0 ? 'trendingUp' : 'trendingDown';

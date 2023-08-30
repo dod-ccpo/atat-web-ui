@@ -2,7 +2,7 @@
  * globally imports library to prevent
  * collision with cypress assert functions 
  */
-import '@testing-library/jest-dom/extend-expect'
+import '@testing-library/jest-dom'
 
 /**
  * Mocked functions prevent overwhelming text

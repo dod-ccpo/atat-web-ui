@@ -8,9 +8,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { Component as VueComponent } from "vue";
 import { Component, Watch } from "vue-property-decorator";
-import { Component as VueComponent } from "vue";
 
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
@@ -25,7 +24,6 @@ import CreateFirstPortfolio from '@/portfolios/portfolio/CreateFirstPortfolio.vu
 import Packages from "@/packages/Index.vue";
 import Home from "@/home/Index.vue";
 import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
-import CurrentUserStore from "./store/user";
 import AcquisitionPackage from "./store/acquisitionPackage";
 
 @Component({

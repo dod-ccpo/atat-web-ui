@@ -134,7 +134,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.ExpiringPop.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 200,
+      //funds_spent_clin: 200,
     },     
     {
       sys_id: "5678",
@@ -145,7 +145,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.OptionExercised.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 200,
+      //funds_spent_clin: 200,
     },   
     {
       sys_id: "4567",
@@ -156,7 +156,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.ExpiringPop.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 200,
+      //funds_spent_clin: 200,
     },     
     {
       sys_id: "5678",
@@ -167,7 +167,7 @@ describe("Testing TaskOrderDetails Component", () => {
       clin_status: Statuses.OptionExercised.value,
       funds_obligated: 100,
       funds_total: 200,
-      funds_spent_clin: 200,
+      //funds_spent_clin: 200,
     },   
   ];
 
@@ -271,10 +271,10 @@ describe("Testing TaskOrderDetails Component", () => {
     });    
 
     it("fundsRemaining() - sets object with remaining $ and %", async () => {
-      let fundsObj = wrapper.vm.fundsRemaining("1000", "500");
+      const fundsObj = wrapper.vm.fundsRemaining("1000", "500");
       expect(fundsObj.percent).toBe("50");
       expect(fundsObj.fundsRemaining).toBe("$500.00 remaining");
-      fundsObj = wrapper.vm.fundsRemaining("0", "0")
+      wrapper.vm.fundsRemaining("0", "0")
     });    
 
     it("collectTableData() - builds CLIN data for the table", async () => {
