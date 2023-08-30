@@ -133,7 +133,6 @@ export default class TaskOrder extends Vue {
           (taskOrder)=> taskOrder.task_order_number===this.activeTaskOrderNumber
           || taskOrder.portfolio === this.portfolioSysId
         )))
-      
         .map((to)=>{
           return{
             sys_id: to.sys_id,

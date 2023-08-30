@@ -7,11 +7,13 @@ import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
 import PortfolioData from "@/store/portfolio";
+import validators from "@/plugins/validation";
 Vue.use(Vuetify);
 
 describe("Testing TaskOrder Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
+  localVue.use(validators);
 
   let total_task_order_value:(number | undefined) = 0;
   let total_lifecycle_amount:(number | undefined) = 0;
