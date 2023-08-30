@@ -172,8 +172,6 @@ import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } f
 import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
 import _ from "lodash";
 import CurrentUserStore from "@/store/user";
-import Steps from "@/store/steps";
-import AppSections from "@/store/appSections";
 
 @Component({
   components: {
