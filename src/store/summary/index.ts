@@ -28,6 +28,7 @@ import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
 import { differenceInQuartersWithOptions } from "date-fns/fp";
+import FinancialDetails from "../financialDetails";
 
 
 
@@ -1735,9 +1736,42 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessFunding(): Promise<void> {
 
-    const isTouched = false;
-    const isComplete =  false;
-    const description = "Placeholder";
+    //look at values in store, set these 3 values
+    const fundingRequestInfo = await FinancialDetails.getFundingRequest();
+    //"", MIPR, fs_form
+
+    const isTouched = !!fundingRequestInfo.funding_request_type;
+
+
+    let isComplete =  false;
+    let description = "";
+
+    if (fundingRequestInfo.funding_request_type === "MIPR") {
+      if (FinancialDetails.fundingRequestMIPRForm?.mipr_filename
+        && FinancialDetails.fundingRequestMIPRForm?.mipr_attachment
+        && FinancialDetails.fundingRequestMIPRForm?.mipr_number) {
+        isComplete = true;
+        description = `MIPR: ${FinancialDetails.fundingRequestMIPRForm.mipr_number}`
+      }
+    }
+    else if (fundingRequestInfo.funding_request_type === "FS_FORM") {
+      if (FinancialDetails.gInvoicingData.useGInvoicing === "YES"
+        && FinancialDetails.gInvoicingData.gInvoiceNumber) {
+        isComplete = true;
+      }
+      else if(FinancialDetails.gInvoicingData.useGInvoicing === "NO"
+        && FinancialDetails.fundingRequestFSForm?.fs_form_7600a_attachment
+        && FinancialDetails.fundingRequestFSForm?.fs_form_7600a_filename
+        && FinancialDetails.fundingRequestFSForm?.gt_c_number
+        && FinancialDetails.fundingRequestFSForm?.order_number) {
+        isComplete = true;
+        description = `GT&C: ${FinancialDetails.fundingRequestFSForm.gt_c_number}<br>
+         Order: ${FinancialDetails.fundingRequestFSForm.order_number}`
+      }
+
+    }
+
+    
 
     const fundingSummaryItem: SummaryItem = {
       title: "Funding",
