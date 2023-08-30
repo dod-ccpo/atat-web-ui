@@ -100,7 +100,6 @@ export default class TaskOrder extends Vue {
 
   public async startProvisionWorkflow(): Promise<void>{
     await Steps.setAltBackDestination(AppSections.sectionTitles.PortfolioSummary);
-    
     if (this.selectedTaskOrder.sys_id) {
       await PortfolioStore.setShowTOPackageSelection(false);
     }
@@ -114,7 +113,7 @@ export default class TaskOrder extends Vue {
         direction: "next"
       },
       replace: true
-    }).catch(() => console.log("avoiding redundant navigation"));
+    })
     AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
   }
 
