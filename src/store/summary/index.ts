@@ -32,6 +32,7 @@ import { differenceInQuartersWithOptions } from "date-fns/fp";
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
+  debugger
   await validateStep(stepNumber);
   return isStepTouched(stepNumber)
 } 
@@ -66,6 +67,7 @@ export const isStepValidatedAndComplete = async (stepNumber: number): Promise<bo
 }
 
 export const isStepComplete = (stepNumber: number): boolean =>{
+  debugger
   return Summary.summaryItems.filter(
     (si: SummaryItem) => si.step === stepNumber
   ).every((si: SummaryItem)=> si.isComplete)
@@ -98,7 +100,11 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 }
 
 export const validateStep = async(stepNumber: number): Promise<void> =>{
+  debugger
   switch(stepNumber){
+  case 1:
+    await Summary.validateStepOne();
+    break;
   case 2:
     await Summary.validateStepTwo();
     break;
@@ -202,7 +208,7 @@ export class SummaryStore extends VuexModule {
       title: "Acquisition Details",
       description: "",
       isComplete: false,
-      isTouched: false,
+      isTouched: AcquisitionPackage.projectTitle !== "",
       routeName: "Project_Overview",
       step:1,
       substep: 1
@@ -218,7 +224,7 @@ export class SummaryStore extends VuexModule {
       isTouched: false,
       routeName: "Organization_Info",
       step:1,
-      substep: 1
+      substep: 2
     }
     await this.doSetSummaryItem(organizationDetails)
   }
@@ -231,7 +237,7 @@ export class SummaryStore extends VuexModule {
       isTouched: false,
       routeName: "Contact_Information",
       step:1,
-      substep: 1
+      substep: 3
     }
     await this.doSetSummaryItem(PrimaryPOC)
   }
@@ -244,7 +250,7 @@ export class SummaryStore extends VuexModule {
       isTouched: false,
       routeName: "Cor_Information",
       step:1,
-      substep: 1
+      substep: 4
     }
     await this.doSetSummaryItem(CORDetails)
   }

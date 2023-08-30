@@ -25,7 +25,9 @@ export const showDITCOPageResolver = (current: string): string => {
 };
 
 export const ProjectOverviewResolver = (current: string): string => {
-  return Summary.hasCurrentStepBeenVisited && current === routeNames.ContractingOfficeInfo
+  debugger
+  return Summary.hasCurrentStepBeenVisited
+  && (current === routeNames.ContractingOfficeInfo||current === routeNames.ContractingShop)
     ? routeNames.SummaryStepOne
     : routeNames.ProjectOverview
 }
@@ -57,7 +59,7 @@ export const AcorsRouteResolver = (current: string): string => {
 
   //routing from alternate cor and the user does not have an ACOR
   if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
-    return routeNames.Exceptions;
+    return routeNames.SummaryStepOne;
   }
 
   //routing from summary and user does not have ACOR
@@ -1732,6 +1734,11 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   showDITCOPageResolver,
+  ProjectOverviewResolver,
+  OrganizationResolver,
+  ContactInformationResolver,
+  CorInformationResolver,
+  ACorInformationQuestionResolver,
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
