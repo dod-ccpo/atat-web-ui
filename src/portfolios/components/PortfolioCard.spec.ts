@@ -8,6 +8,7 @@ import AppSections from "@/store/appSections";
 import PortfolioData from "@/store/portfolio";
 import PortfolioStore from "@/store/portfolio";
 import { cspConsoleURLs } from "@/store/portfolio";
+import validators from "@/plugins/validation";
 
 Vue.use(Vuetify);
 
@@ -25,7 +26,7 @@ describe("Testing index Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
+  localVue.use(validators);
   const cardData: PortfolioCardData =
     {
       // eslint-disable-next-line camelcase
