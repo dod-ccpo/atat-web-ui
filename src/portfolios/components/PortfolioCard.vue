@@ -248,20 +248,18 @@ export default class PortfolioCard extends Vue {
   }
 
   public async startProvisionWorkflow(): Promise<void>{
-    
     await AcquisitionPackage.reset();
     if (this.cardData.sysId) {
       await PortfolioStore.setShowTOPackageSelection(false);
     }
     await PortfolioStore.setSelectedAcquisitionPackageSysId(this.cardData.sysId as string);
-
     this.$router.push({
       name: this.provWorkflowRouteNames.AwardedTaskOrder,
       params: {
         direction: "next"
       },
       replace: true
-    }).catch(() => console.log("avoiding redundant navigation"));
+    })
     AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
   }
 
