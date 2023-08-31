@@ -53,6 +53,7 @@ describe("Testing Common Component", () => {
     grade_civ: "",
     title: "",
     manually_entered: "", // not used on Primary Contact contact entry form
+    acquisition_package: ""
   };
 
   const mockMilitaryRankDTO: MilitaryRankDTO = {

@@ -78,8 +78,7 @@
         </div>
       </div>
       <div class="text-base-dark mb-3">
-        <!-- ATAT TODO -- REINSTATE WHEN NOT HARD-CODING dod_component
-        <span class="_agency">{{ cardData.agency }}</span>
+        <span class="_agency">{{ cardData.agencyDisplay }}</span>
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
@@ -87,7 +86,6 @@
           :height="9" 
           class="d-inline-block mx-1 _last-modified" 
         />
-        -->
         {{ cardData.lastModifiedStr }}
       </div>
 
@@ -394,6 +392,10 @@ export default class PortfolioCard extends Vue {
       { 
         title: "View funding tracker",
         action: this.menuActions.viewFundingTracker
+      },
+      { 
+        title: "View task orders",
+        action: this.menuActions.viewTaskOrders
       },
       /*
       { 

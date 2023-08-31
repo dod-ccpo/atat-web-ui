@@ -37,8 +37,6 @@ const actions =  {
   [actionHandlerNames.writeOwnSoleSourceCause]: writeOwnSoleSourceCause,
   [actionHandlerNames.writeOwnMarketResearchDetails]: writeOwnMarketResearchDetails,
   [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
-  [actionHandlerNames.openTOSearchModal]: openTOSearchModal,
-  [actionHandlerNames.startProvisioning]: startProvisioning,
   [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
 };
 
