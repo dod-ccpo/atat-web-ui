@@ -1762,7 +1762,7 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
-      routeName: "IncrementalFunding",
+      routeName: "SeverabilityAndIncrementalFunding",
       step: 8,
       substep: 2
     }
