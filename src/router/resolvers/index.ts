@@ -29,7 +29,7 @@ export const AcorsRouteResolver = (current: string): string => {
 
   //routing from alternate cor and the user does not have an ACOR
   if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
-    return routeNames.Exceptions;
+    return ExceptionToFairOpportunityResolver(current);
   }
 
   //routing from summary and user does not have ACOR
@@ -59,6 +59,15 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   const source = evalPlan.source_selection;
   const method = evalPlan.method;
   return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
+}
+
+export const ExceptionToFairOpportunityResolver = (current:string): string =>{
+  const isFromStepOne = 
+    [routeNames.AcorInformation, routeNames.AlternateCor].includes(current)
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
+  return isFromStepOne
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.Exceptions
+    : routeNames.SummaryStepTwo;
 }
 
 export const EvalPlanRouteResolver = (current: string): string => {
@@ -1710,6 +1719,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   ProcurementHistorySummaryRouteResolver,
+  ExceptionToFairOpportunityResolver,
   CurrentEnvironmentResolver,
   RemoveBarriersFormRouteResolver,
   conductedResearchRouteResolver,
