@@ -1,7 +1,8 @@
 import {
     colors,
     randomString,
-    randomNumber
+    randomNumber,
+    formatDateInMMDDYYYY
 } from "../../../../helpers"
 import background from "../../../../selectors/background.sel";
 import fo from "../../../../selectors/fairOpportunityProcess.sel";
@@ -15,10 +16,21 @@ describe("Test suite: Step04-Previous or Current Contract with EvaluationPlan", 
 
 
     const pt = "TC-Step-4-Background-evalplan-procurement" + randomString(5);
-    const scope = "Background-Procurement-" + randomString(5);   
+    const scope = "Background-Procurement-" + randomString(5);
     const contractNo = randomNumber(14);
     const validContractNo = randomNumber(13);
-    
+    //editted contractNo
+    const edittedContractNo = "Editted" + randomNumber(6);
+    const rowCount = 1;
+    const descriptionDetails = [`${rowCount} previous contract: ${validContractNo}`];
+    //updated description after edit
+    const updatedDescriptionDetails = [`${rowCount} previous contract: ${edittedContractNo}`];
+    const incumbentCName = "IncumbentContractName- " + randomString(3);
+
+    const dayOfMonth = 10;
+    const date = new Date();
+    const expiredDateFormatted = formatDateInMMDDYYYY(date, 10, "next");
+
 
     before(() => {
 
@@ -39,8 +51,23 @@ describe("Test suite: Step04-Previous or Current Contract with EvaluationPlan", 
             });
         cy.waitUntil(() => cy.findElement(background.ccYesRadioOption).should("exist"));
 
-    })
-    it("TC1:Message Validation: Current Contract screen", () => {
+    });
+
+    function currentContract() {
+        cy.enterTextInTextField(background.incumbentTxtBox, incumbentCName);
+        cy.enterTextInTextField(background.contractNoTxtBox, validContractNo);
+        cy.selectDatefromDatePicker(
+            background.expirationDatePickerIcon,
+            background.navigateNextMonth,
+            background.expirationSelectDate,
+            dayOfMonth,
+            background.expirationDatePicker
+        );
+        cy.waitUntil(function () {
+            return cy.findElement(background.expirationDatePickerInputbox).should("have.value", expiredDateFormatted);
+        });
+    }
+    it("TC1:Message Validations: Current Contract", () => {
         cy.log(" TestReport: Step4-Background-Previous/Current Contract")
         cy.verifyPageHeader("Do you have a current contract for this effort?");
         cy.radioBtn(background.ccYesRadioOption, "YES").not("[disabled]");
@@ -51,26 +78,22 @@ describe("Test suite: Step04-Previous or Current Contract with EvaluationPlan", 
             .then(() => {
                 cy.checkErrorMessage(background.radioOptionError, "Please select an option");
             });
-
         cy.findElement("#developerToggleButton")
             .click({
                 force: true
             });
-        
         cy.btnClick(common.continueBtn, " Continue ").then(() => {
             cy.findElement(background.incumbentTxtBox).should("not.exist");
         });
         cy.radioBtn(background.ccYesRadioOption, "YES").click({
             force: true
         });
-
         cy.clickContinueButton(background.ccYesRadioOption,
             "Let’s gather some details about your previous or current contract"
         );
-
     });
-    it("TC2:Message Validations: Let’s gather some details about your previous or current contract", () => {
 
+    it("TC2:Message Validations: Let’s gather some details about your previous or current contract", () => {
         cy.log(" TestReport: Let’s gather some details about your previous or current contract");
         cy.hoverToolTip(
             background.tNoTooltipBtn,
@@ -101,7 +124,9 @@ describe("Test suite: Step04-Previous or Current Contract with EvaluationPlan", 
         cy.log("Validation error for expiration date picker");
         cy.findElement(background.expirationDatePickerInputbox).should("be.visible").clear()
             .click()
-            .blur({ force: true })
+            .blur({
+                force: true
+            })
             .then(() => {
                 cy.checkErrorMessage(
                     background.expirationDatePickerError,
@@ -109,24 +134,66 @@ describe("Test suite: Step04-Previous or Current Contract with EvaluationPlan", 
                 );
             });
         cy.log("Validation for Contract if more than 13 characters")
-        cy.findElement(background.contractNoTxtBox).type(validContractNo);
-        cy.clickSomethingElse(background.expirationDatePickerInputbox).then(() => {
-        cy.findElement(background.contractNoTxtBox).scrollIntoView();
-        cy.findElement(background.contractNoTxtError).should("not.exist");      
-        }); 
-        cy.findElement(background.contractNoTxtBox).clear().type(contractNo)
-            .blur({ force: true }).then(() => {
+        cy.findElement(background.contractNoTxtBox).type(contractNo)
+            .blur({
+                force: true
+            }).then(() => {
                 cy.checkErrorMessage(
-                background.contractNoTxtError,
-                "Your contract number must be 13 alphanumeric characters."
-            );
-        });
-
+                    background.contractNoTxtError,
+                    "Your contract number must be 13 alphanumeric characters."
+                );
+            });
         cy.btnClick(common.continueBtn, " Continue ").then(() => {
             cy.findElement(background.existYesRadioOption).should("not.exist");
         });
+    });
 
-        
+    it("TC3:Procurement History Details", () => {
+        currentContract();
+        cy.findElement("#developerToggleButton")
+            .click({
+                force: true
+            });
+        cy.clickContinueButton(
+            background.incumbentTxtBox,
+            "Do you have a current environment to rehost?"
+        );
+        cy.clickContinueButton(
+            background.existingEnvYesRadioBtn,
+            "Your Background Summary"
+        );
+        cy.verifyTextMatches(
+            background.procurementHistoryHeaderText,
+            "Procurement History");
+        cy.verifyListMatches(background.procurementHistoryDescription, descriptionDetails);
+    });
+
+    it("TC4:Procurement History Details-view/Edit", () => {
+        cy.clickAndWaitForElementExists(
+            background.procurementHistoryCompleteBtn,
+            background.ccYesRadioOption
+        );
+        cy.verifySelectedRadioOption(background.activeRadioOption, "Yes");
+        cy.clickContinueButton(
+            background.ccYesRadioOption,
+            "Let’s gather some details about your current contract"
+        );
+        cy.verifyEnteredInputTxt(background.incumbentTxtBox, incumbentCName);
+        cy.verifyEnteredInputTxt(background.contractNoTxtBox, validContractNo);
+        cy.verifyEnteredInputTxt(background.expirationDatePickerInputbox, expiredDateFormatted);
+        cy.enterTextInTextField(background.contractNoTxtBox, edittedContractNo);
+        cy.clickContinueButton(
+            background.contractNoTxtBox,
+            "Do you have a current environment to rehost?"
+            );
+        cy.clickContinueButton(
+            background.existingEnvYesRadioBtn,
+            "Your Background Summary"
+        )
+        cy.verifyTextMatches(
+            background.procurementHistoryHeaderText,
+            "Procurement History");
+        cy.verifyListMatches(background.procurementHistoryDescription, updatedDescriptionDetails);
     });
 
 })

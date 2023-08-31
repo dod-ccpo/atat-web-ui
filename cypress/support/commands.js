@@ -130,6 +130,7 @@ Cypress.Commands.add("waitUntilModalNotVisible", () => {
 Cypress.Commands.add("homePageClickAcquisitionPackBtn", () => {
   cy.findElement(lp.welcomeBarText).should("exist");
   cy.textExists(lp.startAcqWelcome, "Start a new acquisition")
+  cy.findElement(lp.startAcqWelcome)
     .should("be.enabled")
     .click();
   cy.verifyPageHeader("Before you get started");
@@ -502,14 +503,21 @@ Cypress.Commands.add("verifyTextArray", (selector, expectedValues) => {
 });
 
 Cypress.Commands.add("verifyListMatches", (selector, expectedText) => {
-  //Verify the list
+  // Verify the list
   cy.findElement(selector)
     .then(($els) => {
       const foundText = Cypress.$.makeArray($els).map((el) => el.innerText);
-      const foundTextArray = foundText[0].split(", ");
+      const foundTextArray = foundText[0].split(", ").map(item => item.replace(/\n/g, '').replace(/\//g, '')).sort() // Sort the array
+      console.log("actualArray:", foundTextArray);
       return foundTextArray;
     })
-    .should("deep.equal", expectedText);
+    .should(($foundTextArray) => {
+      // Sort the expectedText array 
+      //const sortedExpectedText = expectedText.slice().sort();
+      expect($foundTextArray).to.deep.equal(expectedText);
+    });
+
+  console.log("expectedArray:", expectedText);
 });
 
 Cypress.Commands.add("clickSideStepper", (stepperSelector, stepperText) => {
@@ -1039,21 +1047,21 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
   });
 });
 
-Cypress.Commands.add("verifyTableData",(tableHeader, tableData,columnHeader, expectedValue)=> {
+Cypress.Commands.add("verifyTableData", (tableHeader, tableData, columnHeader, expectedValue) => {
 
   cy.findElement(tableHeader).each(($el, index, $list) => {
-      const text = $el.text();
-      if (text.includes(columnHeader)) {
-          cy.findElement(tableData).eq(index).then(function (value) {
-              const actualValue = value.text().trim();
-              if (isNaN(actualValue)) {
-                  const trimmedActualValue = actualValue.toUpperCase().replace(/\s/g, '').replace(/[/()]/g, '')
-                  expect(trimmedActualValue).to.equal(expectedValue)
-              } else {
-                  expect(Number(actualValue)).to.equal(Number(expectedValue));
-              }
-          })
-      }
+    const text = $el.text();
+    if (text.includes(columnHeader)) {
+      cy.findElement(tableData).eq(index).then(function (value) {
+        const actualValue = value.text().trim();
+        if (isNaN(actualValue)) {
+          const trimmedActualValue = actualValue.toUpperCase().replace(/\s/g, '').replace(/[/()]/g, '')
+          expect(trimmedActualValue).to.equal(expectedValue)
+        } else {
+          expect(Number(actualValue)).to.equal(Number(expectedValue));
+        }
+      })
+    }
   })
 });
 
