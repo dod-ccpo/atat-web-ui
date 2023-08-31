@@ -6,6 +6,8 @@ import PortfolioSummaryPageHead from
   "@/portfolios/portfolio/components/shared/PortfolioSummaryPageHead.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
+import PortfolioStore from "@/store/portfolio";
+import CurrentUserStore from "@/store/user";
 Vue.use(Vuetify);
 
 describe("Testing Members Component", () => {
@@ -111,4 +113,100 @@ describe("Testing Members Component", () => {
   //   await wrapper.vm.moveToInput();
   //   expect(document.activeElement?.id).toBe(id);
   // })
+
+  it("test handleMoreMenuClick() => moveToInput", async () => {
+    const moveToInputSpy = jest.spyOn(wrapper.vm, 'moveToInput').mockImplementation()
+    await wrapper.vm.handleMoreMenuClick('moveToInput')
+    expect(moveToInputSpy).toHaveBeenCalled()
+  })
+
+  it("test handleMoreMenuClick() => openModal", async () => {
+    const openModalSpy = jest.spyOn(wrapper.vm, 'openModal').mockImplementation()
+    await wrapper.vm.handleMoreMenuClick('openModal')
+    expect(openModalSpy).toHaveBeenCalled()
+  })
+
+  it("test handleMoreMenuClick() => openArchivePortfolioModal", async () => {
+    const openArchivePortfolioModalSpy = jest.spyOn(
+      wrapper.vm, 
+      'openArchivePortfolioModal'
+    ).mockImplementation()
+
+    await wrapper.vm.handleMoreMenuClick('openArchivePortfolioModal')
+    expect(openArchivePortfolioModalSpy).toHaveBeenCalled()
+  })
+
+  it("test moreMenuItemActions data", async () => {
+    expect(wrapper.vm.$data.moreMenuItemActions).toStrictEqual({
+    openArchivePortfolioModal: "openArchivePortfolioModal",
+    moveToInput: "moveToInput",
+    openModal: "openModal",
+    leaveThisPortfolio: "leaveThisPortfolio"
+    })
+  })
+
+  it("test getMoreMenuItems () => MeatballMenuItems[] as Owner", async () => {
+    const items =  wrapper.vm.getMoreMenuItems;
+    expect(items).toStrictEqual([
+      {
+        id: "InviteMembers_MenuItem",
+        title: "Invite members to portfolio",
+        action: 'openModal'
+      },
+      {
+        id: "RenamePortfolio_MenuItem",
+        title: "Rename portfolio",
+        action: "moveToInput"
+      },
+      {
+      id: "ArchivePortfolio_MenuItem",
+      title: "Archive portfolio",
+      action: "openArchivePortfolioModal"
+    }
+  ])
+  })
+
+  it("test getMoreMenuItems () => MeatballMenuItems[] as Manager", async () => {
+    /* eslint-disable camelcase */
+    const mockUser = {sys_id: '1234'} 
+    const mockPortfolio = {portfolio_managers: '1234'};
+    /* eslint-enable camelcase */
+    CurrentUserStore.setCurrentUser(mockUser);
+    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
+    const items =  wrapper.vm.getMoreMenuItems;
+    expect(items).toStrictEqual([
+      {
+        id: "LeavePortfolio_MenuItem",
+        title: "Leave this portfolio",
+        action: 'leaveThisPortfolio'
+      },
+      {
+        id: "InviteMembers_MenuItem",
+        title: "Invite members to portfolio",
+        action: 'openModal'
+      },
+      {
+        id: "RenamePortfolio_MenuItem",
+        title: "Rename portfolio",
+        action: "moveToInput"
+      }
+  ])
+  })
+
+  it("test getMoreMenuItems () => MeatballMenuItems[] as Viewer", async () => {
+    /* eslint-disable camelcase */
+    const mockUser = {sys_id: '1234'}
+    const mockPortfolio = {portfolio_viewers: '1234'}; 
+    /* eslint-enable camelcase */
+    CurrentUserStore.setCurrentUser(mockUser);
+    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
+    const items =  wrapper.vm.getMoreMenuItems;
+    expect(items).toStrictEqual([
+      {
+        id: "LeavePortfolio_MenuItem",
+        title: "Leave this portfolio",
+        action: 'leaveThisPortfolio'
+      }
+  ])
+  })
 })
