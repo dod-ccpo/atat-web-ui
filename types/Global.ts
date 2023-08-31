@@ -60,6 +60,7 @@ export interface MeatballMenuItem {
   separatorBefore?: boolean;
   icon?: MenuIcon;
   hidden?:boolean;
+  id?: string;
 }
 export interface MeatballMenu {
   id: string;

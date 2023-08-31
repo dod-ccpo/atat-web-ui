@@ -21,7 +21,7 @@
             <transition-group name="funding-increments" tag="div">
               <div
                 v-for="(researcher, index) in researchers"
-                :key="index"
+                :key="researchers[index].name + '_' + index"
                 :id="'Researcher' + index"
                 class="d-flex width-100 researcher-table-row pa-2 pt-3"
               >
