@@ -9,8 +9,8 @@ import {
 } from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
-import { ContractTypeApi } from "@/api/contractDetails";
 import {
+  ContactDTO,
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CrossDomainSolutionDTO, CurrentContractDTO,
@@ -27,7 +27,8 @@ import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
-import { differenceInQuartersWithOptions } from "date-fns/fp";
+import { AxiosRequestConfig } from "axios";
+import api from "@/api";
 
 
 
@@ -294,7 +295,8 @@ export class SummaryStore extends VuexModule {
       && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
     return (hasNoFairOpp) ||
-      (hasJustification 
+      (hasProposedCSP
+        && hasJustification 
         && hasMinGovtRequirements
         && await this.hasSoleSourceSituation(fairOpp)
         && await this.hasProcurement(fairOpp)
@@ -488,7 +490,7 @@ export class SummaryStore extends VuexModule {
     // assess question one
     // 1. Is your agency preparing a fair opportunity competitive follow-on requirement?
     const followOnRequirement = fairOpp.barriers_follow_on_requirement;
-    const hasFollowOnRequirement = followOnRequirement === "NO"
+    const hasFollowOnRequirement = (followOnRequirement !== "" && followOnRequirement === "NO")
       ? true
       : fairOpp.barriers_follow_on_expected_date_awarded !=="" ;
      
@@ -507,8 +509,9 @@ export class SummaryStore extends VuexModule {
     //assess question three
     // 4. Are you planning future development and enhancement of Infrastructure as a Service (IaaS)
     //    components that will shift to a containerized platform?
+    const hasJA = fairOpp.barriers_j_a_prepared !== ""
     const isJAPrepared = 
-      fairOpp.barriers_j_a_prepared === "NO"
+      hasJA && fairOpp.barriers_j_a_prepared === "NO"
         ? true
         : fairOpp.barriers_j_a_prepared_results !== "";
 
@@ -528,10 +531,48 @@ export class SummaryStore extends VuexModule {
   
   @Action({rawError: true})
   public async hasCertificationPOCS(fairOpp: FairOpportunityDTO): Promise<boolean>{
-    return fairOpp.requirements_poc !== ""
-     && fairOpp.requirements_poc_type !== ""
-     && fairOpp.technical_poc !== ""
-     && fairOpp.technical_poc_type !== ""
+    const reqPOCType = fairOpp.requirements_poc_type;
+    const reqPOCId = fairOpp.requirements_poc;
+    const technicalPOCType = fairOpp.technical_poc_type;
+    const technicalPOCId = fairOpp.technical_poc;
+    const hasExistingTechPOC = technicalPOCId !== "" && technicalPOCType !=="";
+    const hasExistingReqPOC = reqPOCId !="" && reqPOCType !="" ;
+    if (reqPOCType === "NEW"){
+      if (await this.isNewPOCValid(reqPOCId as string) === false){
+        return false;
+      };
+    } 
+    if (technicalPOCType === "NEW"){
+      if (await this.isNewPOCValid(technicalPOCId as string) === false){
+        return false;
+      };
+    } 
+    return hasExistingReqPOC && hasExistingTechPOC
+  }
+
+  @Action({rawError: true})
+  public async isNewPOCValid(sysID: string): Promise<boolean>{
+    const contactResponse: ContactDTO[] = await api.contactsTable.getQuery({
+      params: {
+        // eslint-disable-next-line camelcase
+        sysparm_query: "sys_id=" + sysID
+      }
+    });
+    if (contactResponse.length>0){
+      const contact = contactResponse[0];
+      const keysToIgnore = Object.keys(contact).filter(
+        x => ["role","first_name","last_name","title","phone"].indexOf(x) === -1
+      );
+      const monitor = {object: contact, keysToIgnore};
+      const isMilitary = contact.role.toUpperCase() === "MILITARY";
+      const hasRankComponents = contact.rank_components !== "" ;
+      const isComplete = await this.isComplete(monitor);
+      return isMilitary
+        ? isComplete && hasRankComponents
+        : isComplete;
+    } else {
+      return false;
+    }
   }
 
   @Action({rawError: true})
@@ -545,9 +586,6 @@ export class SummaryStore extends VuexModule {
     );
     const monitor = {object: evalPlanStore, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
-    // let isComplete = false
-
-    //
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
       description: "",
