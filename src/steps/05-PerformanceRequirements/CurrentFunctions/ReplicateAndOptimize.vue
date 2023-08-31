@@ -76,7 +76,27 @@
                 </ul>
               </template>
             </ATATExpandableLink>
+
+
           </div>
+          <ATATAlert
+              id="JWCCInfoAlert"
+              :showIcon="true"
+              type="info"
+              class="my-10"
+            >
+              <template v-slot:content>
+                <div>
+                  <p>
+                    The information you provide in this section allows JWCC cloud service providers
+                    to propose and the Government to analyze proposals in a consistent manner. All
+                    requirements are presented as a minimum capability for analysis only and will
+                    neither limit the actual Cloud Service Offering(s) ordered from the JWCC Catalog
+                    during TO performance nor exceed the dollar threshold established within the TO.
+                  </p>
+                </div>
+              </template>
+            </ATATAlert>
         </v-col>
       </v-row>
     </v-container>
