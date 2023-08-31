@@ -183,7 +183,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATLoader from "@/components/ATATLoader.vue";
@@ -199,12 +199,10 @@ import Portfolios from "../portfolios/Index.vue";
 import PortfoliosSummary from "../portfolios/components/PortfoliosSummary.vue"
 import { 
   AcquisitionPackageSummaryDTO,
-  AcquisitionPackageSummarySearchDTO,
-  UserDTO, 
+  AcquisitionPackageSummarySearchDTO
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import CurrentUserStore from "@/store/user";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import AppSections from "@/store/appSections";
 
 @Component({

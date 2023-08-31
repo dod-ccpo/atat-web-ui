@@ -6,13 +6,14 @@ import Index  from "@/portfolios/Index.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import AppSections from "@/store/appSections";
 import PortfolioStore from "@/store/portfolio";
+import validators from "@/plugins/validation";
 Vue.use(Vuetify);
 
 describe("Testing index Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
+  localVue.use(validators);
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(Index, {

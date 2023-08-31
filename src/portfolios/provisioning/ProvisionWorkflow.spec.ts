@@ -4,7 +4,6 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import ProvisionWorkflow from './ProvisionWorkflow.vue'
-import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 
 Vue.use(Vuetify);
