@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!-- ATAT TODO * Q1 FY24 - reinstate after MVP when new single portfolio summary API is available
-                     that prevents multiple calls per portfolio
+    <!-- ATAT TODO * Q1 FY24 - reinstate after MVP when new single portfolio 
+      summary API is available that prevents multiple calls per portfolio
 
     <div v-if="!isHomeView" class="bg-base-lightest pa-4 border-rounded">
       <div class="d-flex justify-space-between align-center">
