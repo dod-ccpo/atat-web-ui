@@ -512,8 +512,8 @@ Cypress.Commands.add("verifyListMatches", (selector, expectedText) => {
       return foundTextArray;
     })
     .should(($foundTextArray) => {
-      // Sort the expectedText array 
-      //const sortedExpectedText = expectedText.slice().sort();
+      //Sort the expectedText array 
+      const sortedExpectedText = expectedText.sort();
       expect($foundTextArray).to.deep.equal(expectedText);
     });
 

@@ -63,7 +63,6 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
     // Summary page:
     const deployedRegionCheckboxesList = deployedRegions.join(' ,').toUpperCase().replace(/\s/g, '');
-    const impactLevelCheckboxesList = "UNCLASSIFIEDIL4";
     const expctedMemory = memoryByte + "GB";
     const storageOptionsList = storageOptions.join(' ,').toUpperCase();
     const storageExpected = storageOptionsList + ":" + storage + "GB";

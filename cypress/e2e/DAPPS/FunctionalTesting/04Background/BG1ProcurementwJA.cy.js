@@ -274,7 +274,9 @@ describe("Test suite: Step04-Procurement History", () => {
             .find('tbody tr')
             .its('length')
             .then((count) => {
-                count = rowCount
+                const getCount = count
+                cy.log(" get row Count is: ", getCount)
+                expect(getCount).equal(rowCount);
 
             });
     });
@@ -295,7 +297,10 @@ describe("Test suite: Step04-Procurement History", () => {
             .find('tbody tr')
             .its('length')
             .then((count) => {
-                count = updatedRowCount
+                const getCount = count
+                cy.log(" get row Count is: ", getCount)
+                expect(getCount).equal(updatedRowCount);
+
             });
     });
 
