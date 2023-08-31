@@ -68,12 +68,9 @@ describe("Testing ProvisionWorkflow", () => {
 
     it("test navigate() => PortfolioSummary", async () =>{
       const mockChangeActive = jest.spyOn(AppSections, "changeActiveSection").mockImplementation();
-      jest.spyOn(global, 'setTimeout')
       await wrapper.setData({altBackDestination: AppSections.sectionTitles.PortfolioSummary})
       await wrapper.vm.navigate('previous')
       expect(mockChangeActive).toHaveBeenCalledWith(AppSections.sectionTitles.PortfolioSummary)
-      expect(setTimeout).toHaveBeenCalled()
-      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 0);
     })
 
     it("test navigate() => Portfolios", async () =>{

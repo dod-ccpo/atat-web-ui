@@ -195,35 +195,5 @@ describe("Testing index Component", () => {
     expect(wrapper.vm.managerEmails).toBe("foo@mail.mil, bar@mail.mil")
   })
 
-  it("tests TOSearchCancelled()", async () =>{
-    const mockSetTOFollowon = jest.spyOn(PortfolioStore, "setProvisioningTOFollowOn")
-    await wrapper.vm.TOSearchCancelled();
-    expect(wrapper.vm.$data.TONumber).toBe("");
-    expect(wrapper.vm.$data.resetValidationNow).toBe(false);
-    expect(wrapper.vm.$data.showTOSearchModal).toBe(false);
-    expect(mockSetTOFollowon).toHaveBeenCalledWith(false)
-  })
-
-  it("tests openSearchTOModal()", async () =>{
-    const mockSetTOFollowon = jest.spyOn(PortfolioStore, "setProvisioningTOFollowOn")
-    await wrapper.vm.openSearchTOModal();
-    expect(wrapper.vm.$data.showTOSearchModal).toBe(true);
-    expect(mockSetTOFollowon).toHaveBeenCalledWith(true)
-  })
-
-  it("tests startProvisionWorkflow()", async () =>{
-    const mockSetTOPackageSelection = jest.spyOn(PortfolioStore, "setShowTOPackageSelection")
-    const mockSetSelected = jest.spyOn(PortfolioStore, "setSelectedAcquisitionPackageSysId")
-    const mockReset = jest.spyOn(AcquisitionPackage, "reset")
-    const mockAppSections = jest.spyOn(AppSections, "changeActiveSection")
-    const mockCardData = {sysId: '1234'}
-    await wrapper.setData({cardData: mockCardData})
-    await wrapper.vm.startProvisionWorkflow();
-    expect(mockReset).toHaveBeenCalled()
-    expect(mockSetTOPackageSelection).toHaveBeenCalledWith(false)
-    expect(mockSetSelected).toHaveBeenCalledWith(mockCardData.sysId)
-    expect(mockAppSections).toHaveBeenCalledWith(AppSections.sectionTitles.ProvisionWorkflow)
-  })
-  
   
 });

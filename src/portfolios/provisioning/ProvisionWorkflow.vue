@@ -192,12 +192,7 @@ export default class ProvisionWorkflow extends Vue {
         }
         case AppSections.sectionTitles.PortfolioSummary: {
           this.$router.push({name: "home", params: { direction } })
-          setTimeout(() =>{
-            (async () =>{
-              await AppSections.setActiveTabIndex(1)
-            }
-            )()
-          }, 0)
+          await AppSections.setActiveTabIndex(1)
           AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
           break;
         }

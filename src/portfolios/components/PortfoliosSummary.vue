@@ -98,6 +98,7 @@
           :isHaCCAdmin="isHaCCAdmin"
           @leavePortfolio="leavePortfolio"
           @openArchivePortfolioModal="openArchivePortfolioModal"
+          @openTOModal="openTOModal"
           :isHomeView="isHomeView"
         />
       </transition-group>
@@ -353,6 +354,10 @@ export default class PortfoliosSummary extends Vue {
     await PortfolioStore.setPortfolioSummaryQueryParams({
       [key]: value
     });
+  }
+
+  public openTOModal(portfolioSysId: string){
+    this.$emit("openTOModal", portfolioSysId);
   }
 
   public showFilters = false;

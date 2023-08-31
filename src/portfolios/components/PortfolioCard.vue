@@ -182,13 +182,6 @@
       :portfolioName="cardData.title"
       @okClicked="leavePortfolio"
     />
-    <TaskOrderSearchModal
-      :showTOSearchModal.sync="showTOSearchModal"
-      :TONumber.sync="TONumber"
-      :resetValidationNow.sync="resetValidationNow"
-      @TOSearchCancelled="TOSearchCancelled"
-      @startProvisionWorkflow="startProvisionWorkflow"
-    />  
 
   </v-card>
 </template>
@@ -208,14 +201,12 @@ import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioMo
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
-import TaskOrderSearchModal from "./TaskOrderSearchModal.vue";
 
 @Component({
   components: {
     ATATSVGIcon,
     ATATMeatballMenu,
-    LeavePortfolioModal,
-    TaskOrderSearchModal
+    LeavePortfolioModal
   }
 })
 
@@ -227,41 +218,6 @@ export default class PortfolioCard extends Vue {
   @Prop({ default: false }) public isHomeView?: boolean;
 
   public showLeavePortfolioModal = false;
-  public showTOSearchModal = false;
-  public TONumber = "";
-  public resetValidationNow = false;
-
-  public provWorkflowRouteNames = {
-    AwardedTaskOrder: "Awarded_Task_Order"
-  };
-
-  public async TOSearchCancelled(): Promise<void> {
-    this.TONumber = "";
-    this.resetValidationNow = true;
-    this.showTOSearchModal = false;
-    await PortfolioStore.setProvisioningTOFollowOn(false)
-  }
-
-  public async openSearchTOModal(): Promise<void> {
-    await PortfolioStore.setProvisioningTOFollowOn(true)
-    this.showTOSearchModal = true;
-  }
-
-  public async startProvisionWorkflow(): Promise<void>{
-    await AcquisitionPackage.reset();
-    if (this.cardData.sysId) {
-      await PortfolioStore.setShowTOPackageSelection(false);
-    }
-    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.cardData.sysId as string);
-    this.$router.push({
-      name: this.provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
-        direction: "next"
-      },
-      replace: true
-    })
-    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
-  }
 
   public menuActions = {
     viewFundingTracker: "navToFundingTracker",
@@ -362,7 +318,8 @@ export default class PortfolioCard extends Vue {
       this.$emit("openArchivePortfolioModal");
       break;
     case this.menuActions.addTaskOrder:
-      this.openSearchTOModal();
+      await PortfolioStore.setProvisioningTOFollowOn(true)
+      this.$emit('openTOModal', this.cardData.sysId)
       break;
     default:
       break; 

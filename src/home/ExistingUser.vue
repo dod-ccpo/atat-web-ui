@@ -83,6 +83,7 @@
                       active-tab="ALL" 
                       default-sort="DESCsys_updated_on"
                       :isHomeView="true"
+                      @openTOModal="openTOSearchModal"
                     />
 
                   </v-expansion-panel-content>
@@ -251,8 +252,8 @@ export default class ExistingUser extends Vue {
     this.$emit("startProvisionWorkflow");
   }
 
-  public openTOSearchModal(acqPackageSysId: string): void {
-    this.$emit("openTOSearchModal", acqPackageSysId);
+  public openTOSearchModal(sysId: string): void {
+    this.$emit("openTOSearchModal", sysId);
   }
   
   public startNewAcquisition(): void {
