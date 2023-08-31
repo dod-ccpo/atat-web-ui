@@ -43,16 +43,16 @@ describe("Testing index Component", () => {
     const mockSetTOFollowon = jest.spyOn(PortfolioStore, "setProvisioningTOFollowOn")
     await wrapper.vm.TOSearchCancelled();
     expect(wrapper.vm.$data.TONumber).toBe("");
-    expect(wrapper.vm.$data.resetValidationNow).toBe(false);
+    expect(wrapper.vm.$data.resetValidationNow).toBe(true);
     expect(wrapper.vm.$data.showTOSearchModal).toBe(false);
     expect(mockSetTOFollowon).toHaveBeenCalledWith(false)
   })
 
-  it("tests openSearchTOModal()", async () =>{
+  it("tests openTOModal()", async () =>{
     const mockSetTOFollowon = jest.spyOn(PortfolioStore, "setProvisioningTOFollowOn")
-    await wrapper.vm.openSearchTOModal();
+    await wrapper.vm.openTOModal();
     expect(wrapper.vm.$data.showTOSearchModal).toBe(true);
-    expect(mockSetTOFollowon).toHaveBeenCalledWith(true)
+    expect(mockSetTOFollowon).toHaveBeenCalledWith(false)
   })
 
   it("tests startProvisionWorkflow()", async () =>{
@@ -61,7 +61,7 @@ describe("Testing index Component", () => {
     const mockReset = jest.spyOn(AcquisitionPackage, "reset")
     const mockAppSections = jest.spyOn(AppSections, "changeActiveSection")
     const mockCardData = {sysId: '1234'}
-    await wrapper.setData({cardData: mockCardData})
+    await wrapper.setData({portfolioSysId: mockCardData.sysId})
     await wrapper.vm.startProvisionWorkflow();
     expect(mockReset).toHaveBeenCalled()
     expect(mockSetTOPackageSelection).toHaveBeenCalledWith(false)
