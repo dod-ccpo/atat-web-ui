@@ -206,7 +206,7 @@ export class PortfolioSummaryStore extends VuexModule {
     const allEnvs: Environment[] = allEnvironmentsList.map(
       environment => convertColumnReferencesToValues(environment)
     );
-    debugger;
+    
     allEnvs.forEach(env => {
       // ATAT TODO AT-9721
       // remove this forEach entirely
