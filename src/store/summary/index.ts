@@ -219,7 +219,7 @@ export class SummaryStore extends VuexModule {
       description: "",
       isComplete: false,
       isTouched: false,
-      routeName: "Organization_Info",
+      routeName: "organization-info",
       step:1,
       substep: 2
     }
@@ -232,7 +232,7 @@ export class SummaryStore extends VuexModule {
       description: "",
       isComplete: false,
       isTouched: false,
-      routeName: "Contact_Information",
+      routeName: "contact-info",
       step:1,
       substep: 3
     }
@@ -245,7 +245,7 @@ export class SummaryStore extends VuexModule {
       description: "",
       isComplete: false,
       isTouched: false,
-      routeName: "Cor_Information",
+      routeName: "cor-info",
       step:1,
       substep: 4
     }
