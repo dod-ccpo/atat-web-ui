@@ -68,7 +68,6 @@
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
-          v-if="!portfolioIsReadOnly"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -82,30 +81,16 @@
           </template>
           <v-list>
             
-            <v-list-item @click="openModal" id="InviteMembers_MenuItem">
-              <v-list-item-title
-              >Invite members to portfolio
-              </v-list-item-title>
-            </v-list-item>
-
-            <v-list-item @click="moveToInput()" id="RenamePortfolio_MenuItem">
-              <v-list-item-title
-              >Rename portfolio
-              </v-list-item-title>
-            </v-list-item>
-
-            <v-list-item v-if="!isProdEnv" id="LeavePortfolio_MenuItem">
+            <v-list-item 
+            v-for="(menuItem, index) in getMoreMenuItems"  
+            :id="menuItem.id"
+            :key="index"
+            @click="handleMoreMenuClick(menuItem.action)"
+            >
               <v-list-item-title>
-                Leave this portfolio
+                {{ menuItem.title }}
               </v-list-item-title>
             </v-list-item>
-            
-            <v-list-item @click="openArchivePortfolioModal" id="ArchivePortfolio_MenuItem">
-              <v-list-item-title>
-                Archive portfolio
-              </v-list-item-title>
-            </v-list-item>
-
             <hr class="my-2"  v-if="!isProdEnv" />
 
             <v-list-item id="LoginToCSPConsole_MenuItem" v-if="!isProdEnv">
@@ -149,7 +134,7 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioStore from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import { SlideoutPanelContent } from "../../../../../types/Global";
+import { SlideoutPanelContent, MeatballMenuItem } from "../../../../../types/Global";
 import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 // eslint-disable-next-line max-len
@@ -176,6 +161,13 @@ export default class PortfolioSummaryPageHead extends Vue {
   @Prop({ default: [""], required: true }) private items!: string[];
   @PropSync("value") private _selectedTab!: number ;
   @PropSync("title") private _title!: string;
+
+  public moreMenuItemActions = {
+    openArchivePortfolioModal: "openArchivePortfolioModal",
+    moveToInput: "moveToInput",
+    openModal: "openModal",
+    leaveThisPortfolio: "leaveThisPortfolio"
+  }
 
   public get portfolioStatus(): string {
     return PortfolioStore.currentPortfolio.status as string;
@@ -204,6 +196,68 @@ export default class PortfolioSummaryPageHead extends Vue {
 
   public get slideoutPanelIsOpen(): boolean {
     return SlideoutPanel.getSlideoutPanelIsOpen;
+  }
+
+  public get getMoreMenuItems(): MeatballMenuItem[]{
+    const menuItems: MeatballMenuItem[] = [];
+    const leavePortfolio = {
+      id: "LeavePortfolio_MenuItem",
+      title: "Leave this portfolio",
+      action: 'leaveThisPortfolio'
+    };
+    const inviteMemebers = {
+      id: "InviteMembers_MenuItem",
+      title: "Invite members to portfolio",
+      action: 'openModal'
+    };
+    const renamePortfolio = {
+      id: "RenamePortfolio_MenuItem",
+      title: "Rename portfolio",
+      action: "moveToInput"
+    }
+    const archivePortfolio = {
+      id: "ArchivePortfolio_MenuItem",
+      title: "Archive portfolio",
+      action: "openArchivePortfolioModal"
+    }
+
+    if(PortfolioStore.currentUserIsViewer){
+      menuItems.push(leavePortfolio);
+    } else if(PortfolioStore.currentUserIsManager){
+      menuItems.push(
+        leavePortfolio, 
+        inviteMemebers, 
+        renamePortfolio
+      )
+    } else{
+      menuItems.push(
+        inviteMemebers, 
+        renamePortfolio,
+        archivePortfolio
+      )
+    }
+    
+
+    return menuItems;
+  }
+
+  public handleMoreMenuClick(menuItem: string | undefined):void{
+    switch(menuItem){
+    case this.moreMenuItemActions.leaveThisPortfolio:
+      // Leave portfolio 
+      break;
+    case this.moreMenuItemActions.moveToInput:
+      this.moveToInput();
+      break;
+    case this.moreMenuItemActions.openArchivePortfolioModal:
+      this.openArchivePortfolioModal();
+      break;
+    case this.moreMenuItemActions.openModal: 
+      this.openModal();
+      break;
+    default: 
+      break;
+    }
   }
 
   @Watch("slideoutPanelIsOpen")
