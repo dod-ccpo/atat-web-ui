@@ -154,7 +154,7 @@ export default class PortfolioSummary extends Vue {
       this.title = portfolio.title || "";
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
-      this.portfolioSysId = portfolio.sysId || "";
+      this.portfolioSysId = portfolio.sysId;
 
       const envs = portfolio.environments;
 

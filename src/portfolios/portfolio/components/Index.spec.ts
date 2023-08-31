@@ -35,6 +35,8 @@ describe("Testing index Component", () => {
     await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
     await wrapper.vm.loadOnEnter();
     expect(wrapper.vm.$data.portfolioSysId).toBe(mockPortfolio.sysId)
+    expect(wrapper.vm.$data.portfolioCSP).toBe(mockPortfolio.csp)
+    expect(wrapper.vm.$data.portfolioDescription).toBe(mockPortfolio.description)
+    expect(wrapper.vm.$data.title).toBe(mockPortfolio.title)
   })
-
 })

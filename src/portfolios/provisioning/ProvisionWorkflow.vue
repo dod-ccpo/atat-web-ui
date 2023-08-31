@@ -166,6 +166,7 @@ export default class ProvisionWorkflow extends Vue {
       this.$router.push({ name: nextStepName as string, params: { direction } });
 
     } else if (direction === "previous" && this.altBackDestination) { 
+      
       if (this.$route.name === this.routeNames.AwardedTaskOrder) {
         Steps.setAltBackDestination("");
         switch (this.altBackDestination) {
