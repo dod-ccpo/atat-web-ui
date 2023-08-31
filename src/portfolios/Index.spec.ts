@@ -8,6 +8,14 @@ import AppSections from "@/store/appSections";
 import PortfolioStore from "@/store/portfolio";
 import validators from "@/plugins/validation";
 Vue.use(Vuetify);
+const mockRouter = {
+  push: jest.fn(),
+};
+const mockRoute = {
+  params: {
+    id: 1,
+  },
+};
 
 describe("Testing index Component", () => {
   const localVue = createLocalVue();
@@ -19,6 +27,10 @@ describe("Testing index Component", () => {
     wrapper = mount(Index, {
       localVue,
       vuetify,
+      mocks: {
+        $router: mockRouter,
+        $route: mockRoute
+      } 
     });
   });
 

@@ -8,7 +8,6 @@ import AppSections from "@/store/appSections";
 import PortfolioStore from "@/store/portfolio";
 import { cspConsoleURLs } from "@/store/portfolio";
 import validators from "@/plugins/validation";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 Vue.use(Vuetify);
 
