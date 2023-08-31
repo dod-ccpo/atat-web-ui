@@ -68,7 +68,6 @@ describe("Testing ProvisionWorkflow", () => {
 
     it("test navigate() => PortfolioSummary", async () =>{
       const mockChangeActive = jest.spyOn(AppSections, "changeActiveSection").mockImplementation();
-      const mockTabIndex = jest.spyOn(AppSections, "setActiveTabIndex").mockImplementation();
       jest.spyOn(global, 'setTimeout')
       await wrapper.setData({altBackDestination: AppSections.sectionTitles.PortfolioSummary})
       await wrapper.vm.navigate('previous')
