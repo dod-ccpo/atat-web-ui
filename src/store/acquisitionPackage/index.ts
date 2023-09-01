@@ -1893,6 +1893,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       this.setInitialized(true);
       this.setIsLoading(false);
+      await Summary.validateStepTwo();
       await Summary.validateStepThree();
       await Summary.validateStepFive();
       await Summary.validateStepSix();
@@ -2362,8 +2363,6 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({ rawError: true })
   async loadSensitiveInformation(): Promise<SensitiveInformationDTO> {
     try {
-      await this.ensureInitialized();
-
       const sys_id = this.sensitiveInformation?.sys_id || "";
 
       if (sys_id.length > 0) {
