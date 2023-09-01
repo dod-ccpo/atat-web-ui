@@ -26,7 +26,7 @@
           :noPrevious="noPrevious"
           class="mb-8"
         />
-         <ATATFooter/>
+        <ATATFooter/>
       </div>
     </v-main>
   </div>
@@ -167,6 +167,7 @@ export default class ProvisionWorkflow extends Vue {
       this.$router.push({ name: nextStepName as string, params: { direction } });
 
     } else if (direction === "previous" && this.altBackDestination) { 
+      
       if (this.$route.name === this.routeNames.AwardedTaskOrder) {
         Steps.setAltBackDestination("");
         switch (this.altBackDestination) {
@@ -183,6 +184,17 @@ export default class ProvisionWorkflow extends Vue {
         case AppSections.sectionTitles.CreateFirstPortfolio: {
           this.$router.push({name: "home", params: { direction } })
           AppSections.changeActiveSection(AppSections.sectionTitles.CreateFirstPortfolio);
+          break;
+        }
+        case AppSections.sectionTitles.Portfolios: {
+          this.$router.push({name: "home", params: { direction } })
+          AppSections.changeActiveSection(AppSections.sectionTitles.Portfolios);
+          break;
+        }
+        case AppSections.sectionTitles.PortfolioSummary: {
+          this.$router.push({name: "home", params: { direction } })
+          await AppSections.setActiveTabIndex(1)
+          AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
           break;
         }
         }
