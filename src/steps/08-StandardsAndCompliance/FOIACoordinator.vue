@@ -100,13 +100,12 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-
+import SaveOnLeave from "@/mixins/saveOnLeave";
 import { SensitiveInformationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 import { RadioButton, SelectData } from "../../../types/Global";
 import ContactData from "@/store/contactData";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -123,7 +122,6 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
   };
 
   private emptySelectData: SelectData = { text: "", value: "" };
-  private saveOnLeaveError: string | unknown = "";
 
   private fullName =
     AcquisitionPackage.sensitiveInformation?.foia_full_name || "";
@@ -192,11 +190,8 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     if (this.selectedAddressType === this.addressTypes.FOR) {
       this.selectedCountry =
         this.countryListData.find(
-          (c) => {
-            return c.text === this.savedData?.foia_country
-          }
+          (c) => c.text === this.savedData?.foia_country
         ) || this.emptySelectData;
-        
     } else {
       // US or Military addreses - set country obj to USA
       this.selectedCountry = { text: "United States of America", value: "US" };
@@ -215,6 +210,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
           this.militaryPostOfficeOptions.find((p) => p.value === this.city) ||
           this.emptySelectData;
 
+        // US addresses - set selectedState
       } else if (
         this.selectedAddressType === this.addressTypes.USA &&
         this.stateListData
@@ -277,7 +273,10 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData =
-      await AcquisitionPackage.loadSensitiveInformation() as SensitiveInformationDTO;
+      (await AcquisitionPackage.loadSensitiveInformation()) as Record<
+        string,
+        string
+      >;
     this.stateListData = ContactData.stateChoices;
     this.countryListData = ContactData.countryListData(["US"]);
 
@@ -317,7 +316,6 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
       }
     } catch (error) {
       console.log(error);
-      this.saveOnLeaveError = error as string;
     }
 
     return true;

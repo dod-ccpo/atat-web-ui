@@ -9,19 +9,8 @@ import ep from "../selectors/evaluationPlan.sel";
 
 Cypress.Commands.add("goToECStep",(pt, scope)=>{
   cy.goToAcqPackageStepOne(pt, scope)
-  cy.findElement(common.stepEvaluationCriteriaLink).click().wait(500).then(()=>{
-    cy.waitUntil(function () {
-          return cy.findElement(common.subStepFairOppLink)
-          .should("be.visible")
-    })
-  })
-  cy.findElement(common.subStepFairOppLink)
-  .should("contain", " Exception to Fair Opportunity ")
-  .click().then(()=>{
-    cy.waitUntil(function () {
-      return cy.findElement(fo.radioOneCSP).should("exist");
-    });
-  });  
+  cy.clickSideStepper(common.stepEvaluationCriteriaLink ," Evaluation Criteria ");
+  cy.activeStep(common.stepEvaluationCriteriaText);
   cy.verifyPageHeader(
       "Let’s see if you qualify for an exception to fair opportunity"
   );    

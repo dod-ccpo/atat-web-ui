@@ -13,16 +13,14 @@ import { ContractTypeApi } from "@/api/contractDetails";
 import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO, CurrentContractDTO,
-  EvaluationPlanDTO,
-  FairOpportunityDTO,
+  CrossDomainSolutionDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
   SelectedClassificationLevelDTO,
   SensitiveInformationDTO
 } from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
-import { convertStringArrayToCommaList, toTitleCase, buildClassificationLabel } from "@/helpers";
+import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
@@ -99,14 +97,8 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 
 export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
-  case 2:
-    await Summary.validateStepTwo();
-    break;
   case 3:
     await Summary.validateStepThree();
-    break;
-  case 4:
-    await Summary.validateStepFour();
     break;
   case 5:
     await Summary.validateStepFive();
@@ -847,6 +839,7 @@ export class SummaryStore extends VuexModule {
   }
   //#endregion
 
+<<<<<<< HEAD
   //#region step 4
   /**
    *  assess all substeps in Step 4 to determine
@@ -1014,6 +1007,8 @@ export class SummaryStore extends VuexModule {
   }
 
 
+=======
+>>>>>>> main
   //#region Step 5
 
   /** assesses all selected service offerings and 

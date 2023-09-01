@@ -2,6 +2,7 @@
 import api from "@/api";
 import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
+import { TABLENAME as ClinTable } from "@/api/clin";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
 import { format, isAfter, isBefore, parseISO } from "date-fns";
@@ -202,43 +203,27 @@ export class DashboardService {
       if (clinsInPeriod.length) {
         clinsInPeriod.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
       }
+     
       const clinSysIds = clinsInPeriod.map(obj => obj.sys_id);
-      const currentCLINs = await api.clinTable.getQuery(
-        {
-          params:
-            {
-              sysparm_fields: "actual_funds_spent,classification_level,clin_number,clin_status," +
-              "funds_obligated,funds_total,idiq_clin,pop_end_date,pop_start_date,sys_created_by," +
-              "sys_create_on,sys_id,sys_mod_count,sys_tags,sys_updated_by,sys_updated_on," +
-              "task_order,type",
-              sysparm_display_value: 'all',
-              sysparm_query: "sys_idIN" + clinSysIds
-            }
+      const clinRequests = clinSysIds.map((clin) => api.clinTable.retrieve(clin));
+      let currentCLINs = await Promise.all(clinRequests);
+
+      const clin_labels = await api.systemChoices.getChoices(
+        ClinTable,
+        "idiq_clin"
+      );
+
+      currentCLINs = currentCLINs.map((clin) => {
+        const label = clin_labels.find(
+          (label) => label.value === clin.idiq_clin
+        );
+        if (label) {
+          clin.idiq_clin_label = label.label;
         }
-      ).then((clinData)=>{
-        // remove any and type out once api is refactored
-        return clinData.map((clin: any) =>{
-          return{
-            sys_id: clin.sys_id.value,
-            clin_number: clin.clin_number.value,
-            idiq_clin: clin.idiq_clin.display_value,
-            pop_end_date: clin.pop_end_date.value,
-            pop_start_date: clin.pop_start_date.value,
-            clin_status: clin.clin_status.value,
-            funds_obligated: clin.funds_obligated.value,
-            funds_total: clin.funds_total.value,
-            actual_funds_spent: clin.actual_funds_spent.value,
-            classification_level: clin.classification_level.value,
-            sys_created_by: clin.sys_created_by.value,
-            sys_mod_count: clin.sys_mod_count.value,
-            sys_tags: clin.sys_tags.value,
-            sys_updated_by:clin.sys_updated_by.value,
-            sys_updated_on: clin.sys_updated_on.value,
-            task_order: {link: clin.task_order.link, value: clin.task_order.value},
-            type: clin.type.value
-          } as ClinDTO
-        })
-      })
+
+        return clin;
+      });
+
       const costs = await this.getCostsInCurrentPeriod(clinSysIds)
 
       return {

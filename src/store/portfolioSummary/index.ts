@@ -324,6 +324,7 @@ export class PortfolioSummaryStore extends VuexModule {
           }
       }
     )
+
     portfolioSummaryList.forEach(portfolio => {
       portfolio.task_orders.forEach(taskOrder => {
         taskOrder.clin_records =
