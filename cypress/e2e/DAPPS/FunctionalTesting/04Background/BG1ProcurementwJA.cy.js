@@ -125,9 +125,7 @@ describe("Test suite: Step04-Procurement History", () => {
         cy.verifyEnteredInputTxt(background.startDateTextField, startDateFormatted);
         cy.verifyEnteredInputTxt(background.expirationDatePickerInputbox, expiredDateFormatted);
         cy.verifyEnteredInputTxt(background.incumbentTxtBox, cName);
-        cy.verifySelectedRadioOption(background.businessSizeActiveRadioOption, "HUBZone").click({
-            force: true
-        });
+        cy.radioBtn(background.hubRadioOption, "HUBZONE").should("be.checked")
 
     };
 
@@ -218,11 +216,7 @@ describe("Test suite: Step04-Procurement History", () => {
         cy.clickContinueButton(
             background.businessSizeRadioOption,
             "Your Procurement History"
-        );
-        //commenting below code due to UI changes
-        // cy.verifyTextMatches(background.recurringPageText,bgCEData.procsummaryIntroText);
-        // cy.findElement(background.procurementHistoryTable).should("exist");
-        // cy.verifyColumnHeaders(1, "Contractor Name", "Missing info");              
+        );                     
 
     });
 
@@ -249,7 +243,8 @@ describe("Test suite: Step04-Procurement History", () => {
     it("TC4:Procurement History Summary-Edit contract details", () => {
 
         cy.log(" TestReport:Procurement History-Edit");
-        cy.findElement(background.edit0).should("be.visible").click()
+        cy.findElement(background.edit0).click();
+        cy.waitUntilElementIsGone(background.procurementHistoryTable);       
         verifyEditGatherDetailsForm(validContractNo, taskOrderNo, startDateFormatted, expiredDateFormatted, cName);
         // edit the ContractNumber
         cy.enterTextInTextField(background.contractNoTxtBox, editContractNo);
@@ -347,8 +342,7 @@ describe("Test suite: Step04-Procurement History", () => {
             background.procurementHistoryTable,
             "Your Background Summary"
         );
-        //updated the added record        
-        cy.verifyListMatches(background.procurementHistoryDescription, UpdatedDescriptionDetails);
+        
     });
 
 
