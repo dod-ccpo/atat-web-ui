@@ -228,6 +228,7 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessPrimaryPOC(): Promise<void>{
+    const contactInfo = AcquisitionPackage.getContact("Contact")
     const PrimaryPOC: SummaryItem = {
       title: "Primary Point of Contact",
       description: "",
@@ -241,6 +242,8 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessCOR(): Promise<void>{
+    const contactInfo = AcquisitionPackage.getContact("COR")
+
     const CORDetails: SummaryItem = {
       title: "Contracting Officer's Representative",
       description: "",
