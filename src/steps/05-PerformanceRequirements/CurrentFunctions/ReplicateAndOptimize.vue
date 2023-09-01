@@ -83,7 +83,7 @@
               id="JWCCInfoAlert"
               :showIcon="true"
               type="info"
-              class="my-10"
+              class="mt-8 mb-2"
             >
               <template v-slot:content>
                 <div>
