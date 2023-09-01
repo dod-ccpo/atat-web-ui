@@ -319,7 +319,8 @@ export default class PortfolioCard extends Vue {
       break;
     case this.menuActions.addTaskOrder:
       await PortfolioStore.setProvisioningTOFollowOn(true)
-      this.$emit('openTOModal', this.cardData.sysId)
+      await PortfolioStore.setSelectedPortfolioPackageSysId(this.cardData.sysId as string)
+      this.$emit('openTOModal')
       break;
     default:
       break; 

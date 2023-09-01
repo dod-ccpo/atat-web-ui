@@ -57,7 +57,7 @@ describe("Testing index Component", () => {
 
   it("tests startProvisionWorkflow()", async () =>{
     const mockSetTOPackageSelection = jest.spyOn(PortfolioStore, "setShowTOPackageSelection")
-    const mockSetSelected = jest.spyOn(PortfolioStore, "setSelectedAcquisitionPackageSysId")
+    const mockSetSelected = jest.spyOn(PortfolioStore, "setSelectedPortfolioPackageSysId")
     const mockReset = jest.spyOn(AcquisitionPackage, "reset")
     const mockAppSections = jest.spyOn(AppSections, "changeActiveSection")
     const mockCardData = {sysId: '1234'}

@@ -356,8 +356,8 @@ export default class PortfoliosSummary extends Vue {
     });
   }
 
-  public openTOModal(portfolioSysId: string){
-    this.$emit("openTOModal", portfolioSysId);
+  public openTOModal(){
+    this.$emit("openTOModal");
   }
 
   public showFilters = false;

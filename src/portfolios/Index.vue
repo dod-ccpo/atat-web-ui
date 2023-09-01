@@ -121,8 +121,8 @@ export default class Portfolios extends Vue {
     await PortfolioStore.setProvisioningTOFollowOn(false)
   }
 
-  public async openTOModal(portfolioSysId: string): Promise<void> {
-    this.portfolioSysId = portfolioSysId;
+  public async openTOModal(): Promise<void> {
+    this.portfolioSysId = PortfolioStore.getSelectedPortfolioPackageSysId;
     this.showTOSearchModal = true;
   }
 
@@ -131,7 +131,6 @@ export default class Portfolios extends Vue {
     if (this.portfolioSysId) {
       await PortfolioStore.setShowTOPackageSelection(false);
     }
-    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.portfolioSysId);
     this.$router.push({
       name: this.provWorkflowRouteNames.AwardedTaskOrder,
       params: {

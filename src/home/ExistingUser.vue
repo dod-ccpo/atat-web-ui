@@ -241,6 +241,7 @@ export default class ExistingUser extends Vue {
   public get userHasPackages(): boolean {
     return CurrentUserStore.getUserHasPackages;
   }
+  
   public get userHasPortfolios(): boolean {
     return CurrentUserStore.getUserHasPortfolios;
   }
@@ -250,8 +251,8 @@ export default class ExistingUser extends Vue {
     this.$emit("startProvisionWorkflow");
   }
 
-  public openTOSearchModal(sysId: string): void {
-    this.$emit("openTOSearchModal", sysId);
+  public openTOSearchModal(acqPackageSysId: string): void {
+    this.$emit("openTOSearchModal", acqPackageSysId);
   }
   
   public startNewAcquisition(): void {

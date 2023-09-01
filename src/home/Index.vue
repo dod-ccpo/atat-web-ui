@@ -147,7 +147,9 @@ export default class Home extends Vue {
   }
 
   public openSearchTOModal(acqPackageSysId: string): void {
-    this.selectedAcquisitionPackageSysId = acqPackageSysId;
+    if(acqPackageSysId){
+      this.selectedAcquisitionPackageSysId = acqPackageSysId;
+    }
     this.showTOSearchModal = true;
   }
 

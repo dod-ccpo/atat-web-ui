@@ -52,11 +52,11 @@ export default class TaskOrderSearchModal extends Vue {
   @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
 
   public isFollowOn = false;
-
-  public bodyText = `To fund your ATAT portfolio, you will need an awarded task order. Enter 
-          your task order number and we’ll retrieve the funding information.`
-  
-  public titleText = "Search for your task order"
+  public defaultBody = `To fund your ATAT portfolio, you will need an awarded task order. Enter 
+          your task order number and we'll retrieve the funding information.`;
+  public bodyText = this.defaultBody;
+  public defaultTitle = "Search for your task order";
+  public titleText = this.defaultTitle;
 
   public async startProvisionWorkflow(): Promise<void> {
     this.$emit("startProvisionWorkflow");
@@ -65,18 +65,20 @@ export default class TaskOrderSearchModal extends Vue {
   public async TOSearchCancelled(): Promise<void> {
     this.$emit("TOSearchCancelled");
   }
-
-  @Watch("_showTOSearchModal")
-  public async checkIfFollowOn(): Promise<void> {
-    this.isFollowOn = PortfolioStore.isProvisioningTOFollowOn;
-    if(this.isFollowOn){
+  public get isTOFollowOn(): boolean {
+    return PortfolioStore.isProvisioningTOFollowOn;
+  }
+  @Watch("isTOFollowOn")
+  public isTOFollowOnChanged(newVal: boolean) {
+    if (newVal) {
       this.bodyText = `To update funding associated with your ATAT portfolio, you will need an
-      awarded modification or follow-on task order. Enter your task order number and we’ll retrieve
+      awarded modification or follow-on task order. Enter your task order number and we'll retrieve
       the funding information.`
       this.titleText = "Search for your modification or follow-on task order"
+    } else {
+      this.bodyText = this.defaultBody;
+      this.titleText = this.defaultTitle;
     }
   }
-
-
 }
 </script>

@@ -150,6 +150,19 @@ export class PortfolioDataStore extends VuexModule {
   public get getSelectedAcquisitionPackageSysId(): string {
     return this.selectedAcquisitionPackageSysId;
   }
+
+  public selectedPortfolioPackageSysId = "";
+  @Action({rawError: true})
+  public async setSelectedPortfolioPackageSysId(sysId: string): Promise<void> {
+    this.doSetSelectedPortfolioPackageSysId(sysId);
+  }
+  @Mutation
+  public doSetSelectedPortfolioPackageSysId(sysId: string): void {
+    this.selectedPortfolioPackageSysId = sysId;
+  }
+  public get getSelectedPortfolioPackageSysId(): string {
+    return this.selectedPortfolioPackageSysId;
+  }
   
   public portfolioProvisioningObj: PortfolioProvisioning 
     = _.cloneDeep(initialPortfolioProvisioningObj());
