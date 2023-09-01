@@ -70,11 +70,12 @@ module.exports = {
     client: {
       logging: 'error',
       progress: false,
-      overlay: {
-        errors: true,
-        warnings: true,
-        runtimeErrors: true
-      }
+      overlay: false,
+      // {
+      //   errors: true,
+      //   warnings: true,
+      //   runtimeErrors: true
+      // }
     }
   },
   css: {

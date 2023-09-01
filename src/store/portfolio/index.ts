@@ -60,7 +60,7 @@ interface CloudDistinguisher {
   name?: string;
 }
 
-// ATAT TODO - future ticket when implemented: get env specific url from 
+// ATAT TODO AT-9567 - get env specific url from 
 // atat_environments table - column `dashboard_link`
 export const cspConsoleURLs: Record<string, string> = {
   azure: "https://portal.azure.com/",
@@ -294,7 +294,7 @@ export class PortfolioDataStore extends VuexModule {
       );
     } 
     catch(error) {
-      // ATAT TODO - add graceful fail message to user in UI
+      // ATAT TODO AT-9177 (EPIC) - add graceful fail message to user in UI
       throw new Error(`Error provisioning portfolio: ${error}`);
     }
   }

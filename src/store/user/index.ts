@@ -187,7 +187,7 @@ export class UserStore extends VuexModule {
   @Action({rawError: true})
   public async getUserRoles(sysId: string): Promise<string[]> {
     try {
-      // ATAT TODO: reinstate after proxy created for sys_user_has_roles
+      // ATAT TODO AT-9575 reinstate after proxy created for sys_user_has_roles
       // const response = await api.userRolesTable.getUserRoles(sysId);
       // return response.map(obj => obj.role);
       return [];
