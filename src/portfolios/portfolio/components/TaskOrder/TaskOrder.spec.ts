@@ -6,7 +6,6 @@ import { DefaultProps } from "vue/types/options";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
-import PortfolioData from "@/store/portfolio";
 Vue.use(Vuetify);
 
 describe("Testing TaskOrder Component", () => {

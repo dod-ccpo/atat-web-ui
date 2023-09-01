@@ -100,7 +100,6 @@ import Attachments from "@/store/attachments";
 import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 import FinancialDetails, {initialFundingRequestFSForm} from "@/store/financialDetails";
 import { hasChanges } from "@/helpers";
-import { AttachmentServiceCallbacks } from "@/services/attachment";
 
 let generalTermsAndConditionsToolTips = "This is a unique 20-character value";
 generalTermsAndConditionsToolTips +=

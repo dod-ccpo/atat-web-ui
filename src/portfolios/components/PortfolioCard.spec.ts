@@ -5,7 +5,6 @@ import { DefaultProps } from "vue/types/options";
 import PortfolioCard from "@/portfolios/components/PortfolioCard.vue";
 import { PortfolioCardData } from "types/Global";
 import AppSections from "@/store/appSections";
-import PortfolioData from "@/store/portfolio";
 import PortfolioStore from "@/store/portfolio";
 import { cspConsoleURLs } from "@/store/portfolio";
 

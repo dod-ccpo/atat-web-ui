@@ -1,7 +1,6 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import {
-  DOWClassificationInstance,
   DOWServiceOffering,
   DOWServiceOfferingGroup,
   OtherServiceOfferingData,
@@ -13,7 +12,7 @@ import {
   ContactDTO,
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO, CurrentContractDTO,
+  CrossDomainSolutionDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
   PeriodDTO,
@@ -27,7 +26,6 @@ import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
-import { AxiosRequestConfig } from "axios";
 import api from "@/api";
 
 

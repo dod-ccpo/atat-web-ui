@@ -823,7 +823,7 @@ import { createDateStr, toCurrencyString, getCurrencyString, getIdText, roundTo1
   from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
-import { add, addDays, isAfter, isBefore, isThisMonth, startOfMonth, subDays } from "date-fns";
+import { add, addDays, isAfter, isThisMonth, startOfMonth, subDays } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO";
 import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
@@ -838,7 +838,6 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
 import PortfolioStore from "@/store/portfolio";
-import Portfolio from "@/store/portfolio";
 
 @Component({
   components: {

@@ -72,7 +72,7 @@ export default class ATATSummaryItem extends Vue {
   }
 
   public async navigate(routeName: string): Promise<void>{
-    let dynamicKey = routeName as keyof unknown;
+    const dynamicKey = routeName as keyof unknown;
     this.$router.push({
       name: routeNames[dynamicKey],
       params: {

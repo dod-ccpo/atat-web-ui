@@ -61,7 +61,6 @@ import { getIdText } from "@/helpers";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATToast from "@/components/ATATToast.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {

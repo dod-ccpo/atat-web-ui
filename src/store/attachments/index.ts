@@ -19,7 +19,6 @@ import { TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED_TABLE } from "@/api/packageDocu
 import { AttachmentDTO } from "@/api/models";
 import {
   AttachmentServiceCallbacks,
-  AttachmentServiceTypes,
   AttachmentServiceFactory,
 } from "@/services/attachment";
 

@@ -66,6 +66,8 @@ export class EDAApi extends ApiBase{
         }
       }
       return edaResponse;
+      //TODO create and cast error to EDAResponse.Error
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error:any) {
       return {
         success: false,

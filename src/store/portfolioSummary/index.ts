@@ -412,7 +412,7 @@ export class PortfolioSummaryStore extends VuexModule {
         let totalTaskOrderValue = 0;
         let totalLifecycleAmount = 0;
         taskOrder.clin_records?.forEach(clinRecord => {
-          let fundsSpentForClin = 0;
+          const fundsSpentForClin = 0;
           const validStatusesForTotalObligated = [
             Statuses.Active.value, Statuses.OptionExercised.value, Statuses.OnTrack.value,
             Statuses.AtRisk.value, Statuses.ExpiringPop.value, Statuses.Delinquent.value, 

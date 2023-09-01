@@ -130,7 +130,7 @@ export class DashboardService {
   }
 
   public async getAllCLINs(taskOrderSysId: string): Promise<ClinDTO[]> {
-    let query = "task_order=" + taskOrderSysId;
+    const query = "task_order=" + taskOrderSysId;
     const fields = "clin_number,funds_obligated,sys_id"
     const config: AxiosRequestConfig = {
       params: {
@@ -145,7 +145,7 @@ export class DashboardService {
 
 
   public async getCostsInCurrentPeriod(clins: string[]): Promise<CostsDTO[]> {
-    let query = "clinIN" + clins.join(",");
+    const query = "clinIN" + clins.join(",");
     const fields =
       "csp,csp.name,clin,clin.clin_number,year_month," +
       "task_order_number,portfolio,organization,agency.title,is_actual,value";
