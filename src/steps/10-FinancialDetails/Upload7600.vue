@@ -16,9 +16,11 @@
             :rules="[
               $validators.required('Please enter your GT&C Number.'),
               $validators.isMaskValid(
-                ['A[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}$'],
-                `Your GT&C Number should be 20 characters (including hyphens
-                    and periods) and use the format: AYYMM-000-000-000000`,
+                ['A[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
+                `Your GT&C Number should be 20 or 22 characters (including hyphens
+                    and periods) and use the format:<ul>
+                    <li>AYYMM-000-000-000000</li>
+                    <li>AYYMM-000-000-000000.0 (with version number)</li></ul>`,
                 true
               ),
             ]"
@@ -36,9 +38,11 @@
             :rules="[
               $validators.required('Please enter your Order Number.'),
               $validators.isMaskValid(
-                ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}$'],
-                `Your Order Number should be 20 characters (including hyphens 
-                    and periods) and use the format: OYYMM-000-000-000000`,
+                ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
+                `Your Order Number should be 20 or 22 characters (including hyphens 
+                    and periods) and use the format:<ul>
+                    <li>OYYMM-000-000-000000</li>
+                    <li>OYYMM-000-000-000000.0 (with version number)</li></ul>`,
                 true
               ),
             ]"
@@ -113,7 +117,7 @@ let orderNumberToolTips =
 orderNumberToolTips +=
   "You can find your Order Number in the top section of your <strong>FS Form 7600B.</strong>";
 
-const GTCMRegex = /A[0-9]{4}-[0-9]{3}-[0-9]{3}-[0-9]{6}$/gm;
+const GTCMRegex = /A[0-9]{4}-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$/gm;
 
 @Component({
   components: {

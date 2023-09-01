@@ -365,7 +365,7 @@ export function createDateStr(dateStr: string, period: boolean, hours?: boolean)
     h = h.length === 1 ? "0" + h : h;
     let m = (date.getMinutes()).toString();
     m = m.length === 1 ? "0" + m : m;
-    formattedDate += " at " + h + m;
+    formattedDate += " " + h + m;
   }
   return formattedDate;
 

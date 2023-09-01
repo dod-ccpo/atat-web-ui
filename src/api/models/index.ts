@@ -647,6 +647,7 @@ export interface ClinDTO extends BaseTableDTO {
   sys_id: string;
   clin_number: string;
   idiq_clin: string;
+  idiq_clin_label?: string;
   pop_end_date: string;
   pop_start_date: string;
   clin_status: string;
