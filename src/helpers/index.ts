@@ -525,6 +525,17 @@ export function getCSPCompanyName(cspId: string): string {
 
 }
 
+export function getCSPLongName(cspId: string): string {
+  const cspCompanyLongNames: Record<string, string> = {
+    AWS: "Amazon Web Services (AWS)",
+    GCP: "Google Cloud",
+    AZURE: "Microsoft Azure",
+    ORACLE: "Oracle Cloud"
+  }
+  return cspCompanyLongNames[cspId] || "";
+
+}
+
 export interface AggregateCountResults {
   result: {
     stats: {

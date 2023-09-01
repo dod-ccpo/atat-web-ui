@@ -84,6 +84,7 @@ import {
 } from "@/router/provisionWorkflow";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
+import { getCSPLongName } from "@/helpers";
 
 @Component({
   components: {
@@ -172,10 +173,10 @@ export default class ProvisionWorkflow extends Vue {
     if (nextStepName) {
       if(PortfolioStore.isProvisioningTOFollowOn){
         const currentPortfolio = PortfolioStore.currentPortfolio;
-        this.showTOConfirmModal = true
         this.TONumber = PortfolioStore.activeTaskOrderNumber;
-        this.csp = currentPortfolio.csp?.toUpperCase() as string;
+        this.csp = getCSPLongName(currentPortfolio.csp?.toUpperCase() as string);
         this.portfolioName = currentPortfolio.title as string;
+        this.showTOConfirmModal = true
         return;
       }
       if (isRouteResolver(nextStepName)) {
