@@ -232,7 +232,7 @@ export default class PortfolioCard extends Vue {
   }
   public currentUserEmail = this.currentUser.email;
   public get managerEmails(): string {
-    // ATAT TODO: Return dummy emails until API call wired up to get portfolio managers
+    // ATAT TODO AT-9603 - Return dummy emails until API call wired up to get portfolio managers
     return "foo@mail.mil, bar@mail.mil";
   }
 
@@ -413,7 +413,7 @@ export default class PortfolioCard extends Vue {
 
     }
 
-    // ATAT TODO -- add functionality in AT-9099?
+    // ATAT TODO AT-9603
     // if (this.isHaCCAdmin) {
     //   this.portfolioCardMenuItems.push(
     //     { 
@@ -423,7 +423,7 @@ export default class PortfolioCard extends Vue {
     //   );
     // }
 
-    // ATAT TODO IN AT-9331
+    // ATAT TODO AT-9331
     // if (!this.isHaCCAdmin && (this.cardData.isManager && this.cardData.portfolio_managers &&
     //   this.cardData.portfolio_managers.split(",").length > 1) || !this.cardData.isManager
     // ) {
@@ -435,7 +435,7 @@ export default class PortfolioCard extends Vue {
     //   );
     // }
 
-    // ATAT TODO - future ticket - provide link to each unclassified environment portal
+    // ATAT TODO AT-9567 - provide link to each unclassified environment portal
     // eslint-disable-next-line max-len
     // Figma link: https://www.figma.com/file/6zwE1QbRrJZ3yFuA0bo7he/ATAT-Portfolio?type=design&node-id=5306-158321&t=zF6Xkw2a7VNDX232-4
     // if (this.cardData.status?.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {

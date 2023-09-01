@@ -226,7 +226,7 @@
                   </ATATAlert>
                 </v-col>
               </v-row>
-              <!-- ATAT TODO - restore in future ticket 
+              <!-- ATAT TODO AT-9565
               <v-row id="BurndownChartWrap">
                 <v-col>
                   <v-card class="_no-shadow v-sheet--outlined pa-8">
@@ -486,7 +486,7 @@
                 </v-col>
               </v-row>
 
-              <!-- ATAT TODO
+              <!-- ATAT TODO *
               ============================================
               Add back and update as needed after ATAT MVP
               ============================================
@@ -1552,7 +1552,7 @@ export default class PortfolioDashboard extends Vue {
         this.totalPortfolioFunds + parseFloat(clin.funds_obligated.toString());
     });
     
-    // ATAT TODO -  adjust step size and Y Max based on total funds amount
+    // ATAT TODO AT-9706 adjust step size and Y Max based on total funds amount
     this.burnChartYMax = Math.ceil(this.totalPortfolioFunds / 100000) * 100000;
     this.burnChartYStepSize = Math.round(this.burnChartYMax / 6);
 

@@ -17,10 +17,7 @@
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">
           <h1 class="mb-2 mt-5 pl-1">Portfolios</h1>
-          <!-- ATAT TODO - reinstate after MVP when new single portfolio summary API is available
-                     that prevents multiple calls per portfolio so can ABORT API calls in progress
-                     when switching between tabs
-          -->
+          <!-- ATAT TODO AT-9553 - ABORT API calls in progress when switching between tabs -->
           <div>
             <v-tabs class="_header-tab "
               v-model="tabIndex">
