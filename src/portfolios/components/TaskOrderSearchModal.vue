@@ -51,7 +51,6 @@ export default class TaskOrderSearchModal extends Vue {
   @PropSync("TONumber") public _TONumber?: string;
   @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
 
-  public isFollowOn = false;
   public defaultBody = `To fund your ATAT portfolio, you will need an awarded task order. Enter 
           your task order number and we'll retrieve the funding information.`;
   public bodyText = this.defaultBody;
@@ -69,7 +68,7 @@ export default class TaskOrderSearchModal extends Vue {
     return PortfolioStore.isProvisioningTOFollowOn;
   }
   @Watch("isTOFollowOn")
-  public isTOFollowOnChanged(newVal: boolean) {
+  public isTOFollowOnChanged(newVal: boolean): void {
     if (newVal) {
       this.bodyText = `To update funding associated with your ATAT portfolio, you will need an
       awarded modification or follow-on task order. Enter your task order number and we'll retrieve

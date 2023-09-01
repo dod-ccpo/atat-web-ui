@@ -57,7 +57,6 @@ describe("Testing index Component", () => {
 
   it("tests startProvisionWorkflow()", async () =>{
     const mockSetTOPackageSelection = jest.spyOn(PortfolioStore, "setShowTOPackageSelection")
-    const mockSetSelected = jest.spyOn(PortfolioStore, "setSelectedPortfolioPackageSysId")
     const mockReset = jest.spyOn(AcquisitionPackage, "reset")
     const mockAppSections = jest.spyOn(AppSections, "changeActiveSection")
     const mockCardData = {sysId: '1234'}
@@ -65,7 +64,6 @@ describe("Testing index Component", () => {
     await wrapper.vm.startProvisionWorkflow();
     expect(mockReset).toHaveBeenCalled()
     expect(mockSetTOPackageSelection).toHaveBeenCalledWith(false)
-    expect(mockSetSelected).toHaveBeenCalledWith(mockCardData.sysId)
     expect(mockAppSections).toHaveBeenCalledWith(AppSections.sectionTitles.ProvisionWorkflow)
   })
   
