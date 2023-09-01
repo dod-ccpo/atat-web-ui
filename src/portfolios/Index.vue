@@ -131,7 +131,7 @@ export default class Portfolios extends Vue {
     if (this.portfolioSysId) {
       await PortfolioStore.setShowTOPackageSelection(false);
     }
-    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.portfolioSysId as string);
+    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.portfolioSysId);
     this.$router.push({
       name: this.provWorkflowRouteNames.AwardedTaskOrder,
       params: {
