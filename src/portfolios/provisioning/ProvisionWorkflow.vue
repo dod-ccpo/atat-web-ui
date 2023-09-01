@@ -29,6 +29,26 @@
         <ATATFooter/>
       </div>
     </v-main>
+    <ATATDialog 
+    id="TOConfirmModal"
+    :showDialog.sync="showTOConfirmModal"
+    title="Add task order to your portfolio?"
+    no-click-animation
+    width="450"
+    @cancelClicked="TOConfirmCancelled"
+    cancelButtonId="TOConfirmCancelled"
+    okText="Add task order"
+  >
+  <template #content>
+    <div class="body">
+      <p>
+        Upon initiation of this process, ATAT will submit Task Order 
+        #{{TONumber}} to <span class="font-weight-bold">{{ csp }}</span> to continue funding 
+        your “{{ portfolioName }}” portfolio. This process cannot be undone.
+      </p>
+    </div>
+    </template>
+  </ATATDialog>
   </div>
 </template>
 
@@ -41,6 +61,7 @@ import ATATStepperNavigation from "@/components/ATATStepperNavigation.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import Steps from "@/store/steps";
+import ATATDialog from "@/components/ATATDialog.vue";
 
 import {
   AdditionalButton,
@@ -62,18 +83,26 @@ import {
   provWorkflowRouteNames 
 } from "@/router/provisionWorkflow";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import PortfolioStore from "@/store/portfolio";
 
 @Component({
   components: {
     ATATSlideoutPanel,
     ATATStepperNavigation,
-    ATATFooter
+    ATATFooter,
+    ATATDialog
   },
 })
 
 export default class ProvisionWorkflow extends Vue {
  
   public routeNames: Record<string, string> = {};
+  public portfolioSysId = "";
+  public showTOConfirmModal = false;
+  public bodyText ="";
+  public TONumber = "";
+  public csp = "";
+  public portfolioName = "";
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent || undefined;
@@ -89,7 +118,6 @@ export default class ProvisionWorkflow extends Vue {
   private altBackDestination = "";
   private hideContinueButton = false;
   private disableContinueButton = false;
-
 
   public get disableContinue(): boolean {
     return AcquisitionPackage.disableContinue;
@@ -131,12 +159,25 @@ export default class ProvisionWorkflow extends Vue {
       routeName => routeName.toLowerCase() !== this.$route.name?.toLowerCase());
   }
 
+  public async TOConfirmCancelled(): Promise<void> {
+    this.showTOConfirmModal = false
+  }
+
   async navigate(direction: string): Promise<void> {
     const nextStepName = direction === "next" 
       ? await Steps.getNext() 
       : await Steps.getPrevious();
     console.log(await AppSections.getSectionData(), 'get section')
+    console.log(PortfolioStore.currentPortfolio, 'current')
     if (nextStepName) {
+      if(PortfolioStore.isProvisioningTOFollowOn){
+        const currentPortfolio = PortfolioStore.currentPortfolio;
+        this.showTOConfirmModal = true
+        this.TONumber = PortfolioStore.activeTaskOrderNumber;
+        this.csp = currentPortfolio.csp?.toUpperCase() as string;
+        this.portfolioName = currentPortfolio.title as string;
+        return;
+      }
       if (isRouteResolver(nextStepName)) {
         const routeResolver = nextStepName as StepRouteResolver;
         this.$router.push({

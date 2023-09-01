@@ -58,6 +58,7 @@ export default class TaskOrderSearchModal extends Vue {
   public titleText = this.defaultTitle;
 
   public async startProvisionWorkflow(): Promise<void> {
+    PortfolioStore.setActiveTaskOrderNumber(this._TONumber as string)
     this.$emit("startProvisionWorkflow");
   }
 
