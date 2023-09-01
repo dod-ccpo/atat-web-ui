@@ -119,10 +119,9 @@ describe("Testing index Component", () => {
     expect(wrapper.emitted('openArchivePortfolioModal')).toBeTruthy();
   });
 
-  it("clicks meatball menu - Archive Portfolio", async () => {
-    const mockOpenSearchModal = jest.spyOn(wrapper.vm, 'openSearchTOModal')
+  it("clicks meatball menu - Add awarded task order or modification", async () => {
     await wrapper.vm.cardMenuClick({action: menuActions.addTaskOrder});
-    expect(mockOpenSearchModal).toHaveBeenCalled();
+    expect(wrapper.emitted('openTOModal')).toBeTruthy();
   });
 
   it("clicks meatball menu - no action taken", async () => {
