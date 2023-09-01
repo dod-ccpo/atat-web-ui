@@ -146,6 +146,7 @@ import Toast from "@/store/toast";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
+import PortfolioStore from "@/store/portfolio";
 @Component({
   components:{
     ATATSVGIcon,
@@ -308,10 +309,10 @@ export default class Card extends Vue {
       this.updateStatus('DRAFT')
       break;
     case "Add awarded task order":
+      await PortfolioStore.setProvisioningTOFollowOn(false)
       this.$emit("openTOSearchModal", this.cardData.sys_id);
       break;
     }
-
   }
 
   public async loadOnEnter(): Promise<void> {   
