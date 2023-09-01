@@ -571,22 +571,22 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessEvalPlan(objectKeys: string[]): Promise<void>{
-    const fairOpp = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity;
+    const fairOpp = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
+    const hasEmptyFairOpp = fairOpp === "";
     const hasNoFairOpp = fairOpp === "NO_NONE"
+    const hasFairOpp = !hasNoFairOpp && !hasEmptyFairOpp;
     const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
     const keysToIgnore = objectKeys.filter(
       x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
     );
     const monitor = {object: evalPlanStore, keysToIgnore};
-    const isTouched = fairOpp === "NO_NONE" && await this.isTouched(monitor) || false;
-    const isComplete = await this.isEvalPlanComplete(evalPlanStore);
+    const isTouched = hasNoFairOpp ? await this.isTouched(monitor) : true;
+    const isComplete = hasFairOpp ? true : await this.isEvalPlanComplete(evalPlanStore);
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
-      description: isComplete && hasNoFairOpp
-        ? await this.setEvalPlanDescription({evalPlanStore, isComplete, hasNoFairOpp}) 
-        : !hasNoFairOpp ? "No Evaluation Plan is required." : "",
-      isComplete: hasNoFairOpp ? true : isComplete,
-      isTouched: hasNoFairOpp ? isTouched : true,
+      description: await this.setEvalPlanDescription({evalPlanStore, isComplete, fairOpp}),
+      isComplete: hasNoFairOpp ? isComplete : (!hasEmptyFairOpp ? true : false),
+      isTouched: hasNoFairOpp ? isTouched : (!hasEmptyFairOpp ? true : false),
       routeName: "CreateEvalPlan",
       step:2,
       substep: 2
@@ -599,14 +599,14 @@ export class SummaryStore extends VuexModule {
     config:{
       evalPlanStore:EvaluationPlanDTO,
       isComplete: boolean,
-      hasNoFairOpp: boolean
+      fairOpp: string
     }): Promise<string> {
     const method = config.evalPlanStore.method;
-    const selection = config.evalPlanStore.source_selection
-    let description = "";
-
-    if (!config.hasNoFairOpp){
-      return "No Evaluation Plan is required."
+    const selection = config.evalPlanStore.source_selection;
+    const hasNoFairOpp = config.fairOpp === "NO_NONE"
+    let description = "No Evaluation Plan is required.";
+    if (!hasNoFairOpp && config.isComplete){
+      return description;
     }
 
     if (!config.isComplete){
@@ -1777,12 +1777,10 @@ export class SummaryStore extends VuexModule {
     object: object
     keysToIgnore: string[]
   }): Promise<boolean>{
-    console.log(config.keysToIgnore)
     return  config.object && await Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
         const dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
-        console.log(dynamicKey + ":" + objAttrib)
         return objAttrib !== "" && objAttrib !== "[]"
       }
     }).length > 0;

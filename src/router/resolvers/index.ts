@@ -119,14 +119,12 @@ export const BVTOResolver = (current: string): string => {
 
 export const SummaryStepTwoRouteResolver = (current: string): string =>{
   return routeNames.SummaryStepTwo;
-  // return isStepTouched(3) 
-  //   ? routeNames.SummaryStepThree 
-  //   : routeNames.PeriodOfPerformance;
 }
 
 export const ProposedCSPRouteResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
   return current === routeNames.Exceptions && evalPlanRequired() 
-    ? routeNames.CreateEvalPlan
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.CreateEvalPlan
     : routeNames.ProposedCSP
 };
 
