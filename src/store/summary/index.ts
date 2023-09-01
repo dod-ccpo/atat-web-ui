@@ -207,7 +207,7 @@ export class SummaryStore extends VuexModule {
       description: "",
       isComplete: false,
       isTouched: AcquisitionPackage.projectTitle !== "",
-      routeName: "project-overview",
+      routeName: "ProjectOverview",
       step:1,
       substep: 1
     }
@@ -229,6 +229,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessPrimaryPOC(): Promise<void>{
     const contactInfo = AcquisitionPackage.getContact("Contact")
+
     const PrimaryPOC: SummaryItem = {
       title: "Primary Point of Contact",
       description: "",
