@@ -41,12 +41,19 @@
           :active-tab="activeTab" 
           default-sort="name" 
           :isHomeView="false"
+          @openTOModal="openTOModal"
         />
 
       </v-container>
       <ATATFooter/>
     </v-main>
-
+    <TaskOrderSearchModal
+      :showTOSearchModal.sync="showTOSearchModal"
+      :TONumber.sync="TONumber"
+      :resetValidationNow.sync="resetValidationNow"
+      @TOSearchCancelled="TOSearchCancelled"
+      @startProvisionWorkflow="startProvisionWorkflow"
+    />  
   </div>
 </template>
 <script lang="ts">
@@ -58,14 +65,18 @@ import { getIdText } from "@/helpers";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATToast from "@/components/ATATToast.vue";
+import AppSections from "@/store/appSections";
+import Steps from "@/store/steps";
+import TaskOrderSearchModal from "./components/TaskOrderSearchModal.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-
+import PortfolioStore from "@/store/portfolio";
 @Component({
   components: {
     PortfoliosSummary,
     ATATSlideoutPanel,
     ATATFooter,
     ATATToast,
+    TaskOrderSearchModal
   }
 })
 
@@ -89,7 +100,44 @@ export default class Portfolios extends Vue {
       text: "Archived",
     },
   ];
+  
+  public provWorkflowRouteNames = {
+    AwardedTaskOrder: "Awarded_Task_Order"
+  };
+
   public activeTab = this.tabItems[0].type;
+  public showTOSearchModal = false;
+  public TONumber = "";
+  public resetValidationNow = false;
+  public portfolioSysId = '';
+
+  public async TOSearchCancelled(): Promise<void> {
+    this.TONumber = "";
+    this.resetValidationNow = true;
+    this.showTOSearchModal = false;
+    await PortfolioStore.setProvisioningTOFollowOn(false)
+  }
+
+  public async openTOModal(): Promise<void> {
+    this.portfolioSysId = PortfolioStore.getSelectedPortfolioPackageSysId;
+    this.showTOSearchModal = true;
+  }
+
+  public async startProvisionWorkflow(): Promise<void>{
+    await AcquisitionPackage.reset();
+    if (this.portfolioSysId) {
+      await PortfolioStore.setShowTOPackageSelection(false);
+    }
+    this.$router.push({
+      name: this.provWorkflowRouteNames.AwardedTaskOrder,
+      params: {
+        direction: "next"
+      },
+      replace: true
+    })
+    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
+  }
+
 
   private getIdText(string: string) {
     return getIdText(string);
@@ -101,6 +149,9 @@ export default class Portfolios extends Vue {
 
   public tabClicked(tabType: string): void {
     this.activeTab = tabType;
+  }
+  public async mounted(){
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Portfolios);
   }
 
 }

@@ -206,7 +206,7 @@ import { UserDTO } from "@/api/models";
   components: {
     ATATSVGIcon,
     ATATMeatballMenu,
-    LeavePortfolioModal,
+    LeavePortfolioModal
   }
 })
 
@@ -226,6 +226,7 @@ export default class PortfolioCard extends Vue {
     emailManagers: "emailManagers",
     loginToCSP: "loginToCSP",
     archivePortfolio: "archivePortfolio",
+    addTaskOrder: 'addTaskOrder'
   }
   public get currentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
@@ -316,6 +317,11 @@ export default class PortfolioCard extends Vue {
     case this.menuActions.archivePortfolio: 
       this.$emit("openArchivePortfolioModal");
       break;
+    case this.menuActions.addTaskOrder:
+      await PortfolioStore.setProvisioningTOFollowOn(true)
+      await PortfolioStore.setSelectedPortfolioPackageSysId(this.cardData.sysId as string)
+      this.$emit('openTOModal')
+      break;
     default:
       break; 
     }
@@ -397,11 +403,10 @@ export default class PortfolioCard extends Vue {
         title: "View task orders",
         action: this.menuActions.viewTaskOrders
       },
-      /*
       { 
-        title: "View task orders",
-        action: this.menuActions.viewTaskOrders
-      },*/
+        title: "Add awarded task order or modification",
+        action: this.menuActions.addTaskOrder
+      }
     ]; 
     if (this.cardData.isOwner && this.cardData.status !== Statuses.Archived.value) {
       this.portfolioCardMenuItems.push(

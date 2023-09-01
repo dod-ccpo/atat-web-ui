@@ -98,6 +98,7 @@
           :isHaCCAdmin="isHaCCAdmin"
           @leavePortfolio="leavePortfolio"
           @openArchivePortfolioModal="openArchivePortfolioModal"
+          @openTOModal="openTOModal"
           :isHomeView="isHomeView"
         />
       </transition-group>
@@ -168,7 +169,7 @@ import PortfolioStore from "@/store/portfolio";
 
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
-import { differenceInDays, formatDistanceToNow, formatISO, isAfter, isBefore } from "date-fns";
+import { differenceInDays, formatDistanceToNow, isAfter} from "date-fns";
 import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
 import _ from "lodash";
 import CurrentUserStore from "@/store/user";
@@ -353,6 +354,10 @@ export default class PortfoliosSummary extends Vue {
     await PortfolioStore.setPortfolioSummaryQueryParams({
       [key]: value
     });
+  }
+
+  public openTOModal(){
+    this.$emit("openTOModal");
   }
 
   public showFilters = false;
