@@ -839,7 +839,6 @@ export class SummaryStore extends VuexModule {
   }
   //#endregion
 
-<<<<<<< HEAD
   //#region step 4
   /**
    *  assess all substeps in Step 4 to determine
@@ -1007,8 +1006,6 @@ export class SummaryStore extends VuexModule {
   }
 
 
-=======
->>>>>>> main
   //#region Step 5
 
   /** assesses all selected service offerings and 
