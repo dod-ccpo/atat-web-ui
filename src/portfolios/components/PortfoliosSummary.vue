@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!-- ATAT TODO - reinstate after MVP when new single portfolio summary API is available
-                     that prevents multiple calls per portfolio
+    <!-- ATAT TODO * Q1 FY24 - reinstate after MVP when new single portfolio 
+      summary API is available that prevents multiple calls per portfolio
 
     <div v-if="!isHomeView" class="bg-base-lightest pa-4 border-rounded">
       <div class="d-flex justify-space-between align-center">
@@ -85,7 +85,7 @@
       v-show="portfolioCardData.length && !isLoading" 
       :style="{ 'margin-bottom: 200px;' : !isHomeView }"
     >
-    <!-- ATAT TODO - add back to div above after search is reinstated
+    <!-- ATAT TODO * Q1 FY24 - add back to div above after search is reinstated
       :class="{ 'mt-10' : !isHomeView }"  
     -->
       <transition-group name="_portfolio-card" tag="div">
@@ -98,6 +98,7 @@
           :isHaCCAdmin="isHaCCAdmin"
           @leavePortfolio="leavePortfolio"
           @openArchivePortfolioModal="openArchivePortfolioModal"
+          @openTOModal="openTOModal"
           :isHomeView="isHomeView"
         />
       </transition-group>
@@ -355,6 +356,10 @@ export default class PortfoliosSummary extends Vue {
     });
   }
 
+  public openTOModal(){
+    this.$emit("openTOModal");
+  }
+
   public showFilters = false;
   public async openFilterSlideout(e: Event): Promise<void> {
     if (e && e.currentTarget) {
@@ -383,7 +388,7 @@ export default class PortfoliosSummary extends Vue {
 
     Toast.setToast(accessRemovedToast);
 
-    // ATAT TODO - future ticket, remove member from portfolio table in snow
+    // ATAT TODO AT-9605 - remove member from portfolio table in snow
     // after removed, make new call to reload portfolio list if > 10 portfolios
     // to ensure 10 listed on page (or 5 on home page)
   }

@@ -6,11 +6,24 @@ import { DefaultProps } from "vue/types/options";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
+import validators from "@/plugins/validation";
+import AppSections from "@/store/appSections";
+import PortfolioStore from "@/store/portfolio";
 Vue.use(Vuetify);
+
+const mockRouter = {
+  push: jest.fn(),
+};
+const mockRoute = {
+  params: {
+    id: 1,
+  },
+};
 
 describe("Testing TaskOrder Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
+  localVue.use(validators);
 
   let total_task_order_value:(number | undefined) = 0;
   let total_lifecycle_amount:(number | undefined) = 0;
@@ -69,6 +82,10 @@ describe("Testing TaskOrder Component", () => {
     wrapper = mount(TaskOrder, {
       localVue,
       vuetify,
+      mocks: {
+        $router: mockRouter,
+        $route: mockRoute
+      } 
     });
   });
 
@@ -94,6 +111,33 @@ describe("Testing TaskOrder Component", () => {
       new Promise(resolve => resolve(dummyPortfolioSummaryList))
     );
     await wrapper.vm.loadOnEnter();
+  })
+  it("tests TOSearchCancelled()", async () =>{
+    const mockSetTOFollowon = jest.spyOn(PortfolioStore, "setProvisioningTOFollowOn")
+    await wrapper.vm.TOSearchCancelled();
+    expect(wrapper.vm.$data.TONumber).toBe("");
+    expect(wrapper.vm.$data.resetValidationNow).toBe(false);
+    expect(wrapper.vm.$data.showTOSearchModal).toBe(false);
+    expect(mockSetTOFollowon).toHaveBeenCalledWith(false)
+  })
+
+  it("tests openSearchTOModal()", async () =>{
+    const mockSetTOFollowon = jest.spyOn(PortfolioStore, "setProvisioningTOFollowOn")
+    await wrapper.vm.openSearchTOModal();
+    expect(wrapper.vm.$data.showTOSearchModal).toBe(true);
+    expect(mockSetTOFollowon).toHaveBeenCalledWith(true)
+  })
+
+  it("tests startProvisionWorkflow()", async () =>{
+    const mockSetTOPackageSelection = jest.spyOn(PortfolioStore, "setShowTOPackageSelection")
+    const mockSetSelected = jest.spyOn(PortfolioStore, "setSelectedAcquisitionPackageSysId")
+    const mockAppSections = jest.spyOn(AppSections, "changeActiveSection")
+    const mockSelectedTaskOrder = {sys_id: '1234'}
+    await wrapper.setData({selectedTaskOrder: mockSelectedTaskOrder})
+    await wrapper.vm.startProvisionWorkflow();
+    expect(mockSetTOPackageSelection).toHaveBeenCalledWith(false)
+    expect(mockSetSelected).toHaveBeenCalledWith(mockSelectedTaskOrder.sys_id)
+    expect(mockAppSections).toHaveBeenCalledWith(AppSections.sectionTitles.ProvisionWorkflow)
   })
 
 })

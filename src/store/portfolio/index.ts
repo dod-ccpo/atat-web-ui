@@ -59,7 +59,7 @@ interface CloudDistinguisher {
   name?: string;
 }
 
-// ATAT TODO - future ticket when implemented: get env specific url from 
+// ATAT TODO AT-9567 - get env specific url from 
 // atat_environments table - column `dashboard_link`
 export const cspConsoleURLs: Record<string, string> = {
   azure: "https://portal.azure.com/",
@@ -113,7 +113,7 @@ const initialCurrentPortfolio = (): Portfolio => {
 })
 
 export class PortfolioDataStore extends VuexModule {
-
+  
   public showTOPackageSelection = true;
   @Action({rawError: true})
   public async setShowTOPackageSelection(bool: boolean): Promise<void> {
@@ -148,6 +148,19 @@ export class PortfolioDataStore extends VuexModule {
   }
   public get getSelectedAcquisitionPackageSysId(): string {
     return this.selectedAcquisitionPackageSysId;
+  }
+
+  public selectedPortfolioPackageSysId = "";
+  @Action({rawError: true})
+  public async setSelectedPortfolioPackageSysId(sysId: string): Promise<void> {
+    this.doSetSelectedPortfolioPackageSysId(sysId);
+  }
+  @Mutation
+  public doSetSelectedPortfolioPackageSysId(sysId: string): void {
+    this.selectedPortfolioPackageSysId = sysId;
+  }
+  public get getSelectedPortfolioPackageSysId(): string {
+    return this.selectedPortfolioPackageSysId;
   }
   
   public portfolioProvisioningObj: PortfolioProvisioning 
@@ -293,7 +306,7 @@ export class PortfolioDataStore extends VuexModule {
       );
     } 
     catch(error) {
-      // ATAT TODO - add graceful fail message to user in UI
+      // ATAT TODO AT-9177 (EPIC) - add graceful fail message to user in UI
       throw new Error(`Error provisioning portfolio: ${error}`);
     }
   }
@@ -352,6 +365,15 @@ export class PortfolioDataStore extends VuexModule {
     this.currentPortfolio = _.cloneDeep(initialCurrentPortfolio());
   }
 
+  public isProvisioningTOFollowOn = false;
+  @Action({rawError: true})
+  public async setProvisioningTOFollowOn(state: boolean): Promise<void> {
+    await this.doSetProvisioningTOFollowOn(state)
+  }
+  @Mutation
+  public async doSetProvisioningTOFollowOn(state: boolean): Promise<void> {
+    this.isProvisioningTOFollowOn = state;
+  }
   public blankEnvironment: Environment = {
     csp: "",
     csp_id: "",

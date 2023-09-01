@@ -742,12 +742,6 @@ export default class PortfolioDrawer extends Vue {
         if (member.role === "Manager" && member.sys_id) managers.push(member.sys_id);
       });
 
-      // ATAT TODO - remove conditional below if servicenow resolves issue on PROD
-      // where owners can't view portfolios unless also a manager
-      if (this.currentUserIsOwner && PortfolioStore.currentUserIsManager) {
-        managers.push(this.currentUser.sys_id as string);
-      }
-
       /* eslint-disable camelcase */
       this.portfolio.portfolio_viewers = viewers.join(",");
       this.portfolio.portfolio_managers = managers.join(",");

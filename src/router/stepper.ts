@@ -163,6 +163,7 @@ import {
   CurrentContractRouteResolver,
   SummaryStepThreeRouteResolver,
   SummaryStepTwoRouteResolver,
+  ExceptionToFairOpportunityResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
@@ -474,6 +475,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: Exceptions,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: ExceptionToFairOpportunityResolver
       },
       
       // ======================

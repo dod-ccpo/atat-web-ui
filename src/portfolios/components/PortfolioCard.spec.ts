@@ -7,6 +7,7 @@ import { PortfolioCardData } from "types/Global";
 import AppSections from "@/store/appSections";
 import PortfolioStore from "@/store/portfolio";
 import { cspConsoleURLs } from "@/store/portfolio";
+import validators from "@/plugins/validation";
 
 Vue.use(Vuetify);
 
@@ -17,14 +18,22 @@ const menuActions = {
   emailManagers: "emailManagers",
   archivePortfolio: "archivePortfolio",
   loginToCSP: "loginToCSP",
+  addTaskOrder: 'addTaskOrder'
 }
-
+const mockRouter = {
+  push: jest.fn(),
+};
+const mockRoute = {
+  params: {
+    id: 1,
+  },
+};
 
 describe("Testing index Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
+  localVue.use(validators);
   const cardData: PortfolioCardData =
     {
       // eslint-disable-next-line camelcase
@@ -52,7 +61,11 @@ describe("Testing index Component", () => {
         index: 0,
         isLastCard: false,
         isHaCCAdmin: true,
-      })      
+      }),
+      mocks: {
+        $router: mockRouter,
+        $route: mockRoute
+      }     
     });
     jest.spyOn(PortfolioStore, "populatePortfolioMembersDetail").mockImplementation(
       ()=>Promise.resolve(cardData));
@@ -104,6 +117,11 @@ describe("Testing index Component", () => {
     window.open = jest.fn();
     await wrapper.vm.cardMenuClick({action: menuActions.archivePortfolio});
     expect(wrapper.emitted('openArchivePortfolioModal')).toBeTruthy();
+  });
+
+  it("clicks meatball menu - Add awarded task order or modification", async () => {
+    await wrapper.vm.cardMenuClick({action: menuActions.addTaskOrder});
+    expect(wrapper.emitted('openTOModal')).toBeTruthy();
   });
 
   it("clicks meatball menu - no action taken", async () => {
@@ -174,4 +192,6 @@ describe("Testing index Component", () => {
   it("tests getter - managerEmails", () =>{
     expect(wrapper.vm.managerEmails).toBe("foo@mail.mil, bar@mail.mil")
   })
+
+  
 });

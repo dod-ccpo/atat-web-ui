@@ -83,6 +83,7 @@
                       active-tab="ALL" 
                       default-sort="DESCsys_updated_on"
                       :isHomeView="true"
+                      @openTOModal="openTOSearchModal"
                     />
 
                   </v-expansion-panel-content>
@@ -240,6 +241,7 @@ export default class ExistingUser extends Vue {
   public get userHasPackages(): boolean {
     return CurrentUserStore.getUserHasPackages;
   }
+  
   public get userHasPortfolios(): boolean {
     return CurrentUserStore.getUserHasPortfolios;
   }
