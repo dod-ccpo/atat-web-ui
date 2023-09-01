@@ -217,24 +217,11 @@ export class PortfolioSummaryStore extends VuexModule {
           : Statuses.Processing.value;
       }
     });
+    
     portfolioSummaryList.forEach(portfolio => {
       portfolio.environments = allEnvs.filter(env => env.portfolio === portfolio.sys_id);
-      if (portfolio.portfolio_status !== Statuses.Archived.value) {
-        // portfolio status based on environment statuses
-        let hasProcessing = false;
-        let hasIssue = false;
-
-        portfolio.environments.forEach(env => {
-          console.log(`Env: ${JSON.stringify(env)}`);
-          if (env.environmentStatus === Statuses.ProvisioningIssue.value) hasIssue = true;
-          if (env.environmentStatus === Statuses.Processing.value) hasProcessing = true;
-          portfolio.portfolio_status = hasIssue ? Statuses.ProvisioningIssue.value
-            : hasProcessing
-              ? Statuses.Processing.value
-              : portfolio.portfolio_status;
-        });
-      }
     });
+    
     return portfolioSummaryList;
   }
 

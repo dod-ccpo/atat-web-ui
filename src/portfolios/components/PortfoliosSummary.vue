@@ -394,6 +394,12 @@ export default class PortfoliosSummary extends Vue {
   public get portfolioName(): string {
     return this.currentPortfolio.title as string;
   }
+  public getPortfolioStatus(portfolioStatus: string): string{
+    const status = Object.keys(Statuses).find((status) =>
+      Statuses[status].value === portfolioStatus
+    ) ?? portfolioStatus;
+    return Statuses[status].label
+  }
   public get csp(): string {
     const cspKey = this.currentPortfolio.csp?.toUpperCase() as string;
     return AcquisitionPackage.csps[cspKey] as string;
@@ -503,7 +509,7 @@ export default class PortfoliosSummary extends Vue {
       cardData.sysId = portfolio.sys_id;
       cardData.title = portfolio.name;
       cardData.description = portfolio.description;
-      cardData.status = portfolio.portfolio_status;
+      cardData.status = this.getPortfolioStatus(portfolio.portfolio_status);
       cardData.fundingStatus = portfolio.portfolio_funding_status;
       cardData.portfolio_owner = portfolio.portfolio_owner;
       cardData.portfolio_managers = portfolio.portfolio_managers;
@@ -513,6 +519,7 @@ export default class PortfoliosSummary extends Vue {
       cardData.agencyDisplay = portfolio.agency_display;
       cardData.environments = portfolio.environments;
       cardData.taskOrderSysId = portfolio.active_task_order;
+      cardData.lastCostDataSync = portfolio.last_cost_data_sync;
       const activeTaskOrder = portfolio.task_orders.find(
         obj => obj.sys_id === cardData.taskOrderSysId
       );

@@ -1,73 +1,212 @@
 {
+  "_comment1": "This is the data for procurement history substep",
+  "gatherDetails": {
+    "taskNoTooltipText": "Leave this field empty if your previous acquisition was only a contract, not an order placed under a contract.",
+    "orderExpTootipText": "Use the period of performance end date for your task order. If you do not have a task order, use your contract end date."
+  },
+  "procurementGatherDetails": {
+    "contractnumber": "This is a 13-character alphanumeric value (no hyphens, dashes or spaces) found on your awarded contract.",
+    "taskOrderNumber": "This is a 13-character alphanumeric value (no hyphens, dashes or spaces). Leave this field empty if your previous acquisition was only a contract, not an order placed under a contract."
+  },
+  "competitionRadioLabels": [
+    "Full and open competition",
+    "Small business (SB) set-aside",
+    "Other than full and open competition"
+  ],
+  "businessSizeRadioOptions": [
+    "Large business",
+    "Small business",
+    "8(a) small business",
+    "HUBZone",
+    "Service-Disabled Veteran-Owned Small Business (SDVOSB)",
+    "Women-Owned Small Business (WOSB)"
+  ],
+  "procsummaryIntroText": "If you have more past contracts for this effort, add them below. You can also edit or delete any information from the contracts that you have already entered. When you’re done, click “Continue” and we will move on to your current environment details.",
+  "_comment2": "From here, it is data for Current Environment substep",
+
+  "CEPage1": {
+    "pageHeader1": " Do you have a current environment to rehost? ",
+    "pageText1": "If you select “Yes” below, we’ll gather details about your current environment. This info will be included in your Description of Work to provide CSPs with a better understanding of what currently exists. This environment may not align with your current requirements that you outlined in Contract Details.",
+    "errorMessageText": "Please select an option",
+    "section1Radioboxes": [
+      "Yes.",
+      "No, current environment does not exist."
+    ]
+  },
+
+  "CEPage2": {
+    "pageHeader2": " Do you have system diagrams, data architecture diagrams, charts, or other relevant information for your current environment? ",
+    "pageText2": "If available, you can upload this supporting documentation, and we will attach it to your Description of Work to be shared with the CSPs for proposal purposes. Please do not upload any classified documents.",
+    "dragandDropText": "Drag and Drop",
+    "browseToUploadText": " browse to upload ",
+    "supportedFileTypes": " Supported file types:  .csv, .xlsx, .pdf, .jpg, .png, .docx ",
+    "section1Radioboxes": [
+      "Yes.",
+      "No."
+    ],
+    "uploadMessageText": "Please upload a file"
+  },
+
+  "CEPage3": {
+    "pageHeader3": " Have you completed a migration assessment, analysis, or process to identify the cloud services and tools needed? ",
+    "pageText3": "If available, you can upload this supporting documentation, and we will attach it to your Description of Work to be shared with the CSPs for proposal purposes. Please do not upload any classified documents."
+  },
+
+  "CEPage4": {
+    "pageHeader4": " Where is your current environment located? ",
+    "pageText4": "If you have instances in a hybrid environment, then we will gather details about the location for each instance later.",
+    "environmentMessageText": "Please select a type of environment",
+    "section1Radioboxes": [
+      "Cloud computing environment",
+      "On-premise environment",
+      "Hybrid environment"
+    ]
+
+  },
+
+  "CEPage5": {
+    "pageHeader5": " Tell us about your current data classification and impact levels ",
+    "pageText5": "If you only have data within a single level, then we will apply your selection below to every instance within your current environment. If you have data within two or more levels, we will gather details about each instance next.",
+    "pageClassQuestion1": " What classification levels are your instances currently deployed in? ",
+    "pageSelectALLMsg": " Select all that apply to your current environment. ",
+    "expectedLabelsCL": [
+      "Unclassified",
+      "Secret",
+      "Top Secret"
+    ],
+    "pageClassQuestion2": " For your Unclassified instance(s), what impact levels are you currently deployed in? ",
+    "pageClassQuestion3": " For your Unclassified instance(s), what type of information are you hosting? ",
+    "expectedLabelsUnCL": [
+      "Unclassified / Impact Level 2 (IL2) Accommodates DoD information approved for public release (Low Confidentiality and Moderate Integrity)",
+      "Unclassified / Impact Level 4 (IL4) Accommodates DoD Controlled Unclassified Information (CUI)",
+      "Unclassified / Impact Level 5 (IL5) Accommodates DoD CUI and National Security Systems"
+    ],
+    "classificationMessageText": "Please select at least one classification level.",
+    "impactLevelMessageText": "Please select at least one impact level.",
+    "expectedLabelsOnPrem": [
+      "Information approved for public release (Low Confidentiality and Moderate Integrity) Equivalent to a Impact Level 2 (IL2) deployment",
+      "Controlled Unclassified Information (CUI) Equivalent to a Impact Level 4 (IL4) deployment",
+      "CUI and National Security Systems Equivalent to a Impact Level 5 (IL5) deploytment"
+    ]
+
+  },
+
+  "CEPage6": {
+    "pageHeader6": " Let’s start gathering details about each instance in your environment ",
+    "pageText6": "An instance may be an isolated environment, an enclave, or a collection of components. Aggregate all virtual machines (VMs) with similar specifications into a single instance below. If you have multiple instances, we will walk through them one at a time.",
+    "section1Question1": "In which region(s) is this instance deployed?",
+    "section1Question1OnPrem": " What type of information are you hosting in this instance? ",
+    "section1Question1Hybrid": "Where is this instance located?",
+    "section1Checkboxes1": [
+      "CONUS East",
+      "CONUS Central",
+      "CONUS West",
+      "AFRICOM",
+      "CENTCOM",
+      "EUCOM",
+      "INDOPACOM",
+      "SOUTHCOM"
+    ],
+    "section1Question2": " What data classification and impact level is this instance deployed in? ",
+    "section1Radioboxes": [
+      "Unclassified / IL2",
+      "Unclassified / IL4",
+      "Unclassified / IL5",
+      "Secret / IL6",
+      "Top Secret"
+    ],
+    "section1RadioboxesOnPrem": [
+      "Unclassified (DoD information approved for public release)",
+      "Unclassified (DoD CUI)",
+      "Unclassified (DoD CUI & National Security Systems)",
+      "Secret",
+      "Top Secret"
+    ],
+    "section2Question1": " How would you describe the current usage? ",
+    "section1RadioboxesHybrid": [
+      "Cloud",
+      "On-premise"
+    ],
+    "section2Radioboxes": [
+      "Evenly distributed or constant usage",
+      "Irregular usage or spike traffic (e.g., typically surges for a specific event or during a certain period each year)"
+    ],
+    "section2Question2": "Are spikes in usage typically caused by a specific event and/or during certain period(s) of the year?",
+    "spikesCheckboxes": [
+      "Event-based spike in traffic",
+      "High usage during certain period(s) of the year"
+    ],
+    "eventMessage": "Tell us about the event that causes a surge in usage",
+    "periodMessage": "In which period of the year do you typically have a surge in usage?",
+    "section2Question3": "Where are your users located?",
+    "section2Message": " Enter the approximate number of users for each selected region. ",
+    "licensingTextboxLable": "Licensing",
+    "vCPsTextboxLable": "Number of vCPUs",
+    "processorTextboxLable": "Processor speed",
+    "operatingSytemTextboxLable": "Operating system",
+    "memoryTextboxLable": "Memory",
+    "storageTypeTextboxLable": " Storage type ",
+    "storageSizeTextLable": "Storage size",
+    "blockStorageSubtitle": " Fixed-sized raw storage capacity ",
+    "objectStorageSubtitle": " Store and serve unstructured user-generated content ",
+    "fileStorageSubtitle": " Store and serve shared file systems ",
+    "archiveStorageSubtitle": " Store and serve for long-term data retention ",
+    "performanceTierLable": " Performance tier ",
+    "performanceRadioboxes": [
+      "General PurposeProvides a balance of compute, memory & network",
+      "Compute OptimizedSupports compute-bound applications that benefit from high performance processors",
+      "Memory OptimizedDesigned to deliver fast performance for workloads that process large data sets in memory",
+      "Storage OptimizedDesigned for high, sequential read and write workloads to very large data sets on local storage"
+    ],
+    "instancesTextboxLable": "Number of instances with these configurations",
+    "monthlyDataTextboxLable": "Approximate data/internet egress per month",
+
+    "section4Legend": " Current payment arrangement ",
+    "section4Radioboxes": [
+      "Reserved/Pre-paid/Up-front",
+      "Pay-as-you-go"
+    ],
+    "section5Question": "What additional information would help a CSP understand your current environment?",
+    "section5Note": "NOTE: This will be included in your Description of Work. Please use vendor-neutral language. Avoid including any company names or vendor-unique brand, product, or titles.",
+
+
     "CEPage1": {
       "pageHeader1": " Do you have a current environment to rehost? ",
       "pageText1": "If you select “Yes” below, we’ll gather details about your current environment. This info will be included in your Description of Work to provide CSPs with a better understanding of what currently exists. This environment may not align with your current requirements that you outlined in Contract Details."
     },
-  
-    "CEPage2": {
-      "pageHeader2": " Do you have system diagrams, data architecture diagrams, charts, or other relevant information for your current environment? ",
-      "pageText2": "If available, you can upload this supporting documentation, and we will attach it to your Description of Work to be shared with the CSPs for proposal purposes. Please do not upload any classified documents."
-          },
 
-    "CEPage3": {
-      "pageHeader3": " Have you completed a migration assessment, analysis, or process to identify the cloud services and tools needed? ",
-      "pageText3": "If available, you can upload this supporting documentation, and we will attach it to your Description of Work to be shared with the CSPs for proposal purposes. Please do not upload any classified documents."
-          },
+    "classificationImpactMessageText": "Select a classification and impact level.",
+    "currentUsageMessageText": "Select a description for your current usage.",
 
-    "CEPage4": {
-      "pageHeader4": " Where is your current environment located? ",
-      "pageText4": "If you have instances in a hybrid environment, then we will gather details about the location for each instance later."
-      
-    },
+    "spikesCausesMessageText": "Select at least one type of spike in usage.",
+    "highUsageEventMessageText": "Enter your high usage event.",
+    "highUsagePeriodMessageText": "Describe your high usage period(s).",
+    "regionMessageText": "Select at least one region.",
 
-    "CEPage5": {
-      "pageHeader5": " Tell us about your current data classification and impact levels ",
-      "pageText5": "If you only have data within a single level, then we will apply your selection below to every instance within your current environment. If you have data within two or more levels, we will gather details about each instance next.",
-      "pageClassQuestion1": " What classification levels are your instances currently deployed in? ",
-      "pageselectALLMsg": " Select all that apply to your current environment. ",
-      "expectedLabelsCL" :[
-        "Unclassified",
-        "Secret",
-        "Top Secret"
-        ],
-        "pageClassQuestion2": " For your Unclassified instance(s), what impact levels are you currently deployed in? ",
-        "expectedLabelsUnCL" :[
-          " Unclassified / Impact Level 2 (IL2) ",
-          " Unclassified / Impact Level 4 (IL4) ",
-          " Unclassified / Impact Level 5 (IL5) "
-        ]
+    "licensingMessageText": "Enter a description of your current licensing.",
+    "vCPUSMessageText": "Enter a number greater than or equal to 1.",
+    "processorSpeedMessageText": "Enter a number greater than or equal to 1.",
+    "operatingSystemMessageText": "Enter the name of an operating system.",
+    "memoryMessageText": "Enter a number greater than or equal to 1.",
+    "storageTypeMessageText": "Select a storage type.",
+    "storageSizeMessageText": "Enter a number greater than or equal to 0.",
 
-      },
+    "performanceTierMessageText": "Select a performance tier.",
+    "monthlyDataMessageText": "Enter a number greater than or equal to 1.",
+    "pricingModelMessageText": "Select a pricing model.",
+    "expirationMessageText": "Enter the expiration date for your reservation period."
 
-      "CEPage6": {
-      "pageHeader6": " Let’s start gathering details about each instance in your environment ",
-      "pageText6": " An instance may be an isolated environment, an enclave, or a collection of components. Aggregate all virtual machines (VMs) with similar specifications into a single instance below. If you have multiple instances, we will walk through them one at a time. ",     
-      "section1Title": " For your Unclassified instance(s), what impact levels are you currently deployed in? ",
-      "section1Question1": "In which region(s) is this instance deployed?",
-      "section1Checkboxes1" :[
-          " Unclassified / Impact Level 2 (IL2) ",
-          " Unclassified / Impact Level 4 (IL4) ",
-          " Unclassified / Impact Level 5 (IL5) "
-        ],
-      "section1Question2": " What data classification and impact level is this instance deployed in? ",
-      "section1Checkboxes2" :[
-          " Unclassified /IL2 ",
-          " Unclassified /IL4",
-          " Unclassified /IL5 ",
-          "Secret /IL6",
-          "Top Secret"
-        ]
+  },
 
-    },
+  "CEPage7": {
+    "pageHeader7": " Current Environment Summary ",
+    "pageText7": " If you have more instances for this environment, add them below. You can also edit or delete any information from the instances that you have already entered. When you’re done, click the “Continue” button to wrap up this section. "
+  },
 
-    "CEPage7": {
-      "pageHeader7": " Current Environment Summary ",
-      "pageText7": " If you have more instances for this environment, add them below. You can also edit or delete any information from the instances that you have already entered. When you’re done, click the Continue button to wrap up this section. ",     
-      "section1Title": " For your Unclassified instance(s), what impact levels are you currently deployed in? ",
-      "section1Question1": "In which region(s) is this instance deployed?"
-    }
-  
+  "BackgroundSummary": {
+    "pageHeader8": " Your Background Summary "
+  }
+
 
 
 }
-  
