@@ -1,5 +1,5 @@
 module.exports = {
-
+ 
   contractNoLabel: "#ContractNumber_text_field_label",
   contractNoTxtBox: "#ContractNumber_text_field",
   contractNoTxtError: "#ContractNumber_text_field_control .field-error",
@@ -13,7 +13,7 @@ module.exports = {
   ccNoRadioOption: "#Radio_NoCurrentContract",
   radioOptionError: "#currentContractOptions_radio_group_control .field-error",
 
-  //Let’s gather some details about your previous or current contract  
+  //Let’s gather some details about your previous or current contract
   incumbentLabel: "#IncumbentContractorName_text_field_label",
   incumbentTxtBox: "#IncumbentContractorName_text_field",
   incumbentError:"#IncumbentContractorName_text_field_control .field-error",
@@ -24,33 +24,18 @@ module.exports = {
   expirationDatePicker:"#ExpirationDatePicker",   
   navigateNextMonth: "#ExpirationDatePicker button[aria-label='Next month']",
   selectDate:".v-date-picker-table button:not(.v-btn--disabled)",
-  expirationSelectDate:"#ExpirationDatePicker > .v-picker__body > :nth-child(1) >.v-date-picker-table button:not(.v-btn--disabled)",
-  tNoTooltipBtn: "#TooltipButton_TaskDeliveryOrderNumber",
-  tNoTooltipText:"#TooltipText_TaskDeliveryOrderNumber",
-  expirationTooltipBtn:"#TooltipButton_Expiration",
-  expirationTooltipText:"#TooltipText_Expiration",
 
   //Let's gather some details about your previous or current contract
   contractOverviewTitle:"h2.mb-5",
-  contractNoTooltipBtn:"#TooltipButton_ContractNumber",
-  contractNoTootipText:"#TooltipText_ContractNumber",
   taskOrderNumberTxtBox:"#TaskOrderNumber_text_field",
-  taskOrderNumberToolTipBtn:"#TooltipButton_TaskOrderNumber",
-  taskOrderNumberTooltipText:"#TooltipText_TaskOrderNumber",  
   fullRadioOption:"#Radio_FULLOPEN",
   sbSetAsideRadioOption:"#Radio_SBSETASIDE",
   otherThanRadioOption:"#Radio_OTHERTHANFULL",
-  competitionRadioGroup:"#CompetitiveStatusOptions_radio_group_control input[type=radio]",
-  competitiveStatusOptionError:"#CompetitiveStatusOptions_radio_group_control .field-error",
-  competitionActiveRadio:"#CompetitiveStatusOptions_radio_group_control .v-item--active",
+  competitiveStatusOptionError:"3CompetitiveStatusOptions_radio_group_control .field-error",
   startDateTextField:"#StartDatePickerTextField",
   startDatePickerBtnIcon:"#StartDatePickerButtonIcon",
   startDatePreviousMonth:"#StartDatePicker button[aria-label='Previous month']",
   startDatepicker:"#StartDatePicker",
-  popValidationError:"#PoPValidation .field-error",
-  businessSizeRadioOption:"#businessSizeOptions_radio_group_control input[type=radio]",
-  businessSizeActiveRadioOption:"#businessSizeOptions_radio_group_control .v-item--active",
-  businessSizeRadioOptionerror:"#businessSizeOptions_radio_group_control .field-error",
   largeRadioOption:"#Radio_LARGE",
   smallRadioOption:"#Radio_SMALL",
   smallBARadioOption:"#Radio_SMALLBA",
@@ -60,14 +45,6 @@ module.exports = {
 
   //Your ProcurementHistory
   procurementHistoryTable:"#ProcurementHistoryDataTable",
-  deleteO:"#DeleteButton_0",
-  edit0:"#EditButton_0",
-  addInstance:"#AddInstance",
-  deleteInstanceModal:"#DeleteInstanceModal",
-  deleteInstanceTitle:"#DeleteInstanceModalTitle",
-  deleteModalBtn:"#DeleteInstanceModal #dialog_ok",
-
-  deletemodalMessage:"#DeleteInstanceModalMessage",
 
     //Current Environments
   existYesRadioOption:"#ExistingEnvOptions_radio_group_control #Radio_Yes",
@@ -92,7 +69,7 @@ module.exports = {
   topSecret:"#Checkbox_TS",
 
 
-  // Do you have system diagrams, data architecture diagrams, charts, or other relevant information for your current environment?
+  // new ones ............
   recurringPageText:  "p.mb-8",
   introPText: "#IntroP",
   systemDocsNoRadioBtn:"#Radio_NoSystemDocs",
@@ -140,8 +117,8 @@ module.exports = {
   checkedregionUsersCheckboxes:
   "#RegionsUsers input[type=checkbox]:checked",
 
-  cloudRadiobox: "#Radio_Cloud",
-  onPremRadiobox: "#Radio_OnPremises",
+ cloudRadiobox: "#Radio_Cloud",
+ onPremRadiobox: "#Radio_OnPremises",
 
   conusEastCheckbox: "#Checkbox_CONUSEast",
   conusCentralCheckbox: "#Checkbox_CONUSCentral",
@@ -204,13 +181,13 @@ module.exports = {
   reservedNavigateNextMonth: "#ExpirationDateDatePicker button[aria-label='Next month']",
 
  //Section#5
-  additionalInfoTextbox: "#AdditionalInfo_text_area",
+ additionalInfoTextbox: "#AdditionalInfo_text_area",
 
  // page#7
-  summaryEnvironmentType: "#EnvironmentType",
-  summaryClassificationText: "#ClassificationText",
-  summaryCETableHeader: ".v-data-table tr th",
-  summaryCETableData: ".v-data-table tr td",
+ summaryEnvironmentType: "#EnvironmentType",
+ summaryClassificationText: "#ClassificationText",
+summaryCETableHeader: ".v-data-table tr th",
+ summaryCETableData: ".v-data-table tr td",
 
 
 }
