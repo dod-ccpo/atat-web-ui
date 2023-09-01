@@ -13,14 +13,17 @@ import { ContractTypeApi } from "@/api/contractDetails";
 import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO,
+  CrossDomainSolutionDTO, 
+  CurrentContractDTO,
+  EvaluationPlanDTO,
+  FairOpportunityDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
   SelectedClassificationLevelDTO,
   SensitiveInformationDTO
 } from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
-import { convertStringArrayToCommaList, toTitleCase } from "@/helpers";
+import { convertStringArrayToCommaList, toTitleCase, buildClassificationLabel } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
