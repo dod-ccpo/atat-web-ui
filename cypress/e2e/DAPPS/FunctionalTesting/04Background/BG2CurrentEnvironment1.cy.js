@@ -41,7 +41,7 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
     const noOfVCPUs = randomNumberBetween(2, 9);
     const precessorSpeed = randomNumber(3);
     const operatingSystemText = "OperatingSystemTest--" + randomString(4);
-    const memory = randomNumber(13);
+    const memory = randomNumber(3);
     const storageSize = randomNumber(2);
     const noOfInstances = randomNumberBetween(3, 9);
     const egressMonth = randomNumberBetween(2, 9);
@@ -69,66 +69,95 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
         cy.activeStep(common.substepCurrentEnvironmentText);
     });
 
+    function environmentsystemDiagramsMigrationOptions(option, yesButton, noButton) {
+        if (option == "Yes") {
+            cy.radioBtn(yesButton, "YES")
+                .not("[disabled]").and("not.checked").click({
+                    force: true
+                });
+        } else if (option == "No") {
+            cy.radioBtn(noButton, "NO")
+                .not("[disabled]").and("not.checked").click({
+                    force: true
+                });
+        }
+    }
+
+    function systemDiagramsUploadDoc(uploadDoc) {
+        cy.findElement(background.uploadFileSysDiagram).selectFile(uploadDoc, {
+            force: true
+        });
+        cy.waitUntil(function () {
+            return cy.findElement(background.removeFile1).should("exist");
+        })
+
+    }
+
+    function environmentType(environment) {
+        if (environment == "Cloud") {
+            cy.radioBtn(background.cloudComputingRadio, "CLOUD").click({
+                force: true
+            });
+        } else if (environment == "onPremise") {
+            cy.radioBtn(background.onPremiseRadio, "ON_PREM").click({
+                force: true
+            });
+        } else if (environment == "Hybrid") {
+            cy.radioBtn(background.hybridRadio, "HYBRID").click({
+                force: true
+            });
+        }
+    }
+
+    function dataClassificationLevels() {
+        cy.findElement(background.unClassCloudCheckboxes).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+    }
+
+    function UnclassificationLevels() {
+        cy.findElement(background.CloudClassificationCheckboxes).should("not.be.checked").check({
+            force: true
+        }).should("be.checked");
+    }
+
     it("TC1: Current Environment: Functional Testcase- Screen Validation Pages1-5", () => {
 
         //Page#1: Do you have a current environment to rehost? Yes No
         cy.verifyPageHeader(bgCEData.CEPage1.pageHeader1);
         cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage1.pageText1);
         cy.verifyRadioGroupLabels(background.existingEnvNoRadioGroup, bgCEData.CEPage1.section1Radioboxes);
-        cy.radioBtn(background.existYesRadioOption, "YES")
-            .not("[disabled]").and("not.checked").click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("Yes", background.existYesRadioOption, background.existNoRadioOption);
 
         // Page#2:  Do you have system diagrams, data architecture diagrams, charts etc..? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage2.pageHeader2)
         cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage2.pageText2);
         cy.verifyRadioGroupLabels(background.existingEnvNoRadioGroup, bgCEData.CEPage2.section1Radioboxes);
         //Select Yes, upload one file, remove same file and upload again
-        cy.radioBtn(background.systemDocsYesRadioBtn, "YES")
-            .click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("Yes", background.systemDocsYesRadioBtn, background.systemDocsNoRadioBtn);
+
         cy.findElement(background.fileUploadSection).should("exist").and("be.visible");
         cy.findElement(background.dragandDropText).should("contain.text", bgCEData.CEPage2.dragandDropText);
         cy.findElement(background.browsetoUploadText).should("contain.text", bgCEData.CEPage2.browseToUploadText);
         cy.findElement(background.supportFileText).should("contain.text", bgCEData.CEPage2.supportedFileTypes);
-        cy.findElement(background.uploadFileSysDiagram).selectFile(docFile, {
-            force: true
-        });
-        cy.waitUntil(function () {
-            return cy.findElement(background.removeFile1).should("exist");
-        })
+        systemDiagramsUploadDoc(docFile);
         //remove the file, verify file is removed and upload again
         cy.findElement(background.removeFile1).click().then(() => {
             cy.findElement(background.removeFile1).should("not.exist");
         })
         //upload again
-        cy.findElement(background.uploadFileSysDiagram).selectFile(docFile, {
-            force: true
-        });
-        cy.waitUntil(function () {
-            return cy.findElement(background.removeFile1).should("exist");
-        })
+        systemDiagramsUploadDoc(docFile);
 
         // Page#3:  Have you completed a migration assessment, analysis, or process to identify the cloud services and tools needed?  
         cy.clickContinueButton(background.systemDocsYesRadioBtn, bgCEData.CEPage3.pageHeader3);
         cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage3.pageText3);
         cy.verifyRadioGroupLabels(background.existingEnvNoRadioGroup, bgCEData.CEPage2.section1Radioboxes);
         //Select Yes, upload two files, remove one file and continue
-        cy.radioBtn(background.existYesRadioOption, "YES").not("[disabled]").and("not.checked")
-            .click({
-                force: true
-            });
-        cy.findElement(background.uploadFileSysDiagram).selectFile(pdfFile, {
-            force: true
-        });
-        cy.findElement(background.uploadFileSysDiagram).selectFile(xlsFile, {
-            force: true
-        });
-        cy.waitUntil(function () {
-            return cy.findElement(background.removeFile1).should("exist");
-        });
+
+        environmentsystemDiagramsMigrationOptions("Yes", background.existYesRadioOption, background.existNoRadioOption);
+        systemDiagramsUploadDoc(pdfFile);
+        systemDiagramsUploadDoc(xlsFile);
+
         cy.findElement(background.fileLinkFile1).should("exist").contains("dd1155.pdf");
         cy.findElement(background.fileLinkFile2).should("exist").contains("testMigration.xlsx");
         //remove one file, verify file is removed
@@ -153,9 +182,7 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
             .not("[disabled]").and("not.checked").click({
                 force: true
             });
-        cy.radioBtn(background.cloudComputingRadio, "CLOUD").click({
-            force: true
-        });
+        environmentType("Cloud");
 
         // Page#5 :Tell us about your current data classification and impact levels 
         cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage5.pageHeader5);
@@ -163,15 +190,11 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
         cy.textExists(background.classificationText, bgCEData.CEPage5.pageClassQuestion1);
         cy.textExists(background.classificationMessage, bgCEData.CEPage5.pageSelectALLMsg);
         cy.verifyCheckBoxLabels(background.unClassCloudCheckboxes, bgCEData.CEPage5.expectedLabelsCL);
-        cy.findElement(background.unClassCloudCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
+        dataClassificationLevels();
         cy.textExists(background.unClassificationText, bgCEData.CEPage5.pageClassQuestion2);
         cy.textExists(background.unClassificationMessage, bgCEData.CEPage5.pageSelectALLMsg);
         cy.verifyCheckBoxLabels(background.CloudClassificationCheckboxes, bgCEData.CEPage5.expectedLabelsUnCL);
-        cy.findElement(background.CloudClassificationCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
+        UnclassificationLevels();
 
         // Page # 6-8 validations in next test case
 
@@ -180,39 +203,25 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
     it("TC2: Current Environment: Functional Testcase- Screen Validation pages 6-8", () => {
 
         //Page#1: Do you have a current environment to rehost? Yes No
-        cy.radioBtn(background.existYesRadioOption, "YES")
-            .not("[disabled]").and("not.checked").click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("Yes", background.existYesRadioOption, background.existNoRadioOption);
 
         // Page#2:  Do you have system diagrams, data architecture diagrams, charts etc..? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage2.pageHeader2)
-        cy.radioBtn(background.systemDocsNoRadioBtn, "NO")
-            .click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("No", background.systemDocsYesRadioBtn, background.systemDocsNoRadioBtn);
 
         // Page#3:  Have you completed a migration assessment, analysis, or process to identify the cloud services and tools needed?  
         cy.clickContinueButton(background.systemDocsYesRadioBtn, bgCEData.CEPage3.pageHeader3);
-        cy.radioBtn(background.existNoRadioOption, "NO").not("[disabled]").and("not.checked")
-            .click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("No", background.existYesRadioOption, background.existNoRadioOption);
+
 
         // Page#4 :  Where is your current environment located? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage4.pageHeader4);
-        cy.radioBtn(background.cloudComputingRadio, "CLOUD").click({
-            force: true
-        });
+        environmentType("Cloud");
 
         // Page#5 :Tell us about your current data classification and impact levels  
         cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage5.pageHeader5);
-        cy.findElement(background.unClassCloudCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.CloudClassificationCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
+        dataClassificationLevels();
+        UnclassificationLevels();
 
         // Page#6 : Let’s start gathering details about each instance in your environment 
         cy.clickContinueButton(background.unClassCloudCheckbox, bgCEData.CEPage6.pageHeader6);
@@ -367,6 +376,16 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
         cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Memory", expctedMemory);
         cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Storage", expctedStorage);
         cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Performance", "GENERALPURPOSE");
+
+        cy.clickContinueButton(background.currentEnvHistoryTable, bgCEData.BackgroundSummary.pageHeader8);
+        cy.textExists(background.backgroundSummaryTitleText, bgCEData.BackgroundSummary.summaryTitle);
+        cy.textExists(background.currentEnvironmentHeaderText, bgCEData.BackgroundSummary.currentEnvironmentTitle);
+        cy.textExists(background.currentEnvironmentDescription, "Cloud environment:");
+        cy.findElement(background.currentEnvironmentDescription).contains("1 instance (Unclassified/IL5)");
+        cy.textExists(background.currentEnvironmentCompleteBtn, bgCEData.BackgroundSummary.currentEnvironmentViewButton);
+
+        cy.findElement(background.currentEnvironmentCompleteBtn).click();
+
     })
 
     it("TC3: Current Environment: Functional Testcase- No flow", () => {
@@ -376,10 +395,7 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
         cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage1.pageText1);
 
         //select No and verify the continue button takes to Performance step
-        cy.radioBtn(background.existNoRadioOption, "NO")
-            .not("[disabled]").and("not.checked").click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("No", background.existYesRadioOption, background.existNoRadioOption);
         cy.clickContinueButton(background.existNoRadioOption, bgCEData.BackgroundSummary.pageHeader8);
         // navigating back to CurrentEnvironment page#1
         cy.btnClick(common.backBtn, "Back");
@@ -392,18 +408,13 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
 
         // Page#2: Do you have system diagrams, data architecture diagrams, charts etc..? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage2.pageHeader2)
-        cy.radioBtn(background.systemDocsNoRadioBtn, "NO")
-            .not("[disabled]").and("not.checked").click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("No", background.systemDocsYesRadioBtn, background.systemDocsNoRadioBtn);
 
         // Page#3:  Have you completed a migration assessment,analysis,orprocess to identify the cloud services tools needed? Yes No
         cy.clickContinueButton(background.systemDocsNoRadioBtn, bgCEData.CEPage3.pageHeader3);
         cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage3.pageText3);
-        cy.radioBtn(background.existNoRadioOption, "NO")
-            .not("[disabled]").and("not.checked").click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("No", background.existYesRadioOption, background.existNoRadioOption);
+
         cy.clickContinueButton(background.existNoRadioOption, bgCEData.CEPage4.pageHeader4);
     })
 
@@ -417,61 +428,40 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
         cy.btnClick(common.continueBtn, " Continue "); // no selection, error message
         cy.checkErrorMessage(background.errorMessage, bgCEData.CEPage1.errorMessageText);
         cy.screenshot(" Page#1 screen is");
-        cy.radioBtn(background.existYesRadioOption, "YES")
-            .not("[disabled]").and("not.checked").click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("Yes", background.existYesRadioOption, background.existNoRadioOption);
 
         // Page#2:  Do you have system diagrams, data architecture diagrams, charts etc..? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage2.pageHeader2)
         cy.btnClick(common.continueBtn, " Continue "); // no selection, error message
         cy.checkErrorMessage(background.errorMessage, bgCEData.CEPage1.errorMessageText);
         //Select Yes, do NOT upload the file and click continue
-        cy.radioBtn(background.systemDocsYesRadioBtn, "YES")
-            .click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("Yes", background.systemDocsYesRadioBtn, background.systemDocsNoRadioBtn);
         cy.btnClick(common.continueBtn, " Continue ");
         cy.checkErrorMessage(background.errorMessage, bgCEData.CEPage2.uploadMessageText);
-        cy.screenshot(" Page#2 screen is");
-        cy.radioBtn(background.systemDocsNoRadioBtn, "NO").click({
-            force: true
-        });
+        environmentsystemDiagramsMigrationOptions("No", background.systemDocsYesRadioBtn, background.systemDocsNoRadioBtn);
 
         // Page#3:  Have you completed a migration assessment,analysis,orprocess to identify the cloud services tools needed? Yes No
         cy.clickContinueButton(background.systemDocsYesRadioBtn, bgCEData.CEPage3.pageHeader3);
         cy.btnClick(common.continueBtn, " Continue "); // no selection, error message
         cy.checkErrorMessage(background.errorMessage, bgCEData.CEPage1.errorMessageText);
         //Select Yes, upload txt file and click continue 
-        cy.radioBtn(background.existYesRadioOption, "YES")
-            .click({
-                force: true
-            });
+        environmentsystemDiagramsMigrationOptions("Yes", background.existYesRadioOption, background.existNoRadioOption);
         cy.findElement(background.uploadFileSysDiagram).selectFile(txtFile, {
             force: true
         });
         cy.checkErrorMessage(background.errorMessage, bgCEData.CEPage2.uploadMessageText);
-        cy.radioBtn(background.existYesRadioOption, "YES")
-            .click({
-                force: true
-            });
+        systemDiagramsUploadDoc(xlsFile);
 
         // Page#4 : Where is your current environment located? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage4.pageHeader4);
         cy.btnClick(common.continueBtn, " Continue "); // no selection, error message
         cy.checkErrorMessage(background.errorMessage, bgCEData.CEPage4.environmentMessageText);
-        cy.radioBtn(background.cloudComputingRadio, "CLOUD").click({ //Cloud computing //On premise //Hybrid environment
-            force: true
-        });
+        environmentType("Cloud");
 
         // Page#5 :Tell us about your current data classification and impact levels  
         cy.clickContinueButton(background.cloudComputingRadio, bgCEData.CEPage5.pageHeader5);
-        cy.findElement(background.unClassCloudCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
-        cy.findElement(background.CloudClassificationCheckboxes).should("not.be.checked").check({
-            force: true
-        }).should("be.checked");
+        dataClassificationLevels();
+        UnclassificationLevels();
 
         // Page#6 : Let’s start gathering details about each instance in your environment 
         cy.clickContinueButton(background.level2Checkbox, bgCEData.CEPage6.pageHeader6);
