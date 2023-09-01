@@ -135,7 +135,7 @@ export default class ProvisionWorkflow extends Vue {
     const nextStepName = direction === "next" 
       ? await Steps.getNext() 
       : await Steps.getPrevious();
-
+    console.log(await AppSections.getSectionData(), 'get section')
     if (nextStepName) {
       if (isRouteResolver(nextStepName)) {
         const routeResolver = nextStepName as StepRouteResolver;
