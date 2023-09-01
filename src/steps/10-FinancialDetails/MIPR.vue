@@ -8,8 +8,7 @@
             id="MIPRNumber"
             :rules="[
                 $validators.required('Please enter the MIPR Number located' +
-                 ' on your authorized DD Form 448.'),
-                $validators.maxLength(20, 'MIPR Number should not exceed 20 characters.')
+                 ' on your authorized DD Form 448.')
               ]"
             :tooltipText="toolTip"
             :value.sync="MIPRNumber"

@@ -43,7 +43,7 @@ import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPl
 import EvalPlanDetails from "../steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.vue";
 import Differentiators from "../steps/02-EvaluationCriteria/EvalPlan/Differentiators.vue";
 import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
-import SummaryStepTwo from "@/steps/02-EvaluationCriteria/SummaryStepTwo.vue"
+
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
 import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
@@ -77,7 +77,6 @@ import SummaryStepThree from "@/steps/04-ContractDetails/SummaryStepThree.vue";
   from "../steps/04-ContractDetails/ClassificationRequirements.vue";
 import SecurityRequirements from "@/steps/04-ContractDetails/SecurityRequirements.vue";
 import CrossDomain from "@/steps/04-ContractDetails/CrossDomain.vue";
-import SummaryStepFour from "@/steps/03-Background/SummaryStepFour.vue"
 
 // Step 5 - Performance Requirements
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
@@ -168,12 +167,10 @@ import {
   ArchitecturalDesignDetailsResolver,
   CurrentContractRouteResolver,
   SummaryStepThreeRouteResolver,
-  SummaryStepTwoRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
   ProcurementHistorySummaryRouteResolver,
-  CurrentEnvironmentResolver,
   ReplicateAndOptimizeResolver,
   ReplicateDetailsResolver,
   PIIRecordResolver,
@@ -204,7 +201,6 @@ import {
   MRRNeedRouteResolver,
   MarketResearchFormRouteResolver,
   CertificationPOCsRouteResolver,
-  EvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   SecurityRequirementsResolver,
   AnticipatedUserAndDataNeedsResolver,
@@ -221,11 +217,7 @@ import {
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
   FOIARecordSummaryResolver,
-  PIIResolver, 
-  COIRouteResolver, 
-  PackagingPackingAndShippingResolver, 
-  TravelRouteResolver,
-  
+  PIIResolver, COIRouteResolver, PackagingPackingAndShippingResolver, TravelRouteResolver
 } from "./resolvers";
 
 export const routeNames = {
@@ -265,7 +257,6 @@ export const routeNames = {
   RemoveBarriers: "Remove_Barriers",
   ReviewBarriers: "Review_Barriers",
   CertificationPOCs: "Certification_POCs",
-  SummaryStepTwo: "SummaryStepTwo",
   //-----------------------------------------
 
   Background: "Background",
@@ -301,7 +292,6 @@ export const routeNames = {
   FOIA: "FOIA",
   FOIACoordinator: "FOIA_Coordinator",
   Section508Standards: "Section_508_Standards",
-  SummaryStepFour: "Summary_Step_Four",
   SummaryStepSix: "Summary_Step_Six",
   SummaryStepSeven: "Summary_Step_Seven",
   ClassificationRequirements: "Classification_Requirements",
@@ -692,7 +682,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CreateEvalPlan,
         completePercentageWeight: 5,
         stepCompleteOnEnter: routeNames.Exceptions,
-        routeResolver: EvalPlanRouteResolver,
         completed: false,
       },
       {
@@ -724,16 +713,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         routeResolver: BVTOResolver,
       },   
-      {
-        menuText: "SummaryStepTwo",
-        path:"summary-step-two",  
-        name: routeNames.SummaryStepTwo,
-        excludeFromMenu: true,
-        completePercentageWeight: 1,
-        component: SummaryStepTwo,
-        continueButtonText: "Wrap up this section",
-        routeResolver: SummaryStepTwoRouteResolver
-      },
     ],
   },
   {
@@ -871,7 +850,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CurrentEnvironment,
         component: HasCurrentEnvironment,
         completePercentageWeight: 5,
-        routeResolver:CurrentEnvironmentResolver,
         completed: false,
       },
       {
@@ -929,16 +907,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         routeResolver: CurrentEnvironmentSummaryResolver,
-      },
-      {
-        menuText: "SummaryStepFour",
-        path:"summary-step-four",
-        name: routeNames.SummaryStepFour,
-        excludeFromMenu: true,
-        completePercentageWeight: 1,
-        component: SummaryStepFour,
-        continueButtonText: "Wrap up this section",
-        continueButtonColor:  "primary"
       },
     ]
   },

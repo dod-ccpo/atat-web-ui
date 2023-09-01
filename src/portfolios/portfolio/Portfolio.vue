@@ -266,7 +266,7 @@
                           v-for="(idiqClin, index) in idiqClins"
                           :key="index"
                           v-model="checked[index + 1]"
-                          :label="idiqClins[index].idiq_clin"
+                          :label="idiqClins[index].idiq_clin_label"
                           :class="'color_chart_' + (index + 2)"
                           hide-details="true"
                           :ripple="false"
@@ -1361,10 +1361,11 @@ export default class PortfolioDashboard extends Vue {
       const color = this.chartDataColorSequence[i + 1];
       const clin = this.idiqClins.find((clin) => clin.clin_number === clinNo);
       if (clin && this.burnChartData.datasets) {
+        // ATAT TODO - reinstate idiq_clin_labels - currently blank in data from SNOW
         const clinActualData = {
-          label: clin.idiq_clin,
-          dataSetId: clin.idiq_clin
-            ? getIdText(clin.idiq_clin + "Actual")
+          label: clin.idiq_clin_label,
+          dataSetId: clin.idiq_clin_label
+            ? getIdText(clin.idiq_clin_label + "Actual")
             : clinNo + "Data",
           data: actualBurn[clinNo],
         };
@@ -1380,9 +1381,9 @@ export default class PortfolioDashboard extends Vue {
         burnChartDataSets.push(clinActualDataSet);
 
         const clinProjectedData = {
-          label: clin.idiq_clin + " Projected",
-          dataSetId: clin.idiq_clin
-            ? getIdText(clin.idiq_clin + "Projected")
+          label: clin.idiq_clin_label + " Projected",
+          dataSetId: clin.idiq_clin_label
+            ? getIdText(clin.idiq_clin_label + "Projected")
             : clinNo + "DataProjected",
           data: projectedBurn[clinNo],
         };
@@ -1459,7 +1460,7 @@ export default class PortfolioDashboard extends Vue {
       };
       const clinNo = idiqClin.clin_number;
       obj.clinStatus = idiqClin.clin_status;
-      obj.clinLabel = idiqClin.idiq_clin || "";
+      obj.clinLabel = idiqClin.idiq_clin_label || "";
       obj.popStart = createDateStr(idiqClin.pop_start_date, true);
       obj.popEnd = createDateStr(idiqClin.pop_end_date, true);
 

@@ -4,19 +4,14 @@ import {
     randomNumberBetween,
     randomString,
 } from "../../../helpers";
+import common from "../../../selectors/common.sel";
 import background from "../../../selectors/background.sel";
 import bgCEData from "../../../fixtures/bgCEData.json";
 
-const fairOpp="none";//none,ja
+describe("Test suite: Background- Current Environment: Summary - E2E", () => {
+    let pt = "TC-Step-04-Background:Current Environment-E2E-" + randomAlphaNumeric(5);
+    let scope = "Project Scope-" + randomString(5);
 
-if(fairOpp==="none"){
-require("./04BGProcurementwEP.cy")
-}else{
-require("./04BGProcurementwJA.cy")
-}
-
-describe("Test suite: Step04-Background-Current Environment", () => {
-    
     // page#4
     let currentEnvironment = "Cloud"; // "Cloud", "Onpremise" , "Hybrid"
     // when CurrentEnvironment is "Hybrid" choose below:
@@ -170,11 +165,11 @@ describe("Test suite: Step04-Background-Current Environment", () => {
     const performanceTierOptionsList = performanceTierOptions.join(' ,').toUpperCase();
 
     before(() => {
-        //Page#1: Do you have a current environment to rehost? Yes No
-        cy.radioBtn(background.existYesRadioOption, "YES")
-            .click({
-                force: true
-            });
+        cy.goToAcqPackageStepOne(pt, scope);
+        cy.clickSideStepper(common.stepBackgroundLink, " Background ");
+        cy.activeStep(common.stepBackgroundText);
+        cy.clickSideStepper(common.substepCurrentEnvironmentLink, " Current Environment ");
+        cy.activeStep(common.substepCurrentEnvironmentText);
     });
 
     // functions for this page:
@@ -317,7 +312,14 @@ describe("Test suite: Step04-Background-Current Environment", () => {
         return environmentType;
     }
 
-    it("TC1: Current Environment: E2E Happy path", () => {       
+    it("TC1: Current Environment: E2E Happy path", () => {
+
+        //Page#1: Do you have a current environment to rehost? Yes No
+        cy.verifyPageHeader(bgCEData.CEPage1.pageHeader1);
+        cy.radioBtn(background.existYesRadioOption, "YES")
+            .click({
+                force: true
+            });
 
         // Page#2: Do you have system diagrams, data architecture diagrams, charts etc..? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage2.pageHeader2)

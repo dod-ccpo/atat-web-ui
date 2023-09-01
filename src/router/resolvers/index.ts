@@ -61,17 +61,14 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
 }
 
-export const EvalPlanRouteResolver = (current: string): string => {
-  return isStepTouched(2) && current === routeNames.CertificationPOCs
-    ? routeNames.SummaryStepTwo
-    : routeNames.CreateEvalPlan
-}
-
-
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
-    return routeNames.SummaryStepTwo
+    Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
+    return ( Summary.hasCurrentStepBeenVisited
+      ? routeNames.SummaryStepThree 
+      : routeNames.PeriodOfPerformance
+    )
   }
   Steps.setAdditionalButtonText({
     buttonText: "I don’t need other assessment areas", 
@@ -95,25 +92,20 @@ export const BVTOResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
   if (current === routeNames.PeriodOfPerformance){
     // moving backwards
-    return isStepTouched(2)
-      ? routeNames.SummaryStepTwo
-      : routeNames.Exceptions
+    if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
+      return routeNames.CreateEvalPlan;
+    }
   }
   if (evalPlan?.method === "BVTO") {
     return routeNames.Differentiators;
   }
 
   return current === routeNames.EvalPlanDetails
-    ? routeNames.SummaryStepTwo
+    ? Summary.hasCurrentStepBeenVisited 
+      ? routeNames.SummaryStepThree 
+      : routeNames.PeriodOfPerformance
     : routeNames.EvalPlanDetails;
 };
-
-export const SummaryStepTwoRouteResolver = (current: string): string =>{
-  return routeNames.SummaryStepTwo;
-  // return isStepTouched(3) 
-  //   ? routeNames.SummaryStepThree 
-  //   : routeNames.PeriodOfPerformance;
-}
 
 export const ProposedCSPRouteResolver = (current: string): string => {
   return current === routeNames.Exceptions && evalPlanRequired() 
@@ -170,7 +162,7 @@ export const RemoveBarriersFormRouteResolver = (current: string): string => {
 
 export const CertificationPOCsRouteResolver = (current: string): string => {
   return evalPlanRequired() && current === routeNames.CreateEvalPlan
-    ? isStepTouched(2) ? routeNames.SummaryStepTwo : routeNames.Exceptions
+    ? routeNames.Exceptions
     : routeNames.CertificationPOCs
 }
 
@@ -238,11 +230,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     currentContracts.length === 1
     && currentContracts[0].is_valid === false
 
-  if(doesNotNeedContract
-    && isStepTouched(4)){
-    return routeNames.SummaryStepFour
-  }
-  else if (doesNotNeedContract){
+  if (doesNotNeedContract){
     return routeNames.CurrentEnvironment;
   } else if (
     !hasExceptionToFairOpp()
@@ -275,20 +263,13 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 
 
 export const ProcurementHistorySummaryRouteResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(4))
   const currentContracts =  AcquisitionPackage.currentContracts || [];
   const doesNotNeedContract = currentContracts.every(
     (c)=>c.current_contract_exists==="NO"
   )
   const fromCurrentEnvironment =  current === routeNames.CurrentEnvironment;
+  
   if (
-    doesNotNeedContract
-      && fromCurrentEnvironment
-      && isStepTouched(4)
-  ){
-    return routeNames.SummaryStepFour
-  }
-  else if (
     doesNotNeedContract
     && fromCurrentEnvironment
   ){
@@ -301,17 +282,6 @@ export const ProcurementHistorySummaryRouteResolver = (current: string): string 
       : routeNames.CurrentContractDetails
   }
   return routeNames.ProcurementHistorySummary
-}
-
-export const CurrentEnvironmentResolver = (current: string): string => {
-  const fromProcurementHistory =  current === routeNames.ProcurementHistorySummary;
-  if (
-    fromProcurementHistory
-      && isStepTouched(4)
-  ){
-    return routeNames.SummaryStepFour
-  }
-  return routeNames.CurrentEnvironment
 }
 
 export const ReplicateAndOptimizeResolver = (current: string): string => {
@@ -341,13 +311,13 @@ export const CurrentEnvRouteResolver = (current: string): string => {
     return routeNames.UploadSystemDocuments;
   }
   return current === routeNames.CurrentEnvironment 
-    ? routeNames.SummaryStepFour
+    ? routeNames.DOWLandingPage
     : routeNames.CurrentEnvironment;
 };
 
 export const CurrentEnvironmentSummaryResolver = (current: string): string => {
   return current === routeNames.ReplicateAndOptimize 
-    ? routeNames.SummaryStepFour
+    ? routeNames.DOWLandingPage
     : routeNames.EnvironmentSummary;
 }
 export const COIRouteResolver = (current: string): string => {
@@ -1065,17 +1035,16 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
   Steps.clearAltBackButtonText();
   if (current === routeNames.DOWLandingPage) {
-    // const hasCurrentContract =
-    //   AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
-    // if (hasCurrentContract) {
-    //   return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
-    //     && CurrentEnvironment.currentEnvInstances.length > 0
-    //     ? "/current-contract/environment-summary"
-    //     : "/current-contract/summary-step-four"
-    // } else {
-    //   return "/current-contract/current-contract"
-    // }
-    return "/current-contract/summary-step-four"
+    const hasCurrentContract = 
+      AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
+    if (hasCurrentContract) {
+      return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES" 
+        && CurrentEnvironment.currentEnvInstances.length > 0
+        ? "/current-contract/environment-summary"
+        : "/current-contract/current-environment"
+    } else {
+      return "/current-contract/current-contract"
+    }
   }
 
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
@@ -1717,7 +1686,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   ProcurementHistorySummaryRouteResolver,
-  CurrentEnvironmentResolver,
   RemoveBarriersFormRouteResolver,
   conductedResearchRouteResolver,
   ReplicateAndOptimizeResolver,
@@ -1740,7 +1708,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FinancialPOCResolver,
   AppropriationOfFundsResolver,
   BVTOResolver,
-  EvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
   ProposedCSPRouteResolver,
   MinimumRequirementsRouteResolver,
@@ -1764,8 +1731,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PIIResolver,
   COIRouteResolver,
   PackagingPackingAndShippingResolver,
-  TravelRouteResolver,
-  SummaryStepTwoRouteResolver
+  TravelRouteResolver
 };
 
 // add path resolvers here 
