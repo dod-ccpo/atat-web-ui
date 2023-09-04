@@ -228,13 +228,22 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessPrimaryPOC(): Promise<void>{
-    const contactInfo = AcquisitionPackage.getContact("Contact")
-
+    const contactInfo = AcquisitionPackage.contactInfo as ContactDTO
+    const contactInfoKeys = Object.keys(contactInfo)
+    const civilianKeys = ["role","first_name","last_name","title","phone"]
+    const militaryKeys = ["role","first_name","last_name","rank_components","phone","dodaac"]
+    const keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
+      x => militaryKeys.indexOf(x) === -1
+    ): contactInfoKeys.filter(
+      x => civilianKeys.indexOf(x) === -1)
+ 
+    const monitor = {object: contactInfo, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
     const PrimaryPOC: SummaryItem = {
       title: "Primary Point of Contact",
       description: "",
-      isComplete: false,
-      isTouched: false,
+      isComplete: await this.isComplete(monitor),
+      isTouched,
       routeName: "ContactInformation",
       step:1,
       substep: 3
@@ -243,13 +252,21 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessCOR(): Promise<void>{
-    const contactInfo = AcquisitionPackage.getContact("COR")
-
+    const contactInfo = AcquisitionPackage.corInfo as ContactDTO
+    const contactInfoKeys = Object.keys(contactInfo)
+    const civilianKeys = ["role","first_name","last_name","title","phone"]
+    const militaryKeys = ["role","first_name","last_name","rank_components","phone","dodaac"]
+    const keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
+      x => militaryKeys.indexOf(x) === -1
+    ): contactInfoKeys.filter(
+      x => civilianKeys.indexOf(x) === -1)
+    const monitor = {object: contactInfo, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
     const CORDetails: SummaryItem = {
       title: "Contracting Officer's Representative",
       description: "",
-      isComplete: false,
-      isTouched: false,
+      isComplete: await this.isComplete(monitor),
+      isTouched,
       routeName: "CorInformation",
       step:1,
       substep: 4
