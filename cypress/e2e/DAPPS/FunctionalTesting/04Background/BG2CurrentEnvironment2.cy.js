@@ -28,13 +28,6 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         'indopacom',
         'southcom',
     ]
-    let impactLevelCheckboxes = [ // accepts only one option
-        // 'UnclassifiedIL2',
-        //'UnclassifiedIL4',
-        //'UnclassifiedIL5',
-        'SecretIL6',
-        // 'TopSecret'
-    ]
     let storageOptions = ['Object' //Block, Object, File, Archive
     ]
     let performanceTierOption = ['computeOptimized' //generalPurpose, computeOptimized, memoryOptimized, storageOptimized
@@ -53,18 +46,8 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
     const storage = randomNumber(3);
     const instances = randomNumberBetween(1, 9);
     const egressMonth = randomNumber(2);
-    //section#4 data
-    //section#5 data
     const additionalInformation = "Additional Info is--" + randomString(5);
 
-    // page#5
-    const impactLevelMap = {
-        UnclassifiedIL2: background.IL2Radiobox,
-        UnclassifiedIL4: background.IL4Radiobox,
-        UnclassifiedIL5: background.IL5Radiobox,
-        SecretIL6: background.IL6Radiobox,
-        TopSecret: background.tsRadiobox
-    }
     const storageTypeOptionsMap = {
         Block: background.blockStorageOption,
         Object: background.objectTypeStorageOption,
@@ -80,7 +63,6 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
 
     // Summary page:
     const deployedRegionCheckboxesList = deployedRegions.join(' ,').toUpperCase().replace(/\s/g, '');
-    const impactLevelCheckboxesList = impactLevelCheckboxes.join(' ,').toUpperCase();
     const expctedMemory = memoryByte + "GB";
     const storageOptionsList = storageOptions.join(' ,').toUpperCase();
     const storageExpected = storageOptionsList + ":" + storage + "GB";
@@ -93,15 +75,6 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.clickSideStepper(common.substepCurrentEnvironmentLink, " Current Environment ");
         cy.activeStep(common.substepCurrentEnvironmentText);
     });
-
-
-    function cloudandPremiseDataClassification() { //cloud &onPremise
-        impactLevelCheckboxes.forEach(impactLevelCheckbox => {
-            cy.findElement(impactLevelMap[impactLevelCheckbox]).click({
-                force: true
-            });
-        });
-    }
 
     function page5CLoudandOnpremiseInstances() {
         //Cloud Instances
@@ -187,7 +160,8 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.findElement(background.conusWestTextbox).type(users);
     }
 
-    function section7verifyTableData() {
+    function section7verifyTableData(impactLevelCheckboxesList) {
+
         cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Classification", impactLevelCheckboxesList);
         cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Quantity", instances);
         cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "vCPU", noOfVCPU);
@@ -224,9 +198,9 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.clickContinueButton(background.systemDocsYesRadioBtn, bgCEData.CEPage3.pageHeader3);
         cy.verifyTextMatches(background.recurringPageText, bgCEData.CEPage3.pageText3);
         cy.radioBtn(background.existNoRadioOption, "NO")
-        .click({
-            force: true
-        });
+            .click({
+                force: true
+            });
         cy.radioBtn(background.existYesRadioOption, "YES").not("not.checked")
             .click({
                 force: true
@@ -265,7 +239,10 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
             force: true
         }).should("be.checked");
         cy.verifyRadioGroupLabels(background.classificationRadioGroup, bgCEData.CEPage6.section1Radioboxes);
-        cloudandPremiseDataClassification();
+        cy.findElement(background.IL4Radiobox)
+            .click({
+                force: true
+            });
 
         //Section#2: Current usage and users
         cy.findElement(background.section2Question1).scrollIntoView();
@@ -291,7 +268,15 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.clickContinueButton(background.additionalInfoTextbox, bgCEData.CEPage7.pageHeader7);
         cy.textExists(background.introPText, bgCEData.CEPage7.pageText7);
         cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Location", "CLOUD" + deployedRegionCheckboxesList);
-        section7verifyTableData();
+        section7verifyTableData("UNCLASSIFIEDIL4");
+
+        // Page#7 : Background Summary
+        cy.clickContinueButton(background.currentEnvHistoryTable, bgCEData.BackgroundSummary.pageHeader8);
+        cy.textExists(background.currentEnvironmentHeaderText, bgCEData.BackgroundSummary.currentEnvironmentTitle);
+        cy.textExists(background.currentEnvironmentDescription, "Hybrid environment:");
+        cy.findElement(background.currentEnvironmentDescription).contains("1 cloud instance (Unclassified/IL4)");
+        cy.textExists(background.currentEnvironmentCompleteBtn, bgCEData.BackgroundSummary.currentEnvironmentViewButton);
+
     })
 
     it("TC2: Current Environment: Functional Testcase- Hybrid-OnPremise Environment", () => {
@@ -299,8 +284,8 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         //Page#1: Do you have a current environment to rehost? Yes No
         cy.verifyRadioGroupLabels(background.existingEnvNoRadioGroup, bgCEData.CEPage1.section1Radioboxes);
         cy.radioBtn(background.existYesRadioOption, "YES").not("not.checked").click({
-                force: true
-            });
+            force: true
+        });
 
         // Page#2:  Do you have system diagrams, data architecture diagrams, charts etc..? 
         cy.clickContinueButton(background.existYesRadioOption, bgCEData.CEPage2.pageHeader2)
@@ -356,7 +341,12 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
             });
         cy.textExists(background.section1Question2OnPrem, bgCEData.CEPage6.section1Question1OnPrem);
         cy.verifyRadioGroupLabels(background.classificationRadioGroup, bgCEData.CEPage6.section1RadioboxesOnPrem);
-        cloudandPremiseDataClassification();
+        cy.findElement(background.IL6Radiobox)
+            .click({
+                force: true
+            });
+
+
 
         //Section#2: Current usage and users
         cy.findElement(background.section2Question1).scrollIntoView();
@@ -374,7 +364,14 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
         cy.textExists(background.page7Title, bgCEData.CEPage7.pageHeader7);
         cy.textExists(background.introPText, bgCEData.CEPage7.pageText7);
         cy.verifyTableData(background.summaryCETableHeader, background.summaryCETableData, "Location", "ON-PREMISEMISSINGINFO");
-        section7verifyTableData();
+        section7verifyTableData("SECRETIL6")
+
+        // Page#7 : Background Summary
+        cy.clickContinueButton(background.currentEnvHistoryTable, bgCEData.BackgroundSummary.pageHeader8);
+        cy.textExists(background.currentEnvironmentHeaderText, bgCEData.BackgroundSummary.currentEnvironmentTitle);
+        cy.textExists(background.currentEnvironmentDescription, "Hybrid environment:");
+        cy.findElement(background.currentEnvironmentDescription).contains("1 on-premise instance (Secret/IL6)");
+        cy.textExists(background.currentEnvironmentCompleteBtn, bgCEData.BackgroundSummary.currentEnvironmentViewButton);
 
     })
 });
