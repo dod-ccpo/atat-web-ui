@@ -90,6 +90,15 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
   return (source === "TECH_PROPOSAL" || source === "SET_LUMP_SUM") && !method ? true : false;
 }
 
+export const ExceptionToFairOpportunityResolver = (current:string): string =>{
+  const isFromStepOne =
+    [routeNames.AcorInformation, routeNames.AlternateCor].includes(current)
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
+  return isFromStepOne
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.Exceptions
+    : routeNames.SummaryStepTwo;
+}
+
 export const EvalPlanRouteResolver = (current: string): string => {
   return isStepTouched(2) && current === routeNames.CertificationPOCs
     ? routeNames.SummaryStepTwo
@@ -139,14 +148,12 @@ export const BVTOResolver = (current: string): string => {
 
 export const SummaryStepTwoRouteResolver = (current: string): string =>{
   return routeNames.SummaryStepTwo;
-  // return isStepTouched(3) 
-  //   ? routeNames.SummaryStepThree 
-  //   : routeNames.PeriodOfPerformance;
 }
 
 export const ProposedCSPRouteResolver = (current: string): string => {
-  return current === routeNames.Exceptions && evalPlanRequired() 
-    ? routeNames.CreateEvalPlan
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
+  return current === routeNames.Exceptions && evalPlanRequired()
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.CreateEvalPlan
     : routeNames.ProposedCSP
 };
 
@@ -469,7 +476,7 @@ export const ContractingInfoResolver = (current: string): string => {
     return routeNames.ContractingOfficeInfo;
   }
   return current === routeNames.ContractingShop 
-    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne: routeNames.ProjectOverview 
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne: routeNames.ProjectOverview
     : routeNames.SummaryStepOne;
 };
 
@@ -1746,6 +1753,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   CurrentContractDetailsRouteResolver,
   ProcurementHistorySummaryRouteResolver,
+  ExceptionToFairOpportunityResolver,
   CurrentEnvironmentResolver,
   RemoveBarriersFormRouteResolver,
   conductedResearchRouteResolver,

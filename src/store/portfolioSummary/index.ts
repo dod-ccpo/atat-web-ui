@@ -101,7 +101,7 @@ export class PortfolioSummaryStore extends VuexModule {
     if (searchDTO.searchString) {
       query = query + "^nameLIKE" + searchDTO.searchString;
     }
-    // ATAT TODO: below block is commented out because "csp" column is moved to "environment" 
+    // ATAT TODO * below block is commented out because "csp" column is moved to "environment" 
     // table and cannot be part of the search for portfolio with offsets and limits for pagination.
     /*if (searchDTO.csps?.length > 0) {
       query = query + "^csp.nameIN" + searchDTO.csps;
@@ -206,9 +206,11 @@ export class PortfolioSummaryStore extends VuexModule {
     const allEnvs: Environment[] = allEnvironmentsList.map(
       environment => convertColumnReferencesToValues(environment)
     );
-
+    
     allEnvs.forEach(env => {
-      // ATAT TODO: env status should be set in SNOW
+      // ATAT TODO AT-9721
+      // remove this forEach entirely
+      // change environmentStatus to environment_status throughout codebase
       if (env.provisioned === "true") {
         env.environmentStatus = Statuses.Provisioned.value;
       } else {
@@ -281,7 +283,6 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action({rawError: true})
   private async setTaskOrdersForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]):
     Promise<PortfolioSummaryDTO[]> {
-    // ATAT TODO - only get task order records where current user is manager or viewer
     let allTaskOrderList = await api.taskOrderTable.getQuery(
       {
         params:
@@ -421,7 +422,7 @@ export class PortfolioSummaryStore extends VuexModule {
           if (validStatusesForTotalObligated.includes(clinRecord.clin_status)) {
             totalObligatedForPortfolio =
               totalObligatedForPortfolio + Number(clinRecord.funds_obligated);
-            // ATAT TODO:check if this should be outside if block
+            // ATAT TODO AT-9722 - check if this should be outside if block
             fundsObligatedTaskOrder = fundsObligatedTaskOrder +
               Number(clinRecord.funds_obligated); 
             totalTaskOrderValue = totalTaskOrderValue + Number(clinRecord.funds_total);
@@ -454,14 +455,13 @@ export class PortfolioSummaryStore extends VuexModule {
    * Makes a callout to get the portfolio search queries and then loads the portfolio list
    * by concatenating the search queries
    *
-   * ATAT TODO: In a future story performance can be improved by eliminating the calls to all
+   * ATAT TODO * Q1 FY24 - address when adding filtering back into portfolio list
+   *  In a future story performance can be improved by eliminating the calls to all
    *  the referenced tables on each search variable change. Strategy is to load all the
    *  portfolios the user can view OR manage and cache the data. On subsequence searches
    *  just make one call to the portfolio table using the search values and use the
    *  response to filter the results from the cached portfolio list. Since the cached results
    *  already have the referenced data, no further call needs to be made.
-   *  Clubbing this story into the existing story will increase the scope and delay the testing
-   *  of this story.
    */
   @Action({rawError: true})
   public async searchPortfolioSummaryList(
