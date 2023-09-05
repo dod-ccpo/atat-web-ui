@@ -18,6 +18,7 @@ import {
   FairOpportunityDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
+  RequirementsCostEstimateDTO,
   SelectedClassificationLevelDTO,
   SensitiveInformationDTO
 } from "@/api/models";
@@ -29,6 +30,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
 import { AxiosRequestConfig } from "axios";
 import api from "@/api";
+import IGCE from "../IGCE";
 
 
 
@@ -1734,7 +1736,7 @@ export class SummaryStore extends VuexModule {
   public async assessRequirementsCostEstimate(): Promise<void> {
 
     const isTouched = false;
-    const isComplete =  false;
+    const isComplete =  await this.isRCEComplete();
     const description = "Placeholder";
 
     const requirementsCostEstimateSummaryItem: SummaryItem = {
@@ -1749,6 +1751,44 @@ export class SummaryStore extends VuexModule {
 
     await this.doSetSummaryItem(requirementsCostEstimateSummaryItem)
   };
+
+  // "" | "YES_REPLICATE" | "YES_OPTIMIZE" | "NO";
+  @Action({rawError: true})
+  public async isRCEComplete(): Promise<boolean> {
+    const rce = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
+    return await this.hasReplicateOrOptimizeAction(rce)
+      && await this.hasArchitecturalDesigns(rce)
+      && await this.hasCostEstimates()
+  }
+
+  @Action({rawError: true})
+  public async hasReplicateOrOptimizeAction(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    const action = CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized;
+    return action.includes("YES")
+      ? rce.optimize_replicate.estimated_values.every(val=>val !== "")
+        && rce.optimize_replicate.option !== ""
+      : true;
+  }
+
+  @Action({rawError: true})
+  public async hasArchitecturalDesigns(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES"
+      ? rce.architectural_design_performance_requirements.estimated_values.every(val=>val !== "")
+        && rce.architectural_design_performance_requirements.option !== ""
+      : true;
+  }
+
+  @Action({rawError: true})
+  public async hasCostEstimates(): Promise<boolean> {
+    return IGCE.igceEstimateList.every(
+      (ce) => {
+        return ce.description !== ""
+          && ce.title !== ""
+          && ["0", "0.00", ""].every(price => price !== "")
+      }
+    )
+  }
+
 
   @Action({rawError: true})
   public async assessIncrementalFunding(): Promise<void> {
