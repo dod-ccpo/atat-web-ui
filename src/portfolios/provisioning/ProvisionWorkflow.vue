@@ -176,7 +176,6 @@ export default class ProvisionWorkflow extends Vue {
       : await Steps.getPrevious();
     
     const {activeSection} = await AppSections.getSectionData()
-
     if (nextStepName) {
       if(PortfolioStore.isProvisioningTOFollowOn && activeSection === "ProvisionWorkflow" ){
         const currentPortfolio = PortfolioStore.currentPortfolio;
@@ -216,59 +215,63 @@ export default class ProvisionWorkflow extends Vue {
       this.$router.push({ name: nextStepName as string, params: { direction } });
 
     } else if (direction === "previous" && this.altBackDestination) { 
-      
       if (this.$route.name === this.routeNames.AwardedTaskOrder) {
-        Steps.setAltBackDestination("");
-        switch (this.altBackDestination) {
-        case AppSections.sectionTitles.Home: {
-          this.$router.push({name: "home", params: { direction } })
-          AppSections.changeActiveSection(AppSections.sectionTitles.Home);
-          break;
-        }
-        case AppSections.sectionTitles.Packages: {
-          this.$router.push({name: "home", params: { direction } })
-          AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
-          break;
-        }
-        case AppSections.sectionTitles.CreateFirstPortfolio: {
-          this.$router.push({name: "home", params: { direction } })
-          AppSections.changeActiveSection(AppSections.sectionTitles.CreateFirstPortfolio);
-          break;
-        }
-        case AppSections.sectionTitles.Portfolios: {
-          this.$router.push({name: "home", params: { direction } })
-          AppSections.changeActiveSection(AppSections.sectionTitles.Portfolios);
-          break;
-        }
-        case AppSections.sectionTitles.PortfolioSummary: {
-          this.$router.push({name: "home", params: { direction } })
-          await AppSections.setActiveTabIndex(1)
-          AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
-          break;
-        }
-        }
+        await this.awardedTaskOrderRoutes(direction)
       }
     }
   }  
 
+  public async awardedTaskOrderRoutes(direction: string){
+    Steps.setAltBackDestination("");
+    switch (this.altBackDestination) {
+    case AppSections.sectionTitles.Home: {
+      this.$router.push({name: "home", params: { direction } })
+      AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+      break;
+    }
+    case AppSections.sectionTitles.Packages: {
+      this.$router.push({name: "home", params: { direction } })
+      AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
+      break;
+    }
+    case AppSections.sectionTitles.CreateFirstPortfolio: {
+      this.$router.push({name: "home", params: { direction } })
+      AppSections.changeActiveSection(AppSections.sectionTitles.CreateFirstPortfolio);
+      break;
+    }
+    case AppSections.sectionTitles.Portfolios: {
+      this.$router.push({name: "home", params: { direction } })
+      AppSections.changeActiveSection(AppSections.sectionTitles.Portfolios);
+      break;
+    }
+    case AppSections.sectionTitles.PortfolioSummary: {
+      this.$router.push({name: "home", params: { direction } })
+      await AppSections.setActiveTabIndex(1)
+      AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
+      break;
+    }
+    }
+  }
   public async addTaskorderToPortfolio(){
     this.disableOk = true;
     this.showOkSpinner = true;
     const portfolioSysId = PortfolioStore.currentPortfolio.sysId as string;
+    console.log(portfolioSysId, this.TONumber)
     const {success} = await api.edaApi.addTO(
       this.TONumber, 
       portfolioSysId
     );
+    console.log(success, 'success?')
     if(success){
-      this.disableOk = false;
-      this.showOkSpinner = false;
-      this.showTOConfirmModal = false;
       await PortfolioSummary.searchPortfolioSummaryList(
         { searchDTO: {}, singlePortfolioSearch: portfolioSysId }
       );
       await PortfolioStore.setPortfolioIsUpdating(true)
       await PortfolioStore.setActiveTaskOrderNumber(this.TONumber)
       await AppSections.setActiveTabIndex(1);
+      this.disableOk = false;
+      this.showOkSpinner = false;
+      this.showTOConfirmModal = false;
       AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
     }
   }
