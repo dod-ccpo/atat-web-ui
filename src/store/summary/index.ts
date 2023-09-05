@@ -1759,6 +1759,14 @@ export class SummaryStore extends VuexModule {
     return await this.hasReplicateOrOptimizeAction(rce)
       && await this.hasArchitecturalDesigns(rce)
       && await this.hasCostEstimates()
+      && await this.hasSurgeRequirements(rce)
+      && await this.hasCostEstimateTotals(rce)
+      && await this.hasHowEstimatesDeveloped(rce);
+
+    //fee specs
+    // travel
+    // training
+    // supporting documentation
   }
 
   @Action({rawError: true})
@@ -1789,6 +1797,39 @@ export class SummaryStore extends VuexModule {
     )
   }
 
+  @Action({rawError: true})
+  public async hasSurgeRequirements(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    return rce.surge_requirements.capabilities === "NO"
+      ? true
+      : rce.surge_requirements.capabilities === "YES"
+        && ["0", null].every(capacity => capacity !== rce.surge_requirements.capacity)
+  }
+
+  @Action({rawError: true})
+  public async hasCostEstimateTotals(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    return (rce.baseYearTotal as number) > 0 
+      && (rce.grandTotal as number) > 0
+  }
+
+  @Action({rawError: true})
+  public async hasHowEstimatesDeveloped(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    const howEstimatesDeveloped = rce.how_estimates_developed;
+    const pcec =  howEstimatesDeveloped.previous_cost_estimate_comparison;
+    const isHowEstimatesDevelopedValid = howEstimatesDeveloped.tools_used !== ""
+      && howEstimatesDeveloped.cost_estimate_description !== ""
+
+    const isHowOtherEstimatesDeveloped = howEstimatesDeveloped.tools_used.includes("OTHER")
+      ? howEstimatesDeveloped.other_tools_used !== ""
+      : true
+
+    const isPreviousCostEstimateComparisonValid = pcec.options.includes("_THAN")
+      ? (pcec.percentage as number) > 0
+      : pcec.options.includes("SAME") ? true : false;
+     
+    return isHowEstimatesDevelopedValid 
+      && isHowOtherEstimatesDeveloped
+      && isPreviousCostEstimateComparisonValid;
+  }
 
   @Action({rawError: true})
   public async assessIncrementalFunding(): Promise<void> {
