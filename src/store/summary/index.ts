@@ -229,11 +229,8 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessFairOpportunity(objectKeys: string[]): Promise<void>{
     const fairOpp = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
-    const keysToIgnore = objectKeys.filter(
-      x => x !== "sys_"
-    );
-    const monitor = {object: fairOpp, keysToIgnore};
-    const isTouched = await this.isTouched(monitor)
+    const keysToIgnore = ["sys_", "cause_migration_estimated_cost"];
+    const isTouched = await this.isTouched({object: fairOpp, keysToIgnore});
     const isComplete = await this.isFairOpportunityComplete(fairOpp);
     const FairOpportunityItem: SummaryItem = {
       title: "Exception to Fair Opportunity",
@@ -577,27 +574,70 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessEvalPlan(objectKeys: string[]): Promise<void>{
-    const isFairOpportunityTouched = this.summaryItems.find(
-      si => si.title.includes("Fair Opportunity")
-    )?.isTouched;
+    const fairOpp = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
+    const hasEmptyFairOpp = fairOpp === "";
+    const hasNoFairOpp = fairOpp === "NO_NONE"
+    const hasFairOpp = !hasNoFairOpp && !hasEmptyFairOpp;
     const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
     const keysToIgnore = objectKeys.filter(
       x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
     );
     const monitor = {object: evalPlanStore, keysToIgnore};
-    const isTouched = await this.isTouched(monitor)
+    const isTouched = hasNoFairOpp ? await this.isTouched(monitor) : true;
+    const isComplete = hasFairOpp ? true : await this.isEvalPlanComplete(evalPlanStore);
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
-      description: "",
-      isComplete: await this.isEvalPlanComplete(evalPlanStore),
-      isTouched,
-      routeName:  "CreateEvalPlan",
+      description: await this.setEvalPlanDescription({evalPlanStore, isComplete, fairOpp}),
+      isComplete: hasNoFairOpp ? isComplete : (!hasEmptyFairOpp ? true : false),
+      isTouched: hasNoFairOpp ? isTouched : (!hasEmptyFairOpp ? true : false),
+      routeName: "CreateEvalPlan",
       step:2,
       substep: 2
     }
     await this.doSetSummaryItem(evalPlan)
   }
 
+  @Action({rawError: true})
+  public async setEvalPlanDescription(
+    config:{
+      evalPlanStore:EvaluationPlanDTO,
+      isComplete: boolean,
+      fairOpp: string
+    }): Promise<string> {
+    const method = config.evalPlanStore.method;
+    const selection = config.evalPlanStore.source_selection;
+    const hasNoFairOpp = config.fairOpp === "NO_NONE"
+    let description = "No Evaluation Plan is required.";
+    if (!hasNoFairOpp && config.isComplete){
+      return description;
+    }
+
+    if (!config.isComplete){
+      return "";
+    }
+
+    switch(selection){
+    case "NO_TECH_PROPOSAL":
+      description = "Technical proposal not required; award will be made on a LPTA basis."
+      break;
+    case "TECH_PROPOSAL":
+      description = (method ?? "") !==  ""
+        ? "Technical proposal required; award will be made on a " + method + " basis."
+        : "";
+      break;
+    case "SET_LUMP_SUM":
+      description = (method ?? "") !==  ""
+        ? "Purchase a set lump sum dollar amount from one CSP; " +
+          "award will be made to the “" + method + "” solution."
+        : "";
+      break;
+    case "EQUAL_SET_LUMP_SUM":
+      description = "Purchase an equal set lump sum dollar amount from each CSP."
+      break;
+    }
+    return description;
+  }
+  
   @Action({rawError: true})
   public async isEvalPlanComplete(evalPlanStore:EvaluationPlanDTO): Promise<boolean> {
     const hasCustomSpecs = (evalPlanStore.has_custom_specifications ?? "") !== "";
@@ -1654,6 +1694,7 @@ export class SummaryStore extends VuexModule {
       x => ["foia_"].indexOf(x) === -1
     );
     keysToIgnore.push("foia_street_address_2");
+    keysToIgnore.push("foia_country");
     const fOIAMonitor = {object: sensitiveInfo, keysToIgnore};
     const isTouched = await this.isTouched(fOIAMonitor)
     const isComplete = sensitiveInfo.potential_to_be_harmful === "NO"

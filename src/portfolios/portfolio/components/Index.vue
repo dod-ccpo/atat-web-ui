@@ -51,7 +51,10 @@
           style="margin-bottom:300px !important"
         >
             <FundingTracker v-if="tabItems[tabIndex] === 'Funding Tracker'" />
-            <TaskOrder v-if="tabItems[tabIndex] === 'Task Orders'"/>
+            <TaskOrder 
+            v-if="tabItems[tabIndex] === 'Task Orders'" 
+            :portfolioSysId="portfolioSysId"
+            />
             <CSPPortalAccess
               v-if="tabItems[tabIndex] === 'CSP Portal Access'"
               :portfolioCSP="portfolioCSP"
@@ -126,6 +129,7 @@ export default class PortfolioSummary extends Vue {
   public title = ""
   public portfolioDescription = ""
   public portfolioCSP = ""
+  public portfolioSysId = ""
 
   public selectedSecondaryTab = 0;
   public secondaryTabClick(index: number): void {
@@ -150,6 +154,7 @@ export default class PortfolioSummary extends Vue {
       this.title = portfolio.title || "";
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
+      this.portfolioSysId = portfolio.sysId;
 
       const envs = portfolio.environments;
 

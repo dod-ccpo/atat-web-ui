@@ -147,7 +147,9 @@ export default class Home extends Vue {
   }
 
   public openSearchTOModal(acqPackageSysId: string): void {
-    this.selectedAcquisitionPackageSysId = acqPackageSysId;
+    if(acqPackageSysId){
+      this.selectedAcquisitionPackageSysId = acqPackageSysId;
+    }
     this.showTOSearchModal = true;
   }
 
@@ -175,7 +177,6 @@ export default class Home extends Vue {
   }
 
   public async startNewAcquisition(): Promise<void> {
-    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await acquisitionPackage.setIsNewPackage(true)
     await AcquisitionPackage.reset();
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
@@ -190,7 +191,6 @@ export default class Home extends Vue {
   }
 
   public async startProvisionWorkflow(): Promise<void>{
-    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await AcquisitionPackage.reset();
     if (this.selectedAcquisitionPackageSysId) {
       await PortfolioStore.setShowTOPackageSelection(false);
@@ -217,6 +217,7 @@ export default class Home extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await AcquisitionPackage.loadFeedbackOptions()
     this.isLoading = true;
     await CurrentUserStore.initialize();

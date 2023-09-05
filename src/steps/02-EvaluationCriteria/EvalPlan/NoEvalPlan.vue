@@ -25,6 +25,14 @@
           will be issued on a sole-source basis to the CSP that you specified in
           the previous section.
         </p>
+        <p>
+          To edit your evaluation criteria,
+          <router-link
+              id="ExceptionsLink"
+              :to="{ name: routeNames.Exceptions }">
+            revisit the Exception to Fair Opportunity section.
+          </router-link>
+        </p>
       </template>
     </ATATAlert>
   </div>
@@ -34,6 +42,7 @@
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import {Component, Mixins} from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
+import {routeNames} from "@/router/stepper";
 
 @Component({
   components: {
@@ -41,6 +50,8 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 
-export default class NoEvalPlan extends Mixins(LoadOnEnter) {}
+export default class NoEvalPlan extends Mixins(LoadOnEnter) {
+  public routeNames = routeNames;
+}
 
 </script>
