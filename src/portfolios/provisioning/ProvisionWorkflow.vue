@@ -256,12 +256,11 @@ export default class ProvisionWorkflow extends Vue {
     this.disableOk = true;
     this.showOkSpinner = true;
     const portfolioSysId = PortfolioStore.currentPortfolio.sysId as string;
-    console.log(portfolioSysId, this.TONumber)
     const {success} = await api.edaApi.addTO(
       this.TONumber, 
       portfolioSysId
     );
-    console.log(success, 'success?')
+
     if(success){
       await PortfolioSummary.searchPortfolioSummaryList(
         { searchDTO: {}, singlePortfolioSearch: portfolioSysId }

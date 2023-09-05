@@ -104,15 +104,9 @@ describe("Testing ProvisionWorkflow", () => {
       Promise.resolve({success: true})
     );
     const mockChangeActive = jest.spyOn(AppSections, "changeActiveSection").mockImplementation();
-      // await PortfolioStore.setCurrentPortfolio({sysId: '1234'})
       await wrapper.setData({TONumber: '10000'}) 
       await wrapper.vm.addTaskorderToPortfolio();
       expect(mockChangeActive).toHaveBeenCalledWith(AppSections.sectionTitles.PortfolioSummary)
     })
-
-    
   });
-
-
-
 });

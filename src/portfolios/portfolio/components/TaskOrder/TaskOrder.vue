@@ -17,7 +17,8 @@
           resources and support for this portfolio.
           -->
         </p>
-        <v-btn 
+        <v-btn
+        v-if="portfolioIsActive"
         outlined 
         class="ml-10 secondary" 
         @click="openSearchTOModal"
@@ -64,6 +65,7 @@ import AppSections from "@/store/appSections";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import Toast from "@/store/toast";
+import { Statuses } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -80,6 +82,7 @@ export default class TaskOrder extends Vue {
   public showDetails = false
   public taskOrders: TaskOrderCardData[] = [];
   public selectedTaskOrder:TaskOrderCardData ={};
+  public portfolioIsActive = true;
 
   public showTOSearchModal = false;
   public TONumber = "";
@@ -127,7 +130,8 @@ export default class TaskOrder extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
-    console.log(PortfolioStore.portfolioIsUpdating, 'is updating')
+    this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.label;
+
     if(PortfolioStore.portfolioIsUpdating){
       const taskOrderUpdatedToast: ToastObj = {
         type: "success",
@@ -141,7 +145,6 @@ export default class TaskOrder extends Vue {
     }
     const portfolioSummaryList = 
       await PortfolioSummary.getAllPortfolioSummaryList() as unknown as PortfolioSummaryDTO[];
-    console.log(portfolioSummaryList, 'sum list')
     if (portfolioSummaryList !== null){
       this.taskOrders = portfolioSummaryList.flatMap(
         portfolio=>portfolio.task_orders.filter((
