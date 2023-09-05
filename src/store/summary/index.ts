@@ -440,6 +440,17 @@ export class SummaryStore extends VuexModule {
         && fairOpp.research_techniques_summary !== ""
       : true;
 
+    // if Q1 or Q2 === 'YES' and 1 item is checked in fairOpp.research_other_techniques_used 
+    // checkbox list then fairOpp.research_techniques_summary is required
+    let hasResearchTechniquesSummary = true;
+    if (researchIsCSPOnlySourceCapable === "YES" || researchReviewCatalogsReviewed === "YES"){
+      // By default, `REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG` is selected.  
+      // Validate that at least 2 items have been selected. 
+      hasResearchTechniquesSummary = 
+        (fairOpp.research_other_techniques_used as string).split(",").length>1 
+        && fairOpp.research_techniques_summary !== ""
+    }
+
     // if `other` is selected, then validate the `other text box`
     const otherOptionSysId = AcquisitionPackage.marketResearchTechniques?.find(
       (option) => option.technique_label.toUpperCase() === "OTHER"
@@ -460,7 +471,8 @@ export class SummaryStore extends VuexModule {
       && hasResearchReviewCatalogsReviewed
       && isOtherOptionSelected
       && hasOtherTechniques
-      && hasMarketResearchDetails;
+      && hasMarketResearchDetails
+      && hasResearchTechniquesSummary;
   }
 
   @Action({rawError: true})

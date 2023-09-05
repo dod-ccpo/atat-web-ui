@@ -21,7 +21,7 @@
             <transition-group name="funding-increments" tag="div">
               <div
                 v-for="(researcher, index) in researchers"
-                :key="researchers[index].name + '_' + index"
+                :key="index"
                 :id="'Researcher' + index"
                 class="d-flex width-100 researcher-table-row pa-2 pt-3"
               >
@@ -144,7 +144,7 @@ export default class WhoConductedResearch extends Mixins(SaveOnLeave) {
     }
   }
   public isResearchDataComplete(researcher:{ name: string, title: string, org: string}):boolean{
-    return researcher.org !== "" && researcher.title !== "" && researcher.org !== "";
+    return researcher.name !== "" && researcher.title !== "" && researcher.org !== "";
   }
   private get currentData(): FairOpportunityDTO {
     const researchValue = this.researchers.length == 0 ? "":JSON.stringify(this.researchers)
