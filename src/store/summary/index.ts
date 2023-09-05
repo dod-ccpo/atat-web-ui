@@ -446,9 +446,10 @@ export class SummaryStore extends VuexModule {
     if (researchIsCSPOnlySourceCapable === "YES" || researchReviewCatalogsReviewed === "YES"){
       // By default, `REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG` is selected.  
       // Validate that at least 2 items have been selected. 
-      hasResearchTechniquesSummary = 
-        (fairOpp.research_other_techniques_used as string).split(",").length>1 
-        && fairOpp.research_techniques_summary !== ""
+      hasResearchTechniquesSummary = hasContractAction
+        ? true
+        : (fairOpp.research_other_techniques_used as string).split(",").length>1 
+          && fairOpp.research_techniques_summary !== ""
     }
 
     // if `other` is selected, then validate the `other text box`
