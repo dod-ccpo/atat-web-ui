@@ -1756,8 +1756,12 @@ export class SummaryStore extends VuexModule {
     }
     else if (fundingRequestInfo.funding_request_type === "FS_FORM") {
       if (FinancialDetails.gInvoicingData.useGInvoicing === "YES"
-        && FinancialDetails.gInvoicingData.gInvoiceNumber) {
+        && FinancialDetails.gInvoicingData.gInvoiceNumber
+        && FinancialDetails.fundingRequestFSForm?.gt_c_number
+        && FinancialDetails.fundingRequestFSForm?.order_number) {
         isComplete = true;
+        description = `GT&C: ${FinancialDetails.fundingRequestFSForm.gt_c_number}<br>
+         Order: ${FinancialDetails.fundingRequestFSForm.order_number}`
       }
       else if(FinancialDetails.gInvoicingData.useGInvoicing === "NO"
         && FinancialDetails.fundingRequestFSForm?.fs_form_7600a_attachment
