@@ -108,5 +108,9 @@ describe("Testing ProvisionWorkflow", () => {
       await wrapper.vm.addTaskorderToPortfolio();
       expect(mockChangeActive).toHaveBeenCalledWith(AppSections.sectionTitles.PortfolioSummary)
     })
+    it("tests TOConfirmCancelled()", async () =>{
+      await wrapper.vm.TOConfirmCancelled();
+      expect(wrapper.vm.$data.showTOConfirmModal).toBe(false);
+    })
   });
 });
