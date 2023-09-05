@@ -116,7 +116,7 @@ export class EDAApi extends ApiBase{
     }
   }
 
-  public async updatePortfolio(
+  public async addTO(
     taskOrderNumber: string,
     portfolioSysId: string
   ): Promise<EDAResponse> {
@@ -127,10 +127,10 @@ export class EDAApi extends ApiBase{
       taskOrderNumber: taskOrderNumber,  
       portfolioSysId: portfolioSysId    
     }
-
+    console.log(params, 'these are the params')
     try {
       const requestConfig: AxiosRequestConfig = { params };
-      const response = await this.instance.put(this.endPoint, requestConfig);
+      const response = await this.instance.put(this.endPoint, null, requestConfig);
       let edaResponse: EDAResponse = {};
       if (response.status === 200) {
         const { result } = response.data;

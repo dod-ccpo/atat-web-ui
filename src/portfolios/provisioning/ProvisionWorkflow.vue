@@ -38,6 +38,9 @@
     @cancelClicked="TOConfirmCancelled"
     cancelButtonId="TOConfirmCancelled"
     okText="Add task order"
+    @ok="addTaskorderToPortfolio"
+    :OKDisabled="disableOk"
+    :showOKSpinner="showOkSpinner"
   >
   <template #content>
     <div class="body">
@@ -84,7 +87,7 @@ import {
 } from "@/router/provisionWorkflow";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
-import { getCSPLongName } from "@/helpers";
+import api from "@/api";
 
 @Component({
   components: {
@@ -104,6 +107,8 @@ export default class ProvisionWorkflow extends Vue {
   public TONumber = "";
   public csp = "";
   public portfolioName = "";
+  public disableOk = false;
+  public showOkSpinner = false;
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent || undefined;
@@ -168,13 +173,14 @@ export default class ProvisionWorkflow extends Vue {
     const nextStepName = direction === "next" 
       ? await Steps.getNext() 
       : await Steps.getPrevious();
-    console.log(await AppSections.getSectionData(), 'get section')
-    console.log(PortfolioStore.currentPortfolio, 'current')
+    
+    const {activeSection} = await AppSections.getSectionData()
+
     if (nextStepName) {
-      if(PortfolioStore.isProvisioningTOFollowOn){
+      if(PortfolioStore.isProvisioningTOFollowOn && activeSection === "ProvisionWorkflow" ){
         const currentPortfolio = PortfolioStore.currentPortfolio;
-        this.TONumber = PortfolioStore.activeTaskOrderNumber;
-        this.csp = getCSPLongName(currentPortfolio.csp?.toUpperCase() as string);
+        this.TONumber = PortfolioStore.portfolioProvisioningObj.taskOrderNumber as string;
+        this.csp = PortfolioStore.portfolioProvisioningObj.cspLong as string;
         this.portfolioName = currentPortfolio.title as string;
         this.showTOConfirmModal = true
         return;
@@ -242,6 +248,16 @@ export default class ProvisionWorkflow extends Vue {
         }
       }
     }
+  }  
+
+  public async addTaskorderToPortfolio(){
+    this.disableOk = true;
+    this.showOkSpinner = true;
+    const addTOResults = await api.edaApi.addTO(
+      this.TONumber, 
+      PortfolioStore.currentPortfolio.sysId as string
+    );
+    console.log(addTOResults, 'theses are the results!')
   }
 
   private setNavButtons(step: StepInfo): void {
