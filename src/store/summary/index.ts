@@ -449,7 +449,8 @@ export class SummaryStore extends VuexModule {
       hasResearchTechniquesSummary = hasContractAction
         ? true
         : (fairOpp.research_other_techniques_used as string).split(",").length>1 
-          && fairOpp.research_techniques_summary !== ""
+          ? fairOpp.research_techniques_summary !== ""
+          : true
     }
 
     // if `other` is selected, then validate the `other text box`
