@@ -3,6 +3,7 @@
     <div class="mb-10">
         <FinancialDetailsAlert />
     </div>
+    <ATATToast />
     <div v-if="!showDetails">
       <h2 class="pb-3">All task orders</h2>
       <div class="d-flex justify-space-between">
@@ -16,7 +17,6 @@
           resources and support for this portfolio.
           -->
         </p>
-        
         <v-btn 
         outlined 
         class="ml-10 secondary" 
@@ -53,7 +53,7 @@ import Vue from "vue";
 import { Component, Prop} from "vue-property-decorator";
 import FinancialDetailsAlert from "../../FinancialDetailsAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
-import {TaskOrderCardData} from "../../../../../types/Global";
+import {TaskOrderCardData, ToastObj} from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
@@ -62,13 +62,16 @@ import PortfolioStore from "@/store/portfolio";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
+import ATATToast from "@/components/ATATToast.vue";
+import Toast from "@/store/toast";
 
 @Component({
   components: {
     TaskOrderCard,
     TaskOrderDetails,
     FinancialDetailsAlert,
-    TaskOrderSearchModal
+    TaskOrderSearchModal,
+    ATATToast
   }
 })
 export default class TaskOrder extends Vue {
@@ -124,8 +127,21 @@ export default class TaskOrder extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
+    console.log(PortfolioStore.portfolioIsUpdating, 'is updating')
+    if(PortfolioStore.portfolioIsUpdating){
+      const taskOrderUpdatedToast: ToastObj = {
+        type: "success",
+        message: "Task Order Number Updated",
+        isOpen: true,
+        hasUndo: false,
+        hasIcon: true,
+      };
+      Toast.setToast(taskOrderUpdatedToast)
+      PortfolioStore.setPortfolioIsUpdating(false)
+    }
     const portfolioSummaryList = 
       await PortfolioSummary.getAllPortfolioSummaryList() as unknown as PortfolioSummaryDTO[];
+    console.log(portfolioSummaryList, 'sum list')
     if (portfolioSummaryList !== null){
       this.taskOrders = portfolioSummaryList.flatMap(
         portfolio=>portfolio.task_orders.filter((

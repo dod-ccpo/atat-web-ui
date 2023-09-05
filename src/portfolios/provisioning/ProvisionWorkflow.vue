@@ -31,7 +31,7 @@
     </v-main>
     <ATATDialog 
     id="TOConfirmModal"
-    :showDialog.sync="showTOConfirmModal"
+    :showDialog="showTOConfirmModal"
     title="Add task order to your portfolio?"
     no-click-animation
     width="450"
@@ -88,6 +88,7 @@ import {
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
 import api from "@/api";
+import PortfolioSummary from "@/store/portfolioSummary";
 
 @Component({
   components: {
@@ -253,11 +254,23 @@ export default class ProvisionWorkflow extends Vue {
   public async addTaskorderToPortfolio(){
     this.disableOk = true;
     this.showOkSpinner = true;
-    const addTOResults = await api.edaApi.addTO(
+    const portfolioSysId = PortfolioStore.currentPortfolio.sysId as string;
+    const {success} = await api.edaApi.addTO(
       this.TONumber, 
-      PortfolioStore.currentPortfolio.sysId as string
+      portfolioSysId
     );
-    console.log(addTOResults, 'theses are the results!')
+    if(success){
+      this.disableOk = false;
+      this.showOkSpinner = false;
+      this.showTOConfirmModal = false;
+      await PortfolioSummary.searchPortfolioSummaryList(
+        { searchDTO: {}, singlePortfolioSearch: portfolioSysId }
+      );
+      await PortfolioStore.setPortfolioIsUpdating(true)
+      await PortfolioStore.setActiveTaskOrderNumber(this.TONumber)
+      await AppSections.setActiveTabIndex(1);
+      AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
+    }
   }
 
   private setNavButtons(step: StepInfo): void {
