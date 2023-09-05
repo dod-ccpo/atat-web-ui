@@ -313,6 +313,8 @@ export class SummaryStore extends VuexModule {
     let isCauseMigrationSelection = false;
     if (causeMigrationSelection === "YES"){
       isCauseMigrationSelection =  fairOpp.cause_migration_estimated_cost !== ""
+        && ["0.00", "0", ""].every(
+          invalidValue => invalidValue !== fairOpp.cause_migration_estimated_cost?.trim())
         && fairOpp.cause_migration_estimated_delay_amount !== ""
         && fairOpp.cause_migration_estimated_delay_unit !== ""
     } else if (causeMigrationSelection === "NO"){
@@ -452,7 +454,7 @@ export class SummaryStore extends VuexModule {
     hasMarketResearchDetails = fairOpp.research_details_for_docgen === "GENERATED"
       ? fairOpp.research_details_generated !== ""
       : fairOpp.research_details_custom !== ""
-      
+
     //todo eval to true
     return hasResearchIsCSPOnlySourceCapable
       && hasResearchReviewCatalogsReviewed
