@@ -2,6 +2,7 @@
     <ATATAlert
       id="LateFormAlert"
       type="info"
+      class="my-10"
       v-if="showAlertHeading"
     >
       <template v-slot:content>
