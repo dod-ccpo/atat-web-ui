@@ -46,8 +46,8 @@
     <div class="body">
       <p>
         Upon initiation of this process, ATAT will submit Task Order 
-        #{{TONumber}} to <span class="font-weight-bold">{{ csp }}</span> to continue funding 
-        your “{{ portfolioName }}” portfolio. This process cannot be undone.
+        #{{TONumber}} to <span class="font-weight-bold">{{ csp }}</span> to update funding
+        associated with your “{{ portfolioName }}” portfolio. This process cannot be undone.
       </p>
     </div>
     </template>
