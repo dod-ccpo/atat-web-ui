@@ -202,16 +202,38 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessAcquisitionDetails(): Promise<void>{
+    const projectOverview = AcquisitionPackage?.projectOverview;
+
+    let title = "Acquisition Details";
+    let description = "";
+    const isTouched = projectOverview ? !!projectOverview.title : false;
+    let isComplete = false;
+
+    if (projectOverview && isTouched) {
+      const processingOffice = AcquisitionPackage.contractingShop === "DITCO" ? "DITCO"
+        : "An external contracting office";
+      description = `${processingOffice} will process this JWCC task order.`;
+      title = projectOverview.title;
+
+      const isCompleteWithoutCjadc2 = !!projectOverview.title
+        && !!projectOverview.scope && !!projectOverview.emergency_declaration
+        && !!projectOverview.cjadc2 && !!projectOverview.project_disclaimer;
+
+      isComplete = projectOverview.cjadc2 === "YES"
+        ? isCompleteWithoutCjadc2 && !!projectOverview.cjadc2_percentage
+        : isCompleteWithoutCjadc2;
+    }
+
     const AcquisitionDetail: SummaryItem = {
-      title: "Acquisition Details",
-      description: "",
-      isComplete: false,
-      isTouched: AcquisitionPackage.projectTitle !== "",
-      routeName: "ProjectOverview",
-      step:1,
+      title,
+      description,
+      isComplete,
+      isTouched,
+      routeName: "ContractingShop",
+      step: 1,
       substep: 1
     }
-    await this.doSetSummaryItem(AcquisitionDetail)
+    await this.doSetSummaryItem(AcquisitionDetail);
   }
   @Action({rawError: true})
   public async assessOrganizationDetails(): Promise<void>{
@@ -238,7 +260,7 @@ export class SummaryStore extends VuexModule {
       step:1,
       substep: 2
     }
-    await this.doSetSummaryItem(organizationDetails)
+    await this.doSetSummaryItem(organizationDetails);
   }
   @Action({rawError: true})
   public async assessPrimaryPOC(): Promise<void>{
