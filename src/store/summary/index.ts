@@ -27,6 +27,7 @@ import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
 import api from "@/api";
+import FinancialDetails from "@/store/financialDetails";
 
 
 
@@ -115,6 +116,9 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
     break;
   case 7:
     await Summary.validateStepSeven();
+    break;
+  case 8:
+    await Summary.validateStepEight();
     break;
   default:
     break;
@@ -311,6 +315,8 @@ export class SummaryStore extends VuexModule {
     let isCauseMigrationSelection = false;
     if (causeMigrationSelection === "YES"){
       isCauseMigrationSelection =  fairOpp.cause_migration_estimated_cost !== ""
+        && ["0.00", "0", ""].every(
+          invalidValue => invalidValue !== fairOpp.cause_migration_estimated_cost?.trim())
         && fairOpp.cause_migration_estimated_delay_amount !== ""
         && fairOpp.cause_migration_estimated_delay_unit !== ""
     } else if (causeMigrationSelection === "NO"){
@@ -436,6 +442,19 @@ export class SummaryStore extends VuexModule {
         && fairOpp.research_techniques_summary !== ""
       : true;
 
+    // if Q1 or Q2 === 'YES' and 1 item is checked in fairOpp.research_other_techniques_used 
+    // checkbox list then fairOpp.research_techniques_summary is required
+    let hasResearchTechniquesSummary = true;
+    if (researchIsCSPOnlySourceCapable === "YES" || researchReviewCatalogsReviewed === "YES"){
+      // By default, `REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG` is selected.  
+      // Validate that at least 2 items have been selected. 
+      hasResearchTechniquesSummary = hasContractAction
+        ? true
+        : (fairOpp.research_other_techniques_used as string).split(",").length>1 
+          ? fairOpp.research_techniques_summary !== ""
+          : true
+    }
+
     // if `other` is selected, then validate the `other text box`
     const otherOptionSysId = AcquisitionPackage.marketResearchTechniques?.find(
       (option) => option.technique_label.toUpperCase() === "OTHER"
@@ -450,13 +469,14 @@ export class SummaryStore extends VuexModule {
     hasMarketResearchDetails = fairOpp.research_details_for_docgen === "GENERATED"
       ? fairOpp.research_details_generated !== ""
       : fairOpp.research_details_custom !== ""
-      
+
     //todo eval to true
     return hasResearchIsCSPOnlySourceCapable
       && hasResearchReviewCatalogsReviewed
       && isOtherOptionSelected
       && hasOtherTechniques
-      && hasMarketResearchDetails;
+      && hasMarketResearchDetails
+      && hasResearchTechniquesSummary;
   }
 
   @Action({rawError: true})
@@ -1755,6 +1775,108 @@ export class SummaryStore extends VuexModule {
     }
     return desc;
   }
+
+  //#endregion
+
+  //#region STEP 8
+  @Action({rawError: true})
+  public async validateStepEight(): Promise<void> {
+    await this.assessRequirementsCostEstimate();
+    await this.assessIncrementalFunding();
+    await this.assessFunding();
+  }
+
+  @Action({rawError: true})
+  public async assessRequirementsCostEstimate(): Promise<void> {
+
+    const isTouched = false;
+    const isComplete =  false;
+    const description = "Placeholder";
+
+    const requirementsCostEstimateSummaryItem: SummaryItem = {
+      title: "Requirements Cost Estimate",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "CreatePriceEstimate",
+      step: 8,
+      substep: 1
+    }
+
+    await this.doSetSummaryItem(requirementsCostEstimateSummaryItem)
+  };
+
+  @Action({rawError: true})
+  public async assessIncrementalFunding(): Promise<void> {
+    // if PoP is < 9 months, section will be autocompleted when either other section becomes touched
+    let isAutoCompleted = false;
+    if (AcquisitionPackage.totalBasePoPDuration < 270
+      && AcquisitionPackage.totalBasePoPDuration > 0) {
+      const reqCostEstimate = this.summaryItems
+        .find(item => item.step === 8 && item.substep === 1);
+      const isReqCostEstimateTouched = reqCostEstimate ? reqCostEstimate.isTouched : false;
+      const funding = this.summaryItems
+        .find(item => item.step === 8 && item.substep === 3);
+      const isFundingTouched = funding ? funding.isTouched : false;
+      isAutoCompleted = isReqCostEstimateTouched || isFundingTouched;
+    }
+
+    let description = "";
+
+    // if incrementally funded, verify that funding increments exist and financial POC is complete
+    const isIncrementallyFunded = FinancialDetails.isIncrementallyFunded;
+    let incrementalFundingPlanComplete = false;
+    if (isIncrementallyFunded === "YES") {
+      const hasFundingIncrements =  FinancialDetails.fundingIncrements.length > 0;
+      const financialPOC = AcquisitionPackage.financialPocInfo;
+      const isFinancialPocComplete = !!financialPOC?.first_name && !!financialPOC.last_name
+        && !!financialPOC.phone && !!financialPOC.email;
+      incrementalFundingPlanComplete = hasFundingIncrements && isFinancialPocComplete;
+
+      description = `<p>Requesting to incrementally fund requirement<br><br>
+        Financial POC: ${financialPOC?.first_name} ${financialPOC?.last_name}<br>
+        ${financialPOC?.email}</p≥`;
+    } else if (isIncrementallyFunded === "NO") {
+      description = "Not requesting to incrementally fund requirement"
+    }
+
+    const isTouched = isAutoCompleted || !!isIncrementallyFunded;
+    const isComplete =  isAutoCompleted || isIncrementallyFunded === "NO"
+      || incrementalFundingPlanComplete;
+
+    const incrementalFundingSummaryItem: SummaryItem = {
+      title: "Incremental Funding",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "SeverabilityAndIncrementalFunding",
+      step: 8,
+      substep: 2
+    }
+
+    await this.doSetSummaryItem(incrementalFundingSummaryItem)
+  };
+
+  @Action({rawError: true})
+  public async assessFunding(): Promise<void> {
+
+    const isTouched = false;
+    const isComplete =  false;
+    const description = "Placeholder";
+
+    const fundingSummaryItem: SummaryItem = {
+      title: "Funding",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "FundingPlanType",
+      step: 8,
+      substep: 3
+    }
+
+    await this.doSetSummaryItem(fundingSummaryItem)
+  };
+
 
   //#endregion
 

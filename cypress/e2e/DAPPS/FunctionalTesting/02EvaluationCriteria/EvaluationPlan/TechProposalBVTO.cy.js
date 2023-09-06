@@ -1,10 +1,11 @@
 import {
   randomString,
   randomAlphaNumeric
-} from "../../../../helpers";
-import ep from "../../../../selectors/evaluationPlan.sel";
-import evalCriteria from '../../../../fixtures/evaluationCriteria.json';
-import common from "../../../../selectors/common.sel";
+} from "../../../../../helpers";
+import ep from "../../../../../selectors/evaluationPlan.sel";
+import evalCriteria from '../../../../../fixtures/evaluationCriteria.json';
+import fo from "../../../../../selectors/fairOpportunityProcess.sel";
+import common from "../../../../../selectors/common.sel";
 
 
 describe("Test suite: TechProposal: BVTO", () => {
@@ -12,6 +13,7 @@ describe("Test suite: TechProposal: BVTO", () => {
   const customText = randomString(5);
   const pt = "TC-Step-2-FairOpp-None-BVTO-" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-BVTO" + randomString(5);
+  const evalPlanDescriptionText = `Technical proposal required; award will be made on a BVTO basis.`;
 
   beforeEach(() => {
 
@@ -37,8 +39,10 @@ describe("Test suite: TechProposal: BVTO", () => {
       ep.customDifferentiatorSection);
     cy.clickContinueButton(
       ep.otherCheckboxOption,
-      "Let’s gather details about the duration of your task order"
+      "Your Evaluation Criteria Summary"
     );
+    cy.log("Verify the Eval plan Summary details")
+    cy.verifyTextMatches(fo.evalPlanDesriptionText,evalPlanDescriptionText);
 
   });
 

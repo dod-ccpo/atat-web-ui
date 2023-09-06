@@ -7,66 +7,67 @@ module.exports = {
   taskDeliveryOrderNoTxtBox: "#TaskDeliveryOrderNumber_text_field",
 
   // Do you have a current contract for this effort?
-  activeRadioOption:"#currentContractOptions_radio_group_control .v-item--active",
+  activeRadioOption: "#currentContractOptions_radio_group_control .v-item--active",
   currentContractOptionsTxt: ".copy-max-width p",
-  ccYesRadioOption:"#Radio_YesCurrentContract",
+  ccYesRadioOption: "#Radio_YesCurrentContract",
   ccNoRadioOption: "#Radio_NoCurrentContract",
   radioOptionError: "#currentContractOptions_radio_group_control .field-error",
 
   //Let’s gather some details about your previous or current contract
   incumbentLabel: "#IncumbentContractorName_text_field_label",
   incumbentTxtBox: "#IncumbentContractorName_text_field",
-  incumbentError:"#IncumbentContractorName_text_field_control .field-error",
+  incumbentError: "#IncumbentContractorName_text_field_control .field-error",
   expirationDatePickerLabel: "#ExpirationDatePickerLabel",
-  expirationDatePickerError:"#ExpirationDatePickerContainer.atat-date-picker .field-error",
+  expirationDatePickerError: "#ExpirationDatePickerContainer.atat-date-picker .field-error",
   expirationDatePickerInputbox: "#ExpirationDatePickerTextField",
   expirationDatePickerIcon: "#ExpirationDatePickerButtonIcon",
-  expirationDatePicker:"#ExpirationDatePicker",
+  expirationDatePicker: "#ExpirationDatePicker",
   navigateNextMonth: "#ExpirationDatePicker button[aria-label='Next month']",
-  selectDate:".v-date-picker-table button:not(.v-btn--disabled)",
-  expirationSelectDate:"#ExpirationDatePicker > .v-picker__body > :nth-child(1) >.v-date-picker-table button:not(.v-btn--disabled)",
+  selectDate: ".v-date-picker-table button:not(.v-btn--disabled)",
+  expirationSelectDate: "#ExpirationDatePicker > .v-picker__body > :nth-child(1) >.v-date-picker-table button:not(.v-btn--disabled)",
   tNoTooltipBtn: "#TooltipButton_TaskDeliveryOrderNumber",
-  tNoTooltipText:"#TooltipText_TaskDeliveryOrderNumber",
-  expirationTooltipBtn:"#TooltipButton_Expiration",
-  expirationTooltipText:"#TooltipText_Expiration",
+  tNoTooltipText: "#TooltipText_TaskDeliveryOrderNumber",
+  expirationTooltipBtn: "#TooltipButton_Expiration",
+  expirationTooltipText: "#TooltipText_Expiration",
 
   //Let's gather some details about your previous or current contract
-  contractOverviewTitle:"h2.mb-5",
-  contractNoTooltipBtn:"#TooltipButton_ContractNumber",
-  contractNoTootipText:"#TooltipText_ContractNumber",
-  taskOrderNumberTxtBox:"#TaskOrderNumber_text_field",
-  taskOrderNumberToolTipBtn:"#TooltipButton_TaskOrderNumber",
-  taskOrderNumberTooltipText:"#TooltipText_TaskOrderNumber",
-  fullRadioOption:"#Radio_FULLOPEN",
-  sbSetAsideRadioOption:"#Radio_SBSETASIDE",
-  otherThanRadioOption:"#Radio_OTHERTHANFULL",
-  competitionRadioGroup:"#CompetitiveStatusOptions_radio_group_control input[type=radio]",
-  competitiveStatusOptionError:"#CompetitiveStatusOptions_radio_group_control .field-error",
-  competitionActiveRadio:"#CompetitiveStatusOptions_radio_group_control .v-item--active",
-  startDateTextField:"#StartDatePickerTextField",
-  startDatePickerBtnIcon:"#StartDatePickerButtonIcon",
-  startDatePreviousMonth:"#StartDatePicker button[aria-label='Previous month']",
-  startDatepicker:"#StartDatePicker",
-  popValidationError:"#PoPValidation .field-error",
-  businessSizeRadioOption:"#businessSizeOptions_radio_group_control input[type=radio]",
-  businessSizeActiveRadioOption:"#businessSizeOptions_radio_group_control .v-item--active",
-  businessSizeRadioOptionerror:"#businessSizeOptions_radio_group_control .field-error",
-  largeRadioOption:"#Radio_LARGE",
-  smallRadioOption:"#Radio_SMALL",
-  smallBARadioOption:"#Radio_SMALLBA",
-  hubRadioOption:"#Radio_HUBZONE",
-  sdvobRadioOption:"#Radio_SDVOSB",
-  wosbRadioOption:"#Radio_WOSB",
+  contractOverviewTitle: "h2.mb-5",
+  contractNoTooltipBtn: "#TooltipButton_ContractNumber",
+  contractNoTootipText: "#TooltipText_ContractNumber",
+  taskOrderNumberTxtBox: "#TaskOrderNumber_text_field",
+  taskOrderNumberToolTipBtn: "#TooltipButton_TaskOrderNumber",
+  taskOrderNumberTooltipText: "#TooltipText_TaskOrderNumber",
+  fullRadioOption: "#Radio_FULLOPEN",
+  sbSetAsideRadioOption: "#Radio_SBSETASIDE",
+  otherThanRadioOption: "#Radio_OTHERTHANFULL",
+  competitionRadioGroup: "#CompetitiveStatusOptions_radio_group_control input[type=radio]",
+  competitiveStatusOptionError: "#CompetitiveStatusOptions_radio_group_control .field-error",
+  competitionActiveRadio: "#CompetitiveStatusOptions_radio_group_control .v-item--active",
+  startDateTextField: "#StartDatePickerTextField",
+  startDatePickerBtnIcon: "#StartDatePickerButtonIcon",
+  startDatePreviousMonth: "#StartDatePicker button[aria-label='Previous month']",
+  startDatepicker: "#StartDatePicker",
+  popValidationError: "#PoPValidation .field-error",
+  businessSizeRadioOption: "#businessSizeOptions_radio_group_control input[type=radio]",
+  businessSizeActiveRadioOption: "#businessSizeOptions_radio_group_control .v-item--active",
+  businessSizeRadioOptionerror: "#businessSizeOptions_radio_group_control .field-error",
+  largeRadioOption: "#Radio_LARGE",
+  smallRadioOption: "#Radio_SMALL",
+  smallBARadioOption: "#Radio_SMALLBA",
+  hubRadioOption: "#Radio_HUBZONE",
+  sdvobRadioOption: "#Radio_SDVOSB",
+  wosbRadioOption: "#Radio_WOSB",
 
   //Your ProcurementHistory
-  procurementHistoryTable:"#ProcurementHistoryDataTable",
-  deleteO:"#DeleteButton_0",
-  edit0:"#EditButton_0",
-  addInstance:"#AddInstance",
-  deleteInstanceModal:"#DeleteInstanceModal",
-  deleteInstanceTitle:"#DeleteInstanceModalTitle",
-  deleteModalBtn:"#DeleteInstanceModal #dialog_ok",
-  deletemodalMessage:"#DeleteInstanceModalMessage",
+  procurementHistoryTable: "#ProcurementHistoryDataTable",
+  deleteO: "#DeleteButton_0",
+  delete1: "#DeleteButton_1",
+  edit0: "#EditButton_0",
+  addInstance: "#AddInstance",
+  deleteInstanceModal: "#DeleteInstanceModal",
+  deleteInstanceTitle: "#DeleteInstanceModalTitle",
+  deleteModalBtn: "#DeleteInstanceModal #dialog_ok",
+  deletemodalMessage: "#DeleteInstanceModalMessage",
 
   //Current Environments
   existYesRadioOption: "#ExistingEnvOptions_radio_group_control #Radio_Yes",
@@ -97,7 +98,7 @@ module.exports = {
   //Page#1:
   recurringPageText: "p.mb-8",
   introPText: "#IntroP",
-  existingEnvNoRadioGroup:"#ExistingEnvOptions_radio_group_control input[type=radio]",
+  existingEnvNoRadioGroup: "#ExistingEnvOptions_radio_group_control input[type=radio]",
   errorMessage: ".field-error.ml-2",
 
   //Page#2
@@ -106,7 +107,7 @@ module.exports = {
   fileUploadSection: "#FundingPlanEventDiv",
   uploadFileSysDiagram: "input[type='file']",
   yourUploadSection: ".file-loading-div.pa-6.v-card",
-  fileLinkFile1: "#File00",       
+  fileLinkFile1: "#File00",
   fileLinkFile2: "#File01",
   dragandDropText: "#FundingPlanEventDiv h2",
   browsetoUploadText: "#FundingPlanEventDiv #BrowseToUpload",
@@ -116,7 +117,7 @@ module.exports = {
   fileUploadErrorMessage: ".file-upload-validation-messages .ml-2",
 
   //page#4
-  envLocationRadioGroup:"#EnvLocationButtons_radio_group_control input[type=radio]",
+  envLocationRadioGroup: "#EnvLocationButtons_radio_group_control input[type=radio]",
   cloudComputingRadio: "#Radio_CloudComputingEnvironment",
   onPremiseRadio: "#Radio_OnPremises",
   hybridRadio: "#Radio_HybridCloudEnvironment",
@@ -150,13 +151,13 @@ module.exports = {
 
   //Page#6 : Let’s start gathering details about each instance in your environment 
   //Section#1
-  page6TitleText: "p.mb-10", 
-  page6Subtitles:  "h2.mb-4",
+  page6TitleText: "p.mb-10",
+  page6Subtitles: "h2.mb-4",
   regionDeployedCheckboxes: "#RegionsDeployed ",
   section1Question1: "#RegionsDeployed span",
   section1Question2OnPrem: "#ClassificationLevelOptions_radio_group_control legend",
   section1Question3: "#EnvironmentLocation_radio_group_control legend",
-  instanceRadioGroup:"#EnvironmentLocation_radio_group_control input[type=radio]",
+  instanceRadioGroup: "#EnvironmentLocation_radio_group_control input[type=radio]",
 
   cloudRadiobox: "#Radio_Cloud",
   onPremRadiobox: "#Radio_OnPremises",
@@ -174,13 +175,13 @@ module.exports = {
   regionUsersCheckboxes: "#RegionsUsers ",
   regionDeployedAllCheckboxes: "#RegionsDeployed input[type=checkbox]",
   checkedregionDeployedCheckboxes: "#RegionsDeployed input[type=checkbox]:checked",
-  
+
   IL2Radiobox: "#Radio_IL2",
   IL4Radiobox: "#Radio_IL4",
   IL5Radiobox: "#Radio_IL5",
   IL6Radiobox: "#Radio_IL6",
   tsRadiobox: "#Radio_TS",
-  classificationRadioGroup:"#ClassificationLevelOptions_radio_group_control input[type=radio]",
+  classificationRadioGroup: "#ClassificationLevelOptions_radio_group_control input[type=radio]",
 
   //Section#2
   section2Question1: "#CurrentUsage legend",
@@ -196,10 +197,10 @@ module.exports = {
   certainPeriodCheckbox: "#Checkbox_CertainPeriods",
   highUsageEventTextbox: "#HighUsageEventDescription_text_field",
   highUsagePeriodTextbox: "#HighUsagePeriodDescription_text_field",
-  
+
   regularUsageRadiobox: "#Radio_RegularUsage",
   irrregularUsageRadiobox: "#Radio_IrregularUsage",
-  currentUsageRadioGroup:"#CurrentUsageDescription_radio_group_control input[type=radio]",
+  currentUsageRadioGroup: "#CurrentUsageDescription_radio_group_control input[type=radio]",
 
   conusEastTextbox: "#RegionsUsers_TextField0_text_field",
   conusCentralTextbox: "#RegionsUsers_TextField1_text_field",
@@ -238,7 +239,7 @@ module.exports = {
   petayteOption: "#id_is_missing_DropdownListItem_PetabytePB",
 
   performanceTiertitle: "#PerformanceTierOptions_radio_group_control .mb-3 legend",
-  performanceTierRadioGroup:"#PerformanceTierOptions_radio_group_control input[type=radio]",
+  performanceTierRadioGroup: "#PerformanceTierOptions_radio_group_control input[type=radio]",
   generalPurposeRadiobox: "#Radio_GeneralPurpose",
   computeOptimRadiobox: "#Radio_ComputeOptimized",
   memoryOptimizedRadiobox: "#Radio_MemoryOptimized",
@@ -251,7 +252,7 @@ module.exports = {
 
   //Section#4
   section4Message: "#PricingDetails legend",
-  currentPaymentRadioGroup:"#CurrentPaymentArrangement_radio_group_control input[type=radio]",
+  currentPaymentRadioGroup: "#CurrentPaymentArrangement_radio_group_control input[type=radio]",
   reservedRadiobox: "#Radio_Reserved",
   payAsYouGoRadiobox: "#Radio_PayAsYouGo",
   reservedExpirationDatePicker: "#ExpirationDateDatePickerButtonIcon",
@@ -292,8 +293,15 @@ module.exports = {
   summaryCETableHeader: ".v-data-table tr th",
   summaryCETableData: ".v-data-table tr td",
 
-  //Performance requirements:
-  dowSummaryAlert: "#DOWSummaryAlert",
+  //Background Summary
+  backgroundSummaryTitleText: "p.mb-10",
+  procurementHistoryHeaderText: "#ProcurementHistory_Heading",
+  procurementHistoryDescription: "#ProcurementHistory_Description",
+  procurementHistoryCompleteBtn: "#ProcurementHistory_CompleteButton",
+
+  currentEnvironmentHeaderText: "#CurrentEnvironment_Heading",
+  currentEnvironmentDescription: "#CurrentEnvironment_Description",
+  currentEnvironmentCompleteBtn: "#CurrentEnvironment_CompleteButton",
 
 
 }

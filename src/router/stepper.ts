@@ -146,7 +146,7 @@ import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
-
+import SummaryStepEight from "@/steps/10-FinancialDetails/SummaryStepEight.vue";
 // step 10 - Generate Package Documents
 import GeneratePackageDocuments from "../steps/11-GeneratePackageDocuments/Index.vue";
 import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToGeneratePackage.vue";
@@ -299,6 +299,7 @@ export const routeNames = {
   SummaryStepFour: "Summary_Step_Four",
   SummaryStepSix: "Summary_Step_Six",
   SummaryStepSeven: "Summary_Step_Seven",
+  SummaryStepEight: "Summary_Step_Eight",
   ClassificationRequirements: "Classification_Requirements",
   SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
@@ -312,7 +313,6 @@ export const routeNames = {
   Upload7600:'Upload_7600',
   FundingPlanType: "Funding_Plan_Type",
   FinancialPOCForm: "Financial_POC_Form",
-  SummaryPage: "Summary_Page",
   CurrentEnvironmentLocation: "Current_Environment_Location",
   ClassificationLevels: "Classification_Levels",
   BackgroundSummary: "Background_Summary",
@@ -1409,16 +1409,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
 
       },
-   
-
-      // {
-      //   menuText: "SummaryPage",
-      //   excludeFromMenu: true,
-      //   path: "summary-page",
-      //   name: routeNames.SummaryPage,
-      //   completePercentageWeight: 1,
-      //   component: SummaryPage,
-      // },
+      {
+        menuText: "SummaryStepEight",
+        path: "summary-step-eight",
+        name: routeNames.SummaryStepEight,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepEight,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor: "primary"
+      },
     ]
   },
   {
