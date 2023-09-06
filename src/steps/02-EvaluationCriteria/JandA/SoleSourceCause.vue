@@ -150,7 +150,7 @@
                   <v-expand-transition>
                     <div class="mt-10" v-if="productOrFeatureSelected">
                       <ATATTextField
-                        id="PlatformOrTechName"
+                        id="UniqueProduct"
                         class="mt-10 mb-10"
                         :value.sync="pfName"
                         :label="`Name of the unique ${productOrFeatureStr}`"

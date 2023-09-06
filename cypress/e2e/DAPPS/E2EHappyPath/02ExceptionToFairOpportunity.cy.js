@@ -67,7 +67,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
     const phoneInputACORSelector = prefixId(commonCorAcor.phoneInputBox, "ACOR_");
 
     //Selection of Exception to Fair Opp
-    const fairOpp = "YES_FAR_16_505_B_2_I_C"; //YES_FAR_16_505_B_2_I_A//YES_FAR_16_505_B_2_I_B;
+    const fairOpp = "YES_FAR_16_505_B_2_I_C"; //YES_FAR_16_505_B_2_I_A//YES_FAR_16_505_B_2_I_B//YES_FAR_16_505_B_2_I_C;
     const oneCSP = "YES_FAR_16_505_B_2_I_B";
     const allFair = "YES_FAR_16_505_B_2_I_C";
     const urgent = "YES_FAR_16_505_B_2_I_A";
@@ -81,8 +81,8 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
     let addTimeCost = "Yes"; //Yes//No
     const costEstimateInputTxt = randomNumber(4);
     const costEstimate = noToCurrency(costEstimateInputTxt);
-    let estDelayVal = "365"; //year=1,week=52,month=12,days=365;
-    let dropDownOption = "days"; // months,year,days,weeks;
+    let estDelayVal = "1"; //year=1,week=52,month=12,days=365;
+    let dropDownOption = "year"; // months,year,days,weeks;
     let govEngineer = "Yes"; //Yes//No
     const pName = " Unique Cloud- " + randomString(3);
     const insuffInput = "Insufficient value- " + randomString(5);
@@ -91,7 +91,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
     let isProductOrFeature = "product"; //product//feature
     const whyEssInputVal = "Entering Ess value for testing- " + randomString(3);
     const whyInadequateInputVal = "Entering Inadequate value for testing- " + randomString(3);
-    const reviewSoleSourceSitVal = cleanText(`The only source capable of performing the ${pt} at the level of quality required is the incumbent contractor, ${csp} Cloud. The refactoring of the current environment from the ${csp} Cloud environment to another CSP would result in additional cost and time. Migration from one platform to another platform would cost ${costEstimate} and delay the project ${estDelayVal} ${dropDownOption}. In addition, there would be a duplication of costs of having to keep the solution running on one platform while refactoring it on another platform. Further, the only source capable of performing the ${pt} at the level and quality required is Oracle Cloud based on Government engineers being trained and certified in ${productInputVal}. Due to ..., there is insufficient time to retrain and obtain certification in another platform/technology.${insuffInput} The only source capable of performing the ${pt} at the level and quality required is Oracle Cloud based on that is peculiar to Oracle Cloud. This ${isProductOrFeature} is essential to the Government’s requirements due to...${whyEssInputVal} Other similar ${isProductOrFeature}s do not meet, nor can be modified to meet, the Government’s requirements due to...${whyInadequateInputVal}`);
+    const reviewSoleSourceSitVal = cleanText(`The only source capable of performing the ${pt} at the level of quality required is the incumbent contractor, ${csp} Cloud. The refactoring of the current environment from the ${csp} Cloud environment to another CSP would result in additional cost and time. Migration from one platform to another platform would cost ${costEstimate} and delay the project ${estDelayVal} ${dropDownOption}. In addition, there would be a duplication of costs of having to keep the solution running on one platform while refactoring it on another platform. Further, the only source capable of performing the ${pt} at the level and quality required is Oracle Cloud based on Government engineers being trained and certified in ${pName}. Due to ..., there is insufficient time to retrain and obtain certification in another platform/technology.${insuffInput} The only source capable of performing the ${pt} at the level and quality required is Oracle Cloud based on ${productInputVal} that is peculiar to Oracle Cloud. This ${isProductOrFeature} is essential to the Government’s requirements due to...${whyEssInputVal} Other similar ${isProductOrFeature}s do not meet, nor can be modified to meet, the Government’s requirements due to...${whyInadequateInputVal}`);
     const reviewDescVal = cleanText(`${csp} possesses the knowledge, skills, capabilities, certification, clearance, and experience required to continue the program without a break or degradation in critical mission services. Given these critical mission requirements, ${csp} is the only contractor that is capable of performing the necessary services for the DoD within the current required timeline.`);
     const soleSourceSitVal = "customsoleSourcesituation-Test";
 
@@ -102,7 +102,8 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
     const descImpactInputVal = "descImpactInput- " + randomString(5);
 
     //Selectionof MRR-Contract action
-    let contractAction = "optionToExtend" //none,bridge,undefinitized,optionToExtend;
+    //To have a MRR,then contractAction should be None;
+    let contractAction = "none" //none,bridge,undefinitized,optionToExtend;
     let techniques = ["perKnowledge", "reviewDB"] //disaMRR,contactKnowledge,reviewDB,reviewSorceList,reviewProdLit,reviewOtherContracts,reviewJWCCCatlog,other;
     const personReliedVal = "personReliedInput- " + randomString(5);
     const otherVal = "otherTechniques-" + randomString(5);
@@ -119,11 +120,6 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
     const sameEndDate = formatDateWithoutPeriod(cd, 27, "previous");
 
     //Review Market Research details
-    const reviewResearchDetailsVal = cleanText(`Additional research was conducted on ${selectedDate} by reviewing the specific capabilities in the JWCC Contracts and it was determined that ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${supportDataVal} Further research was conducted on ${sameEndDate} by reviewing the JWCC contractor's catalogs to determine if other similar offerings (to include: ) meet or can be modified to satisfy the Government’s requirements. The results have determined that no other offering is suitable as follows...${crResultVal} Therefore, it was determined the is essential to the Government’s requirements and ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${techniquesSummaryInputVal}`);
-    const cAction = "-8 extension" // bridge extension,UCA,-8 extension
-    const reviewResearchDetailsValCase3 = cleanText(`Additional research was conducted on ${selectedDate} by reviewing the specific capabilities in the JWCC Contracts and it was determined that ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${supportDataVal} Further research was conducted on ${sameEndDate} by reviewing the JWCC contractor's catalogs to determine if other similar offerings (to include: ) meet or can be modified to satisfy the Government’s requirements. The results have determined that no other offering is suitable as follows...${crResultVal} Therefore, it was determined the is essential to the Government’s requirements and ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. Additional market research was not completed for this effort because an exception applies (${cAction}).`);
-    const reviewResearchDetailsValCase4 = cleanText(`Additional research was conducted on ${selectedDate} by reviewing the specific capabilities in the JWCC Contracts and it was determined that ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${supportDataVal} Additional market research was not completed for this effort because an exception applies (${cAction}).`)
-
     const researchDetailsVal = "test research details- " + randomString(5);
 
     //Selection of Conducted,market research
@@ -145,6 +141,9 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
     const formattedDate = formatDateWithPeriod(currentDate);
     const reviewBarrierDetailsVal = cleanText(`To overcome future barriers to competition, is preparing a fair opportunity competitive follow-on requirement. The follow-on is expected to be completed, solicited, and awarded by ${formattedDate}. To overcome future barriers to competition, will pursue training and certification for Government engineers in other technologies. To overcome future barriers to competition, future development and enhancement of IaaS components will include shifting to a containerized platform. This will enable multiple vendors to meet the requirements which will enable the flexibility to shift workload based on financial and mission requirements. ${priorProcurementVal}`);
     const barrierDetailsVal = "test barriers details- " + randomString(5);
+
+    //summary:
+    const evalPlanDescriptionText = `No Evaluation Plan is required.`
 
 
     before(() => {
@@ -248,7 +247,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
                 force: true
             });
         }
-    }
+    };
 
     function selectGovEngineer(govEngineer, pName, insuffInput) {
         if (govEngineer === "Yes") {
@@ -262,7 +261,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
                 force: true
             });
         }
-    }
+    };
 
     function selectSpecificFeatureProduct(
         specificFeaProduct,
@@ -293,7 +292,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
                 force: true
             });
         }
-    }
+    };
 
     function soleSourceSituation(
         addTimeCost,
@@ -324,13 +323,25 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
             cy.findElement(fo.soleSourceSitInputBox).should("be.empty");
             cy.enterTextInTextField(fo.soleSourceSitInputBox, soleSourceSitVal);
         }
-    }
+    };
+
+    function otherTechniquesExists() {
+        if (contractAction === "none") {
+            cy.findElement(fo.capablesourceYesOption).should('not.be.checked');
+            cy.waitUntil(function () {
+                return cy.findElement(fo.otherTechniques).should("be.visible");
+            });
+        } else {
+            cy.findElement(fo.otherTechniques).should("not.exist");
+        }
+    };
 
     function selectOnlyCapableSource(supportDataVal) {
         if (capablesourceOption === "Yes") {
-            cy.findElement(fo.capablesourceYesOption).should("exist").should("be.enabled").click({
-                force: true
-            }).should("be.checked");
+            cy.findElement(fo.capablesourceYesOption).should("exist").should("be.enabled")
+                .and("not.checked").click({
+                    force: true
+                }).should("be.checked");
             cy.findElement(fo.capablesourceActiveOption)
                 .then(($radioBtn) => {
                     const selectedOption = cleanText($radioBtn.text());
@@ -351,7 +362,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
                 force: true
             }).should("be.checked");
         }
-    }
+    };
 
     function reviewCatalogSection(crResultVal) {
         if (reviewCatalogSectionOption === "Yes") {
@@ -399,7 +410,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
                 })
                 .should("be.checked");
         }
-    }
+    };
 
     function selectOtherTechniques(
         techniques,
@@ -437,58 +448,82 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
                 .clear()
                 .type(techniquesSummaryInputVal);
         }
+    };
+
+    function commonMRRReviewText() {
+        return cleanText(`
+            Additional research was conducted on ${selectedDate} by reviewing the specific capabilities in the JWCC Contracts and it was determined that ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required. ${supportDataVal} 
+            Further research was conducted on ${sameEndDate} by reviewing the JWCC contractor's catalogs to determine if other similar offerings (to include: ${productInputVal}) meet or can be modified to satisfy the Government’s requirements. The results have determined that no other offering is suitable as follows...${crResultVal} 
+            Therefore, it was determined the ${productInputVal} is essential to the Government’s requirements and ${csp} is the only source capable of fulfilling the Government’s minimum needs in the manner and time frame required.
+            `);
+    }
+
+    function reviewResearchDetailsText() {
+        let reviewResearchText = "";
+        const commonText = " Additional market research was not completed for this effort because an exception applies ";
+
+        switch (contractAction) {
+            case "none":
+                reviewResearchText = commonMRRReviewText() + " " + cleanText(techniquesSummaryInputVal);
+                break;
+            case "bridge":
+                reviewResearchText = commonMRRReviewText() + `${commonText}(a bridge extension).`;
+                break;
+            case "undefinitized":
+                reviewResearchText = commonMRRReviewText() + `${commonText}(UCA).`;
+                break;
+            case "optionToExtend":
+                reviewResearchText = commonMRRReviewText() + `${commonText}(-8 extension).`;
+                break;
+        }
+
+        return reviewResearchText;
     }
 
     function selectMRREfforts(
         capablesourceOption,
         reviewCatalogSectionOption,
         contractAction,
-        reviewResearchDetailsVal,
         researchDetailsVal
     ) {
         const reviewPageHeaderText = "Let’s review your market research details";
         const tellUsReviewText = "Tell us about your market research details";
+        const isCapableSourceYes = capablesourceOption === "Yes";
+        const isContractActionNone = contractAction === "none";
+        const isReviewCatalogYes = reviewCatalogSectionOption === "Yes";
 
-        // Case 1: Capable Source - Yes, Review Catalog - Yes, Contract Action - None
-        if (capablesourceOption === "Yes" && reviewCatalogSectionOption === "Yes" && contractAction === "none") {
-            cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
-            cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsVal);
-        }
-
-        // Case 2: Capable Source - No or Contract Action - Not None
-        else if (capablesourceOption === "No" && contractAction !== "none") {
+        if (isCapableSourceYes) {
+            if (isReviewCatalogYes && isContractActionNone) {
+                cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
+                cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsText());
+            } else if (!isReviewCatalogYes && !isContractActionNone) {
+                cy.clickContinueButton(fo.capablesourceYesOption, tellUsReviewText);
+                cy.findElement(fo.researchDetailsInput).should("be.empty");
+                cy.enterTextInTextField(fo.researchDetailsInput, researchDetailsVal);
+            } else if (isReviewCatalogYes && !isContractActionNone) {
+                cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
+                cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsText());
+            }
+        } else if (!isCapableSourceYes && !isContractActionNone) {
             cy.clickContinueButton(fo.capablesourceYesOption, tellUsReviewText);
             cy.findElement(fo.researchDetailsInput).should("be.empty");
             cy.enterTextInTextField(fo.researchDetailsInput, researchDetailsVal);
         }
-
-        // Case 3: Capable Source - Yes, Review Catalog - Yes, Contract Action - Not None
-        else if (capablesourceOption === "Yes" && reviewCatalogSectionOption === "Yes" && contractAction !== "none") {
-            cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
-            cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsValCase3);
-        }
-
-        // Case 4: Capable Source - Yes or Contract Action - Not None
-        else if (capablesourceOption === "Yes" && contractAction !== "none") {
-            cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
-            cy.findElement(fo.researchDetailsInput).should("be.empty");
-            cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsValCase4);
-        }
-    }
+    };
 
     function followOnUniqueOrSpecializedCapabilities() {
         cy.verifyPageHeader("Do you want to include any other facts to support the use of the “unique or highly specialized capabilities” exception?");
-    }
+    };
 
     function followOnLogicalFollowOn() {
         cy.verifyPageHeader("Do you want to include any other facts to support the use of the “logical follow-on” exception?");
 
-    }
+    };
 
     function followOnUnusualAndCompellingUrgency() {
         cy.verifyPageHeader("Do you want to include any other facts to support the use of the “unusual and compelling urgency” exception?");
 
-    }
+    };
 
     function followOnException() {
         if (fairOpp === oneCSP) {
@@ -498,7 +533,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
         } else if (fairOpp === urgent) {
             followOnUnusualAndCompellingUrgency();
         }
-    }
+    };
 
     function selectFollowOn(followOn) {
         if (followOn === "Yes") {
@@ -569,7 +604,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
             cy.findElement(fo.barriersInput).should("be.empty");
             cy.enterTextInTextField(fo.barriersInput, barrierDetailsVal);
         }
-    }
+    };
 
     function gatherPOC() {
         if (acor === "Yes") {
@@ -587,6 +622,38 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
                 force: true
             });
         }
+    };
+
+    function exceptionToFairOppSummaryDescDetails() {
+        let description = "";
+
+        switch (fairOpp) {
+            case allFair:
+                description = "FAR 16.505(b)(2)(i)(C) – Logical follow-on.";
+                break;
+            case oneCSP:
+                description = "FAR 16.505(b)(2)(i)(B) – Unique or highly specialized capabilities.";
+                break;
+            case urgent:
+                description = "FAR 16.505(b)(2)(i)(A) – Unusual and compelling urgency.";
+                break;
+        }
+
+        let descriptionText = "";
+
+        switch (contractAction) {
+            case "none":
+                descriptionText = "A J&A and Sole Source MRR are required in final acquisition package.";
+                break;
+            case "bridge":
+            case "undefinitized":
+            case "optionToExtend":
+                descriptionText = "A J&A is required in final acquisition package.";
+                break;
+        }
+
+        const exceptionToFairOppDescriptionText = description + descriptionText;
+        cy.verifyTextMatches(fo.exceptionToFairOppDescriptionText, exceptionToFairOppDescriptionText);
     }
 
 
@@ -689,6 +756,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
             return Cypress.$(fo.capablesourceYesOption).attr("aria-checked") == "false";
 
         });
+        otherTechniquesExists()
         selectOnlyCapableSource(supportDataVal);
 
         if (specificFeaProduct === "Yes") {
@@ -704,7 +772,6 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
             capablesourceOption,
             reviewCatalogSectionOption,
             contractAction,
-            reviewResearchDetailsVal,
             researchDetailsVal
         );
         if (contractAction === "none") {
@@ -779,6 +846,16 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
             fo.reqPrimaryPOC,
             "Based on what you told us, you do not need an evaluation plan for this acquisition."
         );
+
+    });
+
+    it("TC7: Evaluation Criteria Summary", () => {
+        cy.clickContinueButton(
+            fo.evalPlanAlertHeader,
+            "Your Evaluation Criteria Summary"
+        );
+        exceptionToFairOppSummaryDescDetails();
+        cy.verifyTextMatches(fo.evalPlanDesriptionText, evalPlanDescriptionText);
 
     });
 });
