@@ -20,17 +20,23 @@ import {
   PeriodOfPerformanceDTO,
   RequirementsCostEstimateDTO,
   SelectedClassificationLevelDTO,
-  SensitiveInformationDTO
+  SensitiveInformationDTO,
+  TrainingEstimateDTO
 } from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
-import { convertStringArrayToCommaList, toTitleCase, buildClassificationLabel } from "@/helpers";
+import {
+  convertStringArrayToCommaList, 
+  toTitleCase, 
+  buildClassificationLabel, 
+  toCurrencyString 
+} from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
 import { AxiosRequestConfig } from "axios";
 import api from "@/api";
-import IGCE from "../IGCE";
+import IGCE, { IGCEStore } from "../IGCE";
 
 
 
@@ -149,7 +155,6 @@ export const getSummaryItemsforStep = async(stepNumber: number): Promise<Summary
     si => si.step === stepNumber
   ).sort((a,b) => (a.substep > b.substep) ? 1 : -1)
 }
-
 
 @Module({
   name: 'SummaryStore',
@@ -1734,38 +1739,51 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessRequirementsCostEstimate(): Promise<void> {
-
+    const rce = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
     const isTouched = false;
-    const isComplete =  await this.isRCEComplete();
-    const description = "Placeholder";
+    const isComplete = await this.isRCEComplete(rce);
+    const costData = await api.costEstimateTable.search(AcquisitionPackage.packageId)
+    IGCE.doSetCostEstimateTotals({
+      base: costData.payload.total_price["Base Period"],
+      grand: costData.payload.grand_total_with_fee["Total"]
+    })
 
     const requirementsCostEstimateSummaryItem: SummaryItem = {
       title: "Requirements Cost Estimate",
-      description,
+      description: await this.setRCEDescription(isComplete),
       isComplete,
       isTouched,
       routeName: "CreatePriceEstimate",
       step: 8,
       substep: 1
     }
-
     await this.doSetSummaryItem(requirementsCostEstimateSummaryItem)
   };
 
-  // "" | "YES_REPLICATE" | "YES_OPTIMIZE" | "NO";
   @Action({rawError: true})
-  public async isRCEComplete(): Promise<boolean> {
-    const rce = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
+  public async setRCEDescription(isComplete: boolean): Promise<string> {
+    
+    return isComplete 
+      ? "Subtotal for base period: $" 
+        + toCurrencyString(IGCE.requirementsCostEstimate?.baseYearTotal as number, true)
+        + "<br />Grand total with fees for all periods: $" 
+        + toCurrencyString(IGCE.requirementsCostEstimate?.grandTotal as number, true)
+      : ""
+  }
+
+  @Action({rawError: true})
+  public async isRCEComplete(rce: RequirementsCostEstimateDTO): Promise<boolean> {
     return await this.hasReplicateOrOptimizeAction(rce)
       && await this.hasArchitecturalDesigns(rce)
       && await this.hasCostEstimates()
+      && await this.hasIGCETraining()
+      && await this.hasIGCETravel(rce)
       && await this.hasSurgeRequirements(rce)
-      && await this.hasCostEstimateTotals(rce)
-      && await this.hasHowEstimatesDeveloped(rce);
+    //  && await this.hasChargedFee(rce)
+    // && await this.hasCostEstimateTotals(rce)
+    // && await this.hasHowEstimatesDeveloped(rce);
 
     //fee specs
-    // travel
-    // training
     // supporting documentation
   }
 
@@ -1798,6 +1816,37 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async hasIGCETraining(): Promise<boolean> {
+    if (IGCE.trainingItems.length>0){
+      const assessedTrainingItems = IGCE.trainingItems.map(
+        (ti)=>{
+          const hasValidEstimatedTrainingPrice = 
+            ["0", "0.00", ""].every(price => price !== ti.estimatedTrainingPrice);
+          return ti.costEstimateType === "ANNUAL_SUBSCRIPTION"
+            ? hasValidEstimatedTrainingPrice
+            : hasValidEstimatedTrainingPrice 
+              && ti.trainingOption !== ""
+              && ti.estimate.estimated_values !== ""
+              && ti.estimate.option !== "";
+        }
+      )
+      return assessedTrainingItems.every(ati => ati === true);
+    } 
+    return true;
+  }
+
+  @Action({rawError: true})
+  public async hasIGCETravel(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    if (rce.travel.option !== ""){
+      const estimatedValues = Object.values(JSON.parse(rce.travel.estimated_values as string))
+      return rce.travel.option === "SINGLE"
+        ? estimatedValues.every((ev)=> (ev as number) > 0 )
+        : estimatedValues.every((ev)=> (ev as number) >= 0 ) // multiple values can === 0
+    }
+    return true
+  }
+
+  @Action({rawError: true})
   public async hasSurgeRequirements(rce: RequirementsCostEstimateDTO): Promise<boolean> {
     return rce.surge_requirements.capabilities === "NO"
       ? true
@@ -1806,9 +1855,19 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async hasCostEstimateTotals(rce: RequirementsCostEstimateDTO): Promise<boolean> {
-    return (rce.baseYearTotal as number) > 0 
-      && (rce.grandTotal as number) > 0
+  public async hasChargedFee(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    if (AcquisitionPackage.contractingShop === "OTHER"){
+      return rce.fee_specs && rce.fee_specs.is_charged !== "NO"
+        ? true
+        : ["0", null, ""].every(percentage => percentage !== rce.fee_specs.percentage)
+    }
+    return true;
+  }
+
+  @Action({rawError: true})
+  public async hasCostEstimateTotals(): Promise<boolean> {
+    return (IGCE.requirementsCostEstimate?.baseYearTotal as number) > 0 
+      && (IGCE.requirementsCostEstimate?.grandTotal as number as number) > 0
   }
 
   @Action({rawError: true})

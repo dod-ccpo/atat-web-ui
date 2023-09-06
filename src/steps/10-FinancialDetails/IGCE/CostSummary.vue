@@ -442,11 +442,6 @@ export default class CostSummary extends Vue {
     const contractingFee = this.costData.payload.other_contracting_office_fee
     const grandTotal = this.costData.payload.grand_total_with_fee
 
-    IGCEStore.doSetCostEstimateTotals({
-      base: this.costData.payload.total_price["Base Period"],
-      grand:this.costData.payload.grand_total_with_fee["Total"]
-    })
-
     if (surgeData) {
       this.createTableData(subTotalData, "false", "Subtotal")
     }
