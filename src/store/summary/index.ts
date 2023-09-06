@@ -118,6 +118,9 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
   case 7:
     await Summary.validateStepSeven();
     break;
+  case 8:
+    await Summary.validateStepEight();
+    break;
   default:
     break;
   }
@@ -1773,6 +1776,77 @@ export class SummaryStore extends VuexModule {
     }
     return desc;
   }
+
+  //#endregion
+
+  //#region STEP 8
+  @Action({rawError: true})
+  public async validateStepEight(): Promise<void> {
+    await this.assessRequirementsCostEstimate();
+    await this.assessIncrementalFunding();
+    await this.assessFunding();
+  }
+
+  @Action({rawError: true})
+  public async assessRequirementsCostEstimate(): Promise<void> {
+
+    const isTouched = false;
+    const isComplete =  false;
+    const description = "Placeholder";
+
+    const requirementsCostEstimateSummaryItem: SummaryItem = {
+      title: "Requirements Cost Estimate",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "CreatePriceEstimate",
+      step: 8,
+      substep: 1
+    }
+
+    await this.doSetSummaryItem(requirementsCostEstimateSummaryItem)
+  };
+
+  @Action({rawError: true})
+  public async assessIncrementalFunding(): Promise<void> {
+
+    const isTouched = false;
+    const isComplete =  false;
+    const description = "Placeholder";
+
+    const incrementalFundingSummaryItem: SummaryItem = {
+      title: "Incremental Funding",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "SeverabilityAndIncrementalFunding",
+      step: 8,
+      substep: 2
+    }
+
+    await this.doSetSummaryItem(incrementalFundingSummaryItem)
+  };
+
+  @Action({rawError: true})
+  public async assessFunding(): Promise<void> {
+
+    const isTouched = false;
+    const isComplete =  false;
+    const description = "Placeholder";
+
+    const fundingSummaryItem: SummaryItem = {
+      title: "Funding",
+      description,
+      isComplete,
+      isTouched,
+      routeName: "FundingPlanType",
+      step: 8,
+      substep: 3
+    }
+
+    await this.doSetSummaryItem(fundingSummaryItem)
+  };
+
 
   //#endregion
 
