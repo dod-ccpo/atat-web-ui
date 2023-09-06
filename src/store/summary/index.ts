@@ -1796,6 +1796,7 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessRequirementsCostEstimate(): Promise<void> {
+
     const rce = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
     const isTouched = false;
     const isComplete = await this.isRCEComplete(rce);
@@ -1807,7 +1808,7 @@ export class SummaryStore extends VuexModule {
 
     const requirementsCostEstimateSummaryItem: SummaryItem = {
       title: "Requirements Cost Estimate",
-      description: await this.setRCEDescription(isComplete),
+      description,
       isComplete,
       isTouched,
       routeName: "CreatePriceEstimate",
