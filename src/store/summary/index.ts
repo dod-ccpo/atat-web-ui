@@ -27,8 +27,8 @@ import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
-import { AxiosRequestConfig } from "axios";
 import api from "@/api";
+import FinancialDetails from "@/store/financialDetails";
 
 
 
@@ -1809,10 +1809,41 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessIncrementalFunding(): Promise<void> {
+    // if PoP is < 9 months, section will be autocompleted when either other section becomes touched
+    let isAutoCompleted = false;
+    if (AcquisitionPackage.totalBasePoPDuration < 270
+      && AcquisitionPackage.totalBasePoPDuration > 0) {
+      const reqCostEstimate = this.summaryItems
+        .find(item => item.step === 8 && item.substep === 1);
+      const isReqCostEstimateTouched = reqCostEstimate ? reqCostEstimate.isTouched : false;
+      const funding = this.summaryItems
+        .find(item => item.step === 8 && item.substep === 3);
+      const isFundingTouched = funding ? funding.isTouched : false;
+      isAutoCompleted = isReqCostEstimateTouched || isFundingTouched;
+    }
 
-    const isTouched = false;
-    const isComplete =  false;
-    const description = "Placeholder";
+    let description = "";
+
+    // if incrementally funded, verify that funding increments exist and financial POC is complete
+    const isIncrementallyFunded = FinancialDetails.isIncrementallyFunded;
+    let incrementalFundingPlanComplete = false;
+    if (isIncrementallyFunded === "YES") {
+      const hasFundingIncrements =  FinancialDetails.fundingIncrements.length > 0;
+      const financialPOC = AcquisitionPackage.financialPocInfo;
+      const isFinancialPocComplete = !!financialPOC?.first_name && !!financialPOC.last_name
+        && !!financialPOC.phone && !!financialPOC.email;
+      incrementalFundingPlanComplete = hasFundingIncrements && isFinancialPocComplete;
+
+      description = `<p>Requesting to incrementally fund requirement<br><br>
+        Financial POC: ${financialPOC?.first_name} ${financialPOC?.last_name}<br>
+        ${financialPOC?.email}</p≥`;
+    } else if (isIncrementallyFunded === "NO") {
+      description = "Not requesting to incrementally fund requirement"
+    }
+
+    const isTouched = isAutoCompleted || !!isIncrementallyFunded;
+    const isComplete =  isAutoCompleted || isIncrementallyFunded === "NO"
+      || incrementalFundingPlanComplete;
 
     const incrementalFundingSummaryItem: SummaryItem = {
       title: "Incremental Funding",
