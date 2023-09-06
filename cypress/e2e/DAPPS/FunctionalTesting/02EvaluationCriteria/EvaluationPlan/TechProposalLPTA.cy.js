@@ -44,7 +44,7 @@ describe("Test suite: Test suite: TechProposal: LPTA", () => {
       evalCriteria.lpta.headerText);  
     cy.findElement(ep.customRadioNoBtn).click({force:true});
     cy.clickContinueButton(
-      ep.lptaRadioBtn,
+      ep.customRadioNoBtn,
       "Your Evaluation Criteria Summary"
     ); 
     cy.verifyTextMatches(fo.evalPlanDesriptionText,evalPlanDescriptionText);

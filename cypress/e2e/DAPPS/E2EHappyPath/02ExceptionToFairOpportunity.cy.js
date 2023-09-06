@@ -483,36 +483,31 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
     function selectMRREfforts(
         capablesourceOption,
         reviewCatalogSectionOption,
-        contractAction,        
+        contractAction,
         researchDetailsVal
     ) {
         const reviewPageHeaderText = "Let’s review your market research details";
         const tellUsReviewText = "Tell us about your market research details";
+        const isCapableSourceYes = capablesourceOption === "Yes";
+        const isContractActionNone = contractAction === "none";
+        const isReviewCatalogYes = reviewCatalogSectionOption === "Yes";
 
-        // Case 1: Capable Source - Yes, Review Catalog - Yes, Contract Action - None
-        if (capablesourceOption === "Yes" && reviewCatalogSectionOption === "Yes" && contractAction === "none") {
-            cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
-            cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsText());
-        }
-
-        // Case 2: Capable Source - No or Contract Action - Not None
-        else if (capablesourceOption === "No" && contractAction !== "none") {
+        if (isCapableSourceYes) {
+            if (isReviewCatalogYes && isContractActionNone) {
+                cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
+                cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsText());
+            } else if (!isReviewCatalogYes && !isContractActionNone) {
+                cy.clickContinueButton(fo.capablesourceYesOption, tellUsReviewText);
+                cy.findElement(fo.researchDetailsInput).should("be.empty");
+                cy.enterTextInTextField(fo.researchDetailsInput, researchDetailsVal);
+            } else if (isReviewCatalogYes && !isContractActionNone) {
+                cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
+                cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsText());
+            }
+        } else if (!isCapableSourceYes && !isContractActionNone) {
             cy.clickContinueButton(fo.capablesourceYesOption, tellUsReviewText);
             cy.findElement(fo.researchDetailsInput).should("be.empty");
             cy.enterTextInTextField(fo.researchDetailsInput, researchDetailsVal);
-        }
-
-        // Case 3: Capable Source - Yes, Review Catalog - Yes, Contract Action - Not None
-        else if (capablesourceOption === "Yes" && reviewCatalogSectionOption === "Yes" && contractAction !== "none") {
-            cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
-            cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsText());
-        }
-
-        // Case 4: Capable Source - Yes or Contract Action - Not None
-        else if (capablesourceOption === "Yes" && contractAction !== "none") {
-            cy.clickContinueButton(fo.capablesourceYesOption, reviewPageHeaderText);
-            cy.findElement(fo.researchDetailsInput).should("be.empty");
-            cy.reviewPageTxtMatches(fo.researchDetailsInput, reviewResearchDetailsText());
         }
     };
 
@@ -776,7 +771,7 @@ describe("Test suite: Step02-Exception to Fair Opportunity", () => {
         selectMRREfforts(
             capablesourceOption,
             reviewCatalogSectionOption,
-            contractAction,            
+            contractAction,
             researchDetailsVal
         );
         if (contractAction === "none") {

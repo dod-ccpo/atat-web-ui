@@ -11,7 +11,6 @@ describe("Test suite: Select Option3 on Create Evaluation Plan: Set Lump sum: Be
 
   const pt = "TC-Step-2-EC-FairOpp-None-bestUse" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-bestUse" + randomString(5);
-  const customText = randomString(5);
   const descriptionText = "Purchase a set lump sum dollar amount from one CSP; award will be made to the “BEST_USE” solution.";
 
   before(() => {
@@ -45,7 +44,7 @@ describe("Test suite: Select Option3 on Create Evaluation Plan: Set Lump sum: Be
     cy.clickContinueButton(ep.bestUseRadioBtn,"Now let’s review assessment criteria required for white papers"); 
     cy.verifySelectedCheckBoxOption(ep.activeSumCheckBoxes)
     cy.findElement(ep.noOtherBtn).scrollIntoView();
-    cy.textExists(ep.noOtherBtn, " I don’t need other assessment areas").click();
+    cy.findElement(ep.noOtherBtn).contains( " I don’t need other assessment areas").click();
     cy.waitUntilElementIsGone(ep.noOtherBtn);
     cy.verifyPageHeader("Let’s gather details about the duration of your task order");    
   });
