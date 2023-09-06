@@ -465,12 +465,23 @@ export class PortfolioSummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   public async searchPortfolioSummaryList(
-    data: { searchDTO: PortfolioSummarySearchDTO, isHomeView?: boolean }
+    data: { 
+      searchDTO: PortfolioSummarySearchDTO, 
+      isHomeView?: boolean,
+      singlePortfolioSearch?: string 
+    }
   ): Promise<PortfolioSummaryMetadataAndDataDTO> {
     try {
       const searchDTO = data.searchDTO;
       const isHomeView = data.isHomeView ?? false;
-      const optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
+      let optionalSearchQuery = "";
+      
+      if (!data.singlePortfolioSearch) {
+        optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
+      } else {
+        optionalSearchQuery = "sys_id=" + data.singlePortfolioSearch;
+      }
+
       let searchQuery = await this.getMandatorySearchParameterQuery({searchDTO, isHomeView});
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;

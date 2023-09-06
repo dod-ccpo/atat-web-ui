@@ -3,6 +3,7 @@
     <div class="mb-10">
         <FinancialDetailsAlert />
     </div>
+    <ATATToast />
     <div v-if="!showDetails">
       <h2 class="pb-3">All task orders</h2>
       <div class="d-flex justify-space-between">
@@ -16,8 +17,8 @@
           resources and support for this portfolio.
           -->
         </p>
-        
-        <v-btn 
+        <v-btn
+        v-if="portfolioIsActive"
         outlined 
         class="ml-10 secondary" 
         @click="openSearchTOModal"
@@ -53,7 +54,7 @@ import Vue from "vue";
 import { Component, Prop} from "vue-property-decorator";
 import FinancialDetailsAlert from "../../FinancialDetailsAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
-import {TaskOrderCardData} from "../../../../../types/Global";
+import {TaskOrderCardData, ToastObj} from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
@@ -62,13 +63,17 @@ import PortfolioStore from "@/store/portfolio";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
+import ATATToast from "@/components/ATATToast.vue";
+import Toast from "@/store/toast";
+import { Statuses } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
     TaskOrderCard,
     TaskOrderDetails,
     FinancialDetailsAlert,
-    TaskOrderSearchModal
+    TaskOrderSearchModal,
+    ATATToast
   }
 })
 export default class TaskOrder extends Vue {
@@ -77,6 +82,7 @@ export default class TaskOrder extends Vue {
   public showDetails = false
   public taskOrders: TaskOrderCardData[] = [];
   public selectedTaskOrder:TaskOrderCardData ={};
+  public portfolioIsActive = true;
 
   public showTOSearchModal = false;
   public TONumber = "";
@@ -124,6 +130,19 @@ export default class TaskOrder extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
+    this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.label;
+
+    if(PortfolioStore.portfolioIsUpdating){
+      const taskOrderUpdatedToast: ToastObj = {
+        type: "success",
+        message: "Task Order Number Updated",
+        isOpen: true,
+        hasUndo: false,
+        hasIcon: true,
+      };
+      Toast.setToast(taskOrderUpdatedToast)
+      PortfolioStore.setPortfolioIsUpdating(false)
+    }
     const portfolioSummaryList = 
       await PortfolioSummary.getAllPortfolioSummaryList() as unknown as PortfolioSummaryDTO[];
     if (portfolioSummaryList !== null){
