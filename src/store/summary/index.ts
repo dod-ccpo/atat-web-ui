@@ -1796,7 +1796,7 @@ export class SummaryStore extends VuexModule {
   public async assessRequirementsCostEstimate(): Promise<void> {
 
     const rce = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
-    const isTouched = false;
+    const isTouched = await this.isRCETouched(rce);
     const isComplete = await this.isRCEComplete(rce);
     const costData = await api.costEstimateTable.search(AcquisitionPackage.packageId)
     IGCE.doSetCostEstimateTotals({
@@ -1824,6 +1824,23 @@ export class SummaryStore extends VuexModule {
         + "<br />Grand total with fees for all periods: $" 
         + toCurrencyString(IGCE.requirementsCostEstimate?.grandTotal as number, true)
       : ""
+  }
+
+  @Action({rawError: true})
+  public async isRCETouched(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    return rce.optimize_replicate.option !== "" 
+      || rce.architectural_design_performance_requirements.option !== ""
+      || IGCE.igceEstimateList.every((ce) => ce.unit_price?.toString() !== "0")
+      || rce.travel.option !== ""
+      || rce.surge_requirements.capabilities !== ""
+      || rce.fee_specs.is_charged !== ""
+      || rce.how_estimates_developed.tools_used !== ""
+      || rce.how_estimates_developed.cost_estimate_description !== ""
+      || rce.how_estimates_developed.previous_cost_estimate_comparison.options !== ""
+
+    // supporting documentation
+    // training
+
   }
 
   @Action({rawError: true})
