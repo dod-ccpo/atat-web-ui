@@ -219,11 +219,25 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessOrganizationDetails(): Promise<void>{
+    const organization = AcquisitionPackage?.organization;
+    let title = "Your Organization";
+    let description = "";
+
+    if (organization?.dodaac) {
+      description = `Organization Name (${organization.dodaac})`
+    }
+
+    const isTouched = !!organization?.agency || !!organization?.organization_name
+      || !!organization?.dodaac || !!organization?.address_type;
+    const isComplete = !!organization?.agency && !!organization.organization_name
+      && !!organization.dodaac && !!organization.address_type && !!organization.street_address_1
+      && !!organization.city && !!organization.state && !!organization.zip_code;
+
     const organizationDetails: SummaryItem = {
-      title: "Your Organization",
-      description: "",
-      isComplete: false,
-      isTouched: false,
+      title,
+      description,
+      isTouched,
+      isComplete,
       hasDelete:false,
       hasShowMore:false,
       routeName: "OrganizationInfo",
@@ -242,7 +256,7 @@ export class SummaryStore extends VuexModule {
       x => militaryKeys.indexOf(x) === -1
     ): contactInfoKeys.filter(
       x => civilianKeys.indexOf(x) === -1)
- 
+
     const monitor = {object: contactInfo, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
     const PrimaryPOC: SummaryItem = {
@@ -337,7 +351,7 @@ export class SummaryStore extends VuexModule {
       isTouched,
       hasDelete:false,
       hasShowMore:false,
-      routeName: "Exceptions", 
+      routeName: "Exceptions",
       step:2,
       substep: 1
     }
