@@ -4,6 +4,7 @@ import {
     cleanText
 } from "../../../helpers";
 import ep from "../../../selectors/evaluationPlan.sel";
+import fo from "../../../selectors/fairOpportunityProcess.sel";
 
 
 describe("Test suite: Step02-Evaluation plan", () => {
@@ -12,7 +13,7 @@ describe("Test suite: Step02-Evaluation plan", () => {
     const scope = "EvaluationCriteria-EvaluationPlan" + randomString(5);
 
     //select different eval plan option
-    let evalPlanOption = "setLumpSum"; //techProposal,noTechProposal,equalLumpSum,setLumpSum
+    let evalPlanOption = "techProposal"; //techProposal,noTechProposal,equalLumpSum,setLumpSum
     const noTechProposalTxt = "no technical proposal is"
     const techProposalTxt = "technical proposals are"
 
@@ -26,13 +27,16 @@ describe("Test suite: Step02-Evaluation plan", () => {
 
     };
     const selectionMethodTechHeader = cleanText(`Now let’s review compliance standards when ${selectionMethodText()} required`);
-    let setTechProposalSelectionMethod = "BVTO"; //BVTO,LPTA;
+    let setTechProposalSelectionMethod = "LPTA"; //BVTO,LPTA;
 
     const customCompliance = "Yes" //Yes,No
     const customText = randomString(5);
 
-    //if evalPlanOption is selected to serLumpSum set the following Option
-    let setLumpSumSelectionMethod = "BestUse" //BestUse,LowestRisk
+    //if evalPlanOption is selected to setLumpSum,then set the following Option
+    let setLumpSumSelectionMethod = "LowestRisk" //BestUse,LowestRisk
+
+    //summary
+    const exceptionToFairOppDescriptionText =`No exceptions apply to this acquisition.A J&A and MRR are NOT required in your final acquisition package.`;
 
     beforeEach(() => {
         cy.selectNoneOption(pt, scope);
@@ -51,14 +55,14 @@ describe("Test suite: Step02-Evaluation plan", () => {
             selectCustomComplianceOption(customCompliance, customText);
             cy.clickContinueButton(ep.customRadioNoBtn, "What differentiator(s) should be used to distinguish between technical proposals?");
             cy.selectCheckBoxes([ep.levelComplexityCheckbox, ep.capGain]);
-            cy.clickContinueButton(ep.otherCheckboxOption, "Let’s gather details about the duration of your task order");
+            cy.clickContinueButton(ep.otherCheckboxOption, "Your Evaluation Criteria Summary");
         } else {
             cy.findElement(ep.lptaRadioBtn).click({
                 force: true
             });
             cy.clickContinueButton(ep.lptaRadioBtn, selectionMethodTechHeader);
             selectCustomComplianceOption(customCompliance, customText);
-            cy.clickContinueButton(ep.customRadioNoBtn, "Let’s gather details about the duration of your task order");
+            cy.clickContinueButton(ep.customRadioNoBtn, "Your Evaluation Criteria Summary");
         }
     };
 
@@ -68,7 +72,7 @@ describe("Test suite: Step02-Evaluation plan", () => {
         });
         cy.clickContinueButton(ep.noTechProposal, selectionMethodTechHeader);
         selectCustomComplianceOption(customCompliance, customText);
-        cy.clickContinueButton(ep.customRadioNoBtn, "Let’s gather details about the duration of your task order");
+        cy.clickContinueButton(ep.customRadioNoBtn, "Your Evaluation Criteria Summary");
     };
 
     function selectCustomComplianceOption(customCompliance, customText) {
@@ -105,15 +109,49 @@ describe("Test suite: Step02-Evaluation plan", () => {
         } else {
             cy.selectCheckBoxes([ep.automationCapabilityCheckBox]);
         }
-        cy.clickContinueButton(ep.riskToGovCheckBox, "Let’s gather details about the duration of your task order");
+        cy.clickContinueButton(ep.riskToGovCheckBox, "Your Evaluation Criteria Summary");
     };
 
     function selectEvalPlanOptionEqualLumpSum() {
         cy.findElement(ep.equalLumpSum).click({
             force: true
         });
-        cy.clickContinueButton(ep.equalLumpSum, "Based on your evaluation method, there are no required compliance standards, differentiators, or assessment areas.");
+        cy.clickContinueButton(
+            ep.equalLumpSum,
+            "Based on your evaluation method, there are no required compliance standards, differentiators, or assessment areas."
+        );
+        cy.clickContinueButton(
+            ep.evalPlanAlertHeader,
+            "Your Evaluation Criteria Summary"
+        );
     };
+
+    function evalplanDescriptionDetails() {
+        let description = "";
+
+        switch (evalPlanOption) {
+            case "noTechProposal":
+                description = "Technical proposal not required; award will be made on a LPTA basis.";
+                break;
+            case "techProposal":
+                description = setTechProposalSelectionMethod === "BVTO" ?
+                    "Technical proposal required; award will be made on a BVTO basis." :
+                    "Technical proposal required; award will be made on a LPTA basis.";
+                break;
+            case "setLumpSum":
+                description = setLumpSumSelectionMethod === "BestUse" ?
+                    "Purchase a set lump sum dollar amount from one CSP; award will be made to the “BEST_USE” solution." :
+                    "Purchase a set lump sum dollar amount from one CSP; award will be made to the “LOWEST_RISK” solution.";
+                break;
+            case "equalLumpSum":
+                description = "Purchase an equal set lump sum dollar amount from each CSP.";
+                break;
+
+        }
+
+        cy.verifyTextMatches(fo.evalPlanDesriptionText, description);
+    }
+
 
     it("TC1: Select Eval plan", () => {
         if (evalPlanOption === "techProposal") {
@@ -125,6 +163,8 @@ describe("Test suite: Step02-Evaluation plan", () => {
         } else if (evalPlanOption === "equalLumpSum") {
             selectEvalPlanOptionEqualLumpSum();
         }
+        cy.verifyTextMatches(fo.exceptionToFairOppDescriptionText, exceptionToFairOppDescriptionText);
+        evalplanDescriptionDetails()
 
     });
 

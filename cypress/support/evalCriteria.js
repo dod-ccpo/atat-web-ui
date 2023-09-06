@@ -138,7 +138,8 @@ Cypress.Commands.add("selectMethodSelectionSectionOption", (radioSelector, value
       const unformattedText = $radioBtn.text()
       const selectedOption = cleanText(unformattedText);
       cy.log(selectedOption);
-      cy.textExists(common.continueBtn, "Continue").click();
+      cy.findElement(common.continueBtn).click();
+      cy.waitUntilElementIsGone(radioSelector)
       const lptaOption = "radio_button_checkedLowest Price" +
         " Technically Acceptable" +
         " (LPTA)Award will be made to the lowest priced offeror meeting the compliance standards.";

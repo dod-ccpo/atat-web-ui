@@ -1,6 +1,6 @@
-import { randomString, randomAlphaNumeric} from "../../../../helpers";  
-import evalCriteria from '../../../../fixtures/evaluationCriteria.json';
-import fo from "../../../../selectors/fairOpportunityProcess.sel";
+import { randomString, randomAlphaNumeric} from "../../../../../helpers";  
+import evalCriteria from '../../../../../fixtures/evaluationCriteria.json';
+import fo from "../../../../../selectors/fairOpportunityProcess.sel";
 
 
 describe("Test suite: Exception to Fair Opportunity", () => {
