@@ -392,6 +392,21 @@ export class PortfolioSummaryStore extends VuexModule {
     })
   }
 
+  public hasActivePortfolios = false;
+  @Action({rawError: true})
+  private async setHasActivePortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
+    const hasActivePortfolios = portfolioSummaryList.some((portfolio) => {
+      return portfolio.portfolio_status === Statuses.Active.label ||
+      portfolio.portfolio_status === Statuses.Active.value
+    })
+    await this.doSetHasActivePortfolios(hasActivePortfolios)
+  }
+
+  @Mutation
+  private async doSetHasActivePortfolios(hasActivePortfolios: boolean){
+    this.hasActivePortfolios = hasActivePortfolios;
+  }
+
   /**
    * Aggregates the 'Total Obligated' and 'Funds Spent' for all the portfolios in the list.
    * Also rolls up the pop dates using the values of the active task order.
@@ -491,6 +506,7 @@ export class PortfolioSummaryStore extends VuexModule {
         await this.setTaskOrdersForPortfolios(portfolioSummaryList);
         await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
         await this.setCostsToTaskOrderClins(portfolioSummaryList);
+        await this.setHasActivePortfolios(portfolioSummaryList);
         // all asynchronous calls are done before this step & data is available for aggregation
         this.computeAllAggregationsAndPopRollup(portfolioSummaryList);
         this.setPortfolioSummaryList(portfolioSummaryList); // caches the list

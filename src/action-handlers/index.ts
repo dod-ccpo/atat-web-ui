@@ -22,6 +22,7 @@ const actionHandlerNames = {
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
   writeOwnMarketResearchDetails: "writeOwnMarketResearchDetails",
   WriteOwnBarriers: "WriteOwnBarriers",
+  startNewAcquisition: "startNewAcquisition"
 }
 
 const actions =  {
@@ -38,6 +39,7 @@ const actions =  {
   [actionHandlerNames.writeOwnMarketResearchDetails]: writeOwnMarketResearchDetails,
   [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
   [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
+  [actionHandlerNames.startNewAcquisition]: startNewAcquisition,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -150,6 +152,19 @@ async function didNotUseDapps() {
       direction: "next"
     }
   });
+}
+async function startNewAcquisition(): Promise<void> {
+  await AcquisitionPackage.setIsNewPackage(true)
+  await AcquisitionPackage.reset();
+  await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+  router.push({
+    name: routeNames.DAPPSChecklist,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));
+  AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
 }
 
 export default actionHandler;

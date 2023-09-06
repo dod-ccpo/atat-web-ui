@@ -17,6 +17,8 @@ import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Summary, { isStepTouched } from "@/store/summary";
+import CurrentUserStore from "@/store/user";
+import PortfolioSummary from "@/store/portfolioSummary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -1708,6 +1710,12 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
     : provWorkflowRouteNames.GeneratedFromPackage;
 }
 
+export const AddToExistingPortfolioResolver = (): string => {
+  return PortfolioSummary.hasActivePortfolios 
+    ? provWorkflowRouteNames.AddToExistingPortfolio
+    : provWorkflowRouteNames.GeneratedFromPackage;
+}
+
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   showDITCOPageResolver,
@@ -1754,6 +1762,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CrossDomainResolver,
   AnticipatedUserAndDataNeedsResolver,
   GeneratedFromPackageRouteResolver,
+  AddToExistingPortfolioResolver,
   ContractingInfoResolver,
   SummaryStepThreeRouteResolver,
   PortfolioDetailsRouteResolver,

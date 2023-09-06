@@ -6,6 +6,7 @@ import GeneratedFromPackage from "@/portfolios/provisioning/GeneratedFromPackage
 import PortfolioDetails from "@/portfolios/provisioning/PortfolioDetails.vue";
 import AddCSPAdmin from "@/portfolios/provisioning/AddCSPAdmin.vue";
 import ReadyToProvision from "@/portfolios/provisioning/ReadyToProvision.vue";
+import AddToExistingPortfolio from "@/portfolios/provisioning/AddToExistingPortfolio.vue"
 
 const GeneratedFromPackageRouteResolver = (): string => {
   return "";
@@ -13,11 +14,15 @@ const GeneratedFromPackageRouteResolver = (): string => {
 const PortfolioDetailsRouteResolver = (): string => {
   return "";
 }
+const AddToExistingPortfolioResolver = (): string => {
+  return "";
+}
 
 export const provWorkflowRouteNames = {
   ProvisioningIndex: "Provisioning_Index",
   ProvisionWorkflow: "Provision_Workflow",
   AwardedTaskOrder: "Awarded_Task_Order",
+  AddToExistingPortfolio: "Add_To_Existing_Portfolio",
   GeneratedFromPackage: "Generated_From_Package",
   PortfolioDetails: "Portfolio_Details",
   AddCSPAdmin: "Add_CSP_Admin",
@@ -54,6 +59,20 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
         ]
       },
       {
+        name: provWorkflowRouteNames.AddToExistingPortfolio,
+        path: "/add-to-portfolio",
+        component: AddToExistingPortfolio, 
+        routeResolver: AddToExistingPortfolioResolver,
+        additionalButtons: [
+          {
+            buttonText: "I need to create a new portfolio",
+            buttonId: "CreateANewPortfolio",
+            buttonClass: "secondary",
+            actionName: "startNewAcquisition",
+          },
+        ]
+      },
+      {
         name: provWorkflowRouteNames.GeneratedFromPackage,
         path: "/generated-from-package",
         component: GeneratedFromPackage, 
@@ -84,7 +103,7 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
         component: ReadyToProvision,
         continueButtonText: "Start Provisioning",
         altContinueAction: "startProvisioning",
-      },
+      }
     ]
   },
 
