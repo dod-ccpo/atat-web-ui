@@ -30,28 +30,28 @@
       </div>
     </v-main>
     <ATATDialog 
-    id="TOConfirmModal"
-    :showDialog="showTOConfirmModal"
-    title="Add task order to your portfolio?"
-    no-click-animation
-    width="450"
-    @cancelClicked="TOConfirmCancelled"
-    cancelButtonId="TOConfirmCancelled"
-    okText="Add task order"
-    @ok="addTaskorderToPortfolio"
-    :OKDisabled="disableOk"
-    :showOKSpinner="showOkSpinner"
-  >
-  <template #content>
-    <div class="body">
-      <p>
-        Upon initiation of this process, ATAT will submit Task Order 
-        #{{TONumber}} to <span class="font-weight-bold">{{ csp }}</span> to update funding
-        associated with your “{{ portfolioName }}” portfolio. This process cannot be undone.
-      </p>
-    </div>
-    </template>
-  </ATATDialog>
+      id="TOConfirmModal"
+      :showDialog="showTOConfirmModal"
+      title="Add task order to your portfolio?"
+      no-click-animation
+      width="450"
+      @cancelClicked="TOConfirmCancelled"
+      cancelButtonId="TOConfirmCancelled"
+      okText="Add task order"
+      @ok="addTaskorderToPortfolio"
+      :OKDisabled="disableOk"
+      :showOKSpinner="showOkSpinner"
+    >
+      <template #content>
+        <div class="body">
+          <p>
+            Upon initiation of this process, ATAT will submit Task Order 
+            #{{TONumber}} to <span class="font-weight-bold">{{ csp }}</span> to update funding
+            associated with your “{{ portfolioName }}” portfolio. This process cannot be undone.
+          </p>
+        </div>
+      </template>
+    </ATATDialog>
   </div>
 </template>
 

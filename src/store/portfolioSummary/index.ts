@@ -474,7 +474,6 @@ export class PortfolioSummaryStore extends VuexModule {
     try {
       const searchDTO = data.searchDTO;
       const isHomeView = data.isHomeView ?? false;
-      let searchQuery = "";
       let optionalSearchQuery = "";
       
       if (!data.singlePortfolioSearch) {
@@ -483,7 +482,7 @@ export class PortfolioSummaryStore extends VuexModule {
         optionalSearchQuery = "sys_id=" + data.singlePortfolioSearch;
       }
 
-      searchQuery = await this.getMandatorySearchParameterQuery({searchDTO, isHomeView});
+      let searchQuery = await this.getMandatorySearchParameterQuery({searchDTO, isHomeView});
       if (optionalSearchQuery.length > 0) {
         searchQuery = optionalSearchQuery + searchQuery;
       }
