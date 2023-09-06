@@ -1794,15 +1794,16 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessRequirementsCostEstimate(): Promise<void> {
+
+    const rce = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
+    const isTouched = false;
+    const isComplete = await this.isRCEComplete(rce);
     const costData = await api.costEstimateTable.search(AcquisitionPackage.packageId)
     IGCE.doSetCostEstimateTotals({
       base: costData.payload.total_price["Base Period"],
       grand: costData.payload.grand_total_with_fee["Total"]
     })
-    const rce = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
-    const isTouched = false;
-    const isComplete = await this.isRCEComplete(rce);
-
+   
     const requirementsCostEstimateSummaryItem: SummaryItem = {
       title: "Requirements Cost Estimate",
       description: await this.setRCEDescription(isComplete),
