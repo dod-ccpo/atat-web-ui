@@ -4,7 +4,6 @@
       type="info"
       v-if="showAlertHeading"
     >
-    
       <template v-slot:content>
             <h3 class="mb-1">End of Fiscal Year Cut-off dates</h3>
             <p class="mb-0">
@@ -27,9 +26,7 @@
                 returned without action. 
             </p>
         <br>
-        <ATATExpandableLink aria-id="LateInfo" :isCopyMaxWidth="false"
-
-        >
+        <ATATExpandableLink aria-id="LateInfo" :isCopyMaxWidth="false">
             <template v-slot:header>
                 View JWCC End of Fiscal Year Cut-off dates
             </template>
