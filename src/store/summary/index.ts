@@ -9,8 +9,8 @@ import {
 } from "types/Global";
 import Periods from "../periods";
 import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
-import { ContractTypeApi } from "@/api/contractDetails";
 import {
+  ContactDTO,
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CrossDomainSolutionDTO, CurrentContractDTO,
@@ -27,9 +27,9 @@ import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
+
 import { differenceInQuartersWithOptions } from "date-fns/fp";
 import FinancialDetails from "../financialDetails";
-
 
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -229,11 +229,8 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessFairOpportunity(objectKeys: string[]): Promise<void>{
     const fairOpp = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
-    const keysToIgnore = objectKeys.filter(
-      x => x !== "sys_"
-    );
-    const monitor = {object: fairOpp, keysToIgnore};
-    const isTouched = await this.isTouched(monitor)
+    const keysToIgnore = ["sys_", "cause_migration_estimated_cost"];
+    const isTouched = await this.isTouched({object: fairOpp, keysToIgnore});
     const isComplete = await this.isFairOpportunityComplete(fairOpp);
     const FairOpportunityItem: SummaryItem = {
       title: "Exception to Fair Opportunity",
@@ -295,7 +292,8 @@ export class SummaryStore extends VuexModule {
       && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
     return (hasNoFairOpp) ||
-      (hasJustification 
+      (hasProposedCSP
+        && hasJustification 
         && hasMinGovtRequirements
         && await this.hasSoleSourceSituation(fairOpp)
         && await this.hasProcurement(fairOpp)
@@ -318,6 +316,8 @@ export class SummaryStore extends VuexModule {
     let isCauseMigrationSelection = false;
     if (causeMigrationSelection === "YES"){
       isCauseMigrationSelection =  fairOpp.cause_migration_estimated_cost !== ""
+        && ["0.00", "0", ""].every(
+          invalidValue => invalidValue !== fairOpp.cause_migration_estimated_cost?.trim())
         && fairOpp.cause_migration_estimated_delay_amount !== ""
         && fairOpp.cause_migration_estimated_delay_unit !== ""
     } else if (causeMigrationSelection === "NO"){
@@ -443,6 +443,19 @@ export class SummaryStore extends VuexModule {
         && fairOpp.research_techniques_summary !== ""
       : true;
 
+    // if Q1 or Q2 === 'YES' and 1 item is checked in fairOpp.research_other_techniques_used 
+    // checkbox list then fairOpp.research_techniques_summary is required
+    let hasResearchTechniquesSummary = true;
+    if (researchIsCSPOnlySourceCapable === "YES" || researchReviewCatalogsReviewed === "YES"){
+      // By default, `REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG` is selected.  
+      // Validate that at least 2 items have been selected. 
+      hasResearchTechniquesSummary = hasContractAction
+        ? true
+        : (fairOpp.research_other_techniques_used as string).split(",").length>1 
+          ? fairOpp.research_techniques_summary !== ""
+          : true
+    }
+
     // if `other` is selected, then validate the `other text box`
     const otherOptionSysId = AcquisitionPackage.marketResearchTechniques?.find(
       (option) => option.technique_label.toUpperCase() === "OTHER"
@@ -457,13 +470,14 @@ export class SummaryStore extends VuexModule {
     hasMarketResearchDetails = fairOpp.research_details_for_docgen === "GENERATED"
       ? fairOpp.research_details_generated !== ""
       : fairOpp.research_details_custom !== ""
-      
+
     //todo eval to true
     return hasResearchIsCSPOnlySourceCapable
       && hasResearchReviewCatalogsReviewed
       && isOtherOptionSelected
       && hasOtherTechniques
-      && hasMarketResearchDetails;
+      && hasMarketResearchDetails
+      && hasResearchTechniquesSummary;
   }
 
   @Action({rawError: true})
@@ -489,7 +503,7 @@ export class SummaryStore extends VuexModule {
     // assess question one
     // 1. Is your agency preparing a fair opportunity competitive follow-on requirement?
     const followOnRequirement = fairOpp.barriers_follow_on_requirement;
-    const hasFollowOnRequirement = followOnRequirement === "NO"
+    const hasFollowOnRequirement = (followOnRequirement !== "" && followOnRequirement === "NO")
       ? true
       : fairOpp.barriers_follow_on_expected_date_awarded !=="" ;
      
@@ -508,8 +522,9 @@ export class SummaryStore extends VuexModule {
     //assess question three
     // 4. Are you planning future development and enhancement of Infrastructure as a Service (IaaS)
     //    components that will shift to a containerized platform?
+    const hasJA = fairOpp.barriers_j_a_prepared !== ""
     const isJAPrepared = 
-      fairOpp.barriers_j_a_prepared === "NO"
+      hasJA && fairOpp.barriers_j_a_prepared === "NO"
         ? true
         : fairOpp.barriers_j_a_prepared_results !== "";
 
@@ -529,38 +544,116 @@ export class SummaryStore extends VuexModule {
   
   @Action({rawError: true})
   public async hasCertificationPOCS(fairOpp: FairOpportunityDTO): Promise<boolean>{
-    return fairOpp.requirements_poc !== ""
-     && fairOpp.requirements_poc_type !== ""
-     && fairOpp.technical_poc !== ""
-     && fairOpp.technical_poc_type !== ""
+    const reqPOCType = fairOpp.requirements_poc_type;
+    const reqPOCId = fairOpp.requirements_poc;
+    const technicalPOCType = fairOpp.technical_poc_type;
+    const technicalPOCId = fairOpp.technical_poc;
+    const hasExistingTechPOC = technicalPOCId !== "" && technicalPOCType !=="";
+    const hasExistingReqPOC = reqPOCId !="" && reqPOCType !="" ;
+    if (reqPOCType === "NEW"){
+      if (await this.isNewPOCValid(reqPOCId as string) === false){
+        return false;
+      };
+    } 
+    if (technicalPOCType === "NEW"){
+      if (await this.isNewPOCValid(technicalPOCId as string) === false){
+        return false;
+      };
+    } 
+    return hasExistingReqPOC && hasExistingTechPOC
+  }
+
+  @Action({rawError: true})
+  public async isNewPOCValid(sysID: string): Promise<boolean>{
+    const contactResponse: ContactDTO[] = await api.contactsTable.getQuery({
+      params: {
+        // eslint-disable-next-line camelcase
+        sysparm_query: "sys_id=" + sysID
+      }
+    });
+    if (contactResponse.length>0){
+      const contact = contactResponse[0];
+      const keysToIgnore = Object.keys(contact).filter(
+        x => ["role","first_name","last_name","title","phone"].indexOf(x) === -1
+      );
+      const monitor = {object: contact, keysToIgnore};
+      const isMilitary = contact.role.toUpperCase() === "MILITARY";
+      const hasRankComponents = contact.rank_components !== "" ;
+      const isComplete = await this.isComplete(monitor);
+      return isMilitary
+        ? isComplete && hasRankComponents
+        : isComplete;
+    } else {
+      return false;
+    }
   }
 
   @Action({rawError: true})
   public async assessEvalPlan(objectKeys: string[]): Promise<void>{
-    const isFairOpportunityTouched = this.summaryItems.find(
-      si => si.title.includes("Fair Opportunity")
-    )?.isTouched;
+    const fairOpp = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
+    const hasEmptyFairOpp = fairOpp === "";
+    const hasNoFairOpp = fairOpp === "NO_NONE"
+    const hasFairOpp = !hasNoFairOpp && !hasEmptyFairOpp;
     const evalPlanStore = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
     const keysToIgnore = objectKeys.filter(
       x => ["custom_","method", "source_", "standard_"].indexOf(x) === -1
     );
     const monitor = {object: evalPlanStore, keysToIgnore};
-    const isTouched = await this.isTouched(monitor)
-    // let isComplete = false
-
-    //
+    const isTouched = hasNoFairOpp ? await this.isTouched(monitor) : true;
+    const isComplete = hasFairOpp ? true : await this.isEvalPlanComplete(evalPlanStore);
     const evalPlan: SummaryItem = {
       title: "Evaluation Plan",
-      description: "",
-      isComplete: await this.isEvalPlanComplete(evalPlanStore),
-      isTouched,
-      routeName:  "CreateEvalPlan",
+      description: await this.setEvalPlanDescription({evalPlanStore, isComplete, fairOpp}),
+      isComplete: hasNoFairOpp ? isComplete : (!hasEmptyFairOpp ? true : false),
+      isTouched: hasNoFairOpp ? isTouched : (!hasEmptyFairOpp ? true : false),
+      routeName: "CreateEvalPlan",
       step:2,
       substep: 2
     }
     await this.doSetSummaryItem(evalPlan)
   }
 
+  @Action({rawError: true})
+  public async setEvalPlanDescription(
+    config:{
+      evalPlanStore:EvaluationPlanDTO,
+      isComplete: boolean,
+      fairOpp: string
+    }): Promise<string> {
+    const method = config.evalPlanStore.method;
+    const selection = config.evalPlanStore.source_selection;
+    const hasNoFairOpp = config.fairOpp === "NO_NONE"
+    let description = "No Evaluation Plan is required.";
+    if (!hasNoFairOpp && config.isComplete){
+      return description;
+    }
+
+    if (!config.isComplete){
+      return "";
+    }
+
+    switch(selection){
+    case "NO_TECH_PROPOSAL":
+      description = "Technical proposal not required; award will be made on a LPTA basis."
+      break;
+    case "TECH_PROPOSAL":
+      description = (method ?? "") !==  ""
+        ? "Technical proposal required; award will be made on a " + method + " basis."
+        : "";
+      break;
+    case "SET_LUMP_SUM":
+      description = (method ?? "") !==  ""
+        ? "Purchase a set lump sum dollar amount from one CSP; " +
+          "award will be made to the “" + method + "” solution."
+        : "";
+      break;
+    case "EQUAL_SET_LUMP_SUM":
+      description = "Purchase an equal set lump sum dollar amount from each CSP."
+      break;
+    }
+    return description;
+  }
+  
   @Action({rawError: true})
   public async isEvalPlanComplete(evalPlanStore:EvaluationPlanDTO): Promise<boolean> {
     const hasCustomSpecs = (evalPlanStore.has_custom_specifications ?? "") !== "";
@@ -1617,6 +1710,7 @@ export class SummaryStore extends VuexModule {
       x => ["foia_"].indexOf(x) === -1
     );
     keysToIgnore.push("foia_street_address_2");
+    keysToIgnore.push("foia_country");
     const fOIAMonitor = {object: sensitiveInfo, keysToIgnore};
     const isTouched = await this.isTouched(fOIAMonitor)
     const isComplete = sensitiveInfo.potential_to_be_harmful === "NO"
@@ -1716,9 +1810,42 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessIncrementalFunding(): Promise<void> {
 
-    const isTouched = false;
-    const isComplete =  false;
-    const description = "Placeholder";
+    // if PoP is < 9 months, section will be autocompleted when either other section becomes touched
+    let isAutoCompleted = false;
+    if (AcquisitionPackage.totalBasePoPDuration < 270
+      && AcquisitionPackage.totalBasePoPDuration > 0) {
+      const reqCostEstimate = this.summaryItems
+        .find(item => item.step === 8 && item.substep === 1);
+      const isReqCostEstimateTouched = reqCostEstimate ? reqCostEstimate.isTouched : false;
+      const funding = this.summaryItems
+        .find(item => item.step === 8 && item.substep === 3);
+      const isFundingTouched = funding ? funding.isTouched : false;
+      isAutoCompleted = isReqCostEstimateTouched || isFundingTouched;
+    }
+
+    let description = "";
+
+    // if incrementally funded, verify that funding increments exist and financial POC is complete
+    const isIncrementallyFunded = FinancialDetails.isIncrementallyFunded;
+    let incrementalFundingPlanComplete = false;
+    if (isIncrementallyFunded === "YES") {
+      const hasFundingIncrements =  FinancialDetails.fundingIncrements.length > 0;
+      const financialPOC = AcquisitionPackage.financialPocInfo;
+      const isFinancialPocComplete = !!financialPOC?.first_name && !!financialPOC.last_name
+        && !!financialPOC.phone && !!financialPOC.email;
+      incrementalFundingPlanComplete = hasFundingIncrements && isFinancialPocComplete;
+
+      description = `<p>Requesting to incrementally fund requirement<br><br>
+        Financial POC: ${financialPOC?.first_name} ${financialPOC?.last_name}<br>
+        ${financialPOC?.email}</p≥`;
+    } else if (isIncrementallyFunded === "NO") {
+      description = "Not requesting to incrementally fund requirement"
+    }
+
+    const isTouched = isAutoCompleted || !!isIncrementallyFunded;
+    const isComplete =  isAutoCompleted || isIncrementallyFunded === "NO"
+      || incrementalFundingPlanComplete;
+
 
     const incrementalFundingSummaryItem: SummaryItem = {
       title: "Incremental Funding",
@@ -1726,6 +1853,7 @@ export class SummaryStore extends VuexModule {
       isComplete,
       isTouched,
       routeName: "IncrementalFunding",
+
       step: 8,
       substep: 2
     }
@@ -1774,8 +1902,6 @@ export class SummaryStore extends VuexModule {
       }
 
     }
-
-    
 
     const fundingSummaryItem: SummaryItem = {
       title: "Funding",

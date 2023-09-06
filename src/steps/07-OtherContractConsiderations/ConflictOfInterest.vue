@@ -4,14 +4,16 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Do you have a potential Conflict of Interest (COI)?
+            Is there a potential Conflict of Interest (COI)?
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
               An organizational COI is a situation where, because of other relationships
-              or activities, a person or company either is unable or potentially unable to render 
-              impartial assistance or advice to the government, cannot objectively perform contract 
-              work, or has an unfair competitive advantage.
+              or activities, a person or company is potentially unable to render impartial 
+              assistance or advice to the government, cannot objectively perform contract
+              work, or has an unfair competitive advantage. Notification of a potential COI
+              will be provided within the Description of Work to the CSPs to address,
+              as applicable, when responding to a solicitation.
               <a
                 role="button"
                 id="CoILearnMore"
@@ -94,7 +96,7 @@ export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
     },
     {
       id: "No",
-      label: "No. This is a new requirement.",
+      label: "No.",
       value: "NO",
     },
   ];

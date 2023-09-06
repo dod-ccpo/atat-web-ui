@@ -211,15 +211,14 @@ Cypress.Commands.add("goToContractDetailsStep", (pt, scope, radioSelector, value
     " What classification level(s) will be required for your cloud resources and/or services? ");
 
 })
-Cypress.Commands.add("anticipatedNeedUsage",(textSel, textVal, radioSel) => {
+Cypress.Commands.add("anticipatedNeedUsage", (textSel, textVal, radioSel) => {
   cy.enterTextInTextField(
-    textSel,textVal)
+    textSel, textVal)
   cy.findElement(radioSel).click({
     force: true,
   });
 
 })
-
 
 Cypress.Commands.add('verifyTableValues', (tableSel, expectedTableData,stopCellIndex) => {
   stopCellIndex = stopCellIndex ?? 1000;
@@ -248,5 +247,14 @@ Cypress.Commands.add("clickAndWaitForVisible", (elementSelector, targetSelector)
     .click()
     .then(() => {
       cy.waitUntil(() => cy.findElement(targetSelector).should("be.visible"));
+    });
+});
+
+Cypress.Commands.add("clickAndWaitForElementExists", (elementSelector, targetSelector) => {
+  cy.get(elementSelector)
+    .should("be.visible")
+    .click()
+    .then(() => {
+      cy.waitUntil(() => cy.findElement(targetSelector).should("exist"));
     });
 });
