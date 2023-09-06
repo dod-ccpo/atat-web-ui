@@ -159,6 +159,7 @@
 
 ._profile-card__name-button {
   &.v-btn {
+    justify-content: left !important;
     padding: 0px !important;
     padding-left: 4px !important;
     span{

@@ -226,21 +226,19 @@
                   </ATATAlert>
                 </v-col>
               </v-row>
-              <!-- ATAT TODO - restore in future ticket 
-              <v-row id="BurndownChartWrap">
+              <v-row id="BurndownChartWrap" v-if="!isProdEnv">
                 <v-col>
                   <v-card class="_no-shadow v-sheet--outlined pa-8">
                     <h3 class="mb-4">Actual and Projected Burn Rate</h3>
                     <p class="text-base-dark font-size-14">
-                      Track your rate of spend and available funds throughout
-                      the current PoP. Forecasted future costs
-                      are based on historical trends and show approximately when
-                      you are projected to exceed your portfolio’s budget.
+                      Track your rate of spend and available funds throughout the current 
+                      PoP. Forecasted future costs are based on historical trends and show 
+                      approximately when you are projected to exceed your portfolio’s budget. 
                     </p>
                     <v-row class="mb-0">
                       <v-col class="font-size-14">Funds available</v-col>
                       <v-col id="BurnPoPs" class="text-right font-size-14">
-                        Current Period: {{ popStart }}&ndash;{{ popEnd }}
+                        Current Period: {{ currentPoPStartStr }}&ndash;{{ currentPoPEndStr }}
                       </v-col>
                     </v-row>
                     <LineChart
@@ -294,7 +292,6 @@
                   </v-card>
                 </v-col>
               </v-row>
-              -->
 
               <v-row>
                 <v-col>
@@ -486,7 +483,7 @@
                 </v-col>
               </v-row>
 
-              <!-- ATAT TODO
+              <!-- ATAT TODO *
               ============================================
               Add back and update as needed after ATAT MVP
               ============================================
@@ -856,6 +853,10 @@ import Portfolio from "@/store/portfolio";
 })
 export default class PortfolioDashboard extends Vue {
   dashboardService: DashboardService = new DashboardService();
+
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
+  }
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""
@@ -1552,7 +1553,7 @@ export default class PortfolioDashboard extends Vue {
         this.totalPortfolioFunds + parseFloat(clin.funds_obligated.toString());
     });
     
-    // ATAT TODO -  adjust step size and Y Max based on total funds amount
+    // ATAT TODO AT-9706 adjust step size and Y Max based on total funds amount
     this.burnChartYMax = Math.ceil(this.totalPortfolioFunds / 100000) * 100000;
     this.burnChartYStepSize = Math.round(this.burnChartYMax / 6);
 
