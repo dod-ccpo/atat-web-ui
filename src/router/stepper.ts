@@ -385,7 +385,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "DAPPS Checklist",
-        path: "/",
+        path: "/dapps-checklist",
         name: routeNames.DAPPSChecklist,
         completePercentageWeight: 0,
         routeResolver: showDITCOPageResolver,

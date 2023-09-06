@@ -162,6 +162,8 @@ export class SummaryStore extends VuexModule {
     description: "",
     isComplete: false,
     isTouched: false,
+    hasDelete:false,
+    hasShowMore:false,
     routeName: "",
     step: 0,
     substep: 0
@@ -207,6 +209,8 @@ export class SummaryStore extends VuexModule {
       description: "",
       isComplete: false,
       isTouched: AcquisitionPackage.projectTitle !== "",
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "ProjectOverview",
       step:1,
       substep: 1
@@ -220,6 +224,8 @@ export class SummaryStore extends VuexModule {
       description: "",
       isComplete: false,
       isTouched: false,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "OrganizationInfo",
       step:1,
       substep: 2
@@ -244,6 +250,8 @@ export class SummaryStore extends VuexModule {
       description: "",
       isComplete: await this.isComplete(monitor),
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "ContactInformation",
       step:1,
       substep: 3
@@ -267,6 +275,8 @@ export class SummaryStore extends VuexModule {
       description: "",
       isComplete: await this.isComplete(monitor),
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "CorInformation",
       step:1,
       substep: 4
@@ -325,6 +335,8 @@ export class SummaryStore extends VuexModule {
       description: await this.setFairOpportunityDescription({fairOpp, isComplete}),
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "Exceptions", 
       step:2,
       substep: 1
@@ -678,6 +690,8 @@ export class SummaryStore extends VuexModule {
       description: await this.setEvalPlanDescription({evalPlanStore, isComplete, fairOpp}),
       isComplete: hasNoFairOpp ? isComplete : (!hasEmptyFairOpp ? true : false),
       isTouched: hasNoFairOpp ? isTouched : (!hasEmptyFairOpp ? true : false),
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "CreateEvalPlan",
       step:2,
       substep: 2
@@ -790,6 +804,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "PeriodOfPerformance",
       step:3,
       substep: 1
@@ -836,6 +852,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "ContractType",
       step:3,
       substep: 2
@@ -898,6 +916,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "ClassificationRequirements",
       step:3,
       substep: 3
@@ -1082,6 +1102,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "CurrentContract",
       step: 4,
       substep: 1
@@ -1174,6 +1196,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "CurrentEnvironment",
       step: 4,
       substep: 2
@@ -1597,6 +1621,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "ConflictOfInterest",
       step: 6,
       substep: 1
@@ -1629,6 +1655,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "PackagingPackingAndShipping",
       step: 6,
       substep: 2
@@ -1674,6 +1702,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "Travel",
       step: 6,
       substep: 3
@@ -1721,7 +1751,9 @@ export class SummaryStore extends VuexModule {
       title: "Personally Identifiable Information (PII)",
       description,
       isComplete,
-      isTouched, 
+      isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "PII",
       step:7,
       substep: 1
@@ -1755,7 +1787,9 @@ export class SummaryStore extends VuexModule {
       title: "Business Associate Agreement (BAA)",
       description,
       isComplete,
-      isTouched, 
+      isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "BAA",
       step:7,
       substep: 2
@@ -1791,7 +1825,9 @@ export class SummaryStore extends VuexModule {
       title: "Public Disclosure of Information",
       description,
       isComplete,
-      isTouched, 
+      isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "FOIA",
       step:7,
       substep: 3
@@ -1830,7 +1866,9 @@ export class SummaryStore extends VuexModule {
       title: "Section 508 Standards",
       description,
       isComplete,
-      isTouched, 
+      isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "Section508Standards",
       step:7,
       substep: 4

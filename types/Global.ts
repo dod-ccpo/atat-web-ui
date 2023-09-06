@@ -818,6 +818,8 @@ export interface SummaryItem {
   isComplete: boolean;
   isTouched: boolean;
   routeName: string;
+  hasDelete: boolean;
+  hasShowMore: boolean;
   step: number;
   substep: number;
 }
