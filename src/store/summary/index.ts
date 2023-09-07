@@ -19,6 +19,7 @@ import {
   FundingRequestDTO,
   FundingRequestFSFormDTO,
   FundingRequestMIPRFormDTO,
+  FundingRequirementDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
   RequirementsCostEstimateDTO,
@@ -41,6 +42,7 @@ import FinancialDetails from "@/store/financialDetails";
 import IGCE  from "../IGCE";
 import Attachments from "../attachments";
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
+import { finished } from "stream";
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
   await validateStep(stepNumber);
@@ -1793,8 +1795,8 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async validateStepEight(): Promise<void> {
     await this.assessRequirementsCostEstimate();
-    await this.assessIncrementalFunding();
     await this.assessFunding();
+    await this.assessIncrementalFunding();
   }
 
   @Action({rawError: true})
@@ -1996,57 +1998,6 @@ export class SummaryStore extends VuexModule {
 
 
   @Action({rawError: true})
-  public async assessIncrementalFunding(): Promise<void> {
-    // if PoP is < 9 months, section will be autocompleted when either other section becomes touched
-    let isAutoCompleted = false;
-    if (AcquisitionPackage.totalBasePoPDuration < 270
-      && AcquisitionPackage.totalBasePoPDuration > 0) {
-      const reqCostEstimate = this.summaryItems
-        .find(item => item.step === 8 && item.substep === 1);
-      const isReqCostEstimateTouched = reqCostEstimate ? reqCostEstimate.isTouched : false;
-      const funding = this.summaryItems
-        .find(item => item.step === 8 && item.substep === 3);
-      const isFundingTouched = funding ? funding.isTouched : false;
-      isAutoCompleted = isReqCostEstimateTouched || isFundingTouched;
-    }
-
-    let description = "";
-
-    // if incrementally funded, verify that funding increments exist and financial POC is complete
-    const isIncrementallyFunded = FinancialDetails.isIncrementallyFunded;
-    let incrementalFundingPlanComplete = false;
-    if (isIncrementallyFunded === "YES") {
-      const hasFundingIncrements =  FinancialDetails.fundingIncrements.length > 0;
-      const financialPOC = AcquisitionPackage.financialPocInfo;
-      const isFinancialPocComplete = !!financialPOC?.first_name && !!financialPOC.last_name
-        && !!financialPOC.phone && !!financialPOC.email;
-      incrementalFundingPlanComplete = hasFundingIncrements && isFinancialPocComplete;
-
-      description = `<p>Requesting to incrementally fund requirement<br><br>
-        Financial POC: ${financialPOC?.first_name} ${financialPOC?.last_name}<br>
-        ${financialPOC?.email}</p≥`;
-    } else if (isIncrementallyFunded === "NO") {
-      description = "Not requesting to incrementally fund requirement"
-    }
-
-    const isTouched = isAutoCompleted || !!isIncrementallyFunded;
-    const isComplete =  isAutoCompleted || isIncrementallyFunded === "NO"
-      || incrementalFundingPlanComplete;
-
-    const incrementalFundingSummaryItem: SummaryItem = {
-      title: "Incremental Funding",
-      description,
-      isComplete,
-      isTouched,
-      routeName: "IncrementalFunding",
-      step: 8,
-      substep: 2
-    }
-
-    await this.doSetSummaryItem(incrementalFundingSummaryItem)
-  };
-
-  @Action({rawError: true})
   public async assessFunding(): Promise<void> {
     const request = await FinancialDetails.fundingRequest as FundingRequestDTO;
     const gInv = await FinancialDetails.gInvoicingData as baseGInvoiceData;
@@ -2065,7 +2016,7 @@ export class SummaryStore extends VuexModule {
       isTouched: await this.isFundingTouched(fundingDataObjs),
       routeName: "FundingPlanType",
       step: 8,
-      substep: 3
+      substep: 2
     }
     await this.doSetSummaryItem(fundingSummaryItem)
   };
@@ -2163,6 +2114,99 @@ export class SummaryStore extends VuexModule {
     return isComplete
   }
 
+  @Action({rawError: true})
+  public async assessIncrementalFunding(): Promise<void> {
+    const req = FinancialDetails.fundingRequirement as FundingRequirementDTO;
+    const poc = AcquisitionPackage.financialPocInfo as ContactDTO;
+    const isPopBaseLessThanNineMonths = 
+    AcquisitionPackage.totalBasePoPDuration >0 && AcquisitionPackage.totalBasePoPDuration <= 270
+    const fundingDataObjects = {req, poc, isPopBaseLessThanNineMonths}
+    const isTouched = await this.isIncrementalFundingTouched(fundingDataObjects);
+    const isComplete = await this.isIncrementalFundingComplete(fundingDataObjects);
+    const incrementalFundingSummaryItem: SummaryItem = {
+      title: "Incremental Funding",
+      description: await this.setIncrementalFundingDescription({poc,isComplete}),
+      isComplete,
+      isTouched,
+      routeName: "SeverabilityAndIncrementalFunding",
+      step: 8,
+      substep: 3
+    }
+    await this.doSetSummaryItem(incrementalFundingSummaryItem)
+  };
+
+  @Action({rawError: true})
+  public async setIncrementalFundingDescription(
+    funding:{
+      poc: ContactDTO,
+      isComplete: boolean
+    }): Promise<string> {
+    return funding.isComplete
+      ? "<p class='mb-8'>Requesting to incrementally fund requirement</p>" + 
+        "Financial POC: " + funding.poc.first_name + " " + funding.poc.last_name + "<br>" +
+        funding.poc.email
+      : ""
+  }
+
+  @Action({rawError: true})
+  public async isIncrementalFundingTouched(
+    funding:{
+      req: FundingRequirementDTO,
+      poc: ContactDTO,
+      isPopBaseLessThanNineMonths: boolean
+    }): Promise<boolean> {
+    return funding.isPopBaseLessThanNineMonths
+      ? true
+      : funding.req.incrementally_funded !== ""
+        || FinancialDetails.fundingIncrements.length > 0
+        || funding.req.financial_poc !== ""
+  }
+
+  @Action({rawError: true})
+  public async isIncrementalFundingComplete(
+    funding:{
+      req: FundingRequirementDTO,
+      poc: ContactDTO,
+      isPopBaseLessThanNineMonths: boolean
+    }): Promise<boolean> {
+   
+    const incrementallyFundedValue = funding.req.incrementally_funded;
+    if (funding.isPopBaseLessThanNineMonths){
+      return true;
+    } else if (incrementallyFundedValue === ""){
+      return false;
+    } else if (incrementallyFundedValue === "YES"){
+      return await this.hasCompleteIncrementalFundingAndPOC(funding);
+    } else if (incrementallyFundedValue === "NO") {
+      return true
+    }
+    return true;
+  }
+
+  @Action({rawError: true})
+  public async hasCompleteIncrementalFundingAndPOC(
+    funding:{
+      req: FundingRequirementDTO,
+      poc: ContactDTO
+    }): Promise<boolean> {
+
+    // determines if fundingIncrements is valid
+    const isFundingIncrementsComplete = FinancialDetails.fundingIncrements.length>0
+
+    // determines if POC is valid
+    let isPOCComplete = false;
+    isPOCComplete = funding.poc.first_name !== ""
+      && funding.poc.last_name !== ""
+      && funding.poc.phone !== ""
+      && funding.poc.email !== ""
+    
+    if (funding.poc.role === "MILITARY"){
+      isPOCComplete = isPOCComplete && funding.poc.rank_components !== ""
+    }
+    return isFundingIncrementsComplete
+        && isPOCComplete
+  }
+
   //#endregion
 
   @Action({rawError: true})
@@ -2201,7 +2245,6 @@ export class SummaryStore extends VuexModule {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
         const dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
-        console.log(dynamicKey + ": " + objAttrib )
         return objAttrib === "" && objAttrib !== "[]"
       }
     }).length === 0;
