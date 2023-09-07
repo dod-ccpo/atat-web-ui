@@ -6,6 +6,11 @@
         { 'mb-n4': hoverableInAlert }
       ]"
   >
+    <v-expand-transition v-if="contentAtTop" >
+      <div v-show="isOpen" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
+        <slot name="content"></slot>
+      </div>
+    </v-expand-transition>
     <a
       @click="toggleOpen"
       @keydown.enter="toggleOpen"
@@ -25,7 +30,7 @@
     >
       <slot name="header"></slot>
     </a>
-    <v-expand-transition>
+    <v-expand-transition v-if="!contentAtTop">
       <div v-show="isOpen" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
         <slot name="content"></slot>
       </div>
@@ -44,6 +49,7 @@ export default class ExpandableLink extends Vue {
   @Prop({ default: true }) hasUnderline?: boolean;
   @Prop({ default: true }) isCopyMaxWidth?: boolean;
   @Prop({ default: false }) hoverableInAlert?: boolean;
+  @Prop({ default: false }) contentAtTop?: boolean;
   @PropSync("open", { default: false }) _open?: boolean;
 
   public isOpen = false;

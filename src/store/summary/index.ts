@@ -220,7 +220,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessOrganizationDetails(): Promise<void>{
     const organization = AcquisitionPackage?.organization;
-    let title = "Your Organization";
+    const title = "Your Organization";
     let description = "";
 
     if (organization?.dodaac) {
@@ -239,7 +239,7 @@ export class SummaryStore extends VuexModule {
       isTouched,
       isComplete,
       hasDelete:false,
-      hasShowMore:false,
+      hasShowMore:true,
       routeName: "OrganizationInfo",
       step:1,
       substep: 2
@@ -265,7 +265,7 @@ export class SummaryStore extends VuexModule {
       isComplete: await this.isComplete(monitor),
       isTouched,
       hasDelete:false,
-      hasShowMore:false,
+      hasShowMore:true,
       routeName: "ContactInformation",
       step:1,
       substep: 3
@@ -290,7 +290,8 @@ export class SummaryStore extends VuexModule {
       isComplete: await this.isComplete(monitor),
       isTouched,
       hasDelete:false,
-      hasShowMore:false,
+      hasShowMore:true,
+      showMoreData:contactInfo,
       routeName: "CorInformation",
       step:1,
       substep: 4

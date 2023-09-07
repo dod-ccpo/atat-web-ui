@@ -15,6 +15,25 @@
             <p class="mb-0" :id="getIdText(item.title) + '_Description'" 
               v-html="item.description">
             </p>
+            <ATATExpandableLink
+              :contentAtTop="true"
+              aria-id="Instructions">
+              <template v-slot:header>
+                Show more
+              </template>
+              <template v-slot:content>
+                <div class="d-flex align-center">
+                  <ATATSVGIcon
+                    width="16"
+                    height="13"
+                    name="email"
+                    color="base-light"/>
+                  <span class="text-base ml-2">
+                    {{item.showMoreData.email}}
+                  </span>
+                </div>
+              </template>
+            </ATATExpandableLink>
           </div>
           <div class="d-flex align-start">
             <div class="d-flex align-center">
@@ -50,15 +69,28 @@ import { routeNames } from "@/router/stepper";
 import { SummaryItem } from "types/Global";
 import Vue from "vue";
 import { Component, Prop} from "vue-property-decorator";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-@Component({})
+@Component({
+  components: {
+    ATATSVGIcon,
+    ATATExpandableLink
+  }
+})
 export default class ATATSummaryItem extends Vue {
   @Prop({default: "SummaryItems"}) private summaryItems!: SummaryItem[] | [];
   
   public getIdText(id: string): string{
     return getIdText(id);
   }
-
+  public showMore = false
+  public get showMoreText():string {
+    return this.showMore?"Show less":"Show more"
+  }
+  public toggleShowMore(): void {
+    this.showMore = !this.showMore;
+  }
   public getButtonId(item:SummaryItem): string {
     let buttonClass = "";
     if (item.isComplete){
@@ -72,7 +104,7 @@ export default class ATATSummaryItem extends Vue {
   }
 
   public async navigate(routeName: string): Promise<void>{
-    let dynamicKey = routeName as keyof unknown;
+    const dynamicKey = routeName as keyof unknown;
     this.$router.push({
       name: routeNames[dynamicKey],
       params: {

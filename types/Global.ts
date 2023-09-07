@@ -820,6 +820,7 @@ export interface SummaryItem {
   routeName: string;
   hasDelete: boolean;
   hasShowMore: boolean;
+  showMoreData?:Record<string, any>
   step: number;
   substep: number;
 }
