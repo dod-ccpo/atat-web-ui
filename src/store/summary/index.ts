@@ -2132,7 +2132,9 @@ export class SummaryStore extends VuexModule {
     const isComplete = await this.isIncrementalFundingComplete(fundingDataObjects);
     const incrementalFundingSummaryItem: SummaryItem = {
       title: "Incremental Funding",
-      description: await this.setIncrementalFundingDescription({poc,isComplete}),
+      description: await this.setIncrementalFundingDescription({
+        poc,req,isComplete,isTouched,isPopBaseLessThanNineMonths}
+      ),
       isComplete,
       isTouched,
       routeName: "SeverabilityAndIncrementalFunding",
@@ -2146,13 +2148,26 @@ export class SummaryStore extends VuexModule {
   public async setIncrementalFundingDescription(
     funding:{
       poc: ContactDTO,
-      isComplete: boolean
-    }): Promise<string> {
-    return funding.isComplete
-      ? "<p class='mb-8'>Requesting to incrementally fund requirement</p>" + 
+      req: FundingRequirementDTO,    
+      isComplete: boolean,
+      isTouched: boolean,
+      isPopBaseLessThanNineMonths: boolean
+    }): Promise<string> {  
+    const incFunding = funding.req.incrementally_funded;
+    let description = "";
+    if (funding.isPopBaseLessThanNineMonths){
+      description =  "Effort does not qualify for incremental funding."
+    } else if (incFunding==="NO"){
+      description =  "Not Requested"
+    } else if (funding.isTouched && !funding.isComplete && incFunding==="YES"){
+      description =  "Requesting to incrementally fund requirement";
+    } else if (funding.isComplete && incFunding === "YES"){
+      description = 
+        "<p class='mb-8'>Requesting to incrementally fund requirement</p>" + 
         "Financial POC: " + funding.poc.first_name + " " + funding.poc.last_name + "<br>" +
         funding.poc.email
-      : ""
+    }
+    return description;
   }
 
   @Action({rawError: true})
