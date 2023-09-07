@@ -3,7 +3,7 @@
 [Optional]Install Cypress globally:
 
 ```
-$ `npm i -g cypress@^^9.5.1`
+$ `npm i -g cypress@10.11.0`
 ```
 
 ### To Open Cypress window

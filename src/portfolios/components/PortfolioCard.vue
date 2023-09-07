@@ -402,12 +402,17 @@ export default class PortfolioCard extends Vue {
       { 
         title: "View task orders",
         action: this.menuActions.viewTaskOrders
-      },
-      { 
-        title: "Add awarded task order or modification",
-        action: this.menuActions.addTaskOrder
       }
     ]; 
+    if(this.cardData.status === Statuses.Active.label){
+      this.portfolioCardMenuItems.push(
+        { 
+          title: "Add awarded task order or modification",
+          action: this.menuActions.addTaskOrder
+        }    
+      );
+    }
+    
     if (this.cardData.isOwner && this.cardData.status !== Statuses.Archived.value) {
       this.portfolioCardMenuItems.push(
         { 
@@ -415,7 +420,6 @@ export default class PortfolioCard extends Vue {
           action: this.menuActions.archivePortfolio,
         },    
       );
-
     }
 
     // ATAT TODO AT-9603
