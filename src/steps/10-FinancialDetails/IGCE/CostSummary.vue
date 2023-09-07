@@ -197,6 +197,7 @@ import Periods from "@/store/periods";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import IGCE from "@/store/IGCE";
 
 
 export interface IGCECostSummaryItem {
@@ -495,6 +496,10 @@ export default class CostSummary extends Vue {
   public async mounted(): Promise<void> {
     this.isLoading = true;
     this.costData = await api.costEstimateTable.search(acquisitionPackage.packageId)
+    IGCE.doSetCostEstimateTotals({
+      base: this.costData.payload.subtotal["Base Period"],
+      grand: this.costData.payload.grand_total_with_fee["Total"]
+    })
     this.surgePercentage =
       `Surge (${IGCEStore.requirementsCostEstimate?.surge_requirements.capacity}%)`
     this.contractingOfficeFee =
