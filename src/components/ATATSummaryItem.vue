@@ -62,7 +62,7 @@
                     </div>
                   </div>
                   <div class="ml-10">
-                    <div v-if="item.showMoreData.role === 'MILITARY'
+                    <div v-if="item.showMoreData.role === 'CIVILIAN'
                     &&item.showMoreData.dodaac" class="d-flex align-center my-3">
                       <ATATSVGIcon
                         width="20"
@@ -72,10 +72,10 @@
                       <span
                         :class="[{'text-error': checkMissing(item.showMoreData.dodaac)}]"
                         class="text-base ml-2">
-                          {{item.showMoreData.dodaac}}
+                         DoDAAC - {{item.showMoreData.dodaac}}
                   </span>
                     </div>
-                    <div v-if="item.showMoreData.role === 'CIVILIAN'
+                    <div v-if="item.showMoreData.role === 'MILITARY'
                     &&item.showMoreData.title" class="d-flex align-center my-3">
                       <ATATSVGIcon
                         width="20"

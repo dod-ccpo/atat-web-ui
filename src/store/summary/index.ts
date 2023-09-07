@@ -298,20 +298,26 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessPrimaryPOC(): Promise<void>{
     const contactInfo = AcquisitionPackage.contactInfo as ContactDTO
-    const contactInfoKeys = Object.keys(contactInfo)
-    const civilianKeys = ["role","first_name","last_name","title","phone"]
-    const militaryKeys = ["role","first_name","last_name","rank_components","phone","dodaac"]
-    const keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
-      x => militaryKeys.indexOf(x) === -1
-    ): contactInfoKeys.filter(
-      x => civilianKeys.indexOf(x) === -1)
-    const showMoreData = {
-      address:"",
-      email:contactInfo.email || "Missing email address",
-      phone:contactInfo.phone || "Missing phone number",
-      dodaac:contactInfo.dodaac || "Missing phone number",
-      title:contactInfo.title || "Missing job title",
-      role:contactInfo.role
+    let contactInfoKeys:string[] = []
+    let keysToIgnore:string[] =[]
+    let showMoreData:Record<string, string> = {}
+    if(contactInfo){
+      contactInfoKeys = Object.keys(contactInfo)
+      const civilianKeys = ["role","first_name","last_name","phone","email","dodaac"]
+      const militaryKeys =
+          ["role","first_name","last_name","rank_components","phone","email","title"]
+      keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
+        x => militaryKeys.indexOf(x) === -1
+      ): contactInfoKeys.filter(
+        x => civilianKeys.indexOf(x) === -1)
+      showMoreData = {
+        address:"",
+        email:contactInfo.email || "Missing email address",
+        phone:contactInfo.phone || "Missing phone number",
+        dodaac:contactInfo.dodaac || "Missing dodaac",
+        title:contactInfo.title || "Missing job title",
+        role:contactInfo.role || "Missing role"
+      }
     }
     const title =contactInfo.first_name && contactInfo.last_name?
       `${contactInfo.first_name} ${contactInfo.last_name}`
@@ -335,20 +341,26 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessCOR(): Promise<void>{
     const contactInfo = AcquisitionPackage.corInfo as ContactDTO
-    const contactInfoKeys = Object.keys(contactInfo)
-    const civilianKeys = ["role","first_name","last_name","title","phone"]
-    const militaryKeys = ["role","first_name","last_name","rank_components","phone","dodaac"]
-    const keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
-      x => militaryKeys.indexOf(x) === -1
-    ): contactInfoKeys.filter(
-      x => civilianKeys.indexOf(x) === -1)
-    const showMoreData = {
-      address:"",
-      email:contactInfo.email || "Missing email address",
-      phone:contactInfo.phone || "Missing phone number",
-      dodaac:contactInfo.dodaac || "Missing phone number",
-      title:contactInfo.title || "Missing job title",
-      role:contactInfo.role
+    let contactInfoKeys:string[] = []
+    let showMoreData:Record<string, string> = {}
+    let keysToIgnore:string[] =[]
+    if(contactInfo){
+      contactInfoKeys = Object.keys(contactInfo)
+      const civilianKeys = ["role","first_name","last_name","phone","email","dodaac"]
+      const militaryKeys =
+          ["role","first_name","last_name","rank_components","phone","email","title"]
+      keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
+        x => militaryKeys.indexOf(x) === -1
+      ): contactInfoKeys.filter(
+        x => civilianKeys.indexOf(x) === -1)
+      showMoreData = {
+        address:"",
+        email:contactInfo.email || "Missing email address",
+        phone:contactInfo.phone || "Missing phone number",
+        dodaac:contactInfo.dodaac || "Missing phone dodaac",
+        title:contactInfo.title || "Missing job title",
+        role:contactInfo.role || "Missing role"
+      }
     }
     const title =contactInfo.first_name && contactInfo.last_name?
       `${contactInfo.first_name} ${contactInfo.last_name}`
@@ -373,20 +385,26 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessACOR(): Promise<void>{
     const contactInfo = AcquisitionPackage.acorInfo as ContactDTO
-    const contactInfoKeys = Object.keys(contactInfo)
-    const civilianKeys = ["role","first_name","last_name","title","phone"]
-    const militaryKeys = ["role","first_name","last_name","rank_components","phone","dodaac"]
-    const keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
-      x => militaryKeys.indexOf(x) === -1
-    ): contactInfoKeys.filter(
-      x => civilianKeys.indexOf(x) === -1)
-    const showMoreData = {
-      address:"",
-      email:contactInfo.email || "Missing email address",
-      phone:contactInfo.phone || "Missing phone number",
-      dodaac:contactInfo.dodaac || "Missing phone number",
-      title:contactInfo.title || "Missing job title",
-      role:contactInfo.role || "Missing role"
+    let contactInfoKeys:string[] = []
+    let keysToIgnore:string[] =[]
+    let showMoreData:Record<string, string> = {}
+    if(contactInfo){
+      contactInfoKeys = Object.keys(contactInfo)
+      const civilianKeys = ["role","first_name","last_name","phone","email","dodaac"]
+      const militaryKeys =
+          ["role","first_name","last_name","rank_components","phone","email","title"]
+      keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
+        x => militaryKeys.indexOf(x) === -1
+      ): contactInfoKeys.filter(
+        x => civilianKeys.indexOf(x) === -1)
+      showMoreData = {
+        address:"",
+        email:contactInfo.email || "Missing email address",
+        phone:contactInfo.phone || "Missing phone number",
+        dodaac:contactInfo.dodaac || "Missing dodaac",
+        title:contactInfo.title || "Missing job title",
+        role:contactInfo.role || "Missing role"
+      }
     }
     const title =contactInfo.first_name && contactInfo.last_name?
       `${contactInfo.first_name} ${contactInfo.last_name}`
@@ -2366,7 +2384,8 @@ export class SummaryStore extends VuexModule {
     const isPopBaseLessThanNineMonths = 
       AcquisitionPackage.totalBasePoPDuration >0 && AcquisitionPackage.totalBasePoPDuration <= 270
     const fundingDataObjects = {req, poc, isPopBaseLessThanNineMonths}
-    const isTouched = await this.isIncrementalFundingTouched(fundingDataObjects);
+    // const isTouched = await this.isIncrementalFundingTouched(fundingDataObjects);
+    const isTouched = false;
     const isComplete = await this.isIncrementalFundingComplete(fundingDataObjects);
     const incrementalFundingSummaryItem: SummaryItem = {
       title: "Incremental Funding",
