@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import {
@@ -201,26 +202,54 @@ export class SummaryStore extends VuexModule {
     await this.assessOrganizationDetails();
     await this.assessPrimaryPOC();
     await this.assessCOR();
+    if(AcquisitionPackage.hasAlternativeContactRep){
+      await this.assessACOR()
+    }
   }
   @Action({rawError: true})
   public async assessAcquisitionDetails(): Promise<void>{
+    const projectOverview = AcquisitionPackage?.projectOverview;
+
+    let title = "Acquisition Details";
+    let description = "";
+    const isTouched = projectOverview ? !!projectOverview.title : false;
+    let isComplete = false;
+
+    if (projectOverview && isTouched) {
+      const processingOffice = AcquisitionPackage.contractingShop === "DITCO" ? "DITCO"
+        : "An external contracting office";
+      description = `${processingOffice} will process this JWCC task order.`;
+      title = projectOverview.title;
+
+      const isCompleteWithoutCjadc2 = !!projectOverview.title
+        && !!projectOverview.scope && !!projectOverview.emergency_declaration
+        && !!projectOverview.cjadc2 && !!projectOverview.project_disclaimer;
+
+      isComplete = projectOverview.cjadc2 === "YES"
+        ? isCompleteWithoutCjadc2 && !!projectOverview.cjadc2_percentage
+        : isCompleteWithoutCjadc2;
+    }
+
     const AcquisitionDetail: SummaryItem = {
-      title: "Acquisition Details",
-      description: "",
-      isComplete: false,
-      isTouched: AcquisitionPackage.projectTitle !== "",
+      title,
+      description,
+      isComplete,
+      isTouched,
       hasDelete:false,
       hasShowMore:false,
-      routeName: "ProjectOverview",
-      step:1,
+      routeName: "ContractingShop",
+      step: 1,
       substep: 1
     }
-    await this.doSetSummaryItem(AcquisitionDetail)
+    await this.doSetSummaryItem(AcquisitionDetail);
   }
   @Action({rawError: true})
   public async assessOrganizationDetails(): Promise<void>{
     const organization = AcquisitionPackage?.organization;
-    const title = "Your Organization";
+    let title = "Your Organization";
+    if(organization?.organization_name){
+      title = organization.organization_name
+    }
     let description = "";
 
     if (organization?.dodaac) {
@@ -232,7 +261,11 @@ export class SummaryStore extends VuexModule {
     const isComplete = !!organization?.agency && !!organization.organization_name
       && !!organization.dodaac && !!organization.address_type && !!organization.street_address_1
       && !!organization.city && !!organization.state && !!organization.zip_code;
-
+    const hasCompleteAddress = organization?.street_address_1
+        && organization.city && organization.state && organization.zip_code
+    const showMoreData = hasCompleteAddress?{address: `${organization.street_address_1} 
+    ${organization.city}, ${organization.state} ${organization.zip_code}`}
+      : {address: "Missing Address"}
     const organizationDetails: SummaryItem = {
       title,
       description,
@@ -240,11 +273,12 @@ export class SummaryStore extends VuexModule {
       isComplete,
       hasDelete:false,
       hasShowMore:true,
+      showMoreData,
       routeName: "OrganizationInfo",
       step:1,
       substep: 2
     }
-    await this.doSetSummaryItem(organizationDetails)
+    await this.doSetSummaryItem(organizationDetails);
   }
   @Action({rawError: true})
   public async assessPrimaryPOC(): Promise<void>{
@@ -256,16 +290,27 @@ export class SummaryStore extends VuexModule {
       x => militaryKeys.indexOf(x) === -1
     ): contactInfoKeys.filter(
       x => civilianKeys.indexOf(x) === -1)
-
+    const showMoreData = {
+      address:"",
+      email:contactInfo.email || "Missing email address",
+      phone:contactInfo.phone || "Missing phone number",
+      dodaac:contactInfo.dodaac || "Missing phone number",
+      title:contactInfo.title || "Missing job title",
+      role:contactInfo.role
+    }
+    const title =contactInfo.first_name && contactInfo.last_name?
+      `${contactInfo.first_name} ${contactInfo.last_name}`
+      : "Primary Point of Contact"
     const monitor = {object: contactInfo, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
     const PrimaryPOC: SummaryItem = {
-      title: "Primary Point of Contact",
-      description: "",
+      title,
+      description: "Primary Point of Contact",
       isComplete: await this.isComplete(monitor),
       isTouched,
       hasDelete:false,
       hasShowMore:true,
+      showMoreData,
       routeName: "ContactInformation",
       step:1,
       substep: 3
@@ -282,21 +327,70 @@ export class SummaryStore extends VuexModule {
       x => militaryKeys.indexOf(x) === -1
     ): contactInfoKeys.filter(
       x => civilianKeys.indexOf(x) === -1)
+    const showMoreData = {
+      address:"",
+      email:contactInfo.email || "Missing email address",
+      phone:contactInfo.phone || "Missing phone number",
+      dodaac:contactInfo.dodaac || "Missing phone number",
+      title:contactInfo.title || "Missing job title",
+      role:contactInfo.role
+    }
+    const title =contactInfo.first_name && contactInfo.last_name?
+      `${contactInfo.first_name} ${contactInfo.last_name}`
+      : "Contracting Officer's Representative"
     const monitor = {object: contactInfo, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
     const CORDetails: SummaryItem = {
-      title: "Contracting Officer's Representative",
-      description: "",
+      title,
+      description: "Contracting Officer's Representative",
       isComplete: await this.isComplete(monitor),
       isTouched,
       hasDelete:false,
       hasShowMore:true,
-      showMoreData:contactInfo,
+      ACORButton:true,
+      showMoreData,
       routeName: "CorInformation",
       step:1,
       substep: 4
     }
     await this.doSetSummaryItem(CORDetails)
+  }
+  @Action({rawError: true})
+  public async assessACOR(): Promise<void>{
+    const contactInfo = AcquisitionPackage.acorInfo as ContactDTO
+    const contactInfoKeys = Object.keys(contactInfo)
+    const civilianKeys = ["role","first_name","last_name","title","phone"]
+    const militaryKeys = ["role","first_name","last_name","rank_components","phone","dodaac"]
+    const keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
+      x => militaryKeys.indexOf(x) === -1
+    ): contactInfoKeys.filter(
+      x => civilianKeys.indexOf(x) === -1)
+    const showMoreData = {
+      address:"",
+      email:contactInfo.email || "Missing email address",
+      phone:contactInfo.phone || "Missing phone number",
+      dodaac:contactInfo.dodaac || "Missing phone number",
+      title:contactInfo.title || "Missing job title",
+      role:contactInfo.role
+    }
+    const title =contactInfo.first_name && contactInfo.last_name?
+      `${contactInfo.first_name} ${contactInfo.last_name}`
+      : "Alternate Contracting Officer's Representative"
+    const monitor = {object: contactInfo, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
+    const ACORDetails: SummaryItem = {
+      title,
+      description: "Alternate Contracting Officer's Representative",
+      isComplete: await this.isComplete(monitor),
+      isTouched,
+      hasDelete:true,
+      hasShowMore:true,
+      showMoreData,
+      routeName: "AcorInformation",
+      step:1,
+      substep: 5
+    }
+    await this.doSetSummaryItem(ACORDetails)
   }
 
 
