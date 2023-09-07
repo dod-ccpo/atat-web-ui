@@ -268,6 +268,7 @@ export default class ProvisionWorkflow extends Vue {
       await PortfolioStore.setPortfolioIsUpdating(true)
       await PortfolioStore.setActiveTaskOrderNumber(this.TONumber)
       await AppSections.setActiveTabIndex(1);
+      await PortfolioStore.setProvisioningTOFollowOn(false)
       this.disableOk = false;
       this.showOkSpinner = false;
       this.showTOConfirmModal = false;

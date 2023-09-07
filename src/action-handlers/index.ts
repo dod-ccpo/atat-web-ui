@@ -154,6 +154,7 @@ async function didNotUseDapps() {
   });
 }
 async function startNewAcquisition(): Promise<void> {
+  await PortfolioStore.setProvisioningTOFollowOn(false)
   await AcquisitionPackage.setIsNewPackage(true)
   await AcquisitionPackage.reset();
   await PortfolioStore.setSelectedAcquisitionPackageSysId("");

@@ -45,9 +45,9 @@
                 </a>
               </div>
               <v-chip
-                v-if="!card.fundingOnTrack"
+                v-if="!card.fundingOnTrack && card.status !== ''"
                 :id="'StatusChip' + index"
-                :class="card.fundStatusColor"
+                :class="card.fundingStatusColor"
                 label
               >
                 {{card.status}}
@@ -91,6 +91,7 @@ import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { PortfolioCardData } from "types/Global";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
+import PortfolioStore from "@/store/portfolio";
 
 
 @Component({
@@ -105,20 +106,25 @@ export default class AddToExistingPortfolio extends Vue {
 
   
   public getPortfolioStatus(portfolioStatus: string): string{
+    if(portfolioStatus === "") return "";
+
     const status = Object.keys(Statuses).find((status) =>
       Statuses[status].value === portfolioStatus
     ) ?? portfolioStatus;
+
     return Statuses[status].label
   }
 
   public portfolioCardData: PortfolioCardData[] = [];
   public selectedPackageSysId = "";
 
-  public packageSelected(index: number): void {
+  public async packageSelected(index: number): Promise<void> {
     this.portfolioCardData.forEach(pkg => pkg.isSelected = false);
     this.portfolioCardData[index].isSelected = true;
     this.selectedPackageSysId = this.portfolioCardData[index].sysId as string;
+    await PortfolioStore.setCurrentPortfolio(this.portfolioCardData[index])
     AcquisitionPackage.setDisableContinue(false);
+    PortfolioStore.setProvisioningTOFollowOn(true)
   }
 
   public getChipColor(status: string){
@@ -129,6 +135,7 @@ export default class AddToExistingPortfolio extends Vue {
     AcquisitionPackage.setDisableContinue(true);
     const currentPortfolios = await 
     PortfolioSummary.getAllPortfolioSummaryList() as PortfolioSummaryDTO[];
+    
     currentPortfolios.forEach((portfolio) => {
       if(portfolio.portfolio_status === Statuses.Active.value){
         const cardData: PortfolioCardData = {};
@@ -155,6 +162,5 @@ export default class AddToExistingPortfolio extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
 }
 </script>
