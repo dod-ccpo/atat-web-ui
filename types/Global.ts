@@ -818,8 +818,8 @@ export interface SummaryItem {
   isComplete: boolean;
   isTouched: boolean;
   routeName: string;
-  hasDelete: boolean;
-  hasShowMore: boolean;
+  hasDelete?: boolean;
+  hasShowMore?: boolean;
   ACORButton?:boolean;
   showMoreData?:Record<string, any>
   step: number;
