@@ -1875,7 +1875,7 @@ export class SummaryStore extends VuexModule {
       || (IGCE.igceEstimateList.length > 0
           && IGCE.igceEstimateList.every((ce) => ce.unit_price?.toString() !== "0"))
       || rce.data.travel.option !== ""
-      || IGCE.trainingItems.length > 0
+      || IGCE.trainingItems.some(item => item.costEstimateType !== "")
       || rce.data.surge_requirements.capabilities !== ""
       || rce.data.fee_specs.is_charged !== ""
       || rce.data.how_estimates_developed.tools_used !== ""
@@ -2163,7 +2163,7 @@ export class SummaryStore extends VuexModule {
       ? true
       : funding.req.incrementally_funded !== ""
         || FinancialDetails.fundingIncrements.length > 0
-        || funding.req.financial_poc !== ""
+        || funding.poc.role !== ""
   }
 
   @Action({rawError: true})
