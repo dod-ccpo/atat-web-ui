@@ -394,7 +394,7 @@ export class PortfolioSummaryStore extends VuexModule {
 
   public hasActivePortfolios = false;
   @Action({rawError: true})
-  private async setHasActivePortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
+  public async setHasActivePortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
     const hasActivePortfolios = portfolioSummaryList.some((portfolio) => {
       return portfolio.portfolio_status === Statuses.Active.label ||
       portfolio.portfolio_status === Statuses.Active.value
@@ -403,7 +403,7 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   @Mutation
-  private async doSetHasActivePortfolios(hasActivePortfolios: boolean){
+  public async doSetHasActivePortfolios(hasActivePortfolios: boolean){
     this.hasActivePortfolios = hasActivePortfolios;
   }
 

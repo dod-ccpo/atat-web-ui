@@ -17,7 +17,6 @@ import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Summary, { isStepTouched } from "@/store/summary";
-import CurrentUserStore from "@/store/user";
 import PortfolioSummary from "@/store/portfolioSummary";
 
 export const showDITCOPageResolver = (current: string): string => {

@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
 import PortfolioCard from "../components/PortfolioCard.vue";
@@ -135,7 +135,7 @@ export default class AddToExistingPortfolio extends Vue {
     AcquisitionPackage.setDisableContinue(true);
     const currentPortfolios = await 
     PortfolioSummary.getAllPortfolioSummaryList() as PortfolioSummaryDTO[];
-    
+
     currentPortfolios.forEach((portfolio) => {
       if(portfolio.portfolio_status === Statuses.Active.value){
         const cardData: PortfolioCardData = {};
