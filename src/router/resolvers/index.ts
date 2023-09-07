@@ -1709,8 +1709,13 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
     : provWorkflowRouteNames.GeneratedFromPackage;
 }
 
-export const AddToExistingPortfolioResolver = (): string => {
-  return PortfolioSummary.hasActivePortfolios 
+export const AddToExistingPortfolioResolver = (current: string): string => {
+  const hasActivePortfolios = PortfolioSummary.hasActivePortfolios;
+  if(current === provWorkflowRouteNames.GeneratedFromPackage && !hasActivePortfolios){
+    return provWorkflowRouteNames.AwardedTaskOrder
+  }
+
+  return hasActivePortfolios 
     ? provWorkflowRouteNames.AddToExistingPortfolio
     : provWorkflowRouteNames.GeneratedFromPackage;
 }

@@ -193,7 +193,7 @@ export default class ProvisionWorkflow extends Vue {
             resolver: routeResolver.name,
             direction
           },
-        });
+        }).catch(() => console.log("avoiding redundant navigation"));;
 
         return ;
       }
@@ -206,7 +206,7 @@ export default class ProvisionWorkflow extends Vue {
             resolver: pathResolver.name,
             direction
           },
-        });
+        }).catch(() => console.log("avoiding redundant navigation"));;
 
         return ;
       }

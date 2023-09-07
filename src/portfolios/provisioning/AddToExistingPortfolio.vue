@@ -144,7 +144,7 @@ export default class AddToExistingPortfolio extends Vue {
         cardData.lastUpdated = portfolio.last_updated;      
         cardData.sysId = portfolio.sys_id;
         cardData.title = portfolio.name;
-        cardData.status = this.getPortfolioStatus(portfolio.portfolio_funding_status) || "";
+        cardData.status = this.getPortfolioStatus(portfolio.portfolio_funding_status);
         cardData.agencyDisplay = portfolio.agency_display;
         cardData.fundingOnTrack = cardData.status === Statuses.OnTrack.label
         cardData.fundingStatusColor = this.getChipColor(portfolio.portfolio_funding_status)
