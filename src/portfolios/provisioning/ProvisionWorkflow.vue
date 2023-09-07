@@ -29,6 +29,29 @@
         <ATATFooter/>
       </div>
     </v-main>
+    <ATATDialog 
+      id="TOConfirmModal"
+      :showDialog="showTOConfirmModal"
+      title="Add task order to your portfolio?"
+      no-click-animation
+      width="450"
+      @cancelClicked="TOConfirmCancelled"
+      cancelButtonId="TOConfirmCancelled"
+      okText="Add task order"
+      @ok="addTaskorderToPortfolio"
+      :OKDisabled="disableOk"
+      :showOKSpinner="showOkSpinner"
+    >
+      <template #content>
+        <div class="body">
+          <p>
+            Upon initiation of this process, ATAT will submit Task Order 
+            #{{TONumber}} to <span class="font-weight-bold">{{ csp }}</span> to update funding
+            associated with your “{{ portfolioName }}” portfolio. This process cannot be undone.
+          </p>
+        </div>
+      </template>
+    </ATATDialog>
   </div>
 </template>
 
@@ -41,6 +64,7 @@ import ATATStepperNavigation from "@/components/ATATStepperNavigation.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import Steps from "@/store/steps";
+import ATATDialog from "@/components/ATATDialog.vue";
 
 import {
   AdditionalButton,
@@ -62,18 +86,30 @@ import {
   provWorkflowRouteNames 
 } from "@/router/provisionWorkflow";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import PortfolioStore from "@/store/portfolio";
+import api from "@/api";
+import PortfolioSummary from "@/store/portfolioSummary";
 
 @Component({
   components: {
     ATATSlideoutPanel,
     ATATStepperNavigation,
-    ATATFooter
+    ATATFooter,
+    ATATDialog
   },
 })
 
 export default class ProvisionWorkflow extends Vue {
  
   public routeNames: Record<string, string> = {};
+  public portfolioSysId = "";
+  public showTOConfirmModal = false;
+  public bodyText ="";
+  public TONumber = "";
+  public csp = "";
+  public portfolioName = "";
+  public disableOk = false;
+  public showOkSpinner = false;
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent || undefined;
@@ -89,7 +125,6 @@ export default class ProvisionWorkflow extends Vue {
   private altBackDestination = "";
   private hideContinueButton = false;
   private disableContinueButton = false;
-
 
   public get disableContinue(): boolean {
     return AcquisitionPackage.disableContinue;
@@ -131,11 +166,25 @@ export default class ProvisionWorkflow extends Vue {
       routeName => routeName.toLowerCase() !== this.$route.name?.toLowerCase());
   }
 
+  public async TOConfirmCancelled(): Promise<void> {
+    this.showTOConfirmModal = false
+  }
+
   async navigate(direction: string): Promise<void> {
     const nextStepName = direction === "next" 
       ? await Steps.getNext() 
       : await Steps.getPrevious();
+    
+    const {activeSection} = await AppSections.getSectionData()
     if (nextStepName) {
+      if(PortfolioStore.isProvisioningTOFollowOn && activeSection === "ProvisionWorkflow" ){
+        const currentPortfolio = PortfolioStore.currentPortfolio;
+        this.TONumber = PortfolioStore.portfolioProvisioningObj.taskOrderNumber as string;
+        this.csp = PortfolioStore.portfolioProvisioningObj.cspLong as string;
+        this.portfolioName = currentPortfolio.title as string;
+        this.showTOConfirmModal = true
+        return;
+      }
       if (isRouteResolver(nextStepName)) {
         const routeResolver = nextStepName as StepRouteResolver;
         this.$router.push({
@@ -166,38 +215,63 @@ export default class ProvisionWorkflow extends Vue {
       this.$router.push({ name: nextStepName as string, params: { direction } });
 
     } else if (direction === "previous" && this.altBackDestination) { 
-      
       if (this.$route.name === this.routeNames.AwardedTaskOrder) {
-        Steps.setAltBackDestination("");
-        switch (this.altBackDestination) {
-        case AppSections.sectionTitles.Home: {
-          this.$router.push({name: "home", params: { direction } })
-          AppSections.changeActiveSection(AppSections.sectionTitles.Home);
-          break;
-        }
-        case AppSections.sectionTitles.Packages: {
-          this.$router.push({name: "home", params: { direction } })
-          AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
-          break;
-        }
-        case AppSections.sectionTitles.CreateFirstPortfolio: {
-          this.$router.push({name: "home", params: { direction } })
-          AppSections.changeActiveSection(AppSections.sectionTitles.CreateFirstPortfolio);
-          break;
-        }
-        case AppSections.sectionTitles.Portfolios: {
-          this.$router.push({name: "home", params: { direction } })
-          AppSections.changeActiveSection(AppSections.sectionTitles.Portfolios);
-          break;
-        }
-        case AppSections.sectionTitles.PortfolioSummary: {
-          this.$router.push({name: "home", params: { direction } })
-          await AppSections.setActiveTabIndex(1)
-          AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
-          break;
-        }
-        }
+        await this.awardedTaskOrderRoutes(direction)
       }
+    }
+  }  
+
+  public async awardedTaskOrderRoutes(direction: string){
+    Steps.setAltBackDestination("");
+    switch (this.altBackDestination) {
+    case AppSections.sectionTitles.Home: {
+      this.$router.push({name: "home", params: { direction } })
+      AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+      break;
+    }
+    case AppSections.sectionTitles.Packages: {
+      this.$router.push({name: "home", params: { direction } })
+      AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
+      break;
+    }
+    case AppSections.sectionTitles.CreateFirstPortfolio: {
+      this.$router.push({name: "home", params: { direction } })
+      AppSections.changeActiveSection(AppSections.sectionTitles.CreateFirstPortfolio);
+      break;
+    }
+    case AppSections.sectionTitles.Portfolios: {
+      this.$router.push({name: "home", params: { direction } })
+      AppSections.changeActiveSection(AppSections.sectionTitles.Portfolios);
+      break;
+    }
+    case AppSections.sectionTitles.PortfolioSummary: {
+      this.$router.push({name: "home", params: { direction } })
+      await AppSections.setActiveTabIndex(1)
+      AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
+      break;
+    }
+    }
+  }
+  public async addTaskorderToPortfolio(){
+    this.disableOk = true;
+    this.showOkSpinner = true;
+    const portfolioSysId = PortfolioStore.currentPortfolio.sysId as string;
+    const {success} = await api.edaApi.addTO(
+      this.TONumber, 
+      portfolioSysId
+    );
+
+    if(success){
+      await PortfolioSummary.searchPortfolioSummaryList(
+        { searchDTO: {}, singlePortfolioSearch: portfolioSysId }
+      );
+      await PortfolioStore.setPortfolioIsUpdating(true)
+      await PortfolioStore.setActiveTaskOrderNumber(this.TONumber)
+      await AppSections.setActiveTabIndex(1);
+      this.disableOk = false;
+      this.showOkSpinner = false;
+      this.showTOConfirmModal = false;
+      AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
     }
   }
 

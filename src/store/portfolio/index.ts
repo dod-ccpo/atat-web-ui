@@ -353,8 +353,27 @@ export class PortfolioDataStore extends VuexModule {
   private alertService = new AlertService();
   public activeTaskOrderNumber = "";
   public activeTaskOrderSysId = "";
+  public portfolioIsUpdating = false;
   
   public alerts: AlertDTO[]= [];
+
+  @Action
+  public async setActiveTaskOrderNumber(taskOrderNumber: string): Promise<void> {
+    await this.doSetActiveTaskOrderNumber(taskOrderNumber)
+  }
+  @Mutation
+  public async doSetActiveTaskOrderNumber(taskOrderNumber: string): Promise<void> {
+    this.activeTaskOrderNumber = taskOrderNumber;
+  }
+
+  @Action
+  public async setPortfolioIsUpdating(updatingState: boolean): Promise<void> {
+    await this.doSetPortfolioIsUpdating(updatingState)
+  }
+  @Mutation
+  public async doSetPortfolioIsUpdating(updatingState: boolean): Promise<void> {
+    this.portfolioIsUpdating = updatingState;
+  }
 
   public currentPortfolio: Portfolio = _.cloneDeep(initialCurrentPortfolio());
   @Action({rawError: true})
