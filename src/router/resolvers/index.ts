@@ -46,7 +46,9 @@ const evalPlanRequired = (): boolean => {
 }
 
 const hasExceptionToFairOpp = (): boolean =>{
-  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
+  return ["NO_NONE", ""].every(
+    val => AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== val
+  )
 }
 
 const fundingRequestType = (): string =>{
@@ -1478,6 +1480,15 @@ const DOWNeedsArchitectureDesign = (): boolean | null => {
 /****************************************************************************/
 /****************************************************************************/
 
+export const CreatePriceEstimateResolver = (current:string): string =>{
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(8))
+  return current === routeNames.SummaryStepSeven
+    ? Summary.hasCurrentStepBeenVisited 
+      ? routeNames.SummaryStepEight
+      : routeNames.CreatePriceEstimate
+    : routeNames.SummaryStepEight;
+}
+
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
   if (current === routeNames.EstimatesDeveloped) {
@@ -1489,6 +1500,13 @@ export const IGCESupportingDocumentationResolver = (current: string): string => 
       : routeNames.CannotProceed;
   }
 };
+
+export const FundingPlanTypeResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.SupportingDocumentation
+    ? routeNames.SummaryStepEight
+    : routeNames.FundingPlanType
+};
+
 
 export const MIPRResolver = (current: string): string => {
   const fundingType = FinancialDetails.fundingRequestType;
@@ -1509,7 +1527,7 @@ export const GInvoicingResolver = (current: string): string => {
     ? routeNames.MIPR
     : hasExceptionToFairOpp() 
       ? routeNames.AppropriationOfFunds
-      : routeNames.SeverabilityAndIncrementalFunding;
+      : SeverabilityAndIncrementalFundingResolver(current);
 }
 
 export const Upload7600Resolver = (current: string): string => {
@@ -1526,7 +1544,7 @@ export const Upload7600Resolver = (current: string): string => {
     ? routeNames.GInvoicing
     : hasExceptionToFairOpp() 
       ? routeNames.AppropriationOfFunds
-      : routeNames.SeverabilityAndIncrementalFunding;
+      : SeverabilityAndIncrementalFundingResolver(current);
 }
 
 export const AppropriationOfFundsResolver = (current: string): string => {
@@ -1537,8 +1555,15 @@ export const AppropriationOfFundsResolver = (current: string): string => {
   
   return current === routeNames.SeverabilityAndIncrementalFunding
     ? routeNames.Upload7600
-    : routeNames.SeverabilityAndIncrementalFunding;
+    : SeverabilityAndIncrementalFundingResolver(current);
 }
+
+export const SeverabilityAndIncrementalFundingResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited 
+    && ([routeNames.AppropriationOfFunds, routeNames.Upload7600].some(route => route === current))
+    ? routeNames.SummaryStepEight
+    : routeNames.SeverabilityAndIncrementalFunding
+};
 
 const cutOff = 270;
 export async function calcBasePeriod(): Promise<number> {
@@ -1779,7 +1804,10 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   COIRouteResolver,
   PackagingPackingAndShippingResolver,
   TravelRouteResolver,
-  SummaryStepTwoRouteResolver
+  SummaryStepTwoRouteResolver,
+  FundingPlanTypeResolver,
+  SeverabilityAndIncrementalFundingResolver,
+  CreatePriceEstimateResolver
 };
 
 // add path resolvers here 
