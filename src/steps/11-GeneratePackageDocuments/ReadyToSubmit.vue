@@ -6,7 +6,7 @@
     <h1 v-else>
       Your acquisition package is ready to submit!
     </h1>
-    <div class="d-flex mt-3">
+    <div class="d-flex mt-3 mb-10">
       <div class="copy-max-width">
         <div v-if="currentUserIsMissionOwner">
           <p class="font-size-20 font-weight-500 mb-3" style="line-height: 1.6;">
@@ -55,7 +55,7 @@
       
 
     </div>
-    <LateFormAlert/>
+    <LateFormAlert class="mt-5"/>
   </div>
 </template>
 <script lang="ts">

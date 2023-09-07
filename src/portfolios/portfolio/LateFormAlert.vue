@@ -2,36 +2,36 @@
     <ATATAlert
       id="LateFormAlert"
       type="info"
-      class="my-10"
       v-if="showAlertHeading"
     >
       <template v-slot:content>
-            <h3 class="mb-0">End of Fiscal Year Cut-off dates</h3>
-            <p class="mb-4 mt-1">
+            <h3 class="mb-1">End of Fiscal Year Cut-off</h3>
+            <p class="mb-3">
                 Requirement packages submitted to DITCO after the below cut-off dates,
                 are subject to DITCO’s late-waiver process. This process only applies
                 to contracting actions that must be executed by the end of fiscal year
                 2023 (e.g., expiring year funds), or not later than Oct. 13, 2023.
             </p>
-            <p class="mb-0">
+            <p class="mb-6">
                 For more information on FY23 cut-off dates and to download a copy of the required
                 late-waiver form, visit 
-                <a href="https://www.figma.com/exit?url=https%3A%2F%2F
-                www.ditco.disa.mil%2FContracts%2FItInstruct"
+                <a href="https://www.ditco.disa.mil/Contracts/ItInstruct"
                  target="_blank">
-            DITCO’s Acquisition Package Submission & Ordering Guide  
-                </a>
-                Required late-waiver form should be submitted and included with your DAPPS package.
-                Requirements received after cut-off without the required late-waiver form may be
-                returned without action. 
+                 <span class="_external-link">
+                    DITCO’s Acquisition Package Submission & Ordering Guide
+                 </span>
+                </a>.
+                Required late-waiver form should be submitted and included with your DAPPS 
+                package. Requirements received after cut-off without the required late-waiver 
+                form may be returned without action. 
             </p>
-        <br>
+            <br>
         <ATATExpandableLink aria-id="LateInfo" :isCopyMaxWidth="false" :hoverableInAlert="true">
             <template v-slot:header>
                 View JWCC End of Fiscal Year Cut-off dates
             </template>
             <template v-slot:content>
-                <v-row class="shrinked-margin">
+                <v-row class="shrinked-margin shrinked-margin-top">
                     <v-col class="font-weight-bold " cols="8">
                         Type of Contracting Action
                     </v-col>
@@ -74,7 +74,7 @@
                     </v-col>
                     <v-col  cols="4">
                         DISA appropriated funds - August 31 <br>
-                        All other funds - September 8
+                        All other funds - September 21
                     </v-col>
                 </v-row>
             
@@ -110,7 +110,11 @@ export default class LateFormAlert extends Vue {
 
 <style scoped>
 .shrinked-margin {
-    margin-top: -5px;
-    margin-bottom: -5px;
+    margin-top: -9px;
+    margin-bottom: -9px;
+}
+
+.shrinked-margin-top {
+    margin-top: -25px;
 }
 </style>
