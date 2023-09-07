@@ -1,7 +1,7 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import {
-  DOWClassificationInstance,
+  baseGInvoiceData,
   DOWServiceOffering,
   DOWServiceOfferingGroup,
   OtherServiceOfferingData,
@@ -13,24 +13,36 @@ import {
   ContactDTO,
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO, CurrentContractDTO,
+  CrossDomainSolutionDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
+  FundingRequestDTO,
+  FundingRequestFSFormDTO,
+  FundingRequestMIPRFormDTO,
+  FundingRequirementDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
+  RequirementsCostEstimateDTO,
   SelectedClassificationLevelDTO,
-  SensitiveInformationDTO
+  SensitiveInformationDTO,
 } from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
-import { convertStringArrayToCommaList, toTitleCase, buildClassificationLabel } from "@/helpers";
+import {
+  convertStringArrayToCommaList, 
+  toTitleCase, 
+  buildClassificationLabel, 
+  toCurrencyString 
+} from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "../acquisitionPackage/evaluationPlan";
 import api from "@/api";
 import FinancialDetails from "@/store/financialDetails";
-
-
+import IGCE  from "../IGCE";
+import Attachments from "../attachments";
+import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
+import { finished } from "stream";
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
   await validateStep(stepNumber);
@@ -148,7 +160,6 @@ export const getSummaryItemsforStep = async(stepNumber: number): Promise<Summary
   ).sort((a,b) => (a.substep > b.substep) ? 1 : -1)
 }
 
-
 @Module({
   name: 'SummaryStore',
   namespaced: true,
@@ -169,6 +180,7 @@ export class SummaryStore extends VuexModule {
 
   public summaryItems: SummaryItem[] = [];
   public hasCurrentStepBeenVisited = false;
+  private attachmentServiceName = REQUIREMENTS_COST_ESTIMATE_TABLE;
 
   @Action({rawError:true})
   public setHasCurrentStepBeenVisited(isVisited: boolean):void{
@@ -222,12 +234,12 @@ export class SummaryStore extends VuexModule {
       "sys_",
       "display",
     ];
-    await this.assessFairOpportunity(fairOppObjectKeys);
+    await this.assessFairOpportunity();
     await this.assessEvalPlan(evalPlanObjectKeys);
   }
 
   @Action({rawError: true})
-  public async assessFairOpportunity(objectKeys: string[]): Promise<void>{
+  public async assessFairOpportunity(): Promise<void>{
     const fairOpp = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
     const keysToIgnore = ["sys_", "cause_migration_estimated_cost"];
     const isTouched = await this.isTouched({object: fairOpp, keysToIgnore});
@@ -1786,101 +1798,440 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async validateStepEight(): Promise<void> {
     await this.assessRequirementsCostEstimate();
-    await this.assessIncrementalFunding();
     await this.assessFunding();
+    await this.assessIncrementalFunding();
   }
 
   @Action({rawError: true})
   public async assessRequirementsCostEstimate(): Promise<void> {
-
-    const isTouched = false;
-    const isComplete =  false;
-    const description = "Placeholder";
-
+    const data = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
+    const hasSupportingDocs = await this.hasSupportingIGCEDocumentation(data); 
+    const isTouched = await this.isRCETouched({data, hasSupportingDocs});
+    const isComplete = await this.isRCEComplete({data, hasSupportingDocs});
+    await this.getCostSummary(isComplete);
+   
     const requirementsCostEstimateSummaryItem: SummaryItem = {
       title: "Requirements Cost Estimate",
-      description,
+      description: await this.setRCEDescription({data, isComplete}),
       isComplete,
       isTouched,
       routeName: "CreatePriceEstimate",
       step: 8,
       substep: 1
     }
-
     await this.doSetSummaryItem(requirementsCostEstimateSummaryItem)
   };
 
+  /**
+   * 
+   * if summary step is complete, set store properties for 
+   * total_price and base_year_price
+   * 
+   * @param isComplete boolean - if true, make the API call 
+   */
+  @Action({rawError: true})
+  public async getCostSummary(isComplete: boolean): Promise<void> {
+    if (isComplete){
+      try{
+        const costData = await api.costEstimateTable.search(AcquisitionPackage.packageId)
+        IGCE.doSetCostEstimateTotals({
+          base: costData.payload.subtotal["Base Period"],
+          grand: costData.payload.grand_total_with_fee["Total"]
+        })
+      } catch(error){
+        console.log(error);
+      }
+    }
+  }
+
+  @Action({rawError: true})
+  public async hasSupportingIGCEDocumentation(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    const attachments = await Attachments.getAttachmentsByTableSysIds({
+      serviceKey: this.attachmentServiceName,
+      tableSysId: rce.sys_id as string
+    });
+    return attachments.length>0
+  }
+
+  @Action({rawError: true})
+  public async setRCEDescription(
+    rce:{
+      data: RequirementsCostEstimateDTO
+      isComplete: boolean
+    }): Promise<string> {
+    return rce.isComplete 
+      ? "Subtotal for base period: $" 
+        + toCurrencyString(rce.data.baseYearTotal as number, true)
+        + "<br />Grand total with fees for all periods: $" 
+        + toCurrencyString(rce.data.grandTotal as number, true)
+      : ""
+  }
+
+  @Action({rawError: true})
+  public async isRCETouched(
+    rce:{
+      data: RequirementsCostEstimateDTO
+      hasSupportingDocs: boolean
+    }): Promise<boolean> {
+    return rce.data.optimize_replicate.option !== "" 
+      || rce.data.architectural_design_performance_requirements.option !== ""
+      || (IGCE.igceEstimateList.length > 0
+          && IGCE.igceEstimateList.every((ce) => ce.unit_price?.toString() !== "0"))
+      || rce.data.travel.option !== ""
+      || IGCE.trainingItems.some(item => item.costEstimateType !== "")
+      || rce.data.surge_requirements.capabilities !== ""
+      || rce.data.fee_specs.is_charged !== ""
+      || rce.data.how_estimates_developed.tools_used !== ""
+      || rce.data.how_estimates_developed.cost_estimate_description !== ""
+      || rce.data.how_estimates_developed.previous_cost_estimate_comparison.options !== ""
+      || rce.hasSupportingDocs
+  }
+
+  @Action({rawError: true})
+  public async isRCEComplete (
+    rce:{
+      data: RequirementsCostEstimateDTO
+      hasSupportingDocs: boolean
+    }): Promise<boolean> {
+    return await this.hasReplicateOrOptimizeAction(rce.data)
+      && await this.hasArchitecturalDesigns(rce.data)
+      && await this.hasCostEstimates()
+      && await this.hasIGCETraining()
+      && await this.hasIGCETravel(rce.data)
+      && await this.hasSurgeRequirements(rce.data)
+      && await this.hasChargedFee(rce.data)
+      && await this.hasHowEstimatesDeveloped(rce.data)
+      && rce.hasSupportingDocs
+  }
+
+  @Action({rawError: true})
+  public async hasReplicateOrOptimizeAction(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    const action = CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized;
+    return action.includes("YES")
+      ? rce.optimize_replicate.estimated_values.every(val=>val !== "")
+        && rce.optimize_replicate.option !== ""
+      : true;
+  }
+
+  @Action({rawError: true})
+  public async hasArchitecturalDesigns(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES"
+      ? rce.architectural_design_performance_requirements.estimated_values.every(val=>val !== "")
+        && rce.architectural_design_performance_requirements.option !== ""
+      : true;
+  }
+
+  @Action({rawError: true})
+  public async hasCostEstimates(): Promise<boolean> {
+    return IGCE.igceEstimateList.every(
+      (ce) => {
+        return ce.description !== ""
+          && ce.title !== ""
+          && ["0", "0.00", ""].every(
+            invalidPrice => ce.unit_price?.toString() !== invalidPrice
+          )
+      }
+    )
+  }
+
+  @Action({rawError: true})
+  public async hasIGCETraining(): Promise<boolean> {
+    if (IGCE.trainingItems.length>0){
+      const assessedTrainingItems = IGCE.trainingItems.map(
+        (ti)=>{
+          const hasValidEstimatedTrainingPrice = 
+            ["0", "0.00", ""].every(price => price !== ti.estimatedTrainingPrice);
+          return ti.costEstimateType === "ANNUAL_SUBSCRIPTION"
+            ? hasValidEstimatedTrainingPrice
+            : hasValidEstimatedTrainingPrice 
+              && ti.trainingOption !== ""
+              && ti.estimate.estimated_values !== ""
+              && ti.estimate.option !== "";
+        }
+      )
+      return assessedTrainingItems.every(ati => ati === true);
+    } 
+    return true;
+  }
+
+  @Action({rawError: true})
+  public async hasIGCETravel(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    if (rce.travel.option !== ""){
+      const estimatedValues = Object.values(JSON.parse(rce.travel.estimated_values as string))
+      return rce.travel.option === "SINGLE"
+        ? estimatedValues.every((ev)=> (ev as number) > 0 )
+        : estimatedValues.every((ev)=> (ev as number) >= 0 ) // multiple values can === 0
+    }
+    return true
+  }
+
+  @Action({rawError: true})
+  public async hasSurgeRequirements(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    return rce.surge_requirements.capabilities === "NO"
+      ? true
+      : rce.surge_requirements.capabilities === "YES"
+        && ["0", null].every(capacity => capacity !== rce.surge_requirements.capacity)
+  }
+
+  @Action({rawError: true})
+  public async hasChargedFee(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    if (AcquisitionPackage.contractingShop === "OTHER"){
+      return rce.fee_specs && rce.fee_specs.is_charged === "NO"
+        ? true
+        : ["0", null, ""].every(percentage => percentage !== rce.fee_specs.percentage)
+    }
+    return true;
+  }
+
+  @Action({rawError: true})
+  public async hasHowEstimatesDeveloped(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    const howEstimatesDeveloped = rce.how_estimates_developed;
+    const pcec =  howEstimatesDeveloped.previous_cost_estimate_comparison;
+    const isHowEstimatesDevelopedValid = howEstimatesDeveloped.tools_used !== ""
+      && howEstimatesDeveloped.cost_estimate_description !== ""
+
+    const isHowOtherEstimatesDeveloped = howEstimatesDeveloped.tools_used.includes("OTHER")
+      ? howEstimatesDeveloped.other_tools_used !== ""
+      : true
+
+    const isPreviousCostEstimateComparisonValid = pcec.options.includes("_THAN")
+      ? (pcec.percentage as number) > 0
+      : pcec.options.includes("SAME") ? true : false;
+     
+    return isHowEstimatesDevelopedValid 
+      && isHowOtherEstimatesDeveloped
+      && isPreviousCostEstimateComparisonValid;
+  }
+
+
+  @Action({rawError: true})
+  public async assessFunding(): Promise<void> {
+    const request = await FinancialDetails.fundingRequest as FundingRequestDTO;
+    const gInv = await FinancialDetails.gInvoicingData as baseGInvoiceData;
+    const fsForm = FinancialDetails.fundingRequestFSForm as FundingRequestFSFormDTO;
+    const mipr = FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO;
+    const hasFairOpp = ["NO_NONE", ""].every(fo => {
+      (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity!==fo
+    })
+    const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp};
+    const isComplete =  await this.isFundingComplete(fundingDataObjs);
+    console.log(isComplete);
+    const fundingSummaryItem: SummaryItem = {
+      title: "Funding",
+      description: await this.setFundingDescription(isComplete),
+      isComplete,
+      isTouched: await this.isFundingTouched(fundingDataObjs),
+      routeName: "FundingPlanType",
+      step: 8,
+      substep: 2
+    }
+    await this.doSetSummaryItem(fundingSummaryItem)
+  };
+
+  @Action({rawError: true})
+  public async setFundingDescription(isComplete: boolean): Promise<string>{
+    if(isComplete){
+      const fsForm = FinancialDetails.fundingRequestFSForm as FundingRequestFSFormDTO;
+      const fundReq = await FinancialDetails.fundingRequest as FundingRequestDTO;
+      return fundReq.funding_request_type === "MIPR"
+        ? "MIPR: " 
+          + (FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO).mipr_number
+        : "GT&C: " + fsForm.gt_c_number + "<br />"
+          + "Order: " + fsForm.order_number
+    }
+    return "";
+  }
+
+  @Action({rawError: true})
+  public async isFundingTouched(
+    funding:{
+      request: FundingRequestDTO,
+      gInv: baseGInvoiceData,
+      fsForm: FundingRequestFSFormDTO,
+      mipr: FundingRequestMIPRFormDTO,
+      hasFairOpp: boolean
+  }): Promise<boolean>{
+    const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600"))
+    const hasAppropriationOfFunds = funding.hasFairOpp
+      ? funding.request.appropriation_fiscal_year !== "" 
+        || funding.request.appropriation_funds_type !== ""
+      : false
+
+    return funding.request.funding_request_type !== ""
+      || funding.gInv.useGInvoicing !== ""
+      || funding.fsForm.order_number !== ""
+      || funding.fsForm.gt_c_number !== ""
+      || await this.isTouched({object: funding.fsForm, keysToIgnore}) //validates 2 docs
+      || hasAppropriationOfFunds
+  }
+
+
+  @Action({rawError: true})
+  public async isFundingComplete(
+    funding:{
+      request: FundingRequestDTO,
+      gInv: baseGInvoiceData,
+      fsForm: FundingRequestFSFormDTO,
+      mipr: FundingRequestMIPRFormDTO,
+      hasFairOpp: boolean
+  }): Promise<boolean>{
+    let hasAppropriationOfFunds = false;
+    let isComplete = false;
+    if (funding.request.funding_request_type === "FS_FORM"){
+      isComplete =  await this.isFSFormComplete({
+        fsForm: funding.fsForm,
+        gInv: funding.gInv,
+        request: funding.request
+      });
+    } else if (funding.request.funding_request_type === "MIPR"){
+      isComplete = await this.isMIPRComplete(funding.mipr);
+    } 
+
+    hasAppropriationOfFunds = funding.hasFairOpp
+      ? funding.request.appropriation_fiscal_year !== "" 
+        && funding.request.appropriation_funds_type !== ""
+      : true
+
+    return isComplete 
+      && hasAppropriationOfFunds;
+  }
+
+  @Action({rawError: true})
+  public async isMIPRComplete(mipr: FundingRequestMIPRFormDTO): Promise<boolean>{
+    return await this.isComplete({object: mipr, keysToIgnore: ["sys_"]})
+  }
+  
+  @Action({rawError: true})
+  public async isFSFormComplete(
+    funding:{
+      fsForm: FundingRequestFSFormDTO,
+      gInv: baseGInvoiceData,
+      request: FundingRequestDTO,
+  }
+  ): Promise<boolean>{
+    let isComplete = false;
+    if (funding.gInv.useGInvoicing === "YES"){
+      isComplete = funding.gInv.gInvoiceNumber !== ""
+    } else if (funding.gInv.useGInvoicing === "NO"){
+      const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600"))
+      isComplete =  funding.fsForm.order_number !== ""
+        && funding.fsForm.gt_c_number !== ""
+        && await this.isComplete({object: funding.fsForm, keysToIgnore}) //validates 2 docs 
+    }
+    return isComplete
+  }
+
   @Action({rawError: true})
   public async assessIncrementalFunding(): Promise<void> {
-    // if PoP is < 9 months, section will be autocompleted when either other section becomes touched
-    let isAutoCompleted = false;
-    if (AcquisitionPackage.totalBasePoPDuration < 270
-      && AcquisitionPackage.totalBasePoPDuration > 0) {
-      const reqCostEstimate = this.summaryItems
-        .find(item => item.step === 8 && item.substep === 1);
-      const isReqCostEstimateTouched = reqCostEstimate ? reqCostEstimate.isTouched : false;
-      const funding = this.summaryItems
-        .find(item => item.step === 8 && item.substep === 3);
-      const isFundingTouched = funding ? funding.isTouched : false;
-      isAutoCompleted = isReqCostEstimateTouched || isFundingTouched;
-    }
-
-    let description = "";
-
-    // if incrementally funded, verify that funding increments exist and financial POC is complete
-    const isIncrementallyFunded = FinancialDetails.isIncrementallyFunded;
-    let incrementalFundingPlanComplete = false;
-    if (isIncrementallyFunded === "YES") {
-      const hasFundingIncrements =  FinancialDetails.fundingIncrements.length > 0;
-      const financialPOC = AcquisitionPackage.financialPocInfo;
-      const isFinancialPocComplete = !!financialPOC?.first_name && !!financialPOC.last_name
-        && !!financialPOC.phone && !!financialPOC.email;
-      incrementalFundingPlanComplete = hasFundingIncrements && isFinancialPocComplete;
-
-      description = `<p>Requesting to incrementally fund requirement<br><br>
-        Financial POC: ${financialPOC?.first_name} ${financialPOC?.last_name}<br>
-        ${financialPOC?.email}</p≥`;
-    } else if (isIncrementallyFunded === "NO") {
-      description = "Not requesting to incrementally fund requirement"
-    }
-
-    const isTouched = isAutoCompleted || !!isIncrementallyFunded;
-    const isComplete =  isAutoCompleted || isIncrementallyFunded === "NO"
-      || incrementalFundingPlanComplete;
-
+    const req = FinancialDetails.fundingRequirement as FundingRequirementDTO;
+    const poc = AcquisitionPackage.financialPocInfo as ContactDTO;
+    const isPopBaseLessThanNineMonths = 
+      AcquisitionPackage.totalBasePoPDuration >0 && AcquisitionPackage.totalBasePoPDuration <= 270
+    const fundingDataObjects = {req, poc, isPopBaseLessThanNineMonths}
+    const isTouched = await this.isIncrementalFundingTouched(fundingDataObjects);
+    const isComplete = await this.isIncrementalFundingComplete(fundingDataObjects);
     const incrementalFundingSummaryItem: SummaryItem = {
       title: "Incremental Funding",
-      description,
+      description: await this.setIncrementalFundingDescription({
+        poc,req,isComplete,isTouched,isPopBaseLessThanNineMonths}
+      ),
       isComplete,
       isTouched,
       routeName: "SeverabilityAndIncrementalFunding",
       step: 8,
-      substep: 2
+      substep: 3
     }
-
     await this.doSetSummaryItem(incrementalFundingSummaryItem)
   };
 
   @Action({rawError: true})
-  public async assessFunding(): Promise<void> {
-
-    const isTouched = false;
-    const isComplete =  false;
-    const description = "Placeholder";
-
-    const fundingSummaryItem: SummaryItem = {
-      title: "Funding",
-      description,
-      isComplete,
-      isTouched,
-      routeName: "FundingPlanType",
-      step: 8,
-      substep: 3
+  public async setIncrementalFundingDescription(
+    funding:{
+      poc: ContactDTO,
+      req: FundingRequirementDTO,    
+      isComplete: boolean,
+      isTouched: boolean,
+      isPopBaseLessThanNineMonths: boolean
+    }): Promise<string> {  
+    const incFunding = funding.req.incrementally_funded;
+    let description = "";
+    if (funding.isPopBaseLessThanNineMonths){
+      description =  "Effort does not qualify for incremental funding."
+    } else if (incFunding==="NO"){
+      description =  "Not Requested"
+    } else if (funding.isTouched && !funding.isComplete && incFunding==="YES"){
+      description =  "Requesting to incrementally fund requirement";
+    } else if (funding.isComplete && incFunding === "YES"){
+      description = 
+        "<p class='mb-8'>Requesting to incrementally fund requirement</p>" + 
+        "Financial POC: " + funding.poc.first_name + " " + funding.poc.last_name + "<br>" +
+        funding.poc.email
     }
+    return description;
+  }
 
-    await this.doSetSummaryItem(fundingSummaryItem)
-  };
+  @Action({rawError: true})
+  public async isIncrementalFundingTouched(
+    funding:{
+      req: FundingRequirementDTO,
+      poc: ContactDTO,
+      isPopBaseLessThanNineMonths: boolean
+    }): Promise<boolean> {
+    return funding.isPopBaseLessThanNineMonths
+      ? true
+      : funding.req.incrementally_funded !== ""
+        || (FinancialDetails.fundingIncrements.length > 0
+            && FinancialDetails.fundingIncrements.every(
+              fi => ["0.00", "0",""].every(invalidAmt => invalidAmt !== fi.amt)))
+        || !!funding.poc.role
+  }
 
+  @Action({rawError: true})
+  public async isIncrementalFundingComplete(
+    funding:{
+      req: FundingRequirementDTO,
+      poc: ContactDTO,
+      isPopBaseLessThanNineMonths: boolean
+    }): Promise<boolean> {
+   
+    const incrementallyFundedValue = funding.req.incrementally_funded;
+    if (funding.isPopBaseLessThanNineMonths){
+      return true;
+    } else if (incrementallyFundedValue === ""){
+      return false;
+    } else if (incrementallyFundedValue === "YES"){
+      return await this.hasCompleteIncrementalFundingAndPOC(funding);
+    } else if (incrementallyFundedValue === "NO") {
+      return true
+    }
+    return true;
+  }
+
+  @Action({rawError: true})
+  public async hasCompleteIncrementalFundingAndPOC(
+    funding:{
+      req: FundingRequirementDTO,
+      poc: ContactDTO
+    }): Promise<boolean> {
+
+    // determines if fundingIncrements is valid
+    const isFundingIncrementsComplete = (FinancialDetails.fundingIncrements.length > 0
+        && FinancialDetails.fundingIncrements.every(
+          fi => ["0.00", "0",""].every(invalidAmt => invalidAmt !== fi.amt)))
+
+    // determines if POC is valid
+    let isPOCComplete = false;
+    isPOCComplete = funding.poc.first_name !== ""
+      && funding.poc.last_name !== ""
+      && funding.poc.phone !== ""
+      && funding.poc.email !== ""
+    
+    if (funding.poc.role === "MILITARY"){
+      isPOCComplete = isPOCComplete && funding.poc.rank_components !== ""
+    }
+    return isFundingIncrementsComplete
+        && isPOCComplete
+  }
 
   //#endregion
 
