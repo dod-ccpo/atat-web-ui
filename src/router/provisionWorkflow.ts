@@ -68,7 +68,7 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
             buttonText: "I need to create a new portfolio",
             buttonId: "CreateANewPortfolio",
             buttonClass: "secondary",
-            actionName: "startNewAcquisition",
+            actionName: "startNewPortfolio",
           },
         ]
       },

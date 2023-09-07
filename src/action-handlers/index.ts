@@ -22,7 +22,7 @@ const actionHandlerNames = {
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
   writeOwnMarketResearchDetails: "writeOwnMarketResearchDetails",
   WriteOwnBarriers: "WriteOwnBarriers",
-  startNewAcquisition: "startNewAcquisition"
+  startNewPortfolio: "startNewPortfolio"
 }
 
 const actions =  {
@@ -39,7 +39,7 @@ const actions =  {
   [actionHandlerNames.writeOwnMarketResearchDetails]: writeOwnMarketResearchDetails,
   [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
   [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
-  [actionHandlerNames.startNewAcquisition]: startNewAcquisition,
+  [actionHandlerNames.startNewPortfolio]: startNewPortfolio,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -154,19 +154,14 @@ async function didNotUseDapps() {
   });
 }
 
-async function startNewAcquisition(): Promise<void> {
-  await PortfolioStore.setProvisioningTOFollowOn(false)
-  await AcquisitionPackage.setIsNewPackage(true)
-  await AcquisitionPackage.reset();
-  await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+async function startNewPortfolio(): Promise<void> {
   router.push({
-    name: routeNames.DAPPSChecklist,
+    name: provWorkflowRouteNames.GeneratedFromPackage,
     params: {
       direction: "next"
     },
     replace: true
   }).catch(() => console.log("avoiding redundant navigation"));
-  AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
 }
 
 export default actionHandler;
