@@ -988,6 +988,8 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
       percentage: number | null;
     };
   }
+  baseYearTotal?: number;
+  grandTotal?: number;
 }
 
 export interface RequirementsCostEstimateFlat extends BaseTableDTO{

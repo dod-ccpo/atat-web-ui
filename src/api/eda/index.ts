@@ -115,4 +115,42 @@ export class EDAApi extends ApiBase{
       };
     }
   }
+
+  public async addTO(
+    taskOrderNumber: string,
+    portfolioSysId: string
+  ): Promise<EDAResponse> {
+    const params: { 
+      taskOrderNumber: string, 
+      portfolioSysId: string 
+    } = {
+      taskOrderNumber: taskOrderNumber,  
+      portfolioSysId: portfolioSysId    
+    }
+
+    try {
+      const requestConfig: AxiosRequestConfig = { params };
+      const response = await this.instance.put(this.endPoint, null, requestConfig);
+      let edaResponse: EDAResponse = {};
+      if (response.status === 200) {
+        edaResponse = {
+          success: true,
+          taskOrderNumber: taskOrderNumber
+        }
+      } else {
+        const { error } = response.data;
+        edaResponse = {
+          success: false,
+          code: error.code,
+          message: error.code || "unknown error",
+        }
+      }
+      return edaResponse;
+    } catch (error) {
+      return {
+        success: false,
+        message: "Unknown error contacting EDA"
+      };
+    }
+  }
 }

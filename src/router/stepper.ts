@@ -152,7 +152,7 @@ import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
-import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
+import SummaryStepEight from "@/steps/10-FinancialDetails/SummaryStepEight.vue";
 
 // step 10 - Generate Package Documents
 import GeneratePackageDocuments from "../steps/11-GeneratePackageDocuments/Index.vue";
@@ -227,6 +227,9 @@ import {
   COIRouteResolver,
   PackagingPackingAndShippingResolver,
   TravelRouteResolver,
+  FundingPlanTypeResolver,
+  SeverabilityAndIncrementalFundingResolver,
+  CreatePriceEstimateResolver,
   ProjectOverviewResolver,
   OrganizationResolver,
   ContactInformationResolver,
@@ -247,7 +250,7 @@ export const routeNames = {
   ExistingContractBackground: "Existing_Contract_Background",
   AcqPackageSummary: "Acquisition_Package_Summary",
   SummaryStepOne: "SummaryStepOne",
-  
+
   FairOpportunity: "Fair_Opportunity",
   Exceptions: "Exceptions",
   EvaluationPlan: "Evaluation_Plan",
@@ -313,6 +316,7 @@ export const routeNames = {
   SummaryStepFour: "Summary_Step_Four",
   SummaryStepSix: "Summary_Step_Six",
   SummaryStepSeven: "Summary_Step_Seven",
+  SummaryStepEight: "Summary_Step_Eight",
   ClassificationRequirements: "Classification_Requirements",
   SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
@@ -326,7 +330,6 @@ export const routeNames = {
   Upload7600:'Upload_7600',
   FundingPlanType: "Funding_Plan_Type",
   FinancialPOCForm: "Financial_POC_Form",
-  SummaryPage: "Summary_Page",
   CurrentEnvironmentLocation: "Current_Environment_Location",
   ClassificationLevels: "Classification_Levels",
   BackgroundSummary: "Background_Summary",
@@ -1252,7 +1255,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "create-price-estimate",
         name: routeNames.CreatePriceEstimate,
         completePercentageWeight: 1,
-        component: CreatePriceEstimate
+        component: CreatePriceEstimate,
+        routeResolver: CreatePriceEstimateResolver
       },
       {
         menuText: "Cannot Proceed",
@@ -1364,7 +1368,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "funding-plan",
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
-        component: FundingPlanType
+        component: FundingPlanType,
+        routeResolver: FundingPlanTypeResolver,
       },
       {
         menuText: "MIPR",
@@ -1408,6 +1413,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
+        routeResolver: SeverabilityAndIncrementalFundingResolver
       },
       {
         menuText: "Incremental Funding",
@@ -1428,16 +1434,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
 
       },
-   
-
-      // {
-      //   menuText: "SummaryPage",
-      //   excludeFromMenu: true,
-      //   path: "summary-page",
-      //   name: routeNames.SummaryPage,
-      //   completePercentageWeight: 1,
-      //   component: SummaryPage,
-      // },
+      {
+        menuText: "SummaryStepEight",
+        path: "summary-step-eight",
+        name: routeNames.SummaryStepEight,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepEight,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor: "primary"
+      },
     ]
   },
   {
