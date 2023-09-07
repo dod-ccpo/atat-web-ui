@@ -226,6 +226,9 @@ import {
   COIRouteResolver, 
   PackagingPackingAndShippingResolver, 
   TravelRouteResolver,
+  FundingPlanTypeResolver,
+  SeverabilityAndIncrementalFundingResolver,
+  CreatePriceEstimateResolver
   
 } from "./resolvers";
 
@@ -1239,7 +1242,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "create-price-estimate",
         name: routeNames.CreatePriceEstimate,
         completePercentageWeight: 1,
-        component: CreatePriceEstimate
+        component: CreatePriceEstimate,
+        routeResolver: CreatePriceEstimateResolver
       },
       {
         menuText: "Cannot Proceed",
@@ -1351,7 +1355,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "funding-plan",
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
-        component: FundingPlanType
+        component: FundingPlanType,
+        routeResolver: FundingPlanTypeResolver,
       },
       {
         menuText: "MIPR",
@@ -1395,6 +1400,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
+        routeResolver: SeverabilityAndIncrementalFundingResolver
       },
       {
         menuText: "Incremental Funding",

@@ -1700,6 +1700,7 @@ export class AcquisitionPackageStore extends VuexModule {
       await IGCE.loadRequirementsCostEstimateDataByPackageId(
         this.acquisitionPackage?.sys_id as string
       );
+      await IGCE.loadIgceEstimateByPackageId(this.packageId)
       this.setPackagePercentLoaded(45);
 
       if(organizationSysId) {
@@ -1878,6 +1879,8 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(90);
 
       await FinancialDetails.loadFundingRequirement();
+      await FinancialDetails.loadFundingRequestFSForm();
+      await FinancialDetails.loadFundingRequestMIPRForm();
 
       this.setPackagePercentLoaded(92);
 
@@ -1903,7 +1906,7 @@ export class AcquisitionPackageStore extends VuexModule {
       await Summary.validateStepFive();
       await Summary.validateStepSix();
       await Summary.validateStepSeven();
-
+      await Summary.validateStepEight();
     } else {
       await this.initialize();
     }
@@ -1982,6 +1985,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
           acquisitionPackage.current_environment = currentEnvironmentDTO.sys_id as string;
           await IGCE.initializeRequirementsCostEstimate(acquisitionPackage.sys_id || "");
+          
           this.setPackagePercentLoaded(70);
           const periodOfPerformanceDTO = await Periods.initialPeriodOfPerformance();
           this.setPackagePercentLoaded(80);
