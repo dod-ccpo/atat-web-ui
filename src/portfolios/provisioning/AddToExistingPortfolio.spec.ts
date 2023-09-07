@@ -8,7 +8,8 @@ import { PortfolioCardData } from "types/Global";
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioSummary from "@/store/portfolioSummary";
-import portfolioSummaryListMock from '../../store/portfolioSummary/mocks/portfolioSummaryListMock.json'
+import portfolioSummaryListMock 
+  from '../../store/portfolioSummary/mocks/portfolioSummaryListMock.json'
 import { PortfolioSummaryDTO } from "@/api/models";
 
 
