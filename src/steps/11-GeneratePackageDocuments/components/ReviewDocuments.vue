@@ -122,6 +122,10 @@
           </v-row>
       </div>
     </div>
+    <ATATFeedbackForm
+        v-if="!isDitcoUser"
+        class="position-sticky float-right"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -143,10 +147,12 @@ import IGCE from "@/store/IGCE";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import { signedDocument } from "types/Global";
+import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
 
 
 @Component({
   components: {
+    ATATFeedbackForm,
     ATATSVGIcon,
     PackageItem,
     ATATAlert
