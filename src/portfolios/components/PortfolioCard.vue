@@ -217,7 +217,6 @@ export default class PortfolioCard extends Vue {
   @Prop() private isHaCCAdmin!: boolean;
   @Prop({ default: false }) public isHomeView?: boolean;
 
-
   public showLeavePortfolioModal = false;
 
   public menuActions = {
