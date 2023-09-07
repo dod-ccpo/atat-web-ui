@@ -45,7 +45,9 @@ const evalPlanRequired = (): boolean => {
 }
 
 const hasExceptionToFairOpp = (): boolean =>{
-  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
+  return ["NO_NONE", ""].every(
+    val => AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== val
+  )
 }
 
 const fundingRequestType = (): string =>{

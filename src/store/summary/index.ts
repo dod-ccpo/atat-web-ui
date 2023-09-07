@@ -1,6 +1,7 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import {
+  baseGInvoiceData,
   DOWServiceOffering,
   DOWServiceOfferingGroup,
   OtherServiceOfferingData,
@@ -15,6 +16,9 @@ import {
   CrossDomainSolutionDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
+  FundingRequestDTO,
+  FundingRequestFSFormDTO,
+  FundingRequestMIPRFormDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
   RequirementsCostEstimateDTO,
@@ -228,12 +232,12 @@ export class SummaryStore extends VuexModule {
       "sys_",
       "display",
     ];
-    await this.assessFairOpportunity(fairOppObjectKeys);
+    await this.assessFairOpportunity();
     await this.assessEvalPlan(evalPlanObjectKeys);
   }
 
   @Action({rawError: true})
-  public async assessFairOpportunity(objectKeys: string[]): Promise<void>{
+  public async assessFairOpportunity(): Promise<void>{
     const fairOpp = AcquisitionPackage.fairOpportunity as FairOpportunityDTO;
     const keysToIgnore = ["sys_", "cause_migration_estimated_cost"];
     const isTouched = await this.isTouched({object: fairOpp, keysToIgnore});
@@ -2044,24 +2048,120 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessFunding(): Promise<void> {
-
-    const isTouched = false;
-    const isComplete =  false;
-    const description = "Placeholder";
-
+    const request = await FinancialDetails.fundingRequest as FundingRequestDTO;
+    const gInv = await FinancialDetails.gInvoicingData as baseGInvoiceData;
+    const fsForm = FinancialDetails.fundingRequestFSForm as FundingRequestFSFormDTO;
+    const mipr = FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO;
+    const hasFairOpp = ["NO_NONE", ""].every(fo => {
+      (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity!==fo
+    })
+    const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp};
+    const isComplete =  await this.isFundingComplete(fundingDataObjs);
+    console.log(isComplete);
     const fundingSummaryItem: SummaryItem = {
       title: "Funding",
-      description,
+      description: await this.setFundingDescription(isComplete),
       isComplete,
-      isTouched,
+      isTouched: await this.isFundingTouched(fundingDataObjs),
       routeName: "FundingPlanType",
       step: 8,
       substep: 3
     }
-
     await this.doSetSummaryItem(fundingSummaryItem)
   };
 
+  @Action({rawError: true})
+  public async setFundingDescription(isComplete: boolean): Promise<string>{
+    if(isComplete){
+      const fsForm = FinancialDetails.fundingRequestFSForm as FundingRequestFSFormDTO;
+      const fundReq = await FinancialDetails.fundingRequest as FundingRequestDTO;
+      return fundReq.funding_request_type === "MIPR"
+        ? "MIPR: " 
+          + (FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO).mipr_number
+        : "GT&C: " + fsForm.gt_c_number + "<br />"
+          + "Order: " + fsForm.order_number
+    }
+    return "";
+  }
+
+  @Action({rawError: true})
+  public async isFundingTouched(
+    funding:{
+      request: FundingRequestDTO,
+      gInv: baseGInvoiceData,
+      fsForm: FundingRequestFSFormDTO,
+      mipr: FundingRequestMIPRFormDTO,
+      hasFairOpp: boolean
+  }): Promise<boolean>{
+    const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600"))
+    const hasAppropriationOfFunds = funding.hasFairOpp
+      ? funding.request.appropriation_fiscal_year !== "" 
+        || funding.request.appropriation_funds_type !== ""
+      : false
+
+    return funding.request.funding_request_type !== ""
+      || funding.gInv.useGInvoicing !== ""
+      || funding.fsForm.order_number !== ""
+      || funding.fsForm.gt_c_number !== ""
+      || await this.isTouched({object: funding.fsForm, keysToIgnore}) //validates 2 docs
+      || hasAppropriationOfFunds
+  }
+
+
+  @Action({rawError: true})
+  public async isFundingComplete(
+    funding:{
+      request: FundingRequestDTO,
+      gInv: baseGInvoiceData,
+      fsForm: FundingRequestFSFormDTO,
+      mipr: FundingRequestMIPRFormDTO,
+      hasFairOpp: boolean
+  }): Promise<boolean>{
+    let hasAppropriationOfFunds = false;
+    let isComplete = false;
+    if (funding.request.funding_request_type === "FS_FORM"){
+      isComplete =  await this.isFSFormComplete({
+        fsForm: funding.fsForm,
+        gInv: funding.gInv,
+        request: funding.request
+      });
+    } else if (funding.request.funding_request_type === "MIPR"){
+      isComplete = await this.isMIPRComplete(funding.mipr);
+    } 
+
+    hasAppropriationOfFunds = funding.hasFairOpp
+      ? funding.request.appropriation_fiscal_year !== "" 
+        && funding.request.appropriation_funds_type !== ""
+      : true
+
+    return isComplete 
+      && hasAppropriationOfFunds;
+  }
+
+  @Action({rawError: true})
+  public async isMIPRComplete(mipr: FundingRequestMIPRFormDTO): Promise<boolean>{
+    return await this.isComplete({object: mipr, keysToIgnore: ["sys_"]})
+  }
+  
+  @Action({rawError: true})
+  public async isFSFormComplete(
+    funding:{
+      fsForm: FundingRequestFSFormDTO,
+      gInv: baseGInvoiceData,
+      request: FundingRequestDTO,
+  }
+  ): Promise<boolean>{
+    let isComplete = false;
+    if (funding.gInv.useGInvoicing === "YES"){
+      isComplete = funding.gInv.gInvoiceNumber !== ""
+    } else if (funding.gInv.useGInvoicing === "NO"){
+      const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600"))
+      isComplete =  funding.fsForm.order_number !== ""
+        && funding.fsForm.gt_c_number !== ""
+        && await this.isComplete({object: funding.fsForm, keysToIgnore}) //validates 2 docs 
+    }
+    return isComplete
+  }
 
   //#endregion
 
@@ -2101,6 +2201,7 @@ export class SummaryStore extends VuexModule {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
         const dynamicKey = key as keyof unknown;
         const objAttrib = config.object[dynamicKey];
+        console.log(dynamicKey + ": " + objAttrib )
         return objAttrib === "" && objAttrib !== "[]"
       }
     }).length === 0;

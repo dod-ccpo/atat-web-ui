@@ -1879,6 +1879,8 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setPackagePercentLoaded(90);
 
       await FinancialDetails.loadFundingRequirement();
+      await FinancialDetails.loadFundingRequestFSForm();
+      await FinancialDetails.loadFundingRequestMIPRForm();
 
       this.setPackagePercentLoaded(92);
 
