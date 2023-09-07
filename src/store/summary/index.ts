@@ -419,8 +419,9 @@ export class SummaryStore extends VuexModule {
     //    contractor’s catalogs to determine if other similar offerings meet or can be modified 
     //    to satisfy your requirements?
     let hasResearchReviewCatalogsReviewed = true;
+    const hasProductOrFeature = fairOpp.cause_product_feature_type !== "";
     const researchReviewCatalogsReviewed = fairOpp.research_review_catalogs_reviewed;
-    if (fairOpp.cause_product_feature_type !== ""){
+    if (hasProductOrFeature){
       const sameResearchDate  
         = fairOpp.research_review_catalogs_same_research_date;
       let hasSameResearchDate = false;
@@ -457,8 +458,10 @@ export class SummaryStore extends VuexModule {
 
     // if Q1 or Q2 === 'YES' and 1 item is checked in fairOpp.research_other_techniques_used 
     // checkbox list then fairOpp.research_techniques_summary is required
+    const noContractActionAndNoProduct = !hasContractAction && !hasProductOrFeature
     let hasResearchTechniquesSummary = true;
-    if (researchIsCSPOnlySourceCapable === "YES" || researchReviewCatalogsReviewed === "YES"){
+    if ((researchIsCSPOnlySourceCapable === "YES" || researchReviewCatalogsReviewed === "YES")
+      || (researchIsCSPOnlySourceCapable === "NO" && !noContractActionAndNoProduct)){
       // By default, `REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG` is selected.  
       // Validate that at least 2 items have been selected. 
       hasResearchTechniquesSummary = hasContractAction
