@@ -2126,7 +2126,7 @@ export class SummaryStore extends VuexModule {
     const req = FinancialDetails.fundingRequirement as FundingRequirementDTO;
     const poc = AcquisitionPackage.financialPocInfo as ContactDTO;
     const isPopBaseLessThanNineMonths = 
-    AcquisitionPackage.totalBasePoPDuration >0 && AcquisitionPackage.totalBasePoPDuration <= 270
+      AcquisitionPackage.totalBasePoPDuration >0 && AcquisitionPackage.totalBasePoPDuration <= 270
     const fundingDataObjects = {req, poc, isPopBaseLessThanNineMonths}
     const isTouched = await this.isIncrementalFundingTouched(fundingDataObjects);
     const isComplete = await this.isIncrementalFundingComplete(fundingDataObjects);
@@ -2165,8 +2165,10 @@ export class SummaryStore extends VuexModule {
     return funding.isPopBaseLessThanNineMonths
       ? true
       : funding.req.incrementally_funded !== ""
-        || FinancialDetails.fundingIncrements.length > 0
-        || funding.poc.role !== ""
+        || (FinancialDetails.fundingIncrements.length > 0
+            && FinancialDetails.fundingIncrements.every(
+              fi => ["0.00", "0",""].every(invalidAmt => invalidAmt !== fi.amt)))
+        || !!funding.poc.role
   }
 
   @Action({rawError: true})
@@ -2198,7 +2200,9 @@ export class SummaryStore extends VuexModule {
     }): Promise<boolean> {
 
     // determines if fundingIncrements is valid
-    const isFundingIncrementsComplete = FinancialDetails.fundingIncrements.length>0
+    const isFundingIncrementsComplete = (FinancialDetails.fundingIncrements.length > 0
+        && FinancialDetails.fundingIncrements.every(
+          fi => ["0.00", "0",""].every(invalidAmt => invalidAmt !== fi.amt)))
 
     // determines if POC is valid
     let isPOCComplete = false;
