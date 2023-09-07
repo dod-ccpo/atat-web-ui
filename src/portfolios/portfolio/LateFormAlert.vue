@@ -6,14 +6,13 @@
       v-if="showAlertHeading"
     >
       <template v-slot:content>
-            <h3 class="mb-1">End of Fiscal Year Cut-off dates</h3>
-            <p class="mb-0">
+            <h3 class="mb-0">End of Fiscal Year Cut-off dates</h3>
+            <p class="mb-4 mt-1">
                 Requirement packages submitted to DITCO after the below cut-off dates,
                 are subject to DITCO’s late-waiver process. This process only applies
                 to contracting actions that must be executed by the end of fiscal year
                 2023 (e.g., expiring year funds), or not later than Oct. 13, 2023.
             </p>
-            <br>
             <p class="mb-0">
                 For more information on FY23 cut-off dates and to download a copy of the required
                 late-waiver form, visit 
@@ -27,20 +26,20 @@
                 returned without action. 
             </p>
         <br>
-        <ATATExpandableLink aria-id="LateInfo" :isCopyMaxWidth="false">
+        <ATATExpandableLink aria-id="LateInfo" :isCopyMaxWidth="false" :hoverableInAlert="true">
             <template v-slot:header>
                 View JWCC End of Fiscal Year Cut-off dates
             </template>
             <template v-slot:content>
-                <v-row>
-                    <v-col class="font-weight-bold mb-0" cols="8">
+                <v-row class="shrinked-margin">
+                    <v-col class="font-weight-bold " cols="8">
                         Type of Contracting Action
                     </v-col>
-                    <v-col class="font-weight-bold mb-0" cols="4">
+                    <v-col class="font-weight-bold" cols="4">
                         Cut-off Date
                     </v-col>
                 </v-row>
-                <v-row>
+                <v-row class="shrinked-margin">
                     <v-col cols="8">
                         RFP requiring a technical proposal (awarded on a BVTO basis)
                     </v-col>
@@ -48,8 +47,7 @@
                         August 18
                     </v-col>
                 </v-row>
-                <br>
-                <v-row>
+                <v-row class="shrinked-margin">
                     <v-col cols="8">
                         RFP requiring a technical proposal (awarded on an LPTA basis)
                         and Lump Sum from one Contractor
@@ -58,7 +56,7 @@
                         August 31
                     </v-col>
                 </v-row>
-                <v-row>
+                <v-row class="shrinked-margin">
                     <v-col cols="8">
                         RFP with no technical proposal (awarded on an LPTA basis) and
                         TOs with Exceptions to Fair Opportunity
@@ -70,11 +68,11 @@
                         </p>
                     </v-col>
                 </v-row>
-                <v-row>
+                <v-row class="shrinked-margin">
                     <v-col cols="8">
                         RFP with an equal lump sum dollar amounts awarded to EACH contractor
                     </v-col>
-                    <v-col cols="4">
+                    <v-col  cols="4">
                         DISA appropriated funds - August 31 <br>
                         All other funds - September 8
                     </v-col>
@@ -109,3 +107,10 @@ export default class LateFormAlert extends Vue {
 }
   
 </script>
+
+<style scoped>
+.shrinked-margin {
+    margin-top: -5px;
+    margin-bottom: -5px;
+}
+</style>
