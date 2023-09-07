@@ -1829,11 +1829,15 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async getCostSummary(isComplete: boolean): Promise<void> {
     if (isComplete){
-      const costData = await api.costEstimateTable.search(AcquisitionPackage.packageId)
-      IGCE.doSetCostEstimateTotals({
-        base: costData.payload.total_price["Base Period"],
-        grand: costData.payload.grand_total_with_fee["Total"]
-      })
+      try{
+        const costData = await api.costEstimateTable.search(AcquisitionPackage.packageId)
+        IGCE.doSetCostEstimateTotals({
+          base: costData.payload.total_price["Base Period"],
+          grand: costData.payload.grand_total_with_fee["Total"]
+        })
+      } catch(error){
+        console.log(error);
+      }
     }
   }
 
