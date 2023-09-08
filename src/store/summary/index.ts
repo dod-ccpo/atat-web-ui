@@ -2400,8 +2400,7 @@ export class SummaryStore extends VuexModule {
     const isPopBaseLessThanNineMonths = 
       AcquisitionPackage.totalBasePoPDuration >0 && AcquisitionPackage.totalBasePoPDuration <= 270
     const fundingDataObjects = {req, poc, isPopBaseLessThanNineMonths}
-    // const isTouched = await this.isIncrementalFundingTouched(fundingDataObjects);
-    const isTouched = false;
+    const isTouched = await this.isIncrementalFundingTouched(fundingDataObjects);
     const isComplete = await this.isIncrementalFundingComplete(fundingDataObjects);
     const incrementalFundingSummaryItem: SummaryItem = {
       title: "Incremental Funding",

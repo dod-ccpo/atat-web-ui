@@ -33,7 +33,7 @@
           }"
           class="step"
           @click.native ="setCurrentStep(
-            step.stepNumber, 
+            step.stepNumber,
             step,
             false)"
         >
@@ -117,19 +117,16 @@ export default class ATATSideStepper extends Vue {
     this.activeStep = stepNumber;
     this.calculatePercentComplete();
     if (step){
-      debugger
       Summary.setHasCurrentStepBeenVisited(
         await isStepValidatedAndTouched(parseInt(stepNumber))
       )
     }
-    debugger
     if (stepNumber && !isSubStep && step && Summary.hasCurrentStepBeenVisited){
       this.navigateToSummary(step, isSubStep);
     }
   }
 
   public navigateToSummary(step: StepperStep, isSubStep: boolean): void {
-    debugger
     const lastSubStep = step.subSteps?.slice(-1)[0];
     if(lastSubStep?.menuText==="SummaryStepOne"){
       this.$router.push({
