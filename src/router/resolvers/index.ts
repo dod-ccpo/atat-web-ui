@@ -7,7 +7,10 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import {EvaluationPlanDTO, SelectedClassificationLevelDTO } from "@/api/models";
+import {EvaluationPlanDTO, 
+  FundingRequirementDTO, 
+  SelectedClassificationLevelDTO } 
+  from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
@@ -1620,6 +1623,11 @@ export async function calcBasePeriod(): Promise<number> {
 }
 
 export const IncrementalFundingResolver = (current: string): string => {
+  const fundingReq = FinancialDetails.fundingRequirement as FundingRequirementDTO;
+  if (fundingReq.incrementally_funded==="NO"){
+    return routeNames.SummaryStepEight;
+  }
+
   let baseDuration
   calcBasePeriod().then(value => {
     baseDuration = value
