@@ -51,11 +51,11 @@
         </div>
 
       </div>
-      <CompletePackageCard />
+      <CompletePackageCard  />
       
 
     </div>
-    <LateFormAlert/>
+    <LateFormAlert class="mt-11"/>
   </div>
 </template>
 <script lang="ts">

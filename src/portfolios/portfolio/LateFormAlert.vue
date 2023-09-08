@@ -17,14 +17,26 @@
             <p class="mb-0">
                 For more information on FY23 cut-off dates and to download a copy of the required
                 late-waiver form, visit 
-                <a href="https://www.figma.com/exit?url=https%3A%2F%2F
-                www.ditco.disa.mil%2FContracts%2FItInstruct"
-                 target="_blank">
-            DITCO’s Acquisition Package Submission & Ordering Guide  
+                <a
+                  id="SubmissionAndOrderingGuideLinkButton"
+                  href="https://www.ditco.disa.mil/Contracts/ItInstruct"
+                  target="_blank" 
+                  class="no-hover d-inline-flex"
+                >
+                    DITCO’s Acquisition Package Submission & Ordering Guide 
+                    <ATATSVGIcon
+                      id="SubmissionAndOrderingGuideLaunchButton"
+                      width="15"
+                      height="15"
+                      name="launch"
+                      class="mr-0 mt-1 ml-1 text-decoration-underline"
+                      color="primary"
+                    />
                 </a>
-                Required late-waiver form should be submitted and included with your DAPPS package.
-                Requirements received after cut-off without the required late-waiver form may be
-                returned without action. 
+               
+                .  Required late-waiver form should be submitted and included with your 
+                DAPPS package. Requirements received after cut-off without the required 
+                late-waiver form may be returned without action. 
             </p>
         <br>
         <ATATExpandableLink aria-id="LateInfo" :isCopyMaxWidth="false"
@@ -95,11 +107,13 @@ import { Component } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { isBefore, parse } from 'date-fns';
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
   
   @Component({
     components: {
       ATATAlert,
-      ATATExpandableLink
+      ATATExpandableLink,
+      ATATSVGIcon
     },
   })
 export default class LateFormAlert extends Vue {
