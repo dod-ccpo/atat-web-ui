@@ -1590,6 +1590,8 @@ export const AppropriationOfFundsResolver = (current: string): string => {
   
   if (hasExceptionToFairOpp()){
     return routeNames.AppropriationOfFunds
+  } else if (evalPlanRequired()){
+    return SeverabilityAndIncrementalFundingResolver(current);
   }
   
   return current === routeNames.SeverabilityAndIncrementalFunding
