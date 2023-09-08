@@ -2140,7 +2140,6 @@ export class SummaryStore extends VuexModule {
       || rce.data.how_estimates_developed.tools_used !== ""
       || rce.data.how_estimates_developed.cost_estimate_description !== ""
       || rce.data.how_estimates_developed.previous_cost_estimate_comparison.options !== ""
-      || rce.hasSupportingDocs
   }
 
   @Action({rawError: true})
@@ -2157,7 +2156,6 @@ export class SummaryStore extends VuexModule {
       && await this.hasSurgeRequirements(rce.data)
       && await this.hasChargedFee(rce.data)
       && await this.hasHowEstimatesDeveloped(rce.data)
-      && rce.hasSupportingDocs
   }
 
   @Action({rawError: true})
@@ -2440,7 +2438,7 @@ export class SummaryStore extends VuexModule {
         || (FinancialDetails.fundingIncrements.length > 0
             && FinancialDetails.fundingIncrements.every(
               fi => ["0.00", "0",""].every(invalidAmt => invalidAmt !== fi.amt)))
-        || !!funding.poc.role
+        || (funding.poc && funding.poc.role !== "")
   }
 
   @Action({rawError: true})
