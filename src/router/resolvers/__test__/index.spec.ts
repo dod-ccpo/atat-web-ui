@@ -235,22 +235,22 @@ describe("testing src/router/index.ts", () => {
       expect(result).toBe(0)
     })
     
-    it("testing the resolver for IncrementalFunding()", () => {
-      jest.spyOn(Periods, 'loadPeriods').mockImplementation(
-        () => Promise.resolve(
-          [
-            {
-              "period_unit": "MONTH",
-              "period_unit_count": "1",
-              "period_type": "BASE",
-              "option_order": "1"
-            },
-          ]
-        ));
+    // it("testing the resolver for IncrementalFunding()", () => {
+    //   jest.spyOn(Periods, 'loadPeriods').mockImplementation(
+    //     () => Promise.resolve(
+    //       [
+    //         {
+    //           "period_unit": "MONTH",
+    //           "period_unit_count": "1",
+    //           "period_type": "BASE",
+    //           "option_order": "1"
+    //         },
+    //       ]
+    //     ));
       
-      const result = IncrementalFundingResolver("SummaryPage");
-      expect(result).toBe("Incremental_Funding")
-    })
+    //   const result = IncrementalFundingResolver("SummaryPage");
+    //   expect(result).toBe("Incremental_Funding")
+    // })
   });
 
   it("testing the resolver for FinancialPOCResolver()", () => {

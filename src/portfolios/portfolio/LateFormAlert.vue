@@ -5,8 +5,8 @@
       v-if="showAlertHeading"
     >
       <template v-slot:content>
-            <h3 class="mb-1">End of Fiscal Year Cut-off</h3>
-            <p class="mb-3">
+            <h3 class="mb-1">End of Fiscal Year Cut-off dates</h3>
+            <p class="mb-0">
                 Requirement packages submitted to DITCO after the below cut-off dates,
                 are subject to DITCO’s late-waiver process. This process only applies
                 to contracting actions that must be executed by the end of fiscal year

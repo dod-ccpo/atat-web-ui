@@ -7,7 +7,10 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import {EvaluationPlanDTO, SelectedClassificationLevelDTO } from "@/api/models";
+import {EvaluationPlanDTO, 
+  FundingRequirementDTO, 
+  SelectedClassificationLevelDTO } 
+  from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
@@ -16,7 +19,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import Summary, { isStepTouched } from "@/store/summary";
+import Summary, { isStepTouched, isStepValidatedAndTouched } from "@/store/summary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
@@ -24,12 +27,41 @@ export const showDITCOPageResolver = (current: string): string => {
     : routeNames.ContractingShop;
 };
 
+export const ProjectOverviewResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
+  return (current === routeNames.ContractingOfficeInfo||current === routeNames.ContractingShop)
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ProjectOverview
+    :routeNames.SummaryStepOne
+}
+
+export const OrganizationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ProjectOverview
+    ? routeNames.SummaryStepOne
+    : routeNames.OrganizationInfo
+}
+
+export const ContactInformationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.OrganizationInfo
+    ? routeNames.SummaryStepOne
+    : routeNames.ContactInformation
+}
+export const CorInformationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ContactInformation
+    ? routeNames.SummaryStepOne
+    : routeNames.CorInformation
+}
+export const ACorInformationQuestionResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.CorInformation
+    ? routeNames.SummaryStepOne
+    : routeNames.AlternateCor
+}
+
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
 
   //routing from alternate cor and the user does not have an ACOR
   if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
-    return ExceptionToFairOpportunityResolver(current);
+    return routeNames.SummaryStepOne;
   }
 
   //routing from summary and user does not have ACOR
@@ -45,7 +77,9 @@ const evalPlanRequired = (): boolean => {
 }
 
 const hasExceptionToFairOpp = (): boolean =>{
-  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== "NO_NONE";
+  return ["NO_NONE", ""].every(
+    val => AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity !== val
+  )
 }
 
 const fundingRequestType = (): string =>{
@@ -62,7 +96,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 }
 
 export const ExceptionToFairOpportunityResolver = (current:string): string =>{
-  const isFromStepOne = 
+  const isFromStepOne =
     [routeNames.AcorInformation, routeNames.AlternateCor].includes(current)
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
   return isFromStepOne
@@ -123,7 +157,7 @@ export const SummaryStepTwoRouteResolver = (current: string): string =>{
 
 export const ProposedCSPRouteResolver = (current: string): string => {
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
-  return current === routeNames.Exceptions && evalPlanRequired() 
+  return current === routeNames.Exceptions && evalPlanRequired()
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.CreateEvalPlan
     : routeNames.ProposedCSP
 };
@@ -439,6 +473,7 @@ export const A11yRequirementResolver = (current: string): string => {
 
 
 export const ContractingInfoResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
   const needsContractInformation =
       AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
 
@@ -446,7 +481,8 @@ export const ContractingInfoResolver = (current: string): string => {
     return routeNames.ContractingOfficeInfo;
   }
   return current === routeNames.ContractingShop 
-    ? routeNames.ProjectOverview : routeNames.ContractingShop;
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne: routeNames.ProjectOverview
+    : routeNames.SummaryStepOne;
 };
 
 /****************************************************************************/
@@ -1477,6 +1513,15 @@ const DOWNeedsArchitectureDesign = (): boolean | null => {
 /****************************************************************************/
 /****************************************************************************/
 
+export const CreatePriceEstimateResolver = (current:string): string =>{
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(8))
+  return current === routeNames.SummaryStepSeven
+    ? Summary.hasCurrentStepBeenVisited 
+      ? routeNames.SummaryStepEight
+      : routeNames.CreatePriceEstimate
+    : routeNames.SummaryStepEight;
+}
+
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
   if (current === routeNames.EstimatesDeveloped) {
@@ -1488,6 +1533,13 @@ export const IGCESupportingDocumentationResolver = (current: string): string => 
       : routeNames.CannotProceed;
   }
 };
+
+export const FundingPlanTypeResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.SupportingDocumentation
+    ? routeNames.SummaryStepEight
+    : routeNames.FundingPlanType
+};
+
 
 export const MIPRResolver = (current: string): string => {
   const fundingType = FinancialDetails.fundingRequestType;
@@ -1508,7 +1560,7 @@ export const GInvoicingResolver = (current: string): string => {
     ? routeNames.MIPR
     : hasExceptionToFairOpp() 
       ? routeNames.AppropriationOfFunds
-      : routeNames.SeverabilityAndIncrementalFunding;
+      : SeverabilityAndIncrementalFundingResolver(current);
 }
 
 export const Upload7600Resolver = (current: string): string => {
@@ -1525,7 +1577,7 @@ export const Upload7600Resolver = (current: string): string => {
     ? routeNames.GInvoicing
     : hasExceptionToFairOpp() 
       ? routeNames.AppropriationOfFunds
-      : routeNames.SeverabilityAndIncrementalFunding;
+      : SeverabilityAndIncrementalFundingResolver(current);
 }
 
 export const AppropriationOfFundsResolver = (current: string): string => {
@@ -1536,8 +1588,15 @@ export const AppropriationOfFundsResolver = (current: string): string => {
   
   return current === routeNames.SeverabilityAndIncrementalFunding
     ? routeNames.Upload7600
-    : routeNames.SeverabilityAndIncrementalFunding;
+    : SeverabilityAndIncrementalFundingResolver(current);
 }
+
+export const SeverabilityAndIncrementalFundingResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited 
+    && ([routeNames.AppropriationOfFunds, routeNames.Upload7600].some(route => route === current))
+    ? routeNames.SummaryStepEight
+    : routeNames.SeverabilityAndIncrementalFunding
+};
 
 const cutOff = 270;
 export async function calcBasePeriod(): Promise<number> {
@@ -1564,6 +1623,15 @@ export async function calcBasePeriod(): Promise<number> {
 }
 
 export const IncrementalFundingResolver = (current: string): string => {
+  const fundingReq = FinancialDetails.fundingRequirement as FundingRequirementDTO;
+  calcBasePeriod().then(daysTotal => {
+    if (daysTotal<=270){return routeNames.SummaryStepEight}
+  })
+
+  if (fundingReq.incrementally_funded==="NO"){
+    return routeNames.SummaryStepEight;
+  }
+
   let baseDuration
   calcBasePeriod().then(value => {
     baseDuration = value
@@ -1711,6 +1779,11 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   showDITCOPageResolver,
+  ProjectOverviewResolver,
+  OrganizationResolver,
+  ContactInformationResolver,
+  CorInformationResolver,
+  ACorInformationQuestionResolver,
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
@@ -1766,7 +1839,10 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   COIRouteResolver,
   PackagingPackingAndShippingResolver,
   TravelRouteResolver,
-  SummaryStepTwoRouteResolver
+  SummaryStepTwoRouteResolver,
+  FundingPlanTypeResolver,
+  SeverabilityAndIncrementalFundingResolver,
+  CreatePriceEstimateResolver
 };
 
 // add path resolvers here 
