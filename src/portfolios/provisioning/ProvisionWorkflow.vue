@@ -175,10 +175,13 @@ export default class ProvisionWorkflow extends Vue {
       ? await Steps.getNext() 
       : await Steps.getPrevious();
     
-    const {activeSection} = await AppSections.getSectionData()
+    const {activeSection} = await AppSections.getSectionData();
     if (nextStepName) {
-      if(PortfolioStore.isProvisioningTOFollowOn && activeSection === "ProvisionWorkflow" ){
-        const currentPortfolio = PortfolioStore.currentPortfolio;
+      const currentPortfolio = PortfolioStore.currentPortfolio;
+
+      if (PortfolioStore.isProvisioningTOFollowOn && activeSection === "ProvisionWorkflow" 
+        && direction === "next" && currentPortfolio.sysId !== ""
+      ){
         this.TONumber = PortfolioStore.portfolioProvisioningObj.taskOrderNumber as string;
         this.csp = PortfolioStore.portfolioProvisioningObj.cspLong as string;
         this.portfolioName = currentPortfolio.title as string;
@@ -193,7 +196,7 @@ export default class ProvisionWorkflow extends Vue {
             resolver: routeResolver.name,
             direction
           },
-        });
+        }).catch(() => console.log("avoiding redundant navigation"));;
 
         return ;
       }
@@ -206,7 +209,7 @@ export default class ProvisionWorkflow extends Vue {
             resolver: pathResolver.name,
             direction
           },
-        });
+        }).catch(() => console.log("avoiding redundant navigation"));;
 
         return ;
       }
@@ -268,6 +271,7 @@ export default class ProvisionWorkflow extends Vue {
       await PortfolioStore.setPortfolioIsUpdating(true)
       await PortfolioStore.setActiveTaskOrderNumber(this.TONumber)
       await AppSections.setActiveTabIndex(1);
+      await PortfolioStore.setProvisioningTOFollowOn(false)
       this.disableOk = false;
       this.showOkSpinner = false;
       this.showTOConfirmModal = false;
