@@ -89,7 +89,7 @@ describe("Testing AddToExistingPortfolio", () => {
       const mockSetProvisioningTOFollowon = jest.spyOn(PortfolioStore, 'setProvisioningTOFollowOn')
         .mockImplementation()
       
-      await wrapper.vm.packageSelected(0);
+      await wrapper.vm.portfolioSelected(0);
       expect(mockSetCurrentPorfolio).toBeCalledWith(mockCardData)
       expect(mocksetDisableContinue).toBeCalledWith(false)
       expect(mockSetProvisioningTOFollowon).toBeCalledWith(true)
