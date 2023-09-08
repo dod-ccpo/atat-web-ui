@@ -24,7 +24,7 @@
               <template v-slot:content>
                 <div class="d-flex justify-space-between" style="width:400px">
                   <div class="mr-10">
-                    <div v-if="item.showMoreData.address" class="d-flex align-center my-3">
+                    <div v-if="item.showMoreData.address" class="d-flex align-start my-3">
                       <ATATSVGIcon
                         width="20"
                         height="20"
@@ -200,11 +200,12 @@ export default class ATATSummaryItem extends Vue {
   public cancelRemoveMember(): void {
     this.showRemoveAcor = false
   }
-  public removeAcor():void {
-    AcquisitionPackage.removeACORInformation()
-    AcquisitionPackage.setHasAlternateCOR(false)
-    const ACORIdx = this.summaryItems.findIndex(item=> item.step === 1 && item.substep=== 4)
-    this.summaryItems.splice(ACORIdx,1)
+  public async removeAcor(): Promise<void> {
+    await AcquisitionPackage.removeACORInformation()
+    await AcquisitionPackage.setHasAlternateCOR(false)
+    const ACORIdx = this.summaryItems.findIndex(item => item.step === 1 && item.substep === 5)
+    this.summaryItems.splice(ACORIdx, 1)
+    this.showRemoveAcor = false
   }
 
   public addAcor():void {
