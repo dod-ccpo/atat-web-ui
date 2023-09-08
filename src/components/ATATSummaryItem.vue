@@ -76,8 +76,7 @@
                   </span>
                     </div>
                     <div
-                      v-if="item.showMoreData.title && item.substep !==4
-                      || item.substep === 4 && item.showMoreData.role === 'MILITARY'"
+                      v-if="item.showMoreData.title && item.substep !== 4"
                       class="d-flex align-center my-3">
                       <ATATSVGIcon
                         width="20"
