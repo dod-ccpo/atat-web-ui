@@ -8,6 +8,7 @@ import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { FairOpportunityDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
@@ -22,6 +23,7 @@ const actionHandlerNames = {
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
   writeOwnMarketResearchDetails: "writeOwnMarketResearchDetails",
   WriteOwnBarriers: "WriteOwnBarriers",
+  startNewPortfolio: "startNewPortfolio"
 }
 
 const actions =  {
@@ -38,6 +40,7 @@ const actions =  {
   [actionHandlerNames.writeOwnMarketResearchDetails]: writeOwnMarketResearchDetails,
   [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
   [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
+  [actionHandlerNames.startNewPortfolio]: startNewPortfolio,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -150,6 +153,27 @@ async function didNotUseDapps() {
       direction: "next"
     }
   });
+}
+
+async function startNewPortfolio(): Promise<void> {
+  // used when clicking secondary "I need to create a new portfolio" button 
+  // on "Add to existing portfolio" page (AddToExistingPortfolio.vue)
+  await PortfolioStore.resetCurrentPortfolio();
+  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
+  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
+  const showPackageSelection = PortfolioStore.showTOPackageSelection;
+  let routeName = provWorkflowRouteNames.PortfolioDetails
+  if (packageCount && (!acqPkgSysId || showPackageSelection)) {
+    routeName = provWorkflowRouteNames.GeneratedFromPackage;
+  }
+
+  router.push({
+    name: routeName,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));
 }
 
 export default actionHandler;
