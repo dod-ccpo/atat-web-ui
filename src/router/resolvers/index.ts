@@ -1706,6 +1706,28 @@ const hasILs = (): boolean => {
   return PortfolioStore.CSPHasImpactLevels;
 }
 
+const userHasActivePortfolios = (): boolean => {
+  return PortfolioSummary.hasActivePortfolios;
+}
+
+export const AddToExistingPortfolioResolver = (current: string): string => {
+  const hasActivePortfolios: boolean = userHasActivePortfolios();
+  // moving backward
+  if (current === provWorkflowRouteNames.GeneratedFromPackage 
+    || current === provWorkflowRouteNames.PortfolioDetails
+  ) {
+    return hasActivePortfolios 
+      ? provWorkflowRouteNames.AddToExistingPortfolio
+      : provWorkflowRouteNames.AwardedTaskOrder
+  } 
+  // moving forward
+  if (hasActivePortfolios) {
+    return provWorkflowRouteNames.AddToExistingPortfolio;
+  }
+
+  return GeneratedFromPackageRouteResolver(current);
+}
+
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
   const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
@@ -1714,11 +1736,15 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
     return provWorkflowRouteNames.GeneratedFromPackage;
   }
   if (current !== provWorkflowRouteNames.PortfolioDetails && acqPkgSysId && !hasILs()) {
-    return provWorkflowRouteNames.AddCSPAdmin
+    return provWorkflowRouteNames.AddCSPAdmin;
   }
-  return current === provWorkflowRouteNames.PortfolioDetails
-    ? provWorkflowRouteNames.AwardedTaskOrder
-    : provWorkflowRouteNames.PortfolioDetails;
+
+  if (current === provWorkflowRouteNames.PortfolioDetails) {
+    return userHasActivePortfolios() 
+      ? provWorkflowRouteNames.AddToExistingPortfolio 
+      : provWorkflowRouteNames.AwardedTaskOrder
+  }
+  return provWorkflowRouteNames.PortfolioDetails;
 }
 
 export const PortfolioDetailsRouteResolver = (current: string): string => {
@@ -1727,23 +1753,16 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
     return provWorkflowRouteNames.PortfolioDetails;
   }
   if (current === provWorkflowRouteNames.AddCSPAdmin && !acqPkgSysId && !hasILs()) {
-    return provWorkflowRouteNames.AwardedTaskOrder;
+    return userHasActivePortfolios()
+      ? provWorkflowRouteNames.AddToExistingPortfolio
+      : provWorkflowRouteNames.AwardedTaskOrder;
   }
   return current === provWorkflowRouteNames.GeneratedFromPackage
+    || provWorkflowRouteNames.AddToExistingPortfolio
     ? provWorkflowRouteNames.AddCSPAdmin
     : provWorkflowRouteNames.GeneratedFromPackage;
 }
 
-export const AddToExistingPortfolioResolver = (current: string): string => {
-  const hasActivePortfolios = PortfolioSummary.hasActivePortfolios;
-  if(current === provWorkflowRouteNames.GeneratedFromPackage && !hasActivePortfolios){
-    return provWorkflowRouteNames.AwardedTaskOrder
-  }
-
-  return hasActivePortfolios 
-    ? provWorkflowRouteNames.AddToExistingPortfolio
-    : provWorkflowRouteNames.GeneratedFromPackage;
-}
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {

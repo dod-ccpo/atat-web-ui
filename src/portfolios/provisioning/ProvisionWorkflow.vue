@@ -175,10 +175,13 @@ export default class ProvisionWorkflow extends Vue {
       ? await Steps.getNext() 
       : await Steps.getPrevious();
     
-    const {activeSection} = await AppSections.getSectionData()
+    const {activeSection} = await AppSections.getSectionData();
     if (nextStepName) {
-      if(PortfolioStore.isProvisioningTOFollowOn && activeSection === "ProvisionWorkflow" ){
-        const currentPortfolio = PortfolioStore.currentPortfolio;
+      const currentPortfolio = PortfolioStore.currentPortfolio;
+
+      if (PortfolioStore.isProvisioningTOFollowOn && activeSection === "ProvisionWorkflow" 
+        && direction === "next" && currentPortfolio.sysId !== ""
+      ){
         this.TONumber = PortfolioStore.portfolioProvisioningObj.taskOrderNumber as string;
         this.csp = PortfolioStore.portfolioProvisioningObj.cspLong as string;
         this.portfolioName = currentPortfolio.title as string;

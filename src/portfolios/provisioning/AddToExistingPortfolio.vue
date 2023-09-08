@@ -25,9 +25,9 @@
           }"
           :id="'Package'+ index"
           elevation="0"
-          @click="packageSelected(index)"
-          @keydown.enter="packageSelected(index)"
-          @keydown.space="packageSelected(index)"
+          @click="portfolioSelected(index)"
+          @keydown.enter="portfolioSelected(index)"
+          @keydown.space="portfolioSelected(index)"
         >
           <div class="flex-grow-1">
             <div class="d-flex">
@@ -37,9 +37,9 @@
                   role="button"
                   tabindex="0"
                   class="h3 _text-decoration-none d-flex align-center _package-title"
-                  @click="packageSelected(index)"
-                  @keydown.enter="packageSelected(index)"
-                  @keydown.space="packageSelected(index)"
+                  @click="portfolioSelected(index)"
+                  @keydown.enter="portfolioSelected(index)"
+                  @keydown.space="portfolioSelected(index)"
                 >
                   {{ card.title || 'Untitled package'}}
                 </a>
@@ -118,7 +118,7 @@ export default class AddToExistingPortfolio extends Vue {
   public portfolioCardData: PortfolioCardData[] = [];
   public selectedPackageSysId = "";
 
-  public async packageSelected(index: number): Promise<void> {
+  public async portfolioSelected(index: number): Promise<void> {
     this.portfolioCardData.forEach(pkg => pkg.isSelected = false);
     this.portfolioCardData[index].isSelected = true;
     this.selectedPackageSysId = this.portfolioCardData[index].sysId as string;
