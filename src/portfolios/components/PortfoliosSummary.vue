@@ -124,6 +124,13 @@
       @clear="clearSearchOrFilters"
     />
 
+    <LeavePortfolioModal
+        :portfolioName="portfolioName"
+        @okClicked="leavePortfolio"
+        @cancelClicked="closeLeavePortfolioModal"
+    />
+
+
     <ArchivePortfolioModal
       :portfolioName="portfolioName"
       :showArchivePortfolioModal="showArchivePortfolioModal"
@@ -140,10 +147,10 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 
-import { Component, Prop, Watch } from "vue-property-decorator";
+import {Component, Prop, Watch} from "vue-property-decorator";
 
-import ArchivePortfolioModal 
-  from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
+// eslint-disable-next-line max-len
+import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
 import ATATLoader from "@/components/ATATLoader.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import ATATSearch from "@/components/ATATSearch.vue"
@@ -152,14 +159,14 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FilterSlideout from "./FiltersSlideout.vue";
 import PortfolioCard from "./PortfolioCard.vue";
 
-import { 
+import {
   FilterOption,
   Portfolio,
-  PortfolioCardData,  
+  PortfolioCardData,
   PortfolioSummaryQueryParams,
-  SelectData, 
+  SelectData,
   SlideoutPanelContent,
-  ToastObj,  
+  ToastObj,
 } from "types/Global";
 
 import PortfolioSummary from "@/store/portfolioSummary";
@@ -167,15 +174,19 @@ import Toast from "@/store/toast";
 import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioStore from "@/store/portfolio";
 
-import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
-import { createDateStr, toCurrencyString } from "@/helpers";
-import { differenceInDays, formatDistanceToNow, isAfter} from "date-fns";
-import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
+import AcquisitionPackage, {Statuses} from "@/store/acquisitionPackage";
+import {createDateStr, toCurrencyString} from "@/helpers";
+import {differenceInDays, formatDistanceToNow, isAfter} from "date-fns";
+import {PortfolioSummarySearchDTO, UserDTO} from "@/api/models";
 import _ from "lodash";
 import CurrentUserStore from "@/store/user";
+import LeavePortfolioModal from "@/portfolios/portfolio/components/shared/LeavePortfolioModal.vue";
+import ATATDialog from "@/components/ATATDialog.vue";
 
 @Component({
   components: {
+    ATATDialog,
+    LeavePortfolioModal,
     ArchivePortfolioModal,
     ATATLoader,
     ATATNoResults,
@@ -374,10 +385,25 @@ export default class PortfoliosSummary extends Vue {
     }
   }
 
-  public leavePortfolio(sysId: string): void {
-    this.portfolioCardData = this.portfolioCardData.filter(
-      obj => obj.sys_id !== sysId
-    );
+  public async leavePortfolio(): Promise<void> {
+    const userSysId = CurrentUserStore.getCurrentUserData.sys_id;
+    if(userSysId) {
+      const currentPortfolio = PortfolioStore.currentPortfolio;
+
+      if(currentPortfolio.portfolio_managers) {
+        const managers = currentPortfolio.portfolio_managers.split(',');
+        currentPortfolio.portfolio_managers = managers.filter(id => id !== userSysId).join(',');
+      }
+
+      if(currentPortfolio.portfolio_viewers) {
+        const viewers = currentPortfolio.portfolio_viewers.split(',');
+        currentPortfolio.portfolio_viewers = viewers.filter(id => id !== userSysId).join(',');
+      }
+
+      await PortfolioStore.setCurrentPortfolioMembers(currentPortfolio);
+      await this.loadPortfolioData();
+    }
+
     const accessRemovedToast: ToastObj = {
       type: "success",
       message: "Portfolio access removed",
@@ -435,8 +461,13 @@ export default class PortfoliosSummary extends Vue {
       this.portfolioCardData.splice(index, 1);
     }
   }
+
   public closeArchivePortfolioModal(): void {
     PortfolioStore.setShowArchivePortfolioModal(false);
+  }
+
+  public closeLeavePortfolioModal(): void {
+    PortfolioStore.setShowLeavePortfolioModal(false);
   }
 
   public async mounted(): Promise<void> {

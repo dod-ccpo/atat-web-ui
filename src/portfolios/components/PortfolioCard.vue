@@ -421,7 +421,15 @@ export default class PortfolioCard extends Vue {
         },    
       );
     }
-
+    
+    if (!this.cardData.isOwner && this.cardData.status !== Statuses.Archived.value) {
+      this.portfolioCardMenuItems.push(
+        {
+          title: "Leave portfolio",
+          action: this.menuActions.leavePortfolio,
+        },
+      );
+    }
     // ATAT TODO AT-9603
     // if (this.isHaCCAdmin) {
     //   this.portfolioCardMenuItems.push(

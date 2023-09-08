@@ -575,6 +575,7 @@ export class PortfolioDataStore extends VuexModule {
     return this.showAddMembersModal;
   }
   public showArchivePortfolioModal = false;
+  public showLeavePortfolioModal = false;
   public currentUserIsViewer = false;
   public currentUserIsManager = false;
   public currentUserIsOwner = false;
@@ -646,11 +647,21 @@ export class PortfolioDataStore extends VuexModule {
   public doSetShowArchivePortfolioModal(show: boolean): void {
     this.showArchivePortfolioModal = show;
   }
-  
+
+  @Action
+  public setShowLeavePortfolioModal(show: boolean): void {
+    this.doSetShowLeavePortfolioModal(show);
+  }
+
+  @Mutation
+  public doSetShowLeavePortfolioModal(show: boolean): void {
+    this.showLeavePortfolioModal = show;
+  }
+
   @Action({rawError: true})
   public async removeMemberFromCurrentPortfolio(sysId: string): Promise<void> {
     const members = this.currentPortfolio.members?.filter(m => m.sys_id !== sysId);
-    this.doSetCurrentPortfolio({members});
+    await this.doSetCurrentPortfolio({members});
   }
 
   @Action({rawError: true})
@@ -664,7 +675,7 @@ export class PortfolioDataStore extends VuexModule {
         } as unknown as PortfolioSummaryDTO;
         let response = await api.portfolioTable.update(portfolio.sysId, members);
         response = convertColumnReferencesToValues(response);
-
+        console.log(response);
         await this.setCurrentPortfolio(response);
         await this.doSetCurrentUserRole();
         await this.populatePortfolioMembersDetail(portfolio);
