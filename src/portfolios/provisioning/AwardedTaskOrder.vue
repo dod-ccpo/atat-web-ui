@@ -197,6 +197,7 @@ export default class AwardedTaskOrder extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await PortfolioStore.resetCurrentPortfolio();
     await AcquisitionPackage.setDisableContinue(false);
     await this.setTaskOrderData();
 
