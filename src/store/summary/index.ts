@@ -301,9 +301,10 @@ export class SummaryStore extends VuexModule {
     let contactInfoKeys:string[] = []
     let keysToIgnore:string[] =[]
     let showMoreData:Record<string, string> = {}
+    let title = "Primary Point of Contact"
     if(contactInfo){
       contactInfoKeys = Object.keys(contactInfo)
-      const civilianKeys = ["role","first_name","last_name","phone","email","dodaac"]
+      const civilianKeys = ["role","first_name","last_name","phone","email","title"]
       const militaryKeys =
           ["role","first_name","last_name","rank_components","phone","email","title"]
       keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
@@ -314,14 +315,14 @@ export class SummaryStore extends VuexModule {
         address:"",
         email:contactInfo.email || "Missing email address",
         phone:contactInfo.phone || "Missing phone number",
-        dodaac:contactInfo.dodaac || "Missing dodaac",
         title:contactInfo.title || "Missing job title",
         role:contactInfo.role || "Missing role"
       }
+      title =contactInfo.first_name && contactInfo.last_name?
+        `${contactInfo.first_name} ${contactInfo.last_name}`
+        : "Primary Point of Contact"
     }
-    const title =contactInfo.first_name && contactInfo.last_name?
-      `${contactInfo.first_name} ${contactInfo.last_name}`
-      : "Primary Point of Contact"
+    
     const monitor = {object: contactInfo, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
     const PrimaryPOC: SummaryItem = {
@@ -344,6 +345,7 @@ export class SummaryStore extends VuexModule {
     let contactInfoKeys:string[] = []
     let showMoreData:Record<string, string> = {}
     let keysToIgnore:string[] =[]
+    let title = "Contracting Officer's Representative"
     if(contactInfo){
       contactInfoKeys = Object.keys(contactInfo)
       const civilianKeys = ["role","first_name","last_name","phone","email","dodaac"]
@@ -361,10 +363,10 @@ export class SummaryStore extends VuexModule {
         title:contactInfo.title || "Missing job title",
         role:contactInfo.role || "Missing role"
       }
+      title =contactInfo.first_name && contactInfo.last_name?
+        `${contactInfo.first_name} ${contactInfo.last_name}`
+        : "Contracting Officer's Representative"
     }
-    const title =contactInfo.first_name && contactInfo.last_name?
-      `${contactInfo.first_name} ${contactInfo.last_name}`
-      : "Contracting Officer's Representative"
     const monitor = {object: contactInfo, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
     const CORDetails: SummaryItem = {
@@ -388,11 +390,12 @@ export class SummaryStore extends VuexModule {
     let contactInfoKeys:string[] = []
     let keysToIgnore:string[] =[]
     let showMoreData:Record<string, string> = {}
+    let title = "Alternate Contracting Officer's Representative"
     if(contactInfo){
       contactInfoKeys = Object.keys(contactInfo)
       const civilianKeys = ["role","first_name","last_name","phone","email","dodaac"]
       const militaryKeys =
-          ["role","first_name","last_name","rank_components","phone","email","title"]
+          ["role","first_name","last_name","rank_components","phone","email","dodaac"]
       keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
         x => militaryKeys.indexOf(x) === -1
       ): contactInfoKeys.filter(
@@ -402,13 +405,12 @@ export class SummaryStore extends VuexModule {
         email:contactInfo.email || "Missing email address",
         phone:contactInfo.phone || "Missing phone number",
         dodaac:contactInfo.dodaac || "Missing dodaac",
-        title:contactInfo.title || "Missing job title",
         role:contactInfo.role || "Missing role"
       }
+      title =contactInfo.first_name && contactInfo.last_name?
+        `${contactInfo.first_name} ${contactInfo.last_name}`
+        : "Alternate Contracting Officer's Representative"
     }
-    const title =contactInfo.first_name && contactInfo.last_name?
-      `${contactInfo.first_name} ${contactInfo.last_name}`
-      : "Alternate Contracting Officer's Representative"
     const monitor = {object: contactInfo, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
     const ACORDetails: SummaryItem = {

@@ -62,8 +62,8 @@
                     </div>
                   </div>
                   <div class="ml-10">
-                    <div v-if="item.showMoreData.role === 'CIVILIAN'
-                    &&item.showMoreData.dodaac" class="d-flex align-center my-3">
+                    <div v-if="item.showMoreData.dodaac"
+                         class="d-flex align-center my-3">
                       <ATATSVGIcon
                         width="20"
                         height="20"
@@ -75,8 +75,10 @@
                          DoDAAC - {{item.showMoreData.dodaac}}
                   </span>
                     </div>
-                    <div v-if="item.showMoreData.role === 'MILITARY'
-                    &&item.showMoreData.title" class="d-flex align-center my-3">
+                    <div
+                      v-if="item.showMoreData.title && item.substep !==4
+                      || item.substep === 4 && item.showMoreData.role === 'MILITARY'"
+                      class="d-flex align-center my-3">
                       <ATATSVGIcon
                         width="20"
                         height="20"
@@ -86,7 +88,7 @@
                         :class="[{'text-error': checkMissing(item.showMoreData.title)}]"
                         class="text-base ml-2">
                           {{item.showMoreData.title}}
-                  </span>
+                      </span>
                     </div>
                   </div>
                 </div>
