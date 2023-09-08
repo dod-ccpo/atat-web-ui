@@ -428,7 +428,6 @@ export class PortfolioSummaryStore extends VuexModule {
         let totalTaskOrderValue = 0;
         let totalLifecycleAmount = 0;
         taskOrder.clin_records?.forEach(clinRecord => {
-          let fundsSpentForClin = 0;
           const validStatusesForTotalObligated = [
             Statuses.Active.value, Statuses.OptionExercised.value, Statuses.OnTrack.value,
             Statuses.AtRisk.value, Statuses.ExpiringPop.value, Statuses.Delinquent.value, 
@@ -445,7 +444,7 @@ export class PortfolioSummaryStore extends VuexModule {
           // totalLifecycleAmount is calculated using all clins of a TO irrespective of status
           totalLifecycleAmount = totalLifecycleAmount + Number(clinRecord.funds_total);
           clinRecord.cost_records?.forEach(costRecord => {
-            if (costRecord.is_actual) { // only add up costs with is_actual=true towards total spent
+            if (costRecord.is_actual === 'true') {
               const costValue = Number(costRecord.value);
               fundsSpentForPortfolio = fundsSpentForPortfolio + costValue;
               fundsSpentForTaskOrder = fundsSpentForTaskOrder + costValue;
