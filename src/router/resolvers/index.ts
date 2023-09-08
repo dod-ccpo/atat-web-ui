@@ -28,12 +28,41 @@ export const showDITCOPageResolver = (current: string): string => {
     : routeNames.ContractingShop;
 };
 
+export const ProjectOverviewResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
+  return (current === routeNames.ContractingOfficeInfo||current === routeNames.ContractingShop)
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ProjectOverview
+    :routeNames.SummaryStepOne
+}
+
+export const OrganizationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ProjectOverview
+    ? routeNames.SummaryStepOne
+    : routeNames.OrganizationInfo
+}
+
+export const ContactInformationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.OrganizationInfo
+    ? routeNames.SummaryStepOne
+    : routeNames.ContactInformation
+}
+export const CorInformationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ContactInformation
+    ? routeNames.SummaryStepOne
+    : routeNames.CorInformation
+}
+export const ACorInformationQuestionResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.CorInformation
+    ? routeNames.SummaryStepOne
+    : routeNames.AlternateCor
+}
+
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
 
   //routing from alternate cor and the user does not have an ACOR
   if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
-    return ExceptionToFairOpportunityResolver(current);
+    return routeNames.SummaryStepOne;
   }
 
   //routing from summary and user does not have ACOR
@@ -68,7 +97,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 }
 
 export const ExceptionToFairOpportunityResolver = (current:string): string =>{
-  const isFromStepOne = 
+  const isFromStepOne =
     [routeNames.AcorInformation, routeNames.AlternateCor].includes(current)
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
   return isFromStepOne
@@ -129,7 +158,7 @@ export const SummaryStepTwoRouteResolver = (current: string): string =>{
 
 export const ProposedCSPRouteResolver = (current: string): string => {
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
-  return current === routeNames.Exceptions && evalPlanRequired() 
+  return current === routeNames.Exceptions && evalPlanRequired()
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.CreateEvalPlan
     : routeNames.ProposedCSP
 };
@@ -445,6 +474,7 @@ export const A11yRequirementResolver = (current: string): string => {
 
 
 export const ContractingInfoResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
   const needsContractInformation =
       AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
 
@@ -452,7 +482,8 @@ export const ContractingInfoResolver = (current: string): string => {
     return routeNames.ContractingOfficeInfo;
   }
   return current === routeNames.ContractingShop 
-    ? routeNames.ProjectOverview : routeNames.ContractingShop;
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne: routeNames.ProjectOverview
+    : routeNames.SummaryStepOne;
 };
 
 /****************************************************************************/
@@ -1779,6 +1810,11 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   showDITCOPageResolver,
+  ProjectOverviewResolver,
+  OrganizationResolver,
+  ContactInformationResolver,
+  CorInformationResolver,
+  ACorInformationQuestionResolver,
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
