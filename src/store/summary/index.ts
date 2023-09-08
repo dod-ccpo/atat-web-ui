@@ -2117,12 +2117,16 @@ export class SummaryStore extends VuexModule {
       data: RequirementsCostEstimateDTO
       isComplete: boolean
     }): Promise<string> {
-    return rce.isComplete 
-      ? "Subtotal for base period: $" 
-        + toCurrencyString(rce.data.baseYearTotal as number, true)
-        + "<br />Grand total with fees for all periods: $" 
-        + toCurrencyString(rce.data.grandTotal as number, true)
-      : ""
+    let description = "";
+    const baseYearTotal = toCurrencyString(rce.data.baseYearTotal as number, true)
+    const grandTotal = toCurrencyString(rce.data.grandTotal as number, true)
+    if (baseYearTotal !== ""){
+      description += "Subtotal for base period: $" + baseYearTotal
+    }
+    if (grandTotal !== ""){
+      description += "<br />Grand total with fees for all periods: $" + grandTotal
+    }
+    return description;
   }
 
   @Action({rawError: true})
@@ -2179,9 +2183,18 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async hasCostEstimates(): Promise<boolean> {
-    return IGCE.igceEstimateList.every(
+    const estimates = IGCE.igceEstimateList;
+    const offerings = 
+      DescriptionOfWork.DOWObject
+        .filter(dow=>["TRAINING", "TRAVEL"].every (off => off !== dow.serviceOfferingGroupId))
+        .reduce((acc,curr)=>acc + (curr.otherOfferingData?.length || 0), 0);
+    if (offerings > estimates.length){
+      return false;
+    }
+    
+    return estimates.every(
       (ce) => {
-        return ce.description !== ""
+        return (ce.title === "PORTABILITY_PLAN" ? true : ce.description !== "")
           && ce.title !== ""
           && ["0", "0.00", ""].every(
             invalidPrice => ce.unit_price?.toString() !== invalidPrice
@@ -2274,7 +2287,7 @@ export class SummaryStore extends VuexModule {
     console.log(isComplete);
     const fundingSummaryItem: SummaryItem = {
       title: "Funding",
-      description: await this.setFundingDescription(isComplete),
+      description: await this.setFundingDescription({fsForm, request, mipr, isComplete}),
       isComplete,
       isTouched: await this.isFundingTouched(fundingDataObjs),
       routeName: "FundingPlanType",
@@ -2285,17 +2298,20 @@ export class SummaryStore extends VuexModule {
   };
 
   @Action({rawError: true})
-  public async setFundingDescription(isComplete: boolean): Promise<string>{
-    if(isComplete){
-      const fsForm = FinancialDetails.fundingRequestFSForm as FundingRequestFSFormDTO;
-      const fundReq = await FinancialDetails.fundingRequest as FundingRequestDTO;
-      return fundReq.funding_request_type === "MIPR"
-        ? "MIPR: " 
-          + (FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO).mipr_number
-        : "GT&C: " + fsForm.gt_c_number + "<br />"
-          + "Order: " + fsForm.order_number
-    }
-    return "";
+  public async setFundingDescription(
+    funding:{
+      fsForm: FundingRequestFSFormDTO,
+      request: FundingRequestDTO,
+      mipr: FundingRequestMIPRFormDTO,
+      isComplete: boolean
+  }): Promise<string>{
+    const hasMIPRNumber = funding.mipr.mipr_number !== ""
+    const hasOrderNumber = funding.fsForm.order_number !== ""
+    const hasGTCNumber = funding.fsForm.gt_c_number !== ""
+    return funding.request.funding_request_type === "MIPR"
+      ? (hasMIPRNumber ? "MIPR: " + funding.mipr.mipr_number  : "")
+      : (hasGTCNumber ? "GT&C: " + funding.fsForm.gt_c_number + "<br />" : "")
+          + (hasOrderNumber ? "Order: " + funding.fsForm.order_number : "")
   }
 
   @Action({rawError: true})
@@ -2440,7 +2456,7 @@ export class SummaryStore extends VuexModule {
         || (FinancialDetails.fundingIncrements.length > 0
             && FinancialDetails.fundingIncrements.every(
               fi => ["0.00", "0",""].every(invalidAmt => invalidAmt !== fi.amt)))
-        || (funding.poc && funding.poc.role !== "")
+        || (funding.poc && funding.poc?.role !== "")
   }
 
   @Action({rawError: true})
