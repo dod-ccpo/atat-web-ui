@@ -2237,12 +2237,23 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async hasIGCETravel(rce: RequirementsCostEstimateDTO): Promise<boolean> {
     if (rce.travel.option !== ""){
-      const estimatedValues = Object.values(JSON.parse(rce.travel.estimated_values as string))
-      return rce.travel.option === "SINGLE"
-        ? estimatedValues.every((ev)=> (ev as number) > 0 )
-        : estimatedValues.every((ev)=> (ev as number) >= 0 ) // multiple values can === 0
-    }
-    return true
+      if (!rce.travel.estimated_values?.toUpperCase().includes("UNDEFINED")){
+        const estimatedValues = Object.values(JSON.parse(rce.travel.estimated_values as string))
+        const totalPop = Periods.periods.length;
+
+        //ensure all estimatedValues have values
+        if (estimatedValues.length !== totalPop){
+          return false;
+        }
+
+        return rce.travel.option === "SINGLE"
+          ? estimatedValues.every((ev)=> (ev as number) > 0 )
+          : estimatedValues.every((ev)=> (ev as number) >= 0 ) // multiple values can === 0
+      }
+      return false;
+    } 
+    return false;
+    
   }
 
   @Action({rawError: true})
@@ -2290,12 +2301,11 @@ export class SummaryStore extends VuexModule {
     const gInv = await FinancialDetails.gInvoicingData as baseGInvoiceData;
     const fsForm = FinancialDetails.fundingRequestFSForm as FundingRequestFSFormDTO;
     const mipr = FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO;
-    const hasFairOpp = ["NO_NONE", ""].every(fo => {
-      (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity!==fo
-    })
+    const fairOpp =
+      (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity;
+    const hasFairOpp = ["NO_NONE", ""].every(noValue => noValue !== fairOpp );
     const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp};
     const isComplete =  await this.isFundingComplete(fundingDataObjs);
-    console.log(isComplete);
     const fundingSummaryItem: SummaryItem = {
       title: "Funding",
       description: await this.setFundingDescription({fsForm, request, mipr, isComplete}),
@@ -2334,7 +2344,7 @@ export class SummaryStore extends VuexModule {
       mipr: FundingRequestMIPRFormDTO,
       hasFairOpp: boolean
   }): Promise<boolean>{
-    const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600"))
+    const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
     const hasAppropriationOfFunds = funding.hasFairOpp
       ? funding.request.appropriation_fiscal_year !== "" 
         || funding.request.appropriation_funds_type !== ""

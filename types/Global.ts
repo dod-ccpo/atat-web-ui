@@ -568,6 +568,9 @@ export interface PortfolioCardData extends Portfolio {
   isManager?: boolean;
   isViewer?: boolean;
   lastCostDataSync?: string;
+  isSelected?: boolean;
+  fundingOnTrack?: boolean;
+  fundingStatusColor?: string;
 }
 
 export interface PortfolioSummaryQueryParams {
