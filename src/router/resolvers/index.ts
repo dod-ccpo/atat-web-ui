@@ -1593,6 +1593,10 @@ export async function calcBasePeriod(): Promise<number> {
 
 export const IncrementalFundingResolver = (current: string): string => {
   const fundingReq = FinancialDetails.fundingRequirement as FundingRequirementDTO;
+  calcBasePeriod().then(daysTotal => {
+    if (daysTotal<=270){return routeNames.SummaryStepEight}
+  })
+
   if (fundingReq.incrementally_funded==="NO"){
     return routeNames.SummaryStepEight;
   }
