@@ -51,9 +51,11 @@
         </div>
 
       </div>
-      <CompletePackageCard />
+      <CompletePackageCard  />
+      
 
     </div>
+    <LateFormAlert class="mt-11"/>
   </div>
 </template>
 <script lang="ts">
@@ -63,6 +65,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import LateFormAlert from "@/portfolios/portfolio/LateFormAlert.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import CompletePackageCard 
@@ -74,6 +77,7 @@ import { User } from "types/Global";
     CompletePackageCard,
     ATATCheckboxGroup,
     ATATSVGIcon,
+    LateFormAlert
   }
 })
 
