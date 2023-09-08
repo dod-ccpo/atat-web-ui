@@ -124,7 +124,7 @@
     </div>
     <ATATFeedbackForm
         v-if="!isDitcoUser"
-        class="position-sticky float-right"
+        class="position-static float-right"
     />
   </div>
 </template>
