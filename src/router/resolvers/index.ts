@@ -27,7 +27,12 @@ export const showDITCOPageResolver = (current: string): string => {
     ? routeNames.DAPPSChecklist 
     : routeNames.ContractingShop;
 };
-
+export const ContractingShopRouteResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
+  return (current === routeNames.DAPPSChecklist)
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ContractingShop
+    :routeNames.SummaryStepOne
+}
 export const ProjectOverviewResolver = (current: string): string => {
   Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
   return (current === routeNames.ContractingOfficeInfo||current === routeNames.ContractingShop)
@@ -482,7 +487,7 @@ export const ContractingInfoResolver = (current: string): string => {
     return routeNames.ContractingOfficeInfo;
   }
   return current === routeNames.ContractingShop 
-    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne: routeNames.ProjectOverview
+    ? routeNames.ProjectOverview
     : routeNames.SummaryStepOne;
 };
 
@@ -1810,6 +1815,7 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   showDITCOPageResolver,
+  ContractingShopRouteResolver,
   ProjectOverviewResolver,
   OrganizationResolver,
   ContactInformationResolver,

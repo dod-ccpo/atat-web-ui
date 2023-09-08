@@ -17,6 +17,7 @@
       @keydown.space="toggleOpen"
       class="expandable-content-opener"
       :class="[
+        contentAtTop? '_contentAtTop':'',
         isOpen ? 'open' : 'closed',
         { 'no-text-decoration': !hasUnderline },
         { '_hoverable-in-alert': hoverableInAlert },
@@ -28,7 +29,10 @@
       :aria-expanded="isOpen + ''"
       :id="'Button_' + ariaId"
     >
-      <slot name="header"></slot>
+      <span v-if="contentAtTop">
+        {{moreOrLess}}
+      </span>
+      <slot v-else name="header"></slot>
     </a>
     <v-expand-transition v-if="!contentAtTop">
       <div v-show="isOpen" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
@@ -57,6 +61,10 @@ export default class ExpandableLink extends Vue {
   public toggleOpen(): void {
     this.isOpen = !this.isOpen;
     this._open = this.isOpen;
+  }
+
+  public get moreOrLess(): string {
+    return this.isOpen ? "Show less":"Show more"
   }
 
   public mounted(): void {
