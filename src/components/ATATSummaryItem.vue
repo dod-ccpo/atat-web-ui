@@ -63,7 +63,7 @@
                   </div>
                   <div class="ml-10">
                     <div v-if="item.showMoreData.dodaac"
-                         class="d-flex align-center my-3">
+                         class="d-flex align-center my-3 no-wrap">
                       <ATATSVGIcon
                         width="20"
                         height="20"

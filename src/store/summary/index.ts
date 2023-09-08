@@ -252,7 +252,7 @@ export class SummaryStore extends VuexModule {
       isTouched,
       hasDelete:false,
       hasShowMore:false,
-      routeName: "ContractingShop",
+      routeName: "ProjectOverview",
       step: 1,
       substep: 1
     }
