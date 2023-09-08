@@ -45,9 +45,10 @@
               id="ContractingShopWarningAlert"
               type="warning"
               :showIcon="true"
+              class="mb-10"
             >
               <template v-slot:content>
-                <p class="mr-5 mb-0">
+                <p class="mr-5">
                   Your Contracting Office may require specific templates for processing 
                   task orders within their organization. Before proceeding, please verify 
                   that your Contracting Office will accept DITCO acquisition package 
