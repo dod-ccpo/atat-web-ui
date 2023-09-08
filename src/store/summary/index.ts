@@ -314,6 +314,8 @@ export class SummaryStore extends VuexModule {
         x => militaryKeys.indexOf(x) === -1
       ): contactInfoKeys.filter(
         x => civilianKeys.indexOf(x) === -1)
+
+      const salutation = contactInfo.salutation
       showMoreData = {
         address:"",
         email:contactInfo.email || "Missing email address",
@@ -362,7 +364,7 @@ export class SummaryStore extends VuexModule {
         address:"",
         email:contactInfo.email || "Missing email address",
         phone:contactInfo.phone || "Missing phone number",
-        dodaac:contactInfo.dodaac || "Missing phone dodaac",
+        dodaac:`DoDAAC - ${contactInfo.dodaac}` || "Missing DoDAAC",
         title:contactInfo.title || "Missing job title",
         role:contactInfo.role || "Missing role"
       }
@@ -407,7 +409,7 @@ export class SummaryStore extends VuexModule {
         address:"",
         email:contactInfo.email || "Missing email address",
         phone:contactInfo.phone || "Missing phone number",
-        dodaac:contactInfo.dodaac || "Missing dodaac",
+        dodaac:`DoDAAC - ${contactInfo.dodaac}` || "Missing DoDAAC",
         role:contactInfo.role || "Missing role"
       }
       title =contactInfo.first_name && contactInfo.last_name?

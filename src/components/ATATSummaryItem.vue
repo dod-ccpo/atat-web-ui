@@ -72,7 +72,7 @@
                       <span
                         :class="[{'text-error': checkMissing(item.showMoreData.dodaac)}]"
                         class="text-base ml-2">
-                         DoDAAC - {{item.showMoreData.dodaac}}
+                        {{item.showMoreData.dodaac}}
                   </span>
                     </div>
                     <div
