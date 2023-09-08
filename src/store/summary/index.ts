@@ -44,6 +44,7 @@ import IGCE  from "../IGCE";
 import Attachments from "../attachments";
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { finished } from "stream";
+import OrganizationData from "@/store/organizationData";
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
   await validateStep(stepNumber);
@@ -252,7 +253,7 @@ export class SummaryStore extends VuexModule {
       isTouched,
       hasDelete:false,
       hasShowMore:false,
-      routeName: "ProjectOverview",
+      routeName: "ContractingShop",
       step: 1,
       substep: 1
     }
@@ -261,14 +262,16 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessOrganizationDetails(): Promise<void>{
     const organization = AcquisitionPackage?.organization;
+    const agencies = OrganizationData.agency_data
     let title = "Your Organization";
-    if(organization?.organization_name){
-      title = organization.organization_name
+    if(organization?.agency){
+      const orgAgency = agencies.filter(item=> item.sys_id === organization.agency)
+      title = orgAgency[0].label
     }
     let description = "";
 
     if (organization?.dodaac) {
-      description = `Organization Name (${organization.dodaac})`
+      description = `${organization.organization_name} (${organization.dodaac})`
     }
 
     const isTouched = !!organization?.agency || !!organization?.organization_name
@@ -311,6 +314,8 @@ export class SummaryStore extends VuexModule {
         x => militaryKeys.indexOf(x) === -1
       ): contactInfoKeys.filter(
         x => civilianKeys.indexOf(x) === -1)
+
+      const salutation = contactInfo.salutation
       showMoreData = {
         address:"",
         email:contactInfo.email || "Missing email address",
@@ -350,7 +355,7 @@ export class SummaryStore extends VuexModule {
       contactInfoKeys = Object.keys(contactInfo)
       const civilianKeys = ["role","first_name","last_name","phone","email","dodaac"]
       const militaryKeys =
-          ["role","first_name","last_name","rank_components","phone","email","title"]
+          ["role","first_name","last_name","rank_components","phone","email",]
       keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
         x => militaryKeys.indexOf(x) === -1
       ): contactInfoKeys.filter(
@@ -359,7 +364,7 @@ export class SummaryStore extends VuexModule {
         address:"",
         email:contactInfo.email || "Missing email address",
         phone:contactInfo.phone || "Missing phone number",
-        dodaac:contactInfo.dodaac || "Missing phone dodaac",
+        dodaac:`DoDAAC - ${contactInfo.dodaac}` || "Missing DoDAAC",
         title:contactInfo.title || "Missing job title",
         role:contactInfo.role || "Missing role"
       }
@@ -404,7 +409,7 @@ export class SummaryStore extends VuexModule {
         address:"",
         email:contactInfo.email || "Missing email address",
         phone:contactInfo.phone || "Missing phone number",
-        dodaac:contactInfo.dodaac || "Missing dodaac",
+        dodaac:`DoDAAC - ${contactInfo.dodaac}` || "Missing DoDAAC",
         role:contactInfo.role || "Missing role"
       }
       title =contactInfo.first_name && contactInfo.last_name?
