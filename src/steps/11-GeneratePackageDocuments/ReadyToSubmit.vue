@@ -6,7 +6,7 @@
     <h1 v-else>
       Your acquisition package is ready to submit!
     </h1>
-    <div class="d-flex mt-3">
+    <div class="d-flex mt-3 mb-10">
       <div class="copy-max-width">
         <div v-if="currentUserIsMissionOwner">
           <p class="font-size-20 font-weight-500 mb-3" style="line-height: 1.6;">
@@ -52,8 +52,10 @@
 
       </div>
       <CompletePackageCard />
+      
 
     </div>
+    <LateFormAlert class="mt-5"/>
   </div>
 </template>
 <script lang="ts">
@@ -63,6 +65,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import LateFormAlert from "@/portfolios/portfolio/LateFormAlert.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import CompletePackageCard 
@@ -74,6 +77,7 @@ import { User } from "types/Global";
     CompletePackageCard,
     ATATCheckboxGroup,
     ATATSVGIcon,
+    LateFormAlert
   }
 })
 
