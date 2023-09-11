@@ -1,6 +1,5 @@
 import {
   AgencyDTO,
-  AttachmentDTO,
   ClassificationLevelDTO,
   DisaOrganizationDTO,
   EvalPlanAssessmentAreaDTO,
@@ -548,20 +547,6 @@ export const getTableRecordCount = async (table: string, query: string ): Promis
   return parseInt(response.result.stats.count);
 }
 
-/**
- * 
- * @param attachments 
- * @returns attachmentsDTO[] with updated download_link
- */
-export const assignDownloadLink = (attachments: AttachmentDTO[] )
-  : AttachmentDTO[]=> {
-  const BASE_API_URL = process.env.VUE_APP_BASE_API_URL;
-  const baseURL = BASE_API_URL?.substring(0, BASE_API_URL.indexOf("/api"));
-  attachments.forEach(
-    // eslint-disable-next-line camelcase 
-    a => a.download_link = baseURL + "/sys_attachment.do?sys_id=" + a.sys_id 
-  )
-  return attachments;
-}
+
 
 
