@@ -11,6 +11,7 @@ import AcorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vu
 import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import DAPPSChecklist from "@/steps/01-AcquisitionPackageDetails/DAPPSChecklist.vue";
 import ContractingOfficeInfo from "@/steps/01-AcquisitionPackageDetails/ContractingOfficeInfo.vue";
+import SummaryStepOne from "@/steps/01-AcquisitionPackageDetails/SummaryStepOne.vue";
 
 // Step 2 - Evaluation Criteria
 import FairOpportunityProcess from "../steps/02-EvaluationCriteria/Index.vue"

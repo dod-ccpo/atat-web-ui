@@ -2,6 +2,7 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import {
+  baseGInvoiceData,
   DOWServiceOffering,
   DOWServiceOfferingGroup,
   OtherServiceOfferingData,
