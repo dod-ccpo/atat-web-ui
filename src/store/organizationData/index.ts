@@ -98,7 +98,6 @@ export class OrganizationDataStore extends VuexModule {
       const sessionRestored = retrieveSession(ATAT_ORGANIZATION_DATA_KEY);
       if (sessionRestored) {
         this.setStoreData(sessionRestored);
-        await this.getAgencyData();
       } else {
         await this.getAgencyData();
         await this.getDisaOrgData();

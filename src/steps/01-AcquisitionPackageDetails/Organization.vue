@@ -175,6 +175,7 @@ import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -344,8 +345,13 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // watchers
   @Watch("selectedAgency")
   protected agencyChanged(newVal: SelectData): void {
-    AcquisitionPackage.setSelectedAgency(newVal);
-    
+    if(newVal === null){
+      this.selectedAgency = {text: "", value: ""}
+      acquisitionPackage.setSelectedAgency(this.selectedAgency)
+    }else{
+      AcquisitionPackage.setSelectedAgency(newVal);
+    }
+
     //reset two attribs below depending on agency dropdown update
     this.selectedDisaOrg = this.isAgencyDisa ? this.selectedDisaOrg :  { text: "", value: ""};
     this.organizationName = this.isAgencyDisa ? "" : this.organizationName;

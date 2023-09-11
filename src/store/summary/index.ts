@@ -270,7 +270,6 @@ export class SummaryStore extends VuexModule {
     if(agency && agencies){
       const orgAgency = agencies.filter(item=> item.sys_id === agency)
       if(orgAgency.length > 0){
-        console.log(orgAgency)
         title = orgAgency[0].label
       }
     }
