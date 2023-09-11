@@ -23,6 +23,7 @@ import {
   FundingRequirementDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
+  ReferenceColumn,
   RequirementsCostEstimateDTO,
   SelectedClassificationLevelDTO,
   SensitiveInformationDTO,
@@ -32,7 +33,7 @@ import {
   convertStringArrayToCommaList, 
   toTitleCase, 
   buildClassificationLabel, 
-  toCurrencyString 
+  toCurrencyString,
 } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
@@ -264,9 +265,14 @@ export class SummaryStore extends VuexModule {
     const organization = AcquisitionPackage?.organization;
     const agencies = OrganizationData.agency_data
     let title = "Your Organization";
-    if(organization?.agency){
-      const orgAgency = agencies.filter(item=> item.sys_id === organization.agency)
-      title = orgAgency[0].label
+    const agency =  typeof organization?.agency === "object"?
+        (organization?.agency as ReferenceColumn).value as string
+      : organization?.agency as string;
+    if(agency && agencies){
+      const orgAgency = agencies.filter(item=> item.sys_id === agency)
+      if(orgAgency.length > 0){
+        title = orgAgency[0].label
+      }
     }
     let description = "";
 

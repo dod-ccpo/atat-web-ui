@@ -401,7 +401,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "contracting-shop",
         name: routeNames.ContractingShop,
         completePercentageWeight: 0,
-        routeResolver:ContractingShopRouteResolver,
         completed: false,
         excludeFromMenu: true,
         component: ContractingShop
