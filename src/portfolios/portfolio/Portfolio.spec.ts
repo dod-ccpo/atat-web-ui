@@ -7,8 +7,51 @@ import Portfolio from "./Portfolio.vue";
 import ATATCharts from "@/store/charts";
 import dashboardMocks from "@/dashboards/__tests__/dashboardMocks..json";
 import PortfolioStore from "@/store/portfolio";
+import { VMain } from "vuetify/lib";
 
 Vue.use(Vuetify);
+const costs= [
+  {
+    is_actual: "true",
+    value: "10",
+  },
+  {
+    is_actual: "true",
+    value: "20",
+  },
+  {
+    is_actual: "true",
+    value: "30",
+  },
+  {
+    is_actual: "true",
+    value: "40",
+  },
+  {
+    is_actual: "true",
+    value: "50",
+  },
+  {
+    is_actual: "true",
+    value: "60",
+  },
+  {
+    is_actual: "true",
+    value: "70",
+  },
+  {
+    is_actual: "true",
+    value: "80",
+  },
+  {
+    is_actual: "true",
+    value: "90",
+  },
+  {
+    is_actual: "true",
+    value: "100",
+  },
+];
 
 describe("Testing Portfolio", () => {
   const localVue = createLocalVue();
@@ -45,50 +88,6 @@ describe("Testing Portfolio", () => {
 
     
     it("Test calculateFundsSpent", async () => {
-
-      const costs= [
-        {
-          is_actual: "true",
-          value: "10",
-        },
-        {
-          is_actual: "true",
-          value: "20",
-        },
-        {
-          is_actual: "true",
-          value: "30",
-        },
-        {
-          is_actual: "true",
-          value: "40",
-        },
-        {
-          is_actual: "true",
-          value: "50",
-        },
-        {
-          is_actual: "true",
-          value: "60",
-        },
-        {
-          is_actual: "true",
-          value: "70",
-        },
-        {
-          is_actual: "true",
-          value: "80",
-        },
-        {
-          is_actual: "true",
-          value: "90",
-        },
-        {
-          is_actual: "true",
-          value: "100",
-        },
-      ];
-
       await wrapper.setData({
         costs: costs,
         fundsSpent: 0,
@@ -123,6 +122,44 @@ describe("Testing Portfolio", () => {
       const dateStr = wrapper.vm.portfolioSyncDate;
       expect(dateStr).toBe("Last sync: Aug. 23 at 0144")
     })
+
+    it("Test calculateBurndown() => uniqueClinNumbersInCostsData.length && this.endOfMonthForecast",
+    async () =>{
+      await wrapper.setData({
+        costs: costs,
+        totalPortfolioFunds: 9000,
+        endOfMonthForecast: 900
+      })
+      await wrapper.vm.calculateBurnDown();
+      expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(90)
+      expect(wrapper.vm.$data.estimatedFundsToBeInvoicedPercent).toBe(10)
+    })
+    it(`Test calculateBurndown() => uniqueClinNumbersInCostsData.length && this.endOfMonthForecast
+      with full funds spent`, async () =>{
+      await wrapper.setData({
+        costs: costs,
+        totalPortfolioFunds: 9000,
+        endOfMonthForecast: 900,
+        fundsSpentPercent: 100
+      })
+      await wrapper.vm.calculateBurnDown();
+      expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(0)
+      expect(wrapper.vm.$data.estimatedFundsToBeInvoicedPercent).toBe(10)
+    })
+
+    it(`Test calculateBurndown() => full funds spent`, async () =>{
+      await wrapper.setData({
+        costs: costs,
+        totalPortfolioFunds: 9000,
+        endOfMonthForecast: 0,
+        fundsSpentPercent: 100
+      })
+      await wrapper.vm.calculateBurnDown();
+      expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(0)
+      expect(wrapper.vm.$data.estimatedFundsToBeInvoicedPercent).toBe(0)
+      expect(wrapper.vm.$data.zeroFundsRemaining).toBe(true)
+    })
+
 
   });
 
