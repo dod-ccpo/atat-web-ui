@@ -3,8 +3,11 @@ import { AxiosRequestConfig } from "axios";
 import { AttachmentDTO } from "../models";
 import { TableApiBase } from "../tableApiBase";
 import FormData from "form-data";
+import { assignDownloadLink } from "@/helpers";
 
 const TABLENAME = "attachment";
+const BASE_API_URL = process.env.VUE_APP_BASE_API_URL;
+const baseURL = BASE_API_URL?.substring(0, BASE_API_URL.indexOf("/api"));
 export class AttachmentApi extends TableApiBase<AttachmentDTO> {
   constructor() {
     super(TABLENAME);
@@ -51,9 +54,8 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
     if(response.status !== 201){
       throw new Error(response.statusText);
     }
-    return response.data.result as AttachmentDTO;
-          
-    
+    //return response.data.result;
+    return (assignDownloadLink([response.data.result as AttachmentDTO]))[0]
   }
 
   public async getAttachments(table_sys_id: string): Promise<AttachmentDTO[]>{
