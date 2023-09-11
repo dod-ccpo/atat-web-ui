@@ -9,6 +9,7 @@ import { PortfolioSummaryDTO } from "@/api/models";
 import validators from "@/plugins/validation";
 import AppSections from "@/store/appSections";
 import PortfolioStore from "@/store/portfolio";
+import Toast from "@/store/toast";
 Vue.use(Vuetify);
 
 const mockRouter = {
@@ -101,6 +102,25 @@ describe("Testing TaskOrder Component", () => {
       new Promise(resolve => resolve(dummyPortfolioSummaryList))
     );
     await wrapper.vm.loadOnEnter();
+  })
+
+  it("loadOnEnter() portfolioIsUpdating", async()=>{
+    PortfolioStore.setPortfolioIsUpdating(true);
+    const mockToastObj = {
+      type: "success",
+      message: "Task Order Number Updated",
+      isOpen: true,
+      hasUndo: false,
+      hasIcon: true,
+    }
+    
+    const toastMock = jest.spyOn(Toast, "setToast").mockImplementation();
+    const setIsUpdatingMock = jest.spyOn(PortfolioStore, "setPortfolioIsUpdating")
+      .mockImplementation()
+    await wrapper.vm.loadOnEnter();
+
+    expect(toastMock).toBeCalledWith(mockToastObj)
+    expect(setIsUpdatingMock).toBeCalledWith(false)
   })
 
   it("loadOnEnter() test with task order that has undefined money amounts", async()=>{

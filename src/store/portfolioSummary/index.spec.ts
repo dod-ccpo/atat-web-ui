@@ -60,6 +60,13 @@ describe("PortfolioSummary Store",
       await expect(portfolioSummaryList?.length).toBe(1)
     })
 
+    it('Test setHasActivePortfolios()', async () => {
+      await portfolioSummaryStore.setHasActivePortfolios(
+        portfolioSummaryListMock as unknown as PortfolioSummaryDTO[]
+      )
+      expect(portfolioSummaryStore.hasActivePortfolios).toBe(true)
+    })
+
     /*
     it('Test searchPortfolioSummaryList()- should not make additional calls if there are no ' +
       'portfolios', async () => {

@@ -5461,6 +5461,7 @@ header .v-toolbar__content {
 }
 .expandable-content-opener.open:after {
   content: "expand_less";
+
 }
 .expandable-content-opener.closed:after {
   content: "expand_more";

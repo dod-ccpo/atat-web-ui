@@ -45,9 +45,10 @@
               id="ContractingShopWarningAlert"
               type="warning"
               :showIcon="true"
+              class="mb-10"
             >
               <template v-slot:content>
-                <p class="mr-5 mb-0">
+                <p class="mr-5">
                   Your Contracting Office may require specific templates for processing 
                   task orders within their organization. Before proceeding, please verify 
                   that your Contracting Office will accept DITCO acquisition package 
@@ -56,6 +57,7 @@
               </template>
             </ATATAlert>
           </div>
+          <LateFormAlert/>
         </v-col>
       </v-row>
     </v-container>
@@ -72,6 +74,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
+import LateFormAlert from "@/portfolios/portfolio/LateFormAlert.vue";
 import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
@@ -89,7 +92,8 @@ import acquisitionPackage from "@/store/acquisitionPackage";
     ATATRadioGroup,
     ATATAlert,
     ATATLoadingPackageModal,
-    ContractingShopLearnMore
+    ContractingShopLearnMore,
+    LateFormAlert
   }
 })
 export default class ContractingShop extends Mixins(SaveOnLeave) {

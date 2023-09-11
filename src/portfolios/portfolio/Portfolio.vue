@@ -819,8 +819,8 @@ import { FundingAlertTypes } from "@/store/portfolio";
 import { createDateStr, toCurrencyString, getCurrencyString, getIdText, roundTo100 } 
   from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
-
-import { add, addDays, isAfter, isThisMonth, startOfMonth, subDays } from "date-fns";
+import { add, addDays, isAfter, isThisMonth, startOfMonth, 
+  subDays, addMonths, format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO";
 import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
@@ -1113,13 +1113,14 @@ export default class PortfolioDashboard extends Vue {
     uniqueClinNumbersInCostsData.forEach((clinNo) => {
       //eslint-disable-next-line prefer-const 
       let clinValues: Record<string, string> = {};
+      const dateCheck = format(addMonths(new Date(), 1),"yyyy-MM-01")
       uniqueDates.forEach((date) => {
         const clin = this.costs.find(
           (cost) => cost.clin_number === clinNo && cost.year_month === date
         );
         if (clin && clin.is_actual === "true") {
           clinValues[date] = clin.value;
-        } else if (clin) {
+        } else if (clin && dateCheck === date) {
           this.endOfMonthForecast += parseFloat(clin.value);
         }
       });

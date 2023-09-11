@@ -358,6 +358,16 @@ export class IGCEStore extends VuexModule {
   }
 
   @Mutation
+  public async doSetCostEstimateTotals(
+    totals:{
+      base: number, 
+      grand: number
+    }): Promise<void> {
+    (this.requirementsCostEstimate as RequirementsCostEstimateDTO).baseYearTotal = totals.base;
+    (this.requirementsCostEstimate as RequirementsCostEstimateDTO).grandTotal = totals.grand;
+  }
+
+  @Mutation
   public setHasDOWandPop(): void {
     const requirementCostEstimate = this.requirementsCostEstimate as RequirementsCostEstimateDTO;
     if ((Periods.periods && Periods.periods.length > 0) && DescriptionOfWork.isDOWComplete) {
