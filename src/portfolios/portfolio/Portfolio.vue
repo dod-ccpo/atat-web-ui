@@ -226,21 +226,19 @@
                   </ATATAlert>
                 </v-col>
               </v-row>
-              <!-- ATAT TODO AT-9565
-              <v-row id="BurndownChartWrap">
+              <v-row id="BurndownChartWrap" v-if="!isProdEnv">
                 <v-col>
                   <v-card class="_no-shadow v-sheet--outlined pa-8">
                     <h3 class="mb-4">Actual and Projected Burn Rate</h3>
                     <p class="text-base-dark font-size-14">
-                      Track your rate of spend and available funds throughout
-                      the current PoP. Forecasted future costs
-                      are based on historical trends and show approximately when
-                      you are projected to exceed your portfolio’s budget.
+                      Track your rate of spend and available funds throughout the current 
+                      PoP. Forecasted future costs are based on historical trends and show 
+                      approximately when you are projected to exceed your portfolio’s budget. 
                     </p>
                     <v-row class="mb-0">
                       <v-col class="font-size-14">Funds available</v-col>
                       <v-col id="BurnPoPs" class="text-right font-size-14">
-                        Current Period: {{ popStart }}&ndash;{{ popEnd }}
+                        Current Period: {{ currentPoPStartStr }}&ndash;{{ currentPoPEndStr }}
                       </v-col>
                     </v-row>
                     <LineChart
@@ -294,7 +292,6 @@
                   </v-card>
                 </v-col>
               </v-row>
-              -->
 
               <v-row>
                 <v-col>
@@ -823,7 +820,8 @@ import { createDateStr, toCurrencyString, getCurrencyString, getIdText, roundTo1
   from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
-import { add, addDays, isAfter, isBefore, isThisMonth, startOfMonth, subDays } from "date-fns";
+import { add, addDays, isAfter, isThisMonth, startOfMonth, 
+  subDays, addMonths, format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO";
 import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
@@ -856,6 +854,10 @@ import Portfolio from "@/store/portfolio";
 })
 export default class PortfolioDashboard extends Vue {
   dashboardService: DashboardService = new DashboardService();
+
+  public get isProdEnv(): boolean {
+    return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
+  }
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""
@@ -1113,13 +1115,14 @@ export default class PortfolioDashboard extends Vue {
     uniqueClinNumbersInCostsData.forEach((clinNo) => {
       //eslint-disable-next-line prefer-const 
       let clinValues: Record<string, string> = {};
+      const dateCheck = format(addMonths(new Date(), 1),"yyyy-MM-01")
       uniqueDates.forEach((date) => {
         const clin = this.costs.find(
           (cost) => cost.clin_number === clinNo && cost.year_month === date
         );
         if (clin && clin.is_actual === "true") {
           clinValues[date] = clin.value;
-        } else if (clin) {
+        } else if (clin && dateCheck === date) {
           this.endOfMonthForecast += parseFloat(clin.value);
         }
       });

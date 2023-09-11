@@ -353,7 +353,7 @@ export interface OrganizationDTO extends BaseTableDTO {
   organization_name?: string;
   disa_organization?: string;
   disa_organization_reference?: ReferenceColumn | string;
-  agency?: string;
+  agency?: string ;
   state?: string;
   zip_code?: string;
   country?: string;
@@ -988,6 +988,8 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
       percentage: number | null;
     };
   }
+  baseYearTotal?: number;
+  grandTotal?: number;
 }
 
 export interface RequirementsCostEstimateFlat extends BaseTableDTO{

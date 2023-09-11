@@ -33,7 +33,7 @@
           }"
           class="step"
           @click.native ="setCurrentStep(
-            step.stepNumber, 
+            step.stepNumber,
             step,
             false)"
         >
@@ -121,7 +121,6 @@ export default class ATATSideStepper extends Vue {
         await isStepValidatedAndTouched(parseInt(stepNumber))
       )
     }
-    
     if (stepNumber && !isSubStep && step && Summary.hasCurrentStepBeenVisited){
       this.navigateToSummary(step, isSubStep);
     }
@@ -129,12 +128,21 @@ export default class ATATSideStepper extends Vue {
 
   public navigateToSummary(step: StepperStep, isSubStep: boolean): void {
     const lastSubStep = step.subSteps?.slice(-1)[0];
-    this.$router.push({
-      path: step?.route + "/" + lastSubStep?.route,
-      params: {
-        direction: "next"
-      },
-    })
+    if(lastSubStep?.menuText==="SummaryStepOne"){
+      this.$router.push({
+        path: step?.route + lastSubStep?.route,
+        params: {
+          direction: "next"
+        },
+      })
+    }else{
+      this.$router.push({
+        path: step?.route + "/" + lastSubStep?.route,
+        params: {
+          direction: "next"
+        },
+      })
+    }
   }
 
   private get getCurrentStepperStep(): StepInfo {

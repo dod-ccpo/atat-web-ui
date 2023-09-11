@@ -12,6 +12,7 @@ import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/Alterna
 import DAPPSChecklist from "@/steps/01-AcquisitionPackageDetails/DAPPSChecklist.vue";
 import ContractingOfficeInfo from "@/steps/01-AcquisitionPackageDetails/ContractingOfficeInfo.vue";
 import Summary from "../steps/Summary.vue";
+import SummaryStepOne from "@/steps/01-AcquisitionPackageDetails/SummaryStepOne.vue";
 
 // Step 2 - Evaluation Criteria
 import FairOpportunityProcess from "../steps/02-EvaluationCriteria/Index.vue"
@@ -151,7 +152,7 @@ import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
-import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
+import SummaryStepEight from "@/steps/10-FinancialDetails/SummaryStepEight.vue";
 
 // step 10 - Generate Package Documents
 import GeneratePackageDocuments from "../steps/11-GeneratePackageDocuments/Index.vue";
@@ -222,12 +223,21 @@ import {
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
   FOIARecordSummaryResolver,
-  PIIResolver, 
-  COIRouteResolver, 
-  PackagingPackingAndShippingResolver, 
+  PIIResolver,
+  COIRouteResolver,
+  PackagingPackingAndShippingResolver,
   TravelRouteResolver,
-  
+  FundingPlanTypeResolver,
+  SeverabilityAndIncrementalFundingResolver,
+  CreatePriceEstimateResolver,
+  ProjectOverviewResolver,
+  OrganizationResolver,
+  ContactInformationResolver,
+  CorInformationResolver,
+  ACorInformationQuestionResolver, ContractingShopRouteResolver,
+
 } from "./resolvers";
+
 
 export const routeNames = {
   ContractingShop: "Contracting_Shop",
@@ -239,7 +249,8 @@ export const routeNames = {
   AcorInformation: "Acor_Information",
   ExistingContractBackground: "Existing_Contract_Background",
   AcqPackageSummary: "Acquisition_Package_Summary",
-  
+  SummaryStepOne: "SummaryStepOne",
+
   FairOpportunity: "Fair_Opportunity",
   Exceptions: "Exceptions",
   EvaluationPlan: "Evaluation_Plan",
@@ -305,6 +316,7 @@ export const routeNames = {
   SummaryStepFour: "Summary_Step_Four",
   SummaryStepSix: "Summary_Step_Six",
   SummaryStepSeven: "Summary_Step_Seven",
+  SummaryStepEight: "Summary_Step_Eight",
   ClassificationRequirements: "Classification_Requirements",
   SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
@@ -318,7 +330,6 @@ export const routeNames = {
   Upload7600:'Upload_7600',
   FundingPlanType: "Funding_Plan_Type",
   FinancialPOCForm: "Financial_POC_Form",
-  SummaryPage: "Summary_Page",
   CurrentEnvironmentLocation: "Current_Environment_Location",
   ClassificationLevels: "Classification_Levels",
   BackgroundSummary: "Background_Summary",
@@ -377,7 +388,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "DAPPS Checklist",
-        path: "/",
+        path: "/dapps-checklist",
         name: routeNames.DAPPSChecklist,
         completePercentageWeight: 0,
         routeResolver: showDITCOPageResolver,
@@ -407,6 +418,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Project Overview",
         path: "project-overview",
         name: routeNames.ProjectOverview,
+        routeResolver:ProjectOverviewResolver,
         completePercentageWeight: 4,
         completed: false,
         stepCompleteOnLeave: routeNames.ProjectOverview,
@@ -416,6 +428,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Organization",
         path: "organization-info",
         name: routeNames.OrganizationInfo,
+        routeResolver: OrganizationResolver,
         completed: false,
         stepCompleteOnLeave: routeNames.OrganizationInfo,
         completePercentageWeight: 5,
@@ -425,6 +438,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Contact Information",
         path: "contact-info",
         name: routeNames.ContactInformation,
+        routeResolver: ContactInformationResolver,
         completePercentageWeight: 5,
         completed: false,
         component: ContactInfo,
@@ -433,6 +447,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Cor Info",
         path: "cor-info",
         name: routeNames.CorInformation,
+        routeResolver: CorInformationResolver,
         excludeFromMenu: true,
         completePercentageWeight: 5,
         component: CorInfo,
@@ -441,6 +456,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Alternate COR",
         path: "alt-cor",
         name: routeNames.AlternateCor,
+        routeResolver:ACorInformationQuestionResolver,
         excludeFromMenu: true,
         component: AlternateCOR,
       },
@@ -453,16 +469,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: AcorInfo,
         routeResolver: AcorsRouteResolver,
       },
-      // {
-      //   menuText: "Summary",
-      //   path: "summary",
-      //   name: routeNames.AcqPackageSummary,
-      //   excludeFromMenu: true,
-      //   completePercentageWeight: 5,
-      //   stepCompleteOnEnter: routeNames.ContactInformation,
-      //   component: Summary,
-      //   backButtonText: "Sample different Back text",
-      // }
+      {
+        menuText: "SummaryStepOne",
+        path:"summary-step-one",
+        name: routeNames.SummaryStepOne,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepOne,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor:  "primary"
+      },
     ],
   },
   {
@@ -1239,7 +1255,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "create-price-estimate",
         name: routeNames.CreatePriceEstimate,
         completePercentageWeight: 1,
-        component: CreatePriceEstimate
+        component: CreatePriceEstimate,
+        routeResolver: CreatePriceEstimateResolver
       },
       {
         menuText: "Cannot Proceed",
@@ -1351,7 +1368,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "funding-plan",
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
-        component: FundingPlanType
+        component: FundingPlanType,
+        routeResolver: FundingPlanTypeResolver,
       },
       {
         menuText: "MIPR",
@@ -1395,6 +1413,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
+        routeResolver: SeverabilityAndIncrementalFundingResolver
       },
       {
         menuText: "Incremental Funding",
@@ -1415,16 +1434,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
 
       },
-   
-
-      // {
-      //   menuText: "SummaryPage",
-      //   excludeFromMenu: true,
-      //   path: "summary-page",
-      //   name: routeNames.SummaryPage,
-      //   completePercentageWeight: 1,
-      //   component: SummaryPage,
-      // },
+      {
+        menuText: "SummaryStepEight",
+        path: "summary-step-eight",
+        name: routeNames.SummaryStepEight,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: SummaryStepEight,
+        continueButtonText: "Wrap up this section",
+        continueButtonColor: "primary"
+      },
     ]
   },
   {

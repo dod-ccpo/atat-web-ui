@@ -55,7 +55,7 @@ module.exports = {
   featureYesOption:"#Radio_ProdFeatYes",
   featureNoOption:"#Radio_ProdFeatNo",
   productOption:"#Radio_Product",
-  productInputBox:"#PlatformOrTechName_text_field",
+  productInputBox:"#UniqueProduct_text_field",
   whyEssInputBox:"#WhyEssential_text_area",
   whyInadequateInputBox:"#WhyInadequate_text_area",
   featureOption:"#Radio_Feature",
@@ -122,6 +122,7 @@ module.exports = {
   reviewOtherContractsCb:"#Checkbox_REVIEWOTHERCONTRACTS",
   reviewJWCCCatlogCb:"#Checkbox_REVIEWJWCCCONTRACTSANDORCONTRACTORSCATALOG",
   otherCb:"#Checkbox_OTHER",
+  otherTechniques:"#OtherTechniques",
   otherinput:"div[name='otherTextField'] input",
   personReliedInput:"#PersonReliedUpon_text_field",
   techniquesSummaryinput:"#TechniquesSummary_text_area",
@@ -171,4 +172,14 @@ module.exports = {
   evalPlanAlertHeader: "#Callout h2",
   evalPlanAlertMessageIntro: "#Callout #IntroP",
   evalPlanAlertSecondMessage: "#Callout #SecondP",  
+
+  //Your Evaluation Criteria Summary
+  summaryItems:"#SummaryItems h3",
+  exceptionToFairOppHeaderText:"#ExceptiontoFairOpportunity_Heading",
+  exceptionToFairOppDescriptionText:"#ExceptiontoFairOpportunity_Description",
+  exceptionToFairOppCompleteBtn:"#ExceptiontoFairOpportunity_CompleteButton",
+  evalPlanText:"#EvaluationPlan_Heading",
+  evalPlanDesriptionText:"#EvaluationPlan_Description",
+  evalPlanStartBtn:"#EvaluationPlan_StartButton",
+  evalPlanCompleteBtn:"#EvaluationPlan_CompleteButton"
 }

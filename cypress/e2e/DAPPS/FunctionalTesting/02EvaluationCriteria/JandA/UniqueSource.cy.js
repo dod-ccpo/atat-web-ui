@@ -3,8 +3,8 @@ import {
     randomNumber,
     randomAlphaNumeric,
     cleanText
-} from "../../../../helpers";
-import fo from "../../../../selectors/fairOpportunityProcess.sel";
+} from "../../../../../helpers";
+import fo from "../../../../../selectors/fairOpportunityProcess.sel";
 
 
 describe("Test suite: Unique Source", () => {
