@@ -1161,12 +1161,16 @@ export default class PortfolioDashboard extends Vue {
       this.zeroFundsRemaining = true;
     } else if (uniqueClinNumbersInCostsData.length && this.monthsInPoP) {
       this.estimatedFundsToBeInvoicedPercent = 1 / this.monthsInPoP * 100;
-      this.estimatedRemainingPercent = 100 - this.estimatedFundsToBeInvoicedPercent;
+      this.estimatedRemainingPercent = 100 - (
+        this.estimatedFundsToBeInvoicedPercent + this.fundsSpentPercent
+      );
     }
 
 
 
-    let estimatedAvailable = (this.totalPortfolioFunds * this.estimatedRemainingPercent) / 100;
+    let estimatedAvailable = this.totalPortfolioFunds  - (
+      estimatedFundsToBeInvoiced + this.fundsSpent
+    )
     if (this.costs.length === 0) {
       estimatedAvailable = this.totalPortfolioFunds;
       this.estimatedRemainingPercent = 100;
