@@ -2507,6 +2507,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeACORInformation(): Promise<void>{
+    debugger
     try{
       await api.contactsTable.remove(this.acorInfo?.sys_id as string)
       this.setContact({ data: initialContact(), type: "ACOR" });
@@ -2706,6 +2707,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.customerFeedback = null
     this.fairOppBackToReview = false;
     this.replaceCustomWithGenerated = false;
+    this.hasAlternativeContactRep = false;
   }
 }
 
