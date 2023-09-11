@@ -175,7 +175,6 @@ import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import acquisitionPackage from "@/store/acquisitionPackage";
 
 
 @Component({
@@ -347,7 +346,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   protected agencyChanged(newVal: SelectData): void {
     if(newVal === null){
       this.selectedAgency = {text: "", value: ""}
-      acquisitionPackage.setSelectedAgency(this.selectedAgency)
+      AcquisitionPackage.setSelectedAgency(this.selectedAgency)
     }else{
       AcquisitionPackage.setSelectedAgency(newVal);
     }
