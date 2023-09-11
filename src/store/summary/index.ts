@@ -1254,7 +1254,7 @@ export class SummaryStore extends VuexModule {
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
-      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
+      || (!!currentContracts && currentContracts.length > 0);
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
