@@ -143,7 +143,7 @@
     <ATATDialog
       id="RemoveMemberModal"
       :showDialog="showRemoveAcor"
-      :title="'Remove ' + ACORName "
+      :title="'Remove ' + ACORName +' ?'"
       no-click-animation
       okText="Delete ACOR"
       width="450"
@@ -170,6 +170,7 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATDialog from "@/components/ATATDialog.vue";
+import { SummaryStore } from "@/store/summary";
 
 @Component({
   components: {
@@ -193,7 +194,8 @@ export default class ATATSummaryItem extends Vue {
     this.showRemoveAcor = true;
   }
   public get ACORName():string {
-    return AcquisitionPackage.acorInfo?.first_name || "undefined"
+    return `${AcquisitionPackage.acorInfo?.first_name}  ${AcquisitionPackage.acorInfo?.last_name}`
+      || "undefined"
   }
   public get hasAcor():boolean {
     return AcquisitionPackage.hasAlternativeContactRep || false
@@ -206,6 +208,7 @@ export default class ATATSummaryItem extends Vue {
     await AcquisitionPackage.setHasAlternateCOR(false)
     const ACORIdx = this.summaryItems.findIndex(item => item.step === 1 && item.substep === 5)
     this.summaryItems.splice(ACORIdx, 1)
+    // this.$emit("deleteAcor");
     this.showRemoveAcor = false
   }
 
