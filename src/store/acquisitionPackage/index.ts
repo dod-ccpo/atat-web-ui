@@ -2706,6 +2706,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.customerFeedback = null
     this.fairOppBackToReview = false;
     this.replaceCustomWithGenerated = false;
+    this.hasAlternativeContactRep = false;
   }
 }
 

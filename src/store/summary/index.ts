@@ -20,7 +20,7 @@ import {
   FundingRequestDTO,
   FundingRequestFSFormDTO,
   FundingRequestMIPRFormDTO,
-  FundingRequirementDTO,
+  FundingRequirementDTO, OrganizationDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
   ReferenceColumn,
@@ -201,6 +201,19 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError:true})
+  public removeSummaryItem(step: number, subStep: number):void{
+    this.doRemoveSummaryItem(step,subStep);
+  }
+
+  @Mutation
+  public doRemoveSummaryItem(step:number,subStep:number):void{
+    debugger
+    const newSummaryItem = this.summaryItems
+      .filter(item => item.step !== step && item.substep !== subStep)
+    this.summaryItems = newSummaryItem
+  }
+
+  @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
     const color = stepNumber > 0
       ? isStepComplete(stepNumber) ? "primary" : "secondary"
@@ -262,9 +275,17 @@ export class SummaryStore extends VuexModule {
   }
   @Action({rawError: true})
   public async assessOrganizationDetails(): Promise<void>{
-    const organization = AcquisitionPackage?.organization;
+    const organization = AcquisitionPackage?.organization as OrganizationDTO;
+    let organizationKeys:string[] = []
+    if(organization){
+      organizationKeys = Object.keys(organization)
+    }
     const agencies = OrganizationData.agency_data
+    const disaAgency = OrganizationData.disa_org_data
     let title = "Your Organization";
+    const disa = typeof organization?.disa_organization_reference === "object"?
+        (organization?.disa_organization_reference as ReferenceColumn).value as string
+      : organization?.disa_organization_reference as string;
     const agency =  typeof organization?.agency === "object"?
         (organization?.agency as ReferenceColumn).value as string
       : organization?.agency as string;
@@ -274,27 +295,50 @@ export class SummaryStore extends VuexModule {
         title = orgAgency[0].label
       }
     }
+    let disaDescription =""
+    if(disa && disaAgency){
+      const disaAgencyName = disaAgency.filter(item=> item.sys_id === disa)
+      disaDescription = disaAgencyName[0].full_name
+    }
     let description = "";
-
-    if (organization?.dodaac) {
+    if (organization?.dodaac && disaDescription) {
+      description = `${disaDescription} (${organization.dodaac})`
+    }else if(disaDescription) {
+      description = `${disaDescription}`
+    }else if(organization?.dodaac && !disaDescription) {
       description = `${organization.organization_name} (${organization.dodaac})`
+    }else{
+      description = `${organization?.organization_name} `
     }
 
+    const orgnameKey =
+        organization.disa_organization_reference?"disa_organization_reference":"organization_name"
+
+    const foreignKeys =
+        // eslint-disable-next-line max-len
+        [orgnameKey,"agency", "dodaac","street_address_1","city","zip_code","country","state"]
+    const civilKeys =
+        // eslint-disable-next-line max-len
+        [orgnameKey,"agency", "dodaac","street_address_1","city","state","zip_code"]
+    const keysToIgnore = organization?.address_type === "FOREIGN"?
+      organizationKeys.filter(
+        x => foreignKeys.indexOf(x) === -1
+      ): organizationKeys.filter(
+        x => civilKeys.indexOf(x) === -1)
     const isTouched = !!organization?.agency || !!organization?.organization_name
       || !!organization?.dodaac || !!organization?.address_type;
-    const isComplete = !!organization?.agency && !!organization.organization_name
-      && !!organization.dodaac && !!organization.address_type && !!organization.street_address_1
-      && !!organization.city && !!organization.state && !!organization.zip_code;
     const hasCompleteAddress = organization?.street_address_1
         && organization.city && organization.state && organization.zip_code
     const showMoreData = hasCompleteAddress?{address: `${organization.street_address_1} 
-    ${organization.city}, ${organization.state} ${organization.zip_code}`}
+    ${organization.city}, ${organization.state} ${organization.zip_code} ${organization?.country}`}
       : {address: "Missing Address"}
+    const monitor = {object: organization, keysToIgnore};
+    debugger
     const organizationDetails: SummaryItem = {
       title,
       description,
       isTouched,
-      isComplete,
+      isComplete: await this.isComplete(monitor),
       hasDelete:false,
       hasShowMore:true,
       showMoreData,
