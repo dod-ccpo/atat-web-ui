@@ -56,8 +56,6 @@ export class AttachmentStore extends VuexModule {
   public [ACQUISITION_PACKAGE_TABLE]: AttachmentDTO[] = [];
   public [PACKAGE_DOCUMENTS_SIGNED_TABLE]: AttachmentDTO[] = [];
   public [PACKAGE_DOCUMENTS_UNSIGNED_TABLE]: AttachmentDTO[] = [];
-  public BASE_API_URL = process.env.VUE_APP_BASE_API_URL;
-  public baseURL = this.BASE_API_URL?.substring(0, this.BASE_API_URL.indexOf("/api"));
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -330,20 +328,6 @@ export class AttachmentStore extends VuexModule {
       attachments: [attachment]});
     return attachment;
   }
-
-  // /**
-  //  * 
-  //  * @param attachments 
-  //  * @returns attachmentsDTO[] with updated download_link
-  //  */
-  // @Action({rawError: true}) 
-  // public async assignDownloadLink(attachments: AttachmentDTO[]): Promise<AttachmentDTO[]>{
-  //   attachments.forEach(
-  //     a => a.download_link = this.baseURL + "/sys_attachment.do?sys_id=" + a.sys_id
-  //   )
-  //   return attachments;
-  // }
-
 
   @Action({rawError: true})
   public async reset(): Promise<void> {

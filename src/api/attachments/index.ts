@@ -5,8 +5,6 @@ import { TableApiBase } from "../tableApiBase";
 import FormData from "form-data";
 
 const TABLENAME = "attachment";
-const BASE_API_URL = process.env.VUE_APP_BASE_API_URL;
-const baseURL = BASE_API_URL?.substring(0, BASE_API_URL.indexOf("/api"));
 export class AttachmentApi extends TableApiBase<AttachmentDTO> {
   constructor() {
     super(TABLENAME);

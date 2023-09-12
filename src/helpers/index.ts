@@ -546,7 +546,3 @@ export const getTableRecordCount = async (table: string, query: string ): Promis
   const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;
   return parseInt(response.result.stats.count);
 }
-
-
-
-
