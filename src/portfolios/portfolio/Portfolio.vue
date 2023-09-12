@@ -1628,21 +1628,24 @@ export default class PortfolioDashboard extends Vue {
 
     this.fundsSpentPercent = (this.fundsSpent / this.totalPortfolioFunds) * 100;
 
-    if (this.fundsSpentPercent >= 99.9 && this.fundsSpentPercent < 100) {
-      // if ALMOST 100%, due to rounding, don't set at 100% spent
-      // if at 99.9 to 99.99999 percent    
-      this.fundsSpentPercentForArcChart = 99.9;
-    } else if (this.fundsSpentPercent < 75 || this.fundsSpentPercent >= 100) {
-      // use whole numbers below 75 and 100 and over
-      this.fundsSpentPercentForArcChart =  Math.round(this.fundsSpentPercent);    
+    if (!isNaN(this.fundsSpentPercent)) {
+      if (this.fundsSpentPercent >= 99.9 && this.fundsSpentPercent < 100) {
+        // if ALMOST 100%, due to rounding, don't set at 100% spent
+        // if at 99.9 to 99.99999 percent    
+        this.fundsSpentPercentForArcChart = 99.9;
+      } else if (this.fundsSpentPercent < 75 || this.fundsSpentPercent >= 100) {
+        // use whole numbers below 75 and 100 and over
+        this.fundsSpentPercentForArcChart =  Math.round(this.fundsSpentPercent);    
+      } else {
+        // include 1 decimal place between 75 and 100
+        this.fundsSpentPercentForArcChart = Math.round(this.fundsSpentPercent * 10) / 10;
+      }
+      const remaining = this.fundsSpentPercentForArcChart > 100
+        ? 0 : 100 - this.fundsSpentPercentForArcChart;
+      this.arcGuageChartData.datasets[0].data = [this.fundsSpentPercentForArcChart, remaining];
     } else {
-      // include 1 decimal place between 75 and 100
-      this.fundsSpentPercentForArcChart = Math.round(this.fundsSpentPercent * 10) / 10;
+      this.arcGuageChartData.datasets[0].data = [0, 100];      
     }
-    const remaining = this.fundsSpentPercentForArcChart > 100
-      ? 0 : 100 - this.fundsSpentPercentForArcChart;
-
-    this.arcGuageChartData.datasets[0].data = [this.fundsSpentPercentForArcChart, remaining];
 
     if (this.fundsSpentPercent >= 75) {
       const arcColor = this.fundsSpentPercent < 100
