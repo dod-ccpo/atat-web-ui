@@ -4,7 +4,7 @@ import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
-import { format, isAfter, isBefore, parseISO } from "date-fns";
+import { format, isAfter, isBefore, parseISO, startOfMonth } from "date-fns";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export interface PortFolioDashBoardDTO {
@@ -105,11 +105,11 @@ export class DashboardService {
   ): Promise<ClinDTO[]> {
     const today = format(new Date().setHours(0,0,0,0), "yyyy-MM-dd")
 
-    let query = "task_order=" + taskOrderSysId;
+    let query = "task_order=" + taskOrderSysId + "^clin_number!=9999";
     const taskOrderStart = parseISO(taskOrder.pop_start_date);
     const taskOrderNotStarted = isBefore(parseISO(today), taskOrderStart);
     if (taskOrderNotStarted) {
-      query +="^clin_numberSTARTSWITH0";
+      query +="^clin_numberSTARTSWITH01";
     } else {
       query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
       query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
@@ -130,7 +130,7 @@ export class DashboardService {
   }
 
   public async getAllCLINs(taskOrderSysId: string): Promise<ClinDTO[]> {
-    let query = "task_order=" + taskOrderSysId;
+    let query = "task_order=" + taskOrderSysId + "^clin_number!=9999";
     const fields = "clin_number,funds_obligated,sys_id"
     const config: AxiosRequestConfig = {
       params: {
@@ -162,6 +162,7 @@ export class DashboardService {
       cost.clin_number = cost["clin.clin_number"];      
       cost = convertColumnReferencesToValues(cost);
     });    
+
     return costs;
   }
 
@@ -182,14 +183,14 @@ export class DashboardService {
           `unable to retrieve task order with number ${taskOrderNumber}`
         );
       }
-      
+
       const allCLINs = await this.getAllCLINs(taskOrderSysId);
 
       const today = format(new Date().setHours(0,0,0,0), "yyyy-MM-dd")
       const taskOrderEnd = parseISO(taskOrder.pop_end_date);
       const taskOrderExpired = isAfter(parseISO(today), taskOrderEnd);
       let clinsInPeriod: ClinDTO[] = [];
-      
+
       if (!taskOrderExpired) {
         // get sys_ids for all clins in current period
         clinsInPeriod = await this.getCLINsInCurrentPeriod(taskOrderSysId, taskOrder);
@@ -202,6 +203,7 @@ export class DashboardService {
       if (clinsInPeriod.length) {
         clinsInPeriod.sort((a,b) => a.clin_number > b.clin_number ? 1 : -1);
       }
+
       const clinSysIds = clinsInPeriod.map(obj => obj.sys_id);
       const currentCLINs = await api.clinTable.getQuery(
         {
@@ -216,27 +218,8 @@ export class DashboardService {
             }
         }
       ).then((clinData)=>{
-        // remove any and type out once api is refactored
-        return clinData.map((clin: any) =>{
-          return{
-            sys_id: clin.sys_id.value,
-            clin_number: clin.clin_number.value,
-            idiq_clin: clin.idiq_clin.display_value,
-            pop_end_date: clin.pop_end_date.value,
-            pop_start_date: clin.pop_start_date.value,
-            clin_status: clin.clin_status.value,
-            funds_obligated: clin.funds_obligated.value,
-            funds_total: clin.funds_total.value,
-            actual_funds_spent: clin.actual_funds_spent.value,
-            classification_level: clin.classification_level.value,
-            sys_created_by: clin.sys_created_by.value,
-            sys_mod_count: clin.sys_mod_count.value,
-            sys_tags: clin.sys_tags.value,
-            sys_updated_by:clin.sys_updated_by.value,
-            sys_updated_on: clin.sys_updated_on.value,
-            task_order: {link: clin.task_order.link, value: clin.task_order.value},
-            type: clin.type.value
-          } as ClinDTO
+        return clinData.map((clin: ClinDTO) =>{
+          return convertColumnReferencesToValues(clin);
         })
       })
       const costs = await this.getCostsInCurrentPeriod(clinSysIds)
