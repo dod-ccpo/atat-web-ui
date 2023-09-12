@@ -1307,9 +1307,7 @@ export class SummaryStore extends VuexModule {
     const prevContracts = currentContracts?.length === 1
       ? `${currentContracts?.length} previous contract:\n${contractNumbers}`
       : `${currentContracts?.length} previous contracts:\n${contractNumbers}`
-
-    const description = isTouched && currentContracts && currentContracts.length > 0
-      && currentContracts[0].contract_number ?
+    const description = isTouched && currentContracts && currentContracts.length > 0?
       hasCurrentOrPreviousContract === "YES"
         ? prevContracts
         : "No previous contracts"
