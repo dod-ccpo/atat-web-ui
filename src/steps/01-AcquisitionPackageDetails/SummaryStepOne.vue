@@ -62,7 +62,6 @@ export default class SummaryStepOne extends Mixins(SaveOnLeave){
     await Summary.toggleButtonColor(1);
   }
   public async deleteAcor(): Promise<void>{
-    debugger
     Summary.removeSummaryItem(1,5)
   }
 
