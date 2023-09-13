@@ -1329,8 +1329,7 @@ export default class PortfolioDashboard extends Vue {
     }, this);
     const monthAmounts = totalActualBurnData.filter(amt => amt !== null);
 
-    const len = monthAmounts.length ? monthAmounts.length : 1; // - 1; 
-    
+    const len = monthAmounts.length;
     // more than 1 month of full-month spend data
     if (len > 1) {
       this.monthlySpendAverage = Math.round((this.fullMonthsFundsSpent / len) * 100) / 100;
@@ -1352,8 +1351,9 @@ export default class PortfolioDashboard extends Vue {
         : this.lastMonthSpend + (this.monthlySpendAverage * this.numberOfMonthsRemainingToBeBilled) 
 
     // PoP has not yet started or in first month of PoP
-    } else if (monthAmounts.length === 0) {
+    } else {
       this.monthlySpendAverage = Math.round((this.availableFunds / this.monthsInPoP) * 100) / 100;
+      this.endOfMonthForecast = this.monthlySpendAverage;
     }
 
     this.burnChartData.labels = this.burnChartXLabels;
