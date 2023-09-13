@@ -42,7 +42,7 @@
     "flag-icons": "^6.1.1",
     "form-data": "^4.0.0",
     "inputmask": "^5.0.7",
-    "libphonenumber-js": "^1.9.51",
+    "libphonenumber-js": "^1.10.44",
     "lodash": "^4.17.21",
     "material-design-icons": "^3.0.1",
     "number-to-words": "^1.2.4",
