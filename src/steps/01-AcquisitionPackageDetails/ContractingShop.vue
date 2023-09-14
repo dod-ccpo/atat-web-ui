@@ -85,6 +85,7 @@ import { ProjectOverviewDTO } from "@/api/models";
 // import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import Summary, { isStepTouched } from "@/store/summary";
 
 
 @Component({
@@ -111,6 +112,7 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
       value: "OTHER"
     }
   ];
+  public skipPageRoute = "";
 
   public contractingShop = "";
 
@@ -154,9 +156,9 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
   }
   
   public async skipPage(): Promise<void> {
-    if(AcquisitionPackage.acquisitionPackage?.package_status === "WAITING_FOR_TASK_ORDER"){
+    if (this.isPageToBeSkipped()){
       this.$router.replace({
-        name: routeNames.UnderReview,
+        name: this.skipPageRoute,
         replace: true,
         params: {
           direction: "next"
@@ -166,6 +168,19 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
         }
       }).catch(() => console.log("avoiding redundant navigation"));
     }
+  }
+
+  public isPageToBeSkipped(): boolean {
+    this.skipPageRoute === "";
+    if (!Summary.hasCurrentStepBeenVisited){
+      Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
+      if(Summary.hasCurrentStepBeenVisited){
+        this.skipPageRoute = routeNames.SummaryStepOne;
+      }
+    } else if (AcquisitionPackage.acquisitionPackage?.package_status === "WAITING_FOR_TASK_ORDER"){
+      this.skipPageRoute =  routeNames.UnderReview;
+    }
+    return this.skipPageRoute !== "";
   }
 
   public async mounted(): Promise<void> {
