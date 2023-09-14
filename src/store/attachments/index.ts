@@ -19,7 +19,6 @@ import { TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED_TABLE } from "@/api/packageDocu
 import { AttachmentDTO } from "@/api/models";
 import {
   AttachmentServiceCallbacks,
-  AttachmentServiceTypes,
   AttachmentServiceFactory,
 } from "@/services/attachment";
 
@@ -33,6 +32,8 @@ import {
 } from "../helpers";
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
+import { AttachmentApi } from "@/api/attachments";
+
 @Module({
   name: "AttachmentsStore",
   namespaced: true,
@@ -274,6 +275,8 @@ export class AttachmentStore extends VuexModule {
         }
       };
       attachmentList = await api.attachments.getQuery(attachmentsBySysIdsRequestConfig);
+      // set download_link in each attachment
+      api.attachments.assignDownloadLink(attachmentList)
       // below call sets the attachments to the store
       this.updateAttachments({
         key: serviceKey,
@@ -298,6 +301,8 @@ export class AttachmentStore extends VuexModule {
       }
     };
     attachmentList = await api.attachments.getQuery(attachmentsBySysIdsRequestConfig);
+    // set download_link in each attachment
+    api.attachments.assignDownloadLink(attachmentList)
     // below call sets the attachments to the store
     this.updateAttachments({
       key: serviceKey,
@@ -315,6 +320,8 @@ export class AttachmentStore extends VuexModule {
       sysID: string;
     }): Promise<AttachmentDTO> {
     const attachment = await api.attachments.retrieve(sysID);
+    // set download_link in each attachment
+    api.attachments.assignDownloadLink([attachment])
     // below call sets the attachments to the store
     this.updateAttachments({
       key: serviceKey,
