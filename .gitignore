@@ -13,7 +13,7 @@ node_modules
 /cypress/screenshots/**
 /nyc_output/out.json
 .nyc_output/out.json
-
+!/**/*.tom
 
 # local env files
 .env.local
