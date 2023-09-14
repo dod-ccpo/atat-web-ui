@@ -1901,6 +1901,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
       this.setInitialized(true);
       this.setIsLoading(false);
+
+      // analyze store to create Summary.summaryItems
+      Summary.setHasCurrentStepBeenVisited(false);
       await Summary.validateStepOne();
       await Summary.validateStepTwo();
       await Summary.validateStepThree();
