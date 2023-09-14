@@ -477,6 +477,31 @@ export default class PortfoliosSummary extends Vue {
     this.loadPortfolioData();
   }  
 
+  public filteredPortfolios(): string[] {
+    const includedPortfolios = []
+    if(this.activeTab === 'ALL' && this.isHomeView){
+      includedPortfolios.push(
+        Statuses.Active.value, 
+        Statuses.Processing.value, 
+        Statuses.ProvisioningIssue.value
+      )
+    } else if(this.activeTab === 'ACTIVE'){
+      includedPortfolios.push(Statuses.Active.value)
+    } else if(this.activeTab === 'PROCESSING'){
+      includedPortfolios.push(Statuses.Processing.value)
+    } else if(this.activeTab === 'ARCHIVED'){
+      includedPortfolios.push(Statuses.Archived.value)
+    } else {
+      includedPortfolios.push(
+        Statuses.Active.value, 
+        Statuses.Processing.value, 
+        Statuses.ProvisioningIssue.value,
+        Statuses.Archived.value
+      )
+    }
+    return includedPortfolios
+  }
+
   public async loadPortfolioData(): Promise<void> {
     this.currentUserSysId = this.currentUser.sys_id as string;
     
@@ -502,80 +527,80 @@ export default class PortfoliosSummary extends Vue {
 
     this.portfolioCount = storeData.total_count;
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
-
+    const includedPortfolios = this.filteredPortfolios();
     storeData.portfolioSummaryList.forEach((portfolio) => {
-      const cardData: PortfolioCardData = {};
-      cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
-      cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
-      cardData.isViewer = portfolio.portfolio_viewers.indexOf(this.currentUserSysId) > -1;
-      cardData.lastUpdated = portfolio.last_updated;      
-      cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";
-      cardData.vendor = portfolio.vendor?.toLowerCase();
-      cardData.sysId = portfolio.sys_id;
-      cardData.title = portfolio.name;
-      cardData.description = portfolio.description;
-      cardData.status = this.getPortfolioStatus(portfolio.portfolio_status);
-      cardData.fundingStatus = portfolio.portfolio_funding_status;
-      cardData.portfolio_owner = portfolio.portfolio_owner;
-      cardData.portfolio_managers = portfolio.portfolio_managers;
-      cardData.portfolio_viewers = portfolio.portfolio_viewers;
-      cardData.createdBy = portfolio.sys_created_by;
-      cardData.agency = portfolio.agency;
-      cardData.agencyDisplay = portfolio.agency_display;
-      cardData.environments = portfolio.environments;
-      cardData.taskOrderSysId = portfolio.active_task_order;
-      cardData.lastCostDataSync = portfolio.last_cost_data_sync;
-      const activeTaskOrder = portfolio.task_orders.find(
-        obj => obj.sys_id === cardData.taskOrderSysId
-      );
-      cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
+      if(includedPortfolios.includes(portfolio.portfolio_status)) {
+        const cardData: PortfolioCardData = {};
+        cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
+        cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
+        cardData.isViewer = portfolio.portfolio_viewers.indexOf(this.currentUserSysId) > -1;
+        cardData.lastUpdated = portfolio.last_updated;      
+        cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";
+        cardData.vendor = portfolio.vendor?.toLowerCase();
+        cardData.sysId = portfolio.sys_id;
+        cardData.title = portfolio.name;
+        cardData.description = portfolio.description;
+        cardData.status = this.getPortfolioStatus(portfolio.portfolio_status);
+        cardData.fundingStatus = portfolio.portfolio_funding_status;
+        cardData.portfolio_owner = portfolio.portfolio_owner;
+        cardData.portfolio_managers = portfolio.portfolio_managers;
+        cardData.portfolio_viewers = portfolio.portfolio_viewers;
+        cardData.createdBy = portfolio.sys_created_by;
+        cardData.agency = portfolio.agency;
+        cardData.agencyDisplay = portfolio.agency_display;
+        cardData.environments = portfolio.environments;
+        cardData.taskOrderSysId = portfolio.active_task_order;
+        cardData.lastCostDataSync = portfolio.last_cost_data_sync;
+        const activeTaskOrder = portfolio.task_orders.find(
+          obj => obj.sys_id === cardData.taskOrderSysId
+        );
+        cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
 
-      // lastModified - if status is "Processing" use "Started ... ago" string
-      if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
-        const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
+        // lastModified - if status is "Processing" use "Started ... ago" string
+        if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
+          const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
 
-        cardData.lastModifiedStr = "Started " + agoString + " ago";
-      } else {
-        if (portfolio.last_updated) {
-          const updatedDate = createDateStr(portfolio.last_updated, true);
-          cardData.lastModifiedStr = "Last modified " + updatedDate;
-        }
+          cardData.lastModifiedStr = "Started " + agoString + " ago";
+        } else {
+          if (portfolio.last_updated) {
+            const updatedDate = createDateStr(portfolio.last_updated, true);
+            cardData.lastModifiedStr = "Last modified " + updatedDate;
+          }
 
-        if (portfolio.task_orders && portfolio.task_orders.length) {
-          cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
-          const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
-          const popEndISO = portfolio.task_orders[0].pop_end_date;
-          const popEnd = createDateStr(popEndISO, true);
-          cardData.currentPoP = popStart + " - " + popEnd;
-          const difToEndDate = formatDistanceToNow(new Date(popEndISO));
-          const difInDays = differenceInDays(new Date(popEndISO), new Date());
-          const difInDaysAbs = Math.abs(difInDays);
-          const difStr = difInDaysAbs > 60 ? difToEndDate : difInDaysAbs + " days";
-          const isExpired = isAfter(new Date(), new Date(popEndISO));
+          if (portfolio.task_orders && portfolio.task_orders.length) {
+            cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
+            const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
+            const popEndISO = portfolio.task_orders[0].pop_end_date;
+            const popEnd = createDateStr(popEndISO, true);
+            cardData.currentPoP = popStart + " - " + popEnd;
+            const difToEndDate = formatDistanceToNow(new Date(popEndISO));
+            const difInDays = differenceInDays(new Date(popEndISO), new Date());
+            const difInDaysAbs = Math.abs(difInDays);
+            const difStr = difInDaysAbs > 60 ? difToEndDate : difInDaysAbs + " days";
+            const isExpired = isAfter(new Date(), new Date(popEndISO));
 
-          cardData.expiration 
+            cardData.expiration 
             = _.capitalize(difStr + (isExpired ? " past" : " to") + " expiration");
+          }
         }
-      }
 
-      if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
-        cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
-        cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
-        cardData.fundsSpentPercent = portfolio.funds_spent ? 
-          String(Math.round(portfolio.funds_spent / portfolio.funds_obligated * 100))
-          : "0";
-        const remainingAmt = portfolio.funds_obligated - portfolio.funds_spent;
-        cardData.fundsRemaining 
+        if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
+          cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
+          cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
+          cardData.fundsSpentPercent = portfolio.funds_spent ? 
+            String(Math.round(portfolio.funds_spent / portfolio.funds_obligated * 100))
+            : "0";
+          const remainingAmt = portfolio.funds_obligated - portfolio.funds_spent;
+          cardData.fundsRemaining 
           = "$" + toCurrencyString(Math.abs(remainingAmt)) 
           + (remainingAmt < 0 ? " overspent" : " remaining");
-      }
+        }
 
-      this.portfolioCardData.push(cardData);
-      this.isLoading = false;
-      this.paging = false;
-      this.isSearchSortFilter = false;
-    });
-
+        this.portfolioCardData.push(cardData);
+        this.isLoading = false;
+        this.paging = false;
+        this.isSearchSortFilter = false;
+      }});
   }
 }
 </script>
