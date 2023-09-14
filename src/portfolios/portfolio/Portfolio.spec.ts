@@ -124,16 +124,16 @@ describe("Testing Portfolio", () => {
     })
 
     it("Test calculateBurndown() => uniqueClinNumbersInCostsData.length && this.endOfMonthForecast",
-    async () =>{
-      await wrapper.setData({
-        costs: costs,
-        totalPortfolioFunds: 9000,
-        endOfMonthForecast: 900
+      async () =>{
+        await wrapper.setData({
+          costs: costs,
+          totalPortfolioFunds: 9000,
+          endOfMonthForecast: 900
+        })
+        await wrapper.vm.calculateBurnDown();
+        expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(90)
+        expect(wrapper.vm.$data.estimatedFundsToBeInvoicedPercent).toBe(10)
       })
-      await wrapper.vm.calculateBurnDown();
-      expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(90)
-      expect(wrapper.vm.$data.estimatedFundsToBeInvoicedPercent).toBe(10)
-    })
     it(`Test calculateBurndown() => uniqueClinNumbersInCostsData.length && this.endOfMonthForecast
       with full funds spent`, async () =>{
       await wrapper.setData({
@@ -146,6 +146,19 @@ describe("Testing Portfolio", () => {
       expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(0)
       expect(wrapper.vm.$data.estimatedFundsToBeInvoicedPercent).toBe(10)
     })
+    
+    it(`Test calculateBurndown() => uniqueClinNumbersInCostsData.length && this.monthsInPoP`, 
+      async () =>{
+        await wrapper.setData({
+          costs: costs,
+          totalPortfolioFunds: 9000,
+          endOfMonthForecast: 0,
+          fundsSpentPercent: 50,
+          monthsInPoP: 10
+        })
+        await wrapper.vm.calculateBurnDown();
+        expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(40)
+      })
 
     it(`Test calculateBurndown() => full funds spent`, async () =>{
       await wrapper.setData({
@@ -159,7 +172,6 @@ describe("Testing Portfolio", () => {
       expect(wrapper.vm.$data.estimatedFundsToBeInvoicedPercent).toBe(0)
       expect(wrapper.vm.$data.zeroFundsRemaining).toBe(true)
     })
-
 
   });
 
