@@ -6,10 +6,9 @@
       <v-col col="7" class="mr-15" style="max-width: 545px">
         <div class="copy-max-width">
           <p>
-            We’ll guide you through steps to start provisioning cloud resources
-            and building an ATAT portfolio. Once set up, you’ll be provided a
-            for viewing funding reports and managing access to your cloud
-            console.
+            We’ll guide you through steps to start provisioning cloud resources 
+            and building an ATAT portfolio. Once set up, you’ll be provided a 
+            dashboard for viewing funding reports and managing access to your cloud console.
           </p>
           <p class="h4">You can expect to:</p>
           <v-list class="_atat-stepper mb-10">
