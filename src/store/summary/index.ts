@@ -211,6 +211,12 @@ export class SummaryStore extends VuexModule {
     this.summaryItems = this.summaryItems.filter(item => item !== itemToDelete)
   }
 
+  @Mutation
+  public async clearSummaryItems():Promise<void>{
+    this.summaryItems = [];
+  }
+
+
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
     const color = stepNumber > 0
