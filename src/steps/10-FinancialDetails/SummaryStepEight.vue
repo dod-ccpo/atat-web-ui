@@ -27,7 +27,7 @@ import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Summary, {
   getSummaryItemsforStep, 
-  isStepComplete, 
+  isStepValidatedAndComplete, 
   isStepValidatedAndTouched } from "@/store/summary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -40,8 +40,8 @@ export default class SummaryStepEight extends Mixins(SaveOnLeave){
   public summaryItems: SummaryItem[] = [];
   public introParagraph = "";
   
-  public setIntroParagraph():void {
-    this.introParagraph = (isStepComplete(8))
+  public async setIntroParagraph():Promise<void> {
+    this.introParagraph = (await isStepValidatedAndComplete(8))
       ? "You are all done with this section, but you can come back at any time to edit details. "
         + "When you are ready, we will generate documents to complete your acquisition package."
       : "We need some more details for this section. You can add info now, or come back to make "

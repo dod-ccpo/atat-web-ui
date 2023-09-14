@@ -353,7 +353,7 @@ export interface OrganizationDTO extends BaseTableDTO {
   organization_name?: string;
   disa_organization?: string;
   disa_organization_reference?: ReferenceColumn | string;
-  agency?: string;
+  agency?: string ;
   state?: string;
   zip_code?: string;
   country?: string;

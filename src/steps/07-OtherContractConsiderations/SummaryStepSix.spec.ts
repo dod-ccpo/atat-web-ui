@@ -20,7 +20,9 @@ describe("Testing SummaryStepSix Component", () => {
     "title": "TouchedSummaryItem", 
     "description": "", 
     "isComplete": false, 
-    "isTouched": true, 
+    "isTouched": true,
+    "hasDelete":false,
+    "hasShowMore":false,
     "routeName": "touchedSummaryItem", 
     "step": 6, 
     "substep": 1 
@@ -30,7 +32,9 @@ describe("Testing SummaryStepSix Component", () => {
     "title": "CompletedSummaryItem", 
     "description": "", 
     "isComplete": true, 
-    "isTouched": true, 
+    "isTouched": true,
+    "hasDelete":false,
+    "hasShowMore":false,
     "routeName": "CompletedSummaryItem", 
     "step": 6, 
     "substep": 1 

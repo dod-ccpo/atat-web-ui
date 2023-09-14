@@ -1901,6 +1901,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       this.setInitialized(true);
       this.setIsLoading(false);
+      await Summary.validateStepOne();
       await Summary.validateStepTwo();
       await Summary.validateStepThree();
       await Summary.validateStepFive();
@@ -2705,6 +2706,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.customerFeedback = null
     this.fairOppBackToReview = false;
     this.replaceCustomWithGenerated = false;
+    this.hasAlternativeContactRep = false;
   }
 }
 

@@ -218,6 +218,7 @@ export default class Home extends Vue {
 
   public async mounted(): Promise<void> {
     await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await PortfolioStore.setProvisioningTOFollowOn(false)
     await AcquisitionPackage.loadFeedbackOptions()
     this.isLoading = true;
     await CurrentUserStore.initialize();

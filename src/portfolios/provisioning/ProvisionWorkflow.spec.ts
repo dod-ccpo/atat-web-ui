@@ -88,8 +88,9 @@ describe("Testing ProvisionWorkflow", () => {
         activeSection: "ProvisionWorkflow",
         sectionTitles: {}
       });
+      await PortfolioStore.setCurrentPortfolio({sysId: '1234'})
       jest.spyOn(Steps, 'getNext').mockResolvedValue('next')
-      PortfolioStore.setProvisioningTOFollowOn(true)
+      await PortfolioStore.setProvisioningTOFollowOn(true)
       await wrapper.setData({altBackDestination: AppSections.sectionTitles.Portfolios})
       await wrapper.vm.navigate('next')
       expect(wrapper.vm.$data.showTOConfirmModal).toBe(true)
