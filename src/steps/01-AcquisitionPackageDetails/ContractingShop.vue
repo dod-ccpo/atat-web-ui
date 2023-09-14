@@ -171,7 +171,7 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
   }
 
   public isPageToBeSkipped(): boolean {
-    this.skipPageRoute === "";
+    this.skipPageRoute = "";
     if (!Summary.hasCurrentStepBeenVisited){
       Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
       if(Summary.hasCurrentStepBeenVisited){
