@@ -57,7 +57,7 @@
               </template>
             </ATATAlert>
           </div>
-          <LateFormAlert/>
+          <LateFormAlert />
         </v-col>
       </v-row>
     </v-container>
@@ -161,7 +161,7 @@ export default class ContractingShop extends Mixins(SaveOnLeave) {
         params: {
           direction: "next"
         },
-        query: {
+        query: {  
           packageId: AcquisitionPackage.packageId
         }
       }).catch(() => console.log("avoiding redundant navigation"));
