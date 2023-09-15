@@ -168,6 +168,7 @@ async function startNewPortfolio(): Promise<void> {
   if (packageCount && (!acqPkgSysId || showPackageSelection)) {
     routeName = provWorkflowRouteNames.GeneratedFromPackage;
   }
+  AcquisitionPackage.setDisableContinue(false);
 
   router.push({
     name: routeName,
