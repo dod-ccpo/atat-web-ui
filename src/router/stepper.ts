@@ -1484,7 +1484,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ReadyToSubmit,
         completePercentageWeight: 0,
         component: ReadyToSubmit,
-        continueButtonText: "Submit my acquisition package"
+        continueButtonText: "Submit my acquisition package",
+        altContinueAction: "submitPackage"
       },
       {
         menuText: "Under Review",

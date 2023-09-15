@@ -3,14 +3,14 @@
     <div class="container-max-width-wide" style="margin: 0 auto;">
     <h1 class="page-header">Ready to create your first ATAT portfolio?</h1>
     <v-row>
-      <v-col col="7" class="mr-15" style="max-width: 545px">
+      <v-col col="8" class="mr-15" style="max-width: 560px">
         <div class="copy-max-width">
-          <p>
+          <p class="mb-3">
             We’ll guide you through steps to start provisioning cloud resources 
             and building an ATAT portfolio. Once set up, you’ll be provided a 
             dashboard for viewing funding reports and managing access to your cloud console.
           </p>
-          <p class="h4">You can expect to:</p>
+          <p class="font-weight-500 mb-3">You can expect to:</p>
           <v-list class="_atat-stepper mb-10">
             <v-list-item-group>
               <v-list-item
@@ -18,7 +18,7 @@
                 :key="index"
               >
                 <span class="_step-circle">{{ index + 1 }}</span>
-                <v-list-item-content>
+                <v-list-item-content class="mb-2">
                   {{ stepText }}
                 </v-list-item-content>
               </v-list-item>
@@ -62,7 +62,7 @@
           </ATATExpandableLink>
         </div>
       </v-col>
-      <v-col cols="5" > 
+      <v-col cols="4" > 
         <ATATSVGIcon
           width="545"
           height="481"
@@ -101,8 +101,8 @@ import TaskOrderSearch from "../components/TaskOrderSearch.vue";
 })
 export default class CreateFirstPortfolio extends Vue {
   public provisionStepsText = [
-    `Provide a few details about your awarded task order and the individuals who 
-      will administer your cloud resources.`,
+    `Provide details about your awarded task order and the individuals who will 
+      administer your cloud resources.`,
     `Initiate provisioning and ATAT will automate the creation of your account 
       and environment with your Cloud Service Provider (CSP).`,
     `Track your cloud usage and manage spending throughout the duration of 
