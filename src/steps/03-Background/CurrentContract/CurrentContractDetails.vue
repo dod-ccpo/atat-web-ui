@@ -221,12 +221,10 @@ import LevelOfCompetition from "@/steps/03-Background/components/LevelOfCompetit
 import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 import AcquisitionPackage, {initialCurrentContract, } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { CurrentContractDTO, ReferenceColumn } from "@/api/models";
-import { formatDate, hasChanges } from "@/helpers";
-import { add, compareAsc, format, formatISO, isValid, subDays } from "date-fns";
+import { CurrentContractDTO } from "@/api/models";
+import { hasChanges } from "@/helpers";
+import { add, compareAsc, format, formatISO, subDays } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
-import _, { isString } from "lodash";
-import { thisExpression, throwStatement } from "@babel/types";
 
 @Component({
   components: {
