@@ -426,7 +426,7 @@
                     >
                       <template v-slot:content>
                       <p class="mb-0">
-                        You have <span class="font-weight-bold">0</span>% remaining in your
+                        You have <span class="font-weight-bold">0%</span> remaining in your
                         portfolio for this period of performance. Add funds to a new or existing
                         task order as soon as possible to continue working with this portfolio.
                       </p>
