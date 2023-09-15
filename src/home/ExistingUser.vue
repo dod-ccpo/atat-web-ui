@@ -199,7 +199,7 @@ import Portfolios from "../portfolios/Index.vue";
 import PortfoliosSummary from "../portfolios/components/PortfoliosSummary.vue"
 import { 
   AcquisitionPackageSummaryDTO,
-  AcquisitionPackageSummarySearchDTO
+  AcquisitionPackageSummarySearchDTO, 
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import CurrentUserStore from "@/store/user";

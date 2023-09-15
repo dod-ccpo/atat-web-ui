@@ -5,7 +5,6 @@ import rootStore from "../index";
 import {
   Environment,
   FilterOption,
-  MemberInvites,
   Operator,
   Portfolio,
   PortfolioCardData,
@@ -14,7 +13,7 @@ import {
   User,
 } from "../../../types/Global"
 
-import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AlertDTO,
   EnvironmentDTO, OperatorDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
 import AlertService from "@/services/alerts";

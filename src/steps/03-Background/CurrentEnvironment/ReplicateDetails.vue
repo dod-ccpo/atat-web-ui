@@ -86,7 +86,6 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import { RadioButton } from "types/Global";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";

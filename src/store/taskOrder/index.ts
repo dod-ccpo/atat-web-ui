@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import api from "@/api";
-import {FundingRequirementDTO, TaskOrderDTO} from "@/api/models";
+import { TaskOrderDTO} from "@/api/models";
 import {
   VuexModule,
   Module,
@@ -16,8 +16,6 @@ import storeHelperFunctions, {
   retrieveSession,
 } from "../helpers";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import FinancialDetails from "../financialDetails";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 const ATAT_TASK_ORDER_KEY = "ATAT_TASK_ORDER_KEY";
 

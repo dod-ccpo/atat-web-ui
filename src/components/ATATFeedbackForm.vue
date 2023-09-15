@@ -218,15 +218,15 @@
 /* eslint-disable camelcase */
 
 import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import acquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { Checkbox } from "../../types/Global";
 import { CustomerFeedbackDTO, FeedbackOptionsDTO } from "@/api/models";
 import ATATCheckboxGroup from "./ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import User, { UserStore } from "@/store/user";
+import User from "@/store/user";
 import { scrollToId } from "@/helpers";
 
 @Component({

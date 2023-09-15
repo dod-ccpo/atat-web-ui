@@ -4,7 +4,6 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { DefaultProps } from "vue/types/options";
 import { Checkbox } from "../../types/Global";
-import _ from "lodash";
 Vue.config.productionTip = false;
 Vue.use(Vuetify);
 

@@ -299,7 +299,6 @@ import { lineChartData, lineChartDataSet } from "types/Global";
 
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
 import _ from 'lodash';
-import { getIdText } from "@/helpers";
 import DonutChart from "../components/charts/DonutChart.vue"
 import { getCurrencyString, getLegendAmount, roundDecimal, roundTo100 } from "@/helpers";
 

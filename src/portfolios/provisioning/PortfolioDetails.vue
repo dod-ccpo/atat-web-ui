@@ -75,7 +75,6 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {

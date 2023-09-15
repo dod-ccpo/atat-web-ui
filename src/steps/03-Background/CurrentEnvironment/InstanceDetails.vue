@@ -148,7 +148,6 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
-import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import AdditionalInfo from "@/components/DOW/AdditionalInfo.vue";
 import CurrentUsage from "@/components/DOW/CurrentUsage.vue";

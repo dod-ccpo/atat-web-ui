@@ -6,7 +6,6 @@ import CreateEvalPlan from "@/steps/02-EvaluationCriteria/EvalPlan/CreateEvalPla
 import validators from "@/plugins/validation";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { EvaluationPlanDTO } from "@/api/models";
-import { initial } from "cypress/types/lodash";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 Vue.use(Vuetify);
