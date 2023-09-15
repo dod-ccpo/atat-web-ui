@@ -23,7 +23,8 @@ const actionHandlerNames = {
   writeOwnSoleSourceCause: "writeOwnSoleSourceCause",
   writeOwnMarketResearchDetails: "writeOwnMarketResearchDetails",
   WriteOwnBarriers: "WriteOwnBarriers",
-  startNewPortfolio: "startNewPortfolio"
+  startNewPortfolio: "startNewPortfolio",
+  submitPackage: "submitPackage"
 }
 
 const actions =  {
@@ -41,6 +42,7 @@ const actions =  {
   [actionHandlerNames.WriteOwnBarriers]: WriteOwnBarriers,
   [actionHandlerNames.didNotUseDapps]: didNotUseDapps,
   [actionHandlerNames.startNewPortfolio]: startNewPortfolio,
+  [actionHandlerNames.submitPackage]: submitPackage,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -174,6 +176,22 @@ async function startNewPortfolio(): Promise<void> {
     },
     replace: true
   }).catch(() => console.log("avoiding redundant navigation"));
+}
+
+async function submitPackage(): Promise<void> {
+  await AcquisitionPackage.setValidateNow(true);
+  await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
+    acquisitionPackageSysId: AcquisitionPackage.acquisitionPackage?.sys_id||"",
+    newStatus: "WAITING_FOR_TASK_ORDER"
+  });
+
+  router.push({
+    name: routeNames.UnderReview,
+    params: {
+      direction: "next"
+    },
+    replace: true
+  }).catch(() => console.log("avoiding redundant navigation"));  
 }
 
 export default actionHandler;

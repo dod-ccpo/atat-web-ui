@@ -2387,9 +2387,9 @@ export class SummaryStore extends VuexModule {
       isComplete: boolean
   }): Promise<string>{
     if (funding.request){
-      const hasMIPRNumber = funding.mipr.mipr_number !== ""
-      const hasOrderNumber = funding.fsForm.order_number !== ""
-      const hasGTCNumber = funding.fsForm.gt_c_number !== ""
+      const hasMIPRNumber = funding.mipr?.mipr_number !== ""
+      const hasOrderNumber = funding.fsForm?.order_number !== ""
+      const hasGTCNumber = funding.fsForm?.gt_c_number !== ""
       return funding.request.funding_request_type === "MIPR"
         ? (hasMIPRNumber ? "MIPR: " + funding.mipr.mipr_number  : "")
         : (hasGTCNumber ? "GT&C: " + funding.fsForm.gt_c_number + "<br />" : "")
