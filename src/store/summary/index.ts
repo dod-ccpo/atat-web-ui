@@ -2386,7 +2386,7 @@ export class SummaryStore extends VuexModule {
       mipr: FundingRequestMIPRFormDTO,
       isComplete: boolean
   }): Promise<string>{
-    if (funding.request){
+    if (funding.request && funding.fsForm){
       const hasMIPRNumber = funding.mipr?.mipr_number !== ""
       const hasOrderNumber = funding.fsForm?.order_number !== ""
       const hasGTCNumber = funding.fsForm?.gt_c_number !== ""
@@ -2407,7 +2407,7 @@ export class SummaryStore extends VuexModule {
       mipr: FundingRequestMIPRFormDTO,
       hasFairOpp: boolean
   }): Promise<boolean>{
-    if (funding.request){
+    if (funding.request && funding.fsForm){
       const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
       const hasAppropriationOfFunds = funding.hasFairOpp
         ? funding.request.appropriation_fiscal_year !== "" 
@@ -2434,7 +2434,7 @@ export class SummaryStore extends VuexModule {
       mipr: FundingRequestMIPRFormDTO,
       hasFairOpp: boolean
   }): Promise<boolean>{
-    if (funding.request){
+    if (funding.request && funding.fsForm){
       let hasAppropriationOfFunds = false;
       let isComplete = false;
       if (funding.request.funding_request_type === "FS_FORM"){
