@@ -998,7 +998,7 @@ export default class PortfolioDashboard extends Vue {
     return this.fundingAlertType.length > 0;
   }
 
-  private get fundingAlertType(): string {
+  public get fundingAlertType(): string {
     if (!this.isLoading) {
       if (this.hasExpired) {
         return FundingAlertTypes.POPExpired;
@@ -1607,13 +1607,10 @@ export default class PortfolioDashboard extends Vue {
     // if currentClins is empty i.e. Expired status, this errors. 
     if(data.currentCLINs.length > 0){
       const currentPeriodPrefix = data.currentCLINs[0].clin_number.slice(0,2);
-      console.log(data.currentCLINs[0], 'prefix')
       const nextPeriodNumber = parseInt(currentPeriodPrefix) + 1;
       const nextPeriodPrefix = nextPeriodNumber < 10 
         ? "0" + nextPeriodNumber : String(nextPeriodNumber);
       const nextPeriodCLINsWithOblFunds = data.allCLINs.filter(clin => {
-        console.log(clin)
-        console.log(nextPeriodPrefix)
         return clin.clin_number.indexOf(nextPeriodPrefix) === 0 
           && clin.funds_obligated.toString() !== "0";
       })

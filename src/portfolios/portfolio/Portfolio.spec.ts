@@ -6,7 +6,7 @@ import { DefaultProps } from "vue/types/options";
 import Portfolio from "./Portfolio.vue";
 import ATATCharts from "@/store/charts";
 import dashboardMocks from "@/dashboards/__tests__/dashboardMocks..json";
-import PortfolioStore from "@/store/portfolio";
+import PortfolioStore, { FundingAlertTypes } from "@/store/portfolio";
 import { VMain } from "vuetify/lib";
 
 Vue.use(Vuetify);
@@ -171,6 +171,14 @@ describe("Testing Portfolio", () => {
       expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(0)
       expect(wrapper.vm.$data.estimatedFundsToBeInvoicedPercent).toBe(0)
       expect(wrapper.vm.$data.zeroFundsRemaining).toBe(true)
+    })
+
+    it(`Test fundingAlertType() => FundingAlert zerofundsremaining`, async () =>{
+      await wrapper.setData({
+        isLoading: false,
+        zeroFundsRemaining: true
+      })
+      expect(wrapper.vm.fundingAlertType).toBe(FundingAlertTypes.POPZeroFundsRemaining)
     })
 
   });
