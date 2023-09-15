@@ -81,20 +81,15 @@
               </template>
               <template v-slot:content>
                 <p>
-                  The provisioning process can take up to {{ processLength }}. We’ll 
-                  email you when the process is complete, but you can come back to ATAT 
-                  anytime for an up-to-date status of your portfolio and funding details.
-                </p>
-                <p>
+                  The provisioning process can take up to {{ processLength }}. 
                   Once complete, {{ provisioningData.csp }} will notify your CSP 
                   administrators with instructions for obtaining access to the cloud console.
                 </p>
                 <p>
-                  You will have access to a new portfolio within ATAT. As the portfolio 
-                  manage, you will be able to track cloud usage and manage spending 
-                  throughout the duration of your task order. You can also add additional 
-                  CSP administrators, if you need to grant more people access to your 
-                  cloud console after the initial provisioning process.
+                  You can come back to ATAT anytime for an up-to-date status of 
+                  your portfolio and funding details. As the portfolio owner, you 
+                  can track cloud usage and manage spending throughout the duration 
+                  of your task order.
                 </p>
               </template>
             </ATATExpandableLink>          
