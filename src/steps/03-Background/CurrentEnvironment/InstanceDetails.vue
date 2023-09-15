@@ -401,7 +401,9 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       this.classificationRadioOptions = buildClassificationCheckboxList(
         filteredClassificationObjects, "", false, true, "short"
       );
-
+      if(!envClassificationLevelSysIds.includes(this.instanceData.classification_level)){
+        this.instanceData.classification_level = ""
+      }
       this.setClassificationLabels();
     }   
   }
