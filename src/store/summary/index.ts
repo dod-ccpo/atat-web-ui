@@ -207,7 +207,6 @@ export class SummaryStore extends VuexModule {
 
   @Mutation
   public doRemoveSummaryItem(step:number,subStep:number):void{
-    debugger
     const newSummaryItem = this.summaryItems
       .filter(item => item.step !== step && item.substep !== subStep)
     this.summaryItems = newSummaryItem
@@ -333,7 +332,6 @@ export class SummaryStore extends VuexModule {
     ${organization.city}, ${organization.state} ${organization.zip_code} ${organization?.country}`}
       : {address: "Missing Address"}
     const monitor = {object: organization, keysToIgnore};
-    debugger
     const organizationDetails: SummaryItem = {
       title,
       description,
@@ -1298,7 +1296,7 @@ export class SummaryStore extends VuexModule {
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
-      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
+      || (!!currentContracts && currentContracts.length > 0);
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
