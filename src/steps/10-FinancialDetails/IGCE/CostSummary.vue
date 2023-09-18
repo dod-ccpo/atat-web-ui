@@ -187,7 +187,7 @@ import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { Component } from "vue-property-decorator";
 
-import { getCurrencyString, getIdText, toCurrencyString } from "@/helpers"
+import { getCurrencyString, getIdText } from "@/helpers"
 import acquisitionPackage from "@/store/acquisitionPackage";
 import { api } from "@/api";
 import { CostEstimateDTO } from "@/api/models";

@@ -1,4 +1,4 @@
-import Vue, { computed } from "vue";
+import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";

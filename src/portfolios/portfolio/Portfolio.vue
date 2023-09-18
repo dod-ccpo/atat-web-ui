@@ -833,7 +833,6 @@ import { FundingAlertTypes } from "@/store/portfolio";
 import { createDateStr, toCurrencyString, getCurrencyString, getIdText, roundTo100 } 
   from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
-
 import { add, addDays, isAfter, isThisMonth, startOfMonth, 
   subDays, addMonths, format, differenceInMonths } from "date-fns";
 import parseISO from "date-fns/parseISO";
@@ -850,7 +849,6 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
 import PortfolioStore from "@/store/portfolio";
-import Portfolio from "@/store/portfolio";
 
 @Component({
   components: {

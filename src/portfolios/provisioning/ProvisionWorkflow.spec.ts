@@ -102,9 +102,9 @@ describe("Testing ProvisionWorkflow", () => {
         (portfolio) => Promise.resolve()
       )
       jest.spyOn(api.edaApi, "addTO").mockImplementation(() => 
-      Promise.resolve({success: true})
-    );
-    const mockChangeActive = jest.spyOn(AppSections, "changeActiveSection").mockImplementation();
+        Promise.resolve({success: true})
+      );
+      const mockChangeActive = jest.spyOn(AppSections, "changeActiveSection").mockImplementation();
       await wrapper.setData({TONumber: '10000'}) 
       await wrapper.vm.addTaskorderToPortfolio();
       expect(mockChangeActive).toHaveBeenCalledWith(AppSections.sectionTitles.PortfolioSummary)

@@ -14,7 +14,8 @@ import {
   ContactDTO,
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO, CurrentEnvironmentInstanceDTO,
+  CrossDomainSolutionDTO,
+  CurrentEnvironmentInstanceDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
   FundingRequestDTO,
@@ -587,7 +588,7 @@ export class SummaryStore extends VuexModule {
     const hasProposedCSP = fairOpp.proposed_csp !== "";
     const hasJustification = fairOpp.justification !== "";
     const hasMinGovtRequirements = fairOpp.min_govt_requirements !== ""
-      && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
+      && fairOpp.min_govt_requirements !== "The cloud service offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
     return (hasNoFairOpp) ||
       (hasProposedCSP
@@ -1297,7 +1298,7 @@ export class SummaryStore extends VuexModule {
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
-      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
+      || (!!currentContracts && currentContracts.length > 0);
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 

@@ -6,7 +6,6 @@ import Vue from "vue";
 import validators from "../../../../plugins/validation";
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { RadioButton } from "types/Global";
 
 describe("Testing CurrentContractOptions Component", () => {
@@ -40,7 +39,7 @@ describe("Testing CurrentContractOptions Component", () => {
           ((cco: RadioButton) => {
             return cco.label.length > 4
           }
-        ));
+          ));
         expect(expectedLabelsIfIsWizard).toBe(true)
       })
 
@@ -54,7 +53,7 @@ describe("Testing CurrentContractOptions Component", () => {
           ((cco: RadioButton) => {
             return cco.label.length <= 4
           }
-        ));
+          ));
         expect(expectedLabelsIfIsWizard).toBe(true)
       })
     })
