@@ -10,7 +10,8 @@ describe("Test suite: Set Lump SumS: Lowest Risk", () => {
 
   const pt = "TC-Step-2-FairOpp-None-LowestRisk-" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-lowestRisk" + randomString(5);
-  const descriptionText = "Purchase a set lump sum dollar amount from one CSP; award will be made to the “LOWEST_RISK” solution.";
+  const descriptionText = "Purchase a set lump sum dollar amount from one CSP;"+
+  " award will be made to the “LOWEST_RISK” solution.";
 
   before(() => {
     cy.selectNoneOption(pt, scope);
@@ -25,20 +26,21 @@ describe("Test suite: Set Lump SumS: Lowest Risk", () => {
     cy.clickContinueButton(
       ep.addAnotherCustomCS,
       "Your Evaluation Criteria Summary"
-      ); 
+    ); 
   });
 
   it("TC2: Navigation-Evaluation criteria", () => {      
     cy.clickAndWaitForElementExists(fo.evalPlanCompleteBtn, ep.setLumpSum); 
     cy.radioBtn(ep.setLumpSum, "SET_LUMP_SUM").should("be.checked");
     cy.radioBtn(ep.lowestRiskRadioBtn, "LOWEST_RISK").should("be.checked");
-    cy.clickContinueButton(ep.bestUseRadioBtn,"Now let’s review assessment criteria required for white papers"); 
+    cy.clickContinueButton(
+      ep.bestUseRadioBtn,"Now let’s review assessment criteria required for white papers"); 
     cy.verifySelectedCheckBoxOption(ep.activeSumCheckBoxes)
     cy.findElement(ep.noOtherBtn).scrollIntoView();
     cy.clickContinueButton(
       ep.addAnotherCustomCS,
       "Your Evaluation Criteria Summary"
-      );       
+    );       
     cy.verifyTextMatches(fo.evalPlanDesriptionText,descriptionText);
   });
 
