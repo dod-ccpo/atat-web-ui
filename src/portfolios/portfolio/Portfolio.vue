@@ -418,6 +418,20 @@
                       :fundingAlertType="fundingAlertType"
                       v-if="arePoPFundsDelinquent"
                     />
+                    <ATATAlert
+                    id="ZeroRemainingFunds"
+                    type="error"
+                    class="my-5"
+                    v-if="zeroFundsRemaining"
+                    >
+                      <template v-slot:content>
+                      <p class="mb-0">
+                        You have <span class="font-weight-bold">0%</span> remaining in your
+                        portfolio for this period of performance. Add funds to a new or existing
+                        task order as soon as possible to continue working with this portfolio.
+                      </p>
+                    </template>
+                  </ATATAlert>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
                         <DonutChart
@@ -819,7 +833,6 @@ import { FundingAlertTypes } from "@/store/portfolio";
 import { createDateStr, toCurrencyString, getCurrencyString, getIdText, roundTo100 } 
   from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
-
 import { add, addDays, isAfter, isThisMonth, startOfMonth, 
   subDays, addMonths, format, differenceInMonths } from "date-fns";
 import parseISO from "date-fns/parseISO";
@@ -836,7 +849,6 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
 import PortfolioStore from "@/store/portfolio";
-import Portfolio from "@/store/portfolio";
 
 @Component({
   components: {
@@ -871,6 +883,7 @@ export default class PortfolioDashboard extends Vue {
   public availableFunds = 0;
   public fundsSpentPercent = 0;
   public fundsSpentPercentForArcChart = 0;
+  public zeroFundsRemaining = false;
 
   public currentPoPStartStr = "";
   public currentPoPStartISO = "";
@@ -1137,26 +1150,33 @@ export default class PortfolioDashboard extends Vue {
       clinCosts[clinNo] = clinValues;
     });
 
-    if (uniqueClinNumbersInCostsData.length && this.endOfMonthForecast) {
-      this.estimatedFundsToBeInvoicedPercent =
-        (this.endOfMonthForecast / this.totalPortfolioFunds) * 100;
-
-      this.estimatedRemainingPercent = this.fundsSpentPercent < 100
-        ? 100 - this.fundsSpentPercent - this.estimatedFundsToBeInvoicedPercent
-        : 0;
-    } else if (uniqueClinNumbersInCostsData.length && this.monthsInPoP) {
-      this.estimatedFundsToBeInvoicedPercent = 1 / this.monthsInPoP * 100;
-      this.estimatedRemainingPercent = 100 - this.estimatedFundsToBeInvoicedPercent;
-    } else {
-      this.estimatedFundsToBeInvoicedPercent = 0;
-      this.estimatedRemainingPercent = 0;
-    }
-
     let estimatedFundsToBeInvoiced = this.endOfMonthForecast
       ? this.endOfMonthForecast
       : this.totalPortfolioFunds / this.monthsInPoP;
 
-    let estimatedAvailable = (this.totalPortfolioFunds * this.estimatedRemainingPercent) / 100;
+    if (uniqueClinNumbersInCostsData.length && this.endOfMonthForecast) {
+      this.estimatedFundsToBeInvoicedPercent =
+        (this.endOfMonthForecast / this.totalPortfolioFunds) * 100;
+      this.estimatedRemainingPercent = this.fundsSpentPercent < 100
+        ? 100 - this.fundsSpentPercent - this.estimatedFundsToBeInvoicedPercent
+        : 0;
+    } else if(this.fundsSpentPercent === 100) {
+      this.estimatedFundsToBeInvoicedPercent = 0;
+      estimatedFundsToBeInvoiced = 0;
+      this.estimatedRemainingPercent = 0;
+      this.zeroFundsRemaining = true;
+    } else if (uniqueClinNumbersInCostsData.length && this.monthsInPoP) {
+      this.estimatedFundsToBeInvoicedPercent = 1 / this.monthsInPoP * 100;
+      this.estimatedRemainingPercent = 100 - (
+        this.estimatedFundsToBeInvoicedPercent + this.fundsSpentPercent
+      );
+    }
+
+
+
+    let estimatedAvailable = this.totalPortfolioFunds  - (
+      estimatedFundsToBeInvoiced + this.fundsSpent
+    )
     if (this.costs.length === 0) {
       estimatedAvailable = this.totalPortfolioFunds;
       this.estimatedRemainingPercent = 100;
@@ -1625,7 +1645,6 @@ export default class PortfolioDashboard extends Vue {
       amount: this.getCurrencyString(this.availableFunds),
       legend: "Funds Available",
     };
-
     this.fundsSpentPercent = (this.fundsSpent / this.totalPortfolioFunds) * 100;
 
     if (!isNaN(this.fundsSpentPercent)) {

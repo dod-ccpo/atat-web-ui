@@ -97,7 +97,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
 
 export default class MinimumRequirements extends Mixins(SaveOnLeave) {
   public suggestedText =
-    "The cloud offerings must continue at their current level in order to support...\n\n" +
+    "The cloud service offerings must continue at their current level in order to support...\n\n" +
     "These offerings include..."
   public minGovReqExplanation = this.suggestedText;
   public showRestoreModal = false;

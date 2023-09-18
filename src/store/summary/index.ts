@@ -588,7 +588,7 @@ export class SummaryStore extends VuexModule {
     const hasProposedCSP = fairOpp.proposed_csp !== "";
     const hasJustification = fairOpp.justification !== "";
     const hasMinGovtRequirements = fairOpp.min_govt_requirements !== ""
-      && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
+      && fairOpp.min_govt_requirements !== "The cloud service offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
     return (hasNoFairOpp) ||
       (hasProposedCSP
@@ -1307,9 +1307,7 @@ export class SummaryStore extends VuexModule {
     const prevContracts = currentContracts?.length === 1
       ? `${currentContracts?.length} previous contract:\n${contractNumbers}`
       : `${currentContracts?.length} previous contracts:\n${contractNumbers}`
-
-    const description = isTouched && currentContracts && currentContracts.length > 0
-      && currentContracts[0].contract_number ?
+    const description = isTouched && currentContracts && currentContracts.length > 0?
       hasCurrentOrPreviousContract === "YES"
         ? prevContracts
         : "No previous contracts"
