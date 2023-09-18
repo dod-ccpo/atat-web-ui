@@ -4,7 +4,6 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import TravelEstimates from "@/steps/10-FinancialDetails/IGCE/TravelEstimates.vue";
 import validators from "@/plugins/validation";
-import IGCEStore from "@/store/IGCE";
 Vue.use(Vuetify);
 
 describe("Testing TravelEstimates Component", () => {

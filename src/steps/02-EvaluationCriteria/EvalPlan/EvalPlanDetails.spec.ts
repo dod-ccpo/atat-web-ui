@@ -4,7 +4,6 @@ import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import EvalPlanDetails from "@/steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.vue";
 import validators from "@/plugins/validation";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
 import { Checkbox } from "types/Global";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";

@@ -36,7 +36,6 @@
   </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
 
 import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";

@@ -220,19 +220,16 @@ import AnticipatedDurationandUsage from "@/components/DOW/AnticipatedDurationand
 import InstanceConfig from "@/components/DOW/InstanceConfig.vue";
 import PerformanceTier from "@/components/DOW/PerformanceTier.vue";
 
-import Toast from "@/store/toast";
 
 import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import _ from "lodash";
 
 import { 
   Checkbox, 
   OtherServiceOfferingData,
   RadioButton,
   SelectData,
-  ToastObj,
 } from "../../../../types/Global";
 
 import ClassificationRequirements from "@/store/classificationRequirements";
@@ -246,7 +243,6 @@ import {
   buildClassificationCheckboxList, 
   buildClassificationLabel,
   createPeriodCheckboxItems,
-  setItemToPlural,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {
