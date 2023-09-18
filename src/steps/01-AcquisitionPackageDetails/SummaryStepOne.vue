@@ -12,7 +12,9 @@
         </div>
 
         <ATATSummaryItems
-          :summaryItems = summaryItems>
+          :summaryItems = summaryItems
+          @deleteAcor="deleteAcor"
+        >
         </ATATSummaryItems>
       </v-col>
     </v-row>
@@ -59,7 +61,9 @@ export default class SummaryStepOne extends Mixins(SaveOnLeave){
     this.summaryItems = await getSummaryItemsforStep(1);
     await Summary.toggleButtonColor(1);
   }
-
+  public async deleteAcor(): Promise<void>{
+    Summary.removeSummaryItem(1,5)
+  }
 
   protected async saveOnLeave(): Promise<boolean> {
     await Summary.toggleButtonColor(-1);

@@ -40,12 +40,10 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
 
 import { Component, Mixins } from "vue-property-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
-import { AttachmentTables } from "@/api";
-import { AttachmentDTO, FundingRequestMIPRFormDTO } from "@/api/models";
+import { FundingRequestMIPRFormDTO } from "@/api/models";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
 import { invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";

@@ -122,7 +122,6 @@ import AddMembersModalLearnMore from "./AddMembersModalLearnMore.vue"
 import { Portfolio, SelectData, User } from "../../../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 
-import _ from "lodash";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import UserManagement from "@/store/user/userManagement";
 import portfolio from "@/store/portfolio";

@@ -4,7 +4,7 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
 import JWCC from "@/dashboards/JWCC.vue";
 import api from "@/api"
-import { AggregateResults, DashboardService } from "@/services/dashboards";
+import { AggregateResults } from "@/services/dashboards";
 Vue.use(Vuetify);
 
 describe("Testing JWCC Component", () => {

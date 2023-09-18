@@ -51,9 +51,7 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
     if(response.status !== 201){
       throw new Error(response.statusText);
     }
-    return response.data.result as AttachmentDTO;
-          
-    
+    return (await this.assignDownloadLink([response.data.result as AttachmentDTO]))[0]
   }
 
   public async getAttachments(table_sys_id: string): Promise<AttachmentDTO[]>{
@@ -66,7 +64,21 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
       }
     }
     const attachments = this.getQuery(config);
-    
+    return attachments;
+  }
+
+  /**
+ * 
+ * @param attachments 
+ * @returns attachmentsDTO[] with updated download_link
+ */
+  public async assignDownloadLink(attachments: AttachmentDTO[]): Promise<AttachmentDTO[]> {
+    const BASE_API_URL = process.env.VUE_APP_BASE_API_URL;
+    const baseURL = BASE_API_URL?.substring(0, BASE_API_URL.indexOf("/api"));
+    attachments.forEach(
+      // eslint-disable-next-line camelcase 
+      a => a.download_link = baseURL + "/sys_attachment.do?sys_id=" + a.sys_id 
+    )
     return attachments;
   }
 

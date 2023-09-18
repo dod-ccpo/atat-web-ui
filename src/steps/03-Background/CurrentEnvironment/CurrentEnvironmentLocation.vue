@@ -66,8 +66,7 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { EnvironmentLocation, RadioButton, ToastObj } from "../../../../types/Global";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { CurrentEnvironmentDTO, CurrentEnvironmentInstanceDTO } from "@/api/models";
+import { CurrentEnvironmentInstanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";

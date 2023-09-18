@@ -81,7 +81,6 @@ import SlideOut_GatherPricesEstimates from
   "@/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.vue";
 import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Requirement.vue";
 import IGCE from "@/store/IGCE";
-import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CrossDomainSolutionDTO, IgceEstimateDTO, ReferenceColumn } from "@/api/models";

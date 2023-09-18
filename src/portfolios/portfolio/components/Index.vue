@@ -89,7 +89,7 @@ import Provisioned from "@/portfolios/provisioning/Provisioned.vue";
 import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
-import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
+import { Statuses } from "@/store/acquisitionPackage";
 import _ from "lodash";
 
 @Component({

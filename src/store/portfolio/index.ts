@@ -5,7 +5,6 @@ import rootStore from "../index";
 import {
   Environment,
   FilterOption,
-  MemberInvites,
   Operator,
   Portfolio,
   PortfolioCardData,
@@ -14,7 +13,7 @@ import {
   User,
 } from "../../../types/Global"
 
-import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AlertDTO,
   EnvironmentDTO, OperatorDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
@@ -190,7 +189,7 @@ export class PortfolioDataStore extends VuexModule {
         }
       });
       response.forEach(obj => {
-        let csp: CSPProvisioningData = { 
+        const csp: CSPProvisioningData = { 
           name: obj.name, 
           classification_level: obj.classification_level,
           cloud_distinguisher: {} 
@@ -781,8 +780,8 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   public async inviteMembers(newMembers: User[]): Promise<void> {
-    let managersList = this.currentPortfolio.portfolio_managers?.split(",") ?? [];
-    let viewersList = this.currentPortfolio.portfolio_viewers?.split(",") ?? [];
+    const managersList = this.currentPortfolio.portfolio_managers?.split(",") ?? [];
+    const viewersList = this.currentPortfolio.portfolio_viewers?.split(",") ?? [];
 
     newMembers.forEach(newMember => {
       if (newMember.role === "Manager") {
@@ -821,7 +820,7 @@ export class PortfolioDataStore extends VuexModule {
           sysparm_query: "^environmentIN" + environment.sys_id
         }
       };
-      let allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
+      const allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
         queryForAllOperatorsOfPortfolio
       );
       allOperatorsOfPortfolioEnv.forEach(async (operator: OperatorDTO): Promise<void> => {

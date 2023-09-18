@@ -274,4 +274,49 @@ describe("Testing index Component", () => {
       expect(actualStatus).toBe('Active')
     });
 
+  it("filteredPortfolios() => All Home View",
+    async () => {
+      const tab = 'ALL';
+      await wrapper.setData({activeTab: tab})
+      const portfolioStatuses = wrapper.vm.filteredPortfolios()
+      expect(portfolioStatuses).toStrictEqual(["ACTIVE", "PROCESSING", "PROVISIONING_ISSUE"])
+    });
+
+  it("filteredPortfolios() => All not home",
+    async () => {
+      const tab = 'ALL';
+      await wrapper.setData({activeTab: tab, isHomeView: false})
+      const portfolioStatuses = wrapper.vm.filteredPortfolios()
+      expect(portfolioStatuses).toStrictEqual([
+        "ACTIVE", 
+        "PROCESSING", 
+        "PROVISIONING_ISSUE", 
+        "ARCHIVED"
+      ])
+    });
+
+  it("filteredPortfolios() => Active",
+    async () => {
+      const tab = 'ACTIVE';
+      await wrapper.setData({activeTab: tab})
+      const portfolioStatuses = wrapper.vm.filteredPortfolios()
+      expect(portfolioStatuses).toStrictEqual(["ACTIVE"])
+    });
+
+  it("filteredPortfolios() => Processing",
+    async () => {
+      const tab = 'PROCESSING';
+      await wrapper.setData({activeTab: tab})
+      const portfolioStatuses = wrapper.vm.filteredPortfolios()
+      expect(portfolioStatuses).toStrictEqual(["PROCESSING"])
+    });
+
+  it("filteredPortfolios() => Archived",
+    async () => {
+      const tab = 'ARCHIVED';
+      await wrapper.setData({activeTab: tab})
+      const portfolioStatuses = wrapper.vm.filteredPortfolios()
+      expect(portfolioStatuses).toStrictEqual(["ARCHIVED"])
+    });
+
 });
