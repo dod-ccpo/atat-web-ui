@@ -3,7 +3,6 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import ATATFileList from "@/components/ATATFileList.vue";
-import { createImportSpecifier } from "typescript";
 Vue.use(Vuetify);
 
 const validFiles = [

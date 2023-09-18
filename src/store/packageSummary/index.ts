@@ -8,8 +8,6 @@ import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decor
 import rootStore from "@/store";
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
-import { flatMap } from "lodash";
-import { isTemplateElement } from "@babel/types";
 
 // const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 

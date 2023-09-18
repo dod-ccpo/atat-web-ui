@@ -155,10 +155,8 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
-import Vue from "vue";
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
-import CurrentContract from "./CurrentContract.vue";
 import { CurrentContractDTO } from "@/api/models";
 import { formatDate, getIdText } from "@/helpers";
 import { routeNames } from "@/router/stepper";

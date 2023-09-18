@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
