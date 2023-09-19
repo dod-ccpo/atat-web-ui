@@ -89,7 +89,7 @@
 <script lang="ts">
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Vue from "vue";
-import { add, format, formatISO, isValid, parseISO } from "date-fns";
+import { add, format, formatISO, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";

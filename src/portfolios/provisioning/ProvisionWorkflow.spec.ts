@@ -88,8 +88,9 @@ describe("Testing ProvisionWorkflow", () => {
         activeSection: "ProvisionWorkflow",
         sectionTitles: {}
       });
+      await PortfolioStore.setCurrentPortfolio({sysId: '1234'})
       jest.spyOn(Steps, 'getNext').mockResolvedValue('next')
-      PortfolioStore.setProvisioningTOFollowOn(true)
+      await PortfolioStore.setProvisioningTOFollowOn(true)
       await wrapper.setData({altBackDestination: AppSections.sectionTitles.Portfolios})
       await wrapper.vm.navigate('next')
       expect(wrapper.vm.$data.showTOConfirmModal).toBe(true)
@@ -101,9 +102,9 @@ describe("Testing ProvisionWorkflow", () => {
         (portfolio) => Promise.resolve()
       )
       jest.spyOn(api.edaApi, "addTO").mockImplementation(() => 
-      Promise.resolve({success: true})
-    );
-    const mockChangeActive = jest.spyOn(AppSections, "changeActiveSection").mockImplementation();
+        Promise.resolve({success: true})
+      );
+      const mockChangeActive = jest.spyOn(AppSections, "changeActiveSection").mockImplementation();
       await wrapper.setData({TONumber: '10000'}) 
       await wrapper.vm.addTaskorderToPortfolio();
       expect(mockChangeActive).toHaveBeenCalledWith(AppSections.sectionTitles.PortfolioSummary)

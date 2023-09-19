@@ -7,7 +7,7 @@ import Vuex from "vuex";
 import CurrentContractDetails 
   from "@/steps/03-Background/CurrentContract/CurrentContractDetails.vue";
 import validators from "../../../plugins/validation";
-import AcquisitionPackage, { StoreProperties }
+import AcquisitionPackage
   from "@/store/acquisitionPackage";
 import { CurrentContractDTO } from "@/api/models";
 
@@ -174,7 +174,7 @@ describe("Testing CurrentContractDetails Component", () => {
     it("currentData() => returns currentContract obj", async () => {
       wrapper.setData(
         {currentContract: isCurrent.currentContract
-      });
+        });
       expect(wrapper.vm.currentData)
         .toEqual(wrapper.vm.$data.currentContract);
     })

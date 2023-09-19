@@ -20,19 +20,54 @@ import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Summary, { isStepTouched } from "@/store/summary";
+import PortfolioSummary from "@/store/portfolioSummary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
     ? routeNames.DAPPSChecklist 
     : routeNames.ContractingShop;
 };
+export const ContractingShopRouteResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
+  return (current === routeNames.DAPPSChecklist)
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ContractingShop
+    :routeNames.SummaryStepOne
+}
+export const ProjectOverviewResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
+  return (current === routeNames.ContractingOfficeInfo||current === routeNames.ContractingShop)
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ProjectOverview
+    :routeNames.SummaryStepOne
+}
+
+export const OrganizationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ProjectOverview
+    ? routeNames.SummaryStepOne
+    : routeNames.OrganizationInfo
+}
+
+export const ContactInformationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.OrganizationInfo
+    ? routeNames.SummaryStepOne
+    : routeNames.ContactInformation
+}
+export const CorInformationResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.ContactInformation
+    ? routeNames.SummaryStepOne
+    : routeNames.CorInformation
+}
+export const ACorInformationQuestionResolver = (current: string): string => {
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.CorInformation
+    ? routeNames.SummaryStepOne
+    : routeNames.AlternateCor
+}
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
 
   //routing from alternate cor and the user does not have an ACOR
   if (current === routeNames.AlternateCor && hasAlternativeContactRep === false) {
-    return ExceptionToFairOpportunityResolver(current);
+    return routeNames.SummaryStepOne;
   }
 
   //routing from summary and user does not have ACOR
@@ -67,7 +102,7 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 }
 
 export const ExceptionToFairOpportunityResolver = (current:string): string =>{
-  const isFromStepOne = 
+  const isFromStepOne =
     [routeNames.AcorInformation, routeNames.AlternateCor].includes(current)
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
   return isFromStepOne
@@ -128,7 +163,7 @@ export const SummaryStepTwoRouteResolver = (current: string): string =>{
 
 export const ProposedCSPRouteResolver = (current: string): string => {
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
-  return current === routeNames.Exceptions && evalPlanRequired() 
+  return current === routeNames.Exceptions && evalPlanRequired()
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.CreateEvalPlan
     : routeNames.ProposedCSP
 };
@@ -444,6 +479,7 @@ export const A11yRequirementResolver = (current: string): string => {
 
 
 export const ContractingInfoResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
   const needsContractInformation =
       AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
 
@@ -451,7 +487,8 @@ export const ContractingInfoResolver = (current: string): string => {
     return routeNames.ContractingOfficeInfo;
   }
   return current === routeNames.ContractingShop 
-    ? routeNames.ProjectOverview : routeNames.ContractingShop;
+    ? routeNames.ProjectOverview
+    : routeNames.SummaryStepOne;
 };
 
 /****************************************************************************/
@@ -1553,6 +1590,8 @@ export const AppropriationOfFundsResolver = (current: string): string => {
   
   if (hasExceptionToFairOpp()){
     return routeNames.AppropriationOfFunds
+  } else if (evalPlanRequired()){
+    return SeverabilityAndIncrementalFundingResolver(current);
   }
   
   return current === routeNames.SeverabilityAndIncrementalFunding
@@ -1717,6 +1756,28 @@ const hasILs = (): boolean => {
   return PortfolioStore.CSPHasImpactLevels;
 }
 
+const userHasActivePortfolios = (): boolean => {
+  return PortfolioSummary.hasActivePortfolios;
+}
+
+export const AddToExistingPortfolioResolver = (current: string): string => {
+  const hasActivePortfolios: boolean = userHasActivePortfolios();
+  // moving backward
+  if (current === provWorkflowRouteNames.GeneratedFromPackage 
+    || current === provWorkflowRouteNames.PortfolioDetails
+  ) {
+    return hasActivePortfolios 
+      ? provWorkflowRouteNames.AddToExistingPortfolio
+      : provWorkflowRouteNames.AwardedTaskOrder
+  } 
+  // moving forward
+  if (hasActivePortfolios) {
+    return provWorkflowRouteNames.AddToExistingPortfolio;
+  }
+
+  return GeneratedFromPackageRouteResolver(current);
+}
+
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
   const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
@@ -1725,11 +1786,15 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
     return provWorkflowRouteNames.GeneratedFromPackage;
   }
   if (current !== provWorkflowRouteNames.PortfolioDetails && acqPkgSysId && !hasILs()) {
-    return provWorkflowRouteNames.AddCSPAdmin
+    return provWorkflowRouteNames.AddCSPAdmin;
   }
-  return current === provWorkflowRouteNames.PortfolioDetails
-    ? provWorkflowRouteNames.AwardedTaskOrder
-    : provWorkflowRouteNames.PortfolioDetails;
+
+  if (current === provWorkflowRouteNames.PortfolioDetails) {
+    return userHasActivePortfolios() 
+      ? provWorkflowRouteNames.AddToExistingPortfolio 
+      : provWorkflowRouteNames.AwardedTaskOrder
+  }
+  return provWorkflowRouteNames.PortfolioDetails;
 }
 
 export const PortfolioDetailsRouteResolver = (current: string): string => {
@@ -1738,16 +1803,26 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
     return provWorkflowRouteNames.PortfolioDetails;
   }
   if (current === provWorkflowRouteNames.AddCSPAdmin && !acqPkgSysId && !hasILs()) {
-    return provWorkflowRouteNames.AwardedTaskOrder;
+    return userHasActivePortfolios()
+      ? provWorkflowRouteNames.AddToExistingPortfolio
+      : provWorkflowRouteNames.AwardedTaskOrder;
   }
   return current === provWorkflowRouteNames.GeneratedFromPackage
+    || provWorkflowRouteNames.AddToExistingPortfolio
     ? provWorkflowRouteNames.AddCSPAdmin
     : provWorkflowRouteNames.GeneratedFromPackage;
 }
 
+
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   showDITCOPageResolver,
+  ContractingShopRouteResolver,
+  ProjectOverviewResolver,
+  OrganizationResolver,
+  ContactInformationResolver,
+  CorInformationResolver,
+  ACorInformationQuestionResolver,
   AcorsRouteResolver,
   ArchitecturalDesignResolver,
   ArchitecturalDesignDetailsResolver,
@@ -1791,6 +1866,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   CrossDomainResolver,
   AnticipatedUserAndDataNeedsResolver,
   GeneratedFromPackageRouteResolver,
+  AddToExistingPortfolioResolver,
   ContractingInfoResolver,
   SummaryStepThreeRouteResolver,
   PortfolioDetailsRouteResolver,

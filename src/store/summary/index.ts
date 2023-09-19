@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import {
@@ -14,14 +15,16 @@ import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CrossDomainSolutionDTO,
+  CurrentEnvironmentInstanceDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
   FundingRequestDTO,
   FundingRequestFSFormDTO,
   FundingRequestMIPRFormDTO,
-  FundingRequirementDTO,
+  FundingRequirementDTO, OrganizationDTO,
   PeriodDTO,
   PeriodOfPerformanceDTO,
+  ReferenceColumn,
   RequirementsCostEstimateDTO,
   SelectedClassificationLevelDTO,
   SensitiveInformationDTO,
@@ -31,7 +34,7 @@ import {
   convertStringArrayToCommaList, 
   toTitleCase, 
   buildClassificationLabel, 
-  toCurrencyString 
+  toCurrencyString,
 } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
@@ -43,6 +46,7 @@ import IGCE  from "../IGCE";
 import Attachments from "../attachments";
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { finished } from "stream";
+import OrganizationData from "@/store/organizationData";
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
   await validateStep(stepNumber);
@@ -112,6 +116,9 @@ export const onlyOneClassification = (classifications: SelectedClassificationLev
 
 export const validateStep = async(stepNumber: number): Promise<void> =>{
   switch(stepNumber){
+  case 1:
+    await Summary.validateStepOne();
+    break;
   case 2:
     await Summary.validateStepTwo();
     break;
@@ -173,6 +180,8 @@ export class SummaryStore extends VuexModule {
     description: "",
     isComplete: false,
     isTouched: false,
+    hasDelete:false,
+    hasShowMore:false,
     routeName: "",
     step: 0,
     substep: 0
@@ -193,6 +202,19 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError:true})
+  public removeSummaryItem(step: number, subStep: number):void{
+    this.doRemoveSummaryItem(step,subStep);
+  }
+
+  @Mutation
+  public doRemoveSummaryItem(step:number,subStep:number):void{
+
+    const newSummaryItem = this.summaryItems
+      .filter(item => item.step !== step && item.substep !== subStep)
+    this.summaryItems = newSummaryItem
+  }
+
+  @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
     const color = stepNumber > 0
       ? isStepComplete(stepNumber) ? "primary" : "secondary"
@@ -200,13 +222,276 @@ export class SummaryStore extends VuexModule {
     await AcquisitionPackage.setContinueButtonColor(color);
   }
 
+  //#region STEP 1
+  /*
+   * assess all substeps in Step 1 to determine
+   * if substep is touched and/or completed
+   */
+  @Action({rawError: true})
+  public async validateStepOne(): Promise<void> {
+    await this.assessAcquisitionDetails();
+    await this.assessOrganizationDetails();
+    await this.assessPrimaryPOC();
+    await this.assessCOR();
+    if(AcquisitionPackage.hasAlternativeContactRep){
+      await this.assessACOR()
+    }
+  }
+  @Action({rawError: true})
+  public async assessAcquisitionDetails(): Promise<void>{
+    const projectOverview = AcquisitionPackage?.projectOverview;
+
+    let title = "Acquisition Details";
+    let description = "";
+    const isTouched = projectOverview ? !!projectOverview.title : false;
+    let isComplete = false;
+
+    if (projectOverview && isTouched) {
+      const processingOffice = AcquisitionPackage.contractingShop === "DITCO" ? "DITCO"
+        : "An external contracting office";
+      description = `${processingOffice} will process this JWCC task order.`;
+      title = projectOverview.title;
+
+      const isCompleteWithoutCjadc2 = !!projectOverview.title
+        && !!projectOverview.scope && !!projectOverview.emergency_declaration
+        && !!projectOverview.cjadc2 && !!projectOverview.project_disclaimer;
+
+      isComplete = projectOverview.cjadc2 === "YES"
+        ? isCompleteWithoutCjadc2 && !!projectOverview.cjadc2_percentage
+        : isCompleteWithoutCjadc2;
+    }
+
+    const AcquisitionDetail: SummaryItem = {
+      title,
+      description,
+      isComplete,
+      isTouched,
+      hasDelete:false,
+      hasShowMore:false,
+      routeName: "ContractingShop",
+      step: 1,
+      substep: 1
+    }
+    await this.doSetSummaryItem(AcquisitionDetail);
+  }
+  @Action({rawError: true})
+  public async assessOrganizationDetails(): Promise<void>{
+    const organization = AcquisitionPackage?.organization as OrganizationDTO;
+    let organizationKeys:string[] = []
+    if(organization){
+      organizationKeys = Object.keys(organization)
+    }
+    const agencies = OrganizationData.agency_data
+    const disaAgency = OrganizationData.disa_org_data
+    let title = "Your Organization";
+    const disa = typeof organization?.disa_organization_reference === "object"?
+        (organization?.disa_organization_reference as ReferenceColumn).value as string
+      : organization?.disa_organization_reference as string;
+    const agency =  typeof organization?.agency === "object"?
+        (organization?.agency as ReferenceColumn).value as string
+      : organization?.agency as string;
+    if(agency && agencies){
+      const orgAgency = agencies.filter(item=> item.sys_id === agency)
+      if(orgAgency.length > 0){
+        title = orgAgency[0].label
+      }
+    }
+    let disaDescription =""
+    if(disa && disaAgency){
+      const disaAgencyName = disaAgency.filter(item=> item.sys_id === disa)
+      disaDescription = disaAgencyName[0].full_name
+    }
+    let description = "";
+    if (organization?.dodaac && disaDescription) {
+      description = `${disaDescription} (${organization.dodaac})`
+    }else if(disaDescription) {
+      description = `${disaDescription}`
+    }else if(organization?.dodaac && !disaDescription) {
+      description = `${organization.organization_name} (${organization.dodaac})`
+    }else{
+      description = `${organization?.organization_name} `
+    }
+
+    const orgnameKey =
+        organization.disa_organization_reference?"disa_organization_reference":"organization_name"
+
+    const foreignKeys =
+        // eslint-disable-next-line max-len
+        [orgnameKey,"agency", "dodaac","street_address_1","city","zip_code","country","state"]
+    const civilKeys =
+        // eslint-disable-next-line max-len
+        [orgnameKey,"agency", "dodaac","street_address_1","city","state","zip_code"]
+    const keysToIgnore = organization?.address_type === "FOREIGN"?
+      organizationKeys.filter(
+        x => foreignKeys.indexOf(x) === -1
+      ): organizationKeys.filter(
+        x => civilKeys.indexOf(x) === -1)
+    const isTouched = !!organization?.agency || !!organization?.organization_name
+      || !!organization?.dodaac || !!organization?.address_type;
+    const hasCompleteAddress = organization?.street_address_1
+        && organization.city && organization.state && organization.zip_code
+    const showMoreData = hasCompleteAddress?{address: `${organization.street_address_1} 
+    ${organization.city}, ${organization.state} ${organization.zip_code} ${organization?.country}`}
+      : {address: "Missing Address"}
+    const monitor = {object: organization, keysToIgnore};
+    const organizationDetails: SummaryItem = {
+      title,
+      description,
+      isTouched,
+      isComplete: await this.isComplete(monitor),
+      hasDelete:false,
+      hasShowMore:true,
+      showMoreData,
+      routeName: "OrganizationInfo",
+      step:1,
+      substep: 2
+    }
+    await this.doSetSummaryItem(organizationDetails);
+  }
+  @Action({rawError: true})
+  public async assessPrimaryPOC(): Promise<void>{
+    const contactInfo = AcquisitionPackage.contactInfo as ContactDTO
+    let contactInfoKeys:string[] = []
+    let keysToIgnore:string[] =[]
+    let showMoreData:Record<string, string> = {}
+    let title = "Primary Point of Contact"
+    if(contactInfo){
+      contactInfoKeys = Object.keys(contactInfo)
+      const civilianKeys = ["role","first_name","last_name","phone","email","title"]
+      const militaryKeys =
+          ["role","first_name","last_name","rank_components","phone","email","title"]
+      keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
+        x => militaryKeys.indexOf(x) === -1
+      ): contactInfoKeys.filter(
+        x => civilianKeys.indexOf(x) === -1)
+
+      const salutation = contactInfo.salutation
+      showMoreData = {
+        address:"",
+        email:contactInfo.email || "Missing email address",
+        phone:contactInfo.phone || "Missing phone number",
+        title:contactInfo.title || "Missing job title",
+        role:contactInfo.role || "Missing role"
+      }
+      title =contactInfo.first_name && contactInfo.last_name?
+        `${contactInfo.first_name} ${contactInfo.last_name}`
+        : "Primary Point of Contact"
+    }
+    
+    const monitor = {object: contactInfo, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
+    const PrimaryPOC: SummaryItem = {
+      title,
+      description: "Primary Point of Contact",
+      isComplete: await this.isComplete(monitor),
+      isTouched,
+      hasDelete:false,
+      hasShowMore:true,
+      showMoreData,
+      routeName: "ContactInformation",
+      step:1,
+      substep: 3
+    }
+    await this.doSetSummaryItem(PrimaryPOC)
+  }
+  @Action({rawError: true})
+  public async assessCOR(): Promise<void>{
+    const contactInfo = AcquisitionPackage.corInfo as ContactDTO
+    let contactInfoKeys:string[] = []
+    let showMoreData:Record<string, string> = {}
+    let keysToIgnore:string[] =[]
+    let title = "Contracting Officer's Representative"
+    if(contactInfo){
+      contactInfoKeys = Object.keys(contactInfo)
+      const civilianKeys = ["role","first_name","last_name","phone","email","dodaac"]
+      const militaryKeys =
+          ["role","first_name","last_name","rank_components","phone","email",]
+      keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
+        x => militaryKeys.indexOf(x) === -1
+      ): contactInfoKeys.filter(
+        x => civilianKeys.indexOf(x) === -1)
+      showMoreData = {
+        address:"",
+        email:contactInfo.email || "Missing email address",
+        phone:contactInfo.phone || "Missing phone number",
+        dodaac:`DoDAAC - ${contactInfo.dodaac}` || "Missing DoDAAC",
+        title:contactInfo.title || "Missing job title",
+        role:contactInfo.role || "Missing role"
+      }
+      title =contactInfo.first_name && contactInfo.last_name?
+        `${contactInfo.first_name} ${contactInfo.last_name}`
+        : "Contracting Officer's Representative"
+    }
+    const monitor = {object: contactInfo, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
+    const CORDetails: SummaryItem = {
+      title,
+      description: "Contracting Officer's Representative",
+      isComplete: await this.isComplete(monitor),
+      isTouched,
+      hasDelete:false,
+      hasShowMore:true,
+      ACORButton:true,
+      showMoreData,
+      routeName: "CorInformation",
+      step:1,
+      substep: 4
+    }
+    await this.doSetSummaryItem(CORDetails)
+  }
+  @Action({rawError: true})
+  public async assessACOR(): Promise<void>{
+    const contactInfo = AcquisitionPackage.acorInfo as ContactDTO
+    let contactInfoKeys:string[] = []
+    let keysToIgnore:string[] =[]
+    let showMoreData:Record<string, string> = {}
+    let title = "Alternate Contracting Officer's Representative"
+    if(contactInfo){
+      contactInfoKeys = Object.keys(contactInfo)
+      const civilianKeys = ["role","first_name","last_name","phone","email","dodaac"]
+      const militaryKeys =
+          ["role","first_name","last_name","rank_components","phone","email","dodaac"]
+      keysToIgnore = contactInfo.role === "MILITARY"? contactInfoKeys.filter(
+        x => militaryKeys.indexOf(x) === -1
+      ): contactInfoKeys.filter(
+        x => civilianKeys.indexOf(x) === -1)
+      showMoreData = {
+        address:"",
+        email:contactInfo.email || "Missing email address",
+        phone:contactInfo.phone || "Missing phone number",
+        dodaac:`DoDAAC - ${contactInfo.dodaac}` || "Missing DoDAAC",
+        role:contactInfo.role || "Missing role"
+      }
+      title =contactInfo.first_name && contactInfo.last_name?
+        `${contactInfo.first_name} ${contactInfo.last_name}`
+        : "Alternate Contracting Officer's Representative"
+    }
+    const monitor = {object: contactInfo, keysToIgnore};
+    const isTouched = await this.isTouched(monitor)
+    const ACORDetails: SummaryItem = {
+      title,
+      description: "Alternate Contracting Officer's Representative",
+      isComplete: await this.isComplete(monitor),
+      isTouched,
+      hasDelete:true,
+      hasShowMore:true,
+      showMoreData,
+      routeName: "AcorInformation",
+      step:1,
+      substep: 5
+    }
+    await this.doSetSummaryItem(ACORDetails)
+  }
+
+
+
   //#region STEP 2
   /*
-   * assess all 2 substeps in Step 3 to determine 
+   * assess all 2 substeps in Step 3 to determine
    * if substep is touched and/or completed
-   * 
+   *
    * The function creates 3 summary step objects for each
-   * substep in step 2 
+   * substep in step 2
    */
   @Action({rawError: true})
   public async validateStepTwo(): Promise<void> {
@@ -249,7 +534,9 @@ export class SummaryStore extends VuexModule {
       description: await this.setFairOpportunityDescription({fairOpp, isComplete}),
       isComplete,
       isTouched,
-      routeName: "Exceptions", 
+      hasDelete:false,
+      hasShowMore:false,
+      routeName: "Exceptions",
       step:2,
       substep: 1
     }
@@ -301,7 +588,7 @@ export class SummaryStore extends VuexModule {
     const hasProposedCSP = fairOpp.proposed_csp !== "";
     const hasJustification = fairOpp.justification !== "";
     const hasMinGovtRequirements = fairOpp.min_govt_requirements !== ""
-      && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
+      && fairOpp.min_govt_requirements !== "The cloud service offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
     return (hasNoFairOpp) ||
       (hasProposedCSP
@@ -621,6 +908,8 @@ export class SummaryStore extends VuexModule {
       description: await this.setEvalPlanDescription({evalPlanStore, isComplete, fairOpp}),
       isComplete: hasNoFairOpp ? isComplete : (!hasEmptyFairOpp ? true : false),
       isTouched: hasNoFairOpp ? isTouched : (!hasEmptyFairOpp ? true : false),
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "CreateEvalPlan",
       step:2,
       substep: 2
@@ -733,6 +1022,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "PeriodOfPerformance",
       step:3,
       substep: 1
@@ -779,6 +1070,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "ContractType",
       step:3,
       substep: 2
@@ -841,6 +1134,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "ClassificationRequirements",
       step:3,
       substep: 3
@@ -1003,7 +1298,7 @@ export class SummaryStore extends VuexModule {
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
-      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
+      || (!!currentContracts && currentContracts.length > 0);
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
@@ -1012,9 +1307,7 @@ export class SummaryStore extends VuexModule {
     const prevContracts = currentContracts?.length === 1
       ? `${currentContracts?.length} previous contract:\n${contractNumbers}`
       : `${currentContracts?.length} previous contracts:\n${contractNumbers}`
-
-    const description = isTouched && currentContracts && currentContracts.length > 0
-      && currentContracts[0].contract_number ?
+    const description = isTouched && currentContracts && currentContracts.length > 0?
       hasCurrentOrPreviousContract === "YES"
         ? prevContracts
         : "No previous contracts"
@@ -1025,6 +1318,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "CurrentContract",
       step: 4,
       substep: 1
@@ -1033,7 +1328,39 @@ export class SummaryStore extends VuexModule {
     await this.doSetSummaryItem(procurementHistorySummaryItem)
   }
   @Action({rawError: true})
+  public async isCurrentEnvironmentComplete(
+    environmentInstances: CurrentEnvironmentInstanceDTO[]
+  ): Promise<boolean>{
+    const requiredFields = [
+      "instance_location",
+      "classification_level",
+      "current_usage_description",
+      "users_per_region",
+      "operating_system",
+      "licensing",
+      "number_of_vcpus",
+      "processor_speed",
+      "memory_amount",
+      "storage_type",
+      "storage_amount",
+      "performance_tier",
+      "number_of_instances",
+      "data_egress_monthly_amount",
+      "pricing_model",
+    ];
+    const results:boolean[] = []
+    for(const instance of environmentInstances){
+      const instanceKeys = Object.keys(instance)
+      const keysToIgnore = instanceKeys.filter(key => requiredFields.indexOf(key) === -1)
+      const complete = await this.isComplete({object:instance, keysToIgnore:keysToIgnore})
+      results.push(complete)
+    }
+    return results.every(value => value)
+  }
+
+  @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
+
     const classificationLevels = await ClassificationRequirements.getAllClassificationLevels()
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
     const currentEnvironmentInstances = await  CurrentEnvironment.getCurrentEnvironmentInstances()
@@ -1061,10 +1388,12 @@ export class SummaryStore extends VuexModule {
     }else if(envLocation === "CLOUD" && envCloudClass){
       locationHasClassification = envCloudClass?.length > 0
     }
+    const isCurrentEnvironmentComplete
+        = this.isCurrentEnvironmentComplete(currentEnvironmentInstances)
     const isTouched = currentEnvironment?.current_environment_exists !== "";
     const isComplete =  currentEnvironment?.current_environment_exists === "NO"
     // eslint-disable-next-line max-len
-    || systemDocsComplete && migrationDocsComplete && locationHasClassification && currentEnvironmentInstances.length > 0;
+    || systemDocsComplete && migrationDocsComplete && locationHasClassification && await isCurrentEnvironmentComplete;
     let description = ""
     if(currentEnvironmentInstances.length){
       const onPremInstances:Record<string, number> = {}
@@ -1117,6 +1446,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "CurrentEnvironment",
       step: 4,
       substep: 2
@@ -1540,6 +1871,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "ConflictOfInterest",
       step: 6,
       substep: 1
@@ -1572,6 +1905,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "PackagingPackingAndShipping",
       step: 6,
       substep: 2
@@ -1617,6 +1952,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "Travel",
       step: 6,
       substep: 3
@@ -1664,7 +2001,9 @@ export class SummaryStore extends VuexModule {
       title: "Personally Identifiable Information (PII)",
       description,
       isComplete,
-      isTouched, 
+      isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "PII",
       step:7,
       substep: 1
@@ -1698,7 +2037,9 @@ export class SummaryStore extends VuexModule {
       title: "Business Associate Agreement (BAA)",
       description,
       isComplete,
-      isTouched, 
+      isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "BAA",
       step:7,
       substep: 2
@@ -1734,7 +2075,9 @@ export class SummaryStore extends VuexModule {
       title: "Public Disclosure of Information",
       description,
       isComplete,
-      isTouched, 
+      isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "FOIA",
       step:7,
       substep: 3
@@ -1773,7 +2116,9 @@ export class SummaryStore extends VuexModule {
       title: "Section 508 Standards",
       description,
       isComplete,
-      isTouched, 
+      isTouched,
+      hasDelete:false,
+      hasShowMore:false,
       routeName: "Section508Standards",
       step:7,
       substep: 4
@@ -1968,12 +2313,23 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async hasIGCETravel(rce: RequirementsCostEstimateDTO): Promise<boolean> {
     if (rce.travel.option !== ""){
-      const estimatedValues = Object.values(JSON.parse(rce.travel.estimated_values as string))
-      return rce.travel.option === "SINGLE"
-        ? estimatedValues.every((ev)=> (ev as number) > 0 )
-        : estimatedValues.every((ev)=> (ev as number) >= 0 ) // multiple values can === 0
-    }
-    return true
+      if (!rce.travel.estimated_values?.toUpperCase().includes("UNDEFINED")){
+        const estimatedValues = Object.values(JSON.parse(rce.travel.estimated_values as string))
+        const totalPop = Periods.periods.length;
+
+        //ensure all estimatedValues have values
+        if (estimatedValues.length !== totalPop){
+          return false;
+        }
+
+        return rce.travel.option === "SINGLE"
+          ? estimatedValues.every((ev)=> (ev as number) > 0 )
+          : estimatedValues.every((ev)=> (ev as number) >= 0 ) // multiple values can === 0
+      }
+      return false;
+    } 
+    return false;
+    
   }
 
   @Action({rawError: true})
@@ -2021,12 +2377,11 @@ export class SummaryStore extends VuexModule {
     const gInv = await FinancialDetails.gInvoicingData as baseGInvoiceData;
     const fsForm = FinancialDetails.fundingRequestFSForm as FundingRequestFSFormDTO;
     const mipr = FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO;
-    const hasFairOpp = ["NO_NONE", ""].every(fo => {
-      (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity!==fo
-    })
+    const fairOpp =
+      (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity;
+    const hasFairOpp = ["NO_NONE", ""].every(noValue => noValue !== fairOpp );
     const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp};
     const isComplete =  await this.isFundingComplete(fundingDataObjs);
-    console.log(isComplete);
     const fundingSummaryItem: SummaryItem = {
       title: "Funding",
       description: await this.setFundingDescription({fsForm, request, mipr, isComplete}),
@@ -2065,7 +2420,7 @@ export class SummaryStore extends VuexModule {
       mipr: FundingRequestMIPRFormDTO,
       hasFairOpp: boolean
   }): Promise<boolean>{
-    const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600"))
+    const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
     const hasAppropriationOfFunds = funding.hasFairOpp
       ? funding.request.appropriation_fiscal_year !== "" 
         || funding.request.appropriation_funds_type !== ""

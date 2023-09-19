@@ -265,7 +265,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";

@@ -6,12 +6,18 @@
         { 'mb-n4': hoverableInAlert }
       ]"
   >
+    <v-expand-transition v-if="contentAtTop" >
+      <div v-show="isOpen" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
+        <slot name="content"></slot>
+      </div>
+    </v-expand-transition>
     <a
       @click="toggleOpen"
       @keydown.enter="toggleOpen"
       @keydown.space="toggleOpen"
       class="expandable-content-opener"
       :class="[
+        contentAtTop? '_contentAtTop':'',
         isOpen ? 'open' : 'closed',
         { 'no-text-decoration': !hasUnderline },
         { '_hoverable-in-alert': hoverableInAlert },
@@ -23,9 +29,12 @@
       :aria-expanded="isOpen + ''"
       :id="'Button_' + ariaId"
     >
-      <slot name="header"></slot>
+      <span v-if="contentAtTop">
+        {{moreOrLess}}
+      </span>
+      <slot v-else name="header"></slot>
     </a>
-    <v-expand-transition>
+    <v-expand-transition v-if="!contentAtTop">
       <div v-show="isOpen" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
         <slot name="content"></slot>
       </div>
@@ -35,7 +44,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
+import {Component, Prop, PropSync} from "vue-property-decorator";
 
 @Component({})
 export default class ExpandableLink extends Vue {
@@ -44,6 +53,7 @@ export default class ExpandableLink extends Vue {
   @Prop({ default: true }) hasUnderline?: boolean;
   @Prop({ default: true }) isCopyMaxWidth?: boolean;
   @Prop({ default: false }) hoverableInAlert?: boolean;
+  @Prop({ default: false }) contentAtTop?: boolean;
   @PropSync("open", { default: false }) _open?: boolean;
 
   public isOpen = false;
@@ -51,6 +61,10 @@ export default class ExpandableLink extends Vue {
   public toggleOpen(): void {
     this.isOpen = !this.isOpen;
     this._open = this.isOpen;
+  }
+
+  public get moreOrLess(): string {
+    return this.isOpen ? "Show less":"Show more"
   }
 
   public mounted(): void {

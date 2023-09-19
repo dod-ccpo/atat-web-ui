@@ -97,7 +97,6 @@
 /* eslint camelcase: 0, prefer-const: 1 */
 import {
   Checkbox,
-  EstimateOptionValue,
   EstimateOptionValueObjectArray,
   RadioButton,
   SingleMultiple,
@@ -109,7 +108,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import Periods from "@/store/periods";
-import { EstimateOptionValueDTO, PeriodDTO } from "@/api/models";
+import { PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
 import {
   createPeriodCheckboxItems,

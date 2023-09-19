@@ -60,7 +60,7 @@
                 <p class="mb-4">
                   During the solicitation process, Cloud Service Providers (CSPs) will
                   be asked to reference the instance details you previously provided
-                  within the Background section and deliver a quote/proposal based on
+                  within the Background section and deliver a proposal based on
                   your choice to either “replicate” or “optimize” your current functions.
                 </p>
                 <ul>
@@ -76,7 +76,27 @@
                 </ul>
               </template>
             </ATATExpandableLink>
+
+
           </div>
+          <ATATAlert
+              id="JWCCInfoAlert"
+              :showIcon="true"
+              type="info"
+              class="mt-8 mb-2"
+            >
+              <template v-slot:content>
+                <div>
+                  <p>
+                    The information you provide in this section allows JWCC cloud service providers
+                    to propose and the Government to analyze proposals in a consistent manner. All
+                    requirements are presented as a minimum capability for analysis only and will
+                    neither limit the actual Cloud Service Offering(s) ordered from the JWCC Catalog
+                    during TO performance nor exceed the dollar threshold established within the TO.
+                  </p>
+                </div>
+              </template>
+            </ATATAlert>
         </v-col>
       </v-row>
     </v-container>
