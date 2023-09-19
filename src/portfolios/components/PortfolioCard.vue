@@ -176,13 +176,6 @@
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
     />
-
-    <LeavePortfolioModal
-      :showModal.sync="showLeavePortfolioModal" 
-      :portfolioName="cardData.title"
-      @okClicked="leavePortfolio"
-    />
-
   </v-card>
 </template>
 
@@ -216,8 +209,10 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
   @Prop({ default: false }) public isHomeView?: boolean;
+  @Prop({ default: false }) public showLeavePortfolioModal?: boolean;
+  
 
-  public showLeavePortfolioModal = false;
+  
 
   public menuActions = {
     viewFundingTracker: "navToFundingTracker",
@@ -300,7 +295,7 @@ export default class PortfolioCard extends Vue {
       AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break; 
     case this.menuActions.leavePortfolio: 
-      this.showLeavePortfolioModal = true;
+      this.$emit("openLeavePortfolioModal");
       break; 
     case this.menuActions.emailManagers: {
       const managerEmails = await this.managerEmails;
@@ -341,7 +336,7 @@ export default class PortfolioCard extends Vue {
   }
 
   public leavePortfolio(): void {
-    this.$emit("leavePortfolio", this.cardData.sys_id);
+    this.$emit("leavePortfolio", this.cardData.sys_id, this.cardData.title);
   }
 
   public CSPs = {

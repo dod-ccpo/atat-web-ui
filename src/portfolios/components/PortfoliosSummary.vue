@@ -98,7 +98,9 @@
           :isHaCCAdmin="isHaCCAdmin"
           @leavePortfolio="leavePortfolio"
           @openArchivePortfolioModal="openArchivePortfolioModal"
+          @openLeavePortfolioModal="openLeavePortfolioModal"
           @openTOModal="openTOModal"
+          :showLeavePortfolioModal.sync="showLeavePortfolioModal"
           :isHomeView="isHomeView"
         />
       </transition-group>
@@ -124,19 +126,20 @@
       @clear="clearSearchOrFilters"
     />
 
-    <LeavePortfolioModal
-        :portfolioName="portfolioName"
-        @okClicked="leavePortfolio"
-        @cancelClicked="closeLeavePortfolioModal"
-    />
-
-
     <ArchivePortfolioModal
       :portfolioName="portfolioName"
       :showArchivePortfolioModal="showArchivePortfolioModal"
       :csp="csp"
       @okClicked="archivePortfolio"
       @cancelClicked="closeArchivePortfolioModal"
+    />
+
+    <LeavePortfolioModal
+      :showModal="showLeavePortfolioModal" 
+      :portfolioName="getCurrentPortfolioTitle"
+      @okClicked="leavePortfolio"
+      @cancelClicked="closeLeavePortfolioModal"
+      :showLeaveModalSpinner="showLeaveModalSpinner"
     />
 
   </div>
@@ -203,7 +206,6 @@ export default class PortfoliosSummary extends Vue {
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
 
   public isHaCCAdmin = CurrentUserStore.currentUserIsHaCCAdmin;
-
   public page = 1;
   public get recordsPerPage(): number {
     return this.isHomeView ? 5 : 10;
@@ -212,7 +214,7 @@ export default class PortfoliosSummary extends Vue {
   public portfolioCount = 0;
   public offset = 0;
   public paging = false;
-
+  public showLeaveModalSpinner =false;
   public portfolioCardData: PortfolioCardData[] = [];
   public isLoading = false;
   public searchString = "";
@@ -288,6 +290,9 @@ export default class PortfoliosSummary extends Vue {
     case "filters":
       await this.clearAllFilters();
     }
+  }
+  public get getCurrentPortfolioTitle(){
+    return PortfolioStore.currentPortfolio.title;
   }
 
   public async clearAllFilters(): Promise<void> {
@@ -386,6 +391,7 @@ export default class PortfoliosSummary extends Vue {
   }
 
   public async leavePortfolio(): Promise<void> {
+    
     const userSysId = CurrentUserStore.getCurrentUserData.sys_id;
     if(userSysId) {
       const currentPortfolio = PortfolioStore.currentPortfolio;
@@ -402,6 +408,7 @@ export default class PortfoliosSummary extends Vue {
 
       await PortfolioStore.setCurrentPortfolioMembers(currentPortfolio);
       await this.loadPortfolioData();
+      this.showLeaveModalSpinner = true;
     }
 
     const accessRemovedToast: ToastObj = {
@@ -438,8 +445,14 @@ export default class PortfoliosSummary extends Vue {
   public get showArchivePortfolioModal(): boolean {
     return PortfolioStore.showArchivePortfolioModal;
   }
+  public get showLeavePortfolioModal(): boolean {
+    return PortfolioStore.showLeavePortfolioModal;
+  }
   public openArchivePortfolioModal():void {
     PortfolioStore.setShowArchivePortfolioModal(true);
+  }
+  public openLeavePortfolioModal():void {
+    PortfolioStore.setShowLeavePortfolioModal(true);
   }
   public async archivePortfolio():Promise<void> {
     const index = this.portfolioCardData.findIndex(

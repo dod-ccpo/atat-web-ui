@@ -8,7 +8,7 @@
     searchType="EDA"
     :wrapperWidth="wrapperWidth"
     :width="width"
-    :validate-on-blur="false"
+    :validate-on-blur="true"
     :value.sync="_TONumber"
     :searchButtonDisabled="searchButtonDisabled"
     @search="startProvisionWorkflow"
