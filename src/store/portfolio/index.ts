@@ -36,6 +36,7 @@ export const FundingAlertTypes = {
   POPLowFunds: "POPLowFunds",
   POPFundsDelinquent: "POPFundsDelinquent",
   POPExpired: "POPExpired",
+  POPZeroFundsRemaining: "POPZeroFundsRemaining"
 };
 
 interface CSPAdmin {
