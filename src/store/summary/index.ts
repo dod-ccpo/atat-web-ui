@@ -15,6 +15,7 @@ import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CrossDomainSolutionDTO,
+  CurrentEnvironmentInstanceDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
   FundingRequestDTO,
@@ -207,7 +208,7 @@ export class SummaryStore extends VuexModule {
 
   @Mutation
   public doRemoveSummaryItem(step:number,subStep:number):void{
-    debugger
+
     const newSummaryItem = this.summaryItems
       .filter(item => item.step !== step && item.substep !== subStep)
     this.summaryItems = newSummaryItem
@@ -333,7 +334,6 @@ export class SummaryStore extends VuexModule {
     ${organization.city}, ${organization.state} ${organization.zip_code} ${organization?.country}`}
       : {address: "Missing Address"}
     const monitor = {object: organization, keysToIgnore};
-    debugger
     const organizationDetails: SummaryItem = {
       title,
       description,
@@ -1298,7 +1298,7 @@ export class SummaryStore extends VuexModule {
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
-      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
+      || (!!currentContracts && currentContracts.length > 0);
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
@@ -1328,7 +1328,39 @@ export class SummaryStore extends VuexModule {
     await this.doSetSummaryItem(procurementHistorySummaryItem)
   }
   @Action({rawError: true})
+  public async isCurrentEnvironmentComplete(
+    environmentInstances: CurrentEnvironmentInstanceDTO[]
+  ): Promise<boolean>{
+    const requiredFields = [
+      "instance_location",
+      "classification_level",
+      "current_usage_description",
+      "users_per_region",
+      "operating_system",
+      "licensing",
+      "number_of_vcpus",
+      "processor_speed",
+      "memory_amount",
+      "storage_type",
+      "storage_amount",
+      "performance_tier",
+      "number_of_instances",
+      "data_egress_monthly_amount",
+      "pricing_model",
+    ];
+    const results:boolean[] = []
+    for(const instance of environmentInstances){
+      const instanceKeys = Object.keys(instance)
+      const keysToIgnore = instanceKeys.filter(key => requiredFields.indexOf(key) === -1)
+      const complete = await this.isComplete({object:instance, keysToIgnore:keysToIgnore})
+      results.push(complete)
+    }
+    return results.every(value => value)
+  }
+
+  @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
+
     const classificationLevels = await ClassificationRequirements.getAllClassificationLevels()
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
     const currentEnvironmentInstances = await  CurrentEnvironment.getCurrentEnvironmentInstances()
@@ -1356,10 +1388,12 @@ export class SummaryStore extends VuexModule {
     }else if(envLocation === "CLOUD" && envCloudClass){
       locationHasClassification = envCloudClass?.length > 0
     }
+    const isCurrentEnvironmentComplete
+        = this.isCurrentEnvironmentComplete(currentEnvironmentInstances)
     const isTouched = currentEnvironment?.current_environment_exists !== "";
     const isComplete =  currentEnvironment?.current_environment_exists === "NO"
     // eslint-disable-next-line max-len
-    || systemDocsComplete && migrationDocsComplete && locationHasClassification && currentEnvironmentInstances.length > 0;
+    || systemDocsComplete && migrationDocsComplete && locationHasClassification && await isCurrentEnvironmentComplete;
     let description = ""
     if(currentEnvironmentInstances.length){
       const onPremInstances:Record<string, number> = {}
