@@ -140,10 +140,10 @@ describe("Testing Portfolio", () => {
         costs: costs,
         totalPortfolioFunds: 9000,
         endOfMonthForecast: 900,
-        fundsSpentPercent: 100
+        fundsSpentPercent: 50
       })
       await wrapper.vm.calculateBurnDown();
-      expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(0)
+      expect(wrapper.vm.$data.estimatedRemainingPercent).toBe(40)
       expect(wrapper.vm.$data.estimatedFundsToBeInvoicedPercent).toBe(10)
     })
     
