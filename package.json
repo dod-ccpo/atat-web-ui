@@ -58,7 +58,7 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
-    "@4tw/cypress-drag-drop": "^2.1.0",
+    "@4tw/cypress-drag-drop": "^2.2.5",
     "@babel/core": "7.17.9",
     "@babel/eslint-parser": "^7.18.2",
     "@babel/generator": "7.17.9",
@@ -84,7 +84,7 @@
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-plugin-tab": "^1.0.5",
-    "cypress-real-events": "^1.7.0",
+    "cypress-real-events": "^1.10.3",
     "cypress-wait-until": "^1.7.2",
     "dotenv": "^16.0.0",
     "eslint": "^8.39.0",
