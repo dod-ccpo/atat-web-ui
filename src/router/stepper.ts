@@ -213,6 +213,7 @@ import {
   OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
   ClassificationRequirementsResolver,
+  PeriodOfPerformanceRouteResolver,
   ContractTypeResolver,
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
@@ -762,6 +763,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
         stepCompleteOnEnter: routeNames.CreateEvalPlan,
+        routeResolver: PeriodOfPerformanceRouteResolver
       },
       {
         name: routeNames.POPStart,
