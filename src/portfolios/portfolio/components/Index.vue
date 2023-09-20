@@ -98,7 +98,6 @@ import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import _ from "lodash";
-import CurrentUserStore from "@/store/user";
 import { ToastObj } from "types/Global";
 import Toast from "@/store/toast";
 import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
