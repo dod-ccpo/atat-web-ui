@@ -971,6 +971,27 @@ export class PortfolioDataStore extends VuexModule {
     this.doReset();
   }
 
+  @Action({rawError: true})
+  public async leavePortfolio(): Promise<void>{
+    const userSysId = CurrentUserStore.getCurrentUserData.sys_id;
+    if(userSysId) {
+      const currentPortfolio = this.currentPortfolio;
+
+      if(currentPortfolio.portfolio_managers) {
+        const managers = currentPortfolio.portfolio_managers.split(',');
+        // eslint-disable-next-line camelcase
+        currentPortfolio.portfolio_managers = managers.filter(id => id !== userSysId).join(',');
+      }
+
+      if(currentPortfolio.portfolio_viewers) {
+        const viewers = currentPortfolio.portfolio_viewers.split(',');
+        // eslint-disable-next-line camelcase
+        currentPortfolio.portfolio_viewers = viewers.filter(id => id !== userSysId).join(',');
+      }
+      await this.setCurrentPortfolioMembers(currentPortfolio);
+    }
+  }
+
   public taskOrderDetailsAlertClosed = false;
 
   @Mutation

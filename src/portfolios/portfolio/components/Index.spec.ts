@@ -70,11 +70,11 @@ describe("Testing index Component", () => {
       sys_id: '1234'
     }
     /* eslint-enable */ 
-    const setCurrent = jest.spyOn(PortfolioStore, 'setCurrentPortfolioMembers').mockImplementation()
+    const leavePort = jest.spyOn(PortfolioStore, 'leavePortfolio').mockImplementation()
     CurrentUserStore.setCurrentUser(mockUser)
     await PortfolioStore.setCurrentPortfolio(mockPortfolio)
     await wrapper.vm.leavePortfolio()
-    expect(setCurrent).toBeCalled()
+    expect(leavePort).toBeCalled()
     expect(wrapper.vm.$data.showLeaveModalSpinner).toBe(false)
     expect(PortfolioStore.showLeavePortfolioModal).toBe(false)
   });

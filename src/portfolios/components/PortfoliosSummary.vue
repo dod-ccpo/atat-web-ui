@@ -392,24 +392,11 @@ export default class PortfoliosSummary extends Vue {
 
   public async leavePortfolio(): Promise<void> {
     this.showLeaveModalSpinner = true;
-    const userSysId = CurrentUserStore.getCurrentUserData.sys_id;
-    if(userSysId) {
-      const currentPortfolio = PortfolioStore.currentPortfolio;
-
-      if(currentPortfolio.portfolio_managers) {
-        const managers = currentPortfolio.portfolio_managers.split(',');
-        currentPortfolio.portfolio_managers = managers.filter(id => id !== userSysId).join(',');
-      }
-
-      if(currentPortfolio.portfolio_viewers) {
-        const viewers = currentPortfolio.portfolio_viewers.split(',');
-        currentPortfolio.portfolio_viewers = viewers.filter(id => id !== userSysId).join(',');
-      }
-      await PortfolioStore.setCurrentPortfolioMembers(currentPortfolio);
-      await this.loadPortfolioData();
-      this.showLeaveModalSpinner = false;
-      this.closeLeavePortfolioModal()
-    }
+    await PortfolioStore.leavePortfolio()
+    await this.loadPortfolioData();
+    this.showLeaveModalSpinner = false;
+    this.closeLeavePortfolioModal()
+    
 
     const accessRemovedToast: ToastObj = {
       type: "success",

@@ -148,27 +148,11 @@ export default class PortfolioSummary extends Vue {
 
   public async leavePortfolio(): Promise<void> {
     this.showLeaveModalSpinner = true;
-    const userSysId = CurrentUserStore.getCurrentUserData.sys_id;
-    if(userSysId) {
-      const currentPortfolio = PortfolioStore.currentPortfolio;
-
-      if(currentPortfolio.portfolio_managers) {
-        const managers = currentPortfolio.portfolio_managers.split(',');
-        // eslint-disable-next-line camelcase
-        currentPortfolio.portfolio_managers = managers.filter(id => id !== userSysId).join(',');
-      }
-
-      if(currentPortfolio.portfolio_viewers) {
-        const viewers = currentPortfolio.portfolio_viewers.split(',');
-        // eslint-disable-next-line camelcase
-        currentPortfolio.portfolio_viewers = viewers.filter(id => id !== userSysId).join(',');
-      }
-      await PortfolioStore.setCurrentPortfolioMembers(currentPortfolio);
-      this.showLeaveModalSpinner = false;
-      this.closeLeavePortfolioModal()
-      AppSections.changeActiveSection(AppSections.sectionTitles.Home);
-    }
-
+    await PortfolioStore.leavePortfolio()
+    this.showLeaveModalSpinner = false;
+    this.closeLeavePortfolioModal()
+    AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+    
     const accessRemovedToast: ToastObj = {
       type: "success",
       message: "Portfolio access removed",

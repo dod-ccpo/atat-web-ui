@@ -132,7 +132,7 @@ describe("Portfolio Store", () => {
   })
 
   it('setShowLeavePortfolioModal()', async()=>{
-    await portfolioStore.setShowLeavePortfolioModal(true)
+    portfolioStore.setShowLeavePortfolioModal(true)
     expect(portfolioStore.showLeavePortfolioModal).toBe(true)
   })
 
