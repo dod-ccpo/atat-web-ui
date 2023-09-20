@@ -54,7 +54,7 @@ import _ from "lodash";
 
 export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
   private fundingRequest: FundingRequestDTO ={};
-  private selectedFundType: "" | "O_M" | "RDT_E" | "PROCUREMENT" = "";
+  private selectedFundType: "" | "O_M" | "RDT_E" | "PROCUREMENT" | "W_C" = "";
   private fundTypes: RadioButton[] = [
     {
       id: "O&M",
@@ -71,6 +71,11 @@ export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
       label: "Procurement",
       value: "PROCUREMENT",
     },
+    {
+      id: "WC",
+      label: "Working Capital",
+      value: "W_C"
+    }
   ];
 
   private selectedFiscalYear = "";
