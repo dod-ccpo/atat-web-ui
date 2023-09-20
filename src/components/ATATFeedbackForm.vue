@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!this.hide" class=" _feedback-form">
+  <div v-if="!this.hide" class="_feedback-form">
     <div class="flex-column">
       <div class="d-flex justify-end">
         <div
@@ -12,22 +12,21 @@
            ]"
         >
           <v-btn
-            rounded
             @click="toggle()"
             @keydown.enter="toggle()"
             @keydown.space="toggle()"
             :class="{'_open':open}"
           >
-          <span class="text-base">
-            Customer Feedback
-          </span>
+            <span class="text-base">
+              CUSTOMER FEEDBACK
+            </span>
             <ATATSVGIcon
               name="chevronDown"
               color="base"
-              class=" _toggle mx-2"
+              class=" _toggle ml-2"
               :class="{'_open':open}"
-              width="10"
-              height="6"
+              width="20"
+              height="20"
             />
           </v-btn>
         </div>

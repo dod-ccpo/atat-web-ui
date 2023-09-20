@@ -1,7 +1,7 @@
 ._feedback-form {
-  position: absolute;
-  right: 0px;
-  bottom: -250px;
+  position: fixed;
+  right: 60px;
+  bottom: 0px;
   max-width: 461px !important;
   display:flex;
   flex-direction: row-reverse;
@@ -10,12 +10,11 @@
   ._feedback-tab {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     background-color: $base-lightest;
-    padding: 8px 12px;
+    padding: 8px 8px 0 8px;
     border-radius: 16px 16px 0 0;
-    position:relative;
-    width:207px;
+    position: relative;
     &:hover {
       background-color: $primary-10;
     }
@@ -27,9 +26,10 @@
     }
 
 
-    .v-btn{
-      padding: 4px !important;
-      background-color: transparent;
+    .v-btn {
+      border-radius: 12px;
+      gap: 4px;
+      background: $base-lightest;
 
       &:hover {
         background-color: transparent;
