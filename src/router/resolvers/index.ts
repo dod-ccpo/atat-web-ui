@@ -105,7 +105,7 @@ export const ExceptionToFairOpportunityResolver = (current:string): string =>{
   const isFromStepOne =
   // eslint-disable-next-line max-len
     [routeNames.AcorInformation, routeNames.AlternateCor, routeNames.SummaryStepOne].includes(current)
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
   return isFromStepOne
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.Exceptions
     : routeNames.SummaryStepTwo;
