@@ -122,6 +122,10 @@
           </v-row>
       </div>
     </div>
+    <ATATFeedbackForm
+        v-if="!isDitcoUser"
+        class="position-static float-right"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -142,10 +146,12 @@ import {TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFS
 import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import { signedDocument } from "types/Global";
+import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
 
 
 @Component({
   components: {
+    ATATFeedbackForm,
     ATATSVGIcon,
     PackageItem,
     ATATAlert
