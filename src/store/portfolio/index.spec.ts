@@ -7,10 +7,38 @@ import { getModule } from 'vuex-module-decorators';
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import UserStore from "@/store/user";
-import {AlertDTO} from '@/api/models';
+import {AlertDTO, UserDTO} from '@/api/models';
 import { Portfolio} from 'types/Global';
+import CurrentUserStore from '@/store/user';
 const localVue = createLocalVue();
 localVue.use(Vuex);
+
+const mockPortfolio =   {
+  name: "mock portfolio",
+  csp: "",
+  /* eslint-disable camelcase */
+  csp_display: "CSP_A",
+  agency: "ARMY",
+  vendor: "AWS",
+  dod_component: "ARMY", // EJY - DOUBLE-CHECK this is still needed
+  task_order_number: "123456",
+  sys_updated_on: "2022-09-26 15:50:20", 
+  task_order_status: "ACTIVE",
+  pop_end_date: "2022-12-31",
+  pop_start_date: "2022-01-01",
+  funds_obligated: 10000,
+  portfolio_status: "PROCESSING",
+  portfolio_owner: "",
+  portfolio_managers: "4567,1234",
+  portfolio_viewers: "7890,5432",
+  funds_spent: 5000,
+  task_orders: [],
+  active_task_order: "",
+  alerts: [],
+  portfolio_funding_status: "",
+  last_cost_data_sync: ""
+  /* eslint-enable camelcase */
+}
 
 
 describe("Portfolio Store", () => {
@@ -135,6 +163,32 @@ describe("Portfolio Store", () => {
     portfolioStore.setShowLeavePortfolioModal(true)
     expect(portfolioStore.showLeavePortfolioModal).toBe(true)
   })
+
+  it('leavePortfolio()', async()=>{
+    /* eslint-disable */ 
+    const mockUser: UserDTO = {
+      last_login_time: "01/02/03",
+      name: "Test User",
+      first_name: "Test",
+      last_name: "User",
+      user_name: "TestUser",
+      email: "Test@email.mil",
+      company: "Rando company",
+      mobile_phone: "123-456-7890",
+      phone: "123-456-7890",
+      home_phone: "123-456-7890",
+      title: "User Title",
+      sys_id: '1234'
+    }
+    /* eslint-enable */ 
+    const mockSetCurrentPortfolioMembers = jest.spyOn(portfolioStore, "setCurrentPortfolioMembers")
+      .mockImplementation()
+    await portfolioStore.setCurrentPortfolio(mockPortfolio)
+    CurrentUserStore.setCurrentUser(mockUser)
+    await portfolioStore.leavePortfolio()
+    expect(mockSetCurrentPortfolioMembers).toBeCalled()
+  })
+
 
 })
 
