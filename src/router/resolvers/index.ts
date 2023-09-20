@@ -409,7 +409,7 @@ export const PeriodOfPerformanceRouteResolver = (current:string): string =>{
   const isFromStepTwo =
       // eslint-disable-next-line max-len
       [routeNames.SummaryStepTwo].includes(current)
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
   return isFromStepTwo
     ? Summary.hasCurrentStepBeenVisited ?
       routeNames.SummaryStepThree : routeNames.PeriodOfPerformance
