@@ -420,10 +420,6 @@ export default class PortfoliosSummary extends Vue {
     };
 
     Toast.setToast(accessRemovedToast);
-
-    // ATAT TODO AT-9605 - remove member from portfolio table in snow
-    // after removed, make new call to reload portfolio list if > 10 portfolios
-    // to ensure 10 listed on page (or 5 on home page)
   }
 
   public get currentPortfolio(): Portfolio {
