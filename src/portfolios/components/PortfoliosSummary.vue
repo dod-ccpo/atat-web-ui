@@ -214,7 +214,7 @@ export default class PortfoliosSummary extends Vue {
   public portfolioCount = 0;
   public offset = 0;
   public paging = false;
-  public showLeaveModalSpinner =false;
+  public showLeaveModalSpinner = false;
   public portfolioCardData: PortfolioCardData[] = [];
   public isLoading = false;
   public searchString = "";

@@ -41,6 +41,7 @@
           :value.sync="tabIndex"
           :title.sync="title"
           :isPortfolioProvisioning="isPortfolioProvisioning"
+          @leavePortfolio="openLeavePortfolioModal"
         />
         
         <v-container
@@ -63,7 +64,13 @@
         </v-container>
 
         <Provisioned v-else style="margin-bottom: 100px;"/>
-
+        <LeavePortfolioModal
+          :showModal="showLeavePortfolioModal" 
+          :portfolioName="getCurrentPortfolioTitle"
+          @okClicked="leavePortfolio"
+          @cancelClicked="closeLeavePortfolioModal"
+          :showLeaveModalSpinner="showLeaveModalSpinner"
+        />
       <ATATFooter/>
 
     </v-main>
@@ -91,6 +98,10 @@ import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import _ from "lodash";
+import CurrentUserStore from "@/store/user";
+import { ToastObj } from "types/Global";
+import Toast from "@/store/toast";
+import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
 
 @Component({
   components: {
@@ -103,6 +114,7 @@ import _ from "lodash";
     ATATSVGIcon,
     ATATToast,
     Provisioned,
+    LeavePortfolioModal
   }
 })
 export default class PortfolioSummary extends Vue {
@@ -110,12 +122,67 @@ export default class PortfolioSummary extends Vue {
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
   }
+  public showLeaveModalSpinner = false;
   public isPortfolioProvisioning = true;
   public tabIndex = 0;
   public tabItems = [
     "Funding Tracker",
     "Task Orders"
   ];
+
+  public get showLeavePortfolioModal(): boolean {
+    return PortfolioStore.showLeavePortfolioModal;
+  }
+
+  public openLeavePortfolioModal():void {
+    PortfolioStore.setShowLeavePortfolioModal(true);
+  }
+
+  public get getCurrentPortfolioTitle(){
+    return PortfolioStore.currentPortfolio.title;
+  }
+
+  public closeLeavePortfolioModal(): void {
+    PortfolioStore.setShowLeavePortfolioModal(false);
+  }
+
+  public async leavePortfolio(): Promise<void> {
+    this.showLeaveModalSpinner = true;
+    const userSysId = CurrentUserStore.getCurrentUserData.sys_id;
+    if(userSysId) {
+      const currentPortfolio = PortfolioStore.currentPortfolio;
+
+      if(currentPortfolio.portfolio_managers) {
+        const managers = currentPortfolio.portfolio_managers.split(',');
+        // eslint-disable-next-line camelcase
+        currentPortfolio.portfolio_managers = managers.filter(id => id !== userSysId).join(',');
+      }
+
+      if(currentPortfolio.portfolio_viewers) {
+        const viewers = currentPortfolio.portfolio_viewers.split(',');
+        // eslint-disable-next-line camelcase
+        currentPortfolio.portfolio_viewers = viewers.filter(id => id !== userSysId).join(',');
+      }
+      await PortfolioStore.setCurrentPortfolioMembers(currentPortfolio);
+      this.showLeaveModalSpinner = false;
+      this.closeLeavePortfolioModal()
+      AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+    }
+
+    const accessRemovedToast: ToastObj = {
+      type: "success",
+      message: "Portfolio access removed",
+      isOpen: true,
+      hasUndo: false,
+      hasIcon: true,
+    };
+
+    Toast.setToast(accessRemovedToast);
+
+    // ATAT TODO AT-9605 - remove member from portfolio table in snow
+    // after removed, make new call to reload portfolio list if > 10 portfolios
+    // to ensure 10 listed on page (or 5 on home page)
+  }
 
   private getIdText(string: string) {
     return getIdText(string);
