@@ -675,7 +675,6 @@ export class PortfolioDataStore extends VuexModule {
         } as unknown as PortfolioSummaryDTO;
         let response = await api.portfolioTable.update(portfolio.sysId, members);
         response = convertColumnReferencesToValues(response);
-        console.log(response);
         await this.setCurrentPortfolio(response);
         await this.doSetCurrentUserRole();
         await this.populatePortfolioMembersDetail(portfolio);

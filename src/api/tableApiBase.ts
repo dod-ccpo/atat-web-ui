@@ -15,6 +15,7 @@ export class TableApiBase<TableDTO> extends baseApi {
   }
 
   private urlWithSysId(sys_id: string): string {
+    console.log( `${this.endPoint}/${sys_id}`)
     return `${this.endPoint}/${sys_id}`;
   }
 

@@ -391,7 +391,7 @@ export default class PortfoliosSummary extends Vue {
   }
 
   public async leavePortfolio(): Promise<void> {
-    
+    this.showLeaveModalSpinner = true;
     const userSysId = CurrentUserStore.getCurrentUserData.sys_id;
     if(userSysId) {
       const currentPortfolio = PortfolioStore.currentPortfolio;
@@ -405,10 +405,10 @@ export default class PortfoliosSummary extends Vue {
         const viewers = currentPortfolio.portfolio_viewers.split(',');
         currentPortfolio.portfolio_viewers = viewers.filter(id => id !== userSysId).join(',');
       }
-
       await PortfolioStore.setCurrentPortfolioMembers(currentPortfolio);
       await this.loadPortfolioData();
-      this.showLeaveModalSpinner = true;
+      this.showLeaveModalSpinner = false;
+      this.closeLeavePortfolioModal()
     }
 
     const accessRemovedToast: ToastObj = {
