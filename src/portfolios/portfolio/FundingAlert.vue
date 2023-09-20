@@ -28,7 +28,7 @@ export default class FundingAlert extends Vue {
   @Prop({ default: 0 }) private timeRemaining?: number;
 
   public get isErrorAlert(): boolean {
-    return this.fundsDelinquent || this.popExpired;
+    return this.fundsDelinquent || this.popExpired || this.zeroFundsRemaining;
   }
   public get showAlertHeading(): boolean {
     return this.getAlertHeading !== "" && this.isErrorAlert;
@@ -36,7 +36,7 @@ export default class FundingAlert extends Vue {
   public get getAlertHeading(): string {
     if (this.popExpired) {
       return "This portfolio’s period of performance has expired."
-    } else if (this.fundsDelinquent) {
+    } else if (this.fundsDelinquent || this.zeroFundsRemaining) {
       return "This portfolio is out of funds."
     }
     return "";
@@ -45,6 +45,8 @@ export default class FundingAlert extends Vue {
   get alertType(): string {
     if (this.expiresSoonWithCLIN) {
       return "info"
+    } else if(this.zeroFundsRemaining){
+      return 'error'
     } else if (this.expiresSoonNoCLIN || this.expiresSoonLowFunds || this.lowFunds) {
       return "warning";
     }
@@ -72,6 +74,9 @@ export default class FundingAlert extends Vue {
   public get popExpired(): boolean {
     return this.fundingAlertType === FundingAlertTypes.POPExpired;
   }
+  public get zeroFundsRemaining(): boolean {
+    return this.fundingAlertType === FundingAlertTypes.POPZeroFundsRemaining
+  }
 
   public get getAlertText(): string {
     let str = "";
@@ -83,6 +88,10 @@ export default class FundingAlert extends Vue {
         ? `. You have obligated funds in an upcoming CLIN, so there will be no gap in
           funding for this portfolio.`
         : ", and there are no obligated funds in an upcoming period of performance.";
+    } else if(this.zeroFundsRemaining){
+      str = `This portfolio has reached the authorized funding limit. Additional performance without
+      additional funding is not authorized under this portfolio and is a potential violation of the
+      AntiDeficiency Act. Contact your Task Order Contracting Officer immediately.`;
     } else if (this.expiresSoonLowFunds || this.lowFunds) {
       str = "This portfolio is almost out of funds";
       str += this.lowFunds

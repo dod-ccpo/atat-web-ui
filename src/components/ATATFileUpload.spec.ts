@@ -2,12 +2,10 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
-import {
-  AttachmentService
-} from "@/services/attachment/base";
+
+
 
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
-import { Verify } from "crypto";
 Vue.use(Vuetify);
 
 

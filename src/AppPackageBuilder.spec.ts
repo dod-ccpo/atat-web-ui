@@ -4,7 +4,6 @@ import VueRouter from "vue-router";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
-import SlideoutPanel from "@/store/slideoutPanel/index";
 
 Vue.use(Vuetify);
 

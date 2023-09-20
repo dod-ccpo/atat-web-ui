@@ -16,6 +16,7 @@ import {
   ContractTypeDTO,
   CrossDomainSolutionDTO, 
   CurrentContractDTO,
+  CurrentEnvironmentInstanceDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
   FundingRequestDTO,
@@ -209,6 +210,7 @@ export class SummaryStore extends VuexModule {
   @Mutation
   public doRemoveSummaryItem(itemToDelete: SummaryItem):void{
     this.summaryItems = this.summaryItems.filter(item => item !== itemToDelete)
+
   }
 
   @Mutation
@@ -599,7 +601,7 @@ export class SummaryStore extends VuexModule {
     const hasProposedCSP = fairOpp.proposed_csp !== "";
     const hasJustification = fairOpp.justification !== "";
     const hasMinGovtRequirements = fairOpp.min_govt_requirements !== ""
-      && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
+      && fairOpp.min_govt_requirements !== "The cloud service offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
     return (hasNoFairOpp) ||
       (hasProposedCSP
@@ -1309,7 +1311,7 @@ export class SummaryStore extends VuexModule {
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
-      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
+      || (!!currentContracts && currentContracts.length > 0);
     const isComplete =  currentContractDetailsIsComplete
       || hasCurrentOrPreviousContract === "NO";
 
@@ -1318,9 +1320,7 @@ export class SummaryStore extends VuexModule {
     const prevContracts = currentContracts?.length === 1
       ? `${currentContracts?.length} previous contract:\n${contractNumbers}`
       : `${currentContracts?.length} previous contracts:\n${contractNumbers}`
-
-    const description = isTouched && currentContracts && currentContracts.length > 0
-      && currentContracts[0].contract_number ?
+    const description = isTouched && currentContracts && currentContracts.length > 0?
       hasCurrentOrPreviousContract === "YES"
         ? prevContracts
         : "No previous contracts"
@@ -1341,7 +1341,39 @@ export class SummaryStore extends VuexModule {
     await this.doSetSummaryItem(procurementHistorySummaryItem)
   }
   @Action({rawError: true})
+  public async isCurrentEnvironmentComplete(
+    environmentInstances: CurrentEnvironmentInstanceDTO[]
+  ): Promise<boolean>{
+    const requiredFields = [
+      "instance_location",
+      "classification_level",
+      "current_usage_description",
+      "users_per_region",
+      "operating_system",
+      "licensing",
+      "number_of_vcpus",
+      "processor_speed",
+      "memory_amount",
+      "storage_type",
+      "storage_amount",
+      "performance_tier",
+      "number_of_instances",
+      "data_egress_monthly_amount",
+      "pricing_model",
+    ];
+    const results:boolean[] = []
+    for(const instance of environmentInstances){
+      const instanceKeys = Object.keys(instance)
+      const keysToIgnore = instanceKeys.filter(key => requiredFields.indexOf(key) === -1)
+      const complete = await this.isComplete({object:instance, keysToIgnore:keysToIgnore})
+      results.push(complete)
+    }
+    return results.every(value => value)
+  }
+
+  @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
+
     const classificationLevels = await ClassificationRequirements.getAllClassificationLevels()
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
     const currentEnvironmentInstances = await  CurrentEnvironment.getCurrentEnvironmentInstances()
@@ -1369,10 +1401,12 @@ export class SummaryStore extends VuexModule {
     }else if(envLocation === "CLOUD" && envCloudClass){
       locationHasClassification = envCloudClass?.length > 0
     }
+    const isCurrentEnvironmentComplete
+        = this.isCurrentEnvironmentComplete(currentEnvironmentInstances)
     const isTouched = currentEnvironment?.current_environment_exists !== "";
     const isComplete =  currentEnvironment?.current_environment_exists === "NO"
     // eslint-disable-next-line max-len
-    || systemDocsComplete && migrationDocsComplete && locationHasClassification && currentEnvironmentInstances.length > 0;
+    || systemDocsComplete && migrationDocsComplete && locationHasClassification && await isCurrentEnvironmentComplete;
     let description = ""
     if(currentEnvironmentInstances.length){
       const onPremInstances:Record<string, number> = {}

@@ -2,14 +2,13 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
-import {FundingAlertTypes, PortfolioDataStore} from "@/store/portfolio/index";
+import { PortfolioDataStore} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import Vue from "vue";
-import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import UserStore from "@/store/user";
-import {AlertDTO, PortfolioSummaryDTO} from '@/api/models';
-import {MemberInvites, Portfolio, User} from 'types/Global';
-import {api} from "@/api";
+import {AlertDTO} from '@/api/models';
+import { Portfolio} from 'types/Global';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 

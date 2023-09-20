@@ -5,7 +5,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import FOIACoordinator from "./FOIACoordinator.vue";
 import validators from "@/plugins/validation";
-import { RadioButton, SelectData } from "../../../types/Global";
+import { SelectData } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 Vue.use(Vuetify);

@@ -1,6 +1,7 @@
 <template>
   <div class="_dashboard">
     <v-container class="container-max-width">
+      <FinancialDetailsAlert />
       <v-row v-if="showFundingAlert">
         <v-col>
           <FundingAlert
@@ -24,7 +25,6 @@
                       This portfolio was archived on {{ lastUpdated }}
                     </template>
                   </ATATAlert>
-                  <FinancialDetailsAlert />
                 </div>
               <div class="d-flex justify-space-between width-100 mb-10">
                 <h2>Overview</h2>
@@ -165,7 +165,7 @@
                         '% of Funds Spent'
                       "
                       :show-label-on-hover="false"
-                      :isError="arePoPFundsDelinquent"
+                      :isError="arePoPFundsDelinquent || zeroFundsRemaining"
                     />
                     <v-divider class="my-4" />
                     <p v-if="hasExpired && !isLoading" class="mb-0 font-size-14">
@@ -174,7 +174,7 @@
                     </p>
                     <p
                       class="mb-0 font-size-14"
-                      v-else-if="arePoPFundsDelinquent && !isLoading"
+                      v-else-if="(arePoPFundsDelinquent || zeroFundsRemaining) && !isLoading"
                     >
                       You’ve spent
                       <strong>{{ fundsSpentPercentForArcChart }}%</strong>
@@ -187,7 +187,6 @@
                       <span v-else>
                         in this PoP.
                       </span>
-
                     </p>
                     <p class="mb-0 font-size-14" v-else-if="!isLoading">
                       At your current rate of spending, you will run out of funds by
@@ -418,6 +417,20 @@
                       :fundingAlertType="fundingAlertType"
                       v-if="arePoPFundsDelinquent"
                     />
+                    <ATATAlert
+                    id="ZeroRemainingFunds"
+                    type="error"
+                    class="my-5"
+                    v-if="zeroFundsRemaining"
+                    >
+                      <template v-slot:content>
+                      <p class="mb-0">
+                        You have <span class="font-weight-bold">0%</span> remaining in your
+                        portfolio for this period of performance. Add funds to a new or existing
+                        task order as soon as possible to continue working with this portfolio.
+                      </p>
+                    </template>
+                  </ATATAlert>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
                         <DonutChart
@@ -819,7 +832,6 @@ import { FundingAlertTypes } from "@/store/portfolio";
 import { createDateStr, toCurrencyString, getCurrencyString, getIdText, roundTo100 } 
   from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
-
 import { add, addDays, isAfter, isThisMonth, startOfMonth, 
   subDays, addMonths, format, differenceInMonths } from "date-fns";
 import parseISO from "date-fns/parseISO";
@@ -836,7 +848,6 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
 import PortfolioStore from "@/store/portfolio";
-import Portfolio from "@/store/portfolio";
 
 @Component({
   components: {
@@ -871,6 +882,7 @@ export default class PortfolioDashboard extends Vue {
   public availableFunds = 0;
   public fundsSpentPercent = 0;
   public fundsSpentPercentForArcChart = 0;
+  public zeroFundsRemaining = false;
 
   public currentPoPStartStr = "";
   public currentPoPStartISO = "";
@@ -961,7 +973,7 @@ export default class PortfolioDashboard extends Vue {
   }
 
   private get hasTimeSensitiveAlert(): boolean {
-    return this.daysUntilEndDate <= 60 && !this.hasObligatedFundsInUpcomingCLIN;
+    return !this.hasObligatedFundsInUpcomingCLIN;
   }
   private get arePoPFundsLow(): boolean {
     return this.fundsSpentPercent >= 75 && this.fundsSpentPercent < 100;
@@ -984,7 +996,7 @@ export default class PortfolioDashboard extends Vue {
     return this.fundingAlertType.length > 0;
   }
 
-  private get fundingAlertType(): string {
+  public get fundingAlertType(): string {
     if (!this.isLoading) {
       if (this.hasExpired) {
         return FundingAlertTypes.POPExpired;
@@ -1003,6 +1015,9 @@ export default class PortfolioDashboard extends Vue {
       }
       if (this.arePoPFundsLow) {
         return FundingAlertTypes.POPLowFunds;
+      }
+      if(this.zeroFundsRemaining){
+        return FundingAlertTypes.POPZeroFundsRemaining
       }
 
     }
@@ -1137,26 +1152,33 @@ export default class PortfolioDashboard extends Vue {
       clinCosts[clinNo] = clinValues;
     });
 
-    if (uniqueClinNumbersInCostsData.length && this.endOfMonthForecast) {
+    let estimatedFundsToBeInvoiced = this.endOfMonthForecast
+      ? this.endOfMonthForecast
+      : this.totalPortfolioFunds / this.monthsInPoP;
+
+    if (this.fundsSpentPercent === 100) {
+      this.estimatedFundsToBeInvoicedPercent = 0;
+      estimatedFundsToBeInvoiced = 0;
+      this.estimatedRemainingPercent = 0;
+      this.zeroFundsRemaining = true;
+    } else if (uniqueClinNumbersInCostsData.length && this.endOfMonthForecast) {
       this.estimatedFundsToBeInvoicedPercent =
         (this.endOfMonthForecast / this.totalPortfolioFunds) * 100;
-
       this.estimatedRemainingPercent = this.fundsSpentPercent < 100
         ? 100 - this.fundsSpentPercent - this.estimatedFundsToBeInvoicedPercent
         : 0;
     } else if (uniqueClinNumbersInCostsData.length && this.monthsInPoP) {
       this.estimatedFundsToBeInvoicedPercent = 1 / this.monthsInPoP * 100;
-      this.estimatedRemainingPercent = 100 - this.estimatedFundsToBeInvoicedPercent;
-    } else {
-      this.estimatedFundsToBeInvoicedPercent = 0;
-      this.estimatedRemainingPercent = 0;
+      this.estimatedRemainingPercent = 100 - (
+        this.estimatedFundsToBeInvoicedPercent + this.fundsSpentPercent
+      );
     }
 
-    let estimatedFundsToBeInvoiced = this.endOfMonthForecast
-      ? this.endOfMonthForecast
-      : this.totalPortfolioFunds / this.monthsInPoP;
 
-    let estimatedAvailable = (this.totalPortfolioFunds * this.estimatedRemainingPercent) / 100;
+
+    let estimatedAvailable = this.totalPortfolioFunds  - (
+      estimatedFundsToBeInvoiced + this.fundsSpent
+    )
     if (this.costs.length === 0) {
       estimatedAvailable = this.totalPortfolioFunds;
       this.estimatedRemainingPercent = 100;
@@ -1625,7 +1647,6 @@ export default class PortfolioDashboard extends Vue {
       amount: this.getCurrencyString(this.availableFunds),
       legend: "Funds Available",
     };
-
     this.fundsSpentPercent = (this.fundsSpent / this.totalPortfolioFunds) * 100;
 
     if (!isNaN(this.fundsSpentPercent)) {

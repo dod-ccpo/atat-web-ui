@@ -70,6 +70,7 @@ import Steps from "@/store/steps";
 import TaskOrderSearchModal from "./components/TaskOrderSearchModal.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
+
 @Component({
   components: {
     PortfoliosSummary,

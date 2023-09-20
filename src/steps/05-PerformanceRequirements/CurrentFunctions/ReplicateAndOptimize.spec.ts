@@ -11,7 +11,6 @@ import validators from "@/plugins/validation";
 import Vuex from "vuex";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
-import Steps from "@/store/steps";
 
 Vue.use(Vuetify);
 

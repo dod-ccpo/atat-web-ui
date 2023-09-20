@@ -138,10 +138,10 @@ describe("Testing Members Component", () => {
 
   it("test moreMenuItemActions data", async () => {
     expect(wrapper.vm.$data.moreMenuItemActions).toStrictEqual({
-    openArchivePortfolioModal: "openArchivePortfolioModal",
-    moveToInput: "moveToInput",
-    openModal: "openModal",
-    leaveThisPortfolio: "leaveThisPortfolio"
+      openArchivePortfolioModal: "openArchivePortfolioModal",
+      moveToInput: "moveToInput",
+      openModal: "openModal",
+      leaveThisPortfolio: "leaveThisPortfolio"
     })
   })
 
@@ -159,11 +159,11 @@ describe("Testing Members Component", () => {
         action: "moveToInput"
       },
       {
-      id: "ArchivePortfolio_MenuItem",
-      title: "Archive portfolio",
-      action: "openArchivePortfolioModal"
-    }
-  ])
+        id: "ArchivePortfolio_MenuItem",
+        title: "Archive portfolio",
+        action: "openArchivePortfolioModal"
+      }
+    ])
   })
 
   it("test getMoreMenuItems () => MeatballMenuItems[] as Manager", async () => {
@@ -190,7 +190,7 @@ describe("Testing Members Component", () => {
         title: "Rename portfolio",
         action: "moveToInput"
       }
-  ])
+    ])
   })
 
   it("test getMoreMenuItems () => MeatballMenuItems[] as Viewer", async () => {
@@ -207,6 +207,6 @@ describe("Testing Members Component", () => {
         title: "Leave this portfolio",
         action: 'leaveThisPortfolio'
       }
-  ])
+    ])
   })
 })
