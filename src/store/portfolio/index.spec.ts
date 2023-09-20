@@ -131,6 +131,11 @@ describe("Portfolio Store", () => {
     expect(portfolio.title).toBe(dummyTitle)
   })
 
+  it('setShowLeavePortfolioModal()', async()=>{
+    await portfolioStore.setShowLeavePortfolioModal(true)
+    expect(portfolioStore.showLeavePortfolioModal).toBe(true)
+  })
+
 })
 
 

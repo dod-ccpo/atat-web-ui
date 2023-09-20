@@ -4,9 +4,10 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import PortfolioSummaryStore from "@/store/portfolioSummary"
-import { PortfolioSummaryDTO } from "@/api/models";
+import { PortfolioSummaryDTO, UserDTO } from "@/api/models";
 import Toast from "@/store/toast";
 import PortfolioStore from "@/store/portfolio";
+import CurrentUserStore from "@/store/user";
 
 Vue.use(Vuetify);
 
@@ -27,8 +28,8 @@ const portfolios: PortfolioSummaryDTO[] = [
     funds_obligated: 10000,
     portfolio_status: "PROCESSING",
     portfolio_owner: "",
-    portfolio_managers: "",
-    portfolio_viewers: "",
+    portfolio_managers: "4567,1234",
+    portfolio_viewers: "7890,5432",
     funds_spent: 5000,
     task_orders: [],
     active_task_order: "",
@@ -318,5 +319,41 @@ describe("Testing index Component", () => {
       const portfolioStatuses = wrapper.vm.filteredPortfolios()
       expect(portfolioStatuses).toStrictEqual(["ARCHIVED"])
     });
+
+  it("test openLeavePortfolioModals()", async () => {
+    await wrapper.vm.openLeavePortfolioModal()
+    expect(PortfolioStore.showLeavePortfolioModal).toBe(true)
+  });
+
+  it("test closeLeavePortfolioModals()", async () => {
+    await wrapper.vm.closeLeavePortfolioModal()
+    expect(PortfolioStore.showLeavePortfolioModal).toBe(false)
+  });
+
+  it("Tests leavePortfolio()", async () => {
+    /* eslint-disable */
+    const mockUser: UserDTO = {
+      last_login_time: "01/02/03",
+      name: "Test User",
+      first_name: "Test",
+      last_name: "User",
+      user_name: "TestUser",
+      email: "Test@email.mil",
+      company: "Rando company",
+      mobile_phone: "123-456-7890",
+      phone: "123-456-7890",
+      home_phone: "123-456-7890",
+      title: "User Title",
+      sys_id: '1234'
+    }
+    /* eslint-enable */ 
+    const setCurrent = jest.spyOn(PortfolioStore, 'setCurrentPortfolioMembers').mockImplementation()
+    CurrentUserStore.setCurrentUser(mockUser)
+    await PortfolioStore.setCurrentPortfolio(portfolios[0])
+    await wrapper.vm.leavePortfolio()
+    expect(setCurrent).toBeCalled()
+    expect(wrapper.vm.$data.showLeaveModalSpinner).toBe(false)
+    expect(PortfolioStore.showLeavePortfolioModal).toBe(false)
+  });
 
 });
