@@ -50,6 +50,7 @@ describe("Portfolio Store", () => {
     const createStore = (storeOptions: any = {}):
         Store<{ portfolio: any }> => new Vuex.Store({ ...storeOptions });
     portfolioStore = getModule(PortfolioDataStore, createStore());
+    /* eslint-disable */ 
     AcquisitionPackage.setProjectOverview({
       title: "",
       scope: "",
@@ -57,6 +58,7 @@ describe("Portfolio Store", () => {
       project_disclaimer: "",
       cjadc2: ""
     })
+    /* eslint-enable */ 
     AcquisitionPackage.setOrganization({})
     // AcquisitionPackage.setAcquisitionPackage({
     //   contract_award: {
@@ -124,6 +126,7 @@ describe("Portfolio Store", () => {
   })
 
   it('Test setAlerts- sets alerts to the passed in value', async () => {
+    /* eslint-disable */ 
     const mockAlerts: AlertDTO[] = [
       {
         clin: "",
@@ -144,6 +147,7 @@ describe("Portfolio Store", () => {
         portfolio: "",
       },
     ];
+    /* eslint-enable */ 
     portfolioStore.setAlerts(mockAlerts);
     Vue.nextTick(() => {
       expect(portfolioStore.alerts).toBe(mockAlerts);
