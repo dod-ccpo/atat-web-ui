@@ -109,8 +109,8 @@ export const ExceptionToFairOpportunityResolver = (current:string): string =>{
       [routeNames.AcorInformation, routeNames.AlternateCor, routeNames.SummaryStepOne].includes(current)
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
   return isFromStepOne
-      ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.Exceptions
-      : routeNames.SummaryStepTwo;
+    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.Exceptions
+    : routeNames.SummaryStepTwo;
 }
 
 export const EvalPlanRouteResolver = (current: string): string => {
