@@ -1901,17 +1901,13 @@ export class AcquisitionPackageStore extends VuexModule {
 
       this.setInitialized(true);
       this.setIsLoading(false);
-      await Summary.validateStepOne();
-      await Summary.validateStepTwo();
-      await Summary.validateStepThree();
-      await Summary.validateStepFour();
-      await Summary.validateStepFive();
-      await Summary.validateStepSix();
-      await Summary.validateStepSeven();
-      await Summary.validateStepEight();
+      await this.createSummaryItems();
+
+
     } else {
       await this.initialize();
     }
+
   }
 
   // @Mutation
@@ -1919,9 +1915,24 @@ export class AcquisitionPackageStore extends VuexModule {
   //   this.periods = value;
   // }
 
+  @Action({rawError: true})
+  public async createSummaryItems(): Promise<void>{
+    await Summary.clearSummaryItems();
+    // analyze store to create Summary.summaryItems
+    Summary.setHasCurrentStepBeenVisited(false);
+    await Summary.validateStepOne();
+    await Summary.validateStepTwo();
+    await Summary.validateStepThree();
+      await Summary.validateStepFour();
+    await Summary.validateStepFive();
+    await Summary.validateStepSix();
+    await Summary.validateStepSeven();
+    await Summary.validateStepEight();
+  }
+
+
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-
     if (this.initialized) {
       return;
     }
@@ -2015,6 +2026,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await Periods.initialize();
     this.setPackagePercentLoaded(100);
     this.setIsLoading(false);
+    await this.createSummaryItems();
   }
 
   // service or agency selected on Organiation page

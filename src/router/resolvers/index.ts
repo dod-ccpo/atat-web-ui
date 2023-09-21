@@ -27,15 +27,17 @@ export const showDITCOPageResolver = (current: string): string => {
     ? routeNames.DAPPSChecklist 
     : routeNames.ContractingShop;
 };
-export const ContractingShopRouteResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
-  return (current === routeNames.DAPPSChecklist)
-    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ContractingShop
-    :routeNames.SummaryStepOne
-}
+
+
+export const ContractingInfoResolver = (current: string): string => {
+  const isNotDITCO = AcquisitionPackage.contractingShop === "OTHER";
+  return isNotDITCO
+    ? routeNames.ContractingOfficeInfo
+    : routeNames.ProjectOverview
+};
+
 export const ProjectOverviewResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
-  return (current === routeNames.ContractingOfficeInfo||current === routeNames.ContractingShop)
+  return current.toUpperCase().includes("CONTRACTING")
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ProjectOverview
     :routeNames.SummaryStepOne
 }
@@ -103,12 +105,12 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 
 export const ExceptionToFairOpportunityResolver = (current:string): string =>{
   const isFromStepOne =
-  // eslint-disable-next-line max-len
-    [routeNames.AcorInformation, routeNames.AlternateCor, routeNames.SummaryStepOne].includes(current)
+      // eslint-disable-next-line max-len
+      [routeNames.AcorInformation, routeNames.AlternateCor, routeNames.SummaryStepOne].includes(current)
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
   return isFromStepOne
-    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.Exceptions
-    : routeNames.SummaryStepTwo;
+      ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.Exceptions
+      : routeNames.SummaryStepTwo;
 }
 
 export const EvalPlanRouteResolver = (current: string): string => {
@@ -116,7 +118,6 @@ export const EvalPlanRouteResolver = (current: string): string => {
     ? routeNames.SummaryStepTwo
     : routeNames.CreateEvalPlan
 }
-
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
@@ -500,19 +501,6 @@ export const A11yRequirementResolver = (current: string): string => {
     : routeNames.Section508Standards;
 };
 
-
-export const ContractingInfoResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
-  const needsContractInformation =
-      AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
-
-  if (needsContractInformation) {
-    return routeNames.ContractingOfficeInfo;
-  }
-  return current === routeNames.ContractingShop 
-    ? routeNames.ProjectOverview
-    : routeNames.SummaryStepOne;
-};
 
 /****************************************************************************/
 /****************************************************************************/
@@ -1840,7 +1828,6 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   showDITCOPageResolver,
-  ContractingShopRouteResolver,
   ProjectOverviewResolver,
   OrganizationResolver,
   ContactInformationResolver,
@@ -1906,7 +1893,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SummaryStepTwoRouteResolver,
   FundingPlanTypeResolver,
   SeverabilityAndIncrementalFundingResolver,
-  CreatePriceEstimateResolver
+  CreatePriceEstimateResolver,
 };
 
 // add path resolvers here 
