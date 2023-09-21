@@ -109,7 +109,7 @@ export class DashboardService {
     const taskOrderStart = parseISO(taskOrder.pop_start_date);
     const taskOrderNotStarted = isBefore(parseISO(today), taskOrderStart);
     if (taskOrderNotStarted) {
-      query +="^clin_numberSTARTSWITH01";
+      query +="^clin_numberSTARTSWITH00";
     } else {
       query += "^pop_end_date>=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
       query += "^pop_start_date<=javascript:gs.dateGenerate('" + today + "', '23:59:59')";
