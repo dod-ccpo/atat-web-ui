@@ -1,3 +1,4 @@
+/* eslint-disable cypress/unsafe-to-chain-command */
 import {
   colors,
   randomString,
@@ -170,10 +171,11 @@ describe("Test suite: Step04-Procurement History", () => {
 
     cy.log("Validation error for contract number, if morethan 13 characters");
     cy.findElement(background.contractNoTxtBox).type(validContractNo);
-    cy.clickSomethingElse(background.startDateTextField).then(() => {
-      cy.findElement(background.contractNoTxtBox).scrollIntoView();
-      cy.findElement(background.contractNoTxtError).should("not.exist");
-    });
+    cy.clickSomethingElse(background.startDateTextField)
+      .then(() => {
+        cy.findElement(background.contractNoTxtBox).scrollIntoView();
+        cy.findElement(background.contractNoTxtError).should("not.exist");
+      });
     cy.findElement(background.contractNoTxtBox).type(invalidContractNo)
       .blur({
         force: true

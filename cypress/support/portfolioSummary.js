@@ -1,3 +1,4 @@
+/* eslint-disable cypress/unsafe-to-chain-command */
 import common from '../selectors/common.sel';
 import 'cypress-iframe';
 import ps from "../selectors/portfolioSummary.sel";

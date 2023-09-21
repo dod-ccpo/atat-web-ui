@@ -1,3 +1,4 @@
+/* eslint-disable cypress/unsafe-to-chain-command */
 import {
   colors, randomNumber,randomString,formatDateInMMDDYYYY
 } from "../../../helpers";    
