@@ -1,4 +1,4 @@
-/* eslint-disable cypress/unsafe-to-chain-command */
+
 import {
   randomString,
   randomNumber,
@@ -21,14 +21,14 @@ describe("Test suite: Unique Source", () => {
   const csp = "AWS";
   const descJustifictionInput = "Tesing Restorebtn-"+randomString(3);
   const gcp="Google";
-  const conTxt_A_B="Your explanation should clearly show that "+
+  const conTxtAB="Your explanation should clearly show that "+
     csp+
     " is the ONLY source capable of performing the required work."+
     " Do not indicate that your source is the “only known source” "+
     "unless you fully describe the process undertaken to make that "+
     "determination (including items such as “sources sought” "+
     "synopsis posted on the Federal Business Opportunities website.)";
-  const ConTxt_C="Your explanation should clearly show that "+
+  const conTxtC="Your explanation should clearly show that "+
     gcp +
     " is the ONLY source capable of performing the required work. "+
     "Do not indicate that your source is the “only known source” "+
@@ -87,7 +87,7 @@ describe("Test suite: Unique Source", () => {
     ) ;
     cy.clickContentLink();
     if(fairopp==urgent || oneCSP){
-      cy.contains(fo.instructionContentText,conTxt_A_B);
+      cy.contains(fo.instructionContentText,conTxtAB);
     }
     cy.findElement(fo.instructionLink).click();
     cy.findElement(fo.descJustifictionInput).type(descJustifictionInput).click();
@@ -135,7 +135,7 @@ describe("Test suite: Unique Source", () => {
       "Why is "+gcp+" the only source capable of meeting your requirements?"
     );       
     cy.clickContentLink();
-    cy.verifyTextMatches(fo.instructionContentText,cleanText(ConTxt_C));        
+    cy.verifyTextMatches(fo.instructionContentText,cleanText(conTxtC));        
             
   })
 

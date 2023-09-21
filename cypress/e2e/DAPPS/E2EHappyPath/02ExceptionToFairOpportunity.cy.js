@@ -1,4 +1,3 @@
-/* eslint-disable cypress/unsafe-to-chain-command */
 import {
   randomString,
   randomAlphaNumeric,

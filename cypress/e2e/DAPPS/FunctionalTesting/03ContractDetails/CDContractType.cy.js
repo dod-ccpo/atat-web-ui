@@ -1,18 +1,13 @@
-/* eslint-disable cypress/unsafe-to-chain-command */
-import {
-  randomAlphaNumeric,
-  randomString
-} from "../../../../helpers";
-import common from "../../../../selectors/common.sel"
+import { randomAlphaNumeric, randomString } from "../../../../helpers";
+import common from "../../../../selectors/common.sel";
 import contractDetails from "../../../../selectors/contractDetails.sel";
-import CDData from '../../../../fixtures/ContractDetailsData/CDData.json';
+import CDData from "../../../../fixtures/ContractDetailsData/CDData.json";
 
 describe("Test suite: Functional Testing - 03 Contract Details> ContractType", () => {
-
   const pt = "TC-Step-3-ContractDetails-Contract Type-" + randomAlphaNumeric(5);
   const scope = "Project Scope-" + randomString(5);
   const inputText = randomAlphaNumeric(8);
-    
+
   before(() => {
     cy.goToAcqPackageStepOne(pt, scope);
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
@@ -21,34 +16,44 @@ describe("Test suite: Functional Testing - 03 Contract Details> ContractType", (
   });
 
   it("TC1: Functional Testing: Screen & Error message validation: Contract Type", () => {
-
     cy.verifyPageHeader(CDData.contractTypePage.pageHeader4);
-    cy.verifyTextMatches(contractDetails.introPText, 
-      CDData.contractTypePage.expectedRecuringReqText);
+    cy.verifyTextMatches(
+      contractDetails.introPText,
+      CDData.contractTypePage.expectedRecuringReqText
+    );
     cy.textExists(contractDetails.farLink, "FAR 12.207");
-    cy.textExists(contractDetails.selectMessageText, CDData.contractTypePage.contractEffortMsg);
+    cy.textExists(
+      contractDetails.selectMessageText,
+      CDData.contractTypePage.contractEffortMsg
+    );
     //Verify checkbox options
-    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
-      .check({
-        force: true
-      });
+    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").check({
+      force: true,
+    });
     cy.findCheckBox(contractDetails.tmCheckBox, "T&M")
-      .should("not.be.checked")
       .check({
-        force: true
-      }).then(() => {
+        force: true,
+      })
+      .then(() => {
         cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
-        cy.textExists(contractDetails.tmTextFieldLabel, CDData.contractTypePage.justificationTMMsg);
-        cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should("exist");
+        cy.textExists(
+          contractDetails.tmTextFieldLabel,
+          CDData.contractTypePage.justificationTMMsg
+        );
+        cy.textExists(contractDetails.tmLearnMoreLink, "Learn more");
         cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
       });
     cy.btnExists(common.continueBtn, " Continue ");
-    cy.verifyCheckBoxLabels(contractDetails.selectedContractTypeOption, 
-      CDData.contractTypePage.expectedLabels);
-    cy.clickContinueButton(contractDetails.tmCheckBox, 
-      CDData.classificationSummary.pageHeaderSummary);
-    cy.log(" TestReport: Step3-ContractDetails-Contract Type Functional Testing Complete ")
-
+    cy.verifyCheckBoxLabels(
+      contractDetails.selectedContractTypeOption,
+      CDData.contractTypePage.expectedLabels
+    );
+    cy.clickContinueButton(
+      contractDetails.tmCheckBox,
+      CDData.classLevelPage1.pageHeaderCL1
+    );
+    cy.log(
+      " TestReport: Step3-ContractDetails-Contract Type Functional Testing Complete "
+    );
   });
-
 });

@@ -1,4 +1,3 @@
-/* eslint-disable cypress/unsafe-to-chain-command */
 import "cypress-iframe";
 import "@4tw/cypress-drag-drop";
 import "cypress-real-events/support";

@@ -1,4 +1,3 @@
-/* eslint-disable cypress/unsafe-to-chain-command */
 /* eslint-disable cypress/no-unnecessary-waiting */
 import 'cypress-iframe';
 import { cleanText} from "../helpers";
