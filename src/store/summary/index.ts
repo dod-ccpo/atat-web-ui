@@ -1346,7 +1346,6 @@ export class SummaryStore extends VuexModule {
       "performance_tier",
       "number_of_instances",
       "data_egress_monthly_amount",
-      "pricing_model",
     ];
     const results:boolean[] = []
     for(const instance of environmentInstances){
@@ -1360,7 +1359,6 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
-
     const classificationLevels = await ClassificationRequirements.getAllClassificationLevels()
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
     const currentEnvironmentInstances = await  CurrentEnvironment.getCurrentEnvironmentInstances()
@@ -1395,6 +1393,7 @@ export class SummaryStore extends VuexModule {
     // eslint-disable-next-line max-len
     || systemDocsComplete && migrationDocsComplete && locationHasClassification && await isCurrentEnvironmentComplete;
     let description = ""
+    const deployedLocations:string[] = []
     if(currentEnvironmentInstances.length){
       const onPremInstances:Record<string, number> = {}
       const cloudInstances:Record<string, number> = {}
@@ -1402,6 +1401,12 @@ export class SummaryStore extends VuexModule {
         const classification = classificationLevels
           .find(CL=> CL.sys_id === instance.classification_level)
         if(classification){
+          if(classification.display){
+            const classificationLocation = classification?.display.split("-")[0]
+            if(!deployedLocations.includes(classificationLocation)){
+              deployedLocations.push(classificationLocation as string)
+            }
+          }
           const key = buildClassificationLabel(classification,"short")
           if(instance.instance_location==="CLOUD"){
             cloudInstances[key] = (cloudInstances[key] || 0) +1
@@ -1409,34 +1414,31 @@ export class SummaryStore extends VuexModule {
             onPremInstances[key] = (onPremInstances[key] || 0) +1
           }
         }
+        console.log(deployedLocations)
       })
+
+      const classificationLabels: Record<string, Record<string, string>> = {
+        CLOUD: {
+          IL2: "Unclassified / IL2",
+          IL4: "Unclassified / IL4",
+          IL5: "Unclassified / IL5",
+          IL6: "Secret / IL6",
+          TS: "Top Secret",
+        },
+        ON_PREM: {
+          IL2: "Unclassified (DoD information approved for public release)",
+          IL4: "Unclassified (DoD CUI)",
+          IL5: "Unclassified (DoD CUI & National Security Systems)",
+          IL6: "Secret",
+          TS: "Top Secret",
+        },
+      }
+      const showMoreData = {}
 
       const envString = envLocation === "HYBRID"?"Hybrid"
         :envLocation === "CLOUD"?"Cloud":"On-premise"
-      const startString = `${envString}`
-      const onPremString = Object.keys(onPremInstances).map(key => {
-        const instance = Number(onPremInstances[key]) > 1? "instances":"instance"
-        if(envString === "Hybrid"){
-          return `${onPremInstances[key]} on-premise ${instance} (${key})`
-        }
-        return `${onPremInstances[key]} ${instance} (${key})`
-      })
-      const cloudString = Object.keys(cloudInstances).map(key => {
-        const instance = Number(cloudInstances[key]) > 1? "instances":"instance"
-        if(envString === "Hybrid"){
-          return `${cloudInstances[key]} cloud ${instance} (${key})`
-        }
-        return `${cloudInstances[key]} ${instance} (${key})`
-      })
-      description += startString
-      if(envLocation === "HYBRID"){
-        description +=` environment:<br>${convertStringArrayToCommaList(cloudString,"and")}
-        ${convertStringArrayToCommaList(onPremString,"and")}`
-      }else if(envLocation === "ON_PREM"){
-        description +=` environment:<br>${convertStringArrayToCommaList(onPremString,"and")}`
-      }else if(envLocation === "CLOUD"){
-        description += ` environment:<br>${convertStringArrayToCommaList(cloudString,"and")}`
-      }
+      // eslint-disable-next-line max-len
+      description = `${envString} environment deployed in ${convertStringArrayToCommaList(deployedLocations, "and")}`
     }
     if(currentEnvironment?.current_environment_exists === "NO"){
       description = "No existing environment"
@@ -1447,7 +1449,7 @@ export class SummaryStore extends VuexModule {
       isComplete,
       isTouched,
       hasDelete:false,
-      hasShowMore:false,
+      hasShowMore:currentEnvironment?.current_environment_exists !== "NO",
       routeName: "CurrentEnvironment",
       step: 4,
       substep: 2
