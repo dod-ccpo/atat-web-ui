@@ -573,7 +573,7 @@ export interface FundingRequestDTO extends BaseTableDTO {
   funding_request_type?: string;
   mipr?: string;
   appropriation_fiscal_year?: string;
-  appropriation_funds_type?: "" | "O_M" | "RDT_E" | "PROCUREMENT";
+  appropriation_funds_type?: "" | "O_M" | "RDT_E" | "PROCUREMENT" | "W_C";
 }
 
 export interface FundingIncrementDTO extends BaseTableDTO{
