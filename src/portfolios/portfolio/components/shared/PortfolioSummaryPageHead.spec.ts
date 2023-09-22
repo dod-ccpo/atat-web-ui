@@ -135,6 +135,11 @@ describe("Testing Members Component", () => {
     await wrapper.vm.handleMoreMenuClick('openArchivePortfolioModal')
     expect(openArchivePortfolioModalSpy).toHaveBeenCalled()
   })
+  
+  it("test handleMoreMenuClick() => leaveThisPortfolio", async () => {
+    await wrapper.vm.handleMoreMenuClick('leaveThisPortfolio')
+    expect(wrapper.emitted("leavePortfolio")).toBeTruthy()
+  })
 
   it("test moreMenuItemActions data", async () => {
     expect(wrapper.vm.$data.moreMenuItemActions).toStrictEqual({

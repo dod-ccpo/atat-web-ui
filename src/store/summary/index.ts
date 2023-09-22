@@ -14,7 +14,8 @@ import {
   ContactDTO,
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO,
+  CrossDomainSolutionDTO, 
+  CurrentContractDTO,
   CurrentEnvironmentInstanceDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
@@ -202,17 +203,21 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError:true})
-  public removeSummaryItem(step: number, subStep: number):void{
-    this.doRemoveSummaryItem(step,subStep);
+  public removeSummaryItem(itemToDelete: SummaryItem):void{
+    this.doRemoveSummaryItem(itemToDelete);
   }
 
   @Mutation
-  public doRemoveSummaryItem(step:number,subStep:number):void{
+  public doRemoveSummaryItem(itemToDelete: SummaryItem):void{
+    this.summaryItems = this.summaryItems.filter(item => item !== itemToDelete)
 
-    const newSummaryItem = this.summaryItems
-      .filter(item => item.step !== step && item.substep !== subStep)
-    this.summaryItems = newSummaryItem
   }
+
+  @Mutation
+  public async clearSummaryItems():Promise<void>{
+    this.summaryItems = [];
+  }
+
 
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
@@ -233,9 +238,7 @@ export class SummaryStore extends VuexModule {
     await this.assessOrganizationDetails();
     await this.assessPrimaryPOC();
     await this.assessCOR();
-    if(AcquisitionPackage.hasAlternativeContactRep){
-      await this.assessACOR()
-    }
+    await this.assessACOR()
   }
   @Action({rawError: true})
   public async assessAcquisitionDetails(): Promise<void>{
@@ -480,7 +483,17 @@ export class SummaryStore extends VuexModule {
       step:1,
       substep: 5
     }
-    await this.doSetSummaryItem(ACORDetails)
+    if(AcquisitionPackage.hasAlternativeContactRep){
+      await this.doSetSummaryItem(ACORDetails)
+    } else {  //remove existingACOR item if necessary
+      const existingACORSummaryItem = this.summaryItems.find(
+        si => si.routeName.toUpperCase() === "ACORINFORMATION"
+      ) as SummaryItem;
+      if (existingACORSummaryItem){
+        await this.removeSummaryItem(existingACORSummaryItem)
+      }
+    }
+    
   }
 
 
@@ -2152,7 +2165,7 @@ export class SummaryStore extends VuexModule {
     const data = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
     const hasSupportingDocs = await this.hasSupportingIGCEDocumentation(data); 
     const isTouched = await this.isRCETouched({data, hasSupportingDocs});
-    const isComplete = await this.isRCEComplete({data, hasSupportingDocs});
+    const isComplete = await this.isRCEComplete({data});
     await this.getCostSummary(isComplete);
    
     const requirementsCostEstimateSummaryItem: SummaryItem = {
@@ -2239,20 +2252,22 @@ export class SummaryStore extends VuexModule {
   public async isRCEComplete (
     rce:{
       data: RequirementsCostEstimateDTO
-      hasSupportingDocs: boolean
     }): Promise<boolean> {
-    return await this.hasReplicateOrOptimizeAction(rce.data)
-      && await this.hasArchitecturalDesigns(rce.data)
-      && await this.hasCostEstimates()
-      && await this.hasIGCETraining()
-      && await this.hasIGCETravel(rce.data)
-      && await this.hasSurgeRequirements(rce.data)
-      && await this.hasChargedFee(rce.data)
-      && await this.hasHowEstimatesDeveloped(rce.data)
+  
+    return await this.hasCompletedReplicateOrOptimizeAction(rce.data)
+      && await this.hasCompletedArchitecturalDesigns(rce.data)
+      && await this.hasCompletedCostEstimates()
+      && await this.hasCompletedIGCETraining()
+      && await this.hasCompletedIGCETravel(rce.data)
+      && await this.hasCompletedSurgeRequirements(rce.data)
+      && await this.hasCompletedChargedFee(rce.data)
+      && await this.hasCompletedHowEstimatesDeveloped(rce.data)
   }
 
   @Action({rawError: true})
-  public async hasReplicateOrOptimizeAction(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+  public async hasCompletedReplicateOrOptimizeAction(
+    rce: RequirementsCostEstimateDTO
+  ): Promise<boolean> {
     const action = CurrentEnvironment.currentEnvironment.current_environment_replicated_optimized;
     return action.includes("YES")
       ? rce.optimize_replicate.estimated_values.every(val=>val !== "")
@@ -2261,7 +2276,9 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async hasArchitecturalDesigns(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+  public async hasCompletedArchitecturalDesigns(
+    rce: RequirementsCostEstimateDTO
+  ): Promise<boolean> {
     return DescriptionOfWork.DOWArchitectureNeeds.needs_architectural_design_services === "YES"
       ? rce.architectural_design_performance_requirements.estimated_values.every(val=>val !== "")
         && rce.architectural_design_performance_requirements.option !== ""
@@ -2269,7 +2286,7 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async hasCostEstimates(): Promise<boolean> {
+  public async hasCompletedCostEstimates(): Promise<boolean> {
     const estimates = IGCE.igceEstimateList;
     const offerings = 
       DescriptionOfWork.DOWObject
@@ -2291,7 +2308,7 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async hasIGCETraining(): Promise<boolean> {
+  public async hasCompletedIGCETraining(): Promise<boolean> {
     if (IGCE.trainingItems.length>0){
       const assessedTrainingItems = IGCE.trainingItems.map(
         (ti)=>{
@@ -2311,29 +2328,28 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async hasIGCETravel(rce: RequirementsCostEstimateDTO): Promise<boolean> {
-    if (rce.travel.option !== ""){
+  public async hasCompletedIGCETravel(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+    if (DescriptionOfWork.travelSummaryInstances.length === 0){
+      return true
+    } else if (rce.travel.option !== ""){
       if (!rce.travel.estimated_values?.toUpperCase().includes("UNDEFINED")){
         const estimatedValues = Object.values(JSON.parse(rce.travel.estimated_values as string))
         const totalPop = Periods.periods.length;
 
-        //ensure all estimatedValues have values
-        if (estimatedValues.length !== totalPop){
-          return false;
-        }
-
         return rce.travel.option === "SINGLE"
           ? estimatedValues.every((ev)=> (ev as number) > 0 )
-          : estimatedValues.every((ev)=> (ev as number) >= 0 ) // multiple values can === 0
+          : (estimatedValues.length === totalPop) // if MULTIPLE 
+            ? estimatedValues.every((ev)=> (ev as number) >= 0 ) // multiple values can === 0
+            : false
       }
       return false;
-    } 
+    }
     return false;
     
   }
 
   @Action({rawError: true})
-  public async hasSurgeRequirements(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+  public async hasCompletedSurgeRequirements(rce: RequirementsCostEstimateDTO): Promise<boolean> {
     return rce.surge_requirements.capabilities === "NO"
       ? true
       : rce.surge_requirements.capabilities === "YES"
@@ -2341,7 +2357,7 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async hasChargedFee(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+  public async hasCompletedChargedFee(rce: RequirementsCostEstimateDTO): Promise<boolean> {
     if (AcquisitionPackage.contractingShop === "OTHER"){
       return rce.fee_specs && rce.fee_specs.is_charged === "NO"
         ? true
@@ -2351,7 +2367,9 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async hasHowEstimatesDeveloped(rce: RequirementsCostEstimateDTO): Promise<boolean> {
+  public async hasCompletedHowEstimatesDeveloped(
+    rce: RequirementsCostEstimateDTO
+  ): Promise<boolean> {
     const howEstimatesDeveloped = rce.how_estimates_developed;
     const pcec =  howEstimatesDeveloped.previous_cost_estimate_comparison;
     const isHowEstimatesDevelopedValid = howEstimatesDeveloped.tools_used !== ""
@@ -2402,13 +2420,16 @@ export class SummaryStore extends VuexModule {
       mipr: FundingRequestMIPRFormDTO,
       isComplete: boolean
   }): Promise<string>{
-    const hasMIPRNumber = funding.mipr.mipr_number !== ""
-    const hasOrderNumber = funding.fsForm.order_number !== ""
-    const hasGTCNumber = funding.fsForm.gt_c_number !== ""
-    return funding.request.funding_request_type === "MIPR"
-      ? (hasMIPRNumber ? "MIPR: " + funding.mipr.mipr_number  : "")
-      : (hasGTCNumber ? "GT&C: " + funding.fsForm.gt_c_number + "<br />" : "")
-          + (hasOrderNumber ? "Order: " + funding.fsForm.order_number : "")
+    if (funding.request && funding.fsForm){
+      const hasMIPRNumber = funding.mipr?.mipr_number !== ""
+      const hasOrderNumber = funding.fsForm?.order_number !== ""
+      const hasGTCNumber = funding.fsForm?.gt_c_number !== ""
+      return funding.request.funding_request_type === "MIPR"
+        ? (hasMIPRNumber ? "MIPR: " + funding.mipr.mipr_number  : "")
+        : (hasGTCNumber ? "GT&C: " + funding.fsForm.gt_c_number + "<br />" : "")
+            + (hasOrderNumber ? "Order: " + funding.fsForm.order_number : "")
+    }
+    return ""
   }
 
   @Action({rawError: true})
@@ -2420,18 +2441,21 @@ export class SummaryStore extends VuexModule {
       mipr: FundingRequestMIPRFormDTO,
       hasFairOpp: boolean
   }): Promise<boolean>{
-    const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
-    const hasAppropriationOfFunds = funding.hasFairOpp
-      ? funding.request.appropriation_fiscal_year !== "" 
-        || funding.request.appropriation_funds_type !== ""
-      : false
+    if (funding.request && funding.fsForm){
+      const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
+      const hasAppropriationOfFunds = funding.hasFairOpp
+        ? funding.request.appropriation_fiscal_year !== "" 
+          || funding.request.appropriation_funds_type !== ""
+        : false
 
-    return funding.request.funding_request_type !== ""
-      || funding.gInv.useGInvoicing !== ""
-      || funding.fsForm.order_number !== ""
-      || funding.fsForm.gt_c_number !== ""
-      || await this.isTouched({object: funding.fsForm, keysToIgnore}) //validates 2 docs
-      || hasAppropriationOfFunds
+      return funding.request.funding_request_type !== ""
+        || funding.gInv.useGInvoicing !== ""
+        || funding.fsForm.order_number !== ""
+        || funding.fsForm.gt_c_number !== ""
+        || await this.isTouched({object: funding.fsForm, keysToIgnore}) //validates 2 docs
+        || hasAppropriationOfFunds
+    }
+    return false
   }
 
 
@@ -2444,25 +2468,28 @@ export class SummaryStore extends VuexModule {
       mipr: FundingRequestMIPRFormDTO,
       hasFairOpp: boolean
   }): Promise<boolean>{
-    let hasAppropriationOfFunds = false;
-    let isComplete = false;
-    if (funding.request.funding_request_type === "FS_FORM"){
-      isComplete =  await this.isFSFormComplete({
-        fsForm: funding.fsForm,
-        gInv: funding.gInv,
-        request: funding.request
-      });
-    } else if (funding.request.funding_request_type === "MIPR"){
-      isComplete = await this.isMIPRComplete(funding.mipr);
+    if (funding.request && funding.fsForm){
+      let hasAppropriationOfFunds = false;
+      let isComplete = false;
+      if (funding.request.funding_request_type === "FS_FORM"){
+        isComplete =  await this.isFSFormComplete({
+          fsForm: funding.fsForm,
+          gInv: funding.gInv,
+          request: funding.request
+        });
+      } else if (funding.request.funding_request_type === "MIPR"){
+        isComplete = await this.isMIPRComplete(funding.mipr);
+      } 
+
+      hasAppropriationOfFunds = funding.hasFairOpp
+        ? funding.request.appropriation_fiscal_year !== "" 
+          && funding.request.appropriation_funds_type !== ""
+        : true
+
+      return isComplete 
+        && hasAppropriationOfFunds;
     } 
-
-    hasAppropriationOfFunds = funding.hasFairOpp
-      ? funding.request.appropriation_fiscal_year !== "" 
-        && funding.request.appropriation_funds_type !== ""
-      : true
-
-    return isComplete 
-      && hasAppropriationOfFunds;
+    return false;
   }
 
   @Action({rawError: true})
@@ -2522,21 +2549,24 @@ export class SummaryStore extends VuexModule {
       isTouched: boolean,
       isPopBaseLessThanNineMonths: boolean
     }): Promise<string> {  
-    const incFunding = funding.req.incrementally_funded;
-    let description = "";
-    if (funding.isPopBaseLessThanNineMonths){
-      description =  "Effort does not qualify for incremental funding."
-    } else if (incFunding==="NO"){
-      description =  "Not Requested"
-    } else if (funding.isTouched && !funding.isComplete && incFunding==="YES"){
-      description =  "Requesting to incrementally fund requirement";
-    } else if (funding.isComplete && incFunding === "YES"){
-      description = 
-        "<p class='mb-8'>Requesting to incrementally fund requirement</p>" + 
-        "Financial POC: " + funding.poc.first_name + " " + funding.poc.last_name + "<br>" +
-        funding.poc.email
+    if (funding.req){
+      const incFunding = funding.req.incrementally_funded;
+      let description = "";
+      if (funding.isPopBaseLessThanNineMonths){
+        description =  "Effort does not qualify for incremental funding."
+      } else if (incFunding==="NO"){
+        description =  "Not Requested"
+      } else if (funding.isTouched && !funding.isComplete && incFunding==="YES"){
+        description =  "Requesting to incrementally fund requirement";
+      } else if (funding.isComplete && incFunding === "YES"){
+        description = 
+          "<p class='mb-8'>Requesting to incrementally fund requirement</p>" + 
+          "Financial POC: " + funding.poc.first_name + " " + funding.poc.last_name + "<br>" +
+          funding.poc.email
+      }
+      return description;
     }
-    return description;
+    return "";
   }
 
   @Action({rawError: true})
@@ -2546,13 +2576,16 @@ export class SummaryStore extends VuexModule {
       poc: ContactDTO,
       isPopBaseLessThanNineMonths: boolean
     }): Promise<boolean> {
-    return funding.isPopBaseLessThanNineMonths
-      ? true
-      : funding.req.incrementally_funded !== ""
-        || (FinancialDetails.fundingIncrements.length > 0
-            && FinancialDetails.fundingIncrements.every(
-              fi => ["0.00", "0",""].every(invalidAmt => invalidAmt !== fi.amt)))
-        || (funding.poc && funding.poc?.role !== "")
+    if (funding.req){
+      return funding.isPopBaseLessThanNineMonths
+        ? true
+        : funding.req.incrementally_funded !== ""
+          || (FinancialDetails.fundingIncrements.length > 0
+              && FinancialDetails.fundingIncrements.every(
+                fi => ["0.00", "0",""].every(invalidAmt => invalidAmt !== fi.amt)))
+          || (funding.poc && funding.poc?.role !== "")
+    }
+    return false;
   }
 
   @Action({rawError: true})
@@ -2562,18 +2595,20 @@ export class SummaryStore extends VuexModule {
       poc: ContactDTO,
       isPopBaseLessThanNineMonths: boolean
     }): Promise<boolean> {
-   
-    const incrementallyFundedValue = funding.req.incrementally_funded;
-    if (funding.isPopBaseLessThanNineMonths){
+    if(funding.req){
+      const incrementallyFundedValue = funding.req.incrementally_funded;
+      if (funding.isPopBaseLessThanNineMonths){
+        return true;
+      } else if (incrementallyFundedValue === ""){
+        return false;
+      } else if (incrementallyFundedValue === "YES"){
+        return await this.hasCompleteIncrementalFundingAndPOC(funding);
+      } else if (incrementallyFundedValue === "NO") {
+        return true
+      }
       return true;
-    } else if (incrementallyFundedValue === ""){
-      return false;
-    } else if (incrementallyFundedValue === "YES"){
-      return await this.hasCompleteIncrementalFundingAndPOC(funding);
-    } else if (incrementallyFundedValue === "NO") {
-      return true
     }
-    return true;
+    return false
   }
 
   @Action({rawError: true})
@@ -2647,11 +2682,13 @@ export class SummaryStore extends VuexModule {
   
   @Mutation
   public async doSetSummaryItem(summaryItem:SummaryItem):Promise<void>{
-    const existingIndex = this.summaryItems.findIndex(
-      si=>(si.step === summaryItem.step) && (si.substep === summaryItem.substep));
-    existingIndex > -1
-      ? this.summaryItems.splice(existingIndex, 1, summaryItem)
-      : this.summaryItems.push(summaryItem)
+    if (summaryItem){
+      const existingIndex = this.summaryItems.findIndex(
+        si=>(si.step === summaryItem.step) && (si.substep === summaryItem.substep));
+      existingIndex > -1
+        ? this.summaryItems.splice(existingIndex, 1, summaryItem)
+        : this.summaryItems.push(summaryItem)
+    }
   }
 
 

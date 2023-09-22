@@ -306,6 +306,7 @@ module.exports = {
   currentEnvironmentHeaderText: "#CurrentEnvironment_Heading",
   currentEnvironmentDescription: "#CurrentEnvironment_Description",
   currentEnvironmentCompleteBtn: "#CurrentEnvironment_CompleteButton",
+  currentEnvironmentReviewBtn: "#CurrentEnvironment_MissingInfoButton",
 
 
 }

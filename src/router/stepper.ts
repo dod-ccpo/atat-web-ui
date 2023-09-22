@@ -213,6 +213,7 @@ import {
   OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
   ClassificationRequirementsResolver,
+  PeriodOfPerformanceRouteResolver,
   ContractTypeResolver,
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
@@ -228,8 +229,7 @@ import {
   OrganizationResolver,
   ContactInformationResolver,
   CorInformationResolver,
-  ACorInformationQuestionResolver, ContractingShopRouteResolver,
-
+  ACorInformationQuestionResolver, 
 } from "./resolvers";
 
 
@@ -397,8 +397,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         completed: false,
         excludeFromMenu: true,
-        component: ContractingShop
-      },{
+        component: ContractingShop,
+      },
+      {
         menuText: "Contracting Office Info",
         path: "contracting-office-info",
         name: routeNames.ContractingOfficeInfo,
@@ -412,7 +413,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Project Overview",
         path: "project-overview",
         name: routeNames.ProjectOverview,
-        routeResolver:ProjectOverviewResolver,
         completePercentageWeight: 4,
         completed: false,
         stepCompleteOnLeave: routeNames.ProjectOverview,
@@ -762,6 +762,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
         stepCompleteOnEnter: routeNames.CreateEvalPlan,
+        routeResolver: PeriodOfPerformanceRouteResolver
       },
       {
         name: routeNames.POPStart,
@@ -1479,7 +1480,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ReadyToSubmit,
         completePercentageWeight: 0,
         component: ReadyToSubmit,
-        continueButtonText: "Submit my acquisition package"
+        continueButtonText: "Submit my acquisition package",
+        altContinueAction: "submitPackage"
       },
       {
         menuText: "Under Review",

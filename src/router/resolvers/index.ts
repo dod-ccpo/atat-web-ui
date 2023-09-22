@@ -27,15 +27,17 @@ export const showDITCOPageResolver = (current: string): string => {
     ? routeNames.DAPPSChecklist 
     : routeNames.ContractingShop;
 };
-export const ContractingShopRouteResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
-  return (current === routeNames.DAPPSChecklist)
-    ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ContractingShop
-    :routeNames.SummaryStepOne
-}
+
+
+export const ContractingInfoResolver = (current: string): string => {
+  const isNotDITCO = AcquisitionPackage.contractingShop === "OTHER";
+  return isNotDITCO
+    ? routeNames.ContractingOfficeInfo
+    : routeNames.ProjectOverview
+};
+
 export const ProjectOverviewResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
-  return (current === routeNames.ContractingOfficeInfo||current === routeNames.ContractingShop)
+  return current.toUpperCase().includes("CONTRACTING")
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepOne : routeNames.ProjectOverview
     :routeNames.SummaryStepOne
 }
@@ -103,7 +105,8 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 
 export const ExceptionToFairOpportunityResolver = (current:string): string =>{
   const isFromStepOne =
-    [routeNames.AcorInformation, routeNames.AlternateCor].includes(current)
+      // eslint-disable-next-line max-len
+      [routeNames.AcorInformation, routeNames.AlternateCor, routeNames.SummaryStepOne].includes(current)
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
   return isFromStepOne
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.Exceptions
@@ -115,7 +118,6 @@ export const EvalPlanRouteResolver = (current: string): string => {
     ? routeNames.SummaryStepTwo
     : routeNames.CreateEvalPlan
 }
-
 
 export const EvalPlanDetailsRouteResolver = (current: string): string => {
   const evalPlan = EvaluationPlan.evaluationPlan as EvaluationPlanDTO;
@@ -263,6 +265,12 @@ const hasLogicalFollowOn = (): boolean => {
 }
 
 export const CurrentContractRouteResolver = (current: string): string => {
+  const isFromStepThree = [routeNames.SummaryStepThree].includes(current)
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(4))
+  if(isFromStepThree && Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepFour
+  }
+
   if (hasLogicalFollowOn()) {
     // if second option in step 2 Exception to Fair Opportunity is selected
     // skip the "Do you have a current/previous contract" page
@@ -397,8 +405,24 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
     ? routeNames.SummaryStepFour
     : routeNames.EnvironmentSummary;
 }
+
+export const PeriodOfPerformanceRouteResolver = (current:string): string =>{
+  const isFromStepTwo =
+      // eslint-disable-next-line max-len
+      [routeNames.SummaryStepTwo].includes(current)
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
+  return isFromStepTwo
+    ? Summary.hasCurrentStepBeenVisited ?
+      routeNames.SummaryStepThree : routeNames.PeriodOfPerformance
+    : routeNames.SummaryStepThree;
+}
+
 export const COIRouteResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(6));
+  const isFromStepFive = [routeNames.DOWLandingPage].includes(current)
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(6))
+  if(isFromStepFive && Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepSix
+  }
   return current === routeNames.DOWLandingPage
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSix: routeNames.ConflictOfInterest
     :routeNames.SummaryStepSix
@@ -416,7 +440,7 @@ export const TravelRouteResolver = (current: string): string => {
 }
 
 export const PIIResolver = (current: string): string =>{
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(7));
+
   return current === routeNames.SummaryStepSix
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSeven : routeNames.PII
     : routeNames.SummaryStepSix
@@ -477,19 +501,6 @@ export const A11yRequirementResolver = (current: string): string => {
     : routeNames.Section508Standards;
 };
 
-
-export const ContractingInfoResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(1));
-  const needsContractInformation =
-      AcquisitionPackage.acquisitionPackage?.contracting_shop === "OTHER";
-
-  if (needsContractInformation) {
-    return routeNames.ContractingOfficeInfo;
-  }
-  return current === routeNames.ContractingShop 
-    ? routeNames.ProjectOverview
-    : routeNames.SummaryStepOne;
-};
 
 /****************************************************************************/
 /****************************************************************************/
@@ -1817,7 +1828,6 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   showDITCOPageResolver,
-  ContractingShopRouteResolver,
   ProjectOverviewResolver,
   OrganizationResolver,
   ContactInformationResolver,
@@ -1837,6 +1847,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ReplicateDetailsResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
+  PeriodOfPerformanceRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
@@ -1882,7 +1893,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SummaryStepTwoRouteResolver,
   FundingPlanTypeResolver,
   SeverabilityAndIncrementalFundingResolver,
-  CreatePriceEstimateResolver
+  CreatePriceEstimateResolver,
 };
 
 // add path resolvers here 
