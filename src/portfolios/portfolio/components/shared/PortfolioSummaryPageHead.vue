@@ -244,7 +244,7 @@ export default class PortfolioSummaryPageHead extends Vue {
   public handleMoreMenuClick(menuItem: string | undefined):void{
     switch(menuItem){
     case this.moreMenuItemActions.leaveThisPortfolio:
-      // Leave portfolio 
+      this.$emit("leavePortfolio")
       break;
     case this.moreMenuItemActions.moveToInput:
       this.moveToInput();

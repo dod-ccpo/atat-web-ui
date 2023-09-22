@@ -98,6 +98,7 @@
           :isHaCCAdmin="isHaCCAdmin"
           @leavePortfolio="leavePortfolio"
           @openArchivePortfolioModal="openArchivePortfolioModal"
+          @openLeavePortfolioModal="openLeavePortfolioModal"
           @openTOModal="openTOModal"
           :isHomeView="isHomeView"
         />
@@ -132,6 +133,14 @@
       @cancelClicked="closeArchivePortfolioModal"
     />
 
+    <LeavePortfolioModal
+      :showModal="showLeavePortfolioModal" 
+      :portfolioName="getCurrentPortfolioTitle"
+      @okClicked="leavePortfolio"
+      @cancelClicked="closeLeavePortfolioModal"
+      :showLeaveModalSpinner="showLeaveModalSpinner"
+    />
+
   </div>
 </template>
 
@@ -140,10 +149,10 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 
-import { Component, Prop, Watch } from "vue-property-decorator";
+import {Component, Prop, Watch} from "vue-property-decorator";
 
-import ArchivePortfolioModal 
-  from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
+// eslint-disable-next-line max-len
+import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
 import ATATLoader from "@/components/ATATLoader.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import ATATSearch from "@/components/ATATSearch.vue"
@@ -152,14 +161,14 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FilterSlideout from "./FiltersSlideout.vue";
 import PortfolioCard from "./PortfolioCard.vue";
 
-import { 
+import {
   FilterOption,
   Portfolio,
-  PortfolioCardData,  
+  PortfolioCardData,
   PortfolioSummaryQueryParams,
-  SelectData, 
+  SelectData,
   SlideoutPanelContent,
-  ToastObj,  
+  ToastObj,
 } from "types/Global";
 
 import PortfolioSummary from "@/store/portfolioSummary";
@@ -173,9 +182,13 @@ import { differenceInDays, formatDistanceToNow, isAfter } from "date-fns";
 import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
 import _ from "lodash";
 import CurrentUserStore from "@/store/user";
+import LeavePortfolioModal from "@/portfolios/portfolio/components/shared/LeavePortfolioModal.vue";
+import ATATDialog from "@/components/ATATDialog.vue";
 
 @Component({
   components: {
+    ATATDialog,
+    LeavePortfolioModal,
     ArchivePortfolioModal,
     ATATLoader,
     ATATNoResults,
@@ -192,7 +205,6 @@ export default class PortfoliosSummary extends Vue {
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
 
   public isHaCCAdmin = CurrentUserStore.currentUserIsHaCCAdmin;
-
   public page = 1;
   public get recordsPerPage(): number {
     return this.isHomeView ? 5 : 10;
@@ -201,7 +213,7 @@ export default class PortfoliosSummary extends Vue {
   public portfolioCount = 0;
   public offset = 0;
   public paging = false;
-
+  public showLeaveModalSpinner = false;
   public portfolioCardData: PortfolioCardData[] = [];
   public isLoading = false;
   public searchString = "";
@@ -277,6 +289,9 @@ export default class PortfoliosSummary extends Vue {
     case "filters":
       await this.clearAllFilters();
     }
+  }
+  public get getCurrentPortfolioTitle(){
+    return PortfolioStore.currentPortfolio.title;
   }
 
   public async clearAllFilters(): Promise<void> {
@@ -374,10 +389,14 @@ export default class PortfoliosSummary extends Vue {
     }
   }
 
-  public leavePortfolio(sysId: string): void {
-    this.portfolioCardData = this.portfolioCardData.filter(
-      obj => obj.sys_id !== sysId
-    );
+  public async leavePortfolio(): Promise<void> {
+    this.showLeaveModalSpinner = true;
+    await PortfolioStore.leavePortfolio()
+    await this.loadPortfolioData();
+    this.showLeaveModalSpinner = false;
+    this.closeLeavePortfolioModal()
+    
+
     const accessRemovedToast: ToastObj = {
       type: "success",
       message: "Portfolio access removed",
@@ -387,10 +406,6 @@ export default class PortfoliosSummary extends Vue {
     };
 
     Toast.setToast(accessRemovedToast);
-
-    // ATAT TODO AT-9605 - remove member from portfolio table in snow
-    // after removed, make new call to reload portfolio list if > 10 portfolios
-    // to ensure 10 listed on page (or 5 on home page)
   }
 
   public get currentPortfolio(): Portfolio {
@@ -412,8 +427,14 @@ export default class PortfoliosSummary extends Vue {
   public get showArchivePortfolioModal(): boolean {
     return PortfolioStore.showArchivePortfolioModal;
   }
+  public get showLeavePortfolioModal(): boolean {
+    return PortfolioStore.showLeavePortfolioModal;
+  }
   public openArchivePortfolioModal():void {
     PortfolioStore.setShowArchivePortfolioModal(true);
+  }
+  public openLeavePortfolioModal():void {
+    PortfolioStore.setShowLeavePortfolioModal(true);
   }
   public async archivePortfolio():Promise<void> {
     const index = this.portfolioCardData.findIndex(
@@ -435,8 +456,13 @@ export default class PortfoliosSummary extends Vue {
       this.portfolioCardData.splice(index, 1);
     }
   }
+
   public closeArchivePortfolioModal(): void {
     PortfolioStore.setShowArchivePortfolioModal(false);
+  }
+
+  public closeLeavePortfolioModal(): void {
+    PortfolioStore.setShowLeavePortfolioModal(false);
   }
 
   public async mounted(): Promise<void> {
