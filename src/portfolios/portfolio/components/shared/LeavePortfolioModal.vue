@@ -6,6 +6,7 @@
   no-click-animation
   okText="Leave portfolio"
   width="450"
+  :showOKSpinner="showLeaveModalSpinner"
   @ok="okClicked"
   @cancelClicked="cancelClicked"
 >    
@@ -36,6 +37,7 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 export default class LeavePortfolioModal extends Vue {
   @PropSync("showModal") public _showModal?: boolean;
   @Prop() public portfolioName!: string;
+  @Prop() public showLeaveModalSpinner!: boolean;
 
   public okClicked(): void {
     this._showModal = false;
@@ -44,6 +46,7 @@ export default class LeavePortfolioModal extends Vue {
 
   public cancelClicked(): void {
     this._showModal = false;
+    this.$emit("cancelClicked");
   }
 
 }

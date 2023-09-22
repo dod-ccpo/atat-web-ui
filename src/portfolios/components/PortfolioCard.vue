@@ -176,13 +176,6 @@
       :menuItems="portfolioCardMenuItems"
       @menuItemClick="cardMenuClick"
     />
-
-    <LeavePortfolioModal
-      :showModal.sync="showLeavePortfolioModal" 
-      :portfolioName="cardData.title"
-      @okClicked="leavePortfolio"
-    />
-
   </v-card>
 </template>
 
@@ -197,7 +190,6 @@ import { MeatballMenuItem, PortfolioCardData } from "types/Global";
 import PortfolioStore, { cspConsoleURLs } from "@/store/portfolio";
 import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
-import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
@@ -205,8 +197,7 @@ import { UserDTO } from "@/api/models";
 @Component({
   components: {
     ATATSVGIcon,
-    ATATMeatballMenu,
-    LeavePortfolioModal
+    ATATMeatballMenu
   }
 })
 
@@ -216,9 +207,7 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
   @Prop({ default: false }) public isHomeView?: boolean;
-
-  public showLeavePortfolioModal = false;
-
+  
   public menuActions = {
     viewFundingTracker: "navToFundingTracker",
     viewTaskOrders: "navToTaskOrders",
@@ -300,7 +289,7 @@ export default class PortfolioCard extends Vue {
       AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break; 
     case this.menuActions.leavePortfolio: 
-      this.showLeavePortfolioModal = true;
+      this.$emit("openLeavePortfolioModal");
       break; 
     case this.menuActions.emailManagers: {
       const managerEmails = await this.managerEmails;
@@ -341,7 +330,7 @@ export default class PortfolioCard extends Vue {
   }
 
   public leavePortfolio(): void {
-    this.$emit("leavePortfolio", this.cardData.sys_id);
+    this.$emit("leavePortfolio", this.cardData.sys_id, this.cardData.title);
   }
 
   public CSPs = {
@@ -421,7 +410,15 @@ export default class PortfolioCard extends Vue {
         },    
       );
     }
-
+    
+    if (!this.cardData.isOwner && this.cardData.status !== Statuses.Archived.value) {
+      this.portfolioCardMenuItems.push(
+        {
+          title: "Leave portfolio",
+          action: this.menuActions.leavePortfolio,
+        },
+      );
+    }
     // ATAT TODO AT-9603
     // if (this.isHaCCAdmin) {
     //   this.portfolioCardMenuItems.push(

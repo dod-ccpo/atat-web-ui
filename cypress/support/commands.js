@@ -189,7 +189,7 @@ Cypress.Commands.add("textExists", (selector, expectedText) => {
   cy.findElement(selector)
     .should("be.visible")
     .then(($el) => {
-      let actualTxt = $el.text();
+      const actualTxt = $el.text();
       const formattedTxt = cleanText(actualTxt);
       cy.log(formattedTxt);
       const expectedTextCleaned = cleanText(expectedText);
@@ -246,7 +246,7 @@ Cypress.Commands.add("radioBtn", (selector, value) => {
 Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
   cy.findElement(selector).should("be.visible").realHover();
   cy.findElement(selector1).then(($el) => {
-    let actualTxt = $el.text();
+    const actualTxt = $el.text();
     const formattedTxt = cleanText(actualTxt);
     cy.log(formattedTxt);
     expect(formattedTxt).equal(expectedText);
@@ -257,7 +257,7 @@ Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
   cy.findElement(selector)
     .scrollIntoView()
     .then(($el) => {
-      let actualTxt = $el.text();
+      const actualTxt = $el.text();
       const actualErrorMessage = cleanText(actualTxt);
       cy.log(actualErrorMessage);
       const errorMessageCleaned = cleanText(errorMessage);
@@ -353,7 +353,7 @@ Cypress.Commands.add("verifyPageHeader", (headerText) => {
 
 Cypress.Commands.add("verifyTextMatches", (selector, expectedText) => {
   cy.findElement(selector).then(($el) => {
-    let actualTxt = $el.text();
+    const actualTxt = $el.text();
     cy.log(actualTxt);
     const formattedTxt = cleanText(actualTxt);
     expect(formattedTxt).equal(expectedText);
@@ -472,8 +472,8 @@ Cypress.Commands.add(
   "verifyColumnHeaders",
   (columnIndex, headerText, expectedValue) => {
     cy.findElement(
-        ".v-data-table-header  th:nth-child(" + columnIndex + ") span"
-      )
+      ".v-data-table-header  th:nth-child(" + columnIndex + ") span"
+    )
       .invoke("text")
       .as("foundHeaderText");
 
@@ -507,7 +507,8 @@ Cypress.Commands.add("verifyListMatches", (selector, expectedText) => {
   cy.findElement(selector)
     .then(($els) => {
       const foundText = Cypress.$.makeArray($els).map((el) => el.innerText);
-      const foundTextArray = foundText[0].split(", ").map(item => item.replace(/\n/g, '').replace(/\//g, '')).sort() // Sort the array
+      const foundTextArray = foundText[0].split(", ").map(item => item.replace(/\n/g, '')
+        .replace(/\//g, '')).sort() // Sort the array
       console.log("actualArray:", foundTextArray);
       return foundTextArray;
     })
@@ -566,7 +567,7 @@ Cypress.Commands.add("messageDisplays", (selector, alertMessage) => {
   cy.findElement(selector)
     .should("exist")
     .then(($message) => {
-      let actualTxt = $message.text();
+      const actualTxt = $message.text();
       cy.log(actualTxt);
       const formattedTxt = cleanText(actualTxt);
       expect(formattedTxt).equal(alertMessage);
@@ -829,12 +830,12 @@ Cypress.Commands.add(
 
       const tooltipButton =
         prefix === "COR_" ?
-        commonCorAcor.toolTipBtnDodaacCOR :
-        commonCorAcor.toolTipBtnDodaacACOR;
+          commonCorAcor.toolTipBtnDodaacCOR :
+          commonCorAcor.toolTipBtnDodaacACOR;
       const tooltipText =
         prefix === "COR_" ?
-        commonCorAcor.toolTipTxtDodaacCOR :
-        commonCorAcor.toolTipTxtDodaacACOR;
+          commonCorAcor.toolTipTxtDodaacCOR :
+          commonCorAcor.toolTipTxtDodaacACOR;
 
       cy.log("TOOLTIP SELECTOR", selector);
       cy.hoverToolTip(tooltipButton, tooltipText, expectedText);
