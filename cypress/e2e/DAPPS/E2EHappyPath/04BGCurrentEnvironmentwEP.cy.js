@@ -530,9 +530,7 @@ describe("Test suite: Step04-Background-Current Environment", () => {
       "Procurement History"
     );
     procurementHistoryDescriptionDetails(
-      fairOpp,
-      previousContract,
-      currentContract
+      
     );
     cy.findElement(background.procurementHistoryCompleteBtn).should(
       "contain",
