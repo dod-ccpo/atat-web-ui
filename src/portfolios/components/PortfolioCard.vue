@@ -190,7 +190,6 @@ import { MeatballMenuItem, PortfolioCardData } from "types/Global";
 import PortfolioStore, { cspConsoleURLs } from "@/store/portfolio";
 import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
-import LeavePortfolioModal from "../portfolio/components/shared/LeavePortfolioModal.vue";
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
@@ -198,8 +197,7 @@ import { UserDTO } from "@/api/models";
 @Component({
   components: {
     ATATSVGIcon,
-    ATATMeatballMenu,
-    LeavePortfolioModal
+    ATATMeatballMenu
   }
 })
 
@@ -209,11 +207,7 @@ export default class PortfolioCard extends Vue {
   @Prop() private isLastCard!: boolean;
   @Prop() private isHaCCAdmin!: boolean;
   @Prop({ default: false }) public isHomeView?: boolean;
-  @Prop({ default: false }) public showLeavePortfolioModal?: boolean;
   
-
-  
-
   public menuActions = {
     viewFundingTracker: "navToFundingTracker",
     viewTaskOrders: "navToTaskOrders",
