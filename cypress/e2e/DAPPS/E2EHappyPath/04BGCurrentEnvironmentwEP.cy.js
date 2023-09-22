@@ -92,7 +92,6 @@ describe("Test suite: Step04-Background-Current Environment", () => {
   const precessorSpeed = randomNumber(4);
   const operatingSystemText = "OperatingSystemTest--" + randomString(3);
   const memory = randomNumber(2);
-  //const storageSize = randomNumber(3);
   const noOfInstances = randomNumberBetween(1, 9);
   const egressPerMonth = randomNumber(2);
   //section#4 data
