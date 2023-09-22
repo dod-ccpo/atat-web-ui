@@ -100,7 +100,6 @@
           @openArchivePortfolioModal="openArchivePortfolioModal"
           @openLeavePortfolioModal="openLeavePortfolioModal"
           @openTOModal="openTOModal"
-          :showLeavePortfolioModal.sync="showLeavePortfolioModal"
           :isHomeView="isHomeView"
         />
       </transition-group>
