@@ -1,17 +1,25 @@
 import { randomString, randomAlphaNumeric, cleanText } from "../../../helpers";
 import ep from "../../../selectors/evaluationPlan.sel";
+import {epSet1,epSet2,epSet3,epSet4,epSet5,epSet6 } from "../../../sharedData/sharedData";
 import fo from "../../../selectors/fairOpportunityProcess.sel";
 
+const dataSets =[epSet1,epSet2,epSet3,epSet4,epSet5,epSet6]
+
 describe("Test suite: Step02-Evaluation plan", () => {
+
+  const dataSetIndex = Cypress.env("epDataSetIndex");
+  const dataSet = dataSets[dataSetIndex];    
+  const {evalPlanOption,
+    setTechProposalSelectionMethod,
+    customCompliance,
+    setLumpSumSelectionMethod
+  } = dataSet
   const pt = "TC-Step-2-FairOpp-EvaluationPlan-" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-EvaluationPlan" + randomString(5);
 
-  //select different eval plan option
-  const evalPlanOption = "techProposal"; //techProposal,noTechProposal,equalLumpSum,setLumpSum
   const noTechProposalTxt = "no technical proposal is";
   const techProposalTxt = "technical proposals are";
 
-  // Based on the eval plan,selectionMethodText
   const selectionMethodText = () => {
     if (evalPlanOption === "techProposal") {
       return techProposalTxt;
@@ -21,14 +29,8 @@ describe("Test suite: Step02-Evaluation plan", () => {
   };
   const selectionMethodTechHeader = cleanText(
     `Now let’s review compliance standards when ${selectionMethodText()} required`
-  );
-  const setTechProposalSelectionMethod = "LPTA"; //BVTO,LPTA;
-
-  const customCompliance = "Yes"; //Yes,No
+  );   
   const customText = randomString(5);
-
-  //if evalPlanOption is selected to setLumpSum,then set the following Option
-  const setLumpSumSelectionMethod = "LowestRisk"; //BestUse,LowestRisk
 
   //summary
   const exceptionToFairOppDescriptionText =cleanText("No exceptions apply to this acquisition."+
