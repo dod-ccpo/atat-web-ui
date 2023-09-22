@@ -93,19 +93,20 @@
             </v-list-item>
             <hr class="my-2"  v-if="!isProdEnv" />
 
-            <v-list-item disabled id="LoginToCSPConsole_MenuItem" v-if="!isProdEnv">
+            <v-list-item disabled id="LoginToCSPConsole_MenuItem" v-if="!isProdEnv && hasCspLinks">
               <v-list-item-title class="_csp-console-text"> 
                 {{cspLoginText}}
               </v-list-item-title>
             </v-list-item>
             <v-list-item
+              class="text-decoration-none"
               v-for="(linkItem, index) in environmentLinks" 
               :key="index"
+              @click="handleLinkClick(linkItem.link)"
             >
               <v-list-item-title class="d-flex align-center">
                 Unclassified <span class="_csp-console-text-link">{{ linkItem.display }}</span>
                 <ATATSVGIcon
-                    class="ml-2"
                     name="launch"
                     width="15"
                     height="15"
@@ -181,7 +182,8 @@ export default class PortfolioSummaryPageHead extends Vue {
     openModal: "openModal",
     leaveThisPortfolio: "leaveThisPortfolio"
   }
-  public cspLoginText = "LOGIN TO YOUR CSP PORTAL"
+  public cspLoginText = "LOGIN TO YOUR CSP PORTAL";
+  public hasCspLinks = false;
 
   public get portfolioStatus(): string {
     return PortfolioStore.currentPortfolio.status as string;
@@ -272,6 +274,10 @@ export default class PortfolioSummaryPageHead extends Vue {
     default: 
       break;
     }
+  }
+
+  public handleLinkClick(link: string): void{
+    window.open(link, "_blank")
   }
 
   @Watch("slideoutPanelIsOpen")
@@ -387,6 +393,12 @@ export default class PortfolioSummaryPageHead extends Vue {
     const collection = document.getElementsByClassName("_portfolio-title-input");
     return collection[0] as HTMLElement;
   }
+  public async loadOnEnter(): Promise<void> {
+    this.hasCspLinks = this.environmentLinks.length > 0;
+    if(this.environmentLinks.length > 1){
+      this.cspLoginText = "LOGIN TO YOUR CSP PORTALS"
+    }
+  }
 
   public async mounted(): Promise<void> {
     if (this.titleInput) {
@@ -395,13 +407,12 @@ export default class PortfolioSummaryPageHead extends Vue {
         this.addInputEventListeners(this, this.titleInput);
       })
     }
-    if(this.environmentLinks.length > 1){
-      this.cspLoginText = "LOGIN TO YOUR CSP PORTALS"
-    }
+
     const slideoutPanelContent: SlideoutPanelContent = {
       component: PortfolioDrawer,
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await this.loadOnEnter()
   }
 }
 </script>

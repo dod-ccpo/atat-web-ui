@@ -200,7 +200,6 @@ export default class PortfolioSummary extends Vue {
 
   public async loadOnEnter(): Promise<void>  {
     const portfolio = _.cloneDeep(PortfolioStore.currentPortfolio);
-    console.log(portfolio)
     if(portfolio.sysId){
       this.isPortfolioProvisioning = false;
       this.title = portfolio.title || "";
@@ -216,7 +215,6 @@ export default class PortfolioSummary extends Vue {
           })
         }
       })
-      console.log(this.environmentLinks, 'links')
       const envs = portfolio.environments;
 
       if (envs?.length) {

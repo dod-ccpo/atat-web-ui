@@ -240,5 +240,8 @@ header._atat-page-header {
   &-link{
     color: #2C353B;
     font-size: 14px !important;
+    padding: 0px 8px;
+    display: flex;
+    align-self: flex-end;
   }
 }
