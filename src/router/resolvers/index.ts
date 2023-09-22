@@ -104,8 +104,11 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 }
 
 export const ExceptionToFairOpportunityResolver = (current:string): string =>{
+  const isFromStepOne =
+      // eslint-disable-next-line max-len
+      [routeNames.AcorInformation, routeNames.AlternateCor, routeNames.SummaryStepOne].includes(current)
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
-  return current === routeNames.SummaryStepOne
+  return isFromStepOne
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepTwo : routeNames.Exceptions
     : routeNames.SummaryStepTwo;
 }
@@ -262,6 +265,12 @@ const hasLogicalFollowOn = (): boolean => {
 }
 
 export const CurrentContractRouteResolver = (current: string): string => {
+  const isFromStepThree = [routeNames.SummaryStepThree].includes(current)
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(4))
+  if(isFromStepThree && Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepFour
+  }
+
   if (hasLogicalFollowOn()) {
     // if second option in step 2 Exception to Fair Opportunity is selected
     // skip the "Do you have a current/previous contract" page
@@ -396,8 +405,24 @@ export const CurrentEnvironmentSummaryResolver = (current: string): string => {
     ? routeNames.SummaryStepFour
     : routeNames.EnvironmentSummary;
 }
+
+export const PeriodOfPerformanceRouteResolver = (current:string): string =>{
+  const isFromStepTwo =
+      // eslint-disable-next-line max-len
+      [routeNames.SummaryStepTwo].includes(current)
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(3))
+  return isFromStepTwo
+    ? Summary.hasCurrentStepBeenVisited ?
+      routeNames.SummaryStepThree : routeNames.PeriodOfPerformance
+    : routeNames.SummaryStepThree;
+}
+
 export const COIRouteResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(6));
+  const isFromStepFive = [routeNames.DOWLandingPage].includes(current)
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(6))
+  if(isFromStepFive && Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepSix
+  }
   return current === routeNames.DOWLandingPage
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSix: routeNames.ConflictOfInterest
     :routeNames.SummaryStepSix
@@ -415,7 +440,7 @@ export const TravelRouteResolver = (current: string): string => {
 }
 
 export const PIIResolver = (current: string): string =>{
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(7));
+
   return current === routeNames.SummaryStepSix
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSeven : routeNames.PII
     : routeNames.SummaryStepSix
@@ -1822,6 +1847,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   ReplicateDetailsResolver,
   CurrentEnvRouteResolver,
   CurrentEnvironmentSummaryResolver,
+  PeriodOfPerformanceRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
