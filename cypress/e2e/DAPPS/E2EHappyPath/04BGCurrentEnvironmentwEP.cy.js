@@ -11,8 +11,6 @@ import {
   epSet2,
   epSet3,
   epSet4,
-  fairOpp,
-  previousContract,
   descriptionDetails,
   
 } from "../../../sharedData/sharedData";
