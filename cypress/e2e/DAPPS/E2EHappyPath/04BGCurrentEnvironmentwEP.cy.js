@@ -93,7 +93,7 @@ describe("Test suite: Step04-Background-Current Environment", () => {
   const operatingSystemText = "OperatingSystemTest--" + randomString(3);
   const memory = randomNumber(2);
   const noOfInstances = randomNumberBetween(1, 9);
-  const egressPerMonth = randomNumber(2);
+  const egressPerMonth = randomNumberBetween(1, 9);
   //section#4 data
   const expirationDate = randomNumberBetween(1, 30);
   //section#5 data
