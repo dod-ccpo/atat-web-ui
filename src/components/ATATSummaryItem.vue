@@ -60,7 +60,7 @@
                           {{item.showMoreData.phone}}
                   </span>
                     </div>
-                    <div v-if="item.showMoreData.cloud"
+                    <div v-if="item.showMoreData.cloud.length > 0"
                       class="d-flex align-start mb-3 mt-2">
                       <div>
                         <ATATSVGIcon
@@ -83,7 +83,8 @@
                         </span>
                       </div>
                     </div>
-                    <div v-if="item.showMoreData.onPrem && !item.showMoreData.cloud"
+                    <div v-if="item.showMoreData.onPrem.length > 0
+                    && !item.showMoreData.cloud.length > 0"
                       class="d-flex align-start mb-3 mt-2"
                     >
                       <div>
@@ -136,7 +137,8 @@
                           {{item.showMoreData.title}}
                       </span>
                     </div>
-                    <div v-if="item.showMoreData.onPrem && item.showMoreData.cloud"
+                    <div v-if="item.showMoreData.onPrem.length > 0
+                    && item.showMoreData.cloud.length > 0"
                          class="d-flex align-start mb-3 mt-2"
                     >
                       <div>
