@@ -22,8 +22,8 @@
                 Show more
               </template>
               <template v-slot:content>
-                <div class="d-flex justify-space-between" style="width:400px">
-                  <div class="mr-10">
+                <div class="d-flex">
+                  <div>
                     <div v-if="item.showMoreData.address" class="d-flex align-start my-3">
                       <ATATSVGIcon
                         width="20"
@@ -60,6 +60,53 @@
                           {{item.showMoreData.phone}}
                   </span>
                     </div>
+                    <div v-if="item.showMoreData.cloud"
+                      class="d-flex align-start mb-3 mt-2">
+                      <div>
+                        <ATATSVGIcon
+                          width="20"
+                          height="20"
+                          name="cloud"
+                          color="base-light"/>
+                      </div>
+                      <div>
+                        <span
+                          class="text-base-light ml-2 font-size-12 font-weight-700 no-wrap">
+                          CLOUD INSTANCES
+                      </span>
+                        <span
+                          class="d-flex flex-column font-size-14 ml-2"
+                          v-for="(value, idx) in item.showMoreData.cloud"
+                          :key="idx"
+                        >
+                          {{value[1]}} - {{value[0]}}
+                        </span>
+                      </div>
+                    </div>
+                    <div v-if="item.showMoreData.onPrem && !item.showMoreData.cloud"
+                      class="d-flex align-start mb-3 mt-2"
+                    >
+                      <div>
+                        <ATATSVGIcon
+                          width="20"
+                          height="20"
+                          name="homeWork"
+                          color="base-light"/>
+                      </div>
+                      <div>
+                        <span
+                          class="text-base-light ml-2 font-size-12 font-weight-700">
+                          ON-PREMISE INSTANCES
+                      </span>
+                        <span
+                          class="d-flex flex-column font-size-14  ml-2"
+                          v-for="(value, idx) in item.showMoreData.onPrem"
+                          :key="idx"
+                        >
+                          {{value[1]}} - {{value[0]}}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   <div class="ml-10">
                     <div v-if="item.showMoreData.dodaac"
@@ -88,6 +135,30 @@
                         class="text-base ml-2">
                           {{item.showMoreData.title}}
                       </span>
+                    </div>
+                    <div v-if="item.showMoreData.onPrem && item.showMoreData.cloud"
+                         class="d-flex align-start mb-3 mt-2"
+                    >
+                      <div>
+                        <ATATSVGIcon
+                          width="20"
+                          height="20"
+                          name="homeWork"
+                          color="base-light"/>
+                      </div>
+                      <div>
+                        <span
+                          class="text-base-light ml-2 font-size-12 font-weight-700">
+                          ON-PREMISE INSTANCES
+                      </span>
+                        <span
+                          class="d-flex flex-column font-size-14  ml-2"
+                          v-for="(value, idx) in item.showMoreData.onPrem"
+                          :key="idx"
+                        >
+                          {{value[1]}} - {{value[0]}}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -113,6 +113,7 @@ import Neutral from "@/components/icons/Neutral.vue";
 import VerySatisfied from "@/components/icons/VerySatisfied.vue";
 import VeryDissatisfied from "@/components/icons/VeryDissatisfied.vue";
 import FeedbackThankYou from "@/components/icons/FeedbackThankYou.vue";
+import HomeWork from "@/components/icons/HomeWork.vue";
 
 
 @Component({
@@ -155,6 +156,7 @@ import FeedbackThankYou from "@/components/icons/FeedbackThankYou.vue";
     FileSignature,
     Filters,
     Gcp,
+    HomeWork,
     HelpOutline,
     InfoOutline,
     JWCCPricingCalculator,

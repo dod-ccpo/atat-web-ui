@@ -1393,6 +1393,7 @@ export class SummaryStore extends VuexModule {
     // eslint-disable-next-line max-len
     || systemDocsComplete && migrationDocsComplete && locationHasClassification && await isCurrentEnvironmentComplete;
     let description = ""
+    let showMoreData:Record<string, [string, number][]> = {}
     const deployedLocations:string[] = []
     if(currentEnvironmentInstances.length){
       const onPremInstances:Record<string, number> = {}
@@ -1407,33 +1408,36 @@ export class SummaryStore extends VuexModule {
               deployedLocations.push(classificationLocation as string)
             }
           }
-          const key = buildClassificationLabel(classification,"short")
+          const classificationLabels: Record<string, Record<string, string>> = {
+            CLOUD: {
+              IL2: "Unclassified/IL2",
+              IL4: "Unclassified/IL4",
+              IL5: "Unclassified/IL5",
+              IL6: "Secret",
+              TS: "Top Secret",
+            },
+            ON_PREM: {
+              IL2: "Unclassified (DoD information approved for public release)",
+              IL4: "Unclassified (DoD CUI)",
+              IL5: "Unclassified (DoD CUI & National Security Systems)",
+              IL6: "Secret",
+              TS: "Top Secret",
+            },
+          }
           if(instance.instance_location==="CLOUD"){
-            cloudInstances[key] = (cloudInstances[key] || 0) +1
+            const convertedKey = classificationLabels["CLOUD"][classification.impact_level]
+            cloudInstances[convertedKey] = (cloudInstances[convertedKey] || 0) +1
           }else{
-            onPremInstances[key] = (onPremInstances[key] || 0) +1
+            const convertedKey = classificationLabels["ON_PREM"][classification.impact_level]
+            onPremInstances[convertedKey] = (onPremInstances[convertedKey] || 0) +1
           }
         }
-        console.log(deployedLocations)
       })
 
-      const classificationLabels: Record<string, Record<string, string>> = {
-        CLOUD: {
-          IL2: "Unclassified / IL2",
-          IL4: "Unclassified / IL4",
-          IL5: "Unclassified / IL5",
-          IL6: "Secret / IL6",
-          TS: "Top Secret",
-        },
-        ON_PREM: {
-          IL2: "Unclassified (DoD information approved for public release)",
-          IL4: "Unclassified (DoD CUI)",
-          IL5: "Unclassified (DoD CUI & National Security Systems)",
-          IL6: "Secret",
-          TS: "Top Secret",
-        },
+      showMoreData = {
+        onPrem: Object.entries(onPremInstances),
+        cloud: Object.entries(cloudInstances)
       }
-      const showMoreData = {}
 
       const envString = envLocation === "HYBRID"?"Hybrid"
         :envLocation === "CLOUD"?"Cloud":"On-premise"
@@ -1448,6 +1452,7 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
+      showMoreData,
       hasDelete:false,
       hasShowMore:currentEnvironment?.current_environment_exists !== "NO",
       routeName: "CurrentEnvironment",
