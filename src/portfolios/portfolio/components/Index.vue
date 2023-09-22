@@ -41,6 +41,7 @@
           :value.sync="tabIndex"
           :title.sync="title"
           :isPortfolioProvisioning="isPortfolioProvisioning"
+          @leavePortfolio="openLeavePortfolioModal"
         />
         
         <v-container
@@ -63,7 +64,13 @@
         </v-container>
 
         <Provisioned v-else style="margin-bottom: 100px;"/>
-
+        <LeavePortfolioModal
+          :showModal="showLeavePortfolioModal" 
+          :portfolioName="getCurrentPortfolioTitle"
+          @okClicked="leavePortfolio"
+          @cancelClicked="closeLeavePortfolioModal"
+          :showLeaveModalSpinner="showLeaveModalSpinner"
+        />
       <ATATFooter/>
 
     </v-main>
@@ -91,6 +98,9 @@ import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import _ from "lodash";
+import { ToastObj } from "types/Global";
+import Toast from "@/store/toast";
+import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
 
 @Component({
   components: {
@@ -103,6 +113,7 @@ import _ from "lodash";
     ATATSVGIcon,
     ATATToast,
     Provisioned,
+    LeavePortfolioModal
   }
 })
 export default class PortfolioSummary extends Vue {
@@ -110,12 +121,47 @@ export default class PortfolioSummary extends Vue {
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
   }
+  public showLeaveModalSpinner = false;
   public isPortfolioProvisioning = true;
   public tabIndex = 0;
   public tabItems = [
     "Funding Tracker",
     "Task Orders"
   ];
+
+  public get showLeavePortfolioModal(): boolean {
+    return PortfolioStore.showLeavePortfolioModal;
+  }
+
+  public openLeavePortfolioModal():void {
+    PortfolioStore.setShowLeavePortfolioModal(true);
+  }
+
+  public get getCurrentPortfolioTitle(){
+    return PortfolioStore.currentPortfolio.title;
+  }
+
+  public closeLeavePortfolioModal(): void {
+    PortfolioStore.setShowLeavePortfolioModal(false);
+  }
+
+  public async leavePortfolio(): Promise<void> {
+    this.showLeaveModalSpinner = true;
+    await PortfolioStore.leavePortfolio()
+    this.showLeaveModalSpinner = false;
+    this.closeLeavePortfolioModal()
+    AppSections.changeActiveSection(AppSections.sectionTitles.Home);
+    
+    const accessRemovedToast: ToastObj = {
+      type: "success",
+      message: "Portfolio access removed",
+      isOpen: true,
+      hasUndo: false,
+      hasIcon: true,
+    };
+
+    Toast.setToast(accessRemovedToast);
+  }
 
   private getIdText(string: string) {
     return getIdText(string);

@@ -1903,11 +1903,11 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setIsLoading(false);
       await this.createSummaryItems();
 
-     
+
     } else {
       await this.initialize();
     }
-   
+
   }
 
   // @Mutation

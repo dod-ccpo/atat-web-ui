@@ -840,13 +840,13 @@ Cypress.Commands.add(
         " contract for, or fund/pay bills for materials and services.";
 
       const tooltipButton =
-        prefix === "COR_"
-          ? commonCorAcor.toolTipBtnDodaacCOR
-          : commonCorAcor.toolTipBtnDodaacACOR;
+        prefix === "COR_" ?
+          commonCorAcor.toolTipBtnDodaacCOR :
+          commonCorAcor.toolTipBtnDodaacACOR;
       const tooltipText =
-        prefix === "COR_"
-          ? commonCorAcor.toolTipTxtDodaacCOR
-          : commonCorAcor.toolTipTxtDodaacACOR;
+        prefix === "COR_" ?
+          commonCorAcor.toolTipTxtDodaacCOR :
+          commonCorAcor.toolTipTxtDodaacACOR;
 
       cy.log("TOOLTIP SELECTOR", selector);
       cy.hoverToolTip(tooltipButton, tooltipText, expectedText);
