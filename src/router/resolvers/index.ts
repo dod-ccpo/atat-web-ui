@@ -1738,15 +1738,13 @@ export const SummaryStepThreeRouteResolver = (current:string): string => {
   return routeNames.SummaryStepThree
 }
 
-const hasILs = (): boolean => {
-  return PortfolioStore.CSPHasImpactLevels;
-}
-
-const userHasActivePortfolios = (): boolean => {
-  return PortfolioSummary.hasActivePortfolios;
-}
+const provFromMeatball = (): boolean => { return PortfolioStore.provisioningFromMeatball }
+const cspHasILs = (): boolean => { return PortfolioStore.CSPHasImpactLevels }
+const taskOrderHasUnclass = (): boolean => { return PortfolioStore.doesTaskOrderHaveUnclassified }
+const userHasActivePortfolios = (): boolean => { return PortfolioSummary.hasActivePortfolios }
 
 export const AddToExistingPortfolioResolver = (current: string): string => {
+  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
   const hasActivePortfolios: boolean = userHasActivePortfolios();
   // moving backward
   if (current === provWorkflowRouteNames.GeneratedFromPackage 
@@ -1756,10 +1754,15 @@ export const AddToExistingPortfolioResolver = (current: string): string => {
       ? provWorkflowRouteNames.AddToExistingPortfolio
       : provWorkflowRouteNames.AwardedTaskOrder
   } 
+  
   // moving forward
-  if (hasActivePortfolios) {
-    return provWorkflowRouteNames.AddToExistingPortfolio;
+  if (provFromMeatball()) {
+    return taskOrderHasUnclass() && cspHasILs()
+      ? provWorkflowRouteNames.PortfolioDetails
+      : provWorkflowRouteNames.AddCSPAdmin;
   }
+
+  if (hasActivePortfolios) return provWorkflowRouteNames.AddToExistingPortfolio;
 
   return GeneratedFromPackageRouteResolver(current);
 }
@@ -1771,30 +1774,42 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
   if (packageCount && (!acqPkgSysId || showPackageSelection)) {
     return provWorkflowRouteNames.GeneratedFromPackage;
   }
-  if (current !== provWorkflowRouteNames.PortfolioDetails && acqPkgSysId && !hasILs()) {
+  if (current !== provWorkflowRouteNames.PortfolioDetails && acqPkgSysId && !cspHasILs()) {
     return provWorkflowRouteNames.AddCSPAdmin;
   }
 
   if (current === provWorkflowRouteNames.PortfolioDetails) {
-    return userHasActivePortfolios() 
+    if (provFromMeatball()) return provWorkflowRouteNames.AwardedTaskOrder;
+    return userHasActivePortfolios()
       ? provWorkflowRouteNames.AddToExistingPortfolio 
       : provWorkflowRouteNames.AwardedTaskOrder
   }
-  return provWorkflowRouteNames.PortfolioDetails;
+  
+  return taskOrderHasUnclass() && cspHasILs() 
+    ? provWorkflowRouteNames.PortfolioDetails
+    : provWorkflowRouteNames.AddCSPAdmin;
 }
 
 export const PortfolioDetailsRouteResolver = (current: string): string => {
+  if (current === provWorkflowRouteNames.AddCSPAdmin && provFromMeatball()) {
+    return taskOrderHasUnclass() && cspHasILs()
+      ? provWorkflowRouteNames.PortfolioDetails
+      : provWorkflowRouteNames.AwardedTaskOrder;    
+  }
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
-  if (!acqPkgSysId || current === provWorkflowRouteNames.AddCSPAdmin || hasILs()) {
+  if (!acqPkgSysId || (taskOrderHasUnclass() && cspHasILs())) {
     return provWorkflowRouteNames.PortfolioDetails;
   }
-  if (current === provWorkflowRouteNames.AddCSPAdmin && !acqPkgSysId && !hasILs()) {
+  if (current === provWorkflowRouteNames.AddCSPAdmin && acqPkgSysId && !taskOrderHasUnclass()) {
+    return provWorkflowRouteNames.GeneratedFromPackage;
+  }
+  if (current === provWorkflowRouteNames.AddCSPAdmin && !acqPkgSysId && !taskOrderHasUnclass()) {
     return userHasActivePortfolios()
       ? provWorkflowRouteNames.AddToExistingPortfolio
       : provWorkflowRouteNames.AwardedTaskOrder;
   }
-  return current === provWorkflowRouteNames.GeneratedFromPackage
-    || provWorkflowRouteNames.AddToExistingPortfolio
+  // eslint-disable-next-line max-len
+  return current === provWorkflowRouteNames.GeneratedFromPackage || provWorkflowRouteNames.AddToExistingPortfolio
     ? provWorkflowRouteNames.AddCSPAdmin
     : provWorkflowRouteNames.GeneratedFromPackage;
 }
