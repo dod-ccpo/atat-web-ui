@@ -1783,7 +1783,7 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
     return userHasActivePortfolios()
       ? provWorkflowRouteNames.AddToExistingPortfolio 
       : provWorkflowRouteNames.AwardedTaskOrder
-    }
+  }
   
   return taskOrderHasUnclass() && cspHasILs() 
     ? provWorkflowRouteNames.PortfolioDetails
