@@ -63,6 +63,7 @@
             :index="index"
             :isLastCard="index === packageData.length - 1"
             @updateStatus="updateStatus"
+            @openTOSearchModal="openTOSearchModal"
           />
 
           <div class="_table-pagination" v-show="packageCount > recordsPerPage">
@@ -97,6 +98,14 @@
       <ATATFooter/>
     </v-main>
 
+    <TaskOrderSearchModal
+      :showTOSearchModal.sync="showTOSearchModal"
+      :TONumber.sync="TONumber"
+      :resetValidationNow.sync="resetValidationNow"
+      @TOSearchCancelled="TOSearchCancelled"
+      @startProvisionWorkflow="startProvisionWorkflow"
+    />    
+
   </div>
 </template>
 <script lang="ts">
@@ -110,6 +119,7 @@ import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
+import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 import Steps from "@/store/steps";
 import {
   AcquisitionPackageSummaryDTO,
@@ -122,6 +132,8 @@ import Search from "@/packages/components/Search.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import PortfolioStore from "@/store/portfolio";
+import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 @Component({
   components: {
@@ -130,7 +142,8 @@ import acquisitionPackage from "@/store/acquisitionPackage";
     ATATToast,
     ATATNoResults,
     Card,
-    Search
+    Search,
+    TaskOrderSearchModal
   }
 })
 export default class Packages extends Vue {
@@ -146,6 +159,11 @@ export default class Packages extends Vue {
 
   public noRecordsHeading = "";
   public noRecordsMessage = "";
+
+  public showTOSearchModal = false;
+  public TONumber = "";
+  public resetValidationNow = false;
+  public selectedAcquisitionPackageSysId = "";
 
   public setNoRecordsText(index: number): void {
     switch (index) {
@@ -316,6 +334,41 @@ export default class Packages extends Vue {
     await this.updateSearchDTO('searchString',this.searchString)
   }
 
+
+  public openTOSearchModal(acqPackageSysId: string): void {
+    if(acqPackageSysId){
+      this.selectedAcquisitionPackageSysId = acqPackageSysId;
+    }
+    this.showTOSearchModal = true;
+  }
+
+  public async TOSearchCancelled(): Promise<void> {
+    this.TONumber = "";
+    this.resetValidationNow = true;
+    this.showTOSearchModal = false;
+    this.selectedAcquisitionPackageSysId = "";
+    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+    await PortfolioStore.setShowTOPackageSelection(true);
+    await PortfolioStore.setProvisioningFromMeatballMenu(false);
+  }
+
+  public async startProvisionWorkflow(): Promise<void>{
+    await AcquisitionPackage.reset();
+    if (this.selectedAcquisitionPackageSysId) {
+      await PortfolioStore.setShowTOPackageSelection(false);
+    }
+    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedAcquisitionPackageSysId);
+
+    this.$router.push({
+      name: provWorkflowRouteNames.AwardedTaskOrder,
+      params: {
+        direction: "next"
+      },
+      replace: true
+    }).catch(() => console.log("avoiding redundant navigation"));
+    AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
+  }
+
   private async loadOnEnter(){
     this.selectedSort = AcquisitionPackageSummary.selectedSort;
     this.loadPackageData();
@@ -326,6 +379,7 @@ export default class Packages extends Vue {
 
   public async mounted():Promise<void>{
     await AcquisitionPackage.setHideNavigation(false);
+    await PortfolioStore.setProvisioningFromMeatballMenu(false);
     this.loadOnEnter();
   }
 

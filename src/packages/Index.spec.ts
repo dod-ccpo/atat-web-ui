@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import VueRouter from "vue-router";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
+import {createLocalVue, shallowMount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import Packages from "./Index.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
@@ -29,7 +29,7 @@ describe("Testing Packages Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(Packages, {
+    wrapper = shallowMount(Packages, {
       vuetify,
       localVue,
       router,
