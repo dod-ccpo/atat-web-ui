@@ -260,3 +260,17 @@
     background-color: $primary-lighter !important;
   }
 }
+
+._stepper-footer {
+  border-top: 1px solid $base-lighter !important;
+  ._footer-title{
+    overflow-y: scroll;
+    padding: 0px 16px 4px 24px;
+    font-size: 1.2rem;
+    font-weight:500;
+  }
+  .v-list {
+    padding: 12px 12px 0px 24px !important;
+    overflow-y: scroll;
+  }
+}

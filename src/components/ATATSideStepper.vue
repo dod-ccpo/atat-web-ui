@@ -17,7 +17,6 @@
         color="#544496"
       ></v-progress-linear>
     </div>
-
     <v-list>
       <v-list-item
         v-for="(step, stepIndex) in stepperData"
@@ -91,6 +90,41 @@
         </v-expand-transition>
       </v-list-item>
     </v-list>
+    <div class="_stepper-footer mt-15">
+      <span class="_footer-title text-base">
+        JWCC RESOURCES
+      </span>
+      <v-list>
+        <template v-for="(step, idx) in JWCCResources.menu">
+          <v-list-item
+            :key="idx"
+            @click="navClicked(step)"
+          >
+            <div class="d-flex align-center width-100 mb-1">
+              <div v-if="step.icon" class="text-center _menu-icon mr-2">
+                <ATATSVGIcon
+                  :name="step.icon.name"
+                  :color="step.icon.color"
+                  :width="step.icon.width"
+                  :height="step.icon.height"
+                />
+              </div>
+              <v-list-item-title class="font-size-16" >
+                {{ step.title }}
+              </v-list-item-title>
+              <div v-if="step.externalUrl">
+                <ATATSVGIcon
+                  name="externalLink"
+                  color="primary"
+                  width="14"
+                  height="16"
+                />
+              </div>
+            </div>
+          </v-list-item>
+        </template>
+      </v-list>
+    </div>
   </v-navigation-drawer>
 </template>
 
@@ -98,14 +132,19 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import { StepperStep } from "../../types/Global";
+import { StepperStep, TopNavItem } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
 import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepValidatedAndTouched} from "@/store/summary";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-@Component({})
+@Component({
+  components: {
+    ATATSVGIcon,
+  }
+})
 export default class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
@@ -149,7 +188,33 @@ export default class ATATSideStepper extends Vue {
     this.activeStep = Steps.currentStep?.stepNumber||"";
     return Steps.currentStep as StepInfo;
   }
-
+  private JWCCResources = {
+    menu: [
+      {
+        title: "Ordering Guide",
+        externalUrl: "https://community.hacc.mil/s/jwcc/ordering-guide",
+        icon: {
+          name: "Article",
+          width: 17,
+          height: 17,
+          color: "base-light"
+        }
+      },
+      {
+        title: "Base Contract",
+        externalUrl: "https://community.hacc.mil/s/jwcc/base-contract",
+        icon: {
+          name: "Article",
+          width: 17,
+          height: 17,
+          color: "base-light"
+        }
+      }
+    ]
+  }
+  public navClicked(item: TopNavItem): void {
+    window.open(item.externalUrl, "_blank");
+  }
   private canNavigate(): boolean {
     return AcquisitionPackage.getAllowDeveloperNavigation;
   }
