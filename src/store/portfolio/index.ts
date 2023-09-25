@@ -193,7 +193,7 @@ export class PortfolioDataStore extends VuexModule {
         const csp: CSPProvisioningData = { 
           name: obj.name, 
           classification_level: obj.classification_level,
-          cloud_distinguisher: {} 
+          cloud_distinguisher: undefined
         };
         const cd = obj.cloud_distinguisher;
         if (cd && cd.length) {
