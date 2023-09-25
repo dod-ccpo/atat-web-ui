@@ -128,7 +128,7 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import { StepperStep, TopNavItem } from "../../types/Global";
+import { StepperStep } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
 import Steps from "@/store/steps";
@@ -183,33 +183,6 @@ export default class ATATSideStepper extends Vue {
   private get getCurrentStepperStep(): StepInfo {
     this.activeStep = Steps.currentStep?.stepNumber||"";
     return Steps.currentStep as StepInfo;
-  }
-  private JWCCResources = {
-    menu: [
-      {
-        title: "Ordering Guide",
-        externalUrl: "https://community.hacc.mil/s/jwcc/ordering-guide",
-        icon: {
-          name: "Article",
-          width: 17,
-          height: 17,
-          color: "base-light"
-        }
-      },
-      {
-        title: "Base Contract",
-        externalUrl: "https://community.hacc.mil/s/jwcc/base-contract",
-        icon: {
-          name: "Article",
-          width: 17,
-          height: 17,
-          color: "base-light"
-        }
-      }
-    ]
-  }
-  public navClicked(item: TopNavItem): void {
-    window.open(item.externalUrl, "_blank");
   }
   private canNavigate(): boolean {
     return AcquisitionPackage.getAllowDeveloperNavigation;
