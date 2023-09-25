@@ -265,12 +265,37 @@
   border-top: 1px solid $base-lighter !important;
   ._footer-title{
     overflow-y: scroll;
-    padding: 0px 16px 4px 24px;
+    padding: 0px 16px 0px 24px;
     font-size: 1.2rem;
     font-weight:500;
   }
+  ._footer-content {
+    padding: 8px 12px 0px 24px
+  }
+  ._external-link {
+    position: relative;
+    padding-right: 24px;
+    display: inline-block;
+    white-space: nowrap;
+    color: $base-dark;
+    &a {
+      text-decoration: underline;
+    }
+
+    &:after {
+      font-family: $icon-font;
+      content: "launch";
+      text-decoration: none !important;
+      -webkit-font-feature-settings: 'liga';
+      color: $primary;
+      position: absolute;
+      top: -1px;
+      right: 2px;
+      font-size: 18px;
+    }
+  }
   .v-list {
-    padding: 12px 12px 0px 24px !important;
+    padding: 8px 12px 0px 24px !important;
     overflow-y: scroll;
   }
 }

@@ -1,9 +1,9 @@
 <template>
-  <v-navigation-drawer 
-    id="GlobalSideNavBar" 
-    app 
-    permanent 
-    class="global-side-nav-bar d-flex flex-column align-start " 
+  <v-navigation-drawer
+    id="GlobalSideNavBar"
+    app
+    permanent
+    class="global-side-nav-bar d-flex flex-column align-start "
     width="320"
   >
     <!-- TODO: remove class .d-none on progress bar when progress bar logic complete -->
@@ -26,9 +26,9 @@
         <router-link
           :id="'Step_' + getIdText(step.menuText)"
           :to="{ name: getRouteName(step) }"
-          :class="{ 
+          :class="{
             'step-complete': isStepComplete(step.stepNumber),
-            'disabled': !isStepComplete(step.stepNumber) && !canNavigate() 
+            'disabled': !isStepComplete(step.stepNumber) && !canNavigate()
           }"
           class="step"
           @click.native ="setCurrentStep(
@@ -50,7 +50,7 @@
 
         <v-expand-transition v-if="hasSubSteps(step)">
           <span v-show="activeStep === step.stepNumber">
-            <span 
+            <span
               v-for="(subStep, subStepIndex) in step.subSteps"
               :key="'step' + step.stepNumber + '_substep' + subStepIndex"
             >
@@ -58,13 +58,13 @@
                 v-show="!subStep.excludeFromMenu"
                 :id="'SubStep_' + getIdText(subStep.menuText)"
                 :to="subStep.route"
-                :class="{ 
+                :class="{
                   'step-complete': isSubstepComplete(subStep.name),
-                  'disabled': !isSubstepComplete(subStep.name) && !canNavigate() 
+                  'disabled': !isSubstepComplete(subStep.name) && !canNavigate()
                 }"
                 class="substep"
                 @click="setCurrentStep(
-                  subStep.stepNumber, 
+                  subStep.stepNumber,
                   subStep,
                   false
                 )"
@@ -94,36 +94,30 @@
       <span class="_footer-title text-base">
         JWCC RESOURCES
       </span>
-      <v-list>
-        <template v-for="(step, idx) in JWCCResources.menu">
-          <v-list-item
-            :key="idx"
-            @click="navClicked(step)"
+      <div class="_footer-content">
+        <div class="d-flex align-center mb-2">
+          <ATATSVGIcon class="mr-2" width="18" height="18" name="Article" color="base-light"/>
+          <a
+            href="https://community.hacc.mil/s/jwcc/ordering-guide"
+            target="_blank"
+            class="_text-link"
+            id="OrderingGuide"
           >
-            <div class="d-flex align-center width-100 mb-1">
-              <div v-if="step.icon" class="text-center _menu-icon mr-2">
-                <ATATSVGIcon
-                  :name="step.icon.name"
-                  :color="step.icon.color"
-                  :width="step.icon.width"
-                  :height="step.icon.height"
-                />
-              </div>
-              <v-list-item-title class="font-size-16" >
-                {{ step.title }}
-              </v-list-item-title>
-              <div v-if="step.externalUrl">
-                <ATATSVGIcon
-                  name="externalLink"
-                  color="primary"
-                  width="14"
-                  height="16"
-                />
-              </div>
-            </div>
-          </v-list-item>
-        </template>
-      </v-list>
+            <span class="_external-link">Ordering Guide</span>
+          </a>
+        </div>
+        <div class="d-flex align-center">
+          <ATATSVGIcon class="mr-2" width="18" height="18" name="Article" color="base-light"/>
+          <a
+            href="https://community.hacc.mil/s/jwcc/base-contract"
+            target="_blank"
+            class="_text-link"
+            id="BaseContract"
+          >
+            <span class="_external-link">Base Contract</span>
+          </a>
+        </div>
+      </div>
     </div>
   </v-navigation-drawer>
 </template>
