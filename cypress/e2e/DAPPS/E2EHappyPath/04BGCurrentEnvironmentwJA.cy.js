@@ -2,7 +2,7 @@ import background from "../../../selectors/background.sel";
 import { descriptionDetails } from "../../../sharedData/sharedData";
 import "./04BGProcurementwJA.cy.js";
 
-describe("Test suite: Step04-Background-Current Environment JA", () => {
+describe("Test suite: Step04-Background-Current Environment JA",  { testIsolation: false },() => {
   const noCurrentEnvironmentDescriptionTxt = ["No existing environment"];
 
   before(() => {

@@ -20,7 +20,7 @@ const dataSets = [epSet1, epSet2, epSet3, epSet4];
 
 
 
-describe("Test suite: Step04-Background-Current Environment", () => {
+describe("Test suite: Step04-Background-Current Environment",{ testIsolation: false }, () => {
 
   const noContract = "No previous contracts";
   const dataSetIndex = Cypress.env("epDataSetIndex");

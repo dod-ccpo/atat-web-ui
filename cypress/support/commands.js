@@ -513,11 +513,11 @@ Cypress.Commands.add("verifyListMatches", (selector, expectedText) => {
           console.log("formattedItem:", formatedItem);
           return formatedItem;
         })
-        .sort(); 
+        .sort();
       console.log("actualArray:", foundTextArray);
       return foundTextArray;
     })
-    .should(($foundTextArray) => {      
+    .should(($foundTextArray) => {
       expect($foundTextArray).to.deep.equal(expectedText);
     });
 
@@ -840,13 +840,13 @@ Cypress.Commands.add(
         " contract for, or fund/pay bills for materials and services.";
 
       const tooltipButton =
-        prefix === "COR_" ?
-          commonCorAcor.toolTipBtnDodaacCOR :
-          commonCorAcor.toolTipBtnDodaacACOR;
+        prefix === "COR_"
+          ? commonCorAcor.toolTipBtnDodaacCOR
+          : commonCorAcor.toolTipBtnDodaacACOR;
       const tooltipText =
-        prefix === "COR_" ?
-          commonCorAcor.toolTipTxtDodaacCOR :
-          commonCorAcor.toolTipTxtDodaacACOR;
+        prefix === "COR_"
+          ? commonCorAcor.toolTipTxtDodaacCOR
+          : commonCorAcor.toolTipTxtDodaacACOR;
 
       cy.log("TOOLTIP SELECTOR", selector);
       cy.hoverToolTip(tooltipButton, tooltipText, expectedText);
@@ -1114,12 +1114,11 @@ Cypress.Commands.add(
   "defaultPoPLengthValue",
   (inputSelector, dropdownSelector) => {
     cy.findElement(inputSelector).invoke("val").should("be.equal", "1");
-    cy.findElement(dropdownSelector)
-      .then(($option) => {
-        const defaultOption = $option.text();
-        cy.log(defaultOption);
-      })
-      .should("have.text", "Year");
+    cy.findElement(dropdownSelector).then(($option) => {
+      const defaultOption = $option.text();
+      cy.log(defaultOption);
+    });
+    cy.findElement(dropdownSelector).should("have.text", "Year");
   }
 );
 

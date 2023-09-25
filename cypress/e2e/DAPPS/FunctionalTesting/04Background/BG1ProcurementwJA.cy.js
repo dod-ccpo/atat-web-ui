@@ -11,7 +11,7 @@ import bgCEData from "../../../../fixtures/bgCEData.json";
 
 
 
-describe("Test suite: Step04-Procurement History", () => {
+describe("Test suite: Step04-Procurement History",{ testIsolation: false }, () => {
 
 
   const pt = "TC-Step-4-Background-JA-procurement" + randomString(5);

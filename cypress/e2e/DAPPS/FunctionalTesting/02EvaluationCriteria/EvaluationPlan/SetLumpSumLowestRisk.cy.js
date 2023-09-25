@@ -6,7 +6,7 @@ import ep from "../../../../../selectors/evaluationPlan.sel";
 import fo from "../../../../../selectors/fairOpportunityProcess.sel";
 import common from "../../../../../selectors/common.sel";
 
-describe("Test suite: Set Lump SumS: Lowest Risk", () => {  
+describe("Test suite: Set Lump SumS: Lowest Risk", { testIsolation: false }, () => {  
 
   const pt = "TC-Step-2-FairOpp-None-LowestRisk-" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-lowestRisk" + randomString(5);

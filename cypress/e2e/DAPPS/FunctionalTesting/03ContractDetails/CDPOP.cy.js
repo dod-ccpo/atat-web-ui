@@ -134,7 +134,7 @@ describe("Test suite: Functional Testing - 03 Contract Details> Period of Perfor
       force: true
     });
     cy.clickContinueButton(contractDetails.noRadioOption,
-      CDData.classificationSummary.pageHeaderSummary);
+      CDData.contractTypePage.pageHeader4);
     cy.log(" TestReport: Step3-ContractDetails-POP Page# 3 Functional Testing complete ")
   });
 

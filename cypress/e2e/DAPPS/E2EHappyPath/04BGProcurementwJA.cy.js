@@ -12,7 +12,7 @@ import "./02ExceptionToFairOpportunity.cy.js";
 
 const dataSets = [jaSet1, jaSet2, jaSet3]
 
-describe("Test suite:Step04-Procurement History with J&A", () => {
+describe("Test suite:Step04-Procurement History with J&A",  { testIsolation: false },() => {
   const dataSetIndex = Cypress.env("jaDataSetIndex");
   const dataSet = dataSets[dataSetIndex];
 

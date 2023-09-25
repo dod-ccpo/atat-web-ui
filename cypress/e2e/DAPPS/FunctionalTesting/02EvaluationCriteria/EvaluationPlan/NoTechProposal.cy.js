@@ -3,7 +3,7 @@ import fo from "../../../../../selectors/fairOpportunityProcess.sel";
 import ep from "../../../../../selectors/evaluationPlan.sel";
 import evalCriteria from '../../../../../fixtures/evaluationCriteria.json';
 
-describe("Test suite: No technical proposal ", () => {  
+describe("Test suite: No technical proposal ",{ testIsolation: false }, () => {  
   const pt = "TC-Step-2-EC-FairOpp-None-noTech" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-noTech" + randomString(5);
   //summary page

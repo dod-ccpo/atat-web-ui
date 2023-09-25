@@ -8,7 +8,7 @@ import fo from "../../../../../selectors/fairOpportunityProcess.sel";
 import common from "../../../../../selectors/common.sel";
 
 
-describe("Test suite: TechProposal: BVTO", () => {
+describe("Test suite: TechProposal: BVTO", { testIsolation: false }, () => {
 
   const customText = randomString(5);
   const pt = "TC-Step-2-FairOpp-None-BVTO-" + randomAlphaNumeric(5);

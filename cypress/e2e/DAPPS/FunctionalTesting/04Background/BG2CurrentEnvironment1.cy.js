@@ -91,7 +91,6 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
     cy.waitUntil(function () {
       return cy.findElement(background.removeFile1).should("exist");
     })
-
   }
 
   function environmentType(environment) {
@@ -207,9 +206,7 @@ describe("Test suite: Background- Current Environment: Functional Testing1", () 
     cy.verifyCheckBoxLabels(background.CloudClassificationCheckboxes, 
       bgCEData.CEPage5.expectedLabelsUnCL);
     UnclassificationLevels();
-
     // Page # 6-8 validations in next test case
-
   })
 
   it("TC2: Current Environment: Functional Testcase- Screen Validation pages 6-8", () => {

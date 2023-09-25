@@ -3,7 +3,7 @@ import ep from "../../../../../selectors/evaluationPlan.sel";
 import evalCriteria from '../../../../../fixtures/evaluationCriteria.json';
 import fo from "../../../../../selectors/fairOpportunityProcess.sel";
 
-describe("Test suite: Test suite: TechProposal: LPTA", () => {
+describe("Test suite: Test suite: TechProposal: LPTA",{ testIsolation: false }, () => {
   
   const pt = "TC-Step-2-FairOpp-None-LPTA-" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-LPTA" + randomString(5);

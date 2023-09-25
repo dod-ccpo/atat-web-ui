@@ -18,7 +18,7 @@ import ac from "../../../selectors/acor.sel";
 import { jaSet1, jaSet2, jaSet3 } from "../../../sharedData/sharedData";
 
 const dataSets = [jaSet1, jaSet2, jaSet3];
-describe("Test suite: Step02-Exception to Fair Opportunity", () => {  
+describe("Test suite: Step02-Exception to Fair Opportunity",  { testIsolation: false },() => {  
 
   const dataSetIndex = Cypress.env("jaDataSetIndex");
   const dataSet = dataSets[dataSetIndex];
