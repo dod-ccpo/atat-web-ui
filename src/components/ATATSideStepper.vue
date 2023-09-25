@@ -102,6 +102,7 @@
             target="_blank"
             class="_text-link"
             id="OrderingGuide"
+            rel="noopener"
           >
             <span class="_external-link">Ordering Guide</span>
           </a>
@@ -113,6 +114,7 @@
             target="_blank"
             class="_text-link"
             id="BaseContract"
+            rel="noopener"
           >
             <span class="_external-link">Base Contract</span>
           </a>
