@@ -8,8 +8,9 @@
         <a href="#" class="_text-link">Accessibility</a> 
         -->
       </div>
-      <div>
-        Last login: {{getCurrentUser.last_login_time}}
+      <div class="footer-content">
+        <div>Last login: {{getCurrentUser.last_login_time}}</div>
+        <div>Version: {{VERSION}}</div>
       </div>
     </v-footer>
     <div v-if="allowDeveloperNavigation()" class="container-max-width">
@@ -46,11 +47,16 @@ import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
+
 @Component({})
 
 export default class ATATFooter extends Vue {
   public get getCurrentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
+  }
+  public get VERSION(): string | undefined {
+    console.log("here's process.env", process.env);
+    return process.env.VERSION;
   }
 
   private allowDeveloperNavigation(): boolean {
@@ -70,3 +76,10 @@ export default class ATATFooter extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.footer-content {
+  text-align: right;
+  margin-bottom: 5px;
+}
+</style>
