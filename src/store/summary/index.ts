@@ -975,7 +975,6 @@ export class SummaryStore extends VuexModule {
   public async isEvalPlanComplete(evalPlanStore:EvaluationPlanDTO): Promise<boolean> {
     const hasCustomSpecs = (evalPlanStore.has_custom_specifications ?? "") !== "";
     const hasStandardDifferentiators = (evalPlanStore.standard_differentiators ?? "") !==  "";
-    const hasStandardSpecifications = (evalPlanStore.standard_specifications ?? "") !== "";
     const hasBestUseOrLowestRiskMethod = 
       (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
     const hasLPTAMethod = evalPlanStore.method === "LPTA";
@@ -991,7 +990,7 @@ export class SummaryStore extends VuexModule {
         : hasCustomSpecs && hasStandardDifferentiators
       break;
     case "SET_LUMP_SUM":
-      isComplete = hasBestUseOrLowestRiskMethod && hasStandardSpecifications;
+      isComplete = hasBestUseOrLowestRiskMethod;
       break;
     case "EQUAL_SET_LUMP_SUM":
       isComplete = true;
