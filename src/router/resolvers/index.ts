@@ -440,7 +440,7 @@ export const TravelRouteResolver = (current: string): string => {
 }
 
 export const PIIResolver = (current: string): string =>{
-
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(7))
   return current === routeNames.SummaryStepSix
     ? Summary.hasCurrentStepBeenVisited ? routeNames.SummaryStepSeven : routeNames.PII
     : routeNames.SummaryStepSix
