@@ -38,6 +38,7 @@
         <PortfolioSummaryPageHead
           headline="Portfolio Summary"
           :items ="tabItems"
+          :environmentLinks="environmentLinks"
           :value.sync="tabIndex"
           :title.sync="title"
           :isPortfolioProvisioning="isPortfolioProvisioning"
@@ -98,7 +99,7 @@ import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { ToastObj } from "types/Global";
+import { ToastObj, EnvironmentLink } from "types/Global";
 import Toast from "@/store/toast";
 import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
 
@@ -116,13 +117,17 @@ import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
     LeavePortfolioModal
   }
 })
+
+
 export default class PortfolioSummary extends Vue {
+  
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
   }
   public showLeaveModalSpinner = false;
   public isPortfolioProvisioning = true;
+  public environmentLinks:EnvironmentLink[] = []
   public tabIndex = 0;
   public tabItems = [
     "Funding Tracker",
@@ -201,7 +206,15 @@ export default class PortfolioSummary extends Vue {
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
       this.portfolioSysId = portfolio.sysId;
-
+      portfolio.environments?.forEach((environment) =>{
+        if(environment.dashboard_link !== '' && environment.classification_level === "U"){
+          const linkDisplay = environment.csp_display.split("_")[1].toUpperCase()
+          this.environmentLinks.push({
+            display: linkDisplay,
+            link: environment.dashboard_link
+          })
+        }
+      })
       const envs = portfolio.environments;
 
       if (envs?.length) {
