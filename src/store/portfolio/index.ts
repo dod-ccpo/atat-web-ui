@@ -721,7 +721,7 @@ export class PortfolioDataStore extends VuexModule {
   public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
     const userSysIds = portfolio.portfolio_owner + "," 
       + portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
-    const allMembersDetailListDTO = await api.userTable.getUsersBySysId(userSysIds);
+    const allMembersDetailListDTO = await api.userApi.getUsersBySysId(userSysIds);
     const allMembersDetailList: User[] = 
       allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
         return {
@@ -764,7 +764,7 @@ export class PortfolioDataStore extends VuexModule {
     // add portfolio owner to front of member list
     if (Object.keys(portfolioOwner).length > 0) {
       portfolio.members.unshift(portfolioOwner);    if (portfolio.createdBy) {
-        const createdByUser = await api.userTable.search(portfolio.createdBy);
+        const createdByUser = await api.userApi.search(portfolio.createdBy);
         this.doSetPortfolioCreator(createdByUser[0]);
       }  
     }

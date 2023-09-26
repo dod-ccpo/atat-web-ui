@@ -158,7 +158,7 @@ export class UserStore extends VuexModule {
     } else if (userId && 
       (this.currentUser.sys_id === "" || this.currentUser.sys_id === undefined)
     ) {
-      const response = await api.userTable.search(userId);
+      const response = await api.userApi.search(userId);
       if (response) {
         const userObj: UserDTO = response[0];
         this.setCurrentUser(userObj);
@@ -188,7 +188,7 @@ export class UserStore extends VuexModule {
   @Action({rawError: true})
   public async getUserRoles(filter?: string): Promise<string[]> {
     try {
-      const response = await api.userRolesTable.getUserRoles(filter);
+      const response = await api.userRolesApi.getUserRoles(filter);
       return response;
     } catch(error) {
       throw new Error(`error retrieving alert data ${error}`);
@@ -199,7 +199,7 @@ export class UserStore extends VuexModule {
   public async getUserRecord(data: {searchStr: string, searchCol?: string}): Promise<User> {
     const user: User = {};
     try {
-      const response = await api.userTable.search(data.searchStr, data.searchCol);
+      const response = await api.userApi.search(data.searchStr, data.searchCol);
       if (response.length) {
         const userRecord: UserDTO = convertColumnReferencesToValues(response[0]);
         user.firstName = userRecord.first_name?.trim();

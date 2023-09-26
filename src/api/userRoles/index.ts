@@ -1,4 +1,3 @@
-import { UserRolesDTO } from "../models";
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { ApiBase } from "../apiBase";
 
