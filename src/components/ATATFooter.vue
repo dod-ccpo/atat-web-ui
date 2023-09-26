@@ -55,7 +55,6 @@ export default class ATATFooter extends Vue {
     return CurrentUserStore.getCurrentUserData;
   }
   public get VERSION(): string | undefined {
-    console.log("here's process.env", process.env);
     return process.env.VERSION;
   }
 
