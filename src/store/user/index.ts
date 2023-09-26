@@ -14,7 +14,8 @@ import { User } from "types/Global";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import {
   PortfolioSummarySearchDTO, 
-  UserDTO 
+  UserDTO, 
+  UserRolesDTO
 } from "@/api/models";
 import AcquisitionPackageSummaryStore from "../acquisitionPackageSummary";
 import PortfolioSummary from "../portfolioSummary";
@@ -151,7 +152,7 @@ export class UserStore extends VuexModule {
     if (sessionRestored) {
       this.setInitialized(false);
       this.setStoreData(sessionRestored);
-      await this.setUserRoles(this.currentUser.sys_id as string);
+      await this.setUserRoles();
       await this.setUserPackageCount();
       this.setInitialized(true);
     } else if (userId && 
@@ -161,7 +162,7 @@ export class UserStore extends VuexModule {
       if (response) {
         const userObj: UserDTO = response[0];
         this.setCurrentUser(userObj);
-        await this.setUserRoles(userObj.sys_id as string);
+        await this.setUserRoles();
         await this.setUserPackageCount();
         storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
         this.setInitialized(true);
@@ -174,8 +175,8 @@ export class UserStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public async setUserRoles(sysId: string): Promise<void> {
-    const roles = await this.getUserRoles(sysId);
+  public async setUserRoles(): Promise<void> {
+    const roles = await this.getUserRoles();
     await this.doSetCurrentUserRoles(roles);
   }
 
@@ -185,12 +186,10 @@ export class UserStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async getUserRoles(sysId: string): Promise<string[]> {
+  public async getUserRoles(filter?: string): Promise<string[]> {
     try {
-      // ATAT TODO AT-9575 reinstate after proxy created for sys_user_has_roles
-      // const response = await api.userRolesTable.getUserRoles(sysId);
-      // return response.map(obj => obj.role);
-      return [];
+      const response = await api.userRolesTable.getUserRoles(filter);
+      return response;
     } catch(error) {
       throw new Error(`error retrieving alert data ${error}`);
     }
