@@ -91,8 +91,7 @@
                 {{ menuItem.title }}
               </v-list-item-title>
             </v-list-item>
-            <hr class="my-2"  v-if="!isProdEnv" />
-
+            <hr class="my-2"  v-if="!isProdEnv && hasCspLinks" />
             <v-list-item disabled id="LoginToCSPConsole_MenuItem" v-if="!isProdEnv && hasCspLinks">
               <v-list-item-title class="_csp-console-text"> 
                 {{cspLoginText}}
