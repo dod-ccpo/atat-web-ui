@@ -12,11 +12,7 @@ import api from "@/api";
 import Vue from "vue";
 import { User } from "types/Global";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import {
-  PortfolioSummarySearchDTO, 
-  UserDTO, 
-  UserRolesDTO
-} from "@/api/models";
+import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
 import AcquisitionPackageSummaryStore from "../acquisitionPackageSummary";
 import PortfolioSummary from "../portfolioSummary";
 import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
