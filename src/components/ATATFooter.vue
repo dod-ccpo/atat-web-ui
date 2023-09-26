@@ -80,6 +80,5 @@ export default class ATATFooter extends Vue {
 <style scoped>
 .footer-content {
   text-align: right;
-  margin-bottom: 5px;
 }
 </style>
