@@ -138,6 +138,21 @@ export class PortfolioDataStore extends VuexModule {
     this.didNotUseDAPPS = bool;
   }
 
+  // if user has started provisioning from an acquisition package card meatball
+  // menu on the home page or the All Packages page, routing will skip both
+  // the "Add to existing portfolio" and "did you use DAPPs" pages in the 
+  // provisioning workflow
+  public provisioningFromMeatball = false;
+  @Action({rawError: true})
+  public async setProvisioningFromMeatballMenu(bool: boolean): Promise<void> {
+    this.doSetProvisioningFromMeatballMenu(bool);
+  }
+  @Mutation
+  public doSetProvisioningFromMeatballMenu(bool: boolean): void {
+    this.provisioningFromMeatball = bool;
+  }
+
+
   public selectedAcquisitionPackageSysId = "";
   @Action({rawError: true})
   public async setSelectedAcquisitionPackageSysId(sysId: string): Promise<void> {
@@ -177,6 +192,11 @@ export class PortfolioDataStore extends VuexModule {
   public get doesCSPHaveImpactLevels(): boolean {
     return this.CSPHasImpactLevels;
   }
+  public get doesTaskOrderHaveUnclassified(): boolean {
+    return this.portfolioProvisioningObj
+      .classificationLevels?.includes("Unclassified") as boolean; 
+  }
+
   @Action({ rawError: true})
   public async setCSPProvisioningData(): Promise<void> {
     try {
