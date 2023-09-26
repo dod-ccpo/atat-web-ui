@@ -61,8 +61,8 @@
                   </span>
                     </div>
                     <div v-if="item.showMoreData.cloud?.length > 0"
-                      class="mb-3 mt-2 mr-15">
-                      <div class="d-flex align-center">
+                      class="mb-3 mt-2 ">
+                      <div class="d-flex align-center" style="min-width:200px">
                         <ATATSVGIcon
                           width="21"
                           height="14"
@@ -86,6 +86,7 @@
                     <div v-if="item.showMoreData.onPrem?.length > 0
                     && !item.showMoreData.cloud.length > 0"
                       class="mb-3 mt-2"
+                      style="min-width:200px"
                     >
                       <div class="d-flex align-center">
                         <ATATSVGIcon
