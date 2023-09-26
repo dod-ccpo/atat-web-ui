@@ -60,22 +60,22 @@
                           {{item.showMoreData.phone}}
                   </span>
                     </div>
-                    <div v-if="item.showMoreData.cloud.length > 0"
-                      class="d-flex align-start mb-3 mt-2">
-                      <div>
+                    <div v-if="item.showMoreData.cloud?.length > 0"
+                      class="mb-3 mt-2 mr-15">
+                      <div class="d-flex align-center">
                         <ATATSVGIcon
-                          width="20"
-                          height="20"
+                          width="21"
+                          height="14"
                           name="cloud"
                           color="base-light"/>
-                      </div>
-                      <div>
                         <span
                           class="text-base-light ml-2 font-size-12 font-weight-700 no-wrap">
                           CLOUD INSTANCES
                       </span>
+                      </div>
+                      <div>
                         <span
-                          class="d-flex flex-column font-size-14 ml-2"
+                          class="d-flex flex-column font-size-14 ml-7"
                           v-for="(value, idx) in item.showMoreData.cloud"
                           :key="idx"
                         >
@@ -83,24 +83,24 @@
                         </span>
                       </div>
                     </div>
-                    <div v-if="item.showMoreData.onPrem.length > 0
+                    <div v-if="item.showMoreData.onPrem?.length > 0
                     && !item.showMoreData.cloud.length > 0"
-                      class="d-flex align-start mb-3 mt-2"
+                      class="mb-3 mt-2"
                     >
-                      <div>
+                      <div class="d-flex align-center">
                         <ATATSVGIcon
                           width="20"
-                          height="20"
+                          height="16"
                           name="homeWork"
                           color="base-light"/>
-                      </div>
-                      <div>
                         <span
                           class="text-base-light ml-2 font-size-12 font-weight-700">
                           ON-PREMISE INSTANCES
                       </span>
+                      </div>
+                      <div>
                         <span
-                          class="d-flex flex-column font-size-14  ml-2"
+                          class="d-flex flex-column font-size-14 ml-7"
                           v-for="(value, idx) in item.showMoreData.onPrem"
                           :key="idx"
                         >
@@ -137,24 +137,24 @@
                           {{item.showMoreData.title}}
                       </span>
                     </div>
-                    <div v-if="item.showMoreData.onPrem.length > 0
+                    <div v-if="item.showMoreData.onPrem?.length > 0
                     && item.showMoreData.cloud.length > 0"
-                         class="d-flex align-start mb-3 mt-2"
+                         class="mb-3 mt-2 pl-2"
                     >
-                      <div>
+                      <div class="d-flex align-center">
                         <ATATSVGIcon
                           width="20"
-                          height="20"
+                          height="16"
                           name="homeWork"
                           color="base-light"/>
-                      </div>
-                      <div>
                         <span
                           class="text-base-light ml-2 font-size-12 font-weight-700">
                           ON-PREMISE INSTANCES
                       </span>
+                      </div>
+                      <div>
                         <span
-                          class="d-flex flex-column font-size-14  ml-2"
+                          class="d-flex flex-column font-size-14 ml-7"
                           v-for="(value, idx) in item.showMoreData.onPrem"
                           :key="idx"
                         >

@@ -16,10 +16,6 @@
     transition: transform 0.3s;
   }
   &._contentAtTop {
-    &:after{
-      transform: rotate(90deg);
-      transition: transform 0.3s;
-    }
     &.open:after {
         transform: rotate(270deg);
         transition: transform 0.3s;
@@ -28,10 +24,6 @@
 
   &.open:after {
     transform: rotate(90deg);
-    &._contentAtTop {
-      transform: rotate(270deg);
-      transition: transform 0.3s;
-    }
   }
 
   &._hoverable-in-alert {
