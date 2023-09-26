@@ -42,6 +42,10 @@ module.exports = {
   chainWebpack: config => {
     let BASE_API_URL = process.env.BASE_API_URL;
     let VERSION = process.env.VERSION;
+    if (!VERSION)
+    {
+      VERSION = "1.0.0";
+    }
     if (!BASE_API_URL){
       console.error("You must provide a value for property BASE_API_URL. Stopping.")
       return process.exit(1)
