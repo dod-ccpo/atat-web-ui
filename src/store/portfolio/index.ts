@@ -575,6 +575,7 @@ export class PortfolioDataStore extends VuexModule {
     return this.showAddMembersModal;
   }
   public showArchivePortfolioModal = false;
+  public showLeavePortfolioModal = false;
   public currentUserIsViewer = false;
   public currentUserIsManager = false;
   public currentUserIsOwner = false;
@@ -646,11 +647,21 @@ export class PortfolioDataStore extends VuexModule {
   public doSetShowArchivePortfolioModal(show: boolean): void {
     this.showArchivePortfolioModal = show;
   }
-  
+
+  @Action
+  public setShowLeavePortfolioModal(show: boolean): void {
+    this.doSetShowLeavePortfolioModal(show);
+  }
+
+  @Mutation
+  public doSetShowLeavePortfolioModal(show: boolean): void {
+    this.showLeavePortfolioModal = show;
+  }
+
   @Action({rawError: true})
   public async removeMemberFromCurrentPortfolio(sysId: string): Promise<void> {
     const members = this.currentPortfolio.members?.filter(m => m.sys_id !== sysId);
-    this.doSetCurrentPortfolio({members});
+    await this.doSetCurrentPortfolio({members});
   }
 
   @Action({rawError: true})
@@ -664,7 +675,6 @@ export class PortfolioDataStore extends VuexModule {
         } as unknown as PortfolioSummaryDTO;
         let response = await api.portfolioTable.update(portfolio.sysId, members);
         response = convertColumnReferencesToValues(response);
-
         await this.setCurrentPortfolio(response);
         await this.doSetCurrentUserRole();
         await this.populatePortfolioMembersDetail(portfolio);
@@ -959,6 +969,27 @@ export class PortfolioDataStore extends VuexModule {
   @Action({rawError: true})
   public async reset(): Promise<void> {
     this.doReset();
+  }
+
+  @Action({rawError: true})
+  public async leavePortfolio(): Promise<void>{
+    const userSysId = CurrentUserStore.getCurrentUserData.sys_id;
+    if(userSysId) {
+      const currentPortfolio = this.currentPortfolio;
+
+      if(currentPortfolio.portfolio_managers) {
+        const managers = currentPortfolio.portfolio_managers.split(',');
+        // eslint-disable-next-line camelcase
+        currentPortfolio.portfolio_managers = managers.filter(id => id !== userSysId).join(',');
+      }
+
+      if(currentPortfolio.portfolio_viewers) {
+        const viewers = currentPortfolio.portfolio_viewers.split(',');
+        // eslint-disable-next-line camelcase
+        currentPortfolio.portfolio_viewers = viewers.filter(id => id !== userSysId).join(',');
+      }
+      await this.setCurrentPortfolioMembers(currentPortfolio);
+    }
   }
 
   public taskOrderDetailsAlertClosed = false;

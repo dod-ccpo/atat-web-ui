@@ -14,39 +14,40 @@ Cypress.Commands.add("goToECStep",(pt, scope)=>{
   cy.verifyPageHeader(
     "Let’s see if you qualify for an exception to fair opportunity"
   );
-  });
+});
 
-  Cypress.Commands.add("selectFairOppRadioOption", (radioSelector, value) => {
-    cy.radioBtn(radioSelector, value).click({ force: true });
-    cy.findElement(fo.fairOppRadioActiveBtn)
-      .then(($radioBtn) => {
-        const selectedOption =cleanText($radioBtn.text());
-        cy.log(selectedOption); 
-        cy.btnClick(common.continueBtn, " Continue ");
-        cy.waitUntilElementIsGone(fo.radioOneCSP);              
-        const optionSelectedText = "radio_button_checkedNone of these exceptions apply to this acquisition."      
-        if (selectedOption === optionSelectedText) {
-            cy.verifyPageHeader("Let’s work on an evaluation plan for your requirement");
-        } else {
-          cy.verifyPageHeader("Which CSP does this exception to fair opportunity apply to?")
-        }
+Cypress.Commands.add("selectFairOppRadioOption", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(fo.fairOppRadioActiveBtn)
+    .then(($radioBtn) => {
+      const selectedOption =cleanText($radioBtn.text());
+      cy.log(selectedOption); 
+      cy.btnClick(common.continueBtn, " Continue ");
+      cy.waitUntilElementIsGone(fo.radioOneCSP);              
+      const optionSelectedText = 
+      "radio_button_checkedNone of these exceptions apply to this acquisition."      
+      if (selectedOption === optionSelectedText) {
+        cy.verifyPageHeader("Let’s work on an evaluation plan for your requirement");
+      } else {
+        cy.verifyPageHeader("Which CSP does this exception to fair opportunity apply to?")
+      }
         
-      });  
-      
-  });
-
-  Cypress.Commands.add("selectCSPSelctionOption", (btnSelector) => {
-    cy.findElement(btnSelector).click().then(($btnselected) => {
-      const selectedCSPCard = cleanText($btnselected.text());
-      cy.log(selectedCSPCard);
-      cy.clickContinueButton(
-        btnSelector,
-        "Let’s work on your justification for this exception to fair opportunity"
-      );
-  
     });  
+      
+});
+
+Cypress.Commands.add("selectCSPSelctionOption", (btnSelector) => {
+  cy.findElement(btnSelector).click().then(($btnselected) => {
+    const selectedCSPCard = cleanText($btnselected.text());
+    cy.log(selectedCSPCard);
+    cy.clickContinueButton(
+      btnSelector,
+      "Let’s work on your justification for this exception to fair opportunity"
+    );
   
-  });
+  });  
+  
+});
 
 Cypress.Commands.add("selectNoneOption", (pt, scope) => {
   cy.goToECStep(pt, scope);  
@@ -251,11 +252,11 @@ Cypress.Commands.add("selectTimePeriodDropdown", (selIcon,selList,selInput,value
   cy.enterTextInTextField(selInput,value)
 });
 Cypress.Commands.add("clickContentLink", ()=>{
-cy.findElement(fo.instructionLink).click().then(()=>{
-  cy.waitUntil(function () {
+  cy.findElement(fo.instructionLink).click().then(()=>{
+    cy.waitUntil(function () {
       return Cypress.$(fo.instructionLink).attr("aria-expanded") == "true";
-  });
-  cy.findElement(fo.instructionContentText).should("be.visible");  
+    });
+    cy.findElement(fo.instructionContentText).should("be.visible");  
 
-})
+  })
 })

@@ -6,10 +6,9 @@
           <h1 class="page-header mb-3 mt-5">Your portfolio is being provisioned!</h1>
           <div class="copy-max-width">
             <p class="mb-6">
-              We’re working with {{ provisioningData.cspLong }} to provision your cloud
-              resources. This process can take up to {{ processLength }}. We’ll email you
-              when the process is complete, but you can come back here anytime
-              for an up-to-date status of your portfolio and funding details.
+              We’re working with {{ provisioningData.cspLong }} to provision your cloud 
+              resources. This process can take up to {{ processLength }}, but you can 
+              come back here anytime to see your portfolio status.
             </p>
           </div>
         </v-col>
