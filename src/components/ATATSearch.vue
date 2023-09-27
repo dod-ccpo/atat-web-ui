@@ -230,6 +230,10 @@ export default class ATATSearch extends Vue {
     this.showHelpText = true;
   }
 
+  public updateError(errorMessage: string){
+    this.$refs.atatSearchInput.errorBucket = [errorMessage]
+  }
+
   private async search(): Promise<void> {
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
@@ -242,7 +246,9 @@ export default class ATATSearch extends Vue {
         const response = await api.edaApi.search(this._value);
         if (response.success !== undefined && !response.success) {
           if (!this.isModal) {
-            this.$refs.atatSearchInput.errorBucket = [response.message || "Unknown error"];
+            console.log(response, 'response')
+            this.updateError(response.message as string);
+            console.log(this.$refs.atatSearchInput)
           } else {
             this.$refs.atatSearchInputModal.errorBucket = [response.message || "Unknown error"];
           }

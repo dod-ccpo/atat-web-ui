@@ -138,6 +138,21 @@ export class PortfolioDataStore extends VuexModule {
     this.didNotUseDAPPS = bool;
   }
 
+  // if user has started provisioning from an acquisition package card meatball
+  // menu on the home page or the All Packages page, routing will skip both
+  // the "Add to existing portfolio" and "did you use DAPPs" pages in the 
+  // provisioning workflow
+  public provisioningFromMeatball = false;
+  @Action({rawError: true})
+  public async setProvisioningFromMeatballMenu(bool: boolean): Promise<void> {
+    this.doSetProvisioningFromMeatballMenu(bool);
+  }
+  @Mutation
+  public doSetProvisioningFromMeatballMenu(bool: boolean): void {
+    this.provisioningFromMeatball = bool;
+  }
+
+
   public selectedAcquisitionPackageSysId = "";
   @Action({rawError: true})
   public async setSelectedAcquisitionPackageSysId(sysId: string): Promise<void> {
@@ -177,6 +192,11 @@ export class PortfolioDataStore extends VuexModule {
   public get doesCSPHaveImpactLevels(): boolean {
     return this.CSPHasImpactLevels;
   }
+  public get doesTaskOrderHaveUnclassified(): boolean {
+    return this.portfolioProvisioningObj
+      .classificationLevels?.includes("Unclassified") as boolean; 
+  }
+
   @Action({ rawError: true})
   public async setCSPProvisioningData(): Promise<void> {
     try {
@@ -193,7 +213,7 @@ export class PortfolioDataStore extends VuexModule {
         const csp: CSPProvisioningData = { 
           name: obj.name, 
           classification_level: obj.classification_level,
-          cloud_distinguisher: {} 
+          cloud_distinguisher: undefined
         };
         const cd = obj.cloud_distinguisher;
         if (cd && cd.length) {
@@ -721,7 +741,7 @@ export class PortfolioDataStore extends VuexModule {
   public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
     const userSysIds = portfolio.portfolio_owner + "," 
       + portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
-    const allMembersDetailListDTO = await api.userTable.getUsersBySysId(userSysIds);
+    const allMembersDetailListDTO = await api.userApi.getUsersBySysId(userSysIds);
     const allMembersDetailList: User[] = 
       allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
         return {
@@ -764,7 +784,7 @@ export class PortfolioDataStore extends VuexModule {
     // add portfolio owner to front of member list
     if (Object.keys(portfolioOwner).length > 0) {
       portfolio.members.unshift(portfolioOwner);    if (portfolio.createdBy) {
-        const createdByUser = await api.userTable.search(portfolio.createdBy);
+        const createdByUser = await api.userApi.search(portfolio.createdBy);
         this.doSetPortfolioCreator(createdByUser[0]);
       }  
     }
