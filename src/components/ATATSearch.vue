@@ -241,10 +241,13 @@ export default class ATATSearch extends Vue {
         await PortfolioStore.reset();
         const response = await api.edaApi.search(this._value);
         if (response.success !== undefined && !response.success) {
+          const errorMessage = [response.message ?? "Unknown error"];
           if (!this.isModal) {
-            this.$refs.atatSearchInput.errorBucket  = [response.message || "Unknown error"];
+            this.$refs.atatSearchInput.errorBucket  = errorMessage;
+            this.errorMessages = errorMessage;
           } else {
-            this.$refs.atatSearchInputModal.errorBucket = [response.message || "Unknown error"];
+            this.$refs.atatSearchInputModal.errorBucket = errorMessage;
+            this.errorMessages = errorMessage;
           }
         } else {
           await PortfolioStore.initProvisioningFromResponse(response);
