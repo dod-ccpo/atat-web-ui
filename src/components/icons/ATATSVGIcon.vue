@@ -113,12 +113,14 @@ import Neutral from "@/components/icons/Neutral.vue";
 import VerySatisfied from "@/components/icons/VerySatisfied.vue";
 import VeryDissatisfied from "@/components/icons/VeryDissatisfied.vue";
 import FeedbackThankYou from "@/components/icons/FeedbackThankYou.vue";
+import Article from "@/components/icons/Article.vue";
 
 
 @Component({
   components: {
     ArchitectureCircle,
     ArrowBack,
+    Article,
     Aws,
     Azure,
     BugReport,

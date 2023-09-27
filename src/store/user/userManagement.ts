@@ -51,7 +51,7 @@ export class UserManagementStore extends VuexModule {
     Promise<UserSearchResultDTO[]> {
     try {
       if (searchStr) {
-        const response = await api.userTable.search(searchStr);
+        const response = await api.userApi.search(searchStr);
         return response;  
       }
       return [];

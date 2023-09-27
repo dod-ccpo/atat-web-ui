@@ -66,7 +66,7 @@ jobs:
         env:
           VERSION: ${{ steps.previoustag.outputs.tag }}
       - name: Set Version Variable - Non-release
-        run: echo "VERSION=$(git rev-parse --short "${{ github.event.pull_request.head.sha }}")" >> $GITHUB_ENV
+        run: echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
       - name: Setup NodeJS
         uses: actions/setup-node@v3
