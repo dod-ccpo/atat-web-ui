@@ -1415,7 +1415,7 @@ export class SummaryStore extends VuexModule {
           .find(CL=> CL.sys_id === instance.classification_level)
         if(classification){
           if(classification.display){
-            const classificationLocation = classification?.display.split("-")[0]
+            const classificationLocation = classification?.display.split("-")[0].trim()
             if(!deployedLocations.includes(classificationLocation)){
               deployedLocations.push(classificationLocation as string)
             }

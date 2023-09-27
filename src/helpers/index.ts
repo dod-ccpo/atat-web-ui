@@ -494,7 +494,7 @@ export function convertStringArrayToCommaList(arr: string[], conjunction?: strin
   conjunction = conjunction || 'and';
   let commaList = arr[0] || "";
   if (arr.length > 1){
-    commaList = arr.slice(0, -1).join(", ") + " "  + conjunction + " " + arr.slice(-1);
+    commaList = arr.slice(0, -1).join(", ") + ", "  + conjunction + " " + arr.slice(-1);
   }
   return commaList;
 }
