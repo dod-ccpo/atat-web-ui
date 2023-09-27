@@ -972,14 +972,22 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async missingCustomDifferentiator(evalPlanStore:EvaluationPlanDTO): Promise<string> {
+  public async missingCustomDifferentiator(evalPlanStore:EvaluationPlanDTO): Promise<boolean> {
     const differentiator = convertEvalPlanDifferentiatorToCheckbox(
       EvaluationPlan.differentiatorData
     );
-
-    const selectedDiffiators = evalPlanStore.standard_differentiators
-    const customDiffiators = evalPlanStore.custom_differentiators
-    return description;
+    const otherIdx = differentiator.findIndex(object => object.label.includes("Other"))
+    const otherDifferentiatorSysId = differentiator[otherIdx].value
+    const selectedDifferentiators = evalPlanStore.standard_differentiators?.split(',')
+    const selectedDifferentiatorsIncludesOther
+        = evalPlanStore.standard_differentiators?.includes(otherDifferentiatorSysId)
+    const customDifferentiators = evalPlanStore.custom_differentiators
+    if(selectedDifferentiators
+        && selectedDifferentiators?.length === 1
+        && selectedDifferentiatorsIncludesOther) {
+      return customDifferentiators === "";
+    }
+    return false;
   }
   
   @Action({rawError: true})
@@ -989,6 +997,7 @@ export class SummaryStore extends VuexModule {
     const hasBestUseOrLowestRiskMethod = 
       (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
     const hasLPTAMethod = evalPlanStore.method === "LPTA";
+    const needsCustomValue = await this.missingCustomDifferentiator(evalPlanStore)
     let isComplete = false;
     switch(evalPlanStore.source_selection){
     case "NO_TECH_PROPOSAL":
@@ -997,7 +1006,7 @@ export class SummaryStore extends VuexModule {
     case "TECH_PROPOSAL":
       isComplete = hasLPTAMethod
         ? hasCustomSpecs 
-        : hasCustomSpecs && hasStandardDifferentiators
+        : hasCustomSpecs && hasStandardDifferentiators && !needsCustomValue
       break;
     case "SET_LUMP_SUM":
       isComplete = hasBestUseOrLowestRiskMethod;
