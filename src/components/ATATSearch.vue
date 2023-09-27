@@ -244,11 +244,10 @@ export default class ATATSearch extends Vue {
           const errorMessage = [response.message ?? "Unknown error"];
           if (!this.isModal) {
             this.$refs.atatSearchInput.errorBucket  = errorMessage;
-            this.errorMessages = errorMessage;
           } else {
             this.$refs.atatSearchInputModal.errorBucket = errorMessage;
-            this.errorMessages = errorMessage;
           }
+          this.errorMessages = errorMessage;
         } else {
           await PortfolioStore.initProvisioningFromResponse(response);
           this.$emit("search");
