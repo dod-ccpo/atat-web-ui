@@ -1436,11 +1436,14 @@ export class SummaryStore extends VuexModule {
               TS: "Top Secret",
             },
           }
+          debugger
           if(instance.instance_location==="CLOUD"){
-            const convertedKey = classificationLabels["CLOUD"][classification.impact_level]
+            // eslint-disable-next-line max-len
+            const convertedKey = classificationLabels["CLOUD"][classification.impact_level || classification.classification]
             cloudInstances[convertedKey] = (cloudInstances[convertedKey] || 0) +1
           }else{
-            const convertedKey = classificationLabels["ON_PREM"][classification.impact_level]
+            // eslint-disable-next-line max-len
+            const convertedKey = classificationLabels["ON_PREM"][classification.impact_level || classification.classification]
             onPremInstances[convertedKey] = (onPremInstances[convertedKey] || 0) +1
           }
         }
