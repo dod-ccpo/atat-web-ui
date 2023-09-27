@@ -1436,7 +1436,6 @@ export class SummaryStore extends VuexModule {
               TS: "Top Secret",
             },
           }
-          debugger
           if(instance.instance_location==="CLOUD"){
             // eslint-disable-next-line max-len
             const convertedKey = classificationLabels["CLOUD"][classification.impact_level || classification.classification]
