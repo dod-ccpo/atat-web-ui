@@ -268,8 +268,9 @@ export default class ATATSummaryItem extends Vue {
     this.showRemoveAcor = true;
   }
   public get ACORName():string {
-    return `${AcquisitionPackage.acorInfo?.first_name}  ${AcquisitionPackage.acorInfo?.last_name}`
-      || "undefined"
+    return (AcquisitionPackage.acorInfo?.first_name && AcquisitionPackage.acorInfo?.last_name) ? 
+      `${AcquisitionPackage.acorInfo?.first_name}  ${AcquisitionPackage.acorInfo?.last_name}` :
+      "undefined"
   }
   public get hasAcor():boolean {
     return AcquisitionPackage.hasAlternativeContactRep || false
