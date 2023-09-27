@@ -32,10 +32,10 @@ import {
 } from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
 import {
-  convertStringArrayToCommaList, 
-  toTitleCase, 
-  buildClassificationLabel, 
-  toCurrencyString,
+  convertStringArrayToCommaList,
+  toTitleCase,
+  buildClassificationLabel,
+  toCurrencyString, convertEvalPlanDifferentiatorToCheckbox,
 } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
@@ -933,10 +933,10 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setEvalPlanDescription(
     config:{
-      evalPlanStore:EvaluationPlanDTO,
-      isComplete: boolean,
-      fairOpp: string
-    }): Promise<string> {
+        evalPlanStore:EvaluationPlanDTO,
+        isComplete: boolean,
+        fairOpp: string
+      }): Promise<string> {
     const method = config.evalPlanStore.method;
     const selection = config.evalPlanStore.source_selection;
     const hasNoFairOpp = config.fairOpp === "NO_NONE"
@@ -961,13 +961,19 @@ export class SummaryStore extends VuexModule {
     case "SET_LUMP_SUM":
       description = (method ?? "") !==  ""
         ? "Purchase a set lump sum dollar amount from one CSP; " +
-          "award will be made to the “" + method + "” solution."
+            "award will be made to the “" + method + "” solution."
         : "";
       break;
     case "EQUAL_SET_LUMP_SUM":
       description = "Purchase an equal set lump sum dollar amount from each CSP."
       break;
     }
+    return description;
+  }
+
+  @Action({rawError: true})
+  public async missingCustomDifferentiator(): Promise<string> {
+    
     return description;
   }
   
@@ -978,7 +984,11 @@ export class SummaryStore extends VuexModule {
     const hasBestUseOrLowestRiskMethod = 
       (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
     const hasLPTAMethod = evalPlanStore.method === "LPTA";
-    
+    const differentiator = convertEvalPlanDifferentiatorToCheckbox(
+      EvaluationPlan.differentiatorData
+    );
+    const needCustomDifferentiator = false
+    const CustomDifferentiator = evalPlanStore.custom_differentiators;
     let isComplete = false;
     switch(evalPlanStore.source_selection){
     case "NO_TECH_PROPOSAL":
