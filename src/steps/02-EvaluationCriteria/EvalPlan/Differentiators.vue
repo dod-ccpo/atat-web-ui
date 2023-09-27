@@ -117,6 +117,7 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    debugger
     const storeData = await EvaluationPlan.getEvaluationPlan();
     this.differentiators = convertEvalPlanDifferentiatorToCheckbox(
       EvaluationPlan.differentiatorData
@@ -129,7 +130,9 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.evalPlan = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);
-      this.selectedDifferentiators = this.evalPlan.standard_differentiators?.split(",") || [];
+      if(this.evalPlan.standard_differentiators){
+        this.selectedDifferentiators = this.evalPlan.standard_differentiators?.split(",")
+      }
       this.customDifferentiators = this.evalPlan.custom_differentiators?.split(",") || [];
     }
   }
