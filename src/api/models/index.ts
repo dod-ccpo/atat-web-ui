@@ -672,7 +672,7 @@ export interface EDAResponse {
   totalAmount?: number | null;
   popStartDate?: string; // "2021-07-01",
   popEndDate?: string; // "2026-07-01",
-  classificationLevels?: string[]; //  ["Unclassified", "Secret"] or sysIds?
+  classificationLevels?: string[]; // ["Unclassified", "Secret", "Top Secret"]
 
 }
 

@@ -12,10 +12,7 @@ import api from "@/api";
 import Vue from "vue";
 import { User } from "types/Global";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import {
-  PortfolioSummarySearchDTO, 
-  UserDTO 
-} from "@/api/models";
+import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
 import AcquisitionPackageSummaryStore from "../acquisitionPackageSummary";
 import PortfolioSummary from "../portfolioSummary";
 import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
@@ -151,17 +148,17 @@ export class UserStore extends VuexModule {
     if (sessionRestored) {
       this.setInitialized(false);
       this.setStoreData(sessionRestored);
-      await this.setUserRoles(this.currentUser.sys_id as string);
+      await this.setUserRoles();
       await this.setUserPackageCount();
       this.setInitialized(true);
     } else if (userId && 
       (this.currentUser.sys_id === "" || this.currentUser.sys_id === undefined)
     ) {
-      const response = await api.userTable.search(userId);
+      const response = await api.userApi.search(userId);
       if (response) {
         const userObj: UserDTO = response[0];
         this.setCurrentUser(userObj);
-        await this.setUserRoles(userObj.sys_id as string);
+        await this.setUserRoles();
         await this.setUserPackageCount();
         storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
         this.setInitialized(true);
@@ -174,8 +171,8 @@ export class UserStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public async setUserRoles(sysId: string): Promise<void> {
-    const roles = await this.getUserRoles(sysId);
+  public async setUserRoles(): Promise<void> {
+    const roles = await this.getUserRoles();
     await this.doSetCurrentUserRoles(roles);
   }
 
@@ -185,12 +182,10 @@ export class UserStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async getUserRoles(sysId: string): Promise<string[]> {
+  public async getUserRoles(filter?: string): Promise<string[]> {
     try {
-      // ATAT TODO AT-9575 reinstate after proxy created for sys_user_has_roles
-      // const response = await api.userRolesTable.getUserRoles(sysId);
-      // return response.map(obj => obj.role);
-      return [];
+      const response = await api.userRolesApi.getUserRoles(filter);
+      return response;
     } catch(error) {
       throw new Error(`error retrieving alert data ${error}`);
     }
@@ -200,7 +195,7 @@ export class UserStore extends VuexModule {
   public async getUserRecord(data: {searchStr: string, searchCol?: string}): Promise<User> {
     const user: User = {};
     try {
-      const response = await api.userTable.search(data.searchStr, data.searchCol);
+      const response = await api.userApi.search(data.searchStr, data.searchCol);
       if (response.length) {
         const userRecord: UserDTO = convertColumnReferencesToValues(response[0]);
         user.firstName = userRecord.first_name?.trim();
