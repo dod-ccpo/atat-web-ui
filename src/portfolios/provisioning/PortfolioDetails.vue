@@ -124,7 +124,9 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   }
 
   public get showCheckbox():boolean {
-    return PortfolioStore.doesCSPHaveImpactLevels && this.checkboxItems.length > 0;
+    return PortfolioStore.doesCSPHaveImpactLevels 
+      && PortfolioStore.doesTaskOrderHaveUnclassified 
+      && this.checkboxItems.length > 0;
   }
   public get currentData(): PortfolioProvisioning {
     return {

@@ -50,6 +50,9 @@ describe("Testing PortfolioDetails Component", () => {
     expect(mockBuildILCheckbox).toHaveBeenCalled()
   });
   it("tests showCheckBox", async () => {
+    await PortfolioStore.doSetPortfolioProvisioning({
+      classificationLevels: ["Unclassified"],
+    })
     await PortfolioStore.doSetCSPProvisioningData({
       cspData: mockCspProvisionData as CSPProvisioningData[],
       hasCloudDistinguishers: true
