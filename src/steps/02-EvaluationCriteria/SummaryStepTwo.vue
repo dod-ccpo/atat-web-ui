@@ -22,7 +22,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Mixins} from "vue-property-decorator";
+import { Component, Mixins} from "vue-facing-decorator;
 import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Summary, { getSummaryItemsforStep, isStepComplete } from "@/store/summary";

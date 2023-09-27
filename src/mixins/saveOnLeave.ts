@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { Route } from "vue-router";
-import { Component } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator;
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
 

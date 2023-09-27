@@ -87,7 +87,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Emit, Prop, PropSync, Watch } from "vue-facing-decorator;
 
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";

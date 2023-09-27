@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import LoadOnEnter from "@/mixins/loadOnEnter";
-import {Component, Mixins} from "vue-property-decorator";
+import {Component, Mixins} from "vue-facing-decorator;
 @Component({
 })
 export default class Summary extends Mixins(LoadOnEnter) {

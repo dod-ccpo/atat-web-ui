@@ -165,7 +165,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-facing-decorator;
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
 import Vue from "vue";

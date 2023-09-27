@@ -35,7 +35,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins } from "vue-facing-decorator;
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";

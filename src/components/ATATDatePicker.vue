@@ -87,7 +87,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator;
 import Vue from "vue";
 import { add, format, formatISO, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";

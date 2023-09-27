@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import LoadOnEnter from "@/mixins/loadOnEnter";
-import {Component, Mixins} from "vue-property-decorator";
+import {Component, Mixins} from "vue-facing-decorator;
 import ATATAlert from "@/components/ATATAlert.vue";
 import {routeNames} from "@/router/stepper";
 

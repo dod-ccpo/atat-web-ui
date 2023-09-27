@@ -21,7 +21,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-facing-decorator;
 import Vue from "vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 

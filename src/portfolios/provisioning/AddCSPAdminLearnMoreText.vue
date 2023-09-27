@@ -46,7 +46,7 @@
 import PortfolioStore from "@/store/portfolio";
 import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Global";
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator;
 
 import ATATAlert from "@/components/ATATAlert.vue"
 

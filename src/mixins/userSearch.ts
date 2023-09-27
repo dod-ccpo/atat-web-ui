@@ -1,7 +1,7 @@
 import Vue from "vue";
 import UserManagement, { UserSearchObj } from "@/store/user/userManagement";
 import _ from "lodash";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator;
 import { User } from "types/Global";
 
 @Component({})

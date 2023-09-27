@@ -43,7 +43,7 @@
 <script lang="ts">
 import Vue from "vue";
 import AppSections from "@/store/appSections";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator;
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 

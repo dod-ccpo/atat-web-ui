@@ -83,7 +83,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-property-decorator";
+import {Component, Mixins} from "vue-facing-decorator;
 import ATATAlert from "@/components/ATATAlert.vue";
 import FairOppExceptions from "./components/FairOppExceptions.vue"
 

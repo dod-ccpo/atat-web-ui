@@ -156,7 +156,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Mixins } from "vue-property-decorator";
+import { Component, Watch, Mixins } from "vue-facing-decorator;
 import {
   convertAgencyRecordToSelect,
   convertDisaOrgToSelect

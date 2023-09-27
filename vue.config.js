@@ -1,3 +1,4 @@
+const path = require('path');
 const servicenowConfig = require('./servicenow.config');
 require('dotenv').config()
 
@@ -11,12 +12,15 @@ const CONFIG = {
 
 
 module.exports = {
-  transpileDependencies: [
-    'vuex-module-decorators'
-  ],
   
+  transpileDependencies: [
+    'vuex-module-decorators',
+    'vue-facing-decorator'
+  ],
   filenameHashing : false,
   configureWebpack: (config) => {
+    
+    config.entry= './src/main.ts'
     if(process.env.NODE_ENV === 'production'){
     config.output.filename = 'js/[name]-js';
     config.output.chunkFilename = 'js/vendor-js';
@@ -37,9 +41,14 @@ module.exports = {
     }
   } else {
     config.devtool= 'source-map'
-  }
+    //config.output.libraryExport= 'default'
+    }
   },
   chainWebpack: config => {
+    //config.entry.set(path.resolve(__dirname) + 'src/main.ts')
+    config.resolve.alias.set('vue', '@vue/compat')
+    config.resolve.alias.set('@/*','src/*')
+    config.resolve.extensions.add('.js')
     let BASE_API_URL = process.env.BASE_API_URL;
     let VERSION = process.env.VERSION;
     if (!BASE_API_URL){

@@ -22,7 +22,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import {Component, Prop, PropSync} from "vue-property-decorator";
+import {Component, Prop, PropSync} from "vue-facing-decorator;
 import ATATTextField from "@/components/ATATTextField.vue";
 
 @Component({

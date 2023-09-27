@@ -191,7 +191,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator;
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";

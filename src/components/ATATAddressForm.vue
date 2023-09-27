@@ -144,7 +144,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-facing-decorator;
 
 import ATATAutoComplete from "./ATATAutoComplete.vue";
 import ATATDialog from "./ATATDialog.vue";

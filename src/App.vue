@@ -8,8 +8,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { Component as VueComponent } from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import Vue from "vue";
+import Component from "vue"
+import { Component as vfdComponent, Watch } from "vue-facing-decorator";
 
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
@@ -26,7 +27,7 @@ import Home from "@/home/Index.vue";
 import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
 import AcquisitionPackage from "./store/acquisitionPackage";
 
-@Component({
+@vfdComponent({
   components: {
     ATATTopNavBar,
   },
@@ -75,7 +76,7 @@ export default class App extends Vue {
     }
   }
 
-  public get appContentComponent(): VueComponent {
+  public get appContentComponent(): typeof Component {
     return AppSections.appContentComponent || {};
   }
 

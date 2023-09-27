@@ -149,7 +149,7 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 
-import {Component, Prop, Watch} from "vue-property-decorator";
+import {Component, Prop, Watch} from "vue-facing-decorator;
 
 // eslint-disable-next-line max-len
 import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";

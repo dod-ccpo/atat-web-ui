@@ -103,7 +103,7 @@
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-facing-decorator;
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";

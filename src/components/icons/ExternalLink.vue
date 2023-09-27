@@ -11,7 +11,7 @@
 
 <script lang='ts'>
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-facing-decorator;
 
 @Component({})
 export default class ExternalLink extends Vue {

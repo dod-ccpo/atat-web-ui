@@ -90,7 +90,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins } from "vue-facing-decorator;
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";

@@ -51,7 +51,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Prop} from "vue-property-decorator";
+import { Component, Prop} from "vue-facing-decorator;
 import FinancialDetailsAlert from "../../FinancialDetailsAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import {TaskOrderCardData, ToastObj} from "../../../../../types/Global";

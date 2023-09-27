@@ -37,7 +37,7 @@
 <script lang="ts">
 import ATATDialog from "@/components/ATATDialog.vue";
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-facing-decorator;
 
 @Component({
   components: {

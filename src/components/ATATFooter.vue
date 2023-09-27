@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator;
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";

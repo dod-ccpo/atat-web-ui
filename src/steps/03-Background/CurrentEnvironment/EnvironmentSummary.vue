@@ -153,7 +153,7 @@
 /*eslint vue/no-child-content: 1 */
 import Vue from "vue";
 
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator;
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
