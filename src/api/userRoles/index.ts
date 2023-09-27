@@ -1,23 +1,24 @@
-import { UserRolesDTO } from "../models";
 import { AxiosError, AxiosRequestConfig } from "axios";
-import { TableApiBase } from "../tableApiBase";
+import { ApiBase } from "../apiBase";
 
-export const TABLENAME = "sys_user_has_role"
+export const ENDPOINTNAME = "x_g_dis_atat/user_proxy/self/roles"
 
-export class UserRolesApi extends TableApiBase<UserRolesDTO> {
+export class UserRolesApi extends ApiBase{
   constructor() {
-    super(TABLENAME);
+    super(ENDPOINTNAME);
   }
 
-  public async getUserRoles(sysId: string): Promise<UserRolesDTO[]> {
+  public async getUserRoles(filter?: string): Promise<string[]> {
     try {
       /* eslint-disable camelcase */
       const config: AxiosRequestConfig = {
         params: {
-          sysparm_query: "user=" + sysId,
-          sysparm_display_value: true,
-          sysparm_exclude_reference_link: true,
-          sysparm_fields: "role",
+          
+        }
+      }
+      if(filter){
+        config.params = {
+          filter: filter
         }
       }
       /* eslint-enable camelcase */
