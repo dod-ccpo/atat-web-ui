@@ -117,7 +117,6 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger
     const storeData = await EvaluationPlan.getEvaluationPlan();
     this.differentiators = convertEvalPlanDifferentiatorToCheckbox(
       EvaluationPlan.differentiatorData
