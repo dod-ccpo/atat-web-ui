@@ -972,8 +972,13 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async missingCustomDifferentiator(): Promise<string> {
-    
+  public async missingCustomDifferentiator(evalPlanStore:EvaluationPlanDTO): Promise<string> {
+    const differentiator = convertEvalPlanDifferentiatorToCheckbox(
+      EvaluationPlan.differentiatorData
+    );
+
+    const selectedDiffiators = evalPlanStore.standard_differentiators
+    const customDiffiators = evalPlanStore.custom_differentiators
     return description;
   }
   
@@ -984,11 +989,6 @@ export class SummaryStore extends VuexModule {
     const hasBestUseOrLowestRiskMethod = 
       (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
     const hasLPTAMethod = evalPlanStore.method === "LPTA";
-    const differentiator = convertEvalPlanDifferentiatorToCheckbox(
-      EvaluationPlan.differentiatorData
-    );
-    const needCustomDifferentiator = false
-    const CustomDifferentiator = evalPlanStore.custom_differentiators;
     let isComplete = false;
     switch(evalPlanStore.source_selection){
     case "NO_TECH_PROPOSAL":
