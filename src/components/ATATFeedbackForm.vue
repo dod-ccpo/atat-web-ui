@@ -25,8 +25,8 @@
               color="base"
               class=" _toggle ml-2"
               :class="{'_open':open}"
-              width="20"
-              height="20"
+              width="16"
+              height="16"
             />
           </v-btn>
         </div>
@@ -191,7 +191,7 @@
                     max-height="192"
                     src="@/assets/images/Feedback_sent_animation.gif"
                   ></v-img>
-                  <div class="d-flex flex-column">
+                  <div class="d-flex flex-column mt-2">
                     <p id="ThankYouP">
                       We value your opinion and will keep working to improve your experience.
                     </p>
