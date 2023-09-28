@@ -462,7 +462,7 @@ export class SummaryStore extends VuexModule {
         address:"",
         email:contactInfo.email || "Missing email address",
         phone:contactInfo.phone || "Missing phone number",
-        dodaac:`DoDAAC - ${contactInfo.dodaac}` || "Missing DoDAAC",
+        dodaac:contactInfo.dodaac ? `DoDAAC - ${contactInfo.dodaac}` : "Missing DoDAAC",
         role:contactInfo.role || "Missing role"
       }
       title =contactInfo.first_name && contactInfo.last_name?
