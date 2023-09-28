@@ -27,7 +27,7 @@
               class="_toggle ml-4"
               :class="{'_open':open}"
               width="14"
-              height="14"
+              height="10"
             />
           </v-btn>
         </div>
