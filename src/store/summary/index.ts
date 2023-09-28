@@ -1370,6 +1370,24 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async sortDeployedInstances(
+    deployedInstances: string[]
+  ): Promise<string[]>{
+    const result:string[] = []
+    const unclassified = deployedInstances.findIndex(value => value === "Unclassified")
+    const secret = deployedInstances.findIndex(value => value === "Secret")
+    const topSecret = deployedInstances.findIndex(value => value === "Top Secret")
+    if(unclassified > -1){
+      result.push(deployedInstances[unclassified])
+    }if(secret > -1){
+      result.push(deployedInstances[secret])
+    }if(topSecret > -1){
+      result.push(deployedInstances[topSecret])
+    }
+    return result
+  }
+
+  @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
     const classificationLevels = await ClassificationRequirements.getAllClassificationLevels()
     const currentEnvironment = await CurrentEnvironment.getCurrentEnvironment()
@@ -1452,11 +1470,11 @@ export class SummaryStore extends VuexModule {
         onPrem: Object.entries(onPremInstances),
         cloud: Object.entries(cloudInstances)
       }
-
       const envString = envLocation === "HYBRID"?"Hybrid"
         :envLocation === "CLOUD"?"Cloud":"On-premise"
+      const orderedDeployedInstances = await this.sortDeployedInstances(deployedLocations)
       // eslint-disable-next-line max-len
-      description = `${envString} environment deployed in ${convertStringArrayToCommaList(deployedLocations, "and")}`
+      description = `${envString} environment deployed in ${convertStringArrayToCommaList(orderedDeployedInstances, "and")}`
     }
     if(currentEnvironment?.current_environment_exists === "NO"){
       description = "No existing environment"
