@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!this.hide" class=" _feedback-form">
+  <div v-if="!this.hide" class="_feedback-form">
     <div class="flex-column">
       <div class="d-flex justify-end">
         <div
@@ -12,22 +12,22 @@
            ]"
         >
           <v-btn
-            rounded
             @click="toggle()"
             @keydown.enter="toggle()"
             @keydown.space="toggle()"
+            class="px-3"
             :class="{'_open':open}"
           >
-          <span class="text-base">
-            Customer Feedback
-          </span>
+            <span class="text-base">
+              CUSTOMER FEEDBACK
+            </span>
             <ATATSVGIcon
               name="chevronDown"
               color="base"
-              class=" _toggle mx-2"
+              class="_toggle ml-4"
               :class="{'_open':open}"
-              width="10"
-              height="6"
+              width="14"
+              height="10"
             />
           </v-btn>
         </div>
@@ -192,7 +192,7 @@
                     max-height="192"
                     src="@/assets/images/Feedback_sent_animation.gif"
                   ></v-img>
-                  <div class="d-flex flex-column">
+                  <div class="d-flex flex-column mt-2">
                     <p id="ThankYouP">
                       We value your opinion and will keep working to improve your experience.
                     </p>
