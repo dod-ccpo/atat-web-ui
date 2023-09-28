@@ -6,6 +6,7 @@
   display:flex;
   flex-direction: row-reverse;
   z-index: 1;
+  filter: drop-shadow(0 -4px 10px rgba(194,194,194,0.5));
 
   ._feedback-tab {
     display: flex;
