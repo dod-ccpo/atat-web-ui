@@ -16,22 +16,14 @@
     transition: transform 0.3s;
   }
   &._contentAtTop {
-    &:after{
-      transform: rotate(90deg);
-      transition: transform 0.3s;
-    }
     &.open:after {
-        transform: rotate(270deg);
-        transition: transform 0.3s;
+      transform: rotate(270deg);
+      transition: transform 0.3s;
     }
   }
 
   &.open:after {
     transform: rotate(90deg);
-    &._contentAtTop {
-      transform: rotate(270deg);
-      transition: transform 0.3s;
-    }
   }
 
   &._hoverable-in-alert {
@@ -44,7 +36,7 @@
     &:hover {
       background-color: $primary-10;
     }
-    
+
     &.closed {
       border-radius: 8px;
     }
@@ -56,7 +48,7 @@
   padding-bottom: 16px;
   border-bottom: 1px solid $base-lighter;
   margin-bottom: 4px;
-  
+
   li {
     margin-bottom: 6px;
   }
@@ -91,7 +83,7 @@
       transform: rotate(-90deg) !important;
     }
   }
-  
+
   &:hover {
     background-color: $base-lighter;
   }
