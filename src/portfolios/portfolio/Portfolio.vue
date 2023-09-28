@@ -1220,22 +1220,25 @@ export default class PortfolioDashboard extends Vue {
 
     const startMonthNo = popStartDate.getMonth();
     const popStartYear = popStartDate.getFullYear();
+    const endMonthNo = popEndDate.getMonth();
     const popEndYear = popEndDate.getFullYear();
-    const burnChartEndYear = periodDatesISO.length > 11 && popStartYear === popEndYear
-      ? (popEndYear + 1) : popEndYear;
+    const burnChartEndYear = (periodDatesISO.length > 11 && popStartYear === popEndYear)
+      || endMonthNo === 11 ? (popEndYear + 1) : popEndYear;
 
     let januaryCount = 0;
+    let idx = 0;
     for (let i = startMonthNo; i < startMonthNo + monthsToAdd + 2; i++) {
       const monthIndex = i > 11 ? i - 12 : i;
       let monthAbbr = this.monthAbbreviations[monthIndex];
       if (i === startMonthNo || i === startMonthNo + monthsToAdd + 1 || monthAbbr === "Jan") {
-        monthAbbr = januaryCount === 0
+        monthAbbr = januaryCount === 0 && idx === 0
           ? monthAbbr + " " + popStartYear
           : monthAbbr + " " + burnChartEndYear;
         if (monthAbbr === "Jan") {
           januaryCount++;
         }   
       }
+      idx++;
    
       this.burnChartXLabels.push(monthAbbr);
     }
@@ -1243,7 +1246,6 @@ export default class PortfolioDashboard extends Vue {
     const projectedBurn: Record<string, (number | null)[]> = {};
     const totalActualBurnData: (number | null)[] = [];
     const totalProjectedBurnData: (number | null)[] = [];
-    
     uniqueClinNumbers.forEach((clinNo) => {
       const thisIdiqClin = this.idiqClins.find(
         (clin) => clin.clin_number === clinNo
@@ -1269,22 +1271,23 @@ export default class PortfolioDashboard extends Vue {
 
           if (Object.keys(thisClinCosts).length > 0) {
             periodDatesISO.forEach((monthISO, i) => {
+              const yearMonth = format(startOfMonth(new Date(parseISO(monthISO))), "yyyy-MM-dd")
               const thisCost = this.costs.find(
-                cost => cost.clin_number === costClinNo && cost.year_month === monthISO
+                cost => cost.clin_number === costClinNo && cost.year_month === yearMonth
               );
               const isActual = thisCost 
                 ? thisCost.is_actual === "true" && !isThisMonth(parseISO(thisCost.year_month))
                 : false;
               const costValue = thisClinCosts[costClinNo] !== undefined
-                && thisClinCosts[costClinNo][monthISO] !== undefined
-                ? parseFloat(thisClinCosts[costClinNo][monthISO]) 
+                && thisClinCosts[costClinNo][yearMonth] !== undefined
+                ? parseFloat(thisClinCosts[costClinNo][yearMonth]) 
                 : NaN;
 
               const monthAmount = !isNaN(costValue) ? costValue : null;
               fundsAvailableForCLIN = monthAmount
                 ? Math.round(fundsAvailableForCLIN - monthAmount)
                 : fundsAvailableForCLIN;
-              const month = addDays((new Date(monthISO).setHours(0,0,0,0)), 1);
+              const month = addDays((new Date(yearMonth).setHours(0,0,0,0)), 1);
               const isCurrentMonth = isThisMonth(new Date(month)) 
               
               const isLastMonth = this.isDateLastMonth(month);
@@ -1850,7 +1853,19 @@ export default class PortfolioDashboard extends Vue {
         ticks: {
           stepSize: 0,
           callback: function (value: number): string {
-            return "$" + Math.round(value / 1000) + "k";
+            let suffix = "";
+            let val = value;
+            if (value >= 1000000) {
+              suffix = "m";
+              val = Math.round((value / 1000000) * 100) / 100;
+            } else if (value >= 100000) {
+              val = Math.round(value / 1000)
+            } 
+            suffix = value > 100000 && value < 1000000 ? "k" : value >= 1000000 ? "m" : "";
+            console.log(val + " " + suffix);
+            // val = value > 100000 && value < 1000000 ? Math.round((value / 1000) * 100) / 100
+            //   : value >= 1000000 ? Math.round((value / 1000000) * 100) / 100 : value
+            return "$" + val + suffix;
           },
         },
       },
