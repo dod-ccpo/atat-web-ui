@@ -528,6 +528,11 @@ export interface Environment extends EnvironmentDTO {
   classification_level?: string;
 }
 
+export interface EnvironmentLink {
+  display: string;
+  link: string
+}
+
 export interface Portfolio extends BaseTableDTO {
   sysId?: string;
   title?: string;

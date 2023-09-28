@@ -288,6 +288,7 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.dataSource.length > 0){
+        await AcquisitionPackage.doSetHasCurrentOrPreviousContracts("YES");
         await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
         await AcquisitionPackage.updateCurrentContractsSNOW(this.dataSource)
       }

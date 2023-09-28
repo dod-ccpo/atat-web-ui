@@ -57,6 +57,17 @@ jobs:
         with:
           # Sonar Scanner requires full history for blame information
           fetch-depth: 0
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: Set Version Variable - Release
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }} 
+        env:
+          VERSION: ${{ steps.previoustag.outputs.tag }}
+      - name: Set Version Variable - Non-release
+        run: echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
@@ -71,6 +82,7 @@ jobs:
           BASE_API_URL: "%BASE_URL_PLACEHOLDER%"
           SNOWUSER: "${{ secrets.VUE_SNOW_USER }}"
           SNOWPASS: ""
+          VERSION: "${{ env.VERSION }}"
       - name: Test the project
         run: npm run test
         if: ${{ !startsWith(github.ref, 'refs/tags/') }} # don't need this for tag pushes

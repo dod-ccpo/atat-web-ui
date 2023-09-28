@@ -4,10 +4,10 @@
     @mouseleave="mouseLeave"
     :style="divStyle"
     class="_svg-icon">
-    <component :is="name" 
-      :color="getColor()" 
-      :height="_height" 
-      :width="_width"
+    <component :is="name"
+               :color="getColor()"
+               :height="_height"
+               :width="_width"
     />
   </div>
 </template>
@@ -113,12 +113,15 @@ import Neutral from "@/components/icons/Neutral.vue";
 import VerySatisfied from "@/components/icons/VerySatisfied.vue";
 import VeryDissatisfied from "@/components/icons/VeryDissatisfied.vue";
 import FeedbackThankYou from "@/components/icons/FeedbackThankYou.vue";
+import Article from "@/components/icons/Article.vue";
+import HomeWork from "@/components/icons/HomeWork.vue";
 
 
 @Component({
   components: {
     ArchitectureCircle,
     ArrowBack,
+    Article,
     Aws,
     Azure,
     BugReport,
@@ -155,6 +158,7 @@ import FeedbackThankYou from "@/components/icons/FeedbackThankYou.vue";
     FileSignature,
     Filters,
     Gcp,
+    HomeWork,
     HelpOutline,
     InfoOutline,
     JWCCPricingCalculator,
@@ -224,8 +228,8 @@ export default class ATATSVGIcon extends Vue {
 
   private get divStyle(): string {
     return "width: " + this._width + "px;" +
-        "height: " + this._height + "px;" +
-        "line-height: 0px";
+      "height: " + this._height + "px;" +
+      "line-height: 0px";
 
   }
 
@@ -250,7 +254,7 @@ export default class ATATSVGIcon extends Vue {
     { "info": "009ddd" },
     { "info-dark":"0076A6" },
     { "success": "62bd59" },
-    { "success-dark": "498e43" },    
+    { "success-dark": "498e43" },
     { "error": "c60634" },
     { "disabled": "c9c9c9" },
     { "disabled-dark": "adadad"},

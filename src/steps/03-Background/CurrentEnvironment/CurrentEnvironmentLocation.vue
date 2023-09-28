@@ -168,12 +168,12 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     const instancesToDelete = this.envInstances.filter(
       obj => obj.instance_location === this.deleteInstanceType
     );
-    instancesToDelete.forEach(async (instance) => {
+    for (const instance of instancesToDelete) {
       if (instance.sys_id) {
         await CurrentEnvironment.deleteEnvironmentInstance(instance.sys_id);
         await CurrentEnvironment.clearEnvClassifications(this.deleteInstanceType);
       }
-    });
+    }
     this.showConfirmDialog = false;
     const instanceTypeDeleted = this.changeToEnv === "CLOUD" ? "On-premise" : "Cloud";
     this.instanceRemovedToast.message = instanceTypeDeleted + " instances deleted";
