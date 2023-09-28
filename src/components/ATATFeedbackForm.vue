@@ -15,6 +15,7 @@
             @click="toggle()"
             @keydown.enter="toggle()"
             @keydown.space="toggle()"
+            class="px-3"
             :class="{'_open':open}"
           >
             <span class="text-base">
@@ -23,10 +24,10 @@
             <ATATSVGIcon
               name="chevronDown"
               color="base"
-              class=" _toggle ml-2"
+              class="_toggle ml-4"
               :class="{'_open':open}"
-              width="16"
-              height="16"
+              width="14"
+              height="14"
             />
           </v-btn>
         </div>
