@@ -324,7 +324,6 @@ export default class EnvironmentSummary extends Vue {
       "performance_tier",
       "number_of_instances",
       "data_egress_monthly_amount",
-      "pricing_model",
     ];
     requiredFields.forEach((field) => {
       if (instanceData[field] === "") {
