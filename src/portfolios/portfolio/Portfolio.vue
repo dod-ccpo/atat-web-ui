@@ -60,8 +60,9 @@
                             Available Funds
                           </p>
                           <p class="mb-0 font-size-14">
-                            Your remaining portfolio balance from all exercised contract line item
-                            numbers (CLINs) since the start of your current task order
+                            Your remaining portfolio balance from all exercised 
+                            contract line item numbers (CLINs) during this 
+                            Period of Performance (PoP)
                           </p>
                         </div>
                       </v-col>
@@ -73,21 +74,15 @@
                           {{ getCurrencyString(totalPortfolioFunds) }}
                         </span>
                         <p class="text-base-dark mb-0 font-size-14">
-                          Total value of all exercised CLINs
+                          Value of all exercised CLINs in this PoP
                         </p>
                         <v-divider class="my-4" />
                         <p class="text-base-darkest mb-0 font-size-14">
-                          Current Period of Performance (PoP)
+                          Current Period of Performance
                         </p>
                         <span id="PoPDates" class="h3 mb-0">
                           {{ currentPoPStartStr }}&ndash;{{ currentPoPEndStr }}
                         </span>
-                        <!-- <p
-                          class="text-base-dark mb-0 font-size-14"
-                          v-if="!hasTimeSensitiveAlert"
-                        >
-                          {{ timeToExpiration }}
-                        </p> -->
 
                         <div 
                           class="d-flex justify-start align-center mb-0 font-size-14"
@@ -338,7 +333,7 @@
                       </v-col>
                       <v-col>
                         <v-card class="bg-base-lightest _no-shadow pa-4">
-                          End-of-month forecast
+                          End-of-month XaaS forecast
                           <span class="h1 d-block my-2">
                             <span v-if="endOfMonthForecast">
                               {{ getCurrencyString(endOfMonthForecast) }}
@@ -359,7 +354,7 @@
                               <span :class="endOfMonthTrendTextColor">
                                 {{ getSpendPercent(endOfMonthForecastTrendPercent) }}%
                               </span>
-                              vs monthly average
+                              vs monthly XaaS average
                             </span>
                           </span>
                         </v-card>
@@ -1853,19 +1848,7 @@ export default class PortfolioDashboard extends Vue {
         ticks: {
           stepSize: 0,
           callback: function (value: number): string {
-            let suffix = "";
-            let val = value;
-            if (value >= 1000000) {
-              suffix = "m";
-              val = Math.round((value / 1000000) * 100) / 100;
-            } else if (value >= 100000) {
-              val = Math.round(value / 1000)
-            } 
-            suffix = value > 100000 && value < 1000000 ? "k" : value >= 1000000 ? "m" : "";
-            console.log(val + " " + suffix);
-            // val = value > 100000 && value < 1000000 ? Math.round((value / 1000) * 100) / 100
-            //   : value >= 1000000 ? Math.round((value / 1000000) * 100) / 100 : value
-            return "$" + val + suffix;
+            return "$" + Math.round(value / 1000) + "k";          
           },
         },
       },
