@@ -28,7 +28,8 @@
       <v-btn
         icon
         class="ml-2"
-        :disabled="_customSpecifications.length === 1"
+        :disabled="_customSpecifications.length === 1 && _customSpecifications[0] === ''
+        "
         @click="deleteCustomSpec(index)"
         :aria-label="'Delete this ' + specificationType"
         :id="'DeleteCustomSpec_' + index"
@@ -93,7 +94,12 @@ export default class CustomSpecifications extends Vue {
   }
 
   public deleteCustomSpec(index: number): void {
-    this._customSpecifications.splice(index, 1);
+    if (this._customSpecifications.length === 1) {
+      Vue.set(this._customSpecifications, 0, ''); 
+    } else {
+      this._customSpecifications.splice(index, 1);
+      this._customSpecifications = [...this._customSpecifications];  
+    }
   }
 
 }

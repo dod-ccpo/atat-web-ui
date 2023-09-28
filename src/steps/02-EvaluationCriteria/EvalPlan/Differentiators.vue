@@ -107,7 +107,7 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
       this.customDifferentiators = [];
     }
     this.customDiffsOptional = newVal.length > 1;
-    if (newVal.length === 1 && this.customDifferentiators.length === 0) {
+    if (this.customDifferentiators.length === 0) {
       this.customDifferentiators.push("");
     }
   }
