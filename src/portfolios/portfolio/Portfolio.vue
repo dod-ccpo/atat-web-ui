@@ -918,7 +918,6 @@ export default class PortfolioDashboard extends Vue {
   public burnChartXLabels: string[] = [];
   public burnChartYMax = 0;
   public burnChartYStepSize = 0;
-  public burnChartYLabelSuffix = "k";
   public tooltipHeaderData: Record<string, string> = {};
 
   public get portfolioStatus(): string {
@@ -1237,6 +1236,9 @@ export default class PortfolioDashboard extends Vue {
    
       this.burnChartXLabels.push(monthAbbr);
     }
+    this.lineChartOptions.scales.x.ticks.maxTicksLimit 
+      = this.burnChartXLabels.length >= 10 ? 7 : 13;
+
     const actualBurn: Record<string, (number | null)[]> = {};
     const projectedBurn: Record<string, (number | null)[]> = {};
     const totalActualBurnData: (number | null)[] = [];
@@ -1606,10 +1608,25 @@ export default class PortfolioDashboard extends Vue {
       this.totalPortfolioFunds =
         this.totalPortfolioFunds + parseFloat(clin.funds_obligated.toString());
     });
-    
-    // ATAT TODO AT-9706 adjust step size and Y Max based on total funds amount
-    this.burnChartYMax = Math.ceil(this.totalPortfolioFunds / 100000) * 100000;
-    this.burnChartYStepSize = Math.round(this.burnChartYMax / 6);
+    let multiplier = 1;
+    const tpf = this.totalPortfolioFunds;
+    if (tpf >= 1000 && tpf < 10000) {
+      multiplier = 1000;
+    } else if (tpf >= 10000 && tpf < 100000) {
+      multiplier = 10000;
+    } else if (tpf >= 100000 && tpf < 1000000) {
+      multiplier = 100000;
+    } else if (tpf >= 1000000) {
+      multiplier = 1000000;
+    }
+    this.burnChartYMax = Math.ceil(this.totalPortfolioFunds / multiplier) * multiplier;
+
+    // ticks array is number of y-axis divisions based on getting round numbers
+    // out of total value's first digit 
+    const yAxisTicksArr = [8,8,6,8,10,6,8,8,6]; // doubled to have line btw labeled lines
+    const firstDigit = parseInt(this.burnChartYMax.toString().charAt(0));
+    const yAxisTicks = yAxisTicksArr[firstDigit - 1];
+    this.burnChartYStepSize = Math.round(this.burnChartYMax / yAxisTicks);
 
     this.lineChartOptions.scales.y.max = this.burnChartYMax;
     this.lineChartOptions.scales.y.ticks.stepSize = this.burnChartYStepSize;
@@ -1847,8 +1864,18 @@ export default class PortfolioDashboard extends Vue {
         },
         ticks: {
           stepSize: 0,
-          callback: function (value: number): string {
-            return "$" + Math.round(value / 1000) + "k";          
+          callback: function (value: number, i: number): string {
+            let suffix = "";
+            let val = value;
+            if (value >= 1000000) {
+              suffix = "M";
+              val = Math.round((value / 1000000) * 100) / 100;
+            } else if (value >= 1000) {
+              val = Math.round(value / 1000)
+            } 
+            suffix = value >= 1000 && value < 1000000 ? "K" : value >= 1000000 ? "M" : "";
+            const isOdd = i % 2 !== 0;
+            return value === 0 || isOdd ? "" : "$" + val + suffix;
           },
         },
       },
