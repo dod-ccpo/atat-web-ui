@@ -265,9 +265,16 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   public async resetDataSource():Promise<void>{
     if (this.dataSource && this.dataSource.length>0){
       // sort
-      await this.dataSource.sort();
+      this.dataSource.sort((a,b) => {
+        // sorting by instance number, which is typed as string | number | undefined
+        // so we need to make sure it's handled when it's not a number
+        // this will be the order the user inserted the instances
+        const safeInstanceNumA = isNaN(Number(a?.instance_number)) ? 0 : Number(a.instance_number)
+        const safeInstanceNumB = isNaN(Number(b?.instance_number)) ? 0 : Number(b.instance_number)
+        return safeInstanceNumA - safeInstanceNumB
+      });
       // reconfigure instance numbers
-      await this.dataSource.forEach((c,idx)=> c.instance_number = idx)
+      this.dataSource.forEach((c,idx)=> c.instance_number = idx)
       // set current contract instance number
       await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
       // set current contracts instore
