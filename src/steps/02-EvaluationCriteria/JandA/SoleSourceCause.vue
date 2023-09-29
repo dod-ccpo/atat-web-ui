@@ -218,7 +218,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-facing-decorator;
+import { Component, Mixins, Watch } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";

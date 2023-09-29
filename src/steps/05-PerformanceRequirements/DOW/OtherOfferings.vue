@@ -209,7 +209,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator;
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeFormElements from "./ComputeFormElements.vue"

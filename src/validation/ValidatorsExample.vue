@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-facing-decorator;
+import { Component } from "vue-facing-decorator";
 import Vue from "vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 

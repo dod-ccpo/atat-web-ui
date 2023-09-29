@@ -37,7 +37,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Mixins } from "vue-facing-decorator;
+import { Component, Mixins } from "vue-facing-decorator";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";

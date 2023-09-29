@@ -210,7 +210,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Vue } from "vue-facing-decorator;
+import { Component, Mixins, Vue } from "vue-facing-decorator";
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";

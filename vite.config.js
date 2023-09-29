@@ -6,7 +6,7 @@ import { checker } from 'vite-plugin-checker';
 import pkg from './package.json'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-//import VueDevTools from 'vite-plugin-dev-tools'
+// import VueDevTools from 'vite-plugin-dev-tools'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -59,11 +59,11 @@ export default defineConfig(({ command, mode}) => {
         version: 2.7
       }),
       //TODO Both typescript & vueTsc are throwing errors
-      //   checker({
-      //     typescript: true,
-      //     vueTsc: true,
-      //     // eslint: {lintCommand:'eslint '},
-      //   }),
+        checker({
+          // typescript: true,
+          vueTsc: true,
+          // eslint: {lintCommand:'eslint '},
+        }),
       // vue-property-decorator
       cssInjectedByJsPlugin(),
       resolve(), //commonjs(), 

@@ -26,7 +26,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-facing-decorator;
+import { Component } from "vue-facing-decorator";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";

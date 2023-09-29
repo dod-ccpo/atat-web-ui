@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-facing-decorator;
+import { Component } from "vue-facing-decorator";
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryDTO } from "@/api/models";
 import PortfolioCard from "../components/PortfolioCard.vue";

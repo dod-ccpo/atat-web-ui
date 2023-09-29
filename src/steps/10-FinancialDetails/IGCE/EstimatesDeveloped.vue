@@ -85,7 +85,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import {Component, Mixins, Watch} from "vue-facing-decorator;
+import {Component, Mixins, Watch} from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";

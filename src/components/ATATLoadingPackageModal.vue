@@ -38,7 +38,7 @@ import Vue from "vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import AppSections from "@/store/appSections";
-import { Component, Prop } from "vue-facing-decorator;
+import { Component, Prop } from "vue-facing-decorator";
 
 @Component({})
 

@@ -61,7 +61,7 @@ import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { routeNames } from "../../../router/stepper"
 
-import { Component } from "vue-facing-decorator;
+import { Component } from "vue-facing-decorator";
 @Component({
   components: {
     ATATAlert,

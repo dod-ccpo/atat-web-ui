@@ -300,7 +300,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator;
+import { Component, Watch } from "vue-facing-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";

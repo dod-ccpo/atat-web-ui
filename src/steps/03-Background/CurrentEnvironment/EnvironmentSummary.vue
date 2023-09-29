@@ -57,10 +57,12 @@
           >
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.location="{ item }">
-              <span
-                 v-html="item.location"
+              <span v-if="item.location"
+                v-html="item.location"
                 :class="[{'text-error font-weight-500': !item.isValid }]">
-                {item}
+              </span>
+              <span v-else :class="[{'text-error font-weight-500': !item.isValid }]">
+                {{ item }}
               </span>
               <div v-if="!item.isValid" class="d-flex align-center nowrap">
                 <ATATSVGIcon 
@@ -153,7 +155,7 @@
 /*eslint vue/no-child-content: 1 */
 import Vue from "vue";
 
-import { Component, Watch } from "vue-facing-decorator;
+import { Component, Watch } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -239,7 +241,6 @@ export default class EnvironmentSummary extends Vue {
           direction: "next"
         }   
       });
-
     })
   }
 

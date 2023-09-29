@@ -101,7 +101,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator;
+import { Component, Watch } from "vue-facing-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";

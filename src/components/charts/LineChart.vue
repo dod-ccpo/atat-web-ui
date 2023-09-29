@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator;
+import { Component, Prop, Watch } from "vue-facing-decorator";
 import Chart, { ChartData } from "chart.js/auto";
 
 @Component({})

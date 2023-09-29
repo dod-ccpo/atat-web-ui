@@ -80,7 +80,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Watch } from "vue-facing-decorator;
+import { Component, Watch } from "vue-facing-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";

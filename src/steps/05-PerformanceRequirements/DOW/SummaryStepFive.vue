@@ -174,7 +174,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import { routeNames } from "../../../router/stepper"
-import { Component, Mixins } from "vue-facing-decorator;
+import { Component, Mixins } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
 import classificationRequirements 

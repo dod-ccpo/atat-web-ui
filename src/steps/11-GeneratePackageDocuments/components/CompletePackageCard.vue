@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-facing-decorator;
+import { Component } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import Vue from "vue";

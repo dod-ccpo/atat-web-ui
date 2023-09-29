@@ -126,7 +126,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop, Watch } from "vue-facing-decorator;
+import { Component, Prop, Watch } from "vue-facing-decorator";
 import { MeatballMenuItem, ToastObj } from "../../../types/Global";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";

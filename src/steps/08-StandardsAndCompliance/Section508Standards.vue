@@ -190,7 +190,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-facing-decorator;
+import {Component, Mixins} from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"

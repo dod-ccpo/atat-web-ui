@@ -26,7 +26,7 @@
    
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync} from "vue-facing-decorator;
+import { Component, Prop, PropSync} from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { 
   Checkbox,  

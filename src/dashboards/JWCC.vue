@@ -284,7 +284,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import Vue from "vue";
-import { Component } from "vue-facing-decorator;
+import { Component } from "vue-facing-decorator";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";

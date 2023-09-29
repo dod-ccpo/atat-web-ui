@@ -30,7 +30,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Prop, PropSync } from "vue-facing-decorator;
+import { Component, Prop, PropSync } from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";

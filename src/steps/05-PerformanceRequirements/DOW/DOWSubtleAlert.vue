@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "vue-facing-decorator;
+import { Component, Prop } from "vue-facing-decorator";
 
 import Vue from "vue";
 import { routeNames } from "../../../router/stepper"

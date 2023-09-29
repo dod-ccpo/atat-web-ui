@@ -61,7 +61,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-facing-decorator;
+import { Component, Mixins, Watch } from "vue-facing-decorator";
 import { hasChanges } from "@/helpers";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";

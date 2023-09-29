@@ -41,7 +41,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 
-import { Component, Mixins } from "vue-facing-decorator;
+import { Component, Mixins } from "vue-facing-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import { FundingRequestMIPRFormDTO } from "@/api/models";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";

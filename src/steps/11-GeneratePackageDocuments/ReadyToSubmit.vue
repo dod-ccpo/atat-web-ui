@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator;
+import { Component, Watch } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";

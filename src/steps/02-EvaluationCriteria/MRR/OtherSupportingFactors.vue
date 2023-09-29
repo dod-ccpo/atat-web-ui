@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-facing-decorator;
+import { Component, Mixins } from "vue-facing-decorator";
 import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";

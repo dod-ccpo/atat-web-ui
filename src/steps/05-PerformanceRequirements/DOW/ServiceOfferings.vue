@@ -72,7 +72,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Mixins, Watch } from "vue-facing-decorator;
+import { Component, Mixins, Watch } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import OtherOfferings from "./OtherOfferings.vue";

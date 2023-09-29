@@ -259,7 +259,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Mixins } from "vue-facing-decorator;
+import { Component, Mixins } from "vue-facing-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";

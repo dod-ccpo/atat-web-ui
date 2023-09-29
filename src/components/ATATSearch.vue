@@ -122,7 +122,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator;
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";

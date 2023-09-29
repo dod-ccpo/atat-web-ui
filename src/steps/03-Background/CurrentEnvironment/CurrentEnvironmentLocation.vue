@@ -64,7 +64,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-facing-decorator;
+import { Component, Mixins, Watch } from "vue-facing-decorator";
 import { EnvironmentLocation, RadioButton, ToastObj } from "../../../../types/Global";
 import { CurrentEnvironmentInstanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";

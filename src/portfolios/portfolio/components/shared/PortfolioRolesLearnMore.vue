@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-facing-decorator;
+import { Component } from "vue-facing-decorator";
 import PortfolioRolesLearnMoreText from "./PortfolioRolesLearnMoreText.vue"
 @Component({
   components: {

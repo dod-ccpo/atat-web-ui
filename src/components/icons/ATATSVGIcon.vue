@@ -16,7 +16,7 @@
 import {stringObj } from "types/Global";
 import Vue from "vue";
 
-import { Component, Prop, PropSync } from "vue-facing-decorator;
+import { Component, Prop, PropSync } from "vue-facing-decorator";
 import ArrowBack from "@/components/icons/ArrowBack.vue";
 import ArchitectureCircle from "@/components/icons/ArchitectureCircle.vue"
 import Aws from "@/components/icons/Aws.vue";

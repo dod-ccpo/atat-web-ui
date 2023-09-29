@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-facing-decorator;
+import { Component, Mixins, Watch } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import Card from "@/packages/components/Card.vue";

@@ -5,7 +5,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator;
+import { Component, Prop, Watch } from "vue-facing-decorator";
 import Chart, { ChartData } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 

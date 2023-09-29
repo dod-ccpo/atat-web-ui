@@ -111,7 +111,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Watch } from "vue-facing-decorator;
+import { Component, Watch } from "vue-facing-decorator";
 import { getIdText, scrollToMainTop } from "@/helpers";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";

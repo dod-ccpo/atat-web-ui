@@ -31,7 +31,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator;
+import { Component, Prop } from "vue-facing-decorator";
 import { User } from "../../../../../types/Global";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";

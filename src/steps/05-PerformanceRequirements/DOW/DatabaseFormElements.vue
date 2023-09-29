@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-facing-decorator;
+import { Component, PropSync } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"

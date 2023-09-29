@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator;
+import { Component, Watch } from "vue-facing-decorator";
 
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "@/components/ATATStepperNavigation.vue";

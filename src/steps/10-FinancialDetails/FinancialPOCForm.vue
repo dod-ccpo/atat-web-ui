@@ -36,7 +36,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component, Mixins } from "vue-facing-decorator;
+import { Component, Mixins } from "vue-facing-decorator";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { CountryObj, RadioButton, RankData, SelectData } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";

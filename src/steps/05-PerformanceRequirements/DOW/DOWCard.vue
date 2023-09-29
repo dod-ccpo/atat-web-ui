@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "vue-facing-decorator;
+import { Component, Prop } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
