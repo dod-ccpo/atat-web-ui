@@ -91,20 +91,28 @@
                 {{ menuItem.title }}
               </v-list-item-title>
             </v-list-item>
-            <hr class="my-2"  v-if="!isProdEnv" />
-
-            <v-list-item id="LoginToCSPConsole_MenuItem" v-if="!isProdEnv">
-              <v-list-item-title
-                class="d-flex align-center"
-              > Login to the CSP console
-                  <ATATSVGIcon
-                    class="ml-2"
+            <hr class="my-2"  v-if="!isProdEnv && hasCspLinks" />
+            <v-list-item disabled id="LoginToCSPConsole_MenuItem" v-if="!isProdEnv && hasCspLinks">
+              <v-list-item-title class="_csp-console-text"> 
+                {{cspLoginText}}
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              class="text-decoration-none"
+              v-for="(linkItem, index) in environmentLinks" 
+              :key="index"
+              @click="handleLinkClick(linkItem.link)"
+            >
+              <v-list-item-title class="d-flex align-center">
+                Unclassified <span class="_csp-console-text-link">{{ linkItem.display }}</span>
+                <ATATSVGIcon
                     name="launch"
                     width="15"
                     height="15"
                     color="primary"
                   />
               </v-list-item-title>
+
             </v-list-item>
           </v-list>
         </v-menu>
@@ -134,7 +142,11 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioStore from "@/store/portfolio";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import { SlideoutPanelContent, MeatballMenuItem } from "../../../../../types/Global";
+import { 
+  SlideoutPanelContent, 
+  MeatballMenuItem, 
+  EnvironmentLink
+} from "../../../../../types/Global";
 import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 // eslint-disable-next-line max-len
@@ -159,6 +171,7 @@ import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteM
 export default class PortfolioSummaryPageHead extends Vue {
   @Prop() public isPortfolioProvisioning!: boolean;
   @Prop({ default: [""], required: true }) private items!: string[];
+  @Prop({ default: [] }) private environmentLinks!: EnvironmentLink[];
   @PropSync("value") private _selectedTab!: number ;
   @PropSync("title") private _title!: string;
 
@@ -168,6 +181,8 @@ export default class PortfolioSummaryPageHead extends Vue {
     openModal: "openModal",
     leaveThisPortfolio: "leaveThisPortfolio"
   }
+  public cspLoginText = "LOGIN TO YOUR CSP PORTAL";
+  public hasCspLinks = false;
 
   public get portfolioStatus(): string {
     return PortfolioStore.currentPortfolio.status as string;
@@ -258,6 +273,10 @@ export default class PortfolioSummaryPageHead extends Vue {
     default: 
       break;
     }
+  }
+
+  public handleLinkClick(link: string): void{
+    window.open(link, "_blank")
   }
 
   @Watch("slideoutPanelIsOpen")
@@ -373,6 +392,12 @@ export default class PortfolioSummaryPageHead extends Vue {
     const collection = document.getElementsByClassName("_portfolio-title-input");
     return collection[0] as HTMLElement;
   }
+  public async loadOnEnter(): Promise<void> {
+    this.hasCspLinks = this.environmentLinks.length > 0;
+    if(this.environmentLinks.length > 1){
+      this.cspLoginText = "LOGIN TO YOUR CSP PORTALS"
+    }
+  }
 
   public async mounted(): Promise<void> {
     if (this.titleInput) {
@@ -381,11 +406,12 @@ export default class PortfolioSummaryPageHead extends Vue {
         this.addInputEventListeners(this, this.titleInput);
       })
     }
-  
+
     const slideoutPanelContent: SlideoutPanelContent = {
       component: PortfolioDrawer,
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await this.loadOnEnter()
   }
 }
 </script>

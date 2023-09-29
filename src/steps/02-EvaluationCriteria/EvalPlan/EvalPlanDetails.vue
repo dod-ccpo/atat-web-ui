@@ -30,11 +30,12 @@
         groupLabelId="OtherAssessmentAreasLabel"
         :items="lumpSumCheckboxOptions"
         :value.sync="selectedSetLumpSumOptions"
+        :optional="true"
       />
 
       <CustomSpecifications 
+      v-if="showCustomSpecifications"
         id="CustomSpecEntry"
-        v-if="showCustomSpecifications"
         :sourceSelection="evalPlan.source_selection"
         :isDifferentiator="false"
         :isOptional="true"
@@ -107,8 +108,8 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
   }
 
   public get showCustomSpecifications(): boolean {
-    return this.selectedStandardsRadioItem === 'YES'
-      || this.selectedSetLumpSumOptions.includes(this.setLumpSumCustomSysId);
+    return this.evalPlan.has_custom_specifications === 'YES'
+     || this.selectedSetLumpSumOptions.includes(this.setLumpSumCustomSysId);
   }
 
   public selectedStandardsRadioItem = "";

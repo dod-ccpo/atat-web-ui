@@ -62,6 +62,7 @@ export default class TaskOrderSearchModal extends Vue {
   }
 
   public async TOSearchCancelled(): Promise<void> {
+    await PortfolioStore.setProvisioningFromMeatballMenu(false);
     this.$emit("TOSearchCancelled");
   }
   public get isTOFollowOn(): boolean {

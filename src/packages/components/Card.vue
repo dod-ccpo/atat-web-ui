@@ -309,7 +309,8 @@ export default class Card extends Vue {
       this.updateStatus('DRAFT')
       break;
     case "Add awarded task order":
-      await PortfolioStore.setProvisioningTOFollowOn(false)
+      await PortfolioStore.setProvisioningTOFollowOn(false);
+      await PortfolioStore.setProvisioningFromMeatballMenu(true);
       this.$emit("openTOSearchModal", this.cardData.sys_id);
       break;
     }
