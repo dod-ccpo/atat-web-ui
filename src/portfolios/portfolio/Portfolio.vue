@@ -1621,8 +1621,8 @@ export default class PortfolioDashboard extends Vue {
     }
     this.burnChartYMax = Math.ceil(this.totalPortfolioFunds / multiplier) * multiplier;
 
-    // ticks array is number of y-axis divisions based on getting round numbers out of
-    // total value's first digit
+    // ticks array is number of y-axis divisions based on getting round numbers
+    // out of total value's first digit 
     const yAxisTicksArr = [8,8,6,8,10,6,8,8,6]; // doubled to have line btw labeled lines
     const firstDigit = parseInt(this.burnChartYMax.toString().charAt(0));
     const yAxisTicks = yAxisTicksArr[firstDigit - 1];
