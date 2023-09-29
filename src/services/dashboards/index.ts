@@ -4,7 +4,7 @@ import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
-import { format, isAfter, isBefore, parseISO, startOfMonth } from "date-fns";
+import { format, isAfter, isBefore, parseISO } from "date-fns";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export interface PortFolioDashBoardDTO {
@@ -218,10 +218,14 @@ export class DashboardService {
             }
         }
       ).then((clinData)=>{
+        const displayData = clinData as unknown as Record<string, Record<string, string>>[]
+        displayData.forEach((clin, i) => {
+          clinData[i].idiq_clin_label = clin.idiq_clin.display_value
+        })
         return clinData.map((clin: ClinDTO) =>{
           return convertColumnReferencesToValues(clin);
-        })
-      })
+        });
+      });
       const costs = await this.getCostsInCurrentPeriod(clinSysIds)
 
       return {
