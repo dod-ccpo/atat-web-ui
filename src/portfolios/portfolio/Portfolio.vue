@@ -1623,8 +1623,7 @@ export default class PortfolioDashboard extends Vue {
 
     // ticks array is number of y-axis divisions based on getting round numbers out of
     // total value's first digit
-    // const yAxisTicksArr = [4,4,6,4,5,6,7,4,3];
-    const yAxisTicksArr = [8,8,12,8,10,12,14,8,6]; // doubled to have line btw labeled lines
+    const yAxisTicksArr = [8,8,6,8,10,6,8,8,6]; // doubled to have line btw labeled lines
     const firstDigit = parseInt(this.burnChartYMax.toString().charAt(0));
     const yAxisTicks = yAxisTicksArr[firstDigit - 1];
     this.burnChartYStepSize = Math.round(this.burnChartYMax / yAxisTicks);
@@ -1866,7 +1865,6 @@ export default class PortfolioDashboard extends Vue {
         ticks: {
           stepSize: 0,
           callback: function (value: number, i: number): string {
-            // console.log("i = " + i + " value = " + value);
             let suffix = "";
             let val = value;
             if (value >= 1000000) {
@@ -1876,8 +1874,8 @@ export default class PortfolioDashboard extends Vue {
               val = Math.round(value / 1000)
             } 
             suffix = value >= 1000 && value < 1000000 ? "K" : value >= 1000000 ? "M" : "";
-            const isEven = i % 2 === 0;
-            return value === 0 || !isEven ? "" : "$" + val + suffix;
+            const isOdd = i % 2 !== 0;
+            return value === 0 || isOdd ? "" : "$" + val + suffix;
           },
         },
       },
