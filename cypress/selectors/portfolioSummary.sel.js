@@ -110,7 +110,6 @@ module.exports = {
   role1AboutRoles: "#Role1_DropdownListItem_AboutRoles",
   fundingTrackerTab: "#FundingTracker_Tab",  
   taskOrderTab: "#TaskOrders_Tab",
-  cspPortalAccessTab: "#CSPPortalAccess_Tab", 
   
   //fundingtrackerview
   portfoliodetailsCard: "#PortfolioDetailsCard",
