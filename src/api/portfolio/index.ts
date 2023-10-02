@@ -1,6 +1,6 @@
 import {TableApiBase} from "@/api/tableApiBase";
 import { ApiBase } from "../apiBase";
-import {PortfolioSummaryObj, PortfolioSummaryDTO} from "@/api/models";
+import {PortfolioSummaryDTO, PortfolioSummaryMetadataAndDataDTO} from "@/api/models";
 import { AxiosRequestConfig, AxiosError } from "axios";
 export const TABLENAME = "x_g_dis_atat_portfolio";
 export const APINAME = "x_g_dis_atat/portfolios";
@@ -16,7 +16,9 @@ export class PortfolioApi extends ApiBase{
     super(APINAME)
   }
 
-  public async getPortfolioSummaryList(userSysId: string): Promise<PortfolioSummaryObj[]> {
+  public async getPortfolioSummaryList(
+    userSysId: string
+  ): Promise<PortfolioSummaryMetadataAndDataDTO> {
     try {
       /* eslint-disable camelcase */
       const config: AxiosRequestConfig = {
@@ -28,7 +30,7 @@ export class PortfolioApi extends ApiBase{
       const response = await this.instance.get( `${this.endPoint}/summary`, config);
       if (response.status === 200) {
         const { result } = response.data;
-        return result.Portfolios;
+        return result;
       } else {
         const { error } = response.data;
         return error;
@@ -36,7 +38,7 @@ export class PortfolioApi extends ApiBase{
     } catch(error) {
       const axiosError = error as AxiosError;
       if (axiosError.response !== undefined && axiosError.response.status === 404) {
-        return [];
+        return {} as PortfolioSummaryMetadataAndDataDTO;
       }
       throw new Error(error as string)
     }

@@ -146,7 +146,9 @@ export class PortfolioSummaryStore extends VuexModule {
    * offset and limit parameters of the pagination.
    */
   @Action({rawError: true})
-  private async getPortfolioSummaryList(userSysId: string): Promise<PortfolioSummaryObj[]> {
+  private async getPortfolioSummaryList(
+    userSysId: string
+  ): Promise<PortfolioSummaryMetadataAndDataDTO> {
   
     await this.ensureInitialized();
   
@@ -495,19 +497,19 @@ export class PortfolioSummaryStore extends VuexModule {
       const portfolioSummaryCount = CurrentUserStore.getCurrentUserPortfolioCount;
       const currentUserSysId = CurrentUserStore.currentUser.sys_id
 
-      let portfolioSummaryList: PortfolioSummaryObj[];
+      let portfolioSummaryList: PortfolioSummaryMetadataAndDataDTO;
       if (portfolioSummaryCount > 0) {
         portfolioSummaryList = await this.getPortfolioSummaryList(currentUserSysId as string);
         console.log(portfolioSummaryList)
-        await this.setHasActivePortfolios(portfolioSummaryList);
-        this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
+        await this.setHasActivePortfolios(portfolioSummaryList.portfolios);
+        this.setPortfolioSummaryList(portfolioSummaryList.portfolios); // caches the list
       } else {
-        portfolioSummaryList = [];
+        portfolioSummaryList = {} as PortfolioSummaryMetadataAndDataDTO;
       }
       console.log(portfolioSummaryList, 'sum list')
       return {
-        total_count: portfolioSummaryCount,
-        portfolioSummaryList: portfolioSummaryList
+        portfolioCount: portfolioSummaryList.portfolioCount,
+        portfolios: portfolioSummaryList.portfolios
       };
     } catch (error) {
       throw new Error("error occurred searching portfolio summary list :" + error);

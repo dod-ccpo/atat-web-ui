@@ -803,13 +803,13 @@ export interface PortfolioSummaryObj extends BaseTableDTO{
   active_task_order: string;
   owner_full_name:string;
   funding_status: string;
-  csp_portal_links: {csp: string, dashboard_link: string}
+  csp_portal_links: {csp: string, dashboard_link: string},
 }
 
 
 export interface PortfolioSummaryMetadataAndDataDTO {
-  total_count: number;
-  portfolioSummaryList: PortfolioSummaryObj[];
+  portfolios: PortfolioSummaryObj[];
+  portfolioCount: number
 }
 
 export interface EnvironmentDTO extends BaseTableDTO {

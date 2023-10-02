@@ -551,10 +551,10 @@ export default class PortfoliosSummary extends Vue {
       { searchDTO: this.portfolioSearchDTO, isHomeView: this.isHomeView }
     );
 
-    this.portfolioCount = storeData.total_count;
+    this.portfolioCount = storeData.portfolioCount;
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
     const includedPortfolios = this.filteredPortfolios();
-    storeData.portfolioSummaryList.forEach((portfolio) => {
+    storeData.portfolios.forEach((portfolio) => {
       if(includedPortfolios.includes(portfolio.portfolio_status)) {
         const cardData: PortfolioCardData = {};
         cardData.isOwner = portfolio.current_user_is_owner;
