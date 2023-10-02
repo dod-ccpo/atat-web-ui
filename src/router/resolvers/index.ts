@@ -1551,10 +1551,10 @@ export const IGCESupportingDocumentationResolver = (current: string): string => 
   }
 };
 
-export const FundingPlanTypeResolver = (current: string): string => {
+export const CurrentlyHasFundingResolver = (current: string): string => {
   return Summary.hasCurrentStepBeenVisited && current === routeNames.SupportingDocumentation
     ? routeNames.SummaryStepEight
-    : routeNames.FundingPlanType
+    : routeNames.CurrentlyHasFunding
 };
 
 
@@ -1906,7 +1906,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PackagingPackingAndShippingResolver,
   TravelRouteResolver,
   SummaryStepTwoRouteResolver,
-  FundingPlanTypeResolver,
+  CurrentlyHasFundingResolver,
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
 };

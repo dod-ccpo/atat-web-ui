@@ -143,11 +143,14 @@ import SeverabilityAndIncrementalFunding
 import IncrementalFunding 
   from "../steps/10-FinancialDetails/IncrementalFunding.vue";
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
+import GTC from "@/steps/10-FinancialDetails/GTCInformation.vue";
+import CurrentlyHasFunding from "@/steps/10-FinancialDetails/CurrentlyHasFunding.vue";
 import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
 import SummaryStepEight from "@/steps/10-FinancialDetails/SummaryStepEight.vue";
+
 // step 10 - Generate Package Documents
 import GeneratePackageDocuments from "../steps/11-GeneratePackageDocuments/Index.vue";
 import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToGeneratePackage.vue";
@@ -180,6 +183,7 @@ import {
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   MIPRResolver,
+  CurrentlyHasFundingResolver,
   GInvoicingResolver,
   Upload7600Resolver,
   AppropriationOfFundsResolver,
@@ -222,7 +226,6 @@ import {
   COIRouteResolver,
   PackagingPackingAndShippingResolver,
   TravelRouteResolver,
-  FundingPlanTypeResolver,
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
   ProjectOverviewResolver,
@@ -315,6 +318,8 @@ export const routeNames = {
   SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
   MIPR: "MIPR",
+  CurrentlyHasFunding: "Currently_Has_Funding",
+  GTC: "GTC",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   IncrementalFunding: "Incremental_Funding",
   GeneratingPackageDocuments: "Generating_Package_Documents",
@@ -1359,41 +1364,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: IGCESupportingDocumentationResolver
       },
       {
-        menuText: "Funding",
-        path: "funding-plan",
-        name: routeNames.FundingPlanType,
-        completePercentageWeight: 1,
-        component: FundingPlanType,
-        routeResolver: FundingPlanTypeResolver,
-      },
-      {
-        menuText: "MIPR",
-        excludeFromMenu: true,
-        path: "mipr",
-        name: routeNames.MIPR,
-        completePercentageWeight: 1,
-        component: MIPR,
-        routeResolver: MIPRResolver
-      },
-      {
-        menuText: "G-Invoicing",
-        excludeFromMenu: true,
-        path: "g-invoicing",
-        name: routeNames.GInvoicing,
-        completePercentageWeight: 1,
-        component: GInvoicing,
-        routeResolver: GInvoicingResolver,
-      },
-      {
-        menuText: "Upload-7600",
-        excludeFromMenu: true,
-        path: "upload-7600",
-        name: routeNames.Upload7600,
-        completePercentageWeight: 1,
-        component: Upload7600,
-        routeResolver: Upload7600Resolver
-      },
-      {
         menuText: "Appropriation of Funds",
         excludeFromMenu: true,
         path: "appropriation-of-funds",
@@ -1429,6 +1399,65 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
 
       },
+      {
+        menuText: "Funding",
+        path: "currently-has-funding",
+        name: routeNames.CurrentlyHasFunding,
+        completePercentageWeight: 1,
+        component: CurrentlyHasFunding,
+        routeResolver: CurrentlyHasFundingResolver,
+      },
+      {
+        menuText: "GTC-Information",
+        path: "gtc-information",
+        name: routeNames.GTC,
+        excludeFromMenu: true,
+        completePercentageWeight: 1,
+        component: GTC,
+      },
+      {
+        menuText: "Generate Package Documents",
+        path:"generate-package-documents",
+        excludeFromMenu: true,
+        name: routeNames.GeneratingPackageDocuments,
+        completePercentageWeight: 0,
+        component: GeneratingPackageDocuments,
+      },
+      {
+        menuText: "Funding-Plan",
+        excludeFromMenu: true,
+        path: "funding-plan",
+        name: routeNames.FundingPlanType,
+        completePercentageWeight: 1,
+        component: FundingPlanType,
+      },
+      {
+        menuText: "Upload-7600",
+        excludeFromMenu: true,
+        path: "upload-7600",
+        name: routeNames.Upload7600,
+        completePercentageWeight: 1,
+        component: Upload7600,
+        //routeResolver: Upload7600Resolver
+      },
+      {
+        menuText: "MIPR",
+        excludeFromMenu: true,
+        path: "mipr",
+        name: routeNames.MIPR,
+        completePercentageWeight: 1,
+        component: MIPR,
+        //routeResolver: MIPRResolver
+      },
+      // {
+      //   menuText: "G-Invoicing",
+      //   excludeFromMenu: true,
+      //   path: "g-invoicing",
+      //   name: routeNames.GInvoicing,
+      //   completePercentageWeight: 1,
+      //   component: GInvoicing,
+      //   routeResolver: GInvoicingResolver,
+      // },
       {
         menuText: "SummaryStepEight",
         path: "summary-step-eight",
