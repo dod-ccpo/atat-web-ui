@@ -2,7 +2,7 @@ import {createLocalVue} from "@vue/test-utils";
 import Vuex, {Store} from "vuex";
 import {getModule} from "vuex-module-decorators";
 import {PortfolioSummaryStore} from "@/store/portfolioSummary/index";
-import { PortfolioSummaryDTO
+import { PortfolioSummaryObj, PortfolioSummaryDTO
 } from "@/api/models";
 import Vue from "vue";
 import portfolioSummaryListMock from "@/store/portfolioSummary/mocks/portfolioSummaryListMock.json"
@@ -55,14 +55,14 @@ describe("PortfolioSummary Store",
 
     it('Test getAllPortfolioSummaryList()- should get the list from store', async () => {
       portfolioSummaryStore.setPortfolioSummaryList(
-          portfolioSummaryListMock as unknown as PortfolioSummaryDTO[]);
+          portfolioSummaryListMock as unknown as PortfolioSummaryObj[]);
       const portfolioSummaryList = await portfolioSummaryStore.getAllPortfolioSummaryList();
       await expect(portfolioSummaryList?.length).toBe(1)
     })
 
     it('Test setHasActivePortfolios()', async () => {
       await portfolioSummaryStore.setHasActivePortfolios(
-        portfolioSummaryListMock as unknown as PortfolioSummaryDTO[]
+        portfolioSummaryListMock as unknown as PortfolioSummaryObj[]
       )
       expect(portfolioSummaryStore.hasActivePortfolios).toBe(true)
     })

@@ -4,7 +4,8 @@ import {
   CloudServiceProviderDTO,
   PortfolioSummaryDTO,
   PortfolioSummaryMetadataAndDataDTO,
-  PortfolioSummarySearchDTO
+  PortfolioSummarySearchDTO,
+  PortfolioSummaryObj
 } from "@/api/models";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
@@ -28,10 +29,10 @@ const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 })
 export class PortfolioSummaryStore extends VuexModule {
   initialized = false;
-  portfolioSummaryList: PortfolioSummaryDTO[] | null = null;
+  portfolioSummaryList: PortfolioSummaryObj[] | null = null;
 
   @Action
-  public async getAllPortfolioSummaryList(): Promise<PortfolioSummaryDTO[] | null> {
+  public async getAllPortfolioSummaryList(): Promise<PortfolioSummaryObj[] | null> {
     return this.portfolioSummaryList;
   }
 
@@ -58,7 +59,7 @@ export class PortfolioSummaryStore extends VuexModule {
   }
 
   @Mutation
-  public setPortfolioSummaryList(value: PortfolioSummaryDTO[]): void {
+  public setPortfolioSummaryList(value: PortfolioSummaryObj[]): void {
     this.portfolioSummaryList = value;
     storeDataToSession(
       this,
@@ -145,21 +146,11 @@ export class PortfolioSummaryStore extends VuexModule {
    * offset and limit parameters of the pagination.
    */
   @Action({rawError: true})
-  private async getPortfolioSummaryList(filterObject: {
-    searchQuery: string,
-    searchDTO: PortfolioSummarySearchDTO
-  }): Promise<PortfolioSummaryDTO[]> {
-    const searchQuery = filterObject.searchQuery;
-    const searchDTO = filterObject.searchDTO;
+  private async getPortfolioSummaryList(userSysId: string): Promise<PortfolioSummaryObj[]> {
+  
     await this.ensureInitialized();
-    const portfolioSummaryListRequestConfig: AxiosRequestConfig = {
-      params: {
-        sysparm_query: searchQuery,
-        sysparm_limit: searchDTO.limit,
-        sysparm_offset: searchDTO.offset
-      }
-    };
-    return await api.portfolioTable.getQuery(portfolioSummaryListRequestConfig);
+  
+    return await api.portfolioApi.getPortfolioSummaryList(userSysId)
   }
 
   /**
@@ -394,7 +385,7 @@ export class PortfolioSummaryStore extends VuexModule {
 
   public hasActivePortfolios = false;
   @Action({rawError: true})
-  public async setHasActivePortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
+  public async setHasActivePortfolios(portfolioSummaryList: PortfolioSummaryObj[]) {
     const hasActivePortfolios = portfolioSummaryList.some((portfolio) => {
       return portfolio.portfolio_status === Statuses.Active.label ||
       portfolio.portfolio_status === Statuses.Active.value
@@ -502,27 +493,18 @@ export class PortfolioSummaryStore extends VuexModule {
       }
 
       const portfolioSummaryCount = CurrentUserStore.getCurrentUserPortfolioCount;
+      const currentUserSysId = CurrentUserStore.currentUser.sys_id
 
-      let portfolioSummaryList: PortfolioSummaryDTO[];
+      let portfolioSummaryList: PortfolioSummaryObj[];
       if (portfolioSummaryCount > 0) {
-        portfolioSummaryList = await this.getPortfolioSummaryList({searchQuery, searchDTO});
-        portfolioSummaryList = portfolioSummaryList
-          .map(portfolioSummary => convertColumnReferencesToValues(portfolioSummary));
-        // callouts to other functions to set data from other tables
-        await this.setAlertsForPortfolios(portfolioSummaryList);
-        await this.setEnvironmentsForPortfolios(portfolioSummaryList);
-        await this.setCspDisplay(portfolioSummaryList);
-        await this.setAgencyDisplay(portfolioSummaryList);
-        await this.setTaskOrdersForPortfolios(portfolioSummaryList);
-        await this.setClinsToPortfolioTaskOrders(portfolioSummaryList);
-        await this.setCostsToTaskOrderClins(portfolioSummaryList);
+        portfolioSummaryList = await this.getPortfolioSummaryList(currentUserSysId as string);
+        console.log(portfolioSummaryList)
         await this.setHasActivePortfolios(portfolioSummaryList);
-        // all asynchronous calls are done before this step & data is available for aggregation
-        this.computeAllAggregationsAndPopRollup(portfolioSummaryList);
         this.setPortfolioSummaryList(portfolioSummaryList); // caches the list
       } else {
         portfolioSummaryList = [];
       }
+      console.log(portfolioSummaryList, 'sum list')
       return {
         total_count: portfolioSummaryCount,
         portfolioSummaryList: portfolioSummaryList

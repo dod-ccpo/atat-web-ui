@@ -108,7 +108,7 @@ describe("Testing index Component", () => {
         // eslint-disable-next-line camelcase
         total_count: 2,
         portfolioSummaryList: portfolios
-      }));
+      }) as any);
     await wrapper.vm.loadPortfolioData();
     expect(wrapper.vm.$data.portfolioCardData.length).toBe(2);
   });
@@ -119,7 +119,7 @@ describe("Testing index Component", () => {
         // eslint-disable-next-line camelcase
         total_count: 2,
         portfolioSummaryList: portfolios
-      }));
+      }) as any);
     wrapper.vm.$data.activeTab = "ACTIVE"
     await wrapper.vm.loadPortfolioData();
     expect(await wrapper.vm.$data.portfolioSearchDTO.portfolioStatus).toBe("");
