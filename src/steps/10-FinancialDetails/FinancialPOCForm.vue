@@ -40,7 +40,7 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { CountryObj, RadioButton, RankData, SelectData } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { hasChanges } from "@/helpers";
+import { convertSystemChoiceToSelect, hasChanges } from "@/helpers";
 import { ContactDTO } from "@/api/models";
 import parsePhoneNumber, { AsYouType, CountryCode } from "libphonenumber-js";
 import ContactData from "@/store/contactData";

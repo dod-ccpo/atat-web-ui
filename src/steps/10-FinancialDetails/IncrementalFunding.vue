@@ -284,6 +284,7 @@ import _ from "lodash";
 import { api } from "@/api";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { MarketResearchTechniquesApi } from "@/api/fairOpportunity";
 
 @Component({
   components: {

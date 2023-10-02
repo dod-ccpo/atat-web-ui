@@ -2,7 +2,7 @@
   <ATATAlert
     id="InaccurateFinancialDetails"
     type="error"
-    class="mb-10"
+    class="my-10"
   >
     <template v-slot:content>
       <h3 class="mb-1">Financial details may be inaccurate</h3>

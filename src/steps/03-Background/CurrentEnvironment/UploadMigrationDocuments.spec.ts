@@ -7,6 +7,7 @@ import validators from "../../../plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import UploadMigrationDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.vue";
+import { AttachmentServiceCallbacks } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import Attachments from "@/store/attachments";
 import { AttachmentDTO, CurrentEnvironmentDTO } from "@/api/models";

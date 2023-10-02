@@ -250,12 +250,6 @@
   opacity: 1 !important;
 }
 
-.center-checkboxes div[role=radiogroup] {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .chart-legend-checkboxes {
   .v-input--checkbox {
       &.color {

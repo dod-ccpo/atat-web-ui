@@ -41,11 +41,6 @@ module.exports = {
   },
   chainWebpack: config => {
     let BASE_API_URL = process.env.BASE_API_URL;
-    let VERSION = process.env.VERSION;
-    if (!VERSION)
-    {
-      VERSION = "1.0.0";
-    }
     if (!BASE_API_URL){
       console.error("You must provide a value for property BASE_API_URL. Stopping.")
       return process.exit(1)
@@ -64,7 +59,6 @@ module.exports = {
           'VUE_APP_SNOWUSER': JSON.stringify(SNOWUSER),
           'VUE_APP_SNOWPASS': JSON.stringify(SNOWPASS),
           'SNOW_USER_SYSID': JSON.stringify(SNOW_USER_SYSID),
-          'VERSION': JSON.stringify(VERSION)
         };
         return definitions;
       });

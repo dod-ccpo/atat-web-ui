@@ -84,13 +84,13 @@ export default class Callout extends Vue {
           numbers/Stock Keeping Units (SKUs) and quantities to meet the requirements.`;
       }
       return `Since you would like to purchase an equal dollar amount from each Contractor,
-        your Contracting Officer (KO) will issue a Request for Proposal (RFP) and ask 
+        your Contracting Officer (KO) will issue a Request for Quote (RFQ) and ask 
         Contractors to respond if they are “interested” or “not interested.” Task orders 
         will be issued to all interested Contractors.`;
     }
     const substr1 =
       this.sourceSelection === "NO_TECH_PROPOSAL"
-        ? "to provide a price proposal"
+        ? "to provide a price quote"
         : "propose a technical solution and provide a price proposal";
     const substr2 =
       this.sourceSelection === "NO_TECH_PROPOSAL"
@@ -116,7 +116,7 @@ export default class Callout extends Vue {
         solution and meets the following assessment areas:`;
     }
     return `Award will be made in equal parts to each Contractor that responds to the 
-      RFP as “interested.”`;
+      RFQ as “interested.”`;
   }
 
   public get listItems(): string[] {

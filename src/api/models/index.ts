@@ -573,7 +573,7 @@ export interface FundingRequestDTO extends BaseTableDTO {
   funding_request_type?: string;
   mipr?: string;
   appropriation_fiscal_year?: string;
-  appropriation_funds_type?: "" | "O_M" | "RDT_E" | "PROCUREMENT" | "W_C";
+  appropriation_funds_type?: "" | "O_M" | "RDT_E" | "PROCUREMENT";
 }
 
 export interface FundingIncrementDTO extends BaseTableDTO{
@@ -647,7 +647,6 @@ export interface ClinDTO extends BaseTableDTO {
   sys_id: string;
   clin_number: string;
   idiq_clin: string;
-  idiq_clin_label?: string;
   pop_end_date: string;
   pop_start_date: string;
   clin_status: string;
@@ -655,6 +654,7 @@ export interface ClinDTO extends BaseTableDTO {
   funds_total: number;
   cost_records?: CostsDTO[]
   actual_funds_spent?: number;
+  clin_title?: string;
 }
 
 export interface EDAResponse {
@@ -672,7 +672,7 @@ export interface EDAResponse {
   totalAmount?: number | null;
   popStartDate?: string; // "2021-07-01",
   popEndDate?: string; // "2026-07-01",
-  classificationLevels?: string[]; // ["Unclassified", "Secret", "Top Secret"]
+  classificationLevels?: string[]; //  ["Unclassified", "Secret"] or sysIds?
 
 }
 

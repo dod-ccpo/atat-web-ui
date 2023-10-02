@@ -1,4 +1,4 @@
-import Vue from "vue";
+import Vue, { computed } from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
@@ -9,6 +9,7 @@ import validators from "../../../plugins/validation";
 import {
   Checkbox,
   RadioButton,
+  SelectData,
 } from "../../../../types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 Vue.use(Vuetify);

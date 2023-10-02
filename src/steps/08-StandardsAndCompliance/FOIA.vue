@@ -58,7 +58,7 @@
                 <p>
                   Generally, the work statements describe the government’s requirements 
                   and are in the public domain prior to award, having been disclosed to 
-                  offerors as part of the Request for Proposal.
+                  offerors as part of the Request for Quote/Proposal.
                 </p>
                 <p>
                   If a work statement contains information that has not been given a 

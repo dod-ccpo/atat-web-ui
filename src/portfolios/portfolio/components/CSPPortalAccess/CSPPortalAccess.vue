@@ -219,8 +219,11 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AddAdminSlideOut from "@/portfolios/portfolio/components/shared/AddAdminSlideOut.vue";
 import {Environment, Operator, SlideoutPanelContent} from "../../../../../types/Global";
 import Portfolio from "@/store/portfolio";
-import { differenceInCalendarDays, startOfTomorrow } from "date-fns";
+import {EnvironmentDTO, OperatorDTO} from "@/api/models";
+import { differenceInCalendarDays, formatISO, formatISO9075, startOfTomorrow } from "date-fns";
 import { createDateStr } from "../../../../helpers"
+import _ from "lodash";
+import PortfolioStore from "@/store/portfolio";
 import { Statuses } from "@/store/acquisitionPackage";
 import AccessingCSPLearnMore from "../shared/AccessingCSPLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel";

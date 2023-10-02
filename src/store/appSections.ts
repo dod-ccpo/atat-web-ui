@@ -91,4 +91,3 @@ export class AppSectionsStore extends VuexModule {
 
 const AppSections = getModule(AppSectionsStore);
 export default AppSections;
-

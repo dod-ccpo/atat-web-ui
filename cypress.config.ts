@@ -12,8 +12,6 @@ export default defineConfig({
   retries: 2,
   env: {
     BABEL_ENV: 'e2e',
-    jaDataSetIndex:0,
-    epDataSetIndex:0,
   },
   e2e: {    
     setupNodeEvents(on, config) {      

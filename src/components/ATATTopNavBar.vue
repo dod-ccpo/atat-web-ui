@@ -133,6 +133,7 @@ import { getUserInitials } from "@/helpers";
 
 import { getIdText } from "@/helpers";
 import AppSections from "@/store/appSections";
+import UserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 

@@ -110,7 +110,7 @@ import ClassificationsModal from "./ClassificationsModal.vue";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
+import { Checkbox, DOWClassificationInstance, ToastObj } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 

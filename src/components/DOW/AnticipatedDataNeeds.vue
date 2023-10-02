@@ -5,7 +5,6 @@
       <ATATTextField
         width="234"
         type="number"
-        id="DataTransfer"
         :label="dataLabel"
         :tooltipText="dataTooltipText"
         :appendDropdown="true"
@@ -20,7 +19,6 @@
     </div>
     <div>
       <ATATRadioGroup
-        id="DataIncrease"
         :legend="increaseLabel"
         :items="increaseOptions"
         :value.sync="_increaseSelection"
@@ -32,7 +30,6 @@
     </div>
     <div v-if="_increaseSelection === 'YES'">
       <ATATRadioGroup
-        id="EstimateGrowth"
         :legend="growthLabel"
         :items="growthOptions"
         :value.sync="_growthSelection"
@@ -43,7 +40,6 @@
       <br />
       <div v-if="_growthSelection !== ''" class="mb-6">
         <ATATSingleAndMultiplePeriods
-          id="Periods"
           :periods="periods"
           :textboxSuffix="'%'"
           :singlePeriodLabel="percentageLabel"
@@ -58,7 +54,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";

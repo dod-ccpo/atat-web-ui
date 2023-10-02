@@ -14,9 +14,8 @@ import {
   ContactDTO,
   ContractConsiderationsDTO,
   ContractTypeDTO,
-  CrossDomainSolutionDTO,
+  CrossDomainSolutionDTO, 
   CurrentContractDTO,
-  CurrentEnvironmentInstanceDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
   FundingRequestDTO,
@@ -32,10 +31,10 @@ import {
 } from "@/api/models";
 import ClassificationRequirements, { isClassLevelUnclass } from "../classificationRequirements";
 import {
-  convertStringArrayToCommaList,
-  toTitleCase,
-  buildClassificationLabel,
-  toCurrencyString, convertEvalPlanDifferentiatorToCheckbox,
+  convertStringArrayToCommaList, 
+  toTitleCase, 
+  buildClassificationLabel, 
+  toCurrencyString,
 } from "@/helpers";
 import _ from "lodash";
 import DescriptionOfWork from "../descriptionOfWork";
@@ -52,31 +51,31 @@ import OrganizationData from "@/store/organizationData";
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
   await validateStep(stepNumber);
   return isStepTouched(stepNumber)
-}
+} 
 
 export const isStepTouched = (stepNumber: number): boolean =>{
   return (Summary.summaryItems.some(
-    (si: SummaryItem) => si.step === stepNumber && si.isTouched
+    (si: SummaryItem) => si.step === stepNumber && si.isTouched 
   ))
-}
+} 
 
 export const isSubStepValidatedAndTouched = async (
-  stepNumber: number,
+  stepNumber: number, 
   subStepNumber: number
 ): Promise<boolean> =>{
   await validateStep(stepNumber);
   return isSubStepComplete(stepNumber, subStepNumber)
-}
+} 
 
 export const isSubStepTouched = (
-  stepNumber: number,
+  stepNumber: number, 
   subStepNumber: number
 ): boolean =>{
   return (Summary.summaryItems.filter(
-    (si: SummaryItem) =>
+    (si: SummaryItem) => 
       si.step === stepNumber && si.substep === subStepNumber
   ))[0].isTouched;
-}
+} 
 
 export const isStepValidatedAndComplete = async (stepNumber: number): Promise<boolean> =>{
   await validateStep(stepNumber);
@@ -90,15 +89,15 @@ export const isStepComplete = (stepNumber: number): boolean =>{
 }
 
 export const isSubStepVaidatedAndComplete = async (
-  stepNumber: number,
-  subStepNumber: number):
-    Promise<boolean> =>{
+  stepNumber: number, 
+  subStepNumber: number): 
+Promise<boolean> =>{
   await validateStep(stepNumber);
   return isSubStepComplete(stepNumber, subStepNumber);
 }
 
 export const isSubStepComplete = (
-  stepNumber: number,
+  stepNumber: number, 
   subStepNumber: number): boolean =>{
   return  Summary.summaryItems.filter(
     (si: SummaryItem) => si.step === stepNumber && si.substep === subStepNumber
@@ -146,20 +145,20 @@ export const validateStep = async(stepNumber: number): Promise<void> =>{
   }
 }
 
-export const getSelectedClassLevelsAsDescription =
-    async(selectedClassLevels?: string[]): Promise<string> =>{
-      const classReqs = ClassificationRequirements.selectedClassificationLevels;
-      const selectClassLevelsSysIds = selectedClassLevels ||
-          classReqs.map(cr => cr.classification_level);
-      const classLevelDisplayNames = ClassificationRequirements.classificationLevels.filter(
-        cl => selectClassLevelsSysIds.includes(cl.sys_id as string)
-      ).map(cl => cl.display?.replaceAll(" - ", "/")).sort();
-      return convertStringArrayToCommaList(classLevelDisplayNames as string[], "and")
-    }
+export const getSelectedClassLevelsAsDescription = 
+  async(selectedClassLevels?: string[]): Promise<string> =>{
+    const classReqs = ClassificationRequirements.selectedClassificationLevels;
+    const selectClassLevelsSysIds = selectedClassLevels || 
+        classReqs.map(cr => cr.classification_level);
+    const classLevelDisplayNames = ClassificationRequirements.classificationLevels.filter(
+      cl => selectClassLevelsSysIds.includes(cl.sys_id as string)
+    ).map(cl => cl.display?.replaceAll(" - ", "/")).sort();
+    return convertStringArrayToCommaList(classLevelDisplayNames as string[], "and")
+  }
 
 /**
- *
- * @param stepNumber
+ * 
+ * @param stepNumber 
  * @returns summaryItems for requested step and sosrted by substep
  */
 export const getSummaryItemsforStep = async(stepNumber: number): Promise<SummaryItem[]> =>{
@@ -210,7 +209,6 @@ export class SummaryStore extends VuexModule {
   @Mutation
   public doRemoveSummaryItem(itemToDelete: SummaryItem):void{
     this.summaryItems = this.summaryItems.filter(item => item !== itemToDelete)
-
   }
 
   @Mutation
@@ -256,8 +254,8 @@ export class SummaryStore extends VuexModule {
       title = projectOverview.title;
 
       const isCompleteWithoutCjadc2 = !!projectOverview.title
-          && !!projectOverview.scope && !!projectOverview.emergency_declaration
-          && !!projectOverview.cjadc2 && !!projectOverview.project_disclaimer;
+        && !!projectOverview.scope && !!projectOverview.emergency_declaration
+        && !!projectOverview.cjadc2 && !!projectOverview.project_disclaimer;
 
       isComplete = projectOverview.cjadc2 === "YES"
         ? isCompleteWithoutCjadc2 && !!projectOverview.cjadc2_percentage
@@ -330,7 +328,7 @@ export class SummaryStore extends VuexModule {
       ): organizationKeys.filter(
         x => civilKeys.indexOf(x) === -1)
     const isTouched = !!organization?.agency || !!organization?.organization_name
-        || !!organization?.dodaac || !!organization?.address_type;
+      || !!organization?.dodaac || !!organization?.address_type;
     const hasCompleteAddress = organization?.street_address_1
         && organization.city && organization.state && organization.zip_code
     const showMoreData = hasCompleteAddress?{address: `${organization.street_address_1} 
@@ -380,7 +378,7 @@ export class SummaryStore extends VuexModule {
         `${contactInfo.first_name} ${contactInfo.last_name}`
         : "Primary Point of Contact"
     }
-
+    
     const monitor = {object: contactInfo, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
     const PrimaryPOC: SummaryItem = {
@@ -417,7 +415,7 @@ export class SummaryStore extends VuexModule {
         address:"",
         email:contactInfo.email || "Missing email address",
         phone:contactInfo.phone || "Missing phone number",
-        dodaac: contactInfo.dodaac ? `DoDAAC - ${contactInfo.dodaac}` : "Missing DoDAAC",
+        dodaac:`DoDAAC - ${contactInfo.dodaac}` || "Missing DoDAAC",
         title:contactInfo.title || "Missing job title",
         role:contactInfo.role || "Missing role"
       }
@@ -462,7 +460,7 @@ export class SummaryStore extends VuexModule {
         address:"",
         email:contactInfo.email || "Missing email address",
         phone:contactInfo.phone || "Missing phone number",
-        dodaac:contactInfo.dodaac ? `DoDAAC - ${contactInfo.dodaac}` : "Missing DoDAAC",
+        dodaac:`DoDAAC - ${contactInfo.dodaac}` || "Missing DoDAAC",
         role:contactInfo.role || "Missing role"
       }
       title =contactInfo.first_name && contactInfo.last_name?
@@ -493,7 +491,7 @@ export class SummaryStore extends VuexModule {
         await this.removeSummaryItem(existingACORSummaryItem)
       }
     }
-
+    
   }
 
 
@@ -559,27 +557,27 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setFairOpportunityDescription(
     resources:{
-        fairOpp: FairOpportunityDTO,
-        isComplete:boolean
-      }): Promise<string>{
+      fairOpp: FairOpportunityDTO,
+      isComplete:boolean
+  }): Promise<string>{
     let MRRText = "";
-    const FARSelection =
-        resources.fairOpp.exception_to_fair_opportunity?.split("_").slice(-1).join()
+    const FARSelection = 
+      resources.fairOpp.exception_to_fair_opportunity?.split("_").slice(-1).join()
     let FARText = "";
     switch(FARSelection){
-    case "A":
+    case "A": 
       FARText = "FAR 16.505(b)(2)(i)(A) – Unusual and compelling urgency.";
       break;
-    case "B":
+    case "B": 
       FARText = "FAR 16.505(b)(2)(i)(B) – Unique or highly specialized capabilities.";
       break;
-    case "C":
+    case "C": 
       FARText = "FAR 16.505(b)(2)(i)(C) – Logical follow-on.";
       break;
     default:
       FARText = "No exceptions apply to this acquisition.<br />" +
-            "A J&A and MRR are NOT required in your final acquisition package."
-      break;
+      "A J&A and MRR are NOT required in your final acquisition package."
+      break; 
     }
 
     const needsMRR = resources.fairOpp.contract_action === "NONE" ;
@@ -592,7 +590,7 @@ export class SummaryStore extends VuexModule {
     return resources.isComplete
       ? FARText + "<br />" + MRRText
       : ""
-
+    
   }
 
   @Action({rawError: true})
@@ -601,22 +599,22 @@ export class SummaryStore extends VuexModule {
     const hasProposedCSP = fairOpp.proposed_csp !== "";
     const hasJustification = fairOpp.justification !== "";
     const hasMinGovtRequirements = fairOpp.min_govt_requirements !== ""
-        && fairOpp.min_govt_requirements !== "The cloud service offerings must continue at their " +
+      && fairOpp.min_govt_requirements !== "The cloud offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
     return (hasNoFairOpp) ||
-        (hasProposedCSP
-            && hasJustification
-            && hasMinGovtRequirements
-            && await this.hasSoleSourceSituation(fairOpp)
-            && await this.hasProcurement(fairOpp)
-            && fairOpp.requirement_impact !== ""
-            && fairOpp.contract_action !== ""
-            && await this.hasMarketResearchEfforts(fairOpp)
-            && await this.hasMarketResearchConductors(fairOpp)
-            && await this.hasOtherFactsToSupportLogicalFollowOn(fairOpp)
-            && await this.hasActionsToRemoveBarriers(fairOpp)
-            && await this.hasCertificationPOCS(fairOpp)
-        );
+      (hasProposedCSP
+        && hasJustification 
+        && hasMinGovtRequirements
+        && await this.hasSoleSourceSituation(fairOpp)
+        && await this.hasProcurement(fairOpp)
+        && fairOpp.requirement_impact !== ""
+        && fairOpp.contract_action !== ""
+        && await this.hasMarketResearchEfforts(fairOpp)
+        && await this.hasMarketResearchConductors(fairOpp)
+        && await this.hasOtherFactsToSupportLogicalFollowOn(fairOpp)
+        && await this.hasActionsToRemoveBarriers(fairOpp)
+        && await this.hasCertificationPOCS(fairOpp)
+      );
   }
 
   @Action({rawError: true})
@@ -628,13 +626,13 @@ export class SummaryStore extends VuexModule {
     let isCauseMigrationSelection = false;
     if (causeMigrationSelection === "YES"){
       isCauseMigrationSelection =  fairOpp.cause_migration_estimated_cost !== ""
-          && ["0.00", "0", ""].every(
-            invalidValue => invalidValue !== fairOpp.cause_migration_estimated_cost?.trim())
-          && fairOpp.cause_migration_estimated_delay_amount !== ""
-          && fairOpp.cause_migration_estimated_delay_unit !== ""
+        && ["0.00", "0", ""].every(
+          invalidValue => invalidValue !== fairOpp.cause_migration_estimated_cost?.trim())
+        && fairOpp.cause_migration_estimated_delay_amount !== ""
+        && fairOpp.cause_migration_estimated_delay_unit !== ""
     } else if (causeMigrationSelection === "NO"){
       isCauseMigrationSelection =  true
-    }
+    } 
 
     // assess second question
     // 2. Are your Government engineers trained and certified in a specific cloud 
@@ -643,10 +641,10 @@ export class SummaryStore extends VuexModule {
     let isCauseGovtEngineersComplete = false;
     if (causeGovtEngineers === "YES"){
       isCauseGovtEngineersComplete = fairOpp.cause_govt_engineers_platform_name !==""
-          && fairOpp.cause_govt_engineers_insufficient_time_reason !== ""
-          && fairOpp.cause_govt_engineers_insufficient_time_reason !== "Due to ..., there is "
+        && fairOpp.cause_govt_engineers_insufficient_time_reason !== "" 
+        && fairOpp.cause_govt_engineers_insufficient_time_reason !== "Due to ..., there is "
           + "insufficient time to retrain and obtain certification in another "
-          + "platform/technology.";
+          + "platform/technology."; 
     } else if (causeGovtEngineers === "NO"){
       isCauseGovtEngineersComplete = true
     }
@@ -655,15 +653,15 @@ export class SummaryStore extends VuexModule {
     const causeProductFeaturePeculiarToCSP = fairOpp.cause_product_feature_peculiar_to_csp;
     let isCauseProductFeaturePeculiarToCSP = false;
     if (causeProductFeaturePeculiarToCSP === "YES"){
-      isCauseProductFeaturePeculiarToCSP =
-          fairOpp.cause_product_feature_type !== ""
-          && fairOpp.cause_product_feature_name !== ""
-          && fairOpp.cause_product_feature_why_essential !== ""
-          && fairOpp.cause_product_feature_why_essential !== "This product is essential to the "
+      isCauseProductFeaturePeculiarToCSP = 
+        fairOpp.cause_product_feature_type !== "" 
+        && fairOpp.cause_product_feature_name !== ""
+        && fairOpp.cause_product_feature_why_essential !== ""
+        && fairOpp.cause_product_feature_why_essential !== "This product is essential to the "
           +"Government’s requirements due to..."
-          && fairOpp.cause_product_feature_why_others_inadequate !== ""
-          && fairOpp.cause_product_feature_why_others_inadequate !== "Other similar products do not"
-          +" meet, nor can be modified to meet, the Government’s requirements due to..."
+        && fairOpp.cause_product_feature_why_others_inadequate !== ""
+        && fairOpp.cause_product_feature_why_others_inadequate !== "Other similar products do not "
+          +"meet, nor can be modified to meet, the Government’s requirements due to..."
     } else if (causeProductFeaturePeculiarToCSP === "NO"){
       isCauseProductFeaturePeculiarToCSP = true
     }
@@ -677,11 +675,11 @@ export class SummaryStore extends VuexModule {
     // validates why CSP is only source capable
     const whyCSPIsOnlyCapableSource = fairOpp.why_csp_is_only_capable_source !== "";
 
-    return isCauseMigrationSelection
-        && isCauseGovtEngineersComplete
-        && isCauseProductFeaturePeculiarToCSP
-        && isSoleSourceCause
-        && whyCSPIsOnlyCapableSource;
+    return isCauseMigrationSelection 
+      && isCauseGovtEngineersComplete
+      && isCauseProductFeaturePeculiarToCSP
+      && isSoleSourceCause
+      && whyCSPIsOnlyCapableSource;
   }
 
   @Action({rawError: true})
@@ -690,8 +688,8 @@ export class SummaryStore extends VuexModule {
     const procurementHasExistingEnv = fairOpp.procurement_has_existing_env === "NO"
       ? true
       : fairOpp.procurement_previous_impact !== "";
-    return procurementDiscussion
-        && procurementHasExistingEnv;
+    return procurementDiscussion 
+      && procurementHasExistingEnv;
   }
 
   @Action({rawError: true})
@@ -707,9 +705,9 @@ export class SummaryStore extends VuexModule {
     let hasResearchIsCSPOnlySourceCapable = false;
     if (researchIsCSPOnlySourceCapable === "YES"){
       const hasDates = (fairOpp.research_start_date !== "" && fairOpp.research_end_date !== "")
-          || fairOpp.research_start_date !== ""
+        || fairOpp.research_start_date !== ""
       hasResearchIsCSPOnlySourceCapable = hasDates
-          && fairOpp.research_supporting_data !== ""
+        && fairOpp.research_supporting_data !== ""
     } else if (researchIsCSPOnlySourceCapable === "NO"){
       hasResearchIsCSPOnlySourceCapable = true
     }
@@ -722,36 +720,36 @@ export class SummaryStore extends VuexModule {
     const hasProductOrFeature = fairOpp.cause_product_feature_type !== "";
     const researchReviewCatalogsReviewed = fairOpp.research_review_catalogs_reviewed;
     if (hasProductOrFeature){
-      const sameResearchDate
-          = fairOpp.research_review_catalogs_same_research_date;
+      const sameResearchDate  
+        = fairOpp.research_review_catalogs_same_research_date;
       let hasSameResearchDate = false;
       const researchReviewCatalogsReviewResults = fairOpp.research_review_catalogs_review_results;
       let hasReviewResults = false;
       if (researchReviewCatalogsReviewed === "YES"){
-        const hasDates =
-            (fairOpp.research_review_catalogs_start_date !== ""
-                && fairOpp.research_review_catalogs_end_date !== "") ||
+        const hasDates = 
+          (fairOpp.research_review_catalogs_start_date !== "" 
+            && fairOpp.research_review_catalogs_end_date !== "") ||
             fairOpp.research_review_catalogs_start_date !== ""
         hasSameResearchDate = sameResearchDate === "YES"
           ? true
-          : hasDates
-
-        hasReviewResults =
-            researchReviewCatalogsReviewResults !== ""
-            && researchReviewCatalogsReviewResults !== "The results have determined that no other "
+          : hasDates  
+  
+        hasReviewResults = 
+          researchReviewCatalogsReviewResults !== ""
+          && researchReviewCatalogsReviewResults !== "The results have determined that no other "
             + "offering is suitable as follows..."
-
-        hasResearchReviewCatalogsReviewed =
-            hasSameResearchDate
-            && hasReviewResults
+  
+        hasResearchReviewCatalogsReviewed = 
+          hasSameResearchDate
+          && hasReviewResults
       }
     }
     // if there is no contract action && both Q1 and Q2 === 'NO'
-    const isOtherTechniquesRequired =
-        !hasContractAction
-        && researchIsCSPOnlySourceCapable === "NO"
-        && researchReviewCatalogsReviewed === "NO";
-    const hasOtherTechniques = isOtherTechniquesRequired
+    const isOtherTechniquesRequired = 
+      !hasContractAction
+      && researchIsCSPOnlySourceCapable === "NO" 
+      && researchReviewCatalogsReviewed === "NO";
+    const hasOtherTechniques = isOtherTechniquesRequired 
       ? fairOpp.research_other_techniques_used !== ""
         && fairOpp.research_techniques_summary !== ""
       : true;
@@ -761,12 +759,12 @@ export class SummaryStore extends VuexModule {
     const noContractActionAndNoProduct = !hasContractAction && !hasProductOrFeature
     let hasResearchTechniquesSummary = true;
     if ((researchIsCSPOnlySourceCapable === "YES" || researchReviewCatalogsReviewed === "YES")
-        || (researchIsCSPOnlySourceCapable === "NO" && !noContractActionAndNoProduct)){
+      || (researchIsCSPOnlySourceCapable === "NO" && !noContractActionAndNoProduct)){
       // By default, `REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG` is selected.  
       // Validate that at least 2 items have been selected. 
       hasResearchTechniquesSummary = hasContractAction
         ? true
-        : (fairOpp.research_other_techniques_used as string).split(",").length>1
+        : (fairOpp.research_other_techniques_used as string).split(",").length>1 
           ? fairOpp.research_techniques_summary !== ""
           : true
     }
@@ -775,10 +773,10 @@ export class SummaryStore extends VuexModule {
     const otherOptionSysId = AcquisitionPackage.marketResearchTechniques?.find(
       (option) => option.technique_label.toUpperCase() === "OTHER"
     )?.sys_id as string;
-    const isOtherOptionSelected =
-        fairOpp.research_other_techniques_used?.includes(otherOptionSysId)
-          ? fairOpp.research_other_technique !== ""
-          : true
+    const isOtherOptionSelected = 
+      fairOpp.research_other_techniques_used?.includes(otherOptionSysId) 
+        ? fairOpp.research_other_technique !== ""
+        : true
 
     // validates market research efforts is generated or custom
     let hasMarketResearchDetails = false;
@@ -788,24 +786,24 @@ export class SummaryStore extends VuexModule {
 
     //todo eval to true
     return hasResearchIsCSPOnlySourceCapable
-        && hasResearchReviewCatalogsReviewed
-        && isOtherOptionSelected
-        && hasOtherTechniques
-        && hasMarketResearchDetails
-        && hasResearchTechniquesSummary;
+      && hasResearchReviewCatalogsReviewed
+      && isOtherOptionSelected
+      && hasOtherTechniques
+      && hasMarketResearchDetails
+      && hasResearchTechniquesSummary;
   }
 
   @Action({rawError: true})
   public async hasMarketResearchConductors(fairOpp: FairOpportunityDTO): Promise<boolean>{
     if (fairOpp.contract_action === "NONE"){
-      const conductors =
-          JSON.parse(fairOpp.market_research_conducted_by as string) as Record<string, string>[];
+      const conductors = 
+        JSON.parse(fairOpp.market_research_conducted_by as string) as Record<string, string>[];
       return conductors.length>0
-          && conductors.every((c) => Object.values(c).every(c=>c!==""))
+        && conductors.every((c) => Object.values(c).every(c=>c!==""))
     }
     return true;
   }
-
+  
   @Action({rawError: true})
   public async hasOtherFactsToSupportLogicalFollowOn(fairOpp: FairOpportunityDTO): Promise<boolean>{
     return fairOpp.other_facts_to_support_logical_follow_on === "NO"
@@ -821,27 +819,27 @@ export class SummaryStore extends VuexModule {
     const hasFollowOnRequirement = (followOnRequirement !== "" && followOnRequirement === "NO")
       ? true
       : fairOpp.barriers_follow_on_expected_date_awarded !=="" ;
-
+     
     //assess question two
     // 2. Is your agency pursuing training and/or certifications for Government engineers 
     //    in other technologies?
-    const isAgencyPursuingTrainingOrCerts =
-        fairOpp.barriers_agency_pursuing_training_or_certs !== "";
+    const isAgencyPursuingTrainingOrCerts = 
+      fairOpp.barriers_agency_pursuing_training_or_certs !== "";
 
     //assess question three
     // 3. Are you planning future development and enhancement of Infrastructure as a Service (IaaS)
     //    components that will shift to a containerized platform?
-    const isPlanningFutureDevleopment =
-        fairOpp.barriers_planning_future_development !== "";
+    const isPlanningFutureDevleopment = 
+      fairOpp.barriers_planning_future_development !== "";
 
     //assess question three
     // 4. Are you planning future development and enhancement of Infrastructure as a Service (IaaS)
     //    components that will shift to a containerized platform?
     const hasJA = fairOpp.barriers_j_a_prepared !== ""
-    const isJAPrepared =
-        hasJA && fairOpp.barriers_j_a_prepared === "NO"
-          ? true
-          : fairOpp.barriers_j_a_prepared_results !== "";
+    const isJAPrepared = 
+      hasJA && fairOpp.barriers_j_a_prepared === "NO"
+        ? true
+        : fairOpp.barriers_j_a_prepared_results !== "";
 
 
     // validates market research efforts is generated or custom
@@ -851,12 +849,12 @@ export class SummaryStore extends VuexModule {
       : fairOpp.barriers_plans_to_remove_custom !== ""
 
     return hasFollowOnRequirement
-        && isAgencyPursuingTrainingOrCerts
-        && isPlanningFutureDevleopment
-        && isJAPrepared
-        && hasPlansToRemoveBarriers
+      && isAgencyPursuingTrainingOrCerts
+      && isPlanningFutureDevleopment
+      && isJAPrepared
+      && hasPlansToRemoveBarriers
   }
-
+  
   @Action({rawError: true})
   public async hasCertificationPOCS(fairOpp: FairOpportunityDTO): Promise<boolean>{
     const reqPOCType = fairOpp.requirements_poc_type;
@@ -869,12 +867,12 @@ export class SummaryStore extends VuexModule {
       if (await this.isNewPOCValid(reqPOCId as string) === false){
         return false;
       };
-    }
+    } 
     if (technicalPOCType === "NEW"){
       if (await this.isNewPOCValid(technicalPOCId as string) === false){
         return false;
       };
-    }
+    } 
     return hasExistingReqPOC && hasExistingTechPOC
   }
 
@@ -933,10 +931,10 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setEvalPlanDescription(
     config:{
-        evalPlanStore:EvaluationPlanDTO,
-        isComplete: boolean,
-        fairOpp: string
-      }): Promise<string> {
+      evalPlanStore:EvaluationPlanDTO,
+      isComplete: boolean,
+      fairOpp: string
+    }): Promise<string> {
     const method = config.evalPlanStore.method;
     const selection = config.evalPlanStore.source_selection;
     const hasNoFairOpp = config.fairOpp === "NO_NONE"
@@ -961,7 +959,7 @@ export class SummaryStore extends VuexModule {
     case "SET_LUMP_SUM":
       description = (method ?? "") !==  ""
         ? "Purchase a set lump sum dollar amount from one CSP; " +
-            "award will be made to the “" + method + "” solution."
+          "award will be made to the “" + method + "” solution."
         : "";
       break;
     case "EQUAL_SET_LUMP_SUM":
@@ -970,34 +968,16 @@ export class SummaryStore extends VuexModule {
     }
     return description;
   }
-
-  @Action({rawError: true})
-  public async missingCustomDifferentiator(evalPlanStore:EvaluationPlanDTO): Promise<boolean> {
-    const differentiator = convertEvalPlanDifferentiatorToCheckbox(
-      EvaluationPlan.differentiatorData
-    );
-    const otherIdx = differentiator.findIndex(object => object.label.includes("Other"))
-    const otherDifferentiatorSysId = differentiator[otherIdx].value
-    const selectedDifferentiators = evalPlanStore.standard_differentiators?.split(',')
-    const selectedDifferentiatorsIncludesOther
-        = evalPlanStore.standard_differentiators?.includes(otherDifferentiatorSysId)
-    const customDifferentiators = evalPlanStore.custom_differentiators
-    if(selectedDifferentiators
-        && selectedDifferentiators?.length === 1
-        && selectedDifferentiatorsIncludesOther) {
-      return customDifferentiators === "";
-    }
-    return false;
-  }
-
+  
   @Action({rawError: true})
   public async isEvalPlanComplete(evalPlanStore:EvaluationPlanDTO): Promise<boolean> {
     const hasCustomSpecs = (evalPlanStore.has_custom_specifications ?? "") !== "";
     const hasStandardDifferentiators = (evalPlanStore.standard_differentiators ?? "") !==  "";
-    const hasBestUseOrLowestRiskMethod =
-        (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
+    const hasStandardSpecifications = (evalPlanStore.standard_specifications ?? "") !== "";
+    const hasBestUseOrLowestRiskMethod = 
+      (evalPlanStore.method === "BEST_USE" || evalPlanStore.method === "LOWEST_RISK")
     const hasLPTAMethod = evalPlanStore.method === "LPTA";
-    const needsCustomValue = await this.missingCustomDifferentiator(evalPlanStore)
+    
     let isComplete = false;
     switch(evalPlanStore.source_selection){
     case "NO_TECH_PROPOSAL":
@@ -1005,11 +985,11 @@ export class SummaryStore extends VuexModule {
       break;
     case "TECH_PROPOSAL":
       isComplete = hasLPTAMethod
-        ? hasCustomSpecs
-        : hasCustomSpecs && hasStandardDifferentiators && !needsCustomValue
+        ? hasCustomSpecs 
+        : hasCustomSpecs && hasStandardDifferentiators
       break;
     case "SET_LUMP_SUM":
-      isComplete = hasBestUseOrLowestRiskMethod;
+      isComplete = hasBestUseOrLowestRiskMethod && hasStandardSpecifications;
       break;
     case "EQUAL_SET_LUMP_SUM":
       isComplete = true;
@@ -1038,15 +1018,15 @@ export class SummaryStore extends VuexModule {
     await this.assessClassificationRequirements();
   }
 
-
+  
   @Action({rawError: true})
   public async assessPeriodOfPerformance(): Promise<void>{
     const PoP = Periods.periodOfPerformance;
     const description = await Periods.formatPeriodOfPerformance();
     const selectedPeriods = Periods.periods;
     const isTouched = selectedPeriods.length>0
-        || PoP?.pop_start_request !== ""
-        || PoP?.recurring_requirement !== ""
+      || PoP?.pop_start_request !== ""
+      || PoP?.recurring_requirement !== ""
     const isComplete = await this.isPOPComplete(selectedPeriods);
     const POPSummaryItem: SummaryItem = {
       title: "Period of Performance (PoP)",
@@ -1067,16 +1047,16 @@ export class SummaryStore extends VuexModule {
     selectedPeriods: PeriodDTO[]
   ): Promise<boolean>{
     const PoP = Periods.periodOfPerformance as PeriodOfPerformanceDTO;
-    const isRequestedStartDateValid =
-        (PoP?.pop_start_request === "YES" && PoP?.requested_pop_start_date !== "")
-        || PoP?.pop_start_request === "NO"
-    const isRecurringRequirementValid =
-        (isMRRToBeGenerated()
-            && PoP?.recurring_requirement === "YES"
-            && PoP?.is_requirement_follow_on_procurement_sole_sourced !== "")
-        || ( !isMRRToBeGenerated()
-            && PoP?.recurring_requirement === "YES")
-        || PoP?.recurring_requirement === "NO";
+    const isRequestedStartDateValid = 
+      (PoP?.pop_start_request === "YES" && PoP?.requested_pop_start_date !== "")
+      || PoP?.pop_start_request === "NO"
+    const isRecurringRequirementValid = 
+      (isMRRToBeGenerated() 
+        && PoP?.recurring_requirement === "YES"
+        && PoP?.is_requirement_follow_on_procurement_sole_sourced !== "")
+      || ( !isMRRToBeGenerated() 
+        && PoP?.recurring_requirement === "YES")
+      || PoP?.recurring_requirement === "NO";
     return isRequestedStartDateValid && isRecurringRequirementValid;
   }
 
@@ -1092,7 +1072,7 @@ export class SummaryStore extends VuexModule {
     const description = await this.setContractTypeDescription({isFfp, isTm});
 
     const isTouched = isFfp || isTm;
-
+  
     const isComplete = await this.setContractTypeIsComplete({
       isFfp, isTm, hasJustification
     });
@@ -1113,10 +1093,10 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setContractTypeIsComplete(
     contractType:{
-        isFfp:boolean,
+        isFfp:boolean, 
         isTm:boolean,
         hasJustification: boolean
-      }): Promise<boolean>{
+    }): Promise<boolean>{
     if (contractType.isFfp && contractType.isTm && contractType.hasJustification){
       return true;
     }
@@ -1132,9 +1112,9 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setContractTypeDescription(
     contractType:{
-        isFfp:boolean,
+        isFfp:boolean, 
         isTm:boolean
-      }): Promise<string>{
+    }): Promise<string>{
     if (contractType.isFfp && contractType.isTm){
       return "Firm-fixed-price (FFP) and Time-and-materials (T&M)"
     }
@@ -1146,7 +1126,7 @@ export class SummaryStore extends VuexModule {
     }
     return "";
   }
-
+  
   @Action({rawError: true})
   public async assessClassificationRequirements(): Promise<void>{
     const title = "Classification Requirements";
@@ -1155,8 +1135,8 @@ export class SummaryStore extends VuexModule {
     const description = await this.setClassificationRequirementsDesc(
       hasSecretOrTS);
     const isTouched = await this.isClassificationRequirementTouchedOrComplete(classReqs)
-        || await this.isSecurityRequirementsTouched(hasSecretOrTS)
-        || await this.isCDSTouched(hasSecretOrTS)
+      || await this.isSecurityRequirementsTouched(hasSecretOrTS)
+      || await this.isCDSTouched(hasSecretOrTS)
     const isComplete = await this.isClassificationRequirementsComplete(
       {hasSecretOrTS, classReqs}
     )
@@ -1175,19 +1155,19 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async isClassificationRequirementsComplete(
+  public async isClassificationRequirementsComplete( 
     config:{
-        hasSecretOrTS: boolean
-        classReqs:SelectedClassificationLevelDTO[]
-      }): Promise<boolean>{
+      hasSecretOrTS: boolean
+      classReqs:SelectedClassificationLevelDTO[]
+  }): Promise<boolean>{
     const hasSelectedClassLevels = config.classReqs.length>0;
     if (!config.hasSecretOrTS){
       return hasSelectedClassLevels;
     }
 
     return await hasSelectedClassLevels
-        && await this.isSecurityRequirementsComplete(config.hasSecretOrTS)
-        && await this.isCDSComplete(config.hasSecretOrTS);
+      && await this.isSecurityRequirementsComplete(config.hasSecretOrTS)
+      && await this.isCDSComplete(config.hasSecretOrTS);
   }
 
   @Action({rawError: true})
@@ -1195,7 +1175,7 @@ export class SummaryStore extends VuexModule {
     hasSecretOrTS: boolean
   ): Promise<string>{
     const cds = ClassificationRequirements.cdsSolution;
-
+   
     const missingCDSVerbiage = !(await this.isCDSComplete(hasSecretOrTS))
       ? "<br />(Cross Domain Solution Required)" : ""
 
@@ -1213,7 +1193,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isSecurityRequirementsTouched(
     hasSecretOrTS: boolean): Promise<boolean>{
-    return hasSecretOrTS
+    return hasSecretOrTS 
       ? ClassificationRequirements.securityRequirements?.length>0
       : false
   }
@@ -1221,7 +1201,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isSecurityRequirementsComplete(
     hasSecretOrTS: boolean): Promise<boolean>{
-    return hasSecretOrTS
+    return hasSecretOrTS 
       ? ClassificationRequirements.securityRequirements?.every(
         sr => sr.classification_information_type.length > 0
       )
@@ -1236,11 +1216,11 @@ export class SummaryStore extends VuexModule {
       "sys_",
       "acquisition_package"
     ]
-    return hasSecretOrTS
+    return hasSecretOrTS 
       ? await this.isTouched({
         object: ClassificationRequirements.cdsSolution as CrossDomainSolutionDTO,
-        keysToIgnore,
-      })
+        keysToIgnore, 
+      }) 
       : false;
   }
 
@@ -1268,7 +1248,7 @@ export class SummaryStore extends VuexModule {
       isCDSComplete = cds && cds.cross_domain_solution_required !== "NO"
         ? await this.isComplete({
           object: cds,
-          keysToIgnore,
+          keysToIgnore, 
         })
         : true
 
@@ -1279,7 +1259,7 @@ export class SummaryStore extends VuexModule {
       })
     }
 
-    return hasSecretOrTS
+    return hasSecretOrTS 
       ? isCDSComplete && isCDSDurationValid
       : true;
   }
@@ -1304,41 +1284,43 @@ export class SummaryStore extends VuexModule {
   public async assessProcurementHistory(): Promise<void> {
     const hasCurrentOrPreviousContract = AcquisitionPackage.hasCurrentOrPreviousContracts;
     const isExceptionToFairOpp =
-        AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity;
+      AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity;
     const currentContracts = AcquisitionPackage.currentContracts;
     let currentContractDetailsIsComplete = !!currentContracts
-        && currentContracts.length !== 0;
+      && currentContracts.length !== 0;
 
     if (currentContracts) {
       if (isExceptionToFairOpp !== "NO_NONE") {
         currentContracts?.forEach((contract) => {
           if (contract.contract_number === "" ||
-              contract.competitive_status === "" ||
-              contract.contract_order_expiration_date === "" ||
-              contract.contract_order_start_date === "" ||
-              contract.incumbent_contractor_name === "" ||
-              contract.business_size === "") currentContractDetailsIsComplete = false;
+            contract.competitive_status === "" ||
+            contract.contract_order_expiration_date === "" ||
+            contract.contract_order_start_date === "" ||
+            contract.incumbent_contractor_name === "" ||
+            contract.business_size === "") currentContractDetailsIsComplete = false;
         });
       } else {
         currentContracts?.forEach((contract) => {
           if (contract.contract_number === "" ||
-              contract.contract_order_expiration_date === "" ||
-              contract.incumbent_contractor_name === "") currentContractDetailsIsComplete = false;
+            contract.contract_order_expiration_date === "" ||
+            contract.incumbent_contractor_name === "") currentContractDetailsIsComplete = false;
         });
       }
     }
 
     const isTouched = hasCurrentOrPreviousContract !== ""
-        || (!!currentContracts && currentContracts.length > 0);
+      || (!!AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length > 0);
     const isComplete =  currentContractDetailsIsComplete
-        || hasCurrentOrPreviousContract === "NO";
+      || hasCurrentOrPreviousContract === "NO";
 
     const contractNumbers = currentContracts?.map(
       (contract) => contract.contract_number).join(", ");
     const prevContracts = currentContracts?.length === 1
       ? `${currentContracts?.length} previous contract:\n${contractNumbers}`
       : `${currentContracts?.length} previous contracts:\n${contractNumbers}`
-    const description = isTouched && currentContracts && currentContracts.length > 0?
+
+    const description = isTouched && currentContracts && currentContracts.length > 0
+      && currentContracts[0].contract_number ?
       hasCurrentOrPreviousContract === "YES"
         ? prevContracts
         : "No previous contracts"
@@ -1358,54 +1340,6 @@ export class SummaryStore extends VuexModule {
 
     await this.doSetSummaryItem(procurementHistorySummaryItem)
   }
-  @Action({rawError: true})
-  public async isCurrentEnvironmentComplete(
-    environmentInstances: CurrentEnvironmentInstanceDTO[]
-  ): Promise<boolean>{
-    const requiredFields = [
-      "instance_location",
-      "classification_level",
-      "current_usage_description",
-      "users_per_region",
-      "operating_system",
-      "licensing",
-      "number_of_vcpus",
-      "processor_speed",
-      "memory_amount",
-      "storage_type",
-      "storage_amount",
-      "performance_tier",
-      "number_of_instances",
-      "data_egress_monthly_amount",
-    ];
-    const results:boolean[] = []
-    for(const instance of environmentInstances){
-      const instanceKeys = Object.keys(instance)
-      const keysToIgnore = instanceKeys.filter(key => requiredFields.indexOf(key) === -1)
-      const complete = await this.isComplete({object:instance, keysToIgnore:keysToIgnore})
-      results.push(complete)
-    }
-    return results.every(value => value)
-  }
-
-  @Action({rawError: true})
-  public async sortDeployedInstances(
-    deployedInstances: string[]
-  ): Promise<string[]>{
-    const result:string[] = []
-    const unclassified = deployedInstances.findIndex(value => value === "Unclassified")
-    const secret = deployedInstances.findIndex(value => value === "Secret")
-    const topSecret = deployedInstances.findIndex(value => value === "Top Secret")
-    if(unclassified > -1){
-      result.push(deployedInstances[unclassified])
-    }if(secret > -1){
-      result.push(deployedInstances[secret])
-    }if(topSecret > -1){
-      result.push(deployedInstances[topSecret])
-    }
-    return result
-  }
-
   @Action({rawError: true})
   public async assessCurrentEnvironment(): Promise<void> {
     const classificationLevels = await ClassificationRequirements.getAllClassificationLevels()
@@ -1435,15 +1369,11 @@ export class SummaryStore extends VuexModule {
     }else if(envLocation === "CLOUD" && envCloudClass){
       locationHasClassification = envCloudClass?.length > 0
     }
-    const isCurrentEnvironmentComplete
-        = this.isCurrentEnvironmentComplete(currentEnvironmentInstances)
     const isTouched = currentEnvironment?.current_environment_exists !== "";
     const isComplete =  currentEnvironment?.current_environment_exists === "NO"
-        // eslint-disable-next-line max-len
-        || systemDocsComplete && migrationDocsComplete && locationHasClassification && await isCurrentEnvironmentComplete;
+    // eslint-disable-next-line max-len
+    || systemDocsComplete && migrationDocsComplete && locationHasClassification && currentEnvironmentInstances.length > 0;
     let description = ""
-    let showMoreData:Record<string, [string, number][]> = {}
-    const deployedLocations:string[] = []
     if(currentEnvironmentInstances.length){
       const onPremInstances:Record<string, number> = {}
       const cloudInstances:Record<string, number> = {}
@@ -1451,49 +1381,41 @@ export class SummaryStore extends VuexModule {
         const classification = classificationLevels
           .find(CL=> CL.sys_id === instance.classification_level)
         if(classification){
-          if(classification.display){
-            const classificationLocation = classification?.display.split("-")[0].trim()
-            if(!deployedLocations.includes(classificationLocation)){
-              deployedLocations.push(classificationLocation as string)
-            }
-          }
-          const classificationLabels: Record<string, Record<string, string>> = {
-            CLOUD: {
-              IL2: "Unclassified/IL2",
-              IL4: "Unclassified/IL4",
-              IL5: "Unclassified/IL5",
-              IL6: "Secret",
-              TS: "Top Secret",
-            },
-            ON_PREM: {
-              IL2: "Unclassified (DoD information approved for public release)",
-              IL4: "Unclassified (DoD CUI)",
-              IL5: "Unclassified (DoD CUI & National Security Systems)",
-              IL6: "Secret",
-              TS: "Top Secret",
-            },
-          }
+          const key = buildClassificationLabel(classification,"short")
           if(instance.instance_location==="CLOUD"){
-            // eslint-disable-next-line max-len
-            const convertedKey = classificationLabels["CLOUD"][classification.impact_level || classification.classification]
-            cloudInstances[convertedKey] = (cloudInstances[convertedKey] || 0) +1
+            cloudInstances[key] = (cloudInstances[key] || 0) +1
           }else{
-            // eslint-disable-next-line max-len
-            const convertedKey = classificationLabels["ON_PREM"][classification.impact_level || classification.classification]
-            onPremInstances[convertedKey] = (onPremInstances[convertedKey] || 0) +1
+            onPremInstances[key] = (onPremInstances[key] || 0) +1
           }
         }
       })
 
-      showMoreData = {
-        onPrem: Object.entries(onPremInstances),
-        cloud: Object.entries(cloudInstances)
-      }
       const envString = envLocation === "HYBRID"?"Hybrid"
         :envLocation === "CLOUD"?"Cloud":"On-premise"
-      const orderedDeployedInstances = await this.sortDeployedInstances(deployedLocations)
-      // eslint-disable-next-line max-len
-      description = `${envString} environment deployed in ${convertStringArrayToCommaList(orderedDeployedInstances, "and")}`
+      const startString = `${envString}`
+      const onPremString = Object.keys(onPremInstances).map(key => {
+        const instance = Number(onPremInstances[key]) > 1? "instances":"instance"
+        if(envString === "Hybrid"){
+          return `${onPremInstances[key]} on-premise ${instance} (${key})`
+        }
+        return `${onPremInstances[key]} ${instance} (${key})`
+      })
+      const cloudString = Object.keys(cloudInstances).map(key => {
+        const instance = Number(cloudInstances[key]) > 1? "instances":"instance"
+        if(envString === "Hybrid"){
+          return `${cloudInstances[key]} cloud ${instance} (${key})`
+        }
+        return `${cloudInstances[key]} ${instance} (${key})`
+      })
+      description += startString
+      if(envLocation === "HYBRID"){
+        description +=` environment:<br>${convertStringArrayToCommaList(cloudString,"and")}
+        ${convertStringArrayToCommaList(onPremString,"and")}`
+      }else if(envLocation === "ON_PREM"){
+        description +=` environment:<br>${convertStringArrayToCommaList(onPremString,"and")}`
+      }else if(envLocation === "CLOUD"){
+        description += ` environment:<br>${convertStringArrayToCommaList(cloudString,"and")}`
+      }
     }
     if(currentEnvironment?.current_environment_exists === "NO"){
       description = "No existing environment"
@@ -1503,9 +1425,8 @@ export class SummaryStore extends VuexModule {
       description,
       isComplete,
       isTouched,
-      showMoreData,
       hasDelete:false,
-      hasShowMore:currentEnvironment?.current_environment_exists !== "NO",
+      hasShowMore:false,
       routeName: "CurrentEnvironment",
       step: 4,
       substep: 2
@@ -1517,12 +1438,12 @@ export class SummaryStore extends VuexModule {
 
   //#region Step 5
 
-  /** assesses all selected service offerings and
+  /** assesses all selected service offerings and 
    * Anticipated Users and Data object
-   */
+  */
 
   /**
-   *
+   * 
    * @param dowObjects DOWServiceOfferingGroup[]
    * @returns string[]
    */
@@ -1532,18 +1453,18 @@ export class SummaryStore extends VuexModule {
     // validates dowObjects.otherOfferingData
     await this.validateAnticipatedUsersAndData();
     const dowObjects = await DescriptionOfWork.getDOWObject();
-    await dowObjects.forEach(async (dow)=>
+    await dowObjects.forEach(async (dow)=> 
     {
       const id = dow.serviceOfferingGroupId;
       const hasServiceOfferings = dow.serviceOfferings?.length > 0;
-      const hasOtherOfferings =
-          (dow.otherOfferingData as OtherServiceOfferingData[])?.length >0
+      const hasOtherOfferings = 
+        (dow.otherOfferingData as OtherServiceOfferingData[])?.length >0
       if (hasServiceOfferings){
         dow.serviceOfferings?.forEach(async (so)=>{
           return await this.isServiceOfferingDataObjComplete(so);
-        })
+        }) 
         dow.isComplete = dow.serviceOfferings.every(
-          vso => vso.isComplete
+          vso => vso.isComplete 
         )
       } else if (hasOtherOfferings){
         dow.otherOfferingData?.forEach(async (ood)=>{
@@ -1555,12 +1476,12 @@ export class SummaryStore extends VuexModule {
             })
         })
         dow.isComplete = dow.otherOfferingData?.every(
-          vso => vso.isComplete
+          vso => vso.isComplete 
         ) || false
       } else {
         dow.isComplete = false;
       }
-
+          
       await this.doSetSummaryItem(
         await this.createServiceOfferingSummaryItem(dow)
       );
@@ -1570,15 +1491,15 @@ export class SummaryStore extends VuexModule {
 
   /**
    *
-   * validates Anticipated Users and Data data in
-   * ClassificationRequirements.selectedClassificationLevels
+   * validates Anticipated Users and Data data in 
+   * ClassificationRequirements.selectedClassificationLevels 
    * store object & creates an Anticipated Users and Data summary item
    * in the Summary store
    */
   @Action({rawError: true})
   public async validateAnticipatedUsersAndData(): Promise<void>{
-    const classLevels =
-        await ClassificationRequirements.getSelectedClassificationLevels();
+    const classLevels = 
+      await ClassificationRequirements.getSelectedClassificationLevels();
     classLevels.forEach((level)=>{
       const data: Record<string, any> = _.clone(level);
       let additionalFields = [""]
@@ -1588,7 +1509,7 @@ export class SummaryStore extends VuexModule {
         "users_per_region",
         "increase_in_users",
         "data_increase"
-      ]
+      ] 
 
       if(data["increase_in_users"]==="YES"){
         additionalFields = [
@@ -1607,11 +1528,11 @@ export class SummaryStore extends VuexModule {
       level.isAnticipatedUsersAndDataIsComplete = requiredFields.every(f => {
         if (f === "increase_in_users" && data.increase_in_users === "YES"){
           return data.user_growth_estimate_percentage.length > 0 &&
-              data.user_growth_estimate_percentage[0] !== ""
+            data.user_growth_estimate_percentage[0] !== ""
         }
         if (f === "data_increase" && data.data_increase === "YES"){
           return data.data_growth_estimate_percentage.length > 0 &&
-              data.data_growth_estimate_percentage[0] !== ""
+            data.data_growth_estimate_percentage[0] !== ""
         }
         return data[f] !== ""
       })
@@ -1622,17 +1543,17 @@ export class SummaryStore extends VuexModule {
   }
 
   /**
-   *
+   * 
    * @param classLevels SelectedClassificationLevelDTO[]
-   * @returns  Anticipated Users and Data summaryItem
-   *
+   * @returns  Anticipated Users and Data summaryItem 
+   * 
    * creates a summary item for Anticipated Users and Data
    */
   @Action({rawError: true})
   public async createAnticipatedUsersAndDataSummaryItem(
     classLevels: SelectedClassificationLevelDTO[]
-  ):
-      Promise<SummaryItem>
+  ): 
+  Promise<SummaryItem>
   {
     const isComplete = classLevels.every(
       cl => cl.isAnticipatedUsersAndDataIsComplete
@@ -1650,18 +1571,18 @@ export class SummaryStore extends VuexModule {
   }
 
   /**
-   *
+   * 
    * @param dow DOWServiceOfferingGroup
    * @returns Summary Item for the service offering
    */
   @Action({rawError: true})
-  public async createServiceOfferingSummaryItem(dow: DOWServiceOfferingGroup):
-      Promise<SummaryItem>
+  public async createServiceOfferingSummaryItem(dow: DOWServiceOfferingGroup): 
+  Promise<SummaryItem>
   {
     const verbiageInfo =  await DescriptionOfWork.getServiceGroupVerbiageInfoWithGroupId(
       dow.serviceOfferingGroupId
     );
-    const title = verbiageInfo
+    const title = verbiageInfo 
       ? verbiageInfo.offeringName
       : toTitleCase(dow.serviceOfferingGroupId)
 
@@ -1679,10 +1600,10 @@ export class SummaryStore extends VuexModule {
 
   /**
    * created description text for the summary item
-   *
-   * @param serviceOfferingGroupId
-   * @returns
-   */
+   * 
+   * @param serviceOfferingGroupId 
+   * @returns 
+   */  
   @Action({rawError: true})
   public async getDOWSummaryDescription(dow: DOWServiceOfferingGroup): Promise<string> {
     const selectedClassLevelsForPP = dow.otherOfferingData?.map(
@@ -1695,14 +1616,14 @@ export class SummaryStore extends VuexModule {
   }
 
   /**
-   *
-   * @param title
-   * @returns (index of title + 1)
-   */
+     * 
+     * @param title 
+     * @returns (index of title + 1) 
+     */
   @Action({rawError: true})
   public async getServiceOfferingSubstep(
     title: string)
-      : Promise<number> {
+  : Promise<number> {
     return [
       'STORAGE',
       'DATABASE',
@@ -1724,14 +1645,14 @@ export class SummaryStore extends VuexModule {
     ].findIndex(serviceOfferingTitle => serviceOfferingTitle === title) + 1
   }
   /**
-   * validates the serviceOffering.classificationInstances
-   *
-   * @param serviceOffering
-   * @returns DOWServiceOffering
+   * validates the serviceOffering.classificationInstances 
+   * 
+   * @param serviceOffering 
+   * @returns DOWServiceOffering 
    */
   @Action({rawError: true})
   public async isServiceOfferingDataObjComplete(serviceOffering: DOWServiceOffering)
-      : Promise<DOWServiceOffering> {
+  : Promise<DOWServiceOffering> {
     serviceOffering.classificationInstances?.forEach(
       (instance) => {
         const data: Record<string, any> = _.clone(instance);
@@ -1740,7 +1661,7 @@ export class SummaryStore extends VuexModule {
           "entireDuration",
           "selectedPeriods",
           "classificationLevelSysId"
-        ]
+        ] 
         instance.isComplete = requiredFields.every(f => {
           if (f === "selectedPeriods"){
             return data.entireDuration === "NO"
@@ -1750,29 +1671,29 @@ export class SummaryStore extends VuexModule {
           return data[f] !== ""
         })
       });
-    serviceOffering.isComplete =
-        serviceOffering.classificationInstances?.every(
-          (ci => ci.isComplete)
-        ) && serviceOffering.classificationInstances.length>0
+    serviceOffering.isComplete = 
+      serviceOffering.classificationInstances?.every(
+        (ci => ci.isComplete)
+      ) && serviceOffering.classificationInstances.length>0
     return serviceOffering;
   }
 
   /**
-   * validates the otherServiceOfferingData
-   *
+   * validates the otherServiceOfferingData 
+   * 
    * @param attribs.otherOfferingData: OtherServiceOfferingData
    * @param attribs.id: string
    * @param attribs.assessSecurityRequirements: boolean
-   * @returns
+   * @returns 
    */
   @Action({rawError: true})
   public async isOtherOfferingDataObjComplete(
     attribs: {
-        otherOfferingData: OtherServiceOfferingData
-        id: string,
-        assessSecurityRequirements: boolean
-      })
-      : Promise<OtherServiceOfferingData> {
+      otherOfferingData: OtherServiceOfferingData
+      id: string,
+      assessSecurityRequirements: boolean
+    })
+    : Promise<OtherServiceOfferingData> {
     //eslint-disable-next-line prefer-const
     let incompleteOfferings = [""];
     let requiredFields = [""];
@@ -1781,12 +1702,12 @@ export class SummaryStore extends VuexModule {
     const isStorage = attribs.id === "STORAGE";
     const isPortabilityPlan = attribs.id === "PORTABILITY_PLAN";
     const isTraining = attribs.id === "TRAINING";
-    const isGeneralXaas = attribs.id === "GENERAL_XAAS";
+    const isGeneralXaas = attribs.id === "GENERAL_XAAS"; 
     const isAdvisoryAssistance = attribs.id === "ADVISORY_ASSISTANCE";
     const isHelpDesk = attribs.id === "HELP_DESK_SERVICES";
     const isDocumentation = attribs.id === "DOCUMENTATION_SUPPORT";
     const isGeneralCloudSupport = attribs.id === "GENERAL_CLOUD_SUPPORT";
-
+    
     const data: Record<string, any> = _.clone(attribs.otherOfferingData);
     let additionalFields:string[] = [];
     if(isCompute){
@@ -1872,9 +1793,9 @@ export class SummaryStore extends VuexModule {
     } else if (isPortabilityPlan) {
       requiredFields = ["classificationLevel"]
     } else if(
-      isAdvisoryAssistance
-        || isDocumentation
-        || isHelpDesk
+      isAdvisoryAssistance 
+        || isDocumentation 
+        || isHelpDesk 
         || isGeneralCloudSupport){
       requiredFields = [
         "descriptionOfNeed",
@@ -1882,10 +1803,10 @@ export class SummaryStore extends VuexModule {
         "entireDuration",
         "periodsNeeded",
         "classificationLevel"
-      ]
+      ] 
       // validate classifiedInformationTypes if classlevel is TS/S
       if (attribs.assessSecurityRequirements
-          && !isClassLevelUnclass(data["classificationLevel"])){
+        && !isClassLevelUnclass(data["classificationLevel"])){
         additionalFields = ["classifiedInformationTypes"];
       }
     }
@@ -1913,7 +1834,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessCOI(): Promise<void> {
     const contractConsiderations =
-        AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
+      AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
 
     const coi = contractConsiderations.potential_conflict_of_interest;
     const coiInfo = contractConsiderations.conflict_of_interest_explanation;
@@ -1942,7 +1863,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessPackagingPackingShipping(): Promise<void> {
     const contractConsiderations =
-        AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
+      AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
 
     const selections = [
       contractConsiderations.contractor_provided_transfer,
@@ -1952,8 +1873,8 @@ export class SummaryStore extends VuexModule {
     const isTouched = selections.includes('true');
     const explanation = contractConsiderations.packaging_shipping_other_explanation;
     const needsExplanation = selections[1] === 'true';
-    const description = isTouched
-      ? await this.getPackagingPackingShippingTitle(selections[2] === 'true')
+    const description = isTouched 
+      ? await this.getPackagingPackingShippingTitle(selections[2] === 'true') 
       : "";
     const isComplete = needsExplanation ?
       (isTouched && explanation !== undefined && explanation.length > 0) : isTouched;
@@ -1975,7 +1896,7 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async getPackagingPackingShippingTitle(isNone: boolean): Promise<string> {
-    return isNone
+    return isNone 
       ? 'No requirement for packaging, packing, and shipping.'
       : 'Effort requires CSP to comply with packaging, packing, and shipping instructions.'
   }
@@ -2004,7 +1925,7 @@ export class SummaryStore extends VuexModule {
     }
     const isTouched = isTravelTouched||travelInfo.length > 0
     const isComplete =  isTravelSkipped
-        || travelInfo.length > 0;
+      || travelInfo.length > 0;
     const travelSummaryItem: SummaryItem = {
       title: "Travel",
       description,
@@ -2033,17 +1954,17 @@ export class SummaryStore extends VuexModule {
       "potential_",
       "508",
       "acquisition",
-      "record_name",
+      "record_name", 
       "work_"
     ];
     await this.assessPII(objectKeys);
     await this.assessBAA(objectKeys);
     await this.assessFOIA(objectKeys);
     await this.assess508Standards(objectKeys);
-
+   
   }
 
-
+  
   @Action({rawError: true})
   public async assessPII(objectKeys: string[]): Promise<void>{
     const sensitiveInfo = AcquisitionPackage.sensitiveInformation as SensitiveInformationDTO;
@@ -2053,8 +1974,8 @@ export class SummaryStore extends VuexModule {
     );
     const monitor = {object: sensitiveInfo, keysToIgnore};
     const isTouched = await this.isTouched(monitor)
-    const isComplete =  monitor.object.pii_present === "NO"
-        || await this.isComplete(monitor);
+    const isComplete =  monitor.object.pii_present === "NO" 
+      || await this.isComplete(monitor);
     const standardsAndComplianceSummaryItem: SummaryItem = {
       title: "Personally Identifiable Information (PII)",
       description,
@@ -2073,7 +1994,7 @@ export class SummaryStore extends VuexModule {
   public async getPIIDescription(sensitiveInfo: SensitiveInformationDTO): Promise<string>{
     let desc = "";
     if (sensitiveInfo.pii_present === "YES"
-        && sensitiveInfo.system_of_record_name !== "" ){
+      && sensitiveInfo.system_of_record_name !== "" ){
       desc = "System of records: " + sensitiveInfo.system_of_record_name
     } else if (sensitiveInfo.pii_present === "NO"){
       desc = "Effort does not include a system of records on individuals."
@@ -2128,7 +2049,7 @@ export class SummaryStore extends VuexModule {
     const fOIAMonitor = {object: sensitiveInfo, keysToIgnore};
     const isTouched = await this.isTouched(fOIAMonitor)
     const isComplete = sensitiveInfo.potential_to_be_harmful === "NO"
-        || await this.isComplete(fOIAMonitor);
+      || await this.isComplete(fOIAMonitor);
     const standardsAndComplianceSummaryItem: SummaryItem = {
       title: "Public Disclosure of Information",
       description,
@@ -2147,10 +2068,10 @@ export class SummaryStore extends VuexModule {
   public async getFOIADescription(sensitiveInfo: SensitiveInformationDTO): Promise<string>{
     let desc = "";
     if (sensitiveInfo.potential_to_be_harmful === "YES"
-        && sensitiveInfo.foia_full_name !== ""
-        && sensitiveInfo.foia_email !== "" ){
-      desc = "FOIA Coordinator: " + sensitiveInfo.foia_full_name + "<br />"
-          + sensitiveInfo.foia_email
+      && sensitiveInfo.foia_full_name !== "" 
+      && sensitiveInfo.foia_email !== "" ){
+      desc = "FOIA Coordinator: " + sensitiveInfo.foia_full_name + "<br />"  
+        + sensitiveInfo.foia_email 
     } else if (sensitiveInfo.potential_to_be_harmful === "NO"){
       desc = "Disclosure is not harmful to the government."
     }
@@ -2167,9 +2088,9 @@ export class SummaryStore extends VuexModule {
     );
     const standardsMonitor = {object: sensitiveInfo, keysToIgnore};
     const isTouched = await this.isTouched(standardsMonitor)
-    const isComplete = (sensitiveInfo.section_508_sufficient === "NO"
-            && sensitiveInfo.accessibility_reqs_508 !== "")
-        || sensitiveInfo.section_508_sufficient === "YES"
+    const isComplete = (sensitiveInfo.section_508_sufficient === "NO" 
+      && sensitiveInfo.accessibility_reqs_508 !== "")
+      || sensitiveInfo.section_508_sufficient === "YES"
     const standardsAndComplianceSummaryItem: SummaryItem = {
       title: "Section 508 Standards",
       description,
@@ -2208,11 +2129,11 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async assessRequirementsCostEstimate(): Promise<void> {
     const data = IGCE.requirementsCostEstimate as RequirementsCostEstimateDTO;
-    const hasSupportingDocs = await this.hasSupportingIGCEDocumentation(data);
+    const hasSupportingDocs = await this.hasSupportingIGCEDocumentation(data); 
     const isTouched = await this.isRCETouched({data, hasSupportingDocs});
     const isComplete = await this.isRCEComplete({data});
     await this.getCostSummary(isComplete);
-
+   
     const requirementsCostEstimateSummaryItem: SummaryItem = {
       title: "Requirements Cost Estimate",
       description: await this.setRCEDescription({data, isComplete}),
@@ -2226,11 +2147,11 @@ export class SummaryStore extends VuexModule {
   };
 
   /**
-   *
-   * if summary step is complete, set store properties for
+   * 
+   * if summary step is complete, set store properties for 
    * total_price and base_year_price
-   *
-   * @param isComplete boolean - if true, make the API call
+   * 
+   * @param isComplete boolean - if true, make the API call 
    */
   @Action({rawError: true})
   public async getCostSummary(isComplete: boolean): Promise<void> {
@@ -2259,9 +2180,9 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setRCEDescription(
     rce:{
-        data: RequirementsCostEstimateDTO
-        isComplete: boolean
-      }): Promise<string> {
+      data: RequirementsCostEstimateDTO
+      isComplete: boolean
+    }): Promise<string> {
     let description = "";
     const baseYearTotal = toCurrencyString(rce.data.baseYearTotal as number, true)
     const grandTotal = toCurrencyString(rce.data.grandTotal as number, true)
@@ -2277,36 +2198,36 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isRCETouched(
     rce:{
-        data: RequirementsCostEstimateDTO
-        hasSupportingDocs: boolean
-      }): Promise<boolean> {
-    return rce.data.optimize_replicate.option !== ""
-        || rce.data.architectural_design_performance_requirements.option !== ""
-        || (IGCE.igceEstimateList.length > 0
-            && IGCE.igceEstimateList.every((ce) => ce.unit_price?.toString() !== "0"))
-        || rce.data.travel.option !== ""
-        || IGCE.trainingItems.some(item => item.costEstimateType !== "")
-        || rce.data.surge_requirements.capabilities !== ""
-        || rce.data.fee_specs.is_charged !== ""
-        || rce.data.how_estimates_developed.tools_used !== ""
-        || rce.data.how_estimates_developed.cost_estimate_description !== ""
-        || rce.data.how_estimates_developed.previous_cost_estimate_comparison.options !== ""
+      data: RequirementsCostEstimateDTO
+      hasSupportingDocs: boolean
+    }): Promise<boolean> {
+    return rce.data.optimize_replicate.option !== "" 
+      || rce.data.architectural_design_performance_requirements.option !== ""
+      || (IGCE.igceEstimateList.length > 0
+          && IGCE.igceEstimateList.every((ce) => ce.unit_price?.toString() !== "0"))
+      || rce.data.travel.option !== ""
+      || IGCE.trainingItems.some(item => item.costEstimateType !== "")
+      || rce.data.surge_requirements.capabilities !== ""
+      || rce.data.fee_specs.is_charged !== ""
+      || rce.data.how_estimates_developed.tools_used !== ""
+      || rce.data.how_estimates_developed.cost_estimate_description !== ""
+      || rce.data.how_estimates_developed.previous_cost_estimate_comparison.options !== ""
   }
 
   @Action({rawError: true})
   public async isRCEComplete (
     rce:{
-        data: RequirementsCostEstimateDTO
-      }): Promise<boolean> {
-
+      data: RequirementsCostEstimateDTO
+    }): Promise<boolean> {
+  
     return await this.hasCompletedReplicateOrOptimizeAction(rce.data)
-        && await this.hasCompletedArchitecturalDesigns(rce.data)
-        && await this.hasCompletedCostEstimates()
-        && await this.hasCompletedIGCETraining()
-        && await this.hasCompletedIGCETravel(rce.data)
-        && await this.hasCompletedSurgeRequirements(rce.data)
-        && await this.hasCompletedChargedFee(rce.data)
-        && await this.hasCompletedHowEstimatesDeveloped(rce.data)
+      && await this.hasCompletedArchitecturalDesigns(rce.data)
+      && await this.hasCompletedCostEstimates()
+      && await this.hasCompletedIGCETraining()
+      && await this.hasCompletedIGCETravel(rce.data)
+      && await this.hasCompletedSurgeRequirements(rce.data)
+      && await this.hasCompletedChargedFee(rce.data)
+      && await this.hasCompletedHowEstimatesDeveloped(rce.data)
   }
 
   @Action({rawError: true})
@@ -2333,21 +2254,21 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async hasCompletedCostEstimates(): Promise<boolean> {
     const estimates = IGCE.igceEstimateList;
-    const offerings =
-        DescriptionOfWork.DOWObject
-          .filter(dow=>["TRAINING", "TRAVEL"].every (off => off !== dow.serviceOfferingGroupId))
-          .reduce((acc,curr)=>acc + (curr.otherOfferingData?.length || 0), 0);
+    const offerings = 
+      DescriptionOfWork.DOWObject
+        .filter(dow=>["TRAINING", "TRAVEL"].every (off => off !== dow.serviceOfferingGroupId))
+        .reduce((acc,curr)=>acc + (curr.otherOfferingData?.length || 0), 0);
     if (offerings > estimates.length){
       return false;
     }
-
+    
     return estimates.every(
       (ce) => {
         return (ce.title === "PORTABILITY_PLAN" ? true : ce.description !== "")
-              && ce.title !== ""
-              && ["0", "0.00", ""].every(
-                invalidPrice => ce.unit_price?.toString() !== invalidPrice
-              )
+          && ce.title !== ""
+          && ["0", "0.00", ""].every(
+            invalidPrice => ce.unit_price?.toString() !== invalidPrice
+          )
       }
     )
   }
@@ -2357,18 +2278,18 @@ export class SummaryStore extends VuexModule {
     if (IGCE.trainingItems.length>0){
       const assessedTrainingItems = IGCE.trainingItems.map(
         (ti)=>{
-          const hasValidEstimatedTrainingPrice =
-                ["0", "0.00", ""].every(price => price !== ti.estimatedTrainingPrice);
+          const hasValidEstimatedTrainingPrice = 
+            ["0", "0.00", ""].every(price => price !== ti.estimatedTrainingPrice);
           return ti.costEstimateType === "ANNUAL_SUBSCRIPTION"
             ? hasValidEstimatedTrainingPrice
-            : hasValidEstimatedTrainingPrice
-                && ti.trainingOption !== ""
-                && ti.estimate.estimated_values !== ""
-                && ti.estimate.option !== "";
+            : hasValidEstimatedTrainingPrice 
+              && ti.trainingOption !== ""
+              && ti.estimate.estimated_values !== ""
+              && ti.estimate.option !== "";
         }
       )
       return assessedTrainingItems.every(ati => ati === true);
-    }
+    } 
     return true;
   }
 
@@ -2383,14 +2304,14 @@ export class SummaryStore extends VuexModule {
 
         return rce.travel.option === "SINGLE"
           ? estimatedValues.every((ev)=> (ev as number) > 0 )
-          : (estimatedValues.length === totalPop) // if MULTIPLE
+          : (estimatedValues.length === totalPop) // if MULTIPLE 
             ? estimatedValues.every((ev)=> (ev as number) >= 0 ) // multiple values can === 0
             : false
       }
       return false;
     }
     return false;
-
+    
   }
 
   @Action({rawError: true})
@@ -2418,7 +2339,7 @@ export class SummaryStore extends VuexModule {
     const howEstimatesDeveloped = rce.how_estimates_developed;
     const pcec =  howEstimatesDeveloped.previous_cost_estimate_comparison;
     const isHowEstimatesDevelopedValid = howEstimatesDeveloped.tools_used !== ""
-        && howEstimatesDeveloped.cost_estimate_description !== ""
+      && howEstimatesDeveloped.cost_estimate_description !== ""
 
     const isHowOtherEstimatesDeveloped = howEstimatesDeveloped.tools_used.includes("OTHER")
       ? howEstimatesDeveloped.other_tools_used !== ""
@@ -2427,10 +2348,10 @@ export class SummaryStore extends VuexModule {
     const isPreviousCostEstimateComparisonValid = pcec.options.includes("_THAN")
       ? (pcec.percentage as number) > 0
       : pcec.options.includes("SAME") ? true : false;
-
-    return isHowEstimatesDevelopedValid
-        && isHowOtherEstimatesDeveloped
-        && isPreviousCostEstimateComparisonValid;
+     
+    return isHowEstimatesDevelopedValid 
+      && isHowOtherEstimatesDeveloped
+      && isPreviousCostEstimateComparisonValid;
   }
 
 
@@ -2441,7 +2362,7 @@ export class SummaryStore extends VuexModule {
     const fsForm = FinancialDetails.fundingRequestFSForm as FundingRequestFSFormDTO;
     const mipr = FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO;
     const fairOpp =
-        (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity;
+      (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity;
     const hasFairOpp = ["NO_NONE", ""].every(noValue => noValue !== fairOpp );
     const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp};
     const isComplete =  await this.isFundingComplete(fundingDataObjs);
@@ -2460,11 +2381,11 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setFundingDescription(
     funding:{
-        fsForm: FundingRequestFSFormDTO,
-        request: FundingRequestDTO,
-        mipr: FundingRequestMIPRFormDTO,
-        isComplete: boolean
-      }): Promise<string>{
+      fsForm: FundingRequestFSFormDTO,
+      request: FundingRequestDTO,
+      mipr: FundingRequestMIPRFormDTO,
+      isComplete: boolean
+  }): Promise<string>{
     if (funding.request && funding.fsForm){
       const hasMIPRNumber = funding.mipr?.mipr_number !== ""
       const hasOrderNumber = funding.fsForm?.order_number !== ""
@@ -2472,7 +2393,7 @@ export class SummaryStore extends VuexModule {
       return funding.request.funding_request_type === "MIPR"
         ? (hasMIPRNumber ? "MIPR: " + funding.mipr.mipr_number  : "")
         : (hasGTCNumber ? "GT&C: " + funding.fsForm.gt_c_number + "<br />" : "")
-          + (hasOrderNumber ? "Order: " + funding.fsForm.order_number : "")
+            + (hasOrderNumber ? "Order: " + funding.fsForm.order_number : "")
     }
     return ""
   }
@@ -2480,25 +2401,25 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isFundingTouched(
     funding:{
-        request: FundingRequestDTO,
-        gInv: baseGInvoiceData,
-        fsForm: FundingRequestFSFormDTO,
-        mipr: FundingRequestMIPRFormDTO,
-        hasFairOpp: boolean
-      }): Promise<boolean>{
+      request: FundingRequestDTO,
+      gInv: baseGInvoiceData,
+      fsForm: FundingRequestFSFormDTO,
+      mipr: FundingRequestMIPRFormDTO,
+      hasFairOpp: boolean
+  }): Promise<boolean>{
     if (funding.request && funding.fsForm){
       const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
       const hasAppropriationOfFunds = funding.hasFairOpp
-        ? funding.request.appropriation_fiscal_year !== ""
+        ? funding.request.appropriation_fiscal_year !== "" 
           || funding.request.appropriation_funds_type !== ""
         : false
 
       return funding.request.funding_request_type !== ""
-          || funding.gInv.useGInvoicing !== ""
-          || funding.fsForm.order_number !== ""
-          || funding.fsForm.gt_c_number !== ""
-          || await this.isTouched({object: funding.fsForm, keysToIgnore}) //validates 2 docs
-          || hasAppropriationOfFunds
+        || funding.gInv.useGInvoicing !== ""
+        || funding.fsForm.order_number !== ""
+        || funding.fsForm.gt_c_number !== ""
+        || await this.isTouched({object: funding.fsForm, keysToIgnore}) //validates 2 docs
+        || hasAppropriationOfFunds
     }
     return false
   }
@@ -2507,12 +2428,12 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isFundingComplete(
     funding:{
-        request: FundingRequestDTO,
-        gInv: baseGInvoiceData,
-        fsForm: FundingRequestFSFormDTO,
-        mipr: FundingRequestMIPRFormDTO,
-        hasFairOpp: boolean
-      }): Promise<boolean>{
+      request: FundingRequestDTO,
+      gInv: baseGInvoiceData,
+      fsForm: FundingRequestFSFormDTO,
+      mipr: FundingRequestMIPRFormDTO,
+      hasFairOpp: boolean
+  }): Promise<boolean>{
     if (funding.request && funding.fsForm){
       let hasAppropriationOfFunds = false;
       let isComplete = false;
@@ -2524,16 +2445,16 @@ export class SummaryStore extends VuexModule {
         });
       } else if (funding.request.funding_request_type === "MIPR"){
         isComplete = await this.isMIPRComplete(funding.mipr);
-      }
+      } 
 
       hasAppropriationOfFunds = funding.hasFairOpp
-        ? funding.request.appropriation_fiscal_year !== ""
+        ? funding.request.appropriation_fiscal_year !== "" 
           && funding.request.appropriation_funds_type !== ""
         : true
 
-      return isComplete
-          && hasAppropriationOfFunds;
-    }
+      return isComplete 
+        && hasAppropriationOfFunds;
+    } 
     return false;
   }
 
@@ -2541,14 +2462,14 @@ export class SummaryStore extends VuexModule {
   public async isMIPRComplete(mipr: FundingRequestMIPRFormDTO): Promise<boolean>{
     return await this.isComplete({object: mipr, keysToIgnore: ["sys_"]})
   }
-
+  
   @Action({rawError: true})
   public async isFSFormComplete(
     funding:{
-        fsForm: FundingRequestFSFormDTO,
-        gInv: baseGInvoiceData,
-        request: FundingRequestDTO,
-      }
+      fsForm: FundingRequestFSFormDTO,
+      gInv: baseGInvoiceData,
+      request: FundingRequestDTO,
+  }
   ): Promise<boolean>{
     let isComplete = false;
     if (funding.gInv.useGInvoicing === "YES"){
@@ -2556,8 +2477,8 @@ export class SummaryStore extends VuexModule {
     } else if (funding.gInv.useGInvoicing === "NO"){
       const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600"))
       isComplete =  funding.fsForm.order_number !== ""
-          && funding.fsForm.gt_c_number !== ""
-          && await this.isComplete({object: funding.fsForm, keysToIgnore}) //validates 2 docs
+        && funding.fsForm.gt_c_number !== ""
+        && await this.isComplete({object: funding.fsForm, keysToIgnore}) //validates 2 docs 
     }
     return isComplete
   }
@@ -2566,8 +2487,8 @@ export class SummaryStore extends VuexModule {
   public async assessIncrementalFunding(): Promise<void> {
     const req = FinancialDetails.fundingRequirement as FundingRequirementDTO;
     const poc = AcquisitionPackage.financialPocInfo as ContactDTO;
-    const isPopBaseLessThanNineMonths =
-        AcquisitionPackage.totalBasePoPDuration >0 && AcquisitionPackage.totalBasePoPDuration <= 270
+    const isPopBaseLessThanNineMonths = 
+      AcquisitionPackage.totalBasePoPDuration >0 && AcquisitionPackage.totalBasePoPDuration <= 270
     const fundingDataObjects = {req, poc, isPopBaseLessThanNineMonths}
     const isTouched = await this.isIncrementalFundingTouched(fundingDataObjects);
     const isComplete = await this.isIncrementalFundingComplete(fundingDataObjects);
@@ -2588,12 +2509,12 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async setIncrementalFundingDescription(
     funding:{
-        poc: ContactDTO,
-        req: FundingRequirementDTO,
-        isComplete: boolean,
-        isTouched: boolean,
-        isPopBaseLessThanNineMonths: boolean
-      }): Promise<string> {
+      poc: ContactDTO,
+      req: FundingRequirementDTO,    
+      isComplete: boolean,
+      isTouched: boolean,
+      isPopBaseLessThanNineMonths: boolean
+    }): Promise<string> {  
     if (funding.req){
       const incFunding = funding.req.incrementally_funded;
       let description = "";
@@ -2604,10 +2525,10 @@ export class SummaryStore extends VuexModule {
       } else if (funding.isTouched && !funding.isComplete && incFunding==="YES"){
         description =  "Requesting to incrementally fund requirement";
       } else if (funding.isComplete && incFunding === "YES"){
-        description =
-            "<p class='mb-8'>Requesting to incrementally fund requirement</p>" +
-            "Financial POC: " + funding.poc.first_name + " " + funding.poc.last_name + "<br>" +
-            funding.poc.email
+        description = 
+          "<p class='mb-8'>Requesting to incrementally fund requirement</p>" + 
+          "Financial POC: " + funding.poc.first_name + " " + funding.poc.last_name + "<br>" +
+          funding.poc.email
       }
       return description;
     }
@@ -2617,10 +2538,10 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isIncrementalFundingTouched(
     funding:{
-        req: FundingRequirementDTO,
-        poc: ContactDTO,
-        isPopBaseLessThanNineMonths: boolean
-      }): Promise<boolean> {
+      req: FundingRequirementDTO,
+      poc: ContactDTO,
+      isPopBaseLessThanNineMonths: boolean
+    }): Promise<boolean> {
     if (funding.req){
       return funding.isPopBaseLessThanNineMonths
         ? true
@@ -2636,10 +2557,10 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isIncrementalFundingComplete(
     funding:{
-        req: FundingRequirementDTO,
-        poc: ContactDTO,
-        isPopBaseLessThanNineMonths: boolean
-      }): Promise<boolean> {
+      req: FundingRequirementDTO,
+      poc: ContactDTO,
+      isPopBaseLessThanNineMonths: boolean
+    }): Promise<boolean> {
     if(funding.req){
       const incrementallyFundedValue = funding.req.incrementally_funded;
       if (funding.isPopBaseLessThanNineMonths){
@@ -2659,9 +2580,9 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async hasCompleteIncrementalFundingAndPOC(
     funding:{
-        req: FundingRequirementDTO,
-        poc: ContactDTO
-      }): Promise<boolean> {
+      req: FundingRequirementDTO,
+      poc: ContactDTO
+    }): Promise<boolean> {
 
     // determines if fundingIncrements is valid
     const isFundingIncrementsComplete = (FinancialDetails.fundingIncrements.length > 0
@@ -2671,10 +2592,10 @@ export class SummaryStore extends VuexModule {
     // determines if POC is valid
     let isPOCComplete = false;
     isPOCComplete = funding.poc.first_name !== ""
-        && funding.poc.last_name !== ""
-        && funding.poc.phone !== ""
-        && funding.poc.email !== ""
-
+      && funding.poc.last_name !== ""
+      && funding.poc.phone !== ""
+      && funding.poc.email !== ""
+    
     if (funding.poc.role === "MILITARY"){
       isPOCComplete = isPOCComplete && funding.poc.rank_components !== ""
     }
@@ -2687,9 +2608,9 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isDurationValid(
     duration: {
-        isNeeded: string,
-        selectedPeriods: string | string[]
-      }): Promise<boolean>{
+      isNeeded: string, 
+      selectedPeriods: string | string[]
+  }): Promise<boolean>{
     return duration.isNeeded.toUpperCase() === "NO"
       ? duration.selectedPeriods.length !== 0
       : true
@@ -2698,9 +2619,9 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isTouched(
     config:{
-        object: object
-        keysToIgnore: string[]
-      }): Promise<boolean>{
+    object: object
+    keysToIgnore: string[]
+  }): Promise<boolean>{
     return  config.object && await Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
         const dynamicKey = key as keyof unknown;
@@ -2713,9 +2634,9 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async isComplete(
     config:{
-        object: object
-        keysToIgnore: string[],
-      }): Promise<boolean>{
+      object: object
+      keysToIgnore: string[],
+    }): Promise<boolean>{
     return  config.object && Object.keys(config.object).filter((key: string) => {
       if (config.keysToIgnore.every(ignoredKey => key.indexOf(ignoredKey)===-1)){
         const dynamicKey = key as keyof unknown;
@@ -2724,7 +2645,7 @@ export class SummaryStore extends VuexModule {
       }
     }).length === 0;
   }
-
+  
   @Mutation
   public async doSetSummaryItem(summaryItem:SummaryItem):Promise<void>{
     if (summaryItem){
@@ -2741,3 +2662,4 @@ export class SummaryStore extends VuexModule {
 
 const Summary = getModule(SummaryStore);
 export default Summary;
+

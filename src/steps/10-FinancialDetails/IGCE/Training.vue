@@ -127,7 +127,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { PeriodDTO } from "@/api/models";
+import { PeriodDTO, TrainingEstimateDTO } from "@/api/models";
 import Periods from "@/store/periods";
 import IGCE from "@/store/IGCE";
 import DescriptionOfWork from "@/store/descriptionOfWork";

@@ -100,7 +100,7 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
-import { SensitiveInformationDTO } from "@/api/models"
+import { ReferenceColumn, SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 import {RadioButton} from "../../../types/Global";

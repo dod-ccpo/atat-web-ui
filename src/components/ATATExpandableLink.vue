@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {Component, Prop, PropSync} from "vue-property-decorator";
+import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
 
 @Component({})
 export default class ExpandableLink extends Vue {

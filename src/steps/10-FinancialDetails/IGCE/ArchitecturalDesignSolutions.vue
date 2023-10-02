@@ -55,6 +55,7 @@ import { hasChanges } from "@/helpers";
 import Periods from "@/store/periods";
 import { EstimateOptionValueDTO, PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
 
 @Component({

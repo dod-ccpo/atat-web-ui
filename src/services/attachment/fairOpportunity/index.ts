@@ -1,7 +1,8 @@
 /* eslint-disable camelcase */
 import {AttachmentDTO, FairOpportunityDTO} from "@/api/models";
-import {AttachmentServiceCallbacks} from "..";
+import {AttachmentServiceCallbacks, RecordManager} from "..";
 import {AttachmentServiceBase} from "../base";
+import AcquisitionPackage from "@/store/acquisitionPackage/index";
 import {FairOpportunityApi} from "@/api/fairOpportunity";
 
 // EJY IS THIS FILE NEEDED NOW?

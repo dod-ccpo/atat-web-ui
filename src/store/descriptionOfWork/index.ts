@@ -10,12 +10,15 @@ import rootStore from "../index";
 import api from "@/api";
 import {
   ArchitecturalDesignRequirementDTO,
+  BaseTableDTO,
   ClassificationInstanceDTO,
+  CloudServiceProviderDTO,
   CloudSupportEnvironmentInstanceDTO,
   ComputeEnvironmentInstanceDTO,
   DatabaseEnvironmentInstanceDTO,
+  EnvironmentInstanceDTO,
   PeriodDTO,
-  ReferenceColumn,
+  ReferenceColumn, SelectedClassificationLevelDTO,
   SelectedServiceOfferingDTO,
   ServiceOfferingDTO,
   StorageEnvironmentInstanceDTO,
@@ -40,7 +43,7 @@ import {
   TravelSummaryTableData,
 } from "../../../types/Global";
 
-import _, { last } from "lodash";
+import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import AcquisitionPackage from "../acquisitionPackage";
 import Periods from "../periods";
@@ -52,6 +55,7 @@ import {
 } from "@/helpers";
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import { TableApiBase } from "@/api/tableApiBase";
 
 
 // Classification Proxy helps keep track of saved

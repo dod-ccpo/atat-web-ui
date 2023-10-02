@@ -177,7 +177,7 @@ import { routeNames } from "../../../router/stepper"
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
-import classificationRequirements 
+import classificationRequirements, { isClassLevelUnclass } 
   from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
@@ -187,8 +187,10 @@ import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
-import { getIdText, toTitleCase } from "@/helpers";
+import { convertSystemChoiceToSelect, getIdText, toTitleCase } from "@/helpers";
+import ClassificationRequirements from "@/store/classificationRequirements";
 import Summary, { getSummaryItemsforStep } from "@/store/summary";
+import { title } from "process";
 // import router from "@/router";
 
 @Component({

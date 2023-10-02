@@ -97,7 +97,7 @@ describe("Testing index Component", () => {
   it("clicks meatball menu - Leave portfolio", async () => {
     await wrapper.setData({ showLeavePortfolioModal: false })
     await wrapper.vm.cardMenuClick({action: menuActions.leavePortfolio});
-    expect(wrapper.emitted('openLeavePortfolioModal')).toBeTruthy();
+    expect(await wrapper.vm.$data.showLeavePortfolioModal).toBeTruthy();
   });
 
   it("clicks meatball menu - Email portfolio managers", async () => {

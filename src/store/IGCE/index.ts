@@ -18,7 +18,8 @@ import {
   ContractTypeDTO,
   TrainingEstimateDTO, ReferenceColumn, CrossDomainSolutionDTO
 } from "@/api/models";
-import { currencyStringToNumber, getStringFromReferenceColumn } from "@/helpers";
+import { currencyStringToNumber, getStringFromReferenceColumn, toTitleCase } from "@/helpers";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {

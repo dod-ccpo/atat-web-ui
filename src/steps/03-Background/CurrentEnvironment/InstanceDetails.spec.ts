@@ -183,10 +183,10 @@ describe("Testing Classification Level Page", () => {
     it("tests loadOnEnter function", async () => {
       classificationRequirements.getAllClassificationLevels = jest.fn();
       CurrentEnvironment.getCurrentEnvInstance = jest.fn().mockResolvedValue({
-        instance_location:"CLOUD",
-        sys_id: "1",
-        is_traffic_spike_event_based: "YES",
-        is_traffic_spike_period_based: "YES"
+          instance_location:"CLOUD",
+          sys_id: "1",
+          is_traffic_spike_event_based: "YES",
+          is_traffic_spike_period_based: "YES"
       });
 
       await wrapper.vm.loadOnEnter();

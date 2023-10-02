@@ -31,6 +31,7 @@ import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
+import { PackageSummaryStore } from "@/store/packageSummary";
 import { SelectData } from "../../../types/Global";
 @Component({
   components:{

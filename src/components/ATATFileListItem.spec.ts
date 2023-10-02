@@ -3,6 +3,7 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import ATATFileListItem from "@/components/ATATFileListItem.vue";
+import { idText } from "typescript";
 Vue.use(Vuetify);
 
 const uploadedFileObj = {

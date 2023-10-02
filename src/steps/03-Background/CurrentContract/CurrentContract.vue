@@ -32,12 +32,13 @@ import { Component, Mixins } from "vue-property-decorator";
 import CurrentContractOptions from "./components/CurrentContractOptions.vue"
 
 import AcquisitionPackage, 
-{initialCurrentContract} from "@/store/acquisitionPackage";
+{initialCurrentContract, StoreProperties} from "@/store/acquisitionPackage";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import Steps from "@/store/steps";
+import { routeNames } from "@/router/stepper";
 import { CurrentContractRouteResolver } from "@/router/resolvers";
 
 @Component({

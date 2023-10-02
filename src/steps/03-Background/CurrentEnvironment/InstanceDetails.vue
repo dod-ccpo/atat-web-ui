@@ -148,6 +148,7 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import AdditionalInfo from "@/components/DOW/AdditionalInfo.vue";
 import CurrentUsage from "@/components/DOW/CurrentUsage.vue";
@@ -400,9 +401,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
       this.classificationRadioOptions = buildClassificationCheckboxList(
         filteredClassificationObjects, "", false, true, "short"
       );
-      if(!envClassificationLevelSysIds.includes(this.instanceData.classification_level)){
-        this.instanceData.classification_level = ""
-      }
+
       this.setClassificationLabels();
     }   
   }

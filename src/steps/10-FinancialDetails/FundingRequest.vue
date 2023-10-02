@@ -84,6 +84,7 @@ import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue
 import { hasChanges } from "@/helpers";
 import FinancialDetails from "@/store/financialDetails";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { de } from "date-fns/locale";
 
 @Component({
   components: {

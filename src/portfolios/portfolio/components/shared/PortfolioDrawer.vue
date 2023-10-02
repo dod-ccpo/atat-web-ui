@@ -334,9 +334,10 @@ import {createDateStr, getStatusChipBgColor, hasChanges} from "@/helpers";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
-import { UserDTO } from "@/api/models";
+import { EnvironmentDTO, UserDTO } from "@/api/models";
 import AppSections from "@/store/appSections";
 import Home from "@/home/Index.vue";
+import Portfolios from "@/portfolios/Index.vue";
 
 interface member extends User {
   menuItems?: SelectData[];
@@ -511,7 +512,7 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public getMemberMenuItems(member: member): SelectData[] {
-    const menuItems = _.cloneDeep(this.memberMenuItems);
+    let menuItems = _.cloneDeep(this.memberMenuItems);
     if (member.email === this.currentUser.email) {
       const removeIndex = menuItems.findIndex((obj) => obj.value === "Remove");
       menuItems[removeIndex].text = "Leave this portfolio";

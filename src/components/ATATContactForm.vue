@@ -173,6 +173,7 @@ import {
   RankData,
   SelectData
 } from "../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import { convertSystemChoiceToSelect } from "@/helpers";
 
 @Component({

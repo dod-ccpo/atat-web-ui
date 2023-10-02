@@ -13,8 +13,7 @@ describe("Test suite: TechProposal: BVTO", () => {
   const customText = randomString(5);
   const pt = "TC-Step-2-FairOpp-None-BVTO-" + randomAlphaNumeric(5);
   const scope = "EvaluationCriteria-FairOpp-BVTO" + randomString(5);
-  const evalPlanDescriptionText = "Technical proposal required;"+
-  " award will be made on a BVTO basis.";
+  const evalPlanDescriptionText = `Technical proposal required; award will be made on a BVTO basis.`;
 
   beforeEach(() => {
 

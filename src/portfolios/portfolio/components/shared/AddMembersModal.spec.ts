@@ -69,7 +69,7 @@ describe("Testing AddMembersModal", () => {
       );
     await PortfolioData.setCurrentPortfolio({ sysId: "2134242" })
     expect (doSetCurrentPortfolioMock).toHaveBeenCalled();
-  });
+ });
 
   it("validates email address - missing domain and @ symbol", async () => {
     wrapper.vm.$data.enteredEmails = [{ email: "", isValid: false }];

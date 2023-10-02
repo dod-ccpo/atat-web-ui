@@ -2,16 +2,18 @@
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
 import {
+  ArchitecturalDesignRequirementDTO,
   CurrentEnvironmentDTO, 
   CurrentEnvironmentInstanceDTO, 
   ReferenceColumn
 } from "@/api/models";
-import {nameofProperty, storeDataToSession} from "@/store/helpers";
+import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
 import _ from "lodash";
 import any = jasmine.any;
 import { AxiosRequestConfig } from "axios";
+import AcquisitionPackage from ".";
 
 const ATAT_CURRENT_ENVIRONMENT_KEY = "ATAT_CURRENT_ENVIRONMENT_KEY";
 

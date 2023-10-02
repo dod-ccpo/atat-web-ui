@@ -5,7 +5,9 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import PortfolioDrawer from "@/portfolios/portfolio/components/shared/PortfolioDrawer.vue";
 import PortfolioData from "@/store/portfolio";
-import { SelectData } from "types/Global";
+import { SelectData, User } from "types/Global";
+import { Statuses } from "@/store/acquisitionPackage";
+import TaskOrder from "@/store/taskOrder";
 Vue.use(Vuetify);
 
 describe("Testing Portfolio Drawer component", () => {

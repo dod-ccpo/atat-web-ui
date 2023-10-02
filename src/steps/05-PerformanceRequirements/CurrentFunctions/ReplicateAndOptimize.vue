@@ -60,7 +60,7 @@
                 <p class="mb-4">
                   During the solicitation process, Cloud Service Providers (CSPs) will
                   be asked to reference the instance details you previously provided
-                  within the Background section and deliver a proposal based on
+                  within the Background section and deliver a quote/proposal based on
                   your choice to either “replicate” or “optimize” your current functions.
                 </p>
                 <ul>

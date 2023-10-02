@@ -1,4 +1,5 @@
-import { getModule, Module, VuexModule } from "vuex-module-decorators";
+import { Component } from "vue";
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 
 @Module({

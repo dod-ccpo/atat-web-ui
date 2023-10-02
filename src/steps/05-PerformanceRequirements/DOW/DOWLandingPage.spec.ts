@@ -3,8 +3,10 @@ import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import DOWLandingPage from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
-
-
+import CurrentEnvironment, {
+  defaultCurrentEnvironment
+} from "@/store/acquisitionPackage/currentEnvironment";
+import currentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 Vue.use(Vuetify);

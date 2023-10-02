@@ -61,6 +61,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import {FairOpportunityDTO, PeriodOfPerformanceDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
+import PeriodOfPerformance from "@/components/icons/PeriodOfPerformance.vue";
 import Periods  from "@/store/periods";
 
 @Component({
@@ -157,7 +158,7 @@ export default class MRRNeed extends Mixins(SaveOnLeave) {
    */
   public async updatePeriodOfPerformance(itemSelected: string):Promise<void>{
     if (itemSelected === "NONE"){
-      const PoP = await Periods.getPeriodOfPerformance() as PeriodOfPerformanceDTO;
+      let PoP = await Periods.getPeriodOfPerformance() as PeriodOfPerformanceDTO;
       PoP.is_requirement_follow_on_procurement_sole_sourced = "";
       await Periods.setPeriodOfPerformance(PoP);
     }

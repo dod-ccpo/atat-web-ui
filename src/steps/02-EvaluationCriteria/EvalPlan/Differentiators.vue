@@ -107,7 +107,7 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
       this.customDifferentiators = [];
     }
     this.customDiffsOptional = newVal.length > 1;
-    if (this.customDifferentiators.length === 0) {
+    if (newVal.length === 1 && this.customDifferentiators.length === 0) {
       this.customDifferentiators.push("");
     }
   }
@@ -129,9 +129,7 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.evalPlan = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);
-      if(this.evalPlan.standard_differentiators){
-        this.selectedDifferentiators = this.evalPlan.standard_differentiators?.split(",")
-      }
+      this.selectedDifferentiators = this.evalPlan.standard_differentiators?.split(",") || [];
       this.customDifferentiators = this.evalPlan.custom_differentiators?.split(",") || [];
     }
   }

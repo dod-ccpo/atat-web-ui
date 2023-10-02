@@ -6,7 +6,7 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Chart, { ChartData } from "chart.js/auto";
+import Chart, { ChartData, ChartOptions } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
 @Component({})

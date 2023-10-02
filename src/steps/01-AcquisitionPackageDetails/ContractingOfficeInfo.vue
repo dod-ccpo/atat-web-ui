@@ -79,8 +79,9 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import {convertSystemChoiceToSelect, convertAgencyRecordToSelect } from "@/helpers";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -92,6 +93,7 @@ import { RadioButton, SelectData } from "types/Global";
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { AddressDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
 
 

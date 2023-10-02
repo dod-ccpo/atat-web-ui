@@ -6,6 +6,7 @@ import { DefaultProps } from "vue/types/options";
 import SurgeCapabilities from "@/steps/10-FinancialDetails/IGCE/SurgeCapabilities.vue";
 import validators from "@/plugins/validation"
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import IGCEStore  from "@/store/IGCE";
 Vue.use(Vuetify);
 
 describe("Testing SurgeCapabilities Component", () => {

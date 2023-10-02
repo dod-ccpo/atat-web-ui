@@ -127,6 +127,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import { User } from "../../../types/Global";
+import _ from "lodash";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import UserManagement from "@/store/user/userManagement";
 import AcquisitionPackage from "@/store/acquisitionPackage";

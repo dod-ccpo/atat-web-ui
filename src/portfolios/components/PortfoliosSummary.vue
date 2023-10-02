@@ -98,7 +98,6 @@
           :isHaCCAdmin="isHaCCAdmin"
           @leavePortfolio="leavePortfolio"
           @openArchivePortfolioModal="openArchivePortfolioModal"
-          @openLeavePortfolioModal="openLeavePortfolioModal"
           @openTOModal="openTOModal"
           :isHomeView="isHomeView"
         />
@@ -133,14 +132,6 @@
       @cancelClicked="closeArchivePortfolioModal"
     />
 
-    <LeavePortfolioModal
-      :showModal="showLeavePortfolioModal" 
-      :portfolioName="getCurrentPortfolioTitle"
-      @okClicked="leavePortfolio"
-      @cancelClicked="closeLeavePortfolioModal"
-      :showLeaveModalSpinner="showLeaveModalSpinner"
-    />
-
   </div>
 </template>
 
@@ -149,10 +140,10 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 
-import {Component, Prop, Watch} from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 
-// eslint-disable-next-line max-len
-import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
+import ArchivePortfolioModal 
+  from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
 import ATATLoader from "@/components/ATATLoader.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import ATATSearch from "@/components/ATATSearch.vue"
@@ -161,14 +152,14 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FilterSlideout from "./FiltersSlideout.vue";
 import PortfolioCard from "./PortfolioCard.vue";
 
-import {
+import { 
   FilterOption,
   Portfolio,
-  PortfolioCardData,
+  PortfolioCardData,  
   PortfolioSummaryQueryParams,
-  SelectData,
+  SelectData, 
   SlideoutPanelContent,
-  ToastObj,
+  ToastObj,  
 } from "types/Global";
 
 import PortfolioSummary from "@/store/portfolioSummary";
@@ -178,17 +169,13 @@ import PortfolioStore from "@/store/portfolio";
 
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { createDateStr, toCurrencyString } from "@/helpers";
-import { differenceInDays, formatDistanceToNow, isAfter } from "date-fns";
+import { differenceInDays, formatDistanceToNow, isAfter} from "date-fns";
 import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
 import _ from "lodash";
 import CurrentUserStore from "@/store/user";
-import LeavePortfolioModal from "@/portfolios/portfolio/components/shared/LeavePortfolioModal.vue";
-import ATATDialog from "@/components/ATATDialog.vue";
 
 @Component({
   components: {
-    ATATDialog,
-    LeavePortfolioModal,
     ArchivePortfolioModal,
     ATATLoader,
     ATATNoResults,
@@ -205,6 +192,7 @@ export default class PortfoliosSummary extends Vue {
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
 
   public isHaCCAdmin = CurrentUserStore.currentUserIsHaCCAdmin;
+
   public page = 1;
   public get recordsPerPage(): number {
     return this.isHomeView ? 5 : 10;
@@ -213,7 +201,7 @@ export default class PortfoliosSummary extends Vue {
   public portfolioCount = 0;
   public offset = 0;
   public paging = false;
-  public showLeaveModalSpinner = false;
+
   public portfolioCardData: PortfolioCardData[] = [];
   public isLoading = false;
   public searchString = "";
@@ -289,9 +277,6 @@ export default class PortfoliosSummary extends Vue {
     case "filters":
       await this.clearAllFilters();
     }
-  }
-  public get getCurrentPortfolioTitle(){
-    return PortfolioStore.currentPortfolio.title;
   }
 
   public async clearAllFilters(): Promise<void> {
@@ -389,14 +374,10 @@ export default class PortfoliosSummary extends Vue {
     }
   }
 
-  public async leavePortfolio(): Promise<void> {
-    this.showLeaveModalSpinner = true;
-    await PortfolioStore.leavePortfolio()
-    await this.loadPortfolioData();
-    this.showLeaveModalSpinner = false;
-    this.closeLeavePortfolioModal()
-    
-
+  public leavePortfolio(sysId: string): void {
+    this.portfolioCardData = this.portfolioCardData.filter(
+      obj => obj.sys_id !== sysId
+    );
     const accessRemovedToast: ToastObj = {
       type: "success",
       message: "Portfolio access removed",
@@ -406,6 +387,10 @@ export default class PortfoliosSummary extends Vue {
     };
 
     Toast.setToast(accessRemovedToast);
+
+    // ATAT TODO AT-9605 - remove member from portfolio table in snow
+    // after removed, make new call to reload portfolio list if > 10 portfolios
+    // to ensure 10 listed on page (or 5 on home page)
   }
 
   public get currentPortfolio(): Portfolio {
@@ -427,14 +412,8 @@ export default class PortfoliosSummary extends Vue {
   public get showArchivePortfolioModal(): boolean {
     return PortfolioStore.showArchivePortfolioModal;
   }
-  public get showLeavePortfolioModal(): boolean {
-    return PortfolioStore.showLeavePortfolioModal;
-  }
   public openArchivePortfolioModal():void {
     PortfolioStore.setShowArchivePortfolioModal(true);
-  }
-  public openLeavePortfolioModal():void {
-    PortfolioStore.setShowLeavePortfolioModal(true);
   }
   public async archivePortfolio():Promise<void> {
     const index = this.portfolioCardData.findIndex(
@@ -456,13 +435,8 @@ export default class PortfoliosSummary extends Vue {
       this.portfolioCardData.splice(index, 1);
     }
   }
-
   public closeArchivePortfolioModal(): void {
     PortfolioStore.setShowArchivePortfolioModal(false);
-  }
-
-  public closeLeavePortfolioModal(): void {
-    PortfolioStore.setShowLeavePortfolioModal(false);
   }
 
   public async mounted(): Promise<void> {
@@ -503,31 +477,6 @@ export default class PortfoliosSummary extends Vue {
     this.loadPortfolioData();
   }  
 
-  public filteredPortfolios(): string[] {
-    const includedPortfolios = []
-    if(this.activeTab === 'ALL' && this.isHomeView){
-      includedPortfolios.push(
-        Statuses.Active.value, 
-        Statuses.Processing.value, 
-        Statuses.ProvisioningIssue.value
-      )
-    } else if(this.activeTab === 'ACTIVE'){
-      includedPortfolios.push(Statuses.Active.value)
-    } else if(this.activeTab === 'PROCESSING'){
-      includedPortfolios.push(Statuses.Processing.value)
-    } else if(this.activeTab === 'ARCHIVED'){
-      includedPortfolios.push(Statuses.Archived.value)
-    } else {
-      includedPortfolios.push(
-        Statuses.Active.value, 
-        Statuses.Processing.value, 
-        Statuses.ProvisioningIssue.value,
-        Statuses.Archived.value
-      )
-    }
-    return includedPortfolios
-  }
-
   public async loadPortfolioData(): Promise<void> {
     this.currentUserSysId = this.currentUser.sys_id as string;
     
@@ -553,80 +502,80 @@ export default class PortfoliosSummary extends Vue {
 
     this.portfolioCount = storeData.total_count;
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
-    const includedPortfolios = this.filteredPortfolios();
+
     storeData.portfolioSummaryList.forEach((portfolio) => {
-      if(includedPortfolios.includes(portfolio.portfolio_status)) {
-        const cardData: PortfolioCardData = {};
-        cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
-        cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
-        cardData.isViewer = portfolio.portfolio_viewers.indexOf(this.currentUserSysId) > -1;
-        cardData.lastUpdated = portfolio.last_updated;      
-        cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";
-        cardData.vendor = portfolio.vendor?.toLowerCase();
-        cardData.sysId = portfolio.sys_id;
-        cardData.title = portfolio.name;
-        cardData.description = portfolio.description;
-        cardData.status = this.getPortfolioStatus(portfolio.portfolio_status);
-        cardData.fundingStatus = portfolio.portfolio_funding_status;
-        cardData.portfolio_owner = portfolio.portfolio_owner;
-        cardData.portfolio_managers = portfolio.portfolio_managers;
-        cardData.portfolio_viewers = portfolio.portfolio_viewers;
-        cardData.createdBy = portfolio.sys_created_by;
-        cardData.agency = portfolio.agency;
-        cardData.agencyDisplay = portfolio.agency_display;
-        cardData.environments = portfolio.environments;
-        cardData.taskOrderSysId = portfolio.active_task_order;
-        cardData.lastCostDataSync = portfolio.last_cost_data_sync;
-        const activeTaskOrder = portfolio.task_orders.find(
-          obj => obj.sys_id === cardData.taskOrderSysId
-        );
-        cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
+      const cardData: PortfolioCardData = {};
+      cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
+      cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
+      cardData.isViewer = portfolio.portfolio_viewers.indexOf(this.currentUserSysId) > -1;
+      cardData.lastUpdated = portfolio.last_updated;      
+      cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";
+      cardData.vendor = portfolio.vendor?.toLowerCase();
+      cardData.sysId = portfolio.sys_id;
+      cardData.title = portfolio.name;
+      cardData.description = portfolio.description;
+      cardData.status = this.getPortfolioStatus(portfolio.portfolio_status);
+      cardData.fundingStatus = portfolio.portfolio_funding_status;
+      cardData.portfolio_owner = portfolio.portfolio_owner;
+      cardData.portfolio_managers = portfolio.portfolio_managers;
+      cardData.portfolio_viewers = portfolio.portfolio_viewers;
+      cardData.createdBy = portfolio.sys_created_by;
+      cardData.agency = portfolio.agency;
+      cardData.agencyDisplay = portfolio.agency_display;
+      cardData.environments = portfolio.environments;
+      cardData.taskOrderSysId = portfolio.active_task_order;
+      cardData.lastCostDataSync = portfolio.last_cost_data_sync;
+      const activeTaskOrder = portfolio.task_orders.find(
+        obj => obj.sys_id === cardData.taskOrderSysId
+      );
+      cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
 
-        // lastModified - if status is "Processing" use "Started ... ago" string
-        if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
-          const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
+      // lastModified - if status is "Processing" use "Started ... ago" string
+      if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
+        const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
 
-          cardData.lastModifiedStr = "Started " + agoString + " ago";
-        } else {
-          if (portfolio.last_updated) {
-            const updatedDate = createDateStr(portfolio.last_updated, true);
-            cardData.lastModifiedStr = "Last modified " + updatedDate;
-          }
-
-          if (portfolio.task_orders && portfolio.task_orders.length) {
-            cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
-            const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
-            const popEndISO = portfolio.task_orders[0].pop_end_date;
-            const popEnd = createDateStr(popEndISO, true);
-            cardData.currentPoP = popStart + " - " + popEnd;
-            const difToEndDate = formatDistanceToNow(new Date(popEndISO));
-            const difInDays = differenceInDays(new Date(popEndISO), new Date());
-            const difInDaysAbs = Math.abs(difInDays);
-            const difStr = difInDaysAbs > 60 ? difToEndDate : difInDaysAbs + " days";
-            const isExpired = isAfter(new Date(), new Date(popEndISO));
-
-            cardData.expiration 
-            = _.capitalize(difStr + (isExpired ? " past" : " to") + " expiration");
-          }
+        cardData.lastModifiedStr = "Started " + agoString + " ago";
+      } else {
+        if (portfolio.last_updated) {
+          const updatedDate = createDateStr(portfolio.last_updated, true);
+          cardData.lastModifiedStr = "Last modified " + updatedDate;
         }
 
-        if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
-          cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
-          cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
-          cardData.fundsSpentPercent = portfolio.funds_spent ? 
-            String(Math.round(portfolio.funds_spent / portfolio.funds_obligated * 100))
-            : "0";
-          const remainingAmt = portfolio.funds_obligated - portfolio.funds_spent;
-          cardData.fundsRemaining 
+        if (portfolio.task_orders && portfolio.task_orders.length) {
+          cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
+          const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
+          const popEndISO = portfolio.task_orders[0].pop_end_date;
+          const popEnd = createDateStr(popEndISO, true);
+          cardData.currentPoP = popStart + " - " + popEnd;
+          const difToEndDate = formatDistanceToNow(new Date(popEndISO));
+          const difInDays = differenceInDays(new Date(popEndISO), new Date());
+          const difInDaysAbs = Math.abs(difInDays);
+          const difStr = difInDaysAbs > 60 ? difToEndDate : difInDaysAbs + " days";
+          const isExpired = isAfter(new Date(), new Date(popEndISO));
+
+          cardData.expiration 
+            = _.capitalize(difStr + (isExpired ? " past" : " to") + " expiration");
+        }
+      }
+
+      if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
+        cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
+        cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
+        cardData.fundsSpentPercent = portfolio.funds_spent ? 
+          String(Math.round(portfolio.funds_spent / portfolio.funds_obligated * 100))
+          : "0";
+        const remainingAmt = portfolio.funds_obligated - portfolio.funds_spent;
+        cardData.fundsRemaining 
           = "$" + toCurrencyString(Math.abs(remainingAmt)) 
           + (remainingAmt < 0 ? " overspent" : " remaining");
-        }
+      }
 
-        this.portfolioCardData.push(cardData);
-        this.isLoading = false;
-        this.paging = false;
-        this.isSearchSortFilter = false;
-      }});
+      this.portfolioCardData.push(cardData);
+      this.isLoading = false;
+      this.paging = false;
+      this.isSearchSortFilter = false;
+    });
+
   }
 }
 </script>

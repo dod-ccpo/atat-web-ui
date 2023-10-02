@@ -8,6 +8,7 @@ import {TABLENAME as MilitaryRanksTable} from "@/api/militaryRanks";
 import {AutoCompleteItem, AutoCompleteItemGroups, SelectData,} from "types/Global";
 import {nameofProperty, retrieveSession, storeDataToSession} from "../helpers"
 import Vue from "vue";
+import {convertColumnReferencesToValues} from "@/api/helpers";
 
 const ATAT_CONTACT_DATA_KEY = 'ATAT_CONTACT_DATA_KEY';
 

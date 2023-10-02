@@ -2,11 +2,13 @@
 import {createLocalVue} from "@vue/test-utils";
 import Vuex, {Store} from "vuex";
 import {getModule} from "vuex-module-decorators";
-import { 
+import AcquisitionPackage, { 
   AcquisitionPackageStore, 
   initialEvaluationPlan 
 } from "@/store/acquisitionPackage/index";
 import { EvaluationPlanDTO } from "@/api/models";
+import Vue from "vue";
+import { EvalPlanMethod, EvalPlanSourceSelection } from "types/Global";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

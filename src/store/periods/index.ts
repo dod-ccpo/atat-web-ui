@@ -15,6 +15,7 @@ import {
   ReferenceColumn,
 } from "@/api/models";
 import Vue from "vue";
+import AcquisitionPackage, { StoreProperties } from "../acquisitionPackage";
 import {
   nameofProperty,
   retrieveSession,

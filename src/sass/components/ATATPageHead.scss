@@ -230,26 +230,3 @@ header._atat-page-header {
     }
   }
 }
-
-._csp-console-text{
-  color: #61686C;
-  font-size: 12px !important;
-  line-height: 16px !important;
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  padding-bottom: 0px !important;
-  &-link{
-    color: #2C353B;
-    font-size: 14px !important;
-    padding: 0px 8px;
-    display: flex;
-    align-self: flex-end;
-  }
-  &-spacer{
-    margin-bottom: 0px !important;
-  }
-  &-wrapper{
-    min-height: 30px !important;
-  }
-}

@@ -8,6 +8,7 @@ import CurrentContract
   from "@/steps/03-Background/CurrentContract/CurrentContract.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import * as ResolverExportedFunctions from "../../../router/resolvers/index";
+import { error } from "console";
 
 describe("Testing CurrentContract Component", () => {
   const localVue = createLocalVue();

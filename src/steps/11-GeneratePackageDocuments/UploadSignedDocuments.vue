@@ -246,17 +246,18 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   }
 
   public async loadOnEnter(): Promise<void> {
-    if(!AcquisitionPackage.initialized){
-      await AcquisitionPackage.loadPackageFromId(AcquisitionPackage.packageId);
-      this.packageNotInitialized = false;
-    }
+    this.packageNotInitialized = !AcquisitionPackage.initialized;
     this.packages = (await AcquisitionPackage.getSignedDocumentsList()).filter(
       signedDoc => signedDoc.show && signedDoc.requiresSignature
     );
     this.needsSignatureLength = this.packages.length;
     this.filesNeeded = this.packages.map(signedDoc => signedDoc.itemName)
-    this.generatedDocumentNames = AcquisitionPackage.generatedDocumentNames;
+    this.generatedDocumentNames = await AcquisitionPackage.generatedDocumentNames;
     this.uploadedFiles = await AcquisitionPackage.getDocuments(true);
+    if(!AcquisitionPackage.initialized){
+      await AcquisitionPackage.loadPackageFromId(AcquisitionPackage.packageId);
+      this.packageNotInitialized = false;
+    }
   }
   async mounted(): Promise<void>{
     await this.loadOnEnter()

@@ -5,6 +5,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import FOIA from "./FOIA.vue";
 import validators from "@/plugins/validation";
+import { RadioButton, SelectData } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 

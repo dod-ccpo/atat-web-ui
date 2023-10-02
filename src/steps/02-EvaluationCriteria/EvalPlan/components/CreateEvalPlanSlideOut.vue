@@ -7,7 +7,7 @@
     <p>
       As part of a competitive acquisition strategy, it is important to establish
       criteria for selecting a source based on submission of a 
-      proposal/white paper.
+      quote/proposal/white paper.
     </p>
     <h3 class="mb-5">What factors should be considered when deciding whether 
       or not to require a technical proposal?</h3>
@@ -62,14 +62,14 @@ export default class CreateEvalPlanSlideOut extends Vue {
       content: `
         <p>
           Your Contracting Officer (KO) will request CSPs provide a price
-          proposal that includes the total price and a complete list
+          quote or proposal that includes the total price and a complete list
           of cloud service offerings with catalog item numbers/SKUs, the unit
           price, unit of issue, and quantities calculated on a monthly basis
           for each catalog item number/SKU required to meet the criteria in
           the Description of Work.
         </p>
         <p>
-          The CSP shall map each proposed catalog item number/SKU to
+          The CSP shall map each quoted or proposed catalog item number/SKU to
           the specific requirement element(s).
         </p>
         <p>
@@ -135,12 +135,12 @@ export default class CreateEvalPlanSlideOut extends Vue {
       id: "EqualAward",
       content: `
         <p>
-          Your KO will issue a Request for Proposal (RFP) and ask CSPs to respond
+          Your KO will issue a Request for Quote (RFQ) and ask CSPs to respond
           if they are “interested” or “not interested.” Task orders will be issued
           to all interested CSPs. 
         </p>
         <p class="font-weight-700 mb-2">
-          Award will be made in equal parts to each CSP that responded to the RFP as “interested.”
+          Award will be made in equal parts to each CSP that responded to the RFQ as “interested.”
         </p>
       `
     },

@@ -42,6 +42,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
+import LoadOnEnter from "@/mixins/loadOnEnter";
 import { Component, Mixins } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";

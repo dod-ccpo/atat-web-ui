@@ -8,56 +8,8 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
 import PortfolioStore from "@/store/portfolio";
 import CurrentUserStore from "@/store/user";
-import { Environment } from "types/Global";
 Vue.use(Vuetify);
 
-const mockEnvironments = [
-  /* eslint-disable */
-  {
-    classification_level: "U",
-    csp: "",
-    csp_display: "azure_il4_dev",
-    csp_id: "",
-    dashboard_link: "https://www.google.com/",
-    environmentStatus: "PROCESSING",
-    name: "Test 2 - Unclassified",
-    portfolio: "",
-    provisioned: "false",
-    provisioned_date: "",
-    provisioning_failure_cause: "",
-    provisioning_request_date: "",
-    sys_created_by: "test.user",
-    sys_created_on: "2023-09-22 18:58:03",
-    sys_id: "",
-    sys_mod_count: "2",
-    sys_tags: "",
-    sys_updated_by: "admin",
-    sys_updated_on: "2023-09-22 18:59:06",
-  },
-  {
-    classification_level: "U",
-    csp: "",
-    csp_display: "azure_il2_dev",
-    csp_id: "",
-    dashboard_link: "https://www.google.com/",
-    environmentStatus: "PROCESSING",
-    name: "Test 2 - Unclassified",
-    portfolio: "",
-    provisioned: "false",
-    provisioned_date: "",
-    provisioning_failure_cause: "",
-    provisioning_request_date: "",
-    sys_created_by: "test.user",
-    sys_created_on: "2023-09-22 18:58:03",
-    sys_id: "",
-    sys_mod_count: "2",
-    sys_tags: "",
-    sys_updated_by: "admin",
-    sys_updated_on: "2023-09-22 18:59:06",
-  },
-  
-] as Environment[]
-/* eslint-enable */
 describe("Testing Members Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
@@ -183,18 +135,13 @@ describe("Testing Members Component", () => {
     await wrapper.vm.handleMoreMenuClick('openArchivePortfolioModal')
     expect(openArchivePortfolioModalSpy).toHaveBeenCalled()
   })
-  
-  it("test handleMoreMenuClick() => leaveThisPortfolio", async () => {
-    await wrapper.vm.handleMoreMenuClick('leaveThisPortfolio')
-    expect(wrapper.emitted("leavePortfolio")).toBeTruthy()
-  })
 
   it("test moreMenuItemActions data", async () => {
     expect(wrapper.vm.$data.moreMenuItemActions).toStrictEqual({
-      openArchivePortfolioModal: "openArchivePortfolioModal",
-      moveToInput: "moveToInput",
-      openModal: "openModal",
-      leaveThisPortfolio: "leaveThisPortfolio"
+    openArchivePortfolioModal: "openArchivePortfolioModal",
+    moveToInput: "moveToInput",
+    openModal: "openModal",
+    leaveThisPortfolio: "leaveThisPortfolio"
     })
   })
 
@@ -212,11 +159,11 @@ describe("Testing Members Component", () => {
         action: "moveToInput"
       },
       {
-        id: "ArchivePortfolio_MenuItem",
-        title: "Archive portfolio",
-        action: "openArchivePortfolioModal"
-      }
-    ])
+      id: "ArchivePortfolio_MenuItem",
+      title: "Archive portfolio",
+      action: "openArchivePortfolioModal"
+    }
+  ])
   })
 
   it("test getMoreMenuItems () => MeatballMenuItems[] as Manager", async () => {
@@ -243,7 +190,7 @@ describe("Testing Members Component", () => {
         title: "Rename portfolio",
         action: "moveToInput"
       }
-    ])
+  ])
   })
 
   it("test getMoreMenuItems () => MeatballMenuItems[] as Viewer", async () => {
@@ -260,12 +207,6 @@ describe("Testing Members Component", () => {
         title: "Leave this portfolio",
         action: 'leaveThisPortfolio'
       }
-    ])
-  })
-
-  it("test loadOnEnter", async () => {
-    await wrapper.setProps({environmentLinks: mockEnvironments})
-    await wrapper.vm.loadOnEnter()
-    expect(wrapper.vm.$data.cspLoginText).toBe("LOGIN TO YOUR CSP PORTALS")
+  ])
   })
 })

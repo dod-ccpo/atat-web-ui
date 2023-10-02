@@ -324,6 +324,7 @@ export default class EnvironmentSummary extends Vue {
       "performance_tier",
       "number_of_instances",
       "data_egress_monthly_amount",
+      "pricing_model",
     ];
     requiredFields.forEach((field) => {
       if (instanceData[field] === "") {
@@ -381,16 +382,9 @@ export default class EnvironmentSummary extends Vue {
       this.tableData = [];
       this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
 
-      for (const instance of this.envInstances) {
-        const index = this.envInstances.indexOf(instance);
+      this.envInstances.forEach(async (instance, index) => {
         //eslint-disable-next-line prefer-const
-        const selectedInCloud = this.classificationsCloud.includes(instance.classification_level)
-        const selectedOnPrem = this.classificationsOnPrem.includes(instance.classification_level)
-        if(!selectedInCloud && !selectedOnPrem) {
-          // eslint-disable-next-line camelcase
-          instance.classification_level = ""
-        }
-        const isValid = await this.validateInstance(instance);
+        let isValid = await this.validateInstance(instance);
         let storage = "";
         if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
           const storageType = toTitleCase(instance.storage_type);
@@ -421,7 +415,7 @@ export default class EnvironmentSummary extends Vue {
               instances.push(this.locationNames[instanceId])
             })
           }
-
+          
           let regions = instances?.length
             ? instances.join(", ")
             : "";
@@ -441,11 +435,10 @@ export default class EnvironmentSummary extends Vue {
           if (i > -1) {
             const classificationLevel = this.classificationLevels[i];
             classification = buildClassificationLabel(classificationLevel, "short");
-          }
+          } 
         }
-
         //eslint-disable-next-line prefer-const
-        let instanceData: EnvInstanceSummaryTableData = {
+        let instanceData: EnvInstanceSummaryTableData = { 
           instanceSysId: instance.sys_id,
           instanceNumber: index + 1,
           location,
@@ -457,18 +450,18 @@ export default class EnvironmentSummary extends Vue {
           performance,
           isValid,
         };
-
+        
         this.tableData.push(instanceData);
         if (this.envLocation === "ON_PREM") {
           this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
         }
 
-        const hasMultipleClassifications
+        const hasMultipleClassifications 
           = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
         if (!hasMultipleClassifications) {
           this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
         }
-      }
+      });
     }, 0);
   }
 

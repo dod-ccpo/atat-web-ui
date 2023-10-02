@@ -4,7 +4,8 @@ import rootStore from "../index";
 
 import api from "@/api";
 import { AxiosRequestConfig } from "axios"
-import { AgencyDTO, DisaOrganizationDTO } from "@/api/models";
+import {TABLENAME as OrganizationTable} from "@/api/organization";
+import { AgencyDTO, DisaOrganizationDTO, SystemChoiceDTO } from "@/api/models";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
 import Vue from "vue";
 

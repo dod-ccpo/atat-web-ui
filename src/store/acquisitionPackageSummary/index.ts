@@ -11,6 +11,7 @@ import Vue from "vue"
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
 import CurrentUserStore from "@/store/user";
+import { UserApi } from "@/api/user";
 import { getTableRecordCount } from "@/helpers";
 import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
 
