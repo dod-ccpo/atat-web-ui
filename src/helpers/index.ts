@@ -22,8 +22,6 @@ export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
 
 export const getIdText = (string: string): string => {
-  console.log(string)
-  console.log(string.replace(/[^A-Z0-9]/ig, ""))
   return string.replace(/[^A-Z0-9]/ig, "");
 }
 
