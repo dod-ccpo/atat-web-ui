@@ -2,7 +2,6 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "@/store";
 import { UserSearchResultDTO } from "@/api/models";
-import { AxiosRequestConfig } from "axios";
 import { api } from "@/api";
 import { User } from "types/Global";
 
@@ -52,7 +51,7 @@ export class UserManagementStore extends VuexModule {
     Promise<UserSearchResultDTO[]> {
     try {
       if (searchStr) {
-        const response = await api.userTable.search(searchStr);
+        const response = await api.userApi.search(searchStr);
         return response;  
       }
       return [];

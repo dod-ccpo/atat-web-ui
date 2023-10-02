@@ -5,7 +5,6 @@ import {getModule} from "vuex-module-decorators";
 import {CurrentEnvironmentStore} from "@/store/acquisitionPackage/currentEnvironment";
 import {CurrentEnvironmentDTO} from "@/api/models";
 import Vue from "vue";
-import storeHelperFunctions from "@/store/helpers";
 import {api} from "@/api";
 
 jest.mock('@/store/helpers')

@@ -8,8 +8,10 @@ describe("Test suite: No technical proposal ", () => {
   const scope = "EvaluationCriteria-FairOpp-noTech" + randomString(5);
   //summary page
   const summaryList = ["Exception to Fair Opportunity", "Evaluation Plan"];
-  const exceptionToFairOppDescriptionText =`No exceptions apply to this acquisition.A J&A and MRR are NOT required in your final acquisition package.`;
- const evalPlanDescriptionText =`Technical proposal not required; award will be made on a LPTA basis.`
+  const exceptionToFairOppDescriptionText ="No exceptions apply to this acquisition."+
+  "A J&A and MRR are NOT required in your final acquisition package.";
+  const evalPlanDescriptionText ="Technical proposal not required;"
+ +" award will be made on a LPTA basis."
 
   before(() => {    
     cy.goToECStep(pt, scope);  
@@ -19,7 +21,7 @@ describe("Test suite: No technical proposal ", () => {
     cy.clickContinueButton(
       ep.noTechProposal,
       evalCriteria.noTechProposal.headerText
-      );    
+    );    
     
   });
 
@@ -58,7 +60,7 @@ describe("Test suite: No technical proposal ", () => {
     cy.clickBackButton(
       ep.customRadioYesBtn,
       evalCriteria.workEvalPlan.headerText
-      );  
+    );  
     cy.radioBtn(ep.noTechProposal, "NO_TECH_PROPOSAL").should("be.checked")
   });
 });

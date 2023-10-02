@@ -24,7 +24,8 @@ module.exports = {
   expirationDatePicker: "#ExpirationDatePicker",
   navigateNextMonth: "#ExpirationDatePicker button[aria-label='Next month']",
   selectDate: ".v-date-picker-table button:not(.v-btn--disabled)",
-  expirationSelectDate: "#ExpirationDatePicker > .v-picker__body > :nth-child(1) >.v-date-picker-table button:not(.v-btn--disabled)",
+  expirationSelectDate: "#ExpirationDatePicker > .v-picker__body"+
+  " > :nth-child(1) >.v-date-picker-table button:not(.v-btn--disabled)",
   tNoTooltipBtn: "#TooltipButton_TaskDeliveryOrderNumber",
   tNoTooltipText: "#TooltipText_TaskDeliveryOrderNumber",
   expirationTooltipBtn: "#TooltipButton_Expiration",
@@ -94,7 +95,7 @@ module.exports = {
 
 
   // new ones ............
-  // Do you have system diagrams, data architecture diagrams, charts, or other relevant information for your current environment?
+  //Do you have system diagrams, charts, or other relevant information for your current environment?
   //Page#1:
   recurringPageText: "p.mb-8",
   introPText: "#IntroP",
@@ -141,7 +142,8 @@ module.exports = {
   level4Checkbox: "#Checkbox_IL4",
   level5Checkbox: "#Checkbox_IL5",
   CloudClassificationCheckboxes: "#CloudClassificationCheckboxes input[type=checkbox]",
-  checkedCloudClassificationCheckboxes: "#CloudClassificationCheckboxes input[type=checkbox]:checked",
+  checkedCloudClassificationCheckboxes: "#CloudClassificationCheckboxes"+
+  " input[type=checkbox]:checked",
 
   //onpremise:
   onPremiseClassificationCheckboxes: "#OnPremClassificationCheckboxes input[type=checkbox]",
@@ -222,7 +224,8 @@ module.exports = {
   memoryTextboxLable: "#Memory_text_field_label",
   memoryTextbox: "#Memory_text_field",
   storageTypeLable: "#StorageType_dropdown_field_label",
-  storageTypeDropdown: "#StorageType_dropdown_field_control .v-input__control .v-input__append-inner",
+  storageTypeDropdown: "#StorageType_dropdown_field_control .v-input__control"+
+  " .v-input__append-inner",
 
   blockStorageOption: "#StorageType_DropdownListItem_Blockstorage",
   objectTypeStorageOption: "#StorageType_DropdownListItem_Objectstorage",
@@ -233,7 +236,8 @@ module.exports = {
   storageSizeLable: "#StorageAmount_text_field_label",
   storageAmountTextbox: "#StorageAmount_text_field",
   storageSizeField: "#StorageAmount_text_field_control ",
-  byteSizeDropdown: "#id_is_missing_dropdown_field_control .v-input__control .v-input__append-inner",
+  byteSizeDropdown: "#id_is_missing_dropdown_field_control"+
+  " .v-input__control .v-input__append-inner",
   gigabyteOption: "#id_is_missing_DropdownListItem_GigabyteGB",
   terabyteOption: "#id_is_missing_DropdownListItem_TerabyteTB",
   petayteOption: "#id_is_missing_DropdownListItem_PetabytePB",
@@ -302,6 +306,7 @@ module.exports = {
   currentEnvironmentHeaderText: "#CurrentEnvironment_Heading",
   currentEnvironmentDescription: "#CurrentEnvironment_Description",
   currentEnvironmentCompleteBtn: "#CurrentEnvironment_CompleteButton",
+  currentEnvironmentReviewBtn: "#CurrentEnvironment_MissingInfoButton",
 
 
 }

@@ -26,16 +26,16 @@ describe("Testing ATATStepperNavigation", () => {
     });
 
     it("getClasses() set $props.type & $props.maxHeight to retrieve certain class(es)",
-    async () => {
-      await wrapper.setProps({
-        type: "callout",
-        maxHeight: "100px",
+      async () => {
+        await wrapper.setProps({
+          type: "callout",
+          maxHeight: "100px",
+        });
+        const _getClasses = await wrapper.vm.getClasses;
+        expect(_getClasses).toBe(
+          "_callout _scrollable py-0 pr-0 bg-primary-lighter"
+        );
       });
-      const _getClasses = await wrapper.vm.getClasses;
-      expect(_getClasses).toBe(
-        "_callout _scrollable py-0 pr-0 bg-primary-lighter"
-      );
-    });
 
     it("getClasses() set $props.type to retrieve certain class", async () => {
       await wrapper.setProps({
@@ -113,14 +113,14 @@ describe("Testing ATATStepperNavigation", () => {
     });
 
     it("close() - sets $prop.show to false and closes the alert from TaskOrderDetailsAlert",
-    async () => {
-      jest
-        .spyOn(PortfolioStore, "setTaskOrderDetailsAlertClosed")
-        .mockImplementation();
-      await wrapper.setData({ id: "TaskOrderDetailsAlert" });
-      await wrapper.vm.close();
-      expect(wrapper.vm.$props.show).toBe(false);
-      expect(PortfolioStore.setTaskOrderDetailsAlertClosed).toHaveBeenCalled();
-    });
+      async () => {
+        jest
+          .spyOn(PortfolioStore, "setTaskOrderDetailsAlertClosed")
+          .mockImplementation();
+        await wrapper.setData({ id: "TaskOrderDetailsAlert" });
+        await wrapper.vm.close();
+        expect(wrapper.vm.$props.show).toBe(false);
+        expect(PortfolioStore.setTaskOrderDetailsAlertClosed).toHaveBeenCalled();
+      });
   });
 });

@@ -11,7 +11,6 @@ import AcorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vu
 import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import DAPPSChecklist from "@/steps/01-AcquisitionPackageDetails/DAPPSChecklist.vue";
 import ContractingOfficeInfo from "@/steps/01-AcquisitionPackageDetails/ContractingOfficeInfo.vue";
-import Summary from "../steps/Summary.vue";
 import SummaryStepOne from "@/steps/01-AcquisitionPackageDetails/SummaryStepOne.vue";
 
 // Step 2 - Evaluation Criteria
@@ -43,7 +42,6 @@ import CertificationPOCs from "../steps/02-EvaluationCriteria/MRR/CertificationP
 import CreateEvalPlan from "../steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.vue";
 import EvalPlanDetails from "../steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.vue";
 import Differentiators from "../steps/02-EvaluationCriteria/EvalPlan/Differentiators.vue";
-import EvalPlanSummary from "../steps/02-EvaluationCriteria/EvalPlan/Summary.vue";
 import SummaryStepTwo from "@/steps/02-EvaluationCriteria/SummaryStepTwo.vue"
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
@@ -60,7 +58,6 @@ import ClassificationLevels
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.vue";
 import InstanceDetails
   from "@/steps/03-Background/CurrentEnvironment/InstanceDetails.vue";
-import BackgroundSummary from "../steps/03-Background/Summary.vue"
 import UploadSystemDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadSystemDocuments.vue";
 import UploadMigrationDocuments
@@ -88,8 +85,7 @@ import ArchitecturalDesignDetails
   from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDOW.vue";
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
-import ArchitectureDesignDOW
-  from "../steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
+
 import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ServiceOfferingDetails 
   from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue";
@@ -142,7 +138,6 @@ import SupportingDocumentation from "@/steps/10-FinancialDetails/IGCE/Supporting
 import EstimatesDeveloped from "@/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.vue";
 import SurgeCapabilities from "../steps/10-FinancialDetails/IGCE/SurgeCapabilities.vue";
 import MIPR from "../steps/10-FinancialDetails/MIPR.vue";
-import TraininigEstimates from "@/steps/10-FinancialDetails/IGCE/Training.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
 import IncrementalFunding 
@@ -153,7 +148,6 @@ import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
 import SummaryStepEight from "@/steps/10-FinancialDetails/SummaryStepEight.vue";
-
 // step 10 - Generate Package Documents
 import GeneratePackageDocuments from "../steps/11-GeneratePackageDocuments/Index.vue";
 import ReadyToGeneratePackage from "@/steps/11-GeneratePackageDocuments/ReadyToGeneratePackage.vue";
@@ -219,6 +213,7 @@ import {
   OtherSupportingFactorsRouteResolver,
   conductedResearchRouteResolver,
   ClassificationRequirementsResolver,
+  PeriodOfPerformanceRouteResolver,
   ContractTypeResolver,
   PIIRecordSummaryResolver,
   BAARecordSummaryResolver,
@@ -767,6 +762,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
         stepCompleteOnEnter: routeNames.CreateEvalPlan,
+        routeResolver: PeriodOfPerformanceRouteResolver
       },
       {
         name: routeNames.POPStart,

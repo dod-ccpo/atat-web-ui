@@ -43,8 +43,7 @@ module.exports = {
         'cypress/**/*.js'
       ],
       rules: {
-        '@typescript-eslint/explicit-module-boundary-types': 0,
-        'eslint prefer-const': 1 
+        '@typescript-eslint/explicit-module-boundary-types': 0,         
       }
     },
     {

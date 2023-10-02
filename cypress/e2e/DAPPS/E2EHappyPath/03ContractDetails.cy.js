@@ -11,36 +11,36 @@ import contractDetails from "../../../selectors/contractDetails.sel";
 import CDData from "../../../fixtures/ContractDetailsData/CDData.json";
 
 describe("Test suite: Contract Details Step:Summary - E2E", () => {
-  let pt = "TC-Step-3-ContractDetails-E2E-" + randomAlphaNumeric(5);
-  let scope = "Project Scope-" + randomString(5);
-  let dropDownBase = "Day(s)"; //Year/Month(s)/ Week(s)/ Day(s)
-  let dropDownOption = "Year"; //Year/Month(s)/ Week(s)/ Day(s)
-  let optionPeriod = "Yes" // Yes/No
-  let randomMonth = randomNumberBetween(1, 12);
-  let randomWeek = randomNumberBetween(1, 52);
-  let randomDay = randomNumberBetween(1, 365);
+  const pt = "TC-Step-3-ContractDetails-E2E-" + randomAlphaNumeric(5);
+  const scope = "Project Scope-" + randomString(5);
+  const dropDownBase = "Day(s)"; //Year/Month(s)/ Week(s)/ Day(s)
+  const dropDownOption = "Year"; //Year/Month(s)/ Week(s)/ Day(s)
+  const optionPeriod = "Yes" // Yes/No
+  const randomMonth = randomNumberBetween(1, 12);
+  const randomWeek = randomNumberBetween(1, 52);
+  const randomDay = randomNumberBetween(1, 365);
 
-  let popStart = "Yes"; //Yes/No
-  let popStartOption = "noSoonerThan"; // noSoonerThan/notLaterThan
-  let popStartDate = "11"
-  let recurringRequirement = "Yes";
-  let contractType = "FFP"; // FFP/T&M
-  let textTM = " Test123"
+  const popStart = "Yes"; //Yes/No
+  const popStartOption = "noSoonerThan"; // noSoonerThan/notLaterThan
+  const popStartDate = "11"
+  const recurringRequirement = "Yes";
+  const contractType = "FFP"; // FFP/T&M
+  const textTM = " Test123"
   // Step#3:Classification Requirements
-  let requiredLabels = [
+  const requiredLabels = [
     'level2',
     //'level4',
     'level5',
     'level6',
     'tops',
   ]
-  let requiredSCCheckboxes = [
+  const requiredSCCheckboxes = [
     'scCkbox1', 'scCkbox2', 'scCkbox3', 'scCkbox4',
     //'scCkbox5','scCkbox6','scCkbox7',
     'scCkbox8', 'scCkbox9', 'scCkbox10',
     //'scCkbox11','scCkbox12',
   ]
-  let requiredTSCheckboxes = [
+  const requiredTSCheckboxes = [
     'tsCkbox1', 'tsCkbox2', 'tsCkbox3',
     //'tsCkbox4','tsCkbox5','tsCkbox6',
     'tsCkbox7', 'tsCkbox8',
@@ -83,10 +83,10 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     tsCkbox12: suffixId(contractDetails.checkbox_12, "TopSecret"),
   };
 
-  let cdsOption = "Yes";
+  const cdsOption = "Yes";
   const pfsText = "TestFS - " + randomAlphaNumeric(3);
   const soText = randomAlphaNumeric(17);
-  let cdsText = randomNumber(2);
+  const cdsText = randomNumber(2);
 
 
   before(() => {
@@ -102,21 +102,21 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
       force: true
     });
     switch (calendar) {
-      //Year/Month(s)/ Week(s)/ Day(s)
-      case "Year":
-        enterTextInInputBox(inputBox, "1");
-        break;
-      case "Month(s)":
-        enterTextInInputBox(inputBox, randomMonth);
-        break;
-      case "Week(s)":
-        enterTextInInputBox(inputBox, randomWeek);
-        break;
-      case "Day(s)":
-        enterTextInInputBox(inputBox, randomDay);
-        break;
-      default:
-        break;
+    //Year/Month(s)/ Week(s)/ Day(s)
+    case "Year":
+      enterTextInInputBox(inputBox, "1");
+      break;
+    case "Month(s)":
+      enterTextInInputBox(inputBox, randomMonth);
+      break;
+    case "Week(s)":
+      enterTextInInputBox(inputBox, randomWeek);
+      break;
+    case "Day(s)":
+      enterTextInInputBox(inputBox, randomDay);
+      break;
+    default:
+      break;
     }
   }
 
@@ -130,7 +130,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     cy.verifyPageHeader(CDData.POPPage1.pageHeader1);
     selectPopLength(contractDetails.baseDropdownIcon, contractDetails.baseDropdownListItems,
       dropDownBase, contractDetails.baseInputTxtBox, dropDownBase);
-    if (optionPeriod == "Yes") {
+    if (optionPeriod === "Yes") {
       cy.findElement(contractDetails.addOptionLink).click();
       selectPopLength(contractDetails.optionDropdownIcon, contractDetails.optionDropdownListItems,
         dropDownOption, contractDetails.optionalTextBox, dropDownOption)
@@ -138,7 +138,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
 
     // Page#2- POP request Pop start date
     cy.clickContinueButton(contractDetails.addOptionLink, CDData.POPPage2.pageHeader2)
-    if (popStart == "Yes") {
+    if (popStart === "Yes") {
       cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").click({
         force: true
       });
@@ -167,29 +167,27 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     cy.findElement(recurringMap[recurringRequirement]).click({
       force: true
     });
-    cy.clickContinueButton(contractDetails.noRadioOption, CDData.classificationSummary.pageHeaderSummary)
+    cy.clickContinueButton(contractDetails.noRadioOption, CDData.contractTypePage.pageHeader4)
 
-    // # Page2 Contract Details- Contract Type:..........
-    cy.findElement(contractDetails.contractStart).click();
-    if (contractType == "FFP") {
+    // # Page2 Contract Details- Contract Type:..........    
+    if (contractType === "FFP") {
       cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").check({
         force: true
       });
-    } else if (contractType == "T&M") {
+    } else if (contractType === "T&M") {
       cy.findCheckBox(contractDetails.tmCheckBox, "T&M").check({
         force: true
       });
       cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, textTM);
     }
-    cy.clickContinueButton(contractDetails.tmCheckBox, CDData.classificationSummary.pageHeaderSummary);
+    cy.clickContinueButton(contractDetails.tmCheckBox, CDData.classLevelPage1.pageHeaderCL1);
 
-    // # Page3 Contract Details- Classification Requirements:...
-    cy.findElement(contractDetails.classReqStart).click();
+    // # Page3 Contract Details- Classification Requirements:...    
     requiredLabels.forEach(requiredLabel => {
       cy.findElement(expectedLabelMaps[requiredLabel]).click({
         force: true
       });
-    });
+    });    
     cy.wait(2000);
     cy.clickContinueButton(contractDetails.level2, CDData.classLevelPage2.pageHeaderCL2);
     requiredSCCheckboxes.forEach(requiredSCCheckbox => {
@@ -204,7 +202,7 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     });
     cy.wait(4000);
     cy.clickContinueButton(contractDetails.checkbox_1, CDData.classLevelPage3.pageHeaderCL3);
-    if (cdsOption == "Yes") {
+    if (cdsOption === "Yes") {
       cy.findElement(contractDetails.cdsYesOption)
         .click({
           force: true
@@ -213,14 +211,18 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
       cy.enterTextInTextField(contractDetails.cdsUtoSTxtbox, cdsText);
       cy.enterTextInTextField(contractDetails.cdsTStoSTxtbox, cdsText);
       cy.enterTextInTextField(contractDetails.projectedFSField, pfsText);
-      cy.anticipatedNeedUsage(contractDetails.anticipatedTxtbox, soText, contractDetails.entiredDurationNo);
-    } else if (cdsOption == "No") {
+      cy.anticipatedNeedUsage(
+        contractDetails.anticipatedTxtbox, soText, contractDetails.entiredDurationNo
+      );
+    } else if (cdsOption === "No") {
       cy.findElement(contractDetails.cdsNoOption)
         .click({
           force: true
         });
     }
-    cy.clickContinueButton(contractDetails.cdsNoOption, CDData.classificationSummary.pageHeaderSummary);
+    cy.clickContinueButton(
+      contractDetails.cdsNoOption, CDData.classificationSummary.pageHeaderSummary
+    );
 
     // Contract Details: Summary page:---
     cy.textExists(contractDetails.popHeading, " Period of Performance (PoP)");

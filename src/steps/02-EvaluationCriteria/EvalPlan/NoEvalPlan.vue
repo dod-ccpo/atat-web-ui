@@ -19,11 +19,10 @@
           acquisition will be evaluated during the source selection process.
         </p>
         <p id="SecondP">
-          Since your requirement qualifies for an exception to the fair
-          opportunity process, your evaluation team will assess the CSP’s entire
-          solicitation response for technical acceptability. A task order award
-          will be issued on a sole-source basis to the CSP that you specified in
-          the previous section.
+          Since an exception to the fair opportunity process applies to your requirement,
+          the evaluation team will assess your Cloud Service Provider’s entire solicitation
+          response for technical acceptability. If the proposal meets the Government’s needs,
+          then a task order award will be issued on a sole-source basis.
         </p>
         <p>
           To edit your evaluation criteria,

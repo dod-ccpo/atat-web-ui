@@ -37,7 +37,7 @@ describe("Testing CreateEvalPlan Component", () => {
       expect(wrapper.vm.isStandards).toBeTruthy();
       expect(wrapper.vm.heading).toBe("Compliance Standards");
       expect(wrapper.vm.listType).toBe("Standard");
-      expect(wrapper.vm.introP).toContain("to provide a price quote");
+      expect(wrapper.vm.introP).toContain("to provide a price proposal");
       expect(wrapper.vm.subhead).toContain("compliance standards");
       expect(wrapper.vm.listItems).toHaveLength(2);
     });

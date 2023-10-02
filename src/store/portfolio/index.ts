@@ -5,7 +5,6 @@ import rootStore from "../index";
 import {
   Environment,
   FilterOption,
-  MemberInvites,
   Operator,
   Portfolio,
   PortfolioCardData,
@@ -14,7 +13,7 @@ import {
   User,
 } from "../../../types/Global"
 
-import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AlertDTO,
   EnvironmentDTO, OperatorDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
@@ -37,6 +36,7 @@ export const FundingAlertTypes = {
   POPLowFunds: "POPLowFunds",
   POPFundsDelinquent: "POPFundsDelinquent",
   POPExpired: "POPExpired",
+  POPZeroFundsRemaining: "POPZeroFundsRemaining"
 };
 
 interface CSPAdmin {
@@ -210,10 +210,10 @@ export class PortfolioDataStore extends VuexModule {
         }
       });
       response.forEach(obj => {
-        let csp: CSPProvisioningData = { 
+        const csp: CSPProvisioningData = { 
           name: obj.name, 
           classification_level: obj.classification_level,
-          cloud_distinguisher: {} 
+          cloud_distinguisher: undefined
         };
         const cd = obj.cloud_distinguisher;
         if (cd && cd.length) {
@@ -595,6 +595,7 @@ export class PortfolioDataStore extends VuexModule {
     return this.showAddMembersModal;
   }
   public showArchivePortfolioModal = false;
+  public showLeavePortfolioModal = false;
   public currentUserIsViewer = false;
   public currentUserIsManager = false;
   public currentUserIsOwner = false;
@@ -666,11 +667,21 @@ export class PortfolioDataStore extends VuexModule {
   public doSetShowArchivePortfolioModal(show: boolean): void {
     this.showArchivePortfolioModal = show;
   }
-  
+
+  @Action
+  public setShowLeavePortfolioModal(show: boolean): void {
+    this.doSetShowLeavePortfolioModal(show);
+  }
+
+  @Mutation
+  public doSetShowLeavePortfolioModal(show: boolean): void {
+    this.showLeavePortfolioModal = show;
+  }
+
   @Action({rawError: true})
   public async removeMemberFromCurrentPortfolio(sysId: string): Promise<void> {
     const members = this.currentPortfolio.members?.filter(m => m.sys_id !== sysId);
-    this.doSetCurrentPortfolio({members});
+    await this.doSetCurrentPortfolio({members});
   }
 
   @Action({rawError: true})
@@ -684,7 +695,6 @@ export class PortfolioDataStore extends VuexModule {
         } as unknown as PortfolioSummaryDTO;
         let response = await api.portfolioTable.update(portfolio.sysId, members);
         response = convertColumnReferencesToValues(response);
-
         await this.setCurrentPortfolio(response);
         await this.doSetCurrentUserRole();
         await this.populatePortfolioMembersDetail(portfolio);
@@ -731,7 +741,7 @@ export class PortfolioDataStore extends VuexModule {
   public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
     const userSysIds = portfolio.portfolio_owner + "," 
       + portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
-    const allMembersDetailListDTO = await api.userTable.getUsersBySysId(userSysIds);
+    const allMembersDetailListDTO = await api.userApi.getUsersBySysId(userSysIds);
     const allMembersDetailList: User[] = 
       allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
         return {
@@ -774,7 +784,7 @@ export class PortfolioDataStore extends VuexModule {
     // add portfolio owner to front of member list
     if (Object.keys(portfolioOwner).length > 0) {
       portfolio.members.unshift(portfolioOwner);    if (portfolio.createdBy) {
-        const createdByUser = await api.userTable.search(portfolio.createdBy);
+        const createdByUser = await api.userApi.search(portfolio.createdBy);
         this.doSetPortfolioCreator(createdByUser[0]);
       }  
     }
@@ -801,8 +811,8 @@ export class PortfolioDataStore extends VuexModule {
 
   @Action({rawError: true})
   public async inviteMembers(newMembers: User[]): Promise<void> {
-    let managersList = this.currentPortfolio.portfolio_managers?.split(",") ?? [];
-    let viewersList = this.currentPortfolio.portfolio_viewers?.split(",") ?? [];
+    const managersList = this.currentPortfolio.portfolio_managers?.split(",") ?? [];
+    const viewersList = this.currentPortfolio.portfolio_viewers?.split(",") ?? [];
 
     newMembers.forEach(newMember => {
       if (newMember.role === "Manager") {
@@ -841,7 +851,7 @@ export class PortfolioDataStore extends VuexModule {
           sysparm_query: "^environmentIN" + environment.sys_id
         }
       };
-      let allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
+      const allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
         queryForAllOperatorsOfPortfolio
       );
       allOperatorsOfPortfolioEnv.forEach(async (operator: OperatorDTO): Promise<void> => {
@@ -979,6 +989,27 @@ export class PortfolioDataStore extends VuexModule {
   @Action({rawError: true})
   public async reset(): Promise<void> {
     this.doReset();
+  }
+
+  @Action({rawError: true})
+  public async leavePortfolio(): Promise<void>{
+    const userSysId = CurrentUserStore.getCurrentUserData.sys_id;
+    if(userSysId) {
+      const currentPortfolio = this.currentPortfolio;
+
+      if(currentPortfolio.portfolio_managers) {
+        const managers = currentPortfolio.portfolio_managers.split(',');
+        // eslint-disable-next-line camelcase
+        currentPortfolio.portfolio_managers = managers.filter(id => id !== userSysId).join(',');
+      }
+
+      if(currentPortfolio.portfolio_viewers) {
+        const viewers = currentPortfolio.portfolio_viewers.split(',');
+        // eslint-disable-next-line camelcase
+        currentPortfolio.portfolio_viewers = viewers.filter(id => id !== userSysId).join(',');
+      }
+      await this.setCurrentPortfolioMembers(currentPortfolio);
+    }
   }
 
   public taskOrderDetailsAlertClosed = false;
