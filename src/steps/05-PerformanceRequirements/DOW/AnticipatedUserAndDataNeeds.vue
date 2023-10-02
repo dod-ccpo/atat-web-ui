@@ -26,7 +26,7 @@
         <v-expansion-panels
           v-model="accordionClosed[index]"
           v-for="(classification, index) in anticipatedNeedsData"
-          :id="'AnticipatedUserAndDataNeedsAccordion' + index"
+          :id="'AnticipatedUserAndDataNeedsAccordion_' + index"
           :key="index"
           class="mb-4"
           flat
@@ -50,9 +50,11 @@
                 :componentIndex="index"
                 :regionUsersOnLoad="anticipatedNeedsData[index].users_per_region"
                 :id="'Regions' +index"
+                :index="index"
                 @regionUserDataUpdate="regionUserDataUpdate"
               />
               <AnticipatedDataNeeds
+                :index="index"
                 :periods="periods"
                 :increaseSelection.sync="anticipatedNeedsData[index].increase_in_users"
                 :growthSelection.sync="anticipatedNeedsData[index].user_growth_estimate_type"
@@ -64,6 +66,7 @@
               <AnticipatedDataNeeds
                 class="mt-5"
                 needs="data"
+                :index="index"
                 :periods="periods"
                 :increaseSelection.sync="anticipatedNeedsData[index].data_increase"
                 :growthSelection.sync="anticipatedNeedsData[index].data_growth_estimate_type"

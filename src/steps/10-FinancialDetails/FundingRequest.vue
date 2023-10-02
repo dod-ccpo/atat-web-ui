@@ -29,42 +29,6 @@
             class="max-width-640 mb-5"
             name="radioButton-card"
           />
-          <ATATExpandableLink aria-id="AboutMissingFundingRequest">
-            <template v-slot:header>
-              What if I don’t have a funding request yet?
-            </template>
-            <template v-slot:content>
-              <p>
-                Every agency manages the transfer of funds differently, so we recommend contacting
-                your agency’s resource management division or financial department to determine
-                the best method for initiating a funding request.
-              </p>
-              <p>
-                G-Invoicing is the long-term solution for Federal Program Agencies (FPAs) to
-                manage their intragovernmental (IGT) Buy/Sell transactions. This is the preferred
-                system for generating and maintaining your GT&amp;Cs and Orders with Defense 
-                Information Technology Contracting Organization (DITCO).
-                <a id="LearnMoreGInvoicing"
-                    role="button"
-                    tabindex="0"
-                    @click="openSlideoutPanel($event, 'Ginvoice')"
-                    @keydown.enter="openSlideoutPanel($event, 'Ginvoice')"
-                    @keydown.space="openSlideoutPanel($event, 'Ginvoice')">
-                  <span>Learn more about G-Invoicing</span>
-                </a>
-              </p>
-              <p>
-                However, until your agency migrates to G-Invoicing, we will still allow you to
-                upload forms that were generating using your agency’s Enterprise Resource Planning
-                (ERP) system.
-              </p>
-              <p>
-                Whether using G-Invoicing or your ERP, you must obtain a certified funding document
-                from your authorized financial point of contact before you can proceed with 
-                this section.
-              </p>
-            </template>
-          </ATATExpandableLink>
         </div>
       </v-col>
     </v-row>
@@ -101,7 +65,7 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
       id: "FSFCheckbox",
       label: "Fiscal Service Forms (7600A and 7600B)",
       value: "FS_FORM",
-      description: `Import from G-Invoicing or manually upload your completed forms.
+      description: `Import your Order from G-Invoicing or manually upload your completed form.
         <v-chip class="v-chip v-chip--label theme--light v-size--default bg-info-dark
         mr-2"><span class="v-chip__content">Recommended</span></v-chip>`
     },

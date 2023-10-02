@@ -5,7 +5,7 @@
       <ATATTextField
         width="234"
         type="number"
-        id="DataTransfer"
+        :id="'DataTransfer_'+ this.index"
         :label="dataLabel"
         :tooltipText="dataTooltipText"
         :appendDropdown="true"
@@ -20,7 +20,7 @@
     </div>
     <div>
       <ATATRadioGroup
-        id="DataIncrease"
+        :id="'DataIncrease_'+ this.index"
         :legend="increaseLabel"
         :items="increaseOptions"
         :value.sync="_increaseSelection"
@@ -32,7 +32,7 @@
     </div>
     <div v-if="_increaseSelection === 'YES'">
       <ATATRadioGroup
-        id="EstimateGrowth"
+        :id="'EstimateGrowth_'+ this.index"
         :legend="growthLabel"
         :items="growthOptions"
         :value.sync="_growthSelection"
@@ -43,7 +43,7 @@
       <br />
       <div v-if="_growthSelection !== ''" class="mb-6">
         <ATATSingleAndMultiplePeriods
-          id="Periods"
+          :id="'Periods'+this.index"
           :periods="periods"
           :textboxSuffix="'%'"
           :singlePeriodLabel="percentageLabel"
@@ -74,6 +74,7 @@ import { PeriodDTO } from "@/api/models";
 })
 export default class AnticipatedDataNeeds extends Vue {
   @Prop({default: "data"}) private needs?: string;
+  @Prop({default: 0}) private index?: number;
   @Prop({
     default: `Approximate data/internet egress across 
       the entire duration of your task order`
