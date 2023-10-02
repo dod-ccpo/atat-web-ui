@@ -78,7 +78,6 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"

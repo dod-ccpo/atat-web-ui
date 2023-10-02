@@ -1,41 +1,30 @@
 ._feedback-form {
-  position: absolute;
-  right: 0px;
-  bottom: -250px;
+  position: fixed;
+  right: 100px;
+  bottom: 0px;
   max-width: 461px !important;
   display:flex;
   flex-direction: row-reverse;
   z-index: 1;
+  filter: drop-shadow(0 -4px 10px rgba(194,194,194,0.5));
 
   ._feedback-tab {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     background-color: $base-lightest;
-    padding: 8px 12px;
+    padding: 8px 8px 0 8px;
     border-radius: 16px 16px 0 0;
-    position:relative;
-    width:207px;
-    &:hover {
-      background-color: $primary-10;
-    }
-    &._open{
-      background-color: $base-lightest;
-    }
+    position: relative;
     &._thank-you{
       display: none;
     }
 
 
-    .v-btn{
-      padding: 4px !important;
-      background-color: transparent;
-
+    .v-btn {
+      border-radius: 15px;
       &:hover {
-        background-color: transparent;
-        &._open{
-          background-color: $base-10;
-        }
+        background-color: $base-10;
       }
       ._toggle {
         transition: transform .3s ease-in-out !important;
@@ -70,7 +59,7 @@
       &:hover {
         border-radius:50%;
         background-color: $primary-10;
-        box-shadow:$primary-10 0px 0px 0px 5px;
+        box-shadow:$primary-10 1.5px 0 0 5px;
       }
     }
   }

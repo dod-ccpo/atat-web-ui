@@ -4,7 +4,7 @@ import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
 import { TABLENAME as FundingRequirementTable } from "@/api/fundingRequirement";
 import { groupBy } from "lodash";
-import { format, isAfter, isBefore, parseISO, startOfMonth } from "date-fns";
+import { format, isAfter, isBefore, parseISO } from "date-fns";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 
 export interface PortFolioDashBoardDTO {
@@ -130,7 +130,7 @@ export class DashboardService {
   }
 
   public async getAllCLINs(taskOrderSysId: string): Promise<ClinDTO[]> {
-    let query = "task_order=" + taskOrderSysId + "^clin_number!=9999";
+    const query = "task_order=" + taskOrderSysId + "^clin_number!=9999";
     const fields = "clin_number,funds_obligated,sys_id"
     const config: AxiosRequestConfig = {
       params: {
@@ -145,7 +145,7 @@ export class DashboardService {
 
 
   public async getCostsInCurrentPeriod(clins: string[]): Promise<CostsDTO[]> {
-    let query = "clinIN" + clins.join(",");
+    const query = "clinIN" + clins.join(",");
     const fields =
       "csp,csp.name,clin,clin.clin_number,year_month," +
       "task_order_number,portfolio,organization,agency.title,is_actual,value";
@@ -218,10 +218,14 @@ export class DashboardService {
             }
         }
       ).then((clinData)=>{
+        const displayData = clinData as unknown as Record<string, Record<string, string>>[]
+        displayData.forEach((clin, i) => {
+          clinData[i].idiq_clin_label = clin.idiq_clin.display_value
+        })
         return clinData.map((clin: ClinDTO) =>{
           return convertColumnReferencesToValues(clin);
-        })
-      })
+        });
+      });
       const costs = await this.getCostsInCurrentPeriod(clinSysIds)
 
       return {

@@ -75,7 +75,6 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -106,8 +105,7 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   }
 
   public async buildILCheckboxItems(): Promise<void> {
-    const cspData = PortfolioStore.CSPProvisioningData;
-    cspData.forEach(obj => {
+    this.CSPProvisioningData.forEach(obj => {
       if (obj.classification_level === "U" && obj.cloud_distinguisher) {
         const checkboxItem: Checkbox = {
           id: obj.cloud_distinguisher.name as string,
@@ -126,7 +124,9 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   }
 
   public get showCheckbox():boolean {
-    return PortfolioStore.doesCSPHaveImpactLevels && PortfolioStore.doesTaskOrderHaveUnclassified;
+    return PortfolioStore.doesCSPHaveImpactLevels 
+      && PortfolioStore.doesTaskOrderHaveUnclassified 
+      && this.checkboxItems.length > 0;
   }
   public get currentData(): PortfolioProvisioning {
     return {
@@ -171,12 +171,13 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    const unclassCSPs = this.CSPProvisioningData.filter((csp) => csp.classification_level === 'U')
     if (!OrganizationData.agency_data || OrganizationData.agency_data.length === 0) {
       await OrganizationData.getAgencyData();
     }
     this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data); 
     await this.setTaskOrderData();
-    if (PortfolioStore.CSPHasImpactLevels) {
+    if (PortfolioStore.CSPHasImpactLevels && unclassCSPs.length > 1) {
       await this.buildILCheckboxItems();
     }
   }

@@ -4,7 +4,6 @@ import {DefaultProps} from "vue/types/options";
 import Vue from "vue";
 import validators from "@/plugins/validation";
 import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
-import ATATTextField from "@/components/ATATTextField.vue";
 
 describe("Testing DoDAAC Component", () => {
   const localVue = createLocalVue();
