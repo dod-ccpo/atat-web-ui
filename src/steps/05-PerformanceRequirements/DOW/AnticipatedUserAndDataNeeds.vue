@@ -32,7 +32,7 @@
           flat
         >
           <v-expansion-panel expand>
-            <v-expansion-panel-header>
+            <v-expansion-panel-header :id="`AccordionButton_${index}`" >
               <div class="d-flex justify-space-between">
                 <div class="h4 _expansion-panel-header">
                   {{buildClassificationLabel(classification,'short',true)}}
