@@ -57,11 +57,6 @@
             v-if="tabItems[tabIndex] === 'Task Orders'" 
             :portfolioSysId="portfolioSysId"
             />
-            <CSPPortalAccess
-              v-if="tabItems[tabIndex] === 'CSP Portal Access'"
-              :portfolioCSP="portfolioCSP"
-              :environmentIndex.sync="selectedSecondaryTab"
-            />
         </v-container>
 
         <Provisioned v-else style="margin-bottom: 100px;"/>
@@ -88,7 +83,6 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import ATATToast from "@/components/ATATToast.vue";
 import PortfolioSummaryPageHead from
   "@/portfolios/portfolio/components/shared/PortfolioSummaryPageHead.vue";
-import CSPPortalAccess from "@/portfolios/portfolio/components/CSPPortalAccess/CSPPortalAccess.vue";
 import FundingTracker from "@/portfolios/portfolio/components/FundingTracker/FundingTracker.vue";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 
@@ -105,7 +99,6 @@ import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
 
 @Component({
   components: {
-    CSPPortalAccess,
     TaskOrder,
     FundingTracker,
     PortfolioSummaryPageHead,
@@ -118,9 +111,7 @@ import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
   }
 })
 
-
 export default class PortfolioSummary extends Vue {
-  
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
