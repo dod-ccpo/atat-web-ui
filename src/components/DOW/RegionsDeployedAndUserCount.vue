@@ -2,6 +2,7 @@
 <template>
   <ATATCheckboxGroup
     :id="id"
+    :index="index"
     :items.sync="regions"
     :groupLabel="groupLabel"
     :groupLabelId="groupLabelId"
@@ -39,6 +40,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 export default class RegionsDeployedAndUserCount extends Vue {
   @Prop({ default: "Regions" }) id!: string;
   @Prop({ default: false }) hasTextFields?: boolean;
+  @Prop({default: 0}) private index?: number;
   @Prop() groupLabel?: string;
   @Prop() groupLabelId?: string;
   @Prop() groupLabelHelpText?: string;
@@ -103,7 +105,7 @@ export default class RegionsDeployedAndUserCount extends Vue {
       .forEach(region => {
         //eslint-disable-next-line prefer-const 
         let item = {
-          id : region.name,
+          id : `${region.name}_${this.index}`,
           label : region.name,
           value : region.sys_id,
           textfieldValue : ""
