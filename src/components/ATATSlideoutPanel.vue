@@ -34,7 +34,11 @@
       </v-btn>
     </div>
 
-    <div id="PanelWrap" class="_panel-content-wrap _portfolio">
+    <div
+      id="PanelWrap"
+      class="_panel-content-wrap "
+      :class="{'_portfolio' : isPortfolios}"
+    >
       <slot v-if="currentPanelDefined"></slot>
     </div>
 
@@ -61,6 +65,9 @@ export default class ATATSlideoutPanel extends Vue {
       const isOpen = target.classList.contains('v-navigation-drawer--open');
       isOpen ? SlideoutPanel.openSlideoutPanel("") : SlideoutPanel.closeSlideoutPanel();
     }
+  }
+  get isPortfolios(): boolean {
+    return AppSections.activeAppSection === "Portfolio Summary"
   }
 
   get panelTitle(): string {
