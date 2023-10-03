@@ -34,7 +34,7 @@
                   an email from each selected CSP with account login instructions.
                 </p>
                 <v-btn
-                :href="requestAccessURL"
+                :href="{ requestAccessURL }"
                 id="RequestAccess"
                 target="_blank"
                 class="primary mt-4 width-45 _text-decoration-none"
@@ -211,7 +211,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class DAPPSChecklist extends Mixins(SaveOnLeave) {
   public requestAccessURL = "https://community.hacc.mil/s/jwcc/pricing-calculator-request"
   public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
+    if (e?.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }

@@ -20,7 +20,7 @@
       {{ item.headerText }}
       </v-expansion-panel-header>
       <v-expansion-panel-content :id="item.id + '_Content'">
-          <div v-html="item.content"></div>
+          <div>{{ item.content }}></div>
       </v-expansion-panel-content>
     </v-expansion-panel>
     </v-expansion-panels>

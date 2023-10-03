@@ -13,7 +13,7 @@
     light
     :timeout="getTimeout"
   >
-    <div v-html="toast.message"></div>
+    <div>{{toast.message}}</div>
     <template v-if="toast.hasUndo" v-slot:action="{ attrs }">
       <v-btn
         text

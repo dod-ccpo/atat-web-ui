@@ -5,7 +5,7 @@
       We encourage your agency to use
       <a
         class="_text-link"
-        :href="$sanitize(gInvoiceHref)"
+        v-bind:href="gInvoiceHref"
         target="_blank"
         rel="noopener"
       >
@@ -62,7 +62,7 @@
       and may be accepted on a direct citation or reimbursable basis and is defined in the
       <a
         class="_text-link"
-        :href="$sanitize(federalAcqHref)"
+        v-bind:href="federalAcqHref"
         target="_blank"
         id="FARLink"
         rel="noopener"

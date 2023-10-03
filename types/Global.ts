@@ -282,7 +282,8 @@ export interface signedDocument{
   itemName:string,
   requiresSignature:boolean,
   alertText?:string,
-  show:boolean
+  show:boolean,
+  description?:string
 }
 
 

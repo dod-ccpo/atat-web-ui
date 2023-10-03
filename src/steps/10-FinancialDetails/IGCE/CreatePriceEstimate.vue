@@ -63,7 +63,7 @@
                                :key="index"
                                :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
                                class="_csp-link d-block mt-4 font-size-14"
-                               :href="link.url"
+                               v-bind:href="link.url"
                                target="_blank"
                             >
                               {{ link.text }}
@@ -222,7 +222,7 @@ export default class CreatePriceEstimate extends Vue {
   public async loadOnEnter(): Promise<void> {
     const storeData = _.cloneDeep(AcquisitionPackage.fairOpportunity);
     if (storeData && storeData.exception_to_fair_opportunity !== 'NO_NONE') {
-      this.recommended = storeData.proposed_csp?.toLowerCase() || "";
+      this.recommended = storeData.proposed_csp?.toLowerCase() ?? "";
     }
   }
 

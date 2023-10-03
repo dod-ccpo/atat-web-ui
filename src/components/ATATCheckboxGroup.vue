@@ -77,8 +77,7 @@
               v-if="item.description"
               class="mb-0 _description"
               :class="[{'_normal':descriptionNormal}]"
-            v-html="item.description"
-            ></div>
+            >{{item.description}}</div>
           </div>
         </template>
         <template v-slot:append>
@@ -290,7 +289,7 @@ export default class ATATCheckboxGroup extends Vue {
       });
     } else if (newVal.length < oldVal.length) {
       // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
-      const uncheckedVal = oldVal.find((val) => !newVal.includes(val)) || "";
+      const uncheckedVal = oldVal.find((val) => !newVal.includes(val)) ?? "";
       const uncheckedIndex = this.getSelectedIndex(uncheckedVal);
       this.selectedIndices = this.selectedIndices.filter(
         (idx) => idx !== uncheckedIndex
@@ -361,15 +360,15 @@ export default class ATATCheckboxGroup extends Vue {
         this._selected = [this.noneValue];
       }
     } else {
+      this.validateOtherOnBlur = true;
+      this.hideOtherTextarea = false;
+      
       if (
         value === this.otherValue &&
         this._selected.indexOf(this.otherValue) > -1
       ) {
         this.validateOtherOnBlur = false;
         this.hideOtherTextarea = true;
-      } else {
-        this.validateOtherOnBlur = true;
-        this.hideOtherTextarea = false;
       }
     }
   }
@@ -380,7 +379,7 @@ export default class ATATCheckboxGroup extends Vue {
     } else {
       setTimeout(() => {
         const checkbox = this.$refs.checkboxGroup;
-        if (checkbox && checkbox.length) {
+        if (checkbox?.length) {
           this.errorMessages = checkbox[0].errorBucket;
         }
         AcquisitionPackage.setValidateNow(false);
@@ -402,7 +401,7 @@ export default class ATATCheckboxGroup extends Vue {
   private getPerformanceRequirementTotal(classLevelSysId: string): string{
     const totalClassLevelInDOW = ClassificationRequirements.classLevelsInDOWTotal.find(
       cl => cl.classLevelSysId === classLevelSysId
-    )?.DOWObjectTotal || 0;
+    )?.DOWObjectTotal ?? 0;
     const hasBeenDeleted = totalClassLevelInDOW === 0;
     if (hasBeenDeleted){ return ""; } 
     return totalClassLevelInDOW > 0 && this._selected.includes(classLevelSysId)
@@ -470,7 +469,7 @@ export default class ATATCheckboxGroup extends Vue {
   public setCheckboxEventListeners(event: FocusEvent): void {
     const thisCheckbox = event.currentTarget as HTMLInputElement;
     const id = thisCheckbox.id;
-    const groupId: string = thisCheckbox.dataset.groupId || "CheckboxGroup";
+    const groupId: string = thisCheckbox.dataset.groupId ?? "CheckboxGroup";
     if (id && groupId && groupId === this.id + "_Group") {
       if (
         !Object.prototype.hasOwnProperty.call(this.blurredCheckboxes, groupId)

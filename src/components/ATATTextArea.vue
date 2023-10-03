@@ -7,7 +7,7 @@
         :class="{ 'd-sr-only': labelSrOnly }"
         :for="id + '_text_area'"
       >
-        <span v-html="label"></span>
+        <span>{{ label }}</span>
         <span v-if="optional" class="optional">
           Optional
         </span>

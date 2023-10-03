@@ -225,6 +225,13 @@ import { Statuses } from "@/store/acquisitionPackage";
 import AccessingCSPLearnMore from "../shared/AccessingCSPLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 
+interface StatusImgPrototype {
+  name: string,
+  width: string,
+  height: string,
+  color: string,
+  bgColor:string
+}
 
 @Component({
   components: {
@@ -390,7 +397,7 @@ export default class CSPPortalAccess extends Vue {
     <span class="text-decoration-underline">DoD ID Card Office Online</span>
     and locate it under “My Profile.”`;
 
-  public statusImg = {
+  public statusImg: Record<string, StatusImgPrototype> = {
     "Failed":{
       name: "failed",
       width: "16",
@@ -585,7 +592,7 @@ export default class CSPPortalAccess extends Vue {
 
   public async openSlideoutPanel(e: Event): Promise<void> {
     try { 
-      if (e && e.currentTarget) {
+      if (e?.currentTarget) {
         const opener = e.currentTarget as HTMLElement;
         const slideoutPanelContent: SlideoutPanelContent = {
           component: AccessingCSPLearnMore,

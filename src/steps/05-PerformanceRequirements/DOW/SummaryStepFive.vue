@@ -68,8 +68,8 @@
                 <h3 class="mb-1" :id="getIdText(item.title ) + '_Heading'">
                   {{ item.title }}
                 </h3>
-                <p class="mb-0" :id="getIdText(item.title) + '_Description'" 
-                  v-html="item.description">
+                <p class="mb-0" :id="getIdText(item.title) + '_Description'">
+                  {{ item.description }}
                 </p>
               </div>
               <div class="d-flex align-start">
@@ -189,7 +189,6 @@ import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 import { getIdText, toTitleCase } from "@/helpers";
 import Summary, { getSummaryItemsforStep } from "@/store/summary";
-// import router from "@/router";
 
 @Component({
   components: {
