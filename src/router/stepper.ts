@@ -145,6 +145,8 @@ import IncrementalFunding
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 import GTC from "@/steps/10-FinancialDetails/GTCInformation.vue";
 import CurrentlyHasFunding from "@/steps/10-FinancialDetails/CurrentlyHasFunding.vue";
+import GeneratingPackageDocumentsFunding
+  from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
 import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
@@ -323,6 +325,7 @@ export const routeNames = {
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   IncrementalFunding: "Incremental_Funding",
   GeneratingPackageDocuments: "Generating_Package_Documents",
+  GeneratingPackageDocumentsFunding: "Generating_Package_Documents_Funding",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
   GInvoicing:'G_Invoicing',
@@ -1416,12 +1419,12 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: GTC,
       },
       {
-        menuText: "Generate Package Documents",
-        path:"generate-package-documents",
+        menuText: "Generate Package Documents (Funding)",
+        path:"generate-package-documents-funding",
         excludeFromMenu: true,
-        name: routeNames.GeneratingPackageDocuments,
+        name: routeNames.GeneratingPackageDocumentsFunding,
         completePercentageWeight: 0,
-        component: GeneratingPackageDocuments,
+        component: GeneratingPackageDocumentsFunding,
       },
       {
         menuText: "Funding-Plan",
