@@ -44,6 +44,8 @@
       <div v-if="_growthSelection !== ''" class="mb-6">
         <ATATSingleAndMultiplePeriods
           :id="'Periods'+this.index"
+          :needs="needs"
+          :index="index"
           :periods="periods"
           :textboxSuffix="'%'"
           :singlePeriodLabel="percentageLabel"
@@ -102,7 +104,7 @@ export default class AnticipatedDataNeeds extends Vue {
   private increaseLabel = "";
   private increaseOptions: RadioButton[] = [
     {
-      id: `Accordion_${this.index}Question${this.index}YES`,
+      id: `Accordion_${this.index}Question_${this.needs}_YES`,
       value: "YES",
       label: "Yes"
     }
@@ -111,13 +113,13 @@ export default class AnticipatedDataNeeds extends Vue {
   private growthLabel = "";
   private growthOptions: RadioButton[] = [
     {
-      id: `Accordion_${this.index}Question${this.index}Single`,
+      id: `Accordion_${this.index}Question_${this.needs}_Single`,
       value: "SINGLE",
       label: `I want to estimate a single growth percentage 
         for the entire duration of the task order.`
     },
     {
-      id: `Accordion_${this.index}Question${this.index}Multiple`,
+      id: `Accordion_${this.index}Question_${this.needs}_Multiple`,
       value: "MULTIPLE",
       label: `I want to customize growth percentage estimates 
         for the base and each option period.`
@@ -135,7 +137,7 @@ export default class AnticipatedDataNeeds extends Vue {
       data over the duration of the task order?`;
 
     this.increaseOptions.push({
-      id: `Accordion_${this.index}Question${this.index}NO`,
+      id: `Accordion_${this.index}Question_${this.needs}_NO`,
       value: "NO",
       label: "No, I expect the amount of data to remain static."
     });
@@ -151,7 +153,7 @@ export default class AnticipatedDataNeeds extends Vue {
       users over the duration of your task order?`;
 
     this.increaseOptions.push({
-      id: `Accordion_${this.index}Question${this.index}NO`,
+      id: `Accordion_${this.index}Question_${this.needs}_NO`,
       value: "NO",
       label: "No, I expect the number of users to remain static."
     });
