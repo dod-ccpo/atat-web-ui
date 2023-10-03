@@ -511,19 +511,6 @@ export interface User {
   title?: string;
 }
 
-export interface Operator {
-  sysId?: string;
-  environment?: string;
-  email?: string;
-  dodId?: string;
-  status?: "Processing" | "Failed" | "Provisioned" | "";
-  addedBy?: string;
-  provisionedDate?: string;
-  provisioned?: string;
-  provisioningFailureCause?: string;
-  provisioningRequestDate?: string;
-}
-
 export interface Environment extends EnvironmentDTO {
   environmentStatus?: string;
   classification_level?: string;
