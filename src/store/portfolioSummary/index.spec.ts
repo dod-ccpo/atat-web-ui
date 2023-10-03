@@ -2,8 +2,7 @@ import {createLocalVue} from "@vue/test-utils";
 import Vuex, {Store} from "vuex";
 import {getModule} from "vuex-module-decorators";
 import {PortfolioSummaryStore} from "@/store/portfolioSummary/index";
-import { PortfolioSummaryObj, PortfolioSummaryDTO
-} from "@/api/models";
+import { PortfolioSummaryObj } from "@/api/models";
 import Vue from "vue";
 import portfolioSummaryListMock from "@/store/portfolioSummary/mocks/portfolioSummaryListMock.json"
 

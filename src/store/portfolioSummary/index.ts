@@ -1,23 +1,17 @@
 /* eslint-disable camelcase */
 import {
-  AgencyDTO,
-  CloudServiceProviderDTO,
-  PortfolioSummaryDTO,
   PortfolioSummaryMetadataAndDataDTO,
   PortfolioSummarySearchDTO,
   PortfolioSummaryObj
 } from "@/api/models";
-import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import {Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "@/store";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import Vue from "vue";
 import {api} from "@/api";
-import {AxiosRequestConfig} from "axios";
 import { Statuses } from "../acquisitionPackage";
 import CurrentUserStore from "../user";
-import {convertColumnReferencesToValues} from "@/api/helpers";
-import { Environment } from "types/Global";
-import { currencyStringToNumber } from "@/helpers";
+
 
 const ATAT_PORTFOLIO_SUMMARY_KEY = "ATAT_PORTFOLIO_SUMMARY_KEY";
 
@@ -146,7 +140,7 @@ export class PortfolioSummaryStore extends VuexModule {
    * offset and limit parameters of the pagination.
    */
   @Action({rawError: true})
-  private async getPortfolioSummaryList(
+  public async getPortfolioSummaryList(
     userSysId: string
   ): Promise<PortfolioSummaryMetadataAndDataDTO> {
   
@@ -155,235 +149,6 @@ export class PortfolioSummaryStore extends VuexModule {
     return await api.portfolioApi.getPortfolioSummaryList(userSysId)
   }
 
-  /**
-   * Constructs a single API call that gets all the alerts across all the portfolios. Parses
-   * the response and sets the 'alerts' to the respective portfolio.
-   */
-  @Action({rawError: true})
-  private async setAlertsForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    let allAlertsList = await api.alertsTable.getQuery(
-      {
-        params:
-          { // bring all fields
-            sysparm_query: "portfolio.sys_idIN" + portfolioSummaryList
-              .map(portfolio => portfolio.sys_id)
-          }
-      }
-    )
-    allAlertsList = allAlertsList
-      .map(alertObj => convertColumnReferencesToValues(alertObj));
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.alerts = allAlertsList
-        .filter((alert) => {
-          return alert.portfolio === portfolio.sys_id});
-    })
-    return portfolioSummaryList;
-  }
-
-  /**
-   * Constructs a single API call that gets all the environments across all the portfolios. Parses
-   * the response and sets the 'environments' to the respective portfolio.
-   */
-  @Action({rawError: true})
-  private async setEnvironmentsForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    // get all environments for all user portfolios
-    const allEnvironmentsList = await api.environmentTable.getQuery(
-      {
-        params:
-          { // bring all fields
-            sysparm_query: "portfolio.sys_idIN" + portfolioSummaryList
-              .map(portfolio => portfolio.sys_id)
-          }
-      }
-    )
-    const allEnvs: Environment[] = allEnvironmentsList.map(
-      environment => convertColumnReferencesToValues(environment)
-    );
-    
-    allEnvs.forEach(env => {
-      // ATAT TODO AT-9721
-      // remove this forEach entirely
-      // change environmentStatus to environment_status throughout codebase
-      if (env.provisioned === "true") {
-        env.environmentStatus = Statuses.Provisioned.value;
-      } else {
-        env.environmentStatus = env.provisioning_failure_cause  
-          ? Statuses.ProvisioningIssue.value 
-          : Statuses.Processing.value;
-      }
-    });
-    
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.environments = allEnvs.filter(env => env.portfolio === portfolio.sys_id);
-    });
-    
-    return portfolioSummaryList;
-  }
-
-  /**
-   * Constructs a single query that gets all the CSP records across all the portfolio environments.
-   * Parses the response and sets the 'csp_display' to the respective environment.
-   */
-  @Action({rawError: true})
-  private async setCspDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    const cspSysIds = portfolioSummaryList.map(portfolio =>
-      portfolio.environments?.map(environment => environment.csp));
-    const allCspList = await api.cloudServiceProviderTable.getQuery(
-      {
-        params:
-          {
-            sysparm_fields: "sys_id,name",
-            sysparm_query: "sys_idIN" + cspSysIds
-          }
-      }
-    )
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.environments?.forEach(environment => {
-        environment.csp_display =
-          (allCspList.find(
-            (csp: CloudServiceProviderDTO) => environment.csp === csp.sys_id)?.name) || "";
-      })
-    });
-  }
-
-  /**
-   * Constructs a single query that gets all the Agency records across all the portfolios.
-   * Parses the response and sets the 'agency_display' to the respective portfolio.
-   */
-  @Action({rawError: true})
-  private async setAgencyDisplay(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    const agencySysIds = portfolioSummaryList.map(portfolio => portfolio.agency);
-    const allAgencyList = await api.agencyTable.getQuery(
-      {
-        params:
-          {
-            sysparm_fields: "sys_id,acronym",
-            sysparm_query: "sys_idIN" + agencySysIds
-          }
-      }
-    )
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.agency_display =
-        (allAgencyList.find(
-          (agency: AgencyDTO) => portfolio.agency === agency.sys_id)?.acronym) || "";
-    });
-  }
-
-  /**
-   * Given a list of portfolios, compiles a single API call and returns the portfolio list
-   * with task orders populated.
-   */
-  @Action({rawError: true})
-  private async setTaskOrdersForPortfolios(portfolioSummaryList: PortfolioSummaryDTO[]):
-    Promise<PortfolioSummaryDTO[]> {
-    let allTaskOrderList = await api.taskOrderTable.getQuery(
-      {
-        params:
-          {
-            sysparm_fields:
-              "sys_id,clins,portfolio,task_order_number,task_order_status," +
-              "pop_end_date,pop_start_date",
-            sysparm_query: "portfolio.sys_idIN" + portfolioSummaryList
-              .map(portfolio => portfolio.sys_id)
-          }
-      }
-    )
-    allTaskOrderList = allTaskOrderList
-      .map(taskOrder => convertColumnReferencesToValues(taskOrder));
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.task_orders = allTaskOrderList
-        .filter((taskOrder) => {
-          return taskOrder.portfolio === portfolio.sys_id
-        });
-    })
-    return portfolioSummaryList;
-  }
-
-  /**
-   * Constructs a single query that get all the clins records across all the task orders. Parses
-   * the response and sets the clins to the respective task order.
-   */
-  @Action({rawError: true})
-  private async setClinsToPortfolioTaskOrders(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    const clins = portfolioSummaryList.map(portfolio => portfolio.task_orders
-      .map(taskOrder => taskOrder.clins));
-    const allClinList = await api.clinTable.getQuery(
-      {
-        params:
-          {
-            sysparm_fields: "sys_id,clin_number,idiq_clin,clin_status,funds_obligated," +
-              "funds_total,actual_funds_spent,pop_start_date,pop_end_date",
-            sysparm_display_value: true,
-            sysparm_query: "sys_idIN" + clins
-          }
-      }
-    )
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.task_orders.forEach(taskOrder => {
-        taskOrder.clin_records =
-          allClinList.filter(clin => (taskOrder.clins.indexOf(<string>clin.sys_id) !== -1))
-            .map(clin => {
-              const fundsTotal = currencyStringToNumber(clin.funds_total as unknown as string)
-              const fundsObligated = currencyStringToNumber(
-                clin.funds_obligated as unknown as string
-              );
-              const actualFundsSpent = currencyStringToNumber(
-                clin.actual_funds_spent as unknown as string
-              );
-              const status = clin.clin_status.toUpperCase().replace(/[\W_]+/g,"_");
-              return {
-                sys_id: clin.sys_id,
-                clin_number: clin.clin_number,
-                idiq_clin: clin.idiq_clin,
-                pop_end_date: clin.pop_end_date,
-                pop_start_date: clin.pop_start_date,
-                clin_status: status,
-                clin_status_display: clin.clin_status,
-                funds_obligated: Number(fundsObligated),
-                funds_total: Number(fundsTotal),
-                actual_funds_spent: Number(actualFundsSpent)
-              }
-            });
-      })
-    })
-  }
-
-  /**
-   * Constructs a single query that gets all the cost records across all the clins. Parses
-   * the response and sets the costs to the respective clin.
-   */
-  @Action({rawError: true})
-  private async setCostsToTaskOrderClins(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    const clinNumbers: string[] = [];
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.task_orders.forEach(taskOrder => {
-        taskOrder.clin_records?.forEach(clinRecord => {
-          clinNumbers.push(clinRecord.sys_id);
-        })
-      })
-    });
-    let allCostList = await api.costsTable.getQuery(
-      {
-        params:
-          {
-            sysparm_fields: "sys_id,clin,task_order_number,is_actual,value",
-            sysparm_query: "clinIN" + clinNumbers,
-            limit: -1,
-          }
-      }
-    )
-    allCostList = allCostList.map(cost => convertColumnReferencesToValues(cost));
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.task_orders.forEach(taskOrder => {
-        taskOrder.clin_records?.forEach(clinRecord => {
-          clinRecord.cost_records =
-            allCostList.filter(cost => {
-              return cost.clin === clinRecord.sys_id
-            });
-        })
-      })
-    })
-  }
 
   public hasActivePortfolios = false;
   @Action({rawError: true})
@@ -398,64 +163,6 @@ export class PortfolioSummaryStore extends VuexModule {
   @Mutation
   public async doSetHasActivePortfolios(hasActivePortfolios: boolean){
     this.hasActivePortfolios = hasActivePortfolios;
-  }
-
-  /**
-   * Aggregates the 'Total Obligated' and 'Funds Spent' for all the portfolios in the list.
-   * Also rolls up the pop dates using the values of the active task order.
-   *
-   * NOTE: Instead of computing here if we were to make the aggregate API call, it would take
-   * as many calls as the number of portfolios to get, for example, the 'Total Obligated' from
-   * the CLINS table. The reason for this is, the aggregate query response does not have any
-   * reference to what portfolio the aggregate belongs to and so a call for each portfolio.
-   * Computing here will eliminate all these calls.
-   */
-  @Action({rawError: true})
-  private computeAllAggregationsAndPopRollup(portfolioSummaryList: PortfolioSummaryDTO[]) {
-    portfolioSummaryList.forEach(portfolio => {
-      let totalObligatedForPortfolio = 0;
-      let fundsSpentForPortfolio = 0;
-      portfolio.task_orders.forEach(taskOrder => {
-        let fundsObligatedTaskOrder = 0;
-        let fundsSpentForTaskOrder = 0;
-        let totalTaskOrderValue = 0;
-        let totalLifecycleAmount = 0;
-        taskOrder.clin_records?.forEach(clinRecord => {
-          const validStatusesForTotalObligated = [
-            Statuses.Active.value, Statuses.OptionExercised.value, Statuses.OnTrack.value,
-            Statuses.AtRisk.value, Statuses.ExpiringPop.value, Statuses.Delinquent.value, 
-            Statuses.FundingAtRisk.value, Statuses.Expired.value
-          ]
-          if (validStatusesForTotalObligated.includes(clinRecord.clin_status)) {
-            totalObligatedForPortfolio =
-              totalObligatedForPortfolio + Number(clinRecord.funds_obligated);
-            // ATAT TODO AT-9722 - check if this should be outside if block
-            fundsObligatedTaskOrder = fundsObligatedTaskOrder +
-              Number(clinRecord.funds_obligated); 
-            totalTaskOrderValue = totalTaskOrderValue + Number(clinRecord.funds_total);
-          }
-          // totalLifecycleAmount is calculated using all clins of a TO irrespective of status
-          totalLifecycleAmount = totalLifecycleAmount + Number(clinRecord.funds_total);
-          clinRecord.cost_records?.forEach(costRecord => {
-            if (costRecord.is_actual === 'true') {
-              const costValue = Number(costRecord.value);
-              fundsSpentForPortfolio = fundsSpentForPortfolio + costValue;
-              fundsSpentForTaskOrder = fundsSpentForTaskOrder + costValue;
-            }
-          });
-        })
-        if (taskOrder.sys_id === portfolio.active_task_order) { // uses dates of active task
-          portfolio.pop_start_date = taskOrder.pop_start_date;
-          portfolio.pop_end_date = taskOrder.pop_end_date;
-        }
-        taskOrder.funds_obligated = fundsObligatedTaskOrder + "";
-        taskOrder.total_task_order_value = totalTaskOrderValue;
-        taskOrder.total_lifecycle_amount = totalLifecycleAmount;
-        taskOrder.funds_spent_task_order = fundsSpentForTaskOrder;
-      })
-      portfolio.funds_obligated = totalObligatedForPortfolio;
-      portfolio.funds_spent = fundsSpentForPortfolio;
-    })
   }
 
   /**

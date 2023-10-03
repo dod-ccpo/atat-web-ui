@@ -492,7 +492,7 @@ export default class PortfoliosSummary extends Vue {
     limit: this.recordsPerPage,
     offset: this.offset,
   }
-   
+
   public currentUserSysId = "";
 
   public get currentUser(): UserDTO {
@@ -502,6 +502,16 @@ export default class PortfoliosSummary extends Vue {
   public currentUserChange(): void {
     this.loadPortfolioData();
   }  
+
+  public get summaryListLength(): number {
+    return PortfolioSummary.portfolioSummaryList?.length as number
+  }
+  @Watch("summaryListLength")
+  public async summarListChanged(): Promise<void>{
+    const summaryList = await PortfolioSummary.getPortfolioSummaryList(this.currentUserSysId);
+    PortfolioSummary.setPortfolioSummaryList(summaryList.portfolios)
+  }
+  
 
   public filteredPortfolios(): string[] {
     const includedPortfolios = []
@@ -547,14 +557,13 @@ export default class PortfoliosSummary extends Vue {
     this.offset = (this.page - 1) * this.recordsPerPage;
     this.portfolioSearchDTO.offset = this.offset;
 
-    const storeData = await PortfolioSummary.searchPortfolioSummaryList(
-      { searchDTO: this.portfolioSearchDTO, isHomeView: this.isHomeView }
-    );
+    const storeData = await PortfolioSummary.getAllPortfolioSummaryList()
 
-    this.portfolioCount = storeData.portfolioCount;
+    this.portfolioCount = CurrentUserStore.getCurrentUserPortfolioCount;
+    await CurrentUserStore.doSetPortfolioCount(this.portfolioCount)
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
     const includedPortfolios = this.filteredPortfolios();
-    storeData.portfolios.forEach((portfolio) => {
+    storeData?.forEach((portfolio) => {
       if(includedPortfolios.includes(portfolio.portfolio_status)) {
         const cardData: PortfolioCardData = {};
         cardData.isOwner = portfolio.current_user_is_owner;

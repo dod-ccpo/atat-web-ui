@@ -97,7 +97,6 @@ export class UserStore extends VuexModule {
       query += userQuery;
       const count = await getTableRecordCount(AcquisitionPackageTable, query)
       this.doSetPackageCount(count);
-      await this.setUserPortfolioCount();
     }
 
   }
@@ -111,19 +110,7 @@ export class UserStore extends VuexModule {
   public get getUserHasPackages(): boolean {
     return this.currentUserPackageCount > 0;
   }
- 
-  @Action({rawError: true})
-  public async setUserPortfolioCount(): Promise<void> {
-    // SET TOTAL PORTFOLIO COUNT
-    let query = "portfolio_statusINPROCESSING,PROVISIONING_ISSUE,ACTIVE,ARCHIVED";
-    const searchDTO: PortfolioSummarySearchDTO = { 
-      role: "ALL" 
-    };
-    const userQuery = await PortfolioSummary.getMandatorySearchParameterQuery({searchDTO});
-    query += userQuery;
-    const count = await getTableRecordCount(PortfolioTable, query)
-    await this.doSetPortfolioCount(count);
-  }
+
   @Mutation
   public async doSetPortfolioCount(count: number): Promise<void> {
     this.currentUserPortfolioCount = count;
@@ -133,6 +120,13 @@ export class UserStore extends VuexModule {
   }
   public get getUserHasPortfolios(): boolean {
     return this.currentUserPortfolioCount > 0;
+  }
+
+  @Action({rawError: true})
+  public async setUserPortfolios(userSysId: string): Promise<void> {
+    const portfolioSum = await PortfolioSummary.getPortfolioSummaryList(userSysId)
+    PortfolioSummary.setPortfolioSummaryList(portfolioSum.portfolios)
+    await this.doSetPortfolioCount(portfolioSum.portfolioCount)
   }
 
   @Action({rawError: true})
@@ -150,6 +144,7 @@ export class UserStore extends VuexModule {
       this.setStoreData(sessionRestored);
       await this.setUserRoles();
       await this.setUserPackageCount();
+      await this.setUserPortfolios(this.currentUser.sys_id as string)
       this.setInitialized(true);
     } else if (userId && 
       (this.currentUser.sys_id === "" || this.currentUser.sys_id === undefined)
@@ -160,6 +155,7 @@ export class UserStore extends VuexModule {
         this.setCurrentUser(userObj);
         await this.setUserRoles();
         await this.setUserPackageCount();
+        await this.setUserPortfolios(userId as string)
         storeDataToSession(this, this.sessionProperties, ATAT_USER_KEY);
         this.setInitialized(true);
       }
