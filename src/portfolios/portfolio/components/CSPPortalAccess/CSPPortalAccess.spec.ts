@@ -4,6 +4,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import CSPPortalAccess from "@/portfolios/portfolio/components/CSPPortalAccess/CSPPortalAccess.vue";
 import validators from "@/plugins/validation";
+import SlideoutPanel from "@/store/slideoutPanel";
 Vue.use(Vuetify);
 
 describe("Testing CSPPortalAccess Component", () => {
@@ -133,5 +134,27 @@ describe("Testing CSPPortalAccess Component", () => {
     });
   });
 
-  
+  it("openSlideOut() properly evaluates event object for null ", async () => {
+    const spy = jest.spyOn(SlideoutPanel,'openSlideoutPanel');
+    spy.mockImplementation(jest.fn());
+    await wrapper.vm.openSlideoutPanel(undefined);
+    expect(spy).not.toHaveBeenCalled();
+  })
+
+  it("openSlideOut() properly evaluates event object for valid event, but null 'currentTarget' ", 
+    async () => {
+      const spy = jest.spyOn(SlideoutPanel,'openSlideoutPanel');
+      spy.mockImplementation(jest.fn());
+      const e = new Event("test");
+      await wrapper.vm.openSlideoutPanel(e);
+      expect(spy).not.toHaveBeenCalled();
+    })
+
+  it("openSlideOut() properly evaluates event object for valid event", async () => {
+    const spy = jest.spyOn(SlideoutPanel,'openSlideoutPanel');
+    spy.mockImplementation(jest.fn());
+    const link = wrapper.find("#LearnMoreLink");
+    link.trigger('click');
+    expect(spy).not.toHaveBeenCalled();
+  })
 })

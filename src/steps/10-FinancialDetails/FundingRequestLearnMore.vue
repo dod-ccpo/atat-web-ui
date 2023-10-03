@@ -5,9 +5,10 @@
       We encourage your agency to use
       <a
         class="_text-link"
-        v-bind:href="gInvoiceHref"
+        :href="$sanitize(gInvoiceHref)"
         target="_blank"
         rel="noopener"
+        id="GINLink"
       >
         <span class="_external-link">Government Invoicing (G-Invoicing)</span>
       </a>
@@ -62,7 +63,7 @@
       and may be accepted on a direct citation or reimbursable basis and is defined in the
       <a
         class="_text-link"
-        v-bind:href="federalAcqHref"
+        :href="$sanitize(federalAcqHref)"
         target="_blank"
         id="FARLink"
         rel="noopener"
