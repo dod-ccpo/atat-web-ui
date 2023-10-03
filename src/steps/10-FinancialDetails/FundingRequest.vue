@@ -63,7 +63,7 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
   private radioButtonItems: RadioButton[] = [
     {
       id: "FSFCheckbox",
-      label: "Fiscal Service Forms (7600A and 7600B)",
+      label: "Fiscal Service Form 7600B",
       value: "FS_FORM",
       description: `Import your Order from G-Invoicing or manually upload your completed form.
         <v-chip class="v-chip v-chip--label theme--light v-size--default bg-info-dark
