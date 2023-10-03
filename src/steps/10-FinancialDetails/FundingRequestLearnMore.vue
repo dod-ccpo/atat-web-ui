@@ -10,57 +10,45 @@
         rel="noopener"
         id="GINLink"
       >
-        <span class="_external-link">Government Invoicing (G-Invoicing)</span>
+        <span class="_external-link">
+         Government Invoicing (G-Invoicing)
+        </span>
       </a>
-      to create and manage all
-      Buy/Sell intragovernmental (IGT) transactions. This financial management system will replace
-      the various manual forms used today like the Fiscal Service (FS) Form 7600A/B, Military
-      Interdepartmental Purchase Request (MIPR), etc.
+      to create and manage all Buy/Sell intragovernmental transactions (IGT). This financial
+      management system will replace the various manual forms used today like the Fiscal
+      Service (FS) Form 7600A/B, Military Interdepartmental Purchase Request (MIPR), etc.
     </p>
-    <p>
-      If your agency has not migrated their financial system to G-Invoicing yet, then you will still
-      be able to upload your completed funding document(s).
-    </p>
+    <ATATAlert id="FundingRequestLearnMore" type="info">
+      <template v-slot:content>
+        <p class="font-size-16 font-weight-700 mb-2">
+          All JWCC requirements packages must have a General Terms & Conditions (GT&C) agreement.
+        </p>
+        <p class="mb-0">
+          You will also need to provide either an FS Form 7600B/Order or a Military
+          Interdepartmental Purchase Request (MIPR).
+        </p>
+      </template>
+    </ATATAlert>
     <hr class="my-5"/>
 
-    <h3 class="mb-4">Fiscal Service Forms 7600A and 7600B</h3>
+    <h3 class="mb-4">Order Requirements and Funding Information (Order)</h3>
     <p>
-      The Department of Treasury’s FS Forms 7600A/B serve as the standard forms to be used
-      government-wide for all reimbursable agreements at the trading partner level.
+      The Order section of an interagency agreement within G-Invoicing replaces the FS Form 7600B.
+      It identifies the specific Requesting Agency requirements for the expected delivery of
+      products and/or services by the Servicing Agency. A fiscal obligation is created when all
+      required points of contact sign to authorize the Order.
     </p>
     <p>
-      The 7600A is a
-      <strong>General Terms and Conditions (GT&amp;C)</strong>
-      agreement that establishes the relationship
-      between the trading partners and identifies the agreement action, period, and type. No fiscal
-      obligations are created through the execution of the GT&amp;C: therefore, no services may be
-      performed and/or no goods may be delivered.
-    </p>
-    <p>
-      The 7600B is the
-      <strong>Order Requirements and Funding Information (Order)</strong>
-      section of an interagency
-      agreement. The Order identifies the specific Requesting Agency requirements for the expected
-      delivery of products and/or services by the Servicing Agency. A fiscal obligation is created
-      when all required points of contact sign to authorize the Order.
-    </p>
-    <p>
-      A GT&amp;C agreement may contain one or more Orders.
-    </p>
-    <p>
-      If your agency uses G-Invoicing, then you will only need to provide your 7600B Order Number, 
-      and we will take care of syncing your IGT info with this acquisition.
-    </p>
-    <p>
-      If you choose to upload, you will need to provide both of these FS forms.
+      A GT&C agreement may contain one or more Orders.
     </p>
     <hr class="my-5"/>
 
     <h3 class="mb-4">Military Interdepartmental Purchase Request (MIPR)</h3>
     <p>
-      MIPR is a method for transferring funds from one military organization to another to procure
-      services, supplies, or equipment for the requiring service. A MIPR is processed on DD Form 448
-      and may be accepted on a direct citation or reimbursable basis and is defined in the
+      In lieu of a G-Invoicing Order, your agency may use a MIPR to transfer funds from one
+      military organization to another to procure services, supplies, or equipment for the
+      requiring service. A MIPR is processed on DD Form 448 and may be accepted on a direct
+      citation or reimbursable basis and is defined in the
       <a
         class="_text-link"
         :href="$sanitize(federalAcqHref)"
@@ -68,8 +56,13 @@
         id="FARLink"
         rel="noopener"
       >
-        Federal Acquisition Regulation (FAR) <span class="_external-link">253.208</span>
+        Defense Federal Acquisition Regulation Supplement– Procedures, Guidance, and Instructions
+        (DFARS PGI) <span class="_external-link">253.208-1</span>
       </a>.
+    </p>
+    <p>
+      Please note that your agency will need to establish a GT&C agreement in G-Invoicing,
+      even if you are using a MIPR.
     </p>
   </div>
 </template>
@@ -77,8 +70,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import ATATAlert from "@/components/ATATAlert.vue";
 
-@Component({})
+@Component({
+  components: {
+    ATATAlert
+  }
+})
 
 export default class FundingRequestLearnMore extends Vue {
   private gInvoiceHref = `https://fiscal.treasury.gov/g-invoice/`

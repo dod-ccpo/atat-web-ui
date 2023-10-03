@@ -64,6 +64,7 @@
       </v-text-field>
       <ATATSelect
         v-if="appendDropdown"
+        :id="id"
         :items="dropdownOptions"
         :showSelectedValue="true"
         :selectedValue.sync="_selectedDropdownValue"
