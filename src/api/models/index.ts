@@ -800,13 +800,11 @@ export interface EnvironmentDTO extends BaseTableDTO {
   csp_display: string;
   name: string;
   dashboard_link: string;
-  pending_operators: string[];
   portfolio: string;
   provisioned: string;
   provisioned_date: string;
   provisioning_failure_cause: string;
   provisioning_request_date: string;
-  csp_admins?: OperatorDTO[];
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
@@ -934,17 +932,6 @@ export interface UserSearchResultDTO extends BaseTableDTO {
   phone?: string;
   company?: string;
   title?: string;
-}
-
-export interface OperatorDTO extends BaseTableDTO{
-  environment?: string;
-  email?: string;
-  dod_id?: string;
-  added_by?: string;
-  provisioned_date?: string;
-  provisioned?: string;
-  provisioning_failure_cause?: string;
-  provisioning_request_date?: string;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{
