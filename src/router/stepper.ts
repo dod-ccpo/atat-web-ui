@@ -1452,15 +1452,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: MIPR,
         //routeResolver: MIPRResolver
       },
-      // {
-      //   menuText: "G-Invoicing",
-      //   excludeFromMenu: true,
-      //   path: "g-invoicing",
-      //   name: routeNames.GInvoicing,
-      //   completePercentageWeight: 1,
-      //   component: GInvoicing,
-      //   routeResolver: GInvoicingResolver,
-      // },
+      {
+        menuText: "G-Invoicing",
+        excludeFromMenu: true,
+        path: "g-invoicing",
+        name: routeNames.GInvoicing,
+        completePercentageWeight: 1,
+        component: GInvoicing,
+        routeResolver: GInvoicingResolver,
+      },
       {
         menuText: "SummaryStepEight",
         path: "summary-step-eight",
