@@ -193,7 +193,8 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private buttonText?: string;
   @Prop({ default: false }) private searchButtonDisabled?: boolean;
   @Prop({ default: false }) private isModal?: boolean;
-  @PropSync("triggerSearch", { default: false }) private _triggerSearch?: boolean;
+  @PropSync("triggerSearch", { default: false })
+  private _triggerSearch?: boolean;
 
   @PropSync("value", { default: "" }) public _value!: string;
   @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
@@ -238,8 +239,7 @@ export default class ATATSearch extends Vue {
 
   @Watch("_triggerSearch")
   private intiateSearch(): void {
-    console.log('here')
-    if (this._value) this.search()
+    if (this._value) this.search();
     this._triggerSearch = false;
   }
 
@@ -258,6 +258,7 @@ export default class ATATSearch extends Vue {
     this.showErrorAlert = false;
     this.showHelpText = false;
     this.showGtcVerifiedIndicator = false;
+    this.showLoader = false;
 
     if (this.searchType === "EDA") {
       try {
@@ -284,7 +285,7 @@ export default class ATATSearch extends Vue {
       }
     } else if (this.searchType === "G-Invoicing") {
       try {
-        if (this.errorMessages.length > 0) return
+        if (this.errorMessages.length > 0) return;
         this.showLoader = true;
         const gInvoicingResponse = await api.gInvoicingApi.search(
           this._value,
