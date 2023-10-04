@@ -178,28 +178,8 @@ export class PortfolioSummaryStore extends VuexModule {
    *  already have the referenced data, no further call needs to be made.
    */
   @Action({rawError: true})
-  public async searchPortfolioSummaryList(
-    data: { 
-      searchDTO: PortfolioSummarySearchDTO, 
-      isHomeView?: boolean,
-      singlePortfolioSearch?: string 
-    }
-  ): Promise<PortfolioSummaryMetadataAndDataDTO> {
+  public async searchPortfolioSummaryList(): Promise<PortfolioSummaryMetadataAndDataDTO> {
     try {
-      const searchDTO = data.searchDTO;
-      const isHomeView = data.isHomeView ?? false;
-      let optionalSearchQuery = "";
-      
-      if (!data.singlePortfolioSearch) {
-        optionalSearchQuery = await this.getOptionalSearchParameterQuery(searchDTO);
-      } else {
-        optionalSearchQuery = "sys_id=" + data.singlePortfolioSearch;
-      }
-
-      let searchQuery = await this.getMandatorySearchParameterQuery({searchDTO, isHomeView});
-      if (optionalSearchQuery.length > 0) {
-        searchQuery = optionalSearchQuery + searchQuery;
-      }
 
       const portfolioSummaryCount = CurrentUserStore.getCurrentUserPortfolioCount;
       const currentUserSysId = CurrentUserStore.currentUser.sys_id
@@ -213,7 +193,6 @@ export class PortfolioSummaryStore extends VuexModule {
       } else {
         portfolioSummaryList = {} as PortfolioSummaryMetadataAndDataDTO;
       }
-      console.log(portfolioSummaryList, 'sum list')
       return {
         portfolioCount: portfolioSummaryList.portfolioCount,
         portfolios: portfolioSummaryList.portfolios

@@ -41,7 +41,7 @@ const portfolios: PortfolioSummaryObj[] = [
   },
   {
     portfolio_name: "test 2000",
-    portfolio_status: "PROCESSING",
+    portfolio_status: "ACTIVE",
     agency: "BRITISH EMBASSY",
     last_updated: "2023-09-27 11:17:01",
     current_user_is_owner: true,
@@ -147,6 +147,19 @@ describe("Testing index Component", () => {
   it("clearSearch()", async () => {
     await wrapper.vm.clearSearch();
     expect(await wrapper.vm.queryParams.searchString).toBe("");
+  });
+  it("summaryListChanged()", async () => {
+    const mockGetAll = jest.spyOn(
+      PortfolioSummaryStore, 
+      "getPortfolioSummaryList"
+    ).mockImplementation(() => Promise.resolve({portfolios: portfolios, portfolioCount: 1}));
+    const mockSet = jest.spyOn(
+      PortfolioSummaryStore, 
+      "setPortfolioSummaryList"
+    ).mockImplementation();
+    await wrapper.vm.summaryListChanged();
+    expect(mockGetAll).toHaveBeenCalled()
+    expect(mockSet).toHaveBeenCalled()
   });
 
 

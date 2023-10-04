@@ -508,7 +508,7 @@ export default class PortfoliosSummary extends Vue {
   }
   
   @Watch("summaryListLength")
-  public async summarListChanged(): Promise<void>{
+  public async summaryListChanged(): Promise<void>{
     const summaryList = await PortfolioSummary.getPortfolioSummaryList(this.currentUserSysId);
     PortfolioSummary.setPortfolioSummaryList(summaryList.portfolios)
   }
@@ -559,7 +559,6 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioSearchDTO.offset = this.offset;
 
     const storeData = await PortfolioSummary.getAllPortfolioSummaryList()
-    console.log(storeData, 'data')
     this.portfolioCount = CurrentUserStore.getCurrentUserPortfolioCount;
     await CurrentUserStore.doSetPortfolioCount(this.portfolioCount)
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);

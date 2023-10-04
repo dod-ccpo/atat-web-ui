@@ -58,7 +58,6 @@ import {TaskOrderCardData, ToastObj} from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryObj } from "@/api/models";
-import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/helpers";
 import PortfolioStore from "@/store/portfolio";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";

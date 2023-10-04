@@ -12,11 +12,10 @@ import api from "@/api";
 import Vue from "vue";
 import { User } from "types/Global";
 import { convertColumnReferencesToValues } from "@/api/helpers";
-import { PortfolioSummarySearchDTO, UserDTO } from "@/api/models";
+import { UserDTO } from "@/api/models";
 import AcquisitionPackageSummaryStore from "../acquisitionPackageSummary";
 import PortfolioSummary from "../portfolioSummary";
 import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
-import { TABLENAME as PortfolioTable } from "@/api/portfolio";
 import { getTableRecordCount } from "@/helpers";
 
 const ATAT_USER_KEY = "ATAT_USER_KEY";
