@@ -187,7 +187,6 @@ export class PortfolioSummaryStore extends VuexModule {
       let portfolioSummaryList: PortfolioSummaryMetadataAndDataDTO;
       if (portfolioSummaryCount > 0) {
         portfolioSummaryList = await this.getPortfolioSummaryList(currentUserSysId as string);
-        console.log(portfolioSummaryList)
         await this.setHasActivePortfolios(portfolioSummaryList.portfolios);
         this.setPortfolioSummaryList(portfolioSummaryList.portfolios); // caches the list
       } else {
