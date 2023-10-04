@@ -1,6 +1,8 @@
 <template>
-  <div id="SearchWrapper" :style="'width: ' + wrapperWidth + '; max-width: ' + wrapperWidth">
-
+  <div
+    id="SearchWrapper"
+    :style="'width: ' + wrapperWidth + '; max-width: ' + wrapperWidth"
+  >
     <div class="d-flex align-center mb-2" v-if="label">
       <label
         :id="id + '_Label'"
@@ -10,17 +12,14 @@
       >
         {{ label }}
       </label>
-      <ATATTooltip 
+      <ATATTooltip
         :tooltipText="tooltipText"
         :tooltipTitle="tooltipTitle"
         :id="id"
         :label="label"
       />
     </div>
-    <div 
-      class="d-flex"
-      :style="'width: ' + width"
-    >
+    <div class="d-flex" :style="'width: ' + width">
       <v-text-field
         :ref="isModal ? 'atatSearchInputModal' : 'atatSearchInput'"
         :id="id + '_SearchInput'"
@@ -41,14 +40,14 @@
         @keydown.enter="search"
       />
       <v-btn
-        :id="id + '_SearchButton'" 
+        :id="id + '_SearchButton'"
         class="primary _search-button"
         @click="search"
         @keydown.enter="search"
         @keydown.space="search"
         :disabled="searchButtonDisabled || searchDisabled"
       >
-        <ATATSVGIcon 
+        <ATATSVGIcon
           v-if="!buttonText"
           name="search"
           color="white"
@@ -75,9 +74,25 @@
         width="3"
         class="mr-2"
       />
-      <span class="text-base">
-        Locating your order in {{ searchType }}
-      </span>
+      <span class="text-base"> Locating your order in {{ searchType }} </span>
+    </div>
+
+    <div
+      id="GtcVerifedIndicator"
+      v-show="showGtcVerifiedIndicator && !showHelpText"
+    >
+      <div
+        class="mt-4 d-flex justify-start"
+        style="align-items: center; gap: 7px"
+      >
+        <ATATSVGIcon
+          name="check-circle"
+          color="success"
+          width="22"
+          height="22"
+        />
+        <span class="font-weight-500">GT&C verified</span>
+      </div>
     </div>
 
     <ATATAlert
@@ -89,16 +104,19 @@
     >
       <template v-slot:content>
         <p>
-          We could not find your order within {{ searchType }}. Please enter a valid
-          order number and search again.
+          We could not find your order within {{ searchType }}. Please enter a
+          valid order number and search again.
         </p>
         <p class="mb-0">
           If you confirmed your order within {{ searchType }} and continue to
           receive this message, please
-          <a href="https://community.hacc.mil/s/contact?RequestTopic=Account%20Trackin
-            g%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer" target="_blank">
-            contact Customer Support
-          </a>.
+          <a
+            href="https://community.hacc.mil/s/contact?RequestTopic=Account%20Trackin
+            g%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"
+            target="_blank"
+          >
+            contact Customer Support </a
+          >.
         </p>
       </template>
     </ATATAlert>
@@ -112,11 +130,10 @@
     >
       <template v-slot:content>
         <p class="mb-0">
-          Good news! We found your order within {{ searchType }}.          
+          Good news! We found your order within {{ searchType }}.
         </p>
       </template>
     </ATATAlert>
-
   </div>
 </template>
 
@@ -124,7 +141,7 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
-import ATATTooltip from "@/components/ATATTooltip.vue"
+import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import api from "@/api";
@@ -142,24 +159,21 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATErrorValidation,
   },
 })
-
 export default class ATATSearch extends Vue {
-
   $refs!: {
-    atatSearchInput: Vue & { 
-      errorBucket: string[]; 
+    atatSearchInput: Vue & {
+      errorBucket: string[];
       errorCount: number;
       resetValidation(): void;
       value: string;
     };
-    atatSearchInputModal: Vue & { 
-      errorBucket: string[]; 
+    atatSearchInputModal: Vue & {
+      errorBucket: string[];
       errorCount: number;
       resetValidation(): void;
       value: string;
     };
-
-  }; 
+  };
 
   @Prop({ default: "Search" }) private id!: string;
   @Prop({ default: "" }) private placeHolder?: string;
@@ -170,7 +184,7 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private tooltipTitle?: string;
   @Prop({ default: "" }) private tooltipText?: string;
   @Prop({ default: "" }) private helpText?: string;
-  @Prop({ default: ()=>[] }) private mask?: string[];
+  @Prop({ default: () => [] }) private mask?: string[];
   @Prop({ default: false }) private isMaskRegex?: boolean;
   @Prop({ default: () => [] }) private rules?: Array<unknown>;
   @Prop({ default: true }) private showErrorMessages?: boolean;
@@ -179,6 +193,7 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private buttonText?: string;
   @Prop({ default: false }) private searchButtonDisabled?: boolean;
   @Prop({ default: false }) private isModal?: boolean;
+  @PropSync("triggerSearch", { default: false }) private _triggerSearch?: boolean;
 
   @PropSync("value", { default: "" }) public _value!: string;
   @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
@@ -188,7 +203,8 @@ export default class ATATSearch extends Vue {
 
   private showHelpText = true;
   private showLoader = false;
-  
+  private showGtcVerifiedIndicator = false;
+
   private showSuccessAlert = false;
   private showErrorAlert = false;
   private maskObj: mask = {};
@@ -208,9 +224,9 @@ export default class ATATSearch extends Vue {
 
   @Watch("_value")
   public valueChanged(newVal: string): void {
-    const hasErrors = !this.isModal 
+    const hasErrors = !this.isModal
       ? this.$refs.atatSearchInput?.errorBucket.length > 0
-      : this.$refs.atatSearchInputModal?.errorBucket.length > 0
+      : this.$refs.atatSearchInputModal?.errorBucket.length > 0;
     const hasContent = newVal && newVal.length > 0;
     this.searchDisabled = hasErrors || !hasContent;
   }
@@ -218,6 +234,13 @@ export default class ATATSearch extends Vue {
   @Watch("errorMessages")
   private errorMessagesChanged(newVal: Array<unknown>): void {
     this.showHelpText = newVal.length === 0 && !this.showLoader;
+  }
+
+  @Watch("_triggerSearch")
+  private intiateSearch(): void {
+    console.log('here')
+    if (this._value) this.search()
+    this._triggerSearch = false;
   }
 
   public onInput(v: string): void {
@@ -234,8 +257,9 @@ export default class ATATSearch extends Vue {
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
     this.showHelpText = false;
-    
-    if(this.searchType === "EDA"){
+    this.showGtcVerifiedIndicator = false;
+
+    if (this.searchType === "EDA") {
       try {
         this.showLoader = true;
         await PortfolioStore.reset();
@@ -244,7 +268,7 @@ export default class ATATSearch extends Vue {
           // set error messages for Refs
           const errorMessage = [response.message ?? "Unknown error"];
           if (!this.isModal) {
-            this.$refs.atatSearchInput.errorBucket  = errorMessage;
+            this.$refs.atatSearchInput.errorBucket = errorMessage;
           } else {
             this.$refs.atatSearchInputModal.errorBucket = errorMessage;
           }
@@ -260,12 +284,14 @@ export default class ATATSearch extends Vue {
       }
     } else if (this.searchType === "G-Invoicing") {
       try {
+        if (this.errorMessages.length > 0) return
         this.showLoader = true;
         const gInvoicingResponse = await api.gInvoicingApi.search(
-          this._value, AcquisitionPackage.packageId
+          this._value,
+          AcquisitionPackage.packageId
         );
-        if (gInvoicingResponse.valid){
-          this.showSuccessAlert = true;
+        if (gInvoicingResponse.valid) {
+          this.showGtcVerifiedIndicator = true;
         } else {
           this.showErrorAlert = true;
         }
@@ -276,33 +302,32 @@ export default class ATATSearch extends Vue {
         this.$emit("search");
       }
     }
-
   }
 
   private setErrorMessage(): void {
-    Vue.nextTick(()=>{
-      this.errorMessages = !this.isModal 
+    Vue.nextTick(() => {
+      this.errorMessages = !this.isModal
         ? this.$refs.atatSearchInput.errorBucket
         : this.$refs.atatSearchInputModal.errorBucket;
     });
   }
 
   private clearErrorMessages(): void {
-    Vue.nextTick(()=>{
+    Vue.nextTick(() => {
       if (!this.isModal) {
         this.$refs.atatSearchInput.errorBucket = [];
       } else {
-        this.$refs.atatSearchInputModal.errorBucket = []; 
+        this.$refs.atatSearchInputModal.errorBucket = [];
       }
       this.errorMessages = [];
     });
     this.$emit("clear");
   }
 
-  private onBlur(e: FocusEvent) : void{
+  private onBlur(e: FocusEvent): void {
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
-    this.$emit('blur', input.value);
+    this.$emit("blur", input.value);
   }
 
   public async resetValidation(): Promise<void> {
@@ -319,29 +344,27 @@ export default class ATATSearch extends Vue {
     this.maskObj = {};
 
     if (this.mask && this.mask.length > 0) {
-      if (this.isMaskRegex){
+      if (this.isMaskRegex) {
         this.maskObj.regex = this.mask[0] || "";
       } else {
         this.maskObj.mask = this.mask || [];
       }
     }
 
-    if (Object.keys(this.maskObj).length > 0){
+    if (Object.keys(this.maskObj).length > 0) {
       this.maskObj.placeholder = "";
       this.maskObj.jitMasking = true;
       Vue.nextTick(() => {
         const inputField = document.getElementById(
-          this.id + '_SearchInput'
+          this.id + "_SearchInput"
         ) as HTMLInputElement;
         Inputmask(this.maskObj).mask(inputField);
       });
     }
   }
 
-  private mounted(): void{
+  private mounted(): void {
     this.setMask();
   }
-
 }
-
 </script>
