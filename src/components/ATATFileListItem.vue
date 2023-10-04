@@ -1,7 +1,7 @@
 <template>
   <div class="content-div d-flex align-center">
     <ATATSVGIcon
-      :name="isPDF(uploadingFileObj?.fileName || '') ? 'pdf' : 'filePresent'"
+      :name="isPDF(uploadingFileObj.fileName || '') ? 'pdf' : 'filePresent'"
       :width="32"
       :height="50"
     />
@@ -11,7 +11,7 @@
         <div class="-flex align-center justify-start">
           <div
             :id="'File0' + index"
-            v-if="(uploadingFileObj?.fileName || '').length < 50"
+            v-if="(uploadingFileObj.fileName || '').length < 50"
           >
             {{ uploadingFileObj.fileName }}
           </div>
@@ -24,7 +24,7 @@
               {{ uploadingFileObj.fileName }}
             </div>
             <div class="truncated-extension width-30 d-flex align-center">
-              {{ getExtension((uploadingFileObj?.fileName || '')) }}
+              {{ getExtension((uploadingFileObj.fileName || '')) }}
             </div>
           </div>
         </div>
@@ -55,7 +55,7 @@
           >
             <div
               :id="'File0' + index"
-              v-if="(uploadingFileObj?.fileName || '').length < 50"
+              v-if="(uploadingFileObj.fileName || '').length < 50"
               class="d-flex align-center"
             >
               {{ uploadingFileObj.fileName }}
@@ -78,7 +78,7 @@
                 {{ uploadingFileObj.fileName }}
               </div>
               <div class="truncated-extension width-30 d-flex align-center">
-                {{ getExtension(uploadingFileObj?.fileName || '') }}
+                {{ getExtension(uploadingFileObj.fileName || '') }}
                 <ATATSVGIcon
                   class="d-inline-block ml-1"
                   v-if="!uploadingFileObj.isErrored"
