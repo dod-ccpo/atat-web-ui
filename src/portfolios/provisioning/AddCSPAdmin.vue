@@ -170,8 +170,9 @@
                 :rules="DoDIdRules"
               />
 
-              <div v-if="classificationLevels.length > 1">
+              <div v-if="classificationLevels.length > 1 || showUnclassifiedILs">
                 <ATATCheckboxGroup 
+                  v-if="classificationLevels.length > 1"
                   id="ClassificationSelection"
                   class="mt-10"
                   groupLabel="What classification level should this individual have access to?"
@@ -397,17 +398,17 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       }
     }
 
-    if (this.classificationLevels.length > 1
-      && this.admins.length > 0
-      && (missingUnclass || missingScrt || missingTS || needsILs && missingILs.length > 0)
+    if (this.admins.length > 0 
+      && ((needsILs && missingILs.length > 0) 
+      || (this.classificationLevels.length > 1 && (missingUnclass || missingScrt || missingTS)))
     ) {
-      const missingEnvs = [];
+      let missingEnvs = [];
       if (needsILs && this.impactLevels.length > 1) {
-        const missingEnvs = missingILs.map(
+        missingEnvs = missingILs.map(
           il => `Unclassified/${il.split('_')[1].toUpperCase()}`
         );
       } else if (missingUnclass) {
-        if (missingUnclass) missingEnvs.push("Unclassified");
+        missingEnvs.push("Unclassified");
       }
 
       if (missingScrt) missingEnvs.push("Secret");
@@ -448,7 +449,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
   public checkTSEmail(val: string): void {
     const tsValid = this.isValidGovOrMilEmail(val);
-    this.showTSEmailWarning = tsValid && val.slice(-7) !== ".ic.gov";
+    this.showTSEmailWarning = tsValid && !val.endsWith(".ic.gov");
   }
 
   public isValidGovOrMilEmail(val: string): boolean {
