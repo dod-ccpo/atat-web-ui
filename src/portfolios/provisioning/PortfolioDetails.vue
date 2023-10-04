@@ -172,7 +172,7 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    AcquisitionPackage.setDisableContinue(false);
+    await AcquisitionPackage.setDisableContinue(false);
     const unclassCSPs = this.CSPProvisioningData.filter((csp) => csp.classification_level === 'U')
     if (!OrganizationData.agency_data || OrganizationData.agency_data.length === 0) {
       await OrganizationData.getAgencyData();
