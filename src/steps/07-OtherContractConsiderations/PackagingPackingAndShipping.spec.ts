@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
+import {createLocalVue, shallowMount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import PackagingPackingAndShipping 
   from "@/steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
@@ -21,7 +21,7 @@ describe("Testing Packaging, Packing, and Shipping Page", () => {
   beforeEach(() => {
     vuetify = new Vuetify();
 
-    wrapper = mount(PackagingPackingAndShipping, {
+    wrapper = shallowMount(PackagingPackingAndShipping, {
       vuetify,
       localVue,
     });

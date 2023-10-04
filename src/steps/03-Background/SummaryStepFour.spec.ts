@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { createLocalVue, shallowMount } from "@vue/test-utils";
 import SummaryStepFour from "@/steps/03-Background/SummaryStepFour.vue";
 import Summary,  * as SummaryExportedFunctions from "@/store/summary";
 
@@ -9,15 +8,10 @@ Vue.use(Vuetify);
 
 describe("Testing SummaryStepTwo Component", () => {
   const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(SummaryStepFour, {
-      vuetify,
-      localVue
-    });
+  const vuetify = new Vuetify();
+  const wrapper = shallowMount(SummaryStepFour, {
+    vuetify,
+    localVue
   });
 
   describe("testing SummaryStepFour render", () => {

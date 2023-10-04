@@ -195,7 +195,6 @@
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import acquisitionPackage from "@/store/acquisitionPackage";
 import { SlideoutPanelContent } from "../../../types/Global";
 import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -218,27 +217,27 @@ export default class DAPPSChecklist extends Mixins(SaveOnLeave) {
   }
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      await acquisitionPackage.setHideSideNavigation(false);
+      await AcquisitionPackage.setHideSideNavigation(false);
     } catch (error) {
       console.log(error);
     }
     return true;
   }
   async mounted(): Promise<void>{
-    const comingFrom = Steps.prevStepName;
-    if (comingFrom !== routeNames.ContractingShop
-    && AcquisitionPackage.packageId !== "") {
-      this.$router.push({
-        name: routeNames.ContractingShop,
-      }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
-    }
+    // const comingFrom = Steps.prevStepName;
+    // if (comingFrom !== routeNames.ContractingShop
+    // && AcquisitionPackage.packageId !== "") {
+    //   this.$router.push({
+    //     name: routeNames.ContractingShop,
+    //   }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+    // }
     
-    await acquisitionPackage.setHideSideNavigation(true);
-    const slideoutPanelContent: SlideoutPanelContent = {
-      component: FundingRequestLearnMore,
-      title: "Learn More",
-    };
-    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    // await AcquisitionPackage.setHideSideNavigation(true);
+    // const slideoutPanelContent: SlideoutPanelContent = {
+    //   component: FundingRequestLearnMore,
+    //   title: "Learn More",
+    // };
+    // await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
 }
 

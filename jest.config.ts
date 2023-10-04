@@ -94,7 +94,6 @@ module.exports = {
     "src/steps/10-FinancialDetails/GTCInformation.spec.ts",
     "src/steps/10-FinancialDetails/IGCE/CannotProceed.spec.ts",
     "src/steps/10-FinancialDetails/IGCE/CostSummary.spec.ts",
-    "src/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.spec.ts",
     "src/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.spec.ts",
     "src/steps/10-FinancialDetails/IGCE/FeeCharged.spec.ts",
     "src/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.spec.ts",

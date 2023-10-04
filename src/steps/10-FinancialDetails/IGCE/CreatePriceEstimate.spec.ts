@@ -1,29 +1,33 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import { createLocalVue, shallowMount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { createLocalVue, mount } from "@vue/test-utils";
 import CreatePriceEstimate from "@/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
+import sanitize from "@/plugins/sanitize";
 Vue.use(Vuetify);
+
+describe("Testing CreatePriceEstimate renders ", () => {
+  const localVue = createLocalVue();
+  localVue.use(sanitize);
+  const vuetify = new Vuetify();
+  const wrapper = mount(CreatePriceEstimate, {
+    localVue,
+    vuetify,
+  });
+
+  it("successfully", async () => {
+    expect(wrapper.exists()).toBe(true);
+  });
+});
 
 describe("Testing CreatePriceEstimate Component", () => {
   const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = shallowMount(CreatePriceEstimate, {
-      localVue,
-      vuetify,
-    });
+  const vuetify = new Vuetify();
+  const wrapper = mount(CreatePriceEstimate, {
+    localVue,
+    vuetify,
   });
 
-  it("renders successfully", async () => {
-    expect(wrapper.exists()).toBe(true);
-  });
-
- 
   it.skip("should mock window alert function", async() => {
     //temporary unit test until showAlert() is removed
     jest.spyOn(window, 'alert').mockReturnValue();
@@ -42,6 +46,7 @@ describe("Testing CreatePriceEstimate Component", () => {
   it("renders calculator link correctly", async() => {
     const link = wrapper.find("#AWSCalculatorLink");
     expect(link.attributes('href'))
-      .toBe("https://calculator.aws/#/?token=4ec5ddaefb8454253ef740c67969aae0&volume_discount=0");
+      // eslint-disable-next-line max-len
+      .toBe("https://calculator.aws/#/?token=4ec5ddaefb8454253ef740c67969aae0&amp;volume_discount=0");
   });
 })

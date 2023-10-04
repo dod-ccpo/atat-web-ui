@@ -63,7 +63,7 @@
                                :key="index"
                                :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
                                class="_csp-link d-block mt-4 font-size-14"
-                               v-bind:href="link.url"
+                               :href="$sanitize(link.url)"
                                target="_blank"
                             >
                               {{ link.text }}
