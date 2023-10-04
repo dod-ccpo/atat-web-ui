@@ -144,6 +144,7 @@ import IncrementalFunding
   from "../steps/10-FinancialDetails/IncrementalFunding.vue";
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 import GTC from "@/steps/10-FinancialDetails/GTCInformation.vue";
+import RFD from "@/steps/10-FinancialDetails/RequireFundingDocuments.vue";
 import CurrentlyHasFunding from "@/steps/10-FinancialDetails/CurrentlyHasFunding.vue";
 import GeneratingPackageDocumentsFunding
   from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
@@ -322,6 +323,7 @@ export const routeNames = {
   MIPR: "MIPR",
   CurrentlyHasFunding: "Currently_Has_Funding",
   GTC: "GTC",
+  RFD: "RFD",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   IncrementalFunding: "Incremental_Funding",
   GeneratingPackageDocuments: "Generating_Package_Documents",
@@ -1400,7 +1402,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: FinancialPOCForm,
         routeResolver: FinancialPOCResolver
-
       },
       {
         menuText: "Funding",
@@ -1409,6 +1410,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: CurrentlyHasFunding,
         routeResolver: CurrentlyHasFundingResolver,
+      },
+      {
+        menuText: "Required Funding Documents",
+        excludeFromMenu: true,
+        path: "required-funding-documents",
+        name: routeNames.RFD,
+        completePercentageWeight: 1,
+        component: RFD,
       },
       {
         menuText: "GTC-Information",

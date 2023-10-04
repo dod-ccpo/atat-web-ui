@@ -1,4 +1,3 @@
-import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import GTC from "./GTCInformation.vue";
@@ -15,10 +14,7 @@ describe("Testing GTC Information component", () => {
     vuetify = new Vuetify();
     wrapper = mount(GTC, {
       localVue,
-      vuetify,
-      propsData:{
-        fundingIncrements:  []
-      }
+      vuetify
     });
   });
 
