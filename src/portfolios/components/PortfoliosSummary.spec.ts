@@ -4,82 +4,68 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import PortfolioSummaryStore from "@/store/portfolioSummary"
-import { PortfolioSummaryDTO, UserDTO } from "@/api/models";
+import { PortfolioSummaryObj, UserDTO } from "@/api/models";
 import Toast from "@/store/toast";
 import PortfolioStore from "@/store/portfolio";
 import CurrentUserStore from "@/store/user";
 
 Vue.use(Vuetify);
 
-const portfolios: PortfolioSummaryDTO[] = [
+const portfolios: PortfolioSummaryObj[] = [
+  /* eslint-disable camelcase */
   {
-    name: "mock portfolio",
-    csp: "",
-    /* eslint-disable camelcase */
-    csp_display: "CSP_A",
-    agency: "ARMY",
-    vendor: "AWS",
-    dod_component: "ARMY", // EJY - DOUBLE-CHECK this is still needed
-    task_order_number: "123456",
-    sys_updated_on: "2022-09-26 15:50:20", 
-    task_order_status: "ACTIVE",
-    pop_end_date: "2022-12-31",
-    pop_start_date: "2022-01-01",
-    funds_obligated: 10000,
+    portfolio_name: "test 3000",
     portfolio_status: "PROCESSING",
-    portfolio_owner: "",
-    portfolio_managers: "4567,1234",
-    portfolio_viewers: "7890,5432",
-    funds_spent: 5000,
-    task_orders: [],
-    active_task_order: "",
-    alerts: [],
-    portfolio_funding_status: "",
-    last_cost_data_sync: ""
-    /* eslint-enable camelcase */
+    agency: "BRITISH EMBASSY",
+    last_updated: "2023-09-27 11:17:01",
+    current_user_is_owner: true,
+    current_user_is_manager: false,
+    vendor: "GCP",
+    pop_start_date: "2023-12-08",
+    pop_end_date: "2028-10-07",
+    total_obligated: 19000,
+    funds_spent: 0,
+    active_task_order: "3000000000000",
+    owner_full_name: "Test User1",
+    funding_status: "ON_TRACK",
+    csp_portal_links: [
+      {
+        csp: "google_il5_dev",
+        dashboard_link: ""
+      },
+      {
+        csp: "google_il6_dev",
+        dashboard_link: ""
+      }
+    ]
   },
   {
-    name: "mock portfolio 2",
-    csp: "",
-    /* eslint-disable camelcase */
-    csp_display: "CSP_B",
-    agency: "ARMY",
-    vendor: "AWS",
-    dod_component: "ARMY", // EJY - DOUBLE-CHECK this is still needed
-    task_order_number: "123456",
-    sys_updated_on: "2022-09-26 15:50:20", 
-    task_order_status: "ACTIVE",
-    pop_end_date: "2022-12-31",
-    pop_start_date: "2022-01-01",
-    funds_obligated: 10000,
-    portfolio_status: "ACTIVE",
-    portfolio_owner: "",
-    portfolio_managers: "",
-    portfolio_viewers: "",
-    funds_spent: 5000,
-    task_orders: [
+    portfolio_name: "test 2000",
+    portfolio_status: "PROCESSING",
+    agency: "BRITISH EMBASSY",
+    last_updated: "2023-09-27 11:17:01",
+    current_user_is_owner: true,
+    current_user_is_manager: false,
+    vendor: "GCP",
+    pop_start_date: "2023-12-08",
+    pop_end_date: "2028-10-07",
+    total_obligated: 1919000,
+    funds_spent: 0,
+    active_task_order: "2000000000000",
+    owner_full_name: "Test User2",
+    funding_status: "ON_TRACK",
+    csp_portal_links: [
       {
-        clins: "",
-        clin_records: [],
-        incrementally_funded: "",
-        funds_obligated: "20000",
-        acquisition_package: "",
-        task_order_number: "123456",
-        task_order_status: "ACTIVE",
-        portfolio: "",
-        funding_plan: "",
-        pop_end_date: "2022-12-31",
-        pop_start_date: "2022-01-01",
-        funds_total: "10000",    
+        csp: "google_il5_dev",
+        dashboard_link: ""
+      },
+      {
+        csp: "google_il6_dev",
+        dashboard_link: ""
       }
-    ],
-    active_task_order: "",
-    alerts: [],
-    portfolio_funding_status: "",
-    last_cost_data_sync: ""
-    /* eslint-enable camelcase */
+    ]
   }
-
+  /* eslint-enable camelcase */
 ];
 
 describe("Testing index Component", () => {
@@ -103,23 +89,15 @@ describe("Testing index Component", () => {
   });
 
   it("tests loadPortfolioData()", async () => {
-    jest.spyOn(PortfolioSummaryStore, "searchPortfolioSummaryList").mockImplementation(
-      () => Promise.resolve({
-        // eslint-disable-next-line camelcase
-        total_count: 2,
-        portfolioSummaryList: portfolios
-      }) as any);
+    jest.spyOn(PortfolioSummaryStore, "getAllPortfolioSummaryList").mockImplementation(
+      () => Promise.resolve(portfolios));
     await wrapper.vm.loadPortfolioData();
     expect(wrapper.vm.$data.portfolioCardData.length).toBe(2);
   });
 
   it("tests loadPortfolioData() - filters by active only", async () => {
-    jest.spyOn(PortfolioSummaryStore, "searchPortfolioSummaryList").mockImplementation(
-      () => Promise.resolve({
-        // eslint-disable-next-line camelcase
-        total_count: 2,
-        portfolioSummaryList: portfolios
-      }) as any);
+    jest.spyOn(PortfolioSummaryStore, "getAllPortfolioSummaryList").mockImplementation(
+      () => Promise.resolve(portfolios));
     wrapper.vm.$data.activeTab = "ACTIVE"
     await wrapper.vm.loadPortfolioData();
     expect(await wrapper.vm.$data.portfolioSearchDTO.portfolioStatus).toBe("");

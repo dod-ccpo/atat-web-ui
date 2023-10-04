@@ -559,7 +559,7 @@ export default class PortfoliosSummary extends Vue {
     this.portfolioSearchDTO.offset = this.offset;
 
     const storeData = await PortfolioSummary.getAllPortfolioSummaryList()
-
+    console.log(storeData, 'data')
     this.portfolioCount = CurrentUserStore.getCurrentUserPortfolioCount;
     await CurrentUserStore.doSetPortfolioCount(this.portfolioCount)
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
@@ -608,7 +608,6 @@ export default class PortfoliosSummary extends Vue {
             = _.capitalize(difStr + (isExpired ? " past" : " to") + " expiration");
           }
         }
-
         if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
           cardData.totalObligated = "$" + toCurrencyString(portfolio.total_obligated);
           cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
