@@ -25,6 +25,7 @@ import BugReport from "@/components/icons/BugReport.vue";
 import Bullet from "@/components/icons/Bullet.vue";
 import Calendar from "@/components/icons/Calendar.vue";
 import CheckedBag from "@/components/icons/CheckedBag.vue";
+import CheckCircle from "@/components/icons/CheckCircle.vue";
 import ChevronDown from "@/components/icons/ChevronDown.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
@@ -129,6 +130,7 @@ import HomeWork from "@/components/icons/HomeWork.vue";
     Calendar,
     CertifiedDocumentsForTransferringFunds,
     CheckedBag,
+    CheckCircle,
     ChevronDown,
     ChevronRight,
     Close,
