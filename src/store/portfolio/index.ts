@@ -71,7 +71,7 @@ export const cspConsoleURLs: Record<string, string> = {
 
 const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
   return {
-    taskOrderNumber: "",
+    taskOrderNumber: "FOOBAR", // EJY CHANGE BACK TO EMPTY STRING
     contractor: "",
     csp: "",
     cspLong: "",
