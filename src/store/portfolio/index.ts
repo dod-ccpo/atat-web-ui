@@ -71,7 +71,7 @@ export const cspConsoleURLs: Record<string, string> = {
 
 const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
   return {
-    taskOrderNumber: "FOOBAR", // EJY CHANGE BACK TO EMPTY STRING
+    taskOrderNumber: "",
     contractor: "",
     csp: "",
     cspLong: "",
@@ -182,7 +182,6 @@ export class PortfolioDataStore extends VuexModule {
   public portfolioProvisioningObj: PortfolioProvisioning 
     = _.cloneDeep(initialPortfolioProvisioningObj());
   
-  // EJY HERE IS THE GETTER
   @Action({rawError: true})
   public async getPortfolioProvisioningObj(): Promise<PortfolioProvisioning> {
     return this.portfolioProvisioningObj;
