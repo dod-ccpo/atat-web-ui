@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import GTCInvoicing from "./GTCInformation.vue";
+import GTCInformation from "./GTCInformation.vue";
 import { DefaultProps } from "vue/types/options";
 
 Vue.use(Vuetify);
@@ -13,7 +13,7 @@ describe("Testing GTC Information component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(GTCInvoicing, {
+    wrapper = mount(GTCInformation, {
       localVue,
       vuetify
     });
