@@ -3,9 +3,7 @@ import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-dec
 import rootStore from "../index";
 
 import {
-  Environment,
   FilterOption,
-  Operator,
   Portfolio,
   PortfolioCardData,
   PortfolioProvisioning,
@@ -14,15 +12,13 @@ import {
 } from "../../../types/Global"
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {AlertDTO,
-  EnvironmentDTO, OperatorDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
+import {AlertDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
 import {api} from "@/api";
 import CurrentUserStore from "../user";
-import {AxiosRequestConfig} from "axios";
 import {convertColumnReferencesToValues} from "@/api/helpers";
-import {format, formatISO9075, startOfTomorrow} from "date-fns";
+import { format } from "date-fns";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -414,21 +410,6 @@ export class PortfolioDataStore extends VuexModule {
   public async doSetProvisioningTOFollowOn(state: boolean): Promise<void> {
     this.isProvisioningTOFollowOn = state;
   }
-  public blankEnvironment: Environment = {
-    csp: "",
-    csp_id: "",
-    csp_display: "",
-    name: "",
-    dashboard_link: "",
-    pending_operators: [],
-    portfolio: "",
-    provisioned: "",
-    provisioned_date: "",
-    provisioning_failure_cause: "",
-    provisioning_request_date: "",
-    csp_admins: [],
-    environmentStatus: "",
-  }  
 
   public currentPortfolioEnvSysId = "";
   @Action({rawError: true})
@@ -837,131 +818,6 @@ export class PortfolioDataStore extends VuexModule {
     await this.setCurrentPortfolio(members);
 
     await this.populatePortfolioMembersDetail(this.currentPortfolio);
-  }
-
-  /**
-   * Loads all the operators of a portfolio and then groups them by environment. Then
-   * makes a call-out to sort the operators by each environment.
-   */
-  @Action({rawError: true})
-  public async loadAllOperatorsOfPortfolioEnvironment(environment: EnvironmentDTO): Promise<void> {
-    if (!environment.csp_admins || environment.csp_admins.length === 0) {
-      const queryForAllOperatorsOfPortfolio: AxiosRequestConfig = {
-        params: {
-          sysparm_query: "^environmentIN" + environment.sys_id
-        }
-      };
-      const allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
-        queryForAllOperatorsOfPortfolio
-      );
-      allOperatorsOfPortfolioEnv.forEach(async (operator: OperatorDTO): Promise<void> => {
-        operator = convertColumnReferencesToValues(operator)        
-        await this.transformAndAddOperatorToPortfolioEnvironment({
-          environment: environment,
-          operatorDTO: operator
-        })
-      }, this)
-
-      await this.sortPortfolioEnvironmentOperators(environment);
-    }
-  }
-
-  /**
-   * Adds the new operator to the operators list of the environment of the
-   * current portfolio. It is the responsibility of the caller to ensure that
-   * this is not a duplicate entry.
-   */
-  @Mutation
-  public async transformAndAddOperatorToPortfolioEnvironment(
-    newOperatorToTransform: {
-      environment: EnvironmentDTO,
-      operatorDTO: OperatorDTO
-    }): Promise<void> {
-    const operatorDTO = newOperatorToTransform.operatorDTO;
-    let operatorStatus: Operator["status"] = "";
-    if (operatorDTO.provisioned === "false" &&
-      operatorDTO.provisioning_failure_cause?.trim().length === 0) {
-      operatorStatus = "Processing"
-    } else if (operatorDTO.provisioned === "false" &&
-      operatorDTO.provisioning_failure_cause &&
-      operatorDTO.provisioning_failure_cause.length > 0) {
-      operatorStatus = "Failed"
-    } else if (operatorDTO.provisioned === "true") {
-      operatorStatus = "Provisioned"
-    }
-    
-    // Business rules require status of Processing to be listed first.
-    // Vuetify table sort decending puts empty values at end. 
-    // Add date of tomorrow to Processing operators. Date will be hidden
-    // with logic from the table. This will allow desired sorting.
-    const pDate = operatorStatus === "Processing"
-      ? formatISO9075(new Date(startOfTomorrow()))
-      : operatorDTO.provisioned_date;
-
-    const operator: Operator = {
-      sysId: operatorDTO.sys_id,
-      environment: operatorDTO.environment,
-      email: operatorDTO.email,
-      dodId: operatorDTO.dod_id,
-      status: operatorStatus,
-      addedBy: operatorDTO.added_by,
-      provisionedDate: pDate,
-      provisioned: operatorDTO.provisioned,
-      provisioningFailureCause: operatorDTO.provisioning_failure_cause,
-      provisioningRequestDate: operatorDTO.provisioning_request_date
-    }
-    if (!newOperatorToTransform.environment.csp_admins) {
-      newOperatorToTransform.environment.csp_admins = [];
-    }
-    newOperatorToTransform.environment.csp_admins.unshift(operator);
-  }
-
-  /**
-   * Sorts the operators (or cspAdmins) of a specific environment of the portfolio. Here are the
-   * sorting rules.
-   * Descending by provisioned date BUT must list all with status Processing first
-   * alphabetically by email, then sort by Provisioned on date.
-   */
-  @Mutation
-  public async sortPortfolioEnvironmentOperators(environment: EnvironmentDTO): Promise<void> {
-    environment.csp_admins?.sort((a, b) => {
-      const operatorA = a as unknown as Operator;
-      const operatorB = b as unknown as Operator;
-      // sort by provisioned date
-      if (operatorA.provisionedDate && operatorB.provisionedDate) {
-        return operatorB.provisionedDate > operatorA.provisionedDate ? -1 : 1;
-      } else {
-        return 0;
-      }
-    })
-  }
-
-  /**
-   * Expects to get one of the environments from the current portfolio of this
-   * store, to which the new operator needs to be added.
-   */
-  @Action({rawError: true})
-  public async addCSPOperator(newOperatorToAdd: {environment: EnvironmentDTO,
-    operator: Operator}): Promise<void> {
-    const newOperator = newOperatorToAdd.operator;
-    const operatorDTO: OperatorDTO = {
-      environment: newOperatorToAdd.environment.sys_id,
-      email: newOperator.email,
-      dod_id: newOperator.dodId,
-      // created_by is DB connection specific. Added by should be pulled from current user
-      added_by: CurrentUserStore.currentUser.sys_id,
-      provisioned_date: "",
-      provisioned: "false",
-      provisioning_failure_cause: "",
-      provisioning_request_date: new Date().getUTCDate().toString()
-    }
-    const operatorResponse = await api.operatorTable.create(operatorDTO);
-    await this.transformAndAddOperatorToPortfolioEnvironment(
-      {
-        environment: newOperatorToAdd.environment,
-        operatorDTO: operatorResponse
-      });
-    await this.sortPortfolioEnvironmentOperators(newOperatorToAdd.environment);
   }
 
   @Action({rawError: true})

@@ -64,7 +64,6 @@ import { RegionsAPI } from "./regions";
 import {EnvironmentApi} from "@/api/environment";
 import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
-import {OperatorAPI} from "@/api/operator";
 import { AddressApi } from "@/api/address";
 import { CostEstimateApi } from "@/api/costEstimate";
 import { DisaOrganizationApi } from "@/api/disaOrganization";
@@ -140,7 +139,6 @@ export const api = {
   regionsTable: new RegionsAPI(),
   packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
   packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
-  operatorTable: new OperatorAPI(),
   addressTable: new AddressApi(),
   disaOrganizationTable: new DisaOrganizationApi(),
   feedbackOptionsTable: new FeedbackOptionsAPI(),
