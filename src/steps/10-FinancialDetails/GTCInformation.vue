@@ -139,7 +139,7 @@ import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
     GInvoiceLearnMore,
   },
 })
-export default class GInvoicing extends Mixins(SaveOnLeave) {
+export default class GTCInformation extends Mixins(SaveOnLeave) {
   // radio options
   public useGInvoicing = "";
   private gInvoicingOptions: RadioButton[] = [
@@ -260,7 +260,7 @@ export default class GInvoicing extends Mixins(SaveOnLeave) {
     };
     this.gInvoiceNumber = this.loaded.gt_c_number;
     this.useGInvoicing = this.loaded.use_g_invoicing;
-    if (this.gInvoiceNumber) this.triggerSearch = true;
+    if (this.gInvoiceNumber && this.useGInvoicing) this.triggerSearch = true;
   }
 
   /**
