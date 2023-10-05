@@ -118,5 +118,12 @@ describe("Testing AddCSPAdmin component", () => {
     await wrapper.vm.setShowMissingAdminAlert();
     expect(wrapper.vm.showMissingAdminAlert).toBe(false);  
   });
-
+  it ("tests checkTSEmail() - warn true", async () => {
+    wrapper.vm.checkTSEmail("foo@mail.mil");
+    expect(wrapper.vm.showTSEmailWarning).toBe(true)
+  });
+  it ("tests checkTSEmail() - warn false", async () => {
+    wrapper.vm.checkTSEmail("foo@mail.ic.gov");
+    expect(wrapper.vm.showTSEmailWarning).toBe(false)
+  });  
 });
