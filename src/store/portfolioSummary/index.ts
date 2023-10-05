@@ -208,6 +208,7 @@ export class PortfolioSummaryStore extends VuexModule {
     );
     
     allEnvs.forEach(env => {
+      console.log(`Env: ${JSON.stringify(env)}`);
       // ATAT TODO AT-9721
       // remove this forEach entirely
       // change environmentStatus to environment_status throughout codebase
@@ -239,17 +240,21 @@ export class PortfolioSummaryStore extends VuexModule {
       {
         params:
           {
-            sysparm_fields: "sys_id,name",
+            sysparm_fields: "sys_id,name,cloud_distinguisher",
             sysparm_query: "sys_idIN" + cspSysIds
           }
       }
     )
-    portfolioSummaryList.forEach(portfolio => {
-      portfolio.environments?.forEach(environment => {
-        environment.csp_display =
-          (allCspList.find(
-            (csp: CloudServiceProviderDTO) => environment.csp === csp.sys_id)?.name) || "";
-      })
+
+    portfolioSummaryList.map(portfolio => {
+      portfolio.environments?.map(environment => {
+        // eslint-disable-next-line max-len
+        const csp: CloudServiceProviderDTO | undefined = allCspList.find(csp => environment.csp === csp.sys_id);
+        if (csp) {
+          const cdObj = csp.cloud_distinguisher ? JSON.parse(csp.cloud_distinguisher) : null;
+          environment.csp_display = cdObj ? `${cdObj.display_name} (${cdObj.name})` : csp.name;
+        }
+      });
     });
   }
 

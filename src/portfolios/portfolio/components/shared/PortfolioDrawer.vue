@@ -184,30 +184,32 @@
         tabindex="0"
         @click="goToCSPAdmin(env.sys_id)"
       >
-        <div class="font-weight-500"> 
-          {{ getClassificationLevel(env.classification_level) }}
-        </div>
-        <div class="d-flex align-center">
-          <div class="text-right mr-2">
-            <span class="font-weight-500 d-block" style="line-height: 1;">
-              {{ getEnvStatus(env) }}
-            </span>
-            <span class="font-size-12 text-base">
-              {{ getEnvDateStr(env) }}
-            </span>
+          <div class="d-flex align-start flex-column text-left mr-2">
+              <span class="font-weight-500 d-block" style="line-height: 1;">
+                {{ getClassificationLevel(env.classification_level) }}
+              </span>
+              <span class="font-size-12 text-base">
+                {{ env.csp_display }}
+              </span>
           </div>
-          <div
-            class="_icon-circle"
-            :class="statusImg[env.environmentStatus].bgColor"
-          >
-            <ATATSVGIcon
-              :name="statusImg[env.environmentStatus].name"
-              :width="statusImg[env.environmentStatus].width"
-              :height="statusImg[env.environmentStatus].height"
-              :color="statusImg[env.environmentStatus].color"
-            />
+          <div class="d-flex align-end align-center">
+            <div class="d-flex flex-column text-right mr-2">
+                <span class="font-weight-500 d-block" style="line-height: 1;">
+                  {{ getEnvStatus(env) }}
+                </span>
+                <span class="font-size-12 text-base">
+                  {{ getEnvDateStr(env) }}
+                </span>
+            </div>
+            <div class="_icon-circle" :class="statusImg[env.environmentStatus].bgColor">
+              <ATATSVGIcon
+                  :name="statusImg[env.environmentStatus].name"
+                  :width="statusImg[env.environmentStatus].width"
+                  :height="statusImg[env.environmentStatus].height"
+                  :color="statusImg[env.environmentStatus].color"
+              />
+            </div>
           </div>
-        </div>
       </div>
     </div>
 
