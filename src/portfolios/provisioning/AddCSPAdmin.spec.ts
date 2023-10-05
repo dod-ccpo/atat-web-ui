@@ -22,7 +22,7 @@ describe("Testing AddCSPAdmin component", () => {
  
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = shallowMount(AddCSPAdmin, {
+    wrapper = mount(AddCSPAdmin, {
       localVue,
       vuetify,
     });
@@ -38,15 +38,24 @@ describe("Testing AddCSPAdmin component", () => {
 
     it ("tests setShowMissingAdminAlert()", async () => {
       PortfolioStore.CSPHasImpactLevels = true;
-      jest.spyOn(PortfolioStore, "getPortfolioProvisioningObj")
-        .mockImplementation(() => Promise.resolve(data));
+
       // await PortfolioStore.setPortfolioProvisioning(data);
-      // await wrapper.vm.loadOnEnter();
-      // wrapper.setData({
-      //   impactLevelCompareArray: ["aws_il2_dev"],
-      //   classificationLevels: ["Unclassified"]
-      // })
+      // await PortfolioStore.doSetPortfolioProvisioning(data);
+ 
+      // jest.spyOn(PortfolioStore, "getPortfolioProvisioningObj")
+      //   .mockImplementation(() => Promise.resolve(data));
+
       await wrapper.vm.loadOnEnter();
+      wrapper.setData({
+        impactLevelCompareArray: ["aws_il2_dev"],
+        classificationLevels: ["Unclassified"],
+        admins: [{hasUnclassifiedAccess: "YES", hasScrtAccess: "NO", hasTSAccess: "NO"}],
+        hasImpactLevels: true,
+        needsUAdmin: true,
+        needsSAdmin: false,
+        needsTSAdmin: false,
+      })
+ 
       await wrapper.vm.setShowMissingAdminAlert();
       expect(wrapper.vm.showMissingAdminAlert).toBe(true);    
    
