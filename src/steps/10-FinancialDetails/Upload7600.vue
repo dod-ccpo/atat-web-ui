@@ -1,4 +1,5 @@
 <template>
+  <v-form ref="form" lazy-validation>
   <v-container class="container-max-width mb-7" fluid>
     <v-row>
       <v-col class="col-12">
@@ -81,6 +82,7 @@
       </v-col>
     </v-row>
   </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">

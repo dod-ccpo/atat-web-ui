@@ -1,4 +1,5 @@
 <template>
+  <v-form ref="form" lazy-validation>
   <v-container fluid class="container-max-width _anticipated-users-accordion">
     <v-row>
       <v-col class="col-12">
@@ -66,6 +67,7 @@
       </v-col>
     </v-row>
   </v-container>
+  </v-form>
 </template>
 
 
@@ -86,6 +88,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CrossDomainSolutionDTO, IgceEstimateDTO, ReferenceColumn } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
+import Vue from "vue";
 
 @Component({
   components: { 
@@ -93,7 +96,9 @@ import Periods from "@/store/periods";
   },
 })
 export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
-  
+  $refs!: {
+    form: Vue & { validate: () => boolean};
+  }
   igceEstimateData: IgceEstimateDTO[] = [];
   tempEstimateDataSource: IgceEstimateDTO[][] = [];
   estimateDataSource: IgceEstimateDTO[][] = [];
@@ -291,13 +296,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    try {
-      await IGCE.setCostEstimate(this.estimateDataSource);
-      await IGCE.setIgceEstimate(this.igceEstimateData);
-    } catch (error) {
-      console.log(error);
-    }
-    return true;
+    debugger
+    return this.$refs.form.validate();
   }
 }
 </script>

@@ -1367,15 +1367,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: IGCESupportingDocumentationResolver
       },
       {
-        menuText: "Appropriation of Funds",
-        excludeFromMenu: true,
-        path: "appropriation-of-funds",
-        name: routeNames.AppropriationOfFunds,
-        completePercentageWeight: 1,
-        component: AppropriationOfFunds,
-        routeResolver: AppropriationOfFundsResolver
-      }, 
-      {
         menuText: "Severability and Incremental Funding",
         path: "severability-and-incremental-funding",
         name: routeNames.SeverabilityAndIncrementalFunding,
@@ -1461,6 +1452,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       //   component: GInvoicing,
       //   routeResolver: GInvoicingResolver,
       // },
+      {
+        menuText: "Appropriation of Funds",
+        excludeFromMenu: true,
+        path: "appropriation-of-funds",
+        name: routeNames.AppropriationOfFunds,
+        completePercentageWeight: 1,
+        component: AppropriationOfFunds,
+        routeResolver: AppropriationOfFundsResolver
+      },
       {
         menuText: "SummaryStepEight",
         path: "summary-step-eight",

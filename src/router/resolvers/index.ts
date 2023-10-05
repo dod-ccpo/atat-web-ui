@@ -1552,7 +1552,7 @@ export const IGCESupportingDocumentationResolver = (current: string): string => 
 };
 
 export const CurrentlyHasFundingResolver = (current: string): string => {
-  return Summary.hasCurrentStepBeenVisited && current === routeNames.SupportingDocumentation
+  return Summary.hasCurrentStepBeenVisited && current === routeNames.FinancialPOCForm
     ? routeNames.SummaryStepEight
     : routeNames.CurrentlyHasFunding
 };
@@ -1602,12 +1602,12 @@ export const AppropriationOfFundsResolver = (current: string): string => {
   if (hasExceptionToFairOpp()){
     return routeNames.AppropriationOfFunds
   } else if (evalPlanRequired()){
-    return SeverabilityAndIncrementalFundingResolver(current);
+    return routeNames.SummaryStepEight;
   }
   
-  return current === routeNames.SeverabilityAndIncrementalFunding
-    ? routeNames.Upload7600
-    : SeverabilityAndIncrementalFundingResolver(current);
+  return current === routeNames.MIPR
+    ? routeNames.SummaryStepEight
+    : routeNames.MIPR;
 }
 
 export const SeverabilityAndIncrementalFundingResolver = (current: string): string => {
@@ -1647,7 +1647,7 @@ export const IncrementalFundingResolver = (current: string): string => {
     if (daysTotal<=270){return routeNames.SummaryStepEight}
   })
 
-  if (fundingReq.incrementally_funded==="NO"){
+  if (fundingReq.incrementally_funded !=="YES"){
     return routeNames.SummaryStepEight;
   }
 

@@ -1,4 +1,5 @@
 <template>
+  <v-form ref="form" lazy-validation>
   <v-container>
     <v-row
       style="flex-wrap: nowrap;"
@@ -17,6 +18,8 @@
           autocomplete="off"
           width="100%"
           v-model="title"
+          :showErrorMessages="false"
+          :rules="[$validators.required('', true)]"
           @blur="saveTitle()"
         />
         <v-textarea
@@ -26,6 +29,8 @@
           rows="1"
           hide-details
           v-model="description"
+          :showErrorMessages="false"
+          :rules="[$validators.required('', true)]"
           @blur="saveDescription()"
 
         />
@@ -46,22 +51,26 @@
         :id="'EstimateTextField_' + index"
         @blur="checkMonthlyValue()"
         :alignRight="true"
+        :rules="[$validators.required('', true)]"
         class="ml-auto pt-3 _requirement-currency"
         :class="[{ 'error--text': noMonthlyValue},]"
         />
       </v-col>
     </v-row>
   </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop, PropSync, Watch} from "vue-property-decorator";
+import { Component, Mixins, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import { currencyStringToNumber, toCurrencyString } from "@/helpers";
 import { IgceEstimateDTO } from "@/api/models";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import IGCE from "@/store/IGCE";
 
 @Component({
   components:{
@@ -69,7 +78,14 @@ import { IgceEstimateDTO } from "@/api/models";
     ATATErrorValidation
   }
 })
-export default class CardRequirement extends Vue {
+export default class CardRequirement extends Mixins(SaveOnLeave) {
+  $refs!: {
+    form: Vue & {
+      validate: () => boolean;
+      resetValidation: () => void;
+      reset: () => void;
+    };
+  };
   @PropSync("cardData") private _cardData!: IgceEstimateDTO;
   @Prop() private index!: number;
 
@@ -85,7 +101,7 @@ export default class CardRequirement extends Vue {
       // eslint-disable-next-line camelcase
       this._cardData.title = this.title;
     }else{
-      this.title = this._cardData.title;
+      this.title = this._cardData.title as string;
     }
   }
   public saveDescription(): void {
@@ -95,7 +111,7 @@ export default class CardRequirement extends Vue {
       // eslint-disable-next-line camelcase
       this._cardData.updated_description = "YES";
     }else{
-      this.description = this._cardData.description;
+      this.description = this._cardData.description as string;
     }
   }
 
@@ -107,9 +123,11 @@ export default class CardRequirement extends Vue {
     }
   }
   public async loadOnEnter(): Promise<void> {
-    this.title = this._cardData.title
-    this.description = this._cardData.description;
-    this.type = "/" + this._cardData.unit.toLowerCase();
+    this.title = this._cardData.title as string
+    this.description = this._cardData.description as string;
+    if(this._cardData.unit){
+      this.type = "/" + this._cardData.unit.toLowerCase();
+    }
     this.moneyNumber = this._cardData.unit_price || 0;
     this.estimate = await this.moneyNumber > 0
       ? toCurrencyString(this.moneyNumber, true) 
@@ -124,6 +142,10 @@ export default class CardRequirement extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter()
+  }
+  protected async saveOnLeave(): Promise<boolean> {
+    debugger
+    return this.$refs.form.validate();
   }
 }
 </script>

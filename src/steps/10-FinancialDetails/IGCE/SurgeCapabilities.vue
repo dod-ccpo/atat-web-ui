@@ -67,10 +67,11 @@ import {YesNo} from "../../../../types/Global";
 })
 export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   $refs!: {
+    form: Vue & { validate: () => boolean};
     PercentageTextbox: Vue & {
       errorMessages: [];
     };
-  };
+  }
 
   public capacity: number | null = null;
   public capabilities: YesNo = "";
