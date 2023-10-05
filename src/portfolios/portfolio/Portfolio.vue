@@ -220,7 +220,7 @@
                   </ATATAlert>
                 </v-col>
               </v-row>
-              <v-row id="BurndownChartWrap" v-if="!isProdEnv">
+              <v-row id="BurndownChartWrap">
                 <v-col>
                   <v-card class="_no-shadow v-sheet--outlined pa-8">
                     <h3 class="mb-4">Actual and Projected Burn Rate</h3>
@@ -860,10 +860,6 @@ import PortfolioStore from "@/store/portfolio";
 })
 export default class PortfolioDashboard extends Vue {
   dashboardService: DashboardService = new DashboardService();
-
-  public get isProdEnv(): boolean {
-    return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
-  }
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""
