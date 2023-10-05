@@ -652,8 +652,8 @@ export class FinancialDetailsStore extends VuexModule {
   @Action({rawError: true})
  public async saveFundingRequestFormAndGInvoicing(
    data: 
-    Partial<FundingRequestFSFormDTO> & 
-    Pick<FundingRequestFSFormDTO, 'gt_c_number' | 'use_g_invoicing' | 'sys_id'>
+   Partial<FundingRequestFSFormDTO> & 
+   Pick<FundingRequestFSFormDTO, 'gt_c_number' | 'use_g_invoicing' | 'sys_id'>
  ): Promise<FundingRequestFSFormDTO> {
    try {
      const prevData = await api.fundingRequestFSFormTable.getQuery(
@@ -680,8 +680,8 @@ export class FinancialDetailsStore extends VuexModule {
        gt_c_number: data.gt_c_number,
      }  
      const savedFundingRequestFSForm = await api.fundingRequestFSFormTable.update(
-      data.sys_id as string,
-      updateObject,
+       data.sys_id as string,
+       updateObject,
      );
      this.setFundingRequestFSForm(savedFundingRequestFSForm);
      return savedFundingRequestFSForm
@@ -690,15 +690,14 @@ export class FinancialDetailsStore extends VuexModule {
    }
  }
 
-  /**
-   * Since @loadFundingRequestFSForm function handles the loading/ initializing, this
-   * function is just responsible for updating the record.
-   */
-  @Action({rawError: true})
-  public async saveFundingRequestFSForm(data:
-  FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
+@Action({rawError: true})
+  public async saveFundingRequestFormBAndOrderNumber(
+    data: 
+      Partial<FundingRequestFSFormDTO> & 
+      Pick<FundingRequestFSFormDTO, 'order_number' | 'use_g_invoicing'>
+  ): Promise<FundingRequestFSFormDTO> {
     try {
-      const getFundingRequestFSForm = await api.fundingRequestFSFormTable.getQuery(
+      const prevData = await api.fundingRequestFSFormTable.getQuery(
         {
           params: {
             sysparm_query: "^sys_id=" + data.sys_id
@@ -706,7 +705,46 @@ export class FinancialDetailsStore extends VuexModule {
         }
       )
       const isUsingGInvoicing = data.use_g_invoicing === "YES";
-      const savedFundingRequestFSForm =
+      // don't override things we don't explicitly set
+      const updateObject: FundingRequestFSFormDTO = {
+        fs_form_7600a_filename: 
+         isUsingGInvoicing ? '' : (data.fs_form_7600a_filename ?? ''),
+        fs_form_7600a_attachment:
+         isUsingGInvoicing ? '' : (data.fs_form_7600a_attachment ?? ''),
+        fs_form_7600b_filename: prevData[0].fs_form_7600b_filename ?? '',
+        fs_form_7600b_attachment: prevData[0].fs_form_7600b_attachment ?? '',
+        order_number: data.order_number,
+        use_g_invoicing: data.use_g_invoicing,
+        gt_c_number: prevData[0].gt_c_number ?? '',
+      }
+      const savedFundingRequestFSForm = await api.fundingRequestFSFormTable.update(
+       data.sys_id as string,
+       updateObject,
+      );
+      this.setFundingRequestFSForm(savedFundingRequestFSForm);
+      return savedFundingRequestFSForm
+    } catch(error) {
+      throw new Error( `error occurred saving funding request form or G-Invoicing number ${error}`);
+    }
+  }
+
+  /**
+   * Since @loadFundingRequestFSForm function handles the loading/ initializing, this
+   * function is just responsible for updating the record.
+   */
+  @Action({rawError: true})
+public async saveFundingRequestFSForm(data:
+  FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
+  try {
+    const getFundingRequestFSForm = await api.fundingRequestFSFormTable.getQuery(
+      {
+        params: {
+          sysparm_query: "^sys_id=" + data.sys_id
+        }
+      }
+    )
+    const isUsingGInvoicing = data.use_g_invoicing === "YES";
+    const savedFundingRequestFSForm =
       await api.fundingRequestFSFormTable.update(data.sys_id as string, 
         {
           fs_form_7600a_filename: data.fs_form_7600a_filename,
@@ -721,12 +759,12 @@ export class FinancialDetailsStore extends VuexModule {
             ? getFundingRequestFSForm[0].gt_c_number
             : data.gt_c_number
         });
-      this.setFundingRequestFSForm(savedFundingRequestFSForm);
-      return savedFundingRequestFSForm;
-    } catch (error) {
-      throw new Error( `error occurred saving funding request form ${error}`);
-    }
+    this.setFundingRequestFSForm(savedFundingRequestFSForm);
+    return savedFundingRequestFSForm;
+  } catch (error) {
+    throw new Error( `error occurred saving funding request form ${error}`);
   }
+}
 
   /**
    * Since @loadFundingRequestMIPRForm function handles the loading/ initializing, this
