@@ -208,7 +208,6 @@ export class PortfolioSummaryStore extends VuexModule {
     );
     
     allEnvs.forEach(env => {
-      console.log(`Env: ${JSON.stringify(env)}`);
       // ATAT TODO AT-9721
       // remove this forEach entirely
       // change environmentStatus to environment_status throughout codebase
