@@ -1,14 +1,11 @@
 import {createLocalVue} from "@vue/test-utils";
 import Vuex from "vuex";
-import { PortfolioApi } from './index';
+import { PortfolioApi, APINAME } from './index';
 import { PortfolioSummaryObj } from "@/api/models";
-import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-jest.mock('axios')
 const portfolios: PortfolioSummaryObj[] = [
   /* eslint-disable camelcase */
   {
@@ -41,24 +38,22 @@ const portfolios: PortfolioSummaryObj[] = [
 ];
   
 
-describe("Potfolio Api",
+describe("Portfolio Api",
   () => {
-    let portfolioApi: PortfolioApi;
-    let mockAxios: MockAdapter;
-    beforeEach(() => {
-      portfolioApi = new PortfolioApi()
-      mockAxios = new MockAdapter(axios)
-    })
+    const portfolioApi = new PortfolioApi()
+    // pass in the api instance
+    const mockAxios= new MockAdapter(portfolioApi.instance)
+
     afterEach(() => {
       jest.clearAllMocks();
-      jest.clearAllTimers();
     })
 
-    
     it('Test getPortfolioSummaryList()', async () => {
-      mockAxios.onGet().reply(200, portfolios)
-      const data = await portfolioApi.getPortfolioSummaryList('1234')
-      expect(data).toBe('')
+      const userId = '1234'
+      mockAxios.onGet(`${APINAME}/summary`, {params: {userId: userId}})
+        .reply(200, {result: portfolios})
+      const data = await portfolioApi.getPortfolioSummaryList(userId)
+      expect(data).toStrictEqual(portfolios)
     })
 
   })
