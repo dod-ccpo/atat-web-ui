@@ -22,7 +22,7 @@
           <div v-if="isXaaS">
             <div class=" d-flex justify-space-between">
               <div>
-                <h3 class="mb-1" id=" AnticipatedUsersAndDataNeeds_Heading">
+                <h3 class="mb-1" id="AnticipatedUsersAndDataNeeds_Heading">
                   {{ AnticipatedUserAndDataSummaryItem.title }}
                 </h3>
               </div>
