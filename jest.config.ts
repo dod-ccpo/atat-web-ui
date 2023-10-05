@@ -16,7 +16,8 @@ module.exports = {
     "src/plugins/*.ts", 
     "src/dashboards/*.ts",  
     "src/services/*.ts", 
-    "src/main.ts"
+    "src/main.ts",
+    "src/portfolios/**/*.ts"
   ],
   globals: {
     "ts-jest": {
@@ -94,7 +95,6 @@ module.exports = {
     "<rootDir>/src/helpers/*.spec.ts",
     "<rootDir>/src/api/**/*.spec.ts",
     "<rootDir>/src/action-handlers/**/*.spec.ts",
-    "<rootDir>/src/portfolio/**/*.spec.ts",
     "<rootDir>/src/packages/**/*.spec.ts",
     "<rootDir>/src/portfolios/**/*.spec.ts",
     "<rootDir>/src/documentReview/**/*.spec.ts",

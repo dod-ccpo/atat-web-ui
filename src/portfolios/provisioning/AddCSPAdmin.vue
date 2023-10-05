@@ -385,6 +385,9 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     const missingTS = 
       this.admins.findIndex(a => a.hasTSAccess === "YES") === -1 && this.needsTSAdmin;
     const needsILs = this.hasImpactLevels;
+    debugger;
+    console.log("needsILs:", needsILs)
+    console.log("this.impactLevelCompareArray: ", this.impactLevelCompareArray)
     const missingILs = [...this.impactLevelCompareArray]
 
     if(this.admins.length > 0){
@@ -710,8 +713,10 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = PortfolioStore.portfolioProvisioningObj;
-
+    const storeData = await PortfolioStore.getPortfolioProvisioningObj();
+    console.log("storeData ", storeData);
+    console.log("storeData.classificationLevels", storeData.classificationLevels);
+    console.log("storeData.taskOrderNumber", storeData.taskOrderNumber);
     if (storeData) {
       this.admins = _.cloneDeep(storeData.admins) || [];
       this.savedData = _.cloneDeep(this.admins);
