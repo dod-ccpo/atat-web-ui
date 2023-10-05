@@ -192,6 +192,7 @@ export class PortfolioDataStore extends VuexModule {
   public get doesCSPHaveImpactLevels(): boolean {
     return this.CSPHasImpactLevels;
   }
+
   public get doesTaskOrderHaveUnclassified(): boolean {
     return this.portfolioProvisioningObj
       .classificationLevels?.includes("Unclassified") as boolean; 
