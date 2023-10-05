@@ -87,7 +87,7 @@ describe("Test suite: Anticipated Users and Data needs", () => {
     cy.selectCheckBoxes([performanceReqs.africom1Checkbox]);
     cy.findElement(performanceReqs.africomRegionText1).type(noOfUsers);
 
-    cy.log("Section 1: Anticipated user as Yes in accordion 2")
+    cy.log("Section 1: Anticipated user as Yes in accordion 2");
     cy.setDurationUserData(
       anticipatedDurationVal,
       accordionIndex,
@@ -96,7 +96,7 @@ describe("Test suite: Anticipated Users and Data needs", () => {
       val
     );
 
-    cy.log("Section 2: Anticipated data as Yes in accordion 2") 
+    cy.log("Section 2: Anticipated data as Yes in accordion 2");
     cy.setDurationUserData(
       anticipatedDurationVal,
       accordionIndex,
@@ -113,6 +113,19 @@ describe("Test suite: Anticipated Users and Data needs", () => {
     cy.clickContinueButton(
       performanceReqs.subAlertMessage,
       "Your XaaS Summary"
+    );
+    //Added extra wait to wait for the page to load 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000);
+    cy.waitUntil(
+      function () {
+        return cy
+          .findElement(performanceReqs.anticipatedUsersBtn)
+          .should("exist");
+      },
+      {
+        timeout: 30000,
+      }
     );
     cy.verifyTextMatches(
       performanceReqs.anticipatedHeading,
