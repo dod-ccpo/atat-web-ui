@@ -32,10 +32,7 @@
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import { RadioButton } from "../../../types/Global";
-import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
-import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import { hasChanges } from "@/helpers";
 import FinancialDetails from "@/store/financialDetails";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -44,11 +41,8 @@ import {routeNames} from "@/router/stepper";
 
 @Component({
   components: {
-    ATATRadioGroup,
-    ATATExpandableLink,
-    FundingRequestLearnMore,
-    GInvoiceLearnMore,
-  },
+    ATATRadioGroup
+  }
 })
 
 export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {

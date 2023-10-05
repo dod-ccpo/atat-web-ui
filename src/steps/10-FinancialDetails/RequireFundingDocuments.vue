@@ -17,11 +17,16 @@
   </v-container>
 </template>
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
 
+import { Component, Mixins } from "vue-property-decorator";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
-@Component({})
+@Component({
+  components: {
+    ATATRadioGroup
+  }
+})
 export default class RequireFundingDocuments extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     return true;

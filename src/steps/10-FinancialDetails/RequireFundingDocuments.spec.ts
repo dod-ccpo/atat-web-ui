@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper } from "@vue/test-utils";
+import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import RFD from "./RequireFundingDocuments.vue";
 import { DefaultProps } from "vue/types/options";
 
