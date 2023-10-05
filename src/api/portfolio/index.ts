@@ -27,6 +27,7 @@ export class PortfolioApi extends ApiBase{
         }
       }
       /* eslint-enable camelcase */
+      console.log(this, 'this')
       const response = await this.instance.get( `${this.endPoint}/summary`, config);
       if (response.status === 200) {
         const { result } = response.data;
