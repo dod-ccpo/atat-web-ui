@@ -44,7 +44,6 @@ const portfolios: PortfolioSummaryObj[] = [
 describe("User Store",
   () => {
     let userStore: UserStore;
-
     beforeEach(() => {
       const createStore = (storeOptions: any = {}):
         Store<{ userStore: any }> => new Vuex.Store({...storeOptions});
