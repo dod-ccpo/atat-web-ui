@@ -5,7 +5,7 @@
       <ATATTextField
         width="234"
         type="number"
-        id="DataTransfer"
+        :id="'DataTransfer_'+ this.index"
         :label="dataLabel"
         :tooltipText="dataTooltipText"
         :appendDropdown="true"
@@ -20,7 +20,7 @@
     </div>
     <div>
       <ATATRadioGroup
-        id="DataIncrease"
+        :id="'DataIncrease_'+ this.index"
         :legend="increaseLabel"
         :items="increaseOptions"
         :value.sync="_increaseSelection"
@@ -32,7 +32,7 @@
     </div>
     <div v-if="_increaseSelection === 'YES'">
       <ATATRadioGroup
-        id="EstimateGrowth"
+        :id="'EstimateGrowth_'+ this.index"
         :legend="growthLabel"
         :items="growthOptions"
         :value.sync="_growthSelection"
@@ -43,7 +43,9 @@
       <br />
       <div v-if="_growthSelection !== ''" class="mb-6">
         <ATATSingleAndMultiplePeriods
-          id="Periods"
+          :id="'Periods'+this.index"
+          :needs="needs"
+          :index="index"
           :periods="periods"
           :textboxSuffix="'%'"
           :singlePeriodLabel="percentageLabel"
@@ -74,6 +76,7 @@ import { PeriodDTO } from "@/api/models";
 })
 export default class AnticipatedDataNeeds extends Vue {
   @Prop({default: "data"}) private needs?: string;
+  @Prop({default: 0}) private index?: number;
   @Prop({
     default: `Approximate data/internet egress across 
       the entire duration of your task order`
@@ -101,7 +104,7 @@ export default class AnticipatedDataNeeds extends Vue {
   private increaseLabel = "";
   private increaseOptions: RadioButton[] = [
     {
-      id: "YES",
+      id: `Accordion_${this.index}Question_${this.needs}_YES`,
       value: "YES",
       label: "Yes"
     }
@@ -110,13 +113,13 @@ export default class AnticipatedDataNeeds extends Vue {
   private growthLabel = "";
   private growthOptions: RadioButton[] = [
     {
-      id: "single",
+      id: `Accordion_${this.index}Question_${this.needs}_Single`,
       value: "SINGLE",
       label: `I want to estimate a single growth percentage 
         for the entire duration of the task order.`
     },
     {
-      id: "multiple",
+      id: `Accordion_${this.index}Question_${this.needs}_Multiple`,
       value: "MULTIPLE",
       label: `I want to customize growth percentage estimates 
         for the base and each option period.`
@@ -134,7 +137,7 @@ export default class AnticipatedDataNeeds extends Vue {
       data over the duration of the task order?`;
 
     this.increaseOptions.push({
-      id: "NO",
+      id: `Accordion_${this.index}Question_${this.needs}_NO`,
       value: "NO",
       label: "No, I expect the amount of data to remain static."
     });
@@ -150,7 +153,7 @@ export default class AnticipatedDataNeeds extends Vue {
       users over the duration of your task order?`;
 
     this.increaseOptions.push({
-      id: "NO",
+      id: `Accordion_${this.index}Question_${this.needs}_NO`,
       value: "NO",
       label: "No, I expect the number of users to remain static."
     });

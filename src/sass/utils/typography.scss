@@ -180,10 +180,7 @@ hr, .hr {
   padding-right: 24px;
   display: inline-block;
   white-space: nowrap;
-  &a {
     text-decoration: underline;
-  }
-
   &:after {
     font-family: $icon-font;
     content: "launch";

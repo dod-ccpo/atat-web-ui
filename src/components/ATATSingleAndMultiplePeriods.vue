@@ -13,7 +13,7 @@
      
     </div>
       <ATATTextField
-        id="SingleAmount"
+        :id="`SingleAmount_${this.needs}_${this.index}`"
         width="190"
         class="mr-2"
         :alignRight="true"
@@ -55,7 +55,7 @@
         </div>
         <div>
           <ATATTextField
-            :id="period.period_type + '_' + idx"
+            :id="period.period_type + '_' + idx + '_' + needs + '_' + index"
             width="190"
             class="ml-5"
             :alignRight="true"
@@ -70,7 +70,6 @@
               ),
             ]"
           />
-          <!-- todo change that back to :number -->
         </div>
       </div>
     </template>
@@ -106,6 +105,8 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
     {default: "Enter your estimated price for this period."}
   ) private multiplePeriodErrorMessage?: string;
   @Prop() private periods!: PeriodDTO[];
+  @Prop({default: "data"}) private needs?: string;
+  @Prop({default: 0}) private index?: number;
 
   @PropSync("values", {default: () => []}) private _values!: string[];
 
