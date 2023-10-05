@@ -35,7 +35,7 @@
           </div>
           <div v-show="useGInvoicing === 'YES'">
             <hr class="mt-5" />
-            <!-- eslint-disable eslint-disable-next-line max-len -->
+            <!-- eslint-disable max-len -->
             <ATATSearch
               id="OrderNumber"
               placeHolder="Find your order in G-Invoicing"
@@ -332,14 +332,13 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         this.loaded = await FinancialDetails.loadFundingRequestFSForm();
-        //eslint-disable-next-line prefer-const
-        let data: FundingRequestFSFormDTO = {
+        /* eslint-disable camelcase */
+        const data: FundingRequestFSFormDTO = {
           ...(this.loaded || initialFundingRequestFSForm),
-          // eslint-disable-next-line camelcase
           use_g_invoicing: this.useGInvoicing,
-          // eslint-disable-next-line camelcase
           gt_c_number: this.gInvoiceNumber,
         };
+        /* eslint-enable */
         await FinancialDetails.saveFundingRequestFormAndGInvoicing(data);
       }
     } catch (error) {
