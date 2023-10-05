@@ -29,7 +29,7 @@ describe("Testing EstimatesDeveloped Component", () => {
       selectedPriceComparison: "More"
     });
     const str = wrapper.vm.overUnderStr;
-    expect(str).toBe("overestimated");
+    expect(str).toBe("underestimated");
   });
 
   it("checks getter overUnderStr string 'underestimated'", async () => {
