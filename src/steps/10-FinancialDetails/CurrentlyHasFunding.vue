@@ -1,30 +1,30 @@
 <template>
-  <v-container class="container-max-width" fluid>
-    <v-row>
-      <v-col class="col-12">
-        <h1 class="page-header mb-3">
-          Do you currently have funding for your acquisition package?
-        </h1>
-        <div class="copy-max-width">
-          <p id="IntroP" class="mb-7">
-            Your Contracting Office may require an interagency agreement (e.g., Fiscal Service Form
-            7600A/General Terms & Conditions (GT&C) agreement) and/or a funding request (e.g.,
-            Fiscal Service Form 7600B or Military Interdepartmental Purchase Request (MIPR)) to
-            procure cloud service offerings from JWCC on your agency’s behalf.
-          </p>
-          <ATATRadioGroup
-              id="FundingTypesRadioGroup"
-              :card="true"
-              :items="radioButtonItems"
-              :rules="[$validators.required('Please select an option.')]"
-              :value.sync="selectedHasFunding"
-              class="max-width-640 mb-5"
-              name="radioButton-card"
-          />
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-form ref="form" lazy-validation>
+    <v-container class="container-max-width" fluid>
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+            Do you currently have funding for your acquisition package?
+          </h1>
+          <div class="copy-max-width">
+            <p id="IntroP" class="mb-7">
+              Your Contracting Office may require an interagency agreement (e.g., Fiscal Service
+              Form 7600A/General Terms & Conditions (GT&C) agreement) and/or a funding request
+              (e.g., Fiscal Service Form 7600B or Military Interdepartmental Purchase Request
+              (MIPR)) to procure cloud service offerings from JWCC on your agency’s behalf.
+            </p>
+            <ATATRadioGroup
+                :card="true"
+                :items="radioButtonItems"
+                :rules="[$validators.required('Please select an option.')]"
+                :value.sync="selectedHasFunding"
+                class="max-width-640 mb-5"
+            />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">

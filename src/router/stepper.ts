@@ -187,6 +187,7 @@ import {
   DowSummaryPathResolver,
   MIPRResolver,
   CurrentlyHasFundingResolver,
+  GTCInformationResolver,
   GInvoicingResolver,
   Upload7600Resolver,
   AppropriationOfFundsResolver,
@@ -362,7 +363,6 @@ export const routeNames = {
   SecurityRequirements:"Security_Requirements",
   CrossDomain:"Cross_Domain",
   ReadyToGeneratePackage:"Ready_To_Generate_Package",
-  GeneratePackageDocuments: "Generate_Package_Documents",
   AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs",
   UploadSignedDocuments:"Upload_Signed_Documents",
   ReadyToSubmit:"Ready_To_Submit",
@@ -1404,14 +1404,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FinancialPOCResolver
       },
       {
-        menuText: "Funding",
-        path: "currently-has-funding",
-        name: routeNames.CurrentlyHasFunding,
-        completePercentageWeight: 1,
-        component: CurrentlyHasFunding,
-        routeResolver: CurrentlyHasFundingResolver,
-      },
-      {
         menuText: "Required Funding Documents",
         excludeFromMenu: true,
         path: "required-funding-documents",
@@ -1420,12 +1412,21 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: RFD,
       },
       {
+        menuText: "Funding",
+        path: "currently-has-funding",
+        name: routeNames.CurrentlyHasFunding,
+        completePercentageWeight: 1,
+        component: CurrentlyHasFunding,
+        routeResolver: CurrentlyHasFundingResolver,
+      },
+      {
         menuText: "GTC-Information",
         path: "gtc-information",
         name: routeNames.GTC,
         excludeFromMenu: true,
         completePercentageWeight: 1,
         component: GTC,
+        routeResolver: GTCInformationResolver
       },
       {
         menuText: "Generate Package Documents (Funding)",
