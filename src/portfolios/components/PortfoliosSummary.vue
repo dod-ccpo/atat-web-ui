@@ -548,17 +548,15 @@ export default class PortfoliosSummary extends Vue {
     if (this.activeTab) {
       this.portfolioSearchDTO.portfolioStatus = this.activeTab === "ALL" ? "" : this.activeTab;
     }
-
-    if (!this.selectedSort && this.defaultSort) {
-      this.selectedSort = this.defaultSort;
-      this.portfolioSearchDTO.sort = this.defaultSort;
-    }
     
-    this.page = !this.paging ? 1 : this.page;
-    this.offset = (this.page - 1) * this.recordsPerPage;
-    this.portfolioSearchDTO.offset = this.offset;
-
-    const storeData = await PortfolioSummary.getAllPortfolioSummaryList()
+    // pagination will be added back
+    // this.page = !this.paging ? 1 : this.page;
+    // this.offset = (this.page - 1) * this.recordsPerPage;
+    // this.portfolioSearchDTO.offset = this.offset;
+    
+    const storeData = await PortfolioSummary.getAllPortfolioSummaryList(
+      this.isHomeView as boolean
+    )
     this.portfolioCount = CurrentUserStore.getCurrentUserPortfolioCount;
     await CurrentUserStore.doSetPortfolioCount(this.portfolioCount)
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);

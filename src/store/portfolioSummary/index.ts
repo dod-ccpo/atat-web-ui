@@ -26,8 +26,23 @@ export class PortfolioSummaryStore extends VuexModule {
   portfolioSummaryList: PortfolioSummaryObj[] | null = null;
 
   @Action
-  public async getAllPortfolioSummaryList(): Promise<PortfolioSummaryObj[] | null> {
-    return this.portfolioSummaryList;
+  public async getAllPortfolioSummaryList(
+    isHomeView: boolean
+  ): Promise<PortfolioSummaryObj[] | null> {
+    if(isHomeView){
+      const sortedList = this.portfolioSummaryList?.sort((a, b) => {
+        const keyA = new Date(a.last_updated),
+          keyB = new Date(b.last_updated);
+        // Compare the 2 dates
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+      })
+      return sortedList?.slice(0, 5) as PortfolioSummaryObj[]
+    }
+    return this.portfolioSummaryList?.sort((a,b) =>{ 
+      return a.portfolio_name < b.portfolio_name ? -1 : 1 
+    }) as PortfolioSummaryObj[];
   }
 
   // store session properties

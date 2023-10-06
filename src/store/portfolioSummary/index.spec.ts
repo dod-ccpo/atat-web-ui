@@ -88,7 +88,7 @@ describe("PortfolioSummary Store",
     it('Test getAllPortfolioSummaryList()- should get the list from store', async () => {
       portfolioSummaryStore.setPortfolioSummaryList(
           portfolioSummaryListMock as unknown as PortfolioSummaryObj[]);
-      const portfolioSummaryList = await portfolioSummaryStore.getAllPortfolioSummaryList();
+      const portfolioSummaryList = await portfolioSummaryStore.getAllPortfolioSummaryList(false);
       await expect(portfolioSummaryList?.length).toBe(1)
     })
 
