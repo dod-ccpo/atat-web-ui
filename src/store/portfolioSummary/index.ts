@@ -31,12 +31,10 @@ export class PortfolioSummaryStore extends VuexModule {
   ): Promise<PortfolioSummaryObj[] | null> {
     if(isHomeView){
       const sortedList = this.portfolioSummaryList?.sort((a, b) => {
-        const keyA = new Date(a.last_updated),
-          keyB = new Date(b.last_updated);
+        const keyA = new Date(a.last_updated)
+        const keyB = new Date(b.last_updated);
         // Compare the 2 dates
-        if (keyA < keyB) return -1;
-        if (keyA > keyB) return 1;
-        return 0;
+        return keyA.getTime() - keyB.getTime()
       })
       return sortedList?.slice(0, 5) as PortfolioSummaryObj[]
     }
