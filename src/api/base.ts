@@ -35,7 +35,7 @@ function configureDefaults(){
 const BASE_API_URL = process.env.VUE_APP_BASE_API_URL;
 
 export default class {
-  protected instance: AxiosInstance;
+  public instance: AxiosInstance;
 
   constructor() {
 
