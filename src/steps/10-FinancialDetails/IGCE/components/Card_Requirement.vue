@@ -1,5 +1,4 @@
 <template>
-  <v-form ref="form" lazy-validation>
   <v-container>
     <v-row
       style="flex-wrap: nowrap;"
@@ -49,11 +48,10 @@
         :alignRight="true"
         class="ml-auto pt-3 _requirement-currency"
         :class="[{ 'error--text': noMonthlyValue},]"
-        />
+      />
       </v-col>
     </v-row>
   </v-container>
-  </v-form>
 </template>
 
 <script lang="ts">
@@ -72,6 +70,7 @@ import { IgceEstimateDTO } from "@/api/models";
   }
 })
 export default class CardRequirement extends Vue {
+
   @PropSync("cardData") private _cardData!: IgceEstimateDTO;
   @Prop() private index!: number;
 
@@ -113,7 +112,7 @@ export default class CardRequirement extends Vue {
     this.description = this._cardData.description;
     this.type = "/" + this._cardData.unit.toLowerCase();
     this.moneyNumber = this._cardData.unit_price || 0;
-    this.estimate = await this.moneyNumber > 0
+    this.estimate = this.moneyNumber > 0
       ? toCurrencyString(this.moneyNumber, true) 
       : "" ;
   }
