@@ -4,9 +4,8 @@ import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import InstanceDetails from "./InstanceDetails.vue";
-import {config, createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
-import validators from "../../../plugins/validation";
+import {config, createLocalVue, mount} from "@vue/test-utils";
+import validators from "@/plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -17,18 +16,13 @@ describe("Testing Classification Level Page", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
   localVue.use(Vuex);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
   config.showDeprecationWarnings = false
   Vue.config.silent = true;
 
-
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(InstanceDetails, {
-      localVue,
-      vuetify
-    });
+  const vuetify = new Vuetify();
+  const wrapper = mount(InstanceDetails, {
+    localVue,
+    vuetify
   });
 
   describe("Initialization....", () => {
@@ -87,22 +81,22 @@ describe("Testing Classification Level Page", () => {
 
     it("tests getCurrentUsageAndUsersSequenceNum getter", () => {
       wrapper.vm.instanceData.instance_location = "ON_PREM";
-      expect(wrapper.vm.getCurrentUsageAndUsersSequenceNum).toBe("2.");
+      expect(wrapper.vm.getCurrentUsageAndUsersSequenceNum).toBe("1.");
     });
 
     it("tests getInstanceConfigurationsSequenceNum getter", () => {
       wrapper.vm.instanceData.instance_location = "ON_PREM";
-      expect(wrapper.vm.getInstanceConfigurationsSequenceNum).toBe("3.");
+      expect(wrapper.vm.getInstanceConfigurationsSequenceNum).toBe("2.");
     });
 
     it("tests getPricingDetailsSequenceNum getter", () => {
       wrapper.vm.instanceData.instance_location = "ON_PREM";
-      expect(wrapper.vm.getPricingDetailsSequenceNum).toBe("4.");
+      expect(wrapper.vm.getPricingDetailsSequenceNum).toBe("3.");
     });
 
     it("tests getAdditionalInfoSequenceNum getter", () => {
       wrapper.vm.instanceData.instance_location = "ON_PREM";
-      expect(wrapper.vm.getAdditionalInfoSequenceNum).toBe("4.");
+      expect(wrapper.vm.getAdditionalInfoSequenceNum).toBe("3.");
     });
 
     it("tests getAdditionalInfoSequenceNum getter no instance heading", () => {

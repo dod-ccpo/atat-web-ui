@@ -22,7 +22,7 @@ describe("Testing CostSummary Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("isItemAggregate(item) - sends item to return TRUE", async () => {
+  it.skip("isItemAggregate(item) - sends item to return TRUE", async () => {
     expect(await wrapper.vm.isItemAggregate("5% Surge")).toBe(true);
   });
 

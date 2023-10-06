@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 
 module.exports = {
@@ -18,11 +19,6 @@ module.exports = {
     "src/services/*.ts", 
     "src/main.ts"
   ],
-  globals: {
-    "ts-jest": {
-      isolatedModules: true,
-    }
-  },
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [ ],
 
@@ -53,48 +49,65 @@ module.exports = {
     "<rootDir>/tests/setup.ts"
   ],
   // The glob patterns Jest uses to detect test files
-  testMatch: [
-    "<rootDir>/src/home/**/*.spec.ts",
-    "<rootDir>/src/components/*.spec.ts",
-    "<rootDir>/src/components/**/*.spec.ts",
-    "<rootDir>/src/steps/01-AcquisitionPackageDetails/COR_ACOR/*.spec.ts",
-    "<rootDir>/src/steps/02-EvaluationCriteria/SummaryStepTwo.spec.ts",
-    "<rootDir>/src/steps/03-Background/components/*.spec.ts",
-    "<rootDir>/src/steps/03-Background/CurrentContract/**/*.spec.ts",
-    "<rootDir>/src/steps/03-Background/CurrentEnvironment/*.spec.ts",
-    "<rootDir>/src/steps/03-Background/SummaryStepFour.spec.ts",
-    "<rootDir>/src/steps/04-ContractDetails/SummaryStepThree.spec.ts",
-    "<rootDir>/src/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.spec.ts",
-    "<rootDir>/src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts",
-    "<rootDir>/src/steps/07-OtherContractConsiderations/*.spec.ts",
-    "<rootDir>/src/steps/07-OtherContractConsiderations/*.spec.ts",
-    "<rootDir>/src/steps/08-StandardsAndCompliance/BAA.spec.ts",
-    "<rootDir>/src/steps/08-StandardsAndCompliance/BAALearnMore.spec.ts",
-    "<rootDir>/src/steps/08-StandardsAndCompliance/Section508AccessibilityRequirements.spec.ts",
-    "<rootDir>/src/steps/08-StandardsAndCompliance/Section508Standards.spec.ts",
-    "<rootDir>/src/steps/08-StandardsAndCompliance/FOIACoordinator.spec.ts",
-    "<rootDir>/src/steps/08-StandardsAndCompliance/FOIA.spec.ts",
-    "<rootDir>/src/steps/08-StandardsAndCompliance/PII.spec.ts",
-    "<rootDir>/src/steps/08-StandardsAndCompliance/PIIRecord.spec.ts",
-    "<rootDir>/src/steps/08-StandardsAndCompliance/SummaryStepSeven.spec.ts",
-    // "<rootDir>/src/steps/**/*.spec.ts",0
-    "<rootDir>/src/store/**/*.spec.ts",
-    "<rootDir>/src/router/**/*.spec.ts",
-    "<rootDir>/src/helpers/*.spec.ts",
-    "<rootDir>/src/api/**/*.spec.ts",
-    "<rootDir>/src/action-handlers/**/*.spec.ts",
-    "<rootDir>/src/portfolio/**/*.spec.ts",
-    "<rootDir>/src/packages/**/*.spec.ts",
-    "<rootDir>/src/portfolios/**/*.spec.ts",
-    "<rootDir>/src/documentReview/**/*.spec.ts",
-    "<rootDir>/src/plugins/*.spec.ts",
-    "<rootDir>/src/dashboards/*.spec.ts",
-    "<rootDir>/src/services/*.spec.ts",
-    "<rootDir>/src/*.spec.ts"
-  ],
+  // testMatch: [
+  //   "<rootPath>/*.spec.ts",
+  //   "<rootPath>/**/*.spec.ts"
+  // ],
   // An array of regexp pattern strings that are matched 
   // against all test paths, matched tests are skipped
-  // testPathIgnorePatterns: [  "<rootDir>/node_modules" ],
+  testPathIgnorePatterns: [  
+    "src/plugins/__tests__/Validation.spec.ts",
+    "src/steps/01-AcquisitionPackageDetails/ContactInfo.spec.ts",
+    "src/steps/01-AcquisitionPackageDetails/Organization.spec.ts",
+    "src/steps/01-AcquisitionPackageDetails/ProjectOverview.spec.ts",
+    "src/steps/01-AcquisitionPackageDetails/components/DoDAAC.spec.ts",
+    "src/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.spec.ts",
+    "src/steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.spec.ts",
+    "src/steps/02-EvaluationCriteria/EvalPlan/Differentiators.spec.ts",
+    "src/steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.spec.ts",
+    "src/steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.spec.ts",
+    "src/steps/02-EvaluationCriteria/EvalPlan/Summary.spec.ts",
+    "src/steps/02-EvaluationCriteria/EvalPlan/components/Callout.spec.ts",
+    "src/steps/02-EvaluationCriteria/EvalPlan/components/CreateEvalPlanSlideOut.spec.ts",
+    "src/steps/02-EvaluationCriteria/EvalPlan/components/CustomSpecifications.spec.ts",
+    "src/steps/02-EvaluationCriteria/Exceptions.spec.ts",
+    "src/steps/02-EvaluationCriteria/JandA/ImpactOfRequirement.spec.ts",
+    "src/steps/02-EvaluationCriteria/JandA/UniqueSource.spec.ts",
+    "src/steps/02-EvaluationCriteria/JustificationAndApproval.spec.ts",
+    "src/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.spec.ts",
+    "src/steps/02-EvaluationCriteria/MRR/CertificationPOCs.spec.ts",
+    "src/steps/02-EvaluationCriteria/MRR/MarketResearchEfforts.spec.ts",
+    "src/steps/02-EvaluationCriteria/components/FairOppExceptions.spec.ts",
+    "src/steps/04-ContractDetails/PeriodOfPerformance.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDOW.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/ComputeFormElements.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/EntireDuration.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/OtherOfferingSummary.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/OtherOfferings.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/OtherRequirementSummary.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/ServiceOfferings.spec.ts",
+    "src/steps/05-PerformanceRequirements/DOW/SummaryStepFive.spec.ts",
+    "src/steps/10-FinancialDetails/CurrentlyHasFunding.spec.ts",
+    "src/steps/10-FinancialDetails/FundingRequestLearnMore.spec.ts",
+    "src/steps/10-FinancialDetails/GTCInformation.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/CannotProceed.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/CostSummary.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/FeeCharged.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/Index.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/SupportingDocumentation.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/SurgeCapabilities.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/SurgeCapacity.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/TravelEstimates.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/components/Card_Requirements.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/components/ICGELearnMore.spec.ts",
+    "src/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.spec.ts",
+    "src/steps/10-FinancialDetails/IncrementalFunding.spec.ts",
+    "src/steps/11-GeneratePackageDocuments/UploadSignedDocuments.spec.ts"
+  ],
  
   // This option sets the URL for the jsdom environment. 
   //It is reflected in properties such as location.href
@@ -107,7 +120,12 @@ module.exports = {
   // A map from regular expressions to paths to transformers
   transform: {
     //"^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-    "^.+\\.ts$": "ts-jest",
+    "^.+\\.ts$": [
+      "ts-jest", {
+        tsconfig: 'tsconfig.json',
+        isolateModules: true
+      }
+    ],
     "^.+\\.vue$": ["@vue/vue2-jest", {sourceMaps: "inline"}],
   },
   // An array of regexp pattern strings that are matched against 

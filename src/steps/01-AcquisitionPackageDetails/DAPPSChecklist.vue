@@ -34,7 +34,7 @@
                   an email from each selected CSP with account login instructions.
                 </p>
                 <v-btn
-                :href="requestAccessURL"
+                :href="{ requestAccessURL }"
                 id="RequestAccess"
                 target="_blank"
                 class="primary mt-4 width-45 _text-decoration-none"
@@ -195,7 +195,6 @@
 import { Component, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import acquisitionPackage from "@/store/acquisitionPackage";
 import { SlideoutPanelContent } from "../../../types/Global";
 import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -211,34 +210,34 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class DAPPSChecklist extends Mixins(SaveOnLeave) {
   public requestAccessURL = "https://community.hacc.mil/s/jwcc/pricing-calculator-request"
   public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
+    if (e?.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
   }
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      await acquisitionPackage.setHideSideNavigation(false);
+      await AcquisitionPackage.setHideSideNavigation(false);
     } catch (error) {
       console.log(error);
     }
     return true;
   }
   async mounted(): Promise<void>{
-    const comingFrom = Steps.prevStepName;
-    if (comingFrom !== routeNames.ContractingShop
-    && AcquisitionPackage.packageId !== "") {
-      this.$router.push({
-        name: routeNames.ContractingShop,
-      }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
-    }
+    // const comingFrom = Steps.prevStepName;
+    // if (comingFrom !== routeNames.ContractingShop
+    // && AcquisitionPackage.packageId !== "") {
+    //   this.$router.push({
+    //     name: routeNames.ContractingShop,
+    //   }).catch(() => console.log("error Navigating to DAPPS Checklist"));      
+    // }
     
-    await acquisitionPackage.setHideSideNavigation(true);
-    const slideoutPanelContent: SlideoutPanelContent = {
-      component: FundingRequestLearnMore,
-      title: "Learn More",
-    };
-    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    // await AcquisitionPackage.setHideSideNavigation(true);
+    // const slideoutPanelContent: SlideoutPanelContent = {
+    //   component: FundingRequestLearnMore,
+    //   title: "Learn More",
+    // };
+    // await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
 }
 

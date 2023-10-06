@@ -8,6 +8,7 @@
         :href="$sanitize(gInvoiceHref)"
         target="_blank"
         rel="noopener"
+        id="GINLink"
       >
         <span class="_external-link">
          Government Invoicing (G-Invoicing)

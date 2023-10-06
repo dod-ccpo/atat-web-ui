@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
+import { createLocalVue, shallowMount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import AddToExistingPortfolio from './AddToExistingPortfolio.vue'
 import { PortfolioCardData } from "types/Global";
@@ -43,7 +43,7 @@ describe("Testing AddToExistingPortfolio", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(AddToExistingPortfolio, {
+    wrapper = shallowMount(AddToExistingPortfolio, {
       vuetify,
       localVue,
       mocks: {

@@ -105,17 +105,17 @@
           <v-row>
             <v-col>
               <PackageItem
-                v-for="(acPackage, idx) of packageCheckList" :key="idx"
+                v-for="(doc, idx) of packageCheckList" :key="idx"
                 :itemNumber="String(idx<9 ? '0' + (idx + 1) : idx + 1)"
-                :itemName="acPackage.itemName"
-                :requiresSignature="acPackage.requiresSignature"
-                :additionalInfo="acPackage.description"
-                :alertText="acPackage.alertText"
+                :itemName="doc.itemName"
+                :requiresSignature="doc.requiresSignature"
+                :additionalInfo="doc.description"
+                :alertText="doc.alertText"
                 :ditcoUser="isDitcoUser"
-                v-show="acPackage.show"
+                v-show="doc.show"
               ></PackageItem>
               <PackageItem
-                v-for="(document, idx) of _packageDocuments" :key="idx"
+                v-for="(doc, idx) of _packageDocuments" :key="idx"
                 :itemNumber="(Number(idx) + 6).toString().padStart(2,'0')"
               ></PackageItem>
             </v-col>
@@ -147,6 +147,7 @@ import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import { signedDocument } from "types/Global";
 import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
+import { AttachmentDTO } from "@/api/models";
 
 
 @Component({
@@ -176,10 +177,10 @@ export default class ReviewDocuments extends Vue {
   private downloadPackageLink = "";
   private domain="";
   get fairOpportunity():string {
-    return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
+    return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity ?? "";
   }
   get incrementallyFunded():string {
-    return FinancialDetails.fundingRequirement?.incrementally_funded || "";
+    return FinancialDetails.fundingRequirement?.incrementally_funded ?? "";
   }
   get isDitcoUser(): boolean {
     return isDitcoUser();
@@ -190,7 +191,7 @@ export default class ReviewDocuments extends Vue {
   }
   private packageCheckList: signedDocument[] = [];
   
-  private createAttachmentObject(attachment:any, step:string):void{
+  private createAttachmentObject(attachment:AttachmentDTO, step:string):void{
     const obj = {
       itemName:attachment.file_name,
       requiresSignature:false,
@@ -201,8 +202,7 @@ export default class ReviewDocuments extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    if(AcquisitionPackage.acquisitionPackage
-      && AcquisitionPackage.acquisitionPackage.sys_updated_on){
+    if(AcquisitionPackage?.acquisitionPackage?.sys_updated_on){
       this.lastUpdatedString =
         `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`
     }

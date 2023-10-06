@@ -141,7 +141,7 @@
                 <v-btn
                   id="CustomerSupportButton"
                   class="secondary mt-4 width-100 _text-decoration-none"
-                  :href="supportUrl"
+                  :href="{ supportUrl }"
                   target="_blank"
                 >      
                   Contact customer support

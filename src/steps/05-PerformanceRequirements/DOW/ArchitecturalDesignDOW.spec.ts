@@ -15,8 +15,8 @@ describe("Testing ArchitecturalDesignDetails Component", () => {
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(ArchitecturalDesignDetails, {
-      vuetify,
-      localVue
+      localVue,
+      vuetify
     });
   });
 

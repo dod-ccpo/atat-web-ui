@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
+import { createLocalVue, shallowMount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import { ClinTableRowData, TaskOrderCardData } from "types/Global";
@@ -185,7 +185,7 @@ describe("Testing TaskOrderDetails Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(TaskOrderDetails, {
+    wrapper = shallowMount(TaskOrderDetails, {
       localVue,
       vuetify,
       propsData: {

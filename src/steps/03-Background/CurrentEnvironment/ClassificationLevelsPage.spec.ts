@@ -4,7 +4,7 @@ import Vuex from "vuex";
 import Vuetify from "vuetify";
 import ClassificationLevelsPage
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.vue";
-import { config, createLocalVue, mount, Wrapper } from "@vue/test-utils";
+import { config, createLocalVue, shallowMount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
@@ -17,10 +17,13 @@ describe("Testing Classification Level Page", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
   localVue.use(Vuex);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
   config.showDeprecationWarnings = false
   Vue.config.silent = true;
+  const vuetify = new Vuetify();
+  const wrapper = shallowMount(ClassificationLevelsPage, {
+    localVue,
+    vuetify,
+  });
 
   const mockEnvironment:CurrentEnvironmentDTO = {
     env_location: "HYBRID"
@@ -37,11 +40,6 @@ describe("Testing Classification Level Page", () => {
   }
 
   beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(ClassificationLevelsPage, {
-      localVue,
-      vuetify,
-    });
     jest.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
       () => Promise.resolve(mockEnvironment)
     );
@@ -68,7 +66,7 @@ describe("Testing Classification Level Page", () => {
       jest.spyOn(CurrentEnvironment, 'setCurrentEnvironment').mockImplementation( () => {
         throw new Error("mock error");
       });
-      const saveOnLeave = await wrapper.vm.saveOnLeave();
+      await wrapper.vm.saveOnLeave();
       expect(console.log).toHaveBeenCalledWith(Error("mock error"));
     });
   });
