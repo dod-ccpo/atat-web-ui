@@ -77,15 +77,10 @@ describe("Testing CurrentlyHasFunding component", () => {
     });
 
     it("should navigate to RFD page if non-DITCO user", () => {
-      (AcquisitionPackage as any).isDitcoUser = jest.fn().mockReturnValue(false);
-      const pushMock = jest.fn();
-      wrapper.vm.$router = { push: pushMock as RawLocation } as VueRouter;
-
-      wrapper.vm.addNavigation();
-
-      expect(pushMock).toHaveBeenCalledWith({
-        name: routeNames.RFD,
-      });
+      jest.spyOn(wrapper.vm, "isDitcoUser").mockReturnValue(false);
+      const pushMock = jest.fn(); wrapper.vm.$router =
+        { push: pushMock as RawLocation } as VueRouter; wrapper.vm.addNavigation();
+      expect(pushMock).toHaveBeenCalledWith({ name: routeNames.RFD, });
     });
   });
 });
