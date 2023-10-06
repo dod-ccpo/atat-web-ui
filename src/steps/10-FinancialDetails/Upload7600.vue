@@ -258,7 +258,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     });
     const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
       const file = new File([], attachment.file_name, {
-        lastModified: Date.parse(attachment.sys_created_on || ""),
+        lastModified: Date.parse(attachment.sys_created_on ?? ""),
       });
       const upload: uploadingFile = {
         attachmentId: attachment.sys_id ?? "",
