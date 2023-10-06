@@ -57,8 +57,7 @@ export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {
       id: "NoFundingCheckbox",
       label:
           "No. I need to obtain funding documents.<br/>" +
-          "<span style='color: #41494E'>We’ll generate a draft of your package to " +
-          "submit to your financial office next.</span>",
+          "We’ll generate a draft of your package to submit to your financial office next.",
       value: "NO_FUNDING",
     }
   ];

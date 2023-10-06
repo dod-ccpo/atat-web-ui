@@ -7,6 +7,7 @@ import { DefaultProps } from "vue/types/options";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import FinancialDetails from "@/store/financialDetails";
 import {routeNames} from "@/router/stepper";
+import VueRouter, {RawLocation} from "vue-router";
 
 Vue.use(Vuetify);
 
@@ -77,9 +78,8 @@ describe("Testing CurrentlyHasFunding component", () => {
 
     it("should navigate to RFD page if non-DITCO user", () => {
       (AcquisitionPackage as any).isDitcoUser = jest.fn().mockReturnValue(false);
-
       const pushMock = jest.fn();
-      wrapper.vm.$router = { push: pushMock } as any;
+      wrapper.vm.$router = { push: pushMock as RawLocation } as VueRouter;
 
       wrapper.vm.addNavigation();
 

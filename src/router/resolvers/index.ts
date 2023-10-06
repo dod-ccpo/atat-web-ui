@@ -1562,7 +1562,7 @@ export const CurrentlyHasFundingResolver = (current: string): string => {
 export const GTCInformationResolver = (current: string): string => {
   return FinancialDetails.hasFunding === "HAS_FUNDING"
     ? routeNames.GTC
-    : routeNames.GeneratingPackageDocuments
+    : routeNames.GeneratingPackageDocumentsFunding
 }
 
 export const MIPRResolver = (current: string): string => {
