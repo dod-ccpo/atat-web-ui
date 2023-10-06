@@ -576,7 +576,6 @@ export default class PortfoliosSummary extends Vue {
         cardData.portfolio_owner = portfolio.owner_full_name;
         cardData.createdBy = portfolio.sys_created_by;
         cardData.agency = portfolio.agency;
-        cardData.taskOrderSysId = portfolio.active_task_order;
         cardData.taskOrderNumber = portfolio.active_task_order
 
         // lastModified - if status is "Processing" use "Started ... ago" string

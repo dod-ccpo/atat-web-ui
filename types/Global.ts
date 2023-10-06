@@ -542,6 +542,10 @@ export interface Portfolio extends BaseTableDTO {
   vendor?: string;
   lastCostDataSync?: string;
   fundingStatus?: string;
+  clins?: ClinDTO[];
+  // add funding data interface
+  fundsData?: any;
+  currentCLINS?: any;
 }
 
 export interface PortfolioCardData extends Portfolio {

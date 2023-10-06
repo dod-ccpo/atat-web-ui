@@ -1658,12 +1658,13 @@ export default class PortfolioDashboard extends Vue {
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId;
-
+    console.log(PortfolioStore.currentPortfolio, 'current')
     const data = await this.getDashboardData();
+    const currentPortfolioData = PortfolioStore.currentPortfolio;
     await this.checkForUpcomingObligatedFunds(data);
-    
+    console.log(currentPortfolioData, 'this is the data')
     this.taskOrder = data.taskOrder;
-    this.costs = data.costs;
+    this.costs = currentPortfolioData.fundsData.costs;
     this.costs.forEach(cost => {
       // eslint-disable-next-line camelcase
       cost.year_month = format(startOfMonth(parseISO(cost.year_month)), "yyyy-MM-dd");
@@ -1671,7 +1672,7 @@ export default class PortfolioDashboard extends Vue {
 
     this.costs.sort((a, b) => (a.clin_number > b.clin_number ? 1 : -1));
     this.costs.sort((a, b) => (a.year_month > b.year_month ? 1 : -1));
-    this.idiqClins = data.currentCLINs;
+    this.idiqClins = currentPortfolioData.currentCLINS;
 
     await this.calculateTotalFunds();
 

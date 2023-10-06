@@ -43,4 +43,33 @@ export class PortfolioApi extends ApiBase{
       throw new Error(error as string)
     }
   }
+  public async getPortfolioDetals(
+    userSysId: string,
+    portfolioSysId: string
+  ): Promise<any> {
+    try {
+      /* eslint-disable camelcase */
+      const config: AxiosRequestConfig = {
+        params: {
+          userId: userSysId,
+          portfolioId: portfolioSysId
+        }
+      }
+      /* eslint-enable camelcase */
+      const response = await this.instance.get( `${this.endPoint}/details`, config);
+      if (response.status === 200) {
+        const { result } = response.data;
+        return result;
+      } else {
+        const { error } = response.data;
+        return error;
+      }
+    } catch(error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response !== undefined && axiosError.response.status === 404) {
+        return {} as PortfolioSummaryMetadataAndDataDTO;
+      }
+      throw new Error(error as string)
+    }
+  }
 }

@@ -192,7 +192,7 @@ import { getStatusChipBgColor, toTitleCase } from "@/helpers";
 import AppSections from "@/store/appSections";
 import { Statuses } from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
-import { UserDTO } from "@/api/models";
+import { UserDTO } from "@/api/models"
 
 @Component({
   components: {
@@ -276,9 +276,9 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
-    this.cardData = await PortfolioStore.populatePortfolioMembersDetail(this.cardData); 
-    
-    await PortfolioStore.setCurrentPortfolioFromCard(this.cardData);
+    // this.cardData = await PortfolioStore.populatePortfolioMembersDetail(this.cardData); 
+    const data = await PortfolioStore.getSelectedPortfolioData(this.cardData.sysId as string)
+    await PortfolioStore.setCurrentPortfolioFromCard(data);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
       await AppSections.setActiveTabIndex(0);
