@@ -24,6 +24,48 @@
               <template v-slot:content>
                 <div class="d-flex">
                   <div>
+                    <div v-if="
+                      item.showMoreData.name
+                    " class="d-flex align-start my-3">
+                      <ATATSVGIcon
+                        width="20"
+                        height="20"
+                        name="person"
+                        color="base-light"/>
+                      <span
+                        class="text-base ml-2"
+                        :class="[{'text-error': checkMissing(item.showMoreData.name)}]">
+                          {{item.showMoreData.name}}
+                      </span>
+                    </div>
+                    <div v-if="
+                      item.showMoreData.first_name && !item.showMoreData.name
+                    " class="d-flex align-start my-3">
+                      <ATATSVGIcon
+                        width="20"
+                        height="20"
+                        name="person"
+                        color="base-light"/>
+                      <span
+                        class="text-base ml-2"
+                        :class="[{'text-error': checkMissing(item.showMoreData.first_name)}]">
+                          {{item.showMoreData.first_name}}
+                      </span>
+                    </div>
+                    <div v-if="
+                      item.showMoreData.last_name && !item.showMoreData.name
+                    " class="d-flex align-start my-3">
+                      <ATATSVGIcon
+                        width="20"
+                        height="20"
+                        name="person"
+                        color="base-light"/>
+                      <span
+                        class="text-base ml-2"
+                        :class="[{'text-error': checkMissing(item.showMoreData.last_name)}]">
+                          {{item.showMoreData.last_name}}
+                      </span>
+                    </div>
                     <div v-if="item.showMoreData.address" class="d-flex align-start my-3">
                       <ATATSVGIcon
                         width="20"
@@ -34,7 +76,7 @@
                         class="text-base ml-2"
                         :class="[{'text-error': checkMissing(item.showMoreData.address)}]">
                           {{item.showMoreData.address}}
-                  </span>
+                      </span>
                     </div>
                     <div v-if="item.showMoreData.email" class="d-flex align-center my-3">
                       <ATATSVGIcon
@@ -217,7 +259,7 @@
     <ATATDialog
       id="RemoveMemberModal"
       :showDialog="showRemoveAcor"
-      :title="'Remove ' + ACORName +' ?'"
+      :title="'Remove ' + ACORName +'?'"
       no-click-animation
       okText="Delete ACOR"
       width="450"
@@ -268,8 +310,10 @@ export default class ATATSummaryItem extends Vue {
     this.showRemoveAcor = true;
   }
   public get ACORName():string {
-    return `${AcquisitionPackage.acorInfo?.first_name}  ${AcquisitionPackage.acorInfo?.last_name}`
-      || "undefined"
+    return (AcquisitionPackage.acorInfo?.first_name || AcquisitionPackage.acorInfo?.last_name) ? 
+      `${AcquisitionPackage.acorInfo?.first_name}  ${AcquisitionPackage.acorInfo?.last_name}`
+        .trim() :
+      "Alternate Contracting Officer's Representative"
   }
   public get hasAcor():boolean {
     return AcquisitionPackage.hasAlternativeContactRep || false
