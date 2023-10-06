@@ -13,6 +13,32 @@ const portfolios: PortfolioSummaryObj[] = [
     portfolio_name: "test 2000",
     portfolio_status: "ACTIVE",
     agency: "BRITISH EMBASSY",
+    last_updated: "2023-09-26 11:17:00",
+    current_user_is_owner: true,
+    current_user_is_manager: false,
+    vendor: "GCP",
+    pop_start_date: "2023-12-08",
+    pop_end_date: "2028-10-07",
+    total_obligated: 1919000,
+    funds_spent: 0,
+    active_task_order: "2000000000000",
+    owner_full_name: "Test User2",
+    funding_status: "ON_TRACK",
+    csp_portal_links: [
+      {
+        csp: "google_il5_dev",
+        dashboard_link: ""
+      },
+      {
+        csp: "google_il6_dev",
+        dashboard_link: ""
+      }
+    ]
+  },
+  {
+    portfolio_name: "test 2001",
+    portfolio_status: "ACTIVE",
+    agency: "BRITISH EMBASSY",
     last_updated: "2023-09-27 11:17:01",
     current_user_is_owner: true,
     current_user_is_manager: false,
@@ -85,11 +111,19 @@ describe("PortfolioSummary Store",
       }
     })
 
-    it('Test getAllPortfolioSummaryList()- should get the list from store', async () => {
+    it('Test getAllPortfolioSummaryList()- list from store, sorted by name', async () => {
       portfolioSummaryStore.setPortfolioSummaryList(
-          portfolioSummaryListMock as unknown as PortfolioSummaryObj[]);
+          portfolios as unknown as PortfolioSummaryObj[]);
       const portfolioSummaryList = await portfolioSummaryStore.getAllPortfolioSummaryList(false);
-      await expect(portfolioSummaryList?.length).toBe(1)
+      expect(portfolioSummaryList?.length).toBe(2)
+      expect(portfolioSummaryList![0]).toStrictEqual(portfolios[0])
+    })
+    it('Test getAllPortfolioSummaryList()- list from store, sorted by date', async () => {
+      portfolioSummaryStore.setPortfolioSummaryList(
+          portfolios as unknown as PortfolioSummaryObj[]);
+      const portfolioSummaryList = await portfolioSummaryStore.getAllPortfolioSummaryList(true);
+      expect(portfolioSummaryList?.length).toBe(2)
+      expect(portfolioSummaryList![0]).toStrictEqual(portfolios[0])
     })
 
     it('Test setHasActivePortfolios()', async () => {
