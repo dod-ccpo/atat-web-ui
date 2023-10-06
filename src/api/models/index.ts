@@ -788,10 +788,28 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   environments?: Environment[];
   last_updated?: string;
 }
+export interface PortfolioSummaryObj extends BaseTableDTO{
+  portfolio_name: string;
+  portfolio_status: string;
+  agency: string;
+  last_updated: string;
+  current_user_is_owner: boolean;
+  current_user_is_manager: boolean;
+  vendor: string;
+  pop_start_date: string;
+  pop_end_date: string;
+  total_obligated: number;
+  funds_spent: number;
+  active_task_order: string;
+  owner_full_name:string;
+  funding_status: string;
+  csp_portal_links: {csp: string, dashboard_link: string}[],
+}
+
 
 export interface PortfolioSummaryMetadataAndDataDTO {
-  total_count: number;
-  portfolioSummaryList: PortfolioSummaryDTO[];
+  portfolios: PortfolioSummaryObj[];
+  portfolioCount: number
 }
 
 export interface EnvironmentDTO extends BaseTableDTO {
