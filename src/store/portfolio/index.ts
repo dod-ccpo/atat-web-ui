@@ -599,7 +599,7 @@ export class PortfolioDataStore extends VuexModule {
       status: portfolioData.portfolio_status,
       csp: portfolioData.csp,
       clins: portfolioData.clins,
-      currentCLINS: portfolioData.clins.filter((clin: any) => 
+      currentCLINs: portfolioData.clins.filter((clin: any) => 
         portfolioData.inPeriodClins.includes(clin.sys_id)
       ),
       vendor: portfolioData.vendor,

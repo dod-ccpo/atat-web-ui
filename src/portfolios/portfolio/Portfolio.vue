@@ -836,6 +836,7 @@ import differenceInCalendarMonths from "date-fns/differenceInCalendarMonths";
 import {
   lineChartData,
   lineChartDataSet,
+  Portfolio,
   SlideoutPanelContent,
 } from "types/Global";
 import _ from "lodash";
@@ -1605,9 +1606,11 @@ export default class PortfolioDashboard extends Vue {
   public async calculateTotalFunds(): Promise<void> {
     // total portfolio funds is sum of each IDIQ CLIN's funds obligated
     this.idiqClins.forEach((clin) => {
+      console.log(clin, 'clin')
       this.totalPortfolioFunds =
         this.totalPortfolioFunds + parseFloat(clin.funds_obligated.toString());
     });
+    console.log(this.totalPortfolioFunds, 'total port funds')
     let multiplier = 1;
     const tpf = this.totalPortfolioFunds;
     if (tpf >= 1000 && tpf < 10000) {
@@ -1640,17 +1643,17 @@ export default class PortfolioDashboard extends Vue {
   public lastSyncDate = "";
   public hasObligatedFundsInUpcomingCLIN = false;
 
-  public async checkForUpcomingObligatedFunds(data: PortFolioDashBoardDTO): Promise<void> {
+  public async checkForUpcomingObligatedFunds(data: Portfolio): Promise<void> {
     // if currentClins is empty i.e. Expired status, this errors. 
     if(data.currentCLINs.length > 0){
       const currentPeriodPrefix = data.currentCLINs[0].clin_number.slice(0,2);
       const nextPeriodNumber = parseInt(currentPeriodPrefix) + 1;
       const nextPeriodPrefix = nextPeriodNumber < 10 
         ? "0" + nextPeriodNumber : String(nextPeriodNumber);
-      const nextPeriodCLINsWithOblFunds = data.allCLINs.filter(clin => {
+      const nextPeriodCLINsWithOblFunds = data.clins?.filter(clin => {
         return clin.clin_number.indexOf(nextPeriodPrefix) === 0 
           && clin.funds_obligated.toString() !== "0";
-      })
+      }) as ClinDTO[]
       this.hasObligatedFundsInUpcomingCLIN = nextPeriodCLINsWithOblFunds.length > 0;
     }
   }
@@ -1661,7 +1664,7 @@ export default class PortfolioDashboard extends Vue {
     console.log(PortfolioStore.currentPortfolio, 'current')
     const data = await this.getDashboardData();
     const currentPortfolioData = PortfolioStore.currentPortfolio;
-    await this.checkForUpcomingObligatedFunds(data);
+    await this.checkForUpcomingObligatedFunds(currentPortfolioData);
     console.log(currentPortfolioData, 'this is the data')
     this.taskOrder = data.taskOrder;
     this.costs = currentPortfolioData.fundsData.costs;
@@ -1672,8 +1675,9 @@ export default class PortfolioDashboard extends Vue {
 
     this.costs.sort((a, b) => (a.clin_number > b.clin_number ? 1 : -1));
     this.costs.sort((a, b) => (a.year_month > b.year_month ? 1 : -1));
-    this.idiqClins = currentPortfolioData.currentCLINS;
-
+    this.idiqClins = currentPortfolioData.currentCLINs;
+    // ERIC I GOT HEREEE!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     await this.calculateTotalFunds();
 
     this.costs.forEach((cost) => {
@@ -1681,7 +1685,7 @@ export default class PortfolioDashboard extends Vue {
     });
     await this.calculateFundsSpent();
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
-
+    console.log(this.availableFunds, 'avail funds')
     this.tooltipHeaderData = {
       title: "Total Funds Available",
       amount: this.getCurrencyString(this.availableFunds),

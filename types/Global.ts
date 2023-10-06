@@ -545,7 +545,7 @@ export interface Portfolio extends BaseTableDTO {
   clins?: ClinDTO[];
   // add funding data interface
   fundsData?: any;
-  currentCLINS?: any;
+  currentCLINs?: any;
 }
 
 export interface PortfolioCardData extends Portfolio {
