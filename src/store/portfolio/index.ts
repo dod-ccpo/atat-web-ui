@@ -626,7 +626,7 @@ export class PortfolioDataStore extends VuexModule {
         lastMonthSpent: portfolioData.spend_last_month,
         lastMonthTrend: portfolioData.spend_last_month_trend,
         spendMonthAverage: portfolioData.spend_monthly_average,
-        totalPortfolioFunds: portfolioData.total_portfolio_fund,
+        totalPortfolioFunds: portfolioData.total_portfolio_funds,
         costs: portfolioData.clins.reduce((acc: CostsDTO[], curr:any) => 
           [...acc, ...curr.costs], [])
       },

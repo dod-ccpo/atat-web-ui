@@ -627,7 +627,7 @@ export interface CostsDTO extends BaseTableDTO {
   portfolio: string;
   organization: string;
   "agency.title"?: string;
-  is_actual: string;
+  is_actual: string | boolean;
   value: string;
 }
 

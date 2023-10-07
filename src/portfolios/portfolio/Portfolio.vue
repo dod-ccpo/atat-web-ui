@@ -1030,8 +1030,8 @@ export default class PortfolioDashboard extends Vue {
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
       if (cost.is_actual === "true") {
-        this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
         if (!isThisMonth(parseISO(cost.year_month))) {
+          // WHAT IS THIS DATA
           this.fullMonthsFundsSpent += parseFloat(cost.value);
         }
       }
@@ -1138,7 +1138,7 @@ export default class PortfolioDashboard extends Vue {
         const clin = this.costs.find(
           (cost) => cost.clin_number === clinNo && cost.year_month === date
         );
-        if (clin && clin.is_actual === "true") {
+        if (clin && clin.is_actual) {
           clinValues[date] = clin.value;
         } else if (clin) {
           this.endOfMonthForecast = this.endOfMonthForecast +  parseFloat(clin.value);
@@ -1349,8 +1349,10 @@ export default class PortfolioDashboard extends Vue {
       );
       const costClinNo = thisIdiqClin?.clin_number;
       const costClinsForThisIdiqClin = this.costs.filter((cost) => {
+        console.log(cost.clin_number === costClinNo && cost.value && cost.is_actual === true
+          && !isThisMonth(parseISO(cost.year_month)))
         return (
-          cost.clin_number === costClinNo && cost.value && cost.is_actual === "true"
+          cost.clin_number === costClinNo && cost.value && cost.is_actual === true
           && !isThisMonth(parseISO(cost.year_month))
         );
       });
@@ -1362,7 +1364,6 @@ export default class PortfolioDashboard extends Vue {
       );
       const idiqClinTotalSpend = 
         thisIdiqClinSpending.reduce((partialSum, a) => partialSum + a, 0);
-
       const lastMonthSpend = this.lastMonthSpend;
       const avgMonthlySpend =
         Math.round((idiqClinTotalSpend / (this.monthsIntoPoP)) * 100) / 100;
@@ -1503,6 +1504,7 @@ export default class PortfolioDashboard extends Vue {
 
   public createTableItems(): void {
     this.idiqClins.forEach((idiqClin) => {
+      console.log(idiqClin, 'idiq')
       //eslint-disable-next-line prefer-const
       let obj: {
         costClinNumber: string;
@@ -1536,7 +1538,7 @@ export default class PortfolioDashboard extends Vue {
       obj.clinLabel = idiqClin.idiq_clin_label || "";
       obj.popStart = createDateStr(idiqClin.pop_start_date, true);
       obj.popEnd = createDateStr(idiqClin.pop_end_date, true);
-
+      console.log(this.idiqClinSpendData, 'spend data')
       obj.totalFundsSpent = toCurrencyString(
         this.idiqClinSpendData[clinNo].idiqClinTotalSpend,
         true
@@ -1605,12 +1607,6 @@ export default class PortfolioDashboard extends Vue {
 
   public async calculateTotalFunds(): Promise<void> {
     // total portfolio funds is sum of each IDIQ CLIN's funds obligated
-    this.idiqClins.forEach((clin) => {
-      console.log(clin, 'clin')
-      this.totalPortfolioFunds =
-        this.totalPortfolioFunds + parseFloat(clin.funds_obligated.toString());
-    });
-    console.log(this.totalPortfolioFunds, 'total port funds')
     let multiplier = 1;
     const tpf = this.totalPortfolioFunds;
     if (tpf >= 1000 && tpf < 10000) {
@@ -1668,6 +1664,7 @@ export default class PortfolioDashboard extends Vue {
     console.log(currentPortfolioData, 'this is the data')
     this.taskOrder = data.taskOrder;
     this.costs = currentPortfolioData.fundsData.costs;
+    const {fundsData} = currentPortfolioData
     this.costs.forEach(cost => {
       // eslint-disable-next-line camelcase
       cost.year_month = format(startOfMonth(parseISO(cost.year_month)), "yyyy-MM-dd");
@@ -1675,23 +1672,28 @@ export default class PortfolioDashboard extends Vue {
 
     this.costs.sort((a, b) => (a.clin_number > b.clin_number ? 1 : -1));
     this.costs.sort((a, b) => (a.year_month > b.year_month ? 1 : -1));
-    this.idiqClins = currentPortfolioData.currentCLINs;
-    // ERIC I GOT HEREEE!!!!!!!!!!!!!!
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    await this.calculateTotalFunds();
-
     this.costs.forEach((cost) => {
       cost.value = parseFloat(cost.value).toString();
     });
+    this.idiqClins = currentPortfolioData.currentCLINs;
+    this.availableFunds = fundsData.fundsAvailable;
+    this.totalPortfolioFunds = fundsData.totalPortfolioFunds
+    this.fundsSpent = this.totalPortfolioFunds - this.availableFunds;
+    this.fundsSpentPercent = (this.fundsSpent / this.totalPortfolioFunds) * 100;
+    // ERIC I GOT HEREEE!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+    await this.calculateTotalFunds();
+
     await this.calculateFundsSpent();
-    this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
-    console.log(this.availableFunds, 'avail funds')
+    
+  
     this.tooltipHeaderData = {
       title: "Total Funds Available",
       amount: this.getCurrencyString(this.availableFunds),
       legend: "Funds Available",
     };
-    this.fundsSpentPercent = (this.fundsSpent / this.totalPortfolioFunds) * 100;
+    
 
     if (!isNaN(this.fundsSpentPercent)) {
       if (this.fundsSpentPercent >= 99.9 && this.fundsSpentPercent < 100) {
