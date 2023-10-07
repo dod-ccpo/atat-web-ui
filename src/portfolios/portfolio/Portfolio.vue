@@ -1349,8 +1349,6 @@ export default class PortfolioDashboard extends Vue {
       );
       const costClinNo = thisIdiqClin?.clin_number;
       const costClinsForThisIdiqClin = this.costs.filter((cost) => {
-        console.log(cost.clin_number === costClinNo && cost.value && cost.is_actual === true
-          && !isThisMonth(parseISO(cost.year_month)))
         return (
           cost.clin_number === costClinNo && cost.value && cost.is_actual === true
           && !isThisMonth(parseISO(cost.year_month))
@@ -1504,7 +1502,7 @@ export default class PortfolioDashboard extends Vue {
 
   public createTableItems(): void {
     this.idiqClins.forEach((idiqClin) => {
-      console.log(idiqClin, 'idiq')
+
       //eslint-disable-next-line prefer-const
       let obj: {
         costClinNumber: string;
@@ -1538,7 +1536,6 @@ export default class PortfolioDashboard extends Vue {
       obj.clinLabel = idiqClin.idiq_clin_label || "";
       obj.popStart = createDateStr(idiqClin.pop_start_date, true);
       obj.popEnd = createDateStr(idiqClin.pop_end_date, true);
-      console.log(this.idiqClinSpendData, 'spend data')
       obj.totalFundsSpent = toCurrencyString(
         this.idiqClinSpendData[clinNo].idiqClinTotalSpend,
         true
@@ -1657,7 +1654,6 @@ export default class PortfolioDashboard extends Vue {
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId;
-    console.log(PortfolioStore.currentPortfolio, 'current')
     const data = await this.getDashboardData();
     const currentPortfolioData = PortfolioStore.currentPortfolio;
     await this.checkForUpcomingObligatedFunds(currentPortfolioData);

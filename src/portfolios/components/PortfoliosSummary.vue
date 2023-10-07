@@ -103,7 +103,7 @@
           :isHomeView="isHomeView"
         />
       </transition-group>
-
+<!--  add back when pagination is added
       <div class="_table-pagination mt-5" v-show="showPagination">
         <span class="mr-11 font-weight-400 font-size-14">
           Showing {{ startingNumber }}-{{ endingNumber }} of {{ portfolioCount }}
@@ -114,7 +114,7 @@
           :length="numberOfPages"
           circle
         ></v-pagination>     
-      </div>
+      </div> -->
 
     </div>
 
