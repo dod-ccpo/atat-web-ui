@@ -221,6 +221,7 @@ export default class Home extends Vue {
     await PortfolioStore.setProvisioningTOFollowOn(false)
     await PortfolioStore.setProvisioningFromMeatballMenu(false);
     await AcquisitionPackage.loadFeedbackOptions()
+    
     this.isLoading = true;
     await CurrentUserStore.initialize();
     if (PortfolioStore.userLeftPortfolio) {

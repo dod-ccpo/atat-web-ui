@@ -465,6 +465,14 @@ export class SummaryStore extends VuexModule {
         dodaac:contactInfo.dodaac ? `DoDAAC - ${contactInfo.dodaac}` : "Missing DoDAAC",
         role:contactInfo.role || "Missing role"
       }
+      // first_name && last_name will only show in "Show more" if they're missing
+      // since they're already included in the title when they're present
+      if (!contactInfo.first_name && !contactInfo.last_name) {
+        showMoreData['name'] = "Missing name"
+      } else {
+        if (!contactInfo.first_name) showMoreData['first_name'] = "Missing first name"
+        if (!contactInfo.last_name) showMoreData['last_name'] = "Missing last name"
+      }
       title =contactInfo.first_name && contactInfo.last_name?
         `${contactInfo.first_name} ${contactInfo.last_name}`
         : "Alternate Contracting Officer's Representative"

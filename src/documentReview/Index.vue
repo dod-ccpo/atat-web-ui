@@ -157,7 +157,7 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
 
   protected async saveOnLeave(): Promise<boolean> {
     await this.hasChanged();
-    this.docDataSectionsToSave.forEach(async(section)=>{
+    await Promise.all(this.docDataSectionsToSave.map(async(section)=>{
       switch(section) {
       case "projectOverview":
         await AcquisitionPackage.saveData({
@@ -202,7 +202,7 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
       default:
         break;
       }
-    });
+    }))
     return true;
   }
 }
