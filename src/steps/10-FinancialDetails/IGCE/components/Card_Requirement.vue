@@ -3,7 +3,7 @@
     <v-row
       style="flex-wrap: nowrap;"
       class=" _requirement-card"
-      :class="[{ 'bg-error-lighter': noMonthlyValue}]"
+      :class="[{ 'bg-error-lighter': showErrors}]"
     >
       <v-col class="font-size-14 font-weight-700 pt-5 pl-6 pr-5 flex-grow-0 flex-shrink-0">
         {{index}}
@@ -33,22 +33,26 @@
           id="MonthlyValueMissing"
           class="atat-text-field-error"
           :errorMessages="['Enter your estimated monthly price for this requirement.']"
-          v-if="noMonthlyValue"
+          v-if="showErrors"
         />
       </v-col>
       <v-col class="flex-grow-0 flex-shrink-0">
-      <ATATTextField
-        :value.sync="estimate"
-        :isCurrency="true"
-        :showErrorMessages="false"
-        :appendText=type
-        width="220"
-        :id="'EstimateTextField_' + index"
-        @blur="checkMonthlyValue()"
-        :alignRight="true"
-        class="ml-auto pt-3 _requirement-currency"
-        :class="[{ 'error--text': noMonthlyValue},]"
-      />
+        <ATATTextField
+          :value.sync="estimate"
+          :isCurrency="true"
+          :showErrorMessages="false"
+          :appendText=type
+          width="220"
+          :id="'EstimateTextField_' + index"
+          @blur="checkMonthlyValue()"
+          :alignRight="true"
+          :rules="[
+          $validators.required(''),
+        ]"
+          class="ml-auto pt-3 _requirement-currency"
+          :class="[{ 'error--text': noMonthlyValue},]"
+          @errorMessage="setErrorMessage"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -79,14 +83,15 @@ export default class CardRequirement extends Vue {
   public type = ""
   public noMonthlyValue = false
   public estimate = "";
-  public moneyNumber = 0; 
+  public moneyNumber = 0;
+  public errorMessage = "";
 
   public saveTitle(): void {
     if(this.title !== ""){
       // eslint-disable-next-line camelcase
       this._cardData.title = this.title;
     }else{
-      this.title = this._cardData.title;
+      this.title = this._cardData.title as string;
     }
   }
   public saveDescription(): void {
@@ -96,7 +101,7 @@ export default class CardRequirement extends Vue {
       // eslint-disable-next-line camelcase
       this._cardData.updated_description = "YES";
     }else{
-      this.description = this._cardData.description;
+      this.description = this._cardData.description as string;
     }
   }
 
@@ -108,13 +113,21 @@ export default class CardRequirement extends Vue {
     }
   }
   public async loadOnEnter(): Promise<void> {
-    this.title = this._cardData.title
-    this.description = this._cardData.description;
-    this.type = "/" + this._cardData.unit.toLowerCase();
+    this.title = this._cardData.title as string
+    this.description = this._cardData.description as string;
+    this.type = "/" + this._cardData.unit?.toLowerCase()
     this.moneyNumber = this._cardData.unit_price || 0;
     this.estimate = this.moneyNumber > 0
-      ? toCurrencyString(this.moneyNumber, true) 
+      ? toCurrencyString(this.moneyNumber, true)
       : "" ;
+  }
+
+  public setErrorMessage(message: string): void{
+    this.errorMessage = message;
+  }
+
+  get showErrors(): boolean {
+    return this.noMonthlyValue || this.errorMessage !== ""
   }
 
   @Watch("estimate")
@@ -128,4 +141,3 @@ export default class CardRequirement extends Vue {
   }
 }
 </script>
-
