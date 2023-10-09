@@ -10,7 +10,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioSummary from "@/store/portfolioSummary";
 import portfolioSummaryListMock 
   from '../../store/portfolioSummary/mocks/portfolioSummaryListMock.json'
-import { PortfolioSummaryDTO } from "@/api/models";
+import { PortfolioSummaryDTO, PortfolioSummaryObj } from "@/api/models";
 
 
 Vue.use(Vuetify);
@@ -65,7 +65,7 @@ describe("Testing AddToExistingPortfolio", () => {
 
     it('tests loadOnEnter', async () =>{
       jest.spyOn(PortfolioSummary, 'getAllPortfolioSummaryList').mockResolvedValue( 
-        portfolioSummaryListMock as unknown as PortfolioSummaryDTO[]
+        portfolioSummaryListMock as unknown as PortfolioSummaryObj[]
       )
       await wrapper.vm.loadOnEnter();
       expect(wrapper.vm.$data.portfolioCardData.length).toBe(1)
