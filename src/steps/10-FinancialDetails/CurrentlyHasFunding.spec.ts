@@ -1,10 +1,11 @@
+
 /* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import CurrentlyHasFunding from "./CurrentlyHasFunding.vue";
 import { DefaultProps } from "vue/types/options";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import * as acqPackageExportedFunctions from "@/store/acquisitionPackage";
 import FinancialDetails from "@/store/financialDetails";
 import {routeNames} from "@/router/stepper";
 import VueRouter, {RawLocation} from "vue-router";
@@ -29,14 +30,15 @@ describe("Testing CurrentlyHasFunding component", () => {
     });
   });
 
-  describe("Initialization....", () => {
+  describe("INITIALIZATION", () => {
     it("tests that component renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
   });
 
-  describe("Testing class functions", () => {
-    it("should retrieve user selection when getter currentData is called", async () => {
+  describe("FUNCTIONS", () => {
+    it("currentData() => should retrieve user selection when getter currentData is called", 
+    async () => {
       let selection = wrapper.vm.currentData;
       expect(selection).toBe("");
       await wrapper.setData({ "selectedHasFunding": "NO_FUNDING" });
@@ -45,7 +47,7 @@ describe("Testing CurrentlyHasFunding component", () => {
       expect(selection).toBe("NO_FUNDING");
     });
 
-    it("should load data correctly on page load", async () => {
+    it("loadOnEnter() => should load data correctly on page load", async () => {
       jest.spyOn(FinancialDetails, 'loadFundingRequirement').mockResolvedValue();
       await wrapper.vm.loadOnEnter();
 
@@ -53,7 +55,7 @@ describe("Testing CurrentlyHasFunding component", () => {
       expect(wrapper.vm.selectedHasFunding).toBe(FinancialDetails.hasFunding || "");
     });
 
-    it("should save data correctly on page leave", async () => {
+    it("saveOnLeave() => should save data correctly on page leave", async () => {
       jest.spyOn(FinancialDetails, 'setHasFunding').mockResolvedValue();
       jest.spyOn(FinancialDetails, 'saveFundingRequirement').mockResolvedValue();
 
@@ -65,7 +67,7 @@ describe("Testing CurrentlyHasFunding component", () => {
       expect(FinancialDetails.saveFundingRequirement).toHaveBeenCalled();
     });
 
-    it("should throw if data does not save on page leave", async () => {
+    it("saveOnLeave() => should throw if data does not save on page leave", async () => {
       jest.spyOn(wrapper.vm, 'hasChanged').mockReturnValue(true);
       jest.spyOn(FinancialDetails, 'setHasFunding')
         .mockImplementation(() => {throw new Error("Mock error")});
@@ -76,11 +78,16 @@ describe("Testing CurrentlyHasFunding component", () => {
       expect(console.log).toHaveBeenCalledWith(new Error("Mock error"));
     });
 
-    it("should navigate to RFD page if non-DITCO user", () => {
-      jest.spyOn(wrapper.vm, "isDitcoUser").mockReturnValue(false);
-      const pushMock = jest.fn(); wrapper.vm.$router =
-        { push: pushMock as RawLocation } as VueRouter; wrapper.vm.addNavigation();
-      expect(pushMock).toHaveBeenCalledWith({ name: routeNames.RFD, });
+    it("addNavigation() => should navigate to RFD page if non-DITCO user", () => {
+      jest.spyOn(acqPackageExportedFunctions, "isDitcoUser").mockReturnValue(false);
+      const pushMock = jest.fn();
+      wrapper.vm.$router = { push: pushMock as RawLocation } as VueRouter;
+      wrapper.vm.addNavigation();
+      expect(pushMock).toHaveBeenCalledWith({
+        name: routeNames.RFD,
+      });
     });
   });
 });
+
+
