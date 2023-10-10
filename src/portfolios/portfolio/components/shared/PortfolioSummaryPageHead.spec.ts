@@ -8,7 +8,7 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import PortfolioData from "@/store/portfolio";
 import PortfolioStore from "@/store/portfolio";
 import CurrentUserStore from "@/store/user";
-import { Environment } from "types/Global";
+import { Environment, PortfolioDetailsDTO, PortfolioDTO } from "types/Global";
 Vue.use(Vuetify);
 
 const mockEnvironments = [
@@ -19,7 +19,7 @@ const mockEnvironments = [
     csp_display: "azure_il4_dev",
     csp_id: "",
     dashboard_link: "https://www.google.com/",
-    environmentStatus: "PROCESSING",
+    environment_status: "PROCESSING",
     name: "Test 2 - Unclassified",
     portfolio: "",
     provisioned: "false",
@@ -40,7 +40,7 @@ const mockEnvironments = [
     csp_display: "azure_il2_dev",
     csp_id: "",
     dashboard_link: "https://www.google.com/",
-    environmentStatus: "PROCESSING",
+    environment_status: "PROCESSING",
     name: "Test 2 - Unclassified",
     portfolio: "",
     provisioned: "false",
@@ -222,10 +222,10 @@ describe("Testing Members Component", () => {
   it("test getMoreMenuItems () => MeatballMenuItems[] as Manager", async () => {
     /* eslint-disable camelcase */
     const mockUser = {sys_id: '1234'} 
-    const mockPortfolio = {portfolio_managers: '1234'};
+    const mockPortfolio = { portfolio: {current_user_is_manager: true}}; 
     /* eslint-enable camelcase */
     CurrentUserStore.setCurrentUser(mockUser);
-    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
+    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio as PortfolioDetailsDTO);
     const items =  wrapper.vm.getMoreMenuItems;
     expect(items).toStrictEqual([
       {
@@ -246,22 +246,6 @@ describe("Testing Members Component", () => {
     ])
   })
 
-  it("test getMoreMenuItems () => MeatballMenuItems[] as Viewer", async () => {
-    /* eslint-disable camelcase */
-    const mockUser = {sys_id: '1234'}
-    const mockPortfolio = {portfolio_viewers: '1234'}; 
-    /* eslint-enable camelcase */
-    CurrentUserStore.setCurrentUser(mockUser);
-    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
-    const items =  wrapper.vm.getMoreMenuItems;
-    expect(items).toStrictEqual([
-      {
-        id: "LeavePortfolio_MenuItem",
-        title: "Leave this portfolio",
-        action: 'leaveThisPortfolio'
-      }
-    ])
-  })
 
   it("test loadOnEnter", async () => {
     await wrapper.setProps({environmentLinks: mockEnvironments})

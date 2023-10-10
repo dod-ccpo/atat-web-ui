@@ -2,6 +2,7 @@ import {TableApiBase} from "@/api/tableApiBase";
 import { ApiBase } from "../apiBase";
 import {PortfolioSummaryDTO, PortfolioSummaryMetadataAndDataDTO} from "@/api/models";
 import { AxiosRequestConfig, AxiosError } from "axios";
+import { PortfolioDetailsDTO } from "types/Global";
 export const TABLENAME = "x_g_dis_atat_portfolio";
 export const APINAME = "x_g_dis_atat/portfolios";
 
@@ -46,7 +47,7 @@ export class PortfolioApi extends ApiBase{
   public async getPortfolioDetals(
     userSysId: string,
     portfolioSysId: string
-  ): Promise<any> {
+  ): Promise<PortfolioDetailsDTO> {
     try {
       /* eslint-disable camelcase */
       const config: AxiosRequestConfig = {
@@ -67,7 +68,7 @@ export class PortfolioApi extends ApiBase{
     } catch(error) {
       const axiosError = error as AxiosError;
       if (axiosError.response !== undefined && axiosError.response.status === 404) {
-        return {} as PortfolioSummaryMetadataAndDataDTO;
+        return {} as PortfolioDetailsDTO;
       }
       throw new Error(error as string)
     }

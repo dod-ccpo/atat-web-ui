@@ -6,13 +6,14 @@ import {
   FilterOption,
   Portfolio,
   PortfolioCardData,
+  PortfolioDetailsDTO,
   PortfolioProvisioning,
   PortfolioSummaryQueryParams,
   User,
 } from "../../../types/Global"
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {AlertDTO, CostsDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
+import {AlertDTO, ClinDTO, CostsDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
 import {api} from "@/api";
@@ -582,39 +583,38 @@ export class PortfolioDataStore extends VuexModule {
   public currentUserIsOwner = false;
 
   @Action
-  public async setCurrentPortfolioFromCard(portfolioCardData: any): Promise<void> {
+  public async setCurrentPortfolioFromCard(portfolioCardData: PortfolioDetailsDTO): Promise<void> {
     await this.doSetCurrentPortfolioFromCard(portfolioCardData);
 
     await this.doSetCurrentUserRole();
   }
 
   @Mutation
-  public async doSetCurrentPortfolioFromCard(portfolioCardData: any): Promise<void> {
-    debugger
+  public async doSetCurrentPortfolioFromCard(
+    portfolioCardData: PortfolioDetailsDTO): Promise<void> 
+  {
     const portfolioData = portfolioCardData.portfolio;
-    console.log(portfolioCardData, 'data')
     const dataFromSummaryCard = {
       sysId: portfolioCardData.portfolioId,
       title: portfolioData.portfolio_name,
       description: portfolioData.description,
       status: portfolioData.portfolio_status,
-      csp: portfolioData.csp,
       clins: portfolioData.clins,
-      currentCLINs: portfolioData.clins.filter((clin: any) => 
-        portfolioData.inPeriodClins.includes(clin.sys_id)
+      currentCLINs: portfolioData.clins?.filter((clin: ClinDTO) => 
+        portfolioData.inPeriodClins?.includes(clin.sys_id)
       ),
       vendor: portfolioData.vendor,
       agency: portfolioData.agency,
       agencyDisplay: portfolioData.agencyDisplay,
-      taskOrderNumber: portfolioData.task_order.task_order_number,
-      taskOrderSysId: portfolioData.task_order.sys_id,
-      portfolio_owner: portfolioData.portfolio_users.owner,
-      portfolio_managers: portfolioData.portfolio_users.managers,
-      portfolio_viewers: portfolioData.portfolio_users.viewers,
+      taskOrderNumber: portfolioData.task_order?.task_order_number,
+      taskOrderSysId: portfolioData.task_order?.sys_id,
+      portfolio_owner: portfolioData.portfolio_users?.owner,
+      portfolio_managers: portfolioData.portfolio_users?.managers,
+      portfolio_viewers: portfolioData.portfolio_users?.viewers,
       members: [
-        portfolioData.portfolio_users.owner, 
-        ...portfolioData.portfolio_users.managers,
-        ...portfolioData.portfolio_users.viewers
+        portfolioData.portfolio_users?.owner, 
+        ...<[]>portfolioData.portfolio_users?.managers,
+        ...<[]>portfolioData.portfolio_users?.viewers
       ],
       environments: portfolioData.environments,
       fundsData: {
@@ -629,23 +629,23 @@ export class PortfolioDataStore extends VuexModule {
         lastMonthTrend: portfolioData.spend_last_month_trend,
         spendMonthAverage: portfolioData.spend_monthly_average,
         totalPortfolioFunds: portfolioData.total_portfolio_funds,
-        costs: portfolioData.clins.reduce((acc: CostsDTO[], curr:any) => 
-          [...acc, ...curr.costs], [])
+        costs: portfolioData.clins?.reduce((acc: CostsDTO[], curr:ClinDTO) => 
+          [...acc, ...<[]>curr.costs], [])
       },
       lastUpdated: portfolioData.last_updated,
-      createdBy: portfolioData.portfolio_users.creator.name,
+      createdBy: portfolioData.portfolio_users?.creator.name,
       popStartDate: portfolioData.pop_start_date,
       popEndDate: portfolioData.pop_end_date,
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
-    this.activeTaskOrderNumber = portfolioData.task_order.task_order_number 
+    this.activeTaskOrderNumber = portfolioData.task_order?.task_order_number 
       ? portfolioData.task_order.task_order_number : "";
-    this.activeTaskOrderSysId = portfolioData.task_order.sys_id 
+    this.activeTaskOrderSysId = portfolioData.task_order?.sys_id 
       ? portfolioData.task_order.sys_id : "";
   }
 
   @Action
-  public async getSelectedPortfolioData(portfolioSysId: string): Promise<any>{
+  public async getSelectedPortfolioData(portfolioSysId: string): Promise<PortfolioDetailsDTO>{
     const currentUserSysId = CurrentUserStore.currentUser.sys_id;
     return api.portfolioApi.getPortfolioDetals(currentUserSysId as string, portfolioSysId)
   }

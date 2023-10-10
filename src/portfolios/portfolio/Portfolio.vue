@@ -506,7 +506,7 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { DashboardService, PortFolioDashBoardDTO } from "../../services/dashboards";
+import { DashboardService } from "../../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../../components/ATATFooter.vue";
 import ATATPageHead from "../../components/ATATPageHead.vue";
@@ -648,7 +648,6 @@ export default class PortfolioDashboard extends Vue {
     return this.lastMonthSpendTrendPercent > 0 ? 'trendingUp' : 'trendingDown';
   }
   public get lastMonthTrendIconColor(): string {
-    debugger;
     return this.lastMonthSpendTrendPercent > 0 ? 'error' : 'success-dark';
   }
   public get lastMonthTrendTextColor(): string {  
@@ -776,7 +775,6 @@ export default class PortfolioDashboard extends Vue {
     if (this.monthsIntoPoP > 0) {
       // get last day of month before this month
       const endOfSpending = subDays(startOfMonth(today), 1);
-      // endOfSpending = subDays(endOfSpending, 1);
       const daysInMonthsWithSpend = differenceInCalendarDays(endOfSpending, start);
 
       if (daysInMonthsWithSpend > 0 && this.fundsSpent) {
@@ -827,20 +825,13 @@ export default class PortfolioDashboard extends Vue {
         );
         if (clin && clin.is_actual) {
           clinValues[date] = clin.value;
-        } else if (clin) {
-          // this.endOfMonthXaaSForecast = this.endOfMonthXaaSForecast +  parseFloat(clin.value);
         }
       });
       clinCosts[clinNo] = clinValues;
     });
 
-    // let estimatedFundsToBeInvoiced = this.endOfMonthXaaSForecast
-    //   ? this.endOfMonthXaaSForecast
-    //   : this.totalPortfolioFunds / this.monthsInPoP;
-
     if (this.fundsSpentPercent === 100) {
       this.estimatedFundsToBeInvoicedPercent = 0;
-      // estimatedFundsToBeInvoiced = 0;
       this.estimatedRemainingPercent = 0;
       this.zeroFundsRemaining = true;
     } else if (uniqueClinNumbersInCostsData.length && this.endOfMonthXaaSForecast) {
@@ -856,13 +847,7 @@ export default class PortfolioDashboard extends Vue {
       );
     }
 
-
-
-    // let estimatedAvailable = this.totalPortfolioFunds  - (
-    //   this.estimatedFundsToBeInvoiced + this.fundsSpent
-    // )
     if (this.costs.length === 0) {
-      // estimatedAvailable = this.totalPortfolioFunds;
       this.estimatedRemainingPercent = 100;
       this.estimatedFundsToBeInvoiced = 0;
     }
@@ -921,7 +906,6 @@ export default class PortfolioDashboard extends Vue {
         }   
       }
       idx++;
-   
       this.burnChartXLabels.push(monthAbbr);
     }
     this.lineChartOptions.scales.x.ticks.maxTicksLimit 
@@ -975,10 +959,6 @@ export default class PortfolioDashboard extends Vue {
               const month = addDays((new Date(yearMonth).setHours(0,0,0,0)), 1);
               const isCurrentMonth = isThisMonth(new Date(month)) 
               
-              // const isLastMonth = this.isDateLastMonth(month);
-              // if (isLastMonth) {
-              //   this.lastMonthSpend += monthAmount ? Math.round(monthAmount) : 0;
-              // }
 
               const actualAvailable = isActual ? fundsAvailableForCLIN : null;
               actual.push(actualAvailable);
@@ -1209,11 +1189,6 @@ export default class PortfolioDashboard extends Vue {
     this.lineChartOptions.scales.y.ticks.stepSize = this.burnChartYStepSize;
   }
 
-  // public async getDashboardData():Promise<PortFolioDashBoardDTO>{
-  //   return this.dashboardService.getdata(this.activeTaskOrderNumber, this.activeTaskOrderSysId);
-  // }
-  // public activeTaskOrderNumber = "";
-  // public activeTaskOrderSysId = "";
   public lastSyncDate = "";
   public hasObligatedFundsInUpcomingCLIN = false;
 
@@ -1237,15 +1212,8 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    // this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
-    // this.activeTaskOrderSysId = PortfolioStore.activeTaskOrderSysId;
-    // // EJY IS THIS STILL NEEDED?
-    // const data = await this.getDashboardData();
-
     const currentPortfolioData = PortfolioStore.currentPortfolio;
     await this.checkForUpcomingObligatedFunds(currentPortfolioData);
-    console.log(currentPortfolioData, 'this is the data')
-    // this.taskOrder = data.taskOrder;
     this.costs = currentPortfolioData.fundsData.costs;
     const {fundsData} = currentPortfolioData
     this.costs.forEach(cost => {

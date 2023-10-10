@@ -276,7 +276,6 @@ export default class PortfolioCard extends Vue {
   public portfolioCardMenuItems: MeatballMenuItem[] = [];
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
-    // this.cardData = await PortfolioStore.populatePortfolioMembersDetail(this.cardData); 
     const data = await PortfolioStore.getSelectedPortfolioData(this.cardData.sysId as string)
     await PortfolioStore.setCurrentPortfolioFromCard(data);
     switch(menuItem.action) {

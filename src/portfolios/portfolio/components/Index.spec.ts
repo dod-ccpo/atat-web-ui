@@ -4,7 +4,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import Index from "@/portfolios/portfolio/components/Index.vue";
 import PortfolioStore from "@/store/portfolio";
-import { Environment, Portfolio } from "types/Global";
+import { Environment, Portfolio, PortfolioDetailsDTO } from "types/Global";
 import CurrentUserStore from "@/store/user";
 import { UserDTO } from "@/api/models";
 
@@ -105,7 +105,7 @@ describe("Testing index Component", () => {
           csp_display: "azure_il4_dev",
           csp_id: "",
           dashboard_link: "https://www.google.com/",
-          environmentStatus: "PROCESSING",
+          environment_status: "PROCESSING",
           name: "Test 2 - Unclassified",
           portfolio: "",
           provisioned: "false",
@@ -123,7 +123,7 @@ describe("Testing index Component", () => {
       ] as Environment[],
     };
     /* eslint-enable */
-    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
+    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio as PortfolioDetailsDTO);
     await wrapper.vm.loadOnEnter();
     expect(wrapper.vm.$data.portfolioSysId).toBe(mockPortfolio.sysId);
     expect(wrapper.vm.$data.portfolioCSP).toBe(mockPortfolio.csp);
