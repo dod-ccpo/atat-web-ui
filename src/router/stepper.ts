@@ -147,7 +147,7 @@ import GTC from "@/steps/10-FinancialDetails/GTCInformation.vue";
 import RFD from "@/steps/10-FinancialDetails/RequireFundingDocuments.vue";
 import CurrentlyHasFunding from "@/steps/10-FinancialDetails/CurrentlyHasFunding.vue";
 import GeneratingPackageDocumentsFunding
-  from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
+  from "../steps/10-FinancialDetails/GeneratePackageDocumentsFunding.vue";
 import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";

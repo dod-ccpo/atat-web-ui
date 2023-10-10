@@ -1523,7 +1523,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async getDocGenStatus(packageId: string): Promise<string> {
     if(this.acquisitionPackage){
       this.acquisitionPackage.docgen_job_status = 
-        await (await (api.acquisitionPackageTable.retrieve(packageId))).docgen_job_status;
+        (await (api.acquisitionPackageTable.retrieve(packageId))).docgen_job_status;
     }
     return this.acquisitionPackage?.docgen_job_status || "";
   }

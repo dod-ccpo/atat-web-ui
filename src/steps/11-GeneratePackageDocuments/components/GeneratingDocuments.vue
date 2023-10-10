@@ -16,7 +16,7 @@
         <br />
         <p class="text-center">
           Hold tight while we generate your required documents and package
-          your files for download. <br /> This process could take about 5 minutes.
+          your files for download. <br /> This process could take a few minutes.
         </p>
       </div>
     </v-col>
