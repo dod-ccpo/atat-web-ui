@@ -8,6 +8,7 @@ import Steps from "@/store/steps";
 Component.registerHooks(["beforeRouteLeave"]);
 @Component({})
 export default class SaveOnLeave extends Vue {
+
   $refs!: {
     form: Vue & {
       validate: () => boolean;
