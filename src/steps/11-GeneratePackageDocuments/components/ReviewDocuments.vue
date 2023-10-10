@@ -215,7 +215,7 @@ export default class ReviewDocuments extends Vue {
       this.packageCheckList.filter(signedDoc => signedDoc.requiresSignature).length;
 
     const currentEnv = await CurrentEnvironment.getCurrentEnvironment()
-    const fundingType = await FinancialDetails.fundingRequestType;
+    const fundingType = FinancialDetails.fundingRequestType;
     const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
     const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
     const reqCostEstimate = await IGCE.getRequirementsCostEstimate();
