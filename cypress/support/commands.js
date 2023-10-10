@@ -1169,25 +1169,6 @@ Cypress.Commands.add("selectPoPStartDate", (radioSelector, value) => {
   });
 });
 
-Cypress.Commands.add("selectTMCheckbox", (inputText) => {
-  cy.findCheckBox(contractDetails.tmCheckBox, "T&M")
-    .should("not.be.checked")
-    .check({
-      force: true,
-    })
-    .then(() => {
-      cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
-      cy.textExists(
-        contractDetails.tmTextFieldLabel,
-        "Please provide justification for your T&M contract type."
-      );
-      cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should(
-        "exist"
-      );
-      cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
-    });
-});
-
 Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value)
     .click({

@@ -77,6 +77,9 @@ module.exports = {
     "<rootDir>/src/steps/08-StandardsAndCompliance/PII.spec.ts",
     "<rootDir>/src/steps/08-StandardsAndCompliance/PIIRecord.spec.ts",
     "<rootDir>/src/steps/08-StandardsAndCompliance/SummaryStepSeven.spec.ts",
+    "<rootDir>/src/steps/10-FinancialDetails/CurrentlyHasFunding.spec.ts",
+    "<rootDir>/src/steps/10-FinancialDetails/RequireFundingDocuments.spec.ts",
+    "<rootDir>/src/steps/10-FinancialDetails/GTCInformation.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",
@@ -107,7 +110,7 @@ module.exports = {
   // A map from regular expressions to paths to transformers
   transform: {
     //"^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-    "^.+\\.ts$": "ts-jest",
+    "^.+\\.ts?$": "ts-jest",
     "^.+\\.vue$": ["@vue/vue2-jest", {sourceMaps: "inline"}],
   },
   // An array of regexp pattern strings that are matched against 
