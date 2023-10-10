@@ -1,9 +1,12 @@
+/* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import EstimatesDeveloped from "@/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.vue";
 import validators from "@/plugins/validation";
+import IGCE from "@/store/IGCE";
+import { RequirementsCostEstimateDTO } from "@/api/models";
 Vue.use(Vuetify);
 
 describe("Testing EstimatesDeveloped Component", () => {
@@ -12,7 +15,17 @@ describe("Testing EstimatesDeveloped Component", () => {
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
+  const requirementsCostEstimate: RequirementsCostEstimateDTO | null = {
+    how_estimates_developed:{
+      tools_used:"AWS,GOOGLE_CLOUD,MICROSOFT_AZURE,ORACLE_CLOUD"
+    }
+  } as RequirementsCostEstimateDTO;
+
+
   beforeEach(() => {
+    jest.spyOn(IGCE,"getRequirementsCostEstimate").mockImplementation(
+      ()=>Promise.resolve(requirementsCostEstimate)
+    )
     vuetify = new Vuetify();
     wrapper = mount(EstimatesDeveloped, {
       localVue,
