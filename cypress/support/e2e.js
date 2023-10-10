@@ -1,8 +1,9 @@
-import './commands'
-import'./contractDetails'
-import './DOW'
+import './commands';
+import'./contractDetails';
+import './DOW';
 import './occ';
 import "./sac";
+import "./background"
 import './portfolioSummary'
 import "./evalCriteria";
 import "cypress-real-events/support";

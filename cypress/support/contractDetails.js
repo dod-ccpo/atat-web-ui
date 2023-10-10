@@ -1,4 +1,5 @@
 import "cypress-iframe";
+import { cleanText } from "../helpers";
 import contractDetails from "../selectors/contractDetails.sel";
 import common from "../selectors/common.sel";
 
@@ -110,3 +111,107 @@ Cypress.Commands.add("unselectSecretLevel", (secretSelector) => {
       cy.findElement(contractDetails.alertMessage).should("not.exist");
     });
 });
+
+Cypress.Commands.add(
+  "verifyTableData",
+  (tableHeader, tableData, columnHeader, expectedValue) => {
+    cy.findElement(tableHeader).each(($el, index) => {
+      const text = $el.text();
+      if (text.includes(columnHeader)) {
+        cy.findElement(tableData)
+          .eq(index)
+          .then(function (value) {
+            const actualValue = value.text().trim();
+            if (isNaN(actualValue)) {
+              const trimmedActualValue = actualValue
+                .toUpperCase()
+                .replace(/\s/g, "")
+                .replace(/[/()]/g, "");
+              expect(trimmedActualValue).to.equal(expectedValue);
+            } else {
+              expect(Number(actualValue)).to.equal(Number(expectedValue));
+            }
+          });
+      }
+    });
+  }
+);
+
+Cypress.Commands.add("popLengthOptionYearExists", () => {
+  cy.findElement(contractDetails.mainWrap).then((main) => {
+    if (main.find(contractDetails.optionRow).length > 0) {
+      cy.log("Option1Row FOUND!");
+      cy.findElement(contractDetails.baseDeleteButton)
+        .should("exist")
+        .and("not.be.disabled");
+      cy.findElement(contractDetails.optionDeleteButton)
+        .should("exist")
+        .and("not.be.disabled");
+    } else {
+      cy.log("Option1Row NOT FOUND!");
+      cy.findElement(contractDetails.baseDeleteButton)
+        .should("exist")
+        .and("be.disabled");
+    }
+  });
+});
+
+Cypress.Commands.add(
+  "defaultPoPLengthValue",
+  (inputSelector, dropdownSelector) => {
+    cy.findElement(inputSelector).invoke("val").should("be.equal", "1");
+    cy.findElement(dropdownSelector)
+      .then(($option) => {
+        const defaultOption = $option.text();
+        cy.log(defaultOption);
+      })
+      .should("have.text", "Year");
+  }
+);
+
+Cypress.Commands.add(
+  "selectDatefromDatePicker",
+  (ciSel, nmSel, selDateSel, calDate, dpSel) => {
+    cy.findElement(ciSel).click();
+    cy.findElement(nmSel)
+      .click({
+        force: true,
+      })
+      .then(() => {
+        cy.findElement(selDateSel).each(($el) => {
+          const dateName = $el.text();
+          if (dateName == calDate) {
+            cy.wrap($el).click({
+              force: true,
+            });
+          }
+        });
+        cy.findElement(dpSel).should("not.visible");
+      });
+  }
+);
+
+Cypress.Commands.add("selectPoPStartDate", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({
+    force: true,
+  });
+  cy.findElement(contractDetails.activePoPStartDate).then(($radioBtn) => {
+    const selectedOption = cleanText($radioBtn.text());
+    cy.log(selectedOption);
+
+    if (selectedOption === "radio_button_checkedYes.") {
+      cy.findElement(contractDetails.requestedStartDate).should("exist");
+      cy.selectDatefromDatePicker(
+        contractDetails.calendarIcon,
+        contractDetails.navigateNextMonth,
+        contractDetails.selectDate,
+        13,
+        contractDetails.datePicker
+      );
+    } else {
+      cy.findElement(contractDetails.requestedStartDate).should("not.exist");
+    }
+    cy.btnExists(common.continueBtn, " Continue ").click();
+  });
+});
+

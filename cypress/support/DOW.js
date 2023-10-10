@@ -7,7 +7,6 @@ import common from "../selectors/common.sel";
 import "cypress-iframe";
 import performanceReq from "../selectors/performanceReqs.sel";
 
-
 //This command is to verify the checkbox label and header for the ServiceOffering Page
 Cypress.Commands.add("verifyServiceOfferingHeader", (categoryObj) => {
   const categoryCheckBoxId = getCheckboxId(categoryObj.value);
@@ -232,6 +231,14 @@ Cypress.Commands.add(
       });
   }
 );
+Cypress.Commands.add("otherAvailableCategory", (categoryText) => {
+  cy.findElement("#OtherAvlGroups .h3")
+    .each(($el) => {
+      const text = $el.text();
+      cy.log(text);
+    })
+    .should("contain", categoryText);
+});
 
 //Tell us about your anticipated users and data needs
 
@@ -304,7 +311,9 @@ Cypress.Commands.add(
         );
       }
     } else {
-      cy.findElement(`#Radio_Accordion${accordionIndex}Question${userData}NO`).click({
+      cy.findElement(
+        `#Radio_Accordion${accordionIndex}Question${userData}NO`
+      ).click({
         force: true,
       });
     }
@@ -325,5 +334,101 @@ Cypress.Commands.add(
       const ddItemSel = `#DataTransfer_${accordionIndex}_DropdownListItem_${selectedDropdownValue}`;
       cy.findElement(ddItemSel).click();
     }
+  }
+);
+
+//Current Functions
+Cypress.Commands.add("selectCurrentFunction", (option) => {
+  cy.log("Option selected:", option);
+  let pageHeader = "";
+
+  if (option === "Replicate") {
+    cy.findElement(performanceReq.replicateRadioOption).click({ force: true });
+    pageHeader =
+      "Tell us more about your requirements to replicate your environment";
+  } else if (option === "Optimise") {
+    cy.findElement(performanceReq.optimiseRadioOption).click({ force: true });
+    pageHeader =
+      "Tell us more about your requirements to optimize your environment";
+  } else {
+    cy.findElement(performanceReq.replicateOptimiseNoOption).click({
+      force: true,
+    });
+    pageHeader = "Your Performance Requirements Summary";
+  }
+
+  cy.clickContinueButton(performanceReq.replicateRadioOption, pageHeader);
+});
+
+Cypress.Commands.add(
+  "selectAdditionalGrowth",
+  (additionalGrowth, percentVal) => {
+    if (additionalGrowth === "Yes") {
+      cy.radioBtn(performanceReq.additionalGrowthYesOption, "YES").click({
+        force: true,
+      });
+      cy.findElement(performanceReq.capacityPerTextField).type(percentVal);
+    } else {
+      cy.radioBtn(performanceReq.additionalGrowthNoOption, "NO").click({
+        force: true,
+      });
+    }
+  }
+);
+
+Cypress.Commands.add("selectPhasedOption", (phasedOption, scheduleVal) => {
+  if (phasedOption === "Yes") {
+    cy.radioBtn(performanceReq.phasedYesRadioOption, "YES").click({
+      force: true,
+    });
+    cy.enterTextInTextField(performanceReq.phaseApproachTextfield, scheduleVal);
+  } else {
+    cy.radioBtn(performanceReq.phasedNoRadioOption, "NO").click({
+      force: true,
+    });
+  }
+});
+
+Cypress.Commands.add("currentFunctionCardDesc", (option) => {
+  let cfButton = "";
+  let descriptionText = "";
+
+  if (option === "Replicate") {
+    descriptionText = "Replicate (lift and shift) using JWCC offerings";
+    cfButton = "View/Edit";
+  } else if (option === "Optimise") {
+    descriptionText = "Optimize (improve/modernize) using JWCC offerings";
+    cfButton = "View/Edit";
+  } else if (option === "No") {
+    descriptionText = "No requirements";
+    cfButton = "View/Edit";
+  } else {
+    cfButton = "Start";
+  }
+  const cfCardDetails = [
+    `Your Current Functions ${descriptionText} ${cfButton}`,
+  ];
+  cy.verifyTextArray(performanceReq.currentFunctionCard, cfCardDetails);
+});
+
+Cypress.Commands.add(
+  "completeCurrentFunctionForm",
+  (
+    option,
+    statementVal,
+    additionalGrowth,
+    percentVal,
+    phasedOption,
+    scheduleVal
+  ) => {
+    cy.selectCurrentFunction(option);
+    cy.enterTextInTextField(performanceReq.objectiveTextfield, statementVal);
+    cy.selectAdditionalGrowth(additionalGrowth, percentVal);
+    cy.selectPhasedOption(phasedOption, scheduleVal);
+    cy.clickContinueButton(
+      performanceReq.phasedYesRadioOption,
+      "Your Performance Requirements Summary"
+    );
+    cy.currentFunctionCardDesc(option);
   }
 );
