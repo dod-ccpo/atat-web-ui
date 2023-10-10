@@ -215,6 +215,7 @@ export default class ReviewDocuments extends Vue {
       this.packageCheckList.filter(signedDoc => signedDoc.requiresSignature).length;
 
     const currentEnv = await CurrentEnvironment.getCurrentEnvironment()
+    const fundingType = await FinancialDetails.fundingRequestType;
     const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
     const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
     const reqCostEstimate = await IGCE.getRequirementsCostEstimate();
@@ -244,7 +245,7 @@ export default class ReviewDocuments extends Vue {
     sysDocAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
     })
-    if(MIPR.mipr_attachment){
+    if(MIPR.mipr_attachment && fundingType === "MIPR"){
       const MIPRAttachment = await Attachments.getAttachmentById({
         serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
       this.createAttachmentObject(MIPRAttachment,'8 (Funding)')
@@ -253,7 +254,7 @@ export default class ReviewDocuments extends Vue {
       if (fundingRequest?.fs_form_7600a_attachment.length > 0) {
         fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment)
       }
-      if (fundingRequest?.fs_form_7600b_attachment.length > 0) {
+      if (fundingRequest?.fs_form_7600b_attachment.length > 0 && fundingType ==="FS_FORM") {
         fundingRequestIds.push(fundingRequest?.fs_form_7600b_attachment)
       }
       const fundingRequestAttachments = await Attachments.getAttachmentsBySysIds({
