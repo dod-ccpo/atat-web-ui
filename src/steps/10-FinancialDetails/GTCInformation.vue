@@ -168,9 +168,8 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   private loaded: FundingRequestFSFormDTO | null = null;
 
   private requiredMessage =
-    "You must include an authorized 7600A and 7600B for this acquisition. " +
-    "Please upload your missing documents," +
-    "or select Back to choose another method for transferring funds.";
+    "You must include an authorized 7600A for this acquisition. " +
+    "Upload your missing document.";
 
   public openSlideoutPanel(e: Event): void {
     if (e?.currentTarget) {
@@ -277,7 +276,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
       gInvoiceNumber: this.gInvoiceNumber,
     };
 
-    if (this.gInvoiceNumber && this.useGInvoicing) this.triggerSearch = true;    
+    if (this.gInvoiceNumber && this.useGInvoicing) this.triggerSearch = true;
   }
 
   /**
