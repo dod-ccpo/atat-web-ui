@@ -219,7 +219,7 @@ describe("FinancialDetails Store", () => {
       }
     });
 
-    it("- successfully and properly updates data", async () => {
+    it("- successfully and properly updates data pt.1 (set g invoicing status)", async () => {
       jest
         .spyOn(api.fundingRequestFSFormTable, "getQuery")
         .mockImplementation(async () => {
@@ -251,6 +251,116 @@ describe("FinancialDetails Store", () => {
       });
       expect(financialDetailsStore.fundingRequestFSForm).toEqual({
         ...fundingRequestFSFormDTO,
+        gt_c_number: "12345678",
+        fs_form_7600a_use_g_invoicing: "YES",
+      });
+    });
+
+    it("- successfully and properly updates data pt.2 (undefineds and new file)", async () => {
+      jest
+        .spyOn(api.fundingRequestFSFormTable, "getQuery")
+        .mockImplementation(async () => {
+          return Promise.resolve([
+            {
+              ...fundingRequestFSFormDTO,
+              fs_form_7600b_filename:
+                undefined as unknown as FundingRequestFSFormDTO["fs_form_7600b_filename"],
+              fs_form_7600b_attachment:
+                undefined as unknown as FundingRequestFSFormDTO["fs_form_7600b_attachment"],
+              fs_form_7600b_use_g_invoicing:
+                undefined as unknown as FundingRequestFSFormDTO["fs_form_7600b_use_g_invoicing"],
+              order_number:
+                undefined as unknown as FundingRequestFSFormDTO["order_number"],
+              use_g_invoicing: undefined,
+            },
+          ]);
+        });
+      jest
+        .spyOn(api.fundingRequestFSFormTable, "update")
+        .mockImplementation(
+          async (sys_id: string, data: FundingRequestFSFormDTO) => {
+            return Promise.resolve(data);
+          }
+        );
+
+      const response =
+        await financialDetailsStore.saveFundingRequestFormAndGInvoicing({
+          fs_form_7600a_filename: "new_file", // these should overwrite existing data
+          fs_form_7600a_attachment: "new_attachment", // these should overwrite existing data
+          fs_form_7600a_use_g_invoicing: "YES",
+          sys_id: "123",
+          gt_c_number: "12345678",
+        });
+
+      expect(api.fundingRequestFSFormTable.getQuery).toHaveBeenCalledTimes(1);
+      expect(api.fundingRequestFSFormTable.update).toHaveBeenCalledTimes(1);
+      expect(response).toEqual({
+        ...fundingRequestFSFormDTO,
+        fs_form_7600a_filename: "new_file",
+        fs_form_7600a_attachment: "new_attachment",
+        gt_c_number: "12345678",
+        fs_form_7600a_use_g_invoicing: "YES",
+      });
+      expect(financialDetailsStore.fundingRequestFSForm).toEqual({
+        ...fundingRequestFSFormDTO,
+        fs_form_7600a_filename: "new_file",
+        fs_form_7600a_attachment: "new_attachment",
+        gt_c_number: "12345678",
+        fs_form_7600a_use_g_invoicing: "YES",
+      });
+    });
+
+    it("- successfully and properly updates data pt.3 (all undefined)", async () => {
+      jest
+        .spyOn(api.fundingRequestFSFormTable, "getQuery")
+        .mockImplementation(async () => {
+          return Promise.resolve([
+            {
+              ...fundingRequestFSFormDTO,
+              fs_form_7600a_filename:
+                undefined as unknown as FundingRequestFSFormDTO["fs_form_7600a_filename"],
+              fs_form_7600a_attachment:
+                undefined as unknown as FundingRequestFSFormDTO["fs_form_7600a_attachment"],
+              fs_form_7600b_filename:
+                undefined as unknown as FundingRequestFSFormDTO["fs_form_7600b_filename"],
+              fs_form_7600b_attachment:
+                undefined as unknown as FundingRequestFSFormDTO["fs_form_7600b_attachment"],
+              fs_form_7600b_use_g_invoicing:
+                undefined as unknown as FundingRequestFSFormDTO["fs_form_7600b_use_g_invoicing"],
+              order_number:
+                undefined as unknown as FundingRequestFSFormDTO["order_number"],
+              use_g_invoicing: undefined,
+            },
+          ]);
+        });
+      jest
+        .spyOn(api.fundingRequestFSFormTable, "update")
+        .mockImplementation(
+          async (sys_id: string, data: FundingRequestFSFormDTO) => {
+            return Promise.resolve(data);
+          }
+        );
+
+      const response =
+        await financialDetailsStore.saveFundingRequestFormAndGInvoicing({
+          fs_form_7600a_use_g_invoicing: "YES",
+          sys_id: "123",
+          gt_c_number: "12345678",
+        });
+
+      expect(api.fundingRequestFSFormTable.getQuery).toHaveBeenCalledTimes(1);
+      expect(api.fundingRequestFSFormTable.update).toHaveBeenCalledTimes(1);
+      expect(response).toEqual({
+        ...fundingRequestFSFormDTO,
+        fs_form_7600a_filename: "",
+        fs_form_7600a_attachment: "",
+        gt_c_number: "12345678",
+        fs_form_7600a_use_g_invoicing: "YES",
+      });
+      expect(financialDetailsStore.fundingRequestFSForm).toEqual({
+        ...fundingRequestFSFormDTO,
+        fs_form_7600a_filename: "",
+        fs_form_7600a_attachment: "",
         gt_c_number: "12345678",
         fs_form_7600a_use_g_invoicing: "YES",
       });

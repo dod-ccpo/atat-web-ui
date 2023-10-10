@@ -5,10 +5,11 @@ import GTCInformation from "./GTCInformation.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "@/plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import SlideoutPanel from "@/store/slideoutPanel";
+import Attachments from "@/store/attachments";
 import FinancialDetails, {
   initialFundingRequestFSForm,
 } from "@/store/financialDetails";
-import Attachments from "@/store/attachments";
 import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 
 Vue.use(Vuetify);
@@ -16,7 +17,7 @@ Vue.use(Vuetify);
 const mockAttachment: AttachmentDTO = {
   /* eslint-disable camelcase */
   size_bytes: "1",
-  file_name: "filename.png",
+  file_name: "test.png",
   average_image_color: "2",
   image_width: "3",
   table_name: "4",
@@ -43,6 +44,18 @@ const mockLoadFundingReturn: FundingRequestFSFormDTO = {
   use_g_invoicing: "YES",
   gt_c_number: "A1212-123-123-123123",
   /* eslint-enable */
+};
+
+const mockFile = {
+  attachmentId: "",
+  created: 0,
+  file: new File([], "test.png"),
+  fileName: "test.png",
+  isErrored: false,
+  isUploaded: true,
+  link: "6",
+  progressStatus: 100,
+  recordId: "11",
 };
 
 describe("Testing GTC Information component", () => {
@@ -143,6 +156,48 @@ describe("Testing GTC Information component", () => {
       it("=> undefined (not rejected)", async () => {
         expect(await wrapper.vm.onRemoveAttachment()).toBe(undefined);
       });
+      it("=> undefined (rejected)", async () => {
+        jest
+          .spyOn(wrapper.vm, "loadFundingRequestData")
+          .mockImplementation(() => {
+            throw Error;
+          });
+        try {
+          wrapper.vm.onRemoveAttachment(mockFile);
+        } catch {
+          expect(await wrapper.vm.onRemoveAttachment(mockFile)).toThrow();
+        }
+        jest.spyOn(wrapper.vm, "loadFundingRequestData").mockRestore();
+      });
+    });
+
+    describe("onRemoveAttachment(file)", () => {
+      it("=> undefined (not rejected)", async () => {
+        jest
+          .spyOn(wrapper.vm, "loadFundingRequestData")
+          .mockImplementation(() => {
+            return Promise.resolve();
+          });
+        jest.spyOn(Attachments, "removeAttachment").mockImplementation(() => {
+          return Promise.resolve();
+        });
+        expect(await wrapper.vm.onRemoveAttachment(mockFile)).toBe(undefined);
+        jest.spyOn(wrapper.vm, "loadFundingRequestData").mockRestore();
+        jest.spyOn(Attachments, "removeAttachment").mockRestore();
+      });
+      it("=> undefined (rejected)", async () => {
+        jest.spyOn(Attachments, "removeAttachment").mockImplementation(() => {
+          throw Error;
+        });
+        try {
+          wrapper.vm.onRemoveAttachment(mockFile);
+        } catch {
+          jest.spyOn(console, "error").mockImplementation(() => undefined);
+          expect(console.error).toHaveBeenCalled();
+          expect(await wrapper.vm.onRemoveAttachment(mockFile)).toThrow();
+        }
+        jest.spyOn(wrapper.vm, "loadFundingRequestData").mockRestore();
+      });
     });
 
     describe("loadFundingRequestData()", () => {
@@ -157,6 +212,80 @@ describe("Testing GTC Information component", () => {
           2
         );
       });
+      // eslint-disable-next-line max-len
+      it("=> undefined (not rejected) and .currentData to be set w/ this.loaded?.gt_c_number being undefined", async () => {
+        wrapper.vm.loaded["gt_c_number"] = undefined;
+        jest
+          .spyOn(FinancialDetails, "loadFundingRequestFSForm")
+          .mockResolvedValue(mockLoadFundingReturn);
+        const result = await wrapper.vm.loadFundingRequestData();
+        expect(result).toBe(undefined);
+        expect(wrapper.vm.currentData).toEqual({
+          ...mockCurrentData,
+          gInvoiceNumber: "",
+        });
+        expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
+          3
+        );
+        wrapper.vm.loaded["gt_c_number"] = mockCurrentData.gInvoiceNumber;
+      });
+      // eslint-disable-next-line max-len
+      it("=> undefined (not rejected) and .currentData to be set w/ this.loaded?.fs_form_7600a_use_g_invoicing being YES", async () => {
+        wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = "YES";
+        jest
+          .spyOn(FinancialDetails, "loadFundingRequestFSForm")
+          .mockResolvedValue(mockLoadFundingReturn);
+        const result = await wrapper.vm.loadFundingRequestData();
+        expect(result).toBe(undefined);
+        expect(wrapper.vm.currentData).toEqual(mockCurrentData);
+        expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
+          4
+        );
+      });
+      // eslint-disable-next-line max-len
+      it("=> undefined (not rejected) and .currentData to be set w/ this.loaded?.fs_form_7600a_attachment being 123", async () => {
+        jest
+          .spyOn(FinancialDetails, "loadFundingRequestFSForm")
+          .mockResolvedValue({
+            /* eslint-disable camelcase */
+            ...mockLoadFundingReturn,
+            fs_form_7600a_attachment: "123",
+            use_g_invoicing: undefined,
+            fs_form_7600a_use_g_invoicing: undefined,
+            /* eslint-enable */
+          });
+        const result = await wrapper.vm.loadFundingRequestData();
+        expect(result).toBe(undefined);
+        expect(wrapper.vm.currentData).toEqual({
+          ...mockCurrentData,
+          useGInvoicing: "NO",
+        });
+        expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
+          5
+        );
+        wrapper.vm.loaded["fs_form_7600a_attachment"] = undefined;
+        wrapper.vm.loaded["use_g_invoicing"] = "YES";
+      });
+      // eslint-disable-next-line max-len
+      it("=> undefined (not rejected) and .currentData to be set w/ everything in this.loaded being undefined", async () => {
+        jest
+          .spyOn(FinancialDetails, "loadFundingRequestFSForm")
+          .mockResolvedValue({
+            /* eslint-disable camelcase */
+            ...mockLoadFundingReturn,
+            use_g_invoicing: undefined,
+            fs_form_7600a_use_g_invoicing: undefined,
+            /* eslint-enable */
+          });
+        const result = await wrapper.vm.loadFundingRequestData();
+        expect(result).toBe(undefined);
+        expect(wrapper.vm.currentData).toEqual(mockCurrentData);
+        expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
+          6
+        );
+        wrapper.vm.loaded["fs_form_7600a_attachment"] = undefined;
+        wrapper.vm.loaded["use_g_invoicing"] = "YES";
+      });
     });
 
     describe("loadAttachments()", () => {
@@ -169,19 +298,27 @@ describe("Testing GTC Information component", () => {
           .spyOn(Attachments, "getAttachmentsBySysIds")
           .mockResolvedValue([mockAttachment]);
         expect(await wrapper.vm.loadAttachments()).toEqual(undefined);
-        expect(wrapper.vm.uploadedFiles).toEqual([
+        expect(wrapper.vm.uploadedFiles).toEqual([mockFile]);
+      });
+
+      // eslint-disable-next-line max-len
+      it("=> undefined (not rejected) and .uploadedFiles to be set with a file loaded, and file download link being undefined", async () => {
+        wrapper.vm.loaded["fs_form_7600a_attachment"] = "123";
+        jest.spyOn(Attachments, "getAttachmentsBySysIds").mockResolvedValue([
           {
-            attachmentId: "",
-            created: 0,
-            file: new File([], ""),
-            fileName: "filename.png",
-            isErrored: false,
-            isUploaded: true,
-            link: "6",
-            progressStatus: 100,
-            recordId: "11",
+            ...mockAttachment,
+            // eslint-disable-next-line camelcase
+            download_link: undefined,
           },
         ]);
+        expect(await wrapper.vm.loadAttachments()).toEqual(undefined);
+        expect(wrapper.vm.uploadedFiles).toEqual([
+          {
+            ...mockFile,
+            link: "",
+          },
+        ]);
+        wrapper.vm.loaded["fs_form_7600a_attachment"] = undefined;
       });
     });
 
@@ -190,14 +327,14 @@ describe("Testing GTC Information component", () => {
         expect(await wrapper.vm.loadOnEnter()).toBe(undefined);
 
         expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
-          3
+          7
         );
       });
     });
 
     describe("saveOnLeave()", () => {
       it("=> true (not rejected and hasChanged)", async () => {
-        wrapper.vm.loaded['fs_form_7600a_use_g_invoicing'] = 'YES'
+        wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = "YES";
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = {
           useGInvoicing: "",
@@ -211,7 +348,7 @@ describe("Testing GTC Information component", () => {
           .mockImplementation(() => Promise.resolve(mockLoadFundingReturn));
         expect(await wrapper.vm.saveOnLeave()).toBe(true);
         expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
-          4
+          8
         );
         expect(
           FinancialDetails.saveFundingRequestFormAndGInvoicing
@@ -229,11 +366,40 @@ describe("Testing GTC Information component", () => {
           .mockImplementation(() => Promise.resolve(mockLoadFundingReturn));
         expect(await wrapper.vm.saveOnLeave()).toBe(true);
         expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
-          4
+          8
         );
         expect(
           FinancialDetails.saveFundingRequestFormAndGInvoicing
         ).toHaveBeenCalledTimes(1);
+      });
+
+      it("=> (rejected and hasChanged)", async () => {
+        wrapper.vm.currentData = mockCurrentData;
+        wrapper.vm.savedData = {
+          useGInvoicing: "",
+          gInvoiceNumber: "",
+        };
+        jest
+          .spyOn(FinancialDetails, "loadFundingRequestFSForm")
+          .mockResolvedValue(undefined as unknown as FundingRequestFSFormDTO);
+        jest
+          .spyOn(FinancialDetails, "saveFundingRequestFormAndGInvoicing")
+          .mockImplementation(() => {
+            throw Error;
+          });
+
+        try {
+          expect(await wrapper.vm.saveOnLeave()).toBe(undefined);
+          expect(
+            FinancialDetails.loadFundingRequestFSForm
+          ).toHaveBeenCalledTimes(9);
+        } catch {
+          expect(
+            FinancialDetails.saveFundingRequestFormAndGInvoicing
+          ).toThrow();
+        }
+
+        wrapper.vm.loaded = mockLoadFundingReturn;
       });
     });
 
@@ -248,10 +414,34 @@ describe("Testing GTC Information component", () => {
       });
 
       it("=> false", async () => {
-        wrapper.vm.loaded['fs_form_7600a_use_g_invoicing'] = 'YES'
+        wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = "YES";
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = mockCurrentData;
         expect(await wrapper.vm.hasChanged()).toBe(false);
+      });
+
+      it("=> true (fs_form_7600a_use_g_invoicing migration)", async () => {
+        wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = undefined;
+        wrapper.vm.currentData = mockCurrentData;
+        wrapper.vm.savedData = mockCurrentData;
+        expect(await wrapper.vm.hasChanged()).toBe(true);
+      });
+    });
+
+    describe("openSlideoutPanel", () => {
+      it("=> undefined", async () => {
+        expect(wrapper.vm.openSlideoutPanel()).toBe(undefined);
+      });
+      it("=> '12345'", async () => {
+        expect(
+          wrapper.vm.openSlideoutPanel({
+            ...new Event("click"),
+            currentTarget: {
+              id: "12345",
+            },
+          })
+        ).toBe(undefined);
+        expect(SlideoutPanel.slideoutPanelOpenerId).toBe("12345");
       });
     });
   });

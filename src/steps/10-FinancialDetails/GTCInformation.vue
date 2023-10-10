@@ -173,8 +173,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
 
   public openSlideoutPanel(e: Event): void {
     if (e?.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      SlideoutPanel.openSlideoutPanel(opener.id);
+      SlideoutPanel.openSlideoutPanel((e.currentTarget as HTMLElement).id);
     }
   }
 
@@ -297,15 +296,15 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     });
     const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
       const file = new File([], attachment.file_name, {
-        lastModified: Date.parse(attachment.sys_created_on || ""),
+        lastModified: Date.parse(attachment.sys_created_on ?? ""),
       });
       const upload: uploadingFile = {
-        attachmentId: attachment.sys_id || "",
+        attachmentId: attachment.sys_id ?? "",
         fileName: attachment.file_name,
         file: file,
         created: file.lastModified,
         progressStatus: 100,
-        link: attachment.download_link || "",
+        link: attachment.download_link ?? "",
         recordId: attachment.table_sys_id,
         isErrored: false,
         isUploaded: true,
