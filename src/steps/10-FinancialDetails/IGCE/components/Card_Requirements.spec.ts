@@ -59,5 +59,41 @@ describe("Testing Card_Requirement", () => {
       expect(title).toBe("test title");
     })
 
+    it("test saveDescription() with no data",async () => {
+      await wrapper.setProps({
+        cardData: {
+          title: "test title",
+          description: "test description",
+          unit: "test unit",
+          // eslint-disable-next-line camelcase
+          unit_price: 1000
+        }
+      })
+      await wrapper.setData({
+        description: "",
+      })
+      await wrapper.vm.saveDescription()
+      const description = wrapper.vm.$data.description
+      expect(description).toBe("test description");
+    })
+
+    it("test saveTitle() with no data",async () => {
+      await wrapper.setProps({
+        cardData: {
+          title: "test title",
+          description: "test description",
+          unit: "test unit",
+          // eslint-disable-next-line camelcase
+          unit_price: 1000
+        }
+      })
+      await wrapper.setData({
+        title: "",
+      })
+      await wrapper.vm.saveTitle()
+      const title = wrapper.vm.$data.title
+      expect(title).toBe("test title");
+    })
+
   })
 })
