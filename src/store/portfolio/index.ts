@@ -590,6 +590,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Mutation
   public async doSetCurrentPortfolioFromCard(portfolioCardData: any): Promise<void> {
+    debugger
     const portfolioData = portfolioCardData.portfolio;
     console.log(portfolioCardData, 'data')
     const dataFromSummaryCard = {
@@ -617,7 +618,8 @@ export class PortfolioDataStore extends VuexModule {
       ],
       environments: portfolioData.environments,
       fundsData: {
-        fundsAvailable: portfolioData.estimated_funds_available,
+        fundsAvailable: portfolioData.available_funds,
+        estimatedFundsAvailable: portfolioData.estimated_funds_available,
         fundsToBeInvoiced: portfolioData.estimated_funds_to_be_invoiced,
         periodFundsSpent: portfolioData.period_funds_spent,
         endOfMonthXaasForecast: portfolioData.spend_end_of_month_xaas_forecast,
@@ -631,7 +633,9 @@ export class PortfolioDataStore extends VuexModule {
           [...acc, ...curr.costs], [])
       },
       lastUpdated: portfolioData.last_updated,
-      createdBy: portfolioData.portfolio_users.creator.name
+      createdBy: portfolioData.portfolio_users.creator.name,
+      popStartDate: portfolioData.pop_start_date,
+      popEndDate: portfolioData.pop_end_date,
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
     this.activeTaskOrderNumber = portfolioData.task_order.task_order_number 

@@ -546,6 +546,8 @@ export interface Portfolio extends BaseTableDTO {
   // add funding data interface
   fundsData?: any;
   currentCLINs?: any;
+  popStartDate?: string;
+  popEndDate?: string;
 }
 
 export interface PortfolioCardData extends Portfolio {
