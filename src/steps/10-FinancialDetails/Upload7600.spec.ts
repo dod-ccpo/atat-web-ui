@@ -33,14 +33,14 @@ const mockAttachment: AttachmentDTO = {
 
 const mockCurrentData = {
   useGInvoicing: "YES",
-  gInvoiceNumber: "O1212-123-123-123123",
+  orderNumber: "O1212-123-123-123123",
 };
 
 const mockLoadFundingReturn: FundingRequestFSFormDTO = {
   ...initialFundingRequestFSForm,
   /* eslint-disable camelcase */
   use_g_invoicing: "YES",
-  gt_c_number: "O1212-123-123-123123",
+  order_number: "O1212-123-123-123123",
   /* eslint-enable */
 };
 
@@ -182,6 +182,7 @@ describe("Testing GTC Information component", () => {
 
     describe("saveOnLeave()", () => {
       it("=> true (not rejected and hasChanged)", async () => {
+        wrapper.vm.loaded['fs_form_7600b_use_g_invoicing'] = 'YES'
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = {
           useGInvoicing: "",
@@ -232,6 +233,7 @@ describe("Testing GTC Information component", () => {
       });
 
       it("=> false", async () => {
+        wrapper.vm.loaded['fs_form_7600b_use_g_invoicing'] = 'YES'
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = mockCurrentData;
         expect(await wrapper.vm.hasChanged()).toBe(false);
