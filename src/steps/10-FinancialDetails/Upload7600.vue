@@ -317,7 +317,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
         /* eslint-disable camelcase */
         const data: FundingRequestFSFormDTO = {
           ...(this.loaded || initialFundingRequestFSForm),
-          use_g_invoicing: this.useGInvoicing,
+          fs_form_7600b_use_g_invoicing: this.useGInvoicing,
           order_number: this.orderNumber,
         };
         /* eslint-enable */
