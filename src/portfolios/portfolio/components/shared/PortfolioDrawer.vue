@@ -613,15 +613,15 @@ export default class PortfolioDrawer extends Vue {
     await AppSections.setActiveTabIndex(2);
   }
   public getEnvStatus(env: Environment): string {
-    if (env.environmentStatus) {
-      const statusKey = this.getStatusKey(env.environmentStatus);
+    if (env.environment_status) {
+      const statusKey = this.getStatusKey(env.environment_status);
       return Statuses[statusKey].label;
     } 
     return "";
   }
 
   public getEnvDateStr(env: Environment): string {
-    if (env.environmentStatus === Statuses.Processing.value && env.sys_created_on) {
+    if (env.environment_status === Statuses.Processing.value && env.sys_created_on) {
       // return "Started x ago"
       const now = new Date();
       const created = new Date(env.sys_created_on);

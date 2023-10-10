@@ -93,11 +93,12 @@ describe("Testing index Component", () => {
 
   it("test loadOnEnter", async () => {
     /* eslint-disable */
-    const mockPortfolio: Portfolio = {
-      sysId: "1234",
-      title: "good portfolio title",
+    const mockPortfolio: PortfolioDetailsDTO = {
+      portfolioId: '1234',
+      portfolio: {
+      sys_id: "1234",
+      portfolio_name: "good portfolio title",
       description: "good description",
-      csp: "4321",
       environments: [
         {
           classification_level: "U",
@@ -115,21 +116,30 @@ describe("Testing index Component", () => {
           sys_created_by: "test.user",
           sys_created_on: "2023-09-22 18:58:03",
           sys_id: "",
+
           sys_mod_count: "2",
           sys_tags: "",
           sys_updated_by: "admin",
           sys_updated_on: "2023-09-22 18:59:06",
         },
       ] as Environment[],
-    };
+      clins: [],
+      portfolio_users:{
+        creator: {},
+        managers: [],
+        owner:{} ,
+        viewers: []
+      }
+    }
+  };
     /* eslint-enable */
-    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio as PortfolioDetailsDTO);
+    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio);
     await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.$data.portfolioSysId).toBe(mockPortfolio.sysId);
-    expect(wrapper.vm.$data.portfolioCSP).toBe(mockPortfolio.csp);
+    expect(wrapper.vm.$data.portfolioSysId).toBe(mockPortfolio.portfolio.sys_id);
+  
     expect(wrapper.vm.$data.portfolioDescription).toBe(
-      mockPortfolio.description
+      mockPortfolio.portfolio.description
     );
-    expect(wrapper.vm.$data.title).toBe(mockPortfolio.title);
+    expect(wrapper.vm.$data.title).toBe(mockPortfolio.portfolio.portfolio_name);
   });
 });
