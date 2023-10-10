@@ -8,8 +8,6 @@ import contact from "../selectors/contact.sel";
 import org from "../selectors/org.sel";
 import commonCorAcor from "../selectors/commonCorAcor.sel";
 import acor from "../selectors/acor.sel";
-import background from "../selectors/background.sel";
-import contractDetails from "../selectors/contractDetails.sel";
 import { cleanText, colors, prefixId } from "../helpers";
 import occ from "../selectors/occ.sel";
 import fd from "../selectors/financialDetails.sel";
