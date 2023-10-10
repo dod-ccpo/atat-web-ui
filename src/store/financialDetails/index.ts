@@ -47,6 +47,7 @@ const initialFundingPlan: FundingPlanDTO = {
 }
 
 export const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
+
   fs_form_7600a_filename: "",
   fs_form_7600a_attachment: "",
   fs_form_7600a_use_g_invoicing: "",
@@ -648,6 +649,7 @@ export class FinancialDetailsStore extends VuexModule {
       });
     this.setFundingRequest(savedFundingRequest);
   }
+
 
   @Action({rawError: true})
  public async saveFundingRequestFormAndGInvoicing(

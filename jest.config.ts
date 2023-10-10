@@ -80,6 +80,7 @@ module.exports = {
     "<rootDir>/src/steps/10-FinancialDetails/CurrentlyHasFunding.spec.ts",
     "<rootDir>/src/steps/10-FinancialDetails/RequireFundingDocuments.spec.ts",
     "<rootDir>/src/steps/10-FinancialDetails/GTCInformation.spec.ts",
+    "<rootDir>/src/steps/10-FinancialDetails/Upload7600.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",

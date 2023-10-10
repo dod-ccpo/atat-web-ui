@@ -94,12 +94,10 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 import Attachments from "@/store/attachments";
 
 import {
-  baseGInvoiceData,
   RadioButton,
   SlideoutPanelContent,
 } from "../../../types/Global";
@@ -231,12 +229,29 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
 
   async loadFundingRequestData(): Promise<void> {
     this.loaded = await FinancialDetails.loadFundingRequestFSForm();
+    this.orderNumber = this.loaded?.order_number ?? "";
+
+    // temporarily infering this useGInvoicing until accounts are properly migrated
+    // if the new form a/b independant use_g_invoicing is already saved use that
+    // else if the previous joined use_g_invoicing is saved, use that
+    // else infer the use_g_invoicing by existence of form_attachment
+    if (this.loaded?.fs_form_7600b_use_g_invoicing) {
+      this.useGInvoicing = this.loaded.fs_form_7600b_use_g_invoicing;
+    } else if (this.loaded?.use_g_invoicing) {
+      this.useGInvoicing = this.loaded?.use_g_invoicing;
+    } else {
+      if (this.loaded?.fs_form_7600b_attachment) {
+        this.useGInvoicing = "NO";
+      } else {
+        this.useGInvoicing = "YES";
+      }
+    }
+
     this.savedData = {
-      useGInvoicing: this.loaded.use_g_invoicing,
-      orderNumber: this.loaded.order_number,
+      useGInvoicing: this.useGInvoicing,
+      orderNumber: this.orderNumber,
     };
-    this.orderNumber = this.loaded.order_number;
-    this.useGInvoicing = this.loaded.use_g_invoicing;
+
     if (this.orderNumber && this.useGInvoicing) this.triggerSearch = true;
   }
 
@@ -291,16 +306,6 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-    await FinancialDetails.loadFundingRequestFSForm();
-    const storeData = FinancialDetails.gInvoicingData;
-    if (storeData) {
-      this.useGInvoicing = storeData.useGInvoicing;
-      this.orderNumber = FinancialDetails.orderNumber ?? '';
-      this.savedData = {
-        useGInvoicing: this.useGInvoicing,
-        orderNumber: this.orderNumber,
-      };
-    }
     await this.loadOnEnter();
   }
 
@@ -325,6 +330,11 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
+    // this if statement is used for the temporary use_g_invoicing migration
+    // it can be safely removed after all packages have been updated
+    if (!this.loaded?.fs_form_7600b_use_g_invoicing) {
+      return true;
+    }
     return hasChanges(this.currentData, this.savedData);
   }
 }
