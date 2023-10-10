@@ -60,7 +60,7 @@
           </div>
           <div v-show="useGInvoicing === 'NO'">
             <hr class="mt-5" />
-            <div style="width:460px">
+            <div style="width: 460px">
               <ATATTextField
                 id="OrderNumber"
                 label="General Terms & Conditions (GT&C) Number"
@@ -316,14 +316,30 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await FinancialDetails.loadFundingRequestFSForm();
     const storeData = FinancialDetails.gInvoicingData;
-    if (storeData) {
-      this.useGInvoicing = storeData.useGInvoicing;
-      this.gInvoiceNumber = storeData.gInvoiceNumber;
-      this.savedData = {
-        useGInvoicing: this.useGInvoicing,
-        gInvoiceNumber: this.gInvoiceNumber,
-      };
+    const formData = FinancialDetails?.fundingRequestFSForm;
+
+    this.gInvoiceNumber = formData?.gt_c_number ?? "";
+
+    // temporarily infering this useGInvoicing until accounts are properly migrated
+    // if the new form a/b independant use_g_invoicing is already saved use that
+    // else if the previous joined use_g_invoicing is saved, use that
+    // else infer the use_g_invoicing by existence of form_attachment
+    if (formData?.fs_form_7600a_use_g_invoicing) {
+      this.useGInvoicing = formData.fs_form_7600a_use_g_invoicing
+    } else if (storeData?.useGInvoicing) {
+      this.useGInvoicing = storeData?.useGInvoicing
+    } else {
+      if (formData?.fs_form_7600a_attachment) {
+        this.useGInvoicing = 'NO'
+      } else {
+        this.useGInvoicing = 'YES'
+      }
     }
+
+    this.savedData = {
+      useGInvoicing: this.useGInvoicing,
+      gInvoiceNumber: this.gInvoiceNumber,
+    };
     await this.loadOnEnter();
   }
 

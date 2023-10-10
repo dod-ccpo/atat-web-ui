@@ -49,8 +49,10 @@ const initialFundingPlan: FundingPlanDTO = {
 export const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
   fs_form_7600a_filename: "",
   fs_form_7600a_attachment: "",
+  fs_form_7600a_use_g_invoicing: "",
   fs_form_7600b_attachment: "",
   fs_form_7600b_filename: "",
+  fs_form_7600b_use_g_invoicing: "",
   use_g_invoicing: "",
   order_number: "",
   gt_c_number: "",
