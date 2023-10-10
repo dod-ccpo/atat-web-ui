@@ -2678,10 +2678,11 @@ export class SummaryStore extends VuexModule {
 
     // determines if POC is valid
     let isPOCComplete = false;
-    isPOCComplete = funding.poc.first_name !== ""
-        && funding.poc.last_name !== ""
-        && funding.poc.phone !== ""
-        && funding.poc.email !== ""
+    isPOCComplete = !!funding.poc && 
+    funding.poc.first_name !== "" &&
+    funding.poc.last_name !== "" &&
+    funding.poc.phone !== "" &&
+    funding.poc.email !== "";
 
     if (funding.poc.role === "MILITARY"){
       isPOCComplete = isPOCComplete && funding.poc.rank_components !== ""
