@@ -6,7 +6,7 @@ import CardRequirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Re
 import validators from "@/plugins/validation";
 Vue.use(Vuetify);
 
-describe("Testing CreatePriceEstimate Component", () => {
+describe("Testing Card_Requirement", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
   let vuetify: Vuetify;
@@ -25,7 +25,7 @@ describe("Testing CreatePriceEstimate Component", () => {
   });
 
   describe("Testing Functions", () => {
-    it("test setError Message()", () => {
+    it("test setError Message()",async () => {
       wrapper.setData({
         errorMessage: "error 1"
       })
@@ -35,6 +35,18 @@ describe("Testing CreatePriceEstimate Component", () => {
       Vue.nextTick(() => {
         expect(errorMessage).toBe("New Error");
       })
+    })
+    it("test loadOnEnter()",async () => {
+      await wrapper.setProps({
+        cardData: {
+          title: "test title",
+          description: "test description",
+          unit: "test unit"
+        }
+      })
+      await wrapper.vm.loadOnEnter()
+      const title = wrapper.vm.cardData.title
+      expect(title).toBe("test title");
     })
 
   })
