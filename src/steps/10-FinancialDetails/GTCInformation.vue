@@ -254,13 +254,30 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
 
   async loadFundingRequestData(): Promise<void> {
     this.loaded = await FinancialDetails.loadFundingRequestFSForm();
+    this.gInvoiceNumber = this.loaded?.gt_c_number ?? "";
+
+    // temporarily infering this useGInvoicing until accounts are properly migrated
+    // if the new form a/b independant use_g_invoicing is already saved use that
+    // else if the previous joined use_g_invoicing is saved, use that
+    // else infer the use_g_invoicing by existence of form_attachment
+    if (this.loaded?.fs_form_7600a_use_g_invoicing) {
+      this.useGInvoicing = this.loaded.fs_form_7600a_use_g_invoicing;
+    } else if (this.loaded?.use_g_invoicing) {
+      this.useGInvoicing = this.loaded?.use_g_invoicing;
+    } else {
+      if (this.loaded?.fs_form_7600a_attachment) {
+        this.useGInvoicing = "NO";
+      } else {
+        this.useGInvoicing = "YES";
+      }
+    }
+
     this.savedData = {
-      useGInvoicing: this.loaded.use_g_invoicing,
-      gInvoiceNumber: this.loaded.gt_c_number,
+      useGInvoicing: this.useGInvoicing,
+      gInvoiceNumber: this.gInvoiceNumber,
     };
-    this.gInvoiceNumber = this.loaded.gt_c_number;
-    this.useGInvoicing = this.loaded.use_g_invoicing;
-    if (this.gInvoiceNumber && this.useGInvoicing) this.triggerSearch = true;
+
+    if (this.gInvoiceNumber && this.useGInvoicing) this.triggerSearch = true;    
   }
 
   /**
@@ -314,32 +331,6 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-    await FinancialDetails.loadFundingRequestFSForm();
-    const storeData = FinancialDetails.gInvoicingData;
-    const formData = FinancialDetails?.fundingRequestFSForm;
-
-    this.gInvoiceNumber = formData?.gt_c_number ?? "";
-
-    // temporarily infering this useGInvoicing until accounts are properly migrated
-    // if the new form a/b independant use_g_invoicing is already saved use that
-    // else if the previous joined use_g_invoicing is saved, use that
-    // else infer the use_g_invoicing by existence of form_attachment
-    if (formData?.fs_form_7600a_use_g_invoicing) {
-      this.useGInvoicing = formData.fs_form_7600a_use_g_invoicing
-    } else if (storeData?.useGInvoicing) {
-      this.useGInvoicing = storeData?.useGInvoicing
-    } else {
-      if (formData?.fs_form_7600a_attachment) {
-        this.useGInvoicing = 'NO'
-      } else {
-        this.useGInvoicing = 'YES'
-      }
-    }
-
-    this.savedData = {
-      useGInvoicing: this.useGInvoicing,
-      gInvoiceNumber: this.gInvoiceNumber,
-    };
     await this.loadOnEnter();
   }
 
@@ -351,7 +342,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
         /* eslint-disable camelcase */
         const data: FundingRequestFSFormDTO = {
           ...(this.loaded || initialFundingRequestFSForm),
-          use_g_invoicing: this.useGInvoicing,
+          fs_form_7600a_use_g_invoicing: this.useGInvoicing,
           gt_c_number: this.gInvoiceNumber,
         };
         /* eslint-enable */
@@ -364,6 +355,11 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
+    // this if statement is used for the temporary use_g_invoicing migration
+    // it can be safely removed after all packages have been updated
+    if (!this.loaded?.fs_form_7600a_use_g_invoicing) {
+      return true;
+    }
     return hasChanges(this.currentData, this.savedData);
   }
 }

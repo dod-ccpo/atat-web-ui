@@ -663,17 +663,19 @@ export class FinancialDetailsStore extends VuexModule {
          }
        }
      )
-     const isUsingGInvoicing = data.use_g_invoicing === "YES";
      // don't override things we don't explicitly set
+     // also don't delete any filenames / attachments
      const updateObject: FundingRequestFSFormDTO = {
-       fs_form_7600a_filename: 
-        isUsingGInvoicing ? '' : (data.fs_form_7600a_filename || ''),
-       fs_form_7600a_attachment:
-        isUsingGInvoicing ? '' : (data.fs_form_7600a_attachment || ''),
+       fs_form_7600a_filename: data.fs_form_7600a_filename ? 
+         data.fs_form_7600a_filename : prevData[0].fs_form_7600b_filename || '',
+       fs_form_7600a_attachment: data.fs_form_7600a_attachment ? 
+         data.fs_form_7600a_attachment : prevData[0].fs_form_7600b_attachment || '',
+       fs_form_7600a_use_g_invoicing: data.fs_form_7600a_use_g_invoicing || '',
        fs_form_7600b_filename: prevData[0].fs_form_7600b_filename || '',
        fs_form_7600b_attachment: prevData[0].fs_form_7600b_attachment || '',
+       fs_form_7600b_use_g_invoicing: prevData[0]?.fs_form_7600b_use_g_invoicing || '',
        order_number: prevData[0].order_number || '',
-       use_g_invoicing: data.use_g_invoicing,
+       use_g_invoicing: prevData[0]?.use_g_invoicing || '',
        gt_c_number: data.gt_c_number,
      }
      const savedFundingRequestFSForm = await api.fundingRequestFSFormTable.update(
