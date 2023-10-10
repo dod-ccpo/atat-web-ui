@@ -1,4 +1,5 @@
 import './commands'
+import'./contractDetails'
 import './DOW'
 import './occ';
 import "./sac";

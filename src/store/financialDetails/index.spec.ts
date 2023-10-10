@@ -6,7 +6,7 @@ import {FinancialDetailsStore} from "@/store/financialDetails/index";
 import {
   FundingRequestDTO,
   FundingRequestFSFormDTO,
-  FundingRequestMIPRFormDTO
+  FundingRequestMIPRFormDTO, FundingRequirementDTO
 } from "@/api/models";
 import {api} from "@/api";
 jest.mock('@/store/helpers')
@@ -20,6 +20,7 @@ describe("FinancialDetails Store",
     let fundingRequest: FundingRequestDTO;
     let fundingRequestFSFormDTO: FundingRequestFSFormDTO
     let fundingRequestMIPRFormDTO: FundingRequestMIPRFormDTO
+    let fundingRequirement: FundingRequirementDTO
 
     beforeEach(() => {
       const createStore = (storeOptions: any = {}):
@@ -42,6 +43,26 @@ describe("FinancialDetails Store",
         mipr_filename: "Test MIPR",
         mipr_attachment: ""
       }
+      fundingRequirement = {
+        acquisition_package: "",
+        financial_poc: "",
+        funding_plan: "",
+        funding_request: "",
+        funds_obligated: "",
+        funds_total: "",
+        has_funding: "",
+        incrementally_funded: "",
+        pop_end_date: "",
+        pop_start_date: "",
+        sys_created_by: "",
+        sys_created_on: "",
+        sys_id: "",
+        sys_mod_count: "",
+        sys_tags: "",
+        sys_updated_by: "",
+        sys_updated_on: "",
+        task_order_number: ""
+      };
     })
     afterEach(() => {
       jest.clearAllMocks();
@@ -121,5 +142,12 @@ describe("FinancialDetails Store",
       } catch {
         await expect(financialDetailsStore.setFundingRequestMIPRForm).not.toHaveBeenCalled();
       }
+    })
+
+    it('Test setHasFunding() - should set hasFunding', async() => {
+      financialDetailsStore.setFundingRequirement(fundingRequirement);
+      await financialDetailsStore.setHasFunding("HAS_FUNDING");
+      expect(financialDetailsStore.hasFunding).toBe("HAS_FUNDING");
+      expect(financialDetailsStore.fundingRequirement?.has_funding).toBe("HAS_FUNDING");
     })
   })
