@@ -1,5 +1,4 @@
 import Vue from "vue";
-import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import GTCInformation from "./GTCInformation.vue";
