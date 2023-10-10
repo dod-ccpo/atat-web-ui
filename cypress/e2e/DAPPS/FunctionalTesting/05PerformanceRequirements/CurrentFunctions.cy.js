@@ -113,7 +113,7 @@ describe("Test suite: Performance Requirement- Current Function", () => {
     );
   });
 
-  it("TC2: Current Function: Replicate: Anitcipate Growth and Phased Option as No", () => {
+  it("TC2: Current Function: Replicate: Anticipate Growth and Phased Option as No", () => {
     cy.verifyTextMatches(performanceReqs.descrIntroText, cf.currentFunction);
     cy.verifyRadioGroupLabels(
       performanceReqs.radioCFLabels,
@@ -131,8 +131,8 @@ describe("Test suite: Performance Requirement- Current Function", () => {
     cy.currentFunctionCardDesc("Replicate");
   });
 
-  it("TC3: Current Function: Optimise: Anitcipate Growth and Phased Option as Yes", () => {
-    cy.selectCurrentFunction("Optimise");
+  it("TC3: Current Function: Optimize: Anticipate Growth and Phased Option as Yes", () => {
+    cy.selectCurrentFunction("Optimize");
     cy.enterTextInTextField(performanceReqs.objectiveTextfield, statementVal);
     cy.selectAdditionalGrowth(additionalGrowth1, percentVal);
     cy.selectPhasedOption(phasedOption1, scheduleVal);
@@ -140,12 +140,12 @@ describe("Test suite: Performance Requirement- Current Function", () => {
       performanceReqs.phasedYesRadioOption,
       "Your Performance Requirements Summary"
     );
-    cy.currentFunctionCardDesc("Optimise");
+    cy.currentFunctionCardDesc("Optimize");
   });
 
   it("TC4: Current Function: No", () => {
     cy.selectCurrentFunction("No");
     cy.currentFunctionCardDesc("No");
   });
-  
+
 });

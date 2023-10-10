@@ -346,7 +346,7 @@ Cypress.Commands.add("selectCurrentFunction", (option) => {
     cy.findElement(performanceReq.replicateRadioOption).click({ force: true });
     pageHeader =
       "Tell us more about your requirements to replicate your environment";
-  } else if (option === "Optimise") {
+  } else if (option === "Optimize") {
     cy.findElement(performanceReq.optimiseRadioOption).click({ force: true });
     pageHeader =
       "Tell us more about your requirements to optimize your environment";
@@ -396,7 +396,7 @@ Cypress.Commands.add("currentFunctionCardDesc", (option) => {
   if (option === "Replicate") {
     descriptionText = "Replicate (lift and shift) using JWCC offerings";
     cfButton = "View/Edit";
-  } else if (option === "Optimise") {
+  } else if (option === "Optimize") {
     descriptionText = "Optimize (improve/modernize) using JWCC offerings";
     cfButton = "View/Edit";
   } else if (option === "No") {
