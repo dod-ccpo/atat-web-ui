@@ -56,15 +56,21 @@
     <hr class="my-5"/>
     <h3 class="mb-4">How does G-Invoicing affect my acquisition?</h3>
     <p>
-      In order to finalize your acquisition package, you will need to have a GT&amp;Cs agreement
-      established between your requesting agency and DISA, the servicing agency. This agreement must
-      be completed in the G-Invoicing system.
+      To finalize your acquisition package, a GT&C agreement must be established between you
+      (the requesting agency) and your Contracting Office (the servicing agency).
     </p>
     <p>
-      Once a GT&amp;Cs is established, you will also need to create an Order for your requirement.
-      You can do this directly within G-Invoicing and we will import your details. Or, we can
-      collect your order requirements and funding info and generate a new Order within G-Invoicing
-      for you.
+      To save time, we recommend establishing this agreement directly within G-Invoicing.
+      DAPPS will verify your information and include it in your completed package.
+    </p>
+    <p>
+      If you upload a FS Form 7600A, the agreement details may need to be manually entered into
+      G-Invoicing during the package review process.
+    </p>
+    <p>
+      Once a GT&C is established and available in G-Invoicing, you can create an Order
+      (i.e., FS Form 7600B) for your requirements within the system. Your agency may opt to use a
+      stand-alone FS Form 7600B (outside of the G-Invoicing system) or a MIPR.
     </p>
   </div>
 </template>

@@ -21,7 +21,7 @@ export class ApiBase extends baseApi {
     return this.instance.post(this.endPoint, data, config);
   }
 
-  protected async get(path: string, config?:AxiosRequestConfig): Promise<AxiosResponse>{
+  public async get(path: string, config?:AxiosRequestConfig): Promise<AxiosResponse>{
     const endPoint = path.length > 0 ? `${this.endPoint}/${path}` : this.endPoint;
     return this.instance.get(endPoint, config);
   }
