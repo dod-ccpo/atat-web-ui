@@ -197,6 +197,7 @@ describe("Testing GTC Information component", () => {
 
     describe("saveOnLeave()", () => {
       it("=> true (not rejected and hasChanged)", async () => {
+        wrapper.vm.loaded['fs_form_7600a_use_g_invoicing'] = 'YES'
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = {
           useGInvoicing: "",
@@ -247,6 +248,7 @@ describe("Testing GTC Information component", () => {
       });
 
       it("=> false", async () => {
+        wrapper.vm.loaded['fs_form_7600a_use_g_invoicing'] = 'YES'
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = mockCurrentData;
         expect(await wrapper.vm.hasChanged()).toBe(false);
