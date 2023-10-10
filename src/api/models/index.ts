@@ -508,7 +508,7 @@ export interface FundingRequestFSFormDTO extends BaseTableDTO {
   fs_form_7600b_attachment: string;
   fs_form_7600b_filename: string;
   fs_form_7600b_use_g_invoicing?: string;
-  use_g_invoicing: string;
+  use_g_invoicing?: string;
   order_number: string;
   gt_c_number: string;
 }
