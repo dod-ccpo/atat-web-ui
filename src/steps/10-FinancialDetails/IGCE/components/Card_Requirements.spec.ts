@@ -36,12 +36,22 @@ describe("Testing Card_Requirement", () => {
         expect(errorMessage).toBe("New Error");
       })
     })
-    it("test loadOnEnter()",async () => {
+    it("test loadOnEnter() with no card data",async () => {
+      await wrapper.setProps({
+        cardData: {}
+      })
+      await wrapper.vm.loadOnEnter()
+      const title = wrapper.vm.cardData.title
+      expect(title).toBe(undefined);
+    })
+    it("test loadOnEnter() with data",async () => {
       await wrapper.setProps({
         cardData: {
           title: "test title",
           description: "test description",
-          unit: "test unit"
+          unit: "test unit",
+          // eslint-disable-next-line camelcase
+          unit_price: 1000
         }
       })
       await wrapper.vm.loadOnEnter()
