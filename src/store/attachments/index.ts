@@ -8,14 +8,6 @@ import {
 } from "vuex-module-decorators";
 import rootStore from "../index";
 
-import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
-import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
-import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
-import { TABLENAME as CURRENT_ENVIRONMENT_TABLE } from "@/api/currentEnvironment";
-import { TABLENAME as FAIR_OPPORTUNITY_TABLE } from "@/api/fairOpportunity";
-import { TABLENAME as ACQUISITION_PACKAGE_TABLE } from "@/api/acquisitionPackages";
-import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED_TABLE } from "@/api/packageDocumentsSigned";
-import { TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED_TABLE } from "@/api/packageDocumentsUnsigned";
 import { AttachmentDTO } from "@/api/models";
 import {
   AttachmentServiceCallbacks,
@@ -42,20 +34,36 @@ import { AttachmentApi } from "@/api/attachments";
 })
 export class AttachmentStore extends VuexModule {
   private initialized = false;
-  // store session properties
-  protected sessionProperties: string[] = [FUNDING_REQUEST_FSFORM_TABLE,
-    FUNDING_REQUEST_MIPRFORM_TABLE, REQUIREMENTS_COST_ESTIMATE_TABLE,
-    CURRENT_ENVIRONMENT_TABLE, FAIR_OPPORTUNITY_TABLE, ACQUISITION_PACKAGE_TABLE,
-    PACKAGE_DOCUMENTS_SIGNED_TABLE];
+  private prefix = "x_g_dis_atat_";
+  private FUNDING_REQUEST_FSFORM_TABLE = "x_g_dis_atat_funding_request_fs_form";
+  private FUNDING_REQUEST_MIPRFORM_TABLE = "x_g_dis_atat_funding_request_mipr";
+  private REQUIREMENTS_COST_ESTIMATE_TABLE = "x_g_dis_atat_requirements_cost_estimate";
+  private CURRENT_ENVIRONMENT_TABLE = "x_g_dis_atat_current_environment";
+  private FAIR_OPPORTUNITY_TABLE = "x_g_dis_atat_fair_opportunity";
+  private ACQUISITION_PACKAGE_TABLE = "x_g_dis_atat_acquisition_package";
+  private PACKAGE_DOCUMENTS_SIGNED_TABLE = "x_g_dis_atat_package_documents_signed";
+  private PACKAGE_DOCUMENTS_UNSIGNED_TABLE = "x_g_dis_atat_package_documents_unsigned";
 
-  public [FUNDING_REQUEST_FSFORM_TABLE]: AttachmentDTO[] = [];
-  public [FUNDING_REQUEST_MIPRFORM_TABLE]: AttachmentDTO[] = [];
-  public [REQUIREMENTS_COST_ESTIMATE_TABLE]: AttachmentDTO[] = [];
-  public [CURRENT_ENVIRONMENT_TABLE]: AttachmentDTO[] = [];
-  public [FAIR_OPPORTUNITY_TABLE]: AttachmentDTO[] = [];
-  public [ACQUISITION_PACKAGE_TABLE]: AttachmentDTO[] = [];
-  public [PACKAGE_DOCUMENTS_SIGNED_TABLE]: AttachmentDTO[] = [];
-  public [PACKAGE_DOCUMENTS_UNSIGNED_TABLE]: AttachmentDTO[] = [];
+  // store session properties
+  protected sessionProperties: string[] = [
+    this.FUNDING_REQUEST_FSFORM_TABLE,
+    this.FUNDING_REQUEST_MIPRFORM_TABLE, 
+    this.REQUIREMENTS_COST_ESTIMATE_TABLE,
+    this.CURRENT_ENVIRONMENT_TABLE, 
+    this.FAIR_OPPORTUNITY_TABLE, 
+    this.ACQUISITION_PACKAGE_TABLE,
+    this.PACKAGE_DOCUMENTS_SIGNED_TABLE,
+    this.PACKAGE_DOCUMENTS_UNSIGNED_TABLE
+  ];
+
+  public ["x_g_dis_atat_funding_request_fs_form"]: AttachmentDTO[] = [];
+  public ["x_g_dis_atat_funding_request_mipr"]: AttachmentDTO[] = [];
+  public ["x_g_dis_atat_requirements_cost_estimate"]: AttachmentDTO[] = [];
+  public ["x_g_dis_atat_current_environment"]: AttachmentDTO[] = [];
+  public ["x_g_dis_atat_fair_opportunity"]: AttachmentDTO[] = [];
+  public ["x_g_dis_atat_acquisition_package"]: AttachmentDTO[] = [];
+  public ["x_g_dis_atat_package_documents_signed"]: AttachmentDTO[] = [];
+  public ["x_g_dis_atat_package_documents_unsigned"]: AttachmentDTO[] = [];
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -150,73 +158,73 @@ export class AttachmentStore extends VuexModule {
     //listen for attachment service upload callbacks
     //and update attachments
     AttachmentServiceCallbacks.registerUploadCallBack(
-      FUNDING_REQUEST_FSFORM_TABLE,
+      this.FUNDING_REQUEST_FSFORM_TABLE,
       (attachment) => {
         this.addAttachment({
-          key: FUNDING_REQUEST_FSFORM_TABLE,
+          key: this.FUNDING_REQUEST_FSFORM_TABLE,
           attachment,
         })
       }
     );
     AttachmentServiceCallbacks.registerUploadCallBack(
-      FUNDING_REQUEST_MIPRFORM_TABLE,
+      this.FUNDING_REQUEST_MIPRFORM_TABLE,
       (attachment) => {
         this.addAttachment({
-          key: FUNDING_REQUEST_MIPRFORM_TABLE,
+          key: this.FUNDING_REQUEST_MIPRFORM_TABLE,
           attachment,
         })
       }
     );
     AttachmentServiceCallbacks.registerUploadCallBack(
-      REQUIREMENTS_COST_ESTIMATE_TABLE,
+      this.REQUIREMENTS_COST_ESTIMATE_TABLE,
       (attachment) => {
         this.addAttachment({
-          key: REQUIREMENTS_COST_ESTIMATE_TABLE,
+          key: this.REQUIREMENTS_COST_ESTIMATE_TABLE,
           attachment,
         })
       }
     );
     AttachmentServiceCallbacks.registerUploadCallBack(
-      CURRENT_ENVIRONMENT_TABLE,
+      this.CURRENT_ENVIRONMENT_TABLE,
       (attachment) => {
         this.addAttachment({
-          key: CURRENT_ENVIRONMENT_TABLE,
+          key: this.CURRENT_ENVIRONMENT_TABLE,
           attachment,
         })
       }
     );
     AttachmentServiceCallbacks.registerUploadCallBack(
-      FAIR_OPPORTUNITY_TABLE,
+      this.FAIR_OPPORTUNITY_TABLE,
       (attachment) => {
         this.addAttachment({
-          key: FAIR_OPPORTUNITY_TABLE,
+          key: this.FAIR_OPPORTUNITY_TABLE,
           attachment
         })
       }
     );
     AttachmentServiceCallbacks.registerUploadCallBack(
-      ACQUISITION_PACKAGE_TABLE,
+      this.ACQUISITION_PACKAGE_TABLE,
       (attachment) => {
         this.addAttachment({
-          key: ACQUISITION_PACKAGE_TABLE,
+          key: this.ACQUISITION_PACKAGE_TABLE,
           attachment
         })
       }
     );
     AttachmentServiceCallbacks.registerUploadCallBack(
-      PACKAGE_DOCUMENTS_SIGNED_TABLE,
+      this.PACKAGE_DOCUMENTS_SIGNED_TABLE,
       (attachment) => {
         this.addAttachment({
-          key: PACKAGE_DOCUMENTS_SIGNED_TABLE,
+          key: this.PACKAGE_DOCUMENTS_SIGNED_TABLE,
           attachment
         })
       }
     );
     AttachmentServiceCallbacks.registerUploadCallBack(
-      PACKAGE_DOCUMENTS_UNSIGNED_TABLE,
+      this.PACKAGE_DOCUMENTS_UNSIGNED_TABLE,
       (attachment) => {
         this.addAttachment({
-          key: PACKAGE_DOCUMENTS_UNSIGNED_TABLE,
+          key: this.PACKAGE_DOCUMENTS_UNSIGNED_TABLE,
           attachment
         })
       }
@@ -338,14 +346,14 @@ export class AttachmentStore extends VuexModule {
   @Mutation
   private doReset(): void {
     this.initialized = false;
-    this[FUNDING_REQUEST_FSFORM_TABLE] = [];
-    this[FUNDING_REQUEST_MIPRFORM_TABLE] = [];
-    this[REQUIREMENTS_COST_ESTIMATE_TABLE] = [];
-    this[CURRENT_ENVIRONMENT_TABLE] = [];
-    this[FAIR_OPPORTUNITY_TABLE] = [];
-    this[ACQUISITION_PACKAGE_TABLE] = [];
-    this[PACKAGE_DOCUMENTS_SIGNED_TABLE] = [];
-    this[PACKAGE_DOCUMENTS_UNSIGNED_TABLE] = [];
+    this["x_g_dis_atat_funding_request_fs_form"] = [];
+    this["x_g_dis_atat_funding_request_mipr"] = [];
+    this["x_g_dis_atat_requirements_cost_estimate"] = [];
+    this["x_g_dis_atat_current_environment"] = [];
+    this["x_g_dis_atat_fair_opportunity"] = [];
+    this["x_g_dis_atat_acquisition_package"] = [];
+    this["x_g_dis_atat_package_documents_signed"] = [];
+    this["x_g_dis_atat_package_documents_unsigned"] = [];
   }
 }
 

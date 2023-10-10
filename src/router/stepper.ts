@@ -144,6 +144,7 @@ import IncrementalFunding
   from "../steps/10-FinancialDetails/IncrementalFunding.vue";
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 import GTC from "@/steps/10-FinancialDetails/GTCInformation.vue";
+import RFD from "@/steps/10-FinancialDetails/RequireFundingDocuments.vue";
 import CurrentlyHasFunding from "@/steps/10-FinancialDetails/CurrentlyHasFunding.vue";
 import GeneratingPackageDocumentsFunding
   from "../steps/11-GeneratePackageDocuments/GeneratePackageDocuments.vue";
@@ -186,6 +187,7 @@ import {
   DowSummaryPathResolver,
   MIPRResolver,
   CurrentlyHasFundingResolver,
+  GTCInformationResolver,
   GInvoicingResolver,
   Upload7600Resolver,
   AppropriationOfFundsResolver,
@@ -322,6 +324,7 @@ export const routeNames = {
   MIPR: "MIPR",
   CurrentlyHasFunding: "Currently_Has_Funding",
   GTC: "GTC",
+  RFD: "RFD",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   IncrementalFunding: "Incremental_Funding",
   GeneratingPackageDocuments: "Generating_Package_Documents",
@@ -360,7 +363,6 @@ export const routeNames = {
   SecurityRequirements:"Security_Requirements",
   CrossDomain:"Cross_Domain",
   ReadyToGeneratePackage:"Ready_To_Generate_Package",
-  GeneratePackageDocuments: "Generate_Package_Documents",
   AnticipatedUserAndDataNeeds: "Anticipated_User_And_Data_Needs",
   UploadSignedDocuments:"Upload_Signed_Documents",
   ReadyToSubmit:"Ready_To_Submit",
@@ -1400,7 +1402,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: FinancialPOCForm,
         routeResolver: FinancialPOCResolver
-
+      },
+      {
+        menuText: "Required Funding Documents",
+        excludeFromMenu: true,
+        path: "required-funding-documents",
+        name: routeNames.RFD,
+        completePercentageWeight: 1,
+        component: RFD,
       },
       {
         menuText: "Funding",
@@ -1417,6 +1426,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         completePercentageWeight: 1,
         component: GTC,
+        routeResolver: GTCInformationResolver
       },
       {
         menuText: "Generate Package Documents (Funding)",

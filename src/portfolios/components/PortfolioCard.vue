@@ -78,7 +78,7 @@
         </div>
       </div>
       <div class="text-base-dark mb-3">
-        <span class="_agency">{{ cardData.agencyDisplay }}</span>
+        <span class="_agency">{{ cardData.agency}}</span>
         <ATATSVGIcon 
           name="bullet" 
           color="base-light" 
