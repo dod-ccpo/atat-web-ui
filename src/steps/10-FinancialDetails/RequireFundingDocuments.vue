@@ -3,7 +3,8 @@
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
-          Let’s gather your General Terms & Conditions (GT&C) information
+          Does your Contracting Office require funding documents for submission of your acquisition
+          package?
         </h1>
         <div class="copy-max-width">
           <p class="mb-10">
@@ -26,7 +27,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     ATATRadioGroup
   }
 })
-export default class GTCInformation extends Mixins(SaveOnLeave) {
+export default class RequireFundingDocuments extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     return true;
   }

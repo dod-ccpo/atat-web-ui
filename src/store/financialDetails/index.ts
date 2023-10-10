@@ -47,7 +47,6 @@ const initialFundingPlan: FundingPlanDTO = {
 }
 
 export const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
-
   fs_form_7600a_filename: "",
   fs_form_7600a_attachment: "",
   fs_form_7600b_attachment: "",
@@ -74,6 +73,7 @@ export class FinancialDetailsStore extends VuexModule {
   initialized = false;
 
   fundingPlan: FundingPlanDTO = this.fundingPlanValue;
+  hasFunding: string | undefined = "";
   estimatedTaskOrderValue: string | undefined = "";
   miprNumber: string | null = null;
   isIncrementallyFunded: string | undefined = "";
@@ -192,6 +192,19 @@ export class FinancialDetailsStore extends VuexModule {
     
     const remainingAmountIncrements = fundingPlan.remaining_amount_increments;
     await this.setFundingIncrements(remainingAmountIncrements);
+  }
+
+  @Action({ rawError: true })
+  public async setHasFunding(val: string): Promise<void> {
+    this.doSetHasFunding(val);
+  }
+
+  @Mutation
+  public doSetHasFunding(val: string): void {
+    this.hasFunding = val;
+    if (this.fundingRequirement) {
+      this.fundingRequirement.has_funding = val;
+    }
   }
 
   @Action({ rawError: true })
@@ -592,6 +605,7 @@ export class FinancialDetailsStore extends VuexModule {
             funding_request: this.fundingRequest?.sys_id as string,
             funds_obligated: "",
             funds_total: "",
+            has_funding: "",
             incrementally_funded: "",
             pop_end_date: "",
             pop_start_date: "",

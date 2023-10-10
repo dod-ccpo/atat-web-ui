@@ -501,7 +501,6 @@ export interface FundingPlanDTO extends BaseTableDTO {
 }
 
 export interface FundingRequestFSFormDTO extends BaseTableDTO {
-
   fs_form_7600a_filename: string;
   fs_form_7600a_attachment: string;
   fs_form_7600b_attachment: string;
@@ -523,6 +522,7 @@ export interface FundingRequirementDTO extends BaseTableDTO {
   funding_request: string;
   funds_obligated: string;
   funds_total: string;
+  has_funding: string;
   incrementally_funded: string;
   pop_start_date: string;
   pop_end_date: string;
