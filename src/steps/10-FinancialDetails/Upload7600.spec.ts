@@ -1,10 +1,9 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import GTCInformation from "./GTCInformation.vue";
+import Upload7600 from "./Upload7600.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "@/plugins/validation";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import FinancialDetails, {
   initialFundingRequestFSForm,
 } from "@/store/financialDetails";
@@ -50,7 +49,7 @@ describe("Testing GTC Information component", () => {
   localVue.use(validators);
 
   const vuetify: Vuetify = new Vuetify();
-  const wrapper: Wrapper<DefaultProps & Vue, Element> = mount(GTCInformation, {
+  const wrapper: Wrapper<DefaultProps & Vue, Element> = mount(Upload7600, {
     localVue,
     vuetify,
   });

@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import GTCInformation from "./GTCInformation.vue";
+import {createLocalVue, mount, Wrapper } from "@vue/test-utils";
+import GTC from "./GTCInformation.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "@/plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -60,12 +60,15 @@ const mockFile = {
 
 describe("Testing GTC Information component", () => {
   const localVue = createLocalVue();
-  localVue.use(validators);
-
-  const vuetify: Vuetify = new Vuetify();
-  const wrapper: Wrapper<DefaultProps & Vue, Element> = mount(GTCInformation, {
-    localVue,
-    vuetify,
+  let vuetify: Vuetify;
+  let wrapper: Wrapper<DefaultProps & Vue, Element>;
+ 
+  beforeEach(() => {
+    vuetify = new Vuetify();
+    wrapper = mount(GTC, {
+      localVue,
+      vuetify
+    });
   });
 
   describe("Initialization....", () => {
