@@ -155,8 +155,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
 
   public openSlideoutPanel(e: Event): void {
     if (e?.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      SlideoutPanel.openSlideoutPanel(opener.id);
+      SlideoutPanel.openSlideoutPanel((e.currentTarget as HTMLElement).id);
     }
   }
 
