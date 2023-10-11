@@ -33,7 +33,7 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
-import FinancialDetails from "@/store/financialDetails";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -41,7 +41,7 @@ import FinancialDetails from "@/store/financialDetails";
   },
 })
 export default class RequireFundingDocuments extends Mixins(SaveOnLeave) {
-  private requireFundingSelection = "YES";
+  private requireFundingSelection = "";
   private requireFundingOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -55,15 +55,21 @@ export default class RequireFundingDocuments extends Mixins(SaveOnLeave) {
     },
   ];
 
-  async loadFundingRequestData(): Promise<void> {
-    await FinancialDetails.loadIFPData();
+  loadFundingRequestData() {
+    // eslint-disable-next-line max-len
+    console.log('item', AcquisitionPackage.acquisitionPackage?.contracting_shop_require_funding_documents_for_submission_of_package)
+
+    this.requireFundingSelection =
+      // eslint-disable-next-line max-len
+      AcquisitionPackage.acquisitionPackage?.contracting_shop_require_funding_documents_for_submission_of_package ?? '';
   }
 
   public async mounted(): Promise<void> {
-    console.log("mounted");
+    this.loadFundingRequestData();
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
     return true;
   }
 }

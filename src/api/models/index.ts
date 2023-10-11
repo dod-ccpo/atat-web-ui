@@ -80,6 +80,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   contracting_shop?: string;
   funding_request?: ReferenceColumn | string;
   contracting_shop_non_ditco_address?: ReferenceColumn | string;
+  contracting_shop_require_funding_documents_for_submission_of_package?: string;
   owner_needs_email_package_ready_to_submit: boolean;
   customer_feedback:ReferenceColumn | string;
 }

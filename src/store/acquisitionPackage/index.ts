@@ -1613,6 +1613,9 @@ export class AcquisitionPackageStore extends VuexModule {
       const primaryContactSysId = acquisitionPackage.primary_contact as string;
       const ContractingShopNonDitcoAddressID =
           acquisitionPackage.contracting_shop_non_ditco_address as string;
+      const ContractingShopRequireFundingDocuments =
+          acquisitionPackage
+            .contracting_shop_require_funding_documents_for_submission_of_package as string;
       const travelNeeded = acquisitionPackage.is_travel_needed as string
       await this.setAcquisitionPackage({
         ...acquisitionPackage,
@@ -1630,6 +1633,8 @@ export class AcquisitionPackageStore extends VuexModule {
         acor: aCorSysId,
         primary_contact: primaryContactSysId,
         contracting_shop_non_ditco_address: ContractingShopNonDitcoAddressID,
+        contracting_shop_require_funding_documents_for_submission_of_package: 
+          ContractingShopRequireFundingDocuments,
       });
       await this.setCurrentUser();
       if(travelNeeded){
