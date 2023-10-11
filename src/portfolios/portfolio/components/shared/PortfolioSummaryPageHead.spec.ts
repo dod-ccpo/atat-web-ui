@@ -9,6 +9,7 @@ import PortfolioData from "@/store/portfolio";
 import PortfolioStore from "@/store/portfolio";
 import CurrentUserStore from "@/store/user";
 import { Environment, PortfolioDetailsDTO, PortfolioDTO } from "types/Global";
+import { ClinDTO } from "@/api/models";
 Vue.use(Vuetify);
 
 const mockEnvironments = [
@@ -222,7 +223,40 @@ describe("Testing Members Component", () => {
   it("test getMoreMenuItems () => MeatballMenuItems[] as Manager", async () => {
     /* eslint-disable camelcase */
     const mockUser = {sys_id: '1234'} 
-    const mockPortfolio = { portfolio: {current_user_is_manager: true}}; 
+    const mockPortfolio: PortfolioDetailsDTO = {
+      portfolioId:'1234',
+      portfolio:{
+        sysId: "1234",
+        current_user_is_manager: true,
+        portfolio_name: "good portfolio title",
+        description: "good description",
+        environments: [
+          {
+            classification_level: "U",
+            csp: "",
+            csp_display: "azure_il4_dev",
+            csp_id: "",
+            dashboard_link: "https://www.google.com/",
+            environment_status: "PROCESSING",
+            name: "Test 2 - Unclassified",
+            portfolio: "",
+            provisioned: "false",
+            provisioned_date: "",
+            provisioning_failure_cause: "",
+            provisioning_request_date: "",
+            sys_created_by: "test.user",
+            sys_created_on: "2023-09-22 18:58:03",
+            sys_id: "",
+            sys_mod_count: "2",
+            sys_tags: "",
+            sys_updated_by: "admin",
+            sys_updated_on: "2023-09-22 18:59:06",
+          },
+        ] as Environment[],
+        clins: [] as ClinDTO[],
+        inPeriodClins: [] as string[]
+      }
+    };
     /* eslint-enable camelcase */
     CurrentUserStore.setCurrentUser(mockUser);
     await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio as PortfolioDetailsDTO);

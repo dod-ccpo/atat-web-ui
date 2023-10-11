@@ -4,9 +4,9 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import Index from "@/portfolios/portfolio/components/Index.vue";
 import PortfolioStore from "@/store/portfolio";
-import { Environment, Portfolio, PortfolioDetailsDTO } from "types/Global";
+import { Environment, Portfolio, PortfolioDetailsDTO, PortfolioDTO } from "types/Global";
 import CurrentUserStore from "@/store/user";
-import { UserDTO } from "@/api/models";
+import { ClinDTO, UserDTO } from "@/api/models";
 
 Vue.use(Vuetify);
 const mockPortfolio = {
@@ -93,43 +93,46 @@ describe("Testing index Component", () => {
 
   it("test loadOnEnter", async () => {
     /* eslint-disable */
-    const mockPortfolio: Portfolio = {
-      sysId: "1234",
-      title: "good portfolio title",
-      description: "good description",
-      csp: "4321",
-      environments: [
-        {
-          classification_level: "U",
-          csp: "",
-          csp_display: "azure_il4_dev",
-          csp_id: "",
-          dashboard_link: "https://www.google.com/",
-          environment_status: "PROCESSING",
-          name: "Test 2 - Unclassified",
-          portfolio: "",
-          provisioned: "false",
-          provisioned_date: "",
-          provisioning_failure_cause: "",
-          provisioning_request_date: "",
-          sys_created_by: "test.user",
-          sys_created_on: "2023-09-22 18:58:03",
-          sys_id: "",
-          sys_mod_count: "2",
-          sys_tags: "",
-          sys_updated_by: "admin",
-          sys_updated_on: "2023-09-22 18:59:06",
-        },
-      ] as Environment[],
+    const mockPortfolio: PortfolioDetailsDTO = {
+      portfolioId:'1234',
+      portfolio:{
+        sysId: "1234",
+        portfolio_name: "good portfolio title",
+        description: "good description",
+        environments: [
+          {
+            classification_level: "U",
+            csp: "",
+            csp_display: "azure_il4_dev",
+            csp_id: "",
+            dashboard_link: "https://www.google.com/",
+            environment_status: "PROCESSING",
+            name: "Test 2 - Unclassified",
+            portfolio: "",
+            provisioned: "false",
+            provisioned_date: "",
+            provisioning_failure_cause: "",
+            provisioning_request_date: "",
+            sys_created_by: "test.user",
+            sys_created_on: "2023-09-22 18:58:03",
+            sys_id: "",
+            sys_mod_count: "2",
+            sys_tags: "",
+            sys_updated_by: "admin",
+            sys_updated_on: "2023-09-22 18:59:06",
+          },
+        ] as Environment[],
+        clins: [] as ClinDTO[],
+        inPeriodClins: [] as string[]
+      }
     };
     /* eslint-enable */
     await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio as PortfolioDetailsDTO);
     await wrapper.vm.loadOnEnter();
-    expect(wrapper.vm.$data.portfolioSysId).toBe(mockPortfolio.sysId);
-    expect(wrapper.vm.$data.portfolioCSP).toBe(mockPortfolio.csp);
+    expect(wrapper.vm.$data.portfolioSysId).toBe(mockPortfolio.portfolio.sysId);
     expect(wrapper.vm.$data.portfolioDescription).toBe(
-      mockPortfolio.description
+      mockPortfolio.portfolio.description
     );
-    expect(wrapper.vm.$data.title).toBe(mockPortfolio.title);
+    expect(wrapper.vm.$data.title).toBe(mockPortfolio.portfolio.portfolio_name);
   });
 });
