@@ -558,6 +558,7 @@ export interface PortfolioDTO extends BaseTableDTO {
   task_order?: TaskOrderDTO;
   total_portfolio_funds?: string;
   vendor?: string;
+  sysId?: string
 }
 
 export interface PortfolioUsers{
@@ -618,6 +619,8 @@ export interface Portfolio extends BaseTableDTO {
   currentCLINs?: ClinDTO[];
   popStartDate?: string;
   popEndDate?: string;
+  current_user_is_manager?: boolean;
+  current_user_is_owner?: boolean;
 }
 
 export interface PortfolioCardData extends Portfolio {
