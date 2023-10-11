@@ -87,37 +87,37 @@ Cypress.Commands.add("verifyServiceOfferingHeader", (categoryObj) => {
 });
 
 //This command is to verify the checkbox label on ServiceOffering Page and navigation
-// Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
-//   const serviceOfferingCheckboxLabels = [];
-//   categoryObj.serviceOfferingCypressLabels.forEach((label) => {
-//     serviceOfferingCheckboxLabels.push(label);
-//   });
+Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
+  const serviceOfferingCheckboxLabels = [];
+  categoryObj.serviceOfferingCypressLabels.forEach((label) => {
+    serviceOfferingCheckboxLabels.push(label);
+  });
 
-//   cy.verifyCheckBoxLabels(
-//     "input[type=checkbox]",
-//     serviceOfferingCheckboxLabels
-//   );
+  cy.verifyCheckBoxLabels(
+    "input[type=checkbox]",
+    serviceOfferingCheckboxLabels
+  );
 
-//   const serviceOfferingNames = getServiceOfferingNames(categoryObj);
+  const serviceOfferingNames = getServiceOfferingNames(categoryObj);
 
-//   const serviceOfferingCheckboxIds = getCheckboxIds(categoryObj);
+  const serviceOfferingCheckboxIds = getCheckboxIds(categoryObj);
 
-//   serviceOfferingCheckboxIds.forEach((checkboxId, index) => {
-//     if (checkboxId.indexOf("Other") === -1) {
-//       cy.deselectAllCheckboxes();
-//       cy.selectCheckBoxes([checkboxId]);
-//       cy.btnClick(common.continueBtn, " Continue ");
+  serviceOfferingCheckboxIds.forEach((checkboxId, index) => {
+    if (checkboxId.indexOf("Other") === -1) {
+      cy.deselectAllCheckboxes();
+      cy.selectCheckBoxes([checkboxId]);
+      cy.btnClick(common.continueBtn, " Continue ");
 
-//       cy.verifyPageHeader(
-//         "Now we’ll gather your requirements for " + serviceOfferingNames[index]
-//       );
-//       // eslint-disable-next-line cypress/no-unnecessary-waiting
-//       cy.wait(1000); // needed because with 2 back button clicks,
-// needs a pause for scroll into view
-//       cy.btnClick(common.backBtn, "Back");
-//     }
-//   });
-// });
+      cy.verifyPageHeader(
+        "Now we’ll gather your requirements for " + serviceOfferingNames[index]
+      );
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1000); // needed because with 2 back button clicks,
+      //needs a pause for scroll into view
+      cy.btnClick(common.backBtn, "Back");
+    }
+  });
+});
 
 Cypress.Commands.add(
   "verifyServiceOfferingsForCategory",
@@ -276,66 +276,6 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("selectSecretLevel", (secretSelector, alertMessage) => {
-  cy.findElement(secretSelector)
-    .should("not.be.checked")
-    .check({
-      force: true,
-    })
-    .then(() => {
-      cy.messageDisplays(contractDetails.alertMessage, alertMessage);
-    });
-});
-
-Cypress.Commands.add("unselectSecretLevel", (secretSelector) => {
-  cy.findElement(secretSelector)
-    .should("be.checked")
-    .uncheck({
-      force: true,
-    })
-    .then(() => {
-      cy.findElement(contractDetails.alertMessage).should("not.exist");
-    });
-});
-
-Cypress.Commands.add(
-  "goToContractDetailsStep",
-  (pt, scope, radioSelector, value, input) => {
-    cy.goToAcqPackageStepOne(pt, scope);
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.activeStep(common.stepContractDetailsText);
-    cy.verifyPageHeader(
-      "Let’s gather details about the duration of your task order"
-    );
-    cy.findElement(contractDetails.addOptionLink).click();
-    cy.clickContinueButton(
-      contractDetails.baseInputTxtBox,
-      " Do you want to request a PoP start date? "
-    );
-
-    cy.selectPoPStartDate(radioSelector, value);
-    cy.waitUntilElementIsGone(contractDetails.popStartDateYesRadioOption);
-    cy.verifyPageHeader("Will this be a recurring requirement?");
-    cy.radioBtn(contractDetails.yesRadioOption, "YES").not("[disabled]").click({
-      force: true,
-    });
-    cy.clickContinueButton(
-      contractDetails.esRadioOption,
-      "Which contract type(s) apply to this acquisition? "
-    );
-
-    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP")
-      .should("not.be.checked")
-      .check({
-        force: true,
-      });
-    cy.selectTMCheckbox(input);
-    cy.clickContinueButton(
-      contractDetails.ffpCheckBox,
-      " What classification level(s) will be required for your cloud resources and/or services? "
-    );
-  }
-);
 Cypress.Commands.add("anticipatedNeedUsage", (textSel, textVal, radioSel) => {
   cy.enterTextInTextField(textSel, textVal);
   cy.findElement(radioSel).click({
@@ -394,5 +334,206 @@ Cypress.Commands.add(
       .then(() => {
         cy.waitUntil(() => cy.findElement(targetSelector).should("exist"));
       });
+  }
+);
+Cypress.Commands.add("otherAvailableCategory", (categoryText) => {
+  cy.findElement("#OtherAvlGroups .h3")
+    .each(($el) => {
+      const text = $el.text();
+      cy.log(text);
+    })
+    .should("contain", categoryText);
+});
+
+//Tell us about your anticipated users and data needs
+
+Cypress.Commands.add(
+  "anticipatedUserDataNeedAccordion",
+  (selectedClassifications) => {
+    let expectedAccordionCount = 0;
+
+    console.log("selectedClassifications:", selectedClassifications);
+
+    if (selectedClassifications.includes("level2")) {
+      expectedAccordionCount++;
+    }
+    if (selectedClassifications.includes("level4")) {
+      expectedAccordionCount++;
+    }
+    if (selectedClassifications.includes("level5")) {
+      expectedAccordionCount++;
+    }
+    if (selectedClassifications.includes("secret")) {
+      expectedAccordionCount++;
+    }
+    if (selectedClassifications.includes("ts")) {
+      expectedAccordionCount++;
+    }
+
+    cy.findElement(".mb-4.v-expansion-panels").then(($element) => {
+      const actualAccordionCount = $element.length;
+      console.log("actualAccordionCount:", actualAccordionCount);
+      expect(actualAccordionCount).equal(expectedAccordionCount);
+    });
+  }
+);
+
+Cypress.Commands.add(
+  "setDurationUserData",
+  (anticipatedDurationVal, accordionIndex, userData, estimateGrowth, val) => {
+    if (anticipatedDurationVal === "Yes") {
+      cy.findElement(
+        `#Radio_Accordion${accordionIndex}Question${userData}YES`
+      ).scrollIntoView();
+      cy.findElement(
+        `#Radio_Accordion${accordionIndex}Question${userData}YES`
+      ).click({ force: true });
+      if (estimateGrowth === "singleGrowth") {
+        cy.findElement(
+          `#Radio_Accordion${accordionIndex}Question${userData}Single`
+        ).click({ force: true });
+        cy.findElement(
+          `#SingleAmount_${userData}_${accordionIndex}_text_field`
+        ).should("exist");
+        cy.findElement(
+          `#SingleAmount_${userData}_${accordionIndex}_text_field`
+        ).type(val);
+      } else if (estimateGrowth === "customGrowth") {
+        cy.findElement(
+          `#Radio_Accordion${accordionIndex}Question${userData}Multiple`
+        ).scrollIntoView();
+        cy.findElement(
+          `#Radio_Accordion${accordionIndex}Question${userData}Multiple`
+        ).click({ force: true });
+        cy.findElement(
+          `#BASE_0_${userData}_${accordionIndex}_text_field`
+        ).scrollIntoView();
+        cy.findElement(
+          `#BASE_0_${userData}_${accordionIndex}_text_field`
+        ).should("exist");
+        cy.findElement(`#BASE_0_${userData}_${accordionIndex}_text_field`).type(
+          val
+        );
+      }
+    } else {
+      cy.findElement(
+        `#Radio_Accordion${accordionIndex}Question${userData}NO`
+      ).click({
+        force: true,
+      });
+    }
+  }
+);
+Cypress.Commands.add(
+  "dataTransfer",
+  (accordionIndex, dataTransferVal, selectedDropdownValue) => {
+    const dropdownOptions = ["GB", "TB", "PB"];
+    const dropdownSelector = `#DataTransfer_${accordionIndex}_dropdown`;
+
+    cy.findElement(`#DataTransfer_${accordionIndex}_text_field`).type(
+      dataTransferVal
+    );
+    cy.findElement(dropdownSelector).click();
+
+    if (dropdownOptions.includes(selectedDropdownValue)) {
+      const ddItemSel = `#DataTransfer_${accordionIndex}_DropdownListItem_${selectedDropdownValue}`;
+      cy.findElement(ddItemSel).click();
+    }
+  }
+);
+
+//Current Functions
+Cypress.Commands.add("selectCurrentFunction", (option) => {
+  cy.log("Option selected:", option);
+  let pageHeader = "";
+
+  if (option === "Replicate") {
+    cy.findElement(performanceReq.replicateRadioOption).click({ force: true });
+    pageHeader =
+      "Tell us more about your requirements to replicate your environment";
+  } else if (option === "Optimize") {
+    cy.findElement(performanceReq.optimiseRadioOption).click({ force: true });
+    pageHeader =
+      "Tell us more about your requirements to optimize your environment";
+  } else {
+    cy.findElement(performanceReq.replicateOptimiseNoOption).click({
+      force: true,
+    });
+    pageHeader = "Your Performance Requirements Summary";
+  }
+
+  cy.clickContinueButton(performanceReq.replicateRadioOption, pageHeader);
+});
+
+Cypress.Commands.add(
+  "selectAdditionalGrowth",
+  (additionalGrowth, percentVal) => {
+    if (additionalGrowth === "Yes") {
+      cy.radioBtn(performanceReq.additionalGrowthYesOption, "YES").click({
+        force: true,
+      });
+      cy.findElement(performanceReq.capacityPerTextField).type(percentVal);
+    } else {
+      cy.radioBtn(performanceReq.additionalGrowthNoOption, "NO").click({
+        force: true,
+      });
+    }
+  }
+);
+
+Cypress.Commands.add("selectPhasedOption", (phasedOption, scheduleVal) => {
+  if (phasedOption === "Yes") {
+    cy.radioBtn(performanceReq.phasedYesRadioOption, "YES").click({
+      force: true,
+    });
+    cy.enterTextInTextField(performanceReq.phaseApproachTextfield, scheduleVal);
+  } else {
+    cy.radioBtn(performanceReq.phasedNoRadioOption, "NO").click({
+      force: true,
+    });
+  }
+});
+
+Cypress.Commands.add("currentFunctionCardDesc", (option) => {
+  let cfButton = "";
+  let descriptionText = "";
+
+  if (option === "Replicate") {
+    descriptionText = "Replicate (lift and shift) using JWCC offerings";
+    cfButton = "View/Edit";
+  } else if (option === "Optimize") {
+    descriptionText = "Optimize (improve/modernize) using JWCC offerings";
+    cfButton = "View/Edit";
+  } else if (option === "No") {
+    descriptionText = "No requirements";
+    cfButton = "View/Edit";
+  } else {
+    cfButton = "Start";
+  }
+  const cfCardDetails = [
+    `Your Current Functions ${descriptionText} ${cfButton}`,
+  ];
+  cy.verifyTextArray(performanceReq.currentFunctionCard, cfCardDetails);
+});
+
+Cypress.Commands.add(
+  "completeCurrentFunctionForm",
+  (
+    option,
+    statementVal,
+    additionalGrowth,
+    percentVal,
+    phasedOption,
+    scheduleVal
+  ) => {
+    cy.selectCurrentFunction(option);
+    cy.enterTextInTextField(performanceReq.objectiveTextfield, statementVal);
+    cy.selectAdditionalGrowth(additionalGrowth, percentVal);
+    cy.selectPhasedOption(phasedOption, scheduleVal);
+    cy.clickContinueButton(
+      performanceReq.phasedYesRadioOption,
+      "Your Performance Requirements Summary"
+    );
+    cy.currentFunctionCardDesc(option);
   }
 );

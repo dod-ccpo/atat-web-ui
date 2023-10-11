@@ -26,7 +26,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocuments from "./components/GeneratingDocuments.vue";
 import ReviewDocuments from "./components/ReviewDocuments.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import Vue from "Vue" ;
+
 @Component({
   components: {
     GeneratingDocuments,

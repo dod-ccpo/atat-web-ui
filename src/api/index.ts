@@ -36,7 +36,7 @@ import { CurrentEnvironmentApi } from "@/api/currentEnvironment";
 import { AggregateApi } from "./aggregate";
 import { EnvironmentInstanceAPI } from "@/api/EnvironmentInstance";
 import { AlertApi } from "./alerts";
-import {PortfolioApi} from "@/api/portfolio";
+import {PortfolioApi, PortfolioTableApi} from "@/api/portfolio";
 import {CloudServiceProviderApi} from "@/api/cloudServiceProvider";
 import {FundingRequirementApi} from "@/api/fundingRequirement";
 import { UserApi } from "@/api/user";
@@ -64,7 +64,6 @@ import { RegionsAPI } from "./regions";
 import {EnvironmentApi} from "@/api/environment";
 import { PackageDocumentsSignedAPI } from "@/api/packageDocumentsSigned";
 import { PackageDocumentsUnsignedAPI } from "@/api/packageDocumentsUnsigned";
-import {OperatorAPI} from "@/api/operator";
 import { AddressApi } from "@/api/address";
 import { CostEstimateApi } from "@/api/costEstimate";
 import { DisaOrganizationApi } from "@/api/disaOrganization";
@@ -115,7 +114,8 @@ export const api = {
   currentEnvironmentInstanceTable: new CurrentEnvironmentInstanceAPI(),
   aggregate: new AggregateApi(),
   environmentInstanceTable: new EnvironmentInstanceAPI(),
-  portfolioTable: new PortfolioApi(),
+  portfolioTable: new PortfolioTableApi(),
+  portfolioApi: new PortfolioApi(),
   environmentTable: new EnvironmentApi(),
   cloudServiceProviderTable: new CloudServiceProviderApi(),
   userApi: new UserApi(),
@@ -139,7 +139,6 @@ export const api = {
   regionsTable: new RegionsAPI(),
   packageDocumentsSignedTable: new PackageDocumentsSignedAPI(),
   packageDocumentsUnsignedTable: new PackageDocumentsUnsignedAPI(),
-  operatorTable: new OperatorAPI(),
   addressTable: new AddressApi(),
   disaOrganizationTable: new DisaOrganizationApi(),
   feedbackOptionsTable: new FeedbackOptionsAPI(),

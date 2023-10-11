@@ -501,7 +501,6 @@ export interface FundingPlanDTO extends BaseTableDTO {
 }
 
 export interface FundingRequestFSFormDTO extends BaseTableDTO {
-
   fs_form_7600a_filename: string;
   fs_form_7600a_attachment: string;
   fs_form_7600b_attachment: string;
@@ -523,6 +522,7 @@ export interface FundingRequirementDTO extends BaseTableDTO {
   funding_request: string;
   funds_obligated: string;
   funds_total: string;
+  has_funding: string;
   incrementally_funded: string;
   pop_start_date: string;
   pop_end_date: string;
@@ -788,10 +788,28 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   environments?: Environment[];
   last_updated?: string;
 }
+export interface PortfolioSummaryObj extends BaseTableDTO{
+  portfolio_name: string;
+  portfolio_status: string;
+  agency: string;
+  last_updated: string;
+  current_user_is_owner: boolean;
+  current_user_is_manager: boolean;
+  vendor: string;
+  pop_start_date: string;
+  pop_end_date: string;
+  total_obligated: number;
+  funds_spent: number;
+  active_task_order: string;
+  owner_full_name:string;
+  funding_status: string;
+  csp_portal_links: {csp: string, dashboard_link: string}[],
+}
+
 
 export interface PortfolioSummaryMetadataAndDataDTO {
-  total_count: number;
-  portfolioSummaryList: PortfolioSummaryDTO[];
+  portfolios: PortfolioSummaryObj[];
+  portfolioCount: number
 }
 
 export interface EnvironmentDTO extends BaseTableDTO {
@@ -800,13 +818,11 @@ export interface EnvironmentDTO extends BaseTableDTO {
   csp_display: string;
   name: string;
   dashboard_link: string;
-  pending_operators: string[];
   portfolio: string;
   provisioned: string;
   provisioned_date: string;
   provisioning_failure_cause: string;
   provisioning_request_date: string;
-  csp_admins?: OperatorDTO[];
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
@@ -934,17 +950,6 @@ export interface UserSearchResultDTO extends BaseTableDTO {
   phone?: string;
   company?: string;
   title?: string;
-}
-
-export interface OperatorDTO extends BaseTableDTO{
-  environment?: string;
-  email?: string;
-  dod_id?: string;
-  added_by?: string;
-  provisioned_date?: string;
-  provisioned?: string;
-  provisioning_failure_cause?: string;
-  provisioning_request_date?: string;
 }
 
 export interface TrainingEstimateDTO extends BaseTableDTO{

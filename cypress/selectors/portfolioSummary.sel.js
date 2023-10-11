@@ -110,7 +110,6 @@ module.exports = {
   role1AboutRoles: "#Role1_DropdownListItem_AboutRoles",
   fundingTrackerTab: "#FundingTracker_Tab",  
   taskOrderTab: "#TaskOrders_Tab",
-  cspPortalAccessTab: "#CSPPortalAccess_Tab", 
   
   //fundingtrackerview
   portfoliodetailsCard: "#PortfolioDetailsCard",
@@ -159,34 +158,6 @@ module.exports = {
   grandhiddenTotalCLINSValue: "td:nth-child(4)._grand-total-obligated-funds span",
   grandTotalFundsSpentValue: "._grand-total-funds-spent",
   optionPendingCLINsValue:"._total-clin-value._OPTION_PENDING",
-  
-  //CSP Portal Access
-  cspTitle: "#CSPTitle.h3",
-  cspDescription: "#CSPDescription",
-  learnMorkLink: "#LearnMoreLink",
-  cspAdminLogLabel: "#TableHeader",
-  addCSPAdminBtn: "#AddCSPAdmin",
-  addCSPModal: "#AddCSPMember",
-  modalMessage: "#UpdateClassificationsModalMessage p.body",
-  modallearnlink: "#AddCSPMember #LearnMoreLink",
-  modalSlideOut: "#AddCSPMember #ModalSlideoutTitle",
-  modalSlideoutCloser:"#AddCSPMember #ModalSlideoutCloser",
-  addCSPModalTitle: "#AddCSPMemberTitle",
-  modalAddAdminBtn: "#AddCSPMember #dialog_ok",
-  modalCancelBtn:"#AddCSPMember #dialog_cancel",
-  adminEmailAddressLabel: "#AdministratorEmail_text_field_label",
-  adminEmailAddressTextBox: "#AdministratorEmail_text_field",
-  adminEmailAddressHelpText: "#AdministratorEmail_text_field_control .help-text",
-  adminEmailAddressError: "#AdministratorEmail_text_field_control .field-error",
-  adminDoDIDLabel: "#AdministratorDODID_text_field_label",
-  adminDoDIDTextbox: "#AdministratorDODID_text_field",
-  adminDoDIDError: "#AdministratorDODID_text_field_control .field-error",
-  adminDoDToolTipBtn: "#TooltipButton_AdministratorDODID",
-  adminDoDToolTipText: "#TooltipText_AdministratorDODID",
-  tablePagination: "ul.v-pagination",
-  tablepageText: "._table-pagination .mr-11",
-  firstRow: "table > tbody > tr:nth-child(1) > td",
-  headerRow:"table> thead th span",
   
   //modal dialog view
   emailLabel: "#PillboxLabel",
