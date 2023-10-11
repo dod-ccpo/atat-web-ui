@@ -322,8 +322,8 @@
                               class="mr-2"
                               :color="lastMonthTrendIconColor"
                             />
-                            <span class="font-size-12 text-base-dark font-weight-700">
-                              <span :class="lastMonthTrendTextColor">
+                            <span class="font-size-12 text-base-dark">
+                              <span :class="lastMonthTrendTextColor" class="font-weight-700">
                                 {{ getSpendPercent(lastMonthSpendTrendPercent) }}%
                               </span>
                               vs monthly average
@@ -354,7 +354,7 @@
                               :color="endOfMonthTrendIconColor"
                             />
                             <span class="font-size-12 text-base-dark">
-                              <span :class="endOfMonthTrendTextColor">
+                              <span :class="endOfMonthTrendTextColor" class="font-weight-700">
                                 {{ getSpendPercent(endOfMonthXaaSForecastTrendPercent) }}%
                               </span>
                               vs monthly XaaS average
