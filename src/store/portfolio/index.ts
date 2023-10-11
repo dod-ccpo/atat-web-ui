@@ -608,6 +608,8 @@ export class PortfolioDataStore extends VuexModule {
       agencyDisplay: portfolioData.agencyDisplay,
       taskOrderNumber: portfolioData.task_order?.task_order_number,
       taskOrderSysId: portfolioData.task_order?.sys_id,
+      currentUserIsManager: portfolioData.current_user_is_manager,
+      currentUserIsOwner: portfolioData.current_user_is_manager,
       portfolio_owner: portfolioData.portfolio_users?.owner,
       portfolio_managers: portfolioData.portfolio_users?.managers,
       portfolio_viewers: portfolioData.portfolio_users?.viewers,
@@ -654,10 +656,10 @@ export class PortfolioDataStore extends VuexModule {
   public async doSetCurrentUserRole(): Promise<void> {
     const sysId = CurrentUserStore.currentUser.sys_id as string;
     this.currentUserIsManager =
-      this.currentPortfolio.current_user_is_manager as boolean;
+      this.currentPortfolio.currentUserIsManager as boolean;
     this.currentUserIsViewer =
       this.currentPortfolio.portfolio_viewers?.includes(sysId) as boolean;
-    this.currentUserIsOwner = this.currentPortfolio.current_user_is_owner as boolean;
+    this.currentUserIsOwner = this.currentPortfolio.currentUserIsOwner as boolean;
   }
 
   @Action

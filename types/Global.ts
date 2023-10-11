@@ -619,8 +619,8 @@ export interface Portfolio extends BaseTableDTO {
   currentCLINs?: ClinDTO[];
   popStartDate?: string;
   popEndDate?: string;
-  current_user_is_manager?: boolean;
-  current_user_is_owner?: boolean;
+  currentUserIsManager?: boolean;
+  currentUserIsOwner?: boolean;
 }
 
 export interface PortfolioCardData extends Portfolio {
