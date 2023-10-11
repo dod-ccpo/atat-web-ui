@@ -4,9 +4,10 @@ import {
   OfferingDetailsPathResolver,
   RequirementsPathResolver,
   ServiceOfferingsPathResolver,
-  calcBasePeriod, 
-  IncrementalFundingResolver, 
-  FinancialPOCResolver  
+  calcBasePeriod,
+  IncrementalFundingResolver,
+  FinancialPOCResolver,
+  AppropriationOfFundsResolver
 } from '../index'
 import {FinancialDetailsStore} from "@/store/financialDetails/index";
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -14,9 +15,10 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 import FinancialDetails from "@/store/financialDetails";
 import { routeNames } from "@/router/stepper";
-import { FundingRequirementDTO } from "@/api/models";
+import { FairOpportunityDTO, FundingRequirementDTO } from "@/api/models";
 import { getModule } from "vuex-module-decorators";
 import Vuex, { Store } from "vuex";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 describe("testing src/router/index.ts", () => {
   
   describe('Testing OtherOfferingSummaryPathResolver()', () => {
@@ -302,6 +304,24 @@ describe("testing src/router/index.ts", () => {
       expect(result).toBe(routeNames.SummaryStepEight);
     });
 
+
+  });
+
+  describe('AppropriationOfFundsResolver', () => {
+    it('should return MIPR', () => {
+      const mockFairOpp = {exception_to_fair_opportunity:""} as FairOpportunityDTO
+      AcquisitionPackage.setFairOpportunity(mockFairOpp)
+      const result = AppropriationOfFundsResolver(routeNames.IncrementalFunding);
+
+      expect(result).toBe(routeNames.MIPR);
+    });
+    it('should return routeNames.SummaryStepEight when current is routeNames.MIPR', () => {
+      const mockFairOpp = {exception_to_fair_opportunity: "NO_NONE"} as FairOpportunityDTO
+      AcquisitionPackage.setFairOpportunity(mockFairOpp)
+      const result = AppropriationOfFundsResolver(routeNames.MIPR);
+
+      expect(result).toBe(routeNames.SummaryStepEight);
+    });
 
   });
 
