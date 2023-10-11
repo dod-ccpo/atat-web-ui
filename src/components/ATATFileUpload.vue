@@ -247,8 +247,6 @@ export default class ATATFileUpload extends Vue {
 
   //Events
   private async deleteFile(file: File): Promise<void> {
-    console.log('got here?')
-
     this.$emit("delete", file);
     await this.$refs.atatFileUpload.$emit("click:clear");
     await this.$refs.atatFileUpload.$emit("change");
