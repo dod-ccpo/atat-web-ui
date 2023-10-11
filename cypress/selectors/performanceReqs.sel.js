@@ -25,6 +25,31 @@ module.exports = {
   cloudSupportCheckboxError: "#CloudSupportCheckboxes .field-error",
   dontneedBtn: "#DontNeedResources",
   startXaaSBtn: "#StartButtonXaaS",
+  startCurrentFunBtn:"#StartButtonReplicateOptimize",
+  currentFunctionCard:"#ReplicateOptimizeCard",
+  
+  //Do you want to replicate or optimize your current functions using JWCC offerings?
+  descrIntroText:"p#IntroP",
+  replicateOptimiseRadioError:"#ReplicateOptimizeOptions_radio_group_control .field-error",
+  radioCFLabels:"#ReplicateOptimizeOptions_radio_group_control input[type=radio]",
+  replicateRadioOption:"#Radio_YesReplicate",
+  optimiseRadioOption:"#Radio_YesOptimize",
+  replicateOptimiseNoOption:"#Radio_NoReplicateOrOptimize",
+  jwtccAlertText:"#JWCCInfoAlert p",
+
+  //Tell us more about your requirements to <selected current function> your environment
+  objectiveTextfield:"#Statement_text_area",
+  objectiveError:"#Statement_text_field_control .field-error",
+  additionalGrowthYesOption:"#Radio_YesGrowth",
+  additionalGrowthNoOption:"#Radio_NoGrowth",
+  additionalGrowthError:"#GrowthOptions_radio_group_control .field-error",
+  capacityPerTextField:"#CapacityPercentage_text_field",
+  capacityTextFieldError:"#CapacityPercentage_text_field_control .field-error",  
+  phasedYesRadioOption:"#Radio_YesPhased",
+  phasedNoRadioOption:"#Radio_NoPhased",
+  phasedRadioError:"#PhasedOptions_radio_group_control .field-error",
+  phaseApproachTextfield:"#PhasedApproachSchedule_text_area",
+  phasedApproachTextfieldError:"#PhasedApproachSchedule_text_field_control .field-error",
 
   //First, tell us about your anticipated users and data needs
   accordionO: "#AnticipatedUserAndDataNeedsAccordion0",
