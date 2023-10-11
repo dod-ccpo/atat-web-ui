@@ -1588,13 +1588,12 @@ export const GInvoicingResolver = (current: string): string => {
 }
 
 export const Upload7600Resolver = (current: string): string => {
-  const useGInvoicing = FinancialDetails.gInvoicingData.useGInvoicing === "YES";
-  
-  if (!useGInvoicing) {
+  if (current === routeNames.FundingPlanType) {
     return fundingRequestType() === "MIPR" 
       ? routeNames.MIPR
       : routeNames.Upload7600;
   }
+
 
   return current === routeNames.SeverabilityAndIncrementalFunding ||
     current === routeNames.AppropriationOfFunds

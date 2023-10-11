@@ -1443,7 +1443,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.Upload7600,
         completePercentageWeight: 1,
         component: Upload7600,
-        //routeResolver: Upload7600Resolver
+        routeResolver: Upload7600Resolver
       },
       {
         menuText: "MIPR",
@@ -1452,7 +1452,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.MIPR,
         completePercentageWeight: 1,
         component: MIPR,
-        //routeResolver: MIPRResolver
+        // routeResolver: MIPRResolver
       },
       {
         menuText: "Generate Package Documents (Funding)",
