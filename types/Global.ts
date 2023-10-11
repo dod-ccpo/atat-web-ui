@@ -534,7 +534,7 @@ export interface PortfolioDTO extends BaseTableDTO {
   current_user_is_manager?: boolean;
   current_user_is_owner?: boolean;
   description?: string;
-  environments?: Environment[]; // here
+  environments?: Environment[]; 
   estimated_funds_available?: string;
   estimated_funds_to_be_invoiced?: string;
   funding_status?: string;

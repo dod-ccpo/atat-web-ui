@@ -4,7 +4,7 @@
       <FinancialDetailsAlert />
       <v-row v-if="showFundingAlert">
         <v-col>
-          <FundingAlert
+          <showFundingAlert
             :fundingAlertType="fundingAlertType"
             :timeRemaining="daysRemaining"
           />
@@ -411,7 +411,7 @@
                       invoiced compared to the total funds available in this portfolio. The data
                       includes money spent on all exercised CLINs during this PoP.
                     </p>
-                    <funding-alert
+                    <show-show-funding-alert
                       :fundingAlertType="fundingAlertType"
                       v-if="arePoPFundsDelinquent"
                     />
@@ -532,6 +532,7 @@ import {
   lineChartData,
   lineChartDataSet,
   Portfolio,
+  PortfolioFundsData,
   SlideoutPanelContent,
 } from "types/Global";
 import _ from "lodash";
@@ -1194,8 +1195,8 @@ export default class PortfolioDashboard extends Vue {
 
   public async checkForUpcomingObligatedFunds(data: Portfolio): Promise<void> {
     // if currentClins is empty i.e. Expired status, this errors. 
-    if(data.currentCLINs.length > 0){
-      const currentPeriodPrefix = data.currentCLINs[0].clin_number.slice(0,2);
+    if((data?.currentCLINs as ClinDTO[]).length > 0){
+      const currentPeriodPrefix = (data?.currentCLINs as ClinDTO[])[0].clin_number.slice(0,2);
       const nextPeriodNumber = parseInt(currentPeriodPrefix) + 1;
       const nextPeriodPrefix = nextPeriodNumber < 10 
         ? "0" + nextPeriodNumber : String(nextPeriodNumber);
@@ -1214,7 +1215,7 @@ export default class PortfolioDashboard extends Vue {
   public async loadOnEnter(): Promise<void> {
     const currentPortfolioData = PortfolioStore.currentPortfolio;
     await this.checkForUpcomingObligatedFunds(currentPortfolioData);
-    this.costs = currentPortfolioData.fundsData.costs;
+    this.costs = (currentPortfolioData.fundsData as PortfolioFundsData).costs as CostsDTO[];
     const {fundsData} = currentPortfolioData
     this.costs.forEach(cost => {
       // eslint-disable-next-line camelcase
@@ -1226,19 +1227,19 @@ export default class PortfolioDashboard extends Vue {
     this.costs.forEach((cost) => {
       cost.value = parseFloat(cost.value).toString();
     });
-    this.idiqClins = currentPortfolioData.currentCLINs;
-    this.availableFunds = fundsData.fundsAvailable;
-    this.totalPortfolioFunds = fundsData.totalPortfolioFunds
-    this.fundsSpent = parseFloat(fundsData.periodFundsSpent);
+    this.idiqClins = currentPortfolioData.currentCLINs as ClinDTO[];
+    this.availableFunds = parseFloat(fundsData?.fundsAvailable as string);
+    this.totalPortfolioFunds = parseFloat(fundsData?.totalPortfolioFunds as string)
+    this.fundsSpent = parseFloat(fundsData?.periodFundsSpent as string);
     this.fundsSpentPercent = (this.fundsSpent / this.totalPortfolioFunds) * 100;
-    this.monthlySpendAverage = fundsData.spendMonthAverage;
-    this.lastMonthSpend = parseFloat(fundsData.lastMonthSpent);
-    this.lastMonthSpendTrendPercent = parseFloat(fundsData.lastMonthTrend);
-    this.endOfMonthXaaSForecast = parseFloat(fundsData.endOfMonthXaasForecast);
-    this.endOfMonthXaaSForecastTrendPercent = parseFloat(fundsData.endOfMonthXaasTrend);
-    this.endOfPeriodForecast = parseFloat(fundsData.endOfPeriodForecast);
-    this.estimatedFundsToBeInvoiced = parseFloat(fundsData.fundsToBeInvoiced);
-    this.estimatedFundsAvailable = parseFloat(fundsData.estimatedFundsAvailable);
+    this.monthlySpendAverage = parseFloat(fundsData?.spendMonthAverage as string);
+    this.lastMonthSpend = parseFloat(fundsData?.lastMonthSpent as string);
+    this.lastMonthSpendTrendPercent = parseFloat(fundsData?.lastMonthTrend as string);
+    this.endOfMonthXaaSForecast = parseFloat(fundsData?.endOfMonthXaasForecast as string);
+    this.endOfMonthXaaSForecastTrendPercent = parseFloat(fundsData?.endOfMonthXaasTrend as string);
+    this.endOfPeriodForecast = parseFloat(fundsData?.endOfPeriodForecast as string);
+    this.estimatedFundsToBeInvoiced = parseFloat(fundsData?.fundsToBeInvoiced as string);
+    this.estimatedFundsAvailable = parseFloat(fundsData?.estimatedFundsAvailable as string);
     await this.setBurnChartYAxis();
   
     this.tooltipHeaderData = {
