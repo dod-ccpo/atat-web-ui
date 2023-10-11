@@ -22,6 +22,7 @@ describe("FinancialDetails Store", () => {
   let fundingRequestMIPRFormDTO: FundingRequestMIPRFormDTO;
   let fundingRequirement: FundingRequirementDTO;
 
+<<<<<<< HEAD
   beforeEach(() => {
     const createStore = (
       storeOptions: any = {}
@@ -73,6 +74,56 @@ describe("FinancialDetails Store", () => {
     jest.clearAllMocks();
     jest.clearAllTimers();
   });
+=======
+    beforeEach(() => {
+      const createStore = (storeOptions: any = {}):
+        Store<{ financialDetails: any }> => new Vuex.Store({...storeOptions});
+      financialDetailsStore = getModule(FinancialDetailsStore, createStore());
+      fundingRequest = {
+        fs_form: "", funding_request_type: "", mipr: ""
+      }
+      fundingRequestFSFormDTO = {
+        fs_form_7600a_filename: "Test 7600",
+        fs_form_7600a_attachment: "123",
+        fs_form_7600a_use_g_invoicing: '',
+        fs_form_7600b_filename: "",
+        fs_form_7600b_attachment: "",
+        fs_form_7600b_use_g_invoicing: '',
+        use_g_invoicing: "",
+        order_number: "",
+        gt_c_number: ""
+      }
+      fundingRequestMIPRFormDTO = {
+        mipr_number: "A12",
+        mipr_filename: "Test MIPR",
+        mipr_attachment: ""
+      }
+      fundingRequirement = {
+        acquisition_package: "",
+        financial_poc: "",
+        funding_plan: "",
+        funding_request: "",
+        funds_obligated: "",
+        funds_total: "",
+        has_funding: "",
+        incrementally_funded: "",
+        pop_end_date: "",
+        pop_start_date: "",
+        sys_created_by: "",
+        sys_created_on: "",
+        sys_id: "",
+        sys_mod_count: "",
+        sys_tags: "",
+        sys_updated_by: "",
+        sys_updated_on: "",
+        task_order_number: ""
+      };
+    })
+    afterEach(() => {
+      jest.clearAllMocks();
+      jest.clearAllTimers();
+    })
+>>>>>>> c8476f437 (added more tests)
 
   it("Test setInitialized()- sets initialized to true", async () => {
     await financialDetailsStore.initialize();
