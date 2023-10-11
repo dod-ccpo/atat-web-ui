@@ -8,10 +8,15 @@ import {
   IncrementalFundingResolver, 
   FinancialPOCResolver  
 } from '../index'
+import {FinancialDetailsStore} from "@/store/financialDetails/index";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
-
+import FinancialDetails from "@/store/financialDetails";
+import { routeNames } from "@/router/stepper";
+import { FundingRequirementDTO } from "@/api/models";
+import { getModule } from "vuex-module-decorators";
+import Vuex, { Store } from "vuex";
 describe("testing src/router/index.ts", () => {
   
   describe('Testing OtherOfferingSummaryPathResolver()', () => {
@@ -268,6 +273,36 @@ describe("testing src/router/index.ts", () => {
 
     const result = FinancialPOCResolver("SummaryPage");
     expect(result).toBe("Financial_POC_Form")
+  });
+
+  describe('IncrementalFundingResolver', () => {
+    // eslint-disable-next-line max-len
+    it('should return routeNames.FinancialPOCForm when current is routeNames.IncrementalFunding', async () => {
+      const createStore = (storeOptions: any = {}):
+          Store<{ financialDetails: any }> => new Vuex.Store({...storeOptions});
+      const financialDetailsStore = getModule(FinancialDetailsStore, createStore());
+      financialDetailsStore
+        .setFundingRequirement({ incrementally_funded: 'YES' } as FundingRequirementDTO);
+
+      const result = IncrementalFundingResolver(routeNames.IncrementalFunding);
+
+      expect(result).toBe(routeNames.FinancialPOCForm);
+    });
+
+    // eslint-disable-next-line max-len
+    it('should return routeNames.SummaryStepEight if fundingReq.incrementally_funded is "NO"', async () => {
+      const createStore = (storeOptions: any = {}):
+          Store<{ financialDetails: any }> => new Vuex.Store({...storeOptions});
+      const financialDetailsStore = getModule(FinancialDetailsStore, createStore());
+      financialDetailsStore
+        .setFundingRequirement({ incrementally_funded: 'NO' } as FundingRequirementDTO);
+
+      const result = IncrementalFundingResolver(routeNames.IncrementalFunding);
+
+      expect(result).toBe(routeNames.SummaryStepEight);
+    });
+
+
   });
 
 });
