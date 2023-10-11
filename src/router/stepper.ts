@@ -1432,14 +1432,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: GTCInformationResolver
       },
       {
-        menuText: "Generate Package Documents (Funding)",
-        path:"generate-package-documents-funding",
-        excludeFromMenu: true,
-        name: routeNames.GeneratingPackageDocumentsFunding,
-        completePercentageWeight: 0,
-        component: GeneratingPackageDocumentsFunding,
-      },
-      {
         menuText: "Funding-Plan",
         excludeFromMenu: true,
         path: "funding-plan",
@@ -1465,6 +1457,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: MIPR,
         //routeResolver: MIPRResolver
+      },
+      {
+        menuText: "Generate Package Documents (Funding)",
+        path:"generate-package-documents-funding",
+        excludeFromMenu: true,
+        name: routeNames.GeneratingPackageDocumentsFunding,
+        completePercentageWeight: 0,
+        component: GeneratingPackageDocumentsFunding,
       },
       {
         menuText: "SummaryStepEight",
