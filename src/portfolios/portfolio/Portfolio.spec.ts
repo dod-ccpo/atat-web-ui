@@ -268,12 +268,14 @@ describe("Testing Portfolio", () => {
       })
       expect(wrapper.vm.endOfMonthTrendIconName).toBe('trendingUp')
     })
+
     it(`Test endOfMonthTrendIconName() => endOfMonthXaaSForecastTrendPercent = 0`, async () =>{
       await wrapper.setData({
         endOfMonthXaaSForecastTrendPercent: 0
       })
       expect(wrapper.vm.endOfMonthTrendIconName).toBe('trendingDown')
     })
+    
     it(`Test endOfMonthTrendIconColor() => endOfMonthXaaSForecastTrendPercent > 0`, async () =>{
       await wrapper.setData({
         endOfMonthXaaSForecastTrendPercent: 1
