@@ -778,6 +778,17 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: false})
+  public async setContractingShopRequireFundingDocuments(value: string): Promise<void> {
+    if(this.acquisitionPackage) {
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        contracting_shop_require_funding_documents_for_submission_of_package: value,
+      });
+      saveAcquisitionPackage(this.acquisitionPackage)
+    }
+  }
+
+  @Action({rawError: false})
   public async setAttachmentNames(value: string[]): Promise<void> {
     this.doSetAttachmentNames(value);
   }
