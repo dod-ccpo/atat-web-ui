@@ -303,21 +303,19 @@ describe("testing src/router/index.ts", () => {
 
       expect(result).toBe(routeNames.SummaryStepEight);
     });
-
-
   });
 
   describe('AppropriationOfFundsResolver', () => {
     it('should return MIPR', () => {
       const mockFairOpp = {exception_to_fair_opportunity:""} as FairOpportunityDTO
-      AcquisitionPackage.setFairOpportunity(mockFairOpp)
+      AcquisitionPackage.doSetFairOpportunity(mockFairOpp)
       const result = AppropriationOfFundsResolver(routeNames.IncrementalFunding);
 
       expect(result).toBe(routeNames.MIPR);
     });
     it('should return routeNames.SummaryStepEight when current is routeNames.MIPR', () => {
       const mockFairOpp = {exception_to_fair_opportunity: "NO_NONE"} as FairOpportunityDTO
-      AcquisitionPackage.setFairOpportunity(mockFairOpp)
+      AcquisitionPackage.doSetFairOpportunity(mockFairOpp)
       const result = AppropriationOfFundsResolver(routeNames.MIPR);
 
       expect(result).toBe(routeNames.SummaryStepEight);
