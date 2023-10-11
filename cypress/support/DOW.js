@@ -2,11 +2,81 @@ import {
   getCheckboxId,
   getServiceOfferingNames,
   getCheckboxIds,
+  getObjectFromArrayByKey,
 } from "../helpers";
-import common from '../selectors/common.sel';
-import 'cypress-iframe';
-import performanceReq from '../selectors/performanceReqs.sel';
+import common from "../selectors/common.sel";
+import "cypress-iframe";
+import performanceReq from "../selectors/performanceReqs.sel";
 import contractDetails from "../selectors/contractDetails.sel";
+
+Cypress.Commands.add(
+  "verifyCategoryAndServiceOfferings", // need updates
+  (categoryLabels, serviceOfferingGroups, categoryValue) => {
+    cy.verifyCheckBoxLabels("input[type=checkbox]", categoryLabels);
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups,
+      "value",
+      categoryValue
+    );
+    if (categoryObj) {
+      cy.verifyServiceOfferingHeader(categoryObj);
+      if (
+        categoryObj.serviceOfferingCypressLabels &&
+        categoryObj.serviceOfferingCypressLabels[0] !== "Other"
+      ) {
+        cy.verifyServiceOfferingsForCategory(categoryObj);
+      }
+    }
+  }
+);
+
+Cypress.Commands.add("requiredContractDetailsforPR", (pt, scope) => {
+  cy.goToAcqPackageStepOne(pt, scope);
+  cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+  cy.verifyPageHeader(
+    "Let’s gather details about the duration of your task order"
+  );
+});
+Cypress.Commands.add("addOptionPeriod", () => {
+  cy.findElement(contractDetails.addOptionLink).click();
+});
+Cypress.Commands.add("selectClassificationLevel", (selectedClassifications) => {
+  const expectedLabelMaps = {
+    level2: contractDetails.level2,
+    level4: contractDetails.level4,
+    level5: contractDetails.level5,
+    level6: contractDetails.level6,
+    tops: contractDetails.ts,
+  };
+  cy.findElement(common.subStepClassReqsLink).click();
+  selectedClassifications.forEach((label) => {
+    cy.findElement(expectedLabelMaps[label]).click({ force: true });
+  });
+  if (
+    selectedClassifications.includes("level6") ||
+    selectedClassifications.includes("tops")
+  ) {
+    cy.clickContinueButton(
+      contractDetails.level4,
+      "Let’s find out more about your security requirements"
+    );
+    cy.findElement("#Checkbox_4_Secret")
+      .check({
+        force: true,
+      })
+      .should("be.checked");
+    cy.findElement("#Checkbox_2_TopSecret")
+      .check({
+        force: true,
+      })
+      .should("be.checked");
+  } else {
+    cy.clickContinueButton(
+      contractDetails.level4,
+      "Your Contract Details Summary"
+    );
+  }
+});
 
 //This command is to verify the checkbox label and header for the ServiceOffering Page
 Cypress.Commands.add("verifyServiceOfferingHeader", (categoryObj) => {
@@ -14,39 +84,75 @@ Cypress.Commands.add("verifyServiceOfferingHeader", (categoryObj) => {
   cy.selectServiceOfferingGroup([categoryCheckBoxId]);
 
   cy.verifyPageHeader("What type of " + categoryObj.label + " do you need?");
-
 });
 
 //This command is to verify the checkbox label on ServiceOffering Page and navigation
-Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
-  const serviceOfferingCheckboxLabels = [];
-  categoryObj.serviceOfferingCypressLabels.forEach((label) => {
-    serviceOfferingCheckboxLabels.push(label);
-  });
+// Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
+//   const serviceOfferingCheckboxLabels = [];
+//   categoryObj.serviceOfferingCypressLabels.forEach((label) => {
+//     serviceOfferingCheckboxLabels.push(label);
+//   });
 
-  cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);
+//   cy.verifyCheckBoxLabels(
+//     "input[type=checkbox]",
+//     serviceOfferingCheckboxLabels
+//   );
 
-  const serviceOfferingNames = getServiceOfferingNames(categoryObj);
+//   const serviceOfferingNames = getServiceOfferingNames(categoryObj);
 
-  const serviceOfferingCheckboxIds = getCheckboxIds(categoryObj);
+//   const serviceOfferingCheckboxIds = getCheckboxIds(categoryObj);
 
-  serviceOfferingCheckboxIds.forEach((checkboxId, index) => {
-    if (checkboxId.indexOf("Other") === -1) {
-      cy.deselectAllCheckboxes();
-      cy.selectCheckBoxes([checkboxId]);
+//   serviceOfferingCheckboxIds.forEach((checkboxId, index) => {
+//     if (checkboxId.indexOf("Other") === -1) {
+//       cy.deselectAllCheckboxes();
+//       cy.selectCheckBoxes([checkboxId]);
+//       cy.btnClick(common.continueBtn, " Continue ");
+
+//       cy.verifyPageHeader(
+//         "Now we’ll gather your requirements for " + serviceOfferingNames[index]
+//       );
+//       // eslint-disable-next-line cypress/no-unnecessary-waiting
+//       cy.wait(1000); // needed because with 2 back button clicks,
+// needs a pause for scroll into view
+//       cy.btnClick(common.backBtn, "Back");
+//     }
+//   });
+// });
+
+Cypress.Commands.add(
+  "verifyServiceOfferingsForCategory",
+  (categoryObj, index) => {
+    // need updates
+    const serviceOfferingCheckboxLabels = [];
+    categoryObj.serviceOfferingCypressLabels.forEach((label) => {
+      serviceOfferingCheckboxLabels.push(label);
+    });
+    cy.verifyCheckBoxLabels(
+      "._checkboxes input[type=checkbox]",
+      serviceOfferingCheckboxLabels
+    );
+    const serviceOfferingNames = getServiceOfferingNames(categoryObj);
+    const serviceOfferingCheckboxIds = getCheckboxIds(categoryObj);
+    if (index >= 0 && index < serviceOfferingCheckboxIds.length) {
+      const selectedCheckboxId = serviceOfferingCheckboxIds[index];
+      cy.selectCheckBoxes([selectedCheckboxId]);
       cy.btnClick(common.continueBtn, " Continue ");
-
-      cy.verifyPageHeader(
-        "Now we’ll gather your requirements for " + serviceOfferingNames[index]
-      );
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(1000); // needed because with 2 back button clicks, needs a pause for scroll into view
-      cy.btnClick(common.backBtn, "Back");
+      cy.waitUntilElementIsGone("#SubtleAlertMessage");
+      if (serviceOfferingNames[index]) {
+        cy.verifyPageHeader(
+          "Now we’ll gather your requirements for " +
+            serviceOfferingNames[index]
+        );
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(1000);
+      }
+    } else {
+      cy.log("Invalid index provided or out of bounds.");
     }
-  });
-});
+  }
+);
 
-//This command is to verify the OtherCategories HeaderLabel on Summary Page 
+//This command is to verify the OtherCategories HeaderLabel on Summary Page
 Cypress.Commands.add("verifyOtherServiceOfferings", (categories) => {
   categories.forEach((cat) => {
     cy.textExists(cat.headingSelector, cat.headingText);
@@ -56,29 +162,33 @@ Cypress.Commands.add("verifyOtherServiceOfferings", (categories) => {
       cat.tooltipText
     );
     cy.textExists(cat.linkSelector, " Add requirements ");
-  })
-})
+  });
+});
 
 //This command is to verify the checkbox label and header for the Compute Category
 Cypress.Commands.add("verifyComputeHeader", (categoryObj) => {
   const categoryCheckBoxId = getCheckboxId(categoryObj.value);
   cy.selectServiceOfferingGroup([categoryCheckBoxId]);
 
-  cy.verifyPageHeader("Let’s start by gathering your " + categoryObj.label + " requirements");
-
+  cy.verifyPageHeader(
+    "Let’s start by gathering your " + categoryObj.label + " requirements"
+  );
 });
 
 //Select compute option
-Cypress.Commands.add("selectComputeOption", (categoryObj, serviceOfferingGroups) => {
-  cy.btnClick(common.continueBtn, " Continue ");
-  cy.verifyPageHeader(" Let’s work on your performance requirements ");
-  const categoryLabels = [];
-  serviceOfferingGroups.forEach((obj) => {
-    categoryLabels.push(obj.label);
-  });
-  cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
-  cy.verifyComputeHeader(categoryObj);
-});
+Cypress.Commands.add(
+  "selectComputeOption",
+  (categoryObj, serviceOfferingGroups) => {
+    cy.btnClick(common.continueBtn, " Continue ");
+    cy.verifyPageHeader(" Let’s work on your performance requirements ");
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels("input[type=checkbox]", categoryLabels);
+    cy.verifyComputeHeader(categoryObj);
+  }
+);
 
 //This command is to verify the Region labels
 Cypress.Commands.add("verifyRegionCheckBoxesLabels", (categoryObj) => {
@@ -90,9 +200,10 @@ Cypress.Commands.add("verifyRegionCheckBoxesLabels", (categoryObj) => {
   categoryObj.regionCypressLabels.forEach((label) => {
     regionCheckBoxesLabels.push(label);
   });
-  const region = "This is the geographic location where your public cloud resources are located," +
+  const region =
+    "This is the geographic location where your public cloud resources are located," +
     " e.g., within the continental U.S. (CONUS) or outside of the continental U.S. (OCONUS)." +
-    " If you need a certain location, select Other and enter your specifications."
+    " If you need a certain location, select Other and enter your specifications.";
   cy.hoverToolTip(
     performanceReq.regionTooltipBtn,
     performanceReq.regionTooltipText,
@@ -100,15 +211,15 @@ Cypress.Commands.add("verifyRegionCheckBoxesLabels", (categoryObj) => {
   );
 
   cy.verifyCheckBoxLabels(performanceReq.regionGroup, regionCheckBoxesLabels);
-
 });
 
 //This command is to verify the Performance tier radio group labels
 Cypress.Commands.add("verifyPerformanceTierRadioLabels", (categoryObj) => {
   cy.findElement(performanceReq.performanceTierLabel).scrollIntoView();
   cy.textExists(performanceReq.performanceTierLabel, " Performance tier ");
-  const tooltipText = "This refers to your network speed and service availability." +
-    " If you have size and performance details, select Other and enter your specifications."
+  const tooltipText =
+    "This refers to your network speed and service availability." +
+    " If you have size and performance details, select Other and enter your specifications.";
   cy.hoverToolTip(
     performanceReq.performanceTierTooltipBtn,
     performanceReq.performanceTierTootipText,
@@ -134,7 +245,10 @@ Cypress.Commands.add("verifyStorageTypeListItems", (categoryObj) => {
   categoryObj.storageTypeCypressLabels.forEach((list) => {
     storageTypeListItems.push(list);
   });
-  cy.verifyStringArray(performanceReq.storageTypeDropdownList, storageTypeListItems);
+  cy.verifyStringArray(
+    performanceReq.storageTypeDropdownList,
+    storageTypeListItems
+  );
 });
 
 //This command is to verify the checkbox label and header for the Compute Category
@@ -142,119 +256,143 @@ Cypress.Commands.add("verifyGeneralXaaSHeader", (categoryObj) => {
   const categoryCheckBoxId = getCheckboxId(categoryObj.value);
   cy.selectServiceOfferingGroup([categoryCheckBoxId]);
 
-  cy.verifyPageHeader("Let’s gather your requirements for general IaaS, PaaS and SaaS");
-
+  cy.verifyPageHeader(
+    "Let’s gather your requirements for general IaaS, PaaS and SaaS"
+  );
 });
 
 //select generalXaaS option
-Cypress.Commands.add("selectGeneralXaaSOption", (categoryObj, serviceOfferingGroups) => {
-  cy.btnClick(common.continueBtn, " Continue ");
-  cy.verifyPageHeader(" Let’s work on your performance requirements ");
-  const categoryLabels = [];
-  serviceOfferingGroups.forEach((obj) => {
-    categoryLabels.push(obj.label);
-  });
-  cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
-  cy.verifyGeneralXaaSHeader(categoryObj);
-});
+Cypress.Commands.add(
+  "selectGeneralXaaSOption",
+  (categoryObj, serviceOfferingGroups) => {
+    cy.btnClick(common.continueBtn, " Continue ");
+    cy.verifyPageHeader(" Let’s work on your performance requirements ");
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels("input[type=checkbox]", categoryLabels);
+    cy.verifyGeneralXaaSHeader(categoryObj);
+  }
+);
 
 Cypress.Commands.add("selectSecretLevel", (secretSelector, alertMessage) => {
-  cy.findElement(secretSelector).should("not.be.checked")
+  cy.findElement(secretSelector)
+    .should("not.be.checked")
     .check({
-      force: true
+      force: true,
     })
     .then(() => {
       cy.messageDisplays(contractDetails.alertMessage, alertMessage);
-
     });
 });
 
 Cypress.Commands.add("unselectSecretLevel", (secretSelector) => {
-  cy.findElement(secretSelector).should("be.checked")
+  cy.findElement(secretSelector)
+    .should("be.checked")
     .uncheck({
-      force: true
+      force: true,
     })
     .then(() => {
       cy.findElement(contractDetails.alertMessage).should("not.exist");
     });
 });
 
-Cypress.Commands.add("goToContractDetailsStep", (pt, scope, radioSelector, value, input) => {
-  cy.goToAcqPackageStepOne(pt, scope);
-  cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-  cy.activeStep(common.stepContractDetailsText);
-  cy.verifyPageHeader(
-    "Let’s gather details about the duration of your task order"
-  );
-  cy.findElement(contractDetails.addOptionLink).click();
-  cy.clickContinueButton(contractDetails.baseInputTxtBox,
-    " Do you want to request a PoP start date? ");
+Cypress.Commands.add(
+  "goToContractDetailsStep",
+  (pt, scope, radioSelector, value, input) => {
+    cy.goToAcqPackageStepOne(pt, scope);
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.activeStep(common.stepContractDetailsText);
+    cy.verifyPageHeader(
+      "Let’s gather details about the duration of your task order"
+    );
+    cy.findElement(contractDetails.addOptionLink).click();
+    cy.clickContinueButton(
+      contractDetails.baseInputTxtBox,
+      " Do you want to request a PoP start date? "
+    );
 
-  cy.selectPoPStartDate(radioSelector, value)
-  cy.waitUntilElementIsGone(contractDetails.popStartDateYesRadioOption);
-  cy.verifyPageHeader("Will this be a recurring requirement?");
-  cy.radioBtn(contractDetails.yesRadioOption, "YES")
-    .not("[disabled]")
-    .click({
-      force: true
+    cy.selectPoPStartDate(radioSelector, value);
+    cy.waitUntilElementIsGone(contractDetails.popStartDateYesRadioOption);
+    cy.verifyPageHeader("Will this be a recurring requirement?");
+    cy.radioBtn(contractDetails.yesRadioOption, "YES").not("[disabled]").click({
+      force: true,
     });
-  cy.clickContinueButton(contractDetails.esRadioOption,
-    "Which contract type(s) apply to this acquisition? ");
+    cy.clickContinueButton(
+      contractDetails.esRadioOption,
+      "Which contract type(s) apply to this acquisition? "
+    );
 
-  cy.findCheckBox(contractDetails.ffpCheckBox, "FFP")
-    .should("not.be.checked")
-    .check({
-      force: true
-    });
-  cy.selectTMCheckbox(input)
-  cy.clickContinueButton(contractDetails.ffpCheckBox,
-    " What classification level(s) will be required for your cloud resources and/or services? ");
-
-})
+    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP")
+      .should("not.be.checked")
+      .check({
+        force: true,
+      });
+    cy.selectTMCheckbox(input);
+    cy.clickContinueButton(
+      contractDetails.ffpCheckBox,
+      " What classification level(s) will be required for your cloud resources and/or services? "
+    );
+  }
+);
 Cypress.Commands.add("anticipatedNeedUsage", (textSel, textVal, radioSel) => {
-  cy.enterTextInTextField(
-    textSel, textVal)
+  cy.enterTextInTextField(textSel, textVal);
   cy.findElement(radioSel).click({
     force: true,
   });
+});
 
-})
+Cypress.Commands.add(
+  "verifyTableValues",
+  (tableSel, expectedTableData, stopCellIndex) => {
+    stopCellIndex = stopCellIndex ?? 1000;
+    cy.findElement(tableSel).as("table");
+    cy.findElement("@table")
+      .find("tbody")
+      .find("tr")
+      .each(($row, rowIndex) => {
+        cy.wrap($row)
+          .find("td")
+          .each(($cell, cellIndex) => {
+            cy.wrap($cell)
+              .invoke("text")
+              .then((text) => {
+                if (cellIndex < stopCellIndex) {
+                  const expectedValue = expectedTableData[rowIndex][cellIndex];
 
-Cypress.Commands.add('verifyTableValues', (tableSel, expectedTableData,stopCellIndex) => {
-  stopCellIndex = stopCellIndex ?? 1000;
-  cy.findElement(tableSel).as('table');
-  cy.findElement('@table').find("tbody").find('tr').each(($row, rowIndex) => {
-    cy.wrap($row).find('td').each(($cell, cellIndex) => {
-      cy.wrap($cell).invoke('text').then((text) => {
-        if (cellIndex < stopCellIndex){
-          const expectedValue = expectedTableData[rowIndex][cellIndex];
-        
-          const trimmedText = text.trim().replace(/\s+/g, ' ');
-          cy.log('Expected Value:', expectedValue);
-          cy.log('Trimmed Text:', trimmedText);
-          cy.log('expected:', expectedValue);
-          expect(trimmedText).to.equal(expectedValue);
-        }        
-        
+                  const trimmedText = text.trim().replace(/\s+/g, " ");
+                  cy.log("Expected Value:", expectedValue);
+                  cy.log("Trimmed Text:", trimmedText);
+                  cy.log("expected:", expectedValue);
+                  expect(trimmedText).to.equal(expectedValue);
+                }
+              });
+          });
       });
-    });
-  });
-});
+  }
+);
 
-Cypress.Commands.add("clickAndWaitForVisible", (elementSelector, targetSelector) => {
-  cy.get(elementSelector)
-    .should("be.visible")
-    .click()
-    .then(() => {
-      cy.waitUntil(() => cy.findElement(targetSelector).should("be.visible"));
-    });
-});
+Cypress.Commands.add(
+  "clickAndWaitForVisible",
+  (elementSelector, targetSelector) => {
+    cy.get(elementSelector)
+      .should("be.visible")
+      .click()
+      .then(() => {
+        cy.waitUntil(() => cy.findElement(targetSelector).should("be.visible"));
+      });
+  }
+);
 
-Cypress.Commands.add("clickAndWaitForElementExists", (elementSelector, targetSelector) => {
-  cy.get(elementSelector)
-    .should("be.visible")
-    .click()
-    .then(() => {
-      cy.waitUntil(() => cy.findElement(targetSelector).should("exist"));
-    });
-});
+Cypress.Commands.add(
+  "clickAndWaitForElementExists",
+  (elementSelector, targetSelector) => {
+    cy.get(elementSelector)
+      .should("be.visible")
+      .click()
+      .then(() => {
+        cy.waitUntil(() => cy.findElement(targetSelector).should("exist"));
+      });
+  }
+);
