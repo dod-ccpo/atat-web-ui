@@ -166,7 +166,7 @@ module.exports = {
 
   conusEastCheckbox: "#Checkbox_CONUSEast",
   conusCentralCheckbox: "#Checkbox_CONUSCentral",
-  conusWestCheckbox: "#Checkbox_CONUSWest",
+  conusWestCheckbox: "#Checkbox_CONUSWest0",
   africomCheckbox: "#Checkbox_AFRICOM",
   centcomCheckbox: "#Checkbox_CENTCOM",
   eucomCheckbox: "#Checkbox_EUCOM",
@@ -236,11 +236,10 @@ module.exports = {
   storageSizeLable: "#StorageAmount_text_field_label",
   storageAmountTextbox: "#StorageAmount_text_field",
   storageSizeField: "#StorageAmount_text_field_control ",
-  byteSizeDropdown: "#id_is_missing_dropdown_field_control"+
-  " .v-input__control .v-input__append-inner",
-  gigabyteOption: "#id_is_missing_DropdownListItem_GigabyteGB",
-  terabyteOption: "#id_is_missing_DropdownListItem_TerabyteTB",
-  petayteOption: "#id_is_missing_DropdownListItem_PetabytePB",
+  byteSizeDropdown: "#StorageAmount_dropdown_field_control",
+  gigabyteOption: "#StorageAmount_DropdownListItem_GigabyteGB",
+  terabyteOption: "#StorageAmount_DropdownListItem_TerabyteTB",
+  petayteOption: "#StorageAmount_DropdownListItem_PetabytePB",
 
   performanceTiertitle: "#PerformanceTierOptions_radio_group_control .mb-3 legend",
   performanceTierRadioGroup: "#PerformanceTierOptions_radio_group_control input[type=radio]",
