@@ -99,6 +99,12 @@ describe("Testing index Component", () => {
         sysId: "1234",
         portfolio_name: "good portfolio title",
         description: "good description",
+        portfolio_users:{
+          managers: [],
+          creator: {},
+          owner: {},
+          viewers: []
+        },
         environments: [
           {
             classification_level: "U",
