@@ -5,6 +5,7 @@ import rootStore from "../index";
 import {
   FilterOption,
   Portfolio,
+  PortfolioCardData,
   PortfolioDetailsDTO,
   PortfolioProvisioning,
   PortfolioSummaryQueryParams,

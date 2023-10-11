@@ -219,7 +219,7 @@ export default class PortfolioSummary extends Vue {
           const c = env.classification_level;
           if (c) {
             const classificationLevel = classificationLevels[c];
-            const envStatus = env.environment_status;
+            const envStatus = env.environmentStatus;
             this.secondaryTabItems.push({
               tabText: classificationLevel,
               status: envStatus as string,
