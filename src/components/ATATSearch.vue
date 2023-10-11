@@ -62,7 +62,14 @@
       <ATATErrorValidation :errorMessages="errorMessages" />
     </div>
 
-    <div v-if="helpText && showHelpText" class="help-text mt-2">
+    <div 
+      v-if="helpText && 
+      showHelpText && 
+      !showGtcVerifiedIndicator && 
+      !showLoader &&
+      !errorMessages.length" 
+      class="help-text mt-2"
+    >
       {{ helpText }}
     </div>
 
@@ -79,7 +86,7 @@
 
     <div
       id="GtcVerifedIndicator"
-      v-show="showGtcVerifiedIndicator && !showHelpText"
+      v-show="showGtcVerifiedIndicator && !errorMessages.length"
     >
       <div
         class="mt-4 d-flex justify-start"
@@ -183,10 +190,11 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private labelClass?: string;
   @Prop({ default: "" }) private tooltipTitle?: string;
   @Prop({ default: "" }) private tooltipText?: string;
-  @Prop({ default: "" }) private helpText?: string;
+  @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: () => [] }) private mask?: string[];
   @Prop({ default: false }) private isMaskRegex?: boolean;
   @Prop({ default: () => [] }) private rules?: Array<unknown>;
+  @Prop({ default: false }) private hideHelpTextOnErrors?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop({ default: "" }) private searchType?: string;
@@ -202,15 +210,22 @@ export default class ATATSearch extends Vue {
   private error = false;
   private errorMessages: string[] = [];
 
-  private showHelpText = true;
   private showLoader = false;
   private showGtcVerifiedIndicator = false;
-
   private showSuccessAlert = false;
   private showErrorAlert = false;
   private maskObj: mask = {};
 
   private searchDisabled = true;
+
+  private hideHelpText = false;
+  private showHelpText(): boolean {
+    if (this.hideHelpText) return false
+    if(this.errorMessages.length && this.hideHelpTextOnErrors){
+      return false;
+    }
+    return  this.helpText.length > 0;
+  }
 
   @Watch("_resetValidationNow")
   public async resetValidationNowChange(newVal: boolean): Promise<void> {
@@ -225,16 +240,14 @@ export default class ATATSearch extends Vue {
 
   @Watch("_value")
   public valueChanged(newVal: string): void {
-    const hasErrors = !this.isModal
-      ? this.$refs.atatSearchInput?.errorBucket.length > 0
-      : this.$refs.atatSearchInputModal?.errorBucket.length > 0;
+    this.showGtcVerifiedIndicator = false;
     const hasContent = newVal && newVal.length > 0;
-    this.searchDisabled = hasErrors || !hasContent;
+    this.searchDisabled = (!hasContent || Boolean(this.errorMessages.length));
   }
 
   @Watch("errorMessages")
   private errorMessagesChanged(newVal: Array<unknown>): void {
-    this.showHelpText = newVal.length === 0 && !this.showLoader;
+    this.hideHelpText = !(newVal.length === 0 && !this.showLoader);
   }
 
   @Watch("_triggerSearch")
@@ -250,13 +263,13 @@ export default class ATATSearch extends Vue {
     }
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
-    this.showHelpText = true;
+    this.hideHelpText = false;
   }
 
   private async search(): Promise<void> {
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
-    this.showHelpText = false;
+    this.hideHelpText = true;
     this.showGtcVerifiedIndicator = false;
     this.showLoader = false;
 
