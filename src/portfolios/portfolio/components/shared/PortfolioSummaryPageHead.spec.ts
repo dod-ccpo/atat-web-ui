@@ -230,6 +230,12 @@ describe("Testing Members Component", () => {
         current_user_is_manager: true,
         portfolio_name: "good portfolio title",
         description: "good description",
+        portfolio_users:{
+          managers: [],
+          creator: {},
+          owner: {},
+          viewers: []
+        },
         environments: [
           {
             classification_level: "U",
