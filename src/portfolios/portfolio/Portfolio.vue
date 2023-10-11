@@ -824,7 +824,7 @@ export default class PortfolioDashboard extends Vue {
         const clin = this.costs.find(
           (cost) => cost.clin_number === clinNo && cost.year_month === date
         );
-        if (clin && clin.is_actual) {
+        if (clin?.is_actual) {
           clinValues[date] = clin.value;
         }
       });

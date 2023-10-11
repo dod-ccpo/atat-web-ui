@@ -5,7 +5,6 @@ import rootStore from "../index";
 import {
   FilterOption,
   Portfolio,
-  PortfolioCardData,
   PortfolioDetailsDTO,
   PortfolioProvisioning,
   PortfolioSummaryQueryParams,
@@ -649,7 +648,7 @@ export class PortfolioDataStore extends VuexModule {
   @Action
   public async getSelectedPortfolioData(portfolioSysId: string): Promise<PortfolioDetailsDTO>{
     const currentUserSysId = CurrentUserStore.currentUser.sys_id;
-    return api.portfolioApi.getPortfolioDetals(currentUserSysId as string, portfolioSysId)
+    return api.portfolioApi.getPortfolioDetails(currentUserSysId as string, portfolioSysId)
   }
 
   @Mutation

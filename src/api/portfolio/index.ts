@@ -44,7 +44,7 @@ export class PortfolioApi extends ApiBase{
       throw new Error(error as string)
     }
   }
-  public async getPortfolioDetals(
+  public async getPortfolioDetails(
     userSysId: string,
     portfolioSysId: string
   ): Promise<PortfolioDetailsDTO> {

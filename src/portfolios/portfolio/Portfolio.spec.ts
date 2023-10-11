@@ -189,9 +189,6 @@ describe("Testing Portfolio", () => {
         localVue,
       });
       await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolioCardData)
-      // jest.spyOn(wrapper.vm, "getDashboardData").mockReturnValue(
-      //   new Promise(resolve=>resolve(dashboardMocks))
-      // )
       await wrapper.vm.loadOnEnter();
 
     });
@@ -263,6 +260,46 @@ describe("Testing Portfolio", () => {
         zeroFundsRemaining: true
       })
       expect(wrapper.vm.fundingAlertType).toBe(FundingAlertTypes.POPZeroFundsRemaining)
+    })
+
+    it(`Test endOfMonthTrendIconName() => endOfMonthXaaSForecastTrendPercent > 0`, async () =>{
+      await wrapper.setData({
+        endOfMonthXaaSForecastTrendPercent: 1
+      })
+      expect(wrapper.vm.endOfMonthTrendIconName).toBe('trendingUp')
+    })
+    it(`Test endOfMonthTrendIconName() => endOfMonthXaaSForecastTrendPercent = 0`, async () =>{
+      await wrapper.setData({
+        endOfMonthXaaSForecastTrendPercent: 0
+      })
+      expect(wrapper.vm.endOfMonthTrendIconName).toBe('trendingDown')
+    })
+    it(`Test endOfMonthTrendIconColor() => endOfMonthXaaSForecastTrendPercent > 0`, async () =>{
+      await wrapper.setData({
+        endOfMonthXaaSForecastTrendPercent: 1
+      })
+      expect(wrapper.vm.endOfMonthTrendIconColor).toBe('error')
+    })
+
+    it(`Test endOfMonthTrendIconColor() => endOfMonthXaaSForecastTrendPercent = 0`, async () =>{
+      await wrapper.setData({
+        endOfMonthXaaSForecastTrendPercent: 0
+      })
+      expect(wrapper.vm.endOfMonthTrendIconColor).toBe('success-dark')
+    })
+
+    it(`Test endOfMonthTrendTextColor() => endOfMonthXaaSForecastTrendPercent > 0`, async () =>{
+      await wrapper.setData({
+        endOfMonthXaaSForecastTrendPercent: 1
+      })
+      expect(wrapper.vm.endOfMonthTrendTextColor).toBe('text-error')
+    })
+
+    it(`Test endOfMonthTrendTextColor() => endOfMonthXaaSForecastTrendPercent = 0`, async () =>{
+      await wrapper.setData({
+        endOfMonthXaaSForecastTrendPercent: 0
+      })
+      expect(wrapper.vm.endOfMonthTrendTextColor).toBe('text-success-dark')
     })
 
   });
