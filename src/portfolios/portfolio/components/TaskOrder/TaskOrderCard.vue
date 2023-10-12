@@ -35,7 +35,7 @@
           <v-chip
             :id="'StatusChip' + index"
             :class="[
-              '_' + cardData.status.toLowerCase(),
+              '_' + (cardData.status).toLowerCase(),
               statusChipBgColor(cardData.status)
             ]"
             label

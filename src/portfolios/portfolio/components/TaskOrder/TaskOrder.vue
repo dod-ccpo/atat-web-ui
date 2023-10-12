@@ -54,7 +54,7 @@ import Vue from "vue";
 import { Component, Prop} from "vue-property-decorator";
 import FinancialDetailsAlert from "../../FinancialDetailsAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
-import {TaskOrderCardData, ToastObj} from "../../../../../types/Global";
+import {PortfolioTaskOrder, TaskOrderCardData, ToastObj} from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryObj } from "@/api/models";
@@ -78,11 +78,11 @@ import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/help
 })
 export default class TaskOrder extends Vue {
   @Prop() private portfolioSysId!: string;
-  @Prop() public taskOrder: any;
+  @Prop() public taskOrder!: PortfolioTaskOrder;;
   public activeTaskOrderNumber = "";
   public showDetails = false
   public taskOrders: TaskOrderCardData[] = [];
-  public selectedTaskOrder:TaskOrderCardData ={};
+  public selectedTaskOrder:TaskOrderCardData = {} as TaskOrderCardData;
   public portfolioIsActive = true;
   public showTOSearchModal = false;
   public TONumber = "";
@@ -131,7 +131,6 @@ export default class TaskOrder extends Vue {
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.label;
-    console.log(this.taskOrder, 'task order')
     if(PortfolioStore.portfolioIsUpdating){
       const taskOrderUpdatedToast: ToastObj = {
         type: "success",
@@ -147,39 +146,21 @@ export default class TaskOrder extends Vue {
       await PortfolioSummary.getAllPortfolioSummaryList(false) as PortfolioSummaryObj[];
     if (portfolioSummaryList !== null){
       // refactor to build via array later
-      this.taskOrders = [{
-        sys_id: this.taskOrder.sys_id,
-        taskOrderNumber: this.taskOrder.task_order_number,
-        periodOfPerformance: createDateStr(this.taskOrder.pop_start_date, true) + " - " +
+      if(this.taskOrder.sys_id){
+        this.taskOrders = [{
+          sys_id: this.taskOrder.sys_id,
+          taskOrderNumber: this.taskOrder.task_order_number,
+          periodOfPerformance: createDateStr(this.taskOrder.pop_start_date, true) + " - " +
               createDateStr(this.taskOrder.pop_end_date, true),
-        totalObligated: '$' + toCurrencyString(this.taskOrder.total_obligated_funds),
-        totalValue: '$' + toCurrencyString(this.taskOrder.total_task_order_value || 0),
-        totalLifeCycle: '$' + toCurrencyString(this.taskOrder.total_lifecycle_amount || 0),
-        totalFundsSpent: '$' + toCurrencyString(this.taskOrder.total_funds_spent || 0),
-        clins: this.taskOrder.clins,
-        status: this.taskOrder.task_order_status,
-        statusLabel: getStatusLabelFromValue(this.taskOrder.task_order_status)
-      }]
-      // this.taskOrders = portfolioSummaryList.flatMap(
-      //   portfolio=>portfolio.task_orders.filter((
-      //     (taskOrder)=> taskOrder.task_order_number===this.activeTaskOrderNumber
-      //     || taskOrder.portfolio === this.portfolioSysId
-      //   )))
-      //   .map((to)=>{
-      //     return{
-      //       sys_id: to.sys_id,
-      //       taskOrderNumber: to.task_order_number,
-      //       periodOfPerformance: createDateStr(to.pop_start_date, true) + " - " +
-      //         createDateStr(to.pop_end_date, true),
-      //       status: to.task_order_status,
-      //       statusLabel: getStatusLabelFromValue(to.task_order_status),
-      //       totalObligated: '$' + toCurrencyString(parseInt(to.funds_obligated)),
-      //       totalValue: '$' + toCurrencyString(to.total_task_order_value || 0),
-      //       totalLifeCycle: '$' + toCurrencyString(to.total_lifecycle_amount || 0),
-      //       totalFundsSpent: '$' + toCurrencyString(to.funds_spent_task_order || 0),
-      //       clins: to.clin_records
-      //     }}
-      // )
+          totalObligated: '$' + toCurrencyString(parseFloat(this.taskOrder.total_obligated_funds)),
+          totalValue: '$' + toCurrencyString(parseFloat(this.taskOrder.total_task_order_value)),
+          totalLifeCycle: '$' + toCurrencyString(parseFloat(this.taskOrder.total_lifecycle_amount)),
+          totalFundsSpent: '$' + toCurrencyString(parseFloat(this.taskOrder.total_funds_spent)),
+          clins: this.taskOrder.clins,
+          status: this.taskOrder.task_order_status,
+          statusLabel: getStatusLabelFromValue(this.taskOrder.task_order_status)
+        }]
+      }
     }
   }
 

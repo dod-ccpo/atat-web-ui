@@ -593,7 +593,6 @@ export class PortfolioDataStore extends VuexModule {
     portfolioCardData: PortfolioDetailsDTO): Promise<void> 
   {
     const portfolioData = portfolioCardData.portfolio;
-    console.log(portfolioCardData, 'portfolio data in store')
     const dataFromSummaryCard = {
       sysId: portfolioCardData.portfolioId,
       title: portfolioData.portfolio_name,
@@ -653,7 +652,6 @@ export class PortfolioDataStore extends VuexModule {
   @Action
   public async getSelectedPortfolioData(portfolioSysId: string): Promise<PortfolioDetailsDTO>{
     const currentUserSysId = CurrentUserStore.currentUser.sys_id;
-    console.log(currentUserSysId, 'uid')
     return api.portfolioApi.getPortfolioDetails(currentUserSysId as string, portfolioSysId)
   }
 
