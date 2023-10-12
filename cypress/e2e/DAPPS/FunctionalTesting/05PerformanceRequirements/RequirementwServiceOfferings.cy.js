@@ -83,14 +83,12 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
         "not.be.checked"
       );
     }
-    //Page#3: Your Xaas Summary
     cy.clickContinueButton(
       performanceReqs.durationNoRadioBtn,
       serviceOfferingGroups.XaasRequirementsPage.XaasSummary
     );
   }
 
-  // Test case: Functional test for Xaas Requirements
   it("TC1: Verify Performance Requirements - XaaS Requirements", () => {
     cy.verifyPageHeader(
       serviceOfferingGroups.XaasRequirementsPage.performancepageHeader
@@ -114,20 +112,20 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
     );
   });
 
-  // Test case: Functional test for Developer Tools
   it("TC2: Verify Developer Tools", () => {
     cy.findElement(performanceReqs.devtoolsCheckBox)
       .check({
         force: true,
       })
       .should("be.checked");
-    //Page#1: First, tell us about your anticipated users and data needs
-    // this page will display for the first selection- call function need to be added
+    cy.log("First, tell us about your anticipated users and data needs");
     cy.clickContinueButton(
       performanceReqs.appCheckBox,
       serviceOfferingGroups.anticipatedUsersPage.pageHeader
     );
-    // skipping anticipated page and moving to DeveloperTools and Services
+    cy.log(
+      "skipping anticipated page and moving to DeveloperTools and Services"
+    );
     cy.clickContinueButton(
       performanceReqs.pageTextanticipatedUsers,
       serviceOfferingGroups.DeveloperToolsPage.pageHeader1
@@ -141,7 +139,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       performanceReqs.pagecheckboxes,
       serviceOfferingGroups.DeveloperToolsPage.developerToolTypes
     );
-    //select and unselect all checkboxes
     cy.findElement(performanceReqs.pagecheckboxes)
       .check({
         force: true,
@@ -149,14 +146,12 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       .should("be.checked");
     cy.deselectAllCheckboxes();
 
-    //check devSecOps checkbox
     cy.findElement(performanceReqs.devToolDevSecOpsCheckBox)
       .check({
         force: true,
       })
       .should("be.checked");
 
-    //Page#2: Now we’ll gather your requirements for DevSecOps
     verifypageheaderwithClickContinue(
       performanceReqs.checkedCheckboxes,
       performanceReqs.devToolDevSecOpsCheckBox,
@@ -185,7 +180,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       serviceOfferingGroups.ApplicationsPage.applicationTypes
     );
 
-    //select and unselect all checkboxes
     cy.findElement(performanceReqs.pagecheckboxes)
       .check({
         force: true,
@@ -193,7 +187,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       .should("be.checked");
     cy.deselectAllCheckboxes();
 
-    //check Application checkbox
     cy.findElement(performanceReqs.applicationCheckBox)
       .check({
         force: true,
@@ -214,7 +207,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
     );
   });
   it.skip("TC4: Verify Error Message Validations", () => {
-    // verify Error messages for Networking
     cy.findElement(performanceReqs.netLink).click({
       force: true,
     });
@@ -234,7 +226,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       performanceReqs.networkHybridCheckBox,
       serviceOfferingGroups.XaasRequirementsPage.XaasSummary
     );
-    // verify Error messages for MachineLearning
     cy.findElement(performanceReqs.mlLink).click({
       force: true,
     });
@@ -268,8 +259,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       performanceReqs.pagecheckboxes,
       serviceOfferingGroups.NetworkingPage.networkTypes
     );
-
-    //select and unselect all checkboxes
     cy.findElement(performanceReqs.pagecheckboxes)
       .check({
         force: true,
@@ -277,7 +266,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       .should("be.checked");
     cy.deselectAllCheckboxes();
 
-    //check Hybrid checkbox
     cy.findElement(performanceReqs.networkHybridCheckBox)
       .check({
         force: true,
@@ -312,7 +300,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       serviceOfferingGroups.MachineLearningPage.MachineLabels
     );
 
-    //select and unselect all checkboxes
     cy.findElement(performanceReqs.pagecheckboxes)
       .check({
         force: true,
@@ -320,7 +307,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       .should("be.checked");
     cy.deselectAllCheckboxes();
 
-    //select Machine Learning- Spacialized Application checkbox
     cy.findElement(performanceReqs.machineSpecializedCheckBox)
       .check({
         force: true,
@@ -359,8 +345,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       performanceReqs.pagecheckboxes,
       serviceOfferingGroups.internetThingsPage.IOTLabels
     );
-
-    //select and unselect all checkboxes
     cy.findElement(performanceReqs.pagecheckboxes)
       .check({
         force: true,
@@ -368,7 +352,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       .should("be.checked");
     cy.deselectAllCheckboxes();
 
-    //select IOT Edge check box
     cy.findElement(performanceReqs.internetIOTEdgeCheckBox)
       .check({
         force: true,
@@ -404,7 +387,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       serviceOfferingGroups.securityPage.securityLabels
     );
 
-    //select and unselect all checkboxes
     cy.findElement(performanceReqs.pagecheckboxes)
       .check({
         force: true,
@@ -412,7 +394,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       .should("be.checked");
     cy.deselectAllCheckboxes();
 
-    //select Managed CSP Cloud Security Solutions
     cy.findElement(performanceReqs.managedCSPSecurityCheckBox)
       .check({
         force: true,
