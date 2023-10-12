@@ -63,7 +63,7 @@
     >
       <div
         id="PortfolioMembersHeader"
-        class="d-flex flex-columm justify-space-between"
+        class="d-flex justify-space-between"
       >
         <div id="PortfolioTitle" class="d-flex">
           <div class="h3 mr-2">Portfolio members</div>
@@ -109,7 +109,7 @@
         class="pt-6"
       >
         <div 
-          class="d-flex flex-columm justify-space-between"
+          class="d-flex justify-space-between"
           v-for="(member, index) in portfolioMembers"
           :key="member.sys_id"
         >
@@ -172,42 +172,44 @@
           class="color-base font-size-20 _condensed-font"
           v-if="showEnvCount"
         >
-          ({{ getEnironmentCount }})
+          ({{ getEnvironmentCount }})
         </div>
       </div>
     </div>
     <div id="EnvironmentsList" class="_hoverable-rows">
       <div 
-        class="_hover-row d-flex align-center justify-space-between" 
-        v-for="(env, index) of portfolio.environments" 
+        class="d-flex align-center justify-space-between"
+        v-for="(env, index) of portfolio.environments"
+        :class="hoverClass(env)"
         :key="index"
         tabindex="0"
-        @click="goToCSPAdmin(env.sys_id)"
+        @click="handleLinkClick(env)"
       >
-        <div class="font-weight-500"> 
-          {{ getClassificationLevel(env.classification_level) }}
-        </div>
-        <div class="d-flex align-center">
-          <div class="text-right mr-2">
-            <span class="font-weight-500 d-block" style="line-height: 1;">
-              {{ getEnvStatus(env) }}
-            </span>
-            <span class="font-size-12 text-base">
-              {{ getEnvDateStr(env) }}
-            </span>
+          <div class="d-flex align-start flex-column text-left mr-2">
+              <span class="font-weight-500 d-block" style="line-height: 1;">
+                {{ getClassificationLevel(env.classification_level) }}
+              </span>
+              <span class="font-size-12 text-base">
+                {{ getCspName(env)}}
+              </span>
           </div>
-          <div
-            class="_icon-circle"
-            :class="statusImg[env.environment_status].bgColor"
-          >
-            <ATATSVGIcon
-              :name="statusImg[env.environment_status].name"
-              :width="statusImg[env.environment_status].width"
-              :height="statusImg[env.environment_status].height"
-              :color="statusImg[env.environment_status].color"
-            />
+          <div class="d-flex align-end align-center">
+            <div class="d-flex flex-column text-right mr-2">
+                <span class="font-weight-500 d-block" style="line-height: 1;">
+                  {{ getEnvStatus(env) }}
+                </span>
+                <span class="font-size-12 text-base">
+                  {{ getEnvDateStr(env) }}
+                </span>
+            </div>
+            <div class="_icon-circle" :class="statusImg[env.environment_status].bgColor">
+              <ATATSVGIcon
+                  :name="statusImg[env.environment_status].name"
+                  :color="statusImg[env.environment_status].color"
+                  :height=parseInt(statusImg[env.environment_status].height)
+                  :width=parseInt(statusImg[env.environment_status].width) />
+            </div>
           </div>
-        </div>
       </div>
     </div>
 
@@ -292,49 +294,34 @@
       :showOKSpinner="showOKSpinner"
       @okClicked="removeMember"
       @cancelClicked="cancelRemoveMember"
-
-    />   
-
+    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import {Component, Watch} from "vue-property-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-
 import LeavePortfolioModal from "../../../portfolio/components/shared/LeavePortfolioModal.vue";
 
-import PortfolioRolesLearnMore from
-  "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
+// eslint-disable-next-line max-len
+import PortfolioRolesLearnMore from "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
 import PortfolioStore from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel";
 import Toast from "@/store/toast";
 
-import {
-  Environment,
-  Portfolio,
-  SelectData,
-  SlideoutPanelContent,
-  ToastObj,
-  User
-} from "types/Global";
-import { 
-  differenceInDays, 
-  differenceInHours,
-  differenceInMinutes, 
-  format,
-  parseISO 
-} from "date-fns";
+// eslint-disable-next-line max-len
+import {Environment, Portfolio, SelectData, SlideoutPanelContent, ToastObj, User} from "types/Global";
+import {differenceInDays, differenceInHours, differenceInMinutes, format, parseISO} from "date-fns";
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import {createDateStr, getStatusChipBgColor, hasChanges} from "@/helpers";
-import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
+import {Statuses} from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
-import { UserDTO } from "@/api/models";
+import {UserDTO} from "@/api/models";
 import AppSections from "@/store/appSections";
 import Home from "@/home/Index.vue";
 
@@ -380,13 +367,10 @@ export default class PortfolioDrawer extends Vue {
   public showManagerDowngradeDialog = false;
   public downgradeMemberIndex = -1;
 
-  public get isProdEnv(): boolean {
-    return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
-  }
-
   public get currentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
   }
+
   @Watch("currentUser")
   public currentUserChange(newVal: UserDTO): void {
     const currentUserSysId = newVal.sys_id;
@@ -411,6 +395,12 @@ export default class PortfolioDrawer extends Vue {
 
   public get portfolioStatus(): string {
     return PortfolioStore.currentPortfolio.status as string;
+  }
+
+  public handleLinkClick(env: Environment): void{
+    if(env.classification_level === 'U' && env.dashboard_link) {
+      window.open(env.dashboard_link, "_blank")
+    }
   }
 
   public get portfolioIsArchived(): boolean {
@@ -474,10 +464,11 @@ export default class PortfolioDrawer extends Vue {
     { text: "Remove from portfolio", value: "Remove", isSelectable: false },
     { text: "About roles", value: "AboutRoles", isSelectable: false },
   ];
+  
   public ownerMenuItems: SelectData[] = [
     { text: "Transfer ownership", value: "TransferOwner", isSelectable: false },
   ]
-
+  
   public statusImg = {
     [Statuses.ProvisioningIssue.value]: {
       name: "warningAmber",
@@ -585,16 +576,10 @@ export default class PortfolioDrawer extends Vue {
     Toast.setToast(this.membersInvitedToast);
   }
 
-  public displayName(member: User): string {
-    return member.firstName && member.lastName 
-      ? member.firstName + " " + member.lastName
-      : member.email || "";
-  }
-
   public get showEnvCount(): boolean {
-    return this.getEnironmentCount > 0; 
+    return this.getEnvironmentCount > 0; 
   }
-  public get getEnironmentCount(): number {
+  public get getEnvironmentCount(): number {
     return this.portfolio.environments?.length || 0;
   }
 
@@ -603,43 +588,45 @@ export default class PortfolioDrawer extends Vue {
     S: "Secret",
     TS: "Top Secret",
   }
+  
   public getClassificationLevel(abbr: string): string {
     return this.classificationLevels[abbr];
   }
 
-  public async goToCSPAdmin(envSysId: string): Promise<void> {
-    // go to CSP Admin page showing correct environment tab    
-    await PortfolioStore.setCurrentEnvSysId(envSysId);
-    await AppSections.setActiveTabIndex(2);
-  }
   public getEnvStatus(env: Environment): string {
-    if (env.environmentStatus) {
-      const statusKey = this.getStatusKey(env.environmentStatus);
+    if (env.environment_status) {
+      const statusKey = this.getStatusKey(env.environment_status);
       return Statuses[statusKey].label;
     } 
     return "";
   }
 
   public getEnvDateStr(env: Environment): string {
-    if (env.environmentStatus === Statuses.Processing.value && env.sys_created_on) {
-      // return "Started x ago"
+    if (env.environment_status === Statuses.Processing.value && env.sys_created_on) {
       const now = new Date();
-      const created = new Date(env.sys_created_on);
-      const diffInMinutes = differenceInMinutes(now, created);
-      const diffInHours = differenceInHours(now, created);
+      const localCreatedOn = this.convertUtcToLocal(env.sys_created_on);
+
+      const diffInMinutes = differenceInMinutes(now, localCreatedOn);
+      const diffInHours = differenceInHours(now, localCreatedOn);
       if (diffInMinutes < 60) {
-        return "Started " +  differenceInMinutes(now, created) + " minutes ago";
+        return "Started " +  differenceInMinutes(now, localCreatedOn) + " minutes ago";
       } else if (diffInHours <= 72) {
         const plural = diffInHours > 1 ? "s" : "";
         return "Started " + diffInHours + ` hour${plural} ago`;
       } 
-      const diffInDays = differenceInDays(now, created);
+      const diffInDays = differenceInDays(now, localCreatedOn);
       return "Started " + diffInDays + " days ago";
     }
 
-    return createDateStr(env.provisioned_date, true, true);
+    // eslint-disable-next-line max-len
+    return (env.provisioned_date) ? createDateStr(env.provisioned_date, true, true) : "";
   }
 
+  public convertUtcToLocal(dateString: string): Date {
+    const utcDate = new Date(dateString);
+    const offsetMinutes = utcDate.getTimezoneOffset();
+    return new Date(utcDate.getTime() - (offsetMinutes * 60 * 1000));
+  }
 
   public portfolioMembers: member[] = [];
 
@@ -650,11 +637,6 @@ export default class PortfolioDrawer extends Vue {
     return this.portfolio?.members?.length
       ? this.portfolio?.members?.length
       : 0;
-  }
-
-  public get managerCount(): number {
-    const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager");
-    return managers.length;
   }
 
   public openMembersModal(): void {
@@ -692,7 +674,7 @@ export default class PortfolioDrawer extends Vue {
 
     this.currentUserIsOwner = false;
     await this.updateMemberRole("Manager", prevOwnerIndex);
-    this.closeTransferOwnerModal();
+    await this.closeTransferOwnerModal();
     Toast.setToast(this.ownershipTransferredToast);
     this.modalOKDisabled = false;
     this.showOKSpinner = false;
@@ -703,6 +685,10 @@ export default class PortfolioDrawer extends Vue {
     const i = array.indexOf(sysId);
     array.splice(i, 1);
     return array.join(",");    
+  }
+
+  public hoverClass(env: Environment): string {
+    return env.classification_level === "U" ? "_hover-row" : "py-3 pl-6 pr-4";
   }
 
   public async closeTransferOwnerModal(): Promise<void> {
@@ -826,7 +812,7 @@ export default class PortfolioDrawer extends Vue {
       if (sysId === this.currentUser.sys_id) {
         // current user left the portfolio - send to home page
         await PortfolioStore.setUserLeftPortfolio(true);
-        AppSections.setAppContentComponent(Home);
+        await AppSections.setAppContentComponent(Home);
 
       } else {
         await this.loadPortfolio();
@@ -843,6 +829,29 @@ export default class PortfolioDrawer extends Vue {
     this.showRemoveMemberDialog = false;
     this.showLeavePortfolioModal = false;
     this.removeMemberIndex = -1;
+  }
+
+  public getCspName(env: Environment): string {
+    if(!env.cloud_distinguisher) {
+      return "";
+    } 
+
+    // JSON.parse can throw
+    try {
+      const cloudDistinguisher = JSON.parse(env.cloud_distinguisher);
+      const impactLevel = cloudDistinguisher.name;
+      switch(this.portfolio.vendor) {
+
+      // eslint-disable-next-line max-len
+      case "AZURE": return (impactLevel === "IL2") ? `Azure Commercial (${impactLevel})` : `Azure Government (${impactLevel})`;
+      case "GCP": return `Google ${impactLevel} Commercial`;
+      case "AWS":
+      case "ORACLE":
+      default: return "";
+      }
+    } catch (e) {
+      return `Failure parsing cloud_distinguisher: err ${JSON.stringify(e, null, 2)}`;
+    }
   }
 }
 </script>
