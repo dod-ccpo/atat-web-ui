@@ -40,21 +40,36 @@ describe("Testing ATATSearch Component", () => {
     })
 
     it("@Watch errorMessagesChanged() - change $data.errorMessages to [] to " +
-    "display $data.showHelpText", async () => {
+    "display showHelpText", async () => {
       await wrapper.setData({
         errorMessages: [],
-        showLoader: false
+        showLoader: false,
       });
-      expect(await wrapper.vm.$data.showHelpText).toBe(true);
+      await wrapper.setProps({
+        hideHelpTextOnErrors: true,
+      })
+      expect(wrapper.vm.showHelpText()).toBe(true);
     })
 
-    it("@Watch errorMessagesChanged() - populate $data.errorMessages to not show " +
-    "$data.showHelpText", async () => {
+    it("@Watch errorMessagesChanged() - change $data.errorMessages to [] to " +
+    "not display showHelpText when hideHelpTextOnErrors is false", async () => {
+      await wrapper.setData({
+        errorMessages: [],
+        showLoader: false,
+      });
+      await wrapper.setProps({
+        hideHelpTextOnErrors: false,
+      })
+      expect(wrapper.vm.showHelpText()).toBe(false);
+    })
+
+    it("@Watch errorMessagesChanged() - populate $data.errorMessages to not display " +
+    "showHelpText", async () => {
       await wrapper.setData({
         errorMessages: ['error Message 001'],
         showLoader: true
       });
-      expect(await wrapper.vm.$data.showHelpText).toBe(false);
+      expect(wrapper.vm.showHelpText()).toBe(false);
     })
 
     it("onInput() - supply valid input with existing $data.errorMessages then  " +
