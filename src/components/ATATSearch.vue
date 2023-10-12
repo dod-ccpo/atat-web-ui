@@ -333,10 +333,13 @@ export default class ATATSearch extends Vue {
         );
         if (gInvoicingResponse.valid) {
           this.showGtcVerifiedIndicator = true;
+          this.$emit('onGInvoiceSearchComplete', true)
         } else {
+          this.$emit('onGInvoiceSearchComplete', false)
           this.showErrorAlert = true;
         }
       } catch (error) {
+        this.$emit('onGInvoiceSearchComplete', false)
         this.showErrorAlert = true;
       } finally {
         this.showLoader = false;
@@ -352,11 +355,14 @@ export default class ATATSearch extends Vue {
         );
         if (gInvoicingResponse.valid) {
           this.showGtcVerifiedIndicator = true;
+          this.$emit('onGInvoiceSearchComplete', true)
         } else {
           this.showErrorAlert = true;
+          this.$emit('onGInvoiceSearchComplete', false)
         }
       } catch (error) {
         this.showErrorAlert = true;
+        this.$emit('onGInvoiceSearchComplete', false)
       } finally {
         this.showLoader = false;
         this.$emit("search");

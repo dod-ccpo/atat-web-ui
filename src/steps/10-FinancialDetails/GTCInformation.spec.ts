@@ -346,8 +346,44 @@ describe("Testing GTC Information component", () => {
       });
     });
 
+    
+    describe("onGInvoiceSearchComplete()", () => {
+      it("false to true", async () => {
+        wrapper.vm.gInvoiceSearchValid = false;
+        wrapper.vm.onGInvoiceSearchComplete(true);
+        expect(wrapper.vm.gInvoiceSearchValid).toBe(true);
+      })
+
+      it("true to false", async () => {
+        wrapper.vm.gInvoiceSearchValid = true;
+        wrapper.vm.onGInvoiceSearchComplete(false);
+        expect(wrapper.vm.gInvoiceSearchValid).toBe(false);
+      })
+    })
+
     describe("saveOnLeave()", () => {
+      it("=> false (gInvoicing is invalid)", async () => {
+        wrapper.vm.gInvoiceSearchValid = false;
+        wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = "YES";
+        wrapper.vm.currentData = mockCurrentData;
+        wrapper.vm.savedData = {
+          useGInvoicing: "",
+          gInvoiceNumber: "",
+        };
+        jest
+          .spyOn(FinancialDetails, "loadFundingRequestFSForm")
+          .mockResolvedValue(mockLoadFundingReturn);
+        jest
+          .spyOn(FinancialDetails, "saveFundingRequestFormAndGInvoicing")
+          .mockImplementation(() => Promise.resolve(mockLoadFundingReturn));
+        expect(await wrapper.vm.saveOnLeave()).toBe(false);
+        expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
+          7
+        );
+      });
+
       it("=> true (not rejected and hasChanged)", async () => {
+        wrapper.vm.gInvoiceSearchValid = true;
         wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = "YES";
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = {
@@ -370,6 +406,7 @@ describe("Testing GTC Information component", () => {
       });
 
       it("=> true (not rejected and not hasChanged)", async () => {
+        wrapper.vm.gInvoiceSearchValid = true;
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = mockCurrentData;
         jest
@@ -388,6 +425,7 @@ describe("Testing GTC Information component", () => {
       });
 
       it("=> (rejected and hasChanged)", async () => {
+        wrapper.vm.gInvoiceSearchValid = true;
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = {
           useGInvoicing: "",

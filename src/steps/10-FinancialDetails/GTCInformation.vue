@@ -83,6 +83,7 @@
                 $validators.required('Please provide a GT&C number.'),
               ]"
               :triggerSearch="triggerSearch"
+              @onGInvoiceSearchComplete="onGInvoiceSearchComplete"
             />
             <!-- eslint-enable -->
           </div>
@@ -189,6 +190,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   // gtc number text field
   public gInvoiceNumber = "";
   private triggerSearch = false;
+  private gInvoiceSearchValid = false;
 
   // file upload
   private validFileFormats = ["pdf"];
@@ -236,11 +238,15 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     );
   }
 
+  private onGInvoiceSearchComplete(validity: boolean) {
+    this.gInvoiceSearchValid = validity;
+  }
+
   // rules array dynamically created based on the invalid
   // files returned from the child component
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
-    if (this.useGInvoicing === 'YES') return []
+    if (this.useGInvoicing === "YES") return [];
     //eslint-disable-next-line prefer-const
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
@@ -371,6 +377,9 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    if (
+      this.gInvoiceSearchValid !== true && this.useGInvoicing === 'YES'
+    ) return false;
     await AcquisitionPackage.setValidateNow(true);
     // file upload / saving
     try {
