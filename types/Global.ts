@@ -621,6 +621,7 @@ export interface Portfolio extends BaseTableDTO {
   popEndDate?: string;
   currentUserIsManager?: boolean;
   currentUserIsOwner?: boolean;
+  taskOrder?: PortfolioTaskOrder
 }
 
 export interface PortfolioCardData extends Portfolio {
@@ -671,6 +672,19 @@ export interface PortfolioProvisioning extends EDAResponse {
   selectedILs?: string[];
 }
 
+export interface PortfolioTaskOrder{
+    total_task_order_value: string,
+    total_lifecycle_amount: string,
+    total_funds_spent:string,
+    total_obligated_funds: string,
+    task_order_number: string,
+    task_order_status: string,
+    sys_id: string,
+    pop_start_date: string,
+    pop_end_date: string,
+    clins: ClinDTO[]
+}
+
 export interface EmailEntry {
   key: string;
   email: string;
@@ -688,16 +702,16 @@ export interface FundingTrackerAlert {
 }
 
 export interface TaskOrderCardData {
-  taskOrderNumber?: string,
-  periodOfPerformance?: string,
-  totalObligated?: string,
-  totalValue?: string,
-  totalLifeCycle?: string,
-  totalFundsSpent?: string,
-  status?: string,
-  statusLabel?: string,
-  sys_id?: string,
-  clins?:ClinDTO[],
+  taskOrderNumber: string,
+  periodOfPerformance: string,
+  totalObligated: string,
+  totalValue: string,
+  totalLifeCycle: string,
+  totalFundsSpent: string,
+  status: string,
+  statusLabel: string,
+  sys_id: string,
+  clins:ClinDTO[],
 }
 
 export interface AwardedTaskOrderDetails {
