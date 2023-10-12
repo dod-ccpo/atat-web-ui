@@ -125,11 +125,11 @@
                   class="py-1 d-flex"
                   style="width: 105px; letter-spacing: normal; cursor: default;"
                 >
-                  <div id="LastManagerOrOwner" class="width-100 text-right">
-                    {{ member.role }}
-                  </div>
+                <div id="LastManagerOrOwner" class="width-100 text-right">
+                  {{ member.role }}
+                </div>
                   
-                  <div style="width: 16px; height: 20px;"></div>
+                <div style="width: 16px; height: 20px;"></div>
                 </div>
               </template>
               <div 
@@ -688,7 +688,8 @@ export default class PortfolioDrawer extends Vue {
   }
 
   public hoverClass(env: Environment): string {
-    return env.classification_level === "U" ? "_hover-row" : "py-3 pl-6 pr-4";
+    return env.classification_level === "U" && env.dashboard_link
+      ? "_hover-row" : "py-3 pl-6 pr-4";
   }
 
   public async closeTransferOwnerModal(): Promise<void> {
