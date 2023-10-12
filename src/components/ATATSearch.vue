@@ -224,7 +224,7 @@ export default class ATATSearch extends Vue {
     if(this.errorMessages.length && this.hideHelpTextOnErrors){
       return false;
     }
-    return  this.helpText.length > 0;
+    return this.helpText.length > 0;
   }
 
   @Watch("_resetValidationNow")
@@ -297,6 +297,25 @@ export default class ATATSearch extends Vue {
         this.showLoader = false;
       }
     } else if (this.searchType === "G-Invoicing") {
+      try {
+        if (this.errorMessages.length > 0) return;
+        this.showLoader = true;
+        const gInvoicingResponse = await api.gInvoicingApi.search(
+          this._value,
+          AcquisitionPackage.packageId
+        );
+        if (gInvoicingResponse.valid) {
+          this.showGtcVerifiedIndicator = true;
+        } else {
+          this.showErrorAlert = true;
+        }
+      } catch (error) {
+        this.showErrorAlert = true;
+      } finally {
+        this.showLoader = false;
+        this.$emit("search");
+      }
+    } else if (this.searchType === "OrderNumber") {
       try {
         if (this.errorMessages.length > 0) return;
         this.showLoader = true;
