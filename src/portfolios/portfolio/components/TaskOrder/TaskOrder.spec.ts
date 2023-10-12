@@ -75,7 +75,7 @@ describe("Testing TaskOrder Component", () => {
   }
 
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  PortfolioStore.setActiveTaskOrderNumber("1234"); // EJY - DOUBLE-CHECK IF NEEDED
+  // PortfolioStore.setActiveTaskOrderNumber("1234"); // EJY - DOUBLE-CHECK IF NEEDED
   
 
   beforeEach(async () => {
