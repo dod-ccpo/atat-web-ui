@@ -198,13 +198,13 @@
           </div>
           <div
             class="_icon-circle"
-            :class="statusImg[env.environmentStatus].bgColor"
+            :class="statusImg[env.environment_status].bgColor"
           >
             <ATATSVGIcon
-              :name="statusImg[env.environmentStatus].name"
-              :width="statusImg[env.environmentStatus].width"
-              :height="statusImg[env.environmentStatus].height"
-              :color="statusImg[env.environmentStatus].color"
+              :name="statusImg[env.environment_status].name"
+              :width="statusImg[env.environment_status].width"
+              :height="statusImg[env.environment_status].height"
+              :color="statusImg[env.environment_status].color"
             />
           </div>
         </div>
