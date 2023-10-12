@@ -65,6 +65,7 @@ import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.v
 import ATATToast from "@/components/ATATToast.vue";
 import Toast from "@/store/toast";
 import { Statuses } from "@/store/acquisitionPackage";
+import { createDateStr, toCurrencyString } from "@/helpers";
 
 @Component({
   components: {
@@ -77,12 +78,12 @@ import { Statuses } from "@/store/acquisitionPackage";
 })
 export default class TaskOrder extends Vue {
   @Prop() private portfolioSysId!: string;
+  @Prop() public taskOrder: any;
   public activeTaskOrderNumber = "";
   public showDetails = false
   public taskOrders: TaskOrderCardData[] = [];
   public selectedTaskOrder:TaskOrderCardData ={};
   public portfolioIsActive = true;
-
   public showTOSearchModal = false;
   public TONumber = "";
   public resetValidationNow = false;
@@ -130,7 +131,7 @@ export default class TaskOrder extends Vue {
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
     this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.label;
-
+    console.log(this.taskOrder, 'task order')
     if(PortfolioStore.portfolioIsUpdating){
       const taskOrderUpdatedToast: ToastObj = {
         type: "success",
@@ -143,8 +144,21 @@ export default class TaskOrder extends Vue {
       PortfolioStore.setPortfolioIsUpdating(false)
     }
     const portfolioSummaryList = 
-      await PortfolioSummary.getAllPortfolioSummaryList() as PortfolioSummaryObj[];
+      await PortfolioSummary.getAllPortfolioSummaryList(false) as PortfolioSummaryObj[];
     if (portfolioSummaryList !== null){
+      console.log(portfolioSummaryList, 'sum list')
+      this.taskOrders = [{
+        sys_id: this.taskOrder.sys_id,
+        taskOrderNumber: this.taskOrder.task_order_number,
+        periodOfPerformance: createDateStr(this.taskOrder.pop_start_date, true) + " - " +
+              createDateStr(this.taskOrder.pop_end_date, true),
+        totalObligated: '$' + toCurrencyString(this.taskOrder.total_obligated_funds),
+        totalValue: '$' + toCurrencyString(this.taskOrder.total_task_order_value || 0),
+        totalLifeCycle: '$' + toCurrencyString(this.taskOrder.total_lifecycle_amount || 0),
+        totalFundsSpent: '$' + toCurrencyString(this.taskOrder.total_funds_spent || 0),
+        clins: this.taskOrder.clins,
+        status: 'ON_TRACK'
+      }]
       // this.taskOrders = portfolioSummaryList.flatMap(
       //   portfolio=>portfolio.task_orders.filter((
       //     (taskOrder)=> taskOrder.task_order_number===this.activeTaskOrderNumber

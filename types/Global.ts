@@ -621,6 +621,7 @@ export interface Portfolio extends BaseTableDTO {
   popEndDate?: string;
   currentUserIsManager?: boolean;
   currentUserIsOwner?: boolean;
+  taskOrder?: any
 }
 
 export interface PortfolioCardData extends Portfolio {

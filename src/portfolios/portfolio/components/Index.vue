@@ -56,6 +56,7 @@
             <TaskOrder 
             v-if="tabItems[tabIndex] === 'Task Orders'" 
             :portfolioSysId="portfolioSysId"
+            :taskOrder = taskOrder
             />
         </v-container>
 
@@ -118,6 +119,7 @@ export default class PortfolioSummary extends Vue {
   }
   public showLeaveModalSpinner = false;
   public isPortfolioProvisioning = true;
+  public taskOrder: any = {}
   public environmentLinks:EnvironmentLink[] = []
   public tabIndex = 0;
   public tabItems = [
@@ -191,12 +193,14 @@ export default class PortfolioSummary extends Vue {
 
   public async loadOnEnter(): Promise<void>  {
     const portfolio = _.cloneDeep(PortfolioStore.currentPortfolio);
+    console.log(portfolio, 'port')
     if(portfolio.sysId){
       this.isPortfolioProvisioning = false;
       this.title = portfolio.title || "";
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
       this.portfolioSysId = portfolio.sysId;
+      this.taskOrder = portfolio.taskOrder;
       portfolio.environments?.forEach((environment) =>{
         if(environment.dashboard_link !== '' && environment.classification_level === "U"){
           const linkDisplay = environment.csp_display.split("_")[1].toUpperCase()
@@ -219,7 +223,7 @@ export default class PortfolioSummary extends Vue {
           const c = env.classification_level;
           if (c) {
             const classificationLevel = classificationLevels[c];
-            const envStatus = env.environmentStatus;
+            const envStatus = env.environment_status;
             this.secondaryTabItems.push({
               tabText: classificationLevel,
               status: envStatus as string,

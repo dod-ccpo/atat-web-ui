@@ -593,6 +593,7 @@ export class PortfolioDataStore extends VuexModule {
     portfolioCardData: PortfolioDetailsDTO): Promise<void> 
   {
     const portfolioData = portfolioCardData.portfolio;
+    console.log(portfolioCardData, 'portfolio data in store')
     const dataFromSummaryCard = {
       sysId: portfolioCardData.portfolioId,
       title: portfolioData.portfolio_name,
@@ -605,13 +606,17 @@ export class PortfolioDataStore extends VuexModule {
       vendor: portfolioData.vendor,
       agency: portfolioData.agency,
       agencyDisplay: portfolioData.agencyDisplay,
-      taskOrderNumber: portfolioData.task_order?.task_order_number,
-      taskOrderSysId: portfolioData.task_order?.sys_id,
       currentUserIsManager: portfolioData.current_user_is_manager,
       currentUserIsOwner: portfolioData.current_user_is_manager,
       portfolio_owner: portfolioData.portfolio_users?.owner,
       portfolio_managers: portfolioData.portfolio_users?.managers,
       portfolio_viewers: portfolioData.portfolio_users?.viewers,
+      taskOrder: {
+        ...portfolioData.task_order,
+        pop_start_date: portfolioData.pop_start_date,
+        pop_end_date: portfolioData.pop_end_date,
+        clins: [...<[]>portfolioData.clins]
+      },
       members: [
         portfolioData.portfolio_users?.owner, 
         ...<[]>portfolioData.portfolio_users?.managers,
@@ -648,6 +653,7 @@ export class PortfolioDataStore extends VuexModule {
   @Action
   public async getSelectedPortfolioData(portfolioSysId: string): Promise<PortfolioDetailsDTO>{
     const currentUserSysId = CurrentUserStore.currentUser.sys_id;
+    console.log(currentUserSysId, 'uid')
     return api.portfolioApi.getPortfolioDetails(currentUserSysId as string, portfolioSysId)
   }
 
