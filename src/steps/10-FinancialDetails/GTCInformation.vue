@@ -73,6 +73,7 @@
               :value.sync="gInvoiceNumber"
               helpText="Format: AYYMM-000-000-000000"
               searchType="G-Invoicing"
+              gInvoicingSearchType="GtcNumber"
               :rules="[
                 $validators.isMaskValid(
                   ['A[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
