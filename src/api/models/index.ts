@@ -829,6 +829,7 @@ export interface EnvironmentDTO extends BaseTableDTO {
   provisioning_failure_cause: string;
   provisioning_request_date: string;
   sys_created_on: string;
+  sys_id: string;
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{

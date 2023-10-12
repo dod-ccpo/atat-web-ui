@@ -63,7 +63,7 @@
     >
       <div
         id="PortfolioMembersHeader"
-        class="d-flex flex-columm justify-space-between"
+        class="d-flex justify-space-between"
       >
         <div id="PortfolioTitle" class="d-flex">
           <div class="h3 mr-2">Portfolio members</div>
@@ -109,7 +109,7 @@
         class="pt-6"
       >
         <div 
-          class="d-flex flex-columm justify-space-between"
+          class="d-flex justify-space-between"
           v-for="(member, index) in portfolioMembers"
           :key="member.sys_id"
         >
@@ -178,11 +178,12 @@
     </div>
     <div id="EnvironmentsList" class="_hoverable-rows">
       <div 
-        class="_hover-row d-flex align-center justify-space-between" 
-        v-for="(env, index) of portfolio.environments" 
+        class="d-flex align-center justify-space-between"
+        v-for="(env, index) of portfolio.environments"
+        :class="hoverClass(env)"
         :key="index"
         tabindex="0"
-        @click="goToCSPAdmin(env.sys_id)"
+        @click="handleLinkClick(env)"
       >
           <div class="d-flex align-start flex-column text-left mr-2">
               <span class="font-weight-500 d-block" style="line-height: 1;">
@@ -313,7 +314,7 @@ import Toast from "@/store/toast";
 
 // eslint-disable-next-line max-len
 import {Environment, Portfolio, SelectData, SlideoutPanelContent, ToastObj, User} from "types/Global";
-import {differenceInDays, differenceInHours, differenceInMinutes} from "date-fns";
+import {differenceInDays, differenceInHours, differenceInMinutes, format, parseISO} from "date-fns";
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import {createDateStr, getStatusChipBgColor, hasChanges} from "@/helpers";
@@ -394,6 +395,12 @@ export default class PortfolioDrawer extends Vue {
 
   public get portfolioStatus(): string {
     return PortfolioStore.currentPortfolio.status as string;
+  }
+
+  public handleLinkClick(env: Environment): void{
+    if(env.classification_level === 'U' && env.dashboard_link) {
+      window.open(env.dashboard_link, "_blank")
+    }
   }
 
   public get portfolioIsArchived(): boolean {
@@ -490,6 +497,10 @@ export default class PortfolioDrawer extends Vue {
     return PortfolioStore.getShowAddMembersModal;
   }
 
+  public set showMembersModal(value: boolean) {
+    PortfolioStore.setShowAddMembersModal(value);
+  }
+
   public getMemberMenuItems(member: member): SelectData[] {
     const menuItems = _.cloneDeep(this.memberMenuItems);
     if (member.email === this.currentUser.email) {
@@ -514,6 +525,10 @@ export default class PortfolioDrawer extends Vue {
     if(hasChanges(PortfolioStore.currentPortfolio.description, this.portfolio.description)) {
       PortfolioStore.updatePortfolioDescription(this.portfolio.description);
     }
+  }
+
+  public formatDate(date: string): string {
+    return format(parseISO(date), "MMM. d, Y, Hm");
   }
 
   public getBgColor(): string {
@@ -578,12 +593,6 @@ export default class PortfolioDrawer extends Vue {
     return this.classificationLevels[abbr];
   }
 
-  public async goToCSPAdmin(envSysId: string): Promise<void> {
-    // go to CSP Admin page showing correct environment tab    
-    await PortfolioStore.setCurrentEnvSysId(envSysId);
-    await AppSections.setActiveTabIndex(2);
-  }
-  
   public getEnvStatus(env: Environment): string {
     if (env.environment_status) {
       const statusKey = this.getStatusKey(env.environment_status);
@@ -610,7 +619,7 @@ export default class PortfolioDrawer extends Vue {
     }
 
     // eslint-disable-next-line max-len
-    return (env.provisioned_date) ? this.convertUtcToLocal(env.provisioned_date).toLocaleString() : "";
+    return (env.provisioned_date) ? createDateStr(env.provisioned_date, true, true) : "";
   }
 
   public convertUtcToLocal(dateString: string): Date {
@@ -676,6 +685,10 @@ export default class PortfolioDrawer extends Vue {
     const i = array.indexOf(sysId);
     array.splice(i, 1);
     return array.join(",");    
+  }
+
+  public hoverClass(env: Environment): string {
+    return env.classification_level === "U" ? "_hover-row" : "py-3 pl-6 pr-4";
   }
 
   public async closeTransferOwnerModal(): Promise<void> {
@@ -817,17 +830,27 @@ export default class PortfolioDrawer extends Vue {
     this.showLeavePortfolioModal = false;
     this.removeMemberIndex = -1;
   }
-  
+
   public getCspName(env: Environment): string {
     if(!env.cloud_distinguisher) {
-      return env.csp_display;
-    }
+      return "";
+    } 
+
+    // JSON.parse can throw
     try {
-      const obj = JSON.parse(env.cloud_distinguisher);
-      console.log(`CSP: ${JSON.stringify(obj, null, 2)}`);
-      return `${obj.display_name} (${obj.name})`;
+      const cloudDistinguisher = JSON.parse(env.cloud_distinguisher);
+      const impactLevel = cloudDistinguisher.name;
+      switch(this.portfolio.vendor) {
+
+      // eslint-disable-next-line max-len
+      case "AZURE": return (impactLevel === "IL2") ? `Azure Commercial (${impactLevel})` : `Azure Government (${impactLevel})`;
+      case "GCP": return `Google ${impactLevel} Commercial`;
+      case "AWS":
+      case "ORACLE":
+      default: return "";
+      }
     } catch (e) {
-      return env.csp_display;
+      return `Failure parsing cloud_distinguisher: err ${JSON.stringify(e, null, 2)}`;
     }
   }
 }

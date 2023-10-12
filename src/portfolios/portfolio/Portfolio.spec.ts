@@ -106,6 +106,8 @@ const mockPortfolioCardData: PortfolioDetailsDTO ={
         provisioned_date: '',
         provisioning_failure_cause: '',
         provisioning_request_date: '',
+        sys_created_on: '',
+        sys_id: ''
       }
     ], 
     estimated_funds_available: '1000.00',
