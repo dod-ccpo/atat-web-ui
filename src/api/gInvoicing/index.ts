@@ -3,12 +3,53 @@ import { AxiosRequestConfig } from "axios";
 import { ApiBase } from "../apiBase";
 import { GInvoicingResponse } from "../models"
 
-export const ENDPOINTNAME = "x_g_dis_atat/g_invoicing/order_validation";
+export const ENDPOINTNAME = "x_g_dis_atat/g_invoicing/";
 
 
 export class GInvoicingApi extends ApiBase{
   constructor(){
     super(ENDPOINTNAME);
+  }
+
+  public async searchGtc(gtcNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
+    try {
+
+      const requestConfig: AxiosRequestConfig = {
+        params: {
+          gtcNumber: gtcNumber,
+          acquisitionPackageId: acqPackageId
+        }
+      };
+
+      const apiResponse = await this.instance.get(`${this.endPoint}/gtc_validation`,
+        requestConfig
+      );
+      if(apiResponse.status === 200){
+        const response: GInvoicingResponse = {
+          valid: true,
+          message: apiResponse?.data?.result
+        };
+
+        return response;
+      } else {
+        const { error } = apiResponse.data;
+
+        const response: GInvoicingResponse = {
+          valid: error.valid,
+          message: error?.message
+        };
+
+        return response;
+      }
+
+    } catch (error) {
+      const response: GInvoicingResponse = {
+        valid: false,
+        message: "unknown error"
+      }
+
+      return response;
+    }
   }
 
   public async search(orderNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
@@ -21,13 +62,13 @@ export class GInvoicingApi extends ApiBase{
         }
       };
 
-      const apiResponse = await this.instance.get(this.endPoint,
+      const apiResponse = await this.instance.get(`${this.endPoint}/order_validation`,
         requestConfig
       );
       if(apiResponse.status === 200){
         const response: GInvoicingResponse = {
           valid: true,
-          message: apiResponse.data.result
+          message: apiResponse?.data?.result
         };
 
         return response;
@@ -35,8 +76,8 @@ export class GInvoicingApi extends ApiBase{
         const { error } = apiResponse.data;
 
         const response: GInvoicingResponse = {
-          valid: error.valid,
-          message: error.message
+          valid: error?.valid,
+          message: error?.message
         };
 
         return response;
