@@ -3,7 +3,6 @@ import {
   randomNumber,
   randomNumberBetween,
   randomString,
-  suffixId,
 } from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
@@ -33,28 +32,8 @@ describe("Test suite: Contract Details Step:Summary - E2E", () => {
     "level6",
     "tops",
   ];
-  const requiredSCCheckboxes = [
-    "scCkbox1",
-    "scCkbox2",
-    "scCkbox3",
-    "scCkbox4",
-    //'scCkbox5','scCkbox6','scCkbox7',
-    "scCkbox8",
-    "scCkbox9",
-    "scCkbox10",
-    //'scCkbox11','scCkbox12',
-  ];
-  const requiredTSCheckboxes = [
-    "tsCkbox1",
-    "tsCkbox2",
-    "tsCkbox3",
-    //'tsCkbox4','tsCkbox5','tsCkbox6',
-    "tsCkbox7",
-    "tsCkbox8",
-    // 'tsCkbox9','tsCkbox10',
-    "tsCkbox11",
-    "tsCkbox12",
-  ];
+  
+
   const expectedLabelMaps = {
     level2: contractDetails.level2,
     level4: contractDetails.level4,

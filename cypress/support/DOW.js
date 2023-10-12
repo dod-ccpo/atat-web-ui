@@ -10,7 +10,7 @@ import performanceReq from "../selectors/performanceReqs.sel";
 import contractDetails from "../selectors/contractDetails.sel";
 
 Cypress.Commands.add(
-  "verifyCategoryAndServiceOfferings", 
+  "verifyCategoryAndServiceOfferings",
   (categoryLabels, serviceOfferingGroups, categoryValue) => {
     cy.verifyCheckBoxLabels("input[type=checkbox]", categoryLabels);
     const categoryObj = getObjectFromArrayByKey(
@@ -38,7 +38,6 @@ Cypress.Commands.add("requiredContractDetailsforPR", (pt, scope) => {
   );
   cy.findElement(contractDetails.addOptionLink).click();
   cy.findElement(contractDetails.optionalTextBox).should("have.value", "1");
-  // cy.findElement(contractDetails.optionOneDropdownDefault).should("have.value", "Year");
   cy.clickContinueButton(
     contractDetails.addOptionLink,
     "Do you want to request a PoP start date?"
