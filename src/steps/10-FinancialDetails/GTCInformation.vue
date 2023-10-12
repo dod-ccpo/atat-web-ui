@@ -32,6 +32,32 @@
               :value.sync="useGInvoicing"
               :rules="[$validators.required('Please select an option')]"
             />
+            <ATATExpandableLink aria-id="Instructions" class="mt-4">
+              <template v-slot:header>
+                What if I don’t have a GT&C agreement yet?
+              </template>
+              <template v-slot:content>
+                <p class="mt-4">
+                  We recommend contacting your agency’s resource management
+                  division or financial department to determine the best method
+                  for initiating a Fiscal Service Form 7600A (i.e., GT&C), as
+                  well as a funding request (e.g., a Fiscal Service Form 7600B,
+                  an Order within G-Invoicing, or a Military Interdepartmental
+                  Purchase Request).
+                </p>
+                <p>
+                  If you are asked to provide documentation for your
+                  requirements package to obtain these funding documents, you
+                  can skip this section and proceed to the “Generate Package
+                  Documents” section to download your completed documents. Prior
+                  to submitting your package to {DITCO/your Contracting Office},
+                  you will need to return to this section to update your funding
+                  details. This will allow you to re-generate a complete package
+                  that includes your funding document numbers on any affected
+                  documents.
+                </p>
+              </template>
+            </ATATExpandableLink>
           </div>
           <div v-show="useGInvoicing === 'YES'">
             <hr class="mt-5" />
@@ -111,6 +137,7 @@ import { invalidFile, uploadingFile } from "types/Global";
 import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -139,6 +166,7 @@ import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
     ATATTextField,
     ATATFileUpload,
     GInvoiceLearnMore,
+    ATATExpandableLink,
   },
 })
 export default class GTCInformation extends Mixins(SaveOnLeave) {
