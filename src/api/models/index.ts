@@ -627,7 +627,7 @@ export interface CostsDTO extends BaseTableDTO {
   portfolio: string;
   organization: string;
   "agency.title"?: string;
-  is_actual: string;
+  is_actual: string | boolean;
   value: string;
 }
 
@@ -644,17 +644,20 @@ export interface CostGroupDTO {
 }
 
 export interface ClinDTO extends BaseTableDTO {
-  sys_id: string;
+  active?: boolean;
+  actual_funds_spent?: number;
+  classification_level?: string;
   clin_number: string;
+  clin_status: string;
+  costs?: CostsDTO[]
+  funds_obligated: number;
+  funds_total: number;
   idiq_clin: string;
   idiq_clin_label?: string;
   pop_end_date: string;
   pop_start_date: string;
-  clin_status: string;
-  funds_obligated: number;
-  funds_total: number;
-  cost_records?: CostsDTO[]
-  actual_funds_spent?: number;
+  sys_id: string;
+  type?: string;
 }
 
 export interface EDAResponse {
@@ -929,6 +932,7 @@ export interface UserDTO extends BaseTableDTO {
   phone?: string;
   home_phone?: string;
   title?: string;
+  sys_id?: string;
 }
 
 export interface UserRolesDTO extends BaseTableDTO {
