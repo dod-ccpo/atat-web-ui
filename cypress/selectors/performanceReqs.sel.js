@@ -25,31 +25,36 @@ module.exports = {
   cloudSupportCheckboxError: "#CloudSupportCheckboxes .field-error",
   dontneedBtn: "#DontNeedResources",
   startXaaSBtn: "#StartButtonXaaS",
-  startCurrentFunBtn:"#StartButtonReplicateOptimize",
-  currentFunctionCard:"#ReplicateOptimizeCard",
-  
+  startCurrentFunBtn: "#StartButtonReplicateOptimize",
+  currentFunctionCard: "#ReplicateOptimizeCard",
+  pageheaderXaas: "#app-content h1",
+  xaasResources: "#XaaSCheckboxes input[type=checkbox]",
+
   //Do you want to replicate or optimize your current functions using JWCC offerings?
-  descrIntroText:"p#IntroP",
-  replicateOptimiseRadioError:"#ReplicateOptimizeOptions_radio_group_control .field-error",
-  radioCFLabels:"#ReplicateOptimizeOptions_radio_group_control input[type=radio]",
-  replicateRadioOption:"#Radio_YesReplicate",
-  optimiseRadioOption:"#Radio_YesOptimize",
-  replicateOptimiseNoOption:"#Radio_NoReplicateOrOptimize",
-  jwtccAlertText:"#JWCCInfoAlert p",
+  descrIntroText: "p#IntroP",
+  replicateOptimiseRadioError:
+    "#ReplicateOptimizeOptions_radio_group_control .field-error",
+  radioCFLabels:
+    "#ReplicateOptimizeOptions_radio_group_control input[type=radio]",
+  replicateRadioOption: "#Radio_YesReplicate",
+  optimiseRadioOption: "#Radio_YesOptimize",
+  replicateOptimiseNoOption: "#Radio_NoReplicateOrOptimize",
+  jwtccAlertText: "#JWCCInfoAlert p",
 
   //Tell us more about your requirements to <selected current function> your environment
-  objectiveTextfield:"#Statement_text_area",
-  objectiveError:"#Statement_text_field_control .field-error",
-  additionalGrowthYesOption:"#Radio_YesGrowth",
-  additionalGrowthNoOption:"#Radio_NoGrowth",
-  additionalGrowthError:"#GrowthOptions_radio_group_control .field-error",
-  capacityPerTextField:"#CapacityPercentage_text_field",
-  capacityTextFieldError:"#CapacityPercentage_text_field_control .field-error",  
-  phasedYesRadioOption:"#Radio_YesPhased",
-  phasedNoRadioOption:"#Radio_NoPhased",
-  phasedRadioError:"#PhasedOptions_radio_group_control .field-error",
-  phaseApproachTextfield:"#PhasedApproachSchedule_text_area",
-  phasedApproachTextfieldError:"#PhasedApproachSchedule_text_field_control .field-error",
+  objectiveTextfield: "#Statement_text_area",
+  objectiveError: "#Statement_text_field_control .field-error",
+  additionalGrowthYesOption: "#Radio_YesGrowth",
+  additionalGrowthNoOption: "#Radio_NoGrowth",
+  additionalGrowthError: "#GrowthOptions_radio_group_control .field-error",
+  capacityPerTextField: "#CapacityPercentage_text_field",
+  capacityTextFieldError: "#CapacityPercentage_text_field_control .field-error",
+  phasedYesRadioOption: "#Radio_YesPhased",
+  phasedNoRadioOption: "#Radio_NoPhased",
+  phasedRadioError: "#PhasedOptions_radio_group_control .field-error",
+  phaseApproachTextfield: "#PhasedApproachSchedule_text_area",
+  phasedApproachTextfieldError:
+    "#PhasedApproachSchedule_text_field_control .field-error",
 
   //First, tell us about your anticipated users and data needs
   accordionO: "#AnticipatedUserAndDataNeedsAccordion0",
@@ -92,7 +97,8 @@ module.exports = {
   africomRegionText1: "#Regions1_TextField3_text_field",
   dataTransferText1field: "#DataTransfer_1_text_field",
   baseDataTextfield: "#BASE_0_data_1_text_field",
-  noDataquestion1:"#Radio_Accordion1QuestiondataNO",
+  noDataquestion1: "#Radio_Accordion1QuestiondataNO",
+  pageTextanticipatedUsers: "p.page-intro",
 
   //Let's start by gathering your Compute requirements
   subAlertMessage: "#SubtleAlertMessage",
@@ -250,8 +256,8 @@ module.exports = {
   toastText: ".v-snack__content",
 
   //xaas summary
-  anticipatedHeading:"h3#AnticipatedUsersAndDataNeeds_Heading",
-  anticipatedUsersBtn:"._Anticipatedusersanddata-button",
+  anticipatedHeading: "h3#AnticipatedUsersAndDataNeeds_Heading",
+  anticipatedUsersBtn: "._Anticipatedusersanddata-button",
 
   //Summary
   selectedGroups: "#SelectedGroups",
@@ -316,16 +322,7 @@ module.exports = {
   trainTooltipText: "#TooltipText_Training",
   trainLink: "#Training_Link",
 
-  // new ones:
-  //  Let’s work on your Anything as a Service (XaaS) requirements
-  pageheaderXaas: "#app-content h1",
-  xaasResources: "#XaaSCheckboxes input[type=checkbox]",
-
-  //First, tell us about your anticipated users and data needs
-  //pageheaderanticipatedUsers: "#app-content h1 span",
-  pageTextanticipatedUsers: "p.page-intro",
-
-  //Applications:
+  //checkboxes for all pages
   pageTextApplication: "#CheckboxGroupLabel",
   applicationCheckboxes: "#CheckboxGroup",
   applicationchkboxLabel: "#CheckboxGroup label",
@@ -333,9 +330,7 @@ module.exports = {
   checkedCheckboxes: "#CheckboxGroup input[type=checkbox]:checked",
   devToolDevSecOpsCheckBox: "#Checkbox_DevSecOps",
   applicationCheckBox: "#Checkbox_Application",
-  OtherTextBox: "#Other_73f8ba6097b121107b1372571153af31_text_field",
   CheckBoxLabels: "#CheckboxGroup label",
-
   unclassTextArea: "#AnticipatedNeedUsage_1_text_area",
   unclassQuestion: "#EntireDuration_1_radio_group_control legend",
   networkHybridCheckBox: "#Checkbox_HybridNetwork",
@@ -343,7 +338,7 @@ module.exports = {
   internetIOTEdgeCheckBox: "#Checkbox_IoTEdge",
   managedCSPSecurityCheckBox: "#Checkbox_ManagedCSPCloudSecuritySolution",
 
-  //Gathering Requirements
+  // Now we’ll gather your requirements for ''
   pageTextClassification: "#ClassificationGroupLabel span",
   checkBoxIL2: "#Checkbox_IL2",
   checkBoxIL4: "#Checkbox_IL4",

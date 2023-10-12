@@ -10,7 +10,7 @@ import performanceReq from "../selectors/performanceReqs.sel";
 import contractDetails from "../selectors/contractDetails.sel";
 
 Cypress.Commands.add(
-  "verifyCategoryAndServiceOfferings", // need updates
+  "verifyCategoryAndServiceOfferings", 
   (categoryLabels, serviceOfferingGroups, categoryValue) => {
     cy.verifyCheckBoxLabels("input[type=checkbox]", categoryLabels);
     const categoryObj = getObjectFromArrayByKey(
@@ -36,46 +36,13 @@ Cypress.Commands.add("requiredContractDetailsforPR", (pt, scope) => {
   cy.verifyPageHeader(
     "Let’s gather details about the duration of your task order"
   );
-});
-Cypress.Commands.add("addOptionPeriod", () => {
   cy.findElement(contractDetails.addOptionLink).click();
-});
-Cypress.Commands.add("selectClassificationLevel", (selectedClassifications) => {
-  const expectedLabelMaps = {
-    level2: contractDetails.level2,
-    level4: contractDetails.level4,
-    level5: contractDetails.level5,
-    level6: contractDetails.level6,
-    tops: contractDetails.ts,
-  };
-  cy.findElement(common.subStepClassReqsLink).click();
-  selectedClassifications.forEach((label) => {
-    cy.findElement(expectedLabelMaps[label]).click({ force: true });
-  });
-  if (
-    selectedClassifications.includes("level6") ||
-    selectedClassifications.includes("tops")
-  ) {
-    cy.clickContinueButton(
-      contractDetails.level4,
-      "Let’s find out more about your security requirements"
-    );
-    cy.findElement("#Checkbox_4_Secret")
-      .check({
-        force: true,
-      })
-      .should("be.checked");
-    cy.findElement("#Checkbox_2_TopSecret")
-      .check({
-        force: true,
-      })
-      .should("be.checked");
-  } else {
-    cy.clickContinueButton(
-      contractDetails.level4,
-      "Your Contract Details Summary"
-    );
-  }
+  cy.findElement(contractDetails.optionalTextBox).should("have.value", "1");
+  // cy.findElement(contractDetails.optionOneDropdownDefault).should("have.value", "Year");
+  cy.clickContinueButton(
+    contractDetails.addOptionLink,
+    "Do you want to request a PoP start date?"
+  );
 });
 
 //This command is to verify the checkbox label and header for the ServiceOffering Page
@@ -118,39 +85,6 @@ Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
     }
   });
 });
-
-Cypress.Commands.add(
-  "verifyServiceOfferingsForCategory",
-  (categoryObj, index) => {
-    // need updates
-    const serviceOfferingCheckboxLabels = [];
-    categoryObj.serviceOfferingCypressLabels.forEach((label) => {
-      serviceOfferingCheckboxLabels.push(label);
-    });
-    cy.verifyCheckBoxLabels(
-      "._checkboxes input[type=checkbox]",
-      serviceOfferingCheckboxLabels
-    );
-    const serviceOfferingNames = getServiceOfferingNames(categoryObj);
-    const serviceOfferingCheckboxIds = getCheckboxIds(categoryObj);
-    if (index >= 0 && index < serviceOfferingCheckboxIds.length) {
-      const selectedCheckboxId = serviceOfferingCheckboxIds[index];
-      cy.selectCheckBoxes([selectedCheckboxId]);
-      cy.btnClick(common.continueBtn, " Continue ");
-      cy.waitUntilElementIsGone("#SubtleAlertMessage");
-      if (serviceOfferingNames[index]) {
-        cy.verifyPageHeader(
-          "Now we’ll gather your requirements for " +
-            serviceOfferingNames[index]
-        );
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(1000);
-      }
-    } else {
-      cy.log("Invalid index provided or out of bounds.");
-    }
-  }
-);
 
 //This command is to verify the OtherCategories HeaderLabel on Summary Page
 Cypress.Commands.add("verifyOtherServiceOfferings", (categories) => {

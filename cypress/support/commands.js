@@ -422,7 +422,7 @@ Cypress.Commands.add("getCheckBoxLabels", (selector) => {
   cy.findElement(selector).each(($checkbox) => {
     const labelFor = $checkbox.attr("id");
 
-    cy.get(`label[for="${labelFor}"]`)
+    cy.findElement(`label[for="${labelFor}"]`)
       .invoke("text")
       .then((text) => {
         foundLabels.push(text);

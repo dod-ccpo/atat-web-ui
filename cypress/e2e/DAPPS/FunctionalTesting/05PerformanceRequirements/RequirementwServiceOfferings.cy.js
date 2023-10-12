@@ -1,6 +1,5 @@
 import { randomAlphaNumeric, randomString } from "../../../../helpers";
 import common from "../../../../selectors/common.sel";
-import contractDetails from "../../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../../selectors/performanceReqs.sel";
 import serviceOfferingGroups from "../../../../fixtures/serviceOfferingGroups.json";
 
@@ -17,10 +16,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
 
   before(() => {
     cy.requiredContractDetailsforPR(pt, scope);
-    cy.clickContinueButton(
-      contractDetails.addOptionLink,
-      "Do you want to request a PoP start date?"
-    );
     cy.selectClassificationLevel(selectedClassifications);
     cy.findElement(common.stepPerformanceReqText).click();
   });
@@ -57,7 +52,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
     cy.verifyTextMatches(
       performanceReqs.requirementsHeading,
       "1. Tell us about the " + heading + " instance"
-      // serviceOfferingGroups.GatherRequirementsPage.sectionTitle
     );
     cy.verifyTextMatches(
       performanceReqs.statement,
@@ -84,9 +78,9 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
         .click({
           force: true,
         });
-      cy.verifyTextMatches(
-        performanceReqs.basePeriodCheckbox,
-        serviceOfferingGroups.GatherRequirementsPage.basePeriodText
+      cy.findElement(performanceReqs.baseCheckbox).should("be.checked");
+      cy.findElement(performanceReqs.optionOneCheckbox).should(
+        "not.be.checked"
       );
     }
     //Page#3: Your Xaas Summary
@@ -437,5 +431,4 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       "Yes"
     );
   });
-
 });
