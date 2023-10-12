@@ -50,7 +50,7 @@
                   requirements package to obtain these funding documents, you
                   can skip this section and proceed to the “Generate Package
                   Documents” section to download your completed documents. Prior
-                  to submitting your package to {DITCO/your Contracting Office},
+                  to submitting your package to {{ ditcoOrContractingOffice }},
                   you will need to return to this section to update your funding
                   details. This will allow you to re-generate a complete package
                   that includes your funding document numbers on any affected
@@ -239,6 +239,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   // files returned from the child component
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
+    if (this.useGInvoicing === 'YES') return []
     //eslint-disable-next-line prefer-const
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
