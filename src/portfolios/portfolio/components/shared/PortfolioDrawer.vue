@@ -192,6 +192,7 @@
                 {{ env.csp_display }}
               </span>
           </div>
+<<<<<<< HEAD
           <div class="d-flex align-end align-center">
             <div class="d-flex flex-column text-right mr-2">
                 <span class="font-weight-500 d-block" style="line-height: 1;">

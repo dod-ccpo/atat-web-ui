@@ -235,7 +235,6 @@ export default class PortfolioSummaryPageHead extends Vue {
       title: "Archive portfolio",
       action: "openArchivePortfolioModal"
     }
-
     if(PortfolioStore.currentUserIsViewer){
       menuItems.push(leavePortfolio);
     } else if(PortfolioStore.currentUserIsManager){
