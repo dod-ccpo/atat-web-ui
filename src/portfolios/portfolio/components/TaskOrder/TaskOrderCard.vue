@@ -152,7 +152,6 @@ export default class TaskOrderCard extends Vue {
     this._showDetails = true
   };
   public statusChipBgColor(status:string): string {
-    console.log(this.taskOrders)
     return getStatusChipBgColor(status);
   }
 
