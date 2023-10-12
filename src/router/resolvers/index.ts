@@ -1570,6 +1570,9 @@ export const MIPRResolver = (current: string): string => {
   if (fundingType === "MIPR") {
     return routeNames.MIPR;
   }
+  if (fundingType === "FS_FORM") {
+    return routeNames.SummaryStepEight;
+  }
   return current === routeNames.GInvoicing
     ? routeNames.FundingPlanType
     : routeNames.GInvoicing;

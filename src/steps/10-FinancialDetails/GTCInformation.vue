@@ -105,7 +105,7 @@
                     `Your GT&C Number should be 20 characters (including hyphens) and use the format: AYYMM-000-000-000000.`,
                     true
                   ),
-                  $validators.required('Please provide a GT&C number.'),
+                  $validators.required('Please provide an Order number.'),
                 ]"
               />
             </div>

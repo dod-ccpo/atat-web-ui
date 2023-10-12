@@ -1452,7 +1452,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.MIPR,
         completePercentageWeight: 1,
         component: MIPR,
-        // routeResolver: MIPRResolver
+        routeResolver: MIPRResolver
       },
       {
         menuText: "Generate Package Documents (Funding)",

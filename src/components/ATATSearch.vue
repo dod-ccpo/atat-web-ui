@@ -105,7 +105,7 @@
         width="3"
         class="mr-2"
       />
-      <span class="text-base"> Locating your order in {{ searchType }} </span>
+      <span class="text-base"> Locating your Order in {{ searchType }} </span>
     </div>
 
     <div
@@ -122,7 +122,7 @@
           width="22"
           height="22"
         />
-        <span class="font-weight-500">GT&C verified</span>
+        <span class="font-weight-500">{{ orderVerifiedText }}</span>
       </div>
     </div>
 
@@ -252,6 +252,10 @@ export default class ATATSearch extends Vue {
     return this.helpText.length > 0;
   }
 
+  private get orderVerifiedText() {
+    return this.gInvoicingSearchType === 'GtcNumber' ? "GT&C verified" : "Order verified"
+  }
+
   @Watch("_resetValidationNow")
   public async resetValidationNowChange(newVal: boolean): Promise<void> {
     if (newVal) {
@@ -349,7 +353,7 @@ export default class ATATSearch extends Vue {
       try {
         if (this.errorMessages.length > 0) return;
         this.showLoader = true;
-        const gInvoicingResponse = await api.gInvoicingApi.search(
+        const gInvoicingResponse = await api.gInvoicingApi.searchOrder(
           this._value,
           AcquisitionPackage.packageId
         );

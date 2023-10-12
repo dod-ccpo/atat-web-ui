@@ -30,12 +30,15 @@
               :value.sync="orderNumber"
               helpText="Format: OYYMM-000-000-000000"
               searchType="G-Invoicing"
+              gInvoicingSearchType="OrderNumber"
+              :onGInvoiceSearchComplete="onGInvoiceSearchComplete"
               :rules="[
                 $validators.isMaskValid(
                   ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
                   `Your GT&C Number should be 20 characters (including hyphens) and use the format: OYYMM-000-000-000000.`,
                   true
                 ),
+                $validators.required('Please provide a GT&C number.'),
               ]"
               :triggerSearch="triggerSearch"
             />
@@ -59,6 +62,7 @@
                     `Your GT&C Number should be 20 characters (including hyphens) and use the format: OYYMM-000-000-000000.`,
                     true
                   ),
+                  $validators.required('Please provide an Order number.'),
                 ]"
               />
             </div>
@@ -110,6 +114,7 @@ import { hasChanges } from "@/helpers";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -147,6 +152,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   private invalidFiles: invalidFile[] = [];
   private uploadedFiles: uploadingFile[] = [];
   private loaded: FundingRequestFSFormDTO | null = null;
+  private gInvoiceSearchValid = false;
 
   private requiredMessage =
     "You must include an authorized 7600B for this acquisition. " +
@@ -157,6 +163,10 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     if (e?.currentTarget) {
       SlideoutPanel.openSlideoutPanel((e.currentTarget as HTMLElement).id);
     }
+  }
+
+  private onGInvoiceSearchComplete(validity: boolean) {
+    this.gInvoiceSearchValid = validity;
   }
 
   public get currentData() {
@@ -309,6 +319,10 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    if (
+      this.gInvoiceSearchValid !== true && this.useGInvoicing === 'YES'
+    ) return false;
+    await AcquisitionPackage.setValidateNow(true);
     // file upload / saving
     try {
       if (this.hasChanged()) {

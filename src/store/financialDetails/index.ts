@@ -692,7 +692,7 @@ export class FinancialDetailsStore extends VuexModule {
    }
  }
 
-@Action({rawError: true})
+  @Action({rawError: true})
   public async saveFundingRequestFormBAndOrderNumber(
     data: 
       Partial<FundingRequestFSFormDTO> & 
@@ -736,18 +736,18 @@ export class FinancialDetailsStore extends VuexModule {
    * function is just responsible for updating the record.
    */
   @Action({rawError: true})
-public async saveFundingRequestFSForm(data:
-  FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
-  try {
-    const getFundingRequestFSForm = await api.fundingRequestFSFormTable.getQuery(
-      {
-        params: {
-          sysparm_query: "^sys_id=" + data.sys_id
+  public async saveFundingRequestFSForm(data:
+    FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
+    try {
+      const getFundingRequestFSForm = await api.fundingRequestFSFormTable.getQuery(
+        {
+          params: {
+            sysparm_query: "^sys_id=" + data.sys_id
+          } 
         }
-      }
-    )
-    const isUsingGInvoicing = data.use_g_invoicing === "YES";
-    const savedFundingRequestFSForm =
+      )
+      const isUsingGInvoicing = data.use_g_invoicing === "YES";
+      const savedFundingRequestFSForm =
       await api.fundingRequestFSFormTable.update(data.sys_id as string, 
         {
           fs_form_7600a_filename: data.fs_form_7600a_filename,
@@ -762,12 +762,12 @@ public async saveFundingRequestFSForm(data:
             ? getFundingRequestFSForm[0].gt_c_number
             : data.gt_c_number
         });
-    this.setFundingRequestFSForm(savedFundingRequestFSForm);
-    return savedFundingRequestFSForm;
-  } catch (error) {
-    throw new Error( `error occurred saving funding request form ${error}`);
+      this.setFundingRequestFSForm(savedFundingRequestFSForm);
+      return savedFundingRequestFSForm;
+    } catch (error) {
+      throw new Error( `error occurred saving funding request form ${error}`);
+    }
   }
-}
 
   /**
    * Since @loadFundingRequestMIPRForm function handles the loading/ initializing, this

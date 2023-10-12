@@ -52,7 +52,7 @@ export class GInvoicingApi extends ApiBase{
     }
   }
 
-  public async search(orderNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
+  public async searchOrder(orderNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
     try {
 
       const requestConfig: AxiosRequestConfig = {
