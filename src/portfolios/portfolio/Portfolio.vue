@@ -805,7 +805,6 @@ export default class PortfolioDashboard extends Vue {
   public donutChartPercentages: number[] = [];
 
   public calculateBurnDown(): void {
-    debugger;
     const uniqueDates = [
       ...new Set(this.costs.map((cost) => cost.year_month)),
     ].sort();
@@ -921,7 +920,6 @@ export default class PortfolioDashboard extends Vue {
       const thisIdiqClin = this.idiqClins.find(
         (clin) => clin.clin_number === clinNo
       );
-      debugger;
       if (thisIdiqClin) {
         const costClinNo = thisIdiqClin.clin_number;
         //eslint-disable-next-line prefer-const 
@@ -1217,9 +1215,7 @@ export default class PortfolioDashboard extends Vue {
   public async loadOnEnter(): Promise<void> {
     const currentPortfolioData = PortfolioStore.currentPortfolio;
     await this.checkForUpcomingObligatedFunds(currentPortfolioData);
-    
     this.costs = (currentPortfolioData.fundsData as PortfolioFundsData).costs as CostsDTO[];
-    debugger;
     const {fundsData} = currentPortfolioData
     this.costs.forEach(cost => {
       // eslint-disable-next-line camelcase
