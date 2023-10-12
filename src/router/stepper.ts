@@ -188,6 +188,7 @@ import {
   MIPRResolver,
   CurrentlyHasFundingResolver,
   GTCInformationResolver,
+  FundingPlanTypeResolver,
   GInvoicingResolver,
   Upload7600Resolver,
   AppropriationOfFundsResolver,
@@ -1443,6 +1444,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
         component: FundingPlanType,
+        routeResolver: FundingPlanTypeResolver,
       },
       {
         menuText: "Upload-7600",

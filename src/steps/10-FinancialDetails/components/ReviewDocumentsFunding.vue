@@ -50,7 +50,7 @@
             </v-col>
             <v-col class="d-flex justify-end" align-self="end">
               <v-btn
-                v-if="isErrored === false"
+                v-if="!isErrored"
                 class="secondary _text-decoration-none px-6 mr-5"
                 large
                 target="_blank"
@@ -79,7 +79,6 @@
                 v-for="(acPackage, idx) of packageCheckList" :key="idx"
                 :itemNumber="String(idx<9 ? '0' + (idx + 1) : idx + 1)"
                 :itemName="acPackage.itemName"
-                :requiresSignature="acPackage.requiresSignature"
                 :additionalInfo="acPackage.description"
                 :alertText="acPackage.alertText"
                 :ditcoUser="isDitcoUser"

@@ -23,14 +23,13 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import GeneratingDocuments from
-  "@/steps/11-GeneratePackageDocuments/components/GeneratingDocuments.vue";
+import GeneratingDocumentsFunding from "./components/GeneratingDocumentsFunding.vue";
 import ReviewDocumentsFunding from "./components/ReviewDocumentsFunding.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
 @Component({
   components: {
-    GeneratingDocuments,
+    GeneratingDocumentsFunding,
     ReviewDocumentsFunding
   }
 })
@@ -42,7 +41,7 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
 
   public packageDocComponent: Vue.Component =
     this.$route.params.direction === "next"
-      ? GeneratingDocuments
+      ? GeneratingDocumentsFunding
       : ReviewDocumentsFunding
 
   get isDitco(): boolean {
@@ -66,24 +65,22 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
     this.isErrored = false;
     this.isGenerating = true;
     this.toggleNavigationElements(true);
-    this.packageDocComponent = GeneratingDocuments;
+    this.packageDocComponent = GeneratingDocumentsFunding;
     await this.getStatus();
   }
 
   public async getStatus(): Promise<void> {
-    const intervalId = window.setInterval(() => checkDocJobStatus, 3000);
-
     const checkDocJobStatus = (async ()=> {
+      console.log("DocJobStatus checked")
       await this.getDocJobStatus();
-      ["SUCCESS", "FAILURE"].some(
-        (status) => {
-          if (status === this.docJobStatus.toUpperCase()){
-            clearInterval(intervalId);
-            this.displayReviewComponent();
-          }
-        }
-      )
+      console.log("Status:", this.docJobStatus)
+      if (this.docJobStatus.toUpperCase() === "SUCCESS"
+          || this.docJobStatus.toUpperCase() === "FAILURE") {
+        clearInterval(intervalId);
+        this.displayReviewComponent();
+      }
     });
+    const intervalId = window.setInterval(checkDocJobStatus, 3000);
   }
 
   public displayReviewComponent(): void{
@@ -110,12 +107,6 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
   public async saveOnLeave(): Promise<boolean> {
     this.isGenerating = false; //to restore bottom navigation
     await AcquisitionPackage.setValidateNow(true);
-    if(this.isDitco){
-      await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
-        acquisitionPackageSysId: AcquisitionPackage.packageId,
-        newStatus: "WAITING_FOR_SIGNATURES"
-      })
-    }
     return true;
   }
 }

@@ -11,12 +11,12 @@
     <v-col class="col-12" :align="'center'">
       <div class="copy-max-width">
         <h1 class="text-center">
-          Generating your acquisition package documents<span class="ellipsis"></span>
+          Generating your draft acquisition package documents<span class="ellipsis"></span>
         </h1>
         <br />
         <p class="text-center">
           Hold tight while we generate your required documents and package
-          your files for download. <br /> This process could take about 5 minutes.
+          your files for download. This <br /> process could take a few minutes.
         </p>
       </div>
     </v-col>
@@ -27,7 +27,7 @@ import { Component, PropSync } from "vue-property-decorator";
 import Vue from "vue";
 
 @Component({})
-export default class GeneratingDocuments extends Vue {
+export default class GeneratingDocumentsFunding extends Vue {
   @PropSync(
     "isGenerating",{default: true}
   ) private _isGenerating!: boolean;

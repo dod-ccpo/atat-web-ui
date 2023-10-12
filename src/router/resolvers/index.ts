@@ -1567,6 +1567,12 @@ export const GTCInformationResolver = (current: string): string => {
       : routeNames.CurrentlyHasFunding
 }
 
+export const FundingPlanTypeResolver = (current: string): string => {
+  return current !== routeNames.GeneratingPackageDocumentsFunding ?
+    routeNames.FundingPlanType
+    : routeNames.SummaryStepEight
+}
+
 export const MIPRResolver = (current: string): string => {
   const fundingType = FinancialDetails.fundingRequestType;
   if (fundingType === "MIPR") {
@@ -1917,6 +1923,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SummaryStepTwoRouteResolver,
   CurrentlyHasFundingResolver,
   GTCInformationResolver,
+  FundingPlanTypeResolver,
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
 };
