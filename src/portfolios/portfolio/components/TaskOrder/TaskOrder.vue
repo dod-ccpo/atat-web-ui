@@ -65,7 +65,7 @@ import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.v
 import ATATToast from "@/components/ATATToast.vue";
 import Toast from "@/store/toast";
 import { Statuses } from "@/store/acquisitionPackage";
-import { createDateStr, toCurrencyString } from "@/helpers";
+import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/helpers";
 
 @Component({
   components: {
@@ -146,7 +146,7 @@ export default class TaskOrder extends Vue {
     const portfolioSummaryList = 
       await PortfolioSummary.getAllPortfolioSummaryList(false) as PortfolioSummaryObj[];
     if (portfolioSummaryList !== null){
-      console.log(portfolioSummaryList, 'sum list')
+      // refactor to build via array later
       this.taskOrders = [{
         sys_id: this.taskOrder.sys_id,
         taskOrderNumber: this.taskOrder.task_order_number,
@@ -157,7 +157,8 @@ export default class TaskOrder extends Vue {
         totalLifeCycle: '$' + toCurrencyString(this.taskOrder.total_lifecycle_amount || 0),
         totalFundsSpent: '$' + toCurrencyString(this.taskOrder.total_funds_spent || 0),
         clins: this.taskOrder.clins,
-        status: 'ON_TRACK'
+        status: this.taskOrder.task_order_status,
+        statusLabel: getStatusLabelFromValue(this.taskOrder.task_order_status)
       }]
       // this.taskOrders = portfolioSummaryList.flatMap(
       //   portfolio=>portfolio.task_orders.filter((

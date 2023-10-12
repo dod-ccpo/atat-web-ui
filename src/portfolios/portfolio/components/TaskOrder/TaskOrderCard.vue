@@ -115,7 +115,7 @@ export default class TaskOrderCard extends Vue {
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
   @PropSync("selectedTaskOrder",{default:()=> ({})}) private _selectedTaskOrder!: TaskOrderCardData;
 
-
+  
   public menuItems(status:string):MeatballMenuItem[] {
     const dropDownItems: MeatballMenuItem[] = [
       {
@@ -152,6 +152,7 @@ export default class TaskOrderCard extends Vue {
     this._showDetails = true
   };
   public statusChipBgColor(status:string): string {
+    console.log(this.taskOrders)
     return getStatusChipBgColor(status);
   }
 

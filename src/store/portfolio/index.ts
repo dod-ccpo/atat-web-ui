@@ -615,7 +615,7 @@ export class PortfolioDataStore extends VuexModule {
         ...portfolioData.task_order,
         pop_start_date: portfolioData.pop_start_date,
         pop_end_date: portfolioData.pop_end_date,
-        clins: [...<[]>portfolioData.clins]
+        clins: [...<[]>portfolioData.clins],
       },
       members: [
         portfolioData.portfolio_users?.owner, 
