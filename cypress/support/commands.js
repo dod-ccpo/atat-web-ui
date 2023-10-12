@@ -417,6 +417,23 @@ Cypress.Commands.add("verifyCheckBoxLabels", (selector, expectedLabels) => {
     });
 });
 
+Cypress.Commands.add("getCheckBoxLabels", (selector) => {
+  const foundLabels = [];
+  cy.findElement(selector).each(($checkbox) => {
+    const labelFor = $checkbox.attr("id");
+
+    cy.findElement(`label[for="${labelFor}"]`)
+      .invoke("text")
+      .then((text) => {
+        foundLabels.push(text);
+      });
+  });
+  foundLabels.forEach((text) => {
+    cy.log(text);
+  });
+  return cy.wrap(foundLabels);
+});
+
 Cypress.Commands.add("verifyRadioGroupLabels", (selector, expectedLabels) => {
   const labels = [];
   const length = expectedLabels.length;

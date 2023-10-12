@@ -187,7 +187,7 @@ describe("Test suite: Background- Current Environment: Functional Testing", () =
       .click({
         force: true,
       });
-    cy.get(background.regionDeployedAllCheckboxes)
+    cy.findElement(background.regionDeployedAllCheckboxes)
       .should("not.be.checked")
       .check({
         force: true,
