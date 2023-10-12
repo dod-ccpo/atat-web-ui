@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
 import {
   PortfolioSummaryMetadataAndDataDTO,
-  PortfolioSummaryObj,
-  PortfolioSummarySearchDTO
+  PortfolioSummarySearchDTO,
+  PortfolioSummaryObj
 } from "@/api/models";
 import {Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "@/store";

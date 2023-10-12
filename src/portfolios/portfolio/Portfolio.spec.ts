@@ -94,6 +94,7 @@ const mockPortfolioCardData: PortfolioDetailsDTO ={
     environments: [
       {
         classification_level: 'U',
+        cloud_distinguisher: '',
         environment_status: 'ACTIVE',
         csp: 'test',
         csp_id: '1234',

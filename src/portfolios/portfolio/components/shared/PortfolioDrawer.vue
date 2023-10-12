@@ -172,7 +172,7 @@
           class="color-base font-size-20 _condensed-font"
           v-if="showEnvCount"
         >
-          ({{ getEnironmentCount }})
+          ({{ getEnvironmentCount }})
         </div>
       </div>
     </div>
@@ -189,10 +189,9 @@
                 {{ getClassificationLevel(env.classification_level) }}
               </span>
               <span class="font-size-12 text-base">
-                {{ env.csp_display }}
+                {{ getCspName(env)}}
               </span>
           </div>
-<<<<<<< HEAD
           <div class="d-flex align-end align-center">
             <div class="d-flex flex-column text-right mr-2">
                 <span class="font-weight-500 d-block" style="line-height: 1;">
@@ -202,13 +201,12 @@
                   {{ getEnvDateStr(env) }}
                 </span>
             </div>
-            <div class="_icon-circle" :class="statusImg[env.environmentStatus].bgColor">
+            <div class="_icon-circle" :class="statusImg[env.environment_status].bgColor">
               <ATATSVGIcon
-                  :name="statusImg[env.environmentStatus].name"
-                  :width="statusImg[env.environmentStatus].width"
-                  :height="statusImg[env.environmentStatus].height"
-                  :color="statusImg[env.environmentStatus].color"
-              />
+                  :name="statusImg[env.environment_status].name"
+                  :color="statusImg[env.environment_status].color"
+                  :height=parseInt(statusImg[env.environment_status].height)
+                  :width=parseInt(statusImg[env.environment_status].width) />
             </div>
           </div>
       </div>
@@ -295,49 +293,34 @@
       :showOKSpinner="showOKSpinner"
       @okClicked="removeMember"
       @cancelClicked="cancelRemoveMember"
-
-    />   
-
+    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import {Component, Watch} from "vue-property-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-
 import LeavePortfolioModal from "../../../portfolio/components/shared/LeavePortfolioModal.vue";
 
-import PortfolioRolesLearnMore from
-  "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
+// eslint-disable-next-line max-len
+import PortfolioRolesLearnMore from "@/portfolios/portfolio/components/shared/PortfolioRolesLearnMore.vue";
 import PortfolioStore from "@/store/portfolio";
 import SlideoutPanel from "@/store/slideoutPanel";
 import Toast from "@/store/toast";
 
-import {
-  Environment,
-  Portfolio,
-  SelectData,
-  SlideoutPanelContent,
-  ToastObj,
-  User
-} from "types/Global";
-import { 
-  differenceInDays, 
-  differenceInHours,
-  differenceInMinutes, 
-  format,
-  parseISO 
-} from "date-fns";
+// eslint-disable-next-line max-len
+import {Environment, Portfolio, SelectData, SlideoutPanelContent, ToastObj, User} from "types/Global";
+import {differenceInDays, differenceInHours, differenceInMinutes} from "date-fns";
 import _ from "lodash";
 import MemberCard from "@/portfolios/portfolio/components/shared/MemberCard.vue";
 import {createDateStr, getStatusChipBgColor, hasChanges} from "@/helpers";
-import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
+import {Statuses} from "@/store/acquisitionPackage";
 import CurrentUserStore from "@/store/user";
 import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteMembersModal.vue";
-import { UserDTO } from "@/api/models";
+import {UserDTO} from "@/api/models";
 import AppSections from "@/store/appSections";
 import Home from "@/home/Index.vue";
 
@@ -383,13 +366,10 @@ export default class PortfolioDrawer extends Vue {
   public showManagerDowngradeDialog = false;
   public downgradeMemberIndex = -1;
 
-  public get isProdEnv(): boolean {
-    return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
-  }
-
   public get currentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
   }
+
   @Watch("currentUser")
   public currentUserChange(newVal: UserDTO): void {
     const currentUserSysId = newVal.sys_id;
@@ -477,10 +457,11 @@ export default class PortfolioDrawer extends Vue {
     { text: "Remove from portfolio", value: "Remove", isSelectable: false },
     { text: "About roles", value: "AboutRoles", isSelectable: false },
   ];
+  
   public ownerMenuItems: SelectData[] = [
     { text: "Transfer ownership", value: "TransferOwner", isSelectable: false },
   ]
-
+  
   public statusImg = {
     [Statuses.ProvisioningIssue.value]: {
       name: "warningAmber",
@@ -509,10 +490,6 @@ export default class PortfolioDrawer extends Vue {
     return PortfolioStore.getShowAddMembersModal;
   }
 
-  public set showMembersModal(value: boolean) {
-    PortfolioStore.setShowAddMembersModal(value);
-  }
-
   public getMemberMenuItems(member: member): SelectData[] {
     const menuItems = _.cloneDeep(this.memberMenuItems);
     if (member.email === this.currentUser.email) {
@@ -537,10 +514,6 @@ export default class PortfolioDrawer extends Vue {
     if(hasChanges(PortfolioStore.currentPortfolio.description, this.portfolio.description)) {
       PortfolioStore.updatePortfolioDescription(this.portfolio.description);
     }
-  }
-
-  public formatDate(date: string): string {
-    return format(parseISO(date), "MMM. d, Y, Hm");
   }
 
   public getBgColor(): string {
@@ -588,16 +561,10 @@ export default class PortfolioDrawer extends Vue {
     Toast.setToast(this.membersInvitedToast);
   }
 
-  public displayName(member: User): string {
-    return member.firstName && member.lastName 
-      ? member.firstName + " " + member.lastName
-      : member.email || "";
-  }
-
   public get showEnvCount(): boolean {
-    return this.getEnironmentCount > 0; 
+    return this.getEnvironmentCount > 0; 
   }
-  public get getEnironmentCount(): number {
+  public get getEnvironmentCount(): number {
     return this.portfolio.environments?.length || 0;
   }
 
@@ -606,6 +573,7 @@ export default class PortfolioDrawer extends Vue {
     S: "Secret",
     TS: "Top Secret",
   }
+  
   public getClassificationLevel(abbr: string): string {
     return this.classificationLevels[abbr];
   }
@@ -615,34 +583,41 @@ export default class PortfolioDrawer extends Vue {
     await PortfolioStore.setCurrentEnvSysId(envSysId);
     await AppSections.setActiveTabIndex(2);
   }
+  
   public getEnvStatus(env: Environment): string {
-    if (env.environmentStatus) {
-      const statusKey = this.getStatusKey(env.environmentStatus);
+    if (env.environment_status) {
+      const statusKey = this.getStatusKey(env.environment_status);
       return Statuses[statusKey].label;
     } 
     return "";
   }
 
   public getEnvDateStr(env: Environment): string {
-    if (env.environmentStatus === Statuses.Processing.value && env.sys_created_on) {
-      // return "Started x ago"
+    if (env.environment_status === Statuses.Processing.value && env.sys_created_on) {
       const now = new Date();
-      const created = new Date(env.sys_created_on);
-      const diffInMinutes = differenceInMinutes(now, created);
-      const diffInHours = differenceInHours(now, created);
+      const localCreatedOn = this.convertUtcToLocal(env.sys_created_on);
+
+      const diffInMinutes = differenceInMinutes(now, localCreatedOn);
+      const diffInHours = differenceInHours(now, localCreatedOn);
       if (diffInMinutes < 60) {
-        return "Started " +  differenceInMinutes(now, created) + " minutes ago";
+        return "Started " +  differenceInMinutes(now, localCreatedOn) + " minutes ago";
       } else if (diffInHours <= 72) {
         const plural = diffInHours > 1 ? "s" : "";
         return "Started " + diffInHours + ` hour${plural} ago`;
       } 
-      const diffInDays = differenceInDays(now, created);
+      const diffInDays = differenceInDays(now, localCreatedOn);
       return "Started " + diffInDays + " days ago";
     }
 
-    return createDateStr(env.provisioned_date, true, true);
+    // eslint-disable-next-line max-len
+    return (env.provisioned_date) ? this.convertUtcToLocal(env.provisioned_date).toLocaleString() : "";
   }
 
+  public convertUtcToLocal(dateString: string): Date {
+    const utcDate = new Date(dateString);
+    const offsetMinutes = utcDate.getTimezoneOffset();
+    return new Date(utcDate.getTime() - (offsetMinutes * 60 * 1000));
+  }
 
   public portfolioMembers: member[] = [];
 
@@ -653,11 +628,6 @@ export default class PortfolioDrawer extends Vue {
     return this.portfolio?.members?.length
       ? this.portfolio?.members?.length
       : 0;
-  }
-
-  public get managerCount(): number {
-    const managers = this.portfolioMembers.filter(obj => obj?.role?.toLowerCase() === "manager");
-    return managers.length;
   }
 
   public openMembersModal(): void {
@@ -695,7 +665,7 @@ export default class PortfolioDrawer extends Vue {
 
     this.currentUserIsOwner = false;
     await this.updateMemberRole("Manager", prevOwnerIndex);
-    this.closeTransferOwnerModal();
+    await this.closeTransferOwnerModal();
     Toast.setToast(this.ownershipTransferredToast);
     this.modalOKDisabled = false;
     this.showOKSpinner = false;
@@ -829,7 +799,7 @@ export default class PortfolioDrawer extends Vue {
       if (sysId === this.currentUser.sys_id) {
         // current user left the portfolio - send to home page
         await PortfolioStore.setUserLeftPortfolio(true);
-        AppSections.setAppContentComponent(Home);
+        await AppSections.setAppContentComponent(Home);
 
       } else {
         await this.loadPortfolio();
@@ -846,6 +816,19 @@ export default class PortfolioDrawer extends Vue {
     this.showRemoveMemberDialog = false;
     this.showLeavePortfolioModal = false;
     this.removeMemberIndex = -1;
+  }
+  
+  public getCspName(env: Environment): string {
+    if(!env.cloud_distinguisher) {
+      return env.csp_display;
+    }
+    try {
+      const obj = JSON.parse(env.cloud_distinguisher);
+      console.log(`CSP: ${JSON.stringify(obj, null, 2)}`);
+      return `${obj.display_name} (${obj.name})`;
+    } catch (e) {
+      return env.csp_display;
+    }
   }
 }
 </script>

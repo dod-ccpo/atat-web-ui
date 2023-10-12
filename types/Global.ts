@@ -513,7 +513,6 @@ export interface User {
 }
 
 export interface Environment extends EnvironmentDTO {
-  classification_level?: string;
   environment_status?: string;
 }
 
