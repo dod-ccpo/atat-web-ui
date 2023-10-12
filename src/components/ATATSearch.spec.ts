@@ -40,36 +40,56 @@ describe("Testing ATATSearch Component", () => {
     })
 
     it("@Watch errorMessagesChanged() - change $data.errorMessages to [] to " +
-    "display showHelpText", async () => {
+    "display showHelpText when hideHelpTextOnErrors is true", async () => {
       await wrapper.setData({
         errorMessages: [],
         showLoader: false,
       });
       await wrapper.setProps({
+        helpText: 'wow',
         hideHelpTextOnErrors: true,
       })
       expect(wrapper.vm.showHelpText()).toBe(true);
     })
 
     it("@Watch errorMessagesChanged() - change $data.errorMessages to [] to " +
-    "not display showHelpText when hideHelpTextOnErrors is false", async () => {
+    "display showHelpText when hideHelpTextOnErrors is false", async () => {
       await wrapper.setData({
         errorMessages: [],
         showLoader: false,
       });
       await wrapper.setProps({
+        helpText: 'wow',
         hideHelpTextOnErrors: false,
       })
-      expect(wrapper.vm.showHelpText()).toBe(false);
+      expect(wrapper.vm.showHelpText()).toBe(true);
     })
 
     it("@Watch errorMessagesChanged() - populate $data.errorMessages to not display " +
-    "showHelpText", async () => {
+    "showHelpText when hideHelpTextOnErrors is true", async () => {
       await wrapper.setData({
         errorMessages: ['error Message 001'],
         showLoader: true
       });
+      await wrapper.setProps({
+        helpText: 'wow',
+        hideHelpTextOnErrors: true,
+      })
       expect(wrapper.vm.showHelpText()).toBe(false);
+    })
+
+    it("@Watch errorMessagesChanged() - populate $data.errorMessages to display " +
+    "showHelpText when hideHelpTextOnErrors is false", async () => {
+      console.log('TESTING THIS ONE \\/ \\/')
+      await wrapper.setData({
+        errorMessages: ['error Message 001'],
+        showLoader: true
+      });
+      await wrapper.setProps({
+        helpText: 'wow',
+        hideHelpTextOnErrors: false,
+      })
+      expect(wrapper.vm.showHelpText()).toBe(true);
     })
 
     it("onInput() - supply valid input with existing $data.errorMessages then  " +

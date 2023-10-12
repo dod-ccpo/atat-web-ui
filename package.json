@@ -14,7 +14,11 @@
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest --no-cache",
+<<<<<<< HEAD
     "test-file:watch": "jest --no-cache --watch src/steps/10-FinancialDetails/RequireFundingDocuments.spec.ts",
+=======
+    "test-file:watch": "jest --no-cache --watch src/steps/10-FinancialDetails/GTCInformation.spec.ts",
+>>>>>>> 0b136c4f3 (fixed tests and fixed search error message for ginvoicing searches)
     "test-files": "jest --no-cache src/steps/03-Background/components/",
     "test:coverage": "jest --coverage",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",

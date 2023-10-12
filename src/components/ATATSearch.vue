@@ -62,12 +62,36 @@
       <ATATErrorValidation :errorMessages="errorMessages" />
     </div>
 
+    <div class="max-width-500 mt-3" v-show="showErrorAlert && searchType === 'G-Invoicing'">
+      <div
+        class="d-flex justify-start align-top atat-text-field-error mt-2"
+      >
+        <div>
+          <v-icon class="text-base-error icon-20 ma-1 mt-0" color="error">error</v-icon>
+        </div>
+        <div class="field-error ml-2 text-left">
+          <p>
+            Unable to locate your GT&C. Enter a valid number and search again.
+            If you need assistance,
+            <a
+              href="https://community.hacc.mil/s/contact?RequestTopic=Account%20Trackin
+              g%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"
+              target="_blank"
+            >
+              contact Customer Support </a
+            >.
+          </p>
+        </div>
+      </div>
+    </div>
+
     <div 
       v-if="helpText && 
       showHelpText && 
       !showGtcVerifiedIndicator && 
       !showLoader &&
-      !errorMessages.length" 
+      !errorMessages.length &&
+      !(showErrorAlert && searchType === 'G-Invoicing')"
       class="help-text mt-2"
     >
       {{ helpText }}
@@ -105,7 +129,7 @@
     <ATATAlert
       :id="id + '_SearchAlertError'"
       type="error"
-      v-show="showErrorAlert"
+      v-show="showErrorAlert && searchType === 'EDA'"
       maxWidth="740"
       class="mt-5"
     >
@@ -194,13 +218,14 @@ export default class ATATSearch extends Vue {
   @Prop({ default: () => [] }) private mask?: string[];
   @Prop({ default: false }) private isMaskRegex?: boolean;
   @Prop({ default: () => [] }) private rules?: Array<unknown>;
-  @Prop({ default: false }) private hideHelpTextOnErrors?: boolean;
+  @Prop({ default: true }) private hideHelpTextOnErrors?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop({ default: "" }) private searchType?: string;
   @Prop({ default: "" }) private buttonText?: string;
   @Prop({ default: false }) private searchButtonDisabled?: boolean;
   @Prop({ default: false }) private isModal?: boolean;
+  @Prop({default: undefined}) private gInvoicingSearchType?: 'GtcNumber' | 'OrderNumber';
   @PropSync("triggerSearch", { default: false })
   private _triggerSearch?: boolean;
 
@@ -247,7 +272,9 @@ export default class ATATSearch extends Vue {
 
   @Watch("errorMessages")
   private errorMessagesChanged(newVal: Array<unknown>): void {
-    this.hideHelpText = !(newVal.length === 0 && !this.showLoader);
+    this.hideHelpText = Boolean(
+      !(newVal.length === 0 && !this.showLoader) && !this.hideHelpTextOnErrors
+    );
   }
 
   @Watch("_triggerSearch")
@@ -296,11 +323,11 @@ export default class ATATSearch extends Vue {
       } finally {
         this.showLoader = false;
       }
-    } else if (this.searchType === "G-Invoicing") {
+    } else if (this.searchType === "G-Invoicing" && this.gInvoicingSearchType === 'GtcNumber') {
       try {
         if (this.errorMessages.length > 0) return;
         this.showLoader = true;
-        const gInvoicingResponse = await api.gInvoicingApi.search(
+        const gInvoicingResponse = await api.gInvoicingApi.searchGtc(
           this._value,
           AcquisitionPackage.packageId
         );
@@ -315,7 +342,7 @@ export default class ATATSearch extends Vue {
         this.showLoader = false;
         this.$emit("search");
       }
-    } else if (this.searchType === "OrderNumber") {
+    } else if (this.searchType === "G-Invoicing" && this.gInvoicingSearchType === 'OrderNumber') {
       try {
         if (this.errorMessages.length > 0) return;
         this.showLoader = true;
@@ -397,6 +424,12 @@ export default class ATATSearch extends Vue {
   }
 
   private mounted(): void {
+    if (
+      this.searchType === 'G-Invoicing' &&
+      !(this.gInvoicingSearchType === 'GtcNumber' || this.gInvoicingSearchType === 'OrderNumber')
+    ) {
+      console.error('gInvoicingSearchType should be set when searchType is G-Invoicing!')
+    }
     this.setMask();
   }
 }
