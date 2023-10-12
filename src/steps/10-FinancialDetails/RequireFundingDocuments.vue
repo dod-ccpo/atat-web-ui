@@ -72,10 +72,15 @@ export default class RequireFundingDocuments extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    if (this.hasChanged()) {
-      await AcquisitionPackage.setContractingShopRequireFundingDocuments(
-        this.requireFundingSelection
-      );
+    await AcquisitionPackage.setValidateNow(true);
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.setContractingShopRequireFundingDocuments(
+          this.requireFundingSelection
+        );
+      }
+    } catch (error) {
+      console.log(error);
     }
     return true;
   }

@@ -1700,6 +1700,7 @@ export const FinancialPOCResolver =  (current: string): string => {
       current === routeNames.ReadyToGeneratePackage && isIncrementallyFunded === "NO") {
     return routeNames.SeverabilityAndIncrementalFunding;
   }
+  if (current === routeNames.RFD) return routeNames.SummaryStepEight;
   return current === routeNames.FinancialPOCForm
     ? routeNames.ReadyToGeneratePackage
     : routeNames.FinancialPOCForm
