@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
 import { PortfolioDataStore} from "@/store/portfolio/index";
