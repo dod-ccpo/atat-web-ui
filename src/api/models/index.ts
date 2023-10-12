@@ -627,7 +627,7 @@ export interface CostsDTO extends BaseTableDTO {
   portfolio: string;
   organization: string;
   "agency.title"?: string;
-  is_actual: string;
+  is_actual: string | boolean;
   value: string;
 }
 
@@ -644,17 +644,20 @@ export interface CostGroupDTO {
 }
 
 export interface ClinDTO extends BaseTableDTO {
-  sys_id: string;
+  active?: boolean;
+  actual_funds_spent?: number;
+  classification_level?: string;
   clin_number: string;
+  clin_status: string;
+  costs?: CostsDTO[]
+  funds_obligated: number;
+  funds_total: number;
   idiq_clin: string;
   idiq_clin_label?: string;
   pop_end_date: string;
   pop_start_date: string;
-  clin_status: string;
-  funds_obligated: number;
-  funds_total: number;
-  cost_records?: CostsDTO[]
-  actual_funds_spent?: number;
+  sys_id: string;
+  type?: string;
 }
 
 export interface EDAResponse {
@@ -788,10 +791,28 @@ export interface PortfolioSummaryDTO extends BaseTableDTO{
   environments?: Environment[];
   last_updated?: string;
 }
+export interface PortfolioSummaryObj extends BaseTableDTO{
+  portfolio_name: string;
+  portfolio_status: string;
+  agency: string;
+  last_updated: string;
+  current_user_is_owner: boolean;
+  current_user_is_manager: boolean;
+  vendor: string;
+  pop_start_date: string;
+  pop_end_date: string;
+  total_obligated: number;
+  funds_spent: number;
+  active_task_order: string;
+  owner_full_name:string;
+  funding_status: string;
+  csp_portal_links: {csp: string, dashboard_link: string}[],
+}
+
 
 export interface PortfolioSummaryMetadataAndDataDTO {
-  total_count: number;
-  portfolioSummaryList: PortfolioSummaryDTO[];
+  portfolios: PortfolioSummaryObj[];
+  portfolioCount: number
 }
 
 export interface EnvironmentDTO extends BaseTableDTO {
@@ -911,6 +932,7 @@ export interface UserDTO extends BaseTableDTO {
   phone?: string;
   home_phone?: string;
   title?: string;
+  sys_id?: string;
 }
 
 export interface UserRolesDTO extends BaseTableDTO {

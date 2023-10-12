@@ -1,0 +1,10 @@
+{
+    "currentFunction":"If your current environment does not meet your current requirements, select “No” below, and the instance details that you previously provided will serve only as background information within your Description of Work.",
+    "replicateOptimizeOptionsLabels":[
+        "Replicate my current functions.",
+        "Optimize my current functions.",
+        "No. I don’t want to replicate or optimize my current functions."
+    ],
+    "jwtccInfoAlert":"The information you provide in this section allows JWCC cloud service providers to propose and the Government to analyze proposals in a consistent manner. All requirements are presented as a minimum capability for analysis only and will neither limit the actual Cloud Service Offering(s) ordered from the JWCC Catalog during TO performance nor exceed the dollar threshold established within the TO."
+
+}

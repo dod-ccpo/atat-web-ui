@@ -1,7 +1,7 @@
 module.exports = {
   introPText: "p.mb-10",
   learnMoreLink: "p.mb-10 a",
-  singleClassText:"#SingleClass",
+  singleClassText: "#SingleClass",
   categoryAlertheading: "#CategoryPageAlert h3",
   categoryAlertInfoTxt: "p#AlertInfo",
   xaasLabelText: "#XaaSLabel",
@@ -24,43 +24,116 @@ module.exports = {
   xassCheckbBoxError: "#XaaSCheckboxes .field-error",
   cloudSupportCheckboxError: "#CloudSupportCheckboxes .field-error",
   dontneedBtn: "#DontNeedResources",
+  startXaaSBtn: "#StartButtonXaaS",
+  startCurrentFunBtn:"#StartButtonReplicateOptimize",
+  currentFunctionCard:"#ReplicateOptimizeCard",
+  
+  //Do you want to replicate or optimize your current functions using JWCC offerings?
+  descrIntroText:"p#IntroP",
+  replicateOptimiseRadioError:"#ReplicateOptimizeOptions_radio_group_control .field-error",
+  radioCFLabels:"#ReplicateOptimizeOptions_radio_group_control input[type=radio]",
+  replicateRadioOption:"#Radio_YesReplicate",
+  optimiseRadioOption:"#Radio_YesOptimize",
+  replicateOptimiseNoOption:"#Radio_NoReplicateOrOptimize",
+  jwtccAlertText:"#JWCCInfoAlert p",
+
+  //Tell us more about your requirements to <selected current function> your environment
+  objectiveTextfield:"#Statement_text_area",
+  objectiveError:"#Statement_text_field_control .field-error",
+  additionalGrowthYesOption:"#Radio_YesGrowth",
+  additionalGrowthNoOption:"#Radio_NoGrowth",
+  additionalGrowthError:"#GrowthOptions_radio_group_control .field-error",
+  capacityPerTextField:"#CapacityPercentage_text_field",
+  capacityTextFieldError:"#CapacityPercentage_text_field_control .field-error",  
+  phasedYesRadioOption:"#Radio_YesPhased",
+  phasedNoRadioOption:"#Radio_NoPhased",
+  phasedRadioError:"#PhasedOptions_radio_group_control .field-error",
+  phaseApproachTextfield:"#PhasedApproachSchedule_text_area",
+  phasedApproachTextfieldError:"#PhasedApproachSchedule_text_field_control .field-error",
+
+  //First, tell us about your anticipated users and data needs
+  accordionO: "#AnticipatedUserAndDataNeedsAccordion0",
+  accordionExpansion: ".expansion-panel",
+  region0: "#AnticipatedUserAndDataNeedsAccordion0 #Regions0",
+  dataIncError:
+    "#AnticipatedUserAndDataNeedsAccordion0 #DataIncrease_radio_group_control .field-error",
+  userTransferError: "#DataIncrease_0_radio_group_control .field-error",
+  userIncError:
+    "#AnticipatedUserAndDataNeedsAccordion0 #DataIncrease_radio_group_control .field-error",
+  acc0QuesYes: "#Radio_Accordion0QuestionuserYES",
+  acc0QuesNo: "#Radio_Accordion0QuestionuserNO",
+  dataTransferText0field: "#DataTransfer_0_text_field",
+  dataTransferText0Error: "#DataTransfer_0_text_field_control  .field-error",
+  dataTransfer0Dropdown: "#DataTransfer_0_dropdown",
+  dataTransfer0Dropdowlist: "#DataTransfer_0_dropdown .v-list-item",
+  conusEast0Checkbox: "#Checkbox_CONUSEast0",
+  conusCentral0Checkbox: "#Checkbox_CONUSCentral0",
+  conusWest0Checkbox: "#Checkbox_CONUSWest0",
+  africom0Checkbox: "#Checkbox_AFRICOM0",
+  centcom0Checkbox: "#Checkbox_CENTCOM0",
+  eucom0Checkbox: "#Checkbox_EUCOM0",
+  indopacom0Checkbox: "#Checkbox_INDOPACOM0",
+  southcom0Checkbox: "#Checkbox_SOUTHCOM0",
+  conusEastRegionText0: "#Regions0_TextField0_text_field",
+  conusCentralRegionText0: "#RegionTex0Regions0_TextField1_text_field",
+  conusWestRegionText0: "#Regions0_TextField2_text_field",
+  africomRegionText0: "#Regions0_TextField3_text_field",
+  centcomRegionText0: "#Regions0_TextField4_text_field",
+  eucomRegionText0: "#Regions0_TextField5_text_field",
+  indopacomRegionText0: "#Regions0_TextField6_text_field",
+  southcomRegionText0: "#Regions0_TextField7_text_field",
+  conusEast1Checkbox: "#Checkbox_CONUSEast1",
+  conusCentral1Checkbox: "#Checkbox_CONUSCentral1",
+  conusWest1Checkbox: "#Checkbox_CONUSWest1",
+  africom1Checkbox: "#Checkbox_AFRICOM1",
+  conusEastRegionText1: "#Regions1_TextField0_text_field",
+  conusCentralRegionTex1: "#Regions1_TextField1_text_field",
+  conusWestRegionText1: "#Regions1_TextField2_text_field",
+  africomRegionText1: "#Regions1_TextField3_text_field",
+  dataTransferText1field: "#DataTransfer_1_text_field",
+  baseDataTextfield: "#BASE_0_data_1_text_field",
+  noDataquestion1:"#Radio_Accordion1QuestiondataNO",
 
   //Let's start by gathering your Compute requirements
-  subAlertMessage:"#SubtleAlertMessage",
-  formSectionOneHeader:"#FormSection1Heading",
+  subAlertMessage: "#SubtleAlertMessage",
+  formSectionOneHeader: "#FormSection1Heading",
   environmentLabel: "#EnvironmnetType_radio_group_control .mr-2",
   envDevTesting: "#Radio_DevTesting",
   envPrepodStage: "#Radio_PreProdStaging",
-  envProd: "#Radio_Production",  
-  regionGroup:"#Regions input[type=checkbox]",
+  envProd: "#Radio_Production",
+  regionGroup: "#Regions input[type=checkbox]",
   regionCheckboxLabel: ".font-weight-500",
   eastCheckbox: "#Checkbox_CONUSEast",
   centralCheckBox: "#Checkbox_CONUSCentral",
   westCheckbox: "#Checkbox_CONUSWest",
-  oconusCheckbox:"#Checkbox_OCONUS",
+  oconusCheckbox: "#Checkbox_OCONUS",
   regionTooltipBtn: "#TooltipButton_Region",
   regionTooltipText: "#TooltipText_Region",
-  classLevelRadioGroup:"#ClassificationLevel_radio_group_control input[type=radio]",
-  classLevelLabel:"#ClassificationLevel_radio_group_control .mr-2",
+  classLevelRadioGroup:
+    "#ClassificationLevel_radio_group_control input[type=radio]",
+  classLevelLabel: "#ClassificationLevel_radio_group_control .mr-2",
   classIL4RadioBtn: "#Radio_IL4Radio",
   classIL2RadioBtn: "#Radio_IL2Radio",
   classIL5RadioBtn: "#Radio_IL5Radio",
   classIL6RadioBtn: "#Radio_IL6Radio",
   classLevelTooltipBtn: "#TooltipButton_ClassificationLevel",
-  classLevelTootipText: "#TooltipText_ClassificationLevel", 
+  classLevelTootipText: "#TooltipText_ClassificationLevel",
   decriptionLabel: "#DescriptionOfNeed_text_field_label",
-  performanceRadioGroup:"#PerformanceTier_radio_group_control input[type=radio]",
-  performanceTierLabel:"#PerformanceTier_radio_group_control .mr-2",
+  performanceRadioGroup:
+    "#PerformanceTier_radio_group_control input[type=radio]",
+  performanceTierLabel: "#PerformanceTier_radio_group_control .mr-2",
   performanceTierTooltipBtn: "#TooltipButton_PerformanceTier",
   performanceTierTootipText: "#TooltipText_PerformanceTier",
-  neededDurationActiveRadioBtn: "#NeededForEntireDuration_radio_group_control .v-item--active",
+  neededDurationActiveRadioBtn:
+    "#NeededForEntireDuration_radio_group_control .v-item--active",
   baseCheckbox: "#Checkbox_BASE",
   formSectionTwoHeader: "#FormSection2Heading",
   operSysLicenLabel: "#OperatingSystemAndLicensing_text_field_label",
   operSysLicenTooltipBtn: "#TooltipButton_OperatingSystemAndLicensing",
   operSysLicenTootipText: "#TooltipText_OperatingSystemAndLicensing",
   operSysLicenTxtBox: "#OperatingSystemAndLicensing_text_field",
-  operSysLicenError: "#OperatingSystemAndLicensing_text_field_control .field-error",
+  operSysLicenError:
+    "#OperatingSystemAndLicensing_text_field_control .field-error",
   noOfvCPULabel: "#NumberOfVCPUs_text_field_label",
   noOfvCPUTxtBox: "#NumberOfVCPUs_text_field",
   noOfvCPUTooltipBtn: "#TooltipButton_NumberOfVCPUs",
@@ -73,7 +146,7 @@ module.exports = {
   memoryError: "#Memory_text_field_control .field-error",
   storageTypeLabel: "#StorageType_dropdown_field_label",
   storageTypeDropdown: "#StorageType_dropdown",
-  storageTypeDropdownList:"#StorageType_dropdown_field_control [role=listbox]",
+  storageTypeDropdownList: "#StorageType_dropdown_field_control [role=listbox]",
   storageTypeError: "#StorageType_dropdown_field_control .field-error",
   storageTypeGP: "#StorageType_DropdownListItem_GeneralPurposeSSD",
   storageTypePIOPS: "#StorageType_DropdownListItem_ProvisionedIOPSSSD",
@@ -81,21 +154,22 @@ module.exports = {
   storageTypeOffline: "#StorageType_DropdownListItem_Offline",
   storageTypeOther: "#StorageType_DropdownListItem_Other",
   storageAmountLabel: "#StorageAmount_text_field_label",
-  storageAmountTextBox:"#StorageAmount_text_field",
+  storageAmountTextBox: "#StorageAmount_text_field",
   storageAmountTooltipBtn: "#TooltipButton_StorageAmount",
   storageAmountTooltipText: "#TooltipText_StorageAmount",
   storageAmountError: "#StorageAmount_text_field_control .field-error",
   noInstancesNeededLabel: "#NumberOfInstances_text_field_label",
   noInstancesNeededTooltipBtn: "#TooltipButton_NumberOfInstances",
   noInstancesNeededTooltipText: "#TooltipText_NumberOfInstances",
-  entireDurationActiveBtn:"#EntireDuration_1_radio_group_control .v-item--active",
+  entireDurationActiveBtn:
+    "#EntireDuration_1_radio_group_control .v-item--active",
   premiumRadioBtn: "#Radio_PerformancePremium",
   standardRadioBtn: "#Radio_PerformanceStandard",
   basicRadioBtn: "#Radio_PerformanceBasic",
-  otherRadioBtn: "#Radio_PerformanceOther", 
-  otherPerTextField:"#OtherPerformance_text_field",
+  otherRadioBtn: "#Radio_PerformanceOther",
+  otherPerTextField: "#OtherPerformance_text_field",
   updateCLLink: "#UpdateClassificationFromIntro",
-    
+
   //Compute Requirements
   tableWrapper: ".v-data-table__wrapper",
   instanceOneEditBtn: "#EditButton_1",
@@ -103,20 +177,20 @@ module.exports = {
   addAnotherInstance: "#AddInstance",
   instanceTwoEditBtn: "#EditButton_2",
   instanceTwoDeleteBtn: "#DeleteButton_2",
-  dialogModal:".v-dialog",
+  dialogModal: ".v-dialog",
   dialogTitle: "#DeleteInstanceModalTitle",
   deleteInstBtn: "#dialog_ok",
-  
+
   //Let’s gather your requirements for general IaaS, PaaS and SaaS
   requirementTitleLabel: "#RequirementTitle_text_field_label",
   requirementTitleTooltipBtn: "#TooltipButton_RequirementTitle",
   requirementTitleTooltipText: "#TooltipText_RequirementTitle",
   requirementTitleTxtBox: "#RequirementTitle_text_field",
 
-  //Your general IaaS, PaaS, and SaaS requirements  
+  //Your general IaaS, PaaS, and SaaS requirements
   noReqTxt: ".w-100",
   optionOneCheckbox: "#Checkbox_OPTION1",
-  
+
   //Next, we’ll gather your requirements for Migration Tools
   singleClassIntro: "#SingleClassificationIntro",
   classTextInIntro: "#SingleClassificationIntro p",
@@ -126,7 +200,8 @@ module.exports = {
   contentText: "#Content_AboutClassificationLevels",
   updateLink: "#UpdateClassification",
   offeringDetailform: "#OfferingDetailsForms",
-  anticipatedTextError1: "#AnticipatedNeedUsage_1_text_field_control .field-error",
+  anticipatedTextError1:
+    "#AnticipatedNeedUsage_1_text_field_control .field-error",
   durationYesRadioBtn: "#Radio_Yes",
   durationNoRadioBtn: "#Radio_No",
   classReqAlertMess: "#ClassificationRequirementsAlert",
@@ -138,30 +213,33 @@ module.exports = {
   anticipatedTextlabel1: "#AnticipatedNeedUsage_1_text_field_label",
   anticipatedTextBox1: "#AnticipatedNeedUsage_1_text_area",
   entireDurationRadioLabel1: "#EntireDuration_1_radio_group_control legend",
-  duration1ActiveRadioBtn: "#EntireDuration_1_radio_group_control .v-item--active",
+  duration1ActiveRadioBtn:
+    "#EntireDuration_1_radio_group_control .v-item--active",
   duration1Error: "#EntireDuration_1_radio_group_control .field-error",
   checkBoxBase: "#Checkbox_BASE",
   alertPeriod1Text: "#PeriodIntro_1",
   baseCheck1Error: "#PeriodsCheckboxes_1 .field-error",
   contractDtailsLink: "#ContractDetailsLink_1",
-  
-  //Multiple classifications levels  
+
+  //Multiple classifications levels
   requirmentHeading2: "h2#RequirementHeading_2",
   anticipatedTextlabel2: "#AnticipatedNeedUsage_2_text_field_label",
   anticipatedTextBox2: "#AnticipatedNeedUsage_2_text_area",
   entireDurationRadioLabel2: "#EntireDuration_2_radio_group_control legend",
   duration2NoRadioBtn: "#EntireDuration_2_radio_group_control #Radio_No",
-  duration2ActiveRadioBtn: "#EntireDuration_2_radio_group_control .v-item--active",
+  duration2ActiveRadioBtn:
+    "#EntireDuration_2_radio_group_control .v-item--active",
   periodCheckboxLabel2: "#PeriodsLabel_2",
   periodCheckboxRow2: "#PeriodsCheckboxes_2 ._checkbox",
   periodCheckbox2: "#PeriodsCheckboxes_2",
   periodCheckBoxBase2: "#PeriodsCheckboxes_2 #Checkbox_BASE",
-  
+
   //Update classification model
   updateModal: ".v-dialog",
   modaltitle: "#ClassificationLevelCheckboxesModalTitle",
   modalMessage: "#ClassificationLevelCheckboxesModalMessage > :nth-child(1)",
-  modalCheckboxes: "#ClassificationLevelCheckboxesModal input[type=checkbox]:checked",
+  modalCheckboxes:
+    "#ClassificationLevelCheckboxesModal input[type=checkbox]:checked",
   level2: "#Checkbox_IL2Modal",
   level4: "#Checkbox_IL4Modal",
   level5: "#Checkbox_IL5Modal",
@@ -169,8 +247,12 @@ module.exports = {
   modalCheckboxesError: "#ClassificationLevelCheckboxesModal .field-error",
   changeLevelBtn: "#dialog_ok",
   cancelBtn: "#dialog_cancel",
-  toastText:".v-snack__content",
-  
+  toastText: ".v-snack__content",
+
+  //xaas summary
+  anticipatedHeading:"h3#AnticipatedUsersAndDataNeeds_Heading",
+  anticipatedUsersBtn:"._Anticipatedusersanddata-button",
+
   //Summary
   selectedGroups: "#SelectedGroups",
   categoryNameHeader: "#SelectedGroups h3",
@@ -180,7 +262,7 @@ module.exports = {
   reviewbtn: "#SelectedGroups button",
   otherCategories: "#OtherAvlGroups h2",
   showMoreLink: "#ShowMoreLink",
-  otherCardHeaders:"#OtherAvlGroups .h3",
+  otherCardHeaders: "#OtherAvlGroups .h3",
   contractDetailsLink: "#Step4Link",
   cardTitle: "#OtherAvlGroups .h3",
   computeHeading: "#Compute_Heading",
@@ -233,5 +315,4 @@ module.exports = {
   trainTooltipBtn: "#TooltipButton_Training",
   trainTooltipText: "#TooltipText_Training",
   trainLink: "#Training_Link",
-
-}  
+};

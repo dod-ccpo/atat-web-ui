@@ -110,7 +110,7 @@ module.exports = {
   // A map from regular expressions to paths to transformers
   transform: {
     //"^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-    "^.+\\.ts$": "ts-jest",
+    "^.+\\.ts?$": "ts-jest",
     "^.+\\.vue$": ["@vue/vue2-jest", {sourceMaps: "inline"}],
   },
   // An array of regexp pattern strings that are matched against 
