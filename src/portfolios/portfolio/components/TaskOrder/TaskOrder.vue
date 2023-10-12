@@ -146,6 +146,7 @@ export default class TaskOrder extends Vue {
       await PortfolioSummary.getAllPortfolioSummaryList(false) as PortfolioSummaryObj[];
     if (portfolioSummaryList !== null){
       // refactor to build via array later
+      console.log(this.taskOrder, 'task order')
       if(this.taskOrder.sys_id){
         this.taskOrders = [{
           sys_id: this.taskOrder.sys_id,
