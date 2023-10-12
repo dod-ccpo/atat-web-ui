@@ -265,9 +265,7 @@ export default class ProvisionWorkflow extends Vue {
     );
 
     if(success){
-      await PortfolioSummary.searchPortfolioSummaryList(
-        { searchDTO: {}, singlePortfolioSearch: portfolioSysId }
-      );
+      await PortfolioSummary.searchPortfolioSummaryList();
       await PortfolioStore.setPortfolioIsUpdating(true)
       await PortfolioStore.setActiveTaskOrderNumber(this.TONumber)
       await AppSections.setActiveTabIndex(1);

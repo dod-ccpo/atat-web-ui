@@ -1,4 +1,4 @@
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, {isDitcoUser} from "@/store/acquisitionPackage";
 import FinancialDetails from "@/store/financialDetails";
 import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
@@ -1552,11 +1552,18 @@ export const IGCESupportingDocumentationResolver = (current: string): string => 
 };
 
 export const CurrentlyHasFundingResolver = (current: string): string => {
-  return Summary.hasCurrentStepBeenVisited && current === routeNames.SupportingDocumentation
+  return Summary.hasCurrentStepBeenVisited
     ? routeNames.SummaryStepEight
-    : routeNames.CurrentlyHasFunding
+    : isDitcoUser()
+      ? routeNames.CurrentlyHasFunding
+      : routeNames.RFD
 };
 
+export const GTCInformationResolver = (current: string): string => {
+  return FinancialDetails.hasFunding === "HAS_FUNDING"
+    ? routeNames.GTC
+    : routeNames.GeneratingPackageDocumentsFunding
+}
 
 export const MIPRResolver = (current: string): string => {
   const fundingType = FinancialDetails.fundingRequestType;
@@ -1647,7 +1654,7 @@ export const IncrementalFundingResolver = (current: string): string => {
     if (daysTotal<=270){return routeNames.SummaryStepEight}
   })
 
-  if (fundingReq.incrementally_funded==="NO"){
+  if (fundingReq.incrementally_funded !== "YES"){
     return routeNames.SummaryStepEight;
   }
 
@@ -1907,6 +1914,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   TravelRouteResolver,
   SummaryStepTwoRouteResolver,
   CurrentlyHasFundingResolver,
+  GTCInformationResolver,
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
 };

@@ -57,8 +57,7 @@ import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrder
 import {TaskOrderCardData, ToastObj} from "../../../../../types/Global";
 import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOrderDetails.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
-import { PortfolioSummaryDTO } from "@/api/models";
-import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/helpers";
+import { PortfolioSummaryObj } from "@/api/models";
 import PortfolioStore from "@/store/portfolio";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
@@ -144,28 +143,28 @@ export default class TaskOrder extends Vue {
       PortfolioStore.setPortfolioIsUpdating(false)
     }
     const portfolioSummaryList = 
-      await PortfolioSummary.getAllPortfolioSummaryList() as unknown as PortfolioSummaryDTO[];
+      await PortfolioSummary.getAllPortfolioSummaryList() as PortfolioSummaryObj[];
     if (portfolioSummaryList !== null){
-      this.taskOrders = portfolioSummaryList.flatMap(
-        portfolio=>portfolio.task_orders.filter((
-          (taskOrder)=> taskOrder.task_order_number===this.activeTaskOrderNumber
-          || taskOrder.portfolio === this.portfolioSysId
-        )))
-        .map((to)=>{
-          return{
-            sys_id: to.sys_id,
-            taskOrderNumber: to.task_order_number,
-            periodOfPerformance: createDateStr(to.pop_start_date, true) + " - " +
-              createDateStr(to.pop_end_date, true),
-            status: to.task_order_status,
-            statusLabel: getStatusLabelFromValue(to.task_order_status),
-            totalObligated: '$' + toCurrencyString(parseInt(to.funds_obligated)),
-            totalValue: '$' + toCurrencyString(to.total_task_order_value || 0),
-            totalLifeCycle: '$' + toCurrencyString(to.total_lifecycle_amount || 0),
-            totalFundsSpent: '$' + toCurrencyString(to.funds_spent_task_order || 0),
-            clins: to.clin_records
-          }}
-        )
+      // this.taskOrders = portfolioSummaryList.flatMap(
+      //   portfolio=>portfolio.task_orders.filter((
+      //     (taskOrder)=> taskOrder.task_order_number===this.activeTaskOrderNumber
+      //     || taskOrder.portfolio === this.portfolioSysId
+      //   )))
+      //   .map((to)=>{
+      //     return{
+      //       sys_id: to.sys_id,
+      //       taskOrderNumber: to.task_order_number,
+      //       periodOfPerformance: createDateStr(to.pop_start_date, true) + " - " +
+      //         createDateStr(to.pop_end_date, true),
+      //       status: to.task_order_status,
+      //       statusLabel: getStatusLabelFromValue(to.task_order_status),
+      //       totalObligated: '$' + toCurrencyString(parseInt(to.funds_obligated)),
+      //       totalValue: '$' + toCurrencyString(to.total_task_order_value || 0),
+      //       totalLifeCycle: '$' + toCurrencyString(to.total_lifecycle_amount || 0),
+      //       totalFundsSpent: '$' + toCurrencyString(to.funds_spent_task_order || 0),
+      //       clins: to.clin_records
+      //     }}
+      // )
     }
   }
 

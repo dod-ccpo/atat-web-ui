@@ -70,6 +70,7 @@ import Steps from "@/store/steps";
 import TaskOrderSearchModal from "./components/TaskOrderSearchModal.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
+import CurrentUserStore from "@/store/user";
 
 @Component({
   components: {
@@ -148,11 +149,12 @@ export default class Portfolios extends Vue {
     return SlideoutPanel.slideoutPanelComponent;
   }
 
-  public tabClicked(tabType: string): void {
+  public async tabClicked(tabType: string):Promise<void> {
     this.activeTab = tabType;
   }
   public async mounted(){
     await Steps.setAltBackDestination(AppSections.sectionTitles.Portfolios);
+    await CurrentUserStore.setUserPortfolios(CurrentUserStore.currentUser.sys_id as string)
   }
 
 }

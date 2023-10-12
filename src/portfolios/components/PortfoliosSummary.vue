@@ -492,7 +492,7 @@ export default class PortfoliosSummary extends Vue {
     limit: this.recordsPerPage,
     offset: this.offset,
   }
-   
+
   public currentUserSysId = "";
 
   public get currentUser(): UserDTO {
@@ -502,6 +502,17 @@ export default class PortfoliosSummary extends Vue {
   public currentUserChange(): void {
     this.loadPortfolioData();
   }  
+
+  public get summaryListLength(): number {
+    return PortfolioSummary.portfolioSummaryList?.length as number
+  }
+  
+  @Watch("summaryListLength")
+  public async summaryListChanged(): Promise<void>{
+    const summaryList = await PortfolioSummary.getPortfolioSummaryList(this.currentUserSysId);
+    PortfolioSummary.setPortfolioSummaryList(summaryList.portfolios)
+  }
+  
 
   public filteredPortfolios(): string[] {
     const includedPortfolios = []
@@ -537,54 +548,40 @@ export default class PortfoliosSummary extends Vue {
     if (this.activeTab) {
       this.portfolioSearchDTO.portfolioStatus = this.activeTab === "ALL" ? "" : this.activeTab;
     }
-
-    if (!this.selectedSort && this.defaultSort) {
-      this.selectedSort = this.defaultSort;
-      this.portfolioSearchDTO.sort = this.defaultSort;
-    }
     
-    this.page = !this.paging ? 1 : this.page;
-    this.offset = (this.page - 1) * this.recordsPerPage;
-    this.portfolioSearchDTO.offset = this.offset;
-
-    const storeData = await PortfolioSummary.searchPortfolioSummaryList(
-      { searchDTO: this.portfolioSearchDTO, isHomeView: this.isHomeView }
-    );
-
-    this.portfolioCount = storeData.total_count;
+    // pagination will be added back
+    // this.page = !this.paging ? 1 : this.page;
+    // this.offset = (this.page - 1) * this.recordsPerPage;
+    // this.portfolioSearchDTO.offset = this.offset;
+    
+    const storeData = await PortfolioSummary.getAllPortfolioSummaryList(
+      this.isHomeView as boolean
+    )
+    this.portfolioCount = CurrentUserStore.getCurrentUserPortfolioCount;
+    await CurrentUserStore.doSetPortfolioCount(this.portfolioCount)
     this.numberOfPages = Math.ceil(this.portfolioCount / this.recordsPerPage);
     const includedPortfolios = this.filteredPortfolios();
-    storeData.portfolioSummaryList.forEach((portfolio) => {
+    storeData?.forEach((portfolio) => {
       if(includedPortfolios.includes(portfolio.portfolio_status)) {
         const cardData: PortfolioCardData = {};
-        cardData.isOwner = (portfolio.portfolio_owner === this.currentUserSysId);
-        cardData.isManager = portfolio.portfolio_managers.indexOf(this.currentUserSysId) > -1;
-        cardData.isViewer = portfolio.portfolio_viewers.indexOf(this.currentUserSysId) > -1;
+        cardData.isOwner = portfolio.current_user_is_owner;
+        cardData.isManager = portfolio.current_user_is_manager
         cardData.lastUpdated = portfolio.last_updated;      
         cardData.csp = portfolio.vendor ?  portfolio.vendor.toLowerCase() : "";
         cardData.vendor = portfolio.vendor?.toLowerCase();
         cardData.sysId = portfolio.sys_id;
-        cardData.title = portfolio.name;
-        cardData.description = portfolio.description;
+        cardData.title = portfolio.portfolio_name;
         cardData.status = this.getPortfolioStatus(portfolio.portfolio_status);
-        cardData.fundingStatus = portfolio.portfolio_funding_status;
-        cardData.portfolio_owner = portfolio.portfolio_owner;
-        cardData.portfolio_managers = portfolio.portfolio_managers;
-        cardData.portfolio_viewers = portfolio.portfolio_viewers;
+        cardData.fundingStatus = portfolio.funding_status;
+        cardData.portfolio_owner = portfolio.owner_full_name;
         cardData.createdBy = portfolio.sys_created_by;
         cardData.agency = portfolio.agency;
-        cardData.agencyDisplay = portfolio.agency_display;
-        cardData.environments = portfolio.environments;
         cardData.taskOrderSysId = portfolio.active_task_order;
-        cardData.lastCostDataSync = portfolio.last_cost_data_sync;
-        const activeTaskOrder = portfolio.task_orders.find(
-          obj => obj.sys_id === cardData.taskOrderSysId
-        );
-        cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
+        cardData.taskOrderNumber = portfolio.active_task_order
 
         // lastModified - if status is "Processing" use "Started ... ago" string
         if (cardData.status.toLowerCase() === Statuses.Processing.value.toLowerCase()) {
-          const agoString = formatDistanceToNow(new Date(portfolio.sys_updated_on));
+          const agoString = formatDistanceToNow(new Date(portfolio.last_updated));
 
           cardData.lastModifiedStr = "Started " + agoString + " ago";
         } else {
@@ -593,10 +590,9 @@ export default class PortfoliosSummary extends Vue {
             cardData.lastModifiedStr = "Last modified " + updatedDate;
           }
 
-          if (portfolio.task_orders && portfolio.task_orders.length) {
-            cardData.taskOrderNumber = portfolio.task_orders[0].task_order_number;
-            const popStart = createDateStr(portfolio.task_orders[0].pop_start_date, true);
-            const popEndISO = portfolio.task_orders[0].pop_end_date;
+          if (portfolio.active_task_order) {
+            const popStart = createDateStr(portfolio.pop_start_date, true);
+            const popEndISO = portfolio.pop_end_date;
             const popEnd = createDateStr(popEndISO, true);
             cardData.currentPoP = popStart + " - " + popEnd;
             const difToEndDate = formatDistanceToNow(new Date(popEndISO));
@@ -609,14 +605,13 @@ export default class PortfoliosSummary extends Vue {
             = _.capitalize(difStr + (isExpired ? " past" : " to") + " expiration");
           }
         }
-
         if (portfolio.portfolio_status.toLowerCase() !== Statuses.Processing.value.toLowerCase()) {
-          cardData.totalObligated = "$" + toCurrencyString(portfolio.funds_obligated);
+          cardData.totalObligated = "$" + toCurrencyString(portfolio.total_obligated);
           cardData.fundsSpent = "$" + toCurrencyString(portfolio.funds_spent);
           cardData.fundsSpentPercent = portfolio.funds_spent ? 
-            String(Math.round(portfolio.funds_spent / portfolio.funds_obligated * 100))
+            String(Math.round(portfolio.funds_spent / portfolio.total_obligated * 100))
             : "0";
-          const remainingAmt = portfolio.funds_obligated - portfolio.funds_spent;
+          const remainingAmt = portfolio.total_obligated - portfolio.funds_spent;
           cardData.fundsRemaining 
           = "$" + toCurrencyString(Math.abs(remainingAmt)) 
           + (remainingAmt < 0 ? " overspent" : " remaining");
