@@ -41,10 +41,6 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
 
   public packageDocComponent: Vue.Component | null = null;
 
-  get isDitco(): boolean {
-    return AcquisitionPackage.acquisitionPackage?.contracting_shop ==="DITCO";
-  }
-
   @Watch("isGenerating")
   public watchIsGenerating(generateDocs: boolean): void{
     generateDocs ? this.displayGeneratingDocumentsComponent() : this.displayReviewComponent();
