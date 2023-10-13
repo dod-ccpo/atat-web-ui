@@ -70,7 +70,6 @@
 </template>
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -87,6 +86,7 @@ import { routeNames } from "@/router/stepper";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepTouched } from "@/store/summary";
 
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
