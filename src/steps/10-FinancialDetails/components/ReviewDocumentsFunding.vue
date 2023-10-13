@@ -49,7 +49,7 @@
             </v-col>
             <v-col class="d-flex justify-end" align-self="end">
               <v-btn
-                v-if="!isErrored"
+                v-if="!isErrored && !isCurrentSectionFunding"
                 class="secondary _text-decoration-none px-6 mr-5"
                 large
                 target="_blank"
@@ -110,6 +110,8 @@ import {TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFS
 import IGCE from "@/store/IGCE";
 import { signedDocument } from "types/Global";
 import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
+import Steps from "@/store/steps";
+import { Console } from "console";
 
 
 @Component({
@@ -147,6 +149,10 @@ export default class ReviewDocumentsFunding extends Vue {
   get isDitcoUser(): boolean {
     return isDitcoUser();
   } 
+
+  get isCurrentSectionFunding(): boolean {
+    return Steps.currentStep?.stepName.toUpperCase() === "GENERATING_PACKAGE_DOCUMENTS_FUNDING"
+  }
 
   private async update(): Promise<void> {
     this._isGenerating = true;
