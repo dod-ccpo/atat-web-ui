@@ -5,7 +5,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
-import { PortfolioSummaryDTO, PortfolioSummaryObj } from "@/api/models";
+import { ClinDTO, PortfolioSummaryDTO, PortfolioSummaryObj } from "@/api/models";
 import validators from "@/plugins/validation";
 import AppSections from "@/store/appSections";
 import PortfolioStore from "@/store/portfolio";
@@ -26,9 +26,9 @@ describe("Testing TaskOrder Component", () => {
   let vuetify: Vuetify;
   localVue.use(validators);
 
-  let total_task_order_value:(number | undefined) = 0;
-  let total_lifecycle_amount:(number | undefined) = 0;
-  let funds_spent_task_order:(number | undefined) = 0;
+  const total_task_order_value:(number | undefined) = 0;
+  const total_lifecycle_amount:(number | undefined) = 0;
+  const funds_spent_task_order:(number | undefined) = 0;
   const dummyPortfolioSummaryList = [
     {
       "portfolio_name": "test 3000",
@@ -43,7 +43,7 @@ describe("Testing TaskOrder Component", () => {
       "total_obligated": 1919000,
       "funds_spent": 0,
       "active_task_order": "3000000000000",
-      "owner_full_name": "Logan Johnston",
+      "owner_full_name": "Test User",
       "funding_status": "ON_TRACK",
       "csp_portal_links": [
         {
@@ -58,11 +58,27 @@ describe("Testing TaskOrder Component", () => {
     }
   ];
 
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  // PortfolioData.setActiveTaskOrderNumber("1234"); // EJY - DOUBLE-CHECK IF NEEDED
- 
+  const mockTaskOrderProp = {
+    taskOrder: {
+      sys_id: '1234',
+      total_task_order_value: '100.00',
+      total_lifecycle_amount: '100.00',
+      total_funds_spent:'100.00',
+      total_obligated_funds: '100.00',
+      task_order_number: '4321',
+      task_order_status: 'ON_TRACK',
 
-  beforeEach(() => {
+      pop_start_date: "2023-12-08",
+      pop_end_date: "2024-12-08",
+      clins: [] as ClinDTO[]
+    }
+  }
+
+  let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  // PortfolioStore.setActiveTaskOrderNumber("1234"); // EJY - DOUBLE-CHECK IF NEEDED
+  
+
+  beforeEach(async () => {
     vuetify = new Vuetify();
     wrapper = mount(TaskOrder, {
       localVue,
@@ -72,16 +88,15 @@ describe("Testing TaskOrder Component", () => {
         $route: mockRoute
       } 
     });
+    await wrapper.setProps(mockTaskOrderProp)
   });
 
   it("renders successfully", async () => {
+    
     expect(wrapper.exists()).toBe(true);
   });
 
   it("loadOnEnter() test with task order that has valid money amounts", async()=>{
-    total_task_order_value = 120000;
-    total_lifecycle_amount = 240000;
-    funds_spent_task_order = 60000;
     jest.spyOn(PortfolioSummary, 'getAllPortfolioSummaryList').mockReturnValue(
       new Promise(resolve => resolve(dummyPortfolioSummaryList as any))
     );
@@ -108,9 +123,6 @@ describe("Testing TaskOrder Component", () => {
   })
 
   it("loadOnEnter() test with task order that has undefined money amounts", async()=>{
-    total_task_order_value = undefined;
-    total_lifecycle_amount = undefined;
-    funds_spent_task_order = undefined;
     jest.spyOn(PortfolioSummary, 'getAllPortfolioSummaryList').mockReturnValue(
       new Promise(resolve => resolve(dummyPortfolioSummaryList as any))
     );
