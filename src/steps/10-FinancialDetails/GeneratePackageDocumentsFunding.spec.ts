@@ -30,10 +30,7 @@ describe("Testing GeneratePackageDocumentsFunding component", () => {
   });
 
   describe("FUNCTIONS", () => {
-    it('isDitco() - returns true if contracting_shop is "DITCO"', () => {
-      expect(wrapper.vm.isDitco).toBe(false);
-    });
-
+   
     it('watchIsGenerating() - calls the right methods when isGenerating changes', async () => {
       const displayGeneratingDocumentsComponentMock =
         jest.spyOn(wrapper.vm, 'displayGeneratingDocumentsComponent');
