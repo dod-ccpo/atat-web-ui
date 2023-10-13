@@ -1560,11 +1560,10 @@ export const CurrentlyHasFundingResolver = (current: string): string => {
 };
 
 export const GTCInformationResolver = (current: string): string => {
-  return FinancialDetails.hasFunding === "HAS_FUNDING"
-    ? routeNames.GTC
-    : current !== routeNames.GeneratingPackageDocumentsFunding ?
-      routeNames.GeneratingPackageDocumentsFunding
-      : routeNames.CurrentlyHasFunding
+  if (FinancialDetails.hasFunding === "HAS_FUNDING") return routeNames.GTC;
+  return current !== routeNames.GeneratingPackageDocumentsFunding ?
+    routeNames.GeneratingPackageDocumentsFunding
+    : routeNames.CurrentlyHasFunding
 }
 
 export const FundingPlanTypeResolver = (current: string): string => {

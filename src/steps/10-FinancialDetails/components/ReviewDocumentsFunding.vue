@@ -139,7 +139,7 @@ export default class ReviewDocumentsFunding extends Vue {
   private needsSignatureLength = 0
   private downloadPackageLink = "";
   get fairOpportunity():string {
-    return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
+    return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity ?? "";
   }
   get incrementallyFunded():string {
     return FinancialDetails.fundingRequirement?.incrementally_funded ?? "";
@@ -193,7 +193,7 @@ export default class ReviewDocumentsFunding extends Vue {
 
     const migrationAttachments = await Attachments.getAttachmentsBySysIds({
       serviceKey: this.currentEnvServiceName,
-      sysIds: currentEnv?.migration_documentation||[]
+      sysIds: currentEnv?.migration_documentation ?? []
     });
     migrationAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
@@ -211,7 +211,7 @@ export default class ReviewDocumentsFunding extends Vue {
         serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
       this.createAttachmentObject(MIPRAttachment,'8 (Funding)')
     }
-    if(fundingRequest){
+    if (fundingRequest) {
       if (fundingRequest?.fs_form_7600a_attachment.length > 0) {
         fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment)
       }
@@ -241,6 +241,5 @@ export default class ReviewDocumentsFunding extends Vue {
     await AcquisitionPackage.setDisableContinue(false)
     await this.loadOnEnter();
   }
-
 }
 </script>

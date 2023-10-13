@@ -73,15 +73,22 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
   }
 
   public async getStatus(): Promise<void> {
-    const checkDocJobStatus = (async ()=> {
+    const checkDocJobStatus = async () => {
       await this.getDocJobStatus();
-      if (this.docJobStatus.toUpperCase() === "SUCCESS"
-          || this.docJobStatus.toUpperCase() === "FAILURE") {
+      if (
+        this.docJobStatus.toUpperCase() === "SUCCESS"
+        || this.docJobStatus.toUpperCase() === "FAILURE"
+      ) {
         clearInterval(intervalId);
         this.displayReviewComponent();
       }
-    });
-    const intervalId = window.setInterval(checkDocJobStatus, 3000);
+    };
+    const intervalId = window.setInterval(() => {
+      checkDocJobStatus().catch((err) => {
+        console.error('Error checking dock job status:', err);
+        clearInterval(intervalId);
+      });
+    }, 3000);
   }
 
   public displayReviewComponent(): void{
