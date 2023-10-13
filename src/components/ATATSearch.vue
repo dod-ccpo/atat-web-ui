@@ -349,7 +349,7 @@ export default class ATATSearch extends Vue {
       try {
         if (this.errorMessages.length > 0) return;
         this.showLoader = true;
-        const gInvoicingResponse = await api.gInvoicingApi.search(
+        const gInvoicingResponse = await api.gInvoicingApi.searchOrder(
           this._value,
           AcquisitionPackage.packageId
         );
