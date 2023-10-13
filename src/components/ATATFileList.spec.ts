@@ -149,6 +149,33 @@ describe("Testing ATATFileList Component", () => {
         );
       });
     })
+  
+  it("onCancelClicked() - sets holdIdxForRemoval and showDialog", () => {
+    wrapper.vm.holdIdxForRemoval = 'test';
+    wrapper.vm.showDialog = 'test';
+    wrapper.vm.onCancelClicked();
+    expect(wrapper.vm.holdIdxForRemoval).toBe(undefined);
+    expect(wrapper.vm.showDialog).toBe(false);
+  })
+
+  it("onRemoveClicked() - sets showDialog when holdIdxForRemoval is undefined", () => {
+    wrapper.vm.holdIdxForRemoval = undefined;
+    wrapper.vm.showDialog = 'test';
+    wrapper.vm.onRemoveClicked();
+    expect(wrapper.vm.holdIdxForRemoval).toBe(undefined);
+    expect(wrapper.vm.showDialog).toBe(false);
+  })
+
+  // eslint-disable-next-line max-len
+  it("onRemoveClicked() - sets showDialog when holdIdxForRemoval is defined, and removes the file", () => {
+    wrapper.vm.holdIdxForRemoval = 'test';
+    wrapper.vm.showDialog = 'test';
+    jest.spyOn(wrapper.vm, 'removeFiles').mockImplementation(() => undefined);
+    wrapper.vm.onRemoveClicked();
+    expect(wrapper.vm.holdIdxForRemoval).toBe('test');
+    expect(wrapper.vm.showDialog).toBe(false);
+    jest.spyOn(wrapper.vm, 'removeFiles').mockRestore();
+  })
 
   it ("@watch validFiles - provides index of file to remove to see delete event has been emitted",
     async()=>{
