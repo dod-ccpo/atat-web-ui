@@ -176,7 +176,9 @@ describe("Testing TaskOrderDetails Component", () => {
     periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
     totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
     totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
-    status:"On Track",
+    status:"On_Track",
+    sys_id: '1234',
+    statusLabel: 'On Track',
     clins: clins
   }
   /* eslint-enable camelcase */
