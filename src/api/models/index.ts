@@ -80,6 +80,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   contracting_shop?: string;
   funding_request?: ReferenceColumn | string;
   contracting_shop_non_ditco_address?: ReferenceColumn | string;
+  contracting_shop_require_funding_documents_for_submission_of_package?: string;
   owner_needs_email_package_ready_to_submit: boolean;
   customer_feedback:ReferenceColumn | string;
 }
@@ -816,6 +817,8 @@ export interface PortfolioSummaryMetadataAndDataDTO {
 }
 
 export interface EnvironmentDTO extends BaseTableDTO {
+  classification_level: string;
+  cloud_distinguisher: string;
   csp: string;
   csp_id: string;
   csp_display: string;
@@ -826,6 +829,8 @@ export interface EnvironmentDTO extends BaseTableDTO {
   provisioned_date: string;
   provisioning_failure_cause: string;
   provisioning_request_date: string;
+  sys_created_on: string;
+  sys_id: string;
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{

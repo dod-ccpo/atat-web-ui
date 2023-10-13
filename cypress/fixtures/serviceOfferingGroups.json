@@ -1,95 +1,61 @@
-[
-  {
-    "label": "Compute",
-    "value": "COMPUTE",
-    "environmentCypressLabels": [
-      "Dev/Testing",
-      "Pre-production/Staging",
-      "Production"
+{
+  "XaasRequirementsPage": {
+    "performancepageHeader": " Let’s work on your performance requirements ",
+    "XaaspageHeader1": " Let’s work on your Anything as a Service (XaaS) requirements ",
+    "XaaspageText2": "Specify any XaaS categories below that may apply to your acquisition, and we’ll walk through each selection to get more details. If you don’t want to add specific offerings, select “None of these apply to my acquisition,” and you can define objective-based requirements within another performance area. Learn more about XaaS categories.",
+    "XaasPageQuestion": "What type of XaaS resources, tools, and services do you need?",
+    "XaasResources": [
+      "Compute",
+      "Developer Tools and Services",
+      "Applications",
+      "Advanced Technology and Algorithmic Techniques (Machine Learning) and Data Analytics",
+      "Networking",
+      "Security",
+      "Edge Computing and Tactical Edge",
+      "Internet of Things (IoT)",
+      "General Infrastructure as a Service, Platform as a Service, and Software as a Service (XaaS) Includes third party marketplace and any other cloud resources not covered in the categories above.",
+      "Database",
+      "Storage Includes any storage requirements not covered within Compute and Database.",
+      "None of these apply to my acquisition."
     ],
-    "environmentMainLabels": [
-      "DevTesting",
-      "PreProdStaging",
-      "Production"
-    ],
-    "regionCypressLabels": [
-      "CONUS East",
-      "CONUS Central",
-      "CONUS West",
-      "OCONUS",
-      "Other"
-    ],
-    "regionMainLabels": [
-      "CONUSEast",
-      "CONUSCentral",
-      "CONUSWest",
-      "OCONUS",
-      "Other"
-    ],
-    "performanceTierCypressLabels": [
-      "High performance (Premium)",
-      "Medium performance (Standard)",
-      "Low performance (Basic)",
-      "Other"
-    ],
-    "performanceTierMainLabels": [
-      "PerformancePremium",
-      "PerformanceStandard",
-      "PerformanceBasic",
-      "Other"
-    ],
-    "storageTypeMainLabels": [
-      "GeneralPurposeSSD",
-      "ProvisionedIOPSSSD",
-      "Nearline",
-      "Offline",
-      "Other"
-    ],
-    "storageTypeCypressLabels": [
-      "General Purpose SSD",
-      "Provisioned IOPS SSD",
-      "Nearline",
-      "Offline",
-      "Other"
+    "XaasSummary": " Your XaaS Summary "
+  },
+  "commonTextPage": {
+    "selectAllText": "Select all that apply to your contracting effort.",
+    "gatherRqmtsHeader": " Now we’ll gather your requirements for "
+  },
+  "anticipatedUsersPage": {
+    "pageHeader": " First, tell us about your anticipated users and data needs ",
+    "page2Text": "Before we walk through each of your selected XaaS categories, we need to know some basic information about your users and data within each classification level.",
+    "checkBoxLabel": "Where are your users located?",
+    "regionCheckboxes": [
+      " CONUS East ",
+      " CONUS Central ",
+      " CONUS West ",
+      " AFRICOM ",
+      " CENTCOM ",
+      " EUCOM ",
+      " INDOPACOM ",
+      " SOUTHCOM "
     ]
   },
-  {
-    "label": "Developer Tools and Services",
-    "value": "DEVELOPERTOOLS",
-    "serviceOfferingCypressLabels": [
+  "DeveloperToolsPage": {
+    "pageHeader1": " What type of Developer Tools and Services do you need? ",
+    "developerToolTypes": [
       "DevSecOps",
-      "Data Management",
-      "Migration Tools",
-      "Transformation Tools",
-      "Cloud Development Tools",
-      "Cloud Audit/Monitoring Tools Requires a waiver from DISA CIO",
-      "Cyber Tools Requires a waiver from DISA CIO",
-      "Other"
-    ],
-    "serviceOfferingMainLabels": [
-      "DevSecOps",
-      "Data Management",
       "Migration Tools",
       "Transformation Tools",
       "Cloud Development Tools",
       "Cloud Audit/Monitoring Tools",
       "Cyber Tools",
       "Other"
-    ]
-  },
-  {
-    "label": "Applications",
-    "value": "APPLICATIONS",
-    "serviceOfferingCypressLabels": [
-      "Application",
-      "Web app",
-      "Database",
-      "Monitoring Tools Requires a waiver from DISA CIO",
-      "Discrete Platform as a Service (PaaS)",
-      "Discrete Software as a Service (SaaS)",
-      "Other"
     ],
-    "serviceOfferingMainLabels": [
+    "unclassText": "Use vendor-neutral language to describe the purpose and usage of the expected tools and capabilities. Provide a functional description of the requirement without including any company names or vendor-unique brand, product, or titles.",
+    "unclassQuestion": " Do you need this requirement for the entire duration of your task order? "
+  },
+  "ApplicationsPage": {
+    "pageHeader1": " What type of Applications do you need? ",
+    "applicationTypes": [
       "Application",
       "Web app",
       "Database",
@@ -97,104 +63,61 @@
       "Discrete Platform as a Service (PaaS)",
       "Discrete Software as a Service (SaaS)",
       "Other"
-    ]
+    ],
+    "unclassText": "Use vendor-neutral language to describe the purpose and usage of the expected tools and capabilities. Provide a functional description of the requirement without including any company names or vendor-unique brand, product, or titles.",
+    "unclassQuestion": " Do you need this requirement for the entire duration of your task order? "
   },
-  {
-    "label": "Advanced Technology and Algorithmic Techniques (Machine Learning)",
-    "value": "MACHINELEARNING",
-    "serviceOfferingCypressLabels": [
-      "Specialized Tools",
-      "Specialized Applications",
-      "Specialized Platform as a Service (PaaS)",
-      "Specialized Software as a Service (SaaS)",
-      "Other"
-    ]
-  },
-  {
-    "label": "Networking",
-    "value": "NETWORKING",
-    "serviceOfferingCypressLabels": [
+  "NetworkingPage": {
+    "pageHeader1": " What type of Networking do you need? ",
+    "networkTypes": [
       "Cloud Service Provider (CSP) Network",
       "Hybrid Network",
       "Custom Network",
       "Other"
     ]
   },
-  {
-    "label": "Security",
-    "value": "SECURITY",
-    "serviceOfferingCypressLabels": [
-      "Security Services",
-      "CSP Cloud Security",
-      "Zero Trust/Permissive Trust Security",
-      "Custom Security",
+  "MachineLearningPage": {
+    "pageHeader1": "What type of Advanced Technology and Algorithmic Techniques (Machine Learning) and Data Analytics do you need?",
+    "MachineLabels": [
+      "Specialized Tools",
+      "Specialized Applications",
+      "Specialized Platform as a Service (PaaS)",
+      "Specialized Software as a Service (SaaS)",
+      "Data Management",
       "Other"
     ]
   },
-  {
-    "label": "Database with Storage",
-    "value": "DATABASE",
-    "serviceOfferingCypressLabels": [
-      "Database services",
-      "Horizontal (typical transaction database row manage)",
-      "Vertical (attribute database/column managed)",
-      "Graph Database (node edge managed)",
-      "Other"
-    ]
-  },
-  {
-    "label": "Edge Computing and Tactical Edge (TE)",
-    "value": "EDGECOMPUTING",
-    "serviceOfferingCypressLabels": [
-      "Remotable Technology",
-      "Mobile Technology",
-      "Perimeter Technology",
-      "Conditional Flag indicating military hardening",
-      "Other"
-    ]
-  },
-  {
-    "label": "Internet of Things (IoT)",
-    "value": "IOT",
-    "serviceOfferingCypressLabels": [
+  "internetThingsPage": {
+    "pageHeader1": " What type of Internet of Things (IoT) do you need? ",
+    "IOTLabels": [
       "IoT Edge",
       "IoT Software as a Service (SaaS)",
       "IoT Platform as a Service (PaaS)",
       "Other"
     ]
   },
-  {
-    "label": "General Iaas, PaaS, and SaaS Including third party marketplace and any other XaaS resources not covered in the categories above",
-    "value": "GENERALXAAS",
-    "serviceOfferingCypressLabels": [
+
+  "securityPage": {
+    "pageHeader1": " What type of Security do you need? ",
+    "securityLabels": [
+      "Security Solutions",
+      "Managed CSP Cloud Security Solution",
+      "Cloud-specific Security Solution",
+      "Zero Trust/Permissive Trust Security",
+      "Custom Security",
       "Other"
+
     ]
   },
-  {
-    "label": "None of these apply to my acquisition.",
-    "value": "XaaSNoneApply"
-  },
-  {
-    "label": "Advisory and Assistance",
-    "value": "ADVISORY",
-    "serviceOfferingCypressLabels": [
-      "Simple Challenge",
-      "Moderate Challenge",
-      "Complex Challenge"
-    ]
-  },
-  {
-    "label": "Training",
-    "value": "TRAINING",
-    "serviceOfferingCypressLabels": [
-      "OCONUS",
-      "OCONUS Local CSP Facility",
-      "OCONUS Local Government Facility",
-      "OCONUS Web based Training"
-    ]
-  },
-  {
-    "label": "None of these apply to my acquisition.",
-    "value": "CloudSupportNoneApply"
+  "GatherRequirementsPage": {
+    "pageText1": "What classification level(s) do you need?",
+    "pageText2": "I need this requirement within a different classification level. What do I do?",
+    "sectionTitle": "1. Tell us about the Unclassified/IL2 instance",
+    "sectionSubTitle": "Statement of objectives for the anticipated need or usage",
+    "descriptionText": "Use vendor-neutral language to describe the purpose and usage of the expected tools and capabilities. Provide a functional description of the requirement without including any company names or vendor-unique brand, product, or titles.",
+    "durationQuestion": "Do you need this requirement for the entire duration of your task order?",
+    "basePeriodText": "Base period",
+    "errorMessage": "Please select at least one"
+
   }
-]
+}

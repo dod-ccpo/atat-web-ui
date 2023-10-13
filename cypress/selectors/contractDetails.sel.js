@@ -33,7 +33,7 @@ module.exports = {
     "#Option1Dropdown_dropdown_dropdown_field_control .v-list",
   optionDropdownListItems:
     "#Option1Dropdown_dropdown_field_control .v-menu__content",
-   optionDropdownYear: "#Option1Dropdown_DropdownListItem_Year",
+  optionDropdownYear: "#Option1Dropdown_DropdownListItem_Year",
   optionDropdownMonth: "#Option1Dropdown_DropdownListItem_Months",
   optionDropdownWeek: "#Option1Dropdown_DropdownListItem_Weeks",
   optioneDropdownDays: "#Option1Dropdown_DropdownListItem_Days",
@@ -123,18 +123,18 @@ module.exports = {
   tsCheckedbox: "#SecurityRequirementsTopSecret input[type=checkbox]:checked",
   secretErrorCheckbox:
     "#SecurityRequirementsSecret input[type=checkbox] .field-error",
-  checkbox_1: "#Checkbox_1",
-  checkbox_2: "#Checkbox_2",
-  checkbox_3: "#Checkbox_3",
-  checkbox_4: "#Checkbox_4",
-  checkbox_5: "#Checkbox_5",
-  checkbox_6: "#Checkbox_6",
-  checkbox_7: "#Checkbox_7",
-  checkbox_8: "#Checkbox_8",
-  checkbox_9: "#Checkbox_9",
-  checkbox_10: "#Checkbox_10",
-  checkbox_11: "#Checkbox_11",
-  checkbox_12: "#Checkbox_12",
+  checkbox1: "#Checkbox_1",
+  checkbox2: "#Checkbox_2",
+  checkbox3: "#Checkbox_3",
+  checkbox4: "#Checkbox_4",
+  checkbox5: "#Checkbox_5",
+  checkbox6: "#Checkbox_6",
+  checkbox7: "#Checkbox_7",
+  checkbox8: "#Checkbox_8",
+  checkbox9: "#Checkbox_9",
+  checkbox10: "#Checkbox_10",
+  checkbox11: "#Checkbox_11",
+  checkbox12: "#Checkbox_12",
   //Cross Domain
   cdsRadiogroup: "#needsCDSGroup_radio_group_control",
   cdsYesOption: "#Radio_YesCdsSolution",
@@ -178,18 +178,18 @@ module.exports = {
   basePeriodCheckboxError: "#PeriodsCheckboxes_01 .field-error",
   basePeriodCheckboxChecked:"#Checkbox_BASE",
 
-// ContractDetails Summary
-popHeading: "#PeriodofPerformancePoP_Heading",
-popDescription: "#PeriodofPerformancePoP_Description",
-popComplete: "#PeriodofPerformancePoP_CompleteButton",
+  // ContractDetails Summary
+  popHeading: "#PeriodofPerformancePoP_Heading",
+  popDescription: "#PeriodofPerformancePoP_Description",
+  popComplete: "#PeriodofPerformancePoP_CompleteButton",
 
-contractTypeHeading: "#ContractType_Heading",
-contractTypeDescription: "#ContractType_Description",
-contractStart: "#ContractType_StartButton",
-contractComplete: "#ContractType_CompleteButton",
+  contractTypeHeading: "#ContractType_Heading",
+  contractTypeDescription: "#ContractType_Description",
+  contractStart: "#ContractType_StartButton",
+  contractComplete: "#ContractType_CompleteButton",
 
-classReqHeading: " #ClassificationRequirements_Heading",
-classReqDescription: "#ClassificationRequirements_Description",
-classReqStart: "#ClassificationRequirements_StartButton",
-classReqComplete: "#ClassificationRequirements_CompleteButton"
+  classReqHeading: " #ClassificationRequirements_Heading",
+  classReqDescription: "#ClassificationRequirements_Description",
+  classReqStart: "#ClassificationRequirements_StartButton",
+  classReqComplete: "#ClassificationRequirements_CompleteButton"
 };

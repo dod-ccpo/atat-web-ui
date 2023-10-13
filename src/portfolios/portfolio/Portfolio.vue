@@ -266,7 +266,7 @@
                           v-for="(idiqClin, index) in idiqClins"
                           :key="index"
                           v-model="checked[index + 1]"
-                          :label="idiqClins[index].idiq_clin_label"
+                          :label="idiqClins[index].idiq_clin"
                           :class="'color_chart_' + (index + 2)"
                           hide-details="true"
                           :ripple="false"
@@ -946,7 +946,7 @@ export default class PortfolioDashboard extends Vue {
                 cost => cost.clin_number === costClinNo && cost.year_month === yearMonth
               );
               const isActual = thisCost 
-                ? thisCost.is_actual === "true" && !isThisMonth(parseISO(thisCost.year_month))
+                ? thisCost.is_actual === true && !isThisMonth(parseISO(thisCost.year_month))
                 : false;
               const costValue = thisClinCosts[costClinNo] !== undefined
                 && thisClinCosts[costClinNo][yearMonth] !== undefined
@@ -1076,7 +1076,7 @@ export default class PortfolioDashboard extends Vue {
       const clin = this.idiqClins.find((clin) => clin.clin_number === clinNo);
       if (clin && this.burnChartData.datasets) {
         const clinActualData = {
-          label: clin.idiq_clin_label,
+          label: clin.idiq_clin,
           dataSetId: clin.idiq_clin
             ? getIdText(clin.idiq_clin + "Actual")
             : clinNo + "Data",
@@ -1094,7 +1094,7 @@ export default class PortfolioDashboard extends Vue {
         burnChartDataSets.push(clinActualDataSet);
 
         const clinProjectedData = {
-          label: clin.idiq_clin_label + " Projected",
+          label: clin.idiq_clin + " Projected",
           dataSetId: clin.idiq_clin
             ? getIdText(clin.idiq_clin + "Projected")
             : clinNo + "DataProjected",
