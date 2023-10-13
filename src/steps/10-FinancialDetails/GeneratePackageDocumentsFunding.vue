@@ -21,11 +21,10 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocumentsFunding from "./components/GeneratingDocumentsFunding.vue";
 import ReviewDocumentsFunding from "./components/ReviewDocumentsFunding.vue";
-import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -39,10 +38,7 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
   private isErrored = false;
   private docJobStatus = "" ;
 
-  public packageDocComponent: Vue.Component =
-    this.$route.params.direction === "next"
-      ? GeneratingDocumentsFunding
-      : ReviewDocumentsFunding
+  public packageDocComponent: Vue.Component | null = null;
 
   get isDitco(): boolean {
     return AcquisitionPackage.acquisitionPackage?.contracting_shop ==="DITCO"
@@ -56,8 +52,15 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
 
 
   public toggleNavigationElements(value: boolean): void {
-    (document.getElementById('stepperNavigation') as HTMLElement).hidden = value;
-    (document.getElementsByTagName('footer'))[0].hidden = value;
+    const stepperNavigation = document.getElementById('stepperNavigation');
+    const footer = document.getElementsByTagName('footer')[0];
+
+    if (stepperNavigation) {
+      stepperNavigation.hidden = value;
+    }
+    if (footer) {
+      footer.hidden = value;
+    }
   }
 
   async displayGeneratingDocumentsComponent(): Promise<void>{
@@ -71,9 +74,7 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
 
   public async getStatus(): Promise<void> {
     const checkDocJobStatus = (async ()=> {
-      console.log("DocJobStatus checked")
       await this.getDocJobStatus();
-      console.log("Status:", this.docJobStatus)
       if (this.docJobStatus.toUpperCase() === "SUCCESS"
           || this.docJobStatus.toUpperCase() === "FAILURE") {
         clearInterval(intervalId);
@@ -95,13 +96,20 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
       AcquisitionPackage.packageId.toUpperCase() || "")
   }
 
-  public async mounted(): Promise<void> {
+  public async determineComponent() {
     await this.getDocJobStatus();
     if (this.docJobStatus === "NOT_STARTED" || this.docJobStatus === "IN_PROGRESS") {
       await this.displayGeneratingDocumentsComponent();
     } else {
       this.displayReviewComponent();
     }
+  }
+
+  public async mounted(): Promise<void> {
+    this.packageDocComponent = this.$route.params.direction === "next"
+      ? GeneratingDocumentsFunding
+      : ReviewDocumentsFunding;
+    await this.determineComponent();
   }
 
   public async saveOnLeave(): Promise<boolean> {

@@ -63,7 +63,7 @@
               </v-btn>
               <v-btn
                 class="primary _text-decoration-none px-6"
-                v-if="isErrored === false"
+                v-if="!isErrored"
                 large
                 width="137"
                 role="button"
@@ -79,7 +79,6 @@
                 v-for="(acPackage, idx) of packageCheckList" :key="idx"
                 :itemNumber="String(idx<9 ? '0' + (idx + 1) : idx + 1)"
                 :itemName="acPackage.itemName"
-                :additionalInfo="acPackage.description"
                 :alertText="acPackage.alertText"
                 :ditcoUser="isDitcoUser"
                 v-show="acPackage.show"
@@ -110,7 +109,6 @@ import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import {TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 import IGCE from "@/store/IGCE";
-import acquisitionPackage from "@/store/acquisitionPackage";
 import { signedDocument } from "types/Global";
 import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
 
@@ -140,12 +138,11 @@ export default class ReviewDocumentsFunding extends Vue {
   private reqCostEstimateServiceName = REQUIREMENTS_COST_ESTIMATE_TABLE;
   private needsSignatureLength = 0
   private downloadPackageLink = "";
-  private domain="";
   get fairOpportunity():string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "";
   }
   get incrementallyFunded():string {
-    return FinancialDetails.fundingRequirement?.incrementally_funded || "";
+    return FinancialDetails.fundingRequirement?.incrementally_funded ?? "";
   }
   get isDitcoUser(): boolean {
     return isDitcoUser();
@@ -156,7 +153,7 @@ export default class ReviewDocumentsFunding extends Vue {
   }
   private packageCheckList: signedDocument[] = [];
   
-  private createAttachmentObject(attachment:any, step:string):void{
+  private createAttachmentObject(attachment: any, step: string):void{
     const obj = {
       itemName:attachment.file_name,
       requiresSignature:false,
@@ -167,14 +164,13 @@ export default class ReviewDocumentsFunding extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    if(AcquisitionPackage.acquisitionPackage
-      && AcquisitionPackage.acquisitionPackage.sys_updated_on){
+    if(AcquisitionPackage.acquisitionPackage?.sys_updated_on) {
       this.lastUpdatedString =
         `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`
     }
     
     this.packageCheckList = (await AcquisitionPackage.getSignedDocumentsList()).filter(
-      signedDoc => signedDoc.show === true
+      signedDoc => signedDoc.show
     )
 
     this.needsSignatureLength = 
@@ -205,7 +201,7 @@ export default class ReviewDocumentsFunding extends Vue {
 
     const sysDocAttachments = await Attachments.getAttachmentsBySysIds({
       serviceKey: this.currentEnvServiceName,
-      sysIds: currentEnv?.system_documentation||[]
+      sysIds: currentEnv?.system_documentation ?? []
     });
     sysDocAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
@@ -230,15 +226,15 @@ export default class ReviewDocumentsFunding extends Vue {
         this.createAttachmentObject(attachment,'8 (Funding)')
       })
     }
-    const docNames:string[] = []
+    const docNames: string[] = []
     this.packageCheckList.forEach(listItem => {
       if(typeof listItem.itemName === "string")
         docNames.push(listItem.itemName)
     })
     await AcquisitionPackage.setAttachmentNames(docNames)
 
-    this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() || "";
-    this.downloadPackageLink = await acquisitionPackage.setDownloadPackageLink(false);
+    this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() ?? "";
+    this.downloadPackageLink = await AcquisitionPackage.setDownloadPackageLink(false);
   }
 
   async mounted(): Promise<void>{
