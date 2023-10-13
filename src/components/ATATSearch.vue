@@ -122,7 +122,7 @@
           width="22"
           height="22"
         />
-        <span class="font-weight-500">GT&C verified</span>
+        <span class="font-weight-500">{{ gInvoicingVerifiedText }}</span>
       </div>
     </div>
 
@@ -250,6 +250,10 @@ export default class ATATSearch extends Vue {
       return false;
     }
     return this.helpText.length > 0;
+  }
+
+  private get gInvoicingVerifiedText() {
+    return this.gInvoicingSearchType === 'GtcNumber' ? "GT&C verified" : "Order verified";
   }
 
   @Watch("_resetValidationNow")
