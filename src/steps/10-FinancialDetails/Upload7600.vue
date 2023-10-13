@@ -46,7 +46,7 @@
           </div>
           <div v-show="useGInvoicing === 'NO'">
             <hr class="mt-5" />
-            <div style="width:460px">
+            <div style="width: 460px">
               <ATATTextField
                 id="OrderNumber"
                 label="Order Number"
@@ -101,10 +101,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 import Attachments from "@/store/attachments";
 
-import {
-  RadioButton,
-  SlideoutPanelContent,
-} from "../../../types/Global";
+import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 import FinancialDetails, {
   initialFundingRequestFSForm,
 } from "@/store/financialDetails";
@@ -316,13 +313,16 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    if (
-      this.gInvoiceSearchValid !== true && this.useGInvoicing === 'YES'
-    ) return false;
-    await AcquisitionPackage.setValidateNow(true);
     // file upload / saving
     try {
       if (this.hasChanged()) {
+        if (
+          this.gInvoiceSearchValid !== true &&
+          this.useGInvoicing === "YES" &&
+          this.orderNumber !== ""
+        )
+          return false;
+        await AcquisitionPackage.setValidateNow(true);
         this.loaded = await FinancialDetails.loadFundingRequestFSForm();
         /* eslint-disable camelcase */
         const data: FundingRequestFSFormDTO = {
