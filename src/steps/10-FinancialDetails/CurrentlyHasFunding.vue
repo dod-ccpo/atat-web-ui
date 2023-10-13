@@ -36,8 +36,9 @@ import { RadioButton } from "../../../types/Global";
 import { hasChanges } from "@/helpers";
 import FinancialDetails from "@/store/financialDetails";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import {isDitcoUser} from "@/store/acquisitionPackage";
+import AcquisitionPackage, {isDitcoUser} from "@/store/acquisitionPackage";
 import {routeNames} from "@/router/stepper";
+import Steps from "@/store/steps";
 
 @Component({
   components: {
@@ -69,8 +70,8 @@ export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     await FinancialDetails.loadFundingRequirement();
-    this.selectedHasFunding = FinancialDetails.hasFunding || "";
-    this.savedData = FinancialDetails.hasFunding || "";
+    this.selectedHasFunding = FinancialDetails.fundingRequirement?.has_funding || "";
+    this.savedData = FinancialDetails.fundingRequirement?.has_funding || "";
   };
 
   public async mounted(): Promise<void> {
@@ -79,7 +80,7 @@ export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {
   };
 
   private addNavigation() {
-    if (!isDitcoUser()) {
+    if (!isDitcoUser() && !Steps.prevStepName.includes(routeNames.RFD)) {
       this.$router.push({
         name: routeNames.RFD,
       })

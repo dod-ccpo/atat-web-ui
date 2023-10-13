@@ -103,7 +103,7 @@
           :isHomeView="isHomeView"
         />
       </transition-group>
-
+<!--  add back when pagination is added
       <div class="_table-pagination mt-5" v-show="showPagination">
         <span class="mr-11 font-weight-400 font-size-14">
           Showing {{ startingNumber }}-{{ endingNumber }} of {{ portfolioCount }}
@@ -114,7 +114,7 @@
           :length="numberOfPages"
           circle
         ></v-pagination>     
-      </div>
+      </div> -->
 
     </div>
 
@@ -576,7 +576,6 @@ export default class PortfoliosSummary extends Vue {
         cardData.portfolio_owner = portfolio.owner_full_name;
         cardData.createdBy = portfolio.sys_created_by;
         cardData.agency = portfolio.agency;
-        cardData.taskOrderSysId = portfolio.active_task_order;
         cardData.taskOrderNumber = portfolio.active_task_order
 
         // lastModified - if status is "Processing" use "Started ... ago" string

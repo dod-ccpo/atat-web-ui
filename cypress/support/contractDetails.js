@@ -68,20 +68,28 @@ Cypress.Commands.add("selectClassificationLevel", (selectedClassifications) => {
     level6: contractDetails.level6,
     tops: contractDetails.ts,
   };
-
   cy.findElement(common.subStepClassReqsLink).click();
   selectedClassifications.forEach((label) => {
     cy.findElement(expectedLabelMaps[label]).click({ force: true });
   });
-
   if (
-    selectedClassifications.includes("Secret") ||
-    selectedClassifications.includes("Top secret")
+    selectedClassifications.includes("level6") ||
+    selectedClassifications.includes("tops")
   ) {
     cy.clickContinueButton(
       contractDetails.level4,
       "Let’s find out more about your security requirements"
     );
+    cy.findElement("#Checkbox_4_Secret")
+      .check({
+        force: true,
+      })
+      .should("be.checked");
+    cy.findElement("#Checkbox_2_TopSecret")
+      .check({
+        force: true,
+      })
+      .should("be.checked");
   } else {
     cy.clickContinueButton(
       contractDetails.level4,

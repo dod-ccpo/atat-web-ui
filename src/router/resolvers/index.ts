@@ -1551,18 +1551,41 @@ export const IGCESupportingDocumentationResolver = (current: string): string => 
   }
 };
 
-export const CurrentlyHasFundingResolver = (current: string): string => {
+export const RFDResolver = (): string => {
+  if (!isDitcoUser()) {
+    return routeNames.RFD
+  }
   return Summary.hasCurrentStepBeenVisited
     ? routeNames.SummaryStepEight
-    : isDitcoUser()
-      ? routeNames.CurrentlyHasFunding
+    : routeNames.CurrentlyHasFunding
+}
+
+export const CurrentlyHasFundingResolver = (current: string): string => {
+  const doesNotNeedFundingDoc = AcquisitionPackage.acquisitionPackage
+    ?.contracting_shop_require_funding_documents_for_submission_of_package === 'NO'
+
+  if (current === routeNames.RFD && doesNotNeedFundingDoc) {
+    return routeNames.SummaryStepEight
+  }
+
+  return Summary.hasCurrentStepBeenVisited
+    ? routeNames.SummaryStepEight
+    : !isDitcoUser() ?
+      routeNames.CurrentlyHasFunding
       : routeNames.RFD
 };
 
 export const GTCInformationResolver = (current: string): string => {
-  return FinancialDetails.hasFunding === "HAS_FUNDING"
-    ? routeNames.GTC
-    : routeNames.GeneratingPackageDocumentsFunding
+  if (FinancialDetails.hasFunding === "HAS_FUNDING") return routeNames.GTC;
+  return current !== routeNames.GeneratingPackageDocumentsFunding ?
+    routeNames.GeneratingPackageDocumentsFunding
+    : routeNames.CurrentlyHasFunding
+}
+
+export const FundingPlanTypeResolver = (current: string): string => {
+  return current !== routeNames.GeneratingPackageDocumentsFunding ?
+    routeNames.FundingPlanType
+    : routeNames.SummaryStepEight
 }
 
 export const MIPRResolver = (current: string): string => {
@@ -1570,35 +1593,25 @@ export const MIPRResolver = (current: string): string => {
   if (fundingType === "MIPR") {
     return routeNames.MIPR;
   }
-  return current === routeNames.GInvoicing
+  if (fundingType === "FS_FORM") {
+    return routeNames.SummaryStepEight;
+  }
+  return current === routeNames.GTC
     ? routeNames.FundingPlanType
-    : routeNames.GInvoicing;
+    : routeNames.GTC;
 };
 
-export const GInvoicingResolver = (current: string): string => {
-  if (fundingRequestType() === "FS_FORM") {
-    return routeNames.GInvoicing;
-  }
-  
-  return current === routeNames.SeverabilityAndIncrementalFunding
-    ? routeNames.MIPR
-    : hasExceptionToFairOpp() 
-      ? routeNames.AppropriationOfFunds
-      : SeverabilityAndIncrementalFundingResolver(current);
-}
-
 export const Upload7600Resolver = (current: string): string => {
-  const useGInvoicing = FinancialDetails.gInvoicingData.useGInvoicing === "YES";
-  
-  if (!useGInvoicing) {
+  if (current === routeNames.FundingPlanType) {
     return fundingRequestType() === "MIPR" 
       ? routeNames.MIPR
       : routeNames.Upload7600;
   }
 
+
   return current === routeNames.SeverabilityAndIncrementalFunding ||
     current === routeNames.AppropriationOfFunds
-    ? routeNames.GInvoicing
+    ? routeNames.GTC
     : hasExceptionToFairOpp() 
       ? routeNames.AppropriationOfFunds
       : SeverabilityAndIncrementalFundingResolver(current);
@@ -1684,6 +1697,7 @@ export const FinancialPOCResolver =  (current: string): string => {
       current === routeNames.ReadyToGeneratePackage && isIncrementallyFunded === "NO") {
     return routeNames.SeverabilityAndIncrementalFunding;
   }
+  if (current === routeNames.RFD) return routeNames.SummaryStepEight;
   return current === routeNames.FinancialPOCForm
     ? routeNames.ReadyToGeneratePackage
     : routeNames.FinancialPOCForm
@@ -1880,7 +1894,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   MIPRResolver,
   IGCESurgeCapabilities,
   FeeChargedResolver,
-  GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
@@ -1915,8 +1928,10 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SummaryStepTwoRouteResolver,
   CurrentlyHasFundingResolver,
   GTCInformationResolver,
+  FundingPlanTypeResolver,
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
+  RFDResolver,
 };
 
 // add path resolvers here 

@@ -18,6 +18,8 @@ import {
   EDAResponse,
   ReferenceColumn, 
   EnvironmentDTO,
+  UserDTO,
+  CostsDTO,
 } from "@/api/models";
 
 export interface DocReviewData {
@@ -511,8 +513,7 @@ export interface User {
 }
 
 export interface Environment extends EnvironmentDTO {
-  environmentStatus?: string;
-  classification_level?: string;
+  environment_status?: string;
 }
 
 export interface EnvironmentLink {
@@ -520,6 +521,75 @@ export interface EnvironmentLink {
   link: string
 }
 
+export interface PortfolioDetailsDTO{
+  portfolio: PortfolioDTO;
+  portfolioId: string;
+}
+export interface PortfolioDTO extends BaseTableDTO {
+  agency?: string;
+  agencyDisplay?: string;
+  available_funds?: string;
+  clins?: ClinDTO[];
+  current_user_is_manager?: boolean;
+  current_user_is_owner?: boolean;
+  description?: string;
+  environments?: Environment[]; 
+  estimated_funds_available?: string;
+  estimated_funds_to_be_invoiced?: string;
+  funding_status?: string;
+  inPeriodClins?:string[];
+  is_archived?:boolean;
+  last_cost_data_sync?: string;
+  last_modified?: string;
+  last_updated?: string;
+  period_funds_spent?: string;
+  pop_end_date?: string;
+  pop_start_date?: string;
+  portfolio_name?: string;
+  portfolio_status?: string;
+  portfolio_users?: PortfolioUsers
+  spend_end_of_month_xaas_forecast?: string;
+  spend_end_of_month_xaas_forecast_trend?: string;
+  spend_end_of_period_forecast?: string;
+  spend_last_month?: string;
+  spend_last_month_trend?: string;
+  spend_monthly_average?: string;
+  task_order?: TaskOrderDTO;
+  total_portfolio_funds?: string;
+  vendor?: string;
+  sysId?: string
+}
+
+export interface PortfolioUsers{
+creator: UserDTO;
+managers: UserDTO[];
+owner: UserDTO;
+viewers: UserDTO[]
+}
+
+export interface PortfolioFundsData{
+  fundsAvailable?: string;
+  estimatedFundsAvailable?:  string;
+  fundsToBeInvoiced?:  string;
+  periodFundsSpent?:  string;
+  endOfMonthXaasForecast?:  string;
+  endOfMonthXaasTrend?:  string;
+  endOfPeriodForecast?:  string;
+  lastMonthSpent?:  string;
+  lastMonthTrend?:  string;
+  spendMonthAverage?:  string;
+  totalPortfolioFunds?:  string;
+  costs?: CostsDTO[]
+}
+
+export interface TaskOrderDTO{
+  sys_id: string;
+  task_order_number: string;
+  total_funds_spent: string;
+  total_lifecycle_amount: string;
+  total_obligated_funds: string;
+  total_task_order_value: string;
+}
 export interface Portfolio extends BaseTableDTO {
   sysId?: string;
   title?: string;
@@ -542,6 +612,15 @@ export interface Portfolio extends BaseTableDTO {
   vendor?: string;
   lastCostDataSync?: string;
   fundingStatus?: string;
+  clins?: ClinDTO[];
+  // add funding data interface
+  fundsData?: PortfolioFundsData;
+  currentCLINs?: ClinDTO[];
+  popStartDate?: string;
+  popEndDate?: string;
+  currentUserIsManager?: boolean;
+  currentUserIsOwner?: boolean;
+  taskOrder?: PortfolioTaskOrder
 }
 
 export interface PortfolioCardData extends Portfolio {
@@ -592,6 +671,19 @@ export interface PortfolioProvisioning extends EDAResponse {
   selectedILs?: string[];
 }
 
+export interface PortfolioTaskOrder{
+    total_task_order_value: string,
+    total_lifecycle_amount: string,
+    total_funds_spent:string,
+    total_obligated_funds: string,
+    task_order_number: string,
+    task_order_status: string,
+    sys_id: string,
+    pop_start_date: string,
+    pop_end_date: string,
+    clins: ClinDTO[]
+}
+
 export interface EmailEntry {
   key: string;
   email: string;
@@ -609,16 +701,16 @@ export interface FundingTrackerAlert {
 }
 
 export interface TaskOrderCardData {
-  taskOrderNumber?: string,
-  periodOfPerformance?: string,
-  totalObligated?: string,
-  totalValue?: string,
-  totalLifeCycle?: string,
-  totalFundsSpent?: string,
-  status?: string,
-  statusLabel?: string,
-  sys_id?: string,
-  clins?:ClinDTO[],
+  taskOrderNumber: string,
+  periodOfPerformance: string,
+  totalObligated: string,
+  totalValue: string,
+  totalLifeCycle: string,
+  totalFundsSpent: string,
+  status: string,
+  statusLabel: string,
+  sys_id: string,
+  clins:ClinDTO[],
 }
 
 export interface AwardedTaskOrderDetails {

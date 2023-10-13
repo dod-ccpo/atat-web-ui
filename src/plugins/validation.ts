@@ -381,9 +381,13 @@ export class ValidationPlugin {
       )
 
       if (!isValidExtension){
-        return `'${fileName}' is not a valid format or has been corrupted. <br />` +
+        return validExtensions.length > 1 ?
+          `'${fileName}' is not a valid format or has been corrupted. <br />` +
                 `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
-                `.${validExtensions.slice(-1)} file.`
+                `.${validExtensions.slice(-1)} file.` 
+          :
+          `'${fileName}' is not a valid format or has been corrupted. <br />` +
+                `Please upload a valid .${validExtensions[0]} file.`
       }
       // list of names that a file can not have
       if(restrictedNames?.includes(file.name)){
@@ -407,9 +411,13 @@ export class ValidationPlugin {
         // during upload, did SNOW detect that the
         // file type was incorrect (eg, changing .txt to .pdf file)
         if (error.indexOf("invalid file type")>-1){
-          invalidMessage = `'${fileName}' is not a valid format or has been corrupted. ` +
-            `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
-            `.${validExtensions.slice(-1)} file.`
+          invalidMessage = validExtensions.length > 1 ?
+            `'${fileName}' is not a valid format or has been corrupted. ` +
+                `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
+                `.${validExtensions.slice(-1)} file.` 
+            :
+            `'${fileName}' is not a valid format or has been corrupted. ` +
+                `Please upload a valid .${validExtensions[0]} file.`
         } else {
           // generic message to accommodate for all other errors
           //that are returned from SNOW

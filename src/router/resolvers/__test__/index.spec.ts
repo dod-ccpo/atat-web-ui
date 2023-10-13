@@ -4,21 +4,22 @@ import {
   OfferingDetailsPathResolver,
   RequirementsPathResolver,
   ServiceOfferingsPathResolver,
-  calcBasePeriod,
-  IncrementalFundingResolver,
+  calcBasePeriod, 
+  IncrementalFundingResolver, 
   FinancialPOCResolver,
-  AppropriationOfFundsResolver
+  RFDResolver,
+  CurrentlyHasFundingResolver
 } from '../index'
 import {FinancialDetailsStore} from "@/store/financialDetails/index";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
-import FinancialDetails from "@/store/financialDetails";
+import * as acqPackageExportedFunctions from "@/store/acquisitionPackage";
 import { routeNames } from "@/router/stepper";
-import { FairOpportunityDTO, FundingRequirementDTO } from "@/api/models";
-import { getModule } from "vuex-module-decorators";
-import Vuex, { Store } from "vuex";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import Summary from "@/store/summary";
+import acquisitionPackage from "@/store/acquisitionPackage";
+import Vue from "vue";
+
 describe("testing src/router/index.ts", () => {
   
   describe('Testing OtherOfferingSummaryPathResolver()', () => {
@@ -277,50 +278,81 @@ describe("testing src/router/index.ts", () => {
     expect(result).toBe("Financial_POC_Form")
   });
 
-  describe('IncrementalFundingResolver', () => {
-    // eslint-disable-next-line max-len
-    it('should return routeNames.FinancialPOCForm when current is routeNames.IncrementalFunding', async () => {
-      const createStore = (storeOptions: any = {}):
-          Store<{ financialDetails: any }> => new Vuex.Store({...storeOptions});
-      const financialDetailsStore = getModule(FinancialDetailsStore, createStore());
-      financialDetailsStore
-        .setFundingRequirement({ incrementally_funded: 'YES' } as FundingRequirementDTO);
+  describe('RFDResolver', () => {
 
-      const result = IncrementalFundingResolver(routeNames.IncrementalFunding);
-
-      expect(result).toBe(routeNames.FinancialPOCForm);
+    it('should return routeNames.RFD when isDitcoUser() returns false', () => {
+      jest
+        .spyOn(acqPackageExportedFunctions, "isDitcoUser")
+        .mockReturnValue(false);
+      const result = RFDResolver();
+      expect(result).toBe(routeNames.RFD);
     });
 
+    it('should return routeNames.SummaryStepEight when Summary.hasCurrentStepBeenVisited is true',
+      () => {
+        jest
+          .spyOn(acqPackageExportedFunctions, "isDitcoUser")
+          .mockReturnValue(true);
+        Summary.setHasCurrentStepBeenVisited(true) ;
+
+        const result = RFDResolver();
+        expect(result).toBe(routeNames.SummaryStepEight);
+      });
+    //
     // eslint-disable-next-line max-len
-    it('should return routeNames.SummaryStepEight if fundingReq.incrementally_funded is "NO"', async () => {
-      const createStore = (storeOptions: any = {}):
-          Store<{ financialDetails: any }> => new Vuex.Store({...storeOptions});
-      const financialDetailsStore = getModule(FinancialDetailsStore, createStore());
-      financialDetailsStore
-        .setFundingRequirement({ incrementally_funded: 'NO' } as FundingRequirementDTO);
+    it('should return routeNames.CurrentlyHasFunding when Summary.hasCurrentStepBeenVisited is false', () => {
+      jest
+        .spyOn(acqPackageExportedFunctions, "isDitcoUser")
+        .mockReturnValue(true);
+      Summary.setHasCurrentStepBeenVisited(false) ;
+      const result = RFDResolver();
 
-      const result = IncrementalFundingResolver(routeNames.IncrementalFunding);
-
-      expect(result).toBe(routeNames.SummaryStepEight);
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
     });
   });
 
-  describe('AppropriationOfFundsResolver', () => {
-    it('should return MIPR', () => {
-      const mockFairOpp = {exception_to_fair_opportunity:""} as FairOpportunityDTO
-      AcquisitionPackage.doSetFairOpportunity(mockFairOpp)
-      const result = AppropriationOfFundsResolver(routeNames.IncrementalFunding);
+  describe('CurrentlyHasFundingResolver', () => {
+    it('return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true',
+      async () => {
+        await acquisitionPackage.setContractingShopRequireFundingDocuments("NO")
 
-      expect(result).toBe(routeNames.MIPR);
-    });
-    it('should return routeNames.SummaryStepEight when current is routeNames.MIPR', () => {
-      const mockFairOpp = {exception_to_fair_opportunity: "NO_NONE"} as FairOpportunityDTO
-      AcquisitionPackage.doSetFairOpportunity(mockFairOpp)
-      const result = AppropriationOfFundsResolver(routeNames.MIPR);
+        const result = CurrentlyHasFundingResolver(routeNames.RFD);
+        Vue.nextTick(() => {
+          expect(result).toBe(routeNames.SummaryStepEight);
+        })
+      });
+
+    it('should return SummaryStepEight when Summary.hasCurrentStepBeenVisited is true', () => {
+      Summary.setHasCurrentStepBeenVisited(true) ;
+
+      const result = CurrentlyHasFundingResolver('SomeOtherRoute');
 
       expect(result).toBe(routeNames.SummaryStepEight);
     });
 
+    it('should return CurrentlyHasFunding when isDitcoUser() is false', () => {
+      jest
+        .spyOn(acqPackageExportedFunctions, "isDitcoUser")
+        .mockReturnValue(false);
+      Summary.setHasCurrentStepBeenVisited(false) ;
+      const result = CurrentlyHasFundingResolver('SomeOtherRoute');
+
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
+    });
+
+    it('should return routeNames.RFD as a default case', async () => {
+      // Mock AcquisitionPackage.acquisitionPackage
+      await acquisitionPackage.setContractingShopRequireFundingDocuments("YES")
+
+
+      jest
+        .spyOn(acqPackageExportedFunctions, "isDitcoUser")
+        .mockReturnValue(true);
+
+      const result = CurrentlyHasFundingResolver('SomeOtherRoute');
+
+      expect(result).toBe(routeNames.RFD);
+    });
   });
 
 });

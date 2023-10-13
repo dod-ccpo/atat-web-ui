@@ -80,6 +80,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   contracting_shop?: string;
   funding_request?: ReferenceColumn | string;
   contracting_shop_non_ditco_address?: ReferenceColumn | string;
+  contracting_shop_require_funding_documents_for_submission_of_package?: string;
   owner_needs_email_package_ready_to_submit: boolean;
   customer_feedback:ReferenceColumn | string;
 }
@@ -503,9 +504,11 @@ export interface FundingPlanDTO extends BaseTableDTO {
 export interface FundingRequestFSFormDTO extends BaseTableDTO {
   fs_form_7600a_filename: string;
   fs_form_7600a_attachment: string;
+  fs_form_7600a_use_g_invoicing?: string;
   fs_form_7600b_attachment: string;
   fs_form_7600b_filename: string;
-  use_g_invoicing: string;
+  fs_form_7600b_use_g_invoicing?: string;
+  use_g_invoicing?: string;
   order_number: string;
   gt_c_number: string;
 }
@@ -627,7 +630,7 @@ export interface CostsDTO extends BaseTableDTO {
   portfolio: string;
   organization: string;
   "agency.title"?: string;
-  is_actual: string;
+  is_actual: string | boolean;
   value: string;
 }
 
@@ -644,17 +647,20 @@ export interface CostGroupDTO {
 }
 
 export interface ClinDTO extends BaseTableDTO {
-  sys_id: string;
+  active?: boolean;
+  actual_funds_spent?: number;
+  classification_level?: string;
   clin_number: string;
+  clin_status: string;
+  costs?: CostsDTO[]
+  funds_obligated: number;
+  funds_total: number;
   idiq_clin: string;
   idiq_clin_label?: string;
   pop_end_date: string;
   pop_start_date: string;
-  clin_status: string;
-  funds_obligated: number;
-  funds_total: number;
-  cost_records?: CostsDTO[]
-  actual_funds_spent?: number;
+  sys_id: string;
+  type?: string;
 }
 
 export interface EDAResponse {
@@ -813,6 +819,8 @@ export interface PortfolioSummaryMetadataAndDataDTO {
 }
 
 export interface EnvironmentDTO extends BaseTableDTO {
+  classification_level: string;
+  cloud_distinguisher: string;
   csp: string;
   csp_id: string;
   csp_display: string;
@@ -823,6 +831,8 @@ export interface EnvironmentDTO extends BaseTableDTO {
   provisioned_date: string;
   provisioning_failure_cause: string;
   provisioning_request_date: string;
+  sys_created_on: string;
+  sys_id: string;
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{
@@ -929,6 +939,7 @@ export interface UserDTO extends BaseTableDTO {
   phone?: string;
   home_phone?: string;
   title?: string;
+  sys_id?: string;
 }
 
 export interface UserRolesDTO extends BaseTableDTO {
