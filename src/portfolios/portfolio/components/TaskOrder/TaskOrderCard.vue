@@ -35,7 +35,7 @@
           <v-chip
             :id="'StatusChip' + index"
             :class="[
-              '_' + cardData.status.toLowerCase(),
+              '_' + (cardData.status).toLowerCase(),
               statusChipBgColor(cardData.status)
             ]"
             label
@@ -115,7 +115,7 @@ export default class TaskOrderCard extends Vue {
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
   @PropSync("selectedTaskOrder",{default:()=> ({})}) private _selectedTaskOrder!: TaskOrderCardData;
 
-
+  
   public menuItems(status:string):MeatballMenuItem[] {
     const dropDownItems: MeatballMenuItem[] = [
       {
