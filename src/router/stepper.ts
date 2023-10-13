@@ -1368,15 +1368,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: IGCESupportingDocumentationResolver
       },
       {
-        menuText: "Appropriation of Funds",
-        excludeFromMenu: true,
-        path: "appropriation-of-funds",
-        name: routeNames.AppropriationOfFunds,
-        completePercentageWeight: 1,
-        component: AppropriationOfFunds,
-        routeResolver: AppropriationOfFundsResolver
-      }, 
-      {
         menuText: "Severability and Incremental Funding",
         path: "severability-and-incremental-funding",
         name: routeNames.SeverabilityAndIncrementalFunding,
@@ -1417,7 +1408,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CurrentlyHasFunding,
         completePercentageWeight: 1,
         component: CurrentlyHasFunding,
-        routeResolver: CurrentlyHasFundingResolver,
+        // routeResolver: CurrentlyHasFundingResolver,
       },
       {
         menuText: "GTC-Information",
@@ -1426,7 +1417,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         completePercentageWeight: 1,
         component: GTC,
-        routeResolver: GTCInformationResolver
+        // routeResolver: GTCInformationResolver
       },
       {
         menuText: "Funding-Plan",
@@ -1435,7 +1426,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
         component: FundingPlanType,
-        routeResolver: FundingPlanTypeResolver,
+        // routeResolver: FundingPlanTypeResolver,
       },
       {
         menuText: "Upload-7600",
@@ -1444,16 +1435,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.Upload7600,
         completePercentageWeight: 1,
         component: Upload7600,
-        routeResolver: Upload7600Resolver
-      },
-      {
-        menuText: "MIPR",
-        excludeFromMenu: true,
-        path: "mipr",
-        name: routeNames.MIPR,
-        completePercentageWeight: 1,
-        component: MIPR,
-        routeResolver: MIPRResolver
+        // routeResolver: Upload7600Resolver
       },
       {
         menuText: "Generate Package Documents (Funding)",
@@ -1462,6 +1444,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GeneratingPackageDocumentsFunding,
         completePercentageWeight: 0,
         component: GeneratingPackageDocumentsFunding,
+      },
+      {
+        menuText: "MIPR",
+        excludeFromMenu: true,
+        path: "mipr",
+        name: routeNames.MIPR,
+        completePercentageWeight: 1,
+        component: MIPR,
+        // routeResolver: MIPRResolver
       },
       {
         menuText: "SummaryStepEight",

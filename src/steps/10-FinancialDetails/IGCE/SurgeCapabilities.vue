@@ -1,4 +1,5 @@
 <template>
+  <v-form ref="form" lazy-validation>
   <v-container fluid class="container-max-width mb-7">
     <v-row>
       <v-col class="col-12">
@@ -46,6 +47,7 @@
       </v-col>
     </v-row>
   </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -67,10 +69,11 @@ import {YesNo} from "../../../../types/Global";
 })
 export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   $refs!: {
+    form: Vue & { validate: () => boolean};
     PercentageTextbox: Vue & {
       errorMessages: [];
     };
-  };
+  }
 
   public capacity: number | null = null;
   public capabilities: YesNo = "";

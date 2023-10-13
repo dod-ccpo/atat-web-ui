@@ -10,6 +10,7 @@ import {
   RFDResolver,
   CurrentlyHasFundingResolver
 } from '../index'
+import {FinancialDetailsStore} from "@/store/financialDetails/index";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
