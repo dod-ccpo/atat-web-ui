@@ -89,9 +89,9 @@ export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {
 
 
   protected async saveOnLeave(): Promise<boolean> {
+    await FinancialDetails.setHasFunding(this.selectedHasFunding);
     try {
       if (this.hasChanged()) {
-        await FinancialDetails.setHasFunding(this.selectedHasFunding);
         await FinancialDetails.saveFundingRequirement();
       }
     } catch (error) {

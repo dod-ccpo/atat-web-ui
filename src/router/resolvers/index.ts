@@ -1568,11 +1568,10 @@ export const CurrentlyHasFundingResolver = (current: string): string => {
     return routeNames.SummaryStepEight
   }
 
-  return Summary.hasCurrentStepBeenVisited
-    ? routeNames.SummaryStepEight
-    : !isDitcoUser() ?
-      routeNames.CurrentlyHasFunding
-      : routeNames.RFD
+  if (Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepEight
+  }
+  return !isDitcoUser() ? routeNames.CurrentlyHasFunding : routeNames.RFD
 };
 
 export const GTCInformationResolver = (current: string): string => {
@@ -1583,8 +1582,8 @@ export const GTCInformationResolver = (current: string): string => {
 }
 
 export const FundingPlanTypeResolver = (current: string): string => {
-  return current !== routeNames.GeneratingPackageDocumentsFunding ?
-    routeNames.FundingPlanType
+  return current !== routeNames.GeneratingPackageDocumentsFunding 
+    ? routeNames.FundingPlanType
     : routeNames.SummaryStepEight
 }
 

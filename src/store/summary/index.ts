@@ -2458,7 +2458,7 @@ export class SummaryStore extends VuexModule {
       description: await this.setFundingDescription({fsForm, request, mipr, isComplete}),
       isComplete,
       isTouched: await this.isFundingTouched(fundingDataObjs),
-      routeName: "FundingPlanType",
+      routeName: "CurrentlyHasFunding",
       step: 8,
       substep: 3
     }
