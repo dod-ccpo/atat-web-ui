@@ -66,4 +66,21 @@ describe("GInvoicingApi", () => {
 
     expect(data).toEqual(expectedResponse);
   });
+
+  it('should handle error in order validation', async () => {
+    const packageId = '1234';
+    const gtcNumber = "A2110-097-097-005307";
+    const expectedResponse = { valid: false, message: "unknown error" };
+
+    mockAxios.onGet(`${ENDPOINTNAME}/order_validation`, { 
+      params: { 
+        gtcNumber: gtcNumber,
+        acquisitionPackageId: packageId 
+      }
+    }).networkError();
+
+    const data = await ginvoicingApi.searchGtc(gtcNumber, packageId);
+
+    expect(data).toEqual(expectedResponse);
+  });
 });
