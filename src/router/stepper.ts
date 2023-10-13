@@ -148,7 +148,6 @@ import RFD from "@/steps/10-FinancialDetails/RequireFundingDocuments.vue";
 import CurrentlyHasFunding from "@/steps/10-FinancialDetails/CurrentlyHasFunding.vue";
 import GeneratingPackageDocumentsFunding
   from "../steps/10-FinancialDetails/GeneratePackageDocumentsFunding.vue";
-import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
@@ -189,7 +188,6 @@ import {
   CurrentlyHasFundingResolver,
   GTCInformationResolver,
   FundingPlanTypeResolver,
-  GInvoicingResolver,
   Upload7600Resolver,
   AppropriationOfFundsResolver,
   IncrementalFundingResolver,
@@ -333,7 +331,6 @@ export const routeNames = {
   GeneratingPackageDocumentsFunding: "Generating_Package_Documents_Funding",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
-  GInvoicing:'G_Invoicing',
   Upload7600:'Upload_7600',
   FundingPlanType: "Funding_Plan_Type",
   FinancialPOCForm: "Financial_POC_Form",
