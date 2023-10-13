@@ -1593,19 +1593,22 @@ export const MIPRResolver = (current: string): string => {
   if (fundingType === "MIPR") {
     return routeNames.MIPR;
   }
+
+  if (fundingType === "FS_FORM") {
+    return routeNames.SummaryStepEight;
+  }
   return current === routeNames.GTC
     ? routeNames.FundingPlanType
     : routeNames.GTC;
 };
 
 export const Upload7600Resolver = (current: string): string => {
-  const useGInvoicing = FinancialDetails.gInvoicingData.useGInvoicing === "YES";
-  
-  if (!useGInvoicing) {
+  if (current === routeNames.FundingPlanType) {
     return fundingRequestType() === "MIPR" 
       ? routeNames.MIPR
       : routeNames.Upload7600;
   }
+
 
   return current === routeNames.SeverabilityAndIncrementalFunding ||
     current === routeNames.AppropriationOfFunds
