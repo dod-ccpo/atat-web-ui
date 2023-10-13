@@ -105,7 +105,7 @@
         width="3"
         class="mr-2"
       />
-      <span class="text-base"> Locating your Order in {{ searchType }} </span>
+      <span class="text-base"> Locating your order in {{ searchType }} </span>
     </div>
 
     <div
@@ -122,7 +122,7 @@
           width="22"
           height="22"
         />
-        <span class="font-weight-500">{{ orderVerifiedText }}</span>
+        <span class="font-weight-500">GT&C verified</span>
       </div>
     </div>
 
@@ -252,10 +252,6 @@ export default class ATATSearch extends Vue {
     return this.helpText.length > 0;
   }
 
-  private get orderVerifiedText() {
-    return this.gInvoicingSearchType === 'GtcNumber' ? "GT&C verified" : "Order verified"
-  }
-
   @Watch("_resetValidationNow")
   public async resetValidationNowChange(newVal: boolean): Promise<void> {
     if (newVal) {
@@ -353,7 +349,7 @@ export default class ATATSearch extends Vue {
       try {
         if (this.errorMessages.length > 0) return;
         this.showLoader = true;
-        const gInvoicingResponse = await api.gInvoicingApi.searchOrder(
+        const gInvoicingResponse = await api.gInvoicingApi.search(
           this._value,
           AcquisitionPackage.packageId
         );
@@ -417,7 +413,7 @@ export default class ATATSearch extends Vue {
       if (this.isMaskRegex) {
         this.maskObj.regex = this.mask[0] || "";
       } else {
-        this.maskObj.mask = this.mask || [];
+        this.maskObj.mask = this.mask;
       }
     }
 
@@ -434,12 +430,6 @@ export default class ATATSearch extends Vue {
   }
 
   private mounted(): void {
-    if (
-      this.searchType === 'G-Invoicing' &&
-      !(this.gInvoicingSearchType === 'GtcNumber' || this.gInvoicingSearchType === 'OrderNumber')
-    ) {
-      console.error('gInvoicingSearchType should be set when searchType is G-Invoicing!')
-    }
     this.setMask();
   }
 }
