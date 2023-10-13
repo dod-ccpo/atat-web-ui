@@ -105,7 +105,7 @@
                     `Your GT&C Number should be 20 characters (including hyphens) and use the format: AYYMM-000-000-000000.`,
                     true
                   ),
-                  $validators.required('Please provide an Order number.'),
+                  $validators.required('Please provide a GT&C number.'),
                 ]"
               />
             </div>
@@ -307,7 +307,9 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     ) {
       this.useGInvoicing = this.loaded?.use_g_invoicing;
     } else {
-      this.useGInvoicing = this.loaded?.fs_form_7600a_attachment ? "NO" : "YES"
+      this.useGInvoicing = this.loaded?.fs_form_7600a_attachment
+        ? "NO"
+        : "YES"
     }
 
     this.savedData = {

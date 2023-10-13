@@ -650,7 +650,6 @@ export class FinancialDetailsStore extends VuexModule {
     this.setFundingRequest(savedFundingRequest);
   }
 
-
   @Action({rawError: true})
  public async saveFundingRequestFormAndGInvoicing(
    data: 
