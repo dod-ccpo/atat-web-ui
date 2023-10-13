@@ -19,7 +19,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import Summary, { isStepTouched } from "@/store/summary";
+import Summary, { isStepComplete, isStepTouched } from "@/store/summary";
 import PortfolioSummary from "@/store/portfolioSummary";
 
 export const showDITCOPageResolver = (current: string): string => {
@@ -1268,7 +1268,11 @@ const IGCERouteNext = (current: string): string => {
 
 
 export const IGCECannotProceedResolver = (current: string): string => {
-  if (!(IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES")){
+  const isStepFiveComplete = isStepComplete(5);
+  console.log("here's step five completeness",isStepFiveComplete )
+  
+  if (!isStepFiveComplete || !(IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES"))
+  {
     return routeNames.CannotProceed;
   }
 

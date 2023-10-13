@@ -57,7 +57,7 @@
 <script lang="ts">
 import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
-import Periods from "@/store/periods";
+import { isStepComplete, isSubStepComplete,  } from "@/store/summary";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { routeNames } from "../../../router/stepper"
 
@@ -70,15 +70,11 @@ import { Component } from "vue-property-decorator";
 export default class CannotProceed extends Vue {
   public routeNames = routeNames;
   get isPoPIncomplete(): boolean {
-    if (Periods.periods) {
-      return Periods.periods.length === 0;
-    } else {
-      return true;
-    }  
+    return !isSubStepComplete(3,1) 
   }
 
   get isPerformanceReqsIncomplete(): boolean {
-    return DescriptionOfWork.isIncomplete;
+    return !isStepComplete(5) || DescriptionOfWork.isIncomplete
   }
 }
 </script>
