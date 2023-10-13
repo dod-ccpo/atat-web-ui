@@ -818,6 +818,8 @@ export interface PortfolioSummaryMetadataAndDataDTO {
 }
 
 export interface EnvironmentDTO extends BaseTableDTO {
+  classification_level: string;
+  cloud_distinguisher: string;
   csp: string;
   csp_id: string;
   csp_display: string;
@@ -828,6 +830,8 @@ export interface EnvironmentDTO extends BaseTableDTO {
   provisioned_date: string;
   provisioning_failure_cause: string;
   provisioning_request_date: string;
+  sys_created_on: string;
+  sys_id: string;
 }
 
 export interface CloudServiceProviderDTO extends BaseTableDTO{

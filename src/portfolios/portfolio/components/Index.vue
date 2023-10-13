@@ -56,6 +56,7 @@
             <TaskOrder 
             v-if="tabItems[tabIndex] === 'Task Orders'" 
             :portfolioSysId="portfolioSysId"
+            :taskOrder.sync = "taskOrder"
             />
         </v-container>
 
@@ -93,7 +94,7 @@ import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { ToastObj, EnvironmentLink } from "types/Global";
+import { ToastObj, EnvironmentLink, PortfolioTaskOrder } from "types/Global";
 import Toast from "@/store/toast";
 import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
 
@@ -118,6 +119,7 @@ export default class PortfolioSummary extends Vue {
   }
   public showLeaveModalSpinner = false;
   public isPortfolioProvisioning = true;
+  public taskOrder!: PortfolioTaskOrder;
   public environmentLinks:EnvironmentLink[] = []
   public tabIndex = 0;
   public tabItems = [
@@ -197,6 +199,7 @@ export default class PortfolioSummary extends Vue {
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
       this.portfolioSysId = portfolio.sysId;
+      this.taskOrder = portfolio.taskOrder as PortfolioTaskOrder;
       portfolio.environments?.forEach((environment) =>{
         if(environment.dashboard_link !== '' && environment.classification_level === "U"){
           const linkDisplay = environment.csp_display.split("_")[1].toUpperCase()
@@ -219,7 +222,7 @@ export default class PortfolioSummary extends Vue {
           const c = env.classification_level;
           if (c) {
             const classificationLevel = classificationLevels[c];
-            const envStatus = env.environmentStatus;
+            const envStatus = env.environment_status;
             this.secondaryTabItems.push({
               tabText: classificationLevel,
               status: envStatus as string,
