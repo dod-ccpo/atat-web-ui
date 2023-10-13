@@ -23,11 +23,13 @@
   </v-row>
 </template>
 <script lang="ts">
+
 import { Component, PropSync } from "vue-property-decorator";
 import Vue from "vue";
 
 @Component({})
 export default class GeneratingDocumentsFunding extends Vue {
+
   @PropSync(
     "isGenerating",{default: true}
   ) private _isGenerating!: boolean;

@@ -133,17 +133,18 @@ export default class ReviewDocumentsFunding extends Vue {
 
 
   public packageId = "";
-  private lastUpdatedString = ""
+  private lastUpdatedString = "";
   private currentEnvServiceName = CURRENT_ENVIRONMENT_TABLE;
   private reqCostEstimateServiceName = REQUIREMENTS_COST_ESTIMATE_TABLE;
-  private needsSignatureLength = 0
+  private needsSignatureLength = 0;
   private downloadPackageLink = "";
-  get fairOpportunity():string {
+  get fairOpportunity(): string {
     return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity ?? "";
   }
-  get incrementallyFunded():string {
+  get incrementallyFunded(): string {
     return FinancialDetails.fundingRequirement?.incrementally_funded ?? "";
   }
+
   get isDitcoUser(): boolean {
     return isDitcoUser();
   } 
@@ -151,34 +152,35 @@ export default class ReviewDocumentsFunding extends Vue {
   private async update(): Promise<void> {
     this._isGenerating = true;
   }
+
   private packageCheckList: signedDocument[] = [];
   
-  private createAttachmentObject(attachment: any, step: string):void{
+  private createAttachmentObject(attachment: any, step: string): void{
     const obj = {
-      itemName:attachment.file_name,
-      requiresSignature:false,
-      show:true,
+      itemName: attachment.file_name,
+      requiresSignature: false,
+      show: true,
       description: `Uploaded in step ${step}`
     }
-    this.packageCheckList.push(obj)
+    this.packageCheckList.push(obj);
   }
 
   public async loadOnEnter(): Promise<void> {
-    if(AcquisitionPackage.acquisitionPackage?.sys_updated_on) {
+    if (AcquisitionPackage.acquisitionPackage?.sys_updated_on) {
       this.lastUpdatedString =
-        `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`
+        `Last updated ${createDateStr(AcquisitionPackage.acquisitionPackage.sys_updated_on, true)}`;
     }
     
     this.packageCheckList = (await AcquisitionPackage.getSignedDocumentsList()).filter(
       signedDoc => signedDoc.show
-    )
+    );
 
     this.needsSignatureLength = 
       this.packageCheckList.filter(signedDoc => signedDoc.requiresSignature).length;
 
-    const currentEnv = await CurrentEnvironment.getCurrentEnvironment()
-    const MIPR = await FinancialDetails.loadFundingRequestMIPRForm()
-    const fundingRequest = await FinancialDetails.loadFundingRequestFSForm()
+    const currentEnv = await CurrentEnvironment.getCurrentEnvironment();
+    const MIPR = await FinancialDetails.loadFundingRequestMIPRForm();
+    const fundingRequest = await FinancialDetails.loadFundingRequestFSForm();
     const reqCostEstimate = await IGCE.getRequirementsCostEstimate();
     const fundingRequestIds = [];
 
@@ -186,37 +188,41 @@ export default class ReviewDocumentsFunding extends Vue {
       serviceKey: this.reqCostEstimateServiceName,
       tableSysId: reqCostEstimate?.sys_id as string
     });
+
     supportingDocumentsAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'8 (Requirements Cost Estimate)')
-    })
-
+    });
 
     const migrationAttachments = await Attachments.getAttachmentsBySysIds({
       serviceKey: this.currentEnvServiceName,
       sysIds: currentEnv?.migration_documentation ?? []
     });
+
     migrationAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
-    })
+    });
 
     const sysDocAttachments = await Attachments.getAttachmentsBySysIds({
       serviceKey: this.currentEnvServiceName,
       sysIds: currentEnv?.system_documentation ?? []
     });
+
     sysDocAttachments.forEach(attachment => {
       this.createAttachmentObject(attachment,'4 (Current Environment)')
-    })
-    if(MIPR.mipr_attachment){
+    });
+
+    if (MIPR.mipr_attachment) {
       const MIPRAttachment = await Attachments.getAttachmentById({
         serviceKey: FUNDING_REQUEST_MIPRFORM_TABLE, sysID: MIPR.mipr_attachment});
-      this.createAttachmentObject(MIPRAttachment,'8 (Funding)')
+      this.createAttachmentObject(MIPRAttachment,'8 (Funding)');
     }
+
     if (fundingRequest) {
       if (fundingRequest?.fs_form_7600a_attachment.length > 0) {
-        fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment)
+        fundingRequestIds.push(fundingRequest?.fs_form_7600a_attachment);
       }
       if (fundingRequest?.fs_form_7600b_attachment.length > 0) {
-        fundingRequestIds.push(fundingRequest?.fs_form_7600b_attachment)
+        fundingRequestIds.push(fundingRequest?.fs_form_7600b_attachment);
       }
       const fundingRequestAttachments = await Attachments.getAttachmentsBySysIds({
         serviceKey: FUNDING_REQUEST_FSFORM_TABLE,
@@ -226,19 +232,22 @@ export default class ReviewDocumentsFunding extends Vue {
         this.createAttachmentObject(attachment,'8 (Funding)')
       })
     }
-    const docNames: string[] = []
+
+    const docNames: string[] = [];
+
     this.packageCheckList.forEach(listItem => {
       if(typeof listItem.itemName === "string")
         docNames.push(listItem.itemName)
-    })
-    await AcquisitionPackage.setAttachmentNames(docNames)
+    });
+
+    await AcquisitionPackage.setAttachmentNames(docNames);
 
     this.packageId = AcquisitionPackage.acquisitionPackage?.sys_id?.toUpperCase() ?? "";
     this.downloadPackageLink = await AcquisitionPackage.setDownloadPackageLink(false);
   }
 
   async mounted(): Promise<void>{
-    await AcquisitionPackage.setDisableContinue(false)
+    await AcquisitionPackage.setDisableContinue(false);
     await this.loadOnEnter();
   }
 }

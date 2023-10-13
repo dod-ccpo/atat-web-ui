@@ -32,6 +32,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     ReviewDocumentsFunding
   }
 })
+
 export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave) {
 
   public isGenerating = false;
@@ -41,12 +42,12 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
   public packageDocComponent: Vue.Component | null = null;
 
   get isDitco(): boolean {
-    return AcquisitionPackage.acquisitionPackage?.contracting_shop ==="DITCO"
+    return AcquisitionPackage.acquisitionPackage?.contracting_shop ==="DITCO";
   }
 
   @Watch("isGenerating")
   public watchIsGenerating(generateDocs: boolean): void{
-    generateDocs ? this.displayGeneratingDocumentsComponent() : this.displayReviewComponent()
+    generateDocs ? this.displayGeneratingDocumentsComponent() : this.displayReviewComponent();
     this.toggleNavigationElements(generateDocs);
   }
 
@@ -58,13 +59,14 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
     if (stepperNavigation) {
       stepperNavigation.hidden = value;
     }
+
     if (footer) {
       footer.hidden = value;
     }
   }
 
   async displayGeneratingDocumentsComponent(): Promise<void>{
-    await AcquisitionPackage.saveDocGenStatus('IN_PROGRESS')
+    await AcquisitionPackage.saveDocGenStatus('IN_PROGRESS');
     this.isErrored = false;
     this.isGenerating = true;
     this.toggleNavigationElements(true);
@@ -83,6 +85,7 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
         this.displayReviewComponent();
       }
     };
+
     const intervalId = window.setInterval(() => {
       checkDocJobStatus().catch((err) => {
         console.error('Error checking dock job status:', err);
@@ -91,16 +94,16 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
     }, 3000);
   }
 
-  public displayReviewComponent(): void{
+  public displayReviewComponent(): void {
     this.isGenerating = false;
-    this.toggleNavigationElements(false)
+    this.toggleNavigationElements(false);
     this.packageDocComponent = ReviewDocumentsFunding;
     this.isErrored = this.docJobStatus.toUpperCase() === "FAILED";
   }
 
   public async getDocJobStatus(): Promise<void> {
     this.docJobStatus = await AcquisitionPackage.getDocGenStatus(
-      AcquisitionPackage.packageId.toUpperCase() || "")
+      AcquisitionPackage.packageId.toUpperCase() || "");
   }
 
   public async determineComponent() {
@@ -120,7 +123,7 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
   }
 
   public async saveOnLeave(): Promise<boolean> {
-    this.isGenerating = false; //to restore bottom navigation
+    this.isGenerating = false; // restores bottom navigation
     await AcquisitionPackage.setValidateNow(true);
     return true;
   }
