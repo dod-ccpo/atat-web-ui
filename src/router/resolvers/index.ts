@@ -1551,11 +1551,27 @@ export const IGCESupportingDocumentationResolver = (current: string): string => 
   }
 };
 
-export const CurrentlyHasFundingResolver = (current: string): string => {
+export const RFDResolver = (): string => {
+  if (!isDitcoUser()) {
+    return routeNames.RFD
+  }
   return Summary.hasCurrentStepBeenVisited
     ? routeNames.SummaryStepEight
-    : isDitcoUser()
-      ? routeNames.CurrentlyHasFunding
+    : routeNames.CurrentlyHasFunding
+}
+
+export const CurrentlyHasFundingResolver = (current: string): string => {
+  const doesNotNeedFundingDoc = AcquisitionPackage.acquisitionPackage
+    ?.contracting_shop_require_funding_documents_for_submission_of_package === 'NO'
+
+  if (current === routeNames.RFD && doesNotNeedFundingDoc) {
+    return routeNames.SummaryStepEight
+  }
+
+  return Summary.hasCurrentStepBeenVisited
+    ? routeNames.SummaryStepEight
+    : !isDitcoUser() ?
+      routeNames.CurrentlyHasFunding
       : routeNames.RFD
 };
 
@@ -1686,6 +1702,7 @@ export const FinancialPOCResolver =  (current: string): string => {
       current === routeNames.ReadyToGeneratePackage && isIncrementallyFunded === "NO") {
     return routeNames.SeverabilityAndIncrementalFunding;
   }
+  if (current === routeNames.RFD) return routeNames.SummaryStepEight;
   return current === routeNames.FinancialPOCForm
     ? routeNames.ReadyToGeneratePackage
     : routeNames.FinancialPOCForm
@@ -1919,6 +1936,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   GTCInformationResolver,
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
+  RFDResolver,
 };
 
 // add path resolvers here 

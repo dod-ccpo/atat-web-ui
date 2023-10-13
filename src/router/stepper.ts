@@ -214,6 +214,7 @@ import {
   AnticipatedUserAndDataNeedsResolver,
   IGCETrainingPathResolver,
   FeeChargedResolver,
+  RFDResolver,
   showDITCOPageResolver,
   ContractingInfoResolver,
   CrossDomainResolver,
@@ -1410,6 +1411,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.RFD,
         completePercentageWeight: 1,
         component: RFD,
+        routeResolver: RFDResolver,
       },
       {
         menuText: "Funding",
