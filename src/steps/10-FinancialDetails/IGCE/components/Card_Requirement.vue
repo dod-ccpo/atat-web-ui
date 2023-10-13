@@ -47,8 +47,8 @@
           @blur="checkMonthlyValue()"
           :alignRight="true"
           :rules="[
-          $validators.required(''),
-        ]"
+            $validators.required(''),
+          ]"
           class="ml-auto pt-3 _requirement-currency"
           :class="[{ 'error--text': noMonthlyValue},]"
           @errorMessage="setErrorMessage"
