@@ -6,7 +6,6 @@
     </h1>
 
     <ATATAlert
-      v-if="needsSignatureLength && isDitcoUser"
       id="Callout"
       class="my-10"
       type="info"
