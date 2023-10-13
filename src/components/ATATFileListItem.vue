@@ -174,9 +174,9 @@ export default class ATATFileListItem extends Vue {
   private getTruncatedFileName(filename: string): string {
     if (filename.length > 45) {
       return (
-        filename.substr(0, 45) +
+        filename.substring(0, 45) +
         "..." +
-        filename.substr(filename.length - 13, filename.length)
+        filename.substring(filename.length - 13, filename.length)
       );
     }
     return filename;
@@ -187,7 +187,7 @@ export default class ATATFileListItem extends Vue {
    * returns extension
    */
   private getExtension(filename: string): string {
-    return "..." + filename.substr(filename.length - 13, filename.length);
+    return "..." + filename.substring(filename.length - 13, filename.length);
   }
 
   /**
@@ -197,7 +197,7 @@ export default class ATATFileListItem extends Vue {
 
   private isPDF(fileName: string): boolean {
     return (
-      fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase() === "pdf"
+      fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase() === "pdf"
     );
   }
 
