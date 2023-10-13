@@ -118,7 +118,14 @@ describe("Testing Upload7600 component", () => {
 
   describe("Testing FUNCTIONS", () => {
     describe("getRulesArray()", () => {
-      it("=> no invalid files", () => {
+      it("=> no invalid files when useGInvoicing === 'YES'", () => {
+        wrapper.vm.useGInvoicing = 'YES';
+        wrapper.vm.invalidFiles = [];
+        expect(JSON.stringify(wrapper.vm.getRulesArray())).toEqual("[]");
+      });
+
+      it("=> no invalid files when useGInvoicing === 'NO'", () => {
+        wrapper.vm.useGInvoicing = 'NO';
         wrapper.vm.invalidFiles = [];
         expect(JSON.stringify(wrapper.vm.getRulesArray())).toEqual(
           JSON.stringify([
@@ -129,7 +136,14 @@ describe("Testing Upload7600 component", () => {
         );
       });
 
-      it("=> invalid file", () => {
+      it("=> invalid file when useGInvoicing === 'YES'", () => {
+        wrapper.vm.useGInvoicing = 'YES';
+        wrapper.vm.invalidFiles = [new File([], "filename.png")];
+        expect(JSON.stringify(wrapper.vm.getRulesArray())).toEqual("[]");
+      });
+
+      it("=> invalid file when useGInvoicing === 'NO'", () => {
+        wrapper.vm.useGInvoicing = 'NO';
         wrapper.vm.invalidFiles = [new File([], "filename.png")];
         expect(JSON.stringify(wrapper.vm.getRulesArray())).toEqual(
           "[null,null]"
