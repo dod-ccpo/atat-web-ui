@@ -9,7 +9,7 @@ import {
   SummaryItem,
 } from "types/Global";
 import Periods from "../periods";
-import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
+import AcquisitionPackage, { isMRRToBeGenerated, isDitcoUser } from "../acquisitionPackage";
 import {
   ContactDTO,
   ContractConsiderationsDTO,
@@ -2452,7 +2452,8 @@ export class SummaryStore extends VuexModule {
         (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity;
     const fundingRequirement = FinancialDetails.fundingRequirement as FundingRequirementDTO
     const hasFairOpp = ["NO_NONE", ""].every(noValue => noValue !== fairOpp );
-    const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp,fundingRequirement};
+    const isDitco = isDitcoUser()
+    const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp,fundingRequirement,isDitco};
     const isComplete =  await this.isFundingComplete(fundingDataObjs);
     const fundingSummaryItem: SummaryItem = {
       title: "Funding",
@@ -2474,6 +2475,10 @@ export class SummaryStore extends VuexModule {
         mipr: FundingRequestMIPRFormDTO,
         isComplete: boolean
       }): Promise<string>{
+    // eslint-disable-next-line max-len
+    if(AcquisitionPackage.acquisitionPackage?.contracting_shop_require_funding_documents_for_submission_of_package === "NO"){
+      return "Funding documents are not required by contracting office"
+    }
     if (funding.request && funding.fsForm){
       const hasMIPRNumber = funding.mipr?.mipr_number !== ""
       const hasOrderNumber = funding.fsForm?.order_number !== ""
@@ -2485,10 +2490,6 @@ export class SummaryStore extends VuexModule {
         ? (hasMIPRNumber ? "MIPR: " + funding.mipr.mipr_number  : "")
         : (hasGTCNumber ? "GT&C: " + funding.fsForm.gt_c_number + "<br />" : "")
           + (hasOrderNumber ? "Order: " + funding.fsForm.order_number : "")
-    }
-    // eslint-disable-next-line max-len
-    if(AcquisitionPackage.acquisitionPackage?.contracting_shop_require_funding_documents_for_submission_of_package === "NO"){
-      return "Funding documents are not required by contracting office"
     }
     return ""
   }
@@ -2502,6 +2503,7 @@ export class SummaryStore extends VuexModule {
         mipr: FundingRequestMIPRFormDTO,
         hasFairOpp: boolean
         fundingRequirement: FundingRequirementDTO
+        isDitco:boolean
       }): Promise<boolean>{
     if (funding.request && funding.fsForm){
       const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
@@ -2509,6 +2511,10 @@ export class SummaryStore extends VuexModule {
         ? funding.request.appropriation_fiscal_year !== ""
           || funding.request.appropriation_funds_type !== ""
         : false
+      if(!funding.isDitco){
+        return AcquisitionPackage.acquisitionPackage
+          ?.contracting_shop_require_funding_documents_for_submission_of_package !== ""
+      }
 
       return funding.request.funding_request_type !== ""
           || funding.gInv.useGInvoicing !== ""
@@ -2531,7 +2537,13 @@ export class SummaryStore extends VuexModule {
         mipr: FundingRequestMIPRFormDTO,
         hasFairOpp: boolean
         fundingRequirement: FundingRequirementDTO
+        isDitco:boolean
       }): Promise<boolean>{
+    if(!funding.isDitco){
+      const needsFunding = AcquisitionPackage.acquisitionPackage
+        ?.contracting_shop_require_funding_documents_for_submission_of_package === "YES"
+      return !needsFunding
+    }
     if (funding.request && funding.fsForm){
       let hasAppropriationOfFunds = false;
       let isComplete = false;

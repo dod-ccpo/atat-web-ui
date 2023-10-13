@@ -7,9 +7,9 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import Periods from "@/store/periods";
 import IGCEStore from "@/store/IGCE";
-import {EvaluationPlanDTO, 
-  FundingRequirementDTO, 
-  SelectedClassificationLevelDTO } 
+import {EvaluationPlanDTO,
+  FundingRequirementDTO,
+  SelectedClassificationLevelDTO }
   from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
@@ -24,7 +24,7 @@ import PortfolioSummary from "@/store/portfolioSummary";
 
 export const showDITCOPageResolver = (current: string): string => {
   return current === routeNames.ContractingShop
-    ? routeNames.DAPPSChecklist 
+    ? routeNames.DAPPSChecklist
     : routeNames.ContractingShop;
 };
 
@@ -125,7 +125,7 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
     return routeNames.SummaryStepTwo
   }
   Steps.setAdditionalButtonText({
-    buttonText: "I don’t need other assessment areas", 
+    buttonText: "I don’t need other assessment areas",
     buttonId: "NoOtherAssessmentAreas"
   });
   try {
@@ -133,7 +133,7 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
       Steps.setAdditionalButtonHide(false);
     } else {
       Steps.setAdditionalButtonHide(true);
-    }  
+    }
   } catch (error) { console.error(error) }
 
   return current === routeNames.CreateEvalPlan || routeNames.Differentiators
@@ -176,7 +176,7 @@ export const MinimumRequirementsRouteResolver = (current: string): string => {
     try {
       AcquisitionPackage.doSetFairOppBackToReview(false);
       return routeNames.SoleSourceReview;
-    } catch (error) { console.error(error) } 
+    } catch (error) { console.error(error) }
   }
   return current === routeNames.SoleSourceCause
     ? routeNames.SoleSourceReview
@@ -198,7 +198,7 @@ export const OtherSupportingFactorsRouteResolver = (current: string): string => 
   if (routeNames.RemoveBarriers && backToReview) {
     try {
       AcquisitionPackage.doSetFairOppBackToReview(false);
-      return routeNames.ReviewBarriers;        
+      return routeNames.ReviewBarriers;
     } catch (error) { console.error(error) }
   }
   return current === routeNames.RemoveBarriers
@@ -207,8 +207,8 @@ export const OtherSupportingFactorsRouteResolver = (current: string): string => 
 }
 
 export const RemoveBarriersFormRouteResolver = (current: string): string => {
-  const skipForm = 
-    AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad;
+  const skipForm =
+      AcquisitionPackage.fairOppExplanations.plansToRemoveBarriers.hadExplanationOnLoad;
   // backward
   if (current === routeNames.ReviewBarriers) {
     return skipForm ? routeNames.OtherSupportingFactors : routeNames.RemoveBarriers;
@@ -228,7 +228,7 @@ export const MRRNeedRouteResolver = (current: string): string => {
   if (current === routeNames.MarketResearchEfforts && backToReview) {
     try {
       AcquisitionPackage.doSetFairOppBackToReview(false);
-      return routeNames.MarketResearchReview;  
+      return routeNames.MarketResearchReview;
     } catch (error) { console.error(error) }
   }
 
@@ -244,7 +244,7 @@ export const MarketResearchFormRouteResolver = (current: string): string => {
     return skipForm ? routeNames.MRRNeed : routeNames.MarketResearchEfforts;
   }
   // forward
-  return skipForm ? routeNames.MarketResearchReview : routeNames.MarketResearchEfforts; 
+  return skipForm ? routeNames.MarketResearchReview : routeNames.MarketResearchEfforts;
 }
 
 const needContractAction = ():boolean =>{
@@ -260,8 +260,8 @@ export const conductedResearchRouteResolver = (current: string): string => {
 };
 
 const hasLogicalFollowOn = (): boolean => {
-  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity 
-    === "YES_FAR_16_505_B_2_I_C"
+  return AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity
+      === "YES_FAR_16_505_B_2_I_C"
 }
 
 export const CurrentContractRouteResolver = (current: string): string => {
@@ -286,15 +286,15 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
   const fromCurrentContract =  current === routeNames.CurrentContract;
   const doesNotNeedContract = AcquisitionPackage.hasCurrentOrPreviousContracts === "NO"
   const hasExistingContracts = AcquisitionPackage.hasCurrentOrPreviousContracts === "YES"
-    && currentContracts.length > 0
+      && currentContracts.length > 0
   const fromProcurementHistory = current === routeNames.ProcurementHistorySummary;
 
-  const hasSingleInvalidContract = 
-    currentContracts.length === 1
-    && currentContracts[0].is_valid === false
+  const hasSingleInvalidContract =
+      currentContracts.length === 1
+      && currentContracts[0].is_valid === false
 
   if(doesNotNeedContract
-    && isStepTouched(4)){
+      && isStepTouched(4)){
     return routeNames.SummaryStepFour
   }
   else if (doesNotNeedContract){
@@ -305,13 +305,13 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
     return routeNames.CurrentContractDetails;
   } else if (
     hasExceptionToFairOpp()
-    && hasSingleInvalidContract
-    && fromCurrentContract
+      && hasSingleInvalidContract
+      && fromCurrentContract
   ){
     return routeNames.CurrentContractDetails;
   } else if (
     hasExceptionToFairOpp()
-    && fromCurrentContract
+      && fromCurrentContract
   ){
     return hasExistingContracts
       ? routeNames.ProcurementHistorySummary
@@ -345,7 +345,7 @@ export const ProcurementHistorySummaryRouteResolver = (current: string): string 
   }
   else if (
     doesNotNeedContract
-    && fromCurrentEnvironment
+      && fromCurrentEnvironment
   ){
     return routeNames.CurrentContract;
   } else if (
@@ -391,17 +391,17 @@ export const ReplicateDetailsResolver = (current: string): string => {
 
 export const CurrentEnvRouteResolver = (current: string): string => {
   const hasCurrentEnv
-    = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
+      = CurrentEnvironment.currentEnvironment?.current_environment_exists === "YES";
   if (hasCurrentEnv) {
     return routeNames.UploadSystemDocuments;
   }
-  return current === routeNames.CurrentEnvironment 
+  return current === routeNames.CurrentEnvironment
     ? routeNames.SummaryStepFour
     : routeNames.CurrentEnvironment;
 };
 
 export const CurrentEnvironmentSummaryResolver = (current: string): string => {
-  return current === routeNames.ReplicateAndOptimize 
+  return current === routeNames.ReplicateAndOptimize
     ? routeNames.SummaryStepFour
     : routeNames.EnvironmentSummary;
 }
@@ -452,7 +452,7 @@ export const PIIRecordResolver = (current: string): string => {
   if (hasSystemOfRecord) {
     return routeNames.PIIRecord;
   }
-  return current === routeNames.PII 
+  return current === routeNames.PII
     ? PIIRecordSummaryResolver(current)
     : routeNames.PII;
 };
@@ -470,8 +470,8 @@ export const BAARecordSummaryResolver = (current: string): string => {
 };
 
 export const FOIARecordResolver = (current: string): string => {
-  const needsFOIACoordinator 
-    = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful === "YES";
+  const needsFOIACoordinator
+      = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful === "YES";
   // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
   // then need to collect information about the FOIA Coordinator
   if (needsFOIACoordinator) {
@@ -506,14 +506,14 @@ export const A11yRequirementResolver = (current: string): string => {
 /****************************************************************************/
 /****************************************************************************
 
-██████   ██████  ██     ██               ███████ ████████  █████  ██████  ████████ 
-██   ██ ██    ██ ██     ██               ██         ██    ██   ██ ██   ██    ██    
-██   ██ ██    ██ ██  █  ██     █████     ███████    ██    ███████ ██████     ██    
-██   ██ ██    ██ ██ ███ ██                    ██    ██    ██   ██ ██   ██    ██    
-██████   ██████   ███ ███                ███████    ██    ██   ██ ██   ██    ██    
+ ██████   ██████  ██     ██               ███████ ████████  █████  ██████  ████████
+ ██   ██ ██    ██ ██     ██               ██         ██    ██   ██ ██   ██    ██
+ ██   ██ ██    ██ ██  █  ██     █████     ███████    ██    ███████ ██████     ██
+ ██   ██ ██    ██ ██ ███ ██                    ██    ██    ██   ██ ██   ██    ██
+ ██████   ██████   ███ ███                ███████    ██    ██   ██ ██   ██    ██
 
 
-/****************************************************************************/
+ /****************************************************************************/
 /****************************************************************************/
 
 const setDontNeedButton = (groupId: string) => {
@@ -543,7 +543,7 @@ const setDontNeedButton = (groupId: string) => {
   dontNeedButtonText += offeringStr;
 
   Steps.setAdditionalButtonText({
-    buttonText: dontNeedButtonText, 
+    buttonText: dontNeedButtonText,
     buttonId: "DontNeedResources"
   });
 
@@ -570,19 +570,19 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 /****************************************************************************
 
- ██████  █████  ████████ ███████  ██████   ██████  ██████  ██ ███████ ███████ 
-██      ██   ██    ██    ██      ██       ██    ██ ██   ██ ██ ██      ██      
-██      ███████    ██    █████   ██   ███ ██    ██ ██████  ██ █████   ███████ 
-██      ██   ██    ██    ██      ██    ██ ██    ██ ██   ██ ██ ██           ██ 
- ██████ ██   ██    ██    ███████  ██████   ██████  ██   ██ ██ ███████ ███████ 
+ ██████  █████  ████████ ███████  ██████   ██████  ██████  ██ ███████ ███████
+ ██      ██   ██    ██    ██      ██       ██    ██ ██   ██ ██ ██      ██
+ ██      ███████    ██    █████   ██   ███ ██    ██ ██████  ██ █████   ███████
+ ██      ██   ██    ██    ██      ██    ██ ██    ██ ██   ██ ██ ██           ██
+ ██████ ██   ██    ██    ███████  ██████   ██████  ██   ██ ██ ███████ ███████
 
-/****************************************************************************/
+ /****************************************************************************/
 export const ArchitecturalDesignResolver = (current: string): string => {
   const groupId = DescriptionOfWork.currentGroupId;
   setDontNeedButton(groupId);
   //coming from replicate and optimize or replicate details
   if(current === routeNames.ReplicateAndOptimize ||
-    current === routeNames.ReplicateDetails){
+      current === routeNames.ReplicateDetails){
     return routeNames.DOWLandingPage
   }
   //coming back from Architectural Design details
@@ -609,9 +609,9 @@ export const ArchitecturalDesignDetailsResolver = (current: string): string => {
 export const RequirementsPathResolver = (current: string, direction: string): string => {
   if (current === routeNames.DOWLandingPage) {
     if ((DescriptionOfWork.currentDOWSection === "XaaS"
-      && !DescriptionOfWork.hasXaasService)
-      || (DescriptionOfWork.currentDOWSection === "CloudSupport"
-      && !DescriptionOfWork.hasCloudService)
+            && !DescriptionOfWork.hasXaasService)
+        || (DescriptionOfWork.currentDOWSection === "CloudSupport"
+            && !DescriptionOfWork.hasCloudService)
     ) {
       return requirementCategories;
     } else {
@@ -622,18 +622,18 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
   if (current === routeNames.ServiceOfferings
-    && missingClassification 
-    && !atBeginningOfOfferingGroups
+      && missingClassification
+      && !atBeginningOfOfferingGroups
   ) {
-    const group = direction === "next" 
-      ? DescriptionOfWork.nextOfferingGroup 
+    const group = direction === "next"
+      ? DescriptionOfWork.nextOfferingGroup
       : DescriptionOfWork.prevOfferingGroup;
     if (group) {
       // send to group offerings page
       const serviceOffering = routeNames.ServiceOfferings
       DescriptionOfWork.setCurrentOfferingGroupId(group);
       setDontNeedButton(group);
-    
+
       return ServiceOfferingsPathResolver(serviceOffering , direction);
     }
   }
@@ -644,8 +644,8 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 
   //if comming from Service Offerings and we have more
   // service offerings groups to navigate through
-  if(current === routeNames.ServiceOfferings && 
-    !atBeginningOfOfferingGroups){ 
+  if(current === routeNames.ServiceOfferings &&
+      !atBeginningOfOfferingGroups){
     const previousGroup = DescriptionOfWork.prevOfferingGroup;
     if (DescriptionOfWork.returnToDOWSummary) {
       return descriptionOfWorkSummaryPath;
@@ -657,7 +657,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 
     DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
     setDontNeedButton(previousGroup);
-    
+
     //Compute, General XaaS, etc. don't have service offerings
     if (otherServiceOfferings.indexOf(previousGroup) > -1) {
       return otherServiceOfferingSummaryPath;
@@ -670,36 +670,36 @@ export const RequirementsPathResolver = (current: string, direction: string): st
       throw new Error(`unable to get last offering for group ${previousGroup}`);
     }
     DescriptionOfWork.setCurrentOffering(lastOfferingForGroup);
-      
+
     return getServiceOfferingsDetailsPath(previousGroup, lastOfferingForGroup.name);
   }
-    
+
   return basePerformanceRequirementsPath;
 }
 
 /****************************************************************************
 
- █████  ██████   ██████ ██   ██     ██████  ███████ ███████ ██  ██████  ███    ██ 
-██   ██ ██   ██ ██      ██   ██     ██   ██ ██      ██      ██ ██       ████   ██ 
-███████ ██████  ██      ███████     ██   ██ █████   ███████ ██ ██   ███ ██ ██  ██ 
-██   ██ ██   ██ ██      ██   ██     ██   ██ ██           ██ ██ ██    ██ ██  ██ ██ 
-██   ██ ██   ██  ██████ ██   ██     ██████  ███████ ███████ ██  ██████  ██   ████ 
+ █████  ██████   ██████ ██   ██     ██████  ███████ ███████ ██  ██████  ███    ██
+ ██   ██ ██   ██ ██      ██   ██     ██   ██ ██      ██      ██ ██       ████   ██
+ ███████ ██████  ██      ███████     ██   ██ █████   ███████ ██ ██   ███ ██ ██  ██
+ ██   ██ ██   ██ ██      ██   ██     ██   ██ ██           ██ ██ ██    ██ ██  ██ ██
+ ██   ██ ██   ██  ██████ ██   ██     ██████  ███████ ███████ ██  ██████  ██   ████
 
 
-/****************************************************************************/
+ /****************************************************************************/
 
 
 
 /****************************************************************************
 
-██    ██ ███████ ███████ ██████  ███████     ██ ██████   █████  ████████  █████  
-██    ██ ██      ██      ██   ██ ██         ██  ██   ██ ██   ██    ██    ██   ██ 
-██    ██ ███████ █████   ██████  ███████   ██   ██   ██ ███████    ██    ███████ 
-██    ██      ██ ██      ██   ██      ██  ██    ██   ██ ██   ██    ██    ██   ██ 
- ██████  ███████ ███████ ██   ██ ███████ ██     ██████  ██   ██    ██    ██   ██ 
+ ██    ██ ███████ ███████ ██████  ███████     ██ ██████   █████  ████████  █████
+ ██    ██ ██      ██      ██   ██ ██         ██  ██   ██ ██   ██    ██    ██   ██
+ ██    ██ ███████ █████   ██████  ███████   ██   ██   ██ ███████    ██    ███████
+ ██    ██      ██ ██      ██   ██      ██  ██    ██   ██ ██   ██    ██    ██   ██
+ ██████  ███████ ███████ ██   ██ ███████ ██     ██████  ██   ██    ██    ██   ██
 
 
-/****************************************************************************/
+ /****************************************************************************/
 
 export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
   const groupId = DescriptionOfWork.currentGroupId;
@@ -707,15 +707,15 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 
   if (
     (DescriptionOfWork.XaaSNoneSelected && DescriptionOfWork.currentDOWSection === "XaaS") ||
-    (DescriptionOfWork.cloudNoneSelected && DescriptionOfWork.currentDOWSection === "CloudSupport")
+      (DescriptionOfWork.cloudNoneSelected && DescriptionOfWork.currentDOWSection === "CloudSupport")
   ) {
     return routeNames.DOWLandingPage;
   }
 
   if (current === routeNames.DOWSummary ||
-    current === routeNames.RequirementCategories
-    && DescriptionOfWork.currentDOWSection === "XaaS"
-    && DescriptionOfWork.hasXaasService
+      current === routeNames.RequirementCategories
+      && DescriptionOfWork.currentDOWSection === "XaaS"
+      && DescriptionOfWork.hasXaasService
   ) {
     return routeNames.AnticipatedUserAndDataNeeds
   }
@@ -726,13 +726,13 @@ export const AnticipatedUserAndDataNeedsResolver = (current:string): string => {
 }
 /****************************************************************************
 
-██████   █████   ██████  ███████     ██████  
-██   ██ ██   ██ ██       ██               ██ 
-██████  ███████ ██   ███ █████        █████  
-██      ██   ██ ██    ██ ██          ██      
-██      ██   ██  ██████  ███████     ███████ 
+ ██████   █████   ██████  ███████     ██████
+ ██   ██ ██   ██ ██       ██               ██
+ ██████  ███████ ██   ███ █████        █████
+ ██      ██   ██ ██    ██ ██          ██
+ ██      ██   ██  ██████  ███████     ███████
 
-/****************************************************************************/
+ /****************************************************************************/
 
 // This is the "simple 7" 2nd-level checkbox list page for non-"other offering" categories
 // ... the service offering checkbox list for a selected offering group...
@@ -744,7 +744,7 @@ export const ServiceOfferingsPathResolver = (
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
   DescriptionOfWork.setCurrentGroupRemoved(false);
-  
+
   if (DescriptionOfWork.returnToDOWSummary && DescriptionOfWork.getFromAnticipatedUsersAndData) {
     DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setFromAnticipatedUsersAndData(false);
@@ -770,51 +770,51 @@ export const ServiceOfferingsPathResolver = (
   // if reviewing service group from store, set "atServicesEnd" to false 
   const reviewGroupFromSummary = DescriptionOfWork.reviewGroupFromSummary;
   const atServicesEnd = reviewGroupFromSummary || isOtherOffering
-    ? false 
+    ? false
     : DescriptionOfWork.isEndOfServiceOfferings;
   DescriptionOfWork.setReviewGroupFromSummary(false);
-  
+
   const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
   const addGroupFromSummary = DescriptionOfWork.addGroupFromSummary;
   const currentGroupRemovedForNav = DescriptionOfWork.currentGroupRemovedForNav;
 
-  const nowhereToGo = DOWObject.length === 0 
-    || onlyNoneApplySelected 
-    || atLastNoneApply 
-    || lastGroupRemoved
+  const nowhereToGo = DOWObject.length === 0
+      || onlyNoneApplySelected
+      || atLastNoneApply
+      || lastGroupRemoved
 
   const directionNext = direction ===  "next";
 
-  if (!addGroupFromSummary 
-    && ((currentGroupRemovedForNav && lastGroupRemoved) 
-    || (currentGroupRemovedForNav && returnToDOWSummary)
-    || (returnToDOWSummary && atServicesEnd && directionNext)
-    || nowhereToGo)
+  if (!addGroupFromSummary
+      && ((currentGroupRemovedForNav && lastGroupRemoved)
+          || (currentGroupRemovedForNav && returnToDOWSummary)
+          || (returnToDOWSummary && atServicesEnd && directionNext)
+          || nowhereToGo)
   ) {
     // return to summary
     DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setLastGroupRemoved(false);
-    DescriptionOfWork.setCurrentGroupRemovedForNav(false); 
+    DescriptionOfWork.setCurrentGroupRemovedForNav(false);
     return descriptionOfWorkSummaryPath;
-  } 
+  }
 
   DescriptionOfWork.setAddGroupFromSummary(false);
 
   //handles moving backwards or forwards through service offerings
   if (current === routeNames.ServiceOfferingDetails &&
-    direction.toUpperCase() === RouteDirection.PREVIOUS) {  
+      direction.toUpperCase() === RouteDirection.PREVIOUS) {
     const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
     const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
 
     //at the beginning of service offerings and offering groups
     // direct the user back to the performance requirements step
-    if (current === routeNames.ServiceOfferingDetails && 
-      atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
+    if (current === routeNames.ServiceOfferingDetails &&
+        atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
       return getOfferingGroupServicesPath(currentGroupId);
     }
 
-    if (atBeginningOfOfferingGroups && atBeginningOfSericeOfferings && 
-      current !== routeNames.ServiceOfferingDetails) {
+    if (atBeginningOfOfferingGroups && atBeginningOfSericeOfferings &&
+        current !== routeNames.ServiceOfferingDetails) {
       return basePerformanceRequirementsPath;
     }
 
@@ -882,7 +882,7 @@ export const ServiceOfferingsPathResolver = (
         DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
         setDontNeedButton(previousGroup);
         const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
-  
+
         if(lastServiceOfferingForGroup === undefined)
         {
           throw new Error(`unable to get last offering for group ${previousGroup}`);
@@ -890,7 +890,7 @@ export const ServiceOfferingsPathResolver = (
         DescriptionOfWork.setCurrentOffering(lastServiceOfferingForGroup);
         return getServiceOfferingsDetailsPath(previousGroup, lastServiceOfferingForGroup.name);
       }
-    }     
+    }
   }
 
   setDontNeedButton(currentGroupId);
@@ -905,8 +905,8 @@ export const ServiceOfferingsPathResolver = (
       if (otherOfferingData && otherOfferingData.length) {
         return otherServiceOfferingSummaryPath;
       }
-    } else if (otherOfferingData && otherOfferingData.length > 0 
-      && !(currentInstanceNumber === 1 && otherOfferingData.length === 1) 
+    } else if (otherOfferingData && otherOfferingData.length > 0
+        && !(currentInstanceNumber === 1 && otherOfferingData.length === 1)
     ) {
       // if more than one "Other" offering (Compute, General XaaS, Database) 
       // instance/requirement, hide the "I don't need ____ resources" button
@@ -921,13 +921,13 @@ export const ServiceOfferingsPathResolver = (
 
 /****************************************************************************
 
-███████ ██ ███    ███ ██████  ██      ███████      ██████      ███████  ██████  ██████  ███    ███ 
-██      ██ ████  ████ ██   ██ ██      ██          ██           ██      ██    ██ ██   ██ ████  ████ 
-███████ ██ ██ ████ ██ ██████  ██      █████       ███████      █████   ██    ██ ██████  ██ ████ ██ 
-     ██ ██ ██  ██  ██ ██      ██      ██          ██    ██     ██      ██    ██ ██   ██ ██  ██  ██ 
-███████ ██ ██      ██ ██      ███████ ███████      ██████      ██       ██████  ██   ██ ██      ██ 
+ ███████ ██ ███    ███ ██████  ██      ███████      ██████      ███████  ██████  ██████  ███    ███
+ ██      ██ ████  ████ ██   ██ ██      ██          ██           ██      ██    ██ ██   ██ ████  ████
+ ███████ ██ ██ ████ ██ ██████  ██      █████       ███████      █████   ██    ██ ██████  ██ ████ ██
+ ██ ██ ██  ██  ██ ██      ██      ██          ██    ██     ██      ██    ██ ██   ██ ██  ██  ██
+ ███████ ██ ██      ██ ██      ███████ ███████      ██████      ██       ██████  ██   ██ ██      ██
 
-/****************************************************************************/
+ /****************************************************************************/
 
 
 //this will always return the path for the current group and the current offering
@@ -945,7 +945,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setBackToContractDetails(false);
     return "current-contract/current-contract";
   }
-  
+
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
   if(current === routeNames.OtherOfferingSummary && isOtherOffering && direction === "previous"){
@@ -965,8 +965,8 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     return OtherOfferingSummaryPathResolver(current, direction);
   }
 
-  if ((missingClassification && DescriptionOfWork.returnToDOWSummary) 
-    || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
+  if ((missingClassification && DescriptionOfWork.returnToDOWSummary)
+      || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
     // and no more groups after
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;
@@ -976,7 +976,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     if (DescriptionOfWork.currentGroupId === "") {
       return basePerformanceRequirementsPath;
     }
-    if (!DescriptionOfWork.currentOfferingGroupHasOfferings) { 
+    if (!DescriptionOfWork.currentOfferingGroupHasOfferings) {
       // send to group offerings page
       const serviceOffering = routeNames.ServiceOfferings
       return ServiceOfferingsPathResolver(serviceOffering , direction);
@@ -1001,7 +1001,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     } else {
       DescriptionOfWork.setLastGroupRemoved(false);
       DescriptionOfWork.setReturnToDOWSummary(false);
-      return descriptionOfWorkSummaryPath;    
+      return descriptionOfWorkSummaryPath;
     }
   }
 
@@ -1013,26 +1013,26 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     // if last group removed, currentGroupId === "", send to summary page
     DescriptionOfWork.setLastGroupRemoved(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
-    return descriptionOfWorkSummaryPath;   
+    return descriptionOfWorkSummaryPath;
   }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
     if (offering) {
-      return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
+      return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;
     }
-  } 
+  }
 
   let nextOrPrevGroup;
   if (current === routeNames.DOWSummary) {
     nextOrPrevGroup = DescriptionOfWork.lastOfferingGroup;
   } else {
-    nextOrPrevGroup = direction === "next" 
-      ? DescriptionOfWork.nextOfferingGroup 
+    nextOrPrevGroup = direction === "next"
+      ? DescriptionOfWork.nextOfferingGroup
       : DescriptionOfWork.prevOfferingGroup;
   }
 
-  if (nextOrPrevGroup && !(current === routeNames.OtherOfferingSummary 
-    && otherServiceOfferings.indexOf(nextOrPrevGroup) > -1)) {
+  if (nextOrPrevGroup && !(current === routeNames.OtherOfferingSummary
+      && otherServiceOfferings.indexOf(nextOrPrevGroup) > -1)) {
     // send to group offerings page
     const serviceOffering = routeNames.ServiceOfferings
     DescriptionOfWork.setCurrentOfferingGroupId(nextOrPrevGroup);
@@ -1046,24 +1046,24 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 
 
 /****************************************************************************
- ██████      ██████         ███████ ██    ██ ███    ███ ███    ███  █████  ██████  ██    ██ 
-██    ██    ██    ██        ██      ██    ██ ████  ████ ████  ████ ██   ██ ██   ██  ██  ██  
-██    ██    ██    ██        ███████ ██    ██ ██ ████ ██ ██ ████ ██ ███████ ██████    ████   
-██    ██    ██    ██             ██ ██    ██ ██  ██  ██ ██  ██  ██ ██   ██ ██   ██    ██    
- ██████  ██  ██████  ██     ███████  ██████  ██      ██ ██      ██ ██   ██ ██   ██    ██    
-/****************************************************************************/
+ ██████      ██████         ███████ ██    ██ ███    ███ ███    ███  █████  ██████  ██    ██
+ ██    ██    ██    ██        ██      ██    ██ ████  ████ ████  ████ ██   ██ ██   ██  ██  ██
+ ██    ██    ██    ██        ███████ ██    ██ ██ ████ ██ ██ ████ ██ ███████ ██████    ████
+ ██    ██    ██    ██             ██ ██    ██ ██  ██  ██ ██  ██  ██ ██   ██ ██   ██    ██
+ ██████  ██  ██████  ██     ███████  ██████  ██      ██ ██      ██ ██   ██ ██   ██    ██
+ /****************************************************************************/
 
 export const OtherOfferingSummaryPathResolver = (current: string, direction: string): string => {
   const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
   const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
   if (packageHasSecretOrHigher && showSecurityRequirements) {
     DescriptionOfWork.doSetNeedsSecurityRequirements(false);
-    return DOWSecurityRequitementsPath;  
+    return DOWSecurityRequitementsPath;
   }
 
   const groupId = DescriptionOfWork.currentGroupId;
   if (otherServiceOfferings.indexOf(groupId) > -1) {
-    return otherServiceOfferingSummaryPath; 
+    return otherServiceOfferingSummaryPath;
   }
 
   if(current === routeNames.ServiceOfferingDetails && direction === "next"){
@@ -1079,47 +1079,47 @@ export const OtherOfferingSummaryPathResolver = (current: string, direction: str
 
 /****************************************************************************
 
-███████ ███████  ██████ ██    ██ ██████  ██ ████████ ██    ██     ██████  ███████  ██████  
-██      ██      ██      ██    ██ ██   ██ ██    ██     ██  ██      ██   ██ ██      ██    ██ 
-███████ █████   ██      ██    ██ ██████  ██    ██      ████       ██████  █████   ██    ██ 
-     ██ ██      ██      ██    ██ ██   ██ ██    ██       ██        ██   ██ ██      ██ ▄▄ ██ 
-███████ ███████  ██████  ██████  ██   ██ ██    ██       ██        ██   ██ ███████  ██████  
+ ███████ ███████  ██████ ██    ██ ██████  ██ ████████ ██    ██     ██████  ███████  ██████
+ ██      ██      ██      ██    ██ ██   ██ ██    ██     ██  ██      ██   ██ ██      ██    ██
+ ███████ █████   ██      ██    ██ ██████  ██    ██      ████       ██████  █████   ██    ██
+ ██ ██      ██      ██    ██ ██   ██ ██    ██       ██        ██   ██ ██      ██ ▄▄ ██
+ ███████ ███████  ██████  ██████  ██   ██ ██    ██       ██        ██   ██ ███████  ██████
 
-/****************************************************************************/
+ /****************************************************************************/
 
 
-export const DOWSecurityRequirementsPathResolver 
-  = (current: string, direction: string): string => {
-    const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
-    const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
+export const DOWSecurityRequirementsPathResolver
+    = (current: string, direction: string): string => {
+      const packageHasSecretOrHigher = ClassificationRequirements.packageHasSecretOrHigher;
+      const showSecurityRequirements = DescriptionOfWork.showSecurityRequirements;
 
-    if (packageHasSecretOrHigher && showSecurityRequirements) {
+      if (packageHasSecretOrHigher && showSecurityRequirements) {
+        DescriptionOfWork.doSetNeedsSecurityRequirements(false);
+        return DOWSecurityRequitementsPath;
+      }
+
+      const groupId = DescriptionOfWork.currentGroupId;
+      const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
+
+      if (isOtherOffering && direction === "prev") {
+        return OtherOfferingSummaryPathResolver(current, direction);
+      } else if (direction === "prev") {
+        return OfferingDetailsPathResolver(current, direction);
+      }
       DescriptionOfWork.doSetNeedsSecurityRequirements(false);
-      return DOWSecurityRequitementsPath;
-    }
-
-    const groupId = DescriptionOfWork.currentGroupId;
-    const isOtherOffering = otherServiceOfferings.indexOf(groupId) > -1;
-
-    if (isOtherOffering && direction === "prev") {
-      return OtherOfferingSummaryPathResolver(current, direction);
-    } else if (direction === "prev") {
-      return OfferingDetailsPathResolver(current, direction);
-    }
-    DescriptionOfWork.doSetNeedsSecurityRequirements(false);
-    return DowSummaryPathResolver(current, direction);
-  };
+      return DowSummaryPathResolver(current, direction);
+    };
 
 
 /****************************************************************************
 
-██████   ██████  ██     ██     ███████ ██    ██ ███    ███  █████  ███    ███ ██████  ██    ██ 
-██   ██ ██    ██ ██     ██     ██      ██    ██ ████  ████ ██   ██ ████  ████ ██   ██  ██  ██  
-██   ██ ██    ██ ██  █  ██     ███████ ██    ██ ██ ████ ██ ███████ ██ ████ ██ ██████    ████   
-██   ██ ██    ██ ██ ███ ██          ██ ██    ██ ██  ██  ██ ██   ██ ██  ██  ██ ██   ██    ██    
-██████   ██████   ███ ███      ███████  ██████  ██      ██ ██   ██ ██      ██ ██   ██    ██    
+ ██████   ██████  ██     ██     ███████ ██    ██ ███    ███  █████  ███    ███ ██████  ██    ██
+ ██   ██ ██    ██ ██     ██     ██      ██    ██ ████  ████ ██   ██ ████  ████ ██   ██  ██  ██
+ ██   ██ ██    ██ ██  █  ██     ███████ ██    ██ ██ ████ ██ ███████ ██ ████ ██ ██████    ████
+ ██   ██ ██    ██ ██ ███ ██          ██ ██    ██ ██  ██  ██ ██   ██ ██  ██  ██ ██   ██    ██
+ ██████   ██████   ███ ███      ███████  ██████  ██      ██ ██   ██ ██      ██ ██   ██    ██
 
-/****************************************************************************/
+ /****************************************************************************/
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
   DescriptionOfWork.setBackToContractDetails(current === routeNames.ConflictOfInterest);
@@ -1150,7 +1150,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
   // coming from service offering details step
   if(current === routeNames.ServiceOfferingDetails
-    || current === routeNames.DOWSecurityRequirements
+      || current === routeNames.DOWSecurityRequirements
   ){
 
     //no more offerings or services to process go to summary
@@ -1205,23 +1205,23 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 /****************************************************************************/
 /****************************************************************************
 
-██████   ██████  ██     ██               ███████ ███    ██ ██████  
-██   ██ ██    ██ ██     ██               ██      ████   ██ ██   ██ 
-██   ██ ██    ██ ██  █  ██     █████     █████   ██ ██  ██ ██   ██ 
-██   ██ ██    ██ ██ ███ ██               ██      ██  ██ ██ ██   ██ 
-██████   ██████   ███ ███                ███████ ██   ████ ██████  
+ ██████   ██████  ██     ██               ███████ ███    ██ ██████
+ ██   ██ ██    ██ ██     ██               ██      ████   ██ ██   ██
+ ██   ██ ██    ██ ██  █  ██     █████     █████   ██ ██  ██ ██   ██
+ ██   ██ ██    ██ ██ ███ ██               ██      ██  ██ ██ ██   ██
+ ██████   ██████   ███ ███                ███████ ██   ████ ██████
 
-/****************************************************************************/
+ /****************************************************************************/
 /****************************************************************************/
 /****************************************************************************
 
-██  ██████   ██████ ███████               ███████ ████████  █████  ██████  ████████ 
-██ ██       ██      ██                    ██         ██    ██   ██ ██   ██    ██    
-██ ██   ███ ██      █████       █████     ███████    ██    ███████ ██████     ██    
-██ ██    ██ ██      ██                         ██    ██    ██   ██ ██   ██    ██    
-██  ██████   ██████ ███████               ███████    ██    ██   ██ ██   ██    ██    
+ ██  ██████   ██████ ███████               ███████ ████████  █████  ██████  ████████
+ ██ ██       ██      ██                    ██         ██    ██   ██ ██   ██    ██
+ ██ ██   ███ ██      █████       █████     ███████    ██    ███████ ██████     ██
+ ██ ██    ██ ██      ██                         ██    ██    ██   ██ ██   ██    ██
+ ██  ██████   ██████ ███████               ███████    ██    ██   ██ ██   ██    ██
 
-/****************************************************************************/
+ /****************************************************************************/
 /****************************************************************************/
 /****************************************************************************/
 
@@ -1230,34 +1230,34 @@ const IGCERouteNext = (current: string): string => {
   if (needsReplicateOrOptimize() && current === routeNames.CreatePriceEstimate) {
     return routeNames.OptimizeOrReplicate;
   }
-  
+
   if ((currentEnvNeedsArchitectureDesign() || DOWNeedsArchitectureDesign()) &&
-    (current === routeNames.CreatePriceEstimate 
-    || current === routeNames.OptimizeOrReplicate)) {
+      (current === routeNames.CreatePriceEstimate
+          || current === routeNames.OptimizeOrReplicate)) {
     return routeNames.ArchitecturalDesignSolutions;
   }
-  if (hasServiceOfferings() && 
-    (current === routeNames.CreatePriceEstimate
-    || current === routeNames.OptimizeOrReplicate
-    || current === routeNames.ArchitecturalDesignSolutions)
+  if (hasServiceOfferings() &&
+      (current === routeNames.CreatePriceEstimate
+          || current === routeNames.OptimizeOrReplicate
+          || current === routeNames.ArchitecturalDesignSolutions)
   ) {
     return routeNames.GatherPriceEstimates;
   }
-  if (dowHasTraining() && 
-    (current === routeNames.CreatePriceEstimate
-    || current === routeNames.OptimizeOrReplicate
-    || current === routeNames.ArchitecturalDesignSolutions
-    || current === routeNames.GatherPriceEstimates)
+  if (dowHasTraining() &&
+      (current === routeNames.CreatePriceEstimate
+          || current === routeNames.OptimizeOrReplicate
+          || current === routeNames.ArchitecturalDesignSolutions
+          || current === routeNames.GatherPriceEstimates)
   ) {
     IGCE.setIgceTrainingIndex(0);
     return routeNames.IGCETraining;
   }
-  if (needsTravelEstimate() && 
-    (current === routeNames.CreatePriceEstimate
-    || current === routeNames.OptimizeOrReplicate
-    || current === routeNames.ArchitecturalDesignSolutions
-    || current === routeNames.GatherPriceEstimates
-    || current === routeNames.IGCETraining)
+  if (needsTravelEstimate() &&
+      (current === routeNames.CreatePriceEstimate
+          || current === routeNames.OptimizeOrReplicate
+          || current === routeNames.ArchitecturalDesignSolutions
+          || current === routeNames.GatherPriceEstimates
+          || current === routeNames.IGCETraining)
   ) {
     return routeNames.TravelEstimates;
   }
@@ -1290,9 +1290,9 @@ export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
 
   // moving backwards
   if (current === routeNames.ArchitecturalDesignSolutions
-    || current === routeNames.GatherPriceEstimates
-    || current === routeNames.IGCETraining
-    || current === routeNames.TravelEstimates
+      || current === routeNames.GatherPriceEstimates
+      || current === routeNames.IGCETraining
+      || current === routeNames.TravelEstimates
   ) {
     return routeNames.CreatePriceEstimate;
   }
@@ -1308,11 +1308,11 @@ export const IGCEArchitecturalDesignSolutionsResolver = (current: string): strin
 
   // moving backwards
   if (current === routeNames.GatherPriceEstimates
-    || current === routeNames.IGCETraining
-    || current === routeNames.TravelEstimates
+      || current === routeNames.IGCETraining
+      || current === routeNames.TravelEstimates
   ) {
-    return needsReplicateOrOptimize() 
-      ? routeNames.OptimizeOrReplicate 
+    return needsReplicateOrOptimize()
+      ? routeNames.OptimizeOrReplicate
       : routeNames.CreatePriceEstimate;
   }
 
@@ -1335,8 +1335,8 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
   const isLastTraining = isLastIGCETraining();
   const isSingleTraining = isSingleTrainingInstance();
 
-  const needsArchDesign 
-    = currentEnvNeedsArchitectureDesign() || DOWNeedsArchitectureDesign();
+  const needsArchDesign
+      = currentEnvNeedsArchitectureDesign() || DOWNeedsArchitectureDesign();
   const needsRepOrOpt = needsReplicateOrOptimize();
   const hasTravel = needsTravelEstimate();
   const hasOfferings = hasServiceOfferings();
@@ -1346,13 +1346,13 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
   if (current === routeNames.ArchitecturalDesignSolutions) {
     if (hasOfferings) return gatherPriceEstimatesPath;
   }
-  if (current === routeNames.ArchitecturalDesignSolutions 
-    || current === routeNames.GatherPriceEstimates
+  if (current === routeNames.ArchitecturalDesignSolutions
+      || current === routeNames.GatherPriceEstimates
   ) {
     if (hasTraining) {
       IGCE.setIgceTrainingIndex(0);
       return igceTrainingPath;
-    } 
+    }
     if (hasTravel) return travelEstimatePath;
     return surgeCapacityPath;
   }
@@ -1365,7 +1365,7 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
     if (hasTraining) {
       IGCE.setIgceTrainingIndex(lastTrainingIndex());
       return igceTrainingPath;
-    } 
+    }
     if (hasOfferings) return gatherPriceEstimatesPath;
     if (needsArchDesign) return archDesignPath;
     if (needsRepOrOpt) return repOptimizePath;
@@ -1376,7 +1376,7 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
   // STARTING FROM TRAINING - DETERMINE IF LOOP OR MOVE ON
 
   // IF MULTIPLE TRAINING INSTANCES
-  if (!isSingleTraining) {  
+  if (!isSingleTraining) {
     // increase or decrease training instance index 
     const newIdx = direction === "next"
       ? IGCE.igceTrainingIndex + 1 : IGCE.igceTrainingIndex - 1;
@@ -1391,10 +1391,10 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
       }
       return igceTrainingPath;
 
-    } 
+    }
     if (isLastTraining && direction === "next") {
       return hasTravel ? travelEstimatePath : surgeCapacityPath;
-    } 
+    }
     return igceTrainingPath;
   }
 
@@ -1403,16 +1403,16 @@ export const IGCETrainingPathResolver = (current: string, direction: string): st
     if (hasOfferings) return gatherPriceEstimatesPath;
     if (needsArchDesign) return archDesignPath;
     if (needsRepOrOpt) return repOptimizePath;
-    return createPriceEstimatePath;  
+    return createPriceEstimatePath;
   }
 
   // going next from Training single instance to either Travel or Surge Capacity
-  return hasTravel ? travelEstimatePath : surgeCapacityPath; 
+  return hasTravel ? travelEstimatePath : surgeCapacityPath;
 }
 
 export const IGCESurgeCapabilities =  (current:string): string =>{
   const surgeCapacity =
-    IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
+      IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
 
   if (surgeCapacity.toUpperCase() !== "YES") {
     if (current === routeNames.SurgeCapacity){
@@ -1423,20 +1423,20 @@ export const IGCESurgeCapabilities =  (current:string): string =>{
     if (current === routeNames.FeeCharged){
       return routeNames.SurgeCapacity;
     }
-  } 
+  }
   return routeNames.SurgeCapabilities;
 }
 
 export const FeeChargedResolver = (current: string): string => {
   const surgeCapacity =
-    IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
+      IGCEStore.requirementsCostEstimate?.surge_requirements.capabilities as string;
 
   if (!contractingShopIsDitco()) {
     return routeNames.FeeCharged
   }
 
   if (current === routeNames.CostSummary) {
-    return surgeCapacity === "YES" 
+    return surgeCapacity === "YES"
       ? routeNames.SurgeCapabilities
       : routeNames.SurgeCapacity;
   }
@@ -1451,8 +1451,8 @@ const contractingShopIsDitco = (): boolean => {
 
 const hasServiceOfferings = (): boolean => {
   const offerings = DescriptionOfWork.DOWObject.filter(obj => {
-    return obj.serviceOfferingGroupId !== "TRAINING" 
-      && obj.serviceOfferingGroupId.indexOf("NONE") === -1
+    return obj.serviceOfferingGroupId !== "TRAINING"
+        && obj.serviceOfferingGroupId.indexOf("NONE") === -1
   });
   return offerings.length >= 1;
 }
@@ -1471,7 +1471,7 @@ const isLastIGCETraining = (): boolean => {
     item => item.serviceOfferingGroupId === "TRAINING"
   );
   const trainingIndex = IGCE.igceTrainingIndex;
-  return trainingOfferings?.otherOfferingData 
+  return trainingOfferings?.otherOfferingData
     ? trainingIndex >= trainingOfferings.otherOfferingData.length - 1 : false;
 }
 
@@ -1486,7 +1486,7 @@ const lastTrainingIndex = (): number => {
   const trainingOfferings = DescriptionOfWork.DOWObject.find(
     item => item.serviceOfferingGroupId === "TRAINING"
   );
-  return trainingOfferings?.otherOfferingData?.length 
+  return trainingOfferings?.otherOfferingData?.length
     ? trainingOfferings?.otherOfferingData?.length - 1
     : -1;
 }
@@ -1496,15 +1496,15 @@ const dowHasTraining = (): boolean => {
     item => item.serviceOfferingGroupId === "TRAINING"
   );
 
-  return trainingOfferings?.otherOfferingData 
+  return trainingOfferings?.otherOfferingData
     ? trainingOfferings.otherOfferingData.length > 0 : false;
 }
 
 const needsReplicateOrOptimize = (): boolean => {
   return (
     CurrentEnvironment.currentEnvironment !== null &&
-    CurrentEnvironment.currentEnvironment
-      .current_environment_replicated_optimized.indexOf("YES") > -1
+      CurrentEnvironment.currentEnvironment
+        .current_environment_replicated_optimized.indexOf("YES") > -1
   );
 }
 
@@ -1520,20 +1520,20 @@ const DOWNeedsArchitectureDesign = (): boolean | null => {
 /****************************************************************************/
 /****************************************************************************
 
-██  ██████   ██████ ███████               ███████ ███    ██ ██████  
-██ ██       ██      ██                    ██      ████   ██ ██   ██ 
-██ ██   ███ ██      █████       █████     █████   ██ ██  ██ ██   ██ 
-██ ██    ██ ██      ██                    ██      ██  ██ ██ ██   ██ 
-██  ██████   ██████ ███████               ███████ ██   ████ ██████  
+ ██  ██████   ██████ ███████               ███████ ███    ██ ██████
+ ██ ██       ██      ██                    ██      ████   ██ ██   ██
+ ██ ██   ███ ██      █████       █████     █████   ██ ██  ██ ██   ██
+ ██ ██    ██ ██      ██                    ██      ██  ██ ██ ██   ██
+ ██  ██████   ██████ ███████               ███████ ██   ████ ██████
 
-/****************************************************************************/
+ /****************************************************************************/
 /****************************************************************************/
 /****************************************************************************/
 
 export const CreatePriceEstimateResolver = (current:string): string =>{
   Summary.setHasCurrentStepBeenVisited(isStepTouched(8))
   return current === routeNames.SummaryStepSeven
-    ? Summary.hasCurrentStepBeenVisited 
+    ? Summary.hasCurrentStepBeenVisited
       ? routeNames.SummaryStepEight
       : routeNames.CreatePriceEstimate
     : routeNames.SummaryStepEight;
@@ -1568,11 +1568,10 @@ export const CurrentlyHasFundingResolver = (current: string): string => {
     return routeNames.SummaryStepEight
   }
 
-  return Summary.hasCurrentStepBeenVisited
-    ? routeNames.SummaryStepEight
-    : !isDitcoUser() ?
-      routeNames.CurrentlyHasFunding
-      : routeNames.RFD
+  if (Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepEight
+  }
+  return !isDitcoUser() ? routeNames.CurrentlyHasFunding : routeNames.RFD
 };
 
 export const GTCInformationResolver = (current: string): string => {
@@ -1583,8 +1582,8 @@ export const GTCInformationResolver = (current: string): string => {
 }
 
 export const FundingPlanTypeResolver = (current: string): string => {
-  return current !== routeNames.GeneratingPackageDocumentsFunding ?
-    routeNames.FundingPlanType
+  return current !== routeNames.GeneratingPackageDocumentsFunding
+    ? routeNames.FundingPlanType
     : routeNames.SummaryStepEight
 }
 
@@ -1603,36 +1602,36 @@ export const MIPRResolver = (current: string): string => {
 
 export const Upload7600Resolver = (current: string): string => {
   if (current === routeNames.FundingPlanType) {
-    return fundingRequestType() === "MIPR" 
+    return fundingRequestType() === "MIPR"
       ? routeNames.MIPR
       : routeNames.Upload7600;
   }
 
 
   return current === routeNames.SeverabilityAndIncrementalFunding ||
-    current === routeNames.AppropriationOfFunds
+  current === routeNames.AppropriationOfFunds
     ? routeNames.GTC
-    : hasExceptionToFairOpp() 
+    : hasExceptionToFairOpp()
       ? routeNames.AppropriationOfFunds
       : SeverabilityAndIncrementalFundingResolver(current);
 }
 
 export const AppropriationOfFundsResolver = (current: string): string => {
-  
+
   if (hasExceptionToFairOpp()){
     return routeNames.AppropriationOfFunds
   } else if (evalPlanRequired()){
-    return SeverabilityAndIncrementalFundingResolver(current);
+    return routeNames.SummaryStepEight;
   }
-  
-  return current === routeNames.SeverabilityAndIncrementalFunding
-    ? routeNames.Upload7600
-    : SeverabilityAndIncrementalFundingResolver(current);
+
+  return current === routeNames.MIPR
+    ? routeNames.SummaryStepEight
+    : routeNames.MIPR;
 }
 
 export const SeverabilityAndIncrementalFundingResolver = (current: string): string => {
-  return Summary.hasCurrentStepBeenVisited 
-    && ([routeNames.AppropriationOfFunds, routeNames.Upload7600].some(route => route === current))
+  return Summary.hasCurrentStepBeenVisited
+  && ([routeNames.AppropriationOfFunds, routeNames.Upload7600].some(route => route === current))
     ? routeNames.SummaryStepEight
     : routeNames.SeverabilityAndIncrementalFunding
 };
@@ -1721,8 +1720,8 @@ export const hasHighSide = (classifications: SelectedClassificationLevelDTO[]): 
 };
 
 export const ContractTypeResolver = (current: string): string => {
-  const isFromRecurringRequirments = 
-    current === routeNames.RecurringRequirement;
+  const isFromRecurringRequirments =
+      current === routeNames.RecurringRequirement;
   return  Summary.hasCurrentStepBeenVisited && isFromRecurringRequirments
     ? routeNames.SummaryStepThree
     : routeNames.ContractType
@@ -1737,9 +1736,9 @@ export const ClassificationRequirementsResolver = (current: string): string => {
 }
 
 export const SecurityRequirementsResolver = (current: string): string => {
-  
+
   const classifications = ClassificationRequirements.selectedClassificationLevels;
-  const hasHigh = hasHighSide(classifications); 
+  const hasHigh = hasHighSide(classifications);
   // forward
   if (current === routeNames.ClassificationRequirements) {
     if (hasHigh) {
@@ -1750,9 +1749,9 @@ export const SecurityRequirementsResolver = (current: string): string => {
   // backward
   return hasHigh ? routeNames.SecurityRequirements : routeNames.ClassificationRequirements
 }
-  
+
 export const CrossDomainResolver = (current: string): string => {
-  //create function for this to be reused 
+  //create function for this to be reused
   const classifications = ClassificationRequirements.selectedClassificationLevels;
   const hasHigh = hasHighSide(classifications);
   const singleClassification = onlyOneClassification(classifications)
@@ -1771,12 +1770,12 @@ export const CrossDomainResolver = (current: string): string => {
       : routeNames.SummaryStepThree
   }
   return routeNames.CrossDomain;
- 
+
 }
 
 export const SummaryStepThreeRouteResolver = (current:string): string => {
   // forward
-  
+
   const navBackNames = [routeNames.CurrentContract, routeNames.CurrentContractDetails];
   if (navBackNames.includes(current)) {
     return routeNames.SummaryStepThree
@@ -1793,14 +1792,14 @@ export const AddToExistingPortfolioResolver = (current: string): string => {
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
   const hasActivePortfolios: boolean = userHasActivePortfolios();
   // moving backward
-  if (current === provWorkflowRouteNames.GeneratedFromPackage 
-    || current === provWorkflowRouteNames.PortfolioDetails
+  if (current === provWorkflowRouteNames.GeneratedFromPackage
+      || current === provWorkflowRouteNames.PortfolioDetails
   ) {
-    return hasActivePortfolios 
+    return hasActivePortfolios
       ? provWorkflowRouteNames.AddToExistingPortfolio
       : provWorkflowRouteNames.AwardedTaskOrder
-  } 
-  
+  }
+
   // moving forward
   if (provFromMeatball()) {
     return taskOrderHasUnclass() && cspHasILs()
@@ -1827,11 +1826,11 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
   if (current === provWorkflowRouteNames.PortfolioDetails) {
     if (provFromMeatball()) return provWorkflowRouteNames.AwardedTaskOrder;
     return userHasActivePortfolios()
-      ? provWorkflowRouteNames.AddToExistingPortfolio 
+      ? provWorkflowRouteNames.AddToExistingPortfolio
       : provWorkflowRouteNames.AwardedTaskOrder
   }
-  
-  return taskOrderHasUnclass() && cspHasILs() 
+
+  return taskOrderHasUnclass() && cspHasILs()
     ? provWorkflowRouteNames.PortfolioDetails
     : provWorkflowRouteNames.AddCSPAdmin;
 }
@@ -1840,7 +1839,7 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
   if (current === provWorkflowRouteNames.AddCSPAdmin && provFromMeatball()) {
     return taskOrderHasUnclass() && cspHasILs()
       ? provWorkflowRouteNames.PortfolioDetails
-      : provWorkflowRouteNames.AwardedTaskOrder;    
+      : provWorkflowRouteNames.AwardedTaskOrder;
   }
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId;
   if (!acqPkgSysId || (taskOrderHasUnclass() && cspHasILs())) {
@@ -1934,7 +1933,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   RFDResolver,
 };
 
-// add path resolvers here 
+// add path resolvers here
 const pathResolvers: Record<string, StepPathResolver> = {
   OtherOfferingSummaryPathResolver,
   DOWSecurityRequirementsPathResolver,
@@ -1954,4 +1953,4 @@ export const InvokePathResolver = (
   resolverName: string,
   currentStep: string,
   direction: string
-): string => pathResolvers[resolverName](currentStep, direction); 
+): string => pathResolvers[resolverName](currentStep, direction);
