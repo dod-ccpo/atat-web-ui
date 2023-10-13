@@ -413,7 +413,7 @@ export default class ATATSearch extends Vue {
       if (this.isMaskRegex) {
         this.maskObj.regex = this.mask[0] || "";
       } else {
-        this.maskObj.mask = this.mask || [];
+        this.maskObj.mask = this.mask;
       }
     }
 
@@ -430,12 +430,6 @@ export default class ATATSearch extends Vue {
   }
 
   private mounted(): void {
-    if (
-      this.searchType === 'G-Invoicing' &&
-      !(this.gInvoicingSearchType === 'GtcNumber' || this.gInvoicingSearchType === 'OrderNumber')
-    ) {
-      console.error('gInvoicingSearchType should be set when searchType is G-Invoicing!')
-    }
     this.setMask();
   }
 }
