@@ -324,7 +324,7 @@ describe("Testing ATATSearch Component", () => {
           gInvoicingSearchType: "OrderNumber",
         })
 
-        jest.spyOn(api.gInvoicingApi, 'searchOrder').mockImplementation(() => { throw Error })
+        jest.spyOn(api.gInvoicingApi, 'search').mockImplementation(() => { throw Error })
 
         try {
           wrapper.vm.search();
