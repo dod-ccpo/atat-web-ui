@@ -2450,8 +2450,9 @@ export class SummaryStore extends VuexModule {
     const mipr = FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO;
     const fairOpp =
         (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity;
+    const fundingRequirement = FinancialDetails.fundingRequirement as FundingRequirementDTO
     const hasFairOpp = ["NO_NONE", ""].every(noValue => noValue !== fairOpp );
-    const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp};
+    const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp,fundingRequirement};
     const isComplete =  await this.isFundingComplete(fundingDataObjs);
     const fundingSummaryItem: SummaryItem = {
       title: "Funding",
@@ -2477,10 +2478,17 @@ export class SummaryStore extends VuexModule {
       const hasMIPRNumber = funding.mipr?.mipr_number !== ""
       const hasOrderNumber = funding.fsForm?.order_number !== ""
       const hasGTCNumber = funding.fsForm?.gt_c_number !== ""
+      if(!hasMIPRNumber && !hasGTCNumber && !hasGTCNumber ){
+        return "Missing funding documents"
+      }
       return funding.request.funding_request_type === "MIPR"
         ? (hasMIPRNumber ? "MIPR: " + funding.mipr.mipr_number  : "")
         : (hasGTCNumber ? "GT&C: " + funding.fsForm.gt_c_number + "<br />" : "")
           + (hasOrderNumber ? "Order: " + funding.fsForm.order_number : "")
+    }
+    // eslint-disable-next-line max-len
+    if(AcquisitionPackage.acquisitionPackage?.contracting_shop_require_funding_documents_for_submission_of_package === "NO"){
+      return "Funding documents are not required by contracting office"
     }
     return ""
   }
@@ -2493,6 +2501,7 @@ export class SummaryStore extends VuexModule {
         fsForm: FundingRequestFSFormDTO,
         mipr: FundingRequestMIPRFormDTO,
         hasFairOpp: boolean
+        fundingRequirement: FundingRequirementDTO
       }): Promise<boolean>{
     if (funding.request && funding.fsForm){
       const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
@@ -2507,6 +2516,7 @@ export class SummaryStore extends VuexModule {
           || funding.fsForm.gt_c_number !== ""
           || await this.isTouched({object: funding.fsForm, keysToIgnore}) //validates 2 docs
           || hasAppropriationOfFunds
+          || funding.fundingRequirement.has_funding !== ""
     }
     return false
   }
@@ -2520,6 +2530,7 @@ export class SummaryStore extends VuexModule {
         fsForm: FundingRequestFSFormDTO,
         mipr: FundingRequestMIPRFormDTO,
         hasFairOpp: boolean
+        fundingRequirement: FundingRequirementDTO
       }): Promise<boolean>{
     if (funding.request && funding.fsForm){
       let hasAppropriationOfFunds = false;
@@ -2539,8 +2550,11 @@ export class SummaryStore extends VuexModule {
           && funding.request.appropriation_funds_type !== ""
         : true
 
+      const needsFundingInfo = funding.fundingRequirement.has_funding === "NO_FUNDING"
+
       return isComplete
-          && hasAppropriationOfFunds;
+          && hasAppropriationOfFunds
+          && !needsFundingInfo;
     }
     return false;
   }
