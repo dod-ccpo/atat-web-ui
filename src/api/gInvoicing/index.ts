@@ -12,85 +12,67 @@ export class GInvoicingApi extends ApiBase{
   }
 
   public async searchGtc(gtcNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
+    let response: GInvoicingResponse = {
+      valid: true,
+      message:""
+    };
     try {
-
       const requestConfig: AxiosRequestConfig = {
         params: {
           gtcNumber: gtcNumber,
           acquisitionPackageId: acqPackageId
         }
       };
-
       const apiResponse = await this.instance.get(`${this.endPoint}/gtc_validation`,
         requestConfig
       );
       if(apiResponse.status === 200){
-        const response: GInvoicingResponse = {
+        response = {
           valid: true,
           message: apiResponse?.data?.result
         };
-
         return response;
-      } else {
-        const { error } = apiResponse.data;
-
-        const response: GInvoicingResponse = {
-          valid: error.valid,
-          message: error?.message
-        };
-
-        return response;
-      }
-
+      } 
     } catch (error) {
-      const response: GInvoicingResponse = {
+      response = {
         valid: false,
         message: "unknown error"
       }
-
-      return response;
     }
+    return response;
   }
 
   public async search(orderNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
+    let response: GInvoicingResponse = {
+      valid: true,
+      message:""
+    };
     try {
-
       const requestConfig: AxiosRequestConfig = {
         params: {
           orderNumber: orderNumber,
           acquisitionPackageId: acqPackageId
         }
       };
-
       const apiResponse = await this.instance.get(`${this.endPoint}/order_validation`,
         requestConfig
       );
+      
       if(apiResponse.status === 200){
-        const response: GInvoicingResponse = {
+        response = {
           valid: true,
           message: apiResponse?.data?.result
         };
-
-        return response;
-      } else {
-        const { error } = apiResponse.data;
-
-        const response: GInvoicingResponse = {
-          valid: error?.valid,
-          message: error?.message
-        };
-
         return response;
       }
 
     } catch (error) {
-      const response: GInvoicingResponse = {
+      response = {
         valid: false,
         message: "unknown error"
       }
-
-      return response;
     }
+    return response;
   }
 
 }
