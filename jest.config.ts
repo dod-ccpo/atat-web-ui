@@ -86,6 +86,7 @@ module.exports = {
     "<rootDir>/src/steps/10-FinancialDetails/IGCE/components/Card_Requirements.spec.ts",
     "<rootDir>/src/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.spec.ts",
     "<rootDir>/src/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.spec.ts",
+    "<rootDir>src/steps/10-FinancialDetails/CurrentlyHasFunding.spec.ts",
     "<rootDir>/src/steps/10-FinancialDetails/Upload7600.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
