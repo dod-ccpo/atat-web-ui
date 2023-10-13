@@ -580,11 +580,12 @@ export class PortfolioDataStore extends VuexModule {
   public currentUserIsViewer = false;
   public currentUserIsManager = false;
   public currentUserIsOwner = false;
+  public currentOwnerSysId = "";
 
   @Action
   public async setCurrentPortfolioFromCard(portfolioCardData: PortfolioDetailsDTO): Promise<void> {
     await this.doSetCurrentPortfolioFromCard(portfolioCardData);
-
+    this.doSetPortfolioCreator(portfolioCardData.portfolio.portfolio_users?.creator as User)
     await this.doSetCurrentUserRole();
   }
 
@@ -593,6 +594,8 @@ export class PortfolioDataStore extends VuexModule {
     portfolioCardData: PortfolioDetailsDTO): Promise<void> 
   {
     const portfolioData = portfolioCardData.portfolio;
+    const portfolioOwner = {...portfolioData.portfolio_users?.owner, role: "Owner"}
+
     const dataFromSummaryCard = {
       sysId: portfolioCardData.portfolioId,
       title: portfolioData.portfolio_name,
@@ -607,7 +610,7 @@ export class PortfolioDataStore extends VuexModule {
       agencyDisplay: portfolioData.agencyDisplay,
       currentUserIsManager: portfolioData.current_user_is_manager,
       currentUserIsOwner: portfolioData.current_user_is_manager,
-      portfolio_owner: portfolioData.portfolio_users?.owner,
+      portfolio_owner: portfolioOwner,
       portfolio_managers: portfolioData.portfolio_users?.managers,
       portfolio_viewers: portfolioData.portfolio_users?.viewers,
       taskOrder: {
@@ -617,9 +620,15 @@ export class PortfolioDataStore extends VuexModule {
         clins: [...<[]>portfolioData.clins],
       },
       members: [
-        portfolioData.portfolio_users?.owner, 
-        ...<[]>portfolioData.portfolio_users?.managers,
-        ...<[]>portfolioData.portfolio_users?.viewers
+        portfolioOwner, 
+        ...<[]>portfolioData.portfolio_users?.managers.map((manager) =>{
+          manager.role = 'Manager'
+          return manager
+        }),
+        ...<[]>portfolioData.portfolio_users?.viewers.map((viewer) => {
+          viewer.role = 'Viewer';
+          return viewer
+        })
       ],
       environments: portfolioData.environments,
       fundsData: {
@@ -705,13 +714,16 @@ export class PortfolioDataStore extends VuexModule {
   public async setCurrentPortfolioMembers(portfolio: Portfolio): Promise<void> {
     try {
       if (portfolio.sysId) {
+        const owner = portfolio.portfolio_owner as unknown as User
+
         const members = {
-          portfolio_owner: portfolio.portfolio_owner,
+          portfolio_owner: owner.sys_id,
           portfolio_managers: portfolio.portfolio_managers,
           portfolio_viewers: portfolio.portfolio_viewers,
         } as unknown as PortfolioSummaryDTO;
         let response = await api.portfolioTable.update(portfolio.sysId, members);
         response = convertColumnReferencesToValues(response);
+        debugger;
         await this.setCurrentPortfolio(response);
         await this.doSetCurrentUserRole();
         await this.populatePortfolioMembersDetail(portfolio);
