@@ -1593,22 +1593,10 @@ export const MIPRResolver = (current: string): string => {
   if (fundingType === "MIPR") {
     return routeNames.MIPR;
   }
-  return current === routeNames.GInvoicing
+  return current === routeNames.GTC
     ? routeNames.FundingPlanType
-    : routeNames.GInvoicing;
+    : routeNames.GTC;
 };
-
-export const GInvoicingResolver = (current: string): string => {
-  if (fundingRequestType() === "FS_FORM") {
-    return routeNames.GInvoicing;
-  }
-  
-  return current === routeNames.SeverabilityAndIncrementalFunding
-    ? routeNames.MIPR
-    : hasExceptionToFairOpp() 
-      ? routeNames.AppropriationOfFunds
-      : SeverabilityAndIncrementalFundingResolver(current);
-}
 
 export const Upload7600Resolver = (current: string): string => {
   const useGInvoicing = FinancialDetails.gInvoicingData.useGInvoicing === "YES";
@@ -1621,7 +1609,7 @@ export const Upload7600Resolver = (current: string): string => {
 
   return current === routeNames.SeverabilityAndIncrementalFunding ||
     current === routeNames.AppropriationOfFunds
-    ? routeNames.GInvoicing
+    ? routeNames.GTC
     : hasExceptionToFairOpp() 
       ? routeNames.AppropriationOfFunds
       : SeverabilityAndIncrementalFundingResolver(current);
@@ -1904,7 +1892,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   MIPRResolver,
   IGCESurgeCapabilities,
   FeeChargedResolver,
-  GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
