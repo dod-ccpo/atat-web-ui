@@ -140,7 +140,7 @@ export class FinancialDetailsStore extends VuexModule {
     const {use_g_invoicing, gt_c_number} = this.fundingRequestFSForm;
     return  {
 
-      useGInvoicing: use_g_invoicing || '',
+      useGInvoicing: use_g_invoicing ?? '',
       gInvoiceNumber: gt_c_number,
     }
   }

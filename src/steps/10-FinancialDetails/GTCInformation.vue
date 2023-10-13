@@ -307,11 +307,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     ) {
       this.useGInvoicing = this.loaded?.use_g_invoicing;
     } else {
-      if (this.loaded?.fs_form_7600a_attachment) {
-        this.useGInvoicing = "NO";
-      } else {
-        this.useGInvoicing = "YES";
-      }
+      this.useGInvoicing = this.loaded?.fs_form_7600a_attachment ? "NO" : "YES"
     }
 
     this.savedData = {
