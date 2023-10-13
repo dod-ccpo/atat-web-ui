@@ -2,6 +2,7 @@ import {TableApiBase} from "@/api/tableApiBase";
 import { ApiBase } from "../apiBase";
 import {PortfolioSummaryDTO, PortfolioSummaryMetadataAndDataDTO} from "@/api/models";
 import { AxiosRequestConfig, AxiosError } from "axios";
+import { PortfolioDetailsDTO } from "types/Global";
 export const TABLENAME = "x_g_dis_atat_portfolio";
 export const APINAME = "x_g_dis_atat/portfolios";
 
@@ -39,6 +40,35 @@ export class PortfolioApi extends ApiBase{
       const axiosError = error as AxiosError;
       if (axiosError.response !== undefined && axiosError.response.status === 404) {
         return {} as PortfolioSummaryMetadataAndDataDTO;
+      }
+      throw new Error(error as string)
+    }
+  }
+  public async getPortfolioDetails(
+    userSysId: string,
+    portfolioSysId: string
+  ): Promise<PortfolioDetailsDTO> {
+    try {
+      /* eslint-disable camelcase */
+      const config: AxiosRequestConfig = {
+        params: {
+          userId: userSysId,
+          portfolioId: portfolioSysId
+        }
+      }
+      /* eslint-enable camelcase */
+      const response = await this.instance.get( `${this.endPoint}/details`, config);
+      if (response.status === 200) {
+        const { result } = response.data;
+        return result;
+      } else {
+        const { error } = response.data;
+        return error;
+      }
+    } catch(error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response !== undefined && axiosError.response.status === 404) {
+        return {} as PortfolioDetailsDTO;
       }
       throw new Error(error as string)
     }

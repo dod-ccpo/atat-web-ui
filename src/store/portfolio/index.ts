@@ -5,14 +5,14 @@ import rootStore from "../index";
 import {
   FilterOption,
   Portfolio,
-  PortfolioCardData,
+  PortfolioDetailsDTO,
   PortfolioProvisioning,
   PortfolioSummaryQueryParams,
   User,
 } from "../../../types/Global"
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {AlertDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
+import {AlertDTO, ClinDTO, CostsDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
 import {api} from "@/api";
@@ -582,51 +582,87 @@ export class PortfolioDataStore extends VuexModule {
   public currentUserIsOwner = false;
 
   @Action
-  public async setCurrentPortfolioFromCard(portfolioCardData: PortfolioCardData): Promise<void> {
+  public async setCurrentPortfolioFromCard(portfolioCardData: PortfolioDetailsDTO): Promise<void> {
     await this.doSetCurrentPortfolioFromCard(portfolioCardData);
-    const env = portfolioCardData.environments ? portfolioCardData.environments[0] : null;
-    if (env && env.sys_id) {
-      await this.setCurrentEnvSysId(env.sys_id);
-    }
+
     await this.doSetCurrentUserRole();
   }
 
   @Mutation
-  public async doSetCurrentPortfolioFromCard(portfolioCardData: PortfolioCardData): Promise<void> {
+  public async doSetCurrentPortfolioFromCard(
+    portfolioCardData: PortfolioDetailsDTO): Promise<void> 
+  {
+    const portfolioData = portfolioCardData.portfolio;
     const dataFromSummaryCard = {
-      sysId: portfolioCardData.sysId,
-      title: portfolioCardData.title,
-      description: portfolioCardData.description,
-      status: portfolioCardData.status,
-      csp: portfolioCardData.csp,
-      vendor: portfolioCardData.vendor,
-      agency: portfolioCardData.agency,
-      agencyDisplay: portfolioCardData.agencyDisplay,
-      taskOrderNumber: portfolioCardData.taskOrderNumber,
-      taskOrderSysId: portfolioCardData.taskOrderSysId,
-      portfolio_owner: portfolioCardData.portfolio_owner,
-      portfolio_managers: portfolioCardData.portfolio_managers,
-      portfolio_viewers: portfolioCardData.portfolio_viewers,
-      members: portfolioCardData.members,
-      environments: portfolioCardData.environments,
-      lastUpdated: portfolioCardData.lastUpdated,
-      createdBy: portfolioCardData.createdBy
+      sysId: portfolioCardData.portfolioId,
+      title: portfolioData.portfolio_name,
+      description: portfolioData.description,
+      status: portfolioData.portfolio_status,
+      clins: portfolioData.clins,
+      currentCLINs: portfolioData.clins?.filter((clin: ClinDTO) => 
+        portfolioData.inPeriodClins?.includes(clin.sys_id)
+      ),
+      vendor: portfolioData.vendor,
+      agency: portfolioData.agency,
+      agencyDisplay: portfolioData.agencyDisplay,
+      currentUserIsManager: portfolioData.current_user_is_manager,
+      currentUserIsOwner: portfolioData.current_user_is_manager,
+      portfolio_owner: portfolioData.portfolio_users?.owner,
+      portfolio_managers: portfolioData.portfolio_users?.managers,
+      portfolio_viewers: portfolioData.portfolio_users?.viewers,
+      taskOrder: {
+        ...portfolioData.task_order,
+        pop_start_date: portfolioData.pop_start_date,
+        pop_end_date: portfolioData.pop_end_date,
+        clins: [...<[]>portfolioData.clins],
+      },
+      members: [
+        portfolioData.portfolio_users?.owner, 
+        ...<[]>portfolioData.portfolio_users?.managers,
+        ...<[]>portfolioData.portfolio_users?.viewers
+      ],
+      environments: portfolioData.environments,
+      fundsData: {
+        fundsAvailable: portfolioData.available_funds,
+        estimatedFundsAvailable: portfolioData.estimated_funds_available,
+        fundsToBeInvoiced: portfolioData.estimated_funds_to_be_invoiced,
+        periodFundsSpent: portfolioData.period_funds_spent,
+        endOfMonthXaasForecast: portfolioData.spend_end_of_month_xaas_forecast,
+        endOfMonthXaasTrend: portfolioData.spend_end_of_month_xaas_forecast_trend,
+        endOfPeriodForecast: portfolioData.spend_end_of_period_forecast,
+        lastMonthSpent: portfolioData.spend_last_month,
+        lastMonthTrend: portfolioData.spend_last_month_trend,
+        spendMonthAverage: portfolioData.spend_monthly_average,
+        totalPortfolioFunds: portfolioData.total_portfolio_funds,
+        costs: portfolioData.clins?.reduce((acc: CostsDTO[], curr:ClinDTO) => 
+          [...acc, ...<[]>curr.costs], [])
+      },
+      lastUpdated: portfolioData.last_updated,
+      createdBy: portfolioData.portfolio_users?.creator.name,
+      popStartDate: portfolioData.pop_start_date,
+      popEndDate: portfolioData.pop_end_date,
     };
     Object.assign(this.currentPortfolio, dataFromSummaryCard);
-    this.activeTaskOrderNumber = portfolioCardData.taskOrderNumber 
-      ? portfolioCardData.taskOrderNumber : "";
-    this.activeTaskOrderSysId = portfolioCardData.taskOrderSysId 
-      ? portfolioCardData.taskOrderSysId : "";
+    this.activeTaskOrderNumber = portfolioData.task_order?.task_order_number 
+      ? portfolioData.task_order.task_order_number : "";
+    this.activeTaskOrderSysId = portfolioData.task_order?.sys_id 
+      ? portfolioData.task_order.sys_id : "";
+  }
+
+  @Action
+  public async getSelectedPortfolioData(portfolioSysId: string): Promise<PortfolioDetailsDTO>{
+    const currentUserSysId = CurrentUserStore.currentUser.sys_id;
+    return api.portfolioApi.getPortfolioDetails(currentUserSysId as string, portfolioSysId)
   }
 
   @Mutation
   public async doSetCurrentUserRole(): Promise<void> {
     const sysId = CurrentUserStore.currentUser.sys_id as string;
     this.currentUserIsManager =
-      this.currentPortfolio.portfolio_managers?.includes(sysId) as boolean;
+      this.currentPortfolio.currentUserIsManager as boolean;
     this.currentUserIsViewer =
       this.currentPortfolio.portfolio_viewers?.includes(sysId) as boolean;
-    this.currentUserIsOwner = this.currentPortfolio.portfolio_owner === sysId;
+    this.currentUserIsOwner = this.currentPortfolio.currentUserIsOwner as boolean;
   }
 
   @Action

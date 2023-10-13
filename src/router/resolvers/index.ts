@@ -1670,7 +1670,7 @@ export const IncrementalFundingResolver = (current: string): string => {
     if (daysTotal<=270){return routeNames.SummaryStepEight}
   })
 
-  if (fundingReq.incrementally_funded==="NO"){
+  if (fundingReq.incrementally_funded !== "YES"){
     return routeNames.SummaryStepEight;
   }
 

@@ -2,6 +2,7 @@
   <v-card 
     class="d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
     :class="{'_card-complete': cardData.isComplete}"
+    :id="cardData.section + 'Card'"
     outlined>
       <ATATSVGIcon 
         v-if="cardData.defineRequirements===true"

@@ -162,7 +162,6 @@ export class PortfolioSummaryStore extends VuexModule {
     return await api.portfolioApi.getPortfolioSummaryList(userSysId)
   }
 
-
   public hasActivePortfolios = false;
   @Action({rawError: true})
   public async setHasActivePortfolios(portfolioSummaryList: PortfolioSummaryObj[]) {
