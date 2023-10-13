@@ -29,39 +29,25 @@ export class GInvoicingApi extends ApiBase{
           valid: true,
           message: apiResponse?.data?.result
         };
-
         return response;
-      } else {
-        const { error } = apiResponse.data;
-
-        const response: GInvoicingResponse = {
-          valid: error.valid,
-          message: error?.message
-        };
-
-        return response;
-      }
-
+      } 
     } catch (error) {
-      const response: GInvoicingResponse = {
+        const response: GInvoicingResponse = {
         valid: false,
         message: "unknown error"
       }
-
       return response;
     }
   }
 
   public async search(orderNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
     try {
-
       const requestConfig: AxiosRequestConfig = {
         params: {
           orderNumber: orderNumber,
           acquisitionPackageId: acqPackageId
         }
       };
-
       const apiResponse = await this.instance.get(`${this.endPoint}/order_validation`,
         requestConfig
       );
@@ -70,16 +56,6 @@ export class GInvoicingApi extends ApiBase{
           valid: true,
           message: apiResponse?.data?.result
         };
-
-        return response;
-      } else {
-        const { error } = apiResponse.data;
-
-        const response: GInvoicingResponse = {
-          valid: error?.valid,
-          message: error?.message
-        };
-
         return response;
       }
 
@@ -88,7 +64,6 @@ export class GInvoicingApi extends ApiBase{
         valid: false,
         message: "unknown error"
       }
-
       return response;
     }
   }
