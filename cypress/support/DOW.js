@@ -2,10 +2,47 @@ import {
   getCheckboxId,
   getServiceOfferingNames,
   getCheckboxIds,
+  getObjectFromArrayByKey,
 } from "../helpers";
 import common from "../selectors/common.sel";
 import "cypress-iframe";
 import performanceReq from "../selectors/performanceReqs.sel";
+import contractDetails from "../selectors/contractDetails.sel";
+
+Cypress.Commands.add(
+  "verifyCategoryAndServiceOfferings",
+  (categoryLabels, serviceOfferingGroups, categoryValue) => {
+    cy.verifyCheckBoxLabels("input[type=checkbox]", categoryLabels);
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups,
+      "value",
+      categoryValue
+    );
+    if (categoryObj) {
+      cy.verifyServiceOfferingHeader(categoryObj);
+      if (
+        categoryObj.serviceOfferingCypressLabels &&
+        categoryObj.serviceOfferingCypressLabels[0] !== "Other"
+      ) {
+        cy.verifyServiceOfferingsForCategory(categoryObj);
+      }
+    }
+  }
+);
+
+Cypress.Commands.add("requiredContractDetailsforPR", (pt, scope) => {
+  cy.goToAcqPackageStepOne(pt, scope);
+  cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+  cy.verifyPageHeader(
+    "Let’s gather details about the duration of your task order"
+  );
+  cy.findElement(contractDetails.addOptionLink).click();
+  cy.findElement(contractDetails.optionalTextBox).should("have.value", "1");
+  cy.clickContinueButton(
+    contractDetails.addOptionLink,
+    "Do you want to request a PoP start date?"
+  );
+});
 
 //This command is to verify the checkbox label and header for the ServiceOffering Page
 Cypress.Commands.add("verifyServiceOfferingHeader", (categoryObj) => {
@@ -41,7 +78,8 @@ Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
         "Now we’ll gather your requirements for " + serviceOfferingNames[index]
       );
       // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(1000); // needed because with 2 back button clicks, needs a pause for scroll into view
+      cy.wait(1000); // needed because with 2 back button clicks,
+      //needs a pause for scroll into view
       cy.btnClick(common.backBtn, "Back");
     }
   });

@@ -77,6 +77,7 @@ const mockPortfolioDetails: PortfolioDetailsDTO ={
     environments: [
       {
         classification_level: 'U',
+        cloud_distinguisher: '',
         environment_status: 'ACTIVE',
         csp: 'test',
         csp_id: '1234',
@@ -88,6 +89,8 @@ const mockPortfolioDetails: PortfolioDetailsDTO ={
         provisioned_date: '',
         provisioning_failure_cause: '',
         provisioning_request_date: '',
+        sys_created_on: '',
+        sys_id: ''
       }
     ], 
     estimated_funds_available: '1000.00',

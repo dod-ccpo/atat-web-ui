@@ -79,7 +79,7 @@ describe("Test suite: Functional Testing - 03 Contract Details> ClassificationRe
     cy.textExists(contractDetails.cdsLabel2, CDData.classLevelPage3.cdsLabelTxt2); 
     cy.verifyCheckBoxLabels(contractDetails.cdsCheckbox, securityRequirements.classCDS.checkboxes);
 
-    cy.get(contractDetails.cdsCheckbox).should("not.be.checked").check({
+    cy.findElement(contractDetails.cdsCheckbox).should("not.be.checked").check({
       force: true
     }).should("be.checked");
     cy.enterTextInTextField(contractDetails.cdsUtoSTxtbox, classInput);

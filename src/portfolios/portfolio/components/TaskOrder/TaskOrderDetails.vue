@@ -617,7 +617,8 @@ export default class TaskOrderDetails extends Vue {
         totalCLINValue: "$" + toCurrencyString(clin.funds_total),
         totalFundsSpent: "$" + toCurrencyString(clin.actual_funds_spent || 0),
         isOverspent: clin.actual_funds_spent
-          ? clin.actual_funds_spent > clin.funds_obligated
+          ? parseFloat(clin.actual_funds_spent.toString()) > 
+          parseFloat(clin.funds_obligated.toString())
           : false,
         fundsRemaining: this.fundsRemaining(
           clin.funds_obligated,
