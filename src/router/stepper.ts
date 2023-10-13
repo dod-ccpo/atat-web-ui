@@ -148,7 +148,6 @@ import RFD from "@/steps/10-FinancialDetails/RequireFundingDocuments.vue";
 import CurrentlyHasFunding from "@/steps/10-FinancialDetails/CurrentlyHasFunding.vue";
 import GeneratingPackageDocumentsFunding
   from "../steps/10-FinancialDetails/GeneratePackageDocumentsFunding.vue";
-import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
@@ -189,7 +188,6 @@ import {
   CurrentlyHasFundingResolver,
   GTCInformationResolver,
   FundingPlanTypeResolver,
-  GInvoicingResolver,
   Upload7600Resolver,
   AppropriationOfFundsResolver,
   IncrementalFundingResolver,
@@ -333,7 +331,6 @@ export const routeNames = {
   GeneratingPackageDocumentsFunding: "Generating_Package_Documents_Funding",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
-  GInvoicing:'G_Invoicing',
   Upload7600:'Upload_7600',
   FundingPlanType: "Funding_Plan_Type",
   FinancialPOCForm: "Financial_POC_Form",
@@ -1432,14 +1429,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: GTCInformationResolver
       },
       {
-        menuText: "Generate Package Documents (Funding)",
-        path:"generate-package-documents-funding",
-        excludeFromMenu: true,
-        name: routeNames.GeneratingPackageDocumentsFunding,
-        completePercentageWeight: 0,
-        component: GeneratingPackageDocumentsFunding,
-      },
-      {
         menuText: "Funding-Plan",
         excludeFromMenu: true,
         path: "funding-plan",
@@ -1455,7 +1444,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.Upload7600,
         completePercentageWeight: 1,
         component: Upload7600,
-        //routeResolver: Upload7600Resolver
+        routeResolver: Upload7600Resolver
       },
       {
         menuText: "MIPR",
@@ -1464,16 +1453,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.MIPR,
         completePercentageWeight: 1,
         component: MIPR,
-        //routeResolver: MIPRResolver
+        routeResolver: MIPRResolver
       },
       {
-        menuText: "G-Invoicing",
+        menuText: "Generate Package Documents (Funding)",
+        path:"generate-package-documents-funding",
         excludeFromMenu: true,
-        path: "g-invoicing",
-        name: routeNames.GInvoicing,
-        completePercentageWeight: 1,
-        component: GInvoicing,
-        routeResolver: GInvoicingResolver,
+        name: routeNames.GeneratingPackageDocumentsFunding,
+        completePercentageWeight: 0,
+        component: GeneratingPackageDocumentsFunding,
       },
       {
         menuText: "SummaryStepEight",

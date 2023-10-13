@@ -1,16 +1,15 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import GTCInformation from "./GTCInformation.vue";
+import Upload7600 from "./Upload7600.vue";
 import { DefaultProps } from "vue/types/options";
 import validators from "@/plugins/validation";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import SlideoutPanel from "@/store/slideoutPanel";
-import Attachments from "@/store/attachments";
 import FinancialDetails, {
   initialFundingRequestFSForm,
 } from "@/store/financialDetails";
+import Attachments from "@/store/attachments";
 import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
+import SlideoutPanel from "@/store/slideoutPanel";
 
 Vue.use(Vuetify);
 
@@ -35,14 +34,14 @@ const mockAttachment: AttachmentDTO = {
 
 const mockCurrentData = {
   useGInvoicing: "YES",
-  gInvoiceNumber: "A1212-123-123-123123",
+  orderNumber: "O1212-123-123-123123",
 };
 
 const mockLoadFundingReturn: FundingRequestFSFormDTO = {
   ...initialFundingRequestFSForm,
   /* eslint-disable camelcase */
   use_g_invoicing: "YES",
-  gt_c_number: "A1212-123-123-123123",
+  order_number: "O1212-123-123-123123",
   /* eslint-enable */
 };
 
@@ -58,12 +57,12 @@ const mockFile = {
   recordId: "11",
 };
 
-describe("Testing GTC Information component", () => {
+describe("Testing Upload7600 component", () => {
   const localVue = createLocalVue();
   localVue.use(validators);
 
   const vuetify: Vuetify = new Vuetify();
-  const wrapper: Wrapper<DefaultProps & Vue, Element> = mount(GTCInformation, {
+  const wrapper: Wrapper<DefaultProps & Vue, Element> = mount(Upload7600, {
     localVue,
     vuetify,
   });
@@ -75,29 +74,15 @@ describe("Testing GTC Information component", () => {
   });
 
   describe("Testing GETTERS", () => {
-    describe("ditcoOrContractingOffice()", () => {
-      it("=> 'DITCO'", async () => {
-        await AcquisitionPackage.setContractingShop("DITCO");
-        expect(wrapper.vm.ditcoOrContractingOffice).toBe("DITCO");
-      });
-
-      it("=> 'your Contracting Office'", async () => {
-        await AcquisitionPackage.setContractingShop("anything else");
-        expect(wrapper.vm.ditcoOrContractingOffice).toBe(
-          "your Contracting Office"
-        );
-      });
-    });
-
     describe("currentData()", () => {
-      it("=> { useGInvoicing: '', gInvoiceNumber: '' }", async () => {
+      it("=> { useGInvoicing: '', orderNumber: '' }", async () => {
         expect(wrapper.vm.currentData).toEqual({
           useGInvoicing: "",
-          gInvoiceNumber: "",
+          orderNumber: "",
         });
       });
 
-      it("=> { useGInvoicing: 'YES', gInvoiceNumber: 'A1212-123-123-123123' }", async () => {
+      it("=> { useGInvoicing: 'YES', orderNumber: 'O1212-123-123-123123' }", async () => {
         jest
           .spyOn(FinancialDetails, "loadFundingRequestFSForm")
           .mockResolvedValue(mockLoadFundingReturn);
@@ -168,25 +153,6 @@ describe("Testing GTC Information component", () => {
 
     describe("onRemoveAttachment(undefined)", () => {
       it("=> undefined (not rejected)", async () => {
-        expect(await wrapper.vm.onRemoveAttachment()).toBe(undefined);
-      });
-      it("=> undefined (rejected)", async () => {
-        jest
-          .spyOn(wrapper.vm, "loadFundingRequestData")
-          .mockImplementation(() => {
-            throw Error;
-          });
-        try {
-          wrapper.vm.onRemoveAttachment(mockFile);
-        } catch {
-          expect(await wrapper.vm.onRemoveAttachment(mockFile)).toThrow();
-        }
-        jest.spyOn(wrapper.vm, "loadFundingRequestData").mockRestore();
-      });
-    });
-
-    describe("onRemoveAttachment(file)", () => {
-      it("=> undefined (not rejected)", async () => {
         jest
           .spyOn(wrapper.vm, "loadFundingRequestData")
           .mockImplementation(() => {
@@ -228,7 +194,7 @@ describe("Testing GTC Information component", () => {
       });
       // eslint-disable-next-line max-len
       it("=> undefined (not rejected) and .currentData to be set w/ this.loaded?.gt_c_number being undefined", async () => {
-        wrapper.vm.loaded["gt_c_number"] = undefined;
+        wrapper.vm.loaded["order_number"] = undefined;
         jest
           .spyOn(FinancialDetails, "loadFundingRequestFSForm")
           .mockResolvedValue(mockLoadFundingReturn);
@@ -236,16 +202,16 @@ describe("Testing GTC Information component", () => {
         expect(result).toBe(undefined);
         expect(wrapper.vm.currentData).toEqual({
           ...mockCurrentData,
-          gInvoiceNumber: "",
+          orderNumber: "",
         });
         expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
           3
         );
-        wrapper.vm.loaded["gt_c_number"] = mockCurrentData.gInvoiceNumber;
+        wrapper.vm.loaded["order_number"] = mockCurrentData.orderNumber;
       });
       // eslint-disable-next-line max-len
       it("=> undefined (not rejected) and .currentData to be set w/ this.loaded?.fs_form_7600a_use_g_invoicing being YES", async () => {
-        wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = "YES";
+        wrapper.vm.loaded["fs_form_7600b_use_g_invoicing"] = "YES";
         jest
           .spyOn(FinancialDetails, "loadFundingRequestFSForm")
           .mockResolvedValue(mockLoadFundingReturn);
@@ -263,9 +229,9 @@ describe("Testing GTC Information component", () => {
           .mockResolvedValue({
             /* eslint-disable camelcase */
             ...mockLoadFundingReturn,
-            fs_form_7600a_attachment: "123",
+            fs_form_7600b_attachment: "123",
             use_g_invoicing: undefined,
-            fs_form_7600a_use_g_invoicing: undefined,
+            fs_form_7600b_use_g_invoicing: undefined,
             /* eslint-enable */
           });
         const result = await wrapper.vm.loadFundingRequestData();
@@ -277,7 +243,7 @@ describe("Testing GTC Information component", () => {
         expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
           5
         );
-        wrapper.vm.loaded["fs_form_7600a_attachment"] = undefined;
+        wrapper.vm.loaded["fs_form_7600b_attachment"] = undefined;
         wrapper.vm.loaded["use_g_invoicing"] = "YES";
       });
       // eslint-disable-next-line max-len
@@ -288,7 +254,7 @@ describe("Testing GTC Information component", () => {
             /* eslint-disable camelcase */
             ...mockLoadFundingReturn,
             use_g_invoicing: undefined,
-            fs_form_7600a_use_g_invoicing: undefined,
+            fs_form_7600b_use_g_invoicing: undefined,
             /* eslint-enable */
           });
         const result = await wrapper.vm.loadFundingRequestData();
@@ -297,7 +263,7 @@ describe("Testing GTC Information component", () => {
         expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
           6
         );
-        wrapper.vm.loaded["fs_form_7600a_attachment"] = undefined;
+        wrapper.vm.loaded["fs_form_7600b_attachment"] = undefined;
         wrapper.vm.loaded["use_g_invoicing"] = "YES";
       });
     });
@@ -317,7 +283,7 @@ describe("Testing GTC Information component", () => {
 
       // eslint-disable-next-line max-len
       it("=> undefined (not rejected) and .uploadedFiles to be set with a file loaded, and file download link being undefined", async () => {
-        wrapper.vm.loaded["fs_form_7600a_attachment"] = "123";
+        wrapper.vm.loaded["fs_form_7600b_attachment"] = "123";
         jest.spyOn(Attachments, "getAttachmentsBySysIds").mockResolvedValue([
           {
             ...mockAttachment,
@@ -332,7 +298,7 @@ describe("Testing GTC Information component", () => {
             link: "",
           },
         ]);
-        wrapper.vm.loaded["fs_form_7600a_attachment"] = undefined;
+        wrapper.vm.loaded["fs_form_7600b_attachment"] = undefined;
       });
     });
 
@@ -346,7 +312,6 @@ describe("Testing GTC Information component", () => {
       });
     });
 
-    
     describe("onGInvoiceSearchComplete()", () => {
       it("false to true", async () => {
         wrapper.vm.gInvoiceSearchValid = false;
@@ -384,7 +349,7 @@ describe("Testing GTC Information component", () => {
 
       it("=> true (not rejected and hasChanged)", async () => {
         wrapper.vm.gInvoiceSearchValid = true;
-        wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = "YES";
+        wrapper.vm.loaded["fs_form_7600b_use_g_invoicing"] = "YES";
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = {
           useGInvoicing: "",
@@ -394,38 +359,36 @@ describe("Testing GTC Information component", () => {
           .spyOn(FinancialDetails, "loadFundingRequestFSForm")
           .mockResolvedValue(mockLoadFundingReturn);
         jest
-          .spyOn(FinancialDetails, "saveFundingRequestFormAndGInvoicing")
+          .spyOn(FinancialDetails, "saveFundingRequestFormBAndOrderNumber")
           .mockImplementation(() => Promise.resolve(mockLoadFundingReturn));
         expect(await wrapper.vm.saveOnLeave()).toBe(true);
         expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
           8
         );
         expect(
-          FinancialDetails.saveFundingRequestFormAndGInvoicing
+          FinancialDetails.saveFundingRequestFormBAndOrderNumber
         ).toHaveBeenCalledTimes(1);
       });
 
       it("=> true (not rejected and not hasChanged)", async () => {
-        wrapper.vm.gInvoiceSearchValid = true;
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = mockCurrentData;
         jest
           .spyOn(FinancialDetails, "loadFundingRequestFSForm")
           .mockResolvedValue(mockLoadFundingReturn);
         jest
-          .spyOn(FinancialDetails, "saveFundingRequestFormAndGInvoicing")
+          .spyOn(FinancialDetails, "saveFundingRequestFormBAndOrderNumber")
           .mockImplementation(() => Promise.resolve(mockLoadFundingReturn));
         expect(await wrapper.vm.saveOnLeave()).toBe(true);
         expect(FinancialDetails.loadFundingRequestFSForm).toHaveBeenCalledTimes(
           8
         );
         expect(
-          FinancialDetails.saveFundingRequestFormAndGInvoicing
+          FinancialDetails.saveFundingRequestFormBAndOrderNumber
         ).toHaveBeenCalledTimes(1);
       });
 
       it("=> (rejected and hasChanged)", async () => {
-        wrapper.vm.gInvoiceSearchValid = true;
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = {
           useGInvoicing: "",
@@ -435,7 +398,7 @@ describe("Testing GTC Information component", () => {
           .spyOn(FinancialDetails, "loadFundingRequestFSForm")
           .mockResolvedValue(undefined as unknown as FundingRequestFSFormDTO);
         jest
-          .spyOn(FinancialDetails, "saveFundingRequestFormAndGInvoicing")
+          .spyOn(FinancialDetails, "saveFundingRequestFormBAndOrderNumber")
           .mockImplementation(() => {
             throw Error;
           });
@@ -447,7 +410,7 @@ describe("Testing GTC Information component", () => {
           ).toHaveBeenCalledTimes(9);
         } catch {
           expect(
-            FinancialDetails.saveFundingRequestFormAndGInvoicing
+            FinancialDetails.saveFundingRequestFormBAndOrderNumber
           ).toThrow();
         }
 
@@ -466,14 +429,14 @@ describe("Testing GTC Information component", () => {
       });
 
       it("=> false", async () => {
-        wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = "YES";
+        wrapper.vm.loaded["fs_form_7600b_use_g_invoicing"] = "YES";
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = mockCurrentData;
         expect(await wrapper.vm.hasChanged()).toBe(false);
       });
 
-      it("=> true (fs_form_7600a_use_g_invoicing migration)", async () => {
-        wrapper.vm.loaded["fs_form_7600a_use_g_invoicing"] = undefined;
+      it("=> true (fs_form_7600b_use_g_invoicing migration)", async () => {
+        wrapper.vm.loaded["fs_form_7600b_use_g_invoicing"] = undefined;
         wrapper.vm.currentData = mockCurrentData;
         wrapper.vm.savedData = mockCurrentData;
         expect(await wrapper.vm.hasChanged()).toBe(true);
