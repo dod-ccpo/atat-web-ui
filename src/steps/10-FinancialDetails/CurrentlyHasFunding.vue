@@ -70,8 +70,8 @@ export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     await FinancialDetails.loadFundingRequirement();
-    this.selectedHasFunding = FinancialDetails.hasFunding || "";
-    this.savedData = FinancialDetails.hasFunding || "";
+    this.selectedHasFunding = FinancialDetails.fundingRequirement?.has_funding || "";
+    this.savedData = FinancialDetails.fundingRequirement?.has_funding || "";
   };
 
   public async mounted(): Promise<void> {
