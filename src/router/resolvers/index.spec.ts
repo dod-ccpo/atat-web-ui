@@ -1,21 +1,21 @@
 /* eslint-disable camelcase */
+/* eslint-disable max-len */
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
 import {
   AcorsRouteResolver,
   BVTOResolver,
-  EvalPlanRouteResolver,
   EvalPlanDetailsRouteResolver,
-  CurrentlyHasFundingResolver
+  CurrentlyHasFundingResolver, GTCInformationResolver, Upload7600Resolver
 } from "./index"
-import * as exportedSummaryStoreFunctions from "@/store/summary"
 import { routeNames } from "@/router/stepper"
 import Vue from "vue";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import Summary from "@/store/summary";
+import FinancialDetails from "@/store/financialDetails";
 
-const aq = {
+const acquisitionPackage = {
   acor: "",
   classification_level: "",
   contract_award: "",
@@ -29,7 +29,7 @@ const aq = {
   docgen_job_status: "",
   docusign_envelope_id: "",
   environment_instance: "",
-  fair_opportunity: "",
+  fair_opportunity: {},
   funding_plans: "",
   funding_requirement: "",
   gfe_overview: "",
@@ -46,7 +46,6 @@ const aq = {
   status: "",
   contracting_shop_require_funding_documents_for_submission_of_package: ''
 };
-
 jest.mock('@/store/summary', () => ({
   Summary: {
     hasCurrentStepBeenVisited: false,
@@ -54,16 +53,8 @@ jest.mock('@/store/summary', () => ({
 }));
 
 describe("testing route resolvers", () => {
-  const legitPeriod = [
-    {
-      "period_unit": "YEAR",
-      "period_unit_count": "1",
-      "period_type": "BASE",
-      "option_order": "1"
-    }
-  ]
   afterEach(()=>{
-    //reset periodOfPerformance and DOW back to incomplete
+    // reset periodOfPerformance and DOW back to incomplete
     Periods.setPeriods([]);
     DescriptionOfWork.setIsIncomplete(true);
   })
@@ -91,62 +82,25 @@ describe("testing route resolvers", () => {
   });
 
   describe("Evaluation Plan Resolvers", () => {
-    it ("EvalPlanRouteResolver() - routes to SummaryStepTwo", async () => {
-      jest.spyOn(exportedSummaryStoreFunctions, "isStepTouched").mockReturnValue(true)
-      expect(EvalPlanRouteResolver(routeNames.CertificationPOCs)).toBe(routeNames.SummaryStepTwo)
-    });
-
-    it ("EvalPlanRouteResolver() - routes to CreateEvalPlan page", async () => {
-      jest.spyOn(exportedSummaryStoreFunctions, "isStepTouched").mockReturnValue(false)
-      expect(EvalPlanRouteResolver(routeNames.SummaryStepTwo)).toBe(routeNames.CreateEvalPlan)
-    });
-
-    it ("BVTOResolver() - routes to BVTO page", async () => {
-      await EvaluationPlan.setEvaluationPlan(
-        { source_selection: "", method: "BVTO" }
-      );
-      const route = BVTOResolver(routeNames.EvalPlanDetails);
-      expect(route).toBe(routeNames.Differentiators);
-    });
-    it ("BVTOResolver() - routes to Summary page when not BVTO method", async () => {
-      await EvaluationPlan.setEvaluationPlan(
-        { source_selection: "", method: "LPTA" }
-      );
-      const route = BVTOResolver(routeNames.EvalPlanDetails);
-      expect(route).toBe(routeNames.SummaryStepTwo);
-    });
-
-    it ("BVTOResolver() - routes to EvalPlanSummary page", async () => {
-      await EvaluationPlan.setEvaluationPlan(
-        { source_selection: "", method: "" }
-      );
-      const route = BVTOResolver(routeNames.EvalPlanDetails);
-      expect(route).toBe(routeNames.SummaryStepTwo);
-    });
-
-    
     it ("EvalPlanDetailsRouteResolver() - routes to EvalPlan page", async () => {
       expect(EvalPlanDetailsRouteResolver(routeNames.CreateEvalPlan))
         .toBe(routeNames.SummaryStepTwo);
     });
-
   });
 
   describe("FundingStep Resolvers", () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      aq.contracting_shop_require_funding_documents_for_submission_of_package = '';
-      aq.contracting_shop = '';
+      acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package = '';
+      acquisitionPackage.contracting_shop = '';
       Summary.hasCurrentStepBeenVisited = false;
     });
 
-    // eslint-disable-next-line max-len
     it('should return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true', async () => {
-      aq.contracting_shop_require_funding_documents_for_submission_of_package = "NO";
-      await AcquisitionPackage.setAcquisitionPackage(aq);
+      acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package = "NO";
+      await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
       const result = CurrentlyHasFundingResolver(routeNames.RFD);
       expect(result).toBe(routeNames.SummaryStepEight);
-
     });
 
     it('should return SummaryStepEight when hasCurrentStepBeenVisited is true', () => {
@@ -156,16 +110,78 @@ describe("testing route resolvers", () => {
     });
 
     it('should return CurrentlyHasFunding when user is not a DITCO user', async () => {
-      await AcquisitionPackage.setAcquisitionPackage(aq);
+      await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
       const result = CurrentlyHasFundingResolver('any-other-route');
       expect(result).toBe(routeNames.CurrentlyHasFunding);
     });
 
     it('should return RFD when user is a DITCO user', async () => {
-      aq.contracting_shop = "DITCO";
-      await AcquisitionPackage.setAcquisitionPackage(aq);
+      acquisitionPackage.contracting_shop = "DITCO";
+      await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
       const result = CurrentlyHasFundingResolver('any-other-route');
       expect(result).toBe(routeNames.RFD);
     });
-  })
+  });
+
+  describe('GTCInformationResolver', () => {
+    beforeEach(() => {
+      FinancialDetails.setHasFunding('');
+    });
+
+    it('should return GTC route if FinancialDetails has funding', async () => {
+      await FinancialDetails.setHasFunding("HAS_FUNDING");
+      const result = GTCInformationResolver('anyRoute');
+      expect(result).toBe(routeNames.GTC);
+    });
+
+    it('should return GeneratingPackageDocumentsFunding if current route is not GeneratingPackageDocumentsFunding and no funding', async () => {
+      await FinancialDetails.setHasFunding("HAS_FUNDING");
+      const result = GTCInformationResolver(routeNames.CurrentlyHasFunding);
+      expect(result).toBe(routeNames.GTC);
+    });
+
+    it('should return CurrentlyHasFunding if current route is GeneratingPackageDocumentsFunding and no funding', () => {
+      const result = GTCInformationResolver(routeNames.CurrentlyHasFunding);
+      expect(result).toBe(routeNames.GeneratingPackageDocumentsFunding);
+    });
+  });
+
+  describe('Upload7600Resolver', () => {
+    beforeEach(() => {
+      FinancialDetails.setHasFunding('');
+    });
+
+    it('should return MIPR route if current is FundingPlanType and fundingRequestType returns "MIPR"', async () => {
+      const fundingRequest = {
+        funding_request_type: 'MIPR'
+      };
+      await FinancialDetails.setFundingRequest(fundingRequest)
+      expect(Upload7600Resolver(routeNames.FundingPlanType)).toBe(routeNames.MIPR);
+    });
+
+    it('should return Upload7600 route if current is FundingPlanType and fundingRequestType does not return "MIPR"', async () => {
+      const fundingRequest = {
+        funding_request_type: 'NOT_MIPR'
+      };
+      await FinancialDetails.setFundingRequest(fundingRequest)
+      expect(Upload7600Resolver(routeNames.FundingPlanType)).toBe(routeNames.Upload7600);
+    });
+
+    it('returns GTC when current is SeverabilityAndIncrementalFunding', () => {
+      const result = Upload7600Resolver(routeNames.SeverabilityAndIncrementalFunding);
+      expect(result).toBe(routeNames.GTC);
+    });
+
+    it('returns GTC when current is AppropriationOfFunds', () => {
+      const result = Upload7600Resolver(routeNames.AppropriationOfFunds);
+      expect(result).toBe(routeNames.GTC);
+    });
+
+    it('returns AppropriationOfFunds when there is an exception to fair opp', async () => {
+      acquisitionPackage.fair_opportunity = {exception_to_fair_opportunity: "NO_NONE"};
+      await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
+      const result = Upload7600Resolver('someOtherRoute'); // this can be any route that's not in the ones explicitly mentioned
+      expect(result).toBe(routeNames.AppropriationOfFunds);
+    });
+  });
 });

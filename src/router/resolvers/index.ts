@@ -1611,7 +1611,6 @@ export const Upload7600Resolver = (current: string): string => {
       : routeNames.Upload7600;
   }
 
-
   return current === routeNames.SeverabilityAndIncrementalFunding ||
     current === routeNames.AppropriationOfFunds
     ? routeNames.GTC
