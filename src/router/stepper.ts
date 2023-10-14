@@ -237,7 +237,6 @@ import {
   ContactInformationResolver,
   CorInformationResolver,
   ACorInformationQuestionResolver, 
-  EstimatesDevelopedResolver
 } from "./resolvers";
 
 
@@ -1367,7 +1366,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.EstimatesDeveloped,
         completePercentageWeight: 1,
         component: EstimatesDeveloped,
-        routeResolver: EstimatesDevelopedResolver
+      },
+      {
+        menuText: "Appropriation of Funds",
+        excludeFromMenu: true,
+        path: "appropriation-of-funds",
+        name: routeNames.AppropriationOfFunds,
+        completePercentageWeight: 1,
+        component: AppropriationOfFunds,
+        routeResolver: AppropriationOfFundsResolver
       },
       {
         menuText: "Severability and Incremental Funding",
