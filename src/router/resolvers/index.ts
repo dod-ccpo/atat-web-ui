@@ -1575,7 +1575,6 @@ export const CurrentlyHasFundingResolver = (current: string): string => {
 
 export const GTCInformationResolver = (current: string): string => {
   const hasFunding = FinancialDetails.fundingRequirement?.has_funding === "HAS_FUNDING";
-  console.log(hasFunding);
   if (current === routeNames.CurrentlyHasFunding){
     return hasFunding ? routeNames.GTC : routeNames.GeneratingPackageDocumentsFunding
   }
