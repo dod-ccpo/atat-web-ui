@@ -6,7 +6,7 @@ import {
   AcorsRouteResolver,
   BVTOResolver,
   EvalPlanDetailsRouteResolver,
-  CurrentlyHasFundingResolver, GTCInformationResolver, Upload7600Resolver
+  CurrentlyHasFundingResolver, GTCInformationResolver, Upload7600Resolver, MIPRResolver
 } from "./index"
 import { routeNames } from "@/router/stepper"
 import Vue from "vue";
@@ -96,13 +96,13 @@ describe("testing route resolvers", () => {
     });
 
     it('should return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true', 
-    async () => {
-      // eslint-disable-next-line max-len
-      acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package="NO";
-      await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
-      const result = CurrentlyHasFundingResolver(routeNames.RFD);
-      expect(result).toBe(routeNames.SummaryStepEight);
-    });
+      async () => {
+        // eslint-disable-next-line max-len
+        acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package="NO";
+        await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
+        const result = CurrentlyHasFundingResolver(routeNames.RFD);
+        expect(result).toBe(routeNames.SummaryStepEight);
+      });
 
     it('should return SummaryStepEight when hasCurrentStepBeenVisited is true', () => {
       Summary.hasCurrentStepBeenVisited = true;
@@ -146,6 +146,45 @@ describe("testing route resolvers", () => {
         'GeneratingPackageDocumentsFunding and no funding', () => {
       const result = GTCInformationResolver(routeNames.CurrentlyHasFunding);
       expect(result).toBe(routeNames.GeneratingPackageDocumentsFunding);
+    });
+  });
+
+  describe('MIPRResolver', () => {
+    beforeEach(() => {
+      FinancialDetails.setHasFunding('');
+      FinancialDetails.setFundingRequirement(fundingReq);
+      FinancialDetails.setFundingRequest({ funding_request_type: '' })
+    });
+
+    it('should return CurrentlyHasFunding route if FinancialDetails has no funding and' +
+      ' current page is GeneratingPackageDocsFunding', async () => {
+      await FinancialDetails.setHasFunding("NO_FUNDING");
+      const result = MIPRResolver(routeNames.GeneratingPackageDocumentsFunding);
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
+    });
+
+    it('should return MIPR route if fundingType is MIPR', async () => {
+      const fundingRequest = { funding_request_type: 'MIPR' };
+      FinancialDetails.setFundingRequest(fundingRequest);
+      const result = MIPRResolver('anyRoute');
+      expect(result).toBe(routeNames.MIPR);
+    });
+
+    it('should return SummaryStepEight route if fundingType is FS_FORM', async () => {
+      const fundingRequest = { funding_request_type: 'FS_FORM' };
+      FinancialDetails.setFundingRequest(fundingRequest);
+      const result = MIPRResolver('anyRoute');
+      expect(result).toBe(routeNames.SummaryStepEight);
+    });
+
+    it('should return FundingPlanType route if routing from GTC page', async () => {
+      const result = MIPRResolver(routeNames.GTC);
+      expect(result).toBe(routeNames.FundingPlanType);
+    });
+
+    it('should return GTC route if no other conditions are met', async () => {
+      const result = MIPRResolver('anyRoute');
+      expect(result).toBe(routeNames.GTC);
     });
   });
 
