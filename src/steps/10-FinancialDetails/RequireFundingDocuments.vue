@@ -16,10 +16,10 @@
               (MIPR)).
             </p>
           </div>
-          <div style="max-width: 180px">
+          <div style="max-width: 240px">
             <ATATRadioGroup
               :card="true"
-              class="max-width-640"
+           
               id="GInvoicingOptions"
               :items="requireFundingOptions"
               :value.sync="requireFundingSelection"
