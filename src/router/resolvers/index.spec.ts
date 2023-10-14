@@ -11,7 +11,6 @@ import {
 } from "./index"
 import { routeNames } from "@/router/stepper"
 import Vue from "vue";
-import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import Summary from "@/store/summary";
 import FinancialDetails from "@/store/financialDetails";
 
