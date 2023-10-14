@@ -14,8 +14,6 @@ import {
 } from "@/api/models";
 import { baseGInvoiceData } from "../../../types/Global";
 import acquisitionPackage from "@/store/acquisitionPackage";
-import Vue from "vue";
-import * as acqPackageExportedFunctions from "@/store/acquisitionPackage";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -454,6 +452,37 @@ describe("Summary Store", () => {
 
       expect(isComplete).toBe(true);
     });
+    it('should return true when !isDitco && !needsFunding', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'FS_FORM',
+          appropriation_fiscal_year: '2023',
+          appropriation_funds_type: 'W_C',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: 'Value1',
+          gt_c_number: 'GTC123',
+          order_number: 'Order123',
+          fs_form_7600b_use_g_invoicing: 'Yes',
+        } as FundingRequestFSFormDTO,
+        mipr: {
+
+        } as FundingRequestMIPRFormDTO,
+        hasFairOpp: true,
+        fundingRequirement: {
+          has_funding: 'NO_FUNDING',
+        } as FundingRequirementDTO,
+        isDitco: false,
+      };
+      await AcquisitionPackage.setContractingShopRequireFundingDocuments("NO")
+      const isComplete = await summaryStore.isFundingComplete(funding);
+
+      await expect(isComplete).toBe(true);
+    });
+
   })
   describe('isFSFormComplete', () => {
     it('should return true if FSForm is complete with G-Invoicing',async () => {
