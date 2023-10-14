@@ -375,7 +375,6 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger;
     if (this.gInvoiceSearchValid !== true && this.useGInvoicing === 'YES'){
       return false;}
 
