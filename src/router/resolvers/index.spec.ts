@@ -97,6 +97,7 @@ describe("testing route resolvers", () => {
 
     it('should return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true', 
     async () => {
+      // eslint-disable-next-line max-len
       acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package="NO";
       await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
       const result = CurrentlyHasFundingResolver(routeNames.RFD);
