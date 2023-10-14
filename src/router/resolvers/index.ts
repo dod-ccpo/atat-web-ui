@@ -1567,7 +1567,6 @@ export const RFDResolver = (): string => {
 export const CurrentlyHasFundingResolver = (current: string): string => {
   const doesNotNeedFundingDoc = AcquisitionPackage.acquisitionPackage
     ?.contracting_shop_require_funding_documents_for_submission_of_package === 'NO'
-
   if (current === routeNames.RFD && doesNotNeedFundingDoc) {
     return routeNames.SummaryStepEight
   }

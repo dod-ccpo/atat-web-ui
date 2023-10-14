@@ -1,9 +1,6 @@
 /* eslint-disable camelcase */
-import AcquisitionPackage, { AcquisitionPackageStore } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import { config } from '@vue/test-utils';
-import IGCEStore from "@/store/IGCE";
-import Vuex from "vuex";
 import Periods from "@/store/periods";
 import {
   AcorsRouteResolver,
@@ -16,13 +13,45 @@ import * as exportedSummaryStoreFunctions from "@/store/summary"
 import { routeNames } from "@/router/stepper"
 import Vue from "vue";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
+import Summary from "@/store/summary";
 
-let apMutations = {
-  contracting_shop_require_funding_documents_for_submission_of_package: jest.fn()
-}
-let apStore = new Vuex.Store({
-  mutations: apMutations
-})
+const aq = {
+  acor: "",
+  classification_level: "",
+  contract_award: "",
+  contract_considerations: "",
+  contract_type: "",
+  contracting_shop: "",
+  cor: "",
+  current_contract_and_recurring_information: "",
+  current_environment: "",
+  customer_feedback: "",
+  docgen_job_status: "",
+  docusign_envelope_id: "",
+  environment_instance: "",
+  fair_opportunity: "",
+  funding_plans: "",
+  funding_requirement: "",
+  gfe_overview: "",
+  is_travel_needed: "",
+  number: "",
+  organization: "",
+  owner_needs_email_package_ready_to_submit: false,
+  period_of_performance: "",
+  periods: "",
+  primary_contact: "",
+  project_overview: "",
+  required_services: "",
+  sensitive_information: "",
+  status: "",
+  contracting_shop_require_funding_documents_for_submission_of_package: ''
+};
+
+jest.mock('@/store/summary', () => ({
+  Summary: {
+    hasCurrentStepBeenVisited: false,
+  },
+}));
 
 describe("testing route resolvers", () => {
   const legitPeriod = [
@@ -38,8 +67,7 @@ describe("testing route resolvers", () => {
     Periods.setPeriods([]);
     DescriptionOfWork.setIsIncomplete(true);
   })
- 
-
+  
   describe("ACORs Resolvers", () => {
     it ("AcorsRouteResolver() - routes to acquisition package summary", async () => {
       await AcquisitionPackage.setHasAlternateCOR(false);
@@ -99,23 +127,45 @@ describe("testing route resolvers", () => {
     
     it ("EvalPlanDetailsRouteResolver() - routes to EvalPlan page", async () => {
       expect(EvalPlanDetailsRouteResolver(routeNames.CreateEvalPlan))
-      .toBe(routeNames.SummaryStepTwo);
+        .toBe(routeNames.SummaryStepTwo);
     });
 
   });
 
   describe("FundingStep Resolvers", () => {
-      
-    it ("CurrentlyHasFundingResolver() - routes to SummaryStepEight", async () => {
-      jest.spyOn(AcquisitionPackage,'loadData').mockImplementation(
-        ()=>Promise.resolve({
-          "contracting_shop_require_funding_documents_for_submission_of_package":"NO"
-        })
-      )
-      Vue.nextTick(()=>{
-        expect(CurrentlyHasFundingResolver(routeNames.RFD))
-            .toBe(routeNames.CurrentlyHasFunding);
-      })
+    beforeEach(() => {
+      jest.clearAllMocks();
+      aq.contracting_shop_require_funding_documents_for_submission_of_package = '';
+      aq.contracting_shop = '';
+      Summary.hasCurrentStepBeenVisited = false;
     });
-  });
-})
+
+    // eslint-disable-next-line max-len
+    it('should return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true', async () => {
+      aq.contracting_shop_require_funding_documents_for_submission_of_package = "NO";
+      await AcquisitionPackage.setAcquisitionPackage(aq);
+      const result = CurrentlyHasFundingResolver(routeNames.RFD);
+      expect(result).toBe(routeNames.SummaryStepEight);
+
+    });
+
+    it('should return SummaryStepEight when hasCurrentStepBeenVisited is true', () => {
+      Summary.hasCurrentStepBeenVisited = true;
+      const result = CurrentlyHasFundingResolver('any-other-route');
+      expect(result).toBe(routeNames.SummaryStepEight);
+    });
+
+    it('should return CurrentlyHasFunding when user is not a DITCO user', async () => {
+      await AcquisitionPackage.setAcquisitionPackage(aq);
+      const result = CurrentlyHasFundingResolver('any-other-route');
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
+    });
+
+    it('should return RFD when user is a DITCO user', async () => {
+      aq.contracting_shop = "DITCO";
+      await AcquisitionPackage.setAcquisitionPackage(aq);
+      const result = CurrentlyHasFundingResolver('any-other-route');
+      expect(result).toBe(routeNames.RFD);
+    });
+  })
+});
