@@ -150,7 +150,6 @@ import GeneratingPackageDocumentsFunding
   from "../steps/10-FinancialDetails/GeneratePackageDocumentsFunding.vue";
 import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
-import AppropriationOfFunds from "@/steps/10-FinancialDetails/AppropriationOfFunds.vue";
 import SummaryStepEight from "@/steps/10-FinancialDetails/SummaryStepEight.vue";
 
 // step 10 - Generate Package Documents
@@ -184,12 +183,6 @@ import {
   ServiceOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
-  MIPRResolver,
-  CurrentlyHasFundingResolver,
-  GTCInformationResolver,
-  FundingPlanTypeResolver,
-  Upload7600Resolver,
-  AppropriationOfFundsResolver,
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
@@ -232,12 +225,10 @@ import {
   TravelRouteResolver,
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
-  ProjectOverviewResolver,
   OrganizationResolver,
   ContactInformationResolver,
   CorInformationResolver,
-  ACorInformationQuestionResolver, 
-  EstimatesDevelopedResolver
+  ACorInformationQuestionResolver
 } from "./resolvers";
 
 
@@ -1352,6 +1343,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CostSummary
       },
       {
+        menuText: "Estimates Developed",
+        excludeFromMenu: true,
+        path: "estimates-developed",
+        name: routeNames.EstimatesDeveloped,
+        completePercentageWeight: 1,
+        component: EstimatesDeveloped
+      },
+      {
         menuText: "Supporting Documentation",
         excludeFromMenu: true,
         path: "supporting-documentation",
@@ -1359,15 +1358,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SupportingDocumentation,
         routeResolver: IGCESupportingDocumentationResolver
-      },
-      {
-        menuText: "Estimates Developed",
-        excludeFromMenu: true,
-        path: "estimates-developed",
-        name: routeNames.EstimatesDeveloped,
-        completePercentageWeight: 1,
-        component: EstimatesDeveloped,
-        routeResolver: EstimatesDevelopedResolver
       },
       {
         menuText: "Severability and Incremental Funding",
