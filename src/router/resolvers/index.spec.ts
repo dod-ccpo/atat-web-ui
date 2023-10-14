@@ -4,15 +4,10 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
 import {
   AcorsRouteResolver,
-  BVTOResolver,
-  EvalPlanRouteResolver,
-  EvalPlanDetailsRouteResolver,
   CurrentlyHasFundingResolver
 } from "./index"
-import * as exportedSummaryStoreFunctions from "@/store/summary"
 import { routeNames } from "@/router/stepper"
 import Vue from "vue";
-import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import Summary from "@/store/summary";
 
 const aq = {
@@ -88,48 +83,6 @@ describe("testing route resolvers", () => {
         expect(route).toBe(routeNames.AcorInformation);
       })
     });
-  });
-
-  describe("Evaluation Plan Resolvers", () => {
-    it ("EvalPlanRouteResolver() - routes to SummaryStepTwo", async () => {
-      jest.spyOn(exportedSummaryStoreFunctions, "isStepTouched").mockReturnValue(true)
-      expect(EvalPlanRouteResolver(routeNames.CertificationPOCs)).toBe(routeNames.SummaryStepTwo)
-    });
-
-    it ("EvalPlanRouteResolver() - routes to CreateEvalPlan page", async () => {
-      jest.spyOn(exportedSummaryStoreFunctions, "isStepTouched").mockReturnValue(false)
-      expect(EvalPlanRouteResolver(routeNames.SummaryStepTwo)).toBe(routeNames.CreateEvalPlan)
-    });
-
-    it ("BVTOResolver() - routes to BVTO page", async () => {
-      await EvaluationPlan.setEvaluationPlan(
-        { source_selection: "", method: "BVTO" }
-      );
-      const route = BVTOResolver(routeNames.EvalPlanDetails);
-      expect(route).toBe(routeNames.Differentiators);
-    });
-    it ("BVTOResolver() - routes to Summary page when not BVTO method", async () => {
-      await EvaluationPlan.setEvaluationPlan(
-        { source_selection: "", method: "LPTA" }
-      );
-      const route = BVTOResolver(routeNames.EvalPlanDetails);
-      expect(route).toBe(routeNames.SummaryStepTwo);
-    });
-
-    it ("BVTOResolver() - routes to EvalPlanSummary page", async () => {
-      await EvaluationPlan.setEvaluationPlan(
-        { source_selection: "", method: "" }
-      );
-      const route = BVTOResolver(routeNames.EvalPlanDetails);
-      expect(route).toBe(routeNames.SummaryStepTwo);
-    });
-
-    
-    it ("EvalPlanDetailsRouteResolver() - routes to EvalPlan page", async () => {
-      expect(EvalPlanDetailsRouteResolver(routeNames.CreateEvalPlan))
-        .toBe(routeNames.SummaryStepTwo);
-    });
-
   });
 
   describe("FundingStep Resolvers", () => {
