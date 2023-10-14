@@ -1269,8 +1269,7 @@ const IGCERouteNext = (current: string): string => {
 
 export const IGCECannotProceedResolver = (current: string): string => {
   const isStepFiveComplete = isStepComplete(5);
-  console.log("here's step five completeness",isStepFiveComplete )
-  
+
   if (!isStepFiveComplete || !(IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES"))
   {
     return routeNames.CannotProceed;
@@ -1575,7 +1574,6 @@ export const CurrentlyHasFundingResolver = (current: string): string => {
 
 export const GTCInformationResolver = (current: string): string => {
   const hasFunding = FinancialDetails.fundingRequirement?.has_funding === "HAS_FUNDING";
-  console.log(hasFunding);
   if (current === routeNames.CurrentlyHasFunding){
     return hasFunding ? routeNames.GTC : routeNames.GeneratingPackageDocumentsFunding
   }
@@ -1620,10 +1618,8 @@ export const Upload7600Resolver = (current: string): string => {
 }
 
 export const GeneratingPackageDocumentsFundingResolver = (current: string): string => {
-  if (current === routeNames.MIPR){
-    return routeNames.SummaryStepEight;
-  }
-  return routeNames.GeneratingPackageDocumentsFunding;
+  // eslint-disable-next-line max-len
+  return (current === routeNames.MIPR) ? routeNames.SummaryStepEight : routeNames.GeneratingPackageDocumentsFunding;
 }
 
 export const AppropriationOfFundsResolver = (current: string): string => {
