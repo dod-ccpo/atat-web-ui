@@ -2488,7 +2488,7 @@ export class SummaryStore extends VuexModule {
       }
       if(funding.request.funding_request_type === "FS_FORM" && !hasOrderNumber){
         return "Missing funding documents"
-      }else if(funding.request.funding_request_type === "FS_FORM" && !hasMIPRNumber){
+      }else if(funding.request.funding_request_type === "MIPR" && !hasMIPRNumber){
         return "Missing funding documents"
 
       }
