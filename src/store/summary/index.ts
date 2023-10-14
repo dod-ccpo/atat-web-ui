@@ -2476,7 +2476,11 @@ export class SummaryStore extends VuexModule {
         isComplete: boolean
       }): Promise<string>{
     // eslint-disable-next-line max-len
-    if(AcquisitionPackage.acquisitionPackage?.contracting_shop_require_funding_documents_for_submission_of_package === "NO"){
+    debugger
+    if(AcquisitionPackage.acquisitionPackage
+      ?.contracting_shop_require_funding_documents_for_submission_of_package === "NO"
+      && !isDitcoUser()
+    ){
       return "Funding documents are not required by contracting office"
     }
     if (funding.request && funding.fsForm){
