@@ -13,6 +13,8 @@ import Vue from "vue";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import Summary from "@/store/summary";
 import FinancialDetails from "@/store/financialDetails";
+import {FundingRequirementDTO} from "@/api/models";
+
 
 const acquisitionPackage = {
   acor: "",
@@ -45,6 +47,18 @@ const acquisitionPackage = {
   status: "",
   contracting_shop_require_funding_documents_for_submission_of_package: ''
 };
+const fundingReq: FundingRequirementDTO = {
+  acquisition_package: "",
+  funding_plan: "",
+  funding_request: "",
+  funds_obligated: "",
+  funds_total: "",
+  has_funding: "",
+  incrementally_funded: "",
+  pop_end_date: "",
+  pop_start_date: "",
+  task_order_number: ""
+};
 jest.mock('@/store/summary', () => ({
   Summary: {
     hasCurrentStepBeenVisited: false,
@@ -57,7 +71,7 @@ describe("testing route resolvers", () => {
     Periods.setPeriods([]);
     DescriptionOfWork.setIsIncomplete(true);
   })
-  
+
   describe("ACORs Resolvers", () => {
     it ("AcorsRouteResolver() - routes to acquisition package summary", async () => {
       await AcquisitionPackage.setHasAlternateCOR(false);
@@ -95,7 +109,7 @@ describe("testing route resolvers", () => {
       Summary.hasCurrentStepBeenVisited = false;
     });
 
-    it('should return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true', 
+    it('should return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true',
       async () => {
         // eslint-disable-next-line max-len
         acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package="NO";
@@ -136,14 +150,14 @@ describe("testing route resolvers", () => {
     });
 
     it('should return GeneratingPackageDocumentsFunding if current route is not ' +
-        'GeneratingPackageDocumentsFunding and no funding', async () => {
+      'GeneratingPackageDocumentsFunding and no funding', async () => {
       await FinancialDetails.setHasFunding("HAS_FUNDING");
       const result = GTCInformationResolver(routeNames.CurrentlyHasFunding);
       expect(result).toBe(routeNames.GeneratingPackageDocumentsFunding);
     });
 
     it('should return CurrentlyHasFunding if current route is ' +
-        'GeneratingPackageDocumentsFunding and no funding', () => {
+      'GeneratingPackageDocumentsFunding and no funding', () => {
       const result = GTCInformationResolver(routeNames.CurrentlyHasFunding);
       expect(result).toBe(routeNames.GeneratingPackageDocumentsFunding);
     });
@@ -188,13 +202,15 @@ describe("testing route resolvers", () => {
     });
   });
 
+
+
   describe('Upload7600Resolver', () => {
     beforeEach(() => {
       FinancialDetails.setHasFunding('');
     });
 
     it('should return MIPR route if current is FundingPlanType and fundingRequestType ' +
-        'returns "MIPR"', async () => {
+      'returns "MIPR"', async () => {
       const fundingRequest = {
         funding_request_type: 'MIPR'
       };
@@ -203,7 +219,7 @@ describe("testing route resolvers", () => {
     });
 
     it('should return Upload7600 route if current is FundingPlanType and fundingRequestType does '+
-        'not return "MIPR"', async () => {
+      'not return "MIPR"', async () => {
       const fundingRequest = {
         funding_request_type: 'NOT_MIPR'
       };
@@ -224,7 +240,7 @@ describe("testing route resolvers", () => {
     it('returns AppropriationOfFunds when there is an exception to fair opp', async () => {
       acquisitionPackage.fair_opportunity = {exception_to_fair_opportunity: "NO_NONE"};
       await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
-      const result = Upload7600Resolver('someOtherRoute'); 
+      const result = Upload7600Resolver('someOtherRoute');
       // this can be any route that's not in the ones explicitly mentioned
       expect(result).toBe(routeNames.Upload7600);
     });
