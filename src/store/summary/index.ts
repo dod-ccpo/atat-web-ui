@@ -2476,7 +2476,6 @@ export class SummaryStore extends VuexModule {
         isComplete: boolean
       }): Promise<string>{
     // eslint-disable-next-line max-len
-    debugger
     if(AcquisitionPackage.acquisitionPackage
       ?.contracting_shop_require_funding_documents_for_submission_of_package === "NO"
       && !isDitcoUser()
