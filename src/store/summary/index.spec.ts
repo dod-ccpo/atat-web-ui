@@ -2,7 +2,7 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from "@vue/test-utils";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { isDitcoUser } from "@/store/acquisitionPackage";
 import  { SummaryStore } from "../summary/index";
 import { getModule } from 'vuex-module-decorators';
 import validators from "../../plugins/validation";
@@ -15,6 +15,7 @@ import {
 import { baseGInvoiceData } from "../../../types/Global";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Vue from "vue";
+import * as acqPackageExportedFunctions from "@/store/acquisitionPackage";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -242,7 +243,7 @@ describe("Summary Store", () => {
       const description = await summaryStore.setFundingDescription(funding);
       setTimeout(()=>{
         expect(description).toBe("Funding documents are not required by contracting office");
-      },1000)
+      },3000)
 
     });
 
@@ -366,6 +367,34 @@ describe("Summary Store", () => {
 
       expect(isTouched).toBe(true);
     });
+    it('should return true when all conditions are met (!Ditco User)', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'FS_FORM',
+          appropriation_fiscal_year: '2023',
+          appropriation_funds_type: 'W_C',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: 'Value1',
+          gt_c_number: 'GTC123',
+          order_number: 'Order123',
+          fs_form_7600b_use_g_invoicing: 'Yes',
+        } as FundingRequestFSFormDTO,
+        mipr: {} as FundingRequestMIPRFormDTO,
+        hasFairOpp: true,
+        fundingRequirement: {
+          has_funding: 'NO_FUNDING',
+        } as FundingRequirementDTO,
+        isDitco: false,
+      };
+      const isTouched = await summaryStore.isFundingTouched(funding);
+
+      expect(isTouched).toBe(true);
+    });
+
   })
   describe('isFundingComplete', () => {
     it('should return false when not all conditions are met', async () => {
