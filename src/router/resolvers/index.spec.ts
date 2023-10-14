@@ -97,7 +97,7 @@ describe("testing route resolvers", () => {
 
     it('should return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true', 
     async () => {
-      acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package = "NO";
+      acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package="NO";
       await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
       const result = CurrentlyHasFundingResolver(routeNames.RFD);
       expect(result).toBe(routeNames.SummaryStepEight);
@@ -184,7 +184,8 @@ describe("testing route resolvers", () => {
     it('returns AppropriationOfFunds when there is an exception to fair opp', async () => {
       acquisitionPackage.fair_opportunity = {exception_to_fair_opportunity: "NO_NONE"};
       await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
-      const result = Upload7600Resolver('someOtherRoute'); // this can be any route that's not in the ones explicitly mentioned
+      const result = Upload7600Resolver('someOtherRoute'); 
+      // this can be any route that's not in the ones explicitly mentioned
       expect(result).toBe(routeNames.Upload7600);
     });
   });
