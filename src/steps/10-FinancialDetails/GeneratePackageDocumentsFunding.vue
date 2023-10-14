@@ -112,7 +112,6 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
   }
 
   public async mounted(): Promise<void> {
-    debugger;
     this.packageDocComponent =  this.$route.params.direction !== "previous"
       ? GeneratingDocumentsFunding
       : ReviewDocumentsFunding;
