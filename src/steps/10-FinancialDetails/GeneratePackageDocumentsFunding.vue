@@ -6,10 +6,10 @@
         <v-col cols="12">
           <div v-if="packageDocComponent">
             <component
-                :is="packageDocComponent"
-                :isErrored="isErrored"
-                :isGenerating.sync="isGenerating"
-                @regenerate="displayGeneratingDocumentsComponent()"
+              :is="packageDocComponent"
+              :isErrored="isErrored"
+              :isGenerating.sync="isGenerating"
+              @regenerate="displayGeneratingDocumentsComponent()"
             />
           </div>
         </v-col>
@@ -112,7 +112,8 @@ export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave)
   }
 
   public async mounted(): Promise<void> {
-    this.packageDocComponent = this.$route.params.direction === "next"
+    debugger;
+    this.packageDocComponent =  this.$route.params.direction !== "previous"
       ? GeneratingDocumentsFunding
       : ReviewDocumentsFunding;
     await this.determineComponent();
