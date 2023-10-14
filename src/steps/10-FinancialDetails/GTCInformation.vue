@@ -375,9 +375,10 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    if (
-      this.gInvoiceSearchValid !== true && this.useGInvoicing === 'YES'
-    ) return false;
+    debugger;
+    if (this.gInvoiceSearchValid !== true && this.useGInvoicing === 'YES'){
+      return false;}
+
     await AcquisitionPackage.setValidateNow(true);
     // file upload / saving
     try {
