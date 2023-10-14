@@ -9,7 +9,7 @@ import {
   SummaryItem,
 } from "types/Global";
 import Periods from "../periods";
-import AcquisitionPackage, { isMRRToBeGenerated } from "../acquisitionPackage";
+import AcquisitionPackage, { isMRRToBeGenerated, isDitcoUser } from "../acquisitionPackage";
 import {
   ContactDTO,
   ContractConsiderationsDTO,
@@ -630,7 +630,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async hasSoleSourceSituation(fairOpp: FairOpportunityDTO): Promise<boolean>{
     // assess first question
-    // 1. Would a fair opportunity competition require your project to migrate from 
+    // 1. Would a fair opportunity competition require your project to migrate from
     //    one platform to another, resulting in additional time and cost?
     const causeMigrationSelection = fairOpp.cause_migration_addl_time_cost;
     let isCauseMigrationSelection = false;
@@ -645,7 +645,7 @@ export class SummaryStore extends VuexModule {
     }
 
     // assess second question
-    // 2. Are your Government engineers trained and certified in a specific cloud 
+    // 2. Are your Government engineers trained and certified in a specific cloud
     //    platform or technology that is unique to Microsoft?
     const causeGovtEngineers = fairOpp.cause_govt_engineers_training_certified;
     let isCauseGovtEngineersComplete = false;
@@ -708,8 +708,8 @@ export class SummaryStore extends VuexModule {
     // 'Option to Extend Services' on the previous screen.
     const hasContractAction = fairOpp.contract_action !== "NONE"
     // assess first question
-    // 1. Did you review the specific capabilities in the JWCC Contracts to 
-    //    determine that Microsoft is the only source capable of fulfilling the Government’s 
+    // 1. Did you review the specific capabilities in the JWCC Contracts to
+    //    determine that Microsoft is the only source capable of fulfilling the Government’s
     //    minimum needs in the manner and time frame required?
     const researchIsCSPOnlySourceCapable = fairOpp.research_is_csp_only_source_capable;
     let hasResearchIsCSPOnlySourceCapable = false;
@@ -723,8 +723,8 @@ export class SummaryStore extends VuexModule {
     }
 
     // assess first question
-    // 2. Thinking of the unique product that you previously told us about, did you review the JWCC 
-    //    contractor’s catalogs to determine if other similar offerings meet or can be modified 
+    // 2. Thinking of the unique product that you previously told us about, did you review the JWCC
+    //    contractor’s catalogs to determine if other similar offerings meet or can be modified
     //    to satisfy your requirements?
     let hasResearchReviewCatalogsReviewed = true;
     const hasProductOrFeature = fairOpp.cause_product_feature_type !== "";
@@ -764,14 +764,14 @@ export class SummaryStore extends VuexModule {
         && fairOpp.research_techniques_summary !== ""
       : true;
 
-    // if Q1 or Q2 === 'YES' and 1 item is checked in fairOpp.research_other_techniques_used 
+    // if Q1 or Q2 === 'YES' and 1 item is checked in fairOpp.research_other_techniques_used
     // checkbox list then fairOpp.research_techniques_summary is required
     const noContractActionAndNoProduct = !hasContractAction && !hasProductOrFeature
     let hasResearchTechniquesSummary = true;
     if ((researchIsCSPOnlySourceCapable === "YES" || researchReviewCatalogsReviewed === "YES")
         || (researchIsCSPOnlySourceCapable === "NO" && !noContractActionAndNoProduct)){
-      // By default, `REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG` is selected.  
-      // Validate that at least 2 items have been selected. 
+      // By default, `REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG` is selected.
+      // Validate that at least 2 items have been selected.
       hasResearchTechniquesSummary = hasContractAction
         ? true
         : (fairOpp.research_other_techniques_used as string).split(",").length>1
@@ -831,7 +831,7 @@ export class SummaryStore extends VuexModule {
       : fairOpp.barriers_follow_on_expected_date_awarded !=="" ;
 
     //assess question two
-    // 2. Is your agency pursuing training and/or certifications for Government engineers 
+    // 2. Is your agency pursuing training and/or certifications for Government engineers
     //    in other technologies?
     const isAgencyPursuingTrainingOrCerts =
         fairOpp.barriers_agency_pursuing_training_or_certs !== "";
@@ -1032,11 +1032,11 @@ export class SummaryStore extends VuexModule {
 
   //#region STEP 3
   /*
-   * assess all 3 substeps in Step 3 to determine 
+   * assess all 3 substeps in Step 3 to determine
    * if substep is touched and/or completed
-   * 
+   *
    * The function creates 3 summary step objects for each
-   * substep in step 3 
+   * substep in step 3
    */
 
   @Action({rawError: true})
@@ -2450,8 +2450,10 @@ export class SummaryStore extends VuexModule {
     const mipr = FinancialDetails.fundingRequestMIPRForm as FundingRequestMIPRFormDTO;
     const fairOpp =
         (AcquisitionPackage.fairOpportunity as FairOpportunityDTO).exception_to_fair_opportunity;
+    const fundingRequirement = FinancialDetails.fundingRequirement as FundingRequirementDTO
     const hasFairOpp = ["NO_NONE", ""].every(noValue => noValue !== fairOpp );
-    const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp};
+    const isDitco = isDitcoUser()
+    const fundingDataObjs = {request,gInv,fsForm,mipr,hasFairOpp,fundingRequirement,isDitco};
     const isComplete =  await this.isFundingComplete(fundingDataObjs);
     const fundingSummaryItem: SummaryItem = {
       title: "Funding",
@@ -2473,10 +2475,26 @@ export class SummaryStore extends VuexModule {
         mipr: FundingRequestMIPRFormDTO,
         isComplete: boolean
       }): Promise<string>{
+    // eslint-disable-next-line max-len
+    if(AcquisitionPackage.acquisitionPackage
+      ?.contracting_shop_require_funding_documents_for_submission_of_package === "NO"
+      && !isDitcoUser()
+    ){
+      return "Funding documents are not required by contracting office"
+    }
     if (funding.request && funding.fsForm){
       const hasMIPRNumber = funding.mipr?.mipr_number !== ""
       const hasOrderNumber = funding.fsForm?.order_number !== ""
       const hasGTCNumber = funding.fsForm?.gt_c_number !== ""
+      if(!hasGTCNumber){
+        return "Missing funding documents"
+      }
+      if(funding.request.funding_request_type === "FS_FORM" && !hasOrderNumber){
+        return "Missing funding documents"
+      }else if(funding.request.funding_request_type === "MIPR" && !hasMIPRNumber){
+        return "Missing funding documents"
+
+      }
       return funding.request.funding_request_type === "MIPR"
         ? (hasMIPRNumber ? "MIPR: " + funding.mipr.mipr_number  : "")
         : (hasGTCNumber ? "GT&C: " + funding.fsForm.gt_c_number + "<br />" : "")
@@ -2493,6 +2511,8 @@ export class SummaryStore extends VuexModule {
         fsForm: FundingRequestFSFormDTO,
         mipr: FundingRequestMIPRFormDTO,
         hasFairOpp: boolean
+        fundingRequirement: FundingRequirementDTO
+        isDitco:boolean
       }): Promise<boolean>{
     if (funding.request && funding.fsForm){
       const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
@@ -2500,6 +2520,10 @@ export class SummaryStore extends VuexModule {
         ? funding.request.appropriation_fiscal_year !== ""
           || funding.request.appropriation_funds_type !== ""
         : false
+      if(!funding.isDitco){
+        return AcquisitionPackage.acquisitionPackage
+          ?.contracting_shop_require_funding_documents_for_submission_of_package !== ""
+      }
 
       return funding.request.funding_request_type !== ""
           || funding.gInv.useGInvoicing !== ""
@@ -2507,6 +2531,7 @@ export class SummaryStore extends VuexModule {
           || funding.fsForm.gt_c_number !== ""
           || await this.isTouched({object: funding.fsForm, keysToIgnore}) //validates 2 docs
           || hasAppropriationOfFunds
+          || funding.fundingRequirement.has_funding !== ""
     }
     return false
   }
@@ -2520,7 +2545,19 @@ export class SummaryStore extends VuexModule {
         fsForm: FundingRequestFSFormDTO,
         mipr: FundingRequestMIPRFormDTO,
         hasFairOpp: boolean
+        fundingRequirement: FundingRequirementDTO
+        isDitco:boolean
       }): Promise<boolean>{
+    const needsFunding = AcquisitionPackage.acquisitionPackage
+      ?.contracting_shop_require_funding_documents_for_submission_of_package === "YES"
+    if(!funding.isDitco && !needsFunding){
+      return true
+    }
+    const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
+    const fsForm700AComplete = await this.isComplete({object: funding.fsForm, keysToIgnore})
+        && funding.fsForm.gt_c_number !== ""
+    const needsFundingInfo = funding.fundingRequirement.has_funding === "NO_FUNDING"
+    const hasFunding = (needsFundingInfo && fsForm700AComplete)
     if (funding.request && funding.fsForm){
       let hasAppropriationOfFunds = false;
       let isComplete = false;
@@ -2529,9 +2566,9 @@ export class SummaryStore extends VuexModule {
           fsForm: funding.fsForm,
           gInv: funding.gInv,
           request: funding.request
-        });
+        }) && fsForm700AComplete;
       } else if (funding.request.funding_request_type === "MIPR"){
-        isComplete = await this.isMIPRComplete(funding.mipr);
+        isComplete = await this.isMIPRComplete(funding.mipr) && fsForm700AComplete;
       }
 
       hasAppropriationOfFunds = funding.hasFairOpp
@@ -2539,8 +2576,10 @@ export class SummaryStore extends VuexModule {
           && funding.request.appropriation_funds_type !== ""
         : true
 
+
       return isComplete
-          && hasAppropriationOfFunds;
+          && hasAppropriationOfFunds
+          && hasFunding;
     }
     return false;
   }
@@ -2559,12 +2598,12 @@ export class SummaryStore extends VuexModule {
       }
   ): Promise<boolean>{
     let isComplete = false;
-    if (funding.gInv.useGInvoicing === "YES"){
+    const fsForm700BGInvoice = funding.fsForm.fs_form_7600b_use_g_invoicing
+    if (fsForm700BGInvoice === "Yes"){
       isComplete = funding.gInv.gInvoiceNumber !== ""
-    } else if (funding.gInv.useGInvoicing === "NO"){
-      const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600"))
+    } else if (fsForm700BGInvoice === "NO"){
+      const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600b"))
       isComplete =  funding.fsForm.order_number !== ""
-          && funding.fsForm.gt_c_number !== ""
           && await this.isComplete({object: funding.fsForm, keysToIgnore}) //validates 2 docs
     }
     return isComplete

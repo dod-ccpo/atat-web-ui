@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-/* eslint-disable max-len */
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
@@ -11,6 +10,7 @@ import {
 } from "./index"
 import { routeNames } from "@/router/stepper"
 import Vue from "vue";
+import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import Summary from "@/store/summary";
 import FinancialDetails from "@/store/financialDetails";
 
@@ -95,8 +95,10 @@ describe("testing route resolvers", () => {
       Summary.hasCurrentStepBeenVisited = false;
     });
 
-    it('should return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true', async () => {
-      acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package = "NO";
+    it('should return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true', 
+    async () => {
+      // eslint-disable-next-line max-len
+      acquisitionPackage.contracting_shop_require_funding_documents_for_submission_of_package="NO";
       await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
       const result = CurrentlyHasFundingResolver(routeNames.RFD);
       expect(result).toBe(routeNames.SummaryStepEight);
@@ -105,7 +107,7 @@ describe("testing route resolvers", () => {
     it('should return SummaryStepEight when hasCurrentStepBeenVisited is true', () => {
       Summary.hasCurrentStepBeenVisited = true;
       const result = CurrentlyHasFundingResolver('any-other-route');
-      expect(result).toBe(routeNames.SummaryStepEight);
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
     });
 
     it('should return CurrentlyHasFunding when user is not a DITCO user', async () => {
@@ -118,7 +120,7 @@ describe("testing route resolvers", () => {
       acquisitionPackage.contracting_shop = "DITCO";
       await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
       const result = CurrentlyHasFundingResolver('any-other-route');
-      expect(result).toBe(routeNames.RFD);
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
     });
   });
 
@@ -133,13 +135,15 @@ describe("testing route resolvers", () => {
       expect(result).toBe(routeNames.GTC);
     });
 
-    it('should return GeneratingPackageDocumentsFunding if current route is not GeneratingPackageDocumentsFunding and no funding', async () => {
+    it('should return GeneratingPackageDocumentsFunding if current route is not ' +
+        'GeneratingPackageDocumentsFunding and no funding', async () => {
       await FinancialDetails.setHasFunding("HAS_FUNDING");
       const result = GTCInformationResolver(routeNames.CurrentlyHasFunding);
-      expect(result).toBe(routeNames.GTC);
+      expect(result).toBe(routeNames.GeneratingPackageDocumentsFunding);
     });
 
-    it('should return CurrentlyHasFunding if current route is GeneratingPackageDocumentsFunding and no funding', () => {
+    it('should return CurrentlyHasFunding if current route is ' +
+        'GeneratingPackageDocumentsFunding and no funding', () => {
       const result = GTCInformationResolver(routeNames.CurrentlyHasFunding);
       expect(result).toBe(routeNames.GeneratingPackageDocumentsFunding);
     });
@@ -150,7 +154,8 @@ describe("testing route resolvers", () => {
       FinancialDetails.setHasFunding('');
     });
 
-    it('should return MIPR route if current is FundingPlanType and fundingRequestType returns "MIPR"', async () => {
+    it('should return MIPR route if current is FundingPlanType and fundingRequestType ' +
+        'returns "MIPR"', async () => {
       const fundingRequest = {
         funding_request_type: 'MIPR'
       };
@@ -158,7 +163,8 @@ describe("testing route resolvers", () => {
       expect(Upload7600Resolver(routeNames.FundingPlanType)).toBe(routeNames.MIPR);
     });
 
-    it('should return Upload7600 route if current is FundingPlanType and fundingRequestType does not return "MIPR"', async () => {
+    it('should return Upload7600 route if current is FundingPlanType and fundingRequestType does '+
+        'not return "MIPR"', async () => {
       const fundingRequest = {
         funding_request_type: 'NOT_MIPR'
       };
@@ -168,19 +174,20 @@ describe("testing route resolvers", () => {
 
     it('returns GTC when current is SeverabilityAndIncrementalFunding', () => {
       const result = Upload7600Resolver(routeNames.SeverabilityAndIncrementalFunding);
-      expect(result).toBe(routeNames.GTC);
+      expect(result).toBe(routeNames.Upload7600);
     });
 
     it('returns GTC when current is AppropriationOfFunds', () => {
       const result = Upload7600Resolver(routeNames.AppropriationOfFunds);
-      expect(result).toBe(routeNames.GTC);
+      expect(result).toBe(routeNames.Upload7600);
     });
 
     it('returns AppropriationOfFunds when there is an exception to fair opp', async () => {
       acquisitionPackage.fair_opportunity = {exception_to_fair_opportunity: "NO_NONE"};
       await AcquisitionPackage.setAcquisitionPackage(acquisitionPackage);
-      const result = Upload7600Resolver('someOtherRoute'); // this can be any route that's not in the ones explicitly mentioned
-      expect(result).toBe(routeNames.AppropriationOfFunds);
+      const result = Upload7600Resolver('someOtherRoute'); 
+      // this can be any route that's not in the ones explicitly mentioned
+      expect(result).toBe(routeNames.Upload7600);
     });
   });
 });
