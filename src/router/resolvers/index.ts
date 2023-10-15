@@ -1567,22 +1567,18 @@ export const RFDResolver = (): string => {
 export const CurrentlyHasFundingResolver = (current: string): string => {
   const doesNotNeedFundingDoc = AcquisitionPackage.acquisitionPackage
     ?.contracting_shop_require_funding_documents_for_submission_of_package === 'NO'
-
   if (current === routeNames.RFD && doesNotNeedFundingDoc) {
     return routeNames.SummaryStepEight
   }
-
-  if (Summary.hasCurrentStepBeenVisited){
-    return routeNames.SummaryStepEight
-  }
-  return !isDitcoUser() ? routeNames.CurrentlyHasFunding : routeNames.RFD
+  return routeNames.CurrentlyHasFunding;
 };
 
 export const GTCInformationResolver = (current: string): string => {
-  if (FinancialDetails.hasFunding === "HAS_FUNDING") return routeNames.GTC;
-  return current !== routeNames.GeneratingPackageDocumentsFunding ?
-    routeNames.GeneratingPackageDocumentsFunding
-    : routeNames.CurrentlyHasFunding
+  const hasFunding = FinancialDetails.fundingRequirement?.has_funding === "HAS_FUNDING";
+  if (current === routeNames.CurrentlyHasFunding){
+    return hasFunding ? routeNames.GTC : routeNames.GeneratingPackageDocumentsFunding
+  }
+  return routeNames.GTC
 }
 
 export const FundingPlanTypeResolver = (current: string): string => {
@@ -1592,6 +1588,12 @@ export const FundingPlanTypeResolver = (current: string): string => {
 }
 
 export const MIPRResolver = (current: string): string => {
+  const hasNoFunding = FinancialDetails.fundingRequirement?.has_funding === "NO_FUNDING";
+  const fromGeneratingDocs = current === routeNames.GeneratingPackageDocumentsFunding;
+  if (hasNoFunding && fromGeneratingDocs){
+    return routeNames.CurrentlyHasFunding;
+  }
+  
   const fundingType = FinancialDetails.fundingRequestType;
   if (fundingType === "MIPR") {
     return routeNames.MIPR;
@@ -1610,15 +1612,17 @@ export const Upload7600Resolver = (current: string): string => {
     return fundingRequestType() === "MIPR" 
       ? routeNames.MIPR
       : routeNames.Upload7600;
+  } else if (current === routeNames.MIPR) {
+    return routeNames.FundingPlanType
   }
+  return routeNames.Upload7600
+}
 
-
-  return current === routeNames.SeverabilityAndIncrementalFunding ||
-    current === routeNames.AppropriationOfFunds
-    ? routeNames.GTC
-    : hasExceptionToFairOpp() 
-      ? routeNames.AppropriationOfFunds
-      : SeverabilityAndIncrementalFundingResolver(current);
+export const GeneratingPackageDocumentsFundingResolver = (current: string): string => {
+  if (current === routeNames.MIPR){
+    return routeNames.SummaryStepEight;
+  }
+  return routeNames.GeneratingPackageDocumentsFunding;
 }
 
 export const AppropriationOfFundsResolver = (current: string): string => {
@@ -1936,6 +1940,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
   RFDResolver,
+  GeneratingPackageDocumentsFundingResolver
 };
 
 // add path resolvers here 

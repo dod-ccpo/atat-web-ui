@@ -237,6 +237,7 @@ import {
   ContactInformationResolver,
   CorInformationResolver,
   ACorInformationQuestionResolver, 
+  GeneratingPackageDocumentsFundingResolver
 } from "./resolvers";
 
 
@@ -1351,14 +1352,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CostSummary
       },
       {
-        menuText: "Estimates Developed",
-        excludeFromMenu: true,
-        path: "estimates-developed",
-        name: routeNames.EstimatesDeveloped,
-        completePercentageWeight: 1,
-        component: EstimatesDeveloped
-      },
-      {
         menuText: "Supporting Documentation",
         excludeFromMenu: true,
         path: "supporting-documentation",
@@ -1366,6 +1359,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SupportingDocumentation,
         routeResolver: IGCESupportingDocumentationResolver
+      },
+      {
+        menuText: "Estimates Developed",
+        excludeFromMenu: true,
+        path: "estimates-developed",
+        name: routeNames.EstimatesDeveloped,
+        completePercentageWeight: 1,
+        component: EstimatesDeveloped,
+      },
+      {
+        menuText: "Appropriation of Funds",
+        excludeFromMenu: true,
+        path: "appropriation-of-funds",
+        name: routeNames.AppropriationOfFunds,
+        completePercentageWeight: 1,
+        component: AppropriationOfFunds,
+        routeResolver: AppropriationOfFundsResolver
       },
       {
         menuText: "Severability and Incremental Funding",
@@ -1408,7 +1418,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CurrentlyHasFunding,
         completePercentageWeight: 1,
         component: CurrentlyHasFunding,
-        // routeResolver: CurrentlyHasFundingResolver,
+        routeResolver: CurrentlyHasFundingResolver,
       },
       {
         menuText: "GTC-Information",
@@ -1417,7 +1427,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         completePercentageWeight: 1,
         component: GTC,
-        // routeResolver: GTCInformationResolver
+        routeResolver: GTCInformationResolver
       },
       {
         menuText: "Funding-Plan",
@@ -1426,7 +1436,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
         component: FundingPlanType,
-        // routeResolver: FundingPlanTypeResolver,
+        routeResolver: FundingPlanTypeResolver,
       },
       {
         menuText: "Upload-7600",
@@ -1435,15 +1445,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.Upload7600,
         completePercentageWeight: 1,
         component: Upload7600,
-        // routeResolver: Upload7600Resolver
-      },
-      {
-        menuText: "Generate Package Documents (Funding)",
-        path:"generate-package-documents-funding",
-        excludeFromMenu: true,
-        name: routeNames.GeneratingPackageDocumentsFunding,
-        completePercentageWeight: 0,
-        component: GeneratingPackageDocumentsFunding,
+        routeResolver: Upload7600Resolver
       },
       {
         menuText: "MIPR",
@@ -1452,8 +1454,18 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.MIPR,
         completePercentageWeight: 1,
         component: MIPR,
-        // routeResolver: MIPRResolver
+        routeResolver: MIPRResolver
       },
+      {
+        menuText: "Generate Package Documents (Funding)",
+        path:"generate-package-documents-funding",
+        excludeFromMenu: true,
+        name: routeNames.GeneratingPackageDocumentsFunding,
+        completePercentageWeight: 0,
+        component: GeneratingPackageDocumentsFunding,
+        routeResolver: GeneratingPackageDocumentsFundingResolver
+      },
+     
       {
         menuText: "SummaryStepEight",
         path: "summary-step-eight",
