@@ -128,7 +128,7 @@ export default class CardRequirement extends Vue {
   }
 
   get showErrors(): boolean {
-    return this.noMonthlyValue || this.errorMessage !== ""
+    return this.noMonthlyValue || this.errorMessage.length>0 
   }
 
   @Watch("estimate")

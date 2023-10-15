@@ -1352,6 +1352,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CostSummary
       },
       {
+        menuText: "Estimates Developed",
+        excludeFromMenu: true,
+        path: "estimates-developed",
+        name: routeNames.EstimatesDeveloped,
+        completePercentageWeight: 1,
+        component: EstimatesDeveloped,
+      },
+      {
         menuText: "Supporting Documentation",
         excludeFromMenu: true,
         path: "supporting-documentation",
@@ -1359,14 +1367,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SupportingDocumentation,
         routeResolver: IGCESupportingDocumentationResolver
-      },
-      {
-        menuText: "Estimates Developed",
-        excludeFromMenu: true,
-        path: "estimates-developed",
-        name: routeNames.EstimatesDeveloped,
-        completePercentageWeight: 1,
-        component: EstimatesDeveloped,
       },
       {
         menuText: "Appropriation of Funds",

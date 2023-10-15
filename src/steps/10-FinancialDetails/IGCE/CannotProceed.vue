@@ -74,7 +74,7 @@ export default class CannotProceed extends Vue {
   }
 
   get isPerformanceReqsIncomplete(): boolean {
-    return !isStepComplete(5) || DescriptionOfWork.isIncomplete
+    return !isStepComplete(5)
   }
 }
 </script>
