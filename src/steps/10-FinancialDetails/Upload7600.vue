@@ -329,7 +329,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
           ...(this.loaded || initialFundingRequestFSForm),
           fs_form_7600b_use_g_invoicing: this.useGInvoicing,
           order_number: this.orderNumber,
-        }; 
+        };
         /* eslint-enable */
         await FinancialDetails.saveFundingRequestFormBAndOrderNumber(data);
       }
