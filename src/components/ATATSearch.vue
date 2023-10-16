@@ -62,36 +62,48 @@
       <ATATErrorValidation :errorMessages="errorMessages" />
     </div>
 
-    <div class="max-width-500 mt-3" v-show="showErrorAlert && searchType === 'G-Invoicing'">
-      <div
-        class="d-flex justify-start align-top atat-text-field-error mt-2"
-      >
+    <div
+      class="mt-3"
+      style="max-width: 560px"
+      v-show="showErrorAlert && searchType === 'G-Invoicing'"
+    >
+      <div class="d-flex justify-start align-top atat-text-field-error mt-2">
         <div>
-          <v-icon class="text-base-error icon-20 ma-1 mt-0" color="error">error</v-icon>
+          <v-icon class="text-base-error icon-20 ma-1 mt-0" color="error"
+            >error</v-icon
+          >
         </div>
         <div class="field-error ml-2 text-left">
           <p>
-            Unable to locate your GT&C. Enter a valid number and search again.
-            If you need assistance,
+            Unable to locate your {{ gInvoicingNotVerifiedText }}. Enter a valid
+            number and search again. If you need assistance,
             <a
               href="https://community.hacc.mil/s/contact?RequestTopic=Account%20Trackin
               g%20and%20Automation%20Tool%20%28ATAT%29&RoleType=Customer"
               target="_blank"
             >
-              contact Customer Support </a
+              contact Customer Support <ATATSVGIcon
+                name="launch"
+                style="display: inline;"
+                width="13"
+                height="13"
+                color="primary"
+              /> </a
             >.
           </p>
         </div>
       </div>
     </div>
 
-    <div 
-      v-if="helpText && 
-      showHelpText && 
-      !showGtcVerifiedIndicator && 
-      !showLoader &&
-      !errorMessages.length &&
-      !(showErrorAlert && searchType === 'G-Invoicing')"
+    <div
+      v-if="
+        helpText &&
+        showHelpText &&
+        !showGtcVerifiedIndicator &&
+        !showLoader &&
+        !errorMessages.length &&
+        !(showErrorAlert && searchType === 'G-Invoicing')
+      "
       class="help-text mt-2"
     >
       {{ helpText }}
@@ -225,7 +237,9 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private buttonText?: string;
   @Prop({ default: false }) private searchButtonDisabled?: boolean;
   @Prop({ default: false }) private isModal?: boolean;
-  @Prop({default: undefined}) private gInvoicingSearchType?: 'GtcNumber' | 'OrderNumber';
+  @Prop({ default: undefined }) private gInvoicingSearchType?:
+    | "GtcNumber"
+    | "OrderNumber";
   @PropSync("triggerSearch", { default: false })
   private _triggerSearch?: boolean;
 
@@ -245,15 +259,23 @@ export default class ATATSearch extends Vue {
 
   private hideHelpText = false;
   private showHelpText(): boolean {
-    if (this.hideHelpText) return false
-    if(this.errorMessages.length && this.hideHelpTextOnErrors){
+    if (this.hideHelpText) return false;
+    if (this.errorMessages.length && this.hideHelpTextOnErrors) {
       return false;
     }
     return this.helpText.length > 0;
   }
 
   private get gInvoicingVerifiedText() {
-    return this.gInvoicingSearchType === 'GtcNumber' ? "GT&C verified" : "Order verified";
+    return this.gInvoicingSearchType === "GtcNumber"
+      ? "GT&C verified"
+      : "Order verified";
+  }
+
+  private get gInvoicingNotVerifiedText() {
+    return this.gInvoicingSearchType === "GtcNumber"
+      ? "GT&C number"
+      : "Order number";
   }
 
   @Watch("_resetValidationNow")
@@ -271,7 +293,7 @@ export default class ATATSearch extends Vue {
   public valueChanged(newVal: string): void {
     this.showGtcVerifiedIndicator = false;
     const hasContent = newVal && newVal.length > 0;
-    this.searchDisabled = (!hasContent || Boolean(this.errorMessages.length));
+    this.searchDisabled = !hasContent || Boolean(this.errorMessages.length);
   }
 
   @Watch("errorMessages")
@@ -327,7 +349,10 @@ export default class ATATSearch extends Vue {
       } finally {
         this.showLoader = false;
       }
-    } else if (this.searchType === "G-Invoicing" && this.gInvoicingSearchType === 'GtcNumber') {
+    } else if (
+      this.searchType === "G-Invoicing" &&
+      this.gInvoicingSearchType === "GtcNumber"
+    ) {
       try {
         if (this.errorMessages.length > 0) return;
         this.showLoader = true;
@@ -337,19 +362,22 @@ export default class ATATSearch extends Vue {
         );
         if (gInvoicingResponse.valid) {
           this.showGtcVerifiedIndicator = true;
-          this.$emit('onGInvoiceSearchComplete', true)
+          this.$emit("onGInvoiceSearchComplete", true);
         } else {
-          this.$emit('onGInvoiceSearchComplete', false)
+          this.$emit("onGInvoiceSearchComplete", false);
           this.showErrorAlert = true;
         }
       } catch (error) {
-        this.$emit('onGInvoiceSearchComplete', false)
+        this.$emit("onGInvoiceSearchComplete", false);
         this.showErrorAlert = true;
       } finally {
         this.showLoader = false;
         this.$emit("search");
       }
-    } else if (this.searchType === "G-Invoicing" && this.gInvoicingSearchType === 'OrderNumber') {
+    } else if (
+      this.searchType === "G-Invoicing" &&
+      this.gInvoicingSearchType === "OrderNumber"
+    ) {
       try {
         if (this.errorMessages.length > 0) return;
         this.showLoader = true;
@@ -359,14 +387,14 @@ export default class ATATSearch extends Vue {
         );
         if (gInvoicingResponse.valid) {
           this.showGtcVerifiedIndicator = true;
-          this.$emit('onGInvoiceSearchComplete', true)
+          this.$emit("onGInvoiceSearchComplete", true);
         } else {
           this.showErrorAlert = true;
-          this.$emit('onGInvoiceSearchComplete', false)
+          this.$emit("onGInvoiceSearchComplete", false);
         }
       } catch (error) {
         this.showErrorAlert = true;
-        this.$emit('onGInvoiceSearchComplete', false)
+        this.$emit("onGInvoiceSearchComplete", false);
       } finally {
         this.showLoader = false;
         this.$emit("search");
