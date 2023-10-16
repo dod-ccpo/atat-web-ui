@@ -2,7 +2,7 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from "@vue/test-utils";
-import AcquisitionPackage, { isDitcoUser } from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import  { SummaryStore } from "../summary/index";
 import { getModule } from 'vuex-module-decorators';
 import validators from "../../plugins/validation";

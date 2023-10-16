@@ -1555,17 +1555,18 @@ export const IGCESupportingDocumentationResolver = (current: string): string => 
 
 
 export const AppropriationOfFundsResolver = (current: string): string => {
-  Summary.setHasCurrentStepBeenVisited(isStepTouched(8))
-  if (hasExceptionToFairOpp()){
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(8));
+  const fromIncFunding = current === routeNames.SeverabilityAndIncrementalFunding;
+  if (fromIncFunding && Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepEight
+  } else if (fromIncFunding && !Summary.hasCurrentStepBeenVisited) {
+    return routeNames.SeverabilityAndIncrementalFunding;
+  } else if (hasExceptionToFairOpp()){
     return routeNames.AppropriationOfFunds
   } else if (evalPlanRequired()){
     return routeNames.SummaryStepEight;
   }
-  
-  return current === routeNames.SeverabilityAndIncrementalFunding
-    && Summary.hasCurrentStepBeenVisited
-    ? routeNames.SummaryStepEight
-    : routeNames.SeverabilityAndIncrementalFunding;
+  return routeNames.AppropriationOfFunds
 }
 
 export const SeverabilityAndIncrementalFundingResolver = (current: string): string => {
