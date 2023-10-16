@@ -307,9 +307,7 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     ) {
       this.useGInvoicing = this.loaded?.use_g_invoicing;
     } else {
-      this.useGInvoicing = this.loaded?.fs_form_7600a_attachment
-        ? "NO"
-        : "YES"
+      this.useGInvoicing = this.loaded?.fs_form_7600a_attachment ? "NO" : "YES";
     }
 
     this.savedData = {
@@ -375,9 +373,9 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    if (this.gInvoiceSearchValid !== true && this.useGInvoicing === 'YES'){
-      return false;}
-
+    if (
+      this.gInvoiceSearchValid !== true && this.useGInvoicing === 'YES'
+    ) return false;
     await AcquisitionPackage.setValidateNow(true);
     // file upload / saving
     try {
