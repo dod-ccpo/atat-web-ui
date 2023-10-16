@@ -525,6 +525,8 @@ export interface PortfolioDetailsDTO{
   portfolio: PortfolioDTO;
   portfolioId: string;
 }
+
+// EJY HERE
 export interface PortfolioDTO extends BaseTableDTO {
   agency?: string;
   agencyDisplay?: string;

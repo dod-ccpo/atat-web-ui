@@ -277,7 +277,7 @@ export default class PortfolioCard extends Vue {
 
   public async cardMenuClick(menuItem: MeatballMenuItem): Promise<void> {
     const data = await PortfolioStore.getSelectedPortfolioData(this.cardData.sysId as string)
-    await PortfolioStore.setCurrentPortfolioFromCard(data);
+    await PortfolioStore.setCurrentPortfolioDetails(data);
     switch(menuItem.action) {
     case this.menuActions.viewFundingTracker:
       await AppSections.setActiveTabIndex(0);

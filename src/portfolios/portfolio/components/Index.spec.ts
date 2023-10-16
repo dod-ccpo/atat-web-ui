@@ -133,7 +133,7 @@ describe("Testing index Component", () => {
       }
     };
     /* eslint-enable */
-    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio as PortfolioDetailsDTO);
+    await PortfolioStore.setCurrentPortfolioDetails(mockPortfolio);
     await wrapper.vm.loadOnEnter();
     expect(wrapper.vm.$data.portfolioSysId).toBe(mockPortfolio.portfolio.sysId);
     expect(wrapper.vm.$data.portfolioDescription).toBe(
