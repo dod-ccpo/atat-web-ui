@@ -12,6 +12,8 @@ import {
   IGCESupportingDocumentationResolver,
   AppropriationOfFundsResolver,
   SeverabilityAndIncrementalFundingResolver,
+  RFDResolver,
+  FinancialPOCResolver,
   
 } from "./index"
 import * as ExportedResolverFunctions from "./index";
@@ -298,6 +300,67 @@ describe("testing route resolvers", () => {
         'GeneratingPackageDocumentsFunding and no funding', () => {
         const result = GTCInformationResolver(routeNames.CurrentlyHasFunding);
         expect(result).toBe(routeNames.GeneratingPackageDocumentsFunding);
+      });
+    });
+
+    describe('RFDResolver', () => {
+      let RCESummaryItem = summaryItem;
+    
+      beforeEach(() => {
+        jest.clearAllMocks();
+        // eslint-disable-next-line max-len
+        RCESummaryItem = {
+          ...summaryItem,
+          "step":8,
+          "isTouched": true
+        }
+        Summary.doSetSummaryItem(RCESummaryItem);
+      });
+
+      it('should return routeNames.SummaryStepEight when Summary.hasCurrentStepBeenVisited '
+          + '&& current === routeNames.FinancialPOCForm', () => {
+        expect(RFDResolver(routeNames.FinancialPOCForm))
+          .toBe(routeNames.SummaryStepEight)
+      });
+
+      it('should return routeNames.RFD if !isDitcoUser()', () => {
+        acquisitionPackage.contracting_shop = "is not ditco user";
+        expect(RFDResolver(''))
+          .toBe(routeNames.RFD)
+      });
+
+      it('should return routeNames.CurrentlyHasFunding if isDitcoUser()', () => {
+        acquisitionPackage.contracting_shop = "DITCO";
+        expect(RFDResolver(''))
+          .toBe(routeNames.CurrentlyHasFunding)
+      });
+    });
+
+    describe('FinancialPOCResolver', () => {
+      let RCESummaryItem = summaryItem;
+    
+      beforeEach(() => {
+        jest.clearAllMocks();
+        // eslint-disable-next-line max-len
+        RCESummaryItem = {
+          ...summaryItem,
+          "step":8,
+          "isTouched": true
+        }
+        Summary.doSetSummaryItem(RCESummaryItem);
+      });
+
+      it('should return routeNames.SummaryStepEight when Summary.hasCurrentStepBeenVisited '
+          + '&& current === routeNames.RFD', () => {
+        expect(FinancialPOCResolver(routeNames.RFD))
+          .toBe(routeNames.SummaryStepEight)
+      });
+
+      it('should return routeNames.FinancialPOCForm when !Summary.hasCurrentStepBeenVisited '
+          + '&& current === routeNames.RFD', () => {
+        RCESummaryItem.isTouched=false;
+        expect(FinancialPOCResolver(routeNames.RFD))
+          .toBe(routeNames.FinancialPOCForm)
       });
     });
 
