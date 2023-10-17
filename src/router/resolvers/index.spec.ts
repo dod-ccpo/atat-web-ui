@@ -213,7 +213,7 @@ describe("testing route resolvers", () => {
         RCESummaryItem.isTouched = false;
         expect(AppropriationOfFundsResolver(
           routeNames.SeverabilityAndIncrementalFunding
-        )).toBe(routeNames.SeverabilityAndIncrementalFunding)
+        )).toBe(routeNames.AppropriationOfFunds)
       });
 
       it('returns AppropriationOfFunds if hasExceptionToFairOpp', async () =>{

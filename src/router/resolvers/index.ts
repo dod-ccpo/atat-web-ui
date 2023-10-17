@@ -1282,10 +1282,7 @@ export const IGCECannotProceedResolver = (current: string): string => {
 }
 
 export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
-  if (current === routeNames.CannotProceed){
-    return routeNames.FundingPlanType;
-  }
-
+ 
   if (needsReplicateOrOptimize()) {
     return routeNames.OptimizeOrReplicate;
   }
@@ -1560,7 +1557,7 @@ export const AppropriationOfFundsResolver = (current: string): string => {
   if (fromIncFunding && Summary.hasCurrentStepBeenVisited){
     return routeNames.SummaryStepEight
   } else if (fromIncFunding && !Summary.hasCurrentStepBeenVisited) {
-    return routeNames.SeverabilityAndIncrementalFunding;
+    return routeNames.AppropriationOfFunds;
   } else if (hasExceptionToFairOpp()){
     return routeNames.AppropriationOfFunds
   } else if (evalPlanRequired()){

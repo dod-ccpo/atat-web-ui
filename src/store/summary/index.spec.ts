@@ -83,7 +83,7 @@ const contactAcorMissingFirstName: Partial<ContactDTO> = {
   phone: '555-555-1234',
   phone_extension: '1234',
   email: 'john.smith.tester@mail.mil',
-  }
+}
 
 describe("Summary Store", () => {
   let summaryStore: SummaryStore;
