@@ -1268,17 +1268,17 @@ const IGCERouteNext = (current: string): string => {
 
 
 export const IGCECannotProceedResolver = (current: string): string => {
-  const canRCEBeDisplayed =  isSubStepComplete(3,1) && isStepComplete(5)
-  
-  if (!canRCEBeDisplayed){
-    return routeNames.CannotProceed;
-  }
-
+  const potentialCurrentPages = [
+    routeNames.OptimizeOrReplicate, 
+    routeNames.ArchitecturalDesignDetails,
+    routeNames.GatherPriceEstimates
+  ]
   if (current === routeNames.CreatePriceEstimate) {
     return IGCERouteNext(current);
+  } else if (potentialCurrentPages.some(pcp => pcp === current)){
+    return routeNames.CreatePriceEstimate
   }
-
-  return routeNames.CreatePriceEstimate;
+  return current;
 }
 
 export const IGCEOptimizeOrReplicateResolver = (current: string): string => {

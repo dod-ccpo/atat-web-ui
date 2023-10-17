@@ -14,6 +14,7 @@ import {
   SeverabilityAndIncrementalFundingResolver,
   RFDResolver,
   FinancialPOCResolver,
+  IGCECannotProceedResolver,
   
 } from "./index"
 import * as ExportedResolverFunctions from "./index";
@@ -158,6 +159,35 @@ describe("testing route resolvers", () => {
           routeNames.SeverabilityAndIncrementalFunding
         )).toBe(routeNames.CannotProceed)
       });
+    })
+
+    describe('IGCECannotProceedResolver()', () => {
+      it('returns routeNames.SurgeCapacity by default ' +
+          'if current === routeNames.CreatePriceEstimate)', 
+      async () =>{
+        expect(IGCECannotProceedResolver(
+          routeNames.CreatePriceEstimate
+        )).toBe(routeNames.SurgeCapacity)
+      });
+
+      it('returns routeNames.CreatePriceEstimate by default ' +
+        'if current === routeNames.OptimizeOrReplicate)', 
+      async () =>{
+        expect(IGCECannotProceedResolver(
+          routeNames.OptimizeOrReplicate
+        )).toBe(routeNames.CreatePriceEstimate)
+      });
+      
+      it('returns current by default' +
+        'if !current.includes(routeNames.OptimizeOrReplicate, ' +
+        'ArchitecturalDesignDetails,routeNames.GatherPriceEstimates,' +
+        'CreatePriceEstimates)', 
+      async () =>{
+        const current = "customRouteName"
+        expect(IGCECannotProceedResolver(current)).toBe(current)
+      });
+
+
     })
 
     describe('AppropriationOfFundsResolver()', () => {
