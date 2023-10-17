@@ -1268,24 +1268,21 @@ const IGCERouteNext = (current: string): string => {
 
 
 export const IGCECannotProceedResolver = (current: string): string => {
-  const canRCEBeDisplayed =  isSubStepComplete(3,1) && isStepComplete(5)
-  
-  if (!canRCEBeDisplayed){
-    return routeNames.CannotProceed;
-  }
-
+  const potentialCurrentPages = [
+    routeNames.OptimizeOrReplicate, 
+    routeNames.ArchitecturalDesignDetails,
+    routeNames.GatherPriceEstimates
+  ]
   if (current === routeNames.CreatePriceEstimate) {
     return IGCERouteNext(current);
+  } else if (potentialCurrentPages.some(pcp => pcp === current)){
+    return routeNames.CreatePriceEstimate
   }
-
-  return routeNames.CreatePriceEstimate;
+  return current;
 }
 
 export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
-  if (current === routeNames.CannotProceed){
-    return routeNames.FundingPlanType;
-  }
-
+ 
   if (needsReplicateOrOptimize()) {
     return routeNames.OptimizeOrReplicate;
   }
@@ -1560,7 +1557,7 @@ export const AppropriationOfFundsResolver = (current: string): string => {
   if (fromIncFunding && Summary.hasCurrentStepBeenVisited){
     return routeNames.SummaryStepEight
   } else if (fromIncFunding && !Summary.hasCurrentStepBeenVisited) {
-    return routeNames.SeverabilityAndIncrementalFunding;
+    return routeNames.AppropriationOfFunds;
   } else if (hasExceptionToFairOpp()){
     return routeNames.AppropriationOfFunds
   } else if (evalPlanRequired()){
@@ -1577,13 +1574,15 @@ export const SeverabilityAndIncrementalFundingResolver = (current: string): stri
 };
 
 
-export const RFDResolver = (): string => {
-  if (!isDitcoUser()) {
-    return routeNames.RFD
+export const RFDResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(8))
+  if (current === routeNames.FinancialPOCForm && Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepEight
   }
-  return Summary.hasCurrentStepBeenVisited
-    ? routeNames.SummaryStepEight
-    : routeNames.CurrentlyHasFunding
+  else if (!isDitcoUser()) {
+    return routeNames.RFD
+  } 
+  return routeNames.CurrentlyHasFunding
 }
 
 export const CurrentlyHasFundingResolver = (current: string): string => {
@@ -1698,18 +1697,12 @@ export const IncrementalFundingResolver = (current: string): string => {
 }
 
 export const FinancialPOCResolver =  (current: string): string => {
-  const isIncrementallyFunded = FinancialDetails.fundingRequirement?.incrementally_funded;
-  let baseDuration
-  calcBasePeriod().then(value => {
-    baseDuration = value
-  })
-  if (current === routeNames.ReadyToGeneratePackage && baseDuration && baseDuration < cutOff ||
-      current === routeNames.ReadyToGeneratePackage && isIncrementallyFunded === "NO") {
-    return routeNames.SeverabilityAndIncrementalFunding;
-  }
-  if (current === routeNames.RFD) return routeNames.SummaryStepEight;
-  return current === routeNames.FinancialPOCForm
-    ? routeNames.ReadyToGeneratePackage
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(8))
+  const fromFunding = 
+    [routeNames.RFD, routeNames.CurrentlyHasFunding].some(route => route === current)
+  
+  return fromFunding && Summary.hasCurrentStepBeenVisited
+    ? routeNames.SummaryStepEight
     : routeNames.FinancialPOCForm
 }
 
