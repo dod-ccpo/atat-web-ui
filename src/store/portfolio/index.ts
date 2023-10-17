@@ -707,7 +707,6 @@ export class PortfolioDataStore extends VuexModule {
   public async setCurrentPortfolioMembers(portfolio: Portfolio): Promise<void> {
     try {
       if (portfolio.sysId) {
-
         const members = {
           portfolio_owner: portfolio.portfolio_owner,
           portfolio_managers: portfolio.portfolio_managers,

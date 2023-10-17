@@ -5,16 +5,49 @@ import { getModule } from 'vuex-module-decorators';
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import UserStore from "@/store/user";
-import {AlertDTO, UserDTO} from '@/api/models';
-import { Portfolio} from 'types/Global';
+import {AlertDTO, PortfolioSummaryDTO, UserDTO} from '@/api/models';
+import { Portfolio, PortfolioDetailsDTO} from 'types/Global';
 import CurrentUserStore from '@/store/user';
+import api from '@/api';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-const mockPortfolio =   {
+/* eslint-disable camelcase */
+const mockPortfolioDetails: PortfolioDetailsDTO = {
+  name: "test portfolio",
+  csp:"",
+  csp_display:"",
+  vendor: "",
+  active_task_order:"",
+  agency:"",
+  agency_display:"",
+  dod_component:"",
+  last_cost_data_sync:"",
+  task_order_number:"", // "1000000001234  << portfolio.active_task_order >>",
+  sys_updated_on:"", // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
+  task_order_status:"", // "EXPIRED << task_order.task_order_status >>",
+  pop_end_date:"", // "2022-12-31 << task_order.pop_end_date >>",
+  pop_start_date:"", // "2022-01-01 << task_order.pop_start_date >>",
+  funds_obligated: 0, // "<< sum of obligated values in all qualifying clins >>",
+  portfolio_status:"", // "PROCESSING << portfolio.portfolio_status >>",
+  portfolio_funding_status:"",
+  portfolio_owner:"",
+  portfolio_managers:"", // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
+  portfolio_viewers:"",
+  funds_spent: 0, // "<< sum of value in cost table queried with task order number >>"
+  task_orders: [],
+  alerts: [],
+  title:"",
+  description:"",
+  environments: [],
+  last_updated:"",
+
+}
+
+const mockPortfolioSummary: PortfolioSummaryDTO =   {
+  sys_id: "1234564869",
   name: "mock portfolio",
   csp: "",
-  /* eslint-disable camelcase */
   csp_display: "CSP_A",
   agency: "ARMY",
   vendor: "AWS",
@@ -37,6 +70,7 @@ const mockPortfolio =   {
   last_cost_data_sync: ""
   /* eslint-enable camelcase */
 }
+
 
 
 describe("Portfolio Store", () => {
@@ -185,11 +219,43 @@ describe("Portfolio Store", () => {
     /* eslint-enable */ 
     const mockSetCurrentPortfolioMembers = jest.spyOn(portfolioStore, "setCurrentPortfolioMembers")
       .mockImplementation()
-    await portfolioStore.setCurrentPortfolio(mockPortfolio)
+    await portfolioStore.setCurrentPortfolio(mockPortfolioSummary)
     CurrentUserStore.setCurrentUser(mockUser)
     await portfolioStore.leavePortfolio()
     expect(mockSetCurrentPortfolioMembers).toBeCalled()
   })
+
+  it ("setCurrentPortfolioMembers()", async() => {
+    const portfolio: Portfolio = {
+      /* eslint-disable */
+      sysId: "132345",
+      portfolio_owner: "11111",
+      portfolio_managers: "22222,33333",
+      portfolio_viewers: "44444,555555",
+      /* eslint-enable */       
+    }
+
+    // await portfolioStore.setFooToTrue();
+    // expect(portfolioStore.foo).toBeTruthy;
+
+    
+    const updateMock = jest.spyOn(api.portfolioTable, 'update').mockImplementation();
+    // jest.spyOn(portfolioStore, "getSelectedPortfolioData").mockImplementation(
+    //   ()=>Promise.resolve(mockPortfolioDetails)
+    // )
+    // const mockGetSelectedPortfolioData = jest.spyOn(portfolioStore, "getSelectedPortfolioData")
+    //   .mockImplementation();     
+    // const fooMock = jest.spyOn(portfolioStore, "setFooToTrue").mockImplementation(); 
+    await portfolioStore.setCurrentPortfolioMembers(portfolio);
+    // expect(fooMock).toBeCalled()
+    // expect(updateMock).toBeCalled();
+    Vue.nextTick(async()=> {
+      expect(updateMock).toBeCalled();
+    })
+    // expect("getSelectedPortfolioData").toBeCalled();
+
+  })
+
 
 
 })
