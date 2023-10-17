@@ -276,7 +276,6 @@ describe("Portfolio Store", () => {
     const memberDetailMock = jest.spyOn(portfolioStore, "populatePortfolioMembersDetail")
       .mockImplementation(() => Promise.resolve())
 
-    await portfolioStore.setCurrentPortfolioMembers(mockPortfolio);
     Vue.nextTick(() => {
       expect(updateMock).toBeCalled();
       expect(portfolioDetailsMock).toBeCalled();
