@@ -43,10 +43,30 @@ const mockPortfolioSummary: PortfolioSummaryDTO =   {
 const mockPortfolioDTO: PortfolioDTO = {
   /* eslint-disable camelcase */
   portfolio_users: {
-    creator: {},
-    owner: {},
-    managers: [{ name: "Carl" }, {name: "Bart"}],
-    viewers: [{ name: "Adam"}, {name: "Carl"}]
+    creator: {
+      name: "Adam", 
+      sys_id: "123",
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      company: "",
+      title: "",
+      role: "Creator"
+    },
+    owner: {
+      name: "Bart", 
+      sys_id: "456",
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      company: "",
+      title: "",
+      role: "Owner"
+    },
+    managers: [{name: "Carl", role: "Manager"}, {name: "Bart", role: "Manager"}],
+    viewers: [{name: "Adam", role: "Viewer"}, {name: "Carl", role: "Viewer"}]
   }
   /* eslint-enable camelcase */    
 }
