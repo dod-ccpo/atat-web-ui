@@ -265,7 +265,7 @@ describe("Testing Members Component", () => {
     };
     /* eslint-enable camelcase */
     CurrentUserStore.setCurrentUser(mockUser);
-    await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolio as PortfolioDetailsDTO);
+    await PortfolioStore.setCurrentPortfolioDetails(mockPortfolio);
     const items =  wrapper.vm.getMoreMenuItems;
     expect(items).toStrictEqual([
       {

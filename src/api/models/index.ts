@@ -940,6 +940,7 @@ export interface UserDTO extends BaseTableDTO {
   home_phone?: string;
   title?: string;
   sys_id?: string;
+  role?: string
 }
 
 export interface UserRolesDTO extends BaseTableDTO {

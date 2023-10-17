@@ -191,7 +191,7 @@ describe("Testing Portfolio", () => {
         vuetify,
         localVue,
       });
-      await PortfolioStore.setCurrentPortfolioFromCard(mockPortfolioCardData)
+      await PortfolioStore.setCurrentPortfolioDetails(mockPortfolioCardData)
       await wrapper.vm.loadOnEnter();
 
     });
