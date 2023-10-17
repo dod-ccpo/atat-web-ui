@@ -704,7 +704,7 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async setCurrentPortfolioMembers(portfolio: Portfolio): Promise<void> {
+  public async setCurrentPortfolioMembers(portfolio: Portfolio): Promise<void> {    
     try {
       if (portfolio.sysId) {
         const members = {

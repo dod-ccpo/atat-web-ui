@@ -13,37 +13,6 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 /* eslint-disable camelcase */
-const mockPortfolioDetails: PortfolioDetailsDTO = {
-  name: "test portfolio",
-  csp:"",
-  csp_display:"",
-  vendor: "",
-  active_task_order:"",
-  agency:"",
-  agency_display:"",
-  dod_component:"",
-  last_cost_data_sync:"",
-  task_order_number:"", // "1000000001234  << portfolio.active_task_order >>",
-  sys_updated_on:"", // "2022-09-26 15:50:20 << portfolio.sys_updated_on >>",
-  task_order_status:"", // "EXPIRED << task_order.task_order_status >>",
-  pop_end_date:"", // "2022-12-31 << task_order.pop_end_date >>",
-  pop_start_date:"", // "2022-01-01 << task_order.pop_start_date >>",
-  funds_obligated: 0, // "<< sum of obligated values in all qualifying clins >>",
-  portfolio_status:"", // "PROCESSING << portfolio.portfolio_status >>",
-  portfolio_funding_status:"",
-  portfolio_owner:"",
-  portfolio_managers:"", // "a8f98bb0e1a5115206fe3a << portfolio.portfolio_managers>>",
-  portfolio_viewers:"",
-  funds_spent: 0, // "<< sum of value in cost table queried with task order number >>"
-  task_orders: [],
-  alerts: [],
-  title:"",
-  description:"",
-  environments: [],
-  last_updated:"",
-
-}
-
 const mockPortfolioSummary: PortfolioSummaryDTO =   {
   sys_id: "1234564869",
   name: "mock portfolio",
@@ -235,24 +204,28 @@ describe("Portfolio Store", () => {
       /* eslint-enable */       
     }
 
-    // await portfolioStore.setFooToTrue();
-    // expect(portfolioStore.foo).toBeTruthy;
+    const portfolioDetails: PortfolioDetailsDTO = {
+      portfolio,
+      portfolioId: "123456789"
+    }
 
     
-    const updateMock = jest.spyOn(api.portfolioTable, 'update').mockImplementation();
-    // jest.spyOn(portfolioStore, "getSelectedPortfolioData").mockImplementation(
-    //   ()=>Promise.resolve(mockPortfolioDetails)
-    // )
-    // const mockGetSelectedPortfolioData = jest.spyOn(portfolioStore, "getSelectedPortfolioData")
-    //   .mockImplementation();     
-    // const fooMock = jest.spyOn(portfolioStore, "setFooToTrue").mockImplementation(); 
+    const updateMock = jest.spyOn(api.portfolioTable, 'update')
+      .mockImplementation(()=>Promise.resolve(mockPortfolioSummary));
+
+    const portfolioDetailsMock = jest.spyOn(portfolioStore, "getSelectedPortfolioData")
+      .mockImplementation(()=>Promise.resolve(portfolioDetails));
+
+    const memberDetailMock = jest.spyOn(portfolioStore, "populatePortfolioMembersDetail")
+      .mockImplementation(() => Promise.resolve())
+
     await portfolioStore.setCurrentPortfolioMembers(portfolio);
-    // expect(fooMock).toBeCalled()
-    // expect(updateMock).toBeCalled();
-    Vue.nextTick(async()=> {
+    Vue.nextTick(() => {
       expect(updateMock).toBeCalled();
+      expect(portfolioDetailsMock).toBeCalled();
+      expect(memberDetailMock).toBeCalled();
+      
     })
-    // expect("getSelectedPortfolioData").toBeCalled();
 
   })
 
