@@ -207,6 +207,30 @@ describe("Summary Store", () => {
     ]);
   });
 
+  describe('setIncrementalFundingDescription', () => {
+    // eslint-disable-next-line max-len
+    it('returns description with POC info', async () => {
+      const funding = {
+        poc:{
+          ...contact,
+          first_name: "firstName",
+          last_name: "lastName",
+          phone: "123-456-7890",
+          email: "email@mail.mil",
+          role: "MILITARY"
+        },
+        req: {
+          incrementally_funded: "YES"
+        } as FundingRequirementDTO,
+        isComplete: true,
+        isTouched: true,
+        isPopBaseLessThanNineMonths: false
+      };
+      expect(await summaryStore.setIncrementalFundingDescription(funding))
+        .toContain("POC");
+    });
+  });
+
   describe('hasCompleteIncrementalFundingAndPOC', () => {
     // eslint-disable-next-line max-len
     it('should return "Funding documents are not required" when not required by contracting office', async () => {
@@ -222,7 +246,6 @@ describe("Summary Store", () => {
           email: "email@mail.mil",
           role: "MILITARY"
         }
-        
       };
       expect(await summaryStore.hasCompleteIncrementalFundingAndPOC(funding)).toBe(false);
     });
