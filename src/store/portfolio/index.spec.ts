@@ -194,31 +194,6 @@ describe("Portfolio Store", () => {
     expect(portfolioStore.showLeavePortfolioModal).toBe(true)
   })
 
-  it('leavePortfolio()', async()=>{
-    /* eslint-disable */ 
-    const mockUser: UserDTO = {
-      last_login_time: "01/02/03",
-      name: "Test User",
-      first_name: "Test",
-      last_name: "User",
-      user_name: "TestUser",
-      email: "Test@email.mil",
-      company: "Rando company",
-      mobile_phone: "123-456-7890",
-      phone: "123-456-7890",
-      home_phone: "123-456-7890",
-      title: "User Title",
-      sys_id: '1234'
-    }
-    /* eslint-enable */ 
-    const mockSetCurrentPortfolioMembers = jest.spyOn(portfolioStore, "setCurrentPortfolioMembers")
-      .mockImplementation()
-    await portfolioStore.setCurrentPortfolio(mockPortfolioSummary)
-    CurrentUserStore.setCurrentUser(mockUser)
-    await portfolioStore.leavePortfolio()
-    expect(mockSetCurrentPortfolioMembers).toBeCalled()
-  })
-
   it ("setCurrentPortfolioMembers()", async() => {   
     jest.spyOn(api.portfolioTable, 'update')
       .mockImplementation(() => Promise.resolve(mockPortfolioSummary));
@@ -245,7 +220,6 @@ describe("Portfolio Store", () => {
       expect(updateMock).toBeCalled();
     })
   })
-
 
   it ("populatePortfolioMembersDetail()", async() => {
     await portfolioStore.populatePortfolioMembersDetail(mockPortfolioDTO);
@@ -282,6 +256,34 @@ describe("Portfolio Store", () => {
       expect(memberDetailMock).toBeCalled();
     });
   });
+
+  // moved to bottom of file - something about this test needs to be fixed - 
+  // it is causing tests after it to intermittently fail 
+  it('leavePortfolio()', async()=>{
+    /* eslint-disable */ 
+    const mockUser: UserDTO = {
+      last_login_time: "01/02/03",
+      name: "Test User",
+      first_name: "Test",
+      last_name: "User",
+      user_name: "TestUser",
+      email: "Test@email.mil",
+      company: "Rando company",
+      mobile_phone: "123-456-7890",
+      phone: "123-456-7890",
+      home_phone: "123-456-7890",
+      title: "User Title",
+      sys_id: '1234'
+    }
+    /* eslint-enable */ 
+    const mockSetCurrentPortfolioMembers = jest.spyOn(portfolioStore, "setCurrentPortfolioMembers")
+      .mockImplementation()
+    await portfolioStore.setCurrentPortfolio(mockPortfolioSummary)
+    CurrentUserStore.setCurrentUser(mockUser)
+    await portfolioStore.leavePortfolio()
+    expect(mockSetCurrentPortfolioMembers).toBeCalled()
+
+  })
 
 });
 
