@@ -10,6 +10,7 @@ import {
   RFDResolver,
   CurrentlyHasFundingResolver
 } from '../index'
+import {FinancialDetailsStore} from "@/store/financialDetails/index";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
@@ -326,7 +327,7 @@ describe("testing src/router/index.ts", () => {
 
       const result = CurrentlyHasFundingResolver('SomeOtherRoute');
 
-      expect(result).toBe(routeNames.SummaryStepEight);
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
     });
 
     it('should return CurrentlyHasFunding when isDitcoUser() is false', () => {
@@ -350,7 +351,7 @@ describe("testing src/router/index.ts", () => {
 
       const result = CurrentlyHasFundingResolver('SomeOtherRoute');
 
-      expect(result).toBe(routeNames.RFD);
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
     });
   });
 

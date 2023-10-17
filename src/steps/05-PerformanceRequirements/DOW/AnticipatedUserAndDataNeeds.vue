@@ -109,7 +109,6 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   $refs!: {
     form: Vue & { validate: () => boolean};
   }
-
   private periods: PeriodDTO[] | null = [];
   public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];

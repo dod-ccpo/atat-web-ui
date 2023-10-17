@@ -64,7 +64,7 @@ describe("GInvoicingApi ", () => {
           acquisitionPackageId: packageId 
         }
       }).reply(200, { result: "Order valid" });
-      const data = await ginvoicingApi.search(orderNumber, packageId);
+      const data = await ginvoicingApi.searchOrder(orderNumber, packageId);
       expect(data).toEqual(expectedResponse);
     });
   

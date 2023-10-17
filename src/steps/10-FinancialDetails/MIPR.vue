@@ -1,5 +1,6 @@
  <template>
-  <v-container class="container-max-width mb-7" fluid>
+   <v-form ref="form" lazy-validation>
+   <v-container class="container-max-width mb-7" fluid>
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header">Let’s gather info about your MIPR</h1>
@@ -37,6 +38,7 @@
       </v-col>
     </v-row>
   </v-container>
+   </v-form>
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */

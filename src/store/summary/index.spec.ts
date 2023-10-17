@@ -6,7 +6,14 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import  { SummaryStore } from "../summary/index";
 import { getModule } from 'vuex-module-decorators';
 import validators from "../../plugins/validation";
-import { ContactDTO } from "@/api/models";
+import {
+  ContactDTO,
+  FundingRequestDTO,
+  FundingRequestFSFormDTO,
+  FundingRequestMIPRFormDTO, FundingRequirementDTO
+} from "@/api/models";
+import { baseGInvoiceData } from "../../../types/Global";
+import acquisitionPackage from "@/store/acquisitionPackage";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -92,7 +99,7 @@ describe("Summary Store", () => {
     );
     summaryStore = getModule(SummaryStore, createStore());
 
-    AcquisitionPackage.reset();
+    await AcquisitionPackage.reset();
     await summaryStore.clearSummaryItems();
   })
   afterEach(async () => {
@@ -201,6 +208,336 @@ describe("Summary Store", () => {
         "title": "Alternate Contracting Officer's Representative",
       },
     ]);
+  });
+
+  describe('setFundingDescription', () => {
+    // eslint-disable-next-line max-len
+    it('should return "Funding documents are not required" when not required by contracting office', async () => {
+      await acquisitionPackage
+        .setContractingShopRequireFundingDocuments('NO')
+      const funding = {
+        request: {
+          funding_request_type: '',
+          appropriation_fiscal_year: '',
+          appropriation_funds_type: '',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: '',
+          useGInvoicing:''
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: '',
+          gt_c_number: '',
+          order_number: '',
+          fs_form_7600b_use_g_invoicing: '',
+        } as FundingRequestFSFormDTO,
+        mipr: {} as FundingRequestMIPRFormDTO,
+        hasFairOpp: false,
+        fundingRequirement: {
+          has_funding: '',
+        } as FundingRequirementDTO,
+        isComplete: true,
+      };
+      const description = await summaryStore.setFundingDescription(funding);
+      setTimeout(()=>{
+        expect(description).toBe("Funding documents are not required by contracting office");
+      },3000)
+
+    });
+
+    it('should return "Missing funding documents" when conditions are not met', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'FS_FORM',
+          appropriation_fiscal_year: '',
+          appropriation_funds_type: '',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: '',
+          useGInvoicing:''
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: '',
+          gt_c_number: '65464',
+          order_number: '',
+          fs_form_7600b_use_g_invoicing: '',
+        } as FundingRequestFSFormDTO,
+        mipr: {} as FundingRequestMIPRFormDTO,
+        hasFairOpp: false,
+        fundingRequirement: {
+          has_funding: '',
+        } as FundingRequirementDTO,
+        isComplete: true,
+      };
+
+      const description = await summaryStore.setFundingDescription(funding);
+
+      expect(description).toBe("Missing funding documents");
+    });
+
+    it('should return "Missing funding documents" when conditions are not met MIPR', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'MIPR',
+          appropriation_fiscal_year: '',
+          appropriation_funds_type: '',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: '',
+          useGInvoicing:''
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: '',
+          gt_c_number: '65464',
+          order_number: '',
+          fs_form_7600b_use_g_invoicing: '',
+        } as FundingRequestFSFormDTO,
+        mipr: {
+          mipr_number:"",
+        } as FundingRequestMIPRFormDTO,
+        hasFairOpp: false,
+        fundingRequirement: {
+          has_funding: '',
+        } as FundingRequirementDTO,
+        isComplete: true,
+      };
+
+      const description = await summaryStore.setFundingDescription(funding);
+
+      expect(description).toBe("Missing funding documents");
+    });
+
+  })
+  describe('isFundingTouched', () => {
+    it('should return false when conditions are not met', async () => {
+      const funding = {
+        request: {
+          funding_request_type: '',
+          appropriation_fiscal_year: '',
+          appropriation_funds_type: '',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: '',
+          useGInvoicing:''
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: '',
+          gt_c_number: '',
+          order_number: '',
+          fs_form_7600b_use_g_invoicing: '',
+        } as FundingRequestFSFormDTO,
+        mipr: {} as FundingRequestMIPRFormDTO,
+        hasFairOpp: false,
+        fundingRequirement: {
+          has_funding: '',
+        } as FundingRequirementDTO,
+        isDitco: true,
+      };
+      const isTouched = await summaryStore.isFundingTouched(funding);
+
+      expect(isTouched).toBe(false);
+    });
+
+    it('should return true when all conditions are met (Ditco User)', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'FS_FORM',
+          appropriation_fiscal_year: '2023',
+          appropriation_funds_type: 'W_C',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: 'Value1',
+          gt_c_number: 'GTC123',
+          order_number: 'Order123',
+          fs_form_7600b_use_g_invoicing: 'Yes',
+        } as FundingRequestFSFormDTO,
+        mipr: {} as FundingRequestMIPRFormDTO,
+        hasFairOpp: true,
+        fundingRequirement: {
+          has_funding: 'NO_FUNDING',
+        } as FundingRequirementDTO,
+        isDitco: true,
+      };
+      const isTouched = await summaryStore.isFundingTouched(funding);
+
+      expect(isTouched).toBe(true);
+    });
+    it('should return true when all conditions are met (!Ditco User)', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'FS_FORM',
+          appropriation_fiscal_year: '2023',
+          appropriation_funds_type: 'W_C',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: 'Value1',
+          gt_c_number: 'GTC123',
+          order_number: 'Order123',
+          fs_form_7600b_use_g_invoicing: 'Yes',
+        } as FundingRequestFSFormDTO,
+        mipr: {} as FundingRequestMIPRFormDTO,
+        hasFairOpp: true,
+        fundingRequirement: {
+          has_funding: 'NO_FUNDING',
+        } as FundingRequirementDTO,
+        isDitco: false,
+      };
+      const isTouched = await summaryStore.isFundingTouched(funding);
+
+      expect(isTouched).toBe(true);
+    });
+
+  })
+  describe('isFundingComplete', () => {
+    it('should return false when not all conditions are met', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'MIPR',
+          appropriation_fiscal_year: '2023',
+          appropriation_funds_type: 'W_C',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        fsForm: {
+        } as FundingRequestFSFormDTO,
+        mipr: {
+          mipr_number: "123242",
+          mipr_attachment:"",
+          mipr_filename:""
+        } as FundingRequestMIPRFormDTO,
+        hasFairOpp: true,
+        fundingRequirement: {
+          has_funding: 'NO_FUNDING',
+        } as FundingRequirementDTO,
+        isDitco: true,
+      };
+
+      const isComplete = await summaryStore.isFundingComplete(funding);
+
+      expect(isComplete).toBe(false);
+    });
+    it('should return true when all conditions are met', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'FS_FORM',
+          appropriation_fiscal_year: '2023',
+          appropriation_funds_type: 'W_C',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: 'Value1',
+          gt_c_number: 'GTC123',
+          order_number: 'Order123',
+          fs_form_7600b_use_g_invoicing: 'Yes',
+        } as FundingRequestFSFormDTO,
+        mipr: {
+
+        } as FundingRequestMIPRFormDTO,
+        hasFairOpp: true,
+        fundingRequirement: {
+          has_funding: 'NO_FUNDING',
+        } as FundingRequirementDTO,
+        isDitco: true,
+      };
+      const isComplete = await summaryStore.isFundingComplete(funding);
+
+      expect(isComplete).toBe(true);
+    });
+    it('should return true when !isDitco && !needsFunding', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'FS_FORM',
+          appropriation_fiscal_year: '2023',
+          appropriation_funds_type: 'W_C',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        fsForm: {
+          fs_form_7600a_attachment: 'Value1',
+          gt_c_number: 'GTC123',
+          order_number: 'Order123',
+          fs_form_7600b_use_g_invoicing: 'Yes',
+        } as FundingRequestFSFormDTO,
+        mipr: {
+
+        } as FundingRequestMIPRFormDTO,
+        hasFairOpp: true,
+        fundingRequirement: {
+          has_funding: 'NO_FUNDING',
+        } as FundingRequirementDTO,
+        isDitco: false,
+      };
+      await AcquisitionPackage.setContractingShopRequireFundingDocuments("NO")
+      const isComplete = await summaryStore.isFundingComplete(funding);
+
+      await expect(isComplete).toBe(true);
+    });
+
+  })
+  describe('isFSFormComplete', () => {
+    it('should return true if FSForm is complete with G-Invoicing',async () => {
+      const funding = {
+        fsForm: {
+          fs_form_7600b_use_g_invoicing: 'Yes',
+        } as FundingRequestFSFormDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        request: {
+          // Define other required data for the function
+        } as FundingRequestDTO,
+      };
+
+      const isComplete = await summaryStore.isFSFormComplete(funding);
+
+      expect(isComplete).toBe(true);
+    });
+    it('should return true if FSForm is complete without G-Invoicing',async () => {
+      const funding = {
+        fsForm: {
+          fs_form_7600b_use_g_invoicing: 'NO',
+          order_number: '123242'
+        } as FundingRequestFSFormDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        request: {
+          // Define other required data for the function
+        } as FundingRequestDTO,
+      };
+
+      const isComplete = await summaryStore.isFSFormComplete(funding);
+
+      expect(isComplete).toBe(true);
+    });
+    it('should return false if FSForm is not complete',async () => {
+      const funding = {
+        fsForm: {
+          fs_form_7600b_use_g_invoicing: 'NO',
+          order_number: ''
+        } as FundingRequestFSFormDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        request: {
+          // Define other required data for the function
+        } as FundingRequestDTO,
+      };
+
+      const isComplete = await summaryStore.isFSFormComplete(funding);
+
+      expect(isComplete).toBe(false);
+    });
   });
 })
 

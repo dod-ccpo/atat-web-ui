@@ -80,7 +80,10 @@ export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {
   };
 
   private addNavigation() {
-    if (!isDitcoUser() && !Steps.prevStepName.includes(routeNames.RFD)) {
+    const from = 
+      [routeNames.GeneratingPackageDocumentsFunding, routeNames.GTC, routeNames.RFD]
+    const displayCurrentlyHasFunding = from.some(page => page == Steps.prevStepName)
+    if (!isDitcoUser() && !displayCurrentlyHasFunding) {
       this.$router.push({
         name: routeNames.RFD,
       })

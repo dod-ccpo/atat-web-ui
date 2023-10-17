@@ -1,4 +1,5 @@
 <template>
+  <v-form ref="form" lazy-validation>
   <v-container class="container-max-width" fluid>
     <v-row v-if="PoPUnder9Months">
       <v-col class="col-12">
@@ -182,6 +183,7 @@
       </v-col>
     </v-row>
   </v-container>
+  </v-form>
 </template>
 <script lang="ts">
 

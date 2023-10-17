@@ -3,10 +3,12 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import CardRequirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Requirement.vue";
+import validators from "@/plugins/validation";
 Vue.use(Vuetify);
 
-describe("Testing CreatePriceEstimate Component", () => {
+describe("Testing Card_Requirement", () => {
   const localVue = createLocalVue();
+  localVue.use(validators);
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
@@ -22,4 +24,76 @@ describe("Testing CreatePriceEstimate Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  describe("Testing Functions", () => {
+    it("test setError Message()",async () => {
+      wrapper.setData({
+        errorMessage: "error 1"
+      })
+      const errorMessage = wrapper.vm.errorMessage
+      expect(errorMessage).toBe("error 1");
+      wrapper.vm.setErrorMessage("New Error")
+      Vue.nextTick(() => {
+        expect(errorMessage).toBe("New Error");
+      })
+    })
+    it("test loadOnEnter() with no card data",async () => {
+      await wrapper.setProps({
+        cardData: {}
+      })
+      await wrapper.vm.loadOnEnter()
+      const title = wrapper.vm.cardData.title
+      expect(title).toBe(undefined);
+    })
+    it("test loadOnEnter() with data",async () => {
+      await wrapper.setProps({
+        cardData: {
+          title: "test title",
+          description: "test description",
+          unit: "test unit",
+          // eslint-disable-next-line camelcase
+          unit_price: 1000
+        }
+      })
+      await wrapper.vm.loadOnEnter()
+      const title = wrapper.vm.cardData.title
+      expect(title).toBe("test title");
+    })
+
+    it("test saveDescription() with no data",async () => {
+      await wrapper.setProps({
+        cardData: {
+          title: "test title",
+          description: "test description",
+          unit: "test unit",
+          // eslint-disable-next-line camelcase
+          unit_price: 1000
+        }
+      })
+      await wrapper.setData({
+        description: "",
+      })
+      await wrapper.vm.saveDescription()
+      const description = wrapper.vm.$data.description
+      expect(description).toBe("test description");
+    })
+
+    it("test saveTitle() with no data",async () => {
+      await wrapper.setProps({
+        cardData: {
+          title: "test title",
+          description: "test description",
+          unit: "test unit",
+          // eslint-disable-next-line camelcase
+          unit_price: 1000
+        }
+      })
+      await wrapper.setData({
+        title: "",
+      })
+      await wrapper.vm.saveTitle()
+      const title = wrapper.vm.$data.title
+      expect(title).toBe("test title");
+    })
+
+  })
 })

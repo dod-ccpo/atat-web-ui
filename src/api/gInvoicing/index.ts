@@ -42,7 +42,7 @@ export class GInvoicingApi extends ApiBase{
     return response;
   }
 
-  public async search(orderNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
+  public async searchOrder(orderNumber: string, acqPackageId: string): Promise<GInvoicingResponse> {
     let response: GInvoicingResponse = {
       valid: true,
       message:""

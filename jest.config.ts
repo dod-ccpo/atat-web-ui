@@ -83,6 +83,11 @@ module.exports = {
     "<rootDir>/src/steps/10-FinancialDetails/components/ReviewDocumentsFunding.spec.ts",
     "<rootDir>/src/steps/10-FinancialDetails/RequireFundingDocuments.spec.ts",
     "<rootDir>/src/steps/10-FinancialDetails/GTCInformation.spec.ts",
+    "<rootDir>/src/steps/10-FinancialDetails/IGCE/components/Card_Requirements.spec.ts",
+    "<rootDir>/src/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.spec.ts",
+    "<rootDir>/src/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.spec.ts",
+    "<rootDir>src/steps/10-FinancialDetails/CurrentlyHasFunding.spec.ts",
+    "<rootDir>/src/steps/10-FinancialDetails/Upload7600.spec.ts",
     // "<rootDir>/src/steps/**/*.spec.ts",0
     "<rootDir>/src/store/**/*.spec.ts",
     "<rootDir>/src/router/**/*.spec.ts",
@@ -96,7 +101,8 @@ module.exports = {
     "<rootDir>/src/plugins/*.spec.ts",
     "<rootDir>/src/dashboards/*.spec.ts",
     "<rootDir>/src/services/*.spec.ts",
-    "<rootDir>/src/*.spec.ts"
+    "<rootDir>/src/*.spec.ts",
+    "<rootDir>/src/router/resolvers/index.spec.ts"
   ],
   // An array of regexp pattern strings that are matched 
   // against all test paths, matched tests are skipped

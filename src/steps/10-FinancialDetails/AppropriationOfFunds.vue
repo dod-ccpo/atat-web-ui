@@ -2,13 +2,13 @@
   <v-container class="container-max-width mb-7" fluid>
     <v-row>
       <v-col class="col-12">
-        <h1 class="mb-3">Let’s find out more about your appropriation of funds</h1>
+        <h1 class="mb-3">Now tell us about the type of funds planned for this acquisition</h1>
         <div class="copy-max-width">
           <p class="mb-10">
-            Based on what you told us about your exception to fair opportunity, we need to know
-            more about where these funds will be coming from. Your responses below, along with
-            your total estimated value generated in the Requirements Cost Estimate section,
-            will be included in your Justification and Approval (J&A).
+            Based on what you told us about your exception to fair opportunity, we
+            need to know more about where these funds will be coming from. Your
+            responses below, along with your total estimated value previously
+            generated, will be included in your Justification and Approval (J&A).
           </p>
           <div class="max-width-740">
             <ATATRadioGroup id="fundTypes" 
