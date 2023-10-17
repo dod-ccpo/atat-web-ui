@@ -2553,10 +2553,13 @@ export class SummaryStore extends VuexModule {
     if(!funding.isDitco && !needsFunding){
       return true
     }
+    if (funding.fsForm === null && funding.mipr === null){
+      return false
+    }
     const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
     const fsForm700AComplete = await this.isComplete({object: funding.fsForm, keysToIgnore})
         && funding.fsForm.gt_c_number !== ""
-    const needsFundingInfo = funding.fundingRequirement.has_funding === "NO_FUNDING"
+    const needsFundingInfo = funding.fundingRequirement?.has_funding === "NO_FUNDING"
     const hasFunding = (needsFundingInfo && fsForm700AComplete)
     if (funding.request && funding.fsForm){
       let hasAppropriationOfFunds = false;
@@ -2717,12 +2720,12 @@ export class SummaryStore extends VuexModule {
 
     // determines if POC is valid
     let isPOCComplete = false;
-    isPOCComplete = funding.poc.first_name !== ""
-        && funding.poc.last_name !== ""
-        && funding.poc.phone !== ""
-        && funding.poc.email !== ""
+    isPOCComplete = funding.poc?.first_name !== ""
+      && funding.poc?.last_name !== ""
+      && funding.poc?.phone !== ""
+      && funding.poc?.email !== ""
 
-    if (funding.poc.role === "MILITARY"){
+    if (funding.poc?.role === "MILITARY"){
       isPOCComplete = isPOCComplete && funding.poc.rank_components !== ""
     }
     return isFundingIncrementsComplete

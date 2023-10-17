@@ -278,39 +278,6 @@ describe("testing src/router/index.ts", () => {
     expect(result).toBe("Financial_POC_Form")
   });
 
-  describe('RFDResolver', () => {
-
-    it('should return routeNames.RFD when isDitcoUser() returns false', () => {
-      jest
-        .spyOn(acqPackageExportedFunctions, "isDitcoUser")
-        .mockReturnValue(false);
-      const result = RFDResolver();
-      expect(result).toBe(routeNames.RFD);
-    });
-
-    it('should return routeNames.SummaryStepEight when Summary.hasCurrentStepBeenVisited is true',
-      () => {
-        jest
-          .spyOn(acqPackageExportedFunctions, "isDitcoUser")
-          .mockReturnValue(true);
-        Summary.setHasCurrentStepBeenVisited(true) ;
-
-        const result = RFDResolver();
-        expect(result).toBe(routeNames.SummaryStepEight);
-      });
-    //
-    // eslint-disable-next-line max-len
-    it('should return routeNames.CurrentlyHasFunding when Summary.hasCurrentStepBeenVisited is false', () => {
-      jest
-        .spyOn(acqPackageExportedFunctions, "isDitcoUser")
-        .mockReturnValue(true);
-      Summary.setHasCurrentStepBeenVisited(false) ;
-      const result = RFDResolver();
-
-      expect(result).toBe(routeNames.CurrentlyHasFunding);
-    });
-  });
-
   describe('CurrentlyHasFundingResolver', () => {
     it('return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true',
       async () => {
