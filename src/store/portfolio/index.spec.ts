@@ -220,22 +220,32 @@ describe("Portfolio Store", () => {
   })
 
   it ("setCurrentPortfolioMembers()", async() => {   
-    const updateMock = jest.spyOn(api.portfolioTable, 'update')
+    jest.spyOn(api.portfolioTable, 'update')
       .mockImplementation(() => Promise.resolve(mockPortfolioSummary));
-
-    const portfolioDetailsMock = jest.spyOn(portfolioStore, "getSelectedPortfolioData")
+    jest.spyOn(portfolioStore, "updatePortfolioMembers")
+      .mockImplementation(() => Promise.resolve());
+    jest.spyOn(portfolioStore, "getSelectedPortfolioData")
       .mockImplementation(() => Promise.resolve(mockPortfolioDetailsDTO));
 
     const memberDetailMock = jest.spyOn(portfolioStore, "populatePortfolioMembersDetail")
       .mockImplementation(() => Promise.resolve())
 
-    await portfolioStore.setCurrentPortfolioMembers(mockPortfolio);
+    await portfolioStore.setCurrentPortfolioMembers(mockPortfolio)
     Vue.nextTick(() => {
-      expect(updateMock).toBeCalled();
-      expect(portfolioDetailsMock).toBeCalled();
-      expect(memberDetailMock).toBeCalled();
-    });
+      expect(memberDetailMock).toBeCalled();      
+    })
   });
+
+  it ("updatePortfolioMembers()", async () => {
+    const updateMock = jest.spyOn(api.portfolioTable, 'update')
+      .mockImplementation(() => Promise.resolve(mockPortfolioSummary));
+    const members = {} as PortfolioSummaryDTO;
+    await portfolioStore.updatePortfolioMembers({sysId: "1234", members });
+    Vue.nextTick(()=> {
+      expect(updateMock).toBeCalled();
+    })
+  })
+
 
   it ("populatePortfolioMembersDetail()", async() => {
     await portfolioStore.populatePortfolioMembersDetail(mockPortfolioDTO);

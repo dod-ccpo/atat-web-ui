@@ -704,6 +704,13 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Action({rawError: true})
+  public async updatePortfolioMembers(
+    data: {sysId: string, members: PortfolioSummaryDTO}
+  ): Promise<void> {
+    await api.portfolioTable.update(data.sysId, data.members);
+  }
+
+  @Action({rawError: true})
   public async setCurrentPortfolioMembers(portfolio: Portfolio): Promise<void> {    
     try {
       if (portfolio.sysId) {
@@ -711,8 +718,8 @@ export class PortfolioDataStore extends VuexModule {
           portfolio_owner: portfolio.portfolio_owner,
           portfolio_managers: portfolio.portfolio_managers,
           portfolio_viewers: portfolio.portfolio_viewers,
-        } as unknown as PortfolioSummaryDTO;
-        await api.portfolioTable.update(portfolio.sysId, members);
+        } as PortfolioSummaryDTO;
+        await this.updatePortfolioMembers({sysId: portfolio.sysId, members});
         const portfolioDetails = await this.getSelectedPortfolioData(portfolio.sysId)
         await this.setCurrentPortfolioDetails(portfolioDetails);
         await this.doSetCurrentUserRole();
