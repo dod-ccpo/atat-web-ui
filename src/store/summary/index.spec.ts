@@ -31,62 +31,59 @@ const _summaryItem = {
   substep: 0
 }
 
-const contactAcorValid: ContactDTO = {
-  type: 'ACOR', // Mission Owner, COR, ACOR
-  role: 'Military', // Military, Civilian, Contractor
+
+const contact: ContactDTO = {
+  type: '',
+  role: '',
   rank_components: '',
   salutation: '',
+  first_name: '',
+  last_name: '',
+  middle_name: '',
+  suffix: '',
+  title: '',
+  phone: '',
+  phone_extension: '',
+  email: '',
+  grade_civ: '',
+  dodaac: '',
+  can_access_package: '',
+  manually_entered: '',
+  acquisition_package: ''
+}
+
+const contactAcorValid: ContactDTO = {
+  ...contact,
+  type: 'ACOR', // 
+  role: 'Military', 
   first_name: 'John',
   last_name: 'Smith',
   middle_name: 'T',
-  suffix: '',
-  title: '',
   phone: '555-555-1234',
   phone_extension: '1234',
   email: 'john.smith.tester@mail.mil',
-  grade_civ: '',
-  dodaac: '',
-  can_access_package: '',
-  manually_entered: '',
-  acquisition_package: '',
 }
 
 const contactAcorMissingFullName: Partial<ContactDTO> = {
+  ...contact,
   type: 'ACOR', // Mission Owner, COR, ACOR
   role: 'Military', // Military, Civilian, Contractor
-  rank_components: '',
-  salutation: '',
   middle_name: 'T',
-  suffix: '',
-  title: '',
   phone: '555-555-1234',
   phone_extension: '1234',
   email: 'john.smith.tester@mail.mil',
-  grade_civ: '',
-  dodaac: '',
-  can_access_package: '',
-  manually_entered: '',
-  acquisition_package: '',
 }
 
 const contactAcorMissingFirstName: Partial<ContactDTO> = {
+  ...contact,
   type: 'ACOR', // Mission Owner, COR, ACOR
   role: 'Military', // Military, Civilian, Contractor
-  rank_components: '',
-  salutation: '',
   middle_name: 'T',
-  suffix: '',
-  title: '',
   first_name: 'John',
   phone: '555-555-1234',
   phone_extension: '1234',
   email: 'john.smith.tester@mail.mil',
-  grade_civ: '',
-  dodaac: '',
-  can_access_package: '',
-  manually_entered: '',
-  acquisition_package: '',
-}
+  }
 
 describe("Summary Store", () => {
   let summaryStore: SummaryStore;
@@ -209,6 +206,28 @@ describe("Summary Store", () => {
       },
     ]);
   });
+
+  describe('hasCompleteIncrementalFundingAndPOC', () => {
+    // eslint-disable-next-line max-len
+    it('should return "Funding documents are not required" when not required by contracting office', async () => {
+      const funding = {
+        req: {
+          has_funding: '',
+        } as FundingRequirementDTO,
+        poc:{
+          ...contact,
+          first_name: "firstName",
+          last_name: "lastName",
+          phone: "123-456-7890",
+          email: "email@mail.mil",
+          role: "MILITARY"
+        }
+        
+      };
+      expect(await summaryStore.hasCompleteIncrementalFundingAndPOC(funding)).toBe(false);
+    });
+  });
+    
 
   describe('setFundingDescription', () => {
     // eslint-disable-next-line max-len
@@ -481,6 +500,30 @@ describe("Summary Store", () => {
       const isComplete = await summaryStore.isFundingComplete(funding);
 
       await expect(isComplete).toBe(true);
+    });
+
+    it('should return true when !isDitco && !needsFunding', async () => {
+      const funding = {
+        request: {
+          funding_request_type: 'FS_FORM',
+          appropriation_fiscal_year: '2023',
+          appropriation_funds_type: 'W_C',
+        } as FundingRequestDTO,
+        gInv: {
+          gInvoiceNumber: 'Invoice123',
+        } as baseGInvoiceData,
+        fsForm: null as unknown as FundingRequestFSFormDTO,
+        mipr: null as unknown as FundingRequestMIPRFormDTO,
+        hasFairOpp: true,
+        fundingRequirement: {
+          has_funding: 'NO_FUNDING',
+        } as FundingRequirementDTO,
+        isDitco: true,
+      };
+      
+      const isComplete = await summaryStore.isFundingComplete(funding);
+
+      await expect(isComplete).toBe(false);
     });
 
   })
