@@ -57,6 +57,19 @@ const mockPortfolio: Portfolio = {
   portfolio_owner: "11111",
   portfolio_managers: "22222,33333",
   portfolio_viewers: "44444,555555",
+  clins: [
+    {
+      clin_number: "0001",
+      clin_status: "",
+      costs: [],
+      funds_obligated: 0,
+      funds_total: 0,
+      idiq_clin: "01",
+      pop_end_date: "",
+      pop_start_date: "",
+      sys_id: "8978798"
+    }
+  ]
   /* eslint-enable */       
 }
 
