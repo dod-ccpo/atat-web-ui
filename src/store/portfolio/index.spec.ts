@@ -55,7 +55,7 @@ const mockPortfolioDTO: PortfolioDTO = {
       role: "Creator"
     },
     owner: {
-      name: "Bart", 
+      name: "Jane", 
       sys_id: "456",
       first_name: "",
       last_name: "",
@@ -249,15 +249,19 @@ describe("Portfolio Store", () => {
 
   it ("populatePortfolioMembersDetail()", async() => {
     await portfolioStore.populatePortfolioMembersDetail(mockPortfolioDTO);
-    const members = portfolioStore.currentPortfolio.members;
-    if (members?.length) {
-      expect(members[0].fullName).toBe("Adam")
-    }
-    const setMembersMock = jest.spyOn(portfolioStore, "doSetPortfolioMembers")
-      .mockImplementation();
     Vue.nextTick(() => {
-      expect(setMembersMock).toBeCalled();
-    })
+      const members = portfolioStore.currentPortfolio.members;
+      if (members?.length) {
+        expect(members[0].fullName).toBe("Jane");
+        expect(members[1].fullName).toBe("Adam");
+      }
+      const setMembersMock = jest.spyOn(portfolioStore, "doSetPortfolioMembers")
+        .mockImplementation();
+      Vue.nextTick(() => {
+        expect(setMembersMock).toBeCalled();
+      })
+    });
+
   });
 
   it ("inviteMembers()", async () => {
