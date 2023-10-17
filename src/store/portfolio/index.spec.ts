@@ -6,7 +6,7 @@ import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import UserStore from "@/store/user";
 import {AlertDTO, PortfolioSummaryDTO, UserDTO} from '@/api/models';
-import { Portfolio, PortfolioDetailsDTO} from 'types/Global';
+import { Portfolio, PortfolioDTO, PortfolioDetailsDTO, User} from 'types/Global';
 import CurrentUserStore from '@/store/user';
 import api from '@/api';
 const localVue = createLocalVue();
@@ -40,6 +40,30 @@ const mockPortfolioSummary: PortfolioSummaryDTO =   {
   /* eslint-enable camelcase */
 }
 
+const mockPortfolioDTO: PortfolioDTO = {
+  /* eslint-disable camelcase */
+  portfolio_users: {
+    creator: {},
+    owner: {},
+    managers: [{ name: "Carl" }, {name: "Bart"}],
+    viewers: [{ name: "Adam"}, {name: "Carl"}]
+  }
+  /* eslint-enable camelcase */    
+}
+
+const mockPortfolio: Portfolio = {
+  /* eslint-disable */
+  sysId: "132345",
+  portfolio_owner: "11111",
+  portfolio_managers: "22222,33333",
+  portfolio_viewers: "44444,555555",
+  /* eslint-enable */       
+}
+
+const mockPortfolioDetailsDTO: PortfolioDetailsDTO = {
+  portfolio: mockPortfolio,
+  portfolioId: "123456789"
+}
 
 
 describe("Portfolio Store", () => {
@@ -61,38 +85,6 @@ describe("Portfolio Store", () => {
     })
     /* eslint-enable */ 
     AcquisitionPackage.setOrganization({})
-    // AcquisitionPackage.setAcquisitionPackage({
-    //   contract_award: {
-    //     link:"",
-    //     value:"",
-    //   },
-    //   docgen_job_status: "",
-    //   classification_level: {value: ""},
-    //   contract_considerations: {value: ""},
-    //   contract_type: {value: ""},
-    //   current_contract: {value: ""},
-    //   current_environment: {value: ""},
-    //   docusign_envelope_id: "",
-    //   environment_instance: "",
-    //   fair_opportunity: {value: ""},
-    //   funding_plans: "",
-    //   gfe_overview: "",
-    //   number: "",
-    //   organization: {value: ""},
-    //   period_of_performance: {value: ""},
-    //   periods: "",
-    //   project_overview: {value: ""},
-    //   required_services: "",
-    //   requirements_cost_estimate: {value: ""},
-    //   sensitive_information: {value: ""},
-    //   status: "",
-    //   sys_created_by: "",
-    //   sys_created_on: "",
-    //   sys_updated_on: "",
-    //   cor: "",
-    //   acor: "",
-    //   primary_contact: ""
-    // })
   })
   afterEach(()=>{
     jest.clearAllMocks();
@@ -195,42 +187,59 @@ describe("Portfolio Store", () => {
   })
 
   it ("setCurrentPortfolioMembers()", async() => {
-    const portfolio: Portfolio = {
-      /* eslint-disable */
-      sysId: "132345",
-      portfolio_owner: "11111",
-      portfolio_managers: "22222,33333",
-      portfolio_viewers: "44444,555555",
-      /* eslint-enable */       
-    }
 
-    const portfolioDetails: PortfolioDetailsDTO = {
-      portfolio,
-      portfolioId: "123456789"
-    }
 
     
     const updateMock = jest.spyOn(api.portfolioTable, 'update')
-      .mockImplementation(()=>Promise.resolve(mockPortfolioSummary));
+      .mockImplementation(() => Promise.resolve(mockPortfolioSummary));
 
     const portfolioDetailsMock = jest.spyOn(portfolioStore, "getSelectedPortfolioData")
-      .mockImplementation(()=>Promise.resolve(portfolioDetails));
+      .mockImplementation(() => Promise.resolve(mockPortfolioDetailsDTO));
 
     const memberDetailMock = jest.spyOn(portfolioStore, "populatePortfolioMembersDetail")
       .mockImplementation(() => Promise.resolve())
 
-    await portfolioStore.setCurrentPortfolioMembers(portfolio);
+    await portfolioStore.setCurrentPortfolioMembers(mockPortfolio);
     Vue.nextTick(() => {
       expect(updateMock).toBeCalled();
       expect(portfolioDetailsMock).toBeCalled();
       expect(memberDetailMock).toBeCalled();
-      
+    });
+  });
+
+  it ("populatePortfolioMembersDetail()", async() => {
+    await portfolioStore.populatePortfolioMembersDetail(mockPortfolioDTO);
+    const members = portfolioStore.currentPortfolio.members;
+    if (members?.length) {
+      expect(members[0].fullName).toBe("Adam")
+    }
+    const setMembersMock = jest.spyOn(portfolioStore, "doSetPortfolioMembers")
+      .mockImplementation();
+    Vue.nextTick(() => {
+      expect(setMembersMock).toBeCalled();
     })
+  });
 
-  })
+  it ("inviteMembers()", async () => {
+    const newMembers: User[] = [];
+    const updateMock = jest.spyOn(api.portfolioTable, 'update')
+      .mockImplementation(() => Promise.resolve(mockPortfolioSummary));
+    await portfolioStore.inviteMembers(newMembers);
 
+    const portfolioDetailsMock = jest.spyOn(portfolioStore, "getSelectedPortfolioData")
+      .mockImplementation(() => Promise.resolve(mockPortfolioDetailsDTO));
 
+    const memberDetailMock = jest.spyOn(portfolioStore, "populatePortfolioMembersDetail")
+      .mockImplementation(() => Promise.resolve())
 
-})
+    await portfolioStore.setCurrentPortfolioMembers(mockPortfolio);
+    Vue.nextTick(() => {
+      expect(updateMock).toBeCalled();
+      expect(portfolioDetailsMock).toBeCalled();
+      expect(memberDetailMock).toBeCalled();
+    });
+  });
+
+});
 
 
