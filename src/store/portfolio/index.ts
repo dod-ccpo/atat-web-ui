@@ -585,7 +585,7 @@ export class PortfolioDataStore extends VuexModule {
   public currentUserIsOwner = false;
   public currentOwnerSysId = "";
 
-  @Action
+  @Action({rawError: true})
   public async setCurrentPortfolioDetails(portfolioDetails: PortfolioDetailsDTO): Promise<void> {
     await this.doSetCurrentPortfolioDetails(portfolioDetails);
     await this.populatePortfolioMembersDetail(portfolioDetails.portfolio);
@@ -621,7 +621,7 @@ export class PortfolioDataStore extends VuexModule {
         ...portfolioData.task_order,
         pop_start_date: portfolioData.pop_start_date,
         pop_end_date: portfolioData.pop_end_date,
-        clins: [...<[]>portfolioData.clins],
+        clins: portfolioData.clins?.length ? [...<[]>portfolioData.clins] : [],
       },
       environments: portfolioData.environments,
       fundsData: {
@@ -651,7 +651,7 @@ export class PortfolioDataStore extends VuexModule {
       ? portfolioData.task_order.sys_id : "";
   }
 
-  @Action
+  @Action({rawError: true})
   public async getSelectedPortfolioData(portfolioSysId: string): Promise<PortfolioDetailsDTO>{
     const currentUserSysId = CurrentUserStore.currentUser.sys_id;
     return api.portfolioApi.getPortfolioDetails(currentUserSysId as string, portfolioSysId)

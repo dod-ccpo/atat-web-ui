@@ -66,7 +66,7 @@ const mockPortfolioDTO: PortfolioDTO = {
       role: "Owner"
     },
     managers: [{name: "Carl", role: "Manager"}, {name: "Bart", role: "Manager"}],
-    viewers: [{name: "Adam", role: "Viewer"}, {name: "Carl", role: "Viewer"}]
+    viewers: [{name: "Adam", role: "Viewer"}, {name: "Carl", role: "Viewer"}], 
   }
   /* eslint-enable camelcase */    
 }
@@ -94,7 +94,7 @@ const mockPortfolio: Portfolio = {
 }
 
 const mockPortfolioDetailsDTO: PortfolioDetailsDTO = {
-  portfolio: mockPortfolio,
+  portfolio: mockPortfolioDTO,
   portfolioId: "123456789"
 }
 
@@ -219,10 +219,7 @@ describe("Portfolio Store", () => {
     expect(mockSetCurrentPortfolioMembers).toBeCalled()
   })
 
-  it ("setCurrentPortfolioMembers()", async() => {
-
-
-    
+  it ("setCurrentPortfolioMembers()", async() => {   
     const updateMock = jest.spyOn(api.portfolioTable, 'update')
       .mockImplementation(() => Promise.resolve(mockPortfolioSummary));
 
