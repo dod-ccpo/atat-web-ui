@@ -43,9 +43,7 @@ export default defineConfig(({ command, mode}) => {
       //'test': console.log(env)
     },
     resolve: {
-      alias: {
-          '@': '/src'
-      },
+      alias: {'@': '/src'},
       extensions: ['.ts','.vue', '.js']
     },
     plugins: [/*VueDevTools(),*/vue(), 
