@@ -211,6 +211,18 @@ export class FinancialDetailsStore extends VuexModule {
   }
 
   @Action({ rawError: true })
+  public async setFinancialPOC(val: string): Promise<void> {
+    this.doSetFinancialPOC(val);
+  }
+
+  @Mutation
+  public doSetFinancialPOC(val: string): void {
+    if (this.fundingRequirement) {
+      this.fundingRequirement.financial_poc = val;
+    }
+  }
+
+  @Action({ rawError: true })
   public async setIsIncrementallyFunded(val: string): Promise<void> {
     this.doSetIsIncrementallyFunded(val);
   }

@@ -2256,6 +2256,7 @@ export class AcquisitionPackageStore extends VuexModule {
             fundingReq.sys_id,
             {...fundingReq, financial_poc: savedContact.sys_id as string})
         }
+        FinancialDetails.setFinancialPOC(savedContact.sys_id as string)
       } else {
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
