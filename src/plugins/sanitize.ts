@@ -7,5 +7,6 @@ export const sanitize = (content: string ): string => {
 export default {
   install(app: App<any>): void {
     app.config.globalProperties.$sanitize = sanitize;
+    console.log("test")
   },
 };
