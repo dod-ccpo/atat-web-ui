@@ -63,7 +63,7 @@ export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {
     }
   ];
   private savedData = "";
-  private POC = ""
+  private POC = "";
 
   private get currentData(): string {
     return this.selectedHasFunding;
@@ -73,7 +73,7 @@ export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {
     await FinancialDetails.loadFundingRequirement();
     this.selectedHasFunding = FinancialDetails.fundingRequirement?.has_funding || "";
     this.savedData = FinancialDetails.fundingRequirement?.has_funding || "";
-    this.POC = FinancialDetails.fundingRequirement?.financial_poc as string;
+    this.POC = FinancialDetails.fundingRequirement?.financial_poc || "";
   };
 
   public async mounted(): Promise<void> {
