@@ -17,18 +17,11 @@ export class PortfolioApi extends ApiBase{
     super(APINAME)
   }
 
-  public async getPortfolioSummaryList(
-    userSysId: string
-  ): Promise<PortfolioSummaryMetadataAndDataDTO> {
+  public async getPortfolioSummaryList(): Promise<PortfolioSummaryMetadataAndDataDTO> {
     try {
       /* eslint-disable camelcase */
-      const config: AxiosRequestConfig = {
-        params: {
-          userId: userSysId
-        }
-      }
       /* eslint-enable camelcase */
-      const response = await this.instance.get( `${this.endPoint}/summary`, config);
+      const response = await this.instance.get( `${this.endPoint}/summary`);
       if (response.status === 200) {
         const { result } = response.data;
         return result;
@@ -45,14 +38,14 @@ export class PortfolioApi extends ApiBase{
     }
   }
   public async getPortfolioDetails(
-    userSysId: string,
+    // userSysId: string,
     portfolioSysId: string
   ): Promise<PortfolioDetailsDTO> {
     try {
       /* eslint-disable camelcase */
       const config: AxiosRequestConfig = {
         params: {
-          userId: userSysId,
+          // userId: userSysId,
           portfolioId: portfolioSysId
         }
       }

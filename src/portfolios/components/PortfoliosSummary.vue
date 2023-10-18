@@ -509,7 +509,7 @@ export default class PortfoliosSummary extends Vue {
   
   @Watch("summaryListLength")
   public async summaryListChanged(): Promise<void>{
-    const summaryList = await PortfolioSummary.getPortfolioSummaryList(this.currentUserSysId);
+    const summaryList = await PortfolioSummary.getPortfolioSummaryList();
     PortfolioSummary.setPortfolioSummaryList(summaryList.portfolios)
   }
   

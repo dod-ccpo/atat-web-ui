@@ -153,13 +153,11 @@ export class PortfolioSummaryStore extends VuexModule {
    * offset and limit parameters of the pagination.
    */
   @Action({rawError: true})
-  public async getPortfolioSummaryList(
-    userSysId: string
-  ): Promise<PortfolioSummaryMetadataAndDataDTO> {
+  public async getPortfolioSummaryList(): Promise<PortfolioSummaryMetadataAndDataDTO> {
   
     await this.ensureInitialized();
   
-    return await api.portfolioApi.getPortfolioSummaryList(userSysId)
+    return await api.portfolioApi.getPortfolioSummaryList();
   }
 
   public hasActivePortfolios = false;
