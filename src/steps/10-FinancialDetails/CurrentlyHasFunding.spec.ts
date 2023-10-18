@@ -9,6 +9,7 @@ import Steps from "@/store/steps";
 import FinancialDetails from "@/store/financialDetails";
 import { routeNames } from "@/router/stepper";
 import VueRouter, { RawLocation } from "vue-router";
+import { FundingRequirementDTO } from "@/api/models";
 
 Vue.use(Vuetify);
 
@@ -41,22 +42,37 @@ describe("Testing CurrentlyHasFunding component", () => {
     it("currentData() => should retrieve user selection when getter currentData is called", async () => {
       let selection = wrapper.vm.currentData;
       expect(selection).toBe("");
-      await wrapper.setData({ selectedHasFunding: "NO_FUNDING" });
+      await wrapper.setData({ 
+        selectedHasFunding: "NO_FUNDING"});
       await wrapper.vm.$nextTick();
       selection = wrapper.vm.currentData;
       expect(selection).toBe("NO_FUNDING");
     });
 
     it("loadOnEnter() => should load data correctly on page load", async () => {
+      const dummyPOCSysId = "1234"
+      const fundingReq: FundingRequirementDTO = {
+        acquisition_package: "",
+        funding_plan: "",
+        funding_request: "",
+        funds_obligated: "",
+        funds_total: "",
+        has_funding: "",
+        incrementally_funded: "",
+        pop_start_date: "",
+        pop_end_date: "",
+        task_order_number: "",
+        financial_poc: dummyPOCSysId
+      }
+
       jest
         .spyOn(FinancialDetails, "loadFundingRequirement")
         .mockResolvedValue();
+      FinancialDetails.setFundingRequirement(fundingReq)
       await wrapper.vm.loadOnEnter();
-
       expect(FinancialDetails.loadFundingRequirement).toHaveBeenCalled();
-      expect(wrapper.vm.selectedHasFunding).toBe(
-        FinancialDetails.hasFunding || ""
-      );
+      expect(wrapper.vm.selectedHasFunding).toBe(FinancialDetails.hasFunding || "");
+      expect(wrapper.vm.$data.POC).toBe(dummyPOCSysId)
     });
 
     it("saveOnLeave() => should save data correctly on page leave", async () => {
@@ -64,7 +80,7 @@ describe("Testing CurrentlyHasFunding component", () => {
       jest
         .spyOn(FinancialDetails, "saveFundingRequirement")
         .mockResolvedValue();
-
+      jest.spyOn(FinancialDetails, "setHasFunding").mockResolvedValue();
       wrapper.setData({ selectedHasFunding: "HAS_FUNDING" });
 
       await wrapper.vm.saveOnLeave();
