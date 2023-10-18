@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-facing-decorator";
-import { Route } from "vue-router";
+import { RouteLocationNormalized } from "vue-router";
 
 // route resolver invoker
 import { InvokePathResolver } from "./index";

@@ -80,7 +80,7 @@ import actionHandler from "./action-handlers/index";
 import AppSections from "./store/appSections";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "./store/descriptionOfWork";
-import { Route } from "vue-router";
+import { RouteLocationNormalized } from "vue-router";
 import steps from "@/store/steps";
 
 @Component({
@@ -137,13 +137,13 @@ export default class AppPackageBuilder extends Vue {
   }
 
   @Watch("$route")
-  async onRouteChanged(newVal: Route, oldVal: Route): Promise<void> {
+  async onRouteChanged(newVal: RouteLocationNormalized, oldVal: RouteLocationNormalized): Promise<void> {
     if (oldVal.name !== "routeResolver") {
       await Steps.setPrevStepName(oldVal.name as string);
     }
 
     const routeName = this.$route.name;
-    const step = await Steps.findRoute(routeName || "");
+    const step = await Steps.findRoute(routeName as string || "");
     if (routeName && step) {
       const { stepName, stepNumber } = step;
       Steps.setCurrentStep(stepName);
@@ -228,7 +228,7 @@ export default class AppPackageBuilder extends Vue {
     }
   }
   public get currentRouteName():string|null|undefined{
-    return this.$route.name
+    return this.$route.name as string
   }
 
   public get isDitcoUser(): boolean {

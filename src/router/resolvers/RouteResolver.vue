@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-facing-decorator";
-import { Route } from "vue-router";
+import { RouteLocationNormalized } from "vue-router";
 
 // route resolver invoker
 import { InvokeRouteResolver } from "./index";
@@ -25,12 +25,12 @@ export default class RouteResolver extends Vue {
   }
 
   public async beforeRouteEnter(
-    to: Route,
-    from: Route,
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
     next: (n: unknown) => void
   ): Promise<void> {
     next(async (vm: { resolveRoute: (current: string) => void }) => {
-      const current = from.name;
+      const current = from.name as string;
       if (!current) {
         throw new Error("from route name undefined");
       }
