@@ -6,11 +6,19 @@ import {
   ServiceOfferingsPathResolver,
   calcBasePeriod, 
   IncrementalFundingResolver, 
-  FinancialPOCResolver  
+  FinancialPOCResolver,
+  RFDResolver,
+  CurrentlyHasFundingResolver
 } from '../index'
+import {FinancialDetailsStore} from "@/store/financialDetails/index";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
+import * as acqPackageExportedFunctions from "@/store/acquisitionPackage";
+import { routeNames } from "@/router/stepper";
+import Summary from "@/store/summary";
+import acquisitionPackage from "@/store/acquisitionPackage";
+import Vue from "vue";
 
 describe("testing src/router/index.ts", () => {
   
@@ -268,6 +276,50 @@ describe("testing src/router/index.ts", () => {
 
     const result = FinancialPOCResolver("SummaryPage");
     expect(result).toBe("Financial_POC_Form")
+  });
+
+  describe('CurrentlyHasFundingResolver', () => {
+    it('return SummaryStepEight when current is RFD and doesNotNeedFundingDoc is true',
+      async () => {
+        await acquisitionPackage.setContractingShopRequireFundingDocuments("NO")
+
+        const result = CurrentlyHasFundingResolver(routeNames.RFD);
+        Vue.nextTick(() => {
+          expect(result).toBe(routeNames.SummaryStepEight);
+        })
+      });
+
+    it('should return SummaryStepEight when Summary.hasCurrentStepBeenVisited is true', () => {
+      Summary.setHasCurrentStepBeenVisited(true) ;
+
+      const result = CurrentlyHasFundingResolver('SomeOtherRoute');
+
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
+    });
+
+    it('should return CurrentlyHasFunding when isDitcoUser() is false', () => {
+      jest
+        .spyOn(acqPackageExportedFunctions, "isDitcoUser")
+        .mockReturnValue(false);
+      Summary.setHasCurrentStepBeenVisited(false) ;
+      const result = CurrentlyHasFundingResolver('SomeOtherRoute');
+
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
+    });
+
+    it('should return routeNames.RFD as a default case', async () => {
+      // Mock AcquisitionPackage.acquisitionPackage
+      await acquisitionPackage.setContractingShopRequireFundingDocuments("YES")
+
+
+      jest
+        .spyOn(acqPackageExportedFunctions, "isDitcoUser")
+        .mockReturnValue(true);
+
+      const result = CurrentlyHasFundingResolver('SomeOtherRoute');
+
+      expect(result).toBe(routeNames.CurrentlyHasFunding);
+    });
   });
 
 });

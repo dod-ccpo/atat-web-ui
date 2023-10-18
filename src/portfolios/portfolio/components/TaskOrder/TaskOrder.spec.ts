@@ -5,7 +5,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 import PortfolioSummary from "@/store/portfolioSummary";
-import { PortfolioSummaryDTO } from "@/api/models";
+import { ClinDTO, PortfolioSummaryDTO, PortfolioSummaryObj } from "@/api/models";
 import validators from "@/plugins/validation";
 import AppSections from "@/store/appSections";
 import PortfolioStore from "@/store/portfolio";
@@ -26,59 +26,59 @@ describe("Testing TaskOrder Component", () => {
   let vuetify: Vuetify;
   localVue.use(validators);
 
-  let total_task_order_value:(number | undefined) = 0;
-  let total_lifecycle_amount:(number | undefined) = 0;
-  let funds_spent_task_order:(number | undefined) = 0;
-  const dummyPortfolioSummaryList: (PortfolioSummaryDTO[]) = [
+  const total_task_order_value:(number | undefined) = 0;
+  const total_lifecycle_amount:(number | undefined) = 0;
+  const funds_spent_task_order:(number | undefined) = 0;
+  const dummyPortfolioSummaryList = [
     {
-      name: "",
-      csp: "01a",
-      active_task_order: "01a",
-      csp_display: "",
-      agency: "",
-      vendor: "",
-      dod_component: "", // EJY - DOUBLE-CHECK
-      task_order_number: "",
-      sys_updated_on: "",
-      task_order_status: "",
-      pop_end_date: "",
-      pop_start_date: "",
-      funds_obligated: 0,
-      portfolio_status: "",
-      portfolio_funding_status: "",
-      portfolio_managers: "",
-      funds_spent: 0,
-      task_orders: [
+      "portfolio_name": "test 3000",
+      "portfolio_status": "PROCESSING",
+      "agency": "BRITISH EMBASSY",
+      "last_updated": "2023-09-27 11:17:01",
+      "current_user_is_owner": true,
+      "current_user_is_manager": false,
+      "vendor": "GCP",
+      "pop_start_date": "2023-12-08",
+      "pop_end_date": "2028-10-07",
+      "total_obligated": 1919000,
+      "funds_spent": 0,
+      "active_task_order": "3000000000000",
+      "owner_full_name": "Test User",
+      "funding_status": "ON_TRACK",
+      "csp_portal_links": [
         {
-          "clins": "01,02,03",
-          "sys_id": "sys01",
-          "portfolio": "port01",
-          "task_order_number": "1234",
-          "pop_end_date": "2023-09-30",
-          "pop_start_date": "2022-10-01",
-          "task_order_status": "ACTIVE",
-          "clin_records": [],
-          "funds_obligated": "825000",
-          "total_task_order_value": total_task_order_value,
-          "total_lifecycle_amount": total_lifecycle_amount,
-          "funds_spent_task_order": funds_spent_task_order,
-          "incrementally_funded": "",
-          "acquisition_package": "", 
-          "funding_plan": "",
-          "funds_total": ""
+          "csp": "google_il5_dev",
+          "dashboard_link": ""
+        },
+        {
+          "csp": "google_il6_dev",
+          "dashboard_link": ""
         }
-      ],
-      portfolio_viewers: "",
-      alerts: [],
-      last_cost_data_sync: ""
+      ]
     }
   ];
 
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  // PortfolioData.setActiveTaskOrderNumber("1234"); // EJY - DOUBLE-CHECK IF NEEDED
- 
+  const mockTaskOrderProp = {
+    taskOrder: {
+      sys_id: '1234',
+      total_task_order_value: '100.00',
+      total_lifecycle_amount: '100.00',
+      total_funds_spent:'100.00',
+      total_obligated_funds: '100.00',
+      task_order_number: '4321',
+      task_order_status: 'ON_TRACK',
 
-  beforeEach(() => {
+      pop_start_date: "2023-12-08",
+      pop_end_date: "2024-12-08",
+      clins: [] as ClinDTO[]
+    }
+  }
+
+  let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  // PortfolioStore.setActiveTaskOrderNumber("1234"); // EJY - DOUBLE-CHECK IF NEEDED
+  
+
+  beforeEach(async () => {
     vuetify = new Vuetify();
     wrapper = mount(TaskOrder, {
       localVue,
@@ -88,18 +88,17 @@ describe("Testing TaskOrder Component", () => {
         $route: mockRoute
       } 
     });
+    await wrapper.setProps(mockTaskOrderProp)
   });
 
   it("renders successfully", async () => {
+    
     expect(wrapper.exists()).toBe(true);
   });
 
   it("loadOnEnter() test with task order that has valid money amounts", async()=>{
-    total_task_order_value = 120000;
-    total_lifecycle_amount = 240000;
-    funds_spent_task_order = 60000;
     jest.spyOn(PortfolioSummary, 'getAllPortfolioSummaryList').mockReturnValue(
-      new Promise(resolve => resolve(dummyPortfolioSummaryList))
+      new Promise(resolve => resolve(dummyPortfolioSummaryList as any))
     );
     await wrapper.vm.loadOnEnter();
   })
@@ -124,11 +123,8 @@ describe("Testing TaskOrder Component", () => {
   })
 
   it("loadOnEnter() test with task order that has undefined money amounts", async()=>{
-    total_task_order_value = undefined;
-    total_lifecycle_amount = undefined;
-    funds_spent_task_order = undefined;
     jest.spyOn(PortfolioSummary, 'getAllPortfolioSummaryList').mockReturnValue(
-      new Promise(resolve => resolve(dummyPortfolioSummaryList))
+      new Promise(resolve => resolve(dummyPortfolioSummaryList as any))
     );
     await wrapper.vm.loadOnEnter();
   })

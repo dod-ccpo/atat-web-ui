@@ -26,13 +26,13 @@
         <v-expansion-panels
           v-model="accordionClosed[index]"
           v-for="(classification, index) in anticipatedNeedsData"
-          :id="'AnticipatedUserAndDataNeedsAccordion' + index"
+          :id="'AnticipatedUserAndDataNeedsAccordion_' + index"
           :key="index"
           class="mb-4"
           flat
         >
           <v-expansion-panel expand>
-            <v-expansion-panel-header>
+            <v-expansion-panel-header :id="`AccordionButton_${index}`" >
               <div class="d-flex justify-space-between">
                 <div class="h4 _expansion-panel-header">
                   {{buildClassificationLabel(classification,'short',true)}}
@@ -50,9 +50,11 @@
                 :componentIndex="index"
                 :regionUsersOnLoad="anticipatedNeedsData[index].users_per_region"
                 :id="'Regions' +index"
+                :index="index"
                 @regionUserDataUpdate="regionUserDataUpdate"
               />
               <AnticipatedDataNeeds
+                :index="index"
                 :periods="periods"
                 :increaseSelection.sync="anticipatedNeedsData[index].increase_in_users"
                 :growthSelection.sync="anticipatedNeedsData[index].user_growth_estimate_type"
@@ -64,6 +66,7 @@
               <AnticipatedDataNeeds
                 class="mt-5"
                 needs="data"
+                :index="index"
                 :periods="periods"
                 :increaseSelection.sync="anticipatedNeedsData[index].data_increase"
                 :growthSelection.sync="anticipatedNeedsData[index].data_growth_estimate_type"
@@ -106,7 +109,6 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
   $refs!: {
     form: Vue & { validate: () => boolean};
   }
-
   private periods: PeriodDTO[] | null = [];
   public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];

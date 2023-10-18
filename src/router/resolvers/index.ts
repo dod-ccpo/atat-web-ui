@@ -1,4 +1,4 @@
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, {isDitcoUser} from "@/store/acquisitionPackage";
 import FinancialDetails from "@/store/financialDetails";
 import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
@@ -19,7 +19,7 @@ import IGCE from "@/store/IGCE";
 import { provWorkflowRouteNames } from "../provisionWorkflow"
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
-import Summary, { isStepTouched } from "@/store/summary";
+import Summary, { isStepComplete, isStepTouched, isSubStepComplete } from "@/store/summary";
 import PortfolioSummary from "@/store/portfolioSummary";
 
 export const showDITCOPageResolver = (current: string): string => {
@@ -1268,22 +1268,21 @@ const IGCERouteNext = (current: string): string => {
 
 
 export const IGCECannotProceedResolver = (current: string): string => {
-  if (!(IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES")){
-    return routeNames.CannotProceed;
-  }
-
+  const potentialCurrentPages = [
+    routeNames.OptimizeOrReplicate, 
+    routeNames.ArchitecturalDesignDetails,
+    routeNames.GatherPriceEstimates
+  ]
   if (current === routeNames.CreatePriceEstimate) {
     return IGCERouteNext(current);
+  } else if (potentialCurrentPages.some(pcp => pcp === current)){
+    return routeNames.CreatePriceEstimate
   }
-
-  return routeNames.CreatePriceEstimate;
+  return current;
 }
 
 export const IGCEOptimizeOrReplicateResolver = (current: string): string => {
-  if (current === routeNames.CannotProceed){
-    return routeNames.FundingPlanType;
-  }
-
+ 
   if (needsReplicateOrOptimize()) {
     return routeNames.OptimizeOrReplicate;
   }
@@ -1541,81 +1540,111 @@ export const CreatePriceEstimateResolver = (current:string): string =>{
 
 
 export const IGCESupportingDocumentationResolver = (current: string): string => {
+  const canRCEBeDisplayed =  isSubStepComplete(3,1) && isStepComplete(5)
   if (current === routeNames.EstimatesDeveloped) {
-    return routeNames.SupportingDocumentation;
+    return routeNames.SupportingDocumentation; 
   } else {
-    return current === routeNames.FundingPlanType &&
-    (IGCEStore.requirementsCostEstimate?.has_DOW_and_PoP === "YES")
+    return current === routeNames.SeverabilityAndIncrementalFunding && canRCEBeDisplayed
       ? routeNames.SupportingDocumentation
       : routeNames.CannotProceed;
   }
 };
 
-export const FundingPlanTypeResolver = (current: string): string => {
-  return Summary.hasCurrentStepBeenVisited && current === routeNames.SupportingDocumentation
-    ? routeNames.SummaryStepEight
-    : routeNames.FundingPlanType
-};
-
-
-export const MIPRResolver = (current: string): string => {
-  const fundingType = FinancialDetails.fundingRequestType;
-  if (fundingType === "MIPR") {
-    return routeNames.MIPR;
-  }
-  return current === routeNames.GInvoicing
-    ? routeNames.FundingPlanType
-    : routeNames.GInvoicing;
-};
-
-export const GInvoicingResolver = (current: string): string => {
-  if (fundingRequestType() === "FS_FORM") {
-    return routeNames.GInvoicing;
-  }
-  
-  return current === routeNames.SeverabilityAndIncrementalFunding
-    ? routeNames.MIPR
-    : hasExceptionToFairOpp() 
-      ? routeNames.AppropriationOfFunds
-      : SeverabilityAndIncrementalFundingResolver(current);
-}
-
-export const Upload7600Resolver = (current: string): string => {
-  const useGInvoicing = FinancialDetails.gInvoicingData.useGInvoicing === "YES";
-  
-  if (!useGInvoicing) {
-    return fundingRequestType() === "MIPR" 
-      ? routeNames.MIPR
-      : routeNames.Upload7600;
-  }
-
-  return current === routeNames.SeverabilityAndIncrementalFunding ||
-    current === routeNames.AppropriationOfFunds
-    ? routeNames.GInvoicing
-    : hasExceptionToFairOpp() 
-      ? routeNames.AppropriationOfFunds
-      : SeverabilityAndIncrementalFundingResolver(current);
-}
 
 export const AppropriationOfFundsResolver = (current: string): string => {
-  
-  if (hasExceptionToFairOpp()){
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(8));
+  const fromIncFunding = current === routeNames.SeverabilityAndIncrementalFunding;
+  if (fromIncFunding && Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepEight
+  } else if (fromIncFunding && !Summary.hasCurrentStepBeenVisited) {
+    return routeNames.AppropriationOfFunds;
+  } else if (hasExceptionToFairOpp()){
     return routeNames.AppropriationOfFunds
   } else if (evalPlanRequired()){
-    return SeverabilityAndIncrementalFundingResolver(current);
+    return routeNames.SummaryStepEight;
   }
-  
-  return current === routeNames.SeverabilityAndIncrementalFunding
-    ? routeNames.Upload7600
-    : SeverabilityAndIncrementalFundingResolver(current);
+  return routeNames.AppropriationOfFunds
 }
 
 export const SeverabilityAndIncrementalFundingResolver = (current: string): string => {
   return Summary.hasCurrentStepBeenVisited 
-    && ([routeNames.AppropriationOfFunds, routeNames.Upload7600].some(route => route === current))
+    && current === routeNames.AppropriationOfFunds
     ? routeNames.SummaryStepEight
     : routeNames.SeverabilityAndIncrementalFunding
 };
+
+
+export const RFDResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(8))
+  if (current === routeNames.FinancialPOCForm && Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepEight
+  }
+  else if (!isDitcoUser()) {
+    return routeNames.RFD
+  } 
+  return routeNames.CurrentlyHasFunding
+}
+
+export const CurrentlyHasFundingResolver = (current: string): string => {
+  const doesNotNeedFundingDoc = AcquisitionPackage.acquisitionPackage
+    ?.contracting_shop_require_funding_documents_for_submission_of_package === 'NO'
+  if (current === routeNames.RFD && doesNotNeedFundingDoc) {
+    return routeNames.SummaryStepEight
+  }
+  return routeNames.CurrentlyHasFunding;
+};
+
+export const GTCInformationResolver = (current: string): string => {
+  const hasFunding = FinancialDetails.fundingRequirement?.has_funding === "HAS_FUNDING";
+  if (current === routeNames.CurrentlyHasFunding){
+    return hasFunding ? routeNames.GTC : routeNames.GeneratingPackageDocumentsFunding
+  }
+  return routeNames.GTC
+}
+
+export const FundingPlanTypeResolver = (current: string): string => {
+  return current !== routeNames.GeneratingPackageDocumentsFunding 
+    ? routeNames.FundingPlanType
+    : routeNames.SummaryStepEight
+}
+
+export const MIPRResolver = (current: string): string => {
+  const hasNoFunding = FinancialDetails.fundingRequirement?.has_funding === "NO_FUNDING";
+  const fromGeneratingDocs = current === routeNames.GeneratingPackageDocumentsFunding;
+  if (hasNoFunding && fromGeneratingDocs){
+    return routeNames.CurrentlyHasFunding;
+  }
+  
+  const fundingType = FinancialDetails.fundingRequestType;
+  if (fundingType === "MIPR") {
+    return routeNames.MIPR;
+  }
+
+  if (fundingType === "FS_FORM") {
+    return routeNames.SummaryStepEight;
+  }
+  return current === routeNames.GTC
+    ? routeNames.FundingPlanType
+    : routeNames.GTC;
+};
+
+export const Upload7600Resolver = (current: string): string => {
+  if (current === routeNames.FundingPlanType) {
+    return fundingRequestType() === "MIPR" 
+      ? routeNames.MIPR
+      : routeNames.Upload7600;
+  } else if (current === routeNames.MIPR) {
+    return routeNames.FundingPlanType
+  }
+  return routeNames.Upload7600
+}
+
+export const GeneratingPackageDocumentsFundingResolver = (current: string): string => {
+  if (current === routeNames.MIPR){
+    return routeNames.SummaryStepEight;
+  }
+  return routeNames.GeneratingPackageDocumentsFunding;
+}
 
 const cutOff = 270;
 export async function calcBasePeriod(): Promise<number> {
@@ -1647,7 +1676,7 @@ export const IncrementalFundingResolver = (current: string): string => {
     if (daysTotal<=270){return routeNames.SummaryStepEight}
   })
 
-  if (fundingReq.incrementally_funded==="NO"){
+  if (fundingReq.incrementally_funded !== "YES"){
     return routeNames.SummaryStepEight;
   }
 
@@ -1668,17 +1697,12 @@ export const IncrementalFundingResolver = (current: string): string => {
 }
 
 export const FinancialPOCResolver =  (current: string): string => {
-  const isIncrementallyFunded = FinancialDetails.fundingRequirement?.incrementally_funded;
-  let baseDuration
-  calcBasePeriod().then(value => {
-    baseDuration = value
-  })
-  if (current === routeNames.ReadyToGeneratePackage && baseDuration && baseDuration < cutOff ||
-      current === routeNames.ReadyToGeneratePackage && isIncrementallyFunded === "NO") {
-    return routeNames.SeverabilityAndIncrementalFunding;
-  }
-  return current === routeNames.FinancialPOCForm
-    ? routeNames.ReadyToGeneratePackage
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(8))
+  const fromFunding = 
+    [routeNames.RFD, routeNames.CurrentlyHasFunding].some(route => route === current)
+  
+  return fromFunding && Summary.hasCurrentStepBeenVisited
+    ? routeNames.SummaryStepEight
     : routeNames.FinancialPOCForm
 }
 
@@ -1873,7 +1897,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   MIPRResolver,
   IGCESurgeCapabilities,
   FeeChargedResolver,
-  GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
@@ -1906,9 +1929,13 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   PackagingPackingAndShippingResolver,
   TravelRouteResolver,
   SummaryStepTwoRouteResolver,
+  CurrentlyHasFundingResolver,
+  GTCInformationResolver,
   FundingPlanTypeResolver,
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
+  RFDResolver,
+  GeneratingPackageDocumentsFundingResolver
 };
 
 // add path resolvers here 

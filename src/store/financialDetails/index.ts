@@ -50,8 +50,10 @@ export const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
 
   fs_form_7600a_filename: "",
   fs_form_7600a_attachment: "",
+  fs_form_7600a_use_g_invoicing: "",
   fs_form_7600b_attachment: "",
   fs_form_7600b_filename: "",
+  fs_form_7600b_use_g_invoicing: "",
   use_g_invoicing: "",
   order_number: "",
   gt_c_number: "",
@@ -74,6 +76,7 @@ export class FinancialDetailsStore extends VuexModule {
   initialized = false;
 
   fundingPlan: FundingPlanDTO = this.fundingPlanValue;
+  hasFunding: string | undefined = "";
   estimatedTaskOrderValue: string | undefined = "";
   miprNumber: string | null = null;
   isIncrementallyFunded: string | undefined = "";
@@ -137,7 +140,7 @@ export class FinancialDetailsStore extends VuexModule {
     const {use_g_invoicing, gt_c_number} = this.fundingRequestFSForm;
     return  {
 
-      useGInvoicing: use_g_invoicing,
+      useGInvoicing: use_g_invoicing ?? '',
       gInvoiceNumber: gt_c_number,
     }
   }
@@ -192,6 +195,19 @@ export class FinancialDetailsStore extends VuexModule {
     
     const remainingAmountIncrements = fundingPlan.remaining_amount_increments;
     await this.setFundingIncrements(remainingAmountIncrements);
+  }
+
+  @Action({ rawError: true })
+  public async setHasFunding(val: string): Promise<void> {
+    this.doSetHasFunding(val);
+  }
+
+  @Mutation
+  public doSetHasFunding(val: string): void {
+    this.hasFunding = val;
+    if (this.fundingRequirement) {
+      this.fundingRequirement.has_funding = val;
+    }
   }
 
   @Action({ rawError: true })
@@ -482,6 +498,9 @@ export class FinancialDetailsStore extends VuexModule {
   public async loadFundingRequestFSForm(): Promise<FundingRequestFSFormDTO> {
     try {
       await this.loadFundingRequest();
+
+
+      
       const fundingRequestDTO = await this.getFundingRequest();
       const fsFormDTO = this.fundingRequestFSForm;
       if (fsFormDTO === null && fundingRequestDTO.fs_form) {
@@ -592,6 +611,7 @@ export class FinancialDetailsStore extends VuexModule {
             funding_request: this.fundingRequest?.sys_id as string,
             funds_obligated: "",
             funds_total: "",
+            has_funding: "",
             incrementally_funded: "",
             pop_end_date: "",
             pop_start_date: "",
@@ -630,23 +650,103 @@ export class FinancialDetailsStore extends VuexModule {
     this.setFundingRequest(savedFundingRequest);
   }
 
-  /**
-   * Since @loadFundingRequestFSForm function handles the loading/ initializing, this
-   * function is just responsible for updating the record.
-   */
   @Action({rawError: true})
- public async saveFundingRequestFSForm(data:
-  FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
+ public async saveFundingRequestFormAndGInvoicing(
+   data: 
+   Partial<FundingRequestFSFormDTO> & 
+   Pick<FundingRequestFSFormDTO, 'gt_c_number' | 'use_g_invoicing' | 'sys_id'>
+ ): Promise<FundingRequestFSFormDTO> {
    try {
-     const getFundingRequestFSForm = await api.fundingRequestFSFormTable.getQuery(
+     const prevData = await api.fundingRequestFSFormTable.getQuery(
        {
          params: {
            sysparm_query: "^sys_id=" + data.sys_id
          }
        }
      )
-     const isUsingGInvoicing = data.use_g_invoicing === "YES";
-     const savedFundingRequestFSForm =
+     // don't override things we don't explicitly set
+     // also don't delete any filenames / attachments
+     const updateObject: FundingRequestFSFormDTO = {
+       fs_form_7600a_filename: data.fs_form_7600a_filename ? 
+         data.fs_form_7600a_filename : (prevData[0].fs_form_7600a_filename ?? ''),
+       fs_form_7600a_attachment: data.fs_form_7600a_attachment ? 
+         data.fs_form_7600a_attachment : prevData[0].fs_form_7600a_attachment ?? '',
+       fs_form_7600a_use_g_invoicing: data.fs_form_7600a_use_g_invoicing ?? '',
+       fs_form_7600b_filename: prevData[0].fs_form_7600b_filename ?? '',
+       fs_form_7600b_attachment: prevData[0].fs_form_7600b_attachment ?? '',
+       fs_form_7600b_use_g_invoicing: prevData[0]?.fs_form_7600b_use_g_invoicing ?? '',
+       order_number: prevData[0].order_number ?? '',
+       use_g_invoicing: data.use_g_invoicing ? 
+         data.use_g_invoicing : prevData[0]?.use_g_invoicing ?? '',
+       gt_c_number: data.gt_c_number,
+     }  
+     const savedFundingRequestFSForm = await api.fundingRequestFSFormTable.update(
+       data.sys_id as string,
+       updateObject,
+     );
+     this.setFundingRequestFSForm(savedFundingRequestFSForm);
+     return savedFundingRequestFSForm
+   } catch(error) {
+     throw new Error( `error occurred saving funding request form or G-Invoicing number ${error}`);
+   }
+ }
+
+  @Action({rawError: true})
+  public async saveFundingRequestFormBAndOrderNumber(
+    data: 
+      Partial<FundingRequestFSFormDTO> & 
+      Pick<FundingRequestFSFormDTO, 'order_number' | 'use_g_invoicing'>
+  ): Promise<FundingRequestFSFormDTO> {
+    try {
+      const prevData = await api.fundingRequestFSFormTable.getQuery(
+        {
+          params: {
+            sysparm_query: "^sys_id=" + data.sys_id
+          }
+        }
+      )
+      // don't override things we don't explicitly set
+      const updateObject: FundingRequestFSFormDTO = {
+        fs_form_7600a_filename: prevData[0].fs_form_7600a_filename ?? '',
+        fs_form_7600a_attachment: prevData[0].fs_form_7600a_attachment ?? '',
+        fs_form_7600a_use_g_invoicing: prevData[0]?.fs_form_7600a_use_g_invoicing ?? '',
+        fs_form_7600b_filename: data.fs_form_7600b_filename ? 
+          data.fs_form_7600b_filename : prevData[0].fs_form_7600b_filename ?? '',
+        fs_form_7600b_attachment: data.fs_form_7600b_attachment ? 
+          data.fs_form_7600b_attachment : prevData[0].fs_form_7600b_attachment ?? '',
+        fs_form_7600b_use_g_invoicing: data.fs_form_7600b_use_g_invoicing ?? '',
+        order_number: data.order_number,
+        use_g_invoicing: prevData[0]?.use_g_invoicing ?? '',
+        gt_c_number: prevData[0].gt_c_number ?? '',
+      }
+      const savedFundingRequestFSForm = await api.fundingRequestFSFormTable.update(
+       data.sys_id as string,
+       updateObject,
+      );
+      this.setFundingRequestFSForm(savedFundingRequestFSForm);
+      return savedFundingRequestFSForm
+    } catch(error) {
+      throw new Error( `error occurred saving funding request form or G-Invoicing number ${error}`);
+    }
+  }
+
+  /**
+   * Since @loadFundingRequestFSForm function handles the loading/ initializing, this
+   * function is just responsible for updating the record.
+   */
+  @Action({rawError: true})
+  public async saveFundingRequestFSForm(data:
+    FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
+    try {
+      const getFundingRequestFSForm = await api.fundingRequestFSFormTable.getQuery(
+        {
+          params: {
+            sysparm_query: "^sys_id=" + data.sys_id
+          } 
+        }
+      )
+      const isUsingGInvoicing = data.use_g_invoicing === "YES";
+      const savedFundingRequestFSForm =
       await api.fundingRequestFSFormTable.update(data.sys_id as string, 
         {
           fs_form_7600a_filename: data.fs_form_7600a_filename,
@@ -661,12 +761,12 @@ export class FinancialDetailsStore extends VuexModule {
             ? getFundingRequestFSForm[0].gt_c_number
             : data.gt_c_number
         });
-     this.setFundingRequestFSForm(savedFundingRequestFSForm);
-     return savedFundingRequestFSForm;
-   } catch (error) {
-     throw new Error( `error occurred saving funding request form ${error}`);
-   }
- }
+      this.setFundingRequestFSForm(savedFundingRequestFSForm);
+      return savedFundingRequestFSForm;
+    } catch (error) {
+      throw new Error( `error occurred saving funding request form ${error}`);
+    }
+  }
 
   /**
    * Since @loadFundingRequestMIPRForm function handles the loading/ initializing, this

@@ -3,26 +3,25 @@ import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-dec
 import rootStore from "../index";
 
 import {
-  Environment,
   FilterOption,
-  Operator,
   Portfolio,
-  PortfolioCardData,
+  PortfolioDetailsDTO,
+  PortfolioDTO,
   PortfolioProvisioning,
   PortfolioSummaryQueryParams,
   User,
 } from "../../../types/Global"
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {AlertDTO,
-  EnvironmentDTO, OperatorDTO, PortfolioSummaryDTO, UserSearchResultDTO} from "@/api/models";
+import {
+  AlertDTO, ClinDTO, CostsDTO, PortfolioSummaryDTO, UserDTO,
+} from "@/api/models";
 import AlertService from "@/services/alerts";
 import _ from "lodash";
 import {api} from "@/api";
 import CurrentUserStore from "../user";
-import {AxiosRequestConfig} from "axios";
 import {convertColumnReferencesToValues} from "@/api/helpers";
-import {format, formatISO9075, startOfTomorrow} from "date-fns";
+import { format } from "date-fns";
 
 export const AlertTypes =  {
   SPENDING_ACTUAL:"SPENDING_ACTUAL",
@@ -415,21 +414,6 @@ export class PortfolioDataStore extends VuexModule {
   public async doSetProvisioningTOFollowOn(state: boolean): Promise<void> {
     this.isProvisioningTOFollowOn = state;
   }
-  public blankEnvironment: Environment = {
-    csp: "",
-    csp_id: "",
-    csp_display: "",
-    name: "",
-    dashboard_link: "",
-    pending_operators: [],
-    portfolio: "",
-    provisioned: "",
-    provisioned_date: "",
-    provisioning_failure_cause: "",
-    provisioning_request_date: "",
-    csp_admins: [],
-    environmentStatus: "",
-  }  
 
   public currentPortfolioEnvSysId = "";
   @Action({rawError: true})
@@ -600,53 +584,88 @@ export class PortfolioDataStore extends VuexModule {
   public currentUserIsViewer = false;
   public currentUserIsManager = false;
   public currentUserIsOwner = false;
+  public currentOwnerSysId = "";
 
-  @Action
-  public async setCurrentPortfolioFromCard(portfolioCardData: PortfolioCardData): Promise<void> {
-    await this.doSetCurrentPortfolioFromCard(portfolioCardData);
-    const env = portfolioCardData.environments ? portfolioCardData.environments[0] : null;
-    if (env && env.sys_id) {
-      await this.setCurrentEnvSysId(env.sys_id);
-    }
+  @Action({rawError: true})
+  public async setCurrentPortfolioDetails(portfolioDetails: PortfolioDetailsDTO): Promise<void> {
+    await this.doSetCurrentPortfolioDetails(portfolioDetails);
+    await this.populatePortfolioMembersDetail(portfolioDetails.portfolio);
+    this.doSetPortfolioCreator(portfolioDetails.portfolio.portfolio_users?.creator as User)
     await this.doSetCurrentUserRole();
   }
 
   @Mutation
-  public async doSetCurrentPortfolioFromCard(portfolioCardData: PortfolioCardData): Promise<void> {
-    const dataFromSummaryCard = {
-      sysId: portfolioCardData.sysId,
-      title: portfolioCardData.title,
-      description: portfolioCardData.description,
-      status: portfolioCardData.status,
-      csp: portfolioCardData.csp,
-      vendor: portfolioCardData.vendor,
-      agency: portfolioCardData.agency,
-      agencyDisplay: portfolioCardData.agencyDisplay,
-      taskOrderNumber: portfolioCardData.taskOrderNumber,
-      taskOrderSysId: portfolioCardData.taskOrderSysId,
-      portfolio_owner: portfolioCardData.portfolio_owner,
-      portfolio_managers: portfolioCardData.portfolio_managers,
-      portfolio_viewers: portfolioCardData.portfolio_viewers,
-      members: portfolioCardData.members,
-      environments: portfolioCardData.environments,
-      lastUpdated: portfolioCardData.lastUpdated,
-      createdBy: portfolioCardData.createdBy
+  public async doSetCurrentPortfolioDetails(
+    portfolioDetails: PortfolioDetailsDTO): Promise<void> 
+  {
+    const portfolioData = portfolioDetails.portfolio;
+    const portfolioOwner = {...portfolioData.portfolio_users?.owner, role: "Owner"}
+
+    const data = {
+      sysId: portfolioDetails.portfolioId,
+      title: portfolioData.portfolio_name,
+      description: portfolioData.description,
+      status: portfolioData.portfolio_status,
+      clins: portfolioData.clins,
+      currentCLINs: portfolioData.clins?.filter((clin: ClinDTO) => 
+        portfolioData.inPeriodClins?.includes(clin.sys_id)
+      ),
+      vendor: portfolioData.vendor,
+      agency: portfolioData.agency,
+      agencyDisplay: portfolioData.agencyDisplay,
+      currentUserIsManager: portfolioData.current_user_is_manager,
+      currentUserIsOwner: portfolioData.current_user_is_manager,
+      portfolio_owner: portfolioOwner.sys_id,
+      portfolio_managers: portfolioData.portfolio_users?.managers.map(obj => obj.sys_id).join(","),
+      portfolio_viewers: portfolioData.portfolio_users?.viewers.map(obj => obj.sys_id).join(","),
+      taskOrder: {
+        ...portfolioData.task_order,
+        pop_start_date: portfolioData.pop_start_date,
+        pop_end_date: portfolioData.pop_end_date,
+        clins: portfolioData.clins?.length ? [...<[]>portfolioData.clins] : [],
+      },
+      environments: portfolioData.environments,
+      fundsData: {
+        fundsAvailable: portfolioData.available_funds,
+        estimatedFundsAvailable: portfolioData.estimated_funds_available,
+        fundsToBeInvoiced: portfolioData.estimated_funds_to_be_invoiced,
+        periodFundsSpent: portfolioData.period_funds_spent,
+        endOfMonthXaasForecast: portfolioData.spend_end_of_month_xaas_forecast,
+        endOfMonthXaasTrend: portfolioData.spend_end_of_month_xaas_forecast_trend,
+        endOfPeriodForecast: portfolioData.spend_end_of_period_forecast,
+        lastMonthSpent: portfolioData.spend_last_month,
+        lastMonthTrend: portfolioData.spend_last_month_trend,
+        spendMonthAverage: portfolioData.spend_monthly_average,
+        totalPortfolioFunds: portfolioData.total_portfolio_funds,
+        costs: portfolioData.clins?.reduce((acc: CostsDTO[], curr:ClinDTO) => 
+          [...acc, ...<[]>curr.costs], [])
+      },
+      lastUpdated: portfolioData.last_updated,
+      createdBy: portfolioData.portfolio_users?.creator.name,
+      popStartDate: portfolioData.pop_start_date,
+      popEndDate: portfolioData.pop_end_date,
     };
-    Object.assign(this.currentPortfolio, dataFromSummaryCard);
-    this.activeTaskOrderNumber = portfolioCardData.taskOrderNumber 
-      ? portfolioCardData.taskOrderNumber : "";
-    this.activeTaskOrderSysId = portfolioCardData.taskOrderSysId 
-      ? portfolioCardData.taskOrderSysId : "";
+    Object.assign(this.currentPortfolio, data);
+    this.activeTaskOrderNumber = portfolioData.task_order?.task_order_number 
+      ? portfolioData.task_order.task_order_number : "";
+    this.activeTaskOrderSysId = portfolioData.task_order?.sys_id 
+      ? portfolioData.task_order.sys_id : "";
+  }
+
+  @Action({rawError: true})
+  public async getSelectedPortfolioData(portfolioSysId: string): Promise<PortfolioDetailsDTO>{
+    const currentUserSysId = CurrentUserStore.currentUser.sys_id;
+    return api.portfolioApi.getPortfolioDetails(currentUserSysId as string, portfolioSysId)
   }
 
   @Mutation
   public async doSetCurrentUserRole(): Promise<void> {
     const sysId = CurrentUserStore.currentUser.sys_id as string;
     this.currentUserIsManager =
-      this.currentPortfolio.portfolio_managers?.includes(sysId) as boolean;
+      this.currentPortfolio.currentUserIsManager as boolean;
     this.currentUserIsViewer =
       this.currentPortfolio.portfolio_viewers?.includes(sysId) as boolean;
-    this.currentUserIsOwner = this.currentPortfolio.portfolio_owner === sysId;
+    this.currentUserIsOwner = this.currentPortfolio.currentUserIsOwner as boolean;
   }
 
   @Action
@@ -686,19 +705,26 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async setCurrentPortfolioMembers(portfolio: Portfolio): Promise<void> {
+  public async updatePortfolioMembers(
+    data: {sysId: string, members: PortfolioSummaryDTO}
+  ): Promise<void> {
+    await api.portfolioTable.update(data.sysId, data.members);
+  }
+
+  @Action({rawError: true})
+  public async setCurrentPortfolioMembers(portfolio: Portfolio): Promise<void> {    
     try {
       if (portfolio.sysId) {
         const members = {
           portfolio_owner: portfolio.portfolio_owner,
           portfolio_managers: portfolio.portfolio_managers,
           portfolio_viewers: portfolio.portfolio_viewers,
-        } as unknown as PortfolioSummaryDTO;
-        let response = await api.portfolioTable.update(portfolio.sysId, members);
-        response = convertColumnReferencesToValues(response);
-        await this.setCurrentPortfolio(response);
+        } as PortfolioSummaryDTO;
+        await this.updatePortfolioMembers({sysId: portfolio.sysId, members});
+        const portfolioDetails = await this.getSelectedPortfolioData(portfolio.sysId)
+        await this.setCurrentPortfolioDetails(portfolioDetails);
         await this.doSetCurrentUserRole();
-        await this.populatePortfolioMembersDetail(portfolio);
+        await this.populatePortfolioMembersDetail(portfolioDetails.portfolio);
       }        
     } catch(error) {
       console.error("Error updating portfolio members:" + error);
@@ -739,65 +765,46 @@ export class PortfolioDataStore extends VuexModule {
    * After populating, the list gets sorted by the user's name.
    */
   @Action({rawError: true})
-  public async populatePortfolioMembersDetail(portfolio: Portfolio): Promise<Portfolio> {
-    const userSysIds = portfolio.portfolio_owner + "," 
-      + portfolio.portfolio_managers + "," + portfolio.portfolio_viewers;
-    const allMembersDetailListDTO = await api.userApi.getUsersBySysId(userSysIds);
-    const allMembersDetailList: User[] = 
-      allMembersDetailListDTO.map((userSearchDTO: UserSearchResultDTO) => {
-        return {
-          sys_id: userSearchDTO.sys_id,
-          firstName: userSearchDTO.first_name,
-          lastName: userSearchDTO.last_name,
-          fullName: userSearchDTO.name,
-          email: userSearchDTO.email,
-          phoneNumber: userSearchDTO.phone,
-          agency: userSearchDTO.company,
-          title: userSearchDTO.title,
-        }
-      });
-    portfolio.members = [];
-    let portfolioOwner: User = {};
-    let isOwner = false;
-    allMembersDetailList.forEach(member => {
-      isOwner = false;
-      if (portfolio.portfolio_owner === member.sys_id) {
-        portfolioOwner = member;
-        portfolioOwner.role = "Owner";
-        isOwner = true;
-      } else if (portfolio.portfolio_managers?.indexOf(member.sys_id as string) !== -1) {
-        member.role = "Manager";
-      } else {
-        member.role = "Viewer";
+  public async populatePortfolioMembersDetail(portfolioDetails: PortfolioDTO  ): Promise<void> {
+    const members = [
+      ...portfolioDetails.portfolio_users?.managers as UserDTO[],
+      ...portfolioDetails.portfolio_users?.viewers as UserDTO[],
+    ] as UserDTO[];
+    members.sort((a,b) => {
+      if (a.name && b.name) {
+        return a.name > b.name ? 1: -1
       }
-      if (!isOwner) {
-        portfolio.members?.push(member);
-      }
+      return 0;
     })
-    portfolio.members?.sort((a, b) => {
-      if (a.fullName && b.fullName) {
-        return a.fullName > b.fullName ? 1 : -1;
-      } else {
-        return 0;
+    members.unshift(portfolioDetails.portfolio_users?.owner as UserDTO);
+    const allMembersDetailList: User[] = members.map((user: UserDTO) => {
+      return {
+        sys_id: user.sys_id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        fullName: user.name,
+        email: user.email,
+        phoneNumber: user.phone,
+        agency: user.company,
+        title: user.title,
+        role: user.role,
       }
     });
-
-    // add portfolio owner to front of member list
-    if (Object.keys(portfolioOwner).length > 0) {
-      portfolio.members.unshift(portfolioOwner);    if (portfolio.createdBy) {
-        const createdByUser = await api.userApi.search(portfolio.createdBy);
-        this.doSetPortfolioCreator(createdByUser[0]);
-      }  
-    }
+    this.doSetPortfolioCreator(portfolioDetails.portfolio_users?.creator as UserDTO)
+    this.doSetPortfolioMembers(allMembersDetailList);
+    
     await this.doSetCurrentUserRole();
-    await this.setCurrentPortfolio(portfolio);
 
-    return portfolio;
+  }
+
+  @Mutation
+  public doSetPortfolioMembers(users: User[]): void {
+    this.currentPortfolio.members = users;
   }
 
   public portfolioCreator: User = {};
   @Mutation
-  public doSetPortfolioCreator(user: UserSearchResultDTO): void {
+  public doSetPortfolioCreator(user: UserDTO): void {
     this.portfolioCreator = {
       sys_id: user.sys_id,
       firstName: user.first_name,
@@ -829,140 +836,10 @@ export class PortfolioDataStore extends VuexModule {
     const response = await api.portfolioTable.update(
       this.currentPortfolio.sysId as string, membersPayload as PortfolioSummaryDTO
     );
-    const portfolio = convertColumnReferencesToValues(response);
-    const members = {
-      portfolio_owner: portfolio.portfolio_owner,
-      portfolio_managers: portfolio.portfolio_managers,
-      portfolio_viewers: portfolio.portfolio_viewers,
-    }
-    await this.setCurrentPortfolio(members);
-
-    await this.populatePortfolioMembersDetail(this.currentPortfolio);
-  }
-
-  /**
-   * Loads all the operators of a portfolio and then groups them by environment. Then
-   * makes a call-out to sort the operators by each environment.
-   */
-  @Action({rawError: true})
-  public async loadAllOperatorsOfPortfolioEnvironment(environment: EnvironmentDTO): Promise<void> {
-    if (!environment.csp_admins || environment.csp_admins.length === 0) {
-      const queryForAllOperatorsOfPortfolio: AxiosRequestConfig = {
-        params: {
-          sysparm_query: "^environmentIN" + environment.sys_id
-        }
-      };
-      const allOperatorsOfPortfolioEnv = await api.operatorTable.getQuery(
-        queryForAllOperatorsOfPortfolio
-      );
-      allOperatorsOfPortfolioEnv.forEach(async (operator: OperatorDTO): Promise<void> => {
-        operator = convertColumnReferencesToValues(operator)        
-        await this.transformAndAddOperatorToPortfolioEnvironment({
-          environment: environment,
-          operatorDTO: operator
-        })
-      }, this)
-
-      await this.sortPortfolioEnvironmentOperators(environment);
-    }
-  }
-
-  /**
-   * Adds the new operator to the operators list of the environment of the
-   * current portfolio. It is the responsibility of the caller to ensure that
-   * this is not a duplicate entry.
-   */
-  @Mutation
-  public async transformAndAddOperatorToPortfolioEnvironment(
-    newOperatorToTransform: {
-      environment: EnvironmentDTO,
-      operatorDTO: OperatorDTO
-    }): Promise<void> {
-    const operatorDTO = newOperatorToTransform.operatorDTO;
-    let operatorStatus: Operator["status"] = "";
-    if (operatorDTO.provisioned === "false" &&
-      operatorDTO.provisioning_failure_cause?.trim().length === 0) {
-      operatorStatus = "Processing"
-    } else if (operatorDTO.provisioned === "false" &&
-      operatorDTO.provisioning_failure_cause &&
-      operatorDTO.provisioning_failure_cause.length > 0) {
-      operatorStatus = "Failed"
-    } else if (operatorDTO.provisioned === "true") {
-      operatorStatus = "Provisioned"
-    }
-    
-    // Business rules require status of Processing to be listed first.
-    // Vuetify table sort decending puts empty values at end. 
-    // Add date of tomorrow to Processing operators. Date will be hidden
-    // with logic from the table. This will allow desired sorting.
-    const pDate = operatorStatus === "Processing"
-      ? formatISO9075(new Date(startOfTomorrow()))
-      : operatorDTO.provisioned_date;
-
-    const operator: Operator = {
-      sysId: operatorDTO.sys_id,
-      environment: operatorDTO.environment,
-      email: operatorDTO.email,
-      dodId: operatorDTO.dod_id,
-      status: operatorStatus,
-      addedBy: operatorDTO.added_by,
-      provisionedDate: pDate,
-      provisioned: operatorDTO.provisioned,
-      provisioningFailureCause: operatorDTO.provisioning_failure_cause,
-      provisioningRequestDate: operatorDTO.provisioning_request_date
-    }
-    if (!newOperatorToTransform.environment.csp_admins) {
-      newOperatorToTransform.environment.csp_admins = [];
-    }
-    newOperatorToTransform.environment.csp_admins.unshift(operator);
-  }
-
-  /**
-   * Sorts the operators (or cspAdmins) of a specific environment of the portfolio. Here are the
-   * sorting rules.
-   * Descending by provisioned date BUT must list all with status Processing first
-   * alphabetically by email, then sort by Provisioned on date.
-   */
-  @Mutation
-  public async sortPortfolioEnvironmentOperators(environment: EnvironmentDTO): Promise<void> {
-    environment.csp_admins?.sort((a, b) => {
-      const operatorA = a as unknown as Operator;
-      const operatorB = b as unknown as Operator;
-      // sort by provisioned date
-      if (operatorA.provisionedDate && operatorB.provisionedDate) {
-        return operatorB.provisionedDate > operatorA.provisionedDate ? -1 : 1;
-      } else {
-        return 0;
-      }
-    })
-  }
-
-  /**
-   * Expects to get one of the environments from the current portfolio of this
-   * store, to which the new operator needs to be added.
-   */
-  @Action({rawError: true})
-  public async addCSPOperator(newOperatorToAdd: {environment: EnvironmentDTO,
-    operator: Operator}): Promise<void> {
-    const newOperator = newOperatorToAdd.operator;
-    const operatorDTO: OperatorDTO = {
-      environment: newOperatorToAdd.environment.sys_id,
-      email: newOperator.email,
-      dod_id: newOperator.dodId,
-      // created_by is DB connection specific. Added by should be pulled from current user
-      added_by: CurrentUserStore.currentUser.sys_id,
-      provisioned_date: "",
-      provisioned: "false",
-      provisioning_failure_cause: "",
-      provisioning_request_date: new Date().getUTCDate().toString()
-    }
-    const operatorResponse = await api.operatorTable.create(operatorDTO);
-    await this.transformAndAddOperatorToPortfolioEnvironment(
-      {
-        environment: newOperatorToAdd.environment,
-        operatorDTO: operatorResponse
-      });
-    await this.sortPortfolioEnvironmentOperators(newOperatorToAdd.environment);
+    const portfolioDetails = await this.getSelectedPortfolioData(response.sys_id as string);
+    await this.setCurrentPortfolioDetails(portfolioDetails);
+    await this.doSetCurrentUserRole();
+    await this.populatePortfolioMembersDetail(portfolioDetails.portfolio);
   }
 
   @Action({rawError: true})

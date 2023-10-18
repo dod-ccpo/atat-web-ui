@@ -56,11 +56,7 @@
             <TaskOrder 
             v-if="tabItems[tabIndex] === 'Task Orders'" 
             :portfolioSysId="portfolioSysId"
-            />
-            <CSPPortalAccess
-              v-if="tabItems[tabIndex] === 'CSP Portal Access'"
-              :portfolioCSP="portfolioCSP"
-              :environmentIndex.sync="selectedSecondaryTab"
+            :taskOrder.sync = "taskOrder"
             />
         </v-container>
 
@@ -88,7 +84,6 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import ATATToast from "@/components/ATATToast.vue";
 import PortfolioSummaryPageHead from
   "@/portfolios/portfolio/components/shared/PortfolioSummaryPageHead.vue";
-import CSPPortalAccess from "@/portfolios/portfolio/components/CSPPortalAccess/CSPPortalAccess.vue";
 import FundingTracker from "@/portfolios/portfolio/components/FundingTracker/FundingTracker.vue";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 
@@ -99,13 +94,12 @@ import AppSections from "@/store/appSections";
 import {getIdText} from "@/helpers";
 import { Statuses } from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { ToastObj, EnvironmentLink } from "types/Global";
+import { ToastObj, EnvironmentLink, PortfolioTaskOrder } from "types/Global";
 import Toast from "@/store/toast";
 import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
 
 @Component({
   components: {
-    CSPPortalAccess,
     TaskOrder,
     FundingTracker,
     PortfolioSummaryPageHead,
@@ -118,15 +112,14 @@ import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
   }
 })
 
-
 export default class PortfolioSummary extends Vue {
-  
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
   }
   public showLeaveModalSpinner = false;
   public isPortfolioProvisioning = true;
+  public taskOrder!: PortfolioTaskOrder;
   public environmentLinks:EnvironmentLink[] = []
   public tabIndex = 0;
   public tabItems = [
@@ -206,6 +199,7 @@ export default class PortfolioSummary extends Vue {
       this.portfolioDescription = portfolio.description || "";
       this.portfolioCSP = portfolio.csp || "";
       this.portfolioSysId = portfolio.sysId;
+      this.taskOrder = portfolio.taskOrder as PortfolioTaskOrder;
       portfolio.environments?.forEach((environment) =>{
         if(environment.dashboard_link !== '' && environment.classification_level === "U"){
           const linkDisplay = environment.csp_display.split("_")[1].toUpperCase()
@@ -228,7 +222,7 @@ export default class PortfolioSummary extends Vue {
           const c = env.classification_level;
           if (c) {
             const classificationLevel = classificationLevels[c];
-            const envStatus = env.environmentStatus;
+            const envStatus = env.environment_status;
             this.secondaryTabItems.push({
               tabText: classificationLevel,
               status: envStatus as string,

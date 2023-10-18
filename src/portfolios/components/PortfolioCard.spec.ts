@@ -3,7 +3,7 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import PortfolioCard from "@/portfolios/components/PortfolioCard.vue";
-import { PortfolioCardData } from "types/Global";
+import { PortfolioCardData, PortfolioDetailsDTO, PortfolioDTO } from "types/Global";
 import AppSections from "@/store/appSections";
 import PortfolioStore from "@/store/portfolio";
 import { cspConsoleURLs } from "@/store/portfolio";
@@ -34,9 +34,19 @@ describe("Testing index Component", () => {
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
   localVue.use(validators);
+  const portfolioDetails: PortfolioDTO = {
+    /* eslint-disable camelcase */
+    sys_id: "1234567890",
+    portfolio_users: {
+      creator: {},
+      owner: {},
+      managers: [],
+      viewers: [],
+    }
+
+  }
   const cardData: PortfolioCardData =
     {
-      // eslint-disable-next-line camelcase
       sys_id: "1234567890",
       title: "ABC123 portfolio",
       status: "Active",
@@ -50,6 +60,7 @@ describe("Testing index Component", () => {
       fundingAlertChipString: "expired",
       isOwner: true
     };
+  /* eslint-enable camelcase */
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -68,7 +79,7 @@ describe("Testing index Component", () => {
       }     
     });
     jest.spyOn(PortfolioStore, "populatePortfolioMembersDetail").mockImplementation(
-      ()=>Promise.resolve(cardData));
+      ()=>Promise.resolve());
   });
 
   it("renders successfully", async () => {
@@ -78,29 +89,54 @@ describe("Testing index Component", () => {
       wrapper.vm.$data.portfolioCardMenuItems[menuItemLength - 1].title
     ).toBe("Archive portfolio")
   });
-
+  /* eslint-disable camelcase */
   it("clicks meatball menu - emit to leave portfolio", async () => {
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
     wrapper.vm.leavePortfolio();
     expect(wrapper.emitted().leavePortfolio).toBeTruthy()
   });
 
   it("clicks meatball menu - view funding tracker", async () => {
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
     await wrapper.vm.cardMenuClick({action: menuActions.viewFundingTracker});
     expect(AppSections.activeAppSection).toBe(AppSections.sectionTitles.PortfolioSummary);
   });
 
   it("clicks meatball menu - view task orders", async () => {
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
     await wrapper.vm.cardMenuClick({action: menuActions.viewTaskOrders});
     expect(AppSections.activeAppSection).toBe(AppSections.sectionTitles.PortfolioSummary);
   });
 
   it("clicks meatball menu - Leave portfolio", async () => {
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
     await wrapper.setData({ showLeavePortfolioModal: false })
     await wrapper.vm.cardMenuClick({action: menuActions.leavePortfolio});
     expect(wrapper.emitted('openLeavePortfolioModal')).toBeTruthy();
   });
 
   it("clicks meatball menu - Email portfolio managers", async () => {
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
     window.open = jest.fn();
     await wrapper.vm.cardMenuClick({action: menuActions.emailManagers});
     expect(window.open).toHaveBeenCalled();
@@ -108,26 +144,56 @@ describe("Testing index Component", () => {
   });
 
   it("clicks meatball menu - Log into CSP console", async () => {
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
     window.open = jest.fn();
     await wrapper.vm.cardMenuClick({action: menuActions.loginToCSP, url: "foo"});
     expect(window.open).toHaveBeenCalledWith("foo", "_blank");
   });
 
   it("clicks meatball menu - Archive Portfolio", async () => {
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
     window.open = jest.fn();
     await wrapper.vm.cardMenuClick({action: menuActions.archivePortfolio});
     expect(wrapper.emitted('openArchivePortfolioModal')).toBeTruthy();
   });
 
   it("clicks meatball menu - Add awarded task order or modification", async () => {
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
     await wrapper.vm.cardMenuClick({action: menuActions.addTaskOrder});
     expect(wrapper.emitted('openTOModal')).toBeTruthy();
   });
 
   it("clicks meatball menu - no action taken", async () => {
+    await wrapper.setData({cardData: {sys_id: '1234'}})
+    jest.spyOn(PortfolioStore, 'setCurrentPortfolioDetails').mockImplementation()
+    jest.spyOn(PortfolioStore, 'getSelectedPortfolioData').mockImplementation(() => {
+      return Promise.resolve({} as PortfolioDetailsDTO)
+    })
     await wrapper.vm.cardMenuClick({action: "foo"});
   });
-
+  /* eslint-enable camelcase */
   it("gets status chip background color", async () => {
     const bgColor = wrapper.vm.statusChipBgColor;
     expect(bgColor.length).toBeGreaterThan(0);

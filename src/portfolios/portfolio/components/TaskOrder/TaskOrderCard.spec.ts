@@ -16,20 +16,29 @@ describe("Testing TaskOrderCard Component", () => {
       localVue,
       vuetify,
       propsData: {
+
         taskOrders: [
           {
             taskOrderNumber:"#HC1028-22-F-0141",
             periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
-            totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
-            totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
-            status:"On Track"
+            totalObligated:"$1,000,000.00",
+            totalValue:"$1,000,000.00",
+            totalLifeCycle:"$1,000,000.00",
+            totalFundsSpent:"$500,000.00",
+            status:"On Track",
+            // eslint-disable-next-line camelcase
+            sys_id: '1234',      
           },
           {
             taskOrderNumber:"#HC1028-22-F-0141",
             periodOfPerformance:"Oct. 1, 2021 - Sept. 30, 2022",
-            totalObligated:"$1,000,000.00","totalValue":"$1,000,000.00",
-            totalLifeCycle:"$1,000,000.00","totalFundsSpent":"$500,000.00",
-            status:"Expired"
+            totalObligated:"$1,000,000.00",
+            totalValue:"$1,000,000.00",
+            totalLifeCycle:"$1,000,000.00",
+            totalFundsSpent:"$500,000.00",
+            status:"EXPIRED",
+            // eslint-disable-next-line camelcase
+            sys_id: '1244',
           },
         ]
       }
