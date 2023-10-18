@@ -8,7 +8,6 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 // import VueDevTools from 'vite-plugin-dev-tools'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
-import path from 'path';
 import dotenv from 'dotenv'
 dotenv.config()
 
