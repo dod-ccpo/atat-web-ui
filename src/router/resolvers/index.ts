@@ -1834,6 +1834,7 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
       : provWorkflowRouteNames.AwardedTaskOrder
   }
   
+  // EJY fix this below
   return taskOrderHasUnclass() && cspHasILs() 
     ? provWorkflowRouteNames.PortfolioDetails
     : provWorkflowRouteNames.AddCSPAdmin;
@@ -1858,7 +1859,8 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
       : provWorkflowRouteNames.AwardedTaskOrder;
   }
   // eslint-disable-next-line max-len
-  return current === provWorkflowRouteNames.GeneratedFromPackage || provWorkflowRouteNames.AddToExistingPortfolio
+  return current === provWorkflowRouteNames.GeneratedFromPackage 
+    || current === provWorkflowRouteNames.AddToExistingPortfolio
     ? provWorkflowRouteNames.AddCSPAdmin
     : provWorkflowRouteNames.GeneratedFromPackage;
 }

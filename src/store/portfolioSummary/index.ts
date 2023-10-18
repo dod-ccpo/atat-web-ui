@@ -28,7 +28,7 @@ export class PortfolioSummaryStore extends VuexModule {
   @Action
   public async getAllPortfolioSummaryList(
     isHomeView: boolean
-  ): Promise<PortfolioSummaryObj[] | null> {
+  ): Promise<PortfolioSummaryObj[]> {
     if(isHomeView){
       const sortedList = this.portfolioSummaryList?.sort((a, b) => {
         const keyA = new Date(a.last_updated)
@@ -159,7 +159,7 @@ export class PortfolioSummaryStore extends VuexModule {
   
     await this.ensureInitialized();
   
-    return await api.portfolioApi.getPortfolioSummaryList(userSysId)
+    return await api.portfolioApi.getPortfolioSummaryList(userSysId);
   }
 
   public hasActivePortfolios = false;
