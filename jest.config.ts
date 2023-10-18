@@ -120,7 +120,7 @@ module.exports = {
   transform: {
     //"^.+\\.js$": "<rootDir>/node_modules/babel-jest",
     "^.+\\.ts?$": "ts-jest",
-    "^.+\\.vue$": ["@vue/vue2-jest", {sourceMaps: "inline"}],
+    "^.+\\.vue$": ["@vue/vue3-jest", {sourceMaps: "inline"}],
   },
   // An array of regexp pattern strings that are matched against 
   // all source file paths, matched files will skip transformation

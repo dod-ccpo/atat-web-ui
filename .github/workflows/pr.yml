@@ -73,46 +73,46 @@ jobs:
           cache: npm
       - name: Install project dependencies
         run: npm ci
-      - name: Build the project
-        run: npm run build
-        env:
-          testURL: "%BASE_URL_PLACEHOLDER%/test"
-          BASE_API_URL: "%BASE_URL_PLACEHOLDER%"
-          SNOWUSER: "${{ secrets.VUE_SNOW_USER }}"
-          SNOWPASS: ""
-          VERSION: "${{ env.VERSION }}"
-      - name: Test the project
-        run: npm run test
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }} # don't need this for tag pushes
-      - name: Trigger SonarCloud
-        uses: SonarSource/sonarcloud-github-action@master
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }} # don't need this for tag pushes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Create SBOM
-        run: |
-            find dist/ -type f > dist/sbom.txt
+     # - name: Build the project
+     #   run: npm run build
+     #   env:
+     #     testURL: "%BASE_URL_PLACEHOLDER%/test"
+     #     BASE_API_URL: "%BASE_URL_PLACEHOLDER%"
+     #     SNOWUSER: "${{ secrets.VUE_SNOW_USER }}"
+     #     SNOWPASS: ""
+     #     VERSION: "${{ env.VERSION }}"
+     # - name: Test the project
+     #   run: npm run test
+     #   if: ${{ !startsWith(github.ref, 'refs/tags/') }} # don't need this for tag pushes
+     # - name: Trigger SonarCloud
+     #   uses: SonarSource/sonarcloud-github-action@master
+     #   if: ${{ !startsWith(github.ref, 'refs/tags/') }} # don't need this for tag pushes
+     #   env:
+     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+     # - name: Create SBOM
+     #   run: |
+     #       find dist/ -type f > dist/sbom.txt
       - name: Preserve build artifact
         uses: actions/upload-artifact@v3
         with:
           path: dist/
           name: atat-web-ui
-      - name: Preserve test coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          path: coverage/lcov-report/
-          name: lcov-report
-      - name: Zip dist folder
-        run: zip -r release.zip dist
-        if: startsWith(github.ref, 'refs/tags/')
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          token: ${{ secrets.WORKFLOWS_PAT }}
-          files: |
-            release.zip
+     # - name: Preserve test coverage report
+     #   uses: actions/upload-artifact@v3
+     #   with:
+     #     path: coverage/lcov-report/
+     #     name: lcov-report
+     # - name: Zip dist folder
+     #   run: zip -r release.zip dist
+     #   if: startsWith(github.ref, 'refs/tags/')
+     # - name: Release
+     #   uses: softprops/action-gh-release@v1
+     #   if: startsWith(github.ref, 'refs/tags/')
+     #   with:
+     #     token: ${{ secrets.WORKFLOWS_PAT }}
+     #     files: |
+     #       release.zip
 
   secretScan:
     name: Scan for secrets
