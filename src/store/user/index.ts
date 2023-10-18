@@ -126,6 +126,7 @@ export class UserStore extends VuexModule {
     const portfolioSum = await PortfolioSummary.getPortfolioSummaryList(userSysId)
     PortfolioSummary.setPortfolioSummaryList(portfolioSum.portfolios)
     await this.doSetPortfolioCount(portfolioSum.portfolioCount)
+    await PortfolioSummary.setHasActivePortfolios(portfolioSum.portfolios);
   }
 
   @Action({rawError: true})

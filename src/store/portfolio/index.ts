@@ -180,7 +180,7 @@ export class PortfolioDataStore extends VuexModule {
   
   public portfolioProvisioningObj: PortfolioProvisioning 
     = _.cloneDeep(initialPortfolioProvisioningObj());
- 
+  
   @Action({rawError: true})
   public async getPortfolioProvisioningObj(): Promise<PortfolioProvisioning> {
     return this.portfolioProvisioningObj;
@@ -191,6 +191,7 @@ export class PortfolioDataStore extends VuexModule {
   public get doesCSPHaveImpactLevels(): boolean {
     return this.CSPHasImpactLevels;
   }
+
   public get doesTaskOrderHaveUnclassified(): boolean {
     return this.portfolioProvisioningObj
       .classificationLevels?.includes("Unclassified") as boolean; 
