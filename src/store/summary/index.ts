@@ -2653,11 +2653,11 @@ export class SummaryStore extends VuexModule {
         description =  "Not Requested"
       } else if (funding.isTouched && !funding.isComplete && incFunding==="YES"){
         description =  "Requesting to incrementally fund requirement";
-      } else if (funding.isComplete && incFunding === "YES"){
+      } else if (funding.isComplete && incFunding === "YES" && funding.poc !== null){
         description =
-            "<p class='mb-8'>Requesting to incrementally fund requirement</p>" +
-            "Financial POC: " + funding.poc.first_name + " " + funding.poc.last_name + "<br>" +
-            funding.poc.email
+          "<p class='mb-8'>Requesting to incrementally fund requirement</p>" +
+          "Financial POC: " + funding.poc?.first_name + " " + funding.poc?.last_name + "<br>" +
+          funding.poc?.email
       }
       return description;
     }
