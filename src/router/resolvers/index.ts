@@ -1834,10 +1834,11 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
       : provWorkflowRouteNames.AwardedTaskOrder
   }
   
-  // EJY fix this below
-  return taskOrderHasUnclass() && cspHasILs() 
-    ? provWorkflowRouteNames.PortfolioDetails
-    : provWorkflowRouteNames.AddCSPAdmin;
+  // EJY double-check this
+  return provWorkflowRouteNames.PortfolioDetails;
+  // return taskOrderHasUnclass() && cspHasILs()
+  //   ? provWorkflowRouteNames.PortfolioDetails
+  //   : provWorkflowRouteNames.AddCSPAdmin;
 }
 
 export const PortfolioDetailsRouteResolver = (current: string): string => {
