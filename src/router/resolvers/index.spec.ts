@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { AcquisitionPackageStore } from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
 import {
@@ -15,6 +15,7 @@ import {
   RFDResolver,
   FinancialPOCResolver,
   IGCECannotProceedResolver,
+  GeneratedFromPackageRouteResolver,
   
 } from "./index"
 import * as ExportedResolverFunctions from "./index";
@@ -25,6 +26,9 @@ import Summary from "@/store/summary";
 import FinancialDetails from "@/store/financialDetails";
 import {FundingRequirementDTO} from "@/api/models";
 import { isStepComplete } from "../../store/summary/index";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import PortfolioStore from "@/store/portfolio";
+import { provWorkflowRouteNames } from "../provisionWorkflow";
 
 const acquisitionPackage = {
   acor: "",
@@ -86,6 +90,16 @@ describe("testing route resolvers", () => {
     // reset periodOfPerformance and DOW back to incomplete
     Periods.setPeriods([]);
     DescriptionOfWork.setIsIncomplete(true);
+  })
+
+  describe("Provisioning Resolvers", () => {
+    it("GeneratedFromPackageRouteResolver", () => {
+      AcquisitionPackageSummary.doSetPackagesWaitingForTaskOrderCount(0);
+      PortfolioStore.doSetSelectedAcquisitionPackageSysId("");
+      PortfolioStore.doSetShowTOPackageSelection(false);
+      const route = GeneratedFromPackageRouteResolver("foo");
+      expect(route).toBe(provWorkflowRouteNames.PortfolioDetails);
+    });
   })
 
   describe("ACORs Resolvers", () => {
