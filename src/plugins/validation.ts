@@ -2,6 +2,7 @@ import Vue from "vue"
 
 import { compareAsc, compareDesc } from "date-fns"
 import { CountryObj } from "types/Global";
+import { App } from "vue";
 
 export class ValidationPlugin {
 
@@ -431,15 +432,10 @@ export class ValidationPlugin {
   };
 }
 
-declare module 'vue/types/vue' {
-  interface Vue {
-    $validators: ValidationPlugin
-  }
-}
 
 export default {
-  install(): void {
+  install(app: App<any>): void {
     const validation = new ValidationPlugin();
-    Vue.prototype.$validators = validation;
+    app.config.globalProperties.$validators = validation;
   },
 };

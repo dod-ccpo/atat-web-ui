@@ -10,7 +10,6 @@
 <script lang="ts">
 import Vue, { Component as VueComponent } from "vue";
 import { Component, Watch } from "vue-property-decorator";
-
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
 import PortfolioSummary from "./portfolios/portfolio/components/Index.vue"
