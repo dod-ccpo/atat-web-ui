@@ -27,7 +27,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 
 import CurrentContractOptions from "./components/CurrentContractOptions.vue"
 
@@ -41,12 +42,13 @@ import Steps from "@/store/steps";
 import { CurrentContractRouteResolver } from "@/router/resolvers";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     CurrentContractOptions,
   },
 })
 
-export default class CurrentContract extends Mixins(SaveOnLeave) {
+export default class CurrentContract extends Vue {
   public headline = "";
   public currentContractExists = "";
   public noContract: CurrentContractDTO = {};

@@ -154,7 +154,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
 import { CurrentContractDTO } from "@/api/models";
@@ -165,12 +166,13 @@ import ATATDialog from "@/components/ATATDialog.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATDialog,
     ATATSVGIcon
   }  
 })
-export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
+export default class ProcurementHistorySummary extends Vue {
 
   public currentContractExists = "";
   public tableHeaders = [

@@ -210,7 +210,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Vue } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue, { ComponentPublicInstance } from 'vue';
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -227,6 +228,7 @@ import { add, compareAsc, format, formatISO, subDays } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATDatePicker,
     ContractNumber,
@@ -238,17 +240,17 @@ import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vu
     ATATErrorValidation
   },
 })
-export default class CurrentContract extends Mixins(SaveOnLeave) {
+export default class CurrentContract extends Vue {
   $refs!: {
-    form: Vue & { 
+    form: ComponentPublicInstance & { 
       resetValidation: () => void;
       reset: () => void;
       validate: () => boolean;
     };
-    startDatePicker: Vue & { 
+    startDatePicker: ComponentPublicInstance & { 
       validate: () => boolean;
     };
-    expirationDatePicker: Vue & { 
+    expirationDatePicker: ComponentPublicInstance & { 
       validate: () => boolean;
     };
   };
@@ -410,9 +412,11 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
         "sys_created_by",
       ];
       keys.forEach((key) => {
-        if (Object.prototype.hasOwnProperty.call(
-          this.currentContract, key as keyof CurrentContractDTO)){
-          this.savedData[key] = this.currentContract[key as keyof CurrentContractDTO];
+        const _key = key as keyof CurrentContractDTO
+        if (Object.prototype.hasOwnProperty.call(this.currentContract, _key)){
+          // @ts-expect-error ts can't check for this.savedData properly here
+          // and this code works as expected.
+          this.savedData[_key] = this.currentContract[_key];
         }
       });
     } 
