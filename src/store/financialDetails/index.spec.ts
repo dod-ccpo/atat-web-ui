@@ -176,6 +176,15 @@ describe("FinancialDetails Store", () => {
     );
   });
 
+  it("Test setFinancialPOC() - should set financial_POC", async () => {
+    const dummyFinancialPOCSysID = "1234"
+    financialDetailsStore.setFundingRequirement(fundingRequirement);
+    await financialDetailsStore.setFinancialPOC(dummyFinancialPOCSysID);
+    expect(financialDetailsStore.fundingRequirement?.financial_poc).toBe(
+      dummyFinancialPOCSysID
+    );
+  });
+
   describe("Test saveFundingRequestFormAndGInvoicing()", () => {
     it("- throw on first api call", async () => {
       jest

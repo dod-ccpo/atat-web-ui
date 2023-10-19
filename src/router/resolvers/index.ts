@@ -1834,9 +1834,7 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
       : provWorkflowRouteNames.AwardedTaskOrder
   }
   
-  return taskOrderHasUnclass() && cspHasILs() 
-    ? provWorkflowRouteNames.PortfolioDetails
-    : provWorkflowRouteNames.AddCSPAdmin;
+  return provWorkflowRouteNames.PortfolioDetails;
 }
 
 export const PortfolioDetailsRouteResolver = (current: string): string => {
@@ -1858,7 +1856,7 @@ export const PortfolioDetailsRouteResolver = (current: string): string => {
       : provWorkflowRouteNames.AwardedTaskOrder;
   }
   // eslint-disable-next-line max-len
-  return current === provWorkflowRouteNames.GeneratedFromPackage || provWorkflowRouteNames.AddToExistingPortfolio
+  return current === provWorkflowRouteNames.GeneratedFromPackage || current === provWorkflowRouteNames.AddToExistingPortfolio
     ? provWorkflowRouteNames.AddCSPAdmin
     : provWorkflowRouteNames.GeneratedFromPackage;
 }
