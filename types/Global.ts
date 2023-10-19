@@ -919,3 +919,22 @@ export enum ClassificationLevels {
   TSCRT = "Top Secret"
 }
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+
+// SelectItemKey, DataTableCompareFunction, and DataTableHeader are unexposed types from Vuetify
+export type SelectItemKey = boolean | null | undefined | string | (string | number)[] | 
+((item: Record<string, any>, fallback?: any) => any);
+export type DataTableCompareFunction<T = any> = (a: T, b: T) => number;
+export type DataTableHeader = {
+  key?: string;
+  value?: SelectItemKey;
+  title: string;
+  colspan?: number;
+  rowspan?: number;
+  fixed?: boolean;
+  align?: 'start' | 'end' | 'center';
+  width?: number | string;
+  minWidth?: string;
+  maxWidth?: string;
+  sortable?: boolean;
+  sort?: DataTableCompareFunction;
+};
