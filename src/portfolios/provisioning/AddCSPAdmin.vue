@@ -265,7 +265,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -282,7 +282,8 @@ import {
   ClassificationLevels,
   PortfolioAdmin,
   PortfolioProvisioning,
-  SlideoutPanelContent
+  SlideoutPanelContent,
+  DataTableHeader
 } from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
@@ -290,6 +291,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATCheckboxGroup,
@@ -301,7 +303,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 
-export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
+export default class AddCSPAdmin extends Vue {
   public admins: PortfolioAdmin[] = [];
   public cspLong = "";
   public csp = "";
@@ -407,7 +409,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
           il => `Unclassified/${il.split('_')[1].toUpperCase()}`
         );
       } else if (missingUnclass) {
-        if (missingUnclass) missingEnvs.push("Unclassified");
+        missingEnvs.push("Unclassified");
       }
 
       if (missingScrt) missingEnvs.push("Secret");
@@ -438,8 +440,8 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.$validators.required("Please enter your administrator’s 10-digit DoD ID.")
   ]
 
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.CSPAdminForm as Vue & { validate: () => boolean };
+  get Form(): typeof Vue & { validate: () => boolean } {
+    return this.$refs.CSPAdminForm as typeof Vue & { validate: () => boolean };
   }
 
   public get tsEmailHelpText(): string {
@@ -496,7 +498,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public savedData: PortfolioAdmin[] = [];
 
   public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
+    if (e?.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
@@ -570,7 +572,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
       this.scrtEmail = admin.scrtEmail as string;
       this.hasTSAccess = admin.hasTSAccess as string;
       this.tsEmail = admin.tsEmail as string;
-      this.selectedImpactLevels = admin.impactLevels||[];
+      this.selectedImpactLevels = admin.impactLevels ?? [];
 
       if (this.hasUnclassifiedAccess === "YES")
         this.selectedClassificationLevels.push(this.unclStr);
@@ -621,13 +623,13 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.resetAccess();
   }
 
-  public get tableHeaders(): Record<string, string>[] {
+  public get tableHeaders(): DataTableHeader[] {
     return [
-      { text: "DoD ID", value: "DoDId" },
-      { text: "Administrator email", value: "adminEmails" },
-      { text: "Classification level", value: "adminClassificationLevels" },
-      { text: "Status", value: "status", width: "200" },
-      { text: "", value: "actions", width: "100" },
+      { title: "DoD ID", value: "DoDId" },
+      { title: "Administrator email", value: "adminEmails" },
+      { title: "Classification level", value: "adminClassificationLevels" },
+      { title: "Status", value: "status", width: "200" },
+      { title: "", value: "actions", width: "100" },
     ]
   }
 
@@ -653,7 +655,6 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
       // build email cell data
       const emails = [];
-      const lineBreaks = count === 0 ? "" : "\n".repeat(count)
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
         if(this.hasImpactLevels){
           emails.push(admin.unclassifiedEmail);
@@ -712,10 +713,10 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     const storeData = PortfolioStore.portfolioProvisioningObj;
 
     if (storeData) {
-      this.admins = _.cloneDeep(storeData.admins) || [];
+      this.admins = _.cloneDeep(storeData.admins) ?? [];
       this.savedData = _.cloneDeep(this.admins);
       this.cspLong = storeData.cspLong as string;
-      this.classificationLevels = storeData.classificationLevels || [];
+      this.classificationLevels = storeData.classificationLevels ?? [];
       // if only one classification level available on the task order,
       // automatically set user to only have access to that classification level
       if (this.classificationLevels.length === 1) {
@@ -726,14 +727,14 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
         this.createClassificationCheckboxes();
       }
 
-      this.impactLevels = storeData.selectedILs || [];
+      this.impactLevels = storeData.selectedILs ?? [];
       if (storeData.selectedILs && storeData.selectedILs.length > 1) {
         this.showUnclassifiedILs = true
         this.createILCheckboxes(storeData.selectedILs)
       } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {
         this.selectedImpactLevels.push(storeData.selectedILs[0]);
       }
-      this.csp = storeData.csp || "";
+      this.csp = storeData.csp ?? "";
 
       this.buildTableData();
 

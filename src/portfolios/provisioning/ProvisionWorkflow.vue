@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "@/components/ATATStepperNavigation.vue";
@@ -140,7 +140,7 @@ export default class ProvisionWorkflow extends Vue {
     
     this.routeNames = provWorkflowRouteNames;
     //get first step and intitialize store to first step;
-    const routeName = this.$route.name;
+    const routeName = this.$route.name as string;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
       const { stepName } = step;
@@ -151,7 +151,7 @@ export default class ProvisionWorkflow extends Vue {
 
   @Watch("$route")
   async onRouteChanged(): Promise<void> {
-    const routeName = this.$route.name;
+    const routeName = this.$route.name as string;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
       const { stepName, stepNumber } = step;
@@ -163,7 +163,7 @@ export default class ProvisionWorkflow extends Vue {
 
   get showStepper(): boolean{
     return ["Provisioned"].some(
-      routeName => routeName.toLowerCase() !== this.$route.name?.toLowerCase());
+      routeName => routeName.toLowerCase() !== (this.$route.name as string)?.toLowerCase());
   }
 
   public async TOConfirmCancelled(): Promise<void> {

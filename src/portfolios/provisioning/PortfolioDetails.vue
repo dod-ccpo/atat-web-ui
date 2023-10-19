@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -75,8 +75,10 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import Vue from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextField,
     ATATAutoComplete,
@@ -84,7 +86,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
   }
 })
 
-export default class PortfolioDetails extends Mixins(SaveOnLeave) {
+export default class PortfolioDetails extends Vue {
   public portfolioTitle = "";
   public serviceOrAgency: SelectData = { text: "", value: "" };
   public selectedCSPProvider = "";

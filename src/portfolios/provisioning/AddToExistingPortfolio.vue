@@ -83,9 +83,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 import PortfolioSummary from "@/store/portfolioSummary";
-import { PortfolioSummaryDTO } from "@/api/models";
 import PortfolioCard from "../components/PortfolioCard.vue";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
 import { PortfolioCardData } from "types/Global";
@@ -134,25 +133,23 @@ export default class AddToExistingPortfolio extends Vue {
   public async loadOnEnter(): Promise<void> {
     AcquisitionPackage.setDisableContinue(true);
     const currentPortfolios = await 
-    PortfolioSummary.getAllPortfolioSummaryList() as PortfolioSummaryDTO[];
-
-    currentPortfolios.forEach((portfolio) => {
+    PortfolioSummary.getAllPortfolioSummaryList(false);;
+    // TODO: CHECK THIS DATA AFTER VUE3 MIGRATION
+    currentPortfolios?.forEach((portfolio) => {
       if(portfolio.portfolio_status === Statuses.Active.value){
         const cardData: PortfolioCardData = {};
         cardData.isSelected = this.selectedPackageSysId !== undefined
           && portfolio.sys_id === this.selectedPackageSysId;
         cardData.lastUpdated = portfolio.last_updated;      
         cardData.sysId = portfolio.sys_id;
-        cardData.title = portfolio.name;
-        cardData.status = this.getPortfolioStatus(portfolio.portfolio_funding_status);
-        cardData.agencyDisplay = portfolio.agency_display;
+        cardData.title = portfolio.portfolio_name;
+        cardData.status = this.getPortfolioStatus(portfolio.funding_status);
+        cardData.agencyDisplay = portfolio.agency;
         cardData.fundingOnTrack = cardData.status === Statuses.OnTrack.label
-        cardData.fundingStatusColor = this.getChipColor(portfolio.portfolio_funding_status)
-        const activeTaskOrder = portfolio.task_orders.find(
-          obj => obj.sys_id === cardData.taskOrderSysId
-        );
-        cardData.taskOrderNumber = activeTaskOrder ? activeTaskOrder.task_order_number : "";
-        const updatedDate = createDateStr(portfolio.last_updated as string, true);
+        cardData.fundingStatusColor = this.getChipColor(portfolio.funding_status)
+        const activeTaskOrder = portfolio.active_task_order;
+        cardData.taskOrderNumber = activeTaskOrder;
+        const updatedDate = createDateStr(portfolio.last_updated, true);
         cardData.lastModifiedStr = "Last modified " + updatedDate;
         this.portfolioCardData.push(cardData);
       }

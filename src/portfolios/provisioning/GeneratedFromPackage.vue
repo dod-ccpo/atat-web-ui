@@ -14,7 +14,7 @@
 
         <v-card
           v-for="(pkg, index) in packageData"
-          :key="pkg.sys_id"
+          :key="pkg.sysId"
           class="_summary-card-wrapper _selectable"          
           :class="{ 
             '_first': index === 0, 
@@ -78,8 +78,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
-
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import Card from "@/packages/components/Card.vue";
 import { AcquisitionPackageSummarySearchDTO, UserDTO } from "@/api/models";
@@ -100,13 +100,14 @@ export interface packageCardData {
 }
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSVGIcon,
     "PackageCards": Card,
   }
 })
 
-export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
+export default class GeneratedFromPackage extends Vue {
   public packageData: packageCardData[] = [];
   public selectedPackageSysId = "";
 
