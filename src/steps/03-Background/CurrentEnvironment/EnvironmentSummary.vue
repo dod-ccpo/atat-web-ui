@@ -59,9 +59,7 @@
             <template v-slot:item.location="{ item }">
               <span
                  v-html="item.location"
-                :class="[{'text-error font-weight-500': !item.isValid }]">
-                {item}
-              </span>
+                :class="[{'text-error font-weight-500': !item.isValid }]"></span>
               <div v-if="!item.isValid" class="d-flex align-center nowrap">
                 <ATATSVGIcon 
                   name="errorFilled"
