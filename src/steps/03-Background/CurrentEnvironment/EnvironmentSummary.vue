@@ -153,7 +153,7 @@
 /*eslint vue/no-child-content: 1 */
 import Vue from "vue";
 
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -367,15 +367,15 @@ export default class EnvironmentSummary extends Vue {
     setTimeout(async () => {
 
       this.tableHeaders = [    
-        { text: "", value: "instanceNumber", width: "50" },
-        { text: "Location", value: "location" },
-        { text: "Classification", value: "classification" },
-        { text: "Quantity", value: "qty" },
-        { text: "vCPU", value: "vCPU" },
-        { text: "Memory", value: "memory" },
-        { text: "Storage", value: "storage" },
-        { text: "Performance", value: "performance" },
-        { text: "", value: "actions", width: "75" },
+        { title: "", value: "instanceNumber", width: "50" },
+        { title: "Location", value: "location" },
+        { title: "Classification", value: "classification" },
+        { title: "Quantity", value: "qty" },
+        { title: "vCPU", value: "vCPU" },
+        { title: "Memory", value: "memory" },
+        { title: "Storage", value: "storage" },
+        { title: "Performance", value: "performance" },
+        { title: "", value: "actions", width: "75" },
       ];
 
       this.tableData = [];
