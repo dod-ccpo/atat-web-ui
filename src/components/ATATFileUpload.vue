@@ -145,8 +145,8 @@
 <script lang="ts">
 /* eslint camelcase: 0 */
 
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue, { ComponentPublicInstance } from "vue";
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
 import {
@@ -168,7 +168,7 @@ import { setItemToPlural } from "@/helpers";
 export default class ATATFileUpload extends Vue {
   // refs
   $refs!: {
-    atatFileUpload: Vue & {
+    atatFileUpload: ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       resetValidation: () => void;
@@ -552,9 +552,7 @@ export default class ATATFileUpload extends Vue {
     window.addEventListener("dragover", this.preventDrop, false);
 
     //try to grab the attachment service via the service factory
-    this.fileAttachmentService = AttachmentServiceFactory(
-      this.attachmentServiceName
-    );
+    this.fileAttachmentService = AttachmentServiceFactory(this.attachmentServiceName);
 
     this._invalidFiles = [];
   }

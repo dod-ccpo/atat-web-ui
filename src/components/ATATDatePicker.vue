@@ -87,8 +87,8 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Vue from "vue";
+import Vue, { ComponentPublicInstance } from "vue";
+import { Component, Prop, Watch } from "vue-facing-decorator";
 import { add, format, formatISO, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -103,14 +103,14 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ATATDatePicker extends Vue {
   // refs
   $refs!: {
-    atatDatePicker: Vue & { 
+    atatDatePicker: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number; 
       validate: () => boolean;
       value: string;
       resetValidation: ()=> boolean;
     };
-    atatDatePickerMenu: Vue & {
+    atatDatePickerMenu: ComponentPublicInstance & {
       save: (selectedDate: string) => Record<string, never>;
     };
   };

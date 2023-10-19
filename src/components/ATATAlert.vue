@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 
 @Component({})
@@ -130,8 +130,8 @@ export default class ATATAlert extends Vue {
       return alertClasses + " bg-" + this.calloutBackground;
     }
     alertClasses = "_" + this.type + "-alert";
-    alertClasses = this.borderLeft ? alertClasses + " _border-left-thick" : alertClasses;
-    alertClasses = this.maxHeight ? alertClasses + " py-0 pr-0" : alertClasses;
+    alertClasses = this.borderLeft ? alertClasses + "_border-left-thick" : alertClasses;
+    alertClasses = this.maxHeight ? alertClasses + "py-0 pr-0" : alertClasses;
     return alertClasses;
   }
 

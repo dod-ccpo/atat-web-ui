@@ -39,7 +39,7 @@
         :error="error"
         :disabled="disabled"
         :rules="checkboxRules"
-        @mouseup="checkBoxClicked(item.value, index)"
+        @mouseup="checkBoxClicked(item.value)"
         multiple
         :hide-details="true"
         :ref="index === 0 ? 'checkboxGroup' : ''"
@@ -147,8 +147,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue, { ComponentPublicInstance } from "vue";
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -172,12 +172,12 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 export default class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
-    checkboxGroup: (Vue & {
+    checkboxGroup: (ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       validate: () => boolean;
     })[];
-    atatTextInput: (Vue & { errorBucket: string[]; errorCount: number })[];
+    atatTextInput: (ComponentPublicInstance & { errorBucket: string[]; errorCount: number })[];
   };
 
   // props
