@@ -136,7 +136,7 @@ export default class ProvisionWorkflow extends Vue {
   }  
 
   async mounted(): Promise<void> {
-    await Steps.setSteps(provisionWorkFlowRoutes);
+    Steps.setSteps(provisionWorkFlowRoutes);
     
     this.routeNames = provWorkflowRouteNames;
     //get first step and intitialize store to first step;
@@ -154,7 +154,7 @@ export default class ProvisionWorkflow extends Vue {
     const routeName = this.$route.name as string;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
-      const { stepName, stepNumber } = step;
+      const { stepName } = step;
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
       SlideoutPanel.closeSlideoutPanel();
@@ -280,10 +280,10 @@ export default class ProvisionWorkflow extends Vue {
   private setNavButtons(step: StepInfo): void {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
-    this.backButtonText = step.backButtonText || "Back";
-    this.continueButtonColor = step.continueButtonColor || "primary";
-    this.continueButtonText = step.continueButtonText || "Continue";
-    this.altContinueAction = step.altContinueAction || "";
+    this.backButtonText = step.backButtonText ?? "Back";
+    this.continueButtonColor = step.continueButtonColor ?? "primary";
+    this.continueButtonText = step.continueButtonText ?? "Continue";
+    this.altContinueAction = step.altContinueAction ?? "";
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
@@ -295,7 +295,7 @@ export default class ProvisionWorkflow extends Vue {
     }
 
     if (button.actionName) {
-      const actionArgs = button.actionArgs || [];
+      const actionArgs = button.actionArgs ?? [];
       await actionHandler(button.actionName, actionArgs);
     }
 

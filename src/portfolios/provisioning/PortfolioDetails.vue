@@ -163,12 +163,12 @@ export default class PortfolioDetails extends Vue {
         serviceOrAgency: this.serviceOrAgency.value,
         selectedILs: this.selectedILs,
       }
-      this.selectedCSPProvider = storeData.csp || ""
+      this.selectedCSPProvider = storeData.csp ?? ""
       this.checkboxHelpText = this.selectedPackage? "":"Select all that apply"
       this.checkboxLabel = this.selectedPackage? "":"What impact level(s) do you need to" +
       " provision?"
 
-      this.selectedILs = storeData.selectedILs || [];
+      this.selectedILs = storeData.selectedILs ?? [];
     }
   }
 

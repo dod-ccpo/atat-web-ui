@@ -1,4 +1,4 @@
-import Vue from "vue";
+import Vue, {ComponentCustomProperties} from "vue";
 import { Route } from "vue-router";
 import { Component } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -10,7 +10,7 @@ Component.registerHooks(["beforeRouteLeave"]);
 export default class SaveOnLeave extends Vue {
 
   $refs!: {
-    form: Vue & {
+    form: typeof Vue & {
       validate: () => boolean;
       resetValidation?: () => void;
       reset?: () => void;

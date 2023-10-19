@@ -90,7 +90,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import PortfolioStore from "@/store/portfolio";
 
-export interface packageCardData {
+export interface PackageCardData {
   isSelected?: boolean;
   packageStatus: string;
   createdBy: string;
@@ -108,7 +108,7 @@ export interface packageCardData {
 })
 
 export default class GeneratedFromPackage extends Vue {
-  public packageData: packageCardData[] = [];
+  public packageData: PackageCardData[] = [];
   public selectedPackageSysId = "";
 
   public searchDTO:AcquisitionPackageSummarySearchDTO = {
@@ -132,7 +132,7 @@ export default class GeneratedFromPackage extends Vue {
   public packageSelected(index: number): void {
     this.packageData.forEach(pkg => pkg.isSelected = false);
     this.packageData[index].isSelected = true;
-    this.selectedPackageSysId = this.packageData[index].sysId as string;
+    this.selectedPackageSysId = this.packageData[index].sysId;
     AcquisitionPackage.setDisableContinue(false);
   }
 
@@ -143,7 +143,7 @@ export default class GeneratedFromPackage extends Vue {
       .searchAcquisitionPackageSummaryList(this.searchDTO);
     packageData.acquisitionPackageSummaryList.forEach(pkg => {
       const updatedDate = createDateStr(pkg.sys_updated_on as string, true);     
-      const cardData: packageCardData = {
+      const cardData: PackageCardData = {
         isSelected: this.selectedPackageSysId !== undefined
           && pkg.sys_id === this.selectedPackageSysId,
         packageStatus: pkg.package_status?.display_value as string,

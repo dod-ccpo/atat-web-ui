@@ -280,15 +280,16 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import {
   Checkbox,
   ClassificationLevels,
+  DataTableHeader,
   PortfolioAdmin,
   PortfolioProvisioning,
   SlideoutPanelContent,
-  DataTableHeader
 } from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { ComponentPublicInstance } from "vue";
 
 @Component({
   mixins: [SaveOnLeave],
@@ -409,7 +410,7 @@ export default class AddCSPAdmin extends Vue {
           il => `Unclassified/${il.split('_')[1].toUpperCase()}`
         );
       } else if (missingUnclass) {
-        missingEnvs.push("Unclassified");
+        if (missingUnclass) missingEnvs.push("Unclassified");
       }
 
       if (missingScrt) missingEnvs.push("Secret");
@@ -440,8 +441,8 @@ export default class AddCSPAdmin extends Vue {
     this.$validators.required("Please enter your administrator’s 10-digit DoD ID.")
   ]
 
-  get Form(): typeof Vue & { validate: () => boolean } {
-    return this.$refs.CSPAdminForm as typeof Vue & { validate: () => boolean };
+  get Form(): ComponentPublicInstance & { validate: () => boolean } {
+    return this.$refs.CSPAdminForm as ComponentPublicInstance & { validate: () => boolean };
   }
 
   public get tsEmailHelpText(): string {
@@ -572,7 +573,7 @@ export default class AddCSPAdmin extends Vue {
       this.scrtEmail = admin.scrtEmail as string;
       this.hasTSAccess = admin.hasTSAccess as string;
       this.tsEmail = admin.tsEmail as string;
-      this.selectedImpactLevels = admin.impactLevels ?? [];
+      this.selectedImpactLevels = admin.impactLevels||[];
 
       if (this.hasUnclassifiedAccess === "YES")
         this.selectedClassificationLevels.push(this.unclStr);
@@ -655,6 +656,7 @@ export default class AddCSPAdmin extends Vue {
 
       // build email cell data
       const emails = [];
+      const lineBreaks = count === 0 ? "" : "\n".repeat(count)
       if (admin.hasUnclassifiedAccess === "YES" && admin.unclassifiedEmail) {
         if(this.hasImpactLevels){
           emails.push(admin.unclassifiedEmail);
@@ -713,10 +715,10 @@ export default class AddCSPAdmin extends Vue {
     const storeData = PortfolioStore.portfolioProvisioningObj;
 
     if (storeData) {
-      this.admins = _.cloneDeep(storeData.admins) ?? [];
+      this.admins = _.cloneDeep(storeData.admins) || [];
       this.savedData = _.cloneDeep(this.admins);
       this.cspLong = storeData.cspLong as string;
-      this.classificationLevels = storeData.classificationLevels ?? [];
+      this.classificationLevels = storeData.classificationLevels || [];
       // if only one classification level available on the task order,
       // automatically set user to only have access to that classification level
       if (this.classificationLevels.length === 1) {
@@ -727,14 +729,14 @@ export default class AddCSPAdmin extends Vue {
         this.createClassificationCheckboxes();
       }
 
-      this.impactLevels = storeData.selectedILs ?? [];
+      this.impactLevels = storeData.selectedILs || [];
       if (storeData.selectedILs && storeData.selectedILs.length > 1) {
         this.showUnclassifiedILs = true
         this.createILCheckboxes(storeData.selectedILs)
       } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {
         this.selectedImpactLevels.push(storeData.selectedILs[0]);
       }
-      this.csp = storeData.csp ?? "";
+      this.csp = storeData.csp || "";
 
       this.buildTableData();
 
