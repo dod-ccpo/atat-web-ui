@@ -264,7 +264,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue , {ComponentPublicInstance} from "vue";
 import { Component } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -289,7 +289,6 @@ import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { ComponentPublicInstance } from "vue";
 
 @Component({
   mixins: [SaveOnLeave],
