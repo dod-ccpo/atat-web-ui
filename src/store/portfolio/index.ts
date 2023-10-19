@@ -236,7 +236,10 @@ export class PortfolioDataStore extends VuexModule {
   }
   ): Promise<void> {
     this.CSPProvisioningData = data.cspData;
-    this.CSPHasImpactLevels = data.hasCloudDistinguishers;
+    const count = data.cspData.reduce(
+      (acc, cur) => cur.classification_level === "U" ? ++acc : acc, 0
+    );
+    this.CSPHasImpactLevels = data.hasCloudDistinguishers && count > 1;
   }
 
   public envsForProvisioning: EnvironmentForProvisioning[] = [];

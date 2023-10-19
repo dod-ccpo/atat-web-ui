@@ -1,6 +1,6 @@
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
-import { PortfolioDataStore} from "@/store/portfolio/index";
+import { CSPProvisioningData, PortfolioDataStore} from "@/store/portfolio/index";
 import { getModule } from 'vuex-module-decorators';
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -179,6 +179,30 @@ describe("Portfolio Store", () => {
       expect(portfolioStore.alerts).toBe(mockAlerts);
     })
   })
+
+  it("doSetCSPProvisioningData()", async () => {
+    /* eslint-disable camelcase */     
+    const cspData: CSPProvisioningData[] = [
+      { name: "", classification_level: "S" }
+    ];
+    let hasCloudDistinguishers = false;
+    // secret only, no distinguishers
+    portfolioStore.doSetCSPProvisioningData({ cspData, hasCloudDistinguishers });
+    expect(portfolioStore.CSPHasImpactLevels).toBeFalsy;
+    
+    // add only 1 unclassified -- CSPHasImpactLevels should remain false
+    cspData.push({ name: "", classification_level: "U"});
+    portfolioStore.doSetCSPProvisioningData({ cspData, hasCloudDistinguishers });
+    expect(portfolioStore.CSPHasImpactLevels).toBeFalsy;
+
+    // add a second unclassified - CSPHasImpactLevels should be true
+    cspData.push({ name: "", classification_level: "U"});
+    hasCloudDistinguishers = true;
+    portfolioStore.doSetCSPProvisioningData({ cspData, hasCloudDistinguishers });
+    expect(portfolioStore.CSPHasImpactLevels).toBeTruthy;
+    /* eslint-enable camelcase */ 
+
+  });
 
   it('getPortolioData()', async()=>{
     const dummyTitle = "dummy Title";
