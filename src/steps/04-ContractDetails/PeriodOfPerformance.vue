@@ -145,7 +145,7 @@
               id="AddOptionPeriodButton"
               v-if="totalPoPDuration < maxTotalPoPDuration"
               plain
-              text
+              variant="text"
               class=" mt-5 link-button no-border"
               :ripple="false"
               @click="addOptionPeriod()"
@@ -175,7 +175,7 @@ import ATATSelect from "@/components/ATATSelect.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { PoP, SelectData, SlideoutPanelContent, SummaryItem } from "../../../types/Global";
+import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
 import { getIdText } from "@/helpers";
 import { PeriodDTO } from "@/api/models";
 import Periods from "@/store/periods";
