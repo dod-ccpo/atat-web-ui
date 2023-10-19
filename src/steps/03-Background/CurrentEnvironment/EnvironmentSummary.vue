@@ -156,7 +156,7 @@ import { Component, Watch } from "vue-facing-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { ClassificationLevelDTO, CurrentEnvironmentInstanceDTO } from "@/api/models";
-import { EnvInstanceSummaryTableData } from "types/Global";
+import { DataTableHeader, EnvInstanceSummaryTableData } from "types/Global";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import _ from "lodash";
@@ -178,7 +178,7 @@ export default class EnvironmentSummary extends Vue {
   public envLocation = "";
   public classificationsCloud: string[] = [];
   public classificationsOnPrem: string[] = [];
-  public tableHeaders: Record<string, string>[] = [];
+  public tableHeaders: DataTableHeader[] = [];
   public tableData: EnvInstanceSummaryTableData[] = [];
   public showDeleteInstanceDialog = false;
   public instanceNumberToDelete = 0;

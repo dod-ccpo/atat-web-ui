@@ -248,7 +248,7 @@
 /* eslint-disable camelcase */
 import { Component, Watch } from "vue-facing-decorator";
 import Vue from 'vue';
-import { Checkbox, TravelSummaryTableData } from "types/Global";
+import { Checkbox, DataTableHeader, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -293,16 +293,16 @@ export default class Travel extends Vue {
     );
   }
 
-  get setTableHeaders():  Record<string, string>[] {
+  get setTableHeaders():  DataTableHeader[] {
     return this.hasListings
       ? [
-        { text: "", value: "instanceNumber", width: "50" },
-        { text: "Location", value: "trip_location" },
-        { text: "Duration", value: "duration_in_days" },
-        { text: "Number of travelers", value: "number_of_travelers" },
-        { text: "Number of trips", value: "number_of_trips" },
-        { text: "Performance period(s)", value: "selected_periods" },
-        { text: "", value: "actions", width: "100" },
+        { title: "", value: "instanceNumber", width: "50" },
+        { title: "Location", value: "trip_location" },
+        { title: "Duration", value: "duration_in_days" },
+        { title: "Number of travelers", value: "number_of_travelers" },
+        { title: "Number of trips", value: "number_of_trips" },
+        { title: "Performance period(s)", value: "selected_periods" },
+        { title: "", value: "actions", width: "100" },
       ]
       : []
   }

@@ -164,6 +164,7 @@ import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { DataTableHeader } from "types/Global";
 
 @Component({
   mixins: [SaveOnLeave],
@@ -175,12 +176,12 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 export default class ProcurementHistorySummary extends Vue {
 
   public currentContractExists = "";
-  public tableHeaders = [
-    { text: "Contractor Name", value: "incumbent_contractor_name"},
-    { text: "Contract Number",  value: "contract_number"},
-    { text: "Task Order Number",  value: "task_delivery_order_number"},
-    { text: "Period of Performance",  value: "contract_order_start_date"},
-    { text: "", value: "actions", width: "75" },
+  public tableHeaders: DataTableHeader[] = [
+    { title: "Contractor Name", value: "incumbent_contractor_name"},
+    { title: "Contract Number",  value: "contract_number"},
+    { title: "Task Order Number",  value: "task_delivery_order_number"},
+    { title: "Period of Performance",  value: "contract_order_start_date"},
+    { title: "", value: "actions", width: "75" },
   ];
   public instanceNumberToDelete = -1;
   public deleteInstanceModalTitle = "";
