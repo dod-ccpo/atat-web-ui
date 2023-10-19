@@ -94,7 +94,8 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import Vue from "vue";
+import { Component, Watch } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -118,6 +119,7 @@ import _ from "lodash";
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     ATATAlert,
@@ -125,7 +127,7 @@ import _ from "lodash";
   }
 })
 
-export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
+export default class ClassificationRequirements extends Vue {
 
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []

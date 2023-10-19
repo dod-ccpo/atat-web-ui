@@ -65,7 +65,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import Vue from 'vue';
+import { Component, Watch } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -78,13 +79,14 @@ import { hasChanges } from "@/helpers";
 import IGCE  from "@/store/IGCE";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     ATATTextArea,
   },
 })
 
-export default class ContractType extends Mixins(SaveOnLeave) {
+export default class ContractType extends Vue {
   private firmFixedPriceSelected = "";
   private timeAndMaterialsSelected = "";
   
