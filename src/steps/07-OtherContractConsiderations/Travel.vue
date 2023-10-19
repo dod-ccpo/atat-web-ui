@@ -246,7 +246,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import { Checkbox, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -260,6 +261,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSVGIcon,
     ATATDialog,
@@ -267,7 +269,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
     ATATCheckboxGroup,
   },
 })
-export default class Travel extends Mixins(SaveOnLeave) {
+export default class Travel extends Vue {
   public tableHeaders: Record<string, string>[] = [];
   public tableData: TravelSummaryTableData[] = [];
   public travelItem: TravelSummaryTableData = {
