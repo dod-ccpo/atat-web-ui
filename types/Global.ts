@@ -925,7 +925,6 @@ export type SelectItemKey = boolean | null | undefined | string | (string | numb
 ((item: Record<string, any>, fallback?: any) => any);
 export type DataTableCompareFunction<T = any> = (a: T, b: T) => number;
 export type DataTableHeader = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   key?: 'data-table-group' | 'data-table-select' | 'data-table-expand' | string;
   value?: SelectItemKey;
   title: string;
