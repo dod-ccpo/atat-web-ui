@@ -6,7 +6,7 @@
     "serve": "vite",
     "build": "vite build",
     "test:unit": "jest --coverage  --no-cache ",
-    "lint": "eslint ./src ./tests ./types -c ./.eslintrc.js --fix",
+    "lint": "eslint ./src ./tests ./types -c ./.eslintrc.js",
     "zip": "zip -r atat-web-ui-dist.zip dist",
     "postbuild": "node servicenow.postbuild.js && node minify.postbuild.js dist/js/",
     "postbuild:cypress": "node cypress.postbuild.js",
