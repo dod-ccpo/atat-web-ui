@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { Component, mixins } from "vue-facing-decorator";
+import { Component } from "vue-facing-decorator";
 
 import ArchitecturalDesignForm from "@/components/DOW/ArchitecturalDesignForm.vue"
 
