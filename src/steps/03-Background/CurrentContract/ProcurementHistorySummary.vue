@@ -165,6 +165,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { DataTableHeader } from "types/Global";
+import { ProcurementHistorySummaryRouteResolver } from "@/router/resolvers";
 
 @Component({
   mixins: [SaveOnLeave],
@@ -210,7 +211,11 @@ export default class ProcurementHistorySummary extends Vue {
 
   public async deleteInstance(): Promise<void> {
     await AcquisitionPackage.deleteContract(this.instanceToDelete);
-    this.$nextTick(async () => {
+    /**
+     * async is necessary this $nextTick b/c `await this.resetDataSource();`
+     * is needed in the function
+     */
+    this.$nextTick(async() => {
       this.showDeleteInstanceDialog = false;
       this.instanceToDelete  = {};
       this.dataSource = this.dataSource.filter(

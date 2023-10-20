@@ -96,7 +96,7 @@ export default class CurrentContract extends Vue {
     if (hasLogicalFollowOn) {
       const routeName = CurrentContractRouteResolver(Steps.prevStepName)
       try{
-        this.$router.push({
+        await this.$router.push({
           name: routeName,
         })
       }catch(error){

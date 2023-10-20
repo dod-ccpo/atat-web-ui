@@ -413,9 +413,13 @@ export default class InstanceDetails extends Vue {
     if (!this.isNewInstance) {
       // user is editing an existing instance, validate on load
       await this.validate();
-      AcquisitionPackage.setValidateNow(true);
+      await AcquisitionPackage.setValidateNow(true);
+      /**
+       * async is necessary this $nextTick b/c `await AcquisitionPackage.setValidateNow(true);`
+       * is needed in the function
+       */
       this.$nextTick(async () => {
-        AcquisitionPackage.setValidateNow(true);
+        await AcquisitionPackage.setValidateNow(true);
       });
     }
   }
