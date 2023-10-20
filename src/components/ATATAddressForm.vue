@@ -123,6 +123,7 @@
     <v-row v-if="_selectedAddressType === addressTypes.FOR">
       <v-col class="col-12 col-lg-4">
         <ATATAutoComplete
+          ref="Country"
           id="Country"
           label="Country"
           :class="inputClass"
@@ -179,6 +180,7 @@ export default class ATATAddressForm extends Vue {
     atatAddressForm: Vue & {
       resetValidation: () => void;
       reset: () => void;
+      $refs:["Country"]
     };
   };
 
@@ -266,9 +268,9 @@ export default class ATATAddressForm extends Vue {
 
   public resetData(): void {
     Vue.nextTick(() => {
-     
+      //TODO: REFACTOR AFTER VUE 3 UPGRADE
       //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.atatAddressForm.$children;
+      const formChildren = this.$refs.atatAddressForm.$refs;
       formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
       this.$refs.atatAddressForm.reset();
       Vue.nextTick(() => {
