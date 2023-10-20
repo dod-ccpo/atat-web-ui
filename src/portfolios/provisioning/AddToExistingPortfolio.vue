@@ -133,7 +133,7 @@ export default class AddToExistingPortfolio extends Vue {
   public async loadOnEnter(): Promise<void> {
     AcquisitionPackage.setDisableContinue(true);
     const currentPortfolios = await 
-    PortfolioSummary.getAllPortfolioSummaryList(false);;
+    PortfolioSummary.getAllPortfolioSummaryList(false);
     // TODO: CHECK THIS DATA AFTER VUE3 MIGRATION
     currentPortfolios?.forEach((portfolio) => {
       if(portfolio.portfolio_status === Statuses.Active.value){
