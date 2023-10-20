@@ -158,7 +158,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Mixins } from "vue-property-decorator";
+import { Component, Watch, Mixins } from "vue-facing-decorator";
 import {convertSystemChoiceToSelect} from "@/helpers";
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
@@ -181,9 +181,10 @@ import {
 import { ContactDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import Vue from "vue";
+import Vue, {ComponentPublicInstance} from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAutoComplete,
     ATATPhoneInput,
@@ -194,7 +195,7 @@ import Vue from "vue";
 })
 export default class ContactInfo extends Mixins(SaveOnLeave) {
   $refs!: {
-    form: Vue & { 
+    form: ComponentPublicInstance & { 
       resetValidation: () => void;
       reset: () => void;
       validate: () => boolean;
