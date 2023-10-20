@@ -75,19 +75,20 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import { RadioButton, SelectData } from "../../../types/Global";
 import { PeriodOfPerformanceDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import Periods from "@/store/periods";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATDatePicker,
@@ -95,7 +96,7 @@ import Periods from "@/store/periods";
     ATATSelect,
   },
 })
-export default class POPStart extends Mixins(SaveOnLeave) {
+export default class POPStart extends Vue {
   // private requestedPopStartDate 
   //   = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";
   // private selectedPoPStartDateOption 
@@ -119,8 +120,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
     },
   ];
 
-  private selectedTimeFrameOption 
-    = AcquisitionPackage.periodOfPerformance?.time_frame || "";
+  private selectedTimeFrameOption = "";
   private timeFrameOptions: SelectData[] = [
     {
       text: "No sooner than",
