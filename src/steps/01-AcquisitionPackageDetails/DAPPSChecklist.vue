@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";

@@ -81,16 +81,16 @@
       v-if="isMissionOwner"
       :showModal.sync="showDeleteModal"
       :packageName="packageName"
-      :hasContributor="hasContributor"
-      :waitingForSignature="isWaitingForSignature"
+      :hasContributor="hasContributor()"
+      :waitingForSignature="isWaitingForSignature()"
       @okClicked="updateStatus('DELETED')"
     />
     <ArchiveModal
       v-if="isMissionOwner"
       :showModal.sync="showArchiveModal"
-      :hasContributor="hasContributor"
+      :hasContributor="hasContributor()"
       :packageName="packageName"
-      :waitingForSignature="isWaitingForSignature"
+      :waitingForSignature="isWaitingForSignature()"
       @okClicked="updateStatus('ARCHIVED')"
     />
 
@@ -101,7 +101,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";
