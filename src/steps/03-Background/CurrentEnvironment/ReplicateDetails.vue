@@ -77,7 +77,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue'
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -91,6 +92,7 @@ import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATTextArea,
@@ -98,7 +100,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-export default class ReplicateDetails extends Mixins(SaveOnLeave) {
+export default class ReplicateDetails extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
   public replicateOrOptimize = "";
   public replicatingOrOptimizing = "";

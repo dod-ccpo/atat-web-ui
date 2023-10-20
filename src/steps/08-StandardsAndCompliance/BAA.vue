@@ -118,7 +118,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -134,6 +135,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 
 @Component({
+  mixins: [LoadOnEnter, SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -142,7 +144,7 @@ import LoadOnEnter from "@/mixins/loadOnEnter";
   },
 })
 
-export default class BAA extends Mixins(LoadOnEnter,SaveOnLeave) {
+export default class BAA extends Vue {
   private baaHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/
     sample-business-associate-agreement-provisions/index.html`;
 

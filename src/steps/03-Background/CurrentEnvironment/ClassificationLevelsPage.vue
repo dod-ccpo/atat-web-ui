@@ -35,7 +35,8 @@
 </template>
 <script lang="ts">
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -47,12 +48,13 @@ import CurrentEnvironment,
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ClassificationLevelForm,
     ATATCheckboxGroup,
   }
 })
-export default class ClassificationLevelsPage extends Mixins(SaveOnLeave) {
+export default class ClassificationLevelsPage extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
   public envLocation = "";
   private isHybrid = false;

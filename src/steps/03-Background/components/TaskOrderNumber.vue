@@ -3,7 +3,7 @@
     <ATATTextField
         :id="id"
         :label="label"
-        :rules="rules"
+        :rules="_rules"
         class="_input-max-width"
         :value.sync="_value"
         :optional="isOptional"
@@ -23,7 +23,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import {Component, Prop, PropSync} from "vue-property-decorator";
+import {Component, Prop, PropSync} from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 @Component({

@@ -30,7 +30,8 @@
 </template>
 <script lang="ts">
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 import { RadioButton, YesNo } from "../../../../types/Global";
 
 
@@ -42,11 +43,12 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
   },
 })
-export default class HasCurrentEnvironment extends Mixins(SaveOnLeave) {
+export default class HasCurrentEnvironment extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
 
   private existingEnvOption: RadioButton[] = [

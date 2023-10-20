@@ -48,7 +48,8 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import { invalidFile, RadioButton, uploadingFile, YesNo } from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AttachmentDTO} from "@/api/models";
@@ -64,12 +65,13 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATFileUpload,
     ATATRadioGroup,
   },
 })
-export default class UploadSystemDocuments extends Mixins(SaveOnLeave) {
+export default class UploadSystemDocuments extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
   
   private attachmentServiceName = CURRENT_ENVIRONMENT_TABLE;
