@@ -123,6 +123,7 @@
     <v-row v-if="_selectedAddressType === addressTypes?.FOR ?? ''">
       <v-col class="col-12 col-lg-4">
         <ATATAutoComplete
+          ref="Country"
           id="Country"
           label="Country"
           :class="inputClass"
@@ -143,8 +144,9 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
+import { Component, Prop } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
 
 import ATATAutoComplete from "./ATATAutoComplete.vue";
 import ATATDialog from "./ATATDialog.vue";
@@ -178,6 +180,7 @@ export default class ATATAddressForm extends Vue {
     atatAddressForm: ComponentPublicInstance & {
       resetValidation: () => void;
       reset: () => void;
+      $refs:["Country"]
     };
   };
 
@@ -265,6 +268,7 @@ export default class ATATAddressForm extends Vue {
 
   public resetData(): void {
     Vue.nextTick(() => {
+
       // TODO: REFACTOR AFTER VUE3 UPGRADE
       // //iterate over the forms children ref manually set their 'errorMessages' array to empty
       // const formChildren = this.$refs.atatAddressForm.$children;
@@ -273,6 +277,7 @@ export default class ATATAddressForm extends Vue {
       // Vue.nextTick(() => {
       //   this.$refs.atatAddressForm.resetValidation();
       // });
+
     });
   }
   // computed
