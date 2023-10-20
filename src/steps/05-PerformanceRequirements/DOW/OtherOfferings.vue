@@ -209,8 +209,8 @@
 
 <script lang="ts">
 import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
-
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeFormElements from "./ComputeFormElements.vue"
 import DatabaseFormElements from "./DatabaseFormElements.vue";
