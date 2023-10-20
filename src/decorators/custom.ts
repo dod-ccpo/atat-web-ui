@@ -1,10 +1,12 @@
 import { createDecorator} from 'vue-facing-decorator'
+import Vue from 'vue'
+import { PropsConfig } from 'vue-facing-decorator/dist/option/props'
 //TODO: REFACTOR AFTER VUE 3 UPGRADE
 
 //https://morioh.com/a/9876aadb338e/vuejs-and-property-decorator#PropSync
 //https://github.com/kaorun343/vue-property-decorator/blob/master/src/decorators/PropSync.ts     
 
-export function PropSync(prefix: string) {
+export function PropSync(prefix: string, options?: PropsConfig) {
   return createDecorator(function (options, key) {
     // prototype
     // export default {
