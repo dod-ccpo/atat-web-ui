@@ -69,7 +69,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -89,6 +89,7 @@ import Summary, { isStepTouched } from "@/store/summary";
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATAlert,
