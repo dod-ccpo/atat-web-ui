@@ -64,7 +64,8 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import { EnvironmentLocation, RadioButton, ToastObj } from "../../../../types/Global";
 import { CurrentEnvironmentInstanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -78,13 +79,14 @@ import CurrentEnvironment,
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATAlert,
     ATATDialog,
   },
 })
-export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
+export default class CurrentEnvironmentLocation extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
   public showConfirmDialog = false;
   /* eslint-disable camelcase */

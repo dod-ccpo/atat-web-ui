@@ -145,7 +145,7 @@
               id="AddOptionPeriodButton"
               v-if="totalPoPDuration < maxTotalPoPDuration"
               plain
-              text
+              variant="text"
               class=" mt-5 link-button no-border"
               :ripple="false"
               @click="addOptionPeriod()"
@@ -165,17 +165,17 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
-import Vue from "vue";
+import Vue, { ComponentPublicInstance } from "vue";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { PoP, SelectData, SlideoutPanelContent, SummaryItem } from "../../../types/Global";
+import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
 import { getIdText } from "@/helpers";
 import { PeriodDTO } from "@/api/models";
 import Periods from "@/store/periods";
@@ -197,6 +197,7 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 }
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextField,
     ATATSelect,
@@ -206,10 +207,10 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
     ATATAlert
   },
 })
-export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
+export default class PeriodOfPerformance extends Vue {
 
   $refs!: {
-    form : Vue & {
+    form : ComponentPublicInstance & {
       validate: () => boolean;
     };
   };
@@ -451,15 +452,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     this.setDragEventListeners();
     await this.loadOnEnter();
-    this.$root.$on('validatePOP', (summaryItem: SummaryItem) => {
-      // your code goes here
-      summaryItem.title="Period Of Performance"
-      summaryItem.isTouched = hasChanges(this.savedData, this.currentData);
-      summaryItem.isComplete = this.hasErrors;
-      summaryItem.step = 4
-      summaryItem.substep = 1
-      return summaryItem;
-    })
   }
 
   public durationLabelEl = document.getElementsByClassName("duration")[0] as HTMLElement;

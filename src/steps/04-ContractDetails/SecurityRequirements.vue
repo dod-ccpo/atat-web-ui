@@ -42,7 +42,8 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -57,6 +58,7 @@ import SecurityRequirementsLearnMore
   from "@/steps/04-ContractDetails/SecurityRequirementsLearnMore.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     SecurityRequirementsForm,
     ATATRadioGroup,
@@ -64,7 +66,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATAlert
   }
 })
-export default class SecurityRequirements extends Mixins(SaveOnLeave) {
+export default class SecurityRequirements extends Vue {
   private storedClassification: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
   private selectedTopSecretSecurityRequirements: string[] = [];

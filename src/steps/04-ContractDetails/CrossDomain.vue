@@ -103,7 +103,8 @@
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import Vue from 'vue';
+import { Component, Watch } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -120,6 +121,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
+  mixins: [LoadOnEnter, SaveOnLeave],
   components: {
     AnticipatedDurationandUsage,
     ATATRadioGroup,
@@ -128,7 +130,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
     ATATAlert
   }
 })
-export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
+export default class CrossDomain extends Vue {
   public isPeriodsDataMissing = false;
   public domainInfo: CrossDomainSolution = {
     crossDomainSolutionRequired: "",
@@ -334,8 +336,11 @@ export default class CrossDomain extends Mixins(LoadOnEnter, SaveOnLeave) {
        = JSON.parse(cdsSolution.traffic_per_domain_pair);
 
       if(solutionTypes){
+        // appears as though this is being used as Checkbox[] and string[]
+        // causing "this.selectedCDSCheckboxItems" to contain strings
+        // when it's typed as only Checkbox[]
         const checkboxItems: any = [];
-        const savedSolutionsTypes: any = [];
+        const savedSolutionsTypes: {type: string, dataQuantity: number}[] = [];
         solutionTypes.forEach(item => {
           const checkBoxItemIndex = this.cdsSolutionItems.findIndex(
             cbItem => cbItem.value === item.type);

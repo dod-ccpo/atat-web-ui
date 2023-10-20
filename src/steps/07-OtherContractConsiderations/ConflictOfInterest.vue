@@ -61,7 +61,8 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import { hasChanges } from "@/helpers";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -75,13 +76,14 @@ import { ContractConsiderationsDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATTextArea,
     CoILearnMore,
   },
 })
-export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
+export default class ConflictOfInterest extends Vue {
   private explanation 
     = AcquisitionPackage.contractConsiderations?.conflict_of_interest_explanation || "";
   private savedData: ContractConsiderationsDTO = {};
