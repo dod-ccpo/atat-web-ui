@@ -99,7 +99,7 @@ export default class AnticipatedDurationandUsage extends Vue {
   @PropSync("entireDuration")public _entireDuration!: string;
   @PropSync("selectedPeriods")public _selectedPeriods!: string[]; 
   
-  @Prop() private index!: string;
+  @Prop() private index!: string | number;
   @Prop({required: true}) private typeForUsage!: string;
   @Prop({required: true}) private typeForDuration!: string;
   @Prop({default: `Statement of objectives for the anticipated 

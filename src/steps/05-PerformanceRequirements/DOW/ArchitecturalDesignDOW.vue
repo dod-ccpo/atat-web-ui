@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, mixins } from "vue-facing-decorator";
 
 import ArchitecturalDesignForm from "@/components/DOW/ArchitecturalDesignForm.vue"
 
@@ -21,14 +21,16 @@ import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import DescriptionOfWork, { defaultDOWArchitecturalNeeds } from "@/store/descriptionOfWork";
 import { ArchitecturalDesignRequirementDTO } from "@/api/models";
+import Vue from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ArchitecturalDesignForm
   }
 })
 
-export default class ArchitectureDesignDOW extends Mixins(SaveOnLeave) {
+export default class ArchitectureDesignDOW extends Vue {
   public DOWArchNeeds = defaultDOWArchitecturalNeeds;
 
   /* eslint-disable camelcase */

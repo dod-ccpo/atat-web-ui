@@ -1,27 +1,27 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
+import { createVuetify } from "vuetify";
+import { mount, VueWrapper, config } from "@vue/test-utils";
 import validators from "../../../plugins/validation";
-import { DefaultProps } from "vue/types/options";
+
 
 import EntireDuration from "./EntireDuration.vue";
-
+const Vuetify = createVuetify()
 Vue.use(Vuetify);
 
 describe("Testing ComputeForm Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
-  localVue.use(Vuex);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  config.showDeprecationWarnings = false
+  Vue.use(validators);
+  // is not assignable to parameter of type Plugin<any[]>
+  // Vue.use(Vuex);
+  let vuetify
+  let wrapper: VueWrapper
+  // Property showDeprecationWarnings does not exist on type GlobalConfigOptions
+  // config.showDeprecationWarnings = false
   Vue.config.silent = true;
 
   beforeEach(() => {
-    vuetify = new Vuetify();
+    vuetify = createVuetify()
     wrapper = mount(EntireDuration, {
-      localVue,
       vuetify,
       propsData: {
         entireDuration: "YES",
@@ -43,14 +43,14 @@ describe("Testing ComputeForm Component", () => {
 
   describe("Validation....", () => {
     it("tests that radio group required message is displayed", async () => {
-      const mockValidator = jest.spyOn(localVue.prototype.$validators, 'required')
+      const mockValidator = jest.spyOn(Vue.prototype.$validators, 'required')
       await wrapper.setProps({ entireDuration: ""}); 
       expect(mockValidator).toHaveBeenCalled();
     });
 
     it(`tests that PoP checkboxes are displayed if 'No' is selected for needed
       for entire duration`, async () => {
-      const mockValidator = jest.spyOn(localVue.prototype.$validators, 'required');
+      const mockValidator = jest.spyOn(Vue.prototype.$validators, 'required');
       await wrapper.setProps({ entireDuration: "NO", periodsNeeded: []}); 
       expect(mockValidator).toHaveBeenCalled();    
     });    

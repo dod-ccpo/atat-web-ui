@@ -1,27 +1,25 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import {DefaultProps} from "vue/types/options";
-import ArchitecturalDesign from "@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue";
+import Vue from 'vue'
+import { createVuetify } from 'vuetify'
+import { mount, VueWrapper } from '@vue/test-utils'
+import ArchitecturalDesign from '@/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.vue'
 
-Vue.use(Vuetify);
+const Vuetify = createVuetify()
+Vue.use(Vuetify)
 
-describe("Testing ArchitecturalDesign Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
+describe('Testing ArchitecturalDesign Component', () => {
+  let vuetify
+  let wrapper: VueWrapper
 
   beforeEach(() => {
-    vuetify = new Vuetify();
+    vuetify = createVuetify()
     wrapper = mount(ArchitecturalDesign, {
       vuetify,
-      localVue
-    });
-  });
+    })
+  })
 
-  describe("testing ArchitecturalDesign render", () => {
-    it("renders successfully", async () => {
-      expect(wrapper.exists()).toBe(true);
-    });
+  describe('testing ArchitecturalDesign render', () => {
+    it('renders successfully', async () => {
+      expect(wrapper.exists()).toBe(true)
+    })
   })
 })
