@@ -72,6 +72,7 @@ declare module 'vue' {
     ContactSupport: typeof import('./src/components/icons/ContactSupport.vue')['default']
     ContentCopy: typeof import('./src/components/icons/ContentCopy.vue')['default']
     ControlPoint: typeof import('./src/components/icons/ControlPoint.vue')['default']
+    copy: typeof import('./src/components/icons/ChevronDown copy.vue')['default']
     Currency: typeof import('./src/components/icons/Currency.vue')['default']
     CurrentFunctionsCircle: typeof import('./src/components/icons/CurrentFunctionsCircle.vue')['default']
     CurrentUsage: typeof import('./src/components/DOW/CurrentUsage.vue')['default']
