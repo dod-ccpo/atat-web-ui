@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
+import { mount, VueWrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import ProjectOverview from "@/steps/01-AcquisitionPackageDetails/ProjectOverview.vue";
 import validators from "../../plugins/validation";

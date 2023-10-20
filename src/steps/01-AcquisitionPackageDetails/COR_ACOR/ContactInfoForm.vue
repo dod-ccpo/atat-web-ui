@@ -192,8 +192,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import Vue, { ComponentPublicInstance } from "vue";
+import { Component, Prop, PropSync } from "vue-facing-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -216,7 +216,7 @@ import { RadioButton, SelectData, RankData } from "../../../../types/Global";
 })
 export default class CorAcorContactInfoForm extends Vue {
   $refs!: {
-    CORACORContactForm: Vue & {
+    CORACORContactForm: ComponentPublicInstance & {
       resetValidation: () => void;
       reset: () => void;
     };
