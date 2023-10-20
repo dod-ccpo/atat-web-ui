@@ -156,7 +156,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Mixins } from "vue-property-decorator";
+import { Component, Watch, Mixins } from "vue-facing-decorator";
 import {
   convertAgencyRecordToSelect,
   convertDisaOrgToSelect
@@ -178,6 +178,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAddressForm,
     ATATAutoComplete,

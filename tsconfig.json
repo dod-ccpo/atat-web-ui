@@ -31,8 +31,7 @@
   },
   "vueCompilerOptions": { 
     //gets rid of the red squiggly lines in the vue component
-    // "target": 2.7,
-    "target": 2, // For Vue version <= 2.6.14
+    "target": 3,
     "experimentalUseElementAccessInTemplate": true
   },
   "include": [
