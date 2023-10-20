@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import Vue from "vue";
 import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
+import { mount, VueWrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import Organization from "@/steps/01-AcquisitionPackageDetails/Organization.vue";
 import validators from "../../plugins/validation";

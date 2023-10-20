@@ -79,7 +79,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
@@ -96,6 +96,7 @@ import ContactData from "@/store/contactData";
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAddressForm,
     ATATAutoComplete,

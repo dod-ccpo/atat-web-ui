@@ -30,8 +30,7 @@
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "vueCompilerOptions": { 
-    //gets rid of the red squiggly lines in the vue component
-    "target": 3, 
+    "target": 3,
     "experimentalUseElementAccessInTemplate": true
   },
   "include": [
