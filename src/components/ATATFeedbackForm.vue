@@ -231,7 +231,7 @@
 /* eslint-disable camelcase */
 
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";

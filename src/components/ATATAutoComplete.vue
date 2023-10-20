@@ -60,10 +60,10 @@
 
 <script lang="ts">
 /* eslint vue/no-v-text-v-html-on-component: 1 */
-import Vue from "vue";
+import Vue, { ComponentPublicInstance } from "vue";
 import { AutoCompleteItem } from "types/Global";
 
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -76,7 +76,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ATATAutoComplete extends Vue {
   // refs
   $refs!: {
-    atatAutoComplete: Vue &
+    atatAutoComplete: ComponentPublicInstance &
     {
       errorBucket: string[];
       errorCount: number;
