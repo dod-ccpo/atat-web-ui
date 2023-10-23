@@ -53,8 +53,8 @@
 </style>
 
 <script lang="ts">
-import Vue from 'vue'
-import {Component, Watch} from 'vue-facing-decorator'
+import Vue from "vue";
+import { Component, Watch } from "vue-facing-decorator";
 
 import ATATFooter from './components/ATATFooter.vue'
 import ATATPageHead from './components/ATATPageHead.vue'
