@@ -100,7 +100,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, mixins, Watch } from "vue-facing-decorator";
 
 import RequirementsForm from './RequirementsForm.vue'
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -134,6 +134,7 @@ import {
 } from "@/packages/helpers/ClassificationRequirementsHelper";
 import classificationRequirements from "@/store/classificationRequirements";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import Vue from "vue";
 
 @Component({
   components: {
@@ -145,7 +146,7 @@ import { convertColumnReferencesToValues } from "@/api/helpers";
   }
 })
 
-export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
+export default class ServiceOfferingDetails extends Vue {
   public serviceOfferingName = DescriptionOfWork.currentOfferingName;
   public serviceOfferingSysId = DescriptionOfWork.currentOfferingSysId;
   public groupId = DescriptionOfWork.currentGroupId;

@@ -64,7 +64,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 

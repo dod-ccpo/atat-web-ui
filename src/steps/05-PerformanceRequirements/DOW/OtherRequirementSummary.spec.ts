@@ -1,9 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
+import { createVuetify } from "vuetify";
+import { mount, VueWrapper, config } from "@vue/test-utils";
 import OtherOfferingSummary from "../DOW/OtherOfferingSummary.vue";
-import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { 
@@ -11,16 +10,17 @@ import {
   OtherServiceOfferingData,
 } from "../../../../types/Global";
 import { SystemChoiceDTO } from "@/api/models";
-
+const Vuetify = createVuetify()
 Vue.use(Vuetify);
 
 describe("Testing ServiceOfferingDetails Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
-  localVue.use(Vuex);  
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  config.showDeprecationWarnings = false
+  Vue.use(validators);
+  // is not assignable to parameter of type Plugin<any[]>
+  // Vue.use(Vuex);
+  let vuetify
+  let wrapper: VueWrapper;
+  // Property showDeprecationWarnings does not exist on type GlobalConfigOptions
+  // config.showDeprecationWarnings = false
   Vue.config.silent = true;
 
   const otherOfferingData: OtherServiceOfferingData[] = [{
@@ -73,9 +73,8 @@ describe("Testing ServiceOfferingDetails Component", () => {
   ]
 
   beforeEach(() => {
-    vuetify = new Vuetify();
+    vuetify = createVuetify()
     wrapper = mount(OtherOfferingSummary, {
-      localVue,
       vuetify,
       propsData: {
         isCompute: false,

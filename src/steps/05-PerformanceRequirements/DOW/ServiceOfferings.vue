@@ -72,7 +72,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, mixins, Watch } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import OtherOfferings from "./OtherOfferings.vue";
@@ -91,6 +91,7 @@ import {
   DOWServiceOffering,
 } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
+import Vue from "vue";
 
 @Component({
   components: {
@@ -101,7 +102,7 @@ import { getIdText } from "@/helpers";
   }
 })
 
-export default class ServiceOfferings extends Mixins(SaveOnLeave) {
+export default class ServiceOfferings extends Vue {
   // requirementName will be pulled from data in future ticket
   public requirementName = "";
 
