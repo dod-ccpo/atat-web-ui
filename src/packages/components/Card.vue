@@ -126,7 +126,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
 import { MeatballMenuItem, ToastObj } from "../../../types/Global";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -144,7 +144,6 @@ import CurrentUserStore from "@/store/user";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Toast from "@/store/toast";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import acquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
 import PortfolioStore from "@/store/portfolio";
 @Component({
@@ -191,24 +190,24 @@ export default class Card extends Vue {
 
   public get statusChipBgColor(): string {
     const status = this.modifiedData.packageStatus
-    return getStatusChipBgColor(status ? status : "");
+    return getStatusChipBgColor(status ?? "");
   }
 
   public reformatData(): void {
     const cardData = this.cardData;
-    if(cardData && cardData.contributors){
+    if(cardData?.contributors){
       this.hasContributor = cardData.contributors?.value.length > 0
     }
-    if(cardData && cardData.mission_owners && this.currentUser.sys_id) {
+    if(cardData?.mission_owners && this.currentUser.sys_id) {
       this.isOwner = cardData.mission_owners?.value.indexOf(this.currentUser.sys_id) > -1
     }
-    this.modifiedData.contractAward = cardData.contract_award?.value || ""
-    this.modifiedData.missionOwner = cardData.mission_owners?.display_value || ""
-    this.modifiedData.packageStatus = cardData.package_status?.display_value || ""
-    this.modifiedData.projectOverview = cardData.project_overview?.display_value || ""
-    this.modifiedData.secondaryReviewers = cardData.secondary_reviewers?.value || ""
-    this.modifiedData.updated = cardData.sys_updated_on || ""
-    this.modifiedData.contributors = cardData.contributors?.value || ""
+    this.modifiedData.contractAward = cardData.contract_award?.value ?? ""
+    this.modifiedData.missionOwner = cardData.mission_owners?.display_value ?? ""
+    this.modifiedData.packageStatus = cardData.package_status?.display_value ?? ""
+    this.modifiedData.projectOverview = cardData.project_overview?.display_value ?? ""
+    this.modifiedData.secondaryReviewers = cardData.secondary_reviewers?.value ?? ""
+    this.modifiedData.updated = cardData.sys_updated_on ?? ""
+    this.modifiedData.contributors = cardData.contributors?.value ?? ""
   }
 
   public async updateStatus(newStatus: string): Promise<void> {
@@ -294,7 +293,7 @@ export default class Card extends Vue {
         }).catch(() => console.log("avoiding redundant navigation"));
       }
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
-      await acquisitionPackage.setIsNewPackage(false)
+      await AcquisitionPackage.setIsNewPackage(false)
       break;
     case "View completed package":
       this.packageTitleClick("Waiting for Task Order");

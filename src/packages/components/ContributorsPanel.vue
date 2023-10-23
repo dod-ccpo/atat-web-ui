@@ -19,12 +19,12 @@
           open-on-hover
           offset-x
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ isActive, props }">
             <v-btn
               plain
-              text
-              v-bind="attrs"
-              v-on="on"
+              text="true"
+              v-bind="props"
+              v-on="isActive"
               class="font-size-14 _profile-card__name-button"
             >
               {{ packageCreator.fullNameForSort }}
@@ -91,8 +91,9 @@
         </v-menu> 
         <div>
           <v-tooltip left nudge-right="15" v-if="currentUserIsOwner">
-            <template v-slot:activator="{ on, attrs }">
-              <span v-bind="attrs" v-on="on">
+            <!-- TODO: check activator -->
+            <template v-slot:activator="{ props }">
+              <span v-bind="props" v-on="props">
                 Owner
               </span>
             </template>
@@ -191,7 +192,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
@@ -269,12 +270,13 @@ export default class ContributorsPanel extends Vue {
   public get contributors(): User[] {
     const users = AcquisitionPackage.getPackageContributors || [];
     return users.sort((a,b) => {
-      return a.fullNameForSort && b.fullNameForSort 
-        ? a.fullNameForSort > b.fullNameForSort ? 1: -1
-        : -1;
+      if (!a.fullNameForSort || !b.fullNameForSort) {
+        return -1;
+      }
+      return a.fullNameForSort > b.fullNameForSort ? 1: -1
     });
   }
-  
+
   public get selectedAgency(): string {
     return AcquisitionPackage.getSelectedAgencyAcronym;
   } 
@@ -381,7 +383,7 @@ export default class ContributorsPanel extends Vue {
     return AcquisitionPackage.getAcquisitionPackageData;
   }
   @Watch("acqPkg")
-  public acqPkgChanged(newPkg: AcquisitionPackageDTO | null): void {
+  public acqPkgChanged(): void {
     this.setPackageData();
   }
 
