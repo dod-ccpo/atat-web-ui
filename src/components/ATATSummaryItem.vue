@@ -281,7 +281,7 @@ import { getIdText } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 import { SummaryItem } from "types/Global";
 import Vue from "vue";
-import { Component, Prop} from "vue-property-decorator";
+import { Component, Prop} from "vue-facing-decorator";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -298,7 +298,7 @@ import { SummaryStore } from "@/store/summary";
 export default class ATATSummaryItem extends Vue {
   @Prop({default: "SummaryItems"}) private summaryItems!: SummaryItem[] | [];
 
-  public getIdText(id: string): string{
+  public getIdText(id: string): string {
     return getIdText(id);
   }
   public showMore = false

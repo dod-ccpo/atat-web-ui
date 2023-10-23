@@ -81,8 +81,8 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue, { ComponentPublicInstance } from "vue";
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -103,7 +103,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ATATTextField extends Vue  {
   // refs
   $refs!: {
-    atatTextField: Vue & { 
+    atatTextField: ComponentPublicInstance & {
       errorBucket: string[]; 
       validate: () => boolean;
       errorCount: number 

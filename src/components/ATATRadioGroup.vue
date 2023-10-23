@@ -127,8 +127,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue, { ComponentPublicInstance } from "vue";
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -151,13 +151,13 @@ export default class ATATRadioGroup extends Vue {
 
   // refs
   $refs!: {
-    radioButtonGroup: Vue & { 
+    radioButtonGroup: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
       resetValidation: () => boolean;
     };
-    atatTextInput: Vue & { 
+    atatTextInput: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;

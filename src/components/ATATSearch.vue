@@ -181,8 +181,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue, {ComponentPublicInstance} from "vue";
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -204,13 +204,13 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 export default class ATATSearch extends Vue {
   $refs!: {
-    atatSearchInput: Vue & {
+    atatSearchInput: ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       resetValidation(): void;
       value: string;
     };
-    atatSearchInputModal: Vue & {
+    atatSearchInputModal: ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       resetValidation(): void;

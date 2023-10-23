@@ -86,8 +86,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Emit, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue, { ComponentPublicInstance } from "vue";
+import { Component, Emit, Prop, PropSync, Watch } from "vue-facing-decorator";
 
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -103,7 +103,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ATATSelect extends Vue {
   // refs
   $refs!: {
-    atatSelect: Vue & { 
+    atatSelect: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
       blur: ()=> void;

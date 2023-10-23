@@ -47,7 +47,7 @@
 <script lang="ts">
 import Vue from "vue";
 import AppSections from "@/store/appSections";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
@@ -108,7 +108,7 @@ export default class ATATSlideoutPanel extends Vue {
    * returns boolean to show overlay when breakpoint is either sm or xs
    */
   get showOverlay(): boolean {
-    return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs;
+    return this.$vuetify.display.sm || this.$vuetify.display.xs;
   }
 
   /* A watcher used to set focus on the opener when the slideout panel is toggled.

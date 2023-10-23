@@ -67,8 +67,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue, { ComponentPublicInstance } from "vue";
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -80,7 +80,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class ATATTextArea extends Vue {
   // refs
   $refs!: {
-    atatTextArea: Vue & {
+    atatTextArea: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;

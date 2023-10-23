@@ -140,8 +140,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue, {ComponentPublicInstance} from "vue";
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";
@@ -381,7 +381,7 @@ export const Countries: CountryObj[] = [
 export default class ATATPhoneInput extends Vue {
   // refs
   $refs!: {
-    atatPhoneTextField: Vue &
+    atatPhoneTextField: ComponentPublicInstance &
     {
       errorBucket: string[];
       errorCount: number;
@@ -390,7 +390,7 @@ export default class ATATPhoneInput extends Vue {
       focus: ()=> void;
       validate: () => boolean;
     };
-    atatPhoneDropdown: Vue &
+    atatPhoneDropdown: ComponentPublicInstance &
     {
       blur: ()=> void;
       focus: ()=> void;
@@ -581,11 +581,11 @@ export default class ATATPhoneInput extends Vue {
   }
 
   get wrapperClass(): string {
-    return this.$vuetify.breakpoint.mdAndDown ? "d-block" : "d-flex";
+    return this.$vuetify.display.mdAndDown ? "d-block" : "d-flex";
   }
 
   get extensionClass(): string {
-    return this.$vuetify.breakpoint.mdAndDown ? "mt-6" : "ml-6";
+    return this.$vuetify.display.mdAndDown ? "mt-6" : "ml-6";
   }
   
 }
