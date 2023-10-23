@@ -922,7 +922,7 @@ export enum ClassificationLevels {
 }
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
 
-// SelectItemKey, DataTableCompareFunction, and DataTableHeader are unexposed types from Vuetify
+// Unexposed Vuetify types below
 export type SelectItemKey = boolean | null | undefined | string | (string | number)[] | 
 ((item: Record<string, any>, fallback?: any) => any);
 export type DataTableCompareFunction<T = any> = (a: T, b: T) => number;
@@ -940,3 +940,6 @@ export type DataTableHeader = {
   sortable?: boolean;
   sort?: DataTableCompareFunction;
 };
+export type ValidationResult = string | boolean;
+export type ValidationRule = ValidationResult | PromiseLike<ValidationResult> |
+  ((value: any) => ValidationResult) | ((value: any) => PromiseLike<ValidationResult>);
