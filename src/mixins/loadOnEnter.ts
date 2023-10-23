@@ -1,15 +1,14 @@
-import Vue from "vue";
+import { Vue, Component, toNative } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
-import { Component } from "vue-facing-decorator";
 import Steps from "@/store/steps";
 
 /**
  * Defines a mixable that calls loadOnEnter method for any 
  * component that extends this mixin. 
  */
-Component.registerHooks(["beforeRouteEnter"]);
+// Component.registerHooks(["beforeRouteEnter"]);
 @Component({})
-export default class LoadOnEnter extends Vue {
+class LoadOnEnter extends Vue {
 
   public async beforeRouteEnter(
     to: RouteLocationNormalized,
@@ -23,3 +22,5 @@ export default class LoadOnEnter extends Vue {
   }
 
 }
+
+export default toNative(LoadOnEnter)
