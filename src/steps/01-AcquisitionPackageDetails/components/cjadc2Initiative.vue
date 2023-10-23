@@ -37,7 +37,8 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Prop, PropSync} from "vue-facing-decorator";
+import { Component, Prop} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { LegendLink, RadioButton } from "types/Global";
