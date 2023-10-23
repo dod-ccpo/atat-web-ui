@@ -295,7 +295,6 @@ export default class CurrentContract extends Vue {
 
   get tomorrowDateISO():string{
     const tomorrow = add (new Date(), {days: 1})
-    const d = format(tomorrow, 'P');
     return formatISO(tomorrow, { representation: 'date' }) 
   }
 
@@ -303,7 +302,7 @@ export default class CurrentContract extends Vue {
   private expirationDPSharedErrorMessages: string[] = [];
 
   private setStartDateErrorMessages(value:string[]): void{
-    this.removeSharedErrorMessages(true);
+    this.removeSharedErrorMessages();
     setTimeout(()=>{
       this.expirationDPSharedErrorMessages = this.isDatePickersEmpty && value.length>0
         ? ["Please enter your PoP start and expiration dates."]
@@ -312,7 +311,7 @@ export default class CurrentContract extends Vue {
   };
 
   private setExpirationDateErrorMessages(value:string[]): void{
-    this.removeSharedErrorMessages(false);
+    this.removeSharedErrorMessages();
     
     setTimeout(()=>{
       this.expirationDPSharedErrorMessages = this.isDatePickersEmpty && value.length>0
@@ -326,13 +325,7 @@ export default class CurrentContract extends Vue {
       && this.currentData.contract_order_expiration_date === "";
   }
 
-  private removeSharedErrorMessages(isStart: boolean):void{
-    const startTextBox = (this.$refs.startDatePicker as unknown as ATATDatePicker)
-      .$refs["atatDatePicker"];
-
-    const expirationTextBox = (this.$refs.expirationDatePicker as unknown as ATATDatePicker)
-      .$refs["atatDatePicker"];
-    
+  private removeSharedErrorMessages():void{    
     this.startDPSharedErrorMessages = [];
     this.expirationDPSharedErrorMessages = [];
   }
