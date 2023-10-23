@@ -74,7 +74,8 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom';
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
 import { Checkbox } from "../../../../types/Global";
