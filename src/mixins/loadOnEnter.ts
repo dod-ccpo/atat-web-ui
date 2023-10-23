@@ -1,6 +1,6 @@
 import Vue from "vue";
-import { Route } from "vue-router";
-import { Component } from "vue-property-decorator";
+import { RouteLocationNormalized } from "vue-router";
+import { Component } from "vue-facing-decorator";
 import Steps from "@/store/steps";
 
 /**
@@ -12,8 +12,8 @@ Component.registerHooks(["beforeRouteEnter"]);
 export default class LoadOnEnter extends Vue {
 
   public async beforeRouteEnter(
-    to: Route,
-    from: Route,
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
     next: (n: unknown) => void
   ): Promise<void> {
     Steps.setEnterStepComplete(to.name as string);

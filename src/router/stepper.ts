@@ -185,8 +185,8 @@ import {
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   MIPRResolver,
-  CurrentlyHasFundingResolver,
-  GTCInformationResolver,
+  // CurrentlyHasFundingResolver,
+  // GTCInformationResolver,
   FundingPlanTypeResolver,
   Upload7600Resolver,
   AppropriationOfFundsResolver,
@@ -213,7 +213,7 @@ import {
   AnticipatedUserAndDataNeedsResolver,
   IGCETrainingPathResolver,
   FeeChargedResolver,
-  RFDResolver,
+  // RFDResolver,
   showDITCOPageResolver,
   ContractingInfoResolver,
   CrossDomainResolver,
@@ -237,7 +237,7 @@ import {
   ContactInformationResolver,
   CorInformationResolver,
   ACorInformationQuestionResolver, 
-  GeneratingPackageDocumentsFundingResolver
+  // GeneratingPackageDocumentsFundingResolver
 } from "./resolvers";
 
 
@@ -378,7 +378,7 @@ export const routeNames = {
  * Rules:
  * 1. Parent steps cannot have a name
  * 2. Parent steps need a page component with a router view defined
- * 3. All steps needs to have unique names
+ * 3. All steps need to have unique names
  * 4. If a stepper route isn't meant to be rendered set it's 'excludeFromMenu' value to true
  */
 export const stepperRoutes: Array<StepperRouteConfig> = [
@@ -1410,7 +1410,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.RFD,
         completePercentageWeight: 1,
         component: RFD,
-        routeResolver: RFDResolver,
+        // routeResolver: RFDResolver,
       },
       {
         menuText: "Funding",
@@ -1418,7 +1418,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CurrentlyHasFunding,
         completePercentageWeight: 1,
         component: CurrentlyHasFunding,
-        routeResolver: CurrentlyHasFundingResolver,
+        // routeResolver: CurrentlyHasFundingResolver,
       },
       {
         menuText: "GTC-Information",
@@ -1427,7 +1427,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         completePercentageWeight: 1,
         component: GTC,
-        routeResolver: GTCInformationResolver
+        // routeResolver: GTCInformationResolver
       },
       {
         menuText: "Funding-Plan",
@@ -1463,7 +1463,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GeneratingPackageDocumentsFunding,
         completePercentageWeight: 0,
         component: GeneratingPackageDocumentsFunding,
-        routeResolver: GeneratingPackageDocumentsFundingResolver
+        // routeResolver: GeneratingPackageDocumentsFundingResolver
       },
      
       {
@@ -1563,7 +1563,7 @@ const mapStepRouteToStepperData = (
     name,
     completed,
     completePercentageWeight,
-    route: path,
+    route: path as string,
     subSteps: stepperRouteConfig.children?.map((child) =>
       mapStepRouteToStepperData(child)
     ),
