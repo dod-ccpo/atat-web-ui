@@ -158,7 +158,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Mixins } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 import {convertSystemChoiceToSelect} from "@/helpers";
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
@@ -193,7 +193,7 @@ import Vue, {ComponentPublicInstance} from "vue";
     ATATTextField,
   },
 })
-export default class ContactInfo extends Mixins(SaveOnLeave) {
+export default class ContactInfo extends Vue {
   $refs!: {
     form: ComponentPublicInstance & { 
       resetValidation: () => void;

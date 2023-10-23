@@ -97,7 +97,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+import { Component, Prop } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDialog from "@/components/ATATDialog.vue";

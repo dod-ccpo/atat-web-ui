@@ -193,7 +193,8 @@
 
 <script lang="ts">
 import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+import { Component, Prop } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
