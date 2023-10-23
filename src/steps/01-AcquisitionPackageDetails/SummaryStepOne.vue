@@ -64,7 +64,12 @@ export default class SummaryStepOne extends Vue{
     await Summary.toggleButtonColor(1);
   }
   public async deleteAcor(): Promise<void>{
-    Summary.removeSummaryItem(1,5)
+    const existingACORSummaryItem = this.summaryItems.find(
+      si => si.routeName.toUpperCase() === "ACORINFORMATION"
+    )
+    if (existingACORSummaryItem){
+      Summary.removeSummaryItem(existingACORSummaryItem)
+    }
   }
 
   protected async saveOnLeave(): Promise<boolean> {

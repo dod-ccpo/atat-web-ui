@@ -137,7 +137,7 @@
               $validators.required(
                 'Please enter your ' + corOrAcor + '’s phone number'
               ),
-              $validators.isPhoneNumberValid(this._selectedPhoneCountry),
+              $validators.isPhoneNumberValid(_selectedPhoneCountry),
             ]"
           />
 
@@ -203,7 +203,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import DoDAAC from "../components/DoDAAC.vue";
 
-import { RadioButton, SelectData, RankData } from "../../../../types/Global";
+import { RadioButton, SelectData, RankData, CountryObj } from "../../../../types/Global";
 
 @Component({
   components: {
@@ -233,7 +233,7 @@ export default class CorAcorContactInfoForm extends Vue {
   @Prop() private isForm!: boolean;
   @Prop() private sectionHeader!: string;
 
-  @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
+  @PropSync("selectedPhoneCountry") private _selectedPhoneCountry!: CountryObj;
 
   @PropSync("selectedRole") private _selectedRole?: string;
   @PropSync("selectedRank") private _selectedRank?: RankData;
@@ -268,18 +268,19 @@ export default class CorAcorContactInfoForm extends Vue {
   }
 
   public resetData(): void {
-    Vue.nextTick(() => {
-      //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.CORACORContactForm.$children;
+    //TODO: children no longer exists on children.. This
+  //   Vue.nextTick(() => {
+  //     //iterate over the forms children ref manually set their 'errorMessages' array to empty
+  //     const formChildren = this.$refs.CORACORContactForm.$children;
 
-      formChildren.forEach((ref)=> {
-        ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-      });
-      Vue.nextTick(() => {
-        this.$refs.CORACORContactForm.reset();
-        this.$refs.CORACORContactForm.resetValidation();
-      });
-    });
+  //     formChildren.forEach((ref)=> {
+  //       ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+  //     });
+  //     Vue.nextTick(() => {
+  //       this.$refs.CORACORContactForm.reset();
+  //       this.$refs.CORACORContactForm.resetValidation();
+  //     });
+  //   });
   }
 }
 </script>

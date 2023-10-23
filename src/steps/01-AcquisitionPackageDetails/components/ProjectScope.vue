@@ -5,7 +5,7 @@
       :label="label"
       class="max-width-740"
       :rows="7"
-      :rules="rules"
+      :rules="_rules"
       :helpText="helpText"
       :value.sync="_projectScope"
       maxChars="300"
@@ -14,7 +14,7 @@
   <div v-else>
      <dl class="vertical">
         <dt>Brief description of the requirement:</dt>
-        <dd>{{ projectScope }}</dd>
+        <dd>{{ _projectScope }}</dd>
       </dl> 
    </div>
 </template>
@@ -25,6 +25,7 @@ import { Component, Prop } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import Vue from "vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import { ValidationRule } from "types/Global";
 
 @Component({
   components: {
@@ -38,6 +39,6 @@ export default class ProjectScope extends Vue {
   @Prop() private label!: string;
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: true }) private isForm!: boolean;
-  @PropSync("rules") private _rules!: "";
+  @PropSync("rules") private _rules!: ValidationRule;
 }
 </script>

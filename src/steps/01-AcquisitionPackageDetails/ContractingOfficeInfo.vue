@@ -109,7 +109,7 @@ import Vue from "vue"
 export default class ContractingOfficeInfo extends Vue {
 
   get inputClass(): string {
-    return this.$vuetify.breakpoint.mdAndDown
+    return this.$vuetify.display.mdAndDown
       ? "_input-max-width my-2"
       : "my-2";
   }

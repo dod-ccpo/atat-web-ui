@@ -7,7 +7,7 @@
     <ATATTextField
       :id="id"
       :label="label"
-      :rules="rules"
+      :rules="_rules"
       class="_input-max-width"
       tooltipText="Provide a short, descriptive title of the work to
               be performed. This will be used to refer to this project within 
@@ -29,6 +29,7 @@ import Vue from "vue";
 import { Component, Prop } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATTextField from "@/components/ATATTextField.vue";
+import { ValidationRule } from "types/Global";
 
 @Component({
   components: {
@@ -42,6 +43,6 @@ export default class ProjectTitle extends Vue {
   @Prop() private label!: string;
   @Prop({ default: "title goes here" }) private helpText!: string;
   @Prop({ default: true}) private isForm!: boolean;
-  @PropSync("rules") private _rules!: "";
+  @PropSync("rules") private _rules!: ValidationRule;
 }
 </script>

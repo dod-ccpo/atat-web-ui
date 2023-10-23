@@ -120,7 +120,7 @@
             :extensionValue.sync="phoneExtension"
             :rules="[
               $validators.isPhoneNumberValid(
-                this.selectedPhoneCountry
+                selectedPhoneCountry
               ),
             ]"
           />
@@ -488,18 +488,19 @@ export default class ContactInfo extends Vue {
   }
 
   public resetData(): void {
-    Vue.nextTick(() => {
-      //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.form.$children;
+    //TODO: implement fix for children
+  //   Vue.nextTick(() => {
+  //     //iterate over the forms children ref manually set their 'errorMessages' array to empty
+  //     const formChildren = this.$refs.form.$children;
      
-      formChildren.forEach((ref)=> {
-        ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-      });
-      Vue.nextTick(() => {
-        this.$refs.form.reset();
-        this.$refs.form.resetValidation();
-      });
-    });
+  //     formChildren.forEach((ref)=> {
+  //       ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+  //     });
+  //     Vue.nextTick(() => {
+  //       this.$refs.form.reset();
+  //       this.$refs.form.resetValidation();
+  //     });
+  //   });
   }
 
   protected async saveOnLeave(): Promise<boolean> {
