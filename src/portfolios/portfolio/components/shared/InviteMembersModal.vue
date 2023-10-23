@@ -125,7 +125,6 @@ import PortfolioStore from "@/store/portfolio";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import UserManagement from "@/store/user/userManagement";
-import portfolio from "@/store/portfolio";
 
 import UserSearch from "@/mixins/userSearch";
 
@@ -209,7 +208,7 @@ export default class InviteMembersModal extends UserSearch {
       (selectedUser.role === "Manager") || (selectedUser.role === "Viewer")
     );
     if (userSelectedNotRemovedList.length > 0) {
-      await portfolio.inviteMembers(userSelectedNotRemovedList);
+      await PortfolioStore.inviteMembers(userSelectedNotRemovedList);
       this.$emit("membersInvited");
     }
   }
