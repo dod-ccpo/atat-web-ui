@@ -50,11 +50,12 @@
           class="_top-nav-menu"
           :class="{ '_profile-menu': navItem.isProfile }"
         >
-          <div v-for="(menuItem, idx) in navItem.menu">
+          <div v-for="(menuItem, idx) in navItem.menu" :key="idx">
             <!-- top profile block with initials in circle, name, and email -->
             <v-list-item
+              :id="'ProfileBlock' + idx"
               v-if="navItem.isProfile && idx === 0"
-              :key="'ProfileBlock' + idx"
+             
               class="d-flex py-2"
               disabled
             >
