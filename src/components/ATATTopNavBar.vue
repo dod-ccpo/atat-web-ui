@@ -50,7 +50,7 @@
           class="_top-nav-menu"
           :class="{ '_profile-menu': navItem.isProfile }"
         >
-          <template v-for="(menuItem, idx) in navItem.menu">
+          <div v-for="(menuItem, idx) in navItem.menu">
             <!-- top profile block with initials in circle, name, and email -->
             <v-list-item
               v-if="navItem.isProfile && idx === 0"
@@ -117,7 +117,7 @@
               </span>
 
             </v-list-item>
-          </template>
+          </div>
         </v-list>
       </v-menu>
     </div>
