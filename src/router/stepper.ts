@@ -185,8 +185,8 @@ import {
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   MIPRResolver,
-  // CurrentlyHasFundingResolver,
-  // GTCInformationResolver,
+  CurrentlyHasFundingResolver,
+  GTCInformationResolver,
   FundingPlanTypeResolver,
   Upload7600Resolver,
   AppropriationOfFundsResolver,
@@ -213,7 +213,7 @@ import {
   AnticipatedUserAndDataNeedsResolver,
   IGCETrainingPathResolver,
   FeeChargedResolver,
-  // RFDResolver,
+  RFDResolver,
   showDITCOPageResolver,
   ContractingInfoResolver,
   CrossDomainResolver,
@@ -237,7 +237,7 @@ import {
   ContactInformationResolver,
   CorInformationResolver,
   ACorInformationQuestionResolver, 
-  // GeneratingPackageDocumentsFundingResolver
+  GeneratingPackageDocumentsFundingResolver
 } from "./resolvers";
 
 
@@ -1410,7 +1410,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.RFD,
         completePercentageWeight: 1,
         component: RFD,
-        // routeResolver: RFDResolver,
+        routeResolver: RFDResolver,
       },
       {
         menuText: "Funding",
@@ -1418,7 +1418,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.CurrentlyHasFunding,
         completePercentageWeight: 1,
         component: CurrentlyHasFunding,
-        // routeResolver: CurrentlyHasFundingResolver,
+        routeResolver: CurrentlyHasFundingResolver,
       },
       {
         menuText: "GTC-Information",
@@ -1427,7 +1427,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         completePercentageWeight: 1,
         component: GTC,
-        // routeResolver: GTCInformationResolver
+        routeResolver: GTCInformationResolver
       },
       {
         menuText: "Funding-Plan",
@@ -1463,7 +1463,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GeneratingPackageDocumentsFunding,
         completePercentageWeight: 0,
         component: GeneratingPackageDocumentsFunding,
-        // routeResolver: GeneratingPackageDocumentsFundingResolver
+        routeResolver: GeneratingPackageDocumentsFundingResolver
       },
      
       {
