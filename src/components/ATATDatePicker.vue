@@ -44,8 +44,8 @@
           v-bind="attrs"
           v-on="on"
           :rules="rules"
-          @blur="onBlur($event)"
-          @focus ="onFocus($event)"
+          @blur="onBlur"
+          @focus ="onFocus"
           @keypress:enter="menu=false"
           :validate-on-blur="validateOnBlur"
           autocomplete="off"
@@ -83,7 +83,7 @@
         scrollable
       ></v-date-picker>
     </v-menu>
-    <ATATErrorValidation v-if="menu === false && showErrors" :errorMessages="errorMessages" />
+    <ATATErrorValidation v-if="!menu && showErrors" :errorMessages="errorMessages" />
   </div>
 </template>
 <script lang="ts">
@@ -93,6 +93,7 @@ import { add, format, formatISO, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import {ValidationRule} from "../../types/Global";
 
 @Component({
   components: {
@@ -141,7 +142,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: string;
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") }) private max!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: false }) private isRequired!: boolean;
   @Prop({ default: true }) private showErrors!: boolean;
 

@@ -19,7 +19,7 @@
 
     <v-list>
       <v-list-item
-        v-for="(item, idx) in menuItems"
+        v-for="(item, idx) in processedMenuItems"
         :key="idx"
         :id="getIdText(item.title) + '_MenuItem' + index"
         :class="[
@@ -73,6 +73,12 @@ export default class ATATMeatballMenu extends Vue {
     this.$emit("menuItemClick", item, this.index);
   }
 
+  get processedMenuItems() {
+    return this.menuItems.map(item => ({
+      ...item,
+      disabled: item.disabled ?? false,  // Providing a default value if `disabled` is undefined
+    }));
+  }
 }
 
 

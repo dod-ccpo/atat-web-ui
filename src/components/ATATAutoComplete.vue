@@ -61,7 +61,7 @@
 <script lang="ts">
 /* eslint vue/no-v-text-v-html-on-component: 1 */
 import Vue, { ComponentPublicInstance } from "vue";
-import { AutoCompleteItem } from "types/Global";
+import {AutoCompleteItem, SelectData, ValidationRule} from "types/Global";
 
 import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -96,11 +96,11 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "", required: true }) private label!: string;
   @Prop({ default: false }) private labelSrOnly!: string;
   @Prop({ default: "" }) private icon!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
-  @Prop({ default: [], required: true }) private searchFields!: [];
-  @Prop({  default: () => [] , required: true }) private items!: [];
+  @Prop({ default: [], required: true }) private searchFields!: string[];
+  @Prop({ default: () => [] , required: true }) private items!: object[];
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;

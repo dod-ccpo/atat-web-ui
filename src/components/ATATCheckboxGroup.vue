@@ -155,7 +155,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
-import { Checkbox, totalClassLevelsInDOWObject } from "../../types/Global";
+import { Checkbox, totalClassLevelsInDOWObject, ValidationRule } from "../../types/Global";
 import { getIdText, setItemToPlural } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationRequirements from "@/store/classificationRequirements";
@@ -196,7 +196,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "CheckboxGroupLabel" }) private groupLabelId!: string;
   @Prop() private groupLabel!: string;
   @Prop() private groupLabelHelpText?: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: () => [] }) private textfieldRules!: Array<unknown>;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @Prop({ default: "" }) private color!: string;
@@ -214,7 +214,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private labelFontWeight?: string;
   @Prop() private labelSuffix?: string;
   @Prop() private textFieldAppendText?: string;
-  @Prop() private textFieldWidth?: number;
+  @Prop() private textFieldWidth?: string;
   @Prop({ default: "text" }) private textFieldType?: string;
   @Prop({ default: false }) private isFormattedNumber?: boolean;
   @Prop({ default: false }) private showIconWithMessage?: boolean;
@@ -232,7 +232,7 @@ export default class ATATCheckboxGroup extends Vue {
   private totalRequirementsInDOW: totalClassLevelsInDOWObject[] = []
   public isLoading = false;
 
-  public checkboxRules: Array<unknown> = [];
+  public checkboxRules: ValidationRule[] = [];
 
   @Watch("rules", {deep: true})
   public rulesChanged(): void {

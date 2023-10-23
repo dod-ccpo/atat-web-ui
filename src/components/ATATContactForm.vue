@@ -257,18 +257,18 @@ export default class ATATContactForm extends Vue {
 
   }
   public resetData(): void {
-    Vue.nextTick(() => {
-      //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.atatGlobalContact.$children;
-
-      formChildren.forEach((ref)=> {
-        ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-      });
-      Vue.nextTick(() => {
-        this.$refs.atatGlobalContact.reset();
-        this.$refs.atatGlobalContact.resetValidation();
-      });
-    });
+    // Vue.nextTick(() => {
+    //   //iterate over the forms children ref manually set their 'errorMessages' array to empty
+    //   const formChildren = this.$refs.atatGlobalContact.$children;
+    //
+    //   formChildren.forEach((ref)=> {
+    //     ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+    //   });
+    //   Vue.nextTick(() => {
+    //     this.$refs.atatGlobalContact.reset();
+    //     this.$refs.atatGlobalContact.resetValidation();
+    //   });
+    // });
   }
 
   public async loadOnEnter(): Promise<void> {
