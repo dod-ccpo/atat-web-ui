@@ -114,7 +114,8 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom'
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";

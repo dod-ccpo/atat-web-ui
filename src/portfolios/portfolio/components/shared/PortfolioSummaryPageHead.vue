@@ -132,8 +132,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
-
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom'
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
 import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";

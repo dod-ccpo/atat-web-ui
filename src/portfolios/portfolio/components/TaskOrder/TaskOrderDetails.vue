@@ -110,9 +110,7 @@
         class="_clin-table border1 border-base-lighter"
       >
         <!-- eslint-disable vue/valid-v-slot -->
-        <template v-slot:body="props">
-          <tbody name="expand">
-            <template>
+        <template v-slot:item="{item, index}">
               <tr
                 class="row-item"
                 :class="[
@@ -121,7 +119,6 @@
                   { 'd-none': item.isExpired && !showInactive },
                   { 'd-none': item.isPending && !showInactive },
                 ]"
-                v-for="item in props.items"
                 :key="item.CLINNumber"
               >
                 <td>
@@ -256,8 +253,7 @@
                   </div>
                 </td>
               </tr>
-            </template>
-            <tr class="_section-divider">
+            <tr class="_section-divider" v-if="addInactiveClinSection(index)">
               <td colspan="2" class="font-weight-400">
                 <span v-if="!isExpiredTO">
                   <a
@@ -339,8 +335,7 @@
                 </div>
               </td>
             </tr>
-          </tbody>
-        </template>
+            </template>
       </v-data-table>
     </div>
 
@@ -385,7 +380,8 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom'
 import {
   ClinTableRowData,
   TaskOrderCardData,
@@ -592,6 +588,9 @@ export default class TaskOrderDetails extends Vue {
       percent: String(percent),
       fundsRemaining: "$" + toCurrencyString(remaining) + " remaining",
     };
+  }
+  public addInactiveClinSection(index: number){
+    return (this.tableData.length - 1) === index
   }
 
   public async collectTableData(): Promise<void> {
@@ -841,10 +840,11 @@ export default class TaskOrderDetails extends Vue {
           this.selectedTaskOrder.totalObligated &&
           this.selectedTaskOrder.totalFundsSpent
         ) {
-          this.taskOrderRemainingFunds = this.fundsRemaining(
-            currencyStringToNumber(this.selectedTaskOrder.totalObligated),
-            currencyStringToNumber(this.selectedTaskOrder.totalFundsSpent)
-          );
+          const totalObligatedNum = currencyStringToNumber(this.selectedTaskOrder.totalObligated);
+          const totalSpentNum = currencyStringToNumber(this.selectedTaskOrder.totalFundsSpent)
+          if(totalObligatedNum && totalSpentNum){
+            this.taskOrderRemainingFunds = this.fundsRemaining(totalObligatedNum, totalSpentNum);
+          }
         }
       } catch {
         console.log("Error loading Task Order Details");
