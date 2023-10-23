@@ -22,7 +22,8 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Mixins} from "vue-facing-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Summary, {
@@ -32,11 +33,12 @@ import Summary, {
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSummaryItems
   },
 })
-export default class SummaryStepEight extends Mixins(SaveOnLeave){
+export default class SummaryStepEight extends Vue {
   public summaryItems: SummaryItem[] = [];
   public introParagraph = "";
   

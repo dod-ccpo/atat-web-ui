@@ -43,7 +43,8 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Mixins } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import {RadioButton, SingleMultiple} from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -56,12 +57,13 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import _ from "lodash";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATSingleAndMultiplePeriods
   },
 })
-export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
+export default class OptimizeOrReplicate extends Vue {
   private opRepOption: SingleMultiple = "";
   private opRepEstValues: string[] = [""];
   private periods: PeriodDTO[] | null = [];
@@ -115,8 +117,12 @@ export default class OptimizeOrReplicate extends Mixins(SaveOnLeave) {
 
   protected async loadOnEnter(): Promise<boolean> {
     const store = await IGCEStore.getRequirementsCostEstimate();
-    this.savedData = _.cloneDeep(store.optimize_replicate);
-    this.opRepOption = store.optimize_replicate.option;
+    const fromStore = _.cloneDeep(store.optimize_replicate)
+    this.savedData = {
+      option: fromStore.option ?? '',
+      estimated_values: fromStore.estimated_values,
+    };
+    this.opRepOption = store.optimize_replicate.option ?? '';
     this.opRepEstValues = store.optimize_replicate.estimated_values;
     return true;
   }

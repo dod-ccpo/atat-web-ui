@@ -20,7 +20,8 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocuments from "./components/GeneratingDocuments.vue";
@@ -28,18 +29,19 @@ import ReviewDocuments from "./components/ReviewDocuments.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     GeneratingDocuments,
     ReviewDocuments
   }
 })
-export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
+export default class GeneratingPackageDocuments extends Vue {
 
   public isGenerating = false;
   private isErrored = false;
   private docJobStatus = "" ;
 
-  public packageDocComponent:Vue.Component = 
+  public packageDocComponent: (typeof Vue) = 
     this.$route.params.direction === "next"
       ? GeneratingDocuments
       : ReviewDocuments
@@ -74,7 +76,7 @@ export default class GeneratingPackageDocuments extends Mixins(SaveOnLeave) {
   public async getStatus(): Promise<void> {
     const intervalId = window.setInterval(() => checkDocJobStatus(), 3000);
 
-    const checkDocJobStatus: unknown = (async ()=> {
+    const checkDocJobStatus = (async ()=> {
       await this.getDocJobStatus();
       ["SUCCESS", "FAILURE"].some(
         (status)=>{

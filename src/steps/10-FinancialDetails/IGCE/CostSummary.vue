@@ -115,8 +115,8 @@
             </tr>
           </template>
           <template v-slot:body="props">
-            <tr 
-              v-for="(item, rowIdx) in props.items" 
+            <tr
+              v-for="(item, rowIdx) in (props.items as unknown as IGCECostSummaryItem[])" 
               :key="rowIdx" 
               class="row-item font-size-14 text-right" :class="[{
                 '_subtotal': item.CLINTypeClassAggregate === 'Subtotal'
@@ -129,8 +129,8 @@
                   item.CLINTypeClassAggregate === 'Fees' ||
                   item.CLINTypeClassAggregate === 'Surge and Fees',
               },
-              { '_fees-row': isAccordionItem(item.isAccordionItem) },
-              { '_hide': showSurgeAndFees(item.isAccordionItem) }
+              { '_fees-row': isAccordionItem(Boolean(item?.isAccordionItem)) },
+              { '_hide': showSurgeAndFees(Boolean(item?.isAccordionItem)) }
               ]"
             >
             <td>
@@ -198,6 +198,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import IGCE from "@/store/IGCE";
+import { DataTableHeader } from '../../../../types/Global';
 
 
 export interface IGCECostSummaryItem {
@@ -209,6 +210,7 @@ export interface IGCECostSummaryItem {
   OptionFour?: string,
   Total?: string,
   isCLINAmount?: string,
+  isAccordionItem?: boolean,
 }
 
 @Component({
@@ -241,9 +243,8 @@ export default class CostSummary extends Vue {
   public toggle(): void {
     this.showSurgeAndFeeRows = !this.showSurgeAndFeeRows
   }
-  public tableHeaders = [
-    { text: "CLIN Type & Classification", value: "CLINTypeClassAggregate" },
-
+  public tableHeaders: DataTableHeader[] = [
+    { title: "CLIN Type & Classification", value: "CLINTypeClassAggregate" },
   ];
 
   public getIdText(str: string): string {
@@ -261,8 +262,12 @@ export default class CostSummary extends Vue {
   }
 
   // eslint-disable-next-line max-len
-  public createTableData(source: Record<string, any>, clinAmount: string, rowName: string, isAccordionItem = false)
-    : void {
+  public createTableData(
+    source: Record<string, any>, 
+    clinAmount: string,
+    rowName: string,
+    isAccordionItem = false,
+  ) : void {
     let basePeriod, option1, option2, option3, option4
     if (source["Base Period"]) {
       basePeriod = getCurrencyString(source["Base Period"], true)

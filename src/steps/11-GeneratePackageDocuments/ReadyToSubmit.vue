@@ -67,7 +67,6 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import LateFormAlert from "@/portfolios/portfolio/LateFormAlert.vue";
-import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import CompletePackageCard 
   from "@/steps/11-GeneratePackageDocuments/components/CompletePackageCard.vue"
 import { User } from "types/Global";

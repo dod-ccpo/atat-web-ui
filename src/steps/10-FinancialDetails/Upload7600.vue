@@ -93,7 +93,8 @@
 </template>
 <script lang="ts">
 import { invalidFile, uploadingFile } from "types/Global";
-import { Component, Mixins } from "vue-facing-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
@@ -114,6 +115,7 @@ import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATSearch,
@@ -122,7 +124,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     GInvoiceLearnMore,
   },
 })
-export default class GTCInformation extends Mixins(SaveOnLeave) {
+export default class GTCInformation extends Vue {
   // radio options
   public useGInvoicing = "";
   private gInvoicingOptions: RadioButton[] = [

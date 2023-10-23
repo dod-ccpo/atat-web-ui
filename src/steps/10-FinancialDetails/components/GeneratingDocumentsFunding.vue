@@ -24,7 +24,8 @@
 </template>
 <script lang="ts">
 
-import { Component, PropSync } from "vue-facing-decorator";
+import { Component } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import Vue from "vue";
 
 @Component({})

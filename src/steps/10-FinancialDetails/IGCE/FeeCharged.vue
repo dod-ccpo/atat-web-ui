@@ -41,7 +41,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Mixins, Watch } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
 import { hasChanges } from "@/helpers";
@@ -49,16 +49,18 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import IGCEStore from "@/store/IGCE";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { YesNo } from "../../../../types/Global";
+import { ComponentPublicInstance } from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATTextField
   },
 })
-export default class FeeCharged extends Mixins(SaveOnLeave) {
+export default class FeeCharged extends Vue {
   $refs!: {
-    PercentageTextbox: Vue & {
+    PercentageTextbox: ComponentPublicInstance & {
       errorMessages: () => [];
     };
   };

@@ -106,7 +106,8 @@ import {
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { Component, Mixins, Watch } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
@@ -123,6 +124,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATRadioGroup,
@@ -131,7 +133,7 @@ import _ from "lodash";
     ATATSVGIcon,
   },
 })
-export default class TravelEstimates extends Mixins(SaveOnLeave) {
+export default class TravelEstimates extends Vue {
   private periods: PeriodDTO[] | null = [];
   private ceilingPrice: SingleMultiple | undefined = "";
   private estimatedTravelCosts = "";

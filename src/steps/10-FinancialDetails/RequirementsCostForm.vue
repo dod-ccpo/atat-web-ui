@@ -21,7 +21,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-facing-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 import FinancialDetails from "@/store/financialDetails";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -30,12 +31,13 @@ import ATATAlert from "../../components/ATATAlert.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATTextField,
   },
 })
-export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
+export default class RequirementsCostForm extends Vue {
   private costEstimate = "";
 
   private get currentData(): RequirementsCostEstimateDTO {

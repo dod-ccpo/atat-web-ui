@@ -58,7 +58,6 @@
 import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { isStepComplete, isSubStepComplete,  } from "@/store/summary";
-import DescriptionOfWork from "@/store/descriptionOfWork";
 import { routeNames } from "../../../router/stepper"
 
 import { Component } from "vue-facing-decorator";

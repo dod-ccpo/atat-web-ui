@@ -47,17 +47,19 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins} from "vue-facing-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSVGIcon
   }
 })
-export default class ReadyToGeneratePackage extends Mixins(SaveOnLeave) {
+export default class ReadyToGeneratePackage extends Vue {
 
   get contractingShop():string {
     return AcquisitionPackage.contractingShop

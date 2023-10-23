@@ -187,7 +187,8 @@
 </template>
 <script lang="ts">
 
-import { Component, Mixins, Watch } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import { RadioButton } from "../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -201,6 +202,7 @@ import { PeriodDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATExpandableLink,
@@ -208,7 +210,7 @@ import { hasChanges } from "@/helpers";
   }
 })
 
-export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeave) {
+export default class SeverabilityAndIncrementalFunding extends Vue {
   private selectedFundOption = "";
   private savedFundOption = "";
   private isPeriodsDataMissing = false;

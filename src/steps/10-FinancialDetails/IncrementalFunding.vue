@@ -153,7 +153,7 @@
                 id="AddIncrementButton"
                 v-if="showAddIncrementButton"
                 plain
-                text
+                variant="text"
                 class=" link-button no-border mt-5"
                 :ripple="false"
                 @click="addIncrement()"
@@ -261,7 +261,8 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Mixins } from "vue-facing-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -288,6 +289,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSelect,
     ATATSVGIcon,
@@ -297,7 +299,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   },
 })
 
-export default class IncrementalFunding extends Mixins(SaveOnLeave) {
+export default class IncrementalFunding extends Vue {
   public today = new Date();
   public currentYear = this.today.getFullYear();
 
