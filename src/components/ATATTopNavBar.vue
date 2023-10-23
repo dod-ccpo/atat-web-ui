@@ -51,6 +51,7 @@
           :class="{ '_profile-menu': navItem.isProfile }"
         >
           <div v-for="(menuItem, idx) in navItem.menu" :key="idx">
+
             <!-- top profile block with initials in circle, name, and email -->
             <v-list-item
               :id="'ProfileBlock' + idx"
