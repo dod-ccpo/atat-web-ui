@@ -1,10 +1,9 @@
 /* eslint-disable camelcase */
 import Vue from "vue";
 import Vuex from "vuex";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
+import Vuetify, { createVuetify } from "vuetify";
+import { mount, VueWrapper, config } from "@vue/test-utils";
 import OtherOfferingSummary from "@/steps/05-PerformanceRequirements/DOW/OtherOfferingSummary.vue";
-import { DefaultProps } from "vue/types/options";
 import validators from "../../../plugins/validation";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import VueRouter from 'vue-router'
@@ -12,19 +11,19 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 
 describe("Testing OtherOfferingSummary Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
-  localVue.use(Vuex);
-  localVue.use(VueRouter)
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  config.showDeprecationWarnings = false
+  Vue.use(validators);
+  // is not assignable to parameter of type Plugin<any[]>
+  // Vue.use(Vuex);
+  // Vue.use(VueRouter)
+  let vuetify
+  let wrapper: VueWrapper;
+  // Property showDeprecationWarnings does not exist on type GlobalConfigOptions
+  // config.showDeprecationWarnings = false
   Vue.config.silent = true;
 
   beforeEach(async () => {
-    vuetify = new Vuetify();
+    vuetify = createVuetify();
     wrapper = mount(OtherOfferingSummary, {
-      localVue,
       vuetify,
     });
     jest.spyOn(DescriptionOfWork, 'getOtherOfferingInstances').mockImplementation(

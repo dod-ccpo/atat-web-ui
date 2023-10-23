@@ -47,7 +47,7 @@
             <ATATRadioGroup
               id="ArchitectureOptions"
               :card="true"
-              :width="180"
+              :width="'180'"
               :items="radioOptions"
               :value.sync="architectureDesignNeeds.needs_architectural_design_services"
               :rules="[$validators.required('Please select an option.')]"
@@ -81,7 +81,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, mixins } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -94,16 +94,18 @@ import _ from "lodash";
 import { routeNames } from "@/router/stepper";
 import ATATAlert from "@/components/ATATAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
+import Vue from "vue";
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATAlert
   }
 })
 
-export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
+export default class ArchitecturalDesign extends Vue {
   public routeNames = routeNames
   public architectureDesignNeeds = defaultDOWArchitecturalNeeds;
   public async setDOWSection(): Promise<void> {
@@ -127,7 +129,7 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
       .current_environment_replicated_optimized === "NO"
   }
   public get hasXaaSNoneApply():boolean {
-    return DescriptionOfWork.DOWObject.length === 1 
+    return DescriptionOfWork.DOWObject.length === 1
       && DescriptionOfWork.DOWObject[0].serviceOfferingGroupId === "XaaS_NONE";
   }
 
@@ -207,7 +209,7 @@ export default class ArchitecturalDesign extends Mixins(SaveOnLeave) {
       console.log(error);
     }
     return true;
-  }  
+  }
 
 }
 

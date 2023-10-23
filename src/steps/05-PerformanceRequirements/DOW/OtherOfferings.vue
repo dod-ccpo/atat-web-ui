@@ -208,9 +208,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-
+import Vue, { ComponentPublicInstance } from "vue";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeFormElements from "./ComputeFormElements.vue"
 import DatabaseFormElements from "./DatabaseFormElements.vue";
@@ -271,7 +271,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 export default class OtherOfferings extends Vue {
   $refs!: {
-    form: Vue & {
+    form: ComponentPublicInstance & {
       resetValidation: () => void;
       errorBucket: string[];
       reset: () => void;
@@ -532,8 +532,8 @@ export default class OtherOfferings extends Vue {
     });
   }
   
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.form as Vue & { validate: () => boolean };
+  get Form(): ComponentPublicInstance & { validate: () => boolean } {
+    return this.$refs.form as ComponentPublicInstance & { validate: () => boolean };
   }
 
   public async validate(): Promise<void> {
@@ -548,8 +548,8 @@ export default class OtherOfferings extends Vue {
     }
     this.errorBagValues = Object.values(this.$refs.form.errorBag);
     let formChildren = this.$refs.form.$children;
-    this.$refs.form.$children.forEach(children => {
-      formChildren = formChildren.concat(children.$children);
+    this.$refs.form.$children.forEach((children: HTMLFormElement) => {
+      formChildren = formChildren.concat(children.$children as HTMLElement);
     });
     const inputRefs = [
       "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
