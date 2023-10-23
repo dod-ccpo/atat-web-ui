@@ -28,7 +28,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync } from "vue-facing-decorator";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import { SelectData } from "../../../types/Global";

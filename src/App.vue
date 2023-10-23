@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import Vue, { Component as VueComponent } from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";

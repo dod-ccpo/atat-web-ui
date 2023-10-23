@@ -29,24 +29,26 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "../../../types/Global";
 import { hasChanges } from "@/helpers";
 import FinancialDetails from "@/store/financialDetails";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage, {isDitcoUser} from "@/store/acquisitionPackage";
+import {isDitcoUser} from "@/store/acquisitionPackage";
 import {routeNames} from "@/router/stepper";
 import Steps from "@/store/steps";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup
   }
 })
 
-export default class CurrentlyHasFunding extends Mixins(SaveOnLeave) {
+export default class CurrentlyHasFunding extends Vue {
   private selectedHasFunding = "";
   private radioButtonItems: RadioButton[] = [
     {

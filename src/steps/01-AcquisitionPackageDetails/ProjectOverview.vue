@@ -78,7 +78,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
@@ -94,9 +94,11 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { YesNo } from "types/Global";
+import Vue from "vue";
 
 @Component({
   components: {
+    mixins: [SaveOnLeave],
     ProjectTitle,
     ProjectScope,
     EmergencyDeclarationSupport,
@@ -105,7 +107,7 @@ import { YesNo } from "types/Global";
     ATATTextField
   },
 })
-export default class ProjectOverview extends Mixins(SaveOnLeave) {
+export default class ProjectOverview extends Vue {
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";

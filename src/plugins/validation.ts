@@ -1,7 +1,7 @@
 import Vue from "vue"
 
 import { compareAsc, compareDesc } from "date-fns"
-import { CountryObj } from "types/Global";
+import { CountryObj, ValidationRule } from "types/Global";
 import { App } from "vue";
 
 export class ValidationPlugin {
@@ -69,35 +69,35 @@ export class ValidationPlugin {
 
   required(
     message?: string, isCurrency?: string
-  ): ((v: string) => string | true | undefined) {
+  ): ValidationRule{
     message = message || "This field is required.";
     return (v: string) => {
       if (typeof v === "object") { // if typeof 'selectData(dropdown)' or string[]
         if (v && Array.isArray(v) === false) {
           // array of objects
-          return v && Object.values(v).every((val) => val !== "") || message;
+          return v && Object.values(v).every((val) => val !== "") || message as string;
         }
         // array of strings
-        return v && Object.values(v).length > 0 || message;
+        return v && Object.values(v).length > 0 || message as string;
       } else if (typeof (v) === "string") {
-        return (v.trim() !== "") || message;
+        return (v.trim() !== "") || message as string;
       } else if ( typeof (v) === "undefined"){ //validates file upload
-        return message;
+        return message as string;
       } else if (isCurrency) {
         const amt = parseFloat(v);
-        return (amt !== 0 && !isNaN(amt)) || message;
+        return (amt !== 0 && !isNaN(amt)) || message as string;
       } else {
-        return (v !== "") || message;
+        return (v !== "") || message as string;
       }
     };
   };
 
   notSameAsDefault(
     message?: string, defaultValue?: string
-  ): ((v: string) => string | true | undefined) {
+  ): ValidationRule{
     message = message || "Text cannot be the same as the default text";
     return (v: string) => {
-      return v && v.trim() !== defaultValue?.trim() || message;
+      return v && v.trim() !== defaultValue?.trim() || message as string;
     }
   }
 

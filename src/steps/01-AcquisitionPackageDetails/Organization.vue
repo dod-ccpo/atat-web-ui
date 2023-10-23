@@ -156,7 +156,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Mixins } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 import {
   convertAgencyRecordToSelect,
   convertDisaOrgToSelect
@@ -175,6 +175,7 @@ import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import Vue from "vue";
 
 
 @Component({
@@ -187,11 +188,11 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 
-export default class OrganizationInfo extends Mixins(SaveOnLeave) {
+export default class OrganizationInfo extends Vue {
   // computed
 
   get inputClass(): string {
-    return this.$vuetify.breakpoint.mdAndDown
+    return this.$vuetify.display.mdAndDown
       ? "_input-max-width my-2"
       : "my-2";
   }
