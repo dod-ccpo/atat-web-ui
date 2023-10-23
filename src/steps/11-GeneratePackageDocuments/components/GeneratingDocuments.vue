@@ -23,8 +23,9 @@
   </v-row>
 </template>
 <script lang="ts">
-import { Component, PropSync } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 import Vue from "vue";
+import { PropSync } from '@/decorators/custom';
 
 @Component({})
 export default class GeneratingDocuments extends Vue {

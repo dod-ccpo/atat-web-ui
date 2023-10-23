@@ -8,7 +8,7 @@
 import IGCEStore from "@/store/IGCE";
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 @Component({
 })
 export default class IGCE extends Vue {
