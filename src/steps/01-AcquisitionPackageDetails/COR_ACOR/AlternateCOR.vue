@@ -55,7 +55,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
     ATATRadioGroup, ATATAlert
   },
 })
-export default class AlternateCOR extends Mixins(SaveOnLeave) {
+export default class AlternateCOR extends Vue {
   private alternateCoreOptions: RadioButton[] = [
     {
       id: "YesAlternateCOR",
