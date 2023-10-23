@@ -432,7 +432,7 @@ export default class TaskOrderDetails extends Vue {
 
   @Watch("selectedTaskOrder", {deep: true})
   public async selectedTaskOrderChanged():Promise<void>{
-    this.clins = this.selectedTaskOrder.clins as ClinDTO[];
+    this.clins = this.selectedTaskOrder.clins;
     if(this.selectedTaskOrder.status === this.statuses.Upcoming.value){
       this.isUpcomingTO = true;
     }

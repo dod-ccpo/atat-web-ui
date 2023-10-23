@@ -581,7 +581,7 @@ export default class PortfolioDrawer extends Vue {
     return this.getEnvironmentCount > 0; 
   }
   public get getEnvironmentCount(): number {
-    return this.portfolio.environments?.length || 0;
+    return this.portfolio.environments?.length ?? 0;
   }
 
   public classificationLevels: Record<string, string> = {
