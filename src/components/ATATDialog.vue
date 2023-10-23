@@ -87,7 +87,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+import { Component, Prop } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import Vue from "vue";
 import { Component as VueComponent } from "vue";
 

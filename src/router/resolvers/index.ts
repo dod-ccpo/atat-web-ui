@@ -1,4 +1,4 @@
-import AcquisitionPackage from '@/store/acquisitionPackage'
+import AcquisitionPackage, { isDitcoUser } from '@/store/acquisitionPackage'
 import FinancialDetails from '@/store/financialDetails'
 import {sanitizeOfferingName} from '@/helpers'
 import {routeNames} from '../stepper'
@@ -1743,6 +1743,34 @@ export const GInvoicingResolver = (current: string): string => {
       : SeverabilityAndIncrementalFundingResolver(current)
 }
 
+export const RFDResolver = (current: string): string => {
+  Summary.setHasCurrentStepBeenVisited(isStepTouched(8))
+  if (current === routeNames.FinancialPOCForm && Summary.hasCurrentStepBeenVisited){
+    return routeNames.SummaryStepEight
+  }
+  else if (!isDitcoUser()) {
+    return routeNames.RFD
+  } 
+  return routeNames.CurrentlyHasFunding
+}
+
+export const CurrentlyHasFundingResolver = (current: string): string => {
+  const doesNotNeedFundingDoc = AcquisitionPackage.acquisitionPackage
+    ?.contracting_shop_require_funding_documents_for_submission_of_package === 'NO'
+  if (current === routeNames.RFD && doesNotNeedFundingDoc) {
+    return routeNames.SummaryStepEight
+  }
+  return routeNames.CurrentlyHasFunding;
+};
+
+export const GTCInformationResolver = (current: string): string => {
+  const hasFunding = FinancialDetails.fundingRequirement?.has_funding === "HAS_FUNDING";
+  if (current === routeNames.CurrentlyHasFunding){
+    return hasFunding ? routeNames.GTC : routeNames.GeneratingPackageDocumentsFunding
+  }
+  return routeNames.GTC
+}
+
 export const Upload7600Resolver = (current: string): string => {
   const useGInvoicing = FinancialDetails.gInvoicingData.useGInvoicing === 'YES'
 
@@ -2021,6 +2049,14 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
   return taskOrderHasUnclass() && cspHasILs()
     ? provWorkflowRouteNames.PortfolioDetails
     : provWorkflowRouteNames.AddCSPAdmin
+}
+
+
+export const GeneratingPackageDocumentsFundingResolver = (current: string): string => {
+  if (current === routeNames.MIPR){
+    return routeNames.SummaryStepEight;
+  }
+  return routeNames.GeneratingPackageDocumentsFunding;
 }
 
 export const PortfolioDetailsRouteResolver = (current: string): string => {

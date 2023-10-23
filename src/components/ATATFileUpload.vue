@@ -146,7 +146,8 @@
 /* eslint camelcase: 0 */
 
 import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
 import {
