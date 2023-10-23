@@ -840,11 +840,10 @@ export default class TaskOrderDetails extends Vue {
           this.selectedTaskOrder.totalObligated &&
           this.selectedTaskOrder.totalFundsSpent
         ) {
-          const totalObligatedNum = currencyStringToNumber(this.selectedTaskOrder.totalObligated);
-          const totalSpentNum = currencyStringToNumber(this.selectedTaskOrder.totalFundsSpent)
-          if(totalObligatedNum && totalSpentNum){
-            this.taskOrderRemainingFunds = this.fundsRemaining(totalObligatedNum, totalSpentNum);
-          }
+          this.taskOrderRemainingFunds = this.fundsRemaining(
+            currencyStringToNumber(this.selectedTaskOrder.totalObligated) ?? 0,
+            currencyStringToNumber(this.selectedTaskOrder.totalFundsSpent) ?? 0
+          );
         }
       } catch {
         console.log("Error loading Task Order Details");
