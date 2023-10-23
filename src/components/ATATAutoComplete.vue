@@ -62,10 +62,10 @@
 /* eslint vue/no-v-text-v-html-on-component: 1 */
 import Vue, { ComponentPublicInstance } from "vue";
 import {AutoCompleteItem, SelectData, ValidationRule} from "types/Global";
-
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { PropSync } from "@/decorators/custom";
 
 @Component({
   components: {
