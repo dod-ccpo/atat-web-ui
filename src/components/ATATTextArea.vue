@@ -68,7 +68,8 @@
 
 <script lang="ts">
 import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 

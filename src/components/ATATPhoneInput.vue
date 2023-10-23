@@ -141,7 +141,8 @@
 
 <script lang="ts">
 import Vue, {ComponentPublicInstance} from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";

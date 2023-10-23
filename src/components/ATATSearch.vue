@@ -182,7 +182,8 @@
 
 <script lang="ts">
 import Vue, {ComponentPublicInstance} from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
