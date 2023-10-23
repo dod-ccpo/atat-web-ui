@@ -143,8 +143,8 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch, mixins, Vue } from "vue-facing-decorator";
+// import Vue from 'vue';
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -198,7 +198,7 @@ import _ from "lodash";
   }
 })
 
-export default class InstanceDetails extends Vue {
+export default class InstanceDetails extends mixins(Vue, SaveOnLeave) {
   /* eslint-disable camelcase */
   public currEnvData = _.cloneDeep(defaultCurrentEnvironment);
   public envLocation = "";
