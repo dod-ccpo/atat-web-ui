@@ -20,26 +20,28 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocumentsFunding from "./components/GeneratingDocumentsFunding.vue";
 import ReviewDocumentsFunding from "./components/ReviewDocumentsFunding.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     GeneratingDocumentsFunding,
     ReviewDocumentsFunding
   }
 })
 
-export default class GeneratePackageDocumentsFunding extends Mixins(SaveOnLeave) {
+export default class GeneratePackageDocumentsFunding extends Vue {
 
   public isGenerating = false;
   private isErrored = false;
   private docJobStatus = "" ;
 
-  public packageDocComponent: Vue.Component | null = null;
+  public packageDocComponent: (typeof Vue) | null = null;
 
   @Watch("isGenerating")
   public watchIsGenerating(generateDocs: boolean): void{
