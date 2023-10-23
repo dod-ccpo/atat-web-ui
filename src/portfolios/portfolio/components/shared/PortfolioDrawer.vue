@@ -76,10 +76,11 @@
           </div>
         </div>
         <v-tooltip left nudge-right="20" v-if="userCanInviteMembers">
-          <template v-slot:activator="{ on, attrs }">
+          <!-- TODO: check activator -->
+          <template v-slot:activator="{ props }">
             <span
-              v-bind="attrs"
-              v-on="on"
+              v-bind="props"
+              v-on="props"
             >
               <v-btn
                 id="AddPortfolioMember"
@@ -119,9 +120,10 @@
           <div v-if="notMemberDropdown(member)">
 
             <v-tooltip left nudge-right="30">
-              <template v-slot:activator="{ on }">
+              <!-- TODO: check activator -->
+              <template v-slot:activator="{ props }">
                 <div
-                  v-on="on"
+                  v-bind="props"
                   class="py-1 d-flex"
                   style="width: 105px; letter-spacing: normal; cursor: default;"
                 >
@@ -153,8 +155,7 @@
               width="105"
               :selectedValue.sync="member.role"
               iconType="chevron"
-              @onChange="(value)=>onSelectedMemberRoleChanged(value, index)"
-              :menuDisabled="member.menuDisabled"
+              @onChange="(value: string)=>onSelectedMemberRoleChanged(value, index)"
             />
 
           </div>
@@ -202,12 +203,12 @@
                   {{ getEnvDateStr(env) }}
                 </span>
             </div>
-            <div class="_icon-circle" :class="statusImg[env.environment_status].bgColor">
+            <div class="_icon-circle" :class="getValue(env.environment_status, 'bgColor')">
               <ATATSVGIcon
-                  :name="statusImg[env.environment_status].name"
-                  :color="statusImg[env.environment_status].color"
-                  :height=parseInt(statusImg[env.environment_status].height)
-                  :width=parseInt(statusImg[env.environment_status].width) />
+                  :name="getValue(env.environment_status,'name')"
+                  :color="getValue(env.environment_status,'color')"
+                  :height="parseInt(getValue(env.environment_status,'height'))"
+                  :width="parseInt(getValue(env.environment_status,'width'))" />
             </div>
           </div>
       </div>
@@ -300,7 +301,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {Component, Watch} from "vue-property-decorator";
+import {Component, Watch} from "vue-facing-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -325,7 +326,7 @@ import {UserDTO} from "@/api/models";
 import AppSections from "@/store/appSections";
 import Home from "@/home/Index.vue";
 
-interface member extends User {
+interface Member extends User {
   menuItems?: SelectData[];
 }
 
@@ -417,7 +418,7 @@ export default class PortfolioDrawer extends Vue {
     return this.csp ? this.csp.toLowerCase() : "aws";
   }
 
-  public cspData = {
+  public cspData: {[key: string]: {[key: string]: string}} = {
     aws: { displayName: "AWS", svgName: "aws", height: "18", width: "30" },
     azure: { displayName: "Azure", svgName: "azure", height: "23", width: "30" },
     gcp: { displayName: "Google Cloud", svgName: "gcp", height: "27", width: "30" },
@@ -469,7 +470,7 @@ export default class PortfolioDrawer extends Vue {
     { text: "Transfer ownership", value: "TransferOwner", isSelectable: false },
   ]
   
-  public statusImg = {
+  public statusImg: {[key: string]: {[key: string]: string}} = {
     [Statuses.ProvisioningIssue.value]: {
       name: "warningAmber",
       width: "15",
@@ -501,7 +502,7 @@ export default class PortfolioDrawer extends Vue {
     PortfolioStore.setShowAddMembersModal(value);
   }
 
-  public getMemberMenuItems(member: member): SelectData[] {
+  public getMemberMenuItems(member: Member): SelectData[] {
     const menuItems = _.cloneDeep(this.memberMenuItems);
     if (member.email === this.currentUser.email) {
       const removeIndex = menuItems.findIndex((obj) => obj.value === "Remove");
@@ -593,6 +594,10 @@ export default class PortfolioDrawer extends Vue {
     return this.classificationLevels[abbr];
   }
 
+  public getValue(status: string | undefined, key: string) {
+    return status?  this.statusImg[status][key] : ""
+  }
+
   public getEnvStatus(env: Environment): string {
     if (env.environment_status) {
       const statusKey = this.getStatusKey(env.environment_status);
@@ -628,7 +633,7 @@ export default class PortfolioDrawer extends Vue {
     return new Date(utcDate.getTime() - (offsetMinutes * 60 * 1000));
   }
 
-  public portfolioMembers: member[] = [];
+  public portfolioMembers: Member[] = [];
 
   public get showMemberCount(): boolean {
     return this.getPortfolioMembersCount > 0;
@@ -745,7 +750,7 @@ export default class PortfolioDrawer extends Vue {
 
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
     const storeData = await PortfolioStore.getPortfolioData();
-    if (this.portfolio && this.portfolio.members && storeData.members) {
+    if (this.portfolio?.members && storeData.members) {
       const memberMenuItems = ["Manager", "Viewer"]
       if (memberMenuItems.indexOf(val) > -1) {
         // if current user is downgrading from Manager to Viewer, show confirm modal

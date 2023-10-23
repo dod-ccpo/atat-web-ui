@@ -93,7 +93,7 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -162,7 +162,7 @@ export default class AddMembersModal extends Vue {
       this.validEmailList = [];
       this.enteredEmails = [];
       this.portfolioData = await PortfolioStore.getPortfolioData();
-      this.projectTitle = this.portfolioData.title || "New Acquisition";
+      this.projectTitle = this.portfolioData.title ?? "New Acquisition";
       await this.setExistingMembers();
 
       if (!this.inputWidthFaker) {

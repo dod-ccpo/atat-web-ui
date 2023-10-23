@@ -69,10 +69,11 @@
           class="_more-menu _header-menu _portfolio"
           attach
         >
-          <template v-slot:activator="{ on, attrs }">
+        <!-- TODO: check activator -->
+          <template v-slot:activator="{ props }">
             <v-btn
-              v-bind="attrs"
-              v-on="on"
+              v-bind="props"
+              v-on="props"
               id="MoreMenuButton"
               class="_more-menu-button _header-button _icon-only"
             >
@@ -131,7 +132,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
 
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";

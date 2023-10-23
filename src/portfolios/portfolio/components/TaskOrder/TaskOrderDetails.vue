@@ -389,6 +389,7 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import {
   ClinTableRowData,
   TaskOrderCardData,
+  DataTableHeader
 } from "../../../../../types/Global";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
@@ -558,13 +559,13 @@ export default class TaskOrderDetails extends Vue {
     return toCurrencyString(value);
   }
 
-  public tableHeaders: Record<string, string>[] = [
-    { text: "CLIN", value: "CLINNumber" },
-    { text: "Status", value: "status" },
-    { text: "Period of performance", value: "PoP" },
-    { text: "Total CLIN value", value: "totalCLINValue" },
-    { text: "Obligated funds", value: "obligatedFunds" },
-    { text: "Total funds spent (%)", value: "totalFundsSpent" },
+  public tableHeaders: DataTableHeader[] = [
+    { title: "CLIN", value: "CLINNumber" },
+    { title: "Status", value: "status" },
+    { title: "Period of performance", value: "PoP" },
+    { title: "Total CLIN value", value: "totalCLINValue" },
+    { title: "Obligated funds", value: "obligatedFunds" },
+    { title: "Total funds spent (%)", value: "totalFundsSpent" },
   ];
 
   public toggleInactive(): void {

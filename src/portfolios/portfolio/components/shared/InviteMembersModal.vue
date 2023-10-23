@@ -102,7 +102,7 @@
                 :items="memberMenuItems"
                 width="105"
                 :selectedValue.sync="user.role"
-                @onChange="(value)=>dropdownChanged(value, index)"
+                @onChange="(value: string)=>dropdownChanged(value, index)"
                 iconType="chevron"
               />
             </v-list-item-action>
@@ -114,7 +114,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-facing-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
