@@ -72,7 +72,7 @@
 
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import {
   SlideoutPanelContent,
@@ -89,15 +89,17 @@ import { CrossDomainSolutionDTO, IgceEstimateDTO, ReferenceColumn } from "@/api/
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 import Vue from "vue";
+import { ComponentPublicInstance } from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: { 
     Card_Requirement
   },
 })
-export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
+export default class GatherPriceEstimates extends Vue {
   $refs!: {
-    form: Vue & { validate: () => boolean};
+    form: ComponentPublicInstance & { validate: () => boolean};
   }
 
   igceEstimateData: IgceEstimateDTO[] = [];
@@ -108,8 +110,8 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   isPanelOpen = [0]; //0 is open; 1 is closed.
   cdsSNOWRecord: CrossDomainSolutionDTO|null|undefined ;
 
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.form as Vue & { validate: () => boolean };
+  get Form(): ComponentPublicInstance & { validate: () => boolean } {
+    return this.$refs.form as ComponentPublicInstance & { validate: () => boolean };
   }
 
   public openSlideoutPanel(e: Event): void {
@@ -286,7 +288,9 @@ export default class GatherPriceEstimates extends Mixins(SaveOnLeave) {
   async sortDataSource(): Promise<void>{
     // sort nested arrays
     for (const classLevelsArray in this.tempEstimateDataSource){
-      await this.tempEstimateDataSource[classLevelsArray].sort((a,b) => (a.title>b.title) ? 1 : -1 )
+      this.tempEstimateDataSource[classLevelsArray].sort(
+        (a, b) => ((a.title ?? '') > (b.title ?? '')) ? 1 : -1 
+      )
     }
   }
 
