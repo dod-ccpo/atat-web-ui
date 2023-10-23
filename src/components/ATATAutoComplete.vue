@@ -61,7 +61,7 @@
 <script lang="ts">
 /* eslint vue/no-v-text-v-html-on-component: 1 */
 import Vue, { ComponentPublicInstance } from "vue";
-import {AutoCompleteItem, SelectData, ValidationRule} from "types/Global";
+import {AutoCompleteItem, ValidationRule} from "types/Global";
 import { Component, Prop, Watch } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
