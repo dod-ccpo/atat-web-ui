@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 import ATATDialog from "@/components/ATATDialog.vue";
 import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";

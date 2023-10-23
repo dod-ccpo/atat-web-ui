@@ -61,7 +61,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop, PropSync, Watch} from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch} from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { currencyStringToNumber, toCurrencyString } from "@/helpers";
 import { IgceEstimateDTO } from "@/api/models";

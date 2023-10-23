@@ -23,7 +23,7 @@
   </v-row>
 </template>
 <script lang="ts">
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync } from "vue-facing-decorator";
 import Vue from "vue";
 
 @Component({})

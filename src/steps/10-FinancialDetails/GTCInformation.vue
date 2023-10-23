@@ -136,7 +136,7 @@
 </template>
 <script lang="ts">
 import { invalidFile, uploadingFile } from "types/Global";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";

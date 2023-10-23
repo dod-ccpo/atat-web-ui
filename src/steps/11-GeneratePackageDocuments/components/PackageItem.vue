@@ -32,7 +32,7 @@
   </v-card>
 </template>
 <script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-facing-decorator";
 import Vue from "vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 

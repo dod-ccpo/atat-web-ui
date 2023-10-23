@@ -185,7 +185,7 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { Component } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 
 import { getCurrencyString, getIdText } from "@/helpers"
 import acquisitionPackage from "@/store/acquisitionPackage";
