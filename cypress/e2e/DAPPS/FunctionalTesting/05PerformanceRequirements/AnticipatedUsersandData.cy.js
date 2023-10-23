@@ -22,7 +22,7 @@ describe("Test suite: Anticipated Users and Data needs", () => {
   const dataTransferVal = randomNumberBetween(1, 9);
   const anticipatedDurationVal1 = "No";
   const anticipatedDurationVal2 = "No";
-
+  
   const estimateGrowth1 = "customGrowth";
   const estimateGrowth2 = "singleGrowth";
 
@@ -67,7 +67,7 @@ describe("Test suite: Anticipated Users and Data needs", () => {
 
   it("TC2:Anticipated Users and Data as No", () => {
     accordionIndex = 0;
-
+    selectedDropdownValue = "GB";
     cy.selectCheckBoxes([performanceReqs.conusEast0Checkbox]);
     cy.findElement(performanceReqs.conusEastRegionText0).type(noOfUsers);
 
