@@ -324,7 +324,7 @@ export default class PortfolioSummaryPageHead extends Vue {
     const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
     if (e?.currentTarget) {
       e.preventDefault();
-      e.cancelBubble = true;
+      e.stopPropagation()
     }
 
     if (!this.showDrawer || currentSlideoutComponent !== PortfolioDrawer) {
