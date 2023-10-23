@@ -165,7 +165,6 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { DataTableHeader } from "types/Global";
-import { ProcurementHistorySummaryRouteResolver } from "@/router/resolvers";
 
 @Component({
   mixins: [SaveOnLeave],

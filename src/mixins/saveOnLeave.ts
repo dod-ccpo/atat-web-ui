@@ -1,16 +1,16 @@
-import Vue from "vue";
-import { Route } from "vue-router";
-import { Component } from "vue-property-decorator";
+import { Vue, Component, toNative } from "vue-facing-decorator";
+import { RouteLocationNormalized } from "vue-router";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
+import { ComponentPublicInstance } from "vue";
 
 // Register the router hooks with their names
-Component.registerHooks(["beforeRouteLeave"]);
+// Component.registerHooks(["beforeRouteLeave"]);
 @Component({})
-export default class SaveOnLeave extends Vue {
+class SaveOnLeave extends Vue {
 
   $refs!: {
-    form: Vue & {
+    form: ComponentPublicInstance & {
       validate: () => boolean;
       resetValidation?: () => void;
       reset?: () => void;
@@ -28,8 +28,8 @@ export default class SaveOnLeave extends Vue {
   }
 
   public async beforeRouteLeave(
-    to: Route,
-    from: Route,
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
     next: (n: void) => void
   ): Promise<void> {
     const goNext = await this.saveOnLeave();
@@ -61,3 +61,6 @@ export default class SaveOnLeave extends Vue {
     })
   }
 }
+
+
+export default toNative(SaveOnLeave)
