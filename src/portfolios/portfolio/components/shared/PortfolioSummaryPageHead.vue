@@ -135,7 +135,6 @@ import { Component, Prop, Watch } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom'
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
-import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";
 import PortfolioDrawer from "@/portfolios/portfolio/components/shared/PortfolioDrawer.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -162,7 +161,6 @@ import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteM
   components: {
     InviteMembersModal,
     ATATTextField,
-    AddMembersModal,
     ArchivePortfolioModal,
     ATATSVGIcon
   }
