@@ -91,8 +91,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -115,7 +114,7 @@ import {RadioButton} from "../../../types/Global";
   },
 })
 
-export default class PII extends  Vue {
+class PII extends  Vue {
   private pIIOptions: RadioButton[] = [
     {
       id: "YesPII",
@@ -178,4 +177,6 @@ export default class PII extends  Vue {
   }
 
 }
+
+export default toNative(PII)
 </script>

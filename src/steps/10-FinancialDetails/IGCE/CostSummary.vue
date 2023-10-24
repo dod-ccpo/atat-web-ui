@@ -186,9 +186,8 @@
 // -DP <3
 
 /*eslint prefer-const: 1 */
-import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import { getCurrencyString, getIdText } from "@/helpers"
 import acquisitionPackage from "@/store/acquisitionPackage";
@@ -223,7 +222,7 @@ export interface IGCECostSummaryItem {
   },
 })
 
-export default class CostSummary extends Vue {
+class CostSummary extends Vue {
   public tableData: IGCECostSummaryItem[] = []
   public costData: CostEstimateDTO = { packageId: "", payload: {} }
   public surgePercentage = "";
@@ -539,5 +538,7 @@ export default class CostSummary extends Vue {
 
 
 }
+
+export default toNative(CostSummary)
 </script>
 

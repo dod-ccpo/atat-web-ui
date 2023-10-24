@@ -32,8 +32,7 @@
   </v-card>
 </template>
 <script lang="ts">
-import { Component, Prop } from "vue-facing-decorator";
-import Vue from "vue";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
@@ -41,7 +40,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
     ATATSVGIcon
   }
 })
-export default class PackageItem extends Vue {
+class PackageItem extends Vue {
 
   @Prop({default: "0"}) private itemNumber!: string;
   @Prop({default: "Item"}) private itemName!: string;
@@ -51,4 +50,6 @@ export default class PackageItem extends Vue {
   @Prop({default: ""}) private alertText!: string;
 
 }
+
+export default toNative(PackageItem)
 </script>

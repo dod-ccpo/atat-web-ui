@@ -52,8 +52,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "../../../components/ATATAlert.vue";
@@ -69,7 +68,7 @@ import { ComponentPublicInstance } from "vue";
     ATATTextField,
   },
 })
-export default class SurgeCapabilities extends Vue {
+class SurgeCapabilities extends Vue {
   $refs!: {
     form: ComponentPublicInstance & { validate: () => boolean};
     PercentageTextbox: ComponentPublicInstance & {
@@ -123,4 +122,6 @@ export default class SurgeCapabilities extends Vue {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(SurgeCapabilities)
 </script>

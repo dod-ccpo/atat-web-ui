@@ -190,8 +190,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -211,7 +210,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     ATATRadioGroup,
   },
 })
-export default class Section508Standards extends Vue {
+class Section508Standards extends Vue {
   private selected508Response 
     = AcquisitionPackage.sensitiveInformation?.section_508_sufficient || "";
 
@@ -279,4 +278,6 @@ export default class Section508Standards extends Vue {
   }
 
 }
+
+export default toNative(Section508Standards)
 </script>

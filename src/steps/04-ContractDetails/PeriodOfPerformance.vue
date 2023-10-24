@@ -165,10 +165,10 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
-import Vue, { ComponentPublicInstance } from "vue";
+import { ComponentPublicInstance } from "vue";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -207,7 +207,7 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
     ATATAlert
   },
 })
-export default class PeriodOfPerformance extends Vue {
+class PeriodOfPerformance extends Vue {
 
   $refs!: {
     form : ComponentPublicInstance & {
@@ -396,7 +396,7 @@ export default class PeriodOfPerformance extends Vue {
   public clearErrorMessages(index:number):void {
     this.durationErrorIndices = this.durationErrorIndices.filter(i=>i!==index);
     this.setDurationErrorMessages([], index);
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       this.$refs.form.validate();
     })
   }
@@ -638,4 +638,6 @@ export default class PeriodOfPerformance extends Vue {
     return true;
   }
 }
+
+export default toNative(PeriodOfPerformance)
 </script>

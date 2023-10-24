@@ -61,8 +61,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import { hasChanges } from "@/helpers";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -83,7 +82,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     CoILearnMore,
   },
 })
-export default class ConflictOfInterest extends Vue {
+class ConflictOfInterest extends Vue {
   private explanation 
     = AcquisitionPackage.contractConsiderations?.conflict_of_interest_explanation || "";
   private savedData: ContractConsiderationsDTO = {};
@@ -165,4 +164,6 @@ export default class ConflictOfInterest extends Vue {
     return true;
   }
 }
+
+export default toNative(ConflictOfInterest)
 </script>

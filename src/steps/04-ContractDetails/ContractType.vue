@@ -65,8 +65,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from 'vue';
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -86,7 +85,7 @@ import IGCE  from "@/store/IGCE";
   },
 })
 
-export default class ContractType extends Vue {
+class ContractType extends Vue {
   private firmFixedPriceSelected = "";
   private timeAndMaterialsSelected = "";
   
@@ -195,4 +194,6 @@ export default class ContractType extends Vue {
   }
 
 }
+
+export default toNative(ContractType)
 </script>

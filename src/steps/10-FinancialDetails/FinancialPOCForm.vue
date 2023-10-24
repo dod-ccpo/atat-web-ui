@@ -38,8 +38,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { CountryObj, RadioButton, RankData, SelectData } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -57,7 +56,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-export default class FinancialPOCForm extends Vue {
+class FinancialPOCForm extends Vue {
   private loaded = false;
   private selectedRole = "";
   private selectedSalutation = "";
@@ -263,4 +262,6 @@ export default class FinancialPOCForm extends Vue {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(FinancialPOCForm)
 </script>

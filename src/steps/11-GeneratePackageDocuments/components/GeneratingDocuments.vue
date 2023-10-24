@@ -23,15 +23,16 @@
   </v-row>
 </template>
 <script lang="ts">
-import { Component } from "vue-facing-decorator";
-import Vue from "vue";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom';
 
 @Component({})
-export default class GeneratingDocuments extends Vue {
+class GeneratingDocuments extends Vue {
   @PropSync(
     "isGenerating",{default: true}
   ) private _isGenerating!: boolean;
 
 }
+
+export default toNative(GeneratingDocuments)
 </script>

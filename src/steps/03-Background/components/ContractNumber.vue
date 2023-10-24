@@ -20,9 +20,7 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
-import Vue from "vue";
-import {Component, Prop} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom"
 import ATATTextField from "@/components/ATATTextField.vue";
 
@@ -31,7 +29,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
     ATATTextField
   },
 })
-export default class ContractNumber extends Vue {
+class ContractNumber extends Vue {
   @PropSync("value", {default: "contract number goes here"})
   private _value!: number;
   @Prop({default: "ContractNumber"}) private id!: string;
@@ -41,4 +39,6 @@ export default class ContractNumber extends Vue {
   @PropSync("rules") private _rules!: "";
   @Prop({default: ""}) private tooltipText!: string;
 }
+
+export default toNative(ContractNumber)
 </script>
