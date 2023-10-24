@@ -214,7 +214,7 @@ export default class ATATFileUpload extends Vue {
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
-  private fileAttachmentService?: any;
+  private fileAttachmentService?: typeof AttachmentServiceTypes;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
   private moreThanMax = false;
