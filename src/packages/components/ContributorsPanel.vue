@@ -19,12 +19,11 @@
           open-on-hover
           offset-x
         >
-          <template v-slot:activator="{ isActive, props }">
+          <template v-slot:activator="{ props }">
             <v-btn
               plain
               text="true"
               v-bind="props"
-              v-on="isActive"
               class="font-size-14 _profile-card__name-button"
             >
               {{ packageCreator.fullNameForSort }}
