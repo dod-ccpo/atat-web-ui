@@ -123,7 +123,9 @@ export interface AutoCompleteItemGroups {
  * Defines Stepper Route Base properties
  */
 interface StepperRouteBase {
-
+  name?: string;
+  path?: string;
+  component?: unknown;
   stepNumber?: string;
   completePercentageWeight?: number;
   menuText?: string;
@@ -285,6 +287,13 @@ export interface signedDocument{
   requiresSignature:boolean,
   alertText?:string,
   show:boolean
+  description?: string
+}
+
+
+export interface SurgeRequirements {
+  capabilities: YesNo,
+  capacity: number | null,
 }
 
 
@@ -472,6 +481,7 @@ export interface TravelSummaryTableData {
 }
 
 export interface TravelCalloutDataItem {
+    id: string,
     period: string,
     periodSysId: string,
     totalNumberOfTripsPerPeriod: number,

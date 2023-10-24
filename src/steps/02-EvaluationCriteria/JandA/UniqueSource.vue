@@ -122,7 +122,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-facing-decorator";
+import {Component} from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {getCSPCompanyName, hasChanges} from "@/helpers";
@@ -131,8 +131,10 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
+import Vue from "vue"
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATExpandableLink,
     ATATTextArea,
@@ -141,7 +143,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
   }
 })
 
-export default class UniqueSource extends Mixins(SaveOnLeave) {
+export default class UniqueSource extends Vue {
   private csp = "";
   private cspAdditionalInstructions = "";
   private showLogicalFollowOnInstructions = false;
