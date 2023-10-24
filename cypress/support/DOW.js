@@ -493,6 +493,7 @@ Cypress.Commands.add(
         force: true,
       })
       .should("be.checked");
+
     cy.verifyTextMatches(
       performanceReqs.contentAboutClass,
       serviceOfferingGroups.GatherRequirementsPage.pageText2
