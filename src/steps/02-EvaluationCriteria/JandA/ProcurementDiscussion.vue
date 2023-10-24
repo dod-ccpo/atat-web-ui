@@ -27,7 +27,7 @@
           <ATATRadioGroup
             class="mb-10"
             id="ExistingEnv"
-            :legend="'Is there an existing environment that would enable ' + this.cspName +
+            :legend="'Is there an existing environment that would enable ' + cspName +
              ' to immediately support a task order award?'"
             :value.sync="existingEnv"
             :items="existingEnvOptions"
@@ -69,15 +69,17 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "../../../../types/Global";
 import { FairOpportunityDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import Vue from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components:{
     ATATTextArea,
     ATATRadioGroup
   }
 })
 
-export default class ProcurementDiscussion extends Mixins(SaveOnLeave) {
+export default class ProcurementDiscussion extends Vue {
   public procurementParagraphText = "Identify any schedule requirements, unique" +
     " features and mandatory requirements, or the existence of" +
     " proprietary data, copyrighted information or a patent which" +

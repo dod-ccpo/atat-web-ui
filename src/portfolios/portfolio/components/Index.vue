@@ -195,9 +195,9 @@ export default class PortfolioSummary extends Vue {
     const portfolio = _.cloneDeep(PortfolioStore.currentPortfolio);
     if(portfolio.sysId){
       this.isPortfolioProvisioning = false;
-      this.title = portfolio.title || "";
-      this.portfolioDescription = portfolio.description || "";
-      this.portfolioCSP = portfolio.csp || "";
+      this.title = portfolio.title ?? "";
+      this.portfolioDescription = portfolio.description ?? "";
+      this.portfolioCSP = portfolio.csp ?? "";
       this.portfolioSysId = portfolio.sysId;
       this.taskOrder = portfolio.taskOrder as PortfolioTaskOrder;
       portfolio.environments?.forEach((environment) =>{
@@ -234,7 +234,7 @@ export default class PortfolioSummary extends Vue {
     } else {
       const provisioningData = await PortfolioStore.getPortfolioProvisioningObj();
       this.isPortfolioProvisioning = true;
-      this.title = provisioningData.portfolioTitle || "Untitled Portfolio"
+      this.title = provisioningData.portfolioTitle ?? "Untitled Portfolio"
     }
   }
   public async mounted(): Promise<void>{

@@ -53,7 +53,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-facing-decorator";
+import {Component} from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import {RadioButton} from "../../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -62,15 +62,17 @@ import {FairOpportunityDTO, PeriodOfPerformanceDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
 import Periods  from "@/store/periods";
+import Vue from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATRadioGroup
   }
 })
 
-export default class MRRNeed extends Mixins(SaveOnLeave) {
+export default class MRRNeed extends Vue {
   private selectedMRRNeed:
       "" | "UCA" | "BCA" | "OES" | "NONE" | undefined = "";
   private mrrNeedOptions: RadioButton[] = [

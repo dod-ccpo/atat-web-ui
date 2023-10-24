@@ -5,6 +5,7 @@ import { Mutations, RouteDirection, StepInfo,
 import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
 import { StepperRouteConfig } from "types/Global";
+import { RouteRecordName } from "vue-router";
 
 @Module({ name: 'Steps', namespaced: true, dynamic: true, store: rootStore })
 export class StepsStore extends VuexModule implements StepsState {
@@ -173,7 +174,7 @@ export class StepsStore extends VuexModule implements StepsState {
     }
 
     @Action({ rawError: true })
-    public findRoute(name: string): StepInfo | undefined {
+    public findRoute(name: string ): StepInfo | undefined {
       return this.stepMap.get(name);
     }
 
