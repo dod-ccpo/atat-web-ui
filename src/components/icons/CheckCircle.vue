@@ -19,8 +19,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Vue, Component, Prop } from "vue-facing-decorator";
 
 @Component({})
 export default class CheckCircle extends Vue {

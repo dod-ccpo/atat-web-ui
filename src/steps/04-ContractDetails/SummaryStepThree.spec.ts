@@ -1,14 +1,17 @@
-import {createVuetify} from "vuetify";
-import { mount} from "@vue/test-utils";
+import { createApp } from 'vue';
+import { VueWrapper, mount} from "@vue/test-utils";
 import SummaryStepThree from "@/steps/04-ContractDetails/SummaryStepThree.vue"
 import Summary,  * as SummaryExportedFunctions from "@/store/summary";
-import { Component } from "vue";
-import { VueCons } from "vue-facing-decorator";
+import vuetify from '@/plugins/vuetify';
 
 
 describe("Testing SummaryStepThree Component", () => {
-  let vuetify = createVuetify();
-  const wrapper = mount(SummaryStepThree);
+  const summaryStepThree = createApp(SummaryStepThree);
+  const wrapper = mount(SummaryStepThree, {
+    global: {
+      plugins: [vuetify]
+    },
+  }) as VueWrapper;
  
   beforeEach(() => {
     jest.spyOn(Summary, "validateStepThree").mockImplementation();
@@ -24,12 +27,12 @@ describe("Testing SummaryStepThree Component", () => {
     describe("introParagraph()=> ", () => {
       it("returns `We need some more details` statement", async () => {
         jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(false);
-        wrapper.vm.setIntroParagraph()
+        wrapper.vm.$.exposed?.setIntroParagraph()
         expect(wrapper.vm.$.data.introParagraph).toContain("We need some more details");
       });
       it("returns `You are all done` statement", async () => {
         jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
-        wrapper.vm.setIntroParagraph()
+        wrapper.vm.$.exposed?.setIntroParagraph()
         expect(wrapper.vm.$.data.introParagraph).toContain("You are all done");
       });
     })
@@ -40,7 +43,7 @@ describe("Testing SummaryStepThree Component", () => {
       const toggleButtonColorMock = jest.spyOn(Summary, "toggleButtonColor").mockImplementation(
         ()=> Promise.resolve()
       );
-      await (wrapper.vm;
+      await wrapper.vm.$.exposed?.saveOnLeave();
       expect(toggleButtonColorMock).toHaveBeenCalled();
     });
   })

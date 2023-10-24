@@ -153,7 +153,8 @@ export default defineConfig(({command, mode}) => {
 			sass: {
 				additionalData: ['@import "@/sass/atat.scss', ''].join('\n')
 			}
-		}
+		},
+		
 	}
 
 	// }

@@ -127,8 +127,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch, toNative, Vue } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -137,6 +137,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 import { LegendLink, RadioButton } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { ComponentPublicInstance } from "vue";
 
 @Component({
   components: {
@@ -147,17 +148,17 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 
-export default class ATATRadioGroup extends Vue {
+class ATATRadioGroup extends Vue {
 
   // refs
   $refs!: {
-    radioButtonGroup: Vue & { 
+    radioButtonGroup: ComponentPublicInstance & { 
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
       resetValidation: () => boolean;
     };
-    atatTextInput: Vue & { 
+    atatTextInput: ComponentPublicInstance & { 
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
@@ -323,5 +324,7 @@ export default class ATATRadioGroup extends Vue {
   }
 
 }
+
+export default toNative(ATATRadioGroup)
 
 </script>

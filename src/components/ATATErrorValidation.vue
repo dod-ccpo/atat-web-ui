@@ -15,11 +15,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop, toNative, Vue } from "vue-facing-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave"
 
-@Component({})
-export default class ATATErrorValidation extends Vue {
+class ATATErrorValidation extends Vue {
   // props
   @Prop({ default: () => [] }) private errorMessages!: string[];
   @Prop({ default: false }) private textAreaWithCounter!: boolean;
@@ -37,4 +36,5 @@ export default class ATATErrorValidation extends Vue {
     return this._errorMsgs?.length > 0;
   }
 }
+export default toNative(ATATErrorValidation)
 </script>

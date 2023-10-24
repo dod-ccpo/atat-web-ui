@@ -6,8 +6,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop, Vue } from "vue-facing-decorator";
 
 @Component({})
 export default class Bullet extends Vue {
