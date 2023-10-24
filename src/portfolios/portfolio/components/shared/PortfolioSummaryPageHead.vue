@@ -73,7 +73,6 @@
           <template v-slot:activator="{ props }">
             <v-btn
               v-bind="props"
-              v-on="props"
               id="MoreMenuButton"
               class="_more-menu-button _header-button _icon-only"
             >

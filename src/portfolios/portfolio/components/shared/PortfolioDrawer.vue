@@ -80,7 +80,6 @@
           <template v-slot:activator="{ props }">
             <span
               v-bind="props"
-              v-on="props"
             >
               <v-btn
                 id="AddPortfolioMember"

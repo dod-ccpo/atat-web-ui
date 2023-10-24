@@ -13,7 +13,6 @@
           plain
           variant="text"
           v-bind="props"
-          v-on="props"
           class="font-size-14 _profile-card__name-button"
         >
           <span v-if="member.firstName">
