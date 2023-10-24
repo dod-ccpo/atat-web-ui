@@ -123,7 +123,9 @@ export interface AutoCompleteItemGroups {
  * Defines Stepper Route Base properties
  */
 interface StepperRouteBase {
-
+  name?: string;
+  path?: string;
+  component?: unknown;
   stepNumber?: string;
   completePercentageWeight?: number;
   menuText?: string;
