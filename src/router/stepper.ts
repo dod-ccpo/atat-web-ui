@@ -378,7 +378,7 @@ export const routeNames = {
  * Rules:
  * 1. Parent steps cannot have a name
  * 2. Parent steps need a page component with a router view defined
- * 3. All steps needs to have unique names
+ * 3. All steps need to have unique names
  * 4. If a stepper route isn't meant to be rendered set it's 'excludeFromMenu' value to true
  */
 export const stepperRoutes: Array<StepperRouteConfig> = [
@@ -1563,7 +1563,7 @@ const mapStepRouteToStepperData = (
     name,
     completed,
     completePercentageWeight,
-    route: path,
+    route: path as string,
     subSteps: stepperRouteConfig.children?.map((child) =>
       mapStepRouteToStepperData(child)
     ),

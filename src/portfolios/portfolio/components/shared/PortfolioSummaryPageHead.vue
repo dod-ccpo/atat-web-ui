@@ -69,10 +69,10 @@
           class="_more-menu _header-menu _portfolio"
           attach
         >
-          <template v-slot:activator="{ on, attrs }">
+        <!-- TODO: check activator -->
+          <template v-slot:activator="{ props }">
             <v-btn
-              v-bind="attrs"
-              v-on="on"
+              v-bind="props"
               id="MoreMenuButton"
               class="_more-menu-button _header-button _icon-only"
             >
@@ -131,8 +131,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
-
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom'
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
 import AddMembersModal from "@/portfolios/portfolio/components/shared/AddMembersModal.vue";
@@ -321,13 +321,13 @@ export default class PortfolioSummaryPageHead extends Vue {
   
   public async openSlideoutPanel(e: Event): Promise<void> {
     const currentSlideoutComponent = SlideoutPanel.slideoutPanelComponent;
-    if (e && e.currentTarget) {
+    if (e?.currentTarget) {
       e.preventDefault();
-      e.cancelBubble = true;
+      e.stopPropagation()
     }
 
     if (!this.showDrawer || currentSlideoutComponent !== PortfolioDrawer) {
-      if (e && e.currentTarget) {
+      if (e?.currentTarget) {
         const opener = e.currentTarget as HTMLElement;
         const slideoutPanelContent: SlideoutPanelContent = {
           component: PortfolioDrawer,
