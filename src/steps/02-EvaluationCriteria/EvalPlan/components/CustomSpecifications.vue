@@ -94,7 +94,7 @@ class CustomSpecifications extends Vue {
 
   public deleteCustomSpec(index: number): void {
     if (this._customSpecifications.length === 1) {
-      Vue.set(this._customSpecifications, 0, ''); 
+      this._customSpecifications[0] = ''; 
     } else {
       this._customSpecifications.splice(index, 1);
       this._customSpecifications = [...this._customSpecifications];  
