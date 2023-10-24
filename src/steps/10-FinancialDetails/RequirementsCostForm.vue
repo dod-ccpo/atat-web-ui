@@ -40,13 +40,13 @@ import ATATTextField from "../../components/ATATTextField.vue";
 export default class RequirementsCostForm extends Vue {
   private costEstimate = "";
 
-  private get currentData(): RequirementsCostEstimateDTO {
+  private get currentData(): Pick<RequirementsCostEstimateDTO, 'estimatedTaskOrderValue'> {
     return {
       estimatedTaskOrderValue: this.costEstimate,
     };
   };
 
-  private savedData: RequirementsCostEstimateDTO = {
+  private savedData: Pick<RequirementsCostEstimateDTO, 'estimatedTaskOrderValue'> = {
     estimatedTaskOrderValue: "",
   };
 
@@ -67,7 +67,7 @@ export default class RequirementsCostForm extends Vue {
     try {
       if (this.hasChanged()) {
         await FinancialDetails.
-          saveEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue || "");
+          saveEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue ?? "");
       }
     } catch (error) {
       console.log(error);
