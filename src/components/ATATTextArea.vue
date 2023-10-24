@@ -18,12 +18,12 @@
         top
         v-if="tooltipText"
       >
-        <template v-slot:activator="{ on }">
+        <!--TODO: validate that this still works after removal of on from activator-->
+        <template v-slot:activator>
           <v-btn
             class="mb-2 ml-1 pa-0 link-button no-border"
             icon
             x-small
-            v-on="on"
             :ripple="false"
             :aria-label="'Help for ' + label"
           >
@@ -67,10 +67,12 @@
 </template>
 
 <script lang="ts">
+import { ComponentPublicInstance } from "vue";
 import { Component, Prop, Watch, Vue, toNative} from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { ValidationRule } from "types/Global";
 
 @Component({
   components: {
@@ -80,7 +82,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 class ATATTextArea extends Vue {
   // refs
   $refs!: {
-    atatTextArea: Vue & {
+    atatTextArea: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
@@ -97,7 +99,7 @@ class ATATTextArea extends Vue {
   @PropSync("value", { default: "" }) private _value!: string;
   @Prop({ default: 4 }) private rows!: number;
   @Prop({ default: false }) private readOnly!: boolean;
-  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
+  @Prop({ default: ()=>[]}) private rules!: ValidationRule[];
   @Prop({ default: true }) private noResize!: boolean;
   @Prop({ default: "" }) private maxChars!: string;
   @Prop({ default: true }) private validateItOnBlur!: boolean;
@@ -118,7 +120,7 @@ class ATATTextArea extends Vue {
     this._turnRulesOff = false;
   }
 
-  public get getRules(): unknown[] {
+  public get getRules(): ValidationRule[] {
     return this._turnRulesOff ? [] : this.rules;
   }
 

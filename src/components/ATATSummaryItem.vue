@@ -126,7 +126,7 @@
                       </div>
                     </div>
                     <div v-if="item.showMoreData.onPrem && item.showMoreData.onPrem.length > 0
-                    && item.showMoreData.cloud && !item.showMoreData.cloud.length > 0"
+                    && item.showMoreData.cloud && item.showMoreData.cloud.length === 0"
                          class="mb-3 mt-2"
                          style="min-width:200px"
                     >
@@ -212,7 +212,7 @@
             <v-btn
               id="AddAcorButton"
               v-if="item.ACORButton && !hasAcor"
-              text
+              text="true"
               class=" mt-5 no-border secondary"
               :ripple="false"
               @click="addAcor()"
@@ -297,7 +297,7 @@ import { SummaryStore } from "@/store/summary";
 class ATATSummaryItem extends Vue {
   @Prop({default: "SummaryItems"}) private summaryItems!: SummaryItem[] | [];
 
-  public getIdText(id: string): string{
+  public getIdText(id: string): string {
     return getIdText(id);
   }
   public showMore = false

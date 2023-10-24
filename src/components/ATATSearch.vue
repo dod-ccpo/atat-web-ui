@@ -181,6 +181,7 @@
 </template>
 
 <script lang="ts">
+import { ComponentPublicInstance } from "vue";
 import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -188,8 +189,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import api from "@/api";
-
-import { mask } from "types/Global";
+import { ValidationRule, mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -204,13 +204,13 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 class ATATSearch extends Vue {
   $refs!: {
-    atatSearchInput: Vue & {
+    atatSearchInput: ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       resetValidation(): void;
       value: string;
     };
-    atatSearchInputModal: Vue & {
+    atatSearchInputModal: ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       resetValidation(): void;
@@ -229,7 +229,7 @@ class ATATSearch extends Vue {
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: () => [] }) private mask?: string[];
   @Prop({ default: false }) private isMaskRegex?: boolean;
-  @Prop({ default: () => [] }) private rules?: Array<unknown>;
+  @Prop({ default: () => [] }) private rules?: ValidationRule[];
   @Prop({ default: true }) private hideHelpTextOnErrors?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
