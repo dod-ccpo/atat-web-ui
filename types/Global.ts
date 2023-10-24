@@ -287,6 +287,13 @@ export interface signedDocument{
   requiresSignature:boolean,
   alertText?:string,
   show:boolean
+  description?: string
+}
+
+
+export interface SurgeRequirements {
+  capabilities: YesNo,
+  capacity: number | null,
 }
 
 
@@ -474,6 +481,7 @@ export interface TravelSummaryTableData {
 }
 
 export interface TravelCalloutDataItem {
+    id: string,
     period: string,
     periodSysId: string,
     totalNumberOfTripsPerPeriod: number,

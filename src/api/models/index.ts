@@ -1007,6 +1007,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   }
   baseYearTotal?: number;
   grandTotal?: number;
+  estimatedTaskOrderValue?: string;
 }
 
 export interface RequirementsCostEstimateFlat extends BaseTableDTO{

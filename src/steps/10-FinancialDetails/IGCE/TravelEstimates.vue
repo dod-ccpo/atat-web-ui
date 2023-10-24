@@ -115,7 +115,8 @@ import {
   createPeriodCheckboxItems,
   hasChanges,
   setItemToPlural,
-  convertEstimateData
+  convertEstimateData,
+  getIdText,
 } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
@@ -237,6 +238,7 @@ export default class TravelEstimates extends Vue {
     
     this.selectedPeriods.forEach((period) => {
       const calloutDataItem: TravelCalloutDataItem = {
+        id: getIdText(period.label),
         period: period.label,
         periodSysId: period.value,
         trips: [],
