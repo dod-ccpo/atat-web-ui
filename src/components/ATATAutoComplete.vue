@@ -9,7 +9,7 @@
       :id="id"
       v-model="_selectedItem"
       :class="inputClass"
-      :items="items"
+      :items="(items)"
       :search-input.sync="searchText"
       :placeholder="placeholder"
       :append-icon="icon"
@@ -28,10 +28,10 @@
       <template v-slot:item="{ item }">
         <v-list-item-content>
           <v-list-item-title
-            v-text="item[titleKey]"
+            v-text="titleKey"
             :class="{ 'font-weight-normal': !subtitleKey }"
           ></v-list-item-title>
-          <v-list-item-subtitle v-if="subtitleKey" v-text="item[subtitleKey]">
+          <v-list-item-subtitle v-if="subtitleKey" v-text="subtitleKey">
           </v-list-item-subtitle>
         </v-list-item-content>
       </template>
@@ -61,11 +61,11 @@
 <script lang="ts">
 /* eslint vue/no-v-text-v-html-on-component: 1 */
 import Vue, { ComponentPublicInstance } from "vue";
-import { AutoCompleteItem } from "types/Global";
-
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import {AutoCompleteItem, ValidationRule} from "types/Global";
+import { Component, Prop, Watch } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { PropSync } from "@/decorators/custom";
 
 @Component({
   components: {
@@ -96,11 +96,11 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "", required: true }) private label!: string;
   @Prop({ default: false }) private labelSrOnly!: string;
   @Prop({ default: "" }) private icon!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
-  @Prop({ default: [], required: true }) private searchFields!: [];
-  @Prop({  default: () => [] , required: true }) private items!: [];
+  @Prop({ default: [], required: true }) private searchFields!: string[];
+  @Prop({ default: () => [] , required: true }) private items!: AutoCompleteItem[];
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;

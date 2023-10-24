@@ -26,9 +26,10 @@
 
 </template>
 <script lang="ts">
-import Vue from "vue";
 
-import { Component, PropSync } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
+
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import { SelectData } from "../../../types/Global";
@@ -38,7 +39,7 @@ import { SelectData } from "../../../types/Global";
     ATATSelect
   }
 })
-export default class Search extends Vue {
+class Search extends Vue {
   @PropSync("searchString") private _searchString!: string;
   @PropSync("selectedSort") private _selectedSort!: 'project_overview' | 'DESCsys_updated_on';
 
@@ -56,5 +57,8 @@ export default class Search extends Vue {
     this.$emit("search");
   }
 }
+
+export default toNative(Search);
+
 </script>
 
