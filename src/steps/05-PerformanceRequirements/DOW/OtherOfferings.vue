@@ -270,7 +270,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 })
 
 class OtherOfferings extends Vue
- {
+{
   $refs!: {
     form: ComponentPublicInstance & {
       resetValidation: () => void;

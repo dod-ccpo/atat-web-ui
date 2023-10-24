@@ -163,7 +163,7 @@ import Summary from "@/store/summary";
 })
 
 class OtherOfferingSummary extends Vue
- {
+{
   public isCompute = false;
   public isGeneralXaaS = false;
   public isDatabase = false;

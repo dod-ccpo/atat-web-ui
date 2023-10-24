@@ -157,7 +157,7 @@ import {buildClassificationLabel} from "@/helpers";
 })
 
 class DOWLandingPage extends Vue
- {
+{
   displayWarning = false;
   totalSections = 3;
   totalSectionsComplete = 0;

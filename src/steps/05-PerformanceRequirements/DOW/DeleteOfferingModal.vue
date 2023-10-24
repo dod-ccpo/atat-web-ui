@@ -40,44 +40,44 @@ class DeleteOfferingModal extends Vue{
 
 	@Watch('requirementName')
 	public requirementNameChanged(): void {
-		this.updateModalContent()
+	 this.updateModalContent()
 	}
 	@Watch('offeringName')
 	public offeringNameChanged(): void {
-		this.updateModalContent()
+	 this.updateModalContent()
 	}
 
 	@Watch('deleteMode')
 	modeChanged(): void {
-		this.updateModalContent()
+	 this.updateModalContent()
 	}
 
 	public updateModalContent(): void {
-		if (this._deleteMode === 'item') {
-		this.title = 'Delete ' + this.offeringName + '?'
-		this.bodyContent = `This requirement will be removed from your 
-	${this.requirementName} requirements.
-	Any details about this requirement will not be saved.`
-		this.okText = 'Delete requirement'
-		} else {
-		this.title = 'Delete all requirements in this category?'
-		this.bodyContent = `This action will remove the “${this.requirementName}” category
-	from your performance requirements. Any details about your requirements
-	will not be saved.`
-		this.okText = 'Delete all requirements'
-		}
+	 if (this._deleteMode === 'item') {
+	  this.title = 'Delete ' + this.offeringName + '?'
+	  this.bodyContent = `This requirement will be removed from your 
+	  ${this.requirementName} requirements.
+	  Any details about this requirement will not be saved.`
+	  this.okText = 'Delete requirement'
+	 } else {
+	  this.title = 'Delete all requirements in this category?'
+	  this.bodyContent = `This action will remove the “${this.requirementName}” category
+	  from your performance requirements. Any details about your requirements
+	  will not be saved.`
+	  this.okText = 'Delete all requirements'
+	 }
 	}
 
 	public async mounted(): Promise<void> {
-		this.modeChanged()
+	  this.modeChanged()
 	}
 
 	public OKClicked(): void {
-		this.$emit('deleteOfferingOkClicked')
+	  this.$emit('deleteOfferingOkClicked')
 	}
 
 	public cancelClicked(): void {
-		this.$emit('deleteOfferingCancelClicked')
+	  this.$emit('deleteOfferingCancelClicked')
 	}
 }
 export default toNative(DeleteOfferingModal) 
