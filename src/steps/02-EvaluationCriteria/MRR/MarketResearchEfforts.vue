@@ -287,7 +287,7 @@
 
 <script lang="ts">
 
-import { Component, Mixins, Watch } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -315,9 +315,11 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import {SlideoutPanelContent} from "../../../../types/Global";
 import MarketResearchEffortsLearnMore
   from "@/steps/02-EvaluationCriteria/MRR/MarketResearchEffortsLearnMore.vue";
+import Vue from "vue"; 
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     AlertForForms,
     ATATCheckboxGroup,
@@ -332,7 +334,7 @@ import MarketResearchEffortsLearnMore
   }
 })
 
-export default class MarketResearchEfforts extends Mixins(SaveOnLeave) {
+export default class MarketResearchEfforts extends Vue {
   public cspName = "";  
   public writeOwnExplanation: YesNo = "";
   public isLoading = false;
