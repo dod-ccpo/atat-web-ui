@@ -1,6 +1,6 @@
 <template>
   <v-expand-transition>
-    <div v-if="!this.hide">
+    <div v-if="!hide">
       <div class="_feedback-form">
         <div class="flex-column">
           <div class="d-flex justify-end">
@@ -160,14 +160,14 @@
                             {{checkboxHeading}}
                           </h2>
                           <ATATCheckboxGroup
-                            v-if="this.DAPPSExperience > 3"
+                            v-if="DAPPSExperience > 3"
                             id="CustomerFeedback"
                             :value.sync="selectedFeedbackOptions"
                             :items="positiveFeedbackOptions"
                             class="copy-max-width mb-10"
                           />
                           <ATATCheckboxGroup
-                            v-if="this.DAPPSExperience <= 3"
+                            v-if="DAPPSExperience <= 3"
                             id="CustomerFeedback"
                             :value.sync="selectedFeedbackOptions"
                             :items="negativeFeedbackOptions"
