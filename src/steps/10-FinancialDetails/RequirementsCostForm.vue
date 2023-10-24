@@ -67,7 +67,7 @@ export default class RequirementsCostForm extends Vue {
     try {
       if (this.hasChanged()) {
         await FinancialDetails.
-          saveEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue || "");
+          saveEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue ?? "");
       }
     } catch (error) {
       console.log(error);
