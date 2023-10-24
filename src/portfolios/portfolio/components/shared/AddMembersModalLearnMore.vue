@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import PortfolioRolesLearnMoreText from "./PortfolioRolesLearnMoreText.vue"
@@ -31,5 +31,6 @@ import PortfolioRolesLearnMoreText from "./PortfolioRolesLearnMoreText.vue"
   }
 })
 
-export default class AddMembersModalLearnMore extends Vue {}
+class AddMembersModalLearnMore extends Vue {}
+export default toNative(AddMembersModalLearnMore)
 </script>
