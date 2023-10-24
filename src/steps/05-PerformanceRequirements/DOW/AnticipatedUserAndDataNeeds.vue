@@ -106,8 +106,7 @@ import { ComponentPublicInstance } from "vue";
     AnticipatedDataNeeds
   },
 })
-class AnticipatedUserAndDataNeeds extends Vue
-export default toNative(AnticipatedUserAndDataNeeds) {
+class AnticipatedUserAndDataNeeds extends Vue{
 
   $refs!: {
     form: ComponentPublicInstance & { validate: () => boolean};
@@ -168,6 +167,6 @@ export default toNative(AnticipatedUserAndDataNeeds) {
     return true;
   }
 }
- 
+export default toNative(AnticipatedUserAndDataNeeds) 
 </script>
 

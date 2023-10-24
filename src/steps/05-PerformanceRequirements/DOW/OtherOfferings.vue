@@ -270,7 +270,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 })
 
 class OtherOfferings extends Vue
-export default toNative(OtherOfferings) {
+ {
   $refs!: {
     form: ComponentPublicInstance & {
       resetValidation: () => void;
@@ -631,6 +631,6 @@ export default toNative(OtherOfferings) {
     classification requirements you previously specified.`;
 
 }
-
+export default toNative(OtherOfferings)
  
 </script>

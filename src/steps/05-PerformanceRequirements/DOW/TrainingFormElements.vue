@@ -96,8 +96,7 @@ import {
   }
 })
 
-class TrainingFormElements extends Vue
-export default toNative(TrainingFormElements) {
+class TrainingFormElements extends Vue{
   @PropSync("data") public offeringData!: OtherServiceOfferingData;
 
   public get trainingLocationLabel(): string {
@@ -144,6 +143,7 @@ export default toNative(TrainingFormElements) {
   ];
 
 }
+export default toNative(TrainingFormElements) 
 
  
 </script>

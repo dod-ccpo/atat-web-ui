@@ -57,8 +57,7 @@ import {
   }
 })
 
-class DatabaseFormElements extends Vue
-export default toNative(DatabaseFormElements) {
+class DatabaseFormElements extends Vue{
   @PropSync("data") public offeringData!: OtherServiceOfferingData;
 
   public databaseTypeOptions: RadioButton[] = [
@@ -117,6 +116,6 @@ export default toNative(DatabaseFormElements) {
 
 
 }
-
+export default toNative(DatabaseFormElements) 
  
 </script>

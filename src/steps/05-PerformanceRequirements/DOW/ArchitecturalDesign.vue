@@ -105,8 +105,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
   }
 })
 
-class ArchitecturalDesign extends Vue
-export default toNative(ArchitecturalDesign) {
+class ArchitecturalDesign extends Vue {
   public routeNames = routeNames
   public architectureDesignNeeds = defaultDOWArchitecturalNeeds;
   public async setDOWSection(): Promise<void> {
@@ -213,6 +212,5 @@ export default toNative(ArchitecturalDesign) {
   }
 
 }
-
- 
+export default toNative(ArchitecturalDesign)
 </script>

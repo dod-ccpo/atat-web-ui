@@ -163,7 +163,7 @@ import Summary from "@/store/summary";
 })
 
 class OtherOfferingSummary extends Vue
-export default toNative(OtherOfferingSummary) {
+ {
   public isCompute = false;
   public isGeneralXaaS = false;
   public isDatabase = false;
@@ -523,6 +523,7 @@ export default toNative(OtherOfferingSummary) {
   }
 
 }
+export default toNative(OtherOfferingSummary)
 
  
 </script>

@@ -128,8 +128,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-class ReplicateAndOptimize extends Vue
-export default toNative(ReplicateAndOptimize) {
+class ReplicateAndOptimize extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
   public routeNames = routeNames
   public radioOptions: RadioButton[] = [
@@ -219,9 +218,6 @@ export default toNative(ReplicateAndOptimize) {
     }
     return true;
   }  
-
-
 }
-
- 
+export default toNative(ReplicateAndOptimize)
 </script>

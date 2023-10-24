@@ -68,8 +68,7 @@ import {
     ATATTextField
   }
 })
-class StorageFormElements extends Vue
-export default toNative(StorageFormElements) {
+class StorageFormElements extends Vue {
   @PropSync("data") public offeringData!: OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
 
@@ -98,6 +97,5 @@ export default toNative(StorageFormElements) {
 
 
 }
-
- 
+export default toNative(StorageFormElements)
 </script>

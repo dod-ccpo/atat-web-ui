@@ -153,8 +153,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 
-class RequirementCategories extends Vue
-export default toNative(RequirementCategories) {
+class RequirementCategories extends Vue{
   public selectedXaasOptions: string[] = [];
   public selectedCloudOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
@@ -360,5 +359,5 @@ export default toNative(RequirementCategories) {
   };
 
 };
- 
+export default toNative(RequirementCategories) 
 </script>

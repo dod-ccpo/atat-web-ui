@@ -19,8 +19,7 @@ import { routeNames } from "../../../router/stepper"
 
 @Component({})
 
-class DOWSubtleAlert extends Vue
-export default toNative(DOWSubtleAlert) {
+class DOWSubtleAlert extends Vue {
   @Prop({default: false}) private isPeriodsDataMissing!: boolean;
   @Prop({default: false}) private isClassificationDataMissing!: boolean;
 
@@ -57,6 +56,6 @@ export default toNative(DOWSubtleAlert) {
   };
 
 }
-
+export default toNative(DOWSubtleAlert)
  
 </script>

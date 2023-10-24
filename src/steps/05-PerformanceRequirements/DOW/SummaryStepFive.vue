@@ -200,8 +200,7 @@ import Summary, { getSummaryItemsforStep } from "@/store/summary";
   }
 })
 
-class SummaryStepFive extends Vue
-export default toNative(SummaryStepFive) {
+class SummaryStepFive extends Vue{
   private isPeriodsDataMissing = false;
   private isClassificationDataMissing = false;
   private showAlert = false;
@@ -462,5 +461,5 @@ export default toNative(SummaryStepFive) {
   }
 
 };
- 
+export default toNative(SummaryStepFive) 
 </script>

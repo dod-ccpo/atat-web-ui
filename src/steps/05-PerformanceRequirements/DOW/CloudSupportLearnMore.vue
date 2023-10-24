@@ -74,8 +74,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
   }
 })
 
-class CloudSupportLearnMore extends Vue
-export default toNative(CloudSupportLearnMore) {
+class CloudSupportLearnMore extends Vue{
   private currentEnvironmentExists = "";
   public requirements = [
     {
@@ -122,5 +121,5 @@ export default toNative(CloudSupportLearnMore) {
     }
   };
 }
- 
+export default toNative(CloudSupportLearnMore) 
 </script>

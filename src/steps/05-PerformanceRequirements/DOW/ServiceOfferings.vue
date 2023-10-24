@@ -102,8 +102,7 @@ import { getIdText } from "@/helpers";
   }
 })
 
-class ServiceOfferings extends Vue
-export default toNative(ServiceOfferings) {
+class ServiceOfferings extends Vue{
   // requirementName will be pulled from data in future ticket
   public requirementName = "";
 
@@ -436,6 +435,5 @@ export default toNative(ServiceOfferings) {
   }
 
 }
-
- 
+export default toNative(ServiceOfferings)
 </script>

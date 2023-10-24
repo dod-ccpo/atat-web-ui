@@ -157,7 +157,7 @@ import {buildClassificationLabel} from "@/helpers";
 })
 
 class DOWLandingPage extends Vue
-export default toNative(DOWLandingPage) {
+ {
   displayWarning = false;
   totalSections = 3;
   totalSectionsComplete = 0;
@@ -440,6 +440,7 @@ export default toNative(DOWLandingPage) {
 
 
 }
+export default toNative(DOWLandingPage)
 
  
 </script>

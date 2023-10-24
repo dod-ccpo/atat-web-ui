@@ -30,8 +30,7 @@ import { ArchitecturalDesignRequirementDTO } from "@/api/models";
   }
 })
 
-class ArchitectureDesignDOW extends Vue
-export default toNative(ArchitectureDesignDOW) {
+class ArchitectureDesignDOW extends Vue {
   public DOWArchNeeds = defaultDOWArchitecturalNeeds;
 
   /* eslint-disable camelcase */
@@ -81,6 +80,5 @@ export default toNative(ArchitectureDesignDOW) {
   }  
 
 }
-
- 
+export default toNative(ArchitectureDesignDOW)
 </script>

@@ -78,7 +78,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 })
 
 class DOWCard extends Vue
-export default toNative(DOWCard) {
+{
   @Prop() public cardData!: DOWCardData;
 
   private setPanelComponent: any = {};
@@ -134,6 +134,6 @@ export default toNative(DOWCard) {
   };
 
 }
-
+export default toNative(DOWCard) 
  
 </script>

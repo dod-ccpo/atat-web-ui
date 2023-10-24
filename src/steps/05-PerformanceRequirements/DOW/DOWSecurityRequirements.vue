@@ -65,8 +65,7 @@ import _ from "lodash";
   }
 })
 
-class DOWSecurityRequirements extends Vue
-export default toNative(DOWSecurityRequirements) {
+class DOWSecurityRequirements extends Vue {
   private selectedClassifications: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
   private selectedTopSecretSecurityRequirements: string[] = [];
@@ -200,6 +199,7 @@ export default toNative(DOWSecurityRequirements) {
     await this.loadOnEnter();
   }
 }
+export default toNative(DOWSecurityRequirements)
  
 </script>
 

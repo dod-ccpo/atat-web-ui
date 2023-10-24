@@ -94,8 +94,7 @@ import { createPeriodCheckboxItems } from "@/helpers";
   }
 })
 
-class RequirementsForm extends Vue
-export default toNative(RequirementsForm) {
+class RequirementsForm extends Vue{
   // props
   @PropSync("instances") private _instances!: DOWClassificationInstance[];
   @Prop() private avlInstancesLength!: number;
@@ -168,6 +167,6 @@ export default toNative(RequirementsForm) {
   };
 
 }
- 
+export default toNative(RequirementsForm)
 </script>
 

@@ -146,8 +146,7 @@ import { convertColumnReferencesToValues } from "@/api/helpers";
   }
 })
 
-class ServiceOfferingDetails extends Vue
-export default toNative(ServiceOfferingDetails) {
+class ServiceOfferingDetails extends Vue{
   public serviceOfferingName = DescriptionOfWork.currentOfferingName;
   public serviceOfferingSysId = DescriptionOfWork.currentOfferingSysId;
   public groupId = DescriptionOfWork.currentGroupId;
@@ -482,6 +481,5 @@ export default toNative(ServiceOfferingDetails) {
 
 
 };
-
- 
+export default toNative(ServiceOfferingDetails) 
 </script>

@@ -72,8 +72,7 @@ import { routeNames } from "../../../router/stepper"
   }
 })
 
-class DOWAlert extends Vue
-export default toNative(DOWAlert) {
+class DOWAlert extends Vue{
   @Prop({default: false}) private isPeriodsDataMissing!: boolean;
   @Prop({default: false}) private isClassificationDataMissing!: boolean;
   @Prop({default: false}) private summaryPage!: boolean;
@@ -105,6 +104,6 @@ export default toNative(DOWAlert) {
       : "";
   };
 };
- 
+export default toNative(DOWAlert) 
 </script>
 

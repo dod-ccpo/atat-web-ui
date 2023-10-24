@@ -51,8 +51,7 @@ import { instanceEnvTypeOptions }  from "@/store/descriptionOfWork";
   }
 })
 
-class ComputeFormElements extends Vue
-export default toNative(ComputeFormElements) {
+class ComputeFormElements extends Vue {
   @PropSync("data") public offeringData!: OtherServiceOfferingData;
 
   public environmentTypeOptions = instanceEnvTypeOptions;
@@ -92,9 +91,7 @@ export default toNative(ComputeFormElements) {
       value: "NEW",
     },
   ];
-
-
 }
-
+export default toNative(ComputeFormElements)
  
 </script>

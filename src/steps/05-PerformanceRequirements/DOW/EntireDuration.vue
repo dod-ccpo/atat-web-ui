@@ -78,8 +78,7 @@ import {
   }
 })
 
-class EntireDuration extends Vue
-export default toNative(EntireDuration) {
+class EntireDuration extends Vue {
   @PropSync("periodsNeeded") public _periodsNeeded?: string[];
   @PropSync("entireDuration") public _entireDuration?: string;
   @Prop() public isPeriodsDataMissing!: boolean;
@@ -112,6 +111,6 @@ export default toNative(EntireDuration) {
   }
 
 }
-
+export default toNative(EntireDuration)
  
 </script>

@@ -84,8 +84,7 @@ import ClassificationRequirements from '@/store/classificationRequirements';
   }
 })
 
-class ClassificationsModal extends Vue
-export default toNative(ClassificationsModal) {
+class ClassificationsModal extends Vue{
   @Prop({ required: true }) public modalCheckboxItems!: Checkbox[];
   @Prop({ required: false }) public IL6SysId?: string;
   @Prop( { required: true }) public modalSelectionsOnOpen!: string[];
@@ -161,9 +160,7 @@ export default toNative(ClassificationsModal) {
   public cleanUp(): void{
     this._showModal = false;
   }
-
- 
 }
 
- 
+export default toNative(ClassificationsModal) 
 </script>
