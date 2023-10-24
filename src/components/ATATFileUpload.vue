@@ -151,7 +151,6 @@ import { PropSync } from "@/decorators/custom";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
 import {
-  AttachmentServiceTypes,
   AttachmentServiceFactory,
 } from "@/services/attachment";
 import { invalidFile, uploadingFile, ValidationResult } from "types/Global";
