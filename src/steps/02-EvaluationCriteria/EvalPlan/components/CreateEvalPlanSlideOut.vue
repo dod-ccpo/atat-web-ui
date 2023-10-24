@@ -54,8 +54,7 @@ import { Component , toNative, Vue} from "vue-facing-decorator";
 @Component({
   components: {},
 })
-class CreateEvalPlanSlideOut extends Vue
-export default toNative(CreateEvalPlanSlideOut) {
+class CreateEvalPlanSlideOut extends Vue{
   public expansionPanelData: Record<string, string>[] = [
     {
       headerText: "Lowest Price Technically Acceptable (LPTA)",
@@ -169,6 +168,7 @@ export default toNative(CreateEvalPlanSlideOut) {
     }
   ];
 }
- 
+
+export default toNative(CreateEvalPlanSlideOut)
 </script>
 

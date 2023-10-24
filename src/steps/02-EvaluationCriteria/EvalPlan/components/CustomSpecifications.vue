@@ -41,7 +41,6 @@
     <v-btn
       id="AddCustomSpecButton"
       plain
-      text
       class=" mt-5 link-button no-border"
       :ripple="false"
       @click="addCustomSpec()"
@@ -60,8 +59,8 @@
 
 <script lang="ts">
  
-import { Component, Prop, PropSync , toNative, Vue} from "vue-facing-decorator";
-
+import { Component, Prop, toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 
@@ -72,8 +71,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
   }
 })
 
-class CustomSpecifications extends Vue
-export default toNative(CustomSpecifications) {
+class CustomSpecifications extends Vue {
   @PropSync("customSpecifications") public _customSpecifications!: string[];
   @Prop() public sourceSelection!: string;
   @Prop({ default: false }) public isDifferentiator?: boolean;
@@ -104,5 +102,6 @@ export default toNative(CustomSpecifications) {
   }
 
 }
- 
+
+export default toNative(CustomSpecifications)
 </script>

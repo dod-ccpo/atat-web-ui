@@ -50,6 +50,7 @@ import ContactData from "@/store/contactData";
 import parsePhoneNumber, {AsYouType, CountryCode} from "libphonenumber-js";
 import {Countries} from "@/components/ATATPhoneInput.vue";
 import ATATContactForm from "@/components/ATATContactForm.vue";
+import { PropSync } from "@/decorators/custom"
  
 
 @Component({

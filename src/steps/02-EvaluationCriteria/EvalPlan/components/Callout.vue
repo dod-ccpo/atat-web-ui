@@ -51,8 +51,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
     ATATAlert,
   },
 })
-class Callout extends Vue
-export default toNative(Callout) {
+class Callout extends Vue {
   @Prop() public sourceSelection!: string;
   @Prop() public method?: string;
 
@@ -163,6 +162,7 @@ export default toNative(Callout) {
     return listItems;
   }
 }
- 
+
+export default toNative(Callout)
 </script>
 

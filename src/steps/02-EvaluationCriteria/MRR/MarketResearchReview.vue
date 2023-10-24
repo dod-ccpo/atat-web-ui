@@ -64,13 +64,7 @@
               :maxChars="4000"
               :validateItOnBlur="true"
               :noResize="false"
-              :rules="[
-                this.$validators.required(`Describe the market research that was 
-                  conducted for this effort.`),
-                this.$validators.maxLength(
-                  4000, 'Limit your description to 4,000 characters or less.'
-                )
-              ]"
+              :rules="textAreaRules"
             />
 
             <ExplanationButtons 
@@ -153,6 +147,13 @@ class MarketResearchReview extends Vue {
   public hasFormBeenEdited = false;
   public hasSuggestedTextBeenEdited = false;
   public explanation = AcquisitionPackage.fairOppExplanations.researchDetails;
+  public textAreaRules = [
+    this.$validators.required(`Describe the market research that was 
+                  conducted for this effort.`),
+    this.$validators.maxLength(
+      4000, 'Limit your description to 4,000 characters or less.'
+    )
+  ]
 
   public get pagewHeaderIntro(): string {
     return this.useCustomTextOnLoad ? "Tell us about" : "Let’s review";
