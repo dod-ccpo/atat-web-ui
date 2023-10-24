@@ -10,15 +10,14 @@
     maxChars="800"
     :rules="[
       $validators.required('Please provide a description for this ' + requirementOrInstance + '.'),
-      $validators.maxLength('500', 'Description is to be 500 characters or less.')
+      $validators.maxLength(500, 'Description is to be 500 characters or less.')
     ]"
   />
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
 @Component({
@@ -27,10 +26,11 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
   }
 })
 
-export default class DescriptionOfNeed extends Vue {
+class DescriptionOfNeed extends Vue {
   @PropSync("anticipatedNeedUsage") public _anticipatedNeedUsage!: string;
   @Prop() public index!: number;
   @Prop({ default: "requirement" }) public requirementOrInstance?: string;
-
+  @Prop({ default: "" }) public description?: string;
 }
+export default toNative(DescriptionOfNeed)
 </script>

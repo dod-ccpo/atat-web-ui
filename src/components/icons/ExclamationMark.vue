@@ -12,11 +12,10 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class ExclamationMark extends Vue {
+class ExclamationMark extends Vue {
   @Prop({default: "c60634", required: true}) private color!:string;
 }
+export default toNative(ExclamationMark)
 </script>

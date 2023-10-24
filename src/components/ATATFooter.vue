@@ -41,8 +41,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Watch, Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -50,7 +49,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({})
 
-export default class ATATFooter extends Vue {
+class ATATFooter extends Vue {
   public get getCurrentUser(): UserDTO {
     return CurrentUserStore.getCurrentUserData;
   }
@@ -74,6 +73,7 @@ export default class ATATFooter extends Vue {
     await AcquisitionPackage.setEmulateProdNav(newVal);
   }
 }
+export default toNative(ATATFooter);
 </script>
 
 <style scoped>

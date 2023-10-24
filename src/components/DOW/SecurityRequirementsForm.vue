@@ -30,11 +30,11 @@
 </template>
 <script lang="ts">
 
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import vue from "vue";
 import { Checkbox, RadioButton } from "../../../types/Global";
 import SecurityRequirementsCheckboxes from "@/components/DOW/SecurityRequirementsCheckboxes.vue";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -46,7 +46,7 @@ import classificationRequirements from "@/store/classificationRequirements";
     ATATAlert
   }
 })
-export default class SecurityRequirementsForm extends vue {
+class SecurityRequirementsForm extends Vue {
   // eslint-disable-next-line max-len
   @PropSync("selectedSecretSecurityRequirements") private _selectedSecretSecurityRequirements!: string[];
   // eslint-disable-next-line max-len
@@ -99,5 +99,6 @@ export default class SecurityRequirementsForm extends vue {
     await this.loadOnEnter();
   }
 }
+export default toNative(SecurityRequirementsForm);
 </script>
 

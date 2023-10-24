@@ -86,8 +86,8 @@
   </div>
 </template>
 <script lang="ts">
-import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { ComponentPublicInstance } from "vue";
+import { Vue, toNative, Component, Prop, Watch } from "vue-facing-decorator";
 import { add, format, formatISO, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -100,7 +100,8 @@ import {ValidationRule} from "../../types/Global";
     ATATErrorValidation,
   },
 })
-export default class ATATDatePicker extends Vue {
+
+class ATATDatePicker extends Vue {
   // refs
   $refs!: {
     atatDatePicker: ComponentPublicInstance & {
@@ -191,7 +192,7 @@ export default class ATATDatePicker extends Vue {
       this.updateDateValueProperty();
       this.removeErrors();
     }
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.$refs.atatDatePicker.validate()
       this.setErrorMessage();
       this.additionalValidateActions("textbox");
@@ -230,7 +231,7 @@ export default class ATATDatePicker extends Vue {
     // saves selectedDate to necessary atatDatePickerMenu attribs
     this.$refs.atatDatePickerMenu.save(selectedDate);
 
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.updateDateValueProperty();
       this.additionalValidateActions("datepicker");
     });
@@ -369,4 +370,5 @@ export default class ATATDatePicker extends Vue {
   }
 
 }
+export default toNative(ATATDatePicker);
 </script>

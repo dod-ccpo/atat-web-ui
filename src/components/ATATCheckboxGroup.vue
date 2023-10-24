@@ -147,10 +147,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { ComponentPublicInstance } from "vue";
+import { Component, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
-
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -170,7 +169,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
     ATATSVGIcon
   },
 })
-export default class ATATCheckboxGroup extends Vue {
+class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
     checkboxGroup: (ComponentPublicInstance & {
@@ -307,7 +306,7 @@ export default class ATATCheckboxGroup extends Vue {
     const otherPrevSelectedIndex =
       this.prevSelected.indexOf(this.otherValue) > -1;
     if (otherIndex && !otherPrevSelectedIndex) {
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         const id =
           this.otherEntryType === "textarea"
             ? this.otherId + "_text_area"
@@ -325,7 +324,7 @@ export default class ATATCheckboxGroup extends Vue {
         this._selected.splice(noneApplyIndex, 1);
       }
     }
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.prevSelected = [...this._selected];
     });
     if (newVal.length || oldVal.length) {
@@ -496,4 +495,5 @@ export default class ATATCheckboxGroup extends Vue {
     }
   }
 }
+export default toNative(ATATCheckboxGroup);
 </script>

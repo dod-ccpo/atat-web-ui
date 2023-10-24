@@ -87,9 +87,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "vue-facing-decorator";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
-import Vue from "vue";
 import { Component as VueComponent } from "vue";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
@@ -100,7 +99,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
   }
 })
 
-export default class ATATDialog extends Vue {
+class ATATDialog extends Vue {
   @Prop() private message!: string;
   @Prop({default: "Dialog-Title"}) private title!: string;
   @Prop({ default: "ATATModalContent"}) private id!: string;
@@ -172,4 +171,5 @@ export default class ATATDialog extends Vue {
     this._modalDrawerIsOpen = false;
   }
 }
+export default toNative(ATATDialog);
 </script>

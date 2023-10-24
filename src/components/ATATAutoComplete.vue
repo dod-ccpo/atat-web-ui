@@ -60,9 +60,10 @@
 
 <script lang="ts">
 /* eslint vue/no-v-text-v-html-on-component: 1 */
-import Vue, { ComponentPublicInstance } from "vue";
-import {AutoCompleteItem, ValidationRule} from "types/Global";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { ComponentPublicInstance } from "vue";
+import { AutoCompleteItem, ValidationRule } from "types/Global";
+
+import { Component, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { PropSync } from "@/decorators/custom";
@@ -73,7 +74,7 @@ import { PropSync } from "@/decorators/custom";
   }
 })
 
-export default class ATATAutoComplete extends Vue {
+class ATATAutoComplete extends Vue {
   // refs
   $refs!: {
     atatAutoComplete: ComponentPublicInstance &
@@ -165,4 +166,5 @@ export default class ATATAutoComplete extends Vue {
     this.isReset = false;
   }
 }
+export default toNative(ATATAutoComplete);
 </script>

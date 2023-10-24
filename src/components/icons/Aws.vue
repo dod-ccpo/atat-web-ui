@@ -9,9 +9,9 @@
 </template>
 
 <script lang='ts'>
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
-export default class AWS extends Vue {
-}
+class AWS extends Vue {}
+export default toNative(AWS);
 </script>

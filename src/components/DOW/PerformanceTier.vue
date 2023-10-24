@@ -16,7 +16,7 @@
       id="NetworkPerformance"
       v-if="isDatabase"
       class="mt-8 _input-max-width-240"
-      :value.sync="offeringData.networkPerformance"
+      :value.sync="(offeringData as OtherServiceOfferingData).networkPerformance"
       label="Network performance"
       tooltipText="This refers to your network speed and service availability."
       :rules="[
@@ -41,12 +41,14 @@
       v-if="!isDOW"
       class="mt-8 _input-max-width-240 _has-appended-dropdown"
       label="Approximate data/internet egress per month"
-      :value.sync="offeringData.dataEgressMonthlyAmount"
+      :value.sync
+        = "(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyAmount"
       tooltipText="This refers to the amount of data that gets transferred from 
         your organization’s host network to external networks."
       :appendDropdown="true"
       :dropdownOptions="storageUnits"
-      :selectedDropdownValue.sync="offeringData.dataEgressMonthlyUnit"
+      :selectedDropdownValue.sync 
+        = "(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyUnit"
       type="number"
       :rules="[
         $validators.required('Enter a number greater than or equal to 1.'),
@@ -59,8 +61,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -79,7 +81,7 @@ import {
   }
 })
 
-export default class PerformanceTier extends Vue {
+class PerformanceTier extends Vue {
   @PropSync("data") 
   public offeringData!: CurrEnvInstancePerformance | OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
@@ -116,8 +118,8 @@ export default class PerformanceTier extends Vue {
       value: "STORAGE",
     },
   ];
-
-
 }
+
+export default toNative(PerformanceTier)
 
 </script>

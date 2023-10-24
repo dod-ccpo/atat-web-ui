@@ -8,10 +8,8 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class Oracle extends Vue {
-}
+class Oracle extends Vue {}
+export default toNative(Oracle);
 </script>

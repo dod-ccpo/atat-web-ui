@@ -14,11 +14,11 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
-
+import { start } from "repl";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class Star extends Vue {
+class Star extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
+export default toNative(Star);
 </script>

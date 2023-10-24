@@ -14,9 +14,8 @@
 
 <script lang='ts'>
 import {stringObj } from "types/Global";
-import Vue from "vue";
-
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ArrowBack from "@/components/icons/ArrowBack.vue";
 import ArchitectureCircle from "@/components/icons/ArchitectureCircle.vue"
 import Aws from "@/components/icons/Aws.vue";
@@ -220,7 +219,7 @@ import HomeWork from "@/components/icons/HomeWork.vue";
   }
 })
 
-export default class ATATSVGIcon extends Vue {
+class ATATSVGIcon extends Vue {
   // props
   @Prop({ required: false }) private color?: string;
   @PropSync("width", {default: 0, required: true}) private _width!: number;
@@ -263,7 +262,6 @@ export default class ATATSVGIcon extends Vue {
     { "white": "ffffff" },
     { "warning-dark2": "e9a514" },
   ]
-
-
 }
+export default toNative(ATATSVGIcon);
 </script>
