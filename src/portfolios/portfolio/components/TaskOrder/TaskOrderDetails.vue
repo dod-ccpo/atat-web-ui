@@ -378,9 +378,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch,  Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom'
 import {
   ClinTableRowData,
@@ -410,7 +408,7 @@ import { ClinDTO } from "@/api/models";
     ATATAlert,
   },
 })
-export default class TaskOrderDetails extends Vue {
+class TaskOrderDetails extends Vue {
   @Prop() private selectedTaskOrder!: TaskOrderCardData;
   @PropSync("showDetails", { default: false }) private _showDetails!: boolean;
 
@@ -851,4 +849,5 @@ export default class TaskOrderDetails extends Vue {
     }
   }
 }
+export default toNative(TaskOrderDetails)
 </script>

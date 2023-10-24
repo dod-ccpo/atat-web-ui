@@ -130,8 +130,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch,  Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom'
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -168,7 +167,7 @@ import InviteMembersModal from "@/portfolios/portfolio/components/shared/InviteM
   }
 })
 
-export default class PortfolioSummaryPageHead extends Vue {
+class PortfolioSummaryPageHead extends Vue {
   @Prop() public isPortfolioProvisioning!: boolean;
   @Prop({ default: [""], required: true }) private items!: string[];
   @Prop({ default: [] }) private environmentLinks!: EnvironmentLink[];
@@ -413,4 +412,5 @@ export default class PortfolioSummaryPageHead extends Vue {
     await this.loadOnEnter()
   }
 }
+export default toNative(PortfolioSummaryPageHead)
 </script>

@@ -1,12 +1,11 @@
-import Vue from "vue";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import UserManagement, { UserSearchObj } from "@/store/user/userManagement";
 import _ from "lodash";
-import { Component, Watch } from "vue-facing-decorator";
 import { User } from "types/Global";
 
 @Component({})
 
-export default class UserSearch extends Vue {
+class UserSearch extends Vue {
   public searchString = "";
   public isSearching = false;
   public searchObj: UserSearchObj = _.cloneDeep(UserManagement.initialSearchObj);
@@ -99,6 +98,6 @@ export default class UserSearch extends Vue {
     this.searchObj = await UserManagement.resetSearchObj();
     await UserManagement.triggerAbort();    
   }
-
-
 }
+
+export default toNative(UserSearch)
