@@ -158,6 +158,9 @@ import { invalidFile, uploadingFile, ValidationResult } from "types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { setItemToPlural } from "@/helpers";
+import { AttachmentServiceBase } from "@/services/attachment/base";
+import { BaseTableDTO } from "@/api/models";
+import { TableApiBase } from "@/api/tableApiBase";
 
 @Component({
   components: {
@@ -215,7 +218,7 @@ export default class ATATFileUpload extends Vue {
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
-  private fileAttachmentService?: typeof AttachmentServiceTypes;
+  private fileAttachmentService?: AttachmentServiceBase<TableApiBase<BaseTableDTO>, BaseTableDTO>;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
   private moreThanMax = false;

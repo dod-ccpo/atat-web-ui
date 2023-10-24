@@ -35,8 +35,8 @@
             v-if="item.icon"
             :name="item.icon.name"
             :color="item.icon.color"
-            :width="item.icon.width as number"
-            :height="item.icon.height as number"
+            :width="+item.icon.width"
+            :height="+item.icon.height"
           />
         </v-list-item-title>
       </v-list-item>
