@@ -106,7 +106,8 @@ import {
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
+import Vue from 'vue';
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
@@ -114,7 +115,8 @@ import {
   createPeriodCheckboxItems,
   hasChanges,
   setItemToPlural,
-  convertEstimateData
+  convertEstimateData,
+  getIdText,
 } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
@@ -123,6 +125,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATRadioGroup,
@@ -131,7 +134,7 @@ import _ from "lodash";
     ATATSVGIcon,
   },
 })
-export default class TravelEstimates extends Mixins(SaveOnLeave) {
+export default class TravelEstimates extends Vue {
   private periods: PeriodDTO[] | null = [];
   private ceilingPrice: SingleMultiple | undefined = "";
   private estimatedTravelCosts = "";
@@ -235,6 +238,7 @@ export default class TravelEstimates extends Mixins(SaveOnLeave) {
     
     this.selectedPeriods.forEach((period) => {
       const calloutDataItem: TravelCalloutDataItem = {
+        id: getIdText(period.label),
         period: period.label,
         periodSysId: period.value,
         trips: [],

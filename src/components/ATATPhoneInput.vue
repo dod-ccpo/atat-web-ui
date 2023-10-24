@@ -140,7 +140,7 @@
 </template>
 
 <script lang="ts">
-import Vue, {ComponentPublicInstance} from "vue";
+import Vue, { ComponentPublicInstance } from "vue";
 import { Component, Prop, Watch } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";

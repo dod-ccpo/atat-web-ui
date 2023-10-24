@@ -32,7 +32,7 @@
                   :class="[{ 'error--text': errorMissingInitialIncrement },]"
                   style="margin-left: 39px;"
                   :validateOnBlur="false"
-                  :rules="[$validators.required('', true)]"
+                  :rules="[$validators.required('')]"
                   @blur="calcAmounts('initialIncrement')"
                 />
                 <span class="d-block" style="width: 9px"></span>
@@ -118,7 +118,7 @@
                         class="mr-2"
                         :class="[{ 'error--text': errorMissingFirstIncrement && index === 0},]"
                         @blur="calcAmounts('increment' + index)"
-                        :rules="[$validators.required('', true)]"
+                        :rules="[$validators.required('')]"
                       />
                       <v-btn
                         :id="'DeleteIncrement' + index"
@@ -153,7 +153,7 @@
                 id="AddIncrementButton"
                 v-if="showAddIncrementButton"
                 plain
-                text
+                variant="text"
                 class=" link-button no-border mt-5"
                 :ripple="false"
                 @click="addIncrement()"
@@ -261,7 +261,8 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -288,6 +289,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSelect,
     ATATSVGIcon,
@@ -297,7 +299,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   },
 })
 
-export default class IncrementalFunding extends Mixins(SaveOnLeave) {
+export default class IncrementalFunding extends Vue {
   public today = new Date();
   public currentYear = this.today.getFullYear();
 
@@ -389,7 +391,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       incr => incr.text === oldVal.text
     );
 
-    this.fundingIncrements[changedItemIndex].text = newVal.text;
+    this.fundingIncrements[changedItemIndex].text = newVal.text ?? '';
     if (newVal.multiSelectOrder) {
       this.fundingIncrements[changedItemIndex].qtrOrder = newVal.multiSelectOrder;
     }
@@ -581,7 +583,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         accumulator + Number(currencyStringToNumber(current.amt)),
       0
     );
-    this.initialAmount = currencyStringToNumber(this.initialAmountStr);
+    this.initialAmount = currencyStringToNumber(this.initialAmountStr) ?? 0;
     this.totalAmount = this.initialAmount
       ? this.initialAmount + incrementsTotal
       : incrementsTotal;
@@ -598,7 +600,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       this.fundingIncrements.forEach((incr) => {
         return (incr.amt =
           incr.amt && incr.amt !== "0.00"
-            ? toCurrencyString(currencyStringToNumber(incr.amt))
+            ? toCurrencyString(currencyStringToNumber(incr.amt) ?? 0)
             : "");
       });
     });
@@ -666,7 +668,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     let lastSelectionOutOfRange: boolean | null = null;
 
     optionsArr.forEach((option: SelectData) => {
-      const isAlreadySelected = alreadySelectedQuarters.includes(option.text);
+      const isAlreadySelected = alreadySelectedQuarters.includes(option.text ?? '');
       const isThisOption = thisDropdownValue === option.text;
       option.disabled = isAlreadySelected && !isThisOption ? true : false;
       option.hidden = false;
@@ -711,7 +713,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.savedData = storeData;
       this.initialAmountStr = storeData.initialFundingIncrementStr;
-      this.initialAmount = currencyStringToNumber(this.initialAmountStr);
+      this.initialAmount = currencyStringToNumber(this.initialAmountStr) ?? 0;
 
       // use below for future validation ticket
       this.hasReturnedToPage = this.fundingIncrements.length > 0;

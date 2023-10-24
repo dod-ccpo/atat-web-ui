@@ -39,7 +39,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 import ATATFileUpload from "../../../components/ATATFileUpload.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 

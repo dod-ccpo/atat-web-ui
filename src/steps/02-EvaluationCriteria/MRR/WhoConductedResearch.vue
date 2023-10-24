@@ -74,7 +74,6 @@
           <v-btn
             id="AddIncrementButton"
             plain
-            text
             class=" link-button no-border mt-5"
             :ripple="false"
             @click="addResearcher()"
@@ -89,8 +88,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import Vue, {ComponentPublicInstance} from "vue";
+import { Component } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -101,6 +100,7 @@ import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSVGIcon,
     ATATTextField,
@@ -108,9 +108,9 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 
-export default class WhoConductedResearch extends Mixins(SaveOnLeave) {
+export default class WhoConductedResearch extends Vue {
   $refs!: {
-    form: Vue & {
+    form: ComponentPublicInstance & {
       resetValidation: () => void;
       reset: () => void;
       validate: () => boolean;
@@ -136,10 +136,11 @@ export default class WhoConductedResearch extends Mixins(SaveOnLeave) {
       this.researchers.splice(index,1)
       if(index === 0){
         this.$refs.form.resetValidation();
-        const formChildren = this.$refs.form.$children[0].$children;
-        formChildren.forEach(ref => {
-          ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-        })
+        // TODO children are no longer present on refs, need fix
+        // const formChildren = this.$refs.form.$children[0].$children;
+        // formChildren.forEach(ref => {
+        //   ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+        // })
       }
     }
   }

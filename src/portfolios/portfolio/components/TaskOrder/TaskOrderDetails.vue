@@ -110,9 +110,7 @@
         class="_clin-table border1 border-base-lighter"
       >
         <!-- eslint-disable vue/valid-v-slot -->
-        <template v-slot:body="props">
-          <tbody name="expand">
-            <template>
+        <template v-slot:item="{item, index}">
               <tr
                 class="row-item"
                 :class="[
@@ -121,7 +119,6 @@
                   { 'd-none': item.isExpired && !showInactive },
                   { 'd-none': item.isPending && !showInactive },
                 ]"
-                v-for="item in props.items"
                 :key="item.CLINNumber"
               >
                 <td>
@@ -256,8 +253,7 @@
                   </div>
                 </td>
               </tr>
-            </template>
-            <tr class="_section-divider">
+            <tr class="_section-divider" v-if="addInactiveClinSection(index)">
               <td colspan="2" class="font-weight-400">
                 <span v-if="!isExpiredTO">
                   <a
@@ -339,8 +335,7 @@
                 </div>
               </td>
             </tr>
-          </tbody>
-        </template>
+            </template>
       </v-data-table>
     </div>
 
@@ -385,10 +380,12 @@
 /*eslint prefer-const: 1 */
 import Vue from "vue";
 
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom'
 import {
   ClinTableRowData,
   TaskOrderCardData,
+  DataTableHeader
 } from "../../../../../types/Global";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
@@ -435,7 +432,7 @@ export default class TaskOrderDetails extends Vue {
 
   @Watch("selectedTaskOrder", {deep: true})
   public async selectedTaskOrderChanged():Promise<void>{
-    this.clins = this.selectedTaskOrder.clins as ClinDTO[];
+    this.clins = this.selectedTaskOrder.clins;
     if(this.selectedTaskOrder.status === this.statuses.Upcoming.value){
       this.isUpcomingTO = true;
     }
@@ -558,13 +555,13 @@ export default class TaskOrderDetails extends Vue {
     return toCurrencyString(value);
   }
 
-  public tableHeaders: Record<string, string>[] = [
-    { text: "CLIN", value: "CLINNumber" },
-    { text: "Status", value: "status" },
-    { text: "Period of performance", value: "PoP" },
-    { text: "Total CLIN value", value: "totalCLINValue" },
-    { text: "Obligated funds", value: "obligatedFunds" },
-    { text: "Total funds spent (%)", value: "totalFundsSpent" },
+  public tableHeaders: DataTableHeader[] = [
+    { title: "CLIN", value: "CLINNumber" },
+    { title: "Status", value: "status" },
+    { title: "Period of performance", value: "PoP" },
+    { title: "Total CLIN value", value: "totalCLINValue" },
+    { title: "Obligated funds", value: "obligatedFunds" },
+    { title: "Total funds spent (%)", value: "totalFundsSpent" },
   ];
 
   public toggleInactive(): void {
@@ -591,6 +588,9 @@ export default class TaskOrderDetails extends Vue {
       percent: String(percent),
       fundsRemaining: "$" + toCurrencyString(remaining) + " remaining",
     };
+  }
+  public addInactiveClinSection(index: number){
+    return (this.tableData.length - 1) === index
   }
 
   public async collectTableData(): Promise<void> {
@@ -841,8 +841,8 @@ export default class TaskOrderDetails extends Vue {
           this.selectedTaskOrder.totalFundsSpent
         ) {
           this.taskOrderRemainingFunds = this.fundsRemaining(
-            currencyStringToNumber(this.selectedTaskOrder.totalObligated),
-            currencyStringToNumber(this.selectedTaskOrder.totalFundsSpent)
+            currencyStringToNumber(this.selectedTaskOrder.totalObligated) ?? 0,
+            currencyStringToNumber(this.selectedTaskOrder.totalFundsSpent) ?? 0
           );
         }
       } catch {

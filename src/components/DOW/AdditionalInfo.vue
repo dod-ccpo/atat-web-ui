@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync } from "vue-facing-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
 

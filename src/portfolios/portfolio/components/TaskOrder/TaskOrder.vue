@@ -51,7 +51,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Prop} from "vue-property-decorator";
+import { Component, Prop} from "vue-facing-decorator";
 import FinancialDetailsAlert from "../../FinancialDetailsAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import {PortfolioTaskOrder, TaskOrderCardData, ToastObj} from "../../../../../types/Global";
@@ -109,9 +109,7 @@ export default class TaskOrder extends Vue {
     if (this.selectedTaskOrder.sys_id) {
       await PortfolioStore.setShowTOPackageSelection(false);
     }
-    await PortfolioStore.setSelectedAcquisitionPackageSysId(
-      this.selectedTaskOrder.sys_id as string
-    );
+    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedTaskOrder.sys_id);
 
     this.$router.push({
       name: this.provWorkflowRouteNames.AwardedTaskOrder,

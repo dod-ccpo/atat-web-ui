@@ -118,7 +118,7 @@ export default class ATATDatePicker extends Vue {
   /**
    * DATA
    */
-  private date = "";
+  private date = [""];
   private dateFormatted = "";
   private menu = false;
   private errorMessages: string[] = [];
@@ -150,7 +150,7 @@ export default class ATATDatePicker extends Vue {
    */
   @Watch("date")
   protected formatDateWatcher(): void {
-    this.dateFormatted = this.reformatDate(this.date);
+    this.dateFormatted = this.reformatDate(this.date[0]);
   }
 
   @Watch("value")
@@ -187,7 +187,7 @@ export default class ATATDatePicker extends Vue {
 
   private onBlur(): void {
     if (isValid(new Date(this.dateFormatted))) {
-      this.date = this.reformatDate(this.dateFormatted);
+      this.date = [this.reformatDate(this.dateFormatted)];
       this.updateDateValueProperty();
       this.removeErrors();
     }
@@ -213,7 +213,7 @@ export default class ATATDatePicker extends Vue {
     // this.validateOnBlur = true;
     if (date === "") {
       this.dateFormatted = "";
-      this.date = "";
+      this.date = [""];
       this.menu = false;
     }
   }
@@ -352,9 +352,9 @@ export default class ATATDatePicker extends Vue {
 
   public async setDateFromValue(): Promise<void> {
     if (this.value && this.value.indexOf("-") > -1) {
-      this.date = this.value;
+      this.date[0] = this.value;
     } else if (this.value && this.value.indexOf("/") > -1) {
-      this.date = this.reformatDate(this.value);
+      this.date[0] = this.reformatDate(this.value);
     }
   }
 

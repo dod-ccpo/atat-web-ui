@@ -133,7 +133,7 @@
             $validators.required(
               'Enter ' + validationMsgCustom + ' phone number.'
             ),
-            $validators.isPhoneNumberValid(this._selectedPhoneCountry),
+            $validators.isPhoneNumberValid(_selectedPhoneCountry),
           ]"
         />
 
@@ -170,6 +170,7 @@ import ContactData from "@/store/contactData";
 import {
   AutoCompleteItem,
   AutoCompleteItemGroups,
+  CountryObj,
   RadioButton,
   RankData,
   SelectData
@@ -199,7 +200,7 @@ export default class ATATContactForm extends Vue {
   private roleLegend?: string;
   @Prop({default: false}) public roleLegendFontNormalWeight?: boolean;
   @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
-  @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
+  @PropSync("selectedPhoneCountry") private _selectedPhoneCountry!: CountryObj;
   @PropSync("selectedRole") private _selectedRole?: string;
   @PropSync("selectedRank") private _selectedRank?: RankData;
   @PropSync("selectedBranch") private _selectedBranch?: SelectData;
