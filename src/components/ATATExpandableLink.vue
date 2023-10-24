@@ -43,12 +43,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 
 @Component({})
-export default class ExpandableLink extends Vue {
+class ExpandableLink extends Vue {
 
   @Prop({ required: true }) ariaId!: string;
   @Prop({ default: true }) hasUnderline?: boolean;
@@ -73,4 +72,5 @@ export default class ExpandableLink extends Vue {
   }
 
 }
+export default toNative(ExpandableLink);
 </script>

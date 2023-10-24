@@ -44,8 +44,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import {Vue, Component, Prop, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 
@@ -55,7 +54,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
   }
 })
 
-export default class ATATNoResults extends Vue {
+class ATATNoResults extends Vue {
   @Prop() private searchString?: string;
   @Prop({ default: false }) private hasFilters?: boolean;
 
@@ -70,6 +69,6 @@ export default class ATATNoResults extends Vue {
   public clear(): void {
     this.$emit("clear", this.hasBoth ? "both" : this.buttonText)
   }
-
 }
+export default toNative(ATATNoResults);
 </script>
