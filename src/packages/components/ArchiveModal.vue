@@ -29,10 +29,9 @@
 </template>
 
 <script lang="ts">
-import ATATDialog from "@/components/ATATDialog.vue";
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
+import ATATDialog from "@/components/ATATDialog.vue";
 
 @Component({
   components: {
@@ -40,7 +39,7 @@ import { PropSync } from "@/decorators/custom";
   }
 })
 
-export default class ArchiveModal extends Vue {
+class ArchiveModal extends Vue {
   @PropSync("showModal") public _showModal?: boolean;
   @Prop() public packageName!: string;
   @Prop() public hasContributor!: boolean;
@@ -56,7 +55,8 @@ export default class ArchiveModal extends Vue {
   public cancelClicked(): void {
     this._showModal = false;
   }
-
 }
+
+export default toNative(ArchiveModal);
 
 </script>

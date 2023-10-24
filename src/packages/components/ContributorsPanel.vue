@@ -75,12 +75,11 @@
           open-on-hover
           offset-x
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ props }">
             <v-btn
               plain
-              text
-              v-bind="attrs"
-              v-on="on"
+              variant="text"
+              v-bind="props"
               class="font-size-14 _profile-card__name-button"
             >
               {{ packageMissionOwner.fullNameForSort }} 
@@ -91,9 +90,8 @@
         </v-menu> 
         <div>
           <v-tooltip left nudge-right="15" v-if="currentUserIsOwner">
-            <!-- TODO: check activator -->
             <template v-slot:activator="{ props }">
-              <span v-bind="props" v-on="props">
+              <span v-bind="props">
                 Owner
               </span>
             </template>
@@ -115,12 +113,11 @@
             open-on-hover
             offset-x
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{ props }">
               <v-btn
                 plain
-                text
-                v-bind="attrs"
-                v-on="on"
+                variant="text"
+                v-bind="props"
                 class="font-size-14 _profile-card__name-button"
               >
                 {{ user.fullNameForSort }}
@@ -191,8 +188,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
@@ -217,7 +213,7 @@ import AppSections from "@/store/appSections";
   }
 })
 
-export default class ContributorsPanel extends Vue {
+class ContributorsPanel extends Vue {
   public lastUpdated = "";
   public currentUserIsOwner = false;
   public contributorCount = 1;
@@ -414,5 +410,7 @@ export default class ContributorsPanel extends Vue {
     this.checkIfCurrentUserIsOwner();
   }
 }
+
+export default toNative(ContributorsPanel);
 
 </script>
