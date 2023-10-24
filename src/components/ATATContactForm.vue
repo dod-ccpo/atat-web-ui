@@ -258,6 +258,7 @@ export default class ATATContactForm extends Vue {
 
   }
   public resetData(): void {
+    // TODO: REFACTOR AFTER VUE3 UPGRADE
     // Vue.nextTick(() => {
     //   //iterate over the forms children ref manually set their 'errorMessages' array to empty
     //   const formChildren = this.$refs.atatGlobalContact.$children;

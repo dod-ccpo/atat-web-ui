@@ -12,7 +12,7 @@
       :nudge-left="0"
       
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{ props }">
         <div class="d-flex align-center mb-2" v-if="label">
           <label
             :id="id + 'DatePickerLabel'"
@@ -41,8 +41,7 @@
           v-model="dateFormatted"
           :style="'width: ' + width + 'px'"
           dense
-          v-bind="attrs"
-          v-on="on"
+          v-bind="props"
           :rules="rules"
           @blur="onBlur"
           @focus ="onFocus"

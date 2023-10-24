@@ -16,7 +16,6 @@
         icon
         :id="'TooltipButton_' + id" 
         x-small
-        v-on="on"
         :ripple="false"
         :aria-label="'Help for ' + label"
         ><v-icon class="icon-20 ma-0 pa-0" small color="#544496"
