@@ -1,23 +1,16 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import {createVuetify} from "vuetify";
+import { mount} from "@vue/test-utils";
 import SummaryStepThree from "@/steps/04-ContractDetails/SummaryStepThree.vue"
 import Summary,  * as SummaryExportedFunctions from "@/store/summary";
+import { Component } from "vue";
+import { VueCons } from "vue-facing-decorator";
 
-Vue.use(Vuetify);
 
 describe("Testing SummaryStepThree Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  let vuetify = createVuetify();
+  const wrapper = mount(SummaryStepThree);
  
   beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(SummaryStepThree, {
-      vuetify,
-      localVue
-    });
     jest.spyOn(Summary, "validateStepThree").mockImplementation();
   });
 
@@ -32,12 +25,12 @@ describe("Testing SummaryStepThree Component", () => {
       it("returns `We need some more details` statement", async () => {
         jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(false);
         wrapper.vm.setIntroParagraph()
-        expect(wrapper.vm.$data.introParagraph).toContain("We need some more details");
+        expect(wrapper.vm.$.data.introParagraph).toContain("We need some more details");
       });
       it("returns `You are all done` statement", async () => {
         jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
         wrapper.vm.setIntroParagraph()
-        expect(wrapper.vm.$data.introParagraph).toContain("You are all done");
+        expect(wrapper.vm.$.data.introParagraph).toContain("You are all done");
       });
     })
   })
@@ -47,7 +40,7 @@ describe("Testing SummaryStepThree Component", () => {
       const toggleButtonColorMock = jest.spyOn(Summary, "toggleButtonColor").mockImplementation(
         ()=> Promise.resolve()
       );
-      await wrapper.vm.saveOnLeave();
+      await (wrapper.vm;
       expect(toggleButtonColorMock).toHaveBeenCalled();
     });
   })
