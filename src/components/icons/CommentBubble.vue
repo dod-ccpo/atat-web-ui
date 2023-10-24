@@ -12,8 +12,8 @@
 import { Component, Prop, toNative, Vue } from "vue-facing-decorator";
 
 @Component({})
-export class CommentBubble extends Vue {
+class CommentBubble extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-
+export default toNative(CommentBubble);
 </script>

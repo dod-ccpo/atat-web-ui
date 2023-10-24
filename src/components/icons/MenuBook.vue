@@ -10,11 +10,9 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class MenuBook extends Vue {
-}
+class MenuBook extends Vue {}
+export default toNative(MenuBook);
 </script>
   

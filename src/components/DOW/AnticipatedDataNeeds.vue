@@ -43,7 +43,7 @@
       <br />
       <div v-if="_growthSelection !== ''" class="mb-6">
         <ATATSingleAndMultiplePeriods
-          :id="'Periods'+this.index"
+          :id="'Periods'+ this.index "
           :needs="needs"
           :index="index"
           :periods="periods"
@@ -59,8 +59,8 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+import { Vue, toNative, Component, Prop } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
@@ -74,7 +74,7 @@ import { PeriodDTO } from "@/api/models";
     ATATSingleAndMultiplePeriods
   }
 })
-export default class AnticipatedDataNeeds extends Vue {
+class AnticipatedDataNeeds extends Vue {
   @Prop({default: "data"}) private needs?: string;
   @Prop({default: 0}) private index?: number;
   @Prop({
@@ -173,4 +173,5 @@ export default class AnticipatedDataNeeds extends Vue {
   }
 
 }
+export default toNative(AnticipatedDataNeeds)
 </script>

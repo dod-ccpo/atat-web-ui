@@ -19,10 +19,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class CheckCircle extends Vue {
+class CheckCircle extends Vue {
   @Prop({ default: "161B1E", required: false }) private color?: string;
 }
+export default toNative(CheckCircle);
 </script>

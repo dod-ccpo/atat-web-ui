@@ -14,12 +14,11 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class StarInTriangle extends Vue {
+class StarInTriangle extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
   @Prop({ default: "ffffff", required: false }) private starColor!: string;
 }
+export default toNative(StarInTriangle);
 </script>
