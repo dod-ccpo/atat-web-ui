@@ -113,7 +113,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
@@ -130,6 +130,7 @@ import { routeNames } from "../../router/stepper"
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components:{
     ATATAlert,
     ATATFileUpload,
@@ -137,7 +138,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     ATATSVGIcon,
   }
 })
-export default class UploadSignedDocuments extends SaveOnLeave {
+class UploadSignedDocuments extends Vue {
   public packageNotInitialized = false;
   public routeNames = routeNames;
 
@@ -272,5 +273,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   }
 
 }
+
+export default toNative(UploadSignedDocuments)
 </script>
 

@@ -55,18 +55,17 @@
   </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { isStepComplete, isSubStepComplete,  } from "@/store/summary";
 import { routeNames } from "../../../router/stepper"
 
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({
   components: {
     ATATAlert,
   },
 })
-export default class CannotProceed extends Vue {
+class CannotProceed extends Vue {
   public routeNames = routeNames;
   get isPoPIncomplete(): boolean {
     return !isSubStepComplete(3,1) 
@@ -76,5 +75,7 @@ export default class CannotProceed extends Vue {
     return !isStepComplete(5)
   }
 }
+
+export default toNative(CannotProceed)
 </script>
 

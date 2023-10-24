@@ -30,9 +30,9 @@
 </template>
 
 <script lang="ts">
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATDialog from "@/components/ATATDialog.vue";
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
 
 @Component({
   components: {
@@ -40,7 +40,7 @@ import { Component, Prop, PropSync } from "vue-facing-decorator";
   }
 })
 
-export default class DeletePackageModal extends Vue {
+class DeletePackageModal extends Vue {
   @PropSync("showModal") public _showModal?: boolean;
   @Prop() public packageName!: string;
   @Prop() public hasContributor!: boolean;
@@ -58,5 +58,7 @@ export default class DeletePackageModal extends Vue {
   }
 
 }
+
+export default toNative(DeletePackageModal);
 
 </script>

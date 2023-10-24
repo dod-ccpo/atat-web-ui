@@ -42,8 +42,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
@@ -54,7 +53,7 @@ import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Glob
     ATATSVGIcon
   },
 })
-export default class Provisioned extends Vue {
+class Provisioned extends Vue {
   public scrtStr = ClassificationLevels.SCRT;
   public unclStr = ClassificationLevels.UNCL;
   public tsStr = ClassificationLevels.TSCRT;
@@ -110,4 +109,5 @@ export default class Provisioned extends Vue {
   }
 
 }
+export default toNative(Provisioned)
 </script>

@@ -72,9 +72,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom';
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
@@ -86,7 +84,7 @@ import { buildClassificationCheckboxList } from "@/helpers";
     ATATCheckboxGroup,
   }
 })
-export default class ClassificationLevelForm extends Vue {
+class ClassificationLevelForm extends Vue {
   @Prop() public isCloud?:boolean;
   @Prop() public isOnPrem?:boolean;
   @Prop({required: true}) public isHybrid?:boolean;
@@ -299,4 +297,6 @@ export default class ClassificationLevelForm extends Vue {
   // END -- PRESERVE CODE FOR POST-MVP
   */
 }
+
+export default toNative(ClassificationLevelForm)
 </script>

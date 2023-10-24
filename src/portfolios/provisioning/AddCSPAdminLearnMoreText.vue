@@ -45,10 +45,11 @@
 <script lang="ts">
 import PortfolioStore from "@/store/portfolio";
 import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Global";
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue"
+import AddAdminSlideOut from "../portfolio/components/shared/AddAdminSlideOut.vue";
+import AddCSPAdminLearnMore from "./AddCSPAdminLearnMore.vue";
 
 @Component({
   components: {
@@ -56,7 +57,7 @@ import ATATAlert from "@/components/ATATAlert.vue"
   }
 })
 
-export default class CSPAdminLearnMoreText extends Vue {
+class CSPAdminLearnMoreText extends Vue {
   public scrtStr = ClassificationLevels.SCRT;
   public unclStr = ClassificationLevels.UNCL;
   public tsStr = ClassificationLevels.TSCRT;
@@ -86,4 +87,5 @@ export default class CSPAdminLearnMoreText extends Vue {
     } 
   }
 }
+export default toNative(CSPAdminLearnMoreText)
 </script>

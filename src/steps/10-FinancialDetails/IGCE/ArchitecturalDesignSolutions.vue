@@ -45,8 +45,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {RadioButton, SingleMultiple} from "types/Global";
@@ -65,7 +64,7 @@ import _ from "lodash";
     ATATSingleAndMultiplePeriods
   }
 })
-export default class ArchitecturalDesignSolutions extends Vue {
+class ArchitecturalDesignSolutions extends Vue {
   private periods: PeriodDTO[] | null = [];
   private singlePeriodTooltipText = "This estimate will be applied to all performance periods.";
   private multiplePeriodTooltipText = `Customize a price estimate for 
@@ -135,4 +134,6 @@ export default class ArchitecturalDesignSolutions extends Vue {
   }
 
 }
+
+export default toNative(ArchitecturalDesignSolutions)
 </script>

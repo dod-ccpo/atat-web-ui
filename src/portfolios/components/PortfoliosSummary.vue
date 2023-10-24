@@ -147,10 +147,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-
-import {Component, Prop, Watch} from "vue-facing-decorator";
-
+import {Component, Prop, Watch, Vue, toNative} from "vue-facing-decorator";
 // eslint-disable-next-line max-len
 import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
 import ATATLoader from "@/components/ATATLoader.vue";
@@ -199,7 +196,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
   }
 })
 
-export default class PortfoliosSummary extends Vue {
+class PortfoliosSummary extends Vue {
   @Prop({ default: "ALL" }) public activeTab!: "ALL" | "ACTIVE" | "PROCESSING" | "ARCHIVED";
   @Prop({ default: false }) public isHomeView?: boolean;
   @Prop({ default: "name" }) public defaultSort?: "name" | "DESCsys_updated_on";
@@ -623,4 +620,5 @@ export default class PortfoliosSummary extends Vue {
       }});
   }
 }
+export default toNative(PortfoliosSummary)
 </script>

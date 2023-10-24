@@ -54,9 +54,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
-
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { FilterOption, PortfolioSummaryQueryParams } from "types/Global";
@@ -69,7 +67,7 @@ import PortfolioStore from "@/store/portfolio";
   }
 })
 
-export default class FilterSlideout extends Vue {  
+class FilterSlideout extends Vue {  
   public selectedPortfolioRole = "ALL";
   public portfolioRoles: FilterOption[] = PortfolioStore.summaryFilterRoles;
   public selectedFundingStatuses: string[] = []; 
@@ -111,5 +109,5 @@ export default class FilterSlideout extends Vue {
   }
 
 }
-
+export default toNative(FilterSlideout)
 </script>

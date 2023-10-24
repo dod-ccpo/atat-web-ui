@@ -502,8 +502,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import { DashboardService } from "../../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../../components/ATATFooter.vue";
@@ -553,7 +552,7 @@ import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
     FinancialDetailsAlert
   },
 })
-export default class PortfolioDashboard extends Vue {
+class PortfolioDashboard extends Vue {
   dashboardService: DashboardService = new DashboardService();
 
   public get isProdEnv(): boolean {
@@ -1515,4 +1514,5 @@ export default class PortfolioDashboard extends Vue {
   }
 
 }
+export default toNative(PortfolioDashboard)
 </script>

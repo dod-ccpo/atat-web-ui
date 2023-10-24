@@ -93,8 +93,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -117,7 +116,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     ATATTextField,
   },
 })
-export default class FOIACoordinator extends Vue {
+class FOIACoordinator extends Vue {
   private addressTypes = {
     USA: "US",
     MIL: "MILITARY",
@@ -328,4 +327,6 @@ export default class FOIACoordinator extends Vue {
     return true;
   }
 }
+
+export default toNative(FOIACoordinator)
 </script>
