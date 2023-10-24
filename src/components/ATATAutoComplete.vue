@@ -25,7 +25,7 @@
       @blur="onBlur"
       @update:search-input="updateSearchInput"
     >
-      <template v-slot:item="{ item }">
+      <template v-slot:item>
         <v-list-item-content>
           <v-list-item-title
             v-text="titleKey"

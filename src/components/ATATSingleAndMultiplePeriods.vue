@@ -13,7 +13,7 @@
      
     </div>
       <ATATTextField
-        :id="`SingleAmount_${this.needs}_${this.index}`"
+        :id="`SingleAmount_${needs}_${index}`"
         width="190"
         class="mr-2"
         :alignRight="true"

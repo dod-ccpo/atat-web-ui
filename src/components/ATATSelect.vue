@@ -91,7 +91,7 @@ import { Component, Emit, Prop, Watch } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { SelectData } from "../../types/Global";
+import { SelectData, ValidationRule } from "../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
@@ -116,7 +116,7 @@ export default class ATATSelect extends Vue {
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: [] }) private items?: SelectData[];
-  @PropSync ("rules", { default: ()=>[] }) private _rules!: Array<unknown>;
+  @PropSync ("rules", { default: ()=>[] }) private _rules!: ValidationRule[];
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private optional!: boolean;

@@ -135,7 +135,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 
-import { LegendLink, RadioButton } from "../../types/Global";
+import { LegendLink, RadioButton, ValidationRule } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -171,7 +171,7 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: "" }) private legend!: string;
   @Prop({ default: "" }) private helpText?: string;
   @Prop({ default: [""] }) private items!: RadioButton[];
-  @Prop({ default: () => []}) private rules!: Array<unknown>;
+  @Prop({ default: () => []}) private rules!: ValidationRule[];
   @Prop({ default: false }) private card!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private disabled!: boolean;

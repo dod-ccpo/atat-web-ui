@@ -32,7 +32,7 @@
         class="text-primary"
         :class="[{ 'text-right' : alignRight }]"
         :disabled="disabled"
-        :hide-details="counter === ''"
+        :hide-details="counter.toString() === ''"
         :suffix="suffix"
         :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="rules"
@@ -88,7 +88,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { mask, SelectData } from "types/Global";
+import { mask, SelectData, ValidationRule } from "types/Global";
 import Inputmask from "inputmask/";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -123,7 +123,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private appendText!: string;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;

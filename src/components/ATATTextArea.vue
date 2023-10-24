@@ -72,6 +72,7 @@ import { Component, Prop, Watch } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { ValidationRule } from "types/Global";
 
 @Component({
   components: {
@@ -98,7 +99,7 @@ export default class ATATTextArea extends Vue {
   @PropSync("value", { default: "" }) private _value!: string;
   @Prop({ default: 4 }) private rows!: number;
   @Prop({ default: false }) private readOnly!: boolean;
-  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
+  @Prop({ default: ()=>[]}) private rules!: ValidationRule[];
   @Prop({ default: true }) private noResize!: boolean;
   @Prop({ default: "" }) private maxChars!: string;
   @Prop({ default: true }) private validateItOnBlur!: boolean;
@@ -119,7 +120,7 @@ export default class ATATTextArea extends Vue {
     this._turnRulesOff = false;
   }
 
-  public get getRules(): unknown[] {
+  public get getRules(): ValidationRule[] {
     return this._turnRulesOff ? [] : this.rules;
   }
 

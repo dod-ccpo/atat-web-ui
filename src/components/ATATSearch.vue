@@ -190,7 +190,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import api from "@/api";
 
-import { mask } from "types/Global";
+import { ValidationRule, mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -230,7 +230,7 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: () => [] }) private mask?: string[];
   @Prop({ default: false }) private isMaskRegex?: boolean;
-  @Prop({ default: () => [] }) private rules?: Array<unknown>;
+  @Prop({ default: () => [] }) private rules?: ValidationRule[];
   @Prop({ default: true }) private hideHelpTextOnErrors?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;

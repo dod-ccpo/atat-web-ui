@@ -146,7 +146,7 @@ import { PropSync } from "@/decorators/custom";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";
-import { CountryObj } from "../../types/Global";
+import { CountryObj, ValidationRule } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -408,7 +408,7 @@ export default class ATATPhoneInput extends Vue {
   @Prop({ default: "" }) private suffix!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "351" }) private width!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: true }) private isPhoneExtensionVisible!: boolean;
   @PropSync("value", { default: "" }) private _value!: string | null;
   @PropSync("extensionValue", {default: ""}) private _extension!: string;
