@@ -14,10 +14,10 @@
     :timeout="getTimeout"
   >
     <div v-html="toast.message"></div>
-    <template v-if="toast.hasUndo" v-slot:action="{ attrs }">
+    <!--TODO: validate that this still works after removal of slot action-->
+    <template v-if="toast.hasUndo">
       <v-btn
-        text
-        v-bind="attrs"
+        text="true"
         @click="onUndo"
       >
         Undo

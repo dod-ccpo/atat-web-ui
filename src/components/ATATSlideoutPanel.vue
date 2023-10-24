@@ -20,7 +20,7 @@
       </div>
       <v-btn
         class="text-base-darkest pa-0 icon-24 _panel-closer"
-        text
+        text="true"
         small
         @click.stop="closeSlideoutPanel"
         @keydown.enter="closeSlideoutPanel"

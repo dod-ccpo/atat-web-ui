@@ -60,7 +60,7 @@
             class="ml-5"
             :alignRight="true"
             :value.sync="_values[idx]"
-            @blur="setsysIdArrayStringified(_values[idx], period.sys_id)"
+            @blur="setsysIdArrayStringified(_values[idx], period?.sys_id ?? '')"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
             :showErrorMessages="true"

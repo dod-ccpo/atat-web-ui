@@ -8,7 +8,8 @@
     eager
     v-if="tooltipText"
   >
-    <template v-slot:activator="{ on }">
+    <!--TODO: validate that this still works after removal of on from activator-->
+    <template v-slot:activator>
       <v-btn
         class=" pa-0 tooltip-button no-border"
         :class="buttonClass"

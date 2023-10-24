@@ -18,12 +18,12 @@
         top
         v-if="tooltipText"
       >
-        <template v-slot:activator="{ on }">
+        <!--TODO: validate that this still works after removal of on from activator-->
+        <template v-slot:activator>
           <v-btn
             class="mb-2 ml-1 pa-0 link-button no-border"
             icon
             x-small
-            v-on="on"
             :ripple="false"
             :aria-label="'Help for ' + label"
           >
