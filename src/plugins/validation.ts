@@ -1,7 +1,7 @@
 import Vue from "vue"
 
 import { compareAsc, compareDesc } from "date-fns"
-import { CountryObj, ValidationRule } from "types/Global";
+import { CountryObj, ValidationResult } from "types/Global";
 import { App } from "vue";
 
 export class ValidationPlugin {
@@ -12,16 +12,16 @@ export class ValidationPlugin {
  *
  * @param {number} length The minimum length allowed for the field's value
  * @param {string} message
- * @returns {() => string | true | undefined}
+ * @returns {() => ValidationResult}
  */
   minLength(
     length: number,
     message?: string
-  ): ((v: string) => string | true | undefined) {
+  ): ((v: string) => ValidationResult) {
     message = message || `Min ${length} characters allowed.`;
 
     return (v: string) => {
-      return v && v.length < length ? message : true;
+      return v && v.length < length ? message as string : true;
     };
   };
 
@@ -31,15 +31,15 @@ export class ValidationPlugin {
  *
  * @param {number} length The maximum length allowed for the field's value
  * @param {string} message
- * @returns {() => string | true | undefined}
+ * @returns {() => ValidationResult}
  */
   maxLength(
     length: number,
     message?: string
-  ): ((v: string) => string | true | undefined) {
+  ): ((v: string) => ValidationResult) {
     message = message || `Max ${length} characters allowed.`;
     return (v: string) => {
-      return v && v.length > length ? message : true;
+      return v && v.length > length ? message as string : true;
     };
   };
 
@@ -48,13 +48,13 @@ export class ValidationPlugin {
  * Returns the error message otherwise.
  *
  * @param message
- * @returns {() => string | true | undefined}
+ * @returns {() => ValidationResult}
  */
 
   allowedLengths(
     lengths: number[], 
     message?: string
-  ): ((v: string) => string | true | undefined) {
+  ): ((v: string) => ValidationResult) {
 
     let lengthsStr: string = lengths.length > 1 
       ? lengths.join(", ")
@@ -63,13 +63,13 @@ export class ValidationPlugin {
 
     message = message || `Must be ${lengthsStr} characters.`;
     return (v: string) => {
-      return v && !lengths.includes(v.length) ? message : true;
+      return v && !lengths.includes(v.length) ? message as string : true;
     };
   };
 
   required(
     message?: string, isCurrency?: string
-  ): ValidationRule{
+  ): ((v: string) => ValidationResult) {
     message = message || "This field is required.";
     return (v: string) => {
       if (typeof v === "object") { // if typeof 'selectData(dropdown)' or string[]
@@ -81,7 +81,7 @@ export class ValidationPlugin {
         return v && Object.values(v).length > 0 || message as string;
       } else if (typeof (v) === "string") {
         return (v.trim() !== "") || message as string;
-      } else if ( typeof (v) === "undefined"){ //validates file upload
+      } else if (typeof (v) === "undefined"){ //validates file upload
         return message as string;
       } else if (isCurrency) {
         const amt = parseFloat(v);
@@ -94,7 +94,7 @@ export class ValidationPlugin {
 
   notSameAsDefault(
     message?: string, defaultValue?: string
-  ): ValidationRule{
+  ): ((v: string) => ValidationResult) {
     message = message || "Text cannot be the same as the default text";
     return (v: string) => {
       return v && v.trim() !== defaultValue?.trim() || message as string;
@@ -106,12 +106,12 @@ export class ValidationPlugin {
  * Returns the error message otherwise.
  *
  * @param message
- * @returns {() => string | true | undefined}
+ * @returns {() => ValidationResult}
  */
-  integer(message?: string): ((v: string) => string | true | undefined) {
+  integer(message?: string): ((v: string) => ValidationResult) {
     message = message || "The value must be an integer number";
 
-    return (v) => Number.isInteger(Number(v)) || message;
+    return (v) => Number.isInteger(Number(v)) || message as string;
   };
 
   /**
@@ -120,15 +120,15 @@ export class ValidationPlugin {
  *
  * @param {number} max Maximum number allowed
  * @param {string} message
- * @returns {() => string | true | undefined}
+ * @returns {() => ValidationResult}
  */
   lessThan(
     max: number,
     message?: string
-  ): ((v: number) => string | true | undefined) {
+  ): ((v: number) => ValidationResult) {
     message = message || `Value must be less than ${max}`;
     return (v: number) => {
-      return v && v < max || message;
+      return v && v < max || message as string;
     };
   };
 
@@ -138,15 +138,15 @@ export class ValidationPlugin {
  *
  * @param {number} min Minimum number allowed
  * @param {string} message
- * @returns {() => string | true | undefined}
+ * @returns {() => ValidationResult}
  */
   greaterThan(
     min: number,
     message?: string
-  ): ((v: number) => string | true | undefined) {
+  ): ((v: number) => ValidationResult) {
     message = message || `Value must be greater than ${min}`;
     return (v: number) => {
-      return v && v > min || message;
+      return v && v > min || message as string;
     };
   };
 
@@ -158,16 +158,16 @@ export class ValidationPlugin {
  * @param {number} min Minimum number allowed
  * @param {number} max Maximum number allowed
  * @param {string} message
- * @returns {() => string | true | undefined}
+ * @returns {() => ValidationResult}
  */
   isBetween(
     min: number,
     max: number,
     message?: string
-  ): ((v: number) => string | true | undefined) {
+  ): ((v: number) => ValidationResult) {
     message = message || `Value must be between ${min} and ${max}`;
     return (v: number) => {
-      return v && (v >= min && v <= max) || message;
+      return v && (v >= min && v <= max) || message as string;
     };
   };
 
@@ -177,17 +177,17 @@ export class ValidationPlugin {
  *
  * @param (string) date as "MM/dd/yyyy"
  * @param {string} message
- * @returns {() => string | true | undefined}
+ * @returns {() => ValidationResult}
  */
   isDateValid(
     message?: string
-  ): ((v: string) => string | true | undefined) {
+  ): ((v: string) => ValidationResult) {
     message = message || `Invalid Date`;
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
       if (v !== ""){
         const d = new Date(v);
-        return (d instanceof Date && !isNaN(d.getMilliseconds())) || message;
+        return (d instanceof Date && !isNaN(d.getMilliseconds())) || message as string;
       }
       return true;
     };
@@ -199,20 +199,20 @@ export class ValidationPlugin {
  * @param {string} dateToCompare
  * @param {string} message
  * @param {boolean} canEqual can dates be equal
- *  @returns (v: string) => string | true | undefined)
+ *  @returns (v: string) => ValidationResult)
  */
   compareDatesAsc(
     dateToCompare: string,
     message: string,
     canEqual: boolean,
-  ): ((v: string) => string | true | undefined) {
+  ): ((v: string) => ValidationResult) {
     return (v: string) => {
       if (dateToCompare !=="" && v !=="" ){
         const condition = canEqual
           ? compareAsc(new Date(v),new Date(dateToCompare)) > -1
           : compareAsc(new Date(v),new Date(dateToCompare))=== 1
         return condition || message;
-      };
+      }
       return true;
     } 
     
@@ -224,20 +224,20 @@ export class ValidationPlugin {
  * @param {string} dateToCompare
  * @param {string} message - error Message
  * @param {boolean} canEqual - can dates be equal
- * @returns (v: string) => string | true | undefined)
+ * @returns (v: string) => ValidationResult)
  */
   compareDatesDesc(
     dateToCompare: string,
     message: string,
     canEqual: boolean
-  ): ((v: string) => string | true | undefined) {
+  ): ((v: string) => ValidationResult) {
     return (v: string) => {
       if (dateToCompare !=="" && v !=="" ){
         const condition = canEqual
           ? compareDesc(new Date(v),new Date(dateToCompare)) > 1
           : compareDesc(new Date(v),new Date(dateToCompare))=== 1
         return condition || message;
-      };
+      }
       return true;
     } 
   };
@@ -248,29 +248,29 @@ export class ValidationPlugin {
  * Returns the error message otherwise.
  *
  * @param {string} message
- * @returns {() => string | true | undefined}
+ * @returns {() => ValidationResult}
  */
   isURL(
     message?: string
-  ):((v: string) => string | true | undefined){
+  ):((v: string) => ValidationResult){
     message = message || "Invalid URL";
     return (v: string) => {
       if (v !== "") {
         // eslint-disable-next-line max-len
         const httpRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/gm;
-        return v.match(httpRegex) ? true : message;
+        return v.match(httpRegex) ? true : message as string;
       }
       return true;
     }
   };
 
   /**
-  * @returns {() => string | true | undefined}
+  * @returns {() => ValidationResult}
   */
   isEmail = (
     message?: string,
     highSide?: "S" | "TS"
-  ): ((v: string) => string | true | undefined) => {
+  ): ((v: string) => ValidationResult) => {
     const isScrt = highSide === "S" ? true : false;
     const isTS = highSide === "TS" ? true : false;
     return (v: string) => {
@@ -301,9 +301,9 @@ export class ValidationPlugin {
   * Returns the error message otherwise.
   *
   * @param {string} country country Abbreviation
-  * @returns {() => string | true | undefined}
+  * @returns {() => ValidationResult}
   */
-  isPhoneNumberValid = (country: CountryObj): ((v: string) => string | true | undefined) => {
+  isPhoneNumberValid = (country: CountryObj): ((v: string) => ValidationResult) => {
     return (v: string) => {
       if (v && v !== "") {
         const plainPN = v.replace(/[() -]/gi, '') || '';
@@ -326,10 +326,10 @@ export class ValidationPlugin {
    * @param {string} mask an Array of input mask ['99999',99999-9999]
    * @param {string} message text to be shown if false
    * @param {boolean} isMaskRegex true or false
-   * @returns {() => string | true | undefined}
+   * @returns {() => ValidationResult}
    */
   isMaskValid = (mask: string[], message: string, isMaskRegex?: boolean):
-    ValidationRule => {
+    ((v: string) => ValidationResult) => {
     return (v: string) => {
       if (v && v !== "") {
         const plainInput = v.replace(/[() -]/gi, '') || '';
@@ -351,7 +351,7 @@ export class ValidationPlugin {
    * Validator that ensures the file is valid.
    * Returns the error message otherwise.
    *
-   * @returns {() => string | true | undefined}
+   * @returns {() => ValidationResult}
    * @param file
    * @param validExtensions
    * @param maxFileSize
@@ -370,7 +370,7 @@ export class ValidationPlugin {
     SNOWError?: string,
     statusCode?: number,
     restrictedNames?:string[],
-  ):((v: string) => string | true | undefined) => {
+  ):((v: string) => ValidationResult) => {
     return () => {
       const fileName = file.name.length>20
         ? file.name.substring(0, 12) + '...'
