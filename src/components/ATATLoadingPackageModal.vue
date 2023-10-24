@@ -34,15 +34,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import AppSections from "@/store/appSections";
-import { Component, Prop } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-
-export default class ATATLoadingPackageModal extends Vue {
+class ATATLoadingPackageModal extends Vue {
   @Prop({ default: false }) isLoading!: boolean;
   
   public get packagePercentLoaded(): number {
@@ -54,7 +50,7 @@ export default class ATATLoadingPackageModal extends Vue {
     const dest = AcquisitionPackage.getCancelLoadDest;
     AppSections.changeActiveSection(dest);
   }
-
 }
+export default toNative(ATATLoadingPackageModal);
 
 </script>

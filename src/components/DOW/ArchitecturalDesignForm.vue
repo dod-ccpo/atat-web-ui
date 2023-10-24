@@ -67,9 +67,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -86,7 +85,7 @@ import classificationRequirements from "@/store/classificationRequirements";
   }
 })
 
-export default class ArchitectureDesignForm extends Vue {
+class ArchitectureDesignForm extends Vue {
   @Prop({ default: true }) isDOW?: boolean;
   @PropSync("statementArchitecturalDesign") public _statementArchitecturalDesign!: string;
   @PropSync("applicationsNeedArchitecturalDesign") 
@@ -111,5 +110,5 @@ export default class ArchitectureDesignForm extends Vue {
   }
 
 }
-
+export default toNative(ArchitectureDesignForm)
 </script>

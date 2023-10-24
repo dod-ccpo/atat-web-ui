@@ -335,12 +335,12 @@ export class ValidationPlugin {
         const plainInput = v.replace(/[() -]/gi, '') || '';
         if (isMaskRegex && isMaskRegex === true) {
           const maskRegEx = new RegExp(mask[0])
-          return maskRegEx.test(v) || message;
+          return maskRegEx.test(v) || message as string;
         } else {
           const isValid = mask?.some((mask) => {
             return mask.replace(/[() -]/gi, '').length === plainInput.length;
           });
-          return isValid || message;
+          return isValid || message as string;
         }
       }
       return true;

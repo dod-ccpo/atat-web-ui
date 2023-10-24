@@ -157,8 +157,8 @@
 </template>
 
 <script lang="ts">
-import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { ComponentPublicInstance } from "vue";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
@@ -186,7 +186,7 @@ import { convertSystemChoiceToSelect } from "@/helpers";
     ATATTextField,
   },
 })
-export default class ATATContactForm extends Vue {
+class ATATContactForm extends Vue {
   $refs!: {
     atatGlobalContact: ComponentPublicInstance & {
       resetValidation: () => void;
@@ -292,4 +292,5 @@ export default class ATATContactForm extends Vue {
     await this.loadOnEnter();
   }
 }
+export default toNative(ATATContactForm);
 </script>

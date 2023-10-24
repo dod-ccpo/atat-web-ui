@@ -126,8 +126,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { StepperStep } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
@@ -141,7 +140,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
     ATATSVGIcon,
   }
 })
-export default class ATATSideStepper extends Vue {
+class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
   public async setCurrentStep(
@@ -243,4 +242,5 @@ export default class ATATSideStepper extends Vue {
   private activeStep = "";
   private percentComplete = 0;
 }
+export default toNative(ATATSideStepper);
 </script>

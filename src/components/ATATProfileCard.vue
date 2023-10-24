@@ -110,8 +110,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { User } from "../../types/Global";
 import { getUserInitials } from "../helpers";
@@ -123,7 +122,7 @@ import { getUserInitials } from "../helpers";
   }
 })
 
-export default class ATATProfileCard extends Vue {
+class ATATProfileCard extends Vue {
   @Prop({required: true}) public person!: User;
   public initials = ""
   public emailLink = ""
@@ -161,5 +160,5 @@ export default class ATATProfileCard extends Vue {
   }
 
 }
-
+export default toNative(ATATProfileCard);
 </script>

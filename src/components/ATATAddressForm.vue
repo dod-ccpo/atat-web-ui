@@ -143,9 +143,9 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
-import Vue, { ComponentPublicInstance } from "vue";
+import { ComponentPublicInstance } from "vue";
 
 import ATATAutoComplete from "./ATATAutoComplete.vue";
 import ATATDialog from "./ATATDialog.vue";
@@ -161,7 +161,8 @@ import {
   mask,
   RadioButton,
   SelectData,
-  stringObj, ValidationRule
+  stringObj,  
+  ValidationRule
 } from "types/Global";
 
 @Component({
@@ -174,7 +175,7 @@ import {
   },
 })
 
-export default class ATATAddressForm extends Vue {
+class ATATAddressForm extends Vue {
   $refs!: {
     atatAddressForm: ComponentPublicInstance & {
       resetValidation: () => void;
@@ -246,7 +247,7 @@ export default class ATATAddressForm extends Vue {
     return rulesArr
   }
   private setMask(inputID:string, rule: isValidObj): void {
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       const inputField = document.getElementById(
         inputID + "_text_field"
       ) as HTMLInputElement;
@@ -266,7 +267,7 @@ export default class ATATAddressForm extends Vue {
   }
 
   public resetData(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
 
       // TODO: REFACTOR AFTER VUE3 UPGRADE
       // //iterate over the forms children ref manually set their 'errorMessages' array to empty
@@ -297,9 +298,6 @@ export default class ATATAddressForm extends Vue {
       ? "ZIPCode"
       : "PostalCode";
   }
-
-
-
 }
-
+export default toNative(ATATAddressForm);
 </script>

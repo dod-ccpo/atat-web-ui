@@ -114,9 +114,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
@@ -134,7 +133,7 @@ import {
   }
 })
 
-export default class InstanceConfig extends Vue {
+class InstanceConfig extends Vue {
   @PropSync("data") public offeringData!: CurrEnvInstanceConfig | OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
   @Prop({default: false}) public isDOW?: boolean;
@@ -161,9 +160,7 @@ export default class InstanceConfig extends Vue {
       value: "ARCHIVE" 
     },
   ];
-
-
-
 }
+export default toNative(InstanceConfig);
 
 </script>

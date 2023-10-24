@@ -55,9 +55,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-facing-decorator";
-
+import { Component, Vue, toNative, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -77,7 +76,7 @@ import {
   }
 })
 
-export default class CurrentUsage extends Vue {
+class CurrentUsage extends Vue {
   
   @PropSync("usageTrafficSpikeCauses") public _usageTrafficSpikeCauses!: string[];
   @PropSync("currentUsageDescription") public _currentUsageDescription!: EnvironmentInstanceUsage;
@@ -112,11 +111,11 @@ export default class CurrentUsage extends Vue {
   ];
 
   @Watch("_currentUsageDescription", {deep: true})
-  public currentUsageDescriptionChange(newVal: CurrEnvInstanceUsage): void {
+  public currentUsageDescriptionChange(newVal: EnvironmentInstanceUsage): void {
     if (newVal === "EVEN_USAGE") {
       this._usageTrafficSpikeCauses = [];
     }
   }
 }
-
+export default toNative(CurrentUsage)
 </script>

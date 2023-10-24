@@ -15,12 +15,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Prop, toNative, Vue } from "vue-facing-decorator";
 
-@Component({})
-export default class ATATErrorValidation extends Vue {
-  // props
+class ATATErrorValidation extends Vue {
   @Prop({ default: () => [] }) private errorMessages!: string[];
   @Prop({ default: false }) private textAreaWithCounter!: boolean;
   @Prop({ default: false }) private showAllErrors!: boolean;
@@ -37,4 +34,5 @@ export default class ATATErrorValidation extends Vue {
     return this.errorMsgs?.length > 0;
   }
 }
+export default toNative(ATATErrorValidation)
 </script>

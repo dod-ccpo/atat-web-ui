@@ -116,8 +116,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
@@ -128,7 +127,7 @@ import { uploadingFile } from "types/Global";
     ATATSVGIcon,
   },
 })
-export default class ATATFileListItem extends Vue {
+class ATATFileListItem extends Vue {
   /** PROPS */
   @Prop({ default: 0 }) private index!: number;
   @Prop({ default: () => ({}) }) private uploadingFileObj!: uploadingFile;
@@ -208,9 +207,10 @@ export default class ATATFileListItem extends Vue {
    */
   private removeFile(idx: number, event?: Event): void {
     event?.preventDefault?.();
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.$emit("removeFiles", idx);
     });
   }
 }
+export default toNative(ATATFileListItem);
 </script>
