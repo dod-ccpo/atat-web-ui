@@ -1,0 +1,20 @@
+{
+    "page1DescText":"This objective-based requirement is a good option if you need help with: determining the most effective cloud resources, tools, or services needed for your project; translating functional requirements into a new technology solution; or guidance on the strategic direction of your project. We'll gather details about your situation and request CSPs to propose a customized cloud solution based on your unique objectives.",
+    "page2DescText":"Use vendor-neutral language in your responses. This will be added to your Description of Work, so avoid including any company names or vendor-unique brand, product, or titles that could impact full and open competition.",
+    "statementLabel":"Provide a detailed statement identifying the outcomes and objectives for this requirement",
+    "appNeedsTextLabel":"Identify any application(s) that need architectural designs",
+    "classGroupLabel":"What data classification and impact level(s) do you need an architectural design solution for?",
+    "classificationLevels":[
+        "Unclassified / Impact Level 2 (IL2) Accommodates DoD information approved for public release (Low Confidentiality and Moderate Integrity)",
+        "Unclassified / Impact Level 4 (IL4) Accommodates DoD Controlled Unclassified Information (CUI)", 
+        "Unclassified / Impact Level 5 (IL5) Accommodates DoD CUI and National Security Systems",
+        "Secret / Impact Level 6 (IL6)",
+        "Top Secret"
+    ],
+    "externalFactorLabel":"What external factors need to be considered for the deployment?",
+    "archAlertOnlyInArchDesignSol":"Based on what you previously told us, we recommend selecting “Yes” below. If you don’t need an architectural design solution, you’ll need to revisit Your Current Functions or XaaS to define performance requirements for your Description of Work.",
+    "onlyArchAlertInXaaS":"Based on what you previously told us, we recommend selecting at least one category below. If you don’t need specific cloud resources or tools, select “None of these apply to my acquisition” and revisit Architectural Design Solution to define performance requirements for your Description of Work.",
+    "archAlertInCF":"Based on what you previously told us, we recommend selecting either “Replicate” or “Optimize” below. If you don’t have requirements related to your current functions, you’ll need to revisit Architectural Design Solution or XaaS to define requirements for your Description of Work.",
+    "bothArchCFInXaas":"Based on what you previously told us, we recommend selecting at least one category below. If you don’t need specific cloud resources or tools, select “None of these apply to my acquisition” and revisit Your Current Functions or Architectural Design Solution to define performance requirements for your Description of Work.",
+    "dowLandingPageAlert":"JWCC is not a support services contract, so you must define at least one objective-based or cloud-specific requirement. Revisit any of the starred performance areas to update your selection. Once a requirement is added, all starred areas will be complete. If you need assistance, contact Customer Support."
+    }    
