@@ -50,11 +50,13 @@
           class="_top-nav-menu"
           :class="{ '_profile-menu': navItem.isProfile }"
         >
-          <template v-for="(menuItem, idx) in navItem.menu">
+          <div v-for="(menuItem, idx) in navItem.menu" :key="idx">
+
             <!-- top profile block with initials in circle, name, and email -->
             <v-list-item
+              :id="'ProfileBlock' + idx"
               v-if="navItem.isProfile && idx === 0"
-              :key="'ProfileBlock' + idx"
+             
               class="d-flex py-2"
               disabled
             >
@@ -117,7 +119,7 @@
               </span>
 
             </v-list-item>
-          </template>
+          </div>
         </v-list>
       </v-menu>
     </div>
@@ -127,7 +129,7 @@
 <script lang="ts">
 import { TopNavItem, User } from "types/Global";
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { getUserInitials } from "@/helpers";
 

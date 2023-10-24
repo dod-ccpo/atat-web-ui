@@ -60,8 +60,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop} from "vue-facing-decorator";
-import { PropSync } from "@/decorators/custom"
+import { Component, Prop, PropSync } from "vue-facing-decorator";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"

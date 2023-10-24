@@ -38,7 +38,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component} from "vue-facing-decorator";
+import {Component, Mixins} from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";

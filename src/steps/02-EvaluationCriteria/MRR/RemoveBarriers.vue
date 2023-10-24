@@ -106,7 +106,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Mixins, Watch } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";

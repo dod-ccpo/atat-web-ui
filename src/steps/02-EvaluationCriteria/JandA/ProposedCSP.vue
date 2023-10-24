@@ -54,7 +54,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Mixins, Watch } from "vue-facing-decorator";
 import { CSP } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";

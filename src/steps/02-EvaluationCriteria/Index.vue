@@ -6,7 +6,6 @@
 import Vue from "vue";
 
 import { Component } from "vue-facing-decorator";
-;
 @Component({
 })
 export default class FairOpportunityProcess extends Vue {

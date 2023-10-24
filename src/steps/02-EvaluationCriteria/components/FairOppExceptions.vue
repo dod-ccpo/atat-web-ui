@@ -26,8 +26,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop} from "vue-facing-decorator";
-import { PropSync } from "@/decorators/custom"
+import { Component, Prop, PropSync } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 
