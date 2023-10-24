@@ -27,8 +27,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import CurrentContractOptions from "./components/CurrentContractOptions.vue"
 
@@ -48,7 +47,7 @@ import { CurrentContractRouteResolver } from "@/router/resolvers";
   },
 })
 
-export default class CurrentContract extends Vue {
+class CurrentContract extends Vue {
   public headline = "";
   public currentContractExists = "";
   public noContract: CurrentContractDTO = {};
@@ -143,4 +142,6 @@ export default class CurrentContract extends Vue {
   }
 
 }
+
+export default toNative(CurrentContract)
 </script>

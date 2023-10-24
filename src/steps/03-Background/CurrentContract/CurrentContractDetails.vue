@@ -210,8 +210,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue, { ComponentPublicInstance } from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
+import { ComponentPublicInstance } from 'vue';
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -240,7 +240,7 @@ import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vu
     ATATErrorValidation
   },
 })
-export default class CurrentContract extends Vue {
+class CurrentContract extends Vue {
   $refs!: {
     form: ComponentPublicInstance & { 
       resetValidation: () => void;
@@ -454,4 +454,6 @@ export default class CurrentContract extends Vue {
     return hasChanges(this.currentData, this.savedData);
   }
 }
+
+export default toNative(CurrentContract)
 </script>

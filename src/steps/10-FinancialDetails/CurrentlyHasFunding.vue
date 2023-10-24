@@ -29,8 +29,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "../../../types/Global";
@@ -48,7 +47,7 @@ import Steps from "@/store/steps";
   }
 })
 
-export default class CurrentlyHasFunding extends Vue {
+class CurrentlyHasFunding extends Vue {
   private selectedHasFunding = "";
   private radioButtonItems: RadioButton[] = [
     {
@@ -109,4 +108,6 @@ export default class CurrentlyHasFunding extends Vue {
     return hasChanges(this.currentData, this.savedData);
   };
 };
+
+export default toNative(CurrentlyHasFunding)
 </script>

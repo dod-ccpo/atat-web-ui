@@ -103,8 +103,7 @@
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import Vue from 'vue';
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -130,7 +129,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
     ATATAlert
   }
 })
-export default class CrossDomain extends Vue {
+class CrossDomain extends Vue {
   public isPeriodsDataMissing = false;
   public domainInfo: CrossDomainSolution = {
     crossDomainSolutionRequired: "",
@@ -377,5 +376,7 @@ export default class CrossDomain extends Vue {
     return true;
   }
 }
+
+export default toNative(CrossDomain)
 </script>
 

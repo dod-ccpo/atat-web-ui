@@ -44,8 +44,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -62,7 +61,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 
-export default class PIIRecord extends Vue {
+class PIIRecord extends Vue {
   private systemName = "";
   private operationToBePerformed = "";
 
@@ -114,4 +113,5 @@ export default class PIIRecord extends Vue {
   }
 }
 
+export default toNative(PIIRecord)
 </script>

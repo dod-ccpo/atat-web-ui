@@ -6,16 +6,16 @@
 
 <script lang="ts">
 import IGCEStore from "@/store/IGCE";
-import Vue from "vue";
 
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({
 })
-export default class IGCE extends Vue {
+class IGCE extends Vue {
   public mounted(): void{
     IGCEStore.setHasDOWandPop();
   }
 }
+export default toNative(IGCE)
 </script>
 
 

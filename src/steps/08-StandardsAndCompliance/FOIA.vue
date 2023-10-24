@@ -96,8 +96,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -122,7 +121,7 @@ import { hasChanges } from "@/helpers";
   },
 })
 
-export default class FOIA extends Vue {
+class FOIA extends Vue {
 
   public potentialToBeHarmful 
     = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful || "";
@@ -202,4 +201,6 @@ export default class FOIA extends Vue {
   }
 
 }
+
+export default toNative(FOIA)
 </script>

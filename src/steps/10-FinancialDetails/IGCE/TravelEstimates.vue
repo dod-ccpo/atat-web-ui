@@ -106,8 +106,7 @@ import {
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
@@ -134,7 +133,7 @@ import _ from "lodash";
     ATATSVGIcon,
   },
 })
-export default class TravelEstimates extends Vue {
+class TravelEstimates extends Vue {
   private periods: PeriodDTO[] | null = [];
   private ceilingPrice: SingleMultiple | undefined = "";
   private estimatedTravelCosts = "";
@@ -342,5 +341,7 @@ export default class TravelEstimates extends Vue {
     return true;
   }
 }
+
+export default toNative(TravelEstimates)
 </script>
 

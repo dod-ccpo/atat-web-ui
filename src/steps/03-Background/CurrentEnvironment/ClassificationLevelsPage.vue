@@ -35,8 +35,7 @@
 </template>
 <script lang="ts">
 
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -54,7 +53,7 @@ import CurrentEnvironment,
     ATATCheckboxGroup,
   }
 })
-export default class ClassificationLevelsPage extends Vue {
+class ClassificationLevelsPage extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
   public envLocation = "";
   private isHybrid = false;
@@ -118,4 +117,6 @@ export default class ClassificationLevelsPage extends Vue {
     return true;
   }  
 }
+
+export default toNative(ClassificationLevelsPage)
 </script>

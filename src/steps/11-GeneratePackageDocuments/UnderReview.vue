@@ -24,9 +24,8 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
 
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
@@ -43,7 +42,7 @@ import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
     CompletePackageCard
   }
 })
-export default class ReadyToSubmit extends Vue {
+class ReadyToSubmit extends Vue {
   public packageNotInitialized = false;
   public feedbackOptions: string[] =[]
   public otherFeedbackValue = ""
@@ -66,5 +65,7 @@ export default class ReadyToSubmit extends Vue {
   }
 
 } 
+
+export default toNative(ReadyToSubmit)
 </script>
 

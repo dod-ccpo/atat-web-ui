@@ -72,7 +72,7 @@
 
 
 <script lang="ts">
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import {
   SlideoutPanelContent,
@@ -88,7 +88,6 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CrossDomainSolutionDTO, IgceEstimateDTO, ReferenceColumn } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
-import Vue from "vue";
 import { ComponentPublicInstance } from "vue";
 
 @Component({
@@ -97,7 +96,7 @@ import { ComponentPublicInstance } from "vue";
     Card_Requirement
   },
 })
-export default class GatherPriceEstimates extends Vue {
+class GatherPriceEstimates extends Vue {
   $refs!: {
     form: ComponentPublicInstance & { validate: () => boolean};
   }
@@ -318,5 +317,7 @@ export default class GatherPriceEstimates extends Vue {
     return false;
   }
 }
+
+export default toNative(GatherPriceEstimates)
 </script>
 

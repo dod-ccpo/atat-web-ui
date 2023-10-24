@@ -187,8 +187,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import { RadioButton } from "../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -210,7 +209,7 @@ import { hasChanges } from "@/helpers";
   }
 })
 
-export default class SeverabilityAndIncrementalFunding extends Vue {
+class SeverabilityAndIncrementalFunding extends Vue {
   private selectedFundOption = "";
   private savedFundOption = "";
   private isPeriodsDataMissing = false;
@@ -313,5 +312,7 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
       && (this.isPeriodsDataMissing || this.isCostEstimateMissing)
   }
 }
+
+export default toNative(SeverabilityAndIncrementalFunding)
 </script>
 

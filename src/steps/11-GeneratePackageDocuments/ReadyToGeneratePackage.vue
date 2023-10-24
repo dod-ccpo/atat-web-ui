@@ -47,8 +47,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -59,7 +58,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
     ATATSVGIcon
   }
 })
-export default class ReadyToGeneratePackage extends Vue {
+class ReadyToGeneratePackage extends Vue {
 
   get contractingShop():string {
     return AcquisitionPackage.contractingShop
@@ -70,4 +69,6 @@ export default class ReadyToGeneratePackage extends Vue {
     return true;
   }
 }
+
+export default toNative(ReadyToGeneratePackage)
 </script>

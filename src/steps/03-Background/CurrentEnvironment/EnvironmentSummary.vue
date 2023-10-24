@@ -149,9 +149,7 @@
 </template>
 <script lang="ts">
 /*eslint vue/no-child-content: 1 */
-import Vue from "vue";
-
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -171,7 +169,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATSVGIcon
   }  
 })
-export default class EnvironmentSummary extends Vue {
+class EnvironmentSummary extends Vue {
   public currEnvData = defaultCurrentEnvironment;
   public deleteInstanceModalTitle = "";
   public envInstances: CurrentEnvironmentInstanceDTO[] = [];
@@ -490,5 +488,7 @@ export default class EnvironmentSummary extends Vue {
   }
 
 }
+
+export default toNative(EnvironmentSummary)
 </script>
 

@@ -246,8 +246,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import { Checkbox, DataTableHeader, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -269,7 +268,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
     ATATCheckboxGroup,
   },
 })
-export default class Travel extends Vue {
+class Travel extends Vue {
   public tableHeaders: Record<string, string>[] = [];
   public tableData: TravelSummaryTableData[] = [];
   public travelItem: TravelSummaryTableData = {
@@ -488,4 +487,6 @@ export default class Travel extends Vue {
   }
 
 }
+
+export default toNative(Travel)
 </script>
