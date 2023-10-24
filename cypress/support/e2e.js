@@ -1,5 +1,6 @@
 import './commands';
 import'./contractDetails';
+import "./performanceRequirements";
 import './DOW';
 import './occ';
 import "./sac";
