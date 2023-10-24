@@ -41,8 +41,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+ 
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -55,7 +55,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
     ATATRadioGroup, ATATAlert
   },
 })
-export default class AlternateCOR extends Vue {
+class AlternateCOR extends Vue {
   private alternateCoreOptions: RadioButton[] = [
     {
       id: "YesAlternateCOR",
@@ -96,4 +96,5 @@ export default class AlternateCOR extends Vue {
     return true;
   }
 }
+export default toNative(AlternateCOR)
 </script>

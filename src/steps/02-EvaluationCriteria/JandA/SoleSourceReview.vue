@@ -103,7 +103,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component } from "vue-facing-decorator";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -119,7 +119,7 @@ import _ from "lodash";
 import { hasChanges } from "@/helpers";
 import { FairOpportunityDTO } from "@/api/models";
 import {routeNames} from "@/router/stepper";
-import Vue from "vue"
+ 
 
 @Component({
   mixins: [SaveOnLeave],
@@ -135,7 +135,7 @@ import Vue from "vue"
   }
 })
 
-export default class SoleSourceReview extends Vue{
+class SoleSourceReview extends Vue {
   public projectTitle = AcquisitionPackage.projectTitle;
   
   public soleSourceCause = "";
@@ -331,4 +331,6 @@ export default class SoleSourceReview extends Vue{
   }
 
 }
+ 
+export default toNative(SoleSourceReview)
 </script>

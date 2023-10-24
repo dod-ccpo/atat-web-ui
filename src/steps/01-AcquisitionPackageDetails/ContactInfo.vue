@@ -158,7 +158,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 import {convertSystemChoiceToSelect} from "@/helpers";
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
@@ -181,7 +181,7 @@ import {
 import { ContactDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import Vue, {ComponentPublicInstance} from "vue";
+import {ComponentPublicInstance} from "vue";
 
 @Component({
   mixins: [SaveOnLeave],
@@ -193,7 +193,7 @@ import Vue, {ComponentPublicInstance} from "vue";
     ATATTextField,
   },
 })
-export default class ContactInfo extends Vue {
+class ContactInfo extends Vue {
   $refs!: {
     form: ComponentPublicInstance & { 
       resetValidation: () => void;
@@ -522,4 +522,5 @@ export default class ContactInfo extends Vue {
     await this.loadOnEnter();
   }
 }
+export default toNative(ContactInfo)
 </script>

@@ -39,10 +39,10 @@
 
 <script lang="ts">
 import LoadOnEnter from "@/mixins/loadOnEnter";
-import {Component, Mixins} from "vue-facing-decorator";
+import {Component, toNative, Vue} from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import {routeNames} from "@/router/stepper";
-import Vue from "vue"
+ 
 
 @Component({
   mixins: [LoadOnEnter],
@@ -51,8 +51,9 @@ import Vue from "vue"
   }
 })
 
-export default class NoEvalPlan extends Vue {
+class NoEvalPlan extends Vue {
   public routeNames = routeNames;
 }
 
+export default toNative(NoEvalPlan) 
 </script>

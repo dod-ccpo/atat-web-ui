@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { 
@@ -71,7 +71,7 @@ import { hasChanges } from "@/helpers";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import NoEvalPlan from "./NoEvalPlan.vue";
-import Vue from "vue"
+ 
 
 @Component({
   mixins: [LoadOnEnter, SaveOnLeave],
@@ -82,7 +82,7 @@ import Vue from "vue"
   }
 })
 
-export default class CreateEvalPlan extends Vue {
+class CreateEvalPlan extends Vue {
   public isLoading = false;
   public sourceSelection: EvalPlanSourceSelection = "";
   public selectedMethod: EvalPlanMethod = "";
@@ -273,4 +273,5 @@ export default class CreateEvalPlan extends Vue {
 
 }
 
+export default toNative(CreateEvalPlan)
 </script>

@@ -113,8 +113,8 @@ import ATATTextField from "../components/ATATTextField.vue";
 import ATATSelect from "../components/ATATSelect.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue"
-import Vue from "vue";
-import {Component} from "vue-facing-decorator";
+ 
+import {Component, toNative, Vue} from "vue-facing-decorator";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 @Component({
   components: {
@@ -126,7 +126,8 @@ import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
     ATATPhoneInput
   },
 })
-export default class StepTwo extends Vue {
+class StepTwo extends Vue
+export default toNative(StepTwo) {
   private show = true;
   private select = null;
   private items = [
@@ -549,4 +550,5 @@ export default class StepTwo extends Vue {
     },
   ];
 }
+ 
 </script>

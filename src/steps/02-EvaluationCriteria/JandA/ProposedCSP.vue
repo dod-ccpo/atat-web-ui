@@ -47,14 +47,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { ComponentPublicInstance } from 'vue';
+import {ComponentPublicInstance} from "vue";
 
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 import { CSP } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
@@ -69,7 +69,7 @@ import { FairOpportunityDTO } from "@/api/models";
   }
 })
 
-export default class ProposedCSP extends Vue {
+class ProposedCSP extends Vue {
   // refs
   $refs!: {
     radioButtonGroup: ComponentPublicInstance & { 
@@ -182,4 +182,6 @@ export default class ProposedCSP extends Vue {
 
 
 }
+ 
+export default toNative(ProposedCSP) 
 </script>

@@ -5,12 +5,14 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
+ 
 
-import { Component } from "vue-facing-decorator";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 @Component({
 })
-export default class JustificationAndApproval extends Vue {
+class JustificationAndApproval extends Vue {
 }
+
+export default toNative(JustificationAndApproval)
 </script>
 

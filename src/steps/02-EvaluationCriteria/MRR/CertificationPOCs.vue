@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from "vue-facing-decorator";
+import {Component, toNative, Vue} from "vue-facing-decorator";
 import CertificationPOCTypeForm
   from "@/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -57,12 +57,13 @@ import ContactData from "@/store/contactData";
 import { getStringFromReferenceColumn, hasChanges } from "@/helpers";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     CertificationPOCTypeForm
   }
 })
 
-export default class CertificationPOCs extends Mixins(SaveOnLeave) {
+class CertificationPOCs extends Vue {
   /* eslint-disable camelcase */
   private pocPrimary: ContactDTO = {} as ContactDTO;
   private pocCor: ContactDTO = {} as ContactDTO;
@@ -151,4 +152,5 @@ export default class CertificationPOCs extends Mixins(SaveOnLeave) {
     await this.loadOnEnter()
   }
 }
+export default toNative(CertificationPOCs)
 </script>

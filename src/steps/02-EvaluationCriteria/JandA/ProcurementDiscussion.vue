@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-facing-decorator";
+import { Component, toNative, Vue} from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
 import _ from "lodash";
@@ -69,7 +69,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "../../../../types/Global";
 import { FairOpportunityDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import Vue from "vue";
+ 
 
 @Component({
   mixins: [SaveOnLeave],
@@ -79,7 +79,7 @@ import Vue from "vue";
   }
 })
 
-export default class ProcurementDiscussion extends Vue {
+class ProcurementDiscussion extends Vue {
   public procurementParagraphText = "Identify any schedule requirements, unique" +
     " features and mandatory requirements, or the existence of" +
     " proprietary data, copyrighted information or a patent which" +
@@ -158,4 +158,6 @@ export default class ProcurementDiscussion extends Vue {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(ProcurementDiscussion) 
 </script>

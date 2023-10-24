@@ -39,8 +39,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+ 
+import { Component , toNative, Vue} from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
@@ -57,7 +57,8 @@ import {
   }
 })
 
-export default class DatabaseFormElements extends Vue {
+class DatabaseFormElements extends Vue
+export default toNative(DatabaseFormElements) {
   @PropSync("data") public offeringData!: OtherServiceOfferingData;
 
   public databaseTypeOptions: RadioButton[] = [
@@ -117,4 +118,5 @@ export default class DatabaseFormElements extends Vue {
 
 }
 
+ 
 </script>

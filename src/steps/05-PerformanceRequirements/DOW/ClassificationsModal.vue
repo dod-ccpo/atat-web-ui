@@ -64,8 +64,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component, Prop, Watch } from "vue-facing-decorator";
+ 
+import { Component, Prop, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -84,7 +84,8 @@ import ClassificationRequirements from '@/store/classificationRequirements';
   }
 })
 
-export default class ClassificationsModal extends Vue {
+class ClassificationsModal extends Vue
+export default toNative(ClassificationsModal) {
   @Prop({ required: true }) public modalCheckboxItems!: Checkbox[];
   @Prop({ required: false }) public IL6SysId?: string;
   @Prop( { required: true }) public modalSelectionsOnOpen!: string[];
@@ -164,4 +165,5 @@ export default class ClassificationsModal extends Vue {
  
 }
 
+ 
 </script>

@@ -14,8 +14,8 @@
  
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import { Component, Prop} from "vue-facing-decorator";
+ 
+import { Component, Prop, toNative, Vue} from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -25,7 +25,7 @@ import { RadioButton } from "types/Global";
     ATATRadioGroup,
   },
 })
-export default class EmergencyDeclarationSupport extends Vue {
+class EmergencyDeclarationSupport extends Vue {
   @PropSync("emergencyDeclaration", { default: "" })
   private _emergencyDeclaration!: string | null;
   @Prop({default: "emergency-declaration-support-requirement"}) private id!: string;
@@ -48,4 +48,5 @@ export default class EmergencyDeclarationSupport extends Vue {
     },
   ];
 }
+export default toNative(EmergencyDeclarationSupport)
 </script>

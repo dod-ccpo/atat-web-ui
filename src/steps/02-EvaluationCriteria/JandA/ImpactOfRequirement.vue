@@ -38,13 +38,13 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component} from "vue-facing-decorator";
+import {Component, toNative, Vue} from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import Vue from "vue"
+ 
 
 @Component({
   mixins: [SaveOnLeave],
@@ -53,7 +53,7 @@ import Vue from "vue"
   }
 })
 
-export default class ImpactOfRequirement extends Vue  {
+class ImpactOfRequirement extends Vue {
   public impactOfRequirementExplanation = "";
 
   private get currentData(): FairOpportunityDTO {
@@ -97,4 +97,6 @@ export default class ImpactOfRequirement extends Vue  {
     await this.loadOnEnter();
   }
 }
+ 
+export default toNative(ImpactOfRequirement)
 </script>

@@ -85,7 +85,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component } from "vue-facing-decorator";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
@@ -96,7 +96,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import Vue, { ComponentPublicInstance } from "vue";
+import { ComponentPublicInstance } from "vue";
 
 
 @Component({
@@ -106,7 +106,8 @@ import Vue, { ComponentPublicInstance } from "vue";
     AnticipatedDataNeeds
   },
 })
-export default class AnticipatedUserAndDataNeeds extends Vue {
+class AnticipatedUserAndDataNeeds extends Vue
+export default toNative(AnticipatedUserAndDataNeeds) {
 
   $refs!: {
     form: ComponentPublicInstance & { validate: () => boolean};
@@ -167,5 +168,6 @@ export default class AnticipatedUserAndDataNeeds extends Vue {
     return true;
   }
 }
+ 
 </script>
 

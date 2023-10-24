@@ -32,7 +32,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, mixins } from "vue-facing-decorator";
+import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -52,7 +52,7 @@ import SecurityRequirementsLearnMore
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
-import Vue from "vue";
+ 
 
 
 @Component({
@@ -65,7 +65,8 @@ import Vue from "vue";
   }
 })
 
-export default class DOWSecurityRequirements extends Vue {
+class DOWSecurityRequirements extends Vue
+export default toNative(DOWSecurityRequirements) {
   private selectedClassifications: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
   private selectedTopSecretSecurityRequirements: string[] = [];
@@ -199,5 +200,6 @@ export default class DOWSecurityRequirements extends Vue {
     await this.loadOnEnter();
   }
 }
+ 
 </script>
 

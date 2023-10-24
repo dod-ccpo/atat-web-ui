@@ -21,9 +21,9 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
-import Vue from "vue";
+ 
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import { ValidationRule } from "types/Global";
 
@@ -32,7 +32,7 @@ import { ValidationRule } from "types/Global";
     ATATTextArea,
   },
 })
-export default class ProjectScope extends Vue {
+class ProjectScope extends Vue {
   @PropSync("projectScope", {default: "scope goes here"}) 
   private _projectScope!: string;
   @Prop({default: "ProjectScope"}) private id!: string;
@@ -41,4 +41,5 @@ export default class ProjectScope extends Vue {
   @Prop({ default: true }) private isForm!: boolean;
   @PropSync("rules") private _rules!: ValidationRule;
 }
+export default toNative(ProjectScope)
 </script>

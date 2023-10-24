@@ -25,8 +25,8 @@
 </template>
    
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop} from "vue-facing-decorator";
+ 
+import { Component, Prop, toNative, Vue} from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { 
@@ -38,9 +38,9 @@ import {
       ATATCheckboxGroup,
     },
   })
-export default class ProjectDisclaimer extends Vue {
+class ProjectDisclaimer extends Vue {
     @PropSync("projectDisclaimer", { default: "" })
-  private _selectedDisclaimer!: string | null;
+    private _selectedDisclaimer!: string | null;
     @Prop({default: "project-disclaimer"}) private groupLabelId!: string;
     @Prop({default: true}) private isForm!: boolean;
     @Prop({default: ""}) private groupLabel!: string;
@@ -57,6 +57,7 @@ export default class ProjectDisclaimer extends Vue {
         value: "YES"
       }
     ];
-}
+  }
+export default toNative(ProjectDisclaimer)
 </script>
   

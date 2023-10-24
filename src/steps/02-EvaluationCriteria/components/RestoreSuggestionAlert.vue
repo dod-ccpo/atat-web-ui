@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+ 
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 
@@ -29,8 +29,9 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 
-export default class RestoreSuggestionAlert extends Vue {
+class RestoreSuggestionAlert extends Vue {
   @Prop({ default: false }) private showAlert!: boolean;
 }
 
+export default toNative(RestoreSuggestionAlert) 
 </script>

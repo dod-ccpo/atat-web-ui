@@ -105,7 +105,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-facing-decorator";
+import { Component, toNative, Vue} from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -124,6 +124,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { routeNames } from "@/router/stepper";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -136,7 +137,7 @@ import { routeNames } from "@/router/stepper";
   }
 })
 
-export default class MarketResearchReview extends Mixins(SaveOnLeave) {
+class MarketResearchReview extends Vue {
   public defaultSuggestion = "";
   public researchDetails = "";
   public researchDetailsGenerated = "";
@@ -326,4 +327,6 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
 
 
 }
+ 
+export default toNative(MarketResearchReview)
 </script>

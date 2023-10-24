@@ -4,10 +4,10 @@
 
 <script lang="ts">
 import LoadOnEnter from "@/mixins/loadOnEnter";
-import {Component, Mixins} from "vue-facing-decorator";
+import {Component, Mixins, toNative, Vue} from "vue-facing-decorator";
 @Component({
 })
-export default class Summary extends Mixins(LoadOnEnter) {
+class Summary extends Mixins(LoadOnEnter) {
 
   protected async loadOnEnter(): Promise<boolean> {
     return true;
@@ -22,4 +22,5 @@ export default class Summary extends Mixins(LoadOnEnter) {
   }
   
 }
+ 
 </script>

@@ -25,8 +25,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator"
+ 
+import { Component, Prop, toNative, Vue } from "vue-facing-decorator"
 import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 
@@ -35,7 +35,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
     ATATTextField,
   },
 })
-export default class DoDAAC extends Vue {
+class DoDAAC extends Vue {
   @PropSync("dodaac") private _dodaac!: string;
   @Prop() private corOrAcor!: string;
   @Prop({ default: true}) private isForm!: boolean;
@@ -54,4 +54,5 @@ export default class DoDAAC extends Vue {
     }
   }
 }
+export default toNative(DoDAAC)
 </script>

@@ -59,8 +59,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+ 
+import { Component, Prop, PropSync , toNative, Vue} from "vue-facing-decorator";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
@@ -72,7 +72,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
   }
 })
 
-export default class CustomSpecifications extends Vue {
+class CustomSpecifications extends Vue
+export default toNative(CustomSpecifications) {
   @PropSync("customSpecifications") public _customSpecifications!: string[];
   @Prop() public sourceSelection!: string;
   @Prop({ default: false }) public isDifferentiator?: boolean;
@@ -103,4 +104,5 @@ export default class CustomSpecifications extends Vue {
   }
 
 }
+ 
 </script>

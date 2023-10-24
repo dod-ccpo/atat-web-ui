@@ -287,7 +287,7 @@
 
 <script lang="ts">
 
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -315,7 +315,7 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import {SlideoutPanelContent} from "../../../../types/Global";
 import MarketResearchEffortsLearnMore
   from "@/steps/02-EvaluationCriteria/MRR/MarketResearchEffortsLearnMore.vue";
-import Vue from "vue"; 
+  
 
 
 @Component({
@@ -334,7 +334,7 @@ import Vue from "vue";
   }
 })
 
-export default class MarketResearchEfforts extends Vue {
+class MarketResearchEfforts extends Vue {
   public cspName = "";  
   public writeOwnExplanation: YesNo = "";
   public isLoading = false;
@@ -824,4 +824,5 @@ export default class MarketResearchEfforts extends Vue {
 
 }
 
+export default toNative(MarketResearchEfforts)
 </script>

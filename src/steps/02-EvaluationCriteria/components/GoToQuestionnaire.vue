@@ -33,8 +33,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+ 
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -46,7 +46,7 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
   }
 })
 
-export default class GoToQuestionnaire extends Vue {
+class GoToQuestionnaire extends Vue {
   @Prop() private section!: "soleSource" | "researchDetails" | "plansToRemoveBarriers";
 
   public get forWhat(): string {
@@ -65,4 +65,5 @@ export default class GoToQuestionnaire extends Vue {
     this.$emit("goToQuestionnaire");
   }
 }
+export default toNative(GoToQuestionnaire) 
 </script>

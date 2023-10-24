@@ -96,9 +96,9 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
+ 
 
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch , toNative, Vue} from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
@@ -132,7 +132,7 @@ import {convertColumnReferencesToValues} from "@/api/helpers";
   }
 })
 
-export default class CommonCorAcor extends Vue {
+class CommonCorAcor extends Vue {
   // props
 
   @Prop({default: false}) private isWizard!: boolean;
@@ -496,5 +496,6 @@ export default class CommonCorAcor extends Vue {
   }
 
 }
+export default toNative(CommonCorAcor)
 </script>
 

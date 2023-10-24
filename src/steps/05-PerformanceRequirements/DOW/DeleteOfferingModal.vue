@@ -16,7 +16,7 @@
 	</ATATDialog>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+ 
 import {Component, Prop, Watch} from 'vue-facing-decorator'
 
 import ATATDialog from '@/components/ATATDialog.vue'
@@ -28,7 +28,8 @@ import { PropSync } from "@/decorators/custom"
 	    ATATDialog
 	  }
 })
-export default class DeleteOfferingModal extends Vue {
+class DeleteOfferingModal extends Vue
+export default toNative(DeleteOfferingModal) {
 		@PropSync('showDialog') public _showModal?: boolean
 		@Prop({default: '[category title]'}) private requirementName!: string
 		@Prop({default: '[offering deselected]'}) private offeringName?: string
@@ -80,4 +81,5 @@ export default class DeleteOfferingModal extends Vue {
 		  this.$emit('deleteOfferingCancelClicked')
 		}
 }
+ 
 </script>

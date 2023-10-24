@@ -25,8 +25,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+ 
+import { Component, Prop, PropSync , toNative, Vue} from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 
@@ -36,7 +36,7 @@ import { RadioButton } from "types/Global";
   },
 })
 
-export default class FairOppExceptions extends Vue {
+class FairOppExceptions extends Vue {
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: ""}) private legend!: string;
   @Prop({default: ""}) private classes!: string;
@@ -107,4 +107,5 @@ export default class FairOppExceptions extends Vue {
     await this.setReadOnly();
   }
 }
+export default toNative(FairOppExceptions)
 </script>

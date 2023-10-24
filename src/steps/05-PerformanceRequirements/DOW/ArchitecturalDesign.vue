@@ -81,7 +81,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, mixins } from "vue-facing-decorator";
+import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -94,7 +94,7 @@ import _ from "lodash";
 import { routeNames } from "@/router/stepper";
 import ATATAlert from "@/components/ATATAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
-import Vue from "vue";
+ 
 
 
 @Component({
@@ -105,7 +105,8 @@ import Vue from "vue";
   }
 })
 
-export default class ArchitecturalDesign extends Vue {
+class ArchitecturalDesign extends Vue
+export default toNative(ArchitecturalDesign) {
   public routeNames = routeNames
   public architectureDesignNeeds = defaultDOWArchitecturalNeeds;
   public async setDOWSection(): Promise<void> {
@@ -213,4 +214,5 @@ export default class ArchitecturalDesign extends Vue {
 
 }
 
+ 
 </script>

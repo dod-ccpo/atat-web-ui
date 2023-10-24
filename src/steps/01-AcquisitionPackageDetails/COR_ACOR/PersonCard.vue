@@ -96,8 +96,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+ 
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -116,7 +116,7 @@ import { routeNames } from "../../../router/stepper";
   }
 })
 
-export default class PersonCard extends Vue {
+class PersonCard extends Vue {
   
   // props
   
@@ -166,4 +166,5 @@ export default class PersonCard extends Vue {
 
 
 }
+export default toNative(PersonCard)
 </script>
