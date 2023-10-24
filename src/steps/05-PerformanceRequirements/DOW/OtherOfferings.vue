@@ -208,8 +208,8 @@
 </template>
 
 <script lang="ts">
-import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { ComponentPublicInstance } from "vue";
+import { Component, Prop, Watch , toNative, Vue} from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeFormElements from "./ComputeFormElements.vue"
@@ -269,7 +269,8 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
   }
 })
 
-export default class OtherOfferings extends Vue {
+class OtherOfferings extends Vue
+{
   $refs!: {
     form: ComponentPublicInstance & {
       resetValidation: () => void;
@@ -630,5 +631,6 @@ export default class OtherOfferings extends Vue {
     classification requirements you previously specified.`;
 
 }
-
+export default toNative(OtherOfferings)
+ 
 </script>

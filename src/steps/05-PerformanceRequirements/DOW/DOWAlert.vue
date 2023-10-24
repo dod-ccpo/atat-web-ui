@@ -61,9 +61,9 @@
 
 <script lang="ts">
 import ATATAlert from "@/components/ATATAlert.vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 
-import Vue from "vue";
+ 
 import { routeNames } from "../../../router/stepper"
 
 @Component({
@@ -72,7 +72,7 @@ import { routeNames } from "../../../router/stepper"
   }
 })
 
-export default class DOWAlert extends Vue {
+class DOWAlert extends Vue{
   @Prop({default: false}) private isPeriodsDataMissing!: boolean;
   @Prop({default: false}) private isClassificationDataMissing!: boolean;
   @Prop({default: false}) private summaryPage!: boolean;
@@ -104,5 +104,6 @@ export default class DOWAlert extends Vue {
       : "";
   };
 };
+export default toNative(DOWAlert) 
 </script>
 

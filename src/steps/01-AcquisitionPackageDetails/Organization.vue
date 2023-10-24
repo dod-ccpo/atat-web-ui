@@ -156,7 +156,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 import {
   convertAgencyRecordToSelect,
   convertDisaOrgToSelect
@@ -175,7 +175,7 @@ import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import Vue from "vue";
+ 
 
 
 @Component({
@@ -188,7 +188,7 @@ import Vue from "vue";
   },
 })
 
-export default class OrganizationInfo extends Vue {
+class OrganizationInfo extends Vue {
   // computed
 
   get inputClass(): string {
@@ -441,4 +441,5 @@ export default class OrganizationInfo extends Vue {
     return true;
   }
 }
+export default toNative(OrganizationInfo)
 </script>

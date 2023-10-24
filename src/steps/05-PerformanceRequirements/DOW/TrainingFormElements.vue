@@ -77,8 +77,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+ 
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
@@ -96,7 +96,7 @@ import {
   }
 })
 
-export default class TrainingFormElements extends Vue {
+class TrainingFormElements extends Vue{
   @PropSync("data") public offeringData!: OtherServiceOfferingData;
 
   public get trainingLocationLabel(): string {
@@ -143,5 +143,7 @@ export default class TrainingFormElements extends Vue {
   ];
 
 }
+export default toNative(TrainingFormElements) 
 
+ 
 </script>

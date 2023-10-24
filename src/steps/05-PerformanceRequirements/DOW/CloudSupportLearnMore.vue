@@ -63,8 +63,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+ 
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
@@ -74,7 +74,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
   }
 })
 
-export default class CloudSupportLearnMore extends Vue {
+class CloudSupportLearnMore extends Vue{
   private currentEnvironmentExists = "";
   public requirements = [
     {
@@ -121,4 +121,5 @@ export default class CloudSupportLearnMore extends Vue {
     }
   };
 }
+export default toNative(CloudSupportLearnMore) 
 </script>

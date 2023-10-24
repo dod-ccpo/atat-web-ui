@@ -36,14 +36,14 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-facing-decorator";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import CommonCorAcor from "./Common.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ContactDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import Vue from "vue"
+ 
 
 @Component({
   mixins: [SaveOnLeave],
@@ -52,7 +52,7 @@ import Vue from "vue"
   }
 })
 
-export default class CorInfo extends Vue {
+class CorInfo extends Vue {
 
   private currentContactData: ContactDTO = AcquisitionPackage.initContact;
   private savedContactData: ContactDTO = AcquisitionPackage.initContact;
@@ -78,4 +78,5 @@ export default class CorInfo extends Vue {
 
 }
 
+export default toNative(CorInfo)
 </script>

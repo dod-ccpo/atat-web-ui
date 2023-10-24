@@ -79,7 +79,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
@@ -93,7 +93,7 @@ import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { AddressDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ContactData from "@/store/contactData";
-import Vue from "vue"
+ 
 
 
 @Component({
@@ -106,7 +106,7 @@ import Vue from "vue"
   },
 })
 
-export default class ContractingOfficeInfo extends Vue {
+class ContractingOfficeInfo extends Vue {
 
   get inputClass(): string {
     return this.$vuetify.display.mdAndDown
@@ -300,4 +300,5 @@ export default class ContractingOfficeInfo extends Vue {
     return true;
   }
 }
+export default toNative(ContractingOfficeInfo)
 </script>

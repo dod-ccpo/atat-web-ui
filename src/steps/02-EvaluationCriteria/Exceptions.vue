@@ -83,7 +83,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component} from "vue-facing-decorator";
+import {Component, toNative, Vue} from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import FairOppExceptions from "./components/FairOppExceptions.vue"
 
@@ -91,7 +91,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import Vue from "vue";
+ 
 
 @Component({
   mixins: [SaveOnLeave],
@@ -101,7 +101,7 @@ import Vue from "vue";
   },
 })
 
-export default class Exceptions extends Vue {
+class Exceptions extends Vue {
 
   private selectedException 
     = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
@@ -180,4 +180,6 @@ export default class Exceptions extends Vue {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(Exceptions)
 </script>

@@ -46,12 +46,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+ 
+import { Component , toNative, Vue} from "vue-facing-decorator";
 
 @Component({})
 
-export default class XaasLearnMore extends Vue {
+class XaasLearnMore extends Vue{
   public requirements = [
     {
       sectionTitle: "Anything as a Service (XaaS)",
@@ -151,4 +151,6 @@ export default class XaasLearnMore extends Vue {
   ];
 
 }
+export default toNative(XaasLearnMore) 
+ 
 </script>

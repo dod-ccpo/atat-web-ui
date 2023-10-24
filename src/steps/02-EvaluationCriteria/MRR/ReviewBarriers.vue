@@ -80,7 +80,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Mixins } from "vue-facing-decorator";
+import { Component, toNative, Vue} from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -97,6 +97,7 @@ import { hasChanges } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSVGIcon,
     ATATTextArea,
@@ -107,7 +108,7 @@ import { routeNames } from "@/router/stepper";
   },
 })
 
-export default class ReviewBarriers extends Mixins(SaveOnLeave){
+class ReviewBarriers extends Vue{
   public barriersToOpportunity = "";
   public defaultSuggestion = "";
   public showRestoreModal = false;
@@ -299,4 +300,6 @@ export default class ReviewBarriers extends Mixins(SaveOnLeave){
     await this.loadOnEnter();
   }
 }
+
+export default toNative(ReviewBarriers) 
 </script>

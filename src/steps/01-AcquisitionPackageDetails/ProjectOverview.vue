@@ -78,7 +78,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
@@ -94,7 +94,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { YesNo } from "types/Global";
-import Vue from "vue";
+ 
 
 @Component({
   components: {
@@ -107,7 +107,7 @@ import Vue from "vue";
     ATATTextField
   },
 })
-export default class ProjectOverview extends Vue {
+class ProjectOverview extends Vue {
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";
@@ -207,4 +207,5 @@ export default class ProjectOverview extends Vue {
     return true;
   }
 }
+export default toNative(ProjectOverview)
 </script>

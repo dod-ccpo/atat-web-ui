@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
@@ -68,7 +68,7 @@ import XaasLearnMore from "./XaasLearnMore.vue";
 import CloudSupportLearnMore from "./CloudSupportLearnMore.vue";
 import { DOWCardData, SlideoutPanelContent } from "../../../../types/Global";
 
-import Vue from "vue";
+ 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
@@ -77,7 +77,8 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
   }
 })
 
-export default class DOWCard extends Vue {
+class DOWCard extends Vue
+{
   @Prop() public cardData!: DOWCardData;
 
   private setPanelComponent: any = {};
@@ -133,5 +134,6 @@ export default class DOWCard extends Vue {
   };
 
 }
-
+export default toNative(DOWCard) 
+ 
 </script>

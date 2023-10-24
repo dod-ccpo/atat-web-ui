@@ -88,8 +88,8 @@
 </template>
 
 <script lang="ts">
-import Vue, {ComponentPublicInstance} from "vue";
-import { Component } from "vue-facing-decorator";
+import {ComponentPublicInstance} from "vue";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -108,7 +108,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 
-export default class WhoConductedResearch extends Vue {
+class WhoConductedResearch extends Vue {
   $refs!: {
     form: ComponentPublicInstance & {
       resetValidation: () => void;
@@ -203,4 +203,6 @@ export default class WhoConductedResearch extends Vue {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(WhoConductedResearch)
 </script>

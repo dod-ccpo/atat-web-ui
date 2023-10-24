@@ -69,7 +69,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component } from "vue-facing-decorator";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -86,7 +86,7 @@ import { ProjectOverviewDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepTouched } from "@/store/summary";
-import Vue from "vue"
+ 
 
 
 @Component({
@@ -99,7 +99,7 @@ import Vue from "vue"
     LateFormAlert
   }
 })
-export default class ContractingShop extends Vue {
+class ContractingShop extends Vue {
   public isPageLoading = false;
   public packageNotInitialized = false;
   public contractingShopOptions: RadioButton[] = [
@@ -202,4 +202,5 @@ export default class ContractingShop extends Vue {
     return true;
   }
 }
+export default toNative(ContractingShop) 
 </script>

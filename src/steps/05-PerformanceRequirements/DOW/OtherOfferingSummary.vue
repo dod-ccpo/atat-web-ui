@@ -135,7 +135,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, mixins, Watch } from "vue-facing-decorator";
+import { Component, mixins, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -153,7 +153,7 @@ import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import _ from 'lodash';
 import { ReferenceColumn } from "@/api/models";
 import Summary from "@/store/summary";
-import Vue from "vue";
+ 
 
 @Component({
   components: {
@@ -162,7 +162,8 @@ import Vue from "vue";
   }
 })
 
-export default class OtherOfferingSummary extends Vue {
+class OtherOfferingSummary extends Vue
+{
   public isCompute = false;
   public isGeneralXaaS = false;
   public isDatabase = false;
@@ -522,5 +523,7 @@ export default class OtherOfferingSummary extends Vue {
   }
 
 }
+export default toNative(OtherOfferingSummary)
 
+ 
 </script>

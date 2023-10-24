@@ -20,8 +20,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+ 
+import { Component, Prop, toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATDialog from "@/components/ATATDialog.vue";
 
 @Component({
@@ -30,7 +31,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
   }
 })
 
-export default class ConfirmRestoreDefaultTextModal extends Vue {
+class ConfirmRestoreDefaultTextModal extends Vue {
   @PropSync("showRestoreModal", { default: false }) public _showRestoreModal?:boolean;
   @Prop({ default: false }) public isBasedOnResponses?: boolean;
   
@@ -51,4 +52,5 @@ export default class ConfirmRestoreDefaultTextModal extends Vue {
 
 }
 
+export default toNative(ConfirmRestoreDefaultTextModal)
 </script>

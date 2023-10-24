@@ -41,8 +41,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+ 
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 
@@ -51,7 +51,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
     ATATAlert,
   },
 })
-export default class Callout extends Vue {
+class Callout extends Vue {
   @Prop() public sourceSelection!: string;
   @Prop() public method?: string;
 
@@ -162,5 +162,7 @@ export default class Callout extends Vue {
     return listItems;
   }
 }
+
+export default toNative(Callout)
 </script>
 

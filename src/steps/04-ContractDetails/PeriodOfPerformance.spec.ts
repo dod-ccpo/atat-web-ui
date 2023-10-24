@@ -17,10 +17,6 @@ describe("Testing PeriodOfPerformance Component", () => {
     vuetify
   });
 
-  beforeEach(() => {
-    
-  });
-
   describe("Initialization....", () => {
     it("tests that component renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);

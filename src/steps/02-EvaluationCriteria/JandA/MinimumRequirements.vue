@@ -73,7 +73,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-facing-decorator";
+import {Component, toNative, Vue} from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
@@ -88,6 +88,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
  * government requirements. Also handles loading and saving the data.
  */
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextArea,
     ATATSVGIcon,
@@ -95,7 +96,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
   }
 })
 
-export default class MinimumRequirements extends Mixins(SaveOnLeave) {
+class MinimumRequirements extends Vue {
   public suggestedText =
     "The cloud service offerings must continue at their current level in order to support...\n\n" +
     "These offerings include..."
@@ -181,4 +182,6 @@ export default class MinimumRequirements extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 }
+ 
+export default toNative(MinimumRequirements)
 </script>
