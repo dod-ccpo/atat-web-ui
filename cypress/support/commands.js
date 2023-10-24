@@ -9,9 +9,7 @@ import org from "../selectors/org.sel";
 import commonCorAcor from "../selectors/commonCorAcor.sel";
 import acor from "../selectors/acor.sel";
 import { cleanText, colors, prefixId } from "../helpers";
-import occ from "../selectors/occ.sel";
 import fd from "../selectors/financialDetails.sel";
-import performanceReqs from "../selectors/performanceReqs.sel";
 import "cypress-wait-until";
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
@@ -539,6 +537,25 @@ Cypress.Commands.add("verifyListMatches", (selector, expectedText) => {
   console.log("expectedArray:", expectedText);
 });
 
+
+Cypress.Commands.add("checkElementsTextAgainstArray", (selector, textArray) => {
+  cy.findElement(selector)
+    .each($element => {
+      cy.wrap($element)
+        .invoke("text")
+        .then(text => {
+          textArray.push(text);
+        });
+    })
+    .then(() => {
+      cy.log("textArray-", textArray);
+      
+      textArray.forEach((text, index) => {
+        cy.wrap(text).should('eq', textArray[index]);
+      });
+    });
+});
+
 Cypress.Commands.add("clickSideStepper", (stepperSelector, stepperText) => {
   cy.findElement(stepperSelector)
     .should("be.visible")
@@ -1052,78 +1069,10 @@ Cypress.Commands.add("acorOption", (radioSelector, value) => {
     }
   });
 });
-Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
-  cy.radioBtn(radioSelector, value)
-    .click({
-      force: true,
-    })
-    .should("be.checked");
-  cy.findElement(occ.trainingRadioOptionActive).then(($radioBtn) => {
-    const selectedOption = cleanText($radioBtn.text());
-    cy.log(selectedOption);
-    cy.btnExists(common.continueBtn, " Continue ").click();
-    if (selectedOption === "radio_button_checkedYes.") {
-      //naviagtes to "Tell us about your mandatory training screen"
-      cy.textExists(common.header, " Tell us about your mandatory training ");
-    } else {
-      cy.verifyPageHeader(
-        "Let's find out if your effort provides for Personally Identifiable Information"
-      );
-      cy.findElement(common.stepStandCompText)
-        .should("be.visible")
-        .and("have.css", "color", colors.primary);
-    }
-  });
-});
-
-Cypress.Commands.add("trainingCourseExists", () => {
-  cy.findElement(occ.trainingCourse).then((trainingCourseRows) => {
-    cy.log(trainingCourseRows.length);
-    if (trainingCourseRows.length === 1) {
-      cy.findElement(occ.trainCourseRemovebtn)
-        .should("exist")
-        .and("be.disabled");
-    } else {
-      cy.findElement(occ.trainCourseRemovebtn)
-        .should("exist")
-        .and("not.be.disabled");
-    }
-  });
-});
-
-Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {
-  cy.selectCheckBoxes(checkboxes);
-  cy.btnClick(common.continueBtn, " Continue ");
-});
 
 Cypress.Commands.add("deselectAllCheckboxes", () => {
   cy.findElement("[type='checkbox']").uncheck({
     force: true,
-  });
-});
-
-Cypress.Commands.add(
-  "durationPeriodExists",
-  (radioSelector, activeSelector, periodLabelSelector, value) => {
-    cy.radioBtn(radioSelector, value).click({
-      force: true,
-    });
-    cy.findElement(activeSelector).then(($radioBtn) => {
-      const selectedOption = $radioBtn.text();
-      cy.log(selectedOption);
-      if (selectedOption === "radio_button_checkedNo") {
-        cy.findElement(periodLabelSelector).should("exist");
-      } else {
-        cy.findElement(periodLabelSelector).should("not.exist");
-      }
-    });
-  }
-);
-
-Cypress.Commands.add("periodCount", (count, checkBoxRowSelector) => {
-  cy.findElement(common.wrap).then((main) => {
-    const periodCount = main.find(checkBoxRowSelector).length;
-    expect(periodCount).equal(count);
   });
 });
 
@@ -1163,18 +1112,6 @@ Cypress.Commands.add("clickSomethingElse", (selectorToScrollToAfter) => {
   }
 });
 
-Cypress.Commands.add("notAvailableCategory", (categoryText) => {
-  cy.textExists(performanceReqs.showMoreLink, " Show more ")
-    .click()
-    .then(() => {
-      cy.findElement("#OtherAvlGroups .h3")
-        .each(($el) => {
-          const text = $el.text();
-          cy.log(text);
-        })
-        .should("not.contain", categoryText);
-    });
-});
 // This command is  used to select G-invoice for your funding request
 Cypress.Commands.add("selectGInvoiceFRequest", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({
@@ -1270,35 +1207,6 @@ Cypress.Commands.add("selectIncrementalFundingPlan", (radioSelector, value) => {
       cy.textExists("div.mb-auto", "future summary page");
     }
   });
-});
-
-
-Cypress.Commands.add(
-  "deleteRequirement",
-  (deleteSelector, titleTxt, deleteBtnText) => {
-    cy.findElement(deleteSelector)
-      .click()
-      .then(() => {
-        cy.findElement(performanceReqs.dialogModal).should("be.visible");
-        cy.textExists(performanceReqs.dialogTitle, titleTxt);
-        cy.btnExists(performanceReqs.deleteInstBtn, deleteBtnText)
-          .click()
-          .then(() => {
-            cy.findElement(performanceReqs.dialogModal).should("not.visible");
-          });
-      });
-  }
-);
-
-Cypress.Commands.add("EditRequirement", (editSelector, text) => {
-  cy.findElement(editSelector).click();
-
-  cy.verifyPageHeader(" Let’s gather some details for " + text);
-});
-
-Cypress.Commands.add("addAnotherRequirement", (addSelector, text) => {
-  cy.findElement(addSelector).click();
-  cy.verifyPageHeader(" Let’s gather some details for " + text);
 });
 
 Cypress.Commands.add(

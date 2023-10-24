@@ -1,9 +1,4 @@
-import {
-  getCheckboxId,
-  getServiceOfferingNames,
-  getCheckboxIds,
-  getObjectFromArrayByKey,
-} from "../helpers";
+import { getCheckboxId, getObjectFromArrayByKey } from "../helpers";
 import common from "../selectors/common.sel";
 import "cypress-iframe";
 import performanceReq from "../selectors/performanceReqs.sel";
@@ -53,39 +48,6 @@ Cypress.Commands.add("verifyServiceOfferingHeader", (categoryObj) => {
   cy.verifyPageHeader("What type of " + categoryObj.label + " do you need?");
 });
 
-//This command is to verify the checkbox label on ServiceOffering Page and navigation
-Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
-  const serviceOfferingCheckboxLabels = [];
-  categoryObj.serviceOfferingCypressLabels.forEach((label) => {
-    serviceOfferingCheckboxLabels.push(label);
-  });
-
-  cy.verifyCheckBoxLabels(
-    "input[type=checkbox]",
-    serviceOfferingCheckboxLabels
-  );
-
-  const serviceOfferingNames = getServiceOfferingNames(categoryObj);
-
-  const serviceOfferingCheckboxIds = getCheckboxIds(categoryObj);
-
-  serviceOfferingCheckboxIds.forEach((checkboxId, index) => {
-    if (checkboxId.indexOf("Other") === -1) {
-      cy.deselectAllCheckboxes();
-      cy.selectCheckBoxes([checkboxId]);
-      cy.btnClick(common.continueBtn, " Continue ");
-
-      cy.verifyPageHeader(
-        "Now we’ll gather your requirements for " + serviceOfferingNames[index]
-      );
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(1000); // needed because with 2 back button clicks,
-      //needs a pause for scroll into view
-      cy.btnClick(common.backBtn, "Back");
-    }
-  });
-});
-
 //This command is to verify the OtherCategories HeaderLabel on Summary Page
 Cypress.Commands.add("verifyOtherServiceOfferings", (categories) => {
   categories.forEach((cat) => {
@@ -108,21 +70,6 @@ Cypress.Commands.add("verifyComputeHeader", (categoryObj) => {
     "Let’s start by gathering your " + categoryObj.label + " requirements"
   );
 });
-
-//Select compute option
-Cypress.Commands.add(
-  "selectComputeOption",
-  (categoryObj, serviceOfferingGroups) => {
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader(" Let’s work on your performance requirements ");
-    const categoryLabels = [];
-    serviceOfferingGroups.forEach((obj) => {
-      categoryLabels.push(obj.label);
-    });
-    cy.verifyCheckBoxLabels("input[type=checkbox]", categoryLabels);
-    cy.verifyComputeHeader(categoryObj);
-  }
-);
 
 //This command is to verify the Region labels
 Cypress.Commands.add("verifyRegionCheckBoxesLabels", (categoryObj) => {
@@ -270,6 +217,7 @@ Cypress.Commands.add(
       });
   }
 );
+
 Cypress.Commands.add("otherAvailableCategory", (categoryText) => {
   cy.findElement("#OtherAvlGroups .h3")
     .each(($el) => {
@@ -280,13 +228,12 @@ Cypress.Commands.add("otherAvailableCategory", (categoryText) => {
 });
 
 //Tell us about your anticipated users and data needs
-
 Cypress.Commands.add(
   "anticipatedUserDataNeedAccordion",
   (selectedClassifications) => {
     let expectedAccordionCount = 0;
 
-    console.log("selectedClassifications:", selectedClassifications);
+    cy.log("selectedClassifications:", selectedClassifications);
 
     if (selectedClassifications.includes("level2")) {
       expectedAccordionCount++;
@@ -306,7 +253,7 @@ Cypress.Commands.add(
 
     cy.findElement(".mb-4.v-expansion-panels").then(($element) => {
       const actualAccordionCount = $element.length;
-      console.log("actualAccordionCount:", actualAccordionCount);
+      cy.log("actualAccordionCount:", actualAccordionCount);
       expect(actualAccordionCount).equal(expectedAccordionCount);
     });
   }
@@ -358,6 +305,7 @@ Cypress.Commands.add(
     }
   }
 );
+
 Cypress.Commands.add(
   "dataTransfer",
   (accordionIndex, dataTransferVal, selectedDropdownValue) => {
@@ -377,15 +325,15 @@ Cypress.Commands.add(
 );
 
 //Current Functions
-Cypress.Commands.add("selectCurrentFunction", (option) => {
-  cy.log("Option selected:", option);
+Cypress.Commands.add("selectCurrentFunction", (currentFunction) => {
+  cy.log("Option selected:", currentFunction);
   let pageHeader = "";
 
-  if (option === "Replicate") {
+  if (currentFunction === "Replicate") {
     cy.findElement(performanceReq.replicateRadioOption).click({ force: true });
     pageHeader =
       "Tell us more about your requirements to replicate your environment";
-  } else if (option === "Optimize") {
+  } else if (currentFunction === "Optimize") {
     cy.findElement(performanceReq.optimiseRadioOption).click({ force: true });
     pageHeader =
       "Tell us more about your requirements to optimize your environment";
@@ -428,17 +376,17 @@ Cypress.Commands.add("selectPhasedOption", (phasedOption, scheduleVal) => {
   }
 });
 
-Cypress.Commands.add("currentFunctionCardDesc", (option) => {
+Cypress.Commands.add("currentFunctionCardDesc", (currentFunction) => {
   let cfButton = "";
   let descriptionText = "";
 
-  if (option === "Replicate") {
+  if (currentFunction=== "Replicate") {
     descriptionText = "Replicate (lift and shift) using JWCC offerings";
     cfButton = "View/Edit";
-  } else if (option === "Optimize") {
+  } else if (currentFunction === "Optimize") {
     descriptionText = "Optimize (improve/modernize) using JWCC offerings";
     cfButton = "View/Edit";
-  } else if (option === "No") {
+  } else if (currentFunction === "No") {
     descriptionText = "No requirements";
     cfButton = "View/Edit";
   } else {
@@ -453,14 +401,13 @@ Cypress.Commands.add("currentFunctionCardDesc", (option) => {
 Cypress.Commands.add(
   "completeCurrentFunctionForm",
   (
-    option,
+    currentFunction,
     statementVal,
     additionalGrowth,
     percentVal,
     phasedOption,
     scheduleVal
   ) => {
-    cy.selectCurrentFunction(option);
     cy.enterTextInTextField(performanceReq.objectiveTextfield, statementVal);
     cy.selectAdditionalGrowth(additionalGrowth, percentVal);
     cy.selectPhasedOption(phasedOption, scheduleVal);
@@ -468,7 +415,7 @@ Cypress.Commands.add(
       performanceReq.phasedYesRadioOption,
       "Your Performance Requirements Summary"
     );
-    cy.currentFunctionCardDesc(option);
+    cy.currentFunctionCardDesc(currentFunction);
   }
 );
 
@@ -509,6 +456,7 @@ Cypress.Commands.add(
         force: true,
       })
       .should("be.checked");
+
     cy.verifyTextMatches(
       performanceReqs.contentAboutClass,
       serviceOfferingGroups.GatherRequirementsPage.pageText2
@@ -988,3 +936,39 @@ Cypress.Commands.add("errorMessageValidationsCPDB", () => {
     serviceOfferingGroups.ComputePage.greaterZeroErrMsg
   );
 });
+
+//Architectural Design solutions
+Cypress.Commands.add("selectArchDesignOption", (archDesignOption) => {
+  console.log("ArchDesignOption selected:", archDesignOption);
+
+  let pageHeader = "";
+  if (archDesignOption === "Yes") {
+    cy.findElement(performanceReq.archYesRadioBtn).click({ force: true });
+    pageHeader = "Tell us more about your architectural design requirements";
+  } else {
+    cy.findElement(performanceReq.archNoRadioBtn).click({ force: true });
+    pageHeader = "Your Performance Requirements Summary";
+  }
+  cy.clickContinueButton(performanceReq.archYesRadioBtn, pageHeader);
+});
+
+Cypress.Commands.add(
+  "fillInArchDesignSolForm",
+  (objecText, externalFactor, archClassLevelDesc) => {
+    cy.enterTextInTextField(performanceReq.objectiveTextfield, objecText);
+    cy.findElement(performanceReq.archClassCheckboxes)
+    cy.enterTextInTextField(
+      performanceReq.externalFactorTextField,
+      externalFactor
+    );
+    cy.clickContinueButton(
+      performanceReq.externalFactorTextField,
+      "Your Performance Requirements Summary"
+    );
+    cy.checkElementsTextAgainstArray(
+      performanceReq.archDesignDesc,
+      archClassLevelDesc
+    );
+  }
+);
+
