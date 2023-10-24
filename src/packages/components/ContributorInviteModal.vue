@@ -122,7 +122,8 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Watch, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -142,7 +143,7 @@ import UserSearch from "@/mixins/userSearch";
   }
 })
 
-export default class ContributorInviteModal extends UserSearch {
+class ContributorInviteModal extends UserSearch {
   @PropSync("showInviteModal") public _showInviteModal?: boolean;
 
   public get alreadyInvitedUsers(): User[] {
@@ -195,4 +196,7 @@ export default class ContributorInviteModal extends UserSearch {
   }
 
 }
+
+export default toNative(ContributorInviteModal);
+
 </script>

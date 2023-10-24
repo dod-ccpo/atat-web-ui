@@ -114,7 +114,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom'
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -138,7 +138,7 @@ import UserSearch from "@/mixins/userSearch";
   }
 })
 
-export default class InviteMembersModal extends UserSearch {
+class InviteMembersModal extends UserSearch {
   @PropSync("showModal") public _showInviteModal?: boolean;
   public portfolioData: Portfolio | null = null;
   public projectTitle = "";
@@ -217,4 +217,5 @@ export default class InviteMembersModal extends UserSearch {
     this.modalDrawerIsOpen = true;
   }
 }
+export default toNative(InviteMembersModal)
 </script>

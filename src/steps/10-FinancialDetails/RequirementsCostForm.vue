@@ -21,8 +21,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import FinancialDetails from "@/store/financialDetails";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -37,7 +36,7 @@ import ATATTextField from "../../components/ATATTextField.vue";
     ATATTextField,
   },
 })
-export default class RequirementsCostForm extends Vue {
+class RequirementsCostForm extends Vue {
   private costEstimate = "";
 
   private get currentData(): Pick<RequirementsCostEstimateDTO, 'estimatedTaskOrderValue'> {
@@ -79,4 +78,6 @@ export default class RequirementsCostForm extends Vue {
     await this.loadOnEnter();
   };
 };
+
+export default toNative(RequirementsCostForm)
 </script>

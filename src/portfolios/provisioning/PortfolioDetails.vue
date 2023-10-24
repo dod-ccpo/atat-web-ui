@@ -64,18 +64,16 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-facing-decorator";
-
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
-
 import PortfolioStore from "@/store/portfolio";
 import { Checkbox, PortfolioProvisioning, SelectData } from "types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import Vue from "vue";
+
 
 @Component({
   mixins: [SaveOnLeave],
@@ -86,7 +84,7 @@ import Vue from "vue";
   }
 })
 
-export default class PortfolioDetails extends Vue {
+class PortfolioDetails extends Vue {
   public portfolioTitle = "";
   public serviceOrAgency: SelectData = { text: "", value: "" };
   public selectedCSPProvider = "";
@@ -199,4 +197,5 @@ export default class PortfolioDetails extends Vue {
   }
 
 }
+export default toNative(PortfolioDetails)
 </script>

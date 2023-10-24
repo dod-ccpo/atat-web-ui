@@ -16,8 +16,7 @@
   </ATATAlert>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import PortfolioStore from "@/store/portfolio";
 
@@ -26,7 +25,7 @@ import PortfolioStore from "@/store/portfolio";
     ATATAlert,
   },
 })
-export default class FinancialDetailsAlert extends Vue {
+class FinancialDetailsAlert extends Vue {
 
   public cspLongName(): string {
     const cspName = PortfolioStore.currentPortfolio.csp ?? "";
@@ -50,4 +49,5 @@ export default class FinancialDetailsAlert extends Vue {
     return longName;
   }
 }
+export default toNative(FinancialDetailsAlert)
 </script>

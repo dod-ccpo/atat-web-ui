@@ -34,8 +34,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -49,7 +49,7 @@ import { CurrEnvInstancePricingDetails, RadioButton } from "types/Global";
   }
 })
 
-export default class PricingDetails extends Vue {
+class PricingDetails extends Vue {
   @PropSync("pricingDetails") public _pricingDetails!: CurrEnvInstancePricingDetails;
 
   public paymentArrangements: RadioButton[] = [
@@ -72,5 +72,6 @@ export default class PricingDetails extends Vue {
     }
   }
 }
+export default toNative(PricingDetails)
 
 </script>

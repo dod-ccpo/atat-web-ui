@@ -94,8 +94,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -127,7 +126,7 @@ import _ from "lodash";
   }
 })
 
-export default class ClassificationRequirements extends Vue {
+class ClassificationRequirements extends Vue {
 
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
@@ -326,5 +325,7 @@ export default class ClassificationRequirements extends Vue {
   }
 
 }
+
+export default toNative(ClassificationRequirements)
 </script>
 

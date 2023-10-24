@@ -181,15 +181,14 @@
 </template>
 
 <script lang="ts">
-import Vue, {ComponentPublicInstance} from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
-import { PropSync } from "@/decorators/custom";
+import { ComponentPublicInstance } from "vue";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
+import {PropSync} from "@/decorators/custom";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import api from "@/api";
-
 import { ValidationRule, mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
@@ -203,7 +202,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATErrorValidation,
   },
 })
-export default class ATATSearch extends Vue {
+class ATATSearch extends Vue {
   $refs!: {
     atatSearchInput: ComponentPublicInstance & {
       errorBucket: string[];
@@ -466,4 +465,5 @@ export default class ATATSearch extends Vue {
     this.setMask();
   }
 }
+export default toNative(ATATSearch);
 </script>

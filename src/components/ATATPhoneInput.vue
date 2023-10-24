@@ -140,9 +140,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
-import { PropSync } from "@/decorators/custom";
+import { ComponentPublicInstance } from "vue";
+import {Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
+import {PropSync} from "@/decorators/custom";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";
@@ -379,7 +379,7 @@ export const Countries: CountryObj[] = [
     ATATErrorValidation,
   },
 })
-export default class ATATPhoneInput extends Vue {
+class ATATPhoneInput extends Vue {
   // refs
   $refs!: {
     atatPhoneTextField: ComponentPublicInstance &
@@ -590,4 +590,5 @@ export default class ATATPhoneInput extends Vue {
   }
   
 }
+export default toNative(ATATPhoneInput);
 </script>

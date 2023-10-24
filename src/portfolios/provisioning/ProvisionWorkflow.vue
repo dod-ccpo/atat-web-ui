@@ -56,9 +56,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
-
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "@/components/ATATStepperNavigation.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
@@ -99,7 +97,7 @@ import PortfolioSummary from "@/store/portfolioSummary";
   },
 })
 
-export default class ProvisionWorkflow extends Vue {
+class ProvisionWorkflow extends Vue {
  
   public routeNames: Record<string, string> = {};
   public portfolioSysId = "";
@@ -311,4 +309,5 @@ export default class ProvisionWorkflow extends Vue {
   }
 
 }
+export default toNative(ProvisionWorkflow)
 </script>

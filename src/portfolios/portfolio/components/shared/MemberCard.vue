@@ -30,8 +30,8 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { User } from "../../../../../types/Global";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -44,7 +44,7 @@ import ATATProfileCard from "@/components/ATATProfileCard.vue";
   }
 })
 
-export default class MemberCard extends Vue {
+class MemberCard extends Vue {
   @Prop({required: true}) private member!: User;
 
   public get getMemberTitle(): string {
@@ -55,4 +55,5 @@ export default class MemberCard extends Vue {
   }
 
 }
+export default toNative(MemberCard)
 </script>

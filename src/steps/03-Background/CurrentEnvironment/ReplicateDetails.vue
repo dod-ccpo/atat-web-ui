@@ -77,8 +77,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue'
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -100,7 +99,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-export default class ReplicateDetails extends Vue {
+class ReplicateDetails extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
   public replicateOrOptimize = "";
   public replicatingOrOptimizing = "";
@@ -201,4 +200,5 @@ export default class ReplicateDetails extends Vue {
 
 }
 
+export default toNative(ReplicateDetails)
 </script>

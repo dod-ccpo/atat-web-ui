@@ -60,8 +60,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -80,7 +79,7 @@ import { User } from "types/Global";
   }
 })
 
-export default class ReadyToSubmit extends Vue {
+class ReadyToSubmit extends Vue {
   public currentUserIsMissionOwner = AcquisitionPackage.currentUserIsMissionOwner;
   public get missionOwner(): User {
     return AcquisitionPackage.getPackageMissionOwner;
@@ -113,5 +112,7 @@ export default class ReadyToSubmit extends Vue {
     await this.loadOnEnter()
   }
 }
+
+export default toNative(ReadyToSubmit)
 </script>
 

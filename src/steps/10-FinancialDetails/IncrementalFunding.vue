@@ -261,8 +261,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -299,7 +298,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   },
 })
 
-export default class IncrementalFunding extends Vue {
+class IncrementalFunding extends Vue {
   public today = new Date();
   public currentYear = this.today.getFullYear();
 
@@ -823,4 +822,6 @@ export default class IncrementalFunding extends Vue {
     return hasChanges(this.currentData, this.savedData);
   }
 }
+
+export default toNative(IncrementalFunding)
 </script>

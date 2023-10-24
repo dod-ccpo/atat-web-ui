@@ -280,8 +280,7 @@
 import { getIdText } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 import { SummaryItem } from "types/Global";
-import Vue from "vue";
-import { Component, Prop} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -295,7 +294,7 @@ import { SummaryStore } from "@/store/summary";
     ATATDialog,
   }
 })
-export default class ATATSummaryItem extends Vue {
+class ATATSummaryItem extends Vue {
   @Prop({default: "SummaryItems"}) private summaryItems!: SummaryItem[] | [];
 
   public getIdText(id: string): string {
@@ -366,4 +365,5 @@ export default class ATATSummaryItem extends Vue {
   }
 
 }
+export default toNative(ATATSummaryItem);
 </script>

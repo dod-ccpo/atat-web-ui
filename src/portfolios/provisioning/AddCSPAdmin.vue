@@ -264,8 +264,7 @@
 </template>
 
 <script lang="ts">
-import Vue , {ComponentPublicInstance} from "vue";
-import { Component } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -303,7 +302,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 
-export default class AddCSPAdmin extends Vue {
+class AddCSPAdmin extends Vue {
   public admins: PortfolioAdmin[] = [];
   public cspLong = "";
   public csp = "";
@@ -440,8 +439,8 @@ export default class AddCSPAdmin extends Vue {
     this.$validators.required("Please enter your administrator’s 10-digit DoD ID.")
   ]
 
-  get Form(): ComponentPublicInstance & { validate: () => boolean } {
-    return this.$refs.CSPAdminForm as ComponentPublicInstance & { validate: () => boolean };
+  get Form(): typeof Vue & { validate: () => boolean } {
+    return this.$refs.CSPAdminForm as typeof Vue & { validate: () => boolean };
   }
 
   public get tsEmailHelpText(): string {
@@ -772,5 +771,5 @@ export default class AddCSPAdmin extends Vue {
 
 
 }
-
+export default toNative(AddCSPAdmin)
 </script>

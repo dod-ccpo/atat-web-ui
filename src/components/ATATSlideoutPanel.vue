@@ -45,15 +45,12 @@
   </v-navigation-drawer>
 </template>
 <script lang="ts">
-import Vue from "vue";
 import AppSections from "@/store/appSections";
-import { Component, Prop, Watch } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 @Component({})
-
-export default class ATATSlideoutPanel extends Vue {
+class ATATSlideoutPanel extends Vue {
   @Prop({ default: "380" }) private panelWidth!: string;
   @Prop({ default: false }) private alwaysOpen!: boolean;
 
@@ -142,4 +139,5 @@ export default class ATATSlideoutPanel extends Vue {
     SlideoutPanel.closeSlideoutPanel();
   }
 }
+export default toNative(ATATSlideoutPanel);
 </script>

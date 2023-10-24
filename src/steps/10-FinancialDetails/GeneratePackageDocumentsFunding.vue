@@ -20,8 +20,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocumentsFunding from "./components/GeneratingDocumentsFunding.vue";
 import ReviewDocumentsFunding from "./components/ReviewDocumentsFunding.vue";
@@ -35,7 +34,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-export default class GeneratePackageDocumentsFunding extends Vue {
+class GeneratePackageDocumentsFunding extends Vue {
 
   public isGenerating = false;
   private isErrored = false;
@@ -126,4 +125,6 @@ export default class GeneratePackageDocumentsFunding extends Vue {
     return true;
   }
 }
+
+export default toNative(GeneratePackageDocumentsFunding)
 </script>

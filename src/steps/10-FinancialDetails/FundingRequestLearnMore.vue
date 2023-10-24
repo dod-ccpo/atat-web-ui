@@ -67,8 +67,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
@@ -77,9 +76,11 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 
-export default class FundingRequestLearnMore extends Vue {
+class FundingRequestLearnMore extends Vue {
   private gInvoiceHref = `https://fiscal.treasury.gov/g-invoice/`
   private federalAcqHref =
     `https://www.acquisition.gov/dfarspgi/pgi-253.208-required-sources-supplies-and-services.`
 }
+
+export default toNative(FundingRequestLearnMore)
 </script>

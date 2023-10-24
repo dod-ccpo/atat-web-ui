@@ -33,7 +33,7 @@ describe("Testing DOW Landing Page", () => {
     });
 
     it("detects currentEnvironment accurately", () => {
-      expect(wrapper.vm.doesCurrentEnvironmentExist()).toBe(false);
+      expect(wrapper.vm.$.exposed?.doesCurrentEnvironmentExist()).toBe(false);
     });
   })
 })

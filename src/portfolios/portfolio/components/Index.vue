@@ -74,9 +74,7 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
@@ -112,7 +110,7 @@ import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
   }
 })
 
-export default class PortfolioSummary extends Vue {
+class PortfolioSummary extends Vue {
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
@@ -245,5 +243,6 @@ export default class PortfolioSummary extends Vue {
     }
   }
 }
+export default toNative(PortfolioSummary)
 </script>
 

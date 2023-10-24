@@ -100,8 +100,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Vue, Component, Watch, toNative } from "vue-facing-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -125,7 +124,7 @@ import { SlideoutPanelContent } from "types/Global";
   }
 })
 
-export default class ATATPageHead extends Vue {
+class ATATPageHead extends Vue {
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public contributorTooltipText = "Invite contributors"
@@ -238,7 +237,7 @@ export default class ATATPageHead extends Vue {
     SlideoutPanel.openSlideoutPanel(openerId);
 
   }
-
 }
+export default toNative(ATATPageHead);
 
 </script>

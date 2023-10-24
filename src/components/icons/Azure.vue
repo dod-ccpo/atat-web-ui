@@ -28,8 +28,8 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative} from "vue-facing-decorator";
 @Component({})
-export default class Azure extends Vue {}
+class Azure extends Vue {}
+export default toNative(Azure)
 </script>

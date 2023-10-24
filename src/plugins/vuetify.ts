@@ -1,20 +1,9 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import "material-design-icons-iconfont/dist/material-design-icons.css";
-import light from "./theme";
+import { createVuetify } from 'vuetify';
+import { VTextField } from 'vuetify/lib/components/index.mjs';
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
-Vue.use(Vuetify);
-
-export default new Vuetify({
-  rtl: false,
-  icons: {
-    iconfont: "md",
-  },
-  theme: {
-    dark: false,
-    options: {
-      customProperties: true,
-    },
-    themes: { light },
-  },
+export default createVuetify({
+  components,
+  directives
 });

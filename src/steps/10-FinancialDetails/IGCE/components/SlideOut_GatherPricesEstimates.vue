@@ -25,9 +25,8 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
 
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { routeNames} from "@/router/stepper";
 
@@ -37,7 +36,7 @@ import { routeNames} from "@/router/stepper";
   },
 })
 // eslint-disable-next-line camelcase
-export default class SlideOut_GatherPricesEstimates extends Vue {
+class SlideOut_GatherPricesEstimates extends Vue {
   private route = routeNames.RequirementCategories
 
   public expansionPanelData: Record<string, string>[] = [
@@ -171,5 +170,7 @@ export default class SlideOut_GatherPricesEstimates extends Vue {
   ];
 
 }
+
+export default toNative(SlideOut_GatherPricesEstimates)
 </script>
 

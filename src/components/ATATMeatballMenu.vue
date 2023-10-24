@@ -45,8 +45,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import {Vue, Component, Prop, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { MeatballMenuItem } from "types/Global";
@@ -57,8 +56,7 @@ import { getIdText } from "@/helpers";
     ATATSVGIcon,
   }
 })
-
-export default class ATATMeatballMenu extends Vue {
+class ATATMeatballMenu extends Vue {
   @Prop() public id!: string;
   @Prop({ default: false }) public left?: boolean;
   @Prop({ default: 0 }) public index!: number;
@@ -79,6 +77,6 @@ export default class ATATMeatballMenu extends Vue {
     }));
   }
 }
-
+export default toNative(ATATMeatballMenu);
 
 </script>

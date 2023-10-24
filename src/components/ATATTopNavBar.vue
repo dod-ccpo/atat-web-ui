@@ -127,8 +127,7 @@
 
 <script lang="ts">
 import { TopNavItem, User } from "types/Global";
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { getUserInitials } from "@/helpers";
 
@@ -142,7 +141,7 @@ import CurrentUserStore from "@/store/user";
     ATATSVGIcon,
   },
 })
-export default class ATATTopNavBar extends Vue {
+class ATATTopNavBar extends Vue {
 
   public currentUser: UserDTO = {}
 
@@ -365,4 +364,5 @@ export default class ATATTopNavBar extends Vue {
     await this.loadOnEnter();
   }
 }
+export default toNative(ATATTopNavBar);
 </script>

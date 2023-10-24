@@ -154,8 +154,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
 import { CurrentContractDTO } from "@/api/models";
@@ -173,7 +172,7 @@ import { DataTableHeader } from "types/Global";
     ATATSVGIcon
   }  
 })
-export default class ProcurementHistorySummary extends Vue {
+class ProcurementHistorySummary extends Vue {
 
   public currentContractExists = "";
   public tableHeaders: DataTableHeader[] = [
@@ -307,4 +306,6 @@ export default class ProcurementHistorySummary extends Vue {
   }
 
 }
+
+export default toNative(ProcurementHistorySummary)
 </script>

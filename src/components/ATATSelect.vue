@@ -86,8 +86,8 @@
 </template>
 
 <script lang="ts">
-import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Emit, Prop, Watch } from "vue-facing-decorator";
+import { ComponentPublicInstance } from "vue";
+import { Component, Emit, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -100,7 +100,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATSVGIcon,
   }
 })
-export default class ATATSelect extends Vue {
+class ATATSelect extends Vue {
   // refs
   $refs!: {
     atatSelect: ComponentPublicInstance & {
@@ -199,4 +199,5 @@ export default class ATATSelect extends Vue {
   }
 
 }
+export default toNative(ATATSelect);
 </script>

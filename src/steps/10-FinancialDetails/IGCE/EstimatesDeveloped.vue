@@ -86,8 +86,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import {Component, Watch} from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -110,7 +109,7 @@ import { ComponentPublicInstance } from "vue";
   }
 })
 
-export default class EstimatesDeveloped extends Vue {
+class EstimatesDeveloped extends Vue {
   $refs!: {
     percentOverUnder: ComponentPublicInstance & {
       resetValidation(): void
@@ -258,4 +257,6 @@ export default class EstimatesDeveloped extends Vue {
   }
 
 }
+
+export default toNative(EstimatesDeveloped)
 </script>

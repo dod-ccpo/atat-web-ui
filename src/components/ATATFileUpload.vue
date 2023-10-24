@@ -145,8 +145,8 @@
 <script lang="ts">
 /* eslint camelcase: 0 */
 
-import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { ComponentPublicInstance } from "vue";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
@@ -168,7 +168,7 @@ import { TableApiBase } from "@/api/tableApiBase";
     ATATErrorValidation,
   },
 })
-export default class ATATFileUpload extends Vue {
+class ATATFileUpload extends Vue {
   // refs
   $refs!: {
     atatFileUpload: ComponentPublicInstance & {
@@ -567,4 +567,5 @@ export default class ATATFileUpload extends Vue {
     }
   }
 }
+export default toNative(ATATFileUpload);
 </script>

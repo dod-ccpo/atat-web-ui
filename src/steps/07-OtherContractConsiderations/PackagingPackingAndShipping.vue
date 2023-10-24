@@ -46,8 +46,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
@@ -64,7 +63,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-export default class PackagingPackingAndShipping extends Vue {
+class PackagingPackingAndShipping extends Vue {
   public otherValueRequiredMessage 
     = "Please enter your packaging, packing and shipping instructions."
   
@@ -178,4 +177,6 @@ export default class PackagingPackingAndShipping extends Vue {
   }
 
 }
+
+export default toNative(PackagingPackingAndShipping)
 </script>

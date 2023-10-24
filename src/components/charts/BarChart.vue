@@ -4,13 +4,12 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-facing-decorator";
+import { Vue, toNative, Component, Prop, Watch } from "vue-facing-decorator";
 import Chart, { ChartData } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
 @Component({})
-export default class BarChart extends Vue {
+class BarChart extends Vue {
   @Prop({ required: true, default: "MyBarChart" }) public chartId!: string;
   @Prop({ required: true, default: {} }) public chartData!: ChartData;
   @Prop({ required: true, default: {} }) public chartOptions!: any;  
@@ -48,5 +47,6 @@ export default class BarChart extends Vue {
   }
 
 }
+export default toNative(BarChart)
 
 </script>
