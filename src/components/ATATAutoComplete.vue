@@ -60,10 +60,11 @@
 
 <script lang="ts">
 /* eslint vue/no-v-text-v-html-on-component: 1 */
-import Vue, { ComponentPublicInstance } from "vue";
-import { AutoCompleteItem } from "types/Global";
+import { ComponentPublicInstance } from "vue";
+import { AutoCompleteItem, ValidationRule } from "types/Global";
 
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -73,7 +74,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 
-export default class ATATAutoComplete extends Vue {
+class ATATAutoComplete extends Vue {
   // refs
   $refs!: {
     atatAutoComplete: ComponentPublicInstance &
@@ -96,7 +97,7 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "", required: true }) private label!: string;
   @Prop({ default: false }) private labelSrOnly!: string;
   @Prop({ default: "" }) private icon!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
   @Prop({ default: [], required: true }) private searchFields!: [];
@@ -165,4 +166,5 @@ export default class ATATAutoComplete extends Vue {
     this.isReset = false;
   }
 }
+export default toNative(ATATAutoComplete);
 </script>

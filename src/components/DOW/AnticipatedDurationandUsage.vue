@@ -78,7 +78,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import {
   Checkbox,
   RadioButton,
-ValidationRule
+  ValidationRule
 } from "../../../types/Global";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
