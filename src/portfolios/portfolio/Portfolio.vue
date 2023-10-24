@@ -255,7 +255,7 @@
                           id="TotalForAllClins_checkbox"
                           v-model="checked[0]"
                           label="Total of All CLINs"
-                          :hideDetails="true"
+                          :hide-details="true"
                           :ripple="false"
                           class="color_chart_1"
                           @change="doToggleDataset(0)"
@@ -267,7 +267,7 @@
                           v-model="checked[index + 1]"
                           :label="idiqClins[index].idiq_clin"
                           :class="'color_chart_' + (index + 2)"
-                          :hideDetails="true"
+                          :hide-details="true"
                           :ripple="false"
                           @change="doToggleDataset((index + 1) * 2)"
                         />
