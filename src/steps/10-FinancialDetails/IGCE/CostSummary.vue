@@ -114,10 +114,9 @@
               </th>
             </tr>
           </template>
-          <template v-slot:body="props">
+          <template v-slot:item="{ item, index }">
             <tr
-              v-for="(item, rowIdx) in (props.items as unknown as IGCECostSummaryItem[])" 
-              :key="rowIdx" 
+              :key="index" 
               class="row-item font-size-14 text-right" :class="[{
                 '_subtotal': item.CLINTypeClassAggregate === 'Subtotal'
                   || item.CLINTypeClassAggregate === 'Total with Surge & Ordering Fee'
