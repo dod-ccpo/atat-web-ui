@@ -127,6 +127,7 @@
 </template>
 
 <script lang="ts">
+import { ComponentPublicInstance } from "vue";
 import { Component, Prop, Watch, toNative, Vue } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -134,7 +135,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 
-import { LegendLink, RadioButton } from "../../types/Global";
+import { LegendLink, RadioButton, ValidationRule } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ComponentPublicInstance } from "vue";
@@ -152,13 +153,13 @@ class ATATRadioGroup extends Vue {
 
   // refs
   $refs!: {
-    radioButtonGroup: ComponentPublicInstance & { 
+    radioButtonGroup: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
       resetValidation: () => boolean;
     };
-    atatTextInput: ComponentPublicInstance & { 
+    atatTextInput: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
@@ -171,7 +172,7 @@ class ATATRadioGroup extends Vue {
   @Prop({ default: "" }) private legend!: string;
   @Prop({ default: "" }) private helpText?: string;
   @Prop({ default: [""] }) private items!: RadioButton[];
-  @Prop({ default: () => []}) private rules!: Array<unknown>;
+  @Prop({ default: () => []}) private rules!: ValidationRule[];
   @Prop({ default: false }) private card!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private disabled!: boolean;

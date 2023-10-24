@@ -24,21 +24,21 @@
         :class="{ 'active-step': step.stepNumber === activeStep }"
       >
         <router-link
-          :id="'Step_' + getIdText(step.menuText)"
+          :id="'Step_' + getIdText(step.menuText ?? '')"
           :to="{ name: getRouteName(step) }"
           :class="{
-            'step-complete': isStepComplete(step.stepNumber),
-            'disabled': !isStepComplete(step.stepNumber) && !canNavigate()
+            'step-complete': isStepComplete(step.stepNumber ?? ''),
+            'disabled': !isStepComplete(step.stepNumber ?? '') && !canNavigate()
           }"
           class="step"
           @click.native ="setCurrentStep(
-            step.stepNumber,
+            step.stepNumber ?? '',
             step,
             false)"
         >
           <span class="step-circle">
             {{ step.stepNumber }}
-            <span v-if="isStepComplete(step.stepNumber)" class="completed-check">
+            <span v-if="isStepComplete(step.stepNumber ?? '')" class="completed-check">
               <span class="d-sr-only">Completed</span>
               <v-icon>check_circle</v-icon>
             </span>
@@ -56,7 +56,7 @@
             >
               <router-link
                 v-show="!subStep.excludeFromMenu"
-                :id="'SubStep_' + getIdText(subStep.menuText)"
+                :id="'SubStep_' + getIdText(subStep.menuText ?? '')"
                 :to="subStep.route"
                 :class="{
                   'step-complete': isSubstepComplete(subStep.name),
@@ -64,7 +64,7 @@
                 }"
                 class="substep"
                 @click="setCurrentStep(
-                  subStep.stepNumber,
+                  subStep.stepNumber ?? '',
                   subStep,
                   false
                 )"
@@ -208,7 +208,7 @@ class ATATSideStepper extends Vue {
     return getIdText(string);
   }
 
-  private getRouteName(step: StepperStep) {
+  private getRouteName(step: StepperStep): string | undefined {
     if (step.name !== "") return step.name;
 
     if (!this.hasSubSteps(step)) {
@@ -219,7 +219,7 @@ class ATATSideStepper extends Vue {
 
     //a stepper route with children should not have a named defined 
     // so we will use the child step name for routing
-    return step.subSteps ? step.subSteps.length > 0 && step.subSteps[0].name : "";
+    return (step.subSteps && step.subSteps.length > 0) ? step.subSteps[0].name : undefined;
   }
   
   private calculatePercentComplete() {

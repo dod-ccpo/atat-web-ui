@@ -18,7 +18,7 @@
         <span v-if="additionalButtons.length && !hideAdditionalButtons" class="d-flex">
           <v-btn 
             v-for="button in additionalButtons"
-            :key="button.id"
+            :key="button.buttonId"
             @click="$emit('additionalButtonClick', button)" 
             :color="getButtonClass(button)" 
             role="link" 
@@ -52,8 +52,8 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { AdditionalButton } from "@/store/steps/types";
 
 @Component({})
-class ATATStepperNavigation extends Vue {
-  @Prop({ default: () => []}) private additionalButtons?: Array<unknown>;
+export default class ATATStepperNavigation extends Vue {
+  @Prop({ default: () => []}) private additionalButtons!: Array<AdditionalButton>;
   @Prop({ default: "Back" }) private backButtonText?: string;
   @Prop({ default: "Continue" }) private continueButtonText?: string;
   @Prop({ default: false }) private noPrevious?: boolean;

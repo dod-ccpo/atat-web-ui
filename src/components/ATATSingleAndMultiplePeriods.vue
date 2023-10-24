@@ -13,7 +13,7 @@
      
     </div>
       <ATATTextField
-        :id="`SingleAmount_${this.needs}_${this.index}`"
+        :id="`SingleAmount_${needs}_${index}`"
         width="190"
         class="mr-2"
         :alignRight="true"
@@ -60,7 +60,7 @@
             class="ml-5"
             :alignRight="true"
             :value.sync="_values[idx]"
-            @blur="setsysIdArrayStringified(_values[idx], period.sys_id)"
+            @blur="setsysIdArrayStringified(_values[idx], period?.sys_id ?? '')"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
             :showErrorMessages="true"
@@ -77,6 +77,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
+import { PropSync } from "@/decorators/custom";
 import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";

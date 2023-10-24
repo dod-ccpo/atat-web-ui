@@ -20,7 +20,7 @@
       </div>
       <v-btn
         class="text-base-darkest pa-0 icon-24 _panel-closer"
-        text
+        text="true"
         small
         @click.stop="closeSlideoutPanel"
         @keydown.enter="closeSlideoutPanel"
@@ -105,7 +105,7 @@ class ATATSlideoutPanel extends Vue {
    * returns boolean to show overlay when breakpoint is either sm or xs
    */
   get showOverlay(): boolean {
-    return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs;
+    return this.$vuetify.display.sm || this.$vuetify.display.xs;
   }
 
   /* A watcher used to set focus on the opener when the slideout panel is toggled.

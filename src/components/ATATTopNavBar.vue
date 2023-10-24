@@ -18,12 +18,11 @@
         :left="navItem.align === 'left'"
       >
         <!-- top nav bar items (buttons) -->
-        <template v-slot:activator="{ on, attrs }">
+        <template v-slot:activator="{ props }">
           <v-btn
-            text
+            text="true"
             dark
-            v-bind="attrs"
-            v-on="on"
+            v-bind="props"
             :id="'TopNavButton_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
             :class="[
               { _profile: navItem.isProfile },
