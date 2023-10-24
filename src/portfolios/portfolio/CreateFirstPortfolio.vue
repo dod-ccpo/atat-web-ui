@@ -84,7 +84,7 @@ import AppSections from "@/store/appSections";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATFooter from "../../components/ATATFooter.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { Component } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { routeNames } from "@/router/stepper";

@@ -135,7 +135,7 @@ import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import { Component } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { SlideoutPanelContent } from "types/Global";
 import IGCELearnMore from "./components/ICGELearnMore.vue";
