@@ -68,11 +68,7 @@
               :maxChars="2500"
               :validateItOnBlur="true"
               :noResize="false"
-              :rules="[
-                this.$validators.required(`Enter an explanation for the cause of 
-                  your sole source situation.`),
-                this.$validators.maxLength(2500)
-              ]"
+              :rules="soleSourceRules"
             />
 
             <ExplanationButtons 
@@ -107,7 +103,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Mixins } from "vue-facing-decorator";
+import { Component } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -158,6 +154,12 @@ export default class SoleSourceReview extends Vue{
   public hasFormBeenEdited = false;
   public hasSuggestedTextBeenEdited = false;
   public explanation = AcquisitionPackage.fairOppExplanations.soleSource;
+  public soleSourceRules: Array<unknown> = [
+    this.$validators.required(`Enter an explanation for the cause of 
+                  your sole source situation.`),
+    this.$validators.maxLength(2500)
+  ];
+    
 
   public get pageHeaderIntro(): string {
     return this.useCustomTextOnLoad ? "Tell us about" : "Let’s review";
