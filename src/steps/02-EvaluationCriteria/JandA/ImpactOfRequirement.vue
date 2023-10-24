@@ -38,20 +38,22 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-facing-decorator";
+import {Component} from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import Vue from "vue"
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextArea
   }
 })
 
-export default class ImpactOfRequirement extends Mixins(SaveOnLeave)  {
+export default class ImpactOfRequirement extends Vue  {
   public impactOfRequirementExplanation = "";
 
   private get currentData(): FairOpportunityDTO {

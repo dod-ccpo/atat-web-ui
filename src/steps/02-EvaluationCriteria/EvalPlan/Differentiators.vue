@@ -54,15 +54,17 @@ import { convertEvalPlanDifferentiatorToCheckbox, hasChanges } from "@/helpers";
 
 import _ from "lodash";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
+import Vue from "vue"
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     CustomSpecifications
   }
 })
 
-export default class Differentiators extends Mixins(SaveOnLeave) {
+export default class Differentiators extends Vue {
 
   /* eslint-disable camelcase */
   public evalPlan: EvaluationPlanDTO = {

@@ -47,30 +47,32 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { ComponentPublicInstance } from 'vue';
 
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { Component, Mixins, Watch } from "vue-facing-decorator";
+import { Component, Watch } from "vue-facing-decorator";
 import { CSP } from "../../../../types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
 import { FairOpportunityDTO } from "@/api/models";
 
+
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATErrorValidation,
     ATATSVGIcon,
   }
 })
 
-export default class ProposedCSP extends Mixins(SaveOnLeave) {
+export default class ProposedCSP extends Vue {
   // refs
   $refs!: {
-    radioButtonGroup: Vue & { 
+    radioButtonGroup: ComponentPublicInstance & { 
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
