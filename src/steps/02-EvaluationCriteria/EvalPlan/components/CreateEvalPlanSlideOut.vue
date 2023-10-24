@@ -50,7 +50,8 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+;
 @Component({
   components: {},
 })

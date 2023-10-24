@@ -22,18 +22,20 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Mixins} from "vue-property-decorator";
+import { Component} from "vue-facing-decorator";
 import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Summary, { getSummaryItemsforStep, isStepComplete } from "@/store/summary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import Vue from "vue"
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSummaryItems
   },
 })
-export default class SummaryStepTwo extends Mixins(SaveOnLeave){
+export default class SummaryStepTwo extends Vue{
   public summaryItems: SummaryItem[] = [];
   public introParagraph = "";
 

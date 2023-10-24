@@ -42,7 +42,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
+import {Component, Prop, PropSync, Watch} from "vue-facing-decorator
+";
 import {CountryObj, RadioButton, RankData, SelectData} from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import {ContactDTO, FinancialPOCType} from "@/api/models";

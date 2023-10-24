@@ -52,7 +52,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-facing-decorator
+";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { 
