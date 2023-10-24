@@ -133,7 +133,7 @@
             $validators.required(
               'Enter ' + validationMsgCustom + ' phone number.'
             ),
-            $validators.isPhoneNumberValid(this._selectedPhoneCountry),
+            $validators.isPhoneNumberValid(_selectedPhoneCountry),
           ]"
         />
 
@@ -158,7 +158,8 @@
 
 <script lang="ts">
 import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -169,6 +170,7 @@ import ContactData from "@/store/contactData";
 import {
   AutoCompleteItem,
   AutoCompleteItemGroups,
+  CountryObj,
   RadioButton,
   RankData,
   SelectData
@@ -198,7 +200,7 @@ export default class ATATContactForm extends Vue {
   private roleLegend?: string;
   @Prop({default: false}) public roleLegendFontNormalWeight?: boolean;
   @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
-  @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
+  @PropSync("selectedPhoneCountry") private _selectedPhoneCountry!: CountryObj;
   @PropSync("selectedRole") private _selectedRole?: string;
   @PropSync("selectedRank") private _selectedRank?: RankData;
   @PropSync("selectedBranch") private _selectedBranch?: SelectData;
@@ -257,18 +259,19 @@ export default class ATATContactForm extends Vue {
 
   }
   public resetData(): void {
-    Vue.nextTick(() => {
-      //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.atatGlobalContact.$children;
-
-      formChildren.forEach((ref)=> {
-        ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-      });
-      Vue.nextTick(() => {
-        this.$refs.atatGlobalContact.reset();
-        this.$refs.atatGlobalContact.resetValidation();
-      });
-    });
+    // TODO: REFACTOR AFTER VUE3 UPGRADE
+    // Vue.nextTick(() => {
+    //   //iterate over the forms children ref manually set their 'errorMessages' array to empty
+    //   const formChildren = this.$refs.atatGlobalContact.$children;
+    //
+    //   formChildren.forEach((ref)=> {
+    //     ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+    //   });
+    //   Vue.nextTick(() => {
+    //     this.$refs.atatGlobalContact.reset();
+    //     this.$refs.atatGlobalContact.resetValidation();
+    //   });
+    // });
   }
 
   public async loadOnEnter(): Promise<void> {

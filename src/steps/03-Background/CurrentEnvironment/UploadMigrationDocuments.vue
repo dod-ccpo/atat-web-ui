@@ -48,8 +48,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import { invalidFile, RadioButton, uploadingFile, YesNo } from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AttachmentDTO} from "@/api/models";
@@ -70,7 +69,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     ATATRadioGroup,
   },
 })
-export default class UploadMigrationDocuments extends Vue {
+class UploadMigrationDocuments extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
 
   private attachmentServiceName = CURRENT_ENVIRONMENT_TABLE;
@@ -253,5 +252,7 @@ export default class UploadMigrationDocuments extends Vue {
     );
   }
 }
+
+export default toNative(UploadMigrationDocuments)
 </script>
 

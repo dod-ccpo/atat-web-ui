@@ -97,27 +97,26 @@
           hide-default-header 
           class="_data-table _has-total-col width-100 my-10">
 
-          <template v-slot:header="{ props }">
+          <template v-slot:headers="{ columns }">
             <tr>
               <th 
-                v-for="(header, hdrIdx) in props.headers" 
-                :key="hdrIdx" 
-                :id="getIdText(header.text)">
+                v-for="(column, idx) in columns" 
+                :key="idx"
+                :id="getIdText(column.title)">
                 <div :class="[
                   'py-4 d-flex font-size-14',
-                  { 'align-left': hdrIdx === 0 },
-                  { 'justify-end': hdrIdx > 0 },
+                  { 'align-left': idx === 0 },
+                  { 'justify-end': idx > 0 },
 
                 ]">
-                  {{ header.text }}
+                  {{ column.title }}
                 </div>
               </th>
             </tr>
           </template>
-          <template v-slot:body="props">
+          <template v-slot:item="{ item, index }">
             <tr
-              v-for="(item, rowIdx) in (props.items as unknown as IGCECostSummaryItem[])" 
-              :key="rowIdx" 
+              :key="index" 
               class="row-item font-size-14 text-right" :class="[{
                 '_subtotal': item.CLINTypeClassAggregate === 'Subtotal'
                   || item.CLINTypeClassAggregate === 'Total with Surge & Ordering Fee'
@@ -182,10 +181,13 @@
   </v-container>
 </template>
 <script lang="ts">
+//TODO: REFACTOR AFTER VUE 3 UPGRADE
+// NOTE: more like check that the table works properly, not refactor
+// -DP <3
+
 /*eslint prefer-const: 1 */
-import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { Component } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import { getCurrencyString, getIdText } from "@/helpers"
 import acquisitionPackage from "@/store/acquisitionPackage";
@@ -220,7 +222,7 @@ export interface IGCECostSummaryItem {
   },
 })
 
-export default class CostSummary extends Vue {
+class CostSummary extends Vue {
   public tableData: IGCECostSummaryItem[] = []
   public costData: CostEstimateDTO = { packageId: "", payload: {} }
   public surgePercentage = "";
@@ -421,11 +423,11 @@ export default class CostSummary extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const headers = [
-      { text: "Base Period", value: "BasePeriod" },
-      { text: "Option 1", value: "OptionOne" },
-      { text: "Option 2", value: "OptionTwo" },
-      { text: "Option 3", value: "OptionThree" },
-      { text: "Option 4", value: "OptionFour" },
+      { title: "Base Period", value: "BasePeriod" },
+      { title: "Option 1", value: "OptionOne" },
+      { title: "Option 2", value: "OptionTwo" },
+      { title: "Option 3", value: "OptionThree" },
+      { title: "Option 4", value: "OptionFour" },
     ]
     this.isLoading = false;
     for (let i = 0; i < this.periodsLength; i++) {
@@ -435,7 +437,7 @@ export default class CostSummary extends Vue {
     this.hasArchDesign = DescriptionOfWork.DOWArchitectureNeeds
       .needs_architectural_design_services === "YES"
 
-    this.tableHeaders.push({ text: "Total", value: "Total" })
+    this.tableHeaders.push({ title: "Total", value: "Total" })
     this.costData.payload.data.forEach((CLIN: Record<string, any>) => {
       this.createTableData(CLIN, "true", CLIN["CLIN Type & Classification"])
     })
@@ -536,5 +538,7 @@ export default class CostSummary extends Vue {
 
 
 }
+
+export default toNative(CostSummary)
 </script>
 

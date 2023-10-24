@@ -1,7 +1,7 @@
 <template>
   <div v-if="showError" :id="id">
     <div
-      v-for="(em, idx) in _errorMsgs"
+      v-for="(em, idx) in errorMsgs"
       :key="idx"
       class="d-flex justify-start align-top atat-text-field-error"
       :class="textAreaWithCounter ? 'mt-n5' : 'mt-2'"
@@ -25,15 +25,15 @@ class ATATErrorValidation extends Vue {
   @Prop({ default: false }) private showAllErrors!: boolean;
   @Prop({default: "Error"}) private id?: string;
 
-  private _errorMsgs = ['']; 
+  private errorMsgs: string[] = [];
 
   get showError(): boolean {
     if (!this.showAllErrors){
-      this._errorMsgs = this.errorMessages.length>0 ? [this.errorMessages[0]] : [];
+      this.errorMsgs = this.errorMessages.length>0 ? [this.errorMessages[0]] : [];
     } else {
-      this._errorMsgs = this.errorMessages;
+      this.errorMsgs = this.errorMessages;
     }
-    return this._errorMsgs?.length > 0;
+    return this.errorMsgs?.length > 0;
   }
 }
 export default toNative(ATATErrorValidation)

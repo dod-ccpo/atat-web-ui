@@ -146,17 +146,20 @@
 /* eslint camelcase: 0 */
 
 import Vue, { ComponentPublicInstance } from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-facing-decorator";
+import { Component, Prop, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
 import {
-  AttachmentServiceTypes,
   AttachmentServiceFactory,
 } from "@/services/attachment";
-import { invalidFile, uploadingFile } from "types/Global";
+import { invalidFile, uploadingFile, ValidationResult } from "types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { setItemToPlural } from "@/helpers";
+import { AttachmentServiceBase } from "@/services/attachment/base";
+import { BaseTableDTO } from "@/api/models";
+import { TableApiBase } from "@/api/tableApiBase";
 
 @Component({
   components: {
@@ -200,7 +203,7 @@ export default class ATATFileUpload extends Vue {
   private confirmRemovalMessage?: string;
   @PropSync("rules", { default: () => [] }) private _rules!: ((
     v: string
-  ) => string | true | undefined)[];
+  ) => ValidationResult)[];
 
   //1073741824 is 1GB, the most SNOW will allow to upload
   @Prop({ default: 1073741824, required: true })
@@ -214,7 +217,7 @@ export default class ATATFileUpload extends Vue {
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
-  private fileAttachmentService?: typeof AttachmentServiceTypes;
+  private fileAttachmentService?: AttachmentServiceBase<TableApiBase<BaseTableDTO>, BaseTableDTO>;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
   private moreThanMax = false;
@@ -239,7 +242,7 @@ export default class ATATFileUpload extends Vue {
     return true;
   }
 
-  get setRules(): ((v: string) => string | true | undefined)[] {
+  get setRules(): ((v: string) => ValidationResult)[] {
     return this._validFiles.length > 0 && this._invalidFiles.length === 0
       ? []
       : this._rules;
@@ -429,7 +432,7 @@ export default class ATATFileUpload extends Vue {
       if (!uploadingFileObj.isUploaded) {
         window.setTimeout(() => {
           this.fileAttachmentService
-            ?.upload(uploadingFileObj.file, (total, current) => {
+            ?.upload(uploadingFileObj.file, (total: number, current: number) => {
               current = 0;
               total = Math.ceil(total / 1000);
               //eslint-disable-next-line prefer-const
@@ -443,7 +446,7 @@ export default class ATATFileUpload extends Vue {
                 }
               }, 500);
             })
-            .then((result) => {
+            .then((result: any) => {
               //download link - link to the file download
               //sys_id the unique id of the attachment in the attachment table
               //table_sys_id the unique id of the table/record
@@ -455,7 +458,7 @@ export default class ATATFileUpload extends Vue {
 
               this.$emit("uploaded", uploadingFileObj);
             })
-            .catch((error) => {
+            .catch((error: any) => {
               //file upload error occurred
               uploadingFileObj.isErrored = true;
               console.log(`file upload error ${error}`);

@@ -16,7 +16,6 @@
       <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
-          
           id="StreetAddress"
           label="Street address"
           :class="inputClass"
@@ -162,7 +161,7 @@ import {
   mask,
   RadioButton,
   SelectData,
-  stringObj
+  stringObj, ValidationRule
 } from "types/Global";
 
 @Component({
@@ -198,9 +197,9 @@ export default class ATATAddressForm extends Vue {
   @Prop({required: true}) public addressTypeOptions?: RadioButton[];
   @Prop({required: true}) public addressTypes?: stringObj;
   @Prop() public militaryPostOfficeOptions?: SelectData[];
-  @Prop() public stateListData?: SelectData[];
+  @Prop({default: []}) public stateListData!: SelectData[];
   @Prop() public stateCodeListData?: SelectData[];
-  @Prop() public countryListData?: SelectData[];
+  @Prop({default: []}) public countryListData!: SelectData[];
   @Prop() public requiredFields?: stringObj[];
   @Prop() public isValidRules?: isValidObj[];
 
@@ -218,9 +217,9 @@ export default class ATATAddressForm extends Vue {
     // this.resetData();
   }
 
-  private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
+  private getRules(inputID: string): ValidationRule[] {
     //eslint-disable-next-line prefer-const 
-    let rulesArr: ((v:string)=>string | true | undefined)[]  = [];
+    let rulesArr: ValidationRule[]  = [];
     if (this.requiredFields) {
 
       const result = this.requiredFields.filter(obj => {

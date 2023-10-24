@@ -96,9 +96,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop,  Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom'
 import { MeatballMenuItem, TaskOrderCardData } from "../../../../../types/Global";
 import { getStatusChipBgColor } from "@/helpers";
@@ -110,7 +108,7 @@ import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
     ATATMeatballMenu
   }
 })
-export default class TaskOrderCard extends Vue {
+class TaskOrderCard extends Vue {
   @Prop() private taskOrders!:TaskOrderCardData[];
   @Prop() private isHistory!:boolean
   @PropSync("showDetails",{default: false}) private _showDetails!: boolean;
@@ -157,6 +155,7 @@ export default class TaskOrderCard extends Vue {
   }
 
 }
+export default toNative(TaskOrderCard)
 </script>
 
 

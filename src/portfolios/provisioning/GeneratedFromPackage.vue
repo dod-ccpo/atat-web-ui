@@ -78,8 +78,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import Card from "@/packages/components/Card.vue";
 import { AcquisitionPackageSummarySearchDTO, UserDTO } from "@/api/models";
@@ -107,7 +106,7 @@ export interface PackageCardData {
   }
 })
 
-export default class GeneratedFromPackage extends Vue {
+class GeneratedFromPackage extends Vue {
   public packageData: PackageCardData[] = [];
   public selectedPackageSysId = "";
 
@@ -177,4 +176,5 @@ export default class GeneratedFromPackage extends Vue {
   }
 
 }
+export default toNative(GeneratedFromPackage)
 </script>

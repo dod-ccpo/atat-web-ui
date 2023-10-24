@@ -37,8 +37,7 @@
 </template>
 <script lang="ts">
 
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
@@ -54,7 +53,7 @@ import _ from "lodash";
   },
 })
 
-export default class AppropriationOfFunds extends Vue {
+class AppropriationOfFunds extends Vue {
   private fundingRequest: FundingRequestDTO ={};
   private selectedFundType: "" | "O_M" | "RDT_E" | "PROCUREMENT" | "W_C" = "";
   private fundTypes: RadioButton[] = [
@@ -168,4 +167,6 @@ export default class AppropriationOfFunds extends Vue {
 
 
 }
+
+export default toNative(AppropriationOfFunds)
 </script>

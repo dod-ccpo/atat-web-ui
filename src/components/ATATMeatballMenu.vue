@@ -6,10 +6,9 @@
     class="_meatball-menu"
     attach
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template v-slot:activator="{ props }">
       <v-btn
-        v-bind="attrs"
-        v-on="on"
+        v-bind="props"
         :id="id + 'Button_' + index"
         class="_meatball-menu-button"
       >
@@ -19,7 +18,7 @@
 
     <v-list>
       <v-list-item
-        v-for="(item, idx) in menuItems"
+        v-for="(item, idx) in processedMenuItems"
         :key="idx"
         :id="getIdText(item.title) + '_MenuItem' + index"
         :class="[
@@ -36,8 +35,8 @@
             v-if="item.icon"
             :name="item.icon.name"
             :color="item.icon.color"
-            :width="item.icon.width as number"
-            :height="item.icon.height as number"
+            :width="+item.icon.width"
+            :height="+item.icon.height"
           />
         </v-list-item-title>
       </v-list-item>
@@ -73,6 +72,12 @@ export default class ATATMeatballMenu extends Vue {
     this.$emit("menuItemClick", item, this.index);
   }
 
+  get processedMenuItems() {
+    return this.menuItems.map(item => ({
+      ...item,
+      disabled: item.disabled ?? false,  // Providing a default value if `disabled` is undefined
+    }));
+  }
 }
 
 

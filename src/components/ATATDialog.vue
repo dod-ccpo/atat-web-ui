@@ -87,7 +87,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, PropSync } from "vue-facing-decorator";
+import { Component, Prop } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import Vue from "vue";
 import { Component as VueComponent } from "vue";
 
@@ -114,8 +115,8 @@ export default class ATATDialog extends Vue {
   @Prop({ default: false }) private showOKSpinner!: boolean;
   @Prop({ default: false }) private hideOkButton!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
-  @Prop({ default: "primary" }) private buttonColor?: string;
-  @Prop({ default: false }) private disableClickingOutside?: boolean;
+  @Prop({ default: "primary" }) private buttonColor!: string;
+  @Prop({ default: false }) private disableClickingOutside!: boolean;
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;
   @Prop() modalClass?: string;

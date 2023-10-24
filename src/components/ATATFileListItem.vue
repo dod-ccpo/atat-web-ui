@@ -101,7 +101,7 @@
       class="secondary ml-auto"
       :id="'RemoveFile0' + index"
       v-if="!isLoading"
-      @click="removeFile(index, ...arguments)"
+      @click="removeFile(index, $event)"
     >
       <ATATSVGIcon
         name="remove"

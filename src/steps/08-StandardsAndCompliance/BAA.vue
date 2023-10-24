@@ -118,8 +118,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -144,7 +143,7 @@ import LoadOnEnter from "@/mixins/loadOnEnter";
   },
 })
 
-export default class BAA extends Vue {
+class BAA extends Vue {
   private baaHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/
     sample-business-associate-agreement-provisions/index.html`;
 
@@ -222,4 +221,6 @@ export default class BAA extends Vue {
     return true;
   }
 }
+
+export default toNative(BAA)
 </script>

@@ -23,7 +23,6 @@
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Vue, toNative } from "vue-facing-decorator";
-// import Vue from 'vue';
 import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Summary, { 

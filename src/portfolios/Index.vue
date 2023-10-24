@@ -57,8 +57,7 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import { getIdText } from "@/helpers";
@@ -82,7 +81,7 @@ import CurrentUserStore from "@/store/user";
   }
 })
 
-export default class Portfolios extends Vue {
+class Portfolios extends Vue {
   public tabIndex = 0;
   public tabItems: Record<string, string>[] = [
     {
@@ -158,6 +157,6 @@ export default class Portfolios extends Vue {
   }
 
 }
-
+export default toNative(Portfolios)
 </script>
 

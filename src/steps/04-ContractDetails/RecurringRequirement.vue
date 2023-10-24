@@ -57,8 +57,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATAlert from "@/components/ATATAlert.vue";
 import AcquisitionPackage, { isMRRToBeGenerated } from "@/store/acquisitionPackage";
@@ -77,7 +76,7 @@ import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
   },
 })
 
-export default class RecurringRequirement extends Vue {
+class RecurringRequirement extends Vue {
 
   public popDTO = defaultPeriodOfPerformance;
 
@@ -191,4 +190,6 @@ export default class RecurringRequirement extends Vue {
     return true;
   }
 }
+
+export default toNative(RecurringRequirement)
 </script>

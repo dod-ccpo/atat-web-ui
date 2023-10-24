@@ -299,8 +299,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component, Watch} from "vue-facing-decorator";
+import {Component, Watch,  Vue, toNative} from "vue-facing-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -341,7 +340,7 @@ interface Member extends User {
   },
 })
 
-export default class PortfolioDrawer extends Vue {
+class PortfolioDrawer extends Vue {
   public portfolio: Portfolio = {};
   public updateTime = "";
   public csp = "";
@@ -859,4 +858,5 @@ export default class PortfolioDrawer extends Vue {
     }
   }
 }
+export default toNative(PortfolioDrawer)
 </script>

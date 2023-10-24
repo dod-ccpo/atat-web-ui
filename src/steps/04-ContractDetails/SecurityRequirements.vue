@@ -42,8 +42,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -66,7 +65,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATAlert
   }
 })
-export default class SecurityRequirements extends Vue {
+class SecurityRequirements extends Vue {
   private storedClassification: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
   private selectedTopSecretSecurityRequirements: string[] = [];
@@ -155,5 +154,7 @@ export default class SecurityRequirements extends Vue {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(SecurityRequirements)
 </script>
 

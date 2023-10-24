@@ -32,7 +32,7 @@
                   :class="[{ 'error--text': errorMissingInitialIncrement },]"
                   style="margin-left: 39px;"
                   :validateOnBlur="false"
-                  :rules="[$validators.required('', true)]"
+                  :rules="[$validators.required('')]"
                   @blur="calcAmounts('initialIncrement')"
                 />
                 <span class="d-block" style="width: 9px"></span>
@@ -118,7 +118,7 @@
                         class="mr-2"
                         :class="[{ 'error--text': errorMissingFirstIncrement && index === 0},]"
                         @blur="calcAmounts('increment' + index)"
-                        :rules="[$validators.required('', true)]"
+                        :rules="[$validators.required('')]"
                       />
                       <v-btn
                         :id="'DeleteIncrement' + index"
@@ -261,8 +261,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component } from "vue-facing-decorator";
-import Vue from 'vue';
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -299,7 +298,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   },
 })
 
-export default class IncrementalFunding extends Vue {
+class IncrementalFunding extends Vue {
   public today = new Date();
   public currentYear = this.today.getFullYear();
 
@@ -391,7 +390,7 @@ export default class IncrementalFunding extends Vue {
       incr => incr.text === oldVal.text
     );
 
-    this.fundingIncrements[changedItemIndex].text = newVal.text;
+    this.fundingIncrements[changedItemIndex].text = newVal.text ?? '';
     if (newVal.multiSelectOrder) {
       this.fundingIncrements[changedItemIndex].qtrOrder = newVal.multiSelectOrder;
     }
@@ -583,7 +582,7 @@ export default class IncrementalFunding extends Vue {
         accumulator + Number(currencyStringToNumber(current.amt)),
       0
     );
-    this.initialAmount = currencyStringToNumber(this.initialAmountStr);
+    this.initialAmount = currencyStringToNumber(this.initialAmountStr) ?? 0;
     this.totalAmount = this.initialAmount
       ? this.initialAmount + incrementsTotal
       : incrementsTotal;
@@ -600,7 +599,7 @@ export default class IncrementalFunding extends Vue {
       this.fundingIncrements.forEach((incr) => {
         return (incr.amt =
           incr.amt && incr.amt !== "0.00"
-            ? toCurrencyString(currencyStringToNumber(incr.amt))
+            ? toCurrencyString(currencyStringToNumber(incr.amt) ?? 0)
             : "");
       });
     });
@@ -668,7 +667,7 @@ export default class IncrementalFunding extends Vue {
     let lastSelectionOutOfRange: boolean | null = null;
 
     optionsArr.forEach((option: SelectData) => {
-      const isAlreadySelected = alreadySelectedQuarters.includes(option.text);
+      const isAlreadySelected = alreadySelectedQuarters.includes(option.text ?? '');
       const isThisOption = thisDropdownValue === option.text;
       option.disabled = isAlreadySelected && !isThisOption ? true : false;
       option.hidden = false;
@@ -713,7 +712,7 @@ export default class IncrementalFunding extends Vue {
     if (storeData) {
       this.savedData = storeData;
       this.initialAmountStr = storeData.initialFundingIncrementStr;
-      this.initialAmount = currencyStringToNumber(this.initialAmountStr);
+      this.initialAmount = currencyStringToNumber(this.initialAmountStr) ?? 0;
 
       // use below for future validation ticket
       this.hasReturnedToPage = this.fundingIncrements.length > 0;
@@ -823,4 +822,6 @@ export default class IncrementalFunding extends Vue {
     return hasChanges(this.currentData, this.savedData);
   }
 }
+
+export default toNative(IncrementalFunding)
 </script>
