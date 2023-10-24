@@ -11,7 +11,7 @@
             {{ label }}
           </label>
         </div>
-
+        <!-- TODO: use the new menu prop 'offset' to achieve what 'offsetY: true' did before -->
         <div class="d-flex">
           <v-select
             ref="atatPhoneDropdown"
@@ -26,19 +26,19 @@
             :error="errorMessages.length > 0"
             v-model="_selectedCountry"
             :height="42"
-            :menu-props="{ bottom: true, offsetY: true }"
+            :menu-props="{ location: 'bottom', offset: 0 }"
             @change="onChange"
             :return-object="true"
           >
             <template v-slot:selection="{ item }">
-              <span class="fi" :class="[`fi-${item.abbreviation}`]"> </span>
+              <span class="fi" :class="[`fi-${item.value.abbreviation}`]"> </span>
             </template>
             <template v-slot:prepend-item>
               <v-text-field
                 v-model="searchTerm"
                 class="_dropdown-text-field"
                 placeholder="Search"
-                persistent-placeholder=""
+                persistent-placeholder
                 @input="searchCountries"
                 append-icon="search"
                 id="DropdownTextField"
@@ -47,33 +47,33 @@
                 autocomplete="off"
               />
             </template>
-            <template v-slot:item="{ item, on }">
+            <!-- TODO:  validate proper functionality given the removal of 'on' from vslot item -->
+            <template v-slot:item="{ item }">
               <v-list-item
                 class="_country-list"
                 :class="[
-                  item.suggested ? '_suggested' : '',
-                  item.active ? '_active' : '',
+                  item.value.suggested ? '_suggested' : '',
+                  item.value.active ? '_active' : '',
                 ]"
-                v-on="on"
               >
                 <v-list-item-content
                   :id="
                     id +
                     '_DropdownListItem_' +
-                    item.name.replace(/[^A-Z0-9]/gi, '')
+                    item.value.name.replace(/[^A-Z0-9]/gi, '')
                   "
-                  :item-value="item.name"
+                  :item-value="item.value.name"
                 >
                   <v-list-item-title class="body _country">
                     <v-row no-gutters align="center">
                       <span
                         class="mr-3 fi"
-                        :class="[`fi-${item.abbreviation}`]"
+                        :class="[`fi-${item.value.abbreviation}`]"
                       >
                       </span>
-                      <span class="mr-2 _country-name">{{ item.name }}</span>
+                      <span class="mr-2 _country-name">{{ item.value.name }}</span>
                       <span class="color-base body-sm">{{
-                          item.countryCode
+                          item.value.countryCode
                         }}</span>
                     </v-row>
                   </v-list-item-title>

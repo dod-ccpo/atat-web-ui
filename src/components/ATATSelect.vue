@@ -14,6 +14,7 @@
       </label>
     </v-flex>
     <v-flex>
+      <!-- TODO: use the new menu prop 'offset' to achieve what 'offsetY: true' did before -->
       <v-select
         ref="atatSelect"
         :id="id + '_dropdown'"
@@ -33,31 +34,30 @@
         :return-object="returnObject"
         :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="_rules"
-        :menu-props="{ bottom: true, offsetY: true }"
+        :menu-props="{ location: 'bottom', offset: 0 }"
         :disabled="menuDisabled"
       >
         <template v-if="showSelectedValue" v-slot:selection="{ item }">
           {{ item.value }}
         </template>
-
-        <template v-slot:item="{ item, on }">
+        <!-- TODO:  validate proper functionality given the removal of 'on' from vslot item -->
+        <template v-slot:item="{ item }">
           <v-list-item 
-            v-on="on" 
             :class="[
-              {'_item-disabled': item.disabled },
-              {'d-none': item.hidden },
-              {'_selected': item.value === _selectedValue || item === _selectedValue }
+              {'_item-disabled': item.value.disabled },
+              {'d-none': item.value.hidden },
+              {'_selected': item.value.value === _selectedValue || item.value === _selectedValue }
             ]"
           >
             <v-list-item-content
-              :id="id + '_DropdownListItem_' + item.text.replace(/[^A-Z0-9]/ig, '')"
+              :id="id + '_DropdownListItem_' + item.value.text.replace(/[^A-Z0-9]/ig, '')"
               :item-value = item.value
             >
               <v-list-item-title class="body">
-                {{ item.text }}
+                {{ item.value.text }}
               </v-list-item-title>
-              <v-list-item-subtitle v-if="item.description">
-                {{ item.description }}
+              <v-list-item-subtitle v-if="item.value.description">
+                {{ item.value.description }}
               </v-list-item-subtitle>
 
             </v-list-item-content>
