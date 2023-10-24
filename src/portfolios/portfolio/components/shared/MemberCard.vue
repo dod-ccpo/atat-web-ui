@@ -7,12 +7,12 @@
       offset-x
       v-if="member"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{ props }">
+        <!-- TODO: check activator -->
         <v-btn
           plain
-          text
-          v-bind="attrs"
-          v-on="on"
+          variant="text"
+          v-bind="props"
           class="font-size-14 _profile-card__name-button"
         >
           <span v-if="member.firstName">
@@ -31,7 +31,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-facing-decorator";
 import { User } from "../../../../../types/Global";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";

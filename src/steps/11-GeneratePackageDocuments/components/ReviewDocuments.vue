@@ -129,7 +129,8 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PackageItem from "./PackageItem.vue";
 import ATATAlert from "@/components/ATATAlert.vue"

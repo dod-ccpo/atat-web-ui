@@ -43,7 +43,8 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
+import Vue from 'vue';
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import { FundingRequestMIPRFormDTO } from "@/api/models";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
@@ -56,12 +57,13 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextField,
     ATATFileUpload,
   },
 })
-export default class MIPR extends Mixins(SaveOnLeave)  {
+export default class MIPR extends Vue {
   private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
   private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
