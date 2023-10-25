@@ -9,7 +9,7 @@ export const mapStepConfigs = (
   const mapStep = (routeConfig: StepperRouteConfig) => {
     const stepInfo: StepInfo = {
       stepNumber: routeConfig.stepNumber || "",
-      stepName: routeConfig.name || "",
+      stepName: routeConfig.name as string || "",
       stepLabel: routeConfig.menuText || "",
       prev: undefined,
       next: undefined,

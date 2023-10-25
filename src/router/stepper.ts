@@ -1554,7 +1554,7 @@ const mapStepRouteToStepperData = (
   } = stepperRouteConfig;
 
   let {name} = stepperRouteConfig;
-  name = name || "";
+  name = name as string || "";
 
   const stepperStep: StepperStep = {
     stepNumber,
