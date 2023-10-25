@@ -66,7 +66,7 @@ export class EDAApi extends ApiBase{
         }
       }
       return edaResponse;
-    } catch (error:any) {
+    } catch (error) {
       return {
         success: false,
         message: errorMessages[error.response.data.result.code] || "Unknown error contacting EDA"
@@ -94,7 +94,6 @@ export class EDAApi extends ApiBase{
       const response = await this.instance.post(this.endPoint, provisioningPostObj, requestConfig);
       let edaResponse: EDAResponse = {};
       if (response.status === 200) {
-        const { result } = response.data;
         edaResponse = {
           success: true,
           taskOrderNumber: taskOrderNumber
