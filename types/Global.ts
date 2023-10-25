@@ -4,6 +4,7 @@ import {
   RouteRecordMultipleViews,
   RouteRecordSingleView,
   RouteComponent,
+  RouteLocationRaw,
 } from "vue-router";
 
 import { AdditionalButton } from "@/store/steps/types";
@@ -207,15 +208,6 @@ export interface CountryObj {
   active: boolean;
   suggested?: boolean;
   mask?: string[];
-}
-
-export interface BreadCrumbItem {
-  disabled?: boolean,
-  exact?: boolean,
-  href?: string,
-  link?: boolean,
-  text?: string | number,
-  to?: string;
 }
 
 export interface ToastObj {
@@ -960,3 +952,13 @@ export type DataTableHeader = {
 export type ValidationResult = string | boolean;
 export type ValidationRule = ValidationResult | PromiseLike<ValidationResult> |
   ((value: any) => ValidationResult) | ((value: any) => PromiseLike<ValidationResult>);
+interface LinkProps {
+    href: string | undefined;
+    replace: boolean | undefined;
+    to: RouteLocationRaw | undefined;
+    exact: boolean | undefined;
+}
+export type BreadcrumbItem = string | (Partial<LinkProps> & {
+    title: string;
+    disabled?: boolean;
+});

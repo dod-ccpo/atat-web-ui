@@ -549,83 +549,83 @@ class OtherOfferings extends Vue
     }
     this.errorBagValues = Object.values(this.$refs.form.errorBag);
     //TODO: REFACTOR AFTER VUE 3 UPGRADE
-    let formChildren = this.$refs.form.$children;
-    this.$refs.form.$children.forEach((children: HTMLFormElement) => {
-      formChildren = formChildren.concat(children.$children as HTMLElement);
-    });
-    const inputRefs = [
-      "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
-    ];
-    const customComponentRefs = ["NeededForEntireDuration", "DescriptionOfNeed"];
-    formChildren.forEach((child: any) => {
-      const refs = child.$refs;
-      const keys = Object.keys(refs);
-      keys.forEach((key: string) => {
-        if (inputRefs.indexOf(key) > -1 || customComponentRefs.indexOf(key) > -1) {
-          const childRef: any = child.$refs[key];
-          if (childRef[0]) {
-            if (this.isCompute && childRef[0].attrs$["data-group-id"] === "Regions_Group"
-            && this._serviceOfferingData.deployedRegions
-              && this._serviceOfferingData.deployedRegions.indexOf(this.otherRegionValue) > -1
-              && this._serviceOfferingData.deployedRegionsOther === ""
-            ) {
-              const otherIndex = child.$children.length - 2;
-              const eb = child.$children[otherIndex].$children[1].$children[0].errorBucket;
-              if (eb.length) {
-                this.hasErrorsOnLoad = true;
-                child.$refs["atatTextInput"][0].errorMessages.push(eb[0]);
-              }
-            }
-          }
-          if (!this.isPortabilityPlan) {
-            if (this.isCompute && key === "radioButtonGroup"
-              && child.$el.attributes.id.value.indexOf("PerformanceTier")
-              && this._serviceOfferingData.performanceTier === this.otherPerformanceTierValue
-            ) {
-              if (this._serviceOfferingData.performanceTierOther === "") {
-                this.validateOtherTierOnBlur = true;
-                this.validateOtherTierNow = true;
-              } else {
-                this.validateOtherTierOnBlur = false;
-                this.clearOtherTierValidation = true;
-              }
-            }
-            if (key === "NeededForEntireDuration" || key === "DescriptionOfNeed") {
-              const errors: string[] = child.$children[0].$children[0].errorBucket;
-              if (errors.length) {
-                this.hasErrorsOnLoad = true;
-                errors.forEach((error) => {
-                  child.$children[0].errorMessages.push(error);
-                })
-              }
+    // let formChildren = this.$refs.form.$children;
+    // this.$refs.form.$children.forEach((children: HTMLFormElement) => {
+    //   formChildren = formChildren.concat(children.$children as HTMLElement);
+    // });
+    // const inputRefs = [
+    //   "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
+    // ];
+    // const customComponentRefs = ["NeededForEntireDuration", "DescriptionOfNeed"];
+    // formChildren.forEach((child: any) => {
+    //   const refs = child.$refs;
+    //   const keys = Object.keys(refs);
+    //   keys.forEach((key: string) => {
+    //     if (inputRefs.indexOf(key) > -1 || customComponentRefs.indexOf(key) > -1) {
+    //       const childRef: any = child.$refs[key];
+    //       if (childRef[0]) {
+    //         if (this.isCompute && childRef[0].attrs$["data-group-id"] === "Regions_Group"
+    //         && this._serviceOfferingData.deployedRegions
+    //           && this._serviceOfferingData.deployedRegions.indexOf(this.otherRegionValue) > -1
+    //           && this._serviceOfferingData.deployedRegionsOther === ""
+    //         ) {
+    //           const otherIndex = child.$children.length - 2;
+    //           const eb = child.$children[otherIndex].$children[1].$children[0].errorBucket;
+    //           if (eb.length) {
+    //             this.hasErrorsOnLoad = true;
+    //             child.$refs["atatTextInput"][0].errorMessages.push(eb[0]);
+    //           }
+    //         }
+    //       }
+    //       if (!this.isPortabilityPlan) {
+    //         if (this.isCompute && key === "radioButtonGroup"
+    //           && child.$el.attributes.id.value.indexOf("PerformanceTier")
+    //           && this._serviceOfferingData.performanceTier === this.otherPerformanceTierValue
+    //         ) {
+    //           if (this._serviceOfferingData.performanceTierOther === "") {
+    //             this.validateOtherTierOnBlur = true;
+    //             this.validateOtherTierNow = true;
+    //           } else {
+    //             this.validateOtherTierOnBlur = false;
+    //             this.clearOtherTierValidation = true;
+    //           }
+    //         }
+    //         if (key === "NeededForEntireDuration" || key === "DescriptionOfNeed") {
+    //           const errors: string[] = child.$children[0].$children[0].errorBucket;
+    //           if (errors.length) {
+    //             this.hasErrorsOnLoad = true;
+    //             errors.forEach((error) => {
+    //               child.$children[0].errorMessages.push(error);
+    //             })
+    //           }
 
-              if (key === "NeededForEntireDuration") {
-                child.$children.forEach((childChild: any, i: number) => {
-                  if (child.$children[i].$el.id.indexOf("PeriodsCheckboxes") > -1
-                    && this._serviceOfferingData.entireDuration.toLowerCase() === "no"
-                    && this._serviceOfferingData.periodsNeeded.length === 0
-                  ) {
-                    child.$children[i].errorMessages.push(
-                      `Please select at least one base or option period.`
-                    );
-                  }                
-                })
-              }
-            }
-          }
+    //           if (key === "NeededForEntireDuration") {
+    //             child.$children.forEach((childChild: any, i: number) => {
+    //               if (child.$children[i].$el.id.indexOf("PeriodsCheckboxes") > -1
+    //                 && this._serviceOfferingData.entireDuration.toLowerCase() === "no"
+    //                 && this._serviceOfferingData.periodsNeeded.length === 0
+    //               ) {
+    //                 child.$children[i].errorMessages.push(
+    //                   `Please select at least one base or option period.`
+    //                 );
+    //               }                
+    //             })
+    //           }
+    //         }
+    //       }
           
-          if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
-            const errorBucket: string[] = childRef.errorBucket;
-            if (errorBucket.length) {
-              this.hasErrorsOnLoad = true;
-              errorBucket.forEach((error) => {
-                child.errorMessages.push(error);
-              });
-            }
-          }
-        }
-      });
-    });
+    //       if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
+    //         const errorBucket: string[] = childRef.errorBucket;
+    //         if (errorBucket.length) {
+    //           this.hasErrorsOnLoad = true;
+    //           errorBucket.forEach((error) => {
+    //             child.errorMessages.push(error);
+    //           });
+    //         }
+    //       }
+    //     }
+    //   });
+    // });
   }
 
   public classificationTooltipText = `The levels listed below are based on the overall 
