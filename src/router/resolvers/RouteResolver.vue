@@ -5,16 +5,16 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-facing-decorator";
-import { Route } from "vue-router";
+import { RouteLocationNormalized } from "vue-router";
 
 // route resolver invoker
 import { InvokeRouteResolver } from "./index";
 
-Component.registerHooks(["beforeRouteEnter"]);
+// Component.registerHooks(["beforeRouteEnter"]);
 @Component({})
 export default class RouteResolver extends Vue {
   private resolveRoute(current: string): void {
-    const routeResolver = this.$route.params.resolver;
+    const routeResolver = this.$route.params.resolver as string;
 
     if (!routeResolver) {
       throw new Error("could not obtain step resolver");
@@ -25,8 +25,8 @@ export default class RouteResolver extends Vue {
   }
 
   public async beforeRouteEnter(
-    to: Route,
-    from: Route,
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
     next: (n: unknown) => void
   ): Promise<void> {
     next(async (vm: { resolveRoute: (current: string) => void }) => {
@@ -35,7 +35,7 @@ export default class RouteResolver extends Vue {
         throw new Error("from route name undefined");
       }
 
-      vm.resolveRoute(current);
+      vm.resolveRoute(current as string);
     });
   }
 }
