@@ -10,6 +10,7 @@ import { RouteLocationNormalized, RouterLink } from "vue-router";
 import { InvokeRouteResolver } from "./index";
 
 // Component.registerHooks(["beforeRouteEnter"]);
+@Component({})
 class RouteResolver extends Vue {
   private resolveRoute(current: string): void {
     const routeResolver = this.$route.params.resolver as string;
