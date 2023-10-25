@@ -3,6 +3,7 @@ import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-dec
 import rootStore from "../index";
 import {
   baseGInvoiceData,
+  DOWClassificationInstance,
   DOWServiceOffering,
   DOWServiceOfferingGroup,
   OtherServiceOfferingData,
@@ -15,7 +16,6 @@ import {
   ContractConsiderationsDTO,
   ContractTypeDTO,
   CrossDomainSolutionDTO,
-  CurrentContractDTO,
   CurrentEnvironmentInstanceDTO,
   EvaluationPlanDTO,
   FairOpportunityDTO,
@@ -23,7 +23,6 @@ import {
   FundingRequestFSFormDTO,
   FundingRequestMIPRFormDTO,
   FundingRequirementDTO, OrganizationDTO,
-  PeriodDTO,
   PeriodOfPerformanceDTO,
   ReferenceColumn,
   RequirementsCostEstimateDTO,
@@ -34,7 +33,6 @@ import ClassificationRequirements, { isClassLevelUnclass } from "../classificati
 import {
   convertStringArrayToCommaList,
   toTitleCase,
-  buildClassificationLabel,
   toCurrencyString, convertEvalPlanDifferentiatorToCheckbox,
 } from "@/helpers";
 import _ from "lodash";
@@ -46,7 +44,6 @@ import FinancialDetails from "@/store/financialDetails";
 import IGCE  from "../IGCE";
 import Attachments from "../attachments";
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
-import { finished } from "stream";
 import OrganizationData from "@/store/organizationData";
 
 export const isStepValidatedAndTouched = async (stepNumber: number): Promise<boolean> =>{
@@ -368,7 +365,6 @@ export class SummaryStore extends VuexModule {
       ): contactInfoKeys.filter(
         x => civilianKeys.indexOf(x) === -1)
 
-      const salutation = contactInfo.salutation
       showMoreData = {
         address:"",
         email:contactInfo.email || "Missing email address",
@@ -516,22 +512,6 @@ export class SummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   public async validateStepTwo(): Promise<void> {
-    const fairOppObjectKeys = [
-      "barriers_",
-      "cause_",
-      "exception_",
-      "justification",
-      "market_research_",
-      "min_govt_",
-      "other_facts_",
-      "procurement_discussion_",
-      "proposed_csp",
-      "requirement_",
-      "research_",
-      "sys_",
-      "technical_",
-      "why_csp"
-    ];
     const evalPlanObjectKeys = [
       "custom_",
       "method",
@@ -1055,7 +1035,7 @@ export class SummaryStore extends VuexModule {
     const isTouched = selectedPeriods.length>0
         || PoP?.pop_start_request !== ""
         || PoP?.recurring_requirement !== ""
-    const isComplete = await this.isPOPComplete(selectedPeriods);
+    const isComplete = await this.isPOPComplete();
     const POPSummaryItem: SummaryItem = {
       title: "Period of Performance (PoP)",
       description,
@@ -1071,9 +1051,7 @@ export class SummaryStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async isPOPComplete(
-    selectedPeriods: PeriodDTO[]
-  ): Promise<boolean>{
+  public async isPOPComplete(): Promise<boolean>{
     const PoP = Periods.periodOfPerformance as PeriodOfPerformanceDTO;
     const isRequestedStartDateValid =
         (PoP?.pop_start_request === "YES" && PoP?.requested_pop_start_date !== "")
@@ -1202,8 +1180,6 @@ export class SummaryStore extends VuexModule {
   public async setClassificationRequirementsDesc(
     hasSecretOrTS: boolean
   ): Promise<string>{
-    const cds = ClassificationRequirements.cdsSolution;
-
     const missingCDSVerbiage = !(await this.isCDSComplete(hasSecretOrTS))
       ? "<br />(Cross Domain Solution Required)" : ""
 
@@ -1588,9 +1564,9 @@ export class SummaryStore extends VuexModule {
     const classLevels =
         await ClassificationRequirements.getSelectedClassificationLevels();
     classLevels.forEach((level)=>{
-      const data: Record<string, any> = _.clone(level);
-      let additionalFields = [""]
-      let requiredFields = [
+      const data = _.clone(level);
+      let additionalFields: Array<(keyof SelectedClassificationLevelDTO)> = []
+      let requiredFields: Array<(keyof SelectedClassificationLevelDTO)> = [
         "data_egress_monthly_amount",
         "data_egress_monthly_unit",
         "users_per_region",
@@ -1614,10 +1590,12 @@ export class SummaryStore extends VuexModule {
       requiredFields = requiredFields.concat(additionalFields);
       level.isAnticipatedUsersAndDataIsComplete = requiredFields.every(f => {
         if (f === "increase_in_users" && data.increase_in_users === "YES"){
+          if (!data.user_growth_estimate_percentage) return false
           return data.user_growth_estimate_percentage.length > 0 &&
               data.user_growth_estimate_percentage[0] !== ""
         }
         if (f === "data_increase" && data.data_increase === "YES"){
+          if (!data.data_growth_estimate_percentage) return false
           return data.data_growth_estimate_percentage.length > 0 &&
               data.data_growth_estimate_percentage[0] !== ""
         }
@@ -1742,8 +1720,8 @@ export class SummaryStore extends VuexModule {
       : Promise<DOWServiceOffering> {
     serviceOffering.classificationInstances?.forEach(
       (instance) => {
-        const data: Record<string, any> = _.clone(instance);
-        const requiredFields = [
+        const data = _.clone(instance);
+        const requiredFields: Array<keyof DOWClassificationInstance> = [
           "anticipatedNeedUsage",
           "entireDuration",
           "selectedPeriods",
@@ -1752,7 +1730,7 @@ export class SummaryStore extends VuexModule {
         instance.isComplete = requiredFields.every(f => {
           if (f === "selectedPeriods"){
             return data.entireDuration === "NO"
-              ? data.selectedPeriods.length > 0
+              ? (data.selectedPeriods ? data.selectedPeriods.length > 0 : false)
               : true
           }
           return data[f] !== ""
@@ -1782,8 +1760,7 @@ export class SummaryStore extends VuexModule {
       })
       : Promise<OtherServiceOfferingData> {
     //eslint-disable-next-line prefer-const
-    let incompleteOfferings = [""];
-    let requiredFields = [""];
+    let requiredFields: Array<keyof OtherServiceOfferingData> = [];
     const isCompute = attribs.id === "COMPUTE";
     const isDatabase = attribs.id === "DATABASE";
     const isStorage = attribs.id === "STORAGE";
@@ -1795,8 +1772,8 @@ export class SummaryStore extends VuexModule {
     const isDocumentation = attribs.id === "DOCUMENTATION_SUPPORT";
     const isGeneralCloudSupport = attribs.id === "GENERAL_CLOUD_SUPPORT";
 
-    const data: Record<string, any> = _.clone(attribs.otherOfferingData);
-    let additionalFields:string[] = [];
+    const data = _.clone(attribs.otherOfferingData);
+    let additionalFields: Array<keyof OtherServiceOfferingData> = [];
     if(isCompute){
       requiredFields = [
         "environmentType",
@@ -1826,7 +1803,7 @@ export class SummaryStore extends VuexModule {
         "numberOfInstances",
         "operatingSystem",
         "databaseLicensing",
-        "operatingSystemLicense",
+        "operatingSystemAndLicensing",
         "storageType",
         "storageAmount",
         "storageUnit",
@@ -1893,7 +1870,7 @@ export class SummaryStore extends VuexModule {
       ]
       // validate classifiedInformationTypes if classlevel is TS/S
       if (attribs.assessSecurityRequirements
-          && !isClassLevelUnclass(data["classificationLevel"])){
+          && !isClassLevelUnclass(data["classificationLevel"] ?? '')){
         additionalFields = ["classifiedInformationTypes"];
       }
     }

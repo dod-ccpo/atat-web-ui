@@ -97,7 +97,7 @@ export class TaskOrderStore extends VuexModule {
       // this converts any references columns to strings
       value = convertColumnReferencesToValues(value);
       // separate out into objects that need to be saved to task order & funding req tables
-      const taskOrderForSave: any = {
+      const taskOrderForSave = {
         clins: value.clins,
         pop_start_date: value.pop_start_date,
         pop_end_date: value.pop_end_date,
@@ -131,7 +131,7 @@ export class TaskOrderStore extends VuexModule {
         }
       }
     }
-    return this.value.incrementally_funded;
+    return this.value.incrementally_funded ?? '';
   }
 
   @Action
