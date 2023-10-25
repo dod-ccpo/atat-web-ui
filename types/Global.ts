@@ -1,10 +1,5 @@
 /* eslint-disable camelcase */
 import { Component } from "vue";
-import {
-  RouteConfigMultipleViews,
-  RouteConfigSingleView
-} from "vue-router/types/router";
-
 import { AdditionalButton } from "@/store/steps/types";
 
 import {
