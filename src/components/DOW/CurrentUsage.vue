@@ -64,7 +64,6 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import { 
   Checkbox, 
   RadioButton, 
-  CurrEnvInstanceUsage, 
   EnvironmentInstanceUsage 
 } from "types/Global";
 

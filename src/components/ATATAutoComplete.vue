@@ -27,12 +27,16 @@
     >
       <template v-slot:item>
         <v-list-item-content>
+          <!-- eslint-disable vue/no-v-text-v-html-on-component -->
           <v-list-item-title
             v-text="titleKey"
             :class="{ 'font-weight-normal': !subtitleKey }"
-          ></v-list-item-title>
-          <v-list-item-subtitle v-if="subtitleKey" v-text="subtitleKey">
-          </v-list-item-subtitle>
+          />
+          <v-list-item-subtitle 
+            v-if="subtitleKey" 
+            v-text="subtitleKey"
+          />
+          <!-- eslint-enable -->
         </v-list-item-content>
       </template>
 
