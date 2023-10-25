@@ -90,6 +90,9 @@ export default defineConfig(({command, mode}) => {
 			target: 'esnext',
 			assetsDir: './',
 			cssCodeSplit: false,
+			test:{
+				environment: "jsdom"
+			},
 			rollupOptions: {
 				output: {
 					dir: './dist/',
