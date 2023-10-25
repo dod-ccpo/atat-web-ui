@@ -5,7 +5,7 @@
       <ATATTextField
         width="234"
         type="number"
-        :id="'DataTransfer_'+ this.index"
+        :id="'DataTransfer_'+ index"
         :label="dataLabel"
         :tooltipText="dataTooltipText"
         :appendDropdown="true"
@@ -20,7 +20,7 @@
     </div>
     <div>
       <ATATRadioGroup
-        :id="'DataIncrease_'+ this.index"
+        :id="'DataIncrease_'+ index"
         :legend="increaseLabel"
         :items="increaseOptions"
         :value.sync="_increaseSelection"
@@ -32,7 +32,7 @@
     </div>
     <div v-if="_increaseSelection === 'YES'">
       <ATATRadioGroup
-        :id="'EstimateGrowth_'+ this.index"
+        :id="'EstimateGrowth_'+ index"
         :legend="growthLabel"
         :items="growthOptions"
         :value.sync="_growthSelection"
@@ -43,7 +43,7 @@
       <br />
       <div v-if="_growthSelection !== ''" class="mb-6">
         <ATATSingleAndMultiplePeriods
-          :id="'Periods'+ this.index "
+          :id="'Periods'+ index "
           :needs="needs"
           :index="index"
           :periods="periods"

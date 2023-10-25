@@ -27,32 +27,32 @@ describe("Testing PeriodOfPerformance Component", () => {
     it('returns error msg string for period longer than a year', async ()=>{
       period.duration= 2;
       period.unitOfTime="YEAR";
-      expect((await wrapper.vm.$.exposed?.oneYearCheck(period)).length).toBeGreaterThan(0);
+      expect((await wrapper.vm.$.exposed?.oneYearCheck(period))?.length).toBeGreaterThan(0);
     });
     it('returns error msg string for period longer than a year', async ()=>{
       period.duration= 13;
       period.unitOfTime="MONTH";
-      expect((await wrapper.vm.$.exposed?.oneYearCheck(period)).length).toBeGreaterThan(0);
+      expect((await wrapper.vm.$.exposed?.oneYearCheck(period))?.length).toBeGreaterThan(0);
     });
     it('returns error msg string for period longer than a year', async ()=>{
       period.duration= 53;
       period.unitOfTime="WEEK";
-      expect((await wrapper.vm.$.exposed?.oneYearCheck(period)).length).toBeGreaterThan(0);
+      expect((await wrapper.vm.$.exposed?.oneYearCheck(period))?.length).toBeGreaterThan(0);
     });
     it('returns error msg string for period longer than a year', async ()=>{
       period.duration= 366;
       period.unitOfTime="DAY";
-      expect((await wrapper.vm.$.exposed?.oneYearCheck(period)).length).toBeGreaterThan(0);
+      expect((await wrapper.vm.$.exposed?.oneYearCheck(period))?.length).toBeGreaterThan(0);
     });
     it('accommodates the `switch` default statement to return an empty string', async ()=>{
       period.duration= 365;
       period.unitOfTime="DAYZZZZ";
-      expect((await wrapper.vm.$.exposed?.oneYearCheck(period)).length).toBe(0);
+      expect((await wrapper.vm.$.exposed?.oneYearCheck(period))?.length).toBe(0);
     });
     it('returns an empty string for period <= than a year', async ()=>{
       period.duration= 365;
       period.unitOfTime="DAY";
-      expect((await wrapper.vm.$.exposed?.oneYearCheck(period)).length).toBe(0);
+      expect((await wrapper.vm.$.exposed?.oneYearCheck(period))?.length).toBe(0);
     });
   })
 

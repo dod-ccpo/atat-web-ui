@@ -82,6 +82,7 @@ import AcquisitionPackage from '@/store/acquisitionPackage'
 import DescriptionOfWork from './store/descriptionOfWork'
 import { RouteLocationNormalized, RouteRecordName } from 'vue-router'
 import steps from '@/store/steps'
+import { ComponentPublicInstance } from "vue";
 
 	@Component({
 	  components: {
@@ -95,8 +96,8 @@ import steps from '@/store/steps'
 	})
 export default class AppPackageBuilder extends Vue {
   $refs!: {
-			sideStepper: ATATSideStepper
-		}
+	sideStepper: ComponentPublicInstance
+  }
 
   public routeNames: Record<string, string> = {}
 
