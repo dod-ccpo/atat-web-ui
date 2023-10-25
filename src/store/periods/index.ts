@@ -347,7 +347,7 @@ export class PeriodsStore extends VuexModule {
     try {
       const sessionDataObject = JSON.parse(sessionData);
       Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
+        (this as any)[property] = sessionDataObject[property];
       });
     } catch (error) {
       throw new Error("error restoring session for organization data store");
