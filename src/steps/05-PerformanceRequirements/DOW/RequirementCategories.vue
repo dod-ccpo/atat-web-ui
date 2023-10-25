@@ -64,7 +64,7 @@
               id="XaaSCheckboxes"
               :card="false"
               :items="xaasCheckboxItems"
-              :noneValue="this.xaaSNoneValue"
+              :noneValue="xaaSNoneValue"
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
@@ -80,7 +80,7 @@
               id="CloudSupportCheckboxes"
               :card="false"
               :items="cloudSupportCheckboxItems"
-              :noneValue="this.cloudNoneValue"
+              :noneValue="cloudNoneValue"
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"

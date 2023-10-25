@@ -52,7 +52,7 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { AdditionalButton } from "@/store/steps/types";
 
 @Component({})
-export default class ATATStepperNavigation extends Vue {
+class ATATStepperNavigation extends Vue {
   @Prop({ default: () => []}) private additionalButtons!: Array<AdditionalButton>;
   @Prop({ default: "Back" }) private backButtonText?: string;
   @Prop({ default: "Continue" }) private continueButtonText?: string;

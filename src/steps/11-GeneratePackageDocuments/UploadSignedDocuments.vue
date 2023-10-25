@@ -121,7 +121,7 @@ import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
-import { invalidFile, signedDocument, uploadingFile } from "../../../types/Global";
+import { ValidationRule, invalidFile, signedDocument, uploadingFile } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Attachments from "@/store/attachments";
 import FinancialDetails from "@/store/financialDetails";
@@ -218,9 +218,9 @@ class UploadSignedDocuments extends Vue {
     return this.uploadedFiles.length === this.getMaxNumberOfFiles
   }
 
-  private getRulesArray(): ((v: string) => string | true | undefined)[] {
+  private getRulesArray(): ValidationRule[] {
     //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+    let rulesArr: ValidationRule[] = [];
 
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(

@@ -424,7 +424,7 @@ class ServiceOfferings extends Vue{
 
     if(!Array.isArray(this.otherOfferingData)){
       const displayedOtherOfferingHasNoClassLevel = existingOtherOfferings.some(
-        others => others.sysId !== this.otherOfferingData.sysId
+        others => others.sysId !== (this.otherOfferingData as OtherServiceOfferingData).sysId
       )
 
       if (displayedOtherOfferingHasNoClassLevel){
