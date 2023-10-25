@@ -21,7 +21,7 @@ import {
   UserDTO,
   CostsDTO,
 } from "@/api/models";
-import { RouteComponent, RouteRecordName, RouteRecordRaw, RouteRecordSingleViewWithChildren, _RouteRecordBase } from "vue-router";
+import { RouteRecordName, RouteRecordSingleViewWithChildren } from "vue-router";
 
 export interface DocReviewData {
   projectOverview: ProjectOverviewDTO;
