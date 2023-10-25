@@ -1,90 +1,6 @@
 <template>
-  <div 
-    class="_home-wrapper"
-    :class="[
-      {'_is-new-user' : isNewUser && !isLoading },
-      {'_is-existing-user' : !isNewUser || isLoading }
-    ]"  
-  >
-    <ATATToast />
-
-    <div class="_hero-banner"></div>
-    <v-main class="_home">
-      <div class="_home-content">
-        <div class="container-max-width">
-          <div v-if="isLoading" class="width-100 text-center" style="height: 1000px;">
-            <div class="_welcome-bar" style="height: 92px">
-              <div class="d-flex align-center" style="margin: 0 auto">
-                <v-progress-circular 
-                  indeterminate color="#544496" size="24" width="3" class="mr-2" />
-                <span class="h3">Loading...</span>
-              </div>
-            </div>
-            
-          </div>
-
-          <div v-if="!isLoading" class="_welcome-bar">
-            <div class="d-flex justify-start">
-              <h1 class="text-primary">
-                Hi {{currentUser.first_name}}! How can we help you?
-              </h1>
-            </div>
-            <div class="d-flex justify-end">
-              <v-btn 
-                v-if="!isNewUser"
-                class="v-btn primary"
-                @click="startNewAcquisition"
-              >
-                Start a new acquisition
-              </v-btn>
-              <v-btn
-                v-else
-                href="https://community.hacc.mil/s/jwcc"
-                target="_blank"
-                id="HelpfulResourcesButton"
-                class="secondary no-text-decoration"
-              >
-                Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
-              </v-btn>
-            </div>
-          </div>
-        </div>
-        <div v-if="!isLoading">
-          <NewUser 
-            v-if="isNewUser" 
-            class="mt-15" 
-            @startNewAcquisition="startNewAcquisition" 
-            @startProvisionWorkflow="startProvisionWorkflow"
-            @openTOSearchModal="openSearchTOModal"
-          />
-
-          <ExistingUser 
-            v-else 
-            class="mt-5" 
-            @startNewAcquisition="startNewAcquisition" 
-            @openTOSearchModal="openSearchTOModal"
-            @startProvisionWorkflow="startProvisionWorkflow"
-
-          />      
-        </div>
-
-        <div class="bg-white">
-          <ATATFooter class="mx-auto pt-10" />
-        </div>
-
-      </div>
-
-    </v-main>
-
-    <TaskOrderSearchModal
-      :showTOSearchModal.sync="showTOSearchModal"
-      :TONumber.sync="TONumber"
-      :resetValidationNow.sync="resetValidationNow"
-      @TOSearchCancelled="TOSearchCancelled"
-      @startProvisionWorkflow="startProvisionWorkflow"
-    />    
-
-  </div>
+  <div>hi there</div>
+ 
 </template>
 
 <script lang="ts">
@@ -112,18 +28,18 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 import Toast from "@/store/toast";
 import { ToastObj } from "types/Global";
 
-@Component({
-  components: {
-    ATATFooter,
-    ATATLoader,
-    ATATLoadingPackageModal,
-    ATATToast,
-    ExistingUser,
-    HelpfulResourcesCards,
-    NewUser,
-    TaskOrderSearchModal,
-  }
-})
+// @Component({
+//   components: {
+//     ATATFooter,
+//     ATATLoader,
+//     ATATLoadingPackageModal,
+//     ATATToast,
+//     ExistingUser,
+//     HelpfulResourcesCards,
+//     NewUser,
+//     TaskOrderSearchModal,
+//   }
+// })
 
 class Home extends Vue {
 

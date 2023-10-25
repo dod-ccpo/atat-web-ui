@@ -17,7 +17,7 @@ import {
   CostsDTO,
 } from "@/api/models";
 
-import { RouteRecordName, RouteRecordSingleViewWithChildren } from "vue-router";
+import { RouteComponent, RouteRecordName, RouteRecordRaw, RouteRecordSingleViewWithChildren } from "vue-router";
 
 export interface DocReviewData {
   projectOverview: ProjectOverviewDTO;
@@ -122,9 +122,10 @@ export interface AutoCompleteItemGroups {
 interface StepperRouteBase extends RouteRecordSingleViewWithChildren {
   name?: RouteRecordName;
   path: string;
+  component: Component;
   stepNumber?: string;
   completePercentageWeight?: number;
-  menuText?: string;
+  // menuText?: string;
   completed?: boolean;
   /**
    * Setting this flag to true will prevent item from being
@@ -149,16 +150,14 @@ interface StepperRouteBase extends RouteRecordSingleViewWithChildren {
  * Stepper Route Single Extends Route Single View
  */
 
-export interface StepperRouteSingleConfig extends
-  Omit<StepperRouteBase, 'children'>, Omit<RouteRecordSingleViewWithChildren, 'children'> {
-    children?: StepperRouteConfig[]
+export interface StepperRouteSingleConfig extends StepperRouteBase {
+    children: RouteRecordRaw[]
 }
 
 /**
  * Stepper Route Multiple Extends Route Multiple Views
  */
-export interface StepperRouteMultipleConfig extends 
-  Omit<StepperRouteBase, 'children'>, Omit<RouteRecordSingleViewWithChildren, 'children'> {
+export interface StepperRouteMultipleConfig {
     children: StepperRouteConfig[]
 }
 

@@ -10,10 +10,10 @@ import sanitize  from "./plugins/sanitize";
 const app = createApp(App)
 
 app.use(store)
-app.use(router);
 app.use(validation);
 app.use(sanitize);
 app.use(vuetify)
+app.use(router);
 
 app.config.globalProperties.productionTip = false;
 

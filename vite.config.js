@@ -6,7 +6,7 @@ import {checker} from 'vite-plugin-checker'
 import pkg from './package.json'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-// import VueDevTools from 'vite-plugin-dev-tools'
+// import VueDevTools from 'vite-plugin-vue-devtools'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -52,7 +52,8 @@ export default defineConfig(({command, mode}) => {
 			extensions: ['.ts', '.vue', '.js']
 		},
 		plugins: [
-			/*VueDevTools(),*/ vue(),
+			// VueDevTools(),
+			vue(),
 
 			Components({
 				dts: true,
@@ -69,7 +70,7 @@ export default defineConfig(({command, mode}) => {
 			//TODO Both typescript & vueTsc are throwing errors
 			checker({
 				// typescript: true,
-				vueTsc: true
+				// vueTsc: true
 				// eslint: {lintCommand:'eslint '},
 			}),
 			// vue-property-decorator

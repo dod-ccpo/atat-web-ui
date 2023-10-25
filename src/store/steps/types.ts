@@ -3,7 +3,7 @@ export type StepPathResolver = (current: string, direction: string)=> string;
 export interface StepInfo {
     continueButtonColor: string;
     stepNumber: string;
-    stepName: string;
+    stepName: string | symbol;
     stepLabel: string;
     prev: string | undefined;
     next: string | undefined;

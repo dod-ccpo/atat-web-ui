@@ -28,16 +28,16 @@ export const mapStepConfigs = (
     const lastStep = map?.get(last || "");
 
     if (lastStep) {
-      lastStep.next = stepInfo.stepName;
-      stepInfo.prev = lastStep.stepName;
+      lastStep.next = stepInfo.stepName as string;
+      stepInfo.prev = lastStep.stepName as string;
     }
         
     //we use step name for dynamic routing
     //since by convention the parent route configs
     //don't have a name we will fall through to child routes
-    if(stepInfo.stepName.length > 0){
-      map?.set(stepInfo.stepName, stepInfo);
-      last = stepInfo.stepName;
+    if((stepInfo.stepName as string).length > 0){
+      map?.set((stepInfo.stepName as string), stepInfo);
+      last = stepInfo.stepName as string;
     }
 
     routeConfig.children?.forEach((childConfig) =>
@@ -74,7 +74,7 @@ export const resolveNextRouteName = (current: string, stepInfo: StepInfo): strin
       (stepInfo.resolver as StepPathResolver)(current, "next");
   }
 
-  return stepInfo.stepName;
+  return stepInfo.stepName as string;
 }
 
 export const resolvePreviousRouteName = 

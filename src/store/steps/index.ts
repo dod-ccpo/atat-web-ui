@@ -6,6 +6,7 @@ import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
 import { StepperRouteConfig } from "types/Global";
 import { RouteRecordName } from "vue-router";
+import { toNative } from "vue-facing-decorator";
 
 @Module({ name: 'Steps', namespaced: true, dynamic: true, store: rootStore })
 export class StepsStore extends VuexModule implements StepsState {
@@ -29,7 +30,7 @@ export class StepsStore extends VuexModule implements StepsState {
   };
     
   prevStepName = "";
-
+  debugger: any;
   stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
 
   altBackButtonText = "";
@@ -39,7 +40,7 @@ export class StepsStore extends VuexModule implements StepsState {
 
   altBackDestination = "";
 
-    @Mutation
+  @Mutation
   public setEnterStepComplete(stepName: string): void {
     const step = this.stepMap.get(stepName);
     if(step && step.stepCompleteOnEnter){
@@ -198,7 +199,7 @@ export class StepsStore extends VuexModule implements StepsState {
         return stepResolver;
       }
 
-      return nextStep?.stepName;
+      return nextStep?.stepName as string;
     }
 
     @Action({ rawError: true })
@@ -213,4 +214,4 @@ export class StepsStore extends VuexModule implements StepsState {
 }
 
 const Steps = getModule(StepsStore);
-export default Steps;
+export default toNative(Steps);

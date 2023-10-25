@@ -10,9 +10,10 @@ module.exports = {
     cy: true,
   },
   extends: [
-    "plugin:vue/essential",
+    // "plugin:vue/essential",
+    "plugin:vue/vue3-recommended",
     "eslint:recommended",
-    "@vue/typescript/recommended",
+    // "@vue/typescript/recommended",
     "prettier",
     "plugin:cypress/recommended"
   ],

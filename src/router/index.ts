@@ -6,15 +6,16 @@ import RouteResolver from "./resolvers/RouteResolver.vue";
 import Home from "../home/Index.vue";
 import { scrollToMainTop } from "@/helpers";
 import { StepperRouteConfig } from "types/Global";
+import { Component } from "vue";
 
-const mapStepperRouterToRaw = (route: StepperRouteConfig): RouteRecordRaw => {
-  const { menuText, children, ...rest } = route;
-  const mappedChildren = children?.map(mapStepperRouterToRaw);
-  return {
-    ...rest,
-    children: mappedChildren
-  } as RouteRecordRaw;
-}
+// const mapStepperRouterToRaw = (route: StepperRouteConfig): RouteRecordRaw => {
+//   const { menuText, children, ...rest } = route;
+//   const mappedChildren = children?.map(mapStepperRouterToRaw);
+//   return {
+//     ...rest,
+//     children: mappedChildren
+//   } as RouteRecordRaw;
+// }
 
 const routes: readonly RouteRecordRaw[] = [
   {
@@ -22,6 +23,8 @@ const routes: readonly RouteRecordRaw[] = [
     component: Home,
     path: "/"
   },
+  ...stepperRoutes as RouteRecordRaw[],
+  ///...provisionWorkFlowRoutes.map(mapStepperRouterToRaw),
   {
     name: 'routeResolver',
     component: RouteResolver,
@@ -32,8 +35,7 @@ const routes: readonly RouteRecordRaw[] = [
     component: PathResolver,
     path: '/pathResolver'
   },
-  ...stepperRoutes.map(mapStepperRouterToRaw),
-  ...provisionWorkFlowRoutes.map(mapStepperRouterToRaw),
+
 ]
 
 const router = createRouter({
