@@ -1,6 +1,5 @@
 <template>
   <div style="outline: none">
-    <!-- <v-form ref="atatFileUploadForm"> -->
     <div
       :id="id + 'EventDiv'"
       v-cloak
@@ -138,7 +137,6 @@
       :confirmRemovalTitle="confirmRemovalTitle"
       :confirmRemovalMessage="confirmRemovalMessage"
     />
-    <!-- </v-form> -->
   </div>
 </template>
 
@@ -446,7 +444,7 @@ class ATATFileUpload extends Vue {
                 }
               }, 500);
             })
-            .then((result: any) => {
+            .then((result) => {
               //download link - link to the file download
               //sys_id the unique id of the attachment in the attachment table
               //table_sys_id the unique id of the table/record
@@ -458,7 +456,7 @@ class ATATFileUpload extends Vue {
 
               this.$emit("uploaded", uploadingFileObj);
             })
-            .catch((error: any) => {
+            .catch((error) => {
               //file upload error occurred
               uploadingFileObj.isErrored = true;
               console.log(`file upload error ${error}`);

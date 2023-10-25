@@ -195,7 +195,7 @@ class ATATDatePicker extends Vue {
     this.$nextTick(() => {
       this.$refs.atatDatePicker.validate()
       this.setErrorMessage();
-      this.additionalValidateActions("textbox");
+      this.additionalValidateActions();
     });
   }
 
@@ -233,7 +233,7 @@ class ATATDatePicker extends Vue {
 
     this.$nextTick(() => {
       this.updateDateValueProperty();
-      this.additionalValidateActions("datepicker");
+      this.additionalValidateActions();
     });
   }
 
@@ -247,7 +247,7 @@ class ATATDatePicker extends Vue {
     } 
   }
 
-  private additionalValidateActions(src: string): void{
+  private additionalValidateActions(): void{
     this.$refs.atatDatePicker.validate();
     this.$nextTick(()=>{
       // no errors are to be generated from clicking on the 
