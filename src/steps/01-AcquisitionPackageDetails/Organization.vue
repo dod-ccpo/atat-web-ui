@@ -340,7 +340,7 @@ class OrganizationInfo extends Vue {
     zip_code: "",
     state: "",
     country: "",
-  } as Record<string, any>
+  } as Record<string, string>
 
 
   // watchers
@@ -366,7 +366,7 @@ class OrganizationInfo extends Vue {
     this.stateListData = ContactData.stateChoices;
     const storeData = await AcquisitionPackage
       .loadData<OrganizationDTO>({storeProperty: 
-      StoreProperties.Organization}) as Record<string, any>;
+      StoreProperties.Organization}) as Record<string, string>;
 
     if (storeData) {
       const keys: string[] = [

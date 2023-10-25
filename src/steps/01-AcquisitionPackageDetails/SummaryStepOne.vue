@@ -24,8 +24,8 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
-import { PortfolioSummaryQueryParams, SummaryItem } from "types/Global";
+import { Component, toNative, Vue} from "vue-facing-decorator";
+import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Summary, {
   getSummaryItemsforStep,
@@ -33,7 +33,6 @@ import Summary, {
   isStepValidatedAndTouched
 } from "@/store/summary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import AcquisitionPackage from "@/store/acquisitionPackage";
  
 
 @Component({
