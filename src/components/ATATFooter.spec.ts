@@ -4,8 +4,13 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import { expect,  describe } from "vitest";
 import vuetify from "@/plugins/vuetify";
 
+
 describe("Testing Footer Component", () => {
-  const wrapper = mount(ATATFooter);
+  const wrapper = mount(ATATFooter, {
+    global:{
+      plugins: [vuetify]
+    }
+  });
 
   it("renders successfully", async () => {
     console.log('here')
