@@ -46,10 +46,11 @@
           @blur="onBlur"
           @focus ="onFocus"
           @keypress:enter="menu=false"
-          :validate-on-blur="validateOnBlur"
+          validate-on="blur"
           autocomplete="off"
         >
-          <template slot="append-outer">
+        <!-- TODO check slot append --> 
+          <template slot="append">
             <v-btn
               icon
               tabindex="-1"
@@ -125,11 +126,6 @@ class ATATDatePicker extends Vue {
   private errorMessages: string[] = [];
   private activePicker = "";
 
-  // Flash of red border on date text field when validateOnBlur is true and user
-  // clicks a date in the picker to be addressed in future milestone.
-  // Leave commented out code for validateOnBlur in place for now.
-  private validateOnBlur = true;
-
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: "" }) private value!: string;
@@ -204,14 +200,11 @@ class ATATDatePicker extends Vue {
   }
 
   /**
-   * sets validateOnBlur to true while user is typing
-   * so as validation occurs only onBlur
    *
    * if textbox is cleared manually, resets necessary
    * date attribs
    */
   private onInput(date: string): void {
-    // this.validateOnBlur = true;
     if (date === "") {
       this.dateFormatted = "";
       this.date = [""];
@@ -223,9 +216,6 @@ class ATATDatePicker extends Vue {
    * @param selectedDate (string) - selected Datepicker date
    */
   private datePickerClicked(selectedDate: string): void {
-    //must be set to false to prevent unnecessary validation
-    // this.validateOnBlur = false;
-   
     this.removeErrors();
 
     // saves selectedDate to necessary atatDatePickerMenu attribs

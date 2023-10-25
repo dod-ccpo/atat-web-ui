@@ -63,7 +63,8 @@
             </v-list-item-content>
           </v-list-item>
         </template>
-        <template v-slot:append>
+        <!-- TODO check slot append -->
+        <template slot="append-inner">
           <v-icon v-if="iconType === 'standard'">arrow_drop_down</v-icon>
           <div
             class="_dropdown-icon"
