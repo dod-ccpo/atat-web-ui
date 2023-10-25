@@ -203,7 +203,7 @@ class GatherPriceEstimates extends Vue {
     let hasSTransfer = false
     let classificationLvl = ""
     if(cdsTransfers){
-      cdsTransfers.forEach((transfer:any) => {
+      cdsTransfers.forEach((transfer: { type: string; }) => {
         const values = transfer.type.split("_")
         const includesTS = values.includes('TS')
         const includesS = values.includes('S')

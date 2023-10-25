@@ -76,7 +76,7 @@ export const saveOrUpdateSelectedServiceOffering =
       selectedServiceOffering: DOWServiceOffering,
       serviceOfferingId: string
     ):Promise<string> => {
-      const tempObject: any = {};
+      const tempObject: Partial<SelectedServiceOfferingDTO> = {};
       let objSysId = "";
       const classificationInstances: string[] = [];
       if(selectedServiceOffering.classificationInstances &&
@@ -114,12 +114,12 @@ export const saveOrUpdateSelectedServiceOffering =
       if(tempObject.sys_id){
         await api.selectedServiceOfferingTable.update(
           tempObject.sys_id,
-          tempObject
+          tempObject as SelectedServiceOfferingDTO
         );
         objSysId = tempObject.sys_id;
       } else {
         const savedObject = await api.selectedServiceOfferingTable.create(
-          tempObject
+          tempObject as SelectedServiceOfferingDTO
         );
         objSysId = savedObject.sys_id as string;
       }
@@ -133,7 +133,7 @@ const saveOrUpdateClassificationInstance =
       title: string,
       serviceOfferingName: string
     ):Promise<string> => {
-      const tempObject: any = {};
+      const tempObject: Partial<ClassificationInstanceDTO> = {};
       let objSysId = "";
 
 
@@ -228,7 +228,13 @@ export const saveOrUpdateOtherServiceOffering =
       serviceOffering: OtherServiceOfferingData,
       offeringType: string
     ):Promise<string> => {
-      const tempObject: any = {};
+      const tempObject: Partial<
+        & ComputeEnvironmentInstanceDTO 
+        & DatabaseEnvironmentInstanceDTO
+        & StorageEnvironmentInstanceDTO
+        & XaasEnvironmentInstanceDTO
+        & CloudSupportEnvironmentInstanceDTO
+      > = {};
       let objSysId = "";
       let idiqClinType = "CLOUD";
       const unit_quantity = await stringifyPeriodsForIGCECostEstimates(

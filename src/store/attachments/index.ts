@@ -23,7 +23,6 @@ import {
 } from "../helpers";
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
-import { AttachmentApi } from "@/api/attachments";
 
 @Module({
   name: "AttachmentsStore",

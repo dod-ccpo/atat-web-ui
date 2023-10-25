@@ -147,6 +147,7 @@ import IGCE from "@/store/IGCE";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import { signedDocument } from "types/Global";
 import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
+import { AttachmentDTO } from "@/api/models";
 
 
 @Component({
@@ -190,7 +191,7 @@ class ReviewDocuments extends Vue {
   }
   private packageCheckList: signedDocument[] = [];
   
-  private createAttachmentObject(attachment:any, step:string):void{
+  private createAttachmentObject(attachment: AttachmentDTO, step:string):void{
     const obj = {
       itemName:attachment.file_name,
       requiresSignature:false,
