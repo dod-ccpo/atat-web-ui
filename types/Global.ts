@@ -157,7 +157,7 @@ export interface StepperRouteSingleConfig extends
  */
 export interface StepperRouteMultipleConfig extends 
   Omit<StepperRouteBase, 'children'>, Omit<RouteRecordSingleViewWithChildren, 'children'> {
-  children: StepperRouteConfig[]
+    children: StepperRouteConfig[]
 }
 
 /**
