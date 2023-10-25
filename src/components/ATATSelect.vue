@@ -170,7 +170,7 @@ class ATATSelect extends Vue {
   public addRequiredRule(): void {
     // accommodates for dropdowns that are loaded
     // with no preselected value but required validation saveOnLeave
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       this._rules.push((v:string)=>v !== "" || "")
     })
   }

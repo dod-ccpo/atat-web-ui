@@ -403,7 +403,7 @@ class ATATSearch extends Vue {
   }
 
   private setErrorMessage(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.errorMessages = !this.isModal
         ? this.$refs.atatSearchInput.errorBucket
         : this.$refs.atatSearchInputModal.errorBucket;
@@ -411,7 +411,7 @@ class ATATSearch extends Vue {
   }
 
   private clearErrorMessages(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       if (!this.isModal) {
         this.$refs.atatSearchInput.errorBucket = [];
       } else {
@@ -452,7 +452,7 @@ class ATATSearch extends Vue {
     if (Object.keys(this.maskObj).length > 0) {
       this.maskObj.placeholder = "";
       this.maskObj.jitMasking = true;
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         const inputField = document.getElementById(
           this.id + "_SearchInput"
         ) as HTMLInputElement;

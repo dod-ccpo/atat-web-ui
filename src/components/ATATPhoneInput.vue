@@ -513,27 +513,27 @@ class ATATPhoneInput extends Vue {
   }
 
   private clearErrorMessages(): void{
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       this.$refs.atatPhoneTextField.errorBucket = [];
       this.errorMessages = [];
     });
   }
 
   private blurDropDown(): void{
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       this.$refs.atatPhoneDropdown.blur();
     });
   }
 
   private focusTextBox():void{
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       this.$refs.atatPhoneTextField.focus();
     });
   }
 
   // mask
   private setPhoneMask(): void{
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       const phoneTextField = document.getElementById(
         this.id + "_textField"
       ) as HTMLElement;
@@ -547,7 +547,7 @@ class ATATPhoneInput extends Vue {
   }
   private setExtensionMask(): void{
     if(this.isPhoneExtensionVisible === true) {
-      Vue.nextTick(()=>{
+      this.$nextTick(()=>{
         const extensionTextField = document.getElementById(
           this.id + "_PhoneExtension_text_field"
         ) as HTMLElement;

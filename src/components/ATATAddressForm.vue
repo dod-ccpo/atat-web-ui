@@ -274,7 +274,7 @@ class ATATAddressForm extends Vue {
       // const formChildren = this.$refs.atatAddressForm.$children;
       // formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
       // this.$refs.atatAddressForm.reset();
-      // Vue.nextTick(() => {
+      // this.$nextTick(() => {
       //   this.$refs.atatAddressForm.resetValidation();
       // });
 
