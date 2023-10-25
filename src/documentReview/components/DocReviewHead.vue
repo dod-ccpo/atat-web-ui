@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { BreadCrumbItem } from "types/Global";
+import { BreadcrumbItem } from "types/Global";
 import Vue from "vue";
 import { Component, Prop } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -25,19 +25,19 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 })
 export default class DocReviewHead extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  public breadCrumbItems: BreadCrumbItem[] = [
+  public breadCrumbItems: BreadcrumbItem[] = [
     {
-      text: "Acquisitions",
+      title: "Acquisitions",
       disabled: false,
       href: "#",
     },
     {
-      text: "Demo Package",
+      title: "Demo Package",
       disabled: false,
       href: "#",
     },
     {
-      text: "Requirements Checklist",
+      title: "Requirements Checklist",
       disabled: true,
       href: "#",
     },
