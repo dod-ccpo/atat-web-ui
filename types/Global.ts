@@ -1,9 +1,6 @@
 /* eslint-disable camelcase */
 import { Component } from "vue";
-import {
-  RouteConfigMultipleViews,
-  RouteConfigSingleView
-} from "vue-router/types/router";
+
 
 import { AdditionalButton } from "@/store/steps/types";
 
@@ -21,7 +18,9 @@ import {
   UserDTO,
   CostsDTO,
 } from "@/api/models";
-import { RouteComponent, RouteRecordName, RouteRecordRaw, RouteRecordSingleViewWithChildren } from "vue-router";
+import {
+  RouteComponent, RouteRecordName, RouteRecordRaw, RouteRecordSingleViewWithChildren
+} from "vue-router";
 
 export interface DocReviewData {
   projectOverview: ProjectOverviewDTO;
@@ -152,14 +151,16 @@ interface StepperRouteBase extends RouteRecordSingleViewWithChildren {
 /**
  * Stepper Route Single Extends Route Single View
  */
-export interface StepperRouteSingleConfig extends StepperRouteBase, RouteRecordSingleViewWithChildren {
+export interface StepperRouteSingleConfig extends 
+StepperRouteBase, RouteRecordSingleViewWithChildren {
   children: RouteRecordRaw[]
 }
 
 /**
  * Stepper Route Multiple Extends Route Multiple Views
  */
-export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteRecordSingleViewWithChildren {
+export interface StepperRouteMultipleConfig extends
+StepperRouteBase, RouteRecordSingleViewWithChildren {
   children: RouteRecordRaw[]
 }
 
@@ -200,12 +201,12 @@ export interface CountryObj {
   mask?: string[];
 }
 
-export interface BreadCrumbItem {
+export interface BreadcrumbItem {
   disabled?: boolean,
   exact?: boolean,
   href?: string,
   link?: boolean,
-  text?: string | number,
+  title?: string | number,
   to?: string;
 }
 

@@ -14,8 +14,7 @@ import {
   AttachmentServiceFactory,
 } from "@/services/attachment";
 
-import Vue from "vue";
-
+import { Vue } from "vue-facing-decorator";
 const ATAT_ATTACHMENTS_KEY = "ATAT_ATTACHMENTS_KEY";
 
 import {

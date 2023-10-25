@@ -1,5 +1,4 @@
 import { createDecorator} from 'vue-facing-decorator'
-import Vue from 'vue'
 import { PropsConfig } from 'vue-facing-decorator/dist/option/props'
 //TODO: REFACTOR AFTER VUE 3 UPGRADE
 

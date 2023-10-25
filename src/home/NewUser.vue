@@ -167,9 +167,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import NewAcquisitionCard from "./components/NewAcquisitionCard.vue";
 import ExistingTaskOrderCard from "./components/ExistingTaskOrderCard.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -183,8 +181,7 @@ import ATATDivider from "@/components/ATATDivider.vue";
     ATATDivider,
   }
 })
-
-export default class NewUser extends Vue {
+class NewUser extends Vue {
 
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
@@ -223,5 +220,5 @@ export default class NewUser extends Vue {
   }
 
 }
-
+export default toNative(NewUser);
 </script>  
