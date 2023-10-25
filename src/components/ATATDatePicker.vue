@@ -49,6 +49,7 @@
           validate-on="blur"
           autocomplete="off"
         >
+        <!-- TODO check slot append --> 
           <template slot="append">
             <v-btn
               icon
