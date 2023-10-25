@@ -489,14 +489,14 @@ class ContactInfo extends Vue {
 
   public resetData(): void {
     //TODO: implement fix for children
-  //   Vue.nextTick(() => {
+  //   this.$nextTick(() => {
   //     //iterate over the forms children ref manually set their 'errorMessages' array to empty
   //     const formChildren = this.$refs.form.$children;
      
   //     formChildren.forEach((ref)=> {
   //       ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
   //     });
-  //     Vue.nextTick(() => {
+  //     this.$nextTick(() => {
   //       this.$refs.form.reset();
   //       this.$refs.form.resetValidation();
   //     });

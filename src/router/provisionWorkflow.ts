@@ -140,7 +140,7 @@ const mapStepRouteToStepperData = (
     name,
     completed,
     completePercentageWeight,
-    route: path,
+    route: path ?? "",
     subSteps: stepperRouteConfig.children?.map((child) =>
       mapStepRouteToStepperData(child)
     ),

@@ -83,7 +83,7 @@
     <div 
       id="PortfolioCards" 
       v-show="portfolioCardData.length && !isLoading" 
-      :style="{ 'margin-bottom: 200px;' : !isHomeView }"
+      :style="cardsStyle"
     >
     <!-- ATAT TODO * Q1 FY24 - add back to div above after search is reinstated
       :class="{ 'mt-10' : !isHomeView }"  
@@ -250,6 +250,10 @@ class PortfoliosSummary extends Vue {
 
   public get showPagination(): boolean {
     return !this.isHomeView && (this.portfolioCount > this.recordsPerPage);
+  }
+
+  public get cardsStyle(): string {
+    return !this.isHomeView ? "_mb-200" : ""; 
   }
 
   public async removeFilter(index: number): Promise<void> {

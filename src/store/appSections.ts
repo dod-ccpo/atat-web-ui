@@ -23,7 +23,6 @@ export class AppSectionsStore extends VuexModule {
   sectionTitles: Record<string, string> = {
     Home: "Home",
     AcquisitionPackage: "Acquisition Package Builder",
-    JWCCDashboard: "JWCC Dashboard",
     TOLookup: "Lookup TO in EDA",
     Portfolios: "Portfolios",
     CreateFirstPortfolio: 'Create First Portfolio',
@@ -37,7 +36,6 @@ export class AppSectionsStore extends VuexModule {
 
   appSectionMenuItems: { title: string }[] = [
     { title: this.sectionTitles.AcquisitionPackage },
-    { title: this.sectionTitles.JWCCDashboard },
     { title: this.sectionTitles.TOLookup },
     { title: this.sectionTitles.Portfolios },
     { title: this.sectionTitles.DocumentReview },

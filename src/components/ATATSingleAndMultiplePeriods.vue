@@ -78,7 +78,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import { PropSync } from "@/decorators/custom";
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import { PeriodDTO } from "@/api/models";

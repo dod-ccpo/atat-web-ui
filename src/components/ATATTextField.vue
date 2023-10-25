@@ -82,7 +82,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import { ComponentPublicInstance } from "vue";
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -167,7 +167,7 @@ class ATATTextField extends Vue  {
 
   public async setErrorMessage(): Promise<void> {
     if (this.validateOnBlur) {
-      Vue.nextTick(()=>{
+      this.$nextTick(()=>{
         this.errorMessages = this.$refs.atatTextField.errorBucket;
         this.$emit('errorMessage', this.errorMessages);
         // await 
@@ -231,7 +231,7 @@ class ATATTextField extends Vue  {
     if (Object.keys(maskObj).length>0){
       maskObj.placeholder="";
       maskObj.jitMasking=true;
-      Vue.nextTick(()=>{
+      this.$nextTick(()=>{
         const inputField = document.getElementById(
           this.id + '_text_field'
         ) as HTMLInputElement;

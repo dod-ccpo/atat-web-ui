@@ -159,7 +159,7 @@ class ATATTextArea extends Vue {
   private onBlur() : void{
     this._turnRulesOff = false;
     if (this.validateItOnBlur) {
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         this.setErrorMessage();
       })
       this.$emit("blur");

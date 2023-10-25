@@ -127,7 +127,6 @@
 </template>
 
 <script lang="ts">
-import { ComponentPublicInstance } from "vue";
 import { Component, Prop, Watch, toNative, Vue } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -280,7 +279,7 @@ class ATATRadioGroup extends Vue {
     if (newVal === this.otherValue) {
       this._validateOtherOnBlur = true;
       this.hideOtherInput = false;
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         const id = this.otherEntryType === "textarea" 
           ? this.otherId + "_text_area" 
           : this.otherId + "_text_field";

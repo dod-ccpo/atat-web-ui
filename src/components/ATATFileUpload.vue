@@ -282,7 +282,7 @@ class ATATFileUpload extends Vue {
    */
   private fileUploadChanged(): void {
     this.removeInvalidFiles(this.fileUploadControl.files as FileList);
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       //remove default vuetify status that displays after
       //upload (eg. '2 files')
       const vuetifyFileUploadStatus = document.getElementsByClassName(
@@ -291,7 +291,7 @@ class ATATFileUpload extends Vue {
       if (vuetifyFileUploadStatus) {
         vuetifyFileUploadStatus.innerHTML = "";
       }
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         this.clearHTMLFileInput();
         (
           document.getElementById(this.id + "FileUpload") as HTMLInputElement
@@ -517,16 +517,16 @@ class ATATFileUpload extends Vue {
   }
 
   private clearErrorMessages(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.$refs.atatFileUpload.reset();
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         this.$refs.atatFileUpload.resetValidation();
       });
     });
   }
 
   private reset(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this._invalidFiles = [];
       this.clearErrorMessages();
       this.errorMessages = [];
