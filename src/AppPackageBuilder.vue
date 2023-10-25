@@ -84,14 +84,14 @@ import steps from '@/store/steps'
 import { ComponentPublicInstance } from "vue";
 
 @Component({
-	components: {
-	ATATFooter,
-	ATATPageHead,
-	ATATSideStepper,
-	ATATSlideoutPanel,
-	ATATStepperNavigation,
-	ATATToast
-	}
+  components: {
+    ATATFooter,
+    ATATPageHead,
+    ATATSideStepper,
+    ATATSlideoutPanel,
+    ATATStepperNavigation,
+    ATATToast
+  }
 })
 class AppPackageBuilder extends Vue {
   $refs!: {
