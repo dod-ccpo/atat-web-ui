@@ -1,32 +1,26 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount } from "@vue/test-utils";
-import ATATFooter from "@/components/ATATFooter.vue";
-Vue.use(Vuetify);
+import { mount } from "@vue/test-utils";
+import ATATFooter from "src/components/ATATFooter.vue";
+import { describe, it, expect } from "vitest";
 
-describe("Testing Footer Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: any;
-  let wrapper: any;
+describe("ATATFooter.vue", () => {
 
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(ATATFooter, {
-      localVue,
-      vuetify,
+  it("should renders is page content is correct", () => {
+    const message = "Happy People";
+    const testMessage = "Happy People";
+    const wrapper = mount(ATATFooter, {
+      props: { message },
     });
+
+    expect(wrapper.text()).toBe(testMessage);
   });
-  it("renders successfully", async () => {
-    const footer = wrapper.findComponent(ATATFooter)
-    expect(footer.exists()).toBe(true);
-    expect(footer.classes()).toContain("width-100")
+
+  it("should render if props value is correct", () => {
+    const message = "Happy People";
+    const testMessage = "Happy People";
+    const wrapper = mount(ATATFooter, {
+      props: { message },
+    });
+
+    expect(wrapper.vm.message).toBe(testMessage);
   });
-  // DMG Test was failing after comment removing non-functional links and buttons 12/29/2022
-  // it("should have three links", async () => {
-  //   const links = await wrapper.findAll("._text-link")
-  //   expect(links.length).toEqual(3)
-  //   expect(links.at(0).text()).toEqual("Security Notice")
-  //   expect(links.at(1).text()).toEqual("Privacy")
-  //   expect(links.at(2).text()).toEqual("Accessibility")
-  // })
 });
