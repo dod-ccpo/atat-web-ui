@@ -59,7 +59,7 @@ export class EvaluationPlanStore extends VuexModule {
     try {
       const sessionDataObject = JSON.parse(sessionData);
       Object.keys(sessionDataObject).forEach((property) => {
-        (this as any)[property] = sessionDataObject[property];
+        (this as unknown as Record<string, string>)[property] = sessionDataObject[property];
       });
     } catch (error) {
       throw new Error("error restoring session for evaluation plan data store");
