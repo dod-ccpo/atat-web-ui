@@ -95,7 +95,9 @@ import { ComponentPublicInstance } from "vue";
 })
 class AppPackageBuilder extends Vue {
   $refs!: {
-	sideStepper: ComponentPublicInstance
+	sideStepper: ComponentPublicInstance & {
+	  setCurrentStep:	(s: string)=>void
+	}
   }
 
   public routeNames: Record<string, string> = {}
@@ -120,7 +122,7 @@ class AppPackageBuilder extends Vue {
   private isNewPackage = false
 
   async mounted(): Promise<void> {
-    await Steps.setSteps(stepperRoutes)
+    Steps.setSteps(stepperRoutes)
     this.hideNavigation = AcquisitionPackage.hideNavigation
     this.hideSideNavigation = AcquisitionPackage.hideSideNavigation
     this.routeNames = routeNames
@@ -152,7 +154,7 @@ class AppPackageBuilder extends Vue {
         !AcquisitionPackage.hideSideNavigation &&
 					!AcquisitionPackage.hideNavigation
       ) {
-        await this.$refs.sideStepper.setCurrentStep(stepNumber)
+        this.$refs.sideStepper.setCurrentStep(stepNumber)
       }
       SlideoutPanel.closeSlideoutPanel()
     }
