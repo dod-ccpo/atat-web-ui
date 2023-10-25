@@ -76,43 +76,50 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 class CloudSupportLearnMore extends Vue{
   private currentEnvironmentExists = "";
-  public requirements = [
-    {
-      sectionTitle: "Cloud Support Services",
-      items: [
-        {
-          name: "Portability plan",
-          description: `Refer to the JWCC Contract Performance Work Statement (PWS)
-            for definition.`
-        },
-        {
-          name: "Advisory and assistance",
-          description: `This category allows you to define the type of advisory
-            services that you need.`,
-        },
-        {
-          name: "Help desk services",
-          description: `This category enables you to define the type of help desk
-            services that you need.`,
-        },
-        {
-          name: "Training",
-          description: `This category enables you to customize support packages
-            for on-site and virtual training requirements.`,
-        },
-        {
-          name: "Documentation support",
-          description: `This category enables you to define the type of support that
-            you need related to documentation.`,
-        },
-        {
-          name: "General cloud support",
-          description: `This category encompasses any other type of cloud support
-            requirements not covered by the other categories.`,
-        },
-      ]
-    },
-  ];
+  public requirements: {
+    sectionTitle: string,
+    items: {
+      name: string,
+      description: string,
+      categories?: string[],
+    }[]
+  }[] = [
+      {
+        sectionTitle: "Cloud Support Services",
+        items: [
+          {
+            name: "Portability plan",
+            description: `Refer to the JWCC Contract Performance Work Statement (PWS)
+              for definition.`
+          },
+          {
+            name: "Advisory and assistance",
+            description: `This category allows you to define the type of advisory
+              services that you need.`,
+          },
+          {
+            name: "Help desk services",
+            description: `This category enables you to define the type of help desk
+              services that you need.`,
+          },
+          {
+            name: "Training",
+            description: `This category enables you to customize support packages
+              for on-site and virtual training requirements.`,
+          },
+          {
+            name: "Documentation support",
+            description: `This category enables you to define the type of support that
+              you need related to documentation.`,
+          },
+          {
+            name: "General cloud support",
+            description: `This category encompasses any other type of cloud support
+              requirements not covered by the other categories.`,
+          },
+        ]
+      },
+    ];
 
   public async mounted(): Promise<void> {
     if (CurrentEnvironment.currentEnvironment) {

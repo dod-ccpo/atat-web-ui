@@ -548,6 +548,7 @@ class OtherOfferings extends Vue
       return;
     }
     this.errorBagValues = Object.values(this.$refs.form.errorBag);
+    //TODO: REFACTOR AFTER VUE 3 UPGRADE
     let formChildren = this.$refs.form.$children;
     this.$refs.form.$children.forEach((children: HTMLFormElement) => {
       formChildren = formChildren.concat(children.$children as HTMLElement);
