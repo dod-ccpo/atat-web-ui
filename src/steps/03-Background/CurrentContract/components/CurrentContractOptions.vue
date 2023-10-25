@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom';
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 
@@ -23,7 +23,7 @@ import { RadioButton } from "types/Global";
   },
 })
 
-export default class CurrentContractOptions extends Vue {
+class CurrentContractOptions extends Vue {
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: false}) private card!: boolean;
   @Prop({default: false}) private isWizard!: boolean; 
@@ -57,4 +57,6 @@ export default class CurrentContractOptions extends Vue {
   }
 
 }
+
+export default toNative(CurrentContractOptions)
 </script>

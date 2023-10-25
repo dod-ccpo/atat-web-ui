@@ -14,7 +14,7 @@
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest --no-cache",
-    "test-file:watch": "jest --no-cache --watch src/store/summary/index.spec.ts",
+    "test-file:watch": "jest --no-cache --watch /src/steps/04-ContractDetails/SummaryStepThree.spec.ts",
     "test-files": "jest --no-cache src/steps/03-Background/components/",
     "test:coverage": "jest --coverage",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
@@ -109,6 +109,7 @@
     "vite-plugin-checker": "^0.6.2",
     "vite-plugin-css-injected-by-js": "^3.3.0",
     "vue-tsc": "^1.8.15",
+    "vue-facing-decorator": "^3.0.2",
     "vuex-module-decorators": "^1.0.0",
     "webpack-merge": "^5.9.0"
   },

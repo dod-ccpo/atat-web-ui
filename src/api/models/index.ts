@@ -590,23 +590,23 @@ export interface TaskOrderDTO extends BaseTableDTO {
   /**
    * @deprecated Will be deprecated: use the prop from funding_requirement
    */
-  incrementally_funded: string; // will be deprecated: use the prop from funding_requirement
+  incrementally_funded?: string; // will be deprecated: use the prop from funding_requirement
   /**
    * @deprecated Will be deprecated: use the prop from funding_requirement
    */
-  funds_obligated: string; // do not delete. for portfolio sum, not in api call but calculated
+  funds_obligated?: string; // do not delete. for portfolio sum, not in api call but calculated
   /**
    * @deprecated Will be deprecated: use the prop from funding_requirement
    */
-  acquisition_package: string; // will be deprecated: use the prop from funding_requirement
+  acquisition_package?: string; // will be deprecated: use the prop from funding_requirement
   /**
    * @deprecated Will be deprecated: use the prop from funding_requirement
    */
-  funding_plan: string; // will be deprecated: use the prop from funding_requirement
+  funding_plan?: string; // will be deprecated: use the prop from funding_requirement
   /**
    * @deprecated Will be deprecated: use the prop from funding_requirement
    */
-  funds_total: string; // do not delete. for portfolio sum, not in api call but calculated
+  funds_total?: string; // do not delete. for portfolio sum, not in api call but calculated
 
   task_order_number: string;
   task_order_status: string;
@@ -1007,6 +1007,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   }
   baseYearTotal?: number;
   grandTotal?: number;
+  estimatedTaskOrderValue?: string;
 }
 
 export interface RequirementsCostEstimateFlat extends BaseTableDTO{

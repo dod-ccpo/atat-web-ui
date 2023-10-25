@@ -21,6 +21,7 @@ import {
   UserDTO,
   CostsDTO,
 } from "@/api/models";
+import { RouteComponent, RouteRecordName, RouteRecordRaw, RouteRecordSingleViewWithChildren } from "vue-router";
 
 export interface DocReviewData {
   projectOverview: ProjectOverviewDTO;
@@ -122,8 +123,9 @@ export interface AutoCompleteItemGroups {
 /**
  * Defines Stepper Route Base properties
  */
-interface StepperRouteBase {
-
+interface StepperRouteBase extends RouteRecordSingleViewWithChildren {
+  name?: RouteRecordName;
+  path: string;
   stepNumber?: string;
   completePercentageWeight?: number;
   menuText?: string;
@@ -150,15 +152,15 @@ interface StepperRouteBase {
 /**
  * Stepper Route Single Extends Route Single View
  */
-export interface StepperRouteSingleConfig extends StepperRouteBase, RouteConfigSingleView {
-  children?: StepperRouteConfig[]
+export interface StepperRouteSingleConfig extends StepperRouteBase, RouteRecordSingleViewWithChildren {
+  children: RouteRecordRaw[]
 }
 
 /**
  * Stepper Route Multiple Extends Route Multiple Views
  */
-export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteConfigMultipleViews {
-  children?: StepperRouteConfig[]
+export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteRecordSingleViewWithChildren {
+  children: RouteRecordRaw[]
 }
 
 /**
@@ -285,6 +287,13 @@ export interface signedDocument{
   requiresSignature:boolean,
   alertText?:string,
   show:boolean
+  description?: string
+}
+
+
+export interface SurgeRequirements {
+  capabilities: YesNo,
+  capacity: number | null,
 }
 
 
@@ -472,6 +481,7 @@ export interface TravelSummaryTableData {
 }
 
 export interface TravelCalloutDataItem {
+    id: string,
     period: string,
     periodSysId: string,
     totalNumberOfTripsPerPeriod: number,
@@ -920,3 +930,24 @@ export enum ClassificationLevels {
 }
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
 
+// Unexposed Vuetify types below
+export type SelectItemKey = boolean | null | undefined | string | (string | number)[] | 
+((item: Record<string, any>, fallback?: any) => any);
+export type DataTableCompareFunction<T = any> = (a: T, b: T) => number;
+export type DataTableHeader = {
+  key?: string;
+  value?: SelectItemKey;
+  title: string;
+  colspan?: number;
+  rowspan?: number;
+  fixed?: boolean;
+  align?: 'start' | 'end' | 'center';
+  width?: number | string;
+  minWidth?: string;
+  maxWidth?: string;
+  sortable?: boolean;
+  sort?: DataTableCompareFunction;
+};
+export type ValidationResult = string | boolean;
+export type ValidationRule = ValidationResult | PromiseLike<ValidationResult> |
+  ((value: any) => ValidationResult) | ((value: any) => PromiseLike<ValidationResult>);

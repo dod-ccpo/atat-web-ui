@@ -41,7 +41,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+ 
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -49,11 +50,12 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup, ATATAlert
   },
 })
-export default class AlternateCOR extends Mixins(SaveOnLeave) {
+class AlternateCOR extends Vue {
   private alternateCoreOptions: RadioButton[] = [
     {
       id: "YesAlternateCOR",
@@ -94,4 +96,5 @@ export default class AlternateCOR extends Mixins(SaveOnLeave) {
     return true;
   }
 }
+export default toNative(AlternateCOR)
 </script>

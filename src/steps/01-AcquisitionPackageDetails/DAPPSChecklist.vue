@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
@@ -203,12 +203,14 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import { routeNames } from "@/router/stepper";
 import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+ 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {ATATSVGIcon,ATATAlert}
 })
 
-export default class DAPPSChecklist extends Mixins(SaveOnLeave) {
+class DAPPSChecklist extends Vue {
   public requestAccessURL = "https://community.hacc.mil/s/jwcc/pricing-calculator-request"
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -242,4 +244,5 @@ export default class DAPPSChecklist extends Mixins(SaveOnLeave) {
   }
 }
 
+export default toNative(DAPPSChecklist)
 </script>

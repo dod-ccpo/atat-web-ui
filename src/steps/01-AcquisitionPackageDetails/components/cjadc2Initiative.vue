@@ -36,8 +36,9 @@
  
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import { Component, Prop, PropSync} from "vue-property-decorator";
+ 
+import { Component, Prop, toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { LegendLink, RadioButton } from "types/Global";
@@ -48,7 +49,7 @@ import { LegendLink, RadioButton } from "types/Global";
     ATATTextField
   },
 })
-export default class CJADC2Initiative extends Vue {
+class CJADC2Initiative extends Vue {
   @PropSync("cjadc2Initiative", { default: "" }) private _cjadc2Initiative!: string | null;
   @PropSync("cjadc2Percentage", {}) public _cjadc2Percentage!: number | null;
   @Prop({default: "cjadc2-initiative"}) private id!: string;
@@ -92,4 +93,5 @@ export default class CJADC2Initiative extends Vue {
   }
     
 }
+export default toNative(CJADC2Initiative)
 </script>

@@ -12,14 +12,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 
-import Vue from "vue";
+ 
 import { routeNames } from "../../../router/stepper"
 
 @Component({})
 
-export default class DOWSubtleAlert extends Vue {
+class DOWSubtleAlert extends Vue {
   @Prop({default: false}) private isPeriodsDataMissing!: boolean;
   @Prop({default: false}) private isClassificationDataMissing!: boolean;
 
@@ -56,5 +56,6 @@ export default class DOWSubtleAlert extends Vue {
   };
 
 }
-
+export default toNative(DOWSubtleAlert)
+ 
 </script>

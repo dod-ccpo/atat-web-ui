@@ -1,7 +1,7 @@
 <template>
   <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
     <!-- eslint-disable -->
-    <path d="M40.5 27C42.9853 27 45 24.9853 45 22.5C45 20.0147 42.9853 18 40.5 18C38.0147 18 36 20.0147 36 22.5C36 24.9853 38.0147 27 40.5 27Z":fill="'#' + color"
+    <path d="M40.5 27C42.9853 27 45 24.9853 45 22.5C45 20.0147 42.9853 18 40.5 18C38.0147 18 36 20.0147 36 22.5C36 24.9853 38.0147 27 40.5 27Z" :fill="'#' + color"
     />
     <path d="M19.5 27C21.9853 27 24 24.9853 24 22.5C24 20.0147 21.9853 18 19.5 18C17.0147 18 15 20.0147 15 22.5C15 24.9853 17.0147 27 19.5 27Z"  :fill="'#' + color"
     />
@@ -13,12 +13,10 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-
-export default class Satisfied extends Vue {
+class Satisfied extends Vue {
   @Prop({ default: "161B1E", required: false }) private color?:string;
 }
+export default toNative(Satisfied);
 </script>

@@ -8,11 +8,10 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import {Component, Prop} from "vue-property-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class Restore extends Vue {
+class Restore extends Vue {
   @Prop({default: "544496", required: true}) private color!:string;
 }
+export default toNative(Restore);
 </script>

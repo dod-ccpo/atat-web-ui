@@ -120,7 +120,7 @@
             :extensionValue.sync="phoneExtension"
             :rules="[
               $validators.isPhoneNumberValid(
-                this.selectedPhoneCountry
+                selectedPhoneCountry
               ),
             ]"
           />
@@ -158,7 +158,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Mixins } from "vue-property-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 import {convertSystemChoiceToSelect} from "@/helpers";
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
@@ -181,9 +181,10 @@ import {
 import { ContactDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import Vue from "vue";
+import {ComponentPublicInstance} from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAutoComplete,
     ATATPhoneInput,
@@ -192,9 +193,9 @@ import Vue from "vue";
     ATATTextField,
   },
 })
-export default class ContactInfo extends Mixins(SaveOnLeave) {
+class ContactInfo extends Vue {
   $refs!: {
-    form: Vue & { 
+    form: ComponentPublicInstance & { 
       resetValidation: () => void;
       reset: () => void;
       validate: () => boolean;
@@ -487,18 +488,19 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   }
 
   public resetData(): void {
-    Vue.nextTick(() => {
-      //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.form.$children;
+    //TODO: implement fix for children
+  //   this.$nextTick(() => {
+  //     //iterate over the forms children ref manually set their 'errorMessages' array to empty
+  //     const formChildren = this.$refs.form.$children;
      
-      formChildren.forEach((ref)=> {
-        ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-      });
-      Vue.nextTick(() => {
-        this.$refs.form.reset();
-        this.$refs.form.resetValidation();
-      });
-    });
+  //     formChildren.forEach((ref)=> {
+  //       ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+  //     });
+  //     this.$nextTick(() => {
+  //       this.$refs.form.reset();
+  //       this.$refs.form.resetValidation();
+  //     });
+  //   });
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -520,4 +522,5 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 }
+export default toNative(ContactInfo)
 </script>

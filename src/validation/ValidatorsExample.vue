@@ -101,8 +101,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator";
-import Vue from "vue";
+import { Component, Vue } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 import SampleLearnMore from "./SampleLearnMore.vue";
@@ -110,6 +109,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import Toast from "@/store/toast";
 
 import { SlideoutPanelContent, ToastObj } from "types/Global";
+import { ComponentInternalInstance } from "vue";
 
 @Component({
   components: {
@@ -149,8 +149,8 @@ export default class ValidatatorsExample extends Vue {
     Toast.setToast(toast);
   }
 
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.form as Vue & { validate: () => boolean };
+  get Form(): ComponentInternalInstance & { validate: () => boolean } {
+    return this.$refs.form as ComponentInternalInstance & { validate: () => boolean };
   }
 
   public async validateForm(): Promise<boolean> {

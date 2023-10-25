@@ -24,8 +24,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative, Watch} from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "types/Global";
@@ -37,7 +36,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 
-export default class RegionsDeployedAndUserCount extends Vue {
+class RegionsDeployedAndUserCount extends Vue {
   @Prop({ default: "Regions" }) id!: string;
   @Prop({ default: false }) hasTextFields?: boolean;
   @Prop({default: 0}) private index?: number;
@@ -113,7 +112,7 @@ export default class RegionsDeployedAndUserCount extends Vue {
         this.regions.push(item);
       })
 
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       if (this.regionUsersOnLoad) {
         this.updateRegionUsers(this.regionUsersOnLoad)
       }
@@ -122,7 +121,8 @@ export default class RegionsDeployedAndUserCount extends Vue {
       }
     })
   }
-
 }
+
+export default toNative(RegionsDeployedAndUserCount);
 </script>
 

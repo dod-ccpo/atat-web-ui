@@ -135,8 +135,8 @@
   </v-form>
 </template>
 <script lang="ts">
-import { invalidFile, uploadingFile } from "types/Global";
-import { Component, Mixins } from "vue-property-decorator";
+import { invalidFile, uploadingFile, ValidationResult } from "types/Global";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -162,6 +162,7 @@ import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATSearch,
@@ -171,7 +172,7 @@ import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
     ATATExpandableLink,
   },
 })
-export default class GTCInformation extends Mixins(SaveOnLeave) {
+class GTCInformation extends Vue {
   // radio options
   public useGInvoicing: "YES" | "NO" | "" = "";
   private gInvoicingOptions: RadioButton[] = [
@@ -245,10 +246,10 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   // rules array dynamically created based on the invalid
   // files returned from the child component
   // `ATATFileUpload.vue`
-  private getRulesArray(): ((v: string) => string | true | undefined)[] {
+  private getRulesArray(): ((v: string) => ValidationResult)[] {
     if (this.useGInvoicing === "YES") return [];
     //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+    let rulesArr: ((v: string) => ValidationResult)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredMessage));
 
@@ -405,4 +406,6 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 }
+
+export default toNative(GTCInformation)
 </script>

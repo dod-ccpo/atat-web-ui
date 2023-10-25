@@ -1,24 +1,22 @@
 import Vue from "vue";
-import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import {DefaultProps} from "vue/types/options";
+import { createVuetify } from "vuetify";
+import { mount, VueWrapper} from "@vue/test-utils";
 import DOWLandingPage from "@/steps/05-PerformanceRequirements/DOW/DOWLandingPage.vue";
 
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
-
+const Vuetify = createVuetify()
 Vue.use(Vuetify);
 
 describe("Testing DOW Landing Page", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
+
+  let vuetify;
+  let wrapper: VueWrapper;
 
   beforeEach(() => {
-    vuetify = new Vuetify();
+    vuetify = createVuetify();
     wrapper = mount(DOWLandingPage, {
       vuetify,
-      localVue
     });
   });
 
@@ -35,7 +33,7 @@ describe("Testing DOW Landing Page", () => {
     });
 
     it("detects currentEnvironment accurately", () => {
-      expect(wrapper.vm.doesCurrentEnvironmentExist()).toBe(false);
+      expect(wrapper.vm.$.exposed?.doesCurrentEnvironmentExist()).toBe(false);
     });
   })
 })

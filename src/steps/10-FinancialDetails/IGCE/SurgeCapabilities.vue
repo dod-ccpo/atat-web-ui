@@ -52,25 +52,26 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "../../../components/ATATAlert.vue";
 import ATATTextField from "../../../components/ATATTextField.vue";
-import IGCEStore, {SurgeRequirements } from "@/store/IGCE";
-import {YesNo} from "../../../../types/Global";
+import IGCEStore from "@/store/IGCE";
+import { YesNo, SurgeRequirements } from "../../../../types/Global";
+import { ComponentPublicInstance } from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATTextField,
   },
 })
-export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
+class SurgeCapabilities extends Vue {
   $refs!: {
-    form: Vue & { validate: () => boolean};
-    PercentageTextbox: Vue & {
+    form: ComponentPublicInstance & { validate: () => boolean};
+    PercentageTextbox: ComponentPublicInstance & {
       errorMessages: [];
     };
   }
@@ -121,4 +122,6 @@ export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(SurgeCapabilities)
 </script>

@@ -6,10 +6,9 @@
     class="_meatball-menu"
     attach
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template v-slot:activator="{ props }">
       <v-btn
-        v-bind="attrs"
-        v-on="on"
+        v-bind="props"
         :id="id + 'Button_' + index"
         class="_meatball-menu-button"
       >
@@ -19,7 +18,7 @@
 
     <v-list>
       <v-list-item
-        v-for="(item, idx) in menuItems"
+        v-for="(item, idx) in processedMenuItems"
         :key="idx"
         :id="getIdText(item.title) + '_MenuItem' + index"
         :class="[
@@ -36,8 +35,8 @@
             v-if="item.icon"
             :name="item.icon.name"
             :color="item.icon.color"
-            :width="item.icon.width"
-            :height="item.icon.height"           
+            :width="+item.icon.width"
+            :height="+item.icon.height"
           />
         </v-list-item-title>
       </v-list-item>
@@ -46,8 +45,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import {Vue, Component, Prop, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { MeatballMenuItem } from "types/Global";
@@ -58,8 +56,7 @@ import { getIdText } from "@/helpers";
     ATATSVGIcon,
   }
 })
-
-export default class ATATMeatballMenu extends Vue {
+class ATATMeatballMenu extends Vue {
   @Prop() public id!: string;
   @Prop({ default: false }) public left?: boolean;
   @Prop({ default: 0 }) public index!: number;
@@ -73,7 +70,13 @@ export default class ATATMeatballMenu extends Vue {
     this.$emit("menuItemClick", item, this.index);
   }
 
+  get processedMenuItems() {
+    return this.menuItems.map(item => ({
+      ...item,
+      disabled: item.disabled ?? false,  // Providing a default value if `disabled` is undefined
+    }));
+  }
 }
-
+export default toNative(ATATMeatballMenu);
 
 </script>

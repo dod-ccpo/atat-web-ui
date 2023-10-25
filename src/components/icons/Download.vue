@@ -9,13 +9,11 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-
-export default class Download extends Vue {
+class Download extends Vue {
   @Prop({ default: "161B1E", required: false }) private color?:string;
 }
+export default toNative(Download);
 </script>
 

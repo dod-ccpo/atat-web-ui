@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -118,6 +118,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import Steps from "@/store/steps";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+ 
 
 @Component({
   components: {
@@ -127,7 +128,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
+class ReplicateAndOptimize extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
   public routeNames = routeNames
   public radioOptions: RadioButton[] = [
@@ -217,8 +218,6 @@ export default class ReplicateAndOptimize extends Mixins(SaveOnLeave) {
     }
     return true;
   }  
-
-
 }
-
+export default toNative(ReplicateAndOptimize)
 </script>

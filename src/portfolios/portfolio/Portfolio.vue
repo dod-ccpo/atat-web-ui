@@ -255,11 +255,10 @@
                           id="TotalForAllClins_checkbox"
                           v-model="checked[0]"
                           label="Total of All CLINs"
-                          hide-details="true"
+                          :hide-details="true"
                           :ripple="false"
                           class="color_chart_1"
                           @change="doToggleDataset(0)"
-                          :color="chartDataColors[0]"
                         ></v-checkbox>
 
                         <v-checkbox
@@ -268,10 +267,9 @@
                           v-model="checked[index + 1]"
                           :label="idiqClins[index].idiq_clin"
                           :class="'color_chart_' + (index + 2)"
-                          hide-details="true"
+                          :hide-details="true"
                           :ripple="false"
                           @change="doToggleDataset((index + 1) * 2)"
-                          :color="chartDataColors[index + 1]"
                         />
                       </v-radio-group>
                     </div>
@@ -504,8 +502,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import { DashboardService } from "../../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../../components/ATATFooter.vue";
@@ -518,7 +515,7 @@ import LineChart from "../../components/charts/LineChart.vue";
 import FinancialDetailsAlert from "./FinancialDetailsAlert.vue";
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
-import { FundingAlertTypes } from "@/store/portfolio";
+import PortfolioStore, { FundingAlertTypes } from "@/store/portfolio";
 import { createDateStr, getCurrencyString, getIdText, roundTo100 } 
   from "@/helpers";
 import { CostsDTO, ClinDTO } from "@/api/models";
@@ -539,7 +536,7 @@ import _ from "lodash";
 import SlideoutPanel from "@/store/slideoutPanel";
 import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 import FundingAlert from "@/portfolios/portfolio/FundingAlert.vue";
-import PortfolioStore from "@/store/portfolio";
+
 
 @Component({
   components: {
@@ -555,11 +552,11 @@ import PortfolioStore from "@/store/portfolio";
     FinancialDetailsAlert
   },
 })
-export default class PortfolioDashboard extends Vue {
+class PortfolioDashboard extends Vue {
   dashboardService: DashboardService = new DashboardService();
 
   public get isProdEnv(): boolean {
-    return AcquisitionPackage.isProdEnv || AcquisitionPackage.emulateProdNav;
+    return AcquisitionPackage.isProdEnv ?? AcquisitionPackage.emulateProdNav;
   }
 
   public get projectTitle(): string {
@@ -1114,7 +1111,7 @@ export default class PortfolioDashboard extends Vue {
     return;
   }
   public async openSlideoutPanel(e: Event): Promise<void> {
-    if (e && e.currentTarget) {
+    if (e?.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       const slideoutPanelContent: SlideoutPanelContent = {
         component: FinancialDataLearnMore,
@@ -1517,4 +1514,5 @@ export default class PortfolioDashboard extends Vue {
   }
 
 }
+export default toNative(PortfolioDashboard)
 </script>

@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -62,6 +62,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     ATATRadioGroup,
@@ -70,7 +71,7 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
   }
 })
 
-export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
+class EvalPlanDetails extends Vue {
   public isLoading = false;
   public get isStandards(): boolean {
     return this.evalPlan.source_selection.indexOf("TECH_PROPOSAL") > -1;
@@ -245,4 +246,5 @@ export default class EvalPlanDetails extends Mixins(SaveOnLeave) {
 
 
 }
+export default toNative(EvalPlanDetails)
 </script>

@@ -88,8 +88,7 @@
 
   </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { isBefore, parse } from 'date-fns';
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -100,11 +99,12 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
       ATATExpandableLink
     },
   })
-export default class LateFormAlert extends Vue {
+class LateFormAlert extends Vue {
 
-  public get showAlert(): boolean {
-    const octoberFirst2023 = parse('2023-10-01', 'yyyy-MM-dd', new Date());
-    return isBefore(new Date(), octoberFirst2023);
+    public get showAlert(): boolean {
+      const octoberFirst2023 = parse('2023-10-01', 'yyyy-MM-dd', new Date());
+      return isBefore(new Date(), octoberFirst2023);
+    }
   }
-}
+export default toNative(LateFormAlert)
 </script>

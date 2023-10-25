@@ -15,10 +15,10 @@
           bottom
           eager
         >
-          <template v-slot:activator="{ on }">
+          <!--TODO: validate that this still works after removal of on from activator-->
+          <template v-slot:activator>
           <v-btn
-            v-on="on"
-            icon class="mr-5 _header-button _add-user-button" 
+            icon class="mr-5 _header-button _add-user-button"
             id="InviteContributorButton"
             @click="openInviteContributorModal"
             @keydown.space="openInviteContributorModal"
@@ -39,18 +39,18 @@
           class="_more-menu _header-menu"
           attach
         >
-          <template v-slot:activator="{ on: onMenu, attrs }">
+          <template v-slot:activator="{ props }">
             <v-tooltip
               transition="slide-y-reverse-transition"
               :id="'Contributor_Tooltip'"
               max-width="250px"
+              v-bind="props"
               bottom
               eager
             >
-              <template v-slot:activator="{ on: onTooltip }">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  v-bind="attrs"
-                  v-on="{...onMenu, ...onTooltip}"
+                  v-bind="props"
                   id="MoreMenuButton"
                   class="_more-menu-button _header-button"
                 >
@@ -81,16 +81,16 @@
       v-if="isMissionOwner"
       :showModal.sync="showDeleteModal"
       :packageName="packageName"
-      :hasContributor="hasContributor"
-      :waitingForSignature="isWaitingForSignature"
+      :hasContributor="hasContributor()"
+      :waitingForSignature="isWaitingForSignature()"
       @okClicked="updateStatus('DELETED')"
     />
     <ArchiveModal
       v-if="isMissionOwner"
       :showModal.sync="showArchiveModal"
-      :hasContributor="hasContributor"
+      :hasContributor="hasContributor()"
       :packageName="packageName"
-      :waitingForSignature="isWaitingForSignature"
+      :waitingForSignature="isWaitingForSignature()"
       @okClicked="updateStatus('ARCHIVED')"
     />
 
@@ -100,8 +100,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch, toNative } from "vue-facing-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -125,7 +124,7 @@ import { SlideoutPanelContent } from "types/Global";
   }
 })
 
-export default class ATATPageHead extends Vue {
+class ATATPageHead extends Vue {
   public moreMenuOpen = false;
   public activeAppSection = AppSections.activeAppSection;
   public contributorTooltipText = "Invite contributors"
@@ -238,7 +237,7 @@ export default class ATATPageHead extends Vue {
     SlideoutPanel.openSlideoutPanel(openerId);
 
   }
-
 }
+export default toNative(ATATPageHead);
 
 </script>

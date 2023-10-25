@@ -218,7 +218,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -234,8 +234,10 @@ import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+ 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     AlertForForms,
     ATATErrorValidation,
@@ -247,7 +249,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 
-export default class SoleSourceCause extends Mixins(SaveOnLeave) {
+class SoleSourceCause extends Vue {
   public cspName = "";
   public writeOwnExplanation: YesNo = "";
   public isLoading = false;
@@ -558,5 +560,7 @@ export default class SoleSourceCause extends Mixins(SaveOnLeave) {
   }
 
 }
+
+export default toNative(SoleSourceCause) 
 </script>
 

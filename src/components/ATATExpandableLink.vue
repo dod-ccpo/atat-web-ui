@@ -7,7 +7,7 @@
       ]"
   >
     <v-expand-transition v-if="contentAtTop" >
-      <div v-show="isOpen" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
+      <div v-show="isOpen" :id="'Content_' + ariaId" :aria-hidden="!isOpen">
         <slot name="content"></slot>
       </div>
     </v-expand-transition>
@@ -26,7 +26,7 @@
       role="button"
       tabindex="0"
       :aria-controls="'Content_' + ariaId"
-      :aria-expanded="isOpen + ''"
+      :aria-expanded="isOpen"
       :id="'Button_' + ariaId"
     >
       <span v-if="contentAtTop">
@@ -35,7 +35,7 @@
       <slot v-else name="header"></slot>
     </a>
     <v-expand-transition v-if="!contentAtTop">
-      <div v-show="isOpen" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
+      <div v-show="isOpen" :id="'Content_' + ariaId" :aria-hidden="isOpen">
         <slot name="content"></slot>
       </div>
     </v-expand-transition>  
@@ -43,11 +43,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component, Prop, PropSync} from "vue-property-decorator";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 
 @Component({})
-export default class ExpandableLink extends Vue {
+class ExpandableLink extends Vue {
 
   @Prop({ required: true }) ariaId!: string;
   @Prop({ default: true }) hasUnderline?: boolean;
@@ -72,4 +72,5 @@ export default class ExpandableLink extends Vue {
   }
 
 }
+export default toNative(ExpandableLink);
 </script>

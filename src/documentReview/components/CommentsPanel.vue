@@ -32,7 +32,7 @@
       <h3 class="mb-4">Comments</h3>
       <dl>
         <dt>
-          <v-btn text x-small class="pa-2 comment-button">
+          <v-btn variant="text" x-small class="pa-2 comment-button">
             <ATATSVGIcon
               name="commentBubble"
               class="comment-icon"
@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({

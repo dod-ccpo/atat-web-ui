@@ -43,11 +43,11 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import { FundingRequestMIPRFormDTO } from "@/api/models";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
-import { invalidFile, uploadingFile } from "types/Global";
+import { ValidationResult, invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
 import ATATTextField from "@/components/ATATTextField.vue";
 import FinancialDetails, { initialFundingRequestMIPRForm } from "@/store/financialDetails";
@@ -56,12 +56,13 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextField,
     ATATFileUpload,
   },
 })
-export default class MIPR extends Mixins(SaveOnLeave)  {
+class MIPR extends Vue {
   private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
   private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
@@ -174,9 +175,9 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
   }
 
   // `ATATFileUpload.vue`
-  private getRulesArray(): ((v: string) => string|true|undefined)[] {
+  private getRulesArray(): ((v: string) => ValidationResult)[] {
     //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+    let rulesArr: ((v: string) => ValidationResult)[] = [];
   
     rulesArr.push(this.$validators.required(this.requiredMessage));
     this.invalidFiles.forEach((iFile) => {
@@ -195,4 +196,6 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
   }
 
 }
+
+export default toNative(MIPR)
 </script>

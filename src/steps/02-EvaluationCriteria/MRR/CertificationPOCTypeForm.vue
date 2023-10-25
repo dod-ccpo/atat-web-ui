@@ -42,7 +42,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
+import {Component, Prop,  Watch, toNative, Vue} from "vue-facing-decorator";
 import {CountryObj, RadioButton, RankData, SelectData} from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import {ContactDTO, FinancialPOCType} from "@/api/models";
@@ -50,7 +50,8 @@ import ContactData from "@/store/contactData";
 import parsePhoneNumber, {AsYouType, CountryCode} from "libphonenumber-js";
 import {Countries} from "@/components/ATATPhoneInput.vue";
 import ATATContactForm from "@/components/ATATContactForm.vue";
-import Vue from "vue";
+import { PropSync } from "@/decorators/custom"
+ 
 
 @Component({
   components: {
@@ -59,7 +60,7 @@ import Vue from "vue";
   }
 })
 
-export default class CertificationPOCTypeForm extends Vue {
+class CertificationPOCTypeForm extends Vue {
   @Prop({default: "Technical"}) private POCType!: "Technical" | "Requirements";
   @Prop({default: "1"}) private sequence!: string;
   @Prop() private pocPrimary!: ContactDTO;
@@ -284,5 +285,7 @@ export default class CertificationPOCTypeForm extends Vue {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(CertificationPOCTypeForm) 
 </script>
 

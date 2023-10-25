@@ -113,7 +113,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
@@ -121,7 +121,7 @@ import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
-import { invalidFile, signedDocument, uploadingFile } from "../../../types/Global";
+import { ValidationRule, invalidFile, signedDocument, uploadingFile } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Attachments from "@/store/attachments";
 import FinancialDetails from "@/store/financialDetails";
@@ -130,6 +130,7 @@ import { routeNames } from "../../router/stepper"
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components:{
     ATATAlert,
     ATATFileUpload,
@@ -137,7 +138,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     ATATSVGIcon,
   }
 })
-export default class UploadSignedDocuments extends SaveOnLeave {
+class UploadSignedDocuments extends Vue {
   public packageNotInitialized = false;
   public routeNames = routeNames;
 
@@ -217,9 +218,9 @@ export default class UploadSignedDocuments extends SaveOnLeave {
     return this.uploadedFiles.length === this.getMaxNumberOfFiles
   }
 
-  private getRulesArray(): ((v: string) => string | true | undefined)[] {
+  private getRulesArray(): ValidationRule[] {
     //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+    let rulesArr: ValidationRule[] = [];
 
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(
@@ -272,5 +273,7 @@ export default class UploadSignedDocuments extends SaveOnLeave {
   }
 
 }
+
+export default toNative(UploadSignedDocuments)
 </script>
 

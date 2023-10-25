@@ -56,9 +56,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
-
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "@/components/ATATStepperNavigation.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
@@ -99,7 +97,7 @@ import PortfolioSummary from "@/store/portfolioSummary";
   },
 })
 
-export default class ProvisionWorkflow extends Vue {
+class ProvisionWorkflow extends Vue {
  
   public routeNames: Record<string, string> = {};
   public portfolioSysId = "";
@@ -136,11 +134,11 @@ export default class ProvisionWorkflow extends Vue {
   }  
 
   async mounted(): Promise<void> {
-    await Steps.setSteps(provisionWorkFlowRoutes);
+    Steps.setSteps(provisionWorkFlowRoutes);
     
     this.routeNames = provWorkflowRouteNames;
     //get first step and intitialize store to first step;
-    const routeName = this.$route.name;
+    const routeName = this.$route.name as string;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
       const { stepName } = step;
@@ -151,10 +149,10 @@ export default class ProvisionWorkflow extends Vue {
 
   @Watch("$route")
   async onRouteChanged(): Promise<void> {
-    const routeName = this.$route.name;
+    const routeName = this.$route.name as string;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
-      const { stepName, stepNumber } = step;
+      const { stepName } = step;
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
       SlideoutPanel.closeSlideoutPanel();
@@ -163,7 +161,7 @@ export default class ProvisionWorkflow extends Vue {
 
   get showStepper(): boolean{
     return ["Provisioned"].some(
-      routeName => routeName.toLowerCase() !== this.$route.name?.toLowerCase());
+      routeName => routeName.toLowerCase() !== (this.$route.name as string)?.toLowerCase());
   }
 
   public async TOConfirmCancelled(): Promise<void> {
@@ -280,10 +278,10 @@ export default class ProvisionWorkflow extends Vue {
   private setNavButtons(step: StepInfo): void {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
-    this.backButtonText = step.backButtonText || "Back";
-    this.continueButtonColor = step.continueButtonColor || "primary";
-    this.continueButtonText = step.continueButtonText || "Continue";
-    this.altContinueAction = step.altContinueAction || "";
+    this.backButtonText = step.backButtonText ?? "Back";
+    this.continueButtonColor = step.continueButtonColor ?? "primary";
+    this.continueButtonText = step.continueButtonText ?? "Continue";
+    this.altContinueAction = step.altContinueAction ?? "";
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }
@@ -295,7 +293,7 @@ export default class ProvisionWorkflow extends Vue {
     }
 
     if (button.actionName) {
-      const actionArgs = button.actionArgs || [];
+      const actionArgs = button.actionArgs ?? [];
       await actionHandler(button.actionName, actionArgs);
     }
 
@@ -311,4 +309,5 @@ export default class ProvisionWorkflow extends Vue {
   }
 
 }
+export default toNative(ProvisionWorkflow)
 </script>

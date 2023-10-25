@@ -91,7 +91,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -106,6 +106,7 @@ import { hasChanges } from "@/helpers";
 import {RadioButton} from "../../../types/Global";
 
 @Component({
+  mixins: [LoadOnEnter, SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -113,7 +114,7 @@ import {RadioButton} from "../../../types/Global";
   },
 })
 
-export default class PII extends  Mixins(LoadOnEnter,SaveOnLeave) {
+class PII extends  Vue {
   private pIIOptions: RadioButton[] = [
     {
       id: "YesPII",
@@ -176,4 +177,6 @@ export default class PII extends  Mixins(LoadOnEnter,SaveOnLeave) {
   }
 
 }
+
+export default toNative(PII)
 </script>

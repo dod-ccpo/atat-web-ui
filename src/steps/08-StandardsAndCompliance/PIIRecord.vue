@@ -44,7 +44,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -54,13 +54,14 @@ import {hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextArea,
     ATATTextField,
   },
 })
 
-export default class PIIRecord extends Mixins(SaveOnLeave) {
+class PIIRecord extends Vue {
   private systemName = "";
   private operationToBePerformed = "";
 
@@ -112,4 +113,5 @@ export default class PIIRecord extends Mixins(SaveOnLeave) {
   }
 }
 
+export default toNative(PIIRecord)
 </script>

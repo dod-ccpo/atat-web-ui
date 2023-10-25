@@ -130,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, mixins, Watch , toNative, Vue} from "vue-facing-decorator";
 import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
@@ -144,8 +144,10 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import {buildClassificationLabel} from "@/helpers";
+ 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -154,7 +156,8 @@ import {buildClassificationLabel} from "@/helpers";
   }
 })
 
-export default class DOWLandingPage extends Mixins(SaveOnLeave) {
+class DOWLandingPage extends Vue
+{
   displayWarning = false;
   totalSections = 3;
   totalSectionsComplete = 0;
@@ -437,5 +440,7 @@ export default class DOWLandingPage extends Mixins(SaveOnLeave) {
 
 
 }
+export default toNative(DOWLandingPage)
 
+ 
 </script>

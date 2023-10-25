@@ -74,9 +74,7 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
@@ -112,7 +110,7 @@ import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
   }
 })
 
-export default class PortfolioSummary extends Vue {
+class PortfolioSummary extends Vue {
 
   private get panelContent() {
     return SlideoutPanel.slideoutPanelComponent;
@@ -195,9 +193,9 @@ export default class PortfolioSummary extends Vue {
     const portfolio = _.cloneDeep(PortfolioStore.currentPortfolio);
     if(portfolio.sysId){
       this.isPortfolioProvisioning = false;
-      this.title = portfolio.title || "";
-      this.portfolioDescription = portfolio.description || "";
-      this.portfolioCSP = portfolio.csp || "";
+      this.title = portfolio.title ?? "";
+      this.portfolioDescription = portfolio.description ?? "";
+      this.portfolioCSP = portfolio.csp ?? "";
       this.portfolioSysId = portfolio.sysId;
       this.taskOrder = portfolio.taskOrder as PortfolioTaskOrder;
       portfolio.environments?.forEach((environment) =>{
@@ -234,7 +232,7 @@ export default class PortfolioSummary extends Vue {
     } else {
       const provisioningData = await PortfolioStore.getPortfolioProvisioningObj();
       this.isPortfolioProvisioning = true;
-      this.title = provisioningData.portfolioTitle || "Untitled Portfolio"
+      this.title = provisioningData.portfolioTitle ?? "Untitled Portfolio"
     }
   }
   public async mounted(): Promise<void>{
@@ -245,5 +243,6 @@ export default class PortfolioSummary extends Vue {
     }
   }
 }
+export default toNative(PortfolioSummary)
 </script>
 

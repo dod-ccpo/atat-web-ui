@@ -76,14 +76,15 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 
-export default class GInvoiceLearnMore extends Vue {
+class GInvoiceLearnMore extends Vue {
   private fiscalServiceHref = "https://www.fiscal.treasury.gov/g-invoice/index.html";
   private gInvoiceLoginHref =
     "https://www.igt.fiscal.treasury.gov";
 }
+
+export default toNative(GInvoiceLearnMore)
 </script>

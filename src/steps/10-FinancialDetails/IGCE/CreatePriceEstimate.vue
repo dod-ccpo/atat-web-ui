@@ -131,11 +131,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import { SlideoutPanelContent } from "types/Global";
 import IGCELearnMore from "./components/ICGELearnMore.vue";
@@ -148,7 +147,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     IGCELearnMore
   },
 })
-export default class CreatePriceEstimate extends Vue {
+class CreatePriceEstimate extends Vue {
   public selectedCSP = "";
   public recommended = ""
   public csps = [
@@ -236,5 +235,7 @@ export default class CreatePriceEstimate extends Vue {
   };
 
 }
+
+export default toNative(CreatePriceEstimate)
 </script>
 

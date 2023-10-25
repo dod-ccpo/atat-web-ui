@@ -129,7 +129,8 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PackageItem from "./PackageItem.vue";
 import ATATAlert from "@/components/ATATAlert.vue"
@@ -140,7 +141,6 @@ import Attachments from "@/store/attachments";
 import {TABLENAME as CURRENT_ENVIRONMENT_TABLE} from "@/api/currentEnvironment";
 import {TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE} from "@/api/fundingRequestMIPRForm";
 import {TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE} from "@/api/requirementsCostEstimate";
-import Vue from "vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import {TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 import IGCE from "@/store/IGCE";
@@ -158,7 +158,7 @@ import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
   }
 })
 
-export default class ReviewDocuments extends Vue {
+class ReviewDocuments extends Vue {
   @PropSync(
     "packageDocuments",{default: () => []}
   ) private _packageDocuments!: [];
@@ -282,4 +282,6 @@ export default class ReviewDocuments extends Vue {
   }
 
 }
+
+export default toNative(ReviewDocuments)
 </script>

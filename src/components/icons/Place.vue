@@ -14,11 +14,10 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class Place extends Vue {
+class Place extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
+export default toNative(Place);
 </script>

@@ -32,7 +32,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import IGCEStore from "@/store/IGCE";
@@ -41,11 +41,12 @@ import {RequirementsCostEstimateDTO} from "@/api/models";
 import {YesNo} from "../../../../types/Global";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
   },
 })
-export default class SurgeCapacity extends Mixins(SaveOnLeave) {
+class SurgeCapacity extends Vue {
   public capacity: number | null = null;
   public capabilities: YesNo = "";
   private items = [
@@ -106,5 +107,7 @@ export default class SurgeCapacity extends Mixins(SaveOnLeave) {
    }
 
 }
+
+export default toNative(SurgeCapacity)
 </script>
 

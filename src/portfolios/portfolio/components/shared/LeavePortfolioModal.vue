@@ -25,8 +25,8 @@
 
 <script lang="ts">
 import ATATDialog from "@/components/ATATDialog.vue";
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative} from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom'
 
 @Component({
   components: {
@@ -34,7 +34,7 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
   }
 })
 
-export default class LeavePortfolioModal extends Vue {
+class LeavePortfolioModal extends Vue {
   @PropSync("showModal") public _showModal?: boolean;
   @Prop() public portfolioName!: string;
   @Prop() public showLeaveModalSpinner!: boolean;
@@ -50,5 +50,5 @@ export default class LeavePortfolioModal extends Vue {
   }
 
 }
-
+export default toNative(LeavePortfolioModal)
 </script>

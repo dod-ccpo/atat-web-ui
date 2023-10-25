@@ -56,9 +56,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-
+ 
+import { Component, Prop, Watch , toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -78,7 +78,7 @@ import {
   }
 })
 
-export default class EntireDuration extends Vue {
+class EntireDuration extends Vue {
   @PropSync("periodsNeeded") public _periodsNeeded?: string[];
   @PropSync("entireDuration") public _entireDuration?: string;
   @Prop() public isPeriodsDataMissing!: boolean;
@@ -111,5 +111,6 @@ export default class EntireDuration extends Vue {
   }
 
 }
-
+export default toNative(EntireDuration)
+ 
 </script>

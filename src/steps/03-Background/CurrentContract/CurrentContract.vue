@@ -27,7 +27,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import CurrentContractOptions from "./components/CurrentContractOptions.vue"
 
@@ -41,12 +41,13 @@ import Steps from "@/store/steps";
 import { CurrentContractRouteResolver } from "@/router/resolvers";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     CurrentContractOptions,
   },
 })
 
-export default class CurrentContract extends Mixins(SaveOnLeave) {
+class CurrentContract extends Vue {
   public headline = "";
   public currentContractExists = "";
   public noContract: CurrentContractDTO = {};
@@ -94,7 +95,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     if (hasLogicalFollowOn) {
       const routeName = CurrentContractRouteResolver(Steps.prevStepName)
       try{
-        this.$router.push({
+        await this.$router.push({
           name: routeName,
         })
       }catch(error){
@@ -141,4 +142,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
 }
+
+export default toNative(CurrentContract)
 </script>

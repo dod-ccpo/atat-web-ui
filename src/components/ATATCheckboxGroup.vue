@@ -39,7 +39,7 @@
         :error="error"
         :disabled="disabled"
         :rules="checkboxRules"
-        @mouseup="checkBoxClicked(item.value, index)"
+        @mouseup="checkBoxClicked(item.value)"
         multiple
         :hide-details="true"
         :ref="index === 0 ? 'checkboxGroup' : ''"
@@ -147,15 +147,15 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-
+import { ComponentPublicInstance } from "vue";
+import { Component, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
-import { Checkbox, totalClassLevelsInDOWObject } from "../../types/Global";
+import { Checkbox, totalClassLevelsInDOWObject, ValidationRule } from "../../types/Global";
 import { getIdText, setItemToPlural } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationRequirements from "@/store/classificationRequirements";
@@ -169,15 +169,15 @@ import ClassificationRequirements from "@/store/classificationRequirements";
     ATATSVGIcon
   },
 })
-export default class ATATCheckboxGroup extends Vue {
+class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
-    checkboxGroup: (Vue & {
+    checkboxGroup: (ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       validate: () => boolean;
     })[];
-    atatTextInput: (Vue & { errorBucket: string[]; errorCount: number })[];
+    atatTextInput: (ComponentPublicInstance & { errorBucket: string[]; errorCount: number })[];
   };
 
   // props
@@ -196,7 +196,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "CheckboxGroupLabel" }) private groupLabelId!: string;
   @Prop() private groupLabel!: string;
   @Prop() private groupLabelHelpText?: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: () => [] }) private textfieldRules!: Array<unknown>;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
   @Prop({ default: "" }) private color!: string;
@@ -214,7 +214,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private labelFontWeight?: string;
   @Prop() private labelSuffix?: string;
   @Prop() private textFieldAppendText?: string;
-  @Prop() private textFieldWidth?: number;
+  @Prop() private textFieldWidth?: string;
   @Prop({ default: "text" }) private textFieldType?: string;
   @Prop({ default: false }) private isFormattedNumber?: boolean;
   @Prop({ default: false }) private showIconWithMessage?: boolean;
@@ -232,7 +232,7 @@ export default class ATATCheckboxGroup extends Vue {
   private totalRequirementsInDOW: totalClassLevelsInDOWObject[] = []
   public isLoading = false;
 
-  public checkboxRules: Array<unknown> = [];
+  public checkboxRules: ValidationRule[] = [];
 
   @Watch("rules", {deep: true})
   public rulesChanged(): void {
@@ -306,7 +306,7 @@ export default class ATATCheckboxGroup extends Vue {
     const otherPrevSelectedIndex =
       this.prevSelected.indexOf(this.otherValue) > -1;
     if (otherIndex && !otherPrevSelectedIndex) {
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         const id =
           this.otherEntryType === "textarea"
             ? this.otherId + "_text_area"
@@ -324,7 +324,7 @@ export default class ATATCheckboxGroup extends Vue {
         this._selected.splice(noneApplyIndex, 1);
       }
     }
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.prevSelected = [...this._selected];
     });
     if (newVal.length || oldVal.length) {
@@ -495,4 +495,5 @@ export default class ATATCheckboxGroup extends Vue {
     }
   }
 }
+export default toNative(ATATCheckboxGroup);
 </script>

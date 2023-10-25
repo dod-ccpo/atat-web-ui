@@ -8,7 +8,8 @@
     eager
     v-if="tooltipText"
   >
-    <template v-slot:activator="{ on }">
+    <!--TODO: validate that this still works after removal of on from activator-->
+    <template v-slot:activator>
       <v-btn
         class=" pa-0 tooltip-button no-border"
         :class="buttonClass"
@@ -16,7 +17,6 @@
         icon
         :id="'TooltipButton_' + id" 
         x-small
-        v-on="on"
         :ripple="false"
         :aria-label="'Help for ' + label"
         ><v-icon class="icon-20 ma-0 pa-0" small color="#544496"
@@ -35,12 +35,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Prop, Vue, toNative } from "vue-facing-decorator";
 
-@Component({})
-
-export default class ATATTooltip extends Vue {
+class ATATTooltip extends Vue {
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "id_is_missing" }) private id!: string;
@@ -48,5 +45,7 @@ export default class ATATTooltip extends Vue {
   @Prop({ default: "" }) private buttonClass!: string;
   @Prop({ default: "" }) private buttonStyle!: string;
 }
+
+export default toNative(ATATTooltip)
 
 </script>

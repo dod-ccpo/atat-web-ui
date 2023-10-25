@@ -11,7 +11,7 @@
             {{ label }}
           </label>
         </div>
-
+        <!-- TODO: use the new menu prop 'offset' to achieve what 'offsetY: true' did before -->
         <div class="d-flex">
           <v-select
             ref="atatPhoneDropdown"
@@ -26,19 +26,19 @@
             :error="errorMessages.length > 0"
             v-model="_selectedCountry"
             :height="42"
-            :menu-props="{ bottom: true, offsetY: true }"
+            :menu-props="{ location: 'bottom', offset: 0 }"
             @change="onChange"
             :return-object="true"
           >
             <template v-slot:selection="{ item }">
-              <span class="fi" :class="[`fi-${item.abbreviation}`]"> </span>
+              <span class="fi" :class="[`fi-${item.value.abbreviation}`]"> </span>
             </template>
             <template v-slot:prepend-item>
               <v-text-field
                 v-model="searchTerm"
                 class="_dropdown-text-field"
                 placeholder="Search"
-                persistent-placeholder=""
+                persistent-placeholder
                 @input="searchCountries"
                 append-icon="search"
                 id="DropdownTextField"
@@ -47,33 +47,33 @@
                 autocomplete="off"
               />
             </template>
-            <template v-slot:item="{ item, on }">
+            <!-- TODO:  validate proper functionality given the removal of 'on' from vslot item -->
+            <template v-slot:item="{ item }">
               <v-list-item
                 class="_country-list"
                 :class="[
-                  item.suggested ? '_suggested' : '',
-                  item.active ? '_active' : '',
+                  item.value.suggested ? '_suggested' : '',
+                  item.value.active ? '_active' : '',
                 ]"
-                v-on="on"
               >
                 <v-list-item-content
                   :id="
                     id +
                     '_DropdownListItem_' +
-                    item.name.replace(/[^A-Z0-9]/gi, '')
+                    item.value.name.replace(/[^A-Z0-9]/gi, '')
                   "
-                  :item-value="item.name"
+                  :item-value="item.value.name"
                 >
                   <v-list-item-title class="body _country">
                     <v-row no-gutters align="center">
                       <span
                         class="mr-3 fi"
-                        :class="[`fi-${item.abbreviation}`]"
+                        :class="[`fi-${item.value.abbreviation}`]"
                       >
                       </span>
-                      <span class="mr-2 _country-name">{{ item.name }}</span>
+                      <span class="mr-2 _country-name">{{ item.value.name }}</span>
                       <span class="color-base body-sm">{{
-                          item.countryCode
+                          item.value.countryCode
                         }}</span>
                     </v-row>
                   </v-list-item-title>
@@ -140,12 +140,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { ComponentPublicInstance } from "vue";
+import {Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
+import {PropSync} from "@/decorators/custom";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";
-import { CountryObj } from "../../types/Global";
+import { CountryObj, ValidationRule } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -378,10 +379,10 @@ export const Countries: CountryObj[] = [
     ATATErrorValidation,
   },
 })
-export default class ATATPhoneInput extends Vue {
+class ATATPhoneInput extends Vue {
   // refs
   $refs!: {
-    atatPhoneTextField: Vue &
+    atatPhoneTextField: ComponentPublicInstance &
     {
       errorBucket: string[];
       errorCount: number;
@@ -390,7 +391,7 @@ export default class ATATPhoneInput extends Vue {
       focus: ()=> void;
       validate: () => boolean;
     };
-    atatPhoneDropdown: Vue &
+    atatPhoneDropdown: ComponentPublicInstance &
     {
       blur: ()=> void;
       focus: ()=> void;
@@ -407,7 +408,7 @@ export default class ATATPhoneInput extends Vue {
   @Prop({ default: "" }) private suffix!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "351" }) private width!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: true }) private isPhoneExtensionVisible!: boolean;
   @PropSync("value", { default: "" }) private _value!: string | null;
   @PropSync("extensionValue", {default: ""}) private _extension!: string;
@@ -512,27 +513,27 @@ export default class ATATPhoneInput extends Vue {
   }
 
   private clearErrorMessages(): void{
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       this.$refs.atatPhoneTextField.errorBucket = [];
       this.errorMessages = [];
     });
   }
 
   private blurDropDown(): void{
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       this.$refs.atatPhoneDropdown.blur();
     });
   }
 
   private focusTextBox():void{
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       this.$refs.atatPhoneTextField.focus();
     });
   }
 
   // mask
   private setPhoneMask(): void{
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       const phoneTextField = document.getElementById(
         this.id + "_textField"
       ) as HTMLElement;
@@ -546,7 +547,7 @@ export default class ATATPhoneInput extends Vue {
   }
   private setExtensionMask(): void{
     if(this.isPhoneExtensionVisible === true) {
-      Vue.nextTick(()=>{
+      this.$nextTick(()=>{
         const extensionTextField = document.getElementById(
           this.id + "_PhoneExtension_text_field"
         ) as HTMLElement;
@@ -581,12 +582,13 @@ export default class ATATPhoneInput extends Vue {
   }
 
   get wrapperClass(): string {
-    return this.$vuetify.breakpoint.mdAndDown ? "d-block" : "d-flex";
+    return this.$vuetify.display.mdAndDown ? "d-block" : "d-flex";
   }
 
   get extensionClass(): string {
-    return this.$vuetify.breakpoint.mdAndDown ? "mt-6" : "ml-6";
+    return this.$vuetify.display.mdAndDown ? "mt-6" : "ml-6";
   }
   
 }
+export default toNative(ATATPhoneInput);
 </script>

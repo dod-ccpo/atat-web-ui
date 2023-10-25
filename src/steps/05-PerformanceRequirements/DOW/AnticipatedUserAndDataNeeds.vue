@@ -85,7 +85,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
@@ -96,20 +96,22 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import Vue from "vue";
+import { ComponentPublicInstance } from "vue";
+
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     RegionsDeployedAndUserCount,
     AnticipatedDataNeeds
   },
 })
-export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
-  
+class AnticipatedUserAndDataNeeds extends Vue{
+
   $refs!: {
-    form: Vue & { validate: () => boolean};
+    form: ComponentPublicInstance & { validate: () => boolean};
   }
-  private periods: PeriodDTO[] | null = [];
+  private periods: PeriodDTO[] = [];
   public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
   public savedData: SelectedClassificationLevelDTO[] = []
@@ -117,8 +119,8 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
     return DescriptionOfWork.returnToDOWSummary === true
   }
 
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.form as Vue & { validate: () => boolean };
+  get Form(): ComponentPublicInstance & { validate: () => boolean } {
+    return this.$refs.form as ComponentPublicInstance & { validate: () => boolean };
   }
 
   private async mounted(): Promise<void> {
@@ -165,5 +167,6 @@ export default class AnticipatedUserAndDataNeeds extends Mixins(SaveOnLeave) {
     return true;
   }
 }
+export default toNative(AnticipatedUserAndDataNeeds) 
 </script>
 

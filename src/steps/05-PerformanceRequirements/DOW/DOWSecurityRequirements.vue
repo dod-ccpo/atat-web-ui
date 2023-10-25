@@ -32,7 +32,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -52,8 +52,11 @@ import SecurityRequirementsLearnMore
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
+ 
+
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     SecurityRequirementsForm,
     ATATRadioGroup,
@@ -62,7 +65,7 @@ import _ from "lodash";
   }
 })
 
-export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
+class DOWSecurityRequirements extends Vue {
   private selectedClassifications: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
   private selectedTopSecretSecurityRequirements: string[] = [];
@@ -116,7 +119,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
   }
 
   public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
+    if (e?.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
@@ -196,5 +199,7 @@ export default class DOWSecurityRequirements extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 }
+export default toNative(DOWSecurityRequirements)
+ 
 </script>
 

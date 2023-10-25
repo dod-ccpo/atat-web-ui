@@ -36,8 +36,7 @@
 
 <script lang="ts">
 import ATATDialog from "@/components/ATATDialog.vue";
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
 @Component({
   components: {
@@ -45,7 +44,7 @@ import { Component, Prop } from "vue-property-decorator";
   }
 })
 
-export default class ArchivePortfolioModal extends Vue {
+class ArchivePortfolioModal extends Vue {
   @Prop({ default: false }) public showArchivePortfolioModal!: boolean;
   @Prop() public portfolioName!: string;
   @Prop() public csp!: string;
@@ -58,5 +57,5 @@ export default class ArchivePortfolioModal extends Vue {
     this.$emit("cancelClicked");
   }
 }
-
+export default toNative(ArchivePortfolioModal)
 </script>

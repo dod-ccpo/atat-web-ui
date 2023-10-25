@@ -101,8 +101,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import { AwardedTaskOrderDetails } from "types/Global";
 import { getCurrencyString } from "@/helpers";
 
@@ -122,7 +121,7 @@ import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
     TaskOrderSearchModal,
   }
 })
-export default class AwardedTaskOrder extends Vue {
+class AwardedTaskOrder extends Vue {
 
   public showTOSearchModal = false;
   public TONumber = "";
@@ -207,4 +206,5 @@ export default class AwardedTaskOrder extends Vue {
   }
 
 }
+export default toNative(AwardedTaskOrder)
 </script>

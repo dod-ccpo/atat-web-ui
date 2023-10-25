@@ -48,7 +48,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import { invalidFile, RadioButton, uploadingFile, YesNo } from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AttachmentDTO} from "@/api/models";
@@ -63,12 +63,13 @@ import {TABLENAME as CURRENT_ENVIRONMENT_TABLE} from "@/api/currentEnvironment";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATFileUpload,
     ATATRadioGroup,
   },
 })
-export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
+class UploadMigrationDocuments extends Vue {
   public currEnvDTO = defaultCurrentEnvironment;
 
   private attachmentServiceName = CURRENT_ENVIRONMENT_TABLE;
@@ -125,9 +126,7 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         Object.assign(this.currEnvDTO, this.currentData);
-        const isCurrentEnvironmentSaved = 
-          await CurrentEnvironment.saveCurrentEnvironment();
-      
+        await CurrentEnvironment.saveCurrentEnvironment();
       }
     } catch (error) {
       console.log(error);
@@ -253,5 +252,7 @@ export default class UploadMigrationDocuments extends Mixins(SaveOnLeave) {
     );
   }
 }
+
+export default toNative(UploadMigrationDocuments)
 </script>
 

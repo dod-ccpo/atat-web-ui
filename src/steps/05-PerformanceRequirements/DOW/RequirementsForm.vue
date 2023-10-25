@@ -64,9 +64,9 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-
+ 
+import { Component, Prop, Watch , toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -94,7 +94,7 @@ import { createPeriodCheckboxItems } from "@/helpers";
   }
 })
 
-export default class RequirementsForm extends Vue {
+class RequirementsForm extends Vue{
   // props
   @PropSync("instances") private _instances!: DOWClassificationInstance[];
   @Prop() private avlInstancesLength!: number;
@@ -167,5 +167,6 @@ export default class RequirementsForm extends Vue {
   };
 
 }
+export default toNative(RequirementsForm)
 </script>
 

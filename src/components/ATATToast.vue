@@ -14,10 +14,10 @@
     :timeout="getTimeout"
   >
     <div v-html="toast.message"></div>
-    <template v-if="toast.hasUndo" v-slot:action="{ attrs }">
+    <!--TODO: validate that this still works after removal of slot action-->
+    <template v-if="toast.hasUndo">
       <v-btn
-        text
-        v-bind="attrs"
+        text="true"
         @click="onUndo"
       >
         Undo
@@ -27,14 +27,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
-
+import { Component, Vue, toNative, Watch } from "vue-facing-decorator";
 import Toast from "@/store/toast"
 
 @Component({})
-
-export default class ATATToast extends Vue {
+class ATATToast extends Vue {
   private toast = Toast.toast;
 
   private isOpen = false;
@@ -78,4 +75,5 @@ export default class ATATToast extends Vue {
     return timeout * 1000;
   }
 }
+export default toNative(ATATToast);
 </script>

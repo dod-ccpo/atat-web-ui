@@ -64,13 +64,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+ 
+import { Component, Prop, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
-
+import { PropSync } from "@/decorators/custom" // add PropSync import
 
 import { Checkbox } from "../../../../types/Global";
 import _ from "lodash";
@@ -84,7 +84,7 @@ import ClassificationRequirements from '@/store/classificationRequirements';
   }
 })
 
-export default class ClassificationsModal extends Vue {
+class ClassificationsModal extends Vue{
   @Prop({ required: true }) public modalCheckboxItems!: Checkbox[];
   @Prop({ required: false }) public IL6SysId?: string;
   @Prop( { required: true }) public modalSelectionsOnOpen!: string[];
@@ -160,8 +160,7 @@ export default class ClassificationsModal extends Vue {
   public cleanUp(): void{
     this._showModal = false;
   }
-
- 
 }
 
+export default toNative(ClassificationsModal) 
 </script>

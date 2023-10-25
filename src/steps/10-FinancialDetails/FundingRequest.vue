@@ -39,7 +39,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -52,6 +52,7 @@ import FinancialDetails from "@/store/financialDetails";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATExpandableLink,
@@ -60,7 +61,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 
-export default class FundingPlanType extends Mixins(SaveOnLeave) {
+class FundingPlanType extends Vue {
   private selectedFundingTypes = "";
   private radioButtonItems: RadioButton[] = [
     {
@@ -129,4 +130,6 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   };
 };
+
+export default toNative(FundingPlanType)
 </script>

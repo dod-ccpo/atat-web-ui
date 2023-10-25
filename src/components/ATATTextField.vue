@@ -32,7 +32,7 @@
         class="text-primary"
         :class="[{ 'text-right' : alignRight }]"
         :disabled="disabled"
-        :hide-details="counter === ''"
+        :hide-details="counter.toString() === ''"
         :suffix="suffix"
         :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="rules"
@@ -81,13 +81,14 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-import ATATTooltip from "@/components/ATATTooltip.vue"
+import { ComponentPublicInstance } from "vue";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import {PropSync} from "@/decorators/custom";
+import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { mask, SelectData } from "types/Global";
+import { mask, SelectData, ValidationRule } from "types/Global";
 import Inputmask from "inputmask/";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -100,10 +101,10 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATSVGIcon,
   },
 })
-export default class ATATTextField extends Vue  {
+class ATATTextField extends Vue  {
   // refs
   $refs!: {
-    atatTextField: Vue & { 
+    atatTextField: ComponentPublicInstance & {
       errorBucket: string[]; 
       validate: () => boolean;
       errorCount: number 
@@ -122,7 +123,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private appendText!: string;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
@@ -166,7 +167,7 @@ export default class ATATTextField extends Vue  {
 
   public async setErrorMessage(): Promise<void> {
     if (this.validateOnBlur) {
-      Vue.nextTick(()=>{
+      this.$nextTick(()=>{
         this.errorMessages = this.$refs.atatTextField.errorBucket;
         this.$emit('errorMessage', this.errorMessages);
         // await 
@@ -230,7 +231,7 @@ export default class ATATTextField extends Vue  {
     if (Object.keys(maskObj).length>0){
       maskObj.placeholder="";
       maskObj.jitMasking=true;
-      Vue.nextTick(()=>{
+      this.$nextTick(()=>{
         const inputField = document.getElementById(
           this.id + '_text_field'
         ) as HTMLInputElement;
@@ -271,4 +272,5 @@ export default class ATATTextField extends Vue  {
   }
 
 }
+export default toNative(ATATTextField);
 </script>

@@ -24,15 +24,17 @@
 </template>
 <script lang="ts">
 
-import { Component, PropSync } from "vue-property-decorator";
-import Vue from "vue";
+import { Component, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 
 @Component({})
-export default class GeneratingDocumentsFunding extends Vue {
+class GeneratingDocumentsFunding extends Vue {
 
   @PropSync(
     "isGenerating",{default: true}
   ) private _isGenerating!: boolean;
 
 }
+
+export default toNative(GeneratingDocumentsFunding)
 </script>

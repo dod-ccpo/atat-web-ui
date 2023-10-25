@@ -68,7 +68,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -77,13 +77,14 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextArea,
     ATATAlert,
   },
 })
 
-export default class AccessibilityReq extends Mixins(SaveOnLeave) {
+class AccessibilityReq extends Vue {
   private accessibilityReqs = "";
   private get currentData(): SensitiveInformationDTO {
     return {
@@ -124,4 +125,6 @@ export default class AccessibilityReq extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(AccessibilityReq)
 </script>

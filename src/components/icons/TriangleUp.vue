@@ -12,12 +12,12 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class TriangleUp extends Vue {
+class TriangleUp extends Vue {
   @Prop({ default: "498e43", required: false }) private color!:string;
 }
+export default toNative(TriangleUp);
 </script>
 
 

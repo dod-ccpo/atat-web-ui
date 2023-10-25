@@ -1,6 +1,5 @@
 <template>
   <div style="outline: none">
-    <!-- <v-form ref="atatFileUploadForm"> -->
     <div
       :id="id + 'EventDiv'"
       v-cloak
@@ -138,25 +137,27 @@
       :confirmRemovalTitle="confirmRemovalTitle"
       :confirmRemovalMessage="confirmRemovalMessage"
     />
-    <!-- </v-form> -->
   </div>
 </template>
 
 <script lang="ts">
 /* eslint camelcase: 0 */
 
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { ComponentPublicInstance } from "vue";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
 import {
-  AttachmentServiceTypes,
   AttachmentServiceFactory,
 } from "@/services/attachment";
-import { invalidFile, uploadingFile } from "types/Global";
+import { invalidFile, uploadingFile, ValidationResult } from "types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { setItemToPlural } from "@/helpers";
+import { AttachmentServiceBase } from "@/services/attachment/base";
+import { BaseTableDTO } from "@/api/models";
+import { TableApiBase } from "@/api/tableApiBase";
 
 @Component({
   components: {
@@ -165,10 +166,10 @@ import { setItemToPlural } from "@/helpers";
     ATATErrorValidation,
   },
 })
-export default class ATATFileUpload extends Vue {
+class ATATFileUpload extends Vue {
   // refs
   $refs!: {
-    atatFileUpload: Vue & {
+    atatFileUpload: ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       resetValidation: () => void;
@@ -200,7 +201,7 @@ export default class ATATFileUpload extends Vue {
   private confirmRemovalMessage?: string;
   @PropSync("rules", { default: () => [] }) private _rules!: ((
     v: string
-  ) => string | true | undefined)[];
+  ) => ValidationResult)[];
 
   //1073741824 is 1GB, the most SNOW will allow to upload
   @Prop({ default: 1073741824, required: true })
@@ -214,7 +215,7 @@ export default class ATATFileUpload extends Vue {
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
-  private fileAttachmentService?: typeof AttachmentServiceTypes;
+  private fileAttachmentService?: AttachmentServiceBase<TableApiBase<BaseTableDTO>, BaseTableDTO>;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
   private moreThanMax = false;
@@ -239,7 +240,7 @@ export default class ATATFileUpload extends Vue {
     return true;
   }
 
-  get setRules(): ((v: string) => string | true | undefined)[] {
+  get setRules(): ((v: string) => ValidationResult)[] {
     return this._validFiles.length > 0 && this._invalidFiles.length === 0
       ? []
       : this._rules;
@@ -279,7 +280,7 @@ export default class ATATFileUpload extends Vue {
    */
   private fileUploadChanged(): void {
     this.removeInvalidFiles(this.fileUploadControl.files as FileList);
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       //remove default vuetify status that displays after
       //upload (eg. '2 files')
       const vuetifyFileUploadStatus = document.getElementsByClassName(
@@ -288,7 +289,7 @@ export default class ATATFileUpload extends Vue {
       if (vuetifyFileUploadStatus) {
         vuetifyFileUploadStatus.innerHTML = "";
       }
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         this.clearHTMLFileInput();
         (
           document.getElementById(this.id + "FileUpload") as HTMLInputElement
@@ -429,7 +430,7 @@ export default class ATATFileUpload extends Vue {
       if (!uploadingFileObj.isUploaded) {
         window.setTimeout(() => {
           this.fileAttachmentService
-            ?.upload(uploadingFileObj.file, (total, current) => {
+            ?.upload(uploadingFileObj.file, (total: number, current: number) => {
               current = 0;
               total = Math.ceil(total / 1000);
               //eslint-disable-next-line prefer-const
@@ -514,16 +515,16 @@ export default class ATATFileUpload extends Vue {
   }
 
   private clearErrorMessages(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.$refs.atatFileUpload.reset();
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         this.$refs.atatFileUpload.resetValidation();
       });
     });
   }
 
   private reset(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this._invalidFiles = [];
       this.clearErrorMessages();
       this.errorMessages = [];
@@ -552,9 +553,7 @@ export default class ATATFileUpload extends Vue {
     window.addEventListener("dragover", this.preventDrop, false);
 
     //try to grab the attachment service via the service factory
-    this.fileAttachmentService = AttachmentServiceFactory(
-      this.attachmentServiceName
-    );
+    this.fileAttachmentService = AttachmentServiceFactory(this.attachmentServiceName);
 
     this._invalidFiles = [];
   }
@@ -566,4 +565,5 @@ export default class ATATFileUpload extends Vue {
     }
   }
 }
+export default toNative(ATATFileUpload);
 </script>

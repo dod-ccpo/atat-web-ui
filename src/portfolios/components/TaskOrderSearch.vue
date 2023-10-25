@@ -24,9 +24,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATSearch from "@/components/ATATSearch.vue";
 
 @Component({
@@ -34,7 +33,7 @@ import ATATSearch from "@/components/ATATSearch.vue";
     ATATSearch,
   },
 })
-export default class TaskOrderSearch extends Vue {
+class TaskOrderSearch extends Vue {
 
   @Prop() public label?: string;
   @Prop() public labelClass?: string;
@@ -69,4 +68,5 @@ export default class TaskOrderSearch extends Vue {
     this.$emit("startProvisionWorkflow");
   }
 }
+export default toNative(TaskOrderSearch)
 </script>

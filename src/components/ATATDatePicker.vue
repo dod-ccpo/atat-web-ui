@@ -12,7 +12,7 @@
       :nudge-left="0"
       
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{ props }">
         <div class="d-flex align-center mb-2" v-if="label">
           <label
             :id="id + 'DatePickerLabel'"
@@ -41,11 +41,10 @@
           v-model="dateFormatted"
           :style="'width: ' + width + 'px'"
           dense
-          v-bind="attrs"
-          v-on="on"
+          v-bind="props"
           :rules="rules"
-          @blur="onBlur($event)"
-          @focus ="onFocus($event)"
+          @blur="onBlur"
+          @focus ="onFocus"
           @keypress:enter="menu=false"
           :validate-on-blur="validateOnBlur"
           autocomplete="off"
@@ -83,16 +82,17 @@
         scrollable
       ></v-date-picker>
     </v-menu>
-    <ATATErrorValidation v-if="menu === false && showErrors" :errorMessages="errorMessages" />
+    <ATATErrorValidation v-if="!menu && showErrors" :errorMessages="errorMessages" />
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Vue from "vue";
+import { ComponentPublicInstance } from "vue";
+import { Vue, toNative, Component, Prop, Watch } from "vue-facing-decorator";
 import { add, format, formatISO, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import {ValidationRule} from "../../types/Global";
 
 @Component({
   components: {
@@ -100,17 +100,18 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATErrorValidation,
   },
 })
-export default class ATATDatePicker extends Vue {
+
+class ATATDatePicker extends Vue {
   // refs
   $refs!: {
-    atatDatePicker: Vue & { 
+    atatDatePicker: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number; 
       validate: () => boolean;
       value: string;
       resetValidation: ()=> boolean;
     };
-    atatDatePickerMenu: Vue & {
+    atatDatePickerMenu: ComponentPublicInstance & {
       save: (selectedDate: string) => Record<string, never>;
     };
   };
@@ -118,7 +119,7 @@ export default class ATATDatePicker extends Vue {
   /**
    * DATA
    */
-  private date = "";
+  private date = [""];
   private dateFormatted = "";
   private menu = false;
   private errorMessages: string[] = [];
@@ -141,7 +142,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: string;
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") }) private max!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: false }) private isRequired!: boolean;
   @Prop({ default: true }) private showErrors!: boolean;
 
@@ -150,7 +151,7 @@ export default class ATATDatePicker extends Vue {
    */
   @Watch("date")
   protected formatDateWatcher(): void {
-    this.dateFormatted = this.reformatDate(this.date);
+    this.dateFormatted = this.reformatDate(this.date[0]);
   }
 
   @Watch("value")
@@ -187,14 +188,14 @@ export default class ATATDatePicker extends Vue {
 
   private onBlur(): void {
     if (isValid(new Date(this.dateFormatted))) {
-      this.date = this.reformatDate(this.dateFormatted);
+      this.date = [this.reformatDate(this.dateFormatted)];
       this.updateDateValueProperty();
       this.removeErrors();
     }
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.$refs.atatDatePicker.validate()
       this.setErrorMessage();
-      this.additionalValidateActions("textbox");
+      this.additionalValidateActions();
     });
   }
 
@@ -213,7 +214,7 @@ export default class ATATDatePicker extends Vue {
     // this.validateOnBlur = true;
     if (date === "") {
       this.dateFormatted = "";
-      this.date = "";
+      this.date = [""];
       this.menu = false;
     }
   }
@@ -230,9 +231,9 @@ export default class ATATDatePicker extends Vue {
     // saves selectedDate to necessary atatDatePickerMenu attribs
     this.$refs.atatDatePickerMenu.save(selectedDate);
 
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.updateDateValueProperty();
-      this.additionalValidateActions("datepicker");
+      this.additionalValidateActions();
     });
   }
 
@@ -246,7 +247,7 @@ export default class ATATDatePicker extends Vue {
     } 
   }
 
-  private additionalValidateActions(src: string): void{
+  private additionalValidateActions(): void{
     this.$refs.atatDatePicker.validate();
     this.$nextTick(()=>{
       // no errors are to be generated from clicking on the 
@@ -352,9 +353,9 @@ export default class ATATDatePicker extends Vue {
 
   public async setDateFromValue(): Promise<void> {
     if (this.value && this.value.indexOf("-") > -1) {
-      this.date = this.value;
+      this.date[0] = this.value;
     } else if (this.value && this.value.indexOf("/") > -1) {
-      this.date = this.reformatDate(this.value);
+      this.date[0] = this.reformatDate(this.value);
     }
   }
 
@@ -369,4 +370,5 @@ export default class ATATDatePicker extends Vue {
   }
 
 }
+export default toNative(ATATDatePicker);
 </script>

@@ -190,7 +190,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -203,13 +203,14 @@ import {hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
     ATATRadioGroup,
   },
 })
-export default class Section508Standards extends Mixins(SaveOnLeave) {
+class Section508Standards extends Vue {
   private selected508Response 
     = AcquisitionPackage.sensitiveInformation?.section_508_sufficient || "";
 
@@ -277,4 +278,6 @@ export default class Section508Standards extends Mixins(SaveOnLeave) {
   }
 
 }
+
+export default toNative(Section508Standards)
 </script>

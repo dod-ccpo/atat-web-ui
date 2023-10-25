@@ -25,8 +25,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom';
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 
@@ -36,7 +36,7 @@ import { RadioButton } from "types/Global";
   },
 })
 
-export default class BusinessSize extends Vue {
+class BusinessSize extends Vue {
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: ""}) private legend!: string;
   @Prop({default: ""}) private classes!: string;
@@ -112,4 +112,6 @@ export default class BusinessSize extends Vue {
     await this.setReadOnly();
   }
 }
+
+export default toNative(BusinessSize)
 </script>

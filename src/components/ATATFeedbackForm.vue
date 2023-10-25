@@ -1,6 +1,6 @@
 <template>
   <v-expand-transition>
-    <div v-if="!this.hide">
+    <div v-if="!hide">
       <div class="_feedback-form">
         <div class="flex-column">
           <div class="d-flex justify-end">
@@ -160,14 +160,14 @@
                             {{checkboxHeading}}
                           </h2>
                           <ATATCheckboxGroup
-                            v-if="this.DAPPSExperience > 3"
+                            v-if="DAPPSExperience > 3"
                             id="CustomerFeedback"
                             :value.sync="selectedFeedbackOptions"
                             :items="positiveFeedbackOptions"
                             class="copy-max-width mb-10"
                           />
                           <ATATCheckboxGroup
-                            v-if="this.DAPPSExperience <= 3"
+                            v-if="DAPPSExperience <= 3"
                             id="CustomerFeedback"
                             :value.sync="selectedFeedbackOptions"
                             :items="negativeFeedbackOptions"
@@ -230,8 +230,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import {Vue,Component, Watch, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -249,8 +248,7 @@ import { scrollToId } from "@/helpers";
     ATATCheckboxGroup
   }
 })
-
-export default class ATATFeedbackForm extends Vue {
+class ATATFeedbackForm extends Vue {
   private open = true
   private showThankYou = false
   private hideIcons = false
@@ -369,4 +367,5 @@ export default class ATATFeedbackForm extends Vue {
     await this.loadOnEnter();
   }
 }
+export default toNative(ATATFeedbackForm);
 </script>

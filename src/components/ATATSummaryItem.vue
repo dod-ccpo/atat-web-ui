@@ -126,7 +126,7 @@
                       </div>
                     </div>
                     <div v-if="item.showMoreData.onPrem && item.showMoreData.onPrem.length > 0
-                    && item.showMoreData.cloud && !item.showMoreData.cloud.length > 0"
+                    && item.showMoreData.cloud && item.showMoreData.cloud.length === 0"
                          class="mb-3 mt-2"
                          style="min-width:200px"
                     >
@@ -212,7 +212,7 @@
             <v-btn
               id="AddAcorButton"
               v-if="item.ACORButton && !hasAcor"
-              text
+              text="true"
               class=" mt-5 no-border secondary"
               :ripple="false"
               @click="addAcor()"
@@ -280,13 +280,11 @@
 import { getIdText } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 import { SummaryItem } from "types/Global";
-import Vue from "vue";
-import { Component, Prop} from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATDialog from "@/components/ATATDialog.vue";
-import { SummaryStore } from "@/store/summary";
 
 @Component({
   components: {
@@ -295,10 +293,10 @@ import { SummaryStore } from "@/store/summary";
     ATATDialog,
   }
 })
-export default class ATATSummaryItem extends Vue {
+class ATATSummaryItem extends Vue {
   @Prop({default: "SummaryItems"}) private summaryItems!: SummaryItem[] | [];
 
-  public getIdText(id: string): string{
+  public getIdText(id: string): string {
     return getIdText(id);
   }
   public showMore = false
@@ -366,4 +364,5 @@ export default class ATATSummaryItem extends Vue {
   }
 
 }
+export default toNative(ATATSummaryItem);
 </script>

@@ -3,7 +3,7 @@
     <ATATTextField
         :id="id"
         :label="label"
-        :rules="rules"
+        :rules="_rules"
         class="_input-max-width"
         :value.sync="_value"
         :optional="isOptional"
@@ -21,9 +21,8 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
-import Vue from "vue";
-import {Component, Prop, PropSync} from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom';
 import ATATTextField from "@/components/ATATTextField.vue";
 
 @Component({
@@ -31,7 +30,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
     ATATTextField
   },
 })
-export default class TaskOrderNumber extends Vue {
+class TaskOrderNumber extends Vue {
   @PropSync("value", {default: "task order number goes here"})
   private _value!: number;
   @Prop({default: "TaskOrderNumber"}) private id!: string;
@@ -42,4 +41,6 @@ export default class TaskOrderNumber extends Vue {
   @Prop({default: "task order number goes here"}) private tooltipText!: string;
   @PropSync("rules") private _rules!: "";
 }
+
+export default toNative(TaskOrderNumber)
 </script>

@@ -24,21 +24,21 @@
         :class="{ 'active-step': step.stepNumber === activeStep }"
       >
         <router-link
-          :id="'Step_' + getIdText(step.menuText)"
+          :id="'Step_' + getIdText(step.menuText ?? '')"
           :to="{ name: getRouteName(step) }"
           :class="{
-            'step-complete': isStepComplete(step.stepNumber),
-            'disabled': !isStepComplete(step.stepNumber) && !canNavigate()
+            'step-complete': isStepComplete(step.stepNumber ?? ''),
+            'disabled': !isStepComplete(step.stepNumber ?? '') && !canNavigate()
           }"
           class="step"
           @click.native ="setCurrentStep(
-            step.stepNumber,
+            step.stepNumber ?? '',
             step,
             false)"
         >
           <span class="step-circle">
             {{ step.stepNumber }}
-            <span v-if="isStepComplete(step.stepNumber)" class="completed-check">
+            <span v-if="isStepComplete(step.stepNumber ?? '')" class="completed-check">
               <span class="d-sr-only">Completed</span>
               <v-icon>check_circle</v-icon>
             </span>
@@ -56,7 +56,7 @@
             >
               <router-link
                 v-show="!subStep.excludeFromMenu"
-                :id="'SubStep_' + getIdText(subStep.menuText)"
+                :id="'SubStep_' + getIdText(subStep.menuText ?? '')"
                 :to="subStep.route"
                 :class="{
                   'step-complete': isSubstepComplete(subStep.name),
@@ -64,7 +64,7 @@
                 }"
                 class="substep"
                 @click="setCurrentStep(
-                  subStep.stepNumber,
+                  subStep.stepNumber ?? '',
                   subStep,
                   false
                 )"
@@ -126,8 +126,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { StepperStep } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
@@ -141,7 +140,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
     ATATSVGIcon,
   }
 })
-export default class ATATSideStepper extends Vue {
+class ATATSideStepper extends Vue {
   @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
 
   public async setCurrentStep(
@@ -209,7 +208,7 @@ export default class ATATSideStepper extends Vue {
     return getIdText(string);
   }
 
-  private getRouteName(step: StepperStep) {
+  private getRouteName(step: StepperStep): string | undefined {
     if (step.name !== "") return step.name;
 
     if (!this.hasSubSteps(step)) {
@@ -220,7 +219,7 @@ export default class ATATSideStepper extends Vue {
 
     //a stepper route with children should not have a named defined 
     // so we will use the child step name for routing
-    return step.subSteps ? step.subSteps.length > 0 && step.subSteps[0].name : "";
+    return (step.subSteps && step.subSteps.length > 0) ? step.subSteps[0].name : undefined;
   }
   
   private calculatePercentComplete() {
@@ -243,4 +242,5 @@ export default class ATATSideStepper extends Vue {
   private activeStep = "";
   private percentComplete = 0;
 }
+export default toNative(ATATSideStepper);
 </script>

@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import CustomSpecifications from "./components/CustomSpecifications.vue"
@@ -56,13 +56,14 @@ import _ from "lodash";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     CustomSpecifications
   }
 })
 
-export default class Differentiators extends Mixins(SaveOnLeave) {
+class Differentiators extends Vue {
 
   /* eslint-disable camelcase */
   public evalPlan: EvaluationPlanDTO = {
@@ -165,4 +166,5 @@ export default class Differentiators extends Mixins(SaveOnLeave) {
 
 }
 
+export default toNative(Differentiators) 
 </script>

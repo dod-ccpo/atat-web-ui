@@ -34,9 +34,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
-
+ 
+import { Component , toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom" // add PropSync import
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
 import { 
@@ -51,7 +51,7 @@ import { instanceEnvTypeOptions }  from "@/store/descriptionOfWork";
   }
 })
 
-export default class ComputeFormElements extends Vue {
+class ComputeFormElements extends Vue {
   @PropSync("data") public offeringData!: OtherServiceOfferingData;
 
   public environmentTypeOptions = instanceEnvTypeOptions;
@@ -91,8 +91,7 @@ export default class ComputeFormElements extends Vue {
       value: "NEW",
     },
   ];
-
-
 }
-
+export default toNative(ComputeFormElements)
+ 
 </script>

@@ -51,9 +51,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
-
+ 
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
@@ -68,7 +68,7 @@ import {
     ATATTextField
   }
 })
-export default class StorageFormElements extends Vue {
+class StorageFormElements extends Vue {
   @PropSync("data") public offeringData!: OtherServiceOfferingData;
   @Prop() public storageUnits!: SelectData[];
 
@@ -97,5 +97,5 @@ export default class StorageFormElements extends Vue {
 
 
 }
-
+export default toNative(StorageFormElements)
 </script>

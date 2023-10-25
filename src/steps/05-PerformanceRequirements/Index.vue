@@ -3,12 +3,12 @@
   <router-view/>
 </template>
 <script lang="ts">
-import Vue from "vue";
+ 
 
-import { Component } from "vue-property-decorator";
+import { Component , toNative, Vue} from "vue-facing-decorator";
 @Component({
 })
-export default class PerformanceRequirementsIndex extends Vue {
-}
+class PerformanceRequirementsIndex extends Vue{}
+export default toNative(PerformanceRequirementsIndex);
 </script>
 

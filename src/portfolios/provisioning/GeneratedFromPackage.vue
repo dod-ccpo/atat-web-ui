@@ -14,7 +14,7 @@
 
         <v-card
           v-for="(pkg, index) in packageData"
-          :key="pkg.sys_id"
+          :key="pkg.sysId"
           class="_summary-card-wrapper _selectable"          
           :class="{ 
             '_first': index === 0, 
@@ -78,8 +78,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
-
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import Card from "@/packages/components/Card.vue";
 import { AcquisitionPackageSummarySearchDTO, UserDTO } from "@/api/models";
@@ -90,7 +89,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import PortfolioStore from "@/store/portfolio";
 
-export interface packageCardData {
+export interface PackageCardData {
   isSelected?: boolean;
   packageStatus: string;
   createdBy: string;
@@ -100,14 +99,15 @@ export interface packageCardData {
 }
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSVGIcon,
     "PackageCards": Card,
   }
 })
 
-export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
-  public packageData: packageCardData[] = [];
+class GeneratedFromPackage extends Vue {
+  public packageData: PackageCardData[] = [];
   public selectedPackageSysId = "";
 
   public searchDTO:AcquisitionPackageSummarySearchDTO = {
@@ -131,7 +131,7 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   public packageSelected(index: number): void {
     this.packageData.forEach(pkg => pkg.isSelected = false);
     this.packageData[index].isSelected = true;
-    this.selectedPackageSysId = this.packageData[index].sysId as string;
+    this.selectedPackageSysId = this.packageData[index].sysId;
     AcquisitionPackage.setDisableContinue(false);
   }
 
@@ -142,7 +142,7 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
       .searchAcquisitionPackageSummaryList(this.searchDTO);
     packageData.acquisitionPackageSummaryList.forEach(pkg => {
       const updatedDate = createDateStr(pkg.sys_updated_on as string, true);     
-      const cardData: packageCardData = {
+      const cardData: PackageCardData = {
         isSelected: this.selectedPackageSysId !== undefined
           && pkg.sys_id === this.selectedPackageSysId,
         packageStatus: pkg.package_status?.display_value as string,
@@ -176,4 +176,5 @@ export default class GeneratedFromPackage extends Mixins(SaveOnLeave) {
   }
 
 }
+export default toNative(GeneratedFromPackage)
 </script>

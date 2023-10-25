@@ -57,8 +57,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Mixins } from "vue-property-decorator";
-
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATAlert from "@/components/ATATAlert.vue";
 import AcquisitionPackage, { isMRRToBeGenerated } from "@/store/acquisitionPackage";
@@ -70,13 +69,14 @@ import { RadioButton } from "../../../types/Global";
 import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATAlert
   },
 })
 
-export default class RecurringRequirement extends Mixins(SaveOnLeave) {
+class RecurringRequirement extends Vue {
 
   public popDTO = defaultPeriodOfPerformance;
 
@@ -190,4 +190,6 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
     return true;
   }
 }
+
+export default toNative(RecurringRequirement)
 </script>

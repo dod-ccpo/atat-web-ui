@@ -3,12 +3,13 @@
   <router-view/>
 </template>
 <script lang="ts">
-import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({
 })
-export default class GeneratePackageDocuments extends Vue {
+class GeneratePackageDocuments extends Vue {
 }
+
+export default toNative(GeneratePackageDocuments)
 </script>
 

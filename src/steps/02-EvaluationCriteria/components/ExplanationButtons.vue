@@ -57,8 +57,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+ 
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
@@ -68,7 +68,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
   }
 })
 
-export default class ExplanationButtons extends Vue {
+class ExplanationButtons extends Vue
+{
   @Prop({ default: false }) private showChangeToCustomButton!: boolean;
   @Prop({ default: false }) private showChangeToDAPPSButton!: boolean;
   @Prop({ default: false }) private showRestoreSuggestionButton!: boolean;
@@ -87,4 +88,5 @@ export default class ExplanationButtons extends Vue {
   }
 }
 
+export default toNative(ExplanationButtons) 
 </script>

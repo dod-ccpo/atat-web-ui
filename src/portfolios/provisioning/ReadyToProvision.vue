@@ -104,8 +104,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component, Watch} from "vue-property-decorator";
+import {Component, Watch,  Vue, toNative} from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -127,7 +126,7 @@ interface CSPAdmins {
   },
 })
 
-export default class ReadyToProvision extends Vue {
+class ReadyToProvision extends Vue {
   public provisioningData: PortfolioProvisioning = {};
   public cspLogoName = "";
   public scrtStr = ClassificationLevels.SCRT;
@@ -217,4 +216,5 @@ export default class ReadyToProvision extends Vue {
   }
 
 }
+export default toNative(ReadyToProvision)
 </script>

@@ -12,9 +12,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
-
+import {Vue, Component, toNative } from "vue-facing-decorator";
+import {PropSync} from "@/decorators/custom";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
 @Component({
@@ -23,8 +22,8 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
   }
 })
 
-export default class AdditionalInfo extends Vue {
+class AdditionalInfo extends Vue {
   @PropSync("additionalInfo") public _additionalInfo!: string;
 }
-
+export default toNative(AdditionalInfo)
 </script>

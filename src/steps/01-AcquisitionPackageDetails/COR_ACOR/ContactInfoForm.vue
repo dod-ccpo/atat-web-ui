@@ -137,7 +137,7 @@
               $validators.required(
                 'Please enter your ' + corOrAcor + '’s phone number'
               ),
-              $validators.isPhoneNumberValid(this._selectedPhoneCountry),
+              $validators.isPhoneNumberValid(_selectedPhoneCountry),
             ]"
           />
 
@@ -192,8 +192,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { ComponentPublicInstance } from "vue";
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -202,7 +203,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import DoDAAC from "../components/DoDAAC.vue";
 
-import { RadioButton, SelectData, RankData } from "../../../../types/Global";
+import { RadioButton, SelectData, RankData, CountryObj } from "../../../../types/Global";
 
 @Component({
   components: {
@@ -214,9 +215,9 @@ import { RadioButton, SelectData, RankData } from "../../../../types/Global";
     DoDAAC,
   },
 })
-export default class CorAcorContactInfoForm extends Vue {
+class CorAcorContactInfoForm extends Vue {
   $refs!: {
-    CORACORContactForm: Vue & {
+    CORACORContactForm: ComponentPublicInstance & {
       resetValidation: () => void;
       reset: () => void;
     };
@@ -232,7 +233,7 @@ export default class CorAcorContactInfoForm extends Vue {
   @Prop() private isForm!: boolean;
   @Prop() private sectionHeader!: string;
 
-  @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
+  @PropSync("selectedPhoneCountry") private _selectedPhoneCountry!: CountryObj;
 
   @PropSync("selectedRole") private _selectedRole?: string;
   @PropSync("selectedRank") private _selectedRank?: RankData;
@@ -267,18 +268,20 @@ export default class CorAcorContactInfoForm extends Vue {
   }
 
   public resetData(): void {
-    Vue.nextTick(() => {
-      //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.CORACORContactForm.$children;
+    //TODO: children no longer exists on children.. This
+  //   this.$nextTick(() => {
+  //     //iterate over the forms children ref manually set their 'errorMessages' array to empty
+  //     const formChildren = this.$refs.CORACORContactForm.$children;
 
-      formChildren.forEach((ref)=> {
-        ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-      });
-      Vue.nextTick(() => {
-        this.$refs.CORACORContactForm.reset();
-        this.$refs.CORACORContactForm.resetValidation();
-      });
-    });
+  //     formChildren.forEach((ref)=> {
+  //       ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+  //     });
+  //     this.$nextTick(() => {
+  //       this.$refs.CORACORContactForm.reset();
+  //       this.$refs.CORACORContactForm.resetValidation();
+  //     });
+  //   });
   }
 }
+export default toNative(CorAcorContactInfoForm)
 </script>

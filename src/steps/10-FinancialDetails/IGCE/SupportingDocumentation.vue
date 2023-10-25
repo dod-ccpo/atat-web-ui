@@ -38,15 +38,14 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATFileUpload from "../../../components/ATATFileUpload.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
 import {AttachmentDTO, RequirementsCostEstimateDTO} from "@/api/models";
-import { invalidFile, uploadingFile } from "types/Global";
+import { ValidationResult, invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
 import IGCE from "@/store/IGCE";
 
@@ -57,7 +56,7 @@ import IGCE from "@/store/IGCE";
   }
 })
 
-export default class SupportingDocumentation extends Vue {
+class SupportingDocumentation extends Vue {
   public validFileFormats = ["csv","xls","xlsx","pdf","jpg","png","doc","docx"];
   private attachmentServiceName = REQUIREMENTS_COST_ESTIMATE_TABLE;
   private rceCostEstimate: RequirementsCostEstimateDTO | null = null;
@@ -110,9 +109,9 @@ export default class SupportingDocumentation extends Vue {
   // rules array dynamically created based on the invalid
   // files returned from the child component
   // `ATATFileUpload.vue`
-  private getRulesArray(): ((v: string) => string | true | undefined)[] {
+  private getRulesArray(): ((v: string) => ValidationResult)[] {
     //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+    let rulesArr: ((v: string) => ValidationResult)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredFileUploadMessage));
 
@@ -186,5 +185,7 @@ export default class SupportingDocumentation extends Vue {
   }
   
 }
+
+export default toNative(SupportingDocumentation)
 </script>
 

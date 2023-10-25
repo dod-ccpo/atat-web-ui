@@ -1,25 +1,27 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper, config } from "@vue/test-utils";
+import { createVuetify } from "vuetify";
+import { mount, VueWrapper, config } from "@vue/test-utils";
 import ComputeFormElements from "./ComputeFormElements.vue";
-import { DefaultProps } from "vue/types/options";
+
 import validators from "../../../plugins/validation";
 
 import {
   RadioButton,
   OtherServiceOfferingData
 } from "../../../../types/Global";
+const Vuetify = createVuetify()
 Vue.use(Vuetify);
 
 
 describe("Testing ComputeForm Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
-  localVue.use(Vuex);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  config.showDeprecationWarnings = false
+  Vue.use(validators);
+  // is not assignable to parameter of type Plugin<any[]>
+  // Vue.use(Vuex);
+  let vuetify
+  let wrapper: VueWrapper;
+  // Property showDeprecationWarnings does not exist on type GlobalConfigOptions
+  // config.showDeprecationWarnings = false
   Vue.config.silent = true;
 
   //propsData
@@ -82,9 +84,8 @@ describe("Testing ComputeForm Component", () => {
   ];
 
   beforeEach(() => {
-    vuetify = new Vuetify();
+    vuetify = createVuetify()
     wrapper = mount(ComputeFormElements, {
-      localVue,
       vuetify,
       mocks: {
         $store: {

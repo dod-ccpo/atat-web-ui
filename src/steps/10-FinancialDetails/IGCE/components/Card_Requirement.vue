@@ -59,9 +59,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 
-import { Component, Prop, PropSync, Watch} from "vue-property-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { currencyStringToNumber, toCurrencyString } from "@/helpers";
 import { IgceEstimateDTO } from "@/api/models";
@@ -74,7 +74,7 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
     ATATErrorValidation
   }
 })
-export default class CardRequirement extends Vue {
+class CardRequirement extends Vue {
 
   @PropSync("cardData") private _cardData!: IgceEstimateDTO;
   @Prop() private index!: number;
@@ -141,4 +141,6 @@ export default class CardRequirement extends Vue {
     await this.loadOnEnter()
   }
 }
+
+export default toNative(CardRequirement)
 </script>

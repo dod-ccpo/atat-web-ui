@@ -154,7 +154,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
 import { CurrentContractDTO } from "@/api/models";
@@ -163,22 +163,24 @@ import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { DataTableHeader } from "types/Global";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATDialog,
     ATATSVGIcon
   }  
 })
-export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
+class ProcurementHistorySummary extends Vue {
 
   public currentContractExists = "";
-  public tableHeaders = [
-    { text: "Contractor Name", value: "incumbent_contractor_name"},
-    { text: "Contract Number",  value: "contract_number"},
-    { text: "Task Order Number",  value: "task_delivery_order_number"},
-    { text: "Period of Performance",  value: "contract_order_start_date"},
-    { text: "", value: "actions", width: "75" },
+  public tableHeaders: DataTableHeader[] = [
+    { title: "Contractor Name", value: "incumbent_contractor_name"},
+    { title: "Contract Number",  value: "contract_number"},
+    { title: "Task Order Number",  value: "task_delivery_order_number"},
+    { title: "Period of Performance",  value: "contract_order_start_date"},
+    { title: "", value: "actions", width: "75" },
   ];
   public instanceNumberToDelete = -1;
   public deleteInstanceModalTitle = "";
@@ -207,7 +209,11 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
 
   public async deleteInstance(): Promise<void> {
     await AcquisitionPackage.deleteContract(this.instanceToDelete);
-    this.$nextTick(async () => {
+    /**
+     * async is necessary this $nextTick b/c `await this.resetDataSource();`
+     * is needed in the function
+     */
+    this.$nextTick(async() => {
       this.showDeleteInstanceDialog = false;
       this.instanceToDelete  = {};
       this.dataSource = this.dataSource.filter(
@@ -300,4 +306,6 @@ export default class ProcurementHistorySummary extends Mixins(SaveOnLeave) {
   }
 
 }
+
+export default toNative(ProcurementHistorySummary)
 </script>

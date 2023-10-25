@@ -4,16 +4,15 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Chart, { ChartData } from "chart.js/auto";
+import { Vue, toNative, Component, Prop, Watch } from "vue-facing-decorator";
+import Chart, { ChartConfiguration, ChartData } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
 @Component({})
-export default class BarChart extends Vue {
+class BarChart extends Vue {
   @Prop({ required: true, default: "MyBarChart" }) public chartId!: string;
   @Prop({ required: true, default: {} }) public chartData!: ChartData;
-  @Prop({ required: true, default: {} }) public chartOptions!: any;  
+  @Prop({ required: true, default: {} }) public chartOptions!: ChartConfiguration['options'];  
   @Prop({ required: false, default: false }) public useChartDataLabels?: boolean;  
 
   private myChart!: Chart;
@@ -32,7 +31,7 @@ export default class BarChart extends Vue {
   public createChart(): void {
     if (this.chartId) {
       //eslint-disable-next-line prefer-const 
-      let plugins: any = [];
+      let plugins = [];
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
       if (this.useChartDataLabels) {
         plugins.push(ChartDataLabels);
@@ -48,5 +47,6 @@ export default class BarChart extends Vue {
   }
 
 }
+export default toNative(BarChart)
 
 </script>

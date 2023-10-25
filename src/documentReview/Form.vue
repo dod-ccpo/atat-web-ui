@@ -129,7 +129,8 @@
 import Vue from "vue";
 
 import PageHead from "./components/DocReviewHead.vue"
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CommentButton from "./components/CommentButton.vue";

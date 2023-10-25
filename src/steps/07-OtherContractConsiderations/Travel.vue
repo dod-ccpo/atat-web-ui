@@ -246,8 +246,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Watch } from "vue-property-decorator";
-import { Checkbox, TravelSummaryTableData } from "types/Global";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Checkbox, DataTableHeader, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -260,6 +260,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSVGIcon,
     ATATDialog,
@@ -267,7 +268,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
     ATATCheckboxGroup,
   },
 })
-export default class Travel extends Mixins(SaveOnLeave) {
+class Travel extends Vue {
   public tableHeaders: Record<string, string>[] = [];
   public tableData: TravelSummaryTableData[] = [];
   public travelItem: TravelSummaryTableData = {
@@ -291,16 +292,16 @@ export default class Travel extends Mixins(SaveOnLeave) {
     );
   }
 
-  get setTableHeaders():  Record<string, string>[] {
+  get setTableHeaders():  DataTableHeader[] {
     return this.hasListings
       ? [
-        { text: "", value: "instanceNumber", width: "50" },
-        { text: "Location", value: "trip_location" },
-        { text: "Duration", value: "duration_in_days" },
-        { text: "Number of travelers", value: "number_of_travelers" },
-        { text: "Number of trips", value: "number_of_trips" },
-        { text: "Performance period(s)", value: "selected_periods" },
-        { text: "", value: "actions", width: "100" },
+        { title: "", value: "instanceNumber", width: "50" },
+        { title: "Location", value: "trip_location" },
+        { title: "Duration", value: "duration_in_days" },
+        { title: "Number of travelers", value: "number_of_travelers" },
+        { title: "Number of trips", value: "number_of_trips" },
+        { title: "Performance period(s)", value: "selected_periods" },
+        { title: "", value: "actions", width: "100" },
       ]
       : []
   }
@@ -486,4 +487,6 @@ export default class Travel extends Mixins(SaveOnLeave) {
   }
 
 }
+
+export default toNative(Travel)
 </script>

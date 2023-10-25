@@ -78,13 +78,12 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import AppSections from "@/store/appSections";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATFooter from "../../components/ATATFooter.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { Component } from "vue-property-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { routeNames } from "@/router/stepper";
@@ -99,7 +98,7 @@ import TaskOrderSearch from "../components/TaskOrderSearch.vue";
     TaskOrderSearch,
   },
 })
-export default class CreateFirstPortfolio extends Vue {
+class CreateFirstPortfolio extends Vue {
   public provisionStepsText = [
     `Provide details about your awarded task order and the individuals who will 
       administer your cloud resources.`,
@@ -150,4 +149,5 @@ export default class CreateFirstPortfolio extends Vue {
     );
   }
 }
+export default toNative(CreateFirstPortfolio)
 </script>

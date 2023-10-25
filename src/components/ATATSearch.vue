@@ -181,15 +181,15 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { ComponentPublicInstance } from "vue";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
+import {PropSync} from "@/decorators/custom";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import api from "@/api";
-
-import { mask } from "types/Global";
+import { ValidationRule, mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -202,15 +202,15 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATErrorValidation,
   },
 })
-export default class ATATSearch extends Vue {
+class ATATSearch extends Vue {
   $refs!: {
-    atatSearchInput: Vue & {
+    atatSearchInput: ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       resetValidation(): void;
       value: string;
     };
-    atatSearchInputModal: Vue & {
+    atatSearchInputModal: ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
       resetValidation(): void;
@@ -229,7 +229,7 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: () => [] }) private mask?: string[];
   @Prop({ default: false }) private isMaskRegex?: boolean;
-  @Prop({ default: () => [] }) private rules?: Array<unknown>;
+  @Prop({ default: () => [] }) private rules?: ValidationRule[];
   @Prop({ default: true }) private hideHelpTextOnErrors?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
@@ -403,7 +403,7 @@ export default class ATATSearch extends Vue {
   }
 
   private setErrorMessage(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.errorMessages = !this.isModal
         ? this.$refs.atatSearchInput.errorBucket
         : this.$refs.atatSearchInputModal.errorBucket;
@@ -411,7 +411,7 @@ export default class ATATSearch extends Vue {
   }
 
   private clearErrorMessages(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       if (!this.isModal) {
         this.$refs.atatSearchInput.errorBucket = [];
       } else {
@@ -452,7 +452,7 @@ export default class ATATSearch extends Vue {
     if (Object.keys(this.maskObj).length > 0) {
       this.maskObj.placeholder = "";
       this.maskObj.jitMasking = true;
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         const inputField = document.getElementById(
           this.id + "_SearchInput"
         ) as HTMLInputElement;
@@ -465,4 +465,5 @@ export default class ATATSearch extends Vue {
     this.setMask();
   }
 }
+export default toNative(ATATSearch);
 </script>

@@ -19,12 +19,11 @@
           open-on-hover
           offset-x
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ props }">
             <v-btn
               plain
-              text
-              v-bind="attrs"
-              v-on="on"
+              text="true"
+              v-bind="props"
               class="font-size-14 _profile-card__name-button"
             >
               {{ packageCreator.fullNameForSort }}
@@ -75,12 +74,11 @@
           open-on-hover
           offset-x
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ props }">
             <v-btn
               plain
-              text
-              v-bind="attrs"
-              v-on="on"
+              variant="text"
+              v-bind="props"
               class="font-size-14 _profile-card__name-button"
             >
               {{ packageMissionOwner.fullNameForSort }} 
@@ -91,8 +89,8 @@
         </v-menu> 
         <div>
           <v-tooltip left nudge-right="15" v-if="currentUserIsOwner">
-            <template v-slot:activator="{ on, attrs }">
-              <span v-bind="attrs" v-on="on">
+            <template v-slot:activator="{ props }">
+              <span v-bind="props">
                 Owner
               </span>
             </template>
@@ -114,12 +112,11 @@
             open-on-hover
             offset-x
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{ props }">
               <v-btn
                 plain
-                text
-                v-bind="attrs"
-                v-on="on"
+                variant="text"
+                v-bind="props"
                 class="font-size-14 _profile-card__name-button"
               >
                 {{ user.fullNameForSort }}
@@ -190,8 +187,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
@@ -216,7 +212,7 @@ import AppSections from "@/store/appSections";
   }
 })
 
-export default class ContributorsPanel extends Vue {
+class ContributorsPanel extends Vue {
   public lastUpdated = "";
   public currentUserIsOwner = false;
   public contributorCount = 1;
@@ -269,12 +265,13 @@ export default class ContributorsPanel extends Vue {
   public get contributors(): User[] {
     const users = AcquisitionPackage.getPackageContributors || [];
     return users.sort((a,b) => {
-      return a.fullNameForSort && b.fullNameForSort 
-        ? a.fullNameForSort > b.fullNameForSort ? 1: -1
-        : -1;
+      if (!a.fullNameForSort || !b.fullNameForSort) {
+        return -1;
+      }
+      return a.fullNameForSort > b.fullNameForSort ? 1: -1
     });
   }
-  
+
   public get selectedAgency(): string {
     return AcquisitionPackage.getSelectedAgencyAcronym;
   } 
@@ -381,7 +378,7 @@ export default class ContributorsPanel extends Vue {
     return AcquisitionPackage.getAcquisitionPackageData;
   }
   @Watch("acqPkg")
-  public acqPkgChanged(newPkg: AcquisitionPackageDTO | null): void {
+  public acqPkgChanged(): void {
     this.setPackageData();
   }
 
@@ -412,5 +409,7 @@ export default class ContributorsPanel extends Vue {
     this.checkIfCurrentUserIsOwner();
   }
 }
+
+export default toNative(ContributorsPanel);
 
 </script>

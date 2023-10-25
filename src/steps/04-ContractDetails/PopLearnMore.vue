@@ -47,8 +47,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 
@@ -57,5 +56,6 @@ import ATATAlert from "@/components/ATATAlert.vue";
     ATATAlert
   }
 })
-export default class PopLearnMore extends Vue {}
+class PopLearnMore extends Vue {}
+export default toNative(PopLearnMore)
 </script>

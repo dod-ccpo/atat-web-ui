@@ -174,7 +174,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import { routeNames } from "../../../router/stepper"
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import _ from "lodash";
 import classificationRequirements 
@@ -189,6 +189,7 @@ import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 import { getIdText, toTitleCase } from "@/helpers";
 import Summary, { getSummaryItemsforStep } from "@/store/summary";
+ 
 // import router from "@/router";
 
 @Component({
@@ -199,7 +200,7 @@ import Summary, { getSummaryItemsforStep } from "@/store/summary";
   }
 })
 
-export default class SummaryStepFive extends Mixins(SaveOnLeave) {
+class SummaryStepFive extends Vue{
   private isPeriodsDataMissing = false;
   private isClassificationDataMissing = false;
   private showAlert = false;
@@ -460,4 +461,5 @@ export default class SummaryStepFive extends Mixins(SaveOnLeave) {
   }
 
 };
+export default toNative(SummaryStepFive) 
 </script>

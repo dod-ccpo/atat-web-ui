@@ -86,8 +86,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import {Component, Mixins, Watch} from "vue-property-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -98,8 +97,10 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import IGCEStore from "@/store/IGCE";
 import {RequirementsCostEstimateDTO} from "@/api/models";
 import {hasChanges} from "@/helpers";
+import { ComponentPublicInstance } from "vue";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     ATATRadioGroup,
@@ -108,9 +109,9 @@ import {hasChanges} from "@/helpers";
   }
 })
 
-export default class EstimatesDeveloped extends Mixins(SaveOnLeave) {
+class EstimatesDeveloped extends Vue {
   $refs!: {
-    percentOverUnder: Vue & {
+    percentOverUnder: ComponentPublicInstance & {
       resetValidation(): void
     };
   };
@@ -256,4 +257,6 @@ export default class EstimatesDeveloped extends Mixins(SaveOnLeave) {
   }
 
 }
+
+export default toNative(EstimatesDeveloped)
 </script>

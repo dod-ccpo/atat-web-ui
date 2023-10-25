@@ -13,8 +13,8 @@
   </ATATAlert>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+ 
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 
@@ -24,7 +24,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 
-export default class AlertForForms extends Vue {
+class AlertForForms extends Vue {
   @Prop() private alertType!: "custom" | "suggestion";
   public get alertText(): string {
     switch(this.alertType) {
@@ -42,4 +42,5 @@ export default class AlertForForms extends Vue {
 
 }
 
+export default toNative(AlertForForms)
 </script>

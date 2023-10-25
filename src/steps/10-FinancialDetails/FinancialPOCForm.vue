@@ -38,7 +38,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { CountryObj, RadioButton, RankData, SelectData } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -50,12 +50,13 @@ import { Countries } from "@/components/ATATPhoneInput.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATContactForm
   }
 })
 
-export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
+class FinancialPOCForm extends Vue {
   private loaded = false;
   private selectedRole = "";
   private selectedSalutation = "";
@@ -261,4 +262,6 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(FinancialPOCForm)
 </script>

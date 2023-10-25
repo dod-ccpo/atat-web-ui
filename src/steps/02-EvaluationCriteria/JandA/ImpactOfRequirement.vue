@@ -38,20 +38,22 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, Mixins} from "vue-property-decorator";
+import {Component, toNative, Vue} from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+ 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextArea
   }
 })
 
-export default class ImpactOfRequirement extends Mixins(SaveOnLeave)  {
+class ImpactOfRequirement extends Vue {
   public impactOfRequirementExplanation = "";
 
   private get currentData(): FairOpportunityDTO {
@@ -95,4 +97,6 @@ export default class ImpactOfRequirement extends Mixins(SaveOnLeave)  {
     await this.loadOnEnter();
   }
 }
+ 
+export default toNative(ImpactOfRequirement)
 </script>

@@ -8,10 +8,11 @@
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-import {Component, Prop} from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
-export default class DynamicForm extends Vue {
+class DynamicForm extends Vue {
   @Prop({default: "544496", required: true}) private color!:string;
 }
+export default toNative(DynamicForm);
+
 </script>

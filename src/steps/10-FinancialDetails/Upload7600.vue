@@ -92,8 +92,8 @@
   </v-form>
 </template>
 <script lang="ts">
-import { invalidFile, uploadingFile } from "types/Global";
-import { Component, Mixins } from "vue-property-decorator";
+import { ValidationResult, invalidFile, uploadingFile } from "types/Global";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
@@ -114,6 +114,7 @@ import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATSearch,
@@ -122,7 +123,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     GInvoiceLearnMore,
   },
 })
-export default class GTCInformation extends Mixins(SaveOnLeave) {
+class Upload7600 extends Vue {
   // radio options
   public useGInvoicing = "";
   private gInvoicingOptions: RadioButton[] = [
@@ -191,10 +192,10 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
   // rules array dynamically created based on the invalid
   // files returned from the child component
   // `ATATFileUpload.vue`
-  private getRulesArray(): ((v: string) => string | true | undefined)[] {
+  private getRulesArray(): ((v: string) => ValidationResult)[] {
     if (this.useGInvoicing === "YES") return [];
     //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+    let rulesArr: ((v: string) => ValidationResult)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredMessage));
 
@@ -344,4 +345,6 @@ export default class GTCInformation extends Mixins(SaveOnLeave) {
     return hasChanges(this.currentData, this.savedData);
   }
 }
+
+export default toNative(Upload7600)
 </script>

@@ -55,8 +55,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
@@ -65,7 +64,8 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 
-export default class AccessingCSPLearnMore extends Vue {
+class AccessingCSPLearnMore extends Vue {
 
 }
+export default toNative(AccessingCSPLearnMore)
 </script>

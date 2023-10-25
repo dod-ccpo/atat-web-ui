@@ -3,7 +3,7 @@
     <ATATTextField
       :id="id"
       :label="label"
-      :rules="rules"
+      :rules="_rules"
       class="_input-max-width"
       :value.sync="_value"
     />
@@ -17,9 +17,8 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable camelcase */
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom';
 import ATATTextField from "@/components/ATATTextField.vue";
 
 @Component({
@@ -27,7 +26,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
     ATATTextField,
   },
 })
-export default class IncumbentContractorName extends Vue {
+class IncumbentContractorName extends Vue {
   @PropSync("value", {default: "incumbent contractor name goes here"})
   private _value!: string;
   @Prop({default: "IncumbentContractorName"}) private id!: string;
@@ -36,4 +35,6 @@ export default class IncumbentContractorName extends Vue {
   @Prop({ default: true}) private isForm!: boolean;
   @PropSync("rules") private _rules!: "";
 }
+
+export default toNative(IncumbentContractorName)
 </script>

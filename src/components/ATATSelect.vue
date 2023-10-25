@@ -14,6 +14,7 @@
       </label>
     </v-flex>
     <v-flex>
+      <!-- TODO: use the new menu prop 'offset' to achieve what 'offsetY: true' did before -->
       <v-select
         ref="atatSelect"
         :id="id + '_dropdown'"
@@ -33,31 +34,30 @@
         :return-object="returnObject"
         :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="_rules"
-        :menu-props="{ bottom: true, offsetY: true }"
+        :menu-props="{ location: 'bottom', offset: 0 }"
         :disabled="menuDisabled"
       >
         <template v-if="showSelectedValue" v-slot:selection="{ item }">
           {{ item.value }}
         </template>
-
-        <template v-slot:item="{ item, on }">
+        <!-- TODO:  validate proper functionality given the removal of 'on' from vslot item -->
+        <template v-slot:item="{ item }">
           <v-list-item 
-            v-on="on" 
             :class="[
-              {'_item-disabled': item.disabled },
-              {'d-none': item.hidden },
-              {'_selected': item.value === _selectedValue || item === _selectedValue }
+              {'_item-disabled': item.value.disabled },
+              {'d-none': item.value.hidden },
+              {'_selected': item.value.value === _selectedValue || item.value === _selectedValue }
             ]"
           >
             <v-list-item-content
-              :id="id + '_DropdownListItem_' + item.text.replace(/[^A-Z0-9]/ig, '')"
+              :id="id + '_DropdownListItem_' + item.value.text.replace(/[^A-Z0-9]/ig, '')"
               :item-value = item.value
             >
               <v-list-item-title class="body">
-                {{ item.text }}
+                {{ item.value.text }}
               </v-list-item-title>
-              <v-list-item-subtitle v-if="item.description">
-                {{ item.description }}
+              <v-list-item-subtitle v-if="item.value.description">
+                {{ item.value.description }}
               </v-list-item-subtitle>
 
             </v-list-item-content>
@@ -86,12 +86,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Emit, Prop, PropSync, Watch } from "vue-property-decorator";
-
+import { ComponentPublicInstance } from "vue";
+import { Component, Emit, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { SelectData } from "../../types/Global";
+import { SelectData, ValidationRule } from "../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
@@ -100,10 +100,10 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATSVGIcon,
   }
 })
-export default class ATATSelect extends Vue {
+class ATATSelect extends Vue {
   // refs
   $refs!: {
-    atatSelect: Vue & { 
+    atatSelect: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
       blur: ()=> void;
@@ -116,7 +116,7 @@ export default class ATATSelect extends Vue {
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: [] }) private items?: SelectData[];
-  @PropSync ("rules", { default: ()=>[] }) private _rules!: Array<unknown>;
+  @PropSync ("rules", { default: ()=>[] }) private _rules!: ValidationRule[];
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private optional!: boolean;
@@ -170,7 +170,7 @@ export default class ATATSelect extends Vue {
   public addRequiredRule(): void {
     // accommodates for dropdowns that are loaded
     // with no preselected value but required validation saveOnLeave
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       this._rules.push((v:string)=>v !== "" || "")
     })
   }
@@ -199,4 +199,5 @@ export default class ATATSelect extends Vue {
   }
 
 }
+export default toNative(ATATSelect);
 </script>

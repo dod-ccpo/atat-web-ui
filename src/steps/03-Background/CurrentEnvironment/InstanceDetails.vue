@@ -143,7 +143,8 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch, mixins, Vue, toNative } from "vue-facing-decorator";
+// import Vue from 'vue';
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -184,6 +185,7 @@ import _ from "lodash";
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATRadioGroup,
@@ -196,7 +198,7 @@ import _ from "lodash";
   }
 })
 
-export default class InstanceDetails extends Mixins(SaveOnLeave) {
+class InstanceDetails extends mixins(Vue, SaveOnLeave) {
   /* eslint-disable camelcase */
   public currEnvData = _.cloneDeep(defaultCurrentEnvironment);
   public envLocation = "";
@@ -561,5 +563,7 @@ export default class InstanceDetails extends Mixins(SaveOnLeave) {
   }
 
 }
+
+export default toNative(InstanceDetails)
 
 </script>

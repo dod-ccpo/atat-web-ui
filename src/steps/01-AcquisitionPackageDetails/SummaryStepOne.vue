@@ -24,7 +24,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 import { PortfolioSummaryQueryParams, SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Summary, {
@@ -34,13 +34,15 @@ import Summary, {
 } from "@/store/summary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+ 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATSummaryItems
   },
 })
-export default class SummaryStepOne extends Mixins(SaveOnLeave){
+class SummaryStepOne extends Vue {
   public summaryItems: SummaryItem[] = [];
   public introParagraph = "";
 
@@ -62,7 +64,12 @@ export default class SummaryStepOne extends Mixins(SaveOnLeave){
     await Summary.toggleButtonColor(1);
   }
   public async deleteAcor(): Promise<void>{
-    Summary.removeSummaryItem(1,5)
+    const existingACORSummaryItem = this.summaryItems.find(
+      si => si.routeName.toUpperCase() === "ACORINFORMATION"
+    )
+    if (existingACORSummaryItem){
+      Summary.removeSummaryItem(existingACORSummaryItem)
+    }
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -71,4 +78,5 @@ export default class SummaryStepOne extends Mixins(SaveOnLeave){
   }
 
 }
+export default toNative(SummaryStepOne)
 </script>

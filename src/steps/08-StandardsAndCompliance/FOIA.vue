@@ -96,7 +96,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -112,6 +112,7 @@ import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -120,7 +121,7 @@ import { hasChanges } from "@/helpers";
   },
 })
 
-export default class FOIA extends Mixins(SaveOnLeave) {
+class FOIA extends Vue {
 
   public potentialToBeHarmful 
     = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful || "";
@@ -200,4 +201,6 @@ export default class FOIA extends Mixins(SaveOnLeave) {
   }
 
 }
+
+export default toNative(FOIA)
 </script>

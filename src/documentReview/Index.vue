@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, mixins } from "vue-facing-decorator";
 
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
@@ -70,7 +70,7 @@ import _ from "lodash";
     Preview
   },
 })
-export default class DocumentReview extends Mixins(SaveOnLeave){
+export default class DocumentReview extends mixins(SaveOnLeave){
   
   private docTitle = "Requirements Checklist";
   private displayView = "";
@@ -84,6 +84,7 @@ export default class DocumentReview extends Mixins(SaveOnLeave){
       scope: "",
       emergency_declaration: "",
       project_disclaimer: "",
+      cjadc2: "",
     },
     organization: {},
     fairOpportunity: {

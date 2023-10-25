@@ -106,7 +106,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -118,9 +118,11 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
 import { YesNo } from "../../../../types/Global";
+ 
 
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     AlertForForms,
     ATATTextArea,
@@ -129,7 +131,8 @@ import { YesNo } from "../../../../types/Global";
   }
 })
 
-export default class RemoveBarriers extends Mixins(SaveOnLeave) {
+class RemoveBarriers extends Vue
+{
   /* eslint-disable camelcase */
 
   public followOnRequirement = getYesNoRadioOptions("FollowOn")
@@ -296,4 +299,6 @@ export default class RemoveBarriers extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 }
+
+export default toNative(RemoveBarriers) 
 </script>

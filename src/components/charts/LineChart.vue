@@ -3,12 +3,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import {Vue, toNative, Component, Prop, Watch } from "vue-facing-decorator";
 import Chart, { ChartData } from "chart.js/auto";
 
-@Component({})
-export default class LineChart extends Vue {
+class LineChart extends Vue {
   @Prop({ required: true, default: "myLineChart" }) public chartId!: string;
   @Prop({ required: true, default: {} }) public chartData!: ChartData;
   @Prop({ required: true, default: {} }) public chartOptions!: any;
@@ -268,4 +266,5 @@ export default class LineChart extends Vue {
     }
   }
 }
+export default toNative(LineChart)
 </script>

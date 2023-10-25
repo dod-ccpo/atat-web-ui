@@ -50,8 +50,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import { Component, Prop} from "vue-property-decorator";
+import { Component, Prop,  Vue, toNative} from "vue-facing-decorator";
 import FinancialDetailsAlert from "../../FinancialDetailsAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import {PortfolioTaskOrder, TaskOrderCardData, ToastObj} from "../../../../../types/Global";
@@ -76,7 +75,7 @@ import { createDateStr, getStatusLabelFromValue, toCurrencyString } from "@/help
     ATATToast
   }
 })
-export default class TaskOrder extends Vue {
+class TaskOrder extends Vue {
   @Prop() private portfolioSysId!: string;
   @Prop() public taskOrder!: PortfolioTaskOrder;;
   public activeTaskOrderNumber = "";
@@ -109,9 +108,7 @@ export default class TaskOrder extends Vue {
     if (this.selectedTaskOrder.sys_id) {
       await PortfolioStore.setShowTOPackageSelection(false);
     }
-    await PortfolioStore.setSelectedAcquisitionPackageSysId(
-      this.selectedTaskOrder.sys_id as string
-    );
+    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedTaskOrder.sys_id);
 
     this.$router.push({
       name: this.provWorkflowRouteNames.AwardedTaskOrder,
@@ -169,5 +166,6 @@ export default class TaskOrder extends Vue {
   }
 
 }
+export default toNative(TaskOrder)
 </script>
 

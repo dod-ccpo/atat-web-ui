@@ -72,7 +72,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, mixins, Watch , toNative, Vue} from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import OtherOfferings from "./OtherOfferings.vue";
@@ -91,6 +91,7 @@ import {
   DOWServiceOffering,
 } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
+ 
 
 @Component({
   components: {
@@ -101,7 +102,7 @@ import { getIdText } from "@/helpers";
   }
 })
 
-export default class ServiceOfferings extends Mixins(SaveOnLeave) {
+class ServiceOfferings extends Vue{
   // requirementName will be pulled from data in future ticket
   public requirementName = "";
 
@@ -423,7 +424,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
     if(!Array.isArray(this.otherOfferingData)){
       const displayedOtherOfferingHasNoClassLevel = existingOtherOfferings.some(
-        others => others.sysId !== this.otherOfferingData.sysId
+        others => others.sysId !== (this.otherOfferingData as OtherServiceOfferingData).sysId
       )
 
       if (displayedOtherOfferingHasNoClassLevel){
@@ -434,5 +435,5 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   }
 
 }
-
+export default toNative(ServiceOfferings)
 </script>

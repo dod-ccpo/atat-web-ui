@@ -113,7 +113,7 @@
 </template>
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { 
   RadioButton, 
@@ -136,6 +136,7 @@ import { defaultTrainingEstimate } from "@/store/IGCE";
 import { hasChanges, convertEstimateData } from "@/helpers";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATSingleAndMultiplePeriods,
@@ -144,7 +145,7 @@ import { hasChanges, convertEstimateData } from "@/helpers";
     ATATTextField
   }
 })
-export default class IGCETraining extends Mixins(SaveOnLeave) {
+class IGCETraining extends Vue {
 
   public trainingEstimateTypeOptions: RadioButton[] = [
     {
@@ -457,5 +458,5 @@ export default class IGCETraining extends Mixins(SaveOnLeave) {
   
 
 }
-
+export default toNative(IGCETraining)
 </script>

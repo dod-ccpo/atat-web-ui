@@ -13,15 +13,14 @@
           :open-on-hover="true"
           :open-delay="500"
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ props }">
             <span
-              v-bind="attrs"
-              v-on="on"
+              v-bind="props"
             >
               <ATATSVGIcon 
-                :name="CSPs[cspKey].img.name" 
-                :width="CSPs[cspKey].img.width" 
-                :height="CSPs[cspKey].img.height" 
+                :name="CSPs[cspKey].name" 
+                :width="CSPs[cspKey].width" 
+                :height="CSPs[cspKey].height" 
               />
             </span>
           </template>
@@ -49,10 +48,9 @@
               :open-on-hover="true"
               :open-delay="500"
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template v-slot:activator="{ props }">
                 <span
-                  v-bind="attrs"
-                  v-on="on"
+                  v-bind="props"
                 >
                   <ATATSVGIcon v-if="cardData.isOwner || cardData.isManager"
                     name="manageAccount" width="20" height="17" color="base" class="ml-3"
@@ -180,8 +178,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
@@ -201,7 +198,7 @@ import { UserDTO } from "@/api/models"
   }
 })
 
-export default class PortfolioCard extends Vue {
+class PortfolioCard extends Vue {
   @Prop() private cardData!: PortfolioCardData;
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
@@ -246,13 +243,13 @@ export default class PortfolioCard extends Vue {
   ];
 
   public get isPopAlert(): boolean {
-    return this.popAlertStatuses.includes(this.cardData.fundingStatus || "");
+    return this.popAlertStatuses.includes(this.cardData.fundingStatus ?? "");
   }
   public get isPopAlertError(): boolean {
     return this.cardData.fundingStatus === Statuses.Expired.value;
   }
   public get isFundingAlert(): boolean {
-    return this.fundingAlertStatuses.includes(this.cardData.fundingStatus || "");
+    return this.fundingAlertStatuses.includes(this.cardData.fundingStatus ?? "");
   }
   public get isFundingAlertError(): boolean {
     return this.cardData.fundingStatus === Statuses.Delinquent.value;
@@ -291,7 +288,7 @@ export default class PortfolioCard extends Vue {
       this.$emit("openLeavePortfolioModal");
       break; 
     case this.menuActions.emailManagers: {
-      const managerEmails = await this.managerEmails;
+      const managerEmails = this.managerEmails;
       const mailStr = "mailto:" + managerEmails + "?cc=" + this.currentUserEmail;
       window.open(mailStr, "_blank");
       break; 
@@ -332,38 +329,32 @@ export default class PortfolioCard extends Vue {
     this.$emit("leavePortfolio", this.cardData.sys_id, this.cardData.title);
   }
 
-  public CSPs = {
+  public CSPs: Record<string, Record<string, string>> = {
     aws: {
       title: "Amazon Web Services",
-      img: {
-        name:"aws",
-        width:"40",
-        height:"24"
-      }
+      name:"aws",
+      width:"40",
+      height:"24"
     },
     azure: {
       title: "Azure",
-      img: {
-        name:"azure",
-        width:"40",
-        height:"31",
-      }
+      name:"azure",
+      width:"40",
+      height:"31",
+      
     },
     gcp: {
       title: "Google Cloud",
-      img: {
-        name:"gcp",
-        width:"40",
-        height:"39"
-      }
+      name:"gcp",
+      width:"40",
+      height:"39"
     },
     oracle: {
       title: "Oracle Cloud",
-      img: {
-        name:"oracle",
-        width:"40",
-        height:"25"
-      }
+      name:"oracle",
+      width:"40",
+      height:"25"
+      
     },
   }
 
@@ -466,6 +457,6 @@ export default class PortfolioCard extends Vue {
   }
 
 }
-
+export default toNative(PortfolioCard)
 </script>
 

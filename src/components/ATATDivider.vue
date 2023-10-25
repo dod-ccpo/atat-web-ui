@@ -10,14 +10,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
 
 @Component({})
-
-export default class ATATDivider extends Vue {
+class ATATDivider extends Vue {
   @Prop() badgeText?: string;
   @Prop({ default: "base-lightest" }) badgeColor?: string;
 }
-
+export default toNative(ATATDivider);
 </script>

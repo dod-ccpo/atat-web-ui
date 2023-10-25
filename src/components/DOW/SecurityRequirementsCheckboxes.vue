@@ -39,11 +39,12 @@
 </template>
 <script lang="ts">
 
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
+
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import vue from "vue";
 import { Checkbox } from "../../../types/Global";
 @Component({
   components: {
@@ -52,7 +53,7 @@ import { Checkbox } from "../../../types/Global";
     ATATAlert
   }
 })
-export default class SecurityRequirementsCheckboxes extends vue {
+class SecurityRequirementsCheckboxes extends Vue {
   @PropSync("selectedSecurityRequirements") private _selectedSecurityRequirements!: string[];
   @Prop() private securityRequirementsCheckboxes!: Checkbox[];
   @Prop() private hasSecret!: boolean;
@@ -68,7 +69,7 @@ export default class SecurityRequirementsCheckboxes extends vue {
   public selectedChange(newVal: string[]): void {
     this._selectedSecurityRequirements = newVal
   }
-
 }
+export default toNative(SecurityRequirementsCheckboxes);
 </script>
 

@@ -33,19 +33,18 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 import ATATDialog from "@/components/ATATDialog.vue";
 import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";
-
+import { PropSync } from "@/decorators/custom";
 @Component({
   components: {
     ATATDialog,
     TaskOrderSearch,
   },
 })
-export default class TaskOrderSearchModal extends Vue {
+class TaskOrderSearchModal extends Vue {
 
   @PropSync("showTOSearchModal") public _showTOSearchModal!: boolean;
   @PropSync("TONumber") public _TONumber?: string;
@@ -81,4 +80,5 @@ export default class TaskOrderSearchModal extends Vue {
     }
   }
 }
+export default toNative(TaskOrderSearchModal)
 </script>

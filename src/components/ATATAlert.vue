@@ -78,12 +78,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 
 @Component({})
-export default class ATATAlert extends Vue {
+class ATATAlert extends Vue {
   @Prop({default: "presentation"}) private role?: string;
   @Prop({default: true}) private show?: boolean;
   @Prop({default: "Alert"}) private id?: string;
@@ -130,8 +129,8 @@ export default class ATATAlert extends Vue {
       return alertClasses + " bg-" + this.calloutBackground;
     }
     alertClasses = "_" + this.type + "-alert";
-    alertClasses = this.borderLeft ? alertClasses + " _border-left-thick" : alertClasses;
-    alertClasses = this.maxHeight ? alertClasses + " py-0 pr-0" : alertClasses;
+    alertClasses = this.borderLeft ? alertClasses + "_border-left-thick" : alertClasses;
+    alertClasses = this.maxHeight ? alertClasses + "py-0 pr-0" : alertClasses;
     return alertClasses;
   }
 
@@ -150,4 +149,5 @@ export default class ATATAlert extends Vue {
     this.show = false;
   }
 }
+export default toNative(ATATAlert);
 </script>

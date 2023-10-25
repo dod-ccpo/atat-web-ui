@@ -64,7 +64,7 @@
               id="XaaSCheckboxes"
               :card="false"
               :items="xaasCheckboxItems"
-              :noneValue="this.xaaSNoneValue"
+              :noneValue="xaaSNoneValue"
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
@@ -80,7 +80,7 @@
               id="CloudSupportCheckboxes"
               :card="false"
               :items="cloudSupportCheckboxItems"
-              :noneValue="this.cloudNoneValue"
+              :noneValue="cloudNoneValue"
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
@@ -119,7 +119,7 @@
 </template>
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -140,6 +140,7 @@ import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATAlert from "@/components/ATATAlert.vue";
+ 
 
 @Component({
   components: {
@@ -152,7 +153,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 
-export default class RequirementCategories extends Mixins(SaveOnLeave) {
+class RequirementCategories extends Vue{
   public selectedXaasOptions: string[] = [];
   public selectedCloudOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
@@ -358,4 +359,5 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   };
 
 };
+export default toNative(RequirementCategories) 
 </script>

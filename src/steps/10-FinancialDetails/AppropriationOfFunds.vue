@@ -37,7 +37,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
@@ -47,12 +47,13 @@ import { hasChanges } from "@/helpers";
 import _ from "lodash";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
   },
 })
 
-export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
+class AppropriationOfFunds extends Vue {
   private fundingRequest: FundingRequestDTO ={};
   private selectedFundType: "" | "O_M" | "RDT_E" | "PROCUREMENT" | "W_C" = "";
   private fundTypes: RadioButton[] = [
@@ -166,4 +167,6 @@ export default class AppropriationOfFunds extends Mixins(SaveOnLeave) {
 
 
 }
+
+export default toNative(AppropriationOfFunds)
 </script>

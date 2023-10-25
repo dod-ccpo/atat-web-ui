@@ -61,7 +61,6 @@ declare module 'vue' {
     CheckCircle: typeof import('./src/components/icons/CheckCircle.vue')['default']
     CheckedBag: typeof import('./src/components/icons/CheckedBag.vue')['default']
     ChevronDown: typeof import('./src/components/icons/ChevronDown.vue')['default']
-    'ChevronDown copy': typeof import('./src/components/icons/ChevronDown copy.vue')['default']
     ChevronRight: typeof import('./src/components/icons/ChevronRight.vue')['default']
     Close: typeof import('./src/components/icons/Close.vue')['default']
     Cloud: typeof import('./src/components/icons/Cloud.vue')['default']

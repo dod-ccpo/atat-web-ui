@@ -87,8 +87,8 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, PropSync} from "vue-property-decorator";
-import Vue from "vue";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import { Component as VueComponent } from "vue";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
@@ -99,7 +99,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
   }
 })
 
-export default class ATATDialog extends Vue {
+class ATATDialog extends Vue {
   @Prop() private message!: string;
   @Prop({default: "Dialog-Title"}) private title!: string;
   @Prop({ default: "ATATModalContent"}) private id!: string;
@@ -114,8 +114,8 @@ export default class ATATDialog extends Vue {
   @Prop({ default: false }) private showOKSpinner!: boolean;
   @Prop({ default: false }) private hideOkButton!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
-  @Prop({ default: "primary" }) private buttonColor?: string;
-  @Prop({ default: false }) private disableClickingOutside?: boolean;
+  @Prop({ default: "primary" }) private buttonColor!: string;
+  @Prop({ default: false }) private disableClickingOutside!: boolean;
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;
   @Prop() modalClass?: string;
@@ -171,4 +171,5 @@ export default class ATATDialog extends Vue {
     this._modalDrawerIsOpen = false;
   }
 }
+export default toNative(ATATDialog);
 </script>

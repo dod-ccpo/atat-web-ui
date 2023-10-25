@@ -37,8 +37,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import ATATFileListItem from "@/components/ATATFileListItem.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "./ATATDialog.vue";
@@ -51,7 +51,7 @@ import { uploadingFile } from "types/Global";
     ATATDialog,
   },
 })
-export default class ATATFileList extends Vue {
+class ATATFileList extends Vue {
   @Prop({ default: "61686c" }) private color!: string;
   @Prop({ default: () => [] }) private validFiles!: uploadingFile[];
   @PropSync("isFullSize", { default: true }) private _isFullSize!: boolean;
@@ -105,7 +105,7 @@ export default class ATATFileList extends Vue {
    * removes file from both file arrays at index
    */
   private removeFiles(idx: number): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       const fileToDelete = this.uploadingFiles[idx];
       this.uploadingFiles.splice(idx, 1);
       this.validFiles.splice(idx, 1);
@@ -150,4 +150,5 @@ export default class ATATFileList extends Vue {
     }
   }
 }
+export default toNative(ATATFileList);
 </script>

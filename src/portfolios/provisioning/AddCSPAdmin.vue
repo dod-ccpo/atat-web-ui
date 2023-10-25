@@ -264,8 +264,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Mixins } from "vue-property-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -280,9 +279,10 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import {
   Checkbox,
   ClassificationLevels,
+  DataTableHeader,
   PortfolioAdmin,
   PortfolioProvisioning,
-  SlideoutPanelContent
+  SlideoutPanelContent,
 } from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
@@ -290,6 +290,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATCheckboxGroup,
@@ -301,7 +302,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 
-export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
+class AddCSPAdmin extends Vue {
   public admins: PortfolioAdmin[] = [];
   public cspLong = "";
   public csp = "";
@@ -438,8 +439,8 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.$validators.required("Please enter your administrator’s 10-digit DoD ID.")
   ]
 
-  get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.CSPAdminForm as Vue & { validate: () => boolean };
+  get Form(): typeof Vue & { validate: () => boolean } {
+    return this.$refs.CSPAdminForm as typeof Vue & { validate: () => boolean };
   }
 
   public get tsEmailHelpText(): string {
@@ -496,7 +497,7 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
   public savedData: PortfolioAdmin[] = [];
 
   public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
+    if (e?.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
@@ -621,13 +622,13 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
     this.resetAccess();
   }
 
-  public get tableHeaders(): Record<string, string>[] {
+  public get tableHeaders(): DataTableHeader[] {
     return [
-      { text: "DoD ID", value: "DoDId" },
-      { text: "Administrator email", value: "adminEmails" },
-      { text: "Classification level", value: "adminClassificationLevels" },
-      { text: "Status", value: "status", width: "200" },
-      { text: "", value: "actions", width: "100" },
+      { title: "DoD ID", value: "DoDId" },
+      { title: "Administrator email", value: "adminEmails" },
+      { title: "Classification level", value: "adminClassificationLevels" },
+      { title: "Status", value: "status", width: "200" },
+      { title: "", value: "actions", width: "100" },
     ]
   }
 
@@ -770,5 +771,5 @@ export default class AddCSPAdmin extends Mixins(SaveOnLeave) {
 
 
 }
-
+export default toNative(AddCSPAdmin)
 </script>

@@ -16,7 +16,6 @@
       <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
-          
           id="StreetAddress"
           label="Street address"
           :class="inputClass"
@@ -39,13 +38,13 @@
       <v-col
         class="col-12"
         :class="[
-          _selectedAddressType !== addressTypes.FOR
+          _selectedAddressType !== addressTypes?.FOR ?? ''
             ? 'col-lg-5'
             : 'col-lg-4',
         ]"
       >
         <ATATTextField
-          v-if="_selectedAddressType !== addressTypes.MIL"
+          v-if="_selectedAddressType !== addressTypes?.MIL ?? ''"
           id="City"
           label="City"
           :class="inputClass"
@@ -53,7 +52,7 @@
           :rules="getRules('City')"
         />
         <ATATSelect
-          v-if="_selectedAddressType === addressTypes.MIL"
+          v-if="_selectedAddressType === addressTypes?.MIL ?? ''"
           id="APO_FPO_DPO"
           label="APO/FPO/DPO"
           :class="inputClass"
@@ -67,7 +66,7 @@
       <v-col
         class="col-12"
         :class="[
-          _selectedAddressType !== addressTypes.FOR
+          _selectedAddressType !== addressTypes?.FOR ?? ''
             ? 'col-lg-3'
             : 'col-lg-4',
         ]"
@@ -75,7 +74,7 @@
         <ATATAutoComplete
           id="State"
           label="State"
-          v-if="_selectedAddressType === addressTypes.USA"
+          v-if="_selectedAddressType === addressTypes?.USA ?? ''"
           :class="inputClass"
           titleKey="text"
           :searchFields="['text', 'value']"
@@ -87,7 +86,7 @@
         />
 
         <ATATSelect
-          v-if="_selectedAddressType === addressTypes.MIL"
+          v-if="_selectedAddressType === addressTypes?.MIL ?? ''"
           id="StateCode"
           label="AA/AE/AP"
           :class="inputClass"
@@ -99,7 +98,7 @@
         />
 
         <ATATTextField
-          v-if="_selectedAddressType === addressTypes.FOR"
+          v-if="_selectedAddressType === addressTypes?.FOR ?? ''"
           id="StateProvince"
           label="State or Province"
           :value.sync="_stateOrProvince"
@@ -120,9 +119,10 @@
         />
       </v-col>
     </v-row>
-    <v-row v-if="_selectedAddressType === addressTypes.FOR">
+    <v-row v-if="_selectedAddressType === addressTypes?.FOR ?? ''">
       <v-col class="col-12 col-lg-4">
         <ATATAutoComplete
+          ref="Country"
           id="Country"
           label="Country"
           :class="inputClass"
@@ -143,8 +143,9 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
+import { ComponentPublicInstance } from "vue";
 
 import ATATAutoComplete from "./ATATAutoComplete.vue";
 import ATATDialog from "./ATATDialog.vue";
@@ -160,7 +161,8 @@ import {
   mask,
   RadioButton,
   SelectData,
-  stringObj
+  stringObj,  
+  ValidationRule
 } from "types/Global";
 
 @Component({
@@ -173,11 +175,12 @@ import {
   },
 })
 
-export default class ATATAddressForm extends Vue {
+class ATATAddressForm extends Vue {
   $refs!: {
-    atatAddressForm: Vue & {
+    atatAddressForm: ComponentPublicInstance & {
       resetValidation: () => void;
       reset: () => void;
+      $refs:["Country"]
     };
   };
 
@@ -195,9 +198,9 @@ export default class ATATAddressForm extends Vue {
   @Prop({required: true}) public addressTypeOptions?: RadioButton[];
   @Prop({required: true}) public addressTypes?: stringObj;
   @Prop() public militaryPostOfficeOptions?: SelectData[];
-  @Prop() public stateListData?: SelectData[];
+  @Prop({default: []}) public stateListData!: SelectData[];
   @Prop() public stateCodeListData?: SelectData[];
-  @Prop() public countryListData?: SelectData[];
+  @Prop({default: []}) public countryListData!: SelectData[];
   @Prop() public requiredFields?: stringObj[];
   @Prop() public isValidRules?: isValidObj[];
 
@@ -215,9 +218,9 @@ export default class ATATAddressForm extends Vue {
     // this.resetData();
   }
 
-  private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
+  private getRules(inputID: string): ValidationRule[] {
     //eslint-disable-next-line prefer-const 
-    let rulesArr: ((v:string)=>string | true | undefined)[]  = [];
+    let rulesArr: ValidationRule[]  = [];
     if (this.requiredFields) {
 
       const result = this.requiredFields.filter(obj => {
@@ -244,7 +247,7 @@ export default class ATATAddressForm extends Vue {
     return rulesArr
   }
   private setMask(inputID:string, rule: isValidObj): void {
-    Vue.nextTick(()=>{
+    this.$nextTick(()=>{
       const inputField = document.getElementById(
         inputID + "_text_field"
       ) as HTMLInputElement;
@@ -264,21 +267,23 @@ export default class ATATAddressForm extends Vue {
   }
 
   public resetData(): void {
-    Vue.nextTick(() => {
-     
-      //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.atatAddressForm.$children;
-      formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
-      this.$refs.atatAddressForm.reset();
-      Vue.nextTick(() => {
-        this.$refs.atatAddressForm.resetValidation();
-      });
+    this.$nextTick(() => {
+
+      // TODO: REFACTOR AFTER VUE3 UPGRADE
+      // //iterate over the forms children ref manually set their 'errorMessages' array to empty
+      // const formChildren = this.$refs.atatAddressForm.$children;
+      // formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
+      // this.$refs.atatAddressForm.reset();
+      // this.$nextTick(() => {
+      //   this.$refs.atatAddressForm.resetValidation();
+      // });
+
     });
   }
   // computed
 
   get inputClass(): string {
-    return this.$vuetify.breakpoint.mdAndDown
+    return this.$vuetify.display.mdAndDown
       ? "_input-max-width my-2"
       : "my-2";
   }
@@ -293,9 +298,6 @@ export default class ATATAddressForm extends Vue {
       ? "ZIPCode"
       : "PostalCode";
   }
-
-
-
 }
-
+export default toNative(ATATAddressForm);
 </script>

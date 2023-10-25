@@ -60,14 +60,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import LateFormAlert from "@/portfolios/portfolio/LateFormAlert.vue";
-import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import CompletePackageCard 
   from "@/steps/11-GeneratePackageDocuments/components/CompletePackageCard.vue"
 import { User } from "types/Global";
@@ -81,7 +79,7 @@ import { User } from "types/Global";
   }
 })
 
-export default class ReadyToSubmit extends Vue {
+class ReadyToSubmit extends Vue {
   public currentUserIsMissionOwner = AcquisitionPackage.currentUserIsMissionOwner;
   public get missionOwner(): User {
     return AcquisitionPackage.getPackageMissionOwner;
@@ -114,5 +112,7 @@ export default class ReadyToSubmit extends Vue {
     await this.loadOnEnter()
   }
 }
+
+export default toNative(ReadyToSubmit)
 </script>
 

@@ -74,14 +74,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 
-export default class BAALearnMore extends Vue {
+class BAALearnMore extends Vue {
   /* eslint-disable max-len */
   private moreInfoHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html`;
   private title45Href= `https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-160/subpart-A/section-160.103`;
 }
+export default toNative(BAALearnMore)
 </script>

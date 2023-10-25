@@ -13,7 +13,7 @@
      
     </div>
       <ATATTextField
-        :id="`SingleAmount_${this.needs}_${this.index}`"
+        :id="`SingleAmount_${needs}_${index}`"
         width="190"
         class="mr-2"
         :alignRight="true"
@@ -60,7 +60,7 @@
             class="ml-5"
             :alignRight="true"
             :value.sync="_values[idx]"
-            @blur="setsysIdArrayStringified(_values[idx], period.sys_id)"
+            @blur="setsysIdArrayStringified(_values[idx], period?.sys_id ?? '')"
             :isCurrency="textboxSuffix === ''"
             :appendText="textboxSuffix !== '' ? textboxSuffix : null"
             :showErrorMessages="true"
@@ -77,8 +77,8 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { PropSync } from "@/decorators/custom";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import { PeriodDTO } from "@/api/models";
@@ -89,7 +89,7 @@ import { PeriodDTO } from "@/api/models";
     ATATTooltip
   }
 })
-export default class ATATSingleAndMultiplePeriods extends Vue {
+class ATATSingleAndMultiplePeriods extends Vue {
   @Prop({default: false}) private isMultiple?: boolean;
   @Prop({default: true}) private showSinglePeriodTooltip?: boolean;
   @Prop({default: false}) private showMultiplePeriodTooltip?: boolean;
@@ -155,4 +155,5 @@ export default class ATATSingleAndMultiplePeriods extends Vue {
   }
 
 }
+export default toNative(ATATSingleAndMultiplePeriods);
 </script>

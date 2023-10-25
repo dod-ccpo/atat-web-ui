@@ -93,7 +93,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -109,13 +109,14 @@ import ContactData from "@/store/contactData";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAddressForm,
     ATATRadioGroup,
     ATATTextField,
   },
 })
-export default class FOIACoordinator extends Mixins(SaveOnLeave) {
+class FOIACoordinator extends Vue {
   private addressTypes = {
     USA: "US",
     MIL: "MILITARY",
@@ -294,8 +295,11 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
         "foia_country",
       ];
       keys.forEach((key: string) => {
-        if (Object.prototype.hasOwnProperty.call(storeData, key)) {
-          this.savedData[key] = storeData[key];
+        const _key = key as keyof SensitiveInformationDTO
+        if (Object.prototype.hasOwnProperty.call(storeData, _key)) {
+          // @ts-expect-error savedData type can't be properly determined by TS
+          // but it works as expected here.
+          this.savedData[_key] = storeData[_key];
         }
       });
     } else {
@@ -323,4 +327,6 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     return true;
   }
 }
+
+export default toNative(FOIACoordinator)
 </script>

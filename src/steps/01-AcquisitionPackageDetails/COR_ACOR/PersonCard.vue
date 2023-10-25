@@ -8,15 +8,15 @@
       ]"
     >
       <span class="font-size-20 mb-5 d-block" :id="id + '_Name'">
-        {{ selectedContact.firstName }} {{ selectedContact.lastName }}
+        {{ _selectedContact.firstName }} {{ _selectedContact.lastName }}
       </span>
       <span class="ml-3 mb-5 d-block" :id="id + '_Email'">
         <v-icon class="mr-2 text-base-light">mail</v-icon> 
-        {{ selectedContact.email }}
+        {{ _selectedContact.email }}
       </span>
       <span class="ml-3 mb-5 d-block" :id="id + '_Phone'">
         <v-icon class="mr-2 text-base-light">phone</v-icon> 
-        {{ selectedContact.phone }}<br />
+        {{ _selectedContact.phone }}<br />
       </span>
       <span 
         class="ml-3 d-block" 
@@ -24,7 +24,7 @@
         :id="id + '_OrgName'"
       >
         <v-icon class="mr-2 text-base-light">pentagon</v-icon> 
-        {{ selectedContact.orgName }}<br />
+        {{ _selectedContact.orgName }}<br />
       </span>
 
       <p 
@@ -96,8 +96,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+ 
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -115,12 +116,12 @@ import { routeNames } from "../../../router/stepper";
   }
 })
 
-export default class PersonCard extends Vue {
+class PersonCard extends Vue {
   
   // props
   
   @Prop({ default: false }) private isACOR!: boolean;
-  @Prop({ default: "PersonCard" }) private id!: boolean;
+  @Prop({ default: "PersonCard" }) private id!: string;
   @PropSync("selectedContact") private _selectedContact!: CorAcorSelectData;
   @PropSync("showContactForm") private _showContactForm!: unknown;
 
@@ -165,4 +166,5 @@ export default class PersonCard extends Vue {
 
 
 }
+export default toNative(PersonCard)
 </script>

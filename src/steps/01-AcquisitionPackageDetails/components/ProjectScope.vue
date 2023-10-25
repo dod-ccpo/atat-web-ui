@@ -5,7 +5,7 @@
       :label="label"
       class="max-width-740"
       :rows="7"
-      :rules="rules"
+      :rules="_rules"
       :helpText="helpText"
       :value.sync="_projectScope"
       maxChars="300"
@@ -14,29 +14,32 @@
   <div v-else>
      <dl class="vertical">
         <dt>Brief description of the requirement:</dt>
-        <dd>{{ projectScope }}</dd>
+        <dd>{{ _projectScope }}</dd>
       </dl> 
    </div>
 </template>
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Prop, PropSync } from "vue-property-decorator";
-import Vue from "vue";
+import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
+ 
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import { ValidationRule } from "types/Global";
 
 @Component({
   components: {
     ATATTextArea,
   },
 })
-export default class ProjectScope extends Vue {
+class ProjectScope extends Vue {
   @PropSync("projectScope", {default: "scope goes here"}) 
   private _projectScope!: string;
   @Prop({default: "ProjectScope"}) private id!: string;
   @Prop() private label!: string;
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: true }) private isForm!: boolean;
-  @PropSync("rules") private _rules!: "";
+  @PropSync("rules") private _rules!: ValidationRule;
 }
+export default toNative(ProjectScope)
 </script>

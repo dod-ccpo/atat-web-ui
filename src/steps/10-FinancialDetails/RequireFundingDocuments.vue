@@ -32,18 +32,19 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
   },
 })
-export default class RequireFundingDocuments extends Mixins(SaveOnLeave) {
+class RequireFundingDocuments extends Vue {
   private savedRequireFundingSelected = "";
   private requireFundingSelection = "";
   private requireFundingOptions: RadioButton[] = [
@@ -89,4 +90,6 @@ export default class RequireFundingDocuments extends Mixins(SaveOnLeave) {
     return this.requireFundingSelection !== this.savedRequireFundingSelected;
   }
 }
+
+export default toNative(RequireFundingDocuments)
 </script>

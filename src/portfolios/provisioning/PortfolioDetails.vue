@@ -64,11 +64,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
-
 import PortfolioStore from "@/store/portfolio";
 import { Checkbox, PortfolioProvisioning, SelectData } from "types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -76,7 +74,9 @@ import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
+
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATTextField,
     ATATAutoComplete,
@@ -84,7 +84,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
   }
 })
 
-export default class PortfolioDetails extends Mixins(SaveOnLeave) {
+class PortfolioDetails extends Vue {
   public portfolioTitle = "";
   public serviceOrAgency: SelectData = { text: "", value: "" };
   public selectedCSPProvider = "";
@@ -161,12 +161,12 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
         serviceOrAgency: this.serviceOrAgency.value,
         selectedILs: this.selectedILs,
       }
-      this.selectedCSPProvider = storeData.csp || ""
+      this.selectedCSPProvider = storeData.csp ?? ""
       this.checkboxHelpText = this.selectedPackage? "":"Select all that apply"
       this.checkboxLabel = this.selectedPackage? "":"What impact level(s) do you need to" +
       " provision?"
 
-      this.selectedILs = storeData.selectedILs || [];
+      this.selectedILs = storeData.selectedILs ?? [];
     }
   }
 
@@ -197,4 +197,5 @@ export default class PortfolioDetails extends Mixins(SaveOnLeave) {
   }
 
 }
+export default toNative(PortfolioDetails)
 </script>

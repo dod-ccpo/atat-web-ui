@@ -102,7 +102,7 @@
                 :items="memberMenuItems"
                 width="105"
                 :selectedValue.sync="user.role"
-                @onChange="(value)=>dropdownChanged(value, index)"
+                @onChange="(value: string)=>dropdownChanged(value, index)"
                 iconType="chevron"
               />
             </v-list-item-action>
@@ -114,7 +114,8 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, Watch, toNative } from "vue-facing-decorator";
+import { PropSync } from '@/decorators/custom'
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -124,7 +125,6 @@ import PortfolioStore from "@/store/portfolio";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import UserManagement from "@/store/user/userManagement";
-import portfolio from "@/store/portfolio";
 
 import UserSearch from "@/mixins/userSearch";
 
@@ -138,7 +138,7 @@ import UserSearch from "@/mixins/userSearch";
   }
 })
 
-export default class InviteMembersModal extends UserSearch {
+class InviteMembersModal extends UserSearch {
   @PropSync("showModal") public _showInviteModal?: boolean;
   public portfolioData: Portfolio | null = null;
   public projectTitle = "";
@@ -208,7 +208,7 @@ export default class InviteMembersModal extends UserSearch {
       (selectedUser.role === "Manager") || (selectedUser.role === "Viewer")
     );
     if (userSelectedNotRemovedList.length > 0) {
-      await portfolio.inviteMembers(userSelectedNotRemovedList);
+      await PortfolioStore.inviteMembers(userSelectedNotRemovedList);
       this.$emit("membersInvited");
     }
   }
@@ -217,4 +217,5 @@ export default class InviteMembersModal extends UserSearch {
     this.modalDrawerIsOpen = true;
   }
 }
+export default toNative(InviteMembersModal)
 </script>

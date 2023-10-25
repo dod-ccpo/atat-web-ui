@@ -64,13 +64,7 @@
               :maxChars="4000"
               :validateItOnBlur="true"
               :noResize="false"
-              :rules="[
-                this.$validators.required(`Describe the market research that was 
-                  conducted for this effort.`),
-                this.$validators.maxLength(
-                  4000, 'Limit your description to 4,000 characters or less.'
-                )
-              ]"
+              :rules="textAreaRules"
             />
 
             <ExplanationButtons 
@@ -105,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, toNative, Vue} from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -124,6 +118,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { routeNames } from "@/router/stepper";
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -136,7 +131,7 @@ import { routeNames } from "@/router/stepper";
   }
 })
 
-export default class MarketResearchReview extends Mixins(SaveOnLeave) {
+class MarketResearchReview extends Vue {
   public defaultSuggestion = "";
   public researchDetails = "";
   public researchDetailsGenerated = "";
@@ -152,6 +147,13 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
   public hasFormBeenEdited = false;
   public hasSuggestedTextBeenEdited = false;
   public explanation = AcquisitionPackage.fairOppExplanations.researchDetails;
+  public textAreaRules = [
+    this.$validators.required(`Describe the market research that was 
+                  conducted for this effort.`),
+    this.$validators.maxLength(
+      4000, 'Limit your description to 4,000 characters or less.'
+    )
+  ]
 
   public get pagewHeaderIntro(): string {
     return this.useCustomTextOnLoad ? "Tell us about" : "Let’s review";
@@ -326,4 +328,6 @@ export default class MarketResearchReview extends Mixins(SaveOnLeave) {
 
 
 }
+ 
+export default toNative(MarketResearchReview)
 </script>
