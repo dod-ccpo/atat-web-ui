@@ -200,12 +200,12 @@ export interface CountryObj {
   mask?: string[];
 }
 
-export interface BreadCrumbItem {
+export interface BreadcrumbItem {
   disabled?: boolean,
   exact?: boolean,
   href?: string,
   link?: boolean,
-  text?: string | number,
+  title?: string | number,
   to?: string;
 }
 
