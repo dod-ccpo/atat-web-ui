@@ -148,7 +148,11 @@ import DescriptionOfWork,
 
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
-import { OtherServiceOfferingData, OtherServiceSummaryTableData } from "../../../../types/Global";
+import { 
+  DataTableHeader, 
+  OtherServiceOfferingData, 
+  OtherServiceSummaryTableData,
+} from "../../../../types/Global";
 import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import _ from 'lodash';
 import { ReferenceColumn } from "@/api/models";
@@ -156,13 +160,14 @@ import Summary from "@/store/summary";
  
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATDialog,
     ATATSVGIcon
   }
 })
 
-class OtherOfferingSummary extends Vue
+class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
 {
   public isCompute = false;
   public isGeneralXaaS = false;
@@ -181,7 +186,7 @@ class OtherOfferingSummary extends Vue
 
   public offeringInstances: OtherServiceOfferingData[] = [];
 
-  public tableHeaders: Record<string, string>[] = [];
+  public tableHeaders: DataTableHeader[] = [];
   public tableData: OtherServiceSummaryTableData[] = [];
 
   public nextOfferingGroupStr = "";
@@ -300,15 +305,15 @@ class OtherOfferingSummary extends Vue
       if (this.isCompute || this.isDatabase) {
         const typeTitle = this.isCompute ? "Type" : "Database Type";
         this.tableHeaders = [    
-          { text: "", value: "instanceNumber", width: "50" },
-          { text: typeTitle, value: "typeOrTitle" },
-          { text: "Classification", value: "classification" },
-          { text: "Quantity", value: "qty" },
-          { text: "vCPU", value: "vCPU" },
-          { text: "Memory", value: "memory" },
-          { text: "Storage", value: "storageAmount" },
-          { text: "Performance", value: "performance" },
-          { text: "", value: "actions", width: "75" },
+          { title: "", value: "instanceNumber", width: "50" },
+          { title: typeTitle, value: "typeOrTitle" },
+          { title: "Classification", value: "classification" },
+          { title: "Quantity", value: "qty" },
+          { title: "vCPU", value: "vCPU" },
+          { title: "Memory", value: "memory" },
+          { title: "Storage", value: "storageAmount" },
+          { title: "Performance", value: "performance" },
+          { title: "", value: "actions", width: "75" },
         ];
 
         if (!instanceClone.environmentType) {
@@ -337,11 +342,11 @@ class OtherOfferingSummary extends Vue
       // -----------------------------------------------------------------
       } else if (this.isStorage) {
         this.tableHeaders = [    
-          { text: "", value: "instanceNumber", width: "50" },
-          { text: "Storage Type", value: "typeOrTitle", width: "50%" },
-          { text: "Classification", value: "classification" },
-          { text: "Storage Size", value: "storageAmount", width: "50%" },
-          { text: "", value: "actions", width: "75" },
+          { title: "", value: "instanceNumber", width: "50" },
+          { title: "Storage Type", value: "typeOrTitle", width: "50%" },
+          { title: "Classification", value: "classification" },
+          { title: "Storage Size", value: "storageAmount", width: "50%" },
+          { title: "", value: "actions", width: "75" },
         ];
         typeOrTitle = instanceClone.storageType || "";
       // -----------------------------------------------------------------
@@ -349,12 +354,12 @@ class OtherOfferingSummary extends Vue
       // -----------------------------------------------------------------
       } else if (this.isTraining) {
         this.tableHeaders = [    
-          { text: "", value: "instanceNumber", width: "50" },
-          { text: "Title", value: "typeOrTitle", width: "30%" },
-          { text: "Classification", value: "classification", width: "20%" },
-          { text: "Training format", value: "trainingType", width: "30%" },
-          { text: "Duration", value: "duration", width: "20%"},
-          { text: "", value: "actions", width: "75" },
+          { title: "", value: "instanceNumber", width: "50" },
+          { title: "Title", value: "typeOrTitle", width: "30%" },
+          { title: "Classification", value: "classification", width: "20%" },
+          { title: "Training format", value: "trainingType", width: "30%" },
+          { title: "Duration", value: "duration", width: "20%"},
+          { title: "", value: "actions", width: "75" },
         ];
         typeOrTitle = instanceClone.trainingRequirementTitle || "";
 
@@ -369,12 +374,12 @@ class OtherOfferingSummary extends Vue
       // -----------------------------------------------------------------
       } else {
         this.tableHeaders = [    
-          { text: "", value: "instanceNumber", width: "50" },
-          { text: "Statement of objectives", value: "typeOrTitle", width: "50%" },
-          { text: "Classification", value: "classification" },
-          { text: "On-site access", value: "personnelOnsiteAccess" },          
-          { text: "Duration", value: "duration", width: "50%" },
-          { text: "", value: "actions", width: "75" },
+          { title: "", value: "instanceNumber", width: "50" },
+          { title: "Statement of objectives", value: "typeOrTitle", width: "50%" },
+          { title: "Classification", value: "classification" },
+          { title: "On-site access", value: "personnelOnsiteAccess" },          
+          { title: "Duration", value: "duration", width: "50%" },
+          { title: "", value: "actions", width: "75" },
         ];
 
         if (!this.hasOnSiteColumn) {

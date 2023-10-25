@@ -100,7 +100,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, mixins, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, mixins, Watch , toNative, Vue } from "vue-facing-decorator";
 
 import RequirementsForm from './RequirementsForm.vue'
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -137,6 +137,7 @@ import { convertColumnReferencesToValues } from "@/api/helpers";
  
 
 @Component({
+  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATCheckboxGroup,
@@ -146,7 +147,7 @@ import { convertColumnReferencesToValues } from "@/api/helpers";
   }
 })
 
-class ServiceOfferingDetails extends Vue{
+class ServiceOfferingDetails extends mixins(Vue, SaveOnLeave) {
   public serviceOfferingName = DescriptionOfWork.currentOfferingName;
   public serviceOfferingSysId = DescriptionOfWork.currentOfferingSysId;
   public groupId = DescriptionOfWork.currentGroupId;

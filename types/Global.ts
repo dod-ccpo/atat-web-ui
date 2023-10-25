@@ -1,9 +1,11 @@
 /* eslint-disable camelcase */
 import { Component } from "vue";
 import {
-  RouteConfigMultipleViews,
-  RouteConfigSingleView
-} from "vue-router/types/router";
+  RouteRecordMultipleViews,
+  RouteRecordSingleView,
+  RouteComponent,
+  RouteLocationRaw,
+} from "vue-router";
 
 import { AdditionalButton } from "@/store/steps/types";
 
@@ -119,13 +121,14 @@ export interface AutoCompleteItemGroups {
   [key: string]: AutoCompleteItem[];
 }
 
+declare type Lazy<T> = () => Promise<T>;
 /**
  * Defines Stepper Route Base properties
  */
 interface StepperRouteBase {
   name?: string;
-  path?: string;
-  component?: unknown;
+  path: string;
+  component?: RouteComponent | Lazy<RouteComponent>;
   stepNumber?: string;
   completePercentageWeight?: number;
   menuText?: string;
@@ -149,18 +152,25 @@ interface StepperRouteBase {
   canNavigateToSummary?:boolean;
 }
 
+// RouteRecord Omissions should be okay because the types set in StepperRouteBase 
+// are either equivalent or more strict than the omitted types from Vue-Vouter
+// But for some reason in RouteRecordSingleView and RouteRecordMultipleViews, they're
+// explicitly set to "never". This might be for their use of it, and probably
+// doesn't effect us. But it also might effect us.
 /**
  * Stepper Route Single Extends Route Single View
  */
-export interface StepperRouteSingleConfig extends StepperRouteBase, RouteConfigSingleView {
-  children?: StepperRouteConfig[]
+export interface StepperRouteSingleConfig extends
+  StepperRouteBase, Omit<RouteRecordSingleView, 'component' | 'children' | 'name'> {
+    children?: StepperRouteConfig[]
 }
 
 /**
  * Stepper Route Multiple Extends Route Multiple Views
  */
-export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteConfigMultipleViews {
-  children?: StepperRouteConfig[]
+export interface StepperRouteMultipleConfig extends 
+  StepperRouteBase, Omit<RouteRecordMultipleViews, 'component' | 'children' | 'name'> {
+    children?: StepperRouteConfig[]
 }
 
 /**
@@ -198,15 +208,6 @@ export interface CountryObj {
   active: boolean;
   suggested?: boolean;
   mask?: string[];
-}
-
-export interface BreadCrumbItem {
-  disabled?: boolean,
-  exact?: boolean,
-  href?: string,
-  link?: boolean,
-  text?: string | number,
-  to?: string;
 }
 
 export interface ToastObj {
@@ -951,3 +952,13 @@ export type DataTableHeader = {
 export type ValidationResult = string | boolean;
 export type ValidationRule = ValidationResult | PromiseLike<ValidationResult> |
   ((value: any) => ValidationResult) | ((value: any) => PromiseLike<ValidationResult>);
+interface LinkProps {
+    href: string | undefined;
+    replace: boolean | undefined;
+    to: RouteLocationRaw | undefined;
+    exact: boolean | undefined;
+}
+export type BreadcrumbItem = string | (Partial<LinkProps> & {
+    title: string;
+    disabled?: boolean;
+});
