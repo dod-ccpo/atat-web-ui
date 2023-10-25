@@ -53,9 +53,7 @@
 
 <script lang="ts">
 
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
-
+import { Component, toNative, Vue } from "vue-facing-decorator";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
@@ -69,7 +67,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 
-export default class TaskOrderLookup extends Vue {
+class TaskOrderLookup extends Vue {
   private toolTipText = `<p class="mb-1">This is a 13-character value for new task orders, or
     a 17-character value for task order modifications.</p>
     <p class="mb-1">If your Contracting Office used:</p>
@@ -85,4 +83,5 @@ export default class TaskOrderLookup extends Vue {
       : "New Acquisition";
   }
 }
+export default toNative(TaskOrderLookup);
 </script>

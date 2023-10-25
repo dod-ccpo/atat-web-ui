@@ -1,4 +1,4 @@
-import Vue from "vue";
+import { Vue } from "vue-facing-decorator";
 import { VueWrapper } from "@vue/test-utils";
 import { ValidationPlugin } from "@/plugins/validation";
 

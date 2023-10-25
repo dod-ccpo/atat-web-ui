@@ -9,7 +9,7 @@ import {
   getModule,
 } from "vuex-module-decorators";
 import rootStore from "../index";
-import Vue from "vue";
+import { Vue } from "vue-facing-decorator";
 import storeHelperFunctions, {
   nameofProperty,
   storeDataToSession,

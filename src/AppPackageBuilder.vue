@@ -53,8 +53,7 @@
 </style>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Vue, Component, Watch, toNative } from "vue-facing-decorator";
 
 import ATATFooter from './components/ATATFooter.vue'
 import ATATPageHead from './components/ATATPageHead.vue'
@@ -84,17 +83,17 @@ import { RouteLocationNormalized, RouteRecordName } from 'vue-router'
 import steps from '@/store/steps'
 import { ComponentPublicInstance } from "vue";
 
-	@Component({
-	  components: {
-	    ATATFooter,
-	    ATATPageHead,
-	    ATATSideStepper,
-	    ATATSlideoutPanel,
-	    ATATStepperNavigation,
-	    ATATToast
-	  }
-	})
-export default class AppPackageBuilder extends Vue {
+@Component({
+	components: {
+	ATATFooter,
+	ATATPageHead,
+	ATATSideStepper,
+	ATATSlideoutPanel,
+	ATATStepperNavigation,
+	ATATToast
+	}
+})
+class AppPackageBuilder extends Vue {
   $refs!: {
 	sideStepper: ComponentPublicInstance
   }
@@ -338,4 +337,5 @@ export default class AppPackageBuilder extends Vue {
 		  }
 		}
 }
+export default toNative(AppPackageBuilder);
 </script>

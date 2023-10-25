@@ -13,9 +13,8 @@
 </template>
 
 <script lang="ts">
-import { BreadcrumbItem } from "types/Global";
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { BreadCrumbItem } from "types/Global";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
@@ -23,24 +22,25 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
     ATATSVGIcon
   }
 })
-export default class DocReviewHead extends Vue {
+class DocReviewHead extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  public breadCrumbItems: BreadcrumbItem[] = [
+  public breadCrumbItems: BreadCrumbItem[] = [
     {
-      title: "Acquisitions",
+      text: "Acquisitions",
       disabled: false,
       href: "#",
     },
     {
-      title: "Demo Package",
+      text: "Demo Package",
       disabled: false,
       href: "#",
     },
     {
-      title: "Requirements Checklist",
+      text: "Requirements Checklist",
       disabled: true,
       href: "#",
     },
   ];
 }
+export default toNative(DocReviewHead);
 </script>
