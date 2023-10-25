@@ -21,7 +21,7 @@ import {
   UserDTO,
   CostsDTO,
 } from "@/api/models";
-import { RouteComponent, RouteRecordName, RouteRecordRaw, RouteRecordSingleViewWithChildren } from "vue-router";
+import { RouteComponent, RouteRecordName, RouteRecordRaw, RouteRecordSingleViewWithChildren, _RouteRecordBase } from "vue-router";
 
 export interface DocReviewData {
   projectOverview: ProjectOverviewDTO;
@@ -152,15 +152,17 @@ interface StepperRouteBase extends RouteRecordSingleViewWithChildren {
 /**
  * Stepper Route Single Extends Route Single View
  */
-export interface StepperRouteSingleConfig extends StepperRouteBase, RouteRecordSingleViewWithChildren {
-  children: RouteRecordRaw[]
+export interface StepperRouteSingleConfig extends
+  Omit<StepperRouteBase, 'children'>, Omit<RouteRecordSingleViewWithChildren, 'children'> {
+    children?: StepperRouteConfig[]
 }
 
 /**
  * Stepper Route Multiple Extends Route Multiple Views
  */
-export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteRecordSingleViewWithChildren {
-  children: RouteRecordRaw[]
+export interface StepperRouteMultipleConfig extends 
+  Omit<StepperRouteBase, 'children'>, Omit<RouteRecordSingleViewWithChildren, 'children'> {
+  children: StepperRouteConfig[]
 }
 
 /**
