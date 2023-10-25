@@ -285,7 +285,6 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATDialog from "@/components/ATATDialog.vue";
-import { SummaryStore } from "@/store/summary";
 
 @Component({
   components: {
