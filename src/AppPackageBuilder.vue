@@ -53,8 +53,7 @@
 </style>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Vue, Component, Watch, toNative } from "vue-facing-decorator";
 
 import ATATFooter from './components/ATATFooter.vue'
 import ATATPageHead from './components/ATATPageHead.vue'
@@ -84,19 +83,21 @@ import { RouteLocationNormalized, RouteRecordName } from 'vue-router'
 import steps from '@/store/steps'
 import { ComponentPublicInstance } from "vue";
 
-	@Component({
-	  components: {
-	    ATATFooter,
-	    ATATPageHead,
-	    ATATSideStepper,
-	    ATATSlideoutPanel,
-	    ATATStepperNavigation,
-	    ATATToast
-	  }
-	})
-export default class AppPackageBuilder extends Vue {
+@Component({
+  components: {
+    ATATFooter,
+    ATATPageHead,
+    ATATSideStepper,
+    ATATSlideoutPanel,
+    ATATStepperNavigation,
+    ATATToast
+  }
+})
+class AppPackageBuilder extends Vue {
   $refs!: {
-	sideStepper: ComponentPublicInstance
+	sideStepper: ComponentPublicInstance & {
+	  setCurrentStep:	(s: string)=>void
+	}
   }
 
   public routeNames: Record<string, string> = {}
@@ -121,7 +122,7 @@ export default class AppPackageBuilder extends Vue {
   private isNewPackage = false
 
   async mounted(): Promise<void> {
-    await Steps.setSteps(stepperRoutes)
+    Steps.setSteps(stepperRoutes)
     this.hideNavigation = AcquisitionPackage.hideNavigation
     this.hideSideNavigation = AcquisitionPackage.hideSideNavigation
     this.routeNames = routeNames
@@ -153,7 +154,7 @@ export default class AppPackageBuilder extends Vue {
         !AcquisitionPackage.hideSideNavigation &&
 					!AcquisitionPackage.hideNavigation
       ) {
-        await this.$refs.sideStepper.setCurrentStep(stepNumber)
+        this.$refs.sideStepper.setCurrentStep(stepNumber)
       }
       SlideoutPanel.closeSlideoutPanel()
     }
@@ -338,4 +339,5 @@ export default class AppPackageBuilder extends Vue {
 		  }
 		}
 }
+export default toNative(AppPackageBuilder);
 </script>

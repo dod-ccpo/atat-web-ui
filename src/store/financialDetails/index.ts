@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import Vue from "vue";
+import { Vue } from "vue-facing-decorator";
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 

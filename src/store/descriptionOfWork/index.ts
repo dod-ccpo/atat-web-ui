@@ -28,7 +28,7 @@ import {
   storeDataToSession,
   retrieveSession,
 } from "../helpers";
-import Vue from "vue";
+import { Vue } from "vue-facing-decorator";
 import {
   DOWServiceOfferingGroup,
   DOWServiceOffering,

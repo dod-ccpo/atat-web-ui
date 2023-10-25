@@ -1,5 +1,3 @@
-import Vue from "vue"
-
 import { compareAsc, compareDesc } from "date-fns"
 import { CountryObj, ValidationResult } from "types/Global";
 import { App } from "vue";

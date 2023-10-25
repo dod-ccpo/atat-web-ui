@@ -21,14 +21,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-facing-decorator";
-
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { scrollToId } from "@/helpers";
 
 @Component({})
-
-export default class NewAcquisitionCard extends Vue {
+class NewAcquisitionCard extends Vue {
 
   public async startNewAcquisition(): Promise<void> {
     this.$emit("startNewAcquisition");
@@ -39,5 +36,5 @@ export default class NewAcquisitionCard extends Vue {
   }
 
 }
-
+export default toNative(NewAcquisitionCard);
 </script>

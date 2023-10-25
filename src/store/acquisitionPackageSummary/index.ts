@@ -7,7 +7,7 @@ import {
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "@/store";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
-import Vue from "vue"
+import { Vue } from "vue-facing-decorator";
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
 import CurrentUserStore from "@/store/user";
