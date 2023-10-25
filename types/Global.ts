@@ -72,7 +72,7 @@ export interface StepperRouteHandlerParams {
 }
 
 export interface StepperStep {
-  name: string;
+  name: string | symbol;
   stepNumber?: string;
   completed?: boolean;
   excludeFromMenu?: boolean;
