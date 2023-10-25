@@ -1,16 +1,13 @@
-import Vue, { VueConstructor } from "vue";
-import { Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import Vue from "vue";
+import { VueWrapper } from "@vue/test-utils";
+import { ValidationPlugin } from "@/plugins/validation";
 
-let wrapper: Wrapper<DefaultProps & Vue, Element>;
-let localVue: VueConstructor<Vue>;
+let wrapper: VueWrapper;
 
 export async function init(
-  w: Wrapper<DefaultProps & Vue, Element>,
-  lV: VueConstructor<Vue>, 
+  w: VueWrapper,
 ): Promise<void> {
   wrapper = w;
-  localVue = lV;
 }
 
 export async function generateString(length: number): Promise<string> {
@@ -24,7 +21,7 @@ export async function generateString(length: number): Promise<string> {
 }
 
 export async function validateInput(
-  validatorName: string,
+  validatorName: keyof ValidationPlugin,
   props: Record<string, string> | Record<string, Record<string, string>>,
   componentRef: string,
   errorCount?: number,
@@ -32,7 +29,7 @@ export async function validateInput(
   let success = false;
 
   try {
-    const mockValidator = jest.spyOn(localVue?.prototype.$validators, validatorName);
+    const mockValidator = jest.spyOn(wrapper.vm.$validators, validatorName);
     await wrapper.setProps(props); 
     expect(mockValidator).toHaveBeenCalled();
 
