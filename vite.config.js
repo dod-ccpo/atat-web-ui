@@ -58,7 +58,7 @@ export default defineConfig(({command, mode}) => {
 			Components({
 				dts: true,
 				directives: false,
-				resolvers: [VuetifyResolver()],
+				resolvers: [/*VuetifyResolver()*/],
 				types: [
 					{
 						from: 'vue-router',

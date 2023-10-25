@@ -26,11 +26,11 @@ import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 // import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
 // import AcquisitionPackage from "./store/acquisitionPackage";
 
-// @Component({
-//   // components: {
-//   //   ATATTopNavBar,
-//   // },
-// })
+@Component({
+  // components: {
+  //   ATATTopNavBar,
+  // },
+})
 class App extends Vue {
   // public get activeAppSection(): string {
   //   return AppSections.activeAppSection;
