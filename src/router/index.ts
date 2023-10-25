@@ -39,7 +39,13 @@ const routes: readonly RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  routes,
+  routes:[
+    {
+      name: 'pathResolver',
+      component: PathResolver,
+      path: '/pathResolver'
+    }
+  ],
   scrollBehavior() {
     scrollToMainTop();
   },

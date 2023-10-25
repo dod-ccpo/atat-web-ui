@@ -22,6 +22,18 @@ const CONFIG = {
 	...servicenowConfig
 }
 
+const babelPlugin = {
+	name: 'plugin-babel',
+	transform: (src, id) => {
+	  if (/\.(jsx?|vue)$/.test(id)) {              // the pattern of the file to handle
+		return babel.transform(src, {
+		  filename: id,
+		  babelrc: false,
+		});
+	  }
+	},
+  };
+
 // https://vitejs.dev/config/
 export default defineConfig(({command, mode}) => {
 	const env = loadEnv(mode, process.cwd(), '')
@@ -53,8 +65,12 @@ export default defineConfig(({command, mode}) => {
 		},
 		plugins: [
 			// VueDevTools(),
-			vue(),
-
+			vue({
+				script: {
+				  babelParserPlugins: ['decorators'],     // must enable decorators support
+				},
+			  }),
+			  babelPlugin,                                // must be after the vue plugin
 			Components({
 				dts: true,
 				directives: false,
@@ -75,7 +91,8 @@ export default defineConfig(({command, mode}) => {
 			}),
 			// vue-property-decorator
 			cssInjectedByJsPlugin(),
-			resolve() //commonjs(),
+			resolve(),
+			//commonjs(),
 			//splitVendorChunkPlugin(),
 		],
 		server: {
