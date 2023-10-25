@@ -126,10 +126,9 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import PageHead from "./components/DocReviewHead.vue"
-import { Component, Prop } from "vue-facing-decorator";
+
 import { PropSync } from "@/decorators/custom";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -176,7 +175,7 @@ import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vu
   },
 })
 
-export default class DocumentReviewForm extends Vue {
+class DocumentReviewForm extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
   @PropSync("docData") private _docData!: DocReviewData; 
   
@@ -190,5 +189,6 @@ export default class DocumentReviewForm extends Vue {
     }
   }
 }
+export default toNative(DocumentReviewForm);
 
 </script>

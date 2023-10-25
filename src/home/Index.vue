@@ -88,9 +88,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-facing-decorator";
-
+import { Component, Vue, toNative, Watch } from "vue-facing-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
@@ -127,7 +125,7 @@ import { ToastObj } from "types/Global";
   }
 })
 
-export default class Home extends Vue {
+class Home extends Vue {
 
   public showTOSearchModal = false;
   public TONumber = "";
@@ -240,5 +238,5 @@ export default class Home extends Vue {
 
 
 }
-
+export default toNative(Home);
 </script>

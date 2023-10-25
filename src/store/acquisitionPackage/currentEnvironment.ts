@@ -7,7 +7,7 @@ import {
   ReferenceColumn
 } from "@/api/models";
 import {nameofProperty, storeDataToSession} from "@/store/helpers";
-import Vue from "vue";
+import { Vue } from "vue-facing-decorator";
 import {api} from "@/api";
 import _ from "lodash";
 import any = jasmine.any;

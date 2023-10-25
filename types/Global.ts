@@ -16,6 +16,7 @@ import {
   UserDTO,
   CostsDTO,
 } from "@/api/models";
+
 import { RouteRecordName, RouteRecordSingleViewWithChildren } from "vue-router";
 
 export interface DocReviewData {
@@ -147,6 +148,7 @@ interface StepperRouteBase extends RouteRecordSingleViewWithChildren {
 /**
  * Stepper Route Single Extends Route Single View
  */
+
 export interface StepperRouteSingleConfig extends
   Omit<StepperRouteBase, 'children'>, Omit<RouteRecordSingleViewWithChildren, 'children'> {
     children?: StepperRouteConfig[]
@@ -197,12 +199,12 @@ export interface CountryObj {
   mask?: string[];
 }
 
-export interface BreadCrumbItem {
+export interface BreadcrumbItem {
   disabled?: boolean,
   exact?: boolean,
   href?: string,
   link?: boolean,
-  text?: string | number,
+  title?: string | number,
   to?: string;
 }
 

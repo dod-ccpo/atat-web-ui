@@ -113,7 +113,6 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 // Step 1 Components
@@ -134,7 +133,7 @@ import ContractNumber from "@/steps/03-Background/components/ContractNumber.vue"
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
 
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
 import { DocReviewData } from "types/Global";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
@@ -156,12 +155,12 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   },
 })
 
-export default class DocumentReviewPreview extends Vue {
+class DocumentReviewPreview extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
   @Prop() private docData!: DocReviewData;
   @Prop() private isForm!: boolean;
 
   private hasACOR = AcquisitionPackage.hasAlternativeContactRep;
 }
-
+export default toNative(DocumentReviewPreview);
 </script>

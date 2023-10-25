@@ -14,8 +14,7 @@
 
 <script lang="ts">
 import { BreadcrumbItem } from "types/Global";
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
@@ -23,9 +22,9 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
     ATATSVGIcon
   }
 })
-export default class DocReviewHead extends Vue {
+class DocReviewHead extends Vue {
   @Prop({ default: "" }) private docTitle!: string;
-  public breadCrumbItems: BreadcrumbItem[] = [
+  public breadCrumbItems = [
     {
       title: "Acquisitions",
       disabled: false,
@@ -43,4 +42,5 @@ export default class DocReviewHead extends Vue {
     },
   ];
 }
+export default toNative(DocReviewHead);
 </script>

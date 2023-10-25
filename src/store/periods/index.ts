@@ -14,7 +14,7 @@ import {
   PeriodOfPerformanceDTO,
   ReferenceColumn,
 } from "@/api/models";
-import Vue from "vue";
+import { Vue } from "vue-facing-decorator";
 import {
   nameofProperty,
   retrieveSession,

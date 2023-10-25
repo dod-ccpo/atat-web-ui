@@ -9,7 +9,7 @@ import {
 import rootStore from "../index";
 import {nameofProperty, retrieveSession, storeDataToSession} from "@/store/helpers";
 import api from "@/api";
-import Vue from "vue";
+import { Vue } from "vue-facing-decorator";
 import { User } from "types/Global";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import { UserDTO } from "@/api/models";

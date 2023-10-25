@@ -6,8 +6,7 @@ import api from "@/api";
 import { AxiosRequestConfig } from "axios"
 import { AgencyDTO, DisaOrganizationDTO } from "@/api/models";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
-import Vue from "vue";
-
+import { Vue } from "vue-facing-decorator";
 const ATAT_ORGANIZATION_DATA_KEY = 'ATAT_ORGANIZATION_DATA_KEY';
 
 @Module({
