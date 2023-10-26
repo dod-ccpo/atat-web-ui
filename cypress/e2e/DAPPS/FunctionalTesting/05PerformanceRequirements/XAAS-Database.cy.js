@@ -78,10 +78,11 @@ describe("Test suite: Database Requirement Categories with Instances", () => {
       performanceReqs.databaseTypeQuestion,
       serviceOfferingGroups.DatabasePage.instance1Question2
     );
-    // cy.verifyRadioGroupLabels(
-    //   performanceReqs.dbLicensingRadio,
-    //   serviceOfferingGroups.ComputePage.databaseTypeRadioGroup
-    // );
+  
+    cy.verifyRadioGroupLabels(
+      performanceReqs.databaseTypeRadioGroup,
+      serviceOfferingGroups.DatabasePage.databaseTypeRadioGroup
+    );
     cy.findElement(performanceReqs.transactionRadioBtn).click({
       force: true,
     });
