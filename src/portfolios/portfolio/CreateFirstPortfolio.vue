@@ -87,7 +87,7 @@ import { Component,  Vue, toNative } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { routeNames } from "@/router/stepper";
-// import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import TaskOrderSearch from "../components/TaskOrderSearch.vue";
 
 @Component({

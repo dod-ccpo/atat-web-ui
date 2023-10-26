@@ -142,7 +142,7 @@ import CurrentUserStore from "@/store/user";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Toast from "@/store/toast";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-//import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import PortfolioStore from "@/store/portfolio";
 
 @Component({

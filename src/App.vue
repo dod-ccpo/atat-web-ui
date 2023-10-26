@@ -25,6 +25,8 @@ import Home from "@/home/Index.vue";
 import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
 import AcquisitionPackage from "./store/acquisitionPackage";
 
+import Steps from '@/store/steps';
+
 @Component({
   components: {
     ATATTopNavBar,
@@ -85,6 +87,8 @@ class App extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    Steps.initialize();
+
     await AcquisitionPackage.setIsProdEnv();
     if (process.env.NODE_ENV === "development") {
       // NOTE: add `userId` to .env file with your snow sys_id to view 

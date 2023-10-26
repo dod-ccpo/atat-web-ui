@@ -30,7 +30,8 @@ export class StepsStore extends VuexModule implements StepsState {
     
   prevStepName = "";
 
-  stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
+  stepMap: Map<string, StepInfo> = new Map;
+
 
   altBackButtonText = "";
   altAdditionalButtonText = "";
@@ -166,6 +167,7 @@ export class StepsStore extends VuexModule implements StepsState {
     @Mutation
     public setSteps(stepperRoutes: StepperRouteConfig[]): void {
       this.stepMap = mapStepConfigs(stepperRoutes);
+      console.log(this.stepMap)
     }
 
     @Action({ rawError: true })
@@ -209,6 +211,11 @@ export class StepsStore extends VuexModule implements StepsState {
     @Action({ rawError: true })
     public async getPrevious(): Promise<string | StepRouteResolver | StepPathResolver| undefined> {
       return this.resolveRoute(RouteDirection.PREVIOUS)
+    }
+
+    @Action({ rawError: true })
+    public initialize() {
+      this.setSteps(stepperRoutes);
     }
 }
 

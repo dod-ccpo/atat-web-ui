@@ -110,7 +110,7 @@ import {TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFS
 import IGCE from "@/store/IGCE";
 import { signedDocument } from "types/Global";
 import ATATFeedbackForm from "@/components/ATATFeedbackForm.vue";
-// import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 
 
 @Component({

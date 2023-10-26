@@ -1,7 +1,7 @@
 import { Vue, Component, toNative } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-//import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import { ComponentPublicInstance } from "vue";
 
 // Register the router hooks with their names

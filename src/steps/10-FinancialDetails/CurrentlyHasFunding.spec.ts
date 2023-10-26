@@ -5,7 +5,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import CurrentlyHasFunding from "./CurrentlyHasFunding.vue";
 import { DefaultProps } from "vue/types/options";
 import * as acqPackageExportedFunctions from "@/store/acquisitionPackage";
-// import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import FinancialDetails from "@/store/financialDetails";
 import { routeNames } from "@/router/stepper";
 import VueRouter, { RawLocation } from "vue-router";

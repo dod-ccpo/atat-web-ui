@@ -118,7 +118,7 @@ import AppSections from "@/store/appSections";
 //import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
-//import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import {
   AcquisitionPackageSummaryDTO,
   AcquisitionPackageSummaryMetadataAndDataDTO,

@@ -37,7 +37,7 @@ import AcquisitionPackage,
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-// import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import { CurrentContractRouteResolver } from "@/router/resolvers";
 
 @Component({

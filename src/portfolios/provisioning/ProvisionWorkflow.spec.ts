@@ -5,7 +5,7 @@ import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
 import { DefaultProps } from "vue/types/options";
 import ProvisionWorkflow from './ProvisionWorkflow.vue'
 import AppSections from "@/store/appSections";
-// import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import PortfolioStore from "@/store/portfolio";
 import api from "@/api";
 import { Portfolio } from "types/Global";

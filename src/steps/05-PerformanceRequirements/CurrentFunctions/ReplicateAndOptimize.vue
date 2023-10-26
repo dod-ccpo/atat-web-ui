@@ -116,7 +116,7 @@ import { routeNames } from "@/router/stepper";
 import ATATAlert from "@/components/ATATAlert.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
-// import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import SaveOnLeave from "@/mixins/saveOnLeave";
  
 

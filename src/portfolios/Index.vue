@@ -65,7 +65,7 @@ import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
-// import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import TaskOrderSearchModal from "./components/TaskOrderSearchModal.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
