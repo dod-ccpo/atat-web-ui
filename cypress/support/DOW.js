@@ -2,8 +2,9 @@ import { getCheckboxId, getObjectFromArrayByKey } from "../helpers";
 import common from "../selectors/common.sel";
 import "cypress-iframe";
 import performanceReq from "../selectors/performanceReqs.sel";
+import performanceReqs from "../selectors/performanceReqs.sel";
 import contractDetails from "../selectors/contractDetails.sel";
-
+import serviceOfferingGroups from "../fixtures/serviceOfferingGroups.json";
 Cypress.Commands.add(
   "verifyCategoryAndServiceOfferings",
   (categoryLabels, serviceOfferingGroups, categoryValue) => {
@@ -418,6 +419,7 @@ Cypress.Commands.add(
   }
 );
 
+
 //Architectural Design solutions
 Cypress.Commands.add("selectArchDesignOption", (archDesignOption) => {
   console.log("ArchDesignOption selected:", archDesignOption);
@@ -438,11 +440,6 @@ Cypress.Commands.add(
   (objecText, externalFactor, archClassLevelDesc) => {
     cy.enterTextInTextField(performanceReq.objectiveTextfield, objecText);
     cy.findElement(performanceReq.archClassCheckboxes)
-      .check({
-        force: true,
-      })
-      .should("be.checked");
-
     cy.enterTextInTextField(
       performanceReq.externalFactorTextField,
       externalFactor
@@ -457,3 +454,522 @@ Cypress.Commands.add(
     );
   }
 );
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add("anticipatedUsersPage", () => {
+  cy.log("First, tell us about your anticipated users and data needs");
+  cy.clickContinueButton(
+    performanceReqs.appCheckBox,
+    serviceOfferingGroups.anticipatedUsersPage.pageHeader
+  );
+  cy.log("skipping anticipated page and moving to DeveloperTools and Services");
+});
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add(
+  "verifypageheaderwithClickContinue",
+  (label, selector, text) => {
+    let pageHeader = "";
+    cy.getCheckBoxLabels(label).then((foundLabels) => {
+      pageHeader = text + foundLabels;
+    });
+    cy.btnClick(common.continueBtn, " Continue ");
+    cy.waitUntilElementIsGone(selector);
+    cy.verifyPageHeader(pageHeader);
+  }
+);
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add(
+  "gatherRequirementsPage",
+  (UnclassifiedOption, heading, anticipatedtext, radioOption) => {
+    cy.verifyTextMatches(
+      performanceReqs.pageTextClassification,
+      serviceOfferingGroups.GatherRequirementsPage.pageText1
+    );
+    cy.findElement(UnclassifiedOption)
+
+      .check({
+        force: true,
+      })
+      .should("be.checked");
+    cy.verifyTextMatches(
+      performanceReqs.contentAboutClass,
+      serviceOfferingGroups.GatherRequirementsPage.pageText2
+    );
+    cy.verifyTextMatches(
+      performanceReqs.requirementsHeading,
+      "1. Tell us about the " + heading + " instance"
+    );
+    cy.verifyTextMatches(
+      performanceReqs.anticipatedTextlabel1,
+      serviceOfferingGroups.GatherRequirementsPage.sectionSubTitle
+    );
+    cy.verifyTextMatches(
+      performanceReqs.functionalDescText,
+      serviceOfferingGroups.GatherRequirementsPage.descriptionText
+    );
+    cy.findElement(performanceReqs.anticipatedTextBox1).type(anticipatedtext);
+    cy.verifyTextMatches(
+      performanceReqs.entireDurationRadioLabel1,
+      serviceOfferingGroups.GatherRequirementsPage.durationQuestion
+    );
+    if (radioOption == "Yes") {
+      cy.radioBtn(performanceReqs.durationYesRadioBtn, "YES")
+        .not("[disabled]")
+        .click({
+          force: true,
+        });
+    } else if (radioOption == "No") {
+      cy.radioBtn(performanceReqs.durationNoRadioBtn, "NO")
+        .not("[disabled]")
+        .click({
+          force: true,
+        });
+      cy.findElement(performanceReqs.baseCheckbox).should("be.checked");
+      cy.findElement(performanceReqs.optionOneCheckbox).should(
+        "not.be.checked"
+      );
+    }
+    cy.clickContinueButton(
+      performanceReqs.durationNoRadioBtn,
+      serviceOfferingGroups.XaasRequirementsPage.XaasSummary
+    );
+  }
+);
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add(
+  "instanceDatabaseConfigurationsScreenCheck",
+  (configType) => {
+    // VCPUs, ProcessorSpeed, OperatingSystem, Memory,
+    //StorageType, StorageSize, noofInstances
+
+    cy.verifyTextMatches(
+      performanceReqs.instanceConfigTitle,
+      "2. " + configType + " Configurations"
+    );
+    cy.log("numOfVCPUs Textbox:.............");
+    cy.findElement(performanceReqs.operatingLicenseQuestion).scrollIntoView();
+    cy.textExists(
+      performanceReqs.noOfvCPULabel,
+      serviceOfferingGroups.ComputePage.vCPsTextboxLable
+    );
+    cy.hoverToolTip(
+      performanceReqs.noOfvCPUTooltipBtn,
+      performanceReqs.noOfvCPUTooltipText,
+      serviceOfferingGroups.ComputePage.vCPsToolTipText
+    );
+    cy.findElement(performanceReqs.operatingLicenseQuestion).scrollIntoView();
+
+    cy.log("ProcessorSpeed Textbox:...........");
+    cy.textExists(
+      performanceReqs.procsrSpeedLabel,
+      serviceOfferingGroups.ComputePage.processorTextboxLable
+    );
+    cy.hoverToolTip(
+      performanceReqs.procsrSpeedTooltipBtn,
+      performanceReqs.procsrSpeedTooltipText,
+      serviceOfferingGroups.ComputePage.processerToolTipText
+    );
+    cy.findElement(performanceReqs.operatingLicenseQuestion).scrollIntoView();
+
+    cy.log("Operating System Textbox:...........");
+    cy.textExists(
+      performanceReqs.operatingSysLabel,
+      serviceOfferingGroups.ComputePage.operatingSysTextboxLable
+    );
+    cy.hoverToolTip(
+      performanceReqs.operatingSysTooltipBtn,
+      performanceReqs.operatingSysTooltipText,
+      serviceOfferingGroups.ComputePage.operatingSysToolTipLabel
+    );
+
+    cy.log("Memory Textbox:................");
+    cy.textExists(
+      performanceReqs.memoryLabel,
+      serviceOfferingGroups.ComputePage.memoryTextboxLable
+    );
+    cy.hoverToolTip(
+      performanceReqs.memoryTooltipBtn,
+      performanceReqs.memoryTooltipTxt,
+      serviceOfferingGroups.ComputePage.memoryToolTipLabel
+    );
+
+    cy.log("storage type dropdown..............");
+    cy.textExists(
+      performanceReqs.storageTypeLabel,
+      serviceOfferingGroups.ComputePage.storageTypeTextboxLable
+    );
+    cy.findElement(performanceReqs.storageTypeDropdown).click();
+    cy.waitUntil(function () {
+      return cy.findElement(performanceReqs.optionBlockStorage).should("exist");
+    });
+    cy.findElement(performanceReqs.optionBlockStorage).should(
+      "contain.text",
+      " Block storage "
+    );
+    cy.findElement(
+      performanceReqs.optionBlockStorage + performanceReqs.storageSubtitle
+    ).should(
+      "contain.text",
+      serviceOfferingGroups.ComputePage.blockStorageText
+    );
+
+    cy.findElement(performanceReqs.optionObjectTypeStorage).should(
+      "contain.text",
+      " Object storage "
+    );
+    cy.findElement(
+      performanceReqs.optionObjectTypeStorage + performanceReqs.storageSubtitle
+    ).should(
+      "contain.text",
+      serviceOfferingGroups.ComputePage.objectStorageText
+    );
+
+    cy.findElement(performanceReqs.optionFileStorage).should(
+      "contain.text",
+      " File storage "
+    );
+    cy.findElement(
+      performanceReqs.optionFileStorage + performanceReqs.storageSubtitle
+    ).should("contain.text", serviceOfferingGroups.ComputePage.fileStorageText);
+
+    cy.findElement(performanceReqs.optionArchiveStorage).should(
+      "contain.text",
+      " Archive storage "
+    );
+    cy.findElement(
+      performanceReqs.optionArchiveStorage + performanceReqs.storageSubtitle
+    ).should(
+      "contain.text",
+      serviceOfferingGroups.ComputePage.archiveStorageText
+    );
+
+    cy.log("Storage Size:................");
+    cy.findElement(performanceReqs.storageAmountLabel).scrollIntoView();
+    cy.textExists(
+      performanceReqs.storageAmountLabel,
+      serviceOfferingGroups.ComputePage.storageSizeTextLable
+    );
+    cy.findElement(
+      performanceReqs.storageSizeField + performanceReqs.byteSizeDropdown
+    ).click(); //dropdownGB
+    cy.waitUntil(function () {
+      return cy
+        .findElement(
+          performanceReqs.storageSizeField + performanceReqs.gigabyteOption
+        )
+        .should("exist");
+    });
+    cy.findElement(
+      performanceReqs.storageSizeField + performanceReqs.gigabyteOption
+    ).should("contain.text", " Gigabyte (GB) ");
+    cy.findElement(
+      performanceReqs.storageSizeField + performanceReqs.terabyteOption
+    ).should("contain.text", " Terabyte (TB) ");
+    cy.findElement(
+      performanceReqs.storageSizeField + performanceReqs.petayteOption
+    ).should("contain.text", " Petabyte (PB) ");
+    cy.findElement(
+      performanceReqs.storageSizeField + performanceReqs.gigabyteOption
+    ).click({
+      force: true,
+    });
+
+    cy.log("Number of Instances:................");
+    cy.textExists(
+      performanceReqs.noInstancesNeededLabel,
+      serviceOfferingGroups.ComputePage.instancesTextboxLable
+    );
+  }
+);
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add(
+  "instanceDatabaseConfigurationsFieldsData",
+  (
+    noOfVCPUs,
+    processorSpeed,
+    operatingSystem,
+    memory,
+    storage,
+    storageSize,
+    noOfInstances
+  ) => {
+    const storageTypeMap = {
+      BlockStorage: performanceReqs.optionBlockStorage,
+      ObjectStorage: performanceReqs.optionObjectTypeStorage,
+      FileStorage: performanceReqs.optionFileStorage,
+      ArchiveStorage: performanceReqs.optionArchiveStorage,
+    };
+    cy.findElement(performanceReqs.noOfvCPUTxtBox).type(noOfVCPUs);
+    cy.findElement(performanceReqs.operatingLicenseQuestion).scrollIntoView();
+    cy.findElement(performanceReqs.procsrSpeedTxtBox).type(processorSpeed);
+    cy.findElement(performanceReqs.operatingSysTxtBox).type(operatingSystem);
+    cy.findElement(performanceReqs.memoryTextBox).type(memory);
+    cy.findElement(performanceReqs.storageTypeLabel).scrollIntoView();
+    cy.findElement(performanceReqs.storageTypeDropdown).click();
+    cy.findElement(storageTypeMap[storage]).click({
+      force: true,
+    });
+    cy.findElement(performanceReqs.storageAmountTextBox).type(storageSize);
+    cy.findElement(performanceReqs.noInstancesTextbox)
+      .clear()
+      .type(noOfInstances);
+  }
+);
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add(
+  "anticipatedNeedAndDurationTitleandData",
+  (requirementName, anticipatedText, task, entireDuration) => {
+    cy.verifyTextMatches(
+      performanceReqs.anticipatedDurationLabel,
+      serviceOfferingGroups.ComputePage.anticptdDurationLabel
+    );
+    if (requirementName == "Compute") {
+      cy.verifyTextMatches(
+        performanceReqs.anticipatedDurationText,
+        serviceOfferingGroups.ComputePage.anticptdDurationText
+      );
+    } else {
+      cy.verifyTextMatches(
+        performanceReqs.anticipatedDurationText,
+        serviceOfferingGroups.GatherRequirementsPage.descriptionText
+      );
+    }
+    cy.findElement(performanceReqs.anticipatedTextBox2).type(anticipatedText);
+
+    cy.verifyTextMatches(
+      performanceReqs.entireDurationRadioLabel2,
+      "Do you need this " +
+        task +
+        " for the entire duration of your task order?"
+    );
+    cy.hoverToolTip(
+      performanceReqs.entireDurationToolTipBtn,
+      performanceReqs.entireDurationToolTipText,
+      "Performance period details will be used to generate a cost estimate for this " +
+        task +
+        " later."
+    );
+    cy.verifyRadioGroupLabels(
+      performanceReqs.entireDurationRadioGroup,
+      serviceOfferingGroups.ComputePage.entireDurationRadioboxes
+    );
+
+    if (entireDuration == "Yes") {
+      cy.radioBtn(performanceReqs.durationYesRadioBtn, "YES")
+        .not("[disabled]")
+        .click({
+          force: true,
+        });
+    } else if (entireDuration == "No") {
+      cy.radioBtn(performanceReqs.durationNoRadioBtn, "NO")
+        .not("[disabled]")
+        .click({
+          force: true,
+        });
+      cy.findElement(performanceReqs.baseCheckbox).should("be.checked");
+      cy.findElement(performanceReqs.optionOneCheckbox).should(
+        "not.be.checked"
+      );
+    }
+  }
+);
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add(
+  "selectDeployedClassificationLevel",
+  (selectedClassification) => {
+    const classLevelMap = {
+      impactLevel2: performanceReqs.classIL2RadioBtn,
+      impactLevel4: performanceReqs.classIL4RadioBtn,
+      impactLevel5: performanceReqs.classIL5RadioBtn,
+      impactLevel6: performanceReqs.classIL6RadioBtn,
+      tops: performanceReqs.topsRadioBtn,
+    };
+    cy.verifyTextMatches(
+      performanceReqs.classLevelQuestion,
+      serviceOfferingGroups.ComputePage.classificationLevelQuestion
+    );
+    cy.hoverToolTip(
+      performanceReqs.classLevelTooltipBtn,
+      performanceReqs.classLevelTootipText,
+      serviceOfferingGroups.ComputePage.classLevelToolTipText
+    );
+    cy.verifyRadioGroupLabels(
+      performanceReqs.classLevelRadioGroup,
+      serviceOfferingGroups.ComputePage.classLevelRadioGroup
+    );
+    cy.verifyTextMatches(
+      performanceReqs.updateClassRequirements,
+      serviceOfferingGroups.ComputePage.updateTitle
+    );
+
+    cy.findElement(classLevelMap[selectedClassification]).click({
+      force: true,
+    });
+  }
+);
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add("OSandDBLicensing", (licenseName, licenseType) => {
+  let category = "";
+
+  if (licenseName == "operatingSystem") {
+    category = performanceReqs.osLicensingRadio;
+  } else if (licenseName == "database") {
+    category = performanceReqs.dbLicensingRadio;
+  }
+  // cy.verifyRadioGroupLabels(
+  //   performanceReqs.operatingLicenseRadioGroup,
+  //   category + "input[type=radio]"
+  // );
+
+  if (licenseType == "transfer") {
+    cy.findElement(category + performanceReqs.transferLicenseRadio).click({
+      force: true,
+    });
+  } else if (licenseType == "newLicense") {
+    cy.findElement(category + performanceReqs.newLicenseRadio).click({
+      force: true,
+    });
+  }
+});
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add("requirementsSummaryPage", (requirementName, task) => {
+  cy.clickContinueButton(
+    performanceReqs.classLevelQuestion,
+    "Your " + requirementName + " Requirements"
+  );
+  cy.verifyTextMatches(
+    performanceReqs.computeSummaryText,
+    "If you need more " +
+      task +
+      ", add them below. You can also edit or delete any info from the " +
+      task +
+      " that you have already entered. When you’re done," +
+      " click “Continue” and we will wrap up this category."
+  );
+});
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add("deleteInstanceOrRequirement", (type, requirementName) => {
+  cy.findElement(performanceReqs.instanceOneDeleteBtn).click({
+    force: true,
+  });
+  cy.verifyTextMatches(performanceReqs.dialogTitle, "Delete " + type + " #1?");
+  cy.verifyTextMatches(
+    performanceReqs.deleteMsg,
+    "This " +
+      type.toLowerCase() +
+      " will be removed from your " +
+      requirementName +
+      " requirements. Any details about this " +
+      type.toLowerCase() +
+      " will not be saved."
+  );
+  cy.findElement(performanceReqs.deleteInstBtn).click({
+    force: true,
+  });
+  cy.findElement(performanceReqs.instanceOneDeleteBtn).should("not.exist");
+});
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add(
+  "deleteALLInstanceOrRequirement",
+  (requirementName, type) => {
+    cy.findElement(performanceReqs.dontneedBtn).click({
+      force: true,
+    });
+    cy.verifyTextMatches(
+      performanceReqs.deleteAllInstTitle,
+      "Delete all " + requirementName + " " + type + "?"
+    );
+    cy.verifyTextMatches(
+      performanceReqs.deleteAllInstMsg,
+      "This action will remove the “" +
+        requirementName +
+        "” category from your performance requirements. Any details about your " +
+        type +
+        " will not be saved."
+    );
+    cy.findElement(performanceReqs.deleteAllInstBtn).click({
+      force: true,
+    });
+    cy.findElement(performanceReqs.computeRequirementsSummaryPageTitle).should(
+      "not.exist"
+    );
+  }
+);
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add("errorMessageValidations", (requirementName) => {
+  cy.findElement(performanceReqs.addAnotherInstance).click({
+    force: true,
+  });
+  cy.clickContinueButton(
+    performanceReqs.classLevelQuestion,
+    " Your " + requirementName + " Requirements "
+  );
+  cy.findElement(performanceReqs.instanceTwoEditBtn).click({
+    force: true,
+  });
+  cy.verifyTextMatches(
+    performanceReqs.classLevelQuestion,
+    serviceOfferingGroups.PerformanceRequirementsPage
+      .classificationLevelQuestion
+  );
+  cy.checkErrorMessage(
+    performanceReqs.errorAlertMessage,
+    serviceOfferingGroups.ComputePage.errorAlertMsg
+  );
+  cy.checkErrorMessage(
+    performanceReqs.classLevelErrorMsg,
+    serviceOfferingGroups.ComputePage.classLvlErrMsg
+  );
+  cy.checkErrorMessage(
+    performanceReqs.anticipatedDurationError,
+    serviceOfferingGroups.ComputePage.objStatementErrMsg
+  );
+  cy.checkErrorMessage(
+    performanceReqs.entireDurationError,
+    serviceOfferingGroups.ComputePage.selectOptionErrMsg
+  );
+});
+
+// ST- new function created for Performance Requirements
+Cypress.Commands.add("errorMessageValidationsCPDB", () => {
+  cy.checkErrorMessage(
+    performanceReqs.osLicensingTypeErrorMsg,
+    serviceOfferingGroups.ComputePage.operSystemErrMsg
+  );
+  cy.checkErrorMessage(
+    performanceReqs.noOfvCPUError,
+    serviceOfferingGroups.ComputePage.greaterOneErrMsg
+  );
+  cy.checkErrorMessage(
+    performanceReqs.procsrSpeedError,
+    serviceOfferingGroups.ComputePage.greaterOneErrMsg
+  );
+  cy.checkErrorMessage(
+    performanceReqs.operatingSysError,
+    serviceOfferingGroups.ComputePage.operSysErrMsg
+  );
+  cy.checkErrorMessage(
+    performanceReqs.memoryError,
+    serviceOfferingGroups.ComputePage.greaterOneErrMsg
+  );
+  cy.checkErrorMessage(
+    performanceReqs.storageTypeError,
+    serviceOfferingGroups.ComputePage.storageTypeErrMsg
+  );
+  cy.checkErrorMessage(
+    performanceReqs.storageAmountError,
+    serviceOfferingGroups.ComputePage.greaterZeroErrMsg
+  );
+});
+
