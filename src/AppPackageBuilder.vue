@@ -63,7 +63,7 @@ import ATATStepperNavigation from './components/ATATStepperNavigation.vue'
 import ATATToast from './components/ATATToast.vue'
 
 import SlideoutPanel from '@/store/slideoutPanel/index'
-//import Steps from '@/store/steps'
+import Steps from '@/store/steps'
 
 import {
   AdditionalButton,
@@ -105,7 +105,7 @@ export default class AppPackageBuilder extends Vue {
     return SlideoutPanel.slideoutPanelComponent || undefined
   }
 
-  //private stepperData = buildStepperData()
+  private stepperData = buildStepperData()
   private additionalButtons: AdditionalButton[] = []
   private noPrevious = false
   private backButtonText = 'Back'
@@ -121,7 +121,7 @@ export default class AppPackageBuilder extends Vue {
   private isNewPackage = false
 
   async mounted(): Promise<void> {
-    //Steps.setSteps(stepperRoutes)
+    // Steps.setSteps(stepperRoutes)
     this.hideNavigation = AcquisitionPackage.hideNavigation
     this.hideSideNavigation = AcquisitionPackage.hideSideNavigation
     this.routeNames = routeNames

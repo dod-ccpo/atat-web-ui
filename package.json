@@ -50,6 +50,7 @@
     "sanitize-html": "^2.6.1",
     "typeface-source-sans-pro": "^1.1.13",
     "uglify-js": "^3.16.3",
+    "vite-plugin-live-reload": "^3.0.2",
     "vue": "^3.1.0",
     "vue-facing-decorator": "^3.0.2",
     "vue-router": "^4.2.5",
@@ -108,8 +109,8 @@
     "vite": "^4.4.9",
     "vite-plugin-checker": "^0.6.2",
     "vite-plugin-css-injected-by-js": "^3.3.0",
-    "vue-tsc": "^1.8.15",
     "vue-facing-decorator": "^3.0.2",
+    "vue-tsc": "^1.8.15",
     "vuex-module-decorators": "^1.0.0",
     "webpack-merge": "^5.9.0"
   },

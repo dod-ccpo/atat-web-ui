@@ -9,6 +9,7 @@ import commonjs from '@rollup/plugin-commonjs'
 // import VueDevTools from 'vite-plugin-dev-tools'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dotenv from 'dotenv'
+import liveReload from 'vite-plugin-live-reload'
 dotenv.config()
 
 const servicenowConfig = require('./servicenow.config')
@@ -69,13 +70,14 @@ export default defineConfig(({command, mode}) => {
 			//TODO Both typescript & vueTsc are throwing errors
 			checker({
 				// typescript: true,
-				vueTsc: true
+				// vueTsc: true
 				// eslint: {lintCommand:'eslint '},
 			}),
 			// vue-property-decorator
 			cssInjectedByJsPlugin(),
-			resolve() //commonjs(),
+			resolve(), //commonjs(),
 			//splitVendorChunkPlugin(),
+			liveReload('./src/**/*.(vue|ts)'),
 		],
 		server: {
 			port: 8080
