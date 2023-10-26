@@ -114,6 +114,11 @@
     padding-left: 44px !important; 
     margin-bottom: 0;
     margin-top: 0;
+    min-height: 50px !important;
+
+    .v-expansion-panel-title__overlay {
+      opacity: 0 !important;
+    }
 
     &:hover {
       background-color: $primary-dark !important;

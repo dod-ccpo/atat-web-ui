@@ -12,8 +12,8 @@
                 style="z-index:10"
               >
                 <v-expansion-panel expand>
-                  <v-expansion-panel-title>
-                    <div class="d-flex justify-space-between">
+                  <v-expansion-panel-title expand-icon="$expand">
+                    <div class="d-flex justify-space-between width-100">
                       <div class="h3">
                         Open Acquisition Packages
                       </div>
@@ -65,7 +65,7 @@
               >
                 <v-expansion-panel expand>
                   <v-expansion-panel-title>
-                    <div class="d-flex justify-space-between">
+                    <div class="d-flex justify-space-between width-100">
                       <div class="h3">
                         Porfolios
                       </div>
