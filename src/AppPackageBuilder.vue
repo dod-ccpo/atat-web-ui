@@ -47,10 +47,10 @@
 		</v-main>
 	</div>
 </template>
-
-<style lang="scss">
+<!-- todo maybe replace this. It is on app.vue now-->
+<!-- <style lang="scss">
 	@import './sass/atat.scss';
-</style>
+</style> -->
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-facing-decorator";

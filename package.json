@@ -108,8 +108,9 @@
     "vite": "^4.4.9",
     "vite-plugin-checker": "^0.6.2",
     "vite-plugin-css-injected-by-js": "^3.3.0",
-    "vue-tsc": "^1.8.15",
+    "vite-plugin-live-reload": "^3.0.2",
     "vue-facing-decorator": "^3.0.2",
+    "vue-tsc": "^1.8.15",
     "vuex-module-decorators": "^1.0.0",
     "webpack-merge": "^5.9.0"
   },

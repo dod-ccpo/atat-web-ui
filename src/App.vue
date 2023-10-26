@@ -1,12 +1,14 @@
 <template>
-  <v-app id="app">
+  <v-layout>
     <ATATTopNavBar />
     <div v-if="appContentComponent">
       <component :is="appContentComponent" />
     </div>
-  </v-app>
+  </v-layout>
 </template>
-
+<style lang="scss">
+	@import './sass/atat.scss';
+</style>
 <script lang="ts">
 import { Component as VueComponent } from "vue";
 import { Component, Watch, Vue, toNative } from "vue-facing-decorator";

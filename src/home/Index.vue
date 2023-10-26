@@ -125,7 +125,7 @@ import { ToastObj } from "types/Global";
   }
 })
 
-class Home extends Vue {
+export default class Home extends Vue {
 
   public showTOSearchModal = false;
   public TONumber = "";
@@ -236,7 +236,5 @@ class Home extends Vue {
     hasIcon: true,
   };
 
-
 }
-export default toNative(Home);
 </script>

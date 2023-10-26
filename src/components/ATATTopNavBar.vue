@@ -1,5 +1,5 @@
 <template>
-  <v-system-bar id="TopNavBar" app flat>
+  <v-app-bar id="TopNavBar">
     <ATATSVGIcon
       color="white"
       width="110"
@@ -122,7 +122,7 @@
         </v-list>
       </v-menu>
     </div>
-  </v-system-bar>
+  </v-app-bar>
 </template>
 
 <script lang="ts">
@@ -208,6 +208,7 @@ export default class ATATTopNavBar extends Vue {
 
   public async buildMenu(): Promise<void> {
     const sectionData = await AppSections.getSectionData();
+    debugger;
     this.topNavMenuItems = [
       {
         title: "Dashboard",
