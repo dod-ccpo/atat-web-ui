@@ -7,10 +7,15 @@
   font-weight: 400;
 }
 
-#TopNavBar {
+#TopNavBar.v-toolbar {
   @extend ._navbar-height;
   background-color: $base-darker;
   z-index: 101 !important;
+  overflow: unset;
+
+  .v-toolbar__content {
+    height: 56px !important;
+  }
   
   button.v-btn {
     @extend ._navbar-height;
@@ -19,6 +24,7 @@
     height: 56px !important;
     background-color: transparent;
     position: relative;
+    color: white;
 
     &:hover,
     &:focus{

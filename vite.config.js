@@ -156,9 +156,7 @@ export default defineConfig(({command, mode}) => {
 			// }
 			preprocessorOptions: {
 				scss: {
-					additionalData: `
-						@import "src/sass/atat.scss";
-					`
+					additionalData: "@import 'src/sass/atat.scss';"
 				}
 			},
 		},

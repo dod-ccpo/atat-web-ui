@@ -103,8 +103,8 @@
     padding-bottom: 80px !important;
   }
 
-  .v-expansion-panel-header {
-    background-color: $primary;
+  v-expansion-panel-header {
+    background-color: $primary !important;
     width: 100%;
     border-bottom: 1px solid $base-lighter;
     border-bottom-left-radius: 0;
