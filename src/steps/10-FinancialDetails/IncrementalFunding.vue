@@ -152,7 +152,6 @@
               <v-btn
                 id="AddIncrementButton"
                 v-if="showAddIncrementButton"
-                plain
                 variant="text"
                 class=" link-button no-border mt-5"
                 :ripple="false"

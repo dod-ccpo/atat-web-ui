@@ -14,8 +14,8 @@
         </li>
       </ul>
       <v-btn
-        class="secondary _text-decoration-none px-6 mt-6"
-        large
+        class="bg-secondary _text-decoration-none px-6 mt-6"
+        size="large"
         role="button"
         @click="downloadDocuments"
       >

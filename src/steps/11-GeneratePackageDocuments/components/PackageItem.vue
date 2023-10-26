@@ -1,19 +1,17 @@
 <template>
   <v-card class="package-item-card border-rounded-more">
     <v-list-item>
-      <v-list-item-avatar>
+      <v-avatar>
         <span class="list-circle">{{itemNumber}}</span>
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title>
-          <span class="text-wrap package-title">{{itemName}}</span>
-        </v-list-item-title>
-        <v-list-item-subtitle v-if="additionalInfo">
-          <span class="font-size-14 font-weight-400 text-base-light">
-            {{additionalInfo}}
-          </span>
-        </v-list-item-subtitle>
-      </v-list-item-content>
+      </v-avatar>
+      <v-list-item-title>
+        <span class="text-wrap package-title">{{itemName}}</span>
+      </v-list-item-title>
+      <v-list-item-subtitle v-if="additionalInfo">
+        <span class="font-size-14 font-weight-400 text-base-light">
+          {{additionalInfo}}
+        </span>
+      </v-list-item-subtitle>
       <v-list-item-action v-if="requiresSignature">
         <span class="d-flex signature-required">
           <div class="d-flex align-center">

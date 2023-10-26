@@ -11,7 +11,7 @@
     <v-col class="col-12" :align="'center'">
       <div class="copy-max-width">
         <h1 class="text-center">
-          Generating your acquisition package documents<span class="ellipsis"></span>
+          Generating your acquisition package documents<span class="text-truncate"></span>
         </h1>
         <br />
         <p class="text-center">

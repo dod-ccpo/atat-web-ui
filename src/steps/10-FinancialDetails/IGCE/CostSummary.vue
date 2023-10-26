@@ -14,7 +14,7 @@
             and we’ll gather details about how your price estimates were developed.
           </span>
           <v-btn 
-            class="secondary align-self-end" 
+            class="bg-secondary align-self-end" 
             role="link" 
             @click="editRoute" 
             @keydown.enter="editRoute"
