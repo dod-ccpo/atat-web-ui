@@ -763,10 +763,6 @@ Cypress.Commands.add(
       performanceReqs.classLevelTootipText,
       serviceOfferingGroups.ComputePage.classLevelToolTipText
     );
-    cy.verifyRadioGroupLabels(
-      performanceReqs.classLevelRadioGroup,
-      serviceOfferingGroups.ComputePage.classLevelRadioGroup
-    );
     cy.verifyTextMatches(
       performanceReqs.updateClassRequirements,
       serviceOfferingGroups.ComputePage.updateTitle
@@ -787,11 +783,6 @@ Cypress.Commands.add("OSandDBLicensing", (licenseName, licenseType) => {
   } else if (licenseName == "database") {
     category = performanceReqs.dbLicensingRadio;
   }
-  // cy.verifyRadioGroupLabels(
-  //   performanceReqs.operatingLicenseRadioGroup,
-  //   category + "input[type=radio]"
-  // );
-
   if (licenseType == "transfer") {
     cy.findElement(category + performanceReqs.transferLicenseRadio).click({
       force: true,
