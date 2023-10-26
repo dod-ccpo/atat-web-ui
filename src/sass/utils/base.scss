@@ -155,19 +155,19 @@ textarea {
         left: 4px;
         top: 8px;
       }
-      .v-expansion-panel-header__icon {
+      .v-expansion-panel-title__icon {
         left: 970px;
         transform: rotate(90deg);
       }
     }
     &.v-expansion-panel--active {
-      .v-expansion-panel-header__icon {
+      .v-expansion-panel-title__icon {
         left: 970px;
         transform: rotate(180deg);
       }
     }
   }
-  .v-expansion-panel-content__wrap {
+  .v-expansion-panel-text__wrap {
     padding: 0px;
     margin-bottom:0px;
   }
@@ -192,7 +192,7 @@ textarea {
  }
 }
 
-.v-expansion-panel-header{
+.v-expansion-panel-title{
   &.no-hover{
     &:hover{
       background-color: transparent !important;

@@ -13,7 +13,7 @@
     &:before {
       box-shadow: none !important;
     }
-    .v-expansion-panel-header {
+    .v-expansion-panel-title {
       margin-bottom: 24px;
       &:hover {
         background-color: transparent !important;
@@ -21,11 +21,11 @@
       &:focus {
         background-color: transparent !important;
       }
-      .v-expansion-panel-header__icon {
+      .v-expansion-panel-title__icon {
         top:10px !important;
       }
     }
-    .v-expansion-panel-content__wrap {
+    .v-expansion-panel-text__wrap {
       padding: 0 !important;
     }
   }

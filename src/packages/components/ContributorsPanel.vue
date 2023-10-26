@@ -145,10 +145,10 @@
     <div class="_panel-padding _panel-user-list pb-6">
       <v-expansion-panels accordion flat>
         <v-expansion-panel>
-          <v-expansion-panel-header class="font-size-14">
+          <v-expansion-panel-title class="font-size-14">
             Learn about contributor roles
           </v-expansion-panel-header>
-          <v-expansion-panel-content class="font-size-14">
+          <v-expansion-panel-text class="font-size-14">
             <p>
               <strong>Owner:</strong> Manages all aspects of a package, to include 
               editing information, generating and submitting the completed package, 

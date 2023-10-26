@@ -356,7 +356,7 @@
     <div>
       <!-- <v-expansion-panels class="pt-6" ripple="false" elevation="0">
         <v-expansion-panel>
-          <v-expansion-panel-header class="d-flex">
+          <v-expansion-panel-title class="d-flex">
             <h2>
               Task Order
             </h2>
@@ -365,7 +365,7 @@
               id="TaskOrderHistoryNumber"
             >1</span>
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-text>
             <TaskOrderCard
               :isHistory="true"
               :taskOrders="[selectedTaskOrder]"

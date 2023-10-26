@@ -32,14 +32,14 @@
           flat
         >
           <v-expansion-panel expand>
-            <v-expansion-panel-header :id="`AccordionButton_${index}`" >
+            <v-expansion-panel-title :id="`AccordionButton_${index}`" >
               <div class="d-flex justify-space-between">
                 <div class="h4 _expansion-panel-header">
                   {{buildClassificationLabel(classification,'short',true)}}
                 </div>
               </div>
             </v-expansion-panel-header>
-            <v-expansion-panel-content>
+            <v-expansion-panel-text>
               <span class="font-weight-500 font-size-20">1. Anticipated users</span>
               <RegionsDeployedAndUserCount
                 groupLabel="Where are your users located?"
