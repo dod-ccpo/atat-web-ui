@@ -1,10 +1,10 @@
 <template>
   <v-app id="app">
-    <!-- <ATATTopNavBar />
+    <ATATTopNavBar />
     <div v-if="appContentComponent">
       <component :is="appContentComponent" />
-    </div> -->
-    <div>hello world</div>
+    </div>
+     <div>hello world</div>
   </v-app>
 </template>
 
@@ -12,36 +12,37 @@
 import { Component as VueComponent } from "vue";
 import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
-// import AppPackageBuilder from "@/AppPackageBuilder.vue";
-// import TaskOrderLookup from "@/TaskOrderLookup.vue";
-// import PortfolioSummary from "./portfolios/portfolio/components/Index.vue"
-// import PortfolioDashboard from "@/portfolios/portfolio/Portfolio.vue";
-// import ATATTopNavBar from "./components/ATATTopNavBar.vue";
-// import AppSections from "@/store/appSections";
-// import DocumentReview from "@/documentReview/Index.vue";
-// import Portfolios from "@/portfolios/Index.vue";
-// import CreateFirstPortfolio from '@/portfolios/portfolio/CreateFirstPortfolio.vue';
-// import Packages from "@/packages/Index.vue";
-// import Home from "@/home/Index.vue";
-// import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
-// import AcquisitionPackage from "./store/acquisitionPackage";
+import AppPackageBuilder from "@/AppPackageBuilder.vue";
+import TaskOrderLookup from "@/TaskOrderLookup.vue";
+import PortfolioSummary from "./portfolios/portfolio/components/Index.vue"
+import PortfolioDashboard from "@/portfolios/portfolio/Portfolio.vue";
+import ATATTopNavBar from "./components/ATATTopNavBar.vue";
+import AppSections from "@/store/appSections"; //good ?
+import DocumentReview from "@/documentReview/Index.vue";
+import Portfolios from "@/portfolios/Index.vue";
+import CreateFirstPortfolio from '@/portfolios/portfolio/CreateFirstPortfolio.vue';
+import Packages from "@/packages/Index.vue";
+import Home from "@/home/Index.vue";
+import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
+import AcquisitionPackage from "./store/acquisitionPackage";
 
 @Component({
-  // components: {
-  //   ATATTopNavBar,
-  // },
+  components: {
+    ATATTopNavBar,
+  },
 })
 class App extends Vue {
-  // public get activeAppSection(): string {
-  //   return AppSections.activeAppSection;
-  // }
+  public get activeAppSection(): string {
+    return AppSections.activeAppSection;
+  }
 
-  // @Watch("activeAppSection")
-  // public activeAppSectionChanged(newActiveSection: string): void {
-  //   switch (newActiveSection) {
-  //   case this.sectionTitles.Home:
-  //     AppSections.setAppContentComponent(Home);
-  //     break;
+  @Watch("activeAppSection")
+  public activeAppSectionChanged(newActiveSection: string): void {
+    switch (newActiveSection) {
+    case this.sectionTitles.Home:
+      console.log("HW, 2!")
+      //AppSections.setAppContentComponent(Home);
+      break;
   //   case this.sectionTitles.ProvisionWorkflow:
   //     AppSections.setAppContentComponent(ProvisionWorkflow);
   //     break;
@@ -69,38 +70,39 @@ class App extends Vue {
   //   case this.sectionTitles.Packages:
   //     AppSections.setAppContentComponent(Packages);
   //     break;
-  //   }
-  // }
+    }
+  }
 
-  // public get appContentComponent(): VueComponent {
-  //   return AppSections.appContentComponent || {};
-  // }
+  public get appContentComponent(): VueComponent {
+    return AppSections.appContentComponent || {};
+  }
 
-  // public sectionTitles: Record<string, string> = {};
+  public sectionTitles: Record<string, string> = {};
 
-  // public async loadOnEnter(): Promise<void> {
-  //   const storeData = await AppSections.getSectionData();
-  //   if (storeData) {
-  //     this.sectionTitles = storeData.sectionTitles;
-  //   }
-  // }
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AppSections.getSectionData();
+    if (storeData) {
+      this.sectionTitles = storeData.sectionTitles;
+    }
+  }
 
-  // public async mounted(): Promise<void> {
-  //   await AcquisitionPackage.setIsProdEnv();
-  //   if (process.env.NODE_ENV === "development") {
-  //     // NOTE: add `userId` to .env file with your snow sys_id to view 
-  //     // your packages etc. when running locally
-  //     const snowUserSysId = process.env.SNOW_USER_SYSID || "";
-  //     sessionStorage.setItem("userId", snowUserSysId)
-  //   }
+  public async mounted(): Promise<void> {
+    //await AcquisitionPackage.setIsProdEnv();
+    if (process.env.NODE_ENV === "development") {
+      // NOTE: add `userId` to .env file with your snow sys_id to view 
+      // your packages etc. when running locally
+      const snowUserSysId = process.env.SNOW_USER_SYSID || "";
+      sessionStorage.setItem("userId", snowUserSysId)
+    }
     
-  //   await this.loadOnEnter();
-  // }
+    await this.loadOnEnter();
+  }
 
-  // public async beforeMount(): Promise<void> {
-  //   await AppSections.setAppContentComponent(Home);
-  // }
+  public async beforeMount(): Promise<void> {
+    // const h = new Home({},"3")
+    // await AppSections.setAppContentComponent(h);
+  }
 }
 export default toNative(App)
-// export { App }
+//export { App }
 </script>

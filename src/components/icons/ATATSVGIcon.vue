@@ -1,10 +1,11 @@
 <template>
   <div
-    @mouseenter="mouseEnter"
-    @mouseleave="mouseLeave"
     :style="divStyle"
-    class="_svg-icon">
-    <component :is="name"
+    class="_svg-icon"
+    @mouseenter="mouseEnter"
+    @mouseleave="mouseLeave">
+    <component
+:is="name"
                :color="getColor()"
                :height="_height"
                :width="_width"
@@ -219,7 +220,7 @@ import HomeWork from "@/components/icons/HomeWork.vue";
   }
 })
 
-class ATATSVGIcon extends Vue {
+export default class ATATSVGIcon extends Vue {
   // props
   @Prop({ required: false }) private color?: string;
   @PropSync("width", {default: 0, required: true}) private _width!: number;
@@ -263,5 +264,5 @@ class ATATSVGIcon extends Vue {
     { "warning-dark2": "e9a514" },
   ]
 }
-export default toNative(ATATSVGIcon);
+//export default toNative(ATATSVGIcon);
 </script>

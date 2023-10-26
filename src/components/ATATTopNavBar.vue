@@ -20,9 +20,9 @@
         <!-- top nav bar items (buttons) -->
         <template v-slot:activator="{ props }">
           <v-btn
+            v-bind="props"
             text="true"
             dark
-            v-bind="props"
             :id="'TopNavButton_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
             :class="[
               { _profile: navItem.isProfile },
@@ -44,8 +44,8 @@
 
         <!-- menu items (dropdown menu) -->
         <v-list
-          attach
           v-if="navItem.menu"
+          attach
           class="_top-nav-menu"
           :class="{ '_profile-menu': navItem.isProfile }"
         >
@@ -53,8 +53,8 @@
 
             <!-- top profile block with initials in circle, name, and email -->
             <v-list-item
-              :id="'ProfileBlock' + idx"
               v-if="navItem.isProfile && idx === 0"
+              :id="'ProfileBlock' + idx"
              
               class="d-flex py-2"
               disabled
@@ -63,30 +63,30 @@
                 {{ navItem.title }}
               </div>
               <div style="line-height: 1.4">
-                <div class="font-weight-700 font-size-14 text-base-darker">
+                <!--<div class="font-weight-700 font-size-14 text-base-darker">
                   {{ currentUser.first_name }} {{ currentUser.last_name }}
                 </div>
                 <div class="font-size-12 text-base">
                   {{ currentUser.email }}
-                </div>
+                </div>-->
               </div>
             </v-list-item>
 
-            <hr
+            <!-- <hr
               v-if="menuItem.separatorBefore"
               :key="'separator' + idx"
               class="my-2"
-            />
+            /> -->
 
             <!-- drop menu items -->
             <v-list-item
-              :key="idx"
               :id="'TopNavBarMenuItem_' + getIdText(menuItem.title)"
-              @click="navClicked(menuItem)"
+              :key="idx"
               :class="[
                 { _active: isMenuItemActive(menuItem) }, 
                 { 'd-block pt-2 pb-1' : menuItem.subtitle } 
               ]"
+              @click="navClicked(menuItem)"
             >
               <div class="d-flex align-center width-100">
                 <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
@@ -129,9 +129,7 @@
 import { TopNavItem, User } from "types/Global";
 import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { getUserInitials } from "@/helpers";
-
-import { getIdText } from "@/helpers";
+import { getUserInitials, getIdText } from "@/helpers";
 import AppSections from "@/store/appSections";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
@@ -141,7 +139,7 @@ import CurrentUserStore from "@/store/user";
     ATATSVGIcon,
   },
 })
-class ATATTopNavBar extends Vue {
+export default class ATATTopNavBar extends Vue {
 
   public currentUser: UserDTO = {}
 
@@ -364,5 +362,5 @@ class ATATTopNavBar extends Vue {
     await this.loadOnEnter();
   }
 }
-export default toNative(ATATTopNavBar);
+//export default toNative(ATATTopNavBar);
 </script>
