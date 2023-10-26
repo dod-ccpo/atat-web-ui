@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts">
-import Vue, { Component as VueComponent } from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component as VueComponent } from "vue";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
@@ -30,7 +30,7 @@ import AcquisitionPackage from "./store/acquisitionPackage";
     ATATTopNavBar,
   },
 })
-export default class App extends Vue {
+class App extends Vue {
   public get activeAppSection(): string {
     return AppSections.activeAppSection;
   }
@@ -41,33 +41,33 @@ export default class App extends Vue {
     case this.sectionTitles.Home:
       AppSections.setAppContentComponent(Home);
       break;
-    case this.sectionTitles.ProvisionWorkflow:
-      AppSections.setAppContentComponent(ProvisionWorkflow);
-      break;
-    case this.sectionTitles.AcquisitionPackage:
-      AppSections.setAppContentComponent(AppPackageBuilder);
-      break;
-    case this.sectionTitles.PortfolioDashboard:
-      AppSections.setAppContentComponent(PortfolioDashboard);
-      break;
-    case this.sectionTitles.TOLookup:
-      AppSections.setAppContentComponent(TaskOrderLookup);
-      break;
-    case this.sectionTitles.Portfolios:
-      AppSections.setAppContentComponent(Portfolios);
-      break;
-    case this.sectionTitles.CreateFirstPortfolio:
-      AppSections.setAppContentComponent(CreateFirstPortfolio);
-      break;
-    case this.sectionTitles.PortfolioSummary:
-      AppSections.setAppContentComponent(PortfolioSummary);
-      break;
-    case this.sectionTitles.DocumentReview:
-      AppSections.setAppContentComponent(DocumentReview);
-      break;  
-    case this.sectionTitles.Packages:
-      AppSections.setAppContentComponent(Packages);
-      break;
+    // case this.sectionTitles.ProvisionWorkflow:
+    //   AppSections.setAppContentComponent(ProvisionWorkflow);
+    //   break;
+    // case this.sectionTitles.AcquisitionPackage:
+    //   AppSections.setAppContentComponent(AppPackageBuilder);
+    //   break;
+    // case this.sectionTitles.PortfolioDashboard:
+    //   AppSections.setAppContentComponent(PortfolioDashboard);
+    //   break;
+    // case this.sectionTitles.TOLookup:
+    //   AppSections.setAppContentComponent(TaskOrderLookup);
+    //   break;
+    // case this.sectionTitles.Portfolios:
+    //   AppSections.setAppContentComponent(Portfolios);
+    //   break;
+    // case this.sectionTitles.CreateFirstPortfolio:
+    //   AppSections.setAppContentComponent(CreateFirstPortfolio);
+    //   break;
+    // case this.sectionTitles.PortfolioSummary:
+    //   AppSections.setAppContentComponent(PortfolioSummary);
+    //   break;
+    // case this.sectionTitles.DocumentReview:
+    //   AppSections.setAppContentComponent(DocumentReview);
+    //   break;  
+    // case this.sectionTitles.Packages:
+    //   AppSections.setAppContentComponent(Packages);
+    //   break;
     }
   }
 
@@ -85,7 +85,7 @@ export default class App extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    await AcquisitionPackage.setIsProdEnv();
+    //await AcquisitionPackage.setIsProdEnv();
     if (process.env.NODE_ENV === "development") {
       // NOTE: add `userId` to .env file with your snow sys_id to view 
       // your packages etc. when running locally
@@ -100,4 +100,5 @@ export default class App extends Vue {
     await AppSections.setAppContentComponent(Home);
   }
 }
+export default toNative(App)
 </script>

@@ -13,8 +13,8 @@ import { Vue } from "vue-facing-decorator";
 import { User } from "types/Global";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 import { UserDTO } from "@/api/models";
-import AcquisitionPackageSummaryStore from "../acquisitionPackageSummary";
-import PortfolioSummary from "../portfolioSummary";
+//import AcquisitionPackageSummaryStore from "../acquisitionPackageSummary";
+//import PortfolioSummary from "../portfolioSummary";
 import { TABLENAME as AcquisitionPackageTable } from "@/api/acquisitionPackages";
 import { getTableRecordCount } from "@/helpers";
 
@@ -92,7 +92,7 @@ export class UserStore extends VuexModule {
     if (!this.initialized) {
       // SET TOTAL PACKAGE COUNT
       let query = "package_statusINDRAFT,WAITING_FOR_SIGNATURES,WAITING_FOR_TASK_ORDER";
-      const userQuery = await AcquisitionPackageSummaryStore.getMandatorySearchParameterQuery();
+      //const userQuery = await AcquisitionPackageSummaryStore.getMandatorySearchParameterQuery();
       query += userQuery;
       const count = await getTableRecordCount(AcquisitionPackageTable, query)
       this.doSetPackageCount(count);
@@ -123,7 +123,7 @@ export class UserStore extends VuexModule {
 
   @Action({rawError: true})
   public async setUserPortfolios(userSysId: string): Promise<void> {
-    const portfolioSum = await PortfolioSummary.getPortfolioSummaryList(userSysId)
+    //const portfolioSum = await PortfolioSummary.getPortfolioSummaryList(userSysId)
     PortfolioSummary.setPortfolioSummaryList(portfolioSum.portfolios)
     await this.doSetPortfolioCount(portfolioSum.portfolioCount)
   }
