@@ -175,7 +175,7 @@ export class StepsStore extends VuexModule implements StepsState {
     }
 
     @Action({ rawError: true })
-    public findRoute(name: string ): StepInfo | undefined {
+    public async findRoute(name: string ): Promise<StepInfo | undefined> {      
       return this.stepMap.get(name);
     }
 
