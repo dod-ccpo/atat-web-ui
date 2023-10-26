@@ -8,7 +8,7 @@ import {
   StepRouteResolver
 } from '@/store/steps/types'
 import DescriptionOfWork from '@/store/descriptionOfWork'
-import Steps from '@/store/steps'
+// import Steps from '@/store/steps'
 import Periods from '@/store/periods'
 import IGCEStore from '@/store/IGCE'
 import {
@@ -149,19 +149,19 @@ export const EvalPlanDetailsRouteResolver = (current: string): string => {
   if (!evalPlanRequired() || missingEvalPlanMethod(evalPlan)) {
     return routeNames.SummaryStepTwo
   }
-  Steps.setAdditionalButtonText({
-    buttonText: 'I don’t need other assessment areas',
-    buttonId: 'NoOtherAssessmentAreas'
-  })
-  try {
-    if (evalPlan.source_selection === 'SET_LUMP_SUM') {
-      Steps.setAdditionalButtonHide(false)
-    } else {
-      Steps.setAdditionalButtonHide(true)
-    }
-  } catch (error) {
-    console.error(error)
-  }
+  // Steps.setAdditionalButtonText({
+  //   buttonText: 'I don’t need other assessment areas',
+  //   buttonId: 'NoOtherAssessmentAreas'
+  // })
+  // try {
+  //   if (evalPlan.source_selection === 'SET_LUMP_SUM') {
+  //     Steps.setAdditionalButtonHide(false)
+  //   } else {
+  //     Steps.setAdditionalButtonHide(true)
+  //   }
+  // } catch (error) {
+  //   console.error(error)
+  // }
 
   return current === routeNames.CreateEvalPlan || routeNames.Differentiators
     ? routeNames.EvalPlanDetails
@@ -588,10 +588,10 @@ const setDontNeedButton = (groupId: string) => {
 		offeringText[groupId.toLowerCase()] || 'these cloud resources'
   dontNeedButtonText += offeringStr
 
-  Steps.setAdditionalButtonText({
-    buttonText: dontNeedButtonText,
-    buttonId: 'DontNeedResources'
-  })
+  // Steps.setAdditionalButtonText({
+  //   buttonText: dontNeedButtonText,
+  //   buttonId: 'DontNeedResources'
+  // })
 }
 
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings
@@ -806,7 +806,7 @@ export const ServiceOfferingsPathResolver = (
   direction: string
 ): string => {
   DescriptionOfWork.setBackToContractDetails(false)
-  Steps.clearAltBackButtonText()
+  // Steps.clearAltBackButtonText()
   DescriptionOfWork.setCurrentGroupRemoved(false)
 
   if (
@@ -992,7 +992,7 @@ export const ServiceOfferingsPathResolver = (
 
   setDontNeedButton(currentGroupId)
   try {
-    Steps.setAdditionalButtonHide(false)
+    // Steps.setAdditionalButtonHide(false)
   } catch (error) {
     console.error(error)
   }
@@ -1014,7 +1014,7 @@ export const ServiceOfferingsPathResolver = (
       // if more than one "Other" offering (Compute, General XaaS, Database)
       // instance/requirement, hide the "I don't need ____ resources" button
       try {
-        Steps.setAdditionalButtonHide(true)
+        // Steps.setAdditionalButtonHide(true)
       } catch (error) {
         console.error(error)
       }
@@ -1039,9 +1039,9 @@ export const OfferingDetailsPathResolver = (
   current: string,
   direction: string
 ): string => {
-  Steps.clearAltBackButtonText()
+  // Steps.clearAltBackButtonText()
   try {
-    Steps.setAdditionalButtonHide(false)
+    // Steps.setAdditionalButtonHide(false)
   } catch (error) {
     console.error(error)
   }
@@ -1261,7 +1261,7 @@ export const DowSummaryPathResolver = (
   DescriptionOfWork.setBackToContractDetails(
     current === routeNames.ConflictOfInterest
   )
-  Steps.clearAltBackButtonText()
+  // Steps.clearAltBackButtonText()
   if (current === routeNames.DOWLandingPage) {
     // const hasCurrentContract =
     //   AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;

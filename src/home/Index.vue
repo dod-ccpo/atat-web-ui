@@ -98,7 +98,7 @@ import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
-//import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 //import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
@@ -125,7 +125,7 @@ import { ToastObj } from "types/Global";
   }
 })
 
-export default class Home extends Vue {
+class Home extends Vue {
 
   public showTOSearchModal = false;
   public TONumber = "";
@@ -237,4 +237,5 @@ export default class Home extends Vue {
   };
 
 }
+export default Home;
 </script>

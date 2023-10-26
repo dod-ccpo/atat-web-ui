@@ -9,10 +9,10 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue} from "vue-facing-decorator";
 @Component({})
-export default class DisaLogo extends Vue {
+class DisaLogo extends Vue {
   @Prop({default: "ffffff", required: true}) private color!:string;
 }
-
+export default DisaLogo;
 </script>

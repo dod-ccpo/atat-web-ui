@@ -9,5 +9,5 @@ import { Component , toNative, Vue} from "vue-facing-decorator";
 })
 class AcquisitionPackageDetails extends Vue {
 }
-export default toNative(AcquisitionPackageDetails)
+export default AcquisitionPackageDetails
 </script>

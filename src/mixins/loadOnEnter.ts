@@ -1,6 +1,6 @@
 import { Vue, Component, toNative } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
-//import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 
 /**
  * Defines a mixable that calls loadOnEnter method for any 
@@ -23,4 +23,4 @@ class LoadOnEnter extends Vue {
 
 }
 
-export default toNative(LoadOnEnter)
+export default LoadOnEnter

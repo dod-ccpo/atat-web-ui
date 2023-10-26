@@ -108,6 +108,6 @@ class SurgeCapacity extends Vue {
 
 }
 
-export default toNative(SurgeCapacity)
+export default SurgeCapacity
 </script>
 

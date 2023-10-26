@@ -10,6 +10,6 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 class GeneratePackageDocuments extends Vue {
 }
 
-export default toNative(GeneratePackageDocuments)
+export default GeneratePackageDocuments
 </script>
 

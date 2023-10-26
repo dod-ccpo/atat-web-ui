@@ -155,6 +155,6 @@ class SecurityRequirements extends Vue {
   }
 }
 
-export default toNative(SecurityRequirements)
+export default SecurityRequirements
 </script>
 

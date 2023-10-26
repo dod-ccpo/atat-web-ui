@@ -186,6 +186,6 @@ class SupportingDocumentation extends Vue {
   
 }
 
-export default toNative(SupportingDocumentation)
+export default SupportingDocumentation
 </script>
 

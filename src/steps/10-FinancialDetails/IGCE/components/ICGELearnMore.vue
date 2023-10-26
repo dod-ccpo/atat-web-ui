@@ -35,5 +35,5 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 
 class ICGELearnMore extends Vue {}
-export default toNative(ICGELearnMore)
+export default ICGELearnMore
 </script>

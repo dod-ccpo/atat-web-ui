@@ -410,6 +410,6 @@ class ContributorsPanel extends Vue {
   }
 }
 
-export default toNative(ContributorsPanel);
+export default ContributorsPanel;
 
 </script>

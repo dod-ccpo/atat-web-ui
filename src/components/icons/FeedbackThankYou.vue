@@ -28,5 +28,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class FeedbackThankYou extends Vue {
   @Prop({default: "61686c", required: true}) private color!:string;
 }
-export default toNative(FeedbackThankYou);
+export default FeedbackThankYou;
 </script>

@@ -70,5 +70,5 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 
 class CoILearnMore extends Vue {}
-export default toNative(CoILearnMore)
+export default CoILearnMore
 </script>

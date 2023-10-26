@@ -42,5 +42,5 @@ class AlertForForms extends Vue {
 
 }
 
-export default toNative(AlertForForms)
+export default AlertForForms
 </script>

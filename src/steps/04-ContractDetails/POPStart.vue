@@ -204,5 +204,5 @@ class POPStart extends Vue {
 
 }
 
-export default toNative(POPStart)
+export default POPStart
 </script>

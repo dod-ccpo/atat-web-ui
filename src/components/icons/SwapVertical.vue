@@ -13,5 +13,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class SwapVertical extends Vue {
   @Prop({ default: "959A9D", required: false }) private color?: string;
 }
-export default toNative(SwapVertical);
+export default SwapVertical;
 </script>

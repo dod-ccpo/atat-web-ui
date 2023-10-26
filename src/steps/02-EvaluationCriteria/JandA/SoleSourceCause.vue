@@ -561,6 +561,6 @@ class SoleSourceCause extends Vue {
 
 }
 
-export default toNative(SoleSourceCause) 
+export default SoleSourceCause 
 </script>
 

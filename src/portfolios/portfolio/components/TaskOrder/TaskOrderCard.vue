@@ -155,7 +155,7 @@ class TaskOrderCard extends Vue {
   }
 
 }
-export default toNative(TaskOrderCard)
+export default TaskOrderCard
 </script>
 
 

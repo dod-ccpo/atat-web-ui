@@ -143,5 +143,5 @@ class OptimizeOrReplicate extends Vue {
 
 }
 
-export default toNative(OptimizeOrReplicate)
+export default OptimizeOrReplicate
 </script>

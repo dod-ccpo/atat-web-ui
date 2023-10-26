@@ -31,5 +31,5 @@
 import { Component, Vue, toNative} from "vue-facing-decorator";
 @Component({})
 class Azure extends Vue {}
-export default toNative(Azure)
+export default Azure
 </script>

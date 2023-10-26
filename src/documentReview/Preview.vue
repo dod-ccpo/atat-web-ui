@@ -162,5 +162,5 @@ class DocumentReviewPreview extends Vue {
 
   private hasACOR = AcquisitionPackage.hasAlternativeContactRep;
 }
-export default toNative(DocumentReviewPreview);
+export default DocumentReviewPreview;
 </script>

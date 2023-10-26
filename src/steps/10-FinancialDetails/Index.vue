@@ -9,5 +9,5 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 
 class FinancialDetails extends Vue {}
 
-export default toNative(FinancialDetails)
+export default FinancialDetails
 </script>

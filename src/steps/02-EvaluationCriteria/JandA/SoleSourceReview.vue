@@ -332,5 +332,5 @@ class SoleSourceReview extends Vue {
 
 }
  
-export default toNative(SoleSourceReview)
+export default SoleSourceReview
 </script>

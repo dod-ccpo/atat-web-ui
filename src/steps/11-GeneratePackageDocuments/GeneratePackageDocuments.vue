@@ -122,5 +122,5 @@ class GeneratingPackageDocuments extends Vue {
   }
 }
 
-export default toNative(GeneratingPackageDocuments)
+export default GeneratingPackageDocuments
 </script>
