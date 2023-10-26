@@ -20,75 +20,6 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
     cy.findElement(common.stepPerformanceReqText).click();
   });
 
-  function verifypageheaderwithClickContinue(label, selector, text) {
-    let pageHeader = "";
-    cy.getCheckBoxLabels(label).then((foundLabels) => {
-      pageHeader = text + foundLabels;
-    });
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.waitUntilElementIsGone(selector);
-    cy.verifyPageHeader(pageHeader);
-  }
-
-  function gatherRequirementsPage(
-    UnclassifiedOption,
-    heading,
-    anticipatedtext,
-    radioOption
-  ) {
-    cy.verifyTextMatches(
-      performanceReqs.pageTextClassification,
-      serviceOfferingGroups.GatherRequirementsPage.pageText1
-    );
-    cy.findElement(UnclassifiedOption)
-      .check({
-        force: true,
-      })
-      .should("be.checked");
-    cy.verifyTextMatches(
-      performanceReqs.aboutButton,
-      serviceOfferingGroups.GatherRequirementsPage.pageText2
-    );
-    cy.verifyTextMatches(
-      performanceReqs.requirementsHeading,
-      "1. Tell us about the " + heading + " instance"
-    );
-    cy.verifyTextMatches(
-      performanceReqs.statement,
-      serviceOfferingGroups.GatherRequirementsPage.sectionSubTitle
-    );
-    cy.verifyTextMatches(
-      performanceReqs.functionalDescText,
-      serviceOfferingGroups.GatherRequirementsPage.descriptionText
-    );
-    cy.findElement(performanceReqs.anticipatedTextArea).type(anticipatedtext);
-    cy.verifyTextMatches(
-      performanceReqs.durationQuestion,
-      serviceOfferingGroups.GatherRequirementsPage.durationQuestion
-    );
-    if (radioOption == "Yes") {
-      cy.radioBtn(performanceReqs.durationYesRadioBtn, "YES")
-        .not("[disabled]")
-        .click({
-          force: true,
-        });
-    } else if (radioOption == "No") {
-      cy.radioBtn(performanceReqs.durationNoRadioBtn, "NO")
-        .not("[disabled]")
-        .click({
-          force: true,
-        });
-      cy.findElement(performanceReqs.baseCheckbox).should("be.checked");
-      cy.findElement(performanceReqs.optionOneCheckbox).should(
-        "not.be.checked"
-      );
-    }
-    cy.clickContinueButton(
-      performanceReqs.durationNoRadioBtn,
-      serviceOfferingGroups.XaasRequirementsPage.XaasSummary
-    );
-  }
-
   it("TC1: Verify Performance Requirements - XaaS Requirements", () => {
     cy.verifyPageHeader(
       serviceOfferingGroups.XaasRequirementsPage.performancepageHeader
@@ -118,14 +49,9 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
         force: true,
       })
       .should("be.checked");
-    cy.log("First, tell us about your anticipated users and data needs");
-    cy.clickContinueButton(
-      performanceReqs.appCheckBox,
-      serviceOfferingGroups.anticipatedUsersPage.pageHeader
-    );
-    cy.log(
-      "skipping anticipated page and moving to DeveloperTools and Services"
-    );
+    cy.anticipatedUsersPage();
+
+    cy.log(" What type of Developer Tools and Services do you need? ")
     cy.clickContinueButton(
       performanceReqs.pageTextanticipatedUsers,
       serviceOfferingGroups.DeveloperToolsPage.pageHeader1
@@ -152,15 +78,15 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       })
       .should("be.checked");
 
-    verifypageheaderwithClickContinue(
+    cy.verifypageheaderwithClickContinue(
       performanceReqs.checkedCheckboxes,
       performanceReqs.devToolDevSecOpsCheckBox,
       serviceOfferingGroups.commonTextPage.gatherRqmtsHeader
     );
-    gatherRequirementsPage(
+    cy.gatherRequirementsPage(
       performanceReqs.checkBoxIL2,
       "Unclassified/IL2",
-      "testDataIL2",
+      "testDeveloperTools",
       "Yes"
     );
   });
@@ -193,16 +119,16 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       })
       .should("be.checked");
 
-    verifypageheaderwithClickContinue(
+    cy.verifypageheaderwithClickContinue(
       performanceReqs.checkedCheckboxes,
       performanceReqs.applicationCheckBox,
       serviceOfferingGroups.commonTextPage.gatherRqmtsHeader
     );
 
-    gatherRequirementsPage(
+    cy.gatherRequirementsPage(
       performanceReqs.checkBoxIL4,
       "Unclassified/IL4",
-      "testDataIL4",
+      "testApplications",
       "No"
     );
   });
@@ -272,15 +198,15 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       })
       .should("be.checked");
 
-    verifypageheaderwithClickContinue(
+    cy.verifypageheaderwithClickContinue(
       performanceReqs.checkedCheckboxes,
       performanceReqs.networkHybridCheckBox,
       serviceOfferingGroups.commonTextPage.gatherRqmtsHeader
     );
-    gatherRequirementsPage(
+    cy.gatherRequirementsPage(
       performanceReqs.checkBoxIL5,
       "Unclassified/IL5",
-      "testDataIL5",
+      "testNetworking",
       "Yes"
     );
   });
@@ -313,15 +239,15 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       })
       .should("be.checked");
 
-    verifypageheaderwithClickContinue(
+    cy.verifypageheaderwithClickContinue(
       performanceReqs.checkedCheckboxes,
       performanceReqs.machineSpecializedCheckBox,
       serviceOfferingGroups.commonTextPage.gatherRqmtsHeader
     );
-    gatherRequirementsPage(
+    cy.gatherRequirementsPage(
       performanceReqs.checkBoxIL5,
       "Unclassified/IL5",
-      "testDataIL5",
+      "testMachineLearning",
       "Yes"
     );
   });
@@ -358,15 +284,15 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       })
       .should("be.checked");
 
-    verifypageheaderwithClickContinue(
+    cy.verifypageheaderwithClickContinue(
       performanceReqs.checkedCheckboxes,
       performanceReqs.internetIOTEdgeCheckBox,
       serviceOfferingGroups.commonTextPage.gatherRqmtsHeader
     );
-    gatherRequirementsPage(
+    cy.gatherRequirementsPage(
       performanceReqs.checkBoxIL6,
       "Secret/IL6",
-      "testDataIL5",
+      "testIOT",
       "Yes"
     );
   });
@@ -400,15 +326,15 @@ describe("Test suite: Requirement Categories with Serive Offering Groups", () =>
       })
       .should("be.checked");
 
-    verifypageheaderwithClickContinue(
+    cy.verifypageheaderwithClickContinue(
       performanceReqs.checkedCheckboxes,
       performanceReqs.managedCSPSecurityCheckBox,
       serviceOfferingGroups.commonTextPage.gatherRqmtsHeader
     );
-    gatherRequirementsPage(
+    cy.gatherRequirementsPage(
       performanceReqs.checkBoxTS,
       "Top Secret",
-      "testDataIL5",
+      "testSecurity",
       "Yes"
     );
   });
