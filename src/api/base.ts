@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import { Vue } from "vue-facing-decorator";
 
 declare global {
   interface Window {
@@ -8,7 +9,6 @@ declare global {
 
 
 function configureDefaults(){
-
   // define ServiceNow authentication schema for REST calls
   // set up axios defaults
   if (process.env.NODE_ENV === "development") {
@@ -26,7 +26,7 @@ function configureDefaults(){
     }
   } else {
     if (axios.defaults?.headers && axios.defaults.headers.common) {
-      axios.defaults.headers.common['X-UserToken'] = window.sessionToken;
+      // axios.defaults.headers.common['X-UserToken'] = window.sessionToken;
     }
   }
   axios.defaults.headers.put["Content-Type"] = "application/json";

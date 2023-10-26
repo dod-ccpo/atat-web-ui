@@ -16,5 +16,6 @@ app.use(sanitize);
 app.use(vuetify)
 
 app.config.globalProperties.productionTip = false;
+app.config.globalProperties.window = window
 
 app.mount('#app')

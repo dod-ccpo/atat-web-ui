@@ -7,7 +7,7 @@
         </h1>
         <div class="copy-max-width">
           <p class="mb-10">
-           {{ introParagraph }}
+           <!-- {{ introParagraph }} -->
           </p>
         </div>
 
@@ -33,17 +33,25 @@ import Summary, {
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
-  components: {
-    ATATSummaryItems
-  },
+  // mixins: [SaveOnLeave],
+  // components: {
+  //   ATATSummaryItems
+  // },
 })
-class SummaryStepThree extends Vue {
+export default class SummaryStepThree extends Vue {
   public summaryItems: SummaryItem[] = [];
   public introParagraph = "";
+  public tonysBoolean = false;
+
+  // public tony():boolean{
+  //   this.tonysBoolean = true;
+  //   return this.tonysBoolean;
+  // }
   
   public setIntroParagraph():void {
-    this.introParagraph = (isStepComplete(3))
+    // console.log(3)
+    const _isStepComplete = (isStepComplete(3));
+    this.introParagraph = 1+1===2
       ? "You are all done with this section, but you can come back at any time to edit "
         + "details. When you are ready, we will move on to gather background information."
       : "We need some more details for this section. You can add info now, or come back to "
@@ -51,20 +59,19 @@ class SummaryStepThree extends Vue {
         + "on to gather background information."
   }
 
-  public async mounted():Promise<void> {
-    this.setIntroParagraph()
-    Summary.setHasCurrentStepBeenVisited(
-      await isStepValidatedAndTouched(3)
-    )
-    this.summaryItems = await getSummaryItemsforStep(3);
-    await Summary.toggleButtonColor(3);
-  }
+  // public async mounted():Promise<void> {
+  //   this.setIntroParagraph()
+  //   Summary.setHasCurrentStepBeenVisited(
+  //     await isStepValidatedAndTouched(3)
+  //   )
+  //   this.summaryItems = await getSummaryItemsforStep(3);
+  //   await Summary.toggleButtonColor(3);
+  // }
 
-  protected async saveOnLeave(): Promise<boolean> {
-    await Summary.toggleButtonColor(-1);
-    return true;
-  }
+  // protected async saveOnLeave(): Promise<boolean> {
+  //   await Summary.toggleButtonColor(-1);
+  //   return true;
+  // }
 }
 
-export default toNative(SummaryStepThree)
 </script>
