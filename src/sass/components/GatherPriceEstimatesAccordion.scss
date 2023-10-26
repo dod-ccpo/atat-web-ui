@@ -1,5 +1,5 @@
 ._price-estimates-accordion {
-  .v-expansion-panel-header {
+  .v-expansion-panel-title {
     background-color: $primary;
     width: 100%;
     border-bottom: none;
@@ -31,7 +31,7 @@
       margin-left:16px;
     }
 
-    .v-expansion-panel-header__icon {
+    .v-expansion-panel-title__icon {
       left: 12px;
       top: 16px;
 
@@ -41,11 +41,11 @@
     }
   }
 
-  .v-expansion-panel-content__wrap {
+  .v-expansion-panel-text__wrap {
     padding: 0;
     margin:0;
   }
-  .v-expansion-panel-content {
+  .v-expansion-panel-text {
     ._expansion-panel-content-header{
       background-color:$base-lightest;
       display: flex;

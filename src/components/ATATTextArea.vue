@@ -15,7 +15,7 @@
       <v-tooltip
         transition="slide-y-reverse-transition"
         color="rgba(0,0,0,1)"
-        top
+        location="top"
         v-if="tooltipText"
       >
         <!--TODO: validate that this still works after removal of on from activator-->
@@ -23,11 +23,11 @@
           <v-btn
             class="mb-2 ml-1 pa-0 link-button no-border"
             icon
-            x-small
+            size="x-small"
             :ripple="false"
             :aria-label="'Help for ' + label"
           >
-            <v-icon class="icon-16 ma-0 pa-0" small color="#544496"
+            <v-icon class="icon-16 ma-0 pa-0" size="small" color="#544496"
             >help_outline
             </v-icon>
           </v-btn>
@@ -40,10 +40,10 @@
       <v-textarea
         ref="atatTextArea"
         :id="id + '_text_area'"
-        outlined
-        :value.sync="_value"
+        variant="outlined"
+        :model-value.sync="_value"
         :placeholder="placeHolder"
-        @input="onInput"
+        @update:model-value="onInput"
         class="text-primary"
         :rules="getRules"
         :rows="rows"

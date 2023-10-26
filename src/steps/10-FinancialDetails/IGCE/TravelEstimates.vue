@@ -55,7 +55,7 @@
                     v-for="(item, index) in calloutData"
                     :key="index"
                   >
-                    <v-expansion-panel-header
+                    <v-expansion-panel-title
                       :id="item.id + '_Button'"
                       class="no-hover"
                     >
@@ -64,7 +64,7 @@
                         ({{ pluralizeTrip(item.totalNumberOfTripsPerPeriod) }})
                       </span>
                     </v-expansion-panel-header>
-                    <v-expansion-panel-content :id="item.id + '_Content'">
+                    <v-expansion-panel-text :id="item.id + '_Content'">
                       <div v-for="(trip, tripIdx) in item.trips" :key="tripIdx">
                         <div v-html="trip" class="d-flex align-top"></div>
                       </div>

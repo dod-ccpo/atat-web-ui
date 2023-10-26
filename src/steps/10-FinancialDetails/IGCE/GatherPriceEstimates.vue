@@ -37,7 +37,7 @@
             :value="isPanelOpen"
           >
             <v-expansion-panel>
-              <v-expansion-panel-header>
+              <v-expansion-panel-title>
                 <div class="d-flex">
                   <div class="h4 _expansion-panel-header">
                     {{ name }}
@@ -47,7 +47,7 @@
                   </div>
                 </div>
               </v-expansion-panel-header>
-              <v-expansion-panel-content>
+              <v-expansion-panel-text>
                 <div>
                   <div class="_expansion-panel-content-header">
                     <div class="summary-text">Service Name and Configuration Summary</div>

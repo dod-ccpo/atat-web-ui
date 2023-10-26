@@ -23,12 +23,12 @@
       <v-text-field
         ref="atatTextField"
         :id="id + '_text_field'"
-        outlined
-        dense
+        variant="outlined"
+        density="compact"
         :height="42"
-        :value.sync="_value"
+        :model-value.sync="_value"
         :placeholder="placeHolder"
-        @input="onInput"
+        @update:model-value="onInput"
         class="text-primary"
         :class="[{ 'text-right' : alignRight }]"
         :disabled="disabled"

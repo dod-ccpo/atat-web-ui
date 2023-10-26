@@ -103,7 +103,7 @@
     padding-bottom: 80px !important;
   }
 
-  v-expansion-panel-header {
+  .v-expansion-panel-title {
     background-color: $primary !important;
     width: 100%;
     border-bottom: 1px solid $base-lighter;
@@ -114,9 +114,14 @@
     padding-left: 44px !important; 
     margin-bottom: 0;
     margin-top: 0;
+    min-height: 50px !important;
+
+    .v-expansion-panel-title__overlay {
+      opacity: 0 !important;
+    }
 
     &:hover {
-      background-color: $primary-dark;
+      background-color: $primary-dark !important;
     }
 
     .h3 {
@@ -127,7 +132,7 @@
       }
     }
 
-    .v-expansion-panel-header__icon {
+    .v-expansion-panel-title__icon {
       left: 12px;
       top: 16px;
 
@@ -137,8 +142,9 @@
     }
   }
 
-  .v-expansion-panel-content__wrap {
+  .v-expansion-panel-text__wrap {
     padding: 0;
+    margin-bottom: 0;
     ._summary-card-wrapper.v-sheet.v-card {
       border-top: none !important;
       border-bottom: 1px solid $base-lighter !important;
@@ -146,9 +152,6 @@
         border-bottom: none !important;
       }
     }
-  }
-  .v-expansion-panel-content__wrap {
-    margin-bottom: 0;
   }
 
 
