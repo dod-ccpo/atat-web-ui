@@ -1,4 +1,4 @@
-import Vue from "vue";
+import { nextTick } from "vue";
 import { VueWrapper } from "@vue/test-utils";
 import { ValidationPlugin } from "@/plugins/validation";
 
@@ -35,7 +35,7 @@ export async function validateInput(
 
     const component = await wrapper.findComponent({ref: componentRef});
 
-    await Vue.nextTick(async () => {
+    await nextTick(async () => {
       const n = errorCount || 0;
       const errorLength = component.vm.$data.errorMessages.length;
       success = errorLength > n;

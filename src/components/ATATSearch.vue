@@ -32,7 +32,7 @@
         :value.sync="_value"
         :placeholder="placeHolder"
         :rules="rules"
-        :validate-on-blur="validateOnBlur"
+        :validate-on="validationString"
         @update:error="setErrorMessage"
         @click:clear="clearErrorMessages"
         @blur="onBlur"
@@ -317,6 +317,10 @@ class ATATSearch extends Vue {
     this.showSuccessAlert = false;
     this.showErrorAlert = false;
     this.hideHelpText = false;
+  }
+
+  public get validationString(){
+    return this.validateOnBlur ? "blur" : undefined
   }
 
   private async search(): Promise<void> {

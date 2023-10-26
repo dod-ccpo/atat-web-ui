@@ -6,8 +6,7 @@ import api from "@/api";
 import { AxiosRequestConfig } from "axios"
 import { AgencyDTO, DisaOrganizationDTO } from "@/api/models";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
-import Vue from "vue";
-
+import { Vue } from "vue-facing-decorator";
 const ATAT_ORGANIZATION_DATA_KEY = 'ATAT_ORGANIZATION_DATA_KEY';
 
 @Module({
@@ -79,13 +78,12 @@ export class OrganizationDataStore extends VuexModule {
   }
 
   @Mutation
-  public setStoreData(sessionData: string):void{
+  public setStoreData(sessionData: string): void {
     try {
       const sessionDataObject = JSON.parse(sessionData);
       Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
+        (this as unknown as Record<string, string>)[property] = sessionDataObject[property];
       });
-
     } catch (error) {
       throw new Error('error restoring session for organization data store');
     }

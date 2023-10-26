@@ -17,8 +17,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
@@ -27,12 +26,11 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
   },
 })
 
-export default class CommentButton extends Vue {
+class CommentButton extends Vue {
   @Prop() private id!: string;
   public addComment(): void {
     // future ticket show dialog with comment input
   }
-
 }
-
+export default toNative(CommentButton);
 </script>

@@ -7,7 +7,7 @@ import {
   ReferenceColumn
 } from "@/api/models";
 import {nameofProperty, storeDataToSession} from "@/store/helpers";
-import Vue from "vue";
+import { Vue } from "vue-facing-decorator";
 import {api} from "@/api";
 import _ from "lodash";
 import any = jasmine.any;
@@ -113,7 +113,7 @@ export class CurrentEnvironmentStore extends VuexModule {
     try {
       const sessionDataObject = JSON.parse(sessionData);
       Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
+        (this as unknown as Record<string, string>)[property] = sessionDataObject[property];
       });
     } catch (error) {
       throw new Error("error restoring session for acquisition package summary data store");

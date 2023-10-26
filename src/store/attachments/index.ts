@@ -14,8 +14,7 @@ import {
   AttachmentServiceFactory,
 } from "@/services/attachment";
 
-import Vue from "vue";
-
+import { Vue } from "vue-facing-decorator";
 const ATAT_ATTACHMENTS_KEY = "ATAT_ATTACHMENTS_KEY";
 
 import {
@@ -70,7 +69,7 @@ export class AttachmentStore extends VuexModule {
     try {
       const sessionDataObject = JSON.parse(sessionData);
       Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
+        (this as unknown as Record<string, string>)[property] = sessionDataObject[property];
       });
     } catch (error) {
       throw new Error("error restoring session for contact data store");
@@ -86,7 +85,7 @@ export class AttachmentStore extends VuexModule {
     attachments: AttachmentDTO[];
   }): void {
     try {
-      Vue.set(this, key, attachments);
+      (this as unknown as Record<string, AttachmentDTO[]>)[key] = attachments;
     } catch (error) {
       throw new Error("error updating attachment data");
     }

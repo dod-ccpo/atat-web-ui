@@ -43,7 +43,7 @@
         autocomplete="off"
         :type="type"
         @keypress="filterNumbers($event)"
-        :validate-on-blur="validateOnBlur"
+        :validate-on="validationString"
       >
 
         <template v-slot:prepend-inner>
@@ -56,7 +56,8 @@
             class="pt-1 mr-1"
           />
         </template>
-        <template v-slot:append v-if="appendText">
+        <!-- TODO check slot append -->
+        <template slot="append-inner" v-if="appendText">
           <span class="_append-text">
             {{ appendText }}
           </span>
@@ -163,6 +164,9 @@ class ATATTextField extends Vue  {
   private errorMessages: string[] = [];
   private onInput(v: string) {
     this._value = v;
+  }
+  public get validationString(){
+    return this.validateOnBlur ? "blur" : undefined
   }
 
   public async setErrorMessage(): Promise<void> {

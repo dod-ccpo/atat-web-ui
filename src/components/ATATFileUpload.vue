@@ -26,7 +26,7 @@
         @change="fileUploadChanged"
         :hide-details="true"
         :rules="setRules"
-        :validate-on-blur="validateOnBlur"
+        validate-on="blur"
         @keydown.tab="setErrorMessage()"
       >
         <template v-slot:prepend-inner>
@@ -217,7 +217,7 @@ class ATATFileUpload extends Vue {
   private isFullSize = true;
   private fileAttachmentService?: AttachmentServiceBase<TableApiBase<BaseTableDTO>, BaseTableDTO>;
   private errorMessages: string[] = [];
-  private validateOnBlur = true;
+
   private moreThanMax = false;
   get isFileUploadDisabled(): boolean {
     return this.maxNumberOfFiles <= this._validFiles.length;

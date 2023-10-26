@@ -7,8 +7,7 @@ import {TABLENAME as ContactsTable} from "@/api/contacts";
 import {TABLENAME as MilitaryRanksTable} from "@/api/militaryRanks";
 import {AutoCompleteItem, AutoCompleteItemGroups, SelectData,} from "types/Global";
 import {nameofProperty, retrieveSession, storeDataToSession} from "../helpers"
-import Vue from "vue";
-
+import { Vue } from "vue-facing-decorator";
 const ATAT_CONTACT_DATA_KEY = 'ATAT_CONTACT_DATA_KEY';
 
 const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
@@ -71,11 +70,11 @@ export class ContactDataStore extends VuexModule {
   }
 
   @Mutation
-  public setStoreData(sessionData: string):void{
+  public setStoreData(sessionData: string): void {
     try {
       const sessionDataObject = JSON.parse(sessionData);
       Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
+        (this as unknown as Record<string, string>)[property] = sessionDataObject[property];
       });
     } catch (error) {
       throw new Error('error restoring session for contact data store');
