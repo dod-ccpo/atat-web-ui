@@ -1,7 +1,7 @@
 import { Vue, Component, toNative } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import Steps from "@/store/steps";
+//import Steps from "@/store/steps";
 import { ComponentPublicInstance } from "vue";
 
 // Register the router hooks with their names
@@ -53,8 +53,8 @@ class SaveOnLeave extends Vue {
           });          
         }
       } else if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
-        Steps.setLeaveStepComplete(from.name as string);  
-        Steps.clearAdditionalButtonText();     
+        // Steps.setLeaveStepComplete(from.name as string);  
+        // Steps.clearAdditionalButtonText();     
         AcquisitionPackage.setDisableContinue(false);
         next();
       }

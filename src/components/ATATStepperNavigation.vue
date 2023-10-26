@@ -48,11 +48,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue } from "vue-facing-decorator";
 import { AdditionalButton } from "@/store/steps/types";
 
 @Component({})
-class ATATStepperNavigation extends Vue {
+export default class ATATStepperNavigation extends Vue {
   @Prop({ default: () => []}) private additionalButtons!: Array<AdditionalButton>;
   @Prop({ default: "Back" }) private backButtonText?: string;
   @Prop({ default: "Continue" }) private continueButtonText?: string;
@@ -83,5 +83,4 @@ class ATATStepperNavigation extends Vue {
     }
   }
 }
-export default toNative(ATATStepperNavigation);
 </script>

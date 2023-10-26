@@ -100,29 +100,29 @@ import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.v
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 //import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
-//import { routeNames } from "@/router/stepper";
+import { routeNames } from "@/router/stepper";
 //import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
-//import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
-//import PortfolioStore from "@/store/portfolio";
-//import acquisitionPackage from "@/store/acquisitionPackage";
+import PortfolioStore from "@/store/portfolio";
 import Toast from "@/store/toast";
 import { ToastObj } from "types/Global";
 
 @Component({
-  // components: {
-  //   ATATFooter,
-  //   ATATLoader,
-  //   ATATLoadingPackageModal,
-  //   ATATToast,
-  //   ExistingUser,
-  //   HelpfulResourcesCards,
-  //   NewUser,
-  //   TaskOrderSearchModal,
-  // }
+  components: {
+    ATATFooter,
+    ATATLoader,
+    ATATLoadingPackageModal,
+    ATATToast,
+    ExistingUser,
+    HelpfulResourcesCards,
+    //TODO Validate with new sys_id
+    NewUser,
+    TaskOrderSearchModal,
+  }
 })
 
 class Home extends Vue {
@@ -156,8 +156,8 @@ class Home extends Vue {
     this.resetValidationNow = true;
     this.showTOSearchModal = false;
     this.selectedAcquisitionPackageSysId = "";
-    // await PortfolioStore.setSelectedAcquisitionPackageSysId("");
-    // await PortfolioStore.setShowTOPackageSelection(true);
+    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+    await PortfolioStore.setShowTOPackageSelection(true);
   }
 
   public get isNewUser(): boolean {
@@ -175,57 +175,57 @@ class Home extends Vue {
   }
 
   public async startNewAcquisition(): Promise<void> {
-    // await acquisitionPackage.setIsNewPackage(true)
-    // await AcquisitionPackage.reset();
-    // await PortfolioStore.setSelectedAcquisitionPackageSysId("");
-    // this.$router.push({
-    //   name: routeNames.DAPPSChecklist,
-    //   params: {
-    //     direction: "next"
-    //   },
-    //   replace: true
-    // }).catch(() => console.log("avoiding redundant navigation"));
+    await AcquisitionPackage.setIsNewPackage(true)
+    await AcquisitionPackage.reset();
+    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+    this.$router.push({
+      name: 'DAPPSChecklist',//routeNames.DAPPSChecklist,
+      params: {
+        direction: "next"
+      },
+      replace: true
+    }).catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
   }
 
   public async startProvisionWorkflow(): Promise<void>{
-    // await AcquisitionPackage.reset();
-    // if (this.selectedAcquisitionPackageSysId) {
-    //   await PortfolioStore.setShowTOPackageSelection(false);
-    // }
-    // await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedAcquisitionPackageSysId);
+    await AcquisitionPackage.reset();
+    if (this.selectedAcquisitionPackageSysId) {
+      await PortfolioStore.setShowTOPackageSelection(false);
+    }
+    await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedAcquisitionPackageSysId);
 
-    // this.$router.push({
-    //   name: provWorkflowRouteNames.AwardedTaskOrder,
-    //   params: {
-    //     direction: "next"
-    //   },
-    //   replace: true
-    // }).catch(() => console.log("avoiding redundant navigation"));
+    this.$router.push({
+      name: 'AwardedTo',//provWorkflowRouteNames.AwardedTaskOrder,
+      params: {
+        direction: "next"
+      },
+      replace: true
+    }).catch(() => console.log("avoiding redundant navigation"));
     AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
   }
 
   public async loadDashboard(): Promise<void> {
-    // await AcquisitionPackage.reset();
-    // await AcquisitionPackage.setHideNavigation(false);
-    // const sectionData = await AppSections.getSectionData();
-    // AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
-    // await PortfolioStore.setSelectedAcquisitionPackageSysId("");
-    // await PortfolioStore.setShowTOPackageSelection(true);
+    await AcquisitionPackage.reset();
+    await AcquisitionPackage.setHideNavigation(false);
+    const sectionData = await AppSections.getSectionData();
+    AcquisitionPackage.doSetCancelLoadDest(sectionData.sectionTitles.Home);
+    await PortfolioStore.setSelectedAcquisitionPackageSysId("");
+    await PortfolioStore.setShowTOPackageSelection(true);
   }
 
   public async mounted(): Promise<void> {
-    // await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
-    // await PortfolioStore.setProvisioningTOFollowOn(false)
-    // await PortfolioStore.setProvisioningFromMeatballMenu(false);
-    // await AcquisitionPackage.loadFeedbackOptions()
+    //await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await PortfolioStore.setProvisioningTOFollowOn(false)
+    await PortfolioStore.setProvisioningFromMeatballMenu(false);
+    await AcquisitionPackage.loadFeedbackOptions()
     
     this.isLoading = true;
     await CurrentUserStore.initialize();
-    // if (PortfolioStore.userLeftPortfolio) {
-    //   Toast.setToast(this.accessRemovedToast);
-    //   await PortfolioStore.setUserLeftPortfolio(false);
-    // }
+    if (PortfolioStore.userLeftPortfolio) {
+      Toast.setToast(this.accessRemovedToast);
+      await PortfolioStore.setUserLeftPortfolio(false);
+    }
   }
 
   public accessRemovedToast: ToastObj = {

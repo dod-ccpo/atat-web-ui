@@ -10,11 +10,11 @@ import {
 } from "@/api/models";
 import {Checkbox, RadioButton, SelectData, User} from "types/Global";
 import _ from "lodash";
-//import Periods from "@/store/periods";
-//import {Statuses} from "@/store/acquisitionPackage";
-//import ATATCharts from "@/store/charts";
+import Periods from "@/store/periods";
+import {Statuses} from "@/store/acquisitionPackage";
+import ATATCharts from "@/store/charts";
 import {differenceInDays, differenceInMonths, format, formatISO, parseISO} from "date-fns";
-//import DescriptionOfWork from "@/store/descriptionOfWork";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 import {AxiosRequestConfig} from "axios";
 import api from "@/api";
 
@@ -157,25 +157,25 @@ export const buildClassificationDescription
       }
     }
 
-// /**
-//  * 
-//  * @param classLevelSysId - Classification Level Sys Id
-//  * @returns the number of existing instances (both Xaas and Cloud Support) that have
-//  *          the classLevelSysId
-//  */
-// export const getDOWOfferingsWithClassLevelTotal = (
-//   classLevelSysId: string
-// ): number => {
-//   const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
-//   const re = new RegExp(classLevelSysId, 'g');
-//   return dowStringified.match(re)?.length || 0;
-// };
+/**
+ * 
+ * @param classLevelSysId - Classification Level Sys Id
+ * @returns the number of existing instances (both Xaas and Cloud Support) that have
+ *          the classLevelSysId
+ */
+export const getDOWOfferingsWithClassLevelTotal = (
+  classLevelSysId: string
+): number => {
+  const dowStringified  = JSON.stringify(DescriptionOfWork.DOWObject);
+  const re = new RegExp(classLevelSysId, 'g');
+  return dowStringified.match(re)?.length || 0;
+};
 
-// //strips whitespace, and special characters
-// export const sanitizeOfferingName = (offeringName: string): string => {
-//   return offeringName.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>{\\}[\]\\/]/gi, "_")
-//     .replace(/ /g, "_").replace(/_$/, '');
-// }
+//strips whitespace, and special characters
+export const sanitizeOfferingName = (offeringName: string): string => {
+  return offeringName.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>{\\}[\]\\/]/gi, "_")
+    .replace(/ /g, "_").replace(/_$/, '');
+}
 
 // formats a number to currency string with commas and 2 decimal places
 export const toCurrencyString = (num: number, decimals?: boolean): string => {
@@ -256,34 +256,34 @@ export const roundTo100 = (numberArr: number[], withTenths?: boolean): number[] 
   return output;
 }
 
-// export const createPeriodCheckboxItems = async (): Promise<Checkbox[]> => {
-//   const periods: PeriodDTO[] = await Periods.loadPeriods();
-//   // ensure sort order is correct
-//   if (periods && periods.length > 0) {
+export const createPeriodCheckboxItems = async (): Promise<Checkbox[]> => {
+  const periods: PeriodDTO[] = await Periods.loadPeriods();
+  // ensure sort order is correct
+  if (periods && periods.length > 0) {
 
-//     periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1);
+    periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1);
     
-//     const arr: Checkbox[] = [];
-//     periods.forEach((period, i) => {
-//       const label = i === 0 ? "Base period" : `Option period ${i}`;
-//       const id = i === 0 ? "BASE" : `OPTION${i}`;
-//       const option: Checkbox = {
-//         id,
-//         label,
-//         value: period.sys_id || "",
-//       };
-//       arr.push(option);
-//     })
-//     return arr;
-//   }
-//   return [
-//     {
-//       id: "BaseDisabled",
-//       label: "Base period",
-//       value: "",
-//     }
-//   ];
-// }
+    const arr: Checkbox[] = [];
+    periods.forEach((period, i) => {
+      const label = i === 0 ? "Base period" : `Option period ${i}`;
+      const id = i === 0 ? "BASE" : `OPTION${i}`;
+      const option: Checkbox = {
+        id,
+        label,
+        value: period.sys_id || "",
+      };
+      arr.push(option);
+    })
+    return arr;
+  }
+  return [
+    {
+      id: "BaseDisabled",
+      label: "Base period",
+      value: "",
+    }
+  ];
+}
 
 export function generateRandomKey(): string {
   const randomNumber = Math.floor(100000000 + Math.random() * 900000000);
@@ -297,55 +297,55 @@ export function getUserInitials(member:User): string {
   return initials.toUpperCase();
 }
 
-// export function getStatusChipBgColor(status: string): string {
-//   switch (status.toLowerCase()) {
-//   case Statuses.Active.value.toLowerCase():
-//   case Statuses.OnTrack.value.toLowerCase():
-//   case Statuses.OnTrack.label.toLowerCase():
-//   case Statuses.TaskOrderAwarded.value.toLowerCase():
-//   case Statuses.TaskOrderAwarded.label.toLowerCase():
-//     return "bg-success";
-//   case Statuses.Processing.value.toLowerCase():
-//   case Statuses.Upcoming.value.toLowerCase():
-//   case Statuses.Draft.value.toLowerCase():
-//   case Statuses.WaitingForSignatures.value.toLowerCase():
-//   case Statuses.WaitingForSignatures.label.toLowerCase():
-//   case Statuses.OptionExercised.value.toLowerCase():
-//   case Statuses.OptionExercised.label.toLowerCase():
-//   case Statuses.OptionPending.value.toLowerCase():
-//   case Statuses.OptionPending.label.toLowerCase():
-//     return "bg-info-dark";
-//   case Statuses.AtRisk.value.toLowerCase():
-//   case Statuses.AtRisk.label.toLowerCase():
-//   case Statuses.WaitingForTaskOrder.value.toLowerCase():
-//   case Statuses.WaitingForTaskOrder.label.toLowerCase():
-//   case Statuses.ExpiringSoon.value.toLowerCase():
-//   case Statuses.ExpiringSoon.label.toLowerCase():
-//   case Statuses.ExpiringPop.value.toLowerCase():
-//   case Statuses.ExpiringPop.label.toLowerCase():
-//   case Statuses.FundingAtRisk.value.toLowerCase():
-//   case Statuses.FundingAtRisk.label.toLowerCase():
-//   case Statuses.ProvisioningIssue.value.toLowerCase():
-//   case Statuses.ProvisioningIssue.label.toLowerCase():
-//     return "bg-warning";
-//   case Statuses.Deleted.value.toLowerCase():
-//   case Statuses.Delinquent.value.toLowerCase():
-//   case Statuses.Expired.value.toLowerCase():
-//   case Statuses.ExpiredPoP.value.toLowerCase():
-//     return "bg-error";
-//   case Statuses.Archived.value.toLowerCase():
-//     return "bg-base-dark";
-//   default:
-//     return "";
-//   }
-// }
+export function getStatusChipBgColor(status: string): string {
+  switch (status.toLowerCase()) {
+  case Statuses.Active.value.toLowerCase():
+  case Statuses.OnTrack.value.toLowerCase():
+  case Statuses.OnTrack.label.toLowerCase():
+  case Statuses.TaskOrderAwarded.value.toLowerCase():
+  case Statuses.TaskOrderAwarded.label.toLowerCase():
+    return "bg-success";
+  case Statuses.Processing.value.toLowerCase():
+  case Statuses.Upcoming.value.toLowerCase():
+  case Statuses.Draft.value.toLowerCase():
+  case Statuses.WaitingForSignatures.value.toLowerCase():
+  case Statuses.WaitingForSignatures.label.toLowerCase():
+  case Statuses.OptionExercised.value.toLowerCase():
+  case Statuses.OptionExercised.label.toLowerCase():
+  case Statuses.OptionPending.value.toLowerCase():
+  case Statuses.OptionPending.label.toLowerCase():
+    return "bg-info-dark";
+  case Statuses.AtRisk.value.toLowerCase():
+  case Statuses.AtRisk.label.toLowerCase():
+  case Statuses.WaitingForTaskOrder.value.toLowerCase():
+  case Statuses.WaitingForTaskOrder.label.toLowerCase():
+  case Statuses.ExpiringSoon.value.toLowerCase():
+  case Statuses.ExpiringSoon.label.toLowerCase():
+  case Statuses.ExpiringPop.value.toLowerCase():
+  case Statuses.ExpiringPop.label.toLowerCase():
+  case Statuses.FundingAtRisk.value.toLowerCase():
+  case Statuses.FundingAtRisk.label.toLowerCase():
+  case Statuses.ProvisioningIssue.value.toLowerCase():
+  case Statuses.ProvisioningIssue.label.toLowerCase():
+    return "bg-warning";
+  case Statuses.Deleted.value.toLowerCase():
+  case Statuses.Delinquent.value.toLowerCase():
+  case Statuses.Expired.value.toLowerCase():
+  case Statuses.ExpiredPoP.value.toLowerCase():
+    return "bg-error";
+  case Statuses.Archived.value.toLowerCase():
+    return "bg-base-dark";
+  default:
+    return "";
+  }
+}
 
 export function getDateObj(dateStr: string): Date {
   return dateStr.includes("-") ? parseISO(dateStr) : new Date(dateStr);
 }
 
-// const monthAbbreviations = ATATCharts.monthAbbreviations;
-// const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
+const monthAbbreviations = ATATCharts.monthAbbreviations;
+const monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
 export function createDateStr(
   dateStr: string,
@@ -386,73 +386,73 @@ export function createDateStr(
 //  *    MMDDYYYY => `MM/dd/YYYY`
 //  */
 
-// export function formatDate(
-//   d: string,
-//   formatType: string
-// ): string {
-//   let dt = new Date(d);
-//   if (d.includes("-")){
-//     dt = new Date(d.replace(/-/g, '/'))
-//   }
-//   let formattedDate = "";
-//   switch(formatType.toUpperCase()){
-//   case "ISO":
-//     formattedDate = formatISO(dt, { representation: 'date' });
-//     break;
-//   case "MMDDYYYY":
-//     formattedDate = format(dt, 'P');
-//     break;
-//   default:
-//     formattedDate = dt.toString();
-//     break;
-//   }
-//   return formattedDate;
-// }
+export function formatDate(
+  d: string,
+  formatType: string
+): string {
+  let dt = new Date(d);
+  if (d.includes("-")){
+    dt = new Date(d.replace(/-/g, '/'))
+  }
+  let formattedDate = "";
+  switch(formatType.toUpperCase()){
+  case "ISO":
+    formattedDate = formatISO(dt, { representation: 'date' });
+    break;
+  case "MMDDYYYY":
+    formattedDate = format(dt, 'P');
+    break;
+  default:
+    formattedDate = dt.toString();
+    break;
+  }
+  return formattedDate;
+}
 
-// export function differenceInDaysOrMonths(
-//   start:string, end:string, daysCutoff?: number
-// ): Record<string, string> {
-//   daysCutoff = daysCutoff || 60;
-//   const formattedStartDate = createDateStr(start, true);
-//   const formattedEndDate = createDateStr(end, true);
-//   const difInDays = differenceInDays(new Date(end), new Date().setHours(0,0,0,0));
-//   const difInMonths = differenceInMonths(new Date(end), new Date().setHours(0,0,0,0));
+export function differenceInDaysOrMonths(
+  start:string, end:string, daysCutoff?: number
+): Record<string, string> {
+  daysCutoff = daysCutoff || 60;
+  const formattedStartDate = createDateStr(start, true);
+  const formattedEndDate = createDateStr(end, true);
+  const difInDays = differenceInDays(new Date(end), new Date().setHours(0,0,0,0));
+  const difInMonths = differenceInMonths(new Date(end), new Date().setHours(0,0,0,0));
 
-//   const useDays = difInDays <= daysCutoff;
-//   const numberOfTimeUnits = useDays ? difInDays : difInMonths;
-//   let unitOfTime = useDays ? "day" : "month";
+  const useDays = difInDays <= daysCutoff;
+  const numberOfTimeUnits = useDays ? difInDays : difInMonths;
+  let unitOfTime = useDays ? "day" : "month";
 
-//   if (numberOfTimeUnits !== 1) {
-//     unitOfTime = unitOfTime + "s";
-//   }
+  if (numberOfTimeUnits !== 1) {
+    unitOfTime = unitOfTime + "s";
+  }
 
-//   return {
-//     startDate: formattedStartDate,
-//     endDate: formattedEndDate,
-//     expiration: `${numberOfTimeUnits} ${unitOfTime} to expiration`
-//   }
-// }
+  return {
+    startDate: formattedStartDate,
+    endDate: formattedEndDate,
+    expiration: `${numberOfTimeUnits} ${unitOfTime} to expiration`
+  }
+}
 
-// export function scrollToMainTop(): void {
-//   const mainWrap = document.querySelector(".v-main__wrap");
-//   if (mainWrap) {
-//     mainWrap.scrollTo({top: 0, behavior: "smooth"});
-//   }
-// }
+export function scrollToMainTop(): void {
+  const mainWrap = document.querySelector(".v-main__wrap");
+  if (mainWrap) {
+    mainWrap.scrollTo({top: 0, behavior: "smooth"});
+  }
+}
 
-// export function scrollToId(id: string): void {
-//   const el = document.getElementById(id);
-//   if (el) {
-//     el.scrollIntoView({
-//       behavior: "smooth"
-//     });    
-//   }
-// }
+export function scrollToId(id: string): void {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({
+      behavior: "smooth"
+    });    
+  }
+}
 
-// export function getStatusLabelFromValue(value: string): string {
-//   const statusKey = _.startCase(value.replaceAll("_", " ").toLowerCase()).replaceAll(" ", "");
-//   return Statuses[statusKey] ? Statuses[statusKey].label : "";
-// }
+export function getStatusLabelFromValue(value: string): string {
+  const statusKey = _.startCase(value.replaceAll("_", " ").toLowerCase()).replaceAll(" ", "");
+  return Statuses[statusKey] ? Statuses[statusKey].label : "";
+}
 
 export function setItemToPlural(numberOfItems: number, noun: string): string {
   return numberOfItems >1 ? noun + "s" : noun;
@@ -467,20 +467,20 @@ export function capitalizeEachWord(str: string, delimiter?: string): string{
   return splitString.join(" ");
 }
 
-// export function convertEstimateData(sysIdArray: Record<string, string>[]): string {
-//   let records = "";
-//   sysIdArray.forEach(
-//     (record) =>{ 
-//       const val = typeof Object.values(record)[0] === "string" 
-//         ? Object.values(record)[0]?.replaceAll(",","")
-//         : Object.values(record)[0];
+export function convertEstimateData(sysIdArray: Record<string, string>[]): string {
+  let records = "";
+  sysIdArray.forEach(
+    (record) =>{ 
+      const val = typeof Object.values(record)[0] === "string" 
+        ? Object.values(record)[0]?.replaceAll(",","")
+        : Object.values(record)[0];
          
-//       records = "\"" + Object.keys(record) +"\":" + val  + "," + records;
-//     }
-//   )
-//   //remove trailing commaa
-//   return "{" + records.substring(0,records.length - 1) + "}";
-// }
+      records = "\"" + Object.keys(record) +"\":" + val  + "," + records;
+    }
+  )
+  //remove trailing commaa
+  return "{" + records.substring(0,records.length - 1) + "}";
+}
 
 /**
  * @param arr 
@@ -501,20 +501,20 @@ export function convertStringArrayToCommaList(arr: string[], conjunction?: strin
   return commaList;
 }
 
-// export function getYesNoRadioOptions(groupId: string): RadioButton[] {
-//   return [
-//     {
-//       id: groupId + "Yes",
-//       label: "Yes",
-//       value: "YES"
-//     },
-//     {
-//       id: groupId + "No",
-//       label: "No",
-//       value: "NO"
-//     },
-//   ];
-// }
+export function getYesNoRadioOptions(groupId: string): RadioButton[] {
+  return [
+    {
+      id: groupId + "Yes",
+      label: "Yes",
+      value: "YES"
+    },
+    {
+      id: groupId + "No",
+      label: "No",
+      value: "NO"
+    },
+  ];
+}
 
 export function getCSPCompanyName(cspId: string): string {
   const cspCompanyNames: Record<string, string> = {

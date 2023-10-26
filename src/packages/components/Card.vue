@@ -124,7 +124,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
 import { MeatballMenuItem, ToastObj } from "../../../types/Global";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -136,13 +136,13 @@ import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.v
 import {
   AcquisitionPackageSummaryDTO, UserDTO,
 } from "@/api/models";
-import { routeNames } from "@/router/stepper";
+//import { routeNames } from "@/router/stepper";
 import AppSections from "@/store/appSections";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Toast from "@/store/toast";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import Steps from "@/store/steps";
+//import Steps from "@/store/steps";
 import PortfolioStore from "@/store/portfolio";
 
 @Component({
@@ -155,7 +155,7 @@ import PortfolioStore from "@/store/portfolio";
   }
 })
 
-class Card extends Vue {
+export default class Card extends Vue {
   @Prop() private cardData!: AcquisitionPackageSummaryDTO;
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
@@ -433,7 +433,7 @@ class Card extends Vue {
   }
 }
 
-export default toNative(Card);
+//export default toNative(Card);
 
 </script>
 

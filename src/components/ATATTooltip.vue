@@ -35,9 +35,9 @@
 </template>
 
 <script lang="ts">
-import { Prop, Vue, toNative } from "vue-facing-decorator";
+import { Prop, Vue } from "vue-facing-decorator";
 
-class ATATTooltip extends Vue {
+export default class ATATTooltip extends Vue {
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "id_is_missing" }) private id!: string;
@@ -45,7 +45,5 @@ class ATATTooltip extends Vue {
   @Prop({ default: "" }) private buttonClass!: string;
   @Prop({ default: "" }) private buttonStyle!: string;
 }
-
-export default toNative(ATATTooltip)
 
 </script>
