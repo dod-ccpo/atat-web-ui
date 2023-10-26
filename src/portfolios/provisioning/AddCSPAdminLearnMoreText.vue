@@ -87,5 +87,5 @@ class CSPAdminLearnMoreText extends Vue {
     } 
   }
 }
-export default toNative(CSPAdminLearnMoreText)
+export default CSPAdminLearnMoreText
 </script>

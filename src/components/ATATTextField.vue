@@ -276,5 +276,5 @@ class ATATTextField extends Vue  {
   }
 
 }
-export default toNative(ATATTextField);
+export default ATATTextField;
 </script>

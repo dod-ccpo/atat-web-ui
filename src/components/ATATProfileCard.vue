@@ -160,5 +160,5 @@ class ATATProfileCard extends Vue {
   }
 
 }
-export default toNative(ATATProfileCard);
+export default ATATProfileCard;
 </script>

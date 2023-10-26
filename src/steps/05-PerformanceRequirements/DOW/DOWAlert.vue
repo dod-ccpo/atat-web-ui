@@ -104,6 +104,6 @@ class DOWAlert extends Vue{
       : "";
   };
 };
-export default toNative(DOWAlert) 
+export default DOWAlert 
 </script>
 

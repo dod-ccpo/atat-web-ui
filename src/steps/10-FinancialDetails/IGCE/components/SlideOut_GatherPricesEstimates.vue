@@ -171,6 +171,6 @@ class SlideOut_GatherPricesEstimates extends Vue {
 
 }
 
-export default toNative(SlideOut_GatherPricesEstimates)
+export default SlideOut_GatherPricesEstimates
 </script>
 

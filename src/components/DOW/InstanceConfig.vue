@@ -161,6 +161,6 @@ class InstanceConfig extends Vue {
     },
   ];
 }
-export default toNative(InstanceConfig);
+export default InstanceConfig;
 
 </script>

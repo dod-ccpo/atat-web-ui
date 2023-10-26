@@ -433,7 +433,7 @@ export default class Card extends Vue {
   }
 }
 
-//export default toNative(Card);
+//export default Card;
 
 </script>
 

@@ -14,5 +14,5 @@
 import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class GCP extends Vue {}
-export default toNative(GCP);
+export default GCP;
 </script>

@@ -167,6 +167,6 @@ class AnticipatedUserAndDataNeeds extends Vue{
     return true;
   }
 }
-export default toNative(AnticipatedUserAndDataNeeds) 
+export default AnticipatedUserAndDataNeeds 
 </script>
 

@@ -59,6 +59,6 @@ class DeletePackageModal extends Vue {
 
 }
 
-export default toNative(DeletePackageModal);
+export default DeletePackageModal;
 
 </script>

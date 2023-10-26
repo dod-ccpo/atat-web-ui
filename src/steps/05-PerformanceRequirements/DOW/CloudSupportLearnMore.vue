@@ -128,5 +128,5 @@ class CloudSupportLearnMore extends Vue{
     }
   };
 }
-export default toNative(CloudSupportLearnMore) 
+export default CloudSupportLearnMore 
 </script>

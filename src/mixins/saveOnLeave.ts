@@ -63,4 +63,4 @@ class SaveOnLeave extends Vue {
 }
 
 
-export default toNative(SaveOnLeave)
+export default SaveOnLeave

@@ -109,5 +109,5 @@ class FilterSlideout extends Vue {
   }
 
 }
-export default toNative(FilterSlideout)
+export default FilterSlideout
 </script>

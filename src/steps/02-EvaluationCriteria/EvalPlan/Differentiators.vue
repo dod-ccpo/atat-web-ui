@@ -166,5 +166,5 @@ class Differentiators extends Vue {
 
 }
 
-export default toNative(Differentiators) 
+export default Differentiators 
 </script>

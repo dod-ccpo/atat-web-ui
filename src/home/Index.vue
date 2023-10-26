@@ -238,5 +238,5 @@ class Home extends Vue {
 
 
 }
-export default toNative(Home);
+export default Home;
 </script>

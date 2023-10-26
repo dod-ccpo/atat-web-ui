@@ -141,7 +141,7 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { DOWCardData } from "types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import Steps from "@/store/steps";
+// import Steps from "@/store/steps";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import {buildClassificationLabel} from "@/helpers";
  
@@ -440,7 +440,7 @@ class DOWLandingPage extends Vue
 
 
 }
-export default toNative(DOWLandingPage)
+export default DOWLandingPage
 
  
 </script>

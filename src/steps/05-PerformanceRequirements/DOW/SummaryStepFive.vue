@@ -185,7 +185,7 @@ import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import { DOWServiceOffering, DOWServiceOfferingGroup, SummaryItem } from "../../../../types/Global";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import Steps from "@/store/steps";
+// import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 import { getIdText, toTitleCase } from "@/helpers";
 import Summary, { getSummaryItemsforStep } from "@/store/summary";
@@ -461,5 +461,5 @@ class SummaryStepFive extends Vue{
   }
 
 };
-export default toNative(SummaryStepFive) 
+export default SummaryStepFive 
 </script>

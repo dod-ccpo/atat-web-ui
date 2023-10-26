@@ -5,7 +5,7 @@ import { DefaultProps } from "vue/types/options";
 import Vue from "vue";
 import CreateFirstPortfolio from "./CreateFirstPortfolio.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import Steps from "@/store/steps";
+// import Steps from "@/store/steps";
 import PortfolioStore from "@/store/portfolio";
 import validators from "@/plugins/validation";
 import AppSections from "@/store/appSections";

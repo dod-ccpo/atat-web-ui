@@ -9,6 +9,6 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 })
 class ContractDetails extends Vue {
 }
-export default toNative(ContractDetails)
+export default ContractDetails
 </script>
 

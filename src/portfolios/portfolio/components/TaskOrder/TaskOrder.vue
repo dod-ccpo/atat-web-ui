@@ -58,7 +58,7 @@ import TaskOrderDetails from "@/portfolios/portfolio/components/TaskOrder/TaskOr
 import PortfolioSummary from "@/store/portfolioSummary";
 import { PortfolioSummaryObj } from "@/api/models";
 import PortfolioStore from "@/store/portfolio";
-import Steps from "@/store/steps";
+// import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 import ATATToast from "@/components/ATATToast.vue";
@@ -166,6 +166,6 @@ class TaskOrder extends Vue {
   }
 
 }
-export default toNative(TaskOrder)
+export default TaskOrder
 </script>
 

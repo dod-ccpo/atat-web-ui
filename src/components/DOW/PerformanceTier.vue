@@ -120,6 +120,6 @@ class PerformanceTier extends Vue {
   ];
 }
 
-export default toNative(PerformanceTier)
+export default PerformanceTier
 
 </script>

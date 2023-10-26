@@ -197,5 +197,5 @@ class MIPR extends Vue {
 
 }
 
-export default toNative(MIPR)
+export default MIPR
 </script>

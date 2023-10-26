@@ -58,7 +58,7 @@ class Search extends Vue {
   }
 }
 
-export default toNative(Search);
+export default Search;
 
 </script>
 

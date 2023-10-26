@@ -58,6 +58,6 @@ class ProjectDisclaimer extends Vue {
       }
     ];
   }
-export default toNative(ProjectDisclaimer)
+export default ProjectDisclaimer
 </script>
   

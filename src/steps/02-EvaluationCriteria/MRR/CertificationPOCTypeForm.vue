@@ -286,6 +286,6 @@ class CertificationPOCTypeForm extends Vue {
   }
 }
 
-export default toNative(CertificationPOCTypeForm) 
+export default CertificationPOCTypeForm 
 </script>
 

@@ -849,5 +849,5 @@ class TaskOrderDetails extends Vue {
     }
   }
 }
-export default toNative(TaskOrderDetails)
+export default TaskOrderDetails
 </script>

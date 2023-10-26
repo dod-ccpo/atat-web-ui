@@ -539,6 +539,6 @@ class CostSummary extends Vue {
 
 }
 
-export default toNative(CostSummary)
+export default CostSummary
 </script>
 

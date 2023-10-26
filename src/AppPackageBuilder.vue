@@ -48,10 +48,6 @@
 	</div>
 </template>
 
-<style lang="scss">
-	@import './sass/atat.scss';
-</style>
-
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-facing-decorator";
 
@@ -63,7 +59,7 @@ import ATATStepperNavigation from './components/ATATStepperNavigation.vue'
 import ATATToast from './components/ATATToast.vue'
 
 import SlideoutPanel from '@/store/slideoutPanel/index'
-import Steps from '@/store/steps'
+// import Steps from '@/store/steps'
 
 import {
   AdditionalButton,
@@ -88,7 +84,7 @@ import { ComponentPublicInstance } from "vue";
     // ATATPageHead,
     // ATATSideStepper,
     // ATATSlideoutPanel,
-    // ATATStepperNavigation,
+    ATATStepperNavigation,
     // ATATToast
   }
 })

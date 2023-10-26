@@ -22,5 +22,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class CurrentFunctionsCircle extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default toNative(CurrentFunctionsCircle);
+export default CurrentFunctionsCircle;
 </script>

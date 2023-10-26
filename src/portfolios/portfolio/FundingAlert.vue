@@ -108,5 +108,5 @@ class FundingAlert extends Vue {
   }
 
 }
-export default toNative(FundingAlert)
+export default FundingAlert
 </script>

@@ -162,5 +162,5 @@ class ClassificationsModal extends Vue{
   }
 }
 
-export default toNative(ClassificationsModal) 
+export default ClassificationsModal 
 </script>

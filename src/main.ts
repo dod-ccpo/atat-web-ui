@@ -14,9 +14,8 @@ app.use(validation);
 app.use(sanitize);
 app.use(vuetify);
 // //TODO fix routing
-// app.use(router);
+app.use(router);
 
-// app.config.globalProperties.productionTip = false;
+app.config.globalProperties.productionTip = false;
 
 app.mount('#app')
- 

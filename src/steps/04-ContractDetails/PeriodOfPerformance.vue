@@ -639,5 +639,5 @@ class PeriodOfPerformance extends Vue {
   }
 }
 
-export default toNative(PeriodOfPerformance)
+export default PeriodOfPerformance
 </script>

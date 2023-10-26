@@ -38,7 +38,7 @@ import FinancialDetails from "@/store/financialDetails";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import {isDitcoUser} from "@/store/acquisitionPackage";
 import {routeNames} from "@/router/stepper";
-import Steps from "@/store/steps";
+// import Steps from "@/store/steps";
 
 @Component({
   mixins: [SaveOnLeave],
@@ -109,5 +109,5 @@ class CurrentlyHasFunding extends Vue {
   };
 };
 
-export default toNative(CurrentlyHasFunding)
+export default CurrentlyHasFunding
 </script>

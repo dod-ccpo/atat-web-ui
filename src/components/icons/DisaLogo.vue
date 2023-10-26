@@ -14,5 +14,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class DisaLogo extends Vue {
   @Prop({default: "ffffff", required: true}) private color!:string;
 }
-export default toNative(DisaLogo);
+export default DisaLogo;
 </script>

@@ -94,5 +94,5 @@ class LevelOfCompetition extends Vue {
   }
 }
 
-export default toNative(LevelOfCompetition)
+export default LevelOfCompetition
 </script>

@@ -61,7 +61,7 @@ import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "@/components/ATATStepperNavigation.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import Steps from "@/store/steps";
+// import Steps from "@/store/steps";
 import ATATDialog from "@/components/ATATDialog.vue";
 
 import {
@@ -309,5 +309,5 @@ class ProvisionWorkflow extends Vue {
   }
 
 }
-export default toNative(ProvisionWorkflow)
+export default ProvisionWorkflow
 </script>

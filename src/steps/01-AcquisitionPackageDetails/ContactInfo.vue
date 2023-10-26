@@ -522,5 +522,5 @@ class ContactInfo extends Vue {
     await this.loadOnEnter();
   }
 }
-export default toNative(ContactInfo)
+export default ContactInfo
 </script>

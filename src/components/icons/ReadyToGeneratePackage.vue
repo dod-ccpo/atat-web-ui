@@ -184,5 +184,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ReadyToGeneratePackage extends Vue {
   @Prop({ default: "161B1E", required: false }) private color?:string;
 }
-export default toNative(ReadyToGeneratePackage);
+export default ReadyToGeneratePackage;
 </script>
