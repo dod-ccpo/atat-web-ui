@@ -39,7 +39,7 @@ class App extends Vue {
   public activeAppSectionChanged(newActiveSection: string): void {
     switch (newActiveSection) {
     case this.sectionTitles.Home:
-      AppSections.setAppContentComponent(AppPackageBuilder);
+      AppSections.setAppContentComponent(Home);
       break;
     // case this.sectionTitles.ProvisionWorkflow:
     //   AppSections.setAppContentComponent(ProvisionWorkflow);

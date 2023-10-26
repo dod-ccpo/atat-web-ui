@@ -10,17 +10,13 @@ import sanitize  from "./plugins/sanitize";
 const app = createApp(App)
 
 app.use(store)
-
-import { stepperRoutes } from "./router/stepper";
-
-const dummy = stepperRoutes
-console.log(dummy)
-// app.use(validation);
-// app.use(sanitize);
-// app.use(vuetify);
+app.use(validation);
+app.use(sanitize);
+app.use(vuetify);
 // //TODO fix routing
-// // app.use(router);
+// app.use(router);
 
 // app.config.globalProperties.productionTip = false;
 
-// app.mount('#app')
+app.mount('#app')
+ 
