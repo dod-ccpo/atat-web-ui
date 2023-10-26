@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-facing-decorator";
+import {Vue, Component, Watch} from 'vue-facing-decorator'
 
 import ATATFooter from './components/ATATFooter.vue'
 import ATATPageHead from './components/ATATPageHead.vue'
@@ -59,7 +59,7 @@ import ATATStepperNavigation from './components/ATATStepperNavigation.vue'
 import ATATToast from './components/ATATToast.vue'
 
 import SlideoutPanel from '@/store/slideoutPanel/index'
-// import Steps from '@/store/steps'
+import Steps from '@/store/steps'
 
 import {
   AdditionalButton,
@@ -75,25 +75,25 @@ import actionHandler from './action-handlers/index'
 import AppSections from './store/appSections'
 import AcquisitionPackage from '@/store/acquisitionPackage'
 import DescriptionOfWork from './store/descriptionOfWork'
-import { RouteLocationNormalized, RouteRecordName } from 'vue-router'
-import { ComponentPublicInstance } from "vue";
+import {RouteLocationNormalized, RouteRecordName} from 'vue-router'
+import {ComponentPublicInstance} from 'vue'
 
-@Component({
-  components: {
-    ATATFooter,
-    // ATATPageHead,
-    // ATATSideStepper,
-    // ATATSlideoutPanel,
-    ATATStepperNavigation,
-    // ATATToast
-  }
-})
+	@Component({
+	  components: {
+	    ATATFooter,
+	    ATATPageHead,
+	    ATATSideStepper,
+	    ATATSlideoutPanel,
+	    ATATStepperNavigation,
+	    ATATToast
+	  }
+	})
 export default class AppPackageBuilder extends Vue {
   $refs!: {
-	sideStepper: ComponentPublicInstance & {
-	  setCurrentStep:	(s: string)=>void
-	}
-  }
+			sideStepper: ComponentPublicInstance & {
+				setCurrentStep: (s: string) => void
+			}
+		}
 
   public routeNames: Record<string, string> = {}
 
@@ -117,152 +117,158 @@ export default class AppPackageBuilder extends Vue {
   private isNewPackage = false
 
   async mounted(): Promise<void> {
-    // Steps.setSteps(stepperRoutes)
+    Steps.setSteps(stepperRoutes)
     this.hideNavigation = AcquisitionPackage.hideNavigation
     this.hideSideNavigation = AcquisitionPackage.hideSideNavigation
     this.routeNames = routeNames
     this.isNewPackage = AcquisitionPackage.isNewPackage
     //get first step and intitialize store to first step;
     const routeName = this.$route.name as string
-    // const step = Steps.findRoute(routeName || '')
-    // if (routeName && step) {
-    //   const {stepName} = step
-    //   Steps.setCurrentStep(stepName)
-    //   this.setNavButtons(step)
-    // }
+
+    const step = await Steps.findRoute(routeName || '')
+    if (routeName && step) {
+      const {stepName} = step
+      Steps.setCurrentStep(stepName)
+      this.setNavButtons(step)
+    }
   }
 
-		@Watch('$route')
-  // eslint-disable-next-line max-len
-  async onRouteChanged(newVal: RouteLocationNormalized, oldVal: RouteLocationNormalized): Promise<void> {
-    // if (oldVal.name !== 'routeResolver') {
-    //   await Steps.setPrevStepName(oldVal.name as string)
-    // }
+
+  @Watch('$route')
+  async onRouteChanged(
+    newVal: RouteLocationNormalized,
+    oldVal: RouteLocationNormalized
+  ): Promise<void> {
+    if (oldVal.name !== 'routeResolver') {
+      await Steps.setPrevStepName(oldVal.name as string)
+    }
 
     const routeName = this.$route.name as string
-    //const step = Steps.findRoute(routeName || '')
-    // if (routeName && step) {
-    //   const {stepName, stepNumber} = step
-    //   //   Steps.setCurrentStep(stepName)
-    //   this.setNavButtons(step)
-    //   if (
-    //     !AcquisitionPackage.hideSideNavigation &&
-    // 				!AcquisitionPackage.hideNavigation
-    //   ) {
-    //     this.$refs.sideStepper.setCurrentStep(stepNumber)
-    //   }
-    //   SlideoutPanel.closeSlideoutPanel()
-    // }
+    const step = Steps.findRoute(routeName || '')
+    if (routeName && step) {
+      const {stepName, stepNumber} = step
+      Steps.setCurrentStep(stepName)
+      this.setNavButtons(step)
+      if (
+        !AcquisitionPackage.hideSideNavigation &&
+					!AcquisitionPackage.hideNavigation
+      ) {
+        this.$refs.sideStepper.setCurrentStep(stepNumber)
+      }
+      SlideoutPanel.closeSlideoutPanel()
+    }
   }
 
-		async navigate(direction: string): Promise<void> {
-		//   const nextStepName =
-		// 		direction === 'next' ? await Steps.getNext() : await Steps.getPrevious()
-		//   if (nextStepName) {
-		//     if (nextStepName === 'DAPPSChecklist') {
-		//       if (AcquisitionPackage.isNewPackage) {
-		//         await this.$router.push({
-		//           name: nextStepName as string,
-		//           params: {direction}
-		//         })
-		//         return
-		//       } else {
-		//         // const activeSection =
-		//         // 			Steps.altBackDestination === 'Home'
-		//         // 			  ? AppSections.sectionTitles.Home
-		//         // 			  : AppSections.sectionTitles.Packages
-		//         // await Steps.setAltBackDestination('')
-		//         await this.$router.push({name: 'home', params: {direction}})
-		//         //AppSections.changeActiveSection(activeSection)
-		//         return
-		//       }
-		//     }
-		//     if (isRouteResolver(nextStepName)) {
-		//       const routeResolver = nextStepName as StepRouteResolver
-		//       this.$router.push({
-		//         name: 'routeResolver',
-		//         params: {
-		//           resolver: routeResolver.name,
-		//           direction
-		//         }
-		//       })
+  async navigate(direction: string): Promise<void> {
+		  console.log(direction, 'direction')
+		  const nextStepName =
+				direction === 'next' ? await Steps.getNext() : await Steps.getPrevious()
+		  console.log(nextStepName, 'next step name')
+		  if (nextStepName) {
+		    if (nextStepName === 'DAPPSChecklist') {
+		      if (AcquisitionPackage.isNewPackage) {
+		        await this.$router.push({
+		          name: nextStepName as string,
+		          params: {direction}
+		        })
+		        return
+		      } else {
+		        const activeSection =
+					Steps.altBackDestination === 'Home'
+					  ? AppSections.sectionTitles.Home
+					  : AppSections.sectionTitles.Packages
+		        await Steps.setAltBackDestination('')
+		        await this.$router.push({name: 'home', params: {direction}})
+		        AppSections.changeActiveSection(activeSection)
+		        return
+		      }
+		    }
+		    if (isRouteResolver(nextStepName)) {
+		      const routeResolver = nextStepName as StepRouteResolver
+		      this.$router.push({
+		        name: 'routeResolver',
+		        params: {
+		          resolver: routeResolver.name,
+		          direction
+		        }
+		      })
 
-		  //       return
-		  //     }
+		      return
+		    }
+		    console.log(nextStepName, 'next step name')
+		    if (isPathResolver(nextStepName)) {
+		      const pathResolver = nextStepName as StepPathResolver
+		      this.$router.push({
+		        name: 'pathResolver',
+		        params: {
+		          resolver: pathResolver.name,
+		          direction
+		        }
+		      })
 
-		  //     if (isPathResolver(nextStepName)) {
-		  //       const pathResolver = nextStepName as StepPathResolver
-		  //       this.$router.push({
-		  //         name: 'pathResolver',
-		  //         params: {
-		  //           resolver: pathResolver.name,
-		  //           direction
-		  //         }
-		  //       })
+		      return
+		    }
 
-		  //       return
-		  //     }
-
-		//     //Steps.setAltBackDestination('')
-		//     this.$router.push({name: nextStepName as string, params: {direction}})
-		//   } else if (direction === 'previous' && this.altBackDestination) {
-		//     if (
-		//       (this.$route.name === this.routeNames.DAPPSChecklist &&
-		// 				this.isNewPackage) ||
-		// 			(this.$route.name === this.routeNames.ContractingShop &&
-		// 				!this.isNewPackage)
-		//     ) {
-		//       //await Steps.setAltBackDestination('')
-		//       switch (this.altBackDestination) {
-		//       case AppSections.sectionTitles.Home: {
-		//         await this.$router.push({name: 'home', params: {direction}})
-		//         AppSections.changeActiveSection(AppSections.sectionTitles.Home)
-		//         break
-		//       }
-		//       case AppSections.sectionTitles.Packages: {
-		//         await this.$router.push({name: 'home', params: {direction}})
-		//         AppSections.changeActiveSection(
-		//           AppSections.sectionTitles.Packages
-		//         )
-		//         break
-		//       }
-		//       case AppSections.sectionTitles.CreateFirstPortfolio: {
-		//         this.$router.push({name: 'home', params: {direction}})
-		//         AppSections.changeActiveSection(
-		//           AppSections.sectionTitles.CreateFirstPortfolio
-		//         )
-		//         break
-		//       }
-		//       }
-		//     }
-		//   }
-		}
-		public get currentRouteName(): RouteRecordName|string | null | undefined {
+		    await Steps.setAltBackDestination('')
+		    this.$router.push({name: nextStepName as string, params: {direction}})
+		  } else if (direction === 'previous' && this.altBackDestination) {
+		    if (
+		      (this.$route.name === this.routeNames.DAPPSChecklist &&
+						this.isNewPackage) ||
+					(this.$route.name === this.routeNames.ContractingShop &&
+						!this.isNewPackage)
+		    ) {
+		      await Steps.setAltBackDestination('')
+		      switch (this.altBackDestination) {
+		      case AppSections.sectionTitles.Home: {
+		        await this.$router.push({name: 'home', params: {direction}})
+		        AppSections.changeActiveSection(AppSections.sectionTitles.Home)
+		        break
+		      }
+		      case AppSections.sectionTitles.Packages: {
+		        await this.$router.push({name: 'home', params: {direction}})
+		        AppSections.changeActiveSection(
+		          AppSections.sectionTitles.Packages
+		        )
+		        break
+		      }
+		      case AppSections.sectionTitles.CreateFirstPortfolio: {
+		        this.$router.push({name: 'home', params: {direction}})
+		        AppSections.changeActiveSection(
+		          AppSections.sectionTitles.CreateFirstPortfolio
+		        )
+		        break
+		      }
+		      }
+		    }
+		  }
+  }
+  public get currentRouteName(): RouteRecordName | string | null | undefined {
 		  return this.$route.name
-		}
+  }
 
-		public get isDitcoUser(): boolean {
+  public get isDitcoUser(): boolean {
 		  return AcquisitionPackage.contractingShop === 'DITCO'
-		}
-		public get disableContinue(): boolean {
+  }
+  public get disableContinue(): boolean {
 		  return AcquisitionPackage.disableContinue
-		}
+  }
 
-		public get getContinueButtonColorFromStore(): string {
+  public get getContinueButtonColorFromStore(): string {
 		  return AcquisitionPackage.continueButtonColor
-		}
+  }
 
-		public get hideNav(): boolean {
+  public get hideNav(): boolean {
 		  return AcquisitionPackage.hideNavigation
-		}
-		public get hideSideNav(): boolean {
+  }
+  public get hideSideNav(): boolean {
 		  return AcquisitionPackage.hideSideNavigation
-		}
+  }
 
 		@Watch('disableContinue')
-		public disableContinueChanged(newVal: boolean): void {
+  public disableContinueChanged(newVal: boolean): void {
 		  this.disableContinueButton = newVal
-		}
+  }
 
 		@Watch('getContinueButtonColorFromStore')
 		public getContinueButtonColorFromStoreChanged(newVal: string): void {

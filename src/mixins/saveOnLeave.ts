@@ -53,8 +53,8 @@ class SaveOnLeave extends Vue {
           });          
         }
       } else if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
-        // Steps.setLeaveStepComplete(from.name as string);  
-        // Steps.clearAdditionalButtonText();     
+        Steps.setLeaveStepComplete(from.name as string);  
+        Steps.clearAdditionalButtonText();     
         AcquisitionPackage.setDisableContinue(false);
         next();
       }

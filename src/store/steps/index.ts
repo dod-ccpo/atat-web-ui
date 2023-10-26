@@ -1,11 +1,10 @@
 import { VuexModule, Module, Action, Mutation, getModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import { Mutations, RouteDirection, StepInfo, 
-  StepPathResolver, StepRouteResolver, StepsState } from "./types";
+  StepPathResolver, StepRouteResolver, StepsState} from "./types";
+import { StepperRouteConfig } from "types/Global";
 import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
-import { StepperRouteConfig } from "types/Global";
-import { RouteRecordName } from "vue-router";
 
 @Module({ name: 'Steps', namespaced: true, dynamic: true, store: rootStore })
 export class StepsStore extends VuexModule implements StepsState {
@@ -171,7 +170,7 @@ export class StepsStore extends VuexModule implements StepsState {
     }
 
     @Action({ rawError: true })
-    public setCurrentStep(stepName: string): void {
+    public async setCurrentStep(stepName: string): Promise<void> {
       this.context.commit(Mutations.SET_CURRENT_STEP, stepName);
     }
 
@@ -186,7 +185,7 @@ export class StepsStore extends VuexModule implements StepsState {
       const nextStepName = direction === RouteDirection.NEXT 
         ? (this.currentStep?.next || '') 
         : (this.currentStep?.prev || '');
-
+      console.log(this.currentStep, 'this')
       const currentStepName = this.currentStep?.stepName;
 
       if (currentStepName === undefined || nextStepName.length === 0)
