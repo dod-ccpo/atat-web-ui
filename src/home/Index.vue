@@ -161,8 +161,8 @@ class Home extends Vue {
   }
 
   public get isNewUser(): boolean {
-    return true;
-    // return !this.userHasPackages && !this.userHasPortfolios;
+    // return true;
+    return !this.userHasPackages && !this.userHasPortfolios;
   } 
   public get userHasPackages(): boolean {
     return CurrentUserStore.getUserHasPackages;
