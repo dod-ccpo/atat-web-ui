@@ -1,5 +1,9 @@
 <template>
-  <v-layout>
+  <v-layout 
+    :class="[
+      { '_center-content' : centerContent },
+      { '_is-home': isHome },
+    ]">
     <ATATTopNavBar />
     <div v-if="appContentComponent">
       <component :is="appContentComponent" />
@@ -26,6 +30,7 @@ import Packages from "@/packages/Index.vue";
 import Home from "@/home/Index.vue";
 import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
 import AcquisitionPackage from "./store/acquisitionPackage";
+
 
 @Component({
   components: {
@@ -96,6 +101,13 @@ class App extends Vue {
     }
     
     await this.loadOnEnter();
+  }
+
+  public get centerContent(): boolean {
+    return this.activeAppSection === AppSections.sectionTitles.Home;
+  }
+  public get isHome(): boolean {
+    return this.activeAppSection === AppSections.sectionTitles.Home;
   }
 
   public async beforeMount(): Promise<void> {

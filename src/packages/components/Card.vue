@@ -28,7 +28,7 @@
           {{modifiedData.packageStatus}}
         </v-chip>
       </div>
-      <div class="text-base -size-14 d-flex align-center">
+      <div class="text-base-dark font-size-14 d-flex align-center">
         <!-- 
         TODO: Add back in when saving progress to snow  
         <div

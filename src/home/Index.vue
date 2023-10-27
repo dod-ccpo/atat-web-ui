@@ -32,7 +32,7 @@
             <div class="d-flex justify-end">
               <v-btn 
                 v-if="!isNewUser"
-                class="v-btn primary"
+                class="v-btn bg-primary"
                 @click="startNewAcquisition"
               >
                 Start a new acquisition
@@ -42,7 +42,7 @@
                 href="https://community.hacc.mil/s/jwcc"
                 target="_blank"
                 id="HelpfulResourcesButton"
-                class="secondary no-text-decoration"
+                class="bg-secondary no-text-decoration"
               >
                 Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
               </v-btn>
@@ -161,7 +161,8 @@ export default class Home extends Vue {
   }
 
   public get isNewUser(): boolean {
-    return !this.userHasPackages && !this.userHasPortfolios;
+    return true;
+    // return !this.userHasPackages && !this.userHasPortfolios;
   } 
   public get userHasPackages(): boolean {
     return CurrentUserStore.getUserHasPackages;

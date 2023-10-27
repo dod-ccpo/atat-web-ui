@@ -238,7 +238,7 @@
 
 ._meatball-menu-button {
   &.v-btn.v-size--default {
-    min-width: 28px;
+    min-width: 28px !important;
     width: 28px;
     height: 28px;
     padding: 0 !important;
