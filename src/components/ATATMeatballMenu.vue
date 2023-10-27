@@ -77,6 +77,6 @@ class ATATMeatballMenu extends Vue {
     }));
   }
 }
-export default toNative(ATATMeatballMenu);
+export default ATATMeatballMenu;
 
 </script>

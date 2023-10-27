@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import { RouteLocationNormalized, RouterLink } from "vue-router";
 
 // route resolver invoker
@@ -23,6 +23,7 @@ class RouteResolver extends Vue {
     this.$router.push({ name: routeName });
   }
 
+  @Hook
   public async beforeRouteEnter(
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
@@ -38,5 +39,5 @@ class RouteResolver extends Vue {
     });
   }
 }
-export default toNative(RouteResolver);
+export default RouteResolver;
 </script>

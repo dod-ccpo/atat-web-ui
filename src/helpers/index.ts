@@ -378,13 +378,13 @@ export function createDateStr(
 
 }
 
-/**
- * @param d - date as string
- * @param formatType "ISO" | "MMDDYYYY"
- * @returns 
- *    ISO => iso-date format `YYYY-MM-DD` (used in vuetify datapickers)
- *    MMDDYYYY => `MM/dd/YYYY`
- */
+// /**
+//  * @param d - date as string
+//  * @param formatType "ISO" | "MMDDYYYY"
+//  * @returns 
+//  *    ISO => iso-date format `YYYY-MM-DD` (used in vuetify datapickers)
+//  *    MMDDYYYY => `MM/dd/YYYY`
+//  */
 
 export function formatDate(
   d: string,
@@ -527,13 +527,13 @@ export function getCSPCompanyName(cspId: string): string {
 
 }
 
-export interface AggregateCountResults {
-  result: {
-    stats: {
-      count: string;
-    };
-  };
-}
+// export interface AggregateCountResults {
+//   result: {
+//     stats: {
+//       count: string;
+//     };
+//   };
+// }
 
 export const getTableRecordCount = async (table: string, query: string ): Promise<number> => {
   // Use aggregate API to get count for number of records in a table

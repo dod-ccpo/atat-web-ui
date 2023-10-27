@@ -96,5 +96,5 @@ class AlternateCOR extends Vue {
     return true;
   }
 }
-export default toNative(AlternateCOR)
+export default AlternateCOR
 </script>

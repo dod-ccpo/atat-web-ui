@@ -20,20 +20,24 @@
       />
     </div>
     <div class="d-flex" :style="'width: ' + width">
+
+      <!-- 
+        :height="40"
+        :validate-on="validationString"
+        @update:error="setErrorMessage"
+      -->
+
       <v-text-field
         :ref="isModal ? 'atatSearchInputModal' : 'atatSearchInput'"
         :id="id + '_SearchInput'"
         class="_search-input"
         clearable
-        @input="onInput"
-        outlined
-        dense
-        :height="40"
-        :value.sync="_value"
+        @update:model-value="onInput"
+        variant="outlined"
+        density="compact"
+        :model-value.sync="_value"
         :placeholder="placeHolder"
         :rules="rules"
-        :validate-on="validationString"
-        @update:error="setErrorMessage"
         @click:clear="clearErrorMessages"
         @blur="onBlur"
         autocomplete="off"
@@ -41,7 +45,7 @@
       />
       <v-btn
         :id="id + '_SearchButton'"
-        class="primary _search-button"
+        class="_primary _search-button"
         @click="search"
         @keydown.enter="search"
         @keydown.space="search"
@@ -182,12 +186,12 @@
 
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue, Watch } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+// import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import api from "@/api";
 import { ValidationRule, mask } from "types/Global";
 import Inputmask from "inputmask/";
@@ -199,10 +203,10 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATAlert,
     ATATSVGIcon,
     ATATTooltip,
-    ATATErrorValidation,
+    // ATATErrorValidation,
   },
 })
-class ATATSearch extends Vue {
+export default class ATATSearch extends Vue {
   $refs!: {
     atatSearchInput: ComponentPublicInstance & {
       errorBucket: string[];
@@ -469,5 +473,4 @@ class ATATSearch extends Vue {
     this.setMask();
   }
 }
-export default toNative(ATATSearch);
 </script>

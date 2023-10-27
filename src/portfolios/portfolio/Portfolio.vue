@@ -1514,5 +1514,5 @@ class PortfolioDashboard extends Vue {
   }
 
 }
-export default toNative(PortfolioDashboard)
+export default PortfolioDashboard
 </script>

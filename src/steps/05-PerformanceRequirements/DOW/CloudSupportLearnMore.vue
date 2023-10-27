@@ -16,10 +16,10 @@
           v-for="(requirement, index) in section.items"
           :key="index + '-' + requirement.name"
         >
-          <v-expansion-panel-header>
+          <v-expansion-panel-title>
             {{ requirement.name }}
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <p v-if="requirement.description" class="mb-0">
               {{ requirement.description }}
             </p>
@@ -34,7 +34,7 @@
                 </li>
               </ul>
             </div>
-          </v-expansion-panel-content>
+          </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
     </div>
@@ -128,5 +128,5 @@ class CloudSupportLearnMore extends Vue{
     }
   };
 }
-export default toNative(CloudSupportLearnMore) 
+export default CloudSupportLearnMore 
 </script>

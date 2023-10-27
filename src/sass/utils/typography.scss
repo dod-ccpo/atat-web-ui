@@ -141,7 +141,7 @@ hr, .hr {
   color: $base !important;
 }
 
-.v-application a {
+.v-layout a {
   color: $primary !important; // override vuetify blue
   text-decoration: underline;
   
@@ -309,6 +309,9 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
     .v-chip__content {
       color: $base-darkest;
     }
+  }
+  .v-chip__underlay {
+    opacity: 0 !important;
   }
 }
 

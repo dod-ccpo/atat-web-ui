@@ -15,5 +15,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ExternalLink extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default toNative(ExternalLink);
+export default ExternalLink;
 </script>

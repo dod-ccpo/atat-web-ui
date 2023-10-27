@@ -440,7 +440,7 @@ class DOWLandingPage extends Vue
 
 
 }
-export default toNative(DOWLandingPage)
+export default DOWLandingPage
 
  
 </script>

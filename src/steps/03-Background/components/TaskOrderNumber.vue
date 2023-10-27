@@ -42,5 +42,5 @@ class TaskOrderNumber extends Vue {
   @PropSync("rules") private _rules!: "";
 }
 
-export default toNative(TaskOrderNumber)
+export default TaskOrderNumber
 </script>

@@ -29,6 +29,8 @@ module.exports = {
   currentFunctionCard: "#ReplicateOptimizeCard",
   pageheaderXaas: "#app-content h1",
   xaasResources: "#XaaSCheckboxes input[type=checkbox]",
+  dowlandingPageAlert: '#DOWLandingPageWarningAlert._atat-alert p',
+  completeXaaSLink:"#CompleteXaaS",
 
   //Do you want to replicate or optimize your current functions using JWCC offerings?
   descrIntroText: "p#IntroP",
@@ -55,6 +57,30 @@ module.exports = {
   phaseApproachTextfield: "#PhasedApproachSchedule_text_area",
   phasedApproachTextfieldError:
     "#PhasedApproachSchedule_text_field_control .field-error",
+  replicateAlert: '#ReplicateAndOptimizeAlert._atat-alert p',
+  completeCurrentEnvLink:"#CompleteCurrentEnv",
+
+  //architectural design solution
+  startArchDesignBtn: "#StartButtonArchitecturalDesign",
+  archDesignCard: "#ArchitecturalDesignCard",
+  archDesignDesc: "#ArchitecturalDesignCard > .align-left > div",
+  archRadioGroupError: "#ArchitectureOptions_radio_group_control .field-error",
+  archYesRadioBtn: "#Radio_YesArchitecture",
+  archNoRadioBtn: "#Radio_NoArchitecture",
+
+  //Tell us  more about your architectural design requirements
+  statementLabel: "#Statement_text_field_label",
+  appNeedsTextLabel:
+    "#ApplicationsNeedArchitecturalDesign_text_field_label span",
+  appNeedsTextfield: "#ApplicationsNeedArchitecturalDesign_text_field",
+  archClassGroupLabel: "#CheckboxGroupLabel span",
+  archClassCheckboxes: "#ClassificationLevelCheckboxes input[type=checkbox]",
+  archClassCheckedboxes: "input[type=checkbox]:checked",
+  externalFactorLabel: "#ExternalFactors_text_field_label > :nth-child(1)",
+  externalFactorTextField: "#ExternalFactors_text_area",
+  archDesignClassCheckboxes: "#ClassificationLevelCheckboxes",
+  archDesignAlert: '#ArchitecturalDesignAlert p',	
+  completeArchDesignLink:"#CompleteArchitectural",
 
   //First, tell us about your anticipated users and data needs
   accordionO: "#AnticipatedUserAndDataNeedsAccordion0",

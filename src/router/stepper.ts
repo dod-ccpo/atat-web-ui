@@ -384,7 +384,7 @@ export const routeNames = {
 export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "01",
-    menuText: "Acquisition Package Details",
+   
     path: "/",
     completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
@@ -504,9 +504,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: ExceptionToFairOpportunityResolver
       },
       
-      // ======================
-      // J & A
-      // ======================
+      // // ======================
+      // // J & A
+      // // ======================
       {
         menuText: "Proposed CSP",
         path: "proposed-csp",
@@ -599,9 +599,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
       },
-      // ======================
-      // MRR
-      // ======================
+      // // ======================
+      // // MRR
+      // // ======================
       {
         menuText: "Need MRR",
         path: "need-mrr",
@@ -704,9 +704,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.Exceptions,
         routeResolver: CertificationPOCsRouteResolver,
       },      
-      // END MRR
-      // ===================================
-      // Eval Plan
+      // // END MRR
+      // // ===================================
+      // // Eval Plan
       {
         menuText: "Create Evaluation Plan",
         path: "eval-plan",
@@ -1554,7 +1554,7 @@ const mapStepRouteToStepperData = (
   } = stepperRouteConfig;
 
   let {name} = stepperRouteConfig;
-  name = name || "";
+  name = name as string || "";
 
   const stepperStep: StepperStep = {
     stepNumber,

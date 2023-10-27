@@ -76,7 +76,6 @@ export class AppSectionsStore extends VuexModule {
   @Action
   async setAppContentComponent(contentComponent: Component): Promise<void> {
     this.doSetAppContentComponent(contentComponent);
-    return;
   }
 
   @Mutation

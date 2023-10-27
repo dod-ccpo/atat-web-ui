@@ -325,6 +325,6 @@ class ATATRadioGroup extends Vue {
 
 }
 
-export default toNative(ATATRadioGroup)
+export default ATATRadioGroup
 
 </script>

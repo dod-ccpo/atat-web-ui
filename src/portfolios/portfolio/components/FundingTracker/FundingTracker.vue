@@ -15,6 +15,6 @@ import PortfolioDashboard from "@/portfolios/portfolio/Portfolio.vue";
   },
 })
 class FundingTracker extends Vue {}
-export default toNative(FundingTracker)
+export default FundingTracker
 </script>
 

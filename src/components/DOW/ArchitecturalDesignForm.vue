@@ -110,5 +110,5 @@ class ArchitectureDesignForm extends Vue {
   }
 
 }
-export default toNative(ArchitectureDesignForm)
+export default ArchitectureDesignForm
 </script>

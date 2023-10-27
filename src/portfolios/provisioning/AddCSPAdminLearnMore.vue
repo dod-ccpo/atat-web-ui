@@ -19,5 +19,5 @@ import CSPAdminLearnMoreText from "./AddCSPAdminLearnMoreText.vue"
 })
 
 class CSPAdminLearnMore extends Vue {}
-export default toNative(CSPAdminLearnMore)
+export default CSPAdminLearnMore
 </script>

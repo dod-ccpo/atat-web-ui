@@ -62,5 +62,5 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
   },
 })
 class CommentsPanel extends Vue {}
-export default toNative(CommentsPanel);
+export default CommentsPanel;
 </script>

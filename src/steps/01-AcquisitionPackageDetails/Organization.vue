@@ -441,5 +441,5 @@ class OrganizationInfo extends Vue {
     return true;
   }
 }
-export default toNative(OrganizationInfo)
+export default OrganizationInfo
 </script>

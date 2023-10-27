@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATSearch from "@/components/ATATSearch.vue";
 
@@ -33,7 +33,7 @@ import ATATSearch from "@/components/ATATSearch.vue";
     ATATSearch,
   },
 })
-class TaskOrderSearch extends Vue {
+export default class TaskOrderSearch extends Vue {
 
   @Prop() public label?: string;
   @Prop() public labelClass?: string;
@@ -46,10 +46,11 @@ class TaskOrderSearch extends Vue {
   @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
 
   public rules = [
-    this.$validators.allowedLengths(
-      [13,19], 
-      'Your task order number must be either 13 or 19 characters.'
-    ),
+    // TODO fix this
+    // this.$validators.allowedLengths(
+    //   [13,19], 
+    //   'Your task order number must be either 13 or 19 characters.'
+    // ),
   ];
 
   public searchButtonDisabled = true;
@@ -68,5 +69,4 @@ class TaskOrderSearch extends Vue {
     this.$emit("startProvisionWorkflow");
   }
 }
-export default toNative(TaskOrderSearch)
 </script>

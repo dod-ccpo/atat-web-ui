@@ -58,5 +58,5 @@ class CurrentContractOptions extends Vue {
 
 }
 
-export default toNative(CurrentContractOptions)
+export default CurrentContractOptions
 </script>

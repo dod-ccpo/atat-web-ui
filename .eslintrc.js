@@ -9,12 +9,15 @@ module.exports = {
   globals: {
     cy: true,
   },
+  
   extends: [
     "plugin:vue/essential",
     "eslint:recommended",
     "@vue/typescript/recommended",
     "prettier",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    // 'plugin:vue/base',
+    // 'plugin:vuetify/base'
   ],
   parserOptions: {
     ecmaVersion: "latest",
@@ -56,4 +59,5 @@ module.exports = {
       }
     }
   ],
+  
 };

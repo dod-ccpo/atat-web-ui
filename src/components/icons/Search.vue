@@ -14,5 +14,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class Search extends Vue {
   @Prop({default: "61686c", required: true}) private color!:string;
 }
-export default toNative(Search);
+export default Search;
 </script>

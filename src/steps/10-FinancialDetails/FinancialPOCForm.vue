@@ -263,5 +263,5 @@ class FinancialPOCForm extends Vue {
   }
 }
 
-export default toNative(FinancialPOCForm)
+export default FinancialPOCForm
 </script>

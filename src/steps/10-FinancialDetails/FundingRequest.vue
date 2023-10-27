@@ -131,5 +131,5 @@ class FundingPlanType extends Vue {
   };
 };
 
-export default toNative(FundingPlanType)
+export default FundingPlanType
 </script>

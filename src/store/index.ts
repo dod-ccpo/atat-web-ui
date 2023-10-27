@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+ 
 const store = createStore({
   state: {},
   mutations: {},
@@ -8,4 +9,3 @@ const store = createStore({
 });
 
 export default store;
-

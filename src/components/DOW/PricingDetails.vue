@@ -72,6 +72,6 @@ class PricingDetails extends Vue {
     }
   }
 }
-export default toNative(PricingDetails)
+export default PricingDetails
 
 </script>

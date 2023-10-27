@@ -13,5 +13,5 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 class AWS extends Vue {}
-export default toNative(AWS);
+export default AWS;
 </script>

@@ -113,5 +113,5 @@ class PIIRecord extends Vue {
   }
 }
 
-export default toNative(PIIRecord)
+export default PIIRecord
 </script>

@@ -32,7 +32,7 @@
             <div class="d-flex justify-end">
               <v-btn 
                 v-if="!isNewUser"
-                class="v-btn primary"
+                class="v-btn bg-primary"
                 @click="startNewAcquisition"
               >
                 Start a new acquisition
@@ -42,7 +42,7 @@
                 href="https://community.hacc.mil/s/jwcc"
                 target="_blank"
                 id="HelpfulResourcesButton"
-                class="secondary no-text-decoration"
+                class="bg-secondary no-text-decoration"
               >
                 Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
               </v-btn>
@@ -101,14 +101,13 @@ import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+//import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import PortfolioStore from "@/store/portfolio";
-import acquisitionPackage from "@/store/acquisitionPackage";
 import Toast from "@/store/toast";
 import { ToastObj } from "types/Global";
 
@@ -120,6 +119,7 @@ import { ToastObj } from "types/Global";
     ATATToast,
     ExistingUser,
     HelpfulResourcesCards,
+    //TODO Validate with new sys_id
     NewUser,
     TaskOrderSearchModal,
   }
@@ -161,6 +161,7 @@ class Home extends Vue {
   }
 
   public get isNewUser(): boolean {
+    // return true;
     return !this.userHasPackages && !this.userHasPortfolios;
   } 
   public get userHasPackages(): boolean {
@@ -175,11 +176,11 @@ class Home extends Vue {
   }
 
   public async startNewAcquisition(): Promise<void> {
-    await acquisitionPackage.setIsNewPackage(true)
+    await AcquisitionPackage.setIsNewPackage(true)
     await AcquisitionPackage.reset();
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router.push({
-      name: routeNames.DAPPSChecklist,
+      name: 'DAPPSChecklist',//routeNames.DAPPSChecklist,
       params: {
         direction: "next"
       },
@@ -196,7 +197,7 @@ class Home extends Vue {
     await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedAcquisitionPackageSysId);
 
     this.$router.push({
-      name: provWorkflowRouteNames.AwardedTaskOrder,
+      name: 'AwardedTo',//provWorkflowRouteNames.AwardedTaskOrder,
       params: {
         direction: "next"
       },
@@ -215,7 +216,7 @@ class Home extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    //await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await PortfolioStore.setProvisioningTOFollowOn(false)
     await PortfolioStore.setProvisioningFromMeatballMenu(false);
     await AcquisitionPackage.loadFeedbackOptions()
@@ -236,7 +237,6 @@ class Home extends Vue {
     hasIcon: true,
   };
 
-
 }
-export default toNative(Home);
+export default Home;
 </script>

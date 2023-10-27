@@ -99,6 +99,6 @@ class SecurityRequirementsForm extends Vue {
     await this.loadOnEnter();
   }
 }
-export default toNative(SecurityRequirementsForm);
+export default SecurityRequirementsForm;
 </script>
 

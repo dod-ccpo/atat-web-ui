@@ -8,21 +8,21 @@ export const mapStepConfigs = (
   let last = "";
   const mapStep = (routeConfig: StepperRouteConfig) => {
     const stepInfo: StepInfo = {
-      stepNumber: routeConfig.stepNumber || "",
-      stepName: routeConfig.name || "",
-      stepLabel: routeConfig.menuText || "",
+      stepNumber: routeConfig.stepNumber ?? "",
+      stepName: routeConfig.name as string ?? "",
+      stepLabel: routeConfig.menuText ?? "",
       prev: undefined,
       next: undefined,
       resolver: routeConfig.routeResolver,
-      additionalButtons: routeConfig.additionalButtons || [],
-      backButtonText: routeConfig.backButtonText || "Back",
-      continueButtonText: routeConfig.continueButtonText || "Continue",
-      continueButtonColor: routeConfig.continueButtonColor || "primary",
-      altContinueAction: routeConfig.altContinueAction || "",
-      completed: routeConfig.completed || false,
-      completePercentageWeight: routeConfig.completePercentageWeight || 0,
-      stepCompleteOnEnter: routeConfig.stepCompleteOnEnter || undefined,
-      stepCompleteOnLeave: routeConfig.stepCompleteOnLeave || undefined
+      additionalButtons: routeConfig.additionalButtons ?? [],
+      backButtonText: routeConfig.backButtonText ?? "Back",
+      continueButtonText: routeConfig.continueButtonText ?? "Continue",
+      continueButtonColor: routeConfig.continueButtonColor ?? "primary",
+      altContinueAction: routeConfig.altContinueAction ?? "",
+      completed: routeConfig.completed ?? false,
+      completePercentageWeight: routeConfig.completePercentageWeight ?? 0,
+      stepCompleteOnEnter: routeConfig.stepCompleteOnEnter ?? undefined,
+      stepCompleteOnLeave: routeConfig.stepCompleteOnLeave ?? undefined
     };
   
     const lastStep = map?.get(last || "");

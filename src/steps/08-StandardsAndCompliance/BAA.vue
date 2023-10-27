@@ -222,5 +222,5 @@ class BAA extends Vue {
   }
 }
 
-export default toNative(BAA)
+export default BAA
 </script>

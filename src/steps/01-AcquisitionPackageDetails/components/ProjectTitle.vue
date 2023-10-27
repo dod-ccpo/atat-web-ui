@@ -45,5 +45,5 @@ class ProjectTitle extends Vue {
   @Prop({ default: true}) private isForm!: boolean;
   @PropSync("rules") private _rules!: ValidationRule;
 }
-export default toNative(ProjectTitle)
+export default ProjectTitle
 </script>

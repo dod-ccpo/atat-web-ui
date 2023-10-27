@@ -16,5 +16,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class TrendingUp extends Vue {
   @Prop({ default: "c60634", required: false }) private color!:string;
 }
-export default toNative(TrendingUp);
+export default TrendingUp;
 </script>

@@ -266,5 +266,5 @@ class LineChart extends Vue {
     }
   }
 }
-export default toNative(LineChart)
+export default LineChart
 </script>

@@ -13,6 +13,6 @@
 import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class MenuBook extends Vue {}
-export default toNative(MenuBook);
+export default MenuBook;
 </script>
   

@@ -482,5 +482,5 @@ class ServiceOfferingDetails extends mixins(Vue, SaveOnLeave) {
 
 
 };
-export default toNative(ServiceOfferingDetails) 
+export default ServiceOfferingDetails 
 </script>
