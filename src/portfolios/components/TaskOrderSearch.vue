@@ -46,6 +46,7 @@ export default class TaskOrderSearch extends Vue {
   @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
 
   public rules = [
+    // TODO fix this
     // this.$validators.allowedLengths(
     //   [13,19], 
     //   'Your task order number must be either 13 or 19 characters.'

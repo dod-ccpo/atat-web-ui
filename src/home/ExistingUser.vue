@@ -210,7 +210,7 @@ import CurrentUserStore from "@/store/user";
     PortfoliosSummary,
     ATATSVGIcon,
     //TODO identify error undefined reading `allowedLengths`
-    //TaskOrderSearch,
+    TaskOrderSearch,
   }
 })
 

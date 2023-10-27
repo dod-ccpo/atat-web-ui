@@ -1,7 +1,7 @@
-.v-input--radio-group {
-  .v-input--radio-group__input {
+.v-radio-group {
+  .v-selection-control-group {
     > fieldset {
-      border: none;
+      border: none !important;
     }      
   }
 }
@@ -13,7 +13,7 @@
 
 ._radio-button:not(._readonly) {
   &.v-radio--is-focused,
-  .v-input--selection-controls__input:hover {
+  .v-selection-control__input:hover {
     .v-input--selection-controls__ripple {
       &:before {
         @extend ._radio-focus;
@@ -28,7 +28,7 @@
     cursor: default;
   }
   &.v-radio--is-focused,
-  .v-input--selection-controls__input:hover {
+  .v-selection-control__input:hover {
     .v-input--selection-controls__ripple {
       &:before {
         background: transparent !important;
@@ -74,7 +74,8 @@
     }
   }
 
-  .v-input--selection-controls__input {
+  // .v-input--selection-controls__input { becomes .v-selection-control__input
+  .v-selection-control__input {
     margin-right: 12px !important;
 
     &:after {
@@ -92,7 +93,7 @@
   }
 
   &.v-radio--is-disabled {
-    .v-input--selection-controls__input {
+    .v-selection-control__input {
       &:after {
         background-color: $base-lightest;
       }
