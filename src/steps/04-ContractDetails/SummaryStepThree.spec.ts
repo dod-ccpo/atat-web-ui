@@ -27,18 +27,18 @@ describe("Testing SummaryStepThree Component", () => {
 
   describe("GETTERS", () => {
     // describe("introParagraph()=> ", () => {
-      test("returns `We need some more details` statement", async () => {
-        // expect(true)
+    test("returns `We need some more details` statement", async () => {
+      // expect(true)
        
-        vi.mock("../../store/summary", "isStepComplete").mockReturnValue(false)
-        wrapper.vm.$.exposed?.setIntroParagraph()
-        //expect(wrapper.vm.$.data.introParagraph).toContain("We need some more details");
-      });
-      // it("returns `You are all done` statement", async () => {
-      //   jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
-      //   wrapper.vm.$.exposed?.setIntroParagraph()
-      //   expect(wrapper.vm.$.data.introParagraph).toContain("You are all done");
-      // });
+      // vi.mock("../../store/summary", "isStepComplete").mockReturnValue(false)
+      wrapper.vm.$.exposed?.setIntroParagraph()
+      //expect(wrapper.vm.$.data.introParagraph).toContain("We need some more details");
+    });
+    // it("returns `You are all done` statement", async () => {
+    //   jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
+    //   wrapper.vm.$.exposed?.setIntroParagraph()
+    //   expect(wrapper.vm.$.data.introParagraph).toContain("You are all done");
+    // });
     // })
   })
 
