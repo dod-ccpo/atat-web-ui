@@ -43,7 +43,7 @@
   }
 }
 
-.v-expansion-panel-text__wrap {
+.v-expansion-panel-text__wrapper {
   padding-left: 32px;
   padding-bottom: 16px;
   border-bottom: 1px solid $base-lighter;
@@ -56,7 +56,7 @@
 
 .v-expansion-panel {
   &:last-child {
-    .v-expansion-panel-text__wrap {
+    .v-expansion-panel-text__wrapper {
       border-bottom: none;
     }
   }
