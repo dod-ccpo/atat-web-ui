@@ -41,5 +41,5 @@ class ProjectScope extends Vue {
   @Prop({ default: true }) private isForm!: boolean;
   @PropSync("rules") private _rules!: ValidationRule;
 }
-export default toNative(ProjectScope)
+export default ProjectScope
 </script>

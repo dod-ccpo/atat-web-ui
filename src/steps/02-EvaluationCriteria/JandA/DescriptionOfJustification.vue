@@ -174,5 +174,5 @@ class DescriptionOfJustification extends Vue {
   }
 }
  
-export default toNative(DescriptionOfJustification)
+export default DescriptionOfJustification
 </script>

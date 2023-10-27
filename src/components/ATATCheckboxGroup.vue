@@ -496,5 +496,5 @@ class ATATCheckboxGroup extends Vue {
     }
   }
 }
-export default toNative(ATATCheckboxGroup);
+export default ATATCheckboxGroup;
 </script>

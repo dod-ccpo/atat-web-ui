@@ -299,5 +299,5 @@ class ATATAddressForm extends Vue {
       : "PostalCode";
   }
 }
-export default toNative(ATATAddressForm);
+export default ATATAddressForm;
 </script>

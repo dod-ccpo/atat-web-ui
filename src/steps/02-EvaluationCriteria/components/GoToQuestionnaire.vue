@@ -65,5 +65,5 @@ class GoToQuestionnaire extends Vue {
     this.$emit("goToQuestionnaire");
   }
 }
-export default toNative(GoToQuestionnaire) 
+export default GoToQuestionnaire 
 </script>

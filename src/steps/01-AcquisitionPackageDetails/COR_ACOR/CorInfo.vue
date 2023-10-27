@@ -78,5 +78,5 @@ class CorInfo extends Vue {
 
 }
 
-export default toNative(CorInfo)
+export default CorInfo
 </script>

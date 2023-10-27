@@ -488,5 +488,5 @@ class Travel extends Vue {
 
 }
 
-export default toNative(Travel)
+export default Travel
 </script>

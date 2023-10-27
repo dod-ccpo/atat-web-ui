@@ -858,5 +858,5 @@ class PortfolioDrawer extends Vue {
     }
   }
 }
-export default toNative(PortfolioDrawer)
+export default PortfolioDrawer
 </script>

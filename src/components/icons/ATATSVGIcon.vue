@@ -6,15 +6,15 @@
     class="_svg-icon">
     <component :is="name"
                :color="getColor()"
-               :height="_height"
-               :width="_width"
+               :height="height"
+               :width="width"
     />
   </div>
 </template>
 
 <script lang='ts'>
 import {stringObj } from "types/Global";
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ArrowBack from "@/components/icons/ArrowBack.vue";
 import ArchitectureCircle from "@/components/icons/ArchitectureCircle.vue"
@@ -219,17 +219,17 @@ import HomeWork from "@/components/icons/HomeWork.vue";
   }
 })
 
-class ATATSVGIcon extends Vue {
+export default class ATATSVGIcon extends Vue {
   // props
   @Prop({ required: false }) private color?: string;
-  @PropSync("width", {default: 0, required: true}) private _width!: number;
-  @PropSync("height",{default: 0, required: true}) private _height!: number;
+  @Prop({default: 0, required: true}) private width!: number;
+  @Prop({default: 0, required: true}) private height!: number;
   @Prop({default: "", required: true}) private name!: string;
 
 
   private get divStyle(): string {
-    return "width: " + this._width + "px;" +
-      "height: " + this._height + "px;" +
+    return "width: " + this.width + "px;" +
+      "height: " + this.height + "px;" +
       "line-height: 0px";
 
   }
@@ -263,5 +263,4 @@ class ATATSVGIcon extends Vue {
     { "warning-dark2": "e9a514" },
   ]
 }
-export default toNative(ATATSVGIcon);
 </script>

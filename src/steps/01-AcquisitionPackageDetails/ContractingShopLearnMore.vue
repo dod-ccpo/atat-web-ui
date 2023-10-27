@@ -68,6 +68,6 @@ import ATATAlert from "@/components/ATATAlert.vue";
 })
 class ContractingShopLearnMore extends Vue
 {}
-export default toNative(ContractingShopLearnMore) 
+export default ContractingShopLearnMore 
 
 </script>

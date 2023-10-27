@@ -328,5 +328,5 @@ class FOIACoordinator extends Vue {
   }
 }
 
-export default toNative(FOIACoordinator)
+export default FOIACoordinator
 </script>

@@ -51,6 +51,6 @@ class ATATLoadingPackageModal extends Vue {
     AppSections.changeActiveSection(dest);
   }
 }
-export default toNative(ATATLoadingPackageModal);
+export default ATATLoadingPackageModal;
 
 </script>

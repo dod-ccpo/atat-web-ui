@@ -11,5 +11,5 @@
 import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class Oracle extends Vue {}
-export default toNative(Oracle);
+export default Oracle;
 </script>

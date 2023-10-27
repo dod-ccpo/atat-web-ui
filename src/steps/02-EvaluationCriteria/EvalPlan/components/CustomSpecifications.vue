@@ -103,5 +103,5 @@ class CustomSpecifications extends Vue {
 
 }
 
-export default toNative(CustomSpecifications)
+export default CustomSpecifications
 </script>

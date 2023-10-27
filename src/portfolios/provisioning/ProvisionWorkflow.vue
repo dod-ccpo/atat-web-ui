@@ -309,5 +309,5 @@ class ProvisionWorkflow extends Vue {
   }
 
 }
-export default toNative(ProvisionWorkflow)
+export default ProvisionWorkflow
 </script>

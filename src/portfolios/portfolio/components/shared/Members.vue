@@ -10,6 +10,6 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 })
 class Members extends Vue {
 }
-export default toNative(Members)
+export default Members
 </script>
 

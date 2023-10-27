@@ -116,5 +116,5 @@ class CurrentUsage extends Vue {
     }
   }
 }
-export default toNative(CurrentUsage)
+export default CurrentUsage
 </script>

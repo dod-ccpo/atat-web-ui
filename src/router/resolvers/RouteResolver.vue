@@ -38,5 +38,5 @@ class RouteResolver extends Vue {
     });
   }
 }
-export default toNative(RouteResolver);
+export default RouteResolver;
 </script>

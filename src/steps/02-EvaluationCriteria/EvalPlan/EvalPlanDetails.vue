@@ -246,5 +246,5 @@ class EvalPlanDetails extends Vue {
 
 
 }
-export default toNative(EvalPlanDetails)
+export default EvalPlanDetails
 </script>

@@ -313,6 +313,6 @@ class SeverabilityAndIncrementalFunding extends Vue {
   }
 }
 
-export default toNative(SeverabilityAndIncrementalFunding)
+export default SeverabilityAndIncrementalFunding
 </script>
 

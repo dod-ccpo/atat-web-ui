@@ -37,7 +37,7 @@
             :value="isPanelOpen"
           >
             <v-expansion-panel>
-              <v-expansion-panel-header>
+              <v-expansion-panel-title>
                 <div class="d-flex">
                   <div class="h4 _expansion-panel-header">
                     {{ name }}
@@ -46,8 +46,8 @@
                     {{ value.length }}
                   </div>
                 </div>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
                 <div>
                   <div class="_expansion-panel-content-header">
                     <div class="summary-text">Service Name and Configuration Summary</div>
@@ -60,7 +60,7 @@
                     :index="idx + 1"
                   />
                 </div>
-              </v-expansion-panel-content>
+              </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
         </div>
@@ -318,6 +318,6 @@ class GatherPriceEstimates extends Vue {
   }
 }
 
-export default toNative(GatherPriceEstimates)
+export default GatherPriceEstimates
 </script>
 

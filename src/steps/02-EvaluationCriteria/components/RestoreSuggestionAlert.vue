@@ -33,5 +33,5 @@ class RestoreSuggestionAlert extends Vue {
   @Prop({ default: false }) private showAlert!: boolean;
 }
 
-export default toNative(RestoreSuggestionAlert) 
+export default RestoreSuggestionAlert 
 </script>

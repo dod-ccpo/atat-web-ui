@@ -52,5 +52,5 @@ class ConfirmRestoreDefaultTextModal extends Vue {
 
 }
 
-export default toNative(ConfirmRestoreDefaultTextModal)
+export default ConfirmRestoreDefaultTextModal
 </script>

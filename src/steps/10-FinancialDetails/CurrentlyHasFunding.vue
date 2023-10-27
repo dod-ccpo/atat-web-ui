@@ -109,5 +109,5 @@ class CurrentlyHasFunding extends Vue {
   };
 };
 
-export default toNative(CurrentlyHasFunding)
+export default CurrentlyHasFunding
 </script>

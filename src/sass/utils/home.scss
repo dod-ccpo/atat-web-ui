@@ -12,11 +12,20 @@
   }
 }
 
+._center-content {
+  margin: 0 auto !important;
+  &._is-home {
+    > div {
+      margin: 0 auto !important;
+    }
+  }
+}
+
 ._home {
   position: relative;
 
   &.v-main {
-    padding-top: 0 !important;
+    padding-top: 306px !important;
     height: 100vh;
   }
   
@@ -44,7 +53,7 @@
   }
 
   ._home-content {
-    margin: 306px auto 0;
+    margin: 0 auto;
   }
   ._resources {
     background-color: $base-lightest;
@@ -103,8 +112,8 @@
     padding-bottom: 80px !important;
   }
 
-  .v-expansion-panel-header {
-    background-color: $primary;
+  .v-expansion-panel-title {
+    background-color: $primary !important;
     width: 100%;
     border-bottom: 1px solid $base-lighter;
     border-bottom-left-radius: 0;
@@ -114,9 +123,14 @@
     padding-left: 44px !important; 
     margin-bottom: 0;
     margin-top: 0;
+    min-height: 50px !important;
+
+    .v-expansion-panel-title__overlay {
+      opacity: 0 !important;
+    }
 
     &:hover {
-      background-color: $primary-dark;
+      background-color: $primary-dark !important;
     }
 
     .h3 {
@@ -127,7 +141,7 @@
       }
     }
 
-    .v-expansion-panel-header__icon {
+    .v-expansion-panel-title__icon {
       left: 12px;
       top: 16px;
 
@@ -137,18 +151,16 @@
     }
   }
 
-  .v-expansion-panel-content__wrap {
+  .v-expansion-panel-text__wrapper {
     padding: 0;
-    ._summary-card-wrapper.v-sheet.v-card {
+    margin-bottom: 0;
+    ._summary-card-wrapper.v-.v-card {
       border-top: none !important;
       border-bottom: 1px solid $base-lighter !important;
       &:last-child {
         border-bottom: none !important;
       }
     }
-  }
-  .v-expansion-panel-content__wrap {
-    margin-bottom: 0;
   }
 
 
@@ -176,7 +188,9 @@
     max-height: 300px;
     width: 100%;
     margin-top: 56px;
-    position: absolute;
+    position: fixed;
+    left: 0;
+    top: 0;
   }
   
   &._is-new-user {
@@ -186,6 +200,7 @@
     ._hero-banner {
       height: 600px;
       max-height: 600px;
+      background-position: center -100px;
     }
     ._welcome-bar {
       box-shadow: 0px 12px 24px rgba(27, 27, 27, 0.2);

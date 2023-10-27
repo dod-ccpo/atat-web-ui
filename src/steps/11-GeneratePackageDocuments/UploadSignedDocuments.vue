@@ -274,6 +274,6 @@ class UploadSignedDocuments extends Vue {
 
 }
 
-export default toNative(UploadSignedDocuments)
+export default UploadSignedDocuments
 </script>
 
