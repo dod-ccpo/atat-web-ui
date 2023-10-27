@@ -29,7 +29,7 @@
             </p>
             <v-btn
               id="StartNewAcquisitionButton"
-              class="primary mb-4 mt-4"
+              class="bg-primary mb-4 mt-4"
               @click="startNewAcquisition"
               @keydown.enter="startNewAcquisition"
               @keydown.space="startNewAcquisition"
@@ -39,23 +39,19 @@
 
           </v-col>
           <v-col class="pl-10">
-            <div class="bg-primary-lighter border-rounded-more pa-8">
+            <div class="bg-primary-lighter border-eounded-more pa-8">
 
               <p class="mb-0">
                 You can expect to:
               </p>
               <v-list class="_atat-stepper">
-                <v-list-item-group >
-                  <v-list-item 
-                    v-for="(stepText, index) in prepareStepsText"
-                    :key="index"
-                  >
-                    <span class="_step-circle">{{ index + 1 }}</span>
-                    <v-list-item-content>
-                      {{ stepText }}
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
+                <v-list-item 
+                  v-for="(stepText, index) in prepareStepsText"
+                  :key="index"
+                >
+                  <span class="_step-circle">{{ index + 1 }}</span>
+                  {{ stepText }}
+                </v-list-item>
               </v-list>
               <v-btn 
                 class="v-btn link-button no-border"
@@ -71,29 +67,27 @@
                     Soon, you will be able to:
                   </p>
                   <v-list class="_atat-stepper">
-                    <v-list-item-group >
-                      <v-list-item>
-                        <span class="_step-circle">1</span>
-                        <v-list-item-content>
-                          Review and digitally sign documents prior to
-                          submission.
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-list-item>
-                        <span class="_step-circle">2</span>
-                        <v-list-item-content>
-                          <p class="font-size-16 mb-4">
-                            Submit your completed package directly within
-                            DAPPS, if you are using Defense Information
-                            Technology Contracting Organization (DITCO).
-                          </p>
-                          <p class="font-size-16 mb-0">
-                            Or, download your finalized documents and submit
-                            them to your Contracting Office for processing.
-                          </p>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list-item-group>
+                    <v-list-item>
+                      <span class="_step-circle">1</span>
+                      
+                        Review and digitally sign documents prior to
+                        submission.
+                      
+                    </v-list-item>
+                    <v-list-item>
+                      <span class="_step-circle">2</span>
+                      
+                        <p class="font-size-16 mb-4">
+                          Submit your completed package directly within
+                          DAPPS, if you are using Defense Information
+                          Technology Contracting Organization (DITCO).
+                        </p>
+                        <p class="font-size-16 mb-0">
+                          Or, download your finalized documents and submit
+                          them to your Contracting Office for processing.
+                        </p>
+                      
+                    </v-list-item>
                   </v-list>
                 </div>
               </v-expand-transition>
@@ -129,7 +123,7 @@
 
             <v-btn
               id="ProvisionButton"
-              class="primary mb-4 mt-4"
+              class="bg-primary mb-4 mt-4"
               @click="openTOSearchModal"
               @keydown.enter="openTOSearchModal"
               @keydown.space="openTOSearchModal"
@@ -139,23 +133,21 @@
 
           </v-col>
           <v-col class="pl-10">
-            <div class="bg-primary-lighter border-rounded-more pa-8">
+            <div class="bg-primary-lighter border-eounded-more pa-8">
 
               <p class="mb-0">
                 You can expect to:
               </p>
               <v-list class="_atat-stepper">
-                <v-list-item-group >
-                  <v-list-item 
-                    v-for="(stepText, index) in provisionStepsText"
-                    :key="index"
-                  >
-                    <span class="_step-circle">{{ index + 1 }}</span>
-                    <v-list-item-content>
-                      {{ stepText }}
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
+                <v-list-item 
+                  v-for="(stepText, index) in provisionStepsText"
+                  :key="index"
+                >
+                  <span class="_step-circle">{{ index + 1 }}</span>
+                  
+                    {{ stepText }}
+                  
+                </v-list-item>
               </v-list>
             </div>
           </v-col>
