@@ -1,4 +1,5 @@
 <template>
+<!--  TODO figure out if :clipped has a replacement prop or if it is the default-->
   <v-navigation-drawer
     id="SlideoutPanel"
     class="_slideout-panel"
@@ -7,7 +8,7 @@
     @transitionend="transitionEnded"
     :width="panelWidth + 'px'"
     app
-    right
+    location="right"
     :clipped="appSection === 'Portfolio Summary' || appSection === 'Portfolios'"
     :temporary="showOverlay"
     disable-resize-watcher
@@ -20,8 +21,8 @@
       </div>
       <v-btn
         class="text-base-darkest pa-0 icon-24 _panel-closer"
-        text="true"
-        small
+        variant="text"
+        size="small"
         @click.stop="closeSlideoutPanel"
         @keydown.enter="closeSlideoutPanel"
         @keydown.space="closeSlideoutPanel"

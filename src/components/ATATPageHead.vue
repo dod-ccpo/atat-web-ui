@@ -2,7 +2,7 @@
   <v-app-bar 
     id="PageHeader" 
     app 
-    flat 
+    flat="true"
     class="_atat-page-header"
   >
     <div class="d-flex justify-space-between width-100 align-center">
@@ -12,8 +12,8 @@
           transition="slide-y-reverse-transition"
           :id="'Contributor_Tooltip'"
           max-width="250px"
-          bottom
-          eager
+          location="bottom"
+          eager="true"
         >
           <!--TODO: validate that this still works after removal of on from activator-->
           <template v-slot:activator>
@@ -34,7 +34,7 @@
         </v-tooltip>
         <v-menu
           :offset-y="true"
-          left
+          location="left"
           id="MoreMenu"
           class="_more-menu _header-menu"
           attach
@@ -45,7 +45,7 @@
               :id="'Contributor_Tooltip'"
               max-width="250px"
               v-bind="props"
-              bottom
+              location="bottom"
               eager
             >
               <template v-slot:activator="{ props }">

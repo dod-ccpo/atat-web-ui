@@ -8,12 +8,12 @@
     <v-card style="padding: 80px 100px">
       <div class="text-center">
         <div class="h1 mb-4" id="LoadingModalTitle">
-          Loading your package details<span class="ellipsis"></span>
+          Loading your package details<span class="text-truncate"></span>
         </div>
         <p>Please wait while we finish getting your package ready.</p>
         <div class="px-4">
           <v-progress-linear
-            :value="packagePercentLoaded"
+            :model-value="packagePercentLoaded"
             color="#544496"
             class="mb-6 _progress-bar"
             height="16"

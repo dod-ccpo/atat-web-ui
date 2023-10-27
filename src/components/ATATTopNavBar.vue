@@ -1,4 +1,5 @@
 <template>
+<!--  TODO review this component after upgrade-->
   <v-system-bar id="TopNavBar" app flat>
     <ATATSVGIcon
       color="white"

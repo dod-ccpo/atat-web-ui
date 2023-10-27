@@ -36,11 +36,11 @@
           :placeholder="placeHolder"
           class="text-primary _input-max-width d-flex align-center"
           :hide-details="true"
-          outlined
-          @input="onInput"
+          variant="outlined"
+          @update:model-value="onInput"
           v-model="dateFormatted"
           :style="'width: ' + width + 'px'"
-          dense
+          density="compact"
           v-bind="props"
           :rules="rules"
           @blur="onBlur"

@@ -10,20 +10,20 @@
       v-model="_selectedItem"
       :class="inputClass"
       :items="(items)"
-      :search-input.sync="searchText"
+      :search.sync="searchText"
       :placeholder="placeholder"
       :append-icon="icon"
-      :item-text="titleKey"
+      :item-title="titleKey"
       :hide-details="true"
-      :filter="customFilter"
+      :customFilter="customFilter"
       :rules="rules"
       return-object
       clearable
-      outlined
-      attach
+      variant="outlined"
+      :menu-props="{attach:true}"
       dense
       @blur="onBlur"
-      @update:search-input="updateSearchInput"
+      @update:search="updateSearchInput"
     >
       <template v-slot:item>
         <v-list-item-content>

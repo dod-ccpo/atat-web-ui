@@ -23,7 +23,7 @@
           label="Developer Navigation"
           class="mr-10"
           color="indigo"
-          inset
+          inset="true"
         >
         </v-switch>
 
@@ -32,7 +32,7 @@
           v-model="prodContent"
           label="Production Content"
           color="indigo"
-          inset
+          inset="true"
         >
         </v-switch>
       </div>

@@ -33,7 +33,7 @@
         <v-btn 
           @click="continueClicked()" 
           v-if="!hideContinueButton"
-          depressed 
+          variant="flat" 
           :color="getContinueButtonColor"
           role="link" 
           class="ml-4"

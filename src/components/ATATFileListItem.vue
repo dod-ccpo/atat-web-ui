@@ -98,7 +98,7 @@
       </div>
     </div>
     <v-btn
-      class="secondary ml-auto"
+      class="bg-secondary ml-auto"
       :id="'RemoveFile0' + index"
       v-if="!isLoading"
       @click="removeFile(index, $event)"

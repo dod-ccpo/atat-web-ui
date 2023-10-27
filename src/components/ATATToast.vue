@@ -1,4 +1,5 @@
 <template>
+<!--  TODO figure out why this component has two location props-->
   <v-snackbar
     v-model="isToastOpen"
     top
@@ -17,7 +18,7 @@
     <!--TODO: validate that this still works after removal of slot action-->
     <template v-if="toast.hasUndo">
       <v-btn
-        text="true"
+        variant="text"
         @click="onUndo"
       >
         Undo

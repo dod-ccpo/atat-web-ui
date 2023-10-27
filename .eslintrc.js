@@ -15,8 +15,13 @@ module.exports = {
     "@vue/typescript/recommended",
     "prettier",
     "plugin:cypress/recommended",
+<<<<<<< Updated upstream
     "plugin:vue/base",
     "plugin:vuetify/base"
+=======
+    'plugin:vue/base',
+    'plugin:vuetify/base'
+>>>>>>> Stashed changes
   ],
   parserOptions: {
     ecmaVersion: "latest",

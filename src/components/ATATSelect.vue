@@ -19,22 +19,20 @@
         ref="atatSelect"
         :id="id + '_dropdown'"
         :items="items"
-        outlined
-        dense
-        attach
+        variant="outlined"
         v-model="_selectedValue"
         :height="42"
         :rounded="rounded"
         :hide-details="true"
-        :value.sync="_selectedValue"
-        @change="onChange"
+        :model-value.sync="_selectedValue"
+        @update:model-value="onChange"
         @blur="onBlur"
         :placeholder="placeholder"
         :class="{ 'mt-2' : label }"
         :return-object="returnObject"
         :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="_rules"
-        :menu-props="{ location: 'bottom', offset: 0 }"
+        :menu-props="{ location: 'bottom', offset: 0, attach:true }"
         :disabled="menuDisabled"
       >
         <template v-if="showSelectedValue" v-slot:selection="{ item }">

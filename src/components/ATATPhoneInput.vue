@@ -15,19 +15,17 @@
         <div class="d-flex">
           <v-select
             ref="atatPhoneDropdown"
-            attach
             id="CountryCodeDropdown"
             class="_country-select"
             :items="searchResults"
-            outlined
-            dense
-            item-text="abbreviation"
+            variant="outlined"
+            item-title="abbreviation"
             :hide-details="true"
             :error="errorMessages.length > 0"
             v-model="_selectedCountry"
             :height="42"
-            :menu-props="{ location: 'bottom', offset: 0 }"
-            @change="onChange"
+            :menu-props="{ location: 'bottom', offset: 0, attach:true }"
+            @update:model-value="onChange"
             :return-object="true"
           >
             <template v-slot:selection="{ item }">
@@ -39,11 +37,11 @@
                 class="_dropdown-text-field"
                 placeholder="Search"
                 persistent-placeholder
-                @input="searchCountries"
+                @update:model-value="searchCountries"
                 append-icon="search"
                 id="DropdownTextField"
-                clearable
-                autofocus
+                clearable="true"
+                autofocus="true"
                 autocomplete="off"
               />
             </template>
@@ -84,10 +82,10 @@
           <v-text-field
             ref="atatPhoneTextField"
             :id="id + '_textField'"
-            outlined
-            dense
+            variant="outlined"
+            density="compact"
             :height="42"
-            :value.sync="_value"
+            :model-value.sync="_value"
             :placeholder="placeHolder"
             @blur="validate"
             class="_phone-number-input"

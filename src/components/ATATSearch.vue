@@ -25,11 +25,11 @@
         :id="id + '_SearchInput'"
         class="_search-input"
         clearable
-        @input="onInput"
-        outlined
-        dense
+        @update:model-value="onInput"
+        variant="outlined"
+        density="compact"
         :height="40"
-        :value.sync="_value"
+        :model-value.sync="_value"
         :placeholder="placeHolder"
         :rules="rules"
         :validate-on="validationString"
@@ -41,7 +41,7 @@
       />
       <v-btn
         :id="id + '_SearchButton'"
-        class="primary _search-button"
+        class="bg-primary _search-button"
         @click="search"
         @keydown.enter="search"
         @keydown.space="search"
