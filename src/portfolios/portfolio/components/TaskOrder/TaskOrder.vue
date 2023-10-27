@@ -19,7 +19,7 @@
         </p>
         <v-btn
         v-if="portfolioIsActive"
-        outlined 
+        variant="outlined"
         class="ml-10 secondary" 
         @click="openSearchTOModal"
         > 
