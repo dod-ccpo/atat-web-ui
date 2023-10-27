@@ -180,7 +180,7 @@ class ServiceOfferings extends Vue{
       this.deselectedLabel = "";
       this.$router.push({
         name: "pathResolver",
-        params: {
+        query: {
           resolver: "ServiceOfferingsPathResolver",
           direction: "next"
         },

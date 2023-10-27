@@ -217,7 +217,7 @@ class MarketResearchReview extends Vue {
     await AcquisitionPackage.doSetFairOppBackToReview(true);
     this.$router.push({
       name: routeNames.MarketResearchEfforts,
-      params: {
+      query: {
         direction: "next"
       }   
     }).catch((e: Error) => console.error(e));

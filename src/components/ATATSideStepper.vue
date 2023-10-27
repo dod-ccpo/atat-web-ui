@@ -165,14 +165,14 @@ class ATATSideStepper extends Vue {
     if(lastSubStep?.menuText==="SummaryStepOne"){
       this.$router.push({
         path: step?.route + lastSubStep?.route,
-        params: {
+        query: {
           direction: "next"
         },
       })
     }else{
       this.$router.push({
         path: step?.route + "/" + lastSubStep?.route,
-        params: {
+        query: {
           direction: "next"
         },
       })

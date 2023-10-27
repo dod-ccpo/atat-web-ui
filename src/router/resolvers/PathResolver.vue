@@ -13,8 +13,8 @@ import { InvokePathResolver } from "./index";
 @Component({})
 class RouteResolver extends Vue {
   private resolveRoute(current: string): void {
-    const routeResolver = this.$route.params.resolver as string;
-    const direction = this.$route.params.direction as string;
+    const routeResolver = this.$route.query.resolver as string;
+    const direction = this.$route.query.direction as string;
 
     if (!routeResolver) {
       throw new Error("could not obtain step resolver");

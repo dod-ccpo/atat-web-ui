@@ -113,7 +113,7 @@ class GeneratePackageDocumentsFunding extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    this.packageDocComponent =  this.$route.params.direction !== "previous"
+    this.packageDocComponent =  this.$route.query.direction !== "previous"
       ? GeneratingDocumentsFunding
       : ReviewDocumentsFunding;
     await this.determineComponent();
