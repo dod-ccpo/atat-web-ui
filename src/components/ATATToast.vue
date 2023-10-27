@@ -2,8 +2,7 @@
 <!--  TODO figure out why this component has two location props-->
   <v-snackbar
     v-model="isToastOpen"
-    top
-    right
+    location="top"
     transition="slide-x-reverse-transition"
     class="_atat-toast"
     :class="[
@@ -11,7 +10,6 @@
       { '_has-icon': toast.hasIcon },
       { '_has-undo': toast.hasUndo },     
     ]"
-    light
     :timeout="getTimeout"
   >
     <div v-html="toast.message"></div>

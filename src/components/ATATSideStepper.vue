@@ -2,7 +2,6 @@
   <!-- TODO: app props have been removed from v-navigation-drawer, v-app-bar and v-system-bar.   -->
   <v-navigation-drawer
     id="GlobalSideNavBar"
-    app
     permanent="true"
     class="global-side-nav-bar d-flex flex-column align-start "
     width="320"

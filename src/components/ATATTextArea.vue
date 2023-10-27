@@ -50,7 +50,6 @@
         :readonly="readOnly"
         :no-resize="noResize"
         @blur="onBlur"
-        @update:error="setErrorMessage"
         :hide-details="maxChars === ''"
         :counter="maxChars"
         :auto-grow="autoGrow"

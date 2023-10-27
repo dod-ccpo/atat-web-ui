@@ -23,7 +23,6 @@
             :hide-details="true"
             :error="errorMessages.length > 0"
             v-model="_selectedCountry"
-            :height="42"
             :menu-props="{ location: 'bottom', offset: 0, attach:true }"
             @update:model-value="onChange"
             :return-object="true"
@@ -54,7 +53,8 @@
                   item.value.active ? '_active' : '',
                 ]"
               >
-                <v-list-item-content
+                <!-- TODO: div below was v-list-item-content -->
+                <div
                   :id="
                     id +
                     '_DropdownListItem_' +
@@ -75,7 +75,7 @@
                         }}</span>
                     </v-row>
                   </v-list-item-title>
-                </v-list-item-content>
+                </div>
               </v-list-item>
             </template>
           </v-select>
@@ -84,7 +84,6 @@
             :id="id + '_textField'"
             variant="outlined"
             density="compact"
-            :height="42"
             :model-value.sync="_value"
             :placeholder="placeHolder"
             @blur="validate"

@@ -1,7 +1,6 @@
 <template>
   <v-app-bar 
     id="PageHeader" 
-    app 
     flat="true"
     class="_atat-page-header"
   >
@@ -33,7 +32,6 @@
           </div>
         </v-tooltip>
         <v-menu
-          :offset-y="true"
           location="left"
           id="MoreMenu"
           class="_more-menu _header-menu"

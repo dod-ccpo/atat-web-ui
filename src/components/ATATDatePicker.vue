@@ -5,12 +5,9 @@
       ref="atatDatePickerMenu"
       v-model="menu"
       min-width="auto"
-      nudge-bottom="getMenuTop"
+      :offset="getMenuTop"
       :attach="'#' + id + 'DatePickerContainer'"
       absolute
-      :nudge-top="0"
-      :nudge-left="0"
-      
     >
       <template v-slot:activator="{ props }">
         <div class="d-flex align-center mb-2" v-if="label">
@@ -32,7 +29,6 @@
         <v-text-field
           ref="atatDatePicker"
           :id="id + 'DatePickerTextField'"
-          :height="42"
           :placeholder="placeHolder"
           class="text-primary _input-max-width d-flex align-center"
           :hide-details="true"

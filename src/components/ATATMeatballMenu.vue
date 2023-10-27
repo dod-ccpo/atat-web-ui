@@ -1,6 +1,5 @@
 <template>
   <v-menu
-    :offset-y="true"
     :left="left"
     :id="id + '_' + index"
     class="_meatball-menu"

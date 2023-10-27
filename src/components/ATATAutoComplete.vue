@@ -21,12 +21,10 @@
       clearable
       variant="outlined"
       :menu-props="{attach:true}"
-      dense
       @blur="onBlur"
       @update:search="updateSearchInput"
     >
       <template v-slot:item>
-        <v-list-item-content>
           <!-- eslint-disable vue/no-v-text-v-html-on-component -->
           <v-list-item-title
             v-text="titleKey"
@@ -37,7 +35,6 @@
             v-text="subtitleKey"
           />
           <!-- eslint-enable -->
-        </v-list-item-content>
       </template>
 
       <template v-slot:no-data>

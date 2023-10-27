@@ -21,7 +21,6 @@
         :items="items"
         variant="outlined"
         v-model="_selectedValue"
-        :height="42"
         :rounded="rounded"
         :hide-details="true"
         :model-value.sync="_selectedValue"
@@ -47,7 +46,7 @@
               {'_selected': item.value.value === _selectedValue || item.value === _selectedValue }
             ]"
           >
-            <v-list-item-content
+            <div
               :id="id + '_DropdownListItem_' + item.value.text.replace(/[^A-Z0-9]/ig, '')"
               :item-value = item.value
             >
@@ -58,7 +57,7 @@
                 {{ item.value.description }}
               </v-list-item-subtitle>
 
-            </v-list-item-content>
+            </div>
           </v-list-item>
         </template>
         <!-- TODO check slot append -->

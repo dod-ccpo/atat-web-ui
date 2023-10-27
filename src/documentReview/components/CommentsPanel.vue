@@ -32,7 +32,7 @@
       <h3 class="mb-4">Comments</h3>
       <dl>
         <dt>
-          <v-btn variant="text" x-small class="pa-2 comment-button">
+          <v-btn variant="text" size="x-small" class="pa-2 comment-button">
             <ATATSVGIcon
               name="commentBubble"
               class="comment-icon"
