@@ -18,7 +18,7 @@
         >
           <v-expansion-panel-title>
             {{ requirement.name }}
-          </v-expansion-panel-header>
+          </v-expansion-panel-title>
           <v-expansion-panel-text>
             <p v-if="requirement.description" class="mb-0">
               {{ requirement.description }}
@@ -34,7 +34,7 @@
                 </li>
               </ul>
             </div>
-          </v-expansion-panel-content>
+          </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
     </div>

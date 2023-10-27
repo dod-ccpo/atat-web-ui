@@ -38,7 +38,7 @@
                   {{buildClassificationLabel(classification,'short',true)}}
                 </div>
               </div>
-            </v-expansion-panel-header>
+            </v-expansion-panel-title>
             <v-expansion-panel-text>
               <span class="font-weight-500 font-size-20">1. Anticipated users</span>
               <RegionsDeployedAndUserCount
@@ -74,7 +74,7 @@
                 :dataTextFieldValue.sync="anticipatedNeedsData[index].data_egress_monthly_amount"
                 :dataDropdownValue.sync="anticipatedNeedsData[index].data_egress_monthly_unit"
               />
-            </v-expansion-panel-content>
+            </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
       </v-col>

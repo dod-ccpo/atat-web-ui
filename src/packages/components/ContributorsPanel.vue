@@ -147,7 +147,7 @@
         <v-expansion-panel>
           <v-expansion-panel-title class="font-size-14">
             Learn about contributor roles
-          </v-expansion-panel-header>
+          </v-expansion-panel-title>
           <v-expansion-panel-text class="font-size-14">
             <p>
               <strong>Owner:</strong> Manages all aspects of a package, to include 
@@ -159,7 +159,7 @@
               people to contribute. However, they cannot submit, archive, or delete 
               the acquisition package. 
             </p>
-          </v-expansion-panel-content>
+          </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
     </div>

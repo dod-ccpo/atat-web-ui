@@ -63,12 +63,12 @@
                       <span class="font-weight-400">
                         ({{ pluralizeTrip(item.totalNumberOfTripsPerPeriod) }})
                       </span>
-                    </v-expansion-panel-header>
+                    </v-expansion-panel-title>
                     <v-expansion-panel-text :id="item.id + '_Content'">
                       <div v-for="(trip, tripIdx) in item.trips" :key="tripIdx">
                         <div v-html="trip" class="d-flex align-top"></div>
                       </div>
-                    </v-expansion-panel-content>
+                    </v-expansion-panel-text>
                   </v-expansion-panel>
                 </v-expansion-panels>
               </template>

@@ -46,7 +46,7 @@
                     {{ value.length }}
                   </div>
                 </div>
-              </v-expansion-panel-header>
+              </v-expansion-panel-title>
               <v-expansion-panel-text>
                 <div>
                   <div class="_expansion-panel-content-header">
@@ -60,7 +60,7 @@
                     :index="idx + 1"
                   />
                 </div>
-              </v-expansion-panel-content>
+              </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
         </div>

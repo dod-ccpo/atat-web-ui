@@ -18,10 +18,10 @@
         >
       <v-expansion-panel-title :id="item.id + '_Button'">
       {{ item.headerText }}
-      </v-expansion-panel-header>
+      </v-expansion-panel-title>
       <v-expansion-panel-text :id="item.id + '_Content'">
           <div v-html="item.content"></div>
-      </v-expansion-panel-content>
+      </v-expansion-panel-text>
     </v-expansion-panel>
     </v-expansion-panels>
     <hr/>
@@ -38,10 +38,10 @@
       >
         <v-expansion-panel-title :id="item.id + '_Button'">
           {{ item.headerText }}
-        </v-expansion-panel-header>
+        </v-expansion-panel-title>
         <v-expansion-panel-text :id="item.id + '_Content'">
           <div v-html="item.content"></div>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
 

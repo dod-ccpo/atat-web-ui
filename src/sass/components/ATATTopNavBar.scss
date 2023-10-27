@@ -77,14 +77,14 @@
             cursor: pointer;
           }
 
-          .v-list-item__title{
+          .v-list-item-header{
             @extend ._menu-text;
           }
 
           &._active {
             cursor: default;
             background-color: $primary-lighter !important;
-            .v-list-item__title {
+            .v-list-item-header {
               font-weight: 700 !important;
             }
             &:hover::before {
