@@ -113,5 +113,5 @@ class BusinessSize extends Vue {
   }
 }
 
-export default toNative(BusinessSize)
+export default BusinessSize
 </script>

@@ -434,5 +434,5 @@ class ServiceOfferings extends Vue{
   }
 
 }
-export default toNative(ServiceOfferings)
+export default ServiceOfferings
 </script>

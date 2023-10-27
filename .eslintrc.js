@@ -9,6 +9,7 @@ module.exports = {
   globals: {
     cy: true,
   },
+  
   extends: [
     "plugin:vue/essential",
     "eslint:recommended",
@@ -58,4 +59,5 @@ module.exports = {
       }
     }
   ],
+  
 };

@@ -78,6 +78,6 @@ class CompletePackageCard extends Vue {
   }
 }
 
-export default toNative(CompletePackageCard)
+export default CompletePackageCard
 </script>
 

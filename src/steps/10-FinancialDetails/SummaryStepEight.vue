@@ -68,7 +68,7 @@ class SummaryStepEight extends Vue {
 
 }
 
-export default toNative(SummaryStepEight)
+export default SummaryStepEight
 </script>
 
 <style scoped>

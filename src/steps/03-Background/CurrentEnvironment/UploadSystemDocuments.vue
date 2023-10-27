@@ -249,6 +249,6 @@ class UploadSystemDocuments extends Vue {
   }
 }
 
-export default toNative(UploadSystemDocuments)
+export default UploadSystemDocuments
 </script>
 

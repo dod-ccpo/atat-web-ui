@@ -218,5 +218,5 @@ class ReplicateAndOptimize extends Vue {
     return true;
   }  
 }
-export default toNative(ReplicateAndOptimize)
+export default ReplicateAndOptimize
 </script>

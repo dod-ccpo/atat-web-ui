@@ -13,5 +13,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class Restore extends Vue {
   @Prop({default: "544496", required: true}) private color!:string;
 }
-export default toNative(Restore);
+export default Restore;
 </script>

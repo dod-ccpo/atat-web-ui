@@ -239,5 +239,5 @@ class CurrentEnvironmentLocation extends Vue {
   }
 }
 
-export default toNative(CurrentEnvironmentLocation)
+export default CurrentEnvironmentLocation
 </script>

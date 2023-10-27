@@ -7,5 +7,5 @@ import { Vue, toNative } from "vue-facing-decorator";
 
 class ProvisioningIndex extends Vue {
 }
-export default toNative(ProvisioningIndex)
+export default ProvisioningIndex
 </script>

@@ -1,6 +1,6 @@
 <template>
 <!--  TODO review this component after upgrade-->
-  <v-system-bar id="TopNavBar" app flat>
+  <v-app-bar id="TopNavBar">
     <ATATSVGIcon
       color="white"
       width="110"
@@ -57,20 +57,22 @@
               :id="'ProfileBlock' + idx"
               v-if="navItem.isProfile && idx === 0"
              
-              class="d-flex py-2"
+              class="d-flex align-start justify-start"
               disabled
             >
-              <div class="_initials mr-2">
-                {{ navItem.title }}
-              </div>
-              <div style="line-height: 1.4">
-                <div class="font-weight-700 font-size-14 text-base-darker">
-                  {{ currentUser.first_name }} {{ currentUser.last_name }}
+              <div class="d-flex align-center">
+                <div class="_initials mr-2">
+                  {{ navItem.title }}
                 </div>
-                <div class="font-size-12 text-base">
-                  {{ currentUser.email }}
+                <div style="line-height: 1.4">
+                  <div class="font-weight-700 font-size-14 text-base-darker">
+                    {{ currentUser.first_name }} {{ currentUser.last_name }}
+                  </div>
+                  <div class="font-size-12 text-base">
+                    {{ currentUser.email }}
+                  </div>
                 </div>
-              </div>
+            </div>
             </v-list-item>
 
             <hr
@@ -89,7 +91,7 @@
                 { 'd-block pt-2 pb-1' : menuItem.subtitle } 
               ]"
             >
-              <div class="d-flex align-center width-100">
+              <div class="d-flex align-center justify-start width-100">
                 <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
                   <ATATSVGIcon
                     :name="menuItem.icon.name"
@@ -98,10 +100,11 @@
                     :height="menuItem.icon.height"
                   />
                 </div>
-                <v-list-item-title>
+                <v-list-item-header class="v-list-item-header mr-2">
+
                   {{ menuItem.title }}
-                </v-list-item-title>
-                <div v-if="menuItem.externalUrl">
+                </v-list-item-header>
+                <div class="ml-auto" v-if="menuItem.externalUrl">
                   <ATATSVGIcon 
                     name="externalLink"
                     color="primary"
@@ -123,7 +126,7 @@
         </v-list>
       </v-menu>
     </div>
-  </v-system-bar>
+  </v-app-bar>
 </template>
 
 <script lang="ts">
@@ -209,6 +212,7 @@ export default class ATATTopNavBar extends Vue {
 
   public async buildMenu(): Promise<void> {
     const sectionData = await AppSections.getSectionData();
+    debugger;
     this.topNavMenuItems = [
       {
         title: "Dashboard",

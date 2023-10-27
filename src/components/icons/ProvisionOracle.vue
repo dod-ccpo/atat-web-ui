@@ -161,5 +161,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ProvisionOracle extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default toNative(ProvisionOracle);
+export default ProvisionOracle;
 </script>

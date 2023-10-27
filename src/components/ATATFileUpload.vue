@@ -565,5 +565,5 @@ class ATATFileUpload extends Vue {
     }
   }
 }
-export default toNative(ATATFileUpload);
+export default ATATFileUpload;
 </script>

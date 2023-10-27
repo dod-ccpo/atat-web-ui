@@ -32,5 +32,5 @@ class DescriptionOfNeed extends Vue {
   @Prop({ default: "requirement" }) public requirementOrInstance?: string;
   @Prop({ default: "" }) public description?: string;
 }
-export default toNative(DescriptionOfNeed)
+export default DescriptionOfNeed
 </script>

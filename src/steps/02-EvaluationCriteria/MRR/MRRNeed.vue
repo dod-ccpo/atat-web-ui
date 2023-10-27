@@ -182,5 +182,5 @@ class MRRNeed extends Vue {
   }
 }
 
-export default toNative(MRRNeed) 
+export default MRRNeed 
 </script>

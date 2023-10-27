@@ -8,13 +8,12 @@
             <div v-if="userHasPackages">
               <v-expansion-panels 
                 id="PackagesAccordion" 
-                flat 
                 v-model="packagesPanel"
                 style="z-index:10"
               >
                 <v-expansion-panel expand>
-                  <v-expansion-panel-header>
-                    <div class="d-flex justify-space-between">
+                  <v-expansion-panel-title expand-icon="$expand">
+                    <div class="d-flex justify-space-between width-100">
                       <div class="h3">
                         Open Acquisition Packages
                       </div>
@@ -23,8 +22,8 @@
                       </div>
                     </div>
 
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
+                  </v-expansion-panel-title>
+                  <v-expansion-panel-text>
 
                     <ATATLoader 
                       v-show="isLoadingPackages" 
@@ -42,7 +41,7 @@
                       @openTOSearchModal="openTOSearchModal"
                     />
 
-                  </v-expansion-panel-content>
+                  </v-expansion-panel-text>
                 </v-expansion-panel>
               </v-expansion-panels>
               <div class="_view-all mb-10 bg-white">
@@ -62,12 +61,11 @@
             <div v-if="userHasPortfolios">
               <v-expansion-panels 
                 id="PortfoliosAccordion" 
-                flat 
                 v-model="portfolioPanel" 
               >
                 <v-expansion-panel expand>
-                  <v-expansion-panel-header>
-                    <div class="d-flex justify-space-between">
+                  <v-expansion-panel-title>
+                    <div class="d-flex justify-space-between width-100">
                       <div class="h3">
                         Porfolios
                       </div>
@@ -76,8 +74,8 @@
                       </div>
                     </div>
 
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
+                  </v-expansion-panel-title>
+                  <v-expansion-panel-text>
 
                     <PortfoliosSummary 
                       active-tab="ALL" 
@@ -86,7 +84,7 @@
                       @openTOModal="openTOSearchModal"
                     />
 
-                  </v-expansion-panel-content>
+                  </v-expansion-panel-text>
                 </v-expansion-panel>
               </v-expansion-panels>
 
@@ -124,7 +122,7 @@
                   id="JWCCHelpCenterButton"
                   href="https://community.hacc.mil/s/jwcc/resources"
                   target="_blank" 
-                  class="secondary mb-4 mt-4 width-100 _text-decoration-none"
+                  class="bg-secondary mb-4 mt-4 width-100 _text-decoration-none"
                 >
                   JWCC Help Center
                   
@@ -140,7 +138,7 @@
                 </v-btn>
                 <v-btn
                   id="CustomerSupportButton"
-                  class="secondary mt-4 width-100 _text-decoration-none"
+                  class="bg-secondary mt-4 width-100 _text-decoration-none"
                   :href="supportUrl"
                   target="_blank"
                 >      
@@ -159,7 +157,7 @@
                   :href="reportIssueLink"
                   id="ReportIssueButton"
                    target="_blank"
-                  class="secondary mt-4 width-100 _text-decoration-none" 
+                  class="bg-secondary mt-4 width-100 _text-decoration-none" 
                 >
                   Report a bug or technical issue
                   <ATATSVGIcon
@@ -212,7 +210,7 @@ import CurrentUserStore from "@/store/user";
     PortfoliosSummary,
     ATATSVGIcon,
     //TODO identify error undefined reading `allowedLengths`
-    //TaskOrderSearch,
+    TaskOrderSearch,
   }
 })
 

@@ -131,7 +131,7 @@ import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { StepperStep } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
-//import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepValidatedAndTouched} from "@/store/summary";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -243,5 +243,5 @@ class ATATSideStepper extends Vue {
   private activeStep = "";
   private percentComplete = 0;
 }
-export default toNative(ATATSideStepper);
+export default ATATSideStepper;
 </script>

@@ -256,5 +256,5 @@ class ReviewDocumentsFunding extends Vue {
   }
 }
 
-export default toNative(ReviewDocumentsFunding)
+export default ReviewDocumentsFunding
 </script>

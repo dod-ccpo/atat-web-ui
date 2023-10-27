@@ -118,5 +118,5 @@ class ClassificationLevelsPage extends Vue {
   }  
 }
 
-export default toNative(ClassificationLevelsPage)
+export default ClassificationLevelsPage
 </script>

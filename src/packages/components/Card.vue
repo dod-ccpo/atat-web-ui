@@ -28,7 +28,7 @@
           {{modifiedData.packageStatus}}
         </v-chip>
       </div>
-      <div class="text-base -size-14 d-flex align-center">
+      <div class="text-base-dark font-size-14 d-flex align-center">
         <!-- 
         TODO: Add back in when saving progress to snow  
         <div
@@ -142,7 +142,7 @@ import CurrentUserStore from "@/store/user";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import Toast from "@/store/toast";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-//import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import PortfolioStore from "@/store/portfolio";
 
 @Component({
@@ -433,7 +433,7 @@ export default class Card extends Vue {
   }
 }
 
-//export default toNative(Card);
+//export default Card;
 
 </script>
 

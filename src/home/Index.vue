@@ -32,7 +32,7 @@
             <div class="d-flex justify-end">
               <v-btn 
                 v-if="!isNewUser"
-                class="v-btn primary"
+                class="v-btn bg-primary"
                 @click="startNewAcquisition"
               >
                 Start a new acquisition
@@ -42,7 +42,7 @@
                 href="https://community.hacc.mil/s/jwcc"
                 target="_blank"
                 id="HelpfulResourcesButton"
-                class="secondary no-text-decoration"
+                class="bg-secondary no-text-decoration"
               >
                 Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
               </v-btn>
@@ -98,7 +98,7 @@ import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 
 import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
-//import Steps from "@/store/steps";
+import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 //import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
@@ -161,6 +161,7 @@ class Home extends Vue {
   }
 
   public get isNewUser(): boolean {
+    // return true;
     return !this.userHasPackages && !this.userHasPortfolios;
   } 
   public get userHasPackages(): boolean {
@@ -236,7 +237,6 @@ class Home extends Vue {
     hasIcon: true,
   };
 
-
 }
-export default toNative(Home);
+export default Home;
 </script>

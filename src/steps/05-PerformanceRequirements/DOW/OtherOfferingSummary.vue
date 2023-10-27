@@ -528,7 +528,7 @@ class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
   }
 
 }
-export default toNative(OtherOfferingSummary)
+export default OtherOfferingSummary
 
  
 </script>

@@ -300,5 +300,5 @@ class ContractingOfficeInfo extends Vue {
     return true;
   }
 }
-export default toNative(ContractingOfficeInfo)
+export default ContractingOfficeInfo
 </script>

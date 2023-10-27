@@ -632,6 +632,6 @@ class OtherOfferings extends Vue
     classification requirements you previously specified.`;
 
 }
-export default toNative(OtherOfferings)
+export default OtherOfferings
  
 </script>

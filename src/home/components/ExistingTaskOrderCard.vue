@@ -32,6 +32,6 @@ class ExistingTaskOrderCard extends Vue {
     this.$emit("startProvisionWorkflow");
   }
 }
-export default toNative(ExistingTaskOrderCard);
+export default ExistingTaskOrderCard;
 
 </script>

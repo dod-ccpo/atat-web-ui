@@ -100,4 +100,4 @@ class UserSearch extends Vue {
   }
 }
 
-export default toNative(UserSearch)
+export default UserSearch

@@ -10,7 +10,7 @@
       background-color: transparent !important;
     }
 
-    &.v-list-item--link {
+    .v-list-item--link {
       &:hover {
         cursor: default;
       }
@@ -25,6 +25,7 @@
 
     .v-list-item__content{
       padding-top: 2px;
+      margin-left: 50px;
     }
 
     &:after {  //verical line
@@ -40,12 +41,17 @@
       display: none;
     }
     ._step-circle {
+      display: inline-block;
+      position: absolute;
+      left: 0;
       font-size: 2.0rem;
       font-weight: 500;
       border: 4px solid $primary;
       margin: 0px 12px 12px 0px;
       text-align: center;
+      min-width: 40px !important;
       width: 40px;
+      min-height: 40px !important;
       height: 40px;
       border-radius: 50%;
       line-height: 32px;

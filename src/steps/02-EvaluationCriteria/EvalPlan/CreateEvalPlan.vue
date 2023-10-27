@@ -273,5 +273,5 @@ class CreateEvalPlan extends Vue {
 
 }
 
-export default toNative(CreateEvalPlan)
+export default CreateEvalPlan
 </script>

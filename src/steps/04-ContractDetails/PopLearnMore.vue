@@ -57,5 +57,5 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 class PopLearnMore extends Vue {}
-export default toNative(PopLearnMore)
+export default PopLearnMore
 </script>

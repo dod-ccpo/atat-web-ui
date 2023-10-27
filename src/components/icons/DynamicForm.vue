@@ -13,6 +13,6 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class DynamicForm extends Vue {
   @Prop({default: "544496", required: true}) private color!:string;
 }
-export default toNative(DynamicForm);
+export default DynamicForm;
 
 </script>

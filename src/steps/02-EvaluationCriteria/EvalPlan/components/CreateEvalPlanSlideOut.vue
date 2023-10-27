@@ -16,12 +16,12 @@
           v-for="(item, index) in factorsPanelData"
           :key="index"
         >
-      <v-expansion-panel-header :id="item.id + '_Button'">
+      <v-expansion-panel-title :id="item.id + '_Button'">
       {{ item.headerText }}
-      </v-expansion-panel-header>
-      <v-expansion-panel-content :id="item.id + '_Content'">
+      </v-expansion-panel-title>
+      <v-expansion-panel-text :id="item.id + '_Content'">
           <div v-html="item.content"></div>
-      </v-expansion-panel-content>
+      </v-expansion-panel-text>
     </v-expansion-panel>
     </v-expansion-panels>
     <hr/>
@@ -36,12 +36,12 @@
         v-for="(item, index) in expansionPanelData"
         :key="index"
       >
-        <v-expansion-panel-header :id="item.id + '_Button'">
+        <v-expansion-panel-title :id="item.id + '_Button'">
           {{ item.headerText }}
-        </v-expansion-panel-header>
-        <v-expansion-panel-content :id="item.id + '_Content'">
+        </v-expansion-panel-title>
+        <v-expansion-panel-text :id="item.id + '_Content'">
           <div v-html="item.content"></div>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -169,6 +169,6 @@ class CreateEvalPlanSlideOut extends Vue{
   ];
 }
 
-export default toNative(CreateEvalPlanSlideOut)
+export default CreateEvalPlanSlideOut
 </script>
 

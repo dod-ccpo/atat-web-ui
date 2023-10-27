@@ -155,5 +155,5 @@ class ATATSingleAndMultiplePeriods extends Vue {
   }
 
 }
-export default toNative(ATATSingleAndMultiplePeriods);
+export default ATATSingleAndMultiplePeriods;
 </script>

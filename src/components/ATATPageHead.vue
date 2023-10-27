@@ -238,6 +238,6 @@ class ATATPageHead extends Vue {
 
   }
 }
-export default toNative(ATATPageHead);
+export default ATATPageHead;
 
 </script>

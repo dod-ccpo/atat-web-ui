@@ -16,6 +16,6 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ErrorFilled extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default toNative(ErrorFilled)
+export default ErrorFilled
 </script>
 

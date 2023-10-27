@@ -230,6 +230,6 @@ class CreatePriceEstimate extends Vue {
 
 }
 
-export default toNative(CreatePriceEstimate)
+export default CreatePriceEstimate
 </script>
 

@@ -489,6 +489,6 @@ class EnvironmentSummary extends Vue {
 
 }
 
-export default toNative(EnvironmentSummary)
+export default EnvironmentSummary
 </script>
 

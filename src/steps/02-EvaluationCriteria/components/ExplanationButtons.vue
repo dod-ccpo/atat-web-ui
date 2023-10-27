@@ -88,5 +88,5 @@ class ExplanationButtons extends Vue
   }
 }
 
-export default toNative(ExplanationButtons) 
+export default ExplanationButtons 
 </script>

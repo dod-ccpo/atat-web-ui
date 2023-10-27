@@ -76,5 +76,5 @@ class ATATToast extends Vue {
     return timeout * 1000;
   }
 }
-export default toNative(ATATToast);
+export default ATATToast;
 </script>

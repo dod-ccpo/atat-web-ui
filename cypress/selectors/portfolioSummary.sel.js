@@ -150,7 +150,7 @@ module.exports = {
   tooltipBtnTFS: "#TooltipButton_TotalFundsToolTip",
   tooltipTextTFS: "#TooltipText_TotalFundsToolTip",
   expirationLink: "._expiration",
-  taskOrderHistoryHeader:".v-expansion-panel-header h2",
+  taskOrderHistoryHeader:".v-expansion-panel-title h2",
   taskOrderHistory: "#TaskOrderHistoryNumber",
   grandTotalObValue: "._grand-total-obligated-funds span",
   grandHiddenTotalObValue:"td:nth-child(3)._grand-total-clin-value span",

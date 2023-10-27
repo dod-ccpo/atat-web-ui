@@ -183,5 +183,5 @@ class MinimumRequirements extends Vue {
   }
 }
  
-export default toNative(MinimumRequirements)
+export default MinimumRequirements
 </script>

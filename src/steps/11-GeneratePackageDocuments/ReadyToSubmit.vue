@@ -113,6 +113,6 @@ class ReadyToSubmit extends Vue {
   }
 }
 
-export default toNative(ReadyToSubmit)
+export default ReadyToSubmit
 </script>
 
