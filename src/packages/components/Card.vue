@@ -28,7 +28,7 @@
           {{modifiedData.packageStatus}}
         </v-chip>
       </div>
-      <div class="text-base -size-14 d-flex align-center">
+      <div class="text-base-dark font-size-14 d-flex align-center">
         <!-- 
         TODO: Add back in when saving progress to snow  
         <div
@@ -124,7 +124,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
 import { MeatballMenuItem, ToastObj } from "../../../types/Global";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -136,7 +136,7 @@ import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.v
 import {
   AcquisitionPackageSummaryDTO, UserDTO,
 } from "@/api/models";
-import { routeNames } from "@/router/stepper";
+//import { routeNames } from "@/router/stepper";
 import AppSections from "@/store/appSections";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
@@ -155,7 +155,7 @@ import PortfolioStore from "@/store/portfolio";
   }
 })
 
-class Card extends Vue {
+export default class Card extends Vue {
   @Prop() private cardData!: AcquisitionPackageSummaryDTO;
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
@@ -433,7 +433,7 @@ class Card extends Vue {
   }
 }
 
-export default toNative(Card);
+//export default Card;
 
 </script>
 

@@ -207,5 +207,5 @@ class ProjectOverview extends Vue {
     return true;
   }
 }
-export default toNative(ProjectOverview)
+export default ProjectOverview
 </script>

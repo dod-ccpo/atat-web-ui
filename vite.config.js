@@ -5,6 +5,7 @@ import Components from 'unplugin-vue-components/vite'
 import {checker} from 'vite-plugin-checker'
 import pkg from './package.json'
 import resolve from '@rollup/plugin-node-resolve'
+import liveReload from 'vite-plugin-live-reload'
 import commonjs from '@rollup/plugin-commonjs'
 // import VueDevTools from 'vite-plugin-dev-tools'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
@@ -52,7 +53,8 @@ export default defineConfig(({command, mode}) => {
 			extensions: ['.ts', '.vue', '.js']
 		},
 		plugins: [
-			/*VueDevTools(),*/ vue(),
+			/*VueDevTools(),*/ 
+			vue(),
 
 			Components({
 				dts: true,
@@ -69,16 +71,20 @@ export default defineConfig(({command, mode}) => {
 			//TODO Both typescript & vueTsc are throwing errors
 			checker({
 				// typescript: true,
-				vueTsc: true
+				// vueTsc: true
 				// eslint: {lintCommand:'eslint '},
 			}),
+			liveReload('./src/**/*.(vue|ts)'),
 			// vue-property-decorator
-			cssInjectedByJsPlugin(),
+			// cssInjectedByJsPlugin(),
 			resolve() //commonjs(),
 			//splitVendorChunkPlugin(),
 		],
 		server: {
-			port: 8080
+			port: 8080,
+			watch: {
+				usePolling: true,
+			  }
 		},
 		// build: {
 
@@ -134,7 +140,7 @@ export default defineConfig(({command, mode}) => {
 			extract: {
 				// false // puts it into app-js
 				filename: 'js/vendor-js'
-			}
+			},
 			// inline: true,
 			// postcss: {
 			//   plugins: [{
@@ -148,11 +154,11 @@ export default defineConfig(({command, mode}) => {
 			//     }
 			//   }]
 			// }
-		},
-		preprocessorOptions: {
-			sass: {
-				additionalData: ['@import "@/sass/atat.scss', ''].join('\n')
-			}
+			preprocessorOptions: {
+				scss: {
+					additionalData: "@import 'src/sass/atat.scss';"
+				}
+			},
 		},
 		
 	}

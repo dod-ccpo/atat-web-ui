@@ -377,6 +377,6 @@ class CrossDomain extends Vue {
   }
 }
 
-export default toNative(CrossDomain)
+export default CrossDomain
 </script>
 

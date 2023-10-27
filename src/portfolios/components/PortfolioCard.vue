@@ -9,7 +9,7 @@
         <v-tooltip
           transition="slide-y-reverse-transition"
           color="rgba(0,0,0,1)"
-          top
+          location="top"
           :open-on-hover="true"
           :open-delay="500"
         >
@@ -44,7 +44,7 @@
             <v-tooltip
               transition="slide-y-reverse-transition"
               color="rgba(0,0,0,1)"
-              top
+              location="top"
               :open-on-hover="true"
               :open-delay="500"
             >
@@ -75,7 +75,7 @@
 
         </div>
       </div>
-      <div class="text-base-dark mb-3">
+      <div class="text-base-dark font-size-14 mb-0">
         <span class="_agency">{{ cardData.agency}}</span>
         <ATATSVGIcon 
           name="bullet" 
@@ -457,6 +457,6 @@ class PortfolioCard extends Vue {
   }
 
 }
-export default toNative(PortfolioCard)
+export default PortfolioCard
 </script>
 

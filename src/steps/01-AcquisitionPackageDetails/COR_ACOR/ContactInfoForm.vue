@@ -283,5 +283,5 @@ class CorAcorContactInfoForm extends Vue {
   //   });
   }
 }
-export default toNative(CorAcorContactInfoForm)
+export default CorAcorContactInfoForm
 </script>

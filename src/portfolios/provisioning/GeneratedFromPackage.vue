@@ -176,5 +176,5 @@ class GeneratedFromPackage extends Vue {
   }
 
 }
-export default toNative(GeneratedFromPackage)
+export default GeneratedFromPackage
 </script>

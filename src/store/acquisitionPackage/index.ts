@@ -53,7 +53,7 @@ import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
 import Periods from "../periods";
-import Steps from "../steps";
+//import Steps from "../steps";
 import { AttachmentServiceFactory } from "@/services/attachment";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import UserStore from "../user";
@@ -1573,7 +1573,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async loadPackageFromId(packageId: string): Promise<void> {
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
-    Steps.clearAltBackButtonText();
+    //Steps.clearAltBackButtonText();
     let acquisitionPackage = await api.acquisitionPackageTable.retrieve(packageId);
     if (acquisitionPackage) {
       acquisitionPackage = convertColumnReferencesToValues(acquisitionPackage)
@@ -1955,7 +1955,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
     this.setIsLoading(true);
     this.setPackagePercentLoaded(0);
-    Steps.clearAltBackButtonText();
+    //Steps.clearAltBackButtonText();
 
     await ContactData.initialize();
     this.setPackagePercentLoaded(5);
@@ -2687,7 +2687,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await TaskOrder.reset();
     await ClassificationRequirements.reset();
     await EvaluationPlan.reset();
-    Steps.clearAltBackButtonText();
+    //Steps.clearAltBackButtonText();
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
     DescriptionOfWork.setIsDOWSummaryAlertOpen(true);
 

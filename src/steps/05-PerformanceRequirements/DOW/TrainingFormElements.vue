@@ -143,7 +143,7 @@ class TrainingFormElements extends Vue{
   ];
 
 }
-export default toNative(TrainingFormElements) 
+export default TrainingFormElements 
 
  
 </script>

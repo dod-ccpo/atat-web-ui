@@ -15,5 +15,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class CheckedBag extends Vue {
   @Prop({ default: "161B1E", required: false }) private color?:string;
 }
-export default toNative(CheckedBag);
+export default CheckedBag;
 </script>

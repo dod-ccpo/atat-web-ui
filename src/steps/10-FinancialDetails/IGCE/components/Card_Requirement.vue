@@ -142,5 +142,5 @@ class CardRequirement extends Vue {
   }
 }
 
-export default toNative(CardRequirement)
+export default CardRequirement
 </script>

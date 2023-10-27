@@ -30,7 +30,7 @@
     opacity: 0 !important;
   }
   
-  &.primary.theme--light{
+  &.primary.v-theme--light{
     background-color:  $primary !important;
     color: #fff !important;
     &:hover{
@@ -43,7 +43,7 @@
     }
   }
   
-  &.secondary.theme--light {
+  &.bg-secondary.v-theme--light {
     background-color: $white !important;
     border: 2px solid $primary !important;
     color: $primary;
@@ -71,7 +71,7 @@
     font-size: 1.4rem !important;
   }
 
-  &.link-button, &.tertirary.theme--light  {
+  &.link-button, &.tertirary.v-theme--light  {
     padding: 6px 12px !important;
   
     &.v-btn--disabled {
@@ -128,7 +128,7 @@
     }
   }
 
-  &._quaternary.theme--light {
+  &._quaternary.v-theme--light {
     background-color: transparent !important;
     .v-btn__content {
       text-decoration: none;
@@ -140,7 +140,7 @@
     }
   }
 
-  &.v-btn--text.theme--light {
+  &.v-btn--text.v-theme--light {
     .v-icon {
       color: $primary !important;
     }
@@ -238,7 +238,7 @@
 
 ._meatball-menu-button {
   &.v-btn.v-size--default {
-    min-width: 28px;
+    min-width: 28px !important;
     width: 28px;
     height: 28px;
     padding: 0 !important;

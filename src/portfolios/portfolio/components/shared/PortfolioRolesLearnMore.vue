@@ -15,5 +15,5 @@ import PortfolioRolesLearnMoreText from "./PortfolioRolesLearnMoreText.vue"
 })
 
 class PortfolioRolesLearnMore extends Vue {}
-export default toNative(PortfolioRolesLearnMore)
+export default PortfolioRolesLearnMore
 </script>

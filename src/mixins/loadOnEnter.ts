@@ -23,4 +23,4 @@ class LoadOnEnter extends Vue {
 
 }
 
-export default toNative(LoadOnEnter)
+export default LoadOnEnter

@@ -173,5 +173,5 @@ class AnticipatedDataNeeds extends Vue {
   }
 
 }
-export default toNative(AnticipatedDataNeeds)
+export default AnticipatedDataNeeds
 </script>

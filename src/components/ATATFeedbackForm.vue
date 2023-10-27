@@ -367,5 +367,5 @@ class ATATFeedbackForm extends Vue {
     await this.loadOnEnter();
   }
 }
-export default toNative(ATATFeedbackForm);
+export default ATATFeedbackForm;
 </script>

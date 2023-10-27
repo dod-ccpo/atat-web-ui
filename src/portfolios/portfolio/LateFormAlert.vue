@@ -106,5 +106,5 @@ class LateFormAlert extends Vue {
       return isBefore(new Date(), octoberFirst2023);
     }
   }
-export default toNative(LateFormAlert)
+export default LateFormAlert
 </script>

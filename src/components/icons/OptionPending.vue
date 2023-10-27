@@ -17,5 +17,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class OptionPending extends Vue {
   @Prop({ default: "161B1E", required: false }) private color?:string;
 }
-export default toNative(OptionPending);
+export default OptionPending;
 </script>

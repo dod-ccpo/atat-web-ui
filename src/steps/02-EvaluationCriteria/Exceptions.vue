@@ -181,5 +181,5 @@ class Exceptions extends Vue {
   }
 }
 
-export default toNative(Exceptions)
+export default Exceptions
 </script>

@@ -16,5 +16,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class Address extends Vue {
   @Prop({ default: "161B1E", required: false }) private color?:string;
 }
-export default toNative(Address)
+export default Address
 </script>

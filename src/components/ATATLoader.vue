@@ -12,10 +12,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue } from "vue-facing-decorator";
 @Component({})
-class ATATLoader extends Vue {
+export default class ATATLoader extends Vue {
   @Prop() private loadingText!: string;
 }
-export default toNative(ATATLoader);
 </script>

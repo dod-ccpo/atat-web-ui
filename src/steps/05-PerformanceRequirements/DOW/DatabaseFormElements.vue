@@ -116,6 +116,6 @@ class DatabaseFormElements extends Vue{
 
 
 }
-export default toNative(DatabaseFormElements) 
+export default DatabaseFormElements 
  
 </script>

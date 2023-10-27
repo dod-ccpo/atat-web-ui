@@ -156,5 +156,5 @@ class AddToExistingPortfolio extends Vue {
     await this.loadOnEnter();
   }
 }
-export default toNative(AddToExistingPortfolio)
+export default AddToExistingPortfolio
 </script>

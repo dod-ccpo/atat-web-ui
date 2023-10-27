@@ -1,5 +1,5 @@
 ._anticipated-users-accordion{
-  .v-expansion-panel-header {
+  .v-expansion-panel-title {
     background-color: $primary;
     width: 100%;
     border-bottom: 1px solid $base-lighter;
@@ -26,7 +26,7 @@
       }
     }
 
-    .v-expansion-panel-header__icon {
+    .v-expansion-panel-title__icon {
       left: 12px;
       top: 13px;
 
@@ -36,10 +36,10 @@
     }
   }
 
-  .v-expansion-panel-content__wrap {
+  .v-expansion-panel-text__wrapper {
     padding: 24px 40px 0 40px;
   }
-  .v-expansion-panel-content {
+  .v-expansion-panel-text {
     border: 1px solid $base-lighter;
     border-top:0;
     border-bottom-left-radius: 4px;

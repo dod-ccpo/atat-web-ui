@@ -197,5 +197,5 @@ class PortfolioDetails extends Vue {
   }
 
 }
-export default toNative(PortfolioDetails)
+export default PortfolioDetails
 </script>

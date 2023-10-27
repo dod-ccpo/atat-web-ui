@@ -15,5 +15,5 @@ import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
 class Calendar extends Vue {
   @Prop({default: "61686c", required: true}) private color!:string;
 }
-export default toNative(Calendar);
+export default Calendar;
 </script>
