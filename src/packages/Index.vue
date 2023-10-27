@@ -302,7 +302,7 @@ export default class Packages extends Vue {
     this.activeTab = tabType;
   }
   public async toAcquisitions(): Promise<void> {
-    //await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
     await acquisitionPackage.setIsNewPackage(true)
     await AcquisitionPackage.reset();
     this.$router.push({
