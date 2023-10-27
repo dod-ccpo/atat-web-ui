@@ -81,7 +81,8 @@
             ></div>
           </div>
         </template>
-        <template v-slot:append>
+        <!-- TODO check slot append -->
+        <template slot="append-inner">
           <template v-if="showOtherEntry(item.value) || hasTextFields">
             <ATATTextArea
               v-if="otherEntryType === 'textarea' && showOtherEntry(item.value)"

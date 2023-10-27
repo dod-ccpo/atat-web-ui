@@ -49,12 +49,12 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
     nameofProperty(this, (x) => x.acquisitionPackageSummaryList)
   ];
 
-  @Mutation
+ @Mutation
   public setStoreData(sessionData: string): void {
     try {
       const sessionDataObject = JSON.parse(sessionData);
       Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
+        (this as unknown as Record<string, string>)[property] = sessionDataObject[property];
       });
     } catch (error) {
       throw new Error("error restoring session for acquisition package summary data store");
@@ -62,9 +62,9 @@ export class AcquisitionPackageSummaryStore extends VuexModule {
   }
 
   @Mutation
-  public setInitialized(value: boolean): void {
-    this.initialized = value;
-  }
+ public setInitialized(value: boolean): void {
+   this.initialized = value;
+ }
 
   @Mutation
   public setAcquisitionPackageSummaryList(value: AcquisitionPackageSummaryDTO[]): void {
