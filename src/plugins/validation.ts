@@ -1,6 +1,6 @@
 import { compareAsc, compareDesc } from "date-fns"
 import { CountryObj, ValidationResult } from "types/Global";
-import { App } from "vue";
+import  {App}  from "vue";
 
 export class ValidationPlugin {
 
@@ -432,7 +432,7 @@ export class ValidationPlugin {
 
 
 export default {
-  install(app: App<any>): void {
+  install(app: App): void {
     const validation = new ValidationPlugin();
     app.config.globalProperties.$validators = validation;
   },
