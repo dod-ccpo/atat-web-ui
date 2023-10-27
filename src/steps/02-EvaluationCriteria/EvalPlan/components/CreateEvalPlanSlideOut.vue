@@ -11,7 +11,7 @@
     </p>
     <h3 class="mb-5">What factors should be considered when deciding whether 
       or not to require a technical proposal?</h3>
-      <v-expansion-panels accordion flat>
+      <v-expansion-panels variant="accordion" borderless>
         <v-expansion-panel
           v-for="(item, index) in factorsPanelData"
           :key="index"
@@ -31,7 +31,7 @@
       The following methods of evaluation are available under the JWCC Contract.
     </p>
 
-    <v-expansion-panels accordion flat>
+    <v-expansion-panels variant="accordion" borderless>
       <v-expansion-panel
         v-for="(item, index) in expansionPanelData"
         :key="index"

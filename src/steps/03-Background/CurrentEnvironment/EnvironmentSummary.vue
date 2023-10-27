@@ -107,7 +107,7 @@
             id="AddInstance"
             type="button"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="bg-secondary _normal _small-text mt-5"
             :ripple="false"
             @click="addInstance()"
           >

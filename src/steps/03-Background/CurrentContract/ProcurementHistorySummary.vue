@@ -88,7 +88,7 @@
                 id="AddInstanceNoData"
                 type="button"
                 role="link" 
-                class="primary _normal _small-text mt-5"
+                class="bg-primary _normal _small-text mt-5"
                 :ripple="false"
                 @click="addInstance()"
                 >
@@ -110,7 +110,7 @@
             id="AddInstance"
             type="button"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="bg-secondary _normal _small-text mt-5"
             :ripple="false"
             @click="addInstance()"
           >

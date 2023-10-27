@@ -73,7 +73,7 @@
           </div>
           <v-btn
             id="AddIncrementButton"
-            plain
+            variant="plain"
             class=" link-button no-border mt-5"
             :ripple="false"
             @click="addResearcher()"

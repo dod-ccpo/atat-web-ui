@@ -15,7 +15,7 @@
       :key="index + '-' + section.sectionTitle"
     >
       <hr v-if="index > 0" class="mb-4" />
-      <v-expansion-panels accordion flat>
+      <v-expansion-panels variant="accordion" borderless>
         <v-expansion-panel 
           v-for="(requirement, index) in section.items"
           :key="index + '-' + requirement.name"

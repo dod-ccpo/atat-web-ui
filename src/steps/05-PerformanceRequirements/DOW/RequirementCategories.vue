@@ -118,8 +118,7 @@
   </div>
 </template>
 <script lang="ts">
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
+import { Component, toNative, Vue} from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";

@@ -81,7 +81,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
+import { Component, toNative, Vue} from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";

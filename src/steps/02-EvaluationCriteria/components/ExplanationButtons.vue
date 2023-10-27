@@ -4,7 +4,7 @@
     <v-btn
       id="ChangeToCustomExplanationButton"
       v-if="showChangeToCustomButton"
-      class="secondary font-size-14 px-4 mb-1 mt-1"
+      class="bg-secondary font-size-14 px-4 mb-1 mt-1"
       @click="changeToCustomExplanation"
     >
       <ATATSVGIcon
@@ -21,7 +21,7 @@
     <v-btn
       id="ChangeToDAPPSSuggestionButton"
       v-if="showChangeToDAPPSButton"
-      class="secondary font-size-14 px-4 mb-1 mt-1"
+      class="bg-secondary font-size-14 px-4 mb-1 mt-1"
       @click="changeToDAPPSSuggestion"
     >
       <ATATSVGIcon
@@ -38,7 +38,7 @@
     <v-btn
       id="RestoreSuggestionButton"
       v-if="showRestoreSuggestionButton"
-      class="secondary font-size-14 px-4 mb-1 mt-1"
+      class="bg-secondary font-size-14 px-4 mb-1 mt-1"
       :class="{'ml-5' : restoreButtonNeedsMargin}"
       :disabled="isRestoreDisabled"
       @click="confirmRestoreDefaultText"

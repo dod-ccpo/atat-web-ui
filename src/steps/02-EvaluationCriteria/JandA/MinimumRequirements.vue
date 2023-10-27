@@ -32,7 +32,7 @@
             />
             <v-btn
                 id="RestoreMinGovReqExplanationButton"
-                class="secondary font-size-14 px-4 mb-1 mt-1"
+                class="bg-secondary font-size-14 px-4 mb-1 mt-1"
                 :disabled="isMinGovReqExpDefaultUnmodified"
                 @click="onRestoreMinGovReqExpClick"
             >
