@@ -5,7 +5,7 @@
         eager 
         max-width="550" 
         max-height="550" 
-        src="@/assets/images/scanAnimation.gif"
+        src="img/scanAnimation.gif"
       ></v-img>
     </v-col>
     <v-col class="col-12" :align="'center'">
@@ -24,7 +24,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 
 @Component({})

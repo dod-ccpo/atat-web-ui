@@ -22,32 +22,24 @@ const INDEX_HTML = path.join(DIST_DIR, "index.html");
 const linkRelRegEx = /<\s*link[^>]*(.*?)>/g;
 const scriptTagRegEx = /<script\b[^>]*>[\s\S\/]*?<\/script\b[^>]*>/g;
 const metaTagRegEx = /<\s*meta[^>]*(.*?)>/g;
-const materialIconsRegEx = /\s*fonts\/MaterialIcons-/g;
-const robotoFontsRegex = /\s*fonts\/roboto-/g;
-const materialIconsAssetsRegEx = /\s*other_assets\/MaterialIcons-/g;
-const robotoFontsAssetsRegex = /\s*other_assets\/roboto-/g;
+const materialIconsRegEx = /\s*other_assets\/materialdesignicons-/g;
+const robotoFontsRegex = /\s*other_assets\/roboto-/g;
+
 const imgRegex = /\s*img\//g;
 const buildMatches = {};
 const fileMapping = {};
 
-try {
-  fs.renameSync(path.join(JS_DIR,'chunk-vendors-js'),path.join(JS_DIR,"vendor-js"))
-} catch (err) {
-  console.error(err);
-}
+
 decorateIndexHTML(INDEX_HTML);
-deleteFiles(FONTS_DIR, "-ttf");
+
 renameFiles(JS_DIR, ourFakeExtension);
 renameFiles(IMG_DIR, ourFakeExtension);
-renameFiles(FONTS_DIR, ourFakeExtension);
-// Use kvp to update old filenames in *.js to new filenames
-moveFonts(FONTS_DIR, path.join(DIST_DIR,"other_assets"));
+renameFiles(ASSETS_DIR, ourFakeExtension);
 updateResourceNames(JS_DIR,"app-");
-updateResourceNames(JS_DIR,"vendor-");
 
 updateAppAssetsPaths(JS_DIR);
-updateAssetPaths(JS_DIR, "vendor-");
-reportMatchDiscrepancies();
+updateAssetPaths(JS_DIR, "app-");
+deleteDirectory(FONTS_DIR)
 
 outputResults();
 
@@ -67,20 +59,6 @@ function findMatches(input, regEx, expectedMatchCount) {
       found: matches ? matches.length : 0
     }
   }
-
-  if (matches) {
-    console.log("Found these matches using expression " + regEx);
-    console.log(matches);
-    if (expectedMatchCount != matches.length){
-      console.log("Expected: " + expectedMatchCount + " but found " + matches.length);
-    }
-  } else {
-    console.log("Found no matches using expression " + regEx);
-    if (expectedMatchCount > 0){
-      console.log("Expected: " + expectedMatchCount + " but found none");
-    }
-  }
-
 
   return matches;
 }
@@ -125,7 +103,6 @@ function removeHtmlTags(html) {
 function removeMetaTags(html) {
   const metaTags = findMatches(html, metaTagRegEx, 3);
   metaTags.forEach((metaTag) => (html = html.replace(metaTag, "")));
-  console.log("Removed <meta> tags from html.");
   return html;
 }
 
@@ -144,7 +121,6 @@ function removeDoubleNewlines(html) {
 function removeLinks(html) {
   const links = findMatches(html, linkRelRegEx, 1);
   links.forEach((link) => (html = html.replace(link, "")));
-  console.log("Removed <link> tags from html.");
   return html;
 }
 
@@ -155,7 +131,7 @@ function removeLinks(html) {
  * to <script src="/some/new/path/foo.js"></script>
  */
 function transformScripts(html) {
-  const scriptTags = findMatches(html, scriptTagRegEx, 1);
+  const scriptTags = findMatches(html, scriptTagRegEx, 2);
   scriptTags.forEach(
     (scriptTag) =>
     (html = html.replace(
@@ -163,8 +139,7 @@ function transformScripts(html) {
       scriptTag.replace("/js/", servicenowConfig.JS_API_PATH)
     ))
   );
-  console.log("Transformed <script> tags in html to the following...");
-  findMatches(html, scriptTagRegEx, 1);
+  findMatches(html, scriptTagRegEx, 2);
   return html;
 }
 
@@ -179,7 +154,6 @@ function injectJellyWrappers(html) {
  * Performs targeted transformations on the specified file
  */
 function decorateIndexHTML(filePath) {
-  console.log(`\nDecorating HTML at ${filePath}`);
   assert.ok(filePath);
   let fileContent = fs.readFileSync(filePath, fileEncoding);
   fileContent = removeDocType(fileContent);
@@ -205,7 +179,6 @@ function resolveRobotoFontsAndImagePaths(fileContent){
     const robotoMatches = findMatches(fileContent, robotoFontsRegex, 18);
     if (robotoMatches) {
       const newFontPath = `${servicenowConfig.ASSETS_API_PATH}roboto-`;
-      console.log(`Replacing the roboto fonts paths with: ${newFontPath}`);
       fileContent = fileContent.replace(robotoFontsRegex, newFontPath);
     }
   
@@ -213,7 +186,6 @@ function resolveRobotoFontsAndImagePaths(fileContent){
     const imageMatches = findMatches(fileContent, imgRegex, 12);
     if (imageMatches) {
       const newImagePath = servicenowConfig.IMG_API_PATH;
-      console.log(`Replacing the image paths with: ${newImagePath}`);
       fileContent = fileContent.replace(imgRegex, newImagePath);
     }
 
@@ -245,7 +217,6 @@ function updateAppAssetsPaths(directory) {
   const filename = dir.find((file) => file.startsWith("app-"));
   const filePath = path.join(directory, filename);
   assert.ok(filePath);
-  console.log(`\nUpdating paths in file ${filePath}`);
   let fileContent = fs.readFileSync(filePath, fileEncoding);
   fileContent = resolveRobotoFontsAndImagePaths(fileContent);
 
@@ -262,13 +233,11 @@ function updateAssetPaths(directory, filenameFilter) {
   const filename = dir.find((file) => file.startsWith(filenameFilter));
   const filePath = path.join(directory, filename);
   assert.ok(filePath);
-  console.log(`\nUpdating paths in file ${filePath}`);
   let fileContent = fs.readFileSync(filePath, fileEncoding);
 
   // material icons
   findMatches(fileContent, materialIconsRegEx, 4);
-  const newIconPath = `${servicenowConfig.ASSETS_API_PATH}MaterialIcons-`;
-  console.log(`Replacing the material icons paths with: ${newIconPath}`);
+  const newIconPath = `${servicenowConfig.ASSETS_API_PATH}materialdesignicons-`;
   fileContent = fileContent.replace(materialIconsRegEx, newIconPath);
   // Commented out because the vendor-js.html file contains no references to 
   // roboto fonts or images.
@@ -281,44 +250,38 @@ function updateAssetPaths(directory, filenameFilter) {
 /**
  * Deletes files from the specified directory that match the filter
  */
-function deleteFiles(directory, endsWithFilter) {
-  console.log(`\nDeleting files in ${directory} ending with ${endsWithFilter}`);
+function deleteDirectory(directory) {
   const files = fs.readdirSync(directory);
   files.forEach((file) => {
     const filename = path.join(directory, file);
-    if (filename.endsWith(endsWithFilter)) {
-      console.log("-- found: ", filename);
       try {
         fs.unlinkSync(filename);
-        console.log("-- deleted: ", filename);
       } catch (err) {
         console.error(err);
       }
-    }
   });
+  try {
+    fs.rmdirSync(directory);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 /**
  * Renames all files in the specified directory by appending an extension
  */
 function renameFiles(directory, extensionToAppend) {
-  console.log(
-    `\nRenaming files in ${directory} with extension ${extensionToAppend}`
-  );
-
   const files = fs.readdirSync(directory);
   files.forEach((file) => {
     //ignore template (.docx) files
     if (file.toLowerCase().indexOf(".docx")===-1) {
       try {
         const oldFilePath = path.join(directory, file);
-        console.log("-- found: ", oldFilePath);
         const newFilename = file.replace(/\.([^\.]*)$/, '-' + '$1') + ourFakeExtension;
         const newFilePath = path.join(directory,newFilename);
         // Add old filename and new filename to a key/value pair.  
         fileMapping[file] = file.replace(/\.([^\.]*)$/, '-' + '$1') + ourFakeExtension;
         fs.renameSync(oldFilePath, newFilePath);
-        console.log("-- renamed: ", newFilePath);
       } catch (err) {
         console.error(err);
       }
@@ -326,55 +289,19 @@ function renameFiles(directory, extensionToAppend) {
   });
 }
 
-/**
- * Moves all fonts from the dist/fonts folder to the dist/other_assets folder
- */
-function moveFonts(src_directory, dest_directory) {
-  const files = fs.readdirSync(src_directory);
-  files.forEach((file) => {
-    const oldFilename = path.join(src_directory,file);
-    const newFilename = path.join(dest_directory,file);
-    try {
-      fs.renameSync(oldFilename,newFilename);
-    } catch (err) {
-      console.error(err);
-    }
-  });
-  try {
-    fs.rmdirSync(src_directory);
-  } catch (err) {
-    console.error(err);
-  }
-}
 
-function reportMatchDiscrepancies() {
-  for (const key in buildMatches) {
-    const matches = buildMatches[key];
-    assert.strictEqual(
-      matches.found,
-      matches.expected,
-      `Expected ${matches.expected} matches to be found.  Check the input and ${key}`
-    );
-  }
-}
 /**
  * Checks for expected output files and displays messages
  */
 function outputResults() {
-  console.log(`\n\nPostbuild script complete.`);
   const jsDir = fs.readdirSync(JS_DIR);
   assert.ok(jsDir);
   const appFile = jsDir.find((file) => file.includes("app"));
   assert.ok(appFile);
-  const vendorFile = jsDir.find((file) => file.includes("vendor"));
-  assert.ok(vendorFile);
   const imgDir = fs.readdirSync(IMG_DIR);
   assert.ok(imgDir);
   const assetsDir = fs.readdirSync(ASSETS_DIR);
   assert.ok(assetsDir);
-  console.log(
-    `All expected files were found and all anticipated changes have been made.`
-  );
   console.log(
     `The build in the ${DIST_DIR} directory is ready for deployment in ServiceNow.`
   );
