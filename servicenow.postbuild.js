@@ -39,7 +39,6 @@ updateResourceNames(JS_DIR,"app-");
 
 updateAppAssetsPaths(JS_DIR);
 updateAssetPaths(JS_DIR, "app-");
-deleteDirectory(FONTS_DIR)
 
 outputResults();
 
@@ -245,26 +244,6 @@ function updateAssetPaths(directory, filenameFilter) {
 
   fs.writeFileSync(filePath, fileContent, fileEncoding);
 
-}
-
-/**
- * Deletes files from the specified directory that match the filter
- */
-function deleteDirectory(directory) {
-  const files = fs.readdirSync(directory);
-  files.forEach((file) => {
-    const filename = path.join(directory, file);
-      try {
-        fs.unlinkSync(filename);
-      } catch (err) {
-        console.error(err);
-      }
-  });
-  try {
-    fs.rmdirSync(directory);
-  } catch (err) {
-    console.error(err);
-  }
 }
 
 /**
