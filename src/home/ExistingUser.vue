@@ -186,12 +186,12 @@ import ATATLoader from "@/components/ATATLoader.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-// import Packages from "@/packages/Index.vue";
+import Packages from "@/packages/Index.vue";
 import Card from "@/packages/components/Card.vue";
 
 import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";
 
-// import Portfolios from "../portfolios/Index.vue";
+import Portfolios from "../portfolios/Index.vue";
 import PortfoliosSummary from "../portfolios/components/PortfoliosSummary.vue"
 import { 
   AcquisitionPackageSummaryDTO,
@@ -199,7 +199,7 @@ import {
 } from "@/api/models";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import CurrentUserStore from "@/store/user";
-// import AppSections from "@/store/appSections";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {

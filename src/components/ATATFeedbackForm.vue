@@ -230,7 +230,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import {Vue,Component, Watch, toNative } from "vue-facing-decorator";
+import {Vue,Component, Watch } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";

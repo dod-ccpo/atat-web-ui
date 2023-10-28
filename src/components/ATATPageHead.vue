@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch, toNative } from "vue-facing-decorator";
+import { Vue, Component, Watch } from "vue-facing-decorator";
 
 import AppSections from "@/store/appSections";
 import SlideoutPanel from "@/store/slideoutPanel";

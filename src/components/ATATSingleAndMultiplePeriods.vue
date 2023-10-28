@@ -78,7 +78,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import { PropSync } from "@/decorators/custom";
-import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import { PeriodDTO } from "@/api/models";
@@ -134,8 +134,7 @@ class ATATSingleAndMultiplePeriods extends Vue {
     if (val && parseInt(val)>0 ){
       const existingKeyIndex = this._sysIdValueArray.findIndex(
         obj => Object.keys(obj)[0] === sysId);
-      //eslint-disable-next-line prefer-const 
-      let obj:Record<string, string>= {};
+      const obj:Record<string, string>= {};
       obj[sysId] = val;
       
       existingKeyIndex>-1 

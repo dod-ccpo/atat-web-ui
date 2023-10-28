@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";

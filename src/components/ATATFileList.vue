@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
+import { Vue, Component, Prop, Watch } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATFileListItem from "@/components/ATATFileListItem.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";

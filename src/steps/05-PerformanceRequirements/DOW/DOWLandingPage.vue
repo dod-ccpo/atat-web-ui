@@ -130,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import { Component, mixins, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch, Vue } from "vue-facing-decorator";
 import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"

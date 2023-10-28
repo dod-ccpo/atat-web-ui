@@ -65,7 +65,7 @@
 
 <script lang="ts">
  
-import { Component, Prop, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";

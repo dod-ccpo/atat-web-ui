@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative, Watch } from "vue-facing-decorator";
+import { Component, Vue, Watch } from "vue-facing-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
