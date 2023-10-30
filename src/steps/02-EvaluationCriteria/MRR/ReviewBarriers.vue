@@ -186,7 +186,7 @@ class ReviewBarriers extends Vue{
     await AcquisitionPackage.doSetFairOppBackToReview(true);
     this.$router.push({
       name: routeNames.RemoveBarriers,
-      params: {
+      query: {
         direction: "next"
       }   
     }).catch((e: Error) => console.error(e));

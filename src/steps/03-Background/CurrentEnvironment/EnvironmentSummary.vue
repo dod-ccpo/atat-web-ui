@@ -229,7 +229,7 @@ class EnvironmentSummary extends Vue {
     this.$nextTick(() => {
       this.$router.push({
         name: routeNames.CurrentEnvironmentLocation,
-        params: {
+        query: {
           direction: "next"
         }   
       });
@@ -246,7 +246,7 @@ class EnvironmentSummary extends Vue {
     // navigate to instance form
     this.$router.push({
       name: routeNames.InstanceDetails,
-      params: {
+      query: {
         direction: "next"
       }   
     });

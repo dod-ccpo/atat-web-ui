@@ -307,7 +307,7 @@ export default class Packages extends Vue {
     await AcquisitionPackage.reset();
     this.$router.push({
       name: 'DAPPSChecklist', //routeNames.DAPPSChecklist,
-      params: {
+      query: {
         direction: "next"
       },
       replace: true
@@ -359,7 +359,7 @@ export default class Packages extends Vue {
 
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
+      query: {
         direction: "next"
       },
       replace: true

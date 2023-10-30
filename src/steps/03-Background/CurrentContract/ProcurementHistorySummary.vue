@@ -285,7 +285,7 @@ class ProcurementHistorySummary extends Vue {
     // navigate to instance form
     this.$router.push({
       name: routeNames.CurrentContractDetails,
-      params: {
+      query: {
         direction: "next"
       } 
     });

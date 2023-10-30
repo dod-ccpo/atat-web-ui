@@ -120,7 +120,7 @@ class CreateFirstPortfolio extends Vue {
 
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
+      query: {
         direction: "next",
       },
       replace: true,
@@ -139,7 +139,7 @@ class CreateFirstPortfolio extends Vue {
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router.push({
       name: routeNames.DAPPSChecklist,
-      params: {
+      query: {
         direction: "next",
       },
       replace: true,

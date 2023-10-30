@@ -112,7 +112,7 @@ class TaskOrder extends Vue {
 
     this.$router.push({
       name: this.provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
+      query: {
         direction: "next"
       },
       replace: true

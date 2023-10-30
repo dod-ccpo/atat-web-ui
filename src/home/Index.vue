@@ -180,8 +180,8 @@ class Home extends Vue {
     await AcquisitionPackage.reset();
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router.push({
-      name: 'DAPPSChecklist',//routeNames.DAPPSChecklist,
-      params: {
+      name: routeNames.DAPPSChecklist,
+      query: {
         direction: "next"
       },
       replace: true
@@ -198,7 +198,7 @@ class Home extends Vue {
 
     this.$router.push({
       name: 'AwardedTo',//provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
+      query: {
         direction: "next"
       },
       replace: true

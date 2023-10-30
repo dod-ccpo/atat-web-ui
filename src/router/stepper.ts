@@ -384,7 +384,6 @@ export const routeNames = {
 export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "01",
-   
     path: "/",
     completePercentageWeight: 14,
     component: AcquisitionPackageDetails,

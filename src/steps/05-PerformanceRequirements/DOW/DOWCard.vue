@@ -102,13 +102,13 @@ class DOWCard extends Vue
     await DescriptionOfWork.setCurrentDOWSection(this.cardData.section as string);
     const routerObj = {
       name: this.cardData.route,
-      params: {
+      query: {
         direction: "next",
         resolver: "",
       }
     }
     if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupport") {
-      routerObj.params.resolver = "RequirementsPathResolver";
+      routerObj.query.resolver = "RequirementsPathResolver";
     } 
     this.$router.push(routerObj)
   }

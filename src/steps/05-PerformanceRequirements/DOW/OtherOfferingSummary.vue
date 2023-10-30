@@ -221,7 +221,7 @@ class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
     // route to ServiceOfferings or DOW Summary
     this.$router.push({
       name: "pathResolver",
-      params: {
+      query: {
         resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
