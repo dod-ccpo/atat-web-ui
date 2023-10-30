@@ -1,7 +1,7 @@
 <template>
   <div :id="id">
     <div 
-      class="max-width-640 border1 border-base-lighter border-rounded-more pa-8"
+      class="max-width-640 border1 border-base-lighter _border-rounded-more pa-8"
       :class="[
         { '_square-bottom _no-border-bottom mb-0' : isSameContact }, 
         {'mb-5' : !isSameContact }

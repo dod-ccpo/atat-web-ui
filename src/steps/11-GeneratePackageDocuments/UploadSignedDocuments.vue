@@ -73,7 +73,7 @@
             <div    
               class="
               border1
-              border-rounded-more
+              _border-rounded-more
               border-base-lighter
               bg-primary-lighter
               pa-6"

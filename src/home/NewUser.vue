@@ -39,7 +39,7 @@
 
           </v-col>
           <v-col class="pl-10">
-            <div class="bg-primary-lighter border-eounded-more pa-8">
+            <div class="bg-primary-lighter _border-rounded-more pa-8">
 
               <p class="mb-0">
                 You can expect to:
@@ -133,7 +133,7 @@
 
           </v-col>
           <v-col class="pl-10">
-            <div class="bg-primary-lighter border-eounded-more pa-8">
+            <div class="bg-primary-lighter _border-rounded-more pa-8">
 
               <p class="mb-0">
                 You can expect to:

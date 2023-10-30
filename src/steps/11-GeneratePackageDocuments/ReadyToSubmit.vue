@@ -18,7 +18,7 @@
             to your completed documents within DAPPS.
           </p>
 
-          <div  class="border1 border-rounded-more border-base-lighter pa-6 bg-primary-lighter">
+          <div  class="border1 _border-rounded-more border-base-lighter pa-6 bg-primary-lighter">
             <ATATCheckboxGroup
               id="CertifiedCheckbox"
               aria-describedby="CertifiedCheckbox"

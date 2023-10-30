@@ -1,5 +1,5 @@
 <template>
-  <v-card class="package-item-card border-rounded-more">
+  <v-card class="package-item-card _border-rounded-more">
     <v-list-item>
       <v-avatar>
         <span class="list-circle">{{itemNumber}}</span>

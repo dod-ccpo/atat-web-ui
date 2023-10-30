@@ -14,7 +14,7 @@
             </p>
           </div>
           <div class="container-max-width">
-            <div class="d-flex bg-primary-lighter py-6 px-6 border-rounded-more">
+            <div class="d-flex bg-primary-lighter py-6 px-6 _border-rounded-more">
               <div class="mx-3">
                 <ATATSVGIcon
                   name="JWCCPricingCalculator"

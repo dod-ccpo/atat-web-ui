@@ -18,7 +18,7 @@
        
           <div class=
              "width-50 body-sm awarded-task-order-details copy-max-width 
-              border1 border-base-lighter border-rounded-more pa-8 mb-10">
+              border1 border-base-lighter _border-rounded-more pa-8 mb-10">
               <h2 class="mb-4">Task Order #{{ awardedTaskOrder.taskOrderNumber }} </h2>
               <dl class="d-flex flex-wrap">
                 <dt class="text-base">Cloud Service Provider (CSP)</dt>

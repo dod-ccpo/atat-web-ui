@@ -46,7 +46,7 @@ module.exports = {
         'cypress/**/*.js'
       ],
       rules: {
-        '@typescript-eslint/explicit-module-boundary-types': 0,         
+        '@typescript-eslint/explicit-module-boundary-types': 0,
       }
     },
     {
@@ -56,6 +56,14 @@ module.exports = {
       ],
       env: {
         jest: true
+      }
+    },
+    {
+      files: [
+        '**/*.vue'
+      ],
+      rules: {
+        'vuetify/no-deprecated-classes': 1
       }
     }
   ],

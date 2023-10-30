@@ -1,7 +1,7 @@
 <template>
   <div class="ml-10">
     <v-card
-      class="border1 border-base-lighter pa-6 _shadow border-rounded-more"
+      class="border1 border-base-lighter pa-6 _shadow _border-rounded-more"
     >
       <h3 class="mb-3 nowrap">Your completed package includes:</h3>
       <ul>
