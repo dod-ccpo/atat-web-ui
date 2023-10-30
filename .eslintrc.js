@@ -16,8 +16,8 @@ module.exports = {
     "@vue/typescript/recommended",
     "prettier",
     "plugin:cypress/recommended",
-    // 'plugin:vue/base',
-    // 'plugin:vuetify/base'
+    'plugin:vue/base',
+    'plugin:vuetify/base'
   ],
   parserOptions: {
     ecmaVersion: "latest",
