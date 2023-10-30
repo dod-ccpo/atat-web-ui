@@ -32,6 +32,7 @@ import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
 import AcquisitionPackage from "./store/acquisitionPackage";
 
 import Steps from '@/store/steps';
+import { stepperRoutes } from "./router/stepper";
 
 @Component({
   components: {
@@ -109,12 +110,17 @@ class App extends Vue {
   public get centerContent(): boolean {
     return this.activeAppSection === AppSections.sectionTitles.Home;
   }
-  public get isHome(): boolean {
+  public get isHome(): boolean { 
     return this.activeAppSection === AppSections.sectionTitles.Home;
-  }
-
+  } 
+ 
   public async beforeMount(): Promise<void> {
-    await AppSections.setAppContentComponent(Home);
+    const isFromDAPPS = window.location.hash.split("/").length>1
+    if (isFromDAPPS) {
+      await AppSections.setAppContentComponent(AppPackageBuilder);
+    } else {
+      await AppSections.setAppContentComponent(Home)
+    }
   }
 }
 export default toNative(App)
