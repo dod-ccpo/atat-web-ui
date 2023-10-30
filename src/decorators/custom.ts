@@ -19,7 +19,6 @@ export function PropSync(propName: string, options: any = {}) {
         return this[propName];
       },
       set(value: any) {
-        debugger;
         this.$emit(`update:${propName}`, value);
       },
     };
