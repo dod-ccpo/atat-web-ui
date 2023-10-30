@@ -166,7 +166,6 @@ export class StepsStore extends VuexModule implements StepsState {
     @Mutation
     public setSteps(stepperRoutes: StepperRouteConfig[]): void {
       this.stepMap = mapStepConfigs(stepperRoutes);
-      console.log(this.stepMap)
     }
 
     @Action({ rawError: true })
@@ -185,7 +184,6 @@ export class StepsStore extends VuexModule implements StepsState {
       const nextStepName = direction === RouteDirection.NEXT 
         ? (this.currentStep?.next || '') 
         : (this.currentStep?.prev || '');
-      console.log(this.currentStep, 'this')
       const currentStepName = this.currentStep?.stepName;
 
       if (currentStepName === undefined || nextStepName.length === 0)
