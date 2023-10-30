@@ -330,7 +330,7 @@ class Travel extends Vue {
         DescriptionOfWork.setConfirmTravelDeleteAll(false);
         this.$router.push({
           name: routeNames.SummaryStepSix,
-          params: {
+          query: {
             direction: "next"
           },
           replace: true
@@ -403,7 +403,7 @@ class Travel extends Vue {
       DescriptionOfWork.setConfirmTravelDeleteAll(false);
       this.$router.push({
         name: routeNames.SummaryStepSix,
-        params: {
+        query: {
           direction: "next"
         },
         replace: true

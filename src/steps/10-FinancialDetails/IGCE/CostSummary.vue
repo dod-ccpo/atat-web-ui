@@ -494,7 +494,7 @@ class CostSummary extends Vue {
     }
     this.$router.push({
       name: name,
-      params: {
+      query: {
         direction: "next"
       }
     });

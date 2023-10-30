@@ -1,4 +1,4 @@
-import { RouteRecordRaw, createRouter, createWebHistory } from "vue-router";
+import { RouteRecordRaw, createRouter, createWebHashHistory } from "vue-router";
 import {stepperRoutes} from "./stepper";
 import { provisionWorkFlowRoutes } from "./provisionWorkflow";
 import PathResolver from "./resolvers/PathResolver.vue";
@@ -41,7 +41,7 @@ const router = createRouter({
   scrollBehavior() {
     scrollToMainTop();
   },
-  history: createWebHistory()
+  history: createWebHashHistory()
 });
 
 export default router;

@@ -211,7 +211,6 @@ export default class ATATTopNavBar extends Vue {
 
   public async buildMenu(): Promise<void> {
     const sectionData = await AppSections.getSectionData();
-    debugger;
     this.topNavMenuItems = [
       {
         title: "Dashboard",

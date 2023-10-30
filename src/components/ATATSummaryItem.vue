@@ -351,7 +351,7 @@ class ATATSummaryItem extends Vue {
     const dynamicKey = routeName as keyof unknown;
     this.$router.push({
       name: routeNames[dynamicKey],
-      params: {
+      query: {
         direction: "next"
       },
     })
