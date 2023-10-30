@@ -10,7 +10,7 @@
         class="link-button no-border"
         id="BackButton"
       >
-        <v-icon size="20">chevron_left</v-icon>
+        <v-icon size="20">mdi-chevron-left</v-icon>
         <span>{{ backButtonText }}</span>
       </v-btn>
 

@@ -655,7 +655,7 @@ hr, .hr {
 }
 .icon-after--chevron-right:after {
   position: absolute;
-  content: "chevron_right";
+  content: "mdi-chevron-right"; /* TODO EJY check this */
   font-family: "Material Icons";
   -webkit-font-feature-settings: "liga";
   right: -28px;

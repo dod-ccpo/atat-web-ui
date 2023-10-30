@@ -11,7 +11,7 @@
         :id="id + 'Button_' + index"
         class="_meatball-menu-button"
       >
-        <v-icon class="text-base-dark">more_horiz</v-icon>
+        <v-icon class="text-base-dark">mdi-dots-horizontal</v-icon>
       </v-btn>
     </template>
 
