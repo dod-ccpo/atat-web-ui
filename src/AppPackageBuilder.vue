@@ -157,7 +157,7 @@ export default class AppPackageBuilder extends Vue {
 	      if (AcquisitionPackage.isNewPackage) {
 	        await this.$router.push({
 	          name: nextStepName as string,
-	          params: { direction }
+	          query: { direction }
 	        })
 	        return
 	      } else {
@@ -165,7 +165,7 @@ export default class AppPackageBuilder extends Vue {
 	          ? AppSections.sectionTitles.Home
 	          : AppSections.sectionTitles.Packages
 	        await Steps.setAltBackDestination('')
-	        await this.$router.push({ name: 'home', params: { direction } })
+	        await this.$router.push({ name: 'home', query: { direction } })
 	        AppSections.changeActiveSection(activeSection)
 	        return
 	      }
@@ -174,7 +174,7 @@ export default class AppPackageBuilder extends Vue {
 	      const routeResolver = nextStepName as StepRouteResolver
 	      this.$router.push({
 	        name: 'routeResolver',
-	        params: {
+	        query: {
 	          resolver: routeResolver.name,
 	          direction
 	        }
@@ -186,7 +186,7 @@ export default class AppPackageBuilder extends Vue {
 	      const pathResolver = nextStepName as StepPathResolver
 	      this.$router.push({
 	        name: 'pathResolver',
-	        params: {
+	        query: {
 	          resolver: pathResolver.name,
 	          direction
 	        }
@@ -196,7 +196,7 @@ export default class AppPackageBuilder extends Vue {
 	    }
 
 	    await Steps.setAltBackDestination('')
-	    this.$router.push({ name: nextStepName as string, params: { direction } })
+	    this.$router.push({ name: nextStepName as string, query: { direction } })
 	  } else if (direction === 'previous' && this.altBackDestination) {
 	    if (
 	      (this.$route.name === this.routeNames.DAPPSChecklist &&
@@ -207,19 +207,19 @@ export default class AppPackageBuilder extends Vue {
 	      await Steps.setAltBackDestination('')
 	      switch (this.altBackDestination) {
 	      case AppSections.sectionTitles.Home: {
-	        await this.$router.push({ name: 'home', params: { direction } })
+	        await this.$router.push({ name: 'home', query: { direction } })
 	        AppSections.changeActiveSection(AppSections.sectionTitles.Home)
 	        break
 	      }
 	      case AppSections.sectionTitles.Packages: {
-	        await this.$router.push({ name: 'home', params: { direction } })
+	        await this.$router.push({ name: 'home', query: { direction } })
 	        AppSections.changeActiveSection(
 	          AppSections.sectionTitles.Packages
 	        )
 	        break
 	      }
 	      case AppSections.sectionTitles.CreateFirstPortfolio: {
-	        this.$router.push({ name: 'home', params: { direction } })
+	        this.$router.push({ name: 'home', query: { direction } })
 	        AppSections.changeActiveSection(
 	          AppSections.sectionTitles.CreateFirstPortfolio
 	        )

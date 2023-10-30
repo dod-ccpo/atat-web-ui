@@ -324,7 +324,7 @@ class SummaryStepFive extends Vue{
     DescriptionOfWork.setReviewGroupFromSummary(true);
     this.$router.push({
       name: routeNames.AnticipatedUserAndDataNeeds,
-      params: {
+      query: {
         direction: "next"
       },
     }).catch((error) => console.log("Routing error:" + error));
@@ -343,7 +343,7 @@ class SummaryStepFive extends Vue{
 
     this.$router.push({
       name: "pathResolver",
-      params: {
+      query: {
         resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
