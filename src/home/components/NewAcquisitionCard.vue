@@ -9,7 +9,7 @@
     </p>
     <v-btn
       id="StartNewAcquisition"
-      class="primary mb-4"
+      class="bg-primary mb-4"
       @click="startNewAcquisition"
       @keydown.enter="startNewAcquisition"
       @keydown.space="startNewAcquisition"

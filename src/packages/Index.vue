@@ -4,10 +4,8 @@
     <v-main>
       <v-app-bar
         id="PageHeader"
-        app
         flat
         class="_atat-page-header _acquisitions"
-        clipped-right
         height="83"
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">
@@ -29,7 +27,7 @@
         </div>
         <div class="d-flex ml-auto">
           <v-btn
-            class="primary"
+            class="bg-primary"
             :ripple="false"
             @click="toAcquisitions"
           >
@@ -74,7 +72,7 @@
             <v-pagination
               v-model="page"
               :length="numberOfPages"
-              circle
+              rounded
             ></v-pagination>     
           </div>
 

@@ -45,7 +45,7 @@
           <h2 class="h3 mb-6 mt-2">You do not have any CSP administrators yet.</h2>
           <v-btn
             id="AddCSPAdmin"
-            class="primary mx-auto mb-2"
+            class="bg-primary mx-auto mb-2"
             @click="openAddCSPModal"
             @keydown.enter="openAddCSPModal"
             @keydown.space="openAddCSPModal"
@@ -116,7 +116,7 @@
           <v-btn
             id="AddAnotherAdmin"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="bg-secondary _normal _small-text mt-5"
             :ripple="false"
             @click="openAddCSPModal()"
           >
