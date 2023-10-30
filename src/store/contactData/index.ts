@@ -7,7 +7,6 @@ import {TABLENAME as ContactsTable} from "@/api/contacts";
 import {TABLENAME as MilitaryRanksTable} from "@/api/militaryRanks";
 import {AutoCompleteItem, AutoCompleteItemGroups, SelectData,} from "types/Global";
 import {nameofProperty, retrieveSession, storeDataToSession} from "../helpers"
-import { Vue } from "vue-facing-decorator";
 const ATAT_CONTACT_DATA_KEY = 'ATAT_CONTACT_DATA_KEY';
 
 const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {

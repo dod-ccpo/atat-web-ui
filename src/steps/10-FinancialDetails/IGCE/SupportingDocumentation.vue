@@ -38,7 +38,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue } from "vue-facing-decorator";
 import ATATFileUpload from "../../../components/ATATFileUpload.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
@@ -110,8 +110,7 @@ class SupportingDocumentation extends Vue {
   // files returned from the child component
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => ValidationResult)[] {
-    //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => ValidationResult)[] = [];
+    const rulesArr: ((v: string) => ValidationResult)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredFileUploadMessage));
 

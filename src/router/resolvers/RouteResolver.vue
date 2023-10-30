@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
-import { RouteLocationNormalized, RouterLink } from "vue-router";
+import { Component, Hook, Vue } from "vue-facing-decorator";
+import { RouteLocationNormalized } from "vue-router";
 
 // route resolver invoker
 import { InvokeRouteResolver } from "./index";

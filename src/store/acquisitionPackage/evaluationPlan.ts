@@ -7,7 +7,6 @@ import {
   EvaluationPlanDTO
 } from "@/api/models";
 import {nameofProperty} from "@/store/helpers";
-import { Vue } from "vue-facing-decorator";
 import {api} from "@/api";
 import { AxiosRequestConfig } from "axios";
 

@@ -106,7 +106,7 @@ import {
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue } from "vue-facing-decorator";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
@@ -326,8 +326,7 @@ class TravelEstimates extends Vue {
   protected async saveOnLeave(): Promise<boolean> {
     if (this.currentData.option?.toLowerCase()==="single"){
       this.sysIdValueArray = [];
-      //eslint-disable-next-line prefer-const
-      let obj:Record<string, string>= {};
+      const obj:Record<string, string>= {};
       obj["PER_PERIOD"] = this.valueArray[0];
       this.sysIdValueArray.push(obj);
     }

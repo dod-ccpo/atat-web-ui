@@ -74,7 +74,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch,  Vue } from "vue-facing-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";

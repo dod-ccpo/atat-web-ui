@@ -35,7 +35,7 @@
 
 <script lang="ts">
  
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue} from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom" // add PropSync import
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 

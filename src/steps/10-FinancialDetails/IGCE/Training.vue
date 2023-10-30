@@ -113,7 +113,7 @@
 </template>
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { 
   RadioButton, 
@@ -436,8 +436,7 @@ class IGCETraining extends Vue {
     try{
       if (this.instanceData.trainingOption.toLowerCase()==="single"){
         this.sysIdValueArray = [];
-        //eslint-disable-next-line prefer-const
-        let obj:Record<string, string>= {};
+        const obj:Record<string, string>= {};
         obj["PER_PERIOD"] = this.valueArray[0];
         this.sysIdValueArray.push(obj);
       }

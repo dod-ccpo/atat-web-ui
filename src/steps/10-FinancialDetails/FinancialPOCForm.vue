@@ -38,7 +38,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { CountryObj, RadioButton, RankData, SelectData } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";

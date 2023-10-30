@@ -122,7 +122,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {getCSPCompanyName, hasChanges} from "@/helpers";

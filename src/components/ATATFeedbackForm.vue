@@ -196,7 +196,7 @@
                               eager
                               max-width="360"
                               max-height="192"
-                              src="@/assets/images/Feedback_sent_animation.gif"
+                              src="img/Feedback_sent_animation.gif"
                             ></v-img>
                             <div class="d-flex flex-column mt-2">
                               <p id="ThankYouP">
@@ -230,7 +230,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import {Vue,Component, Watch, toNative } from "vue-facing-decorator";
+import {Vue,Component, Watch } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";

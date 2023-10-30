@@ -59,7 +59,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import { isStepComplete, isSubStepComplete,  } from "@/store/summary";
 import { routeNames } from "../../../router/stepper"
 
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 @Component({
   components: {
     ATATAlert,
