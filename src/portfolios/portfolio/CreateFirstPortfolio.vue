@@ -81,7 +81,7 @@ import AppSections from "@/store/appSections";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATFooter from "../../components/ATATFooter.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { Component,  Vue, toNative } from "vue-facing-decorator";
+import { Component,  Vue } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import { routeNames } from "@/router/stepper";
@@ -118,7 +118,7 @@ class CreateFirstPortfolio extends Vue {
 
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
+      query: {
         direction: "next",
       },
       replace: true,
@@ -137,7 +137,7 @@ class CreateFirstPortfolio extends Vue {
     await PortfolioStore.setSelectedAcquisitionPackageSysId("");
     this.$router.push({
       name: routeNames.DAPPSChecklist,
-      params: {
+      query: {
         direction: "next",
       },
       replace: true,

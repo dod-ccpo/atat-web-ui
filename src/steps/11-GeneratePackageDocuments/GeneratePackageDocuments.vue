@@ -20,7 +20,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocuments from "./components/GeneratingDocuments.vue";
@@ -41,7 +41,7 @@ class GeneratingPackageDocuments extends Vue {
   private docJobStatus = "" ;
 
   public packageDocComponent: (typeof Vue) = 
-    this.$route.params.direction === "next"
+    this.$route.query.direction === "next"
       ? GeneratingDocuments
       : ReviewDocuments
 
@@ -102,7 +102,7 @@ class GeneratingPackageDocuments extends Vue {
 
   public async mounted(): Promise<void> {
     await this.getDocJobStatus();
-    if (this.$route.params.direction === "next"){
+    if (this.$route.query.direction === "next"){
       await this.displayGeneratingDocumentsComponent();
     } else {
       await this.displayReviewComponent();

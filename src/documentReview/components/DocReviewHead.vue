@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { BreadcrumbItem } from "types/Global";
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({

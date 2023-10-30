@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts">
-import { Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue} from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -117,7 +117,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import Steps from "@/store/steps";
- 
+
 
 @Component({
   components: {

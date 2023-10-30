@@ -55,7 +55,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component,  Vue, toNative } from "vue-facing-decorator";
+import { Component,  Vue } from "vue-facing-decorator";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import { getIdText } from "@/helpers";
@@ -129,7 +129,7 @@ class Portfolios extends Vue {
     }
     this.$router.push({
       name: this.provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
+      query: {
         direction: "next"
       },
       replace: true

@@ -59,7 +59,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, toNative, Component, Prop } from "vue-facing-decorator";
+import { Vue, Component, Prop } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";

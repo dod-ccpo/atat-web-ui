@@ -133,7 +133,7 @@ import ContractNumber from "@/steps/03-Background/components/ContractNumber.vue"
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
 
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue } from "vue-facing-decorator";
 
 import { DocReviewData } from "types/Global";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";

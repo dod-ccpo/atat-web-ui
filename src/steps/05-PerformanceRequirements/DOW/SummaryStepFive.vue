@@ -174,7 +174,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import { routeNames } from "../../../router/stepper"
-import { Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import _ from "lodash";
 import classificationRequirements 
   from "@/store/classificationRequirements";
@@ -323,7 +323,7 @@ class SummaryStepFive extends Vue{
     DescriptionOfWork.setReviewGroupFromSummary(true);
     this.$router.push({
       name: routeNames.AnticipatedUserAndDataNeeds,
-      params: {
+      query: {
         direction: "next"
       },
     }).catch((error) => console.log("Routing error:" + error));
@@ -342,7 +342,7 @@ class SummaryStepFive extends Vue{
 
     this.$router.push({
       name: "pathResolver",
-      params: {
+      query: {
         resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },

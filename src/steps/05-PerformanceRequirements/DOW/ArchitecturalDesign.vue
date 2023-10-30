@@ -112,12 +112,12 @@ class ArchitecturalDesign extends Vue {
     await DescriptionOfWork.setCurrentDOWSection("XaaS");
     const routerObj = {
       name: routeNames.RequirementCategories,
-      params: {
+      query: {
         direction: "next",
         resolver: "",
       }
     }
-    routerObj.params.resolver = "RequirementsPathResolver";
+    routerObj.query.resolver = "RequirementsPathResolver";
     this.$router.push(routerObj)
   }
 
@@ -198,8 +198,7 @@ class ArchitecturalDesign extends Vue {
     try {
       if (this.hasChanged()) {
         if(this.currentData.needs_architectural_design_services === "NO"){
-          //eslint-disable-next-line prefer-const
-          let data = Object.assign(this.currentData, emptyArchObject)
+          const data = Object.assign(this.currentData, emptyArchObject)
           await DescriptionOfWork.setDOWArchitecturalDesign(data);
         }else{
           await DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);

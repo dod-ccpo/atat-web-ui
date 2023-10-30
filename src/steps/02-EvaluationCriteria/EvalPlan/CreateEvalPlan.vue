@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch, Vue } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { 

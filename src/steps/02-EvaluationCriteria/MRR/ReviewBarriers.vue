@@ -80,7 +80,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -186,7 +186,7 @@ class ReviewBarriers extends Vue{
     await AcquisitionPackage.doSetFairOppBackToReview(true);
     this.$router.push({
       name: routeNames.RemoveBarriers,
-      params: {
+      query: {
         direction: "next"
       }   
     }).catch((e: Error) => console.error(e));

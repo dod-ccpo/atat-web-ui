@@ -143,7 +143,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import { ComponentPublicInstance } from "vue";
 
@@ -219,8 +219,7 @@ class ATATAddressForm extends Vue {
   }
 
   private getRules(inputID: string): ValidationRule[] {
-    //eslint-disable-next-line prefer-const 
-    let rulesArr: ValidationRule[]  = [];
+    const rulesArr: ValidationRule[]  = [];
     if (this.requiredFields) {
 
       const result = this.requiredFields.filter(obj => {

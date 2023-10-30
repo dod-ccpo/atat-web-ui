@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import {Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";

@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
@@ -102,13 +102,13 @@ class DOWCard extends Vue
     await DescriptionOfWork.setCurrentDOWSection(this.cardData.section as string);
     const routerObj = {
       name: this.cardData.route,
-      params: {
+      query: {
         direction: "next",
         resolver: "",
       }
     }
     if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupport") {
-      routerObj.params.resolver = "RequirementsPathResolver";
+      routerObj.query.resolver = "RequirementsPathResolver";
     } 
     this.$router.push(routerObj)
   }

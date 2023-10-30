@@ -378,7 +378,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Prop, Watch,  Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch,  Vue } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom'
 import {
   ClinTableRowData,
@@ -576,12 +576,10 @@ class TaskOrderDetails extends Vue {
         fundsRemaining: "",
       };
     }
-    //eslint-disable-next-line prefer-const
-    let percent = Math.round(
+    const percent = Math.round(
       (Number(fundsSpent) / Number(obligatedFunds)) * 100
     );
-    //eslint-disable-next-line prefer-const
-    let remaining = Number(obligatedFunds) - Number(fundsSpent);
+    const remaining = Number(obligatedFunds) - Number(fundsSpent);
     return {
       percent: String(percent),
       fundsRemaining: "$" + toCurrencyString(remaining) + " remaining",

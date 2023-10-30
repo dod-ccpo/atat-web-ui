@@ -109,13 +109,13 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue } from "vue-facing-decorator";
 import { getIdText, scrollToMainTop } from "@/helpers";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
-//import { routeNames } from "@/router/stepper";
+import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 import Steps from "@/store/steps";
@@ -302,12 +302,12 @@ export default class Packages extends Vue {
     this.activeTab = tabType;
   }
   public async toAcquisitions(): Promise<void> {
-    //await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
     await acquisitionPackage.setIsNewPackage(true)
     await AcquisitionPackage.reset();
     this.$router.push({
       name: 'DAPPSChecklist', //routeNames.DAPPSChecklist,
-      params: {
+      query: {
         direction: "next"
       },
       replace: true
@@ -359,7 +359,7 @@ export default class Packages extends Vue {
 
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
+      query: {
         direction: "next"
       },
       replace: true

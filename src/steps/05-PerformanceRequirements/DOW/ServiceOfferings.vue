@@ -71,7 +71,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch, Vue } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import OtherOfferings from "./OtherOfferings.vue";
@@ -179,7 +179,7 @@ class ServiceOfferings extends Vue{
       this.deselectedLabel = "";
       this.$router.push({
         name: "pathResolver",
-        params: {
+        query: {
           resolver: "ServiceOfferingsPathResolver",
           direction: "next"
         },
@@ -298,8 +298,7 @@ class ServiceOfferings extends Vue{
       }
     }
     //find sys_id for otherValue
-    //eslint-disable-next-line prefer-const
-    let otherCheckBoxIndex = this.checkboxItems.findIndex((item) =>item.label === "Other")
+    const otherCheckBoxIndex = this.checkboxItems.findIndex((item) =>item.label === "Other")
     this.otherValue = this.checkboxItems[otherCheckBoxIndex]?.value || ""
 
     const periods = await Periods.loadPeriods();

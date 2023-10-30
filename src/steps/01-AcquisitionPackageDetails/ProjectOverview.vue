@@ -78,7 +78,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch , Vue} from "vue-facing-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";

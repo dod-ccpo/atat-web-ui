@@ -20,7 +20,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocumentsFunding from "./components/GeneratingDocumentsFunding.vue";
 import ReviewDocumentsFunding from "./components/ReviewDocumentsFunding.vue";
@@ -113,7 +113,7 @@ class GeneratePackageDocumentsFunding extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    this.packageDocComponent =  this.$route.params.direction !== "previous"
+    this.packageDocComponent =  this.$route.query.direction !== "previous"
       ? GeneratingDocumentsFunding
       : ReviewDocumentsFunding;
     await this.determineComponent();

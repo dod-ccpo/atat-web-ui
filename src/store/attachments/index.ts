@@ -14,7 +14,6 @@ import {
   AttachmentServiceFactory,
 } from "@/services/attachment";
 
-import { Vue } from "vue-facing-decorator";
 const ATAT_ATTACHMENTS_KEY = "ATAT_ATTACHMENTS_KEY";
 
 import {
@@ -23,7 +22,6 @@ import {
 } from "../helpers";
 import {api} from "@/api";
 import {AxiosRequestConfig} from "axios";
-import { AttachmentApi } from "@/api/attachments";
 
 @Module({
   name: "AttachmentsStore",

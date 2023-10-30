@@ -502,7 +502,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component,  Vue, toNative } from "vue-facing-decorator";
+import { Component,  Vue } from "vue-facing-decorator";
 import { DashboardService } from "../../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../../components/ATATFooter.vue";
@@ -811,12 +811,10 @@ class PortfolioDashboard extends Vue {
     const uniqueClinNumbers = [
       ...new Set(this.idiqClins.map((clin) => clin.clin_number)),
     ].sort();
-    
-    //eslint-disable-next-line prefer-const 
-    let clinCosts: Record<string, Record<string, string>> = {};
+     
+    const clinCosts: Record<string, Record<string, string>> = {};
     uniqueClinNumbersInCostsData.forEach((clinNo) => {
-      //eslint-disable-next-line prefer-const 
-      let clinValues: Record<string, string> = {};
+      const clinValues: Record<string, string> = {};
       uniqueDates.forEach((date) => {
         const clin = this.costs.find(
           (cost) => cost.clin_number === clinNo && cost.year_month === date
@@ -873,8 +871,7 @@ class PortfolioDashboard extends Vue {
     const popEndDate = parseISO(this.currentPoPEndISO);
 
     let month = popStartDate;
-    //eslint-disable-next-line prefer-const 
-    let monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
+    const monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
 
     for (let i = 0; i < monthsToAdd; i++) {
       month = add(popStartDate, { months: i + 1 });
@@ -919,8 +916,7 @@ class PortfolioDashboard extends Vue {
       );
       if (thisIdiqClin) {
         const costClinNo = thisIdiqClin.clin_number;
-        //eslint-disable-next-line prefer-const 
-        let fundsObligatedForCLIN = thisIdiqClin.funds_obligated;
+        const fundsObligatedForCLIN = thisIdiqClin.funds_obligated;
 
         let fundsAvailableForCLIN = !isNaN(parseFloat(fundsObligatedForCLIN.toString()))
           ? Math.round(parseFloat((fundsObligatedForCLIN.toString())) + Number.EPSILON)
@@ -1042,10 +1038,8 @@ class PortfolioDashboard extends Vue {
 
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
-    //eslint-disable-next-line prefer-const
-    let burnChartDataSets: lineChartDataSet[] = [];
-    //eslint-disable-next-line prefer-const
-    let clinTotalActualDataSet: lineChartDataSet =
+    const burnChartDataSets: lineChartDataSet[] = [];
+    const clinTotalActualDataSet: lineChartDataSet =
       this.burnChartActualCommonDataSet;
     const totalActualData = {
       dataSetId: "TotalCLINsActual",
@@ -1055,8 +1049,7 @@ class PortfolioDashboard extends Vue {
     Object.assign(clinTotalActualDataSet, totalActualData);
     burnChartDataSets.push(clinTotalActualDataSet);
     this.checked.push(true);
-    //eslint-disable-next-line prefer-const
-    let clinTotalProjectedDataSet: lineChartDataSet =
+    const clinTotalProjectedDataSet: lineChartDataSet =
       this.burnChartProjectedCommonDataSet;
     const totalProjectedData = {
       dataSetId: "TotalClinsProjected",
@@ -1079,8 +1072,7 @@ class PortfolioDashboard extends Vue {
             : clinNo + "Data",
           data: actualBurn[clinNo],
         };
-        //eslint-disable-next-line prefer-const
-        let clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
+        const clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
         clinActualDataSet.borderColor = color;
         clinActualDataSet.pointBackgroundColor = color;
         clinActualDataSet.pointHoverBackgroundColor = color;
@@ -1097,8 +1089,7 @@ class PortfolioDashboard extends Vue {
             : clinNo + "DataProjected",
           data: projectedBurn[clinNo],
         };
-        //eslint-disable-next-line prefer-const
-        let clinProjectedDataSet: lineChartDataSet = _.clone(
+        const clinProjectedDataSet: lineChartDataSet = _.clone(
           this.burnChartProjectedCommonDataSet
         );
         clinProjectedDataSet.borderColor = color;
@@ -1150,8 +1141,7 @@ class PortfolioDashboard extends Vue {
       daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
-    //eslint-disable-next-line prefer-const
-    let timeUnit = useMonths
+    const timeUnit = useMonths
       ? singular
         ? "month"
         : "months"

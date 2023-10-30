@@ -103,7 +103,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -222,7 +222,7 @@ class SoleSourceReview extends Vue {
     await AcquisitionPackage.doSetFairOppBackToReview(true);
     this.$router.push({
       name: routeNames.SoleSourceCause,
-      params: {
+      query: {
         direction: "next"
       }   
     }).catch((e: Error) => console.error(e));

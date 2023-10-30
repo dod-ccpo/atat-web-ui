@@ -187,7 +187,7 @@
 
 /*eslint prefer-const: 1 */
 import ATATAlert from "@/components/ATATAlert.vue";
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 
 import { getCurrencyString, getIdText } from "@/helpers"
 import acquisitionPackage from "@/store/acquisitionPackage";
@@ -494,7 +494,7 @@ class CostSummary extends Vue {
     }
     this.$router.push({
       name: name,
-      params: {
+      query: {
         direction: "next"
       }
     });

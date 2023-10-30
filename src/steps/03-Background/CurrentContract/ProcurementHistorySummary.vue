@@ -154,7 +154,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
 import { CurrentContractDTO } from "@/api/models";
@@ -285,7 +285,7 @@ class ProcurementHistorySummary extends Vue {
     // navigate to instance form
     this.$router.push({
       name: routeNames.CurrentContractDetails,
-      params: {
+      query: {
         direction: "next"
       } 
     });
