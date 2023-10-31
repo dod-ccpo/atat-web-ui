@@ -17,7 +17,7 @@
 </template>
 <script lang="ts">
  
-import { Component, Prop, Watch, Vue } from 'vue-facing-decorator'
+import { Component, Prop, Watch, Vue, toNative } from 'vue-facing-decorator'
 
 import ATATDialog from '@/components/ATATDialog.vue'
 import { PropSync } from "@/decorators/custom"
