@@ -100,6 +100,7 @@
     <ATATMeatballMenu
       :id="'CardMenu' + index"
       :left="true"
+      :menuWidth="250"
       :index="index"
       :menuItems="cardMenuItems"
       @menuItemClick="cardMenuClick"

@@ -47,7 +47,7 @@ describe("Testing ATATPageHead Component", () => {
   //   const moreButton = wrapper.find("#MoreMenuButton");
   //   expect(moreButton.exists()).toBe(true);
   //   const moreIcon = moreButton.find(".v-icon");
-  //   expect (moreIcon.text()).toBe("more_horiz");
+  //   expect (moreIcon.text()).toBe("mdi-dots-horizontal");
   // });
   //
   // it("moreMenuButton - menu is collapsed before being clicked", async () => {

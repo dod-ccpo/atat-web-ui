@@ -55,7 +55,7 @@
         <v-btn
           icon
           :ripple="false"
-          x-small
+          size="x-small"
           aria-label="Close alert"
           @click="close"
         >
