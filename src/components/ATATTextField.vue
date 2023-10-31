@@ -25,10 +25,9 @@
         :id="id + '_text_field'"
         variant="outlined"
         density="compact"
-        :height="42"
-        :model-value.sync="_value"
+        :model-value="_value"
+        @update:modelValue="_value = $event"
         :placeholder="placeHolder"
-        @update:model-value="onInput"
         class="text-primary"
         :class="[{ 'text-right' : alignRight }]"
         :disabled="disabled"
@@ -39,12 +38,14 @@
         :counter="counter"
         @blur="onBlur"
         @focus="onFocus"
-        @update:error="setErrorMessage"
         autocomplete="off"
         :type="type"
         @keypress="filterNumbers($event)"
         :validate-on="validationString"
       >
+
+        <!-- TODO - figure out how to set error messages
+           @update:error="setErrorMessage" -->
 
         <template v-slot:prepend-inner>
           <ATATSVGIcon
@@ -162,9 +163,7 @@ class ATATTextField extends Vue  {
 
   //data
   private errorMessages: string[] = [];
-  private onInput(v: string) {
-    this._value = v;
-  }
+
   public get validationString(){
     return this.validateOnBlur ? "blur" : undefined
   }
@@ -256,10 +255,10 @@ class ATATTextField extends Vue  {
   }
 
   private showHelpText(): boolean {
-    if(this.errorMessages.length && this.hideHelpTextOnErrors){
+    if(this.errorMessages?.length && this.hideHelpTextOnErrors){
       return false;
     }
-    return  this.helpText.length > 0;
+    return this.helpText.length > 0;
   }
 
   public filterNumbers(evt: KeyboardEvent): void {

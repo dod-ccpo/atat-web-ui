@@ -83,7 +83,6 @@ import { SlideoutPanelContent, RadioButton } from "../../../types/Global";
 import ContractingShopLearnMore from "./ContractingShopLearnMore.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ProjectOverviewDTO } from "@/api/models";
-import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepTouched } from "@/store/summary";
@@ -118,10 +117,6 @@ class ContractingShop extends Vue {
   public skipPageRoute = "";
 
   public contractingShop = "";
-
-  // public testThis(val: string) {
-  //   this.contractingShop = val
-  // }
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -211,5 +206,5 @@ class ContractingShop extends Vue {
     return true;
   }
 }
-export default toNative(ContractingShop )
+export default toNative(ContractingShop)
 </script>
