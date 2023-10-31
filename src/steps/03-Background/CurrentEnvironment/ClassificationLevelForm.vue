@@ -72,7 +72,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom';
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
@@ -230,8 +230,7 @@ class ClassificationLevelForm extends Vue {
 
     await this.setSecretSysIds();
     await this.setOnPremImpactLevelSysId();
-    //eslint-disable-next-line prefer-const
-    let onlyUnclassifiedILs = this.allClassificationLevels
+    const onlyUnclassifiedILs = this.allClassificationLevels
       .filter(classification => classification.classification === "U" );
     this.cloudImpactLevelOptions = buildClassificationCheckboxList(
       onlyUnclassifiedILs, "", true, true

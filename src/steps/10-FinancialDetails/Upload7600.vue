@@ -93,7 +93,7 @@
 </template>
 <script lang="ts">
 import { ValidationResult, invalidFile, uploadingFile } from "types/Global";
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
@@ -194,8 +194,7 @@ class Upload7600 extends Vue {
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => ValidationResult)[] {
     if (this.useGInvoicing === "YES") return [];
-    //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => ValidationResult)[] = [];
+    const rulesArr: ((v: string) => ValidationResult)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredMessage));
 

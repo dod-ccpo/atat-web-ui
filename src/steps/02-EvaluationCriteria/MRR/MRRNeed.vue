@@ -53,7 +53,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import {RadioButton} from "../../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";

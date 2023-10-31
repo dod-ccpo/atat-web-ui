@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";

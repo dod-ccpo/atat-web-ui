@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative, Watch } from "vue-facing-decorator";
+import { Component, Vue, Watch } from "vue-facing-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
@@ -216,7 +216,7 @@ class Home extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    //await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Home);
     await PortfolioStore.setProvisioningTOFollowOn(false)
     await PortfolioStore.setProvisioningFromMeatballMenu(false);
     await AcquisitionPackage.loadFeedbackOptions()

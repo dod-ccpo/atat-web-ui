@@ -126,7 +126,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
 import { StepperStep } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
@@ -224,8 +224,7 @@ class ATATSideStepper extends Vue {
   
   private calculatePercentComplete() {
     this.percentComplete = 0;
-    //eslint-disable-next-line prefer-const 
-    for(let [key, value] of Steps.stepMap){
+    for(const [key, value] of Steps.stepMap){
       if(value.completed)
         this.percentComplete += value.completePercentageWeight as number;
     }

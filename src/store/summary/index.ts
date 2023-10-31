@@ -1512,7 +1512,6 @@ export class SummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   public async validateStepFive(): Promise<void> {
-    //eslint-disable-next-line prefer-const
     // validates dowObjects.otherOfferingData
     await this.validateAnticipatedUsersAndData();
     const dowObjects = await DescriptionOfWork.getDOWObject();
@@ -1759,7 +1758,6 @@ export class SummaryStore extends VuexModule {
         assessSecurityRequirements: boolean
       })
       : Promise<OtherServiceOfferingData> {
-    //eslint-disable-next-line prefer-const
     let requiredFields: Array<keyof OtherServiceOfferingData> = [];
     const isCompute = attribs.id === "COMPUTE";
     const isDatabase = attribs.id === "DATABASE";

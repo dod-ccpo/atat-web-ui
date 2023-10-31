@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative, Watch } from "vue-facing-decorator";
+import { Component, Vue, Watch } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";

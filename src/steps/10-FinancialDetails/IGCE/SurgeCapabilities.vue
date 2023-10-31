@@ -52,7 +52,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "../../../components/ATATAlert.vue";

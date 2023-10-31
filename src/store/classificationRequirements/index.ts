@@ -611,8 +611,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   @Action({rawError: true})
   public async updateCDSForNewClassificationLevels(classToBeDeleted: string):Promise<boolean>{
     try {
-      // eslint-disable-next-line prefer-const
-      let cdsSolution:CrossDomainSolutionDTO = this.cdsSolution as CrossDomainSolutionDTO
+      const cdsSolution:CrossDomainSolutionDTO = this.cdsSolution as CrossDomainSolutionDTO
       const classToBeRemoved = await this.getClassLevelRecord(classToBeDeleted)
       const currentDomainPairs = JSON.parse(
         cdsSolution.traffic_per_domain_pair)

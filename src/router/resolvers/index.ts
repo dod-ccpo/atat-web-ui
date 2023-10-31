@@ -1273,6 +1273,7 @@ export const DowSummaryPathResolver = (
     } else {
       return "/current-contract/current-contract"
     }
+    // TODO - check if this is needed when routing fixed
     return '/current-contract/summary-step-four'
   }
 

@@ -93,7 +93,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom';
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PackageItem from "@/steps/11-GeneratePackageDocuments/components/PackageItem.vue";

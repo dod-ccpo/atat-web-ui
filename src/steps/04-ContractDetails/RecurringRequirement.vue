@@ -57,7 +57,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATAlert from "@/components/ATATAlert.vue";
 import AcquisitionPackage, { isMRRToBeGenerated } from "@/store/acquisitionPackage";
@@ -174,8 +174,7 @@ class RecurringRequirement extends Vue {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        //eslint-disable-next-line prefer-const
-        let pops: PeriodOfPerformanceDTO  = {  
+        const pops: PeriodOfPerformanceDTO  = {  
           ...this.popDTO,
           is_requirement_follow_on_procurement_sole_sourced: 
             this.currentData.is_requirement_follow_on_procurement_sole_sourced || "",

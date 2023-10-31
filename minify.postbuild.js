@@ -34,8 +34,6 @@ fs.readdir(directoryPath, function (err, files) {
     return console.log('Unable to scan directory: ' + err);
   } 
 
-  console.log('minifying js files...');
   const filesToMinify = files.map(file=> `${distPath}${file}`);
   filesToMinify.forEach(file=>minify(file));
-  console.log('minifying complete');
 });
