@@ -24,7 +24,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Prop, Vue, Watch} from "vue-facing-decorator";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "types/Global";
