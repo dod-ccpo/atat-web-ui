@@ -280,7 +280,7 @@
 import { getIdText } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 import { SummaryItem } from "types/Global";
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -364,5 +364,5 @@ class ATATSummaryItem extends Vue {
   }
 
 }
-export default ATATSummaryItem;
+export default toNative(ATATSummaryItem)
 </script>

@@ -260,7 +260,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -819,5 +819,5 @@ class IncrementalFunding extends Vue {
   }
 }
 
-export default IncrementalFunding
+export default toNative(IncrementalFunding)
 </script>

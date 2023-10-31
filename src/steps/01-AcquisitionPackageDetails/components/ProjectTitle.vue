@@ -26,7 +26,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
  
-import { Component, Prop , Vue} from "vue-facing-decorator";
+import { Component, Prop , Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATTextField from "@/components/ATATTextField.vue";
 import { ValidationRule } from "types/Global";
@@ -45,5 +45,5 @@ class ProjectTitle extends Vue {
   @Prop({ default: true}) private isForm!: boolean;
   @PropSync("rules") private _rules!: ValidationRule;
 }
-export default ProjectTitle
+export default toNative(ProjectTitle)
 </script>

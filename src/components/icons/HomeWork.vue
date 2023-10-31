@@ -13,10 +13,10 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class HomeWork extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default HomeWork;
+export default toNative(HomeWork)
 </script>

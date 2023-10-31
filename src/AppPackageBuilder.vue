@@ -41,7 +41,7 @@
 </style> -->
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-facing-decorator'
+import { Vue, Component, Watch, toNative } from 'vue-facing-decorator'
 
 import ATATFooter from './components/ATATFooter.vue'
 import ATATPageHead from './components/ATATPageHead.vue'
@@ -80,7 +80,7 @@ import { ComponentPublicInstance } from 'vue'
     ATATToast
   }
 })
-export default class AppPackageBuilder extends Vue {
+class AppPackageBuilder extends Vue {
   $refs!: {
 		sideStepper: ComponentPublicInstance & {
 			setCurrentStep: (s: string) => void
@@ -326,4 +326,6 @@ export default class AppPackageBuilder extends Vue {
 	  }
 	}
 }
+
+export default toNative(AppPackageBuilder)
 </script>

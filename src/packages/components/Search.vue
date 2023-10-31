@@ -27,7 +27,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -58,7 +58,7 @@ class Search extends Vue {
   }
 }
 
-export default Search;
+export default toNative(Search)
 
 </script>
 

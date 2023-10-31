@@ -79,7 +79,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component , Vue} from "vue-facing-decorator";
+import { Component , Vue, toNative } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
@@ -300,5 +300,5 @@ class ContractingOfficeInfo extends Vue {
     return true;
   }
 }
-export default ContractingOfficeInfo
+export default toNative(ContractingOfficeInfo)
 </script>

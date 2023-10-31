@@ -246,7 +246,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import { Checkbox, DataTableHeader, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -488,5 +488,5 @@ class Travel extends Vue {
 
 }
 
-export default Travel
+export default toNative(Travel)
 </script>

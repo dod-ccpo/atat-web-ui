@@ -81,7 +81,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -211,5 +211,5 @@ class ArchitecturalDesign extends Vue {
   }
 
 }
-export default ArchitecturalDesign
+export default toNative(ArchitecturalDesign)
 </script>

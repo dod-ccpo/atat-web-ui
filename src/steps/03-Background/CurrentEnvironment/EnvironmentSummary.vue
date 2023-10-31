@@ -149,7 +149,7 @@
 </template>
 <script lang="ts">
 /*eslint vue/no-child-content: 1 */
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -484,6 +484,6 @@ class EnvironmentSummary extends Vue {
 
 }
 
-export default EnvironmentSummary
+export default toNative(EnvironmentSummary)
 </script>
 

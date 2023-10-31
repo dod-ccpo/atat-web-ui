@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
@@ -78,6 +78,6 @@ class CompletePackageCard extends Vue {
   }
 }
 
-export default CompletePackageCard
+export default toNative(CompletePackageCard)
 </script>
 

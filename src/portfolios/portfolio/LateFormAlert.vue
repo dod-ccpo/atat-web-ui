@@ -88,7 +88,7 @@
 
   </template>
 <script lang="ts">
-import { Component,  Vue } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { isBefore, parse } from 'date-fns';
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -106,5 +106,5 @@ class LateFormAlert extends Vue {
       return isBefore(new Date(), octoberFirst2023);
     }
   }
-export default LateFormAlert
+export default toNative(LateFormAlert)
 </script>

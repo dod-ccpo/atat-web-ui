@@ -6,11 +6,11 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 class Bullet extends Vue {
   @Prop({ default: "959A9D", required: false }) private color?: string;
 }
-export default Bullet;
+export default toNative(Bullet)
 </script>

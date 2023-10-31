@@ -158,7 +158,7 @@
 
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Vue, Component, Prop, Watch } from "vue-facing-decorator";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
@@ -291,5 +291,5 @@ class ATATContactForm extends Vue {
     await this.loadOnEnter();
   }
 }
-export default ATATContactForm;
+export default toNative(ATATContactForm)
 </script>

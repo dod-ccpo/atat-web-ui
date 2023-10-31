@@ -30,10 +30,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 
 class ICGELearnMore extends Vue {}
-export default ICGELearnMore
+export default toNative(ICGELearnMore)
 </script>

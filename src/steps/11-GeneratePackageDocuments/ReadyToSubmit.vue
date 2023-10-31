@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -113,6 +113,6 @@ class ReadyToSubmit extends Vue {
   }
 }
 
-export default ReadyToSubmit
+export default toNative(ReadyToSubmit)
 </script>
 

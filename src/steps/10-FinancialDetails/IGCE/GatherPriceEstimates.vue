@@ -72,7 +72,7 @@
 
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import {
   SlideoutPanelContent,
@@ -318,6 +318,6 @@ class GatherPriceEstimates extends Vue {
   }
 }
 
-export default GatherPriceEstimates
+export default toNative(GatherPriceEstimates)
 </script>
 

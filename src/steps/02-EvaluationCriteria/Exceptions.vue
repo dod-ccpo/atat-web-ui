@@ -83,7 +83,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import FairOppExceptions from "./components/FairOppExceptions.vue"
 
@@ -181,5 +181,5 @@ class Exceptions extends Vue {
   }
 }
 
-export default Exceptions
+export default toNative(Exceptions)
 </script>

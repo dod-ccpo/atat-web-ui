@@ -29,7 +29,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "../../../types/Global";
@@ -109,5 +109,5 @@ class CurrentlyHasFunding extends Vue {
   };
 };
 
-export default CurrentlyHasFunding
+export default toNative(CurrentlyHasFunding)
 </script>

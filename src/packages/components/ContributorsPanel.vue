@@ -183,7 +183,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATMeatballMenu from "@/components/ATATMeatballMenu.vue";
@@ -406,6 +406,6 @@ class ContributorsPanel extends Vue {
   }
 }
 
-export default ContributorsPanel;
+export default toNative(ContributorsPanel)
 
 </script>

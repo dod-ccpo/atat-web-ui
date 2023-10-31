@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { Component,  Vue } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import PortfolioRolesLearnMoreText from "./PortfolioRolesLearnMoreText.vue"
 @Component({
   components: {
@@ -15,5 +15,5 @@ import PortfolioRolesLearnMoreText from "./PortfolioRolesLearnMoreText.vue"
 })
 
 class PortfolioRolesLearnMore extends Vue {}
-export default PortfolioRolesLearnMore
+export default toNative(PortfolioRolesLearnMore)
 </script>

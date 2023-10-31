@@ -35,7 +35,7 @@
 
 <script lang="ts">
  
-import { Component, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom" // add PropSync import
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
@@ -92,6 +92,6 @@ class ComputeFormElements extends Vue {
     },
   ];
 }
-export default ComputeFormElements
+export default toNative(ComputeFormElements)
  
 </script>

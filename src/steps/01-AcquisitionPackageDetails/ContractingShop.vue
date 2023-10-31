@@ -70,7 +70,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component , Vue} from "vue-facing-decorator";
+import { Component , Vue, toNative} from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -208,5 +208,5 @@ class ContractingShop extends Vue {
     return true;
   }
 }
-export default ContractingShop 
+export default toNative(ContractingShop )
 </script>

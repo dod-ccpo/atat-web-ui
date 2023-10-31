@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 
@@ -83,5 +83,5 @@ class BAALearnMore extends Vue {
   private moreInfoHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html`;
   private title45Href= `https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-160/subpart-A/section-160.103`;
 }
-export default BAALearnMore
+export default toNative(BAALearnMore)
 </script>

@@ -180,7 +180,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATLoader from "@/components/ATATLoader.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
@@ -214,7 +214,7 @@ import AppSections from "@/store/appSections";
   }
 })
 
-export default class ExistingUser extends Vue {
+class ExistingUser extends Vue {
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public isLoadingPackages = true;
 
@@ -294,4 +294,5 @@ export default class ExistingUser extends Vue {
   }
 
 }
+export default toNative(ExistingUser)
 </script>

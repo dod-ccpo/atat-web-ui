@@ -117,7 +117,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -192,6 +192,6 @@ class ContributorInviteModal extends UserSearch {
 
 }
 
-export default ContributorInviteModal;
+export default toNative(ContributorInviteModal)
 
 </script>

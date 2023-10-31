@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { User } from "../../types/Global";
 import { getUserInitials } from "../helpers";
@@ -156,5 +156,5 @@ class ATATProfileCard extends Vue {
   }
 
 }
-export default ATATProfileCard;
+export default toNative(ATATProfileCard)
 </script>

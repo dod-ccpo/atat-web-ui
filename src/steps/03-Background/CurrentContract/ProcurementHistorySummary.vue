@@ -154,7 +154,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
 import { CurrentContractDTO } from "@/api/models";
@@ -307,5 +307,5 @@ class ProcurementHistorySummary extends Vue {
 
 }
 
-export default ProcurementHistorySummary
+export default toNative(ProcurementHistorySummary)
 </script>

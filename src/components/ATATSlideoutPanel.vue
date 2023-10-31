@@ -45,7 +45,7 @@
 </template>
 <script lang="ts">
 import AppSections from "@/store/appSections";
-import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 @Component({})
@@ -138,5 +138,5 @@ class ATATSlideoutPanel extends Vue {
     SlideoutPanel.closeSlideoutPanel();
   }
 }
-export default ATATSlideoutPanel;
+export default toNative(ATATSlideoutPanel)
 </script>

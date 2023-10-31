@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch,  Vue } from "vue-facing-decorator";
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import { AwardedTaskOrderDetails } from "types/Global";
 import { getCurrencyString } from "@/helpers";
 
@@ -206,5 +206,5 @@ class AwardedTaskOrder extends Vue {
   }
 
 }
-export default AwardedTaskOrder
+export default toNative(AwardedTaskOrder)
 </script>

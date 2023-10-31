@@ -34,7 +34,7 @@
 
 <script lang="ts">
  
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -65,5 +65,5 @@ class GoToQuestionnaire extends Vue {
     this.$emit("goToQuestionnaire");
   }
 }
-export default GoToQuestionnaire 
+export default toNative(GoToQuestionnaire )
 </script>

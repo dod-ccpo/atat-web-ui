@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-facing-decorator";
+import { Component, Vue, Watch, toNative } from "vue-facing-decorator";
 import Toast from "@/store/toast"
 
 @Component({})
@@ -74,5 +74,5 @@ class ATATToast extends Vue {
     return timeout * 1000;
   }
 }
-export default ATATToast;
+export default toNative(ATATToast)
 </script>
