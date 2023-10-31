@@ -76,7 +76,7 @@
               id="MoreMenuButton"
               class="_more-menu-button _header-button _icon-only"
             >
-              <v-icon class="text-base-dark">more_horiz</v-icon>
+              <v-icon class="text-base-dark">mdi-dots-horizontal</v-icon>
             </v-btn>
           </template>
           <v-list>
