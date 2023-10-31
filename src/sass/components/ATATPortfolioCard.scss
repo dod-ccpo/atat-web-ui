@@ -6,6 +6,8 @@
   border-bottom: none !important;
   border-radius: 0;
   font-size: 1.4rem;
+  overflow: unset !important;
+  z-index: auto; // 100;
 
   &._first {
     border-top-left-radius: 4px;
@@ -21,7 +23,7 @@
     white-space: normal; 
     text-align: center; 
     padding: 4px;
-   }
+  }
 
   ._is-paginated & {
     &._last {
