@@ -1,6 +1,9 @@
 <template>
   <div class="_dashboard">
-    <v-container class="container-max-width">
+    <v-container 
+    :fluid="true"
+    class="container-max-width"
+    >
       <FinancialDetailsAlert />
       <v-row v-if="showFundingAlert">
         <v-col>
@@ -41,7 +44,11 @@
                 </div>                  
               </div>
               <v-row>
-                <v-col class="col-sm-6 col-md-8">
+                <v-col
+                cols="8"
+                md="8"
+                sm="6" 
+               >
                   <v-card
                     id="PortfolioDetailsCard"
                     class="_no-shadow v-sheet--outlined height-100 pa-8 d-flex flex-column"
@@ -118,7 +125,11 @@
                     </v-row>
                   </v-card>
                 </v-col>
-                <v-col class="col-sm-6 col-md-4">
+                <v-col 
+                cols="4"
+                sm="6"
+                md="4"
+              >
                   <v-card
                     id="FundingStatusCard"
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
@@ -258,7 +269,7 @@
                           :hide-details="true"
                           :ripple="false"
                           class="color_chart_1"
-                          @change="doToggleDataset(0)"
+                          @update:model-value="doToggleDataset(0)"
                         ></v-checkbox>
 
                         <v-checkbox
@@ -269,7 +280,7 @@
                           :class="'color_chart_' + (index + 2)"
                           :hide-details="true"
                           :ripple="false"
-                          @change="doToggleDataset((index + 1) * 2)"
+                          @update:model-value="doToggleDataset((index + 1) * 2)"
                         />
                       </v-radio-group>
                     </div>

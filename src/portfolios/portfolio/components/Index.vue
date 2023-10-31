@@ -234,6 +234,7 @@ class PortfolioSummary extends Vue {
       this.isPortfolioProvisioning = true;
       this.title = provisioningData.portfolioTitle ?? "Untitled Portfolio"
     }
+    
   }
   public async mounted(): Promise<void>{
     await this.loadOnEnter();

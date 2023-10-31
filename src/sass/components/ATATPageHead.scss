@@ -1,11 +1,9 @@
 ._header-tab-styles {
-  .v-tabs-slider-wrapper{
+  .v-tab__slider{
     height: 4px !important;
     padding-left:4px;
     padding-right:4px;
-    .v-tabs-slider{
-      background-color: $primary !important;
-    }
+    background-color: $primary !important;
   }
   .v-tab{
     color: $base-dark !important;
@@ -60,7 +58,7 @@ header._atat-page-header {
       padding: 24px 56px !important;
     }
     ._header-tab {
-      .v-tabs-bar {
+      .v-tabs {
         height: 41px;
       }
     }
@@ -72,7 +70,7 @@ header._atat-page-header {
       height: 85px !important;
     }
     ._header-tab {
-      .v-tabs-bar {
+      .v-tabs {
         height: 33px;
       }
     }
@@ -201,7 +199,7 @@ header._atat-page-header {
   margin-bottom: 40px;
   border-bottom: 1px solid $base-lighter;
   background-color: $base-lightest;
-  .v-tabs-bar {
+  .v-tabs {
     background-color: transparent !important;
   }
 
@@ -214,12 +212,12 @@ header._atat-page-header {
   width: 100%;
 
   @extend ._header-tab-styles;
-  .v-tabs-bar {
+  .v-tabs {
     background-color: $base-lightest !important;
     border-bottom: 1px solid $base-lighter;
     padding-left: 56px;
     height: 45px;
-    .v-tabs-slider-wrapper {
+    .v-tab__slider {
       padding: 0 !important;
     }
     .v-tab {
