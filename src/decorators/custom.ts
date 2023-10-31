@@ -1,4 +1,5 @@
 import { createDecorator} from 'vue-facing-decorator';
+import { PropsConfig } from 'vue-facing-decorator/dist/option/props';
 
 /**
  * Decorator for creating a two-way binding on a prop (sync modifier).
@@ -6,8 +7,8 @@ import { createDecorator} from 'vue-facing-decorator';
  * @param propName - The name of the property to sync.
  * @param options - The options for the prop (type, default, validator, etc.).
  */
-export function PropSync(propName: string, options: any = {}) {
-  return createDecorator((componentOptions, k) => {
+export function PropSync(propName: string, options: PropsConfig = {}) {
+  return createDecorator((componentOptions, k: string) => {
     // Ensure props and computed options exist
     componentOptions.props ??= {};
     componentOptions.computed ??= {};
@@ -18,8 +19,9 @@ export function PropSync(propName: string, options: any = {}) {
       get() {
         return this[propName];
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       set(value: any) {
-        this.$emit(`update:${propName}`, value);
+        this.$emit(`${propName}`, value);
       },
     };
   });
