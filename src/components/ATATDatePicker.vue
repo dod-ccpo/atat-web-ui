@@ -360,5 +360,5 @@ class ATATDatePicker extends Vue {
   }
 
 }
-export default ATATDatePicker;
+export default toNative(ATATDatePicker)
 </script>

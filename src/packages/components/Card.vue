@@ -155,7 +155,7 @@ import PortfolioStore from "@/store/portfolio";
   }
 })
 
-export default class Card extends Vue {
+class Card extends Vue {
   @Prop() private cardData!: AcquisitionPackageSummaryDTO;
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
@@ -433,7 +433,7 @@ export default class Card extends Vue {
   }
 }
 
-//export default Card;
+export default toNative(Card)
 
 </script>
 

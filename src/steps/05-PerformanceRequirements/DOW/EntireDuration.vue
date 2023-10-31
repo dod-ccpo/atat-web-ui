@@ -111,6 +111,6 @@ class EntireDuration extends Vue {
   }
 
 }
-export default EntireDuration
+export default toNative(EntireDuration)
  
 </script>

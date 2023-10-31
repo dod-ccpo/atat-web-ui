@@ -56,6 +56,6 @@ class DOWSubtleAlert extends Vue {
   };
 
 }
-export default DOWSubtleAlert
+export default toNative(DOWSubtleAlert)
  
 </script>

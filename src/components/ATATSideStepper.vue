@@ -241,5 +241,5 @@ class ATATSideStepper extends Vue {
   private activeStep = "";
   private percentComplete = 0;
 }
-export default ATATSideStepper;
+export default toNative(ATATSideStepper)
 </script>

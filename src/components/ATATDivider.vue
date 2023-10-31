@@ -17,5 +17,5 @@ class ATATDivider extends Vue {
   @Prop() badgeText?: string;
   @Prop({ default: "base-lightest" }) badgeColor?: string;
 }
-export default ATATDivider;
+export default toNative(ATATDivider)
 </script>

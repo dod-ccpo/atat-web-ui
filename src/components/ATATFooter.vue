@@ -73,7 +73,7 @@ class ATATFooter extends Vue {
     await AcquisitionPackage.setEmulateProdNav(newVal);
   }
 }
-export default ATATFooter;
+export default toNative(ATATFooter)
 </script>
 
 <style scoped>

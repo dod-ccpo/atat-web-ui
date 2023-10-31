@@ -70,5 +70,5 @@ class ATATNoResults extends Vue {
     this.$emit("clear", this.hasBoth ? "both" : this.buttonText)
   }
 }
-export default ATATNoResults;
+export default toNative(ATATNoResults)
 </script>

@@ -80,6 +80,6 @@ class DeleteOfferingModal extends Vue{
 	  this.$emit('deleteOfferingCancelClicked')
 	}
 }
-export default DeleteOfferingModal 
+export default toNative(DeleteOfferingModal )
  
 </script>

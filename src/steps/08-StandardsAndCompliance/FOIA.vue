@@ -202,5 +202,5 @@ class FOIA extends Vue {
 
 }
 
-export default FOIA
+export default toNative(FOIA)
 </script>

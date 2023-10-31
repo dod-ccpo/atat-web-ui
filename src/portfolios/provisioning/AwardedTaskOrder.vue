@@ -206,5 +206,5 @@ class AwardedTaskOrder extends Vue {
   }
 
 }
-export default AwardedTaskOrder
+export default toNative(AwardedTaskOrder)
 </script>

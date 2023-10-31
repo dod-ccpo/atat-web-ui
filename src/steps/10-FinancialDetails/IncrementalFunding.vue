@@ -820,5 +820,5 @@ class IncrementalFunding extends Vue {
   }
 }
 
-export default IncrementalFunding
+export default toNative(IncrementalFunding)
 </script>

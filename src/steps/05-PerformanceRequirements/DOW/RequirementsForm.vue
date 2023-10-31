@@ -167,6 +167,6 @@ class RequirementsForm extends Vue{
   };
 
 }
-export default RequirementsForm
+export default toNative(RequirementsForm)
 </script>
 

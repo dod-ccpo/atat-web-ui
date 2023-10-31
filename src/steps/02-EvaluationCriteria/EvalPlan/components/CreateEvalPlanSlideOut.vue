@@ -169,6 +169,6 @@ class CreateEvalPlanSlideOut extends Vue{
   ];
 }
 
-export default CreateEvalPlanSlideOut
+export default toNative(CreateEvalPlanSlideOut)
 </script>
 

@@ -67,5 +67,5 @@ import ATATAlert from "@/components/ATATAlert.vue";
 class AccessingCSPLearnMore extends Vue {
 
 }
-export default AccessingCSPLearnMore
+export default toNative(AccessingCSPLearnMore)
 </script>

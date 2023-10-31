@@ -108,5 +108,5 @@ class FairOppExceptions extends Vue {
     await this.setReadOnly();
   }
 }
-export default FairOppExceptions
+export default toNative(FairOppExceptions)
 </script>

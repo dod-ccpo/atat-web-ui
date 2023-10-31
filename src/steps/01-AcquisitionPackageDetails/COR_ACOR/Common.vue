@@ -496,6 +496,6 @@ class CommonCorAcor extends Vue {
   }
 
 }
-export default CommonCorAcor
+export default toNative(CommonCorAcor)
 </script>
 

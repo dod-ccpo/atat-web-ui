@@ -253,6 +253,6 @@ class UploadMigrationDocuments extends Vue {
   }
 }
 
-export default UploadMigrationDocuments
+export default toNative(UploadMigrationDocuments)
 </script>
 

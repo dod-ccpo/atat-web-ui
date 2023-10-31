@@ -151,6 +151,6 @@ class XaasLearnMore extends Vue{
   ];
 
 }
-export default XaasLearnMore 
+export default toNative(XaasLearnMore )
  
 </script>

@@ -51,5 +51,5 @@ class PackageItem extends Vue {
 
 }
 
-export default PackageItem
+export default toNative(PackageItem)
 </script>

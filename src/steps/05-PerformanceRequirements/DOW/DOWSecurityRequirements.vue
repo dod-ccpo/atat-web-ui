@@ -198,7 +198,7 @@ class DOWSecurityRequirements extends Vue {
     await this.loadOnEnter();
   }
 }
-export default DOWSecurityRequirements
+export default toNative(DOWSecurityRequirements)
  
 </script>
 

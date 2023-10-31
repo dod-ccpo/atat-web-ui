@@ -15,6 +15,6 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class OtherCommonDocumentation extends Vue {
   @Prop({default: "61686c", required: true}) private color!:string;
 }
-export default OtherCommonDocumentation;
+export default toNative(OtherCommonDocumentation)
 </script>
 

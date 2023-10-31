@@ -178,5 +178,5 @@ class PackagingPackingAndShipping extends Vue {
 
 }
 
-export default PackagingPackingAndShipping
+export default toNative(PackagingPackingAndShipping)
 </script>

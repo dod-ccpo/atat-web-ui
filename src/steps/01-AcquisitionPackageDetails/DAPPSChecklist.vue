@@ -244,5 +244,5 @@ class DAPPSChecklist extends Vue {
   }
 }
 
-export default DAPPSChecklist
+export default toNative(DAPPSChecklist)
 </script>

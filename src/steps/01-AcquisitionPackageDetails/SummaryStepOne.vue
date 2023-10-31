@@ -77,5 +77,5 @@ class SummaryStepOne extends Vue {
   }
 
 }
-export default SummaryStepOne
+export default toNative(SummaryStepOne)
 </script>

@@ -13,6 +13,6 @@ import { Component, Vue} from "vue-facing-decorator";
 class JustificationAndApproval extends Vue {
 }
 
-export default JustificationAndApproval
+export default toNative(JustificationAndApproval)
 </script>
 

@@ -70,5 +70,5 @@ class ReadyToGeneratePackage extends Vue {
   }
 }
 
-export default ReadyToGeneratePackage
+export default toNative(ReadyToGeneratePackage)
 </script>

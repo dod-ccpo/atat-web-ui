@@ -17,5 +17,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ExclamationMark extends Vue {
   @Prop({default: "c60634", required: true}) private color!:string;
 }
-export default ExclamationMark
+export default toNative(ExclamationMark)
 </script>

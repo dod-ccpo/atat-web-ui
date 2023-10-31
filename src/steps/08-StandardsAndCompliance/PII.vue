@@ -178,5 +178,5 @@ class PII extends  Vue {
 
 }
 
-export default PII
+export default toNative(PII)
 </script>

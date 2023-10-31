@@ -54,5 +54,5 @@ class DoDAAC extends Vue {
     }
   }
 }
-export default DoDAAC
+export default toNative(DoDAAC)
 </script>

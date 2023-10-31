@@ -93,5 +93,5 @@ class CJADC2Initiative extends Vue {
   }
     
 }
-export default CJADC2Initiative
+export default toNative(CJADC2Initiative)
 </script>

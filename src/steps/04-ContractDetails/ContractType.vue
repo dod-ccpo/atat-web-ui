@@ -195,5 +195,5 @@ class ContractType extends Vue {
 
 }
 
-export default ContractType
+export default toNative(ContractType)
 </script>

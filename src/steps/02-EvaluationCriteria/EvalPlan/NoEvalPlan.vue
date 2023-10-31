@@ -55,5 +55,5 @@ class NoEvalPlan extends Vue {
   public routeNames = routeNames;
 }
 
-export default NoEvalPlan 
+export default toNative(NoEvalPlan )
 </script>

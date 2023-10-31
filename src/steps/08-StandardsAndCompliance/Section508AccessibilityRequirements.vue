@@ -126,5 +126,5 @@ class AccessibilityReq extends Vue {
   }
 }
 
-export default AccessibilityReq
+export default toNative(AccessibilityReq)
 </script>

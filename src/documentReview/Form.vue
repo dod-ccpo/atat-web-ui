@@ -189,6 +189,6 @@ class DocumentReviewForm extends Vue {
     }
   }
 }
-export default DocumentReviewForm;
+export default toNative(DocumentReviewForm)
 
 </script>

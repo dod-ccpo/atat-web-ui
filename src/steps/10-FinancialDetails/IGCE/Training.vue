@@ -457,5 +457,5 @@ class IGCETraining extends Vue {
   
 
 }
-export default IGCETraining
+export default toNative(IGCETraining)
 </script>

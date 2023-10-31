@@ -410,5 +410,5 @@ class PortfolioSummaryPageHead extends Vue {
     await this.loadOnEnter()
   }
 }
-export default PortfolioSummaryPageHead
+export default toNative(PortfolioSummaryPageHead)
 </script>

@@ -142,7 +142,7 @@ import CurrentUserStore from "@/store/user";
     ATATSVGIcon,
   },
 })
-export default class ATATTopNavBar extends Vue {
+class ATATTopNavBar extends Vue {
 
   public currentUser: UserDTO = {}
 
@@ -365,4 +365,5 @@ export default class ATATTopNavBar extends Vue {
     await this.loadOnEnter();
   }
 }
+export default toNative(ATATTopNavBar)
 </script>

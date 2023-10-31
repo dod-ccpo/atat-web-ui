@@ -197,6 +197,6 @@ class ContributorInviteModal extends UserSearch {
 
 }
 
-export default ContributorInviteModal;
+export default toNative(ContributorInviteModal)
 
 </script>

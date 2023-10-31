@@ -82,5 +82,5 @@ class FundingRequestLearnMore extends Vue {
     `https://www.acquisition.gov/dfarspgi/pgi-253.208-required-sources-supplies-and-services.`
 }
 
-export default FundingRequestLearnMore
+export default toNative(FundingRequestLearnMore)
 </script>

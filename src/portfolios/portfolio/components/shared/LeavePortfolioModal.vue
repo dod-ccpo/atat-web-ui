@@ -50,5 +50,5 @@ class LeavePortfolioModal extends Vue {
   }
 
 }
-export default LeavePortfolioModal
+export default toNative(LeavePortfolioModal)
 </script>

@@ -98,5 +98,5 @@ class ImpactOfRequirement extends Vue {
   }
 }
  
-export default ImpactOfRequirement
+export default toNative(ImpactOfRequirement)
 </script>

@@ -152,5 +152,5 @@ class CertificationPOCs extends Vue {
     await this.loadOnEnter()
   }
 }
-export default CertificationPOCs
+export default toNative(CertificationPOCs)
 </script>

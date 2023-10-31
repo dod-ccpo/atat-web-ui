@@ -149,5 +149,5 @@ class CreateFirstPortfolio extends Vue {
     );
   }
 }
-export default CreateFirstPortfolio
+export default toNative(CreateFirstPortfolio)
 </script>

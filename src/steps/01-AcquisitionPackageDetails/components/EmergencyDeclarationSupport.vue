@@ -48,5 +48,5 @@ class EmergencyDeclarationSupport extends Vue {
     },
   ];
 }
-export default EmergencyDeclarationSupport
+export default toNative(EmergencyDeclarationSupport)
 </script>

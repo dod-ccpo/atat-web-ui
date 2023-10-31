@@ -329,5 +329,5 @@ class MarketResearchReview extends Vue {
 
 }
  
-export default MarketResearchReview
+export default toNative(MarketResearchReview)
 </script>

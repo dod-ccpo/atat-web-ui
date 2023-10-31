@@ -83,5 +83,5 @@ class TaskOrderLookup extends Vue {
       : "New Acquisition";
   }
 }
-export default TaskOrderLookup;
+export default toNative(TaskOrderLookup)
 </script>

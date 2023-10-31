@@ -163,6 +163,6 @@ class Callout extends Vue {
   }
 }
 
-export default Callout
+export default toNative(Callout)
 </script>
 

@@ -173,5 +173,5 @@ class AnticipatedDurationandUsage extends Vue {
   }
 
 }
-export default AnticipatedDurationandUsage
+export default toNative(AnticipatedDurationandUsage)
 </script>

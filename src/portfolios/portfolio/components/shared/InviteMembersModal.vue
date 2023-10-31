@@ -217,5 +217,5 @@ class InviteMembersModal extends UserSearch {
     this.modalDrawerIsOpen = true;
   }
 }
-export default InviteMembersModal
+export default toNative(InviteMembersModal)
 </script>

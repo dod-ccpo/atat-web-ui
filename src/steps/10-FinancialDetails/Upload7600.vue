@@ -345,5 +345,5 @@ class Upload7600 extends Vue {
   }
 }
 
-export default Upload7600
+export default toNative(Upload7600)
 </script>

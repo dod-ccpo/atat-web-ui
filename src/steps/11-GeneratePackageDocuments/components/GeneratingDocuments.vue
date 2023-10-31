@@ -34,5 +34,5 @@ class GeneratingDocuments extends Vue {
 
 }
 
-export default GeneratingDocuments
+export default toNative(GeneratingDocuments)
 </script>

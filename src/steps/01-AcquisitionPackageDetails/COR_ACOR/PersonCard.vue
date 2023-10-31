@@ -166,5 +166,5 @@ class PersonCard extends Vue {
 
 
 }
-export default PersonCard
+export default toNative(PersonCard)
 </script>

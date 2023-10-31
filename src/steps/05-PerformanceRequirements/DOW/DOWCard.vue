@@ -134,6 +134,6 @@ class DOWCard extends Vue
   };
 
 }
-export default DOWCard 
+export default toNative(DOWCard )
  
 </script>

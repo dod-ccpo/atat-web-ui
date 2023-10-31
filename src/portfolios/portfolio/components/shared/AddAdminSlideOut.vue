@@ -57,6 +57,6 @@ import ATATAlert from "@/components/ATATAlert.vue";
 class AddAdminSlideOut extends Vue {
 
 }
-export default AddAdminSlideOut
+export default toNative(AddAdminSlideOut)
 </script>
 

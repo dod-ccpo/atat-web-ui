@@ -132,5 +132,5 @@ class OtherSupportingFactors extends Vue {
   }
 }
 
-export default OtherSupportingFactors
+export default toNative(OtherSupportingFactors)
 </script>

@@ -168,5 +168,5 @@ class AppropriationOfFunds extends Vue {
 
 }
 
-export default AppropriationOfFunds
+export default toNative(AppropriationOfFunds)
 </script>

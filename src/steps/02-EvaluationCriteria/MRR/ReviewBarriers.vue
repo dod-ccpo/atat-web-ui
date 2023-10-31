@@ -301,5 +301,5 @@ class ReviewBarriers extends Vue{
   }
 }
 
-export default ReviewBarriers 
+export default toNative(ReviewBarriers )
 </script>

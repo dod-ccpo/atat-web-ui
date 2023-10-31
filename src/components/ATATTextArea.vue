@@ -166,5 +166,5 @@ class ATATTextArea extends Vue {
     }
   }
 }
-export default ATATTextArea
+export default toNative(ATATTextArea)
 </script>

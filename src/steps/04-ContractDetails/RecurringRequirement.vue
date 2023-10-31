@@ -190,5 +190,5 @@ class RecurringRequirement extends Vue {
   }
 }
 
-export default RecurringRequirement
+export default toNative(RecurringRequirement)
 </script>

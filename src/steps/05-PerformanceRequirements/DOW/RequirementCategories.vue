@@ -358,5 +358,5 @@ class RequirementCategories extends Vue{
   };
 
 };
-export default RequirementCategories 
+export default toNative(RequirementCategories )
 </script>

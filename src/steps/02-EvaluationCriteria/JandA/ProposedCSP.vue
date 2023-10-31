@@ -183,5 +183,5 @@ class ProposedCSP extends Vue {
 
 }
  
-export default ProposedCSP 
+export default toNative(ProposedCSP )
 </script>

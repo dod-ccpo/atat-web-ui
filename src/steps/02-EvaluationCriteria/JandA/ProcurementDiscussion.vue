@@ -159,5 +159,5 @@ class ProcurementDiscussion extends Vue {
   }
 }
 
-export default ProcurementDiscussion 
+export default toNative(ProcurementDiscussion )
 </script>

@@ -64,5 +64,5 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 })
 
 class SampleLearnMore extends Vue {}
-export default SampleLearnMore;
+export default toNative(SampleLearnMore)
 </script>

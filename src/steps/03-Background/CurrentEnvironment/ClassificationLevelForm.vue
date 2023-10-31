@@ -297,5 +297,5 @@ class ClassificationLevelForm extends Vue {
   */
 }
 
-export default ClassificationLevelForm
+export default toNative(ClassificationLevelForm)
 </script>

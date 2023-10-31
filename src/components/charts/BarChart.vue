@@ -46,6 +46,6 @@ class BarChart extends Vue {
   }
 
 }
-export default BarChart
+export default toNative(BarChart)
 
 </script>

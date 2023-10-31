@@ -70,7 +70,7 @@ import _ from "lodash";
     Preview
   },
 })
-export default class DocumentReview extends mixins(SaveOnLeave){
+class DocumentReview extends mixins(SaveOnLeave){
   
   private docTitle = "Requirements Checklist";
   private displayView = "";
@@ -207,4 +207,5 @@ export default class DocumentReview extends mixins(SaveOnLeave){
     return true;
   }
 }
+export default toNative(DocumentReview)
 </script>

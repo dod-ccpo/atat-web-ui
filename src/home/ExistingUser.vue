@@ -214,7 +214,7 @@ import AppSections from "@/store/appSections";
   }
 })
 
-export default class ExistingUser extends Vue {
+class ExistingUser extends Vue {
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public isLoadingPackages = true;
 
@@ -294,4 +294,5 @@ export default class ExistingUser extends Vue {
   }
 
 }
+export default toNative(ExistingUser)
 </script>

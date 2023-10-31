@@ -406,5 +406,5 @@ class GTCInformation extends Vue {
   }
 }
 
-export default GTCInformation
+export default toNative(GTCInformation)
 </script>

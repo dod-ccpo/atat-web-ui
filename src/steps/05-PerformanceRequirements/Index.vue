@@ -9,6 +9,6 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({
 })
 class PerformanceRequirementsIndex extends Vue{}
-export default PerformanceRequirementsIndex;
+export default toNative(PerformanceRequirementsIndex)
 </script>
 

@@ -66,5 +66,5 @@ class SummaryStepFour extends Vue {
   }
 }
 
-export default SummaryStepFour
+export default toNative(SummaryStepFour)
 </script>

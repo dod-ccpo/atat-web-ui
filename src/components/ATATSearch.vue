@@ -206,7 +206,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     // ATATErrorValidation,
   },
 })
-export default class ATATSearch extends Vue {
+class ATATSearch extends Vue {
   $refs!: {
     atatSearchInput: ComponentPublicInstance & {
       errorBucket: string[];
@@ -473,4 +473,5 @@ export default class ATATSearch extends Vue {
     this.setMask();
   }
 }
+export default toNative(ATATSearch)
 </script>

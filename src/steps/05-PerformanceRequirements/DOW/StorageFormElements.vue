@@ -97,5 +97,5 @@ class StorageFormElements extends Vue {
 
 
 }
-export default StorageFormElements
+export default toNative(StorageFormElements)
 </script>

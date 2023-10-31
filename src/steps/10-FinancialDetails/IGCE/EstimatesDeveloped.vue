@@ -258,5 +258,5 @@ class EstimatesDeveloped extends Vue {
 
 }
 
-export default EstimatesDeveloped
+export default toNative(EstimatesDeveloped)
 </script>

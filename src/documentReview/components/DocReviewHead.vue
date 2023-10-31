@@ -42,5 +42,5 @@ class DocReviewHead extends Vue {
     },
   ];
 }
-export default DocReviewHead;
+export default toNative(DocReviewHead)
 </script>

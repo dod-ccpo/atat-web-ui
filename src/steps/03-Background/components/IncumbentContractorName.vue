@@ -36,5 +36,5 @@ class IncumbentContractorName extends Vue {
   @PropSync("rules") private _rules!: "";
 }
 
-export default IncumbentContractorName
+export default toNative(IncumbentContractorName)
 </script>

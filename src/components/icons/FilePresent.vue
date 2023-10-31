@@ -17,5 +17,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class FilePresent extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default FilePresent;
+export default toNative(FilePresent)
 </script>

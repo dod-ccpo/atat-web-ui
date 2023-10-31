@@ -341,6 +341,6 @@ class TravelEstimates extends Vue {
   }
 }
 
-export default TravelEstimates
+export default toNative(TravelEstimates)
 </script>
 

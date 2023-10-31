@@ -211,5 +211,5 @@ class ArchitecturalDesign extends Vue {
   }
 
 }
-export default ArchitecturalDesign
+export default toNative(ArchitecturalDesign)
 </script>

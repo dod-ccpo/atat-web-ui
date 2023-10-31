@@ -204,5 +204,5 @@ class WhoConductedResearch extends Vue {
   }
 }
 
-export default WhoConductedResearch
+export default toNative(WhoConductedResearch)
 </script>

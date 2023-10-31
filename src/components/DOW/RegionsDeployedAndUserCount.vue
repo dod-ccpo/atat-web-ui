@@ -121,6 +121,6 @@ class RegionsDeployedAndUserCount extends Vue {
   }
 }
 
-export default RegionsDeployedAndUserCount;
+export default toNative(RegionsDeployedAndUserCount)
 </script>
 

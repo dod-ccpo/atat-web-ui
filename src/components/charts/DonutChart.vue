@@ -198,5 +198,5 @@ class DonutChart extends Vue {
     return tooltipEl;
   };
 }
-export default DonutChart
+export default toNative(DonutChart)
 </script>

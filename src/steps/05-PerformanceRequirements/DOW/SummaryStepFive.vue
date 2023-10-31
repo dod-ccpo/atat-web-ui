@@ -459,5 +459,5 @@ class SummaryStepFive extends Vue{
   }
 
 };
-export default SummaryStepFive 
+export default toNative(SummaryStepFive )
 </script>

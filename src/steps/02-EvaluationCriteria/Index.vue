@@ -11,6 +11,6 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 class FairOpportunityProcess extends Vue {
 }
 
-export default FairOpportunityProcess
+export default toNative(FairOpportunityProcess)
 </script>
 

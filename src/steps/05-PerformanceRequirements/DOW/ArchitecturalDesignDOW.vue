@@ -80,5 +80,5 @@ class ArchitectureDesignDOW extends Vue {
   }  
 
 }
-export default ArchitectureDesignDOW
+export default toNative(ArchitectureDesignDOW)
 </script>

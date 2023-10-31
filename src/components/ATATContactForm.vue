@@ -292,5 +292,5 @@ class ATATContactForm extends Vue {
     await this.loadOnEnter();
   }
 }
-export default ATATContactForm;
+export default toNative(ATATContactForm)
 </script>

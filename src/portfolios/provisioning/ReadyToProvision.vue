@@ -216,5 +216,5 @@ class ReadyToProvision extends Vue {
   }
 
 }
-export default ReadyToProvision
+export default toNative(ReadyToProvision)
 </script>

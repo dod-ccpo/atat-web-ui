@@ -200,5 +200,5 @@ class ATATSelect extends Vue {
   }
 
 }
-export default ATATSelect;
+export default toNative(ATATSelect)
 </script>

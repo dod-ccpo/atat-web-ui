@@ -92,6 +92,6 @@ class ComputeFormElements extends Vue {
     },
   ];
 }
-export default ComputeFormElements
+export default toNative(ComputeFormElements)
  
 </script>

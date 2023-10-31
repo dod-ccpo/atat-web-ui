@@ -173,7 +173,7 @@ import ATATDivider from "@/components/ATATDivider.vue";
     ATATDivider,
   }
 })
-export default class NewUser extends Vue {
+class NewUser extends Vue {
 
   public startNewAcquisition(): void {
     this.$emit("startNewAcquisition");
@@ -212,4 +212,5 @@ export default class NewUser extends Vue {
   }
 
 }
+export default toNative(NewUser)
 </script>  

@@ -149,5 +149,5 @@ class ATATAlert extends Vue {
     this.show = false;
   }
 }
-export default ATATAlert
+export default toNative(ATATAlert)
 </script>

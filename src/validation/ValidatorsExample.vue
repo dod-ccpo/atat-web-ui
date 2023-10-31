@@ -118,7 +118,7 @@ import { ComponentInternalInstance } from "vue";
   },
 })
 
-export default class ValidatatorsExample extends Vue {
+class ValidatatorsExample extends Vue {
   private minValue = "a";
   private minValueCustom = "a";
   private maxValue = "12345678910";
@@ -180,4 +180,5 @@ export default class ValidatatorsExample extends Vue {
   }
 
 }
+export default toNative(ValidatatorsExample)
 </script>

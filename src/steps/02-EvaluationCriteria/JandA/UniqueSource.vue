@@ -257,5 +257,5 @@ class UniqueSource extends Vue {
   }
 }
  
-export default UniqueSource 
+export default toNative(UniqueSource )
 </script>

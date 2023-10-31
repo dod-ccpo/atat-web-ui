@@ -170,5 +170,5 @@ class ATATAutoComplete extends Vue {
     this.isReset = false;
   }
 }
-export default ATATAutoComplete;
+export default toNative(ATATAutoComplete)
 </script>

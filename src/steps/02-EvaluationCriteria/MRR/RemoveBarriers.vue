@@ -300,5 +300,5 @@ class RemoveBarriers extends Vue
   }
 }
 
-export default RemoveBarriers 
+export default toNative(RemoveBarriers )
 </script>

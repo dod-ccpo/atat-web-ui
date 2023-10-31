@@ -45,7 +45,7 @@ import { PropSync } from "@/decorators/custom";
     //TaskOrderSearch,
   },
 })
-export default class TaskOrderSearchModal extends Vue {
+class TaskOrderSearchModal extends Vue {
 
   @PropSync("showTOSearchModal") public _showTOSearchModal!: boolean;
   @PropSync("TONumber") public _TONumber?: string;
@@ -81,4 +81,5 @@ export default class TaskOrderSearchModal extends Vue {
     }
   }
 }
+export default toNative(TaskOrderSearchModal)
 </script>

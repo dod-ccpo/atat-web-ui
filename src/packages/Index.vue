@@ -145,7 +145,7 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
   }
 })
 
-export default class Packages extends Vue {
+class Packages extends Vue {
   public page = 1;
   public recordsPerPage = 10;
   public numberOfPages = 0;
@@ -382,5 +382,6 @@ export default class Packages extends Vue {
   }
 
 }
+export default toNative(Packages)
 </script>
 

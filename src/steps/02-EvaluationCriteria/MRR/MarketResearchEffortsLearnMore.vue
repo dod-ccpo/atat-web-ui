@@ -45,5 +45,5 @@ import ATATAlert from "@/components/ATATAlert.vue";
 class MarketResearchEffortsLearnMore extends Vue {
 }
 
-export default MarketResearchEffortsLearnMore 
+export default toNative(MarketResearchEffortsLearnMore )
 </script>

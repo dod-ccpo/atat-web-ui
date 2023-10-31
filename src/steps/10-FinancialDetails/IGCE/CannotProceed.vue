@@ -76,6 +76,6 @@ class CannotProceed extends Vue {
   }
 }
 
-export default CannotProceed
+export default toNative(CannotProceed)
 </script>
 

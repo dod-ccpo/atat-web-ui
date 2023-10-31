@@ -202,5 +202,5 @@ class ContractingShop extends Vue {
     return true;
   }
 }
-export default ContractingShop 
+export default toNative(ContractingShop )
 </script>
