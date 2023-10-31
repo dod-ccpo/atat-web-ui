@@ -19,8 +19,8 @@
         </p>
         <v-btn
         v-if="portfolioIsActive"
-        outlined 
-        class="ml-10 secondary" 
+        variant="outlined" 
+        class="ml-10 bg-secondary text-primary" 
         @click="openSearchTOModal"
         > 
         Add follow-on task order 
@@ -127,7 +127,7 @@ class TaskOrder extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
-    this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.label;
+    this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.value;
     if(PortfolioStore.portfolioIsUpdating){
       const taskOrderUpdatedToast: ToastObj = {
         type: "success",

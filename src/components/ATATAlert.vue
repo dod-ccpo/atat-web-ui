@@ -20,15 +20,15 @@
         v-if="type !== 'callout' && showIcon"
         class="pr-4"
       >
-        <i
+        <v-icon
           aria-hidden="true"
           :class="[
             getIconSize(),
-            'v-icon notranslate material-icons theme--light',
+            'text-error',
           ]"
         >
           {{ getIcon() }}
-        </i>
+        </v-icon>
       </div>
       <div class="width-100">
         <slot name="content"></slot>
@@ -55,7 +55,7 @@
         <v-btn
           icon
           :ripple="false"
-          x-small
+          size="x-small"
           aria-label="Close alert"
           @click="close"
         >
