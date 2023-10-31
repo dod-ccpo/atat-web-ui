@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-facing-decorator";
+import { Component, Vue, Watch, toNative } from "vue-facing-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
@@ -238,5 +238,5 @@ class Home extends Vue {
   };
 
 }
-export default Home;
+export default toNative(Home)
 </script>

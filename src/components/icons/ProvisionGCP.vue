@@ -47,10 +47,10 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class ProvisionGCP extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default ProvisionGCP;
+export default toNative(ProvisionGCP)
 </script>

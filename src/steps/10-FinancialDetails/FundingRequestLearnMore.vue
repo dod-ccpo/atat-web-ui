@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
@@ -82,5 +82,5 @@ class FundingRequestLearnMore extends Vue {
     `https://www.acquisition.gov/dfarspgi/pgi-253.208-required-sources-supplies-and-services.`
 }
 
-export default FundingRequestLearnMore
+export default toNative(FundingRequestLearnMore)
 </script>

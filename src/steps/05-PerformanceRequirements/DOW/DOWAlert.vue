@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import ATATAlert from "@/components/ATATAlert.vue";
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
  
 import { routeNames } from "../../../router/stepper"
@@ -104,6 +104,6 @@ class DOWAlert extends Vue{
       : "";
   };
 };
-export default DOWAlert 
+export default toNative(DOWAlert )
 </script>
 

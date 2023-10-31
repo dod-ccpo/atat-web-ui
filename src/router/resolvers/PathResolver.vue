@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
 
 // route resolver invoker
@@ -39,5 +39,5 @@ class RouteResolver extends Vue {
     });
   }
 }
-export default RouteResolver;
+export default toNative(RouteResolver)
 </script>

@@ -43,7 +43,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import {RadioButton, SingleMultiple} from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -143,5 +143,5 @@ class OptimizeOrReplicate extends Vue {
 
 }
 
-export default OptimizeOrReplicate
+export default toNative(OptimizeOrReplicate)
 </script>

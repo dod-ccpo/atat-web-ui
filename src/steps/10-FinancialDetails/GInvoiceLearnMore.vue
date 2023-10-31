@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 
@@ -86,5 +86,5 @@ class GInvoiceLearnMore extends Vue {
     "https://www.igt.fiscal.treasury.gov";
 }
 
-export default GInvoiceLearnMore
+export default toNative(GInvoiceLearnMore)
 </script>

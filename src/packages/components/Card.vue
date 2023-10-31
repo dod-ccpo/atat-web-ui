@@ -125,7 +125,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { MeatballMenuItem, ToastObj } from "../../../types/Global";
 import { createDateStr, getStatusChipBgColor } from "@/helpers";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -156,7 +156,7 @@ import PortfolioStore from "@/store/portfolio";
   }
 })
 
-export default class Card extends Vue {
+class Card extends Vue {
   @Prop() private cardData!: AcquisitionPackageSummaryDTO;
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
@@ -434,7 +434,7 @@ export default class Card extends Vue {
   }
 }
 
-//export default Card;
+export default toNative(Card)
 
 </script>
 

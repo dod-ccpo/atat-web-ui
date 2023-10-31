@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
@@ -32,5 +32,5 @@ class DescriptionOfNeed extends Vue {
   @Prop({ default: "requirement" }) public requirementOrInstance?: string;
   @Prop({ default: "" }) public description?: string;
 }
-export default DescriptionOfNeed
+export default toNative(DescriptionOfNeed)
 </script>

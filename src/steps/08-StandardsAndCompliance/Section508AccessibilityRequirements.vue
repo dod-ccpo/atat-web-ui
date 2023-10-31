@@ -68,7 +68,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -126,5 +126,5 @@ class AccessibilityReq extends Vue {
   }
 }
 
-export default AccessibilityReq
+export default toNative(AccessibilityReq)
 </script>

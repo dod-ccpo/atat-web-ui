@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Component,  Vue } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
@@ -109,5 +109,5 @@ class Provisioned extends Vue {
   }
 
 }
-export default Provisioned
+export default toNative(Provisioned)
 </script>

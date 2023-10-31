@@ -2,10 +2,10 @@
   <router-view/>
 </template>
 <script lang="ts">;
-import { Vue } from "vue-facing-decorator";
+import { Vue, toNative, Component } from "vue-facing-decorator";
 
-
+@Component
 class ProvisioningIndex extends Vue {
 }
-export default ProvisioningIndex
+export default toNative(ProvisioningIndex)
 </script>

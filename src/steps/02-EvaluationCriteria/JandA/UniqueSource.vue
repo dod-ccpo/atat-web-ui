@@ -122,7 +122,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {getCSPCompanyName, hasChanges} from "@/helpers";
@@ -257,5 +257,5 @@ class UniqueSource extends Vue {
   }
 }
  
-export default UniqueSource 
+export default toNative(UniqueSource )
 </script>

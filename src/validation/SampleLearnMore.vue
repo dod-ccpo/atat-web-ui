@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 
 @Component({
@@ -64,5 +64,5 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 })
 
 class SampleLearnMore extends Vue {}
-export default SampleLearnMore;
+export default toNative(SampleLearnMore)
 </script>

@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-facing-decorator";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 
 @Component({})
@@ -72,5 +72,5 @@ class ExpandableLink extends Vue {
   }
 
 }
-export default ExpandableLink;
+export default toNative(ExpandableLink)
 </script>

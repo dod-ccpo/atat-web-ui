@@ -173,7 +173,7 @@
 </template>
 <script lang="ts">
 import { routeNames } from "../../../router/stepper"
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import _ from "lodash";
 import classificationRequirements 
   from "@/store/classificationRequirements";
@@ -459,5 +459,5 @@ class SummaryStepFive extends Vue{
   }
 
 };
-export default SummaryStepFive 
+export default toNative(SummaryStepFive )
 </script>

@@ -78,11 +78,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 
 @Component({})
-export default class ATATAlert extends Vue {
+class ATATAlert extends Vue {
   @Prop({default: "presentation"}) private role?: string;
   @Prop({default: true}) private show?: boolean;
   @Prop({default: "Alert"}) private id?: string;
@@ -149,4 +149,5 @@ export default class ATATAlert extends Vue {
     this.show = false;
   }
 }
+export default toNative(ATATAlert)
 </script>

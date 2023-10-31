@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import CustomSpecifications from "./components/CustomSpecifications.vue"
@@ -166,5 +166,5 @@ class Differentiators extends Vue {
 
 }
 
-export default Differentiators 
+export default toNative(Differentiators )
 </script>

@@ -158,7 +158,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch , Vue} from "vue-facing-decorator";
+import { Component, Watch , Vue, toNative } from "vue-facing-decorator";
 import {convertSystemChoiceToSelect} from "@/helpers";
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
@@ -522,5 +522,5 @@ class ContactInfo extends Vue {
     await this.loadOnEnter();
   }
 }
-export default ContactInfo
+export default toNative(ContactInfo)
 </script>

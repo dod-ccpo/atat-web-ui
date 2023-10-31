@@ -38,7 +38,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
@@ -98,5 +98,5 @@ class ImpactOfRequirement extends Vue {
   }
 }
  
-export default ImpactOfRequirement
+export default toNative(ImpactOfRequirement)
 </script>

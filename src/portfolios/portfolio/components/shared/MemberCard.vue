@@ -31,7 +31,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { User } from "../../../../../types/Global";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -55,5 +55,5 @@ class MemberCard extends Vue {
   }
 
 }
-export default MemberCard
+export default toNative(MemberCard)
 </script>

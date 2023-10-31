@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch,  Vue } from "vue-facing-decorator";
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import Card from "@/packages/components/Card.vue";
 import { AcquisitionPackageSummarySearchDTO, UserDTO } from "@/api/models";
@@ -176,5 +176,5 @@ class GeneratedFromPackage extends Vue {
   }
 
 }
-export default GeneratedFromPackage
+export default toNative(GeneratedFromPackage)
 </script>

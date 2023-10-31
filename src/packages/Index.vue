@@ -109,7 +109,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import { getIdText, scrollToMainTop } from "@/helpers";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
@@ -145,7 +145,7 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
   }
 })
 
-export default class Packages extends Vue {
+class Packages extends Vue {
   public page = 1;
   public recordsPerPage = 10;
   public numberOfPages = 0;
@@ -382,5 +382,6 @@ export default class Packages extends Vue {
   }
 
 }
+export default toNative(Packages)
 </script>
 

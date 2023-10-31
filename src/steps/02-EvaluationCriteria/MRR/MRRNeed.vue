@@ -53,7 +53,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import {RadioButton} from "../../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -182,5 +182,5 @@ class MRRNeed extends Vue {
   }
 }
 
-export default MRRNeed 
+export default toNative(MRRNeed )
 </script>
