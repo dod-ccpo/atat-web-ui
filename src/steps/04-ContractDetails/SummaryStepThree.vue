@@ -22,36 +22,28 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue } from "vue-facing-decorator";
 import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
-import Summary, { 
+import Summary, {
   getSummaryItemsforStep,
   isStepComplete, 
-  isStepValidatedAndTouched 
+  isStepValidatedAndTouched
 } from "@/store/summary";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
-  // mixins: [SaveOnLeave],
-  // components: {
-  //   ATATSummaryItems
-  // },
+  mixins: [SaveOnLeave],
+  components: {
+    ATATSummaryItems
+  },
 })
 export default class SummaryStepThree extends Vue {
   public summaryItems: SummaryItem[] = [];
   public introParagraph = "";
-  public tonysBoolean = false;
 
-  // public tony():boolean{
-  //   this.tonysBoolean = true;
-  //   return this.tonysBoolean;
-  // }
-  
-  public setIntroParagraph():void {
-    // console.log(3)
-    const _isStepComplete = (isStepComplete(3));
-    this.introParagraph = 1+1===2
+  private setIntroParagraph():void {
+    this.introParagraph = isStepComplete(3)
       ? "You are all done with this section, but you can come back at any time to edit "
         + "details. When you are ready, we will move on to gather background information."
       : "We need some more details for this section. You can add info now, or come back to "
@@ -59,19 +51,19 @@ export default class SummaryStepThree extends Vue {
         + "on to gather background information."
   }
 
-  // public async mounted():Promise<void> {
-  //   this.setIntroParagraph()
-  //   Summary.setHasCurrentStepBeenVisited(
-  //     await isStepValidatedAndTouched(3)
-  //   )
-  //   this.summaryItems = await getSummaryItemsforStep(3);
-  //   await Summary.toggleButtonColor(3);
-  // }
+  public async mounted():Promise<void> {
+    this.setIntroParagraph()
+    Summary.setHasCurrentStepBeenVisited(
+      await isStepValidatedAndTouched(3)
+    )
+    this.summaryItems = await getSummaryItemsforStep(3);
+    await Summary.toggleButtonColor(3);
+  }
 
-  // protected async saveOnLeave(): Promise<boolean> {
-  //   await Summary.toggleButtonColor(-1);
-  //   return true;
-  // }
+  protected async saveOnLeave(): Promise<boolean> {
+    await Summary.toggleButtonColor(-1);
+    return true;
+  }
 }
 
 </script>

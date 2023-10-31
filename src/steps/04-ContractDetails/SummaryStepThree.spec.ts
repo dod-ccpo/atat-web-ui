@@ -1,56 +1,49 @@
-import { createApp } from 'vue';
-import { VueWrapper, mount} from "@vue/test-utils";
-import SummaryStepThree from "./SummaryStepThree.vue"
-import Summary,  {isStepComplete} from "../../store/summary";
-import vuetify from '@/plugins/vuetify';
-import { describe, expect, test, vi, Mock } from "vitest";
-vi.mock("../../store/summary")
+import { describe, it, expect, vi } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils';
+import SummaryStepThree from "./SummaryStepThree.vue";
+import * as Summary from "@/store/summary";
 
-describe("Testing SummaryStepThree Component", () => {
-  const summaryStepThree = createApp(SummaryStepThree);
-  const wrapper = mount(summaryStepThree, {
-    // global: {
-    //   plugins: [vuetify]
-    // },
+
+describe('SummaryStepThree', () => {
+  vi.mock("@/store/summary", async () => {
+    const actual = await vi.importActual("@/store/summary") as typeof Summary;
+
+    return {
+      ...actual,
+      isStepComplete: vi.fn().mockReturnValue(false),
+      getSummaryItemsforStep: vi.fn().mockReturnValue({
+        description: "",
+        isComplete: false,
+        isTouched: false,
+        routeName: "",
+        step: 0,
+        substep: 0,
+        title: ""
+      }),
+    }
   });
- 
-  // beforeEach(() => {
-  //   jest.spyOn(Summary, "validateStepThree").mockImplementation();
-  // });
 
+  const wrapper: VueWrapper = shallowMount(SummaryStepThree);
 
-  // describe("testing SummaryStepThree render", () => {
-  //   test("renders successfully", async () => {
-  //     expect(wrapper.exists()).toBe(true);
-  //   });
-  // })
-
-  describe("GETTERS", () => {
-    // describe("introParagraph()=> ", () => {
-    test("returns `We need some more details` statement", async () => {
-      // expect(true)
-       
-      // vi.mock("../../store/summary", "isStepComplete").mockReturnValue(false)
-      wrapper.vm.$.exposed?.setIntroParagraph()
-      //expect(wrapper.vm.$.data.introParagraph).toContain("We need some more details");
+  describe("testing SummaryStepThree render", () => {
+    it("renders successfully", async () => {
+      expect(wrapper.exists()).toBe(true);
     });
-    // it("returns `You are all done` statement", async () => {
-    //   jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
-    //   wrapper.vm.$.exposed?.setIntroParagraph()
-    //   expect(wrapper.vm.$.data.introParagraph).toContain("You are all done");
-    // });
-    // })
   })
 
-  // describe("FUNCTIONS", () => {
-  //   it("saveOnLeave()=> expect function to be called", async () => {
-  //     const toggleButtonColorMock = jest.spyOn(Summary, "toggleButtonColor").mockImplementation(
-  //       ()=> Promise.resolve()
-  //     );
-  //     await wrapper.vm.$.exposed?.saveOnLeave();
-  //     expect(toggleButtonColorMock).toHaveBeenCalled();
-  //   });
-  // })
+  it('sets the intro paragraph for a complete step', async () => {
+    (Summary.isStepComplete as any).mockReturnValue(true);
 
+    await (wrapper.vm as any).setIntroParagraph();
+    expect((wrapper.vm as any).introParagraph).toContain('You are all done with this section');
+  });
 
-})
+  it('sets the intro paragraph for an incomplete step', async () => {
+    (Summary.isStepComplete as any).mockReturnValue(false);
+
+    await (wrapper.vm as any).setIntroParagraph();
+    expect((wrapper.vm as any).introParagraph).toContain('We need some more details for this' +
+      ' section');
+  });
+});
+

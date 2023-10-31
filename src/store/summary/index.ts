@@ -1071,8 +1071,8 @@ export class SummaryStore extends VuexModule {
     const title = "Contract Type";
     const contractType = AcquisitionPackage.contractType as ContractTypeDTO;
 
-    const isFfp = contractType.firm_fixed_price.toLowerCase() === "true";
-    const isTm = contractType.time_and_materials.toLowerCase() === "true";
+    const isFfp = contractType?.firm_fixed_price.toLowerCase() === "true";
+    const isTm = contractType?.time_and_materials.toLowerCase() === "true";
     const hasJustification = contractType?.contract_type_justification.trim() !== "";
 
     const description = await this.setContractTypeDescription({isFfp, isTm});

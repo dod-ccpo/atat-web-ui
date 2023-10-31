@@ -6,6 +6,12 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    coverage: { enabled: true, reporter: ["html", "lcov"]}
   },
-   root: ".", //Define the root
+  root: ".",
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  },
 });
