@@ -69,7 +69,7 @@ class FundingPlanType extends Vue {
       label: "Fiscal Service Form 7600B",
       value: "FS_FORM",
       description: `Import your Order from G-Invoicing or manually upload your completed form.
-        <v-chip class="v-chip v-chip--label theme--light v-size--default bg-info-dark
+        <v-chip class="v-chip v-chip--label theme--light v-btn--size-default bg-info-dark
         mr-2"><span class="v-chip__content">Recommended</span></v-chip>`
     },
     {

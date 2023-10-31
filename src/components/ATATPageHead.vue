@@ -1,7 +1,6 @@
 <template>
   <v-app-bar 
     id="PageHeader" 
-    app 
     flat 
     class="_atat-page-header"
   >
@@ -12,7 +11,7 @@
           transition="slide-y-reverse-transition"
           :id="'Contributor_Tooltip'"
           max-width="250px"
-          bottom
+          location="bottom"
           eager
         >
           <!--TODO: validate that this still works after removal of on from activator-->
@@ -33,8 +32,7 @@
           </div>
         </v-tooltip>
         <v-menu
-          :offset-y="true"
-          left
+          location="left"
           id="MoreMenu"
           class="_more-menu _header-menu"
           attach
@@ -45,7 +43,7 @@
               :id="'Contributor_Tooltip'"
               max-width="250px"
               v-bind="props"
-              bottom
+              location="bottom"
               eager
             >
               <template v-slot:activator="{ props }">
@@ -54,7 +52,7 @@
                   id="MoreMenuButton"
                   class="_more-menu-button _header-button"
                 >
-                  <v-icon class="text-base-dark">more_horiz</v-icon>
+                  <v-icon class="text-base-dark">mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
               <div id="ContributorTooltipText" class="_tooltip-content-wrap _no-pointer">

@@ -34,6 +34,7 @@
               :card="true"
               width="400"
               :rules="[$validators.required('Please select an option.')]"
+              @update:value="radioButtonClicked"
             />
           </div>
         </v-col>
@@ -123,6 +124,11 @@ class ContractingShop extends Vue {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
+  }
+
+  public radioButtonClicked(val: string): void {
+    debugger;
+    this.contractingShop = val;
   }
 
   public get isLoading(): boolean {
