@@ -51,7 +51,8 @@
                >
                   <v-card
                     id="PortfolioDetailsCard"
-                    class="_no-shadow v-sheet--outlined height-100 pa-8 d-flex flex-column"
+                    class="_no-shadow height-100 pa-8 d-flex flex-column"
+                    :border="true"
                   >
                     <h3 class="mb-6">Portfolio Details</h3>
                     <v-row>
@@ -132,7 +133,8 @@
               >
                   <v-card
                     id="FundingStatusCard"
-                    class="_no-shadow v-sheet--outlined height-100 pa-8"
+                    class="_no-shadow  height-100 pa-8"
+                    :border="true"
                   >
                     <div
                       id="FundingStatusHeader"
@@ -233,7 +235,7 @@
               </v-row>
               <v-row id="BurndownChartWrap" v-if="!isProdEnv">
                 <v-col>
-                  <v-card class="_no-shadow v-sheet--outlined pa-8">
+                  <v-card class="_no-shadow pa-8" :border="true">
                     <h3 class="mb-4">Actual and Projected Burn Rate</h3>
                     <p class="text-base-dark font-size-14">
                       Track your rate of spend and available funds throughout the current 
@@ -298,7 +300,7 @@
 
               <v-row>
                 <v-col>
-                  <v-card class="_no-shadow v-sheet--outlined pa-8">
+                  <v-card class="_no-shadow pa-8" :border="true">
                     <h3>Spend Summary</h3>
                     <p class="font-size-14">
                       View a breakdown of how much you spend on cloud resources,
@@ -413,7 +415,7 @@
 
               <v-row>
                 <v-col>
-                  <v-card class="_no-shadow v-sheet--outlined pa-8 pb-2">
+                  <v-card class="_no-shadow pa-8 pb-2" :border="true">
                     <h3>Breakdown of Actual and Estimated Spend</h3>
                     <p class="font-size-14">
                       The chart below shows the proportion of funds spent and funds estimated to be
