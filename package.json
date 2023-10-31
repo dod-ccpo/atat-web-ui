@@ -15,7 +15,7 @@
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest --no-cache",
     "test-ui": "vitest --ui",
-    "test-file:watch": "vitest watch --reporter verbose --logHeapUsage src/steps/04-ContractDetails/SummaryStepThree.spec.ts",
+    "test-file:watch": "vitest watch --reporter verbose --logHeapUsage src/plugins/validation.spec.ts",
     "test-files": "jest --no-cache src/steps/03-Background/components/",
     "test:coverage": "jest --coverage",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",

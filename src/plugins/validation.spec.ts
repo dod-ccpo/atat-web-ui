@@ -1,29 +1,26 @@
 import Vue from "vue";
-import Vuetify from "vuetify";
+//import Vuetify from "vuetify";
 import validation from "./validation";
 
 
-import { createLocalVue, mount,  Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+//import { createLocalVue, mount,  Wrapper } from "@vue/test-utils";
+//import { DefaultProps } from "vue/types/options";
 import ValidatorsExample from "@/validation/ValidatorsExample.vue";
+import { VueWrapper, shallowMount } from '@vue/test-utils';
+import { describe, it, expect, vi } from 'vitest';
 
-Vue.config.productionTip = false;
-Vue.use(Vuetify);
-Vue.use(validation);
+// vi.mock("@/validation/ValidatorsExample.vue", async () => {
+//   const actual = await vi.importActual(
+//     "@/validation/ValidatorsExample.vue") as typeof ValidatorsExample;
+//   return {
+//     ...actual,
+//     validateForm: vi.fn(),
+//   };
+// });
+const wrapper: VueWrapper = shallowMount(ValidatorsExample);
 
-describe("Testing Validators", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  
-  beforeEach(()=> {
-  
-    vuetify = new Vuetify();
-    wrapper = mount(ValidatorsExample, {  
-      localVue,
-      vuetify,
-    });
-  });
+describe('Testing Validators', () => {
+
   
   describe("Required Email", () => {
     const validValue = [
@@ -104,17 +101,18 @@ describe("Testing Validators", () => {
     ]
     it("validates email successfully", async () => {
       for(const item of validValue) {
-        checkEmailTest(item.fieldName,item.errorText,item.value,false)
+        const testval =  await checkEmailTest(item.fieldName,item.errorText,item.value,false)
+        console.log("here's testval", testval);
       }
     })
-    it("validates email but wrong domain(s)", () => {
+    it("validates email but wrong domain(s)", async () => {
       for(const item of invalidDomain) {
-        checkEmailTest(item.fieldName,item.errorText,item.value,true)
+        await checkEmailTest(item.fieldName,item.errorText,item.value,true)
       }
     })
     it("fails on email recognition", async () => {
       for(const item of failureValues) {
-        checkEmailTest(item.fieldName,item.errorText,item.value,true)
+        await checkEmailTest(item.fieldName,item.errorText,item.value,true)
       }
     })
   })
@@ -122,13 +120,13 @@ describe("Testing Validators", () => {
   const checkEmailTest = async (
     fieldName: string, errorText: string, value:string, expectErrorMessage: boolean
   ) => {
-    let emailField = wrapper.findComponent({ref: fieldName})
-    const input = emailField.find('input')
-    input.setValue(value)
-    await wrapper.vm.validateForm()
-    Vue.nextTick()
-    emailField = wrapper.findComponent({ref: fieldName})
-    const errorMessage = await emailField.find('.error--text')
+    let emailField = wrapper.findComponent({ref: fieldName});
+    const input = emailField.find('input');
+    input.setValue(value);
+    await (wrapper.vm as any).validateForm();
+    Vue.nextTick();
+    emailField = wrapper.findComponent({ref: fieldName});
+    const errorMessage = await emailField.find('.error--text');
     expect(errorMessage.exists()).toBe(expectErrorMessage)
   }
 });
