@@ -1,7 +1,7 @@
 <template>
   <v-app-bar 
     id="PageHeader" 
-    flat="true"
+    flat
     class="_atat-page-header"
   >
     <div class="d-flex justify-space-between width-100 align-center">
@@ -12,7 +12,7 @@
           :id="'Contributor_Tooltip'"
           max-width="250px"
           location="bottom"
-          eager="true"
+          eager
         >
           <!--TODO: validate that this still works after removal of on from activator-->
           <template v-slot:activator>
@@ -52,7 +52,7 @@
                   id="MoreMenuButton"
                   class="_more-menu-button _header-button"
                 >
-                  <v-icon class="text-base-dark">more_horiz</v-icon>
+                  <v-icon class="text-base-dark">mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
               <div id="ContributorTooltipText" class="_tooltip-content-wrap _no-pointer">
