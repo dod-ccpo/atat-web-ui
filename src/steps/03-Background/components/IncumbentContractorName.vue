@@ -9,10 +9,10 @@
     />
   </div>
   <div v-else> 
-      <dl :id="id">
-        <dt>{{ label }}:</dt>
-        <dd>{{ _value }}</dd>
-      </dl>
+    <dl :id="id">
+      <dt>{{ label }}:</dt>
+      <dd>{{ _value }}</dd>
+    </dl>
   </div>
 </template>
 
@@ -27,11 +27,10 @@ import ATATTextField from "@/components/ATATTextField.vue";
   },
 })
 class IncumbentContractorName extends Vue {
-  @PropSync("value", {default: "incumbent contractor name goes here"})
-  private _value!: string;
+  @PropSync("value", {default: ""}) private _value!: string;
   @Prop({default: "IncumbentContractorName"}) private id!: string;
   @Prop({default: "Incumbent Contractor Name"}) private label!: string;
-  @Prop({ default: "incumbent contractor name goes here" }) private helpText!: string;
+  @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: true}) private isForm!: boolean;
   @PropSync("rules") private _rules!: "";
 }

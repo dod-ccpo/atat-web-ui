@@ -38,10 +38,10 @@ import { ValidationRule } from "types/Global";
   },
 })
 class ProjectTitle extends Vue {
-  @PropSync("currentTitle", {default: "title goes here"}) private _currentTitle!: string;
+  @PropSync("currentTitle", {default: ""}) private _currentTitle!: string;
   @Prop({default: "ProjectTitle"}) private id!: string;
   @Prop() private label!: string;
-  @Prop({ default: "title goes here" }) private helpText!: string;
+  @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: true}) private isForm!: boolean;
   @PropSync("rules") private _rules!: ValidationRule;
 }
