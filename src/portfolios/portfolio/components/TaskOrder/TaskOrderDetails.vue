@@ -109,7 +109,6 @@
         hide-default-footer
         class="_clin-table border1 border-base-lighter"
       >
-        <!-- eslint-disable vue/valid-v-slot -->
         <template v-slot:item="{item, index}">
               <tr
                 class="row-item"
@@ -270,8 +269,8 @@
                   </span>
               </span>
               </td>
-              <td align="right" class="font-weight-700">Total</td>
-              <td align="right" class="font-weight-700 _grand-total-clin-value">
+              <td  class="font-weight-700 text-right">Total</td>
+              <td  class="font-weight-700 text-right _grand-total-clin-value">
                 <span v-if="!showInactive">
                   ${{ toCurrencyString(currentPeriodFundingTotals.CLINValue) }}
                 </span>
@@ -280,8 +279,7 @@
                 </span>
               </td>
               <td
-                align="right"
-                class="font-weight-700 _grand-total-obligated-funds"
+                class="font-weight-700 _grand-total-obligated-funds text-right"
               >
                 <span v-if="!showInactive">
                   ${{
@@ -292,7 +290,7 @@
                   {{ selectedTaskOrder.totalObligated }}
                 </span>
               </td>
-              <td align="right">
+              <td class="text-right">
                 <div v-if="!showInactive">
                   <div
                     class="d-flex justify-end align-center font-weight-700 text-base-darkset"
