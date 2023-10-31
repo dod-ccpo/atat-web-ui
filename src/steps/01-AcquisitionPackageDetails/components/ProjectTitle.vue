@@ -12,7 +12,8 @@
       tooltipText="Provide a short, descriptive title of the work to
               be performed. This will be used to refer to this project within 
               ATAT and across all acquisition documents."
-      :value.sync="_currentTitle"
+      :value="_currentTitle"
+      @update:value="_currentTitle = $event"
     />
   </div>
   <div v-else> 

@@ -10,6 +10,7 @@ import { PropsConfig } from 'vue-facing-decorator/dist/option/props';
 export function PropSync(propName: string, options: PropsConfig = {}) {
   return createDecorator((componentOptions, k: string) => {
     // Ensure props and computed options exist
+    componentOptions.emits = [...componentOptions.emits, `update:${propName}`]
     componentOptions.props ??= {};
     componentOptions.computed ??= {};
 
@@ -21,7 +22,7 @@ export function PropSync(propName: string, options: PropsConfig = {}) {
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       set(value: any) {
-        this.$emit(`${propName}`, value);
+        this.$emit(`update:${propName}`, value);
       },
     };
   });

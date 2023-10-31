@@ -264,7 +264,6 @@ class ATATRadioGroup extends Vue {
 
   // events
   private onClick(): void {
-    this.$emit("update:value", this._selectedValue);
     this.clearErrorMessage();
   }
 

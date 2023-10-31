@@ -26,9 +26,9 @@
         variant="outlined"
         density="compact"
         :height="42"
-        :model-value.sync="_value"
+        :model-value="_value"
+        @update:model-value="_value = $event"
         :placeholder="placeHolder"
-        @update:model-value="onInput"
         class="text-primary"
         :class="[{ 'text-right' : alignRight }]"
         :disabled="disabled"
@@ -162,9 +162,6 @@ class ATATTextField extends Vue  {
 
   //data
   private errorMessages: string[] = [];
-  private onInput(v: string) {
-    this._value = v;
-  }
   public get validationString(){
     return this.validateOnBlur ? "blur" : undefined
   }
