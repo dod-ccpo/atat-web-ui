@@ -42,7 +42,7 @@
 
 <script lang="ts">
  
-import { Component , Vue} from "vue-facing-decorator";
+import { Component , Vue, toNative} from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";

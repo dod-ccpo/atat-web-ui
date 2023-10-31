@@ -74,7 +74,7 @@ export default defineConfig(({command, mode}) => {
 				// vueTsc: true
 				// eslint: {lintCommand:'eslint '},
 			}),
-			liveReload('./src/**/*.(vue|ts)'),
+			// liveReload('./src/**/*.(vue|ts)'),
 			// vue-property-decorator
 			cssInjectedByJsPlugin(),
 			resolve() //commonjs(),

@@ -53,7 +53,7 @@
 
 <script lang="ts">
 
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue";
 import ATATSearch from "@/components/ATATSearch.vue";

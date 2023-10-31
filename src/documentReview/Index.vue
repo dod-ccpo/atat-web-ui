@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Component, mixins } from "vue-facing-decorator";
+import { Component, mixins, toNative } from "vue-facing-decorator";
 
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";

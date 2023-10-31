@@ -130,7 +130,7 @@
 
 <script lang="ts">
 import { TopNavItem, User } from "types/Global";
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { getUserInitials, getIdText } from "@/helpers";
 import AppSections from "@/store/appSections";

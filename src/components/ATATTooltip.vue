@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { Prop, Vue, Component } from "vue-facing-decorator";
+import { Prop, Vue, Component, toNative } from "vue-facing-decorator";
 @Component
 export default class ATATTooltip extends Vue {
   @Prop({ default: "" }) private tooltipTitle!: string;

@@ -25,7 +25,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";

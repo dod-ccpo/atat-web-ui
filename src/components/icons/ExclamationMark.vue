@@ -12,7 +12,7 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class ExclamationMark extends Vue {
   @Prop({default: "c60634", required: true}) private color!:string;

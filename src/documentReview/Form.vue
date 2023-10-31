@@ -126,7 +126,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import PageHead from "./components/DocReviewHead.vue"
 
 import { PropSync } from "@/decorators/custom";

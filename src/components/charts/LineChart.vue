@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop, Watch } from "vue-facing-decorator";
+import {Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import Chart, { ChartData } from "chart.js/auto";
 @Component
 class LineChart extends Vue {

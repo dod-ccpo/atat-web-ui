@@ -11,7 +11,7 @@
 </template>
 
 <script lang='ts'>
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class GCP extends Vue {}
 export default GCP;

@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component } from "vue-facing-decorator";
+import {Vue, Component, toNative } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 

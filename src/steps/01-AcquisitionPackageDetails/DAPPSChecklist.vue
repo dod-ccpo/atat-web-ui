@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { Component , Vue} from "vue-facing-decorator";
+import { Component , Vue, toNative } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";

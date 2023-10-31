@@ -130,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch,  Vue } from "vue-facing-decorator";
+import { Component, Prop, Watch,  Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom'
 import AppSections from "@/store/appSections";
 import ATATTextField from "@/components/ATATTextField.vue";

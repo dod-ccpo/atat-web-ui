@@ -50,7 +50,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Prop,  Vue } from "vue-facing-decorator";
+import { Component, Prop,  Vue, toNative } from "vue-facing-decorator";
 import FinancialDetailsAlert from "../../FinancialDetailsAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import {PortfolioTaskOrder, TaskOrderCardData, ToastObj} from "../../../../../types/Global";

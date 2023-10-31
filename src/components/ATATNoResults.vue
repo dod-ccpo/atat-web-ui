@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop } from "vue-facing-decorator";
+import {Vue, Component, Prop, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 

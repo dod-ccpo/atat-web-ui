@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
 import ATATDialog from "@/components/ATATDialog.vue";
 import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";

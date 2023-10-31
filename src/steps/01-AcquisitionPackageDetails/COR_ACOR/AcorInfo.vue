@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Component , Vue} from "vue-facing-decorator";
+import { Component , Vue, toNative} from "vue-facing-decorator";
 import CommonCorAcor from "./Common.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";

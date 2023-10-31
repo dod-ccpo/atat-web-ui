@@ -14,7 +14,7 @@
 
 <script lang='ts'>
 import {stringObj } from "types/Global";
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ArrowBack from "@/components/icons/ArrowBack.vue";
 import ArchitectureCircle from "@/components/icons/ArchitectureCircle.vue"

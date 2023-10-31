@@ -36,7 +36,7 @@
 <script lang="ts">
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import AppSections from "@/store/appSections";
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class ATATLoadingPackageModal extends Vue {
   @Prop({ default: false }) isLoading!: boolean;

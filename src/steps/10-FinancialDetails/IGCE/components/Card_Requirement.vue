@@ -60,7 +60,7 @@
 
 <script lang="ts">
 
-import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { currencyStringToNumber, toCurrencyString } from "@/helpers";
