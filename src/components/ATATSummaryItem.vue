@@ -111,7 +111,7 @@
                           name="cloud"
                           color="base-light"/>
                         <span
-                          class="text-base-light ml-2 font-size-12 font-weight-700 no-wrap">
+                          class="text-base-light ml-2 font-size-12 font-weight-700 text-no-wrap">
                           CLOUD INSTANCES
                       </span>
                       </div>
@@ -154,7 +154,7 @@
                   </div>
                   <div class="ml-10">
                     <div v-if="item.showMoreData.dodaac"
-                         class="d-flex align-center my-3 no-wrap">
+                         class="d-flex align-center my-3 text-no-wrap">
                       <ATATSVGIcon
                         width="20"
                         height="20"
@@ -212,8 +212,8 @@
             <v-btn
               id="AddAcorButton"
               v-if="item.ACORButton && !hasAcor"
-              text="true"
-              class=" mt-5 no-border secondary"
+              variant="text"
+              class="mt-5 no-border _secondary"
               :ripple="false"
               @click="addAcor()"
               @keydown.enter="addAcor()"

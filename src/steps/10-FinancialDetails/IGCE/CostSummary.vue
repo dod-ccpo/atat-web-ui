@@ -14,7 +14,7 @@
             and we’ll gather details about how your price estimates were developed.
           </span>
           <v-btn 
-            class="secondary align-self-end" 
+            class="_secondary align-self-end" 
             role="link" 
             @click="editRoute" 
             @keydown.enter="editRoute"
@@ -74,7 +74,7 @@
           </template>
         </ATATAlert>
         <div v-if="isLoading" class="d-flex justify-space-around py-15 border1 
-              border-rounded border-base-lighter my-10 bg-offwhite width-100 
+              _border-rounded border-base-lighter my-10 bg-offwhite width-100 
               text-center">
           <div class="d-flex align-center" style="margin: 0 auto">
             <v-progress-circular 

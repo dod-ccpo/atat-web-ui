@@ -11,7 +11,7 @@
       <v-col class="flex-grow-1 flex-shrink-1">
         <v-text-field
           :id="'HeaderTextField_' + index"
-          dense
+          density="compact"
           class="_requirement-head my-1 width-100"
           hide-details
           autocomplete="off"

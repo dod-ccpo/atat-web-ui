@@ -19,23 +19,19 @@
         ref="atatSelect"
         :id="id + '_dropdown'"
         :items="items"
-        outlined
-        dense
-        attach
+        variant="outlined"
         v-model="_selectedValue"
-        :height="42"
         :rounded="rounded"
         :hide-details="true"
         :modal-value="_selectedValue"
-        @update:modal-value="_selectedValue = $event"
-        @change="onChange"
+        @update:modalValue="onChange"
         @blur="onBlur"
         :placeholder="placeholder"
         :class="{ 'mt-2' : label }"
         :return-object="returnObject"
         :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="_rules"
-        :menu-props="{ location: 'bottom', offset: 0 }"
+        :menu-props="{ location: 'bottom', offset: 0, attach:true }"
         :disabled="menuDisabled"
       >
         <template v-if="showSelectedValue" v-slot:selection="{ item }">
@@ -50,7 +46,7 @@
               {'_selected': item.value.value === _selectedValue || item.value === _selectedValue }
             ]"
           >
-            <v-list-item-content
+            <div
               :id="id + '_DropdownListItem_' + item.value.text.replace(/[^A-Z0-9]/ig, '')"
               :item-value = item.value
             >
@@ -61,7 +57,7 @@
                 {{ item.value.description }}
               </v-list-item-subtitle>
 
-            </v-list-item-content>
+            </div>
           </v-list-item>
         </template>
         <!-- TODO check slot append -->
@@ -138,6 +134,7 @@ class ATATSelect extends Vue {
 
   @Emit("onChange")
   private onChange(val: string | SelectData): void {
+    this._selectedValue = val
     const isString = typeof val === "string";
     const isObject = typeof val === "object"
     let isSelectable = true;

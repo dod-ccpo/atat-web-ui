@@ -9,10 +9,8 @@
     <v-main>
       <v-app-bar
         id="PageHeader"
-        app
         flat
         class="_atat-page-header _portfolios"
-        clipped-right
         height="118"
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">

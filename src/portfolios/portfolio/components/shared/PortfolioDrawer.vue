@@ -9,7 +9,7 @@
             auto-grow
             autocomplete="off"
             class="_drawer-text-area pa-2 mb-2 font-size-14"
-            dense
+            density="compact"
             hide-details
             placeholder="Add a description"
             rows="1"
@@ -75,7 +75,7 @@
             ({{ getPortfolioMembersCount }})
           </div>
         </div>
-        <v-tooltip left nudge-right="20" v-if="userCanInviteMembers">
+        <v-tooltip location="left" offset="20" v-if="userCanInviteMembers">
           <!-- TODO: check activator -->
           <template v-slot:activator="{ props }">
             <span
@@ -118,7 +118,7 @@
           <!-- NOT DROPDOWN - for owner and if current user is Viewer & member is someone else -->
           <div v-if="notMemberDropdown(member)">
 
-            <v-tooltip left nudge-right="30">
+            <v-tooltip location="left" offset="30">
               <!-- TODO: check activator -->
               <template v-slot:activator="{ props }">
                 <div

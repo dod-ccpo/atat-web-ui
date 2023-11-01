@@ -146,7 +146,6 @@
             <v-btn
               id="AddOptionPeriodButton"
               v-if="totalPoPDuration < maxTotalPoPDuration"
-              plain
               variant="text"
               class=" mt-5 link-button no-border"
               :ripple="false"
