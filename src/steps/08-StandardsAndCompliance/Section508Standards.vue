@@ -160,7 +160,8 @@
               <ATATRadioGroup
                 id="Section508RadioGroup"
                 legend="Are the above Section 508 requirements sufficient for this acquisition?"
-                :value.sync="selected508Response"
+                :value="selected508Response"
+                @update:value="selected508Response = $event"
                 :items="section508Options"
                 @radioButtonSelected = "radioButtonSelected"
                 name="Section508RadioGroup"

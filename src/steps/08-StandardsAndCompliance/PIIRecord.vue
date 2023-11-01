@@ -12,7 +12,8 @@
                 id="SystemName"
                 label="System name"
                 class="_input-max-width"
-                :value.sync="systemName"
+                :value="systemName"
+                @update:value="systemName = $event"
                 :rules="[$validators.required('Please enter the name of your system of records.')]"
               />
             </div>
@@ -22,7 +23,8 @@
                 label="What is the operation of work to be performed?"
                 class="width-100"
                 :rows="7"
-                :value.sync="operationToBePerformed"
+                :value="operationToBePerformed"
+                @update:value="operationToBePerformed = $event"
                 :rules="[
                   $validators.required(
                     'Please enter a description for the operation of work to be performed.'

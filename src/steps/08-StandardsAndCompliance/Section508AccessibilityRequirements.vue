@@ -51,7 +51,8 @@
               custom ART report or from one of the sample procurements."
               class="width-100 copy-max-width"
               :rows="10"
-              :value.sync="accessibilityReqs"
+              :value="accessibilityReqs"
+              @update:value="accessibilityReqs = $event"
               :rules="[
                   $validators.required(
                     'Please enter your accessibility requirements.'
