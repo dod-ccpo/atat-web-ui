@@ -127,7 +127,7 @@ export default defineConfig(({command, mode}) => {
 			globals: true,
 			environment: 'jsdom',
 			coverage: { 
-			  enabled: false,
+			  enabled: true,
 			  provider: 'v8', 
 			  clean: true,
 			  reportOnFailure: true,
