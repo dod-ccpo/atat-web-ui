@@ -110,7 +110,10 @@
         class="_clin-table border1 border-base-lighter"
       >
         <template v-slot:item="{item, index}">
-              <tr
+          <tr>
+            <td>{{ item.status }}</td>
+          </tr>
+              <!-- <tr
                 class="row-item"
                 :class="[
                   { '_section-divider': item.startNewClinGroup },
@@ -332,8 +335,8 @@
                   </span>
                 </div>
               </td>
-            </tr>
-            </template>
+            </tr> -->
+            </template> 
       </v-data-table>
     </div>
 
