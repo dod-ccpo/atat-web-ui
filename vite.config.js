@@ -10,6 +10,7 @@ import vuetify from 'vite-plugin-vuetify'
 import VueDevTools from 'vite-plugin-vue-devtools'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dotenv from 'dotenv'
+import path from 'node:path'
 dotenv.config()
 
 const servicenowConfig = require('./servicenow.config')
@@ -46,7 +47,7 @@ export default defineConfig(({command, mode}) => {
 		},
 		resolve: {
 			alias: {
-				'@': '/src',
+				'@': path.resolve(__dirname, "src"),
 				vue: 'vue/dist/vue.esm-bundler.js', // Alias 'vue' to Vue 3
 				'vue/compat': 'vue/dist/vue.runtime.esm-bundler.js'
 			},
