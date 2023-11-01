@@ -149,7 +149,7 @@ export default defineConfig(({command, mode}) => {
       server: {
 			  deps: {
           inline: ['vuetify'],
-          optimizer: 'web'
+          //optimizer: 'web'
 			  }
       },
       root: './',
