@@ -1,6 +1,6 @@
 html {
   font-size: 10px !important;
-  overflow-y: hidden;
+  overflow-y: hidden !important;
 }
 body {
   font-size: 1.6rem; 
@@ -21,25 +21,28 @@ body {
   @extend .body;
   }
 
-.v-main__wrap {
+.v-main:not(._home) {
   background-color: $white;
-  padding: 28px 56px 0px 44px;
+  // padding: 28px 56px 0px 44px;
   overflow-y: scroll;
-  max-height: calc(100vh - 116px);
+  max-height: 100vh !important;
 
-  #app-content{
-    height: 100%;
+  ._app-content{
+    height: 100% !important;
+    ._app-content-wrap {
+      // @extend .container-max-width;
+    }
   }
 }
 
 .container-max-width {
   // max page width for very wide screens - wraps all page content
-  max-width: 1040px;
+  // max-width: 1040px;
   margin-left: 0;
 }
 .container-max-width-wide {
   // max page width for very wide screens - wraps all page content
-  max-width: 1164px;
+  // max-width: 1164px;
 }
 
 .copy-max-width {

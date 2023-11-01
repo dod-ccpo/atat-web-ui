@@ -18,6 +18,10 @@
     > div {
       margin: 0 auto !important;
     }
+    &.v-layout {
+      overflow-y: scroll;
+    }    
+
   }
 }
 
@@ -182,6 +186,7 @@
 ._home-wrapper {
   ._hero-banner {
     background-image: url("./assets/images/jedi-banner.png");
+    z-index: -1;
     background-size: cover;
     background-position: center -170px;
     height: 300px;

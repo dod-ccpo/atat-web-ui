@@ -1,7 +1,7 @@
 <template>
   <v-layout 
+    class="_center-content"
     :class="[
-      { '_center-content' : centerContent },
       { '_is-home': isHome },
     ]">
     <ATATTopNavBar />

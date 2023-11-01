@@ -3,13 +3,15 @@
   <v-navigation-drawer
     id="SlideoutPanel"
     class="_slideout-panel"
-    v-model="isSlideoutPanelOpen"
+    :model-value="isSlideoutPanelOpen"
     transition="slide-x-reverse-transition"
     @transitionend="transitionEnded"
     :width="panelWidth + 'px'"
     location="right"
     :temporary="showOverlay"
     disable-resize-watcher
+    rail
+    rail-width="400"
   >
     <div
       v-if="panelTitle"
@@ -57,9 +59,12 @@ class ATATSlideoutPanel extends Vue {
   public appSection = AppSections.activeAppSection;
   public transitionEnded(e: Event):void {
     const target = e.currentTarget as HTMLElement;
+    debugger;
     if (target) {
-      const isOpen = target.classList.contains('v-navigation-drawer--open');
-      isOpen ? SlideoutPanel.openSlideoutPanel("") : SlideoutPanel.closeSlideoutPanel();
+      const isOpen = target.classList.contains('v-navigation-drawer--active');
+      isOpen  
+        ? SlideoutPanel.openSlideoutPanel("") 
+        : SlideoutPanel.closeSlideoutPanel();
     }
   }
   get isPortfolios(): boolean {
@@ -85,6 +90,7 @@ class ATATSlideoutPanel extends Vue {
   get isSlideoutPanelOpen(): boolean {
     const _isSlideoutPanelOpen = SlideoutPanel.slideoutPanelIsOpen;
     setTimeout(() => {
+      debugger;
       if (_isSlideoutPanelOpen && this.showOverlay) {
         document
           .getElementsByClassName("v-overlay--active")[0]
@@ -135,6 +141,7 @@ class ATATSlideoutPanel extends Vue {
   }
 
   private closeSlideoutPanel(): void {
+    debugger;
     SlideoutPanel.closeSlideoutPanel();
   }
 }

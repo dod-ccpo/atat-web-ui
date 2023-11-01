@@ -32,7 +32,7 @@
             <div class="d-flex justify-end">
               <v-btn 
                 v-if="!isNewUser"
-                class="v-btn _primary"
+                class="v-btn _atat-primary"
                 @click="startNewAcquisition"
               >
                 Start a new acquisition
@@ -42,7 +42,7 @@
                 href="https://community.hacc.mil/s/jwcc"
                 target="_blank"
                 id="HelpfulResourcesButton"
-                class="_secondary no-text-decoration"
+                class="_atat-secondary no-text-decoration"
               >
                 Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
               </v-btn>

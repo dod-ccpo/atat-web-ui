@@ -9,29 +9,33 @@
 		<ATATToast />
 		<ATATPageHead />
 	<v-main>
-		<div id="app-content" class="d-flex flex-column">
-			<div class="mb-auto">
-			<router-view></router-view>
+
+		<div id="app-content" class="_app-content d-flex flex-column">
+			<div class="mb-auto _app-content-wrap">
+				<router-view></router-view>
+			</div>
+			<ATATStepperNavigation 
+				v-if="!hideNavigation" 
+				@next="navigate('next')" 
+				@previous="navigate('previous')"
+				@additionalButtonClick="additionalButtonClick" 
+				@takeAltContinueAction="takeAltContinueAction"
+				:additionalButtons="additionalButtons" 
+				:backButtonText="backButtonText"
+				:continueButtonText="continueButtonText" 
+				:continueButtonColor="continueButtonColor"
+				:altContinueAction="altContinueAction" 
+				:hideContinueButton="hideContinueButton"
+				:hideAdditionalButtons="hideAdditionalButtons" 
+				:disableContinue="disableContinueButton"
+				:noPrevious="noPrevious" class="mb-8"
+				:class="[currentRouteName === routeNames.DAPPSChecklist ? 'mx-auto' : '']"
+			/>
+			<ATATFooter 
+				:class="[currentRouteName === routeNames.DAPPSChecklist ? 'mx-auto' : '']" 
+			/>
 		</div>
-		<ATATStepperNavigation 
-		v-if="!hideNavigation" 
-		@next="navigate('next')" 
-		@previous="navigate('previous')"
-		@additionalButtonClick="additionalButtonClick" 
-		@takeAltContinueAction="takeAltContinueAction"
-		:additionalButtons="additionalButtons" 
-		:backButtonText="backButtonText"
-		:continueButtonText="continueButtonText" 
-		:continueButtonColor="continueButtonColor"
-		:altContinueAction="altContinueAction" 
-		:hideContinueButton="hideContinueButton"
-		:hideAdditionalButtons="hideAdditionalButtons" 
-		:disableContinue="disableContinueButton"
-		:noPrevious="noPrevious" class="mb-8"
-		:class="[currentRouteName === routeNames.DAPPSChecklist ? 'mx-auto' : '']"
-		/>
-		<ATATFooter :class="[currentRouteName === routeNames.DAPPSChecklist ? 'mx-auto' : '']" />
-		</div>
+
 	</v-main>
 	</div>
 </template>
