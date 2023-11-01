@@ -90,9 +90,6 @@ export default defineConfig(({command, mode}) => {
 			target: 'esnext',
 			assetsDir: './',
 			cssCodeSplit: false,
-			// optimizeDeps: {
-			// 	include: ['node_modules/*']
-			// },
 			rollupOptions: {
 				output: {
 					dir: './dist/',
