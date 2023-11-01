@@ -22,7 +22,8 @@
             </div>
             <ATATCheckboxGroup
               id="ClassificationLevelCheckboxes"
-              :value.sync="selectedOptions"
+              :value="selectedOptions"
+              @update:value="selectedOptions = $event"
               :items="checkboxItems"
               name="checkboxes"
               :card="false"
@@ -71,7 +72,8 @@
     </div>
     <ATATDialog
       id="DeleteClassificationRequirements"
-      :showDialog.sync="showDialog"
+      :showDialog="showDialog"
+      @update:showDialog="showDialog = $event"
       :title="'Delete all ' + getServiceOfferingName + ' requirements?'"
       no-click-animation
       okText="Delete"

@@ -19,7 +19,8 @@
                 :card="true"
                 :items="recurringOptions"
                 @radioButtonClicked="recurringOptionsClicked"
-                :value.sync="selectedRecurringOption"
+                :value="selectedRecurringOption"
+                @update:value="selectedRecurringOption = $event"
                 :rules="[$validators.required('Please select an option')]"
               />
             </div>
@@ -44,7 +45,8 @@
                   :legend="followOnProcurementBeSoleSourcedLegend"
                   :card="false"
                   :items="followOnProcurementBeSoleSourcedOptions"
-                  :value.sync="selectedfollowOnProcurementBeSoleSourcedOption"
+                  :value="selectedfollowOnProcurementBeSoleSourcedOption"
+                  @update:value="selectedfollowOnProcurementBeSoleSourcedOption = $event"
                   :rules="[$validators.required('Please select an option')]"
                 />
               </div>

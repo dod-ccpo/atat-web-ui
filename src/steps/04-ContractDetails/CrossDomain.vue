@@ -11,7 +11,8 @@
             <ATATRadioGroup
               id="needsCDSGroup"
               card="true"
-              :value.sync="domainInfo.crossDomainSolutionRequired"
+              :value="domainInfo.crossDomainSolutionRequired"
+              @update:value="domainInfo.crossDomainSolutionRequired = $event"
               :items="cdsOptions"
               :rules="[$validators.required('Please select Yes or No.')]"
               name="needsCDSGroup"
@@ -27,7 +28,8 @@
                   <v-col>
                     <ATATCheckboxGroup
                       id="cdsSolutions"
-                      :items.sync="cdsSolutionItems"
+                      :items="cdsSolutionItems"
+                      @update:items="cdsSolutionItems = $event"
                       textFieldAppendText="GB/month"  
                       class="mb-8 _cds-checkbox-list"
                       :hasTextFields="true"
@@ -35,7 +37,8 @@
                       groupLabel="What type of cross-domain solution do you need?"
                       :labelWidth="240"
                       :textFieldWidth="164"
-                      :value.sync="selectedCDSCheckboxItems"
+                      :value="selectedCDSCheckboxItems"
+                      @update:value="selectedCDSCheckboxItems = $event"
                       :groupLabelHelpText="cdsSolutionLabelHelpText"
                       :rules="[
                         $validators
@@ -53,7 +56,8 @@
                     <ATATTextField 
                       id="projectedFileStreamType"
                       label="Projected file stream/type"
-                      :value.sync="domainInfo.projectedFileStream"
+                      :value="domainInfo.projectedFileStream"
+                      @update:value="domainInfo.projectedFileStream = $event"
                       :rules="[
                         $validators
                         .required('Enter a projected file stream/type')
@@ -67,10 +71,14 @@
                     <AnticipatedDurationandUsage
                       typeForUsage="cds"
                       typeForDuration="requirement"
-                      :anticipatedNeedUsage.sync="
+                      :anticipatedNeedUsage="
                         domainInfo.anticipatedNeedUsage"
-                      :entireDuration.sync="domainInfo.entireDuration"
-                      :selectedPeriods.sync="domainInfo.selectedPeriods"
+                      @update:anticipatedNeedUsage="
+                        domainInfo.anticipatedNeedUsage = $event"
+                      :entireDuration="domainInfo.entireDuration"
+                      @update:entireDuration="domainInfo.entireDuration = $event"
+                      :selectedPeriods="domainInfo.selectedPeriods"
+                      @update:selectedPeriods="domainInfo.selectedPeriods = $event"
                       :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
                       :isPeriodsDataMissing="isPeriodsDataMissing"
                       index="0"

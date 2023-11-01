@@ -41,9 +41,9 @@
         ref="atatTextArea"
         :id="id + '_text_area'"
         variant="outlined"
-        :model-value.sync="_value"
-        :placeholder="placeHolder"
+        :model-value="_value"
         @update:model-value="onInput"
+        :placeholder="placeHolder"
         class="text-primary"
         :rules="getRules"
         :rows="rows"
@@ -75,6 +75,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
 
 @Component({
+  emits: ['input', 'blur'],
   components: {
     ATATErrorValidation
   }
@@ -115,7 +116,7 @@ class ATATTextArea extends Vue {
   private placeHolder = "";
   private errorMessages: string[] = [];
   private onInput(v: string) {
-    this._value = v;
+    this._value = v
     this.$emit("input");
     this._turnRulesOff = false;
   }

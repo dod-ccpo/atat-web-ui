@@ -99,7 +99,8 @@
                 class="width-100 mb-6"
                 :rows="3"
                 :validateItOnBlur="_validateOtherOnBlur"
-                :value.sync="_otherValueEntered"
+                :value="_otherValueEntered"
+                @update:value="_otherValueEntered = $event"
                 :rules="otherRequiredRule"
               />
               <ATATTextField
@@ -109,7 +110,8 @@
                 :id="otherId"
                 class="mb-6 mt-2 _input-wrapper-max-width"
                 :validateItOnBlur="_validateOtherOnBlur"
-                :value.sync="_otherValueEntered"
+                :value="_otherValueEntered"
+                @update:value="_otherValueEntered = $event"
                 :rules="otherRequiredRule"
               />
 

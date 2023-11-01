@@ -26,7 +26,8 @@
               </p>
             <ATATCheckboxGroup
               id="ContractTypesCheckboxes"
-              :value.sync="selectedContractTypes"
+              :value="selectedContractTypes"
+              @update:value="selectedContractTypes = $event"
               :items="checkboxItems"
               name="checkbox-card"
               :card="true"
@@ -41,7 +42,8 @@
               <hr />
               <ATATTextArea
                 id="JustificationForTM"
-                :value.sync="justification"
+                :value="justification"
+                @update:value="justification = $event"
                 label="Please provide justification for your T&amp;M contract type."
                 helpText="Briefly describe why the duration of work and/or costs cannot 
                   be reasonably estimated and what control measures will be taken to 

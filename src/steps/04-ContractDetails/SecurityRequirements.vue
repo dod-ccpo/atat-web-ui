@@ -30,8 +30,11 @@
            :hasSecret="hasSecret"
            :hasTopSecret="hasTopSecret"
            :isDOW="false"
-           :selectedSecretSecurityRequirements.sync="selectedSecretSecurityRequirements"
-           :selectedTopSecretSecurityRequirements.sync="selectedTopSecretSecurityRequirements"
+           :selectedSecretSecurityRequirements="selectedSecretSecurityRequirements"
+           @update:selectedSecretSecurityRequirements="selectedSecretSecurityRequirements = $event"
+           :selectedTopSecretSecurityRequirements="selectedTopSecretSecurityRequirements"
+           @update:selectedTopSecretSecurityRequirements="
+             selectedTopSecretSecurityRequirements = $event"
            :selectedClearanceLevels="selectedClearanceLevels"
          />
         </v-col>

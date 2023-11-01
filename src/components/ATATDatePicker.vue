@@ -74,7 +74,8 @@
         v-model="date"
         :show-adjacent-months="showAdjacentMonths"
         no-title
-        :active-picker.sync="activePicker"
+        :active-picker="activePicker"
+        @update:active-picker="activePicker = $event"
         type="date"
         :min="min"
         :max="max"

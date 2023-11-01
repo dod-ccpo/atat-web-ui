@@ -46,7 +46,7 @@
               Period of Performance length
             </div>
             <div id="BaseAndOptionWrapper">
-              <draggable
+              <!-- <draggable
                 v-model="optionPeriods"
                 ghost-class="ghost"
               >
@@ -75,7 +75,8 @@
                           width="178"
                           :showErrorMessages="false"
                           @errorMessage = "setDurationErrorMessages($event, index)"
-                          :value.sync="optionPeriods[index].duration"
+                          :value="optionPeriods[index].duration"
+                          @update:value="optionPeriods[index].duration = $event"
                           type="number"
                           :rules="[
                             $validators.required(''),
@@ -88,7 +89,8 @@
                           :items="timePeriods"
                           width="178"
                           :showErrorMessages="false"
-                          :selectedValue.sync="optionPeriods[index].unitOfTime"
+                          :selectedValue="optionPeriods[index].unitOfTime"
+                          @update:selectedValue="optionPeriods[index].unitOfTime = $event"
                           @errorMessage = "setDurationErrorMessages($event, index)"
                           class="mr-4"
                         />
@@ -138,7 +140,7 @@
                       v-if="oneYearCheck(optionPeriods[index])"
                     />
                   </div>
-              </draggable>
+              </draggable> -->
             </div>
 
             <v-btn
