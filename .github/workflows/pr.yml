@@ -83,6 +83,12 @@ jobs:
           VERSION: "${{ env.VERSION }}"
       - name: Test the project
         run: npm run test
+        env:
+          testURL: "%BASE_URL_PLACEHOLDER%/test"
+          BASE_API_URL: "%BASE_URL_PLACEHOLDER%"
+          SNOWUSER: "${{ secrets.VUE_SNOW_USER }}"
+          SNOWPASS: ""
+          VERSION: "${{ env.VERSION }}"
         if: ${{ !startsWith(github.ref, 'refs/tags/') }} # don't need this for tag pushes
       - name: Trigger SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
