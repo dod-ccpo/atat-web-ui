@@ -291,7 +291,8 @@
 
     &:after {
       font-family: $icon-font;
-      content: "launch";
+      // font: normal normal normal 24px/1 "Material Design Icons";
+      // content: "\F0327";
       text-decoration: none !important;
       -webkit-font-feature-settings: 'liga';
       color: $primary;

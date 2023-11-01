@@ -57,6 +57,14 @@ module.exports = {
       env: {
         jest: true
       }
+    },
+    {
+      files: [
+        '**/*.vue'
+      ],
+      rules: {
+        'vuetify/no-deprecated-classes': 1
+      }
     }
   ],
   

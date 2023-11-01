@@ -34,7 +34,8 @@
     opacity: 0 !important;
   }
   
-  &.bg-primary.v-theme--light{
+  &.bg-primary.v-theme--light,
+  &.primary.v-theme--light{
     background-color:  $primary !important;
     color: #fff !important;
     &:hover{
@@ -47,10 +48,11 @@
     }
   }
   
-  &.bg-secondary.v-theme--light {
+  &.bg-secondary.v-theme--light,
+  &.secondary.v-theme--light {
     background-color: $white !important;
     border: 2px solid $primary !important;
-    color: $primary;
+    color: $primary !important;
     font-weight: 500 !important;
 
     &:hover {
@@ -75,7 +77,8 @@
     font-size: 1.4rem !important;
   }
 
-  &.link-button, &.tertirary.v-theme--light  {
+  &.link-button, 
+  &.tertirary.v-theme--light  {
     padding: 6px 12px !important;
   
     &.v-btn--disabled {

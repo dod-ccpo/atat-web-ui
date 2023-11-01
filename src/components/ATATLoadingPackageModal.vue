@@ -13,7 +13,7 @@
         <p>Please wait while we finish getting your package ready.</p>
         <div class="px-4">
           <v-progress-linear
-            :value="packagePercentLoaded"
+            :model-value="packagePercentLoaded"
             color="#544496"
             class="mb-6 _progress-bar"
             height="16"

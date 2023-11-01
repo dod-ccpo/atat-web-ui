@@ -190,6 +190,7 @@
   legend {
     font-weight: 500;
     max-width: 740px;
+    font-size: 1.6rem;
   }
   
   &.error--text {
@@ -231,9 +232,14 @@
 
   }
   &._inline {
+    
+    .v-selection-control-group,
     .v-input--radio-group__input {
       display: flex;
       flex-direction: row !important;
+      .v-selection-control__wrapper{
+        display: none;
+      }
     }
   }
 

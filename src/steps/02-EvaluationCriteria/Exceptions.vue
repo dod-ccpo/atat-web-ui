@@ -38,7 +38,8 @@
               legend="Based on your market research, do any of the following exceptions to fair 
                 opportunity apply to your acquisition?"
               classes="copy-max-width mb-10 mt-3"
-              :selectedException.sync="selectedException"
+              :selectedException="selectedException"
+              @update:selectedException="selectedException=$event"
               :rules="[$validators.required('Please select an option')]"            
             />
 
