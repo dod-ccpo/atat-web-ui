@@ -80,8 +80,8 @@
             <v-col class="d-flex justify-end" align-self="end">
               <v-btn
                 v-if="isErrored === false"
-                class="secondary _text-decoration-none px-6 mr-5"
-                large
+                class="_secondary _text-decoration-none px-6 mr-5"
+                size="large"
                 target="_blank"
                 @click="update()"
                 @keydown.enter="update()"
@@ -91,9 +91,9 @@
                 <ATATSVGIcon class="pl-2" width="14" height="19" name="update" color="primary"/>
               </v-btn>
               <v-btn
-                class="primary _text-decoration-none px-6"
+                class="_primary _text-decoration-none px-6"
                 v-if="isErrored === false"
-                large
+                size="large"
                 width="137"
                 role="button"
                 :href="downloadPackageLink" >

@@ -39,13 +39,13 @@
 
         <div 
           v-if="admins.length === 0"
-          class="w-100 py-10 border1 border-rounded border-base-lighter 
+          class="w-100 py-10 border1 _border-rounded border-base-lighter 
             text-center mb-10 mt-10 bg-base-off-white"
         >
           <h2 class="h3 mb-6 mt-2">You do not have any CSP administrators yet.</h2>
           <v-btn
             id="AddCSPAdmin"
-            class="primary mx-auto mb-2"
+            class="_primary mx-auto mb-2"
             @click="openAddCSPModal"
             @keydown.enter="openAddCSPModal"
             @keydown.space="openAddCSPModal"
@@ -116,7 +116,7 @@
           <v-btn
             id="AddAnotherAdmin"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="_secondary _normal _small-text mt-5"
             :ripple="false"
             @click="openAddCSPModal()"
           >

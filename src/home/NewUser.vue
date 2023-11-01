@@ -29,7 +29,7 @@
             </p>
             <v-btn
               id="StartNewAcquisitionButton"
-              class="bg-primary mb-4 mt-4"
+              class="_primary mb-4 mt-4"
               @click="startNewAcquisition"
               @keydown.enter="startNewAcquisition"
               @keydown.space="startNewAcquisition"
@@ -39,7 +39,7 @@
 
           </v-col>
           <v-col class="pl-10">
-            <div class="bg-primary-lighter border-eounded-more pa-8">
+            <div class="_primary-lighter _border-rounded-more pa-8">
 
               <p class="mb-0">
                 You can expect to:
@@ -123,7 +123,7 @@
 
             <v-btn
               id="ProvisionButton"
-              class="bg-primary mb-4 mt-4"
+              class="_primary mb-4 mt-4"
               @click="openTOSearchModal"
               @keydown.enter="openTOSearchModal"
               @keydown.space="openTOSearchModal"
@@ -133,7 +133,7 @@
 
           </v-col>
           <v-col class="pl-10">
-            <div class="bg-primary-lighter border-eounded-more pa-8">
+            <div class="bg-primary-lighter _border-rounded-more pa-8">
 
               <p class="mb-0">
                 You can expect to:

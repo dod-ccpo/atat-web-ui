@@ -213,7 +213,7 @@
               id="AddAcorButton"
               v-if="item.ACORButton && !hasAcor"
               variant="text"
-              class="mt-5 no-border bg-secondary"
+              class="mt-5 no-border _secondary"
               :ripple="false"
               @click="addAcor()"
               @keydown.enter="addAcor()"

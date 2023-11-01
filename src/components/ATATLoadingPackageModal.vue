@@ -8,7 +8,7 @@
     <v-card style="padding: 80px 100px">
       <div class="text-center">
         <div class="h1 mb-4" id="LoadingModalTitle">
-          Loading your package details<span class="ellipsis"></span>
+          Loading your package details<span class="_ellipsis"></span>
         </div>
         <p>Please wait while we finish getting your package ready.</p>
         <div class="px-4">

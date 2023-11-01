@@ -6,17 +6,15 @@
 
     <v-app-bar
       id="PageHeader"
-      app
       flat
       class="_atat-page-header _portfolio-summary"
-      clipped-right
       height="83"
     > 
       <div class=" d-flex justify-space-between width-100 align-center">       
         <div id="NameHeader" tabindex="-1" class="mt-1">
           <v-text-field
             id="PortfolioTitleInput"
-            dense
+            density="compact"
             placeholder="Portfolio title"
             class="h2 _portfolio-title-input my-1"
             hide-details
@@ -63,8 +61,8 @@
           />
         </v-btn>
         <v-menu
-          :offset-y="true"
-          left
+          :offset="true"
+          location="left"
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach

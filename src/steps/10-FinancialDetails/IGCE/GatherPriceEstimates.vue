@@ -32,9 +32,9 @@
             :id="'AnticipatedUserAndDataNeedsAccordion' + index"
             :key="index"
             class="mb-4"
-            flat
+            borderless
             multiple
-            :value="isPanelOpen"
+            :model-value="isPanelOpen"
           >
             <v-expansion-panel>
               <v-expansion-panel-title>

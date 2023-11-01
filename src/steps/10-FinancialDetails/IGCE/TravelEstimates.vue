@@ -49,7 +49,7 @@
                   </div>
                 </div>
 
-                <v-expansion-panels accordion flat>
+                <v-expansion-panels variant="accordion" borderless>
                   <v-expansion-panel
                     class="bg-transparent"
                     v-for="(item, index) in calloutData"

@@ -16,8 +16,8 @@ module.exports = {
     "@vue/typescript/recommended",
     "prettier",
     "plugin:cypress/recommended",
-    'plugin:vue/base',
-    'plugin:vuetify/base'
+    "plugin:vue/base",
+    "plugin:vuetify/base"
   ],
   parserOptions: {
     ecmaVersion: "latest",
@@ -46,7 +46,7 @@ module.exports = {
         'cypress/**/*.js'
       ],
       rules: {
-        '@typescript-eslint/explicit-module-boundary-types': 0,         
+        '@typescript-eslint/explicit-module-boundary-types': 0,
       }
     },
     {
