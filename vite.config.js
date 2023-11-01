@@ -156,7 +156,7 @@ export default defineConfig(({command, mode}) => {
 			  }
 			},
 			root: '.',
-			ui: true,
+			//ui: true,
 			//Default exclude: node_modules/, dist/, cypress/, *.config.*, **/.{idea,git,cache,output,temp} 
 			exclude: [
 				'node_modules/**',
