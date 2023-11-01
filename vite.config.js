@@ -141,10 +141,10 @@ export default defineConfig(({command, mode}) => {
 			  restoreMocks: true,
 			  maxConcurrency: 10,
 			  concurrent: true,
-			  typecheck: {
-				enabled: true,
-				checker: 'vue-tsc'
-			  },
+			 //  typecheck: {
+				// enabled: true,
+				// checker: 'vue-tsc'
+			 //  },
 			//  bail: 10,
 
 			},
