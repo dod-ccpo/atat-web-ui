@@ -100,7 +100,7 @@
       </v-card>
     </div>
     <div class="mt-10">
-      <v-data-table
+      <v-table
         id="CLINDataTable"
         :headers="tableHeaders"
         :items="tableData"
@@ -109,11 +109,17 @@
         hide-default-footer
         class="_clin-table border1 border-base-lighter"
       >
-        <template v-slot:item="{item, index}">
-          <tr>
-            <td>{{ item.status }}</td>
-          </tr>
-              <!-- <tr
+      <thead>
+        <tr>
+      <th
+      v-for="header in tableHeaders" :key="header.title">
+      {{ header.title }}
+      </th>
+      </tr>
+      </thead>
+      <tbody>
+              <tr
+                v-for="item in tableData"
                 class="row-item"
                 :class="[
                   { '_section-divider': item.startNewClinGroup },
@@ -152,7 +158,7 @@
                 <td :style="{ verticalAlign: getValign(item) }">
                   <div class="d-flex flex-column">
                     <span class="nowrap _pop-dates">
-                      {{ item.PoP.startDate }}&ndash;{{ item.PoP.endDate }}
+                      {{ item.PoP?.startDate }}&ndash;{{ item.PoP?.endDate }}
                     </span>
                     <span
                       v-if="item.isActive"
@@ -173,7 +179,7 @@
                       class="_expiration"
                       v-if="item.status !== statuses.OptionExercised.value"
                       >
-                      {{ item.PoP.expiration }}
+                      {{ item.PoP?.expiration }}
                     </span>
                     </span>
                   </div>
@@ -210,7 +216,7 @@
                         }"
                         class="font-size-12 text-base ml-3 _funds-spent-percent"
                       >
-                        ({{ item.fundsRemaining.percent }}%)
+                        ({{ item.fundsRemaining?.percent }}%)
                       </span>
                     </div>
                     <div
@@ -250,12 +256,12 @@
                         color="warning-dark2"
                         class="mr-1"
                       />
-                      {{ item.fundsRemaining.fundsRemaining }}
+                      {{ item.fundsRemaining?.fundsRemaining }}
                     </div>
                   </div>
                 </td>
               </tr>
-            <tr class="_section-divider" v-if="addInactiveClinSection(index)">
+            <tr class="_section-divider">
               <td colspan="2" class="font-weight-400">
                 <span v-if="!isExpiredTO">
                   <a
@@ -335,9 +341,9 @@
                   </span>
                 </div>
               </td>
-            </tr> -->
-            </template> 
-      </v-data-table>
+            </tr> 
+          </tbody>
+      </v-table>
     </div>
 
     <div v-if="!isAlertClosed" class="mt-10">
@@ -355,7 +361,7 @@
       </ATATAlert>
     </div>
     <div>
-      <!-- <v-expansion-panels class="pt-6" ripple="false" elevation="0">
+     <!-- <v-expansion-panels class="pt-6" ripple="false" elevation="0">
         <v-expansion-panel>
           <v-expansion-panel-title class="d-flex">
             <h2>
@@ -373,7 +379,7 @@
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
-      </v-expansion-panels> -->
+      </v-expansion-panels>  -->
     </div>
   </div>
 </template>

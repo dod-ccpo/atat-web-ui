@@ -172,7 +172,7 @@ textarea {
     margin-bottom:0px;
   }
 
- .v-data-table__wrapper {
+ .v-table__wrapper {
    tbody {
      line-height: 1.2em !important;
      tr {
@@ -201,10 +201,10 @@ textarea {
 }
 
 
-._offering-instances.v-data-table, ._instances-table.v-data-table {
-  > .v-data-table__wrapper > table > tbody {
+._offering-instances.v-table, ._instances-table.v-table {
+  > .v-table__wrapper > table > tbody {
     > tr {
-      &.v-data-table__empty-wrapper {
+      &.v-table__empty-wrapper {
         height: 120px;
         
         td {
@@ -226,10 +226,10 @@ textarea {
   }
 }
 
-._base-table-style.v-data-table,
-._instances-table.v-data-table, 
-._offering-instances.v-data-table {
-  > .v-data-table__wrapper > table > thead > tr {
+._base-table-style.v-table,
+._instances-table.v-table, 
+._offering-instances.v-table {
+  > .v-table__wrapper > table > thead > tr {
     background-color: $base-lightest;
     & > th {
       font-size: 1.2rem;
@@ -242,11 +242,11 @@ textarea {
   }
 }
 
-._base-table-style.v-data-table {
+._base-table-style.v-table {
   border-collapse: collapse;
   border: 1px solid $base-lighter;
   border-radius: 4px;
-  > .v-data-table__wrapper > table > thead > tr {
+  > .v-table__wrapper > table > thead > tr {
     & > th {
       height: 40px;
       background: $base-lightest;
@@ -260,7 +260,7 @@ textarea {
       }
     }
   }
-  > .v-data-table__wrapper > table > tbody > tr {
+  > .v-table__wrapper > table > tbody > tr {
     & > td {
       padding-top: 16px;
       padding-bottom: 16px;
@@ -332,16 +332,16 @@ textarea {
 }
 
 ._clin-table,
-._csp-admin-log.v-data-table {
+._csp-admin-log.v-table {
   table {
     border-collapse: collapse;
   }
   ._section-divider {
     border-top: 4px solid $base-lighter;
   }
-  > .v-data-table__wrapper > table > tbody {
+  > .v-table__wrapper > table > tbody {
     > tr {
-      &.v-data-table__empty-wrapper {
+      &.v-table__empty-wrapper {
         height: 120px;
 
         td {
@@ -364,7 +364,7 @@ textarea {
       }
     }
   }
-  > .v-data-table__wrapper > table > thead > tr {
+  > .v-table__wrapper > table > thead > tr {
     background-color: $base-lightest;
 
     & > th {
