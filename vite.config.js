@@ -71,7 +71,7 @@ export default defineConfig(({command, mode}) => {
 			//TODO Migrate unit tests and enable vueTsc
 			checker({
 				// typescript: true,
-				// vueTsc: true
+				vueTsc: true
 				// eslint: {lintCommand:'eslint '},
 			}),
 			// liveReload('./src/**/*.(vue|ts)'),
@@ -127,7 +127,7 @@ export default defineConfig(({command, mode}) => {
 			globals: true,
 			environment: 'jsdom',
 			coverage: { 
-			  enabled: true,
+			  enabled: false,
 			  provider: 'v8', 
 			  clean: true,
 			  reportOnFailure: true,
