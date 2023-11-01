@@ -11,9 +11,9 @@
     "postbuild:cypress": "node cypress.postbuild.js",
     "build:isolated_tests": "vue-cli-service build --dest dist_testing",
     "build:iso-test-folder": "npm run build:isolated_tests && npm run postbuild:cypress",
-    "test": "vitest run --open=false",
+    "test": "vitest run",
     "test-file:watch": "vitest --watch src/steps/04-ContractDetails/SummaryStepThree.spec.ts",
-    "test-files": "vitest src/steps/04-ContractDetails/",
+    "test-files": "vitest --open=true --ui src/steps/04-ContractDetails/",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
     "cypress:single-test": "npm run test:e2e --  --spec 'cypress/e2e/DAPPS/E2EHappyPath/*.cy.js'",
     "cypress:isolated-tests": "npx cypress run --env grepTags=-@iso-ignore"
