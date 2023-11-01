@@ -71,11 +71,9 @@ export default defineConfig(({command, mode}) => {
 			//TODO Migrate unit tests and enable vueTsc
 			checker({
 				// typescript: true,
-				vueTsc: true
+				// vueTsc: true
 				// eslint: {lintCommand:'eslint '},
 			}),
-			// liveReload('./src/**/*.(vue|ts)'),
-			// vue-property-decorator
 			cssInjectedByJsPlugin(),
 			resolve() //commonjs(),
 			//splitVendorChunkPlugin(),
@@ -141,10 +139,10 @@ export default defineConfig(({command, mode}) => {
 			  restoreMocks: true,
 			  maxConcurrency: 10,
 			  concurrent: true,
-			 //  typecheck: {
-				// enabled: true,
-				// checker: 'vue-tsc'
-			 //  },
+			  typecheck: {
+				enabled: true,
+				checker: 'vue-tsc'
+			  },
 			//  bail: 10,
 
 			},
