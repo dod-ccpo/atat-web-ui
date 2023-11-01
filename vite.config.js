@@ -92,7 +92,7 @@ export default defineConfig(({command, mode}) => {
       cssCodeSplit: false,
       rollupOptions: {
         output: {
-          dir: './dist/',
+          dir: './dist',
           format: 'iife', //iife || umd !cjs
           entryFileNames: 'js/app-js',
           chunkFileNames: 'js/vendor-js',
