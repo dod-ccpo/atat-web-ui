@@ -126,23 +126,23 @@ export default defineConfig(({command, mode}) => {
 			coverage: { 
 			  enabled: true,
 			  provider: 'v8', 
-			  clean: true,
+			//  clean: true,
 			  //open: true,
-			  reportOnFailure: true,
-			  skipFull: true,
+			//  reportOnFailure: true,
+			//  skipFull: true,
 			 // perFile: true,
 			//   lines: 80,
 			//   functions: 80,
 			//   branches: 80,
 			//   statements: 80,
 			  reporter: ['text','html', 'lcov'],
-			  restoreMocks: true,
-			  maxConcurrency: 10,
-			  concurrent: true,
-			  typecheck: {
-				enabled: true,
-				checker: 'vue-tsc'
-			  },
+			  //restoreMocks: true,
+			  //maxConcurrency: 10,
+			  //concurrent: true,
+			//   typecheck: {
+			// 	enabled: true,
+			// 	checker: 'vue-tsc'
+			//   },
 			//  bail: 10,
 
 			},
