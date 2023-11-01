@@ -152,7 +152,8 @@
               <ATATTextField
                 id="TripLocation"
                 label="Trip Location"
-                :value.sync="travelItem.trip_location"
+                :value="travelItem.trip_location"
+                @update:value="travelItem.trip_location = $event"
               />
             </v-col>
           </v-row>
@@ -162,7 +163,8 @@
                 id="Duration"
                 label="Duration"
                 suffix="days"
-                :value.sync="travelItem.duration_in_days"
+                :value="travelItem.duration_in_days"
+                @update:value="travelItem.duration_in_days = $event"
                 type="number"
               />
             </v-col>
@@ -171,7 +173,8 @@
                 id="NumberOfTravelers"
                 label="Number of travelers"
                 suffix="people"
-                :value.sync="travelItem.number_of_travelers"
+                :value="travelItem.number_of_travelers"
+                @update:value="travelItem.number_of_travelers = $event"
                 type="number"
               />
             </v-col>
@@ -180,7 +183,8 @@
                 id="NumberOfTrips"
                 label="Number of trips"
                 suffix="per period"
-                :value.sync="travelItem.number_of_trips"
+                :value="travelItem.number_of_trips"
+                @update:value="travelItem.number_of_trips = $event"
                 tooltipText="This number of trips will be applied to each period selected below."
                 type="number"
               />
@@ -203,7 +207,8 @@
                 aria-describedby="PeriodsLabel"
                 ref="periodsCheckboxes"
                 :items="availablePeriodCheckboxItems"
-                :value.sync="travelItem.selected_periods"
+                :value="travelItem.selected_periods"
+                @update:value="travelItem.selected_periods = $event"
                 :card="false"
                 class="copy-max-width"
               />

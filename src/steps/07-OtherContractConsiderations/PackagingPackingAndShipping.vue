@@ -22,10 +22,12 @@
             </div>
             <ATATCheckboxGroup
               id="PackagingEtcCheckboxes"
-              :value.sync="selectedOptions"
+              :value="selectedOptions"
+              @update:value="selectedOptions = $event"
               :hasOtherValue="true"
               :otherValue="otherValue"
-              :otherValueEntered.sync="otherValueEntered"
+              :otherValueEntered="otherValueEntered"
+              @update:otherValueEntered="otherValueEntered = $event"
               :otherValueRequiredMessage="otherValueRequiredMessage"
               :noneValue="noneApplyValue"
               :items="checkboxItems"
