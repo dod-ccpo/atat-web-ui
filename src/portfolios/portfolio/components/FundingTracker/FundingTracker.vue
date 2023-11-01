@@ -5,7 +5,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import PortfolioDashboard from "@/portfolios/portfolio/Portfolio.vue";
 
@@ -15,6 +15,6 @@ import PortfolioDashboard from "@/portfolios/portfolio/Portfolio.vue";
   },
 })
 class FundingTracker extends Vue {}
-export default FundingTracker
+export default toNative(FundingTracker)
 </script>
 

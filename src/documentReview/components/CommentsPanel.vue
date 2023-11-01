@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
@@ -62,5 +62,5 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
   },
 })
 class CommentsPanel extends Vue {}
-export default CommentsPanel;
+export default toNative(CommentsPanel)
 </script>

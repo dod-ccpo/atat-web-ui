@@ -80,7 +80,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -301,5 +301,5 @@ class ReviewBarriers extends Vue{
   }
 }
 
-export default ReviewBarriers 
+export default toNative(ReviewBarriers )
 </script>

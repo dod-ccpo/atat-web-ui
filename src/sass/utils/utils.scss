@@ -196,3 +196,7 @@ $widths: 500, 640, 740, 840, 760, 1200;
 ._mb-200 {
   margin-bottom: 200px;
 }
+
+.v-list-item-title {
+  line-height: unset !important;
+}

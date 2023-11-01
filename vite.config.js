@@ -1,12 +1,12 @@
+/// <reference types="vitest" />
 import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
-import {VuetifyResolver} from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import {checker} from 'vite-plugin-checker'
 import pkg from './package.json'
 import resolve from '@rollup/plugin-node-resolve'
-import liveReload from 'vite-plugin-live-reload'
 import commonjs from '@rollup/plugin-commonjs'
+import vuetify from 'vite-plugin-vuetify'
 import VueDevTools from 'vite-plugin-vue-devtools'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dotenv from 'dotenv'
@@ -55,7 +55,7 @@ export default defineConfig(({command, mode}) => {
 		plugins: [
 			VueDevTools({analyze: true}), 
 			vue(),
-
+			vuetify(),
 			Components({
 				dts: true,
 				directives: false,
@@ -74,7 +74,7 @@ export default defineConfig(({command, mode}) => {
 				// vueTsc: true
 				// eslint: {lintCommand:'eslint '},
 			}),
-			liveReload('./src/**/*.(vue|ts)'),
+			// liveReload('./src/**/*.(vue|ts)'),
 			// vue-property-decorator
 			cssInjectedByJsPlugin(),
 			resolve() //commonjs(),
@@ -123,6 +123,42 @@ export default defineConfig(({command, mode}) => {
 				}
 			}
 		},
+		test: {
+			globals: true,
+			environment: 'jsdom',
+			coverage: { 
+			  enabled: true,
+			  provider: 'v8', 
+			  clean: true,
+			  reportOnFailure: true,
+			  skipFull: true,
+			  perFile: true,
+			//   lines: 80,
+			//   functions: 80,
+			//   branches: 80,
+			//   statements: 80,
+			  reporter: ['text','html', 'lcov'],
+			  restoreMocks: true,
+			  maxConcurrency: 10,
+			  concurrent: true,
+			  typecheck: {
+				enabled: true,
+				checker: 'vue-tsc'
+			  },
+			//  bail: 10,
+
+			},
+			server: {
+			  deps: {
+				inline: ['vuetify'],
+				optimizer: 'web'
+			  }
+			},
+			root: '.',
+			ui: true,
+			//Default exclude: node_modules/, dist/, cypress/, *.config.*, **/.{idea,git,cache,output,temp} 
+			//exclude: []
+		  },
 		minify: 'esbuild',
 		commonjsOptions: {
 			esmExternals: false

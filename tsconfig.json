@@ -18,11 +18,11 @@
     "types": [
       "node",
       "vuetify",
-      "jest",
       "cypress",
       "cypress-real-events",
       "@4tw/cypress-drag-drop",
-      "@testing-library/jest-dom"
+      "@testing-library/jest-dom",
+      "vitest/globals"
     ],
     "paths": {
       "@/*": ["src/*"]

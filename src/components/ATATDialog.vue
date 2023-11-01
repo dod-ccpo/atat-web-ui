@@ -87,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-facing-decorator";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import { Component as VueComponent } from "vue";
 
@@ -171,5 +171,5 @@ class ATATDialog extends Vue {
     this._modalDrawerIsOpen = false;
   }
 }
-export default ATATDialog;
+export default toNative(ATATDialog)
 </script>

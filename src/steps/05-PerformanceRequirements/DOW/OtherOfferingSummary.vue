@@ -135,7 +135,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, mixins, Watch, Vue } from "vue-facing-decorator";
+import { Component, mixins, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -527,7 +527,7 @@ class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
   }
 
 }
-export default OtherOfferingSummary
+export default toNative(OtherOfferingSummary)
 
  
 </script>

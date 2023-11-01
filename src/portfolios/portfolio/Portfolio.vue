@@ -515,7 +515,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component,  Vue } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import { DashboardService } from "../../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../../components/ATATFooter.vue";
@@ -1517,5 +1517,5 @@ class PortfolioDashboard extends Vue {
   }
 
 }
-export default PortfolioDashboard
+export default toNative(PortfolioDashboard)
 </script>

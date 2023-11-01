@@ -7,7 +7,7 @@
 <script lang="ts">
 import IGCEStore from "@/store/IGCE";
 
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({
 })
 class IGCE extends Vue {
@@ -15,7 +15,7 @@ class IGCE extends Vue {
     IGCEStore.setHasDOWandPop();
   }
 }
-export default IGCE
+export default toNative(IGCE)
 </script>
 
 

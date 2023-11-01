@@ -13,7 +13,7 @@
   </ATATAlert>
 </template>
 <script lang="ts">
-import { Component, Prop,  Vue } from "vue-facing-decorator";
+import { Component, Prop,  Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { FundingAlertTypes } from "@/store/portfolio";
 
@@ -108,5 +108,5 @@ class FundingAlert extends Vue {
   }
 
 }
-export default FundingAlert
+export default toNative(FundingAlert)
 </script>

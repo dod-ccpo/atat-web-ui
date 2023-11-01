@@ -106,7 +106,7 @@
 
 <script lang="ts">
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -300,5 +300,5 @@ class RemoveBarriers extends Vue
   }
 }
 
-export default RemoveBarriers 
+export default toNative(RemoveBarriers )
 </script>

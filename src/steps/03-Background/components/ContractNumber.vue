@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom"
 import ATATTextField from "@/components/ATATTextField.vue";
 
@@ -40,5 +40,5 @@ class ContractNumber extends Vue {
   @Prop({default: ""}) private tooltipText!: string;
 }
 
-export default ContractNumber
+export default toNative(ContractNumber)
 </script>

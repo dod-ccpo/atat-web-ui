@@ -72,7 +72,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom';
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
@@ -297,5 +297,5 @@ class ClassificationLevelForm extends Vue {
   */
 }
 
-export default ClassificationLevelForm
+export default toNative(ClassificationLevelForm)
 </script>

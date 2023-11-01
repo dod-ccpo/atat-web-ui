@@ -21,7 +21,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import FinancialDetails from "@/store/financialDetails";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -79,5 +79,5 @@ class RequirementsCostForm extends Vue {
   };
 };
 
-export default RequirementsCostForm
+export default toNative(RequirementsCostForm)
 </script>

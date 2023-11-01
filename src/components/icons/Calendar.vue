@@ -9,11 +9,11 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Prop } from "vue-facing-decorator";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
 
 @Component({})
 class Calendar extends Vue {
   @Prop({default: "61686c", required: true}) private color!:string;
 }
-export default Calendar;
+export default toNative(Calendar)
 </script>

@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class FinancialDataLearnMore extends Vue {}
-export default FinancialDataLearnMore;
+export default toNative(FinancialDataLearnMore)
 </script>

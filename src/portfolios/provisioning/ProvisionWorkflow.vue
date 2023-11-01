@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch,  Vue } from "vue-facing-decorator";
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "@/components/ATATStepperNavigation.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
@@ -309,5 +309,5 @@ class ProvisionWorkflow extends Vue {
   }
 
 }
-export default ProvisionWorkflow
+export default toNative(ProvisionWorkflow)
 </script>

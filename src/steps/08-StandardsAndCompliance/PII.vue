@@ -91,7 +91,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -178,5 +178,5 @@ class PII extends  Vue {
 
 }
 
-export default PII
+export default toNative(PII)
 </script>

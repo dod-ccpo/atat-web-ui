@@ -17,7 +17,7 @@
 
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import TaskOrderSearch from "@/portfolios/components/TaskOrderSearch.vue";
 
 @Component({
@@ -32,6 +32,6 @@ class ExistingTaskOrderCard extends Vue {
     this.$emit("startProvisionWorkflow");
   }
 }
-export default ExistingTaskOrderCard;
+export default toNative(ExistingTaskOrderCard)
 
 </script>

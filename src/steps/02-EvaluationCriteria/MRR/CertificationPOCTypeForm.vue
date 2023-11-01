@@ -42,7 +42,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Prop,  Watch, Vue } from "vue-facing-decorator";
+import { Component, Prop,  Watch, Vue, toNative } from "vue-facing-decorator";
 import {CountryObj, RadioButton, RankData, SelectData} from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import {ContactDTO, FinancialPOCType} from "@/api/models";
@@ -286,6 +286,6 @@ class CertificationPOCTypeForm extends Vue {
   }
 }
 
-export default CertificationPOCTypeForm 
+export default toNative(CertificationPOCTypeForm )
 </script>
 

@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { Component,  Vue } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import PortfolioStore from "@/store/portfolio";
@@ -197,5 +197,5 @@ class PortfolioDetails extends Vue {
   }
 
 }
-export default PortfolioDetails
+export default toNative(PortfolioDetails)
 </script>

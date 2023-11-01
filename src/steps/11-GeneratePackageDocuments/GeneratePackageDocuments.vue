@@ -20,7 +20,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocuments from "./components/GeneratingDocuments.vue";
@@ -122,5 +122,5 @@ class GeneratingPackageDocuments extends Vue {
   }
 }
 
-export default GeneratingPackageDocuments
+export default toNative(GeneratingPackageDocuments)
 </script>
