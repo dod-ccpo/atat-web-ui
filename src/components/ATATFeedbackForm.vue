@@ -181,7 +181,7 @@
                             :value.sync="otherFeedbackValue"
                           />
                           <v-btn
-                            class="primary ml-auto"
+                            class="_primary ml-auto"
                             id="verySatisfied"
                             @click="sendFeedback()"
                             @keydown.enter="sendFeedback()"
@@ -205,7 +205,7 @@
                               </p>
                               <v-btn
                                 id="Dismiss"
-                                class="secondary mx-auto"
+                                class="_secondary mx-auto"
                                 @click="dismiss"
                                 @keydown.enter="dismiss"
                                 @keydown.space="dismiss"

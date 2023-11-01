@@ -29,7 +29,7 @@
           :id="'AnticipatedUserAndDataNeedsAccordion_' + index"
           :key="index"
           class="mb-4"
-          flat
+          borderless
         >
           <v-expansion-panel expand>
             <v-expansion-panel-title :id="`AccordionButton_${index}`" >

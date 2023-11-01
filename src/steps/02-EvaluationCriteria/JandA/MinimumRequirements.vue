@@ -31,18 +31,18 @@
                 ]"
             />
             <v-btn
-                id="RestoreMinGovReqExplanationButton"
-                class="secondary font-size-14 px-4 mb-1 mt-1"
-                :disabled="isMinGovReqExpDefaultUnmodified"
-                @click="onRestoreMinGovReqExpClick"
+              id="RestoreMinGovReqExplanationButton"
+              class="_secondary font-size-14 px-4 mb-1 mt-1"
+              :disabled="isMinGovReqExpDefaultUnmodified"
+              @click="onRestoreMinGovReqExpClick"
             >
               <ATATSVGIcon
-                  id="RestoreMinGovReqExplanationButtonIcon"
-                  width="18"
-                  height="18"
-                  name="restore"
-                  class="mr-1"
-                  :color="btnRestoreIconColor"
+                id="RestoreMinGovReqExplanationButtonIcon"
+                width="18"
+                height="18"
+                name="restore"
+                class="mr-1"
+                :color="btnRestoreIconColor"
               />
               Restore default suggestion
             </v-btn>

@@ -1,4 +1,5 @@
 <template>
+<!--  TODO figure out if :clipped has a replacement and layout should be adjusted with order prop-->
   <v-navigation-drawer
     id="SlideoutPanel"
     class="_slideout-panel"
@@ -6,9 +7,7 @@
     transition="slide-x-reverse-transition"
     @transitionend="transitionEnded"
     :width="panelWidth + 'px'"
-    app
-    right
-    :clipped="appSection === 'Portfolio Summary' || appSection === 'Portfolios'"
+    location="right"
     :temporary="showOverlay"
     disable-resize-watcher
   >
@@ -20,8 +19,8 @@
       </div>
       <v-btn
         class="text-base-darkest pa-0 icon-24 _panel-closer"
-        text="true"
-        small
+        variant="text"
+        size="small"
         @click.stop="closeSlideoutPanel"
         @keydown.enter="closeSlideoutPanel"
         @keydown.space="closeSlideoutPanel"
@@ -53,8 +52,8 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 class ATATSlideoutPanel extends Vue {
   @Prop({ default: "380" }) private panelWidth!: string;
   @Prop({ default: false }) private alwaysOpen!: boolean;
-
-  
+  // below should be adjusted to work with order prop in template
+  // :clipped="appSection === 'Portfolio Summary' || appSection === 'Portfolios'"
   public appSection = AppSections.activeAppSection;
   public transitionEnded(e: Event):void {
     const target = e.currentTarget as HTMLElement;

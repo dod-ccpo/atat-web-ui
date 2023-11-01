@@ -12,17 +12,15 @@
           </p>
           <p class="font-weight-500 mb-3">You can expect to:</p>
           <v-list class="_atat-stepper mb-10">
-            <v-list-item-group>
               <v-list-item
                 v-for="(stepText, index) in provisionStepsText"
                 :key="index"
               >
                 <span class="_step-circle">{{ index + 1 }}</span>
-                <v-list-item-content class="mb-2">
+                <div class="mb-2">
                   {{ stepText }}
-                </v-list-item-content>
+                </div>
               </v-list-item>
-            </v-list-item-group>
           </v-list>
           <div class="mb-6 pa-6 rounded-lg _card-soft-shadow">
             <TaskOrderSearch

@@ -38,6 +38,7 @@
         :model-value.sync="_value"
         :placeholder="placeHolder"
         :rules="rules"
+        :validate-on="validationString"
         @click:clear="clearErrorMessages"
         @blur="onBlur"
         autocomplete="off"

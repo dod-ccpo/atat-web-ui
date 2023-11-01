@@ -1,6 +1,6 @@
 <template>
   <div class="_preview-wrap">
-    <v-app-bar app flat v-if="!isForm" class="_preview-header d-flex align-center bg-white">
+    <v-app-bar flat v-if="!isForm" class="_preview-header d-flex align-center bg-white">
       <v-btn 
         class="plain bg-transparent mx-7 my-4 pa-0" 
         @click="$emit('showView', 'form')" >

@@ -152,7 +152,6 @@
               <v-btn
                 id="AddIncrementButton"
                 v-if="showAddIncrementButton"
-                plain
                 variant="text"
                 class=" link-button no-border mt-5"
                 :ripple="false"
@@ -188,7 +187,7 @@
 
             <div class="ml-10 width-100">
               <div
-                class="bg-primary-lighter width-100 border-rounded-more pa-6"
+                class="bg-primary-lighter width-100 _border-rounded-more pa-6"
               >
                 <div class="d-flex">
                   <div class="pr-5">
