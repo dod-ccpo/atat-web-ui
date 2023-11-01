@@ -20,11 +20,10 @@
             v-for="button in additionalButtons"
             :key="button.buttonId"
             @click="$emit('additionalButtonClick', button)" 
-            :color="getButtonClass(button)" 
             role="link" 
             class="ml-4"
             :id="button.buttonId"
-            :class="{ 'd-none': button.hide }"
+            :class="[{ 'd-none': button.hide },getButtonClass(button)] "
           >
             {{ button.buttonText }}
           </v-btn>
@@ -34,7 +33,7 @@
           @click="continueClicked()" 
           v-if="!hideContinueButton"
           variant="flat" 
-          :color="getContinueButtonColor"
+          :class="getContinueButtonColor"
           role="link" 
           class="ml-4"
           id="ContinueButton"
@@ -67,13 +66,14 @@ class ATATStepperNavigation extends Vue {
   @Prop({ default: "" }) private altContinueAction?: string;
 
   private getButtonClass(button: AdditionalButton) {
-    return button.buttonClass || "secondary";
+    return button.buttonClass ?? "_secondary";
   }
 
   get getContinueButtonColor():string{
+    console.log(this.continueButtonColor)
     return this.continueButtonColor !== ""
       ? this.continueButtonColor as string
-      : this.continueButtonText === 'Continue'? 'primary' : 'secondary'
+      : this.continueButtonText === 'Continue'? '_primary' : '_secondary'
   } 
 
 

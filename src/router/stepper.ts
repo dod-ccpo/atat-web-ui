@@ -480,7 +480,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepOne,
         continueButtonText: "Wrap up this section",
-        continueButtonColor:  "primary"
+        continueButtonColor:  "_primary"
       },
     ],
   },
@@ -552,7 +552,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I want to write my own explanation",
             buttonId: "WriteOwnSoleSourceCause",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "writeOwnSoleSourceCause",
           },
         ]
@@ -626,7 +626,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I want to write my own explanation",
             buttonId: "WriteOwnMarketResearchDetails",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "writeOwnMarketResearchDetails",
           },
         ]
@@ -677,7 +677,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I want to write my own explanation",
             buttonId: "WriteOwnBarriers",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "WriteOwnBarriers",
           },
         ]
@@ -729,7 +729,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I don’t need other assessment areas",
             buttonId: "NoOtherAssessmentAreas",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             // name: routeNames.EvalPlanSummary, // TODO: restore when summaryu page added
             name: routeNames.PeriodOfPerformance,
           },
@@ -960,7 +960,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepFour,
         continueButtonText: "Wrap up this section",
-        continueButtonColor:  "primary"
+        continueButtonColor:  "_primary"
       },
     ]
   },
@@ -1043,7 +1043,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I don’t need these cloud resources",
             buttonId: "DontNeedResources",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "confirmServiceDeletion",
             emitText: "confirmDeleteService",
           },
@@ -1070,7 +1070,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I don’t need compute resources",
             buttonId: "DontNeedResources",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "confirmOtherOfferingDeletion",
             emitText: "confirmDeleteCompute",
           },
@@ -1144,7 +1144,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I don’t need CSP employees to travel",
             buttonId: "DontNeedTravel",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "confirmDeleteTravelAll",
             emitText: "confirmDeleteTravel",
           },
@@ -1158,7 +1158,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepSix,
         continueButtonText: "Wrap up this section",
-        continueButtonColor:  "primary"
+        continueButtonColor:  "_primary"
       },
     ]
   },
@@ -1243,7 +1243,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepSeven,
         continueButtonText: "Wrap up this section",
-        continueButtonColor:  "primary"
+        continueButtonColor:  "_primary"
       },
     ]
   },
@@ -1473,7 +1473,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepEight,
         continueButtonText: "Wrap up this section",
-        continueButtonColor: "primary"
+        continueButtonColor: "_primary"
       },
     ]
   },

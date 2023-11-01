@@ -17,7 +17,7 @@ export const mapStepConfigs = (
       additionalButtons: routeConfig.additionalButtons ?? [],
       backButtonText: routeConfig.backButtonText ?? "Back",
       continueButtonText: routeConfig.continueButtonText ?? "Continue",
-      continueButtonColor: routeConfig.continueButtonColor ?? "primary",
+      continueButtonColor: routeConfig.continueButtonColor ?? "_primary",
       altContinueAction: routeConfig.altContinueAction ?? "",
       completed: routeConfig.completed ?? false,
       completePercentageWeight: routeConfig.completePercentageWeight ?? 0,

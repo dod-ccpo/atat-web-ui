@@ -54,8 +54,11 @@
         :counter="maxChars"
         :auto-grow="autoGrow"
         :style="getStyles"
+        messages="showMessages"
+      
       >
       </v-textarea>
+      <div> tony </div>
       <ATATErrorValidation
         :errorMessages="errorMessages" 
         :textAreaWithCounter="maxChars !== ''"
@@ -110,7 +113,7 @@ class ATATTextArea extends Vue {
   @Prop({ default: "" }) private minHeight!: string;
   @Prop({ default: "" }) private maxHeight!: string;
   
-
+  private showMessages = "";
   //data
   private placeHolder = "";
   private errorMessages: string[] = [];

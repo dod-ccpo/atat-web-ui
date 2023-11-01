@@ -5,7 +5,7 @@
       id="ExceptionRadioOptions"
       :legend="legend" 
       :value="_selectedException"
-      @update:_selectedException = "_selectedException=$event"
+      @update:value = "_selectedException = $event"
       :items="exceptionOptions"
       name="fair-opportunity-exceptions-radio-group"
       :class="classes"

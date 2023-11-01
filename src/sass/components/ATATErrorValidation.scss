@@ -1,25 +1,22 @@
-// .v-input--error{
-//     .v-input__control{
-//       &.v-field--error,
-//       &.error--text{
-//         fieldset, 
-//         fieldset:focus{
-//             border-color: $error !important;
-//             border-width: 2px;
-//           }
-//         i, 
-//         label,
-//         .v-text-field__suffix{
-//             color: $error !important;
-//         }
-//       }
-  
-//       .atat-text-field-error{
-//         display: contents;
-//       }
-//     }
+.v-input--error{
+  .v-input__control{
+      .v-field--error,
+      fieldset, 
+      fieldset:focus{
+        border-color: $error !important;
+        border-width: 2px;
+      }
+      i, 
+      label,
+      .v-text-field__suffix{
+        color: $error !important;
+      }
+    }
 
-// }
+    .atat-text-field-error{
+      display: contents;
+    }
+}
 
 .customized-error-control{
   .v-input.v-text-field--outlined ,

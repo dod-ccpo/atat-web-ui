@@ -279,7 +279,7 @@ class ProvisionWorkflow extends Vue {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText ?? "Back";
-    this.continueButtonColor = step.continueButtonColor ?? "primary";
+    this.continueButtonColor = step.continueButtonColor ?? "_primary";
     this.continueButtonText = step.continueButtonText ?? "Continue";
     this.altContinueAction = step.altContinueAction ?? "";
     if (step.additionalButtons) {

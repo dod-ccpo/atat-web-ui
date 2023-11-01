@@ -241,7 +241,7 @@
               <v-btn width="111"
                      :id="getButtonId(item)"
                      :class="[
-                  item.isComplete ? 'secondary' : 'primary',
+                  item.isComplete ? '_secondary' : '_primary',
                 ]"
                      @click="navigate(item.routeName)"
                      @keydown.enter="navigate(item.routeName)"

@@ -1,5 +1,9 @@
 
 .v-textarea {
+  .v-field__input{
+    color: $base-darkest;
+    -webkit-mask-image: none;
+  }
   .v-field__outline{
     border: 1px  $base;
     border-radius: 4px;
@@ -17,12 +21,12 @@
       display: none !important;
     }
   }
-  // &.v-input--error,
-  // &.error--text {
-  //   .v-counter {
-  //     color: $error !important;
-  //   }
-  // }
+  &.v-input--error,
+  &.error--text {
+    .v-counter {
+      color: $error !important;
+    }
+  }
 
   .v-text-field__details {
     display: flex;
