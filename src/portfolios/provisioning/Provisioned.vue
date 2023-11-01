@@ -109,5 +109,5 @@ class Provisioned extends Vue {
   }
 
 }
-export default Provisioned
+export default toNative(Provisioned)
 </script>

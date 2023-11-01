@@ -9,6 +9,6 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 })
 class Background extends Vue {
 }
-export default Background
+export default toNative(Background)
 </script>
 

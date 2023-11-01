@@ -150,5 +150,5 @@ class ATATFileList extends Vue {
     }
   }
 }
-export default ATATFileList;
+export default toNative(ATATFileList)
 </script>

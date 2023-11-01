@@ -176,8 +176,7 @@ class MIPR extends Vue {
 
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => ValidationResult)[] {
-    //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => ValidationResult)[] = [];
+    const rulesArr: ((v: string) => ValidationResult)[] = [];
   
     rulesArr.push(this.$validators.required(this.requiredMessage));
     this.invalidFiles.forEach((iFile) => {
@@ -197,5 +196,5 @@ class MIPR extends Vue {
 
 }
 
-export default MIPR
+export default toNative(MIPR)
 </script>

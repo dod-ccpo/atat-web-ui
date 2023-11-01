@@ -12,7 +12,8 @@
       tooltipText="Provide a short, descriptive title of the work to
               be performed. This will be used to refer to this project within 
               ATAT and across all acquisition documents."
-      :value.sync="_currentTitle"
+      :value="_currentTitle"
+      @update:value="_currentTitle = $event"
     />
   </div>
   <div v-else> 
@@ -26,7 +27,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
  
-import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop , Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATTextField from "@/components/ATATTextField.vue";
 import { ValidationRule } from "types/Global";
@@ -37,13 +38,12 @@ import { ValidationRule } from "types/Global";
   },
 })
 class ProjectTitle extends Vue {
-  @PropSync("currentTitle", {default: "title goes here"}) 
-  private _currentTitle!: string;
+  @PropSync("currentTitle", {default: ""}) private _currentTitle!: string;
   @Prop({default: "ProjectTitle"}) private id!: string;
   @Prop() private label!: string;
-  @Prop({ default: "title goes here" }) private helpText!: string;
+  @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: true}) private isForm!: boolean;
   @PropSync("rules") private _rules!: ValidationRule;
 }
-export default ProjectTitle
+export default toNative(ProjectTitle)
 </script>

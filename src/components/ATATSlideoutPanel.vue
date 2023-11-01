@@ -139,5 +139,5 @@ class ATATSlideoutPanel extends Vue {
     SlideoutPanel.closeSlideoutPanel();
   }
 }
-export default ATATSlideoutPanel;
+export default toNative(ATATSlideoutPanel)
 </script>

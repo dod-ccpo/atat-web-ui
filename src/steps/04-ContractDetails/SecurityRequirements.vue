@@ -77,8 +77,7 @@ class SecurityRequirements extends Vue {
   public savedData: SecurityRequirement[] = []
 
   public get currentData(): SecurityRequirement[] {
-    //eslint-disable-next-line prefer-const
-    let requirements:SecurityRequirement[] = []
+    const requirements:SecurityRequirement[] = []
     if(this.hasSecret){
       requirements.push({
         type:"SECRET",
@@ -129,8 +128,7 @@ class SecurityRequirements extends Vue {
         this.hasSecret = true
       }
     })
-    //eslint-disable-next-line prefer-const
-    let storeData = classificationRequirements.securityRequirements
+    const storeData = classificationRequirements.securityRequirements
     if(storeData){
       storeData.forEach((requirement)=>{
         if(requirement.type === "SECRET"){
@@ -155,6 +153,6 @@ class SecurityRequirements extends Vue {
   }
 }
 
-export default SecurityRequirements
+export default toNative(SecurityRequirements)
 </script>
 

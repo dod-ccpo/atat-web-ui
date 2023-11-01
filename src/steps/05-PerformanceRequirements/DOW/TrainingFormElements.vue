@@ -78,7 +78,7 @@
 
 <script lang="ts">
  
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
@@ -143,7 +143,7 @@ class TrainingFormElements extends Vue{
   ];
 
 }
-export default TrainingFormElements 
+export default toNative(TrainingFormElements )
 
  
 </script>

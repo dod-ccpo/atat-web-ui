@@ -79,5 +79,5 @@ class RequirementsCostForm extends Vue {
   };
 };
 
-export default RequirementsCostForm
+export default toNative(RequirementsCostForm)
 </script>

@@ -224,8 +224,7 @@ class ATATSideStepper extends Vue {
   
   private calculatePercentComplete() {
     this.percentComplete = 0;
-    //eslint-disable-next-line prefer-const 
-    for(let [key, value] of Steps.stepMap){
+    for(const [key, value] of Steps.stepMap){
       if(value.completed)
         this.percentComplete += value.completePercentageWeight as number;
     }
@@ -242,5 +241,5 @@ class ATATSideStepper extends Vue {
   private activeStep = "";
   private percentComplete = 0;
 }
-export default ATATSideStepper;
+export default toNative(ATATSideStepper)
 </script>

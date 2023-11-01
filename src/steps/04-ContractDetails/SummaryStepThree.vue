@@ -66,5 +66,5 @@ class SummaryStepThree extends Vue {
   }
 }
 
-export default SummaryStepThree
+export default toNative(SummaryStepThree)
 </script>

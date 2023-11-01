@@ -36,5 +36,5 @@ class NewAcquisitionCard extends Vue {
   }
 
 }
-export default NewAcquisitionCard;
+export default toNative(NewAcquisitionCard)
 </script>

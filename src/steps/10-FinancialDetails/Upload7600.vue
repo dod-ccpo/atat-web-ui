@@ -194,8 +194,7 @@ class Upload7600 extends Vue {
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => ValidationResult)[] {
     if (this.useGInvoicing === "YES") return [];
-    //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => ValidationResult)[] = [];
+    const rulesArr: ((v: string) => ValidationResult)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredMessage));
 
@@ -346,5 +345,5 @@ class Upload7600 extends Vue {
   }
 }
 
-export default Upload7600
+export default toNative(Upload7600)
 </script>

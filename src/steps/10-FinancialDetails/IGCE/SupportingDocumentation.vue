@@ -110,8 +110,7 @@ class SupportingDocumentation extends Vue {
   // files returned from the child component
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => ValidationResult)[] {
-    //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => ValidationResult)[] = [];
+    const rulesArr: ((v: string) => ValidationResult)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredFileUploadMessage));
 
@@ -186,6 +185,6 @@ class SupportingDocumentation extends Vue {
   
 }
 
-export default SupportingDocumentation
+export default toNative(SupportingDocumentation)
 </script>
 

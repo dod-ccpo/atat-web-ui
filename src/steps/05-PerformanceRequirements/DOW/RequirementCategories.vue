@@ -118,8 +118,7 @@
   </div>
 </template>
 <script lang="ts">
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -359,5 +358,5 @@ class RequirementCategories extends Vue{
   };
 
 };
-export default RequirementCategories 
+export default toNative(RequirementCategories )
 </script>

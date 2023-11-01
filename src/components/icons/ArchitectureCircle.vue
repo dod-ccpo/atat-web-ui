@@ -55,5 +55,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ArchitectureCircle extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default ArchitectureCircle;
+export default toNative(ArchitectureCircle)
 </script>

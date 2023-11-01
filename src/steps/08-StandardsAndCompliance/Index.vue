@@ -8,6 +8,6 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 
 class OtherContractConsiderations extends Vue {}
-export default OtherContractConsiderations
+export default toNative(OtherContractConsiderations)
 
 </script>

@@ -564,6 +564,6 @@ class InstanceDetails extends mixins(Vue, SaveOnLeave) {
 
 }
 
-export default InstanceDetails
+export default toNative(InstanceDetails)
 
 </script>

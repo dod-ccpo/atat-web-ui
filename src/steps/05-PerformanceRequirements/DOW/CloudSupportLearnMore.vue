@@ -64,7 +64,7 @@
 
 <script lang="ts">
  
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
@@ -128,5 +128,5 @@ class CloudSupportLearnMore extends Vue{
     }
   };
 }
-export default CloudSupportLearnMore 
+export default toNative(CloudSupportLearnMore )
 </script>

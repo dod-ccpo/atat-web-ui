@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ArchitecturalDesignForm from "@/components/DOW/ArchitecturalDesignForm.vue"
 
@@ -80,5 +80,5 @@ class ArchitectureDesignDOW extends Vue {
   }  
 
 }
-export default ArchitectureDesignDOW
+export default toNative(ArchitectureDesignDOW)
 </script>

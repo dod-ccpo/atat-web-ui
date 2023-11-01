@@ -171,5 +171,5 @@ class ATATDialog extends Vue {
     this._modalDrawerIsOpen = false;
   }
 }
-export default ATATDialog;
+export default toNative(ATATDialog)
 </script>

@@ -284,5 +284,5 @@ class ReviewDocuments extends Vue {
 
 }
 
-export default ReviewDocuments
+export default toNative(ReviewDocuments)
 </script>

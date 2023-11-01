@@ -1071,8 +1071,8 @@ export class SummaryStore extends VuexModule {
     const title = "Contract Type";
     const contractType = AcquisitionPackage.contractType as ContractTypeDTO;
 
-    const isFfp = contractType.firm_fixed_price.toLowerCase() === "true";
-    const isTm = contractType.time_and_materials.toLowerCase() === "true";
+    const isFfp = contractType?.firm_fixed_price.toLowerCase() === "true";
+    const isTm = contractType?.time_and_materials.toLowerCase() === "true";
     const hasJustification = contractType?.contract_type_justification.trim() !== "";
 
     const description = await this.setContractTypeDescription({isFfp, isTm});
@@ -1512,7 +1512,6 @@ export class SummaryStore extends VuexModule {
    */
   @Action({rawError: true})
   public async validateStepFive(): Promise<void> {
-    //eslint-disable-next-line prefer-const
     // validates dowObjects.otherOfferingData
     await this.validateAnticipatedUsersAndData();
     const dowObjects = await DescriptionOfWork.getDOWObject();
@@ -1759,7 +1758,6 @@ export class SummaryStore extends VuexModule {
         assessSecurityRequirements: boolean
       })
       : Promise<OtherServiceOfferingData> {
-    //eslint-disable-next-line prefer-const
     let requiredFields: Array<keyof OtherServiceOfferingData> = [];
     const isCompute = attribs.id === "COMPUTE";
     const isDatabase = attribs.id === "DATABASE";

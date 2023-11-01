@@ -81,7 +81,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -198,8 +198,7 @@ class ArchitecturalDesign extends Vue {
     try {
       if (this.hasChanged()) {
         if(this.currentData.needs_architectural_design_services === "NO"){
-          //eslint-disable-next-line prefer-const
-          let data = Object.assign(this.currentData, emptyArchObject)
+          const data = Object.assign(this.currentData, emptyArchObject)
           await DescriptionOfWork.setDOWArchitecturalDesign(data);
         }else{
           await DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);
@@ -212,5 +211,5 @@ class ArchitecturalDesign extends Vue {
   }
 
 }
-export default ArchitecturalDesign
+export default toNative(ArchitecturalDesign)
 </script>

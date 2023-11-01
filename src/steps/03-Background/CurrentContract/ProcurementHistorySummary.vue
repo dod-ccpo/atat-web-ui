@@ -307,5 +307,5 @@ class ProcurementHistorySummary extends Vue {
 
 }
 
-export default ProcurementHistorySummary
+export default toNative(ProcurementHistorySummary)
 </script>

@@ -326,8 +326,7 @@ class TravelEstimates extends Vue {
   protected async saveOnLeave(): Promise<boolean> {
     if (this.currentData.option?.toLowerCase()==="single"){
       this.sysIdValueArray = [];
-      //eslint-disable-next-line prefer-const
-      let obj:Record<string, string>= {};
+      const obj:Record<string, string>= {};
       obj["PER_PERIOD"] = this.valueArray[0];
       this.sysIdValueArray.push(obj);
     }
@@ -342,6 +341,6 @@ class TravelEstimates extends Vue {
   }
 }
 
-export default TravelEstimates
+export default toNative(TravelEstimates)
 </script>
 

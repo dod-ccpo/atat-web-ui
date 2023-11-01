@@ -457,6 +457,6 @@ class PortfolioCard extends Vue {
   }
 
 }
-export default PortfolioCard
+export default toNative(PortfolioCard)
 </script>
 

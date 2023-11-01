@@ -26,7 +26,7 @@
 
 <script lang="ts">
  
-import { Component, Prop, toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -108,5 +108,5 @@ class FairOppExceptions extends Vue {
     await this.setReadOnly();
   }
 }
-export default FairOppExceptions
+export default toNative(FairOppExceptions)
 </script>

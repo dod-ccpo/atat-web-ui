@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom"
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import {
@@ -173,5 +173,5 @@ class AnticipatedDurationandUsage extends Vue {
   }
 
 }
-export default AnticipatedDurationandUsage
+export default toNative(AnticipatedDurationandUsage)
 </script>

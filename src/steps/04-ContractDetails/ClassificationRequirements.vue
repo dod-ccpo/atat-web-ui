@@ -326,6 +326,6 @@ class ClassificationRequirements extends Vue {
 
 }
 
-export default ClassificationRequirements
+export default toNative(ClassificationRequirements)
 </script>
 

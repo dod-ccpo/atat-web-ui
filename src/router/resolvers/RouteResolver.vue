@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
-import { RouteLocationNormalized, RouterLink } from "vue-router";
+import { RouteLocationNormalized } from "vue-router";
 
 // route resolver invoker
 import { InvokeRouteResolver } from "./index";
@@ -39,5 +39,5 @@ class RouteResolver extends Vue {
     });
   }
 }
-export default RouteResolver;
+export default toNative(RouteResolver)
 </script>

@@ -57,5 +57,5 @@ class ArchivePortfolioModal extends Vue {
     this.$emit("cancelClicked");
   }
 }
-export default ArchivePortfolioModal
+export default toNative(ArchivePortfolioModal)
 </script>

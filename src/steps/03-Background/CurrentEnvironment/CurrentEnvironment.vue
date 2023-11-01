@@ -113,6 +113,6 @@ class HasCurrentEnvironment extends Vue {
 
 }
 
-export default HasCurrentEnvironment
+export default toNative(HasCurrentEnvironment)
 </script>
 

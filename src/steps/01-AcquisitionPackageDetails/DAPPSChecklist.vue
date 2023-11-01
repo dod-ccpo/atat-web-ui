@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component , Vue, toNative } from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
@@ -244,5 +244,5 @@ class DAPPSChecklist extends Vue {
   }
 }
 
-export default DAPPSChecklist
+export default toNative(DAPPSChecklist)
 </script>

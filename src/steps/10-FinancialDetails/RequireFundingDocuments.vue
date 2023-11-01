@@ -91,5 +91,5 @@ class RequireFundingDocuments extends Vue {
   }
 }
 
-export default RequireFundingDocuments
+export default toNative(RequireFundingDocuments)
 </script>

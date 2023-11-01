@@ -248,8 +248,7 @@ class GTCInformation extends Vue {
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => ValidationResult)[] {
     if (this.useGInvoicing === "YES") return [];
-    //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => ValidationResult)[] = [];
+    const rulesArr: ((v: string) => ValidationResult)[] = [];
 
     rulesArr.push(this.$validators.required(this.requiredMessage));
 
@@ -407,5 +406,5 @@ class GTCInformation extends Vue {
   }
 }
 
-export default GTCInformation
+export default toNative(GTCInformation)
 </script>

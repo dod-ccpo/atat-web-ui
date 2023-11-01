@@ -9,11 +9,11 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, toNative, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 class CommentBubble extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default CommentBubble;
+export default toNative(CommentBubble)
 </script>

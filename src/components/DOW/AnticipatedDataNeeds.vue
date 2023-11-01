@@ -59,7 +59,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, toNative, Component, Prop } from "vue-facing-decorator";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -173,5 +173,5 @@ class AnticipatedDataNeeds extends Vue {
   }
 
 }
-export default AnticipatedDataNeeds
+export default toNative(AnticipatedDataNeeds)
 </script>

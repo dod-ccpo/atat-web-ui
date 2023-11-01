@@ -55,5 +55,5 @@ class MemberCard extends Vue {
   }
 
 }
-export default MemberCard
+export default toNative(MemberCard)
 </script>

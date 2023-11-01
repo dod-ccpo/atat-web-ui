@@ -57,7 +57,7 @@
 </template>
 <script lang="ts">
  
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component , Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 
@@ -68,6 +68,6 @@ import ATATAlert from "@/components/ATATAlert.vue";
 })
 class ContractingShopLearnMore extends Vue
 {}
-export default ContractingShopLearnMore 
+export default toNative(ContractingShopLearnMore )
 
 </script>

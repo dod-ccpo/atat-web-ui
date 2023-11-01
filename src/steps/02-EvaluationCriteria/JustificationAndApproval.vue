@@ -7,12 +7,12 @@
 <script lang="ts">
  
 
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 @Component({
 })
 class JustificationAndApproval extends Vue {
 }
 
-export default JustificationAndApproval
+export default toNative(JustificationAndApproval)
 </script>
 

@@ -127,7 +127,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, toNative, Vue } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -156,7 +156,7 @@ class ATATRadioGroup extends Vue {
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
-      resetValidation: () => boolean;
+      // resetValidation: () => boolean;
     };
     atatTextInput: ComponentPublicInstance & {
       errorBucket: string[]; 
@@ -227,7 +227,7 @@ class ATATRadioGroup extends Vue {
   private clearErrorMessage(): void {
     this.errorMessages = [];
     this._clearErrorMessages = false;
-    this.$refs.radioButtonGroup.resetValidation();
+    // this.$refs.radioButtonGroup.resetValidation();
   } 
   @Watch("clearErrorMessages")
   public clearErrorMessagesChanged(newVal: boolean): void {
@@ -264,7 +264,6 @@ class ATATRadioGroup extends Vue {
 
   // events
   private onClick(): void {
-    this.$emit("radioButtonClicked", this._selectedValue);
     this.clearErrorMessage();
   }
 
@@ -325,6 +324,6 @@ class ATATRadioGroup extends Vue {
 
 }
 
-export default ATATRadioGroup
+export default toNative(ATATRadioGroup)
 
 </script>

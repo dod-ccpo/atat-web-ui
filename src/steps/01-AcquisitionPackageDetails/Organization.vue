@@ -156,7 +156,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch , Vue, toNative } from "vue-facing-decorator";
 import {
   convertAgencyRecordToSelect,
   convertDisaOrgToSelect
@@ -441,5 +441,5 @@ class OrganizationInfo extends Vue {
     return true;
   }
 }
-export default OrganizationInfo
+export default toNative(OrganizationInfo)
 </script>

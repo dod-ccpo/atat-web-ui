@@ -287,7 +287,7 @@
 
 <script lang="ts">
 
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -824,5 +824,5 @@ class MarketResearchEfforts extends Vue {
 
 }
 
-export default MarketResearchEfforts
+export default toNative(MarketResearchEfforts)
 </script>

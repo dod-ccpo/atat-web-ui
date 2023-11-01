@@ -70,6 +70,6 @@ class SecurityRequirementsCheckboxes extends Vue {
     this._selectedSecurityRequirements = newVal
   }
 }
-export default SecurityRequirementsCheckboxes;
+export default toNative(SecurityRequirementsCheckboxes)
 </script>
 

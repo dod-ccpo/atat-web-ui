@@ -174,8 +174,7 @@ class RecurringRequirement extends Vue {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        //eslint-disable-next-line prefer-const
-        let pops: PeriodOfPerformanceDTO  = {  
+        const pops: PeriodOfPerformanceDTO  = {  
           ...this.popDTO,
           is_requirement_follow_on_procurement_sole_sourced: 
             this.currentData.is_requirement_follow_on_procurement_sole_sourced || "",
@@ -191,5 +190,5 @@ class RecurringRequirement extends Vue {
   }
 }
 
-export default RecurringRequirement
+export default toNative(RecurringRequirement)
 </script>

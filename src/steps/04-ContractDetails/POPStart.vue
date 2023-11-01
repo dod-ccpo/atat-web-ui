@@ -178,8 +178,7 @@ class POPStart extends Vue {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        //eslint-disable-next-line prefer-const
-        let pops: PeriodOfPerformanceDTO  = {  
+        const pops: PeriodOfPerformanceDTO  = {  
           ...this.loaded,
           time_frame: this.currentData.time_frame || "",
           pop_start_request: this.currentData.pop_start_request || "",
@@ -204,5 +203,5 @@ class POPStart extends Vue {
 
 }
 
-export default POPStart
+export default toNative(POPStart)
 </script>

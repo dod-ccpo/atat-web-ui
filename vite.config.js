@@ -1,13 +1,13 @@
+/// <reference types="vitest" />
 import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
-import {VuetifyResolver} from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import {checker} from 'vite-plugin-checker'
 import pkg from './package.json'
 import resolve from '@rollup/plugin-node-resolve'
-import liveReload from 'vite-plugin-live-reload'
 import commonjs from '@rollup/plugin-commonjs'
-// import VueDevTools from 'vite-plugin-dev-tools'
+import vuetify from 'vite-plugin-vuetify'
+import VueDevTools from 'vite-plugin-vue-devtools'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -23,7 +23,6 @@ const CONFIG = {
 	...servicenowConfig
 }
 
-// https://vitejs.dev/config/
 export default defineConfig(({command, mode}) => {
 	const env = loadEnv(mode, process.cwd(), '')
 	const BASE_API_URL = env.BASE_API_URL.endsWith('/')
@@ -32,8 +31,9 @@ export default defineConfig(({command, mode}) => {
 		SNOWUSER = mode === 'development' ? env.SNOWUSER : '',
 		SNOWPASS = mode === 'development' ? env.SNOWPASS : '',
 		SNOW_USER_SYSID =
-			mode === 'development' ? env.userId : 'e0c4c728875ed510ec3b777acebb356f' // pragma: allowlist secret
-
+			mode === 'development' ? env.userId : 'e0c4c728875ed510ec3b777acebb356f', // pragma: allowlist secret
+		VERSION = env.VERSION,
+		VUE_APP_allowDeveloperNavigation = mode === 'development' ? env.VUE_APP_allowDeveloperNavigation: false
 	//  if(command === 'serve') {
 	return {
 		define: {
@@ -41,8 +41,8 @@ export default defineConfig(({command, mode}) => {
 			'process.env.VUE_APP_SNOWUSER': JSON.stringify(SNOWUSER),
 			'process.env.VUE_APP_SNOWPASS': JSON.stringify(SNOWPASS),
 			'process.env.SNOW_USER_SYSID': JSON.stringify(SNOW_USER_SYSID),
-			'process.env.VUE_APP_allowDeveloperNavigation': JSON.stringify('true')
-			//'test': console.log(env)
+			'process.env.VUE_APP_allowDeveloperNavigation': JSON.stringify(VUE_APP_allowDeveloperNavigation),
+			'process.env.VERSION': JSON.stringify(VERSION)
 		},
 		resolve: {
 			alias: {
@@ -53,30 +53,30 @@ export default defineConfig(({command, mode}) => {
 			extensions: ['.ts', '.vue', '.js']
 		},
 		plugins: [
-			/*VueDevTools(),*/ 
+			VueDevTools({analyze: true}), 
 			vue(),
-
+			vuetify(),
 			Components({
 				dts: true,
 				directives: false,
-				resolvers: [VuetifyResolver()],
+				resolvers: [],
 				types: [
 					{
 						from: 'vue-router',
 						names: ['RouterLink', 'RouterView']
 					}
 				],
-				version: 2.7
+				version: 3
 			}),
-			//TODO Both typescript & vueTsc are throwing errors
+			//TODO Migrate unit tests and enable vueTsc
 			checker({
 				// typescript: true,
 				// vueTsc: true
 				// eslint: {lintCommand:'eslint '},
 			}),
-			liveReload('./src/**/*.(vue|ts)'),
+			// liveReload('./src/**/*.(vue|ts)'),
 			// vue-property-decorator
-			// cssInjectedByJsPlugin(),
+			cssInjectedByJsPlugin(),
 			resolve() //commonjs(),
 			//splitVendorChunkPlugin(),
 		],
@@ -86,28 +86,22 @@ export default defineConfig(({command, mode}) => {
 				usePolling: true,
 			  }
 		},
-		// build: {
-
-		// }
-		// optimizeDeps: {
-		//   include: ['assets/*','node_modules/*']
-		// },
 		build: {
 			target: 'esnext',
 			assetsDir: './',
 			cssCodeSplit: false,
+			// optimizeDeps: {
+			// 	include: ['node_modules/*']
+			// },
 			rollupOptions: {
 				output: {
 					dir: './dist/',
-					format: 'iife', //iife || umd
+					format: 'iife', //iife || umd !cjs
 					entryFileNames: 'js/app-js',
 					chunkFileNames: 'js/vendor-js',
 					assetFileNames: assetInfo => {
-						if (/\.(gif)$/.test(assetInfo.name)) {
-							console.log('gif', assetInfo.name)
-						}
+						
 						if (/\.(png|jpe?g|gif|webp|svg)$/.test(assetInfo.name)) {
-							console.log(assetInfo.name)
 							return `img/[name]-[hash:6]-[ext]`
 						} else if (/\.(woff2?|eot|ttf|otf|ttc)$/i.test(assetInfo.name)) {
 							return `other_assets/[name]-[hash:6]-[ext]`
@@ -129,31 +123,49 @@ export default defineConfig(({command, mode}) => {
 				}
 			}
 		},
+		test: {
+			globals: true,
+			environment: 'jsdom',
+			coverage: { 
+			  enabled: true,
+			  provider: 'v8', 
+			  clean: true,
+			  reportOnFailure: true,
+			  skipFull: true,
+			  perFile: true,
+			//   lines: 80,
+			//   functions: 80,
+			//   branches: 80,
+			//   statements: 80,
+			  reporter: ['text','html', 'lcov'],
+			  restoreMocks: true,
+			  maxConcurrency: 10,
+			  concurrent: true,
+			  typecheck: {
+				enabled: true,
+				checker: 'vue-tsc'
+			  },
+			//  bail: 10,
+
+			},
+			server: {
+			  deps: {
+				inline: ['vuetify'],
+				optimizer: 'web'
+			  }
+			},
+			root: '.',
+			ui: true,
+			//Default exclude: node_modules/, dist/, cypress/, *.config.*, **/.{idea,git,cache,output,temp} 
+			//exclude: []
+		  },
 		minify: 'esbuild',
-		//},
 		commonjsOptions: {
-			// 5. Output in commonjs format
 			esmExternals: false
 		},
 
 		css: {
-			extract: {
-				// false // puts it into app-js
-				filename: 'js/vendor-js'
-			},
-			// inline: true,
-			// postcss: {
-			//   plugins: [{
-			//     postcssPlugin: 'internal:charset-removal',
-			//     AtRule: {
-			//       charset: atRule => {
-			//         if(atRule.name === 'charset'){
-			//           atRule.remove()
-			//         }
-			//       }
-			//     }
-			//   }]
-			// }
+			extract: false,
 			preprocessorOptions: {
 				scss: {
 					additionalData: "@import 'src/sass/atat.scss';"
@@ -162,6 +174,4 @@ export default defineConfig(({command, mode}) => {
 		},
 		
 	}
-
-	// }
 })

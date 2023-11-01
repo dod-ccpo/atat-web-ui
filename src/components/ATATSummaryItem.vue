@@ -364,5 +364,5 @@ class ATATSummaryItem extends Vue {
   }
 
 }
-export default ATATSummaryItem;
+export default toNative(ATATSummaryItem)
 </script>

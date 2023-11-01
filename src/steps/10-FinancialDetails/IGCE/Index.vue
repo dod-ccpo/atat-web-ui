@@ -15,7 +15,7 @@ class IGCE extends Vue {
     IGCEStore.setHasDOWandPop();
   }
 }
-export default IGCE
+export default toNative(IGCE)
 </script>
 
 

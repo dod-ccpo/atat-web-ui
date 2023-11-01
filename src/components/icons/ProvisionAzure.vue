@@ -73,5 +73,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ProvisionAzure extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default ProvisionAzure;
+export default toNative(ProvisionAzure)
 </script>

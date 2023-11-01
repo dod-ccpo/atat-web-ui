@@ -771,5 +771,5 @@ class AddCSPAdmin extends Vue {
 
 
 }
-export default AddCSPAdmin
+export default toNative(AddCSPAdmin)
 </script>

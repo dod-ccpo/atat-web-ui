@@ -25,5 +25,5 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 class AdditionalInfo extends Vue {
   @PropSync("additionalInfo") public _additionalInfo!: string;
 }
-export default AdditionalInfo
+export default toNative(AdditionalInfo)
 </script>

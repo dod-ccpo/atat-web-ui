@@ -72,5 +72,5 @@ class ExpandableLink extends Vue {
   }
 
 }
-export default ExpandableLink;
+export default toNative(ExpandableLink)
 </script>

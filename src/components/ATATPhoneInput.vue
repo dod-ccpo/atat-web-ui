@@ -590,5 +590,5 @@ class ATATPhoneInput extends Vue {
   }
   
 }
-export default ATATPhoneInput;
+export default toNative(ATATPhoneInput)
 </script>

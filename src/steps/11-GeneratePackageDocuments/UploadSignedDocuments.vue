@@ -219,8 +219,7 @@ class UploadSignedDocuments extends Vue {
   }
 
   private getRulesArray(): ValidationRule[] {
-    //eslint-disable-next-line prefer-const
-    let rulesArr: ValidationRule[] = [];
+    const rulesArr: ValidationRule[] = [];
 
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(
@@ -274,6 +273,6 @@ class UploadSignedDocuments extends Vue {
 
 }
 
-export default UploadSignedDocuments
+export default toNative(UploadSignedDocuments)
 </script>
 

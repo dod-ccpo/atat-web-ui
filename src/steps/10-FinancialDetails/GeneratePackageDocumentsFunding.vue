@@ -126,5 +126,5 @@ class GeneratePackageDocumentsFunding extends Vue {
   }
 }
 
-export default GeneratePackageDocumentsFunding
+export default toNative(GeneratePackageDocumentsFunding)
 </script>

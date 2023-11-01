@@ -219,8 +219,7 @@ class ATATAddressForm extends Vue {
   }
 
   private getRules(inputID: string): ValidationRule[] {
-    //eslint-disable-next-line prefer-const 
-    let rulesArr: ValidationRule[]  = [];
+    const rulesArr: ValidationRule[]  = [];
     if (this.requiredFields) {
 
       const result = this.requiredFields.filter(obj => {
@@ -299,5 +298,5 @@ class ATATAddressForm extends Vue {
       : "PostalCode";
   }
 }
-export default ATATAddressForm;
+export default toNative(ATATAddressForm)
 </script>

@@ -89,7 +89,7 @@
 
 <script lang="ts">
 import {ComponentPublicInstance} from "vue";
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -204,5 +204,5 @@ class WhoConductedResearch extends Vue {
   }
 }
 
-export default WhoConductedResearch
+export default toNative(WhoConductedResearch)
 </script>

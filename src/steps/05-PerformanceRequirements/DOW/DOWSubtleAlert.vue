@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
  
 import { routeNames } from "../../../router/stepper"
@@ -56,6 +56,6 @@ class DOWSubtleAlert extends Vue {
   };
 
 }
-export default DOWSubtleAlert
+export default toNative(DOWSubtleAlert)
  
 </script>

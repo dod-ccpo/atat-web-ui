@@ -170,7 +170,7 @@ class SlideOut_GatherPricesEstimates extends Vue {
   ];
 
 }
-// eslint-disable-next-line camelcase
-export default SlideOut_GatherPricesEstimates
+//eslint-disable-next-line camelcase
+export default toNative(SlideOut_GatherPricesEstimates)
 </script>
 

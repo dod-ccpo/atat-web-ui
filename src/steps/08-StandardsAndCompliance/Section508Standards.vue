@@ -279,5 +279,5 @@ class Section508Standards extends Vue {
 
 }
 
-export default Section508Standards
+export default toNative(Section508Standards)
 </script>

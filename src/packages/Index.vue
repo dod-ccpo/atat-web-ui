@@ -115,7 +115,7 @@ import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
-//import { routeNames } from "@/router/stepper";
+import { routeNames } from "@/router/stepper";
 import Card from "@/packages/components/Card.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 import Steps from "@/store/steps";
@@ -145,7 +145,7 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
   }
 })
 
-export default class Packages extends Vue {
+class Packages extends Vue {
   public page = 1;
   public recordsPerPage = 10;
   public numberOfPages = 0;
@@ -302,7 +302,7 @@ export default class Packages extends Vue {
     this.activeTab = tabType;
   }
   public async toAcquisitions(): Promise<void> {
-    //await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
+    await Steps.setAltBackDestination(AppSections.sectionTitles.Packages);
     await acquisitionPackage.setIsNewPackage(true)
     await AcquisitionPackage.reset();
     this.$router.push({
@@ -382,5 +382,6 @@ export default class Packages extends Vue {
   }
 
 }
+export default toNative(Packages)
 </script>
 

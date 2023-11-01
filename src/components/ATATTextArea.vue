@@ -68,7 +68,7 @@
 
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch, Vue, toNative} from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -166,5 +166,5 @@ class ATATTextArea extends Vue {
     }
   }
 }
-export default ATATTextArea
+export default toNative(ATATTextArea)
 </script>

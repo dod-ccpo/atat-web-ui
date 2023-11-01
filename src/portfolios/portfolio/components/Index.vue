@@ -243,6 +243,6 @@ class PortfolioSummary extends Vue {
     }
   }
 }
-export default PortfolioSummary
+export default toNative(PortfolioSummary)
 </script>
 

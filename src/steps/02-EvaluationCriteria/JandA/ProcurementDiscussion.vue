@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
 import _ from "lodash";
@@ -159,5 +159,5 @@ class ProcurementDiscussion extends Vue {
   }
 }
 
-export default ProcurementDiscussion 
+export default toNative(ProcurementDiscussion )
 </script>

@@ -22,7 +22,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { SummaryItem } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Summary, { getSummaryItemsforStep, isStepComplete } from "@/store/summary";
@@ -63,5 +63,5 @@ class SummaryStepTwo extends Vue {
 
 }
 
-export default SummaryStepTwo
+export default toNative(SummaryStepTwo)
 </script>

@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 import SampleLearnMore from "./SampleLearnMore.vue";
@@ -118,7 +118,7 @@ import { ComponentInternalInstance } from "vue";
   },
 })
 
-export default class ValidatatorsExample extends Vue {
+class ValidatatorsExample extends Vue {
   private minValue = "a";
   private minValueCustom = "a";
   private maxValue = "12345678910";
@@ -132,8 +132,7 @@ export default class ValidatatorsExample extends Vue {
     hasUndo: boolean, 
     longMessage: boolean,
   ): void {
-    //eslint-disable-next-line prefer-const
-    let message = longMessage 
+    const message = longMessage 
       ? `My toast with a long message to check the timing of the toast - one extra 
         second for every 120 characters so this message should add one second. `
       : "My toast message ";
@@ -181,4 +180,5 @@ export default class ValidatatorsExample extends Vue {
   }
 
 }
+export default toNative(ValidatatorsExample)
 </script>

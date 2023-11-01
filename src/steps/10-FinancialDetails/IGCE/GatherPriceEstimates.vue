@@ -318,6 +318,6 @@ class GatherPriceEstimates extends Vue {
   }
 }
 
-export default GatherPriceEstimates
+export default toNative(GatherPriceEstimates)
 </script>
 

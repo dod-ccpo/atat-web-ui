@@ -655,7 +655,7 @@ hr, .hr {
 }
 .icon-after--chevron-right:after {
   position: absolute;
-  content: "chevron_right";
+  content: "mdi-chevron-right"; /* TODO EJY check this */
   font-family: "Material Icons";
   -webkit-font-feature-settings: "liga";
   right: -28px;
@@ -5006,10 +5006,10 @@ header .v-toolbar__content {
   padding: 16px 24px !important;
   border-bottom: #e0e1e2 solid 1px !important;
 }
-
-.v-input--radio-group fieldset {
+/* 
+.v-radio-group fieldset {
   border: none !important;
-}
+} */
 
 ._radio-focus, ._radio-button .v-input--selection-controls__input:hover .v-input--selection-controls__ripple:before, ._radio-button-card .v-input--selection-controls__input:hover .v-input--selection-controls__ripple:before, ._radio-button.v-radio--is-focused .v-input--selection-controls__ripple:before, .v-radio--is-focused._radio-button-card .v-input--selection-controls__ripple:before, ._checkbox.v-input--is-focused .v-input--selection-controls__ripple:before, .v-input--is-focused._checkbox-card .v-input--selection-controls__ripple:before {
   background: #eeecf5 !important;
@@ -5121,14 +5121,14 @@ header .v-toolbar__content {
 .v-select-list .v-list-item__content {
   padding: 8px 0;
 }
-.v-select-list .v-list-item__title, .v-select-list .v-list-item__subtitle {
+.v-select-list .v-list-item-title, .v-select-list .v-list-item__subtitle {
   text-align: left;
   margin-bottom: 0 !important;
   line-height: 1.25 !important;
   font-weight: 400 !important;
   white-space: normal;
 }
-.v-select-list .v-list-item__title {
+.v-select-list .v-list-item-title {
   font-size: 1.6rem !important;
 }
 .v-select-list .v-list-item__subtitle {

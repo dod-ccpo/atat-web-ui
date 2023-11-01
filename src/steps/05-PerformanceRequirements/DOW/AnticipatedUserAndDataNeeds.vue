@@ -85,7 +85,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
@@ -167,6 +167,6 @@ class AnticipatedUserAndDataNeeds extends Vue{
     return true;
   }
 }
-export default AnticipatedUserAndDataNeeds 
+export default toNative(AnticipatedUserAndDataNeeds )
 </script>
 

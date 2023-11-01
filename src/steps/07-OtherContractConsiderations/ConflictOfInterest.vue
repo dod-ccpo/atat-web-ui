@@ -165,5 +165,5 @@ class ConflictOfInterest extends Vue {
   }
 }
 
-export default ConflictOfInterest
+export default toNative(ConflictOfInterest)
 </script>

@@ -172,10 +172,8 @@
   </v-container>
 </template>
 <script lang="ts">
-/*eslint prefer-const: 1 */
 import { routeNames } from "../../../router/stepper"
-import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import _ from "lodash";
 import classificationRequirements 
   from "@/store/classificationRequirements";
@@ -461,5 +459,5 @@ class SummaryStepFive extends Vue{
   }
 
 };
-export default SummaryStepFive 
+export default toNative(SummaryStepFive )
 </script>

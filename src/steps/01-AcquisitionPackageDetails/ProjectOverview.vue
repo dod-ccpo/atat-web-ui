@@ -20,7 +20,8 @@
                 $validators.required('Please enter your project title'),
                 $validators.maxLength(60, 'Title cannot exceed 60 characters'),
               ]"
-              :currentTitle.sync="currentTitle"
+              :currentTitle="currentTitle"
+              @update:currentTitle="currentTitle = $event"
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
@@ -78,7 +79,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch , Vue, toNative} from "vue-facing-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
@@ -207,5 +208,5 @@ class ProjectOverview extends Vue {
     return true;
   }
 }
-export default ProjectOverview
+export default toNative(ProjectOverview)
 </script>

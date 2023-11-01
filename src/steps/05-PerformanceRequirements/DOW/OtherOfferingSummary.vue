@@ -135,7 +135,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, mixins, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, mixins, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -413,8 +413,7 @@ class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
         instanceClone.periodsNeeded.forEach((sysId) => {
           const periodObj = allPeriods.find((obj) => obj.sys_id === sysId);
           if (periodObj) {
-            //eslint-disable-next-line prefer-const
-            let periodText = periodObj?.period_type.indexOf("BASE") > -1 
+            const periodText = periodObj?.period_type.indexOf("BASE") > -1 
               ? "Base period" : "Option period " + (parseInt(periodObj.option_order) - 1);
             periodsNeeded.push(periodText);
           }
@@ -528,7 +527,7 @@ class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
   }
 
 }
-export default OtherOfferingSummary
+export default toNative(OtherOfferingSummary)
 
  
 </script>

@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
@@ -134,6 +134,6 @@ class DOWCard extends Vue
   };
 
 }
-export default DOWCard 
+export default toNative(DOWCard )
  
 </script>

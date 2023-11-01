@@ -507,8 +507,7 @@ class IncrementalFunding extends Vue {
   public addIncrement(): void {
     const lastFundingIncrement = this.fundingIncrements.at(-1);
     const lastSelectedQtr = lastFundingIncrement?.text;
-    //eslint-disable-next-line prefer-const
-    let selectedQtrIndex = this.fiscalQuarters.findIndex(
+    const selectedQtrIndex = this.fiscalQuarters.findIndex(
       (p) => p.text === lastSelectedQtr
     );
 
@@ -576,8 +575,7 @@ class IncrementalFunding extends Vue {
   public isFundingMet = false;
 
   public calcAmounts(field: string): void {
-    //eslint-disable-next-line prefer-const
-    let incrementsTotal = this.fundingIncrements.reduce(
+    const incrementsTotal = this.fundingIncrements.reduce(
       (accumulator, current) =>
         accumulator + Number(currencyStringToNumber(current.amt)),
       0
@@ -788,8 +786,7 @@ class IncrementalFunding extends Vue {
       }
       if (this.allowContinue) {
         // Set chronological order of fiscal quarters in fundingIncrements
-        //eslint-disable-next-line prefer-const
-        let sortedIncrements: fundingIncrement[] = [];
+        const sortedIncrements: fundingIncrement[] = [];
         this.fundingIncrements.forEach((incr) => {
           incr.order =
             this.fiscalQuarters.findIndex((q) => q.text === incr.text) + 1;
@@ -823,5 +820,5 @@ class IncrementalFunding extends Vue {
   }
 }
 
-export default IncrementalFunding
+export default toNative(IncrementalFunding)
 </script>

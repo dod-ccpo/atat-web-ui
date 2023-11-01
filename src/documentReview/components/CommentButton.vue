@@ -32,5 +32,5 @@ class CommentButton extends Vue {
     // future ticket show dialog with comment input
   }
 }
-export default CommentButton;
+export default toNative(CommentButton)
 </script>

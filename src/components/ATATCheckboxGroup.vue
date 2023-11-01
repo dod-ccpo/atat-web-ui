@@ -149,7 +149,7 @@
 
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Component, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -496,5 +496,5 @@ class ATATCheckboxGroup extends Vue {
     }
   }
 }
-export default ATATCheckboxGroup;
+export default toNative(ATATCheckboxGroup)
 </script>

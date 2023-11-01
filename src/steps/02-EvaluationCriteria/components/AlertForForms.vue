@@ -14,7 +14,7 @@
 </template>
 <script lang="ts">
  
-import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 
@@ -42,5 +42,5 @@ class AlertForForms extends Vue {
 
 }
 
-export default AlertForForms
+export default toNative(AlertForForms)
 </script>

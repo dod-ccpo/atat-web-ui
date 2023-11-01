@@ -136,6 +136,6 @@ class FeeCharged extends Vue {
 
 }
 
-export default FeeCharged
+export default toNative(FeeCharged)
 </script>
 

@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { 
@@ -273,5 +273,5 @@ class CreateEvalPlan extends Vue {
 
 }
 
-export default CreateEvalPlan
+export default toNative(CreateEvalPlan)
 </script>

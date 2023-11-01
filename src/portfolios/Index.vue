@@ -157,6 +157,6 @@ class Portfolios extends Vue {
   }
 
 }
-export default Portfolios
+export default toNative(Portfolios)
 </script>
 

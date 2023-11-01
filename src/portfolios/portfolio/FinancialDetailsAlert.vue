@@ -49,5 +49,5 @@ class FinancialDetailsAlert extends Vue {
     return longName;
   }
 }
-export default FinancialDetailsAlert
+export default toNative(FinancialDetailsAlert)
 </script>

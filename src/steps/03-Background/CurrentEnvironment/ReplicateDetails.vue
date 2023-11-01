@@ -200,5 +200,5 @@ class ReplicateDetails extends Vue {
 
 }
 
-export default ReplicateDetails
+export default toNative(ReplicateDetails)
 </script>

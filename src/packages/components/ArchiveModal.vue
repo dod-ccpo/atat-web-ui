@@ -57,6 +57,6 @@ class ArchiveModal extends Vue {
   }
 }
 
-export default ArchiveModal;
+export default toNative(ArchiveModal)
 
 </script>

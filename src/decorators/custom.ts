@@ -1,58 +1,29 @@
-import { createDecorator} from 'vue-facing-decorator'
-import { PropsConfig } from 'vue-facing-decorator/dist/option/props'
-//TODO: REFACTOR AFTER VUE 3 UPGRADE
+import { createDecorator} from 'vue-facing-decorator';
+import { PropsConfig } from 'vue-facing-decorator/dist/option/props';
 
-//https://morioh.com/a/9876aadb338e/vuejs-and-property-decorator#PropSync
-//https://github.com/kaorun343/vue-property-decorator/blob/master/src/decorators/PropSync.ts     
+/**
+ * Decorator for creating a two-way binding on a prop (sync modifier).
+ * 
+ * @param propName - The name of the property to sync.
+ * @param options - The options for the prop (type, default, validator, etc.).
+ */
+export function PropSync(propName: string, options: PropsConfig = {}) {
+  return createDecorator((componentOptions, k: string) => {
+    // Ensure props and computed options exist
+    componentOptions.emits = [...componentOptions.emits, `update:${propName}`]
+    componentOptions.props ??= {};
+    componentOptions.computed ??= {};
 
-export function PropSync(prefix: string, options?: PropsConfig) {
-  return createDecorator(function (options, key) {
-    // prototype
-    // export default {
-    //     props: {
-    //       name: {
-    //         type: String,
-    //       },
-    //     },
-    //     computed: {
-    //       syncedName: {
-    //         get() {
-    //           return this.name
-    //         },
-    //         set(value) {
-    //           this.$emit('update:name', value)
-    //         },
-    //       },
-    //     },
-    //   }
-
-    //from old propsync 
-    // export function PropSync(
-    //     propName: string,
-    //     options: PropOptions | Constructor[] | Constructor = {},
-    //   ) {
-    //     return (target: Vue, key: string) => {
-    //       applyMetadata(options, target, key)
-    //       createDecorator((componentOptions, k) => {
-    //         ;(componentOptions.props || (componentOptions.props = {} as any))[
-    //           propName
-    //         ] = options
-    //         ;(componentOptions.computed || (componentOptions.computed = {}))[k] = {
-    //           get() {
-    //             return (this as any)[propName]
-    //           },
-    //           set(this: Vue, value) {
-    //             this.$emit(`update:${propName}`, value)
-    //           },
-    //         }
-    //       })(target, key)
-    //     }
-    //   }
-
-  }, {
-    preserve: true
-  })
+    // Define prop and computed prop for sync
+    componentOptions.props[propName] = options;
+    componentOptions.computed[k] = {
+      get() {
+        return this[propName];
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      set(value: any) {
+        this.$emit(`update:${propName}`, value);
+      },
+    };
+  });
 }
-
-
-

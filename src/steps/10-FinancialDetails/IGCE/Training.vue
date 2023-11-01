@@ -436,8 +436,7 @@ class IGCETraining extends Vue {
     try{
       if (this.instanceData.trainingOption.toLowerCase()==="single"){
         this.sysIdValueArray = [];
-        //eslint-disable-next-line prefer-const
-        let obj:Record<string, string>= {};
+        const obj:Record<string, string>= {};
         obj["PER_PERIOD"] = this.valueArray[0];
         this.sysIdValueArray.push(obj);
       }
@@ -458,5 +457,5 @@ class IGCETraining extends Vue {
   
 
 }
-export default IGCETraining
+export default toNative(IGCETraining)
 </script>

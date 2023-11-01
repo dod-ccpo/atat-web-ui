@@ -88,7 +88,7 @@
 </template>
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Vue, toNative, Component, Prop, Watch } from "vue-facing-decorator";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import { add, format, formatISO, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -360,5 +360,5 @@ class ATATDatePicker extends Vue {
   }
 
 }
-export default ATATDatePicker;
+export default toNative(ATATDatePicker)
 </script>

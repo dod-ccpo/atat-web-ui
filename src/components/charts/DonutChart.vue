@@ -4,12 +4,12 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { toNative, Vue, Component, Prop, Watch } from "vue-facing-decorator";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import Chart, { ChartData } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { toCurrencyString } from "@/helpers";
 import ATATCharts from "@/store/charts";
-
+@Component
 class DonutChart extends Vue {
   @Prop({ required: true, default: "MyDonutChart" }) public chartId!: string;
   @Prop({ required: true, default: {} }) public chartData!: ChartData;
@@ -50,8 +50,7 @@ class DonutChart extends Vue {
   public async createChart(): Promise<void> {
     const centertext = this.centertext(this);
     if (this.chartId) {
-      //eslint-disable-next-line prefer-const 
-      let plugins: any = [centertext];
+      const plugins: any = [centertext];
       if (this.useChartDataLabels) {
         plugins.push(ChartDataLabels);
       }
@@ -199,5 +198,5 @@ class DonutChart extends Vue {
     return tooltipEl;
   };
 }
-export default DonutChart
+export default toNative(DonutChart)
 </script>

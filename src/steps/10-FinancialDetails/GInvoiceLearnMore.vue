@@ -86,5 +86,5 @@ class GInvoiceLearnMore extends Vue {
     "https://www.igt.fiscal.treasury.gov";
 }
 
-export default GInvoiceLearnMore
+export default toNative(GInvoiceLearnMore)
 </script>

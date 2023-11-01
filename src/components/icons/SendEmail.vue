@@ -15,5 +15,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class SendEmail extends Vue {
   @Prop({ default: "161B1E", required: false }) private color?:string;
 }
-export default SendEmail;
+export default toNative(SendEmail)
 </script>

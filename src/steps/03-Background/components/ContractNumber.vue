@@ -40,5 +40,5 @@ class ContractNumber extends Vue {
   @Prop({default: ""}) private tooltipText!: string;
 }
 
-export default ContractNumber
+export default toNative(ContractNumber)
 </script>

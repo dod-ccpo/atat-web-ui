@@ -117,5 +117,5 @@ class App extends Vue {
     await AppSections.setAppContentComponent(Home);
   }
 }
-export default App
+export default toNative(App)
 </script>

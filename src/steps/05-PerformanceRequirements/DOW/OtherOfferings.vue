@@ -209,7 +209,7 @@
 
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ClassificationsModal from "./ClassificationsModal.vue";
 import ComputeFormElements from "./ComputeFormElements.vue"
@@ -632,6 +632,6 @@ class OtherOfferings extends Vue
     classification requirements you previously specified.`;
 
 }
-export default OtherOfferings
+export default toNative(OtherOfferings)
  
 </script>

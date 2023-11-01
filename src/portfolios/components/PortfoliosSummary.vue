@@ -147,7 +147,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 /*eslint prefer-const: 1 */
-import {Component, Prop, Watch, Vue, toNative} from "vue-facing-decorator";
+import {Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 // eslint-disable-next-line max-len
 import ArchivePortfolioModal from "@/portfolios/portfolio/components/shared/ArchivePortfolioModal.vue";
 import ATATLoader from "@/components/ATATLoader.vue";
@@ -624,5 +624,5 @@ class PortfoliosSummary extends Vue {
       }});
   }
 }
-export default PortfoliosSummary
+export default toNative(PortfoliosSummary)
 </script>

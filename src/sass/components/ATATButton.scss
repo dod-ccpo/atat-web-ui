@@ -25,12 +25,16 @@
   }
   @extend %v-btn-text;
 
+  .v-btn__overlay {
+    background-color: transparent !important;
+  }
+
   // removes the default darker opacity assigned by vuetify
   &:hover::before, &:focus::before {
     opacity: 0 !important;
   }
   
-  &.primary.v-theme--light{
+  &.bg-primary.v-theme--light{
     background-color:  $primary !important;
     color: #fff !important;
     &:hover{
@@ -190,7 +194,7 @@
 }
 
 ._meatball-menu {
-  .v-list-item__title {
+  .v-list-item-title {
     font-size: 1.4rem;
   }
 
@@ -204,7 +208,7 @@
       }
     }
 
-    .v-list-item__title {
+    .v-list-item-title {
       font-size: 1.6rem;
       display: flex;
       align-items: center;
@@ -237,7 +241,8 @@
 }
 
 ._meatball-menu-button {
-  &.v-btn.v-size--default {
+  padding: 0 !important;
+  &.v-btn.v-btn--size-default {
     min-width: 28px !important;
     width: 28px;
     height: 28px;
