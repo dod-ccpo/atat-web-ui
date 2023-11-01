@@ -130,7 +130,7 @@ export default defineConfig(({command, mode}) => {
 			  //open: true,
 			  reportOnFailure: true,
 			  skipFull: true,
-			  perFile: true,
+			 // perFile: true,
 			//   lines: 80,
 			//   functions: 80,
 			//   branches: 80,
