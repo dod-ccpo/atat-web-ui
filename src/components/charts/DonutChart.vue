@@ -5,10 +5,12 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom";
 import Chart, { ChartData } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { toCurrencyString } from "@/helpers";
 import ATATCharts from "@/store/charts";
+
 @Component
 class DonutChart extends Vue {
   @Prop({ required: true, default: "MyDonutChart" }) public chartId!: string;
@@ -32,7 +34,7 @@ class DonutChart extends Vue {
     this.myChart.update();
   }
 
-  private async mounted(): Promise<void> {
+  public async mounted(): Promise<void> {
     if (this.showLabelOnHover) {
       const toolTipExternalOptions = {
         enabled: false,
@@ -116,7 +118,7 @@ class DonutChart extends Vue {
       tooltipEl.style.opacity = 0;
       return;
     }
-
+    
     if (tooltip.body) {
       const bodyLines = tooltip.body.map((b: any) => b.lines);
       const labelText = bodyLines[0][0];
