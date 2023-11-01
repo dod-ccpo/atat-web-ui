@@ -39,8 +39,10 @@
           headline="Portfolio Summary"
           :items ="tabItems"
           :environmentLinks="environmentLinks"
-          :value.sync="tabIndex"
-          :title.sync="title"
+          :value="tabIndex"
+          @update:value="tabIndex"
+          :title="title"
+          @update:title="title = $event"
           :isPortfolioProvisioning="isPortfolioProvisioning"
           @leavePortfolio="openLeavePortfolioModal"
         />
