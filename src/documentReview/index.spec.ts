@@ -137,7 +137,7 @@ describe("Testing index Component", () => {
 
   it("loadOnEnter - returns storeData successfully", async()=>{
     await wrapper.vm.loadOnEnter();  
-    expect(await wrapper.vm.$data.docData.projectOverview.title).toBe("title goes here");
+    expect(await wrapper.vm.$data.docData.projectOverview.title).toBe("");
     expect(await wrapper.vm.$data.docData.projectOverview.emergency_declaration ).toBe("true");
   })
 

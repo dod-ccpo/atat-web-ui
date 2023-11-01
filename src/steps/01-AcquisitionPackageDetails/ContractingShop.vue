@@ -30,11 +30,11 @@
               id="ContractingShopChoice"
               name="ContractingShopChoice"
               :items="contractingShopOptions"
-              :value.sync="contractingShop"
+              :value="contractingShop"
+              @update:value="contractingShop = $event"
               :card="true"
               width="400"
               :rules="[$validators.required('Please select an option.')]"
-              @update:value="radioButtonClicked"
             />
           </div>
         </v-col>
@@ -83,7 +83,6 @@ import { SlideoutPanelContent, RadioButton } from "../../../types/Global";
 import ContractingShopLearnMore from "./ContractingShopLearnMore.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ProjectOverviewDTO } from "@/api/models";
-// import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepTouched } from "@/store/summary";
@@ -127,7 +126,6 @@ class ContractingShop extends Vue {
   }
 
   public radioButtonClicked(val: string): void {
-    debugger;
     this.contractingShop = val;
   }
 
@@ -208,5 +206,5 @@ class ContractingShop extends Vue {
     return true;
   }
 }
-export default toNative(ContractingShop )
+export default toNative(ContractingShop)
 </script>

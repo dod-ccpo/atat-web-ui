@@ -20,7 +20,8 @@
                 $validators.required('Please enter your project title'),
                 $validators.maxLength(60, 'Title cannot exceed 60 characters'),
               ]"
-              :currentTitle.sync="currentTitle"
+              :currentTitle="currentTitle"
+              @update:currentTitle="currentTitle = $event"
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
