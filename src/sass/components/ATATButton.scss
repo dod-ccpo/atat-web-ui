@@ -34,7 +34,7 @@
     opacity: 0 !important;
   }
   
-  &.bg-primary.v-theme--light{
+  &._primary.v-theme--light{
     background-color:  $primary !important;
     color: #fff !important;
     &:hover{
@@ -47,7 +47,7 @@
     }
   }
   
-  &.bg-secondary.v-theme--light {
+  &._secondary.v-theme--light {
     background-color: $white !important;
     border: 2px solid $primary !important;
     color: $primary;

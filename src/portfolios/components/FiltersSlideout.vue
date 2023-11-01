@@ -41,7 +41,7 @@
 
         <v-btn
           id="ApplyFilters"
-          class="bg-primary"
+          class="_primary"
           @click="applyFilters"
         >
           Apply filters

@@ -25,7 +25,7 @@
                 w-100
                 py-10
                 border1
-                border-rounded border-base-lighter
+                border-eounded border-base-lighter
                 text-center
                 mb-10
                 mt-10
@@ -99,7 +99,7 @@
             <hr class="mt-0" v-if="hasListings" />
           </div>
           <div v-if="isLoading"
-            class="d-flex justify-space-around py-10 border1 border-rounded border-base-lighter
+            class="d-flex justify-space-around py-10 border1 border-eounded border-base-lighter
             my-10 bg-offwhite width-100 text-center
           "
           >
@@ -117,7 +117,7 @@
           <v-btn v-if="!isLoading"
             id="AddInstance"
             role="link"
-            class="bg-secondary _normal _small-text mt-5"
+            class="_secondary _normal _small-text mt-5"
             :ripple="false"
             @click="createInstance()"
           >

@@ -11,7 +11,7 @@
         suggestion to meet your requirements, if needed.
       </p>
       <v-btn
-        class="bg-secondary font-size-14 px-3 mb-1 mt-1"
+        class="_secondary font-size-14 px-3 mb-1 mt-1"
         id="GoToQuestionnaireBtn"
         @click="goToQuestionnaire"
         @keydown.enter="goToQuestionnaire"

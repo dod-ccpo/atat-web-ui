@@ -50,7 +50,7 @@
             <v-col class="d-flex justify-end" align-self="end">
               <v-btn
                 v-if="!isErrored && !isCurrentSectionFunding"
-                class="bg-secondary _text-decoration-none px-6 mr-5"
+                class="_secondary _text-decoration-none px-6 mr-5"
                 size="large"
                 target="_blank"
                 @click="update()"
@@ -61,7 +61,7 @@
                 <ATATSVGIcon class="pl-2" width="14" height="19" name="update" color="primary"/>
               </v-btn>
               <v-btn
-                class="bg-primary _text-decoration-none px-6"
+                class="_primary _text-decoration-none px-6"
                 v-if="!isErrored"
                 size="large"
                 width="137"

@@ -50,7 +50,7 @@
                     <v-row>
                       <v-col>
                         <div
-                          class="bg-primary-lighter px-6 py-6 height-100"
+                          class="_primary-lighter px-6 py-6 height-100"
                           style="border-radius: 4px"
                         >
                           <span id="AvailableFunds" class="h1 mb-0">

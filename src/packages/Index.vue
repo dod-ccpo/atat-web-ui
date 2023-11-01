@@ -27,7 +27,7 @@
         </div>
         <div class="d-flex ml-auto">
           <v-btn
-            class="bg-primary"
+            class="_primary"
             :ripple="false"
             @click="toAcquisitions"
           >

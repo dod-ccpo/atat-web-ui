@@ -34,7 +34,7 @@
 
     <v-btn 
       id="ClearSearchButton"
-      class="bg-primary mx-auto"
+      class="_primary mx-auto"
       @click="clear"
     >
       Clear {{ buttonText }}

@@ -34,10 +34,10 @@
                   an email from each selected CSP with account login instructions.
                 </p>
                 <v-btn
-                :href="requestAccessURL"
-                id="RequestAccess"
-                target="_blank"
-                class="bg-primary mt-4 width-45 _text-decoration-none"
+                  :href="requestAccessURL"
+                  id="RequestAccess"
+                  target="_blank"
+                  class="_primary mt-4 width-45 _text-decoration-none"
                 >
                   Request access to CSP pricing calculators
                 <ATATSVGIcon

@@ -18,10 +18,10 @@
           -->
         </p>
         <v-btn
-        v-if="portfolioIsActive"
-        variant="outlined"
-        class="ml-10 bg-secondary"
-        @click="openSearchTOModal"
+          v-if="portfolioIsActive"
+          variant="outlined"
+          class="ml-10 _secondary"
+          @click="openSearchTOModal"
         > 
         Add follow-on task order 
       </v-btn>

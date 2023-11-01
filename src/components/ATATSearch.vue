@@ -46,7 +46,7 @@
       />
       <v-btn
         :id="id + '_SearchButton'"
-        class="bg-primary _search-button"
+        class="_primary _search-button"
         @click="search"
         @keydown.enter="search"
         @keydown.space="search"
