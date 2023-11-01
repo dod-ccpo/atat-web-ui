@@ -80,46 +80,6 @@ export default defineConfig(({command, mode}) => {
       resolve() //commonjs(),
       //splitVendorChunkPlugin(),
     ],
-    server: {
-      port: 8080,
-      watch: {
-        usePolling: true,
-			  }
-    },
-    build: {
-      target: 'esnext',
-      assetsDir: './',
-      cssCodeSplit: false,
-      rollupOptions: {
-        output: {
-          dir: './dist',
-          format: 'iife', //iife || umd !cjs
-          entryFileNames: 'js/app-js',
-          chunkFileNames: 'js/vendor-js',
-          assetFileNames: (assetInfo) => {
-						
-            if (/\.(png|jpe?g|gif|webp|svg)$/.test(assetInfo.name)) {
-              return `img/[name]-[hash:6]-[ext]`
-            } else if (/\.(woff2?|eot|ttf|otf|ttc)$/i.test(assetInfo.name)) {
-              return `other_assets/[name]-[hash:6]-[ext]`
-            }
-            return assetInfo.name
-          }
-          //doesn't work with iife/umd
-          // manualChunks: (id) => {
-          //   if(id.includes("node_modules")){
-          //     const depName = id.split('/node_modules/')[1].split('/')[0]
-          //     if((pkg.dependencies && pkg.dependencies[depName]) /*|| (pkg.devDependencies && pkg.devDependencies[depName])*/){
-          //       return `js/vendor-js`
-          //     }
-          //   }
-          //   else if(id.includes('/src/assets/')){
-          //     return `js/vendor-js`
-          //   }
-          // }
-        }
-      }
-    },
     test: {
       globals: true,
       environment: 'jsdom',
@@ -350,6 +310,47 @@ export default defineConfig(({command, mode}) => {
       //   'tests/unit/example.spec.ts'
       // ]
 		  },
+    server: {
+      port: 8080,
+      watch: {
+        usePolling: true,
+			  }
+    },
+    build: {
+      target: 'esnext',
+      assetsDir: './',
+      cssCodeSplit: false,
+      rollupOptions: {
+        output: {
+          dir: './dist',
+          format: 'iife', //iife || umd !cjs
+          entryFileNames: 'js/app-js',
+          chunkFileNames: 'js/vendor-js',
+          assetFileNames: (assetInfo) => {
+						
+            if (/\.(png|jpe?g|gif|webp|svg)$/.test(assetInfo.name)) {
+              return `img/[name]-[hash:6]-[ext]`
+            } else if (/\.(woff2?|eot|ttf|otf|ttc)$/i.test(assetInfo.name)) {
+              return `other_assets/[name]-[hash:6]-[ext]`
+            }
+            return assetInfo.name
+          }
+          //doesn't work with iife/umd
+          // manualChunks: (id) => {
+          //   if(id.includes("node_modules")){
+          //     const depName = id.split('/node_modules/')[1].split('/')[0]
+          //     if((pkg.dependencies && pkg.dependencies[depName]) /*|| (pkg.devDependencies && pkg.devDependencies[depName])*/){
+          //       return `js/vendor-js`
+          //     }
+          //   }
+          //   else if(id.includes('/src/assets/')){
+          //     return `js/vendor-js`
+          //   }
+          // }
+        }
+      }
+    },
+    
     minify: 'esbuild',
     commonjsOptions: {
       esmExternals: false
