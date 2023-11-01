@@ -65,7 +65,7 @@
     border-radius: 8px;
   }
 
-  &._info-alert {
+  &._mdi-information-alert {
     background-color: $info_lighter;
     border-color: $info;
     
@@ -74,7 +74,7 @@
     }
   }
 
-  &._error-alert {
+  &._mdi-alert-circle-alert {
     background-color: $error-lighter;
     border-color: $error;
 

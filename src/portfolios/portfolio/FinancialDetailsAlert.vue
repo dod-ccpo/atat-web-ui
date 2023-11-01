@@ -1,7 +1,7 @@
 <template>
   <ATATAlert
     id="InaccurateFinancialDetails"
-    type="error"
+    type="mdi-alert-circle"
     class="mb-10"
   >
     <template v-slot:content>

@@ -21,7 +21,7 @@
                   <ATATAlert
                     id="ArchivedCallout"
                     v-if="portfolioIsArchived"
-                    type="info"
+                    type="mdi-information"
                     class="mb-10"
                   >
                     <template v-slot:content>
@@ -210,7 +210,7 @@
                 <v-col>
                   <ATATAlert
                     id="FinancialDetailsAlert"
-                    type="info"
+                    type="mdi-information"
                     class="container-max-width my-10"
                   >
                     <template v-slot:content>
@@ -428,7 +428,7 @@
                     />
                     <ATATAlert
                     id="ZeroRemainingFunds"
-                    type="error"
+                    type="mdi-alert-circle"
                     class="my-5"
                     v-if="zeroFundsRemaining"
                     >
