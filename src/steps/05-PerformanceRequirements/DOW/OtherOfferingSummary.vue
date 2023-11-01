@@ -21,7 +21,7 @@
 
           <div 
             v-if="tableData.length === 0"
-            class="w-100 py-10 border1 border-eounded border-base-lighter text-center mb-10 mt-10" 
+            class="w-100 py-10 border1 _border-rounded border-base-lighter text-center mb-10 mt-10" 
           >
             You do not have any requirements yet.
           </div>

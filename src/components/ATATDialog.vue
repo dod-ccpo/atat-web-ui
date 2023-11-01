@@ -15,7 +15,7 @@
       <v-card-title class="h2 text-break" :id="modalTitleId" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
-      <v-card-text class="body-lg text-black px-10" :id="modalMessageId">
+      <v-card-text class="body-lg text-base-darkest px-10" :id="modalMessageId">
         <slot name="content"></slot>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">

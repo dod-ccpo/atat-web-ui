@@ -25,7 +25,7 @@
                 w-100
                 py-10
                 border1
-                border-eounded border-base-lighter
+                _border-rounded border-base-lighter
                 text-center
                 mb-10
                 mt-10
@@ -99,7 +99,7 @@
             <hr class="mt-0" v-if="hasListings" />
           </div>
           <div v-if="isLoading"
-            class="d-flex justify-space-around py-10 border1 border-eounded border-base-lighter
+            class="d-flex justify-space-around py-10 border1 _border-rounded border-base-lighter
             my-10 bg-offwhite width-100 text-center
           "
           >

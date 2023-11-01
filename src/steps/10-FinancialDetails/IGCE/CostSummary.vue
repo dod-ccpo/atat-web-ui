@@ -74,7 +74,7 @@
           </template>
         </ATATAlert>
         <div v-if="isLoading" class="d-flex justify-space-around py-15 border1 
-              border-eounded border-base-lighter my-10 bg-offwhite width-100 
+              _border-rounded border-base-lighter my-10 bg-offwhite width-100 
               text-center">
           <div class="d-flex align-center" style="margin: 0 auto">
             <v-progress-circular 
