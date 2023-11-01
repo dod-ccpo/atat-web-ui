@@ -74,8 +74,6 @@ export default defineConfig(({command, mode}) => {
 				// vueTsc: true
 				// eslint: {lintCommand:'eslint '},
 			}),
-			// liveReload('./src/**/*.(vue|ts)'),
-			// vue-property-decorator
 			cssInjectedByJsPlugin(),
 			resolve() //commonjs(),
 			//splitVendorChunkPlugin(),
@@ -214,8 +212,6 @@ export default defineConfig(({command, mode}) => {
         'src/packages/components/DeletePackageModal.spec.ts',
         'src/packages/components/Search.spec.ts',
         'src/packages/Index.spec.ts',
-        'src/plugins/__tests__/Validation.spec.ts',
-        'src/plugins/validation.spec.ts',
         'src/portfolios/components/FiltersSlideout.spec.ts',
         'src/portfolios/components/PortfolioCard.spec.ts',
         'src/portfolios/components/PortfoliosSummary.spec.ts',
