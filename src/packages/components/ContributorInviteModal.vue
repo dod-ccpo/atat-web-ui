@@ -24,9 +24,8 @@
           clearable
           append-icon="search"
           @click:clear="clearSearch()"
-          outlined
-          dense
-          :height="40"
+          variant="outlined"
+          density="compact"
           placeholder="Search by name or email address"
           autocomplete="off"
         />
@@ -52,14 +51,12 @@
                 @click="onUserSelection(user)"
                 class="pointer"
               >
-                <v-list-item-content>
                   <v-list-item-title class="font-weight-bolder font-size-16">
                     {{ user.firstName }} {{ user.lastName}}{{ user.title}} {{ user.agency }}
                   </v-list-item-title>
                   <v-list-item-subtitle class="font-size-14">
                     {{ user.email }}
                   </v-list-item-subtitle>
-                </v-list-item-content>
               </v-list-item>
             </v-list>
 
@@ -88,14 +85,12 @@
             v-for="(user, index) in userSelectedList" :key="user.sys_id"
             class="_search-results-list"
           >
-            <v-list-item-content>
               <v-list-item-title class="font-weight-bolder font-size-16">
                 {{ user.firstName }} {{ user.lastName }}{{ user.title}} {{ user.agency }}
               </v-list-item-title>
               <v-list-item-subtitle class="font-size-14">
                 {{ user.email }}
               </v-list-item-subtitle>
-            </v-list-item-content>
             <v-list-item-action>
               <v-btn
                 :id="'RemoveSelectedUser' + index"
@@ -122,7 +117,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-facing-decorator";
+import { Component, Watch, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -197,6 +192,6 @@ class ContributorInviteModal extends UserSearch {
 
 }
 
-export default ContributorInviteModal;
+export default toNative(ContributorInviteModal)
 
 </script>

@@ -37,7 +37,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
  
-import { Component, Prop, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -86,12 +86,12 @@ class CJADC2Initiative extends Vue {
       : this._cjadc2Percentage
   }
 
-  public helpTextLinkClicked(e:Event):void{
+  public helpTextLinkClicked(e: Event):void{
     // eslint-disable-next-line max-len
     const link = "https://media.defense.gov/2022/Mar/17/2002958406/-1/-1/1/SUMMARY-OF-THE-JOINT-ALL-DOMAIN-COMMAND-AND-CONTROL-STRATEGY.PDF"
     window.open(link, "_blank");
   }
     
 }
-export default CJADC2Initiative
+export default toNative(CJADC2Initiative)
 </script>

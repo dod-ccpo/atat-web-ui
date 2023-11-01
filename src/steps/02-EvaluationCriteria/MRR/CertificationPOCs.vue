@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import CertificationPOCTypeForm
   from "@/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -152,5 +152,5 @@ class CertificationPOCs extends Vue {
     await this.loadOnEnter()
   }
 }
-export default CertificationPOCs
+export default toNative(CertificationPOCs)
 </script>

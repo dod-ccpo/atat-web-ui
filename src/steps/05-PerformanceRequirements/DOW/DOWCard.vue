@@ -3,7 +3,7 @@
     class="d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
     :class="{'_card-complete': cardData.isComplete}"
     :id="cardData.section + 'Card'"
-    outlined>
+    variant="outlined">
       <ATATSVGIcon 
         v-if="cardData.defineRequirements===true"
         name="StarInTriangle"
@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
@@ -134,6 +134,6 @@ class DOWCard extends Vue
   };
 
 }
-export default DOWCard 
+export default toNative(DOWCard )
  
 </script>

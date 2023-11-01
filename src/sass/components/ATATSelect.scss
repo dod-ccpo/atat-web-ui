@@ -16,7 +16,7 @@
     }
     &._selected {
       background-color: $primary-lighter;
-      .v-list-item__title {
+      .v-list-item-title {
         font-weight: 700 !important;
       }
       &:hover:before {
@@ -27,14 +27,14 @@
   .v-list-item__content {
     padding: 12px 0 !important;
   }
-  .v-list-item__title, .v-list-item__subtitle {
+  .v-list-item-title, .v-list-item__subtitle {
     text-align: left;
     margin-bottom: 0 !important;
     line-height: 1.25 !important;
     font-weight: 400 !important;
     white-space: normal;
   }
-  .v-list-item__title {
+  .v-list-item-title {
     font-size: 1.6rem !important;
   }
   .v-list-item__subtitle {

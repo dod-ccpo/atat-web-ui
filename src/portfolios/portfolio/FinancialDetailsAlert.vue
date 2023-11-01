@@ -16,7 +16,7 @@
   </ATATAlert>
 </template>
 <script lang="ts">
-import { Component,  Vue } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import PortfolioStore from "@/store/portfolio";
 
@@ -49,5 +49,5 @@ class FinancialDetailsAlert extends Vue {
     return longName;
   }
 }
-export default FinancialDetailsAlert
+export default toNative(FinancialDetailsAlert)
 </script>

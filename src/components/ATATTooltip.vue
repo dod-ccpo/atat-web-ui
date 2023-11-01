@@ -4,8 +4,8 @@
     :id="'Tooltip_' + id" 
     max-width="250px"
     :open-delay="500"
-    top
-    eager
+    location="top"
+    eager="true"
     v-if="tooltipText"
   >
     <!--TODO: validate that this still works after removal of on from activator-->
@@ -16,10 +16,10 @@
         :style="buttonStyle"
         icon
         :id="'TooltipButton_' + id" 
-        x-small
+        size="x-small"
         :ripple="false"
         :aria-label="'Help for ' + label"
-        ><v-icon class="icon-20 ma-0 pa-0" small color="#544496"
+        ><v-icon class="icon-20 ma-0 pa-0" size="small" color="#544496"
           >help_outline
         </v-icon>
       </v-btn>
@@ -35,9 +35,9 @@
 </template>
 
 <script lang="ts">
-import { Prop, Vue, Component } from "vue-facing-decorator";
+import { Prop, Vue, Component, toNative } from "vue-facing-decorator";
 @Component
-export default class ATATTooltip extends Vue {
+class ATATTooltip extends Vue {
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "id_is_missing" }) private id!: string;
@@ -45,5 +45,5 @@ export default class ATATTooltip extends Vue {
   @Prop({ default: "" }) private buttonClass!: string;
   @Prop({ default: "" }) private buttonStyle!: string;
 }
-
+export default toNative(ATATTooltip)
 </script>

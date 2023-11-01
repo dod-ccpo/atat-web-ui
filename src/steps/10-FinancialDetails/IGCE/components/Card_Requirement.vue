@@ -11,7 +11,7 @@
       <v-col class="flex-grow-1 flex-shrink-1">
         <v-text-field
           :id="'HeaderTextField_' + index"
-          dense
+          density="compact"
           class="_requirement-head my-1 width-100"
           hide-details
           autocomplete="off"
@@ -60,7 +60,7 @@
 
 <script lang="ts">
 
-import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { currencyStringToNumber, toCurrencyString } from "@/helpers";
@@ -142,5 +142,5 @@ class CardRequirement extends Vue {
   }
 }
 
-export default CardRequirement
+export default toNative(CardRequirement)
 </script>

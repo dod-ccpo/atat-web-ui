@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 import CSPAdminLearnMoreText from "./AddCSPAdminLearnMoreText.vue"
 
@@ -19,5 +19,5 @@ import CSPAdminLearnMoreText from "./AddCSPAdminLearnMoreText.vue"
 })
 
 class CSPAdminLearnMore extends Vue {}
-export default CSPAdminLearnMore
+export default toNative(CSPAdminLearnMore)
 </script>

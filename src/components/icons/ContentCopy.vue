@@ -14,10 +14,10 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class ContentCopy extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default ContentCopy;
+export default toNative(ContentCopy)
 </script>

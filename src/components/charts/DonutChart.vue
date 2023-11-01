@@ -4,7 +4,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Vue, Component, Prop, Watch } from "vue-facing-decorator";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import Chart, { ChartData } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { toCurrencyString } from "@/helpers";
@@ -198,5 +198,5 @@ class DonutChart extends Vue {
     return tooltipEl;
   };
 }
-export default DonutChart
+export default toNative(DonutChart)
 </script>

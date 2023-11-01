@@ -210,7 +210,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { ComponentPublicInstance } from 'vue';
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
@@ -455,5 +455,5 @@ class CurrentContract extends Vue {
   }
 }
 
-export default CurrentContract
+export default toNative(CurrentContract)
 </script>

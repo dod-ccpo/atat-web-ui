@@ -9,7 +9,7 @@
     </p>
     <v-btn
       id="StartNewAcquisition"
-      class="primary mb-4"
+      class="_primary mb-4"
       @click="startNewAcquisition"
       @keydown.enter="startNewAcquisition"
       @keydown.space="startNewAcquisition"
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { scrollToId } from "@/helpers";
 
 @Component({})
@@ -36,5 +36,5 @@ class NewAcquisitionCard extends Vue {
   }
 
 }
-export default NewAcquisitionCard;
+export default toNative(NewAcquisitionCard)
 </script>

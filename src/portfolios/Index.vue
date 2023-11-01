@@ -9,10 +9,8 @@
     <v-main>
       <v-app-bar
         id="PageHeader"
-        app
         flat
         class="_atat-page-header _portfolios"
-        clipped-right
         height="118"
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">
@@ -57,7 +55,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component,  Vue } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import PortfoliosSummary from "@/portfolios/components/PortfoliosSummary.vue";
 import ATATFooter from "@/components/ATATFooter.vue";
 import { getIdText } from "@/helpers";
@@ -157,6 +155,6 @@ class Portfolios extends Vue {
   }
 
 }
-export default Portfolios
+export default toNative(Portfolios)
 </script>
 

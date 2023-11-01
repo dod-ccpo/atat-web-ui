@@ -23,10 +23,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 
 class FOIALearnMore extends Vue {}
-export default FOIALearnMore
+export default toNative(FOIALearnMore)
 </script>

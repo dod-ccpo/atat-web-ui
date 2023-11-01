@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { Component,  Vue } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import PortfolioSummary from "@/store/portfolioSummary";
 import PortfolioCard from "../components/PortfolioCard.vue";
 import AcquisitionPackage, { Statuses } from "@/store/acquisitionPackage";
@@ -156,5 +156,5 @@ class AddToExistingPortfolio extends Vue {
     await this.loadOnEnter();
   }
 }
-export default AddToExistingPortfolio
+export default toNative(AddToExistingPortfolio)
 </script>

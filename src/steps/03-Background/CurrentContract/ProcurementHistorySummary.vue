@@ -78,7 +78,7 @@
             <div 
               v-if="!hasContractData"
               class=
-                "w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
+                "w-100 py-10 border1 _border-rounded border-base-lighter text-center mb-10 mt-10" 
               >
               <h3>
                 You have not added any past contracts yet.
@@ -88,7 +88,7 @@
                 id="AddInstanceNoData"
                 type="button"
                 role="link" 
-                class="primary _normal _small-text mt-5"
+                class="_primary _normal _small-text mt-5"
                 :ripple="false"
                 @click="addInstance()"
                 >
@@ -110,7 +110,7 @@
             id="AddInstance"
             type="button"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="_secondary _normal _small-text mt-5"
             :ripple="false"
             @click="addInstance()"
           >
@@ -154,7 +154,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
 import { CurrentContractDTO } from "@/api/models";
@@ -307,5 +307,5 @@ class ProcurementHistorySummary extends Vue {
 
 }
 
-export default ProcurementHistorySummary
+export default toNative(ProcurementHistorySummary)
 </script>

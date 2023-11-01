@@ -29,7 +29,7 @@
           :id="'AnticipatedUserAndDataNeedsAccordion_' + index"
           :key="index"
           class="mb-4"
-          flat
+          borderless
         >
           <v-expansion-panel expand>
             <v-expansion-panel-title :id="`AccordionButton_${index}`" >
@@ -85,7 +85,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
@@ -167,6 +167,6 @@ class AnticipatedUserAndDataNeeds extends Vue{
     return true;
   }
 }
-export default AnticipatedUserAndDataNeeds 
+export default toNative(AnticipatedUserAndDataNeeds )
 </script>
 

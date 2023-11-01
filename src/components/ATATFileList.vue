@@ -1,6 +1,6 @@
 <template>
   <div v-if="uploadingFiles.length > 0">
-    <v-card flat class="file-loading-div pa-6">
+    <v-card flat="true" class="file-loading-div pa-6">
       <v-card-title
         v-if="multiplesAllowed === true"
         :class="[{ 'pb-6': multiplesAllowed }, 'h2 pa-0']"
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-facing-decorator";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATFileListItem from "@/components/ATATFileListItem.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -150,5 +150,5 @@ class ATATFileList extends Vue {
     }
   }
 }
-export default ATATFileList;
+export default toNative(ATATFileList)
 </script>

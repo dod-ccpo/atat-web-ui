@@ -15,7 +15,7 @@
       <v-card-title class="h2 text-break" :id="modalTitleId" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
-      <v-card-text class="body-lg black--text px-10" :id="modalMessageId">
+      <v-card-text class="body-lg text-base-darkest px-10" :id="modalMessageId">
         <slot name="content"></slot>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
@@ -54,7 +54,7 @@
         v-model="_modalDrawerIsOpen"
         absolute
         temporary
-        right
+        location="right"
         width="100%"
         transition="slide-x-reverse-transition"
       >
@@ -87,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-facing-decorator";
+import { Vue, Component, Prop, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import { Component as VueComponent } from "vue";
 
@@ -171,5 +171,5 @@ class ATATDialog extends Vue {
     this._modalDrawerIsOpen = false;
   }
 }
-export default ATATDialog;
+export default toNative(ATATDialog)
 </script>

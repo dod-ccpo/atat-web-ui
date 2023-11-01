@@ -1,6 +1,6 @@
 <template>
   <div class="_preview-wrap">
-    <v-app-bar app flat v-if="!isForm" class="_preview-header d-flex align-center bg-white">
+    <v-app-bar flat v-if="!isForm" class="_preview-header d-flex align-center bg-white">
       <v-btn 
         class="plain bg-transparent mx-7 my-4 pa-0" 
         @click="$emit('showView', 'form')" >
@@ -133,7 +133,7 @@ import ContractNumber from "@/steps/03-Background/components/ContractNumber.vue"
 import CurrentContractOptions 
   from "@/steps/03-Background/CurrentContract/components/CurrentContractOptions.vue";
 
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
 import { DocReviewData } from "types/Global";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
@@ -162,5 +162,5 @@ class DocumentReviewPreview extends Vue {
 
   private hasACOR = AcquisitionPackage.hasAlternativeContactRep;
 }
-export default DocumentReviewPreview;
+export default toNative(DocumentReviewPreview)
 </script>

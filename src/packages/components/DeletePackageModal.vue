@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATDialog from "@/components/ATATDialog.vue";
 
@@ -59,6 +59,6 @@ class DeletePackageModal extends Vue {
 
 }
 
-export default DeletePackageModal;
+export default toNative(DeletePackageModal)
 
 </script>

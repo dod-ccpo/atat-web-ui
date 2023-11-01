@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -110,5 +110,5 @@ class ArchitectureDesignForm extends Vue {
   }
 
 }
-export default ArchitectureDesignForm
+export default toNative(ArchitectureDesignForm)
 </script>

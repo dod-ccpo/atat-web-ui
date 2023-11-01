@@ -11,7 +11,7 @@
     <v-col class="col-12" :align="'center'">
       <div class="copy-max-width">
         <h1 class="text-center">
-          Generating your draft acquisition package documents<span class="ellipsis"></span>
+          Generating your draft acquisition package documents<span class="_ellipsis"></span>
         </h1>
         <br />
         <p class="text-center">
@@ -24,7 +24,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 
 @Component({})
@@ -36,5 +36,5 @@ class GeneratingDocumentsFunding extends Vue {
 
 }
 
-export default GeneratingDocumentsFunding
+export default toNative(GeneratingDocumentsFunding)
 </script>

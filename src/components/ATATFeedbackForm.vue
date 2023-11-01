@@ -181,7 +181,7 @@
                             :value.sync="otherFeedbackValue"
                           />
                           <v-btn
-                            class="primary ml-auto"
+                            class="_primary ml-auto"
                             id="verySatisfied"
                             @click="sendFeedback()"
                             @keydown.enter="sendFeedback()"
@@ -205,7 +205,7 @@
                               </p>
                               <v-btn
                                 id="Dismiss"
-                                class="secondary mx-auto"
+                                class="_secondary mx-auto"
                                 @click="dismiss"
                                 @keydown.enter="dismiss"
                                 @keydown.space="dismiss"
@@ -230,7 +230,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import {Vue,Component, Watch } from "vue-facing-decorator";
+import {Vue,Component, Watch, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -367,5 +367,5 @@ class ATATFeedbackForm extends Vue {
     await this.loadOnEnter();
   }
 }
-export default ATATFeedbackForm;
+export default toNative(ATATFeedbackForm)
 </script>

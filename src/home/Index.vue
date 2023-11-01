@@ -32,7 +32,7 @@
             <div class="d-flex justify-end">
               <v-btn 
                 v-if="!isNewUser"
-                class="v-btn bg-primary"
+                class="v-btn _primary"
                 @click="startNewAcquisition"
               >
                 Start a new acquisition
@@ -42,7 +42,7 @@
                 href="https://community.hacc.mil/s/jwcc"
                 target="_blank"
                 id="HelpfulResourcesButton"
-                class="bg-secondary no-text-decoration"
+                class="_secondary no-text-decoration"
               >
                 Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
               </v-btn>
@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-facing-decorator";
+import { Component, Vue, Watch, toNative } from "vue-facing-decorator";
 import ATATFooter from "@/components/ATATFooter.vue";
 import ExistingUser from "./ExistingUser.vue";
 import NewUser from "./NewUser.vue";
@@ -238,5 +238,5 @@ class Home extends Vue {
   };
 
 }
-export default Home;
+export default toNative(Home)
 </script>

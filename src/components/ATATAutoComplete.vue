@@ -10,23 +10,21 @@
       v-model="_selectedItem"
       :class="inputClass"
       :items="(items)"
-      :search-input.sync="searchText"
+      :search.sync="searchText"
       :placeholder="placeholder"
       :append-icon="icon"
-      :item-text="titleKey"
+      :item-title="titleKey"
       :hide-details="true"
-      :filter="customFilter"
+      :customFilter="customFilter"
       :rules="rules"
       return-object
       clearable
-      outlined
-      attach
-      dense
+      variant="outlined"
+      :menu-props="{attach:true}"
       @blur="onBlur"
-      @update:search-input="updateSearchInput"
+      @update:search="updateSearchInput"
     >
       <template v-slot:item>
-        <v-list-item-content>
           <!-- eslint-disable vue/no-v-text-v-html-on-component -->
           <v-list-item-title
             v-text="titleKey"
@@ -37,7 +35,6 @@
             v-text="subtitleKey"
           />
           <!-- eslint-enable -->
-        </v-list-item-content>
       </template>
 
       <template v-slot:no-data>
@@ -67,7 +64,7 @@
 import { ComponentPublicInstance } from "vue";
 import { AutoCompleteItem, ValidationRule } from "types/Global";
 
-import { Component, Prop, Vue, Watch } from "vue-facing-decorator";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { PropSync } from "@/decorators/custom";
@@ -170,5 +167,5 @@ class ATATAutoComplete extends Vue {
     this.isReset = false;
   }
 }
-export default ATATAutoComplete;
+export default toNative(ATATAutoComplete)
 </script>

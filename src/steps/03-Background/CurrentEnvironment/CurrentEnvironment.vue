@@ -30,7 +30,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import { RadioButton, YesNo } from "../../../../types/Global";
 
 
@@ -113,6 +113,6 @@ class HasCurrentEnvironment extends Vue {
 
 }
 
-export default HasCurrentEnvironment
+export default toNative(HasCurrentEnvironment)
 </script>
 

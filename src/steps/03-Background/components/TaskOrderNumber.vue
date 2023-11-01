@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom';
 import ATATTextField from "@/components/ATATTextField.vue";
 
@@ -42,5 +42,5 @@ class TaskOrderNumber extends Vue {
   @PropSync("rules") private _rules!: "";
 }
 
-export default TaskOrderNumber
+export default toNative(TaskOrderNumber)
 </script>

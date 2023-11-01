@@ -1,4 +1,5 @@
 <template>
+<!--  TODO review this component after upgrade-->
   <v-app-bar id="TopNavBar">
     <ATATSVGIcon
       color="white"
@@ -11,17 +12,15 @@
       <v-menu
         v-for="(navItem, navIdx) in topNavMenuItems"
         :key="navIdx"
-        :offset-y="true"
-        nudge-left="0"
+        :offset="0"
         :id="'TopNavBarMenu_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
         :attach="navItem.menu !== undefined"
-        :left="navItem.align === 'left'"
+        location="left"
       >
         <!-- top nav bar items (buttons) -->
         <template v-slot:activator="{ props }">
           <v-btn
-            text="true"
-            dark
+            variant="text"
             v-bind="props"
             :id="'TopNavButton_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
             :class="[
@@ -130,7 +129,7 @@
 
 <script lang="ts">
 import { TopNavItem, User } from "types/Global";
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { getUserInitials, getIdText } from "@/helpers";
 import AppSections from "@/store/appSections";
@@ -142,7 +141,7 @@ import CurrentUserStore from "@/store/user";
     ATATSVGIcon,
   },
 })
-export default class ATATTopNavBar extends Vue {
+class ATATTopNavBar extends Vue {
 
   public currentUser: UserDTO = {}
 
@@ -365,4 +364,5 @@ export default class ATATTopNavBar extends Vue {
     await this.loadOnEnter();
   }
 }
+export default toNative(ATATTopNavBar)
 </script>

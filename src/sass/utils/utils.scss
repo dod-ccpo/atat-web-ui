@@ -160,17 +160,16 @@ $widths: 500, 640, 740, 840, 760, 1200;
   box-shadow: 0px 1px 4px rgba(27, 27, 27, 0.1) !important;
 }
 
-.ellipsis{
+._ellipsis{
   display:inline-block;
   overflow:hidden;
   vertical-align:bottom;
-}
-
-.ellipsis:after {
-  display:inline-block;
-  -webkit-animation: ellipsis-keyframes 900ms steps(4, jump-none) infinite;
-  animation: ellipsis-keyframes 900ms steps(4, jump-none) infinite;
-  content: "...";
+  &:after {
+    display:inline-block;
+    -webkit-animation: ellipsis-keyframes 900ms steps(4, jump-none) infinite;
+    animation: ellipsis-keyframes 900ms steps(4, jump-none) infinite;
+    content: "...";
+  }
 }
 
 @keyframes ellipsis-keyframes {
@@ -195,4 +194,8 @@ $widths: 500, 640, 740, 840, 760, 1200;
 
 ._mb-200 {
   margin-bottom: 200px;
+}
+
+.v-list-item-title {
+  line-height: unset !important;
 }

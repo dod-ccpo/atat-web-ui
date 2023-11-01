@@ -9,7 +9,7 @@
             auto-grow
             autocomplete="off"
             class="_drawer-text-area pa-2 mb-2 font-size-14"
-            dense
+            density="compact"
             hide-details
             placeholder="Add a description"
             rows="1"
@@ -75,7 +75,7 @@
             ({{ getPortfolioMembersCount }})
           </div>
         </div>
-        <v-tooltip left nudge-right="20" v-if="userCanInviteMembers">
+        <v-tooltip location="left" offset="20" v-if="userCanInviteMembers">
           <!-- TODO: check activator -->
           <template v-slot:activator="{ props }">
             <span
@@ -118,7 +118,7 @@
           <!-- NOT DROPDOWN - for owner and if current user is Viewer & member is someone else -->
           <div v-if="notMemberDropdown(member)">
 
-            <v-tooltip left nudge-right="30">
+            <v-tooltip location="left" offset="30">
               <!-- TODO: check activator -->
               <template v-slot:activator="{ props }">
                 <div
@@ -299,7 +299,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Watch,  Vue } from "vue-facing-decorator";
+import {Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -858,5 +858,5 @@ class PortfolioDrawer extends Vue {
     }
   }
 }
-export default PortfolioDrawer
+export default toNative(PortfolioDrawer)
 </script>

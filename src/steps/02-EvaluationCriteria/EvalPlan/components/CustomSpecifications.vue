@@ -40,7 +40,7 @@
 
     <v-btn
       id="AddCustomSpecButton"
-      plain
+      variant="plain"
       class=" mt-5 link-button no-border"
       :ripple="false"
       @click="addCustomSpec()"
@@ -59,7 +59,7 @@
 
 <script lang="ts">
  
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
@@ -103,5 +103,5 @@ class CustomSpecifications extends Vue {
 
 }
 
-export default CustomSpecifications
+export default toNative(CustomSpecifications)
 </script>

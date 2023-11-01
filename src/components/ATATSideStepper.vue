@@ -1,8 +1,8 @@
 <template>
+  <!-- TODO: app props have been removed from v-navigation-drawer, v-app-bar and v-system-bar.   -->
   <v-navigation-drawer
     id="GlobalSideNavBar"
-    app
-    permanent
+    permanent="true"
     class="global-side-nav-bar d-flex flex-column align-start "
     width="320"
   >
@@ -11,7 +11,7 @@
       <strong class="text-primary pl-1">{{ percentComplete }}%</strong>&nbsp;
       <span class="text-base">COMPLETE</span>
       <v-progress-linear
-        :value="percentComplete"
+        :model-value="percentComplete"
         height="12"
         rounded
         color="#544496"
@@ -126,7 +126,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Prop, Watch, Vue } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import { StepperStep } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import { StepInfo } from "@/store/steps/types";
@@ -241,5 +241,5 @@ class ATATSideStepper extends Vue {
   private activeStep = "";
   private percentComplete = 0;
 }
-export default ATATSideStepper;
+export default toNative(ATATSideStepper)
 </script>

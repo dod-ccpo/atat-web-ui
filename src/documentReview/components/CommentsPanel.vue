@@ -32,7 +32,7 @@
       <h3 class="mb-4">Comments</h3>
       <dl>
         <dt>
-          <v-btn variant="text" x-small class="pa-2 comment-button">
+          <v-btn variant="text" size="x-small" class="pa-2 comment-button">
             <ATATSVGIcon
               name="commentBubble"
               class="comment-icon"
@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
@@ -62,5 +62,5 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
   },
 })
 class CommentsPanel extends Vue {}
-export default CommentsPanel;
+export default toNative(CommentsPanel)
 </script>

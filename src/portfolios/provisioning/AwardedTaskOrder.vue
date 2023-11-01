@@ -18,7 +18,7 @@
        
           <div class=
              "width-50 body-sm awarded-task-order-details copy-max-width 
-              border1 border-base-lighter border-rounded-more pa-8 mb-10">
+              border1 border-base-lighter _border-rounded-more pa-8 mb-10">
               <h2 class="mb-4">Task Order #{{ awardedTaskOrder.taskOrderNumber }} </h2>
               <dl class="d-flex flex-wrap">
                 <dt class="text-base">Cloud Service Provider (CSP)</dt>
@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch,  Vue } from "vue-facing-decorator";
+import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import { AwardedTaskOrderDetails } from "types/Global";
 import { getCurrencyString } from "@/helpers";
 
@@ -206,5 +206,5 @@ class AwardedTaskOrder extends Vue {
   }
 
 }
-export default AwardedTaskOrder
+export default toNative(AwardedTaskOrder)
 </script>

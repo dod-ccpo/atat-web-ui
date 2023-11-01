@@ -30,7 +30,8 @@
               id="ContractingShopChoice"
               name="ContractingShopChoice"
               :items="contractingShopOptions"
-              :value.sync="contractingShop"
+              :value="contractingShop"
+              @update:value="contractingShop = $event"
               :card="true"
               width="400"
               :rules="[$validators.required('Please select an option.')]"
@@ -69,7 +70,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component , Vue} from "vue-facing-decorator";
+import { Component , Vue, toNative} from "vue-facing-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -82,7 +83,6 @@ import { SlideoutPanelContent, RadioButton } from "../../../types/Global";
 import ContractingShopLearnMore from "./ContractingShopLearnMore.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ProjectOverviewDTO } from "@/api/models";
-// import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepTouched } from "@/store/summary";
@@ -123,6 +123,10 @@ class ContractingShop extends Vue {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
+  }
+
+  public radioButtonClicked(val: string): void {
+    this.contractingShop = val;
   }
 
   public get isLoading(): boolean {
@@ -202,5 +206,5 @@ class ContractingShop extends Vue {
     return true;
   }
 }
-export default ContractingShop 
+export default toNative(ContractingShop)
 </script>

@@ -25,7 +25,7 @@
                 w-100
                 py-10
                 border1
-                border-rounded border-base-lighter
+                _border-rounded border-base-lighter
                 text-center
                 mb-10
                 mt-10
@@ -99,7 +99,7 @@
             <hr class="mt-0" v-if="hasListings" />
           </div>
           <div v-if="isLoading"
-            class="d-flex justify-space-around py-10 border1 border-rounded border-base-lighter
+            class="d-flex justify-space-around py-10 border1 _border-rounded border-base-lighter
             my-10 bg-offwhite width-100 text-center
           "
           >
@@ -117,7 +117,7 @@
           <v-btn v-if="!isLoading"
             id="AddInstance"
             role="link"
-            class="secondary _normal _small-text mt-5"
+            class="_secondary _normal _small-text mt-5"
             :ripple="false"
             @click="createInstance()"
           >
@@ -246,7 +246,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import { Checkbox, DataTableHeader, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -488,5 +488,5 @@ class Travel extends Vue {
 
 }
 
-export default Travel
+export default toNative(Travel)
 </script>

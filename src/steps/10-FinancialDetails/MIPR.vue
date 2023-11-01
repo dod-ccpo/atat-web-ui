@@ -43,7 +43,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import { FundingRequestMIPRFormDTO } from "@/api/models";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
@@ -196,5 +196,5 @@ class MIPR extends Vue {
 
 }
 
-export default MIPR
+export default toNative(MIPR)
 </script>

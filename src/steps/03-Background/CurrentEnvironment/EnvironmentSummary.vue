@@ -41,7 +41,7 @@
 
           <div 
             v-if="tableData.length === 0"
-            class="w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
+            class="w-100 py-10 border1 _border-rounded border-base-lighter text-center mb-10 mt-10" 
           >
             You currently do not have any instances.
           </div>
@@ -107,7 +107,7 @@
             id="AddInstance"
             type="button"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="_secondary _normal _small-text mt-5"
             :ripple="false"
             @click="addInstance()"
           >
@@ -149,7 +149,7 @@
 </template>
 <script lang="ts">
 /*eslint vue/no-child-content: 1 */
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -484,6 +484,6 @@ class EnvironmentSummary extends Vue {
 
 }
 
-export default EnvironmentSummary
+export default toNative(EnvironmentSummary)
 </script>
 

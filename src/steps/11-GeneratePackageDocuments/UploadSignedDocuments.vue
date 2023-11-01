@@ -73,7 +73,7 @@
             <div    
               class="
               border1
-              border-rounded-more
+              _border-rounded-more
               border-base-lighter
               bg-primary-lighter
               pa-6"
@@ -113,7 +113,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
@@ -273,6 +273,6 @@ class UploadSignedDocuments extends Vue {
 
 }
 
-export default UploadSignedDocuments
+export default toNative(UploadSignedDocuments)
 </script>
 

@@ -15,7 +15,7 @@
       :key="index + '-' + section.sectionTitle"
     >
       <hr v-if="index > 0" class="mb-4" />
-      <v-expansion-panels accordion flat>
+      <v-expansion-panels variant="accordion" borderless>
         <v-expansion-panel 
           v-for="(requirement, index) in section.items"
           :key="index + '-' + requirement.name"
@@ -47,7 +47,7 @@
 
 <script lang="ts">
  
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 
@@ -151,6 +151,6 @@ class XaasLearnMore extends Vue{
   ];
 
 }
-export default XaasLearnMore 
+export default toNative(XaasLearnMore )
  
 </script>

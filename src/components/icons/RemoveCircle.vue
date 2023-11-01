@@ -13,10 +13,10 @@
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 @Component({})
 class RemoveCircle extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default RemoveCircle;
+export default toNative(RemoveCircle)
 </script>

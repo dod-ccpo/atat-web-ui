@@ -32,7 +32,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import IGCEStore from "@/store/IGCE";
@@ -108,6 +108,6 @@ class SurgeCapacity extends Vue {
 
 }
 
-export default SurgeCapacity
+export default toNative(SurgeCapacity)
 </script>
 

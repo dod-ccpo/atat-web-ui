@@ -31,18 +31,18 @@
                 ]"
             />
             <v-btn
-                id="RestoreMinGovReqExplanationButton"
-                class="secondary font-size-14 px-4 mb-1 mt-1"
-                :disabled="isMinGovReqExpDefaultUnmodified"
-                @click="onRestoreMinGovReqExpClick"
+              id="RestoreMinGovReqExplanationButton"
+              class="_secondary font-size-14 px-4 mb-1 mt-1"
+              :disabled="isMinGovReqExpDefaultUnmodified"
+              @click="onRestoreMinGovReqExpClick"
             >
               <ATATSVGIcon
-                  id="RestoreMinGovReqExplanationButtonIcon"
-                  width="18"
-                  height="18"
-                  name="restore"
-                  class="mr-1"
-                  :color="btnRestoreIconColor"
+                id="RestoreMinGovReqExplanationButtonIcon"
+                width="18"
+                height="18"
+                name="restore"
+                class="mr-1"
+                :color="btnRestoreIconColor"
               />
               Restore default suggestion
             </v-btn>
@@ -73,7 +73,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
@@ -183,5 +183,5 @@ class MinimumRequirements extends Vue {
   }
 }
  
-export default MinimumRequirements
+export default toNative(MinimumRequirements)
 </script>

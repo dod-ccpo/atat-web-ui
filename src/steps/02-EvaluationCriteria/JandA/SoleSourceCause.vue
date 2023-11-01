@@ -218,7 +218,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -561,6 +561,6 @@ class SoleSourceCause extends Vue {
 
 }
 
-export default SoleSourceCause 
+export default toNative(SoleSourceCause )
 </script>
 

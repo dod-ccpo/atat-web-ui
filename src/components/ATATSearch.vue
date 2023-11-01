@@ -38,6 +38,7 @@
         :model-value.sync="_value"
         :placeholder="placeHolder"
         :rules="rules"
+        :validate-on="validationString"
         @click:clear="clearErrorMessages"
         @blur="onBlur"
         autocomplete="off"
@@ -186,7 +187,7 @@
 
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Component, Prop, Vue, Watch } from "vue-facing-decorator";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue";
@@ -206,7 +207,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     // ATATErrorValidation,
   },
 })
-export default class ATATSearch extends Vue {
+class ATATSearch extends Vue {
   $refs!: {
     atatSearchInput: ComponentPublicInstance & {
       errorBucket: string[];
@@ -473,4 +474,5 @@ export default class ATATSearch extends Vue {
     this.setMask();
   }
 }
+export default toNative(ATATSearch)
 </script>

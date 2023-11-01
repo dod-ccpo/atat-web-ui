@@ -21,7 +21,7 @@
 
           <div 
             v-if="tableData.length === 0"
-            class="w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
+            class="w-100 py-10 border1 _border-rounded border-base-lighter text-center mb-10 mt-10" 
           >
             You do not have any requirements yet.
           </div>
@@ -70,7 +70,7 @@
           <v-btn
             id="AddInstance"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="_secondary _normal _small-text mt-5"
             :ripple="false"
             @click="addInstance()"
           >
@@ -135,7 +135,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, mixins, Watch, Vue } from "vue-facing-decorator";
+import { Component, mixins, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -527,7 +527,7 @@ class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
   }
 
 }
-export default OtherOfferingSummary
+export default toNative(OtherOfferingSummary)
 
  
 </script>

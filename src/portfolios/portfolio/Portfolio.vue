@@ -258,7 +258,7 @@
                           :hide-details="true"
                           :ripple="false"
                           class="color_chart_1"
-                          @change="doToggleDataset(0)"
+                          @update:model-value="doToggleDataset(0)"
                         ></v-checkbox>
 
                         <v-checkbox
@@ -269,7 +269,7 @@
                           :class="'color_chart_' + (index + 2)"
                           :hide-details="true"
                           :ripple="false"
-                          @change="doToggleDataset((index + 1) * 2)"
+                          @update:model-value="doToggleDataset((index + 1) * 2)"
                         />
                       </v-radio-group>
                     </div>
@@ -502,7 +502,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component,  Vue } from "vue-facing-decorator";
+import { Component,  Vue, toNative } from "vue-facing-decorator";
 import { DashboardService } from "../../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../../components/ATATFooter.vue";
@@ -1504,5 +1504,5 @@ class PortfolioDashboard extends Vue {
   }
 
 }
-export default PortfolioDashboard
+export default toNative(PortfolioDashboard)
 </script>

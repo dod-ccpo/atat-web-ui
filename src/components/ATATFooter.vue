@@ -23,7 +23,7 @@
           label="Developer Navigation"
           class="mr-10"
           color="indigo"
-          inset
+          inset="true"
         >
         </v-switch>
 
@@ -32,7 +32,7 @@
           v-model="prodContent"
           label="Production Content"
           color="indigo"
-          inset
+          inset="true"
         >
         </v-switch>
       </div>
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { Watch, Component, Vue } from "vue-facing-decorator";
+import { Watch, Component, Vue, toNative } from "vue-facing-decorator";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -73,7 +73,7 @@ class ATATFooter extends Vue {
     await AcquisitionPackage.setEmulateProdNav(newVal);
   }
 }
-export default ATATFooter;
+export default toNative(ATATFooter)
 </script>
 
 <style scoped>

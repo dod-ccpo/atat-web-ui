@@ -100,7 +100,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, mixins, Watch, Vue } from "vue-facing-decorator";
+import { Component, mixins, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import RequirementsForm from './RequirementsForm.vue'
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -482,5 +482,5 @@ class ServiceOfferingDetails extends mixins(Vue, SaveOnLeave) {
 
 
 };
-export default ServiceOfferingDetails 
+export default toNative(ServiceOfferingDetails )
 </script>

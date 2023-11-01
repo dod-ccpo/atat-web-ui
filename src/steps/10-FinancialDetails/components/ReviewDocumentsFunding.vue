@@ -50,8 +50,8 @@
             <v-col class="d-flex justify-end" align-self="end">
               <v-btn
                 v-if="!isErrored && !isCurrentSectionFunding"
-                class="secondary _text-decoration-none px-6 mr-5"
-                large
+                class="_secondary _text-decoration-none px-6 mr-5"
+                size="large"
                 target="_blank"
                 @click="update()"
                 @keydown.enter="update()"
@@ -61,9 +61,9 @@
                 <ATATSVGIcon class="pl-2" width="14" height="19" name="update" color="primary"/>
               </v-btn>
               <v-btn
-                class="primary _text-decoration-none px-6"
+                class="_primary _text-decoration-none px-6"
                 v-if="!isErrored"
-                large
+                size="large"
                 width="137"
                 role="button"
                 :href="downloadPackageLink" >
@@ -93,7 +93,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom';
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import PackageItem from "@/steps/11-GeneratePackageDocuments/components/PackageItem.vue";
@@ -256,5 +256,5 @@ class ReviewDocumentsFunding extends Vue {
   }
 }
 
-export default ReviewDocumentsFunding
+export default toNative(ReviewDocumentsFunding)
 </script>

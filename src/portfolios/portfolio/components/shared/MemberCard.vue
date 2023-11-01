@@ -2,16 +2,15 @@
   <div class="text-center">
     <v-menu
       :close-on-content-click="false"
-      left
+      location="left"
       open-on-hover
-      offset-x
+      offset
       v-if="member"
     >
       <template v-slot:activator="{ props }">
         <!-- TODO: check activator -->
         <v-btn
-          plain
-          variant="text"
+          variant="plain"
           v-bind="props"
           class="font-size-14 _profile-card__name-button"
         >
@@ -31,7 +30,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Prop, Vue } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { User } from "../../../../../types/Global";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -55,5 +54,5 @@ class MemberCard extends Vue {
   }
 
 }
-export default MemberCard
+export default toNative(MemberCard)
 </script>

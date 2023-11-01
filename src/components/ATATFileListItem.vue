@@ -98,7 +98,7 @@
       </div>
     </div>
     <v-btn
-      class="secondary ml-auto"
+      class="_secondary ml-auto"
       :id="'RemoveFile0' + index"
       v-if="!isLoading"
       @click="removeFile(index, $event)"
@@ -116,7 +116,7 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Prop, Watch } from "vue-facing-decorator";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
@@ -212,5 +212,5 @@ class ATATFileListItem extends Vue {
     });
   }
 }
-export default ATATFileListItem;
+export default toNative(ATATFileListItem)
 </script>

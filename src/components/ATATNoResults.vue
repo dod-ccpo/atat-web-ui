@@ -34,7 +34,7 @@
 
     <v-btn 
       id="ClearSearchButton"
-      class="primary mx-auto"
+      class="_primary mx-auto"
       @click="clear"
     >
       Clear {{ buttonText }}
@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop } from "vue-facing-decorator";
+import {Vue, Component, Prop, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 
@@ -70,5 +70,5 @@ class ATATNoResults extends Vue {
     this.$emit("clear", this.hasBoth ? "both" : this.buttonText)
   }
 }
-export default ATATNoResults;
+export default toNative(ATATNoResults)
 </script>

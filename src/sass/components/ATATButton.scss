@@ -34,7 +34,7 @@
     opacity: 0 !important;
   }
   
-  &.bg-primary.v-theme--light{
+  &._primary.v-theme--light{
     background-color:  $primary !important;
     color: #fff !important;
     &:hover{
@@ -47,7 +47,7 @@
     }
   }
   
-  &.bg-secondary.v-theme--light {
+  &._secondary.v-theme--light {
     background-color: $white !important;
     border: 2px solid $primary !important;
     color: $primary;
@@ -194,7 +194,7 @@
 }
 
 ._meatball-menu {
-  .v-list-item__title {
+  .v-list-item-title {
     font-size: 1.4rem;
   }
 
@@ -208,7 +208,7 @@
       }
     }
 
-    .v-list-item__title {
+    .v-list-item-title {
       font-size: 1.6rem;
       display: flex;
       align-items: center;
@@ -241,7 +241,8 @@
 }
 
 ._meatball-menu-button {
-  &.v-btn.v-size--default {
+  padding: 0 !important;
+  &.v-btn.v-btn--size-default {
     min-width: 28px !important;
     width: 28px;
     height: 28px;

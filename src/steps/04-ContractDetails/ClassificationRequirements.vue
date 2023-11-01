@@ -94,7 +94,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -326,6 +326,6 @@ class ClassificationRequirements extends Vue {
 
 }
 
-export default ClassificationRequirements
+export default toNative(ClassificationRequirements)
 </script>
 

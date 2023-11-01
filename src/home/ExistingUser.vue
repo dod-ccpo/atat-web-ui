@@ -122,7 +122,7 @@
                   id="JWCCHelpCenterButton"
                   href="https://community.hacc.mil/s/jwcc/resources"
                   target="_blank" 
-                  class="bg-secondary mb-4 mt-4 width-100 _text-decoration-none"
+                  class="_secondary mb-4 mt-4 width-100 _text-decoration-none"
                 >
                   JWCC Help Center
                   
@@ -138,7 +138,7 @@
                 </v-btn>
                 <v-btn
                   id="CustomerSupportButton"
-                  class="bg-secondary mt-4 width-100 _text-decoration-none"
+                  class="_secondary mt-4 width-100 _text-decoration-none"
                   :href="supportUrl"
                   target="_blank"
                 >      
@@ -156,8 +156,8 @@
                 <v-btn
                   :href="reportIssueLink"
                   id="ReportIssueButton"
-                   target="_blank"
-                  class="bg-secondary mt-4 width-100 _text-decoration-none" 
+                  target="_blank"
+                  class="_secondary mt-4 width-100 _text-decoration-none" 
                 >
                   Report a bug or technical issue
                   <ATATSVGIcon
@@ -180,7 +180,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATLoader from "@/components/ATATLoader.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
@@ -214,7 +214,7 @@ import AppSections from "@/store/appSections";
   }
 })
 
-export default class ExistingUser extends Vue {
+class ExistingUser extends Vue {
   public packageData:AcquisitionPackageSummaryDTO[] = []
   public isLoadingPackages = true;
 
@@ -294,4 +294,5 @@ export default class ExistingUser extends Vue {
   }
 
 }
+export default toNative(ExistingUser)
 </script>
