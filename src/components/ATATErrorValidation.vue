@@ -1,9 +1,9 @@
 <template>
-  <div v-if="showError" :id="id">
+  <div v-if="showError" :id="id" class="mt-2">
     <div
       v-for="(em, idx) in errorMsgs"
       :key="idx"
-      class="d-flex justify-start align-top atat-text-field-error"
+      class="d-flex justify-start align-center atat-text-field-error"
       :class="textAreaWithCounter ? 'mt-n5' : 'mt-2'"
     >
       <div>
@@ -16,7 +16,12 @@
 
 <script lang="ts">
 import { Prop, Vue, Component, toNative } from "vue-facing-decorator";
-@Component({})
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
+@Component({
+  components:{
+    ATATSVGIcon
+  }
+})
 class ATATErrorValidation extends Vue {
   @Prop({ default: () => [] }) private errorMessages!: string[];
   @Prop({ default: false }) private textAreaWithCounter!: boolean;
