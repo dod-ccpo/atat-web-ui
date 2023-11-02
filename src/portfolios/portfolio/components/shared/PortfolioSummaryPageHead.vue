@@ -387,7 +387,6 @@ class PortfolioSummaryPageHead extends Vue {
     return collection[0] as HTMLElement;
   }
   public async loadOnEnter(): Promise<void> {
-    console.log(this._title, 'title')
     this.hasCspLinks = this.environmentLinks.length > 0;
     if(this.environmentLinks.length > 1){
       this.cspLoginText = "LOGIN TO YOUR CSP PORTALS"
