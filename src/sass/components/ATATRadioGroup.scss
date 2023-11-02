@@ -186,8 +186,9 @@
 //   }
 // }
 
-._atat-radio-group.v-input.v-radio-group {
+._atat-radio-group {
   legend {
+    @extend body;
     font-weight: 500;
     max-width: 740px;
   }

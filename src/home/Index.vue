@@ -45,7 +45,7 @@
                 id="HelpfulResourcesButton"
                 class="_secondary no-text-decoration"
               >
-                Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
+                Learn more about JWCC&nbsp;<v-icon>mdi-launch</v-icon>
               </v-btn>
             </div>
           </div>

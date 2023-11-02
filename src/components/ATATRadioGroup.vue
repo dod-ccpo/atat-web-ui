@@ -7,6 +7,8 @@
       :rules="rules"
       v-model="_selectedValue"
     >
+    <!-- @update:modelValue="_selectedValue = $event" -->
+
       <fieldset>
         <div class="d-flex" :class="{ 'mb-3' : !helpText }">
           <legend
@@ -254,7 +256,7 @@ class ATATRadioGroup extends Vue {
 
   get radioClasses(): string {
     let classes = this.card ? "_radio-button-card" : "_radio-button";
-    classes += this.errorMessages.length > 0 ? ' error--text v-input--has-state' : '';
+    classes += this.errorMessages?.length > 0 ? ' error--text v-input--has-state' : '';
     return classes;
   }
 
@@ -263,7 +265,10 @@ class ATATRadioGroup extends Vue {
   }
 
   // events
-  private onClick(): void {
+  private onClick(e: PointerEvent): void {
+    const target = e.currentTarget as Element;
+    const value = target.querySelector("input")?.value as string;
+    this._selectedValue = value;
     this.clearErrorMessage();
   }
 
