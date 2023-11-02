@@ -41,7 +41,6 @@ export class SlideoutPanelStore extends VuexModule {
 
   @Action 
   public closeSlideoutPanel(): void {
-    debugger;
     this.doCloseSlideoutPanel();
   }
   @Mutation

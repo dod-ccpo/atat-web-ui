@@ -59,7 +59,6 @@ class ATATSlideoutPanel extends Vue {
   public appSection = AppSections.activeAppSection;
   public transitionEnded(e: Event):void {
     const target = e.currentTarget as HTMLElement;
-    debugger;
     if (target) {
       const isOpen = target.classList.contains('v-navigation-drawer--active');
       isOpen  
@@ -90,7 +89,6 @@ class ATATSlideoutPanel extends Vue {
   get isSlideoutPanelOpen(): boolean {
     const _isSlideoutPanelOpen = SlideoutPanel.slideoutPanelIsOpen;
     setTimeout(() => {
-      debugger;
       if (_isSlideoutPanelOpen && this.showOverlay) {
         document
           .getElementsByClassName("v-overlay--active")[0]
@@ -141,7 +139,6 @@ class ATATSlideoutPanel extends Vue {
   }
 
   private closeSlideoutPanel(): void {
-    debugger;
     SlideoutPanel.closeSlideoutPanel();
   }
 }
