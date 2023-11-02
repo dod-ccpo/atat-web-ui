@@ -170,7 +170,6 @@ export default defineConfig(({command, mode}) => {
         'src/components/ATATDivider.spec.ts',
         'src/components/ATATErrorValidation.spec.ts',
         'src/components/ATATPhoneInput.spec.ts',
-        'src/components/ATATRadioGroup.spec.ts',
         'src/components/ATATSearch.spec.ts',
         'src/components/ATATSelect.spec.ts',
         'src/components/ATATSideStepper.spec.ts',
