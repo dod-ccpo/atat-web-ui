@@ -49,24 +49,7 @@ describe("Testing ATATRadioGroup Component", () => {
   
   const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
-
-  // beforeEach(() => {
-  //   vuetify = new Vuetify();
-  //   wrapper = mount(ATATRadioGroup, {
-  //     localVue,
-  //     vuetify,
-  //     propsData: {
-  //       items,
-  //       value,
-  //       legendSrOnly,
-  //       disabled,
-  //     }
-  //   });
-  //   radioButtonTwo = wrapper.find('input[type="radio"][value="RadioTwo"]');
-  // });
-
   it("renders successfully", async () => {
-    console.log(wrapper.html())
     const radioGroup = wrapper.findComponent(ATATRadioGroup)
     expect(radioGroup.exists()).toBe(true);
 

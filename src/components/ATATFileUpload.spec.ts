@@ -279,8 +279,6 @@ describe("Testing ATATTextField Component", () => {
   })
 
   it.skip("removeInvalidFiles() - logs file that is too big to props.invalidFiles", async ()=>{
-    fileList[0] = fileThatIsTooBig
-    console.log(vm.$props)
     await vm.removeInvalidFiles(fileList);
     expect(await vm.$props.invalidFiles[0].file.name).toBe(
       fileList[0].name

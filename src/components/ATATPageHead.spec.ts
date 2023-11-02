@@ -27,7 +27,6 @@ describe("Testing ATATPageHead Component", () => {
 
   it.skip("headline display correctly", async () => {
     const headerSpan = wrapper.find(".h3");
-    console.log("Header",wrapper.html())
     expect(headerSpan.exists()).toBe(true);
     expect(headerSpan.text()).toBe(headline)
   });
