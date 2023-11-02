@@ -15,7 +15,8 @@
         :card='false'
         label='disclaimer.label'
         :groupLabelId="groupLabelId"
-        :value.sync="_selectedDisclaimer"
+        :value="_selectedDisclaimer"
+        @update:value="_selectedDisclaimer = $event"
         :items="disclaimer"
         name="project-disclaimer-checkbox-group"
         :rules="_rules"
