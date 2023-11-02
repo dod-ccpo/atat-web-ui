@@ -102,7 +102,7 @@ import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
-//import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -191,6 +191,7 @@ class Home extends Vue {
   }
 
   public async startProvisionWorkflow(): Promise<void>{
+    console.log('here')
     await AcquisitionPackage.reset();
     if (this.selectedAcquisitionPackageSysId) {
       await PortfolioStore.setShowTOPackageSelection(false);
@@ -198,7 +199,7 @@ class Home extends Vue {
     await PortfolioStore.setSelectedAcquisitionPackageSysId(this.selectedAcquisitionPackageSysId);
 
     this.$router.push({
-      name: 'AwardedTo',//provWorkflowRouteNames.AwardedTaskOrder,
+      name: provWorkflowRouteNames.AwardedTaskOrder,
       query: {
         direction: "next"
       },

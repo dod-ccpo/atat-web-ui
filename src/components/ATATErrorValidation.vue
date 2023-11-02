@@ -7,7 +7,7 @@
       :class="textAreaWithCounter ? 'mt-n5' : 'mt-2'"
     >
       <div>
-        <v-icon class="text-base-error icon-20 ma-1 mt-0" color="error">error</v-icon>
+        <v-icon class="text-base-error icon-20 ma-1 mt-0" color="error">mdi-alert-circle</v-icon>
       </div>
       <div class="field-error ml-2 text-left" v-html="errorMessages[idx]"></div>
     </div>
