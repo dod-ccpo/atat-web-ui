@@ -90,7 +90,7 @@ import Summary, { isStepTouched } from "@/store/summary";
 
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
+  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATAlert,

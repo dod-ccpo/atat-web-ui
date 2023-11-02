@@ -159,26 +159,20 @@ class Exceptions extends Vue {
 
   protected async saveOnLeave(): Promise<boolean> {
 
-    const form = ref();
-    form.value.validate().then((response: SubmitEventPromise)=>{
-      debugger;
-      console.log(response);
-    })
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.setFairOpportunity(this.currentData)
+      }
+      // if user changed from `NO_NONE` OR to `NO_NONE`
+      // clear current contract info from STORE & SNOW
+      if (this.hasChangedFromToNoNone()){
+        await AcquisitionPackage.clearCurrentContractInfo();
+      }
+    } catch (error) {
+      console.log(error);
+    }
 
-    // try {
-    //   if (this.hasChanged()) {
-    //     await AcquisitionPackage.setFairOpportunity(this.currentData)
-    //   }
-    //   // if user changed from `NO_NONE` OR to `NO_NONE`
-    //   // clear current contract info from STORE & SNOW
-    //   if (this.hasChangedFromToNoNone()){
-    //     await AcquisitionPackage.clearCurrentContractInfo();
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
-    return false;
+    return true;
   }
 
   public hasChangedFromToNoNone():boolean{
