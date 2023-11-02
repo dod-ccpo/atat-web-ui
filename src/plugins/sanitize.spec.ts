@@ -1,4 +1,5 @@
 import {sanitize} from "./sanitize";
+import { describe, it, expect } from 'vitest';
 
 describe('sanitize plugin', function () {
 
