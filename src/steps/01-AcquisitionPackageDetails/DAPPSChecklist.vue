@@ -14,7 +14,7 @@
             </p>
           </div>
           <div class="container-max-width">
-            <div class="d-flex bg-primary-lighter py-6 px-6 border-rounded-more">
+            <div class="d-flex bg-primary-lighter py-6 px-6 _border-rounded-more">
               <div class="mx-3">
                 <ATATSVGIcon
                   name="JWCCPricingCalculator"
@@ -34,10 +34,10 @@
                   an email from each selected CSP with account login instructions.
                 </p>
                 <v-btn
-                :href="requestAccessURL"
-                id="RequestAccess"
-                target="_blank"
-                class="primary mt-4 width-45 _text-decoration-none"
+                  :href="requestAccessURL"
+                  id="RequestAccess"
+                  target="_blank"
+                  class="_primary mt-4 width-45 _text-decoration-none"
                 >
                   Request access to CSP pricing calculators
                 <ATATSVGIcon

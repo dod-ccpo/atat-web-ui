@@ -5,17 +5,14 @@
           <div class="_initials mr-2">
             {{ initials }}
           </div>
-        <v-list-item-content class="ml-4">
           <v-list-item-title class="h3">
             {{ person.title }} {{person.fullName}}
           </v-list-item-title>
-        </v-list-item-content>
       </v-list-item>
       <hr class="my-0" />
     </v-list>
     <v-list>
       <v-list-item class="px-6 py-6">
-        <v-list-item-content>
           <div class="d-flex align-center">
             <ATATSVGIcon
               width="16"
@@ -102,7 +99,6 @@
               {{person.designation}}
             </span>
           </div>
-        </v-list-item-content>
       </v-list-item>
     </v-list>
   </v-card>

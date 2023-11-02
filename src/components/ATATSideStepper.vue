@@ -1,8 +1,8 @@
 <template>
+  <!-- TODO: app props have been removed from v-navigation-drawer, v-app-bar and v-system-bar.   -->
   <v-navigation-drawer
     id="GlobalSideNavBar"
-    app
-    permanent
+    permanent="true"
     class="global-side-nav-bar d-flex flex-column align-start "
     width="320"
   >
@@ -11,7 +11,7 @@
       <strong class="text-primary pl-1">{{ percentComplete }}%</strong>&nbsp;
       <span class="text-base">COMPLETE</span>
       <v-progress-linear
-        :value="percentComplete"
+        :model-value="percentComplete"
         height="12"
         rounded
         color="#544496"

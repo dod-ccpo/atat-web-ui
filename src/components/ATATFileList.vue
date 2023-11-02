@@ -1,6 +1,6 @@
 <template>
   <div v-if="uploadingFiles.length > 0">
-    <v-card flat class="file-loading-div pa-6">
+    <v-card flat="true" class="file-loading-div pa-6">
       <v-card-title
         v-if="multiplesAllowed === true"
         :class="[{ 'pb-6': multiplesAllowed }, 'h2 pa-0']"

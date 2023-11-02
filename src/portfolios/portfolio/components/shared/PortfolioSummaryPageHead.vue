@@ -63,8 +63,6 @@
           />
         </v-btn>
         <v-menu
-          offset="y"
-          location="left"
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach

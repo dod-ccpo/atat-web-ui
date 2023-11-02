@@ -1,8 +1,8 @@
 <template>
+<!--  TODO figure out why this component has two location props-->
   <v-snackbar
     v-model="isToastOpen"
-    top
-    right
+    location="top"
     transition="slide-x-reverse-transition"
     class="_atat-toast"
     :class="[
@@ -10,14 +10,13 @@
       { '_has-icon': toast.hasIcon },
       { '_has-undo': toast.hasUndo },     
     ]"
-    light
     :timeout="getTimeout"
   >
     <div v-html="toast.message"></div>
     <!--TODO: validate that this still works after removal of slot action-->
     <template v-if="toast.hasUndo">
       <v-btn
-        text="true"
+        variant="text"
         @click="onUndo"
       >
         Undo

@@ -40,7 +40,7 @@
 
     <v-btn
       id="AddCustomSpecButton"
-      plain
+      variant="plain"
       class=" mt-5 link-button no-border"
       :ripple="false"
       @click="addCustomSpec()"
