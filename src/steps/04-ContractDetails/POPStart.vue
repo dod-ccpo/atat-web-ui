@@ -78,7 +78,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, mixins } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -98,7 +98,7 @@ import Periods from "@/store/periods";
     ATATSelect,
   },
 })
-class POPStart extends Vue {
+class POPStart extends mixins(SaveOnLeave) {
   // private requestedPopStartDate 
   //   = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";
   // private selectedPoPStartDateOption 

@@ -71,13 +71,12 @@ import { RadioButton } from "../../../types/Global";
 import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATAlert
   },
 })
-
 class RecurringRequirement extends Vue {
 
   public popDTO = defaultPeriodOfPerformance;
@@ -149,6 +148,8 @@ class RecurringRequirement extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    // console.log(this.$refs.form.validate)
+
     await this.loadOnEnter();
   }
 
@@ -174,6 +175,7 @@ class RecurringRequirement extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
     try {
       if (this.hasChanged()) {
         const pops: PeriodOfPerformanceDTO  = {  
@@ -187,9 +189,9 @@ class RecurringRequirement extends Vue {
     } catch (error) {
       console.log(error);
     }
-
     return true;
   }
+
 }
 
 export default toNative(RecurringRequirement)

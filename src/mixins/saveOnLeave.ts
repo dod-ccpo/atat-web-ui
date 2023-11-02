@@ -4,8 +4,6 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
 import { ComponentPublicInstance } from "vue";
 
-// Register the router hooks with their names
-// Component.registerHooks(["beforeRouteLeave"]);
 @Component({})
 class SaveOnLeave extends Vue {
 
@@ -27,16 +25,17 @@ class SaveOnLeave extends Vue {
     throw new Error("Not Implemented Error");
   }
 
-  public async beforeRouteLeave(
+  public async beforeUnmount(
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
     next: (n: void) => void
   ): Promise<void> {
+
     const goNext = await this.saveOnLeave();
     const formToValidate = this.$refs.form;
     const skipValidation = AcquisitionPackage.skipValidation;
     let isValid = true;
-    const direction = to.params.direction;
+    const direction = to.query.direction;
     if(direction === "next" && formToValidate && !skipValidation){
       AcquisitionPackage.setValidateNow(true);
       isValid = this.$refs.form.validate();
@@ -61,6 +60,5 @@ class SaveOnLeave extends Vue {
     })
   }
 }
-
 
 export default SaveOnLeave
