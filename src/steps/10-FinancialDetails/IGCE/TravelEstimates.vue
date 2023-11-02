@@ -19,7 +19,8 @@
               legend="How do you want to estimate your travel needs?"
               :items="travelEstimateOptions"
               @radioButtonClicked="clearSelectedValues"
-              :value.sync="ceilingPrice"
+              :value="ceilingPrice"
+              @update:value="ceilingPrice = $event"
               :rules="[$validators.required('Please select an option')]"
             />
           </div>
@@ -85,8 +86,10 @@
               period specified in the travel summary."
             singlePeriodErrorMessage="Enter your estimated travel costs per period"
             multiplePeriodErrorMessage="Enter your estimated travel costs for this period"
-            :values.sync="valueArray"
-            :sysIdValueArray.sync="sysIdValueArray"
+            :values="valueArray"
+            @update:values="valueArray = $event"
+            :sysIdValueArray="sysIdValueArray"
+            @update:sysIdValueArray="sysIdValueArray = $event"
           ></ATATSingleAndMultiplePeriods>
         </div>
       </v-col>

@@ -21,16 +21,19 @@
                 id="perfReqArchEstimates"
                 legend="How do you want to estimate a price for this requirement?"
                 :items="estimateOptions"
-                :value.sync="perfReqOption"
+                :value="perfReqOption"
+                @update:value="perfReqOption = $event"
                 :rules="[$validators.required('Please select an option')]"
               />
             </div>
 
             <div v-if="perfReqOption !== ''" class="mt-8">
               <ATATSingleAndMultiplePeriods
-                :periods.sync="periods"
+                :periods="periods"
+                @update:periods="periods = $event"
                 :isMultiple="perfReqOption === 'MULTIPLE'"
-                :values.sync="perfReqEstValues"
+                :values="perfReqEstValues"
+                @update:values="perfReqEstValues = $event"
                 :singlePeriodTooltipText="singlePeriodTooltipText"
                 :multiplePeriodTooltipText = "multiplePeriodTooltipText"
                 :showMultiplePeriodTooltip="true"

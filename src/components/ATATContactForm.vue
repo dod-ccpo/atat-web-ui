@@ -6,7 +6,8 @@
       :legend="roleLegend"
       :legend-font-normal-weight="roleLegendFontNormalWeight"
       :items="contactRoles"
-      :value.sync="_selectedRole"
+      :value="_selectedRole"
+      @update:value="_selectedRole = $event"
       :rules="[
         $validators.required('Enter ' + validationMsgCustom + ' role.'),
       ]"
@@ -23,8 +24,10 @@
         label="Service Branch"
         placeholder=""
         :items="branchData"
-        :selectedValue.sync="_selectedBranch"
-        :showAccessRadioButtons.sync="_showAccessRadioButtons"
+        :selectedValue="_selectedBranch"
+        @update:selectedValue="_selectedBranch = $event"
+        :showAccessRadioButtons="_showAccessRadioButtons"
+        @update:showAccessRadioButtons="_showAccessRadioButtons = $event"
         :returnObject="true"
         :rules="[
           $validators.required(
@@ -41,7 +44,8 @@
           titleKey="name"
           :items="selectedBranchRanksData"
           :searchFields="['name', 'grade']"
-          :selectedItem.sync="_selectedRank"
+          :selectedItem="_selectedRank"
+          @update:selectedItem="_selectedRank = $event"
           :rules="[
             $validators.required(
               'Select ' + validationMsgCustom + ' rank.'
@@ -59,7 +63,8 @@
           :optional="true"
           placeholder=""
           :items="salutationData"
-          :selectedValue.sync="_selectedSalutation"
+          :selectedValue="_selectedSalutation"
+          @update:selectedValue="_selectedSalutation = $event"
         />
 
         <v-row class="form-section mb-7">
@@ -68,7 +73,8 @@
               label="First name"
               :id="idPrefix + 'FirstName'"
               class="_input-max-width"
-              :value.sync="_firstName"
+              :value="_firstName"
+              @update:value="_firstName = $event"
               :rules="[
                 $validators.required(
                   'Enter ' + validationMsgCustom + ' first name.'
@@ -82,7 +88,8 @@
               :id="idPrefix + 'MiddleName'"
               :optional="true"
               class="_input-max-width"
-              :value.sync="_middleName"
+              :value="_middleName"
+              @update:value="_middleName = $event"
             />
           </v-col>
           <v-col class="col-12 col-lg-3">
@@ -90,7 +97,8 @@
               label="Last name"
               :id="idPrefix + 'LastName'"
               class="_input-max-width"
-              :value.sync="_lastName"
+              :value="_lastName"
+              @update:value="_lastName = $event"
               :rules="[
                 $validators.required(
                   'Enter ' + validationMsgCustom + ' last name.'
@@ -104,7 +112,8 @@
               :id="idPrefix + 'Suffix'"
               :optional="true"
               width="80"
-              :value.sync="_suffix"
+              :value="_suffix"
+              @update:value="_suffix = $event"
             />
           </v-col>
         </v-row>
@@ -114,7 +123,8 @@
             :id="idPrefix + 'JobTitle'"
             label="Job Title"
             class="_input-max-width mb-10"
-            :value.sync="_title"
+            :value="_title"
+            @update:value="_title = $event"
             :rules="[
             $validators.required(
               'Enter ' + validationMsgCustom + ' job title.'
@@ -126,9 +136,12 @@
           :id="idPrefix + 'PhoneNumber'"
           label="Phone number"
           class="width-100 mb-10"
-          :value.sync="_phone"
-          :country.sync="_selectedPhoneCountry"
-          :extensionValue.sync="_phoneExt"
+          :value="_phone"
+          @update:value="_phone = $event"
+          :country="_selectedPhoneCountry"
+          @update:country="_selectedPhoneCountry = $event"
+          :extensionValue="_phoneExt"
+          @update:extensionValue="_phoneExt = $event"
           :rules="[
             $validators.required(
               'Enter ' + validationMsgCustom + ' phone number.'
@@ -143,7 +156,8 @@
           label="Email address"
           class="_input-max-width mb-10"
           helpText="Enter a .mil or .gov email address."
-          :value.sync="_email"
+          :value="_email"
+          @update:value="_email = $event"
           :rules="[
             $validators.required(
               'Enter ' + validationMsgCustom + ' email address.'

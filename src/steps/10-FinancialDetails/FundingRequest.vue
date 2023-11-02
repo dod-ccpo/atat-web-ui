@@ -26,7 +26,8 @@
             :card="true"
             :items="radioButtonItems"
             :rules="[$validators.required('Please select a type of funding request.')]"
-            :value.sync="selectedFundingTypes"
+            :value="selectedFundingTypes"
+            @update:value="selectedFundingTypes = $event"
             class="max-width-640 mb-5"
             name="radioButton-card"
           />

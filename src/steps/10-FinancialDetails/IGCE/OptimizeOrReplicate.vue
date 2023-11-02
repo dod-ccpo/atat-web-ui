@@ -20,7 +20,8 @@
               :card="false"
               legend="How do you want to estimate a price for this requirement?"
               :items="optimizeOrReplicateEstimateOptions"
-              :value.sync="opRepOption"
+              :value="opRepOption"
+              @update:value="opRepOption = $event"
               :rules="[$validators.required('Please select an option')]"
             />
           </div>
@@ -28,9 +29,11 @@
 
           <div v-if="opRepOption !== ''">
             <ATATSingleAndMultiplePeriods
-              :periods.sync="periods"
+              :periods="periods"
+              @update:periods="periods = $event"
               :isMultiple="opRepOption === 'MULTIPLE'"
-              :values.sync="opRepEstValues"
+              :values="opRepEstValues"
+              @update:values="opRepEstValues = $event"
               :singlePeriodTooltipText="singlePeriodTooltipText"
               :multiplePeriodTooltipText = "multiplePeriodTooltipText"
               :showMultiplePeriodTooltip="true"

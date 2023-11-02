@@ -57,7 +57,8 @@
             :card="true"
             :items="incrementallyFundOptions"
             :rules="[$validators.required('Please select an option')]"
-            :value.sync="selectedFundOption"
+            :value="selectedFundOption"
+            @update:value="selectedFundOption = $event"
             class="copy-max-width mb-5 max-width-640"
           />
           <ATATExpandableLink aria-id="IFPFAQ1">

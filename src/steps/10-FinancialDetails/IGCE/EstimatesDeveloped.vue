@@ -17,10 +17,12 @@
             id="UsedForEstimatingCheckboxes"
             groupLabel="What information and/or tools were used to generate your estimated prices?"
             class="copy-max-width mb-10"
-            :value.sync="selectedTools"
+            :value="selectedTools"
+            @update:value="selectedTools = $event"
             :hasOtherValue="true"
             otherValue="OTHER"
-            :otherValueEntered.sync="otherValueEntered"
+            :otherValueEntered="otherValueEntered"
+            @update:otherValueEntered="otherValueEntered = $event"
             otherValueRequiredMessage="Please enter your other type of information or tool."
             :items="toolsOptions"
             name="checkboxes"
@@ -46,7 +48,8 @@
               prices, and identify any and all assumptions used (e.g., schedule or 
               budget constraints, technology expectations, inflation, travel costs, 
               etc.)."
-            :value.sync="howEstimateMade"
+            :value="howEstimateMade"
+            @update:value="howEstimateMade = $event"
             maxChars="1000"
           />
 
@@ -56,7 +59,8 @@
             legend="Thinking of your previous contract for this requirement, how 
               does the cost estimate compare with the prices that you actually paid 
               for services and/or support?" 
-            :value.sync="selectedPriceComparison"
+            :value="selectedPriceComparison"
+            @update:value="selectedPriceComparison = $event"
             :items="priceComparisonOptions"
             name="price-comparison"
             :rules="[
@@ -72,7 +76,8 @@
             id="PricePercentage"
             suffix="%"
             width="150"
-            :value.sync="percentOverUnder"
+            :value="percentOverUnder"
+            @update:value="percentOverUnder = $event"
             :rules="percentageRules"
             type="number"
           />
