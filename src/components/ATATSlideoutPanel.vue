@@ -3,13 +3,15 @@
   <v-navigation-drawer
     id="SlideoutPanel"
     class="_slideout-panel"
-    v-model="isSlideoutPanelOpen"
+    :model-value="isSlideoutPanelOpen"
     transition="slide-x-reverse-transition"
     @transitionend="transitionEnded"
     :width="panelWidth + 'px'"
     location="right"
     :temporary="showOverlay"
     disable-resize-watcher
+    rail
+    rail-width="400"
   >
     <div
       v-if="panelTitle"
@@ -29,7 +31,7 @@
         :ripple="false"
         aria-label="Close panel"
       >
-        <v-icon aria-hidden="true" class="icon-20">close</v-icon>
+        <v-icon aria-hidden="true" class="icon-20">mdi-close</v-icon>
       </v-btn>
     </div>
 
@@ -58,8 +60,10 @@ class ATATSlideoutPanel extends Vue {
   public transitionEnded(e: Event):void {
     const target = e.currentTarget as HTMLElement;
     if (target) {
-      const isOpen = target.classList.contains('v-navigation-drawer--open');
-      isOpen ? SlideoutPanel.openSlideoutPanel("") : SlideoutPanel.closeSlideoutPanel();
+      const isOpen = target.classList.contains('v-navigation-drawer--active');
+      isOpen  
+        ? SlideoutPanel.openSlideoutPanel("") 
+        : SlideoutPanel.closeSlideoutPanel();
     }
   }
   get isPortfolios(): boolean {
