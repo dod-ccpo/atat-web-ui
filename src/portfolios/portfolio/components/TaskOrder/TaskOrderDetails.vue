@@ -112,7 +112,10 @@
       <thead>
         <tr>
           <th
-          v-for="header in tableHeaders" :key="header.title">
+          v-for="header in tableHeaders" 
+          :key="header.title"
+          :id="header.title"
+          >
             {{ header.title }}
           </th>
         </tr>
