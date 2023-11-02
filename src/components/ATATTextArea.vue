@@ -54,11 +54,8 @@
         :counter="maxChars"
         :auto-grow="autoGrow"
         :style="getStyles"
-        messages="showMessages"
-      
       >
       </v-textarea>
-      <div> tony </div>
       <ATATErrorValidation
         :errorMessages="errorMessages" 
         :textAreaWithCounter="maxChars !== ''"
@@ -75,6 +72,7 @@ import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
   emits: ['input'],
@@ -86,12 +84,15 @@ class ATATTextArea extends Vue {
   // refs
   $refs!: {
     atatTextArea: ComponentPublicInstance & {
+      messages: string[],
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
+      validate: () => Promise<SubmitEventPromise>;
+      resetValidation: ()=> void
     };
   };
 
+  
   // props
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
@@ -129,7 +130,11 @@ class ATATTextArea extends Vue {
   }
 
   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatTextArea.errorBucket;
+    this.$refs.atatTextArea.validate().then(
+      (response: unknown) => {
+        this.errorMessages = response as string[];
+      }
+    );
   }
 
   public get validateFormNow(): boolean {

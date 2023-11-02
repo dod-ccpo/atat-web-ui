@@ -98,8 +98,8 @@ import { YesNo } from "types/Global";
  
 
 @Component({
+  mixins: [toNative(SaveOnLeave)],
   components: {
-    mixins: [SaveOnLeave],
     ProjectTitle,
     ProjectScope,
     EmergencyDeclarationSupport,
