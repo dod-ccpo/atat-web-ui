@@ -99,7 +99,7 @@ export interface PackageCardData {
 }
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATSVGIcon,
     "PackageCards": Card,

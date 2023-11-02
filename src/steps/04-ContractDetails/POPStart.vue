@@ -87,7 +87,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import Periods from "@/store/periods";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATDatePicker,

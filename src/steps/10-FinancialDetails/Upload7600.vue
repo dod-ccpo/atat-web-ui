@@ -114,7 +114,7 @@ import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATSearch,

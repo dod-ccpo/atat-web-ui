@@ -56,7 +56,7 @@ import _ from "lodash";
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     SecurityRequirementsForm,
     ATATRadioGroup,

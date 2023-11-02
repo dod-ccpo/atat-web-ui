@@ -57,7 +57,7 @@ import ContactData from "@/store/contactData";
 import { getStringFromReferenceColumn, hasChanges } from "@/helpers";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     CertificationPOCTypeForm
   }

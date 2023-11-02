@@ -201,7 +201,7 @@ import { PeriodDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATExpandableLink,

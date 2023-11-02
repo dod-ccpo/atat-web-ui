@@ -30,7 +30,7 @@ import ATATAlert from "../../components/ATATAlert.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATTextField,

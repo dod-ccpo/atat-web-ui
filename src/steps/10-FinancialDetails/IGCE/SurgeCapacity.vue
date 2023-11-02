@@ -41,7 +41,7 @@ import {RequirementsCostEstimateDTO} from "@/api/models";
 import {YesNo} from "../../../../types/Global";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
   },

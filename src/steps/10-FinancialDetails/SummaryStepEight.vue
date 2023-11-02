@@ -32,7 +32,7 @@ import Summary, {
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATSummaryItems
   },

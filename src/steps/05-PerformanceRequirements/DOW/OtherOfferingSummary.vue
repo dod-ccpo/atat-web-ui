@@ -160,7 +160,7 @@ import Summary from "@/store/summary";
  
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATDialog,
     ATATSVGIcon

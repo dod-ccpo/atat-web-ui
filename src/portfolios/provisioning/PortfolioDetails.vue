@@ -76,7 +76,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATTextField,
     ATATAutoComplete,

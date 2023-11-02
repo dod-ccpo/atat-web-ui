@@ -137,7 +137,7 @@ import { convertColumnReferencesToValues } from "@/api/helpers";
  
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATCheckboxGroup,

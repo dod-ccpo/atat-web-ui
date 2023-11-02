@@ -78,7 +78,7 @@ import { hasChanges } from "@/helpers";
 import IGCE  from "@/store/IGCE";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATCheckboxGroup,
     ATATTextArea,

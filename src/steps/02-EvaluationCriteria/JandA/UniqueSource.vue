@@ -134,7 +134,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
  
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATExpandableLink,
     ATATTextArea,

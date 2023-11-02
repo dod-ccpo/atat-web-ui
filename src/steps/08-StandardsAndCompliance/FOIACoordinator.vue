@@ -109,7 +109,7 @@ import ContactData from "@/store/contactData";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAddressForm,
     ATATRadioGroup,

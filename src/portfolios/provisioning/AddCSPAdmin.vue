@@ -290,7 +290,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATCheckboxGroup,

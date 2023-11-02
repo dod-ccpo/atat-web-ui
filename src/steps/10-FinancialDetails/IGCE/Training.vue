@@ -136,7 +136,7 @@ import { defaultTrainingEstimate } from "@/store/IGCE";
 import { hasChanges, convertEstimateData } from "@/helpers";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATSingleAndMultiplePeriods,

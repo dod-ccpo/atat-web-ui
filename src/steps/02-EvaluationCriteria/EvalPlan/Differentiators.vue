@@ -56,7 +56,7 @@ import _ from "lodash";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATCheckboxGroup,
     CustomSpecifications

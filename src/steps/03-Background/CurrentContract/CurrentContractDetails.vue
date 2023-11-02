@@ -228,7 +228,7 @@ import { add, compareAsc, format, formatISO, subDays } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATDatePicker,
     ContractNumber,

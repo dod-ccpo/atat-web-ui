@@ -58,7 +58,7 @@ import IGCEStore from "@/store/IGCE";
 import _ from "lodash";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATSingleAndMultiplePeriods

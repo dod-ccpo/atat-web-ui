@@ -53,7 +53,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATSVGIcon
   }

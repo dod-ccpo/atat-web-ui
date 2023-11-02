@@ -166,7 +166,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { DataTableHeader } from "types/Global";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATDialog,
     ATATSVGIcon

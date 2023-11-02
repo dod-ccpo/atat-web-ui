@@ -47,7 +47,7 @@ import CurrentEnvironment,
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ClassificationLevelForm,
     ATATCheckboxGroup,

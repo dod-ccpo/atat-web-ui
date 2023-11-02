@@ -50,7 +50,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup, ATATAlert
   },

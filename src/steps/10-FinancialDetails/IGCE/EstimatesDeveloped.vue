@@ -100,7 +100,7 @@ import {hasChanges} from "@/helpers";
 import { ComponentPublicInstance } from "vue";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATCheckboxGroup,
     ATATRadioGroup,

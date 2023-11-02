@@ -122,7 +122,7 @@ import {routeNames} from "@/router/stepper";
  
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATExpandableLink,

@@ -100,7 +100,7 @@ import { ComponentPublicInstance } from "vue";
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     RegionsDeployedAndUserCount,
     AnticipatedDataNeeds

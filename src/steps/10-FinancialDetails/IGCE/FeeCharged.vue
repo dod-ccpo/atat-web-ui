@@ -51,7 +51,7 @@ import { YesNo } from "../../../../types/Global";
 import { ComponentPublicInstance } from "vue";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATTextField

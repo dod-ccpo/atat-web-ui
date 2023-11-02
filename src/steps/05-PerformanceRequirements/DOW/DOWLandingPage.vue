@@ -147,7 +147,7 @@ import {buildClassificationLabel} from "@/helpers";
  
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATExpandableLink,

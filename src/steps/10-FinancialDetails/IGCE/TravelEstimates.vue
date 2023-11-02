@@ -124,7 +124,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATRadioGroup,

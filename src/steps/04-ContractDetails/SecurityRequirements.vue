@@ -57,7 +57,7 @@ import SecurityRequirementsLearnMore
   from "@/steps/04-ContractDetails/SecurityRequirementsLearnMore.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     SecurityRequirementsForm,
     ATATRadioGroup,

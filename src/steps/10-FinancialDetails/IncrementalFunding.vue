@@ -287,7 +287,7 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATSelect,
     ATATSVGIcon,

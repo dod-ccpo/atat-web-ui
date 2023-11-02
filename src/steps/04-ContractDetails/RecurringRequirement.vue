@@ -69,7 +69,7 @@ import { RadioButton } from "../../../types/Global";
 import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATAlert

@@ -41,7 +41,7 @@ import {routeNames} from "@/router/stepper";
 import Steps from "@/store/steps";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup
   }

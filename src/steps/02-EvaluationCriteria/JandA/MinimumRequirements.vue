@@ -88,7 +88,7 @@ import ATATDialog from "@/components/ATATDialog.vue";
  * government requirements. Also handles loading and saving the data.
  */
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATTextArea,
     ATATSVGIcon,

@@ -47,7 +47,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
  
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATTextArea
   }

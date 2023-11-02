@@ -41,7 +41,7 @@ import Steps from "@/store/steps";
 import { CurrentContractRouteResolver } from "@/router/resolvers";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     CurrentContractOptions,
   },

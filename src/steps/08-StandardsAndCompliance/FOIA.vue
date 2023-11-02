@@ -112,7 +112,7 @@ import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATExpandableLink,

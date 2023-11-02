@@ -27,7 +27,7 @@ class SaveOnLeave extends Vue {
     throw new Error("Not Implemented Error");
   }
 
-  public async beforeRouteLeave(
+  public async beforeUnmount(
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
     next: (n: void) => void

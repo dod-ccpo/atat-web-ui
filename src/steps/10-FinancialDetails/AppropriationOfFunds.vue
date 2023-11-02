@@ -47,7 +47,7 @@ import { hasChanges } from "@/helpers";
 import _ from "lodash";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
   },

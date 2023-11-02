@@ -62,7 +62,7 @@ import { YesNo, SurgeRequirements } from "../../../../types/Global";
 import { ComponentPublicInstance } from "vue";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATTextField,

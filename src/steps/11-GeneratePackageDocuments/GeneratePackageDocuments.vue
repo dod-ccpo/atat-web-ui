@@ -28,7 +28,7 @@ import ReviewDocuments from "./components/ReviewDocuments.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     GeneratingDocuments,
     ReviewDocuments

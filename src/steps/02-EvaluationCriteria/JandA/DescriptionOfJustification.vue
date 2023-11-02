@@ -90,7 +90,7 @@ import _ from "lodash";
 import {hasChanges} from "@/helpers";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATExpandableLink,
     ATATTextArea

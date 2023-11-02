@@ -260,7 +260,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATSVGIcon,
     ATATDialog,

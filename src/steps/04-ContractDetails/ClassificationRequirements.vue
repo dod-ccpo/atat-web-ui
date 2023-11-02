@@ -118,7 +118,7 @@ import _ from "lodash";
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATCheckboxGroup,
     ATATAlert,

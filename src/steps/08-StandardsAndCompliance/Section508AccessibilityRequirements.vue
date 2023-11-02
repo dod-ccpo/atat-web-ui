@@ -77,7 +77,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATTextArea,
     ATATAlert,

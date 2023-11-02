@@ -162,7 +162,7 @@ import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATSearch,

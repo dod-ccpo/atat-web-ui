@@ -196,7 +196,7 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 }
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATTextField,
     ATATSelect,

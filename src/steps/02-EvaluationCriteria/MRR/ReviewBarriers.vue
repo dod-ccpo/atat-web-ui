@@ -97,7 +97,7 @@ import { hasChanges } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATSVGIcon,
     ATATTextArea,

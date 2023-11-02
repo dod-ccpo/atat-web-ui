@@ -63,7 +63,7 @@ import {TABLENAME as CURRENT_ENVIRONMENT_TABLE} from "@/api/currentEnvironment";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATFileUpload,
     ATATRadioGroup,

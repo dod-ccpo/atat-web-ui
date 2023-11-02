@@ -97,7 +97,7 @@ import ContactData from "@/store/contactData";
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAddressForm,
     ATATAutoComplete,

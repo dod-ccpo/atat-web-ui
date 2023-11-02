@@ -319,7 +319,7 @@ import MarketResearchEffortsLearnMore
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     AlertForForms,
     ATATCheckboxGroup,

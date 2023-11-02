@@ -56,7 +56,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATTextField,
     ATATFileUpload,

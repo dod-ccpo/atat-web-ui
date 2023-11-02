@@ -62,7 +62,7 @@ import { FairOpportunityDTO } from "@/api/models";
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATErrorValidation,
     ATATSVGIcon,

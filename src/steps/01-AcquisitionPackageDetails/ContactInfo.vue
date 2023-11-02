@@ -184,7 +184,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import {ComponentPublicInstance} from "vue";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAutoComplete,
     ATATPhoneInput,

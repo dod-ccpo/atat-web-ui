@@ -206,7 +206,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
  
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {ATATSVGIcon,ATATAlert}
 })
 

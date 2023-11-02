@@ -98,7 +98,7 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATAlert

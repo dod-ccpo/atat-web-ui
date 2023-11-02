@@ -24,7 +24,7 @@ import { ArchitecturalDesignRequirementDTO } from "@/api/models";
  
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ArchitecturalDesignForm
   }

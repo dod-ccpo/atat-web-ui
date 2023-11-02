@@ -91,7 +91,7 @@ import Periods from "@/store/periods";
 import { ComponentPublicInstance } from "vue";
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: { 
     Card_Requirement
   },
