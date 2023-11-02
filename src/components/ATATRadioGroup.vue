@@ -7,6 +7,8 @@
       :rules="rules"
       v-model="_selectedValue"
     >
+    <!-- @update:modelValue="_selectedValue = $event" -->
+
       <fieldset>
         <div class="d-flex" :class="{ 'mb-3' : !helpText }">
           <legend
@@ -264,8 +266,10 @@ class ATATRadioGroup extends Vue {
   }
 
   // events
-  private onClick(selected: string): void {
-    this._selectedValue = selected; 
+  private onClick(e: PointerEvent): void {
+    const target = e.currentTarget as Element;
+    const value = target.querySelector("input")?.value as string;
+    this._selectedValue = value;
     this.clearErrorMessage();
   }
 

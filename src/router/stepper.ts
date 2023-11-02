@@ -383,6 +383,7 @@ export const routeNames = {
  */
 export const stepperRoutes: Array<StepperRouteConfig> = [
   {
+    menuText: "Acquisition Package Details",
     stepNumber: "01",
     path: "/",
     completePercentageWeight: 14,

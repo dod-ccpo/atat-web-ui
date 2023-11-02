@@ -188,7 +188,7 @@ hr, .hr {
     -webkit-font-feature-settings: 'liga';
     color: $primary;
     position: absolute;
-    top: 0px;
+    top: 0;
     right: 2px;
     font-size: 18px;
   }
@@ -322,7 +322,9 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
 
 ul._atat-ul {
   padding-bottom: 12px;
+  padding-left: 24px;
   li {
+    line-height: 1.5em;
     padding-bottom: 8px;
     ul {
       li {
