@@ -219,7 +219,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
     const color = stepNumber > 0
-      ? isStepComplete(stepNumber) ? "primary" : "secondary"
+      ? isStepComplete(stepNumber) ? "_primary" : "_secondary"
       : ""
     await AcquisitionPackage.setContinueButtonColor(color);
   }

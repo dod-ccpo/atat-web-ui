@@ -53,7 +53,7 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I need to enter a different task order number",
             buttonId: "EnterAnotherTaskOrderNumber",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "openTOSearchModal",
           },
         ]
@@ -67,7 +67,7 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I need to create a new portfolio",
             buttonId: "CreateANewPortfolio",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "startNewPortfolio",
           },
         ]
@@ -81,7 +81,7 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I didn’t use DAPPS for this task order",
             buttonId: "DidNotUseDapps",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "didNotUseDapps",
           },
         ]

@@ -18,7 +18,14 @@
     > div {
       margin: 0 auto !important;
     }
+    &.v-layout {
+      overflow-y: scroll;
+    }    
   }
+}
+
+.v-expansion-panel__shadow {
+  box-shadow: none !important;
 }
 
 ._home {
@@ -29,11 +36,12 @@
     height: 100vh;
   }
   
-  .v-main__wrap {
+  &.v-main__wrap {
     position: relative;
     background-color: transparent;
     padding: 0;
     max-height: 100vh;
+    width: 100%;
   }
 
   ._welcome-bar {
@@ -47,8 +55,8 @@
   }
 
   .container-max-width {
-    margin: 0 auto;
-    max-width: 1088px;
+    max-width: 1248px !important;
+    width: 100%;
     padding: 0 24px;
   }
 
@@ -115,7 +123,6 @@
   .v-expansion-panel-title {
     background-color: $primary !important;
     width: 100%;
-    border-bottom: 1px solid $base-lighter;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     padding-top: 10px !important;
@@ -154,11 +161,12 @@
   .v-expansion-panel-text__wrapper {
     padding: 0;
     margin-bottom: 0;
-    ._summary-card-wrapper.v-.v-card {
+    ._summary-card-wrapper.v-card {
       border-top: none !important;
       border-bottom: 1px solid $base-lighter !important;
       &:last-child {
         border-bottom: none !important;
+        box-shadow: none !important;
       }
     }
   }
@@ -168,6 +176,7 @@
     border: none;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    box-shadow: none !important;
   }
 
 
@@ -180,8 +189,14 @@
 }
 
 ._home-wrapper {
+  width: 100% !important; 
+  margin: 0 auto !important;
+  &._is-loading {
+    min-width: 100vw;
+  }
   ._hero-banner {
     background-image: url("./assets/images/jedi-banner.png");
+    z-index: -1;
     background-size: cover;
     background-position: center -170px;
     height: 300px;
@@ -204,6 +219,9 @@
     }
     ._welcome-bar {
       box-shadow: 0px 12px 24px rgba(27, 27, 27, 0.2);
+    }
+    .container-max-width {
+      max-width: 1040px !important;
     }
   }
 

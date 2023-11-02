@@ -29,40 +29,23 @@
       </template>
     </ATATAlert>
     <hr class="my-5"/>
+    
+    <h3 class="mb-4">Types of accepted funding documents</h3>
 
-    <h3 class="mb-4">Order Requirements and Funding Information (Order)</h3>
-    <p>
-      The Order section of an interagency agreement within G-Invoicing replaces the FS Form 7600B.
-      It identifies the specific Requesting Agency requirements for the expected delivery of
-      products and/or services by the Servicing Agency. A fiscal obligation is created when all
-      required points of contact sign to authorize the Order.
-    </p>
-    <p>
-      A GT&C agreement may contain one or more Orders.
-    </p>
-    <hr class="my-5"/>
-
-    <h3 class="mb-4">Military Interdepartmental Purchase Request (MIPR)</h3>
-    <p>
-      In lieu of a G-Invoicing Order, your agency may use a MIPR to transfer funds from one
-      military organization to another to procure services, supplies, or equipment for the
-      requiring service. A MIPR is processed on DD Form 448 and may be accepted on a direct
-      citation or reimbursable basis and is defined in the
-      <a
-        class="_text-link"
-        :href="$sanitize(federalAcqHref)"
-        target="_blank"
-        id="FARLink"
-        rel="noopener"
+    <v-expansion-panels variant="accordion" borderless>
+      <v-expansion-panel 
+        v-for="(fundingDoc, index) in typesOfFundingDocs"
+        :key="index + '-' + fundingDoc.title"
       >
-        Defense Federal Acquisition Regulation Supplement– Procedures, Guidance, and Instructions
-        (DFARS PGI) <span class="_external-link">253.208-1</span>
-      </a>.
-    </p>
-    <p>
-      Please note that your agency will need to establish a GT&C agreement in G-Invoicing,
-      even if you are using a MIPR.
-    </p>
+        <v-expansion-panel-title class="_no-border-bottom">
+          {{ fundingDoc.title }}
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <div v-html="fundingDoc.description"></div>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
+
   </div>
 </template>
 
@@ -80,6 +63,39 @@ class FundingRequestLearnMore extends Vue {
   private gInvoiceHref = `https://fiscal.treasury.gov/g-invoice/`
   private federalAcqHref =
     `https://www.acquisition.gov/dfarspgi/pgi-253.208-required-sources-supplies-and-services.`
+  public typesOfFundingDocs: Record<string, string>[] = [
+    {
+      title: "General Terms and Conditions (GT&C)",
+      description: `<p class="mb-0">Previously known as the FS Form 7600A, a GT&C agreement 
+        within G-Invoicing establishes the relationship between the trading partners and 
+        identifies the agreement action, period, and type. No fiscal obligations are 
+        created through the execution of the GT&C; therefore, no services may be 
+        performed and/or no goods may be delivered.</p>`
+    },
+    {
+      title: "Order Requirements and Funding Information (Order)",
+      description: `<p>The Order section of an interagency agreement within G-Invoicing 
+        replaces the FS Form 7600B. It identifies the specific Requesting Agency 
+        requirements for the expected delivery of products and/or services by the 
+        Servicing Agency. A fiscal obligation is created when all required points 
+        of contact sign to authorize the Order.</p>
+        <p class="mb-0">A GT&C agreement may contain one or more Orders.</p>`
+    },
+    {
+      title: "Military Interdepartmental Purchase Request (MIPR)",
+      description: `<p>In lieu of a G-Invoicing Order, your agency may choose to use 
+        a MIPR to transfer funds from one military organization to another to procure 
+        services, supplies, or equipment for the requiring service. A MIPR is processed 
+        on DD Form 448 and may be accepted on a direct citation or reimbursable basis 
+        and is defined in the 
+        <a href="${this.federalAcqHref}" _target="blank" rel="noopener noreferrer">
+        Defense Federal Acquisition Regulation Supplement– Procedures, Guidance, and 
+        Instructions (DFARS PGI) <span class="_external-link">253.208-1</span></a>.</p>
+        <p class="mb-0">Please note that your agency will need to establish a GT&C agreement, 
+          even if you are using a MIPR.</p>`
+    },
+  ];
+
 }
 
 export default toNative(FundingRequestLearnMore)
