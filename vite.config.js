@@ -3,11 +3,9 @@ import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import {checker} from 'vite-plugin-checker'
-import pkg from './package.json'
 import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
-import vuetify from 'vite-plugin-vuetify'
 import VueDevTools from 'vite-plugin-vue-devtools'
+import vuetify from 'vite-plugin-vuetify'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -75,7 +73,7 @@ export default defineConfig(({command, mode}) => {
 				// eslint: {lintCommand:'eslint '},
 			}),
 			cssInjectedByJsPlugin(),
-			resolve() //commonjs(),
+			resolve()
 			//splitVendorChunkPlugin(),
 		],
 		server: {

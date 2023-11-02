@@ -76,13 +76,14 @@ class ATATStepperNavigation extends Vue {
   @Prop({ default: "" }) private altContinueAction?: string;
 
   private getButtonClass(button: AdditionalButton) {
-    return button.buttonClass || "_secondary";
+    return button.buttonClass ?? "_secondary";
   }
 
   get getContinueButtonColor():string{
+    console.log(this.continueButtonColor)
     return this.continueButtonColor !== ""
       ? this.continueButtonColor as string
-      : this.continueButtonText === 'Continue'? '_primary' : '_secondary _foobar'
+      : this.continueButtonText === 'Continue'? '_primary' : '_secondary'
   } 
 
   private continueClicked(): void {

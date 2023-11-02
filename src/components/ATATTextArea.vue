@@ -67,13 +67,15 @@
 
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative, Emit } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
+  emits: ['input'],
   components: {
     ATATErrorValidation
   }
@@ -82,12 +84,15 @@ class ATATTextArea extends Vue {
   // refs
   $refs!: {
     atatTextArea: ComponentPublicInstance & {
+      messages: string[],
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
+      validate: () => Promise<SubmitEventPromise>;
+      resetValidation: ()=> void
     };
   };
 
+  
   // props
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
@@ -109,13 +114,14 @@ class ATATTextArea extends Vue {
   @Prop({ default: "" }) private minHeight!: string;
   @Prop({ default: "" }) private maxHeight!: string;
   
-
+  private showMessages = "";
   //data
   private placeHolder = "";
   private errorMessages: string[] = [];
+  
   private onInput(v: string) {
     this._value = v;
-    this.$emit("input");
+    this.$emit("input", v);
     this._turnRulesOff = false;
   }
 
@@ -124,7 +130,11 @@ class ATATTextArea extends Vue {
   }
 
   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatTextArea.errorBucket;
+    this.$refs.atatTextArea.validate().then(
+      (response: unknown) => {
+        this.errorMessages = response as string[];
+      }
+    );
   }
 
   public get validateFormNow(): boolean {

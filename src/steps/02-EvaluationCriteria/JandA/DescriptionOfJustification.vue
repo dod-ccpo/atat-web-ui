@@ -70,7 +70,8 @@
                 ),
               ]
               "
-              :value.sync="justficationDescription"
+              :value="justficationDescription"
+              @update:value="justficationDescription = $event"
               maxChars="1000"
           />
         </v-col>

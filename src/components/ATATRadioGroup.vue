@@ -142,6 +142,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ComponentPublicInstance } from "vue";
 
 @Component({
+  emits:["radioButtonSelected"],
   components: {
     ATATErrorValidation,
     ATATTextArea,
