@@ -41,8 +41,8 @@
                     width="111"
                     :class="[
                       AnticipatedUserAndDataSummaryItem.isComplete
-                        ? 'secondary'
-                        : 'primary',
+                        ? '_secondary'
+                        : '_primary',
                       '_' + getIdText('AnticipatedUsersAndData') + '-button'
                     ]"
                     @click="routeToAnticipatedUsersAndDataNeeds()"

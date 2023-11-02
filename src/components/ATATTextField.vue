@@ -19,6 +19,7 @@
         :label="label"
       />
     </div>
+
     <div class="d-flex _input-wrapper" :class="{'_append-dropdown' : appendDropdown}">
       <v-text-field
         ref="atatTextField"
@@ -263,7 +264,7 @@ class ATATTextField extends Vue  {
     if(this.errorMessages?.length && this.hideHelpTextOnErrors){
       return false;
     }
-    return this.helpText.length > 0;
+    return this.helpText?.length > 0;
   }
 
   public filterNumbers(evt: KeyboardEvent): void {

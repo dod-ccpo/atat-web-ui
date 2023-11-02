@@ -42,7 +42,7 @@
       <div class="d-flex align-center justify-center flex-column ml-auto">
         <v-btn
           class="ml-5"
-          :class="cardData.isComplete ? 'secondary' : 'primary'"
+          :class="cardData.isComplete ? '_secondary' : '_primary'"
           :id="`StartButton` + cardData.section" 
           width="110"
           role="link"
