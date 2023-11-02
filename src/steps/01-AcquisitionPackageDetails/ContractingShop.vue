@@ -166,10 +166,8 @@ class ContractingShop extends Vue {
       this.$router.replace({
         name: this.skipPageRoute,
         replace: true,
-        params: {
-          direction: "next"
-        },
-        query: {  
+        query: {
+          direction: "next",
           packageId: AcquisitionPackage.packageId
         }
       }).catch(() => console.log("avoiding redundant navigation"));
