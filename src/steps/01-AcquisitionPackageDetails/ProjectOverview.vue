@@ -100,7 +100,6 @@ import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { YesNo } from "types/Global";
  
-
 @Component({
   mixins: [toNative(SaveOnLeave)],
   components: {
@@ -112,7 +111,7 @@ import { YesNo } from "types/Global";
     ATATTextField
   },
 })
-class ProjectOverview extends Vue {
+class ProjectOverview extends SaveOnLeave {
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";

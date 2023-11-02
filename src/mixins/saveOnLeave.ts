@@ -1,11 +1,9 @@
-import { Vue, Component } from "vue-facing-decorator";
+import { Vue, Component, Hook } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
 import { ComponentPublicInstance } from "vue";
 
-// Register the router hooks with their names
-// Component.registerHooks(["beforeRouteLeave"]);
 @Component({})
 class SaveOnLeave extends Vue {
 
@@ -27,7 +25,8 @@ class SaveOnLeave extends Vue {
     throw new Error("Not Implemented Error");
   }
 
-  public async beforeUnmount(
+  @Hook
+  public async beforeRouteLeave(
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
     next: (n: void) => void
@@ -50,7 +49,7 @@ class SaveOnLeave extends Vue {
         if (el) {
           el.scrollIntoView({
             behavior: "smooth"
-          });          
+          });
         }
       } else if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
         Steps.setLeaveStepComplete(from.name as string);  

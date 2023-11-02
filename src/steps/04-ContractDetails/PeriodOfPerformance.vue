@@ -46,7 +46,7 @@
               Period of Performance length
             </div>
             <div id="BaseAndOptionWrapper">
-              <draggable
+              <!-- <draggable
                 v-model="optionPeriods"
                 ghost-class="ghost"
               >
@@ -138,7 +138,7 @@
                       v-if="oneYearCheck(optionPeriods[index])"
                     />
                   </div>
-              </draggable>
+              </draggable> -->
             </div>
 
             <v-btn
