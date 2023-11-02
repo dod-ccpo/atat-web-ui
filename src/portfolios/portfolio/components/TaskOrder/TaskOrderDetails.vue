@@ -111,11 +111,11 @@
       >
       <thead>
         <tr>
-      <th
-      v-for="header in tableHeaders" :key="header.title">
-      {{ header.title }}
-      </th>
-      </tr>
+          <th
+          v-for="header in tableHeaders" :key="header.title">
+            {{ header.title }}
+          </th>
+        </tr>
       </thead>
       <tbody>
               <tr
@@ -347,7 +347,7 @@
     </div>
 
     <div v-if="!isAlertClosed" class="mt-10">
-      <ATATAlert id="TaskOrderDetailsAlert" type="info" closeButton="true">
+      <ATATAlert id="TaskOrderDetailsAlert" type="mdi-information" closeButton="true">
         <template v-slot:content>
           <p class="mb-0">
             NOTE: Spend data is provided by your CSP to assist with tracking

@@ -24,7 +24,7 @@
           aria-hidden="true"
           :class="[
             getIconSize(),
-            'text-error',
+            'v-icon notranslate v-theme--light',
           ]"
         >
           {{ getIcon() }}
@@ -63,13 +63,12 @@
             aria-hidden="true"
             class="
               notranslate
-              material-icons
-              theme--light
+              v-theme--light
               text-base-darkest
               icon-20
             "
           >
-            close
+            mdi-close
           </v-icon>
         </v-btn>
       </div>
