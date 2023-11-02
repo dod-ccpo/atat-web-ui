@@ -1,24 +1,26 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils';
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
-Vue.config.productionTip = false;
-Vue.use(Vuetify);
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
+
+
+
 
 describe("Testing ATATPhoneInput Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
+  const vuetify = createVuetify({
+    components,
+    directives,
+  })
+  const wrapper:VueWrapper = shallowMount(ATATPhoneInput, {
+    globals: {
+      plugins: [vuetify]
+    }
+  })
 
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(ATATPhoneInput, {
-      localVue,
-      vuetify,
-    });
-  });
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   it("renders successfully", async () => {
     const phoneInput = wrapper.findComponent(ATATPhoneInput)
@@ -53,25 +55,25 @@ describe("Testing ATATPhoneInput Component", () => {
 
   it("inputActions() - ensure supplied extension equals props.extension", async () => {
     const extensionInput = "x3867"
-    await wrapper.vm.inputActions(extensionInput)
+    await vm.inputActions(extensionInput)
     // also runs setExtensionMask()
-    Vue.nextTick(() => {
-      expect(wrapper.vm.$props.extension).toEqual(extensionInput)
+    vm.nextTick(() => {
+      expect(vm.$props.extension).toEqual(extensionInput)
     })
   })
 
   it("searchCountries() - ensure all countries return in results", async () => {
     await wrapper.setData({ searchTerm: "" })
-    wrapper.vm.searchCountries()
+    vm.searchCountries()
 
-    expect(wrapper.vm.$data.searchResults.length).toEqual(31)
+    expect(vm.$data.searchResults.length).toEqual(31)
   })
   it("searchCountries() - ensure countries with 'cr' return in results", async () => {
     await wrapper.setData({ searchTerm: "cr" })
-    wrapper.vm.searchCountries()
+    vm.searchCountries()
 
-    expect(wrapper.vm.$data.searchResults.length).toEqual(1)
-    expect(wrapper.vm.$data.searchResults[0].name).toEqual("Croatia")
+    expect(vm.$data.searchResults.length).toEqual(1)
+    expect(vm.$data.searchResults[0].name).toEqual("Croatia")
   })
 
   it("setErrorMessage() - provides phoneInput.$data.errorBucket automatically to ensure " +
@@ -81,17 +83,17 @@ describe("Testing ATATPhoneInput Component", () => {
     await phoneInput.setData({
       errorBucket: errorMessages
     })
-    await wrapper.vm.setErrorMessage();
-    Vue.nextTick(() => {
-      expect(wrapper.vm.$data.errorMessages).toBe(errorMessages);
+    await vm.setErrorMessage();
+    vm.nextTick(() => {
+      expect(vm.$data.errorMessages).toBe(errorMessages);
     })
   })
 
   it("@Watch onValueChange() - change value to update ", async () => {
     const updatedValue = "39583424"
     await wrapper.setProps({ value: updatedValue })
-    await wrapper.vm.onValueChange()
-    expect(wrapper.vm.$props.value).toEqual(updatedValue)
+    await vm.onValueChange()
+    expect(vm.$props.value).toEqual(updatedValue)
   })
 
   it("onChange() - call event and ensure `blur` event is emitted with $props.value", async () => {
@@ -106,41 +108,41 @@ describe("Testing ATATPhoneInput Component", () => {
   })
 
   it("wrapperClass() - setting $vuetify.breakpoint.mdAndDown to retrieve class", async () => {
-    wrapper.vm.$vuetify.breakpoint.mdAndDown = true
-    const wrapperClass = await wrapper.vm.wrapperClass
+    vm.$vuetify.breakpoint.mdAndDown = true
+    const wrapperClass = await vm.wrapperClass
     expect(wrapperClass).toBe("d-block")
   })
   it("wrapperClass() - setting $vuetify.breakpoint.mdAndDown to retrieve class", async () => {
-    wrapper.vm.$vuetify.breakpoint.mdAndDown = false
-    const wrapperClass = await wrapper.vm.wrapperClass
+    vm.$vuetify.breakpoint.mdAndDown = false
+    const wrapperClass = await vm.wrapperClass
     expect(wrapperClass).toBe("d-flex")
   })
   it("extensionClass() - setting $vuetify.breakpoint.mdAndDown to retrieve class", async () => {
-    wrapper.vm.$vuetify.breakpoint.mdAndDown = true
-    const extensionClass = await wrapper.vm.extensionClass
+    vm.$vuetify.breakpoint.mdAndDown = true
+    const extensionClass = await vm.extensionClass
     expect(extensionClass).toBe("mt-6")
   })
   it("extensionClass() - setting $vuetify.breakpoint.mdAndDown to retrieve class", async () => {
-    wrapper.vm.$vuetify.breakpoint.mdAndDown = false
-    const extensionClass = await wrapper.vm.extensionClass
+    vm.$vuetify.breakpoint.mdAndDown = false
+    const extensionClass = await vm.extensionClass
     expect(extensionClass).toBe("ml-6")
   })
   
   it("select country - expand country dropdown and select one of the .v-list-items", async () => {
-    const dropDown = wrapper.findAll("#CountryCodeDropdown")
+    const dropDown = vm.findAll("#CountryCodeDropdown")
     const countryItemNumber = 4
-    const country = wrapper.vm.$data.countries[countryItemNumber] // Bulgaria
+    const country = vm.$data.countries[countryItemNumber] // Bulgaria
     expect(dropDown.exists()).toEqual(true)
     await dropDown.trigger("click")
     
     // captures onChange() and methods insides
-    const listItems = wrapper.findAll(".v-list-item")
+    const listItems = vm.findAll(".v-list-item")
     expect(listItems.at(countryItemNumber).exists()).toEqual(true)
     await listItems.at(countryItemNumber).trigger("click")
 
     const countryCodePrefix = wrapper.find(".v-text-field__prefix")
     expect(countryCodePrefix.exists()).toEqual(true)
-    Vue.nextTick(() => {
+    vm.nextTick(() => {
       expect(countryCodePrefix.text()).toBe(country.countryCode)
     })
   })

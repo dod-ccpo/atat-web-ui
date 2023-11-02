@@ -138,17 +138,18 @@ export default defineConfig(({command, mode}) => {
 			  maxConcurrency: 10,
 			  concurrent: true,
 			  typecheck: {
-				enabled: true,
-				checker: 'vue-tsc'
+          enabled: true,
+          checker: 'vue-tsc'
 			  },
 			//  bail: 10,
 
 			},
 			server: {
 			  deps: {
-				inline: ['vuetify'],
+				  inline: ['vuetify'],
 			  }
 			},
+      open: false,
 			root: './',
 			ui: true,
 			//Default exclude: node_modules/, dist/, cypress/, *.config.*, **/.{idea,git,cache,output,temp} 
@@ -166,13 +167,6 @@ export default defineConfig(({command, mode}) => {
         'src/components/ATATDialog.spec.ts',
         'src/components/ATATDivider.spec.ts',
         'src/components/ATATErrorValidation.spec.ts',
-        'src/components/ATATExpandableLink.spec.ts',
-        'src/components/ATATFileList.spec.ts',
-        'src/components/ATATFileListItem.spec.ts',
-        'src/components/ATATFileUpload.spec.ts',
-        'src/components/ATATFooter.spec.ts',
-        'src/components/ATATMeatballMenu.spec.ts',
-        'src/components/ATATPageHead.spec.ts',
         'src/components/ATATPhoneInput.spec.ts',
         'src/components/ATATRadioGroup.spec.ts',
         'src/components/ATATSearch.spec.ts',
