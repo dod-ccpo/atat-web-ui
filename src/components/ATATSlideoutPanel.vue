@@ -1,5 +1,4 @@
 <template>
-<!--  TODO figure out if :clipped has a replacement and layout should be adjusted with order prop-->
   <v-navigation-drawer
     id="SlideoutPanel"
     class="_slideout-panel"
