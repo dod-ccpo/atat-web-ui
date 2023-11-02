@@ -11,7 +11,7 @@ describe("Testing Footer Component", () => {
   it("renders successfully", async () => {
     const footer = wrapper.findComponent(ATATFooter)
     expect(footer.exists()).toBe(true);
-    expect(footer.classes()).toContain("width-100")
+    expect(footer.classes()).toContain("d-flex")
   });
   
 });
