@@ -18,7 +18,8 @@
                 id="minGovReqExplanation"
                 class="max-width-740"
                 :rows="11"
-                :value.sync="minGovReqExplanation"
+                :value="minGovReqExplanation"
+                @update:value="minGovReqExplanation = $event"
                 maxChars="1000"
                 :turnRulesOff.sync="turnRulesOff"
                 :rules="[

@@ -46,19 +46,22 @@
           <div class="d-flex align-start flex-column mt-6">
             <EmergencyDeclarationSupport
               legend="Is this requirement in support of an emergency declaration?"
-              :emergencyDeclaration.sync="emergencyDeclaration"
+              :emergencyDeclaration="emergencyDeclaration"
+              @update:emergencyDeclaration="emergencyDeclaration = $event"
               :rules="[$validators.required('Please select an option')]"
             />
           </div>
           <div class="d-flex align-start flex-column mt-6">
             <CJADC2Initiative
               legend='Is this package in support of the Combined Joint All-Domain Command and
-                       Control (CJADC2) initiative?'
+                Control (CJADC2) initiative?'
               helpText = "CJADC2 is the Department of Defense's (DoD's) concept to connect sensors 
-                          from all of the military services-Air Force, Army, Marine Corps, Navy, 
-                          and Space Force-into a single network."
-              :cjadc2Initiative.sync="cjadc2Initiative"
-              :cjadc2Percentage.sync='cjadc2Percentage'
+                from all of the military services-Air Force, Army, Marine Corps, Navy, 
+                and Space Force-into a single network."
+              :cjadc2Initiative="cjadc2Initiative"
+              @update:cjadc2Initiative="cjadc2Initiative = $event"
+              :cjadc2Percentage="cjadc2Percentage"
+              @update:cjadc2Percentage="cjadc2Percentage = $event"
               :rules="[$validators.required('Please select an option')]"
             />
           </div>
@@ -66,7 +69,8 @@
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectDisclaimer
               groupLabelId="disclaimerGroupLabel"
-              :projectDisclaimer.sync="selectedDisclaimer"
+              :projectDisclaimer="selectedDisclaimer"
+              @update:projectDisclaimer="projectDisclaimer = $event"
               :rules="[$validators.required(`You must acknowledge compliance with your 
               Military-specific policies.`)]"
             />
@@ -98,8 +102,8 @@ import { YesNo } from "types/Global";
  
 
 @Component({
+  mixins: [toNative(SaveOnLeave)],
   components: {
-    mixins: [toNative(SaveOnLeave)],
     ProjectTitle,
     ProjectScope,
     EmergencyDeclarationSupport,

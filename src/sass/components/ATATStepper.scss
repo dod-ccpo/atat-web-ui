@@ -141,7 +141,7 @@
     }
   }
   
-  &.v-item--active {
+  &.v-selection-control--dirty {
     border-color: $primary !important;
     outline: 1px solid $primary;
     background-color: $primary-lighter;
