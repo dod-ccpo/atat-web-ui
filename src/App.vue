@@ -39,6 +39,7 @@ import Steps from '@/store/steps';
   },
 })
 class App extends Vue {
+
   public get activeAppSection(): string {
     return AppSections.activeAppSection;
   }

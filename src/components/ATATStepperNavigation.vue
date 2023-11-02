@@ -1,11 +1,11 @@
 <template>
-  <v-container>
+  <v-container fluid class="container-max-width mx-auto">
     <v-row>
       <v-col>
 
-        <nav class="stepper-nav container-max-width" :id="id">
+        <nav class="stepper-nav" :id="id">
           <hr class="base-lighter mt-10 mb-8" />
-          <div class="d-flex">
+          <div class="d-flex" style="margin-bottom: 100px">
 
             <v-btn
               v-if="!noPrevious"
@@ -76,14 +76,14 @@ class ATATStepperNavigation extends Vue {
   @Prop({ default: "" }) private altContinueAction?: string;
 
   private getButtonClass(button: AdditionalButton) {
-    return button.buttonClass || "_atat-secondary";
+    return button.buttonClass || "_secondary";
   }
 
   get getContinueButtonColor():string{
     debugger;
     return this.continueButtonColor !== ""
       ? this.continueButtonColor as string
-      : this.continueButtonText === 'Continue'? '_atat-primary' : '_atat-secondary _foobar'
+      : this.continueButtonText === 'Continue'? '_primary' : '_secondary _foobar'
   } 
 
   private continueClicked(): void {

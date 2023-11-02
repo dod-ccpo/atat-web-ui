@@ -181,14 +181,14 @@ hr, .hr {
   display: inline-block;
   white-space: nowrap;
     text-decoration: underline;
-  &:after {
+  &:before {
     font-family: $icon-font;
-    content: "launch";
+    content: "\F0327";
     text-decoration: none !important;
     -webkit-font-feature-settings: 'liga';
     color: $primary;
     position: absolute;
-    top: -1px;
+    top: 0;
     right: 2px;
     font-size: 18px;
   }

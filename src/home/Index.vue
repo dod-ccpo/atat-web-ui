@@ -3,7 +3,8 @@
     class="_home-wrapper"
     :class="[
       {'_is-new-user' : isNewUser && !isLoading },
-      {'_is-existing-user' : !isNewUser || isLoading }
+      {'_is-existing-user' : !isNewUser || isLoading },
+      {'_is-loading' : isLoading },
     ]"  
   >
     <ATATToast />
@@ -11,8 +12,8 @@
     <div class="_hero-banner"></div>
     <v-main class="_home">
       <div class="_home-content">
-        <div class="container-max-width">
-          <div v-if="isLoading" class="width-100 text-center" style="height: 1000px;">
+        <div class="container-max-width mx-auto">
+          <div v-if="isLoading" style="height: 1000px;">
             <div class="_welcome-bar" style="height: 92px">
               <div class="d-flex align-center" style="margin: 0 auto">
                 <v-progress-circular 
@@ -32,7 +33,7 @@
             <div class="d-flex justify-end">
               <v-btn 
                 v-if="!isNewUser"
-                class="v-btn _atat-primary"
+                class="v-btn _primary"
                 @click="startNewAcquisition"
               >
                 Start a new acquisition
@@ -42,7 +43,7 @@
                 href="https://community.hacc.mil/s/jwcc"
                 target="_blank"
                 id="HelpfulResourcesButton"
-                class="_atat-secondary no-text-decoration"
+                class="_secondary no-text-decoration"
               >
                 Learn more about JWCC&nbsp;<v-icon>launch</v-icon>
               </v-btn>
@@ -68,7 +69,7 @@
           />      
         </div>
 
-        <div class="bg-white">
+        <div class="bg-white _is-home">
           <ATATFooter class="mx-auto pt-10" />
         </div>
 

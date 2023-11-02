@@ -4985,7 +4985,7 @@ hr, .hr {
   opacity: 1 !important;
 }
 
-.v-theme--light.v-footer.atat-page-footer {
+.v-theme--light.v-footer._atat-page-footer {
   background-color: #ffffff;
   margin: 0 56px;
   padding: 20px 0 40px;

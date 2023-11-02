@@ -31,7 +31,7 @@
         :ripple="false"
         aria-label="Close panel"
       >
-        <v-icon aria-hidden="true" class="icon-20">close</v-icon>
+        <v-icon aria-hidden="true" class="icon-20">mdi-close</v-icon>
       </v-btn>
     </div>
 
