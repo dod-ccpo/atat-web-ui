@@ -67,9 +67,9 @@ export class ValidationPlugin {
 
   required(
     message?: string, isCurrency?: string
-  ): ((v: string) => ValidationResult) {
+  ): ((v: string | [] | undefined  ) => ValidationResult) {
     message = message || "This field is required.";
-    return (v: string) => {
+    return (v: string | [] | undefined  ) => {
       if (typeof v === "object") { // if typeof 'selectData(dropdown)' or string[]
         if (v && Array.isArray(v) === false) {
           // array of objects
