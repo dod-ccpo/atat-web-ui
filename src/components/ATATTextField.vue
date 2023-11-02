@@ -108,7 +108,7 @@ class ATATTextField extends Vue  {
   $refs!: {
     atatTextField: ComponentPublicInstance & {
       errorBucket: string[]; 
-      validate: () => boolean;
+      validate: () => Promise<boolean>;
       errorCount: number 
       resetValidation(): void
     };
@@ -157,8 +157,12 @@ class ATATTextField extends Vue  {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatTextField.validate())
-      this.setErrorMessage();
+    this.$refs.atatTextField.validate().then(
+      (response: unknown) => {
+        if ((response as string[]).length === 0)
+        { this.setErrorMessage() }
+      }
+    );
   }
 
   //data
@@ -170,11 +174,12 @@ class ATATTextField extends Vue  {
 
   public async setErrorMessage(): Promise<void> {
     if (this.validateOnBlur) {
-      this.$nextTick(()=>{
-        this.errorMessages = this.$refs.atatTextField.errorBucket;
-        this.$emit('errorMessage', this.errorMessages);
-        // await 
-      });
+      this.$refs.atatTextField.validate().then(
+        (response: unknown) => {
+          this.errorMessages = response as string[];
+          this.$emit('errorMessage', this.errorMessages);
+        }
+      );
     } else {
       await this.resetValidation();
     }

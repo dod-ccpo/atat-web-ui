@@ -155,13 +155,12 @@ class ATATRadioGroup extends Vue {
     radioButtonGroup: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
-      // resetValidation: () => boolean;
+      validate: () => Promise<boolean>;
     };
     atatTextInput: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
+      validate: () => Promise<boolean>;
     };
   }; 
 
@@ -216,13 +215,25 @@ class ATATRadioGroup extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.radioButtonGroup.validate())
-      this.setErrorMessage();
+    this.$refs.radioButtonGroup.validate().then(
+      (response: unknown) => {
+        if ((response as string[]).length === 0)
+        { this.setErrorMessage() }
+      }
+    );
   }
 
   // methods
   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
+    this.$refs.radioButtonGroup.validate().then(
+      (response: unknown) => {
+        this.errorMessages = response as string[];
+        this.$emit('errorMessage', this.errorMessages);
+      }
+    );
+
+
+
   } 
   private clearErrorMessage(): void {
     this.errorMessages = [];

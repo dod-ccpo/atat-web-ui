@@ -82,9 +82,11 @@ class ATATTextArea extends Vue {
   // refs
   $refs!: {
     atatTextArea: ComponentPublicInstance & {
+      messages: string[],
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
+      validate: () => Promise<boolean>;
+      resetValidation: ()=> void
     };
   };
 
@@ -124,7 +126,11 @@ class ATATTextArea extends Vue {
   }
 
   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatTextArea.errorBucket;
+    this.$refs.atatTextArea.validate().then(
+      (response: unknown) => {
+        this.errorMessages = response as string[];
+      }
+    );
   }
 
   public get validateFormNow(): boolean {
