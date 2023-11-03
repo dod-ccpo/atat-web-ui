@@ -155,7 +155,7 @@ Cypress.Commands.add("selectDitcoOption", (selector, text) => {
 
 Cypress.Commands.add("clickDevToggleBtn", () => {
   const toggleSel = "#developerToggleButton";
-  cy.findElement(".atat-page-footer").scrollIntoView();
+  cy.findElement("._atat-page-footer").scrollIntoView();
   cy.waitUntil(function () {
     return Cypress.$(toggleSel).attr("aria-checked") == "false";
   });

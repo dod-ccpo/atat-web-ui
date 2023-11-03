@@ -156,7 +156,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch , Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import {
   convertAgencyRecordToSelect,
   convertDisaOrgToSelect
@@ -174,12 +174,11 @@ import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
  
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAddressForm,
     ATATAutoComplete,
@@ -189,6 +188,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 class OrganizationInfo extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   // computed
 
   get inputClass(): string {

@@ -85,32 +85,36 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import Periods from "@/store/periods";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import { ComponentPublicInstance } from "vue";
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     RegionsDeployedAndUserCount,
     AnticipatedDataNeeds
   },
 })
-class AnticipatedUserAndDataNeeds extends Vue{
+class AnticipatedUserAndDataNeeds extends Vue {
 
-  $refs!: {
-    form: ComponentPublicInstance & { validate: () => boolean};
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
   }
+
   private periods: PeriodDTO[] = [];
   public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
@@ -119,8 +123,8 @@ class AnticipatedUserAndDataNeeds extends Vue{
     return DescriptionOfWork.returnToDOWSummary === true
   }
 
-  get Form(): ComponentPublicInstance & { validate: () => boolean } {
-    return this.$refs.form as ComponentPublicInstance & { validate: () => boolean };
+  get Form(): SaveOnLeaveRefs['form'] {
+    return this.$refs.form
   }
 
   private async mounted(): Promise<void> {
@@ -157,7 +161,7 @@ class AnticipatedUserAndDataNeeds extends Vue{
     try {
       if (this.hasChanged()) {
         for(const classification of this.currentData){
-          classification.isValid = this.$refs.form.validate();
+          classification.isValid = await this.$refs.form.validate();
           await this.updateSnowSelected(classification);
         }
       }

@@ -109,9 +109,9 @@
 </template>
 <script lang="ts">
 import LoadOnEnter from "@/mixins/loadOnEnter";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -120,7 +120,7 @@ import {
   Checkbox,
   CrossDomainSolution,
   RadioButton,
-} from "../../../types/Global";
+} from "types/Global";
 import { createPeriodCheckboxItems } from "@/helpers";
 import Periods from "@/store/periods";
 
@@ -128,7 +128,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
-  mixins: [LoadOnEnter, SaveOnLeave],
+  mixins: [LoadOnEnter],
   components: {
     AnticipatedDurationandUsage,
     ATATRadioGroup,
@@ -138,6 +138,16 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 class CrossDomain extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public isPeriodsDataMissing = false;
   public domainInfo: CrossDomainSolution = {
     crossDomainSolutionRequired: "",

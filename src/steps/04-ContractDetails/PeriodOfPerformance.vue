@@ -166,10 +166,9 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
+import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
-import { ComponentPublicInstance } from "vue";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -198,7 +197,6 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 }
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATTextField,
     ATATSelect,
@@ -210,11 +208,15 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 })
 class PeriodOfPerformance extends Vue {
 
-  $refs!: {
-    form : ComponentPublicInstance & {
-      validate: () => boolean;
-    };
-  };
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public maxTotalPoPDuration = 365 * 5;
   public durationErrorMessage = "Please provide a valid period length."
   public optionPeriodCount = 1;

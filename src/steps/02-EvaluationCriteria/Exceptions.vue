@@ -38,7 +38,8 @@
               legend="Based on your market research, do any of the following exceptions to fair 
                 opportunity apply to your acquisition?"
               classes="copy-max-width mb-10 mt-3"
-              :selectedException.sync="selectedException"
+              :value="selectedException"
+              @update:value="selectedException = $event"
               :rules="[$validators.required('Please select an option')]"            
             />
 
@@ -83,18 +84,17 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import FairOppExceptions from "./components/FairOppExceptions.vue"
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
- 
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     FairOppExceptions,
@@ -102,6 +102,15 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 class Exceptions extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   private selectedException 
     = AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity as string;
@@ -155,6 +164,7 @@ class Exceptions extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

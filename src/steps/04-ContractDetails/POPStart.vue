@@ -78,7 +78,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Watch, Vue, toNative, mixins } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -86,11 +86,10 @@ import ATATSelect from "@/components/ATATSelect.vue";
 import { RadioButton, SelectData } from "../../../types/Global";
 import { PeriodOfPerformanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import Periods from "@/store/periods";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATDatePicker,
@@ -98,7 +97,17 @@ import Periods from "@/store/periods";
     ATATSelect,
   },
 })
-class POPStart extends mixins(SaveOnLeave) {
+class POPStart extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   // private requestedPopStartDate 
   //   = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";
   // private selectedPoPStartDateOption 

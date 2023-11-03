@@ -32,7 +32,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -44,7 +44,7 @@ import {
   SlideoutPanelContent } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import SecurityRequirementsForm from "@/components/DOW/SecurityRequirementsForm.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import SecurityRequirementsLearnMore
@@ -56,7 +56,6 @@ import _ from "lodash";
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     SecurityRequirementsForm,
     ATATRadioGroup,
@@ -66,6 +65,16 @@ import _ from "lodash";
 })
 
 class DOWSecurityRequirements extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private selectedClassifications: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
   private selectedTopSecretSecurityRequirements: string[] = [];

@@ -72,7 +72,7 @@ async function writeOwnSoleSourceCause() {
   
   router.push({
     name: routeNames.SoleSourceReview,
-    params: {
+    query: {
       direction: "next"
     },
     replace: true
@@ -85,7 +85,7 @@ async function WriteOwnBarriers() {
   await AcquisitionPackage.setSkipValidation(true);
   router.push({
     name: routeNames.ReviewBarriers,
-    params: {
+    query: {
       direction: "next"
     },
     replace: true
@@ -99,7 +99,7 @@ async function writeOwnMarketResearchDetails() {
   await AcquisitionPackage.setSkipValidation(true);
   router.push({
     name: routeNames.MarketResearchReview,
-    params: {
+    query: {
       direction: "next"
     },
     replace: true
@@ -117,7 +117,7 @@ async function deleteServiceOfferingGroup() {
 
   router.push({
     name: "pathResolver",
-    params: {
+    query: {
       resolver: "ServiceOfferingsPathResolver",
       direction: "next"
     },
@@ -151,7 +151,7 @@ async function didNotUseDapps() {
   await PortfolioStore.setDidNotUseDAPPS(true);
   router.push({
     name: provWorkflowRouteNames.PortfolioDetails,
-    params: {
+    query: {
       direction: "next"
     }
   });
@@ -171,7 +171,7 @@ async function startNewPortfolio(): Promise<void> {
 
   router.push({
     name: routeName,
-    params: {
+    query: {
       direction: "next"
     },
     replace: true
@@ -187,7 +187,7 @@ async function submitPackage(): Promise<void> {
 
   router.push({
     name: routeNames.UnderReview,
-    params: {
+    query: {
       direction: "next"
     },
     replace: true

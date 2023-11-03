@@ -1,34 +1,55 @@
 
-.v-textarea {
-  fieldset{
-    border: 1px solid $base;
-    border-radius: 4px;
-    max-height: none !important;
+textarea{
+  &:-webkit-scrollbar-thumb{
+    border: none !important;
   }
+ 
+}
+
+.v-textarea {
+ 
   textarea{
     @extend %body;
+    color: $base-darkest;
+    -webkit-mask-image: none !important;
+    &::-webkit-scrollbar-thumb{
+      border: 0px solid !important;
+    }
     padding-top: 10px;
     margin-top: 0 !important;
   }
 
-  .v-text-field__details {
-    .v-messages {
-      display: none !important;
-    }
-  }
-
-  &.error--text {
-    .v-counter {
-      color: $error !important;
-    }
-  }
-
-  .v-text-field__details {
+  .v-input__details {
     display: flex;
     justify-content: flex-end;
     padding-right: 0 !important;
+    .v-messages {
+      display: none !important;
+    }
+    .v-counter {
+      display: block;
+      &.slide-y-transition-leave-active{
+        transition: none !important;
+      }
+    }
   }
-  &.v-input--is-readonly {
+  
+  &.v-input--error {
+    .v-input__control{
+      .v-field--error{
+        border-width: 4px !important;
+      }
+    }
+    .v-counter {
+      color: $error !important;
+      display: block !important;
+      &.slide-y-transition-leave-active{
+        transition: none !important;
+      }
+    }
+  }
+
+  .v-input--is-readonly {
     border: none !important;
     .v-input__control {
       background-color: white !important;

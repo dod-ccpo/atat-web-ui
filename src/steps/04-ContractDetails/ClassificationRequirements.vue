@@ -96,7 +96,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -108,7 +108,7 @@ import {
   AcquisitionPackageDTO,
   ClassificationLevelDTO, SelectedClassificationLevelDTO
 } from "@/api/models";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { 
   hasChanges, 
   buildClassificationCheckboxList, 
@@ -120,7 +120,6 @@ import _ from "lodash";
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     ATATAlert,
@@ -129,6 +128,15 @@ import _ from "lodash";
 })
 
 class ClassificationRequirements extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []

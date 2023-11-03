@@ -4,7 +4,8 @@
       <ATATRadioGroup
         :id="id"
         :legend="legend" 
-        :value.sync="_cjadc2Initiative"
+        :value="_cjadc2Initiative"
+        @update:value="_cjadc2Initiative = $event"
         :items="radioGroupItems"
         @helpTextLinkClicked="helpTextLinkClicked"
         :isHelpTextLinkExternal="true"
@@ -20,13 +21,13 @@
           label="Estimate the percent of this package's total estimated funds that will go to 
                 CJADC2 programs or efforts."
           :value.sync='_cjadc2Percentage'
+          @update:value="_cjadc2Percentage = $event"
           id="CJADC2PricePercentage"
-          :v-model='_cjadc2Percentage'
           :rules="[
             $validators.isBetween(1, 100, percentageErrorMessage),
             $validators.required(percentageErrorMessage),
           ]"
-          placeHolder="1-100"
+          placeHolder="1—100"
           suffix="%"
           width="100"
         />
