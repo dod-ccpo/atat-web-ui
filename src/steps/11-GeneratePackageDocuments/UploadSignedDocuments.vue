@@ -113,7 +113,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
@@ -127,10 +127,9 @@ import Attachments from "@/store/attachments";
 import FinancialDetails from "@/store/financialDetails";
 import { PackageDocumentsSignedDTO } from "@/api/models";
 import { routeNames } from "../../router/stepper"
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components:{
     ATATAlert,
     ATATFileUpload,
@@ -139,6 +138,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   }
 })
 class UploadSignedDocuments extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public packageNotInitialized = false;
   public routeNames = routeNames;
 

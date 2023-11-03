@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch,  Vue, toNative, Hook } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import Card from "@/packages/components/Card.vue";
 import { AcquisitionPackageSummarySearchDTO, UserDTO } from "@/api/models";
@@ -86,7 +86,7 @@ import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 import CurrentUserStore from "@/store/user";
 import { createDateStr } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import PortfolioStore from "@/store/portfolio";
 
 export interface PackageCardData {
@@ -99,7 +99,6 @@ export interface PackageCardData {
 }
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATSVGIcon,
     "PackageCards": Card,
@@ -107,6 +106,15 @@ export interface PackageCardData {
 })
 
 class GeneratedFromPackage extends Vue {
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public packageData: PackageCardData[] = [];
   public selectedPackageSysId = "";
 

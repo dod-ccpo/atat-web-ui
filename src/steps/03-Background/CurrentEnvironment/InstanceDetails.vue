@@ -143,8 +143,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch, mixins, Vue, toNative } from "vue-facing-decorator";
-// import Vue from 'vue';
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -180,12 +179,11 @@ import CurrentEnvironment,
 import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import _ from "lodash";
 
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATRadioGroup,
@@ -198,7 +196,17 @@ import _ from "lodash";
   }
 })
 
-class InstanceDetails extends mixins(Vue, SaveOnLeave) {
+class InstanceDetails extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   /* eslint-disable camelcase */
   public currEnvData = _.cloneDeep(defaultCurrentEnvironment);
   public envLocation = "";
@@ -421,9 +429,9 @@ class InstanceDetails extends mixins(Vue, SaveOnLeave) {
   }
 
   public async validate(): Promise<void> {
-    this.$nextTick(() => {
-      this.isValid = this.$refs.form.validate();
-    });
+    await this.$nextTick(async () => {
+      this.isValid = await this.$refs.form.validate();
+    })
   }
 
   public async mounted(): Promise<void> {
@@ -499,7 +507,7 @@ class InstanceDetails extends mixins(Vue, SaveOnLeave) {
     // need to flip `setValidateNow` to true in page component's `saveOnLeave` method
     // for pages with checkbox groups that have validation rules
     await AcquisitionPackage.setValidateNow(true);
-    const isValid = this.$refs.form.validate();
+    const isValid = await this.$refs.form.validate();
 
     try {
       this.instanceData.instance_number = this.instanceNumber;

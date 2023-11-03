@@ -52,9 +52,9 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATAlert from "../../../components/ATATAlert.vue";
 import ATATTextField from "../../../components/ATATTextField.vue";
 import IGCEStore from "@/store/IGCE";
@@ -62,18 +62,24 @@ import { YesNo, SurgeRequirements } from "../../../../types/Global";
 import { ComponentPublicInstance } from "vue";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATTextField,
   },
 })
 class SurgeCapabilities extends Vue {
-  $refs!: {
-    form: ComponentPublicInstance & { validate: () => boolean};
+
+  $refs!: SaveOnLeaveRefs & {
     PercentageTextbox: ComponentPublicInstance & {
       errorMessages: [];
     };
+  }
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
   }
 
   public capacity: number | null = null;

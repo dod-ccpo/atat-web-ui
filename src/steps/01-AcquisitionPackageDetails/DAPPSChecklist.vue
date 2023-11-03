@@ -189,8 +189,8 @@
 </template>
 
 <script lang="ts">
-import { Component , Vue, toNative } from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import { SlideoutPanelContent } from "../../../types/Global";
@@ -200,14 +200,23 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import { routeNames } from "@/router/stepper";
 import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
- 
+
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {ATATSVGIcon,ATATAlert}
 })
 
 class DAPPSChecklist extends Vue {
+  
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public requestAccessURL = "https://community.hacc.mil/s/jwcc/pricing-calculator-request"
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {

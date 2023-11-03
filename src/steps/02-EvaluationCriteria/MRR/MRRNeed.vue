@@ -53,11 +53,11 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import {RadioButton} from "../../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import {FairOpportunityDTO, PeriodOfPerformanceDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
@@ -65,7 +65,6 @@ import Periods  from "@/store/periods";
  
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAlert,
     ATATRadioGroup
@@ -73,6 +72,16 @@ import Periods  from "@/store/periods";
 })
 
 class MRRNeed extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private selectedMRRNeed:
       "" | "UCA" | "BCA" | "OES" | "NONE" | undefined = "";
   private mrrNeedOptions: RadioButton[] = [

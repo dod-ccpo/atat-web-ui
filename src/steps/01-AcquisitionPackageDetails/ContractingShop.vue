@@ -70,8 +70,8 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component , Vue, toNative} from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component , Hook, Vue, toNative} from "vue-facing-decorator";
+import { From, Next, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -91,7 +91,6 @@ import Summary, { isStepTouched } from "@/store/summary";
 
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATAlert,
@@ -101,6 +100,15 @@ import Summary, { isStepTouched } from "@/store/summary";
   }
 })
 class ContractingShop extends Vue {
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+  
   public isPageLoading = false;
   public packageNotInitialized = false;
   public contractingShopOptions: RadioButton[] = [

@@ -45,10 +45,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import CertificationPOCTypeForm
   from "@/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ContactDTO, FairOpportunityDTO, FinancialPOCType } from "@/api/models";
 import { convertColumnReferencesToValues } from "@/api/helpers";
@@ -57,13 +57,22 @@ import ContactData from "@/store/contactData";
 import { getStringFromReferenceColumn, hasChanges } from "@/helpers";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     CertificationPOCTypeForm
   }
 })
 
 class CertificationPOCs extends Vue {
+  
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   /* eslint-disable camelcase */
   private pocPrimary: ContactDTO = {} as ContactDTO;
   private pocCor: ContactDTO = {} as ContactDTO;

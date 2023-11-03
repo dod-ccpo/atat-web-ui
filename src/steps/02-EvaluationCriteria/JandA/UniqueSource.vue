@@ -122,11 +122,11 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {getCSPCompanyName, hasChanges} from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -134,7 +134,6 @@ import ATATDialog from "@/components/ATATDialog.vue";
  
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATExpandableLink,
     ATATTextArea,
@@ -144,6 +143,16 @@ import ATATDialog from "@/components/ATATDialog.vue";
 })
 
 class UniqueSource extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private csp = "";
   private cspAdditionalInstructions = "";
   private showLogicalFollowOnInstructions = false;

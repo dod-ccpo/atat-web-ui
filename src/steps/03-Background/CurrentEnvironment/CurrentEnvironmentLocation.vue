@@ -64,7 +64,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import { EnvironmentLocation, RadioButton, ToastObj } from "../../../../types/Global";
 import { CurrentEnvironmentInstanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -75,10 +75,9 @@ import Toast from "@/store/toast";
 
 import CurrentEnvironment,
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATAlert,
@@ -86,6 +85,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 class CurrentEnvironmentLocation extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public currEnvDTO = defaultCurrentEnvironment;
   public showConfirmDialog = false;
   /* eslint-disable camelcase */

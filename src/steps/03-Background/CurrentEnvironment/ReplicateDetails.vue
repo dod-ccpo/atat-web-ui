@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -88,10 +88,9 @@ import CurrentEnvironment,
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATTextArea,
@@ -100,6 +99,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 class ReplicateDetails extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public currEnvDTO = defaultCurrentEnvironment;
   public replicateOrOptimize = "";
   public replicatingOrOptimizing = "";

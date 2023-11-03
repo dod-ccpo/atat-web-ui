@@ -42,21 +42,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import CustomSpecifications from "./components/CustomSpecifications.vue"
 import { Checkbox } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { convertEvalPlanDifferentiatorToCheckbox, hasChanges } from "@/helpers";
 
 import _ from "lodash";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATCheckboxGroup,
     CustomSpecifications
@@ -64,6 +63,15 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 })
 
 class Differentiators extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   /* eslint-disable camelcase */
   public evalPlan: EvaluationPlanDTO = {

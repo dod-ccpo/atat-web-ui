@@ -93,7 +93,7 @@
 </template>
 <script lang="ts">
 import { ValidationResult, invalidFile, uploadingFile } from "types/Global";
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
@@ -106,7 +106,7 @@ import FinancialDetails, {
   initialFundingRequestFSForm,
 } from "@/store/financialDetails";
 
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
@@ -114,7 +114,6 @@ import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATSearch,
@@ -124,6 +123,16 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   },
 })
 class Upload7600 extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   // radio options
   public useGInvoicing = "";
   private gInvoicingOptions: RadioButton[] = [

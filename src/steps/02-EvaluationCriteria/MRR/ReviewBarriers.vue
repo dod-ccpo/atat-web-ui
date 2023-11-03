@@ -79,8 +79,8 @@
 </template>
 
 <script lang="ts">
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -97,7 +97,6 @@ import { hasChanges } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATSVGIcon,
     ATATTextArea,
@@ -108,7 +107,17 @@ import { routeNames } from "@/router/stepper";
   },
 })
 
-class ReviewBarriers extends Vue{
+class ReviewBarriers extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public barriersToOpportunity = "";
   public defaultSuggestion = "";
   public showRestoreModal = false;

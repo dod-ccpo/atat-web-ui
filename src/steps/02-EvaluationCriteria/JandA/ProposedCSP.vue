@@ -54,15 +54,14 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import { CSP } from "../../../../types/Global";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import _ from "lodash";
 import { FairOpportunityDTO } from "@/api/models";
 
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATErrorValidation,
     ATATSVGIcon,
@@ -70,15 +69,22 @@ import { FairOpportunityDTO } from "@/api/models";
 })
 
 class ProposedCSP extends Vue {
-  // refs
-  $refs!: {
+
+  $refs!: SaveOnLeaveRefs & {
     radioButtonGroup: ComponentPublicInstance & { 
       errorBucket: string[]; 
       errorCount: number;
       validate: () => boolean;
       resetValidation: () => boolean;
     };
-  }; 
+  };
+
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   public selectedCSP: CSP = "";
   private errorMessages: string[] = [];

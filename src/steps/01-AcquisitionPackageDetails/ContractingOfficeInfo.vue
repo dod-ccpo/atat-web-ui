@@ -79,8 +79,8 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component , Vue, toNative } from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component , Hook, toNative, Vue } from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -97,7 +97,6 @@ import ContactData from "@/store/contactData";
 
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATAddressForm,
     ATATAutoComplete,
@@ -107,6 +106,15 @@ import ContactData from "@/store/contactData";
 })
 
 class ContractingOfficeInfo extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   get inputClass(): string {
     return this.$vuetify.display.mdAndDown

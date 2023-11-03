@@ -134,8 +134,8 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, mixins, Watch, Vue, toNative } from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -160,15 +160,23 @@ import Summary from "@/store/summary";
  
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATDialog,
     ATATSVGIcon
   }
 })
 
-class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
-{
+class OtherOfferingSummary extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public isCompute = false;
   public isGeneralXaaS = false;
   public isDatabase = false;

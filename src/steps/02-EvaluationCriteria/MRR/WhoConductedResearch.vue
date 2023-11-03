@@ -88,8 +88,7 @@
 </template>
 
 <script lang="ts">
-import {ComponentPublicInstance} from "vue";
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -97,10 +96,9 @@ import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import _ from "lodash";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATSVGIcon,
     ATATTextField,
@@ -109,13 +107,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 class WhoConductedResearch extends Vue {
-  $refs!: {
-    form: ComponentPublicInstance & {
-      resetValidation: () => void;
-      reset: () => void;
-      validate: () => boolean;
-    };
-  };
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   /* eslint-disable camelcase */
   public researchers:{ name: string, title: string, org: string}[] = [];
   public savedResearchers = ""
@@ -135,7 +136,7 @@ class WhoConductedResearch extends Vue {
     if(this.researchers[index]){
       this.researchers.splice(index,1)
       if(index === 0){
-        this.$refs.form.resetValidation();
+        this.$refs.form.resetValidation?.();
         // TODO children are no longer present on refs, need fix
         // const formChildren = this.$refs.form.$children[0].$children;
         // formChildren.forEach(ref => {

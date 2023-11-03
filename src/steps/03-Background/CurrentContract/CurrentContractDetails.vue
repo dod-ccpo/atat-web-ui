@@ -210,7 +210,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import { ComponentPublicInstance } from 'vue';
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
@@ -221,14 +221,13 @@ import IncumbentContractorName from "@/steps/03-Background/components/IncumbentC
 import LevelOfCompetition from "@/steps/03-Background/components/LevelOfCompetition.vue";
 import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 import AcquisitionPackage, {initialCurrentContract, } from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { add, compareAsc, format, formatISO, subDays } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATDatePicker,
     ContractNumber,
@@ -240,20 +239,24 @@ import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vu
     ATATErrorValidation
   },
 })
+
 class CurrentContract extends Vue {
-  $refs!: {
-    form: ComponentPublicInstance & { 
-      resetValidation: () => void;
-      reset: () => void;
-      validate: () => boolean;
-    };
+
+  $refs!: SaveOnLeaveRefs & {
     startDatePicker: ComponentPublicInstance & { 
       validate: () => boolean;
     };
     expirationDatePicker: ComponentPublicInstance & { 
       validate: () => boolean;
     };
-  };
+  }
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   private currentContracts:CurrentContractDTO[] = [];
   private currentContract:CurrentContractDTO = {};
@@ -420,7 +423,7 @@ class CurrentContract extends Vue {
     try {
       if (this.hasChanged()) {
         this.currentData.acquisition_package = AcquisitionPackage.packageId;
-        this.currentData.is_valid = this.$refs.form.validate();
+        this.currentData.is_valid = await this.$refs.form.validate();
         if (this.currentData.contract_order_expiration_date !== ""){
           this.currentData.is_current = compareAsc(
             new Date(),

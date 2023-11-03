@@ -81,12 +81,12 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import DescriptionOfWork, { defaultDOWArchitecturalNeeds } from "@/store/descriptionOfWork";
 import { ArchitecturalDesignRequirementDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -98,7 +98,6 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATAlert
@@ -106,6 +105,16 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 })
 
 class ArchitecturalDesign extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public routeNames = routeNames
   public architectureDesignNeeds = defaultDOWArchitecturalNeeds;
   public async setDOWSection(): Promise<void> {

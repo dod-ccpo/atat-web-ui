@@ -81,9 +81,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {FairOpportunityDTO} from "@/api/models";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -91,7 +91,6 @@ import _ from "lodash";
 import {hasChanges} from "@/helpers";
 
 @Component({
-  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATExpandableLink,
     ATATTextArea
@@ -99,6 +98,16 @@ import {hasChanges} from "@/helpers";
 })
 
 class DescriptionOfJustification extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public justficationDescription = "";
 
   public showMore = false;
