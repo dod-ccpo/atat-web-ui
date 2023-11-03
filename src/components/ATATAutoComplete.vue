@@ -10,10 +10,14 @@
       v-model="_selectedItem"
       :class="inputClass"
       :items="items"
+
       :search.sync="searchText"
       :placeholder="placeholder"
       :append-icon="icon"
+
       :item-title="titleKey"
+      :item-value="valueKey"
+
       :hide-details="true"
       :rules="rules"
       return-object
@@ -21,24 +25,28 @@
       variant="outlined"
       :menu-props="{attach:true}"
       @blur="onBlur"
-      @update:search="updateSearchInput"
+      @update:search="updateSearchInput"     
     >
-    <!-- :customFilter="customFilter" -->
+    <!-- 
+      :customFilter="customFilter" 
+    -->
 
-      <template v-slot:item>
+      <template v-slot:item="{ props, item }">
           <!-- eslint-disable vue/no-v-text-v-html-on-component -->
-          <v-list-item-title
-            v-text="titleKey"
+          <v-list-item 
+            v-bind="props"
             :class="{ 'font-weight-normal': !subtitleKey }"
+            :title="item.title"
+            :subtitle="item?.raw?.subtitle"
           />
-          <v-list-item-subtitle 
+          <!-- <v-list-item-subtitle 
             v-if="subtitleKey" 
             v-text="subtitleKey"
-          />
+          /> -->
           <!-- eslint-enable -->
       </template>
 
-      <template v-slot:no-data>
+      <!-- <template v-slot:no-data>
         <v-list-item v-show="searchText !== null" class="no-results">
           <v-list-item-title>
             No results found.
@@ -54,9 +62,10 @@
             </a>
           </v-list-item-title>
         </v-list-item>
-      </template>
+      </template> -->
     </v-autocomplete>
     <ATATErrorValidation :errorMessages="errorMessages" />
+
   </div>
 </template>
 
@@ -100,7 +109,8 @@ class ATATAutoComplete extends Vue {
   @Prop({ default: false }) private labelSrOnly!: string;
   @Prop({ default: "" }) private icon!: string;
   @Prop({ default: () => [] }) private rules!: ValidationRule[];
-  @Prop({ default: "", required: true }) private titleKey!: string;
+  @Prop({ default: "text", required: true }) private titleKey!: string;
+  @Prop({ default: "value", required: true }) private valueKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
   @Prop({ default: [], required: true }) private searchFields!: string[];
   @Prop({ default: () => [] , required: true }) private items!: AutoCompleteItem[];

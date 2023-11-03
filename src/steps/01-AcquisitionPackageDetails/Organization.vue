@@ -13,7 +13,6 @@
             class="_input-max-width mb-2"
             label="What service or agency are you affiliated with?"
             :label-sr-only="false"
-            titleKey="text"
             :searchFields="['text']"
             :items="agencyData"
             :selectedItem.sync="selectedAgency"
@@ -77,12 +76,14 @@
               </h2>
 
               <ATATAddressForm 
-                :selectedAddressType.sync="selectedAddressType"
+                :selectedAddressType="selectedAddressType"
+                @update:selectedAddressType="selectedAddressType = $event"
                 :streetAddress1.sync="streetAddress1"
                 :streetAddress2.sync="streetAddress2"
                 :city.sync="city"
                 :selectedMilitaryPO.sync="selectedMilitaryPO"
-                :selectedState.sync="selectedState"
+                :selectedState="selectedState"
+
                 :selectedStateCode.sync="selectedStateCode"
                 :stateOrProvince.sync="stateOrProvince"
                 :zipCode.sync="zipCode"
