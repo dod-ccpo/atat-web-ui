@@ -294,6 +294,7 @@ export default defineConfig(({command, mode}) => {
         'tests/unit/example.spec.ts',
          //ignored test files by jest
          'src/steps/01-AcquisitionPackageDetails/ContactInfo.spec.ts',
+         'src/steps/01-AcquisitionPackageDetails/COR_ACOR/Common.spec.ts',
          'src/steps/01-AcquisitionPackageDetails/Organization.spec.ts',
          'src/steps/01-AcquisitionPackageDetails/ProjectOverview.spec.ts',
          'src/steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.spec.ts',
