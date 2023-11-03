@@ -72,7 +72,7 @@
 
 
 <script lang="ts">
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import {
   SlideoutPanelContent,
@@ -83,22 +83,26 @@ import SlideOut_GatherPricesEstimates from
   "@/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.vue";
 import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Requirement.vue";
 import IGCE from "@/store/IGCE";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CrossDomainSolutionDTO, IgceEstimateDTO, ReferenceColumn } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
-import { ComponentPublicInstance } from "vue";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: { 
     Card_Requirement
   },
 })
 class GatherPriceEstimates extends Vue {
-  $refs!: {
-    form: ComponentPublicInstance & { validate: () => boolean};
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
   }
 
   igceEstimateData: IgceEstimateDTO[] = [];
@@ -109,8 +113,8 @@ class GatherPriceEstimates extends Vue {
   isPanelOpen = [0]; //0 is open; 1 is closed.
   cdsSNOWRecord: CrossDomainSolutionDTO|null|undefined ;
 
-  get Form(): ComponentPublicInstance & { validate: () => boolean } {
-    return this.$refs.form as ComponentPublicInstance & { validate: () => boolean };
+  get Form(): SaveOnLeaveRefs['form'] {
+    return this.$refs.form
   }
 
   public openSlideoutPanel(e: Event): void {
