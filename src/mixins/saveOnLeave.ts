@@ -1,5 +1,5 @@
 import { Vue } from 'vue-facing-decorator'
-import { RouteLocationNormalized, NavigationGuardNext } from "vue-router";
+import { RouteLocationNormalized } from "vue-router";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
 import { ComponentPublicInstance } from "vue";
@@ -14,7 +14,6 @@ export type SaveOnLeaveRefs = ComponentPublicInstance['$refs'] & {
 
 export type To = RouteLocationNormalized
 export type From = RouteLocationNormalized
-export type Next = NavigationGuardNext
 
 export async function beforeRouteLeaveFunction(p: {
   to: To, from: From,
