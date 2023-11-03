@@ -20,15 +20,15 @@
         v-if="type !== 'callout' && showIcon"
         class="pr-4"
       >
-        <i
+        <v-icon
           aria-hidden="true"
           :class="[
             getIconSize(),
-            'v-icon notranslate material-icons theme--light',
+            'v-icon notranslate v-theme--light',
           ]"
         >
           {{ getIcon() }}
-        </i>
+        </v-icon>
       </div>
       <div class="width-100">
         <slot name="content"></slot>
@@ -63,13 +63,12 @@
             aria-hidden="true"
             class="
               notranslate
-              material-icons
-              theme--light
+              v-theme--light
               text-base-darkest
               icon-20
             "
           >
-            close
+            mdi-close
           </v-icon>
         </v-btn>
       </div>
