@@ -55,7 +55,7 @@
                 v-if="selectedTimeFrameOption === 'NO_LATER_THAN'"
                 type="warning"
               >
-                <template slot="content">
+                <template v-slot:content>
                   <p class="mb-0">
                     All efforts will be made to accommodate your requested period
                     of performance start date. However, there is no guarantee that
