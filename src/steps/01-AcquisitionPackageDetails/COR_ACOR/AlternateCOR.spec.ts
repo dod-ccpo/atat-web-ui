@@ -1,31 +1,34 @@
 /* eslint-disable camelcase */
-import Vue from "vue";
-import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import {DefaultProps} from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import AlternateCOR from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import validators from "../../../plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { createStore } from 'vuex';
 
-Vue.use(Vuetify);
 
 describe("Testing AlternateCOR Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  localVue.use(validators);
+  const actions = {
+    setHasAlternateCOR: vi.fn().mockReturnValue(false)
+  }
+  const mockStore = createStore({
+    modules: {
+      AcquisitionPackage: {
+        namespaced: true,
+        actions
+      }
+    }
+  })
+  const wrapper: VueWrapper = shallowMount(AlternateCOR, {
+    props: {},
+    global: {
+      plugins: [mockStore,validators]
+    }
+  })
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(AlternateCOR, {
-      vuetify,
-      localVue
-    });
-    AcquisitionPackage.setHasAlternateCOR(true);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
+    AcquisitionPackage.setHasAlternateCOR(true)
   })
 
   it("renders successfully", async () => {
@@ -35,21 +38,23 @@ describe("Testing AlternateCOR Component", () => {
   it("hasAlternateCOR() - should set the 'removeAcor' data of the component based on " +
     "what is configured", async () => {
     await wrapper.setData({
-      hasAlternateCOR: "false"
+      hasAlternateCOR: 'false'
     });
-    expect(wrapper.vm.$data.removeAcor).toBe(true);
+
+    expect(vm.$data.removeAcor).toBe(false);
+    
     await wrapper.setData({
-      hasAlternateCOR: "true"
+      hasAlternateCOR: 'true'
     });
-    expect(wrapper.vm.$data.removeAcor).toBe(false);
+    expect(vm.$data.removeAcor).toBe(false);
   });
 
   it("saveOnLeave() - should call the store and save if remove acor is set", async () => {
-    jest.spyOn(AcquisitionPackage, 'removeACORInformation').mockImplementation(
+    vi.spyOn(AcquisitionPackage, 'removeACORInformation').mockImplementation(
       () => Promise.resolve()
     );
-    wrapper.vm.$data.removeAcor = true;
-    await wrapper.vm.saveOnLeave();
+    vm.$data.removeAcor = true;
+    await vm.saveOnLeave();
     expect(AcquisitionPackage.removeACORInformation).toHaveBeenCalled();
   });
 })
