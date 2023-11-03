@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue, toNative, Hook } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
 
 // route resolver invoker
@@ -23,7 +23,7 @@ class RouteResolver extends Vue {
     const pathName = InvokePathResolver(routeResolver, current, direction);
     this.$router.push({ path: pathName });
   }
-
+  @Hook
   public async beforeRouteEnter(
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,

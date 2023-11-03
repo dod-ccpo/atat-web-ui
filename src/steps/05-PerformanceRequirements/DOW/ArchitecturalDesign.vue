@@ -49,7 +49,8 @@
               :card="true"
               :width="'180'"
               :items="radioOptions"
-              :value.sync="architectureDesignNeeds.needs_architectural_design_services"
+              :value="architectureDesignNeeds.needs_architectural_design_services"
+              @update:value="architectureDesignNeeds.needs_architectural_design_services = $event"
               :rules="[$validators.required('Please select an option.')]"
             />
           </div>
@@ -94,11 +95,11 @@ import _ from "lodash";
 import { routeNames } from "@/router/stepper";
 import ATATAlert from "@/components/ATATAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
- 
+
 
 
 @Component({
-  mixins: [SaveOnLeave],
+  mixins: [toNative(SaveOnLeave)],
   components: {
     ATATRadioGroup,
     ATATAlert
@@ -174,9 +175,15 @@ class ArchitecturalDesign extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
+  public async beforeUnmount(): Promise<void> {
+    debugger
+    await this.saveOnLeave();
+  }
 
   public async loadOnEnter(): Promise<void> {
+    debugger
     const storeData = await DescriptionOfWork.getDOWArchitecturalNeeds();
+    console.log(storeData)
     if (storeData) {
       this.savedData = _.cloneDeep(storeData);
       this.architectureDesignNeeds = _.cloneDeep(storeData)

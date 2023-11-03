@@ -2,10 +2,16 @@
   <v-form ref="form" lazy-validation>
     <ArchitecturalDesignForm
       :isDOW="true"
-      :statementArchitecturalDesign.sync="DOWArchNeeds.statement"
-      :applicationsNeedArchitecturalDesign.sync="DOWArchNeeds.applications_needing_design"
-      :dataClassificationsImpactLevels.sync="DOWArchNeeds.data_classification_levels"
-      :externalFactors.sync="DOWArchNeeds.external_factors"
+      :statementArchitecturalDesign="DOWArchNeeds.statement"
+      @update:statementArchitecturalDesign="DOWArchNeeds.statement = $event"
+      :applicationsNeedArchitecturalDesign="DOWArchNeeds.applications_needing_design"
+      @update:applicationsNeedArchitecturalDesign
+        ="DOWArchNeeds.applications_needing_design = $event"
+      :dataClassificationsImpactLevels="DOWArchNeeds.data_classification_levels"
+      @update:dataClassificationsImpactLevels="DOWArchNeeds.data_classification_levels = $event"
+      :externalFactors="DOWArchNeeds.external_factors"
+      @update:externalFactors="DOWArchNeeds.external_factors = $event"
+
     />
   </v-form>
 </template>
