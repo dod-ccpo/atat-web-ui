@@ -22,7 +22,7 @@
         prepend-icon=""
         accept="application/pdf,application/vnd.ms-excel, .xlsx, .doc, .docx"
         :truncate-length="truncateLength"
-        :clearable="true"
+        :clearable="false"
         @change="fileUploadChanged"
         :hide-details="true"
         :rules="setRules"
@@ -77,7 +77,7 @@
             <div>
               <ATATSVGIcon
                 name="uploadFile"
-                :class="isFileUploadDisabled ? 'bg-disabled-dark' : 'bg-base'"
+                :class="{ 'bg-disabled-dark': isFileUploadDisabled }"
                 :width="40"
                 :height="50"
               />
@@ -128,10 +128,12 @@
     <ATATFileList
       :validFiles="_validFiles"
       class="mt-5"
-      :isFullSize.sync="isFullSize"
+      :isFullSize="isFullSize"
+      @update:isFullSize="isFullSize=$event"
       :multiplesAllowed="multiplesAllowed"
       :title="fileListTitle"
-      :removeAll.sync="_removeAll"
+      :removeAll="_removeAll"
+      @update:removeAll="_removeAll = $event"
       @delete="deleteFile"
       :confirmRemoval="confirmRemoval"
       :confirmRemovalTitle="confirmRemovalTitle"
@@ -160,6 +162,12 @@ import { BaseTableDTO } from "@/api/models";
 import { TableApiBase } from "@/api/tableApiBase";
 
 @Component({
+  emits:[
+    "delete",
+    "click:clear",
+    "change",
+    "uploaded"
+  ],
   components: {
     ATATSVGIcon,
     ATATFileList,
@@ -174,7 +182,7 @@ class ATATFileUpload extends Vue {
       errorCount: number;
       resetValidation: () => void;
       reset: () => void;
-      validate: () => boolean;
+      validate: () => Promise<boolean>;
     };
   };
 
@@ -191,15 +199,14 @@ class ATATFileUpload extends Vue {
   @Prop({ default: true }) private showMaxSize!: boolean;
   @Prop({ default: false }) private startCompact?: boolean;
   @Prop({ default: () => [] }) private validFileFormats!: string[];
-  @PropSync("invalidFiles", { default: () => [] })
-  private _invalidFiles!: invalidFile[];
+  @PropSync("invalidFiles", { default: () => [] }) private _invalidFiles!: invalidFile[];
   @Prop({ default: "", required: true }) private attachmentServiceName!: string;
   @PropSync("removeAll") public _removeAll?: boolean;
   @Prop({ default: false }) private confirmRemoval!: boolean;
   @Prop({ default: "Are you sure?" }) private confirmRemovalTitle?: string;
   @Prop({ default: "Are you sure you want to remove the file(s)?" })
   private confirmRemovalMessage?: string;
-  @PropSync("rules", { default: () => [] }) private _rules!: ((
+  @PropSync("rules") private _rules!: ((
     v: string
   ) => ValidationResult)[];
 
@@ -501,14 +508,16 @@ class ATATFileUpload extends Vue {
   }
 
   private setErrorMessage(): void {
-    this.$nextTick(() => {
-      this.errorMessages = this.$refs.atatFileUpload.errorBucket;
-      if (this._invalidFiles.length > 0 || this.moreThanMax) {
-        this.errorMessages = this.errorMessages.filter(
-          (msg) => msg !== this.requiredMessage
-        );
+    this.$refs.atatFileUpload.validate().then(
+      (response: unknown) => {
+        this.errorMessages = response as string[];
+        if (this._invalidFiles.length > 0 || this.moreThanMax) {
+          this.errorMessages = this.errorMessages.filter(
+            (msg) => msg !== this.requiredMessage
+          );
+        }
       }
-    });
+    );
   }
 
   private clearErrorMessages(): void {

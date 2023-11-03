@@ -19,10 +19,11 @@
           id="SupportingDocFileUpload"
           @delete="onRemoveAttachment"
           fileListTitle="Your files"
-          :invalidFiles.sync="invalidFiles"
+          :invalidFiles="invalidFiles"
+          @update:invalidFiles="invalidFiles=$event"
           :maxNumberOfFiles="100"
           :maxFileSizeInBytes="maxFileSizeInBytes"
-          :validFiles.sync="uploadedFiles"
+          :validFiles="uploadedFiles"
           :requiredMessage="requiredFileUploadMessage"
           :rules="getRulesArray()"
           @mouseleave="onFileUploadChanged"
@@ -81,19 +82,12 @@ class SupportingDocumentation extends Vue {
           attachmentId,
           recordId, // recordId is the "table_sys_id" in the context of ATTACHMENT API
         });
-
         //get updated data
         await this.loadRequirementsCostEstimateData();
       }
     } catch (error) {
       console.error(`error removing attachment with id ${file?.attachmentId}`);
     }
-  }
-
-  @Watch("uploadedFiles")
-  private onUploadedFilesChanged(): void {
-    // this.showWarning =
-    //   this.uploadedFiles.length > 0 && this.uploadedFiles.length < 2;
   }
 
   async loadRequirementsCostEstimateData(): Promise<void>{
