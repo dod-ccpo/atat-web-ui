@@ -119,7 +119,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -131,11 +131,11 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 import {SensitiveInformationDTO} from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 
 @Component({
-  mixins: [LoadOnEnter, SaveOnLeave],
+  mixins: [LoadOnEnter],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -145,6 +145,16 @@ import LoadOnEnter from "@/mixins/loadOnEnter";
 })
 
 class BAA extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private baaHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/
     sample-business-associate-agreement-provisions/index.html`;
 

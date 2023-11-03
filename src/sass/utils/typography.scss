@@ -181,14 +181,14 @@ hr, .hr {
   display: inline-block;
   white-space: nowrap;
     text-decoration: underline;
-  &:after {
+  &:before {
     font-family: $icon-font;
-    content: "launch";
+    content: "\F0327";
     text-decoration: none !important;
     -webkit-font-feature-settings: 'liga';
     color: $primary;
     position: absolute;
-    top: -1px;
+    top: 0;
     right: 2px;
     font-size: 18px;
   }
@@ -200,6 +200,7 @@ hr, .hr {
     }
   }
 }
+
 
 ._text-decoration-none {
   text-decoration: none !important;
@@ -321,7 +322,9 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
 
 ul._atat-ul {
   padding-bottom: 12px;
+  padding-left: 24px;
   li {
+    line-height: 1.5em;
     padding-bottom: 8px;
     ul {
       li {

@@ -77,7 +77,7 @@
             <div>
               <ATATSVGIcon
                 name="uploadFile"
-                :color="isFileUploadDisabled ? 'disabled-dark' : 'base'"
+                :class="isFileUploadDisabled ? 'bg-disabled-dark' : 'bg-base'"
                 :width="40"
                 :height="50"
               />

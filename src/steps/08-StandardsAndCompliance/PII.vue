@@ -92,22 +92,22 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
-import {RadioButton} from "../../../types/Global";
+import {RadioButton} from "types/Global";
+import { SaveOnLeaveRefs, To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [LoadOnEnter, SaveOnLeave],
+  mixins: [LoadOnEnter],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -116,6 +116,16 @@ import {RadioButton} from "../../../types/Global";
 })
 
 class PII extends  Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private pIIOptions: RadioButton[] = [
     {
       id: "YesPII",

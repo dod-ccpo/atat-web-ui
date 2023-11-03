@@ -105,7 +105,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -118,10 +118,9 @@ import { hasChanges } from "@/helpers";
 
 import { RadioButton, SelectData } from "../../../types/Global";
 import ContactData from "@/store/contactData";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAddressForm,
     ATATRadioGroup,
@@ -129,6 +128,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 class FOIACoordinator extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private addressTypes = {
     USA: "US",
     MIL: "MILITARY",

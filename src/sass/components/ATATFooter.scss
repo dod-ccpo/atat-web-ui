@@ -1,19 +1,26 @@
-.v-theme--light.v-footer.atat-page-footer {
-    padding: 20px 0 40px;
-    border-top: 1px solid #DFE1E2;
-    height: 84px;
-    justify-content: space-between;
-    font-size: 1.4rem;
-    width: calc(100% - 112px);
-    background-color: $white;
+.v-theme--light.v-footer._atat-page-footer {
+  padding: 20px 0 40px;
+  border-top: 1px solid #DFE1E2;
+  height: 84px;
+  justify-content: space-between;
+  font-size: 1.4rem;
+  width: 100%;
+  background-color: $white;
+  @extend .container-max-width;
+  margin: 0 auto;
 
-    ._dashboard & {
-      width: 100%;
-      background-color: transparent;
-    }
+  ._dashboard & {
+    width: 100%;
+    background-color: transparent;
   }
-  .links {
-    a {
-      margin-right: 1.6rem;
-    }
-  } 
+  ._is-home & {
+    padding-top: 100px !important;
+  }
+  
+}
+
+.links {
+  a {
+    margin-right: 1.6rem;
+  }
+} 

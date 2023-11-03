@@ -10,7 +10,7 @@ module.exports = {
   stepperProgressBarText: "._stepper-progress-bar .text-base",
   progressBar: ".v-progress-linear__determinate",
   completePercentage:".global-side-nav-bar .completed-check[data-substep-complete-percentage]",  
-  footerLinks:".atat-page-footer .links",
+  footerLinks:"._atat-page-footer .links",
   continueBtn:"#ContinueButton",
   backBtn: "#BackButton span span",
   introText: "p.mb-10",
