@@ -106,7 +106,8 @@
       @menuItemClick="cardMenuClick"
     />
     <DeletePackageModal
-      :showModal.sync="showDeleteModal"
+      :showModal="showDeleteModal"
+      @update:showModal="showDeleteModal = $event"
       :packageName="modifiedData.projectOverview || 'Untitled package'"
       :hasContributor="hasContributor"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
@@ -114,7 +115,8 @@
       :id="'DeletePackageModal_' + index"
     />
     <ArchiveModal
-      :showModal.sync="showArchiveModal"
+      :showModal="showArchiveModal"
+      @update:showModal="showArchiveModal = $event"
       :hasContributor="hasContributor"
       :packageName="modifiedData.projectOverview || 'Untitled package'"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
