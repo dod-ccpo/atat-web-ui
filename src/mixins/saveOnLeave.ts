@@ -20,6 +20,9 @@ export async function beforeRouteLeaveFunction(p: {
   saveOnLeave: () => Promise<boolean>, 
   form: SaveOnLeaveRefs['form'],
   nextTick: (f: () => void) => Promise<void>,
+  // this is an easy way to test the validation state 
+  // while we work on our pages before it gets fixed
+  // it can be removed after validation is fixed
   isValidOverrideForTesting?: boolean,
 }) {
   const goNext = await p.saveOnLeave();
@@ -33,6 +36,9 @@ export async function beforeRouteLeaveFunction(p: {
     isValid = await p.form.validate()
   }
 
+  // this is an easy way to test the validation state 
+  // while we work on our pages before it gets fixed
+  // it can be removed after validation is fixed
   if (typeof p.isValidOverrideForTesting !== 'undefined') {
     isValid = p.isValidOverrideForTesting
   }
