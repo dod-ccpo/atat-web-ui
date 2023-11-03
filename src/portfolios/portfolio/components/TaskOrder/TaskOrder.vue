@@ -29,20 +29,26 @@
       <TaskOrderCard
         :isHistory="false"
         :taskOrders="taskOrders"
-        :showDetails.sync="showDetails"
-        :selectedTaskOrder.sync="selectedTaskOrder"
+        :showDetails="showDetails"
+        @update:showDetails="showDetails = $event"
+        :selectedTaskOrder="selectedTaskOrder"
+        @update:selectedTaskOrder="selectedTaskOrder = $event"
       />
     </div>
     <div v-show="showDetails">
       <TaskOrderDetails
         :selectedTaskOrder="selectedTaskOrder"
-        :showDetails.sync="showDetails"
+        :showDetails="showDetails"
+        @update:showDetails="showDetails = $event"
       />
     </div>
     <TaskOrderSearchModal
-      :showTOSearchModal.sync="showTOSearchModal"
-      :TONumber.sync="TONumber"
-      :resetValidationNow.sync="resetValidationNow"
+      :showTOSearchModal="showTOSearchModal"
+      @update:showTOSearchModal="showTOSearchModal = $event"
+      :TONumber="TONumber"
+      @update:TONumber="TONumber = $event"
+      :resetValidationNow="resetValidationNow"
+      @update:resetValidationNow="resetValidationNow = $event"
       @TOSearchCancelled="TOSearchCancelled"
       @startProvisionWorkflow="startProvisionWorkflow"
     /> 
@@ -127,7 +133,7 @@ class TaskOrder extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
-    this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.label;
+    this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.value;
     if(PortfolioStore.portfolioIsUpdating){
       const taskOrderUpdatedToast: ToastObj = {
         type: "success",

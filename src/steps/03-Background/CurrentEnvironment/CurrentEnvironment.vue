@@ -18,7 +18,8 @@
               :card="true"
               :items="existingEnvOption"
               :rules="[$validators.required('Please select an option')]"
-              :value.sync="currentEnvironmentExists"
+              :value="currentEnvironmentExists"
+              @update:value="currentEnvironmentExists = $event"
               class="copy-max-width mb-10 max-width-740"
               width="380"
             />
