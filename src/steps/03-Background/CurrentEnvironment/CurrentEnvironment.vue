@@ -18,7 +18,8 @@
               :card="true"
               :items="existingEnvOption"
               :rules="[$validators.required('Please select an option')]"
-              :value.sync="currentEnvironmentExists"
+              :value="currentEnvironmentExists"
+              @update:value="currentEnvironmentExists = $event"
               class="copy-max-width mb-10 max-width-740"
               width="380"
             />
@@ -30,7 +31,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import { RadioButton, YesNo } from "../../../../types/Global";
 
 
@@ -38,16 +39,24 @@ import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import SaveOnLeave from "@/mixins/saveOnLeave";
-
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
   },
 })
 class HasCurrentEnvironment extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public currEnvDTO = defaultCurrentEnvironment;
 
   private existingEnvOption: RadioButton[] = [
