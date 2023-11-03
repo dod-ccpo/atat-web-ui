@@ -7,8 +7,6 @@
       :rules="rules"
       v-model="_selectedValue"
     >
-    <!-- @update:modelValue="_selectedValue = $event" -->
-
       <fieldset>
         <div class="d-flex" :class="{ 'mb-3' : !helpText }">
           <legend
@@ -74,7 +72,13 @@
           :disabled="item.disabled || disabled"
           :readonly="item.readonly"
           @blur="onBlur"
+          @keydown.enter="onBlur"
+          @keydown.space="onBlur"
+          @mouseenter="onBlur"
+          @mouseleave="onBlur"
+          @mouseout="onBlur"
           @click="onClick"
+          validate-on="blur"
         >
           <template v-if="item.description || card || item.value === otherValue" v-slot:label>
             <div class="d-flex flex-column">
@@ -152,19 +156,16 @@ import { ComponentPublicInstance } from "vue";
 })
 
 class ATATRadioGroup extends Vue {
-
-  // refs
   $refs!: {
     radioButtonGroup: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
-      // resetValidation: () => boolean;
+      validate: () => Promise<boolean>;
     };
     atatTextInput: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
+      validate: () => Promise<boolean>;
     };
   }; 
 
@@ -218,8 +219,8 @@ class ATATRadioGroup extends Vue {
   }
 
   @Watch('validateFormNow')
-  public validateNowChange(): void {
-    if(!this.$refs.radioButtonGroup.validate())
+  public async validateNowChange(): Promise<void> {
+    if(await !this.$refs.radioButtonGroup.validate())
       this.setErrorMessage();
   }
 
