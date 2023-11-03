@@ -29,7 +29,7 @@
         </v-btn>
         <v-btn
           v-if="!hideOkButton"
-          :color="buttonColor"
+          :class="buttonColor"
           :ripple="false"
           :id="okButtonId"
           :disabled="OKDisabled"

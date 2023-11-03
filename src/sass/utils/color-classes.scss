@@ -28,6 +28,8 @@
   .bg-white     { background-color: $white !important; }
   .bg-offwhite  { background-color: $offwhite !important; }
 
+  .text-white   { color: $white !important}
+
   .text-base-darkest   { color: $base-darkest !important; }
   .text-base-darker    { color: $base-darker !important; }
   .text-base-dark      { color: $base-dark !important; }
@@ -66,6 +68,7 @@
   // DISA GOLD
   .bg-warning-darker  { background-color: $warning-darker !important; }
   .bg-warning-dark    { background-color: $warning-dark !important; }
+  .bg-warning-dark2   { background-color: $warning-dark2 !important; }
   .bg-warning         { background-color: $warning !important; }
   .bg-warning-light   { background-color: $warning-light !important; }
   .bg-warning-lighter { background-color: $warning-lighter !important; }

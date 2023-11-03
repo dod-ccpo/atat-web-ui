@@ -1,38 +1,48 @@
 <template>
 	<div style="overflow: hidden">
 		<ATATSideStepper 
-		v-if="!hideSideNavigation && !hideNavigation" ref="sideStepper" :stepperData="stepperData"
+			v-if="!hideSideNavigation && !hideNavigation" 
+			ref="sideStepper" 
+			:stepperData="stepperData"
 		/>
 		<ATATSlideoutPanel v-if="panelContent">
 			<component :is="panelContent"></component>
 		</ATATSlideoutPanel>
 		<ATATToast />
 		<ATATPageHead />
-	<v-main>
-		<div id="app-content" class="d-flex flex-column">
-			<div class="mb-auto">
-			<router-view></router-view>
-		</div>
-		<ATATStepperNavigation 
-		v-if="!hideNavigation" 
-		@next="navigate('next')" 
-		@previous="navigate('previous')"
-		@additionalButtonClick="additionalButtonClick" 
-		@takeAltContinueAction="takeAltContinueAction"
-		:additionalButtons="additionalButtons" 
-		:backButtonText="backButtonText"
-		:continueButtonText="continueButtonText" 
-		:continueButtonColor="continueButtonColor"
-		:altContinueAction="altContinueAction" 
-		:hideContinueButton="hideContinueButton"
-		:hideAdditionalButtons="hideAdditionalButtons" 
-		:disableContinue="disableContinueButton"
-		:noPrevious="noPrevious" class="mb-8"
-		:class="[currentRouteName === routeNames.DAPPSChecklist ? 'mx-auto' : '']"
-		/>
-		<ATATFooter :class="[currentRouteName === routeNames.DAPPSChecklist ? 'mx-auto' : '']" />
-		</div>
-	</v-main>
+
+		<v-main>
+			<div id="app-content" class="_app-content d-flex flex-column">
+				<div class="_app-content-wrap">
+					<div class="_app-content-padding">
+						
+						<router-view></router-view>
+
+						<ATATStepperNavigation 
+							v-if="!hideNavigation" 
+							@next="navigate('next')" 
+							@previous="navigate('previous')"
+							@additionalButtonClick="additionalButtonClick" 
+							@takeAltContinueAction="takeAltContinueAction"
+							:additionalButtons="additionalButtons" 
+							:backButtonText="backButtonText"
+							:continueButtonText="continueButtonText" 
+							:continueButtonColor="continueButtonColor"
+							:altContinueAction="altContinueAction" 
+							:hideContinueButton="hideContinueButton"
+							:hideAdditionalButtons="hideAdditionalButtons" 
+							:disableContinue="disableContinueButton"
+							:noPrevious="noPrevious" class="mb-8"
+						/>
+						<ATATFooter />						
+					</div>
+				</div>
+
+			</div>
+
+		</v-main>
+
+	
 	</div>
 </template>
 <!-- todo maybe replace this. It is on app.vue now-->

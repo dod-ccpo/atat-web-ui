@@ -16,7 +16,7 @@
         </h1>
 
         <v-row>
-          <v-col class="pr-10">
+          <v-col class="px-10">
             <p class="mt-5">
               The DISA Acquisition Package Preparation System (DAPPS) will walk you through
               the necessary steps to digitally prepare an acquisition package to procure 
@@ -107,7 +107,7 @@
           Provision your cloud resources
         </h1>
         <v-row>
-          <v-col class="pr-10">
+          <v-col class="px-10">
             <p class="mt-8">
               Whether you used DAPPS to generate your acquisition package or obtained 
               a JWCC task order from your own Contracting Office, the Account Tracking 
@@ -132,7 +132,7 @@
             </v-btn>            
 
           </v-col>
-          <v-col class="pl-10">
+          <v-col class="px-10">
             <div class="bg-primary-lighter _border-rounded-more pa-8">
 
               <p class="mb-0">
