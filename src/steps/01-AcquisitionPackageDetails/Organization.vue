@@ -8,6 +8,15 @@
             Next, we’ll gather information about your organization
           </h1>
 
+
+          
+          <!-- <v-autocomplete
+            :items="agencyData"
+            item-title="text"
+            item-value="value"
+            :eager="true"
+
+          /> -->
           <ATATAutoComplete
             id="Agency"
             class="_input-max-width mb-2"
@@ -15,10 +24,12 @@
             :label-sr-only="false"
             :searchFields="['text']"
             :items="agencyData"
-            :selectedItem.sync="selectedAgency"
+            :selectedItem="selectedAgency"
+            @update:selectedItem="selectedAgency = $event"
             :rules="[$validators.required('Please select your agency or service.')]"
             placeholder="Find your agency or service"
             icon="arrow_drop_down"
+            :eager="true"
           />
 
           <div v-if="selectedAgency" class="mt-10">
@@ -363,6 +374,7 @@ class OrganizationInfo extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data);
+    console.log(this.agencyData)
     this.disaOrgData = convertDisaOrgToSelect(OrganizationData.disa_org_data);
     this.stateListData = ContactData.stateChoices;
     const storeData = await AcquisitionPackage

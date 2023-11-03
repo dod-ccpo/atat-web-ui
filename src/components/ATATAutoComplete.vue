@@ -25,7 +25,8 @@
       variant="outlined"
       :menu-props="{attach:true}"
       @blur="onBlur"
-      @update:search="updateSearchInput"     
+      @update:search="updateSearchInput" 
+      eager    
     >
     <!-- 
       :customFilter="customFilter" 
