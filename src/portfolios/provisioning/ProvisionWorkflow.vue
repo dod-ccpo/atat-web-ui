@@ -3,7 +3,7 @@
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-    <v-main class="_center-page-content _provisioning">
+    <v-main class="_center-page-content _provisioning _scroll-y">
       <div id="app-content" class="d-flex flex-column pt-16">
 
         <div  class="mb-auto _page-content">
