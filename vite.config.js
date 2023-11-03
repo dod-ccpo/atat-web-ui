@@ -154,7 +154,6 @@ export default defineConfig(({command, mode}) => {
 			//Default exclude: node_modules/, dist/, cypress/, *.config.*, **/.{idea,git,cache,output,temp} 
 			exclude: [
         'node_modules/**',
-        'src/steps/01-AcquisitionPackageDetails/SummaryStepOne.spec.ts',
         'src/api/gInvoicing/index.spec.ts',
         'src/api/portfolio/index.spec.ts',
         'src/AppPackageBuilder.spec.ts',
@@ -294,8 +293,6 @@ export default defineConfig(({command, mode}) => {
         'src/store/user/index.spec.ts',
         'tests/unit/example.spec.ts',
          //ignored test files by jest
-         'src/steps/01-AcquisitionPackageDetails/components/DoDAAC.spec.ts',
-         'src/steps/01-AcquisitionPackageDetails/components/EmergencyDeclarationSupport.spec.ts',
          'src/steps/01-AcquisitionPackageDetails/ContactInfo.spec.ts',
          'src/steps/01-AcquisitionPackageDetails/Organization.spec.ts',
          'src/steps/01-AcquisitionPackageDetails/ProjectOverview.spec.ts',
