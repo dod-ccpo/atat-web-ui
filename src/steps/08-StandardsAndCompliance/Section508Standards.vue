@@ -12,8 +12,15 @@
                 The overarching JWCC Contract provides the following language to
                 ensure CSPs comply with the government’s Section 508 Accessibility
                 Standards for Cloud Computing. If your project requires different
-                compliance standards, we’ll gather that info next. Learn more
-                about Section 508.
+                compliance standards, we’ll gather that info next.
+                <a role="button"
+                  id="LearnMoreBAA"
+                  tabindex="0"
+                  @click="openSlideoutPanel"
+                  @keydown.enter="openSlideoutPanel"
+                  @keydown.space="openSlideoutPanel">
+                  Learn more about Section 508.
+                </a>
               </p>
               <ATATAlert 
                 id="Section508Callout" 
@@ -21,7 +28,7 @@
                 maxHeight="460"
                 class="mb-10"
               >
-                <template slot="content">
+                <template v-slot:content>
                   <h2>
                     Section 508 Accessibility Standards for Cloud Computing
                   </h2>
@@ -31,7 +38,7 @@
                     Rehabiliation Act
                   </p>
 
-                  <span class="font-size-20 _semibold mb-4 d-block">
+                  <span class="font-size-20 _semibold mb-4 mt-5 d-block">
                     Electronic Content Technical Criteria:
                   </span>
                   <ul class="_atat-ul">
@@ -196,8 +203,10 @@ import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import Section508StandardsLearnMore from "./Section508StandardsLearnMore.vue";
 
-import { RadioButton } from "../../../types/Global";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+import { RadioButton, SlideoutPanelContent } from "types/Global";
 import {SensitiveInformationDTO} from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
@@ -254,6 +263,13 @@ class Section508Standards extends Vue {
     section_508_sufficient: "",
   }
 
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
@@ -284,6 +300,11 @@ class Section508Standards extends Vue {
     return true;
   }
   public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: Section508StandardsLearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 
