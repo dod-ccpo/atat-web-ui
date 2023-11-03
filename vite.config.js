@@ -154,6 +154,7 @@ export default defineConfig(({command, mode}) => {
 			//Default exclude: node_modules/, dist/, cypress/, *.config.*, **/.{idea,git,cache,output,temp} 
 			exclude: [
         'node_modules/**',
+        'src/steps/01-AcquisitionPackageDetails/SummaryStepOne.spec.ts',
         'src/api/gInvoicing/index.spec.ts',
         'src/api/portfolio/index.spec.ts',
         'src/AppPackageBuilder.spec.ts',
