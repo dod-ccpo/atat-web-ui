@@ -1,30 +1,60 @@
+/* eslint-disable camelcase */
 import { describe, it, expect } from 'vitest';
 import { VueWrapper, shallowMount } from '@vue/test-utils'
 import SummaryStepOne from "@/steps/01-AcquisitionPackageDetails/SummaryStepOne.vue";
 import Summary, * as SummaryExportedFunctions from "@/store/summary";
-
+import { createStore } from 'vuex';
+import AcquisitionPackage from '@/store/acquisitionPackage';
+import { OrganizationDTO } from '@/api/models';
 
 describe("Testing SummaryStepOne Component", () => {
-  
+  const actions = {
+    initialize: vi.fn().mockResolvedValue(Promise.resolve()),
+    setInitialized: vi.fn().mockReturnValue(true),
+    initialOrganization: vi.fn().mockReturnValue({
+      country: "",
+      address_type: "",
+      city: "",
+      dodaac: "",
+      street_address_1: "",
+      street_address_2: "",
+      zip_code: "",
+      sys_id: "",
+      disa_organization: "HaCC",
+      organization_name: "",
+      agency: "DISA",
+      state: "",
+      disa_organization_reference: {
+        link: 'abc123',
+        value: 'sys_id'
+      }
+    })
+  } 
+  const mockStore = createStore({
+    modules: {
+      OrganizationData: {
+        namespaced: true,
+        actions
+      }
+    }
+  })
   const wrapper: VueWrapper = shallowMount(SummaryStepOne, {
     props: {
 
     },
     global: {
-      plugins: []
+      plugins: [mockStore]
     }
   })
 
   const vm =  (wrapper.vm as typeof wrapper.vm.$options)
   
-  wrapper.setData({
-    organization: {
-      // eslint-disable-next-line camelcase
-      disa_organization_reference: "HaCC"
-    }
-  })
+ 
+  AcquisitionPackage.setOrganization(actions.initialOrganization as OrganizationDTO)
+  
 
   describe("testing SummaryStepOne render", () => {
+
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });

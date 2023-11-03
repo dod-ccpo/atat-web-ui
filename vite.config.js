@@ -293,6 +293,7 @@ export default defineConfig(({command, mode}) => {
         'src/store/user/index.spec.ts',
         'tests/unit/example.spec.ts',
          //ignored test files by jest
+         'src/steps/01-AcquisitionPackageDetails/components/DoDAAC.spec.ts',
          'src/steps/01-AcquisitionPackageDetails/Organization.spec.ts',
          'src/steps/01-AcquisitionPackageDetails/ProjectOverview.spec.ts',
          'src/steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.spec.ts',
