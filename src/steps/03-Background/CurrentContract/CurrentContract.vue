@@ -14,7 +14,8 @@
             <CurrentContractOptions                                  
               :card="true"
               :isWizard="true"
-              :selectedOption.sync="currentContractExists"
+              :selectedOption="currentContractExists"
+              @update:selectedOption="currentContractExists = $event"
               :hasExceptionToFairOpportunity="hasExceptionToFairOpportunity"
               :rules="[$validators.required('Please select an option')]"            
             />

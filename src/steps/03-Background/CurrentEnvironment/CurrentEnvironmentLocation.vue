@@ -16,7 +16,8 @@
               :card="true"
               :items="envLocationOption"
               :rules="[$validators.required('Please select a type of environment')]"
-              :value.sync="currentEnvironmentLocation"
+              :value="currentEnvironmentLocation"
+              @update:value="currentEnvironmentLocation = $event"
               class="copy-max-width mb-10 max-width-740"
               name="radioButton-card"
             />
@@ -28,7 +29,7 @@
             type="warning"
             v-if="warningMessage"
           >
-            <template slot="content">
+            <template v-slot:content>
               <p class="mb-0">
                 NOTE: {{ warningMessage }}
               </p>

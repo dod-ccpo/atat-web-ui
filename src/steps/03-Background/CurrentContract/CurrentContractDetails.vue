@@ -25,7 +25,8 @@
                   true
                 ),
               ]" 
-              :value.sync="currentContract.contract_number" 
+              :value="currentContract.contract_number" 
+              @update:value="currentContract.contract_number = $event"
               class="_input-max-width mb-9" 
               label="Contract number" 
               tooltipText="This is a 13-character alphanumeric value (no hyphens, dashes or spaces) 
@@ -33,7 +34,8 @@
 
             <TaskOrderNumber 
             id="TaskOrderNumber" 
-            :value.sync="currentContract.task_delivery_order_number" 
+            :value="currentContract.task_delivery_order_number" 
+            @update:value="currentContract.task_delivery_order_number = $event"
             :optional="true"
             class="_input-max-width mb-10" 
             label="Task order number" 
@@ -50,7 +52,8 @@
 
             <LevelOfCompetition legend="What level of competition was used in this procurement?"
               classes="copy-max-width mb-4 mt-3" 
-              :competitiveStatus.sync="currentContract.competitive_status"
+              :competitiveStatus="currentContract.competitive_status"
+              @update:competitiveStatus="currentContract.competitive_status = $event"
               :rules="[$validators.required('Please select a level of competition.')]">
             </LevelOfCompetition>
 
@@ -136,14 +139,16 @@
                   'Please enter the contractor’s name.'
                 ),
               ]" 
-              :value.sync="currentContract.incumbent_contractor_name" 
+              :value="currentContract.incumbent_contractor_name" 
+              @update:value="currentContract.incumbent_contractor_name = $event"
               class="_input-max-width mb-10"
               label="Contractor name" />
 
               <BusinessSize 
                 legend="What business size is this contractor?"
                 classes="copy-max-width mt-3" 
-                :businessSize.sync="currentContract.business_size"
+                :businessSize="currentContract.business_size"
+                @update:businessSize="currentContract.business_size = $event"
                 :rules="[$validators.required('Please select a business size.')]">
               </BusinessSize>
 
