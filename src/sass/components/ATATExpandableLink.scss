@@ -60,7 +60,18 @@
       border-bottom: none;
     }
   }
+  .v-expansion-panel-title {
+    border-radius: 4px !important;
+  }
+  .v-expansion-panel-title--active, .v-expansion-panel-title__overlay {
+    background-color: transparent;
+  }
 }
+
+.v-expansion-panel:not(:first-child)::after {
+  border: none;
+}
+
 
 .v-expansion-panel-title {
   @extend .body;
