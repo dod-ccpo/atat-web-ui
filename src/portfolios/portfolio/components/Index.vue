@@ -29,10 +29,10 @@
     </div>
 
     <v-main
-      class="_dashboard"
+      class="_dashboard _scroll-y"
       :class="[
         {'_funding-dashboard': tabItems[tabIndex] === 'Funding Tracker'},
-        {'bg-white': isPortfolioProvisioning}
+        {'bg-white': isPortfolioProvisioning},
       ]"
     >
         <PortfolioSummaryPageHead
