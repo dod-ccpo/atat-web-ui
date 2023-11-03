@@ -52,7 +52,8 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { invalidFile, RadioButton, uploadingFile, ValidationRule, YesNo } from "../../../../types/Global";
+import { invalidFile, RadioButton, uploadingFile, ValidationRule, YesNo } 
+  from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AttachmentDTO} from "@/api/models";
 import { getFileUploadValidationRules, hasChanges } from "@/helpers";

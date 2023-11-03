@@ -72,7 +72,6 @@ import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
-import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
   emits: ['input'],
