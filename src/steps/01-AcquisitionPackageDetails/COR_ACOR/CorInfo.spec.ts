@@ -1,21 +1,14 @@
 /* eslint-disable camelcase */
-import Vue from "vue";
-import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import {DefaultProps} from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import CorInfo from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/CorInfo.vue";
 import validators from "../../../plugins/validation";
 import ContactData from "@/store/contactData";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {ContactDTO} from "@/api/models";
 
-Vue.use(Vuetify);
 
 describe("Testing CorInfo Component", () => {
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  const localVue = createLocalVue();
-  localVue.use(validators);
 
   const mockCurrentDontactData: ContactDTO = {
     grade_civ: "",
@@ -57,35 +50,32 @@ describe("Testing CorInfo Component", () => {
     acquisition_package: ""
   }
 
+  const wrapper: VueWrapper = shallowMount(CorInfo, {
+    props: {},
+    global: {
+      plugins: [validators]
+    }
+  })
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
   beforeEach(() => {
-    jest.spyOn(ContactData, 'initialize').mockImplementation(
+    vi.spyOn(ContactData, 'initialize').mockImplementation(
       () => Promise.resolve()
     );
 
-    vuetify = new Vuetify();
-    wrapper = mount(CorInfo, {
-      vuetify,
-      localVue
-    });
-
-    wrapper.vm.$data.currentContactData = mockCurrentDontactData;
-    wrapper.vm.$data.savedContactData = mockSavedDontactData;
+    vm.$data.currentContactData = mockCurrentDontactData;
+    vm.$data.savedContactData = mockSavedDontactData;
   });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  })
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
 
   it("saveOnLeave() - should call the store and save if any data changes", async () => {
-    jest.spyOn(AcquisitionPackage, 'saveContactInfo').mockImplementation(
+    vi.spyOn(AcquisitionPackage, 'saveContactInfo').mockImplementation(
       () => Promise.resolve()
     );
-    wrapper.vm.$data.currentContactData.role = "ROLE_UPDATED"
-    await wrapper.vm.saveOnLeave();
+    vm.$data.currentContactData.role = "ROLE_UPDATED"
+    await vm.saveOnLeave();
     expect(AcquisitionPackage.saveContactInfo).toHaveBeenCalled();
   });
 })
