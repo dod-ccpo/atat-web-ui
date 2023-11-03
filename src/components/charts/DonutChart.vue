@@ -9,7 +9,6 @@ import Chart, { ChartData } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { toCurrencyString } from "@/helpers";
 import ATATCharts from "@/store/charts";
-
 @Component
 class DonutChart extends Vue {
   @Prop({ required: true, default: "MyDonutChart" }) public chartId!: string;
@@ -33,7 +32,7 @@ class DonutChart extends Vue {
     this.myChart.update();
   }
 
-  public async mounted(): Promise<void> {
+  private async mounted(): Promise<void> {
     if (this.showLabelOnHover) {
       const toolTipExternalOptions = {
         enabled: false,

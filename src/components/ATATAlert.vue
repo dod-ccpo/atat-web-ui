@@ -24,7 +24,7 @@
           aria-hidden="true"
           :class="[
             getIconSize(),
-            'v-icon notranslate v-theme--light',
+            'v-icon notranslate material-icons theme--light',
           ]"
         >
           {{ getIcon() }}
@@ -63,12 +63,13 @@
             aria-hidden="true"
             class="
               notranslate
-              v-theme--light
+              material-icons
+              theme--light
               text-base-darkest
               icon-20
             "
           >
-            mdi-close
+            close
           </v-icon>
         </v-btn>
       </div>
@@ -138,7 +139,13 @@ class ATATAlert extends Vue {
   }
 
   private getIcon(): string | unknown {
-    return (this.type === "success") ? "check_circle" : this.type;
+    switch (this.type) {
+    case "success" : return "mdi-check-circle";
+    case "info" : return "mdi-information";
+    case "error" : return "mdi-alert-circle";
+    case "warning" : return "mdi-alert"
+    default: "";
+    }
   }
 
   private close(): void {
