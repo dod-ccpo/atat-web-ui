@@ -40,30 +40,36 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue"
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import IGCEStore from "@/store/IGCE";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { YesNo } from "../../../../types/Global";
 import { ComponentPublicInstance } from "vue";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATTextField
   },
 })
 class FeeCharged extends Vue {
-  $refs!: {
+
+  $refs!: SaveOnLeaveRefs & {
     PercentageTextbox: ComponentPublicInstance & {
       errorMessages: () => [];
     };
-  };
-
+  }
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   private isCharged: YesNo = "";
   private percentage: number | null = null;

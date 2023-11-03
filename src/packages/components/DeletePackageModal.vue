@@ -1,9 +1,10 @@
 <template>
   <ATATDialog
     :id="id"
-    :showDialog.sync="_showModal"
+    :showDialog="_showModal"
+    @update:showDialog="_showModal = $event"
     title="Delete this acquisition package?"
-    buttonColor="error"
+    buttonColor="_error"
     no-click-animation
     okText="Delete permanently"
     cancelText="Keep acquisition"
@@ -37,7 +38,8 @@ import ATATDialog from "@/components/ATATDialog.vue";
 @Component({
   components: {
     ATATDialog
-  }
+  },
+  emits:["okClicked"]
 })
 
 class DeletePackageModal extends Vue {
