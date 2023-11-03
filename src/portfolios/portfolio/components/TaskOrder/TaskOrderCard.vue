@@ -13,7 +13,7 @@
             role="button"
             tabindex="0"
             :id="'TaskOrderLink'+ index"
-            class="h3 _text-decoration-none"
+            class="h3 _text-decoration-none mr-1"
             @click="taskOrderClicked($event,cardData)"
             @keydown.space="taskOrderClicked($event,cardData)"
             @keydown.enter="taskOrderClicked($event,cardData)"
@@ -31,6 +31,7 @@
         </div>
         <div
           v-if="isHistory=== false"
+          class="mr-4"
         >
           <v-chip
             :id="'StatusChip' + index"
@@ -54,26 +55,26 @@
         />
       </div>
       <div class="d-flex">
-        <div class="mr-15 pb-4" :id="'PoP'+ index">
+        <div class="mr-16 pb-4" :id="'PoP'+ index">
           <span class="_title">Period of Performance</span>
           <span class="_title-value d-block nowrap">
             {{ cardData.periodOfPerformance }}
           </span>
         </div>
 
-        <div class="mr-15" :id="'ObligatedFunds'+ index">
+        <div class="mr-16" :id="'ObligatedFunds'+ index">
           <span class="_title">Total Obligated</span>
           <span class="_title-value d-block nowrap">
             {{ cardData.totalObligated }}
           </span>
         </div>
-        <div class="mr-15" :id="'TotalValue'+index">
+        <div class="mr-16" :id="'TotalValue'+index">
           <span class="_title">Total Value</span>
           <span class="_title-value d-block nowrap">
             {{ cardData.totalValue }}
           </span>
         </div>
-        <div class="mr-15" :id="'TotalLifecycle'+index">
+        <div class="mr-16" :id="'TotalLifecycle'+index">
           <span class="_title">Total Lifecyle</span>
           <span class="_title-value d-block nowrap">
             {{ cardData.totalLifeCycle }}
