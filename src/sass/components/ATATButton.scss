@@ -47,6 +47,11 @@
     }
   }
   
+  &._error.v-theme--light{
+    background-color:  $error !important;
+    color: #fff !important;
+  }
+  
   &._secondary.v-theme--light {
     background-color: $white !important;
     border: 2px solid $primary !important;
