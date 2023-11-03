@@ -71,7 +71,7 @@
 </template>
 <script lang="ts">
 import { Component , Hook, Vue, toNative} from "vue-facing-decorator";
-import { From, Next, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
