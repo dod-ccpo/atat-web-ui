@@ -74,6 +74,21 @@ describe("Testing Common Component", () => {
   const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   beforeEach(() => {
+    vi.spyOn(AcquisitionPackage, 'initialize').mockImplementation(
+      () => Promise.resolve()
+    );
+    vi.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
+      () => Promise.resolve(mockContactDTO)
+    );
+    vi.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
+      () => Promise.resolve()
+    );
+    vi.spyOn(AcquisitionPackage, 'saveContactInfo').mockImplementation(
+      () => Promise.resolve()
+    );
+    vi.spyOn(ContactData, 'initialize').mockImplementation(
+      () => Promise.resolve()
+    );
     vi.spyOn(ContactData, 'LoadMilitaryBranches').mockImplementation(
       () => Promise.resolve([mockSystemChoiceDTO1, mockSystemChoiceDTO2])
     );

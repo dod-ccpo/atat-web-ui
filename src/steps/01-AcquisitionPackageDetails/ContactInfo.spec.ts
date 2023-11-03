@@ -111,13 +111,13 @@ describe("Testing ContactInfo Component", () => {
       ] as SystemChoiceDTO[]
     });
 
-    vi.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
-      new Promise(resolve => resolve({
+    vi.spyOn(ContactData, 'GetMilitaryRank').mockImplementation(async () => {
+      return Promise.resolve({
         name: "Admiral",
         grade: "O-10",
         branch: "NAVY"
-      } as MilitaryRankDTO))
-    );
+      } as MilitaryRankDTO)
+    });
 
     vi.spyOn(api.systemChoices, 'getChoices').mockImplementation(async () => {
       return [
@@ -185,8 +185,9 @@ describe("Testing ContactInfo Component", () => {
   it("branchChange() - update selected branch", async () =>  {
   
     const rank: MilitaryRankDTO = { name: "this", grade: "that", branch: "other" };     
-    vi.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
-      new Promise(resolve => resolve(rank))
+    vi.spyOn(ContactData, 'GetMilitaryRank').mockImplementation(async () => {
+      return Promise.resolve(rank)
+    }
     );
 
     await vm.loadOnEnter(); 
@@ -196,8 +197,10 @@ describe("Testing ContactInfo Component", () => {
   it("branchChange() - update selected branch with empty object", async () =>  {
   
     const rank: MilitaryRankDTO = { name: "", grade: "", branch: "" };     
-    vi.spyOn(ContactData, 'GetMilitaryRank').mockReturnValue(
-      new Promise(resolve => resolve(rank))
+    vi.spyOn(ContactData, 'GetMilitaryRank').mockImplementation(async () => {
+      Promise.resolve(rank)
+    }
+      
     );
 
     await vm.loadOnEnter(); 
