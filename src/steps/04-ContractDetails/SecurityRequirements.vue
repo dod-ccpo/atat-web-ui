@@ -42,7 +42,7 @@
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -50,14 +50,14 @@ import { ClassificationLevelDTO } from "@/api/models";
 import { SecurityRequirement, SlideoutPanelContent } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import SecurityRequirementsForm from "@/components/DOW/SecurityRequirementsForm.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import SecurityRequirementsLearnMore
   from "@/steps/04-ContractDetails/SecurityRequirementsLearnMore.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     SecurityRequirementsForm,
     ATATRadioGroup,
@@ -66,6 +66,16 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 class SecurityRequirements extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private storedClassification: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
   private selectedTopSecretSecurityRequirements: string[] = [];

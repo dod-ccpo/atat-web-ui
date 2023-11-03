@@ -1,6 +1,6 @@
 <template>
 <!--  TODO review this component after upgrade-->
-  <v-app-bar id="TopNavBar">
+  <v-app-bar id="TopNavBar" height="56">
     <ATATSVGIcon
       color="white"
       width="110"

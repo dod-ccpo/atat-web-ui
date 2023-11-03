@@ -218,9 +218,12 @@ body {
   background-color: #ffffff;
   padding: 28px 56px 120px 44px;
 }
+.v-container.v-container--fluid {
+  max-width: 1040px !important;
 
+}
 .container-max-width {
-  max-width: 1040px;
+  max-width: 1040px !important;
   margin-left: 0;
 }
 
@@ -4982,7 +4985,7 @@ hr, .hr {
   opacity: 1 !important;
 }
 
-.v-theme--light.v-footer.atat-page-footer {
+.v-theme--light.v-footer._atat-page-footer {
   background-color: #ffffff;
   margin: 0 56px;
   padding: 20px 0 40px;

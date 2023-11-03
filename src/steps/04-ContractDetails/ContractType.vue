@@ -65,27 +65,35 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
 import { Checkbox } from "../../../types/Global";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { ContractTypeDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 import IGCE  from "@/store/IGCE";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     ATATTextArea,
   },
 })
-
 class ContractType extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private firmFixedPriceSelected = "";
   private timeAndMaterialsSelected = "";
   

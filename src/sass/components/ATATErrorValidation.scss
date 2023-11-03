@@ -1,20 +1,21 @@
-.error--text{
-  &.error--text{
-    fieldset, 
-    fieldset:focus{
+.v-input--error{
+  .v-input__control{
+      .v-field--error,
+      fieldset, 
+      fieldset:focus{
         border-color: $error !important;
         border-width: 2px;
       }
-    i, 
-    label,
-    .v-text-field__suffix{
+      i, 
+      label,
+      .v-text-field__suffix{
         color: $error !important;
+      }
     }
-  }
 
-  .atat-text-field-error{
-    display: contents;
-  }
+    .atat-text-field-error{
+      display: contents;
+    }
 }
 
 .customized-error-control{

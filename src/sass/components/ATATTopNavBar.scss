@@ -1,3 +1,7 @@
+.v-app-bar.v-toolbar:not(.v-toolbar--flat) {
+  box-shadow: none !important;
+}
+
 ._navbar-height {
   height: 56px !important;
 }
