@@ -97,7 +97,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
   components: {
     ATATSVGIcon,
   },
-  emits:["cancelClicked"]
+  emits:["cancelClicked", "ok"]
 })
 
 class ATATDialog extends Vue {

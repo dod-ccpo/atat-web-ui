@@ -38,7 +38,8 @@ import ATATDialog from "@/components/ATATDialog.vue";
 @Component({
   components: {
     ATATDialog
-  }
+  },
+  emits:["okClicked"]
 })
 
 class DeletePackageModal extends Vue {

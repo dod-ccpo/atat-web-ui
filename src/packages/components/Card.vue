@@ -155,7 +155,8 @@ import PortfolioStore from "@/store/portfolio";
     DeletePackageModal,
     ArchiveModal,
     TaskOrderSearchModal,
-  }
+  },
+  emits:["updateStatus", "openTOSearchModal", ]
 })
 
 class Card extends Vue {
