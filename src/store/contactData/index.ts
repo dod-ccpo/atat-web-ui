@@ -53,8 +53,8 @@ export class ContactDataStore extends VuexModule {
   public get stateChoices(): SelectData[] {
     return this.states.filter(state=>state.key !== 'us').map(state=> {
       return  {
-        text: state.name,
-        value: state.key.replace('us-', '').toUpperCase()
+        "item-title": state.name,
+        "item-value": state.key.replace('us-', '').toUpperCase()
       }
     });
   }
@@ -62,8 +62,8 @@ export class ContactDataStore extends VuexModule {
   public get countryChoices(): SelectData[] {
     return this.countries.map(country=> {
       return  {
-        text: country.name,
-        value: country.sys_id,
+        "item-title": country.name,
+        "item-value": country.sys_id,
       }
     })
   }

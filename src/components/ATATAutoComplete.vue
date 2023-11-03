@@ -9,13 +9,12 @@
       :id="id"
       v-model="_selectedItem"
       :class="inputClass"
-      :items="(items)"
+      :items="items"
       :search.sync="searchText"
       :placeholder="placeholder"
       :append-icon="icon"
       :item-title="titleKey"
       :hide-details="true"
-      :customFilter="customFilter"
       :rules="rules"
       return-object
       clearable
@@ -24,6 +23,8 @@
       @blur="onBlur"
       @update:search="updateSearchInput"
     >
+    <!-- :customFilter="customFilter" -->
+
       <template v-slot:item>
           <!-- eslint-disable vue/no-v-text-v-html-on-component -->
           <v-list-item-title
@@ -89,7 +90,7 @@ class ATATAutoComplete extends Vue {
   };
   // data
   private errorMessages: string[] = [];
-  private searchText = null;
+  private searchText = "";
   private isReset = false;
 
   // props
@@ -130,18 +131,18 @@ class ATATAutoComplete extends Vue {
       this.setErrorMessage();
   }
 
-  private customFilter(item: AutoCompleteItem, queryText: string) {
-    let text = "";
-    this.searchFields.forEach((key) => {
-      text += item[key] + " ";
-    });
-    const searchText = queryText.toLowerCase();
-    return text.toLowerCase().indexOf(searchText) > -1;
-  }
+  // private customFilter(item: AutoCompleteItem, queryText: string) {
+  //   let text = "";
+  //   this.searchFields.forEach((key) => {
+  //     text += item[key] + " ";
+  //   });
+  //   const searchText = queryText.toLowerCase();
+  //   return text.toLowerCase().indexOf(searchText) > -1;
+  // }
 
   private noResultsAction() {
     this._selectedItem = {};
-    this.searchText = null;
+    this.searchText = "";
     this.isReset = true;
     this.$emit("noAutoCompleteResultsAction");
   }
@@ -160,7 +161,7 @@ class ATATAutoComplete extends Vue {
   private updateSearchInput(): void {
     if (this.isReset) {
       this._selectedItem = {};
-      this.searchText = null;
+      this.searchText = "";
       this.$emit("autocompleteInputUpdate", this.isReset);
     }
     this.setErrorMessage();

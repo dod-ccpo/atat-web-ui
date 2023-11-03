@@ -55,7 +55,7 @@
             <CJADC2Initiative
               legend='Is this package in support of the Combined Joint All-Domain Command and
                 Control (CJADC2) initiative?'
-              helpText = "CJADC2 is the Department of Defense's (DoD's) concept to connect sensors 
+              helpText = "CJADC2 is the Department of Defense’s (DoD’s) concept to connect sensors 
                 from all of the military services-Air Force, Army, Marine Corps, Navy, 
                 and Space Force-into a single network."
               :cjadc2Initiative="cjadc2Initiative"

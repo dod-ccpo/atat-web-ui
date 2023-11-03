@@ -22,6 +22,7 @@
       <v-checkbox
         v-for="(item, index) in _items"
         v-model="_selected"
+        @update:v-model="_selected = $event"
         :id="'Checkbox_' + getIdText(item.id) + checkboxLabelSuffix"
         :class="[
           card ? '_checkbox-card' : '_checkbox',
@@ -282,6 +283,7 @@ class ATATCheckboxGroup extends Vue {
 
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
+    debugger;
     if (!oldVal || newVal.length > oldVal.length) {
       // new checkbox checked - get the index, push to this.selectedIndices
       const newCheckedVals = newVal.filter((val) => !oldVal.includes(val));
@@ -355,6 +357,7 @@ class ATATCheckboxGroup extends Vue {
       this.checkboxRules = this.rules;
       this.validateCheckboxesNow = true;
     }
+    debugger;
     if (value === this.noneValue) {
       this.validateOtherOnBlur = false;
       this.hideOtherTextarea = true;

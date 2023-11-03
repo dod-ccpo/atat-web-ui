@@ -2,6 +2,27 @@
   .v-label {
     transition: none !important;
     animation: none !important;
+    opacity: 1;
+  }
+  .v-selection-control {
+    align-items: stretch;
+  }
+  .v-selection-control__input {
+    width: 24px;
+    height: 24px;
+  }
+  .v-selection-control__wrapper {
+    height: 100%;
+    margin-right: 4px;
+    align-items: baseline;
+    margin-top: 4px;
+    opacity: 1;
+  }
+  .v-selection-control__input {
+    i.v-icon {
+      opacity: 1;
+      font-size: 2.4rem;
+    }
   }
 }
 

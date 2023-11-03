@@ -88,33 +88,33 @@
                 :zipCode.sync="zipCode"
                 :selectedCountry.sync="selectedCountry"
                 :requiredFields='[
-                {field:"StreetAddress", message: "Please enter an address."},
-                {field:"City", message:  "Please enter a city."},
-              {field:"State" , message: "Please select a state."},
-              {field:"ZIPCode" , message: "Please enter a ZIP code."},
-              {
-                field:"APO_FPO_DPO",
-                message: "Please select a military post office (APO or FPO)."
-                },
-              {field:"StateCode", message:  "Please select a state code."},
-              {field:"StateProvince", message: "Please enter a state/province."},
-              {field:"Country", message: "Please select a country."},
-              {field:"PostalCode" , message: "Please enter a postal code."},
-              ]'
-              :isValidRules='[
-                {
-                  field:"ZIPCode",
-                  message: "Your ZIP code must be 5 or 9 digits.",
-                  mask:["99999", "99999-9999"],
-                  },
-                {
-                  field:"PostalCode",
-                  message: "Your postal code must be 10 characters or " +
-                  "less and may include spaces and hyphens.",
-                  mask:["^[0-9A-Za-z\\s\\-]{1,10}$"],
-                  isMaskRegex: true
-                }
-              ]'
+                  {field:"StreetAddress", message: "Please enter an address."},
+                  {field:"City", message:  "Please enter a city."},
+                  {field:"State" , message: "Please select a state."},
+                  {field:"ZIPCode" , message: "Please enter a ZIP code."},
+                  {
+                    field:"APO_FPO_DPO",
+                    message: "Please select a military post office (APO or FPO)."
+                    },
+                  {field:"StateCode", message:  "Please select a state code."},
+                  {field:"StateProvince", message: "Please enter a state/province."},
+                  {field:"Country", message: "Please select a country."},
+                  {field:"PostalCode" , message: "Please enter a postal code."},
+                ]'
+                :isValidRules='[
+                  {
+                    field:"ZIPCode",
+                    message: "Your ZIP code must be 5 or 9 digits.",
+                    mask:["99999", "99999-9999"],
+                    },
+                  {
+                    field:"PostalCode",
+                    message: "Your postal code must be 10 characters or " +
+                    "less and may include spaces and hyphens.",
+                    mask:["^[0-9A-Za-z\\s\\-]{1,10}$"],
+                    isMaskRegex: true
+                  }
+                ]'
                 :addressTypeOptions="addressTypeOptions"
                 :addressTypes="addressTypes"
                 :militaryPostOfficeOptions="militaryPostOfficeOptions"

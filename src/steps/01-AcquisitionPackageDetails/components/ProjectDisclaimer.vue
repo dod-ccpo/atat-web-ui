@@ -40,8 +40,7 @@ import {
     },
   })
 class ProjectDisclaimer extends Vue {
-    @PropSync("projectDisclaimer", { default: "" })
-    private _selectedDisclaimer!: string | null;
+    @PropSync("projectDisclaimer", { default: "" }) private _selectedDisclaimer!: string | null;
     @Prop({default: "project-disclaimer"}) private groupLabelId!: string;
     @Prop({default: true}) private isForm!: boolean;
     @Prop({default: ""}) private groupLabel!: string;

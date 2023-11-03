@@ -4,7 +4,8 @@
     <ATATRadioGroup
       id="AddressType"
       legend="Type of mailing address"
-      :value.sync="_selectedAddressType"
+      :value="_selectedAddressType"
+      @update:value="_selectedAddressType = $event"
       :items="addressTypeOptions"
       name="AddressType"
       class="mt-3 mb-8"
@@ -79,6 +80,8 @@
           titleKey="text"
           :searchFields="['text', 'value']"
           :items="stateListData"
+          item-title="name"
+          item-value="value"
           :selectedItem.sync="_selectedState"
           placeholder=""
           icon="arrow_drop_down"
