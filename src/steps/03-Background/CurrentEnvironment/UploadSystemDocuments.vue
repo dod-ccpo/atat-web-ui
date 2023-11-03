@@ -18,26 +18,29 @@
               :card="true"
               :items="uploadOptions"
               :rules="[$validators.required('Please select an option')]"
-              :value.sync="hasSystemDocumentation"
+              :value="hasSystemDocumentation"
+              @update:value="hasSystemDocumentation = $event"
               class="copy-max-width mb-10 max-width-740"
               width="180"
             />
             <div v-if="hasSystemDocumentation === 'YES'">
               <hr />
               <ATATFileUpload
-                  id="FundingPlan"
-                  tabindex="-1"
-                  :maxNumberOfFiles="100"
-                  :maxFileSizeInBytes="maxFileSizeInBytes"
-                  :validFileFormats="validFileFormats"
-                  :multiplesAllowed="true"
-                  :attachmentServiceName="attachmentServiceName"
-                  :invalidFiles.sync="invalidFiles"
-                  :validFiles.sync="uploadedFiles"
-                  :removeAll.sync="removeAll"
-                  @delete="onRemoveAttachment"
-                  @uploaded="onUpload"
-                  :rules="[$validators.required('Please upload a file')]"
+                id="FundingPlan"
+                tabindex="-1"
+                :maxNumberOfFiles="100"
+                :maxFileSizeInBytes="maxFileSizeInBytes"
+                :validFileFormats="validFileFormats"
+                :multiplesAllowed="true"
+                :attachmentServiceName="attachmentServiceName"
+                :invalidFiles="invalidFiles"
+                @update:invalidFiles="invalidFiles = $event"
+                :validFiles="uploadedFiles"
+                :removeAll="removeAll"
+                @update:removeAll = 'removeAll = $event'
+                @delete="onRemoveAttachment"
+                @uploaded="onUpload"
+                :rules="getRulesArray()"
               />
             </div>
           </div>
@@ -49,10 +52,15 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { invalidFile, RadioButton, uploadingFile, YesNo } from "../../../../types/Global";
+import { 
+  invalidFile, 
+  RadioButton, 
+  uploadingFile, 
+  ValidationRule, 
+  YesNo } from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AttachmentDTO} from "@/api/models";
-import { hasChanges } from "@/helpers";
+import { getFileUploadValidationRules, hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { TABLENAME as CURRENT_ENVIRONMENT_TABLE } from "@/api/currentEnvironment";
@@ -195,6 +203,19 @@ class UploadSystemDocuments extends Vue {
       console.error(`error removing attachment with id ${file?.attachmentId}`);
     }
   }
+
+  // rules array dynamically created based on the invalid
+  // files returned from the child component
+  // `ATATFileUpload.vue`
+  private getRulesArray(): ValidationRule[] {
+    return getFileUploadValidationRules(
+      this.invalidFiles,
+      "Please upload a file",
+      this.validFileFormats,
+      this.maxFileSizeInBytes
+    )
+  }
+
 
   /**
    * Loads the attachments across all the records of current

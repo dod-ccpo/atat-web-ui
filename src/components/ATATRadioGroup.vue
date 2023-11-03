@@ -220,25 +220,13 @@ class ATATRadioGroup extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.$refs.radioButtonGroup.validate().then(
-      (response: unknown) => {
-        if ((response as string[]).length === 0)
-        { this.setErrorMessage() }
-      }
-    );
+    if(!this.$refs.radioButtonGroup.validate())
+      this.setErrorMessage();
   }
 
   // methods
   private setErrorMessage(): void {
-    this.$refs.radioButtonGroup.validate().then(
-      (response: unknown) => {
-        this.errorMessages = response as string[];
-        this.$emit('errorMessage', this.errorMessages);
-      }
-    );
-
-
-
+    this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
   } 
   private clearErrorMessage(): void {
     this.errorMessages = [];

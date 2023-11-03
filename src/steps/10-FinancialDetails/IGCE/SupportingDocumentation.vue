@@ -46,9 +46,10 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
 import {AttachmentDTO, RequirementsCostEstimateDTO} from "@/api/models";
-import { ValidationResult, invalidFile, uploadingFile } from "types/Global";
+import { ValidationRule, invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
 import IGCE from "@/store/IGCE";
+import { getFileUploadValidationRules } from "@/helpers";
 
 @Component({
   components: {
@@ -103,25 +104,13 @@ class SupportingDocumentation extends Vue {
   // rules array dynamically created based on the invalid
   // files returned from the child component
   // `ATATFileUpload.vue`
-  private getRulesArray(): ((v: string) => ValidationResult)[] {
-    const rulesArr: ((v: string) => ValidationResult)[] = [];
-
-    rulesArr.push(this.$validators.required(this.requiredFileUploadMessage));
-
-    this.invalidFiles.forEach((iFile) => {
-      rulesArr.push(
-        this.$validators.isFileValid(
-          iFile.file,
-          this.validFileFormats,
-          this.maxFileSizeInBytes,
-          iFile.doesFileExist,
-          iFile.SNOWError,
-          iFile.statusCode
-        )
-      );
-    });
-
-    return rulesArr;
+  private getRulesArray(): ValidationRule[] {
+    return getFileUploadValidationRules(
+      this.invalidFiles,
+      this.requiredFileUploadMessage,
+      this.validFileFormats,
+      this.maxFileSizeInBytes
+    )
   }
 
   /**

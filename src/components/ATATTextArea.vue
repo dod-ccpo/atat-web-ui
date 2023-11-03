@@ -143,8 +143,12 @@ class ATATTextArea extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatTextArea.validate())
-      this.setErrorMessage();
+    this.$refs.atatTextArea.validate().then(
+      (response: unknown) => {
+        if ((response as string[]).length === 0)
+        { this.setErrorMessage() }
+      }
+    );
   }
 
   @Watch('rules')

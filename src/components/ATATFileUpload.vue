@@ -153,7 +153,7 @@ import ATATFileList from "@/components/ATATFileList.vue";
 import {
   AttachmentServiceFactory,
 } from "@/services/attachment";
-import { invalidFile, uploadingFile, ValidationResult } from "types/Global";
+import { invalidFile, uploadingFile, ValidationRule } from "types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { setItemToPlural } from "@/helpers";
@@ -206,9 +206,7 @@ class ATATFileUpload extends Vue {
   @Prop({ default: "Are you sure?" }) private confirmRemovalTitle?: string;
   @Prop({ default: "Are you sure you want to remove the file(s)?" })
   private confirmRemovalMessage?: string;
-  @PropSync("rules") private _rules!: ((
-    v: string
-  ) => ValidationResult)[];
+  @Prop({ default: () => [] }) private rules!: ValidationRule[];
 
   //1073741824 is 1GB, the most SNOW will allow to upload
   @Prop({ default: 1073741824, required: true })
@@ -246,10 +244,10 @@ class ATATFileUpload extends Vue {
     return true;
   }
 
-  get setRules(): ((v: string) => ValidationResult)[] {
+  get setRules(): ValidationRule[] {
     return this._validFiles.length > 0 && this._invalidFiles.length === 0
       ? []
-      : this._rules;
+      : this.rules;
   }
 
   //Events
@@ -362,11 +360,7 @@ class ATATFileUpload extends Vue {
       );
 
       const doesFileExist = this._validFiles.some((fileObj) => {
-        return (
-          vFile.name === fileObj.file?.name &&
-          vFile.lastModified === fileObj.file.lastModified &&
-          vFile.size === fileObj.file.size
-        );
+        return vFile.name === fileObj.file?.name;
       });
       const isFileSizeValid = vFile.size < this.maxFileSizeInBytes;
 
@@ -397,7 +391,9 @@ class ATATFileUpload extends Vue {
         setItemToPlural(this.maxNumberOfFiles, "file") +
         ".";
       this.$refs.atatFileUpload.errorBucket.push(errorText);
-      this.setErrorMessage();
+      this.$refs.atatFileUpload.validate().then(
+        ()=>{this.setErrorMessage()}
+      );
       return;
     }
 
@@ -436,17 +432,8 @@ class ATATFileUpload extends Vue {
         window.setTimeout(() => {
           this.fileAttachmentService
             ?.upload(uploadingFileObj.file, (total: number, current: number) => {
-              current = 0;
-              total = Math.ceil(total / 1000);
-              const progress = window.setInterval(() => {
-                if (current < total) {
-                  current = current + Math.floor(Math.random() * total);
-                  uploadingFileObj.progressStatus = (current / total) * 100;
-                } else {
-                  clearInterval(progress);
-                  uploadingFileObj.progressStatus = 100;
-                }
-              }, 500);
+              uploadingFileObj.progressStatus = (current / total) * 100;
+             
             })
             .then((result) => {
               //download link - link to the file download
@@ -492,7 +479,9 @@ class ATATFileUpload extends Vue {
       this._invalidFiles.push({ file, doesFileExist, SNOWError, statusCode });
     }
     if (this._invalidFiles.length > 0) {
-      this.setErrorMessage();
+      this.$refs.atatFileUpload.validate().then(
+        ()=> {this.setErrorMessage();}
+      )
     }
   }
 
@@ -502,9 +491,12 @@ class ATATFileUpload extends Vue {
 
   @Watch("validateFormNow")
   public validateNowChange(): void {
-    if (!this.$refs.atatFileUpload.validate()) {
-      this.setErrorMessage();
-    }
+    this.$refs.atatFileUpload.validate().then(
+      (response: unknown) => {
+        if ((response as string[]).length === 0){ 
+          this.setErrorMessage() }
+      }
+    );
   }
 
   private setErrorMessage(): void {
