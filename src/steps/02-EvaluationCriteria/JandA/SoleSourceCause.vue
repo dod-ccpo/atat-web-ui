@@ -218,7 +218,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -233,11 +233,10 @@ import { FairOppDocGenType, FairOpportunityDTO } from "@/api/models";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
  
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     AlertForForms,
     ATATErrorValidation,
@@ -250,6 +249,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 class SoleSourceCause extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public cspName = "";
   public writeOwnExplanation: YesNo = "";
   public isLoading = false;

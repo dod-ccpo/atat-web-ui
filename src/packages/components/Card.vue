@@ -254,7 +254,7 @@ class Card extends Vue {
       this.$router.replace({
         name: routeNames.UnderReview,
         replace: true,
-        params: {
+        query: {
           direction: "next"
         }   
       }).catch(() => console.log("avoiding redundant navigation"));
@@ -272,12 +272,10 @@ class Card extends Vue {
         this.$router.replace({
           name: routeNames.UploadSignedDocuments,
           replace: true,
-          params: {
-            direction: "next"
-          },
           query: {
+            direction: "next",
             packageId: this.cardData.sys_id
-          }
+          },
         }).catch(() => console.log("avoiding redundant navigation"));
         await AcquisitionPackage.setPackageId(this.cardData.sys_id as string);
         AcquisitionPackage.setProjectTitle(this.modifiedData.projectOverview);
@@ -285,12 +283,10 @@ class Card extends Vue {
         this.$router.replace({
           name: routeNames.ContractingShop,
           replace: true,
-          params: {
-            direction: "next"
-          },
           query: {
+            direction: "next",
             packageId: this.cardData.sys_id
-          }
+          },
         }).catch(() => console.log("avoiding redundant navigation"));
       }
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);

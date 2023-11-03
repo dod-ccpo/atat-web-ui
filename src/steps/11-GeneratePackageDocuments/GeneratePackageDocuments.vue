@@ -20,21 +20,29 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocuments from "./components/GeneratingDocuments.vue";
 import ReviewDocuments from "./components/ReviewDocuments.vue";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     GeneratingDocuments,
     ReviewDocuments
   }
 })
 class GeneratingPackageDocuments extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   public isGenerating = false;
   private isErrored = false;
