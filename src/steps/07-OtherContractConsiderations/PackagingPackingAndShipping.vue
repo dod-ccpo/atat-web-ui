@@ -20,7 +20,7 @@
                 Select all that apply to your contracting effort.
               </p>
             </div>
-            <ATATCheckboxGroup
+            <!-- <ATATCheckboxGroup
               id="PackagingEtcCheckboxes"
               :value="selectedOptions"
               @update:value="selectedOptions = $event"
@@ -39,7 +39,7 @@
               :rules="[
                 $validators.required('Please select an option.')
               ]"
-            />
+            /> -->
           </v-col>
         </v-row>
       </v-container>
