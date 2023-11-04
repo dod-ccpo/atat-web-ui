@@ -20,7 +20,8 @@
           id="StreetAddress"
           label="Street address"
           :class="inputClass"
-          :value.sync="_streetAddress1"
+          :value="_streetAddress1"
+          @update:value="_streetAddress1 = $event"
           :rules="getRules('StreetAddress')"
         />
       </v-col>
@@ -30,7 +31,8 @@
           label="Unit, suite, etc."
           :optional="true"
           :class="inputClass"
-          :value.sync="_streetAddress2"
+          :value="_streetAddress2"
+          @update:value="_streetAddress2 = $event"
           width="160"
         />
       </v-col>

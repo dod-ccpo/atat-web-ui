@@ -21,7 +21,6 @@
             @update:selectedItem="selectedAgency = $event"
             :rules="[$validators.required('Please select your agency or service.')]"
             placeholder="Find your agency or service"
-            icon="arrow_drop_down"
           />
 
           <div v-if="selectedAgency" class="mt-10">
@@ -39,7 +38,8 @@
                 titleKey="text"
                 :searchFields="['text']"
                 :items="disaOrgData"
-                :selectedItem.sync="selectedDisaOrg"
+                :selectedItem="selectedDisaOrg"
+                @update:selectedItem="selectedDisaOrg = $event"
                 :rules="[$validators.required('Please select your DISA Organization.')]"
                 placeholder="Find your DISA organization"
                 icon="arrow_drop_down"
@@ -50,7 +50,8 @@
                 v-if="!isAgencyDisa"
                 label="Organization name"
                 class="_input-max-width mb-10"
-                :value.sync="organizationName"
+                :value="organizationName"
+                @update:value="organizationName = $event"
                 :rules="[$validators.required('Please enter your organization name.'),
                 $validators.maxLength(80, 'Organization name cannot exceed 80 characters.')]"
               />
@@ -62,7 +63,8 @@
                 tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, 
                 activity, or organization that has the authority to request, contract 
                 for, or fund/pay bills for materials and services."
-                :value.sync="dodAddressCode"
+                :value="dodAddressCode"
+                @update:value="dodAddressCode = $event"
                 :rules="[
                   $validators.required('Please enter your 6-character DoDAAC.'), 
                   $validators.minLength(6, 'Your DoDAAC must be 6 characters.'),
@@ -81,12 +83,12 @@
               <ATATAddressForm 
                 :selectedAddressType="selectedAddressType"
                 @update:selectedAddressType="selectedAddressType = $event"
-                :streetAddress1.sync="streetAddress1"
+                :streetAddress1="streetAddress1"
+                @update:streetAddress1="streetAddress1 = $event"
                 :streetAddress2.sync="streetAddress2"
                 :city.sync="city"
                 :selectedMilitaryPO.sync="selectedMilitaryPO"
                 :selectedState="selectedState"
-
                 :selectedStateCode.sync="selectedStateCode"
                 :stateOrProvince.sync="stateOrProvince"
                 :zipCode.sync="zipCode"
@@ -329,7 +331,7 @@ class OrganizationInfo extends Vue {
       disa_organization_reference: this.selectedDisaOrg.value as string,
       organization_name: this.organizationName,
       dodaac: this.dodAddressCode,
-      agency: this.selectedAgency.value as string,
+      agency: this.selectedAgency as string,
       address_type: this.selectedAddressType,
       street_address_1: this.streetAddress1,
       street_address_2: this.streetAddress2,
@@ -341,7 +343,6 @@ class OrganizationInfo extends Vue {
   }
 
   private savedData = {
-    disa_organization: "",
     disa_organization_reference:"",
     organization_name: "",
     dodaac: "",
@@ -384,7 +385,6 @@ class OrganizationInfo extends Vue {
 
     if (storeData) {
       const keys: string[] = [
-        "disa_organization",
         "organization_name",
         "disa_organization_reference",
         "dodaac",
@@ -413,7 +413,7 @@ class OrganizationInfo extends Vue {
       }
       if(storeData.disa_organization_reference){
         this.selectedDisaOrg = this.disaOrgData.find(
-          (disaOrg) => disaOrg.value === storeData.disa_organization_reference.value
+          (disaOrg) => disaOrg.value === storeData.disa_organization_reference.value //EJY FIX THIS
         ) as SelectData
       }
 

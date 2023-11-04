@@ -1,13 +1,18 @@
 <template>
   <div :id="id + '_AutoComplete_Wrapper'">
 
-    <v-autocomplete
+    <!-- <v-autocomplete
       :items="items"
       item-title="text"
       item-value="value"
       :eager="true"
       placeholder="FOOBAR"
-    />
+      return-object
+      clearable
+      clear-icon="mdi-close"
+      @update:modelValue="valueUpdate"
+    /> -->
+
 
 
     <label :for="id" :class="{ 'd-sr-only': labelSrOnly }" class="mb-2 d-block">
@@ -17,56 +22,44 @@
     <v-autocomplete
       ref="atatAutoComplete"
       :id="id"
-      v-model="_selectedItem"
       :class="inputClass"
-      :search.sync="searchText"
-      :placeholder="placeholder"
-      :append-icon="icon"
 
       :items="items"
-
-
       :item-title="titleKey"
       :item-value="valueKey"
+      :eager="true"
+      :placeholder="placeholder"
+      return-object
+      clearable
+      clear-icon="mdi-close"
+      @update:modelValue="valueUpdate"      
 
       :hide-details="true"
       :rules="rules"
-      return-object
-      clearable
       variant="outlined"
-      :eager="true"
-      clear-icon="mdi-close"
+
+      :search.sync="searchText"
+      @blur="onBlur"
 
     >
     <!-- 
-      
-      :menu-props="{attach:true}"
-
-
-
-      @blur="onBlur"
-      @update:search="updateSearchInput" 
-      :eager="true"    
-
+       -- nooooo
+      @click:clear="valueCleared"
       :customFilter="customFilter" 
+      @update:search="updateSearchInput" 
+
     -->
 
       <template v-slot:item="{ props, item }">
-          <!-- eslint-disable vue/no-v-text-v-html-on-component -->
-          <v-list-item 
-            v-bind="props"
-            :class="{ 'font-weight-normal': !subtitleKey }"
-            :title="item.title"
-            :subtitle="item?.raw?.subtitle"
-          />
-          <!-- <v-list-item-subtitle 
-            v-if="subtitleKey" 
-            v-text="subtitleKey"
-          /> -->
-          <!-- eslint-enable -->
+        <v-list-item 
+          v-bind="props"
+          :class="{ 'font-weight-normal': !subtitleKey }"
+          :title="item?.raw?.[titleKey]"
+          :subtitle="item?.raw?.[subtitleKey]"
+        />
       </template>
 
-      <!-- <template v-slot:no-data>
+      <template v-slot:no-data>
         <v-list-item v-show="searchText !== null" class="no-results">
           <v-list-item-title>
             No results found.
@@ -82,7 +75,7 @@
             </a>
           </v-list-item-title>
         </v-list-item>
-      </template> -->
+      </template>
     </v-autocomplete>
     <ATATErrorValidation :errorMessages="errorMessages" />
 
@@ -139,10 +132,11 @@ class ATATAutoComplete extends Vue {
   @Prop({ default: "" }) private noResultsText!: string;
   @PropSync("selectedItem") private _selectedItem!: AutoCompleteItem;
 
+  public emptySelectedItem = { [this.titleKey]: "", [this.valueKey]: "" };
+
   // computed
 
   get inputClass(): string {
-    debugger;
     let inputClass = this.icon.length ? "is-" + this.icon + "-icon" : "";
     if (this.icon === "search") {
       inputClass += " icon-no-rotate";
@@ -162,7 +156,7 @@ class ATATAutoComplete extends Vue {
       this.setErrorMessage();
   }
 
-  // private customFilter(item: AutoCompleteItem, queryText: string) {
+  // private customFilter(itemTitle: string, queryText: string, item: any) {
   //   let text = "";
   //   this.searchFields.forEach((key) => {
   //     text += item[key] + " ";
@@ -172,10 +166,11 @@ class ATATAutoComplete extends Vue {
   // }
 
   private noResultsAction() {
-    this._selectedItem = {};
+    debugger;
+    this._selectedItem.text = "";
+    this._selectedItem.value = "";
     this.searchText = "";
     this.isReset = true;
-    this.$emit("noAutoCompleteResultsAction");
   }
 
   private setErrorMessage(): void {
@@ -184,20 +179,35 @@ class ATATAutoComplete extends Vue {
     })
   }
   //@Events
-  private onBlur(value: string) : void{
+  private onBlur() : void{
     this.setErrorMessage();
-    this.$emit('blur', value);
   }
 
-  private updateSearchInput(): void {
-    if (this.isReset) {
-      this._selectedItem = {};
-      this.searchText = "";
-      this.$emit("autocompleteInputUpdate", this.isReset);
-    }
-    this.setErrorMessage();
-    this.isReset = false;
+  // private updateSearchInput(): void {
+  //   if (this.isReset) {
+  //     this._selectedItem = {};
+  //     this.searchText = "";
+  //     this.$emit("autocompleteInputUpdate", this.isReset);
+  //   }
+  //   this.setErrorMessage();
+  //   this.isReset = false;
+  // }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private valueUpdate(val: any): void {
+    debugger;
+    this._selectedItem[this.titleKey] = val ? val[this.titleKey] : "";
+    this._selectedItem[this.valueKey] = val ? val[this.valueKey] : "";
+    debugger;
   }
+
+  // private valueCleared(): void {
+  //   debugger;
+  //   this._selectedItem[this.titleKey] = "";
+  //   this._selectedItem[this.valueKey] = "";
+  //   debugger;
+  // }
+
 }
 export default toNative(ATATAutoComplete)
 </script>

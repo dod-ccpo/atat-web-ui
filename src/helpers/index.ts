@@ -435,7 +435,7 @@ export function differenceInDaysOrMonths(
 }
 
 export function scrollToMainTop(): void {
-  const mainWrap = document.querySelector(".v-main ._app-contnet");
+  const mainWrap = document.querySelector(".v-main ._app-content");
   if (mainWrap) {
     mainWrap.scrollTo({top: 0, behavior: "smooth"});
   }

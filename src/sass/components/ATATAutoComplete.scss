@@ -1,7 +1,4 @@
 .v-autocomplete__content {
-  position: absolute;
-  z-index: 100000;
-  min-height: 300px;
   max-width: 416px !important;   
 
     &.v-menu__content {
@@ -20,8 +17,27 @@
   }
 }
 
+.v-field--focused {
+  .v-field__outline {
+    color: $primary !important
+  }
+  &.v-field--error {
+    .v-field__outline {
+      color: $error !important
+    }    
+  }
+}
 
 .v-autocomplete {
+  .v-field__input {
+    padding: 0 12px;
+    height: 40px !important;
+    min-height: 40px !important;
+  }
+  .v-field__field {
+    height: 40px !important;
+  }
+
   &.v-select {
     &.v-select--is-menu-active {
       &.icon-no-rotate {
