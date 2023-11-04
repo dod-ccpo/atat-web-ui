@@ -10,13 +10,6 @@
 
 
           
-          <!-- <v-autocomplete
-            :items="agencyData"
-            item-title="text"
-            item-value="value"
-            :eager="true"
-
-          /> -->
           <ATATAutoComplete
             id="Agency"
             class="_input-max-width mb-2"
@@ -29,7 +22,6 @@
             :rules="[$validators.required('Please select your agency or service.')]"
             placeholder="Find your agency or service"
             icon="arrow_drop_down"
-            :eager="true"
           />
 
           <div v-if="selectedAgency" class="mt-10">

@@ -1,5 +1,15 @@
 <template>
   <div :id="id + '_AutoComplete_Wrapper'">
+
+    <v-autocomplete
+      :items="items"
+      item-title="text"
+      item-value="value"
+      :eager="true"
+      placeholder="FOOBAR"
+    />
+
+
     <label :for="id" :class="{ 'd-sr-only': labelSrOnly }" class="mb-2 d-block">
       {{ label }}
       <span v-if="optional" class="optional"> Optional </span>
@@ -9,11 +19,12 @@
       :id="id"
       v-model="_selectedItem"
       :class="inputClass"
-      :items="items"
-
       :search.sync="searchText"
       :placeholder="placeholder"
       :append-icon="icon"
+
+      :items="items"
+
 
       :item-title="titleKey"
       :item-value="valueKey"
@@ -23,12 +34,20 @@
       return-object
       clearable
       variant="outlined"
-      :menu-props="{attach:true}"
-      @blur="onBlur"
-      @update:search="updateSearchInput" 
-      eager    
+      :eager="true"
+      clear-icon="mdi-close"
+
     >
     <!-- 
+      
+      :menu-props="{attach:true}"
+
+
+
+      @blur="onBlur"
+      @update:search="updateSearchInput" 
+      :eager="true"    
+
       :customFilter="customFilter" 
     -->
 
@@ -123,6 +142,7 @@ class ATATAutoComplete extends Vue {
   // computed
 
   get inputClass(): string {
+    debugger;
     let inputClass = this.icon.length ? "is-" + this.icon + "-icon" : "";
     if (this.icon === "search") {
       inputClass += " icon-no-rotate";
