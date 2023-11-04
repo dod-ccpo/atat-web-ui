@@ -105,8 +105,8 @@
 </template>
 
 <script lang="ts">
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -117,12 +117,11 @@ import { FairOppDocGenType, FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
-import { YesNo } from "../../../../types/Global";
+import { YesNo } from "types/Global";
  
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     AlertForForms,
     ATATTextArea,
@@ -131,8 +130,17 @@ import { YesNo } from "../../../../types/Global";
   }
 })
 
-class RemoveBarriers extends Vue
-{
+class RemoveBarriers extends Vue {
+  
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   /* eslint-disable camelcase */
 
   public followOnRequirement = getYesNoRadioOptions("FollowOn")

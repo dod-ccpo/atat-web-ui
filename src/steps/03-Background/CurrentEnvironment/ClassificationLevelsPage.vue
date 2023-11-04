@@ -35,10 +35,10 @@
 </template>
 <script lang="ts">
 
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationLevelForm
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.vue";
@@ -47,13 +47,22 @@ import CurrentEnvironment,
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ClassificationLevelForm,
     ATATCheckboxGroup,
   }
 })
 class ClassificationLevelsPage extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public currEnvDTO = defaultCurrentEnvironment;
   public envLocation = "";
   private isHybrid = false;

@@ -84,7 +84,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch , Vue, toNative} from "vue-facing-decorator";
+import { Component, Watch , Vue, toNative, mixins, Hook} from "vue-facing-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
@@ -96,14 +96,12 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import AcquisitionPackage, {
   StoreProperties,
 } from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { YesNo } from "types/Global";
  
-
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ProjectTitle,
     ProjectScope,
@@ -114,6 +112,15 @@ import { YesNo } from "types/Global";
   },
 })
 class ProjectOverview extends Vue {
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";
@@ -213,5 +220,6 @@ class ProjectOverview extends Vue {
     return true;
   }
 }
+
 export default toNative(ProjectOverview)
 </script>

@@ -29,7 +29,7 @@
         </v-btn>
         <v-btn
           v-if="!hideOkButton"
-          :class="buttonColor"
+          :class="[buttonColor, 'ml-2']"
           :ripple="false"
           :id="okButtonId"
           :disabled="OKDisabled"
@@ -96,7 +96,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 @Component({
   components: {
     ATATSVGIcon,
-  }
+  },
+  emits:["cancelClicked", "ok"]
 })
 
 class ATATDialog extends Vue {
@@ -114,7 +115,7 @@ class ATATDialog extends Vue {
   @Prop({ default: false }) private showOKSpinner!: boolean;
   @Prop({ default: false }) private hideOkButton!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
-  @Prop({ default: "primary" }) private buttonColor!: string;
+  @Prop({ default: "_primary" }) private buttonColor!: string;
   @Prop({ default: false }) private disableClickingOutside!: boolean;
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;

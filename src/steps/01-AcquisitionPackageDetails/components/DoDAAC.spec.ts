@@ -1,39 +1,29 @@
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import Vuetify from "vuetify";
-import {DefaultProps} from "vue/types/options";
-import Vue from "vue";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import validators from "@/plugins/validation";
 import DoDAAC from "@/steps/01-AcquisitionPackageDetails/components/DoDAAC.vue";
 
 describe("Testing DoDAAC Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue>;
-  localVue.use(validators);
 
-  beforeEach(() => {
-    // test
-    vuetify = new Vuetify();
-    wrapper = mount(DoDAAC, {
-      localVue,
-      vuetify,
-    });
-  });
-  afterEach(() => {
-    jest.clearAllMocks();
+  const wrapper: VueWrapper = shallowMount(DoDAAC, {
+    props: {},
+    global: {
+      plugins: [validators]
+    }
   })
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
 
   it("sets value on input focus", async () => {
-    wrapper.vm.onFocus("foo");    
-    expect(wrapper.vm.$data.valueOnFocus).toBe("foo");
+    vm.onFocus("foo");    
+    expect(vm.$data.valueOnFocus).toBe("foo");
   });
   it("sets value on input blur", async () => {
-    wrapper.vm.$data.valueOnFocus = "foo";
-    wrapper.vm.onBlur("bar");   
+    vm.$data.valueOnFocus = "foo";
+    vm.onBlur("bar");   
     expect(wrapper.emitted().valueChange).toBeTruthy(); 
 
   });

@@ -19,10 +19,11 @@
           id="SupportingDocFileUpload"
           @delete="onRemoveAttachment"
           fileListTitle="Your files"
-          :invalidFiles.sync="invalidFiles"
+          :invalidFiles="invalidFiles"
+          @update:invalidFiles="invalidFiles=$event"
           :maxNumberOfFiles="100"
           :maxFileSizeInBytes="maxFileSizeInBytes"
-          :validFiles.sync="uploadedFiles"
+          :validFiles="uploadedFiles"
           :requiredMessage="requiredFileUploadMessage"
           :rules="getRulesArray()"
           @mouseleave="onFileUploadChanged"
@@ -38,16 +39,17 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATFileUpload from "../../../components/ATATFileUpload.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 import { TABLENAME as REQUIREMENTS_COST_ESTIMATE_TABLE } from "@/api/requirementsCostEstimate";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
 import {AttachmentDTO, RequirementsCostEstimateDTO} from "@/api/models";
-import { ValidationResult, invalidFile, uploadingFile } from "types/Global";
+import { ValidationRule, invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
 import IGCE from "@/store/IGCE";
+import { getFileUploadValidationRules } from "@/helpers";
 
 @Component({
   components: {
@@ -81,19 +83,12 @@ class SupportingDocumentation extends Vue {
           attachmentId,
           recordId, // recordId is the "table_sys_id" in the context of ATTACHMENT API
         });
-
         //get updated data
         await this.loadRequirementsCostEstimateData();
       }
     } catch (error) {
       console.error(`error removing attachment with id ${file?.attachmentId}`);
     }
-  }
-
-  @Watch("uploadedFiles")
-  private onUploadedFilesChanged(): void {
-    // this.showWarning =
-    //   this.uploadedFiles.length > 0 && this.uploadedFiles.length < 2;
   }
 
   async loadRequirementsCostEstimateData(): Promise<void>{
@@ -109,25 +104,13 @@ class SupportingDocumentation extends Vue {
   // rules array dynamically created based on the invalid
   // files returned from the child component
   // `ATATFileUpload.vue`
-  private getRulesArray(): ((v: string) => ValidationResult)[] {
-    const rulesArr: ((v: string) => ValidationResult)[] = [];
-
-    rulesArr.push(this.$validators.required(this.requiredFileUploadMessage));
-
-    this.invalidFiles.forEach((iFile) => {
-      rulesArr.push(
-        this.$validators.isFileValid(
-          iFile.file,
-          this.validFileFormats,
-          this.maxFileSizeInBytes,
-          iFile.doesFileExist,
-          iFile.SNOWError,
-          iFile.statusCode
-        )
-      );
-    });
-
-    return rulesArr;
+  private getRulesArray(): ValidationRule[] {
+    return getFileUploadValidationRules(
+      this.invalidFiles,
+      this.requiredFileUploadMessage,
+      this.validFileFormats,
+      this.maxFileSizeInBytes
+    )
   }
 
   /**
