@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect} from 'vitest';
 import { VueWrapper, shallowMount } from '@vue/test-utils';
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 
 describe("Testing BusinessSize Component", () => {
 
   const wrapper: VueWrapper = shallowMount(BusinessSize);
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options);
 
 
   it("renders successfully", async () => {
@@ -14,7 +14,7 @@ describe("Testing BusinessSize Component", () => {
 
   describe("ensure setReadOnly() =>", () => {
     beforeEach(() => {
-      wrapper.setData({
+      wrapper.setProps({
         isForm: false,
       });
     });
@@ -23,16 +23,16 @@ describe("Testing BusinessSize Component", () => {
       await wrapper.setProps({
         businessSize: ""
       })
-      await wrapper.vm.setReadOnly();
-      expect(wrapper.vm.$data.selectedBusinessSizeReadOnly).toEqual("YES");
+      await vm.setReadOnly();
+      expect(vm.selectedBusinessSizeReadOnly).toEqual("YES");
     });
   
     it("returns NO", async () => {
       await wrapper.setProps({
         businessSize: "NO_NONE"
       })
-      await wrapper.vm.setReadOnly();
-      expect(wrapper.vm.$data.selectedBusinessSizeReadOnly).toEqual("NO");
+      await vm.setReadOnly();
+      expect(vm.selectedBusinessSizeReadOnly).toEqual("NO");
     });
   })
 });
