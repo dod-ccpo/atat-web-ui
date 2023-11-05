@@ -6,7 +6,6 @@ import { VueWrapper, shallowMount } from '@vue/test-utils';
 import CurrentContract 
   from "@/steps/03-Background/CurrentContract/CurrentContract.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { createRouter, createWebHistory } from 'vue-router';
 import * as ResolverExportedFunctions from "../../../router/resolvers/index";
 
 describe("Testing CurrentContract Component", () => {
@@ -23,27 +22,15 @@ describe("Testing CurrentContract Component", () => {
     currentContractExists: "NO",
     savedData:{ current_contract_exists: "YES" }
   }
-  const mockRouter = createRouter({
-    history: createWebHistory(),
-    routes: [],
-  });
 
-  vi.stubGlobal('AcquisitionPackage', {
-    fairOpportunity: {
-      exception_to_fair_opportunity: "YES_FAR_16_505_B_2_I_C"
-    },
-    packageId: 'some_package_id'
-  });
-  vi.stubGlobal('Steps', {
-    prevStepName: 'some_previous_step'
-  });
-  vi.mock('@/router/resolvers', () => ({
-    CurrentContractRouteResolver: vi.fn(() => 'mock_route_name'),
-  }));
 
   const wrapper: VueWrapper = shallowMount(CurrentContract, {
     global: {
-      plugins: [mockRouter]
+      mocks: {
+        $router: {
+          push: vi.fn()
+        }
+      }
     }
   });
   const vm =  (wrapper.vm as typeof wrapper.vm.$options);
@@ -106,11 +93,10 @@ describe("Testing CurrentContract Component", () => {
 
     describe("addNavigation() =>", ()=>{
       it("mocks route as expected", async()=>{
-        const pushSpy = vi.spyOn(mockRouter, 'push');
         await vm.addNavigation();
-        expect(pushSpy).toHaveBeenCalledWith({
-          name: 'mock_route_name',
-        })
+        expect(vm.$router.push).toHaveBeenCalledWith({
+          name: "Procurement_History_Summary",
+        });
       })
 
       it("loadOnEnter() => sets data attributes as expected", async()=>{
