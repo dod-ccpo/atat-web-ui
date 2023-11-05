@@ -50,7 +50,7 @@
 }
 
 ._checkboxes ._checkbox {
-  .mdi-checkbox-blank-outline {
+  .mdi-checkbox-blank-outline { // unchecked
     color: $base;
     &:after {
       content: "";
@@ -63,9 +63,16 @@
       left: 5px;
     }
   }
-  .mdi-checkbox-marked {
+  .mdi-checkbox-marked { // checked
     color: $primary;
   }
+  .v-selection-control {
+    min-height: 0;;
+  }
+  .v-selection-control__wrapper {
+    margin-top: 0;
+  }
+
 
   margin-bottom: 12px;
 
@@ -90,11 +97,6 @@
         height: 40px;
       }
     }
-    // .v-input--selection-controls__ripple {
-    //   &:before {
-    //     @extend ._radio-focus;
-    //   }
-    // }
   }
 
   &.v-input--checkbox {
@@ -175,6 +177,7 @@
   }
 
   &._has-other {
+    display: block;
     &._other-selected {
       .v-input__slot {
         margin-bottom: 0;
