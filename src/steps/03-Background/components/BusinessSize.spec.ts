@@ -1,21 +1,12 @@
+import { describe, it, expect, vi } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils';
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import Vuetify from "vuetify";
-import {DefaultProps} from "vue/types/options";
-import Vue from "vue";
 import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 
 describe("Testing BusinessSize Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue>;
 
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(BusinessSize, {
-      localVue,
-      vuetify,
-    });
-  });
+  const wrapper: VueWrapper = shallowMount(BusinessSize);
+
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
