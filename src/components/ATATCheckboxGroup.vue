@@ -22,7 +22,6 @@
       <v-checkbox
         v-for="(item, index) in _items"
         v-model="_selected"
-        @update:v-model="_selected = $event"
         :id="'Checkbox_' + getIdText(item.id) + checkboxLabelSuffix"
         :class="[
           card ? '_checkbox-card' : '_checkbox',
@@ -40,12 +39,14 @@
         :error="error"
         :disabled="disabled"
         :rules="checkboxRules"
-        @mouseup="checkBoxClicked(item.value)"
         multiple
         :hide-details="true"
         :ref="index === 0 ? 'checkboxGroup' : ''"
         :data-group-id="id + '_Group'"
       >
+      <!-- @mouseup="checkBoxClicked(item.value)" -->
+
+
         <template
           v-if="
             card ||
@@ -163,6 +164,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationRequirements from "@/store/classificationRequirements";
 
 @Component({
+  emits: ["update:value"],
   components: {
     ATATTextArea,
     ATATTextField,
@@ -183,7 +185,9 @@ class ATATCheckboxGroup extends Vue {
   };
 
   // props
-  @PropSync("value") private _selected!: string[];
+  @Prop({ default: [] }) private value!: string[];
+  public _selected: string[] = this.value;
+
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
 
   @PropSync("items") private _items!: Checkbox[];
@@ -283,7 +287,8 @@ class ATATCheckboxGroup extends Vue {
 
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
-    debugger;
+
+
     if (!oldVal || newVal.length > oldVal.length) {
       // new checkbox checked - get the index, push to this.selectedIndices
       const newCheckedVals = newVal.filter((val) => !oldVal.includes(val));
@@ -329,6 +334,7 @@ class ATATCheckboxGroup extends Vue {
     }
     this.$nextTick(() => {
       this.prevSelected = [...this._selected];
+      this.$emit("update:value", [...this._selected]);
     });
     if (newVal.length || oldVal.length) {
       this.setErrorMessage();

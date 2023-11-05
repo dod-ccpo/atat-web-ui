@@ -40,8 +40,8 @@ import {
     },
   })
 class ProjectDisclaimer extends Vue {
-    @PropSync("projectDisclaimer", { default: "" }) private _selectedDisclaimer!: string | null;
-    @Prop({default: "project-disclaimer"}) private groupLabelId!: string;
+    @PropSync("selectedDisclaimer", { default: [] }) private _selectedDisclaimer!: string[];
+    @Prop({default: "ProjectDisclaimer"}) private groupLabelId!: string;
     @Prop({default: true}) private isForm!: boolean;
     @Prop({default: ""}) private groupLabel!: string;
     
@@ -49,6 +49,12 @@ class ProjectDisclaimer extends Vue {
 
     @Prop({ default: true }) private boldText!: boolean;
     
+    // public doSomething(val: string[]): void {
+    //   debugger; //
+    //   this._selectedDisclaimer = val.length ? val[0] : ""
+    //   debugger;;
+    // }
+
     public disclaimer: Checkbox[] = [ 
       {
         id: "Yes_ProjectDisclaimer",

@@ -69,8 +69,8 @@
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectDisclaimer
               groupLabelId="disclaimerGroupLabel"
-              :projectDisclaimer="selectedDisclaimer"
-              @update:projectDisclaimer="projectDisclaimer = $event"
+              :selectedDisclaimer="selectedDisclaimer"
+              @update:selectedDisclaimer="selectedDisclaimer = $event"
               :rules="[$validators.required(`You must acknowledge compliance with your 
               Military-specific policies.`)]"
             />
@@ -84,7 +84,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch , Vue, toNative, mixins, Hook} from "vue-facing-decorator";
+import { Component, Watch , Vue, toNative, Hook} from "vue-facing-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";
