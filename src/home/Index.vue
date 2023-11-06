@@ -191,7 +191,6 @@ class Home extends Vue {
   }
 
   public async startProvisionWorkflow(): Promise<void>{
-    console.log('here')
     await AcquisitionPackage.reset();
     if (this.selectedAcquisitionPackageSysId) {
       await PortfolioStore.setShowTOPackageSelection(false);
