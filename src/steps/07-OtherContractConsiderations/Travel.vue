@@ -206,6 +206,7 @@
                 id="PeriodsCheckboxes"
                 aria-describedby="PeriodsLabel"
                 ref="periodsCheckboxes"
+                :hasOtherValue="false"
                 :items="availablePeriodCheckboxItems"
                 :value="travelItem.selected_periods"
                 @update:value="travelItem.selected_periods = $event"
