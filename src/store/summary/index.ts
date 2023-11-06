@@ -313,7 +313,7 @@ export class SummaryStore extends VuexModule {
     }
 
     const orgnameKey =
-        organization.disa_organization_reference?"disa_organization_reference":"organization_name"
+        organization.disa_organization_reference ? "disa_organization_reference":"organization_name"
 
     const foreignKeys =
         // eslint-disable-next-line max-len
