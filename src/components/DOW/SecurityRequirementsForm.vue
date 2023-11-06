@@ -7,7 +7,9 @@
         legend="What clearance level is required for contractor employees to provide your
          training?"
         :items="clearanceLevels"
-        :value.sync="_selectedClearanceLevel"
+        :value="_selectedClearanceLevel"
+        @update:value="_selectedClearanceLevel = $event"
+
       />
       <hr />
     </div>
@@ -16,7 +18,8 @@
       :hasSecret="hasSecret"
       :isDOW="isDOW"
       :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
-      :selectedSecurityRequirements.sync="_selectedSecretSecurityRequirements"
+      :selectedSecurityRequirements="_selectedSecretSecurityRequirements"
+      @update:selectedSecurityRequirements="_selectedSecretSecurityRequirements = $event"
     />
     <hr v-if="hasTopSecret && hasSecret" />
     <SecurityRequirementsCheckboxes
@@ -25,6 +28,7 @@
       :isDOW="isDOW"
       :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
       :selectedSecurityRequirements.sync="_selectedTopSecretSecurityRequirements"
+      @update:selectedSecurityRequirements="_selectedTopSecretSecurityRequirements = $event"
     />
   </div>
 </template>

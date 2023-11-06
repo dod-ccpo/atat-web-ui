@@ -68,7 +68,8 @@
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
-              :value.sync="selectedXaasOptions"
+              :value="selectedXaasOptions"
+              @update:value="selectedXaasOptions = $event"
               aria-describedby="XaaSLabel"
               class="copy-max-width"
               groupLabel="What type of XaaS resources, tools, and services do you need?"
@@ -84,7 +85,8 @@
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
-              :value.sync="selectedCloudOptions"
+              :value="selectedCloudOptions"
+              @update:value="selectedCloudOptions = $event"
               aria-describedby="CloudSupportLabel"
               class="copy-max-width"
               groupLabel="What type of services do you need in a cloud support package?"
@@ -118,7 +120,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -139,6 +141,7 @@ import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATAlert from "@/components/ATATAlert.vue";
+import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/saveOnLeave";
  
 
 @Component({
@@ -153,6 +156,13 @@ import ATATAlert from "@/components/ATATAlert.vue";
 })
 
 class RequirementCategories extends Vue{
+  $refs!: SaveOnLeaveRefs
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from,
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
   public selectedXaasOptions: string[] = [];
   public selectedCloudOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
@@ -337,6 +347,7 @@ class RequirementCategories extends Vue{
   };
 
   protected async saveOnLeave(): Promise<boolean> {
+    debugger
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (!this.goToSummary) {

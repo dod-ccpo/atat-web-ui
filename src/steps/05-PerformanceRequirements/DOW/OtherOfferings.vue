@@ -79,7 +79,8 @@
             v-if="!isPortabilityPlan"
             id="ClassificationLevel"
             legend="What classification level is this instance deployed in?"
-            :value.sync="_serviceOfferingData.classificationLevel"
+            :value="_serviceOfferingData.classificationLevel"
+            @update:value="_serviceOfferingData.classificationLevel = $event"
             :items="classificationRadioOptions"
             name="ClassificationLevel"
             class="mt-3 mb-2"
@@ -102,7 +103,8 @@
             v-if="isPortabilityPlan"
             id="ClassificationLevel"
             groupLabel="What classification level(s) do you need a Portability Plan for?"
-            :value.sync="_portabilityClassificationLevels"
+            :value="_portabilityClassificationLevels"
+            @update:value="_portabilityClassificationLevels = $event"
             :items="classificationRadioOptions"
             name="ClassificationLevel"
             class="mt-3 mb-2"
@@ -115,23 +117,28 @@
 
       <ComputeFormElements
         v-if="isCompute"
-        :data.sync="_serviceOfferingData"  
+        :data="_serviceOfferingData"
+        @update:data="_serviceOfferingData = $event"
       />
 
       <DatabaseFormElements
         v-if="isDatabase"
-        :data.sync="_serviceOfferingData"  
+        :data="_serviceOfferingData"
+        @update:data="_serviceOfferingData = $event"
       />
 
       <StorageFormElements
         v-if="isStorage"
-        :data.sync="_serviceOfferingData"
+        :data="_serviceOfferingData"
+        @update:data="_serviceOfferingData = $event"
         :storageUnits="storageUnits"
       />
 
       <TrainingFormElements
         v-if="isTraining"
-        :data.sync="_serviceOfferingData"
+        :data="_serviceOfferingData"
+        @update:data="_serviceOfferingData = $event"
+
       />
       
       <section v-if="isCompute || isDatabase">
@@ -141,7 +148,8 @@
         </h2>
 
         <InstanceConfig
-          :data.sync="_serviceOfferingData"
+          :data="_serviceOfferingData"
+          @update:data="_serviceOfferingData = $event"
           :storageUnits="storageUnits"
           :isDOW="true"
         />
@@ -150,7 +158,8 @@
           :isCompute="isCompute"
           :isDatabase="isDatabase"
           :isDOW="true"
-          :data.sync="_serviceOfferingData"
+          :data="_serviceOfferingData"
+          @update:data="_serviceOfferingData = $event"
           :storageUnits="storageUnits"
         />
       </section>
@@ -170,9 +179,13 @@
           :index="_serviceOfferingData.instanceNumber"
           :isPeriodsDataMissing="isPeriodsDataMissing"
           :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
-          :anticipatedNeedUsage.sync="_serviceOfferingData.descriptionOfNeed"
-          :entireDuration.sync="_serviceOfferingData.entireDuration"
-          :selectedPeriods.sync="_serviceOfferingData.periodsNeeded"
+          :anticipatedNeedUsage="_serviceOfferingData.descriptionOfNeed"
+          @update:anticipatedNeedUsage="_serviceOfferingData.descriptionOfNeed = $event"
+          :entireDuration="_serviceOfferingData.entireDuration"
+          @update:entireDuration="_serviceOfferingData.entireDuration = $event"
+          :selectedPeriods="_serviceOfferingData.periodsNeeded"
+          @update:selectedPeriods="_serviceOfferingData.periodsNeeded = $event"
+
         />
       </div>
       
@@ -182,7 +195,8 @@
           class="copy-max-width mb-10 mt-0"
           legend="Will this service require CSP personnel to access on-site locations?"
           :items="onsiteAccessOptions"
-          :value.sync="_serviceOfferingData.personnelOnsiteAccess"
+          :value="_serviceOfferingData.personnelOnsiteAccess"
+          @update:value="_serviceOfferingData.personnelOnsiteAccess = $event"
           :rules="[
             $validators.required(
               'Please select an option.'
@@ -197,11 +211,13 @@
       :showDialog="showDialog"
       @cancelClicked="modalCancelClicked"
       @okClicked="classificationLevelsChanged"
-      :modalSelectedOptions.sync="modalSelectedOptions"
+      :modalSelectedOptions="modalSelectedOptions"
+      @update:modalSelectedOptions="modalSelectedOptions = $event"
       :modalSelectionsOnOpen="modalSelectionsOnOpen"
       :modalCheckboxItems="modalCheckboxItems"
       :IL6SysId="IL6SysId"
-      :isIL6Selected.sync="isIL6Selected"
+      :isIL6Selected="isIL6Selected"
+      @update:isIL6Selected="isIL6Selected = $event"
     />
 
   </div>

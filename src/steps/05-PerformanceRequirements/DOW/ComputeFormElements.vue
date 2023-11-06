@@ -3,7 +3,8 @@
     <ATATRadioGroup
       id="EnvironmentType"
       legend="What type of environment is this instance?"
-      :value.sync="offeringData.environmentType"
+      :value="offeringData.environmentType"
+      @update:value="offeringData.environmentType = $event"
       :items="environmentTypeOptions"
       name="EnvironmnetType"
       class="mt-3 mb-8"
@@ -13,7 +14,8 @@
     <ATATRadioGroup
       id="OperatingEnvType"
       legend="What type of operating environment do you need?"
-      :value.sync="offeringData.operatingEnvironment"
+      :value="offeringData.operatingEnvironment"
+      @update:value="offeringData.operatingEnvironment = $event"
       :items="operatingEnvOptions"
       name="OperatingEnvType"
       class="mt-3 mb-8"
@@ -23,7 +25,8 @@
     <ATATRadioGroup
       id="OSLicensingType"
       legend="Operating system licensing"
-      :value.sync="offeringData.operatingSystemAndLicensing"
+      :value="offeringData.operatingSystemAndLicensing"
+      @update:value="offeringData.operatingSystemAndLicensing = $event"
       :items="OSLicensingOptions"
       name="OSLicensingType"
       class="mt-3 mb-8"

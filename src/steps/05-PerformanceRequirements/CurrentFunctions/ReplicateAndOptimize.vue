@@ -48,7 +48,8 @@
               id="ReplicateOptimizeOptions"
               :card="true"
               :items="radioOptions"
-              :value.sync="currEnvDTO.current_environment_replicated_optimized"
+              :value="currEnvDTO.current_environment_replicated_optimized"
+              @update:value="currEnvDTO.current_environment_replicated_optimized = $event"
               :rules="[$validators.required('Please select an option.')]"
             />
 
@@ -104,7 +105,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative} from "vue-facing-decorator";
+import { Component, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -117,6 +118,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import Steps from "@/store/steps";
+import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/saveOnLeave";
 
 
 @Component({
@@ -128,6 +130,13 @@ import Steps from "@/store/steps";
 })
 
 class ReplicateAndOptimize extends Vue {
+  $refs!: SaveOnLeaveRefs
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from,
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
   public currEnvDTO = defaultCurrentEnvironment;
   public routeNames = routeNames
   public radioOptions: RadioButton[] = [

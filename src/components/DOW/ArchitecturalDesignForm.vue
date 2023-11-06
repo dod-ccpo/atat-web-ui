@@ -18,7 +18,8 @@
             <ATATTextArea 
               id="Statement"
               class="textarea-max-width mb-10"
-              :value.sync="_statementArchitecturalDesign"
+              :value="_statementArchitecturalDesign"
+              @update:value="_statementArchitecturalDesign = $event"
               label="Provide a detailed statement identifying the outcomes and 
                 objectives for this requirement"
               helpText="Include any information that would help a CSP to propose
@@ -32,12 +33,15 @@
               class="textarea-max-width mb-10"
               :optional="true"
               label="Identify any application(s) that need architectural designs"
-              :value.sync="_applicationsNeedArchitecturalDesign"
+              :value="_applicationsNeedArchitecturalDesign"
+              @update:value="_applicationsNeedArchitecturalDesign = $event"
+
             />
 
             <ATATCheckboxGroup
               id="ClassificationLevelCheckboxes"
               :value.sync="_dataClassificationsImpactLevels"
+              @update:value="_dataClassificationsImpactLevels = $event"
               :items="classificationCheckboxes"
               groupLabel="What data classification and impact level(s) do you need an 
                 architectural design solution for?"
@@ -53,7 +57,8 @@
               id="ExternalFactors"
               :optional="true"
               class="textarea-max-width mb-10"
-              :value.sync="_externalFactors"
+              :value="_externalFactors"
+              @update:value="_externalFactors = $event"
               label="What external factors need to be considered for the deployment?"
               helpText="Include any details about expiring contracts, data center closure, 
                 restrictions of applications, etc."
