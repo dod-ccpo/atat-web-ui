@@ -41,6 +41,8 @@
               :city="city"
               @update:city="city = $event"
               :countryListData="countryListData"
+              :stateCodeListData="stateCodeListData"
+              :stateListData="stateListData"
               :militaryPostOfficeOptions="militaryPostOfficeOptions"
               :minLength="[]"
               :requiredFields="[
@@ -85,8 +87,6 @@
               @update:selectedState="selectedState = $event"
               :selectedStateCode="selectedStateCode"
               @update:selectedStateCode="selectedStateCode = $event"
-              :stateCodeListData="stateCodeListData"
-              :stateListData="stateListData"
               :stateOrProvince="stateOrProvince"
               @update:stateOrProvince="stateOrProvince = $event"
               :streetAddress1="streetAddress1"

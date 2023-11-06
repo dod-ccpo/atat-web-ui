@@ -280,16 +280,15 @@ class ATATAddressForm extends Vue {
 
       // TODO: REFACTOR AFTER VUE3 UPGRADE
       // //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      const formChildren = this.$refs.atatAddressForm.$el;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // const formChildren = this.$refs.atatAddressForm;
+      // console.log(formChildren)
+      // formChildren.forEach((ref: {errorMessages:[]}) => ref.errorMessages = []);
 
-      console.log(formChildren)
-
-      formChildren.forEach((ref: {errorMessages:[]}) => ref.errorMessages = []);
       this.$refs.atatAddressForm.reset();
       this.$nextTick(() => {
         this.$refs.atatAddressForm.resetValidation();
       });
-
     });
   }
   // computed
