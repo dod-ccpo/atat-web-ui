@@ -17,6 +17,8 @@
       return-object
       clearable
       clear-icon="mdi-close"
+
+      :model-value="_selectedItem"
       @update:modelValue="valueUpdate"      
 
       :hide-details="true"

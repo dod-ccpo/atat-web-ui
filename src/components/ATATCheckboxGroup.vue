@@ -1,5 +1,9 @@
 <template>
   <div :id="id">
+    <v-form :id="id" 
+      ref="checkboxGroupForm"
+      :lazy-validation="true"
+      @blur="setErrorMessage">
     <p
       v-if="groupLabel"
       :id="groupLabelId"
@@ -85,9 +89,7 @@
         </template>
 
         <template v-slot:append>
-          <template v-if="
-            hasOtherValue && (otherIsSelected || hasTextFields) && item.value === otherValue
-          ">
+          <template v-if="(otherIsSelected || hasTextFields) && item.value === otherValue">
             <ATATTextArea
               v-if="otherEntryType === 'textarea'"
               ref="atatTextInput"
@@ -149,6 +151,7 @@
     </div>
 
     <ATATErrorValidation :errorMessages="errorMessages" />
+    </v-form>
   </div>
 </template>
 
@@ -165,6 +168,7 @@ import { Checkbox, totalClassLevelsInDOWObject, ValidationRule } from "../../typ
 import { getIdText, setItemToPlural } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationRequirements from "@/store/classificationRequirements";
+import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
   emits: ["update:value"],
@@ -179,10 +183,13 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
+    checkboxGroupForm: (ComponentPublicInstance)& {
+      validate: () => Promise<SubmitEventPromise>
+    },
     checkboxGroup: (ComponentPublicInstance & {
       errorBucket: string[];
       errorCount: number;
-      validate: () => boolean;
+      validate: () => Promise<boolean>;
     })[];
     atatTextInput: (ComponentPublicInstance & { errorBucket: string[]; errorCount: number })[];
   };
@@ -360,9 +367,14 @@ class ATATCheckboxGroup extends Vue {
     } else {
       setTimeout(() => {
         const checkbox = this.$refs.checkboxGroup;
-        if (checkbox && checkbox.length) {
-          this.errorMessages = checkbox[0].errorBucket;
-        }
+        // if (checkbox && checkbox.length) {
+        //   this.errorMessages = checkbox[0].errorBucket;
+        // }
+        this.$refs.checkboxGroupForm.validate().then(
+          async (response:SubmitEventPromise)=>{
+            this.errorMessages = (await (response)).errors[0].errorMessages;
+          }
+        )
         AcquisitionPackage.setValidateNow(false);
       }, 0);
     }

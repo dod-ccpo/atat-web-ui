@@ -78,7 +78,7 @@
             :ripple="false"
             @click="addResearcher()"
           >
-            <v-icon color="primary" class="mr-2">control_point</v-icon>
+            <v-icon color="primary" class="mr-2">mdi-plus-circle-outline</v-icon>
             <span>Add another researcher</span>
           </v-btn>
         </v-col>
