@@ -79,6 +79,7 @@
           @mouseout="onBlur"
           @click="onClick"
           validate-on="blur"
+          color="#544496"
         >
           <template v-if="item.description || card || item.value === otherValue" v-slot:label>
             <div class="d-flex flex-column">

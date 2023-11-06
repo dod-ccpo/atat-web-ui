@@ -161,8 +161,8 @@ hr, .hr {
   &._chevron-right-after {
     text-decoration: none;
     &:after {
-      content: "chevron_right";
-      font-family: "Material Icons";
+      content: "\F0142";
+      font-family: $icon-font;
       -webkit-font-feature-settings: "liga";
       font-size: 20px;
       font-weight: normal;
@@ -258,7 +258,7 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
 
   &:after {
     position: absolute;
-    content: "chevron_right";
+    content: "\F0142";
     font-family: $icon-font;
     -webkit-font-feature-settings: "liga";
     right: -28px;
