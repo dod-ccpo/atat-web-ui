@@ -30,7 +30,8 @@
               id="COIOptions"
               :card="true"
               :items="conflictOfInterestOptions"
-              :value.sync="hasConflict"
+              :value="hasConflict"
+              @update:value="hasConflict = $event"
               :rules="[$validators.required('Please select an option')]"
             />
           </div>
@@ -50,7 +51,8 @@
                   'Please limit your description to 1600 characters or less'
                 ),
               ]"
-              :value.sync="explanation"
+              :value="explanation"
+              @update:value="explanation = $event"
               maxChars="1600"
             />
           </div>

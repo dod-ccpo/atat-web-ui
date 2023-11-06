@@ -1,24 +1,30 @@
-.v-tooltip__content {
+._atat-tooltip-wrapper {
+  transition: opacity 0.25s !important;
   display: block !important;
-  background-color: transparent !important;
   opacity: 1 !important;
-  z-index: 300 !important;
+  z-index: 10000 !important;
+
+  .v-overlay__content {
+    background-color: transparent;
+  }
 
   ._tooltip-content-wrap {
-    opacity: 0 !important;
     transition: opacity 0.25s !important;
     background-color: rgba($base-darkest, 0.9);
     padding: 8px 12px !important;
-    line-height: 1.5em !important;
     display: block;
     border-radius: 4px;
     position: relative;
-
+    > div {
+      color: $white;
+      font-size: 1.4rem;
+      line-height: 1.5em !important;
+    }
 
     &:not(._left, ._no-pointer)::after {
       content: "";
       position: absolute;
-      bottom: -15px;
+      bottom: -20px;
       left: calc(50% - 10px);
       width: 0;
       height: 0;
@@ -42,6 +48,16 @@
   &.menuable__content__active {
     ._tooltip-content-wrap {
       opacity: 1 !important;
+    }
+  }
+}
+
+.v-btn._tooltip-button {
+  height: 19px;
+  &:focus-visible {
+    &:after {
+      border: none !important;
+      background-color: rgba($primary, 0.5);
     }
   }
 }
