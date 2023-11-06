@@ -29,18 +29,20 @@
     </div>
 
     <v-main
-      class="_dashboard"
+      class="_dashboard _scroll-y"
       :class="[
         {'_funding-dashboard': tabItems[tabIndex] === 'Funding Tracker'},
-        {'bg-white': isPortfolioProvisioning}
+        {'bg-white': isPortfolioProvisioning},
       ]"
     >
         <PortfolioSummaryPageHead
           headline="Portfolio Summary"
           :items ="tabItems"
           :environmentLinks="environmentLinks"
-          :value.sync="tabIndex"
-          :title.sync="title"
+          :value="tabIndex"
+          @update:value="tabIndex"
+          :title="title"
+          @update:title="title = $event"
           :isPortfolioProvisioning="isPortfolioProvisioning"
           @leavePortfolio="openLeavePortfolioModal"
         />
@@ -234,6 +236,7 @@ class PortfolioSummary extends Vue {
       this.isPortfolioProvisioning = true;
       this.title = provisioningData.portfolioTitle ?? "Untitled Portfolio"
     }
+    
   }
   public async mounted(): Promise<void>{
     await this.loadOnEnter();
