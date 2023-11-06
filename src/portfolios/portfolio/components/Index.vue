@@ -29,10 +29,10 @@
     </div>
 
     <v-main
-      class="_dashboard"
+      class="_dashboard _scroll-y"
       :class="[
         {'_funding-dashboard': tabItems[tabIndex] === 'Funding Tracker'},
-        {'bg-white': isPortfolioProvisioning}
+        {'bg-white': isPortfolioProvisioning},
       ]"
     >
         <PortfolioSummaryPageHead
@@ -237,6 +237,7 @@ class PortfolioSummary extends Vue {
       this.isPortfolioProvisioning = true;
       this.title = provisioningData.portfolioTitle ?? "Untitled Portfolio"
     }
+    
   }
   public async mounted(): Promise<void>{
     await this.loadOnEnter();
