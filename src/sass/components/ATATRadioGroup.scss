@@ -221,7 +221,7 @@
       color: $base-darker !important;
     }
 
-    .tooltip-button i {
+    ._tooltip-button i {
       color: $primary !important;
     }
   }
@@ -266,6 +266,11 @@
     }
   }
 
+  .v-selection-control--focus-visible {
+    .v-selection-control__input::before {
+      background-color: $primary;
+    }
+  }
 }
 
 ._description-small {

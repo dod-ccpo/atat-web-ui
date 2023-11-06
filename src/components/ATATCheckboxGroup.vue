@@ -27,7 +27,7 @@
           card ? '_checkbox-card' : '_checkbox',
           color ? '_checkbox-' + color : '',
           { 'flex-column _has-other': item.value === otherValue },
-          { '_other-selected': showOtherEntry(item.value) },
+          { '_other-selected': otherIsSelected },
           { '_no-description': noDescriptions },
           { '_has-text-fields': hasTextFields },
           { '_big-bold-label': boldText },
@@ -39,12 +39,14 @@
         :error="error"
         :disabled="disabled"
         :rules="checkboxRules"
-        @mouseup="checkBoxClicked(item.value)"
         multiple
         :hide-details="true"
         :ref="index === 0 ? 'checkboxGroup' : ''"
         :data-group-id="id + '_Group'"
       >
+      <!-- @mouseup="checkBoxClicked(item.value)" -->
+
+
         <template
           v-if="
             card ||
@@ -81,14 +83,13 @@
             ></div>
           </div>
         </template>
-        <!-- TODO check slot append -->
-        <template slot="append-inner">
-          <template v-if="showOtherEntry(item.value) || hasTextFields">
+
+        <template v-slot:append>
+          <template v-if="(otherIsSelected || hasTextFields) && item.value === otherValue">
             <ATATTextArea
-              v-if="otherEntryType === 'textarea' && showOtherEntry(item.value)"
+              v-if="otherEntryType === 'textarea'"
               ref="atatTextInput"
               name="otherTextArea"
-              v-show="showOtherEntry(item.value)"
               :id="otherId"
               class="width-100 ml-5 mb-6"
               :rows="3"
@@ -98,10 +99,9 @@
               :rules="otherRequiredRule"
             />
             <ATATTextField
-              v-if="otherEntryType === 'textfield' && showOtherEntry(item.value)"
+              v-if="otherEntryType === 'textfield'"
               ref="atatTextInput"
               name="otherTextField"
-              v-show="showOtherEntry(item.value)"
               :id="otherId"
               class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
               :validateItOnBlur="validateOtherOnBlur"
@@ -111,7 +111,7 @@
             />
 
             <ATATTextField
-              v-if="hasTextFields && showTextField(index)"
+              v-if="hasTextFields"
               ref="atatTextInput"
               :id="id + '_TextField' + index"
               :appendText="textFieldAppendText"
@@ -165,6 +165,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationRequirements from "@/store/classificationRequirements";
 
 @Component({
+  emits: ["update:value"],
   components: {
     ATATTextArea,
     ATATTextField,
@@ -185,10 +186,11 @@ class ATATCheckboxGroup extends Vue {
   };
 
   // props
-  @PropSync("value") private _selected!: string[];
+  @Prop({ default: [] }) private value!: string[];
+  public _selected: string[] = this.value;
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
-
   @PropSync("items") private _items!: Checkbox[];
+
   @Prop({ default: false }) private card!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private disabled!: boolean;
@@ -318,7 +320,8 @@ class ATATCheckboxGroup extends Vue {
         document.getElementById(id)?.focus();
       });
     }
-    if (newVal.indexOf(this.noneValue) > -1) {
+    if (newVal.includes(this.noneValue)) {
+      this._otherValueEntered = "";
       const noneApplyIndex = this.prevSelected.indexOf(this.noneValue);
       if (newVal.length > 1 && noneApplyIndex === -1) {
         // uncheck the other options
@@ -330,6 +333,12 @@ class ATATCheckboxGroup extends Vue {
     }
     this.$nextTick(() => {
       this.prevSelected = [...this._selected];
+      this.$emit("update:value", [...this._selected]);
+      this.validateOtherOnBlur = this.otherIsSelected ? true : false;
+      if (this.checkboxRules.length === 0) {
+        this.checkboxRules = this.rules;
+        this.validateCheckboxesNow = true;
+      }      
     });
     if (newVal.length || oldVal.length) {
       this.setErrorMessage();
@@ -339,43 +348,8 @@ class ATATCheckboxGroup extends Vue {
   private getIdText(string: string) {
     return getIdText(string);
   }
-
-  private showOtherEntry(value: string): boolean {
-    return this.hasOtherValue
-      && value === this.otherValue
-      && this._selected.indexOf(this.otherValue) > -1
-      && !this.hideOtherTextarea;
-  }
-
-  private hideOtherTextarea = false;
-
-  private showTextField(index: number): boolean {
-    return this.selectedIndices.includes(index);
-  }
-
-  private checkBoxClicked(value: string): void {
-    if (this.checkboxRules.length === 0) {
-      this.checkboxRules = this.rules;
-      this.validateCheckboxesNow = true;
-    }
-    if (value === this.noneValue) {
-      this.validateOtherOnBlur = false;
-      this.hideOtherTextarea = true;
-      if (this._selected.indexOf(this.otherValue) > -1) {
-        this._selected = [this.noneValue];
-      }
-    } else {
-      if (
-        value === this.otherValue &&
-        this._selected.indexOf(this.otherValue) > -1
-      ) {
-        this.validateOtherOnBlur = false;
-        this.hideOtherTextarea = true;
-      } else {
-        this.validateOtherOnBlur = true;
-        this.hideOtherTextarea = false;
-      }
-    }
+  public get otherIsSelected(): boolean {
+    return this._selected.includes(this.otherValue)
   }
 
   private setErrorMessage(): void {
