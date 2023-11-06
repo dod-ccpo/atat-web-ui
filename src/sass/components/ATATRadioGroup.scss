@@ -150,10 +150,12 @@
   label {
     color: $base-darkest !important;
     padding-top: 1px;
+  }
 
-    &.error--text {
-      color: $error-dark !important;
-
+  &.error--text {
+    border-color: $error !important;
+    label{
+      color: $error !important;
     }
   }
 
@@ -167,14 +169,7 @@
     font-size: 1.6rem;
   }
 
-  label {
-    color: $base-darkest !important;
-    padding-top: 1px;
-  }
-  &.error--text {
-    border-color: $error;
-  }
-}
+ }
 
 
 ._atat-radio-group {
@@ -225,29 +220,24 @@
       color: $primary !important;
     }
   }
-  .v-input__control {
-    .v-messages.error--text {
+  &.v-input--error{
+    .v-input__details {
       display: none !important;
-      .v-messages__wrapper {
-        display: none !important;
-          .v-messages__message {
-          display: none !important;
-        }
-      }
     }
-    .v-messages {       
-      position: relative;
-      .message-transition-leave-active.message-transition-leave-to {
-        position: absolute;
-        display: none !important;
-        transition: none !important;  
-        transform: none !important;
-        left: -10000;
-        top: -10000;
-      }
-    }
-
   }
+
+  .v-messages {       
+    position: relative;
+    .message-transition-leave-active.message-transition-leave-to {
+      position: absolute;
+      display: none !important;
+      transition: none !important;  
+      transform: none !important;
+      left: -10000;
+      top: -10000;
+    }
+  }
+
   &._inline {
     
     .v-selection-control-group,
