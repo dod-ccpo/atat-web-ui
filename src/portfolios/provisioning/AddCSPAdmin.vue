@@ -88,8 +88,10 @@
             <td class="text-start">
               {{ item.DoDId }}
             </td>
+            <!-- eslint-disable vue/valid-v-slot -->
             <td v-html="item.adminEmails" class="text-start">
             </td>
+            <!-- eslint-disable vue/valid-v-slot -->
             <td  v-html="item.adminClassificationLevels" class="text-start">
             </td>
             <td class="d-flex align-center text-start" >
