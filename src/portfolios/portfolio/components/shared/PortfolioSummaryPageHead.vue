@@ -25,6 +25,7 @@
             maxlength="60"
             :readonly="portfolioIsReadOnly"
             :disabled="portfolioIsReadOnly"
+            variant="plain"
           />
         <div>
           <v-tabs 
