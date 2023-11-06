@@ -74,11 +74,6 @@
           :disabled="item.disabled || disabled"
           :readonly="item.readonly"
           @blur="onBlur"
-          @keydown.enter="onBlur"
-          @keydown.space="onBlur"
-          @mouseenter="onBlur"
-          @mouseleave="onBlur"
-          @mouseout="onBlur"
           @click="onClick"
           validate-on="blur"
           color="#544496"
@@ -236,6 +231,7 @@ class ATATRadioGroup extends Vue {
 
   // methods
   private setErrorMessage(): void {
+    this.clearErrorMessage();
     this.$refs.radioButtonGroup.validate().then(
       async (response:SubmitEventPromise)=>{
         this.errorMessages = (await (response)).errors[0].errorMessages;
@@ -244,6 +240,7 @@ class ATATRadioGroup extends Vue {
     )
   } 
   private clearErrorMessage(): void {
+    this.hasErrors = false;
     this.errorMessages = [];
     this._clearErrorMessages = false;
     // this.$refs.radioButtonGroup.resetValidation();
@@ -298,6 +295,7 @@ class ATATRadioGroup extends Vue {
   @Watch("_selectedValue")
   protected valueChange(newVal: string): void {
     this.$emit("radioButtonSelected", this._selectedValue);
+    this.hasErrors = false;
     if (newVal === this.otherValue) {
       this._validateOtherOnBlur = true;
       this.hideOtherInput = false;

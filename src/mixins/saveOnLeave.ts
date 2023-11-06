@@ -52,7 +52,7 @@ export async function beforeRouteLeaveFunction(p: {
     AcquisitionPackage.setValidateNow(false);
     AcquisitionPackage.setSkipValidation(false);
     if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
-      const el = document.getElementsByClassName("field-error")[0];
+      const el = document.getElementsByClassName("v-input--error")[0];
       if (el) {
         el.scrollIntoView({
           behavior: "smooth"

@@ -32,7 +32,7 @@
                 maxWidth="400"
                 minWidth="400"
               >
-                <template slot="content">
+                <template v-slot:content>
                   <div class="d-flex justify-space-between mb-4 width-100" >
                     <div>
                       <div class="d-flex">

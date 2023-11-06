@@ -46,7 +46,8 @@
               legend="Have you provided any CUI information in this acquisition package that, 
                 if released, would be harmful to the government?"
               :items="fOIAOptions"
-              :value.sync="potentialToBeHarmful"
+              :value="potentialToBeHarmful"
+              @update:value="potentialToBeHarmful = $event"
               :rules="[$validators.required('Please select an option')]"
             /> 
 
