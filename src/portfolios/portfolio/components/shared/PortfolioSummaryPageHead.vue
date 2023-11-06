@@ -61,7 +61,7 @@
           />
         </v-btn>
         <v-menu
-          :offset="true"
+          offset="true"
           location="left"
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"

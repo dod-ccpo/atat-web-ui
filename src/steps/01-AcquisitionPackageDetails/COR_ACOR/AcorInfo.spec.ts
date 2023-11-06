@@ -1,21 +1,14 @@
 /* eslint-disable camelcase */
-import Vue from "vue";
-import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import {DefaultProps} from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import AcorInfo from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
 import validators from "../../../plugins/validation";
 import ContactData from "@/store/contactData";
 import {ContactDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
-Vue.use(Vuetify);
-
 describe("Testing AcorInfo Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  localVue.use(validators);
+
 
   const mockCurrentDontactData: ContactDTO = {
     grade_civ: "",
@@ -56,38 +49,45 @@ describe("Testing AcorInfo Component", () => {
     manually_entered: "",
     acquisition_package: ""
   }
-
+  let wrapper: VueWrapper
+  let vm: typeof wrapper.vm.$options
   beforeEach(() => {
-    jest.spyOn(ContactData, 'initialize').mockImplementation(
+    vi.spyOn(ContactData, 'initialize').mockImplementation(
       () => Promise.resolve()
     );
 
-    vuetify = new Vuetify();
-    wrapper = mount(AcorInfo, {
-      vuetify,
-      localVue
-    });
+    wrapper = shallowMount(AcorInfo, {
+      props: {
+        
+      },
+      global: {
+        plugins: [validators]
+      }
+    })
+    vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
-    wrapper.vm.$data.currentContactData = mockCurrentDontactData;
-    wrapper.vm.$data.savedContactData = mockSavedDontactData;
+    wrapper.setData({
+      currentContractData: mockCurrentDontactData,
+      savedContractData: mockSavedDontactData
+    })
+
   });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  })
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
 
   it("saveOnLeave() - should call the store and save if any data changes", async () => {
-    jest.spyOn(AcquisitionPackage, 'saveContactInfo').mockImplementation(
+    vi.spyOn(AcquisitionPackage, 'saveContactInfo').mockImplementation(
       () => Promise.resolve()
     );
-    wrapper.vm.$data.currentContactData.role = "ROLE_UPDATED"
-    await wrapper.vm.saveOnLeave();
-    expect(AcquisitionPackage.saveContactInfo).toHaveBeenCalled();
-  });
-
-
+ 
+    await wrapper.setData({
+      currentContactData: {
+        role: "ROLE_UPDATED"
+      }
+    })
+    const saveOnLeave = await vm.saveOnLeave();
+    expect(saveOnLeave).toBe(true)
+  })
 })

@@ -86,7 +86,8 @@
     />
     <ArchiveModal
       v-if="isMissionOwner"
-      :showModal.sync="showArchiveModal"
+      :showModal="showArchiveModal"
+      @update:showModal="showArchiveModal = $event"
       :hasContributor="hasContributor()"
       :packageName="packageName"
       :waitingForSignature="isWaitingForSignature()"
