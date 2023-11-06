@@ -34,7 +34,7 @@
               You do not have any travel requirements yet.
             </div>
             <div v-if="hasListings">
-              <v-data-table
+              <v-table
                   v-if="hasListings"
                   :headers="setTableHeaders"
                   :items="tableData"
@@ -42,59 +42,77 @@
                   class="elevation-0 _offering-instances mt-10"
                   :hide-default-footer="true"
               >
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.duration_in_days="{ item }">
-                  {{ item.duration_in_days }}
-                  {{ item.duration_in_days>1 ? 'days': 'day'}}
-                </template>
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.number_of_travelers="{ item }">
-                  {{ item.number_of_travelers }}
-                  {{ item.number_of_travelers>1 ? 'travelers': 'traveler'}}
-                </template>
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.number_of_trips="{ item }">
-                  {{ createNumberOfTripsTexts(item)  }}
-                </template>
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.selected_periods="{ item }">
-                  {{ createPeriodText(item.selected_periods) }}
-                </template>
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.actions="{ item }">
-                  <div class="d-flex justify-space-between align-center">
-                    <button
-                        type="button"
-                        :id="'EditButton_' + item.instanceNumber"
-                        @click="editInstance(item)"
-
+                <thead>
+                  <tr>
+                    <th
+                      v-for="item in setTableHeaders"
+                      :key="item.title"
+                      class="text-left" scope="row"
                     >
-                      <ATATSVGIcon name="edit" height="19" width="19" />
-                    </button>
+                      {{ item.title }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="item, i in tableData"
+                    :key="item.sys_id"
+                  >
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+                    <td>
+                      {{ item.trip_location }}
+                    </td>
+                    <td>
+                      {{ item.duration_in_days }}
+                      {{ // @ts-ignore
+                        item.duration_in_days>1 ? 'days': 'day'
+                      }}
+                    </td>
+                    <td>
+                      {{ item.number_of_travelers }}
+                      {{ // @ts-ignore
+                        item.number_of_travelers>1 ? 'travelers': 'traveler'
+                      }}
+                    </td>
+                    <td>
+                      {{ createNumberOfTripsTexts(item)  }}
+                    </td>
+                    <td>
+                      {{ createPeriodText(item.selected_periods) }}
+                    </td>
+                    <td>
+                      <div class="d-flex justify-space-between align-center">
+                        <button
+                            type="button"
+                            :id="'EditButton_' + item.instanceNumber"
+                            @click="editInstance(item)"
 
-                    <button
-                        type="button"
-                        :id="'CopyButton_' + item.instanceNumber"
-                        @click="copyInstance(item)"
-                    >
-                      <ATATSVGIcon name="content-copy" height="19" width="22" />
-                    </button>
+                        >
+                          <ATATSVGIcon name="edit" height="19" width="19" />
+                        </button>
 
-                    <button
-                        type="button"
-                        :id="'DeleteButton_' + item.instanceNumber"
-                        @click="confirmDeleteModal(item)"
-                    >
-                      <ATATSVGIcon name="remove" height="18" width="14" />
-                    </button>
-                  </div>
-                </template>
-              </v-data-table>
+                        <button
+                            type="button"
+                            :id="'CopyButton_' + item.instanceNumber"
+                            @click="copyInstance(item)"
+                        >
+                          <ATATSVGIcon name="content-copy" height="19" width="22" />
+                        </button>
+
+                        <button
+                            type="button"
+                            :id="'DeleteButton_' + item.instanceNumber"
+                            @click="confirmDeleteModal(item)"
+                        >
+                          <ATATSVGIcon name="remove" height="18" width="14" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
             </div>
             <hr class="mt-0" v-if="hasListings" />
           </div>
@@ -307,7 +325,7 @@ class Travel extends Vue {
     );
   }
 
-  get setTableHeaders():  DataTableHeader[] {
+  get setTableHeaders(): DataTableHeader[] {
     return this.hasListings
       ? [
         { title: "", value: "instanceNumber", width: "50" },
