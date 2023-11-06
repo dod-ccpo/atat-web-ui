@@ -266,9 +266,11 @@ class ATATCheckboxGroup extends Vue {
     return [this.showPerformanceRequirementTotal].includes(true);
   }
 
-  private otherRequiredRule = this.otherValueRequiredMessage
-    ? [this.$validators?.required(this.otherValueRequiredMessage)]
-    : [];
+  get otherRequiredRule(): ValidationRule[] {
+    return this.otherValueRequiredMessage
+      ? [this.$validators.required(this.otherValueRequiredMessage)]
+      : [];
+  }
 
   get otherId(): string {
     return "Other_" + getIdText(this.otherValue);
@@ -367,9 +369,6 @@ class ATATCheckboxGroup extends Vue {
     } else {
       setTimeout(() => {
         const checkbox = this.$refs.checkboxGroup;
-        // if (checkbox && checkbox.length) {
-        //   this.errorMessages = checkbox[0].errorBucket;
-        // }
         this.$refs.checkboxGroupForm.validate().then(
           async (response:SubmitEventPromise)=>{
             this.errorMessages = (await (response)).errors[0].errorMessages;
