@@ -85,7 +85,9 @@
         </template>
 
         <template v-slot:append>
-          <template v-if="(otherIsSelected || hasTextFields) && item.value === otherValue">
+          <template v-if="
+            hasOtherValue && (otherIsSelected || hasTextFields) && item.value === otherValue
+          ">
             <ATATTextArea
               v-if="otherEntryType === 'textarea'"
               ref="atatTextInput"

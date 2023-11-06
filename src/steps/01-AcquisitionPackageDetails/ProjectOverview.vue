@@ -27,7 +27,8 @@
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectScope
               label="What is the scope of your requirement?"
-              :projectScope.sync="projectScope"
+              :projectScope="projectScope"
+              @update:projectScope="projectScope = $event"
               helpText="Briefly describe the type of resources and services to be
                 acquired, and what is necessary to achieve mission specific
                 outcomes for this particular requirement (e.g., move DITCO’s contract

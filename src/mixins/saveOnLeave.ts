@@ -4,9 +4,11 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
 import { ComponentPublicInstance } from "vue";
 
+import { SubmitEventPromise } from 'vuetify/lib/framework.mjs';
+
 export type SaveOnLeaveRefs = ComponentPublicInstance['$refs'] & {
   form: ComponentPublicInstance & {
-    validate: () => Promise<boolean>;
+    validate: ()=> Promise<boolean>;
     resetValidation?: () => void;
     reset?: () => void;
   };
@@ -33,7 +35,10 @@ export async function beforeRouteLeaveFunction(p: {
   const direction = p.to.query.direction;
   if(direction === "next" && formToValidate && !skipValidation){
     AcquisitionPackage.setValidateNow(true);
-    isValid = await p.form.validate()
+    p.form.validate().then(
+      (response:unknown) => {
+        isValid = (response as string[]).length === 0
+      })
   }
 
   // this is an easy way to test the validation state 

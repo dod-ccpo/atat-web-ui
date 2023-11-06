@@ -6,7 +6,6 @@
   border: 1px solid transparent;
   padding: 16px 24px;
   position: relative;
-  background-color: $error-lighter;
 
   &._has-expandable-header {
     padding: 16px 24px 32px !important;
@@ -66,15 +65,12 @@
     border-radius: 8px;
   }
 
-  &._mdi-information-alert {
+  &._info-alert {
     background-color: $info_lighter;
     border-color: $info;
     
     .v-icon {
       color: $info;
-    }
-    .v-btn {
-      background-color: $info_lighter;
     }
   }
 
