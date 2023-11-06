@@ -15,16 +15,20 @@
     </v-flex>
     <v-flex>
       <!-- TODO: use the new menu prop 'offset' to achieve what 'offsetY: true' did before -->
+
+      <!-- @update:model-value="onChange" -->
+
       <v-select
         ref="atatSelect"
         :id="id + '_dropdown'"
         :items="items"
         variant="outlined"
         v-model="_selectedValue"
+
+        @update:v-model="[_selectedValue = $event, onChange]"
+
         :rounded="rounded"
         :hide-details="true"
-        :model-value.sync="_selectedValue"
-        @update:model-value="onChange"
         @blur="onBlur"
         :placeholder="placeholder"
         :class="{ 'mt-2' : label }"

@@ -17,7 +17,7 @@
       management system will replace the various manual forms used today like the Fiscal
       Service (FS) Form 7600A/B, Military Interdepartmental Purchase Request (MIPR), etc.
     </p>
-    <ATATAlert id="FundingRequestLearnMore" type="info">
+    <ATATAlert id="FundingRequestLearnMoreAlert" type="info">
       <template v-slot:content>
         <p class="font-size-16 font-weight-700 mb-2">
           All JWCC requirements packages must have a General Terms & Conditions (GT&C) agreement.
@@ -30,17 +30,18 @@
     </ATATAlert>
     <hr class="my-5"/>
     
-    <h3 class="mb-4">Types of accepted funding documents</h3>
+    <h3 class="mb-4" id="FundingTypesHeader">Types of accepted funding documents</h3>
 
     <v-expansion-panels variant="accordion" borderless>
       <v-expansion-panel 
         v-for="(fundingDoc, index) in typesOfFundingDocs"
         :key="index + '-' + fundingDoc.title"
+        :id="fundingDoc.id + 'Section'"
       >
-        <v-expansion-panel-title class="_no-border-bottom">
+        <v-expansion-panel-title class="_no-border-bottom" :id="fundingDoc.id + 'Button'">
           {{ fundingDoc.title }}
         </v-expansion-panel-title>
-        <v-expansion-panel-text>
+        <v-expansion-panel-text :id="fundingDoc.id + 'Text'">
           <div v-html="fundingDoc.description"></div>
         </v-expansion-panel-text>
       </v-expansion-panel>
@@ -64,7 +65,8 @@ class FundingRequestLearnMore extends Vue {
   private federalAcqHref =
     `https://www.acquisition.gov/dfarspgi/pgi-253.208-required-sources-supplies-and-services.`
   public typesOfFundingDocs: Record<string, string>[] = [
-    {
+    { 
+      id: "GTC",
       title: "General Terms and Conditions (GT&C)",
       description: `<p class="mb-0">Previously known as the FS Form 7600A, a GT&C agreement 
         within G-Invoicing establishes the relationship between the trading partners and 
@@ -73,6 +75,7 @@ class FundingRequestLearnMore extends Vue {
         performed and/or no goods may be delivered.</p>`
     },
     {
+      id: "Order",
       title: "Order Requirements and Funding Information (Order)",
       description: `<p>The Order section of an interagency agreement within G-Invoicing 
         replaces the FS Form 7600B. It identifies the specific Requesting Agency 
@@ -82,13 +85,14 @@ class FundingRequestLearnMore extends Vue {
         <p class="mb-0">A GT&C agreement may contain one or more Orders.</p>`
     },
     {
+      id: "MIPR",
       title: "Military Interdepartmental Purchase Request (MIPR)",
       description: `<p>In lieu of a G-Invoicing Order, your agency may choose to use 
         a MIPR to transfer funds from one military organization to another to procure 
         services, supplies, or equipment for the requiring service. A MIPR is processed 
         on DD Form 448 and may be accepted on a direct citation or reimbursable basis 
         and is defined in the 
-        <a href="${this.federalAcqHref}" _target="blank" rel="noopener noreferrer">
+        <a href="${this.federalAcqHref}" _target="blank" id="FARLink">
         Defense Federal Acquisition Regulation Supplement– Procedures, Guidance, and 
         Instructions (DFARS PGI) <span class="_external-link">253.208-1</span></a>.</p>
         <p class="mb-0">Please note that your agency will need to establish a GT&C agreement, 
