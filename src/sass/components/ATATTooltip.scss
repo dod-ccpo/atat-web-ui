@@ -2,7 +2,7 @@
   transition: opacity 0.25s !important;
   display: block !important;
   opacity: 1 !important;
-  z-index: 300 !important;
+  z-index: 10000 !important;
 
   .v-overlay__content {
     background-color: transparent;
@@ -53,6 +53,7 @@
 }
 
 .v-btn._tooltip-button {
+  height: 19px;
   &:focus-visible {
     &:after {
       border: none !important;
