@@ -20,7 +20,7 @@
                 Select all that apply to your contracting effort.
               </p>
             </div>
-            <!-- <ATATCheckboxGroup
+            <ATATCheckboxGroup
               id="PackagingEtcCheckboxes"
               :value="selectedOptions"
               @update:value="selectedOptions = $event"
@@ -39,7 +39,7 @@
               :rules="[
                 $validators.required('Please select an option.')
               ]"
-            /> -->
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -54,7 +54,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ContractConsiderationsDTO } from "@/api/models";
-import { Checkbox } from "../../../types/Global";
+import { Checkbox } from "types/Global";
 import { hasChanges } from "@/helpers";
 import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 

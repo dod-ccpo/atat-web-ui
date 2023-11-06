@@ -93,7 +93,8 @@
               class="width-100 ml-5 mb-6"
               :rows="3"
               :validateItOnBlur="validateOtherOnBlur"
-              :value.sync="_otherValueEntered"
+              :value="_otherValueEntered"
+              @update:value="_otherValueEntered = $event"
               :rules="otherRequiredRule"
             />
             <ATATTextField
@@ -104,7 +105,8 @@
               :id="otherId"
               class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
               :validateItOnBlur="validateOtherOnBlur"
-              :value.sync="_otherValueEntered"
+              :value="_otherValueEntered"
+              @update:value="_otherValueEntered = $event"
               :rules="otherRequiredRule"
             />
 
@@ -118,7 +120,8 @@
               @blur="textFieldBlur(index)"
               :isFormattedNumber="isFormattedNumber"
               :rules="textfieldRules"
-              :value.sync="item.textfieldValue"
+              :value="item.textfieldValue"
+              @update:value="item.textfieldValue = $event"
             />
           </template>
           <template v-if="showMessage">
@@ -253,7 +256,7 @@ class ATATCheckboxGroup extends Vue {
   }
 
   private otherRequiredRule = this.otherValueRequiredMessage
-    ? [this.$validators.required(this.otherValueRequiredMessage)]
+    ? [this.$validators?.required(this.otherValueRequiredMessage)]
     : [];
 
   get otherId(): string {
