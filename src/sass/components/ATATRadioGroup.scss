@@ -7,6 +7,11 @@
   }
   .v-selection-control {
     align-items: center !important;
+    &.error--text{
+      label {
+        color: $error !important;
+      }
+    }
     label {
       color: $base-darkest !important;
     }
@@ -208,7 +213,8 @@
   &.error--text {
     color: $error !important;
 
-    label.error--text {
+    label,
+    span {
       color: $error !important;
     }
 
