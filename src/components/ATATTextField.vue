@@ -95,6 +95,7 @@ import { mask, SelectData, ValidationRule } from "types/Global";
 import Inputmask from "inputmask/";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
   components: {
@@ -159,9 +160,9 @@ class ATATTextField extends Vue  {
   @Watch('validateFormNow')
   public validateNowChange(): void {
     this.$refs.atatTextField.validate().then(
-      (response: unknown) => {
-        if ((response as string[]).length === 0)
-        { this.setErrorMessage() }
+      async (response: SubmitEventPromise) => {
+        if (!((await response).valid as boolean)){ 
+          this.setErrorMessage() }
       }
     );
   }
