@@ -1,20 +1,5 @@
 <template>
   <div :id="id + '_AutoComplete_Wrapper'">
-
-    <!-- <v-autocomplete
-      :items="items"
-      item-title="text"
-      item-value="value"
-      :eager="true"
-      placeholder="FOOBAR"
-      return-object
-      clearable
-      clear-icon="mdi-close"
-      @update:modelValue="valueUpdate"
-    /> -->
-
-
-
     <label :for="id" :class="{ 'd-sr-only': labelSrOnly }" class="mb-2 d-block">
       {{ label }}
       <span v-if="optional" class="optional"> Optional </span>
@@ -43,11 +28,9 @@
 
     >
     <!-- 
-       -- nooooo
       @click:clear="valueCleared"
       :customFilter="customFilter" 
       @update:search="updateSearchInput" 
-
     -->
 
       <template v-slot:item="{ props, item }">
