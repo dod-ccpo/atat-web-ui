@@ -157,7 +157,7 @@
                 :ripple="false"
                 @click="addIncrement()"
               >
-                <v-icon color="primary" class="mr-2">control_point</v-icon>
+                <v-icon color="primary" class="mr-2">mdi-plus-circle-outline</v-icon>
                 <span>Add funding increment</span>
               </v-btn>
 
