@@ -16,7 +16,12 @@
     <v-flex>
       <!-- TODO: use the new menu prop 'offset' to achieve what 'offsetY: true' did before -->
 
-      <!-- @update:model-value="onChange" -->
+      <!-- 
+        @update:model-value="onChange" 
+      
+      
+      
+      -->
 
       <v-select
         ref="atatSelect"
@@ -24,8 +29,10 @@
         :items="items"
         variant="outlined"
         v-model="_selectedValue"
+        @update:v-model="_selectedValue = $event"
 
-        @update:v-model="[_selectedValue = $event, onChange]"
+        item-title="text"
+        item-value="value"
 
         :rounded="rounded"
         :hide-details="true"
@@ -35,49 +42,24 @@
         :return-object="returnObject"
         :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="_rules"
-        :menu-props="{ location: 'bottom', offset: 0, attach:true }"
+        :menu-props="{ location: 'bottom', offset: 0 }"
         :disabled="menuDisabled"
+        :eager="true"
       >
         <template v-if="showSelectedValue" v-slot:selection="{ item }">
           {{ item.value }}
         </template>
-        <!-- TODO:  validate proper functionality given the removal of 'on' from vslot item -->
         <template v-slot:item="{ item }">
           <v-list-item 
+            :id="getIdText(item.value)"
             :class="[
               {'_item-disabled': item.value.disabled },
               {'d-none': item.value.hidden },
               {'_selected': item.value.value === _selectedValue || item.value === _selectedValue }
             ]"
-          >
-            <div
-              :id="id + '_DropdownListItem_' + item.value.text.replace(/[^A-Z0-9]/ig, '')"
-              :item-value = item.value
-            >
-              <v-list-item-title class="body">
-                {{ item.value.text }}
-              </v-list-item-title>
-              <v-list-item-subtitle v-if="item.value.description">
-                {{ item.value.description }}
-              </v-list-item-subtitle>
-
-            </div>
-          </v-list-item>
-        </template>
-        <!-- TODO check slot append -->
-        <template slot="append-inner">
-          <v-icon v-if="iconType === 'standard'">arrow_drop_down</v-icon>
-          <div
-            class="_dropdown-icon"
-            v-if="iconType === 'chevron'"
-          >
-            <ATATSVGIcon 
-              name="chevronDown" 
-              color="base-darkest" 
-              :width="10" 
-              :height="7" 
-            />
-          </div>
+            :title="item?.raw?.text"
+            :subtitle="item?.raw?.description"
+          />
         </template>
       </v-select>
   
@@ -95,6 +77,7 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { SelectData, ValidationRule } from "../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
@@ -136,25 +119,31 @@ class ATATSelect extends Vue {
   private errorMessages: string[] = [];
   private selectedBeforeChange: SelectData | string = "";
 
-  @Emit("onChange")
-  private onChange(val: string | SelectData): void {
-    const isString = typeof val === "string";
-    const isObject = typeof val === "object"
-    let isSelectable = true;
-    if (isObject && Object.prototype.hasOwnProperty.call(val, "isSelectable")
-      && val.isSelectable !== undefined) {
-      isSelectable = val.isSelectable;
-    }
-    if (isString || isSelectable) {
-      this.selected = val;
-      this.setErrorMessage();
-      this.$emit("selectValueChange", { 
-        "newSelectedValue": val, 
-        "selectedBeforeChange": this.selectedBeforeChange 
-      });
-      this.selectedBeforeChange = val;
-    }
+  public getIdText(text: string): string {
+    debugger;
+    return this.id + "_DropdownListItem_" + getIdText(text);  
   }
+
+  // @Emit("onChange")
+  // private onChange(val: string | SelectData): void {
+  //   debugger;
+  //   const isString = typeof val === "string";
+  //   const isObject = typeof val === "object"
+  //   let isSelectable = true;
+  //   if (isObject && Object.prototype.hasOwnProperty.call(val, "isSelectable")
+  //     && val.isSelectable !== undefined) {
+  //     isSelectable = val.isSelectable;
+  //   }
+  //   if (isString || isSelectable) {
+  //     this.selected = val;
+  //     this.setErrorMessage();
+  //     this.$emit("selectValueChange", { 
+  //       "newSelectedValue": val, 
+  //       "selectedBeforeChange": this.selectedBeforeChange 
+  //     });
+  //     this.selectedBeforeChange = val;
+  //   }
+  // }
 
   public get validateFormNow(): boolean {
     return AcquisitionPackage.getValidateNow;
