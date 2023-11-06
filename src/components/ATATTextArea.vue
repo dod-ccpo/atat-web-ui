@@ -72,6 +72,7 @@ import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
+import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
   emits: ['input'],
@@ -143,9 +144,9 @@ class ATATTextArea extends Vue {
   @Watch('validateFormNow')
   public validateNowChange(): void {
     this.$refs.atatTextArea.validate().then(
-      (response: unknown) => {
-        if ((response as string[]).length === 0)
-        { this.setErrorMessage() }
+      async (response: SubmitEventPromise) => {
+        if (!((await response).valid as boolean)){ 
+          this.setErrorMessage() }
       }
     );
   }
