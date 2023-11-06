@@ -78,7 +78,7 @@
                     "
                   >
                     <span class="d-sr-only">Completed</span>
-                    <v-icon>check_circle</v-icon>
+                    <v-icon>mdi-check-circle</v-icon>
                   </span>
                 </span>
                 <span class="step-text">

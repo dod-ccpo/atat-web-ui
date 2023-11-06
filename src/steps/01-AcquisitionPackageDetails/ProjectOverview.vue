@@ -27,7 +27,8 @@
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectScope
               label="What is the scope of your requirement?"
-              :projectScope.sync="projectScope"
+              :projectScope="projectScope"
+              @update:projectScope="projectScope = $event"
               helpText="Briefly describe the type of resources and services to be
                 acquired, and what is necessary to achieve mission specific
                 outcomes for this particular requirement (e.g., move DITCO’s contract
@@ -55,7 +56,7 @@
             <CJADC2Initiative
               legend='Is this package in support of the Combined Joint All-Domain Command and
                 Control (CJADC2) initiative?'
-              helpText = "CJADC2 is the Department of Defense's (DoD's) concept to connect sensors 
+              helpText = "CJADC2 is the Department of Defense’s (DoD’s) concept to connect sensors 
                 from all of the military services-Air Force, Army, Marine Corps, Navy, 
                 and Space Force-into a single network."
               :cjadc2Initiative="cjadc2Initiative"
@@ -69,8 +70,8 @@
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectDisclaimer
               groupLabelId="disclaimerGroupLabel"
-              :projectDisclaimer="selectedDisclaimer"
-              @update:projectDisclaimer="projectDisclaimer = $event"
+              :selectedDisclaimer="selectedDisclaimer"
+              @update:selectedDisclaimer="selectedDisclaimer = $event"
               :rules="[$validators.required(`You must acknowledge compliance with your 
               Military-specific policies.`)]"
             />
@@ -78,12 +79,13 @@
         </v-col>
       </v-row>
     </v-container>
+
   </v-form>
 </template>
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch , Vue, toNative, mixins, Hook} from "vue-facing-decorator";
+import { Component, Watch , Vue, toNative, Hook} from "vue-facing-decorator";
 
 import ProjectTitle from "./components/ProjectTitle.vue"
 import ProjectScope from "./components/ProjectScope.vue";

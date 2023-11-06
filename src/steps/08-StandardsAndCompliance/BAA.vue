@@ -44,7 +44,8 @@
                 or in part) of the system, and/or for creating, receiving, transmitting, 
                 managing, and disposing of PHI?"
               :items="bAAOptions"
-              :value.sync="selectedBAAOption"
+              :value="selectedBAAOption"
+              @update:value="selectedBAAOption = $event"
               :rules="[$validators.required('Please select an option')]"
             />
 

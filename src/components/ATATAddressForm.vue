@@ -4,7 +4,8 @@
     <ATATRadioGroup
       id="AddressType"
       legend="Type of mailing address"
-      :value.sync="_selectedAddressType"
+      :value="_selectedAddressType"
+      @update:value="_selectedAddressType = $event"
       :items="addressTypeOptions"
       name="AddressType"
       class="mt-3 mb-8"
@@ -19,7 +20,8 @@
           id="StreetAddress"
           label="Street address"
           :class="inputClass"
-          :value.sync="_streetAddress1"
+          :value="_streetAddress1"
+          @update:value="_streetAddress1 = $event"
           :rules="getRules('StreetAddress')"
         />
       </v-col>
@@ -29,7 +31,8 @@
           label="Unit, suite, etc."
           :optional="true"
           :class="inputClass"
-          :value.sync="_streetAddress2"
+          :value="_streetAddress2"
+          @update:value="_streetAddress2 = $event"
           width="160"
         />
       </v-col>
@@ -71,15 +74,16 @@
             : 'col-lg-4',
         ]"
       >
+      <!-- titleKey="text"       -->
         <ATATAutoComplete
           id="State"
           label="State"
           v-if="_selectedAddressType === addressTypes?.USA ?? ''"
           :class="inputClass"
-          titleKey="text"
           :searchFields="['text', 'value']"
           :items="stateListData"
-          :selectedItem.sync="_selectedState"
+          :selectedItem="_selectedState"
+          @update:selectedItem="_selectedState = $event"
           placeholder=""
           icon="arrow_drop_down"
           :rules="getRules('State')"

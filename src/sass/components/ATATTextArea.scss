@@ -35,11 +35,6 @@ textarea{
   }
   
   &.v-input--error {
-    .v-input__control{
-      .v-field--error{
-        border-width: 4px !important;
-      }
-    }
     .v-counter {
       color: $error !important;
       display: block !important;
