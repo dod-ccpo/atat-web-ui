@@ -30,7 +30,6 @@
         variant="outlined"
         v-model="_selectedValue"
         @update:v-model="_selectedValue = $event"
-
         item-title="text"
         item-value="value"
 
@@ -120,7 +119,6 @@ class ATATSelect extends Vue {
   private selectedBeforeChange: SelectData | string = "";
 
   public getIdText(text: string): string {
-    debugger;
     return this.id + "_DropdownListItem_" + getIdText(text);  
   }
 
