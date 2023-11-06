@@ -49,7 +49,7 @@
               <!-- <draggable
                 v-model="optionPeriods"
                 ghost-class="ghost"
-              >
+              > -->
                   <div
                     v-for="(optionPeriod, index) in optionPeriods"
                     :key="getIdText(getOptionPeriodLabel(index))"
@@ -75,7 +75,8 @@
                           width="178"
                           :showErrorMessages="false"
                           @errorMessage = "setDurationErrorMessages($event, index)"
-                          :value.sync="optionPeriods[index].duration"
+                          :value="optionPeriods[index].duration"
+                          @update:value="optionPeriods[index].duration = $event"
                           type="number"
                           :rules="[
                             $validators.required(''),
@@ -88,7 +89,8 @@
                           :items="timePeriods"
                           width="178"
                           :showErrorMessages="false"
-                          :selectedValue.sync="optionPeriods[index].unitOfTime"
+                          :selectedValue="optionPeriods[index].unitOfTime"
+                          @update:selectedValue="optionPeriods[index].unitOfTime = $event"
                           @errorMessage = "setDurationErrorMessages($event, index)"
                           class="mr-4"
                         />
@@ -105,7 +107,7 @@
                           aria-label="Duplicate this option period"
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
                         >
-                          <v-icon> content_copy </v-icon>
+                          <v-icon> mdi-content-copy </v-icon>
                         </v-btn>
 
                         <v-btn
@@ -115,7 +117,7 @@
                           aria-label="Delete this option period"
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Delete'"
                         >
-                          <v-icon> delete </v-icon>
+                          <v-icon> mdi-delete </v-icon>
                         </v-btn>
                       </div>
 
@@ -138,7 +140,7 @@
                       v-if="oneYearCheck(optionPeriods[index])"
                     />
                   </div>
-              </draggable> -->
+              <!-- </draggable> -->
             </div>
 
             <v-btn
@@ -149,7 +151,7 @@
               :ripple="false"
               @click="addOptionPeriod()"
             >
-              <v-icon color="primary" class="mr-2">control_point</v-icon>
+              <v-icon color="primary" class="mr-2">mdi-plus-circle-outline</v-icon>
               <span>Add an option period</span>
             </v-btn>
           </v-col>
