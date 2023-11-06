@@ -1,8 +1,21 @@
 ._search-input.v-text-field {
-  fieldset {
+  .v-field.v-field--variant-outlined {
+    top: 1px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    top: -4px;
+    border: none !important;
+    outline: 1px solid $base-darkest;
+    max-height: 40px;
+    &.v-field--focused {
+      border: none;
+      outline: 2px solid $primary;
+      outline-offset: -1px;
+    }
+    
+
+  }
+  .v-field__field, .v-field__input {
+    max-height: 38px;
   }
   .v-text-field__details {
     display: none;
