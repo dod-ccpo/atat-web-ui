@@ -6,7 +6,6 @@
   border: 1px solid transparent;
   padding: 16px 24px;
   position: relative;
-  background-color: $error-lighter;
 
   &._has-expandable-header {
     padding: 16px 24px 32px !important;
@@ -72,9 +71,6 @@
     
     .v-icon {
       color: $info;
-    }
-    .v-btn {
-      background-color: $info_lighter;
     }
   }
 

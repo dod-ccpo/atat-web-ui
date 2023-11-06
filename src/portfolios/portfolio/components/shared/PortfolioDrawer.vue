@@ -16,6 +16,7 @@
             @blur="saveDescription"
             :readonly="isReadOnly || currentUserIsViewer"
             :disabled="isReadOnly || currentUserIsViewer"
+            variant="plain"
           />
         </div>
 

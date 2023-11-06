@@ -116,7 +116,7 @@ class DonutChart extends Vue {
       tooltipEl.style.opacity = 0;
       return;
     }
-
+    
     if (tooltip.body) {
       const bodyLines = tooltip.body.map((b: any) => b.lines);
       const labelText = bodyLines[0][0];
