@@ -19,7 +19,7 @@
       <ul class="mt-4 ml-6">
         <li class="mb-2">
           <a 
-            :href="section508Href"
+            href="https://www.section508.gov"
             target="_blank"
             class="_text-link"
           >
@@ -28,7 +28,7 @@
         </li>
         <li class="mb-2">
           <a 
-            :href="artHref" 
+            href="https://www.section508.gov/art/" 
             target="_blank"
             class="_text-link"
           >
@@ -37,7 +37,7 @@
         </li>
         <li class="mb-2">
           <a 
-            :href="ictRevisedStandardsHref" 
+            href="https://www.access-board.gov/ict/" 
             target="_blank"
             class="_text-link"
           >
@@ -55,10 +55,6 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 
 @Component({})
 class Section508StandardsLearnMore extends Vue {
-  /* eslint-disable max-len */
-  private section508Href = `https://www.section508.gov`;
-  private artHref= `https://www.section508.gov/art/`;
-  private ictRevisedStandardsHref= `https://www.access-board.gov/ict/`;
 }
 export default toNative(Section508StandardsLearnMore)
 </script>
