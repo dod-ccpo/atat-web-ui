@@ -22,7 +22,8 @@
             </div>
             <ATATCheckboxGroup
               id="ClassificationLevelCheckboxes"
-              :value.sync="selectedOptions"
+              :value="selectedOptions"
+              @update:value="selectedOptions = $event"
               :items="checkboxItems"
               name="checkboxes"
               :card="false"

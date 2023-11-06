@@ -49,9 +49,11 @@
                 class="mb-12 mt-5"
                 :componentIndex="index"
                 :regionUsersOnLoad="anticipatedNeedsData[index].users_per_region"
+                @update:regionUsersOnLoad="anticipatedNeedsData[index].users_per_region = $event"
                 :id="'Regions' +index"
                 :index="index"
                 @regionUserDataUpdate="regionUserDataUpdate"
+                @update:regionUserDataUpdate="regionUserDataUpdate = $event"
               />
               <AnticipatedDataNeeds
                 :index="index"

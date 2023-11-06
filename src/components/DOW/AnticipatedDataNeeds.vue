@@ -12,7 +12,8 @@
         :dropdownOptions="dataUnits"
         :value="_dataTextFieldValue"
         @update:value="_dataTextFieldValue = $event"
-        :selectedDropdownValue.sync="_dataDropdownValue"
+        :selectedDropdownValue="_dataDropdownValue"
+        @update:selectedDropdownValue="_dataDropdownValue = $event"
         :rules="[
           $validators.required('Enter the amount of data egress anticipated in this task order.')
         ]"
