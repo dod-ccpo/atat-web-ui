@@ -31,7 +31,8 @@
               legend="Does this effort provide for the design, development, or operation of a system
                 of records on individuals by the contractor (in whole or in part)?"
               :items="pIIOptions"
-              :value.sync="selectedPIIOption"
+              :value="selectedPIIOption"
+              @update:value="selectedPIIOption = $event"
               :rules="[$validators.required('Please select an option')]"
             />
 
