@@ -76,12 +76,12 @@
             : 'col-lg-4',
         ]"
       >
+      <!-- titleKey="text"       -->
         <ATATAutoComplete
           id="State"
           label="State"
           v-if="_selectedAddressType === addressTypes?.USA ?? ''"
           :class="inputClass"
-          titleKey="text"
           :searchFields="['text', 'value']"
           :items="stateListData"
           :selectedItem="_selectedState"

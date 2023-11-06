@@ -1,4 +1,43 @@
+.v-autocomplete__content {
+  max-width: 416px !important;   
+
+    &.v-menu__content {
+    box-shadow: 0px 4px 10px rgba(194, 194, 194, 0.5);
+    border-radius: 8px;
+    .v-list-item--active {
+      &:before {
+        opacity: 0;
+      }
+      background-color: $primary-lighter !important;
+      color: $base-darkest !important;
+      .v-list-item-title {
+        font-weight: 700 !important;
+      }
+    }
+  }
+}
+
+.v-field--focused {
+  .v-field__outline {
+    color: $primary !important
+  }
+  &.v-field--error {
+    .v-field__outline {
+      color: $error !important
+    }    
+  }
+}
+
 .v-autocomplete {
+  .v-field__input {
+    padding: 0 12px;
+    height: 40px !important;
+    min-height: 40px !important;
+  }
+  .v-field__field {
+    height: 40px !important;
+  }
+
   &.v-select {
     &.v-select--is-menu-active {
       &.icon-no-rotate {
@@ -14,20 +53,7 @@
     }
   }
 
-  .v-autocomplete__content.v-menu__content {
-    box-shadow: 0px 4px 10px rgba(194, 194, 194, 0.5);
-    border-radius: 8px;
-    .v-list-item--active {
-      &:before {
-        opacity: 0;
-      }
-      background-color: $primary-lighter !important;
-      color: $base-darkest !important;
-      .v-list-item-title {
-        font-weight: 700 !important;
-      }
-    }
-  }
+  
   
   .v-select__slot {
     input {

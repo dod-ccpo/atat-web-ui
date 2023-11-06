@@ -16,10 +16,11 @@
         :helpText="helpText"
       >
       </ATATRadioGroup>
+
       <div v-if='_cjadc2Initiative=== "YES"' class="mt-4">
         <ATATTextField
-          label="Estimate the percent of this package's total estimated funds that will go to 
-                CJADC2 programs or efforts."
+          label="Estimate the percent of this package’s total estimated funds that will go to 
+            CJADC2 programs or efforts."
           :value.sync='_cjadc2Percentage'
           @update:value="_cjadc2Percentage = $event"
           id="CJADC2PricePercentage"
@@ -32,6 +33,7 @@
           width="100"
         />
       </div>
+      
     </div>
 </template>
  
@@ -87,7 +89,7 @@ class CJADC2Initiative extends Vue {
       : this._cjadc2Percentage
   }
 
-  public helpTextLinkClicked(e: Event):void{
+  public helpTextLinkClicked():void{
     // eslint-disable-next-line max-len
     const link = "https://media.defense.gov/2022/Mar/17/2002958406/-1/-1/1/SUMMARY-OF-THE-JOINT-ALL-DOMAIN-COMMAND-AND-CONTROL-STRATEGY.PDF"
     window.open(link, "_blank");

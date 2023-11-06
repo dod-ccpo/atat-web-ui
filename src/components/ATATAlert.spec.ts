@@ -95,7 +95,7 @@ describe("Testing ATATStepperNavigation", () => {
         type: "success",
       });
       const inputClass = await wrapper.vm.getIcon();
-      expect(inputClass).toBe("check_circle");
+      expect(inputClass).toBe("mdi-check-circle");
     });
 
     it("getIcon() - setting $props.size==='error' to retrieve error icon", async () => {

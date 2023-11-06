@@ -22,10 +22,12 @@
             </div>
             <ATATCheckboxGroup
               id="PackagingEtcCheckboxes"
-              :value.sync="selectedOptions"
+              :value="selectedOptions"
+              @update:value="selectedOptions = $event"
               :hasOtherValue="true"
               :otherValue="otherValue"
-              :otherValueEntered.sync="otherValueEntered"
+              :otherValueEntered="otherValueEntered"
+              @update:otherValueEntered="otherValueEntered = $event"
               :otherValueRequiredMessage="otherValueRequiredMessage"
               :noneValue="noneApplyValue"
               :items="checkboxItems"
@@ -112,8 +114,9 @@ class PackagingPackingAndShipping extends Vue {
     },    
   ];
 
-  @Watch("selectedOptions")
+  @Watch("selectedOptions", {deep: true})
   public selectedOptionsChange(newVal: string[]): void {
+    debugger;
     this.noneApplySelected = newVal.indexOf(this.noneApplyValue) > -1 ? "true" : "false";
     this.otherSelected = newVal.indexOf(this.otherValue) > -1 ? "true" : "false";
     this.contractorProvidedTransportSelected 
