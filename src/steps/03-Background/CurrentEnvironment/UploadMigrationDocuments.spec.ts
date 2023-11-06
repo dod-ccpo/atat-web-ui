@@ -12,7 +12,6 @@ import { createStore } from 'vuex';
 
 vi.mock('@/store/acquisitionPackage')
 vi.mock('@/store/acquisitionPackage/currentEnvironment')
-vi.mock('@/store/attachments')
 
 const uploadingFile = {
   "file": {
@@ -95,8 +94,11 @@ describe("Testing UploadMigrationDocuments Component", () => {
         vi.spyOn(AcquisitionPackage, "setValidateNow")
           .mockImplementation(Promise.resolve);
       })
-      it.skip("validates assigned Objects", async () => {
+      it("validates assigned Objects", async () => {
         vi.spyOn(vm, "hasChanged").mockReturnValue(true);
+        vi.spyOn(AcquisitionPackage, 'setValidateNow').mockImplementation(
+          () => Promise.resolve()
+        );
         vi.spyOn(CurrentEnvironment, "saveCurrentEnvironment")
           .mockReturnValue(Promise.resolve(true))
         const saved = await vm.saveOnLeave();
@@ -109,9 +111,12 @@ describe("Testing UploadMigrationDocuments Component", () => {
         expect(matchedKeys.length).toBeGreaterThan(0);
       });
 
-      it.skip("mocks an error", async () => {
+      it("mocks an error", async () => {
         const errMessage = 'dummy Error Message'
         vi.spyOn(vm, "hasChanged").mockResolvedValue(true);
+        vi.spyOn(AcquisitionPackage, 'setValidateNow').mockImplementation(
+          () => Promise.resolve()
+        );
         vi.spyOn(CurrentEnvironment, "saveCurrentEnvironment")
           .mockRejectedValue(errMessage)
         await vm.saveOnLeave()
@@ -154,20 +159,24 @@ describe("Testing UploadMigrationDocuments Component", () => {
     })
 
     describe("loadAttachments() => ", () => {
-      it.skip("ensure $data attributes are set as expected ", async () => {
+      it("ensure $data attributes are set as expected ", async () => {
+        const attachmentDTOArray = [
+          { file_name: "fileName001" },
+          { file_name: "fileName002" },
+          { file_name: "fileName003" },
+        ] as AttachmentDTO[]
         wrapper.setData({
           currEnvDTO: {}
         })
-        //TODO Mock out the call and return expected data
-        // vi.spyOn(Attachments, 'getAttachmentsBySysIds').getResolvedValue({
-        //   file_name: 'file',
-        //   table_sys_id: 'abc123',
-        // })
+
+        vi.spyOn(Attachments, 'getAttachmentsBySysIds').mockImplementation(async () => {
+          return attachmentDTOArray
+        })
         await vm.loadAttachments()
         expect(vm.$data.currEnvDTO.migration_documentation).toHaveLength(0)
       });
 
-      it.skip("ensure store methods are called with necessary params", async () => {
+      it("ensure store methods are called with necessary params", async () => {
         wrapper.setData({
           currEnvDTO: {
             migration_documentation: ['dummyFile01']
@@ -256,17 +265,19 @@ describe("Testing UploadMigrationDocuments Component", () => {
 
   describe("GETTERS", () => {
     describe("currentData() => validates dataset with   ", () => {
-      it.skip("POPULATED value", async () => {
+      it("POPULATED value", async () => {
         const hasMigrationDocs = "YES"
         wrapper.setData({ hasMigrationDocumentation: hasMigrationDocs })
         const currentData = vm.currentData;
-        expect(currentData.has_migration_documentation).toBe(hasMigrationDocs)
+        expect(currentData.hasMigrationDocumentation).toBe(hasMigrationDocs)
       });
+
       it.skip("NO value", async () => {
-        const hasMigrationDocs = ""
-        wrapper.setData({ hasMigrationDocumentation: hasMigrationDocs })
+        const hasMigrationDoc = "NO"
+        wrapper.setData({ hasMigrationDocumentation: hasMigrationDoc })
+        vm.$nextTick()
         const currentData = vm.currentData;
-        expect(currentData.has_migration_documentation).toBe(hasMigrationDocs)
+        expect(currentData.hasMigrationDocumentation).toBe(hasMigrationDoc)
       });
     })
   })
