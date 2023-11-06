@@ -4,6 +4,10 @@
   opacity: 1 !important;
   z-index: 300 !important;
 
+  .v-overlay__content {
+    background-color: transparent;
+  }
+
   ._tooltip-content-wrap {
     transition: opacity 0.25s !important;
     background-color: rgba($base-darkest, 0.9);

@@ -7,13 +7,13 @@
       legend="What role best describes your affiliation with the DoD?"
       id="ContactRole"
       :items="contactRoles"
-      :value.sync="selectedRole"
+      :value="selectedRole"
+      @update:value="selectedRole = $event"
       class="mb-6"
       @radioButtonSelected="contactTypeChange"
       :rules="[$validators.required('Please select your role.')]"
     />
-
-    <v-form ref="form">
+    <v-form ref="form" v-if="selectedRole !== ''">
       <v-row class="form-section">
       <v-col>
         <ATATSelect
@@ -39,7 +39,8 @@
           :optional="true"
           placeholder=""
           :items="salutationData"
-          :selectedValue.sync="selectedSalutation"
+          :selectedValue="selectedSalutation"
+          @update:selectedValue="selectedSalutation = $event"
         />
 
         <ATATAutoComplete
