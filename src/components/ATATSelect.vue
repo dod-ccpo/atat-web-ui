@@ -121,7 +121,6 @@ class ATATSelect extends Vue {
   private selectedBeforeChange: SelectData | string = "";
 
   public getIdText(text: string): string {
-    debugger;
     return this.id + "_DropdownListItem_" + getIdText(text);  
   }
 
