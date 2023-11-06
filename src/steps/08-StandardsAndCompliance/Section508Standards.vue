@@ -183,11 +183,36 @@
                 </template>
                 <template v-slot:content>
                   <p>
-                    (To be completed in next milestone)
+                    The <a 
+                      href="https://www.section508.gov/art/#/"
+                      target="_blank"
+                      class="_text-link"
+                    >Accessibility Requirements Tool
+                       <span class="_external-link">(ART)</span></a> is a step-by-step guide 
+                    that helps you determine and properly document IT accessibility requirements 
+                    in contracting documents. From the ART website, you can choose from 
+                    pre-packaged sample procurements for standard ICT products and services, or 
+                    start a new procurement to identify your relevant accessibility requirements.
                   </p>
+                  <p>
+                    ART will guide you through a series of questions about your procurement, 
+                    beginning with potential exceptions. If no exceptions apply, the tool will walk 
+                    you through the criteria for each item in your procurement, then produce a 
+                    comprehensive report detailing all the applicable standards and exceptions that 
+                    apply to your procurement. This document provides guidance on the following 
+                    areas:
+                  </p>
+                  <p class="ml-6">
+                    <ul>
+                    <li class="mb-2">Exceptions;</li>
+                    <li class="mb-2">Hardware;</li>
+                    <li class="mb-2">Electronic content;</li>
+                    <li class="mb-2">Software; and</li>
+                    <li class="mb-2">ICT support products and services.</li>
+                  </ul>
+                </p>
                 </template>
               </ATATExpandableLink>
-
             </div>
           </v-col>
         </v-row>
