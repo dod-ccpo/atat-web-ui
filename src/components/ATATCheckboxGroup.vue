@@ -89,7 +89,7 @@
         </template>
 
         <template v-slot:append>
-          <template v-if="(otherIsSelected || hasTextFields) && item.value === otherValue">
+          <template v-if="otherIsSelected && item.value === otherValue">
             <ATATTextArea
               v-if="otherEntryType === 'textarea'"
               ref="atatTextInput"
@@ -113,9 +113,10 @@
               @update:value="_otherValueEntered = $event"
               :rules="otherRequiredRule"
             />
-
+          </template>
+          <template v-if="hasTextFields">
             <ATATTextField
-              v-if="hasTextFields"
+              v-if="showTextField(index)"
               ref="atatTextInput"
               :id="id + '_TextField' + index"
               :appendText="textFieldAppendText"
@@ -251,7 +252,7 @@ class ATATCheckboxGroup extends Vue {
 
   @Watch("value", {deep: true})
   public valueChanged(newVal: string[]): void{
-    debugger
+    // debugger
   } 
 
   @Watch("rules", {deep: true})
@@ -277,6 +278,10 @@ class ATATCheckboxGroup extends Vue {
 
   get otherId(): string {
     return "Other_" + getIdText(this.otherValue);
+  }
+
+  private showTextField(index: number): boolean {
+    return this.selectedIndices.includes(index);
   }
 
   public textFieldBlur(index: number): void {

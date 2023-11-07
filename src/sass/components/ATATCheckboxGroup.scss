@@ -49,6 +49,17 @@
   }
 }
 
+._checkbox._has-text-fields {
+  display: flex !important;
+  .v-selection-control {
+    display: flex;
+    align-items: center;
+  }
+  .v-selection-control__wrapper {
+    height: 24px;
+  }
+}
+
 ._checkboxes ._checkbox {
   .mdi-checkbox-blank-outline { // unchecked
     color: $base;

@@ -3,7 +3,8 @@
   <ATATCheckboxGroup
     :id="id"
     :index="index"
-    :items.sync="regions"
+    :items="regions"
+    @update:items="regions = $event"
     :groupLabel="groupLabel"
     :groupLabelId="groupLabelId"
     :groupLabelHelpText="groupLabelHelpText"
@@ -32,6 +33,7 @@ import { Checkbox } from "types/Global";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  emits: ["selectedRegionsUpdate", "regionUserDataUpdate"],
   components: {
     ATATCheckboxGroup
   }
