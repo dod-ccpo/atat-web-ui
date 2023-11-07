@@ -250,9 +250,9 @@ class ATATCheckboxGroup extends Vue {
 
   public checkboxRules: ValidationRule[] = [];
 
-  @Watch("value", {deep: true})
-  public valueChanged(newVal: string[]): void{
-  } 
+  // @Watch("value", {deep: true})
+  // public valueChanged(newVal: string[]): void{
+  // }
 
   @Watch("rules", {deep: true})
   public rulesChanged(): void {
