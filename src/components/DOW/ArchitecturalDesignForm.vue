@@ -40,7 +40,7 @@
 
             <ATATCheckboxGroup
               id="ClassificationLevelCheckboxes"
-              :value.sync="_dataClassificationsImpactLevels"
+              :value="_dataClassificationsImpactLevels"
               @update:value="_dataClassificationsImpactLevels = $event"
               :items="classificationCheckboxes"
               groupLabel="What data classification and impact level(s) do you need an 

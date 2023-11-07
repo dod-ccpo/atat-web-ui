@@ -8,7 +8,6 @@ import { PropsConfig } from 'vue-facing-decorator/dist/option/props';
  * @param options - The options for the prop (type, default, validator, etc.).
  */
 export function PropSync(propName: string, options: PropsConfig = {}) {
-  debugger
   return createDecorator((componentOptions, k: string) => {
     // Ensure props and computed options exist
     componentOptions.emits = [...componentOptions.emits, `update:${propName}`]

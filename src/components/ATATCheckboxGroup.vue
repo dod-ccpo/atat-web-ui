@@ -43,7 +43,7 @@
         :error="error"
         :disabled="disabled"
         :rules="checkboxRules"
-        multiple
+        :multiple="true"
         :hide-details="true"
         :ref="index === 0 ? 'checkboxGroup' : ''"
         :data-group-id="id + '_Group'"
