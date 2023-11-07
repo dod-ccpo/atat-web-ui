@@ -239,6 +239,7 @@ export default defineConfig(({command, mode}) => {
         'src/steps/02-EvaluationCriteria/EvalPlan/components/CustomSpecifications.spec.ts',
         'src/steps/02-EvaluationCriteria/SummaryStepTwo.spec.ts',
         'src/steps/03-Background/CurrentContract/components/CurrentContractOptions.spec.ts',
+        'src/steps/03-Background/CurrentEnvironment/EnvironmentSummary.spec.ts',
         'src/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.spec.ts', //nested store API calls
         'src/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.spec.ts', //nested store API calls
         'src/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.spec.ts',
