@@ -52,12 +52,14 @@ const currEnvironmentDTO: CurrentEnvironmentDTO = {
   data_classifications_impact_levels: [],
   external_factors_architectural_design: ""
 };
+
 const actions = {
   getAttachmentsBySysIds: vi.fn().mockResolvedValue({
     file_name: 'file',
     table_sys_id: 'abc123',
   })
 }
+
 const mockStore = createStore({
   modules: {
     Attachments: {
@@ -68,16 +70,15 @@ const mockStore = createStore({
 })
 
 describe("Testing UploadMigrationDocuments Component", () => {
+
   const wrapper: VueWrapper = shallowMount(UploadMigrationDocuments, {
     props: {},
     global: {
       plugins: [mockStore,validators]
     }
   })
-  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
-  // describe("Testing Classification Level Page", () => {
 
-  // });
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   describe("FUNCTIONS", () => {
     it("hasChanged()", async () => {
@@ -267,15 +268,14 @@ describe("Testing UploadMigrationDocuments Component", () => {
     describe("currentData() => validates dataset with   ", () => {
       it("POPULATED value", async () => {
         const hasMigrationDocs = "YES"
-        wrapper.setData({ hasMigrationDocumentation: hasMigrationDocs })
+        wrapper.setData({ currentData: {hasMigrationDocumentation: hasMigrationDocs} })
         const currentData = vm.currentData;
         expect(currentData.hasMigrationDocumentation).toBe(hasMigrationDocs)
       });
 
-      it.skip("NO value", async () => {
+      it("NO value", async () => {
         const hasMigrationDoc = "NO"
-        wrapper.setData({ hasMigrationDocumentation: hasMigrationDoc })
-        vm.$nextTick()
+        wrapper.setData({ currentData: {hasMigrationDocumentation: hasMigrationDoc} })
         const currentData = vm.currentData;
         expect(currentData.hasMigrationDocumentation).toBe(hasMigrationDoc)
       });
