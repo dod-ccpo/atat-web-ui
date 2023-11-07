@@ -111,7 +111,8 @@
                 cloud resources or to continue funding an existing portfolio.
               </p>
               <TaskOrderSearch
-                :TONumber.sync="TONumber"
+                :TONumber="TONumber"
+                @update:TONumber="TONumber = $event"
                 @startProvisionWorkflow="startProvisionWorkflow"
               />
             </v-card>            

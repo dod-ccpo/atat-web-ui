@@ -249,6 +249,11 @@ class ATATCheckboxGroup extends Vue {
 
   public checkboxRules: ValidationRule[] = [];
 
+  @Watch("value", {deep: true})
+  public valueChanged(newVal: string[]): void{
+    debugger
+  } 
+
   @Watch("rules", {deep: true})
   public rulesChanged(): void {
     this.checkboxRules = [];
@@ -449,7 +454,7 @@ class ATATCheckboxGroup extends Vue {
   public mounted(): void {
     this.isLoading = true;
     this.setEventListeners();
-   
+    debugger
     // if validateOnLoad, then validate checkboxes immediately
     if (this.validateOnLoad){
       this.validateCheckboxesNow = true;

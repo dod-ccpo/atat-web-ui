@@ -144,7 +144,7 @@ class ATATAlert extends Vue {
     case "info" : return "mdi-information";
     case "error" : return "mdi-alert-circle";
     case "warning" : return "mdi-alert"
-    default: "";
+    default: return "";
     }
   }
 
