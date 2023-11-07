@@ -1,12 +1,9 @@
 /* eslint-disable camelcase */
 import { describe, it, expect, vi} from 'vitest';
 import { VueWrapper, shallowMount } from '@vue/test-utils';
-//import { DefaultProps } from "vue/types/options";
-//import validators from "../../../plugins/validation";
 import CurrentContract 
   from "@/steps/03-Background/CurrentContract/CurrentContract.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import * as ResolverExportedFunctions from "../../../router/resolvers/index";
 
 describe("Testing CurrentContract Component", () => {
   

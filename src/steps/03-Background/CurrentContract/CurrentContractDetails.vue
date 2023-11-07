@@ -287,12 +287,12 @@ class CurrentContract extends Vue {
   }
 
   get startDate():string{
-    const d = this.currentContract.contract_order_start_date || "";
+    const d = this.currentContract?.contract_order_start_date || "";
     return d !=="" ? formatISO(new Date(d), { representation: 'date' }) : "" 
   }
 
   get expirationDate():string{
-    const d = this.currentContract.contract_order_expiration_date || "";
+    const d = this.currentContract?.contract_order_expiration_date || "";
     return d !=="" ? formatISO(new Date(d), { representation: 'date' }) : "" 
   }
 
