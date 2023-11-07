@@ -11,7 +11,8 @@
               class="_input-max-width mb-10"
               label="Full name"
               helpText="Include rank, if applicable"
-              :value.sync="fullName"
+              :value="fullName"
+              @update:value="fullName = $event"
               :rules="[
                 $validators.required(
                   'Please enter your FOIA coordinator’s full name.'
@@ -24,7 +25,8 @@
               class="_input-max-width mb-10"
               label="Email address"
               helpText="Enter a .mil or .gov email address."
-              :value.sync="emailAddress"
+              :value="emailAddress"
+              @update:value="emailAddress = $event"
               :rules="[
                 $validators.required('Please enter your email address.'),
                 $validators.isEmail(),
@@ -36,8 +38,11 @@
             <ATATAddressForm
               :addressTypeOptions="addressTypeOptions"
               :addressTypes="addressTypes"
-              :city.sync="city"
+              :city="city"
+              @update:city="city = $event"
               :countryListData="countryListData"
+              :stateCodeListData="stateCodeListData"
+              :stateListData="stateListData"
               :militaryPostOfficeOptions="militaryPostOfficeOptions"
               :minLength="[]"
               :requiredFields="[
@@ -72,17 +77,24 @@
                   isMaskRegex: true,
                 },
               ]"
-              :selectedAddressType.sync="selectedAddressType"
-              :selectedCountry.sync="selectedCountry"
-              :selectedMilitaryPO.sync="selectedMilitaryPO"
-              :selectedState.sync="selectedState"
-              :selectedStateCode.sync="selectedStateCode"
-              :stateCodeListData="stateCodeListData"
-              :stateListData="stateListData"
-              :stateOrProvince.sync="stateOrProvince"
-              :streetAddress1.sync="streetAddress1"
-              :streetAddress2.sync="streetAddress2"
-              :zipCode.sync="zipCode"
+              :selectedAddressType="selectedAddressType"
+              @update:selectedAddressType="selectedAddressType = $event"
+              :selectedCountry="selectedCountry"
+              @update:selectedCountry="selectedCountry = $event"
+              :selectedMilitaryPO="selectedMilitaryPO"
+              @update:selectedMilitaryPO="selectedMilitaryPO = $event"
+              :selectedState="selectedState"
+              @update:selectedState="selectedState = $event"
+              :selectedStateCode="selectedStateCode"
+              @update:selectedStateCode="selectedStateCode = $event"
+              :stateOrProvince="stateOrProvince"
+              @update:stateOrProvince="stateOrProvince = $event"
+              :streetAddress1="streetAddress1"
+              @update:streetAddress1="streetAddress1 = $event"
+              :streetAddress2="streetAddress2"
+              @update:streetAddress2="streetAddress2 = $event"
+              :zipCode="zipCode"
+              @update:zipCode="zipCode = $event"
             />
           </v-col>
         </v-row>

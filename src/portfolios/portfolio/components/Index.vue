@@ -29,18 +29,20 @@
     </div>
 
     <v-main
-      class="_dashboard"
+      class="_dashboard _scroll-y"
       :class="[
         {'_funding-dashboard': tabItems[tabIndex] === 'Funding Tracker'},
-        {'bg-white': isPortfolioProvisioning}
+        {'bg-white': isPortfolioProvisioning},
       ]"
     >
         <PortfolioSummaryPageHead
           headline="Portfolio Summary"
           :items ="tabItems"
           :environmentLinks="environmentLinks"
-          :value.sync="tabIndex"
-          :title.sync="title"
+          :value="tabIndex"
+          @update:value="tabIndex = $event"
+          :title="title"
+          @update:title="title = $event"
           :isPortfolioProvisioning="isPortfolioProvisioning"
           @leavePortfolio="openLeavePortfolioModal"
         />
@@ -56,11 +58,12 @@
             <TaskOrder 
             v-if="tabItems[tabIndex] === 'Task Orders'" 
             :portfolioSysId="portfolioSysId"
-            :taskOrder.sync = "taskOrder"
+            :taskOrder = "taskOrder"
+            @update:taskOrder = "taskOrder = $event"
             />
         </v-container>
 
-        <Provisioned v-else style="margin-bottom: 100px;"/>
+        <PortfolioProvisioned v-else style="margin-bottom: 100px;"/>
         <LeavePortfolioModal
           :showModal="showLeavePortfolioModal" 
           :portfolioName="getCurrentPortfolioTitle"
@@ -85,7 +88,7 @@ import PortfolioSummaryPageHead from
 import FundingTracker from "@/portfolios/portfolio/components/FundingTracker/FundingTracker.vue";
 import TaskOrder from "@/portfolios/portfolio/components/TaskOrder/TaskOrder.vue";
 
-import Provisioned from "@/portfolios/provisioning/Provisioned.vue";
+import PortfolioProvisioned from "@/portfolios/provisioning/PortfolioProvisioned.vue";
 
 import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
@@ -105,7 +108,7 @@ import LeavePortfolioModal from "./shared/LeavePortfolioModal.vue";
     ATATSlideoutPanel,
     ATATSVGIcon,
     ATATToast,
-    Provisioned,
+    PortfolioProvisioned,
     LeavePortfolioModal
   }
 })
@@ -234,6 +237,7 @@ class PortfolioSummary extends Vue {
       this.isPortfolioProvisioning = true;
       this.title = provisioningData.portfolioTitle ?? "Untitled Portfolio"
     }
+    
   }
   public async mounted(): Promise<void>{
     await this.loadOnEnter();

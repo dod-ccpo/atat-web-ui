@@ -68,7 +68,8 @@
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
-              :value.sync="selectedXaasOptions"
+              :value="selectedXaasOptions"
+              @update:value="selectedXaasOptions = $event"
               aria-describedby="XaaSLabel"
               class="copy-max-width"
               groupLabel="What type of XaaS resources, tools, and services do you need?"
@@ -84,7 +85,8 @@
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
-              :value.sync="selectedCloudOptions"
+              :value="selectedCloudOptions"
+              @update:value="selectedCloudOptions = $event"
               aria-describedby="CloudSupportLabel"
               class="copy-max-width"
               groupLabel="What type of services do you need in a cloud support package?"

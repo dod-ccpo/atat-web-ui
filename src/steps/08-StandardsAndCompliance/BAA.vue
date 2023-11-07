@@ -44,7 +44,8 @@
                 or in part) of the system, and/or for creating, receiving, transmitting, 
                 managing, and disposing of PHI?"
               :items="bAAOptions"
-              :value.sync="selectedBAAOption"
+              :value="selectedBAAOption"
+              @update:value="selectedBAAOption = $event"
               :rules="[$validators.required('Please select an option')]"
             />
 
@@ -126,7 +127,7 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import BAALearnMore from "./BAALearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import { RadioButton, SlideoutPanelContent } from "types/Global";
 import {SensitiveInformationDTO} from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";

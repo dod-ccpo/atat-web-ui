@@ -157,7 +157,7 @@
                 :ripple="false"
                 @click="addIncrement()"
               >
-                <v-icon color="primary" class="mr-2">control_point</v-icon>
+                <v-icon color="primary" class="mr-2">mdi-plus-circle-outline</v-icon>
                 <span>Add funding increment</span>
               </v-btn>
 
@@ -244,7 +244,7 @@
           class="width-70 mt-5"
           v-if=" isOverfunded || isUnderfunded "
         >
-          <template slot="content">
+          <template v-slot:content>
             <p class="mb-0">
               Based on your requirement’s cost estimate, your plan is
               <strong>{{ isOverfunded ? 'over' : 'under'}}funded</strong>. 

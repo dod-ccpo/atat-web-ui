@@ -4871,7 +4871,7 @@ hr, .hr {
   padding: 6px 12px !important;
   background-color: transparent !important;
 }
-.v-btn.link-button.tooltip-button {
+.v-btn.link-button._tooltip-button {
   padding: 12px !important;
 }
 .v-btn.link-button i {
@@ -5424,7 +5424,7 @@ header .v-toolbar__content {
   padding: 6px 12px !important;
   background-color: transparent !important;
 }
-.v-dialog .v-card .v-card__actions .v-btn.link-button.tooltip-button {
+.v-dialog .v-card .v-card__actions .v-btn.link-button._tooltip-button {
   padding: 12px !important;
 }
 .v-dialog .v-card .v-card__actions .v-btn.link-button i {

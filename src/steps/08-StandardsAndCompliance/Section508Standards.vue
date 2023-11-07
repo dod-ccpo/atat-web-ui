@@ -12,8 +12,15 @@
                 The overarching JWCC Contract provides the following language to
                 ensure CSPs comply with the government’s Section 508 Accessibility
                 Standards for Cloud Computing. If your project requires different
-                compliance standards, we’ll gather that info next. Learn more
-                about Section 508.
+                compliance standards, we’ll gather that info next.
+                <a role="button"
+                  id="LearnMoreBAA"
+                  tabindex="0"
+                  @click="openSlideoutPanel"
+                  @keydown.enter="openSlideoutPanel"
+                  @keydown.space="openSlideoutPanel">
+                  Learn more about Section 508.
+                </a>
               </p>
               <ATATAlert 
                 id="Section508Callout" 
@@ -21,7 +28,7 @@
                 maxHeight="460"
                 class="mb-10"
               >
-                <template slot="content">
+                <template v-slot:content>
                   <h2>
                     Section 508 Accessibility Standards for Cloud Computing
                   </h2>
@@ -31,7 +38,7 @@
                     Rehabiliation Act
                   </p>
 
-                  <span class="font-size-20 _semibold mb-4 d-block">
+                  <span class="font-size-20 _semibold mb-4 mt-5 d-block">
                     Electronic Content Technical Criteria:
                   </span>
                   <ul class="_atat-ul">
@@ -160,7 +167,8 @@
               <ATATRadioGroup
                 id="Section508RadioGroup"
                 legend="Are the above Section 508 requirements sufficient for this acquisition?"
-                :value.sync="selected508Response"
+                :value="selected508Response"
+                @update:value="selected508Response = $event"
                 :items="section508Options"
                 @radioButtonSelected = "radioButtonSelected"
                 name="Section508RadioGroup"
@@ -175,11 +183,36 @@
                 </template>
                 <template v-slot:content>
                   <p>
-                    (To be completed in next milestone)
+                    The <a 
+                      href="https://www.section508.gov/art/#/"
+                      target="_blank"
+                      class="_text-link"
+                    >Accessibility Requirements Tool
+                       <span class="_external-link">(ART)</span></a> is a step-by-step guide 
+                    that helps you determine and properly document IT accessibility requirements 
+                    in contracting documents. From the ART website, you can choose from 
+                    pre-packaged sample procurements for standard ICT products and services, or 
+                    start a new procurement to identify your relevant accessibility requirements.
                   </p>
+                  <p>
+                    ART will guide you through a series of questions about your procurement, 
+                    beginning with potential exceptions. If no exceptions apply, the tool will walk 
+                    you through the criteria for each item in your procurement, then produce a 
+                    comprehensive report detailing all the applicable standards and exceptions that 
+                    apply to your procurement. This document provides guidance on the following 
+                    areas:
+                  </p>
+                  <p class="ml-6">
+                    <ul>
+                    <li class="mb-2">Exceptions;</li>
+                    <li class="mb-2">Hardware;</li>
+                    <li class="mb-2">Electronic content;</li>
+                    <li class="mb-2">Software; and</li>
+                    <li class="mb-2">ICT support products and services.</li>
+                  </ul>
+                </p>
                 </template>
               </ATATExpandableLink>
-
             </div>
           </v-col>
         </v-row>
@@ -195,8 +228,10 @@ import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import Section508StandardsLearnMore from "./Section508StandardsLearnMore.vue";
 
-import { RadioButton } from "../../../types/Global";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+import { RadioButton, SlideoutPanelContent } from "types/Global";
 import {SensitiveInformationDTO} from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
@@ -253,6 +288,13 @@ class Section508Standards extends Vue {
     section_508_sufficient: "",
   }
 
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
@@ -283,6 +325,11 @@ class Section508Standards extends Vue {
     return true;
   }
   public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: Section508StandardsLearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 

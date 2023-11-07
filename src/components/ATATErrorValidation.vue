@@ -7,14 +7,7 @@
       :class="textAreaWithCounter ? 'mt-n5' : 'mt-2'"
     >
       <div>
-        <ATATSVGIcon
-          name="errorFilled"
-          class="ma-1 mt-0"
-          color="error"
-          width="16"
-          height="16"
-        >
-        </ATATSVGIcon>
+        <v-icon class="text-base-error icon-20 ma-1 mt-0" color="error">mdi-alert-circle</v-icon>
       </div>
       <div class="field-error ml-2 text-left" v-html="errorMessages[idx]"></div>
     </div>
