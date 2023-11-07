@@ -151,7 +151,6 @@ class ATATAutoComplete extends Vue {
   // }
 
   private noResultsAction() {
-    debugger;
     this._selectedItem.text = "";
     this._selectedItem.value = "";
     this.searchText = "";
@@ -180,10 +179,8 @@ class ATATAutoComplete extends Vue {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private valueUpdate(val: any): void {
-    debugger;
     this._selectedItem[this.titleKey] = val ? val[this.titleKey] : "";
     this._selectedItem[this.valueKey] = val ? val[this.valueKey] : "";
-    debugger;
   }
 
   // private valueCleared(): void {

@@ -58,6 +58,7 @@
           :optional="true"
           @selectedRegionsUpdate="regionsDeployedUpdate"
           :selectedDeployedRegionsOnLoad="selectedDeployedRegionsOnLoad"
+          labelSuffix="Regions"
         />
 
         <ATATRadioGroup 
@@ -103,6 +104,7 @@
           :rules="[$validators.required('Select at least one region.'),]"
           :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
           :regionUsersOnLoad="regionUsersOnLoad"
+          labelSuffix="Users"
         />
 
         <hr />

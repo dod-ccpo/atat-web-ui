@@ -6,6 +6,7 @@
     :items.sync="regions"
     :groupLabel="groupLabel"
     :groupLabelId="groupLabelId"
+    :labelSuffix="labelSuffix"
     :groupLabelHelpText="groupLabelHelpText"
     :optional="optional"
     :tooltipText="tooltipText"
@@ -44,6 +45,7 @@ class RegionsDeployedAndUserCount extends Vue {
   @Prop() groupLabel?: string;
   @Prop() groupLabelId?: string;
   @Prop() groupLabelHelpText?: string;
+  @Prop() labelSuffix?: string;
   @Prop() optional!: boolean;
   @Prop() tooltipText?: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
@@ -57,7 +59,9 @@ class RegionsDeployedAndUserCount extends Vue {
 
   @Watch("selectedRegions")
   public selectedRegionsChanged(): void {
-    this.$emit("selectedRegionsUpdate", this.selectedRegions);
+    if (this.labelSuffix === "Regions") {
+      this.$emit("selectedRegionsUpdate", this.selectedRegions);
+    }
   }
 
   public regionsUserDataUpdate(data: Checkbox[]): void {

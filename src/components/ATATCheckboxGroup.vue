@@ -89,7 +89,7 @@
         </template>
 
         <template v-slot:append>
-          <template v-if="(otherIsSelected || hasTextFields) && item.value === otherValue">
+          <template v-if="otherIsSelected && item.value === otherValue">
             <ATATTextArea
               v-if="otherEntryType === 'textarea'"
               ref="atatTextInput"
@@ -113,9 +113,10 @@
               @update:value="_otherValueEntered = $event"
               :rules="otherRequiredRule"
             />
-
+          </template>
+          <template v-if="hasTextFields">
             <ATATTextField
-              v-if="hasTextFields"
+              v-if="showTextField(index)"
               ref="atatTextInput"
               :id="id + '_TextField' + index"
               :appendText="textFieldAppendText"
@@ -196,7 +197,7 @@ class ATATCheckboxGroup extends Vue {
 
   // props
   @Prop({ default: [] }) private value!: string[];
-  public _selected: string[] = this.value;
+  public _selected: string[] = [];
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @PropSync("items") private _items!: Checkbox[];
 
@@ -249,11 +250,6 @@ class ATATCheckboxGroup extends Vue {
 
   public checkboxRules: ValidationRule[] = [];
 
-  @Watch("value", {deep: true})
-  public valueChanged(newVal: string[]): void{
-    debugger
-  } 
-
   @Watch("rules", {deep: true})
   public rulesChanged(): void {
     this.checkboxRules = [];
@@ -277,6 +273,10 @@ class ATATCheckboxGroup extends Vue {
 
   get otherId(): string {
     return "Other_" + getIdText(this.otherValue);
+  }
+
+  private showTextField(index: number): boolean {
+    return this.selectedIndices.includes(index);
   }
 
   public textFieldBlur(index: number): void {
@@ -454,7 +454,6 @@ class ATATCheckboxGroup extends Vue {
   public mounted(): void {
     this.isLoading = true;
     this.setEventListeners();
-    debugger
     // if validateOnLoad, then validate checkboxes immediately
     if (this.validateOnLoad){
       this.validateCheckboxesNow = true;
@@ -462,6 +461,9 @@ class ATATCheckboxGroup extends Vue {
         this.setErrorMessage();
       }, 0)
     }
+    setTimeout(()=>{
+      this._selected = this.value;
+    }, 0)    
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {
