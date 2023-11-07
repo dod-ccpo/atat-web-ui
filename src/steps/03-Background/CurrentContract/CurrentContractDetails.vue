@@ -70,7 +70,8 @@
               <ATATDatePicker 
                 ref="startDatePicker"
                 id="Start" 
-                :value.sync="currentContract.contract_order_start_date" 
+                :value="currentContract.contract_order_start_date" 
+                @update:value="currentContract.contract_order_start_date = $event"
                 label="Start date" 
                 placeHolder="MM/DD/YYYY"
                 :min = "startMinDate"
@@ -96,7 +97,8 @@
                <!-- NOTE: max date to be determined -->
               <ATATDatePicker 
                 id="Expiration" 
-                :value.sync="currentContract.contract_order_expiration_date" 
+                :value="currentContract.contract_order_expiration_date" 
+                @update:value="currentContract.contract_order_expiration_date = $event"
                 label="Expiration date"
                 :min = "expMinDate"
                 :max = "expMaxDate"
@@ -161,7 +163,8 @@
                   'Enter the contractor’s name.'
                 ),
               ]" 
-              :value.sync="currentContract.incumbent_contractor_name" 
+              :value="currentContract.incumbent_contractor_name" 
+              @update:value="currentContract.incumbent_contractor_name = $event"
               class="_input-max-width mb-10"
               label="Incumbent contractor name" />
 
@@ -174,12 +177,14 @@
                   true
                 ),
               ]" 
-              :value.sync="currentContract.contract_number" 
+              :value="currentContract.contract_number" 
+              @update:value="currentContract.contract_number = $event"
               class="_input-max-width mb-10" 
               label="Contract number" />
 
             <TaskOrderNumber id="TaskDeliveryOrderNumber" 
-            :value.sync="currentContract.task_delivery_order_number" 
+            :value="currentContract.task_delivery_order_number" 
+            @update:value="currentContract.task_delivery_order_number = $event"
             :optional="true"
             class="_input-max-width mb-10" 
             label="Task/Delivery order number" 
@@ -200,7 +205,8 @@
                 ),
                 $validators.isDateValid('Please enter a valid date.'),
               ]" 
-              :value.sync="currentContract.contract_order_expiration_date" 
+              :value="currentContract.contract_order_expiration_date" 
+              @update:value="currentContract.contract_order_expiration_date = $event"
               label="Contract/Order expiration date" 
               :min="tomorrowDateISO"
               placeHolder="MM/DD/YYYY" 
@@ -420,6 +426,7 @@ class CurrentContract extends Vue {
           this.savedData[_key] = this.currentContract[_key];
         }
       });
+      console.log("loaded data", this.savedData);
     } 
     this.setHeadline();
   }
