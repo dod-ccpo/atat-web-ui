@@ -1,24 +1,20 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import SummaryStepFour from "@/steps/03-Background/SummaryStepFour.vue";
 import Summary,  * as SummaryExportedFunctions from "@/store/summary";
 
-Vue.use(Vuetify);
+vi.mock('@/store/summary')
 
 describe("Testing SummaryStepTwo Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(SummaryStepFour, {
-      vuetify,
-      localVue
-    });
-  });
+  const wrapper: VueWrapper = shallowMount(SummaryStepFour, {
+    props: {},
+    global: {
+      plugins: []
+    }
+  })
+
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   describe("testing SummaryStepFour render", () => {
     it("renders successfully", async () => {
@@ -29,24 +25,24 @@ describe("Testing SummaryStepTwo Component", () => {
   describe("GETTERS!", () => {
     describe("introParagraph()=> ", () => {
       it("returns `We need some more details` statement", async () => {
-        jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(false);
-        wrapper.vm.setIntroParagraph()
-        expect(wrapper.vm.$data.introParagraph).toContain("We need some more details");
+        vi.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(false);
+        vm.setIntroParagraph()
+        expect(vm.$data.introParagraph).toContain("We need some more details");
       });
       it("returns `You are all done` statement", async () => {
-        jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
-        wrapper.vm.setIntroParagraph()
-        expect(wrapper.vm.$data.introParagraph).toContain("You are all done");
+        vi.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
+        vm.setIntroParagraph()
+        expect(vm.$data.introParagraph).toContain("You are all done");
       });
     })
   })
 
   describe("FUNCTIONS", () => {
     it("saveOnLeave()=> expect function to be called", async () => {
-      const toggleButtonColorMock = jest.spyOn(Summary, "toggleButtonColor").mockImplementation(
+      const toggleButtonColorMock = vi.spyOn(Summary, "toggleButtonColor").mockImplementation(
         ()=> Promise.resolve()
       );
-      await wrapper.vm.saveOnLeave();
+      await vm.saveOnLeave();
       expect(toggleButtonColorMock).toHaveBeenCalled();
     });
   })
