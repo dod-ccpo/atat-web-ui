@@ -247,16 +247,8 @@ export default defineConfig(({command, mode}) => {
         'src/steps/03-Background/CurrentContract/CurrentContract.spec.ts',
         'src/steps/03-Background/CurrentContract/CurrentContractDetails.spec.ts',
         'src/steps/03-Background/CurrentContract/ProcurementHistorySummary.spec.ts',
-        'src/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.spec.ts',
-        'src/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.spec.ts',
-        'src/steps/03-Background/CurrentEnvironment/CurrentEnvironment.spec.ts',
-        'src/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.spec.ts',
-        'src/steps/03-Background/CurrentEnvironment/EnvironmentSummary.spec.ts',
-        'src/steps/03-Background/CurrentEnvironment/InstanceDetails.spec.ts',
-        'src/steps/03-Background/CurrentEnvironment/ReplicateDetails.spec.ts',
-        'src/steps/03-Background/CurrentEnvironment/UploadMigrationDocuments.spec.ts',
-        'src/steps/03-Background/CurrentEnvironment/UploadSystemDocuments.spec.ts',
-        'src/steps/03-Background/SummaryStepFour.spec.ts',
+        'src/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.spec.ts', //nested store API calls
+        'src/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.spec.ts', //nested store API calls
         'src/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.spec.ts',
         'src/steps/05-PerformanceRequirements/DOW/DOWLandingPage.spec.ts',
         'src/steps/05-PerformanceRequirements/DOW/EntireDuration.spec.ts',
