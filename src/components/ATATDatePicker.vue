@@ -35,7 +35,7 @@
        
      
     <ATATErrorValidation v-if="showErrors" :errorMessages="errorMessages" />
-    <div v-if="showHelpText" class="help-text mt-2">
+    <div v-if="displayHelpText" class="help-text mt-2">
       {{ helpText }}
     </div>
   </div>
@@ -84,7 +84,7 @@ class ATATDatePicker extends Vue {
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: "220" }) private width!: string;
-  @Prop({ default: "Format (mm/dd/yyyy)" }) private helpText!: string;
+  @Prop({ default: "mm/dd/yyyy" }) private helpText!: string;
   @Prop({ default: true }) private showHelpText!: boolean;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
@@ -103,6 +103,17 @@ class ATATDatePicker extends Vue {
   @Watch("value")
   public async valueChanged(): Promise<void> {
     await this.setDateFromValue();
+  }
+
+  /** 
+   * GETTERS 
+  */
+
+  /**
+   *  toggles between help text and error messages 
+  */
+  get displayHelpText(): boolean {
+    return this.showHelpText && this.errorMessages.length === 0
   }
 
   /**

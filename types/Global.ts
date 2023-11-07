@@ -936,7 +936,7 @@ export type SaveOnLeaveRefs =  {
     form: ComponentPublicInstance & {
       validate: ()=> Promise<SubmitEventPromise>;
     },
-     ATATRadioForm: ComponentPublicInstance & {
+    ATATRadioForm: ComponentPublicInstance & {
       setErrorMessage: ()=> void,
       $refs:{
         radioButtonGroup: ComponentPublicInstance & {
@@ -945,19 +945,6 @@ export type SaveOnLeaveRefs =  {
       }
     };
 };
-
-// $refs!: {
-//   form: ComponentPublicInstance & {
-//     validate: ()=> Promise<SubmitEventPromise>
-//   };
-//   ATATRadioForm: ComponentPublicInstance & {
-//     $refs:{
-//       radioButtonGroup: ComponentPublicInstance & {
-//         validate: () => Promise<SubmitEventPromise>;
-//       }
-//     }
-//   };
-// }; 
 
 
 // Unexposed Vuetify types below
