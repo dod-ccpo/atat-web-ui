@@ -2,6 +2,7 @@
   <v-form :id="id+'_radio_group_control'" 
     ref="radioButtonGroup"
     validate-on="submit"
+    :errors="errorMessages"
     >
     <v-radio-group
       class="_atat-radio-group"
@@ -146,7 +147,9 @@ import { ComponentPublicInstance } from "vue";
 import { SubmitEventPromise } from './../../node_modules/vuetify/lib/index.mjs';
 
 @Component({
-  emits:["radioButtonSelected"],
+  emits:[
+    "radioButtonSelected",
+  ],
   components: {
     ATATErrorValidation,
     ATATTextArea,

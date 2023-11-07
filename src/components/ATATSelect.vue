@@ -81,6 +81,10 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getIdText } from "@/helpers";
 
 @Component({
+  emits:[
+    "errorMessage",
+    "blur"
+  ],
   components: {
     ATATErrorValidation,
     ATATSVGIcon,

@@ -200,6 +200,12 @@ import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  emits:[
+    "search",
+    "onGInvoiceSearchComplete",
+    "clear", 
+    "blur"
+  ],
   components: {
     ATATAlert,
     ATATSVGIcon,

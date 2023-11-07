@@ -118,7 +118,7 @@ class ProjectOverview extends Vue {
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, form: this.$refs, nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

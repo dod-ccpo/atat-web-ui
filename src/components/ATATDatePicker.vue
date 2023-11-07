@@ -92,6 +92,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import {ValidationRule} from "../../types/Global";
 
 @Component({
+  mixins:["update:value", "hasErrorMessages"],
   components: {
     ATATTooltip,
     ATATErrorValidation,

@@ -177,6 +177,7 @@ import {
 import { convertSystemChoiceToSelect } from "@/helpers";
 
 @Component({
+  emits: ["resetContactForm"],
   components: {
     ATATAutoComplete,
     ATATPhoneInput,

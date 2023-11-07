@@ -29,7 +29,9 @@
 import { Component, Vue, Watch, toNative } from "vue-facing-decorator";
 import Toast from "@/store/toast"
 
-@Component({})
+@Component({
+  emits:["toast-undo"]
+})
 class ATATToast extends Vue {
   private toast = Toast.toast;
 

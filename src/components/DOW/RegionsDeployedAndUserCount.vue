@@ -31,6 +31,10 @@ import { Checkbox } from "types/Global";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  emits:[
+    "selectedRegionsUpdate",
+    "regionUserDataUpdate"
+  ],
   components: {
     ATATCheckboxGroup
   }

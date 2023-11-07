@@ -49,6 +49,7 @@ import {Vue, Component, Prop, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 
 @Component({
+  emits:["clear", "both"],
   components: {
     ATATSVGIcon,
   }

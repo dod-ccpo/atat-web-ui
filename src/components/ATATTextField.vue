@@ -98,6 +98,11 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
+  emits:[
+    'errorMessage',
+    'blur',
+    'focus'
+  ],
   components: {
     ATATTooltip,
     ATATErrorValidation,

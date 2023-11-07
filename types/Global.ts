@@ -931,18 +931,34 @@ export enum ClassificationLevels {
 }
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
 
-export type SaveOnLeaveRefs = {
-  form: ComponentPublicInstance & {
-    validate: ()=> Promise<SubmitEventPromise>;
-    resetValidation?: () => void;
-    reset?: () => void;
-  },
-  ATATRadioForm: ComponentPublicInstance & {
-    validate: ()=> Promise<SubmitEventPromise>;
-    resetValidation?: () => void;
-    reset?: () => void;
-  };
+export type SaveOnLeaveRefs =  {
+  
+    form: ComponentPublicInstance & {
+      validate: ()=> Promise<SubmitEventPromise>;
+    },
+     ATATRadioForm: ComponentPublicInstance & {
+      setErrorMessage: ()=> void,
+      $refs:{
+        radioButtonGroup: ComponentPublicInstance & {
+          validate: () => Promise<SubmitEventPromise>;
+        }
+      }
+    };
 };
+
+// $refs!: {
+//   form: ComponentPublicInstance & {
+//     validate: ()=> Promise<SubmitEventPromise>
+//   };
+//   ATATRadioForm: ComponentPublicInstance & {
+//     $refs:{
+//       radioButtonGroup: ComponentPublicInstance & {
+//         validate: () => Promise<SubmitEventPromise>;
+//       }
+//     }
+//   };
+// }; 
+
 
 // Unexposed Vuetify types below
 export type SelectItemKey = boolean | null | undefined | string | (string | number)[] | 

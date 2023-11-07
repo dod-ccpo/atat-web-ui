@@ -104,34 +104,28 @@ import { ComponentPublicInstance } from "vue";
 })
 class ContractingShop extends Vue {
   
-  $refs!: {
-    form: ComponentPublicInstance & {
-      validate: ()=> Promise<SubmitEventPromise>
-    };
-    ATATRadioForm: ComponentPublicInstance & {
-      $refs:{
-        radioButtonGroup: ComponentPublicInstance & {
-          validate: () => Promise<SubmitEventPromise>;
-        }
-      }
-    };
-  }; 
+  // $refs!: {
+  //   form: ComponentPublicInstance & {
+  //     validate: ()=> Promise<SubmitEventPromise>
+  //   };
+  //   ATATRadioForm: ComponentPublicInstance & {
+  //     $refs:{
+  //       radioButtonGroup: ComponentPublicInstance & {
+  //         validate: () => Promise<SubmitEventPromise>;
+  //       }
+  //     }
+  //   };
+  // }; 
 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
-      form: this.$refs.form,
+      form: this.$refs as SaveOnLeaveRefs,
       nextTick: this.$nextTick,
-      isValid: [
-        await (await (this.$refs.form.validate())).valid,
-        await (await (this.$refs.ATATRadioForm.$refs.radioButtonGroup.validate())).valid,
-      ].every(b=>b)
     }).catch(() => false)
   }
 
-  // await((await this.$refs.form as SaveOnLeaveRefs["form"]).validate()).valid,
-  //       (await this.$refs.ATATRadioForm as SaveOnLeaveRefs["ATATRadioForm"]).validate().valid
   
   public isPageLoading = false;
   public packageNotInitialized = false;

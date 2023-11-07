@@ -173,14 +173,14 @@ import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
-import { RadioButton, SelectData } from "types/Global";
+import { RadioButton, SaveOnLeaveRefs, SelectData } from "types/Global";
 
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
  
 
 
@@ -195,12 +195,12 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class OrganizationInfo extends Vue {
 
-  $refs!: SaveOnLeaveRefs
+ 
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, form: this.$refs as SaveOnLeaveRefs, nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

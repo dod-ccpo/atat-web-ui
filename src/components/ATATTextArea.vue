@@ -75,7 +75,10 @@ import { ValidationRule } from "types/Global";
 import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
-  emits: ['input'],
+  emits: [
+    'input',
+    'blur'
+  ],
   components: {
     ATATErrorValidation
   }

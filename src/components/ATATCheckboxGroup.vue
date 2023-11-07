@@ -171,7 +171,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
-  emits: ["update:value"],
+  emits: ["update:value", "checkboxTextfieldDataUpdate"],
   components: {
     ATATTextArea,
     ATATTextField,

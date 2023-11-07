@@ -370,6 +370,7 @@ export const Countries: CountryObj[] = [
 ];
 
 @Component({
+  emits:["blur"],
   components: {
     ATATTextField,
     ATATAutoComplete,
