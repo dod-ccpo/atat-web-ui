@@ -109,9 +109,7 @@ class ATATTextField extends Vue  {
   // refs
   $refs!: {
     atatTextField: ComponentPublicInstance & {
-      errorBucket: string[]; 
       validate: () => Promise<SubmitEventPromise>;
-      errorCount: number 
       resetValidation(): void
     };
   }; 
@@ -209,7 +207,6 @@ class ATATTextField extends Vue  {
 
   public resetValidation(): void {
     this.errorMessages = [];
-    this.$refs.atatTextField.errorBucket = [];
     this.$refs.atatTextField.resetValidation();
   }
 
