@@ -46,10 +46,10 @@
               Period of Performance length
             </div>
             <div id="BaseAndOptionWrapper">
-              <draggable
+              <!-- <draggable
                 v-model="optionPeriods"
                 ghost-class="ghost"
-              >
+              > -->
                   <div
                     v-for="(optionPeriod, index) in optionPeriods"
                     :key="getIdText(getOptionPeriodLabel(index))"
@@ -75,7 +75,8 @@
                           width="178"
                           :showErrorMessages="false"
                           @errorMessage = "setDurationErrorMessages($event, index)"
-                          :value.sync="optionPeriods[index].duration"
+                          :value="optionPeriods[index].duration"
+                          @update:value="optionPeriods[index].duration = $event"
                           type="number"
                           :rules="[
                             $validators.required(''),
@@ -88,7 +89,8 @@
                           :items="timePeriods"
                           width="178"
                           :showErrorMessages="false"
-                          :selectedValue.sync="optionPeriods[index].unitOfTime"
+                          :selectedValue="optionPeriods[index].unitOfTime"
+                          @update:selectedValue="optionPeriods[index].unitOfTime = $event"
                           @errorMessage = "setDurationErrorMessages($event, index)"
                           class="mr-4"
                         />
@@ -105,7 +107,7 @@
                           aria-label="Duplicate this option period"
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
                         >
-                          <v-icon> content_copy </v-icon>
+                          <v-icon> mdi-content-copy </v-icon>
                         </v-btn>
 
                         <v-btn
@@ -115,7 +117,7 @@
                           aria-label="Delete this option period"
                           :id="getIdText(getOptionPeriodLabel(index)) + 'Delete'"
                         >
-                          <v-icon> delete </v-icon>
+                          <v-icon> mdi-delete </v-icon>
                         </v-btn>
                       </div>
 
@@ -138,7 +140,7 @@
                       v-if="oneYearCheck(optionPeriods[index])"
                     />
                   </div>
-              </draggable>
+              <!-- </draggable> -->
             </div>
 
             <v-btn
@@ -149,7 +151,7 @@
               :ripple="false"
               @click="addOptionPeriod()"
             >
-              <v-icon color="primary" class="mr-2">control_point</v-icon>
+              <v-icon color="primary" class="mr-2">mdi-plus-circle-outline</v-icon>
               <span>Add an option period</span>
             </v-btn>
           </v-col>
@@ -164,10 +166,9 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
+import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
-import { ComponentPublicInstance } from "vue";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
@@ -196,7 +197,6 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 }
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATTextField,
     ATATSelect,
@@ -208,11 +208,15 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 })
 class PeriodOfPerformance extends Vue {
 
-  $refs!: {
-    form : ComponentPublicInstance & {
-      validate: () => boolean;
-    };
-  };
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public maxTotalPoPDuration = 365 * 5;
   public durationErrorMessage = "Please provide a valid period length."
   public optionPeriodCount = 1;

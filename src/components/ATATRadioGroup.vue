@@ -1,14 +1,14 @@
 <template>
-  <div :id="id+'_radio_group_control'">
+  <v-form :id="id+'_radio_group_control'" 
+    ref="radioButtonGroup"
+    :lazy-validation="true">
     <v-radio-group
       class="_atat-radio-group"
-      ref="radioButtonGroup"
       :hide-details="false"
-      :rules="rules"
       v-model="_selectedValue"
+      :rules="rules"
+      :error="hasErrors"
     >
-    <!-- @update:modelValue="_selectedValue = $event" -->
-
       <fieldset>
         <div class="d-flex" :class="{ 'mb-3' : !helpText }">
           <legend
@@ -75,6 +75,8 @@
           :readonly="item.readonly"
           @blur="onBlur"
           @click="onClick"
+          validate-on="blur"
+          color="#544496"
         >
           <template v-if="item.description || card || item.value === otherValue" v-slot:label>
             <div class="d-flex flex-column">
@@ -117,7 +119,7 @@
 
             </div>
           </template>
-          <template v-else v-slot:label>
+          <template v-else v-slot:label >
               <span v-html="item.label"></span>
           </template>
 
@@ -125,7 +127,7 @@
       </fieldset>
     </v-radio-group>
     <ATATErrorValidation :errorMessages="errorMessages" />
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -140,6 +142,7 @@ import { LegendLink, RadioButton, ValidationRule } from "../../types/Global";
 import { getIdText } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ComponentPublicInstance } from "vue";
+import { SubmitEventPromise } from './../../node_modules/vuetify/lib/index.mjs';
 
 @Component({
   emits:["radioButtonSelected"],
@@ -152,19 +155,17 @@ import { ComponentPublicInstance } from "vue";
 })
 
 class ATATRadioGroup extends Vue {
-
-  // refs
   $refs!: {
     radioButtonGroup: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
-      // resetValidation: () => boolean;
+      validate: ()=> Promise<SubmitEventPromise>
+     
     };
     atatTextInput: ComponentPublicInstance & {
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
+      validate: () => Promise<boolean>;
     };
   }; 
 
@@ -201,6 +202,7 @@ class ATATRadioGroup extends Vue {
   // data
   private errorMessages: string[] = [];
   private hideOtherInput = false;
+  private hasErrors = false;
 
   private otherRequiredRule = this.otherValueRequiredMessage && this._validateOtherOnBlur
     ? [this.$validators.required(this.otherValueRequiredMessage)]
@@ -219,15 +221,26 @@ class ATATRadioGroup extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.radioButtonGroup.validate())
-      this.setErrorMessage();
+    this.$refs.radioButtonGroup.validate().then(
+      async (response: SubmitEventPromise) => {
+        if (!((await response).valid as boolean)){ 
+          this.setErrorMessage() }
+      }
+    );
   }
 
   // methods
   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
+    this.clearErrorMessage();
+    this.$refs.radioButtonGroup.validate().then(
+      async (response:SubmitEventPromise)=>{
+        this.errorMessages = (await (response)).errors[0].errorMessages;
+        this.hasErrors = this.errorMessages.length>0
+      }
+    )
   } 
   private clearErrorMessage(): void {
+    this.hasErrors = false;
     this.errorMessages = [];
     this._clearErrorMessages = false;
     // this.$refs.radioButtonGroup.resetValidation();
@@ -276,11 +289,13 @@ class ATATRadioGroup extends Vue {
   private onBlur(): void {
     this.setErrorMessage();
   }
+  
 
   // watch
   @Watch("_selectedValue")
   protected valueChange(newVal: string): void {
     this.$emit("radioButtonSelected", this._selectedValue);
+    this.hasErrors = false;
     if (newVal === this.otherValue) {
       this._validateOtherOnBlur = true;
       this.hideOtherInput = false;

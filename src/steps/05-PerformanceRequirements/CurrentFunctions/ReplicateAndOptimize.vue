@@ -151,12 +151,12 @@ class ReplicateAndOptimize extends Vue {
     await DescriptionOfWork.setCurrentDOWSection("XaaS");
     const routerObj = {
       name: routeNames.RequirementCategories,
-      params: {
+      query: {
         direction: "next",
         resolver: "",
       }
     }
-    routerObj.params.resolver = "RequirementsPathResolver";
+    routerObj.query.resolver = "RequirementsPathResolver";
     this.$router.push(routerObj)
   }
 

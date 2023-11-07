@@ -1,22 +1,20 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { mount, VueWrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import ProjectOverview from "@/steps/01-AcquisitionPackageDetails/ProjectOverview.vue";
 import validators from "../../plugins/validation";
 import AcquisitionPackage,{ StoreProperties}
   from "@/store/acquisitionPackage";
-// import { off } from "process";
-// import { convertSystemChoiceToSelect } from "@/helpers";
 import { ProjectOverviewDTO } from "@/api/models";
-Vue.use(Vuetify);
 
 describe("Testing index Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  localVue.use(validators);
-
+  const wrapper: VueWrapper = shallowMount(ProjectOverview, {
+    props: {},
+    global: {
+      plugins: [validators]
+    }
+  })
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
+  
   const mockProjectOverviewDTO = {
     "scope": "Scope From Store",
     "title": "Title From Store",
@@ -37,32 +35,21 @@ describe("Testing index Component", () => {
 
   beforeEach(() => {
     
-    jest.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
+    vi.spyOn(AcquisitionPackage, 'loadData').mockImplementation(
       ()=>Promise.resolve(mockProjectOverviewDTO));
 
-    jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
+    vi.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
       ()=>Promise.resolve());
 
-    vuetify = new Vuetify();
-    wrapper = mount(ProjectOverview, {
-      localVue,
-      vuetify,
-    });
-
   });
-
-  afterEach(()=>{
-    jest.clearAllMocks();
-    
-  })
 
   it("renders successfully", async () => {
     expect(await wrapper.exists()).toBe(true);
   });
 
   it("loadOnEnter - returns storeData successfully", async()=>{
-    await wrapper.vm.loadOnEnter();  
-    expect(await wrapper.vm.$data.currentTitle).toBe("Title From Store");
+    await vm.loadOnEnter();  
+    expect(await vm.$data.currentTitle).toBe("Title From Store");
   })
 
   it("currentData() - set title to ensure currentData.title is updated", 
@@ -72,7 +59,7 @@ describe("Testing index Component", () => {
         currentTitle: title
       })
 
-      const currentData =  await wrapper.vm.currentData;
+      const currentData =  await vm.currentData;
       expect(currentData.title).toBe(title)
     })
 
@@ -83,7 +70,7 @@ describe("Testing index Component", () => {
     await wrapper.setData({
       emergencyDeclaration
     })
-    const currentData =  await wrapper.vm.currentData;
+    const currentData =  await vm.currentData;
     expect(currentData.emergency_declaration).toBe("yes")
   })
 
@@ -94,7 +81,7 @@ describe("Testing index Component", () => {
     await wrapper.setData({
       emergencyDeclaration
     })
-    const currentData =  await wrapper.vm.currentData;
+    const currentData =  await vm.currentData;
     expect(currentData.emergency_declaration).toBe("no")
   })
 
@@ -112,7 +99,7 @@ describe("Testing index Component", () => {
         "cjadc2_percentage": "12"
       }
     )
-    const savedData =  await wrapper.vm.savedData;
+    const savedData =  await vm.savedData;
     expect(savedData.title).toBe(title)
   })
 
@@ -138,7 +125,7 @@ describe("Testing index Component", () => {
         }
       }
     )
-    expect(await wrapper.vm.hasChanged()).toBe(true)
+    expect(await vm.hasChanged()).toBe(true)
   })
 
   it("saveOnLeave() - if $data.hasChanged() $store.data === $data.savedData", 
@@ -150,7 +137,7 @@ describe("Testing index Component", () => {
         }
       )
 
-      const saveOnLeave = await wrapper.vm.saveOnLeave();
+      const saveOnLeave = await vm.saveOnLeave();
       expect(saveOnLeave).toBe(true)
 
       const dataFromStore: ProjectOverviewDTO = await AcquisitionPackage.loadData({
@@ -167,7 +154,7 @@ describe("Testing index Component", () => {
           savedData: mockProjectOverviewDTO,
         }
       )
-      const saveOnLeave = await wrapper.vm.saveOnLeave();
+      const saveOnLeave = await vm.saveOnLeave();
       expect(saveOnLeave).toBe(true)
     })
 })

@@ -51,7 +51,8 @@
               custom ART report or from one of the sample procurements."
               class="width-100 copy-max-width"
               :rows="10"
-              :value.sync="accessibilityReqs"
+              :value="accessibilityReqs"
+              @update:value="accessibilityReqs = $event"
               :rules="[
                   $validators.required(
                     'Please enter your accessibility requirements.'
@@ -68,16 +69,15 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import { SensitiveInformationDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATTextArea,
     ATATAlert,
@@ -85,6 +85,16 @@ import { hasChanges } from "@/helpers";
 })
 
 class AccessibilityReq extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private accessibilityReqs = "";
   private get currentData(): SensitiveInformationDTO {
     return {

@@ -7,7 +7,8 @@
       :rows="7"
       :rules="_rules"
       :helpText="helpText"
-      :value.sync="_projectScope"
+      :value="_projectScope"
+      @update:value="_projectScope = $event"
       maxChars="300"
     />
   </div>

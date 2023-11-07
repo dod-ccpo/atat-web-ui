@@ -12,7 +12,8 @@
                 id="SystemName"
                 label="System name"
                 class="_input-max-width"
-                :value.sync="systemName"
+                :value="systemName"
+                @update:value="systemName = $event"
                 :rules="[$validators.required('Please enter the name of your system of records.')]"
               />
             </div>
@@ -22,7 +23,8 @@
                 label="What is the operation of work to be performed?"
                 class="width-100"
                 :rows="7"
-                :value.sync="operationToBePerformed"
+                :value="operationToBePerformed"
+                @update:value="operationToBePerformed = $event"
                 :rules="[
                   $validators.required(
                     'Please enter a description for the operation of work to be performed.'
@@ -44,17 +46,16 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import {SensitiveInformationDTO} from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATTextArea,
     ATATTextField,
@@ -62,6 +63,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 class PIIRecord extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private systemName = "";
   private operationToBePerformed = "";
 

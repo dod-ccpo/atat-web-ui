@@ -219,7 +219,7 @@
               @keydown.enter="addAcor()"
               @keydown.space="addAcor()"
             >
-              <v-icon color="primary" class="mr-2">control_point</v-icon>
+              <v-icon color="primary" class="mr-2">mdi-plus-circle-outline</v-icon>
               <span>Add an Alternate COR</span>
             </v-btn>
           </div>

@@ -30,7 +30,7 @@
               maxWidth="400"
               minWidth="400"
             >
-              <template slot="content">
+              <template v-slot:content>
                 <div class="mb-4 width-100">
                   <div class="d-flex align-center height-60">
                     <div>
@@ -106,7 +106,7 @@ import {
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
@@ -117,14 +117,13 @@ import {
   convertEstimateData,
   getIdText,
 } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATRadioGroup,
@@ -134,6 +133,16 @@ import _ from "lodash";
   },
 })
 class TravelEstimates extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private periods: PeriodDTO[] | null = [];
   private ceilingPrice: SingleMultiple | undefined = "";
   private estimatedTravelCosts = "";
