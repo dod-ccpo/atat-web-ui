@@ -93,12 +93,12 @@ class DatabaseFormElements extends Vue{
 
   public OSLicensingOptions: RadioButton[] = [
     {
-      id: "TransferLicense",
+      id: "OSTransferLicense",
       label: "Transfer existing license",
       value: "TRANSFER_EXISTING",
     },
     {
-      id: "NewLicense",
+      id: "OSNewLicense1",
       label: "New license",
       value: "NEW",
     },
@@ -106,12 +106,12 @@ class DatabaseFormElements extends Vue{
 
   public DBLicensingOptions: RadioButton[] = [
     {
-      id: "TransferLicense",
+      id: "DBTransferLicense",
       label: "Transfer existing license",
       value: "TRANSFER_EXISTING",
     },
     {
-      id: "NewLicense",
+      id: "DBNewLicense",
       label: "New license",
       value: "NEW",
     },

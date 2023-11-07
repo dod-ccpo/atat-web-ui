@@ -116,7 +116,7 @@
           </template>
           <template v-if="hasTextFields">
             <ATATTextField
-              v-if="hasTextFields && showTextField(index)"
+              v-if="showTextField(index)"
               ref="atatTextInput"
               :id="id + '_TextField' + index"
               :appendText="textFieldAppendText"
@@ -252,7 +252,6 @@ class ATATCheckboxGroup extends Vue {
 
   @Watch("value", {deep: true})
   public valueChanged(newVal: string[]): void{
-    debugger
   } 
 
   @Watch("rules", {deep: true})
@@ -459,7 +458,6 @@ class ATATCheckboxGroup extends Vue {
   public mounted(): void {
     this.isLoading = true;
     this.setEventListeners();
-    debugger
     // if validateOnLoad, then validate checkboxes immediately
     if (this.validateOnLoad){
       this.validateCheckboxesNow = true;
@@ -467,6 +465,9 @@ class ATATCheckboxGroup extends Vue {
         this.setErrorMessage();
       }, 0)
     }
+    setTimeout(()=>{
+      this._selected = this.value;
+    }, 0)
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {

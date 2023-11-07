@@ -347,7 +347,6 @@ class RequirementCategories extends Vue{
   };
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger
     await AcquisitionPackage.setValidateNow(true);
     try {
       if (!this.goToSummary) {
