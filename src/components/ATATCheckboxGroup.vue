@@ -90,7 +90,7 @@
 
         <template v-slot:append>
           <template v-if="otherIsSelected && item.value === otherValue">
-            <!-- <ATATTextArea
+            <ATATTextArea
               v-if="otherEntryType === 'textarea'"
               ref="atatTextInput"
               name="otherTextArea"
@@ -101,8 +101,8 @@
               :value="_otherValueEntered"
               @update:value="_otherValueEntered = $event"
               :rules="otherRequiredRule"
-            /> -->
-            <!-- <ATATTextField
+            />
+            <ATATTextField
               v-if="otherEntryType === 'textfield'"
               ref="atatTextInput"
               name="otherTextField"
@@ -112,7 +112,7 @@
               :value="_otherValueEntered"
               @update:value="_otherValueEntered = $event"
               :rules="otherRequiredRule"
-            /> -->
+            />
           </template>
           <template v-if="hasTextFields">
             <ATATTextField
