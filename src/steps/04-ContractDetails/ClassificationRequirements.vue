@@ -327,7 +327,7 @@ class ClassificationRequirements extends Vue {
     }
     this.savedSelectedClassLevelList =  _.cloneDeep(selectedOptionsOnLoad);
 
-    this.buildClassificationRequirementsAlert();
+    await this.buildClassificationRequirementsAlert();
   }
 
   public async mounted(): Promise<void> {

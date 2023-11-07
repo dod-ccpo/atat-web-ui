@@ -108,7 +108,6 @@
   </v-form>
 </template>
 <script lang="ts">
-import LoadOnEnter from "@/mixins/loadOnEnter";
 import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
@@ -128,7 +127,6 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
-  mixins: [LoadOnEnter],
   components: {
     AnticipatedDurationandUsage,
     ATATRadioGroup,
@@ -392,6 +390,10 @@ class CrossDomain extends Vue {
         .updateDomainPairsInIGCEEstimateTable(this.domainInfo.solutionType)
     }
     return true;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 }
 
