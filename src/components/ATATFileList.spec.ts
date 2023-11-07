@@ -69,18 +69,22 @@ const uploadingFiles = [
 
 describe("Testing ATATFileList Component", () => {
   
-  const wrapper:VueWrapper = shallowMount(ATATFileList, {
-    props: {
-      validFiles,
-      multiplesAllowed: false,
-      title: 'dummyFile'
-    },
-    global: {
-      plugins: []
-    }
+  let wrapper:VueWrapper
+  let vm:any
+  
+  beforeEach(() => {
+    wrapper = shallowMount(ATATFileList, {
+      props: {
+        validFiles,
+        multiplesAllowed: false,
+        title: 'dummyFile'
+      },
+      global: {
+        plugins: []
+      }
+    })
+    vm =  (wrapper.vm as typeof wrapper.vm.$options)
   })
-
-  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
@@ -132,18 +136,19 @@ describe("Testing ATATFileList Component", () => {
       expect(headline).toBe("");
     })
   
-  it.skip("removeFiles() - provides index of file to remove to see delete event has been emitted",
+  it("removeFiles() - provides index of file to remove to see delete event has been emitted",
     async()=>{
       const idx=0;
       await wrapper.setData({
-        uploadingFiles
+        uploadingFiles: uploadingFiles
       });
+      const file = uploadingFiles[idx]
       await vm.removeFiles(idx);
-      wrapper.vm.$nextTick(()=>{
-        expect(wrapper.emitted("delete")?.flat()[0]).toEqual(
-          uploadingFiles[idx]
-        );
-      });
+      //vm.$nextTick(()=>{
+      expect(wrapper.emitted("delete")?.flat()[idx]).toEqual(
+        file
+      );
+      //});
     })
   
   it("onCancelClicked() - sets holdIdxForRemoval and showDialog", () => {
@@ -159,7 +164,7 @@ describe("Testing ATATFileList Component", () => {
     expect(vm.showDialog).toBe(false);
   })
 
-  it.skip("onRemoveClicked() - sets showDialog when holdIdxForRemoval is undefined", () => {
+  it("onRemoveClicked() - sets showDialog when holdIdxForRemoval is undefined", () => {
     vm.holdIdxForRemoval = undefined;
     vm.showDialog = 'test';
     vm.onRemoveClicked();
@@ -168,7 +173,7 @@ describe("Testing ATATFileList Component", () => {
   })
 
   // eslint-disable-next-line max-len
-  it.skip("onRemoveClicked() - sets showDialog when holdIdxForRemoval is defined, and removes the file", () => {
+  it("onRemoveClicked() - sets showDialog when holdIdxForRemoval is defined, and removes the file", () => {
     vm.holdIdxForRemoval = 'test';
     vm.showDialog = 'test';
     vi.spyOn(vm, 'removeFiles').mockImplementation(() => undefined);
@@ -177,7 +182,7 @@ describe("Testing ATATFileList Component", () => {
     expect(vm.showDialog).toBe(false);
   })
   
-  it.skip(
+  it(
     "@watch validFiles - provides index of file to remove to see delete event has been emitted",
     async()=>{
       const validFile = {
@@ -198,18 +203,17 @@ describe("Testing ATATFileList Component", () => {
         "isErrored": false,
         "isUploaded": true
       }
-      await wrapper.setData({
-        uploadingFiles: [uploadingFiles[0]],
-
-      });
+      await wrapper.setData({uploadingFiles: []})
+      await wrapper.setData({validFiles: []})
      
-      
       // add a file to validFiles activate @watch
       await vm.validFiles.push(validFile)
 
-      wrapper.vm.$nextTick(()=>{
-        expect(vm.uploadingFiles[2]).toStrictEqual(validFile);
+      //await vm.setFilesToDisplay()
+      await vm.$nextTick(() => {
+        expect(vm.validFiles[1]).toStrictEqual(validFile);
       });
+      
     })
 
 

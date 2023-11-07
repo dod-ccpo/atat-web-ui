@@ -133,7 +133,7 @@ describe("Testing ATATRadioGroup Component", () => {
     const tooltip = wrapper.findComponent(ATATTooltip)
     expect(tooltip.exists()).toBe(true)
   })
-
+  //TODO fix $refs
   it.skip("onBlur() - emitting a blur event and set errorMessages", async () => {
     const errorMessages = ["error message 003"]
     const radioGroup = await wrapper.find({ ref: "radioButtonGroup" })

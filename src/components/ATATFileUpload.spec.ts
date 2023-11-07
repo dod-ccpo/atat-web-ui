@@ -124,7 +124,6 @@ const fileList = {
   item: (index: number) => File
 };
 
-
 describe("Testing ATATTextField Component", () => {
   const vuetify = createVuetify({
     components,
@@ -138,7 +137,7 @@ describe("Testing ATATTextField Component", () => {
         attachmentServiceName: 'x_g_dis_atat_funding_request_mipr',
         id: 'test',
         validFileFormats: ['xls', 'pdf'],
-        maxFileSizeInBytes: 10000000000
+        maxFileSizeInBytes: 10000000000,
       },
       global: {
         plugins: [vuetify]
@@ -178,7 +177,7 @@ describe("Testing ATATTextField Component", () => {
     wrapper.setProps({
       validFiles
     })
-    const link = await wrapper.find("#BrowseToUpload");
+    const link = wrapper.find("#BrowseToUpload");
     await link.trigger("mousedown", {
       classList: vi.fn(() => ['_text_link'])
     });
@@ -238,7 +237,7 @@ describe("Testing ATATTextField Component", () => {
   it.skip("addDropFile() - process `drop.prevent` event to ensure that " +
     "data.isHovering===false && reset() is called", async () => {
     // class MockDragEvent extends Event {
-    //   constructor(type, dataTransfer) {
+    //   constructor(type:any, dataTransfer:any) {
     //     super(type);
     //     this.dataTransfer = dataTransfer;
     //   }
@@ -269,7 +268,7 @@ describe("Testing ATATTextField Component", () => {
       expect(vm.$data.isHovering).toBe(true);
     })
   });
-
+  //TODO this.$refs to be addressed
   it.skip("removeInvalidFiles() - logs file with bad extension to props.invalidFiles", async ()=>{
     fileList[0] = fileWithBadExtension
     await vm.removeInvalidFiles(fileList);
@@ -312,7 +311,7 @@ describe("Testing ATATTextField Component", () => {
     )
   });
 
-  it.skip("uploadFiles() - ", async ()=>{
+  it("uploadFiles() - ", async ()=>{
     await wrapper.setProps({
       validFiles: [validFiles[2]],// getting a file that isUploaded===false
       fileAttachmentService: {
@@ -320,12 +319,6 @@ describe("Testing ATATTextField Component", () => {
       }
     });
     
-
-    // jest.spyOn(global, "setTimeout").mockImplementation(()=> (0 void) );
-    // // jest.spyOn(AttachmentService, "upload").mockImplementation(()=>{
-    // //     return true
-    // // })
-    // await wrapper.vm.uploadFiles;yyyy
   });
 
 
