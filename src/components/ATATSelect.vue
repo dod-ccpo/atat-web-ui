@@ -49,8 +49,9 @@
         <template v-if="showSelectedValue" v-slot:selection="{ item }">
           {{ item.value }}
         </template>
-        <template v-slot:item="{ item }">
+        <template v-slot:item="{ props, item }">
           <v-list-item 
+            v-bind="props"
             :id="getIdText(item.value)"
             :class="[
               {'_item-disabled': item.value.disabled },
@@ -120,7 +121,6 @@ class ATATSelect extends Vue {
   private selectedBeforeChange: SelectData | string = "";
 
   public getIdText(text: string): string {
-    debugger;
     return this.id + "_DropdownListItem_" + getIdText(text);  
   }
 
