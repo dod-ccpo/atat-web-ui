@@ -1,7 +1,8 @@
 <template>
   <v-form :id="id+'_radio_group_control'" 
     ref="radioButtonGroup"
-    :lazy-validation="true">
+    validate-on="submit"
+    >
     <v-radio-group
       class="_atat-radio-group"
       :hide-details="false"
@@ -231,7 +232,7 @@ class ATATRadioGroup extends Vue {
 
   // methods
   private setErrorMessage(): void {
-    this.clearErrorMessage();
+    AcquisitionPackage.setValidateNow(true)
     this.$refs.radioButtonGroup.validate().then(
       async (response:SubmitEventPromise)=>{
         this.errorMessages = (await (response)).errors[0].errorMessages;

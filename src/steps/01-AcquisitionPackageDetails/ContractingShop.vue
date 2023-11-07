@@ -27,6 +27,7 @@
             </p>
 
             <ATATRadioGroup 
+              ref="ATATRadioForm"
               id="ContractingShopChoice"
               name="ContractingShopChoice"
               :items="contractingShopOptions"
@@ -71,7 +72,7 @@
 </template>
 <script lang="ts">
 import { Component , Hook, Vue, toNative} from "vue-facing-decorator";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -79,7 +80,7 @@ import LateFormAlert from "@/portfolios/portfolio/LateFormAlert.vue";
 import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { SlideoutPanelContent, RadioButton } from "../../../types/Global";
+import { SlideoutPanelContent, RadioButton, SaveOnLeaveRefs} from "../../../types/Global";
 import ContractingShopLearnMore from "./ContractingShopLearnMore.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ProjectOverviewDTO } from "@/api/models";
@@ -87,6 +88,8 @@ import { ProjectOverviewDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepTouched } from "@/store/summary";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
+import { ComponentPublicInstance } from "vue";
  
 
 
@@ -100,14 +103,35 @@ import Summary, { isStepTouched } from "@/store/summary";
   }
 })
 class ContractingShop extends Vue {
-  $refs!: SaveOnLeaveRefs
   
+  $refs!: {
+    form: ComponentPublicInstance & {
+      validate: ()=> Promise<SubmitEventPromise>
+    };
+    ATATRadioForm: ComponentPublicInstance & {
+      $refs:{
+        radioButtonGroup: ComponentPublicInstance & {
+          validate: () => Promise<SubmitEventPromise>;
+        }
+      }
+    };
+  }; 
+
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs.form,
+      nextTick: this.$nextTick,
+      isValid: [
+        await (await (this.$refs.form.validate())).valid,
+        await (await (this.$refs.ATATRadioForm.$refs.radioButtonGroup.validate())).valid,
+      ].every(b=>b)
     }).catch(() => false)
   }
+
+  // await((await this.$refs.form as SaveOnLeaveRefs["form"]).validate()).valid,
+  //       (await this.$refs.ATATRadioForm as SaveOnLeaveRefs["ATATRadioForm"]).validate().valid
   
   public isPageLoading = false;
   public packageNotInitialized = false;
