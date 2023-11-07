@@ -98,7 +98,7 @@
                   For more information, reference
                   <a 
                     :href="moreInfoHref"
-                    class="_text-link _external-link"
+                    class="_text-link"
                     target="_blank"
                   >
                     Business Associate and PHI, CFR title 45 part 
