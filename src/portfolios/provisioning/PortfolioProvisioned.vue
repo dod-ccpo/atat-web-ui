@@ -53,7 +53,7 @@ import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Glob
     ATATSVGIcon
   },
 })
-class Provisioned extends Vue {
+class PortfolioProvisioned extends Vue {
   public scrtStr = ClassificationLevels.SCRT;
   public unclStr = ClassificationLevels.UNCL;
   public tsStr = ClassificationLevels.TSCRT;
@@ -109,5 +109,5 @@ class Provisioned extends Vue {
   }
 
 }
-export default toNative(Provisioned)
+export default toNative(PortfolioProvisioned)
 </script>

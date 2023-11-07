@@ -22,7 +22,8 @@
           <ATATTextField 
             label="Portfolio title"
             class="_input-max-width mb-10"
-            :value.sync="portfolioTitle"
+            :value="portfolioTitle"
+            @update:value="portfolioTitle = $event"
             :rules="[
               $validators.required('Please enter your project title.'),
               $validators.maxLength(60, 'Title cannot exceed 60 characters')
