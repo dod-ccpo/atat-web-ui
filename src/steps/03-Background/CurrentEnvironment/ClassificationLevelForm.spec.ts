@@ -7,28 +7,14 @@ import validators from "../../../plugins/validation";
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
 import { createStore } from 'vuex';
-//import api from '@/api'
-// vi.mock('@/store/acquisitionPackage')
-// vi.mock('@/store/IGCE')
-// vi.mock('@/store/descriptionOfWork')
-vi.mock('@/api')
-//vi.mock('@/store/classificationRequirements')
 
-// vi.mock('@/api', () => {
-//   {
-//     vi.fn(() => Promise.resolve(classificationsMock))
-//   }
-// })
+vi.mock('@/api')
+
+
+
 //TODO PropSync Issue
 describe("Testing CurrentEnvironment Component", () => {
-  //, async () => {
-  //   const actual:typeof classificationRequirements = await vi
-  //     .importActual('@/store/classificationRequirements')
-  //   return {
-  //     ...actual,
-  //     getAllClassificationLevels: vi.fn()
-  //   }
-  // })
+
   const onPremImpactOptions =  [
     {
       id: "PublicRelease",
@@ -94,8 +80,6 @@ describe("Testing CurrentEnvironment Component", () => {
     }
   ]
   const actions = {
-    // all: vi.fn(),
-    handler: {get: vi.fn(),},
     getAllClassificationLevels: vi.fn().mockResolvedValue(
       [{impact_level: '',
         classification: 'TS'}],
@@ -122,16 +106,6 @@ describe("Testing CurrentEnvironment Component", () => {
       isHybrid: false, 
       hybridText: 'hybridText'
     },
-    // data() {
-    //   return {
-    //     allClassificationLevels: [{
-    //       impact_level: 'IL6',
-    //       classification: 'S'
-    //     },{impact_level: '',
-    //       classification: 'TS'}],
-    //     //getAllClassificationLevels: vi.fn()
-    //   }
-    // },
     global: {
       plugins: [mockStore,validators]
     }
@@ -139,25 +113,15 @@ describe("Testing CurrentEnvironment Component", () => {
   const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   beforeEach(() => {
-    // wrapper.setData({
-    //   allClassificationLevels: [{
-    //     impact_level: 'IL6',
-    //     classification: 'S'
-    //   },{impact_level: '',
-    //     classification: 'TS'}]
-    // })
+
     classificationRequirements.getAllClassificationLevels()
     vi.spyOn(classificationRequirements, 'loadClassificationLevels')
       .mockImplementation(()=> Promise.resolve())
-    // vi.spyOn(classificationRequirements, 'getAllClassificationLevels').mockImplementation(
-    //   () => Promise.resolve(classificationsMock)
-    // );
 
     wrapper.setProps({selectedClassifications:["1","2"]})
   });
 
   it.only("renders successfully", async () => {
-    console.log(2)
     expect(wrapper.exists()).toBe(true);
   });
 
