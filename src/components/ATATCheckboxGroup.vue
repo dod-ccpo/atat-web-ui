@@ -25,7 +25,7 @@
     <div class="_checkboxes" :class="{'_inline' : inline}">
       <v-checkbox
         v-for="(item, index) in _items"
-        v-model="_selected"
+        v-model="value"
         :id="'Checkbox_' + getIdText(item.id) + checkboxLabelSuffix"
         :class="[
           card ? '_checkbox-card' : '_checkbox',
@@ -197,6 +197,7 @@ class ATATCheckboxGroup extends Vue {
   // props
   @Prop({ default: [] }) private value!: string[];
   public _selected: string[] = this.value;
+
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @PropSync("items") private _items!: Checkbox[];
 
@@ -251,7 +252,7 @@ class ATATCheckboxGroup extends Vue {
 
   @Watch("value", {deep: true})
   public valueChanged(newVal: string[]): void{
-    debugger
+    console.log(newVal)
   } 
 
   @Watch("rules", {deep: true})
@@ -454,14 +455,16 @@ class ATATCheckboxGroup extends Vue {
   public mounted(): void {
     this.isLoading = true;
     this.setEventListeners();
-    debugger
     // if validateOnLoad, then validate checkboxes immediately
     if (this.validateOnLoad){
       this.validateCheckboxesNow = true;
       setTimeout(()=>{
         this.setErrorMessage();
       }, 0)
-    }
+    } 
+
+    console.log('value: ', this.value)
+    console.log('selected: ', this._selected)
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {
