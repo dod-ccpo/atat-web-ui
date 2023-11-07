@@ -46,7 +46,7 @@
             You currently do not have any instances.
           </div>
 
-          <v-data-table
+          <v-table
             v-if="tableData.length"
             :headers="tableHeaders"
             :items="tableData"
@@ -55,51 +55,81 @@
             :hide-default-footer="true"
             no-data-text="You currently do not have any instances."
           >
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.location="{ item }">
-              <span
-                 v-html="item.location"
-                :class="[{'text-error font-weight-500': !item.isValid }]"></span>
-              <div v-if="!item.isValid" class="d-flex align-center nowrap">
-                <ATATSVGIcon 
-                  name="errorFilled"
-                  width="13"
-                  height="13"
-                  color="error"
-                />
-                <span class="font-size-12 text-error d-inline-block ml-1">Missing info</span>
-              </div>
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.storage="{ item }">
-              <span class="nowrap">{{ item.storage }}</span>
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.performance="{ item }">
-              <span class="nowrap">{{ item.performance }}</span>
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.actions="{ item }">
-              <button
-                type="button"
-                :id="'EditButton_' + item.instanceNumber"
-                @click="editInstance(item)"
-                class="mr-2"
+            <thead>
+              <tr>
+                <th
+                  v-for="header in tableHeaders"
+                  :key="(header.value as string)"
+                  :id="(header.value as string)"
+                  class="text-start"
+                >
+                  {{ header.title }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="item in tableData"
+                :key="item.instanceNumber"
               >
-                <ATATSVGIcon name="edit" height="19" width="19" />
-              </button>
+                <td>
+                  {{ item.instanceNumber }}
+                </td>
+                <td v-if="envLocation !== 'ON_PREM'">
+                  <span
+                    v-html="item.location"
+                    :class="[{'text-error font-weight-500': !item.isValid }]">
+                  </span>
+                  <div v-if="!item.isValid" class="d-flex align-center nowrap">
+                    <ATATSVGIcon 
+                      name="errorFilled"
+                      width="13"
+                      height="13"
+                      color="error"
+                    />
+                    <span class="font-size-12 text-error d-inline-block ml-1">Missing info</span>
+                  </div>
+                </td>
+                <td v-if="envLocation !== 'CLOUD'">
+                  <span class="nowrap">{{ item.classification }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.qty }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.vCPU }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.memory }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.storage }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.performance }}</span>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    :id="'EditButton_' + item.instanceNumber"
+                    @click="editInstance(item)"
+                    class="mr-2"
+                  >
+                    <ATATSVGIcon name="edit" height="19" width="19" />
+                  </button>
 
-              <button
-                type="button"
-                :id="'DeleteButton_' + item.instanceNumber"
-                @click="confirmDeleteInstance(item)"
-                class="ml-2"
-              >
-                <ATATSVGIcon name="remove" height="18" width="14" />
-              </button>
-            </template>
-
-          </v-data-table> 
+                  <button
+                    type="button"
+                    :id="'DeleteButton_' + item.instanceNumber"
+                    @click="confirmDeleteInstance(item)"
+                    class="ml-2"
+                  >
+                    <ATATSVGIcon name="remove" height="18" width="14" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </v-table> 
 
           <hr class="mt-0" v-if="tableData.length" /> 
 

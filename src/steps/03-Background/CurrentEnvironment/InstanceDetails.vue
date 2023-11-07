@@ -84,7 +84,7 @@
         <CurrentUsage 
           class="mb-10"
           :usageTrafficSpikeCauses="usageTrafficSpikeCauses"
-          @update:usageTrafficSpikeCausesUpdate="usageTrafficSpikeCausesChange = $event"
+          @update:usageTrafficSpikeCauses="usageTrafficSpikeCauses = $event"
           :currentUsageDescription="instanceData.current_usage_description"
           @update:currentUsageDescription="instanceData.current_usage_description = $event"
           :eventSpikeDescription="instanceData.traffic_spike_event_description"

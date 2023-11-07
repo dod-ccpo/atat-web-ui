@@ -426,7 +426,6 @@ class CurrentContract extends Vue {
           this.savedData[_key] = this.currentContract[_key];
         }
       });
-      console.log("loaded data", this.savedData);
     } 
     this.setHeadline();
   }
