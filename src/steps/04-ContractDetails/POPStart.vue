@@ -43,8 +43,8 @@
                 />
                 <ATATDatePicker 
                   id="RequestDatePicker" 
-                  :value="requestedPopStartDate"
-                  @update:value="requestedPopStartDate = $event"
+                  :value="requestedPopStartDate" 
+                  @update:value="requestedPopStartDate = $event" 
                   :rules="[
                     $validators.required('Please enter a valid date'),
                     $validators.isDateValid('Please enter a valid date')
@@ -107,11 +107,6 @@ class POPStart extends Vue {
       saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
     }).catch(() => false)
   }
-
-  // private requestedPopStartDate 
-  //   = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";
-  // private selectedPoPStartDateOption 
-  //   = AcquisitionPackage.periodOfPerformance?.pop_start_request || "";
 
   private requestedPopStartDate = "";
   private selectedPoPStartDateOption = "";
