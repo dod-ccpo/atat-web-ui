@@ -732,7 +732,7 @@ const serviceGroupVerbiageInfo: Record<string, Record<string, string>> = {
   STORAGE: {
     offeringName: "Storage",
     heading2: "Storage Instance",
-    headingSummary: "Storage Requirementss",
+    headingSummary: "Storage Requirements",
     typeForUsage: "requirement",
     typeForText: "instance",
     introText: `each Storage instance that you need, separate from your 

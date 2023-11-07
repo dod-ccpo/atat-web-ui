@@ -28,7 +28,7 @@
             type="warning"
             v-if="warningMessage"
           >
-            <template slot="content">
+            <template v-slot:content>
               <p class="mb-0">
                 NOTE: {{ warningMessage }}
               </p>

@@ -30,7 +30,7 @@
               maxWidth="400"
               minWidth="400"
             >
-              <template slot="content">
+              <template v-slot:content>
                 <div class="mb-4 width-100">
                   <div class="d-flex align-center height-60">
                     <div>

@@ -50,7 +50,6 @@
       "Cyber Tools",
       "Other"
     ],
-    "unclassText": "Use vendor-neutral language to describe the purpose and usage of the expected tools and capabilities. Provide a functional description of the requirement without including any company names or vendor-unique brand, product, or titles.",
     "unclassQuestion": " Do you need this requirement for the entire duration of your task order? "
   },
   "ApplicationsPage": {
@@ -64,7 +63,6 @@
       "Discrete Software as a Service (SaaS)",
       "Other"
     ],
-    "unclassText": "Use vendor-neutral language to describe the purpose and usage of the expected tools and capabilities. Provide a functional description of the requirement without including any company names or vendor-unique brand, product, or titles.",
     "unclassQuestion": " Do you need this requirement for the entire duration of your task order? "
   },
   "NetworkingPage": {
@@ -96,7 +94,6 @@
       "Other"
     ]
   },
-
   "securityPage": {
     "pageHeader1": " What type of Security do you need? ",
     "securityLabels": [
@@ -106,7 +103,6 @@
       "Zero Trust/Permissive Trust Security",
       "Custom Security",
       "Other"
-
     ]
   },
   "GatherRequirementsPage": {
@@ -118,6 +114,133 @@
     "durationQuestion": "Do you need this requirement for the entire duration of your task order?",
     "basePeriodText": "Base period",
     "errorMessage": "Please select at least one"
+  },
+  "PerformanceRequirementsPage": {
+    "pageHeader1": " Let’s gather your requirements for Compute ",
+    "sectionTitle": " In this section, we’ll collect details about each Compute instance that you need.",
+    "instance1Header": "1. Instance details",
+    "classificationLevelQuestion": "What classification level is this instance deployed in?"
+  },
+  "ComputePage": {
+    "pageHeader1": " Let’s gather your requirements for Compute ",
+    "sectionTitle": "In this section, we’ll collect details about each Compute instance that you need.",
+    "instance1Header": "1. Instance details",
+    "classificationLevelQuestion": "What classification level is this instance deployed in?",
+    "classLevelToolTipText": "The levels listed below are based on the overall classification requirements you previously specified.",
+    "classLevelRadioGroup": [
+      "Unclassified / Impact Level 2 (IL2)",
+      "Unclassified / Impact Level 4 (IL4)",
+      "Unclassified / Impact Level 5 (IL5)",
+      "Secret / Impact Level 6 (IL6)",
+      "Top Secret"
+    ],
+    "updateTitle": "Update your Classification Requirements",
+    "instance1Question2": "What type of environment is this instance?",
+    "environmentTypeRadioGroup": [
+      "Dev/Testing",
+      "Pre-production",
+      "Production/Staging",
+      "Continuity of Operations Planning (COOP)/Disaster Recovery"
+    ],
+    "instance1Question3": "What type of operating environment do you need?",
+    "operatingenvironmentRadioGroup": [
+      "Virtual Machine",
+      "Containers",
+      "Serverless Computing",
+      "End User Computing Virtual Desktop"
+    ],
+    "instance1Licensing": "Operating system licensing",
+    "operatingSystemLicensingRadioGroup": [
+      "Transfer existing license",
+      "New license"
+    ],
+    "instance2Header": "2. Instance Configurations",
+    "vCPsTextboxLable": "Number of vCPUs",
+    "vCPsToolTipText": "This refers to the size of compute. You can provide an approximate number of virtual centralized processing units (vCPUs).",
+    "processorTextboxLable": "Processor speed",
+    "processerToolTipText": "Enter the clock speed for each vCPU. This is typically measured in gigahertz (GHz).",
+    "operatingSysTextboxLable": "Operating system",
+    "operatingSysToolTipLabel": "Specify the type of Operating System (OS) that your instance is running on (e.g., Windows, Linux).",
+    "memoryTextboxLable": "Memory",
+    "memoryToolTipLabel": "Enter the amount of Random Access Memory (RAM) available for storing data short-term in order to perform computing operations.",
+    "storageTypeTextboxLable": " Storage type ",
+    "blockStorageText": " Fixed-sized raw storage capacity ",
+    "objectStorageText": " Store and serve unstructured user-generated content ",
+    "fileStorageText": " Store and serve shared file systems ",
+    "archiveStorageText": " Store and serve for long-term data retention ",
+    "storageSizeTextLable": "Storage size",
+    "performanceTierLable": " Performance tier ",
+    "performanceTierToolTipLabel": "This refers to your network speed and service availability.",
+    "performanceRadioboxes": [
+      "General PurposeProvides a balance of compute, memory & network",
+      "Compute OptimizedSupports compute-bound applications that benefit from high performance processors",
+      "Memory OptimizedDesigned to deliver fast performance for workloads that process large data sets in memory",
+      "Storage OptimizedDesigned for high, sequential read and write workloads to very large data sets on local storage"
+    ],
+    "instancesTextboxLable": "Number of instances with these configurations",
+    "anticptdDurationTitle": "3. Anticipated need and duration",
+    "anticptdDurationLabel": "Statement of objectives for the anticipated need or usage",
+    "anticptdDurationText": "Use vendor-neutral language. Provide a functional description of the requirement without including any company names or vendor-unique brand, product, or titles.",
+    "anticptdInstanceQuestion": "Do you need this instance for the entire duration of your task order?",
+    "anticptdInstanceToolTipLabel": "Performance period details will be used to generate a cost estimate for this instance later.",
+    "entireDurationRadioboxes": [
+      "Yes",
+      "No"
+    ],
+    "computeRequirementsSummaryPageTitle": "Your Compute Requirements",
+    "computeRequirementsSummaryText": "If you need more instances, add them below. You can also edit or delete any info from the instances that you have already entered. When you’re done, click “Continue” and we will wrap up this category.",
+    "computeRequirements": "Your Compute Requirements",
+    "deleteDialogMsg": "This instance will be removed from your Compute requirements. Any details about this instance will not be saved.",
+    "errorAlertMsg": " Some of your info is missing. You can add it now or come back at any time before finalizing your acquisition package. ",
+    "classLvlErrMsg": "Please select a classification level.",
+    "envTypeErrMsg": "Please select a type of environment.",
+    "operTypeErrMsg": "Please select a type of operating environment.",
+    "operSystemErrMsg": "Please select a type of operating system licensing.",
+    "greaterOneErrMsg": "Enter a number greater than or equal to 1.",
+    "operSysErrMsg": "Enter the name of an operating system.",
+    "storageTypeErrMsg": "Select a storage type.",
+    "greaterZeroErrMsg": "Enter a number greater than or equal to 0.",
+    "performanceTierErrMsg": "Select a performance tier.",
+    "objStatementErrMsg": "Provide your statement of objective.",
+    "selectOptionErrMsg": "Please select an option."
+  },
+  "DatabasePage": {
+    "pageHeader1": " Let’s gather your requirements for Database ",
+    "sectionTitle": "In this section, we’ll collect details about each Database instance that you need.",
+    "instance1Header": "1. Database details",
+    "instance1Question2": "What type of database do you need?",
+    "databaseTypeRadioGroup": [
+      "Analytical",
+      "Transactional",
+      "Graph",
+      "Relational",
+      "Other"
+    ],
+    "databaseLicensing": "Database licensing",
+    "networkPerformanceTextboxLable": "Network performance",
+    "networkPerformanceToolTipLabel": "This refers to your network speed and service availability.",
+    "databaseErrMsg": "Please select a type of database.",
+    "dbLicenseErrMsg": "Please select a type of database licensing",
+    "networkPerformanceErrMsg": "Enter a description of your network performance.",
 
+    
+    "deleteDialogMsgDB": "This instance will be removed from your Database requirements. Any details about this instance will not be saved.",
+    "databaseSummaryPageTitle": "Your Database Requirements"
+  },
+  "GeneralXaasPage": {
+    "pageHeader1": " Let’s gather your requirements for General IaaS, PaaS, and SaaS ",
+    "sectionTitle": "In this section, we’ll collect details about any third-party marketplace solutions or cloud resources not covered in the other Anything as a Service (XaaS) categories.",
+    "pageTitle": "Let’s gather some details for Requirement #1",
+    "pageTitle2": "Let’s gather some details for Requirement #2",
+    "deleteDialogMsg": "This requirement will be removed from your General IaaS, PaaS, and SaaS requirements. Any details about this requirement will not be saved.",
+    "generalSummaryPageTitle": "Your General IaaS, PaaS, and SaaS Requirements"
+  },
+  "StoragePage": {
+    "pageHeader1": " Let’s gather your requirements for Storage ",
+    "anticptdDurationTitle": "2. Anticipated need and duration",
+    "sectionTitle": "In this section, we’ll collect details about each Storage instance that you need, separate from your Compute and Database requirements.",
+    "instance1Header": "1. Storage configurations",
+    "pageHeader2": "Let’s gather some details for Storage Instance #2",
+    "storageSummaryHeader": " Your Storage Requirements "
   }
 }

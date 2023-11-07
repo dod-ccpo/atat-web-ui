@@ -72,7 +72,7 @@ import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
-import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
+import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
   emits: ['input', 'blur'],
@@ -87,7 +87,7 @@ class ATATTextArea extends Vue {
       messages: string[],
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => Promise<SubmitEventPromise>;
+      validate: () => Promise<boolean>;
       resetValidation: ()=> void
     };
   };
@@ -143,8 +143,12 @@ class ATATTextArea extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatTextArea.validate())
-      this.setErrorMessage();
+    this.$refs.atatTextArea.validate().then(
+      async (response: SubmitEventPromise) => {
+        if (!((await response).valid as boolean)){ 
+          this.setErrorMessage() }
+      }
+    );
   }
 
   @Watch('rules')
