@@ -35,7 +35,7 @@
         @update:model-value="onInput"
         variant="outlined"
         density="compact"
-        :model-value.sync="_value"
+        :model-value="_value"
         :placeholder="placeHolder"
         :rules="rules"
         :validate-on="validationString"
