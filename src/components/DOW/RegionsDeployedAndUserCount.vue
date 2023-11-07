@@ -86,7 +86,6 @@ class RegionsDeployedAndUserCount extends Vue {
       const regionUsersArray = JSON.parse(value);
       const selectedRegions: string[] = [];
       regionUsersArray.forEach((regionUsers: Record<string, string>) => {
-        debugger
         const region = Object.keys(regionUsers)[0];
         selectedRegions.push(region);
         const userCount = Object.values(regionUsers)[0];
