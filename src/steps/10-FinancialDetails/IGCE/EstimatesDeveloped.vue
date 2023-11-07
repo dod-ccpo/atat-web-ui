@@ -91,21 +91,20 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 import {RadioButton, Checkbox} from "../../../../types/Global";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import IGCEStore from "@/store/IGCE";
 import {RequirementsCostEstimateDTO} from "@/api/models";
 import {hasChanges} from "@/helpers";
 import { ComponentPublicInstance } from "vue";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     ATATRadioGroup,
@@ -115,11 +114,19 @@ import { ComponentPublicInstance } from "vue";
 })
 
 class EstimatesDeveloped extends Vue {
-  $refs!: {
+
+  $refs!: SaveOnLeaveRefs & {
     percentOverUnder: ComponentPublicInstance & {
       resetValidation(): void
     };
-  };
+  }
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   public selectedPriceComparison: "" | "MORE_THAN" | "LESS_THAN" | "SAME" = "";
   public howEstimateMade = "";

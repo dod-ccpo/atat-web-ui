@@ -33,21 +33,30 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import IGCEStore from "@/store/IGCE";
 import { hasChanges } from "@/helpers";
 import {RequirementsCostEstimateDTO} from "@/api/models";
-import {YesNo} from "../../../../types/Global";
+import {YesNo} from "types/Global";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
   },
 })
 class SurgeCapacity extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public capacity: number | null = null;
   public capabilities: YesNo = "";
   private items = [

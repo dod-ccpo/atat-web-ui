@@ -2,7 +2,7 @@
   <!-- TODO: app props have been removed from v-navigation-drawer, v-app-bar and v-system-bar.   -->
   <v-navigation-drawer
     id="GlobalSideNavBar"
-    permanent="true"
+    :permanent="true"
     class="global-side-nav-bar d-flex flex-column align-start "
     width="320"
   >
@@ -40,7 +40,7 @@
             {{ step.stepNumber }}
             <span v-if="isStepComplete(step.stepNumber ?? '')" class="completed-check">
               <span class="d-sr-only">Completed</span>
-              <v-icon>check_circle</v-icon>
+              <v-icon>mdi-check-circle</v-icon>
             </span>
           </span>
           <span class="step-text">
@@ -78,7 +78,7 @@
                     "
                   >
                     <span class="d-sr-only">Completed</span>
-                    <v-icon>check_circle</v-icon>
+                    <v-icon>mdi-check-circle</v-icon>
                   </span>
                 </span>
                 <span class="step-text">
@@ -115,7 +115,7 @@
             class="_text-link"
             id="BaseContract"
             rel="noopener"
-          >
+          > 
             <span class="_external-link">Base Contract</span>
           </a>
         </div>

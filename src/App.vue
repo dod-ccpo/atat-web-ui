@@ -1,7 +1,7 @@
 <template>
   <v-layout 
+    class="_center-content"
     :class="[
-      { '_center-content' : centerContent },
       { '_is-home': isHome },
     ]">
     <ATATTopNavBar />
@@ -39,6 +39,7 @@ import Steps from '@/store/steps';
   },
 })
 class App extends Vue {
+
   public get activeAppSection(): string {
     return AppSections.activeAppSection;
   }
@@ -107,10 +108,12 @@ class App extends Vue {
   }
 
   public get centerContent(): boolean {
-    return this.activeAppSection === AppSections.sectionTitles.Home;
+    return this.activeAppSection === AppSections.sectionTitles.Home ||
+    this.activeAppSection === AppSections.sectionTitles.PortfolioSummary;
   }
   public get isHome(): boolean {
-    return this.activeAppSection === AppSections.sectionTitles.Home;
+    return this.activeAppSection === AppSections.sectionTitles.Home ||
+    this.activeAppSection === AppSections.sectionTitles.PortfolioSummary;
   }
 
   public async beforeMount(): Promise<void> {

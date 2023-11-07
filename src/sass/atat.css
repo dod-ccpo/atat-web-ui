@@ -218,9 +218,12 @@ body {
   background-color: #ffffff;
   padding: 28px 56px 120px 44px;
 }
+.v-container.v-container--fluid {
+  max-width: 1040px !important;
 
+}
 .container-max-width {
-  max-width: 1040px;
+  max-width: 1040px !important;
   margin-left: 0;
 }
 
@@ -4868,7 +4871,7 @@ hr, .hr {
   padding: 6px 12px !important;
   background-color: transparent !important;
 }
-.v-btn.link-button.tooltip-button {
+.v-btn.link-button._tooltip-button {
   padding: 12px !important;
 }
 .v-btn.link-button i {
@@ -4982,7 +4985,7 @@ hr, .hr {
   opacity: 1 !important;
 }
 
-.v-theme--light.v-footer.atat-page-footer {
+.v-theme--light.v-footer._atat-page-footer {
   background-color: #ffffff;
   margin: 0 56px;
   padding: 20px 0 40px;
@@ -5421,7 +5424,7 @@ header .v-toolbar__content {
   padding: 6px 12px !important;
   background-color: transparent !important;
 }
-.v-dialog .v-card .v-card__actions .v-btn.link-button.tooltip-button {
+.v-dialog .v-card .v-card__actions .v-btn.link-button._tooltip-button {
   padding: 12px !important;
 }
 .v-dialog .v-card .v-card__actions .v-btn.link-button i {

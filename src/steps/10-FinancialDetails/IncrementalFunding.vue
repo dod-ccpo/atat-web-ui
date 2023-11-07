@@ -160,7 +160,7 @@
                 :ripple="false"
                 @click="addIncrement()"
               >
-                <v-icon color="primary" class="mr-2">control_point</v-icon>
+                <v-icon color="primary" class="mr-2">mdi-plus-circle-outline</v-icon>
                 <span>Add funding increment</span>
               </v-btn>
 
@@ -248,7 +248,7 @@
           class="width-70 mt-5"
           v-if=" isOverfunded || isUnderfunded "
         >
-          <template slot="content">
+          <template v-slot:content>
             <p class="mb-0">
               Based on your requirement’s cost estimate, your plan is
               <strong>{{ isOverfunded ? 'over' : 'under'}}funded</strong>. 
@@ -264,7 +264,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -280,7 +280,7 @@ import { CostEstimateDTO, PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber, roundDecimal } from "@/helpers";
 
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import { format } from "date-fns";
 import { parseISO } from "date-fns/fp";
@@ -291,7 +291,6 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATSelect,
     ATATSVGIcon,
@@ -302,6 +301,16 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 
 class IncrementalFunding extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public today = new Date();
   public currentYear = this.today.getFullYear();
 

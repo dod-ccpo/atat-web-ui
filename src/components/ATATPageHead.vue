@@ -3,6 +3,7 @@
     id="PageHeader" 
     flat
     class="_atat-page-header"
+    height="56"
   >
     <div class="d-flex justify-space-between width-100 align-center">
       <div id="PackageNameHeader" tabindex="-1" class="h3">{{ packageName }}</div>
@@ -23,7 +24,7 @@
             @keydown.space="openInviteContributorModal"
             @keydown.enter="openInviteContributorModal"
           >
-            <v-icon class="icon-20 text-base-dark">person_add_alt_1</v-icon>
+            <v-icon class="icon-20 text-base-dark">mdi-account-plus</v-icon>
           </v-btn>
           </template>
           <div id="ContributorTooltipText" class="_tooltip-content-wrap _no-pointer">
@@ -85,7 +86,8 @@
     />
     <ArchiveModal
       v-if="isMissionOwner"
-      :showModal.sync="showArchiveModal"
+      :showModal="showArchiveModal"
+      @update:showModal="showArchiveModal = $event"
       :hasContributor="hasContributor()"
       :packageName="packageName"
       :waitingForSignature="isWaitingForSignature()"

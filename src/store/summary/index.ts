@@ -219,7 +219,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
     const color = stepNumber > 0
-      ? isStepComplete(stepNumber) ? "primary" : "secondary"
+      ? isStepComplete(stepNumber) ? "_primary" : "_secondary"
       : ""
     await AcquisitionPackage.setContinueButtonColor(color);
   }
@@ -313,7 +313,7 @@ export class SummaryStore extends VuexModule {
     }
 
     const orgnameKey =
-        organization.disa_organization_reference?"disa_organization_reference":"organization_name"
+        organization.disa_organization_reference ? "disa_organization_reference":"organization_name"
 
     const foreignKeys =
         // eslint-disable-next-line max-len

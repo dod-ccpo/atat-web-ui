@@ -50,7 +50,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { CountryObj, RadioButton, RankData, SelectData } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -59,16 +59,25 @@ import { ContactDTO } from "@/api/models";
 import parsePhoneNumber, { AsYouType, CountryCode } from "libphonenumber-js";
 import ContactData from "@/store/contactData";
 import { Countries } from "@/components/ATATPhoneInput.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATContactForm
   }
 })
 
 class FinancialPOCForm extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private loaded = false;
   private selectedRole = "";
   private selectedSalutation = "";

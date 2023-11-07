@@ -3,7 +3,7 @@
     <section class="_learn-more-section">
       <div class="container-max-width">
         <v-row>    
-          <v-col class="col-sm-12 col-md-7 pr-5">
+          <v-col class="pr-5" cols="12" md="7">
 
             <div v-if="userHasPackages">
               <v-expansion-panels 
@@ -103,7 +103,7 @@
 
           </v-col>
 
-          <v-col class="col-sm-12 col-md-5 pl-5">
+          <v-col class="pl-5" cols="12" md="5">
             <v-card flat class="pa-6 mb-10 _simple-border">
               <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
               <p class="body">
@@ -111,7 +111,8 @@
                 cloud resources or to continue funding an existing portfolio.
               </p>
               <TaskOrderSearch
-                :TONumber.sync="TONumber"
+                :TONumber="TONumber"
+                @update:TONumber="TONumber = $event"
                 @startProvisionWorkflow="startProvisionWorkflow"
               />
             </v-card>            

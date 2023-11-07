@@ -33,19 +33,28 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
   },
 })
 class RequireFundingDocuments extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private savedRequireFundingSelected = "";
   private requireFundingSelection = "";
   private requireFundingOptions: RadioButton[] = [

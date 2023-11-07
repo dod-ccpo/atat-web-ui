@@ -1,5 +1,8 @@
 .v-text-field {
-  
+  .v-field__input input {
+    color: $base-darkest;
+    opacity: 1;
+  }
   .v-text-field__suffix {
     color: $base-light;
   }
@@ -13,7 +16,25 @@
     margin-top: 6px !important;
     z-index: 1;
   }
+  .v-field--variant-outlined {
+    opacity: 1 !important;
+    border: 1px solid $base-darkest;
+    &.v-field--focused {
+      border: 1px solid $primary;
+      outline: 1px solid $primary;
+    }
+    &.v-field--error {
+      border: 1px solid $error;
+      outline: 1px solid $error;
+    }
 
+  }
+  .v-field__outline {
+    .v-field__outline__start, .v-field__outline__end {
+      border: none !important;
+    }
+  }
+  
   fieldset {
     max-height: 40px;
     margin-top: 4px;
@@ -41,7 +62,6 @@
       color: $error;
     }
   }
-
 
   .atat-text-field-error {
     i {

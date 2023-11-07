@@ -38,22 +38,31 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
  
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATTextArea
   }
 })
 
 class ImpactOfRequirement extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public impactOfRequirementExplanation = "";
 
   private get currentData(): FairOpportunityDTO {

@@ -34,7 +34,7 @@
               You do not have any travel requirements yet.
             </div>
             <div v-if="hasListings">
-              <v-data-table
+              <v-table
                   v-if="hasListings"
                   :headers="setTableHeaders"
                   :items="tableData"
@@ -42,59 +42,77 @@
                   class="elevation-0 _offering-instances mt-10"
                   :hide-default-footer="true"
               >
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.duration_in_days="{ item }">
-                  {{ item.duration_in_days }}
-                  {{ item.duration_in_days>1 ? 'days': 'day'}}
-                </template>
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.number_of_travelers="{ item }">
-                  {{ item.number_of_travelers }}
-                  {{ item.number_of_travelers>1 ? 'travelers': 'traveler'}}
-                </template>
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.number_of_trips="{ item }">
-                  {{ createNumberOfTripsTexts(item)  }}
-                </template>
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.selected_periods="{ item }">
-                  {{ createPeriodText(item.selected_periods) }}
-                </template>
-
-                <!-- eslint-disable vue/valid-v-slot -->
-                <template v-slot:item.actions="{ item }">
-                  <div class="d-flex justify-space-between align-center">
-                    <button
-                        type="button"
-                        :id="'EditButton_' + item.instanceNumber"
-                        @click="editInstance(item)"
-
+                <thead>
+                  <tr>
+                    <th
+                      v-for="item in setTableHeaders"
+                      :key="item.title"
+                      class="text-left" scope="row"
                     >
-                      <ATATSVGIcon name="edit" height="19" width="19" />
-                    </button>
+                      {{ item.title }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="item, i in tableData"
+                    :key="item.sys_id"
+                  >
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+                    <td>
+                      {{ item.trip_location }}
+                    </td>
+                    <td>
+                      {{ item.duration_in_days }}
+                      {{ // @ts-ignore
+                        item.duration_in_days>1 ? 'days': 'day'
+                      }}
+                    </td>
+                    <td>
+                      {{ item.number_of_travelers }}
+                      {{ // @ts-ignore
+                        item.number_of_travelers>1 ? 'travelers': 'traveler'
+                      }}
+                    </td>
+                    <td>
+                      {{ createNumberOfTripsTexts(item)  }}
+                    </td>
+                    <td>
+                      {{ createPeriodText(item.selected_periods) }}
+                    </td>
+                    <td>
+                      <div class="d-flex justify-space-between align-center">
+                        <button
+                            type="button"
+                            :id="'EditButton_' + item.instanceNumber"
+                            @click="editInstance(item)"
 
-                    <button
-                        type="button"
-                        :id="'CopyButton_' + item.instanceNumber"
-                        @click="copyInstance(item)"
-                    >
-                      <ATATSVGIcon name="content-copy" height="19" width="22" />
-                    </button>
+                        >
+                          <ATATSVGIcon name="edit" height="19" width="19" />
+                        </button>
 
-                    <button
-                        type="button"
-                        :id="'DeleteButton_' + item.instanceNumber"
-                        @click="confirmDeleteModal(item)"
-                    >
-                      <ATATSVGIcon name="remove" height="18" width="14" />
-                    </button>
-                  </div>
-                </template>
-              </v-data-table>
+                        <button
+                            type="button"
+                            :id="'CopyButton_' + item.instanceNumber"
+                            @click="copyInstance(item)"
+                        >
+                          <ATATSVGIcon name="content-copy" height="19" width="22" />
+                        </button>
+
+                        <button
+                            type="button"
+                            :id="'DeleteButton_' + item.instanceNumber"
+                            @click="confirmDeleteModal(item)"
+                        >
+                          <ATATSVGIcon name="remove" height="18" width="14" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
             </div>
             <hr class="mt-0" v-if="hasListings" />
           </div>
@@ -152,7 +170,8 @@
               <ATATTextField
                 id="TripLocation"
                 label="Trip Location"
-                :value.sync="travelItem.trip_location"
+                :value="travelItem.trip_location"
+                @update:value="travelItem.trip_location = $event"
               />
             </v-col>
           </v-row>
@@ -162,7 +181,8 @@
                 id="Duration"
                 label="Duration"
                 suffix="days"
-                :value.sync="travelItem.duration_in_days"
+                :value="travelItem.duration_in_days"
+                @update:value="travelItem.duration_in_days = $event"
                 type="number"
               />
             </v-col>
@@ -171,7 +191,8 @@
                 id="NumberOfTravelers"
                 label="Number of travelers"
                 suffix="people"
-                :value.sync="travelItem.number_of_travelers"
+                :value="travelItem.number_of_travelers"
+                @update:value="travelItem.number_of_travelers = $event"
                 type="number"
               />
             </v-col>
@@ -180,7 +201,8 @@
                 id="NumberOfTrips"
                 label="Number of trips"
                 suffix="per period"
-                :value.sync="travelItem.number_of_trips"
+                :value="travelItem.number_of_trips"
+                @update:value="travelItem.number_of_trips = $event"
                 tooltipText="This number of trips will be applied to each period selected below."
                 type="number"
               />
@@ -202,8 +224,10 @@
                 id="PeriodsCheckboxes"
                 aria-describedby="PeriodsLabel"
                 ref="periodsCheckboxes"
+                :hasOtherValue="false"
                 :items="availablePeriodCheckboxItems"
-                :value.sync="travelItem.selected_periods"
+                :value="travelItem.selected_periods"
+                @update:value="travelItem.selected_periods = $event"
                 :card="false"
                 class="copy-max-width"
               />
@@ -246,7 +270,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import { Checkbox, DataTableHeader, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -256,11 +280,10 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { createPeriodCheckboxItems } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {routeNames} from "@/router/stepper";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATSVGIcon,
     ATATDialog,
@@ -269,6 +292,16 @@ import acquisitionPackage from "@/store/acquisitionPackage";
   },
 })
 class Travel extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public tableHeaders: Record<string, string>[] = [];
   public tableData: TravelSummaryTableData[] = [];
   public travelItem: TravelSummaryTableData = {
@@ -292,7 +325,7 @@ class Travel extends Vue {
     );
   }
 
-  get setTableHeaders():  DataTableHeader[] {
+  get setTableHeaders(): DataTableHeader[] {
     return this.hasListings
       ? [
         { title: "", value: "instanceNumber", width: "50" },

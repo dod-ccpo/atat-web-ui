@@ -46,8 +46,8 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import {RadioButton, SingleMultiple} from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
@@ -59,13 +59,22 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import _ from "lodash";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATSingleAndMultiplePeriods
   },
 })
 class OptimizeOrReplicate extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private opRepOption: SingleMultiple = "";
   private opRepEstValues: string[] = [""];
   private periods: PeriodDTO[] | null = [];

@@ -141,7 +141,7 @@
 </template>
 <script lang="ts">
 import { invalidFile, uploadingFile, ValidationResult } from "types/Global";
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -160,14 +160,13 @@ import FinancialDetails, {
   initialFundingRequestFSForm,
 } from "@/store/financialDetails";
 
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATFileUpload from "@/components/ATATFileUpload.vue";
 import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATSearch,
@@ -178,6 +177,15 @@ import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
   },
 })
 class GTCInformation extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
   // radio options
   public useGInvoicing: "YES" | "NO" | "" = "";
   private gInvoicingOptions: RadioButton[] = [

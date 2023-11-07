@@ -7,34 +7,41 @@
     <v-autocomplete
       ref="atatAutoComplete"
       :id="id"
-      v-model="_selectedItem"
       :class="inputClass"
-      :items="(items)"
-      :search.sync="searchText"
-      :placeholder="placeholder"
-      :append-icon="icon"
+
+      :items="items"
       :item-title="titleKey"
-      :hide-details="true"
-      :customFilter="customFilter"
-      :rules="rules"
+      :item-value="valueKey"
+      :eager="true"
+      :placeholder="placeholder"
       return-object
       clearable
+      clear-icon="mdi-close"
+
+      :model-value="_selectedItem"
+      @update:modelValue="valueUpdate"      
+
+      :hide-details="true"
+      :rules="rules"
       variant="outlined"
-      :menu-props="{attach:true}"
+
+      :search.sync="searchText"
       @blur="onBlur"
-      @update:search="updateSearchInput"
+
     >
-      <template v-slot:item>
-          <!-- eslint-disable vue/no-v-text-v-html-on-component -->
-          <v-list-item-title
-            v-text="titleKey"
-            :class="{ 'font-weight-normal': !subtitleKey }"
-          />
-          <v-list-item-subtitle 
-            v-if="subtitleKey" 
-            v-text="subtitleKey"
-          />
-          <!-- eslint-enable -->
+    <!-- 
+      @click:clear="valueCleared"
+      :customFilter="customFilter" 
+      @update:search="updateSearchInput" 
+    -->
+
+      <template v-slot:item="{ props, item }">
+        <v-list-item 
+          v-bind="props"
+          :class="{ 'font-weight-normal': !subtitleKey }"
+          :title="item?.raw?.[titleKey]"
+          :subtitle="item?.raw?.[subtitleKey]"
+        />
       </template>
 
       <template v-slot:no-data>
@@ -56,6 +63,7 @@
       </template>
     </v-autocomplete>
     <ATATErrorValidation :errorMessages="errorMessages" />
+
   </div>
 </template>
 
@@ -89,7 +97,7 @@ class ATATAutoComplete extends Vue {
   };
   // data
   private errorMessages: string[] = [];
-  private searchText = null;
+  private searchText = "";
   private isReset = false;
 
   // props
@@ -99,7 +107,8 @@ class ATATAutoComplete extends Vue {
   @Prop({ default: false }) private labelSrOnly!: string;
   @Prop({ default: "" }) private icon!: string;
   @Prop({ default: () => [] }) private rules!: ValidationRule[];
-  @Prop({ default: "", required: true }) private titleKey!: string;
+  @Prop({ default: "text", required: true }) private titleKey!: string;
+  @Prop({ default: "value", required: true }) private valueKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
   @Prop({ default: [], required: true }) private searchFields!: string[];
   @Prop({ default: () => [] , required: true }) private items!: AutoCompleteItem[];
@@ -107,6 +116,8 @@ class ATATAutoComplete extends Vue {
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
   @PropSync("selectedItem") private _selectedItem!: AutoCompleteItem;
+
+  public emptySelectedItem = { [this.titleKey]: "", [this.valueKey]: "" };
 
   // computed
 
@@ -130,20 +141,21 @@ class ATATAutoComplete extends Vue {
       this.setErrorMessage();
   }
 
-  private customFilter(item: AutoCompleteItem, queryText: string) {
-    let text = "";
-    this.searchFields.forEach((key) => {
-      text += item[key] + " ";
-    });
-    const searchText = queryText.toLowerCase();
-    return text.toLowerCase().indexOf(searchText) > -1;
-  }
+  // private customFilter(itemTitle: string, queryText: string, item: any) {
+  //   let text = "";
+  //   this.searchFields.forEach((key) => {
+  //     text += item[key] + " ";
+  //   });
+  //   const searchText = queryText.toLowerCase();
+  //   return text.toLowerCase().indexOf(searchText) > -1;
+  // }
 
   private noResultsAction() {
-    this._selectedItem = {};
-    this.searchText = null;
+    debugger;
+    this._selectedItem.text = "";
+    this._selectedItem.value = "";
+    this.searchText = "";
     this.isReset = true;
-    this.$emit("noAutoCompleteResultsAction");
   }
 
   private setErrorMessage(): void {
@@ -152,20 +164,35 @@ class ATATAutoComplete extends Vue {
     })
   }
   //@Events
-  private onBlur(value: string) : void{
+  private onBlur() : void{
     this.setErrorMessage();
-    this.$emit('blur', value);
   }
 
-  private updateSearchInput(): void {
-    if (this.isReset) {
-      this._selectedItem = {};
-      this.searchText = null;
-      this.$emit("autocompleteInputUpdate", this.isReset);
-    }
-    this.setErrorMessage();
-    this.isReset = false;
+  // private updateSearchInput(): void {
+  //   if (this.isReset) {
+  //     this._selectedItem = {};
+  //     this.searchText = "";
+  //     this.$emit("autocompleteInputUpdate", this.isReset);
+  //   }
+  //   this.setErrorMessage();
+  //   this.isReset = false;
+  // }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private valueUpdate(val: any): void {
+    debugger;
+    this._selectedItem[this.titleKey] = val ? val[this.titleKey] : "";
+    this._selectedItem[this.valueKey] = val ? val[this.valueKey] : "";
+    debugger;
   }
+
+  // private valueCleared(): void {
+  //   debugger;
+  //   this._selectedItem[this.titleKey] = "";
+  //   this._selectedItem[this.valueKey] = "";
+  //   debugger;
+  // }
+
 }
 export default toNative(ATATAutoComplete)
 </script>
