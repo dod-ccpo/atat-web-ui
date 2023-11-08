@@ -404,7 +404,7 @@ class EnvironmentSummary extends Vue {
 
       this.tableData = [];
       this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
-      if (this.envInstances.length){
+      if (this.envInstances?.length){
         for (const instance of this.envInstances) {
           const index = this.envInstances.indexOf(instance);
           const selectedInCloud = this.classificationsCloud.includes(instance.classification_level)
