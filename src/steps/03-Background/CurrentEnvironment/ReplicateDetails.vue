@@ -17,7 +17,8 @@
             <ATATTextArea 
               id="Statement"
               class="textarea-max-width mb-10"
-              :value.sync="currEnvDTO.statement_replicated_optimized"
+              :value="currEnvDTO.statement_replicated_optimized"
+              @update:value="currEnvDTO.statement_replicated_optimized = $event"
               label="Provide a detailed statement identifying the outcomes and 
                 objectives for this requirement"
               :helpText="'Include any information that would help a CSP to ' 
@@ -32,7 +33,8 @@
               legend="Do you anticipate additional growth?"
               :card="false"
               :items="additionalGrowthOptions"
-              :value.sync="currEnvDTO.additional_growth"
+              :value="currEnvDTO.additional_growth"
+              @update:value="currEnvDTO.additional_growth = $event"
               :rules="[$validators.required('Please select an option.')]"
             />
 
@@ -44,7 +46,8 @@
               label="What percentage of additional capacity do you anticipate each year?"
               suffix="%"
               type="number"
-              :value.sync="currEnvDTO.anticipated_yearly_additional_capacity"
+              :value="currEnvDTO.anticipated_yearly_additional_capacity"
+              @update:value="currEnvDTO.anticipated_yearly_additional_capacity = $event"
               :rules="[$validators.required('Enter a percentage for your anticipated growth.')]"
             />
 
@@ -55,7 +58,8 @@
                 + ' your current functions?'"
               :card="false"
               :items="phasedApproachOptions"
-              :value.sync="currEnvDTO.has_phased_approach"
+              :value="currEnvDTO.has_phased_approach"
+              @update:value="currEnvDTO.has_phased_approach = $event"
               :rules="[$validators.required('Please select an option.')]"
              />
 
@@ -63,7 +67,8 @@
               v-if="currEnvDTO.has_phased_approach === 'YES'"
               id="PhasedApproachSchedule"
               class="textarea-max-width mb-10"
-              :value.sync="currEnvDTO.phased_approach_schedule"
+              :value="currEnvDTO.phased_approach_schedule"
+              @update:value="currEnvDTO.phased_approach_schedule = $event"
               label="What is your schedule for this phased approach?"
               :maxChars="500"
               :rules="[$validators.required('Enter details about your phased approach schedule.')]"

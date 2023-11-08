@@ -13,7 +13,6 @@ export function PropSync(propName: string, options: PropsConfig = {}) {
     componentOptions.emits = [...componentOptions.emits, `update:${propName}`]
     componentOptions.props ??= {};
     componentOptions.computed ??= {};
-
     // Define prop and computed prop for sync
     componentOptions.props[propName] = options;
     componentOptions.computed[k] = {

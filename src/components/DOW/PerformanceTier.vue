@@ -9,14 +9,16 @@
       :rules="[
         $validators.required('Select a performance tier.'),
       ]"
-      :value.sync="offeringData.performanceTier"
+      :value="offeringData.performanceTier"
+      @update:value="offeringData.performanceTier = $event"
     />
 
     <ATATTextField
       id="NetworkPerformance"
       v-if="isDatabase"
       class="mt-8 _input-max-width-240"
-      :value.sync="(offeringData as OtherServiceOfferingData).networkPerformance"
+      :value="(offeringData as OtherServiceOfferingData).networkPerformance"
+      @update:value="(offeringData as OtherServiceOfferingData).networkPerformance = $event"
       label="Network performance"
       tooltipText="This refers to your network speed and service availability."
       :rules="[
@@ -27,7 +29,8 @@
     <ATATTextField
       id="NumberOfInstances"
       class="mt-8 _input-max-width-240"
-      :value.sync="offeringData.numberOfInstances"
+      :value="offeringData.numberOfInstances"
+      @update:value="offeringData.numberOfInstances = $event"
       label="Number of instances with these configurations"
       type="number"
       :rules="[
@@ -41,14 +44,15 @@
       v-if="!isDOW"
       class="mt-8 _input-max-width-240 _has-appended-dropdown"
       label="Approximate data/internet egress per month"
-      :value.sync
-        = "(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyAmount"
+      :value="(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyAmount"
+      @update:value="(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyAmount = $event"
       tooltipText="This refers to the amount of data that gets transferred from 
         your organization’s host network to external networks."
       :appendDropdown="true"
       :dropdownOptions="storageUnits"
-      :selectedDropdownValue.sync 
-        = "(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyUnit"
+      :selectedDropdownValue="(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyUnit"
+      @update:selectedDropdownValue="(offeringData as CurrEnvInstancePerformance)
+        .dataEgressMonthlyUnit = $event"
       type="number"
       :rules="[
         $validators.required('Enter a number greater than or equal to 1.'),

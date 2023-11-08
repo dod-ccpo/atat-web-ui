@@ -536,7 +536,9 @@ class ATATFileUpload extends Vue {
     const fileInput = document.getElementById(
       this.id + "FileUpload"
     ) as HTMLInputElement;
-    fileInput.value = "";
+    if(fileInput){
+      fileInput.value = "";
+    }
   }
 
   //life cycle hooks

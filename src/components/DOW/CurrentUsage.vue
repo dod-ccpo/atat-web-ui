@@ -3,7 +3,8 @@
     <ATATRadioGroup 
       id="CurrentUsageDescription"
       :items="usageOptions"
-      :value.sync="_currentUsageDescription"
+      :value="_currentUsageDescription"
+      @update:value="_currentUsageDescription = $event"
       legend="How would you describe the current usage?"
       :rules="[
         $validators.required('Select a description for your current usage.'),
@@ -18,7 +19,8 @@
         during certain period(s) of the year?"
       groupLabelId="SpikeCauseGroupLabel"
       :items="spikeCauses"
-      :value.sync="_usageTrafficSpikeCauses"
+      :value="_usageTrafficSpikeCauses"
+      @update:value="_usageTrafficSpikeCauses = $event"
       :rules="[
         $validators.required('Select at least one type of spike in usage.'),
       ]"
@@ -28,7 +30,8 @@
       id="HighUsageEventDescription"
       class="mt-10"
       v-if="_usageTrafficSpikeCauses.includes('EVENT')"
-      :value.sync="_eventSpikeDescription"
+      :value="_eventSpikeDescription"
+      @update:value="_eventSpikeDescription = $event"
       label="Tell us about the event that causes a surge in usage"
       tooltipText="Include any details that would help a CSP better understand 
         your surge requirements (e.g., event name and/or time of year)."
@@ -41,7 +44,8 @@
       id="HighUsagePeriodDescription"
       class="mt-8"
       v-if="_usageTrafficSpikeCauses.includes('PERIOD')"
-      :value.sync="_periodSpikeDescription"
+      :value="_periodSpikeDescription"
+      @update:value="_periodSpikeDescription = $event"
       label="In which period of the year do you typically have a surge in usage?"
       tooltipText="Include any details that would help a CSP better understand 
         your surge requirements (e.g., date ranges or particular days, months, 

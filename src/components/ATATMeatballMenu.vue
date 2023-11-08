@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop, toNative } from "vue-facing-decorator";
+import {Vue, Component, Prop, toNative, Emit } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { MeatballMenuItem } from "types/Global";
@@ -63,11 +63,12 @@ class ATATMeatballMenu extends Vue {
   @Prop({ default: 0 }) public index!: number;
   @Prop() public menuItems!: MeatballMenuItem[];
   @Prop({ default: 200 }) public menuWidth!: number;
+  
 
   private getIdText(string: string) {
     return getIdText(string);
   }
-
+  @Emit("menuItemClick")
   public menuItemClick(item: MeatballMenuItem): void {
     this.$emit("menuItemClick", item, this.index);
   }

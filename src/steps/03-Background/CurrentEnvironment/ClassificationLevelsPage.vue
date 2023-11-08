@@ -17,7 +17,8 @@
               hybridText="1. Your cloud instances"
               :isHybrid="isHybrid"
               :isCloud="isCloud"
-              :selectedClassifications.sync="envClassificationsCloud"
+              :selectedClassifications="envClassificationsCloud"
+              @update:selectedClassifications="envClassificationsCloud = $event"
             />
             <hr v-if="isHybrid" />
             <ClassificationLevelForm
@@ -25,7 +26,8 @@
               hybridText="2. Your on-premise instances"
               :isHybrid="isHybrid"
               :isOnPrem="isOnPrem"
-              :selectedClassifications.sync="envClassificationsOnPrem"
+              :selectedClassifications="envClassificationsOnPrem"
+              @update:selectedClassifications="envClassificationsOnPrem = $event"
             />
           </div>
         </v-col>
