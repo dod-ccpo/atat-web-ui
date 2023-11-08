@@ -35,7 +35,11 @@
     }
   }
   
-  // fieldset { // deprecated
+  &:not(.v-textarea).v-field__field {
+    max-height: 40px;
+  }
+
+  // fieldset { // deprecated -- KEEP SPRINT 69
   //   max-height: 40px;
   //   margin-top: 4px;
   //   border: 1px solid $base;

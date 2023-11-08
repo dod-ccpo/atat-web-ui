@@ -4,9 +4,8 @@
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border: none !important;
-    outline: 1px solid $base-darkest;
+    outline: 1px solid $base;
     max-height: 40px;
-    border-right: 1px solid $base-darkest !important;
     &.v-field--focused {
       border: none;
       outline: 2px solid $primary;

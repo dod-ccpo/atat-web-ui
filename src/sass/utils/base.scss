@@ -590,13 +590,19 @@ textarea {
     max-height: calc(100vh - 56px);
   }
 }
-._recommended-Chip {
+._recommended-chip {
   background-color: $primary-lighter;
   padding: 4px;
   border-radius:4px;
   font-weight: 500;
 }
 
+.v-card {
+  &._border-light {
+    border: 1px solid $base-lighter;
+    opacity: 1;
+  }
+}
 
 ._auto-input-width {
   display: inline-block;

@@ -94,7 +94,6 @@
 
   // .v-input--selection-controls__input { becomes .v-selection-control__input
   .v-selection-control__input {
-    margin-right: 12px !important;
 
     &:after { // white background for radio button
       content: '';

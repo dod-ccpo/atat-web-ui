@@ -27,7 +27,7 @@ describe("Testing ATATSelect Component", () => {
   describe("testing atatSelect.vue", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
-      expect(wrapper.findComponent(ATATSelect).classes()[0]).toBe("atat-select")
+      expect(wrapper.findComponent(ATATSelect).classes()[0]).toBe("_atat-select")
     });
 
     it("set rules props then ensure the select wrapper is equal to rules props", async () => {
