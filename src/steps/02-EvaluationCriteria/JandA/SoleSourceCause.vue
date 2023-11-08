@@ -38,7 +38,8 @@
                   <ATATTextField
                     id="MigrationEstimatedCost"
                     class="mt-10 mb-10"
-                    :value.sync="migrEstCost"
+                    :value="migrEstCost"
+                    @update:value="migrEstCost = $event"
                     label="Estimated cost to migrate"
                     :isCurrency="true"
                     :width="400"
@@ -52,7 +53,8 @@
                       <ATATTextField
                         id="MigrationEstimatedDelay"
                         class="mt-0"
-                        :value.sync="migrEstDelayAmt"
+                        :value="migrEstDelayAmt"
+                        @update:value="migrEstDelayAmt = $event"
                         label="Estimated delay amount"
                         :labelSrOnly="true"
                         type="number"
@@ -64,7 +66,8 @@
                       
                       <ATATSelect 
                         :items="unitsOfTime"
-                        :selectedValue.sync="migrEstDelayUnit"
+                        :selectedValue="migrEstDelayUnit"
+                        @update:selectedValue="migrEstDelayUnit = $event"
                         label="Estimated delay unit of time"
                         :labelSrOnly="true"
                         :returnObject="false"
@@ -89,7 +92,8 @@
                 name="GovtEngineers"
                 :legend="`Are your Government engineers trained and certified in a 
                   specific cloud platform or technology that is unique to ${cspName}?`"
-                :value.sync="geCertified"
+                :value="geCertified"
+                @update:value="geCertified = $event"
                 :items="govtEngineersOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -99,7 +103,8 @@
                   <ATATTextField
                     id="PlatformOrTechName"
                     class="mt-10 mb-10"
-                    :value.sync="gePlatformName"
+                    :value="gePlatformName"
+                    @update:value="gePlatformName = $event"
                     label="Name of unique cloud platform/technology"
                     :rules="[
                       $validators.required('Enter the name of the cloud platform/technology.')
@@ -111,7 +116,8 @@
                       in another platform?"
                     helpText="Fill in the blank to complete the suggested sentence 
                       below or write your own reason."
-                    :value.sync="geInsufficientTimeReason"
+                    :value="geInsufficientTimeReason"
+                    @update:value="geInsufficientTimeReason = $event"
                     :maxChars="500"
                     :rows="6"
                     :validateItOnBlur="true"
@@ -134,7 +140,8 @@
                 id="ProductFeature"
                 name="ProductFeature"
                 :legend="`Is there a specific product or feature that is peculiar to ${cspName}?`"
-                :value.sync="pfPeculiarToCSP"
+                :value="pfPeculiarToCSP"
+                @update:value="pfPeculiarToCSP = $event"
                 :items="isPeculiarOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -144,7 +151,8 @@
                     id="IsProductOrFeature"
                     name="IsProductOrFeature"
                     legend="Is it a product or feature?"
-                    :value.sync="pfType"
+                    :value="pfType"
+                    @update:value="pfType = $event"
                     :items="productOrFeatureOptions"
                     :rules="[$validators.required('Please select an option.')]"
                   />
@@ -153,7 +161,8 @@
                       <ATATTextField
                         id="UniqueProduct"
                         class="mt-10 mb-10"
-                        :value.sync="pfName"
+                        :value="pfName"
+                        @update:value="pfName = $event"
                         :label="`Name of the unique ${productOrFeatureStr}`"
                         :rules="[
                           $validators.required(`Enter the name of your ${productOrFeatureStr}.`)
@@ -166,11 +175,13 @@
                           the Government’s requirements?`"
                         helpText="Fill in the blank to complete the suggested sentence 
                           below or write your own reason."
-                        :value.sync="pfWhyEssential"
+                        :value="pfWhyEssential"
+                        @update:value="pfWhyEssential = $event"
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
-                        :turnRulesOff.sync="whyEssentialRulesOff"
+                        :turnRulesOff="whyEssentialRulesOff"
+                        @update:turnRulesOff="whyEssentialRulesOff = $event"
                         :rules="[
                           $validators.required(whyEssentialErrorMessage),
                           $validators.notSameAsDefault(
@@ -188,11 +199,13 @@
                           meet the Government’s requirements?`"
                         helpText="Fill in the blank to complete the suggested sentence 
                           below or write your own reason."
-                        :value.sync="pfWhyOthersInadequate"
+                        :value="pfWhyOthersInadequate"
+                        @update:value="pfWhyOthersInadequate = $event"
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
-                        :turnRulesOff.sync="whyInadequateRulesOff"
+                        :turnRulesOff="whyInadequateRulesOff"
+                        @update:turnRulesOff="whyInadequateRulesOff = $event"
                         :rules="[
                           $validators.required(whyOthersInadequateErrorMessage),
                           $validators.notSameAsDefault(
