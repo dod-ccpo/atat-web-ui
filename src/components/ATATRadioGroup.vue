@@ -225,21 +225,16 @@ class ATATRadioGroup extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.$refs.radioButtonGroup.validate().then(
-      async (response: SubmitEventPromise) => {
-        if (!((await response).valid as boolean)){ 
-          this.setErrorMessage() }
-      }
-    );
+    this.setErrorMessage();
   }
 
   // methods
   private setErrorMessage(): void {
     AcquisitionPackage.setValidateNow(true)
-    this.$refs.radioButtonGroup.validate().then(
+    this.$refs.radioButtonGroup?.validate().then(
       async (response:SubmitEventPromise)=>{
-        this.errorMessages = (await (response)).errors[0].errorMessages;
-        this.hasErrors = this.errorMessages.length>0
+        this.errorMessages = (await (response)).errors[0]?.errorMessages;
+        this.hasErrors = this.errorMessages?.length>0
       }
     )
   } 

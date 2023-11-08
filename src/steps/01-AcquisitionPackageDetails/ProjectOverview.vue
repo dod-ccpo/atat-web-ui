@@ -46,6 +46,7 @@
           </div>
           <div class="d-flex align-start flex-column mt-6">
             <EmergencyDeclarationSupport
+              ref="EmergencyDeclarationRadioExternal"
               legend="Is this requirement in support of an emergency declaration?"
               :emergencyDeclaration="emergencyDeclaration"
               @update:emergencyDeclaration="emergencyDeclaration = $event"
@@ -54,6 +55,7 @@
           </div>
           <div class="d-flex align-start flex-column mt-6">
             <CJADC2Initiative
+              ref="CJADC2RadioExternal"
               legend='Is this package in support of the Combined Joint All-Domain Command and
                 Control (CJADC2) initiative?'
               helpText = "CJADC2 is the Department of Defense’s (DoD’s) concept to connect sensors 
@@ -97,10 +99,10 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import AcquisitionPackage, {
   StoreProperties,
 } from "@/store/acquisitionPackage";
-import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import { YesNo } from "types/Global";
+import { SaveOnLeaveRefs, YesNo } from "types/Global";
  
 @Component({
   components: {
@@ -113,12 +115,15 @@ import { YesNo } from "types/Global";
   },
 })
 class ProjectOverview extends Vue {
-  $refs!: SaveOnLeaveRefs
+
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
+    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

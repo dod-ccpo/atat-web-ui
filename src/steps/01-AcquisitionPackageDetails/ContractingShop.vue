@@ -103,19 +103,7 @@ import { ComponentPublicInstance } from "vue";
   }
 })
 class ContractingShop extends Vue {
-  
-  // $refs!: {
-  //   form: ComponentPublicInstance & {
-  //     validate: ()=> Promise<SubmitEventPromise>
-  //   };
-  //   ATATRadioForm: ComponentPublicInstance & {
-  //     $refs:{
-  //       radioButtonGroup: ComponentPublicInstance & {
-  //         validate: () => Promise<SubmitEventPromise>;
-  //       }
-  //     }
-  //   };
-  // }; 
+
 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {

@@ -372,15 +372,15 @@ class ATATCheckboxGroup extends Vue {
     if (this._selected.length) {
       this.clearErrorMessage();
     } else {
-      setTimeout(() => {
-        const checkbox = this.$refs.checkboxGroup;
-        this.$refs.checkboxGroupForm.validate().then(
-          async (response:SubmitEventPromise)=>{
-            this.errorMessages = (await (response)).errors[0].errorMessages;
-          }
-        )
-        AcquisitionPackage.setValidateNow(false);
-      }, 0);
+      this.$refs.checkboxGroupForm?.validate().then(
+        async (response:SubmitEventPromise)=>{
+          debugger;
+          this.errorMessages = (await response).valid !== true
+            ? (await response).errors[0].errorMessages
+            : [];
+          AcquisitionPackage.setValidateNow(false);
+        }
+      )
     }
     this.isLoading = false;
   }
@@ -453,7 +453,6 @@ class ATATCheckboxGroup extends Vue {
   public mounted(): void {
     this.isLoading = true;
     this.setEventListeners();
-    debugger
     // if validateOnLoad, then validate checkboxes immediately
     if (this.validateOnLoad){
       this.validateCheckboxesNow = true;

@@ -2,6 +2,7 @@
 <template>
     <div >
       <ATATRadioGroup
+        ref="radioButtonGroup"
         :id="id"
         :legend="legend" 
         :value="_cjadc2Initiative"

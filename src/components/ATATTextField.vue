@@ -114,7 +114,7 @@ class ATATTextField extends Vue  {
   // refs
   $refs!: {
     atatTextField: ComponentPublicInstance & {
-      validate: () => Promise<SubmitEventPromise>;
+      validate: () => Promise<string[]>;
       resetValidation(): void
     };
   }; 
@@ -162,12 +162,7 @@ class ATATTextField extends Vue  {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.$refs.atatTextField.validate().then(
-      async (response: SubmitEventPromise) => {
-        if (!((await response).valid)){ 
-          this.setErrorMessage() }
-      }
-    );
+    this.setErrorMessage()
   }
 
   //data
@@ -177,16 +172,19 @@ class ATATTextField extends Vue  {
     return this.validateOnBlur ? "blur" : undefined
   }
 
-  public async setErrorMessage(): Promise<void> {
+  public setErrorMessage(): void {
+    this.errorMessages = [];
     if (this.validateOnBlur) {
       this.$refs.atatTextField.validate().then(
-        (response: unknown) => {
-          this.errorMessages = response as string[];
-          this.$emit('errorMessage', this.errorMessages);
+        async (response: string[]) => {
+          if (response.length>0){
+            this.errorMessages = response;
+            this.$emit('errorMessage', this.errorMessages);
+          }
         }
       );
     } else {
-      await this.resetValidation();
+      this.resetValidation();
     }
   }
 

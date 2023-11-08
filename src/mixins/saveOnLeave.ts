@@ -2,7 +2,7 @@ import { Vue } from 'vue-facing-decorator'
 import { RouteLocationNormalized } from "vue-router";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
-import { SaveOnLeaveRefs } from 'types/Global';
+import { FormRef, RadioFormRef, RadioFormRefAsExternalComponent, SaveOnLeaveRefs } from 'types/Global';
 import { SubmitEventPromise } from 'vuetify/lib/framework.mjs';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import { ComponentPublicInstance } from 'vue';
@@ -12,6 +12,36 @@ import { ref } from 'vue';
 
 export type To = RouteLocationNormalized
 export type From = RouteLocationNormalized
+ 
+export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> => {
+  const refKeys = Object.keys(forms)
+  const validatedForms: boolean[] = [];
+  debugger;
+  for (const ref of refKeys){
+    if (ref.toLowerCase().includes("radio")){
+      if (ref.toLowerCase().includes("external")){
+        const radioFormWithExternalComponent = 
+          (forms as unknown as RadioFormRefAsExternalComponent)[ref];
+        radioFormWithExternalComponent.$refs.radioButtonGroup.setErrorMessage();
+        validatedForms.push(
+          // eslint-disable-next-line max-len
+          await (await radioFormWithExternalComponent.$refs.radioButtonGroup.$refs.radioButtonGroup.validate()).valid
+        );
+      } else {
+        const radioForm = (forms as unknown as RadioFormRef)[ref];
+        radioForm.setErrorMessage();
+        validatedForms.push(
+          await (await radioForm.$refs.radioButtonGroup.validate()).valid
+        );
+      }
+    } else if (ref.toLowerCase() === "form"){
+      const form = (forms as unknown as FormRef)[ref] ;
+      validatedForms.push(await (await (form).validate()).valid);
+    }
+  }
+  return validatedForms.every(f=>f)
+}
+
 
 export async function beforeRouteLeaveFunction(p: {
   to: To, from: From,
@@ -24,28 +54,13 @@ export async function beforeRouteLeaveFunction(p: {
   // it can be removed after validation is fixed
   isValidOverrideForTesting?: boolean,
 }) {
-  let validateAllForms: boolean[] = [];
-  const refKeys = Object.keys(p.form);
-  debugger;
-  for (let i=0;i<refKeys.length;i++){
-    switch(refKeys[i].toLowerCase()){
-    case "form":
-      validateAllForms.push(await (await (p.form.form).validate()).valid);
-      break;
-    case "atatradioform":
-      p.form.ATATRadioForm.setErrorMessage();
-      validateAllForms.push(
-        await (await (p.form.ATATRadioForm).$refs.radioButtonGroup.validate()).valid
-      );
-      break;
-    }
-  }
-  const isValid = validateAllForms.every(f=>f)
+ 
+  const isValid = await validateAllForms(p.form)
   const goNext = await p.saveOnLeave();
   const skipValidation = AcquisitionPackage.skipValidation;
   const direction = p.to.query.direction;
-  if(direction === "next" && p.isValid && !skipValidation){
-    AcquisitionPackage.setValidateNow(p.isValid);
+  if(direction === "next" && isValid && !skipValidation){
+    AcquisitionPackage.setValidateNow(isValid);
   }
   
 
@@ -60,7 +75,7 @@ export async function beforeRouteLeaveFunction(p: {
   return p.nextTick(()=> {
     AcquisitionPackage.setValidateNow(false);
     AcquisitionPackage.setSkipValidation(false);
-    if (!p.isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
+    if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
       const el = document.getElementsByClassName("error--text")[0];
       if (el) {
         el.scrollIntoView({
@@ -68,7 +83,7 @@ export async function beforeRouteLeaveFunction(p: {
         });
       }
       return false
-    } else if (goNext && (p.isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
+    } else if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
       Steps.setLeaveStepComplete(p.from.name as string);  
       Steps.clearAdditionalButtonText();     
       AcquisitionPackage.setDisableContinue(false);

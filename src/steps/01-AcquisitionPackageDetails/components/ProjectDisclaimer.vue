@@ -48,18 +48,12 @@ class ProjectDisclaimer extends Vue {
     @PropSync("rules") private _rules!: "";
 
     @Prop({ default: true }) private boldText!: boolean;
-    
-    // public doSomething(val: string[]): void {
-    //   debugger; //
-    //   this._selectedDisclaimer = val.length ? val[0] : ""
-    //   debugger;;
-    // }
-
+  
     public disclaimer: Checkbox[] = [ 
       {
         id: "Yes_ProjectDisclaimer",
         label: `I acknowledge that I am in compliance with my Military 
-    Service-specific policies related to cloud acquisition, as applicable.`,
+              Service-specific policies related to cloud acquisition, as applicable.`,
         value: "YES"
       }
     ];

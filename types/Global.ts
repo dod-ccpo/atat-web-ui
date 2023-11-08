@@ -20,6 +20,7 @@ import {
 import { RouteRecordName, RouteRecordSingleViewWithChildren } from "vue-router";
 import { ComponentPublicInstance } from "vue";
 import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
+import { ref } from "vue";
 
 export interface DocReviewData {
   projectOverview: ProjectOverviewDTO;
@@ -930,13 +931,42 @@ export enum ClassificationLevels {
   TSCRT = "Top Secret"
 }
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+export interface FormRef {
+  [key: string]: ComponentPublicInstance & {
+    validate: ()=> Promise<SubmitEventPromise>;
+  }
+}
+export interface RadioFormRef{
+  [key: string]: ComponentPublicInstance & {
+    setErrorMessage: ()=> void,
+    $refs:{
+      radioButtonGroup: ComponentPublicInstance & {
+        validate: () => Promise<SubmitEventPromise>;
+      }
+    }
+  }
+}
 
-export type SaveOnLeaveRefs =  {
-  
-    form: ComponentPublicInstance & {
+export interface RadioFormRefAsExternalComponent{
+  [key: string]: ComponentPublicInstance & {
+    $refs:{
+      radioButtonGroup: ComponentPublicInstance & {
+        setErrorMessage: ()=> void,
+        $refs:{
+          radioButtonGroup: ComponentPublicInstance & {
+            validate: () => Promise<SubmitEventPromise>;
+          }
+        }
+      }
+    }
+  }
+}
+
+export type SaveOnLeaveRefs  =  {
+    "form": ComponentPublicInstance & {
       validate: ()=> Promise<SubmitEventPromise>;
     },
-    ATATRadioForm: ComponentPublicInstance & {
+    "RadioForm" : ComponentPublicInstance & {
       setErrorMessage: ()=> void,
       $refs:{
         radioButtonGroup: ComponentPublicInstance & {

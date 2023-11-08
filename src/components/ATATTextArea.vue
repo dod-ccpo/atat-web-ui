@@ -90,7 +90,7 @@ class ATATTextArea extends Vue {
       messages: string[],
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => Promise<boolean>;
+      validate: () => Promise<string[]>;
       resetValidation: ()=> void
     };
   };
@@ -133,9 +133,10 @@ class ATATTextArea extends Vue {
   }
 
   private setErrorMessage(): void {
+    this.errorMessages = [];
     this.$refs.atatTextArea.validate().then(
-      (response: unknown) => {
-        this.errorMessages = response as string[];
+      async (response: string[]) => {
+        this.errorMessages = response;
       }
     );
   }
@@ -146,12 +147,7 @@ class ATATTextArea extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.$refs.atatTextArea.validate().then(
-      async (response: SubmitEventPromise) => {
-        if (!((await response).valid as boolean)){ 
-          this.setErrorMessage() }
-      }
-    );
+    this.setErrorMessage();
   }
 
   @Watch('rules')
