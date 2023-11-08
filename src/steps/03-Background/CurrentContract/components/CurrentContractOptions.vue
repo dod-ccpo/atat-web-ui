@@ -6,7 +6,8 @@
     :legend="legend"
     :card="card"
     :items="currentContractOptions" 
-    :value.sync="_selectedOption"
+    :value="_selectedOption"
+    @update:value="_selectedOption = $event"
     :rules="rules"
   />
 </template>
