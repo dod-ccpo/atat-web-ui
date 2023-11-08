@@ -45,9 +45,6 @@
         :validate-on="validationString"
       >
 
-        <!-- TODO - figure out how to set error messages
-           @update:error="setErrorMessage" -->
-
         <template v-slot:prepend-inner>
           <ATATSVGIcon
             v-if="isCurrency"
@@ -58,7 +55,6 @@
             class="pt-1 mr-1"
           />
         </template>
-        <!-- TODO check slot append -->
         <template slot="append-inner" v-if="appendText">
           <span class="_append-text">
             {{ appendText }}

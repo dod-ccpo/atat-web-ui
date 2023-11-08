@@ -67,7 +67,7 @@
                   <v-expansion-panel-title>
                     <div class="d-flex justify-space-between width-100">
                       <div class="h3">
-                        Porfolios
+                        Portfolios
                       </div>
                       <div class="h3 text-base-light _item-count pr-4">
                         {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>

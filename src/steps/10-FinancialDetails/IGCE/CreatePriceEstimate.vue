@@ -5,7 +5,7 @@
         <h1 class="page-header mb-3">
           Let’s work on a price estimate for your cloud requirements
         </h1>
-         <div class="copy-max-width">
+        <div class="copy-max-width">
             <p id="IntroP" class="mb-10">
               In the Performance Requirements section, you told us about all of the cloud 
               services and support that are needed for this project. Next, we’ll dive into 
@@ -31,7 +31,6 @@
           <template v-slot:content>
             <h2>Getting started with your price estimate</h2>
             <v-list class="_atat-stepper">
-              <v-list-group>
                 <v-list-item>
                   <span class="_step-circle">1</span>
                   Choose one or more of the Cloud Service Provider (CSP) pricing 
@@ -40,7 +39,7 @@
                   you may need to register for an account to view the pricing calculator.
                   <div class="d-flex">
                     <div v-for="(csp,idx) in csps" :key="idx">
-                      <v-card
+                      <div
                         class="_csp-card _calculator-card justify-space-between"
                         :class="{'_recommended-card' : recommended === csp.iconName}"
                       >
@@ -61,7 +60,7 @@
                           <a v-for="(link, index) in csp.links"
                               :key="index"
                               :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
-                              class="_csp-link d-block mt-4 font-size-14"
+                              class="_csp-link d-block font-size-14"
                               :href="link.url"
                               target="_blank"
                           >
@@ -77,7 +76,7 @@
                             </span>
                           </a>
                         </div>
-                      </v-card>
+                      </div>
                       <div
                         v-if="recommended === csp.iconName"
                         class="_recommended-banner"
@@ -101,7 +100,6 @@
                   refer to this report throughout the remaining “Requirements
                   Cost Estimate” interview questions.</span>
                 </v-list-item>
-              </v-list-group>
             </v-list>
           </template>
         </ATATAlert>
@@ -172,7 +170,7 @@ class CreatePriceEstimate extends Vue {
           url: "https://portal.gov.gss.google/il4/calc.html",
         },
         {
-          text: "IL6 calculator",
+          text: "IL5 calculator",
           url: "https://portal.gov.gss.google/il5/calc.html",
         }
       ] 

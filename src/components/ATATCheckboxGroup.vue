@@ -43,7 +43,7 @@
         :error="error"
         :disabled="disabled"
         :rules="checkboxRules"
-        :multiple="true"
+        multiple
         :hide-details="true"
         :ref="index === 0 ? 'checkboxGroup' : ''"
         :data-group-id="id + '_Group'"
@@ -249,10 +249,6 @@ class ATATCheckboxGroup extends Vue {
   public isLoading = false;
 
   public checkboxRules: ValidationRule[] = [];
-
-  // @Watch("value", {deep: true})
-  // public valueChanged(newVal: string[]): void{
-  // }
 
   @Watch("rules", {deep: true})
   public rulesChanged(): void {

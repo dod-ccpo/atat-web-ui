@@ -1,5 +1,5 @@
 <template>
-  <div :id="id + '_dropdown_field_control'" class="atat-select">
+  <div :id="id + '_dropdown_field_control'" class="_atat-select">
     <v-flex>
       <label
         v-if="label"
