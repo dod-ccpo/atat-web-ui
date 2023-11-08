@@ -279,9 +279,6 @@ class ATATCheckboxGroup extends Vue {
     return "Other_" + getIdText(this.otherValue);
   }
 
-  private showTextField(index: number): boolean {
-    return this.selectedIndices.includes(index);
-  }
 
   public textFieldBlur(index: number): void {
     const textfield = this.getTextField(index);
