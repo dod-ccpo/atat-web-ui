@@ -2,7 +2,8 @@
   <ATATTextArea 
     id="AdditionalInfo"
     class="max-width-740"
-    :value.sync="_additionalInfo"
+    :value="_additionalInfo"
+    @update:value="_additionalInfo = $event"
     label="What additional information would help a CSP understand your current environment?"
     helpText="NOTE: This will be included in your Description of Work. Please use
       vendor-neutral language. Avoid including any company names or vendor-unique 

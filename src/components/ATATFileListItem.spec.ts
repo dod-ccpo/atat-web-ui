@@ -1,9 +1,6 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect, vi } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils';
 import ATATFileListItem from "@/components/ATATFileListItem.vue";
-Vue.use(Vuetify);
 
 const uploadedFileObj = {
   "file": "[object File1]",
@@ -38,20 +35,15 @@ const uploadingFileObj = {
 
 
 describe("Testing ATATFileList Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(ATATFileListItem, {
-      localVue,
-      vuetify,
-      propsData: {
-        uploadingFileObj: uploadedFileObj
-      }
-    });
-  });
+  const wrapper: VueWrapper = shallowMount(ATATFileListItem, {
+    props: {
+      uploadingFileObj: uploadedFileObj
+    },
+    global: {
+      plugins: []
+    }
+  })
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   it("renders successfully", async () => {
     expect(await wrapper.exists()).toBe(true);
@@ -61,7 +53,7 @@ describe("Testing ATATFileList Component", () => {
     await wrapper.setProps((
       uploadingFileObj
     ))
-    const isLoading = await wrapper.vm.isLoading;
+    const isLoading = await vm.isLoading;
     expect(isLoading).toBe(false);
   })
 
@@ -74,7 +66,7 @@ describe("Testing ATATFileList Component", () => {
         isErrored: true
       }
     });
-    Vue.nextTick(()=>{
+    wrapper.vm.$nextTick(()=>{
       expect(wrapper.emitted("removeFiles")?.flat()[0]).toBe(idx);
     });
   })
@@ -82,14 +74,14 @@ describe("Testing ATATFileList Component", () => {
   it("getExtension() - supply filename with extension to return last 13 chars prepended " +
       "with `...`", async()=>{
     const fileName = "thisisalongnameforadummyFile.pdf";
-    const ext = await wrapper.vm.getExtension(fileName);
+    const ext = await wrapper.vm.$options.methods.getExtension(fileName);
     expect(ext).toBe("...dummyFile.pdf");
   })
 
   it("getTruncatedFileName() - supplies long filename to ensure that" +
   " that ... is added at the same place keeping all long file names the same width", async()=>{
     const fileName = "thisisalongnameforarepeatedforthisisalongnamefordummyFile.pdf";
-    const ext = await wrapper.vm.getTruncatedFileName(fileName);
+    const ext = await wrapper.vm.$options.methods.getTruncatedFileName(fileName);
     expect(ext).toBe("thisisalongnameforarepeatedforthisisalongname...dummyFile.pdf");
   })
 

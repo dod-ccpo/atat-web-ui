@@ -49,7 +49,8 @@
               :card="true"
               :width="'180'"
               :items="radioOptions"
-              :value.sync="architectureDesignNeeds.needs_architectural_design_services"
+              :value="architectureDesignNeeds.needs_architectural_design_services"
+              @update:value="architectureDesignNeeds.needs_architectural_design_services = $event"
               :rules="[$validators.required('Please select an option.')]"
             />
           </div>
@@ -107,10 +108,10 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 class ArchitecturalDesign extends Vue {
 
   $refs!: SaveOnLeaveRefs
-  
+
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
-    return await beforeRouteLeaveFunction({ to, from, 
+    return await beforeRouteLeaveFunction({ to, from,
       saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
     }).catch(() => false)
   }

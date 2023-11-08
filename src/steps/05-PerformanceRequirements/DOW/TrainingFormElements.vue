@@ -3,7 +3,8 @@
     <ATATTextField
       id="TrainingTitle"
       class="_input-wrapper-max-width mb-10"
-      :value.sync="offeringData.trainingRequirementTitle"
+      :value="offeringData.trainingRequirementTitle"
+      @update:value="offeringData.trainingRequirementTitle = $event"
       label="Training title"
       tooltipText="Enter a title that briefly describes this specific training requirement."
       :rules="[
@@ -15,7 +16,8 @@
     <ATATRadioGroup
       id="TrainingFormat"
       legend="What training format do you require?"
-      :value.sync="offeringData.trainingType"
+      :value="offeringData.trainingType"
+      @update:value="offeringData.trainingType = $event"
       :items="trainingTypes"
       name="TrainingFormat"
       @radioButtonSelected="clearData()"
@@ -27,7 +29,8 @@
       id="TrainingFacility"
       v-if="offeringData.trainingType === 'ONSITE_INSTRUCTOR_CONUS'"
       legend="What type of facility will your training be held at??"
-      :value.sync="offeringData.trainingFacilityType"
+      :value="offeringData.trainingFacilityType"
+      @update:value="offeringData.trainingFacilityType = $event"
       :items="trainingFaciltyTypes"
       name="TrainingFacility"
       class="mb-10"
@@ -39,7 +42,8 @@
       id="TrainingLocation"
       class="mb-10"
       v-if="showTrainingLocation"
-      :value.sync="offeringData.trainingLocation"
+      :value="offeringData.trainingLocation"
+      @update:value="offeringData.trainingLocation = $event"
       :label="trainingLocationLabel"
       width="234"
       :rules="[
@@ -51,7 +55,8 @@
       id="TrainingTimezone"
       class="mb-10"
       v-if="showTrainingTimezone"
-      :value.sync="offeringData.trainingTimeZone"
+      :value="offeringData.trainingTimeZone"
+      @update:value="offeringData.trainingTimeZone = $event"
       label="Timezone of training"
       width="234"
       :rules="[
@@ -62,7 +67,8 @@
     <ATATTextField
       id="TrainingPersonnel"
       class="mb-10"
-      :value.sync="offeringData.trainingPersonnel"
+      :value="offeringData.trainingPersonnel"
+      @update:value="offeringData.trainingPersonnel = $event"
       label="How many personnel require this training?"
       tooltipText="Enter the total number of people that require this training. 
         This may be split across multiple training sessions."
