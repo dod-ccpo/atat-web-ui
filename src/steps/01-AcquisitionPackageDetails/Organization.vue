@@ -327,7 +327,7 @@ class OrganizationInfo extends Vue {
     };
   }
 
-  private savedData = {
+  private savedData: OrganizationDTO = {
     disa_organization: "",
     disa_organization_reference:"",
     organization_name: "",
@@ -340,7 +340,7 @@ class OrganizationInfo extends Vue {
     zip_code: "",
     state: "",
     country: "",
-  } as Record<string, string>
+  }
 
 
   // watchers
@@ -366,10 +366,10 @@ class OrganizationInfo extends Vue {
     this.stateListData = ContactData.stateChoices;
     const storeData = await AcquisitionPackage
       .loadData<OrganizationDTO>({storeProperty: 
-      StoreProperties.Organization}) as Record<string, string>;
+      StoreProperties.Organization});
 
     if (storeData) {
-      const keys: string[] = [
+      const keys: (keyof OrganizationDTO)[] = [
         "disa_organization",
         "organization_name",
         "disa_organization_reference",
@@ -383,14 +383,21 @@ class OrganizationInfo extends Vue {
         "state",
         "country",        
       ];
-      keys.forEach((key: string) => {
+      keys.forEach((key) => {
         if (Object.prototype.hasOwnProperty.call(storeData, key)) {
+          // @ts-expect-error ts can't wrap it's head around this one
           this.savedData[key] = storeData[key];
         }
       });
 
       const selectedAgencyIndex = this.agencyData.findIndex(
-        (svc) => svc.value === storeData.agency.value
+        (svc) => svc.value === (
+          typeof storeData.agency === 'string' ?
+            storeData.agency
+            : // @ts-expect-error fallback in case the previous 
+            // way was right even though it doesn't match the type
+            storeData.agency?.value
+        )
       );
 
       if (selectedAgencyIndex > -1) {
@@ -399,12 +406,16 @@ class OrganizationInfo extends Vue {
       }
       if(storeData.disa_organization_reference){
         this.selectedDisaOrg = this.disaOrgData.find(
-          (disaOrg) => disaOrg.value === storeData.disa_organization_reference.value
+          (disaOrg) => disaOrg.value === (
+            typeof storeData.disa_organization_reference === 'string' ?
+              storeData.disa_organization_reference 
+              :
+              storeData.disa_organization_reference?.value)
         ) as SelectData
       }
 
-      this.organizationName = storeData.organization_name;
-      this.dodAddressCode = storeData.dodaac;
+      this.organizationName = storeData.organization_name ?? '';
+      this.dodAddressCode = storeData.dodaac ?? '';
 
       const selectedAddressTypeIndx = this.addressTypeOptions.findIndex(
         (options) => options.value === storeData.address_type
@@ -415,11 +426,11 @@ class OrganizationInfo extends Vue {
           ? this.addressTypeOptions[selectedAddressTypeIndx].value
           : "";
           
-      this.streetAddress1 = storeData.street_address_1;
-      this.streetAddress2 = storeData.street_address_2;
-      this.city = storeData.city;
-      this.zipCode = storeData.zip_code;
-      this.stateOrProvince = storeData.state;
+      this.streetAddress1 = storeData.street_address_1 ?? '';
+      this.streetAddress2 = storeData.street_address_2 ?? '';
+      this.city = storeData.city ?? '';
+      this.zipCode = storeData.zip_code ?? '';
+      this.stateOrProvince = storeData.state ?? '';
 
     }
   }
