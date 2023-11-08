@@ -404,90 +404,91 @@ class EnvironmentSummary extends Vue {
 
       this.tableData = [];
       this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
-
-      for (const instance of this.envInstances) {
-        const index = this.envInstances.indexOf(instance);
-        const selectedInCloud = this.classificationsCloud.includes(instance.classification_level)
-        const selectedOnPrem = this.classificationsOnPrem.includes(instance.classification_level)
-        if(!selectedInCloud && !selectedOnPrem) {
-          // eslint-disable-next-line camelcase
-          instance.classification_level = ""
-        }
-        const isValid = await this.validateInstance(instance);
-        let storage = "";
-        if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
-          const storageType = toTitleCase(instance.storage_type);
-          storage = storageType + ": " + String(instance.storage_amount)
-            + " " + instance.storage_unit;
-        }
-        let performance = "";
-        if (instance.performance_tier) {
-          performance = toTitleCase(instance.performance_tier);
-          performance += performance === "General" ? " Purpose" : " Optimized";
-        }
-        let location = "";
-        if (instance.instance_location === "ON_PREM") {
-          location = "On-premise";
-        } else {
-          const instances: string[] = []
-          if (typeof instance.deployed_regions === "string") {
-            const regionsSysIds = instance.deployed_regions?.split(',')
-            regionsSysIds.forEach((instanceId) => {
-              instances.push(this.locationNames[instanceId])
-            })
+      if (this.envInstances.length){
+        for (const instance of this.envInstances) {
+          const index = this.envInstances.indexOf(instance);
+          const selectedInCloud = this.classificationsCloud.includes(instance.classification_level)
+          const selectedOnPrem = this.classificationsOnPrem.includes(instance.classification_level)
+          if(!selectedInCloud && !selectedOnPrem) {
+            // eslint-disable-next-line camelcase
+            instance.classification_level = ""
           }
-          //TODO fix existing records so the data isn't pulled in as an array
-          //then we can remove this and cleanup the logic for this
-          if(Array.isArray(instance.deployed_regions)){
-            instance.deployed_regions.forEach((instanceId) => {
-              instances.push(this.locationNames[instanceId])
-            })
+          const isValid = await this.validateInstance(instance);
+          let storage = "";
+          if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
+            const storageType = toTitleCase(instance.storage_type);
+            storage = storageType + ": " + String(instance.storage_amount)
+              + " " + instance.storage_unit;
+          }
+          let performance = "";
+          if (instance.performance_tier) {
+            performance = toTitleCase(instance.performance_tier);
+            performance += performance === "General" ? " Purpose" : " Optimized";
+          }
+          let location = "";
+          if (instance.instance_location === "ON_PREM") {
+            location = "On-premise";
+          } else {
+            const instances: string[] = []
+            if (typeof instance.deployed_regions === "string") {
+              const regionsSysIds = instance.deployed_regions?.split(',')
+              regionsSysIds.forEach((instanceId) => {
+                instances.push(this.locationNames[instanceId])
+              })
+            }
+            //TODO fix existing records so the data isn't pulled in as an array
+            //then we can remove this and cleanup the logic for this
+            if(Array.isArray(instance.deployed_regions)){
+              instance.deployed_regions.forEach((instanceId) => {
+                instances.push(this.locationNames[instanceId])
+              })
+            }
+
+            let regions = instances?.length
+              ? instances.join(", ")
+              : "";
+            regions = regions.replaceAll("CONUS", "CONUS ");
+            location = this.envLocation === "HYBRID"
+              ? regions.length
+                ? "Cloud<br>(" + regions + ")"
+                : "Cloud"
+              : regions;
           }
 
-          let regions = instances?.length
-            ? instances.join(", ")
-            : "";
-          regions = regions.replaceAll("CONUS", "CONUS ");
-          location = this.envLocation === "HYBRID"
-            ? regions.length
-              ? "Cloud<br>(" + regions + ")"
-              : "Cloud"
-            : regions;
-        }
-
-        let classification = "";
-        if (instance.classification_level) {
-          const i = this.classificationLevels.findIndex(
-            obj => obj.sys_id === instance.classification_level
-          );
-          if (i > -1) {
-            const classificationLevel = this.classificationLevels[i];
-            classification = buildClassificationLabel(classificationLevel, "short");
+          let classification = "";
+          if (instance.classification_level) {
+            const i = this.classificationLevels.findIndex(
+              obj => obj.sys_id === instance.classification_level
+            );
+            if (i > -1) {
+              const classificationLevel = this.classificationLevels[i];
+              classification = buildClassificationLabel(classificationLevel, "short");
+            }
           }
-        }
 
-        const instanceData: EnvInstanceSummaryTableData = {
-          instanceSysId: instance.sys_id,
-          instanceNumber: index + 1,
-          location,
-          classification,
-          qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
-          vCPU: instance.number_of_vcpus ? String(instance.number_of_vcpus) : "",
-          memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
-          storage,
-          performance,
-          isValid,
-        };
+          const instanceData: EnvInstanceSummaryTableData = {
+            instanceSysId: instance.sys_id,
+            instanceNumber: index + 1,
+            location,
+            classification,
+            qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
+            vCPU: instance.number_of_vcpus ? String(instance.number_of_vcpus) : "",
+            memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
+            storage,
+            performance,
+            isValid,
+          };
 
-        this.tableData.push(instanceData);
-        if (this.envLocation === "ON_PREM") {
-          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
-        }
+          this.tableData.push(instanceData);
+          if (this.envLocation === "ON_PREM") {
+            this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
+          }
 
-        const hasMultipleClassifications
-          = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
-        if (!hasMultipleClassifications) {
-          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
+          const hasMultipleClassifications
+            = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
+          if (!hasMultipleClassifications) {
+            this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
+          }
         }
       }
     }, 0);
