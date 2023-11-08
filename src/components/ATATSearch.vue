@@ -22,9 +22,10 @@
     <div class="d-flex" :style="'width: ' + width">
 
       <!-- 
-        :height="40"
         :validate-on="validationString"
         @update:error="setErrorMessage"
+        @update:model-value="onInput"
+        @update:modelValue="_value = $event"
       -->
 
       <v-text-field
@@ -32,17 +33,19 @@
         :id="id + '_SearchInput'"
         class="_search-input"
         clearable
-        @update:model-value="onInput"
         variant="outlined"
         density="compact"
         :model-value="_value"
+        @update:model-value="onInput"
         :placeholder="placeHolder"
+        :persistent-placeholder="true"
         :rules="rules"
         :validate-on="validationString"
         @click:clear="clearErrorMessages"
         @blur="onBlur"
         autocomplete="off"
         @keydown.enter="search"
+        :hide-details="true"
       />
       <v-btn
         :id="id + '_SearchButton'"
@@ -63,7 +66,7 @@
       </v-btn>
     </div>
 
-    <div class="max-width-500 mt-3" v-show="errorMessages.length">
+    <div class="max-width-500 mt-3" v-show="errorMessages?.length">
       <ATATErrorValidation :errorMessages="errorMessages" />
     </div>
 
@@ -106,7 +109,7 @@
         showHelpText &&
         !showGtcVerifiedIndicator &&
         !showLoader &&
-        !errorMessages.length &&
+        !errorMessages?.length &&
         !(showErrorAlert && searchType === 'G-Invoicing')
       "
       class="help-text mt-2"
@@ -127,7 +130,7 @@
 
     <div
       id="GtcVerifedIndicator"
-      v-show="showGtcVerifiedIndicator && !errorMessages.length"
+      v-show="showGtcVerifiedIndicator && !errorMessages?.length"
     >
       <div
         class="mt-4 d-flex justify-start"
@@ -265,10 +268,10 @@ class ATATSearch extends Vue {
   private hideHelpText = false;
   private showHelpText(): boolean {
     if (this.hideHelpText) return false;
-    if (this.errorMessages.length && this.hideHelpTextOnErrors) {
+    if (this.errorMessages?.length && this.hideHelpTextOnErrors) {
       return false;
     }
-    return this.helpText.length > 0;
+    return this.helpText?.length > 0;
   }
 
   private get gInvoicingVerifiedText() {
@@ -297,14 +300,14 @@ class ATATSearch extends Vue {
   @Watch("_value")
   public valueChanged(newVal: string): void {
     this.showGtcVerifiedIndicator = false;
-    const hasContent = newVal && newVal.length > 0;
-    this.searchDisabled = !hasContent || Boolean(this.errorMessages.length);
+    const hasContent = newVal?.length > 0;
+    this.searchDisabled = !hasContent || Boolean(this.errorMessages?.length);
   }
 
   @Watch("errorMessages")
   private errorMessagesChanged(newVal: Array<unknown>): void {
     this.hideHelpText = Boolean(
-      !(newVal.length === 0 && !this.showLoader) && !this.hideHelpTextOnErrors
+      !(newVal?.length === 0 && !this.showLoader) && !this.hideHelpTextOnErrors
     );
   }
 
@@ -316,7 +319,7 @@ class ATATSearch extends Vue {
 
   public onInput(v: string): void {
     this._value = v;
-    if (this.errorMessages.length > 0) {
+    if (this.errorMessages?.length > 0) {
       this.clearErrorMessages();
     }
     this.showSuccessAlert = false;
@@ -363,7 +366,7 @@ class ATATSearch extends Vue {
       this.gInvoicingSearchType === "GtcNumber"
     ) {
       try {
-        if (this.errorMessages.length > 0) return;
+        if (this.errorMessages?.length > 0) return;
         this.showLoader = true;
         const gInvoicingResponse = await api.gInvoicingApi.searchGtc(
           this._value,
@@ -388,7 +391,7 @@ class ATATSearch extends Vue {
       this.gInvoicingSearchType === "OrderNumber"
     ) {
       try {
-        if (this.errorMessages.length > 0) return;
+        if (this.errorMessages?.length > 0) return;
         this.showLoader = true;
         const gInvoicingResponse = await api.gInvoicingApi.searchOrder(
           this._value,

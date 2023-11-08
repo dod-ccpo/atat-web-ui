@@ -3,7 +3,7 @@
     <div
       v-for="(em, idx) in errorMsgs"
       :key="idx"
-      class="d-flex justify-start align-center atat-text-field-error"
+      class="d-flex justify-start atat-text-field-error"
       :class="textAreaWithCounter ? 'mt-n5' : 'mt-2'"
     >
       <div>

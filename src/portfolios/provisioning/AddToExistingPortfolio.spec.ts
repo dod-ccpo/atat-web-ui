@@ -82,7 +82,7 @@ describe("Testing AddToExistingPortfolio", () => {
       wrapper.setData({portfolioCardData: [
         mockCardData
       ]})
-      const mockSetCurrentPorfolio = jest.spyOn(PortfolioStore, 'setCurrentPortfolio')
+      const mockSetCurrentPortfolio = jest.spyOn(PortfolioStore, 'setCurrentPortfolio')
         .mockImplementation()
       const mocksetDisableContinue = jest.spyOn(AcquisitionPackage, "setDisableContinue")
         .mockImplementation()
@@ -90,7 +90,7 @@ describe("Testing AddToExistingPortfolio", () => {
         .mockImplementation()
       
       await wrapper.vm.portfolioSelected(0);
-      expect(mockSetCurrentPorfolio).toBeCalledWith(mockCardData)
+      expect(mockSetCurrentPortfolio).toBeCalledWith(mockCardData)
       expect(mocksetDisableContinue).toBeCalledWith(false)
       expect(mockSetProvisioningTOFollowon).toBeCalledWith(true)
     })

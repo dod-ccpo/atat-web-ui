@@ -2055,10 +2055,10 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async getPIIDescription(sensitiveInfo: SensitiveInformationDTO): Promise<string>{
     let desc = "";
-    if (sensitiveInfo.pii_present === "YES"
-        && sensitiveInfo.system_of_record_name !== "" ){
+    if (sensitiveInfo?.pii_present === "YES"
+        && sensitiveInfo?.system_of_record_name !== "" ){
       desc = "System of records: " + sensitiveInfo.system_of_record_name
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo?.pii_present === "NO"){
       desc = "Effort does not include a system of records on individuals."
     }
     return desc;

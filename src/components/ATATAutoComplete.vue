@@ -184,10 +184,8 @@ class ATATAutoComplete extends Vue {
   }
 
   // private valueCleared(): void {
-  //   debugger;
   //   this._selectedItem[this.titleKey] = "";
   //   this._selectedItem[this.valueKey] = "";
-  //   debugger;
   // }
 
 }

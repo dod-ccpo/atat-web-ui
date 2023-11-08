@@ -37,7 +37,7 @@
                   label=""
                   :items="timeFrameOptions"
                   :selectedValue="selectedTimeFrameOption"
-                  @update:selectedValue="selectedTimeFrameOption=$event"
+                  @update:selectedValue="selectedTimeFrameOption = $event"
                   style="max-width: 196px"
                   :rules="[$validators.required('Please select an option')]"
                 />
