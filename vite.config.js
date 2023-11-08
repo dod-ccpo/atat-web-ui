@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import {checker} from 'vite-plugin-checker'
 import resolve from '@rollup/plugin-node-resolve'
-import VueDevTools from 'vite-plugin-vue-devtools'
+// import VueDevTools from 'vite-plugin-vue-devtools'
 import vuetify from 'vite-plugin-vuetify'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dotenv from 'dotenv'
@@ -48,7 +48,7 @@ export default defineConfig(({command, mode}) => {
             extensions: ['.ts', '.vue', '.js']
         },
         plugins: [
-            VueDevTools({analyze: true}), 
+            // VueDevTools({analyze: true}), 
             vue(),
             vuetify(),
             Components({
