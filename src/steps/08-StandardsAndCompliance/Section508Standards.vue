@@ -203,12 +203,12 @@
                     areas:
                   </p>
                   <p class="ml-6">
-                    <ul>
-                    <li class="mb-2">Exceptions;</li>
-                    <li class="mb-2">Hardware;</li>
-                    <li class="mb-2">Electronic content;</li>
-                    <li class="mb-2">Software; and</li>
-                    <li class="mb-2">ICT support products and services.</li>
+                    <ul class="_atat-ul">
+                    <li>Exceptions;</li>
+                    <li>Hardware;</li>
+                    <li>Electronic content;</li>
+                    <li>Software; and</li>
+                    <li>ICT support products and services.</li>
                   </ul>
                 </p>
                 </template>

@@ -86,6 +86,8 @@ export default defineConfig(({command, mode}) => {
 			target: 'esnext',
 			assetsDir: './',
 			cssCodeSplit: false,
+            cssMinify: false,
+            minify: false,
 			// optimizeDeps: {
 			// 	include: ['node_modules/*']
 			// },
@@ -335,7 +337,7 @@ export default defineConfig(({command, mode}) => {
          'src/steps/11-GeneratePackageDocuments/UploadSignedDocuments.spec.ts',
       ]
 		  },
-		minify: 'esbuild',
+		// minify: 'esbuild',
 		commonjsOptions: {
 			esmExternals: false
 		},

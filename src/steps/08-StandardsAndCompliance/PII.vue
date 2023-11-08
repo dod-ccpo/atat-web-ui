@@ -46,7 +46,7 @@
                   records on individuals (in whole or in part), then the Contracting Officer must
                   include the following clauses in the solicitation:
                 </p>
-                <ul>
+                <ul class="_atat-ul">
                   <li class="pb-2">
                     Privacy Act Notification,
                     <a
