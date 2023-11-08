@@ -7,7 +7,8 @@
       :legend="'Is this ' + requirementOrInstance + 
         ' needed for the entire duration of your task order?'"
       :items="entureDurationOptions"
-      :value.sync="_entireDuration"
+      :value="_entireDuration"
+      @update:value="_entireDuration = $event"
       :rules="[
         $validators.required(
           'Please select an option to specify your ' + requirementOrInstance + '’s duration.'
@@ -22,7 +23,8 @@
         :id="'PeriodsCheckboxes_' + (index + 1)"
         :aria-describedby="'PeriodsLabel_' + (index + 1)"
         ref="periodsCheckboxes"
-        :value.sync="_periodsNeeded"
+        :value="_periodsNeeded"
+        @update:value="_periodsNeeded = $event"
         :items="availablePeriodCheckboxItems"
         :card="false"
         :disabled="isPeriodsDataMissing"

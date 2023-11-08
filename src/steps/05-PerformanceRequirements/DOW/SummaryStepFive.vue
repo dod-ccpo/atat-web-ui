@@ -32,9 +32,13 @@
                     v-if="!AnticipatedUserAndDataSummaryItem.isComplete" 
                     class="d-flex align-start nowrap ml-5"
                   >
-                    <v-icon
-                      class="icon-20 text-warning-dark2 pr-2"
-                    >warning</v-icon>
+                    <ATATSVGIcon
+                      width="20"
+                      height="20"
+                      name="warning"
+                      class="mr-2"
+                      color="warning-dark2"
+                    />
                     <p class="_missing-info mb-0 pr-4 _semibold">Missing info</p>
                   </div>
                   <v-btn
@@ -78,15 +82,19 @@
                     v-if="item.isComplete === false" 
                     class="d-flex align-start nowrap ml-5"
                   >
-                    <v-icon
-                      class="icon-20 text-warning-dark2 pr-2"
-                    >warning</v-icon>
+                    <ATATSVGIcon
+                      width="20"
+                      height="20"
+                      name="warning"
+                      class="mr-2"
+                      color="warning-dark2"
+                    />
                     <p class="_missing-info mb-0 pr-4 _semibold">Missing info</p>
                   </div>
                   <v-btn
                     width="111"
                     :class="[
-                      item.isComplete === true ? 'secondary': 'primary',
+                      item.isComplete === true ? '_secondary': '_primary',
                       '_' + getIdText(item.title) + '-button'
                     ]"
                     @click="routeToSelection(getRouteName(item.routeName),false)"
@@ -179,6 +187,7 @@ import _ from "lodash";
 import classificationRequirements 
   from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import { DOWServiceOffering, DOWServiceOfferingGroup, SummaryItem } from "../../../../types/Global";
@@ -196,6 +205,7 @@ import Summary, { getSummaryItemsforStep } from "@/store/summary";
     ATATAlert,
     ATATTooltip,
     DOWAlert,
+    ATATSVGIcon
   }
 })
 

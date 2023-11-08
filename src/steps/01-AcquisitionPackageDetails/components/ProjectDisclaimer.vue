@@ -48,12 +48,6 @@ class ProjectDisclaimer extends Vue {
     @PropSync("rules") private _rules!: "";
 
     @Prop({ default: true }) private boldText!: boolean;
-    
-    // public doSomething(val: string[]): void {
-    //   debugger; //
-    //   this._selectedDisclaimer = val.length ? val[0] : ""
-    //   debugger;;
-    // }
 
     public disclaimer: Checkbox[] = [ 
       {
@@ -66,4 +60,3 @@ class ProjectDisclaimer extends Vue {
   }
 export default toNative(ProjectDisclaimer)
 </script>
-  

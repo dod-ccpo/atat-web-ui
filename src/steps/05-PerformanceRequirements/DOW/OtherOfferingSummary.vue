@@ -26,7 +26,7 @@
             You do not have any requirements yet.
           </div>
 
-          <v-data-table
+          <v-table
             v-if="tableData.length"
             :headers="tableHeaders"
             :items="tableData"
@@ -36,36 +36,84 @@
             :hide-default-footer="true"
             no-data-text="You do not have any requirements yet."
           >
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.typeOrTitle="{ item }">
-              <div>
-                <span 
-                :class="{'text-clamp--1-line' : hasStatementColumn }"
-                v-html="item.typeOrTitle">
-              </span>
-              <span v-if="!item.isComplete" v-html=rowErrorMessage></span>
-              </div>
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.actions="{ item }">
-              <button
-                :id="'EditButton_' + item.instanceNumber"
-                @click="editInstance(item)"
-                class="mr-2"
+            <thead>
+              <tr>
+                <th
+                  v-for="header in tableHeaders"
+                  :key="header.title"
+                  :id="header.title"
+                  class="text-start sortable"
+                >
+                  {{ header.title }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="item in tableData"
+                :key="item.type"
               >
-                <ATATSVGIcon name="edit" height="19" width="19" />
-              </button>
-
-              <button
-                :id="'DeleteButton_' + item.instanceNumber"
-                @click="confirmDeleteInstance(item)"
-                class="ml-2"
-              >
-                <ATATSVGIcon name="remove" height="18" width="14" />
-              </button>
-            </template>
-
-          </v-data-table>  
+                <td>
+                  {{item.instanceNumber}}
+                </td>
+                <td>
+                  <span
+                    :class="{'text-clamp--1-line' : hasStatementColumn }"
+                    v-html="item.typeOrTitle">
+                  </span>
+                  <span v-if="!item.isComplete" v-html=rowErrorMessage></span>
+                </td>
+                <td>
+                  {{item.classification}}
+                </td>
+                <td v-if="isAdvisoryAssistance || isDocumentation|| isHelpDesk">
+                  {{item.personnelOnsiteAccess}}
+                </td>
+                <td v-if="isTraining">
+                  {{item.trainingType}}
+                </td>
+                <td v-if="!isCompute && !isDatabase">
+                  {{item.duration}}
+                </td>
+                <td v-if="isStorage">
+                  {{item.storageAmount}}
+                </td>
+                <td v-if="isCompute || isDatabase">
+                  {{item.qty}}
+                </td>
+                <td v-if="isCompute || isDatabase">
+                {{item.vCPU}}
+                </td>
+                <td v-if="isCompute || isDatabase">
+                {{item.memory}}
+                </td>
+                <td v-if="isCompute || isDatabase">
+                  {{item.storageAmount}}
+                </td>
+                <td v-if="isCompute || isDatabase">
+                {{item.performance}}
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <button
+                      :id="'EditButton_' + item.instanceNumber"
+                      @click="editInstance(item)"
+                      class="mr-2"
+                    >
+                      <ATATSVGIcon name="edit" height="19" width="19" />
+                    </button>
+                    <button
+                      :id="'DeleteButton_' + item.instanceNumber"
+                      @click="confirmDeleteInstance(item)"
+                      class="ml-2"
+                    >
+                      <ATATSVGIcon name="remove" height="18" width="14" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+             </v-table>
           <hr class="mt-0" v-if="tableData.length" /> 
           <v-btn
             id="AddInstance"

@@ -53,7 +53,7 @@
                   <div
                     v-for="(optionPeriod, index) in optionPeriods"
                     :key="getIdText(getOptionPeriodLabel(index))"
-                    class="d-inline-block py-2 draggable"
+                    class="d-inline-block py-2"
                     :id="getIdText(getOptionPeriodLabel(index)) + 'Row'"
                     @click="preDrag($event, index)"
                     :data-index="index"

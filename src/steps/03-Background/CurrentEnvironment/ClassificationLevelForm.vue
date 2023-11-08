@@ -17,7 +17,8 @@
       :rules="[
               $validators.required('Please select at least one classification level.')
        ]"
-      :value.sync="selectedTopLevelClassifications"
+      :value="selectedTopLevelClassifications"
+      @update:value="selectedTopLevelClassifications = $event"
       class="copy-max-width mb-10"
       name="classificationTypesCheckboxes"
     />
@@ -41,7 +42,8 @@
         :hasOtherValue="true"
         :items="impactLevelOptions"
         :rules="[$validators.required(impactLevelErrorMessage)]"
-        :value.sync="selectedImpactLevels"
+        :value="selectedImpactLevels"
+        @update:value="selectedImpactLevels = $event"
         class="copy-max-width mb-10"
         :name="impactLevelId"
       />
@@ -61,7 +63,8 @@
         :rules="[
                     $validators.required('Please select at least one type of cloud.')
            ]"
-        :value.sync="_selectedCloudTypes"
+        :value="_selectedCloudTypes"
+        @update:value="_selectedCloudTypes = $event"
         class="copy-max-width"
         name="cloudTypeCheckboxes"
       />
