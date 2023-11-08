@@ -72,8 +72,8 @@ export class EDAApi extends ApiBase{
         success: false,
         message: errorMessages[code] || "Unknown error contacting EDA"
       };
-      console.log(code)
-      if(code == '0001'){
+      
+      if(code == "2000"){
         errorResponse.provisioningIssue = true
       }
       return errorResponse
