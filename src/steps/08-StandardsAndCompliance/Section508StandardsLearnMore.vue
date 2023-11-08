@@ -16,8 +16,8 @@
     </p>
     <p>
       For more information, visit:
-      <ul class="mt-4 ml-6">
-        <li class="mb-2">
+      <ul class="mt-4 _atat-ul">
+        <li>
           <a 
             href="https://www.section508.gov"
             target="_blank"
@@ -26,7 +26,7 @@
             <span class="_external-link">Section508.gov</span>
           </a>
         </li>
-        <li class="mb-2">
+        <li>
           <a 
             href="https://www.section508.gov/art/" 
             target="_blank"
@@ -35,7 +35,7 @@
             Accessibility Requirements Tool <span class="_external-link">(ART)</span>
           </a>
         </li>
-        <li class="mb-2">
+        <li>
           <a 
             href="https://www.access-board.gov/ict/" 
             target="_blank"

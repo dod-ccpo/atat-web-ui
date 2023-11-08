@@ -89,7 +89,7 @@
         </template>
 
         <template v-slot:append>
-          <template v-if="(otherIsSelected || hasTextFields) && item.value === otherValue">
+          <template v-if="otherIsSelected && item.value === otherValue">
             <ATATTextArea
               v-if="otherEntryType === 'textarea'"
               ref="atatTextInput"
@@ -113,9 +113,11 @@
               @update:value="_otherValueEntered = $event"
               :rules="otherRequiredRule"
             />
+          </template>
+          <template v-if="hasTextFields">
 
             <ATATTextField
-              v-if="hasTextFields"
+              v-if="showTextField(index)"
               ref="atatTextInput"
               :id="id + '_TextField' + index"
               :appendText="textFieldAppendText"
@@ -197,6 +199,7 @@ class ATATCheckboxGroup extends Vue {
   // props
   @Prop({ default: [] }) private value!: string[];
   public _selected: string[] = this.value;
+
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @PropSync("items") private _items!: Checkbox[];
 
@@ -262,6 +265,10 @@ class ATATCheckboxGroup extends Vue {
     this.checkboxRules = this.rules;
   }
 
+  private showTextField(index: number): boolean {
+    return this.selectedIndices.includes(index);
+  }
+
   get showMessage(): boolean{
     return [this.showPerformanceRequirementTotal].includes(true);
   }
@@ -305,7 +312,7 @@ class ATATCheckboxGroup extends Vue {
       });
     } else if (newVal.length < oldVal.length) {
       // checkbox UNchecked - get the index from oldVal, remove from this.selectedIndices
-      const uncheckedVal = oldVal.find((val) => !newVal.includes(val)) || "";
+      const uncheckedVal = oldVal.find((val) => !newVal.includes(val)) ?? "";
       const uncheckedIndex = this.getSelectedIndex(uncheckedVal);
       this.selectedIndices = this.selectedIndices.filter(
         (idx) => idx !== uncheckedIndex
@@ -343,7 +350,7 @@ class ATATCheckboxGroup extends Vue {
     this.$nextTick(() => {
       this.prevSelected = [...this._selected];
       this.$emit("update:value", [...this._selected]);
-      this.validateOtherOnBlur = this.otherIsSelected ? true : false;
+      this.validateOtherOnBlur = this.otherIsSelected;
       if (this.checkboxRules.length === 0) {
         this.checkboxRules = this.rules;
         this.validateCheckboxesNow = true;
@@ -357,6 +364,7 @@ class ATATCheckboxGroup extends Vue {
   private getIdText(string: string) {
     return getIdText(string);
   }
+
   public get otherIsSelected(): boolean {
     return this._selected.includes(this.otherValue)
   }
@@ -394,7 +402,7 @@ class ATATCheckboxGroup extends Vue {
   private getPerformanceRequirementTotal(classLevelSysId: string): string{
     const totalClassLevelInDOW = ClassificationRequirements.classLevelsInDOWTotal.find(
       cl => cl.classLevelSysId === classLevelSysId
-    )?.DOWObjectTotal || 0;
+    )?.DOWObjectTotal ?? 0;
     const hasBeenDeleted = totalClassLevelInDOW === 0;
     if (hasBeenDeleted){ return ""; } 
     return totalClassLevelInDOW > 0 && this._selected.includes(classLevelSysId)
@@ -456,12 +464,16 @@ class ATATCheckboxGroup extends Vue {
         this.setErrorMessage();
       }, 0)
     }
+
+    setTimeout(() => {
+      this._selected = this.value
+    }, 0)
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {
     const thisCheckbox = event.currentTarget as HTMLInputElement;
     const id = thisCheckbox.id;
-    const groupId: string = thisCheckbox.dataset.groupId || "CheckboxGroup";
+    const groupId: string = thisCheckbox.dataset.groupId ?? "CheckboxGroup";
     if (id && groupId && groupId === this.id + "_Group") {
       if (
         !Object.prototype.hasOwnProperty.call(this.blurredCheckboxes, groupId)

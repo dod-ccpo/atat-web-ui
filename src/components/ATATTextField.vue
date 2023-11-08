@@ -66,7 +66,8 @@
         :id="id"
         :items="dropdownOptions"
         :showSelectedValue="true"
-        :selectedValue.sync="_selectedDropdownValue"
+        :selectedValue="_selectedDropdownValue"
+        @update:selectedValue="_selectedDropdownValue = $event"
       /> 
     </div>
 
