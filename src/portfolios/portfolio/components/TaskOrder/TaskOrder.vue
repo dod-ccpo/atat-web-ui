@@ -18,10 +18,10 @@
           -->
         </p>
         <v-btn
-        v-if="portfolioIsActive"
-        outlined 
-        class="ml-10 secondary" 
-        @click="openSearchTOModal"
+          v-if="portfolioIsActive"
+          variant="outlined"
+          class="ml-10 _secondary"
+          @click="openSearchTOModal"
         > 
         Add follow-on task order 
       </v-btn>
@@ -29,20 +29,26 @@
       <TaskOrderCard
         :isHistory="false"
         :taskOrders="taskOrders"
-        :showDetails.sync="showDetails"
-        :selectedTaskOrder.sync="selectedTaskOrder"
+        :showDetails="showDetails"
+        @update:showDetails="showDetails = $event"
+        :selectedTaskOrder="selectedTaskOrder"
+        @update:selectedTaskOrder="selectedTaskOrder = $event"
       />
     </div>
     <div v-show="showDetails">
       <TaskOrderDetails
         :selectedTaskOrder="selectedTaskOrder"
-        :showDetails.sync="showDetails"
+        :showDetails="showDetails"
+        @update:showDetails="showDetails = $event"
       />
     </div>
     <TaskOrderSearchModal
-      :showTOSearchModal.sync="showTOSearchModal"
-      :TONumber.sync="TONumber"
-      :resetValidationNow.sync="resetValidationNow"
+      :showTOSearchModal="showTOSearchModal"
+      @update:showTOSearchModal="showTOSearchModal = $event"
+      :TONumber="TONumber"
+      @update:TONumber="TONumber = $event"
+      :resetValidationNow="resetValidationNow"
+      @update:resetValidationNow="resetValidationNow = $event"
       @TOSearchCancelled="TOSearchCancelled"
       @startProvisionWorkflow="startProvisionWorkflow"
     /> 
@@ -50,7 +56,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Prop,  Vue, toNative} from "vue-facing-decorator";
+import { Component, Prop,  Vue, toNative } from "vue-facing-decorator";
 import FinancialDetailsAlert from "../../FinancialDetailsAlert.vue";
 import TaskOrderCard from "@/portfolios/portfolio/components/TaskOrder/TaskOrderCard.vue";
 import {PortfolioTaskOrder, TaskOrderCardData, ToastObj} from "../../../../../types/Global";
@@ -112,7 +118,7 @@ class TaskOrder extends Vue {
 
     this.$router.push({
       name: this.provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
+      query: {
         direction: "next"
       },
       replace: true
@@ -127,7 +133,7 @@ class TaskOrder extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.activeTaskOrderNumber = PortfolioStore.activeTaskOrderNumber;
-    this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.label;
+    this.portfolioIsActive = PortfolioStore.currentPortfolio.status  === Statuses.Active.value;
     if(PortfolioStore.portfolioIsUpdating){
       const taskOrderUpdatedToast: ToastObj = {
         type: "success",

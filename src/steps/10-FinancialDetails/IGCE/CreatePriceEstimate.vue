@@ -5,7 +5,7 @@
         <h1 class="page-header mb-3">
           Let’s work on a price estimate for your cloud requirements
         </h1>
-         <div class="copy-max-width">
+        <div class="copy-max-width">
             <p id="IntroP" class="mb-10">
               In the Performance Requirements section, you told us about all of the cloud 
               services and support that are needed for this project. Next, we’ll dive into 
@@ -31,83 +31,75 @@
           <template v-slot:content>
             <h2>Getting started with your price estimate</h2>
             <v-list class="_atat-stepper">
-              <v-list-item-group >
                 <v-list-item>
                   <span class="_step-circle">1</span>
-                  <v-list-item-content>
-                    Choose one or more of the Cloud Service Provider (CSP) pricing 
-                    calculators below to help you calculate your estimated price 
-                    for JWCC cloud services and support. Depending on your selection, 
-                    you may need to register for an account to view the pricing calculator.
-                    <div class="d-flex">
-                      <div v-for="(csp,idx) in csps" :key="idx">
-                        <v-card
-                          class="_csp-card _calculator-card justify-space-between"
-                          :class="{'_recommended-card' : recommended === csp.iconName}"
-                        >
-                          <div>
-                            <div class="_svg-icon-div">
-                              <ATATSVGIcon
-                                id="Azure"
-                                :name="csp.iconName"
-                                class="svg-icon"
-                                :width="csp.width"
-                                :height="csp.height" />
-                            </div>
-                            <h3 class="_csp-name"> {{ csp.name }}</h3>
+                  Choose one or more of the Cloud Service Provider (CSP) pricing 
+                  calculators below to help you calculate your estimated price 
+                  for JWCC cloud services and support. Depending on your selection, 
+                  you may need to register for an account to view the pricing calculator.
+                  <div class="d-flex">
+                    <div v-for="(csp,idx) in csps" :key="idx">
+                      <div
+                        class="_csp-card _calculator-card justify-space-between"
+                        :class="{'_recommended-card' : recommended === csp.iconName}"
+                      >
+                        <div>
+                          <div class="_svg-icon-div">
+                            <ATATSVGIcon
+                              id="Azure"
+                              :name="csp.iconName"
+                              class="svg-icon"
+                              :width="csp.width"
+                              :height="csp.height" />
                           </div>
+                          <h3 class="_csp-name"> {{ csp.name }}</h3>
+                        </div>
 
-                          <div class="_csp-link-div">
+                        <div class="_csp-link-div">
 
-                            <a v-for="(link, index) in csp.links"
-                               :key="index"
-                               :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
-                               class="_csp-link d-block mt-4 font-size-14"
-                               :href="link.url"
-                               target="_blank"
-                            >
-                              {{ link.text }}
-                              <span class="_text-decoration-none ml-1">
-                              <ATATSVGIcon
-                                :id="csp.iconName.toUpperCase() + 'LaunchIcon'"
-                                width="15"
-                                height="15"
-                                name="launch"
-                                color="primary"
-                              />
-                              </span>
-                            </a>
-                          </div>
-                        </v-card>
-                        <div
-                          v-if="recommended === csp.iconName"
-                          class="_recommended-banner"
-                        >
-                          RECOMMENDED
+                          <a v-for="(link, index) in csp.links"
+                              :key="index"
+                              :id="csp.iconName.toUpperCase() + 'CalculatorLink'"
+                              class="_csp-link d-block font-size-14"
+                              :href="link.url"
+                              target="_blank"
+                          >
+                            {{ link.text }}
+                            <span class="_text-decoration-none ml-1">
+                            <ATATSVGIcon
+                              :id="csp.iconName.toUpperCase() + 'LaunchIcon'"
+                              width="15"
+                              height="15"
+                              name="launch"
+                              color="primary"
+                            />
+                            </span>
+                          </a>
                         </div>
                       </div>
+                      <div
+                        v-if="recommended === csp.iconName"
+                        class="_recommended-banner"
+                      >
+                        RECOMMENDED
+                      </div>
                     </div>
-                  </v-list-item-content>
+                  </div>
                 </v-list-item>
                 <v-list-item>
                   <span class="_step-circle">2</span>
-                  <v-list-item-content>
-                    From one or more of the pricing calculator websites, add
-                    products and services to fit your unique requirements, in
-                    order to generate an independent estimate, generic to any
-                    CSP.
-                  </v-list-item-content>
+                  From one or more of the pricing calculator websites, add
+                  products and services to fit your unique requirements, in
+                  order to generate an independent estimate, generic to any
+                  CSP.
                 </v-list-item>
-                <v-list-item>
+                <v-list-item >
                   <span class="_step-circle">3</span>
-                  <v-list-item-content class="pb-0">
-                    Export a copy of your estimate or save a unique link to
-                    revisit it directly through your browser. You will need to
-                    refer to this report throughout the remaining “Requirements
-                    Cost Estimate” interview questions.
-                  </v-list-item-content>
+                  <span class="pb-0">Export a copy of your estimate or save a unique link to
+                  revisit it directly through your browser. You will need to
+                  refer to this report throughout the remaining “Requirements
+                  Cost Estimate” interview questions.</span>
                 </v-list-item>
-              </v-list-item-group>
             </v-list>
           </template>
         </ATATAlert>
@@ -178,7 +170,7 @@ class CreatePriceEstimate extends Vue {
           url: "https://portal.gov.gss.google/il4/calc.html",
         },
         {
-          text: "IL6 calculator",
+          text: "IL5 calculator",
           url: "https://portal.gov.gss.google/il5/calc.html",
         }
       ] 

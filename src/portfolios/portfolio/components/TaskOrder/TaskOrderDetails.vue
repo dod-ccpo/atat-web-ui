@@ -100,7 +100,7 @@
       </v-card>
     </div>
     <div class="mt-10">
-      <v-data-table
+      <v-table
         id="CLINDataTable"
         :headers="tableHeaders"
         :items="tableData"
@@ -109,9 +109,20 @@
         hide-default-footer
         class="_clin-table border1 border-base-lighter"
       >
-        <!-- eslint-disable vue/valid-v-slot -->
-        <template v-slot:item="{item, index}">
+      <thead>
+        <tr>
+          <th
+          v-for="header in tableHeaders" 
+          :key="header.title"
+          :id="header.title"
+          >
+            {{ header.title }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
               <tr
+                v-for="item in tableData"
                 class="row-item"
                 :class="[
                   { '_section-divider': item.startNewClinGroup },
@@ -150,7 +161,7 @@
                 <td :style="{ verticalAlign: getValign(item) }">
                   <div class="d-flex flex-column">
                     <span class="nowrap _pop-dates">
-                      {{ item.PoP.startDate }}&ndash;{{ item.PoP.endDate }}
+                      {{ item.PoP?.startDate }}&ndash;{{ item.PoP?.endDate }}
                     </span>
                     <span
                       v-if="item.isActive"
@@ -171,7 +182,7 @@
                       class="_expiration"
                       v-if="item.status !== statuses.OptionExercised.value"
                       >
-                      {{ item.PoP.expiration }}
+                      {{ item.PoP?.expiration }}
                     </span>
                     </span>
                   </div>
@@ -208,7 +219,7 @@
                         }"
                         class="font-size-12 text-base ml-3 _funds-spent-percent"
                       >
-                        ({{ item.fundsRemaining.percent }}%)
+                        ({{ item.fundsRemaining?.percent }}%)
                       </span>
                     </div>
                     <div
@@ -248,12 +259,12 @@
                         color="warning-dark2"
                         class="mr-1"
                       />
-                      {{ item.fundsRemaining.fundsRemaining }}
+                      {{ item.fundsRemaining?.fundsRemaining }}
                     </div>
                   </div>
                 </td>
               </tr>
-            <tr class="_section-divider" v-if="addInactiveClinSection(index)">
+            <tr class="_section-divider">
               <td colspan="2" class="font-weight-400">
                 <span v-if="!isExpiredTO">
                   <a
@@ -270,8 +281,8 @@
                   </span>
               </span>
               </td>
-              <td align="right" class="font-weight-700">Total</td>
-              <td align="right" class="font-weight-700 _grand-total-clin-value">
+              <td  class="font-weight-700 text-right">Total</td>
+              <td  class="font-weight-700 text-right _grand-total-clin-value">
                 <span v-if="!showInactive">
                   ${{ toCurrencyString(currentPeriodFundingTotals.CLINValue) }}
                 </span>
@@ -280,8 +291,7 @@
                 </span>
               </td>
               <td
-                align="right"
-                class="font-weight-700 _grand-total-obligated-funds"
+                class="font-weight-700 _grand-total-obligated-funds text-right"
               >
                 <span v-if="!showInactive">
                   ${{
@@ -292,7 +302,7 @@
                   {{ selectedTaskOrder.totalObligated }}
                 </span>
               </td>
-              <td align="right">
+              <td class="text-right">
                 <div v-if="!showInactive">
                   <div
                     class="d-flex justify-end align-center font-weight-700 text-base-darkset"
@@ -334,13 +344,13 @@
                   </span>
                 </div>
               </td>
-            </tr>
-            </template>
-      </v-data-table>
+            </tr> 
+          </tbody>
+      </v-table>
     </div>
 
     <div v-if="!isAlertClosed" class="mt-10">
-      <ATATAlert id="TaskOrderDetailsAlert" type="info" closeButton="true">
+      <ATATAlert id="TaskOrderDetailsAlert" type="mdi-information" closeButton="true">
         <template v-slot:content>
           <p class="mb-0">
             NOTE: Spend data is provided by your CSP to assist with tracking
@@ -354,9 +364,9 @@
       </ATATAlert>
     </div>
     <div>
-      <!-- <v-expansion-panels class="pt-6" ripple="false" elevation="0">
+     <!-- <v-expansion-panels class="pt-6" ripple="false" elevation="0">
         <v-expansion-panel>
-          <v-expansion-panel-header class="d-flex">
+          <v-expansion-panel-title class="d-flex">
             <h2>
               Task Order
             </h2>
@@ -365,14 +375,14 @@
               id="TaskOrderHistoryNumber"
             >1</span>
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-text>
             <TaskOrderCard
               :isHistory="true"
               :taskOrders="[selectedTaskOrder]"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
-      </v-expansion-panels> -->
+      </v-expansion-panels>  -->
     </div>
   </div>
 </template>
@@ -576,12 +586,10 @@ class TaskOrderDetails extends Vue {
         fundsRemaining: "",
       };
     }
-    //eslint-disable-next-line prefer-const
-    let percent = Math.round(
+    const percent = Math.round(
       (Number(fundsSpent) / Number(obligatedFunds)) * 100
     );
-    //eslint-disable-next-line prefer-const
-    let remaining = Number(obligatedFunds) - Number(fundsSpent);
+    const remaining = Number(obligatedFunds) - Number(fundsSpent);
     return {
       percent: String(percent),
       fundsRemaining: "$" + toCurrencyString(remaining) + " remaining",

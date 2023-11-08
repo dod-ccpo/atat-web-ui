@@ -7,13 +7,13 @@
       legend="What role best describes your affiliation with the DoD?"
       id="ContactRole"
       :items="contactRoles"
-      :value.sync="selectedRole"
+      :value="selectedRole"
+      @update:value="selectedRole = $event"
       class="mb-6"
       @radioButtonSelected="contactTypeChange"
       :rules="[$validators.required('Please select your role.')]"
     />
-
-    <v-form ref="form">
+    <v-form ref="form" v-if="selectedRole !== ''">
       <v-row class="form-section">
       <v-col>
         <ATATSelect
@@ -39,7 +39,8 @@
           :optional="true"
           placeholder=""
           :items="salutationData"
-          :selectedValue.sync="selectedSalutation"
+          :selectedValue="selectedSalutation"
+          @update:selectedValue="selectedSalutation = $event"
         />
 
         <ATATAutoComplete
@@ -158,7 +159,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch , Vue, toNative, Hook } from "vue-facing-decorator";
 import {convertSystemChoiceToSelect} from "@/helpers";
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
@@ -180,11 +181,9 @@ import {
 } from "../../../types/Global";
 import { ContactDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import {ComponentPublicInstance} from "vue";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAutoComplete,
     ATATPhoneInput,
@@ -194,15 +193,17 @@ import {ComponentPublicInstance} from "vue";
   },
 })
 class ContactInfo extends Vue {
-  $refs!: {
-    form: ComponentPublicInstance & { 
-      resetValidation: () => void;
-      reset: () => void;
-      validate: () => boolean;
-    };
-  };
-  
-  
+
+  $refs!: SaveOnLeaveRefs
+
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
+
   // computed
 
   get showContactInfoFields(): boolean {

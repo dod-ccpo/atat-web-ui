@@ -14,5 +14,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class Currency extends Vue {
   @Prop({default: "959A9D", required: true}) private color!:string;
 }
-export default toNative(Currency);
+export default toNative(Currency)
 </script>

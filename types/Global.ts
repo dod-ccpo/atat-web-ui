@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
 import { Component } from "vue";
-
-
 import { AdditionalButton } from "@/store/steps/types";
 
 import {
@@ -18,9 +16,8 @@ import {
   UserDTO,
   CostsDTO,
 } from "@/api/models";
-import {
-  RouteComponent, RouteRecordName, RouteRecordRaw, RouteRecordSingleViewWithChildren
-} from "vue-router";
+
+import { RouteRecordName, RouteRecordSingleViewWithChildren } from "vue-router";
 
 export interface DocReviewData {
   projectOverview: ProjectOverviewDTO;
@@ -112,7 +109,7 @@ export interface SelectData {
  * interface for autocomplete Items
  */
 export interface AutoCompleteItem {
-  [key: string]: string | number | null | boolean
+  [key: string]: string | number | undefined | boolean
 }
 
 export interface AutoCompleteItemGroups {
@@ -151,17 +148,18 @@ interface StepperRouteBase extends RouteRecordSingleViewWithChildren {
 /**
  * Stepper Route Single Extends Route Single View
  */
-export interface StepperRouteSingleConfig extends 
-StepperRouteBase, RouteRecordSingleViewWithChildren {
-  children: RouteRecordRaw[]
+
+export interface StepperRouteSingleConfig extends
+  Omit<StepperRouteBase, 'children'>, Omit<RouteRecordSingleViewWithChildren, 'children'> {
+    children?: StepperRouteConfig[]
 }
 
 /**
  * Stepper Route Multiple Extends Route Multiple Views
  */
-export interface StepperRouteMultipleConfig extends
-StepperRouteBase, RouteRecordSingleViewWithChildren {
-  children: RouteRecordRaw[]
+export interface StepperRouteMultipleConfig extends 
+  Omit<StepperRouteBase, 'children'>, Omit<RouteRecordSingleViewWithChildren, 'children'> {
+    children: StepperRouteConfig[]
 }
 
 /**
@@ -749,7 +747,7 @@ export interface ClinTableRowData {
   totalFundsSpent?:string,
   fundsRemaining?: {percent:string, fundsRemaining:string},
   isOverspent?: boolean,
-  status?:string,
+  status:string,
   statusLabel?: string;
   startNewClinGroup?: boolean,
   popStartDate: string

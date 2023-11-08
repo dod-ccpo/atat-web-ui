@@ -7,7 +7,8 @@
         legend="What clearance level is required for contractor employees to provide your
          training?"
         :items="clearanceLevels"
-        :value.sync="_selectedClearanceLevel"
+        :value="_selectedClearanceLevel"
+        @update:value="_selectedClearanceLevel = $event"
       />
       <hr />
     </div>
@@ -16,7 +17,8 @@
       :hasSecret="hasSecret"
       :isDOW="isDOW"
       :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
-      :selectedSecurityRequirements.sync="_selectedSecretSecurityRequirements"
+      :selectedSecurityRequirements="_selectedSecretSecurityRequirements"
+      @update:selectedSecurityRequirements="_selectedSecretSecurityRequirements = $event"
     />
     <hr v-if="hasTopSecret && hasSecret" />
     <SecurityRequirementsCheckboxes
@@ -24,7 +26,8 @@
       :hasTopSecret="hasTopSecret"
       :isDOW="isDOW"
       :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
-      :selectedSecurityRequirements.sync="_selectedTopSecretSecurityRequirements"
+      :selectedSecurityRequirements="_selectedTopSecretSecurityRequirements"
+      @update:selectedSecurityRequirements="_selectedTopSecretSecurityRequirements = $event"
     />
   </div>
 </template>
@@ -99,6 +102,6 @@ class SecurityRequirementsForm extends Vue {
     await this.loadOnEnter();
   }
 }
-export default toNative(SecurityRequirementsForm);
+export default toNative(SecurityRequirementsForm)
 </script>
 

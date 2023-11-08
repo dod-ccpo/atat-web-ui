@@ -102,8 +102,8 @@
 </template>
 
 <script lang="ts">
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -122,7 +122,6 @@ import {routeNames} from "@/router/stepper";
  
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -136,6 +135,16 @@ import {routeNames} from "@/router/stepper";
 })
 
 class SoleSourceReview extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public projectTitle = AcquisitionPackage.projectTitle;
   
   public soleSourceCause = "";
@@ -222,7 +231,7 @@ class SoleSourceReview extends Vue {
     await AcquisitionPackage.doSetFairOppBackToReview(true);
     this.$router.push({
       name: routeNames.SoleSourceCause,
-      params: {
+      query: {
         direction: "next"
       }   
     }).catch((e: Error) => console.error(e));

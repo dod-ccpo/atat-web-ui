@@ -9,12 +9,15 @@ module.exports = {
   globals: {
     cy: true,
   },
+  
   extends: [
     "plugin:vue/essential",
     "eslint:recommended",
     "@vue/typescript/recommended",
     "prettier",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    "plugin:vue/base",
+    "plugin:vuetify/base"
   ],
   parserOptions: {
     ecmaVersion: "latest",
@@ -43,7 +46,7 @@ module.exports = {
         'cypress/**/*.js'
       ],
       rules: {
-        '@typescript-eslint/explicit-module-boundary-types': 0,         
+        '@typescript-eslint/explicit-module-boundary-types': 0,
       }
     },
     {
@@ -54,6 +57,15 @@ module.exports = {
       env: {
         jest: true
       }
+    },
+    {
+      files: [
+        '**/*.vue'
+      ],
+      rules: {
+        'vuetify/no-deprecated-classes': 1
+      }
     }
   ],
+  
 };

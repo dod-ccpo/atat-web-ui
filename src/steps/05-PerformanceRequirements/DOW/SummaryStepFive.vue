@@ -41,8 +41,8 @@
                     width="111"
                     :class="[
                       AnticipatedUserAndDataSummaryItem.isComplete
-                        ? 'secondary'
-                        : 'primary',
+                        ? '_secondary'
+                        : '_primary',
                       '_' + getIdText('AnticipatedUsersAndData') + '-button'
                     ]"
                     @click="routeToAnticipatedUsersAndDataNeeds()"
@@ -174,8 +174,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 import { routeNames } from "../../../router/stepper"
-import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import _ from "lodash";
 import classificationRequirements 
   from "@/store/classificationRequirements";
@@ -324,7 +323,7 @@ class SummaryStepFive extends Vue{
     DescriptionOfWork.setReviewGroupFromSummary(true);
     this.$router.push({
       name: routeNames.AnticipatedUserAndDataNeeds,
-      params: {
+      query: {
         direction: "next"
       },
     }).catch((error) => console.log("Routing error:" + error));
@@ -343,7 +342,7 @@ class SummaryStepFive extends Vue{
 
     this.$router.push({
       name: "pathResolver",
-      params: {
+      query: {
         resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
@@ -461,5 +460,5 @@ class SummaryStepFive extends Vue{
   }
 
 };
-export default toNative(SummaryStepFive) 
+export default toNative(SummaryStepFive )
 </script>

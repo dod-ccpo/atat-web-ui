@@ -12,5 +12,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class Bullet extends Vue {
   @Prop({ default: "959A9D", required: false }) private color?: string;
 }
-export default toNative(Bullet);
+export default toNative(Bullet)
 </script>

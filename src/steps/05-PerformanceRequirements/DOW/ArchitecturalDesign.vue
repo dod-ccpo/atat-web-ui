@@ -49,7 +49,8 @@
               :card="true"
               :width="'180'"
               :items="radioOptions"
-              :value.sync="architectureDesignNeeds.needs_architectural_design_services"
+              :value="architectureDesignNeeds.needs_architectural_design_services"
+              @update:value="architectureDesignNeeds.needs_architectural_design_services = $event"
               :rules="[$validators.required('Please select an option.')]"
             />
           </div>
@@ -81,12 +82,12 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, mixins , toNative, Vue} from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import DescriptionOfWork, { defaultDOWArchitecturalNeeds } from "@/store/descriptionOfWork";
 import { ArchitecturalDesignRequirementDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -98,7 +99,6 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATAlert
@@ -106,18 +106,28 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 })
 
 class ArchitecturalDesign extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public routeNames = routeNames
   public architectureDesignNeeds = defaultDOWArchitecturalNeeds;
   public async setDOWSection(): Promise<void> {
     await DescriptionOfWork.setCurrentDOWSection("XaaS");
     const routerObj = {
       name: routeNames.RequirementCategories,
-      params: {
+      query: {
         direction: "next",
         resolver: "",
       }
     }
-    routerObj.params.resolver = "RequirementsPathResolver";
+    routerObj.query.resolver = "RequirementsPathResolver";
     this.$router.push(routerObj)
   }
 
@@ -198,8 +208,7 @@ class ArchitecturalDesign extends Vue {
     try {
       if (this.hasChanged()) {
         if(this.currentData.needs_architectural_design_services === "NO"){
-          //eslint-disable-next-line prefer-const
-          let data = Object.assign(this.currentData, emptyArchObject)
+          const data = Object.assign(this.currentData, emptyArchObject)
           await DescriptionOfWork.setDOWArchitecturalDesign(data);
         }else{
           await DescriptionOfWork.setDOWArchitecturalDesign(this.currentData);

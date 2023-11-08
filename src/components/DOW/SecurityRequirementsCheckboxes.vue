@@ -26,7 +26,8 @@
     <ATATCheckboxGroup
       :id="`SecurityRequirements${idSuffix}`"
       :labelSuffix="idSuffix"
-      :value.sync="_selectedSecurityRequirements"
+      :value="_selectedSecurityRequirements"
+      @update:value="_selectedSecurityRequirements = $event"
       :items="securityRequirementsCheckboxes"
       name="checkboxes"
       :card="false"
@@ -70,6 +71,6 @@ class SecurityRequirementsCheckboxes extends Vue {
     this._selectedSecurityRequirements = newVal
   }
 }
-export default toNative(SecurityRequirementsCheckboxes);
+export default toNative(SecurityRequirementsCheckboxes)
 </script>
 

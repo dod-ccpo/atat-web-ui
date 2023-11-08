@@ -287,7 +287,7 @@
 
 <script lang="ts">
 
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -308,7 +308,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { Checkbox, RadioButton, YesNo } from "types/Global";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { addDays, format, isAfter, isSameDay, parseISO, sub } from "date-fns";
 
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -319,7 +319,6 @@ import MarketResearchEffortsLearnMore
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     AlertForForms,
     ATATCheckboxGroup,
@@ -335,6 +334,16 @@ import MarketResearchEffortsLearnMore
 })
 
 class MarketResearchEfforts extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public cspName = "";  
   public writeOwnExplanation: YesNo = "";
   public isLoading = false;

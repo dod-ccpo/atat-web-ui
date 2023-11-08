@@ -29,17 +29,17 @@
           :id="'AnticipatedUserAndDataNeedsAccordion_' + index"
           :key="index"
           class="mb-4"
-          flat
+          borderless
         >
           <v-expansion-panel expand>
-            <v-expansion-panel-header :id="`AccordionButton_${index}`" >
+            <v-expansion-panel-title :id="`AccordionButton_${index}`" >
               <div class="d-flex justify-space-between">
                 <div class="h4 _expansion-panel-header">
                   {{buildClassificationLabel(classification,'short',true)}}
                 </div>
               </div>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
               <span class="font-weight-500 font-size-20">1. Anticipated users</span>
               <RegionsDeployedAndUserCount
                 groupLabel="Where are your users located?"
@@ -74,7 +74,7 @@
                 :dataTextFieldValue.sync="anticipatedNeedsData[index].data_egress_monthly_amount"
                 :dataDropdownValue.sync="anticipatedNeedsData[index].data_egress_monthly_unit"
               />
-            </v-expansion-panel-content>
+            </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
       </v-col>
@@ -85,32 +85,36 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { PeriodDTO, SelectedClassificationLevelDTO } from "@/api/models";
 import { buildClassificationLabel, hasChanges } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import Periods from "@/store/periods";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import { ComponentPublicInstance } from "vue";
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     RegionsDeployedAndUserCount,
     AnticipatedDataNeeds
   },
 })
-class AnticipatedUserAndDataNeeds extends Vue{
+class AnticipatedUserAndDataNeeds extends Vue {
 
-  $refs!: {
-    form: ComponentPublicInstance & { validate: () => boolean};
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
   }
+
   private periods: PeriodDTO[] = [];
   public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
@@ -119,8 +123,8 @@ class AnticipatedUserAndDataNeeds extends Vue{
     return DescriptionOfWork.returnToDOWSummary === true
   }
 
-  get Form(): ComponentPublicInstance & { validate: () => boolean } {
-    return this.$refs.form as ComponentPublicInstance & { validate: () => boolean };
+  get Form(): SaveOnLeaveRefs['form'] {
+    return this.$refs.form
   }
 
   private async mounted(): Promise<void> {
@@ -157,7 +161,7 @@ class AnticipatedUserAndDataNeeds extends Vue{
     try {
       if (this.hasChanged()) {
         for(const classification of this.currentData){
-          classification.isValid = this.$refs.form.validate();
+          classification.isValid = await this.$refs.form.validate();
           await this.updateSnowSelected(classification);
         }
       }
@@ -167,6 +171,6 @@ class AnticipatedUserAndDataNeeds extends Vue{
     return true;
   }
 }
-export default toNative(AnticipatedUserAndDataNeeds) 
+export default toNative(AnticipatedUserAndDataNeeds )
 </script>
 

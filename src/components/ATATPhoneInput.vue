@@ -15,19 +15,16 @@
         <div class="d-flex">
           <v-select
             ref="atatPhoneDropdown"
-            attach
             id="CountryCodeDropdown"
             class="_country-select"
             :items="searchResults"
-            outlined
-            dense
-            item-text="abbreviation"
+            variant="outlined"
+            item-title="abbreviation"
             :hide-details="true"
             :error="errorMessages.length > 0"
             v-model="_selectedCountry"
-            :height="42"
-            :menu-props="{ location: 'bottom', offset: 0 }"
-            @change="onChange"
+            :menu-props="{ location: 'bottom', offset: 0, attach:true }"
+            @update:model-value="onChange"
             :return-object="true"
           >
             <template v-slot:selection="{ item }">
@@ -39,11 +36,11 @@
                 class="_dropdown-text-field"
                 placeholder="Search"
                 persistent-placeholder
-                @input="searchCountries"
+                @update:model-value="searchCountries"
                 append-icon="search"
                 id="DropdownTextField"
-                clearable
-                autofocus
+                clearable="true"
+                autofocus="true"
                 autocomplete="off"
               />
             </template>
@@ -56,7 +53,8 @@
                   item.value.active ? '_active' : '',
                 ]"
               >
-                <v-list-item-content
+                <!-- TODO: div below was v-list-item-content -->
+                <div
                   :id="
                     id +
                     '_DropdownListItem_' +
@@ -77,17 +75,16 @@
                         }}</span>
                     </v-row>
                   </v-list-item-title>
-                </v-list-item-content>
+                </div>
               </v-list-item>
             </template>
           </v-select>
           <v-text-field
             ref="atatPhoneTextField"
             :id="id + '_textField'"
-            outlined
-            dense
-            :height="42"
-            :value.sync="_value"
+            variant="outlined"
+            density="compact"
+            :model-value.sync="_value"
             :placeholder="placeHolder"
             @blur="validate"
             class="_phone-number-input"
@@ -590,5 +587,5 @@ class ATATPhoneInput extends Vue {
   }
   
 }
-export default toNative(ATATPhoneInput);
+export default toNative(ATATPhoneInput)
 </script>

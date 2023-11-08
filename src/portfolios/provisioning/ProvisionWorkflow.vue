@@ -3,8 +3,8 @@
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-    <v-main class="_center-page-content _provisioning">
-      <div id="app-content" class="d-flex flex-column">
+    <v-main class="_center-page-content _provisioning _scroll-y">
+      <div id="app-content" class="d-flex flex-column pt-16">
 
         <div  class="mb-auto _page-content">
           <router-view></router-view>
@@ -190,7 +190,7 @@ class ProvisionWorkflow extends Vue {
         const routeResolver = nextStepName as StepRouteResolver;
         this.$router.push({
           name: "routeResolver",
-          params: {
+          query: {
             resolver: routeResolver.name,
             direction
           },
@@ -203,7 +203,7 @@ class ProvisionWorkflow extends Vue {
         const pathResolver = nextStepName as StepPathResolver;
         this.$router.push({
           name: "pathResolver",
-          params: {
+          query: {
             resolver: pathResolver.name,
             direction
           },
@@ -213,7 +213,7 @@ class ProvisionWorkflow extends Vue {
       }
 
       Steps.setAltBackDestination("");   
-      this.$router.push({ name: nextStepName as string, params: { direction } });
+      this.$router.push({ name: nextStepName as string, query: { direction } });
 
     } else if (direction === "previous" && this.altBackDestination) { 
       if (this.$route.name === this.routeNames.AwardedTaskOrder) {
@@ -226,27 +226,27 @@ class ProvisionWorkflow extends Vue {
     Steps.setAltBackDestination("");
     switch (this.altBackDestination) {
     case AppSections.sectionTitles.Home: {
-      this.$router.push({name: "home", params: { direction } })
+      this.$router.push({name: "home", query: { direction } })
       AppSections.changeActiveSection(AppSections.sectionTitles.Home);
       break;
     }
     case AppSections.sectionTitles.Packages: {
-      this.$router.push({name: "home", params: { direction } })
+      this.$router.push({name: "home", query: { direction } })
       AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
       break;
     }
     case AppSections.sectionTitles.CreateFirstPortfolio: {
-      this.$router.push({name: "home", params: { direction } })
+      this.$router.push({name: "home", query: { direction } })
       AppSections.changeActiveSection(AppSections.sectionTitles.CreateFirstPortfolio);
       break;
     }
     case AppSections.sectionTitles.Portfolios: {
-      this.$router.push({name: "home", params: { direction } })
+      this.$router.push({name: "home", query: { direction } })
       AppSections.changeActiveSection(AppSections.sectionTitles.Portfolios);
       break;
     }
     case AppSections.sectionTitles.PortfolioSummary: {
-      this.$router.push({name: "home", params: { direction } })
+      this.$router.push({name: "home", query: { direction } })
       await AppSections.setActiveTabIndex(1)
       AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break;
@@ -279,7 +279,7 @@ class ProvisionWorkflow extends Vue {
     this.altBackDestination = Steps.altBackDestination;
     this.noPrevious = !step.prev && !this.altBackDestination;
     this.backButtonText = step.backButtonText ?? "Back";
-    this.continueButtonColor = step.continueButtonColor ?? "primary";
+    this.continueButtonColor = step.continueButtonColor ?? "_primary";
     this.continueButtonText = step.continueButtonText ?? "Continue";
     this.altContinueAction = step.altContinueAction ?? "";
     if (step.additionalButtons) {

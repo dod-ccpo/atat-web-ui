@@ -8,17 +8,17 @@
       Use the following Frequently Asked Questions (FAQs) to help you complete
       the Requirements Cost Estimate section.
     </p>
-    <v-expansion-panels accordion flat>
+    <v-expansion-panels variant="accordion" borderless>
       <v-expansion-panel
         v-for="(item, index) in expansionPanelData"
         :key="index"
       >
-        <v-expansion-panel-header :id="item.id + '_Button'">
+        <v-expansion-panel-title :id="item.id + '_Button'">
           {{ item.headerText }}
-        </v-expansion-panel-header>
-        <v-expansion-panel-content :id="item.id + '_Content'">
+        </v-expansion-panel-title>
+        <v-expansion-panel-text :id="item.id + '_Content'">
           <div v-html="item.content"></div>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -170,7 +170,7 @@ class SlideOut_GatherPricesEstimates extends Vue {
   ];
 
 }
-
+//eslint-disable-next-line camelcase
 export default toNative(SlideOut_GatherPricesEstimates)
 </script>
 

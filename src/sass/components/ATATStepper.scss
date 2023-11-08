@@ -1,7 +1,10 @@
 ._atat-stepper {
   background-color: transparent !important;
+  &.v-list {
+    padding-bottom: 0;
+  }
 
-  .v-list-item{
+  .v-list-item {
     display: flex;
     align-items:flex-start;
     padding: 0px;
@@ -10,7 +13,7 @@
       background-color: transparent !important;
     }
 
-    &.v-list-item--link {
+    .v-list-item--link {
       &:hover {
         cursor: default;
       }
@@ -23,29 +26,43 @@
       }
     }
 
-    .v-list-item__content{
+    .v-list-item__content {
       padding-top: 2px;
+      padding-bottom: 12px;
+      margin-left: 50px;
+
+      &:after {  //verical line
+        position: absolute;
+        top: 20px;
+        left: 18px;
+        bottom: -30px;
+        content: "";
+        width: 4px;
+        background-color: $primary;
+      }
     }
 
-    &:after {  //verical line
-      position: absolute;
-      top: 0px;
-      left: 18px;
-      bottom: -30px;
-      content: "";
-      width: 4px;
-      background-color: $primary;
-    }
-    &:last-child::after{
-      display: none;
-    }
+    &:last-child {
+      .v-list-item__content {
+        padding-bottom: 0;
+        &:after {
+          display: none !important;
+        }
+      }
+    }       
+
     ._step-circle {
+      display: inline-block;
+      position: absolute;
+      left: 0;
       font-size: 2.0rem;
       font-weight: 500;
       border: 4px solid $primary;
       margin: 0px 12px 12px 0px;
       text-align: center;
+      min-width: 40px !important;
       width: 40px;
+      min-height: 40px !important;
       height: 40px;
       border-radius: 50%;
       line-height: 32px;
@@ -53,6 +70,7 @@
       z-index: 2;
     }
   }
+ 
 }
 
 ._csp-card {
@@ -61,7 +79,7 @@
   
   height: 160px;
   &._calculator-card {
-    height: 245px;
+    height: 237px;
     width: 169px !important;
     max-width: 169px;
     &._recommended-card {
@@ -103,7 +121,7 @@
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    height: 84px;
+    height: 70px;
   }
   ._csp-name {
     font-weight: 500;
@@ -117,14 +135,13 @@
       justify-content: center !important;
       align-items: center;
       text-decoration: none;
-      margin: 8px 0;
+      margin-bottom: 8px;
       font-weight: normal;
       &:hover {
         text-decoration: underline;
       }
     }
     width: 100%;
-    margin-top: 8px;
   }
 
   &.v-radio {
@@ -135,7 +152,7 @@
     }
   }
   
-  &.v-item--active {
+  &.v-selection-control--dirty {
     border-color: $primary !important;
     outline: 1px solid $primary;
     background-color: $primary-lighter;

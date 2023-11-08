@@ -15,14 +15,12 @@
         <span id="CreatedByLabel">Created by</span>
         <v-menu
           :close-on-content-click="false"
-          left
+          location="left"
           open-on-hover
-          offset-x
         >
           <template v-slot:activator="{ props }">
             <v-btn
-              plain
-              text="true"
+              variant="plain"
               v-bind="props"
               class="font-size-14 _profile-card__name-button"
             >
@@ -70,14 +68,13 @@
       <div class="d-flex justify-space-between align-center font-size-14">
         <v-menu
           :close-on-content-click="false"
-          left
+          location="left"
           open-on-hover
-          offset-x
+          offset=""
         >
           <template v-slot:activator="{ props }">
             <v-btn
-              plain
-              variant="text"
+              variant="plain"
               v-bind="props"
               class="font-size-14 _profile-card__name-button"
             >
@@ -88,7 +85,7 @@
           <ATATProfileCard :person="packageMissionOwner" />
         </v-menu> 
         <div>
-          <v-tooltip left nudge-right="15" v-if="currentUserIsOwner">
+          <v-tooltip location="left" offset="15" v-if="currentUserIsOwner">
             <template v-slot:activator="{ props }">
               <span v-bind="props">
                 Owner
@@ -108,14 +105,13 @@
         <div class="d-flex justify-space-between align-center font-size-14">
           <v-menu
             :close-on-content-click="false"
-            left
+            location="left"
             open-on-hover
-            offset-x
+            offset=""
           >
             <template v-slot:activator="{ props }">
               <v-btn
-                plain
-                variant="text"
+                variant="plain"
                 v-bind="props"
                 class="font-size-14 _profile-card__name-button"
               >
@@ -143,12 +139,12 @@
     <hr class="my-0">
 
     <div class="_panel-padding _panel-user-list pb-6">
-      <v-expansion-panels accordion flat>
+      <v-expansion-panels variant="accordion" >
         <v-expansion-panel>
-          <v-expansion-panel-header class="font-size-14">
+          <v-expansion-panel-title class="font-size-14">
             Learn about contributor roles
-          </v-expansion-panel-header>
-          <v-expansion-panel-content class="font-size-14">
+          </v-expansion-panel-title>
+          <v-expansion-panel-text class="font-size-14">
             <p>
               <strong>Owner:</strong> Manages all aspects of a package, to include 
               editing information, generating and submitting the completed package, 
@@ -159,7 +155,7 @@
               people to contribute. However, they cannot submit, archive, or delete 
               the acquisition package. 
             </p>
-          </v-expansion-panel-content>
+          </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
     </div>
@@ -410,6 +406,6 @@ class ContributorsPanel extends Vue {
   }
 }
 
-export default toNative(ContributorsPanel);
+export default toNative(ContributorsPanel)
 
 </script>

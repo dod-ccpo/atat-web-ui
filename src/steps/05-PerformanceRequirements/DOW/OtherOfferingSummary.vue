@@ -21,7 +21,7 @@
 
           <div 
             v-if="tableData.length === 0"
-            class="w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
+            class="w-100 py-10 border1 _border-rounded border-base-lighter text-center mb-10 mt-10" 
           >
             You do not have any requirements yet.
           </div>
@@ -70,7 +70,7 @@
           <v-btn
             id="AddInstance"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="_secondary _normal _small-text mt-5"
             :ripple="false"
             @click="addInstance()"
           >
@@ -134,8 +134,8 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import SaveOnLeave from "@/mixins/saveOnLeave";
-import { Component, mixins, Watch , toNative, Vue} from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -160,15 +160,23 @@ import Summary from "@/store/summary";
  
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATDialog,
     ATATSVGIcon
   }
 })
 
-class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
-{
+class OtherOfferingSummary extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public isCompute = false;
   public isGeneralXaaS = false;
   public isDatabase = false;
@@ -221,7 +229,7 @@ class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
     // route to ServiceOfferings or DOW Summary
     this.$router.push({
       name: "pathResolver",
-      params: {
+      query: {
         resolver: "ServiceOfferingsPathResolver",
         direction: "next"
       },
@@ -413,8 +421,7 @@ class OtherOfferingSummary extends mixins(Vue, SaveOnLeave)
         instanceClone.periodsNeeded.forEach((sysId) => {
           const periodObj = allPeriods.find((obj) => obj.sys_id === sysId);
           if (periodObj) {
-            //eslint-disable-next-line prefer-const
-            let periodText = periodObj?.period_type.indexOf("BASE") > -1 
+            const periodText = periodObj?.period_type.indexOf("BASE") > -1 
               ? "Base period" : "Option period " + (parseInt(periodObj.option_order) - 1);
             periodsNeeded.push(periodText);
           }

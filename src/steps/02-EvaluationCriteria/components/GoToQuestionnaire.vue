@@ -11,7 +11,7 @@
         suggestion to meet your requirements, if needed.
       </p>
       <v-btn
-        class="secondary font-size-14 px-3 mb-1 mt-1"
+        class="_secondary font-size-14 px-3 mb-1 mt-1"
         id="GoToQuestionnaireBtn"
         @click="goToQuestionnaire"
         @keydown.enter="goToQuestionnaire"
@@ -34,7 +34,7 @@
 
 <script lang="ts">
  
-import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -65,5 +65,5 @@ class GoToQuestionnaire extends Vue {
     this.$emit("goToQuestionnaire");
   }
 }
-export default toNative(GoToQuestionnaire) 
+export default toNative(GoToQuestionnaire )
 </script>

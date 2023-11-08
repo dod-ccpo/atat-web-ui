@@ -27,22 +27,23 @@
 }
 
 .atat-file-upload,
-.atat-file-upload.v-input--is-focused.primary--text{
+.atat-file-upload.v-input--is-focused.text-primary {
   width: 740px;
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23fbfbfb' rx='8' ry='8' stroke='%2361686c' stroke-width='2' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;  
   border-radius: 8px;
-  color: $base !important;
+  color: $base-lighter !important;
   margin: 0px;
   padding: 0px;
   .v-input__control{
-    .v-input__slot{
+    .v-field{
+      display: flex;
       &::before,
       &::after{
         border: none;
         transition: none !important;
       }
       margin: 0px;
-      .v-input__prepend-inner{
+      .v-field__prepend-inner{
         margin: 0px;
         padding: 0px;
         transition: none !important;
@@ -55,6 +56,20 @@
         .content-mini{
           cursor: pointer;
           padding: 16px 20px 21px 26px;
+        }
+      }
+      .v-field__field{
+        display: none !important;
+      }
+      &:hover{
+        .v-field__outline{
+          box-sizing: unset;
+        }  
+      }
+      .v-field__outline{
+        box-sizing: unset;
+        &::after{
+          border-width: 0px !important;
         }
       }
     }

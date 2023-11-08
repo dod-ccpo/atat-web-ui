@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Component, mixins } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATFooter from "@/components/ATATFooter.vue";
 import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
@@ -56,7 +56,7 @@ import {
   ProjectOverviewDTO 
 } from "@/api/models";
 
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import _ from "lodash";
 
@@ -70,7 +70,15 @@ import _ from "lodash";
     Preview
   },
 })
-export default class DocumentReview extends mixins(SaveOnLeave){
+class DocumentReview extends Vue {
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
   
   private docTitle = "Requirements Checklist";
   private displayView = "";
@@ -207,4 +215,5 @@ export default class DocumentReview extends mixins(SaveOnLeave){
     return true;
   }
 }
+export default toNative(DocumentReview)
 </script>

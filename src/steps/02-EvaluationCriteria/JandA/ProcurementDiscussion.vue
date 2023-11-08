@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
 import _ from "lodash";
@@ -68,11 +68,10 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "../../../../types/Global";
 import { FairOpportunityDTO } from "@/api/models";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
  
 
 @Component({
-  mixins: [SaveOnLeave],
   components:{
     ATATTextArea,
     ATATRadioGroup
@@ -80,6 +79,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 class ProcurementDiscussion extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public procurementParagraphText = "Identify any schedule requirements, unique" +
     " features and mandatory requirements, or the existence of" +
     " proprietary data, copyrighted information or a patent which" +
@@ -159,5 +168,5 @@ class ProcurementDiscussion extends Vue {
   }
 }
 
-export default toNative(ProcurementDiscussion) 
+export default toNative(ProcurementDiscussion )
 </script>

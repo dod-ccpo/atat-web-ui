@@ -152,13 +152,12 @@
               <v-btn
                 id="AddIncrementButton"
                 v-if="showAddIncrementButton"
-                plain
                 variant="text"
                 class=" link-button no-border mt-5"
                 :ripple="false"
                 @click="addIncrement()"
               >
-                <v-icon color="primary" class="mr-2">control_point</v-icon>
+                <v-icon color="primary" class="mr-2">mdi-plus-circle-outline</v-icon>
                 <span>Add funding increment</span>
               </v-btn>
 
@@ -188,7 +187,7 @@
 
             <div class="ml-10 width-100">
               <div
-                class="bg-primary-lighter width-100 border-rounded-more pa-6"
+                class="bg-primary-lighter width-100 _border-rounded-more pa-6"
               >
                 <div class="d-flex">
                   <div class="pr-5">
@@ -245,7 +244,7 @@
           class="width-70 mt-5"
           v-if=" isOverfunded || isUnderfunded "
         >
-          <template slot="content">
+          <template v-slot:content>
             <p class="mb-0">
               Based on your requirement’s cost estimate, your plan is
               <strong>{{ isOverfunded ? 'over' : 'under'}}funded</strong>. 
@@ -261,7 +260,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -277,7 +276,7 @@ import { CostEstimateDTO, PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber, roundDecimal } from "@/helpers";
 
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import { format } from "date-fns";
 import { parseISO } from "date-fns/fp";
@@ -288,7 +287,6 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATSelect,
     ATATSVGIcon,
@@ -299,6 +297,16 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 
 class IncrementalFunding extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public today = new Date();
   public currentYear = this.today.getFullYear();
 
@@ -507,8 +515,7 @@ class IncrementalFunding extends Vue {
   public addIncrement(): void {
     const lastFundingIncrement = this.fundingIncrements.at(-1);
     const lastSelectedQtr = lastFundingIncrement?.text;
-    //eslint-disable-next-line prefer-const
-    let selectedQtrIndex = this.fiscalQuarters.findIndex(
+    const selectedQtrIndex = this.fiscalQuarters.findIndex(
       (p) => p.text === lastSelectedQtr
     );
 
@@ -576,8 +583,7 @@ class IncrementalFunding extends Vue {
   public isFundingMet = false;
 
   public calcAmounts(field: string): void {
-    //eslint-disable-next-line prefer-const
-    let incrementsTotal = this.fundingIncrements.reduce(
+    const incrementsTotal = this.fundingIncrements.reduce(
       (accumulator, current) =>
         accumulator + Number(currencyStringToNumber(current.amt)),
       0
@@ -788,8 +794,7 @@ class IncrementalFunding extends Vue {
       }
       if (this.allowContinue) {
         // Set chronological order of fiscal quarters in fundingIncrements
-        //eslint-disable-next-line prefer-const
-        let sortedIncrements: fundingIncrement[] = [];
+        const sortedIncrements: fundingIncrement[] = [];
         this.fundingIncrements.forEach((incr) => {
           incr.order =
             this.fiscalQuarters.findIndex((q) => q.text === incr.text) + 1;

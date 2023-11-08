@@ -3,7 +3,8 @@
     <ATATRadioGroup
       :id="id"
       :legend="legend" 
-      :value.sync="_emergencyDeclaration"
+      :value="_emergencyDeclaration"
+      @update:value="_emergencyDeclaration = $event"
       :items="radioGroupItems"
       name="emergency-declaration-support-requirement-radio-group"
       :rules="_rules"
@@ -15,7 +16,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
  
-import { Component, Prop, toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
@@ -26,8 +27,7 @@ import { RadioButton } from "types/Global";
   },
 })
 class EmergencyDeclarationSupport extends Vue {
-  @PropSync("emergencyDeclaration", { default: "" })
-  private _emergencyDeclaration!: string | null;
+  @PropSync("emergencyDeclaration", { default: "" }) private _emergencyDeclaration!: string | null;
   @Prop({default: "emergency-declaration-support-requirement"}) private id!: string;
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: ""}) private legend!: string;

@@ -17,5 +17,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ControlPoint extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default toNative(ControlPoint);
+export default toNative(ControlPoint)
 </script>

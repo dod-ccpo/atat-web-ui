@@ -42,20 +42,30 @@
 
 <script lang="ts">
  
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
-    ATATRadioGroup, ATATAlert
+    ATATRadioGroup,
+    ATATAlert,
   },
 })
 class AlternateCOR extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private alternateCoreOptions: RadioButton[] = [
     {
       id: "YesAlternateCOR",

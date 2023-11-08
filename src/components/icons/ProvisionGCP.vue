@@ -52,5 +52,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ProvisionGCP extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default toNative(ProvisionGCP);
+export default toNative(ProvisionGCP)
 </script>

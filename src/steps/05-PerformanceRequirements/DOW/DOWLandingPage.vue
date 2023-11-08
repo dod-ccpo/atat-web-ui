@@ -130,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import { Component, mixins, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import DOWCard from "@/steps/05-PerformanceRequirements/DOW/DOWCard.vue"
@@ -142,12 +142,11 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import { DOWCardData } from "types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import {buildClassificationLabel} from "@/helpers";
  
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -155,9 +154,17 @@ import {buildClassificationLabel} from "@/helpers";
     DOWCard,
   }
 })
+class DOWLandingPage extends Vue {
 
-class DOWLandingPage extends Vue
-{
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   displayWarning = false;
   totalSections = 3;
   totalSectionsComplete = 0;

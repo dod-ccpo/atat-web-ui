@@ -19,7 +19,8 @@
                 :card="true"
                 :items="recurringOptions"
                 @radioButtonClicked="recurringOptionsClicked"
-                :value.sync="selectedRecurringOption"
+                :value="selectedRecurringOption"
+                @update:value="selectedRecurringOption = $event"
                 :rules="[$validators.required('Please select an option')]"
               />
             </div>
@@ -44,7 +45,8 @@
                   :legend="followOnProcurementBeSoleSourcedLegend"
                   :card="false"
                   :items="followOnProcurementBeSoleSourcedOptions"
-                  :value.sync="selectedfollowOnProcurementBeSoleSourcedOption"
+                  :value="selectedfollowOnProcurementBeSoleSourcedOption"
+                  @update:value="selectedfollowOnProcurementBeSoleSourcedOption = $event"
                   :rules="[$validators.required('Please select an option')]"
                 />
               </div>
@@ -57,11 +59,11 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATAlert from "@/components/ATATAlert.vue";
 import AcquisitionPackage, { isMRRToBeGenerated } from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { PeriodOfPerformanceDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
@@ -69,14 +71,20 @@ import { RadioButton } from "../../../types/Global";
 import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATAlert
   },
 })
-
 class RecurringRequirement extends Vue {
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   public popDTO = defaultPeriodOfPerformance;
 
@@ -147,6 +155,8 @@ class RecurringRequirement extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    // console.log(this.$refs.form.validate)
+
     await this.loadOnEnter();
   }
 
@@ -172,23 +182,23 @@ class RecurringRequirement extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
     try {
       if (this.hasChanged()) {
-        //eslint-disable-next-line prefer-const
-        let pops: PeriodOfPerformanceDTO  = {  
+        const pops: PeriodOfPerformanceDTO  = {  
           ...this.popDTO,
           is_requirement_follow_on_procurement_sole_sourced: 
-            this.currentData.is_requirement_follow_on_procurement_sole_sourced || "",
-          recurring_requirement: this.currentData.recurring_requirement || "",
+            this.currentData.is_requirement_follow_on_procurement_sole_sourced ?? "",
+          recurring_requirement: this.currentData.recurring_requirement ?? "",
         }
         await Periods.setPeriodOfPerformance(pops);
       }
     } catch (error) {
       console.log(error);
     }
-
     return true;
   }
+
 }
 
 export default toNative(RecurringRequirement)

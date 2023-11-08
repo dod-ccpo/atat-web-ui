@@ -4,10 +4,8 @@
     <v-main>
       <v-app-bar
         id="PageHeader"
-        app
         flat
         class="_atat-page-header _acquisitions"
-        clipped-right
         height="83"
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">
@@ -29,7 +27,7 @@
         </div>
         <div class="d-flex ml-auto">
           <v-btn
-            class="primary"
+            class="_primary"
             :ripple="false"
             @click="toAcquisitions"
           >
@@ -74,7 +72,7 @@
             <v-pagination
               v-model="page"
               :length="numberOfPages"
-              circle
+              rounded
             ></v-pagination>     
           </div>
 
@@ -135,13 +133,13 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 @Component({
   components: {
-    PortfoliosSummary,
-    ATATFooter,
-    ATATToast,
-    ATATNoResults,
-    Card,
-    Search,
-    TaskOrderSearchModal
+    // PortfoliosSummary,
+    // ATATFooter,
+    // ATATToast,
+    // ATATNoResults,
+    // Card,
+    // Search,
+    // TaskOrderSearchModal
   }
 })
 
@@ -306,8 +304,8 @@ class Packages extends Vue {
     await acquisitionPackage.setIsNewPackage(true)
     await AcquisitionPackage.reset();
     this.$router.push({
-      name: routeNames.DAPPSChecklist,
-      params: {
+      name: 'DAPPSChecklist', //routeNames.DAPPSChecklist,
+      query: {
         direction: "next"
       },
       replace: true
@@ -359,7 +357,7 @@ class Packages extends Vue {
 
     this.$router.push({
       name: provWorkflowRouteNames.AwardedTaskOrder,
-      params: {
+      query: {
         direction: "next"
       },
       replace: true
@@ -382,7 +380,6 @@ class Packages extends Vue {
   }
 
 }
-
-export default toNative(Packages);
+export default toNative(Packages)
 </script>
 

@@ -40,9 +40,9 @@ export class PackageSummaryStore extends VuexModule {
   // public setStoreData(sessionData: string): void {
   //   try {
   //     const sessionDataObject = JSON.parse(sessionData);
-  //   Object.keys(sessionDataObject).forEach((property) => {
-  //     (this as unknown as Record<string, string>)[property] = sessionDataObject[property]
-  //   }, this);
+  //     Object.keys(sessionDataObject).forEach((property) => {
+  //       (this as unknown as Record<string, string>)[property] = sessionDataObject[property];
+  //     });
   //   } catch (error) {
   //     throw new Error("error restoring session for portfolio summary data store");
   //   }

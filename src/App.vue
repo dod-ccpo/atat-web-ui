@@ -1,15 +1,21 @@
 <template>
-  <v-app id="app">
+  <v-layout 
+    class="_center-content"
+    :class="[
+      { '_is-home': isHome },
+    ]">
     <ATATTopNavBar />
     <div v-if="appContentComponent">
       <component :is="appContentComponent" />
     </div>
-  </v-app>
+  </v-layout>
 </template>
-
+<style lang="scss">
+	@import './sass/atat.scss';
+</style>
 <script lang="ts">
-import Vue, { Component as VueComponent } from "vue";
-import { Component, Watch } from "vue-facing-decorator";
+import { Component as VueComponent } from "vue";
+import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
@@ -25,12 +31,15 @@ import Home from "@/home/Index.vue";
 import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
 import AcquisitionPackage from "./store/acquisitionPackage";
 
+import Steps from '@/store/steps';
+
 @Component({
   components: {
     ATATTopNavBar,
   },
 })
-export default class App extends Vue {
+class App extends Vue {
+
   public get activeAppSection(): string {
     return AppSections.activeAppSection;
   }
@@ -85,6 +94,8 @@ export default class App extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    Steps.initialize();
+
     await AcquisitionPackage.setIsProdEnv();
     if (process.env.NODE_ENV === "development") {
       // NOTE: add `userId` to .env file with your snow sys_id to view 
@@ -96,8 +107,18 @@ export default class App extends Vue {
     await this.loadOnEnter();
   }
 
+  public get centerContent(): boolean {
+    return this.activeAppSection === AppSections.sectionTitles.Home ||
+    this.activeAppSection === AppSections.sectionTitles.PortfolioSummary;
+  }
+  public get isHome(): boolean {
+    return this.activeAppSection === AppSections.sectionTitles.Home ||
+    this.activeAppSection === AppSections.sectionTitles.PortfolioSummary;
+  }
+
   public async beforeMount(): Promise<void> {
     await AppSections.setAppContentComponent(Home);
   }
 }
+export default toNative(App)
 </script>

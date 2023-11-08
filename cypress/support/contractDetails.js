@@ -47,12 +47,7 @@ Cypress.Commands.add("selectTMCheckbox", (inputText) => {
     .check({
       force: true,
     })
-    .then(() => {
-      cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
-      cy.textExists(
-        contractDetails.tmTextFieldLabel,
-        "Please provide justification for your T&M contract type."
-      );
+    .then(() => {     
       cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
     });
 });

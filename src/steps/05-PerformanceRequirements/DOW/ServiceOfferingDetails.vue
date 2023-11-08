@@ -100,7 +100,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, mixins, Watch , toNative, Vue } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import RequirementsForm from './RequirementsForm.vue'
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -108,7 +108,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ClassificationsModal from "./ClassificationsModal.vue";
 
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
@@ -137,7 +137,6 @@ import { convertColumnReferencesToValues } from "@/api/helpers";
  
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATCheckboxGroup,
@@ -147,7 +146,17 @@ import { convertColumnReferencesToValues } from "@/api/helpers";
   }
 })
 
-class ServiceOfferingDetails extends mixins(Vue, SaveOnLeave) {
+class ServiceOfferingDetails extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public serviceOfferingName = DescriptionOfWork.currentOfferingName;
   public serviceOfferingSysId = DescriptionOfWork.currentOfferingSysId;
   public groupId = DescriptionOfWork.currentGroupId;
@@ -455,7 +464,7 @@ class ServiceOfferingDetails extends mixins(Vue, SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
-    const isValid = this.$refs.form.validate();
+    const isValid = await this.$refs.form.validate();
     try {
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {
@@ -482,5 +491,5 @@ class ServiceOfferingDetails extends mixins(Vue, SaveOnLeave) {
 
 
 };
-export default toNative(ServiceOfferingDetails) 
+export default toNative(ServiceOfferingDetails )
 </script>

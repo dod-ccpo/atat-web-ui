@@ -28,7 +28,7 @@
           {{modifiedData.packageStatus}}
         </v-chip>
       </div>
-      <div class="text-base -size-14 d-flex align-center">
+      <div class="text-base-dark font-size-14 d-flex align-center">
         <!-- 
         TODO: Add back in when saving progress to snow  
         <div
@@ -100,12 +100,14 @@
     <ATATMeatballMenu
       :id="'CardMenu' + index"
       :left="true"
+      :menuWidth="250"
       :index="index"
       :menuItems="cardMenuItems"
       @menuItemClick="cardMenuClick"
     />
     <DeletePackageModal
-      :showModal.sync="showDeleteModal"
+      :showModal="showDeleteModal"
+      @update:showModal="showDeleteModal = $event"
       :packageName="modifiedData.projectOverview || 'Untitled package'"
       :hasContributor="hasContributor"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
@@ -113,7 +115,8 @@
       :id="'DeletePackageModal_' + index"
     />
     <ArchiveModal
-      :showModal.sync="showArchiveModal"
+      :showModal="showArchiveModal"
+      @update:showModal="showArchiveModal = $event"
       :hasContributor="hasContributor"
       :packageName="modifiedData.projectOverview || 'Untitled package'"
       :waitingForSignature="modifiedData.packageStatus.toLowerCase() === 'waiting for signatures'"
@@ -152,7 +155,8 @@ import PortfolioStore from "@/store/portfolio";
     DeletePackageModal,
     ArchiveModal,
     TaskOrderSearchModal,
-  }
+  },
+  emits:["updateStatus", "openTOSearchModal", ]
 })
 
 class Card extends Vue {
@@ -253,7 +257,7 @@ class Card extends Vue {
       this.$router.replace({
         name: routeNames.UnderReview,
         replace: true,
-        params: {
+        query: {
           direction: "next"
         }   
       }).catch(() => console.log("avoiding redundant navigation"));
@@ -271,12 +275,10 @@ class Card extends Vue {
         this.$router.replace({
           name: routeNames.UploadSignedDocuments,
           replace: true,
-          params: {
-            direction: "next"
-          },
           query: {
+            direction: "next",
             packageId: this.cardData.sys_id
-          }
+          },
         }).catch(() => console.log("avoiding redundant navigation"));
         await AcquisitionPackage.setPackageId(this.cardData.sys_id as string);
         AcquisitionPackage.setProjectTitle(this.modifiedData.projectOverview);
@@ -284,12 +286,10 @@ class Card extends Vue {
         this.$router.replace({
           name: routeNames.ContractingShop,
           replace: true,
-          params: {
-            direction: "next"
-          },
           query: {
+            direction: "next",
             packageId: this.cardData.sys_id
-          }
+          },
         }).catch(() => console.log("avoiding redundant navigation"));
       }
       AppSections.changeActiveSection(AppSections.sectionTitles.AcquisitionPackage);
@@ -433,7 +433,7 @@ class Card extends Vue {
   }
 }
 
-export default toNative(Card);
+export default toNative(Card)
 
 </script>
 

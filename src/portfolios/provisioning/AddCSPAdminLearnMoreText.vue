@@ -48,8 +48,6 @@ import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Glob
 import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue"
-import AddAdminSlideOut from "../portfolio/components/shared/AddAdminSlideOut.vue";
-import AddCSPAdminLearnMore from "./AddCSPAdminLearnMore.vue";
 
 @Component({
   components: {

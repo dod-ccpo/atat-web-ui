@@ -39,13 +39,13 @@
 
         <div 
           v-if="admins.length === 0"
-          class="w-100 py-10 border1 border-rounded border-base-lighter 
+          class="w-100 py-10 border1 _border-rounded border-base-lighter 
             text-center mb-10 mt-10 bg-base-off-white"
         >
           <h2 class="h3 mb-6 mt-2">You do not have any CSP administrators yet.</h2>
           <v-btn
             id="AddCSPAdmin"
-            class="primary mx-auto mb-2"
+            class="_primary mx-auto mb-2"
             @click="openAddCSPModal"
             @keydown.enter="openAddCSPModal"
             @keydown.space="openAddCSPModal"
@@ -61,26 +61,41 @@
           </v-btn> 
         </div>
         <div v-else>
-          <v-data-table 
+          <v-table 
             :headers="tableHeaders"
             :items="tableData"
             :items-per-page="-1"
             class="elevation-0 _offering-instances _base-table-style mt-10"
             :hide-default-footer="true"
           >
-
+          <thead>
+            <tr>
+              <th 
+              v-for="header in tableHeaders" 
+              :key="header.title"
+              :id="header.title"
+              class="text-start sortable"
+              >
+                {{ header.title }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+            v-for="item in tableData"
+            :key="item.DoDId"
+            >
+            <td class="text-start">
+              {{ item.DoDId }}
+            </td>
             <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.adminEmails="{ item }">
-              <span v-html="item.adminEmails"></span>
-            </template>
+            <td v-html="item.adminEmails" class="text-start">
+            </td>
             <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.adminClassificationLevels="{ item }">
-              <span v-html="item.adminClassificationLevels"></span>
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.status="{ item }">
-              <div class="d-flex align-center" style="margin-top: -6px;">
-                <div class="_icon-circle bg-info-lighter">
+            <td  v-html="item.adminClassificationLevels" class="text-start">
+            </td>
+            <td class="d-flex align-center text-start" >
+              <div class="_icon-circle bg-info-lighter">
                   <ATATSVGIcon
                     name="cloud"
                     width="21"
@@ -88,13 +103,9 @@
                     color="info-dark"
                   />
                 </div>
-                <div>
-                  {{ item.status }}
-                </div>
-              </div>
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.actions="{ item }">
+              {{ item.status }}
+            </td>
+            <td class="text-start">
               <button
                 :id="'EditButton_' + item.index"
                 @click="editAdmin(item)"
@@ -110,13 +121,15 @@
               >
                 <ATATSVGIcon name="remove" height="18" width="14" />
               </button>
-            </template>
-            
-          </v-data-table>
+            </td>
+
+          </tr>
+          </tbody>
+          </v-table>
           <v-btn
             id="AddAnotherAdmin"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="_secondary _normal _small-text mt-5"
             :ripple="false"
             @click="openAddCSPModal()"
           >
@@ -133,7 +146,8 @@
       
         <ATATDialog 
           id="AddCSPAdminModal"
-          :showDialog.sync="openModal"
+          :showDialog="openModal"
+          @update:showDialog="openModal = $event"
           :title="isEdit ? 'Edit administrator details' : 'Add a CSP administrator'"
           no-click-animation
           :okText="isEdit ? 'Update' : 'Add administrator'"
@@ -143,7 +157,8 @@
           @cancelClicked="resetAdmin"
           :modalSlideoutComponent="modalSlideoutComponent"
           modalSlideoutTitle="Learn more about CSP administrators"
-          :modalDrawerIsOpen.sync="modalDrawerIsOpen"
+          :modalDrawerIsOpen="modalDrawerIsOpen"
+          @update:modalDrawerIsOpen="modalDrawerIsOpen = $event"
         >
           <template #content>
             <p class="body">
@@ -158,7 +173,8 @@
             
               <ATATTextField 
                 id="AdminDoDId"
-                :value.sync="adminDoDId"
+                :value="adminDoDId"
+                @update:value="adminDoDId = $event"
                 label="Administrator’s DoD ID"
                 tooltipText="This 10-digit number is printed on the back of your 
                   administrator's Common Access Card (CAC). You may also ask your 
@@ -175,7 +191,8 @@
                   id="ClassificationSelection"
                   class="mt-10"
                   groupLabel="What classification level should this individual have access to?"
-                  :value.sync="selectedClassificationLevels"
+                  :value="selectedClassificationLevels"
+                  @update:value="selectedClassificationLevels = $event"
                   :items="classificationLevelOptions"
                   :card="true"
                   :inline="true"
@@ -188,7 +205,8 @@
                   id="ImpactLevelSelection"
                   class="mt-10"
                   groupLabel="What impact level should this individual have access to?"
-                  :value.sync="selectedImpactLevels"
+                  :value="selectedImpactLevels"
+                  @update:value="selectedImpactLevels = $event"
                   :items="impactLevelOptions"
                   :card="true"
                   :inline="true"
@@ -200,7 +218,8 @@
               <ATATTextField
                 id="UnclassifiedEmail"
                 v-if="unclassifiedSelected"
-                :value.sync="unclassifiedEmail"
+                :value="unclassifiedEmail"
+                @update:value="unclassifiedEmail = $event"
                 label="Unclassified email address"
                 :tooltipText="unclassifiedTooltip"
                 class="_input-max-width mt-10"
@@ -215,7 +234,8 @@
               <ATATTextField
                 id="ScrtEmail"
                 v-if="scrtSelected"
-                :value.sync="scrtEmail"
+                :value="scrtEmail"
+                @update:value="scrtEmail = $event"
                 label="SIPRNet email address"
                 :tooltipText="secretToolTip"
                 class="_input-max-width mt-10"
@@ -231,7 +251,8 @@
               <ATATTextField
                 id="TSEmail"
                 v-if="tsSelected"
-                :value.sync="tsEmail"
+                :value="tsEmail"
+                @update:value="tsEmail = $event"
                 label="JWICS email address"
                 :tooltipText="tsToolTip"
                 class="_input-max-width mt-10"
@@ -264,7 +285,7 @@
 </template>
 
 <script lang="ts">
-import { Component,  Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -286,11 +307,10 @@ import {
 } from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATCheckboxGroup,
@@ -303,6 +323,15 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 
 class AddCSPAdmin extends Vue {
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public admins: PortfolioAdmin[] = [];
   public cspLong = "";
   public csp = "";
@@ -433,10 +462,10 @@ class AddCSPAdmin extends Vue {
   }
 
   public DoDIdRules = [
-    this.$validators.allowedLengths(
-      [10], 'The DoD ID must be 10 characters.'
-    ),
-    this.$validators.required("Please enter your administrator’s 10-digit DoD ID.")
+    // this.$validators.allowedLengths(
+    //   [10], 'The DoD ID must be 10 characters.'
+    // ),
+    // this.$validators.required("Please enter your administrator’s 10-digit DoD ID.")
   ]
 
   get Form(): typeof Vue & { validate: () => boolean } {

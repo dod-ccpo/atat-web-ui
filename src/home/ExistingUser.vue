@@ -3,18 +3,17 @@
     <section class="_learn-more-section">
       <div class="container-max-width">
         <v-row>    
-          <v-col class="col-sm-12 col-md-7 pr-5">
+          <v-col class="pr-5" cols="12" md="7">
 
             <div v-if="userHasPackages">
               <v-expansion-panels 
                 id="PackagesAccordion" 
-                flat 
                 v-model="packagesPanel"
                 style="z-index:10"
               >
                 <v-expansion-panel expand>
-                  <v-expansion-panel-header>
-                    <div class="d-flex justify-space-between">
+                  <v-expansion-panel-title expand-icon="$expand">
+                    <div class="d-flex justify-space-between width-100">
                       <div class="h3">
                         Open Acquisition Packages
                       </div>
@@ -23,8 +22,8 @@
                       </div>
                     </div>
 
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
+                  </v-expansion-panel-title>
+                  <v-expansion-panel-text>
 
                     <ATATLoader 
                       v-show="isLoadingPackages" 
@@ -42,7 +41,7 @@
                       @openTOSearchModal="openTOSearchModal"
                     />
 
-                  </v-expansion-panel-content>
+                  </v-expansion-panel-text>
                 </v-expansion-panel>
               </v-expansion-panels>
               <div class="_view-all mb-10 bg-white">
@@ -62,22 +61,21 @@
             <div v-if="userHasPortfolios">
               <v-expansion-panels 
                 id="PortfoliosAccordion" 
-                flat 
                 v-model="portfolioPanel" 
               >
                 <v-expansion-panel expand>
-                  <v-expansion-panel-header>
-                    <div class="d-flex justify-space-between">
+                  <v-expansion-panel-title>
+                    <div class="d-flex justify-space-between width-100">
                       <div class="h3">
-                        Porfolios
+                        Portfolios
                       </div>
                       <div class="h3 text-base-light _item-count pr-4">
                         {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
                       </div>
                     </div>
 
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
+                  </v-expansion-panel-title>
+                  <v-expansion-panel-text>
 
                     <PortfoliosSummary 
                       active-tab="ALL" 
@@ -86,7 +84,7 @@
                       @openTOModal="openTOSearchModal"
                     />
 
-                  </v-expansion-panel-content>
+                  </v-expansion-panel-text>
                 </v-expansion-panel>
               </v-expansion-panels>
 
@@ -105,7 +103,7 @@
 
           </v-col>
 
-          <v-col class="col-sm-12 col-md-5 pl-5">
+          <v-col class="pl-5" cols="12" md="5">
             <v-card flat class="pa-6 mb-10 _simple-border">
               <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
               <p class="body">
@@ -113,7 +111,8 @@
                 cloud resources or to continue funding an existing portfolio.
               </p>
               <TaskOrderSearch
-                :TONumber.sync="TONumber"
+                :TONumber="TONumber"
+                @update:TONumber="TONumber = $event"
                 @startProvisionWorkflow="startProvisionWorkflow"
               />
             </v-card>            
@@ -124,7 +123,7 @@
                   id="JWCCHelpCenterButton"
                   href="https://community.hacc.mil/s/jwcc/resources"
                   target="_blank" 
-                  class="secondary mb-4 mt-4 width-100 _text-decoration-none"
+                  class="_secondary mb-4 mt-4 width-100 _text-decoration-none"
                 >
                   JWCC Help Center
                   
@@ -140,7 +139,7 @@
                 </v-btn>
                 <v-btn
                   id="CustomerSupportButton"
-                  class="secondary mt-4 width-100 _text-decoration-none"
+                  class="_secondary mt-4 width-100 _text-decoration-none"
                   :href="supportUrl"
                   target="_blank"
                 >      
@@ -158,8 +157,8 @@
                 <v-btn
                   :href="reportIssueLink"
                   id="ReportIssueButton"
-                   target="_blank"
-                  class="secondary mt-4 width-100 _text-decoration-none" 
+                  target="_blank"
+                  class="_secondary mt-4 width-100 _text-decoration-none" 
                 >
                   Report a bug or technical issue
                   <ATATSVGIcon
@@ -211,6 +210,7 @@ import AppSections from "@/store/appSections";
     "PackageCards": Card,
     PortfoliosSummary,
     ATATSVGIcon,
+    //TODO identify error undefined reading `allowedLengths`
     TaskOrderSearch,
   }
 })
@@ -295,5 +295,5 @@ class ExistingUser extends Vue {
   }
 
 }
-export default toNative(ExistingUser);
+export default toNative(ExistingUser)
 </script>

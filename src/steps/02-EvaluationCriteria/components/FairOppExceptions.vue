@@ -4,7 +4,8 @@
       v-if="isForm"
       id="ExceptionRadioOptions"
       :legend="legend" 
-      :value.sync="_selectedException"
+      :value="_selectedException"
+      @update:value = "_selectedException = $event"
       :items="exceptionOptions"
       name="fair-opportunity-exceptions-radio-group"
       :class="classes"
@@ -26,7 +27,7 @@
 
 <script lang="ts">
  
-import { Component, Prop, toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";

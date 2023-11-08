@@ -11,7 +11,8 @@
               class="_input-max-width mb-10"
               label="Full name"
               helpText="Include rank, if applicable"
-              :value.sync="fullName"
+              :value="fullName"
+              @update:value="fullName = $event"
               :rules="[
                 $validators.required(
                   'Please enter your FOIA coordinator’s full name.'
@@ -24,7 +25,8 @@
               class="_input-max-width mb-10"
               label="Email address"
               helpText="Enter a .mil or .gov email address."
-              :value.sync="emailAddress"
+              :value="emailAddress"
+              @update:value="emailAddress = $event"
               :rules="[
                 $validators.required('Please enter your email address.'),
                 $validators.isEmail(),
@@ -36,8 +38,11 @@
             <ATATAddressForm
               :addressTypeOptions="addressTypeOptions"
               :addressTypes="addressTypes"
-              :city.sync="city"
+              :city="city"
+              @update:city="city = $event"
               :countryListData="countryListData"
+              :stateCodeListData="stateCodeListData"
+              :stateListData="stateListData"
               :militaryPostOfficeOptions="militaryPostOfficeOptions"
               :minLength="[]"
               :requiredFields="[
@@ -72,17 +77,24 @@
                   isMaskRegex: true,
                 },
               ]"
-              :selectedAddressType.sync="selectedAddressType"
-              :selectedCountry.sync="selectedCountry"
-              :selectedMilitaryPO.sync="selectedMilitaryPO"
-              :selectedState.sync="selectedState"
-              :selectedStateCode.sync="selectedStateCode"
-              :stateCodeListData="stateCodeListData"
-              :stateListData="stateListData"
-              :stateOrProvince.sync="stateOrProvince"
-              :streetAddress1.sync="streetAddress1"
-              :streetAddress2.sync="streetAddress2"
-              :zipCode.sync="zipCode"
+              :selectedAddressType="selectedAddressType"
+              @update:selectedAddressType="selectedAddressType = $event"
+              :selectedCountry="selectedCountry"
+              @update:selectedCountry="selectedCountry = $event"
+              :selectedMilitaryPO="selectedMilitaryPO"
+              @update:selectedMilitaryPO="selectedMilitaryPO = $event"
+              :selectedState="selectedState"
+              @update:selectedState="selectedState = $event"
+              :selectedStateCode="selectedStateCode"
+              @update:selectedStateCode="selectedStateCode = $event"
+              :stateOrProvince="stateOrProvince"
+              @update:stateOrProvince="stateOrProvince = $event"
+              :streetAddress1="streetAddress1"
+              @update:streetAddress1="streetAddress1 = $event"
+              :streetAddress2="streetAddress2"
+              @update:streetAddress2="streetAddress2 = $event"
+              :zipCode="zipCode"
+              @update:zipCode="zipCode = $event"
             />
           </v-col>
         </v-row>
@@ -93,7 +105,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -106,10 +118,9 @@ import { hasChanges } from "@/helpers";
 
 import { RadioButton, SelectData } from "../../../types/Global";
 import ContactData from "@/store/contactData";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAddressForm,
     ATATRadioGroup,
@@ -117,6 +128,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 class FOIACoordinator extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private addressTypes = {
     USA: "US",
     MIL: "MILITARY",

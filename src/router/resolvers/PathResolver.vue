@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Vue, toNative, Hook } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
 
 // route resolver invoker
@@ -13,8 +13,8 @@ import { InvokePathResolver } from "./index";
 @Component({})
 class RouteResolver extends Vue {
   private resolveRoute(current: string): void {
-    const routeResolver = this.$route.params.resolver as string;
-    const direction = this.$route.params.direction as string;
+    const routeResolver = this.$route.query.resolver as string;
+    const direction = this.$route.query.direction as string;
 
     if (!routeResolver) {
       throw new Error("could not obtain step resolver");
@@ -24,6 +24,7 @@ class RouteResolver extends Vue {
     this.$router.push({ path: pathName });
   }
 
+  @Hook
   public async beforeRouteEnter(
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
@@ -39,5 +40,5 @@ class RouteResolver extends Vue {
     });
   }
 }
-export default toNative(RouteResolver);
+export default toNative(RouteResolver)
 </script>

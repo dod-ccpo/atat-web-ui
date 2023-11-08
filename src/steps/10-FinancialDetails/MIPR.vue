@@ -43,7 +43,7 @@
 <script lang="ts">
 /*eslint prefer-const: 1 */
 
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import { FundingRequestMIPRFormDTO } from "@/api/models";
 import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
@@ -52,17 +52,26 @@ import Attachments from "@/store/attachments";
 import ATATTextField from "@/components/ATATTextField.vue";
 import FinancialDetails, { initialFundingRequestMIPRForm } from "@/store/financialDetails";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATTextField,
     ATATFileUpload,
   },
 })
 class MIPR extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
   private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
@@ -176,8 +185,7 @@ class MIPR extends Vue {
 
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => ValidationResult)[] {
-    //eslint-disable-next-line prefer-const
-    let rulesArr: ((v: string) => ValidationResult)[] = [];
+    const rulesArr: ((v: string) => ValidationResult)[] = [];
   
     rulesArr.push(this.$validators.required(this.requiredMessage));
     this.invalidFiles.forEach((iFile) => {

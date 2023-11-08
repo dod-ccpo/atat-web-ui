@@ -65,7 +65,7 @@
 
 <script lang="ts">
  
-import { Component, Prop, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -162,5 +162,5 @@ class ClassificationsModal extends Vue{
   }
 }
 
-export default toNative(ClassificationsModal) 
+export default toNative(ClassificationsModal )
 </script>

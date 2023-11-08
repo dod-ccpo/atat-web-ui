@@ -19,16 +19,16 @@
         :label="label"
       />
     </div>
+
     <div class="d-flex _input-wrapper" :class="{'_append-dropdown' : appendDropdown}">
       <v-text-field
         ref="atatTextField"
         :id="id + '_text_field'"
-        outlined
-        dense
-        :height="42"
-        :value.sync="_value"
+        variant="outlined"
+        density="compact"
+        :model-value="_value"
+        @update:modelValue="_value = $event"
         :placeholder="placeHolder"
-        @input="onInput"
         class="text-primary"
         :class="[{ 'text-right' : alignRight }]"
         :disabled="disabled"
@@ -39,11 +39,10 @@
         :counter="counter"
         @blur="onBlur"
         @focus="onFocus"
-        @update:error="setErrorMessage"
         autocomplete="off"
         :type="type"
         @keypress="filterNumbers($event)"
-        :validate-on-blur="validateOnBlur"
+        :validate-on="validationString"
       >
 
         <template v-slot:prepend-inner>
@@ -56,7 +55,7 @@
             class="pt-1 mr-1"
           />
         </template>
-        <template v-slot:append v-if="appendText">
+        <template slot="append-inner" v-if="appendText">
           <span class="_append-text">
             {{ appendText }}
           </span>
@@ -67,7 +66,8 @@
         :id="id"
         :items="dropdownOptions"
         :showSelectedValue="true"
-        :selectedValue.sync="_selectedDropdownValue"
+        :selectedValue="_selectedDropdownValue"
+        @update:selectedValue="_selectedDropdownValue = $event"
       /> 
     </div>
 
@@ -92,6 +92,7 @@ import { mask, SelectData, ValidationRule } from "types/Global";
 import Inputmask from "inputmask/";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
   components: {
@@ -105,9 +106,7 @@ class ATATTextField extends Vue  {
   // refs
   $refs!: {
     atatTextField: ComponentPublicInstance & {
-      errorBucket: string[]; 
-      validate: () => boolean;
-      errorCount: number 
+      validate: () => Promise<SubmitEventPromise>;
       resetValidation(): void
     };
   }; 
@@ -155,23 +154,29 @@ class ATATTextField extends Vue  {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatTextField.validate())
-      this.setErrorMessage();
+    this.$refs.atatTextField.validate().then(
+      async (response: SubmitEventPromise) => {
+        if (!((await response).valid)){ 
+          this.setErrorMessage() }
+      }
+    );
   }
 
   //data
   private errorMessages: string[] = [];
-  private onInput(v: string) {
-    this._value = v;
+
+  public get validationString(){
+    return this.validateOnBlur ? "blur" : undefined
   }
 
   public async setErrorMessage(): Promise<void> {
     if (this.validateOnBlur) {
-      this.$nextTick(()=>{
-        this.errorMessages = this.$refs.atatTextField.errorBucket;
-        this.$emit('errorMessage', this.errorMessages);
-        // await 
-      });
+      this.$refs.atatTextField.validate().then(
+        (response: unknown) => {
+          this.errorMessages = response as string[];
+          this.$emit('errorMessage', this.errorMessages);
+        }
+      );
     } else {
       await this.resetValidation();
     }
@@ -199,7 +204,6 @@ class ATATTextField extends Vue  {
 
   public resetValidation(): void {
     this.errorMessages = [];
-    this.$refs.atatTextField.errorBucket = [];
     this.$refs.atatTextField.resetValidation();
   }
 
@@ -252,16 +256,15 @@ class ATATTextField extends Vue  {
   }
 
   private showHelpText(): boolean {
-    if(this.errorMessages.length && this.hideHelpTextOnErrors){
+    if(this.errorMessages?.length && this.hideHelpTextOnErrors){
       return false;
     }
-    return  this.helpText.length > 0;
+    return this.helpText?.length > 0;
   }
 
   public filterNumbers(evt: KeyboardEvent): void {
     if (this.type === "number") {
-      //eslint-disable-next-line prefer-const 
-      let keyPressed = evt.key.toString();
+      const keyPressed = evt.key.toString();
       const regex = this.allowDecimals
         ? /^[0-9]*\.?[0-9]*$/
         : /^[0-9]+$/
@@ -272,5 +275,5 @@ class ATATTextField extends Vue  {
   }
 
 }
-export default toNative(ATATTextField);
+export default toNative(ATATTextField)
 </script>

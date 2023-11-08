@@ -1,5 +1,6 @@
 <template>
-  <v-system-bar id="TopNavBar" app flat>
+<!--  TODO review this component after upgrade-->
+  <v-app-bar id="TopNavBar" height="56">
     <ATATSVGIcon
       color="white"
       width="110"
@@ -11,17 +12,15 @@
       <v-menu
         v-for="(navItem, navIdx) in topNavMenuItems"
         :key="navIdx"
-        :offset-y="true"
-        nudge-left="0"
+        :offset="0"
         :id="'TopNavBarMenu_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
         :attach="navItem.menu !== undefined"
-        :left="navItem.align === 'left'"
+        location="left"
       >
         <!-- top nav bar items (buttons) -->
         <template v-slot:activator="{ props }">
           <v-btn
-            text="true"
-            dark
+            variant="text"
             v-bind="props"
             :id="'TopNavButton_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
             :class="[
@@ -56,20 +55,22 @@
               :id="'ProfileBlock' + idx"
               v-if="navItem.isProfile && idx === 0"
              
-              class="d-flex py-2"
+              class="d-flex align-start justify-start"
               disabled
             >
-              <div class="_initials mr-2">
-                {{ navItem.title }}
-              </div>
-              <div style="line-height: 1.4">
-                <div class="font-weight-700 font-size-14 text-base-darker">
-                  {{ currentUser.first_name }} {{ currentUser.last_name }}
+              <div class="d-flex align-center">
+                <div class="_initials mr-2">
+                  {{ navItem.title }}
                 </div>
-                <div class="font-size-12 text-base">
-                  {{ currentUser.email }}
+                <div style="line-height: 1.4">
+                  <div class="font-weight-700 font-size-14 text-base-darker">
+                    {{ currentUser.first_name }} {{ currentUser.last_name }}
+                  </div>
+                  <div class="font-size-12 text-base">
+                    {{ currentUser.email }}
+                  </div>
                 </div>
-              </div>
+            </div>
             </v-list-item>
 
             <hr
@@ -88,7 +89,7 @@
                 { 'd-block pt-2 pb-1' : menuItem.subtitle } 
               ]"
             >
-              <div class="d-flex align-center width-100">
+              <div class="d-flex align-center justify-start width-100">
                 <div v-if="menuItem.icon" class="text-center _menu-icon mr-2">
                   <ATATSVGIcon
                     :name="menuItem.icon.name"
@@ -97,10 +98,11 @@
                     :height="menuItem.icon.height"
                   />
                 </div>
-                <v-list-item-title>
+                <v-list-item-header class="v-list-item-header mr-2">
+
                   {{ menuItem.title }}
-                </v-list-item-title>
-                <div v-if="menuItem.externalUrl">
+                </v-list-item-header>
+                <div class="ml-auto" v-if="menuItem.externalUrl">
                   <ATATSVGIcon 
                     name="externalLink"
                     color="primary"
@@ -122,16 +124,14 @@
         </v-list>
       </v-menu>
     </div>
-  </v-system-bar>
+  </v-app-bar>
 </template>
 
 <script lang="ts">
 import { TopNavItem, User } from "types/Global";
 import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { getUserInitials } from "@/helpers";
-
-import { getIdText } from "@/helpers";
+import { getUserInitials, getIdText } from "@/helpers";
 import AppSections from "@/store/appSections";
 import { UserDTO } from "@/api/models";
 import CurrentUserStore from "@/store/user";
@@ -364,5 +364,5 @@ class ATATTopNavBar extends Vue {
     await this.loadOnEnter();
   }
 }
-export default toNative(ATATTopNavBar);
+export default toNative(ATATTopNavBar)
 </script>

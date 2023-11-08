@@ -1,100 +1,60 @@
-
 <template>
   <div :id="id + 'DatePickerContainer'" class="atat-date-picker">
-    <v-menu
-      ref="atatDatePickerMenu"
-      v-model="menu"
-      min-width="auto"
-      nudge-bottom="getMenuTop"
-      :attach="'#' + id + 'DatePickerContainer'"
-      absolute
-      :nudge-top="0"
-      :nudge-left="0"
-      
-    >
-      <template v-slot:activator="{ props }">
-        <div class="d-flex align-center mb-2" v-if="label">
-          <label
-            :id="id + 'DatePickerLabel'"
-            class="form-field-label mr-1"
-            :for="id + 'DatePickerTextField'"
-          >
-            {{ label }}
-            <span v-if="optional" class="optional"> Optional </span>
-          </label>
-          <ATATTooltip
-            :tooltipText="tooltipText"
-            :tooltipTitle="tooltipTitle"
-            :id="id"
-            :label="label"
-          />
-        </div>
-        <v-text-field
-          ref="atatDatePicker"
-          :id="id + 'DatePickerTextField'"
-          :height="42"
-          :placeholder="placeHolder"
-          class="text-primary _input-max-width d-flex align-center"
-          :hide-details="true"
-          outlined
-          @input="onInput"
-          v-model="dateFormatted"
-          :style="'width: ' + width + 'px'"
-          dense
-          v-bind="props"
-          :rules="rules"
-          @blur="onBlur"
-          @focus ="onFocus"
-          @keypress:enter="menu=false"
-          :validate-on-blur="validateOnBlur"
-          autocomplete="off"
-        >
-          <template slot="append-outer">
-            <v-btn
-              icon
-              tabindex="-1"
-              :id="id + 'DatePickerButton'"
-              aria-label="Open calendar to select date"
-              @click="toggleMenu"
-              class="pa-0 icon-28 ml-2"
-            >
-              <v-icon
-                :id="id + 'DatePickerButtonIcon'"
-                class="icon-28 text-base-darkest"
-              >
-                calendar_today
-              </v-icon>
-            </v-btn>
-          </template>
-        </v-text-field>
-      </template>
-      <v-date-picker
-        :id="id + 'DatePicker'"
-        v-model="date"
-        :show-adjacent-months="showAdjacentMonths"
-        no-title
-        :active-picker.sync="activePicker"
-        type="date"
-        :min="min"
-        :max="max"
-        @click:date="datePickerClicked"
-        @keypress:enter="onBlur()"
-        scrollable
-      ></v-date-picker>
-    </v-menu>
-    <ATATErrorValidation v-if="!menu && showErrors" :errorMessages="errorMessages" />
+    <div class="d-flex align-center mb-2" v-if="label">
+      <label
+        :id="id + 'DatePickerLabel'"
+        class="form-field-label mr-1"
+        :for="id + 'DatePickerTextField'"
+      >
+        {{ label }}
+        <span v-if="optional" class="optional"> Optional </span>
+      </label>
+      <ATATTooltip
+        :tooltipText="tooltipText"
+        :tooltipTitle="tooltipTitle"
+        :id="id"
+        :label="label"
+      />
+    </div>
+    <v-text-field
+      ref="atatDatePicker"
+      :id="id + 'DatePickerTextField'"
+      :placeholder="placeHolder"
+      class="text-primary _input-max-width d-flex align-center"
+      :hide-details="true"
+      variant="outlined"
+      @update:model-value="onInput"
+      v-model="dateFormatted"
+      :style="'width: ' + width + 'px'"
+      density="compact"
+      :rules="rules"
+      @blur="onBlur"
+      validate-on="blur"
+      autocomplete="off"
+    ></v-text-field>  
+       
+     
+    <ATATErrorValidation v-if="showErrors" :errorMessages="errorMessages" />
+    <div v-if="showHelpText" class="help-text mt-2">
+      {{ helpText }}
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Vue, toNative, Component, Prop, Watch } from "vue-facing-decorator";
-import { add, format, formatISO, isValid } from "date-fns";
+import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
+import { format, formatISO, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {ValidationRule} from "../../types/Global";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
+  emits:[
+    "update:value",
+    "hasErrorMessages"
+  ],
   components: {
     ATATTooltip,
     ATATErrorValidation,
@@ -105,14 +65,9 @@ class ATATDatePicker extends Vue {
   // refs
   $refs!: {
     atatDatePicker: ComponentPublicInstance & {
-      errorBucket: string[]; 
-      errorCount: number; 
-      validate: () => boolean;
+      validate: () => Promise<SubmitEventPromise>;
       value: string;
       resetValidation: ()=> boolean;
-    };
-    atatDatePickerMenu: ComponentPublicInstance & {
-      save: (selectedDate: string) => Record<string, never>;
     };
   };
 
@@ -121,27 +76,18 @@ class ATATDatePicker extends Vue {
    */
   private date = [""];
   private dateFormatted = "";
-  private menu = false;
   private errorMessages: string[] = [];
-  private activePicker = "";
-
-  // Flash of red border on date text field when validateOnBlur is true and user
-  // clicks a date in the picker to be addressed in future milestone.
-  // Leave commented out code for validateOnBlur in place for now.
-  private validateOnBlur = true;
 
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: false }) private showAdjacentMonths!: boolean;
   @Prop({ default: "220" }) private width!: string;
-  @Prop({ default: "" }) private helpText!: string;
+  @Prop({ default: "Format (mm/dd/yyyy)" }) private helpText!: string;
+  @Prop({ default: true }) private showHelpText!: boolean;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
-  @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: string;
-  @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") }) private max!: string;
   @Prop({ default: () => [] }) private rules!: ValidationRule[];
   @Prop({ default: false }) private isRequired!: boolean;
   @Prop({ default: true }) private showErrors!: boolean;
@@ -157,20 +103,6 @@ class ATATDatePicker extends Vue {
   @Watch("value")
   public async valueChanged(): Promise<void> {
     await this.setDateFromValue();
-  }
-
-  /**
-   * restores standar calendar view when popup menu is displayed
-   * if previous view was month or year view
-   */
-
-  @Watch("menu")
-  protected showStandardCalendar(val: boolean): void {
-    if (val) {
-      setTimeout(()=>(this.activePicker = "DATE"));
-    } else {
-      this.$refs.atatDatePicker.validate();
-    }
   }
 
   /**
@@ -195,47 +127,20 @@ class ATATDatePicker extends Vue {
     this.$nextTick(() => {
       this.$refs.atatDatePicker.validate()
       this.setErrorMessage();
-      this.additionalValidateActions();
     });
   }
-
-  private onFocus(): void {
-    this.menu = false;
-  }
-
   /**
-   * sets validateOnBlur to true while user is typing
-   * so as validation occurs only onBlur
    *
    * if textbox is cleared manually, resets necessary
    * date attribs
    */
   private onInput(date: string): void {
-    // this.validateOnBlur = true;
     if (date === "") {
       this.dateFormatted = "";
       this.date = [""];
-      this.menu = false;
     }
   }
 
-  /**
-   * @param selectedDate (string) - selected Datepicker date
-   */
-  private datePickerClicked(selectedDate: string): void {
-    //must be set to false to prevent unnecessary validation
-    // this.validateOnBlur = false;
-   
-    this.removeErrors();
-
-    // saves selectedDate to necessary atatDatePickerMenu attribs
-    this.$refs.atatDatePickerMenu.save(selectedDate);
-
-    this.$nextTick(() => {
-      this.updateDateValueProperty();
-      this.additionalValidateActions();
-    });
-  }
 
   /**
    * emits 'update:date' value when dp is clicked or
@@ -247,26 +152,12 @@ class ATATDatePicker extends Vue {
     } 
   }
 
-  private additionalValidateActions(): void{
-    this.$refs.atatDatePicker.validate();
-    this.$nextTick(()=>{
-      // no errors are to be generated from clicking on the 
-      // datepicker picker/menu
-      const errors = this.$refs.atatDatePicker.errorBucket
-      this.$refs.atatDatePicker.errorBucket = !this.menu 
-        ? errors
-        : [];
-      this.$emit("hasErrorMessages", errors );
-    })
-  }
-
 
   /**
    * utility function that removes errors from
    * Vuetify's errorBucket & this.errorMessages
    */
   private removeErrors(): void {
-    this.$refs.atatDatePicker.errorBucket = [];
     this.errorMessages = [];
   }
 
@@ -280,7 +171,6 @@ class ATATDatePicker extends Vue {
       
       /// don't show menu when user is typing date
       // makes validation hard to manage
-      this.menu=false;
       if (e.key.toLowerCase()==="enter"){
         this.$refs.atatDatePicker.validate();
       }
@@ -322,12 +212,6 @@ class ATATDatePicker extends Vue {
     return formattedDate;
   }
 
-  /**
-   * toggle menus based on value of this.menu
-   */
-  private toggleMenu(): void {
-    this.menu = !this.menu;
-  }
 
   public get validateFormNow(): boolean {
     return AcquisitionPackage.getValidateNow;
@@ -340,15 +224,13 @@ class ATATDatePicker extends Vue {
     }
   }
 
-  /**
-   * returns menutop based on if label
-   */
-  get getMenutop(): string {
-    return this.label !== "" ? "80" : "40";
-  }
-
   private async setErrorMessage(): Promise<void> {
-    this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
+    this.$refs.atatDatePicker.validate().then(
+      (response: unknown) => {
+        this.errorMessages = response as string[];
+        this.$emit('errorMessage', this.errorMessages);
+      }
+    );
   }
 
   public async setDateFromValue(): Promise<void> {
@@ -370,5 +252,5 @@ class ATATDatePicker extends Vue {
   }
 
 }
-export default toNative(ATATDatePicker);
+export default toNative(ATATDatePicker)
 </script>

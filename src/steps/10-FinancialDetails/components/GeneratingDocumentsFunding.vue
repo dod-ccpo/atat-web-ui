@@ -5,13 +5,13 @@
         eager 
         max-width="550" 
         max-height="550" 
-        src="@/assets/images/scanAnimation.gif"
+        src="img/scanAnimation.gif"
       ></v-img>
     </v-col>
     <v-col class="col-12" :align="'center'">
       <div class="copy-max-width">
         <h1 class="text-center">
-          Generating your draft acquisition package documents<span class="ellipsis"></span>
+          Generating your draft acquisition package documents<span class="_ellipsis"></span>
         </h1>
         <br />
         <p class="text-center">

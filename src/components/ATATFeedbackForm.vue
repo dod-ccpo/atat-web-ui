@@ -181,7 +181,7 @@
                             :value.sync="otherFeedbackValue"
                           />
                           <v-btn
-                            class="primary ml-auto"
+                            class="_primary ml-auto"
                             id="verySatisfied"
                             @click="sendFeedback()"
                             @keydown.enter="sendFeedback()"
@@ -196,7 +196,7 @@
                               eager
                               max-width="360"
                               max-height="192"
-                              src="@/assets/images/Feedback_sent_animation.gif"
+                              src="img/Feedback_sent_animation.gif"
                             ></v-img>
                             <div class="d-flex flex-column mt-2">
                               <p id="ThankYouP">
@@ -205,7 +205,7 @@
                               </p>
                               <v-btn
                                 id="Dismiss"
-                                class="secondary mx-auto"
+                                class="_secondary mx-auto"
                                 @click="dismiss"
                                 @keydown.enter="dismiss"
                                 @keydown.space="dismiss"
@@ -367,5 +367,5 @@ class ATATFeedbackForm extends Vue {
     await this.loadOnEnter();
   }
 }
-export default toNative(ATATFeedbackForm);
+export default toNative(ATATFeedbackForm)
 </script>

@@ -1,9 +1,9 @@
 <template>
   <v-app-bar 
     id="PageHeader" 
-    app 
-    flat 
+    flat
     class="_atat-page-header"
+    height="56"
   >
     <div class="d-flex justify-space-between width-100 align-center">
       <div id="PackageNameHeader" tabindex="-1" class="h3">{{ packageName }}</div>
@@ -12,7 +12,7 @@
           transition="slide-y-reverse-transition"
           :id="'Contributor_Tooltip'"
           max-width="250px"
-          bottom
+          location="bottom"
           eager
         >
           <!--TODO: validate that this still works after removal of on from activator-->
@@ -24,7 +24,7 @@
             @keydown.space="openInviteContributorModal"
             @keydown.enter="openInviteContributorModal"
           >
-            <v-icon class="icon-20 text-base-dark">person_add_alt_1</v-icon>
+            <v-icon class="icon-20 text-base-dark">mdi-account-plus</v-icon>
           </v-btn>
           </template>
           <div id="ContributorTooltipText" class="_tooltip-content-wrap _no-pointer">
@@ -33,8 +33,7 @@
           </div>
         </v-tooltip>
         <v-menu
-          :offset-y="true"
-          left
+          location="left"
           id="MoreMenu"
           class="_more-menu _header-menu"
           attach
@@ -45,7 +44,7 @@
               :id="'Contributor_Tooltip'"
               max-width="250px"
               v-bind="props"
-              bottom
+              location="bottom"
               eager
             >
               <template v-slot:activator="{ props }">
@@ -54,7 +53,7 @@
                   id="MoreMenuButton"
                   class="_more-menu-button _header-button"
                 >
-                  <v-icon class="text-base-dark">more_horiz</v-icon>
+                  <v-icon class="text-base-dark">mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
               <div id="ContributorTooltipText" class="_tooltip-content-wrap _no-pointer">
@@ -87,7 +86,8 @@
     />
     <ArchiveModal
       v-if="isMissionOwner"
-      :showModal.sync="showArchiveModal"
+      :showModal="showArchiveModal"
+      @update:showModal="showArchiveModal = $event"
       :hasContributor="hasContributor()"
       :packageName="packageName"
       :waitingForSignature="isWaitingForSignature()"
@@ -238,6 +238,6 @@ class ATATPageHead extends Vue {
 
   }
 }
-export default toNative(ATATPageHead);
+export default toNative(ATATPageHead)
 
 </script>

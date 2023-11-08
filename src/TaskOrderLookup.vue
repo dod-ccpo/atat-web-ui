@@ -53,7 +53,7 @@
 
 <script lang="ts">
 
-import { Component, toNative, Vue } from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
@@ -83,5 +83,5 @@ class TaskOrderLookup extends Vue {
       : "New Acquisition";
   }
 }
-export default toNative(TaskOrderLookup);
+export default toNative(TaskOrderLookup)
 </script>

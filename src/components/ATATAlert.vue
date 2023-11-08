@@ -20,7 +20,7 @@
         v-if="type !== 'callout' && showIcon"
         class="pr-4"
       >
-        <i
+        <v-icon
           aria-hidden="true"
           :class="[
             getIconSize(),
@@ -28,7 +28,7 @@
           ]"
         >
           {{ getIcon() }}
-        </i>
+        </v-icon>
       </div>
       <div class="width-100">
         <slot name="content"></slot>
@@ -55,7 +55,7 @@
         <v-btn
           icon
           :ripple="false"
-          x-small
+          size="x-small"
           aria-label="Close alert"
           @click="close"
         >
@@ -139,7 +139,13 @@ class ATATAlert extends Vue {
   }
 
   private getIcon(): string | unknown {
-    return (this.type === "success") ? "check_circle" : this.type;
+    switch (this.type) {
+    case "success" : return "mdi-check-circle";
+    case "info" : return "mdi-information";
+    case "error" : return "mdi-alert-circle";
+    case "warning" : return "mdi-alert"
+    default: return "";
+    }
   }
 
   private close(): void {
@@ -149,5 +155,5 @@ class ATATAlert extends Vue {
     this.show = false;
   }
 }
-export default toNative(ATATAlert);
+export default toNative(ATATAlert)
 </script>

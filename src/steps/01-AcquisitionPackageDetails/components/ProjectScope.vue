@@ -7,7 +7,8 @@
       :rows="7"
       :rules="_rules"
       :helpText="helpText"
-      :value.sync="_projectScope"
+      :value="_projectScope"
+      @update:value="_projectScope = $event"
       maxChars="300"
     />
   </div>
@@ -21,7 +22,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop , Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
  
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -33,8 +34,7 @@ import { ValidationRule } from "types/Global";
   },
 })
 class ProjectScope extends Vue {
-  @PropSync("projectScope", {default: "scope goes here"}) 
-  private _projectScope!: string;
+  @PropSync("projectScope", {default: ""}) private _projectScope!: string;
   @Prop({default: "ProjectScope"}) private id!: string;
   @Prop() private label!: string;
   @Prop({ default: "" }) private helpText!: string;

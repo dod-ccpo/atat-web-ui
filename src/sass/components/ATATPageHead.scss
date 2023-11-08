@@ -1,11 +1,10 @@
 ._header-tab-styles {
-  .v-tabs-slider-wrapper{
+  .v-tab__slider{
     height: 4px !important;
     padding-left:4px;
     padding-right:4px;
-    .v-tabs-slider{
-      background-color: $primary !important;
-    }
+    margin-bottom: 4px;
+    background-color: $primary !important;
   }
   .v-tab{
     color: $base-dark !important;
@@ -26,7 +25,7 @@
         background-color: transparent !important;
       }
     }
-    &.v-tab--active{
+    &.v-tab--selected{
       color: $primary !important;
     }
   }  
@@ -36,6 +35,7 @@ header._atat-page-header {
   height: 6rem !important;
   background-color: $white !important;
   z-index: 100 !important;
+  overflow: unset;
 
   .v-toolbar__content {
     height: 6rem !important;
@@ -60,7 +60,7 @@ header._atat-page-header {
       padding: 24px 56px !important;
     }
     ._header-tab {
-      .v-tabs-bar {
+      .v-tabs {
         height: 41px;
       }
     }
@@ -72,20 +72,21 @@ header._atat-page-header {
       height: 85px !important;
     }
     ._header-tab {
-      .v-tabs-bar {
+      .v-tabs {
         height: 33px;
       }
     }
 
-    ._portfolio-title-input {
+    #PortfolioTitleInput {
       border-radius: 4px;
       border: 1px solid transparent;
       outline: 1px solid transparent;
-      padding-left: 5px;
-      padding-right: 5px;
       margin-left: -5px;
       margin-right: -5px;
-
+      font-size: 2.4rem;
+      font-weight: 500;
+      font-family: "Roboto Condensed", sans-serif;
+      padding: 0px 5px 8px 5px;
       &.v-input--is-disabled {
         border: none !important;
         
@@ -121,7 +122,7 @@ header._atat-page-header {
   }
 
   ._more-menu-button, ._add-user-button {
-    &.v-btn.v-size--default {
+    &.v-btn.v-btn--size-default {
       min-width: 28px;
       width: 28px;
       height: 28px;
@@ -144,7 +145,7 @@ header._atat-page-header {
     }
   }
 
-  ._header-button.theme--light.v-btn.v-btn--has-bg {
+  ._header-button.v-theme--light.v-btn.v-btn--has-bg {
     background-color: transparent;
   }
 
@@ -171,7 +172,7 @@ header._atat-page-header {
         }
       }
 
-      .v-list-item__title {
+      .v-list-item-title {
         font-size: 14px;
       }
     }
@@ -183,7 +184,7 @@ header._atat-page-header {
       .v-menu__content {
         width: 280px;
       }
-      .v-list-item__title {
+      .v-list-item-title {
         padding: 12px 0px;
         font-size: 16px;
       }
@@ -201,7 +202,7 @@ header._atat-page-header {
   margin-bottom: 40px;
   border-bottom: 1px solid $base-lighter;
   background-color: $base-lightest;
-  .v-tabs-bar {
+  .v-tabs {
     background-color: transparent !important;
   }
 
@@ -214,12 +215,12 @@ header._atat-page-header {
   width: 100%;
 
   @extend ._header-tab-styles;
-  .v-tabs-bar {
+  .v-tabs {
     background-color: $base-lightest !important;
     border-bottom: 1px solid $base-lighter;
     padding-left: 56px;
     height: 45px;
-    .v-tabs-slider-wrapper {
+    .v-tab__slider {
       padding: 0 !important;
     }
     .v-tab {

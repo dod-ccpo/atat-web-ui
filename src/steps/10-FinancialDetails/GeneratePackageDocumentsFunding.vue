@@ -20,14 +20,13 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocumentsFunding from "./components/GeneratingDocumentsFunding.vue";
 import ReviewDocumentsFunding from "./components/ReviewDocumentsFunding.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     GeneratingDocumentsFunding,
     ReviewDocumentsFunding
@@ -35,6 +34,15 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 class GeneratePackageDocumentsFunding extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   public isGenerating = false;
   private isErrored = false;
@@ -113,7 +121,7 @@ class GeneratePackageDocumentsFunding extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    this.packageDocComponent =  this.$route.params.direction !== "previous"
+    this.packageDocComponent =  this.$route.query.direction !== "previous"
       ? GeneratingDocumentsFunding
       : ReviewDocumentsFunding;
     await this.determineComponent();

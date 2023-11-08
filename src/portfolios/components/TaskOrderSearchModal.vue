@@ -41,7 +41,8 @@ import { PropSync } from "@/decorators/custom";
 @Component({
   components: {
     ATATDialog,
-    TaskOrderSearch,
+    //TODO identify error undefined reading `allowedLengths`
+    //TaskOrderSearch,
   },
 })
 class TaskOrderSearchModal extends Vue {

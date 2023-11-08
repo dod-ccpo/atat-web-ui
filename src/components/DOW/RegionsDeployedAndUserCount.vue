@@ -24,7 +24,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Prop, Vue, toNative, Watch} from "vue-facing-decorator";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "types/Global";
@@ -98,12 +98,10 @@ class RegionsDeployedAndUserCount extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    //eslint-disable-next-line prefer-const 
-    let regionsData = acquisitionPackage.regions
+    const regionsData = acquisitionPackage.regions
     regionsData?.sort((a, b) => a.sequence > b.sequence ? 1 : -1)
       .forEach(region => {
-        //eslint-disable-next-line prefer-const 
-        let item = {
+        const item = {
           id : `${region.name}_${this.index}`,
           label : region.name,
           value : region.sys_id,
@@ -123,6 +121,6 @@ class RegionsDeployedAndUserCount extends Vue {
   }
 }
 
-export default toNative(RegionsDeployedAndUserCount);
+export default toNative(RegionsDeployedAndUserCount)
 </script>
 

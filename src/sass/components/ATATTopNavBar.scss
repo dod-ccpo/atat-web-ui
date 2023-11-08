@@ -1,3 +1,7 @@
+.v-app-bar.v-toolbar:not(.v-toolbar--flat) {
+  box-shadow: none !important;
+}
+
 ._navbar-height {
   height: 56px !important;
 }
@@ -7,10 +11,15 @@
   font-weight: 400;
 }
 
-#TopNavBar {
+#TopNavBar.v-toolbar {
   @extend ._navbar-height;
   background-color: $base-darker;
   z-index: 101 !important;
+  overflow: unset;
+
+  .v-toolbar__content {
+    height: 56px !important;
+  }
   
   button.v-btn {
     @extend ._navbar-height;
@@ -19,6 +28,7 @@
     height: 56px !important;
     background-color: transparent;
     position: relative;
+    color: white;
 
     &:hover,
     &:focus{
@@ -71,14 +81,14 @@
             cursor: pointer;
           }
 
-          .v-list-item__title{
+          .v-list-item-header{
             @extend ._menu-text;
           }
 
           &._active {
             cursor: default;
             background-color: $primary-lighter !important;
-            .v-list-item__title {
+            .v-list-item-header {
               font-weight: 700 !important;
             }
             &:hover::before {

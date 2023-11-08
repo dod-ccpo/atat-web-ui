@@ -41,7 +41,7 @@
 
           <div 
             v-if="tableData.length === 0"
-            class="w-100 py-10 border1 border-rounded border-base-lighter text-center mb-10 mt-10" 
+            class="w-100 py-10 border1 _border-rounded border-base-lighter text-center mb-10 mt-10" 
           >
             You currently do not have any instances.
           </div>
@@ -107,7 +107,7 @@
             id="AddInstance"
             type="button"
             role="link" 
-            class="secondary _normal _small-text mt-5"
+            class="_secondary _normal _small-text mt-5"
             :ripple="false"
             @click="addInstance()"
           >
@@ -213,11 +213,9 @@ class EnvironmentSummary extends Vue {
         unclassifiedILs.push(cl.impact_level);
       }
     });
-    //eslint-disable-next-line prefer-const
-    let uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
+    const uniqueClassifications = (classifications.filter((v, i, a) => a.indexOf(v) === i));
     if (this.envLocation !== "ON_PREM" && uniqueClassifications.includes("Unclassified")) {
-      //eslint-disable-next-line prefer-const
-      let uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
+      const uniqueILs = (unclassifiedILs.filter((v, i, a) => a.indexOf(v) === i)).join(", ");
       const unclassifiedIndex = uniqueClassifications.indexOf("Unclassified");
       uniqueClassifications.splice(unclassifiedIndex, 1);
       uniqueClassifications.unshift("Unclassified (" + uniqueILs + ")");
@@ -231,7 +229,7 @@ class EnvironmentSummary extends Vue {
     this.$nextTick(() => {
       this.$router.push({
         name: routeNames.CurrentEnvironmentLocation,
-        params: {
+        query: {
           direction: "next"
         }   
       });
@@ -248,7 +246,7 @@ class EnvironmentSummary extends Vue {
     // navigate to instance form
     this.$router.push({
       name: routeNames.InstanceDetails,
-      params: {
+      query: {
         direction: "next"
       }   
     });
@@ -379,7 +377,6 @@ class EnvironmentSummary extends Vue {
 
       for (const instance of this.envInstances) {
         const index = this.envInstances.indexOf(instance);
-        //eslint-disable-next-line prefer-const
         const selectedInCloud = this.classificationsCloud.includes(instance.classification_level)
         const selectedOnPrem = this.classificationsOnPrem.includes(instance.classification_level)
         if(!selectedInCloud && !selectedOnPrem) {
@@ -402,8 +399,7 @@ class EnvironmentSummary extends Vue {
         if (instance.instance_location === "ON_PREM") {
           location = "On-premise";
         } else {
-          //eslint-disable-next-line prefer-const
-          let instances: string[] = []
+          const instances: string[] = []
           if (typeof instance.deployed_regions === "string") {
             const regionsSysIds = instance.deployed_regions?.split(',')
             regionsSysIds.forEach((instanceId) => {
@@ -440,8 +436,7 @@ class EnvironmentSummary extends Vue {
           }
         }
 
-        //eslint-disable-next-line prefer-const
-        let instanceData: EnvInstanceSummaryTableData = {
+        const instanceData: EnvInstanceSummaryTableData = {
           instanceSysId: instance.sys_id,
           instanceNumber: index + 1,
           location,

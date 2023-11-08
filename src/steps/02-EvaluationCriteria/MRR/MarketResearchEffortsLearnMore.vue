@@ -33,7 +33,7 @@
 
 <script lang="ts">
  
-import {Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
@@ -45,5 +45,5 @@ import ATATAlert from "@/components/ATATAlert.vue";
 class MarketResearchEffortsLearnMore extends Vue {
 }
 
-export default toNative(MarketResearchEffortsLearnMore) 
+export default toNative(MarketResearchEffortsLearnMore )
 </script>

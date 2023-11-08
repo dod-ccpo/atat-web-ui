@@ -1,7 +1,8 @@
 <template>
   <v-menu
-    :offset-y="true"
-    :left="left"
+    :offset="getOffset"
+    location="bottom"
+    :width="menuWidth"
     :id="id + '_' + index"
     class="_meatball-menu"
     attach
@@ -12,7 +13,7 @@
         :id="id + 'Button_' + index"
         class="_meatball-menu-button"
       >
-        <v-icon class="text-base-dark">more_horiz</v-icon>
+        <v-icon class="text-base-dark">mdi-dots-horizontal</v-icon>
       </v-btn>
     </template>
 
@@ -61,6 +62,7 @@ class ATATMeatballMenu extends Vue {
   @Prop({ default: false }) public left?: boolean;
   @Prop({ default: 0 }) public index!: number;
   @Prop() public menuItems!: MeatballMenuItem[];
+  @Prop({ default: 200 }) public menuWidth!: number;
 
   private getIdText(string: string) {
     return getIdText(string);
@@ -76,7 +78,13 @@ class ATATMeatballMenu extends Vue {
       disabled: item.disabled ?? false,  // Providing a default value if `disabled` is undefined
     }));
   }
+
+  public get getOffset(): string {
+    return this.left ?
+      "0 " + String(this.menuWidth - 28): // button width is 28
+      "0";
+  }
 }
-export default toNative(ATATMeatballMenu);
+export default toNative(ATATMeatballMenu)
 
 </script>

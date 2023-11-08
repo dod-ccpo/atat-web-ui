@@ -18,7 +18,8 @@
                 id="minGovReqExplanation"
                 class="max-width-740"
                 :rows="11"
-                :value.sync="minGovReqExplanation"
+                :value="minGovReqExplanation"
+                @update:value="minGovReqExplanation = $event"
                 maxChars="1000"
                 :turnRulesOff.sync="turnRulesOff"
                 :rules="[
@@ -31,18 +32,18 @@
                 ]"
             />
             <v-btn
-                id="RestoreMinGovReqExplanationButton"
-                class="secondary font-size-14 px-4 mb-1 mt-1"
-                :disabled="isMinGovReqExpDefaultUnmodified"
-                @click="onRestoreMinGovReqExpClick"
+              id="RestoreMinGovReqExplanationButton"
+              class="_secondary font-size-14 px-4 mb-1 mt-1"
+              :disabled="isMinGovReqExpDefaultUnmodified"
+              @click="onRestoreMinGovReqExpClick"
             >
               <ATATSVGIcon
-                  id="RestoreMinGovReqExplanationButtonIcon"
-                  width="18"
-                  height="18"
-                  name="restore"
-                  class="mr-1"
-                  :color="btnRestoreIconColor"
+                id="RestoreMinGovReqExplanationButtonIcon"
+                width="18"
+                height="18"
+                name="restore"
+                class="mr-1"
+                :color="btnRestoreIconColor"
               />
               Restore default suggestion
             </v-btn>
@@ -73,12 +74,12 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import {Component, toNative, Vue} from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
 import _ from "lodash";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -88,7 +89,6 @@ import ATATDialog from "@/components/ATATDialog.vue";
  * government requirements. Also handles loading and saving the data.
  */
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATTextArea,
     ATATSVGIcon,
@@ -97,6 +97,16 @@ import ATATDialog from "@/components/ATATDialog.vue";
 })
 
 class MinimumRequirements extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public suggestedText =
     "The cloud service offerings must continue at their current level in order to support...\n\n" +
     "These offerings include..."

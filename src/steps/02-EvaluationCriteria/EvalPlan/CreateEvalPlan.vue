@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { 
@@ -65,7 +65,7 @@ import {
 import SlideoutPanel from "@/store/slideoutPanel";
 import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
 import { EvaluationPlanDTO } from "@/api/models";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import { hasChanges } from "@/helpers";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
@@ -74,7 +74,7 @@ import NoEvalPlan from "./NoEvalPlan.vue";
  
 
 @Component({
-  mixins: [LoadOnEnter, SaveOnLeave],
+  mixins: [LoadOnEnter],
   components: {
     ATATRadioGroup,
     CreateEvalPlanSlideOut,
@@ -83,6 +83,16 @@ import NoEvalPlan from "./NoEvalPlan.vue";
 })
 
 class CreateEvalPlan extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public isLoading = false;
   public sourceSelection: EvalPlanSourceSelection = "";
   public selectedMethod: EvalPlanMethod = "";

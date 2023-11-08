@@ -111,7 +111,7 @@
                           name="cloud"
                           color="base-light"/>
                         <span
-                          class="text-base-light ml-2 font-size-12 font-weight-700 no-wrap">
+                          class="text-base-light ml-2 font-size-12 font-weight-700 text-no-wrap">
                           CLOUD INSTANCES
                       </span>
                       </div>
@@ -154,7 +154,7 @@
                   </div>
                   <div class="ml-10">
                     <div v-if="item.showMoreData.dodaac"
-                         class="d-flex align-center my-3 no-wrap">
+                         class="d-flex align-center my-3 text-no-wrap">
                       <ATATSVGIcon
                         width="20"
                         height="20"
@@ -212,14 +212,14 @@
             <v-btn
               id="AddAcorButton"
               v-if="item.ACORButton && !hasAcor"
-              text="true"
-              class=" mt-5 no-border secondary"
+              variant="text"
+              class="mt-5 no-border _secondary"
               :ripple="false"
               @click="addAcor()"
               @keydown.enter="addAcor()"
               @keydown.space="addAcor()"
             >
-              <v-icon color="primary" class="mr-2">control_point</v-icon>
+              <v-icon color="primary" class="mr-2">mdi-plus-circle-outline</v-icon>
               <span>Add an Alternate COR</span>
             </v-btn>
           </div>
@@ -229,13 +229,19 @@
                 v-if="item.isTouched && !item.isComplete"
                 :id="getIdText(item.title) + '_MissingInfoLabel'"
                 class="d-flex align-start nowrap ml-5">
-                <v-icon class="icon-20 text-warning-dark2 pr-2">warning</v-icon>
+                <ATATSVGIcon
+                  width="20"
+                  height="20"
+                  name="warning"
+                  class="mr-2"
+                  color="warning-dark2"
+                />
                 <p class="_missing-info mb-0 pr-4 _semibold">Missing info</p>
               </div>
               <v-btn width="111"
                      :id="getButtonId(item)"
                      :class="[
-                  item.isComplete ? 'secondary' : 'primary',
+                  item.isComplete ? '_secondary' : '_primary',
                 ]"
                      @click="navigate(item.routeName)"
                      @keydown.enter="navigate(item.routeName)"
@@ -351,7 +357,7 @@ class ATATSummaryItem extends Vue {
     const dynamicKey = routeName as keyof unknown;
     this.$router.push({
       name: routeNames[dynamicKey],
-      params: {
+      query: {
         direction: "next"
       },
     })
@@ -364,5 +370,5 @@ class ATATSummaryItem extends Vue {
   }
 
 }
-export default toNative(ATATSummaryItem);
+export default toNative(ATATSummaryItem)
 </script>

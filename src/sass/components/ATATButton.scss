@@ -25,12 +25,16 @@
   }
   @extend %v-btn-text;
 
+  .v-btn__overlay {
+    background-color: transparent !important;
+  }
+
   // removes the default darker opacity assigned by vuetify
   &:hover::before, &:focus::before {
     opacity: 0 !important;
   }
   
-  &.primary.theme--light{
+  &._primary.v-theme--light{
     background-color:  $primary !important;
     color: #fff !important;
     &:hover{
@@ -43,10 +47,15 @@
     }
   }
   
-  &.secondary.theme--light {
+  &._error.v-theme--light{
+    background-color:  $error !important;
+    color: #fff !important;
+  }
+  
+  &._secondary.v-theme--light {
     background-color: $white !important;
     border: 2px solid $primary !important;
-    color: $primary;
+    color: $primary !important;
     font-weight: 500 !important;
 
     &:hover {
@@ -71,7 +80,8 @@
     font-size: 1.4rem !important;
   }
 
-  &.link-button, &.tertirary.theme--light  {
+  &.link-button, 
+  &.tertirary.v-theme--light  {
     padding: 6px 12px !important;
   
     &.v-btn--disabled {
@@ -83,7 +93,7 @@
 
     }
 
-    &.tooltip-button {
+    &._tooltip-button {
       padding: 12px !important;
     }
 
@@ -128,7 +138,7 @@
     }
   }
 
-  &._quaternary.theme--light {
+  &._quaternary.v-theme--light {
     background-color: transparent !important;
     .v-btn__content {
       text-decoration: none;
@@ -140,7 +150,7 @@
     }
   }
 
-  &.v-btn--text.theme--light {
+  &.v-btn--text.v-theme--light {
     .v-icon {
       color: $primary !important;
     }
@@ -190,7 +200,7 @@
 }
 
 ._meatball-menu {
-  .v-list-item__title {
+  .v-list-item-title {
     font-size: 1.4rem;
   }
 
@@ -204,7 +214,7 @@
       }
     }
 
-    .v-list-item__title {
+    .v-list-item-title {
       font-size: 1.6rem;
       display: flex;
       align-items: center;
@@ -237,8 +247,9 @@
 }
 
 ._meatball-menu-button {
-  &.v-btn.v-size--default {
-    min-width: 28px;
+  padding: 0 !important;
+  &.v-btn.v-btn--size-default {
+    min-width: 28px !important;
     width: 28px;
     height: 28px;
     padding: 0 !important;

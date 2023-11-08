@@ -36,23 +36,31 @@
 </template>
 
 <script lang="ts">
-import { Component , toNative, Vue} from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import CommonCorAcor from "./Common.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ContactDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
  
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     CommonCorAcor,
   }
 })
 
 class CorInfo extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   private currentContactData: ContactDTO = AcquisitionPackage.initContact;
   private savedContactData: ContactDTO = AcquisitionPackage.initContact;

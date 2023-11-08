@@ -9,7 +9,8 @@
     :wrapperWidth="wrapperWidth"
     :width="width"
     :validate-on-blur="true"
-    :value.sync="_TONumber"
+    :value="_TONumber"
+    @update:value="_TONumber = $event"
     :searchButtonDisabled="searchButtonDisabled"
     @search="startProvisionWorkflow"
     :rules="rules"
@@ -18,7 +19,8 @@
     :label="label"
     :labelClass="labelClass"
     :tooltipText="tooltipText"
-    :resetValidationNow.sync="_resetValidationNow"
+    :resetValidationNow="_resetValidationNow"
+    @update:resetValidationNow="_resetValidationNow = $event"
     :isModal="isModal"
   />
 </template>
@@ -46,10 +48,10 @@ class TaskOrderSearch extends Vue {
   @PropSync("resetValidationNow") public _resetValidationNow!: boolean;
 
   public rules = [
-    this.$validators.allowedLengths(
-      [13,19], 
-      'Your task order number must be either 13 or 19 characters.'
-    ),
+    // this.$validators.allowedLengths(
+    //   [13,19], 
+    //   'Your task order number must be either 13 or 19 characters.'
+    // ),
   ];
 
   public searchButtonDisabled = true;

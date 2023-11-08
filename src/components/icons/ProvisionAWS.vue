@@ -169,5 +169,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ProvisionAWS extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default toNative(ProvisionAWS);
+export default toNative(ProvisionAWS)
 </script>

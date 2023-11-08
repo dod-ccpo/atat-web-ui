@@ -8,7 +8,7 @@ import {
   ReferenceColumn,
   SystemChoiceDTO
 } from "@/api/models";
-import {Checkbox, RadioButton, SelectData, User} from "types/Global";
+import {Checkbox, RadioButton, SelectData, User, ValidationRule, invalidFile} from "types/Global";
 import _ from "lodash";
 import Periods from "@/store/periods";
 import {Statuses} from "@/store/acquisitionPackage";
@@ -17,6 +17,7 @@ import {differenceInDays, differenceInMonths, format, formatISO, parseISO} from 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {AxiosRequestConfig} from "axios";
 import api from "@/api";
+import {ValidationPlugin} from "@/plugins/validation"
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
   !_.isEqual(argOne, argTwo);
@@ -378,13 +379,13 @@ export function createDateStr(
 
 }
 
-/**
- * @param d - date as string
- * @param formatType "ISO" | "MMDDYYYY"
- * @returns 
- *    ISO => iso-date format `YYYY-MM-DD` (used in vuetify datapickers)
- *    MMDDYYYY => `MM/dd/YYYY`
- */
+// /**
+//  * @param d - date as string
+//  * @param formatType "ISO" | "MMDDYYYY"
+//  * @returns 
+//  *    ISO => iso-date format `YYYY-MM-DD` (used in vuetify datapickers)
+//  *    MMDDYYYY => `MM/dd/YYYY`
+//  */
 
 export function formatDate(
   d: string,
@@ -434,7 +435,7 @@ export function differenceInDaysOrMonths(
 }
 
 export function scrollToMainTop(): void {
-  const mainWrap = document.querySelector(".v-main__wrap");
+  const mainWrap = document.querySelector(".v-main ._app-content");
   if (mainWrap) {
     mainWrap.scrollTo({top: 0, behavior: "smooth"});
   }
@@ -527,13 +528,13 @@ export function getCSPCompanyName(cspId: string): string {
 
 }
 
-export interface AggregateCountResults {
-  result: {
-    stats: {
-      count: string;
-    };
-  };
-}
+// export interface AggregateCountResults {
+//   result: {
+//     stats: {
+//       count: string;
+//     };
+//   };
+// }
 
 export const getTableRecordCount = async (table: string, query: string ): Promise<number> => {
   // Use aggregate API to get count for number of records in a table
@@ -547,4 +548,29 @@ export const getTableRecordCount = async (table: string, query: string ): Promis
   /* eslint-enable camelcase */
   const response = await api.aggregate.makeRequest(table, config) as AggregateCountResults;
   return parseInt(response.result.stats.count);
+}
+
+export const getFileUploadValidationRules = (
+  invalidFiles: invalidFile[],
+  requiredMsg: string,
+  validFileFormats: string[],
+  maxFileSizeInBytes: number
+):ValidationRule[] =>{
+  const validators = new ValidationPlugin();
+  const rulesArr: ValidationRule[] = [];
+  rulesArr.push(validators.required(requiredMsg));
+
+  invalidFiles.forEach((iFile) => {
+    rulesArr.push(
+      validators.isFileValid(
+        iFile.file,
+        validFileFormats,
+        maxFileSizeInBytes,
+        iFile.doesFileExist,
+        iFile.SNOWError,
+        iFile.statusCode
+      )
+    );
+  });
+  return rulesArr;
 }

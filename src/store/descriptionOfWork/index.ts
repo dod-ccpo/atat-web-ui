@@ -738,7 +738,7 @@ const serviceGroupVerbiageInfo: Record<string, Record<string, string>> = {
   STORAGE: {
     offeringName: "Storage",
     heading2: "Storage Instance",
-    headingSummary: "Storage Requirementss",
+    headingSummary: "Storage Requirements",
     typeForUsage: "requirement",
     typeForText: "instance",
     introText: `each Storage instance that you need, separate from your 
@@ -2665,7 +2665,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     try {
       const sessionDataObject = JSON.parse(sessionData);
       Object.keys(sessionDataObject).forEach((property) => {
-        Vue.set(this, property, sessionDataObject[property]);
+        (this as unknown as Record<string, string>)[property] = sessionDataObject[property];
       });
     } catch (error) {
       throw new Error("error restoring session for contact data store");

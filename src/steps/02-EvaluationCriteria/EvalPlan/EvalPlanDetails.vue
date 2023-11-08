@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch , toNative, Vue} from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -58,11 +58,10 @@ import { EvaluationPlanDTO } from "@/api/models";
 import { Checkbox, RadioButton } from "types/Global";
 import { convertEvalPlanAssessmentAreaToCheckbox, hasChanges, scrollToId } from "@/helpers";
 import _ from "lodash";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     ATATRadioGroup,
@@ -72,6 +71,16 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 })
 
 class EvalPlanDetails extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public isLoading = false;
   public get isStandards(): boolean {
     return this.evalPlan.source_selection.indexOf("TECH_PROPOSAL") > -1;

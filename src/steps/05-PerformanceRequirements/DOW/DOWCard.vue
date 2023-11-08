@@ -1,9 +1,9 @@
 <template>
   <v-card 
-    class="d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
+    class="_border-light d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
     :class="{'_card-complete': cardData.isComplete}"
     :id="cardData.section + 'Card'"
-    outlined>
+    variant="outlined">
       <ATATSVGIcon 
         v-if="cardData.defineRequirements===true"
         name="StarInTriangle"
@@ -34,7 +34,7 @@
         </div>
         <div v-if="cardData.recommendedText && !cardData.isComplete">
           <div class="text-base pt-2 font-size-14">
-           <span class="_recommended-Chip text-base-dark">Recommended for:</span>
+            <span class="_recommended-chip text-base-dark">Recommended for:</span>
             {{cardData.recommendedText}}
           </div>
         </div>
@@ -42,7 +42,7 @@
       <div class="d-flex align-center justify-center flex-column ml-auto">
         <v-btn
           class="ml-5"
-          :class="cardData.isComplete ? 'secondary' : 'primary'"
+          :class="cardData.isComplete ? '_secondary' : '_primary'"
           :id="`StartButton` + cardData.section" 
           width="110"
           role="link"
@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
@@ -102,13 +102,13 @@ class DOWCard extends Vue
     await DescriptionOfWork.setCurrentDOWSection(this.cardData.section as string);
     const routerObj = {
       name: this.cardData.route,
-      params: {
+      query: {
         direction: "next",
         resolver: "",
       }
     }
     if (this.cardData.section === "XaaS" || this.cardData.section === "CloudSupport") {
-      routerObj.params.resolver = "RequirementsPathResolver";
+      routerObj.query.resolver = "RequirementsPathResolver";
     } 
     this.$router.push(routerObj)
   }
@@ -134,6 +134,6 @@ class DOWCard extends Vue
   };
 
 }
-export default toNative(DOWCard) 
+export default toNative(DOWCard )
  
 </script>

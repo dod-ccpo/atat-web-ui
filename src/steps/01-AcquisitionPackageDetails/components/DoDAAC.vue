@@ -26,7 +26,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
  
-import { Component, Prop, toNative, Vue } from "vue-facing-decorator"
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator"
 import { PropSync } from "@/decorators/custom";
 import ATATTextField from "@/components/ATATTextField.vue";
 

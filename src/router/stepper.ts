@@ -383,8 +383,8 @@ export const routeNames = {
  */
 export const stepperRoutes: Array<StepperRouteConfig> = [
   {
-    stepNumber: "01",
     menuText: "Acquisition Package Details",
+    stepNumber: "01",
     path: "/",
     completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
@@ -481,7 +481,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepOne,
         continueButtonText: "Wrap up this section",
-        continueButtonColor:  "primary"
+        continueButtonColor:  "_primary"
       },
     ],
   },
@@ -504,9 +504,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: ExceptionToFairOpportunityResolver
       },
       
-      // ======================
-      // J & A
-      // ======================
+      // // ======================
+      // // J & A
+      // // ======================
       {
         menuText: "Proposed CSP",
         path: "proposed-csp",
@@ -553,7 +553,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I want to write my own explanation",
             buttonId: "WriteOwnSoleSourceCause",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "writeOwnSoleSourceCause",
           },
         ]
@@ -599,9 +599,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.Exceptions,
       },
-      // ======================
-      // MRR
-      // ======================
+      // // ======================
+      // // MRR
+      // // ======================
       {
         menuText: "Need MRR",
         path: "need-mrr",
@@ -627,7 +627,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I want to write my own explanation",
             buttonId: "WriteOwnMarketResearchDetails",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "writeOwnMarketResearchDetails",
           },
         ]
@@ -678,7 +678,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I want to write my own explanation",
             buttonId: "WriteOwnBarriers",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "WriteOwnBarriers",
           },
         ]
@@ -704,9 +704,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         stepCompleteOnEnter: routeNames.Exceptions,
         routeResolver: CertificationPOCsRouteResolver,
       },      
-      // END MRR
-      // ===================================
-      // Eval Plan
+      // // END MRR
+      // // ===================================
+      // // Eval Plan
       {
         menuText: "Create Evaluation Plan",
         path: "eval-plan",
@@ -730,7 +730,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I don’t need other assessment areas",
             buttonId: "NoOtherAssessmentAreas",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             // name: routeNames.EvalPlanSummary, // TODO: restore when summaryu page added
             name: routeNames.PeriodOfPerformance,
           },
@@ -961,7 +961,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepFour,
         continueButtonText: "Wrap up this section",
-        continueButtonColor:  "primary"
+        continueButtonColor:  "_primary"
       },
     ]
   },
@@ -1044,7 +1044,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I don’t need these cloud resources",
             buttonId: "DontNeedResources",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "confirmServiceDeletion",
             emitText: "confirmDeleteService",
           },
@@ -1071,7 +1071,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I don’t need compute resources",
             buttonId: "DontNeedResources",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "confirmOtherOfferingDeletion",
             emitText: "confirmDeleteCompute",
           },
@@ -1145,7 +1145,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             buttonText: "I don’t need CSP employees to travel",
             buttonId: "DontNeedTravel",
-            buttonClass: "secondary",
+            buttonClass: "_secondary",
             actionName: "confirmDeleteTravelAll",
             emitText: "confirmDeleteTravel",
           },
@@ -1159,7 +1159,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepSix,
         continueButtonText: "Wrap up this section",
-        continueButtonColor:  "primary"
+        continueButtonColor:  "_primary"
       },
     ]
   },
@@ -1244,7 +1244,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepSeven,
         continueButtonText: "Wrap up this section",
-        continueButtonColor:  "primary"
+        continueButtonColor:  "_primary"
       },
     ]
   },
@@ -1474,7 +1474,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: SummaryStepEight,
         continueButtonText: "Wrap up this section",
-        continueButtonColor: "primary"
+        continueButtonColor: "_primary"
       },
     ]
   },
@@ -1554,7 +1554,7 @@ const mapStepRouteToStepperData = (
   } = stepperRouteConfig;
 
   let {name} = stepperRouteConfig;
-  name = name || "";
+  name = name as string || "";
 
   const stepperStep: StepperStep = {
     stepNumber,

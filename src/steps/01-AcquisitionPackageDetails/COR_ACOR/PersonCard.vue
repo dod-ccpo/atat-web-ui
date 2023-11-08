@@ -1,7 +1,7 @@
 <template>
   <div :id="id">
     <div 
-      class="max-width-640 border1 border-base-lighter border-rounded-more pa-8"
+      class="max-width-640 border1 border-base-lighter _border-rounded-more pa-8"
       :class="[
         { '_square-bottom _no-border-bottom mb-0' : isSameContact }, 
         {'mb-5' : !isSameContact }
@@ -97,7 +97,7 @@
 
 <script lang="ts">
  
-import { Component, Prop , toNative, Vue} from "vue-facing-decorator";
+import { Component, Prop , Vue, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 
 import ATATAlert from "@/components/ATATAlert.vue";

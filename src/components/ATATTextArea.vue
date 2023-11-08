@@ -15,7 +15,7 @@
       <v-tooltip
         transition="slide-y-reverse-transition"
         color="rgba(0,0,0,1)"
-        top
+        location="top"
         v-if="tooltipText"
       >
         <!--TODO: validate that this still works after removal of on from activator-->
@@ -23,11 +23,11 @@
           <v-btn
             class="mb-2 ml-1 pa-0 link-button no-border"
             icon
-            x-small
+            size="x-small"
             :ripple="false"
             :aria-label="'Help for ' + label"
           >
-            <v-icon class="icon-16 ma-0 pa-0" small color="#544496"
+            <v-icon class="icon-16 ma-0 pa-0" size="small" color="#544496"
             >help_outline
             </v-icon>
           </v-btn>
@@ -40,17 +40,16 @@
       <v-textarea
         ref="atatTextArea"
         :id="id + '_text_area'"
-        outlined
-        :value.sync="_value"
+        variant="outlined"
+        :model-value="_value"
+        @update:model-value="onInput"
         :placeholder="placeHolder"
-        @input="onInput"
         class="text-primary"
         :rules="getRules"
         :rows="rows"
         :readonly="readOnly"
         :no-resize="noResize"
         @blur="onBlur"
-        @update:error="setErrorMessage"
         :hide-details="maxChars === ''"
         :counter="maxChars"
         :auto-grow="autoGrow"
@@ -68,13 +67,15 @@
 
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch, Vue, toNative} from "vue-facing-decorator";
+import { Component, Prop, Watch, Vue, toNative, Emit } from "vue-facing-decorator";
 import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
+import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
+  emits: ['input', 'blur'],
   components: {
     ATATErrorValidation
   }
@@ -83,12 +84,15 @@ class ATATTextArea extends Vue {
   // refs
   $refs!: {
     atatTextArea: ComponentPublicInstance & {
+      messages: string[],
       errorBucket: string[]; 
       errorCount: number;
-      validate: () => boolean;
+      validate: () => Promise<boolean>;
+      resetValidation: ()=> void
     };
   };
 
+  
   // props
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
@@ -110,13 +114,14 @@ class ATATTextArea extends Vue {
   @Prop({ default: "" }) private minHeight!: string;
   @Prop({ default: "" }) private maxHeight!: string;
   
-
+  private showMessages = "";
   //data
   private placeHolder = "";
   private errorMessages: string[] = [];
+  
   private onInput(v: string) {
     this._value = v;
-    this.$emit("input");
+    this.$emit("input", v);
     this._turnRulesOff = false;
   }
 
@@ -125,7 +130,11 @@ class ATATTextArea extends Vue {
   }
 
   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatTextArea.errorBucket;
+    this.$refs.atatTextArea.validate().then(
+      (response: unknown) => {
+        this.errorMessages = response as string[];
+      }
+    );
   }
 
   public get validateFormNow(): boolean {
@@ -134,8 +143,12 @@ class ATATTextArea extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatTextArea.validate())
-      this.setErrorMessage();
+    this.$refs.atatTextArea.validate().then(
+      async (response: SubmitEventPromise) => {
+        if (!((await response).valid as boolean)){ 
+          this.setErrorMessage() }
+      }
+    );
   }
 
   @Watch('rules')

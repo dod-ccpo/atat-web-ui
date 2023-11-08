@@ -30,7 +30,7 @@
               maxWidth="400"
               minWidth="400"
             >
-              <template slot="content">
+              <template v-slot:content>
                 <div class="mb-4 width-100">
                   <div class="d-flex align-center height-60">
                     <div>
@@ -49,13 +49,13 @@
                   </div>
                 </div>
 
-                <v-expansion-panels accordion flat>
+                <v-expansion-panels variant="accordion" borderless>
                   <v-expansion-panel
                     class="bg-transparent"
                     v-for="(item, index) in calloutData"
                     :key="index"
                   >
-                    <v-expansion-panel-header
+                    <v-expansion-panel-title
                       :id="item.id + '_Button'"
                       class="no-hover"
                     >
@@ -63,12 +63,12 @@
                       <span class="font-weight-400">
                         ({{ pluralizeTrip(item.totalNumberOfTripsPerPeriod) }})
                       </span>
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content :id="item.id + '_Content'">
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text :id="item.id + '_Content'">
                       <div v-for="(trip, tripIdx) in item.trips" :key="tripIdx">
                         <div v-html="trip" class="d-flex align-top"></div>
                       </div>
-                    </v-expansion-panel-content>
+                    </v-expansion-panel-text>
                   </v-expansion-panel>
                 </v-expansion-panels>
               </template>
@@ -106,7 +106,7 @@ import {
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
 import IGCEStore from "@/store/IGCE";
@@ -117,14 +117,13 @@ import {
   convertEstimateData,
   getIdText,
 } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import _ from "lodash";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATRadioGroup,
@@ -134,6 +133,16 @@ import _ from "lodash";
   },
 })
 class TravelEstimates extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private periods: PeriodDTO[] | null = [];
   private ceilingPrice: SingleMultiple | undefined = "";
   private estimatedTravelCosts = "";
@@ -326,8 +335,7 @@ class TravelEstimates extends Vue {
   protected async saveOnLeave(): Promise<boolean> {
     if (this.currentData.option?.toLowerCase()==="single"){
       this.sysIdValueArray = [];
-      //eslint-disable-next-line prefer-const
-      let obj:Record<string, string>= {};
+      const obj:Record<string, string>= {};
       obj["PER_PERIOD"] = this.valueArray[0];
       this.sysIdValueArray.push(obj);
     }

@@ -30,7 +30,8 @@
               id="ContractingShopChoice"
               name="ContractingShopChoice"
               :items="contractingShopOptions"
-              :value.sync="contractingShop"
+              :value="contractingShop"
+              @update:value="contractingShop = $event"
               :card="true"
               width="400"
               :rules="[$validators.required('Please select an option.')]"
@@ -69,8 +70,8 @@
   </v-form>
 </template>
 <script lang="ts">
-import { Component , toNative, Vue} from "vue-facing-decorator";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component , Hook, Vue, toNative} from "vue-facing-decorator";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -90,7 +91,6 @@ import Summary, { isStepTouched } from "@/store/summary";
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATAlert,
@@ -100,6 +100,15 @@ import Summary, { isStepTouched } from "@/store/summary";
   }
 })
 class ContractingShop extends Vue {
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+  
   public isPageLoading = false;
   public packageNotInitialized = false;
   public contractingShopOptions: RadioButton[] = [
@@ -162,10 +171,8 @@ class ContractingShop extends Vue {
       this.$router.replace({
         name: this.skipPageRoute,
         replace: true,
-        params: {
-          direction: "next"
-        },
-        query: {  
+        query: {
+          direction: "next",
           packageId: AcquisitionPackage.packageId
         }
       }).catch(() => console.log("avoiding redundant navigation"));
@@ -202,5 +209,5 @@ class ContractingShop extends Vue {
     return true;
   }
 }
-export default toNative(ContractingShop) 
+export default toNative(ContractingShop )
 </script>

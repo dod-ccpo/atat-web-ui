@@ -1,6 +1,6 @@
 html {
-  font-size: 10px;
-  overflow-y: hidden;
+  font-size: 10px !important;
+  overflow-y: hidden !important;
 }
 body {
   font-size: 1.6rem; 
@@ -21,25 +21,41 @@ body {
   @extend .body;
   }
 
-.v-main__wrap {
+.v-main:not(._home) {
   background-color: $white;
-  padding: 28px 56px 0px 44px;
-  overflow-y: scroll;
-  max-height: calc(100vh - 116px);
+  // padding: 28px 56px 0px 44px;
+  // overflow-y: scroll;
+  max-height: 100vh !important;
+  width: 100vw;
 
-  #app-content{
-    height: 100%;
+  ._app-content{
+    height: 100vh !important;
+    overflow-y: auto;
+    ._app-content-wrap {
+      margin: 0 auto auto !important;
+      @extend .container-max-width;
+      width: 100%;
+    }
+  }
+}
+._app-content-padding {
+  padding: 32px 40px; // will = 40px 56px with v-container extra 16px
+  @media screen and (max-width: 1280px) {
+    padding: 16px 24px !important;
   }
 }
 
+
+
+
 .container-max-width {
   // max page width for very wide screens - wraps all page content
-  max-width: 1040px;
+  max-width: 1120px;
   margin-left: 0;
 }
 .container-max-width-wide {
   // max page width for very wide screens - wraps all page content
-  max-width: 1164px;
+  max-width: 1244px;
 }
 
 .copy-max-width {
@@ -55,7 +71,7 @@ body {
   border-radius: 4px !important;
 }
 
-.border-rounded-more {
+._border-rounded-more {
   border-radius: 8px !important
 }
 
@@ -155,24 +171,24 @@ textarea {
         left: 4px;
         top: 8px;
       }
-      .v-expansion-panel-header__icon {
+      .v-expansion-panel-title__icon {
         left: 970px;
         transform: rotate(90deg);
       }
     }
     &.v-expansion-panel--active {
-      .v-expansion-panel-header__icon {
+      .v-expansion-panel-title__icon {
         left: 970px;
         transform: rotate(180deg);
       }
     }
   }
-  .v-expansion-panel-content__wrap {
+  .v-expansion-panel-text__wrapper {
     padding: 0px;
     margin-bottom:0px;
   }
 
- .v-data-table__wrapper {
+ .v-table__wrapper {
    tbody {
      line-height: 1.2em !important;
      tr {
@@ -192,7 +208,7 @@ textarea {
  }
 }
 
-.v-expansion-panel-header{
+.v-expansion-panel-title{
   &.no-hover{
     &:hover{
       background-color: transparent !important;
@@ -201,10 +217,10 @@ textarea {
 }
 
 
-._offering-instances.v-data-table, ._instances-table.v-data-table {
-  > .v-data-table__wrapper > table > tbody {
+._offering-instances.v-table, ._instances-table.v-table {
+  > .v-table__wrapper > table > tbody {
     > tr {
-      &.v-data-table__empty-wrapper {
+      &.v-table__empty-wrapper {
         height: 120px;
         
         td {
@@ -226,10 +242,10 @@ textarea {
   }
 }
 
-._base-table-style.v-data-table,
-._instances-table.v-data-table, 
-._offering-instances.v-data-table {
-  > .v-data-table__wrapper > table > thead > tr {
+._base-table-style.v-table,
+._instances-table.v-table, 
+._offering-instances.v-table {
+  > .v-table__wrapper > table > thead > tr {
     background-color: $base-lightest;
     & > th {
       font-size: 1.2rem;
@@ -242,11 +258,11 @@ textarea {
   }
 }
 
-._base-table-style.v-data-table {
+._base-table-style.v-table {
   border-collapse: collapse;
   border: 1px solid $base-lighter;
   border-radius: 4px;
-  > .v-data-table__wrapper > table > thead > tr {
+  > .v-table__wrapper > table > thead > tr {
     & > th {
       height: 40px;
       background: $base-lightest;
@@ -260,7 +276,7 @@ textarea {
       }
     }
   }
-  > .v-data-table__wrapper > table > tbody > tr {
+  > .v-table__wrapper > table > tbody > tr {
     & > td {
       padding-top: 16px;
       padding-bottom: 16px;
@@ -332,16 +348,16 @@ textarea {
 }
 
 ._clin-table,
-._csp-admin-log.v-data-table {
+._csp-admin-log.v-table {
   table {
     border-collapse: collapse;
   }
   ._section-divider {
     border-top: 4px solid $base-lighter;
   }
-  > .v-data-table__wrapper > table > tbody {
+  > .v-table__wrapper > table > tbody {
     > tr {
-      &.v-data-table__empty-wrapper {
+      &.v-table__empty-wrapper {
         height: 120px;
 
         td {
@@ -364,7 +380,7 @@ textarea {
       }
     }
   }
-  > .v-data-table__wrapper > table > thead > tr {
+  > .v-table__wrapper > table > thead > tr {
     background-color: $base-lightest;
 
     & > th {
@@ -481,7 +497,7 @@ textarea {
   }
 }
 
-.theme--light.v-application ._data-table {
+.v-layout ._data-table {
   table {
     border-collapse: collapse !important;
   }
@@ -557,7 +573,7 @@ textarea {
   // use left and right specifically to not override top/bottom
   margin-right: auto;
   margin-left: auto;
-  .stepper-nav, ._page-content, .atat-page-footer {
+  .stepper-nav, ._page-content, ._atat-page-footer {
     margin-right: auto;
     margin-left: auto;
   }
@@ -574,13 +590,19 @@ textarea {
     max-height: calc(100vh - 56px);
   }
 }
-._recommended-Chip {
+._recommended-chip {
   background-color: $primary-lighter;
   padding: 4px;
   border-radius:4px;
   font-weight: 500;
 }
 
+.v-card {
+  &._border-light {
+    border: 1px solid $base-lighter;
+    opacity: 1;
+  }
+}
 
 ._auto-input-width {
   display: inline-block;

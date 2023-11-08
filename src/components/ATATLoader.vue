@@ -17,5 +17,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class ATATLoader extends Vue {
   @Prop() private loadingText!: string;
 }
-export default toNative(ATATLoader);
+export default toNative(ATATLoader)
 </script>

@@ -1,7 +1,13 @@
+.v-navigation-drawer__scrim {
+  z-index: 2000 !important;
+}
+
 ._slideout-panel {
+  z-index: 2001 !important;
   .v-navigation-drawer__content {
     overflow-y: hidden;
     overflow-x: hidden;
+    // max-width: 380px;
   }
   ._panel-title {
     font-weight: 700;
@@ -30,7 +36,6 @@
     height: 60px;
     padding: 16px 24px;
     border-bottom: 1px solid $base-lighter;
-    border-left: 1px solid $base-lighter;
     position: sticky;
     top: 0;
     background-color: $white;
@@ -59,7 +64,7 @@
     .v-menu__content {
       left: -95px !important;
     }
-    .v-list-item__title span {
+    .v-list-item-title span {
       white-space: nowrap !important;
     }
     .v-select__selection {

@@ -2,8 +2,8 @@
   display: inline-block;
   text-decoration: underline;
   &:after {
-    content: "chevron_right";
-    font-family: "Material Icons";
+    content: "\F0142";
+    font-family: $icon-font;
     -webkit-font-feature-settings: "liga";
     font-size: 24px;
     font-weight: normal;
@@ -43,7 +43,7 @@
   }
 }
 
-.v-expansion-panel-content__wrap {
+.v-expansion-panel-text__wrapper {
   padding-left: 32px;
   padding-bottom: 16px;
   border-bottom: 1px solid $base-lighter;
@@ -56,13 +56,24 @@
 
 .v-expansion-panel {
   &:last-child {
-    .v-expansion-panel-content__wrap {
+    .v-expansion-panel-text__wrapper {
       border-bottom: none;
     }
   }
+  .v-expansion-panel-title {
+    border-radius: 4px !important;
+  }
+  .v-expansion-panel-title--active, .v-expansion-panel-title__overlay {
+    background-color: transparent;
+  }
 }
 
-.v-expansion-panel-header {
+.v-expansion-panel:not(:first-child)::after {
+  border: none;
+}
+
+
+.v-expansion-panel-title {
   @extend .body;
   font-weight: 700 !important;
   position: relative;
@@ -73,7 +84,7 @@
   width: auto;
   border-radius: 4px;
 
-  .v-expansion-panel-header__icon {
+  .v-expansion-panel-title__icon {
     position: absolute;
     left: 4px;
     top: 8px;
@@ -88,10 +99,10 @@
     background-color: $base-lighter;
   }
 
-  &.v-expansion-panel-header--active {
+  &.v-expansion-panel-title--active {
     min-height: auto;
 
-    .v-expansion-panel-header__icon {
+    .v-expansion-panel-title__icon {
       .v-icon {
         transform: rotate(0deg) !important;
       }

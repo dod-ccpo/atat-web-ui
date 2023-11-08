@@ -14,5 +14,5 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 class InfoOutline extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
 }
-export default toNative(InfoOutline);
+export default toNative(InfoOutline)
 </script>

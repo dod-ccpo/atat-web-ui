@@ -1,26 +1,29 @@
 <template>
   <v-tooltip
-    transition="slide-y-reverse-transition"
+    transition="fade-transition"
     :id="'Tooltip_' + id" 
+    class="_atat-tooltip-wrapper"
     max-width="250px"
     :open-delay="500"
-    top
-    eager
+    location="top"
+    :eager="true"
     v-if="tooltipText"
+    offset="0"
   >
     <!--TODO: validate that this still works after removal of on from activator-->
-    <template v-slot:activator>
+    <template v-slot:activator="{ props }">
       <v-btn
-        class=" pa-0 tooltip-button no-border"
+        v-bind="props"
+        class=" pa-0 _tooltip-button no-border"
         :class="buttonClass"
         :style="buttonStyle"
         icon
         :id="'TooltipButton_' + id" 
-        x-small
+        size="x-small"
         :ripple="false"
         :aria-label="'Help for ' + label"
-        ><v-icon class="icon-20 ma-0 pa-0" small color="#544496"
-          >help_outline
+        ><v-icon class="icon-20 ma-0 pa-0" size="small" color="#544496"
+          >mdi-help-circle-outline
         </v-icon>
       </v-btn>
     </template>
@@ -35,8 +38,8 @@
 </template>
 
 <script lang="ts">
-import { Prop, Vue, toNative } from "vue-facing-decorator";
-
+import { Prop, Vue, Component, toNative } from "vue-facing-decorator";
+@Component
 class ATATTooltip extends Vue {
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
@@ -45,7 +48,5 @@ class ATATTooltip extends Vue {
   @Prop({ default: "" }) private buttonClass!: string;
   @Prop({ default: "" }) private buttonStyle!: string;
 }
-
 export default toNative(ATATTooltip)
-
 </script>

@@ -1,6 +1,6 @@
 import { compareAsc, compareDesc } from "date-fns"
 import { CountryObj, ValidationResult } from "types/Global";
-import { App } from "vue";
+import  {App}  from "vue";
 
 export class ValidationPlugin {
 
@@ -67,9 +67,9 @@ export class ValidationPlugin {
 
   required(
     message?: string, isCurrency?: string
-  ): ((v: string) => ValidationResult) {
+  ): ((v: string | [] | undefined  ) => ValidationResult) {
     message = message || "This field is required.";
-    return (v: string) => {
+    return (v: string | [] | undefined  ) => {
       if (typeof v === "object") { // if typeof 'selectData(dropdown)' or string[]
         if (v && Array.isArray(v) === false) {
           // array of objects
@@ -432,7 +432,7 @@ export class ValidationPlugin {
 
 
 export default {
-  install(app: App<any>): void {
+  install(app: App): void {
     const validation = new ValidationPlugin();
     app.config.globalProperties.$validators = validation;
   },
