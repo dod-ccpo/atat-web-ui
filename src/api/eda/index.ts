@@ -73,7 +73,7 @@ export class EDAApi extends ApiBase{
         message: errorMessages[code] || "Unknown error contacting EDA"
       };
       
-      if(code == "2000"){
+      if(code === "2000"){
         errorResponse.provisioningIssue = true
       }
       return errorResponse
