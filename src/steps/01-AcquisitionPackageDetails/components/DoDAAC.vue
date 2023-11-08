@@ -7,7 +7,8 @@
       tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 
       unit, activity, or organization that has the authority to request, 
       contract for, or fund/pay bills for materials and services."
-      :value.sync="_dodaac"
+      :value="_dodaac"
+      @update:value="_dodaac = $event"
       :mask="['^[0-9A-Za-z]{1,6}$']"
       :isMaskRegex="true"
       :rules="rules"
