@@ -5,7 +5,6 @@ import { Mutations, RouteDirection, StepInfo,
 import { StepperRouteConfig } from "types/Global";
 import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
-import { StepperRouteConfig } from "types/Global";
 
 @Module({ name: 'Steps', namespaced: true, dynamic: true, store: rootStore })
 export class StepsStore extends VuexModule implements StepsState {
