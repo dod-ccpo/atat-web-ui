@@ -121,7 +121,7 @@ import { Vue, Component, Prop, Watch, toNative } from "vue-facing-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
-import { uploadingFile } from "types/Global";
+//import { uploadingFile } from "types/Global";
 
 @Component({
   components: {

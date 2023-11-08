@@ -433,6 +433,7 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   base_and_options?: string; //deprecated
   option_periods?: string;
   base_period?: ReferenceColumn | string;
+  acquisition_package: ReferenceColumn | string;
 }
 
 export interface ContractTypeDTO extends BaseTableDTO {
@@ -538,6 +539,8 @@ export interface PeriodDTO extends BaseTableDTO {
   period_unit_count: string;
   period_type: string;
   option_order: string;
+  acquisition_package: ReferenceColumn | string;
+  
 }
 
 export interface ReferenceColumn {
