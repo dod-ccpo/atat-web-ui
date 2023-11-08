@@ -1,4 +1,4 @@
-import { Vue, Component } from "vue-facing-decorator";
+import { Vue, Component, Hook } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
 import Steps from "@/store/steps";
 
@@ -9,7 +9,7 @@ import Steps from "@/store/steps";
 // Component.registerHooks(["beforeRouteEnter"]);
 @Component({})
 class LoadOnEnter extends Vue {
-
+  @Hook
   public async beforeRouteEnter(
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,

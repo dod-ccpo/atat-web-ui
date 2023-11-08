@@ -38,7 +38,8 @@
             <ATATExpandableLink
                 :hasUnderline="false"
                 :isCopyMaxWidth="false"
-                :open.sync="isOpen"
+                :open="isOpen"
+                @update:open="isOpen = $event"
                 :hoverableInAlert="true"
                 class="container-max-width"
                 aria-id="ExpandDefiningRequirements">
