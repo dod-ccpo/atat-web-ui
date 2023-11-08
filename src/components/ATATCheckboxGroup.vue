@@ -363,7 +363,6 @@ class ATATCheckboxGroup extends Vue {
   private getIdText(string: string) {
     return getIdText(string);
   }
-
   public get otherIsSelected(): boolean {
     return this._selected.includes(this.otherValue)
   }
@@ -465,7 +464,7 @@ class ATATCheckboxGroup extends Vue {
     }
     setTimeout(()=>{
       this._selected = this.value;
-    }, 0)    
+    }, 0)
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {
