@@ -171,7 +171,7 @@ class RecurringRequirement extends Vue {
           recurring_requirement: storeData.recurring_requirement,
           is_requirement_follow_on_procurement_sole_sourced:
             storeData.is_requirement_follow_on_procurement_sole_sourced,
-          acquisition_package: AcquisitionPackage.packageId,
+          acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || "",
         }
         this.selectedRecurringOption = storeData.recurring_requirement as string;
         this.selectedfollowOnProcurementBeSoleSourcedOption = 

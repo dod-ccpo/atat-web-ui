@@ -275,7 +275,7 @@ export class PeriodsStore extends VuexModule {
           base_period: basePeriod?.sys_id || "",
           option_periods: optionPeriods.map((period) => period.sys_id).join(","),
           sys_id: this.periodOfPerformance.sys_id || "",
-          acquisition_package: AcquisitionPackage.packageId || "",
+          acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || ""
         };
 
         return pop;
@@ -321,7 +321,7 @@ export class PeriodsStore extends VuexModule {
         requested_pop_start_date: this.periodOfPerformance?.requested_pop_start_date  || "",
         base_period: basePeriod?.sys_id || "",
         option_periods: optionPeriods.map((period) => period.sys_id).join(","),
-        acquisition_package: AcquisitionPackage.packageId || "",
+        acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || ""
       };
 
       const popSysId = this.periodOfPerformance?.sys_id || "";
