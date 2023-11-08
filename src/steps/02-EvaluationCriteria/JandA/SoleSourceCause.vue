@@ -28,7 +28,8 @@
                 name="AddlTimeCost"
                 legend="Would a fair opportunity competition require your project to 
                   migrate from one platform to another, resulting in additional time and cost?"
-                :value.sync="migrAddlTimeCost"
+                :value="migrAddlTimeCost"
+                @update:value = "migrAddlTimeCost = $event"
                 :items="addlTimeCostOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
