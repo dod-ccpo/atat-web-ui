@@ -21,7 +21,6 @@
                 <span class="h3">Loading...</span>
               </div>
             </div>
-            
           </div>
 
           <div v-if="!isLoading" class="_welcome-bar">
@@ -162,7 +161,6 @@ class Home extends Vue {
   }
 
   public get isNewUser(): boolean {
-    // return true;
     return !this.userHasPackages && !this.userHasPortfolios;
   } 
   public get userHasPackages(): boolean {

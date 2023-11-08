@@ -52,7 +52,7 @@
                 @keydown.space="helpTextLinkClicked"
               >
                 <span 
-                  :class="[{'_external-link': isHelpTextLinkExternal}]">
+                  :class="[{'_external-link--small': isHelpTextLinkExternal}]">
                   {{ helpTextLink.linkText }}</span>
               </a>
             </span>

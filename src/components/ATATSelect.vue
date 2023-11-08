@@ -1,5 +1,5 @@
 <template>
-  <div :id="id + '_dropdown_field_control'" class="atat-select">
+  <div :id="id + '_dropdown_field_control'" class="_atat-select">
     <v-flex>
       <label
         v-if="label"
@@ -126,7 +126,6 @@ class ATATSelect extends Vue {
 
   // @Emit("onChange")
   // private onChange(val: string | SelectData): void {
-  //   debugger;
   //   const isString = typeof val === "string";
   //   const isObject = typeof val === "object"
   //   let isSelectable = true;

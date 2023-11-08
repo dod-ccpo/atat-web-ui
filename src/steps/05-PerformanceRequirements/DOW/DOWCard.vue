@@ -1,6 +1,6 @@
 <template>
   <v-card 
-    class="d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
+    class="_border-light d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
     :class="{'_card-complete': cardData.isComplete}"
     :id="cardData.section + 'Card'"
     variant="outlined">
@@ -34,7 +34,7 @@
         </div>
         <div v-if="cardData.recommendedText && !cardData.isComplete">
           <div class="text-base pt-2 font-size-14">
-           <span class="_recommended-Chip text-base-dark">Recommended for:</span>
+            <span class="_recommended-chip text-base-dark">Recommended for:</span>
             {{cardData.recommendedText}}
           </div>
         </div>
