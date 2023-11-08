@@ -45,6 +45,7 @@
         @blur="onBlur"
         autocomplete="off"
         @keydown.enter="search"
+        :hide-details="true"
       />
       <v-btn
         :id="id + '_SearchButton'"
@@ -298,7 +299,6 @@ class ATATSearch extends Vue {
 
   @Watch("_value")
   public valueChanged(newVal: string): void {
-    debugger;
     this.showGtcVerifiedIndicator = false;
     const hasContent = newVal?.length > 0;
     this.searchDisabled = !hasContent || Boolean(this.errorMessages?.length);
@@ -318,9 +318,7 @@ class ATATSearch extends Vue {
   }
 
   public onInput(v: string): void {
-    debugger;
     this._value = v;
-    debugger;    
     if (this.errorMessages?.length > 0) {
       this.clearErrorMessages();
     }
@@ -437,7 +435,6 @@ class ATATSearch extends Vue {
   }
 
   private onBlur(e: FocusEvent): void {
-    debugger;
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
     this.$emit("blur", input.value);

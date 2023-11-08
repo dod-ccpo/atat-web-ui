@@ -6,6 +6,7 @@
     border: none !important;
     outline: 1px solid $base-darkest;
     max-height: 40px;
+    border-right: 1px solid $base-darkest !important;
     &.v-field--focused {
       border: none;
       outline: 2px solid $primary;
@@ -14,17 +15,18 @@
     
 
   }
-  .v-field__field, .v-field__input {
-    max-height: 38px;
+  .v-field__field {
+    max-height: 36px;
+  }
+  .v-field__input {
+    max-height: 36px;
+    padding: 10px 12px;
   }
   .v-text-field__details {
     display: none;
   }
   .v-input__slot {
     margin-bottom: 0;
-  }
-  .v-field{
-    height: 40px;
   }
 }
 

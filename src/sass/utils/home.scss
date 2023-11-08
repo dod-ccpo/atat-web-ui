@@ -120,11 +120,11 @@
     padding-bottom: 80px !important;
   }
 
-  .v-expansion-panel-title {
+  .v-expansion-panel .v-expansion-panel-title {
     background-color: $primary !important;
     width: 100%;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
     padding-top: 10px !important;
     padding-bottom: 12px !important;
     padding-left: 44px !important; 
