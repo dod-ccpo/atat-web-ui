@@ -345,7 +345,6 @@ class ATATSearch extends Vue {
         if (response.success !== undefined && !response.success) {
           // redirect to provisioning issue page
           if(response.provisioningIssue){
-            console.log(this._value)
             PortfolioStore.setActiveTaskOrderNumber(this._value)
             await this.$router.push({
               name: provWorkflowRouteNames.ProvisioningIssue
