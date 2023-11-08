@@ -44,17 +44,15 @@
       v-if="!isDOW"
       class="mt-8 _input-max-width-240 _has-appended-dropdown"
       label="Approximate data/internet egress per month"
-      :value.sync
-        = "(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyAmount"
+      :value="(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyAmount"
       @update:value="(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyAmount = $event"
       tooltipText="This refers to the amount of data that gets transferred from 
         your organization’s host network to external networks."
       :appendDropdown="true"
       :dropdownOptions="storageUnits"
-      :selectedDropdownValue
-        = "(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyUnit"
-      @update:selectedDropdownValue
-        = "(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyUnit = $event"
+      :selectedDropdownValue="(offeringData as CurrEnvInstancePerformance).dataEgressMonthlyUnit"
+      @update:selectedDropdownValue="(offeringData as CurrEnvInstancePerformance)
+        .dataEgressMonthlyUnit = $event"
       type="number"
       :rules="[
         $validators.required('Enter a number greater than or equal to 1.'),

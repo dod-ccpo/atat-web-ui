@@ -30,8 +30,8 @@
       id="HighUsageEventDescription"
       class="mt-10"
       v-if="_usageTrafficSpikeCauses.includes('EVENT')"
-      :value.sync="_eventSpikeDescription"
-      @update:value="architectureDesignNeeds.needs_architectural_design_services = $event"
+      :value="_eventSpikeDescription"
+      @update:value="_eventSpikeDescription = $event"
       label="Tell us about the event that causes a surge in usage"
       tooltipText="Include any details that would help a CSP better understand 
         your surge requirements (e.g., event name and/or time of year)."

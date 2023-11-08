@@ -197,7 +197,7 @@ class ATATCheckboxGroup extends Vue {
 
   // props
   @Prop({ default: [] }) private value!: string[];
-  public _selected: string[] = this.value;
+  public _selected: string[] = [];
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @PropSync("items") private _items!: Checkbox[];
 
@@ -278,6 +278,7 @@ class ATATCheckboxGroup extends Vue {
   get otherId(): string {
     return "Other_" + getIdText(this.otherValue);
   }
+
 
   public textFieldBlur(index: number): void {
     const textfield = this.getTextField(index);

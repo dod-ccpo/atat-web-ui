@@ -40,7 +40,8 @@
         tooltipText="<strong>On-premise environments</strong> are deployed in-house 
           and within an enterprise IT infrastructure. <strong>Cloud environments</strong> 
           are hosted by a third-party provider in an off-site, cloud-based server."
-        :value.sync="instanceData.instance_location"
+        :value="instanceData.instance_location"
+        @update:value="instanceData.instance_location = $event"
         legend="Where is this instance located?"
       />
 
@@ -57,6 +58,7 @@
           :optional="true"
           @selectedRegionsUpdate="regionsDeployedUpdate"
           :selectedDeployedRegionsOnLoad="selectedDeployedRegionsOnLoad"
+          labelSuffix="Regions"
         />
 
         <ATATRadioGroup 
@@ -64,10 +66,12 @@
           v-if="classificationRadioOptions.length > 1"
           class="mb-8"
           :items="classificationRadioOptions"
-          :value.sync="instanceData.classification_level"
+          :value="instanceData.classification_level"
+          @update:value="instanceData.classification_level = $event"
           :legend="classificationLegend"
           :rules="[$validators.required(classificationErrorMessage)]"
-          :clearErrorMessages.sync="clearClassificationErrorMessages"
+          :clearErrorMessages="clearClassificationErrorMessages"
+          @update:clearErrorMessages="clearClassificationErrorMessages = $event"
         />
 
         <hr v-if="hasTellUsAboutInstanceHeading" />
@@ -79,16 +83,20 @@
 
         <CurrentUsage 
           class="mb-10"
-          :usageTrafficSpikeCauses.sync="usageTrafficSpikeCauses"
-          :currentUsageDescription.sync="instanceData.current_usage_description"
-          :eventSpikeDescription.sync="instanceData.traffic_spike_event_description"
-          :periodSpikeDescription.sync="instanceData.traffic_spike_period_description"
+          :usageTrafficSpikeCauses="usageTrafficSpikeCauses"
+          @update:usageTrafficSpikeCauses="usageTrafficSpikeCauses = $event"
+          :currentUsageDescription="instanceData.current_usage_description"
+          @update:currentUsageDescription="instanceData.current_usage_description = $event"
+          :eventSpikeDescription="instanceData.traffic_spike_event_description"
+          @update:eventSpikeDescription="instanceData.traffic_spike_event_description = $event"
+          :periodSpikeDescription="instanceData.traffic_spike_period_description"
+          @update:periodSpikeDescription="instanceData.traffic_spike_period_description = $event"
         />
 
         <RegionsDeployedAndUserCount 
           :hasTextFields="true"
           id="RegionsUsers"
-          :optional="false"
+          :optional="true"
           groupLabelId="RegionUsersLabel"
           groupLabel="Where are your users located?"
           groupLabelHelpText="Enter the approximate number of users for each selected region."
@@ -96,6 +104,7 @@
           :rules="[$validators.required('Select at least one region.'),]"
           :textfieldRules="[$validators.required('Enter the number of users in this region.'),]"
           :regionUsersOnLoad="regionUsersOnLoad"
+          labelSuffix="Users"
         />
 
         <hr />
@@ -106,12 +115,14 @@
         </h2>
 
         <InstanceConfig
-          :data.sync="instanceConfig"
+          :data="instanceConfig"
+          @update:data="instanceConfigChange = $event"
           :storageUnits="storageUnits"
         />
 
         <PerformanceTier 
-          :data.sync="performanceTier"
+          :data="performanceTier"
+          @update:data="performanceTierChange = $event"
           :storageUnits="storageUnits"
         />
 
@@ -123,7 +134,10 @@
             Pricing details
           </h2>
 
-          <PricingDetails :pricingDetails.sync="pricingDetails" />
+          <PricingDetails 
+            :pricingDetails="pricingDetails" 
+            @update:pricingDetails="pricingDetailsChange = $event"
+          />
 
           <hr />
         </span>
@@ -134,7 +148,10 @@
           <span class="text-base font-weight-400">(Optional)</span>
         </h2>
 
-        <AdditionalInfo :additionalInfo.sync="instanceData.additional_information" />
+        <AdditionalInfo 
+          :additionalInfo="instanceData.additional_information" 
+          @update:additionalInfo="instanceData.additional_information = $event"
+        />
 
       </div>
     </div>
