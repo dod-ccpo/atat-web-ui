@@ -116,6 +116,7 @@ describe("Testing CurrentContract Component", () => {
             .mockImplementation(()=>Promise.resolve())
           vi.spyOn(AcquisitionPackage, "clearCurrentContractInfo")
             .mockImplementation(()=>Promise.resolve())
+          vi.spyOn(AcquisitionPackage, 'updateCurrentContractsSNOW').mockResolvedValue();
        
           wrapper.setData(hasChanged);
         })
@@ -130,15 +131,26 @@ describe("Testing CurrentContract Component", () => {
           await vm.saveOnLeave();
           expect(vm.$data.saveOnLeaveError).toBe(errorMessage);
         });
-        //TODO mocks are not set up correctly, this test is making api calls
+        //TODO Identify saveOnLeave why `this.noContract = {}`
         it.skip("initializes a current contract as expected if current_contract_exists==='NO'",
           async()=>{
+            wrapper.setData({
+              hasCurrentContract: "NO",
+              currentData: {
+                current_contract_exists: "YES",
+                acquisition_package: "ABF32"
+              },
+              savedData: {
+                current_contract_exists: "NO",
+                acquisition_package: "ABF32"
+              }
+            })
+            vm.$nextTick();
             await vm.saveOnLeave();
             expect(vm.$data.noContract.current_contract_exists).toEqual("NO");
             expect(vm.$data.noContract.instance_number).toEqual(0);
           });
-        //TODO mocks are not set up correctly, this test is making api calls
-        it.skip("initializes a current contract as expected if current_contract_exists==='NO'" +
+        it("initializes a current contract as expected if current_contract_exists==='NO'" +
         "&& expects function to be called",
         async()=>{
           const updateCurrentContractsSNOWMock = 
