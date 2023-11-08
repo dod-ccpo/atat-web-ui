@@ -3,7 +3,8 @@
     <ATATRadioGroup
       id="DatabaseType"
       legend="What type of database do you need?"
-      :value.sync="offeringData.databaseType"
+      :value="offeringData.databaseType"
+      @update:value="offeringData.databaseType = $event"
       :items="databaseTypeOptions"
       name="DatabaseType"
       class="mt-3 mb-8"
@@ -18,7 +19,8 @@
     <ATATRadioGroup
       id="OSLicensingType"
       legend="Operating system licensing"
-      :value.sync="offeringData.licensing"
+      :value="offeringData.licensing"
+      @update:value="offeringData.licensing = $event"
       :items="OSLicensingOptions"
       name="OSLicensingType"
       class="mt-3 mb-8"
@@ -28,7 +30,8 @@
     <ATATRadioGroup
       id="DatabaseLicensing"
       legend="Database licensing"
-      :value.sync="offeringData.databaseLicensing"
+      :value="offeringData.databaseLicensing"
+      @update:value="offeringData.databaseLicensing = $event"
       :items="DBLicensingOptions"
       name="DatabaseLicensing"
       class="mt-3 mb-8"
@@ -90,12 +93,12 @@ class DatabaseFormElements extends Vue{
 
   public OSLicensingOptions: RadioButton[] = [
     {
-      id: "TransferLicense",
+      id: "OSTransferLicense",
       label: "Transfer existing license",
       value: "TRANSFER_EXISTING",
     },
     {
-      id: "NewLicense",
+      id: "OSNewLicense1",
       label: "New license",
       value: "NEW",
     },
@@ -103,12 +106,12 @@ class DatabaseFormElements extends Vue{
 
   public DBLicensingOptions: RadioButton[] = [
     {
-      id: "TransferLicense",
+      id: "DBTransferLicense",
       label: "Transfer existing license",
       value: "TRANSFER_EXISTING",
     },
     {
-      id: "NewLicense",
+      id: "DBNewLicense",
       label: "New license",
       value: "NEW",
     },

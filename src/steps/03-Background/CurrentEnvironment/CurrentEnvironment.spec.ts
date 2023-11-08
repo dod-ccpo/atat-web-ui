@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import Vuetify from "vuetify";
-import { DefaultProps } from "vue/types/options";
-import Vue from "vue";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import validators from "../../../plugins/validation";
 // eslint-disable-next-line max-len
 import CurrentEnvironmentComponent from "@/steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue"
@@ -14,22 +12,21 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 
 describe("Testing CurrentEnvironment Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue>;
-
   const mockEnvironment:CurrentEnvironmentDTO = {
     current_environment_exists: "YES"
   } as CurrentEnvironmentDTO
 
+  const wrapper:VueWrapper = shallowMount(CurrentEnvironmentComponent, {
+    props: {
+
+    },
+    global: {
+      plugins: [validators]
+    }
+  })
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
   beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(CurrentEnvironmentComponent, {
-      localVue,
-      vuetify,
-    });
-    jest.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
+    vi.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
       () => Promise.resolve(mockEnvironment)
     );
   })
@@ -40,15 +37,15 @@ describe("Testing CurrentEnvironment Component", () => {
 
   it("test CurrentData to get coverage for branch", async () => {
     wrapper.setData({currentEnvironmentExists:""})
-    await Vue.nextTick()
-    const currentData = wrapper.vm.currentData
+    await vm.$nextTick()
+    const currentData = vm.currentData
     expect(currentData).toStrictEqual({"current_environment_exists": ""});
 
   })
   it("test saveOnLeave to return true", async () => {
     wrapper.setData({currentEnvironmentExists:""})
-    await Vue.nextTick()
-    const saveOnLeave = await wrapper.vm.saveOnLeave()
+    await vm.$nextTick()
+    const saveOnLeave = await vm.saveOnLeave()
     expect(saveOnLeave).toBeTruthy();
   })
 

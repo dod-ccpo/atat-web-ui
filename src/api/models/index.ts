@@ -767,7 +767,7 @@ export interface TravelRequirementDTO extends BaseTableDTO {
 }
 
 export interface PortfolioSummaryDTO extends BaseTableDTO{
-  name: string; // "Porfolio Name << portfolio.name >>",
+  name: string; // "Portfolio Name << portfolio.name >>",
   csp: string;
   csp_display: string;
   vendor: CSP;

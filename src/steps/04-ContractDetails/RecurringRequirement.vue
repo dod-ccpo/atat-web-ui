@@ -76,7 +76,6 @@ import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
     ATATAlert
   },
 })
-
 class RecurringRequirement extends Vue {
   $refs!: SaveOnLeaveRefs
   
@@ -156,6 +155,8 @@ class RecurringRequirement extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    // console.log(this.$refs.form.validate)
+
     await this.loadOnEnter();
   }
 
@@ -181,6 +182,7 @@ class RecurringRequirement extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
     try {
       if (this.hasChanged()) {
         const pops: PeriodOfPerformanceDTO  = {  
@@ -194,9 +196,9 @@ class RecurringRequirement extends Vue {
     } catch (error) {
       console.log(error);
     }
-
     return true;
   }
+
 }
 
 export default toNative(RecurringRequirement)

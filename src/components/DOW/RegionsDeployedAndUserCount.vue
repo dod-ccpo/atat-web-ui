@@ -3,9 +3,11 @@
   <ATATCheckboxGroup
     :id="id"
     :index="index"
-    :items.sync="regions"
+    :items="regions"
+    @update:items="regions = $event"
     :groupLabel="groupLabel"
     :groupLabelId="groupLabelId"
+    :labelSuffix="labelSuffix"
     :groupLabelHelpText="groupLabelHelpText"
     :optional="optional"
     :tooltipText="tooltipText"
@@ -14,7 +16,8 @@
     :textFieldWidth="164"
     textFieldType="number"
     :labelWidth="180"
-    :value.sync="selectedRegions"
+    :value="selectedRegions"
+    @update:value="selectedRegions = $event"
     @checkboxTextfieldDataUpdate="regionsUserDataUpdate"
     :isFormattedNumber="true"
     :rules="rules"
@@ -31,6 +34,7 @@ import { Checkbox } from "types/Global";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
+  emits: ["selectedRegionsUpdate", "regionUserDataUpdate"],
   components: {
     ATATCheckboxGroup
   }
@@ -43,6 +47,7 @@ class RegionsDeployedAndUserCount extends Vue {
   @Prop() groupLabel?: string;
   @Prop() groupLabelId?: string;
   @Prop() groupLabelHelpText?: string;
+  @Prop() labelSuffix?: string;
   @Prop() optional!: boolean;
   @Prop() tooltipText?: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
@@ -56,7 +61,9 @@ class RegionsDeployedAndUserCount extends Vue {
 
   @Watch("selectedRegions")
   public selectedRegionsChanged(): void {
-    this.$emit("selectedRegionsUpdate", this.selectedRegions);
+    if (this.labelSuffix === "Regions") {
+      this.$emit("selectedRegionsUpdate", this.selectedRegions);
+    }
   }
 
   public regionsUserDataUpdate(data: Checkbox[]): void {
