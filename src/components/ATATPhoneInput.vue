@@ -20,12 +20,14 @@
             :items="searchResults"
             variant="outlined"
             item-title="abbreviation"
+            item-value="countryCode"
             :hide-details="true"
             :error="errorMessages.length > 0"
             v-model="_selectedCountry"
+            @update:v-model="_selectedCountry = $event"
             :menu-props="{ location: 'bottom', offset: 0, attach:true }"
             @update:model-value="onChange"
-            :return-object="true"
+            return-object
           >
             <template v-slot:selection="{ item }">
               <span class="fi" :class="[`fi-${item.value.abbreviation}`]"> </span>
@@ -33,15 +35,16 @@
             <template v-slot:prepend-item>
               <v-text-field
                 v-model="searchTerm"
+                @update:v-model="searchTerm = $event"
                 class="_dropdown-text-field"
                 placeholder="Search"
                 persistent-placeholder
                 @update:model-value="searchCountries"
                 append-icon="search"
                 id="DropdownTextField"
-                clearable="true"
-                autofocus="true"
-                autocomplete="off"
+                :clearable="true"
+                :autofocus="true"
+                :autocomplete="false"
               />
             </template>
             <!-- TODO:  validate proper functionality given the removal of 'on' from vslot item -->
@@ -84,7 +87,8 @@
             :id="id + '_textField'"
             variant="outlined"
             density="compact"
-            :model-value.sync="_value"
+            :model-value="_value"
+            @update:modelValue="_value = $event"
             :placeholder="placeHolder"
             @blur="validate"
             class="_phone-number-input"
@@ -124,7 +128,8 @@
           outlined
           dense
           :height="42"
-          :value.sync="_extension"
+          :value="_extension"
+          @update:value="_extension = $event"
           class="_phone-extension-input"
           @input="inputActions"
           autocomplete="off"
@@ -429,8 +434,8 @@ class ATATPhoneInput extends Vue {
   private errorMessages: string[] = [];
   private countries = Countries;
 
-  private inputActions(v: string) {
-    this._extension = v;
+  private inputActions(v:any) {
+    this._extension = v.target.value;
     this.setExtensionMask();
   };
 
@@ -478,7 +483,7 @@ class ATATPhoneInput extends Vue {
   private validate(e: FocusEvent,) : void{
     const input = e.target as HTMLInputElement;
     this._value = input.value
-    this.setErrorMessage();
+    // this.setErrorMessage();
     this.$emit('blur', input.value);
   }
 

@@ -63,7 +63,7 @@
                   within the Background section and deliver a proposal based on
                   your choice to either “replicate” or “optimize” your current functions.
                 </p>
-                <ul>
+                <ul class="_atat-ul">
                   <li class="pb-2">
                     To replicate your current functions, a CSP will be expected to perform
                     a “lift and shift” to recreate your environment and configurations, as is.

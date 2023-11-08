@@ -418,6 +418,7 @@ class CommonCorAcor extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    debugger
     const branches = await ContactData.LoadMilitaryBranches();
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
