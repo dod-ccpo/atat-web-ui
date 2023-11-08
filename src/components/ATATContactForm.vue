@@ -151,7 +151,7 @@
         />
 
         <ATATTextField
-            v-if="showEmail"
+          v-if="showEmail"
           :id="idPrefix + 'EmailAddress'"
           label="Email address"
           class="_input-max-width mb-10"
@@ -238,6 +238,11 @@ class ATATContactForm extends Vue {
     if (newVal !== null){
       this.setRankData();
     }
+  }
+
+  @Watch("_email")
+  protected emailChange(newVal: string): void {
+    console.log(newVal)
   }
 
   // data

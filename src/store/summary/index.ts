@@ -2525,40 +2525,54 @@ export class SummaryStore extends VuexModule {
       }): Promise<boolean>{
     const needsFunding = AcquisitionPackage.acquisitionPackage
       ?.contracting_shop_require_funding_documents_for_submission_of_package === "YES"
+    console.log('here1')
     if(!funding.isDitco && !needsFunding){
       return true
     }
+    console.log('here2')
     if (funding.fsForm === null && funding.mipr === null){
       return false
     }
+    console.log('here3')
     const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
-    const fsForm700AComplete = await this.isComplete({object: funding.fsForm, keysToIgnore})
+    const fsForm7600AComplete = await this.isComplete({object: funding.fsForm, keysToIgnore})
         && funding.fsForm.gt_c_number !== ""
     const needsFundingInfo = funding.fundingRequirement?.has_funding === "NO_FUNDING"
-    const hasFunding = (needsFundingInfo && fsForm700AComplete)
+    console.log('fsForm7600AComplete: ', fsForm7600AComplete) // true
+    console.log('needsFundingInfo: ', needsFundingInfo) // false
+    const hasFunding = (needsFundingInfo && fsForm7600AComplete)
+    console.log('here4')
     if (funding.request && funding.fsForm){
       let hasAppropriationOfFunds = false;
       let isComplete = false;
+      console.log('here5')
       if (funding.request.funding_request_type === "FS_FORM"){
+        console.log('here6')
         isComplete =  await this.isFSFormComplete({
           fsForm: funding.fsForm,
           gInv: funding.gInv,
           request: funding.request
-        }) && fsForm700AComplete;
+        }) && fsForm7600AComplete;
       } else if (funding.request.funding_request_type === "MIPR"){
-        isComplete = await this.isMIPRComplete(funding.mipr) && fsForm700AComplete;
+        console.log('here7')
+        isComplete = await this.isMIPRComplete(funding.mipr) && fsForm7600AComplete;
       }
 
+      console.log('here8')
       hasAppropriationOfFunds = funding.hasFairOpp
         ? funding.request.appropriation_fiscal_year !== ""
           && funding.request.appropriation_funds_type !== ""
         : true
-
+      
+      console.log('isComplete: ', isComplete) // true
+      console.log('hasAppropriationOfFunds: ', hasAppropriationOfFunds) // true
+      console.log('hasFunding: ', hasFunding) // false
 
       return isComplete
           && hasAppropriationOfFunds
           && hasFunding;
     }
+    console.log('here10')
     return false;
   }
 
