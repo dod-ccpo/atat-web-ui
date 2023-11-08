@@ -41,9 +41,9 @@
         ref="atatTextArea"
         :id="id + '_text_area'"
         variant="outlined"
-        :model-value.sync="_value"
-        :placeholder="placeHolder"
+        :model-value="_value"
         @update:model-value="onInput"
+        :placeholder="placeHolder"
         class="text-primary"
         :rules="getRules"
         :rows="rows"
@@ -75,7 +75,7 @@ import { ValidationRule } from "types/Global";
 import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
-  emits: ['input'],
+  emits: ['input', 'blur'],
   components: {
     ATATErrorValidation
   }

@@ -67,7 +67,7 @@
                   <v-expansion-panel-title>
                     <div class="d-flex justify-space-between width-100">
                       <div class="h3">
-                        Porfolios
+                        Portfolios
                       </div>
                       <div class="h3 text-base-light _item-count pr-4">
                         {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
@@ -111,7 +111,8 @@
                 cloud resources or to continue funding an existing portfolio.
               </p>
               <TaskOrderSearch
-                :TONumber.sync="TONumber"
+                :TONumber="TONumber"
+                @update:TONumber="TONumber = $event"
                 @startProvisionWorkflow="startProvisionWorkflow"
               />
             </v-card>            

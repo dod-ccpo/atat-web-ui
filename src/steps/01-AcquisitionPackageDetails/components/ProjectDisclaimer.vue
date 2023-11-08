@@ -49,12 +49,6 @@ class ProjectDisclaimer extends Vue {
 
     @Prop({ default: true }) private boldText!: boolean;
     
-    // public doSomething(val: string[]): void {
-    //   debugger; //
-    //   this._selectedDisclaimer = val.length ? val[0] : ""
-    //   debugger;;
-    // }
-
     public disclaimer: Checkbox[] = [ 
       {
         id: "Yes_ProjectDisclaimer",

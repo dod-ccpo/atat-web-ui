@@ -1,7 +1,8 @@
 <template>
 <div>
   <ATATTextArea
-    :value.sync="_anticipatedNeedUsage"
+    :value="_anticipatedNeedUsage"
+    @update:value="_anticipatedNeedUsage = $event"
     :id="'AnticipatedNeedUsage_' + ((index as number) + 1)"
     ref="DescriptionOfNeed"
     :label="label"
@@ -23,7 +24,8 @@
       :legend="durationLabel ||
         `Do you need this ${typeForDuration} for the entire duration of your task order?`"
       :items="entireDurationOptions"
-      :value.sync="_entireDuration"
+      :value="_entireDuration"
+      @update:value="_entireDuration = $event"
       :tooltipText="durationToolTip"
       :rules="[
         $validators.required(
@@ -39,7 +41,8 @@
         :id="'PeriodsCheckboxes_' + ((index as number) + 1)"
         :aria-describedby="'PeriodsLabel_' + ((index as number) + 1)"
         ref="periodsCheckboxes"
-        :value.sync="_selectedPeriods"
+        :value="_selectedPeriods"
+        @update:value="_selectedPeriods = $event"
         :items="availablePeriodCheckboxItems"
         :card="false"
         :disabled="isPeriodsDataMissing"

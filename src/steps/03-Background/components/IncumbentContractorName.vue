@@ -5,7 +5,8 @@
       :label="label"
       :rules="_rules"
       class="_input-max-width"
-      :value.sync="_value"
+      :value="_value"
+      @update:value="_value = $event"
     />
   </div>
   <div v-else> 

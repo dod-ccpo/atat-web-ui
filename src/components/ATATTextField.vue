@@ -45,9 +45,6 @@
         :validate-on="validationString"
       >
 
-        <!-- TODO - figure out how to set error messages
-           @update:error="setErrorMessage" -->
-
         <template v-slot:prepend-inner>
           <ATATSVGIcon
             v-if="isCurrency"
@@ -58,7 +55,6 @@
             class="pt-1 mr-1"
           />
         </template>
-        <!-- TODO check slot append -->
         <template slot="append-inner" v-if="appendText">
           <span class="_append-text">
             {{ appendText }}
@@ -70,7 +66,8 @@
         :id="id"
         :items="dropdownOptions"
         :showSelectedValue="true"
-        :selectedValue.sync="_selectedDropdownValue"
+        :selectedValue="_selectedDropdownValue"
+        @update:selectedValue="_selectedDropdownValue = $event"
       /> 
     </div>
 
@@ -109,9 +106,7 @@ class ATATTextField extends Vue  {
   // refs
   $refs!: {
     atatTextField: ComponentPublicInstance & {
-      errorBucket: string[]; 
       validate: () => Promise<SubmitEventPromise>;
-      errorCount: number 
       resetValidation(): void
     };
   }; 
@@ -209,7 +204,6 @@ class ATATTextField extends Vue  {
 
   public resetValidation(): void {
     this.errorMessages = [];
-    this.$refs.atatTextField.errorBucket = [];
     this.$refs.atatTextField.resetValidation();
   }
 

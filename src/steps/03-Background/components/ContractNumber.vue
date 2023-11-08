@@ -6,7 +6,8 @@
         :rules="_rules"
         class="_input-max-width"
         :tooltip-text="tooltipText"
-        :value.sync="_value"
+        :value="_value"
+        @update:value="_value = $event"
         :isMaskRegex="true"
         :mask="['^[a-zA-Z0-9]*$']"
     />

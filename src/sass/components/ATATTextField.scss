@@ -35,21 +35,25 @@
     }
   }
   
-  fieldset {
+  &:not(.v-textarea).v-field__field {
     max-height: 40px;
-    margin-top: 4px;
-    border: 1px solid $base;
-    border-radius: 4px;
-    background-color: white;
-    legend {
-      display: none;
-    }
-
-    &:focus {
-      border-width: 2px;
-      border-color: $primary;
-    }
   }
+
+  // fieldset { // deprecated -- KEEP SPRINT 69
+  //   max-height: 40px;
+  //   margin-top: 4px;
+  //   border: 1px solid $base;
+  //   border-radius: 4px;
+  //   background-color: white;
+  //   legend {
+  //     display: none;
+  //   }
+
+  //   &:focus {
+  //     border-width: 2px;
+  //     border-color: $primary;
+  //   }
+  // }
 
   &.error--text {
     fieldset,

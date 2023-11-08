@@ -17,7 +17,8 @@
                 id="PoPStartDate"
                 :card="true"
                 :items="startPoPDateOptions"
-                :value.sync="selectedPoPStartDateOption"
+                :value="selectedPoPStartDateOption"
+                @update:value="selectedPoPStartDateOption = $event"
                 :rules="[$validators.required('Please select an option')]"
                 width="200"
               />
@@ -35,13 +36,15 @@
                   class="mr-7"
                   label=""
                   :items="timeFrameOptions"
-                  :selectedValue.sync="selectedTimeFrameOption"
+                  :selectedValue="selectedTimeFrameOption"
+                  @update:selectedValue="selectedTimeFrameOption = $event"
                   style="max-width: 196px"
                   :rules="[$validators.required('Please select an option')]"
                 />
                 <ATATDatePicker 
                   id="RequestDatePicker" 
-                  :value.sync="requestedPopStartDate" 
+                  :value="requestedPopStartDate" 
+                  @update:value="requestedPopStartDate = $event" 
                   :rules="[
                     $validators.required('Please enter a valid date'),
                     $validators.isDateValid('Please enter a valid date')
@@ -104,11 +107,6 @@ class POPStart extends Vue {
       saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
     }).catch(() => false)
   }
-
-  // private requestedPopStartDate 
-  //   = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";
-  // private selectedPoPStartDateOption 
-  //   = AcquisitionPackage.periodOfPerformance?.pop_start_request || "";
 
   private requestedPopStartDate = "";
   private selectedPoPStartDateOption = "";
