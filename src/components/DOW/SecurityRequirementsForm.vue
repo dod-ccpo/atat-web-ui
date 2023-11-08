@@ -9,7 +9,6 @@
         :items="clearanceLevels"
         :value="_selectedClearanceLevel"
         @update:value="_selectedClearanceLevel = $event"
-
       />
       <hr />
     </div>
@@ -27,7 +26,7 @@
       :hasTopSecret="hasTopSecret"
       :isDOW="isDOW"
       :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
-      :selectedSecurityRequirements.sync="_selectedTopSecretSecurityRequirements"
+      :selectedSecurityRequirements="_selectedTopSecretSecurityRequirements"
       @update:selectedSecurityRequirements="_selectedTopSecretSecurityRequirements = $event"
     />
   </div>

@@ -68,7 +68,7 @@
         :showSelectedValue="true"
         :selectedValue="_selectedDropdownValue"
         @update:selectedValue="_selectedDropdownValue = $event"
-      />
+      /> 
     </div>
 
 

@@ -72,7 +72,8 @@
     </div>
     <ATATDialog
       id="DeleteClassificationRequirements"
-      :showDialog.sync="showDialog"
+      :showDialog="showDialog"
+      @update:showDialog="showDialog = $event"
       :title="'Delete all ' + getServiceOfferingName + ' requirements?'"
       no-click-animation
       okText="Delete"
@@ -102,7 +103,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import Toast from "@/store/toast";
 
-import { Checkbox, ToastObj } from "../../../types/Global";
+import { Checkbox, ToastObj } from "types/Global";
 import {
   AcquisitionPackageDTO,
   ClassificationLevelDTO, SelectedClassificationLevelDTO
@@ -326,13 +327,12 @@ class ClassificationRequirements extends Vue {
     }
     this.savedSelectedClassLevelList =  _.cloneDeep(selectedOptionsOnLoad);
 
-    this.buildClassificationRequirementsAlert();
+    await this.buildClassificationRequirementsAlert();
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
 }
 
 export default toNative(ClassificationRequirements)
