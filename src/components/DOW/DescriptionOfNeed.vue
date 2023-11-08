@@ -1,6 +1,7 @@
 <template>
   <ATATTextArea
-    :value.sync="_anticipatedNeedUsage"
+    :value="_anticipatedNeedUsage"
+    @update:value="_anticipatedNeedUsage = $event"
     :id="'AnticipatedNeedUsage_' + (index + 1)"
     ref="DescriptionOfNeed"
     label="Statement of objectives for the anticipated need or usage"

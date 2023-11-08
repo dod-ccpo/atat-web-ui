@@ -10,8 +10,10 @@
         :tooltipText="dataTooltipText"
         :appendDropdown="true"
         :dropdownOptions="dataUnits"
-        :value.sync="_dataTextFieldValue"
-        :selectedDropdownValue.sync="_dataDropdownValue"
+        :value="_dataTextFieldValue"
+        @update:value="_dataTextFieldValue = $event"
+        :selectedDropdownValue="_dataDropdownValue"
+        @update:selectedDropdownValue="_dataDropdownValue = $event"
         :rules="[
           $validators.required('Enter the amount of data egress anticipated in this task order.')
         ]"
@@ -23,7 +25,8 @@
         :id="'DataIncrease_'+ index"
         :legend="increaseLabel"
         :items="increaseOptions"
-        :value.sync="_increaseSelection"
+        :value="_increaseSelection"
+        @update:value="_increaseSelection = $event"
         :rules="[
           $validators.required('Please select an option.')
         ]"
@@ -35,7 +38,9 @@
         :id="'EstimateGrowth_'+ index"
         :legend="growthLabel"
         :items="growthOptions"
-        :value.sync="_growthSelection"
+        :value="_growthSelection"
+        @update:value="_growthSelection = $event"
+
         :rules="[
           $validators.required('Please select an option.')
         ]"
@@ -51,7 +56,8 @@
           :singlePeriodLabel="percentageLabel"
           :multiplePeriodLabel="percentageLabel"
           :isMultiple="_growthSelection === 'MULTIPLE'"
-          :values.sync="_percentages"
+          :values="_percentages"
+          @update:value="_percentages = $event"
         ></ATATSingleAndMultiplePeriods>
       </div>
     </div>

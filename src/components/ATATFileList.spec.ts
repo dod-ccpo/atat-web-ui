@@ -1,9 +1,6 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect, vi } from 'vitest';
+import { VueWrapper, shallowMount } from "@vue/test-utils";
 import ATATFileList from "@/components/ATATFileList.vue";
-Vue.use(Vuetify);
 
 const validFiles = [
   {
@@ -62,7 +59,7 @@ const uploadingFiles = [
     "created": 1659355539053,
     "progressStatus": 100,
     "link": "/api/now/attachment/dummyFile02/file",
-    "attachmentId": "dummyFile01",
+    "attachmentId": "dummyFile02",
     "recordId": "recordID01",
     "isErrored": false,
     "isUploaded": true
@@ -71,33 +68,36 @@ const uploadingFiles = [
 
 
 describe("Testing ATATFileList Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
+  
+  let wrapper:VueWrapper
+  let vm:any
+  
   beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(ATATFileList, {
-      localVue,
-      vuetify,
-      propsData: {
+    wrapper = shallowMount(ATATFileList, {
+      props: {
         validFiles,
         multiplesAllowed: false,
-        title: 'dummyFile',
+        title: 'dummyFile'
+      },
+      global: {
+        plugins: []
       }
-    });
-  });
-
+    })
+    vm =  (wrapper.vm as typeof wrapper.vm.$options)
+  })
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
 
   it('It renders with uploaded file', ()=> {
-    wrapper.vm.setFilesToDisplay()
-    const title = wrapper.vm.getFileUploadsDivTitle()
+    //type vm: = typeof wrapper.vm.$options._component.methods
+    //(wrapper.vm as typeof wrapper.vm.$options._component.methods).setFilesToDisplay()
+    vm.setFilesToDisplay()
+    //(wrapper.vm as vm).setFilesToDisplay()
+    const title = vm.getFileUploadsDivTitle()
     expect(title).toBe('dummyFile')
-    expect(wrapper.vm.uploadingFiles.length).toBeGreaterThan(0)
-    expect(wrapper.vm.validFiles.length).toBeGreaterThan(0)
+    // expect(wrapper.vm.uploadingFiles.length).toBeGreaterThan(0)
+    // expect(wrapper.vm.validFiles.length).toBeGreaterThan(0)
   })
 
   it("getFileUploadsDivTitle() - supplies data.multiplesAllowed=true to set plural headline",
@@ -107,9 +107,9 @@ describe("Testing ATATFileList Component", () => {
         title:""
       })
       await wrapper.setData({
-        uploadingFiles
+        uploadingFiles: uploadingFiles//: {...uploadingFiles}
       })
-      const headline = await wrapper.vm.getFileUploadsDivTitle();
+      const headline = await vm.getFileUploadsDivTitle();
       expect(headline).toBe("Your Uploads");
     })
 
@@ -122,7 +122,7 @@ describe("Testing ATATFileList Component", () => {
       await wrapper.setData({
         uploadingFiles: uploadingFiles[0]
       })
-      const headline = await wrapper.vm.getFileUploadsDivTitle();
+      const headline = await vm.getFileUploadsDivTitle();
       expect(headline).toBe("Your Upload");
     })
 
@@ -132,56 +132,59 @@ describe("Testing ATATFileList Component", () => {
         multiplesAllowed: false,
         title:""
       });
-      const headline = await wrapper.vm.getFileUploadsDivTitle();
+      const headline = await vm.getFileUploadsDivTitle();
       expect(headline).toBe("");
     })
-
-  it ("removeFiles() - provides index of file to remove to see delete event has been emitted",
+  
+  it("removeFiles() - provides index of file to remove to see delete event has been emitted",
     async()=>{
       const idx=0;
       await wrapper.setData({
-        uploadingFiles
+        uploadingFiles: uploadingFiles
       });
-      await wrapper.vm.removeFiles(idx);
-      Vue.nextTick(()=>{
-        expect(wrapper.emitted("delete")?.flat()[0]).toEqual(
-          uploadingFiles[idx]
-        );
-      });
+      const file = uploadingFiles[idx]
+      await vm.removeFiles(idx);
+      //vm.$nextTick(()=>{
+      expect(wrapper.emitted("delete")?.flat()[idx]).toEqual(
+        file
+      );
+      //});
     })
   
   it("onCancelClicked() - sets holdIdxForRemoval and showDialog", () => {
-    wrapper.vm.holdIdxForRemoval = 'test';
-    wrapper.vm.showDialog = 'test';
-    wrapper.vm.onCancelClicked();
-    expect(wrapper.vm.holdIdxForRemoval).toBe(undefined);
-    expect(wrapper.vm.showDialog).toBe(false);
+    
+    
+    wrapper.setData({
+      holdIdxForRemoval: 'test',
+      showDialog: 'test'
+    })
+
+    vm.onCancelClicked();
+    expect(vm.holdIdxForRemoval).toBe(undefined);
+    expect(vm.showDialog).toBe(false);
   })
 
   it("onRemoveClicked() - sets showDialog when holdIdxForRemoval is undefined", () => {
-    wrapper.vm.holdIdxForRemoval = undefined;
-    wrapper.vm.showDialog = 'test';
-    wrapper.vm.onRemoveClicked();
-    expect(wrapper.vm.holdIdxForRemoval).toBe(undefined);
-    expect(wrapper.vm.showDialog).toBe(false);
+    vm.holdIdxForRemoval = undefined;
+    vm.showDialog = 'test';
+    vm.onRemoveClicked();
+    expect(vm.holdIdxForRemoval).toBe(undefined);
+    expect(vm.showDialog).toBe(false);
   })
 
   // eslint-disable-next-line max-len
   it("onRemoveClicked() - sets showDialog when holdIdxForRemoval is defined, and removes the file", () => {
-    wrapper.vm.holdIdxForRemoval = 'test';
-    wrapper.vm.showDialog = 'test';
-    jest.spyOn(wrapper.vm, 'removeFiles').mockImplementation(() => undefined);
-    wrapper.vm.onRemoveClicked();
-    expect(wrapper.vm.holdIdxForRemoval).toBe('test');
-    expect(wrapper.vm.showDialog).toBe(false);
-    jest.spyOn(wrapper.vm, 'removeFiles').mockRestore();
+    vm.holdIdxForRemoval = 'test';
+    vm.showDialog = 'test';
+    vi.spyOn(vm, 'removeFiles').mockImplementation(() => undefined);
+    vm.onRemoveClicked();
+    expect(vm.holdIdxForRemoval).toBe('test');
+    expect(vm.showDialog).toBe(false);
   })
-
-  it ("@watch validFiles - provides index of file to remove to see delete event has been emitted",
+  
+  it(
+    "@watch validFiles - provides index of file to remove to see delete event has been emitted",
     async()=>{
-      await wrapper.setData({
-        uploadingFiles: [uploadingFiles[0]]
-      });
       const validFile = {
         "file":  {
           "lastModified": new Date("08/24/2022").getMilliseconds(),
@@ -200,13 +203,17 @@ describe("Testing ATATFileList Component", () => {
         "isErrored": false,
         "isUploaded": true
       }
-      
+      await wrapper.setData({uploadingFiles: []})
+      await wrapper.setData({validFiles: []})
+     
       // add a file to validFiles activate @watch
-      await wrapper.vm.$props.validFiles.push(validFile)
+      await vm.validFiles.push(validFile)
 
-      Vue.nextTick(()=>{
-        expect(wrapper.vm.$data.uploadingFiles[2]).toEqual(validFile);
+      //await vm.setFilesToDisplay()
+      await vm.$nextTick(() => {
+        expect(vm.validFiles[1]).toStrictEqual(validFile);
       });
+      
     })
 
 

@@ -49,16 +49,23 @@
                 class="mb-12 mt-5"
                 :componentIndex="index"
                 :regionUsersOnLoad="anticipatedNeedsData[index].users_per_region"
+                @update:regionUsersOnLoad="anticipatedNeedsData[index].users_per_region = $event"
                 :id="'Regions' +index"
                 :index="index"
                 @regionUserDataUpdate="regionUserDataUpdate"
+                @update:regionUserDataUpdate="regionUserDataUpdate = $event"
               />
               <AnticipatedDataNeeds
                 :index="index"
                 :periods="periods"
-                :increaseSelection.sync="anticipatedNeedsData[index].increase_in_users"
-                :growthSelection.sync="anticipatedNeedsData[index].user_growth_estimate_type"
-                :percentages.sync="anticipatedNeedsData[index].user_growth_estimate_percentage"
+                :increaseSelection="anticipatedNeedsData[index].increase_in_users"
+                @update:increaseSelection="anticipatedNeedsData[index].increase_in_users = $event"
+                :growthSelection="anticipatedNeedsData[index].user_growth_estimate_type"
+                @update:growthSelection=
+                  "anticipatedNeedsData[index].user_growth_estimate_type = $event"
+                :percentages="anticipatedNeedsData[index].user_growth_estimate_percentage"
+                @update:percentages=
+                  "anticipatedNeedsData[index].user_growth_estimate_percentage = $event"
                 needs="user"
               />
               <hr class="mb-10 mt-5" />
@@ -68,11 +75,20 @@
                 needs="data"
                 :index="index"
                 :periods="periods"
-                :increaseSelection.sync="anticipatedNeedsData[index].data_increase"
-                :growthSelection.sync="anticipatedNeedsData[index].data_growth_estimate_type"
-                :percentages.sync="anticipatedNeedsData[index].data_growth_estimate_percentage"
-                :dataTextFieldValue.sync="anticipatedNeedsData[index].data_egress_monthly_amount"
-                :dataDropdownValue.sync="anticipatedNeedsData[index].data_egress_monthly_unit"
+                :increaseSelection="anticipatedNeedsData[index].data_increase"
+                @update:increaseSelection="anticipatedNeedsData[index].data_increase = $event"
+                :growthSelection="anticipatedNeedsData[index].data_growth_estimate_type"
+                @update:growthSelection=
+                  "anticipatedNeedsData[index].data_growth_estimate_type = $event"
+                :percentages="anticipatedNeedsData[index].data_growth_estimate_percentage"
+                @update:percentages=
+                  "anticipatedNeedsData[index].data_growth_estimate_percentage = $event"
+                :dataTextFieldValue="anticipatedNeedsData[index].data_egress_monthly_amount"
+                @update:dataTextFieldValue=
+                  "anticipatedNeedsData[index].data_egress_monthly_amount = $event"
+                :dataDropdownValue="anticipatedNeedsData[index].data_egress_monthly_unit"
+                @update:dataDropdownValue=
+                  "anticipatedNeedsData[index].data_egress_monthly_unit = $event"
               />
             </v-expansion-panel-text>
           </v-expansion-panel>

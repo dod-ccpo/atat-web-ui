@@ -30,7 +30,6 @@
         variant="outlined"
         v-model="_selectedValue"
         @update:v-model="_selectedValue = $event"
-
         item-title="text"
         item-value="value"
 

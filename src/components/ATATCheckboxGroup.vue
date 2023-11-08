@@ -115,7 +115,6 @@
             />
           </template>
           <template v-if="hasTextFields">
-
             <ATATTextField
               v-if="showTextField(index)"
               ref="atatTextInput"
@@ -198,8 +197,7 @@ class ATATCheckboxGroup extends Vue {
 
   // props
   @Prop({ default: [] }) private value!: string[];
-  public _selected: string[] = this.value;
-
+  public _selected: string[] = [];
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @PropSync("items") private _items!: Checkbox[];
 
@@ -282,6 +280,7 @@ class ATATCheckboxGroup extends Vue {
   get otherId(): string {
     return "Other_" + getIdText(this.otherValue);
   }
+
 
   public textFieldBlur(index: number): void {
     const textfield = this.getTextField(index);
@@ -366,7 +365,6 @@ class ATATCheckboxGroup extends Vue {
   private getIdText(string: string) {
     return getIdText(string);
   }
-
   public get otherIsSelected(): boolean {
     return this._selected.includes(this.otherValue)
   }
@@ -463,9 +461,8 @@ class ATATCheckboxGroup extends Vue {
         this.setErrorMessage();
       }, 0)
     }
-
-    setTimeout(() => {
-      this._selected = this.value
+    setTimeout(()=>{
+      this._selected = this.value;
     }, 0)
   }
 

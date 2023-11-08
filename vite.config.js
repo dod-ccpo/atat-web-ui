@@ -19,138 +19,140 @@ const CONFIG = {
     ...servicenowConfig
 }
 export default defineConfig(({command, mode}) => {
-    const env = loadEnv(mode, process.cwd(), '')
-    const BASE_API_URL = env.BASE_API_URL.endsWith('/')
-            ? env.BASE_API_URL + 'api'
-            : env.BASE_API_URL + '/api',
-        SNOWUSER = mode === 'development' ? env.SNOWUSER : '',
-        SNOWPASS = mode === 'development' ? env.SNOWPASS : '',
-        SNOW_USER_SYSID =
-            mode === 'development' ? env.userId : 'e0c4c728875ed510ec3b777acebb356f', // pragma: allowlist secret
-        VERSION = env.VERSION,
-        VUE_APP_allowDeveloperNavigation = mode === 'development' ? env.VUE_APP_allowDeveloperNavigation: false
-    //  if(command === 'serve') {
-    return {
-        define: {
-            'process.env.VUE_APP_BASE_API_URL': JSON.stringify(BASE_API_URL),
-            'process.env.VUE_APP_SNOWUSER': JSON.stringify(SNOWUSER),
-            'process.env.VUE_APP_SNOWPASS': JSON.stringify(SNOWPASS),
-            'process.env.SNOW_USER_SYSID': JSON.stringify(SNOW_USER_SYSID),
-            'process.env.VUE_APP_allowDeveloperNavigation': JSON.stringify(VUE_APP_allowDeveloperNavigation),
-            'process.env.VERSION': JSON.stringify(VERSION)
-        },
-        resolve: {
-            alias: {
-                '@': path.resolve(__dirname, "src"),
-                vue: 'vue/dist/vue.esm-bundler.js', // Alias 'vue' to Vue 3
-                'vue/compat': 'vue/dist/vue.runtime.esm-bundler.js'
-            },
-            extensions: ['.ts', '.vue', '.js']
-        },
-        plugins: [
-            // VueDevTools({analyze: true}), 
-            vue(),
-            vuetify(),
-            Components({
-                dts: true,
-                directives: false,
-                resolvers: [],
-                types: [
-                    {
-                        from: 'vue-router',
-                        names: ['RouterLink', 'RouterView']
-                    }
-                ],
-                version: 3
-            }),
-            //TODO Migrate unit tests and enable vueTsc
-            checker({
-                // typescript: true,
-                // vueTsc: true
-                // eslint: {lintCommand:'eslint '},
-            }),
-            cssInjectedByJsPlugin(),
-            resolve()
-            //splitVendorChunkPlugin(),
-        ],
-        server: {
-            port: 8080,
-            watch: {
-                usePolling: true,
-              }
-        },
-        build: {
-            target: 'esnext',
-            assetsDir: './',
-            cssCodeSplit: false,
-            // optimizeDeps: {
-            //  include: ['node_modules/*']
-            // },
-            minify:false,
+	const env = loadEnv(mode, process.cwd(), '')
+	const BASE_API_URL = env.BASE_API_URL.endsWith('/')
+			? env.BASE_API_URL + 'api'
+			: env.BASE_API_URL + '/api',
+		SNOWUSER = mode === 'development' ? env.SNOWUSER : '',
+		SNOWPASS = mode === 'development' ? env.SNOWPASS : '',
+		SNOW_USER_SYSID =
+			mode === 'development' ? env.userId : 'e0c4c728875ed510ec3b777acebb356f', // pragma: allowlist secret
+		VERSION = env.VERSION,
+		VUE_APP_allowDeveloperNavigation = mode === 'development' ? env.VUE_APP_allowDeveloperNavigation: false
+	//  if(command === 'serve') {
+	return {
+		define: {
+			'process.env.VUE_APP_BASE_API_URL': JSON.stringify(BASE_API_URL),
+			'process.env.VUE_APP_SNOWUSER': JSON.stringify(SNOWUSER),
+			'process.env.VUE_APP_SNOWPASS': JSON.stringify(SNOWPASS),
+			'process.env.SNOW_USER_SYSID': JSON.stringify(SNOW_USER_SYSID),
+			'process.env.VUE_APP_allowDeveloperNavigation': JSON.stringify(VUE_APP_allowDeveloperNavigation),
+			'process.env.VERSION': JSON.stringify(VERSION)
+		},
+		resolve: {
+			alias: {
+				'@': path.resolve(__dirname, "src"),
+				vue: 'vue/dist/vue.esm-bundler.js', // Alias 'vue' to Vue 3
+				'vue/compat': 'vue/dist/vue.runtime.esm-bundler.js'
+			},
+			extensions: ['.ts', '.vue', '.js']
+		},
+		plugins: [
+			VueDevTools({analyze: true}), 
+			vue(),
+			vuetify(),
+			Components({
+				dts: true,
+				directives: false,
+				resolvers: [],
+				types: [
+					{
+						from: 'vue-router',
+						names: ['RouterLink', 'RouterView']
+					}
+				],
+				version: 3
+			}),
+			//TODO Migrate unit tests and enable vueTsc
+			checker({
+				// typescript: true,
+				// vueTsc: true
+				// eslint: {lintCommand:'eslint '},
+			}),
+			cssInjectedByJsPlugin(),
+			resolve()
+			//splitVendorChunkPlugin(),
+		],
+		server: {
+			port: 8080,
+			watch: {
+				usePolling: true,
+			  }
+		},
+		build: {
+			target: 'esnext',
+			assetsDir: './',
+			cssCodeSplit: false,
             cssMinify: false,
-            rollupOptions: {
-                output: {
-                    dir: './dist',
-                    format: 'iife', //iife || umd !cjs
-                    entryFileNames: 'js/app-js',
-                chunkFileNames: 'js/vendor-js',
-                    assetFileNames: assetInfo => {
-                        
-                        if (/\.(png|jpe?g|gif|webp|svg)$/.test(assetInfo.name)) {
-                            return `img/[name]-[hash:6]-[ext]`
-                        } else if (/\.(woff2?|eot|ttf|otf|ttc)$/i.test(assetInfo.name)) {
-                            return `other_assets/[name]-[hash:6]-[ext]`
-                        }
-                        return assetInfo.name
-                    }
-                    //doesn't work with iife/umd
-                    // manualChunks: (id) => {
-                    //   if(id.includes("node_modules")){
-                    //     const depName = id.split('/node_modules/')[1].split('/')[0]
-                    //     if((pkg.dependencies && pkg.dependencies[depName]) /*|| (pkg.devDependencies && pkg.devDependencies[depName])*/){
-                    //       return `js/vendor-js`
-                    //     }
-                    //   }
-                    //   else if(id.includes('/src/assets/')){
-                    //     return `js/vendor-js`
-                    //   }
-                    // }
-                }
-            }
-        },
-        test: {
-            globals: true,
-            environment: 'jsdom',
-            coverage: { 
-              enabled: true,
-              provider: 'v8', 
-              clean: true,
-              reportOnFailure: true,
-              skipFull: true,
-              perFile: true,
-            //   lines: 80,
-            //   functions: 80,
-            //   branches: 80,
-            //   statements: 80,
-              reporter: ['text','html', 'lcov'],
-              restoreMocks: true,
-              maxConcurrency: 10,
-              concurrent: true,
-              typecheck: {
-                enabled: true,
-                checker: 'vue-tsc'
-              },
-            //  bail: 10,
-            },
-            server: {
-              deps: {
-                inline: ['vuetify'],
-              }
-            },
-            root: './',
-            ui: true,
-            //Default exclude: node_modules/, dist/, cypress/, *.config.*, **/.{idea,git,cache,output,temp} 
-            exclude: [
+            minify: false,
+			// optimizeDeps: {
+			// 	include: ['node_modules/*']
+			// },
+			rollupOptions: {
+				output: {
+					dir: './dist',
+					format: 'iife', //iife || umd !cjs
+					entryFileNames: 'js/app-js',
+					chunkFileNames: 'js/vendor-js',
+					assetFileNames: assetInfo => {
+						
+						if (/\.(png|jpe?g|gif|webp|svg)$/.test(assetInfo.name)) {
+							return `img/[name]-[hash:6]-[ext]`
+						} else if (/\.(woff2?|eot|ttf|otf|ttc)$/i.test(assetInfo.name)) {
+							return `other_assets/[name]-[hash:6]-[ext]`
+						}
+						return assetInfo.name
+					}
+					//doesn't work with iife/umd
+					// manualChunks: (id) => {
+					//   if(id.includes("node_modules")){
+					//     const depName = id.split('/node_modules/')[1].split('/')[0]
+					//     if((pkg.dependencies && pkg.dependencies[depName]) /*|| (pkg.devDependencies && pkg.devDependencies[depName])*/){
+					//       return `js/vendor-js`
+					//     }
+					//   }
+					//   else if(id.includes('/src/assets/')){
+					//     return `js/vendor-js`
+					//   }
+					// }
+				}
+			}
+		},
+		test: {
+			globals: true,
+			environment: 'jsdom',
+			coverage: { 
+			  enabled: true,
+			  provider: 'v8', 
+			  clean: true,
+			  reportOnFailure: true,
+			  skipFull: true,
+			  perFile: true,
+			//   lines: 80,
+			//   functions: 80,
+			//   branches: 80,
+			//   statements: 80,
+			  reporter: ['text','html', 'lcov'],
+			  restoreMocks: true,
+			  maxConcurrency: 10,
+			  concurrent: true,
+			  typecheck: {
+          enabled: true,
+          checker: 'vue-tsc'
+			  },
+			//  bail: 10,
+
+			},
+			server: {
+			  deps: {
+				  inline: ['vuetify'],
+			  }
+			},
+      open: false,
+			root: './',
+			ui: true,
+			//Default exclude: node_modules/, dist/, cypress/, *.config.*, **/.{idea,git,cache,output,temp} 
+			exclude: [
         'node_modules/**',
         'src/api/gInvoicing/index.spec.ts',
         'src/api/portfolio/index.spec.ts',
@@ -164,15 +166,7 @@ export default defineConfig(({command, mode}) => {
         'src/components/ATATDialog.spec.ts',
         'src/components/ATATDivider.spec.ts',
         'src/components/ATATErrorValidation.spec.ts',
-        'src/components/ATATExpandableLink.spec.ts',
-        'src/components/ATATFileList.spec.ts',
-        'src/components/ATATFileListItem.spec.ts',
-        'src/components/ATATFileUpload.spec.ts',
-        'src/components/ATATFooter.spec.ts',
-        'src/components/ATATMeatballMenu.spec.ts',
-        'src/components/ATATPageHead.spec.ts',
         'src/components/ATATPhoneInput.spec.ts',
-        'src/components/ATATRadioGroup.spec.ts',
         'src/components/ATATSearch.spec.ts',
         'src/components/ATATSelect.spec.ts',
         'src/components/ATATSideStepper.spec.ts',
@@ -282,57 +276,57 @@ export default defineConfig(({command, mode}) => {
         'src/store/taskOrder/index.spec.ts',
         'src/store/user/index.spec.ts',
         'tests/unit/example.spec.ts',
-         //ignored test files by jest
-         'src/steps/01-AcquisitionPackageDetails/ContactInfo.spec.ts',
-         'src/steps/01-AcquisitionPackageDetails/COR_ACOR/Common.spec.ts',
-         'src/steps/01-AcquisitionPackageDetails/Organization.spec.ts',
-         'src/steps/01-AcquisitionPackageDetails/ProjectOverview.spec.ts',
-         'src/steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.spec.ts',
-         'src/steps/02-EvaluationCriteria/EvalPlan/Differentiators.spec.ts',
-         'src/steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.spec.ts',
-         'src/steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.spec.ts',
-         'src/steps/02-EvaluationCriteria/EvalPlan/Summary.spec.ts',
-         'src/steps/02-EvaluationCriteria/EvalPlan/components/Callout.spec.ts',
-         'src/steps/02-EvaluationCriteria/EvalPlan/components/CreateEvalPlanSlideOut.spec.ts',
-         'src/steps/02-EvaluationCriteria/EvalPlan/components/CustomSpecifications.spec.ts',
-         'src/steps/02-EvaluationCriteria/Exceptions.spec.ts',
-         'src/steps/02-EvaluationCriteria/JandA/ImpactOfRequirement.spec.ts',
-         'src/steps/02-EvaluationCriteria/JandA/UniqueSource.spec.ts',
-         'src/steps/02-EvaluationCriteria/JustificationAndApproval.spec.ts',
-         'src/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.spec.ts',
-         'src/steps/02-EvaluationCriteria/MRR/CertificationPOCs.spec.ts',
-         'src/steps/02-EvaluationCriteria/MRR/MarketResearchEfforts.spec.ts',
-         'src/steps/02-EvaluationCriteria/components/FairOppExceptions.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDOW.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/ComputeFormElements.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/EntireDuration.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/OtherOfferingSummary.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/OtherOfferings.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/OtherRequirementSummary.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/ServiceOfferings.spec.ts',
-         'src/steps/05-PerformanceRequirements/DOW/SummaryStepFive.spec.ts',
-         'src/steps/10-FinancialDetails/CurrentlyHasFunding.spec.ts',
-         'src/steps/10-FinancialDetails/GTCInformation.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/CannotProceed.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/CostSummary.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/FeeCharged.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/Index.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/SupportingDocumentation.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/SurgeCapabilities.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/SurgeCapacity.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/TravelEstimates.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/components/Card_Requirements.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/components/ICGELearnMore.spec.ts',
-         'src/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.spec.ts',
-         'src/steps/10-FinancialDetails/IncrementalFunding.spec.ts',
-         'src/steps/11-GeneratePackageDocuments/UploadSignedDocuments.spec.ts',
+        //ignored test files by jest
+        'src/steps/01-AcquisitionPackageDetails/ContactInfo.spec.ts',
+        'src/steps/01-AcquisitionPackageDetails/COR_ACOR/Common.spec.ts',
+        'src/steps/01-AcquisitionPackageDetails/Organization.spec.ts',
+        'src/steps/01-AcquisitionPackageDetails/ProjectOverview.spec.ts',
+        'src/steps/02-EvaluationCriteria/EvalPlan/CreateEvalPlan.spec.ts',
+        'src/steps/02-EvaluationCriteria/EvalPlan/Differentiators.spec.ts',
+        'src/steps/02-EvaluationCriteria/EvalPlan/EvalPlanDetails.spec.ts',
+        'src/steps/02-EvaluationCriteria/EvalPlan/NoEvalPlan.spec.ts',
+        'src/steps/02-EvaluationCriteria/EvalPlan/Summary.spec.ts',
+        'src/steps/02-EvaluationCriteria/EvalPlan/components/Callout.spec.ts',
+        'src/steps/02-EvaluationCriteria/EvalPlan/components/CreateEvalPlanSlideOut.spec.ts',
+        'src/steps/02-EvaluationCriteria/EvalPlan/components/CustomSpecifications.spec.ts',
+        'src/steps/02-EvaluationCriteria/Exceptions.spec.ts',
+        'src/steps/02-EvaluationCriteria/JandA/ImpactOfRequirement.spec.ts',
+        'src/steps/02-EvaluationCriteria/JandA/UniqueSource.spec.ts',
+        'src/steps/02-EvaluationCriteria/JustificationAndApproval.spec.ts',
+        'src/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.spec.ts',
+        'src/steps/02-EvaluationCriteria/MRR/CertificationPOCs.spec.ts',
+        'src/steps/02-EvaluationCriteria/MRR/MarketResearchEfforts.spec.ts',
+        'src/steps/02-EvaluationCriteria/components/FairOppExceptions.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/ArchitecturalDesign.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/ArchitecturalDesignDOW.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/ComputeFormElements.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/EntireDuration.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/OtherOfferingSummary.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/OtherOfferings.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/OtherRequirementSummary.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/ServiceOfferings.spec.ts',
+        'src/steps/05-PerformanceRequirements/DOW/SummaryStepFive.spec.ts',
+        'src/steps/10-FinancialDetails/CurrentlyHasFunding.spec.ts',
+        'src/steps/10-FinancialDetails/GTCInformation.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/CannotProceed.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/CostSummary.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/CreatePriceEstimate.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/EstimatesDeveloped.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/FeeCharged.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/GatherPriceEstimates.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/Index.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/SupportingDocumentation.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/SurgeCapabilities.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/SurgeCapacity.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/TravelEstimates.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/components/Card_Requirements.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/components/ICGELearnMore.spec.ts',
+        'src/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.spec.ts',
+        'src/steps/10-FinancialDetails/IncrementalFunding.spec.ts',
+        'src/steps/11-GeneratePackageDocuments/UploadSignedDocuments.spec.ts',
       ]
-          },
+        },
         // minify: 'esbuild',
         commonjsOptions: {
             esmExternals: false

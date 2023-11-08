@@ -34,7 +34,8 @@
                 <ATATCheckboxGroup
                   id="ClassificationCheckboxes"
                   aria-describedby="ClassificationGroupLabel"
-                  :value.sync="selectedHeaderLevelSysIds"
+                  :value="selectedHeaderLevelSysIds"
+                  @update:value="selectedHeaderLevelSysIds = $event"
                   :items="headerCheckboxItems"
                   :card="false"
                   class="copy-max-width"
@@ -87,11 +88,13 @@
         :showDialog="showDialog"
         @cancelClicked="modalCancelClicked"
         @okClicked="modalOkClicked"
-        :modalSelectedOptions.sync="modalSelectedOptions"
+        :modalSelectedOptions="modalSelectedOptions"
+        @update:modalSelectedOptions="modalSelectedOptions = $event"
         :modalSelectionsOnOpen="modalSelectionsOnOpen"
         :modalCheckboxItems="modalCheckboxItems"
         :IL6SysId="IL6SysId"
-        :isIL6Selected.sync="isIL6Selected"
+        :isIL6Selected="isIL6Selected"
+        @update:isIL6Selected="isIL6Selected = $event"
       />
 
     </div>

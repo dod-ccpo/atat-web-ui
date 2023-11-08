@@ -46,7 +46,7 @@
             You currently do not have any instances.
           </div>
 
-          <v-data-table
+          <v-table
             v-if="tableData.length"
             :headers="tableHeaders"
             :items="tableData"
@@ -55,51 +55,81 @@
             :hide-default-footer="true"
             no-data-text="You currently do not have any instances."
           >
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.location="{ item }">
-              <span
-                 v-html="item.location"
-                :class="[{'text-error font-weight-500': !item.isValid }]"></span>
-              <div v-if="!item.isValid" class="d-flex align-center nowrap">
-                <ATATSVGIcon 
-                  name="errorFilled"
-                  width="13"
-                  height="13"
-                  color="error"
-                />
-                <span class="font-size-12 text-error d-inline-block ml-1">Missing info</span>
-              </div>
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.storage="{ item }">
-              <span class="nowrap">{{ item.storage }}</span>
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.performance="{ item }">
-              <span class="nowrap">{{ item.performance }}</span>
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.actions="{ item }">
-              <button
-                type="button"
-                :id="'EditButton_' + item.instanceNumber"
-                @click="editInstance(item)"
-                class="mr-2"
+            <thead>
+              <tr>
+                <th
+                  v-for="header in tableHeaders"
+                  :key="(header.value as string)"
+                  :id="(header.value as string)"
+                  class="text-start"
+                >
+                  {{ header.title }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="item in tableData"
+                :key="item.instanceNumber"
               >
-                <ATATSVGIcon name="edit" height="19" width="19" />
-              </button>
+                <td>
+                  {{ item.instanceNumber }}
+                </td>
+                <td v-if="envLocation !== 'ON_PREM'">
+                  <span
+                    v-html="item.location"
+                    :class="[{'text-error font-weight-500': !item.isValid }]">
+                  </span>
+                  <div v-if="!item.isValid" class="d-flex align-center nowrap">
+                    <ATATSVGIcon 
+                      name="errorFilled"
+                      width="13"
+                      height="13"
+                      color="error"
+                    />
+                    <span class="font-size-12 text-error d-inline-block ml-1">Missing info</span>
+                  </div>
+                </td>
+                <td v-if="envLocation !== 'CLOUD'">
+                  <span class="nowrap">{{ item.classification }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.qty }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.vCPU }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.memory }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.storage }}</span>
+                </td>
+                <td>
+                  <span class="nowrap">{{ item.performance }}</span>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    :id="'EditButton_' + item.instanceNumber"
+                    @click="editInstance(item)"
+                    class="mr-2"
+                  >
+                    <ATATSVGIcon name="edit" height="19" width="19" />
+                  </button>
 
-              <button
-                type="button"
-                :id="'DeleteButton_' + item.instanceNumber"
-                @click="confirmDeleteInstance(item)"
-                class="ml-2"
-              >
-                <ATATSVGIcon name="remove" height="18" width="14" />
-              </button>
-            </template>
-
-          </v-data-table> 
+                  <button
+                    type="button"
+                    :id="'DeleteButton_' + item.instanceNumber"
+                    @click="confirmDeleteInstance(item)"
+                    class="ml-2"
+                  >
+                    <ATATSVGIcon name="remove" height="18" width="14" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </v-table> 
 
           <hr class="mt-0" v-if="tableData.length" /> 
 
@@ -374,90 +404,91 @@ class EnvironmentSummary extends Vue {
 
       this.tableData = [];
       this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
-
-      for (const instance of this.envInstances) {
-        const index = this.envInstances.indexOf(instance);
-        const selectedInCloud = this.classificationsCloud.includes(instance.classification_level)
-        const selectedOnPrem = this.classificationsOnPrem.includes(instance.classification_level)
-        if(!selectedInCloud && !selectedOnPrem) {
-          // eslint-disable-next-line camelcase
-          instance.classification_level = ""
-        }
-        const isValid = await this.validateInstance(instance);
-        let storage = "";
-        if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
-          const storageType = toTitleCase(instance.storage_type);
-          storage = storageType + ": " + String(instance.storage_amount)
-            + " " + instance.storage_unit;
-        }
-        let performance = "";
-        if (instance.performance_tier) {
-          performance = toTitleCase(instance.performance_tier);
-          performance += performance === "General" ? " Purpose" : " Optimized";
-        }
-        let location = "";
-        if (instance.instance_location === "ON_PREM") {
-          location = "On-premise";
-        } else {
-          const instances: string[] = []
-          if (typeof instance.deployed_regions === "string") {
-            const regionsSysIds = instance.deployed_regions?.split(',')
-            regionsSysIds.forEach((instanceId) => {
-              instances.push(this.locationNames[instanceId])
-            })
+      if (this.envInstances?.length){
+        for (const instance of this.envInstances) {
+          const index = this.envInstances.indexOf(instance);
+          const selectedInCloud = this.classificationsCloud.includes(instance.classification_level)
+          const selectedOnPrem = this.classificationsOnPrem.includes(instance.classification_level)
+          if(!selectedInCloud && !selectedOnPrem) {
+            // eslint-disable-next-line camelcase
+            instance.classification_level = ""
           }
-          //TODO fix existing records so the data isn't pulled in as an array
-          //then we can remove this and cleanup the logic for this
-          if(Array.isArray(instance.deployed_regions)){
-            instance.deployed_regions.forEach((instanceId) => {
-              instances.push(this.locationNames[instanceId])
-            })
+          const isValid = await this.validateInstance(instance);
+          let storage = "";
+          if (instance.storage_type && instance.storage_amount && instance.storage_unit) {
+            const storageType = toTitleCase(instance.storage_type);
+            storage = storageType + ": " + String(instance.storage_amount)
+              + " " + instance.storage_unit;
+          }
+          let performance = "";
+          if (instance.performance_tier) {
+            performance = toTitleCase(instance.performance_tier);
+            performance += performance === "General" ? " Purpose" : " Optimized";
+          }
+          let location = "";
+          if (instance.instance_location === "ON_PREM") {
+            location = "On-premise";
+          } else {
+            const instances: string[] = []
+            if (typeof instance.deployed_regions === "string") {
+              const regionsSysIds = instance.deployed_regions?.split(',')
+              regionsSysIds.forEach((instanceId) => {
+                instances.push(this.locationNames[instanceId])
+              })
+            }
+            //TODO fix existing records so the data isn't pulled in as an array
+            //then we can remove this and cleanup the logic for this
+            if(Array.isArray(instance.deployed_regions)){
+              instance.deployed_regions.forEach((instanceId) => {
+                instances.push(this.locationNames[instanceId])
+              })
+            }
+
+            let regions = instances?.length
+              ? instances.join(", ")
+              : "";
+            regions = regions.replaceAll("CONUS", "CONUS ");
+            location = this.envLocation === "HYBRID"
+              ? regions.length
+                ? "Cloud<br>(" + regions + ")"
+                : "Cloud"
+              : regions;
           }
 
-          let regions = instances?.length
-            ? instances.join(", ")
-            : "";
-          regions = regions.replaceAll("CONUS", "CONUS ");
-          location = this.envLocation === "HYBRID"
-            ? regions.length
-              ? "Cloud<br>(" + regions + ")"
-              : "Cloud"
-            : regions;
-        }
-
-        let classification = "";
-        if (instance.classification_level) {
-          const i = this.classificationLevels.findIndex(
-            obj => obj.sys_id === instance.classification_level
-          );
-          if (i > -1) {
-            const classificationLevel = this.classificationLevels[i];
-            classification = buildClassificationLabel(classificationLevel, "short");
+          let classification = "";
+          if (instance.classification_level) {
+            const i = this.classificationLevels.findIndex(
+              obj => obj.sys_id === instance.classification_level
+            );
+            if (i > -1) {
+              const classificationLevel = this.classificationLevels[i];
+              classification = buildClassificationLabel(classificationLevel, "short");
+            }
           }
-        }
 
-        const instanceData: EnvInstanceSummaryTableData = {
-          instanceSysId: instance.sys_id,
-          instanceNumber: index + 1,
-          location,
-          classification,
-          qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
-          vCPU: instance.number_of_vcpus ? String(instance.number_of_vcpus) : "",
-          memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
-          storage,
-          performance,
-          isValid,
-        };
+          const instanceData: EnvInstanceSummaryTableData = {
+            instanceSysId: instance.sys_id,
+            instanceNumber: index + 1,
+            location,
+            classification,
+            qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
+            vCPU: instance.number_of_vcpus ? String(instance.number_of_vcpus) : "",
+            memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
+            storage,
+            performance,
+            isValid,
+          };
 
-        this.tableData.push(instanceData);
-        if (this.envLocation === "ON_PREM") {
-          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
-        }
+          this.tableData.push(instanceData);
+          if (this.envLocation === "ON_PREM") {
+            this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
+          }
 
-        const hasMultipleClassifications
-          = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
-        if (!hasMultipleClassifications) {
-          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
+          const hasMultipleClassifications
+            = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
+          if (!hasMultipleClassifications) {
+            this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
+          }
         }
       }
     }, 0);

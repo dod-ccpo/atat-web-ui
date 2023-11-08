@@ -7,7 +7,8 @@
       usage costs for a fixed term.  <br><br><strong>Pay-as-you-go instances</strong> let you pay 
 	  for compute capacity by the hour or second with no long-term commitments."
       :items="paymentArrangements"
-      :value.sync="_pricingDetails.currentPaymentArrangement"
+      :value="_pricingDetails.currentPaymentArrangement"
+      @update:value="_pricingDetails.currentPaymentArrangement = $event"
       :rules="[
         $validators.required('Select a pricing model.'),
       ]"
@@ -23,7 +24,8 @@
         ),
         $validators.isDateValid('Please enter a valid date.'),
       ]"
-      :value.sync="_pricingDetails.pricingPeriodExpirationDate"
+      :value="_pricingDetails.pricingPeriodExpirationDate"
+      @update:value="_pricingDetails.pricingPeriodExpirationDate = $event"
       label="Contract/Order expiration date"
       placeHolder="MM/DD/YYYY"
       tooltipText="Enter the date that your current reservation period, pre-paid 
