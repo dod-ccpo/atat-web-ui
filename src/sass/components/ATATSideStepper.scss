@@ -280,26 +280,8 @@
     padding: 8px 12px 0px 24px
   }
   ._external-link {
-    position: relative;
-    padding-right: 24px;
-    display: inline-block;
-    white-space: nowrap;
     color: $base-dark;
-    &a {
-      text-decoration: underline;
-    }
-
-    &:after {
-      font-family: $icon-font;
-      content: "launch";
-      text-decoration: none !important;
-      -webkit-font-feature-settings: 'liga';
-      color: $primary;
-      position: absolute;
-      top: -1px;
-      right: 2px;
-      font-size: 18px;
-    }
+    text-decoration: none;    
   }
   .v-list {
     padding: 8px 12px 0px 24px !important;

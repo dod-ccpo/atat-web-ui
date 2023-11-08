@@ -2,8 +2,8 @@
   display: inline-block;
   text-decoration: underline;
   &:after {
-    content: "mdi-chevron-right";
-    font-family: "Material Icons";
+    content: "\F0142";
+    font-family: $icon-font;
     -webkit-font-feature-settings: "liga";
     font-size: 24px;
     font-weight: normal;
@@ -60,7 +60,18 @@
       border-bottom: none;
     }
   }
+  .v-expansion-panel-title {
+    border-radius: 4px !important;
+  }
+  .v-expansion-panel-title--active, .v-expansion-panel-title__overlay {
+    background-color: transparent;
+  }
 }
+
+.v-expansion-panel:not(:first-child)::after {
+  border: none;
+}
+
 
 .v-expansion-panel-title {
   @extend .body;

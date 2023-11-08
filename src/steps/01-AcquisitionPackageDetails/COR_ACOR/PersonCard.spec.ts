@@ -1,20 +1,13 @@
 /* eslint-disable camelcase */
-import Vue from "vue";
-import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import {DefaultProps} from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import PersonCard from "@/steps/01-AcquisitionPackageDetails/COR_ACOR/PersonCard.vue";
 import validators from "../../../plugins/validation";
 import {CorAcorSelectData} from "../../../../types/Global";
 import {ContactDTO} from "@/api/models";
 
-Vue.use(Vuetify);
 
 describe("Testing PersonCard Component", () => {
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-  const localVue = createLocalVue();
-  localVue.use(validators);
   
   const mockCorAcorSelectData: CorAcorSelectData = {
     id: "COR_ACOR_ID",
@@ -45,40 +38,34 @@ describe("Testing PersonCard Component", () => {
     manually_entered: "",
     acquisition_package: ""
   }
-
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(PersonCard, {
-      propsData: {
-        selectedContact: mockCorAcorSelectData,
-        showContactForm: false
-      },
-      vuetify,
-      localVue
-    });
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
+  const wrapper: VueWrapper = shallowMount(PersonCard, {
+    props: {
+      selectedContact: mockCorAcorSelectData,
+      showContactForm: false
+    },
+    global: {
+      plugins: [validators]
+    }
   })
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
 
   it("removeCorInfo() - should remove the core info", async () => {
-    await wrapper.vm.removeCorInfo();
-    expect(wrapper.vm._showContactForm).toBe(false);
+    await vm.removeCorInfo();
+    expect(vm._showContactForm).toBe(false);
   });
 
   it("corOrAcor() should get the cor or acor mode",
     async () => {
-      let _corOrAcor = await wrapper.vm.corOrAcor;
+      let _corOrAcor = await vm.corOrAcor;
       expect(_corOrAcor).toBe("COR");
       await wrapper.setProps({
         isACOR: true
       })
-      _corOrAcor = await wrapper.vm.corOrAcor;
+      _corOrAcor = await vm.corOrAcor;
       expect(_corOrAcor).toBe("ACOR");
     });
 })

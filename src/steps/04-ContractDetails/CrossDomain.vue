@@ -11,7 +11,8 @@
             <ATATRadioGroup
               id="needsCDSGroup"
               card="true"
-              :value.sync="domainInfo.crossDomainSolutionRequired"
+              :value="domainInfo.crossDomainSolutionRequired"
+              @update:value="domainInfo.crossDomainSolutionRequired = $event"
               :items="cdsOptions"
               :rules="[$validators.required('Please select Yes or No.')]"
               name="needsCDSGroup"
@@ -27,7 +28,8 @@
                   <v-col>
                     <ATATCheckboxGroup
                       id="cdsSolutions"
-                      :items.sync="cdsSolutionItems"
+                      :items="cdsSolutionItems"
+                      @update:items="cdsSolutionItems = $event"
                       textFieldAppendText="GB/month"  
                       class="mb-8 _cds-checkbox-list"
                       :hasTextFields="true"
@@ -35,7 +37,8 @@
                       groupLabel="What type of cross-domain solution do you need?"
                       :labelWidth="240"
                       :textFieldWidth="164"
-                      :value.sync="selectedCDSCheckboxItems"
+                      :value="selectedCDSCheckboxItems"
+                      @update:value="selectedCDSCheckboxItems = $event"
                       :groupLabelHelpText="cdsSolutionLabelHelpText"
                       :rules="[
                         $validators
@@ -53,7 +56,8 @@
                     <ATATTextField 
                       id="projectedFileStreamType"
                       label="Projected file stream/type"
-                      :value.sync="domainInfo.projectedFileStream"
+                      :value="domainInfo.projectedFileStream"
+                      @update:value="domainInfo.projectedFileStream = $event"
                       :rules="[
                         $validators
                         .required('Enter a projected file stream/type')
@@ -67,10 +71,14 @@
                     <AnticipatedDurationandUsage
                       typeForUsage="cds"
                       typeForDuration="requirement"
-                      :anticipatedNeedUsage.sync="
+                      :anticipatedNeedUsage="
                         domainInfo.anticipatedNeedUsage"
-                      :entireDuration.sync="domainInfo.entireDuration"
-                      :selectedPeriods.sync="domainInfo.selectedPeriods"
+                      @update:anticipatedNeedUsage="
+                        domainInfo.anticipatedNeedUsage = $event"
+                      :entireDuration="domainInfo.entireDuration"
+                      @update:entireDuration="domainInfo.entireDuration = $event"
+                      :selectedPeriods="domainInfo.selectedPeriods"
+                      @update:selectedPeriods="domainInfo.selectedPeriods = $event"
                       :availablePeriodCheckboxItems="availablePeriodCheckboxItems"
                       :isPeriodsDataMissing="isPeriodsDataMissing"
                       index="0"
@@ -100,10 +108,9 @@
   </v-form>
 </template>
 <script lang="ts">
-import LoadOnEnter from "@/mixins/loadOnEnter";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -112,7 +119,7 @@ import {
   Checkbox,
   CrossDomainSolution,
   RadioButton,
-} from "../../../types/Global";
+} from "types/Global";
 import { createPeriodCheckboxItems } from "@/helpers";
 import Periods from "@/store/periods";
 
@@ -120,7 +127,6 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
-  mixins: [LoadOnEnter, SaveOnLeave],
   components: {
     AnticipatedDurationandUsage,
     ATATRadioGroup,
@@ -130,6 +136,16 @@ import ATATAlert from "@/components/ATATAlert.vue";
   }
 })
 class CrossDomain extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public isPeriodsDataMissing = false;
   public domainInfo: CrossDomainSolution = {
     crossDomainSolutionRequired: "",
@@ -374,6 +390,10 @@ class CrossDomain extends Vue {
         .updateDomainPairsInIGCEEstimateTable(this.domainInfo.solutionType)
     }
     return true;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 }
 

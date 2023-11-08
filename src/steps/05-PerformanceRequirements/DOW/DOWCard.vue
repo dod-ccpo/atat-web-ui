@@ -1,9 +1,9 @@
 <template>
   <v-card 
-    class="d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
+    class="_border-light d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
     :class="{'_card-complete': cardData.isComplete}"
     :id="cardData.section + 'Card'"
-    outlined>
+    variant="outlined">
       <ATATSVGIcon 
         v-if="cardData.defineRequirements===true"
         name="StarInTriangle"
@@ -34,7 +34,7 @@
         </div>
         <div v-if="cardData.recommendedText && !cardData.isComplete">
           <div class="text-base pt-2 font-size-14">
-           <span class="_recommended-Chip text-base-dark">Recommended for:</span>
+            <span class="_recommended-chip text-base-dark">Recommended for:</span>
             {{cardData.recommendedText}}
           </div>
         </div>
@@ -42,7 +42,7 @@
       <div class="d-flex align-center justify-center flex-column ml-auto">
         <v-btn
           class="ml-5"
-          :class="cardData.isComplete ? 'secondary' : 'primary'"
+          :class="cardData.isComplete ? '_secondary' : '_primary'"
           :id="`StartButton` + cardData.section" 
           width="110"
           role="link"

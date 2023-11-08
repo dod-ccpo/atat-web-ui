@@ -4,7 +4,8 @@
     <ATATRadioGroup
       id="AddressType"
       legend="Type of mailing address"
-      :value.sync="_selectedAddressType"
+      :value="_selectedAddressType"
+      @update:value="_selectedAddressType = $event"
       :items="addressTypeOptions"
       name="AddressType"
       class="mt-3 mb-8"
@@ -19,7 +20,8 @@
           id="StreetAddress"
           label="Street address"
           :class="inputClass"
-          :value.sync="_streetAddress1"
+          :value="_streetAddress1"
+          @update:value="_streetAddress1 = $event"
           :rules="getRules('StreetAddress')"
         />
       </v-col>
@@ -29,7 +31,8 @@
           label="Unit, suite, etc."
           :optional="true"
           :class="inputClass"
-          :value.sync="_streetAddress2"
+          :value="_streetAddress2"
+          @update:value="_streetAddress2 = $event"
           width="160"
         />
       </v-col>
@@ -48,7 +51,8 @@
           id="City"
           label="City"
           :class="inputClass"
-          :value.sync="_city"
+          :value="_city"
+          @update:value="_city = $event"
           :rules="getRules('City')"
         />
         <ATATSelect
@@ -57,7 +61,8 @@
           label="APO/FPO/DPO"
           :class="inputClass"
           :items="militaryPostOfficeOptions"
-          :selectedValue.sync="_selectedMilitaryPO"
+          :selectedValue="_selectedMilitaryPO"
+          @update:selectedValue="_selectedMilitaryPO = $event"
           :returnObject="true"
           :rules="getRules('APO_FPO_DPO')"
 
@@ -71,15 +76,16 @@
             : 'col-lg-4',
         ]"
       >
+      <!-- titleKey="text"       -->
         <ATATAutoComplete
           id="State"
           label="State"
           v-if="_selectedAddressType === addressTypes?.USA ?? ''"
           :class="inputClass"
-          titleKey="text"
           :searchFields="['text', 'value']"
           :items="stateListData"
-          :selectedItem.sync="_selectedState"
+          :selectedItem="_selectedState"
+          @update:selectedItem="_selectedState = $event"
           placeholder=""
           icon="arrow_drop_down"
           :rules="getRules('State')"
@@ -91,7 +97,8 @@
           label="AA/AE/AP"
           :class="inputClass"
           :items="stateCodeListData"
-          :selectedValue.sync="_selectedStateCode"
+          :selectedValue="_selectedStateCode"
+          @update:selectedValue="_selectedStateCode = $event"
           :returnObject="true"
           :rules="getRules('StateCode')"
 
@@ -101,7 +108,8 @@
           v-if="_selectedAddressType === addressTypes?.FOR ?? ''"
           id="StateProvince"
           label="State or Province"
-          :value.sync="_stateOrProvince"
+          :value="_stateOrProvince"
+          @update:value="_stateOrProvince = $event"
           :class="inputClass"
           :rules="getRules('StateProvince')"
 
@@ -112,7 +120,8 @@
           :id="IDLabel"
           :label="zipLabel"
           :class="inputClass"
-          :value.sync="_zipCode"
+          :value="_zipCode"
+          @update:value="_zipCode = $event"
           :rules="getRules(IDLabel)"
           :validateOnBlur="true"
           width="160"
@@ -129,7 +138,8 @@
           titleKey="text"
           :searchFields="['text', 'value']"
           :items="countryListData"
-          :selectedItem.sync="_selectedCountry"
+          :selectedItem="_selectedCountry"
+          @update:selectedItem="_selectedCountry = $event"
           :returnObject="true"
           placeholder=""
           icon="arrow_drop_down"
@@ -215,7 +225,7 @@ class ATATAddressForm extends Vue {
           ? { text: "", value: "" }
           : { text: "United States of America", value: "US" };
 
-    // this.resetData();
+    this.resetData();
   }
 
   private getRules(inputID: string): ValidationRule[] {
@@ -270,13 +280,15 @@ class ATATAddressForm extends Vue {
 
       // TODO: REFACTOR AFTER VUE3 UPGRADE
       // //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      // const formChildren = this.$refs.atatAddressForm.$children;
-      // formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
-      // this.$refs.atatAddressForm.reset();
-      // this.$nextTick(() => {
-      //   this.$refs.atatAddressForm.resetValidation();
-      // });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // const formChildren = this.$refs.atatAddressForm;
+      // console.log(formChildren)
+      // formChildren.forEach((ref: {errorMessages:[]}) => ref.errorMessages = []);
 
+      this.$refs.atatAddressForm.reset();
+      this.$nextTick(() => {
+        this.$refs.atatAddressForm.resetValidation();
+      });
     });
   }
   // computed

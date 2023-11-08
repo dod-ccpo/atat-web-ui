@@ -1,5 +1,6 @@
 <template>
-  <v-app-bar id="TopNavBar">
+<!--  TODO review this component after upgrade-->
+  <v-app-bar id="TopNavBar" height="56">
     <ATATSVGIcon
       color="white"
       width="110"
@@ -11,17 +12,15 @@
       <v-menu
         v-for="(navItem, navIdx) in topNavMenuItems"
         :key="navIdx"
-        :offset-y="true"
-        nudge-left="0"
+        :offset="0"
         :id="'TopNavBarMenu_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
         :attach="navItem.menu !== undefined"
-        :left="navItem.align === 'left'"
+        location="left"
       >
         <!-- top nav bar items (buttons) -->
         <template v-slot:activator="{ props }">
           <v-btn
-            text="true"
-            dark
+            variant="text"
             v-bind="props"
             :id="'TopNavButton_' + (!navItem.isProfile ? getIdText(navItem.title) : 'User')"
             :class="[

@@ -8,7 +8,7 @@
 
     <div class="d-flex flex-column filename-and-progress-bar-div ml-3">
       <div v-if="isLoading" class="">
-        <div class="-flex align-center justify-start">
+        <div class="d-flex align-center justify-start">
           <div
             :id="'File0' + index"
             v-if="(uploadingFileObj.fileName || '').length < 50"
@@ -28,10 +28,11 @@
             </div>
           </div>
         </div>
-        <div class="d-flex align-center mt-auto">
+        <div class="d-flex align-center">
           <v-progress-linear
-            class="progress-bar mr-5"
-            v-model="uploadingFileObj.progressStatus"
+            class="_progress-bar mr-5"
+            color="#544496"
+            :model-value ="uploadingFileObj.progressStatus"
             height="16"
           >
           </v-progress-linear>
@@ -98,7 +99,7 @@
       </div>
     </div>
     <v-btn
-      class="secondary ml-auto"
+      class="_secondary ml-auto"
       :id="'RemoveFile0' + index"
       v-if="!isLoading"
       @click="removeFile(index, $event)"

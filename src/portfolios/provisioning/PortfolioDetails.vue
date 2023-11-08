@@ -22,7 +22,8 @@
           <ATATTextField 
             label="Portfolio title"
             class="_input-max-width mb-10"
-            :value.sync="portfolioTitle"
+            :value="portfolioTitle"
+            @update:value="portfolioTitle = $event"
             :rules="[
               $validators.required('Please enter your project title.'),
               $validators.maxLength(60, 'Title cannot exceed 60 characters')
@@ -64,19 +65,18 @@
 </template>
 
 <script lang="ts">
-import { Component,  Vue, toNative } from "vue-facing-decorator";
+import { Component,  Hook,  Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import PortfolioStore from "@/store/portfolio";
 import { Checkbox, PortfolioProvisioning, SelectData } from "types/Global";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATTextField,
     ATATAutoComplete,
@@ -85,6 +85,15 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 })
 
 class PortfolioDetails extends Vue {
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public portfolioTitle = "";
   public serviceOrAgency: SelectData = { text: "", value: "" };
   public selectedCSPProvider = "";

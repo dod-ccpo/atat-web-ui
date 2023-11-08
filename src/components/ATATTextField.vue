@@ -19,6 +19,7 @@
         :label="label"
       />
     </div>
+
     <div class="d-flex _input-wrapper" :class="{'_append-dropdown' : appendDropdown}">
       <v-text-field
         ref="atatTextField"
@@ -44,9 +45,6 @@
         :validate-on="validationString"
       >
 
-        <!-- TODO - figure out how to set error messages
-           @update:error="setErrorMessage" -->
-
         <template v-slot:prepend-inner>
           <ATATSVGIcon
             v-if="isCurrency"
@@ -57,7 +55,6 @@
             class="pt-1 mr-1"
           />
         </template>
-        <!-- TODO check slot append -->
         <template slot="append-inner" v-if="appendText">
           <span class="_append-text">
             {{ appendText }}
@@ -69,7 +66,8 @@
         :id="id"
         :items="dropdownOptions"
         :showSelectedValue="true"
-        :selectedValue.sync="_selectedDropdownValue"
+        :selectedValue="_selectedDropdownValue"
+        @update:selectedValue="_selectedDropdownValue = $event"
       /> 
     </div>
 
@@ -94,6 +92,7 @@ import { mask, SelectData, ValidationRule } from "types/Global";
 import Inputmask from "inputmask/";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
   components: {
@@ -107,9 +106,7 @@ class ATATTextField extends Vue  {
   // refs
   $refs!: {
     atatTextField: ComponentPublicInstance & {
-      errorBucket: string[]; 
-      validate: () => boolean;
-      errorCount: number 
+      validate: () => Promise<SubmitEventPromise>;
       resetValidation(): void
     };
   }; 
@@ -157,8 +154,12 @@ class ATATTextField extends Vue  {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatTextField.validate())
-      this.setErrorMessage();
+    this.$refs.atatTextField.validate().then(
+      async (response: SubmitEventPromise) => {
+        if (!((await response).valid)){ 
+          this.setErrorMessage() }
+      }
+    );
   }
 
   //data
@@ -170,11 +171,12 @@ class ATATTextField extends Vue  {
 
   public async setErrorMessage(): Promise<void> {
     if (this.validateOnBlur) {
-      this.$nextTick(()=>{
-        this.errorMessages = this.$refs.atatTextField.errorBucket;
-        this.$emit('errorMessage', this.errorMessages);
-        // await 
-      });
+      this.$refs.atatTextField.validate().then(
+        (response: unknown) => {
+          this.errorMessages = response as string[];
+          this.$emit('errorMessage', this.errorMessages);
+        }
+      );
     } else {
       await this.resetValidation();
     }
@@ -202,7 +204,6 @@ class ATATTextField extends Vue  {
 
   public resetValidation(): void {
     this.errorMessages = [];
-    this.$refs.atatTextField.errorBucket = [];
     this.$refs.atatTextField.resetValidation();
   }
 
@@ -258,7 +259,7 @@ class ATATTextField extends Vue  {
     if(this.errorMessages?.length && this.hideHelpTextOnErrors){
       return false;
     }
-    return this.helpText.length > 0;
+    return this.helpText?.length > 0;
   }
 
   public filterNumbers(evt: KeyboardEvent): void {

@@ -22,7 +22,8 @@
             </div>
             <ATATCheckboxGroup
               id="ClassificationLevelCheckboxes"
-              :value.sync="selectedOptions"
+              :value="selectedOptions"
+              @update:value="selectedOptions = $event"
               :items="checkboxItems"
               name="checkboxes"
               :card="false"
@@ -71,7 +72,8 @@
     </div>
     <ATATDialog
       id="DeleteClassificationRequirements"
-      :showDialog.sync="showDialog"
+      :showDialog="showDialog"
+      @update:showDialog="showDialog = $event"
       :title="'Delete all ' + getServiceOfferingName + ' requirements?'"
       no-click-animation
       okText="Delete"
@@ -94,19 +96,19 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import Toast from "@/store/toast";
 
-import { Checkbox, ToastObj } from "../../../types/Global";
+import { Checkbox, ToastObj } from "types/Global";
 import {
   AcquisitionPackageDTO,
   ClassificationLevelDTO, SelectedClassificationLevelDTO
 } from "@/api/models";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { 
   hasChanges, 
   buildClassificationCheckboxList, 
@@ -118,7 +120,6 @@ import _ from "lodash";
 
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATCheckboxGroup,
     ATATAlert,
@@ -127,6 +128,15 @@ import _ from "lodash";
 })
 
 class ClassificationRequirements extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
@@ -317,13 +327,12 @@ class ClassificationRequirements extends Vue {
     }
     this.savedSelectedClassLevelList =  _.cloneDeep(selectedOptionsOnLoad);
 
-    this.buildClassificationRequirementsAlert();
+    await this.buildClassificationRequirementsAlert();
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
 }
 
 export default toNative(ClassificationRequirements)

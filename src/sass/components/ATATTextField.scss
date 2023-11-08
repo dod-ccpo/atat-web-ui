@@ -1,5 +1,8 @@
 .v-text-field {
-  
+  .v-field__input input {
+    color: $base-darkest;
+    opacity: 1;
+  }
   .v-text-field__suffix {
     color: $base-light;
   }
@@ -13,22 +16,44 @@
     margin-top: 6px !important;
     z-index: 1;
   }
-
-  fieldset {
-    max-height: 40px;
-    margin-top: 4px;
-    border: 1px solid $base;
-    border-radius: 4px;
-    background-color: white;
-    legend {
-      display: none;
+  .v-field--variant-outlined {
+    opacity: 1 !important;
+    border: 1px solid $base-darkest;
+    &.v-field--focused {
+      border: 1px solid $primary;
+      outline: 1px solid $primary;
+    }
+    &.v-field--error {
+      border: 1px solid $error;
+      outline: 1px solid $error;
     }
 
-    &:focus {
-      border-width: 2px;
-      border-color: $primary;
+  }
+  .v-field__outline {
+    .v-field__outline__start, .v-field__outline__end {
+      border: none !important;
     }
   }
+  
+  &:not(.v-textarea).v-field__field {
+    max-height: 40px;
+  }
+
+  // fieldset { // deprecated -- KEEP SPRINT 69
+  //   max-height: 40px;
+  //   margin-top: 4px;
+  //   border: 1px solid $base;
+  //   border-radius: 4px;
+  //   background-color: white;
+  //   legend {
+  //     display: none;
+  //   }
+
+  //   &:focus {
+  //     border-width: 2px;
+  //     border-color: $primary;
+  //   }
+  // }
 
   &.error--text {
     fieldset,
@@ -41,7 +66,6 @@
       color: $error;
     }
   }
-
 
   .atat-text-field-error {
     i {

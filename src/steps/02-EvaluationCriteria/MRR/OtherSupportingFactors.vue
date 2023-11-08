@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
@@ -48,10 +48,9 @@ import _ from "lodash";
 import { RadioButton } from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
     ATATTextArea,
@@ -59,6 +58,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 class OtherSupportingFactors extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   /* eslint-disable camelcase */
   public exceptionDiscussion =""
   public exceptionChoices :RadioButton[] = getYesNoRadioOptions("Exception")

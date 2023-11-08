@@ -206,7 +206,7 @@ export class ClassificationRequirementsStore extends VuexModule {
 
   @Action({rawError: true})
   public async getSelectedClassificationLevels(): Promise<SelectedClassificationLevelDTO[]> {
-    return await this.selectedClassificationLevels;
+    return this.selectedClassificationLevels;
   }
 
   /**

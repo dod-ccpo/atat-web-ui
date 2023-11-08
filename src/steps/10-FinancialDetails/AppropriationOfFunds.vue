@@ -37,9 +37,9 @@
 </template>
 <script lang="ts">
 
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
 import { FundingRequestDTO } from "@/api/models";
 import FinancialDetails from "@/store/financialDetails";
@@ -47,13 +47,21 @@ import { hasChanges } from "@/helpers";
 import _ from "lodash";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATRadioGroup,
   },
 })
-
 class AppropriationOfFunds extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+  
   private fundingRequest: FundingRequestDTO ={};
   private selectedFundType: "" | "O_M" | "RDT_E" | "PROCUREMENT" | "W_C" = "";
   private fundTypes: RadioButton[] = [

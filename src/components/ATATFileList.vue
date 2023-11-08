@@ -18,7 +18,8 @@
     </v-card>
     <ATATDialog
       id="DeleteFilesConfirmation"
-      :showDialog.sync="showDialog"
+      :showDialog="showDialog"
+      @update:showDialog="showDialog = $event"
       :title="confirmRemovalTitle"
       no-click-animation
       okText="Delete file"
@@ -45,6 +46,7 @@ import ATATDialog from "./ATATDialog.vue";
 import { uploadingFile } from "types/Global";
 
 @Component({
+  emits:["delete"],
   components: {
     ATATFileListItem,
     ATATSVGIcon,
@@ -53,7 +55,7 @@ import { uploadingFile } from "types/Global";
 })
 class ATATFileList extends Vue {
   @Prop({ default: "61686c" }) private color!: string;
-  @Prop({ default: () => [] }) private validFiles!: uploadingFile[];
+  @Prop() private validFiles!: uploadingFile[];
   @PropSync("isFullSize", { default: true }) private _isFullSize!: boolean;
   @PropSync("removeAll", { default: false }) public _removeAll?: boolean;
 
@@ -131,8 +133,8 @@ class ATATFileList extends Vue {
    * preventing the same file from being displayed
    * multiple times
    */
-  @Watch("validFiles")
-  protected setFilesToDisplay(): void {
+  @Watch("validFiles", {deep: true})
+  public setFilesToDisplay(): void {
     if (this.uploadingFiles.length < this.validFiles.length) {
       this.validFiles.forEach((vFile) => {
         const doesFileExist = this.uploadingFiles.some((fileObj) => {

@@ -8,7 +8,7 @@
       Use the following Frequently Asked Questions (FAQs) to help you complete
       the Requirements Cost Estimate section.
     </p>
-    <v-expansion-panels accordion flat>
+    <v-expansion-panels variant="accordion" borderless>
       <v-expansion-panel
         v-for="(item, index) in expansionPanelData"
         :key="index"

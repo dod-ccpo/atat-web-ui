@@ -31,7 +31,8 @@
               legend="Does this effort provide for the design, development, or operation of a system
                 of records on individuals by the contractor (in whole or in part)?"
               :items="pIIOptions"
-              :value.sync="selectedPIIOption"
+              :value="selectedPIIOption"
+              @update:value="selectedPIIOption = $event"
               :rules="[$validators.required('Please select an option')]"
             />
 
@@ -45,7 +46,7 @@
                   records on individuals (in whole or in part), then the Contracting Officer must
                   include the following clauses in the solicitation:
                 </p>
-                <ul>
+                <ul class="_atat-ul">
                   <li class="pb-2">
                     Privacy Act Notification,
                     <a
@@ -91,22 +92,22 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
-import {RadioButton} from "../../../types/Global";
+import {RadioButton} from "types/Global";
+import { SaveOnLeaveRefs, To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
-  mixins: [LoadOnEnter, SaveOnLeave],
+  mixins: [LoadOnEnter],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -115,6 +116,16 @@ import {RadioButton} from "../../../types/Global";
 })
 
 class PII extends  Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   private pIIOptions: RadioButton[] = [
     {
       id: "YesPII",

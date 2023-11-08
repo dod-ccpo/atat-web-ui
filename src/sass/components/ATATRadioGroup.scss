@@ -7,6 +7,11 @@
   }
   .v-selection-control {
     align-items: center !important;
+    &.error--text{
+      label {
+        color: $error !important;
+      }
+    }
     label {
       color: $base-darkest !important;
     }
@@ -89,7 +94,6 @@
 
   // .v-input--selection-controls__input { becomes .v-selection-control__input
   .v-selection-control__input {
-    margin-right: 12px !important;
 
     &:after { // white background for radio button
       content: '';
@@ -129,7 +133,7 @@
   background-color: $base-lightest !important;
   border: solid 1px $base-lighter;
   border-radius: 4px !important;
-  padding: 10px;
+  padding: 8px 12px;
   margin-bottom: 12px !important;
   align-items: start !important;
 
@@ -150,10 +154,12 @@
   label {
     color: $base-darkest !important;
     padding-top: 1px;
+  }
 
-    &.error--text {
-      color: $error-dark !important;
-
+  &.error--text {
+    border-color: $error !important;
+    label{
+      color: $error !important;
     }
   }
 
@@ -167,35 +173,47 @@
     font-size: 1.6rem;
   }
 
-  label {
-    color: $base-darkest !important;
-    padding-top: 1px;
-  }
-  &.error--text {
-    border-color: $error;
-  }
-}
+ }
 
-// .v-input--radio-group--column { // deprecated?
-//   margin-top: 0px !important;
+
+._atat-radio-group {
+  .v-radio {
+    &:not(:last-child):not(:only-child) {
+      margin-bottom: 12px !important
+    }
+    
+    align-items: stretch !important;
+    
+    .v-selection-control__wrapper {
+      height: 24px;
+      width: 24px;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+    }
+  }
+  .v-selection-control__input {
+    &:hover {
+      cursor: pointer;
+      &::before {
+        opacity: 0 !important;
+      }
+    }
+  }  
+
   
-//   .v-radio {
-//     &:not(:last-child):not(:only-child) {
-//       margin-bottom: 12px !important
-//     }
-//   }
-// }
-
-._atat-radio-group.v-input.v-radio-group {
   legend {
+    @extend body;
     font-weight: 500;
     max-width: 740px;
+    font-size: 1.6rem;
   }
   
   &.error--text {
     color: $error !important;
 
-    label.error--text {
+    label,
+    span {
       color: $error !important;
     }
 
@@ -203,37 +221,37 @@
       color: $base-darker !important;
     }
 
-    .tooltip-button i {
+    ._tooltip-button i {
       color: $primary !important;
     }
   }
-  .v-input__control {
-    .v-messages.error--text {
+  &.v-input--error{
+    .v-input__details {
       display: none !important;
-      .v-messages__wrapper {
-        display: none !important;
-          .v-messages__message {
-          display: none !important;
-        }
-      }
     }
-    .v-messages {       
-      position: relative;
-      .message-transition-leave-active.message-transition-leave-to {
-        position: absolute;
-        display: none !important;
-        transition: none !important;  
-        transform: none !important;
-        left: -10000;
-        top: -10000;
-      }
-    }
-
   }
+
+  .v-messages {       
+    position: relative;
+    .message-transition-leave-active.message-transition-leave-to {
+      position: absolute;
+      display: none !important;
+      transition: none !important;  
+      transform: none !important;
+      left: -10000;
+      top: -10000;
+    }
+  }
+
   &._inline {
+    
+    .v-selection-control-group,
     .v-input--radio-group__input {
       display: flex;
       flex-direction: row !important;
+      .v-selection-control__wrapper{
+        display: none;
+      }
     }
   }
 
@@ -243,6 +261,11 @@
     }
   }
 
+  .v-selection-control--focus-visible {
+    .v-selection-control__input::before {
+      background-color: $primary;
+    }
+  }
 }
 
 ._description-small {

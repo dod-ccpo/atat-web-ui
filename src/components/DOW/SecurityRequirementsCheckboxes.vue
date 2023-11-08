@@ -26,7 +26,8 @@
     <ATATCheckboxGroup
       :id="`SecurityRequirements${idSuffix}`"
       :labelSuffix="idSuffix"
-      :value.sync="_selectedSecurityRequirements"
+      :value="_selectedSecurityRequirements"
+      @update:value="_selectedSecurityRequirements = $event"
       :items="securityRequirementsCheckboxes"
       name="checkboxes"
       :card="false"

@@ -219,7 +219,7 @@ export class SummaryStore extends VuexModule {
   @Action({rawError:true})
   public async toggleButtonColor(stepNumber: number):Promise<void>{
     const color = stepNumber > 0
-      ? isStepComplete(stepNumber) ? "primary" : "secondary"
+      ? isStepComplete(stepNumber) ? "_primary" : "_secondary"
       : ""
     await AcquisitionPackage.setContinueButtonColor(color);
   }
@@ -313,7 +313,7 @@ export class SummaryStore extends VuexModule {
     }
 
     const orgnameKey =
-        organization.disa_organization_reference?"disa_organization_reference":"organization_name"
+        organization.disa_organization_reference ? "disa_organization_reference":"organization_name"
 
     const foreignKeys =
         // eslint-disable-next-line max-len
@@ -2055,10 +2055,10 @@ export class SummaryStore extends VuexModule {
   @Action({rawError: true})
   public async getPIIDescription(sensitiveInfo: SensitiveInformationDTO): Promise<string>{
     let desc = "";
-    if (sensitiveInfo.pii_present === "YES"
-        && sensitiveInfo.system_of_record_name !== "" ){
+    if (sensitiveInfo?.pii_present === "YES"
+        && sensitiveInfo?.system_of_record_name !== "" ){
       desc = "System of records: " + sensitiveInfo.system_of_record_name
-    } else if (sensitiveInfo.pii_present === "NO"){
+    } else if (sensitiveInfo?.pii_present === "NO"){
       desc = "Effort does not include a system of records on individuals."
     }
     return desc;

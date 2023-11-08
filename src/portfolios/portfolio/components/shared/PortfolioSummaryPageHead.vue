@@ -6,19 +6,16 @@
 
     <v-app-bar
       id="PageHeader"
-      app
       flat
       class="_atat-page-header _portfolio-summary"
-      clipped-right
       height="83"
     > 
       <div class=" d-flex justify-space-between width-100 align-center">       
         <div id="NameHeader" tabindex="-1" class="mt-1">
           <v-text-field
             id="PortfolioTitleInput"
-            dense
+            density="compact"
             placeholder="Portfolio title"
-            class="h2 _portfolio-title-input my-1"
             hide-details
             autocomplete="off"
             v-model="_title"
@@ -27,18 +24,21 @@
             maxlength="60"
             :readonly="portfolioIsReadOnly"
             :disabled="portfolioIsReadOnly"
+            variant="plain"
           />
         <div>
           <v-tabs 
             class="_header-tab "
             v-model="_selectedTab"
+            height="33"
+            density="compact"
             v-if="!isPortfolioProvisioning"
           >
             <v-tab
               v-for="(tab, index) in items"
               :key="index"
               :id="getIdText(tab) + '_Tab'"
-              class="font-size-14 pa-1 pt-2  pb-5 mr-3"
+              class="font-size-14 pa-0 pt-2 pb-7 mr-3"
               @click="tabClicked(index)"
             >{{tab}}</v-tab>
           </v-tabs>
@@ -63,8 +63,6 @@
           />
         </v-btn>
         <v-menu
-          :offset-y="true"
-          left
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
@@ -385,8 +383,8 @@ class PortfolioSummaryPageHead extends Vue {
     return document.getElementById("PortfolioTitleInput") as HTMLInputElement;
   }
   public get titleInputWrap(): HTMLElement {
-    const collection = document.getElementsByClassName("_portfolio-title-input");
-    return collection[0] as HTMLElement;
+    const collection = document.getElementById("PortfolioTitleInput")
+    return collection as HTMLElement;
   }
   public async loadOnEnter(): Promise<void> {
     this.hasCspLinks = this.environmentLinks.length > 0;

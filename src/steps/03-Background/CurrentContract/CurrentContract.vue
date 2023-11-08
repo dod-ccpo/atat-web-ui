@@ -27,27 +27,36 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import CurrentContractOptions from "./components/CurrentContractOptions.vue"
 
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
 
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import Steps from "@/store/steps";
 import { CurrentContractRouteResolver } from "@/router/resolvers";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     CurrentContractOptions,
   },
 })
 
 class CurrentContract extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public headline = "";
   public currentContractExists = "";
   public noContract: CurrentContractDTO = {};

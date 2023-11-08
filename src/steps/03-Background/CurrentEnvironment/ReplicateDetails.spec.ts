@@ -1,20 +1,14 @@
 /* eslint-disable camelcase */
-import Vue from "vue";
-import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import {DefaultProps} from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import ReplicateDetails from "@/steps/03-Background/CurrentEnvironment/ReplicateDetails.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import { CurrentEnvironmentDTO } from "@/api/models";
 import validators from "@/plugins/validation";
 
-Vue.use(Vuetify);
+vi.mock('@/store/acquisitionPackage/currentEnvironment')
 
 describe("Testing ReplicateDetails Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
   const mockEnvironment = {
     statement_replicated_optimized: "test statement",
@@ -25,13 +19,16 @@ describe("Testing ReplicateDetails Component", () => {
     current_environment_replicated_optimized: "YES_REPLICATE"
   } as CurrentEnvironmentDTO
 
+  const wrapper:VueWrapper = shallowMount(ReplicateDetails, {
+    props: {},
+    global: {
+      plugins: [validators]
+    }
+  })
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
+
   beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(ReplicateDetails, {
-      vuetify,
-      localVue
-    });
-    jest.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
+    vi.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
       () => Promise.resolve(mockEnvironment)
     );
   });
@@ -45,8 +42,8 @@ describe("Testing ReplicateDetails Component", () => {
         }
       })
 
-      await Vue.nextTick();
-      expect(wrapper.vm.$data.currEnvDTO.anticipated_yearly_additional_capacity).toBe(null)
+      await vm.$nextTick();
+      expect(vm.$data.currEnvDTO.anticipated_yearly_additional_capacity).toBe(null)
 
     })
 
@@ -60,20 +57,22 @@ describe("Testing ReplicateDetails Component", () => {
           has_phased_approach:"NO"
         }
       })
-      await Vue.nextTick();
-      const hasChanged = wrapper.vm.hasChanged()
+      await vm.$nextTick();
+      const hasChanged = vm.hasChanged()
       expect(hasChanged).toBe(true);
     })
 
     it("test saveOnLeave() return true", async () => {
+      vi.spyOn(CurrentEnvironment, 'setCurrentEnvironment')
+        .mockImplementation(() => Promise.resolve())
       wrapper.setData({
         currentData:{
           additional_growth:"NO",
           has_phased_approach:"NO"
         }
       })
-      await Vue.nextTick();
-      const saveOnLeave = await wrapper.vm.saveOnLeave()
+      await vm.$nextTick();
+      const saveOnLeave = await vm.saveOnLeave()
       expect(saveOnLeave).toBeTruthy();
     });
   })

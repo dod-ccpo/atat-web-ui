@@ -17,7 +17,8 @@
                 id="PoPStartDate"
                 :card="true"
                 :items="startPoPDateOptions"
-                :value.sync="selectedPoPStartDateOption"
+                :value="selectedPoPStartDateOption"
+                @update:value="selectedPoPStartDateOption = $event"
                 :rules="[$validators.required('Please select an option')]"
                 width="200"
               />
@@ -35,13 +36,15 @@
                   class="mr-7"
                   label=""
                   :items="timeFrameOptions"
-                  :selectedValue.sync="selectedTimeFrameOption"
+                  :selectedValue="selectedTimeFrameOption"
+                  @update:selectedValue="selectedTimeFrameOption = $event"
                   style="max-width: 196px"
                   :rules="[$validators.required('Please select an option')]"
                 />
                 <ATATDatePicker 
                   id="RequestDatePicker" 
-                  :value.sync="requestedPopStartDate" 
+                  :value="requestedPopStartDate" 
+                  @update:value="requestedPopStartDate = $event" 
                   :rules="[
                     $validators.required('Please enter a valid date'),
                     $validators.isDateValid('Please enter a valid date')
@@ -55,7 +58,7 @@
                 v-if="selectedTimeFrameOption === 'NO_LATER_THAN'"
                 type="warning"
               >
-                <template slot="content">
+                <template v-slot:content>
                   <p class="mb-0">
                     All efforts will be made to accommodate your requested period
                     of performance start date. However, there is no guarantee that
@@ -75,7 +78,7 @@
 
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -83,11 +86,10 @@ import ATATSelect from "@/components/ATATSelect.vue";
 import { RadioButton, SelectData } from "../../../types/Global";
 import { PeriodOfPerformanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import Periods from "@/store/periods";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATDatePicker,
@@ -96,10 +98,15 @@ import Periods from "@/store/periods";
   },
 })
 class POPStart extends Vue {
-  // private requestedPopStartDate 
-  //   = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";
-  // private selectedPoPStartDateOption 
-  //   = AcquisitionPackage.periodOfPerformance?.pop_start_request || "";
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   private requestedPopStartDate = "";
   private selectedPoPStartDateOption = "";

@@ -46,7 +46,8 @@
               legend="Have you provided any CUI information in this acquisition package that, 
                 if released, would be harmful to the government?"
               :items="fOIAOptions"
-              :value.sync="potentialToBeHarmful"
+              :value="potentialToBeHarmful"
+              @update:value="potentialToBeHarmful = $event"
               :rules="[$validators.required('Please select an option')]"
             /> 
 
@@ -96,7 +97,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -107,12 +108,11 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -122,6 +122,15 @@ import { hasChanges } from "@/helpers";
 })
 
 class FOIA extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
 
   public potentialToBeHarmful 
     = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful || "";

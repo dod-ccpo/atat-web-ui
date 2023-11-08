@@ -3,7 +3,7 @@
     <section class="_learn-more-section">
       <div class="container-max-width">
         <v-row>    
-          <v-col class="col-sm-12 col-md-7 pr-5">
+          <v-col class="pr-5" cols="12" md="7">
 
             <div v-if="userHasPackages">
               <v-expansion-panels 
@@ -67,7 +67,7 @@
                   <v-expansion-panel-title>
                     <div class="d-flex justify-space-between width-100">
                       <div class="h3">
-                        Porfolios
+                        Portfolios
                       </div>
                       <div class="h3 text-base-light _item-count pr-4">
                         {{ portfolioCount }} portfolio<span v-if="portfolioCount !== 1">s</span>
@@ -103,7 +103,7 @@
 
           </v-col>
 
-          <v-col class="col-sm-12 col-md-5 pl-5">
+          <v-col class="pl-5" cols="12" md="5">
             <v-card flat class="pa-6 mb-10 _simple-border">
               <h3 class="text-primary mb-4">Do you already have an awarded task order?</h3>
               <p class="body">
@@ -111,7 +111,8 @@
                 cloud resources or to continue funding an existing portfolio.
               </p>
               <TaskOrderSearch
-                :TONumber.sync="TONumber"
+                :TONumber="TONumber"
+                @update:TONumber="TONumber = $event"
                 @startProvisionWorkflow="startProvisionWorkflow"
               />
             </v-card>            
@@ -122,7 +123,7 @@
                   id="JWCCHelpCenterButton"
                   href="https://community.hacc.mil/s/jwcc/resources"
                   target="_blank" 
-                  class="bg-secondary mb-4 mt-4 width-100 _text-decoration-none"
+                  class="_secondary mb-4 mt-4 width-100 _text-decoration-none"
                 >
                   JWCC Help Center
                   
@@ -138,7 +139,7 @@
                 </v-btn>
                 <v-btn
                   id="CustomerSupportButton"
-                  class="bg-secondary mt-4 width-100 _text-decoration-none"
+                  class="_secondary mt-4 width-100 _text-decoration-none"
                   :href="supportUrl"
                   target="_blank"
                 >      
@@ -156,8 +157,8 @@
                 <v-btn
                   :href="reportIssueLink"
                   id="ReportIssueButton"
-                   target="_blank"
-                  class="bg-secondary mt-4 width-100 _text-decoration-none" 
+                  target="_blank"
+                  class="_secondary mt-4 width-100 _text-decoration-none" 
                 >
                   Report a bug or technical issue
                   <ATATSVGIcon

@@ -15,7 +15,7 @@
       <v-card-title class="h2 text-break" :id="modalTitleId" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
-      <v-card-text class="body-lg black--text px-10" :id="modalMessageId">
+      <v-card-text class="body-lg text-base-darkest px-10" :id="modalMessageId">
         <slot name="content"></slot>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
@@ -29,7 +29,7 @@
         </v-btn>
         <v-btn
           v-if="!hideOkButton"
-          :color="buttonColor"
+          :class="[buttonColor, 'ml-2']"
           :ripple="false"
           :id="okButtonId"
           :disabled="OKDisabled"
@@ -54,7 +54,7 @@
         v-model="_modalDrawerIsOpen"
         absolute
         temporary
-        right
+        location="right"
         width="100%"
         transition="slide-x-reverse-transition"
       >
@@ -96,7 +96,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
 @Component({
   components: {
     ATATSVGIcon,
-  }
+  },
+  emits:["cancelClicked", "ok"]
 })
 
 class ATATDialog extends Vue {
@@ -114,7 +115,7 @@ class ATATDialog extends Vue {
   @Prop({ default: false }) private showOKSpinner!: boolean;
   @Prop({ default: false }) private hideOkButton!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
-  @Prop({ default: "primary" }) private buttonColor!: string;
+  @Prop({ default: "_primary" }) private buttonColor!: string;
   @Prop({ default: false }) private disableClickingOutside!: boolean;
   @Prop() private modalSlideoutTitle?: string;
   @Prop() modalSlideoutComponent?: VueComponent;

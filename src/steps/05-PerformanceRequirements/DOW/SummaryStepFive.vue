@@ -41,8 +41,8 @@
                     width="111"
                     :class="[
                       AnticipatedUserAndDataSummaryItem.isComplete
-                        ? 'secondary'
-                        : 'primary',
+                        ? '_secondary'
+                        : '_primary',
                       '_' + getIdText('AnticipatedUsersAndData') + '-button'
                     ]"
                     @click="routeToAnticipatedUsersAndDataNeeds()"
@@ -172,6 +172,7 @@
   </v-container>
 </template>
 <script lang="ts">
+/*eslint prefer-const: 1 */
 import { routeNames } from "../../../router/stepper"
 import { Component, Vue, toNative } from "vue-facing-decorator";
 import _ from "lodash";

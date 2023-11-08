@@ -1,6 +1,9 @@
 <template>
   <div class="_dashboard">
-    <v-container class="container-max-width">
+    <v-container 
+    :fluid="true"
+    class="container-max-width"
+    >
       <FinancialDetailsAlert />
       <v-row v-if="showFundingAlert">
         <v-col>
@@ -41,10 +44,15 @@
                 </div>                  
               </div>
               <v-row>
-                <v-col class="col-sm-6 col-md-8">
+                <v-col
+                cols="8"
+                md="8"
+                sm="6" 
+               >
                   <v-card
                     id="PortfolioDetailsCard"
-                    class="_no-shadow v-sheet--outlined height-100 pa-8 d-flex flex-column"
+                    class="_no-shadow height-100 pa-8 d-flex flex-column"
+                    :border="true"
                   >
                     <h3 class="mb-6">Portfolio Details</h3>
                     <v-row>
@@ -118,10 +126,15 @@
                     </v-row>
                   </v-card>
                 </v-col>
-                <v-col class="col-sm-6 col-md-4">
+                <v-col 
+                cols="4"
+                sm="6"
+                md="4"
+              >
                   <v-card
                     id="FundingStatusCard"
-                    class="_no-shadow v-sheet--outlined height-100 pa-8"
+                    class="_no-shadow  height-100 pa-8"
+                    :border="true"
                   >
                     <div
                       id="FundingStatusHeader"
@@ -222,7 +235,7 @@
               </v-row>
               <v-row id="BurndownChartWrap" v-if="!isProdEnv">
                 <v-col>
-                  <v-card class="_no-shadow v-sheet--outlined pa-8">
+                  <v-card class="_no-shadow pa-8" :border="true">
                     <h3 class="mb-4">Actual and Projected Burn Rate</h3>
                     <p class="text-base-dark font-size-14">
                       Track your rate of spend and available funds throughout the current 
@@ -258,7 +271,7 @@
                           :hide-details="true"
                           :ripple="false"
                           class="color_chart_1"
-                          @change="doToggleDataset(0)"
+                          @update:model-value="doToggleDataset(0)"
                         ></v-checkbox>
 
                         <v-checkbox
@@ -269,7 +282,7 @@
                           :class="'color_chart_' + (index + 2)"
                           :hide-details="true"
                           :ripple="false"
-                          @change="doToggleDataset((index + 1) * 2)"
+                          @update:model-value="doToggleDataset((index + 1) * 2)"
                         />
                       </v-radio-group>
                     </div>
@@ -287,7 +300,7 @@
 
               <v-row>
                 <v-col>
-                  <v-card class="_no-shadow v-sheet--outlined pa-8">
+                  <v-card class="_no-shadow pa-8" :border="true">
                     <h3>Spend Summary</h3>
                     <p class="font-size-14">
                       View a breakdown of how much you spend on cloud resources,
@@ -402,7 +415,7 @@
 
               <v-row>
                 <v-col>
-                  <v-card class="_no-shadow v-sheet--outlined pa-8 pb-2">
+                  <v-card class="_no-shadow pa-8 pb-2" :border="true">
                     <h3>Breakdown of Actual and Estimated Spend</h3>
                     <p class="font-size-14">
                       The chart below shows the proportion of funds spent and funds estimated to be

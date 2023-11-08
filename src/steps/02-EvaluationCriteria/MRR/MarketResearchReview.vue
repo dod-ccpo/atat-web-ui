@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -114,11 +114,10 @@ import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import SaveOnLeave from "@/mixins/saveOnLeave";
+import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { routeNames } from "@/router/stepper";
 
 @Component({
-  mixins: [SaveOnLeave],
   components: {
     ATATAlert,
     ATATExpandableLink,
@@ -132,6 +131,16 @@ import { routeNames } from "@/router/stepper";
 })
 
 class MarketResearchReview extends Vue {
+
+  $refs!: SaveOnLeaveRefs
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   public defaultSuggestion = "";
   public researchDetails = "";
   public researchDetailsGenerated = "";

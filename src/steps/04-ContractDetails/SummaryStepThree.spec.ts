@@ -47,7 +47,7 @@ describe('SummaryStepThree', () => {
   })
 
   it('sets the intro paragraph for a complete step', async () => {
-    actions.isStepComplete.mockReturnValue(true);
+    actions.isStepComplete.mockReturnValue(true); //ideally work with this through vm
 
     await wrapper.vm.$options.methods.setIntroParagraph();
     expect(wrapper.vm.$.data.introParagraph).toContain('You are all done with this section');
