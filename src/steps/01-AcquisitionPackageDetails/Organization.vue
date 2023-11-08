@@ -222,6 +222,7 @@ class OrganizationInfo extends Vue {
     FOR: "FOREIGN",
   };
 
+  private acquisitionPackage = "";
   private organizationName = "";
   private dodAddressCode = "";
   private selectedAddressType = "";
@@ -328,6 +329,7 @@ class OrganizationInfo extends Vue {
     }
 
     return {
+      acquisition_package: this.acquisitionPackage,
       disa_organization_reference: this.selectedDisaOrg.value as string,
       organization_name: this.organizationName,
       dodaac: this.dodAddressCode,
@@ -343,6 +345,7 @@ class OrganizationInfo extends Vue {
   }
 
   private savedData = {
+    acquisition_package: "",
     disa_organization_reference:"",
     organization_name: "",
     dodaac: "",
@@ -376,7 +379,6 @@ class OrganizationInfo extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data);
-    console.log(this.agencyData)
     this.disaOrgData = convertDisaOrgToSelect(OrganizationData.disa_org_data);
     this.stateListData = ContactData.stateChoices;
     const storeData = await AcquisitionPackage
@@ -385,6 +387,7 @@ class OrganizationInfo extends Vue {
 
     if (storeData) {
       const keys: string[] = [
+        "acquisition_package",
         "organization_name",
         "disa_organization_reference",
         "dodaac",
@@ -417,6 +420,10 @@ class OrganizationInfo extends Vue {
         ) as SelectData
       }
 
+      if (AcquisitionPackage.acquisitionPackage) {
+        this.acquisitionPackage = (AcquisitionPackage.acquisitionPackage.sys_id) 
+          ? AcquisitionPackage.acquisitionPackage.sys_id : ""; 
+      }
       this.organizationName = storeData.organization_name;
       this.dodAddressCode = storeData.dodaac;
 

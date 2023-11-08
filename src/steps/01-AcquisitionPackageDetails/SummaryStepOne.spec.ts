@@ -12,6 +12,7 @@ describe("Testing SummaryStepOne Component", () => {
     initialize: vi.fn().mockResolvedValue(Promise.resolve()),
     setInitialized: vi.fn().mockReturnValue(true),
     initialOrganization: vi.fn().mockReturnValue({
+      acquisition_package: "",
       country: "",
       address_type: "",
       city: "",

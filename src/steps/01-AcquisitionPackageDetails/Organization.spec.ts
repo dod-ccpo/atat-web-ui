@@ -45,6 +45,7 @@ const countryList: SelectData[] = [
 describe("Testing Organization Component", () => {
 
   const mockOrganizationDTO: OrganizationDTO = {
+    acquisition_package: "",
     disa_organization: disaOrgsList[0].value,
     organization_name: "",
     dodaac: "",
@@ -58,7 +59,8 @@ describe("Testing Organization Component", () => {
     country: "US",
   }; 
 
-  const mockOrganizationDTOCurrent = {
+  const mockOrganizationDTOCurrent: OrganizationDTO = {
+    acquisition_package: "",
     disa_organization: "",
     organization_name: "",
     dodaac: "",
