@@ -19,9 +19,13 @@
           <!-- pragma: allowlist nextline secret -->
           <SecurityRequirementsForm :hasSecret="hasSecret" :hasTopSecret="hasTopSecret"
             :isDOW="true"
-            :selectedSecretSecurityRequirements.sync="selectedSecretSecurityRequirements"
-            :selectedTopSecretSecurityRequirements.sync="selectedTopSecretSecurityRequirements"
-            :selectedClearanceLevel.sync="selectedClearanceLevel"
+            :selectedSecretSecurityRequirements="selectedSecretSecurityRequirements"
+            @update:selectedSecretSecurityRequirements="selectedSecretSecurityRequirements = $event"
+            :selectedTopSecretSecurityRequirements="selectedTopSecretSecurityRequirements"
+            @update:selectedTopSecretSecurityRequirements
+             ="selectedTopSecretSecurityRequirements = $event"
+            :selectedClearanceLevel="selectedClearanceLevel"
+            @update:selectedClearanceLevel="selectedClearanceLevel = $event"
           />
         </v-col>
       </v-row>

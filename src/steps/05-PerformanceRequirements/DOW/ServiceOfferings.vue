@@ -26,13 +26,15 @@
             <ATATCheckboxGroup
               id="CheckboxGroup"
               aria-describedby="CheckboxGroupLabel"
-              :value.sync="selectedOptions"
+              :value="selectedOptions"
+              @update:value="selectedOptions = $event"
               :items="checkboxItems"
               :card="false"
               class="copy-max-width"
               :hasOtherValue="true"
               :otherValue="otherValue"
-              :otherValueEntered.sync="otherValueEntered"
+              :otherValueEntered="otherValueEntered"
+              @update:otherValueEntered="otherValueEntered = $event"
               :otherValueRequiredMessage="otherValueRequiredMessage"
               otherEntryType="textfield"
               :rules="[
@@ -46,10 +48,12 @@
         <v-col v-else-if="!isServiceOfferingList">
           <OtherOfferings 
             :otherOfferingList="otherOfferingList"
-            :serviceOfferingData.sync="otherOfferingData" 
+            :serviceOfferingData="otherOfferingData"
+            @update:serviceOfferingData="otherOfferingData = $event"
             :isPeriodsDataMissing="isPeriodsDataMissing"
             :isClassificationDataMissing="isClassificationDataMissing"
-            :portabilityClassificationLevels.sync="portabilityClassificationLevels"
+            :portabilityClassificationLevels="portabilityClassificationLevels"
+            @update:portabilityClassificationLevels="portabilityClassificationLevels = $event"
           />
         </v-col>
 
@@ -71,7 +75,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { Component, Watch, Vue, toNative } from "vue-facing-decorator";
+import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import OtherOfferings from "./OtherOfferings.vue";
@@ -90,6 +94,7 @@ import {
   DOWServiceOffering,
 } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
+import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/saveOnLeave";
  
 
 @Component({
@@ -102,6 +107,15 @@ import { getIdText } from "@/helpers";
 })
 
 class ServiceOfferings extends Vue{
+  $refs!: SaveOnLeaveRefs
+
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from,
+      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+    }).catch(() => false)
+  }
+
   // requirementName will be pulled from data in future ticket
   public requirementName = "";
 

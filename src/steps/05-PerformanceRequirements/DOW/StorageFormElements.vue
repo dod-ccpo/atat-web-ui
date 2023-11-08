@@ -6,7 +6,8 @@
           id="StorageType"
           label="Storage type"
           :items="storageTypes"
-          :selectedValue.sync="offeringData.storageType"
+          :selectedValue="offeringData.storageType"
+          @update:selectedValue="offeringData.storageType = $event"
           :validateOnBlur="true"
           :rules="[
             $validators.required('Select a storage type.')
@@ -18,12 +19,14 @@
         <ATATTextField
           id="StorageAmount"
           label="Storage size"
-          :value.sync="offeringData.storageAmount"
+          :value="offeringData.storageAmount"
+          @update:value="offeringData.storageAmount = $event"
           tooltipText="Enter the amount of storage available to access and store 
             data on a long-term basis."
           :appendDropdown="true"
           :dropdownOptions="storageUnits"
-          :selectedDropdownValue.sync="offeringData.storageUnit"
+          :selectedDropdownValue="offeringData.storageUnit"
+          @update:selectedDropdownValue="offeringData.storageUnit = $event"
           type="number"
           :rules="[
             $validators.required('Enter a number greater than or equal to 0.'),
@@ -37,7 +40,8 @@
         <ATATTextField
           id="NumberOfInstances"
           class="mt-8 _input-max-width-240"
-          :value.sync="offeringData.numberOfInstances"
+          :value="offeringData.numberOfInstances"
+          @update:value="offeringData.numberOfInstances = $event"
           label="Number of instances needed"
           type="number"
           :rules="[
