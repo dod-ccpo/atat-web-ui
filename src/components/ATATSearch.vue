@@ -22,10 +22,10 @@
     <div class="d-flex" :style="'width: ' + width">
 
       <!-- 
-        :height="40"
         :validate-on="validationString"
         @update:error="setErrorMessage"
         @update:model-value="onInput"
+        @update:modelValue="_value = $event"
       -->
 
       <v-text-field
@@ -36,7 +36,7 @@
         variant="outlined"
         density="compact"
         :model-value="_value"
-        @update:modelValue="_value = $event"
+        @update:model-value="onInput"
         :placeholder="placeHolder"
         :persistent-placeholder="true"
         :rules="rules"
