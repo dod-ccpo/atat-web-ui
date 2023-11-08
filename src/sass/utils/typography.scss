@@ -192,14 +192,16 @@ hr, .hr {
     right: 2px;
     font-size: 18px;
   }
-  &._external-link--small {
-    &:after {
-      font-size: 15px;
-      top: -2px;
-      right: 5px;
-    }
+}
+._external-link--small {
+  @extend ._external-link;
+  &:before {
+    font-size: 15px;
+    top: 1px;
+    right: 5px;
   }
 }
+
 
 
 ._text-decoration-none {

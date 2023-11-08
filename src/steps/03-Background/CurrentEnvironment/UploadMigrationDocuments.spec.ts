@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import validators from "../../../plugins/validation";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import UploadMigrationDocuments
@@ -10,8 +8,10 @@ import UploadMigrationDocuments
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import Attachments from "@/store/attachments";
 import { AttachmentDTO, CurrentEnvironmentDTO } from "@/api/models";
+import { createStore } from 'vuex';
 
-Vue.use(Vuetify);
+vi.mock('@/store/acquisitionPackage')
+vi.mock('@/store/acquisitionPackage/currentEnvironment')
 
 const uploadingFile = {
   "file": {
@@ -53,20 +53,32 @@ const currEnvironmentDTO: CurrentEnvironmentDTO = {
   external_factors_architectural_design: ""
 };
 
+const actions = {
+  getAttachmentsBySysIds: vi.fn().mockResolvedValue({
+    file_name: 'file',
+    table_sys_id: 'abc123',
+  })
+}
+
+const mockStore = createStore({
+  modules: {
+    Attachments: {
+      namespaced: true,
+      actions
+    }
+  }
+})
 
 describe("Testing UploadMigrationDocuments Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(UploadMigrationDocuments, {
-      vuetify,
-      localVue
-    });
-  });
+  const wrapper: VueWrapper = shallowMount(UploadMigrationDocuments, {
+    props: {},
+    global: {
+      plugins: [mockStore,validators]
+    }
+  })
+
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   describe("FUNCTIONS", () => {
     it("hasChanged()", async () => {
@@ -74,35 +86,42 @@ describe("Testing UploadMigrationDocuments Component", () => {
         currentData: { hasMigrationDocumentation: "YES" },
         savedData: { hasMigrationDocumentation: "NO" }
       })
-      expect(wrapper.vm.hasChanged()).toBe(true);
+      expect(vm.hasChanged()).toBe(true);
     });
   
 
     describe("saveOnLeave() =>  ", () => {
       beforeEach(() => {
-        jest.spyOn(AcquisitionPackage, "setValidateNow")
-          .mockImplementation();
+        vi.spyOn(AcquisitionPackage, "setValidateNow")
+          .mockImplementation(Promise.resolve);
       })
       it("validates assigned Objects", async () => {
-        jest.spyOn(wrapper.vm, "hasChanged").mockReturnValue(true);
-        jest.spyOn(CurrentEnvironment, "saveCurrentEnvironment")
+        vi.spyOn(vm, "hasChanged").mockReturnValue(true);
+        vi.spyOn(AcquisitionPackage, 'setValidateNow').mockImplementation(
+          () => Promise.resolve()
+        );
+        vi.spyOn(CurrentEnvironment, "saveCurrentEnvironment")
           .mockReturnValue(Promise.resolve(true))
-        await wrapper.vm.saveOnLeave();
+        const saved = await vm.saveOnLeave();
+        expect(saved).toBe(true)
         //validating `Object.assign(this.currEnvDTO, this.currentData);`
-        const matchedKeys = Object.keys(wrapper.vm.$data.currEnvDTO)
+        const matchedKeys = Object.keys(vm.$data.currEnvDTO)
           .filter(
-            k => Object.keys(wrapper.vm.currentData).includes(k)
+            k => Object.keys(vm.currentData).includes(k)
           )
         expect(matchedKeys.length).toBeGreaterThan(0);
       });
 
       it("mocks an error", async () => {
         const errMessage = 'dummy Error Message'
-        jest.spyOn(wrapper.vm, "hasChanged").mockResolvedValue(true);
-        jest.spyOn(CurrentEnvironment, "saveCurrentEnvironment")
+        vi.spyOn(vm, "hasChanged").mockResolvedValue(true);
+        vi.spyOn(AcquisitionPackage, 'setValidateNow').mockImplementation(
+          () => Promise.resolve()
+        );
+        vi.spyOn(CurrentEnvironment, "saveCurrentEnvironment")
           .mockRejectedValue(errMessage)
-        await wrapper.vm.saveOnLeave()
-        expect(wrapper.vm.$data.saveOnLeaveError).toEqual(errMessage)
+        await vm.saveOnLeave()
+        expect(vm.$data.saveOnLeaveError).toEqual(errMessage)
       })
     })
 
@@ -113,27 +132,27 @@ describe("Testing UploadMigrationDocuments Component", () => {
             migration_documentation: ['dummyFile01']
           }
         })
-        expect(wrapper.vm.$data.currEnvDTO.migration_documentation).toHaveLength(1)
-        jest.spyOn(Attachments, "removeAttachment").
+        expect(vm.$data.currEnvDTO.migration_documentation).toHaveLength(1)
+        vi.spyOn(Attachments, "removeAttachment").
           mockImplementation(()=>Promise.resolve())
-        await wrapper.vm.onRemoveAttachment(uploadingFile);
-        expect(wrapper.vm.$data.currEnvDTO.migration_documentation).toHaveLength(0)
+        await vm.onRemoveAttachment(uploadingFile);
+        expect(vm.$data.currEnvDTO.migration_documentation).toHaveLength(0)
       });
 
       it("validates that store method was called", async () => {
         const setCurrentEnvironment =
-        jest.spyOn(CurrentEnvironment, "saveCurrentEnvironment").mockImplementation(
+        vi.spyOn(CurrentEnvironment, "saveCurrentEnvironment").mockImplementation(
           () => Promise.resolve(true)
         )
-        await wrapper.vm.onRemoveAttachment(uploadingFile);
+        await vm.onRemoveAttachment(uploadingFile);
         expect(setCurrentEnvironment).toHaveBeenCalled();
       });
       it("mocks an error ", async () => {
         const errMessage = 'error removing attachment with id ' + uploadingFile.attachmentId
-        jest.spyOn(wrapper.vm, "onRemoveAttachment")
+        vi.spyOn(vm, "onRemoveAttachment")
           .mockRejectedValue(errMessage)
         try {
-          await wrapper.vm.onRemoveAttachment()
+          await vm.onRemoveAttachment()
         } catch (error) {
           expect(error).toBe(errMessage);
         }
@@ -142,11 +161,20 @@ describe("Testing UploadMigrationDocuments Component", () => {
 
     describe("loadAttachments() => ", () => {
       it("ensure $data attributes are set as expected ", async () => {
+        const attachmentDTOArray = [
+          { file_name: "fileName001" },
+          { file_name: "fileName002" },
+          { file_name: "fileName003" },
+        ] as AttachmentDTO[]
         wrapper.setData({
           currEnvDTO: {}
         })
-        await wrapper.vm.loadAttachments()
-        expect(wrapper.vm.$data.currEnvDTO.migration_documentation).toHaveLength(0)
+
+        vi.spyOn(Attachments, 'getAttachmentsBySysIds').mockImplementation(async () => {
+          return attachmentDTOArray
+        })
+        await vm.loadAttachments()
+        expect(vm.$data.currEnvDTO.migration_documentation).toHaveLength(0)
       });
 
       it("ensure store methods are called with necessary params", async () => {
@@ -161,13 +189,13 @@ describe("Testing UploadMigrationDocuments Component", () => {
           { file_name: "fileName002" },
           { file_name: "fileName003" },
         ] as AttachmentDTO[]
-        jest.spyOn(Attachments,"getAttachmentsBySysIds").mockImplementation(
+        vi.spyOn(Attachments,"getAttachmentsBySysIds").mockImplementation(
           async () => {
             return attachmentDTOArray
           }
         )
-        await wrapper.vm.loadAttachments()
-        expect(wrapper.vm.$data.uploadedFiles).toHaveLength(3)
+        await vm.loadAttachments()
+        expect(vm.$data.uploadedFiles).toHaveLength(3)
       });
     })
 
@@ -177,17 +205,17 @@ describe("Testing UploadMigrationDocuments Component", () => {
           wrapper.setData({
             currEnvDTO: {}
           })
-          const getCurrentEnvironment = jest.spyOn(CurrentEnvironment, "getCurrentEnvironment")
+          const getCurrentEnvironment = vi.spyOn(CurrentEnvironment, "getCurrentEnvironment")
             .mockImplementation(async()=>{
               return currEnvironmentDTO as CurrentEnvironmentDTO
             }
             )
-          await wrapper.vm.loadOnEnter();
-          expect(wrapper.vm.$data.currEnvDTO).toEqual(currEnvironmentDTO);
-          expect(wrapper.vm.$data.hasMigrationDocumentation).toEqual(
+          await vm.loadOnEnter();
+          expect(vm.$data.currEnvDTO).toEqual(currEnvironmentDTO);
+          expect(vm.$data.hasMigrationDocumentation).toEqual(
             currEnvironmentDTO.has_migration_documentation
           )
-          expect(wrapper.vm.$data.savedData.has_migration_documentation).toEqual(
+          expect(vm.$data.savedData.has_migration_documentation).toEqual(
             currEnvironmentDTO.has_migration_documentation
           )
         });
@@ -200,8 +228,8 @@ describe("Testing UploadMigrationDocuments Component", () => {
           wrapper.setData({
             currEnvDTO: {}
           })
-          await wrapper.vm.onUpload(uploadingFile);
-          expect(wrapper.vm.currEnvDTO.migration_documentation).toHaveLength(1)
+          await vm.onUpload(uploadingFile);
+          expect(vm.currEnvDTO.migration_documentation).toHaveLength(1)
         });
 
         it("if wrapper.vm.currEnvDTO is populated ", async () => {
@@ -210,8 +238,8 @@ describe("Testing UploadMigrationDocuments Component", () => {
               migration_documentation: ['']
             }
           })
-          await wrapper.vm.onUpload(uploadingFile);
-          const isMigrationDocAdded = wrapper.vm.currEnvDTO.migration_documentation.some(
+          await vm.onUpload(uploadingFile);
+          const isMigrationDocAdded = vm.currEnvDTO.migration_documentation.some(
             (f: string) => f === uploadingFile.attachmentId
           )
           expect(isMigrationDocAdded).toBe(true);
@@ -219,19 +247,19 @@ describe("Testing UploadMigrationDocuments Component", () => {
       })
       it("validates that store method was called ", async () => {
         const setCurrentEnvironment =
-          jest.spyOn(CurrentEnvironment, "setCurrentEnvironment").mockImplementation(
+          vi.spyOn(CurrentEnvironment, "setCurrentEnvironment").mockImplementation(
             () => Promise.resolve()
           )
-        await wrapper.vm.onUpload(uploadingFile);
+        await vm.onUpload(uploadingFile);
         expect(setCurrentEnvironment).toHaveBeenCalled();
       });
 
       it("mocks an error ", async () => {
         const errMessage = 'error completing file upload with id ' + uploadingFile.attachmentId
-        jest.spyOn(CurrentEnvironment, "setCurrentEnvironment")
+        vi.spyOn(CurrentEnvironment, "setCurrentEnvironment")
           .mockRejectedValue(errMessage)
-        await wrapper.vm.onUpload(uploadingFile);
-        expect(wrapper.vm.$data.onUploadError).toEqual(errMessage);
+        await vm.onUpload(uploadingFile);
+        expect(vm.$data.onUploadError).toEqual(errMessage);
       });
     })
   })
@@ -240,15 +268,16 @@ describe("Testing UploadMigrationDocuments Component", () => {
     describe("currentData() => validates dataset with   ", () => {
       it("POPULATED value", async () => {
         const hasMigrationDocs = "YES"
-        wrapper.setData({ hasMigrationDocumentation: hasMigrationDocs })
-        const currentData = wrapper.vm.currentData;
-        expect(currentData.has_migration_documentation).toBe(hasMigrationDocs)
+        wrapper.setData({ currentData: {hasMigrationDocumentation: hasMigrationDocs} })
+        const currentData = vm.currentData;
+        expect(currentData.hasMigrationDocumentation).toBe(hasMigrationDocs)
       });
+
       it("NO value", async () => {
-        const hasMigrationDocs = ""
-        wrapper.setData({ hasMigrationDocumentation: hasMigrationDocs })
-        const currentData = wrapper.vm.currentData;
-        expect(currentData.has_migration_documentation).toBe(hasMigrationDocs)
+        const hasMigrationDoc = "NO"
+        wrapper.setData({ currentData: {hasMigrationDocumentation: hasMigrationDoc} })
+        const currentData = vm.currentData;
+        expect(currentData.hasMigrationDocumentation).toBe(hasMigrationDoc)
       });
     })
   })
@@ -256,10 +285,10 @@ describe("Testing UploadMigrationDocuments Component", () => {
   describe("WATCHERS", () => {
     it("onValueChange() => sets $data attribs as expected", async () => {
       wrapper.setData({ hasMigrationDocumentation: "YES" })
-      wrapper.vm.hasMigrationDocumentation = "NO";
-      await Vue.nextTick();
-      expect(wrapper.vm.$data.uploadedFiles).toHaveLength(0);
-      expect(wrapper.vm.$data.removeAll).toEqual(true);
+      vm.hasMigrationDocumentation = "NO";
+      await vm.$nextTick();
+      expect(vm.$data.uploadedFiles).toHaveLength(0);
+      expect(vm.$data.removeAll).toEqual(true);
     });
 
   })

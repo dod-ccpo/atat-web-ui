@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
-import Vue from "vue";
-import Vuetify from "vuetify";
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import {DefaultProps} from "vue/types/options";
+import { describe, it, expect } from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils'
 import UploadSystemDocuments
   from "@/steps/03-Background/CurrentEnvironment/UploadSystemDocuments.vue";
 import validators from "../../../plugins/validation";
@@ -11,15 +9,12 @@ import { AttachmentDTO, CurrentEnvironmentDTO } from "@/api/models";
 import Attachments from "@/store/attachments";
 import { uploadingFile } from "../../../../types/Global";
 import { AttachmentServiceCallbacks } from "@/services/attachment";
+import { createStore } from 'vuex';
 
+vi.mock('@/store/acquisitionPackage/currentEnvironment')
 
-Vue.use(Vuetify);
 
 describe("Testing UploadSystemDocuments Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
   const mockEnvironment = {
     has_system_documentation:"NO"
@@ -44,26 +39,46 @@ describe("Testing UploadSystemDocuments Component", () => {
   const mockAttachment2 ={
     file_name: "empty attachment",
   } as AttachmentDTO
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(UploadSystemDocuments, {
-      vuetify,
-      localVue
-    });
+  
+  const actions = {
+    getAttachmentsBySysIds: vi.fn().mockResolvedValue({
+      file_name: 'file',
+      table_sys_id: 'abc123',
+    })
+  }
+  
+  const mockStore = createStore({
+    modules: {
+      Attachments: {
+        namespaced: true,
+        actions
+      }
+    }
+  })
+  
+  const wrapper: VueWrapper = shallowMount(UploadSystemDocuments, {
+    props: {},
+    global: {
+      plugins: [mockStore,validators]
+    }
+  })
 
-    jest.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
+  
+  beforeEach(() => {
+    vi.spyOn(CurrentEnvironment, 'getCurrentEnvironment').mockImplementation(
       () => Promise.resolve(mockEnvironment)
     );
-    jest.spyOn(CurrentEnvironment, 'loadCurrentEnvironment').mockImplementation(
+    vi.spyOn(CurrentEnvironment, 'loadCurrentEnvironment').mockImplementation(
       () => Promise.resolve(mockEnvironment)
     );
-    jest.spyOn(Attachments, 'getAttachmentsBySysIds').mockImplementation(
+    vi.spyOn(Attachments, 'getAttachmentsBySysIds').mockImplementation(
       () => Promise.resolve([mockAttachment1,mockAttachment2])
     );
-    jest.spyOn(Attachments, 'removeAttachment').mockImplementation(
+    vi.spyOn(Attachments, 'removeAttachment').mockImplementation(
       () => Promise.resolve()
     );
-    jest.spyOn(AttachmentServiceCallbacks, 'registerUploadCallBack').mockImplementation(
+    vi.spyOn(AttachmentServiceCallbacks, 'registerUploadCallBack').mockImplementation(
       () => Promise.resolve()
     );
   });
@@ -76,7 +91,7 @@ describe("Testing UploadSystemDocuments Component", () => {
 
     describe("FUNCTIONS", () => {
       beforeEach(() =>{
-        jest.spyOn(CurrentEnvironment, 'setCurrentEnvironment').mockImplementation(
+        vi.spyOn(CurrentEnvironment, 'setCurrentEnvironment').mockImplementation(
           () => Promise.resolve()
         );
       })
@@ -84,9 +99,9 @@ describe("Testing UploadSystemDocuments Component", () => {
         wrapper.setData({
           hasSystemDocumentation:"YES"
         })
-        await Vue.nextTick();
-        wrapper.vm.$data.savedData = 'test2'
-        expect(wrapper.vm.hasChanged()).toBe(true);
+        await vm.$nextTick();
+        vm.$data.savedData = 'test2'
+        expect(vm.hasChanged()).toBe(true);
       });
 
       it("test saveOnLeave() return true", async () => {
@@ -95,19 +110,18 @@ describe("Testing UploadSystemDocuments Component", () => {
             hasSystemDocumentation:""
           }
         })
-        await Vue.nextTick();
-        const saveOnLeave = await wrapper.vm.saveOnLeave()
+        await vm.$nextTick();
+        const saveOnLeave = await vm.saveOnLeave()
         expect(saveOnLeave).toBeTruthy();
       });
 
 
       it("test selectedUploadChange", () => {
-        wrapper.vm.$data.selectedUpload = "NO";
-        const result = wrapper.vm.$data.removeAll
-        wrapper.vm.selectedUploadChange()
-        Vue.nextTick(() => {
-          expect(result).toBe(true);
-        })
+        
+        wrapper.setData({hasSystemDocumentation: 'NO'})
+        vm.selectedUploadChange()
+        const result = vm.$data.removeAll
+        expect(result).toBe(true);
       })
 
       it("test onUpload success", () => {
@@ -119,10 +133,10 @@ describe("Testing UploadSystemDocuments Component", () => {
             system_documentation:""
           }
         })
-        Vue.nextTick()
-        wrapper.vm.onUpload(file);
-        Vue.nextTick()
-        const fileUploaded = wrapper.vm.$data.currEnvDTO.system_documentation.includes("1234")
+        vm.$nextTick()
+        vm.onUpload(file);
+        vm.$nextTick()
+        const fileUploaded = vm.$data.currEnvDTO.system_documentation.includes("1234")
         expect(fileUploaded).toBe(true);
       })
 
@@ -130,12 +144,12 @@ describe("Testing UploadSystemDocuments Component", () => {
         const file = {
           attachmentId: '1234',
         } as uploadingFile
-        console.error = jest.fn();
-        jest.spyOn(CurrentEnvironment, 'setCurrentEnvironment').mockImplementation( () => {
+        console.error = vi.fn();
+        vi.spyOn(CurrentEnvironment, 'setCurrentEnvironment').mockImplementation( () => {
           throw new Error("mock error");
         });
-        wrapper.vm.onUpload(file);
-        Vue.nextTick()
+        vm.onUpload(file);
+        vm.$nextTick()
         expect(console.error).toHaveBeenCalledWith("error completing file upload with id 1234");
 
       })
@@ -149,9 +163,9 @@ describe("Testing UploadSystemDocuments Component", () => {
             system_documentation:[file]
           }
         })
-        await wrapper.vm.onRemoveAttachment(file);
-        await Vue.nextTick()
-        const fileUploaded = wrapper.vm.$data.currEnvDTO.system_documentation.includes("1234")
+        await vm.onRemoveAttachment(file);
+        await vm.$nextTick()
+        const fileUploaded = vm.$data.currEnvDTO.system_documentation.includes("1234")
         expect(fileUploaded).toBe(false);
       })
 
@@ -160,8 +174,8 @@ describe("Testing UploadSystemDocuments Component", () => {
     describe("GETTERS", () => {
       it("test get currentData", async () => {
         wrapper.setData({hasSystemDocumentation: ""})
-        await Vue.nextTick();
-        const currentData = wrapper.vm.currentData
+        await vm.$nextTick();
+        const currentData = vm.currentData
         expect(currentData).toStrictEqual({"has_system_documentation": ""})
       });
     })

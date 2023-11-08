@@ -39,7 +39,7 @@
 
           </v-col>
           <v-col class="pl-10">
-            <div class="_primary-lighter _border-rounded-more pa-8">
+            <div class="bg-primary-lighter _border-rounded-more pa-8">
 
               <p class="mb-0">
                 You can expect to:
@@ -57,8 +57,8 @@
                 class="v-btn link-button no-border"
                 @click="toggleShowNewFeatures"
               >
-                <v-icon v-if="!showNewFeatures">navigate_next</v-icon>
-                <v-icon v-if="showNewFeatures">expand_more</v-icon>
+                <v-icon v-if="!showNewFeatures">mdi-chevron-right</v-icon>
+                <v-icon v-if="showNewFeatures">mdi-chevron-down</v-icon>
                 <span><strong>Stay tuned for upcoming features! Read more</strong></span>
               </v-btn>
               <v-expand-transition>
