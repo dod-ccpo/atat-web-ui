@@ -84,7 +84,8 @@
             :id="id + '_textField'"
             variant="outlined"
             density="compact"
-            :model-value.sync="_value"
+            :model-value="_value"
+            @update:modelValue="_value = $event"
             :placeholder="placeHolder"
             @blur="validate"
             class="_phone-number-input"
@@ -124,7 +125,8 @@
           outlined
           dense
           :height="42"
-          :value.sync="_extension"
+          :value="_extension"
+          @update:value="_extension = $event"
           class="_phone-extension-input"
           @input="inputActions"
           autocomplete="off"
