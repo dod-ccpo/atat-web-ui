@@ -287,7 +287,13 @@ export class DashboardService {
    * Uses aggregate api response from funding_requirement table and all the data from the task_order
    * and transforms the data as needed by the JWCCDashboard component.
    */
-  public async getTotals(taskOrderNumbers: string[]): Promise<any> {
+  public async getTotals(taskOrderNumbers: string[]): Promise<
+  TaskOrderAggregate & {
+    costGroups: CostGroup[],
+    fundsSpentToDate: number,
+    fundsSpentByCSP: Record<string, EntitySpending>,
+    fundsSpentByAgency: Record<string, EntitySpending>,
+  }> {
     //grab the earliest and the latest pop-start date available
     const taskOrderQuery = taskOrderNumbers.reduce((prev, current) => {
       const query = prev
