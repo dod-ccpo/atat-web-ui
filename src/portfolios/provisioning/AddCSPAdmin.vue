@@ -186,8 +186,8 @@
                 :rules="DoDIdRules"
               />
 
-              <div v-if="classificationLevels.length > 1">
                 <ATATCheckboxGroup 
+                  v-if="classificationLevels.length > 1" 
                   id="ClassificationSelection"
                   class="mt-10"
                   groupLabel="What classification level should this individual have access to?"
@@ -213,7 +213,6 @@
                   cardWidth="180"
                   :noDescriptions="true"
                 />
-              </div>
 
               <ATATTextField
                 id="UnclassifiedEmail"
@@ -758,7 +757,6 @@ class AddCSPAdmin extends Vue {
 
       this.impactLevels = storeData.selectedILs || [];
       if (storeData.selectedILs && storeData.selectedILs.length > 1) {
-        console.log(storeData)
         this.showUnclassifiedILs = true
         this.createILCheckboxes(storeData.selectedILs)
       } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {

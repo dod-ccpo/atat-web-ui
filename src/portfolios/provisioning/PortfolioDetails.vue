@@ -199,7 +199,6 @@ class PortfolioDetails extends Vue {
 
   public async saveOnLeave(): Promise<boolean> {
     try {
-      console.log(this.selectedILs, this.currentData)
       this.selectedILs.sort(); // ensure correct order e.g., IL2, IL4, IL5
       await PortfolioStore.setPortfolioProvisioning(this.currentData);
     } catch (error) {
