@@ -8,7 +8,8 @@
             <component 
               :is="packageDocComponent" 
               :isErrored="isErrored"
-              :isGenerating.sync="isGenerating"
+              :isGenerating="isGenerating"
+              @update:isGenerating="isGenerating = $event"
               @regenerate="displayGeneratingDocumentsComponent()"            
             />
           </div>
@@ -49,7 +50,7 @@ class GeneratingPackageDocuments extends Vue {
   private docJobStatus = "" ;
 
   public packageDocComponent: (typeof Vue) = 
-    this.$route.query.direction === "next"
+    this.$route?.query.direction === "next"
       ? GeneratingDocuments
       : ReviewDocuments
 
@@ -110,7 +111,7 @@ class GeneratingPackageDocuments extends Vue {
 
   public async mounted(): Promise<void> {
     await this.getDocJobStatus();
-    if (this.$route.query.direction === "next"){
+    if (this.$route?.query.direction === "next"){
       await this.displayGeneratingDocumentsComponent();
     } else {
       await this.displayReviewComponent();

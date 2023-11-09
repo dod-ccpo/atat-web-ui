@@ -161,24 +161,27 @@
                           </h2>
                           <ATATCheckboxGroup
                             v-if="DAPPSExperience > 3"
-                            id="CustomerFeedback"
-                            :value.sync="selectedFeedbackOptions"
+                            id="CustomerFeedback0"
+                            :value="selectedFeedbackOptions"
+                            @update:value="selectedFeedbackOptions = $event"
                             :items="positiveFeedbackOptions"
                             class="copy-max-width mb-10"
                           />
                           <ATATCheckboxGroup
                             v-if="DAPPSExperience <= 3"
-                            id="CustomerFeedback"
-                            :value.sync="selectedFeedbackOptions"
+                            id="CustomerFeedback1"
+                            :value="selectedFeedbackOptions"
+                            @update:value="selectedFeedbackOptions = $event"
                             :items="negativeFeedbackOptions"
                             class="copy-max-width mb-10"
                           />
                           <p class="mb-2">Other, please specify </p>
                           <ATATTextArea
-                            id="otherFeedback"
+                            id="otherFeedback2"
                             class="width-100 mb-10"
                             :rows="3"
-                            :value.sync="otherFeedbackValue"
+                            :value="otherFeedbackValue"
+                            @update:value="otherFeedbackValue = $event"
                           />
                           <v-btn
                             class="_primary ml-auto"
