@@ -26,6 +26,7 @@
               </p>
             <ATATCheckboxGroup
               id="ContractTypesCheckboxes"
+              :key="selectedContractTypes.toString()"
               :value="selectedContractTypes"
               @update:value="selectedContractTypes = $event"
               :items="checkboxItems"
@@ -105,6 +106,7 @@ class ContractType extends Vue {
   protected selectedContractTypesChanged(newSelections: string[]): void {
     this.firmFixedPriceSelected = newSelections.indexOf("FFP") > -1 ? "true" : "false";
     this.timeAndMaterialsSelected = newSelections.indexOf("T&M") > -1 ? "true" : "false";
+
   }
 
   @Watch("timeAndMaterialsSelected")
@@ -177,6 +179,7 @@ class ContractType extends Vue {
           this.selectedContractTypes.push("T&M");
         }
         
+        console.log('parent: ', this.selectedContractTypes)
       }
     } else {
       AcquisitionPackage.setContractType(this.currentData);
