@@ -231,6 +231,7 @@ class SeverabilityAndIncrementalFunding extends Vue {
     period_unit_count: "",
     period_type: "",
     option_order: "",
+    acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || "",
   };
   private incrementallyFundOptions: RadioButton[] = [
     {
