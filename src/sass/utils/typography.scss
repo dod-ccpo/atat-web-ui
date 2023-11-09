@@ -180,7 +180,8 @@ hr, .hr {
   padding-right: 24px;
   display: inline-block;
   white-space: nowrap;
-    text-decoration: underline;
+  text-decoration: underline;
+  color: $primary;
   &:before {
     font-family: $icon-font;
     content: "\F0327";

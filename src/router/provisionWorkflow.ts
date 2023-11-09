@@ -7,6 +7,7 @@ import PortfolioDetails from "@/portfolios/provisioning/PortfolioDetails.vue";
 import AddCSPAdmin from "@/portfolios/provisioning/AddCSPAdmin.vue";
 import ReadyToProvision from "@/portfolios/provisioning/ReadyToProvision.vue";
 import AddToExistingPortfolio from "@/portfolios/provisioning/AddToExistingPortfolio.vue"
+import ProvisioningIssue from "@/portfolios/provisioning/ProvisioningIssue.vue"
 
 const GeneratedFromPackageRouteResolver = (): string => {
   return "";
@@ -21,6 +22,7 @@ const AddToExistingPortfolioResolver = (): string => {
 export const provWorkflowRouteNames = {
   ProvisioningIndex: "Provisioning_Index",
   ProvisionWorkflow: "Provision_Workflow",
+  ProvisioningIssue: "Provisioning_Issue",
   AwardedTaskOrder: "Awarded_Task_Order",
   AddToExistingPortfolio: "Add_To_Existing_Portfolio",
   GeneratedFromPackage: "Generated_From_Package",
@@ -103,6 +105,11 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
         component: ReadyToProvision,
         continueButtonText: "Start Provisioning",
         altContinueAction: "startProvisioning",
+      },
+      {
+        name: provWorkflowRouteNames.ProvisioningIssue,
+        path: "/provisioning-issue",
+        component: ProvisioningIssue
       }
     ]
   },

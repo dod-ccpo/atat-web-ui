@@ -23,7 +23,8 @@
                 <label for="InitialAmount"> Initial funding increment </label>
                 <ATATTextField
                   id="InitialAmount"
-                  :value.sync="initialAmountStr"
+                  :value="initialAmountStr"
+                  @update:value="initialAmountStr = $event"
                   :alignRight="true"
                   :isCurrency="true"
                   :showErrorMessages="false"
@@ -96,7 +97,8 @@
                         :id="'IncrementPeriod' + index"
                         :items="getFiscalQuarters(index)"
                         width="190"
-                        :selectedValue.sync="selectedQuarters[index]"
+                        :selectedValue="selectedQuarters[index]"
+                        @update:selectedValue="selectedQuarters[index] = $event"
                         class="mr-4"
                         :class="{
                           'customized-error-control error--text': index === outOfRangeIndex
@@ -109,7 +111,8 @@
                       <ATATTextField
                         :id="'Amount' + index"
                         :ref="'Amount' + index"
-                        :value.sync="fundingIncrements[index].amt"
+                        :value="fundingIncrements[index].amt"
+                        @update:value="fundingIncrements[index].amt = $event"
                         :alignRight="true"
                         :isCurrency="true"
                         :showErrorMessages="false"
@@ -173,7 +176,8 @@
 
                 <ATATTextField
                   id="TotalAmount"
-                  :value.sync="totalAmount"
+                  :value="totalAmount"
+                  @update:value="totalAmount = $event"
                   :alignRight="true"
                   :isCurrency="true"
                   width="190"

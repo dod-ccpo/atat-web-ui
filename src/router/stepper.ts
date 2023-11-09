@@ -196,7 +196,6 @@ import {
   OtherOfferingSummaryPathResolver,
   DOWSecurityRequirementsPathResolver,
   IGCESurgeCapabilities,
-  IGCECannotProceedResolver,
   IGCEOptimizeOrReplicateResolver,
   IGCEArchitecturalDesignSolutionsResolver,
   IGCESupportingDocumentationResolver,
@@ -1262,15 +1261,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: CreatePriceEstimate,
         routeResolver: CreatePriceEstimateResolver
-      },
-      {
-        menuText: "Cannot Proceed",
-        excludeFromMenu: true,
-        path: "cannot-proceed",
-        name: routeNames.CannotProceed,
-        completePercentageWeight: 1,
-        component: CannotProceed,
-        routeResolver: IGCECannotProceedResolver
       },
       {
         menuText: "Optimize Or Replicate",

@@ -38,7 +38,8 @@
           placeHolder="1-50"
           suffix="%"
           width="150"
-          :value.sync="capacity"
+          :value="capacity"
+          @update:value="capacity = $event"
           :rules="[
             $validators.isBetween(1, 50, 'Please enter a number between 1-50'),
             $validators.required('Please enter a number between 1-50'),

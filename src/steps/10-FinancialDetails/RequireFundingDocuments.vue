@@ -22,7 +22,8 @@
            
               id="GInvoicingOptions"
               :items="requireFundingOptions"
-              :value.sync="requireFundingSelection"
+              :value="requireFundingSelection"
+              @update:value="requireFundingSelection = $event"
               :rules="[$validators.required('Please select an option.')]"
             />
           </div>

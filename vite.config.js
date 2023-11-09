@@ -233,15 +233,8 @@ export default defineConfig(({command, mode}) => {
         'src/steps/02-EvaluationCriteria/EvalPlan/components/CreateEvalPlanSlideOut.spec.ts',
         'src/steps/02-EvaluationCriteria/EvalPlan/components/CustomSpecifications.spec.ts',
         'src/steps/02-EvaluationCriteria/SummaryStepTwo.spec.ts',
-        'src/steps/03-Background/components/BusinessSize.spec.ts',
-        'src/steps/03-Background/components/ContractNumber.spec.ts',
-        'src/steps/03-Background/components/IncumbentContractorName.spec.ts',
-        'src/steps/03-Background/components/LevelOfCompetition.spec.ts',
-        'src/steps/03-Background/components/TaskOrderNumber.spec.ts',
         'src/steps/03-Background/CurrentContract/components/CurrentContractOptions.spec.ts',
-        'src/steps/03-Background/CurrentContract/CurrentContract.spec.ts',
-        'src/steps/03-Background/CurrentContract/CurrentContractDetails.spec.ts',
-        'src/steps/03-Background/CurrentContract/ProcurementHistorySummary.spec.ts',
+        'src/steps/03-Background/CurrentEnvironment/EnvironmentSummary.spec.ts',
         'src/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.spec.ts', //nested store API calls
         'src/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.spec.ts', //nested store API calls
         'src/steps/05-PerformanceRequirements/CurrentFunctions/ReplicateAndOptimize.spec.ts',

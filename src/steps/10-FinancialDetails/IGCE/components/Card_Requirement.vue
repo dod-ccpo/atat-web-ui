@@ -38,7 +38,8 @@
       </v-col>
       <v-col class="flex-grow-0 flex-shrink-0">
         <ATATTextField
-          :value.sync="estimate"
+          :value="estimate"
+          @update:value="estimate = $event"
           :isCurrency="true"
           :showErrorMessages="false"
           :appendText=type
