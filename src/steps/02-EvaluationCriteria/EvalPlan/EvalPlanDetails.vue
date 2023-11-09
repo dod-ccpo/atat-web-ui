@@ -36,7 +36,7 @@
       />
 
       <CustomSpecifications 
-      v-if="showCustomSpecifications"
+        v-if="showCustomSpecifications"
         id="CustomSpecEntry"
         :sourceSelection="evalPlan.source_selection"
         :isDifferentiator="false"
@@ -160,7 +160,8 @@ class EvalPlanDetails extends Vue {
 
   public customSpecifications: string[] = [];
 
-  public initCustomSpecs(): void {  
+  public initCustomSpecs(): void {
+    console.log('custom: ', this.customSpecifications)
     this.customSpecifications = this.evalPlan.custom_specifications?.split(",") || [];
     if (!this.isLoading) {
       this.$nextTick(() => {
@@ -228,7 +229,6 @@ class EvalPlanDetails extends Vue {
       this.selectedStandardsRadioItem = this.evalPlan.has_custom_specifications || "";
 
       this.lumpSumCheckboxOptions = this.setLumpSumCheckboxOptions();
-
     }
   }
 
