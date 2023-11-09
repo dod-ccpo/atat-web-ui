@@ -100,7 +100,7 @@ import AcquisitionPackage, {
 import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import { YesNo } from "types/Global";
+import { SelectData, YesNo } from "types/Global";
  
 @Component({
   components: {
@@ -122,6 +122,13 @@ class ProjectOverview extends Vue {
     }).catch(() => false)
   }
 
+  private foo = 0;
+  private unit = ""
+  public storageUnits: SelectData[] = [
+    { text: "Gigabyte (GB)", value: "GB" },
+    { text: "Terabyte (TB)", value: "TB" },
+    { text: "Petabyte (PB)", value: "PB" },
+  ];
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";
