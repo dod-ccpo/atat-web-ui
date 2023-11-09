@@ -38,7 +38,7 @@
               legend="Based on your market research, do any of the following exceptions to fair 
                 opportunity apply to your acquisition?"
               classes="copy-max-width mb-10 mt-3"
-              :value="selectedException"
+              :selectedException="selectedException"
               @onSelected="selectedException = $event"
               :rules="[$validators.required('Please select an option')]"  
             />
@@ -160,11 +160,9 @@ class Exceptions extends Vue {
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity as string;
     }
-
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

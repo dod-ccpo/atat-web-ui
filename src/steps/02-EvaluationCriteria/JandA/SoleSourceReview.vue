@@ -69,7 +69,11 @@
               :maxChars="2500"
               :validateItOnBlur="true"
               :noResize="false"
-              :rules="soleSourceRules"
+              :rules="[
+                $validators.required(
+                  `Enter an explanation for the cause of your sole source situation.`
+                ),
+                $validators.maxLength(2500)]"
             />
 
             <ExplanationButtons 
@@ -164,13 +168,7 @@ class SoleSourceReview extends Vue {
   public showAlert = false;
   public hasFormBeenEdited = false;
   public hasSuggestedTextBeenEdited = false;
-  public explanation = AcquisitionPackage.fairOppExplanations.soleSource;
-  public soleSourceRules: Array<unknown> = [
-    this.$validators.required(`Enter an explanation for the cause of 
-                  your sole source situation.`),
-    this.$validators.maxLength(2500)
-  ];
-    
+  public explanation = AcquisitionPackage.fairOppExplanations.soleSource;    
 
   public get pageHeaderIntro(): string {
     return this.useCustomTextOnLoad ? "Tell us about" : "Let’s review";
