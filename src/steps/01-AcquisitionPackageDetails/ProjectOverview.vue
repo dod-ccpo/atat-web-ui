@@ -15,6 +15,7 @@
           </p>
           <div class="mt-10">
             <ProjectTitle
+              ref="ProjectTitleRef"
               label="Project/Requirement Title"
               :rules="[
                 $validators.required('Please enter your project title'),
@@ -26,6 +27,7 @@
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectScope
+              ref="ProjectScopeRef"
               label="What is the scope of your requirement?"
               :projectScope="projectScope"
               @update:projectScope="projectScope = $event"
@@ -71,6 +73,7 @@
           <hr/>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectDisclaimer
+              ref="disclaimerGroupLabelRef"
               groupLabelId="disclaimerGroupLabel"
               :selectedDisclaimer="selectedDisclaimer"
               @update:selectedDisclaimer="selectedDisclaimer = $event"
@@ -99,10 +102,10 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import AcquisitionPackage, {
   StoreProperties,
 } from "@/store/acquisitionPackage";
-import { To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { To, From, beforeRouteLeaveFunction, SaveOnLeaveRefs } from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import { SaveOnLeaveRefs, YesNo } from "types/Global";
+import {  YesNo } from "types/Global";
  
 @Component({
   components: {
@@ -122,7 +125,7 @@ class ProjectOverview extends Vue {
     debugger;
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
-      form: this.$refs as SaveOnLeaveRefs, 
+      form: this.$refs as SaveOnLeaveRefs,
       nextTick: this.$nextTick,
     }).catch(() => false)
   }
@@ -143,6 +146,7 @@ class ProjectOverview extends Vue {
     AcquisitionPackage.setProjectTitle(value);
   }
 
+  
   private get currentData(): ProjectOverviewDTO {
     return {
       title: this.currentTitle,

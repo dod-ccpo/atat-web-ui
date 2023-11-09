@@ -39,6 +39,7 @@
             <ATATRadioGroup
               class="copy-max-width mb-10"
               id="BAARadioOptions"
+              ref="BAARadioOptions"
               legend="Does this effort provide for definition of a Business Associate 
                 who may be involved in but not limited to design or development (in whole 
                 or in part) of the system, and/or for creating, receiving, transmitting, 
@@ -127,11 +128,11 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import BAALearnMore from "./BAALearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { RadioButton, SlideoutPanelContent } from "types/Global";
+import { RadioButton, SaveOnLeaveRefs, SlideoutPanelContent } from "types/Global";
 import {SensitiveInformationDTO} from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 
 @Component({
@@ -146,12 +147,13 @@ import LoadOnEnter from "@/mixins/loadOnEnter";
 
 class BAA extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
+    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

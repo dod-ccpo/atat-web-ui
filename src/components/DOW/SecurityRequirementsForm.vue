@@ -13,6 +13,7 @@
       <hr />
     </div>
     <SecurityRequirementsCheckboxes
+      ref="SecretCheckboxes"
       v-if="hasSecret"
       :hasSecret="hasSecret"
       :isDOW="isDOW"
@@ -22,6 +23,7 @@
     />
     <hr v-if="hasTopSecret && hasSecret" />
     <SecurityRequirementsCheckboxes
+      ref="TopSecretCheckboxes"
       v-if="hasTopSecret"
       :hasTopSecret="hasTopSecret"
       :isDOW="isDOW"
@@ -29,7 +31,7 @@
       :selectedSecurityRequirements="_selectedTopSecretSecurityRequirements"
       @update:selectedSecurityRequirements="_selectedTopSecretSecurityRequirements = $event"
     />
-  </div>
+    </div>
 </template>
 <script lang="ts">
 

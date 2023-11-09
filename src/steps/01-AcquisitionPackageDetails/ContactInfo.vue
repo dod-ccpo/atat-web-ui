@@ -4,6 +4,7 @@
     <h1 class="page-header">Let’s find out about the primary point of contact for this 
       requirement</h1>
     <ATATRadioGroup
+      ref="contactRolesRadioGroup"
       legend="What role best describes your affiliation with the DoD?"
       id="ContactRole"
       :items="contactRoles"

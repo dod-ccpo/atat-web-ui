@@ -26,6 +26,7 @@
             </ATATAlert>
 
             <ATATRadioGroup
+              ref="PIIOptions"
               class="copy-max-width mb-10"
               id="PIIOptions"
               legend="Does this effort provide for the design, development, or operation of a system

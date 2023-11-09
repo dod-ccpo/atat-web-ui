@@ -16,6 +16,7 @@
               <ATATRadioGroup
                 class="copy-max-width mb-n6 max-width-740"
                 id="RecurringOptions"
+                ref="RecurringOptionsRadioRef"
                 :card="true"
                 :items="recurringOptions"
                 @radioButtonClicked="recurringOptionsClicked"
@@ -41,6 +42,7 @@
               </ATATAlert>
               <ATATRadioGroup
                   class="copy-max-width max-width-740"
+                  ref="RecurringRequirementRadioRef"
                   id="followOnProcurementBeSoleSourcedOptions"
                   :legend="followOnProcurementBeSoleSourcedLegend"
                   :card="false"
@@ -63,11 +65,11 @@ import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATAlert from "@/components/ATATAlert.vue";
 import AcquisitionPackage, { isMRRToBeGenerated } from "@/store/acquisitionPackage";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { PeriodOfPerformanceDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
-import { RadioButton } from "../../../types/Global";
+import { RadioButton, SaveOnLeaveRefs } from "../../../types/Global";
 import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
 
 @Component({
@@ -77,12 +79,13 @@ import Periods, { defaultPeriodOfPerformance } from "@/store/periods";
   },
 })
 class RecurringRequirement extends Vue {
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

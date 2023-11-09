@@ -39,8 +39,8 @@
                 @update:model-value="searchCountries"
                 append-icon="search"
                 id="DropdownTextField"
-                clearable="true"
-                autofocus="true"
+                :clearable="true"
+                :autofocus="true"
                 autocomplete="off"
               />
             </template>

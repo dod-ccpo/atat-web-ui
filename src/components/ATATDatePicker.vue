@@ -1,5 +1,9 @@
 <template>
-  <div :id="id + 'DatePickerContainer'" class="atat-date-picker">
+  <v-form
+    :id="id + 'DatePickerContainer'" 
+    class="atat-date-picker"
+    ref="atatDatePickerForm"
+    lazy-validation="true">
     <div class="d-flex align-center mb-2" v-if="label">
       <label
         :id="id + 'DatePickerLabel'"
@@ -17,7 +21,7 @@
       />
     </div>
     <v-text-field
-      ref="atatDatePicker"
+      ref="atatDatePickerTextField"
       :id="id + 'DatePickerTextField'"
       :placeholder="placeHolder"
       class="text-primary _input-max-width d-flex align-center"
@@ -38,7 +42,7 @@
     <div v-if="displayHelpText" class="help-text mt-2">
       {{ helpText }}
     </div>
-  </div>
+  </v-form>
 </template>
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
@@ -64,7 +68,7 @@ import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 class ATATDatePicker extends Vue {
   // refs
   $refs!: {
-    atatDatePicker: ComponentPublicInstance & {
+    atatDatePickerTextField: ComponentPublicInstance & {
       validate: () => Promise<SubmitEventPromise>;
       value: string;
       resetValidation: ()=> boolean;
@@ -136,7 +140,7 @@ class ATATDatePicker extends Vue {
       this.removeErrors();
     }
     this.$nextTick(() => {
-      this.$refs.atatDatePicker.validate()
+      this.$refs.atatDatePickerTextField.validate()
       this.setErrorMessage();
     });
   }
@@ -183,7 +187,7 @@ class ATATDatePicker extends Vue {
       /// don't show menu when user is typing date
       // makes validation hard to manage
       if (e.key.toLowerCase()==="enter"){
-        this.$refs.atatDatePicker.validate();
+        this.$refs.atatDatePickerTextField.validate();
       }
      
       if(Number.isNaN(parseInt(e.key))) {
@@ -230,14 +234,13 @@ class ATATDatePicker extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatDatePicker.validate()){
-      this.setErrorMessage();
-    }
+    this.setErrorMessage();
   }
 
   private async setErrorMessage(): Promise<void> {
-    this.$refs.atatDatePicker.validate().then(
+    this.$refs.atatDatePickerTextField.validate().then(
       (response: unknown) => {
+        debugger;
         this.errorMessages = response as string[];
         this.$emit('errorMessage', this.errorMessages);
       }

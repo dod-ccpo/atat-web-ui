@@ -88,10 +88,6 @@ import { ProjectOverviewDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepTouched } from "@/store/summary";
-import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
-import { ComponentPublicInstance } from "vue";
- 
-
 
 @Component({
   components: {
@@ -107,6 +103,7 @@ class ContractingShop extends Vue {
 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
+    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs,

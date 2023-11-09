@@ -7,6 +7,7 @@
             <h1 class="page-header">Tell us about your FOIA Coordinator</h1>
 
             <ATATTextField
+              ref="FullName"
               id="FullName"
               class="_input-max-width mb-10"
               label="Full name"
@@ -21,6 +22,7 @@
             />
 
             <ATATTextField
+              ref="Email"
               id="Email"
               class="_input-max-width mb-10"
               label="Email address"
@@ -36,6 +38,7 @@
             <hr />
 
             <ATATAddressForm
+              ref="AddressForm"
               :addressTypeOptions="addressTypeOptions"
               :addressTypes="addressTypes"
               :city="city"
@@ -116,9 +119,9 @@ import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage"
 import { SensitiveInformationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
-import { RadioButton, SelectData } from "../../../types/Global";
+import { RadioButton, SaveOnLeaveRefs, SelectData } from "../../../types/Global";
 import ContactData from "@/store/contactData";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -129,15 +132,16 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 class FOIACoordinator extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
+    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
-
+  
   private addressTypes = {
     USA: "US",
     MIL: "MILITARY",

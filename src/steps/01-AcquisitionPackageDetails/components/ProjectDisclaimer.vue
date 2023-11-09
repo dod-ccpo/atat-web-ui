@@ -11,6 +11,7 @@
          must confirm their understanding of this responsibility.
     </p>
       <ATATCheckboxGroup
+        ref="projectDisclaimerGroup"
         id="projectDisclaimer"
         :card='false'
         label='disclaimer.label'

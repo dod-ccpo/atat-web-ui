@@ -167,7 +167,7 @@
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import draggable from "vuedraggable";
 
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -175,7 +175,7 @@ import ATATSelect from "@/components/ATATSelect.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
+import { PoP, SaveOnLeaveRefs, SelectData, SlideoutPanelContent } from "../../../types/Global";
 import { getIdText } from "@/helpers";
 import { PeriodDTO } from "@/api/models";
 import Periods from "@/store/periods";
@@ -208,12 +208,13 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
 })
 class PeriodOfPerformance extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

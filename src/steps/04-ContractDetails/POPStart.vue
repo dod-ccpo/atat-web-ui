@@ -13,6 +13,7 @@
                 task order.
               </p>
               <ATATRadioGroup
+                ref="PoPStartRadio"
                 class="copy-max-width max-width-740"
                 id="PoPStartDate"
                 :card="true"
@@ -43,6 +44,7 @@
                 />
                 <ATATDatePicker 
                   id="RequestDatePicker" 
+                  ref="RequestDatePickerRef" 
                   :value="requestedPopStartDate" 
                   @update:value="requestedPopStartDate = $event" 
                   :rules="[
@@ -83,10 +85,10 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
-import { RadioButton, SelectData } from "../../../types/Global";
+import { RadioButton, SaveOnLeaveRefs, SelectData } from "../../../types/Global";
 import { PeriodOfPerformanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import Periods from "@/store/periods";
 
 @Component({
@@ -98,13 +100,13 @@ import Periods from "@/store/periods";
   },
 })
 class POPStart extends Vue {
-
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

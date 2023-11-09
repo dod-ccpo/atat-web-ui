@@ -8,39 +8,48 @@ import {
   RadioFormRefAsExternalComponent, 
   SaveOnLeaveRefs 
 } from 'types/Global';
+import { ComponentPublicInstance } from 'vue';
 
 export type To = RouteLocationNormalized
 export type From = RouteLocationNormalized
+
+export let isFormsValid:boolean[] = []
  
 export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> => {
   const refKeys = Object.keys(forms)
-  const validatedForms: boolean[] = [];
+  let validatedForms: boolean[] = [];
+  const isValid: boolean[] = [];
+
   debugger;
+  isFormsValid = [];
   for (const ref of refKeys){
-    if (ref.toLowerCase().includes("radio")){
-      if (ref.toLowerCase().includes("external")){
-        const radioFormWithExternalComponent = 
-          (forms as unknown as RadioFormRefAsExternalComponent)[ref];
-        radioFormWithExternalComponent.$refs.radioButtonGroup.setErrorMessage();
-        validatedForms.push(
-          // eslint-disable-next-line max-len
-          await (await radioFormWithExternalComponent.$refs.radioButtonGroup.$refs.radioButtonGroup.validate()).valid
-        );
-      } else {
-        const radioForm = (forms as unknown as RadioFormRef)[ref];
-        radioForm.setErrorMessage();
-        validatedForms.push(
-          await (await radioForm.$refs.radioButtonGroup.validate()).valid
-        );
-      }
-    } else if (ref.toLowerCase() === "form"){
-      const form = (forms as unknown as FormRef)[ref] ;
-      validatedForms.push(await (await (form).validate()).valid);
-    }
+    const form = (forms as unknown as FormRef)[ref];
+    await(getRef({form}))
   }
-  return validatedForms.every(f=>f)
+  console.log(isFormsValid)
+  return isFormsValid.every(f=>f)
 }
 
+async function getRef(p:{
+  form:ComponentPublicInstance, 
+}):Promise<void>{
+  // debugger;
+  // console.log(p.form);
+  const refs = p.form.$refs;
+  if (refs){
+    for (const ref in refs){
+      const _formRef = (refs as unknown as SaveOnLeaveRefs)[ref];
+      if (Object.keys(_formRef).includes("validate")){
+        
+        const validMuch = ((await(await _formRef).validate()).valid);
+        console.log(ref);
+        console.log(validMuch)
+        isFormsValid.push((await(await _formRef).validate()).valid);
+      }
+      await getRef({form:_formRef});
+    }
+  }
+}
 
 export async function beforeRouteLeaveFunction(p: {
   to: To, from: From,

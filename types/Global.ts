@@ -933,7 +933,11 @@ export enum ClassificationLevels {
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
 export interface FormRef {
   [key: string]: ComponentPublicInstance & {
-    validate: ()=> Promise<SubmitEventPromise>;
+    $refs:{
+      validate: ()=> Promise<SubmitEventPromise>;
+      resetValidation?: () => void;
+      reset?: () => void;
+    }
   }
 }
 export interface RadioFormRef{
@@ -962,18 +966,68 @@ export interface RadioFormRefAsExternalComponent{
   }
 }
 
-export type SaveOnLeaveRefs  =  {
-    "form": ComponentPublicInstance & {
-      validate: ()=> Promise<SubmitEventPromise>;
-    },
-    "RadioForm" : ComponentPublicInstance & {
-      setErrorMessage: ()=> void,
-      $refs:{
-        radioButtonGroup: ComponentPublicInstance & {
-          validate: () => Promise<SubmitEventPromise>;
+export interface DatePickerRef{
+  [key: string]: ComponentPublicInstance & {
+    setErrorMessage: ()=> void,
+    $refs:{
+      atatDatePicker: ComponentPublicInstance & {
+        validate: () => Promise<SubmitEventPromise>;
+      }
+    }
+  }
+}
+
+export interface CheckboxGroupRef{
+  [key: string]: ComponentPublicInstance & {
+    setErrorMessage: ()=> void,
+    $refs:{
+      [key: string]: ComponentPublicInstance & {
+        setErrorMessage: ()=> void,
+        validate: () => Promise<SubmitEventPromise>;
+        $refs:{
+          [key: string]: ComponentPublicInstance & {
+            setErrorMessage: ()=> void,
+            validate: () => Promise<SubmitEventPromise>;
+          }
         }
       }
-    };
+    }
+  }
+}
+
+// export interface CheckboxGroupRef{
+//   [key: string]: ComponentPublicInstance & {
+//     setErrorMessage: ()=> void,
+//     $refs:{
+//       checkboxGroupForm: ComponentPublicInstance & {
+//         validate: () => Promise<SubmitEventPromise>;
+//       }
+//     }
+//   }
+// }
+
+export type SaveOnLeaveRefs  =  {
+  [key: string]: ComponentPublicInstance & {
+      validate: ()=> Promise<SubmitEventPromise>;
+        $refs:{
+          [key: string]: ComponentPublicInstance & {
+          validate: () => Promise<SubmitEventPromise>;
+          $refs:{
+            [key: string]: ComponentPublicInstance & {
+            validate: () => Promise<SubmitEventPromise>;
+          }
+        }
+      }
+    }
+    // "RadioForm" : ComponentPublicInstance & {
+    //   setErrorMessage: ()=> void,
+    //   $refs:{
+    //     radioButtonGroup: ComponentPublicInstance & {
+    //       validate: () => Promise<SubmitEventPromise>;
+    //     }
+    //   }
+    // };
+  }
 };
 
 

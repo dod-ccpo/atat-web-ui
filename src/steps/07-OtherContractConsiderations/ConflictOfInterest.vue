@@ -26,6 +26,7 @@
               </a>
             </p>
             <ATATRadioGroup
+              ref="COIOptions"
               class="copy-max-width max-width-760"
               id="COIOptions"
               :card="true"
@@ -71,10 +72,10 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import CoILearnMore from "./CoILearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import { RadioButton, SaveOnLeaveRefs, SlideoutPanelContent } from "../../../types/Global";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ContractConsiderationsDTO } from "@/api/models";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -85,12 +86,14 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 class ConflictOfInterest extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
+    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 
