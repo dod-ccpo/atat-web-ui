@@ -98,7 +98,7 @@ import AcquisitionPackage, {
   StoreProperties,
 } from "@/store/acquisitionPackage";
 import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
-import { ProjectOverviewDTO } from "@/api/models";
+import { ProjectOverviewDTO, ReferenceColumn } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { SelectData, YesNo } from "types/Global";
  
@@ -122,6 +122,7 @@ class ProjectOverview extends Vue {
     }).catch(() => false)
   }
 
+  private acquisitionPackage: ReferenceColumn | string = "";
   private foo = 0;
   private unit = ""
   public storageUnits: SelectData[] = [
@@ -147,6 +148,7 @@ class ProjectOverview extends Vue {
 
   private get currentData(): ProjectOverviewDTO {
     return {
+      acquisition_package: this.acquisitionPackage,
       title: this.currentTitle,
       scope: this.projectScope,
       emergency_declaration: this.emergencyDeclaration,
@@ -159,6 +161,7 @@ class ProjectOverview extends Vue {
   private get savedData(): ProjectOverviewDTO {
     const poObj = AcquisitionPackage.projectOverview as ProjectOverviewDTO;
     return {
+      acquisition_package: poObj.acquisition_package,
       title: poObj.title,
       scope: poObj.scope,
       emergency_declaration: poObj.emergency_declaration,
@@ -184,6 +187,10 @@ class ProjectOverview extends Vue {
         storeProperty: StoreProperties.ProjectOverview,
       });
     if (storeData) {
+      if (AcquisitionPackage.acquisitionPackage) {
+        this.acquisitionPackage = (AcquisitionPackage.acquisitionPackage.sys_id) 
+          ? AcquisitionPackage.acquisitionPackage.sys_id : ""; 
+      }
       this.currentTitle = storeData.title;
       this.projectScope = storeData.scope;
       if (

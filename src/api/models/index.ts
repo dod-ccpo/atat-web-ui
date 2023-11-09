@@ -349,6 +349,7 @@ export interface MarketResearchTechniquesDTO extends BaseTableDTO {
 
 
 export interface OrganizationDTO extends BaseTableDTO {
+  acquisition_package?: ReferenceColumn | string;
   street_address_1?: string;
   street_address_2?: string;
   organization_name?: string;
@@ -364,6 +365,7 @@ export interface OrganizationDTO extends BaseTableDTO {
 }
 
 export interface ProjectOverviewDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   title: string;
   scope: string;
   emergency_declaration: string;

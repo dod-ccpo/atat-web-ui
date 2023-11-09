@@ -88,6 +88,7 @@ class DocumentReview extends Vue {
 
   private docDataInitial: DocReviewData = {
     projectOverview: {
+      acquisition_package: "",
       title: "",
       scope: "",
       emergency_declaration: "",

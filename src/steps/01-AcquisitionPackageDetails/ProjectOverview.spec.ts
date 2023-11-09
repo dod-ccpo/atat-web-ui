@@ -91,6 +91,7 @@ describe("Testing index Component", () => {
     const title = "Dummy Title"
     AcquisitionPackage.setProjectOverview(
       {
+        "acquisition_package": "acqPackageId",
         "scope": "scope goes here",
         "title": title,
         "emergency_declaration": "yes",
