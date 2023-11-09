@@ -19,7 +19,8 @@
           <ATATRadioGroup 
             id="isFeeChargedOptions" 
             width="180" 
-            :value.sync="isCharged" 
+            :value="isCharged"
+            @update:value="isCharged = $event"
             :items="items"
             name="is-fee-charged" 
             card="true" 
@@ -29,7 +30,10 @@
           <ATATTextField v-if="isCharged === 'YES'" ref="PercentageTextbox"
             label="What percentage of the total price does your contracting office charge?" 
             id="ContractPricePercentage"
-            placeHolder="1-20" suffix="%" width="150" :value.sync="percentage" :rules="[
+            placeHolder="1-20" suffix="%" width="150"
+            :value="percentage"
+            @update:value="percentage = $event"
+            :rules="[
               $validators.required('Please enter your contracting office’s fee.'),
               $validators.isBetween(1, 20, 'The percentage must be less than or equal to 20%.'),
             ]" />

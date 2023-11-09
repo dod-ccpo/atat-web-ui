@@ -18,7 +18,8 @@
         <ATATRadioGroup
           id="SurgeCapacity"
           class="max-width-640"
-          :value.sync="capabilities"
+          :value="capabilities"
+          @update:value="capabilities = $event"
           :items="items"
           name="surge-capacity"
           card="true"

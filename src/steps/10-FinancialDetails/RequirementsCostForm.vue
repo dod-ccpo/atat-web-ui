@@ -10,7 +10,8 @@
           label="Requirements Cost Estimate"
           id="TemporaryCostField"
           :isCurrency="true"
-          :value.sync="costEstimate"
+          :value="costEstimate"
+          @update:value="costEstimate = $event"
           :alignRight="true"
           width="200"
         />
