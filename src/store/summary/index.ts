@@ -2532,10 +2532,11 @@ export class SummaryStore extends VuexModule {
       return false
     }
     const keysToIgnore = Object.keys(funding.fsForm).filter(k=>!k.includes("fs_form_7600a"))
-    const fsForm700AComplete = await this.isComplete({object: funding.fsForm, keysToIgnore})
+    const fsForm7600AComplete = await this.isComplete({object: funding.fsForm, keysToIgnore})
         && funding.fsForm.gt_c_number !== ""
-    const needsFundingInfo = funding.fundingRequirement?.has_funding === "NO_FUNDING"
-    const hasFunding = (needsFundingInfo && fsForm700AComplete)
+    const needsFundingInfo = funding.fundingRequirement?.has_funding !== "NO_FUNDING"
+
+    const hasFunding = (needsFundingInfo && fsForm7600AComplete)
     if (funding.request && funding.fsForm){
       let hasAppropriationOfFunds = false;
       let isComplete = false;
@@ -2544,16 +2545,15 @@ export class SummaryStore extends VuexModule {
           fsForm: funding.fsForm,
           gInv: funding.gInv,
           request: funding.request
-        }) && fsForm700AComplete;
+        }) && fsForm7600AComplete;
       } else if (funding.request.funding_request_type === "MIPR"){
-        isComplete = await this.isMIPRComplete(funding.mipr) && fsForm700AComplete;
+        isComplete = await this.isMIPRComplete(funding.mipr) && fsForm7600AComplete;
       }
 
       hasAppropriationOfFunds = funding.hasFairOpp
         ? funding.request.appropriation_fiscal_year !== ""
           && funding.request.appropriation_funds_type !== ""
         : true
-
 
       return isComplete
           && hasAppropriationOfFunds

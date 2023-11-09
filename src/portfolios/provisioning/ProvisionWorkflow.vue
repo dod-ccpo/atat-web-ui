@@ -160,8 +160,9 @@ class ProvisionWorkflow extends Vue {
   }
 
   get showStepper(): boolean{
-    return ["Provisioned"].some(
-      routeName => routeName.toLowerCase() !== (this.$route.name as string)?.toLowerCase());
+    return !["provisioned", "provisioning_issue"].includes(
+      (this.$route.name as string).toLowerCase()
+    )
   }
 
   public async TOConfirmCancelled(): Promise<void> {

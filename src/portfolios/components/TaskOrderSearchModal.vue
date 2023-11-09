@@ -1,7 +1,8 @@
 <template>
   <ATATDialog 
     id="TOSearchModal"
-    :showDialog.sync="_showTOSearchModal"
+    :showDialog="_showTOSearchModal"
+    @update:showDialog="_showTOSearchModal = $event"
     :title="titleText"
     no-click-animation
     :hideOkButton="true"
@@ -22,8 +23,10 @@
             modification. Depending on which form was used, this may be referred 
             to as the “Order Number” or “Delivery Order/Call No.”"
           @startProvisionWorkflow="startProvisionWorkflow"
-          :TONumber.sync="_TONumber"
-          :resetValidationNow.sync="_resetValidationNow"
+          :TONumber="_TONumber"
+          @update:TONumber="_TONumber = $event"
+          :resetValidationNow="_resetValidationNow"
+          @update:resetValidationNow="_resetValidationNow = $event"
           :isModal="true"
         />
 
@@ -41,8 +44,7 @@ import { PropSync } from "@/decorators/custom";
 @Component({
   components: {
     ATATDialog,
-    //TODO identify error undefined reading `allowedLengths`
-    //TaskOrderSearch,
+    TaskOrderSearch,
   },
 })
 class TaskOrderSearchModal extends Vue {
