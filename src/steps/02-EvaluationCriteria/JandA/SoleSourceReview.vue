@@ -61,7 +61,8 @@
               class="mt-6 textarea-max-width"
               label="Cause of your sole source situation"
               :labelSrOnly="true"
-              :value.sync="soleSourceCause"
+              :value="soleSourceCause"
+              @update:value="soleSourceCause = $event"
               :autoGrow="true"
               :rows="10"
               minHeight="200"
@@ -95,7 +96,8 @@
     </v-container>    
     <ConfirmRestoreDefaultTextModal
       @okRestore="restoreSuggestion"
-      :showRestoreModal.sync="showRestoreModal"
+      :showRestoreModal="showRestoreModal"
+      @update:showRestoreModal="showRestoreModal = $event"
       :isBasedOnResponses="true"
     />
   </v-form>

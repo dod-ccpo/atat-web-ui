@@ -34,7 +34,8 @@
               class="textarea-max-width"
               label="Plans to remove barriers to fair opportunity"
               :labelSrOnly="true"
-              :value.sync="barriersToOpportunity"
+              :value="barriersToOpportunity"
+              @update:value="barriersToOpportunity = $event"
               :autoGrow="true"
               :rows="10"
               minHeight="200"
@@ -72,7 +73,8 @@
     </v-container>
     <ConfirmRestoreDefaultTextModal
       @okRestore="restoreSuggestion"
-      :showRestoreModal.sync="showRestoreModal"
+      :showRestoreModal="showRestoreModal"
+      @update:showRestoreModal="showRestoreModal = $event"
       :isBasedOnResponses="true"
     />
   </v-form>

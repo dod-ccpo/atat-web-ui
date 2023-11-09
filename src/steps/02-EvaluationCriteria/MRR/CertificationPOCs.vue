@@ -20,9 +20,12 @@
             :pocPrimary="pocPrimary"
             :pocCor="pocCor"
             :pocAcor="pocAcor"
-            :newContactData.sync="technicalContactData"
-            :selectedSysId.sync="technicalPOCId"
-            :selectedPocType.sync="technicalPOCType"
+            :newContactData="technicalContactData"
+            @update:newContactData="technicalContactData = $event"
+            :selectedSysId="technicalPOCId"
+            @update:selectedSysId="technicalPOCId = $event"
+            :selectedPocType="technicalPOCType"
+            @update:selectedPocType="technicalPOCType = $event"
           />
           <hr>
           <CertificationPOCTypeForm
@@ -33,9 +36,12 @@
             :pocPrimary="pocPrimary"
             :pocCor="pocCor"
             :pocAcor="pocAcor"
-            :newContactData.sync="requirementContactData"
-            :selectedSysId.sync="requirementsPOCId"
-            :selectedPocType.sync="requirementsPOCType"
+            :newContactData="requirementContactData"
+            @update:newContactData="requirementContactData = $event"
+            :selectedSysId="requirementsPOCId"
+            @update:selectedSysId="requirementsPOCId = $event"
+            :selectedPocType="requirementsPOCType"
+            @update:selectedPocType="requirementsPOCType = $event"
           >
           </CertificationPOCTypeForm>
         </v-col>

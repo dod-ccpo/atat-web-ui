@@ -20,7 +20,8 @@
           :card="true"
           :noDescriptions="true"
           :items="differentiators"
-          :value.sync="selectedDifferentiators"
+          :value="selectedDifferentiators"
+          @update:value="selectedDifferentiators = $event"
           :rules="[
             $validators.required('Please select at least one differentiator.'),
           ]"
@@ -33,7 +34,8 @@
           sourceSelection="TechProposal"
           :isDifferentiator="true"
           :isOptional="customDiffsOptional"
-          :customSpecifications.sync="customDifferentiators"
+          :customSpecifications="customDifferentiators"
+          @update:customSpecifications="customDifferentiators = $event"
         />     
 
       </div>

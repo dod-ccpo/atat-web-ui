@@ -38,7 +38,8 @@
                   <ATATTextField
                     :id="'Name' + index"
                     :ref="'Name' + index"
-                    :value.sync="researchers[index].name"
+                    :value="researchers[index].name"
+                    @update:value="researchers[index].name = $event"
                     :rules="index === 0?[$validators.required(nameErrorText)]:[]"
                   />
                 </div>
@@ -46,7 +47,8 @@
                   <ATATTextField
                     :id="'Title' + index"
                     :ref="'Title' + index"
-                    :value.sync="researchers[index].title"
+                    :value="researchers[index].title"
+                    @update:value="researchers[index].title = $event"
                     :rules="index === 0?[$validators.required(titleErrorText)]:[]"
                   />
                 </div>
@@ -54,7 +56,8 @@
                   <ATATTextField
                     :id="'Org' + index"
                     :ref="'Org' + index"
-                    :value.sync="researchers[index].org"
+                    :value="researchers[index].org"
+                    @update:value="researchers[index].org = $event"
                     :rules="index === 0?[$validators.required(orgErrorText)]:[]"
                   />
                 </div>

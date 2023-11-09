@@ -63,9 +63,11 @@
                 id="descriptionOfJustification"
                 class="max-width-740"
                 :rows="11"
-                :value.sync="uniqueSourceExplanation"
+                :value="uniqueSourceExplanation"
+                @update:value="uniqueSourceExplanation = $event"
                 maxChars="2500"
-                :turnRulesOff.sync="turnRulesOff"
+                :turnRulesOff="turnRulesOff"
+                @update:turnRulesOff="turnRulesOff = $event"
                 :rules="[
                 $validators.required( //notSameAsDefault is not a requirement for this screen
                   'Explain why ' + csp + ' is the only CSP capable of ' +

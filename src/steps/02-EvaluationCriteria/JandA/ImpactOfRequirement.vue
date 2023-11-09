@@ -16,7 +16,8 @@
                 id="descriptionOfImpact"
                 class="max-width-740"
                 :rows="11"
-                :value.sync="impactOfRequirementExplanation"
+                :value="impactOfRequirementExplanation"
+                @update:value="impactOfRequirementExplanation = $event"
                 maxChars="2500"
                 :rules="[
                 $validators.required(

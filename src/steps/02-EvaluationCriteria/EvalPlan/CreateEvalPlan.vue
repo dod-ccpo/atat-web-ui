@@ -24,7 +24,8 @@
           legend="Which source selection process is applicable to your requirement?"
           :legend-link="legendLink"
           @openSlideoutPanel="openSlideoutPanel"
-          :value.sync="sourceSelection"
+          :value="sourceSelection"
+          @update:value="sourceSelection = $event"
           :items="evalOptions"
           :rules="[
             $validators.required('Please select an option.'),
@@ -36,12 +37,14 @@
           <ATATRadioGroup 
             id="MethodSelection"
             :legend="methodLegend"
-            :value.sync="selectedMethod"
+            :value="selectedMethod"
+            @update:value="selectedMethod = $event"
             :items="methodOptions"
             :rules="[
               $validators.required(methodRequiredMessage),
             ]"
-            :clearErrorMessages.sync="clearMethodErrors"
+            :clearErrorMessages="clearMethodErrors"
+            @update:clearErrorMessages="clearMethodErrors = $event"
           />
 
         </section>

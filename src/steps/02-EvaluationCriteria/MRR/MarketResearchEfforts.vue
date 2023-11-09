@@ -33,7 +33,8 @@
               name="OnlyCapableSource"
               :legend="onlySourceCapableLegend"
               @radioButtonSelected="onlyCapableSourceClicked"
-              :value.sync="cspIsOnlySourceCapable"
+              :value="cspIsOnlySourceCapable"
+              @update:value="cspIsOnlySourceCapable = $event"
               :items="onlySourceCapableOptions"
               :rules="[$validators.required('Please select an option.')]"
             />
@@ -54,7 +55,8 @@
                         $validators.required('Enter a start date using the format MM/DD/YYYY.'),
                         $validators.isDateValid('Please enter a valid date.'),
                       ]"
-                      :value.sync="researchStartDate"
+                      :value="researchStartDate"
+                      @update:value="researchStartDate = $event"
                       :min="minResearchStartDate"
                       :max="today"
                       label="Start date"
@@ -86,7 +88,8 @@
                       $validators.required('Enter an end date using the format MM/DD/YYYY.'),
                       $validators.isDateValid('Please enter a valid date.'),
                     ]"
-                    :value.sync="researchEndDate"
+                    :value="researchEndDate"
+                    @update:value="researchEndDate = $event"
                     label="End date"
                     placeHolder="MM/DD/YYYY"
                   />
@@ -99,7 +102,8 @@
                   label="Briefly discuss the market research data that supports your 
                     sole source determination"
                   helpText="Include the who, what, when, where, why, and outcome of your research."
-                  :value.sync="supportingData"
+                  :value="supportingData"
+                  @update:value="supportingData = $event"
                   :maxChars="1000"
                   :rows="6"
                   :validateItOnBlur="true"
@@ -122,7 +126,8 @@
                 id="ReviewedCatalogs"
                 name="ReviewedCatalogs"
                 :legend="reviewedCatalogsLegend"
-                :value.sync="reviewedCatalogs"
+                :value="reviewedCatalogs"
+                @update:value="reviewedCatalogs = $event"
                 :items="reviewedCatalogsOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -136,7 +141,8 @@
                     v-if="hasResearchDates"
                     legend="Was this research conducted on the same date or date range 
                       as indicated above?"
-                    :value.sync="sameAsResearchDate"
+                    :value="sameAsResearchDate"
+                    @update:value="sameAsResearchDate = $event"
                     :items="sameDatesOptions"
                     :rules="[$validators.required('Please select an option.')]"
                   />
@@ -159,7 +165,8 @@
                             ),
                             $validators.isDateValid('Please enter a valid date.'),
                           ]"
-                          :value.sync="catalogReviewStartDate"
+                          :value="catalogReviewStartDate"
+                          @update:value="catalogReviewStartDate = $event"
                           :min="minResearchStartDate"
                           :max="today"
                           label="Start date"
@@ -190,7 +197,8 @@
                           $validators.required('Enter an end date using the format MM/DD/YYYY.'),
                           $validators.isDateValid('Please enter a valid date.'),
                         ]"
-                        :value.sync="catalogReviewEndDate"
+                        :value="catalogReviewEndDate"
+                        @update:value="catalogReviewEndDate = $event"
                         :min="minCatalogReviewEndDate"
                         :max="today"
                         label="End date"
@@ -204,7 +212,8 @@
                     label="Briefly discuss the results from your JWCC catalog review"
                     helpText="Fill in the blank to complete the suggested sentence below 
                       or write your own description."
-                    :value.sync="catalogReviewResults"
+                    :value="catalogReviewResults"
+                    @update:value="catalogReviewResults = $event"
                     :maxChars="1000"
                     :rows="6"
                     :validateItOnBlur="true"
@@ -228,10 +237,12 @@
                 groupLabel="What other techniques did you use?"
                 :optional="otherTechniquesOptional"
                 :items="otherTechniquesOptions"
-                :value.sync="selectedTechniquesUsed"
+                :value="selectedTechniquesUsed"
+                @update:value="selectedTechniquesUsed = $event"
                 :rules="techniquesRules"
                 :hasOtherValue="true"
-                :otherValueEntered.sync="otherTechnique"
+                :otherValueEntered="otherTechnique"
+                @update:otherValueEntered="otherTechnique = $event"
                 otherValueRequiredMessage="Enter your other technique."
                 :validateOtherOnBlur="true"
                 :otherValue="getOtherTechniqueSysId"
@@ -242,7 +253,8 @@
                   v-if="showPersonalKnowledgePerson"
                   id="PersonReliedUpon"
                   :class="personalKnowledgeInputClass"
-                  :value.sync="personalKnowledgePerson"
+                  :value="personalKnowledgePerson"
+                  @update:value="personalKnowledgePerson = $event"
                   label="Name and/or position of the person relied upon"
                   tooltipText="This refers to the following technique you selected: 
                     “Personal knowledge in procuring supplies/services of this type”"
@@ -259,7 +271,8 @@
                   v-if="showTechniquesSummary"
                   id="TechniquesSummary"
                   :class="techniquesSummaryInputClass"
-                  :value.sync="techniquesSummary"
+                  :value="techniquesSummary"
+                  @update:value="techniquesSummary = $event"
                   label="Summarize the market research performed using the technique(s) 
                     selected above"
                   helpText="Include the who, what, when, where, why, and outcome of your research."

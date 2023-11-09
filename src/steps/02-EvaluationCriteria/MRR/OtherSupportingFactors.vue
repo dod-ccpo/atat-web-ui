@@ -12,7 +12,8 @@
             name="ProductFeature"
             card="true"
             width="180"
-            :value.sync="selectedException"
+            :value="selectedException"
+            @update:value="selectedException = $event"
             :items="exceptionChoices"
             :rules="[$validators.required('Please select an option.')]"
           />
@@ -23,7 +24,8 @@
               id="ExceptionTextArea"
               label="Briefly discuss any other
               facts or details supporting the use of this exception"
-              :value.sync="exceptionDiscussion"
+              :value="exceptionDiscussion"
+              @update:value="exceptionDiscussion"
               :maxChars="1000"
               :rows="6"
               :validateItOnBlur="true"

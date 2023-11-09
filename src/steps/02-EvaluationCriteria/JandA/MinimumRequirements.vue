@@ -21,7 +21,8 @@
                 :value="minGovReqExplanation"
                 @update:value="minGovReqExplanation = $event"
                 maxChars="1000"
-                :turnRulesOff.sync="turnRulesOff"
+                :turnRulesOff="turnRulesOff"
+                @update:turnRulesOff="turnRulesOff = $event"
                 :rules="[
                   $validators.notSameAsDefault(
                     'Enter your minimum government requirements.', suggestedText,

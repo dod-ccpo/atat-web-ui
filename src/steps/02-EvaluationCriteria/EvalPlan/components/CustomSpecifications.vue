@@ -19,7 +19,8 @@
       <ATATTextField 
         :id="'CustomSpec' + index" 
         class="width-100"
-        :value.sync="_customSpecifications[index]"
+        :value="_customSpecifications[index]"
+        @update:value="_customSpecifications[index] = $event"
         :rules="!isOptional
           ? [$validators.required('Please enter a custom ' + specificationType + '.')]
           : []"

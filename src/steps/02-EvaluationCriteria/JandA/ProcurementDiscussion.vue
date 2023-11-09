@@ -12,7 +12,8 @@
             label="Discuss the constraints of your procurement"
             :helpText="procurementParagraphText"
             :rows="11"
-            :value.sync="procurementText"
+            :value="procurementText"
+            @update:value="procurementText = $event"
             maxChars="2500"
             :rules="[
                   $validators.required(
@@ -29,7 +30,8 @@
             id="ExistingEnv"
             :legend="'Is there an existing environment that would enable ' + cspName +
              ' to immediately support a task order award?'"
-            :value.sync="existingEnv"
+            :value="existingEnv"
+            @update:value="existingEnv = $event"
             :items="existingEnvOptions"
             :rules="[$validators.required('Please select an option.')]"
           />
@@ -41,7 +43,8 @@
               helpText="Review the suggested language and edit any details based on your unique
                requirements."
               :rows="11"
-              :value.sync="procurementImpact"
+              :value="procurementImpact"
+              @update:value="procurementImpact = $event"
               maxChars="1000"
               :rules="[
                   $validators.required(

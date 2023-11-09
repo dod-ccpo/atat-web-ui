@@ -16,7 +16,8 @@
         class="copy-max-width"
         :items="standardsRadioGroupItems"
         :legend="radioGroupLegend"
-        :value.sync="selectedStandardsRadioItem"
+        :value="selectedStandardsRadioItem"
+        @update:value="selectedStandardsRadioItem = $event"
         :rules="[
           $validators.required('Please select an option.'),
         ]"
@@ -29,7 +30,8 @@
           assessment areas would you like to evaluate?"
         groupLabelId="OtherAssessmentAreasLabel"
         :items="lumpSumCheckboxOptions"
-        :value.sync="selectedSetLumpSumOptions"
+        :value="selectedSetLumpSumOptions"
+        @update:value="selectedSetLumpSumOptions = $event"
         :optional="true"
       />
 
@@ -39,7 +41,8 @@
         :sourceSelection="evalPlan.source_selection"
         :isDifferentiator="false"
         :isOptional="true"
-        :customSpecifications.sync="customSpecifications"
+        :customSpecifications="customSpecifications"
+        @update:customSpecifications="customSpecifications = $event"
       />
 
     </div>

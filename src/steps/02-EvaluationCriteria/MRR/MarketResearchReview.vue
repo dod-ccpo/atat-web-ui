@@ -57,7 +57,8 @@
               class="mt-6 textarea-max-width"
               label="Market research details"
               :labelSrOnly="true"
-              :value.sync="researchDetails"
+              :value="researchDetails"
+              @update:value="researchDetails = $event"
               :autoGrow="true"
               :rows="10"
               minHeight="200"
@@ -91,7 +92,8 @@
     </v-container>   
     <ConfirmRestoreDefaultTextModal
       @okRestore="restoreSuggestion"
-      :showRestoreModal.sync="showRestoreModal"
+      :showRestoreModal="showRestoreModal"
+      @update:showRestoreModal="showRestoreModal = $event"
       :isBasedOnResponses="true"
     />
     

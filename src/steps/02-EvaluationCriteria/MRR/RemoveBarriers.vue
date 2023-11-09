@@ -24,7 +24,8 @@
             id="FairOpportunityFollowOn"
             name="FairOpportunityFollowOn"
             legend="Is your agency preparing a fair opportunity competitive follow-on requirement?"
-            :value.sync="selectedRequirement"
+            :value="selectedRequirement"
+            @update:value="selectedRequirement = $event"
             :items="followOnRequirement"
             :rules="[$validators.required('Please select an option.')]"
           />
@@ -39,7 +40,8 @@
                   ),
                   $validators.isDateValid(`Enter a date using the format 'MM/DD/YYYY`),
                 ]"
-                :value.sync="followOnDate"
+                :value="followOnDate"
+                @update:value="followOnDate = $event"
                 label="When do you expect to have this follow-on competed, solicited
                  and awarded by?"
                 placeHolder="MM/DD/YYYY"
@@ -52,7 +54,8 @@
             name="PursuingTraining"
             legend="Is your agency pursuing training and/or certifications for Government engineers
              in other technologies?"
-            :value.sync="selectedTrainingRequirement"
+            :value="selectedTrainingRequirement"
+            @update:value="selectedTrainingRequirement = $event"
             :items="trainingRequirement"
             :rules="[$validators.required('Please select an option.')]"
           />
@@ -64,7 +67,8 @@
              Service (IaaS) components that will shift to a containerized platform?"
             helpText="This does not apply to Software as a Service (SasS) or Platform as a Service
              (PaaS) requirements."
-            :value.sync="selectedIaaSRequirement"
+            :value="selectedIaaSRequirement"
+            @update:value="selectedIaaSRequirement = $event"
             :items="IaaSRequirement"
             :rules="[$validators.required('Please select an option.')]"
           />
@@ -75,7 +79,8 @@
             tooltipText="If there are no previous contracts related to this effort, select “No.”
              We’ll find out more about your procurement history in the Background section."
             legend="Was a J&A prepared to support any prior procurements related to this effort?"
-            :value.sync="selectedProcurement"
+            :value="selectedProcurement"
+            @update:value="selectedProcurement = $event"
             :items="priorProcurement"
             :rules="[$validators.required('Please select an option.')]"
           />
@@ -86,7 +91,8 @@
                 id="ProcurementTextArea"
                 label="Briefly explain the results of any actions taken to remove barriers from
                  previous J&As"
-                :value.sync="procurementDiscussion"
+                :value="procurementDiscussion"
+                @update:value="procurementDiscussion = $event"
                 :maxChars="1000"
                 :rows="6"
                 :validateItOnBlur="true"

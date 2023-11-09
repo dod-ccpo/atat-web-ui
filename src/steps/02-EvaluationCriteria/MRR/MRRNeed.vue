@@ -18,7 +18,8 @@
             legend="Do any of the following contract actions apply to this acquisition?"
             tooltipText="DISA does not require MRRs for undefinitized contract actions (UCAs),
               bridge contract actions, or FAR 52.217-8 Option to Extend Services."
-            :value.sync="selectedMRRNeed"
+            :value="selectedMRRNeed"
+            @update:value="selectedMRRNeed = $event"
             :items="mrrNeedOptions"
             name="fair-opportunity-exceptions-radio-group"
             class="copy-max-width mb-10 mt-3"
