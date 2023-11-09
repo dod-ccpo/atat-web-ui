@@ -1716,20 +1716,29 @@ export const IGCESupportingDocumentationResolver = (
 }
 
 export const FundingPlanTypeResolver = (current: string): string => {
-  return Summary.hasCurrentStepBeenVisited &&
-		current === routeNames.SupportingDocumentation
-    ? routeNames.SummaryStepEight
-    : routeNames.FundingPlanType
+  return current !== routeNames.GeneratingPackageDocumentsFunding 
+    ? routeNames.FundingPlanType
+    : routeNames.SummaryStepEight
 }
 
 export const MIPRResolver = (current: string): string => {
-  const fundingType = FinancialDetails.fundingRequestType
-  if (fundingType === 'MIPR') {
-    return routeNames.MIPR
+  const hasNoFunding = FinancialDetails.fundingRequirement?.has_funding === "NO_FUNDING";
+  const fromGeneratingDocs = current === routeNames.GeneratingPackageDocumentsFunding;
+  if (hasNoFunding && fromGeneratingDocs){
+    return routeNames.CurrentlyHasFunding;
+  }
+  
+  const fundingType = FinancialDetails.fundingRequestType;
+  if (fundingType === "MIPR") {
+    return routeNames.MIPR;
+  }
+
+  if (fundingType === "FS_FORM") {
+    return routeNames.SummaryStepEight;
   }
   return current === routeNames.GTC
     ? routeNames.FundingPlanType
-    : routeNames.GTC
+    : routeNames.GTC;
 }
 
 export const GInvoicingResolver = (current: string): string => {
@@ -2127,6 +2136,10 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   IGCESurgeCapabilities,
   FeeChargedResolver,
   GInvoicingResolver,
+  CurrentlyHasFundingResolver,
+  GTCInformationResolver,
+  RFDResolver,
+  GeneratingPackageDocumentsFundingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,

@@ -192,7 +192,8 @@ const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
     period_unit: pop.unitOfTime,
     period_unit_count: pop.duration?.toString() || "",
     option_order: pop.order.toString() || "",
-    sys_id: pop.id || undefined
+    sys_id: pop.id || undefined,
+    acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || "",
   }
 }
 
@@ -584,6 +585,7 @@ class PeriodOfPerformance extends Vue {
           period_unit: period.period_unit,
           period_type: period.period_type,
           sys_id: period.sys_id,
+          acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || ""
         }
       });
     this.optionPeriods = periods.length ? periods.map(period=> {

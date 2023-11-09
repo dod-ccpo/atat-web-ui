@@ -82,8 +82,8 @@
           </thead>
           <tbody>
             <tr
-            v-for="item in tableData"
-            :key="item.DoDId"
+              v-for="item in tableData"
+              :key="item.DoDId"
             >
             <td class="text-start">
               {{ item.DoDId }}

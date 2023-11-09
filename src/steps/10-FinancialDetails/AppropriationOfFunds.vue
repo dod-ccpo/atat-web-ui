@@ -14,7 +14,8 @@
             <ATATRadioGroup id="fundTypes" 
               legend="What type of funds are planned for this acquisition?" 
               :items="fundTypes" 
-              :value.sync="selectedFundType"
+              :value="selectedFundType"
+              @update:value="selectedFundType = $event"
               :rules="[
                   $validators.required('Please select type of funds.'),
                 ]" 
@@ -24,7 +25,8 @@
             <ATATRadioGroup id="ContactAffiliation" 
               legend="What fiscal year funds are planned for this acquisition?" 
               :items="fiscalYearFunds" 
-              :value.sync="selectedFiscalYear"
+              :value="selectedFiscalYear"
+              @update:value="selectedFiscalYear = $event"
               class="mb-10" 
               :rules="[$validators.required('Please select an option.')]"
               >

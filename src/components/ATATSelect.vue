@@ -14,13 +14,9 @@
       </label>
     </v-flex>
     <v-flex>
-      <!-- TODO: use the new menu prop 'offset' to achieve what 'offsetY: true' did before -->
 
       <!-- 
         @update:model-value="onChange" 
-      
-      
-      
       -->
 
       <v-select

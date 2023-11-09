@@ -57,7 +57,8 @@
             :card="true"
             :items="incrementallyFundOptions"
             :rules="[$validators.required('Please select an option')]"
-            :value.sync="selectedFundOption"
+            :value="selectedFundOption"
+            @update:value="selectedFundOption = $event"
             class="copy-max-width mb-5 max-width-640"
           />
           <ATATExpandableLink aria-id="IFPFAQ1">
@@ -230,6 +231,7 @@ class SeverabilityAndIncrementalFunding extends Vue {
     period_unit_count: "",
     period_type: "",
     option_order: "",
+    acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || "",
   };
   private incrementallyFundOptions: RadioButton[] = [
     {
