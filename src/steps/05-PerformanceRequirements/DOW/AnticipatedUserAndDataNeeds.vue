@@ -61,11 +61,11 @@
                 :increaseSelection="anticipatedNeedsData[index].increase_in_users"
                 @update:increaseSelection="anticipatedNeedsData[index].increase_in_users = $event"
                 :growthSelection="anticipatedNeedsData[index].user_growth_estimate_type"
-                @update:growthSelection=
-                  "anticipatedNeedsData[index].user_growth_estimate_type = $event"
+                @update:growthSelection="anticipatedNeedsData[index].user_growth_estimate_type 
+                  = $event"
                 :percentages="anticipatedNeedsData[index].user_growth_estimate_percentage"
-                @update:percentages=
-                  "anticipatedNeedsData[index].user_growth_estimate_percentage = $event"
+                @update:percentages="anticipatedNeedsData[index].user_growth_estimate_percentage 
+                  = $event"
                 needs="user"
               />
               <hr class="mb-10 mt-5" />
@@ -78,17 +78,17 @@
                 :increaseSelection="anticipatedNeedsData[index].data_increase"
                 @update:increaseSelection="anticipatedNeedsData[index].data_increase = $event"
                 :growthSelection="anticipatedNeedsData[index].data_growth_estimate_type"
-                @update:growthSelection=
-                  "anticipatedNeedsData[index].data_growth_estimate_type = $event"
+                @update:growthSelection="anticipatedNeedsData[index].data_growth_estimate_type 
+                  = $event"
                 :percentages="anticipatedNeedsData[index].data_growth_estimate_percentage"
-                @update:percentages=
-                  "anticipatedNeedsData[index].data_growth_estimate_percentage = $event"
+                @update:percentages="anticipatedNeedsData[index].data_growth_estimate_percentage 
+                  = $event"
                 :dataTextFieldValue="anticipatedNeedsData[index].data_egress_monthly_amount"
-                @update:dataTextFieldValue=
-                  "anticipatedNeedsData[index].data_egress_monthly_amount = $event"
+                @update:dataTextFieldValue="anticipatedNeedsData[index].data_egress_monthly_amount
+                  = $event"
                 :dataDropdownValue="anticipatedNeedsData[index].data_egress_monthly_unit"
-                @update:dataDropdownValue=
-                  "anticipatedNeedsData[index].data_egress_monthly_unit = $event"
+                @update:dataDropdownValue="anticipatedNeedsData[index].data_egress_monthly_unit 
+                  = $event"
               />
             </v-expansion-panel-text>
           </v-expansion-panel>
@@ -147,15 +147,20 @@ class AnticipatedUserAndDataNeeds extends Vue {
     await this.loadOnEnter();
   }
   public buildClassificationLabel = buildClassificationLabel
-  public regionUserDataUpdate(data: string,index:number): void {
+  public regionUserDataUpdate(data: string, index: number): void {
     this.anticipatedNeedsData[index].users_per_region = data;
   }
   private async loadOnEnter(): Promise<void> {
     this.periods = Periods.periods;
-    const classifications = await ClassificationRequirements.getSelectedClassificationLevels()
+    const classifications = await ClassificationRequirements.getSelectedClassificationLevels();
+    classifications.forEach((c) => {
+      c.data_egress_monthly_unit = c.data_egress_monthly_unit ?? "GB";
+    });
     this.savedData = _.cloneDeep(classifications);
-    this.anticipatedNeedsData = classifications
-      .sort((a,b) => a.impact_level > b.impact_level ? 1 : -1)
+    this.anticipatedNeedsData = classifications.sort(
+      (a,b) => a.impact_level > b.impact_level ? 1 : -1
+    );
+
     this.accordionClosed = new Array(this.anticipatedNeedsData.length).fill(0)
   }
 
