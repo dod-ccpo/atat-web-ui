@@ -24,15 +24,15 @@
             @update:v-model="_selectedCountry = $event"
             :return-object="true"
             :eager="true"
-            
+
           >
-<!-- 
+<!--
             :error="errorMessages.length > 0"
 
             item-title="name"
             item-value="abbreviation"           -->
           <!-- @update:v-model="onChange" -->
-            
+
             <template v-slot:selection="{ item }">
               <span class="fi" :class="[`fi-${item.value.abbreviation}`]"> </span>
             </template>
@@ -48,7 +48,7 @@
                 id="DropdownTextField"
                 :clearable="true"
                 :autofocus="true"
-                autocomplete="off"
+                :autocomplete="false"
               />
             </template>
             <template v-slot:item="{ props, item }">
@@ -73,7 +73,7 @@
                           item.raw.countryCode
                         }}</span>
                     </v-row>
-                  </v-list-item-title> 
+                  </v-list-item-title>
                 </div>
               </v-list-item>
             </template>
@@ -431,8 +431,8 @@ class ATATPhoneInput extends Vue {
   private errorMessages: string[] = [];
   private countries = Countries;
 
-  private inputActions(v: string) {
-    this._extension = v;
+  private inputActions(v:any) {
+    this._extension = v.target.value;
     this.setExtensionMask();
   };
 
@@ -480,7 +480,7 @@ class ATATPhoneInput extends Vue {
   private validate(e: FocusEvent,) : void{
     const input = e.target as HTMLInputElement;
     this._value = input.value
-    this.setErrorMessage();
+    // this.setErrorMessage();
     this.$emit('blur', input.value);
   }
 
@@ -568,9 +568,9 @@ class ATATPhoneInput extends Vue {
 
 
   // /**
-  //  * when parent forms methods (.reset() and .resetValidation()) are called  
+  //  * when parent forms methods (.reset() and .resetValidation()) are called
   //  * this._selectedCountry is set to null.
-  //  * 
+  //  *
   //  * updated method sets default value
   // */
   // private updated(): void{

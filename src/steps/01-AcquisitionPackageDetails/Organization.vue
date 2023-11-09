@@ -35,7 +35,6 @@
                 class="_input-max-width mb-10"
                 label="DISA Organization"
                 :label-sr-only="false"
-                titleKey="text"
                 :searchFields="['text']"
                 :items="disaOrgData"
                 :selectedItem="selectedDisaOrg"
@@ -85,14 +84,22 @@
                 @update:selectedAddressType="selectedAddressType = $event"
                 :streetAddress1="streetAddress1"
                 @update:streetAddress1="streetAddress1 = $event"
-                :streetAddress2.sync="streetAddress2"
-                :city.sync="city"
-                :selectedMilitaryPO.sync="selectedMilitaryPO"
+                :streetAddress2="streetAddress2"
+                @update:streetAddress2="streetAddress2 = $event"
+                :city="city"
+                @update:city="city = $event"
+                :selectedMilitaryPO="selectedMilitaryPO"
+                @update:selectedMilitaryPO="selectedMilitaryPO = $event"
                 :selectedState="selectedState"
-                :selectedStateCode.sync="selectedStateCode"
-                :stateOrProvince.sync="stateOrProvince"
-                :zipCode.sync="zipCode"
-                :selectedCountry.sync="selectedCountry"
+                @update:selectedState="selectedState = $event"
+                :selectedStateCode="selectedStateCode"
+                @update:selectedStateCode="selectedStateCode = $event"
+                :stateOrProvince="stateOrProvince"
+                @update:stateOrProvince="stateOrProvince = $event"
+                :zipCode="zipCode"
+                @update:zipCode="zipCode = $event"
+                :selectedCountry="selectedCountry"
+                @update:selectedCountry="selectedCountry = $event"
                 :requiredFields='[
                   {field:"StreetAddress", message: "Please enter an address."},
                   {field:"City", message:  "Please enter a city."},
@@ -167,7 +174,7 @@ import {
   convertAgencyRecordToSelect,
   convertDisaOrgToSelect
 } from "@/helpers";
-
+import { convertColumnReferencesToValues } from "@/api/helpers";
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -331,7 +338,7 @@ class OrganizationInfo extends Vue {
       disa_organization_reference: this.selectedDisaOrg.value as string,
       organization_name: this.organizationName,
       dodaac: this.dodAddressCode,
-      agency: this.selectedAgency as string,
+      agency: this.selectedAgency.value as string,
       address_type: this.selectedAddressType,
       street_address_1: this.streetAddress1,
       street_address_2: this.streetAddress2,
@@ -376,7 +383,6 @@ class OrganizationInfo extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data);
-    console.log(this.agencyData)
     this.disaOrgData = convertDisaOrgToSelect(OrganizationData.disa_org_data);
     this.stateListData = ContactData.stateChoices;
     const storeData = await AcquisitionPackage
@@ -402,6 +408,7 @@ class OrganizationInfo extends Vue {
           this.savedData[key] = storeData[key];
         }
       });
+
 
       const selectedAgencyIndex = this.agencyData.findIndex(
         (svc) => svc.value === storeData.agency.value
