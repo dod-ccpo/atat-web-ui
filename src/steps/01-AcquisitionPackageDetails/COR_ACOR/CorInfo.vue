@@ -25,8 +25,10 @@
           <CommonCorAcor 
             :isACOR="false"
             :isWizard="true"
-            :currentContactData.sync="currentContactData"
-            :savedContactData.sync="savedContactData"
+            :currentContactData="currentContactData"
+            @update:currentContactData="currentContactData = $event"
+            :savedContactData="savedContactData"
+            @update:savedContactData="savedContactData = $event"
           />
 
         </v-col>

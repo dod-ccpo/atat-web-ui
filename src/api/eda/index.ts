@@ -16,13 +16,13 @@ export class EDAApi extends ApiBase{
     const custSupportUrl = "https://community.hacc.mil/s/contact?RequestTopic=DAPPS"
     const errorMessages: Record<string, string> = {
       "0001": `Task order is already funding a portfolio. If you need assistance, 
-        <a href="${custSupportUrl}" id="SupportLink" class="external-link" target="_blank">contact 
+        <a href="${custSupportUrl}" id="SupportLink" class="_external-link" target="_blank">contact 
         Customer Support</a>.`,
       "0002": `Unable to locate your task order. If you need assistance, 
-        <a href="${custSupportUrl}" id="SupportLink" class="external-link" target="_blank">contact 
+        <a href="${custSupportUrl}" id="SupportLink" class="_external-link" target="_blank">contact 
         Customer Support</a>.`,
       "0003": `Task order not awarded under JWCC Contract.
-        <a href="${custSupportUrl}" id="SupportLink" class="external-link" target="_blank">Contact 
+        <a href="${custSupportUrl}" id="SupportLink" class="_external-link" target="_blank">Contact 
         Customer Support</a> for assistance.`
     }    
     try {
@@ -67,10 +67,16 @@ export class EDAApi extends ApiBase{
       }
       return edaResponse;
     } catch (error: any) {
-      return {
+      const {code} = error.response.data.result
+      const errorResponse:EDAResponse = {
         success: false,
-        message: errorMessages[error.response.data.result.code] || "Unknown error contacting EDA"
+        message: errorMessages[code] || "Unknown error contacting EDA"
       };
+      
+      if(code === "2000"){
+        errorResponse.provisioningIssue = true
+      }
+      return errorResponse
     }
   }
 

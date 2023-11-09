@@ -13,7 +13,8 @@
                 $validators.maxLength(20, 'MIPR Number should not exceed 20 characters.')
               ]"
             :tooltipText="toolTip"
-            :value.sync="MIPRNumber"
+            :value="MIPRNumber"
+            @update:value="MIPRNumber = $event"
             class="_input-max-width"
             label="MIPR Number"
           />
@@ -23,12 +24,14 @@
         <ATATFileUpload
           id="FundingPlan"
           tabindex="-1"
-          :invalidFiles.sync="invalidFiles"
+          :invalidFiles="invalidFiles"
+          @update:invalidFiles="invalidFiles = $event"
           :maxFileSizeInBytes="maxFileSizeInBytes"
           :maxNumberOfFiles="1"
           :rules="getRulesArray()"
           :validFileFormats="validFileFormats"
-          :validFiles.sync="uploadedFiles"
+          :validFiles="uploadedFiles"
+          @update:validFiles="uploadedFiles = $event"
           :helpText="fileUploadHelpText"
           :attachmentServiceName="attachmentServiceName"
           @delete="onRemoveAttachment"

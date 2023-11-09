@@ -123,6 +123,7 @@ declare module 'vue' {
     ProvisionAzure: typeof import('./src/components/icons/ProvisionAzure.vue')['default']
     Provisioned: typeof import('./src/components/icons/Provisioned.vue')['default']
     ProvisionGCP: typeof import('./src/components/icons/ProvisionGCP.vue')['default']
+    ProvisioningIssue: typeof import('./src/components/icons/ProvisioningIssue.vue')['default']
     ProvisionOracle: typeof import('./src/components/icons/ProvisionOracle.vue')['default']
     ReadyToGeneratePackage: typeof import('./src/components/icons/ReadyToGeneratePackage.vue')['default']
     RegionsDeployedAndUserCount: typeof import('./src/components/DOW/RegionsDeployedAndUserCount.vue')['default']

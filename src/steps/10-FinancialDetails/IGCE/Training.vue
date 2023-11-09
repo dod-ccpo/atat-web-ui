@@ -20,7 +20,8 @@
                 class="mb-8"
                 legend="How do you want to estimate your cost for this training?"
                 :items="trainingEstimateTypeOptions"
-                :value.sync="instanceData.costEstimateType"
+                :value="instanceData.costEstimateType"
+                @update:value="instanceData.costEstimateType = $event"
                 :rules="[$validators.required('Please select an option.')]"
               />
 
@@ -68,7 +69,8 @@
               :label="costEstimateLabel"
               :suffix="costEstimateSuffix"
               :isCurrency="true"
-              :value.sync="instanceData.estimatedTrainingPrice"
+              :value="instanceData.estimatedTrainingPrice"
+              @update:value="instanceData.estimatedTrainingPrice = $event"
               :tooltipText="costEstimateTooltipText"
               width="234"
               :rules="costEstimateRules"
@@ -81,7 +83,8 @@
                 id="TrainingType"
                 :legend="periodTypeLabel"
                 :items="periodTypeOptions"
-                :value.sync="instanceData.trainingOption"
+                :value="instanceData.trainingOption"
+                @update:value="instanceData.trainingOption = $event"
                 @radioButtonClicked="radioButtonClicked"
                 :rules="[
                   $validators.required('Please select an option.')
@@ -98,8 +101,10 @@
                   :showSinglePeriodTooltip="false"
                   :singlePeriodErrorMessage="singlePeriodErrorMessage"
                   :multiplePeriodErrorMessage="multiplePeriodErrorMessage"
-                  :values.sync="valueArray"
-                  :sysIdValueArray.sync="sysIdValueArray"
+                  :values="valueArray"
+                  @update:values="valueArray = $event"
+                  :sysIdValueArray="sysIdValueArray"
+                  @update:sysIdValueArray="sysIdValueArray = $event"
                 />
                 
               </div>

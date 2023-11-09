@@ -21,7 +21,7 @@
         <ATATTextField
           label="Estimate the percent of this package’s total estimated funds that will go to 
             CJADC2 programs or efforts."
-          :value.sync='_cjadc2Percentage'
+          :value='_cjadc2Percentage'
           @update:value="_cjadc2Percentage = $event"
           id="CJADC2PricePercentage"
           :rules="[
