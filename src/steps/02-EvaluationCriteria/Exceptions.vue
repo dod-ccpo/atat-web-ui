@@ -39,8 +39,8 @@
                 opportunity apply to your acquisition?"
               classes="copy-max-width mb-10 mt-3"
               :value="selectedException"
-              @update:value="selectedException = $event"
-              :rules="[$validators.required('Please select an option')]"            
+              @onSelected="selectedException = $event"
+              :rules="[$validators.required('Please select an option')]"  
             />
 
             <ATATAlert
