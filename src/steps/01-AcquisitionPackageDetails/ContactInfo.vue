@@ -404,7 +404,7 @@ class ContactInfo extends Vue {
 
     const storeData = await AcquisitionPackage.getContact("Primary Contact");
     this.savedData = storeData;
-    debugger
+
     if (storeData) {
       this.selectedRole = storeData.role;
 
@@ -518,7 +518,7 @@ class ContactInfo extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger
+
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveContactInfo({
