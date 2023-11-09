@@ -23,6 +23,7 @@ import {
 import * as converter from "number-to-words"
 import { AxiosRequestConfig } from "axios";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import AcquisitionPackage from "../acquisitionPackage";
 
 const ATAT_PERIODS_DATA_KEY = "ATAT_PERIODS_DATA_KEY";
 
@@ -47,7 +48,8 @@ export const defaultPeriodOfPerformance: PeriodOfPerformanceDTO = {
   recurring_requirement: "",
   option_periods: "",
   base_period: "",
-  is_requirement_follow_on_procurement_sole_sourced: ""
+  is_requirement_follow_on_procurement_sole_sourced: "",
+  acquisition_package: "",
 }
 
 @Module({
@@ -273,6 +275,7 @@ export class PeriodsStore extends VuexModule {
           base_period: basePeriod?.sys_id || "",
           option_periods: optionPeriods.map((period) => period.sys_id).join(","),
           sys_id: this.periodOfPerformance.sys_id || "",
+          acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || ""
         };
 
         return pop;
@@ -318,6 +321,7 @@ export class PeriodsStore extends VuexModule {
         requested_pop_start_date: this.periodOfPerformance?.requested_pop_start_date  || "",
         base_period: basePeriod?.sys_id || "",
         option_periods: optionPeriods.map((period) => period.sys_id).join(","),
+        acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || ""
       };
 
       const popSysId = this.periodOfPerformance?.sys_id || "";

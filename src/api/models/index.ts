@@ -349,6 +349,7 @@ export interface MarketResearchTechniquesDTO extends BaseTableDTO {
 
 
 export interface OrganizationDTO extends BaseTableDTO {
+  acquisition_package?: ReferenceColumn | string;
   street_address_1?: string;
   street_address_2?: string;
   organization_name?: string;
@@ -364,6 +365,7 @@ export interface OrganizationDTO extends BaseTableDTO {
 }
 
 export interface ProjectOverviewDTO extends BaseTableDTO {
+  acquisition_package: ReferenceColumn | string;
   title: string;
   scope: string;
   emergency_declaration: string;
@@ -433,6 +435,7 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   base_and_options?: string; //deprecated
   option_periods?: string;
   base_period?: ReferenceColumn | string;
+  acquisition_package: ReferenceColumn | string;
 }
 
 export interface ContractTypeDTO extends BaseTableDTO {
@@ -538,6 +541,8 @@ export interface PeriodDTO extends BaseTableDTO {
   period_unit_count: string;
   period_type: string;
   option_order: string;
+  acquisition_package: ReferenceColumn | string;
+  
 }
 
 export interface ReferenceColumn {

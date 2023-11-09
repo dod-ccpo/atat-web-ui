@@ -23,7 +23,11 @@
     fieldset {
       border-radius: 4px 0 0 4px;
     }
-
+    .v-select__selection {
+      .fi {
+        min-width: 20px;
+      }
+    }
     .v-select__selections {
       flex-direction: column-reverse;
       input {
@@ -41,6 +45,13 @@
         margin-left: 4px;
       }
     }
+    .v-field__append-inner {
+      right: 0;
+    }
+    .v-field {
+      padding-right: 2px;
+    }
+    
   }
   ._phone-number-input {
     max-width: 351px;

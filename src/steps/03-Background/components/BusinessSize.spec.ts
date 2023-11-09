@@ -1,21 +1,12 @@
-import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import Vuetify from "vuetify";
-import {DefaultProps} from "vue/types/options";
-import Vue from "vue";
+import { describe, it, expect} from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils';
 import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 
 describe("Testing BusinessSize Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue>;
 
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(BusinessSize, {
-      localVue,
-      vuetify,
-    });
-  });
+  const wrapper: VueWrapper = shallowMount(BusinessSize);
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options);
+
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
@@ -23,7 +14,7 @@ describe("Testing BusinessSize Component", () => {
 
   describe("ensure setReadOnly() =>", () => {
     beforeEach(() => {
-      wrapper.setData({
+      wrapper.setProps({
         isForm: false,
       });
     });
@@ -32,16 +23,16 @@ describe("Testing BusinessSize Component", () => {
       await wrapper.setProps({
         businessSize: ""
       })
-      await wrapper.vm.setReadOnly();
-      expect(wrapper.vm.$data.selectedBusinessSizeReadOnly).toEqual("YES");
+      await vm.setReadOnly();
+      expect(vm.selectedBusinessSizeReadOnly).toEqual("YES");
     });
   
     it("returns NO", async () => {
       await wrapper.setProps({
         businessSize: "NO_NONE"
       })
-      await wrapper.vm.setReadOnly();
-      expect(wrapper.vm.$data.selectedBusinessSizeReadOnly).toEqual("NO");
+      await vm.setReadOnly();
+      expect(vm.selectedBusinessSizeReadOnly).toEqual("NO");
     });
   })
 });

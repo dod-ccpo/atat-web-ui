@@ -19,7 +19,7 @@
       clear-icon="mdi-close"
 
       :model-value="_selectedItem"
-      @update:modelValue="valueUpdate"      
+      @update:modelValue="valueUpdate"
 
       :hide-details="true"
       :rules="rules"
