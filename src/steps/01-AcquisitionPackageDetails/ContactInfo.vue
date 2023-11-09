@@ -24,7 +24,8 @@
           label="Service branch"
           placeholder=""
           :items="branchData"
-          :selectedValue.sync="selectedBranch"
+          :selectedValue="selectedBranch"
+          @update:selectedValue="selectedBranch = $event"
           :return-object="true"
           :rules="[
             $validators.required('Please enter your Service Branch.')
@@ -50,7 +51,8 @@
           titleKey="name"
           :items="selectedBranchRanksData"
           :searchFields="['name', 'grade']"
-          :selectedItem.sync="selectedRank"
+          :selectedItem="selectedRank"
+          @update:selectedItem="selectedRank = $event"
           class="_input-max-width mb-7"
           icon="arrow_drop_down"
           :rules="[
@@ -64,18 +66,20 @@
           <ATATTextField
             label="First name"
             id="FirstName"
-          :value.sync="firstName"
-          class="_input-max-width"
-          :rules="[
+            :value="firstName"
+            @update:value="firstName = $event"
+            class="_input-max-width"
+            :rules="[
             $validators.required('Please enter your first name.')
-          ]"
+            ]"
           />
         </v-col>
         <v-col class="col-12 col-lg-3">
           <ATATTextField
             label="Middle name"
             id="MiddleName"
-            :value.sync="middleName"
+            :value="middleName"
+            @update:value="middleName = $event"
             :optional="true"
             class="_input-max-width"
           />
@@ -84,7 +88,8 @@
           <ATATTextField
             label="Last name"
             id="LastName"
-            :value.sync="lastName"
+            :value="lastName"
+            @update:value="lastName = $event"
             class="_input-max-width"
             :rules="[
               $validators.required('Please enter your last name.')
@@ -97,7 +102,8 @@
             id="Suffix"
             :optional="true"
             width="80"
-            :value.sync="suffix"
+            :value="suffix"
+            @update:value="suffix = $event"
           />
         </v-col>
       </v-row>
@@ -107,7 +113,8 @@
             label="Your title"
             id="ContactTitle"
             class="_input-max-width mb-10"
-            :value.sync="title"
+            :value="title"
+            @update:value="title = $event"
             :rules="[
               $validators.required('Please enter your title.')
             ]"
@@ -116,9 +123,12 @@
             label="Your phone number"
             id="ContactPhone"
             class="mb-10"
-            :value.sync="selectedPhoneNumber"
-            :country.sync="selectedPhoneCountry"
-            :extensionValue.sync="phoneExtension"
+            :value="selectedPhoneNumber"
+            @update:value="selectedPhoneNumber = $event"
+            :country="selectedPhoneCountry"
+            @update:country="selectedPhoneCountry = $event"
+            :extensionValue="phoneExtension"
+            @update:extensionValue="phoneExtension = $event"
             :rules="[
               $validators.isPhoneNumberValid(
                 selectedPhoneCountry
@@ -130,7 +140,8 @@
             id="ContactEmail"
             class="_input-max-width mb-10"
             helpText="Enter a .mil or .gov email address."
-            :value.sync="email"
+            :value="email"
+            @update:value="email = $event"
             :validateOnBlur="true"
             :rules="[
                 $validators.required('Please enter your email address.'),
@@ -145,9 +156,11 @@
             label="Grade"
             :label-sr-only="false"
             titleKey="label"
+            valueKey="grade"
             :searchFields="['label']"
             :items="gradeData"
-            :selectedItem.sync="selectedGrade"
+            :selectedItem="selectedGrade"
+            @update:selectedItem="selectedGrade = $event"
             placeholder=""
             icon="arrow_drop_down"
           />
@@ -505,6 +518,7 @@ class ContactInfo extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveContactInfo({

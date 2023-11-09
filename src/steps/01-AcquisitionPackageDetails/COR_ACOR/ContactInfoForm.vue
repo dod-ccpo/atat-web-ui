@@ -24,7 +24,8 @@
           '’s affiliation with the DoD?'
         "
         :items="contactRoles"
-        :value.sync="_selectedRole"
+        :value="_selectedRole"
+        @update:value="_selectedRole = $event"
         :rules="[
           $validators.required('Please enter your ' + corOrAcor + '’s role.'),
         ]"
@@ -41,7 +42,8 @@
           label="Service Branch"
           placeholder=""
           :items="branchData"
-          :selectedValue.sync="_selectedBranch"
+          :selectedValue="_selectedBranch"
+          @update:selectedValue="_selectedBranch = $event"
           :returnObject="true"
           :rules="[
             $validators.required(
@@ -56,9 +58,11 @@
             v-show="_selectedRole === 'MILITARY'"
             label="Rank"
             titleKey="name"
+            valueKey="sysId"
             :items="selectedBranchRanksData"
             :searchFields="['name', 'grade']"
-            :selectedItem.sync="_selectedRank"
+            :selectedItem="_selectedRank"
+            @update:selectedItem="_selectedRank = $event"
             :rules="[
               $validators.required(
                 'Please select your ' + corOrAcor + '’s rank.'
@@ -76,7 +80,8 @@
             :optional="true"
             placeholder=""
             :items="salutationData"
-            :selectedValue.sync="_selectedSalutation"
+            :selectedValue="_selectedSalutation"
+            @update:selectedValue="_selectedSalutation = $event"
           />
 
           <v-row class="form-section mb-7">
@@ -85,7 +90,8 @@
                 label="First name"
                 :id="corOrAcor + '_FirstName'"
                 class="_input-max-width"
-                :value.sync="_firstName"
+                :value="_firstName"
+                @update:value="_firstName = $event"
                 :rules="[
                   $validators.required(
                     'Please enter your ' + corOrAcor + '’s first name.'
@@ -99,7 +105,8 @@
                 :id="corOrAcor + '_MiddleName'"
                 :optional="true"
                 class="_input-max-width"
-                :value.sync="_middleName"
+                :value="_middleName"
+                @update:value="_middleName = $event"
               />
             </v-col>
             <v-col class="col-12 col-lg-3">
@@ -107,7 +114,8 @@
                 label="Last name"
                 :id="corOrAcor + '_LastName'"
                 class="_input-max-width"
-                :value.sync="_lastName"
+                :value="_lastName"
+                @update:value="_lastName = $event"
                 :rules="[
                   $validators.required(
                     'Please enter your ' + corOrAcor + '’s last name.'
@@ -121,7 +129,8 @@
                 :id="corOrAcor + '_Suffix'"
                 :optional="true"
                 width="80"
-                :value.sync="_suffix"
+                :value="_suffix"
+                @update:value="_suffix = $event"
               />
             </v-col>
           </v-row>
@@ -130,9 +139,12 @@
             :id="corOrAcor + '_PhoneNumber'"
             label="Phone number"
             class="width-100 mb-10"
-            :value.sync="_phone"
-            :country.sync="_selectedPhoneCountry"
-            :extensionValue.sync="_phoneExt"
+            :value="_phone"
+            @update:value="_phone = $event"
+            :country="_selectedPhoneCountry"
+            @update:country="_selectedPhoneCountry = $event"
+            :extensionValue="_phoneExt"
+            @update:extensionValue="_phoneExt = $event"
             :rules="[
               $validators.required(
                 'Please enter your ' + corOrAcor + '’s phone number'
@@ -147,7 +159,8 @@
             class="_input-max-width"
             :class="{ 'mb-10': isWizard }"
             helpText="Enter a .mil or .gov email address."
-            :value.sync="_email"
+            :value="_email"
+            @update:value="_email = $event"
             :rules="[
               $validators.required(
                 'Please enter your ' + corOrAcor + '’s email address.'
@@ -160,7 +173,8 @@
             v-if="isWizard"
             :isForm="true"
             :isWizard="isWizard"
-            :dodaac.sync="_dodaac"
+            :dodaac="_dodaac"
+            @update:dodaac="_dodaac = $event"
             :corOrAcor="corOrAcor"
             :rules="[ 
               $validators.required('Please enter your ' + corOrAcor + '’s 6-character DoDAAC.'),

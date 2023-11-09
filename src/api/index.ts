@@ -86,7 +86,7 @@ export const api = {
   contractConsiderationsTable: new ContractConsiderationsApi(),
   fairOpportunityTable: new FairOpportunityApi(),
   marketResearchTechniquesTable: new MarketResearchTechniquesApi(),
-  fundingPlanTable :new FundingPlanApi(),
+  fundingPlanTable: new FundingPlanApi(),
   fundingRequestTable: new FundingRequestApi(),
   fundingIncrementTable: new FundingIncrementApi(),
   fundingRequestFSFormTable: new FundingRequestFSFormApi(),

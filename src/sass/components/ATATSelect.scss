@@ -127,12 +127,13 @@
     .v-select__slot {
       height: 32px;
     }
-    .v-input__append-inner {
-      // dropdown arrow icon
-      margin-top: 4px !important;
-      padding: 0;
-    }
+
   }
+  .v-field__append-inner {
+    // dropdown arrow icon
+    margin-top: 0 !important;
+    padding: 0;
+  }  
   
   &._alt-style {
     fieldset {
@@ -173,4 +174,32 @@
       left: -50px !important;
     }
   }
+}
+
+._atat-textfield {
+
+  .v-field__append-inner {
+    // background-color: red !important;
+    // dropdown arrow icon
+    padding: 0;
+    .v-icon {
+      margin: 0;
+    }
+  }  
+
+  .v-select {
+    .v-field {
+      padding-right: 0;
+    }
+
+    input {
+      display: none;
+    }
+
+    .v-select__selection {
+      margin-left: 8px;
+    }
+  }
+
+
 }
