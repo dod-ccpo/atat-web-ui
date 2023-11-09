@@ -222,6 +222,8 @@ export class PortfolioDataStore extends VuexModule {
         }
         cspData.push(csp);
       });
+      const unclassCount = cspData.filter(e => e.classification_level === "U").length;
+      hasCloudDistinguishers = unclassCount > 1 ? hasCloudDistinguishers : false;
       cspData = cspData.sort((a,b) => a.name > b.name ? 1 : -1)
       await this.doSetCSPProvisioningData({cspData, hasCloudDistinguishers});
     } catch (error) {

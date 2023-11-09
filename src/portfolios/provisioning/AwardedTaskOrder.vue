@@ -90,9 +90,12 @@
 
     </v-container>
     <TaskOrderSearchModal
-      :showTOSearchModal.sync="showTOSearchModal"
-      :TONumber.sync="TONumber"
-      :resetValidationNow.sync="resetValidationNow"
+      :showTOSearchModal="showTOSearchModal"
+      @update:showTOSearchModal="showTOSearchModal = $event"
+      :TONumber="TONumber"
+      @update:TONumber="TONumber = $event"
+      :resetValidationNow="resetValidationNow"
+      @update:resetValidationNow="resetValidationNow = $event"
       @TOSearchCancelled="TOSearchCancelled"
       @startProvisionWorkflow="resetAwardedTaskOrderData"
     />        
@@ -135,6 +138,7 @@ class AwardedTaskOrder extends Vue {
     this.TONumber = "";
     this.resetValidationNow = true;
     this.showTOSearchModal = false;
+    PortfolioStore.setOpenTOSearchModal(false)
   }
 
   public get openTOSearchPortfolio(): boolean {
