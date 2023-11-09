@@ -38,7 +38,8 @@
             titleKey="text"
             :searchFields="['text']"
             :items="agencyData"
-            :selectedItem.sync="serviceOrAgency"
+            :selectedItem="serviceOrAgency"
+            @update:selectedItem="serviceOrAgency = $event"
             :rules="[$validators.required('Please select your service or agency.')]"
             placeholder="Find your service/agency"
             icon="arrow_drop_down"
@@ -49,7 +50,8 @@
             :groupLabel="checkboxLabel"
             :groupLabelHelpText="checkboxHelpText"
             id="ImpactLevelCheckboxes"
-            :value.sync="selectedILs"
+            :value="selectedILs"
+            @update:value="selectedILs = $event"
             :items="checkboxItems"
             :descriptionNormal="true"
             name="checkbox-card"
@@ -197,6 +199,7 @@ class PortfolioDetails extends Vue {
 
   public async saveOnLeave(): Promise<boolean> {
     try {
+      console.log(this.selectedILs, this.currentData)
       this.selectedILs.sort(); // ensure correct order e.g., IL2, IL4, IL5
       await PortfolioStore.setPortfolioProvisioning(this.currentData);
     } catch (error) {

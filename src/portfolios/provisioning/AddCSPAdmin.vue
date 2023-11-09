@@ -758,6 +758,7 @@ class AddCSPAdmin extends Vue {
 
       this.impactLevels = storeData.selectedILs || [];
       if (storeData.selectedILs && storeData.selectedILs.length > 1) {
+        console.log(storeData)
         this.showUnclassifiedILs = true
         this.createILCheckboxes(storeData.selectedILs)
       } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {

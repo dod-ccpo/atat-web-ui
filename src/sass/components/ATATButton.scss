@@ -45,6 +45,10 @@
     &:active {
       background-color: $primary-darker !important;
     }
+    &.v-btn--disabled {
+      background-color: $disabled !important;
+      opacity: 1;
+    }
   }
   
   &._error.v-theme--light{

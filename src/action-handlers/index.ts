@@ -70,7 +70,7 @@ async function writeOwnSoleSourceCause() {
   
   AcquisitionPackage.fairOppExplanations.soleSource.useCustomText = true;
   
-  router.push({
+  await router.push({
     name: routeNames.SoleSourceReview,
     query: {
       direction: "next"
@@ -83,7 +83,7 @@ async function WriteOwnBarriers() {
   const fairOpp: FairOpportunityDTO = { barriers_write_own_explanation: "YES" };
   await AcquisitionPackage.setFairOpportunity(fairOpp);
   await AcquisitionPackage.setSkipValidation(true);
-  router.push({
+  await router.push({
     name: routeNames.ReviewBarriers,
     query: {
       direction: "next"
@@ -97,7 +97,7 @@ async function writeOwnMarketResearchDetails() {
   const fairOpp: FairOpportunityDTO = { research_write_own_explanation: "YES" };
   await AcquisitionPackage.setFairOpportunity(fairOpp);
   await AcquisitionPackage.setSkipValidation(true);
-  router.push({
+  await router.push({
     name: routeNames.MarketResearchReview,
     query: {
       direction: "next"
@@ -115,7 +115,7 @@ function clearCurrentContractInfo() {
 async function deleteServiceOfferingGroup() {
   await DescriptionOfWork.removeCurrentOfferingGroup();
 
-  router.push({
+  await router.push({
     name: "pathResolver",
     query: {
       resolver: "ServiceOfferingsPathResolver",
@@ -149,7 +149,7 @@ async function startProvisioning() {
 
 async function didNotUseDapps() {
   await PortfolioStore.setDidNotUseDAPPS(true);
-  router.push({
+  await router.push({
     name: provWorkflowRouteNames.PortfolioDetails,
     query: {
       direction: "next"
@@ -169,7 +169,7 @@ async function startNewPortfolio(): Promise<void> {
     routeName = provWorkflowRouteNames.GeneratedFromPackage;
   }
 
-  router.push({
+  await router.push({
     name: routeName,
     query: {
       direction: "next"
@@ -185,7 +185,7 @@ async function submitPackage(): Promise<void> {
     newStatus: "WAITING_FOR_TASK_ORDER"
   });
 
-  router.push({
+  await router.push({
     name: routeNames.UnderReview,
     query: {
       direction: "next"
