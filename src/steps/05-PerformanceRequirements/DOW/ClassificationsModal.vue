@@ -1,7 +1,8 @@
 <template>
   <ATATDialog
     id="UpdateClassificationsModal"
-    :showDialog.sync="_showModal"
+    :showDialog="_showModal"
+    @update:showDialog="_showModal = $event"
     title="What classification and impact level(s) are required 
       for your entire contracting effort?"
     no-click-animation
@@ -19,7 +20,8 @@
       </p>
       <ATATCheckboxGroup
         id="ClassificationLevelCheckboxesModal"
-        :value.sync="_modalSelectedOptions"
+        :value="_modalSelectedOptions"
+        @update:value="_modalSelectedOptions = $event"
         :hasOtherValue="false"
         :items="modalCheckboxItems"
         name="checkboxes"

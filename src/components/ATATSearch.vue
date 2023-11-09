@@ -201,6 +201,8 @@ import { ValidationRule, mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import AppSections from "@/store/appSections";
 
 @Component({
   components: {
@@ -344,6 +346,15 @@ class ATATSearch extends Vue {
         await PortfolioStore.reset();
         const response = await api.edaApi.search(this._value);
         if (response.success !== undefined && !response.success) {
+          // redirect to provisioning issue page
+          if(response.provisioningIssue){
+            PortfolioStore.setActiveTaskOrderNumber(this._value)
+            await this.$router.push({
+              name: provWorkflowRouteNames.ProvisioningIssue
+            })
+            AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
+            return;
+          }
           // set error messages for Refs
           const errorMessage = [response.message ?? "Unknown error"];
           if (!this.isModal) {

@@ -1,7 +1,8 @@
 <template>
 	<ATATDialog
 		id="DeleteOfferingModal"
-		:showDialog.sync="_showModal"
+		:showDialog="_showModal"
+    @update:showDialog="_showModal = $event"
 		:title="title"
 		no-click-animation
 		:okText="okText"

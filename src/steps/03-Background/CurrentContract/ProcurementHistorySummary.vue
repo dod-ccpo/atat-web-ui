@@ -13,7 +13,7 @@
               already entered. When you’re done, click “Continue” and we will move on to your 
               current environment details.
             </p>
-            <v-data-table
+            <v-table
               v-if="hasContractData"
               id="ProcurementHistoryDataTable"
               :headers="tableHeaders"
@@ -24,57 +24,72 @@
               class="elevation-0 _instances-table mt-10"
               no-data-text="You have not added any past contracts yet."
             >
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.incumbent_contractor_name="{ item }">
-              <span
-                :class="[{'text-error font-weight-500': !item.is_valid}]">
-                {{ item.incumbent_contractor_name }}
-              </span>
-              <div v-if="!item.is_valid" class="d-flex align-center nowrap">
-                <ATATSVGIcon 
-                  name="errorFilled"
-                  width="13"
-                  height="13"
-                  color="error"
-                />
-                <span class="font-size-12 text-error d-inline-block ml-1">Missing info</span>
-              </div>
-            </template>
-
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.contract_number="{ item }">
-              {{ item.contract_number }}
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.task_delivery_order_number="{ item }">
-              {{ item.task_delivery_order_number }}
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.contract_order_start_date="{ item }">
-              {{  formatContractDate(item.contract_order_start_date) }} - 
-              {{  formatContractDate(item.contract_order_expiration_date) }} 
-            </template>
-            <!-- eslint-disable vue/valid-v-slot -->
-            <template v-slot:item.actions="{ item }">
-              <button
-                type="button"
-                :id="'EditButton_' + item.instance_number"
-                @click="editInstance(item)"
-                class="mr-2"
-              >
-                <ATATSVGIcon name="edit" height="19" width="19" />
-              </button>
-
-              <button
-                type="button"
-                :id="'DeleteButton_' + item.instance_number"
-                @click="confirmDeleteInstance(item)"
-                class="ml-2"
-              >
-                <ATATSVGIcon name="remove" height="18" width="14" />
-              </button>
-            </template>
-            </v-data-table>
+              <thead>
+                <tr>
+                  <th
+                    v-for="header in tableHeaders"
+                    :key="(header.value as string)"
+                    :id="(header.value as string)"
+                    class="text-start"
+                  >
+                    {{ header.title }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="item in dataSource"
+                  :key="item.instance_number"
+                >
+                  <td>
+                    <span
+                      :class="[{'text-error font-weight-500': !item.is_valid}]">
+                      {{ item.incumbent_contractor_name }}
+                    </span>
+                    <div v-if="!item.is_valid" class="d-flex align-center nowrap">
+                      <ATATSVGIcon 
+                        name="errorFilled"
+                        width="13"
+                        height="13"
+                        color="error"
+                      />
+                      <span 
+                        class="font-size-12 text-error d-inline-block ml-1">
+                          Missing info
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    {{ item.contract_number }}
+                  </td> 
+                  <td>
+                    {{ item.task_delivery_order_number }}
+                  </td>
+                  <td>
+                    {{ formatContractDate(item.contract_order_start_date as string) }} - 
+                    {{ formatContractDate(item.contract_order_expiration_date as string) }}
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      :id="'EditButton_' + item.instance_number"
+                      @click="editInstance(item)"
+                      class="mr-2"
+                    >
+                      <ATATSVGIcon name="edit" height="19" width="19" />
+                    </button>
+                    <button
+                      type="button"
+                      :id="'DeleteButton_' + item.instance_number"
+                      @click="confirmDeleteInstance(item)"
+                      class="ml-2"
+                    >
+                      <ATATSVGIcon name="remove" height="18" width="14" />
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </v-table>
             <div 
               v-if="!hasContractData"
               class=

@@ -858,7 +858,7 @@ export const defaultDOWArchitecturalNeeds: ArchitecturalDesignRequirementDTO = {
   source: "DOW",
   statement: "",
   applications_needing_design: "",
-  data_classification_levels: "",
+  data_classification_levels: [""],
   external_factors: "",
   acquisition_package: "",
   needs_architectural_design_services:""

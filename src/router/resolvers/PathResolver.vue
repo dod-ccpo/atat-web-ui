@@ -23,7 +23,6 @@ class RouteResolver extends Vue {
     const pathName = InvokePathResolver(routeResolver, current, direction);
     this.$router.push({ path: pathName });
   }
-
   @Hook
   public async beforeRouteEnter(
     to: RouteLocationNormalized,
