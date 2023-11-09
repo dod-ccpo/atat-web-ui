@@ -67,10 +67,16 @@ export class EDAApi extends ApiBase{
       }
       return edaResponse;
     } catch (error: any) {
-      return {
+      const {code} = error.response.data.result
+      const errorResponse:EDAResponse = {
         success: false,
-        message: errorMessages[error.response.data.result.code] || "Unknown error contacting EDA"
+        message: errorMessages[code] || "Unknown error contacting EDA"
       };
+      
+      if(code === "2000"){
+        errorResponse.provisioningIssue = true
+      }
+      return errorResponse
     }
   }
 
