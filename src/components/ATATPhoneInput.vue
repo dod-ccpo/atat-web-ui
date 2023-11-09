@@ -11,7 +11,6 @@
             {{ label }}
           </label>
         </div>
-        <!-- TODO: use the new menu prop 'offset' to achieve what 'offsetY: true' did before -->
         <div class="d-flex">
           <v-select
             ref="atatPhoneDropdown"
@@ -19,27 +18,32 @@
             class="_country-select"
             :items="searchResults"
             variant="outlined"
-            item-title="abbreviation"
-            item-value="countryCode"
+
             :hide-details="true"
-            :error="errorMessages.length > 0"
             v-model="_selectedCountry"
             @update:v-model="_selectedCountry = $event"
-            :menu-props="{ location: 'bottom', offset: 0, attach:true }"
-            @update:model-value="onChange"
-            return-object
+            :return-object="true"
+            :eager="true"
+
           >
+<!--
+            :error="errorMessages.length > 0"
+
+            item-title="name"
+            item-value="abbreviation"           -->
+          <!-- @update:v-model="onChange" -->
+
             <template v-slot:selection="{ item }">
               <span class="fi" :class="[`fi-${item.value.abbreviation}`]"> </span>
             </template>
+
             <template v-slot:prepend-item>
               <v-text-field
                 v-model="searchTerm"
-                @update:v-model="searchTerm = $event"
+                @update:model-value="searchCountries"
                 class="_dropdown-text-field"
                 placeholder="Search"
                 persistent-placeholder
-                @update:model-value="searchCountries"
                 append-icon="search"
                 id="DropdownTextField"
                 :clearable="true"
@@ -47,34 +51,26 @@
                 :autocomplete="false"
               />
             </template>
-            <!-- TODO:  validate proper functionality given the removal of 'on' from vslot item -->
-            <template v-slot:item="{ item }">
+            <template v-slot:item="{ props, item }">
               <v-list-item
+                :v-bind="props"
                 class="_country-list"
                 :class="[
-                  item.value.suggested ? '_suggested' : '',
-                  item.value.active ? '_active' : '',
+                  item.raw.suggested ? '_suggested' : '',
+                  item.raw.active ? '_active' : '',
                 ]"
+                :value="item.raw.abbreviation"
               >
-                <!-- TODO: div below was v-list-item-content -->
-                <div
-                  :id="
-                    id +
-                    '_DropdownListItem_' +
-                    item.value.name.replace(/[^A-Z0-9]/gi, '')
-                  "
-                  :item-value="item.value.name"
-                >
+                <div :item-value="item?.raw.name">
                   <v-list-item-title class="body _country">
                     <v-row no-gutters align="center">
                       <span
                         class="mr-3 fi"
-                        :class="[`fi-${item.value.abbreviation}`]"
-                      >
-                      </span>
-                      <span class="mr-2 _country-name">{{ item.value.name }}</span>
+                        :class="[`fi-${item.raw.abbreviation}`]"
+                      ></span>
+                      <span class="mr-2 _country-name">{{ item.raw.name }}</span>
                       <span class="color-base body-sm">{{
-                          item.value.countryCode
+                          item.raw.countryCode
                         }}</span>
                     </v-row>
                   </v-list-item-title>
@@ -82,6 +78,7 @@
               </v-list-item>
             </template>
           </v-select>
+
           <v-text-field
             ref="atatPhoneTextField"
             :id="id + '_textField'"
@@ -539,7 +536,6 @@ class ATATPhoneInput extends Vue {
       const phoneTextField = document.getElementById(
         this.id + "_textField"
       ) as HTMLElement;
-
       return Inputmask({
         mask: this._selectedCountry?.mask || [],
         placeholder: "",
@@ -571,17 +567,18 @@ class ATATPhoneInput extends Vue {
   }
 
 
-  /**
-   * when parent forms methods (.reset() and .resetValidation()) are called  
-   * this._selectedCountry is set to null.
-   * 
-   * updated method sets default value
-  */
-  private updated(): void{
-    if (this._selectedCountry === null){
-      this._selectedCountry = this.countries[0];
-    }
-  }
+  // /**
+  //  * when parent forms methods (.reset() and .resetValidation()) are called
+  //  * this._selectedCountry is set to null.
+  //  *
+  //  * updated method sets default value
+  // */
+  // private updated(): void{
+  //   debugger;
+  //   if (this._selectedCountry === null){
+  //     this._selectedCountry = this.countries[0];
+  //   }
+  // }
 
   get wrapperClass(): string {
     return this.$vuetify.display.mdAndDown ? "d-block" : "d-flex";

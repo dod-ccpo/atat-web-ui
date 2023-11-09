@@ -1,5 +1,25 @@
 <template>
   <v-form ref="form" lazy-validation>
+    <ATATTextField
+      id="MonthlyDataEgress"
+      class="mt-8 _input-max-width-240 _has-appended-dropdown"
+      label="Approximate data/internet egress per month"
+      :value="foo"
+      @update:value="foo = $event"
+      tooltipText="This refers to the amount of data that gets transferred from 
+        your organization’s host network to external networks."
+      :appendDropdown="true"
+      :dropdownOptions="storageUnits"
+      :selectedDropdownValue="unit"
+      @update:selectedDropdownValue="unit = $event"
+      type="number"
+      :rules="[
+        $validators.required('Enter a number greater than or equal to 1.'),
+        $validators.greaterThan(0, 'Enter a number greater than or equal to 1.'),
+      ]"
+      :allowDecimals="false"
+    />     
+
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
@@ -100,7 +120,7 @@ import AcquisitionPackage, {
 import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import { YesNo } from "types/Global";
+import { SelectData, YesNo } from "types/Global";
  
 @Component({
   components: {
@@ -122,6 +142,13 @@ class ProjectOverview extends Vue {
     }).catch(() => false)
   }
 
+  private foo = 0;
+  private unit = ""
+  public storageUnits: SelectData[] = [
+    { text: "Gigabyte (GB)", value: "GB" },
+    { text: "Terabyte (TB)", value: "TB" },
+    { text: "Petabyte (PB)", value: "PB" },
+  ];
   private currentTitle = "";
   private projectScope = "";
   private emergencyDeclaration = "";
