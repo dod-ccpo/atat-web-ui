@@ -178,8 +178,6 @@ class ContractType extends Vue {
         if (this.timeAndMaterialsSelected === "true") {
           this.selectedContractTypes.push("T&M");
         }
-        
-        console.log('parent: ', this.selectedContractTypes)
       }
     } else {
       AcquisitionPackage.setContractType(this.currentData);
