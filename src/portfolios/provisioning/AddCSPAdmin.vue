@@ -94,16 +94,18 @@
             <!-- eslint-disable vue/valid-v-slot -->
             <td  v-html="item.adminClassificationLevels" class="text-start">
             </td>
-            <td class="d-flex align-center text-start" >
-              <div class="_icon-circle bg-info-lighter">
-                  <ATATSVGIcon
-                    name="cloud"
-                    width="21"
-                    height="14"
-                    color="info-dark"
-                  />
-                </div>
-              {{ item.status }}
+            <td class="text-start" >
+              <div class="d-flex align-center">
+                <div class="_icon-circle bg-info-lighter">
+                    <ATATSVGIcon
+                      name="cloud"
+                      width="21"
+                      height="14"
+                      color="info-dark"
+                    />
+                  </div>
+                {{ item.status }}
+              </div>
             </td>
             <td class="text-start">
               <button
