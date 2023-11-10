@@ -486,7 +486,6 @@ class AddCSPAdmin extends Vue {
   }
 
   public get ModalOKDisabled(): boolean {
-    debugger;
     const idOK = this.adminDoDId.length === 10;
     const classificationSelected = this.selectedClassificationLevels.length > 0;
     let unclassEmailValid = true;
@@ -536,7 +535,6 @@ class AddCSPAdmin extends Vue {
     this.modalDrawerIsOpen = true;
   }
   public openAddCSPModal(): void {
-    debugger;
     this.resetSelectedClassificationLevels = true;
     this.openModal = true;
   }

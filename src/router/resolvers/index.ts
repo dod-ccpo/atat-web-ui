@@ -2009,7 +2009,6 @@ const userHasActivePortfolios = (): boolean => {
 }
 
 export const AddToExistingPortfolioResolver = (current: string): string => {
-  debugger;
   const hasActivePortfolios: boolean = userHasActivePortfolios()
   // moving backward
   if (
@@ -2034,7 +2033,6 @@ export const AddToExistingPortfolioResolver = (current: string): string => {
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
-  debugger;
   const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId
   const showPackageSelection = PortfolioStore.showTOPackageSelection
@@ -2064,7 +2062,6 @@ export const GeneratedFromPackageRouteResolver = (current: string): string => {
 }
 
 export const GeneratingPackageDocumentsFundingResolver = (current: string): string => {
-  debugger;
   if (current === routeNames.MIPR){
     return routeNames.SummaryStepEight;
   }
@@ -2072,7 +2069,6 @@ export const GeneratingPackageDocumentsFundingResolver = (current: string): stri
 }
 
 export const PortfolioDetailsRouteResolver = (current: string): string => {
-  debugger;
   if (current === provWorkflowRouteNames.AddCSPAdmin && provFromMeatball()) {
     return taskOrderHasUnclass() && cspHasILs()
       ? provWorkflowRouteNames.PortfolioDetails

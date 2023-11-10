@@ -28,7 +28,7 @@ import PortfolioStore from "@/store/portfolio";
 class FinancialDetailsAlert extends Vue {
 
   public cspLongName(): string {
-    const cspName = PortfolioStore.currentPortfolio.csp ?? "";
+    const cspName = PortfolioStore.currentPortfolio.vendor ?? "";
     let longName = "";
     switch (cspName.toLowerCase()) {
     case "aws":

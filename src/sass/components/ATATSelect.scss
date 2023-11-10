@@ -82,14 +82,7 @@
     display: flex;
     align-items: center;
   }
-  .v-subheader {
-    text-transform: uppercase;
-    color: $base;
-    font-size: 14px;
-    font-weight: 500;
-    padding-left: 16px;
-  }
-  
+
   .v-select__slot {
     height: 38px;
   }
@@ -154,11 +147,12 @@
       border: none;
       background-color: transparent;
     }
-
+    border-radius: 4px;
     &:hover {
-      fieldset {
-        background-color: $primary-20;
-      }
+      background-color: $primary-20;
+    }
+    .v-field--appended {
+      padding-right: 4px !important;
     }
   }
 
@@ -166,6 +160,10 @@
     .v-menu__content {
       min-width: 180px !important;
       left: -75px !important;
+    }
+    .v-field__input {
+      min-height: 32px !important;
+      height: 32px !important;
     }
   }
   &._search-bar-sort {
@@ -203,3 +201,24 @@
 
 
 }
+
+.v-select__content {
+  .v-list-subheader__text {
+    text-transform: uppercase;
+    color: $base;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.v-overlay .v-select__content {
+  .v-list-item__overlay {
+    opacity: 0 !important;
+  }
+  .v-list-item:not(.v-list-item--active) {
+    &:hover {
+      background-color: $base-lightest;
+    }
+  }
+}
+

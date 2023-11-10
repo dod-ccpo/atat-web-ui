@@ -51,7 +51,7 @@ export default defineConfig(({command, mode}) => {
 			extensions: ['.ts', '.vue', '.js']
 		},
 		plugins: [
-			VueDevTools({analyze: true}), 
+			// VueDevTools({analyze: true}), 
 			vue(),
 			vuetify(),
 			Components({

@@ -1228,6 +1228,7 @@ class PortfolioDashboard extends Vue {
       cost.value = parseFloat(cost.value).toString();
     });
     this.idiqClins = currentPortfolioData.currentCLINs as ClinDTO[];
+    this.idiqClins = this.idiqClins.filter(c => c.clin_number !== "9999")
     this.availableFunds = parseFloat(fundsData?.fundsAvailable as string);
     this.totalPortfolioFunds = parseFloat(fundsData?.totalPortfolioFunds as string)
     this.fundsSpent = parseFloat(fundsData?.periodFundsSpent as string);

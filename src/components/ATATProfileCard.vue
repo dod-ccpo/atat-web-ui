@@ -13,92 +13,89 @@
     </v-list>
     <v-list>
       <v-list-item class="px-6 py-6">
-          <div class="d-flex align-center">
-            <ATATSVGIcon
-              width="16"
-              height="13"
-              name="email"
-              color="base-light"
-            />
-            <a
-              class="font-size-14 ml-3 _text-link"
-              :href="emailLink"
-            >
-              {{person.email}}
-            </a>
-          </div>
-          <div
-            class="d-flex align-top mt-3"
-            v-if="hasPhone"
+        <div class="d-flex align-center">
+          <ATATSVGIcon
+            width="16"
+            height="13"
+            name="email"
+            color="base-light"
+          />
+          <a
+            class="font-size-14 ml-3 _text-link"
+            :href="emailLink"
           >
-            <ATATSVGIcon
-              width="16"
-              height="13"
-              name="phone"
-              color="base-light"
-            />
-            <div>
-              <div v-if="person.officePhone" class="d-flex align-center mb-1">
-                <span class="font-size-14 ml-3">
-                  {{formatPhoneNumber(person.officePhone)}}
-                </span>
-                <span class="pl-4 font-size-14">
-                  Office
-                </span>
-              </div>
-
-              <div v-if="person.mobilePhone" class="d-flex align-center mb-1">
-                <span class="font-size-14 ml-3">
-                  {{formatPhoneNumber(person.mobilePhone)}}
-                </span>
-                <span class="pl-4 font-size-14">
-                  Mobile
-                </span>
-              </div>
-
-              <div v-if="person.dsnPhone" class="d-flex align-center mb-1">
-                <span class="font-size-14 ml-3">
-                  {{formatPhoneNumber(person.dsnPhone)}}
-                </span>
-                <span class="pl-4 font-size-14">
-                  DSN
-                </span>
-              </div>
-
+            {{person.email}}
+          </a>
+        </div>
+        <div v-if="hasPhone" class="d-flex align-top mt-3">
+          <ATATSVGIcon
+            width="16"
+            height="13"
+            name="phone"
+            color="base-light"
+          />
+          <div>
+            <div v-if="person.officePhone" class="d-flex align-center mb-1">
+              <span class="font-size-14 ml-3">
+                {{formatPhoneNumber(person.officePhone)}}
+              </span>
+              <span class="pl-4 font-size-14">
+                Office
+              </span>
             </div>
-          </div>
 
-          <div
-            class="d-flex align-center"
-            :class="agencyClass"
-            v-if="person.agency"
-          >
-            <ATATSVGIcon
-              width="16"
-              height="16"
-              name="service"
-              color="base-light"
-            />
-            <span class="font-size-14 ml-3">
-              {{person.agency}}
-            </span>
-          </div>
+            <div v-if="person.mobilePhone" class="d-flex align-center mb-1">
+              <span class="font-size-14 ml-3">
+                {{formatPhoneNumber(person.mobilePhone)}}
+              </span>
+              <span class="pl-4 font-size-14">
+                Mobile
+              </span>
+            </div>
 
-          <div
-            class="d-flex align-center"
-            :class="designationClass"
-            v-if="person.designation"
-          >
-            <ATATSVGIcon
-              width="16"
-              height="16"
-              name="role"
-              color="base-light"
-            />
-            <span class="font-size-14 ml-3">
-              {{person.designation}}
-            </span>
+            <div v-if="person.dsnPhone" class="d-flex align-center mb-1">
+              <span class="font-size-14 ml-3">
+                {{formatPhoneNumber(person.dsnPhone)}}
+              </span>
+              <span class="pl-4 font-size-14">
+                DSN
+              </span>
+            </div>
+
           </div>
+        </div>
+
+        <div
+          class="d-flex align-center"
+          :class="agencyClass"
+          v-if="person.agency"
+        >
+          <ATATSVGIcon
+            width="16"
+            height="16"
+            name="service"
+            color="base-light"
+          />
+          <span class="font-size-14 ml-3">
+            {{person.agency}}
+          </span>
+        </div>
+
+        <div
+          class="d-flex align-center"
+          :class="designationClass"
+          v-if="person.designation"
+        >
+          <ATATSVGIcon
+            width="16"
+            height="16"
+            name="role"
+            color="base-light"
+          />
+          <span class="font-size-14 ml-3">
+            {{person.designation}}
+          </span>
+        </div>
       </v-list-item>
     </v-list>
   </v-card>

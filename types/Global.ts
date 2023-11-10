@@ -103,7 +103,11 @@ export interface SelectData {
   isSelectable?: boolean;
   sys_id?: string;
   name?:string;
+  type?: "subheader" | "divider";
 }
+
+export type MenuVariant = "outlined" | "plain" | "filled" | "underlined" 
+  | "solo" | "solo-inverted" | "solo-filled" | undefined;
 
 /**
  * interface for autocomplete Items

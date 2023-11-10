@@ -386,7 +386,7 @@ class ATATCheckboxGroup extends Vue {
         // }
         this.$refs.checkboxGroupForm.validate().then(
           async (response:SubmitEventPromise)=>{
-            this.errorMessages = (await (response)).errors[0].errorMessages;
+            this.errorMessages = (await (response)).errors[0]?.errorMessages;
           }
         )
         AcquisitionPackage.setValidateNow(false);
