@@ -125,7 +125,8 @@ class RecurringRequirement extends Vue {
     return {
       recurring_requirement: this.selectedRecurringOption,
       is_requirement_follow_on_procurement_sole_sourced: 
-        this.selectedfollowOnProcurementBeSoleSourcedOption
+        this.selectedfollowOnProcurementBeSoleSourcedOption,
+      acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || "",
     };
   }
 
@@ -147,7 +148,8 @@ class RecurringRequirement extends Vue {
 
   private savedData: PeriodOfPerformanceDTO = { 
     recurring_requirement: "",
-    is_requirement_follow_on_procurement_sole_sourced: ""
+    is_requirement_follow_on_procurement_sole_sourced: "",
+    acquisition_package:  "",
   };
 
   private recurringOptionsClicked(): void{
@@ -171,7 +173,8 @@ class RecurringRequirement extends Vue {
         this.savedData = {
           recurring_requirement: storeData.recurring_requirement,
           is_requirement_follow_on_procurement_sole_sourced:
-            storeData.is_requirement_follow_on_procurement_sole_sourced
+            storeData.is_requirement_follow_on_procurement_sole_sourced,
+          acquisition_package: AcquisitionPackage?.acquisitionPackage?.sys_id || "",
         }
         this.selectedRecurringOption = storeData.recurring_requirement as string;
         this.selectedfollowOnProcurementBeSoleSourcedOption = 

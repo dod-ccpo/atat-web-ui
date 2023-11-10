@@ -74,7 +74,8 @@
     </a>
     <ATATDialog
       id="ChangeContactInfoModal"
-      :showDialog.sync="showDialog"
+      :showDialog="showDialog"
+      @update:showDialog="showDialog = $event"
       :title="'Request change to ' + corOrAcor + '’s contact information'"
       no-click-animation
       okText="Send Request"

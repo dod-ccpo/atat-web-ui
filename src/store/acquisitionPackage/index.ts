@@ -143,6 +143,7 @@ export const initialCurrentContract = (): CurrentContractDTO => {
 const initialProjectOverview = () => {
   const disclaimer:YesNo = "";
   return {
+    acquisition_package: "",
     sys_id: "",
     title: "",
     scope: "",
@@ -155,6 +156,7 @@ const initialProjectOverview = () => {
 
 const initialOrganization = () => {
   return {
+    acquisition_package: "",
     country: "",
     address_type: "",
     city: "",

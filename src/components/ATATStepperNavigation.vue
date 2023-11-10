@@ -60,10 +60,7 @@ import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import { AdditionalButton } from "@/store/steps/types";
 
 @Component({
-  emits:[
-    "next",
-    "talkAltContinueAction",
-  ]
+  emits:["next", "additionalButtonClick", "takeAltContinueAction", "previous"]
 })
 class ATATStepperNavigation extends Vue {
   @Prop({ default: () => []}) private additionalButtons!: Array<AdditionalButton>;

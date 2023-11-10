@@ -86,7 +86,7 @@
             <span class="h3">Calculating your total projected costs</span>
           </div>
         </div>
-        <v-data-table 
+        <v-table 
           v-else 
           id="CostEstimateDataTable" 
           :headers="tableHeaders" 
@@ -95,28 +95,28 @@
           :items-per-page="-1" 
           hide-default-footer 
           hide-default-header 
-          class="_data-table _has-total-col width-100 my-10">
-
-          <template v-slot:headers="{ columns }">
+          class="_data-table _has-total-col width-100 my-10"
+        >
+          <thead>
             <tr>
               <th 
-                v-for="(column, idx) in columns" 
+                v-for="(header, idx) in tableHeaders" 
                 :key="idx"
-                :id="getIdText(column.title)">
+                :id="getIdText(header.title)">
                 <div :class="[
                   'py-4 d-flex font-size-14',
                   { 'align-left': idx === 0 },
                   { 'justify-end': idx > 0 },
-
                 ]">
-                  {{ column.title }}
+                  {{ header.title }}
                 </div>
               </th>
             </tr>
-          </template>
-          <template v-slot:item="{ item, index }">
+          </thead>
+          <tbody>
             <tr
-              :key="index" 
+              v-for="(item, idx) in tableData"
+              :key="idx" 
               class="row-item font-size-14 text-right" :class="[{
                 '_subtotal': item.CLINTypeClassAggregate === 'Subtotal'
                   || item.CLINTypeClassAggregate === 'Total with Surge & Ordering Fee'
@@ -174,8 +174,8 @@
                 <div>{{ item.Total }}</div>
               </td>
             </tr>
-          </template>
-        </v-data-table>
+          </tbody>
+        </v-table>
       </v-col>
     </v-row>
   </v-container>
@@ -200,7 +200,7 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import IGCE from "@/store/IGCE";
-import { DataTableHeader } from '../../../../types/Global';
+import { DataTableHeader } from 'types/Global';
 
 
 export interface IGCECostSummaryItem {

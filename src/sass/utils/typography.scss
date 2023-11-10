@@ -141,23 +141,23 @@ hr, .hr {
   color: $base !important;
 }
 
+._text-link, .expandable-content-opener, .primary-text {
+  text-decoration: underline;
+  color: $primary !important;
+
+  &:hover {
+    color: $primary-dark !important;
+  }
+
+  &:active {
+    color: $primary-darker !important;
+  }
+}
+
 .v-layout a {
   color: $primary !important; // override vuetify blue
   text-decoration: underline;
   
-  &._text-link, &.expandable-content-opener, &.primary-text {
-    text-decoration: underline;
-    color: $primary !important;
-
-    &:hover {
-      color: $primary-dark !important;
-    }
-
-    &:active {
-      color: $primary-darker !important;
-    }
-  }
-
   &._chevron-right-after {
     text-decoration: none;
     &:after {
@@ -180,7 +180,8 @@ hr, .hr {
   padding-right: 24px;
   display: inline-block;
   white-space: nowrap;
-    text-decoration: underline;
+  text-decoration: underline;
+  color: $primary;
   &:before {
     font-family: $icon-font;
     content: "\F0327";

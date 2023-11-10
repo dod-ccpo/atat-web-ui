@@ -17,7 +17,8 @@
                 :card="true"
                 :items="radioButtonItems"
                 :rules="[$validators.required('Please select an option.')]"
-                :value.sync="selectedHasFunding"
+                :value="selectedHasFunding"
+                @update:value="selectedHasFunding = $event"
                 class="max-width-640 mb-5"
             />
           </div>

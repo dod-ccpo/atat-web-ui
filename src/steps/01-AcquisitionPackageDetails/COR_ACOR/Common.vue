@@ -53,20 +53,34 @@
       :corOrAcor="corOrAcor"
       :sectionHeader="sectionHeader"
       
-      :selectedRole.sync="selectedRole"
-      :selectedBranch.sync="selectedBranch"
-      :selectedRank.sync="selectedRank"
-      :selectedSalutation.sync="selectedSalutation"
-      :firstName.sync="firstName"
-      :middleName.sync="middleName"
-      :lastName.sync="lastName"
-      :suffix.sync="suffix"
+      :selectedRole="selectedRole"
+      @update:selectedRole="selectedRole = $event"
+      :selectedBranch="selectedBranch"
+      @update:selectedBranch="selectedBranch = $event"
+      :selectedRank="selectedRank"
+      @update:selectedRank="selectedRank = $event"
+      :selectedSalutation="selectedSalutation"
+      @update:selectedSalutation="selectedSalutation = $event"
+      :firstName="firstName"
+      @update:firstName="firstName = $event"
+      :middleName="middleName"
+      @update:middleName="middleName = $event"
+      :lastName="lastName"
+      @update:lastName="lastName = $event"
+      :suffix="suffix"
+      @update:suffix="suffix = $event"
       :formalName="formalName"
-      :email.sync="email"
-      :phone.sync="phone"
-      :selectedPhoneCountry.sync="selectedPhoneCountry"
-      :phoneExt.sync="phoneExt"
-      :dodaac.sync="dodaac"
+      @update:formalName="formalName = $event"
+      :email="email"
+      @update:email="email = $event"
+      :phone="phone"
+      @update:phone="phone = $event"
+      :selectedPhoneCountry="selectedPhoneCountry"
+      @update:selectedPhoneCountry="selectedPhoneCountry = $event"
+      :phoneExt="phoneExt"
+      @update:phoneExt="phoneExt = $event"
+      :dodaac="dodaac"
+      @update:dodaac="dodaac = $event"
 
       :contactRoles="contactRoles"
       :branchData="branchData"
@@ -404,6 +418,7 @@ class CommonCorAcor extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+
     const branches = await ContactData.LoadMilitaryBranches();
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;

@@ -3,30 +3,34 @@
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
-    <v-main class="_center-page-content _provisioning _scroll-y">
-      <div id="app-content" class="d-flex flex-column pt-16">
+    <v-main class="_center-page-content _provisioning">
+      <div id="app-content" class="_app-content d-flex flex-column pt-16">
+				<div class="_app-content-wrap">
+					<div class="_app-content-padding">
 
-        <div  class="mb-auto _page-content">
-          <router-view></router-view>
+            <div  class="mb-auto _page-content">
+              <router-view></router-view>
+            </div>
+
+            <ATATStepperNavigation
+              v-if="showStepper"
+              @next="navigate('next')"
+              @previous="navigate('previous')"
+              @additionalButtonClick="additionalButtonClick"
+              @takeAltContinueAction="takeAltContinueAction"
+              :additionalButtons="additionalButtons"
+              :backButtonText="backButtonText"
+              :continueButtonText="continueButtonText"
+              :continueButtonColor="continueButtonColor"
+              :altContinueAction="altContinueAction"
+              :hideContinueButton="hideContinueButton"
+              :disableContinue="disableContinueButton"
+              :noPrevious="noPrevious"
+              class="mb-8"
+            />
+            <ATATFooter/>
+          </div>
         </div>
-
-        <ATATStepperNavigation
-          v-if="showStepper"
-          @next="navigate('next')"
-          @previous="navigate('previous')"
-          @additionalButtonClick="additionalButtonClick"
-          @takeAltContinueAction="takeAltContinueAction"
-          :additionalButtons="additionalButtons"
-          :backButtonText="backButtonText"
-          :continueButtonText="continueButtonText"
-          :continueButtonColor="continueButtonColor"
-          :altContinueAction="altContinueAction"
-          :hideContinueButton="hideContinueButton"
-          :disableContinue="disableContinueButton"
-          :noPrevious="noPrevious"
-          class="mb-8"
-        />
-        <ATATFooter/>
       </div>
     </v-main>
     <ATATDialog 
@@ -160,8 +164,9 @@ class ProvisionWorkflow extends Vue {
   }
 
   get showStepper(): boolean{
-    return ["Provisioned"].some(
-      routeName => routeName.toLowerCase() !== (this.$route.name as string)?.toLowerCase());
+    return !["provisioned", "provisioning_issue"].includes(
+      (this.$route.name as string).toLowerCase()
+    )
   }
 
   public async TOConfirmCancelled(): Promise<void> {

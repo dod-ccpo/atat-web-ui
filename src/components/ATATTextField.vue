@@ -20,7 +20,10 @@
       />
     </div>
 
-    <div class="d-flex _input-wrapper" :class="{'_append-dropdown' : appendDropdown}">
+    <div 
+      class="_atat-textfield d-flex _input-wrapper" 
+      :class="{'_append-dropdown' : appendDropdown}"
+    >
       <v-text-field
         ref="atatTextField"
         :id="id + '_text_field'"
@@ -55,7 +58,7 @@
             class="pt-1 mr-1"
           />
         </template>
-        <template slot="append-inner" v-if="appendText">
+        <template v-slot:append-inner v-if="appendText">
           <span class="_append-text">
             {{ appendText }}
           </span>

@@ -21,7 +21,7 @@
               color="base-light"
             />
             <a
-              class="font-size-14 ml-3"
+              class="font-size-14 ml-3 _text-link"
               :href="emailLink"
             >
               {{person.email}}

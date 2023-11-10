@@ -4,7 +4,7 @@
       :close-on-content-click="false"
       location="left"
       open-on-hover
-      offset
+      :z-index=9999
       v-if="member"
     >
       <template v-slot:activator="{ props }">
