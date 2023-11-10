@@ -5,7 +5,7 @@
       padding: 40px 40px 8px 40px !important;
     }
     .v-card-text {
-      padding: 0px 40px 60px 40px !important;
+      padding: 16px 40px 60px 40px !important;
     }
     .v-card-actions {
       border-top: 1px solid $base-lighter;
@@ -51,6 +51,9 @@
   }
 
   .v-navigation-drawer {
+    z-index: 2001 !important;
+    top: 0 !important;
+    height: 100% !important;
     .v-card-title {
       position: sticky;
       top: 0;

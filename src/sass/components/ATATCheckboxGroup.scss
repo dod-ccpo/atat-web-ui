@@ -18,8 +18,9 @@
     height: 24px;
   }
   .v-selection-control__wrapper {
+    top: 1px;
     height: 100%;
-    margin-right: 4px;
+    margin-right: 0;
     align-items: baseline;
     margin-top: 4px;
     opacity: 1;
@@ -41,7 +42,7 @@
 ._checkboxes {
   &._inline {
     display: flex;
-    .v-input--checkbox {
+    .v-checkbox {
       margin-right: 12px !important;
       margin-top: 0 !important;
       margin-bottom: 0 !important;
@@ -67,7 +68,7 @@
       content: "";
       background-color: white;
       height: 14px;
-      width: 14px;
+      width: 13px;
       display: block;
       position: absolute;
       top: 5px;

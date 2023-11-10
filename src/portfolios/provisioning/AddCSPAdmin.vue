@@ -193,6 +193,8 @@
                   groupLabel="What classification level should this individual have access to?"
                   :value="selectedClassificationLevels"
                   @update:value="selectedClassificationLevels = $event"
+                  :resetSelected="resetSelectedClassificationLevels"
+                  @update:resetSelected="resetSelectedClassificationLevels = $event"
                   :items="classificationLevelOptions"
                   :card="true"
                   :inline="true"
@@ -309,6 +311,8 @@ import _ from "lodash";
 import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
+import { shallowRef } from "vue";
+
 @Component({
   components: {
     ATATAlert,
@@ -316,8 +320,8 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATDialog,
     ATATSVGIcon,
     ATATTextField,
-    CSPAdminLearnMore,
-    CSPAdminLearnMoreText
+    CSPAdminLearnMore: shallowRef(CSPAdminLearnMore),
+    CSPAdminLearnMoreText: shallowRef(CSPAdminLearnMoreText)
   }
 })
 
@@ -336,7 +340,7 @@ class AddCSPAdmin extends Vue {
   public csp = "";
   public classificationLevels: string[] = [];
   public openModal = false;
-  public modalSlideoutComponent = CSPAdminLearnMoreText;
+  public modalSlideoutComponent = shallowRef(CSPAdminLearnMoreText);
   public modalDrawerIsOpen = false;
 
   public adminDoDId = "";
@@ -358,6 +362,7 @@ class AddCSPAdmin extends Vue {
 
   public selectedClassificationLevels: string[] = [];
   public classificationLevelOptions: Checkbox[] = [];
+  public resetSelectedClassificationLevels = false;
 
   public selectedImpactLevels: string[] = [];
   public impactLevelOptions: Checkbox[] = [];
@@ -413,37 +418,30 @@ class AddCSPAdmin extends Vue {
     const missingTS = 
       this.admins.findIndex(a => a.hasTSAccess === "YES") === -1 && this.needsTSAdmin;
     const needsILs = this.hasImpactLevels;
-    const missingILs = [...this.impactLevelCompareArray]
+    const missingILs = [...this.impactLevelCompareArray];
 
-    if(this.admins.length > 0){
-      if(needsILs){
-        this.admins.forEach(admin=>{
-          admin.impactLevels?.forEach(il =>{
-            const idx = missingILs.findIndex(value => value === il)
-            missingILs.splice(idx, 1)
-          })
-        })
-      }
+    if (this.admins.length > 0 && needsILs) {
+      this.admins.forEach(admin => {
+        admin.impactLevels?.forEach(il => {
+          const idx = missingILs.findIndex(value => value === il);
+          missingILs.splice(idx, 1);
+        });
+      });
     }
 
-    if (this.classificationLevels.length > 1
-      && this.admins.length > 0
+    if (this.classificationLevels.length > 1 && this.admins.length > 0
       && (missingUnclass || missingScrt || missingTS || needsILs && missingILs.length > 0)
     ) {
-      const missingEnvs = [];
+      let missingEnvs = [];
       if (needsILs && this.impactLevels.length > 1) {
-        const missingEnvs = missingILs.map(
-          il => `Unclassified/${il.split('_')[1].toUpperCase()}`
-        );
+        missingEnvs = missingILs.map(il => `Unclassified/${il.split('_')[1].toUpperCase()}`);
       } else if (missingUnclass) {
         if (missingUnclass) missingEnvs.push("Unclassified");
       }
-
       if (missingScrt) missingEnvs.push("Secret");
       if (missingTS) missingEnvs.push("Top Secret");
       const str = missingEnvs.join(", ");
       this.missingEnv = str.replace(/,(?=[^,]+$)/, ' and');
-
       this.showMissingAdminAlert = true;
     } else {
       this.showMissingAdminAlert = false;
@@ -486,6 +484,7 @@ class AddCSPAdmin extends Vue {
   }
 
   public get ModalOKDisabled(): boolean {
+    debugger;
     const idOK = this.adminDoDId.length === 10;
     const classificationSelected = this.selectedClassificationLevels.length > 0;
     let unclassEmailValid = true;
@@ -535,6 +534,8 @@ class AddCSPAdmin extends Vue {
     this.modalDrawerIsOpen = true;
   }
   public openAddCSPModal(): void {
+    debugger;
+    this.resetSelectedClassificationLevels = true;
     this.openModal = true;
   }
 
@@ -776,6 +777,7 @@ class AddCSPAdmin extends Vue {
       component: CSPAdminLearnMore,
       title: "Learn More",
     };
+
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }

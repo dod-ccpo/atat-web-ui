@@ -172,7 +172,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
-  emits: ["update:value"],
+  emits: ["update:value", "checkboxTextfieldDataUpdate"],
   components: {
     ATATTextArea,
     ATATTextField,
@@ -198,6 +198,8 @@ class ATATCheckboxGroup extends Vue {
   // props
   @Prop({ default: [] }) private value!: string[];
   public _selected: string[] = [];
+  @PropSync("resetSelected") private _resetSelected!: boolean;
+
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @PropSync("items") private _items!: Checkbox[];
 
@@ -298,6 +300,12 @@ class ATATCheckboxGroup extends Vue {
     return document.getElementById(
       `${this.id}_TextField${index}_text_field`
     ) as HTMLInputElement;
+  }
+
+  @Watch("resetSelected")
+  public resetSelectedNow(): void {
+    this._selected = [];
+    this._resetSelected = false;
   }
 
   @Watch("_selected")
