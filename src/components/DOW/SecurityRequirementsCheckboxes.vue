@@ -24,6 +24,7 @@
     </p>
 
     <ATATCheckboxGroup
+      ref="SecurityRequirementsCheckboxGroupRef"
       :id="`SecurityRequirements${idSuffix}`"
       :labelSuffix="idSuffix"
       :value="_selectedSecurityRequirements"

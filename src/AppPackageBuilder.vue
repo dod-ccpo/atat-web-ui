@@ -89,7 +89,8 @@ import { ComponentPublicInstance } from 'vue'
     ATATSlideoutPanel,
     ATATStepperNavigation,
     ATATToast
-  }
+  },
+  
 })
 class AppPackageBuilder extends Vue {
   $refs!: {

@@ -1,8 +1,6 @@
 <template>
   <v-form :id="id+'_radio_group_control'" 
-    ref="radioButtonGroup"
-    validate-on="submit"
-    :errors="errorMessages"
+    ref="atatRadioButtonGroup"
     >
     <v-radio-group
       class="_atat-radio-group"
@@ -162,16 +160,8 @@ import { SubmitEventPromise } from './../../node_modules/vuetify/lib/index.mjs';
 
 class ATATRadioGroup extends Vue {
   $refs!: {
-    radioButtonGroup: ComponentPublicInstance & {
-      errorBucket: string[]; 
-      errorCount: number;
+    atatRadioButtonGroup: ComponentPublicInstance & {
       validate: ()=> Promise<SubmitEventPromise>
-     
-    };
-    atatTextInput: ComponentPublicInstance & {
-      errorBucket: string[]; 
-      errorCount: number;
-      validate: () => Promise<boolean>;
     };
   }; 
 
@@ -227,19 +217,17 @@ class ATATRadioGroup extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.setErrorMessage();
+    this.setErrorMessage().finally();
   }
 
   // methods
-  private setErrorMessage(): void {
-    AcquisitionPackage.setValidateNow(true)
-    this.$refs.radioButtonGroup?.validate().then(
-      async (response:SubmitEventPromise)=>{
-        this.errorMessages = (await (response)).errors[0]?.errorMessages;
-        this.hasErrors = this.errorMessages?.length>0
-      }
-    )
+  public async setErrorMessage(): Promise<void> {
+    const validate = await this.$refs.atatRadioButtonGroup?.validate();
+    this.errorMessages = validate.errors[0]?.errorMessages;
+    this.hasErrors = this.errorMessages?.length>0
   } 
+
+
   private clearErrorMessage(): void {
     this.hasErrors = false;
     this.errorMessages = [];
@@ -288,7 +276,7 @@ class ATATRadioGroup extends Vue {
   }
 
   private onBlur(): void {
-    this.setErrorMessage();
+    this.setErrorMessage().catch(() => false);
   }
   
 
@@ -323,14 +311,9 @@ class ATATRadioGroup extends Vue {
     const header = document.getElementsByClassName("page-header")[0] as HTMLElement;
     header.focus();
 
-    this.setErrorMessage();
+    await this.setErrorMessage();
   }
 
-  @Watch("clearOtherValidation")
-  public resetOtherValidation(): void {
-    this.$refs.atatTextInput.errorBucket = [];
-    this.$refs.atatTextInput.errorCount = 0;
-  }
 
   public legendLinkClicked(e: Event): void {
     if (this.legendLink) {

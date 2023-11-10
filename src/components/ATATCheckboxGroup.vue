@@ -1,7 +1,7 @@
-<template>
+f<template>
   <div :id="id">
     <v-form :id="id" 
-      ref="checkboxGroupForm"
+      ref="checkBoxGroup"
       :lazy-validation="true"
       @blur="setErrorMessage">
     <p
@@ -48,9 +48,6 @@
         :ref="index === 0 ? 'checkboxGroup' : ''"
         :data-group-id="id + '_Group'"
       >
-      <!-- @mouseup="checkBoxClicked(item.value)" -->
-
-
         <template
           v-if="
             card ||
@@ -184,15 +181,9 @@ import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
-    checkboxGroupForm: (ComponentPublicInstance)& {
+    checkBoxGroup: (ComponentPublicInstance)& {
       validate: () => Promise<SubmitEventPromise>
-    },
-    checkboxGroup: (ComponentPublicInstance & {
-      errorBucket: string[];
-      errorCount: number;
-      validate: () => Promise<boolean>;
-    })[];
-    atatTextInput: (ComponentPublicInstance & { errorBucket: string[]; errorCount: number })[];
+    }
   };
 
   // props
@@ -358,7 +349,7 @@ class ATATCheckboxGroup extends Vue {
       }      
     });
     if (newVal.length || oldVal.length) {
-      this.setErrorMessage();
+      this.setErrorMessage().finally();
     }
   }
 
@@ -369,17 +360,15 @@ class ATATCheckboxGroup extends Vue {
     return this._selected.includes(this.otherValue)
   }
 
-  private setErrorMessage(): void {
+  private async setErrorMessage(): Promise<void> {
     if (this._selected.length) {
       this.clearErrorMessage();
     } else {
-      this.$refs.checkboxGroupForm?.validate().then(
+      this.$refs.checkBoxGroup.validate().then(
         async (response:SubmitEventPromise)=>{
-          debugger;
           this.errorMessages = (await response).valid !== true
             ? (await response).errors[0].errorMessages
             : [];
-          AcquisitionPackage.setValidateNow(false);
         }
       )
     }
@@ -421,7 +410,7 @@ class ATATCheckboxGroup extends Vue {
       this.checkboxRules = this.rules;
     }
 
-    this.setErrorMessage();
+    this.setErrorMessage().finally();
   }
 
   @Watch("_items")
@@ -458,7 +447,7 @@ class ATATCheckboxGroup extends Vue {
     if (this.validateOnLoad){
       this.validateCheckboxesNow = true;
       setTimeout(()=>{
-        this.setErrorMessage();
+        this.setErrorMessage().finally();
       }, 0)
     }
     setTimeout(()=>{
@@ -489,7 +478,7 @@ class ATATCheckboxGroup extends Vue {
           this.checkboxRules = this.rules;
           this.validateCheckboxesNow = true;
         }
-        this.setErrorMessage();
+        this.setErrorMessage().finally();
       }
     }
   }

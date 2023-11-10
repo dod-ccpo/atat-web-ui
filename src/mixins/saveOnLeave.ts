@@ -4,8 +4,6 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
 import { 
   FormRef, 
-  RadioFormRef, 
-  RadioFormRefAsExternalComponent, 
   SaveOnLeaveRefs 
 } from 'types/Global';
 import { ComponentPublicInstance } from 'vue';
@@ -17,36 +15,52 @@ export let isFormsValid:boolean[] = []
  
 export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> => {
   const refKeys = Object.keys(forms)
-  let validatedForms: boolean[] = [];
-  const isValid: boolean[] = [];
+  // let validatedForms: boolean[] = [];
+  // const isValid: boolean[] = [];
 
   debugger;
   isFormsValid = [];
   for (const ref of refKeys){
     const form = (forms as unknown as FormRef)[ref];
-    await(getRef({form}))
+    console.log('25: => ' + ref)
+    if (form){
+      
+      if (Object.prototype.hasOwnProperty.call(form, "setErrorMessage")){
+        form.setErrorMessage();
+      } 
+      if (Object.prototype.hasOwnProperty.call(form, "validate")){
+        isFormsValid.push((await form.validate()).valid);
+      } else {
+        await(getRef(form))
+      }
+    }
   }
   console.log(isFormsValid)
-  return isFormsValid.every(f=>f)
+  return isFormsValid.every(f=>f===true)
 }
 
-async function getRef(p:{
-  form:ComponentPublicInstance, 
-}):Promise<void>{
+async function getRef(form:ComponentPublicInstance):Promise<void>{
   // debugger;
   // console.log(p.form);
-  const refs = p.form.$refs;
+  const refs = form.$refs || form;
   if (refs){
     for (const ref in refs){
-      const _formRef = (refs as unknown as SaveOnLeaveRefs)[ref];
-      if (Object.keys(_formRef).includes("validate")){
-        
-        const validMuch = ((await(await _formRef).validate()).valid);
+      console.log('49: => ' + ref)
+      const _formRef = (refs as unknown as FormRef)[ref];
+      if (Object.prototype.hasOwnProperty.call(_formRef, "validate")){
+        // AcquisitionPackage.setValidateNow(true);
+        const validMuch = (await (_formRef.validate())).valid;
         console.log(ref);
         console.log(validMuch)
-        isFormsValid.push((await(await _formRef).validate()).valid);
+        isFormsValid.push((await(_formRef.validate())).valid);
+        // await(_formRef).setErrorMessage();
       }
-      await getRef({form:_formRef});
+      if (Object.prototype.hasOwnProperty.call(_formRef, "setErrorMessage")){
+        // AcquisitionPackage.setValidateNow(true)
+        (_formRef).setErrorMessage()
+      }
+
+      await getRef(_formRef);
     }
   }
 }
@@ -72,6 +86,7 @@ export async function beforeRouteLeaveFunction(p: {
     AcquisitionPackage.setValidateNow(false);
     AcquisitionPackage.setSkipValidation(false);
     if (direction === "previous"){
+      //add something here
 
     } else if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
       const el = document.getElementsByClassName("error--text")[0];

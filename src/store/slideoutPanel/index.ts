@@ -10,7 +10,7 @@ import { SlideoutPanelContent } from "types/Global";
   store: rootStore
 })
 
-export class SlideoutPanelStore extends VuexModule {
+class SlideoutPanelStore extends VuexModule {
   
   slideoutPanelIsOpen = false;
   // slideoutPanelOpenerId for 508 return focus. set when link clicked to open panel

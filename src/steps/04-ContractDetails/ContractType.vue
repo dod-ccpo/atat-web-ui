@@ -26,6 +26,7 @@
               </p>
             <ATATCheckboxGroup
               id="ContractTypesCheckboxes"
+              ref="ContractTypesCheckboxesRef"
               :key="selectedContractTypes.toString()"
               :value="selectedContractTypes"
               @update:value="selectedContractTypes = $event"
@@ -43,6 +44,7 @@
               <hr />
               <ATATTextArea
                 id="JustificationForTM"
+                ref="JustificationForTM"
                 :value="justification"
                 @update:value="justification = $event"
                 label="Please provide justification for your T&amp;M contract type."
@@ -190,7 +192,7 @@ class ContractType extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    await AcquisitionPackage.setValidateNow(true);
+    // await AcquisitionPackage.setValidateNow(true);
 
     try {
       if (this.hasChanged()) {

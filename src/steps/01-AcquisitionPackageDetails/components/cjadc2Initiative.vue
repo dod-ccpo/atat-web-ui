@@ -2,19 +2,14 @@
 <template>
     <div >
       <ATATRadioGroup
-        ref="CJADC2RadioExternal"
+        ref="CJADC2RadioExternalRef"
         :id="id"
         :legend="legend" 
         :value="_cjadc2Initiative"
         @update:value="_cjadc2Initiative = $event"
         :items="radioGroupItems"
-        @helpTextLinkClicked="helpTextLinkClicked"
-        :isHelpTextLinkExternal="true"
-        @radioButtonSelected='radioButtonSelected'
         name="cjadc2-initiative-radio-group"
         :rules="_rules"
-        :help-text-link="helpTextLink"
-        :helpText="helpText"
       >
       </ATATRadioGroup>
 

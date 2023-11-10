@@ -122,13 +122,13 @@ class ProjectOverview extends Vue {
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
-    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs,
       nextTick: this.$nextTick,
     }).catch(() => false)
   }
+
 
   private acquisitionPackage: ReferenceColumn | string = "";
   private foo = 0;

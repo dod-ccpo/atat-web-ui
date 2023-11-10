@@ -933,11 +933,10 @@ export enum ClassificationLevels {
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
 export interface FormRef {
   [key: string]: ComponentPublicInstance & {
-    $refs:{
-      validate: ()=> Promise<SubmitEventPromise>;
-      resetValidation?: () => void;
-      reset?: () => void;
-    }
+    setErrorMessage: ()=> Promise<void>;
+    validate: ()=> Promise<SubmitEventPromise>;
+    resetValidation?: () => void;
+    reset?: () => void;
   }
 }
 export interface RadioFormRef{
@@ -1008,14 +1007,17 @@ export interface CheckboxGroupRef{
 
 export type SaveOnLeaveRefs  =  {
   [key: string]: ComponentPublicInstance & {
+      setErrorMessage: ()=> Promise<void>;
       validate: ()=> Promise<SubmitEventPromise>;
         $refs:{
           [key: string]: ComponentPublicInstance & {
-          validate: () => Promise<SubmitEventPromise>;
-          $refs:{
-            [key: string]: ComponentPublicInstance & {
+            setErrorMessage: ()=> Promise<void>;
             validate: () => Promise<SubmitEventPromise>;
-          }
+            $refs:{
+              [key: string]: ComponentPublicInstance & {
+                setErrorMessage: ()=> Promise<void>;
+                validate: () => Promise<SubmitEventPromise>;
+            }
         }
       }
     }

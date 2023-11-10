@@ -39,6 +39,7 @@
       <div v-show="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
         <ATATAutoComplete
           :id="idPrefix + 'Rank'"
+          ref="RankRef"
           v-show="_selectedRole === 'MILITARY'"
           label="Rank"
           titleKey="name"
@@ -59,6 +60,7 @@
           :id="idPrefix + 'Salutation'"
           v-show="_selectedRole === 'CIVILIAN'"
           class="_input-max-width mb-7"
+          ref="CivilianRef"
           label="Salutation"
           :optional="true"
           placeholder=""

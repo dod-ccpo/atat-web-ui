@@ -148,6 +148,7 @@ import Inputmask from "inputmask/";
 import { CountryObj, ValidationRule } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 export const Countries: CountryObj[] = [
   {
@@ -384,12 +385,10 @@ class ATATPhoneInput extends Vue {
   $refs!: {
     atatPhoneTextField: ComponentPublicInstance &
     {
-      errorBucket: string[];
-      errorCount: number;
       reset: ()=> void;
       blur: ()=> void;
       focus: ()=> void;
-      validate: () => boolean;
+      validate: () => Promise<string[]>;
     };
     atatPhoneDropdown: ComponentPublicInstance &
     {
@@ -458,9 +457,17 @@ class ATATPhoneInput extends Vue {
   }
 
   //ATATErrorValidation
-  private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatPhoneTextField.errorBucket;
-  }
+  public setErrorMessage(): void {
+    this.errorMessages = [];
+    this.$refs.atatPhoneTextField.validate().then(
+      async (response: string[]) => {
+        debugger;
+        if (response.length>0){
+          this.errorMessages = response;
+        }
+      }
+    );
+  } 
 
   public get validateFormNow(): boolean {
     return AcquisitionPackage.getValidateNow;
@@ -514,7 +521,6 @@ class ATATPhoneInput extends Vue {
 
   private clearErrorMessages(): void{
     this.$nextTick(()=>{
-      this.$refs.atatPhoneTextField.errorBucket = [];
       this.errorMessages = [];
     });
   }

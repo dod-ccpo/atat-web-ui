@@ -70,7 +70,6 @@ class PackagingPackingAndShipping extends Vue {
  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
-    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs,

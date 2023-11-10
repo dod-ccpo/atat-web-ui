@@ -35,6 +35,7 @@
 
         <ATATSelect
           v-if="selectedRole !== 'MILITARY'"
+          ref="SalutationRef"
           id="Salutation"
           class="_input-max-width"
           label="Salutation"
@@ -50,6 +51,7 @@
           v-if="selectedRole === 'MILITARY' && showContactInfoFields"
           label="Rank"
           titleKey="name"
+          ref="RankRef"
           :items="selectedBranchRanksData"
           :searchFields="['name', 'grade']"
           :selectedItem="selectedRank"
@@ -65,6 +67,7 @@
       <v-row class="form-section" v-show="showContactInfoFields">
         <v-col class="col-12 col-lg-3">
           <ATATTextField
+            ref="FirstNameRef"
             label="First name"
             id="FirstName"
             :value="firstName"
@@ -87,6 +90,7 @@
         </v-col>
         <v-col class="col-12 col-lg-3">
           <ATATTextField
+            ref="LastNameRef"
             label="Last name"
             id="LastName"
             :value="lastName"
@@ -111,6 +115,7 @@
       <v-row class="form-section mb-0" v-if="showContactInfoFields">
         <v-col>
           <ATATTextField
+            ref="TitleRef"
             label="Your title"
             id="ContactTitle"
             class="_input-max-width mb-10"
@@ -121,6 +126,7 @@
             ]"
           />
           <ATATPhoneInput
+            ref="PhoneRef"
             label="Your phone number"
             id="ContactPhone"
             class="mb-10"
@@ -137,6 +143,7 @@
             ]"
           />
           <ATATTextField
+            ref="EmailRef"
             label="Your email"
             id="ContactEmail"
             class="_input-max-width mb-10"
@@ -174,7 +181,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch , Vue, toNative, Hook } from "vue-facing-decorator";
-import {convertSystemChoiceToSelect} from "@/helpers";
+import {convertSystemChoiceToSelect, hasChanges} from "@/helpers";
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -195,7 +202,6 @@ import {
   SelectData,
 } from "../../../types/Global";
 import { ContactDTO } from "@/api/models";
-import { hasChanges } from "@/helpers";
 import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
@@ -209,14 +215,15 @@ import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 })
 class ContactInfo extends Vue {
 
-
+ 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs as SaveOnLeaveRefs, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    })
   }
-
 
   // computed
 

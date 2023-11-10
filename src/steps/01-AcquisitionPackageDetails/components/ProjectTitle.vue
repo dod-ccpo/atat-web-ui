@@ -5,6 +5,7 @@
     </h2>
     
     <ATATTextField
+      ref="ProjectTitleRef"
       :id="id"
       :label="label"
       :rules="_rules"

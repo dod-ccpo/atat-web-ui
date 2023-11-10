@@ -152,7 +152,7 @@ class ATATTextArea extends Vue {
 
   @Watch('rules')
   public rulesChanged(): void {
-    this.$refs.atatTextArea.validate();
+    this.$refs.atatTextArea?.validate();
   }
 
   public get getStyles(): string {

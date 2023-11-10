@@ -237,12 +237,11 @@ class ATATDatePicker extends Vue {
     this.setErrorMessage();
   }
 
-  private async setErrorMessage(): Promise<void> {
+  private setErrorMessage(): void {
     this.$refs.atatDatePickerTextField.validate().then(
       (response: unknown) => {
-        debugger;
         this.errorMessages = response as string[];
-        this.$emit('errorMessage', this.errorMessages);
+
       }
     );
   }
