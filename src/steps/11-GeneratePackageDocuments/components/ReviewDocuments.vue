@@ -77,7 +77,7 @@
                 {{packageCheckList.length}} documents • {{lastUpdatedString}}
               </span>
             </v-col>
-            <v-col class="d-flex justify-end" align-self="end">
+            <v-col col-12 class="d-flex justify-end" align-self="end">
               <v-btn
                 v-if="isErrored === false"
                 class="_secondary _text-decoration-none px-6 mr-5"
