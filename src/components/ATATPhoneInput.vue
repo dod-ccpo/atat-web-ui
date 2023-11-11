@@ -87,7 +87,7 @@
             :model-value="_value"
             @update:modelValue="_value = $event"
             :placeholder="placeHolder"
-            @blur="validate"
+            @blur="validateEvent"
             class="_phone-number-input"
             :hide-details="true"
             :suffix="suffix"
@@ -475,8 +475,7 @@ class ATATPhoneInput extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatPhoneTextField.validate())
-      this.setErrorMessage();
+    this.setErrorMessage();
   }
 
 
@@ -485,10 +484,10 @@ class ATATPhoneInput extends Vue {
     this.setPhoneMask();
   }
   //@Events
-  private validate(e: FocusEvent,) : void{
+  private validateEvent(e: FocusEvent,) : void{
     const input = e.target as HTMLInputElement;
     this._value = input.value
-    // this.setErrorMessage();
+    this.setErrorMessage();
     this.$emit('blur', input.value);
   }
 

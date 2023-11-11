@@ -14,22 +14,18 @@ export type From = RouteLocationNormalized
 export let isFormsValid:boolean[] = []
  
 export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> => {
-  const refKeys = Object.keys(forms)
-  // let validatedForms: boolean[] = [];
-  // const isValid: boolean[] = [];
-
   debugger;
   isFormsValid = [];
-  for (const ref of refKeys){
-    const form = (forms as unknown as FormRef)[ref];
-    console.log('25: => ' + ref)
+  for (const f in forms){
+    const form = (forms as unknown as FormRef)[f];
     if (form){
       
       if (Object.prototype.hasOwnProperty.call(form, "setErrorMessage")){
         form.setErrorMessage();
       } 
       if (Object.prototype.hasOwnProperty.call(form, "validate")){
-        isFormsValid.push((await form.validate()).valid);
+        const isFormValid = (await form.validate()).valid;
+        isFormsValid.push(isFormValid);
       } else {
         await(getRef(form))
       }
@@ -48,15 +44,9 @@ async function getRef(form:ComponentPublicInstance):Promise<void>{
       console.log('49: => ' + ref)
       const _formRef = (refs as unknown as FormRef)[ref];
       if (Object.prototype.hasOwnProperty.call(_formRef, "validate")){
-        // AcquisitionPackage.setValidateNow(true);
-        const validMuch = (await (_formRef.validate())).valid;
-        console.log(ref);
-        console.log(validMuch)
         isFormsValid.push((await(_formRef.validate())).valid);
-        // await(_formRef).setErrorMessage();
       }
       if (Object.prototype.hasOwnProperty.call(_formRef, "setErrorMessage")){
-        // AcquisitionPackage.setValidateNow(true)
         (_formRef).setErrorMessage()
       }
 

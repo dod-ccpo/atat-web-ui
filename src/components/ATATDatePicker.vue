@@ -1,9 +1,8 @@
 <template>
-  <v-form
+  <div
     :id="id + 'DatePickerContainer'" 
     class="atat-date-picker"
-    ref="atatDatePickerForm"
-    lazy-validation="true">
+    >
     <div class="d-flex align-center mb-2" v-if="label">
       <label
         :id="id + 'DatePickerLabel'"
@@ -42,7 +41,7 @@
     <div v-if="displayHelpText" class="help-text mt-2">
       {{ helpText }}
     </div>
-  </v-form>
+  </div>
 </template>
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
@@ -52,7 +51,6 @@ import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {ValidationRule} from "../../types/Global";
-import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
   emits:[
@@ -69,7 +67,7 @@ class ATATDatePicker extends Vue {
   // refs
   $refs!: {
     atatDatePickerTextField: ComponentPublicInstance & {
-      validate: () => Promise<SubmitEventPromise>;
+      validate: () => Promise<string[]>;
       value: string;
       resetValidation: ()=> boolean;
     };
@@ -239,8 +237,9 @@ class ATATDatePicker extends Vue {
 
   private setErrorMessage(): void {
     this.$refs.atatDatePickerTextField.validate().then(
-      (response: unknown) => {
+      async (response: string[]) => {
         this.errorMessages = response as string[];
+        this.$emit("hasErrorMessages", this.errorMessages );
 
       }
     );

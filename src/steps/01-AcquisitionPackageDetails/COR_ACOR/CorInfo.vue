@@ -23,6 +23,7 @@
           </p>
 
           <CommonCorAcor 
+            ref="CommonCorAcorRef"
             :isACOR="false"
             :isWizard="true"
             :currentContactData="currentContactData"
@@ -60,8 +61,10 @@ class CorInfo extends Vue {
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs as SaveOnLeaveRefs, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private currentContactData: ContactDTO = AcquisitionPackage.initContact;

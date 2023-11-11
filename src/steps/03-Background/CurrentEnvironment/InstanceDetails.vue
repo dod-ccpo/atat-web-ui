@@ -179,6 +179,7 @@ import {
   SelectData,
   CurrEnvInstancePricingDetails,
   RadioButton,
+  SaveOnLeaveRefs,
 } from "types/Global";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -196,7 +197,7 @@ import CurrentEnvironment,
 import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import _ from "lodash";
 
 
@@ -215,12 +216,13 @@ import _ from "lodash";
 
 class InstanceDetails extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 
@@ -437,7 +439,7 @@ class InstanceDetails extends Vue {
     this.isNewInstance = await CurrentEnvironment.isNewInstance();
     if (!this.isNewInstance) {
       // user is editing an existing instance, validate on load
-      await this.validate();
+      await this.validateForm();
       AcquisitionPackage.setValidateNow(true);
       this.$nextTick(async () => {
         AcquisitionPackage.setValidateNow(true);
@@ -445,15 +447,16 @@ class InstanceDetails extends Vue {
     }
   }
 
-  public async validate(): Promise<void> {
+  public async validateForm(): Promise<void> {
     await this.$nextTick(async () => {
-      this.isValid = await this.$refs.form.validate();
+      this.isValid = 
+        (await(await this.$refs.form as SaveOnLeaveRefs["form"]).validate()).valid;
     })
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    await this.validateOnLoad();
+    // await this.validateOnLoad();
   }
 
   // EJY NEED ROUTE RESOLVER AFTER on classifications page if no location selected
@@ -524,7 +527,8 @@ class InstanceDetails extends Vue {
     // need to flip `setValidateNow` to true in page component's `saveOnLeave` method
     // for pages with checkbox groups that have validation rules
     await AcquisitionPackage.setValidateNow(true);
-    const isValid = await this.$refs.form.validate();
+    const isValid = 
+      (await(await this.$refs.form as SaveOnLeaveRefs["form"]).validate()).valid;
 
     try {
       this.instanceData.instance_number = this.instanceNumber;
