@@ -8,7 +8,8 @@
             <component 
               :is="packageDocComponent" 
               :isErrored="isErrored"
-              :isGenerating.sync="isGenerating"
+              :isGenerating="isGenerating"
+              @update:isGenerating="isGenerating = $event"
               @regenerate="displayGeneratingDocumentsComponent()"            
             />
           </div>
