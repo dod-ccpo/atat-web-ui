@@ -153,7 +153,7 @@ class BAA extends Vue {
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs,
       nextTick: this.$nextTick,
-    }).catch(() => false)
+    }).catch()
   }
 
   private baaHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/

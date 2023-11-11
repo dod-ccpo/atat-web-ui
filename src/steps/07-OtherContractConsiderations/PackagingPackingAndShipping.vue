@@ -74,7 +74,7 @@ class PackagingPackingAndShipping extends Vue {
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs,
       nextTick: this.$nextTick,
-    }).catch(() => false)
+    }).catch()
   }
   public otherValueRequiredMessage 
     = "Please enter your packaging, packing and shipping instructions."

@@ -104,8 +104,8 @@ import LoadOnEnter from "@/mixins/loadOnEnter";
 import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
-import {RadioButton} from "types/Global";
-import { SaveOnLeaveRefs, To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import {RadioButton, SaveOnLeaveRefs} from "types/Global";
+import { To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   mixins: [LoadOnEnter],
@@ -117,16 +117,16 @@ import { SaveOnLeaveRefs, To, From, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 
 class PII extends  Vue {
-
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
+  
   private pIIOptions: RadioButton[] = [
     {
       id: "YesPII",

@@ -91,9 +91,9 @@ class ConflictOfInterest extends Vue {
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
-      form: this.$refs as SaveOnLeaveRefs,
+      form: this.$refs as SaveOnLeaveRefs, 
       nextTick: this.$nextTick,
-    }).catch(() => false)
+    }).catch()
   }
 
   private explanation 

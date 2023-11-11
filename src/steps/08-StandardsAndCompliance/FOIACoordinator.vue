@@ -138,7 +138,7 @@ class FOIACoordinator extends Vue {
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs,
       nextTick: this.$nextTick,
-    }).catch(() => false)
+    }).catch()
   }
   
   private addressTypes = {
