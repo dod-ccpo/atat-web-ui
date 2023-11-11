@@ -350,7 +350,7 @@
     </div>
 
     <div v-if="!isAlertClosed" class="mt-10">
-      <ATATAlert id="TaskOrderDetailsAlert" type="mdi-information" closeButton="true">
+      <ATATAlert id="TaskOrderDetailsAlert" type="info" closeButton="true">
         <template v-slot:content>
           <p class="mb-0">
             NOTE: Spend data is provided by your CSP to assist with tracking

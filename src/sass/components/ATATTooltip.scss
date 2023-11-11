@@ -68,4 +68,9 @@
       background-color: rgba($primary, 0.5);
     }
   }
+  background-color: transparent;
+  &::after {
+    border: none !important;
+  }
+
 }

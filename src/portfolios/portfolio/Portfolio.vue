@@ -1,8 +1,8 @@
 <template>
   <div class="_dashboard">
     <v-container 
-    :fluid="true"
-    class="container-max-width"
+      :fluid="true"
+      class="container-max-width"
     >
       <FinancialDetailsAlert />
       <v-row v-if="showFundingAlert">
@@ -29,7 +29,7 @@
                     </template>
                   </ATATAlert>
                 </div>
-              <div class="d-flex justify-space-between width-100 mb-10">
+              <div class="d-flex justify-space-between width-100 mb-5">
                 <h2>Overview</h2>
                 <div class="d-flex align-end" v-if="hasSyncDate">
                   <span class="text-base-dark">
