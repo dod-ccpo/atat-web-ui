@@ -8,7 +8,8 @@
     </p>
 
     <TaskOrderSearch
-      :TONumber.sync="TONumber"
+      :TONumber="TONumber"
+      @update:TONumber="TONumber = $event"
       @startProvisionWorkflow="startProvisionWorkflow"
     />
   

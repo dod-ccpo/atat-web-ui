@@ -91,7 +91,8 @@
     </v-container>   
     <ConfirmRestoreDefaultTextModal
       @okRestore="restoreSuggestion"
-      :showRestoreModal.sync="showRestoreModal"
+      :showRestoreModal="showRestoreModal"
+      @update:showRestoreModal="showRestoreModal = $event"
       :isBasedOnResponses="true"
     />
     

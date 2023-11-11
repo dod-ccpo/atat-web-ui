@@ -46,9 +46,12 @@
       <ATATFooter/>
     </v-main>
     <TaskOrderSearchModal
-      :showTOSearchModal.sync="showTOSearchModal"
-      :TONumber.sync="TONumber"
-      :resetValidationNow.sync="resetValidationNow"
+      :showTOSearchModal="showTOSearchModal"
+      @update:showTOSearchModal="showTOSearchModal = $event"
+      :TONumber="TONumber"
+      @update:TONumber="TONumber = $event"
+      :resetValidationNow="resetValidationNow"
+      @update:resetValidationNow="resetValidationNow = $event"
       @TOSearchCancelled="TOSearchCancelled"
       @startProvisionWorkflow="startProvisionWorkflow"
     />  

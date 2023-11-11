@@ -11,7 +11,8 @@
         subtitleKey="email"
         :items="contactList"
         :searchFields="['fullName', 'email']"
-        :selectedItem.sync="selectedContact"
+        :selectedItem="selectedContact"
+        @update:selectedItem="selectedContact = $event"
         placeholder="Search by name or email"
         icon="search"
         :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
@@ -22,8 +23,10 @@
       <PersonCard
         v-if="haveSelectedContact"
         :isACOR="isACOR"
-        :selectedContact.sync="selectedContact"
-        :showContactForm.sync="showContactForm"
+        :selectedContact="selectedContact"
+        @update:selectedContact="selectedContact = $event"
+        :showContactForm="showContactForm"
+        @update:showContactForm="showContactForm = $event"
         id="SelectedContactCard"
       />
     </div>
@@ -102,7 +105,8 @@
           acquisition package in ATAT?"
         id="AccessToEdit"
         :items="accessToEditOptions"
-        :value.sync="selectedAccessToEdit"
+        :value="selectedAccessToEdit"
+        @update:value="selectedAccessToEdit = $event"
         :rules="[$validators.required('Please select Yes or No.')]"
       />-->
     </section>

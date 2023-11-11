@@ -47,7 +47,7 @@
           {{ item.value }}
         </template>
         <template v-slot:item="{ props, item }">
-          <v-divider v-if="item.raw.type === 'divider'" />
+          <v-divider v-if="item?.raw?.type === 'divider'" />
           <v-list-subheader v-else-if="item?.raw?.type === 'subheader'">
             {{ item?.raw?.text }}
           </v-list-subheader>

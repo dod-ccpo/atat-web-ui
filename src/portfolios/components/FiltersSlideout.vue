@@ -5,7 +5,8 @@
       name="PortfolioRole"
       legend="Role"
       :items="portfolioRoles"
-      :value.sync="selectedPortfolioRole"
+      :value="selectedPortfolioRole"
+      @update:value="selectedPortfolioRole = $event"
     />
 
     <ATATCheckboxGroup
@@ -15,7 +16,8 @@
       groupLabelId="FundingStatusLabel"
       :card="false"
       :items="fundingStatuses"
-      :value.sync="selectedFundingStatuses"
+      :value="selectedFundingStatuses"
+      @update:value="selectedFundingStatuses = $event"
     />
 
     <ATATCheckboxGroup
@@ -25,7 +27,8 @@
       groupLabelId="CSPOptionsLabel"
       :card="false"
       :items="cspOptions"
-      :value.sync="selectedCSPs"
+      :value="selectedCSPs"
+      @update:value="selectedCSPs = $event"
     />
 
     <div class="_sticky-slideout-footer">

@@ -167,7 +167,8 @@
 
     <ATATDialog
       id="ConfirmationModal"
-      :showDialog.sync="showConfirmationModal"
+      :showDialog="showConfirmationModal"
+      @update:showDialog="showConfirmationModal = $event"
       :title="confirmationModalTitle" 
       no-click-animation
       :okText="confirmationModalOKButtonText"
