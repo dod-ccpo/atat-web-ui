@@ -1,21 +1,21 @@
 <template>
   <ATATDialog
-      id="InviteMembersModal"
-      :showDialog="_showInviteModal"
-      @update:showDialog="_showInviteModal = $event"
-      :title="'Invite people to “' + projectTitle + '”'"
-      no-click-animation
-      okText="Invite"
-      width="632"
-      @ok="inviteMembers"
-      @cancelClicked="onCancel()"
-      :modalSlideoutComponent="modalSlideoutComponent"
-      modalSlideoutTitle="Learn more about portfolio roles"
-      :modalDrawerIsOpen="modalDrawerIsOpen"
-      @update:modalDrawerIsOpen="modalDrawerIsOpen = $event"
-      modalClass="_invite-modal"
-      :OKDisabled="OKDisabled"
-    >
+    id="InviteMembersModal"
+    :showDialog="_showInviteModal"
+    @update:showDialog="_showInviteModal = $event"
+    :title="'Invite people to “' + projectTitle + '”'"
+    no-click-animation
+    okText="Invite"
+    width="632"
+    @ok="inviteMembers"
+    @cancelClicked="onCancel()"
+    :modalSlideoutComponent="modalSlideoutComponent"
+    modalSlideoutTitle="Learn more about portfolio roles"
+    :modalDrawerIsOpen="modalDrawerIsOpen"
+    @update:modalDrawerIsOpen="modalDrawerIsOpen = $event"
+    modalClass="_invite-modal"
+    :OKDisabled="OKDisabled"
+  >
     <template #content>
       <p class="body">
         Use “.mil” or “.gov” email addresses to ensure people can authenticate with
@@ -30,7 +30,8 @@
           id="SearchMember"
           v-model="searchString"
           clearable
-          append-icon="search"
+          clear-icon="mdi-close"
+          append-inner-icon="mdi-magnify"
           @click:clear="clearSearch()"
           variant="outlined"
           density="compact"
@@ -43,7 +44,7 @@
           color="#544496"
           size="24"
           width="3"
-          class="mr-2"
+          class="mr-1"
         />
 
         <div class="_search-result-dropdown">
@@ -86,12 +87,14 @@
           <v-list-item
               class="_search-results-list"
               v-for="(user, index) in userSelectedList" :key="user.sys_id">
-              <v-list-item-title class="font-weight-bolder font-size-16">
-                {{ user.firstName }} {{ user.lastName}}{{ user.title}}  {{ user.agency}}
-              </v-list-item-title>
-              <v-list-item-subtitle class="font-size-14">
-                {{ user.email }}
-              </v-list-item-subtitle>
+              <div class="_user-info">
+                <v-list-item-title class="font-weight-bolder font-size-16">
+                  {{ user.firstName }} {{ user.lastName}}{{ user.title}}  {{ user.agency}}
+                </v-list-item-title>
+                <v-list-item-subtitle class="font-size-14">
+                  {{ user.email }}
+                </v-list-item-subtitle>
+              </div>
             <v-list-item-action>
               <ATATSelect
                 :id="'Role' + index"
@@ -99,9 +102,11 @@
                 :items="memberMenuItems"
                 width="105"
                 :selectedValue="user.role"
-                @update:selectedValue="user.role = $event"
-                @onChange="(value: string)=>dropdownChanged(value, index)"
+                @update:selectedValue="dropdownChanged($event, index)"
                 iconType="chevron"
+                :eager="true"
+                attach
+                variant="none"
               />
             </v-list-item-action>
           </v-list-item>
@@ -112,7 +117,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, toNative } from "vue-facing-decorator";
+import { Component, Prop, Watch, mixins, toNative } from "vue-facing-decorator";
 import { PropSync } from '@/decorators/custom'
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -136,16 +141,17 @@ import UserSearch from "@/mixins/userSearch";
   }
 })
 
-class InviteMembersModal extends UserSearch {
+class InviteMembersModal extends mixins(UserSearch) {
   @PropSync("showModal") public _showInviteModal?: boolean;
+  
   public portfolioData: Portfolio | null = null;
   public projectTitle = "";
 
   public memberMenuItems: SelectData[] = [
-    { header: "Roles" },
+    { type: "subheader", text: "Roles" },
     { text: "Manager", value: "Manager" },
     { text: "Viewer", value: "Viewer" },
-    { divider: true },
+    { type: "divider" },
     { text: "Remove", value: "Remove", isSelectable: false }
   ];
 
@@ -153,8 +159,11 @@ class InviteMembersModal extends UserSearch {
   private modalDrawerIsOpen = false;
 
   public dropdownChanged(value: string, index: number): void {
+    debugger;
     if (value === "Remove") {
       this.userSelectedList.splice(index, 1);
+    } else {
+      this.userSelectedList[index].role = value;      
     }
   }
 
@@ -202,6 +211,7 @@ class InviteMembersModal extends UserSearch {
    * one new member to a specific role instead of 'remove'
    */
   public async inviteMembers(): Promise<void> {
+    debugger;
     const userSelectedNotRemovedList = this.userSelectedList.filter(selectedUser =>
       (selectedUser.role === "Manager") || (selectedUser.role === "Viewer")
     );

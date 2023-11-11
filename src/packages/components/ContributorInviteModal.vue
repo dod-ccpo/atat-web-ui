@@ -23,6 +23,7 @@
           id="SearchUser"
           v-model="searchString"
           clearable
+          clear-icon="mdi-close"
           append-inner-icon="mdi-magnify"
           @click:clear="clearSearch()"
           variant="outlined"

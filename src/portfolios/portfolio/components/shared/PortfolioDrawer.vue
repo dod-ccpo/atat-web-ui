@@ -155,7 +155,6 @@
               iconType="chevron"
               variant="none"
             />
-            <!-- @onChange="(value: string)=>onSelectedMemberRoleChanged(value, index)" -->
 
           </div>
         </div>
@@ -223,7 +222,8 @@
     </div>
 
     <InviteMembersModal
-      :showModal.sync="showMembersModal"
+      :showModal="showMembersModal"
+      @update:showModal="showMembersModal = $event"
       @membersInvited="membersInvited"
     />
 
@@ -289,7 +289,8 @@
     </ATATDialog>
 
     <LeavePortfolioModal
-      :showModal.sync="showLeavePortfolioModal" 
+      :showModal="showLeavePortfolioModal" 
+      @update:showModal="showLeavePortfolioModal = $event"
       :portfolioName="portfolio.title"
       :showOKSpinner="showOKSpinner"
       @okClicked="removeMember"

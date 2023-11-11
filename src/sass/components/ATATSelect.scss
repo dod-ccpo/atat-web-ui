@@ -165,7 +165,11 @@
     .v-field__input {
       min-height: 32px !important;
       height: 32px !important;
+      padding-right: 0 !important;
     }
+    // .v-select__selection {
+    //   width: 60px !important;
+    // }
   }
   &._search-bar-sort {
     .v-menu__content {
