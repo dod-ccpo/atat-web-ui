@@ -212,6 +212,7 @@
 }
 
 .v-overlay .v-select__content {
+  max-height: none !important;
   .v-list-item__overlay {
     opacity: 0 !important;
   }

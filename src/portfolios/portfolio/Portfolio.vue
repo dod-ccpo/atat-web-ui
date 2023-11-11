@@ -259,9 +259,8 @@
                       :hasProjected="true"
                     />
                     <div class="d-block text-center">
-                      <v-radio-group
-                        row
-                        class="checkbox-group-row center-checkboxes 
+                      <div
+                        class="checkbox-group-row center-checkboxes _checkboxes
                         chart-legend-checkboxes label-small no-messages compact mt-4"
                       >
                         <v-checkbox
@@ -284,7 +283,7 @@
                           :ripple="false"
                           @update:model-value="doToggleDataset((index + 1) * 2)"
                         />
-                      </v-radio-group>
+                      </div>
                     </div>
 
                     <div

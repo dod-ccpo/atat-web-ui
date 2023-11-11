@@ -10,7 +10,6 @@
     v-if="tooltipText"
     offset="0"
   >
-    <!--TODO: validate that this still works after removal of on from activator-->
     <template v-slot:activator="{ props }">
       <v-btn
         v-bind="props"

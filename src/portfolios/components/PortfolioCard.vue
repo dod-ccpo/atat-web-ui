@@ -7,11 +7,14 @@
     <div class="pr-5" v-if="hasCSP">
       <div class="_csp-icon-wrap" :data-csp="CSPs[cspKey].title">
         <v-tooltip
-          transition="slide-y-reverse-transition"
+          transition="fade-transition"
           color="rgba(0,0,0,1)"
           location="top"
           :open-on-hover="true"
           :open-delay="500"
+          class="_atat-tooltip-wrapper"
+          :eager="true"
+
         >
           <template v-slot:activator="{ props }">
             <span
@@ -42,11 +45,13 @@
             {{ cardData.title }}
 
             <v-tooltip
-              transition="slide-y-reverse-transition"
+              transition="fade-transition"
               color="rgba(0,0,0,1)"
               location="top"
               :open-on-hover="true"
               :open-delay="500"
+              class="_atat-tooltip-wrapper"
+              :eager="true"
             >
               <template v-slot:activator="{ props }">
                 <span

@@ -309,50 +309,79 @@
   justify-content: center;
 }
 
+.checkbox-group-row {
+  display: inline-flex;
+}
+
 .chart-legend-checkboxes {
-  .v-input--checkbox {
-      &.color {
-          &_chart_1 {
-              .v-icon { color: $chart_color1 !important; }
-              input[type=checkbox]:before { background-color: $chart_color1; }
-          }
-          &_chart_2 {
-              .v-icon { color: $chart_color2 !important; }
-              input[type=checkbox]:before { background-color: $chart_color2; }
-          }
-          &_chart_3 {
-              .v-icon { color: $chart_color3 !important; }
-              input[type=checkbox]:before { background-color: $chart_color3; }
-          }
-          &_chart_4 {
-              .v-icon { color: $chart_color4 !important; }
-              input[type=checkbox]:before { background-color: $chart_color4; }
-          }
-          &_chart_5 {
-              .v-icon { color: $chart_color5 !important; }
-              input[type=checkbox]:before { background-color: $chart_color5; }
-          }
-          &_chart_6 {
-              .v-icon { color: $chart_color6 !important; }
-              input[type=checkbox]:before { background-color: $chart_color6; }
-          }
-          &_chart_7 {
-              .v-icon { color: $chart_color7 !important; }
-              input[type=checkbox]:before { background-color: $chart_color7; }
-          }
-          &_chart_8 {
-              .v-icon { color: $chart_color8 !important; }
-              input[type=checkbox]:before { background-color: $chart_color8; }
-          }
-          &_chart_9 {
-              .v-icon { color: $chart_color9 !important; }
-              input[type=checkbox]:before { background-color: $chart_color9; }
-          }
-          &_chart_10 {
-              .v-icon { color: $chart_color10 !important; }
-              input[type=checkbox]:before { background-color: $chart_color10; }
-          }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  .mdi-checkbox-blank-outline {
+    opacity: 1;
+  }
+  .v-checkbox {
+    opacity: 1 !important;
+    max-width: fit-content;
+    margin-right: 24px;
+
+    .v-icon {
+      font-size: 24px;
+    }
+    .v-label {
+      font-size: 1.2rem !important;
+      color: $base-darkest !important;
+      opacity: 1 !important;
+    }
+
+    .v-selection-control__wrapper {
+      width: 32px;
+      height: 32px;      
+    }
+    .v-selection-control__input {
+      width: 32px;
+      height: 32px;
+      &::before {
+        width: 32px;
+        height: 32px;  
       }
+    }
+    .v-checkbox-btn {
+      min-height: 40px !important;
+    }
+
+    &.color { // e.g., color_chart_1, color_chart_2
+      &_chart_1 {
+        .v-icon { color: $chart_color1 !important; }
+      }
+      &_chart_2 {
+        .v-icon { color: $chart_color2 !important; }
+      }
+      &_chart_3 {
+        .v-icon { color: $chart_color3 !important; }
+      }
+      &_chart_4 {
+        .v-icon { color: $chart_color4 !important; }
+      }
+      &_chart_5 {
+        .v-icon { color: $chart_color5 !important; }
+      }
+      &_chart_6 {
+        .v-icon { color: $chart_color6 !important; }
+      }
+      &_chart_7 {
+        .v-icon { color: $chart_color7 !important; }
+      }
+      &_chart_8 {
+        .v-icon { color: $chart_color8 !important; }
+      }
+      &_chart_9 {
+        .v-icon { color: $chart_color9 !important; }
+      }
+      &_chart_10 {
+        .v-icon { color: $chart_color10 !important; }
+      }
+    }
 
       &.v-input--is-disabled {
           label.v-label.v-label--is-disabled {

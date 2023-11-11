@@ -466,6 +466,7 @@ class PortfolioDrawer extends Vue {
   
   public ownerMenuItems: SelectData[] = [
     { text: "Transfer ownership", value: "TransferOwner", isSelectable: false },
+    { text: "Transfer footest", value: "TransferOwner", isSelectable: false },
   ]
   
   public statusImg: {[key: string]: {[key: string]: string}} = {
