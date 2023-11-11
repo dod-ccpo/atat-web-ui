@@ -1,7 +1,8 @@
 <template>
   <ATATDialog
       id="InviteUsersModal"
-      :showDialog.sync="_showInviteModal"
+      :showDialog="_showInviteModal"
+      @update:showDialog="_showInviteModal = $event"
       title="Invite people to contribute to your acquisition"
       no-click-animation
       okText="Invite"
@@ -22,7 +23,7 @@
           id="SearchUser"
           v-model="searchString"
           clearable
-          append-icon="search"
+          append-inner-icon="mdi-magnify"
           @click:clear="clearSearch()"
           variant="outlined"
           density="compact"
@@ -35,7 +36,7 @@
           color="#544496"
           size="24"
           width="3"
-          class="mr-2"
+          class="mr-3"
         />
 
         <div class="_search-result-dropdown">
@@ -51,13 +52,14 @@
                 @click="onUserSelection(user)"
                 class="pointer"
               >
-                  <v-list-item-title class="font-weight-bolder font-size-16">
-                    {{ user.firstName }} {{ user.lastName}}{{ user.title}} {{ user.agency }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle class="font-size-14">
-                    {{ user.email }}
-                  </v-list-item-subtitle>
+                <v-list-item-title class="font-weight-bolder font-size-16">
+                  {{ user.firstName }} {{ user.lastName}}{{ user.title}} {{ user.agency }}
+                </v-list-item-title>
+                <v-list-item-subtitle class="font-size-14">
+                  {{ user.email }}
+                </v-list-item-subtitle>
               </v-list-item>
+              
             </v-list>
 
             <v-list class="py-1" v-if="showNoResults">
@@ -85,12 +87,15 @@
             v-for="(user, index) in userSelectedList" :key="user.sys_id"
             class="_search-results-list"
           >
+            <div class="_user-info">
               <v-list-item-title class="font-weight-bolder font-size-16">
                 {{ user.firstName }} {{ user.lastName }}{{ user.title}} {{ user.agency }}
               </v-list-item-title>
               <v-list-item-subtitle class="font-size-14">
                 {{ user.email }}
               </v-list-item-subtitle>
+            </div>
+
             <v-list-item-action>
               <v-btn
                 :id="'RemoveSelectedUser' + index"
@@ -117,7 +122,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch, toNative } from "vue-facing-decorator";
+import { Component, Watch, mixins, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -138,7 +143,7 @@ import UserSearch from "@/mixins/userSearch";
   }
 })
 
-class ContributorInviteModal extends UserSearch {
+class ContributorInviteModal extends mixins(UserSearch) {
   @PropSync("showInviteModal") public _showInviteModal?: boolean;
 
   public get alreadyInvitedUsers(): User[] {
@@ -186,6 +191,7 @@ class ContributorInviteModal extends UserSearch {
   }
 
   public async inviteUsers(): Promise<void> {
+    debugger;
     const invitesSysIds = this.userSelectedList.map(usr => usr.sys_id).join(",");
     await AcquisitionPackage.inviteContributors(invitesSysIds);
   }

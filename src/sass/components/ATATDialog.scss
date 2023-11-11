@@ -93,6 +93,15 @@
         border-radius: 8px ;
         overflow-y: scroll ;
       }
+      .v-list-item {
+        min-height: 60px;
+        &.bg-warning-lighter {
+          background-color: $warning-lighter !important;
+          height: 48px !important;
+          min-height: 48px !important;
+        }
+      }
+
     }
     ._refine-search-message {
       padding: 12px 16px;
@@ -116,12 +125,19 @@
     padding: 0 24px 0 40px;  
     min-height: 200px;
     max-height: 400px;
-
+    .v-list {
+      margin: 0 -40px;
+      padding-left: 40px;
+    }
     ._search-results-list {
       margin: 0 -40px;
-      padding: 0 40px;  
+      padding: 12px 40px;  
       &:hover {
         background-color: $base-lightest !important;
+      }
+      .v-list-item__content {
+        display: flex;
+        justify-content: space-between;
       }
     }
 

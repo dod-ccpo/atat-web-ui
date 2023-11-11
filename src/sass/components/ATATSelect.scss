@@ -1,4 +1,4 @@
-.v-select__content, .v-autocomplete__content { // the dropdown
+.v-select__content, .v-autocomplete__content, .v-list-item__content { // the dropdown
   hr {
      margin: 8px 0;
   }
@@ -27,7 +27,8 @@
   .v-list-item__content {
     padding: 12px 0 !important;
   }
-  .v-list-item-title, .v-list-item__subtitle {
+
+  .v-list-item-title, .v-list-item-subtitle {
     text-align: left;
     margin-bottom: 0 !important;
     line-height: 1.25 !important;
@@ -37,9 +38,9 @@
   .v-list-item-title {
     font-size: 1.6rem !important;
   }
-  .v-list-item__subtitle {
+  .v-list-item-subtitle {
     font-size: 1.4rem !important;
-    color: $base !important; 
+    color: $base-darker !important; 
   }
 }
 

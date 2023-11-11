@@ -13,11 +13,12 @@
           :id="'Contributor_Tooltip'"
           max-width="250px"
           location="bottom"
+          class="_atat-tooltip-wrapper"
           eager
         >
-          <!--TODO: validate that this still works after removal of on from activator-->
-          <template v-slot:activator>
+          <template v-slot:activator="{ props }" >
           <v-btn
+            v-bind="props"
             icon class="mr-5 _header-button _add-user-button"
             id="InviteContributorButton"
             @click="openInviteContributorModal"
@@ -28,26 +29,27 @@
           </v-btn>
           </template>
           <div id="ContributorTooltipText" class="_tooltip-content-wrap _no-pointer">
-          <div v-html="contributorTooltipText">
-          </div>
+            <div v-html="contributorTooltipText"></div>
           </div>
         </v-tooltip>
+        
         <v-menu
-          location="left"
+          location="bottom right"
           id="MoreMenu"
           class="_more-menu _header-menu"
           attach
         >
           <template v-slot:activator="{ props }">
-            <v-tooltip
+            <!-- <v-tooltip
               transition="slide-y-reverse-transition"
               :id="'Contributor_Tooltip'"
               max-width="250px"
               v-bind="props"
               location="bottom"
               eager
+              class="_atat-tooltip-wrapper"
             >
-              <template v-slot:activator="{ props }">
+              <template v-slot:activator="{ props }"> -->
                 <v-btn
                   v-bind="props"
                   id="MoreMenuButton"
@@ -55,12 +57,12 @@
                 >
                   <v-icon class="text-base-dark">mdi-dots-horizontal</v-icon>
                 </v-btn>
-              </template>
+              <!-- </template>
               <div id="ContributorTooltipText" class="_tooltip-content-wrap _no-pointer">
                 <div v-html="moreOptionsTooltipText">
                 </div>
               </div>
-            </v-tooltip>
+            </v-tooltip> -->
           </template>
           <v-list>
             <v-list-item
@@ -78,7 +80,8 @@
     </div>
     <DeletePackageModal
       v-if="isMissionOwner"
-      :showModal.sync="showDeleteModal"
+      :showModal="showDeleteModal"
+      @update:showModal="showDeleteModal = $event"
       :packageName="packageName"
       :hasContributor="hasContributor()"
       :waitingForSignature="isWaitingForSignature()"
@@ -94,7 +97,10 @@
       @okClicked="updateStatus('ARCHIVED')"
     />
 
-    <ContributorInviteModal :showInviteModal.sync="showInviteModal" />
+    <ContributorInviteModal 
+      :showInviteModal="showInviteModal" 
+      @update:showInviteModal="showInviteModal = $event"
+    />
 
   </v-app-bar>
 </template>
@@ -185,6 +191,7 @@ class ATATPageHead extends Vue {
   } 
 
   public async moreMenuClick(title: string ): Promise<void> {
+    debugger;
     switch(title){
     case "View package details":
       if (!this.showDrawer) this.openSlideoutPanel();

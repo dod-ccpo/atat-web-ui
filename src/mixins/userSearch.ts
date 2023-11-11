@@ -34,6 +34,7 @@ class UserSearch extends Vue {
       this.isSearching = true;
       this.searchObj.isLoading = true;
       const response = await UserManagement.searchUserByNameAndEmail(searchStr)
+      debugger;
       this.searchObj.searchResults = response.map(userSearchDTO => {
         /* eslint-disable camelcase */
         return {
@@ -48,7 +49,7 @@ class UserSearch extends Vue {
         }
         /* eslint-enable camelcase */
       });
-  
+      debugger;
       this.searchObj.noResults = this.searchObj.searchResults.length === 0;
       this.searchObj.isLoading = false;
       this.isSearching = false;

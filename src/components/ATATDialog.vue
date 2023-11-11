@@ -55,7 +55,6 @@
         v-model="_modalDrawerIsOpen"
         absolute
         temporary
-        location="right"
         width="100%"
         transition="slide-x-reverse-transition"
       >

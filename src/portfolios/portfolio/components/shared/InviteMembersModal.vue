@@ -1,7 +1,8 @@
 <template>
   <ATATDialog
       id="InviteMembersModal"
-      :showDialog.sync="_showInviteModal"
+      :showDialog="_showInviteModal"
+      @update:showDialog="_showInviteModal = $event"
       :title="'Invite people to “' + projectTitle + '”'"
       no-click-animation
       okText="Invite"
@@ -10,7 +11,8 @@
       @cancelClicked="onCancel()"
       :modalSlideoutComponent="modalSlideoutComponent"
       modalSlideoutTitle="Learn more about portfolio roles"
-      :modalDrawerIsOpen.sync="modalDrawerIsOpen"
+      :modalDrawerIsOpen="modalDrawerIsOpen"
+      @update:modalDrawerIsOpen="modalDrawerIsOpen = $event"
       modalClass="_invite-modal"
       :OKDisabled="OKDisabled"
     >
@@ -96,7 +98,8 @@
                 class="_small _alt-style-clean _invite-members-modal align-self-end"
                 :items="memberMenuItems"
                 width="105"
-                :selectedValue.sync="user.role"
+                :selectedValue="user.role"
+                @update:selectedValue="user.role = $event"
                 @onChange="(value: string)=>dropdownChanged(value, index)"
                 iconType="chevron"
               />

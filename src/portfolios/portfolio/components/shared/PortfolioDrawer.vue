@@ -644,7 +644,6 @@ class PortfolioDrawer extends Vue {
   }
 
   public openMembersModal(): void {
-    debugger;
     PortfolioStore.setShowAddMembersModal(true);
   }
 
@@ -749,9 +748,7 @@ class PortfolioDrawer extends Vue {
   }
 
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
-    debugger;
     this.portfolioMembers[index].role = val;
-    debugger;
     const storeData = await PortfolioStore.getPortfolioData();
     if (this.portfolio?.members && storeData.members) {
       const memberMenuItems = ["Manager", "Viewer"]
