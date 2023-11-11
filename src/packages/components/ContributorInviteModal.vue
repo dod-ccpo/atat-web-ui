@@ -192,7 +192,6 @@ class ContributorInviteModal extends mixins(UserSearch) {
   }
 
   public async inviteUsers(): Promise<void> {
-    debugger;
     const invitesSysIds = this.userSelectedList.map(usr => usr.sys_id).join(",");
     await AcquisitionPackage.inviteContributors(invitesSysIds);
   }

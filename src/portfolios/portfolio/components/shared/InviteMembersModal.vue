@@ -159,7 +159,6 @@ class InviteMembersModal extends mixins(UserSearch) {
   private modalDrawerIsOpen = false;
 
   public dropdownChanged(value: string, index: number): void {
-    debugger;
     if (value === "Remove") {
       this.userSelectedList.splice(index, 1);
     } else {
@@ -211,7 +210,6 @@ class InviteMembersModal extends mixins(UserSearch) {
    * one new member to a specific role instead of 'remove'
    */
   public async inviteMembers(): Promise<void> {
-    debugger;
     const userSelectedNotRemovedList = this.userSelectedList.filter(selectedUser =>
       (selectedUser.role === "Manager") || (selectedUser.role === "Viewer")
     );

@@ -76,6 +76,13 @@
             ({{ getPortfolioMembersCount }})
           </div>
         </div>
+
+        <!-- 
+          TODO - research if can use tooltip to wrap a button that
+          has other functionality besides opening a tooltip since uses
+          same `v-slot:activator="{ props }"
+        -->
+
         <!-- <v-tooltip location="left" offset="20" v-if="userCanInviteMembers">
           <template v-slot:activator="{ props }">
             <span

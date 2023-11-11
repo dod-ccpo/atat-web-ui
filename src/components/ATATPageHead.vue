@@ -40,6 +40,11 @@
           attach
         >
           <template v-slot:activator="{ props }">
+            <!-- 
+              TODO - research if can use tooltip to wrap a button that
+              has other functionality besides opening a tooltip since uses
+              same `v-slot:activator="{ props }"
+            -->
             <!-- <v-tooltip
               transition="slide-y-reverse-transition"
               :id="'Contributor_Tooltip'"
@@ -191,7 +196,6 @@ class ATATPageHead extends Vue {
   } 
 
   public async moreMenuClick(title: string ): Promise<void> {
-    debugger;
     switch(title){
     case "View package details":
       if (!this.showDrawer) this.openSlideoutPanel();
