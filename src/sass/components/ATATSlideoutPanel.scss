@@ -149,6 +149,11 @@ hr.v-divider {
 
 ._profile-card {
   width: 360px;
+
+  ._profile-card-details {
+    display: flex;
+    flex-direction: column !important;
+  }  
   .v-list {
     padding: 0px !important;
     .v-list-item {

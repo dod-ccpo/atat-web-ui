@@ -17,6 +17,7 @@
           :close-on-content-click="false"
           location="left"
           open-on-hover
+          offset="10"
         >
           <template v-slot:activator="{ props }">
             <v-btn
@@ -70,7 +71,7 @@
           :close-on-content-click="false"
           location="left"
           open-on-hover
-          offset=""
+          offset="10"
         >
           <template v-slot:activator="{ props }">
             <v-btn
@@ -106,8 +107,8 @@
           <v-menu
             :close-on-content-click="false"
             location="left"
-            open-on-hover
-            offset=""
+            offset="10"
+            open-on-hover            
           >
             <template v-slot:activator="{ props }">
               <v-btn
