@@ -9,6 +9,14 @@
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     padding: 8px;
+    
+    &:focus-visible {
+      border-color: $primary;
+      outline: 1px solid $primary;
+      &:after {
+        opacity: 0;
+      }
+    }
   }  
   ._country-select {
     padding-right: 0;
