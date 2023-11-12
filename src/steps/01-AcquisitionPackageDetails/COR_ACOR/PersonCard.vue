@@ -11,11 +11,11 @@
         {{ _selectedContact.firstName }} {{ _selectedContact.lastName }}
       </span>
       <span class="ml-3 mb-5 d-block" :id="id + '_Email'">
-        <v-icon class="mr-2 text-base-light">mail</v-icon> 
+        <v-icon class="mr-2 text-base-light">mdi-email</v-icon> 
         {{ _selectedContact.email }}
       </span>
       <span class="ml-3 mb-5 d-block" :id="id + '_Phone'">
-        <v-icon class="mr-2 text-base-light">phone</v-icon> 
+        <v-icon class="mr-2 text-base-light">mdi-phone</v-icon> 
         {{ _selectedContact.phone }}<br />
       </span>
       <span 
@@ -23,7 +23,7 @@
         :class="{ 'mb-10' : !isSameContact }"
         :id="id + '_OrgName'"
       >
-        <v-icon class="mr-2 text-base-light">pentagon</v-icon> 
+        <v-icon class="mr-2 text-base-light">mdi-pentagon</v-icon> 
         {{ _selectedContact.orgName }}<br />
       </span>
 
@@ -63,7 +63,7 @@
       </template>
     </ATATAlert>
 
-    <v-icon class="text-primary mr-1" @click="removeCorInfo">delete</v-icon>
+    <v-icon class="text-primary mr-1" @click="removeCorInfo">mdi-delete</v-icon>
     <a 
       class="_text-link" 
       role="button" 

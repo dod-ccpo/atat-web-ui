@@ -254,7 +254,7 @@
                 :id="getIdText(item.title) + '_Delete'"
                 class="d-flex nowrap ml-5"
                 @click="showAcorModal()">
-                <v-icon class="icon-20 pr-2">delete</v-icon>
+                <v-icon class="icon-20 pr-2">mdi-delete</v-icon>
               </v-btn>
             </div>
           </div>
