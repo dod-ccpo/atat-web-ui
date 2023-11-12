@@ -30,17 +30,17 @@
         </div>
         <div class="d-flex justify-end align-center"></div>
       </v-app-bar>
+
       <div class="_app-content" style="padding-top: 80px;">
         <div class="_app-content-wrap">  
-      <PortfoliosSummary 
-        :active-tab="activeTab" 
-        default-sort="name" 
-        :isHomeView="false"
-        @openTOModal="openTOModal"
-      />
-
-      <ATATFooter/>
-    </div>
+          <PortfoliosSummary 
+            :active-tab="activeTab" 
+            default-sort="name" 
+            :isHomeView="false"
+            @openTOModal="openTOModal"
+          />
+          <ATATFooter/>
+        </div>
       </div>
 
     </v-main>
