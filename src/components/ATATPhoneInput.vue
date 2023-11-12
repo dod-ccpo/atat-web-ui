@@ -426,7 +426,6 @@ class ATATPhoneInput extends Vue {
   }) private _selectedCountry!: CountryObj;
 
   public menuItemClick(item: CountryObj): void {
-    debugger;
     this.menuOpen = false;
     this._selectedCountry = item;
   }

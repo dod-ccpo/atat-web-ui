@@ -58,7 +58,6 @@ class TaskOrderSearch extends Vue {
 
   @Watch("_TONumber")
   public TONumberChanged(newVal: string): void {
-    debugger;
     if (newVal) {
       if (this._TONumber !== newVal.toUpperCase()) {
         this._TONumber = newVal.toUpperCase();
