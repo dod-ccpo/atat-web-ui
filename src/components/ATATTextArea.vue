@@ -18,7 +18,6 @@
         location="top"
         v-if="tooltipText"
       >
-        <!--TODO: validate that this still works after removal of on from activator-->
         <template v-slot:activator>
           <v-btn
             class="mb-2 ml-1 pa-0 link-button no-border"
@@ -45,7 +44,7 @@
         @update:model-value="onInput"
         :placeholder="placeHolder"
         class="text-primary"
-        :rules="getRules"
+        :rules="rules"
         :rows="rows"
         :readonly="readOnly"
         :no-resize="noResize"
@@ -72,7 +71,6 @@ import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
-import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
   emits: [
@@ -87,9 +85,6 @@ class ATATTextArea extends Vue {
   // refs
   $refs!: {
     atatTextArea: ComponentPublicInstance & {
-      messages: string[],
-      errorBucket: string[]; 
-      errorCount: number;
       validate: () => Promise<string[]>;
       resetValidation: ()=> void
     };
@@ -129,6 +124,7 @@ class ATATTextArea extends Vue {
   }
 
   public get getRules(): ValidationRule[] {
+    debugger;
     return this._turnRulesOff ? [] : this.rules;
   }
 
@@ -150,10 +146,10 @@ class ATATTextArea extends Vue {
     this.setErrorMessage();
   }
 
-  @Watch('rules')
-  public rulesChanged(): void {
-    this.$refs.atatTextArea?.validate();
-  }
+  // @Watch('rules')
+  // public rulesChanged(): void {
+  //   this.$refs.atatTextArea?.validate();
+  // }
 
   public get getStyles(): string {
     let styles = "";

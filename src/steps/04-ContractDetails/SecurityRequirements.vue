@@ -1,5 +1,5 @@
 <template>
-  <div>
+    <v-form ref="form" lazy-validation>
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
@@ -40,7 +40,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
+  </v-form>
 </template>
 <script lang="ts">
 /*eslint prefer-const: 1 */

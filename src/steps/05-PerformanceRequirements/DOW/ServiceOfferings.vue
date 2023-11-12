@@ -1,5 +1,6 @@
 <template>
   <div class="mb-7">
+    <v-form ref="form" lazy-validation>
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col
@@ -25,6 +26,7 @@
 
             <ATATCheckboxGroup
               id="CheckboxGroup"
+              ref="CheckboxGroupRef"
               aria-describedby="CheckboxGroupLabel"
               :value="selectedOptions"
               @update:value="selectedOptions = $event"
@@ -47,6 +49,7 @@
         
         <v-col v-else-if="!isServiceOfferingList">
           <OtherOfferings 
+            ref="OtherOfferingsRef"
             :otherOfferingList="otherOfferingList"
             :serviceOfferingData="otherOfferingData"
             @update:serviceOfferingData="otherOfferingData = $event"
@@ -69,7 +72,7 @@
       @deleteOfferingOkClicked="deleteServiceItem"
     >
     </DeleteOfferingModal>
-
+  </v-form>
   </div>
 </template>
 
@@ -92,9 +95,10 @@ import {
   Checkbox, 
   OtherServiceOfferingData, 
   DOWServiceOffering,
+  SaveOnLeaveRefs,
 } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
-import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/saveOnLeave";
+import { beforeRouteLeaveFunction, From, To } from "@/mixins/saveOnLeave";
  
 
 @Component({
@@ -107,15 +111,17 @@ import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/sa
 })
 
 class ServiceOfferings extends Vue{
-  $refs!: SaveOnLeaveRefs
 
+
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
-    return await beforeRouteLeaveFunction({ to, from,
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
   // requirementName will be pulled from data in future ticket
   public requirementName = "";
 

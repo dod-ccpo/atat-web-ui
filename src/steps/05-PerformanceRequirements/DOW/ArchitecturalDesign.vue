@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation>
+  <v-form lazy-validation>
     <v-container class="container-max-width" fluid>
       <v-row>
         <v-col class="col-12">
@@ -46,6 +46,7 @@
             </div>
             <ATATRadioGroup
               id="ArchitectureOptions"
+              ref="ArchitectureOptionsRef"
               :card="true"
               :width="'180'"
               :items="radioOptions"
@@ -85,9 +86,9 @@
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { RadioButton } from "types/Global";
+import { RadioButton, SaveOnLeaveRefs } from "types/Global";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import DescriptionOfWork, { defaultDOWArchitecturalNeeds } from "@/store/descriptionOfWork";
 import { ArchitecturalDesignRequirementDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -107,13 +108,13 @@ import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 
 class ArchitecturalDesign extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
-    return await beforeRouteLeaveFunction({ to, from,
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public routeNames = routeNames

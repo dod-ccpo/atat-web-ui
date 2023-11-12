@@ -22,7 +22,9 @@
 
     <div 
       class="_atat-textfield d-flex _input-wrapper" 
-      :class="{'_append-dropdown' : appendDropdown}"
+      :class="{
+        '_append-dropdown' : appendDropdown,
+        'is-errored': errorMessages.length>0 }"
     >
       <v-text-field
         ref="atatTextField"
@@ -66,11 +68,14 @@
       </v-text-field>
       <ATATSelect
         v-if="appendDropdown"
+        ref="atatSelectRef"
         :id="id"
         :items="dropdownOptions"
         :showSelectedValue="true"
         :selectedValue="_selectedDropdownValue"
         @update:selectedValue="_selectedDropdownValue = $event"
+        @errorMessage = "addDropDownErrorMessage"
+        :rules="dropDownRules"
       /> 
     </div>
 
@@ -111,6 +116,10 @@ class ATATTextField extends Vue  {
     atatTextField: ComponentPublicInstance & {
       validate: () => Promise<string[]>;
       resetValidation(): void
+    },
+    atatSelectRef: ComponentPublicInstance & {
+      validate: () => Promise<string[]>;
+      resetValidation(): void
     };
   }; 
 
@@ -126,6 +135,7 @@ class ATATTextField extends Vue  {
   @Prop({ default: "" }) private appendText!: string;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: () => [] }) private rules!: ValidationRule[];
+  @Prop({ default: () => [] }) private dropDownRules!: ValidationRule[];
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
@@ -173,17 +183,23 @@ class ATATTextField extends Vue  {
       this.$refs.atatTextField.validate().then(
         async (response: string[]) => {
           if (response.length>0){
-            this.errorMessages = response;
+            this.errorMessages = [...response];
             this.$emit('errorMessage', this.errorMessages);
           }
         }
       );
+    
     } else {
       this.resetValidation();
     }
   }
 
   //@Events
+  public addDropDownErrorMessage(errorMsgs: string[]): void{
+    debugger;
+    this.errorMessages = [...errorMsgs]
+  }
+
   public onBlur(e: FocusEvent) : void{
     const input = e.target as HTMLInputElement;
     if (this.validateOnBlur) {

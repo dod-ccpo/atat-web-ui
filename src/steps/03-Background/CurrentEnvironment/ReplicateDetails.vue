@@ -16,6 +16,7 @@
 
             <ATATTextArea 
               id="Statement"
+              ref="StatementRef"
               class="textarea-max-width mb-10"
               :value="currEnvDTO.statement_replicated_optimized"
               @update:value="currEnvDTO.statement_replicated_optimized = $event"
@@ -29,6 +30,7 @@
 
             <ATATRadioGroup 
               id="GrowthOptions"
+              ref="GrowthOptionsRef"
               class="mb-8"
               legend="Do you anticipate additional growth?"
               :card="false"
@@ -41,6 +43,7 @@
             <ATATTextField 
               v-if="currEnvDTO.additional_growth === 'YES'"
               id="CapacityPercentage"
+              ref="CapacityPercentageRef"
               class="mb-8"
               :width="120"
               label="What percentage of additional capacity do you anticipate each year?"
@@ -53,6 +56,7 @@
 
             <ATATRadioGroup 
               id="PhasedOptions"
+              ref="PhasedOptionsRef"
               class="mb-8"
               :legend="'Do you need a phased approach for ' + replicatingOrOptimizing
                 + ' your current functions?'"
@@ -66,6 +70,7 @@
             <ATATTextArea 
               v-if="currEnvDTO.has_phased_approach === 'YES'"
               id="PhasedApproachSchedule"
+              ref="PhasedApproachScheduleRef"
               class="textarea-max-width mb-10"
               :value="currEnvDTO.phased_approach_schedule"
               @update:value="currEnvDTO.phased_approach_schedule = $event"
@@ -88,12 +93,12 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import { RadioButton } from "types/Global";
+import { RadioButton, SaveOnLeaveRefs } from "types/Global";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -105,13 +110,14 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class ReplicateDetails extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public currEnvDTO = defaultCurrentEnvironment;

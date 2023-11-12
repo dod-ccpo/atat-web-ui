@@ -24,8 +24,8 @@
     </p>
 
     <ATATCheckboxGroup
-      ref="SecurityRequirementsCheckboxGroupRef"
-      :id="`SecurityRequirements${idSuffix}`"
+      :ref="'SecurityRequirements' + idSuffix + 'Ref'"
+      :id="'SecurityRequirements' + idSuffix"
       :labelSuffix="idSuffix"
       :value="_selectedSecurityRequirements"
       @update:value="_selectedSecurityRequirements = $event"
@@ -34,8 +34,8 @@
       :card="false"
       class="copy-max-width"
       :rules="[
-      $validators.required('Please select at least one type of classified information.')
-    ]"
+        $validators.required('Please select at least one type of classified information.')
+     ]"
     />
   </div>
 </template>

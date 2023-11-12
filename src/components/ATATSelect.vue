@@ -116,7 +116,7 @@ class ATATSelect extends Vue {
       errorCount: number;
       blur: ()=> void;
       focus: ()=> void;
-      validate: () => boolean;
+      validate: () => Promise<string[]>;
     };
   }; 
 
@@ -214,12 +214,14 @@ class ATATSelect extends Vue {
   }
 
   private setErrorMessage(): void {
-    setTimeout(() => {
-      this.errorMessages = this.$refs.atatSelect && Object.prototype.hasOwnProperty.call(
-        this.$refs.atatSelect, "errorBucket"
-      ) ? this.$refs.atatSelect.errorBucket : [];
-      this.$emit('errorMessage', this.errorMessages);
-    }, 0);
+    this.$refs.atatSelect.validate().then(
+      async (response: string[]) => {
+        if (response.length>0){
+          this.errorMessages = response;
+          this.$emit('errorMessage', this.errorMessages);
+        }
+      }
+    );
   }
 
   //@Events

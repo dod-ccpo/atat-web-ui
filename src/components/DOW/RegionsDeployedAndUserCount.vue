@@ -2,6 +2,7 @@
 <template>
   <ATATCheckboxGroup
     :id="id"
+    :ref="id + 'Ref'"
     :index="index"
     :items="regions"
     @update:items="regions = $event"
