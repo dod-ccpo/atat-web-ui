@@ -60,7 +60,7 @@
             width="190"
             class="ml-5"
             :alignRight="true"
-            :value.sync="_values[idx]"
+            :value="_values[idx]"
             @update:value="_values[idx] = $event"
             @blur="setsysIdArrayStringified(_values[idx], period?.sys_id ?? '')"
             :isCurrency="textboxSuffix === ''"

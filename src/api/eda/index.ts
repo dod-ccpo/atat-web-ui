@@ -21,9 +21,9 @@ export class EDAApi extends ApiBase{
       "0002": `Unable to locate your task order. If you need assistance, 
         <a href="${custSupportUrl}" id="SupportLink" class="_external-link" target="_blank">contact 
         Customer Support</a>.`,
-      "0003": `Task order not awarded under JWCC Contract.
-        <a href="${custSupportUrl}" id="SupportLink" class="_external-link" target="_blank">Contact 
-        Customer Support</a> for assistance.`
+      "0003": `Task order not awarded under JWCC Contract. <a href="${custSupportUrl}" 
+        id="SupportLink" target="_blank">Contact Customer 
+        <span class="_external-link">Support</span></a> for assistance.`
     }    
     try {
       const requestConfig: AxiosRequestConfig = {

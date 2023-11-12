@@ -189,6 +189,8 @@ class ATATCheckboxGroup extends Vue {
   // props
   @Prop({ default: [] }) private value!: string[];
   public _selected: string[] = [];
+  @PropSync("resetSelected") private _resetSelected!: boolean;
+
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @PropSync("items") private _items!: Checkbox[];
 
@@ -293,6 +295,12 @@ class ATATCheckboxGroup extends Vue {
     ) as HTMLInputElement;
   }
 
+  @Watch("resetSelected")
+  public resetSelectedNow(): void {
+    this._selected = [];
+    this._resetSelected = false;
+  }
+
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
     if (!oldVal || newVal.length > oldVal.length) {
@@ -366,11 +374,10 @@ class ATATCheckboxGroup extends Vue {
     } else {
       this.$refs.checkBoxGroup.validate().then(
         async (response:SubmitEventPromise)=>{
-          this.errorMessages = (await response).valid !== true
-            ? (await response).errors[0].errorMessages
-            : [];
+          this.errorMessages = (await (response)).errors[0]?.errorMessages;
         }
       )
+      AcquisitionPackage.setValidateNow(false);
     }
     this.isLoading = false;
   }

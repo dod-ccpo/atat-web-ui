@@ -22,7 +22,8 @@
             <ATATCheckboxGroup
               id="CertifiedCheckbox"
               aria-describedby="CertifiedCheckbox"
-              :value.sync="certified"
+              :value="certified"
+              @update:value="certified = $event"
               :items="checkboxItem"
               :boldText="true"
               :card="false"

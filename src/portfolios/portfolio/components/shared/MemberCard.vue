@@ -4,11 +4,10 @@
       :close-on-content-click="false"
       location="left"
       open-on-hover
-      :z-index=9999
+      :z-index="2010"
       v-if="member"
     >
       <template v-slot:activator="{ props }">
-        <!-- TODO: check activator -->
         <v-btn
           variant="plain"
           v-bind="props"

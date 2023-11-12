@@ -154,7 +154,7 @@ hr, .hr {
   }
 }
 
-.v-layout a {
+.v-layout a, .v-overlay-container a {
   color: $primary !important; // override vuetify blue
   text-decoration: underline;
   

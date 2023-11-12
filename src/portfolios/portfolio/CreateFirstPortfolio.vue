@@ -26,7 +26,8 @@
             <TaskOrderSearch
               label="Get started by adding your task order number"
               labelClass="h3"
-              :TONumber.sync="TONumber"
+              :TONumber="TONumber"
+              @update:TONumber="TONumber = $event"
               @startProvisionWorkflow="startProvisionWorkflow"
               :wrapperWidth="searchWidth"
               :width="searchWidth"

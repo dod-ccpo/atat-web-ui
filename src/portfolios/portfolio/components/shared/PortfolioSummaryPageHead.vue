@@ -50,7 +50,7 @@
       >
         <v-btn
           class="_icon-only mr-2"
-          id="Info_Button"
+          id="PortfolioDrawerOpenerButton"
           @click="openSlideoutPanel"
           @keydown.enter="openSlideoutPanel"
           @keydown.space="openSlideoutPanel"
@@ -66,8 +66,8 @@
           id="MoreMenu"
           class="_more-menu _header-menu _portfolio"
           attach
+          location="bottom right"
         >
-        <!-- TODO: check activator -->
           <template v-slot:activator="{ props }">
             <v-btn
               v-bind="props"
@@ -89,12 +89,12 @@
                 {{ menuItem.title }}
               </v-list-item-title>
             </v-list-item>
-            <hr class="my-2"  v-if="!isProdEnv && hasCspLinks" />
-            <v-list-item disabled id="LoginToCSPConsole_MenuItem" v-if="!isProdEnv && hasCspLinks">
+            <hr class="my-2" v-if="hasCspLinks" />
+            <v-list-subheader id="LoginToCSPConsole_MenuItem" v-if="hasCspLinks">
               <v-list-item-title class="_csp-console-text"> 
                 {{cspLoginText}}
               </v-list-item-title>
-            </v-list-item>
+            </v-list-subheader>
             <v-list-item
               class="text-decoration-none"
               v-for="(linkItem, index) in environmentLinks" 
@@ -387,6 +387,7 @@ class PortfolioSummaryPageHead extends Vue {
     return collection as HTMLElement;
   }
   public async loadOnEnter(): Promise<void> {
+    
     this.hasCspLinks = this.environmentLinks.length > 0;
     if(this.environmentLinks.length > 1){
       this.cspLoginText = "LOGIN TO YOUR CSP PORTALS"

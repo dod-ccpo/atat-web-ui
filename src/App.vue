@@ -108,12 +108,10 @@ class App extends Vue {
   }
 
   public get centerContent(): boolean {
-    return this.activeAppSection === AppSections.sectionTitles.Home ||
-    this.activeAppSection === AppSections.sectionTitles.PortfolioSummary;
+    return this.activeAppSection === AppSections.sectionTitles.Home;
   }
   public get isHome(): boolean {
-    return this.activeAppSection === AppSections.sectionTitles.Home ||
-    this.activeAppSection === AppSections.sectionTitles.PortfolioSummary;
+    return this.activeAppSection === AppSections.sectionTitles.Home;
   }
 
   public async beforeMount(): Promise<void> {

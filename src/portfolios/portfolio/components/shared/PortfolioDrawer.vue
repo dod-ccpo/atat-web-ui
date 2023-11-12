@@ -8,7 +8,7 @@
             v-model="portfolio.description"
             auto-grow
             autocomplete="off"
-            class="_drawer-text-area pa-2 mb-2 font-size-14"
+            class="_drawer-text-area pa-2 mb-2"
             density="compact"
             hide-details
             placeholder="Add a description"
@@ -22,7 +22,7 @@
 
         <div class="d-flex justify-space-between pb-3">
           <span id="StatusLabel">Status</span>
-          <v-chip id="StatusChip" :color="getBgColor()" label>
+          <v-chip id="StatusChip" :class="getBgColor()" label>
             {{ portfolioStatus }}
           </v-chip>
         </div>
@@ -76,12 +76,18 @@
             ({{ getPortfolioMembersCount }})
           </div>
         </div>
-        <v-tooltip location="left" offset="20" v-if="userCanInviteMembers">
-          <!-- TODO: check activator -->
+
+        <!-- 
+          TODO - research if can use tooltip to wrap a button that
+          has other functionality besides opening a tooltip since uses
+          same `v-slot:activator="{ props }"
+        -->
+
+        <!-- <v-tooltip location="left" offset="20" v-if="userCanInviteMembers">
           <template v-slot:activator="{ props }">
             <span
               v-bind="props"
-            >
+            > -->
               <v-btn
                 id="AddPortfolioMember"
                 class="_icon-only"
@@ -97,12 +103,12 @@
                   :height="16"
                 />
               </v-btn>
-            </span>
-          </template>
+            <!-- </span> -->
+          <!-- </template>
           <div class="_tooltip-content-wrap _left">
             Add members
           </div>
-        </v-tooltip>
+        </v-tooltip> -->
 
       </div>
       <div
@@ -118,9 +124,7 @@
 
           <!-- NOT DROPDOWN - for owner and if current user is Viewer & member is someone else -->
           <div v-if="notMemberDropdown(member)">
-
-            <v-tooltip location="left" offset="30">
-              <!-- TODO: check activator -->
+            <v-tooltip location="left" offset="-50" class="_atat-tooltip-wrapper">
               <template v-slot:activator="{ props }">
                 <div
                   v-bind="props"
@@ -153,9 +157,10 @@
               class="_small _alt-style-clean _invite-members-modal align-self-end"
               :items="member.menuItems"
               width="105"
-              :selectedValue.sync="member.role"
+              :selectedValue="member.role"
+              @update:selectedValue="onSelectedMemberRoleChanged($event, index)"
               iconType="chevron"
-              @onChange="(value: string)=>onSelectedMemberRoleChanged(value, index)"
+              variant="none"
             />
 
           </div>
@@ -224,7 +229,8 @@
     </div>
 
     <InviteMembersModal
-      :showModal.sync="showMembersModal"
+      :showModal="showMembersModal"
+      @update:showModal="showMembersModal = $event"
       @membersInvited="membersInvited"
     />
 
@@ -290,7 +296,8 @@
     </ATATDialog>
 
     <LeavePortfolioModal
-      :showModal.sync="showLeavePortfolioModal" 
+      :showModal="showLeavePortfolioModal" 
+      @update:showModal="showLeavePortfolioModal = $event"
       :portfolioName="portfolio.title"
       :showOKSpinner="showOKSpinner"
       @okClicked="removeMember"
@@ -457,16 +464,17 @@ class PortfolioDrawer extends Vue {
   }
 
   public memberMenuItems: SelectData[] = [
-    { header: "Roles" },
+    { type: "subheader", text: "Roles"},
     { text: "Manager", value: "Manager" },
     { text: "Viewer", value: "Viewer" },
-    { divider: true },
+    { type: "divider" },
     { text: "Remove from portfolio", value: "Remove", isSelectable: false },
     { text: "About roles", value: "AboutRoles", isSelectable: false },
   ];
   
   public ownerMenuItems: SelectData[] = [
     { text: "Transfer ownership", value: "TransferOwner", isSelectable: false },
+    { text: "Transfer footest", value: "TransferOwner", isSelectable: false },
   ]
   
   public statusImg: {[key: string]: {[key: string]: string}} = {
@@ -648,40 +656,41 @@ class PortfolioDrawer extends Vue {
   }
 
   public async transferOwner(): Promise<void> {
-    this.modalOKDisabled = true;
-    this.showOKSpinner = true;
-    /* eslint-disable camelcase */
-    const newOwner = this.portfolioMembers[this.transferOwnershipIndex];
-    this.portfolio.portfolio_owner = newOwner.sys_id;
-    const newOwnerPrevRole = newOwner.role;
-    newOwner.role = "Owner";
+    debugger;
+    // this.modalOKDisabled = true;
+    // this.showOKSpinner = true;
+    // /* eslint-disable camelcase */
+    // const newOwner = this.portfolioMembers[this.transferOwnershipIndex];
+    // this.portfolio.portfolio_owner = newOwner.sys_id;
+    // const newOwnerPrevRole = newOwner.role;
+    // newOwner.role = "Owner";
 
-    if (newOwner.sys_id) {
-      if (newOwnerPrevRole === "Manager" && this.portfolio.portfolio_managers) {
-        this.portfolio.portfolio_managers = this.removeItemFromArray(
-          this.portfolio.portfolio_managers, newOwner.sys_id
-        );
-      } else if (newOwnerPrevRole === "Viewer" && this.portfolio.portfolio_viewers) {
-        this.portfolio.portfolio_viewers = this.removeItemFromArray(
-          this.portfolio.portfolio_viewers, newOwner.sys_id
-        );
-      }
-    }
-    /* eslint-enable camelcase */
+    // if (newOwner.sys_id) {
+    //   if (newOwnerPrevRole === "Manager" && this.portfolio.portfolio_managers) {
+    //     this.portfolio.portfolio_managers = this.removeItemFromArray(
+    //       this.portfolio.portfolio_managers, newOwner.sys_id
+    //     );
+    //   } else if (newOwnerPrevRole === "Viewer" && this.portfolio.portfolio_viewers) {
+    //     this.portfolio.portfolio_viewers = this.removeItemFromArray(
+    //       this.portfolio.portfolio_viewers, newOwner.sys_id
+    //     );
+    //   }
+    // }
+    // /* eslint-enable camelcase */
 
-    const prevOwnerIndex = this.portfolioMembers.findIndex(usr => usr.role === "Owner") ?? 0;
-    this.portfolioMembers[prevOwnerIndex].role = "Manager";
-    if (this.portfolio.members) {
-      this.portfolio.members[this.transferOwnershipIndex].role = "Owner"
-      this.portfolio.members[prevOwnerIndex].role = "Manager"
-    }
+    // const prevOwnerIndex = this.portfolioMembers.findIndex(usr => usr.role === "Owner") ?? 0;
+    // this.portfolioMembers[prevOwnerIndex].role = "Manager";
+    // if (this.portfolio.members) {
+    //   this.portfolio.members[this.transferOwnershipIndex].role = "Owner"
+    //   this.portfolio.members[prevOwnerIndex].role = "Manager"
+    // }
 
-    this.currentUserIsOwner = false;
-    await this.updateMemberRole("Manager", prevOwnerIndex);
-    await this.closeTransferOwnerModal();
-    Toast.setToast(this.ownershipTransferredToast);
-    this.modalOKDisabled = false;
-    this.showOKSpinner = false;
+    // this.currentUserIsOwner = false;
+    // await this.updateMemberRole("Manager", prevOwnerIndex);
+    // await this.closeTransferOwnerModal();
+    // Toast.setToast(this.ownershipTransferredToast);
+    // this.modalOKDisabled = false;
+    // this.showOKSpinner = false;
   }
 
   public removeItemFromArray(users: string, sysId: string): string {
@@ -697,6 +706,7 @@ class PortfolioDrawer extends Vue {
   }
 
   public async closeTransferOwnerModal(): Promise<void> {
+    debugger;
     this.showTransferOwnerDialog = false;
     this.transferOwnershipIndex = -1;
   }
@@ -748,6 +758,7 @@ class PortfolioDrawer extends Vue {
   }
 
   private async onSelectedMemberRoleChanged(val: string, index: number): Promise<void> {
+    this.portfolioMembers[index].role = val;
     const storeData = await PortfolioStore.getPortfolioData();
     if (this.portfolio?.members && storeData.members) {
       const memberMenuItems = ["Manager", "Viewer"]

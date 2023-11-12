@@ -97,11 +97,7 @@ import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  emits:[
-    'errorMessage',
-    'blur',
-    'focus'
-  ],
+  emits: ["errorMessage", "blur", "focus"],
   components: {
     ATATTooltip,
     ATATErrorValidation,

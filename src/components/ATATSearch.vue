@@ -33,6 +33,7 @@
         :id="id + '_SearchInput'"
         class="_search-input"
         clearable
+        clear-icon="mdi-close"
         variant="outlined"
         density="compact"
         :model-value="_value"

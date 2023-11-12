@@ -111,4 +111,13 @@
     }
   }
 
+  ._alert-close-btn {
+    height: 24px;
+    width: 24px;
+    .v-btn__overlay, .v-btn__underlay {
+      display: none !important;
+    }
+    background-color: transparent;
+  }
+
 }

@@ -13,6 +13,7 @@
     </v-list>
     <v-list>
       <v-list-item class="px-6 py-6">
+        <div class="_profile-card-details">
           <div class="d-flex align-center">
             <ATATSVGIcon
               width="16"
@@ -27,10 +28,7 @@
               {{person.email}}
             </a>
           </div>
-          <div
-            class="d-flex align-top mt-3"
-            v-if="hasPhone"
-          >
+          <div v-if="hasPhone" class="d-flex align-top mt-3">
             <ATATSVGIcon
               width="16"
               height="13"
@@ -99,6 +97,7 @@
               {{person.designation}}
             </span>
           </div>
+        </div>
       </v-list-item>
     </v-list>
   </v-card>
