@@ -14,7 +14,6 @@
         <div class="d-flex">
           <v-menu
             v-model="menuOpen"
-            persistent
             ref="atatPhoneDropdown"
             id="CountryCodeDropdown"
             class="_country-select"
