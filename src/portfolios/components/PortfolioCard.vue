@@ -397,6 +397,7 @@ class PortfolioCard extends Vue {
       );
     }
     
+    debugger;
     if (this.cardData.isOwner && this.cardData.status !== Statuses.Archived.value) {
       this.portfolioCardMenuItems.push(
         { 

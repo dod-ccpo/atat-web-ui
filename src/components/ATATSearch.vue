@@ -321,6 +321,7 @@ class ATATSearch extends Vue {
   }
 
   public onInput(v: string): void {
+    debugger;
     this._value = v;
     if (this.errorMessages?.length > 0) {
       this.clearErrorMessages();
