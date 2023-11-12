@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-base-lightest mt-4 pa-4 border-rounded">
+  <div class="bg-base-lightest mt-4 pa-4 border-eounded">
     <div class="d-flex justify-space-between align-center">
       <ATATSearch
         id="SearchPackages"
@@ -7,7 +7,8 @@
         width="450px"
         @search="searchPackages"
         @clear="clearSearch"
-        :value.sync="_searchString"
+        :value="_searchString"
+        @update:value="_searchString = $event"
       />
       <div class="d-flex align-center">
         <div>
@@ -17,7 +18,8 @@
             width="167"
             iconType="chevron"
             :items="sortOptions"
-            :selectedValue.sync="_selectedSort"
+            :selectedValue="_selectedSort"
+            @update:selectedValue="_selectedSort = $event"
           />
         </div>
       </div>

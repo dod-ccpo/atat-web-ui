@@ -50,11 +50,11 @@
       <!-- modal slideout -->
       <v-navigation-drawer
         id="ModalSlideout"
+        class="_modal-slideout"
         v-if="modalSlideoutComponent"
         v-model="_modalDrawerIsOpen"
         absolute
         temporary
-        location="right"
         width="100%"
         transition="slide-x-reverse-transition"
       >
@@ -66,6 +66,7 @@
               @click="closeModalDrawer"
               @keydown.enter="closeModalDrawer"
               @keydown.space="closeModalDrawer"
+              tabindex="-1"
             >
               <ATATSVGIcon
                 name="arrowBack"
@@ -142,6 +143,7 @@ class ATATDialog extends Vue {
   }
 
   private onCancel() {
+    debugger;
     this.$emit("cancelClicked");
     this._showDialog = false;
     this.returnFocus(this.focusOnCancel);

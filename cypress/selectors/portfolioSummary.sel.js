@@ -69,7 +69,7 @@ module.exports = {
   loginCSPMenu: "#LoginToCSPConsole_MenuItem",
   
   //infopanel
-  infoBtn: "#Info_Button",
+  infoBtn: "#PortfolioDrawerOpenerButton",
   slideoutPanel:"#SlideoutPanel",
   panelWrap: "#PanelWrap",
   aboutPortSection: "#AboutPortfolioSection",

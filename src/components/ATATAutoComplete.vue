@@ -25,7 +25,8 @@
       :rules="rules"
       variant="outlined"
 
-      :search.sync="searchText"
+      :search="searchText"
+      @update:search="searchText = $event"
       @blur="onBlur"
 
     >

@@ -11,7 +11,8 @@
           width="450px"
           @search="searchPortfolios"
           @clear="clearSearch"
-          :value.sync="searchString"
+          :value="searchString"
+          @update:value="searchString = $event"
         />
         <div class="d-flex align-center">
           <div>
@@ -20,7 +21,8 @@
               class="_small _alt-style-clean _search-bar-sort"
               :items="sortOptions"
               width="167"
-              :selectedValue.sync="selectedSort"
+              :selectedValue="selectedSort"
+              @update:selectedValue="selectedSort = $event"
               iconType="chevron"
               @selectValueChange="sortPortfolios"
             />

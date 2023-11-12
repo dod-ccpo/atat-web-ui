@@ -43,8 +43,10 @@
       >
         <Search
           id="SearchPackages"
-          :searchString.sync="searchString"
-          :selectedSort.sync="selectedSort"
+          :searchString="searchString"
+          @update:searchString="searchString = $event"
+          :selectedSort="selectedSort"
+          @update:selectedSort="selectedSort = $event"
           @search="search"
           @clear="clear"
         />
@@ -97,9 +99,12 @@
     </v-main>
 
     <TaskOrderSearchModal
-      :showTOSearchModal.sync="showTOSearchModal"
-      :TONumber.sync="TONumber"
-      :resetValidationNow.sync="resetValidationNow"
+      :showTOSearchModal="showTOSearchModal"
+      @update:showTOSearchModal="showTOSearchModal = $event"
+      :TONumber="TONumber"
+      @update:TONumber="TONumber = $event"
+      :resetValidationNow="resetValidationNow"
+      @update:resetValidationNow="resetValidationNow = $event"
       @TOSearchCancelled="TOSearchCancelled"
       @startProvisionWorkflow="startProvisionWorkflow"
     />    

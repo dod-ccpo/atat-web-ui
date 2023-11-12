@@ -123,6 +123,9 @@
         text-transform: uppercase;
         color: $base-darker;
       }
+      .v-list-item--disabled {
+        opacity: 1;
+      }
     }
   }
 }

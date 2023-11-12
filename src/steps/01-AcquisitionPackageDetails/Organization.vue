@@ -142,7 +142,8 @@
 
       <ATATDialog
         id="AddAgencyModal"
-        :showDialog.sync="showDialog"
+        :showDialog="showDialog"
+        @update:showDialog="showDialog = $event"
         title="Request to add your agency"
         persistent
         no-click-animation
