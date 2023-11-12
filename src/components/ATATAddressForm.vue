@@ -13,7 +13,7 @@
       :rules="[$validators.required('Please select your Organization\'s address type.')]"
     />
 
-    <div v-if="_selectedAddressType !== ''" ref="atatAddressForm" lazy-validation>
+    <div v-if="_selectedAddressType !== ''">
       <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
