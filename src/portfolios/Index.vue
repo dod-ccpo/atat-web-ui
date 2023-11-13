@@ -7,16 +7,15 @@
     <ATATToast />
 
     <v-main>
+    
       <v-app-bar
         id="PageHeader"
         flat
         class="_atat-page-header _portfolios"
-        height="118"
       >
-        <div id="NameHeader" tabindex="-1" class="mt-1">
-          <h1 class="mb-2 mt-5 pl-1">Portfolios</h1>
+        <div id="NameHeader" tabindex="-1">
+          <h1 class="mt-5">Portfolios</h1>
           <!-- ATAT TODO AT-9553 - ABORT API calls in progress when switching between tabs -->
-          <div>
             <v-tabs class="_header-tab "
               v-model="tabIndex">
               <v-tab
@@ -27,29 +26,29 @@
                 class="font-size-14 pa-1 pt-2 pb-4 mr-3"
               >{{ tab.text }}</v-tab>
             </v-tabs>
-          </div> 
 
         </div>
         <div class="d-flex justify-end align-center"></div>
       </v-app-bar>
-      <v-container
-        class="container-max-width"
-      >
-        <PortfoliosSummary 
-          :active-tab="activeTab" 
-          default-sort="name" 
-          :isHomeView="false"
-          @openTOModal="openTOModal"
-        />
 
-      </v-container>
-      <ATATFooter/>
+      <div class="_app-content" style="padding-top: 80px;">
+        <div class="_app-content-wrap">  
+          <PortfoliosSummary 
+            :active-tab="activeTab" 
+            default-sort="name" 
+            :isHomeView="false"
+            @openTOModal="openTOModal"
+          />
+          <ATATFooter/>
+        </div>
+      </div>
+
     </v-main>
     <TaskOrderSearchModal
       :showTOSearchModal="showTOSearchModal"
       @update:showTOSearchModal="showTOSearchModal = $event"
       :TONumber="TONumber"
-      @update:TONumber="TONumber = $event"
+      @update:TONumber="TONumber = $event" 
       :resetValidationNow="resetValidationNow"
       @update:resetValidationNow="resetValidationNow = $event"
       @TOSearchCancelled="TOSearchCancelled"

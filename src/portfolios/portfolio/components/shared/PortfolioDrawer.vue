@@ -474,7 +474,6 @@ class PortfolioDrawer extends Vue {
   
   public ownerMenuItems: SelectData[] = [
     { text: "Transfer ownership", value: "TransferOwner", isSelectable: false },
-    { text: "Transfer footest", value: "TransferOwner", isSelectable: false },
   ]
   
   public statusImg: {[key: string]: {[key: string]: string}} = {
@@ -656,40 +655,40 @@ class PortfolioDrawer extends Vue {
   }
 
   public async transferOwner(): Promise<void> {
-    // this.modalOKDisabled = true;
-    // this.showOKSpinner = true;
-    // /* eslint-disable camelcase */
-    // const newOwner = this.portfolioMembers[this.transferOwnershipIndex];
-    // this.portfolio.portfolio_owner = newOwner.sys_id;
-    // const newOwnerPrevRole = newOwner.role;
-    // newOwner.role = "Owner";
+    this.modalOKDisabled = true;
+    this.showOKSpinner = true;
+    /* eslint-disable camelcase */
+    const newOwner = this.portfolioMembers[this.transferOwnershipIndex];
+    this.portfolio.portfolio_owner = newOwner.sys_id;
+    const newOwnerPrevRole = newOwner.role;
+    newOwner.role = "Owner";
 
-    // if (newOwner.sys_id) {
-    //   if (newOwnerPrevRole === "Manager" && this.portfolio.portfolio_managers) {
-    //     this.portfolio.portfolio_managers = this.removeItemFromArray(
-    //       this.portfolio.portfolio_managers, newOwner.sys_id
-    //     );
-    //   } else if (newOwnerPrevRole === "Viewer" && this.portfolio.portfolio_viewers) {
-    //     this.portfolio.portfolio_viewers = this.removeItemFromArray(
-    //       this.portfolio.portfolio_viewers, newOwner.sys_id
-    //     );
-    //   }
-    // }
-    // /* eslint-enable camelcase */
+    if (newOwner.sys_id) {
+      if (newOwnerPrevRole === "Manager" && this.portfolio.portfolio_managers) {
+        this.portfolio.portfolio_managers = this.removeItemFromArray(
+          this.portfolio.portfolio_managers, newOwner.sys_id
+        );
+      } else if (newOwnerPrevRole === "Viewer" && this.portfolio.portfolio_viewers) {
+        this.portfolio.portfolio_viewers = this.removeItemFromArray(
+          this.portfolio.portfolio_viewers, newOwner.sys_id
+        );
+      }
+    }
+    /* eslint-enable camelcase */
 
-    // const prevOwnerIndex = this.portfolioMembers.findIndex(usr => usr.role === "Owner") ?? 0;
-    // this.portfolioMembers[prevOwnerIndex].role = "Manager";
-    // if (this.portfolio.members) {
-    //   this.portfolio.members[this.transferOwnershipIndex].role = "Owner"
-    //   this.portfolio.members[prevOwnerIndex].role = "Manager"
-    // }
+    const prevOwnerIndex = this.portfolioMembers.findIndex(usr => usr.role === "Owner") ?? 0;
+    this.portfolioMembers[prevOwnerIndex].role = "Manager";
+    if (this.portfolio.members) {
+      this.portfolio.members[this.transferOwnershipIndex].role = "Owner"
+      this.portfolio.members[prevOwnerIndex].role = "Manager"
+    }
 
-    // this.currentUserIsOwner = false;
-    // await this.updateMemberRole("Manager", prevOwnerIndex);
-    // await this.closeTransferOwnerModal();
-    // Toast.setToast(this.ownershipTransferredToast);
-    // this.modalOKDisabled = false;
-    // this.showOKSpinner = false;
+    this.currentUserIsOwner = false;
+    await this.updateMemberRole("Manager", prevOwnerIndex);
+    await this.closeTransferOwnerModal();
+    Toast.setToast(this.ownershipTransferredToast);
+    this.modalOKDisabled = false;
+    this.showOKSpinner = false;
   }
 
   public removeItemFromArray(users: string, sysId: string): string {

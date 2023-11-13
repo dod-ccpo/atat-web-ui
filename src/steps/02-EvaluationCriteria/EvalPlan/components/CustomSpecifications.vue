@@ -34,7 +34,7 @@
         :aria-label="'Delete this ' + specificationType"
         :id="'DeleteCustomSpec_' + index"
       >
-        <v-icon> delete </v-icon>
+        <v-icon>mdi-delete</v-icon>
       </v-btn>
     </div>
 

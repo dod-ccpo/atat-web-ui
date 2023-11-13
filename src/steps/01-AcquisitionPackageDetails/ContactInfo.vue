@@ -52,6 +52,7 @@
           label="Rank"
           titleKey="name"
           ref="RankRef"
+          valueKey="sysId"
           :items="selectedBranchRanksData"
           :searchFields="['name', 'grade']"
           :selectedItem="selectedRank"

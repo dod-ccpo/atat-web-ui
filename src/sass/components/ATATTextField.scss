@@ -27,22 +27,6 @@
       max-height: 40px;
     }
 
-    // fieldset { // deprecated -- KEEP SPRINT 69
-    //   max-height: 40px;
-    //   margin-top: 4px;
-    //   border: 1px solid $base;
-    //   border-radius: 4px;
-    //   background-color: white;
-    //   legend {
-    //     display: none;
-    //   }
-
-    //   &:focus {
-    //     border-width: 2px;
-    //     border-color: $primary;
-    //   }
-    // }
-
     &.error--text {
       fieldset,
       fieldset:focus {
@@ -156,11 +140,11 @@ input[type=number] {
   opacity: 1 !important;
   border: 1px solid $base;
   &.v-field--focused {
-    border: 1px solid $primary;
+    border: 1px solid $primary !important;
     outline: 1px solid $primary;
   }
-  &.v-field--error {
-    border: 1px solid $error;
+  &.v-field--error, &.v-input--error {
+    border: 1px solid $error !important;
     outline: 1px solid $error;
   }
  

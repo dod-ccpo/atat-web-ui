@@ -6,15 +6,13 @@
         id="PageHeader"
         flat
         class="_atat-page-header _acquisitions"
-        height="83"
       >
         <div id="NameHeader" tabindex="-1" class="mt-1">
           <div class="d-flex align-center">
-            <h1 class="mb-2 mt-5 pl-1">Acquisitions</h1>
+            <h1 class="mt-4">Acquisitions</h1>
           </div>
           <div>
-            <v-tabs class="_header-tab "
-                    v-model="tabIndex">
+            <v-tabs class="_header-tab" v-model="tabIndex">
               <v-tab
                 v-for="(tab, index) in tabItems"
                 :key="index"
@@ -36,66 +34,68 @@
         </div>
         <div class="d-flex justify-end align-center"></div>
       </v-app-bar>
-      <v-container
-        class="container-max-width"
-        style="margin-bottom: 200px;"
-        id="PackageTable"
-      >
-        <Search
-          id="SearchPackages"
-          :searchString="searchString"
-          @update:searchString="searchString = $event"
-          :selectedSort="selectedSort"
-          @update:selectedSort="selectedSort = $event"
-          @search="search"
-          @clear="clear"
-        />
-        <div
-          v-if="packageData.length" 
-          id="PackageCards" 
-          class="d-flex flex-column align-center pt-5"
-          :class="{ '_is-paginated' : packageCount > recordsPerPage}"
-        >
-          <Card
-            v-for="(cardData, index) in packageData"
-            :key="cardData.sys_id"
-            :cardData="cardData"
-            :index="index"
-            :isLastCard="index === packageData.length - 1"
-            @updateStatus="updateStatus"
-            @openTOSearchModal="openTOSearchModal"
+
+      <div class="_app-content" style="padding-top: 80px;">
+        <div class="_app-content-wrap">  
+
+          <PackageSearch
+            class="_package-search-wrapper"
+            id="SearchPackages"
+            :searchString="searchString"
+            @update:searchString="searchString = $event"
+            :selectedSort="selectedSort"
+            @update:selectedSort="selectedSort = $event"
+            @search="search"
+            @clear="clear"
           />
+          <div
+            v-if="packageData.length" 
+            id="PackageCards" 
+            class="d-flex flex-column align-center pt-5"
+            :class="{ '_is-paginated' : packageCount > recordsPerPage}"
+          >
+            <PackageCard
+              v-for="(cardData, index) in packageData"
+              :key="cardData.sys_id"
+              :cardData="cardData"
+              :index="index"
+              :isLastCard="index === packageData.length - 1"
+              @updateStatus="updateStatus"
+              @openTOSearchModal="openTOSearchModal"
+            />
 
-          <div class="_table-pagination" v-show="packageCount > recordsPerPage">
-            <span class="mr-11 font-weight-400 font-size-14">
-              Showing {{ startingNumber }}-{{ endingNumber }} of {{ packageCount }}
-            </span>
+            <div class="_table-pagination" v-show="packageCount > recordsPerPage">
+              <span class="mr-11 font-weight-400 font-size-14">
+                Showing {{ startingNumber }}-{{ endingNumber }} of {{ packageCount }}
+              </span>
 
-            <v-pagination
-              v-model="page"
-              :length="numberOfPages"
-              rounded
-            ></v-pagination>     
+              <v-pagination
+                v-model="page"
+                :length="numberOfPages"
+                rounded
+              ></v-pagination>     
+            </div>
+
+          </div>
+          <div 
+            v-if="!packageData.length && !isLoading"
+            id="NoRecords" 
+            class="width-100 py-10 text-center"
+          >
+            <h2 class="mb-2">{{ noRecordsHeading }}</h2>
+            <p>{{ noRecordsMessage }}</p>
           </div>
 
-        </div>
-        <div 
-          v-if="!packageData.length && !isLoading"
-          id="NoRecords" 
-          class="width-100 py-10 text-center"
-        >
-          <h2 class="mb-2">{{ noRecordsHeading }}</h2>
-          <p>{{ noRecordsMessage }}</p>
-        </div>
+          <ATATNoResults
+            v-show="packageData.length === 0 && searchString && !isLoading"
+            :searchString="searchedString"
+            @clear="clear"
+          />
 
-        <ATATNoResults
-          v-show="packageData.length === 0 && searchString && !isLoading"
-          :searchString="searchedString"
-          @clear="clear"
-        />
+          <ATATFooter/>
+        </div>
+      </div>
 
-      </v-container>
-      <ATATFooter/>
     </v-main>
 
     <TaskOrderSearchModal
@@ -119,7 +119,7 @@ import ATATFooter from "@/components/ATATFooter.vue";
 import ATATToast from "@/components/ATATToast.vue";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
-import Card from "@/packages/components/Card.vue";
+import PackageCard from "@/packages/components/Card.vue";
 import TaskOrderSearchModal from "@/portfolios/components/TaskOrderSearchModal.vue";
 import Steps from "@/store/steps";
 import {
@@ -129,7 +129,7 @@ import {
 } from "@/api/models";
 
 import AcquisitionPackageSummary, { PackageSort } from "@/store/acquisitionPackageSummary";
-import Search from "@/packages/components/Search.vue";
+import PackageSearch from "@/packages/components/Search.vue";
 import ATATNoResults from "@/components/ATATNoResults.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
@@ -138,13 +138,13 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 
 @Component({
   components: {
-    // PortfoliosSummary,
-    // ATATFooter,
-    // ATATToast,
-    // ATATNoResults,
-    // Card,
-    // Search,
-    // TaskOrderSearchModal
+    PortfoliosSummary,
+    ATATFooter,
+    ATATToast,
+    ATATNoResults,
+    PackageCard,
+    PackageSearch,
+    TaskOrderSearchModal
   }
 })
 
@@ -309,7 +309,7 @@ class Packages extends Vue {
     await acquisitionPackage.setIsNewPackage(true)
     await AcquisitionPackage.reset();
     this.$router.push({
-      name: 'DAPPSChecklist', //routeNames.DAPPSChecklist,
+      name: routeNames.DAPPSChecklist,
       query: {
         direction: "next"
       },
