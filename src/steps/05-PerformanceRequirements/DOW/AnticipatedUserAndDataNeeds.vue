@@ -154,7 +154,8 @@ class AnticipatedUserAndDataNeeds extends Vue {
     this.periods = Periods.periods;
     const classifications = await ClassificationRequirements.getSelectedClassificationLevels();
     classifications.forEach((c) => {
-      c.data_egress_monthly_unit = c.data_egress_monthly_unit ?? "GB";
+      c.data_egress_monthly_unit = c.data_egress_monthly_unit !== "" 
+        ? c.data_egress_monthly_unit : "GB";
     });
     this.savedData = _.cloneDeep(classifications);
     this.anticipatedNeedsData = classifications.sort(
