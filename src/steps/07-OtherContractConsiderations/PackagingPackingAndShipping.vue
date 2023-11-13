@@ -21,7 +21,7 @@
               </p>
             </div>
             <ATATCheckboxGroup
-              ref="PackagingEtcCheckboxes"  
+              :key="selectedOptions.toString()"
               id="PackagingEtcCheckboxes"
               :value="selectedOptions"
               @update:value="selectedOptions = $event"
@@ -148,12 +148,15 @@ class PackagingPackingAndShipping extends Vue {
         packaging_shipping_none_apply: storeData.packaging_shipping_none_apply
       }
 
-      this.savedData.contractor_provided_transfer === "true" 
-        ? this.selectedOptions.push(this.contractorProvidedTransportValue) : null; 
-      this.savedData.packaging_shipping_other === "true" 
-        ? this.selectedOptions.push(this.otherValue) : null; 
-      this.savedData.packaging_shipping_none_apply === "true" 
-        ? this.selectedOptions.push(this.noneApplyValue) : null; 
+      if (this.savedData.contractor_provided_transfer === "true")
+        this.selectedOptions.push(this.contractorProvidedTransportValue)
+
+      if (this.savedData.packaging_shipping_other === "true")
+        this.selectedOptions.push(this.otherValue)
+
+      if (this.savedData.packaging_shipping_none_apply === "true")
+        this.selectedOptions.push(this.noneApplyValue)
+
       this.otherValueEntered = this.savedData.packaging_shipping_other_explanation as string;
     } else {
       AcquisitionPackage.setCurrentContract(this.currentData);
