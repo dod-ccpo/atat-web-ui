@@ -159,7 +159,7 @@ import PortfolioStore from "@/store/portfolio";
   emits:["updateStatus", "openTOSearchModal", ]
 })
 
-class Card extends Vue {
+class PackageCard extends Vue {
   @Prop() private cardData!: AcquisitionPackageSummaryDTO;
   @Prop() private index!: number;
   @Prop() private isLastCard!: boolean;
@@ -433,7 +433,7 @@ class Card extends Vue {
   }
 }
 
-export default toNative(Card)
+export default toNative(PackageCard)
 
 </script>
 

@@ -12,72 +12,70 @@
           </label>
         </div>
         <div class="d-flex">
-          <v-select
+          <v-menu
+            v-model="menuOpen"
             ref="atatPhoneDropdown"
             id="CountryCodeDropdown"
             class="_country-select"
-            :items="searchResults"
-            variant="outlined"
-
             :hide-details="true"
-            v-model="_selectedCountry"
             @update:v-model="_selectedCountry = $event"
             :return-object="true"
             :eager="true"
-
+            attach
+            :close-on-content-click="false"
           >
-<!--
-            :error="errorMessages.length > 0"
-
-            item-title="name"
-            item-value="abbreviation"           -->
-          <!-- @update:v-model="onChange" -->
-
-            <template v-slot:selection="{ item }">
-              <span class="fi" :class="[`fi-${item.value.abbreviation}`]"> </span>
+            <template v-slot:activator="{ props }">
+              <v-btn v-bind="props" class="_country-select-button">
+                <span class="fi" :class="`fi-` + _selectedCountry?.abbreviation"></span>
+                <ATATSVGIcon
+                  class="ml-1"
+                  name="chevronDown"
+                  width="10"
+                  height="7"
+                  color="base-dark"
+                />
+              </v-btn>
             </template>
 
-            <template v-slot:prepend-item>
-              <v-text-field
-                v-model="searchTerm"
-                @update:model-value="searchCountries"
-                class="_dropdown-text-field"
-                placeholder="Search"
-                persistent-placeholder
-                append-icon="search"
-                id="DropdownTextField"
-                :clearable="true"
-                :autofocus="true"
-                :autocomplete="false"
-              />
-            </template>
-            <template v-slot:item="{ props, item }">
+            <v-list>
+              <div class="_country-search">
+                <v-text-field
+                  v-model="searchTerm"
+                  @update:model-value="searchCountries"
+                  class="_dropdown-text-field"
+                  placeholder="Search"
+                  persistent-placeholder
+                  append-inner-icon="mdi-magnify"
+                  id="DropdownTextField"
+                  :clearable="true"
+                  clear-icon="mdi-close"
+                  :autofocus="true"
+                  :autocomplete="false"
+                  :hide-details="true"
+                />
+              </div>              
               <v-list-item
-                :v-bind="props"
-                class="_country-list"
+                v-for="(item, idx) in searchResults"
+                :key="item.abbreviation + idx"
+                class="_country-item"
                 :class="[
-                  item.raw.suggested ? '_suggested' : '',
-                  item.raw.active ? '_active' : '',
+                  item.suggested ? '_suggested' : '',
+                  item.active ? '_active' : '',
+                  { '_suggested-label' : idx === 0 && item.suggested }
                 ]"
-                :value="item.raw.abbreviation"
+                @click="menuItemClick(item)"
               >
-                <div :item-value="item?.raw.name">
-                  <v-list-item-title class="body _country">
-                    <v-row no-gutters align="center">
-                      <span
-                        class="mr-3 fi"
-                        :class="[`fi-${item.raw.abbreviation}`]"
-                      ></span>
-                      <span class="mr-2 _country-name">{{ item.raw.name }}</span>
-                      <span class="color-base body-sm">{{
-                          item.raw.countryCode
-                        }}</span>
-                    </v-row>
-                  </v-list-item-title>
-                </div>
+                <v-list-item-title class="body _country">
+                  <span class="mr-3 fi" :class="[`fi-${item.abbreviation}`]"></span>
+                  <span class="mr-2 _country-name">{{ item.name }}</span>
+                  <span class="color-base body-sm">{{ item.countryCode }}</span>
+                </v-list-item-title>
               </v-list-item>
-            </template>
-          </v-select>
+              <div v-if="searchResults.length === 0" class="py-2 px-4">
+                Country not found
+              </div>
+            </v-list>
+          </v-menu>
 
           <v-text-field
             ref="atatPhoneTextField"
@@ -148,6 +146,7 @@ import Inputmask from "inputmask/";
 import { CountryObj, ValidationRule } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 export const Countries: CountryObj[] = [
   {
@@ -376,6 +375,7 @@ export const Countries: CountryObj[] = [
     ATATTextField,
     ATATAutoComplete,
     ATATErrorValidation,
+    ATATSVGIcon,
   },
 })
 class ATATPhoneInput extends Vue {
@@ -424,6 +424,12 @@ class ATATPhoneInput extends Vue {
     type: Object as () => CountryObj
   }) private _selectedCountry!: CountryObj;
 
+  public menuItemClick(item: CountryObj): void {
+    this.menuOpen = false;
+    this._selectedCountry = item;
+  }
+
+  public menuOpen = false;  
   
   // data
   private searchResults: CountryObj[] = [];
@@ -565,20 +571,6 @@ class ATATPhoneInput extends Vue {
     this.setPhoneMask();
     this.setExtensionMask();
   }
-
-
-  // /**
-  //  * when parent forms methods (.reset() and .resetValidation()) are called
-  //  * this._selectedCountry is set to null.
-  //  *
-  //  * updated method sets default value
-  // */
-  // private updated(): void{
-  //   debugger;
-  //   if (this._selectedCountry === null){
-  //     this._selectedCountry = this.countries[0];
-  //   }
-  // }
 
   get wrapperClass(): string {
     return this.$vuetify.display.mdAndDown ? "d-block" : "d-flex";

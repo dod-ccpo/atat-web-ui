@@ -143,7 +143,6 @@ class ATATDialog extends Vue {
   }
 
   private onCancel() {
-    debugger;
     this.$emit("cancelClicked");
     this._showDialog = false;
     this.returnFocus(this.focusOnCancel);

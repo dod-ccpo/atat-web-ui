@@ -65,7 +65,7 @@
                     @click="deleteResearcher(index)"
                     :disabled="researchers.length === 1"
                   >
-                    <v-icon> delete </v-icon>
+                    <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </div>
               </div>

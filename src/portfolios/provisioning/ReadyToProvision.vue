@@ -14,7 +14,7 @@
 
       <div class="d-flex width-100">
           <div class="flex-grow-1" style="margin-right: 80px;">
-            <div class="border1 border-rounded border-base-lighter pa-8">
+            <div class="border1 _border-rounded border-base-lighter pa-8">
               <h2 class="mb-6">Provisioning details</h2>
 
               <div class="d-flex mb-6">

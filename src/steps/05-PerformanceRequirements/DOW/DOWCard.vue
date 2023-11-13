@@ -1,6 +1,6 @@
 <template>
   <v-card 
-    class="_border-light d-flex border-rounded px-8 py-6 mb-4 default-box-shadow"
+    class="_border-light d-flex _border-rounded px-8 py-6 mb-4 default-box-shadow"
     :class="{'_card-complete': cardData.isComplete}"
     :id="cardData.section + 'Card'"
     variant="outlined">
