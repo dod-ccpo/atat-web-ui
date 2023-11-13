@@ -38,7 +38,7 @@
           Office will accept DITCO templates for the following documents:
         </p>
         <div class="mb-0">
-          <ul>
+          <ul class="_atat-ul">
             <li>Requirements Checklist</li>
             <li>Description of Work</li>
             <li>Independent Government Cost Estimate (IGCE)</li>
