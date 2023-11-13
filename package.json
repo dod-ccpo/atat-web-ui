@@ -22,7 +22,7 @@
     "@types/inputmask": "^5.0.3",
     "@types/number-to-words": "^1.2.1",
     "@vue/compat": "^3.1.0",
-    "axios": "^0.26.0",
+    "axios": "^1.6.1",
     "chart.js": "^3.8.0",
     "chartjs-plugin-datalabels": "^2.0.0",
     "core-js": "^3.21.1",
