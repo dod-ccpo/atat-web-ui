@@ -987,6 +987,7 @@ export interface EstimateOptionValueDTO {
 
 export interface RequirementsCostEstimateDTO extends BaseTableDTO{
   acquisition_package: ReferenceColumn | string;
+  classification_level: ReferenceColumn | string;
   has_DOW_and_PoP: YesNo;
   optimize_replicate: EstimateOptionValue;
   architectural_design_current_environment: EstimateOptionValue;
@@ -1018,6 +1019,7 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO{
 
 export interface RequirementsCostEstimateFlat extends BaseTableDTO{
   acquisition_package: ReferenceColumn | string;
+  classification_level: ReferenceColumn | string;
   architectural_design_current_environment_option?: SingleMultiple;
   architectural_design_current_environment_estimated_values: string;// csv
   architectural_design_performance_requirements_option?: SingleMultiple;

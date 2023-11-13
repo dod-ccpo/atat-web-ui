@@ -26,6 +26,7 @@ describe("Testing SupportingDocumentation Component", () => {
     });
     requirementsCostEstimateDTO = {
       acquisition_package: "",
+      classification_level: "",
       has_DOW_and_PoP: "",
       architectural_design_current_environment: {
         option: "",

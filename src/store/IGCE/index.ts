@@ -23,6 +23,7 @@ import { currencyStringToNumber, getStringFromReferenceColumn } from "@/helpers"
 export const defaultRequirementsCostEstimate = (): RequirementsCostEstimateDTO => {
   return {
     acquisition_package: "",
+    classification_level: "",
     has_DOW_and_PoP: "",
     architectural_design_current_environment: {
       option: "",
@@ -382,6 +383,7 @@ export class IGCEStore extends VuexModule {
     rceFlat: RequirementsCostEstimateFlat): Promise<RequirementsCostEstimateDTO> {
     return {
       acquisition_package: rceFlat.acquisition_package,
+      classification_level: rceFlat.classification_level,
       architectural_design_current_environment: {
         option: rceFlat.architectural_design_current_environment_option,
         estimated_values:
@@ -448,6 +450,9 @@ export class IGCEStore extends VuexModule {
       acquisition_package: typeof rceTree.acquisition_package === "object"
         ? rceTree.acquisition_package.value as string
         : rceTree.acquisition_package as string,
+      classification_level: typeof rceTree.classification_level === "object"
+        ? rceTree.classification_level.value as string
+        : rceTree.classification_level as string,
       architectural_design_current_environment_option:
         rceTree.architectural_design_current_environment.option,
       architectural_design_current_environment_estimated_values:
