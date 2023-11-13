@@ -44,8 +44,9 @@
             </ATATAlert>
             </div>
             <ATATRadioGroup
-                class="mb-5"
+              class="mb-5"
               id="ReplicateOptimizeOptions"
+              ref="ReplicateOptimizeOptionsRef"
               :card="true"
               :items="radioOptions"
               :value="currEnvDTO.current_environment_replicated_optimized"
@@ -108,7 +109,7 @@
 import { Component, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { RadioButton } from "types/Global";
+import { RadioButton, SaveOnLeaveRefs } from "types/Global";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
 import _ from "lodash";
@@ -118,7 +119,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import Steps from "@/store/steps";
-import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/saveOnLeave";
+import { beforeRouteLeaveFunction, From, To } from "@/mixins/saveOnLeave";
 
 
 @Component({
@@ -130,13 +131,17 @@ import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/sa
 })
 
 class ReplicateAndOptimize extends Vue {
-  $refs!: SaveOnLeaveRefs
+
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
-    return await beforeRouteLeaveFunction({ to, from,
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
+
   public currEnvDTO = defaultCurrentEnvironment;
   public routeNames = routeNames
   public radioOptions: RadioButton[] = [

@@ -42,6 +42,8 @@
             <v-expansion-panel-text>
               <span class="font-weight-500 font-size-20">1. Anticipated users</span>
               <RegionsDeployedAndUserCount
+                :id="'Regions' + index"
+                :ref="'RegionsRef' + index"
                 groupLabel="Where are your users located?"
                 groupLabelHelpText="Enter the approximate number of users that you expect within
                  each selected region."
@@ -50,12 +52,18 @@
                 :componentIndex="index"
                 :regionUsersOnLoad="anticipatedNeedsData[index].users_per_region"
                 @update:regionUsersOnLoad="anticipatedNeedsData[index].users_per_region = $event"
-                :id="'Regions' +index"
                 :index="index"
+                :rules="[
+                  $validators.required('Select at least one region')
+                ]"
+                :textfieldRules="[
+                  $validators.required('Enter the number of users in this region.')
+                ]"
+          
                 @regionUserDataUpdate="regionUserDataUpdate"
-                @update:regionUserDataUpdate="regionUserDataUpdate = $event"
               />
               <AnticipatedDataNeeds
+                :ref="'AnticipatedUserNeeds' + index + 'Ref'"
                 :index="index"
                 :periods="periods"
                 :increaseSelection="anticipatedNeedsData[index].increase_in_users"
@@ -67,10 +75,12 @@
                 @update:percentages="anticipatedNeedsData[index].user_growth_estimate_percentage 
                   = $event"
                 needs="user"
+                :rules="[$validators.required('Please select an option')]"
               />
               <hr class="mb-10 mt-5" />
               <span class="font-weight-500 font-size-20 mb-5">2. Anticipated data needs</span>
               <AnticipatedDataNeeds
+                :ref="'AnticipatedDataNeeds' + index + 'Ref'"
                 class="mt-5"
                 needs="data"
                 :index="index"
@@ -108,10 +118,11 @@ import { buildClassificationLabel, hasChanges } from "@/helpers";
 import RegionsDeployedAndUserCount from "@/components/DOW/RegionsDeployedAndUserCount.vue";
 import AnticipatedDataNeeds from "@/components/DOW/AnticipatedDataNeeds.vue";
 import Periods from "@/store/periods";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import { SaveOnLeaveRefs } from "types/Global";
 
 
 @Component({
@@ -121,26 +132,22 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
   },
 })
 class AnticipatedUserAndDataNeeds extends Vue {
-
-  $refs!: SaveOnLeaveRefs
+    
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
   private periods: PeriodDTO[] = [];
   public accordionClosed: number[] = [];
   public anticipatedNeedsData: SelectedClassificationLevelDTO[] = [];
   public savedData: SelectedClassificationLevelDTO[] = []
   public get comingFromReview():boolean {
     return DescriptionOfWork.returnToDOWSummary === true
-  }
-
-  get Form(): SaveOnLeaveRefs['form'] {
-    return this.$refs.form
   }
 
   private async mounted(): Promise<void> {
@@ -182,7 +189,8 @@ class AnticipatedUserAndDataNeeds extends Vue {
     try {
       if (this.hasChanged()) {
         for(const classification of this.currentData){
-          classification.isValid = await this.$refs.form.validate();
+          classification.isValid = 
+            (await(await this.$refs.form as SaveOnLeaveRefs["form"]).validate()).valid
           await this.updateSnowSelected(classification);
         }
       }

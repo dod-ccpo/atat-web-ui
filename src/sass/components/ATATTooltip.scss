@@ -9,6 +9,7 @@
   }
 
   ._tooltip-content-wrap {
+    font-size: 1.4rem;
     transition: opacity 0.25s !important;
     background-color: rgba($base-darkest, 0.9);
     padding: 8px 12px !important;
@@ -38,7 +39,7 @@
       position: absolute;
       width: 0;
       height: 0;
-      right: -15px;
+      right: -20px;
       top: calc(50% - 10px);
       border: 10px solid transparent;
       border-left-color: rgba($base-darkest, 0.9);
@@ -55,10 +56,21 @@
 
 .v-btn._tooltip-button {
   height: 19px;
+  position: relative;
   &:focus-visible {
     &:after {
+      position: absolute;
+      top: -3px;
+      left: 4px;
+      width: 25px;
+      height: 25px;
       border: none !important;
       background-color: rgba($primary, 0.5);
     }
   }
+  background-color: transparent;
+  &::after {
+    border: none !important;
+  }
+
 }

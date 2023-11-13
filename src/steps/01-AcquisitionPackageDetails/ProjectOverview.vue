@@ -15,6 +15,7 @@
           </p>
           <div class="mt-10">
             <ProjectTitle
+              ref="ProjectTitleRef"
               label="Project/Requirement Title"
               :rules="[
                 $validators.required('Please enter your project title'),
@@ -26,6 +27,7 @@
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectScope
+              ref="ProjectScopeRef"
               label="What is the scope of your requirement?"
               :projectScope="projectScope"
               @update:projectScope="projectScope = $event"
@@ -46,6 +48,7 @@
           </div>
           <div class="d-flex align-start flex-column mt-6">
             <EmergencyDeclarationSupport
+              ref="EmergencyDeclarationRadioExternal"
               legend="Is this requirement in support of an emergency declaration?"
               :emergencyDeclaration="emergencyDeclaration"
               @update:emergencyDeclaration="emergencyDeclaration = $event"
@@ -54,6 +57,7 @@
           </div>
           <div class="d-flex align-start flex-column mt-6">
             <CJADC2Initiative
+              ref="CJADC2RadioExternal"
               legend='Is this package in support of the Combined Joint All-Domain Command and
                 Control (CJADC2) initiative?'
               helpText = "CJADC2 is the Department of Defense’s (DoD’s) concept to connect sensors 
@@ -69,6 +73,7 @@
           <hr/>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
             <ProjectDisclaimer
+              ref="disclaimerGroupLabelRef"
               groupLabelId="disclaimerGroupLabel"
               :selectedDisclaimer="selectedDisclaimer"
               @update:selectedDisclaimer="selectedDisclaimer = $event"
@@ -97,10 +102,10 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import AcquisitionPackage, {
   StoreProperties,
 } from "@/store/acquisitionPackage";
-import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { ProjectOverviewDTO, ReferenceColumn } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import { SelectData, YesNo } from "types/Global";
+import { SaveOnLeaveRefs, SelectData, YesNo } from "types/Global";
  
 @Component({
   components: {
@@ -113,14 +118,17 @@ import { SelectData, YesNo } from "types/Global";
   },
 })
 class ProjectOverview extends Vue {
-  $refs!: SaveOnLeaveRefs
+
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
+
 
   private acquisitionPackage: ReferenceColumn | string = "";
   private foo = 0;
@@ -146,6 +154,7 @@ class ProjectOverview extends Vue {
     AcquisitionPackage.setProjectTitle(value);
   }
 
+  
   private get currentData(): ProjectOverviewDTO {
     return {
       acquisition_package: this.acquisitionPackage,

@@ -15,6 +15,7 @@
             </p>
             <ATATRadioGroup
               id="ExistingEnvOptions"
+              ref="ExistingEnvOptionsRef"
               :card="true"
               :items="uploadOptions"
               :rules="[$validators.required('Please select an option')]"
@@ -26,6 +27,7 @@
             <div v-if="hasSystemDocumentation === 'YES'">
               <hr />
               <ATATFileUpload
+                ref="SystemDocsUploadRef"
                 id="FundingPlan"
                 tabindex="-1"
                 :maxNumberOfFiles="100"
@@ -55,6 +57,7 @@ import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import { 
   invalidFile, 
   RadioButton, 
+  SaveOnLeaveRefs, 
   uploadingFile, 
   ValidationRule, 
   YesNo } from "../../../../types/Global";
@@ -68,7 +71,7 @@ import CurrentEnvironment,
 {defaultCurrentEnvironment} from "@/store/acquisitionPackage/currentEnvironment";
 import Attachments from "@/store/attachments";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 
 @Component({
@@ -79,13 +82,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 class UploadSystemDocuments extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, nextTick: this.$nextTick,
+    }).catch()
   }
 
   public currEnvDTO = defaultCurrentEnvironment;

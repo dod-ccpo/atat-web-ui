@@ -124,6 +124,7 @@ import { formatInTimeZone } from "date-fns-tz";
 import { uploadingFile } from "types/Global";
 
 @Component({
+  emits:["removeFiles"],
   components: {
     ATATSVGIcon,
   },

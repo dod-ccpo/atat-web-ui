@@ -13,6 +13,7 @@
             </p>
             <ATATRadioGroup
               id="EnvLocationButtons"
+              ref="EnvLocationButtons"
               :card="true"
               :items="envLocationOption"
               :rules="[$validators.required('Please select a type of environment')]"
@@ -66,7 +67,11 @@
 </template>
 <script lang="ts">
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { EnvironmentLocation, RadioButton, ToastObj } from "../../../../types/Global";
+import { 
+  EnvironmentLocation, 
+  RadioButton, 
+  SaveOnLeaveRefs, 
+  ToastObj } from "../../../../types/Global";
 import { CurrentEnvironmentInstanceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -76,7 +81,7 @@ import Toast from "@/store/toast";
 
 import CurrentEnvironment,
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -87,12 +92,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 class CurrentEnvironmentLocation extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

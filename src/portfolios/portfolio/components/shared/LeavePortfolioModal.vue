@@ -1,7 +1,8 @@
 <template>
   <ATATDialog
   id="LeavePortfolioModal"
-  :showDialog.sync="_showModal"
+  :showDialog="_showModal"
+  @update:showDialog="_showModal = $event"
   :title="'Leave “' + portfolioName + '” portfolio?'" 
   no-click-animation
   okText="Leave portfolio"

@@ -1,8 +1,8 @@
 <template>
   <div class="_dashboard">
     <v-container 
-    :fluid="true"
-    class="container-max-width"
+      :fluid="true"
+      class="container-max-width"
     >
       <FinancialDetailsAlert />
       <v-row v-if="showFundingAlert">
@@ -29,7 +29,7 @@
                     </template>
                   </ATATAlert>
                 </div>
-              <div class="d-flex justify-space-between width-100 mb-10">
+              <div class="d-flex justify-space-between width-100 mb-5">
                 <h2>Overview</h2>
                 <div class="d-flex align-end" v-if="hasSyncDate">
                   <span class="text-base-dark">
@@ -259,9 +259,8 @@
                       :hasProjected="true"
                     />
                     <div class="d-block text-center">
-                      <v-radio-group
-                        row
-                        class="checkbox-group-row center-checkboxes 
+                      <div
+                        class="checkbox-group-row center-checkboxes _checkboxes
                         chart-legend-checkboxes label-small no-messages compact mt-4"
                       >
                         <v-checkbox
@@ -284,7 +283,7 @@
                           :ripple="false"
                           @update:model-value="doToggleDataset((index + 1) * 2)"
                         />
-                      </v-radio-group>
+                      </div>
                     </div>
 
                     <div
@@ -1228,6 +1227,7 @@ class PortfolioDashboard extends Vue {
       cost.value = parseFloat(cost.value).toString();
     });
     this.idiqClins = currentPortfolioData.currentCLINs as ClinDTO[];
+    this.idiqClins = this.idiqClins.filter(c => c.clin_number !== "9999")
     this.availableFunds = parseFloat(fundsData?.fundsAvailable as string);
     this.totalPortfolioFunds = parseFloat(fundsData?.totalPortfolioFunds as string)
     this.fundsSpent = parseFloat(fundsData?.periodFundsSpent as string);

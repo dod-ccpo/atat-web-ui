@@ -45,6 +45,18 @@
     &:active {
       background-color: $primary-darker !important;
     }
+    &.v-btn--disabled {
+      background-color: $disabled !important;
+      opacity: 1;
+    }
+    &:focus-visible {
+      outline: 4px solid $primary;
+      &:after {
+        outline: 2px solid white !important;
+        border: none !important;
+        opacity: 1;
+      }
+    }
   }
   
   &._error.v-theme--light{
@@ -73,6 +85,14 @@
         color: $disabled;
         opacity: 1 !important;
       }
+    }
+    &:focus-visible {
+      &:after {
+        outline: 2px solid $primary !important;
+        outline-offset: 4px;
+        border: none !important;
+        opacity: 1;
+      }    
     }
   }
 
@@ -139,6 +159,11 @@
     &.font-weight-bold {
       span {
         font-weight: 700 !important;
+      }
+    }
+    &:focus-visible {
+      &::after {
+        border: none !important;
       }
     }
   }

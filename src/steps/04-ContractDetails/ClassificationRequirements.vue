@@ -22,6 +22,7 @@
             </div>
             <ATATCheckboxGroup
               id="ClassificationLevelCheckboxes"
+              ref="ClassificationLevelCheckboxesRef"
               :value="selectedOptions"
               @update:value="selectedOptions = $event"
               :items="checkboxItems"
@@ -103,12 +104,12 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import Toast from "@/store/toast";
 
-import { Checkbox, ToastObj } from "types/Global";
+import { Checkbox, SaveOnLeaveRefs, ToastObj } from "types/Global";
 import {
   AcquisitionPackageDTO,
   ClassificationLevelDTO, SelectedClassificationLevelDTO
 } from "@/api/models";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { 
   hasChanges, 
   buildClassificationCheckboxList, 
@@ -129,12 +130,12 @@ import _ from "lodash";
 
 class ClassificationRequirements extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

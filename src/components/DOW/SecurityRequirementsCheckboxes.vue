@@ -22,20 +22,22 @@
     <p v-if="isDOW" :id="`DOWMessageNote${idSuffix}`" class="mb-5">
       Select all that apply to this support service.
     </p>
-
-    <ATATCheckboxGroup
-      :id="`SecurityRequirements${idSuffix}`"
-      :labelSuffix="idSuffix"
-      :value="_selectedSecurityRequirements"
-      @update:value="_selectedSecurityRequirements = $event"
-      :items="securityRequirementsCheckboxes"
-      name="checkboxes"
-      :card="false"
-      class="copy-max-width"
-      :rules="[
-      $validators.required('Please select at least one type of classified information.')
-    ]"
-    />
+    <v-form ref="SecurityRequirementsCheckboxes" class="copy-max-width" lazy-validation>
+      <ATATCheckboxGroup
+        :ref="'SecurityRequirements' + idSuffix + 'Ref'"
+        :id="'SecurityRequirements' + idSuffix"
+        :labelSuffix="idSuffix"
+        :value="_selectedSecurityRequirements"
+        @update:value="_selectedSecurityRequirements = $event"
+        :items="securityRequirementsCheckboxes"
+        name="checkboxes"
+        :card="false"
+        class="copy-max-width"
+        :rules="[
+          $validators.required('Please select at least one type of classified information.')
+      ]"
+      />
+    </v-form>
   </div>
 </template>
 <script lang="ts">

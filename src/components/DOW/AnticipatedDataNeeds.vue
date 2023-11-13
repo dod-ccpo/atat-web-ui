@@ -6,6 +6,7 @@
         width="234"
         type="number"
         :id="'DataTransfer_'+ index"
+        :ref="'DataTransfer_'+ index + '_Ref'"
         :label="dataLabel"
         :tooltipText="dataTooltipText"
         :appendDropdown="true"
@@ -15,7 +16,12 @@
         :selectedDropdownValue="_dataDropdownValue"
         @update:selectedDropdownValue="_dataDropdownValue = $event"
         :rules="[
-          $validators.required('Enter the amount of data egress anticipated in this task order.')
+          $validators.required(
+            'Enter the amount of data egress anticipated in this task order.'
+          )
+        ]"
+        :dropDownRules="[
+          $validators.required('Please select an option')
         ]"
       ></ATATTextField>
       <br/>
@@ -23,6 +29,7 @@
     <div>
       <ATATRadioGroup
         :id="'DataIncrease_'+ index"
+        :ref="'DataIncrease_'+ index + '_Ref'"
         :legend="increaseLabel"
         :items="increaseOptions"
         :value="_increaseSelection"
@@ -36,6 +43,7 @@
     <div v-if="_increaseSelection === 'YES'">
       <ATATRadioGroup
         :id="'EstimateGrowth_'+ index"
+        :ref="'EstimateGrowth_'+ index + '_Ref'"
         :legend="growthLabel"
         :items="growthOptions"
         :value="_growthSelection"
@@ -49,6 +57,7 @@
       <div v-if="_growthSelection !== ''" class="mb-6">
         <ATATSingleAndMultiplePeriods
           :id="'Periods'+ index "
+          :ref="'Periods'+ index + '_Ref'"
           :needs="needs"
           :index="index"
           :periods="periods"

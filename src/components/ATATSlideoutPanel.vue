@@ -1,5 +1,6 @@
 <template>
   <v-navigation-drawer
+    markRaw="true"
     id="SlideoutPanel"
     class="_slideout-panel"
     :model-value="isSlideoutPanelOpen"
@@ -48,6 +49,7 @@
 import AppSections from "@/store/appSections";
 import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel/index";
+import { markRaw } from "vue";
 
 @Component({})
 class ATATSlideoutPanel extends Vue {
@@ -141,5 +143,5 @@ class ATATSlideoutPanel extends Vue {
     SlideoutPanel.closeSlideoutPanel();
   }
 }
-export default toNative(ATATSlideoutPanel)
+export default markRaw(toNative(ATATSlideoutPanel))
 </script>

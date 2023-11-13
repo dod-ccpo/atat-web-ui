@@ -11,7 +11,8 @@
             <p class="mb-8">
               {{ getLeadParagraph }}
             </p>
-            <CurrentContractOptions                                  
+            <CurrentContractOptions   
+              ref="CurrentContractOptionsRef"                               
               :card="true"
               :isWizard="true"
               :selectedOption="currentContractExists"
@@ -35,11 +36,12 @@ import CurrentContractOptions from "./components/CurrentContractOptions.vue"
 import AcquisitionPackage, 
 {initialCurrentContract} from "@/store/acquisitionPackage";
 
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import Steps from "@/store/steps";
 import { CurrentContractRouteResolver } from "@/router/resolvers";
+import { SaveOnLeaveRefs } from "types/Global";
 
 @Component({
   components: {
@@ -48,14 +50,14 @@ import { CurrentContractRouteResolver } from "@/router/resolvers";
 })
 
 class CurrentContract extends Vue {
-
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public headline = "";

@@ -27,7 +27,8 @@
                             searchType="EDA"
                             :hideHelpTextOnError="true"
                             :validate-on-blur="true"
-                            :value.sync="taskOrder"
+                            :value="taskOrder"
+                            @update:value="taskOrder = $event"
                             :rules="[
                               $validators.required('Please enter your awarded task order number.'),
                               $validators.isMaskValid(

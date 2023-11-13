@@ -1016,7 +1016,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "/requirement-categories",
         excludeFromMenu: true,
         name: routeNames.RequirementCategories,
-        stepCompleteOnEnter: routeNames.DOWLandingPage, // TODO - double-check when wired up
+        stepCompleteOnEnter: routeNames.DOWLandingPage, 
         completePercentageWeight: 1,
         component: RequirementCategories,
         routeResolver: PerformanceRequirementsPathResolver,

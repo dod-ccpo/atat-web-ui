@@ -14,6 +14,7 @@
               current requirements that you outlined in Contract Details.
             </p>
             <ATATRadioGroup
+              ref="ExistingEnvOptionsRef"
               id="ExistingEnvOptions"
               :card="true"
               :items="existingEnvOption"
@@ -32,14 +33,14 @@
 <script lang="ts">
 
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
-import { RadioButton, YesNo } from "../../../../types/Global";
+import { RadioButton, SaveOnLeaveRefs, YesNo } from "../../../../types/Global";
 
 
 import { hasChanges } from "@/helpers";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -48,13 +49,11 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 class HasCurrentEnvironment extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, form: this.$refs as SaveOnLeaveRefs, nextTick: this.$nextTick,
+    }).catch()
   }
 
   public currEnvDTO = defaultCurrentEnvironment;

@@ -12,6 +12,7 @@
           
           <ATATAutoComplete
             id="Agency"
+            ref="AgencyRef"
             class="_input-max-width mb-2"
             label="What service or agency are you affiliated with?"
             :label-sr-only="false"
@@ -31,6 +32,7 @@
               </h2>
               <ATATAutoComplete
                 id="DisaOrg"
+                ref="DisaOrgRef"
                 v-if="isAgencyDisa"
                 class="_input-max-width mb-10"
                 label="DISA Organization"
@@ -46,6 +48,7 @@
 
               <ATATTextField
                 id="OrgName"
+                ref="OrgNameRef"
                 v-if="!isAgencyDisa"
                 label="Organization name"
                 class="_input-max-width mb-10"
@@ -57,6 +60,7 @@
 
               <ATATTextField
                 id="DoDAAC"
+                ref="DoDAACRef"
                 label="DoD Activity Address Code (DoDAAC)"
                 class="_input-max-width"
                 tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, 
@@ -80,6 +84,7 @@
               </h2>
 
               <ATATAddressForm 
+                ref="AddressFormRef"
                 :selectedAddressType="selectedAddressType"
                 @update:selectedAddressType="selectedAddressType = $event"
                 :streetAddress1="streetAddress1"
@@ -142,7 +147,8 @@
 
       <ATATDialog
         id="AddAgencyModal"
-        :showDialog.sync="showDialog"
+        :showDialog="showDialog"
+        @update:showDialog="showDialog = $event"
         title="Request to add your agency"
         persistent
         no-click-animation
@@ -158,6 +164,7 @@
           </p>
           <ATATTextField
             id="AgencyOrgName"
+            ref="AgencyOrgNameRef"
             label="Agency/Organization Name"
             :class="[inputClass, 'pb-16 mb-9']"
           />
@@ -174,20 +181,19 @@ import {
   convertAgencyRecordToSelect,
   convertDisaOrgToSelect
 } from "@/helpers";
-import { convertColumnReferencesToValues } from "@/api/helpers";
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
-import { RadioButton, SelectData } from "types/Global";
+import { RadioButton, SaveOnLeaveRefs, SelectData } from "types/Global";
 
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
  
 
 
@@ -201,16 +207,15 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 
 class OrganizationInfo extends Vue {
-
-  $refs!: SaveOnLeaveRefs
-  
+   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
   // computed
 
   get inputClass(): string {

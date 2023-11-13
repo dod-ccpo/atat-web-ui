@@ -10,6 +10,7 @@
       Select all that apply to your current environment.
     </p>
     <ATATCheckboxGroup
+      ref="ClassificationLevelCheckboxesRef"
       id="ClassificationLevelCheckboxes"
       :card="false"
       :hasOtherValue="true"
@@ -37,6 +38,7 @@
       </p>
 
       <ATATCheckboxGroup
+        ref="ImpactLevelId"
         :id="impactLevelId"
         :card="false"
         :hasOtherValue="true"
@@ -49,27 +51,6 @@
       />
 
     </div>
-
-    <!-- START -- PRESERVE CODE FOR POST-MVP -->
-    <!-- <div v-if="IL2Selected">
-      <p id="CloudTypeP" class="mb-4 font-weight-500">
-        For your IL2 instance(s), what type of cloud are currently deployed in?
-      </p>
-      <ATATCheckboxGroup
-        id="CloudTypeCheckboxes"
-        :card="false"
-        :hasOtherValue="true"
-        :items="cloudTypes"
-        :rules="[
-                    $validators.required('Please select at least one type of cloud.')
-           ]"
-        :value="_selectedCloudTypes"
-        @update:value="_selectedCloudTypes = $event"
-        class="copy-max-width"
-        name="cloudTypeCheckboxes"
-      />
-    </div> -->
-    <!-- END -- PRESERVE CODE FOR POST-MVP -->
 
   </div>
 </template>

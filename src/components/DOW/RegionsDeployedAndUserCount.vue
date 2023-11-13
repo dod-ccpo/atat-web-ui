@@ -2,6 +2,7 @@
 <template>
   <ATATCheckboxGroup
     :id="id"
+    :ref="id + 'Ref'"
     :index="index"
     :items="regions"
     @update:items="regions = $event"
@@ -34,7 +35,10 @@ import { Checkbox } from "types/Global";
 import acquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
-  emits: ["selectedRegionsUpdate", "regionUserDataUpdate"],
+  emits:[
+    "selectedRegionsUpdate",
+    "regionUserDataUpdate"
+  ],
   components: {
     ATATCheckboxGroup
   }

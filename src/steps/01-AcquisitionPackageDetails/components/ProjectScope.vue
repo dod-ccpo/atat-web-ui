@@ -1,6 +1,7 @@
 <template>
   <div v-if="isForm">
     <ATATTextArea
+      ref="ProjectScopeRef"
       :id="id"
       :label="label"
       class="max-width-740"

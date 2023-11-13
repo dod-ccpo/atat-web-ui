@@ -81,6 +81,7 @@ import { RouteLocationNormalized, RouteRecordName } from 'vue-router'
 import { ComponentPublicInstance } from 'vue'
 
 @Component({
+  emits:["AdditionalButtonClicked"],
   components: {
     ATATFooter,
     ATATPageHead,
@@ -88,7 +89,8 @@ import { ComponentPublicInstance } from 'vue'
     ATATSlideoutPanel,
     ATATStepperNavigation,
     ATATToast
-  }
+  },
+  
 })
 class AppPackageBuilder extends Vue {
   $refs!: {

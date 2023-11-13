@@ -233,6 +233,7 @@ class DAPPSChecklist extends Vue {
     return true;
   }
   async mounted(): Promise<void>{
+    AcquisitionPackage.setSkipValidation(true);
     const comingFrom = Steps.prevStepName;
     if (comingFrom !== routeNames.ContractingShop
     && AcquisitionPackage.packageId !== "") {

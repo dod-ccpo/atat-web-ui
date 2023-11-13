@@ -4,7 +4,7 @@
     :value="_anticipatedNeedUsage"
     @update:value="_anticipatedNeedUsage = $event"
     :id="'AnticipatedNeedUsage_' + ((index as number) + 1)"
-    ref="DescriptionOfNeed"
+    :ref="'AnticipatedNeedUsage_' + ((index as number) + 1)"
     :label="label"
     :helpText="usageHelpText"
     class="width-100 mb-10 max-width-740"
@@ -19,8 +19,8 @@
   <div>
     <ATATRadioGroup
       class="copy-max-width mb-10 mt-0"
-      ref="NeededForEntireDuration"
       :id="'EntireDuration_' + ((index as number) + 1)"
+      :ref="'EntireDuration_' + ((index as number) + 1)"
       :legend="durationLabel ||
         `Do you need this ${typeForDuration} for the entire duration of your task order?`"
       :items="entireDurationOptions"
@@ -40,7 +40,7 @@
       <ATATCheckboxGroup
         :id="'PeriodsCheckboxes_' + ((index as number) + 1)"
         :aria-describedby="'PeriodsLabel_' + ((index as number) + 1)"
-        ref="periodsCheckboxes"
+        :ref="'PeriodsCheckboxes_' + ((index as number) + 1)"
         :value="_selectedPeriods"
         @update:value="_selectedPeriods = $event"
         :items="availablePeriodCheckboxItems"

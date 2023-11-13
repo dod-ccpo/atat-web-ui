@@ -119,6 +119,10 @@ import HomeWork from "@/components/icons/HomeWork.vue";
 
 
 @Component({
+  emits:[
+    "mouseenter",
+    "mouseleave"
+  ],
   components: {
     ArchitectureCircle,
     ArrowBack,

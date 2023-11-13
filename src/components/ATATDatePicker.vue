@@ -1,5 +1,8 @@
 <template>
-  <div :id="id + 'DatePickerContainer'" class="atat-date-picker">
+  <div
+    :id="id + 'DatePickerContainer'" 
+    class="atat-date-picker"
+    >
     <div class="d-flex align-center mb-2" v-if="label">
       <label
         :id="id + 'DatePickerLabel'"
@@ -17,7 +20,7 @@
       />
     </div>
     <v-text-field
-      ref="atatDatePicker"
+      ref="atatDatePickerTextField"
       :id="id + 'DatePickerTextField'"
       :placeholder="placeHolder"
       class="text-primary _input-max-width d-flex align-center"
@@ -35,7 +38,7 @@
        
      
     <ATATErrorValidation v-if="showErrors" :errorMessages="errorMessages" />
-    <div v-if="showHelpText" class="help-text mt-2">
+    <div v-if="displayHelpText" class="help-text mt-2">
       {{ helpText }}
     </div>
   </div>
@@ -48,7 +51,6 @@ import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {ValidationRule} from "../../types/Global";
-import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
   emits:[
@@ -64,8 +66,8 @@ import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 class ATATDatePicker extends Vue {
   // refs
   $refs!: {
-    atatDatePicker: ComponentPublicInstance & {
-      validate: () => Promise<SubmitEventPromise>;
+    atatDatePickerTextField: ComponentPublicInstance & {
+      validate: () => Promise<string[]>;
       value: string;
       resetValidation: ()=> boolean;
     };
@@ -84,7 +86,7 @@ class ATATDatePicker extends Vue {
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: "220" }) private width!: string;
-  @Prop({ default: "Format (mm/dd/yyyy)" }) private helpText!: string;
+  @Prop({ default: "mm/dd/yyyy" }) private helpText!: string;
   @Prop({ default: true }) private showHelpText!: boolean;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
@@ -103,6 +105,17 @@ class ATATDatePicker extends Vue {
   @Watch("value")
   public async valueChanged(): Promise<void> {
     await this.setDateFromValue();
+  }
+
+  /** 
+   * GETTERS 
+  */
+
+  /**
+   *  toggles between help text and error messages 
+  */
+  get displayHelpText(): boolean {
+    return this.showHelpText && this.errorMessages.length === 0
   }
 
   /**
@@ -125,7 +138,7 @@ class ATATDatePicker extends Vue {
       this.removeErrors();
     }
     this.$nextTick(() => {
-      this.$refs.atatDatePicker.validate()
+      this.$refs.atatDatePickerTextField.validate()
       this.setErrorMessage();
     });
   }
@@ -172,7 +185,7 @@ class ATATDatePicker extends Vue {
       /// don't show menu when user is typing date
       // makes validation hard to manage
       if (e.key.toLowerCase()==="enter"){
-        this.$refs.atatDatePicker.validate();
+        this.$refs.atatDatePickerTextField.validate();
       }
      
       if(Number.isNaN(parseInt(e.key))) {
@@ -219,16 +232,15 @@ class ATATDatePicker extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatDatePicker.validate()){
-      this.setErrorMessage();
-    }
+    this.setErrorMessage();
   }
 
-  private async setErrorMessage(): Promise<void> {
-    this.$refs.atatDatePicker.validate().then(
-      (response: unknown) => {
+  private setErrorMessage(): void {
+    this.$refs.atatDatePickerTextField.validate().then(
+      async (response: string[]) => {
         this.errorMessages = response as string[];
-        this.$emit('errorMessage', this.errorMessages);
+        this.$emit("hasErrorMessages", this.errorMessages );
+
       }
     );
   }

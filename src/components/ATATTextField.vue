@@ -22,7 +22,9 @@
 
     <div 
       class="_atat-textfield d-flex _input-wrapper" 
-      :class="{'_append-dropdown' : appendDropdown}"
+      :class="{
+        '_append-dropdown' : appendDropdown,
+        'is-errored': errorMessages.length>0 }"
     >
       <v-text-field
         ref="atatTextField"
@@ -66,11 +68,14 @@
       </v-text-field>
       <ATATSelect
         v-if="appendDropdown"
+        ref="atatSelectRef"
         :id="id"
         :items="dropdownOptions"
         :showSelectedValue="true"
         :selectedValue="_selectedDropdownValue"
         @update:selectedValue="_selectedDropdownValue = $event"
+        @errorMessage = "addDropDownErrorMessage"
+        :rules="dropDownRules"
       /> 
     </div>
 
@@ -95,9 +100,9 @@ import { mask, SelectData, ValidationRule } from "types/Global";
 import Inputmask from "inputmask/";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
+  emits: ["errorMessage", "blur", "focus"],
   components: {
     ATATTooltip,
     ATATErrorValidation,
@@ -109,7 +114,11 @@ class ATATTextField extends Vue  {
   // refs
   $refs!: {
     atatTextField: ComponentPublicInstance & {
-      validate: () => Promise<SubmitEventPromise>;
+      validate: () => Promise<string[]>;
+      resetValidation(): void
+    },
+    atatSelectRef: ComponentPublicInstance & {
+      validate: () => Promise<string[]>;
       resetValidation(): void
     };
   }; 
@@ -126,6 +135,7 @@ class ATATTextField extends Vue  {
   @Prop({ default: "" }) private appendText!: string;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: () => [] }) private rules!: ValidationRule[];
+  @Prop({ default: () => [] }) private dropDownRules!: ValidationRule[];
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
@@ -157,12 +167,7 @@ class ATATTextField extends Vue  {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.$refs.atatTextField.validate().then(
-      async (response: SubmitEventPromise) => {
-        if (!((await response).valid)){ 
-          this.setErrorMessage() }
-      }
-    );
+    this.setErrorMessage()
   }
 
   //data
@@ -172,20 +177,28 @@ class ATATTextField extends Vue  {
     return this.validateOnBlur ? "blur" : undefined
   }
 
-  public async setErrorMessage(): Promise<void> {
+  public setErrorMessage(): void {
+    this.errorMessages = [];
     if (this.validateOnBlur) {
       this.$refs.atatTextField.validate().then(
-        (response: unknown) => {
-          this.errorMessages = response as string[];
-          this.$emit('errorMessage', this.errorMessages);
+        async (response: string[]) => {
+          if (response.length>0){
+            this.errorMessages = [...response];
+            this.$emit('errorMessage', this.errorMessages);
+          }
         }
       );
+    
     } else {
-      await this.resetValidation();
+      this.resetValidation();
     }
   }
 
   //@Events
+  public addDropDownErrorMessage(errorMsgs: string[]): void{
+    this.errorMessages = [...errorMsgs]
+  }
+
   public onBlur(e: FocusEvent) : void{
     const input = e.target as HTMLInputElement;
     if (this.validateOnBlur) {

@@ -2,6 +2,10 @@
   z-index: 2000 !important;
 }
 
+.v-overlay.v-menu {
+  z-index: 3000 !important;
+}
+
 ._slideout-panel {
   z-index: 2001 !important;
   .v-navigation-drawer__content {
@@ -44,12 +48,8 @@
   
   ._panel-content-wrap {
     overflow-y: auto;
-    max-height: calc(100vh - 120px);
-    height: calc(100vh - 120px);
-    &._portfolio {
-      max-height: calc(100vh - 180px);
-      height: calc(100vh - 180px);  
-    }
+    max-height: calc(100vh - 115px);
+    height: calc(100vh - 115px);
   }
 
   ._panel-padding {
@@ -67,13 +67,20 @@
     .v-list-item-title span {
       white-space: nowrap !important;
     }
-    .v-select__selection {
+    .v-select__selection-text, .v-select__selection {
       width: 100%;
       text-align: right;
       padding-right: 4px;
     }
+    .v-field__input {
+      padding: 0 0 0 8px;
+    }
 
     ._drawer-text-area {
+      .v-field__input {
+        font-size: 1.4rem !important;
+        padding-left: 4px;
+      }
       border-radius: 4px;
       border: 1px solid transparent;
       outline: 1px solid transparent;
@@ -134,18 +141,27 @@
 
 }
 
-  hr {
-    z-index: auto;
-    }
+hr.v-divider {
+  z-index: auto;
+  border-color: $base-lighter !important;
+  opacity: 1;
+}
+
 ._profile-card {
   width: 360px;
+
+  ._profile-card-details {
+    display: flex;
+    flex-direction: column !important;
+  }  
   .v-list {
     padding: 0px !important;
     .v-list-item {
       .v-list-item__content {
         padding: 0px;
-
-  }
+        display: inline-flex;
+        align-items: center;
+      }
       ._initials {
         width: 48px;
         height: 48px;
@@ -163,6 +179,7 @@
 }
 
 ._profile-card__name-button {
+  opacity: 1;
   &.v-btn {
     justify-content: left !important;
     padding: 0px !important;

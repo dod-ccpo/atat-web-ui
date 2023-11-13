@@ -38,41 +38,20 @@
         >
         </div>
       </div>
-      <div
-        v-if="closeButton"
-        class="
-          text-center
-          pr-0
-          pl-4
-          pt-1
-          mx-0
-          d-flex
-          flex-column
-          align-start
-          ml-auto
-        "
+
+      <v-btn 
+        v-if="closeButton" 
+        class="_alert-close-btn"
+        icon :ripple="false" 
+        size="x-small" 
+        aria-label="Close alert" 
+        @click="close"
       >
-        <v-btn
-          icon
-          :ripple="false"
-          size="x-small"
-          aria-label="Close alert"
-          @click="close"
-        >
-          <v-icon
-            aria-hidden="true"
-            class="
-              notranslate
-              material-icons
-              theme--light
-              text-base-darkest
-              icon-20
-            "
-          >
-            close
-          </v-icon>
-        </v-btn>
-      </div>
+        <v-icon aria-hidden="true" class="text-base-darkest icon-20">
+          mdi-close
+        </v-icon>
+      </v-btn>
+
     </div>
   </div>
 </template>

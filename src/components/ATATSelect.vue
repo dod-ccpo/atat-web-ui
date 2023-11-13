@@ -1,6 +1,6 @@
 <template>
   <div :id="id + '_dropdown_field_control'" class="_atat-select">
-    <v-flex>
+    <div>
       <label
         v-if="label"
         :id="id + '_dropdown_field_label'"
@@ -12,23 +12,17 @@
           Optional
         </span>
       </label>
-    </v-flex>
-    <v-flex>
-
-      <!-- 
-        @update:model-value="onChange" 
-      -->
-
+    </div>
+    <div>
       <v-select
         ref="atatSelect"
         :id="id + '_dropdown'"
         :items="items"
-        variant="outlined"
+        :variant="variant"
         v-model="_selectedValue"
         @update:v-model="_selectedValue = $event"
         item-title="text"
         item-value="value"
-
         :rounded="rounded"
         :hide-details="true"
         @blur="onBlur"
@@ -37,17 +31,25 @@
         :return-object="returnObject"
         :style="'max-width: ' + width + 'px; width: ' + width + 'px'"
         :rules="_rules"
-        :menu-props="{ location: 'bottom', offset: 0 }"
+        location="bottom"
+        offset="0"
+        anchor="bottom end"
         :disabled="menuDisabled"
         :eager="true"
+        menu-icon="mdi-chevron-down"
       >
         <template v-if="showSelectedValue" v-slot:selection="{ item }">
           {{ item.value }}
         </template>
         <template v-slot:item="{ props, item }">
+          <v-divider v-if="item?.raw?.type === 'divider'" />
+          <v-list-subheader v-else-if="item?.raw?.type === 'subheader'">
+            {{ item?.raw?.text }}
+          </v-list-subheader>
           <v-list-item 
+            v-else
             v-bind="props"
-            :id="getIdText(item.value)"
+            :id="getIdText(item)"
             :class="[
               {'_item-disabled': item.value.disabled },
               {'d-none': item.value.hidden },
@@ -57,11 +59,27 @@
             :subtitle="item?.raw?.description"
           />
         </template>
+
+        <!-- <template v-slot:append-inner>
+          <v-icon v-if="iconType === 'standard'">mdi-menu-down</v-icon>
+          <div
+            class="_dropdown-icon"
+            v-if="iconType === 'chevron'"
+          >
+            <ATATSVGIcon 
+              name="chevronDown" 
+              color="base-darkest" 
+              :width="10" 
+              :height="7" 
+            />
+          </div>
+        </template> -->
+
       </v-select>
   
       <ATATErrorValidation :errorMessages="errorMessages"  v-if="showErrorMessages" />
 
-    </v-flex>
+    </div>
   </div>
 </template>
 
@@ -71,11 +89,15 @@ import { Component, Emit, Prop, Vue, Watch, toNative } from "vue-facing-decorato
 import { PropSync } from "@/decorators/custom";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-import { SelectData, ValidationRule } from "../../types/Global";
+import { MenuVariant, SelectData, ValidationRule } from "../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getIdText } from "@/helpers";
 
 @Component({
+  emits:[
+    "errorMessage",
+    "blur"
+  ],
   components: {
     ATATErrorValidation,
     ATATSVGIcon,
@@ -89,7 +111,7 @@ class ATATSelect extends Vue {
       errorCount: number;
       blur: ()=> void;
       focus: ()=> void;
-      validate: () => boolean;
+      validate: () => Promise<string[]>;
     };
   }; 
 
@@ -108,6 +130,7 @@ class ATATSelect extends Vue {
   @Prop({ default: false }) private menuDisabled?: boolean;
   @Prop({ default: false }) private showSelectedValue?: boolean;
   @Prop( {default: false }) private labelSrOnly?: boolean;
+  @Prop( { default: "outlined" }) private variant!: MenuVariant;
 
   //data
   private rounded = false;
@@ -115,8 +138,9 @@ class ATATSelect extends Vue {
   private errorMessages: string[] = [];
   private selectedBeforeChange: SelectData | string = "";
 
-  public getIdText(text: string): string {
-    return this.id + "_DropdownListItem_" + getIdText(text);  
+  public getIdText(item: SelectData): string {
+    const key = Object.keys(item).includes("text") ? "text" : Object.keys(item)[0];
+    return this.id + "_DropdownListItem_" + getIdText(key);  
   }
 
   @Emit("onChange")
@@ -139,7 +163,6 @@ class ATATSelect extends Vue {
       this.selectedBeforeChange = val;
     }
   }
-
   // @Emit("onChange")
   // private onChange(val: string | SelectData): void {
   //   const isString = typeof val === "string";
@@ -166,11 +189,11 @@ class ATATSelect extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.addRequiredRule();
-    if(!this.$refs.atatSelect.validate()){
-      this.setErrorMessage();
-      this.$emit('errorMessage', this.errorMessages);
-    }
+    // this.addRequiredRule();
+    // if(!this.$refs.atatSelect.validate()){
+    //   this.setErrorMessage();
+    //   this.$emit('errorMessage', this.errorMessages);
+    // }
   }
 
   public addRequiredRule(): void {
@@ -186,12 +209,14 @@ class ATATSelect extends Vue {
   }
 
   private setErrorMessage(): void {
-    setTimeout(() => {
-      this.errorMessages = this.$refs.atatSelect && Object.prototype.hasOwnProperty.call(
-        this.$refs.atatSelect, "errorBucket"
-      ) ? this.$refs.atatSelect.errorBucket : [];
-      this.$emit('errorMessage', this.errorMessages);
-    }, 0);
+    this.$refs.atatSelect.validate().then(
+      async (response: string[]) => {
+        if (response.length>0){
+          this.errorMessages = response;
+          this.$emit('errorMessage', this.errorMessages);
+        }
+      }
+    );
   }
 
   //@Events

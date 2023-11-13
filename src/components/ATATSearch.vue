@@ -33,6 +33,7 @@
         :id="id + '_SearchInput'"
         class="_search-input"
         clearable
+        clear-icon="mdi-close"
         variant="outlined"
         density="compact"
         :model-value="_value"
@@ -78,7 +79,7 @@
       <div class="d-flex justify-start align-top atat-text-field-error mt-2">
         <div>
           <v-icon class="text-base-error icon-20 ma-1 mt-0" color="error"
-            >error</v-icon
+            >mdi-alert-circle</v-icon
           >
         </div>
         <div class="field-error ml-2 text-left">
@@ -205,6 +206,12 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import AppSections from "@/store/appSections";
 
 @Component({
+  emits:[
+    "search",
+    "onGInvoiceSearchComplete",
+    "clear", 
+    "blur"
+  ],
   components: {
     ATATAlert,
     ATATSVGIcon,

@@ -764,7 +764,6 @@ export const AnticipatedUserAndDataNeedsResolver = (
 ): string => {
   const groupId = DescriptionOfWork.currentGroupId
   setDontNeedButton(groupId)
-
   if (
     (DescriptionOfWork.XaaSNoneSelected &&
 			DescriptionOfWork.currentDOWSection === 'XaaS') ||
@@ -2009,7 +2008,6 @@ const userHasActivePortfolios = (): boolean => {
 }
 
 export const AddToExistingPortfolioResolver = (current: string): string => {
-  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId
   const hasActivePortfolios: boolean = userHasActivePortfolios()
   // moving backward
   if (
@@ -2034,33 +2032,33 @@ export const AddToExistingPortfolioResolver = (current: string): string => {
 }
 
 export const GeneratedFromPackageRouteResolver = (current: string): string => {
-  const packageCount =
-		AcquisitionPackageSummary.packagesWaitingForTaskOrderCount
+  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
   const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId
   const showPackageSelection = PortfolioStore.showTOPackageSelection
+
   if (packageCount && (!acqPkgSysId || showPackageSelection)) {
     return provWorkflowRouteNames.GeneratedFromPackage
   }
-  if (
-    current !== provWorkflowRouteNames.PortfolioDetails &&
-		acqPkgSysId &&
-		!cspHasILs()
-  ) {
+
+  if (current !== provWorkflowRouteNames.PortfolioDetails && acqPkgSysId && !cspHasILs()) {
     return provWorkflowRouteNames.AddCSPAdmin
   }
 
   if (current === provWorkflowRouteNames.PortfolioDetails) {
-    if (provFromMeatball()) return provWorkflowRouteNames.AwardedTaskOrder
+    if (provFromMeatball()) return provWorkflowRouteNames.AwardedTaskOrder;
     return userHasActivePortfolios()
       ? provWorkflowRouteNames.AddToExistingPortfolio
       : provWorkflowRouteNames.AwardedTaskOrder
+  }
+
+  if (!acqPkgSysId && current === provWorkflowRouteNames.AwardedTaskOrder) {
+    return provWorkflowRouteNames.PortfolioDetails;
   }
 
   return taskOrderHasUnclass() && cspHasILs()
     ? provWorkflowRouteNames.PortfolioDetails
     : provWorkflowRouteNames.AddCSPAdmin
 }
-
 
 export const GeneratingPackageDocumentsFundingResolver = (current: string): string => {
   if (current === routeNames.MIPR){

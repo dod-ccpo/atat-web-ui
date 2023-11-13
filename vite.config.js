@@ -4,23 +4,20 @@ import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import {checker} from 'vite-plugin-checker'
 import resolve from '@rollup/plugin-node-resolve'
-import VueDevTools from 'vite-plugin-vue-devtools'
+// import VueDevTools from 'vite-plugin-vue-devtools'
 import vuetify from 'vite-plugin-vuetify'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dotenv from 'dotenv'
 dotenv.config()
 import path from 'node:path'
-
 const servicenowConfig = require('./servicenow.config')
-
 const DEFAULTS = {
-	ASSET_SIZE_LIMIT: 10000
+    ASSET_SIZE_LIMIT: 10000
 }
 const CONFIG = {
-	...DEFAULTS,
-	...servicenowConfig
+    ...DEFAULTS,
+    ...servicenowConfig
 }
-
 export default defineConfig(({command, mode}) => {
 	const env = loadEnv(mode, process.cwd(), '')
 	const BASE_API_URL = env.BASE_API_URL.endsWith('/')
@@ -51,7 +48,7 @@ export default defineConfig(({command, mode}) => {
 			extensions: ['.ts', '.vue', '.js']
 		},
 		plugins: [
-			VueDevTools({analyze: true}), 
+			// VueDevTools({analyze: true}), 
 			vue(),
 			vuetify(),
 			Components({
@@ -321,20 +318,19 @@ export default defineConfig(({command, mode}) => {
         'src/steps/10-FinancialDetails/IncrementalFunding.spec.ts',
         'src/steps/11-GeneratePackageDocuments/UploadSignedDocuments.spec.ts',
       ]
-		  },
-		// minify: 'esbuild',
-		commonjsOptions: {
-			esmExternals: false
-		},
-
-		css: {
-			extract: false,
-			preprocessorOptions: {
-				scss: {
-					additionalData: "@import 'src/sass/atat.scss';"
-				}
-			},
-		},
-		
-	}
+        },
+        // minify: 'esbuild',
+        commonjsOptions: {
+            esmExternals: false
+        },
+        css: {
+            extract: false,
+            preprocessorOptions: {
+                scss: {
+                    additionalData: "@import 'src/sass/atat.scss';"
+                }
+            },
+        },
+        
+    }
 })

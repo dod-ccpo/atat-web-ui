@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation>
+    <div>
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
@@ -259,7 +259,7 @@
         </p>
       </template>
     </ATATDialog>
-  </v-form>
+  </div>
 </template>
 
 <style>
