@@ -32,6 +32,7 @@
 
               <div v-else id="ClassificationCheckboxWrapper">
                 <ATATCheckboxGroup
+                  ref="ClassificationCheckboxesRef"  
                   id="ClassificationCheckboxes"
                   aria-describedby="ClassificationGroupLabel"
                   :value="selectedHeaderLevelSysIds"
@@ -71,6 +72,7 @@
 
               <div id="OfferingDetailsForms">
                 <RequirementsForm
+                  ref="RequirementsFormRef"
                   :instances="instancesFormData"
                   :avlInstancesLength="selectedInstancesLength"
                   :isPeriodsDataMissing="isPeriodsDataMissing"
@@ -111,9 +113,9 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ClassificationsModal from "./ClassificationsModal.vue";
 
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
-import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
+import { Checkbox, DOWClassificationInstance, SaveOnLeaveRefs } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
 
@@ -151,13 +153,14 @@ import { convertColumnReferencesToValues } from "@/api/helpers";
 
 class ServiceOfferingDetails extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public serviceOfferingName = DescriptionOfWork.currentOfferingName;

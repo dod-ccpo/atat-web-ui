@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation>
+  <v-form  lazy-validation>
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
@@ -23,6 +23,7 @@
           </p>
 
           <CommonCorAcor 
+            ref="CommonCorAcorRef"
             :isACOR="true" 
             :isWizard="true"
             :currentContactData="currentContactData"
@@ -44,7 +45,8 @@ import CommonCorAcor from "./Common.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ContactDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from "types/Global";
  
 
 @Component({
@@ -55,13 +57,15 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class CorInfo extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
+ 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private currentContactData: ContactDTO = AcquisitionPackage.initContact;

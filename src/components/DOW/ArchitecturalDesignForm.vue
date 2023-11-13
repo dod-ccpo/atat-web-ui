@@ -1,5 +1,4 @@
 <template>
-  <!-- <v-form ref="form"> -->
     <v-container class="container-max-width" fluid>
       <v-row>
         <v-col class="col-12">
@@ -16,6 +15,7 @@
 
 
             <ATATTextArea 
+              ref="StatementRef"  
               id="Statement"
               class="textarea-max-width mb-10"
               :value="_statementArchitecturalDesign"
@@ -40,6 +40,7 @@
 
             <ATATCheckboxGroup
               id="ClassificationLevelCheckboxes"
+              ref="ClassificationLevelCheckboxesRef"
               :value="_dataClassificationsImpactLevels"
               @update:value="_dataClassificationsImpactLevels = $event"
               :items="classificationCheckboxes"
@@ -68,7 +69,6 @@
         </v-col>
       </v-row>
     </v-container>
-  <!-- </v-form> -->
 </template>
 
 <script lang="ts">

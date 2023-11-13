@@ -18,7 +18,7 @@
         location="top"
         v-if="tooltipText"
       >
-        <!--TODO: validate that this still works after removal of on from activator-->
+      
         <template v-slot:activator="{ props }">
           <v-btn
             v-bind="props"
@@ -46,7 +46,7 @@
         @update:model-value="onInput"
         :placeholder="placeHolder"
         class="text-primary"
-        :rules="getRules"
+        :rules="rules"
         :rows="rows"
         :readonly="readOnly"
         :no-resize="noResize"
@@ -73,10 +73,12 @@ import {PropSync} from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
-import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
-  emits: ['input', 'blur'],
+  emits: [
+    'input',
+    'blur'
+  ],
   components: {
     ATATErrorValidation
   }
@@ -85,10 +87,7 @@ class ATATTextArea extends Vue {
   // refs
   $refs!: {
     atatTextArea: ComponentPublicInstance & {
-      messages: string[],
-      errorBucket: string[]; 
-      errorCount: number;
-      validate: () => Promise<boolean>;
+      validate: () => Promise<string[]>;
       resetValidation: ()=> void
     };
   };
@@ -131,9 +130,10 @@ class ATATTextArea extends Vue {
   }
 
   private setErrorMessage(): void {
+    this.errorMessages = [];
     this.$refs.atatTextArea.validate().then(
-      (response: unknown) => {
-        this.errorMessages = response as string[];
+      async (response: string[]) => {
+        this.errorMessages = response;
       }
     );
   }
@@ -144,18 +144,13 @@ class ATATTextArea extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.$refs.atatTextArea.validate().then(
-      async (response: SubmitEventPromise) => {
-        if (!((await response).valid as boolean)){ 
-          this.setErrorMessage() }
-      }
-    );
+    this.setErrorMessage();
   }
 
-  @Watch('rules')
-  public rulesChanged(): void {
-    this.$refs.atatTextArea.validate();
-  }
+  // @Watch('rules')
+  // public rulesChanged(): void {
+  //   this.$refs.atatTextArea?.validate();
+  // }
 
   public get getStyles(): string {
     let styles = "";

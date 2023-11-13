@@ -93,7 +93,7 @@
     color: $base;  
   }
   
-  &.error--text {
+  &.v-input--error {
     ._description {
       color: $error !important;
     }
@@ -260,10 +260,11 @@
     margin-top: 12px !important;
     padding-top: 12px !important;
   }
-  &.error--text {
+  &.v-input--error,
+  &.v-input--error:focus:hover{
     background-color: $base-lightest !important;
-    border: solid 1px $error;
-    outline: solid 1px $error;
+    border: solid 1px $error !important;
+    outline: solid 1px $error !important;
     border-radius: 4px !important;
     &:hover {
       outline: solid 1px $primary;
@@ -271,8 +272,10 @@
     &._no-description {
       padding-bottom: 12px;
     }
-    label {
-      color: $error-dark !important;
+    label,
+    ._description,
+    ._description span:not(.v-chip__content){
+      color: $error !important;
     }
   }
   .v-messages {

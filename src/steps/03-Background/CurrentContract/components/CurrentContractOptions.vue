@@ -2,6 +2,7 @@
   <ATATRadioGroup                                  
     class="max-width-500"
     id="currentContractOptions"
+    ref="currentContractOptions"
     name="currentContractOptions"
     :legend="legend"
     :card="card"

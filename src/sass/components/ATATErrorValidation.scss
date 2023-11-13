@@ -6,7 +6,7 @@
         border-color: $error !important;
         border-width: 2px;
       }
-      i, 
+      i:not(.mdi-help-circle-outline), 
       label,
       .v-text-field__suffix{
         color: $error !important;

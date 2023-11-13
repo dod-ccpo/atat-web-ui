@@ -53,6 +53,7 @@ import { MeatballMenuItem } from "types/Global";
 import { getIdText } from "@/helpers";
 
 @Component({
+  emits:["menuItemClick"],
   components: {
     ATATSVGIcon,
   }

@@ -1,6 +1,6 @@
 <template>
   <div :id="id + '_dropdown_field_control'" class="_atat-select">
-    <v-flex>
+    <div>
       <label
         v-if="label"
         :id="id + '_dropdown_field_label'"
@@ -12,13 +12,8 @@
           Optional
         </span>
       </label>
-    </v-flex>
-    <v-flex>
-
-      <!-- 
-        @update:model-value="onChange" 
-      -->
-
+    </div>
+    <div>
       <v-select
         ref="atatSelect"
         :id="id + '_dropdown'"
@@ -84,7 +79,7 @@
   
       <ATATErrorValidation :errorMessages="errorMessages"  v-if="showErrorMessages" />
 
-    </v-flex>
+    </div>
   </div>
 </template>
 
@@ -99,6 +94,10 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getIdText } from "@/helpers";
 
 @Component({
+  emits:[
+    "errorMessage",
+    "blur"
+  ],
   components: {
     ATATErrorValidation,
     ATATSVGIcon,
@@ -112,7 +111,7 @@ class ATATSelect extends Vue {
       errorCount: number;
       blur: ()=> void;
       focus: ()=> void;
-      validate: () => boolean;
+      validate: () => Promise<string[]>;
     };
   }; 
 
@@ -190,11 +189,11 @@ class ATATSelect extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.addRequiredRule();
-    if(!this.$refs.atatSelect.validate()){
-      this.setErrorMessage();
-      this.$emit('errorMessage', this.errorMessages);
-    }
+    // this.addRequiredRule();
+    // if(!this.$refs.atatSelect.validate()){
+    //   this.setErrorMessage();
+    //   this.$emit('errorMessage', this.errorMessages);
+    // }
   }
 
   public addRequiredRule(): void {
@@ -210,12 +209,14 @@ class ATATSelect extends Vue {
   }
 
   private setErrorMessage(): void {
-    setTimeout(() => {
-      this.errorMessages = this.$refs.atatSelect && Object.prototype.hasOwnProperty.call(
-        this.$refs.atatSelect, "errorBucket"
-      ) ? this.$refs.atatSelect.errorBucket : [];
-      this.$emit('errorMessage', this.errorMessages);
-    }, 0);
+    this.$refs.atatSelect.validate().then(
+      async (response: string[]) => {
+        if (response.length>0){
+          this.errorMessages = response;
+          this.$emit('errorMessage', this.errorMessages);
+        }
+      }
+    );
   }
 
   //@Events

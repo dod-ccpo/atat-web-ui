@@ -68,7 +68,7 @@
             </span>
             <div class="d-flex mt-4">
               <ATATDatePicker 
-                ref="startDatePicker"
+                
                 id="Start" 
                 :value="currentContract.contract_order_start_date" 
                 @update:value="currentContract.contract_order_start_date = $event"
@@ -104,7 +104,6 @@
                 :max = "expMaxDate"
                 placeHolder="MM/DD/YYYY"
                 :class="{'error--text':expirationDPSharedErrorMessages.length>0}"
-                ref="expirationDatePicker"
                 :showErrors="false"
                 @hasErrorMessages="setExpirationDateErrorMessages"
                 :rules="[
@@ -222,8 +221,6 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
-import { ComponentPublicInstance } from 'vue';
-
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -232,11 +229,12 @@ import IncumbentContractorName from "@/steps/03-Background/components/IncumbentC
 import LevelOfCompetition from "@/steps/03-Background/components/LevelOfCompetition.vue";
 import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 import AcquisitionPackage, {initialCurrentContract, } from "@/store/acquisitionPackage";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import { add, compareAsc, format, formatISO, subDays } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
+import { SaveOnLeaveRefs } from "types/Global";
 
 @Component({
   components: {
@@ -253,20 +251,14 @@ import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vu
 
 class CurrentContract extends Vue {
 
-  $refs!: SaveOnLeaveRefs & {
-    startDatePicker: ComponentPublicInstance & { 
-      validate: () => boolean;
-    };
-    expirationDatePicker: ComponentPublicInstance & { 
-      validate: () => boolean;
-    };
-  }
-  
+ 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as unknown as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private currentContracts:CurrentContractDTO[] = [];
@@ -434,7 +426,8 @@ class CurrentContract extends Vue {
     try {
       if (this.hasChanged()) {
         this.currentData.acquisition_package = AcquisitionPackage.packageId;
-        this.currentData.is_valid = await this.$refs.form.validate();
+        this.currentData.is_valid = 
+          (await(await this.$refs.form as SaveOnLeaveRefs["form"]).validate()).valid
         if (this.currentData.contract_order_expiration_date !== ""){
           this.currentData.is_current = compareAsc(
             new Date(),

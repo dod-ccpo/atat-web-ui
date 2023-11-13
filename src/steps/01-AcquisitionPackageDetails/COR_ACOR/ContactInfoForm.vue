@@ -18,6 +18,7 @@
       <ATATRadioGroup
         v-show="isWizard"
         id="ContactAffiliation"
+        ref="ContactAffiliationRef"
         :legend="
           'What role best describes your ' +
           corOrAcor +
@@ -33,9 +34,10 @@
         @radioButtonSelected="contactTypeChange"
       />
 
-      <v-form ref="CORACORContactForm">
+      <div>
         <ATATSelect
           :id="corOrAcor + '_Branch'"
+          :ref="corOrAcor + '_BranchRef'"
           v-show="_selectedRole === 'MILITARY'"
           v-model="_selectedBranch"
           class="_input-max-width mb-10"
@@ -52,10 +54,11 @@
           ]"
         />
 
-        <div v-show="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
-          <ATATAutoComplete
+        <div v-if="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
+          <!-- <ATATAutoComplete
             :id="corOrAcor + '_Rank'"
-            v-show="_selectedRole === 'MILITARY'"
+            :ref="corOrAcor + '_RankRef'"
+            v-if="_selectedRole === 'MILITARY'"
             label="Rank"
             titleKey="name"
             valueKey="sysId"
@@ -70,10 +73,11 @@
             ]"
             class="_input-max-width mb-7"
             icon="arrow_drop_down"
-          />
+          /> -->
 
           <ATATSelect
             :id="corOrAcor + '_Salutation'"
+            :ref="corOrAcor + '_SalutationRef'"
             v-show="_selectedRole === 'CIVILIAN'"
             class="_input-max-width mb-7"
             label="Salutation"
@@ -89,6 +93,7 @@
               <ATATTextField
                 label="First name"
                 :id="corOrAcor + '_FirstName'"
+                :ref="corOrAcor + '_FirstNameRef'"
                 class="_input-max-width"
                 :value="_firstName"
                 @update:value="_firstName = $event"
@@ -103,6 +108,7 @@
               <ATATTextField
                 label="Middle name"
                 :id="corOrAcor + '_MiddleName'"
+                :ref="corOrAcor + '_MiddleNameRef'"
                 :optional="true"
                 class="_input-max-width"
                 :value="_middleName"
@@ -113,6 +119,7 @@
               <ATATTextField
                 label="Last name"
                 :id="corOrAcor + '_LastName'"
+                :ref="corOrAcor + '_LastNameRef'"
                 class="_input-max-width"
                 :value="_lastName"
                 @update:value="_lastName = $event"
@@ -127,6 +134,7 @@
               <ATATTextField
                 label="Suffix"
                 :id="corOrAcor + '_Suffix'"
+                :ref="corOrAcor + '_SuffixRef'"
                 :optional="true"
                 width="80"
                 :value="_suffix"
@@ -137,6 +145,7 @@
 
           <ATATPhoneInput
             :id="corOrAcor + '_PhoneNumber'"
+            :ref="corOrAcor + '_PhoneNumberRef'"
             label="Phone number"
             class="width-100 mb-10"
             :value="_phone"
@@ -155,6 +164,7 @@
 
           <ATATTextField
             :id="corOrAcor + '_EmailAddress'"
+            :ref="corOrAcor + '_EmailAddressRef'"
             label="Email address"
             class="_input-max-width"
             :class="{ 'mb-10': isWizard }"
@@ -171,6 +181,7 @@
 
           <DoDAAC 
             v-if="isWizard"
+            ref="DoDAACref"
             :isForm="true"
             :isWizard="isWizard"
             :dodaac="_dodaac"
@@ -181,7 +192,7 @@
             ]"
           />
         </div>
-      </v-form>
+      </div>
     </section>
     
     <div v-else>
@@ -230,15 +241,8 @@ import { RadioButton, SelectData, RankData, CountryObj } from "../../../../types
   },
 })
 class CorAcorContactInfoForm extends Vue {
-  $refs!: {
-    CORACORContactForm: ComponentPublicInstance & {
-      resetValidation: () => void;
-      reset: () => void;
-    };
-  };
 
   //props
-
   @Prop() private corOrAcor!: string;
   @Prop() private branchData!: SelectData[];
   @Prop() private selectedBranchRanksData!: SelectData[];
@@ -275,27 +279,9 @@ class CorAcorContactInfoForm extends Vue {
 
   private loaded = false;
   private contactTypeChange(): void {
-    if (this.loaded) {
-      this.resetData();
-    }
     this.loaded = true;
   }
 
-  public resetData(): void {
-    //TODO: children no longer exists on children.. This
-  //   this.$nextTick(() => {
-  //     //iterate over the forms children ref manually set their 'errorMessages' array to empty
-  //     const formChildren = this.$refs.CORACORContactForm.$children;
-
-  //     formChildren.forEach((ref)=> {
-  //       ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-  //     });
-  //     this.$nextTick(() => {
-  //       this.$refs.CORACORContactForm.reset();
-  //       this.$refs.CORACORContactForm.resetValidation();
-  //     });
-  //   });
-  }
 }
 export default toNative(CorAcorContactInfoForm)
 </script>
