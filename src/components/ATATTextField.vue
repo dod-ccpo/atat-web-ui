@@ -55,7 +55,7 @@
             :color="getIconColor"
             :width="9"
             :height="16"
-            class="pt-1 mr-1"
+            class="mr-1"
           />
         </template>
         <template v-slot:append-inner v-if="appendText">

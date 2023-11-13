@@ -69,6 +69,10 @@
     &.v-btn--disabled {
       border-color: $disabled !important;
       background-color: $white !important;
+      .v-btn__content {
+        color: $disabled;
+        opacity: 1 !important;
+      }
     }
   }
 
@@ -83,6 +87,7 @@
   &.link-button, 
   &.tertirary.v-theme--light  {
     padding: 6px 12px !important;
+    opacity: 1;
   
     &.v-btn--disabled {
       background-color: transparent !important;
