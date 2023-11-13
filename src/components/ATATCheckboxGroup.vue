@@ -470,9 +470,19 @@ class ATATCheckboxGroup extends Vue {
         this.setErrorMessage();
       }, 0)
     }
-    setTimeout(()=>{
-      this._selected = this.value;
-    }, 0)
+    // if the parent is still empty, try to load again on next render
+    if (this.value.length === 0) {
+      setTimeout(()=>{
+        this._selected = this.value
+      }, 0)
+    // if the parent has the value set, then try setting it now
+    } else {
+      this._selected = this.value
+    }
+    // if this checkbox group still refuses to update with the latest
+    // value given by the parent, you can set this element's :key
+    // to change when the parent's value changes, doing so forces
+    // this element to rerender.
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {
