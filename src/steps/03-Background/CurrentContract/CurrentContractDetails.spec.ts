@@ -398,7 +398,8 @@ describe("Testing CurrentContractDetails Component", () => {
         expect(vm.$data.isCurrent).toBe(false);
       })
 
-      // it("if current and saved data has changed and NO exception to fair opportunity", async () => {
+      // it("if current and saved data has changed and NO exception to fair opportunity", 
+      // async () => {
       //   await AcquisitionPackage.doSetFairOpportunity(
       //     { exception_to_fair_opportunity: "NO_NONE" }
       //   )
