@@ -78,6 +78,7 @@
           <ATATRadioGroup
             v-if="!isPortabilityPlan"
             id="ClassificationLevel"
+            ref="ClassificationLevelRef"
             legend="What classification level is this instance deployed in?"
             :value="_serviceOfferingData.classificationLevel"
             @update:value="_serviceOfferingData.classificationLevel = $event"
@@ -102,6 +103,7 @@
           <ATATCheckboxGroup
             v-if="isPortabilityPlan"
             id="ClassificationLevel"
+            ref="ClassificationLevelRef"
             groupLabel="What classification level(s) do you need a Portability Plan for?"
             :value="_portabilityClassificationLevels"
             @update:value="_portabilityClassificationLevels = $event"
@@ -116,12 +118,14 @@
       </div>
 
       <ComputeFormElements
+        ref="ComputeFormElementsRef"
         v-if="isCompute"
         :data="_serviceOfferingData"
         @update:data="_serviceOfferingData = $event"
       />
 
       <DatabaseFormElements
+        ref="DatabaseFormElementsRef"
         v-if="isDatabase"
         :data="_serviceOfferingData"
         @update:data="_serviceOfferingData = $event"
@@ -129,6 +133,7 @@
 
       <StorageFormElements
         v-if="isStorage"
+        ref="StorageFormElementsRef"
         :data="_serviceOfferingData"
         @update:data="_serviceOfferingData = $event"
         :storageUnits="storageUnits"
@@ -136,6 +141,7 @@
 
       <TrainingFormElements
         v-if="isTraining"
+        ref="TrainingFormElementsRef"
         :data="_serviceOfferingData"
         @update:data="_serviceOfferingData = $event"
 
@@ -148,6 +154,7 @@
         </h2>
 
         <InstanceConfig
+          ref="InstanceConfigRef"
           :data="_serviceOfferingData"
           @update:data="_serviceOfferingData = $event"
           :storageUnits="storageUnits"
@@ -155,6 +162,7 @@
         />
 
         <PerformanceTier 
+          ref="PerformanceTierRef"
           :isCompute="isCompute"
           :isDatabase="isDatabase"
           :isDOW="true"
@@ -174,6 +182,7 @@
       
       <div v-if="!isPortabilityPlan">
         <AnticipatedDurationandUsage
+          ref="AnticipatedDurationAndUsageRef"
           :typeForUsage="serviceGroupVerbiageInfo.typeForUsage"
           :typeForDuration="serviceGroupVerbiageInfo.typeForText"
           :index="_serviceOfferingData.instanceNumber"
@@ -192,6 +201,7 @@
 
       <div v-if="isSupport" class="mt-10">
         <ATATRadioGroup
+          ref="SupportRadioGroupRef"
           class="copy-max-width mb-10 mt-0"
           legend="Will this service require CSP personnel to access on-site locations?"
           :items="onsiteAccessOptions"
@@ -267,6 +277,7 @@ import {
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
   components: {
@@ -290,10 +301,7 @@ class OtherOfferings extends Vue
   $refs!: {
     form: ComponentPublicInstance & {
       resetValidation: () => void;
-      errorBucket: string[];
-      reset: () => void;
-      validate: () => boolean;
-      errorBag: Record<number, boolean>;
+      validate: () => Promise<SubmitEventPromise>;
     },
   };
 
@@ -519,15 +527,11 @@ class OtherOfferings extends Vue
       this.formHasBeenTouched 
         = await DescriptionOfWork.hasInstanceBeenTouched(this._serviceOfferingData.instanceNumber);
     }
-    if (this.formHasBeenTouched) {
-      // user is editing an existing instance, validate on load
-      await this.validate();
-      this.$nextTick(async () => {
-        this.setErrorMessages();
-      });
-    } else {
-      this.validateOtherTierOnBlur = true;
-    }
+    
+    this.formHasBeenTouched 
+      ? await this.setErrorMessages()
+      : this.validateOtherTierOnBlur = true;
+
     return;
   }
 
@@ -536,112 +540,20 @@ class OtherOfferings extends Vue
     await this.setComponentSpecificData();
   }
 
-  public formComponentUpdate(): void {
-    const eb = this.$refs.form.errorBag;
-    this.errorBagValues = Object.values(eb);
-  }
-
   @Watch("errorBagValues")
   public errorBagChange(): void {
-    this.$nextTick(() => {
-      const errorBag = Object.values(this.$refs.form.errorBag);
-      this.formHasErrors = errorBag.includes(true);
-    });
-  }
-  
-  get Form(): ComponentPublicInstance & { validate: () => boolean } {
-    return this.$refs.form as ComponentPublicInstance & { validate: () => boolean };
+    this.setErrorMessages();
   }
 
-  public async validate(): Promise<void> {
-    this.$nextTick(() => {
-      this.Form.validate();
-    });
-  }
-    
   private setErrorMessages(): void {
-    if (!this.$refs.form) {
-      return;
-    }
-    this.errorBagValues = Object.values(this.$refs.form.errorBag);
-    //TODO: REFACTOR AFTER VUE 3 UPGRADE
-    // let formChildren = this.$refs.form.$children;
-    // this.$refs.form.$children.forEach((children: HTMLFormElement) => {
-    //   formChildren = formChildren.concat(children.$children as HTMLElement);
-    // });
-    // const inputRefs = [
-    //   "radioButtonGroup", "atatTextField", "atatTextArea", "atatSelect", "checkboxGroup",
-    // ];
-    // const customComponentRefs = ["NeededForEntireDuration", "DescriptionOfNeed"];
-    // formChildren.forEach((child: any) => {
-    //   const refs = child.$refs;
-    //   const keys = Object.keys(refs);
-    //   keys.forEach((key: string) => {
-    //     if (inputRefs.indexOf(key) > -1 || customComponentRefs.indexOf(key) > -1) {
-    //       const childRef: any = child.$refs[key];
-    //       if (childRef[0]) {
-    //         if (this.isCompute && childRef[0].attrs$["data-group-id"] === "Regions_Group"
-    //         && this._serviceOfferingData.deployedRegions
-    //           && this._serviceOfferingData.deployedRegions.indexOf(this.otherRegionValue) > -1
-    //           && this._serviceOfferingData.deployedRegionsOther === ""
-    //         ) {
-    //           const otherIndex = child.$children.length - 2;
-    //           const eb = child.$children[otherIndex].$children[1].$children[0].errorBucket;
-    //           if (eb.length) {
-    //             this.hasErrorsOnLoad = true;
-    //             child.$refs["atatTextInput"][0].errorMessages.push(eb[0]);
-    //           }
-    //         }
-    //       }
-    //       if (!this.isPortabilityPlan) {
-    //         if (this.isCompute && key === "radioButtonGroup"
-    //           && child.$el.attributes.id.value.indexOf("PerformanceTier")
-    //           && this._serviceOfferingData.performanceTier === this.otherPerformanceTierValue
-    //         ) {
-    //           if (this._serviceOfferingData.performanceTierOther === "") {
-    //             this.validateOtherTierOnBlur = true;
-    //             this.validateOtherTierNow = true;
-    //           } else {
-    //             this.validateOtherTierOnBlur = false;
-    //             this.clearOtherTierValidation = true;
-    //           }
-    //         }
-    //         if (key === "NeededForEntireDuration" || key === "DescriptionOfNeed") {
-    //           const errors: string[] = child.$children[0].$children[0].errorBucket;
-    //           if (errors.length) {
-    //             this.hasErrorsOnLoad = true;
-    //             errors.forEach((error) => {
-    //               child.$children[0].errorMessages.push(error);
-    //             })
-    //           }
-
-    //           if (key === "NeededForEntireDuration") {
-    //             child.$children.forEach((childChild: any, i: number) => {
-    //               if (child.$children[i].$el.id.indexOf("PeriodsCheckboxes") > -1
-    //                 && this._serviceOfferingData.entireDuration.toLowerCase() === "no"
-    //                 && this._serviceOfferingData.periodsNeeded.length === 0
-    //               ) {
-    //                 child.$children[i].errorMessages.push(
-    //                   `Please select at least one base or option period.`
-    //                 );
-    //               }                
-    //             })
-    //           }
-    //         }
-    //       }
-          
-    //       if (childRef && Object.prototype.hasOwnProperty.call(childRef, "errorBucket")) {
-    //         const errorBucket: string[] = childRef.errorBucket;
-    //         if (errorBucket.length) {
-    //           this.hasErrorsOnLoad = true;
-    //           errorBucket.forEach((error) => {
-    //             child.errorMessages.push(error);
-    //           });
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
+    this.$nextTick(() => {
+      this.$refs.form.validate().then(
+        async (response:SubmitEventPromise)=>{
+          this.errorBagValues = [(await (response)).valid]; 
+          this.formHasErrors = this.errorBagValues.includes(true);
+        }
+      );
+    });
   }
 
   public classificationTooltipText = `The levels listed below are based on the overall 

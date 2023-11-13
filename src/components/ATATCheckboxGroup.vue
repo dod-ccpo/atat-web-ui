@@ -1,7 +1,7 @@
 f<template>
   <div :id="id">
     <v-form :id="id" 
-      ref="checkBoxGroup"
+      ref="atatCheckBoxGroupRef"
       :lazy-validation="true"
       @blur="setErrorMessage">
     <p
@@ -181,7 +181,7 @@ import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
-    checkBoxGroup: (ComponentPublicInstance)& {
+    atatCheckBoxGroupRef: (ComponentPublicInstance)& {
       validate: () => Promise<SubmitEventPromise>
     }
   };
@@ -369,12 +369,11 @@ class ATATCheckboxGroup extends Vue {
   }
 
   private async setErrorMessage(): Promise<void> {
-    debugger;
     if (this._selected.length) {
       this.clearErrorMessage();
     } else {
       AcquisitionPackage.setValidateNow(true);
-      this.$refs.checkBoxGroup.validate().then(
+      this.$refs.atatCheckBoxGroupRef.validate().then(
         async (response:SubmitEventPromise)=>{
           this.errorMessages = (await (response)).errors[0]?.errorMessages;
         }

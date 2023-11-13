@@ -26,7 +26,7 @@
             </p>
           </div>
          <SecurityRequirementsForm
-           ref="SecurityRequirementsCheckboxes"
+           ref="SecurityRequirementsFormRef"
            :hasSecret="hasSecret"
            :hasTopSecret="hasTopSecret"
            :isDOW="false"
@@ -114,7 +114,6 @@ class SecurityRequirements extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
         await classificationRequirements.setSecurityRequirements(this.currentData);

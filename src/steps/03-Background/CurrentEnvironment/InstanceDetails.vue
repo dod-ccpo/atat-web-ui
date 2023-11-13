@@ -35,6 +35,7 @@
       <ATATRadioGroup 
         v-if="envLocation === 'HYBRID' || !envLocation"
         id="EnvironmentLocation"
+        ref ="EnvironmentLocationRef"
         class="mb-8"
         :items="envLocationOptions"
         tooltipText="<strong>On-premise environments</strong> are deployed in-house 
@@ -50,6 +51,7 @@
         <RegionsDeployedAndUserCount 
           v-if="instanceData.instance_location === 'CLOUD'"
           id="RegionsDeployed"
+          ref="RegionsDeployedRef"
           class="mb-8"
           :hasTextFields="false"
           groupLabelId="RegionsDeployedLabel"
@@ -63,6 +65,7 @@
 
         <ATATRadioGroup 
           id="ClassificationLevelOptions"
+          ref="ClassificationLevelOptionsRef"
           v-if="classificationRadioOptions.length > 1"
           class="mb-8"
           :items="classificationRadioOptions"
@@ -83,6 +86,7 @@
 
         <CurrentUsage 
           class="mb-10"
+          ref="CurrentUsageRef"
           :usageTrafficSpikeCauses="usageTrafficSpikeCauses"
           @update:usageTrafficSpikeCauses="usageTrafficSpikeCauses = $event"
           :currentUsageDescription="instanceData.current_usage_description"
@@ -96,6 +100,7 @@
         <RegionsDeployedAndUserCount 
           :hasTextFields="true"
           id="RegionsUsers"
+          ref="RegionsUsersRef"
           :optional="true"
           groupLabelId="RegionUsersLabel"
           groupLabel="Where are your users located?"
@@ -115,12 +120,14 @@
         </h2>
 
         <InstanceConfig
+          ref="InstanceConfigRef"
           :data="instanceConfig"
           @update:data="instanceConfigChange = $event"
           :storageUnits="storageUnits"
         />
 
         <PerformanceTier 
+          ref="PerformanceTierRef"
           :data="performanceTier"
           @update:data="performanceTierChange = $event"
           :storageUnits="storageUnits"
@@ -135,6 +142,7 @@
           </h2>
 
           <PricingDetails 
+            ref="PricingDetailsRef"
             :pricingDetails="pricingDetails" 
             @update:pricingDetails="pricingDetailsChange = $event"
           />
@@ -149,6 +157,7 @@
         </h2>
 
         <AdditionalInfo 
+          ref="AdditionalInfoRef"
           :additionalInfo="instanceData.additional_information" 
           @update:additionalInfo="instanceData.additional_information = $event"
         />
@@ -187,7 +196,6 @@ import {
   ClassificationLevelDTO, 
   CurrentEnvironmentInstanceDTO 
 } from "@/api/models";
-
 
 import CurrentEnvironment, 
 { 

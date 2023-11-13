@@ -656,7 +656,6 @@ class PortfolioDrawer extends Vue {
   }
 
   public async transferOwner(): Promise<void> {
-    debugger;
     // this.modalOKDisabled = true;
     // this.showOKSpinner = true;
     // /* eslint-disable camelcase */
@@ -706,7 +705,6 @@ class PortfolioDrawer extends Vue {
   }
 
   public async closeTransferOwnerModal(): Promise<void> {
-    debugger;
     this.showTransferOwnerDialog = false;
     this.transferOwnershipIndex = -1;
   }

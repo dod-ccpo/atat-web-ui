@@ -73,9 +73,8 @@
 import { ComponentPublicInstance } from "vue";
 import { AutoCompleteItem, ValidationRule } from "types/Global";
 
-import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import { PropSync } from "@/decorators/custom";
 
 @Component({
@@ -89,11 +88,9 @@ class ATATAutoComplete extends Vue {
   $refs!: {
     atatAutoComplete: ComponentPublicInstance &
     {
-      errorBucket: string[];
-      errorCount: number;
       blur: ()=> void;
       focus: ()=> void;
-      validate: () => boolean;
+      validate: () => Promise<string[]>;
     };
   };
   // data
@@ -132,25 +129,6 @@ class ATATAutoComplete extends Vue {
 
   // methods
 
-  public get validateFormNow(): boolean {
-    return AcquisitionPackage.getValidateNow;
-  }
-
-  @Watch('validateFormNow')
-  public validateNowChange(): void {
-    if(!this.$refs.atatAutoComplete.validate())
-      this.setErrorMessage();
-  }
-
-  // private customFilter(itemTitle: string, queryText: string, item: any) {
-  //   let text = "";
-  //   this.searchFields.forEach((key) => {
-  //     text += item[key] + " ";
-  //   });
-  //   const searchText = queryText.toLowerCase();
-  //   return text.toLowerCase().indexOf(searchText) > -1;
-  // }
-
   private noResultsAction() {
     this._selectedItem.text = "";
     this._selectedItem.value = "";
@@ -159,36 +137,22 @@ class ATATAutoComplete extends Vue {
   }
 
   private setErrorMessage(): void {
-    setTimeout(()=>{
-      this.errorMessages = this.$refs.atatAutoComplete?.errorBucket;
-    })
+    this.$refs.atatAutoComplete.validate().then(
+      async (response: string[]) => {
+        this.errorMessages = response;
+      }
+    );
   }
   //@Events
   private onBlur() : void{
     this.setErrorMessage();
   }
 
-  // private updateSearchInput(): void {
-  //   if (this.isReset) {
-  //     this._selectedItem = {};
-  //     this.searchText = "";
-  //     this.$emit("autocompleteInputUpdate", this.isReset);
-  //   }
-  //   this.setErrorMessage();
-  //   this.isReset = false;
-  // }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private valueUpdate(val: any): void {
     this._selectedItem[this.titleKey] = val ? val[this.titleKey] : "";
     this._selectedItem[this.valueKey] = val ? val[this.valueKey] : "";
   }
-
-  // private valueCleared(): void {
-  //   this._selectedItem[this.titleKey] = "";
-  //   this._selectedItem[this.valueKey] = "";
-
-  // }
 
 }
 export default toNative(ATATAutoComplete)

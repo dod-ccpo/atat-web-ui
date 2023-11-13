@@ -1,6 +1,6 @@
 <template>
   <div :id="id + '_dropdown_field_control'" class="_atat-select">
-    <v-flex>
+    <div>
       <label
         v-if="label"
         :id="id + '_dropdown_field_label'"
@@ -12,13 +12,8 @@
           Optional
         </span>
       </label>
-    </v-flex>
-    <v-flex>
-
-      <!-- 
-        @update:model-value="onChange" 
-      -->
-
+    </div>
+    <div>
       <v-select
         ref="atatSelect"
         :id="id + '_dropdown'"
@@ -84,7 +79,7 @@
   
       <ATATErrorValidation :errorMessages="errorMessages"  v-if="showErrorMessages" />
 
-    </v-flex>
+    </div>
   </div>
 </template>
 
@@ -194,11 +189,11 @@ class ATATSelect extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    this.addRequiredRule();
-    if(!this.$refs.atatSelect.validate()){
-      this.setErrorMessage();
-      this.$emit('errorMessage', this.errorMessages);
-    }
+    // this.addRequiredRule();
+    // if(!this.$refs.atatSelect.validate()){
+    //   this.setErrorMessage();
+    //   this.$emit('errorMessage', this.errorMessages);
+    // }
   }
 
   public addRequiredRule(): void {

@@ -54,11 +54,11 @@
                   >Architectural Design Solution</router-link>
 
                   to define performance requirements for your Description of Work.
-                </p>
+              </p>
               </template>
             </ATATAlert>
           </div>
-          <v-form ref="form" class="copy-max-width">
+          <v-form ref="form" class="copy-max-width lazy-validation">
             <ATATCheckboxGroup
               v-if="currentDOWSection === 'XaaS'"
               ref="XaaSCheckboxesRef"

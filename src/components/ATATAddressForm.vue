@@ -3,6 +3,7 @@
 
     <ATATRadioGroup
       id="AddressType"
+      ref="AddressTypeRef"
       legend="Type of mailing address"
       :value="_selectedAddressType"
       @update:value="_selectedAddressType = $event"
@@ -13,11 +14,15 @@
       :rules="[$validators.required('Please select your Organization\'s address type.')]"
     />
 
-    <div v-if="_selectedAddressType !== ''">
+    <v-form
+      ref="AddressFormRef"
+      lazy-validation
+      v-if="_selectedAddressType !== ''">
       <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
           id="StreetAddress"
+          ref="StreetAddressRef"
           label="Street address"
           :class="inputClass"
           :value="_streetAddress1"
@@ -49,6 +54,7 @@
         <ATATTextField
           v-if="_selectedAddressType !== addressTypes?.MIL ?? ''"
           id="City"
+          ref="CityRef"
           label="City"
           :class="inputClass"
           :value="_city"
@@ -58,6 +64,7 @@
         <ATATSelect
           v-if="_selectedAddressType === addressTypes?.MIL ?? ''"
           id="APO_FPO_DPO"
+          ref="APO_FPO_DPORef"
           label="APO/FPO/DPO"
           :class="inputClass"
           :items="militaryPostOfficeOptions"
@@ -76,9 +83,9 @@
             : 'col-lg-4',
         ]"
       >
-      <!-- titleKey="text"       -->
         <ATATAutoComplete
           id="State"
+          ref="StateRef"
           label="State"
           v-if="_selectedAddressType === addressTypes?.USA ?? ''"
           :class="inputClass"
@@ -94,6 +101,7 @@
         <ATATSelect
           v-if="_selectedAddressType === addressTypes?.MIL ?? ''"
           id="StateCode"
+          ref="StateCodeRef"
           label="AA/AE/AP"
           :class="inputClass"
           :items="stateCodeListData"
@@ -107,6 +115,7 @@
         <ATATTextField
           v-if="_selectedAddressType === addressTypes?.FOR ?? ''"
           id="StateProvince"
+          ref="StateProvinceRef"
           label="State or Province"
           :value="_stateOrProvince"
           @update:value="_stateOrProvince = $event"
@@ -118,6 +127,7 @@
       <v-col class="col-12 col-lg-3">
         <ATATTextField
           :id="IDLabel"
+          ref="ZipCodeRef"
           :label="zipLabel"
           :class="inputClass"
           :value="_zipCode"
@@ -131,7 +141,7 @@
     <v-row v-if="_selectedAddressType === addressTypes?.FOR ?? ''">
       <v-col class="col-12 col-lg-4">
         <ATATAutoComplete
-          ref="Country"
+          ref="CountryRef"
           id="Country"
           label="Country"
           :class="inputClass"
@@ -147,7 +157,7 @@
         />
       </v-col>
     </v-row> 
-    </div>
+    </v-form>
   </div>
 </template>
 
@@ -174,6 +184,7 @@ import {
   stringObj,  
   ValidationRule
 } from "types/Global";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
   components: {
@@ -186,12 +197,14 @@ import {
 })
 
 class ATATAddressForm extends Vue {
+
   $refs!: {
-    atatAddressForm: ComponentPublicInstance & {
-      resetValidation: () => void;
-      reset: () => void;
-      $refs:["Country"]
-    };
+    [key: string]:ComponentPublicInstance & {
+      setErrorMessage: ()=> void,
+      validate: () => Promise<SubmitEventPromise>,
+      resetValidation: ()=> void,
+      reset: ()=> void
+    }
   };
 
   @PropSync("selectedAddressType") public _selectedAddressType?: string;
@@ -229,14 +242,12 @@ class ATATAddressForm extends Vue {
   }
 
   private getRules(inputID: string): ValidationRule[] {
-    const rulesArr: ValidationRule[]  = [];
     if (this.requiredFields) {
-
       const result = this.requiredFields.filter(obj => {
         return obj.field === inputID
       })
       if(result.length) {
-        rulesArr.push(this.$validators.required(result[0].message))
+        return [this.$validators.required(result[0].message)]
       }
     }
 
@@ -247,13 +258,12 @@ class ATATAddressForm extends Vue {
       if(isValidResult.length) {
         const rule = isValidResult[0];
         this.setMask(inputID, rule);
-        rulesArr.push(this.$validators.isMaskValid(
+        return[this.$validators.isMaskValid(
           rule.mask,rule.message,rule.isMaskRegex
-        ))
+        )]
       }
     }
-
-    return rulesArr
+    return [];
   }
   private setMask(inputID:string, rule: isValidObj): void {
     this.$nextTick(()=>{
@@ -276,21 +286,20 @@ class ATATAddressForm extends Vue {
   }
 
   public resetData(): void {
-    this.$nextTick(() => {
-
-      // TODO: REFACTOR AFTER VUE3 UPGRADE
-      // //iterate over the forms children ref manually set their 'errorMessages' array to empty
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // const formChildren = this.$refs.atatAddressForm;
-      // console.log(formChildren)
-      // formChildren.forEach((ref: {errorMessages:[]}) => ref.errorMessages = []);
-
-      this.$refs.atatAddressForm.reset();
-      this.$nextTick(() => {
-        this.$refs.atatAddressForm.resetValidation();
-      });
-    });
+    
+    for (const ref in this.$refs){
+      if (ref === "AddressFormRef"){
+        this.$refs.AddressFormRef?.resetValidation();
+        this.$refs.AddressFormRef?.reset();
+      }
+      if (this.$refs[ref]){
+        if (Object.hasOwnProperty.call(this.$refs[ref], "resetValidation")){
+          this.$refs[ref].resetValidation();
+        }
+      } 
+    }
   }
+
   // computed
 
   get inputClass(): string {

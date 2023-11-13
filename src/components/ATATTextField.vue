@@ -196,7 +196,6 @@ class ATATTextField extends Vue  {
 
   //@Events
   public addDropDownErrorMessage(errorMsgs: string[]): void{
-    debugger;
     this.errorMessages = [...errorMsgs]
   }
 

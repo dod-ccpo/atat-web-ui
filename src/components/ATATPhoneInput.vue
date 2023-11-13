@@ -461,7 +461,6 @@ class ATATPhoneInput extends Vue {
     this.errorMessages = [];
     this.$refs.atatPhoneTextField.validate().then(
       async (response: string[]) => {
-        debugger;
         if (response.length>0){
           this.errorMessages = response;
         }
@@ -580,7 +579,6 @@ class ATATPhoneInput extends Vue {
   //  * updated method sets default value
   // */
   // private updated(): void{
-  //   debugger;
   //   if (this._selectedCountry === null){
   //     this._selectedCountry = this.countries[0];
   //   }

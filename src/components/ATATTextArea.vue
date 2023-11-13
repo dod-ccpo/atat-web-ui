@@ -124,7 +124,6 @@ class ATATTextArea extends Vue {
   }
 
   public get getRules(): ValidationRule[] {
-    debugger;
     return this._turnRulesOff ? [] : this.rules;
   }
 

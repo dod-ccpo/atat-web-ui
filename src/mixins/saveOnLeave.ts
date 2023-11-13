@@ -14,17 +14,16 @@ export type From = RouteLocationNormalized
 export let isFormsValid:boolean[] = []
  
 export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> => {
-  debugger;
   isFormsValid = [];
   for (const f in forms){
     const form = (forms as unknown as FormRef)[f];
     if (form){
       console.log('22: => ' + f)
-      if (Object.prototype.hasOwnProperty.call(form, "setErrorMessage")){
+      if (Object.prototype?.hasOwnProperty?.call(form, "setErrorMessage")){
         form.setErrorMessage();
       } 
-      if (Object.prototype.hasOwnProperty.call(form, "validate")){
-        const isFormValid = (await form.validate()).valid;
+      if (Object.prototype?.hasOwnProperty?.call(form, "validate")){
+        const isFormValid = (await form.validate())?.valid;
         isFormsValid.push(isFormValid);
       } else {
         await(getRef(form))
@@ -36,16 +35,18 @@ export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> 
 }
 
 async function getRef(form:ComponentPublicInstance):Promise<void>{
-  const refs = form.$refs || form;
+  const refs = form?.$refs || form;
   if (refs){
     for (const ref in refs){
       console.log('42: => ' + ref)
       const _formRef = (refs as unknown as FormRef)[ref];
-      if (Object.prototype.hasOwnProperty.call(_formRef, "validate")){
-        isFormsValid.push((await(_formRef.validate())).valid);
-      }
-      if (Object.prototype.hasOwnProperty.call(_formRef, "setErrorMessage")){
-        (_formRef).setErrorMessage()
+      if (_formRef){
+        if (Object.prototype?.hasOwnProperty?.call(_formRef, "validate")){
+          isFormsValid.push((await(_formRef.validate())).valid);
+        }
+        if (Object.prototype?.hasOwnProperty?.call(_formRef, "setErrorMessage")){
+          (_formRef).setErrorMessage()
+        }
       }
 
       await getRef(_formRef);

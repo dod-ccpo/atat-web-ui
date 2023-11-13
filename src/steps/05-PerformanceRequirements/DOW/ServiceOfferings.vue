@@ -1,8 +1,8 @@
 <template>
   <div class="mb-7">
-    <v-form ref="form" lazy-validation>
     <v-container fluid class="container-max-width">
       <v-row>
+        <v-form ref="form" lazy-validation>
         <v-col
           v-if="isServiceOfferingList"
           class="col-12"
@@ -59,7 +59,7 @@
             @update:portabilityClassificationLevels="portabilityClassificationLevels = $event"
           />
         </v-col>
-
+        </v-form>
       </v-row>
     </v-container>
 
@@ -72,7 +72,7 @@
       @deleteOfferingOkClicked="deleteServiceItem"
     >
     </DeleteOfferingModal>
-  </v-form>
+
   </div>
 </template>
 
@@ -99,6 +99,7 @@ import {
 } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
 import { beforeRouteLeaveFunction, From, To } from "@/mixins/saveOnLeave";
+import AcquisitionPackage from "@/store/acquisitionPackage";
  
 
 @Component({
@@ -111,8 +112,6 @@ import { beforeRouteLeaveFunction, From, To } from "@/mixins/saveOnLeave";
 })
 
 class ServiceOfferings extends Vue{
-
-
     
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
@@ -125,9 +124,11 @@ class ServiceOfferings extends Vue{
   // requirementName will be pulled from data in future ticket
   public requirementName = "";
 
-  public requiredMessage = `Please select at least one type of offering. If you 
-    no longer need ${this.requirementName}, select the “I don't need 
+  get requiredMessage():string{
+    return `Please select at least one type of offering. If you 
+    no longer need ${this.requirementName},<br />select the “I don't need 
     these cloud resources” button below.`;
+  }
 
   public otherValueRequiredMessage = "Please enter a title for this requirement."
   public otherValue = "Other";
@@ -336,6 +337,7 @@ class ServiceOfferings extends Vue{
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    await AcquisitionPackage.setValidateNow(true)
     try {
       if (this.serviceGroupOnLoad) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
