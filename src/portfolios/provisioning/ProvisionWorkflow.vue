@@ -181,10 +181,7 @@ class ProvisionWorkflow extends Vue {
     const {activeSection} = await AppSections.getSectionData();
     if (nextStepName) {
       const currentPortfolio = PortfolioStore.currentPortfolio;
-      if(nextStepName === provWorkflowRouteNames.ReadyToProvision){
-        this.continueButtonText = "Submitting";
-        this.showOkSpinner = true;
-      }
+
       if (PortfolioStore.isProvisioningTOFollowOn && activeSection === "ProvisionWorkflow" 
         && direction === "next" && currentPortfolio.sysId !== ""
       ){
@@ -196,7 +193,6 @@ class ProvisionWorkflow extends Vue {
       }
 
       if (isRouteResolver(nextStepName)) {
-        console.log('here')
         const routeResolver = nextStepName as StepRouteResolver;
         await this.$router.push({
           name: "routeResolver",
