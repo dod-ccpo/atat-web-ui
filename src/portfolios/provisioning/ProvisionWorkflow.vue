@@ -181,7 +181,10 @@ class ProvisionWorkflow extends Vue {
     const {activeSection} = await AppSections.getSectionData();
     if (nextStepName) {
       const currentPortfolio = PortfolioStore.currentPortfolio;
-
+      if(nextStepName === provWorkflowRouteNames.ReadyToProvision){
+        this.continueButtonText = "Submitting";
+        this.showOkSpinner = true;
+      }
       if (PortfolioStore.isProvisioningTOFollowOn && activeSection === "ProvisionWorkflow" 
         && direction === "next" && currentPortfolio.sysId !== ""
       ){
@@ -191,9 +194,11 @@ class ProvisionWorkflow extends Vue {
         this.showTOConfirmModal = true
         return;
       }
+
       if (isRouteResolver(nextStepName)) {
+        console.log('here')
         const routeResolver = nextStepName as StepRouteResolver;
-        this.$router.push({
+        await this.$router.push({
           name: "routeResolver",
           query: {
             resolver: routeResolver.name,
@@ -206,7 +211,7 @@ class ProvisionWorkflow extends Vue {
 
       if (isPathResolver(nextStepName)) {
         const pathResolver = nextStepName as StepPathResolver;
-        this.$router.push({
+        await this.$router.push({
           name: "pathResolver",
           query: {
             resolver: pathResolver.name,
@@ -218,7 +223,7 @@ class ProvisionWorkflow extends Vue {
       }
 
       Steps.setAltBackDestination("");   
-      this.$router.push({ name: nextStepName as string, query: { direction } });
+      await this.$router.push({ name: nextStepName as string, query: { direction } });
 
     } else if (direction === "previous" && this.altBackDestination) { 
       if (this.$route.name === this.routeNames.AwardedTaskOrder) {
@@ -231,27 +236,27 @@ class ProvisionWorkflow extends Vue {
     Steps.setAltBackDestination("");
     switch (this.altBackDestination) {
     case AppSections.sectionTitles.Home: {
-      this.$router.push({name: "home", query: { direction } })
+      await this.$router.push({name: "home", query: { direction } })
       AppSections.changeActiveSection(AppSections.sectionTitles.Home);
       break;
     }
     case AppSections.sectionTitles.Packages: {
-      this.$router.push({name: "home", query: { direction } })
+      await this.$router.push({name: "home", query: { direction } })
       AppSections.changeActiveSection(AppSections.sectionTitles.Packages);
       break;
     }
     case AppSections.sectionTitles.CreateFirstPortfolio: {
-      this.$router.push({name: "home", query: { direction } })
+      await this.$router.push({name: "home", query: { direction } })
       AppSections.changeActiveSection(AppSections.sectionTitles.CreateFirstPortfolio);
       break;
     }
     case AppSections.sectionTitles.Portfolios: {
-      this.$router.push({name: "home", query: { direction } })
+      await this.$router.push({name: "home", query: { direction } })
       AppSections.changeActiveSection(AppSections.sectionTitles.Portfolios);
       break;
     }
     case AppSections.sectionTitles.PortfolioSummary: {
-      this.$router.push({name: "home", query: { direction } })
+      await this.$router.push({name: "home", query: { direction } })
       await AppSections.setActiveTabIndex(1)
       AppSections.changeActiveSection(AppSections.sectionTitles.PortfolioSummary);
       break;
@@ -303,7 +308,7 @@ class ProvisionWorkflow extends Vue {
     }
 
     if (button.name) {
-      this.$router.push({ name: button.name });
+      await this.$router.push({ name: button.name });
     }
   }
 

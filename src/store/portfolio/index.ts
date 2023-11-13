@@ -258,6 +258,7 @@ export class PortfolioDataStore extends VuexModule {
   @Action({rawError: true})
   public async startProvisioning(): Promise<void> {
     await this.resetCurrentPortfolio();
+    AcquisitionPackage.setShowContinueSpinner(true)
     try {
       let portfolioName=""
       let portfolioAgency = ""
@@ -331,6 +332,7 @@ export class PortfolioDataStore extends VuexModule {
       // ATAT TODO AT-9177 (EPIC) - add graceful fail message to user in UI
       throw new Error(`Error provisioning portfolio: ${error}`);
     }
+    AcquisitionPackage.doSetShowContinueSpinner(false)
   }
 
   /**
