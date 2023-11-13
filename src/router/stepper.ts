@@ -401,7 +401,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Contracting Shop",
-        path: "contracting-shop",
+        path: "/contracting-shop",
         name: routeNames.ContractingShop,
         completePercentageWeight: 0,
         completed: false,
@@ -410,7 +410,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Contracting Office Info",
-        path: "contracting-office-info",
+        path: "/contracting-office-info",
         name: routeNames.ContractingOfficeInfo,
         routeResolver:ContractingInfoResolver,
         completePercentageWeight: 0,
@@ -420,7 +420,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Project Overview",
-        path: "project-overview",
+        path: "/project-overview",
         name: routeNames.ProjectOverview,
         completePercentageWeight: 4,
         completed: false,
@@ -429,7 +429,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Organization",
-        path: "organization-info",
+        path: "/organization-info",
         name: routeNames.OrganizationInfo,
         routeResolver: OrganizationResolver,
         completed: false,
@@ -439,7 +439,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Contact Information",
-        path: "contact-info",
+        path: "/contact-info",
         name: routeNames.ContactInformation,
         routeResolver: ContactInformationResolver,
         completePercentageWeight: 5,
@@ -448,7 +448,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Cor Info",
-        path: "cor-info",
+        path: "/cor-info",
         name: routeNames.CorInformation,
         routeResolver: CorInformationResolver,
         excludeFromMenu: true,
@@ -457,7 +457,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Alternate COR",
-        path: "alt-cor",
+        path: "/alt-cor",
         name: routeNames.AlternateCor,
         routeResolver:ACorInformationQuestionResolver,
         excludeFromMenu: true,
@@ -465,7 +465,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Acors",
-        path: "acor-info",
+        path: "/acor-info",
         name: routeNames.AcorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
@@ -474,7 +474,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "SummaryStepOne",
-        path:"summary-step-one",
+        path:"/summary-step-one",
         name: routeNames.SummaryStepOne,
         excludeFromMenu: true,
         completePercentageWeight: 1,
@@ -495,7 +495,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Exception to Fair Opportunity",
-        path: "exceptions",
+        path: "/exceptions",
         name: routeNames.Exceptions,
         component: Exceptions,
         completePercentageWeight: 5,
@@ -508,7 +508,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       // // ======================
       {
         menuText: "Proposed CSP",
-        path: "proposed-csp",
+        path: "/proposed-csp",
         name: routeNames.ProposedCSP,
         component: ProposedCSP,
         completePercentageWeight: 0,
@@ -519,7 +519,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Description of Justification",
-        path: "description-of-justification",
+        path: "/description-of-justification",
         name: routeNames.DescriptionOfJustification,
         component: DescriptionOfJustification,
         completePercentageWeight: 0,
@@ -529,7 +529,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Minimum Requirements",
-        path: "minimum-requirements",
+        path: "/minimum-requirements",
         name: routeNames.MinimumRequirements,
         component: MinimumRequirements,
         completePercentageWeight: 0,
@@ -540,7 +540,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Cause of Sole Source",
-        path: "sole-source-cause",
+        path: "/sole-source-cause",
         name: routeNames.SoleSourceCause,
         component: SoleSourceCause,
         completePercentageWeight: 0,
@@ -559,7 +559,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Sole Source Review",
-        path: "sole-source-review",
+        path: "/sole-source-review",
         name: routeNames.SoleSourceReview,
         component: SoleSourceReview,
         completePercentageWeight: 0,
@@ -569,7 +569,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },      
       {
         menuText: "Unique Source",
-        path: "unique-source",
+        path: "/unique-source",
         name: routeNames.UniqueSource,
         component: UniqueSource,
         completePercentageWeight: 0,
@@ -579,7 +579,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Procurement Discussion",
-        path: "procurement-discussion",
+        path: "/procurement-discussion",
         name: routeNames.ProcurementDiscussion,
         component: ProcurementDiscussion,
         completePercentageWeight: 0,
@@ -590,7 +590,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },      
       {
         menuText: "Impact of Requirement",
-        path: "requirement-impact",
+        path: "/requirement-impact",
         name: routeNames.ImpactOfRequirement,
         component: ImpactOfRequirement,
         completePercentageWeight: 0,
@@ -603,7 +603,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       // // ======================
       {
         menuText: "Need MRR",
-        path: "need-mrr",
+        path: "/need-mrr",
         name: routeNames.MRRNeed,
         component: MRRNeed,
         completePercentageWeight: 0,
@@ -614,7 +614,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Market Research Efforts",
-        path: "market-research-efforts",
+        path: "/market-research-efforts",
         name: routeNames.MarketResearchEfforts,
         component: MarketResearchEfforts,
         completePercentageWeight: 0,
@@ -633,7 +633,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Market Research Review",
-        path: "market-research-review",
+        path: "/market-research-review",
         name: routeNames.MarketResearchReview,
         component: MarketResearchReview,
         completePercentageWeight: 0,
@@ -643,7 +643,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },      
       {
         menuText: "Who Conducted Research",
-        path: "who-conducted-research",
+        path: "/who-conducted-research",
         name: routeNames.WhoConductedResearch,
         component: WhoConductedResearch,
         completePercentageWeight: 0,
@@ -654,7 +654,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },      
       {
         menuText: "Other Supporting Factors",
-        path: "other-supporting-factors",
+        path: "/other-supporting-factors",
         name: routeNames.OtherSupportingFactors,
         component: OtherSupportingFactors,
         completePercentageWeight: 0,
@@ -665,7 +665,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Remove Barriers",
-        path: "remove-barriers",
+        path: "/remove-barriers",
         name: routeNames.RemoveBarriers,
         component: RemoveBarriers,
         completePercentageWeight: 0,
@@ -684,7 +684,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },      
       {
         menuText: "Review Barriers",
-        path: "review-barriers",
+        path: "/review-barriers",
         name: routeNames.ReviewBarriers,
         component: ReviewBarriers,
         completePercentageWeight: 0,
@@ -694,7 +694,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },      
       {
         menuText: "Certification POCs",
-        path: "certification-pocs",
+        path: "/certification-pocs",
         name: routeNames.CertificationPOCs,
         component: CertificationPOCs,
         completePercentageWeight: 0,
@@ -708,7 +708,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       // // Eval Plan
       {
         menuText: "Create Evaluation Plan",
-        path: "eval-plan",
+        path: "/eval-plan",
         name: routeNames.CreateEvalPlan,
         component: CreateEvalPlan,
         completePercentageWeight: 5,
@@ -718,7 +718,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Evaluation Plan Details",
-        path: "eval-plan-details",
+        path: "/eval-plan-details",
         name: routeNames.EvalPlanDetails,
         component: EvalPlanDetails,
         completePercentageWeight: 5,
@@ -737,7 +737,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Proposal Required BVTO",
-        path: "proposal-required-bvto",
+        path: "/proposal-required-bvto",
         name: routeNames.Differentiators,
         component: Differentiators,
         completePercentageWeight: 5,
@@ -747,7 +747,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },   
       {
         menuText: "SummaryStepTwo",
-        path:"summary-step-two",  
+        path:"/summary-step-two",  
         name: routeNames.SummaryStepTwo,
         excludeFromMenu: true,
         completePercentageWeight: 1,
@@ -767,7 +767,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         name: routeNames.PeriodOfPerformance,
         menuText: "Period of Performance",
-        path: "period-of-performance",
+        path: "/period-of-performance",
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
         stepCompleteOnEnter: routeNames.CreateEvalPlan,
@@ -776,7 +776,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         name: routeNames.POPStart,
         menuText: "Period of Performance Start Date",
-        path: "period-of-performance-start-date",
+        path: "/period-of-performance-start-date",
         excludeFromMenu: true,
         completePercentageWeight: 2,
         component: POPStart,
@@ -785,7 +785,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.RecurringRequirement,
         menuText: "Recurring Requirement",
         excludeFromMenu: true,
-        path: "recurring-requirement",
+        path: "/recurring-requirement",
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.PeriodOfPerformance,
         component: RecurringRequirement,
@@ -793,7 +793,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         name: routeNames.ContractType,
         menuText: "Contract Type",
-        path: "contract-type",
+        path: "/contract-type",
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.ContractType,
         component: ContractType,
@@ -801,7 +801,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Classification Requirements",
-        path:"classification-requirements",
+        path:"/classification-requirements",
         name: routeNames.ClassificationRequirements,
         completePercentageWeight: 1,
         component: ClassificationRequirements,
@@ -809,7 +809,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Security Requirements",
-        path:"security-requirements",
+        path:"/security-requirements",
         name: routeNames.SecurityRequirements,
         excludeFromMenu: true,
         completePercentageWeight: 1,
@@ -818,7 +818,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "CrossDomain",
-        path:"cross-domain",
+        path:"/cross-domain",
         name: routeNames.CrossDomain,
         excludeFromMenu: true,
         stepCompleteOnEnter: routeNames.ClassificationRequirements,
@@ -828,7 +828,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "SummaryStepThree",
-        path:"summary-step-three",
+        path:"/summary-step-three",
         name: routeNames.SummaryStepThree,
         excludeFromMenu: true,
         completePercentageWeight: 1,
@@ -850,7 +850,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Procurement History",
-        path: "current-contract",
+        path: "/current-contract",
         name: routeNames.CurrentContract,
         completePercentageWeight: 0,
         routeResolver: CurrentContractRouteResolver,
@@ -859,7 +859,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Details",
-        path: "current-contract-details",
+        path: "/current-contract-details",
         excludeFromMenu: true,
         name: routeNames.CurrentContractDetails,
         completePercentageWeight: 0,
@@ -879,7 +879,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Procurement History Summary",
-        path: "procurement-history-summary",
+        path: "/procurement-history-summary",
         excludeFromMenu: true,
         name: routeNames.ProcurementHistorySummary,
         completePercentageWeight: 0,
@@ -889,7 +889,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Current Environment",
-        path: "current-environment",
+        path: "/current-environment",
         name: routeNames.CurrentEnvironment,
         component: HasCurrentEnvironment,
         completePercentageWeight: 5,
@@ -898,7 +898,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Upload Charts",
-        path: "upload-charts",
+        path: "/upload-charts",
         excludeFromMenu: true,
         name: routeNames.UploadSystemDocuments,
         component: UploadSystemDocuments,
@@ -908,7 +908,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Upload Process",
-        path: "upload-process",
+        path: "/upload-process",
         excludeFromMenu: true,
         name: routeNames.UploadMigrationDocuments,
         component: UploadMigrationDocuments,
@@ -917,7 +917,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Current Environment Location",
-        path: "current-environment-location",
+        path: "/current-environment-location",
         excludeFromMenu: true,
         name: routeNames.CurrentEnvironmentLocation,
         component: CurrentEnvironmentLocation,
@@ -926,7 +926,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Classification Levels",
-        path: "classification-levels",
+        path: "/classification-levels",
         excludeFromMenu: true,
         name: routeNames.ClassificationLevels,
         component: ClassificationLevels,
@@ -935,7 +935,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Environment Details Page",
-        path: "environment-details-page",
+        path: "/environment-details-page",
         excludeFromMenu: true,
         name: routeNames.InstanceDetails,
         component: InstanceDetails,
@@ -944,7 +944,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Environment Summary",
-        path: "environment-summary",
+        path: "/environment-summary",
         excludeFromMenu: true,
         name: routeNames.EnvironmentSummary,
         component: EnvironmentSummary,
@@ -954,7 +954,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "SummaryStepFour",
-        path:"summary-step-four",
+        path:"/summary-step-four",
         name: routeNames.SummaryStepFour,
         excludeFromMenu: true,
         completePercentageWeight: 1,
@@ -973,7 +973,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Replicate And Optimize",
-        path: "replicate-and-optimize",
+        path: "/replicate-and-optimize",
         excludeFromMenu: true,
         name: routeNames.ReplicateAndOptimize,
         component: ReplicateAndOptimize,
@@ -983,7 +983,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Replicate Details",
-        path: "replicate-details",
+        path: "/replicate-details",
         excludeFromMenu: true,
         name: routeNames.ReplicateDetails,
         component: ReplicateDetails,
@@ -993,7 +993,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Architectural Design",
-        path: "architectural-design",
+        path: "/architectural-design",
         excludeFromMenu: true,
         name: routeNames.ArchitecturalDesign,
         component: ArchitecturalDesign,
@@ -1003,7 +1003,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Architectural Design Details",
-        path: "architectural-design-details",
+        path: "/architectural-design-details",
         excludeFromMenu: true,
         name: routeNames.ArchitecturalDesignDetails,
         component: ArchitecturalDesignDetails,
@@ -1024,7 +1024,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Anticipated Users and Data Needs",
         excludeFromMenu: true,
-        path: "anticipated-users-and-data-needs",
+        path: "/anticipated-users-and-data-needs",
         name: routeNames.AnticipatedUserAndDataNeeds,
         completePercentageWeight: 5,
         completed: false,
@@ -1033,7 +1033,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Service Offerings",
-        path: "service-offerings/:groupName",
+        path: "/service-offerings/:groupName",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferings,
         completePercentageWeight: 1,
@@ -1051,7 +1051,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Service Offering Details",
-        path: "service-offering-details/:groupName/:serviceOffering",
+        path: "/service-offering-details/:groupName/:serviceOffering",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferingDetails,
         completePercentageWeight: 1,
@@ -1060,7 +1060,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Other Service Offering Summary",
-        path: "service-offerings/other/summary",
+        path: "/service-offerings/other/summary",
         excludeFromMenu: true,
         name: routeNames.OtherOfferingSummary,
         completePercentageWeight: 1,
@@ -1078,7 +1078,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Security Requirements",
-        path: "dow-security-requirements",
+        path: "/dow-security-requirements",
         excludeFromMenu: true,
         name: routeNames.DOWSecurityRequirements,
         completePercentageWeight: 1,
@@ -1088,7 +1088,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
 
       {
         menuText: "DOW Summary",
-        path: "dow-summary",
+        path: "/dow-summary",
         excludeFromMenu: true,
         name: routeNames.DOWSummary,
         completePercentageWeight: 1,
@@ -1117,7 +1117,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         name: routeNames.ConflictOfInterest,
         menuText: "Conflict of Interest",
-        path: "conflict-of-interest",
+        path: "/conflict-of-interest",
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.ConflictOfInterest,
         component: ConflictOfInterest,
@@ -1126,7 +1126,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         name: routeNames.PackagingPackingAndShipping,
         menuText: "Packaging, Packing, and Shipping",
-        path: "packaging-packing-and-shipping",
+        path: "/packaging-packing-and-shipping",
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.PackagingPackingAndShipping,
         component: PackagingPackingAndShipping,
@@ -1135,7 +1135,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         name: routeNames.Travel,
         menuText: "Travel",
-        path: "travel",
+        path: "/travel",
         completePercentageWeight: 2,
         stepCompleteOnLeave: routeNames.Travel,
         component: Travel,
@@ -1152,7 +1152,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "SummaryStepSix",
-        path:"summary-step-six",
+        path:"/summary-step-six",
         name: routeNames.SummaryStepSix,
         excludeFromMenu: true,
         completePercentageWeight: 1,
@@ -1237,7 +1237,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "SummaryStepSeven",
-        path:"summary-step-seven",
+        path:"/summary-step-seven",
         name: routeNames.SummaryStepSeven,
         excludeFromMenu: true,
         completePercentageWeight: 1,
@@ -1256,7 +1256,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Requirements Cost Estimates",
-        path: "create-price-estimate",
+        path: "/create-price-estimate",
         name: routeNames.CreatePriceEstimate,
         completePercentageWeight: 1,
         component: CreatePriceEstimate,
@@ -1265,7 +1265,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Optimize Or Replicate",
         excludeFromMenu: true,
-        path: "optimize-or-replicate",
+        path: "/optimize-or-replicate",
         name: routeNames.OptimizeOrReplicate,
         completePercentageWeight: 0,
         component: OptimizeOrReplicate,
@@ -1274,7 +1274,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Architectural Design Solutions",
         excludeFromMenu: true,
-        path: "architectural-design-solutions",
+        path: "/architectural-design-solutions",
         name: routeNames.ArchitecturalDesignSolutions,
         completePercentageWeight: 0,
         component: ArchitecturalDesignSolutions,
@@ -1283,7 +1283,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Gather Price Estimates",
         excludeFromMenu: true,
-        path: "gather-price-estimates",
+        path: "/gather-price-estimates",
         name: routeNames.GatherPriceEstimates,
         completePercentageWeight: 1,
         component: GatherPriceEstimates,
@@ -1292,7 +1292,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Training",
         excludeFromMenu: true,
-        path: "training-estimate",
+        path: "/training-estimate",
         name: routeNames.IGCETraining,
         completePercentageWeight: 1,
         component: IGCETraining,
@@ -1301,7 +1301,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Travel Estimates",
         excludeFromMenu: true,
-        path: "travel-estimate",
+        path: "/travel-estimate",
         name: routeNames.TravelEstimates,
         completePercentageWeight: 1,
         component: TravelEstimates,
@@ -1310,7 +1310,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Surge Capacity",
         excludeFromMenu: true,
-        path: "surge-capacity",
+        path: "/surge-capacity",
         name: routeNames.SurgeCapacity,
         completePercentageWeight: 1,
         component: SurgeCapacity,
@@ -1318,7 +1318,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Surge Capabilities",
         excludeFromMenu: true,
-        path: "surge-capabilities",
+        path: "/surge-capabilities",
         name: routeNames.SurgeCapabilities,
         completePercentageWeight: 1,
         component: SurgeCapabilities,
@@ -1327,7 +1327,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Fee Charged",
         excludeFromMenu: true,
-        path: "fee-charged",
+        path: "/fee-charged",
         name: routeNames.FeeCharged,
         completePercentageWeight: 1,
         component: FeeCharged,
@@ -1336,7 +1336,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Cost Summary",
         excludeFromMenu: true,
-        path: "cost-summary",
+        path: "/cost-summary",
         name: routeNames.CostSummary,
         completePercentageWeight: 1,
         component: CostSummary
@@ -1344,7 +1344,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Estimates Developed",
         excludeFromMenu: true,
-        path: "estimates-developed",
+        path: "/estimates-developed",
         name: routeNames.EstimatesDeveloped,
         completePercentageWeight: 1,
         component: EstimatesDeveloped,
@@ -1352,7 +1352,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Supporting Documentation",
         excludeFromMenu: true,
-        path: "supporting-documentation",
+        path: "/supporting-documentation",
         name: routeNames.SupportingDocumentation,
         completePercentageWeight: 1,
         component: SupportingDocumentation,
@@ -1361,7 +1361,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Appropriation of Funds",
         excludeFromMenu: true,
-        path: "appropriation-of-funds",
+        path: "/appropriation-of-funds",
         name: routeNames.AppropriationOfFunds,
         completePercentageWeight: 1,
         component: AppropriationOfFunds,
@@ -1369,7 +1369,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Severability and Incremental Funding",
-        path: "severability-and-incremental-funding",
+        path: "/severability-and-incremental-funding",
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
@@ -1378,7 +1378,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Incremental Funding",
         excludeFromMenu: true,
-        path: "incremental-funding",
+        path: "/incremental-funding",
         name: routeNames.IncrementalFunding,
         completePercentageWeight: 1,
         component: IncrementalFunding,
@@ -1387,7 +1387,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Financial POC Form",
         excludeFromMenu: true,
-        path: "financial-POC-Form",
+        path: "/financial-POC-Form",
         name: routeNames.FinancialPOCForm,
         completePercentageWeight: 1,
         component: FinancialPOCForm,
@@ -1396,7 +1396,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Required Funding Documents",
         excludeFromMenu: true,
-        path: "required-funding-documents",
+        path: "/required-funding-documents",
         name: routeNames.RFD,
         completePercentageWeight: 1,
         component: RFD,
@@ -1404,7 +1404,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Funding",
-        path: "currently-has-funding",
+        path: "/currently-has-funding",
         name: routeNames.CurrentlyHasFunding,
         completePercentageWeight: 1,
         component: CurrentlyHasFunding,
@@ -1412,7 +1412,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "GTC-Information",
-        path: "gtc-information",
+        path: "/gtc-information",
         name: routeNames.GTC,
         excludeFromMenu: true,
         completePercentageWeight: 1,
@@ -1422,7 +1422,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Funding-Plan",
         excludeFromMenu: true,
-        path: "funding-plan",
+        path: "/funding-plan",
         name: routeNames.FundingPlanType,
         completePercentageWeight: 1,
         component: FundingPlanType,
@@ -1431,7 +1431,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Upload-7600",
         excludeFromMenu: true,
-        path: "upload-7600",
+        path: "/upload-7600",
         name: routeNames.Upload7600,
         completePercentageWeight: 1,
         component: Upload7600,
@@ -1440,7 +1440,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "MIPR",
         excludeFromMenu: true,
-        path: "mipr",
+        path: "/mipr",
         name: routeNames.MIPR,
         completePercentageWeight: 1,
         component: MIPR,
@@ -1448,7 +1448,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Generate Package Documents (Funding)",
-        path:"generate-package-documents-funding",
+        path:"/generate-package-documents-funding",
         excludeFromMenu: true,
         name: routeNames.GeneratingPackageDocumentsFunding,
         completePercentageWeight: 0,
@@ -1458,7 +1458,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
      
       {
         menuText: "SummaryStepEight",
-        path: "summary-step-eight",
+        path: "/summary-step-eight",
         name: routeNames.SummaryStepEight,
         excludeFromMenu: true,
         completePercentageWeight: 1,
@@ -1477,7 +1477,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Ready To Generate Package",
-        path:"ready-to-generate-package",
+        path:"/ready-to-generate-package",
         excludeFromMenu: true,
         name: routeNames.ReadyToGeneratePackage,
         completePercentageWeight: 0,
@@ -1486,7 +1486,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Generate Package Documents",
-        path:"generate-package-documents",
+        path:"/generate-package-documents",
         excludeFromMenu: true,
         name: routeNames.GeneratingPackageDocuments,
         completePercentageWeight: 0,
@@ -1494,7 +1494,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Upload Signed Documents",
-        path:"upload-signed-documents",
+        path:"/upload-signed-documents",
         excludeFromMenu: true,
         name: routeNames.UploadSignedDocuments,
         completePercentageWeight: 0,
@@ -1502,7 +1502,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Ready To Submit",
-        path:"ready-to-submit",
+        path:"/ready-to-submit",
         excludeFromMenu: true,
         name: routeNames.ReadyToSubmit,
         completePercentageWeight: 0,
@@ -1512,7 +1512,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Under Review",
-        path:"under-review",
+        path:"/under-review",
         excludeFromMenu: true,
         name: routeNames.UnderReview,
         completePercentageWeight: 0,
