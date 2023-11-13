@@ -1,8 +1,7 @@
 <template>
-<!--  TODO figure out why this component has two location props-->
   <v-snackbar
     v-model="isToastOpen"
-    location="top"
+    location="top right"
     transition="slide-x-reverse-transition"
     class="_atat-toast"
     :class="[
@@ -13,7 +12,6 @@
     :timeout="getTimeout"
   >
     <div v-html="toast.message"></div>
-    <!--TODO: validate that this still works after removal of slot action-->
     <template v-if="toast.hasUndo">
       <v-btn
         variant="text"

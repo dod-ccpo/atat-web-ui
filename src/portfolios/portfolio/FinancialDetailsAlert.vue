@@ -2,7 +2,7 @@
   <ATATAlert
     id="InaccurateFinancialDetails"
     type="error"
-    class="mb-10"
+    class="mb-1 mt-4"
   >
     <template v-slot:content>
       <h3 class="mb-1">Financial details may be inaccurate</h3>
@@ -28,7 +28,7 @@ import PortfolioStore from "@/store/portfolio";
 class FinancialDetailsAlert extends Vue {
 
   public cspLongName(): string {
-    const cspName = PortfolioStore.currentPortfolio.csp ?? "";
+    const cspName = PortfolioStore.currentPortfolio.vendor ?? "";
     let longName = "";
     switch (cspName.toLowerCase()) {
     case "aws":

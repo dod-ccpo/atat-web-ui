@@ -19,8 +19,9 @@
         v-if="tooltipText"
       >
         <!--TODO: validate that this still works after removal of on from activator-->
-        <template v-slot:activator>
+        <template v-slot:activator="{ props }">
           <v-btn
+            v-bind="props"
             class="mb-2 ml-1 pa-0 link-button no-border"
             icon
             size="x-small"
@@ -28,7 +29,7 @@
             :aria-label="'Help for ' + label"
           >
             <v-icon class="icon-16 ma-0 pa-0" size="small" color="#544496"
-            >help_outline
+            >mdi-help-circle-outline
             </v-icon>
           </v-btn>
         </template>

@@ -1,9 +1,10 @@
 ._atat-toast {
-  .v-snack__content {
+  z-index: 3000 !important;
+  .v-snackbar__content {
     @extend .body;
   }
 
-  .v-snack__action  {
+  .v-snackbar__action  {
     margin-right: 0;
     .v-btn {
       padding-left: 0 !important;
@@ -11,7 +12,7 @@
   }
 
   &._has-icon {
-    .v-snack__content {
+    .v-snackbar__content {
       color: $base-darkest;
       margin-left: 30px;
       position: relative;
@@ -32,28 +33,28 @@
     }
   }
 
-  .v-snack__wrapper {
+  .v-snackbar__wrapper {
     border: 1px solid;
     min-width: unset;
   }
 
   &._toast-success {
-    .v-snack__wrapper {
+    .v-snackbar__wrapper {
       background-color: $success-lighter;
       border-color: $success !important;
     }
-    .v-snack__content::after {
+    .v-snackbar__content::after {
       color: $success;
     }
   }
 
   &._toast-info {
-    .v-snack__wrapper {
+    .v-snackbar__wrapper {
       background-color: $info-lighter;
       border-color: $info !important;
     }
 
-    .v-snack__content::after {
+    .v-snackbar__content::after {
       color: $info;
     }
   }

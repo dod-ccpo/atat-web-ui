@@ -172,7 +172,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
-  emits: ["update:value"],
+  emits: ["update:value", "checkboxTextfieldDataUpdate"],
   components: {
     ATATTextArea,
     ATATTextField,
@@ -198,6 +198,8 @@ class ATATCheckboxGroup extends Vue {
   // props
   @Prop({ default: [] }) private value!: string[];
   public _selected: string[] = [];
+  @PropSync("resetSelected") private _resetSelected!: boolean;
+
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @PropSync("items") private _items!: Checkbox[];
 
@@ -300,6 +302,12 @@ class ATATCheckboxGroup extends Vue {
     ) as HTMLInputElement;
   }
 
+  @Watch("resetSelected")
+  public resetSelectedNow(): void {
+    this._selected = [];
+    this._resetSelected = false;
+  }
+
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[], oldVal: string[]): void {
     if (!oldVal || newVal.length > oldVal.length) {
@@ -378,7 +386,7 @@ class ATATCheckboxGroup extends Vue {
         // }
         this.$refs.checkboxGroupForm.validate().then(
           async (response:SubmitEventPromise)=>{
-            this.errorMessages = (await (response)).errors[0].errorMessages;
+            this.errorMessages = (await (response)).errors[0]?.errorMessages;
           }
         )
         AcquisitionPackage.setValidateNow(false);
@@ -462,9 +470,19 @@ class ATATCheckboxGroup extends Vue {
         this.setErrorMessage();
       }, 0)
     }
-    setTimeout(()=>{
-      this._selected = this.value;
-    }, 0)
+    // if the parent is still empty, try to load again on next render
+    if (this.value.length === 0) {
+      setTimeout(()=>{
+        this._selected = this.value
+      }, 0)
+    // if the parent has the value set, then try setting it now
+    } else {
+      this._selected = this.value
+    }
+    // if this checkbox group still refuses to update with the latest
+    // value given by the parent, you can set this element's :key
+    // to change when the parent's value changes, doing so forces
+    // this element to rerender.
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {

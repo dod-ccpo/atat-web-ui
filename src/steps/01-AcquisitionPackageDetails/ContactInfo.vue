@@ -49,6 +49,7 @@
           v-if="selectedRole === 'MILITARY' && showContactInfoFields"
           label="Rank"
           titleKey="name"
+          valueKey="sysId"
           :items="selectedBranchRanksData"
           :searchFields="['name', 'grade']"
           :selectedItem="selectedRank"

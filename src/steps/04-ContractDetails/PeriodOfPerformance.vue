@@ -59,9 +59,9 @@
                     :data-index="index"
                   >
                     <div class="d-flex align-center">
-                      <div class="d-flex">
-                        <v-icon class="drag-icon">drag_indicator</v-icon>
-                      </div>
+                      <!-- <div class="d-flex">
+                        <v-icon class="drag-icon">mdi-drag-vertical</v-icon>
+                      </div> -->
                       <div
                         class="d-flex justify-end mr-4 font-size-14 _text-base"
                         style="width: 65px"

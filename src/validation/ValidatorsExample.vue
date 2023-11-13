@@ -56,7 +56,8 @@
       <v-col cols="7"
         ><ATATTextField
           :rules="[$validators.minLength(3)]"
-          :value.sync="minValue"
+          :value="minValue"
+          @update:value="minValue = $event"
           label="Min Length 3"
           ref="minLengthField"
       /></v-col>

@@ -1,7 +1,8 @@
 <template>
   <ATATDialog
     :id="id"
-    :showDialog.sync="_showModal"
+    :showDialog="_showModal"
+    @update:showDialog="_showModal = $event"
     title="Archive this acquisition package?"
     no-click-animation
     okText="Archive"
