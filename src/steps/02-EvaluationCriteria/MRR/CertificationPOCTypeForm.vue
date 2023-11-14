@@ -4,6 +4,7 @@
     <ATATRadioGroup
         v-if="loaded"
         :id="POCType + 'certificationPOCType'"
+        :ref="POCType + 'certificationPOCTypeRef'"
         :legend="'Will any of these individuals serve as the '
               + POCType + ' Certifier for your J&A?'"
         :legend-font-normal-weight="true"
@@ -17,8 +18,13 @@
     <ATATContactForm
         v-if="showContactForm"
         :id-prefix="POCType"
+        :ref="POCType + 'ContactFormRef'"
         role-legend="What role best describes this individual’s affiliation with the DoD?"
         :role-legend-font-normal-weight="true"
+        :roles="contactRoles"
+        :selectedRole="_newContactData.role"
+        @update:selectedRole="_newContactData.role = $event"
+        @update:roles="contactRoles = $event"
         :show-job-title="true"
         :title="_newContactData.title"
         @update:title="_newContactData.title = $event"
@@ -39,15 +45,11 @@
         @update:selectedPhoneCountry="selectedPhoneCountry = $event"
         :selectedRank="selectedRank"
         @update:selectedRank="selectedRank = $event"
-        :selectedRole="_newContactData.role"
-        @update:selectedRole="_newContactData.role = $event"
         :selectedSalutation="_newContactData.salutation"
         @update:selectedSalutation="_newContactData.salutation = $event"
         :suffix="_newContactData.suffix"
         @update:suffix="_newContactData.suffix = $event"
         :loaded="loaded"
-        :roles="contactRoles"
-        @update:roles="contactRoles = $event"
         :validation-msg-custom="'your ' + POCType + ' POC’s'"
         @resetContactForm="resetContactForm"
     />
@@ -57,15 +59,15 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Prop,  Watch, Vue, toNative } from "vue-facing-decorator";
-import {CountryObj, RadioButton, RankData, SelectData} from "../../../../types/Global";
+import { CountryObj, RadioButton, RankData, SelectData } from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import {ContactDTO, FinancialPOCType} from "@/api/models";
+import { ContactDTO, FinancialPOCType } from "@/api/models";
 import ContactData from "@/store/contactData";
-import parsePhoneNumber, {AsYouType, CountryCode} from "libphonenumber-js";
-import {Countries} from "@/components/ATATPhoneInput.vue";
+import parsePhoneNumber, { AsYouType, CountryCode } from "libphonenumber-js";
+import { Countries } from "@/components/ATATPhoneInput.vue";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { PropSync } from "@/decorators/custom"
- 
+
 
 @Component({
   components: {
@@ -91,7 +93,7 @@ class CertificationPOCTypeForm extends Vue {
   private loaded = false;
 
   private phone = "";
-  private selectedBranch: SelectData = {};
+  private selectedBranch: SelectData = { text: "", value: "" };
   private selectedRank: RankData = {grade: "", name: "", sysId: ""};
   
   public resetContactForm(): void {

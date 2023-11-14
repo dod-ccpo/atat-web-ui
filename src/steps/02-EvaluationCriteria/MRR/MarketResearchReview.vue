@@ -54,6 +54,7 @@
 
             <ATATTextArea 
               id="ResearchDetails"
+              ref="ResearchDetailsRef"
               class="mt-6 textarea-max-width"
               label="Market research details"
               :labelSrOnly="true"
@@ -75,6 +76,7 @@
             />
 
             <ExplanationButtons 
+              ref="ExplanationButtonsRef"
               :showChangeToCustomButton="showChangeToCustomButton"
               :showChangeToDAPPSButton="showChangeToDAPPSButton"
               :showRestoreSuggestionButton="showRestoreSuggestionButton"
@@ -122,7 +124,8 @@ import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import { routeNames } from "@/router/stepper";
 
 @Component({
@@ -140,13 +143,13 @@ import { routeNames } from "@/router/stepper";
 
 class MarketResearchReview extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public defaultSuggestion = "";

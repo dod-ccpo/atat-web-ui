@@ -55,8 +55,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { CSP } from "../../../../types/Global";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { CSP, SaveOnLeaveRefs } from "../../../../types/Global";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import _ from "lodash";
 import { FairOpportunityDTO } from "@/api/models";
 
@@ -82,8 +82,10 @@ class ProposedCSP extends Vue {
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public selectedCSP: CSP = "";

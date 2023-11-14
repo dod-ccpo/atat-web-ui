@@ -3,6 +3,7 @@
     <ATATRadioGroup
       v-if="isForm"
       id="ExceptionRadioOptions1"
+      ref="ExceptionRadioOptions1Ref"
       :legend="legend" 
       :value="_selectedException"
       @update:value = "_selectedException = $event"
@@ -14,6 +15,7 @@
     <ATATRadioGroup
       v-if="!isForm"
       id="ExceptionRadioOptions2"
+      ref="ExceptionRadioOptions2Ref"
       :legend="legend" 
       :value="selectedExceptionReadOnly"
       :items="exceptionOptionsReadOnly"

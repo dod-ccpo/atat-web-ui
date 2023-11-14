@@ -58,6 +58,7 @@
 
             <ATATTextArea 
               id="SoleSourceSituation"
+              ref="SoleSourceSituationRef"
               class="mt-6 textarea-max-width"
               label="Cause of your sole source situation"
               :labelSrOnly="true"
@@ -77,6 +78,7 @@
             />
 
             <ExplanationButtons 
+              ref="ExplanationButtonsRef"
               :showChangeToCustomButton="showChangeToCustomButton"
               :showChangeToDAPPSButton="showChangeToDAPPSButton"
               :showRestoreSuggestionButton="showRestoreSuggestionButton"
@@ -108,7 +110,8 @@
 </template>
 
 <script lang="ts">
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -142,13 +145,13 @@ import {routeNames} from "@/router/stepper";
 
 class SoleSourceReview extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public projectTitle = AcquisitionPackage.projectTitle;

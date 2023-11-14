@@ -3,6 +3,7 @@
   <section :id="idPrefix + 'contactForm'" class="mt-10">
     <ATATRadioGroup
       :id="idPrefix + 'ContactAffiliation'"
+      :ref="idPrefix + 'ContactAffiliationRef'"
       :legend="roleLegend"
       :legend-font-normal-weight="roleLegendFontNormalWeight"
       :items="contactRoles"
@@ -18,14 +19,15 @@
     <v-form ref="atatGlobalContact">
       <ATATSelect
         :id="idPrefix + 'Branch'"
+        :ref="idPrefix + 'BranchRef'"
         v-show="_selectedRole === 'MILITARY'"
         v-model="_selectedBranch"
+        :selectedValue="_selectedBranch"
+        @update:selectedValue="_selectedBranch = $event"
         class="_input-max-width mb-10"
         label="Service Branch"
         placeholder=""
         :items="branchData"
-        :selectedValue="_selectedBranch"
-        @update:selectedValue="_selectedBranch = $event"
         :showAccessRadioButtons="_showAccessRadioButtons"
         @update:showAccessRadioButtons="_showAccessRadioButtons = $event"
         :returnObject="true"
@@ -39,10 +41,11 @@
       <div v-show="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
         <ATATAutoComplete
           :id="idPrefix + 'Rank'"
-          ref="RankRef"
+          :ref="idPrefix +  'RankRef'"
           v-show="_selectedRole === 'MILITARY'"
           label="Rank"
           titleKey="name"
+          valueKey="value"
           :items="selectedBranchRanksData"
           :searchFields="['name', 'grade']"
           :selectedItem="_selectedRank"
@@ -58,9 +61,9 @@
 
         <ATATSelect
           :id="idPrefix + 'Salutation'"
+          :ref="idPrefix + 'SalutationRef'"
           v-show="_selectedRole === 'CIVILIAN'"
           class="_input-max-width mb-7"
-          ref="CivilianRef"
           label="Salutation"
           :optional="true"
           placeholder=""
@@ -74,6 +77,7 @@
             <ATATTextField
               label="First name"
               :id="idPrefix + 'FirstName'"
+              :ref="idPrefix + 'FirstNameRef'"
               class="_input-max-width"
               :value="_firstName"
               @update:value="_firstName = $event"
@@ -88,6 +92,7 @@
             <ATATTextField
               label="Middle name"
               :id="idPrefix + 'MiddleName'"
+              :ref="idPrefix + 'MiddleNameRef'"
               :optional="true"
               class="_input-max-width"
               :value="_middleName"
@@ -98,6 +103,7 @@
             <ATATTextField
               label="Last name"
               :id="idPrefix + 'LastName'"
+              :ref="idPrefix + 'LastNameRef'"
               class="_input-max-width"
               :value="_lastName"
               @update:value="_lastName = $event"
@@ -112,6 +118,7 @@
             <ATATTextField
               label="Suffix"
               :id="idPrefix + 'Suffix'"
+              :ref="idPrefix + 'SuffixRef'"
               :optional="true"
               width="80"
               :value="_suffix"
@@ -123,6 +130,7 @@
         <ATATTextField
             v-if="showJobTitle"
             :id="idPrefix + 'JobTitle'"
+            :ref="idPrefix + 'JobTitleRef'"
             label="Job Title"
             class="_input-max-width mb-10"
             :value="_title"
@@ -136,6 +144,7 @@
 
         <ATATPhoneInput
           :id="idPrefix + 'PhoneNumber'"
+          :ref="idPrefix + 'PhoneNumberRef'"
           label="Phone number"
           class="width-100 mb-10"
           :value="_phone"
@@ -155,6 +164,7 @@
         <ATATTextField
           v-if="showEmail"
           :id="idPrefix + 'EmailAddress'"
+          :ref="idPrefix + 'EmailAddressRef'"
           label="Email address"
           class="_input-max-width mb-10"
           helpText="Enter a .mil or .gov email address."
@@ -243,11 +253,6 @@ class ATATContactForm extends Vue {
     }
   }
 
-  @Watch("_email")
-  protected emailChange(newVal: string): void {
-    console.log(newVal)
-  }
-
   // data
   private branchData: SelectData[] = [];
   private branchRanksData: AutoCompleteItemGroups = {};
@@ -305,6 +310,9 @@ class ATATContactForm extends Vue {
         value,
       };
     });
+
+    console.log('overhere', this.branchData)
+
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
     this.salutationData = convertSystemChoiceToSelect(ContactData.salutationChoices);
   }

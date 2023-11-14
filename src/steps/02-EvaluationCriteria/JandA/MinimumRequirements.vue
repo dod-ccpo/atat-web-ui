@@ -16,6 +16,7 @@
             </p>
             <ATATTextArea
                 id="minGovReqExplanation"
+                ref="minGovReqExplanationRef"
                 class="max-width-740"
                 :rows="11"
                 :value="minGovReqExplanation"
@@ -80,7 +81,8 @@ import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
 import _ from "lodash";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -99,13 +101,13 @@ import ATATDialog from "@/components/ATATDialog.vue";
 
 class MinimumRequirements extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public suggestedText =

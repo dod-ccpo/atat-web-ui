@@ -25,6 +25,7 @@
 
               <ATATRadioGroup 
                 id="AddlTimeCost"
+                ref="AddlTimeCostRef"
                 name="AddlTimeCost"
                 legend="Would a fair opportunity competition require your project to 
                   migrate from one platform to another, resulting in additional time and cost?"
@@ -37,6 +38,7 @@
                 <div v-if="requiresAddlTimeCost">
                   <ATATTextField
                     id="MigrationEstimatedCost"
+                    ref="MigrationEstimatedCostRef"
                     class="mt-10 mb-10"
                     :value="migrEstCost"
                     @update:value="migrEstCost = $event"
@@ -52,6 +54,7 @@
                     <div class="d-flex justify-space-between">  
                       <ATATTextField
                         id="MigrationEstimatedDelay"
+                        ref="MigrationEstimatedDelayRef"
                         class="mt-0"
                         :value="migrEstDelayAmt"
                         @update:value="migrEstDelayAmt = $event"
@@ -65,6 +68,8 @@
                       />      
                       
                       <ATATSelect 
+                        id="MigrationSelect"
+                        ref="MigrationSelectRef"
                         :items="unitsOfTime"
                         :selectedValue="migrEstDelayUnit"
                         @update:selectedValue="migrEstDelayUnit = $event"
@@ -77,6 +82,7 @@
 
                     <ATATErrorValidation
                       id="MigrationEstimatedDelayValidation"
+                      ref="MigrationEstimatedDelayValidationRef"
                       class="atat-text-field-error"
                       v-if="migrationError"
                       :errorMessages="[migrationErrorMessage]"
@@ -89,6 +95,7 @@
 
               <ATATRadioGroup 
                 id="GovtEngineers"
+                ref="GovtEngineersRef"
                 name="GovtEngineers"
                 :legend="`Are your Government engineers trained and certified in a 
                   specific cloud platform or technology that is unique to ${cspName}?`"
@@ -102,6 +109,7 @@
 
                   <ATATTextField
                     id="PlatformOrTechName"
+                    ref="PlatformOrTechNameRef"
                     class="mt-10 mb-10"
                     :value="gePlatformName"
                     @update:value="gePlatformName = $event"
@@ -112,6 +120,7 @@
                   />
                   <ATATTextArea 
                     id="InsufficientTimeReason"
+                    ref="InsufficientTimeReasonRef"
                     label="Why is there insufficient time to retrain and obtain certifications 
                       in another platform?"
                     helpText="Fill in the blank to complete the suggested sentence 
@@ -138,6 +147,7 @@
 
               <ATATRadioGroup 
                 id="ProductFeature"
+                ref="ProductFeatureRef"
                 name="ProductFeature"
                 :legend="`Is there a specific product or feature that is peculiar to ${cspName}?`"
                 :value="pfPeculiarToCSP"
@@ -149,6 +159,7 @@
                 <div class="mt-10" v-if="hasPeculiarProduct">
                   <ATATRadioGroup 
                     id="IsProductOrFeature"
+                    ref="IsProductOrFeatureRef"
                     name="IsProductOrFeature"
                     legend="Is it a product or feature?"
                     :value="pfType"
@@ -160,6 +171,7 @@
                     <div class="mt-10" v-if="productOrFeatureSelected">
                       <ATATTextField
                         id="UniqueProduct"
+                        ref="UniqueProductRef"
                         class="mt-10 mb-10"
                         :value="pfName"
                         @update:value="pfName = $event"
@@ -171,6 +183,7 @@
 
                       <ATATTextArea 
                         id="WhyEssential"
+                        ref="WhyEssentialRef"
                         :label="`Why is this ${productOrFeatureStr} essential to 
                           the Government’s requirements?`"
                         helpText="Fill in the blank to complete the suggested sentence 
@@ -194,6 +207,7 @@
 
                       <ATATTextArea 
                         id="WhyInadequate"
+                        ref="WhyInadequateRef"
                         class="mt-10"
                         :label="`Why do other similar ${productOrFeatureStr}s not 
                           meet the Government’s requirements?`"
@@ -247,8 +261,8 @@ import { FairOppDocGenType, FairOpportunityDTO } from "@/api/models";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
- 
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 
 @Component({
   components: {
@@ -264,13 +278,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class SoleSourceCause extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public cspName = "";

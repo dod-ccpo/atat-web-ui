@@ -99,7 +99,8 @@ import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import _ from "lodash";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 
 @Component({
   components: {
@@ -111,13 +112,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class WhoConductedResearch extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   /* eslint-disable camelcase */
@@ -139,12 +140,7 @@ class WhoConductedResearch extends Vue {
     if(this.researchers[index]){
       this.researchers.splice(index,1)
       if(index === 0){
-        this.$refs.form.resetValidation?.();
-        // TODO children are no longer present on refs, need fix
-        // const formChildren = this.$refs.form.$children[0].$children;
-        // formChildren.forEach(ref => {
-        //   ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-        // })
+        (this.$refs.form as SaveOnLeaveRefs['form']).resetValidation?.();
       }
     }
   }

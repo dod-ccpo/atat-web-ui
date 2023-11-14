@@ -30,6 +30,7 @@
           <div class="max-width-740">
             <ATATRadioGroup 
               id="OnlyCapableSource"
+              ref="OnlyCapableSourceRef"
               name="OnlyCapableSource"
               :legend="onlySourceCapableLegend"
               @radioButtonSelected="onlyCapableSourceClicked"
@@ -50,6 +51,7 @@
                   <div style="width: 270px; max-width: 270px;">
                     <ATATDatePicker
                       id="ResearchStartDate"
+                      ref="ResearchStartDateRef"
                       class="mr-10"
                       :rules="[
                         $validators.required('Enter a start date using the format MM/DD/YYYY.'),
@@ -64,6 +66,7 @@
                     />
                     <v-btn 
                       id="ResearchAddEndDate"
+                      ref="ResearchAddEndDateRef"
                       @click="toggleResearchEndDate()"
                       @keydown.space="toggleResearchEndDate()"
                       @keydown.enter="toggleResearchEndDate()"
@@ -81,6 +84,7 @@
                   </div>
                   <ATATDatePicker
                     id="ResearchEndDate"
+                    ref="ResearchEndDateRef"
                     v-if="showResearchEndDate"
                     :min="minResearchEndDate"
                     :max="today"
@@ -98,6 +102,7 @@
 
                 <ATATTextArea 
                   id="SupportingData"
+                  ref="SupportingDataRef"
                   class="mt-10"
                   label="Briefly discuss the market research data that supports your 
                     sole source determination"
@@ -124,6 +129,7 @@
 
               <ATATRadioGroup 
                 id="ReviewedCatalogs"
+                ref="ReviewedCatalogsRef"
                 name="ReviewedCatalogs"
                 :legend="reviewedCatalogsLegend"
                 :value="reviewedCatalogs"
@@ -136,6 +142,7 @@
                 <div v-if="wereCatalogsReviewed" class="mt-8" id="ReviewedCatalogsForm">
                   <ATATRadioGroup 
                     id="ReviewedCatalogsSameDates"
+                    ref="ReviewedCatalogsSameDatesRef"
                     name="ReviewedCatalogsSameDates"
                     class="mb-8"
                     v-if="hasResearchDates"
@@ -158,6 +165,7 @@
                       <div style="width: 270px; max-width: 270px;">
                         <ATATDatePicker
                           id="CatalogReviewStartDate"
+                          ref="CatalogReviewStartDateRef"
                           class="mr-10"
                           :rules="[
                             $validators.required(
@@ -174,6 +182,7 @@
                         />
                         <v-btn 
                           id="CatalogReviewAddEndDate"
+                          ref="CatalogReviewAddEndDateRef"
                           @click="toggleCatalogReviewEndDate()"
                           @keydown.space="toggleCatalogReviewEndDate()"
                           @keydown.enter="toggleCatalogReviewEndDate()"
@@ -192,6 +201,7 @@
 
                       <ATATDatePicker
                         id="CatalogReviewEndDate"
+                        ref="CatalogReviewEndDateRef"
                         v-if="showCatalogReviewEndDate"
                         :rules="[
                           $validators.required('Enter an end date using the format MM/DD/YYYY.'),
@@ -208,6 +218,7 @@
                   </div>
                   <ATATTextArea 
                     id="CatalogReviewResults"
+                    ref="CatalogReviewResultsRef"
                     class="mt-10"
                     label="Briefly discuss the results from your JWCC catalog review"
                     helpText="Fill in the blank to complete the suggested sentence below 
@@ -234,6 +245,7 @@
               <hr />
               <ATATCheckboxGroup 
                 id="OtherTechniques"
+                ref="OtherTechniquesRef"
                 groupLabel="What other techniques did you use?"
                 :optional="otherTechniquesOptional"
                 :items="otherTechniquesOptions"
@@ -252,6 +264,7 @@
                 <ATATTextField 
                   v-if="showPersonalKnowledgePerson"
                   id="PersonReliedUpon"
+                  ref="PersonReliedUponRef"
                   :class="personalKnowledgeInputClass"
                   :value="personalKnowledgePerson"
                   @update:value="personalKnowledgePerson = $event"
@@ -270,6 +283,7 @@
                 <ATATTextArea
                   v-if="showTechniquesSummary"
                   id="TechniquesSummary"
+                  ref="TechniquesSummaryRef"
                   :class="techniquesSummaryInputClass"
                   :value="techniquesSummary"
                   @update:value="techniquesSummary = $event"
@@ -319,9 +333,9 @@ import {
 } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { Checkbox, RadioButton, YesNo } from "types/Global";
+import { Checkbox, RadioButton, YesNo, SaveOnLeaveRefs } from "types/Global";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { addDays, format, isAfter, isSameDay, parseISO, sub } from "date-fns";
 
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -348,13 +362,13 @@ import MarketResearchEffortsLearnMore
 
 class MarketResearchEfforts extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public cspName = "";  

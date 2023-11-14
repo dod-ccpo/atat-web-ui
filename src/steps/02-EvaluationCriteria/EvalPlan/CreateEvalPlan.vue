@@ -21,6 +21,7 @@
 
         <ATATRadioGroup 
           id="EvalPlanOptions"
+          ref="EvalPlanOptionsRef"
           legend="Which source selection process is applicable to your requirement?"
           :legend-link="legendLink"
           @openSlideoutPanel="openSlideoutPanel"
@@ -36,6 +37,7 @@
           <hr>
           <ATATRadioGroup 
             id="MethodSelection"
+            ref="MethodSelectionRef"
             :legend="methodLegend"
             :value="selectedMethod"
             @update:value="selectedMethod = $event"
@@ -68,13 +70,14 @@ import {
 import SlideoutPanel from "@/store/slideoutPanel";
 import CreateEvalPlanSlideOut from "./components/CreateEvalPlanSlideOut.vue";
 import { EvaluationPlanDTO } from "@/api/models";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import LoadOnEnter from "@/mixins/loadOnEnter";
 import { hasChanges } from "@/helpers";
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import NoEvalPlan from "./NoEvalPlan.vue";
- 
+
 
 @Component({
   mixins: [LoadOnEnter],
@@ -87,13 +90,13 @@ import NoEvalPlan from "./NoEvalPlan.vue";
 
 class CreateEvalPlan extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public isLoading = false;

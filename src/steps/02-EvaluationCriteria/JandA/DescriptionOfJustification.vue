@@ -56,6 +56,7 @@
 
           <ATATTextArea
               id="descriptionOfJustification"
+              ref="descriptionOfJustificationRef"
               class="max-width-740"
               :rows="7"
               :rules="
@@ -83,7 +84,8 @@
 <script lang="ts">
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {FairOpportunityDTO} from "@/api/models";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -99,13 +101,13 @@ import {hasChanges} from "@/helpers";
 
 class DescriptionOfJustification extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public justficationDescription = "";

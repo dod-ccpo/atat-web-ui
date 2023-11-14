@@ -18,6 +18,7 @@
 
       <ATATTextField 
         :id="'CustomSpec' + index" 
+        :ref="'CustomSpec' + index + 'Ref'" 
         class="width-100"
         :value="_customSpecifications[index]"
         @update:value="onCustomSpecsChange($event, index)"

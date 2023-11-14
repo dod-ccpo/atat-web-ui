@@ -31,6 +31,7 @@
 
             <ATATTextArea
               id="BarriersTextArea"
+              ref="BarriersTextAreaRef"
               class="textarea-max-width"
               label="Plans to remove barriers to fair opportunity"
               :labelSrOnly="true"
@@ -50,6 +51,7 @@
             />
 
             <ExplanationButtons 
+              ref="ExplanationButtonsRef"
               :showChangeToCustomButton="showChangeToCustomButton"
               :showChangeToDAPPSButton="showChangeToDAPPSButton"
               :showRestoreSuggestionButton="showRestoreSuggestionButton"
@@ -81,7 +83,8 @@
 </template>
 
 <script lang="ts">
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -111,13 +114,13 @@ import { routeNames } from "@/router/stepper";
 
 class ReviewBarriers extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public barriersToOpportunity = "";

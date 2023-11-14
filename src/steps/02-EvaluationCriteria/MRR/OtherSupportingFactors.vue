@@ -9,6 +9,7 @@
           </h1>
           <ATATRadioGroup
             id="ProductFeature"
+            ref="ProductFeatureRef"
             name="ProductFeature"
             card="true"
             width="180"
@@ -22,6 +23,7 @@
             <ATATTextArea
               class="textarea-max-width"
               id="ExceptionTextArea"
+              ref="ExceptionTextAreaRef"
               label="Briefly discuss any other
               facts or details supporting the use of this exception"
               :value="exceptionDiscussion"
@@ -47,10 +49,10 @@ import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
 import _ from "lodash";
-import { RadioButton } from "../../../../types/Global";
+import { RadioButton, SaveOnLeaveRefs } from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -61,13 +63,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class OtherSupportingFactors extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   /* eslint-disable camelcase */

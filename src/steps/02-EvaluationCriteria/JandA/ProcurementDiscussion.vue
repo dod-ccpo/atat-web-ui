@@ -8,6 +8,7 @@
           </h1>
           <ATATTextArea
             id="procurementText"
+            ref="procurementTextRef"
             class="max-width-740"
             label="Discuss the constraints of your procurement"
             :helpText="procurementParagraphText"
@@ -28,6 +29,7 @@
           <ATATRadioGroup
             class="mb-10"
             id="ExistingEnv"
+            ref="ExistingEnvRef"
             :legend="'Is there an existing environment that would enable ' + cspName +
              ' to immediately support a task order award?'"
             :value="existingEnv"
@@ -38,6 +40,7 @@
           <div v-if="existingEnv === 'YES'">
             <ATATTextArea
               id="procurementImpact"
+              ref="procurementImpactRef"
               class="max-width-740"
               label="How does your previous procurement impact this contracting effort?"
               helpText="Review the suggested language and edit any details based on your unique
@@ -71,8 +74,8 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "../../../../types/Global";
 import { FairOpportunityDTO } from "@/api/models";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
- 
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 
 @Component({
   components:{
@@ -83,13 +86,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class ProcurementDiscussion extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public procurementParagraphText = "Identify any schedule requirements, unique" +

@@ -14,6 +14,7 @@
             </p>
             <ATATTextArea
                 id="descriptionOfImpact"
+                ref="descriptionOfImpactRef"
                 class="max-width-740"
                 :rows="11"
                 :value="impactOfRequirementExplanation"
@@ -43,7 +44,8 @@ import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import ATATTextArea from "@/components/ATATTextArea.vue";
  
 
@@ -55,13 +57,13 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 
 class ImpactOfRequirement extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public impactOfRequirementExplanation = "";

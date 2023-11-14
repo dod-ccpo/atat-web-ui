@@ -61,6 +61,7 @@
             </ATATExpandableLink>
             <ATATTextArea
                 id="descriptionOfJustification"
+                ref="descriptionOfJustificationRef"
                 class="max-width-740"
                 :rows="11"
                 :value="uniqueSourceExplanation"
@@ -82,6 +83,7 @@
             />
             <v-btn
               id="RestoreMinGovReqExplanationButton"
+              ref="RestoreMinGovReqExplanationButtonRef"
               class="_secondary font-size-14 px-4 mb-1 mt-1"
               :disabled="isMinGovReqExpDefaultUnmodified"
               @click="onRestoreMinGovReqExpClick"
@@ -103,6 +105,7 @@
 
     <ATATDialog
         id="UniqueSourceModal"
+        ref="UniqueSourceModalRef"
         :showDialog="showRestoreModal"
         title="Restore to suggestion?"
         no-click-animation
@@ -128,7 +131,8 @@ import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import {FairOpportunityDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {getCSPCompanyName, hasChanges} from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -146,13 +150,13 @@ import ATATDialog from "@/components/ATATDialog.vue";
 
 class UniqueSource extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private csp = "";

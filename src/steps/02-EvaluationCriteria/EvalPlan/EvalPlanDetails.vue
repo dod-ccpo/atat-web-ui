@@ -13,6 +13,7 @@
       <ATATRadioGroup
         v-if="isStandards"
         id="CustomStandards"
+        ref="CustomStandardsRef"
         class="copy-max-width"
         :items="standardsRadioGroupItems"
         :legend="radioGroupLegend"
@@ -26,6 +27,7 @@
       <ATATCheckboxGroup 
         v-if="evalPlan.source_selection === 'SET_LUMP_SUM'"
         id="SetLumpSumCheckboxes"
+        ref="SetLumpSumCheckboxesRef"
         groupLabel="In addition to the required criteria listed above, what other 
           assessment areas would you like to evaluate?"
         groupLabelId="OtherAssessmentAreasLabel"
@@ -38,6 +40,7 @@
       <CustomSpecifications 
         v-if="showCustomSpecifications"
         id="CustomSpecEntry"
+        ref="CustomSpecEntryRef"
         :sourceSelection="evalPlan.source_selection"
         :isDifferentiator="false"
         :isOptional="true"
@@ -61,7 +64,8 @@ import { EvaluationPlanDTO } from "@/api/models";
 import { Checkbox, RadioButton } from "types/Global";
 import { convertEvalPlanAssessmentAreaToCheckbox, hasChanges, scrollToId } from "@/helpers";
 import _ from "lodash";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
@@ -75,13 +79,13 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 class EvalPlanDetails extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public isLoading = false;

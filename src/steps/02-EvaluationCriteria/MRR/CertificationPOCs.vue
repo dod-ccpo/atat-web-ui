@@ -14,7 +14,9 @@
           </p>
           <CertificationPOCTypeForm
             v-if="showChildren"
+            key="technicalForm"
             id="technicalForm"
+            ref="technicalFormRef"
             POCType="Technical"
             sequence="1"
             :pocPrimary="pocPrimary"
@@ -30,7 +32,9 @@
           <hr>
           <CertificationPOCTypeForm
             v-if="showChildren"
+            key="requirementsForm"
             id="requirementsForm"
+            ref="requirementsFormRef"
             POCType="Requirements"
             sequence="2"
             :pocPrimary="pocPrimary"
@@ -51,10 +55,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, Watch, toNative } from "vue-facing-decorator";
 import CertificationPOCTypeForm
   from "@/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.vue";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ContactDTO, FairOpportunityDTO, FinancialPOCType } from "@/api/models";
 import { convertColumnReferencesToValues } from "@/api/helpers";
@@ -69,14 +74,14 @@ import { getStringFromReferenceColumn, hasChanges } from "@/helpers";
 })
 
 class CertificationPOCs extends Vue {
-  
-  $refs!: SaveOnLeaveRefs
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   /* eslint-disable camelcase */
@@ -91,16 +96,27 @@ class CertificationPOCs extends Vue {
   private requirementsPOCType = ""
   private showChildren = false
 
+  @Watch('technicalContactData', { deep: true })
+  public thing1(newVal: any) {
+    console.log('tech', newVal)
+  }
+
+  @Watch('requirementContactData', { deep: true })
+  public thing2(newVal: any) {
+    console.log('reqs', newVal)
+  }
+
   private get currentData(): FairOpportunityDTO {
-    const fairOppSaved: FairOpportunityDTO = _.cloneDeep(AcquisitionPackage.fairOpportunity)
-      || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
-    const formData: FairOpportunityDTO = {
-      technical_poc: this.technicalPOCId,
-      technical_poc_type: this.technicalPOCType as FinancialPOCType,
-      requirements_poc: this.requirementsPOCId,
-      requirements_poc_type: this.requirementsPOCType as FinancialPOCType
-    };
-    return Object.assign(fairOppSaved,formData)
+    // const fairOppSaved: FairOpportunityDTO = _.cloneDeep(AcquisitionPackage.fairOpportunity)
+    //   || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
+    // const formData: FairOpportunityDTO = {
+    //   technical_poc: this.technicalPOCId,
+    //   technical_poc_type: this.technicalPOCType as FinancialPOCType,
+    //   requirements_poc: this.requirementsPOCId,
+    //   requirements_poc_type: this.requirementsPOCType as FinancialPOCType
+    // };
+    // return Object.assign(fairOppSaved,formData)
+    return {}
   }
 
   private savedData: FairOpportunityDTO = {}
