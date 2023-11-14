@@ -85,7 +85,7 @@
             :model-value="_value"
             @update:modelValue="_value = $event"
             :placeholder="placeHolder"
-            @blur="validate"
+            @blur="validateEvent"
             class="_phone-number-input"
             :hide-details="true"
             :suffix="suffix"
@@ -146,8 +146,8 @@ import Inputmask from "inputmask/";
 import { CountryObj, ValidationRule } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
-
 export const Countries: CountryObj[] = [
   {
     name: "United States",
@@ -371,6 +371,7 @@ export const Countries: CountryObj[] = [
 ];
 
 @Component({
+  emits:["blur"],
   components: {
     ATATTextField,
     ATATAutoComplete,
@@ -383,12 +384,10 @@ class ATATPhoneInput extends Vue {
   $refs!: {
     atatPhoneTextField: ComponentPublicInstance &
     {
-      errorBucket: string[];
-      errorCount: number;
       reset: ()=> void;
       blur: ()=> void;
       focus: ()=> void;
-      validate: () => boolean;
+      validate: () => Promise<string[]>;
     };
     atatPhoneDropdown: ComponentPublicInstance &
     {
@@ -463,9 +462,16 @@ class ATATPhoneInput extends Vue {
   }
 
   //ATATErrorValidation
-  private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatPhoneTextField.errorBucket;
-  }
+  public setErrorMessage(): void {
+    this.errorMessages = [];
+    this.$refs.atatPhoneTextField.validate().then(
+      async (response: string[]) => {
+        if (response.length>0){
+          this.errorMessages = response;
+        }
+      }
+    );
+  } 
 
   public get validateFormNow(): boolean {
     return AcquisitionPackage.getValidateNow;
@@ -473,8 +479,7 @@ class ATATPhoneInput extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.atatPhoneTextField.validate())
-      this.setErrorMessage();
+    this.setErrorMessage();
   }
 
 
@@ -483,10 +488,10 @@ class ATATPhoneInput extends Vue {
     this.setPhoneMask();
   }
   //@Events
-  private validate(e: FocusEvent,) : void{
+  private validateEvent(e: FocusEvent,) : void{
     const input = e.target as HTMLInputElement;
     this._value = input.value
-    // this.setErrorMessage();
+    this.setErrorMessage();
     this.$emit('blur', input.value);
   }
 
@@ -519,7 +524,6 @@ class ATATPhoneInput extends Vue {
 
   private clearErrorMessages(): void{
     this.$nextTick(()=>{
-      this.$refs.atatPhoneTextField.errorBucket = [];
       this.errorMessages = [];
     });
   }

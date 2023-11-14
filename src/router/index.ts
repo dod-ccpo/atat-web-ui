@@ -44,4 +44,10 @@ const router = createRouter({
   history: createWebHashHistory()
 });
 
+stepperRoutes.forEach((route) =>{
+  route.children?.forEach((childRoute) =>{
+    router.addRoute(childRoute)
+  })
+})
+
 export default router;

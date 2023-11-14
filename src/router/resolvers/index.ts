@@ -764,7 +764,6 @@ export const AnticipatedUserAndDataNeedsResolver = (
 ): string => {
   const groupId = DescriptionOfWork.currentGroupId
   setDontNeedButton(groupId)
-
   if (
     (DescriptionOfWork.XaaSNoneSelected &&
 			DescriptionOfWork.currentDOWSection === 'XaaS') ||

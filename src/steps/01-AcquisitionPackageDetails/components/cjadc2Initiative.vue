@@ -2,23 +2,20 @@
 <template>
     <div >
       <ATATRadioGroup
+        ref="CJADC2RadioExternalRef"
         :id="id"
         :legend="legend" 
         :value="_cjadc2Initiative"
         @update:value="_cjadc2Initiative = $event"
         :items="radioGroupItems"
-        @helpTextLinkClicked="helpTextLinkClicked"
-        :isHelpTextLinkExternal="true"
-        @radioButtonSelected='radioButtonSelected'
         name="cjadc2-initiative-radio-group"
         :rules="_rules"
-        :help-text-link="helpTextLink"
-        :helpText="helpText"
       >
       </ATATRadioGroup>
 
       <div v-if='_cjadc2Initiative=== "YES"' class="mt-4">
         <ATATTextField
+          ref="CJADC2RadioExternalTextField"
           label="Estimate the percent of this package’s total estimated funds that will go to 
             CJADC2 programs or efforts."
           :value='_cjadc2Percentage'

@@ -23,6 +23,7 @@
                 <ATATRadioGroup 
                   v-if="isDelivery"
                   id="DeliveryOptions"
+                  ref="DeliveryOptionsRef"
                   class="mb-8"
                   :items="deliveryOptions"
                   :value="instance.typeOfDelivery"
@@ -33,6 +34,7 @@
                 <ATATRadioGroup 
                   v-if="isMobile"
                   id="MobilityOptions"
+                  ref="MobilityOptionsRef"
                   class="mb-8"
                   :items="mobilityOptions"
                   :value="instance.typeOfMobility"
@@ -49,6 +51,7 @@
               </div>
 
               <AnticipatedDurationandUsage
+                ref="AnticipatedDurationandUsageRef"
                 typeForUsage="requirement"
                 typeForDuration="requirement"
                 :anticipatedNeedUsage="instance.anticipatedNeedUsage"

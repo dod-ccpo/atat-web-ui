@@ -105,6 +105,12 @@
     .v-input__append-inner {
       padding-left: 0 !important;
     }
+    
+    ._atat-select{
+      #Error{
+        display: none;
+      }
+    }
   }
 
 }
@@ -140,4 +146,5 @@ input[type=number] {
     border: 1px solid $error !important;
     outline: 1px solid $error;
   }
+ 
 }

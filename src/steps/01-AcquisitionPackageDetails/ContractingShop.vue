@@ -27,6 +27,7 @@
             </p>
 
             <ATATRadioGroup 
+              ref="ATATRadioForm"
               id="ContractingShopChoice"
               name="ContractingShopChoice"
               :items="contractingShopOptions"
@@ -71,7 +72,7 @@
 </template>
 <script lang="ts">
 import { Component , Hook, Vue, toNative} from "vue-facing-decorator";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -79,7 +80,7 @@ import LateFormAlert from "@/portfolios/portfolio/LateFormAlert.vue";
 import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { SlideoutPanelContent, RadioButton } from "../../../types/Global";
+import { SlideoutPanelContent, RadioButton, SaveOnLeaveRefs} from "../../../types/Global";
 import ContractingShopLearnMore from "./ContractingShopLearnMore.vue";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ProjectOverviewDTO } from "@/api/models";
@@ -87,8 +88,6 @@ import { ProjectOverviewDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import Summary, { isStepTouched } from "@/store/summary";
- 
-
 
 @Component({
   components: {
@@ -100,14 +99,17 @@ import Summary, { isStepTouched } from "@/store/summary";
   }
 })
 class ContractingShop extends Vue {
-  $refs!: SaveOnLeaveRefs
-  
+
+
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    }).catch()
   }
+
   
   public isPageLoading = false;
   public packageNotInitialized = false;

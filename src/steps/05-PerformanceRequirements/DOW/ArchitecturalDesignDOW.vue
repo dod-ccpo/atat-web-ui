@@ -1,6 +1,7 @@
 <template>
-  <v-form ref="form" lazy-validation>
+  <v-form lazy-validation>
     <ArchitecturalDesignForm
+      ref="ArchitecturalDesignFormRef"
       :isDOW="true"
       :statementArchitecturalDesign="DOWArchNeeds.statement"
       @update:statementArchitecturalDesign="DOWArchNeeds.statement = $event"
@@ -24,9 +25,10 @@ import ArchitecturalDesignForm from "@/components/DOW/ArchitecturalDesignForm.vu
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import DescriptionOfWork, { defaultDOWArchitecturalNeeds } from "@/store/descriptionOfWork";
 import { ArchitecturalDesignRequirementDTO } from "@/api/models";
+import { SaveOnLeaveRefs } from "types/Global";
  
 
 @Component({
@@ -37,13 +39,14 @@ import { ArchitecturalDesignRequirementDTO } from "@/api/models";
 
 class ArchitectureDesignDOW extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public DOWArchNeeds = defaultDOWArchitecturalNeeds;

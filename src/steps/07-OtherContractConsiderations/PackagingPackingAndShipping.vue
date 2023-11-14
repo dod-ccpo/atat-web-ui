@@ -55,9 +55,9 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ContractConsiderationsDTO } from "@/api/models";
-import { Checkbox } from "types/Global";
+import { Checkbox, SaveOnLeaveRefs } from "types/Global";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -67,15 +67,15 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class PackagingPackingAndShipping extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+ 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
   public otherValueRequiredMessage 
     = "Please enter your packaging, packing and shipping instructions."
   

@@ -12,24 +12,28 @@
       />
       <hr />
     </div>
-    <SecurityRequirementsCheckboxes
-      v-if="hasSecret"
-      :hasSecret="hasSecret"
-      :isDOW="isDOW"
-      :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
-      :selectedSecurityRequirements="_selectedSecretSecurityRequirements"
-      @update:selectedSecurityRequirements="_selectedSecretSecurityRequirements = $event"
-    />
-    <hr v-if="hasTopSecret && hasSecret" />
-    <SecurityRequirementsCheckboxes
-      v-if="hasTopSecret"
-      :hasTopSecret="hasTopSecret"
-      :isDOW="isDOW"
-      :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
-      :selectedSecurityRequirements="_selectedTopSecretSecurityRequirements"
-      @update:selectedSecurityRequirements="_selectedTopSecretSecurityRequirements = $event"
-    />
-  </div>
+    <v-form ref="SecurityRequirementsForm" class="copy-max-width" lazy-validation>
+      <SecurityRequirementsCheckboxes
+        ref="SecretCheckboxesRef"
+        v-if="hasSecret"
+        :hasSecret="hasSecret"
+        :isDOW="isDOW"
+        :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
+        :selectedSecurityRequirements="_selectedSecretSecurityRequirements"
+        @update:selectedSecurityRequirements="_selectedSecretSecurityRequirements = $event"
+      />
+      <hr v-if="hasTopSecret && hasSecret" />
+      <SecurityRequirementsCheckboxes
+        ref="TopSecretCheckboxesRef"
+        v-if="hasTopSecret"
+        :hasTopSecret="hasTopSecret"
+        :isDOW="isDOW"
+        :securityRequirementsCheckboxes="securityRequirementsCheckboxes"
+        :selectedSecurityRequirements="_selectedTopSecretSecurityRequirements"
+        @update:selectedSecurityRequirements="_selectedTopSecretSecurityRequirements = $event"
+      />
+    </v-form>
+    </div>
 </template>
 <script lang="ts">
 

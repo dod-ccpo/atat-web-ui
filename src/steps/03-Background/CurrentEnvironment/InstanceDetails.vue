@@ -35,6 +35,7 @@
       <ATATRadioGroup 
         v-if="envLocation === 'HYBRID' || !envLocation"
         id="EnvironmentLocation"
+        ref ="EnvironmentLocationRef"
         class="mb-8"
         :items="envLocationOptions"
         tooltipText="<strong>On-premise environments</strong> are deployed in-house 
@@ -50,6 +51,7 @@
         <RegionsDeployedAndUserCount 
           v-if="instanceData.instance_location === 'CLOUD'"
           id="RegionsDeployed"
+          ref="RegionsDeployedRef"
           class="mb-8"
           :hasTextFields="false"
           groupLabelId="RegionsDeployedLabel"
@@ -63,6 +65,7 @@
 
         <ATATRadioGroup 
           id="ClassificationLevelOptions"
+          ref="ClassificationLevelOptionsRef"
           v-if="classificationRadioOptions.length > 1"
           class="mb-8"
           :items="classificationRadioOptions"
@@ -83,6 +86,7 @@
 
         <CurrentUsage 
           class="mb-10"
+          ref="CurrentUsageRef"
           :usageTrafficSpikeCauses="usageTrafficSpikeCauses"
           @update:usageTrafficSpikeCauses="usageTrafficSpikeCauses = $event"
           :currentUsageDescription="instanceData.current_usage_description"
@@ -96,6 +100,7 @@
         <RegionsDeployedAndUserCount 
           :hasTextFields="true"
           id="RegionsUsers"
+          ref="RegionsUsersRef"
           :optional="true"
           groupLabelId="RegionUsersLabel"
           groupLabel="Where are your users located?"
@@ -115,12 +120,14 @@
         </h2>
 
         <InstanceConfig
+          ref="InstanceConfigRef"
           :data="instanceConfig"
           @update:data="instanceConfigChange = $event"
           :storageUnits="storageUnits"
         />
 
         <PerformanceTier 
+          ref="PerformanceTierRef"
           :data="performanceTier"
           @update:data="performanceTierChange = $event"
           :storageUnits="storageUnits"
@@ -135,6 +142,7 @@
           </h2>
 
           <PricingDetails 
+            ref="PricingDetailsRef"
             :pricingDetails="pricingDetails" 
             @update:pricingDetails="pricingDetailsChange = $event"
           />
@@ -149,6 +157,7 @@
         </h2>
 
         <AdditionalInfo 
+          ref="AdditionalInfoRef"
           :additionalInfo="instanceData.additional_information" 
           @update:additionalInfo="instanceData.additional_information = $event"
         />
@@ -179,6 +188,7 @@ import {
   SelectData,
   CurrEnvInstancePricingDetails,
   RadioButton,
+  SaveOnLeaveRefs,
 } from "types/Global";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -186,7 +196,6 @@ import {
   ClassificationLevelDTO, 
   CurrentEnvironmentInstanceDTO 
 } from "@/api/models";
-
 
 import CurrentEnvironment, 
 { 
@@ -196,7 +205,7 @@ import CurrentEnvironment,
 import classificationRequirements from "@/store/classificationRequirements";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import _ from "lodash";
 
 
@@ -215,12 +224,13 @@ import _ from "lodash";
 
 class InstanceDetails extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 
@@ -437,7 +447,7 @@ class InstanceDetails extends Vue {
     this.isNewInstance = await CurrentEnvironment.isNewInstance();
     if (!this.isNewInstance) {
       // user is editing an existing instance, validate on load
-      await this.validate();
+      await this.validateForm();
       AcquisitionPackage.setValidateNow(true);
       this.$nextTick(async () => {
         AcquisitionPackage.setValidateNow(true);
@@ -445,15 +455,16 @@ class InstanceDetails extends Vue {
     }
   }
 
-  public async validate(): Promise<void> {
+  public async validateForm(): Promise<void> {
     await this.$nextTick(async () => {
-      this.isValid = await this.$refs.form.validate();
+      this.isValid = 
+        (await(await this.$refs.form as SaveOnLeaveRefs["form"]).validate()).valid;
     })
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    await this.validateOnLoad();
+    // await this.validateOnLoad();
   }
 
   // EJY NEED ROUTE RESOLVER AFTER on classifications page if no location selected
@@ -524,7 +535,8 @@ class InstanceDetails extends Vue {
     // need to flip `setValidateNow` to true in page component's `saveOnLeave` method
     // for pages with checkbox groups that have validation rules
     await AcquisitionPackage.setValidateNow(true);
-    const isValid = await this.$refs.form.validate();
+    const isValid = 
+      (await(await this.$refs.form as SaveOnLeaveRefs["form"]).validate()).valid;
 
     try {
       this.instanceData.instance_number = this.instanceNumber;

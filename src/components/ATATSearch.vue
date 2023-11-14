@@ -206,6 +206,12 @@ import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import AppSections from "@/store/appSections";
 
 @Component({
+  emits:[
+    "search",
+    "onGInvoiceSearchComplete",
+    "clear", 
+    "blur"
+  ],
   components: {
     ATATAlert,
     ATATSVGIcon,
