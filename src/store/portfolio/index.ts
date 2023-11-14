@@ -332,7 +332,7 @@ export class PortfolioDataStore extends VuexModule {
       // ATAT TODO AT-9177 (EPIC) - add graceful fail message to user in UI
       throw new Error(`Error provisioning portfolio: ${error}`);
     }
-    AcquisitionPackage.doSetShowContinueSpinner(false)
+    AcquisitionPackage.setShowContinueSpinner(false)
   }
 
   /**
