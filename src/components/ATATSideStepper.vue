@@ -171,14 +171,14 @@ class ATATSideStepper extends Vue {
       })
     }else{
       this.$router.push({
-        path: step?.route + "/" + lastSubStep?.route,
+        path: lastSubStep?.route,
         query: {
           direction: "next"
         },
       })
     }
   }
-
+  
   private get getCurrentStepperStep(): StepInfo {
     this.activeStep = Steps.currentStep?.stepNumber||"";
     return Steps.currentStep as StepInfo;
