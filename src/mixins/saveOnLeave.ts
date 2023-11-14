@@ -7,6 +7,7 @@ import {
   SaveOnLeaveRefs 
 } from 'types/Global';
 import { ComponentPublicInstance } from 'vue';
+import { isArray } from 'lodash';
 
 export type To = RouteLocationNormalized
 export type From = RouteLocationNormalized
@@ -22,7 +23,7 @@ export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> 
       if (Object.prototype?.hasOwnProperty?.call(form, "setErrorMessage")){
         form.setErrorMessage();
       } 
-      if (Object.prototype?.hasOwnProperty?.call(form, "validate")){
+      if (form.$.type.name?.toLowerCase()==="vform"){
         const isFormValid = (await form.validate())?.valid;
         isFormsValid.push(isFormValid);
       } else {
@@ -41,7 +42,7 @@ async function getRef(form:ComponentPublicInstance):Promise<void>{
       console.log('42: => ' + ref)
       const _formRef = (refs as unknown as FormRef)[ref];
       if (_formRef){
-        if (Object.prototype?.hasOwnProperty?.call(_formRef, "validate")){
+        if (!(isArray(_formRef)) && _formRef.$.type.name?.toLowerCase()==="vform"){
           isFormsValid.push((await(_formRef.validate())).valid);
         }
         if (Object.prototype?.hasOwnProperty?.call(_formRef, "setErrorMessage")){
@@ -78,12 +79,12 @@ export async function beforeRouteLeaveFunction(p: {
       //add something here
 
     } else if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
-      const el = document.getElementsByClassName("error--text")[0];
-      if (el) {
-        el.scrollIntoView({
-          behavior: "smooth"
-        });
-      }
+      // const el = document.getElementsByClassName("error--text")[0];
+      // if (el) {
+      //   el.scrollIntoView({
+      //     behavior: "smooth"
+      //   });
+      // }
       return false
     } else if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
       Steps.setLeaveStepComplete(p.from.name as string);  

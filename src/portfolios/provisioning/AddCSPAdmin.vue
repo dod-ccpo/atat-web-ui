@@ -171,9 +171,10 @@
               </a>
             </p>
 
-            <form ref="CSPAdminForm">
+            <v-form ref="CSPAdminForm" lazy-validation>
             
               <ATATTextField 
+                ref="adminDoDID"
                 id="AdminDoDId"
                 :value="adminDoDId"
                 @update:value="adminDoDId = $event"
@@ -189,6 +190,7 @@
               />
 
                 <ATATCheckboxGroup 
+                  ref="classificationCheckboxes"
                   v-if="classificationLevels.length > 1" 
                   id="ClassificationSelection"
                   class="mt-10"
@@ -204,6 +206,7 @@
                   :noDescriptions="true"
                 />
                 <ATATCheckboxGroup
+                  ref="impactLevelCheckboxes"
                   v-if="selectedClassificationLevels.includes('Unclassified')
                   && showUnclassifiedILs"
                   id="ImpactLevelSelection"
@@ -219,6 +222,7 @@
                 />
 
               <ATATTextField
+                ref="emailUnclassified"
                 id="UnclassifiedEmail"
                 v-if="unclassifiedSelected"
                 :value="unclassifiedEmail"
@@ -235,6 +239,7 @@
                 ]"
               />
               <ATATTextField
+                ref="emailScrt"
                 id="ScrtEmail"
                 v-if="scrtSelected"
                 :value="scrtEmail"
@@ -252,6 +257,7 @@
               />
 
               <ATATTextField
+                ref="emailTS"
                 id="TSEmail"
                 v-if="tsSelected"
                 :value="tsEmail"
@@ -278,7 +284,7 @@
                 </div>
               </div>
 
-            </form>
+            </v-form>
           </template>
         </ATATDialog>
 
@@ -306,11 +312,12 @@ import {
   DataTableHeader,
   PortfolioAdmin,
   PortfolioProvisioning,
+  SaveOnLeaveRefs,
   SlideoutPanelContent,
 } from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
-import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import { shallowRef } from "vue";
@@ -328,13 +335,15 @@ import { shallowRef } from "vue";
 })
 
 class AddCSPAdmin extends Vue {
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
+    AcquisitionPackage.setSkipValidation(true)
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public admins: PortfolioAdmin[] = [];
