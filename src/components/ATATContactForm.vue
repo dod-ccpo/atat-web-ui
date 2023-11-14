@@ -16,7 +16,7 @@
       @radioButtonSelected="contactTypeChange"
     />
 
-    <v-form ref="atatGlobalContact">
+    <v-form :ref="idPrefix + 'atatGlobalContact'">
       <ATATSelect
         :id="idPrefix + 'Branch'"
         :ref="idPrefix + 'BranchRef'"
