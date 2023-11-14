@@ -107,7 +107,7 @@
         :disable-sort="true"
         :items-per-page="-1"
         hide-default-footer
-        class="_clin-table border1 border-base-lighter"
+        class="_clin-table"
       >
       <thead>
         <tr>

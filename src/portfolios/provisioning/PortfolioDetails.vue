@@ -10,8 +10,8 @@
             <p v-if="!selectedPackage">
               The following information will be used to refer to this project throughout ATAT and
               will be sent to your CSP during provisioning.<strong>
-              Please do not include any Controlled Unclassified Information (CUI) or classified
-              information within your portfolio title.
+              Do not include any Controlled Unclassified Information (CUI) or classified
+              information.
             </strong>
             </p>
             <p v-else>
@@ -19,6 +19,7 @@
             </p>
           </div>
           <div v-if="!selectedPackage" class="copy-max-width">
+          <div class="h2 mb-6">1. Portfolio Details</div>
           <ATATTextField 
             label="Portfolio title"
             class="_input-max-width mb-10"
@@ -45,7 +46,7 @@
             icon="arrow_drop_down"
           />
           </div>
-          <ATATCheckboxGroup
+          <!-- <ATATCheckboxGroup
             v-if="showCheckbox"
             :groupLabel="checkboxLabel"
             :groupLabelHelpText="checkboxHelpText"
@@ -59,7 +60,98 @@
             cardWidth="800"
             :rules="checkboxRules"
             :validateOnLoad="false"
-          />
+            :largeLabel="true"
+          /> -->
+          <div 
+          v-if="showCheckbox"
+          >
+            <div class="h2">2. Tell us about your cloud environments</div>
+            <div class="text-base font-size-14 mb-10 copy-max-width">
+              Based on your task order details, you have funding for 
+              (<strong>Unclassified</strong>,
+              <strong>Secret</strong>, and 
+              <strong>Top Secret</strong>) 
+              levels. For each option below, select whether you need to provision
+              a new environment or transfer billing for an existing cloud environment
+              to your JWCC task order.
+            </div>
+            <v-table
+            class="_environments-table"
+            >
+              <thead>
+                <th 
+                v-for="header in environmentHeaders"
+                :key="header.label"
+                >
+                  <div class="d-flex align-center justify-center">
+                    <span :class="[{'mr-2': header.tooltip}]">{{ header.label }}</span>
+                    <ATATTooltip
+                      v-if="header.tooltip"
+                      id="PortfolioEnvironmentsTooltip"
+                      :tooltipText="header.tooltip"
+                      label="PortfolioEnvironments"
+                    />
+                  </div>
+              </th>
+              </thead>
+              <tbody>
+                <tr
+                v-for="item in checkboxItems"
+                :key="item.id"
+                >
+                <td>
+                  <div class="d-flex flex-column _environment-info">
+                    <span class="_environment-label">{{ item.label }}</span>
+                    <span class="_environment-description">{{ item.description }}</span>
+                  </div>
+                </td>
+                <td>
+                  <v-radio
+                  class="d-flex justify-center"
+                  >
+                  </v-radio>
+                </td>
+                <td>
+                  <v-radio
+                  class="d-flex justify-center"
+                  ></v-radio>
+                </td>
+                <td>
+                  <v-radio
+                  class="d-flex justify-center"
+                  ></v-radio>
+                </td>
+                </tr>
+             
+                <tr
+                v-for="item in classificationLevels"
+                :key="item"
+                >
+                <td>
+                  <div class="d-flex flex-column _environment-info">
+                    <span class="_environment-label">{{ item }}</span>
+                  </div>
+                </td>
+                <td>
+                  <v-radio
+                  class="d-flex justify-center"
+                  >
+                  </v-radio>
+                </td>
+                <td>
+                  <v-radio
+                  class="d-flex justify-center"
+                  ></v-radio>
+                </td>
+                <td>
+                  <v-radio
+                  class="d-flex justify-center"
+                  ></v-radio>
+                </td>
+                </tr>
+              </tbody>
+            </v-table>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -101,7 +193,7 @@ class PortfolioDetails extends Vue {
   public selectedCSPProvider = "";
   public checkboxLabel = ""
   public checkboxHelpText = ""
-
+  public classificationLevels:string[] = []
   private agencyData: SelectData[] = [];
   private selectedILs: string[] = [];
   
@@ -158,6 +250,24 @@ class PortfolioDetails extends Vue {
     selectedILs: [],
   }
 
+  public environmentHeaders = [
+    {label: "Available Cloud Environments"},
+    {label: "New Environment", 
+      tooltip: `Select this option if you need to stand up
+      a new cloud workload or migrate an existing on-premise environment to the cloud.
+      During the provisioning process, a new environment will be created within each level
+      selected below.`
+    },
+    {label: "Transfer Billing", 
+      tooltip: `Select this option if you have
+      existing workloads within the cloud environment and need to update billing
+      information to your JWCC task order. ATAT will NOT create a new cloud environment
+      during the provisioning process.`
+    },
+    {label: "Not applicable"},
+  ]
+  
+
   public async setTaskOrderData(): Promise<void> {
     const storeData = PortfolioStore.portfolioProvisioningObj;
     if (storeData) {
@@ -173,9 +283,11 @@ class PortfolioDetails extends Vue {
         selectedILs: this.selectedILs,
       }
       this.selectedCSPProvider = storeData.csp ?? ""
-      this.checkboxHelpText = this.selectedPackage? "":"Select all that apply"
-      this.checkboxLabel = this.selectedPackage? "":"What impact level(s) do you need to" +
-      " provision?"
+      this.checkboxHelpText = this.selectedPackage? "": `Based on your task order details, you have
+      funding for (Unclassified, Secret and Top Secret)
+      levels. For each option below, select whether you need to provision a new environment or
+      transfer billing for an existing cloud environment to your JWCC task order.`
+      this.checkboxLabel = this.selectedPackage? "": `2. Tell us about your cloud environments`
 
       this.selectedILs = storeData.selectedILs ?? [];
     }
@@ -187,6 +299,8 @@ class PortfolioDetails extends Vue {
       await OrganizationData.getAgencyData();
     }
     this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data); 
+    this.classificationLevels = PortfolioStore.portfolioProvisioningObj?.classificationLevels
+      ?.filter((level: string) => level.toLowerCase() !== 'unclassified') ?? [];
     await this.setTaskOrderData();
     if (PortfolioStore.CSPHasImpactLevels && unclassCSPs.length > 1) {
       await this.buildILCheckboxItems();

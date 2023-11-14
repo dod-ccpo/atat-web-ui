@@ -44,7 +44,8 @@ interface CSPAdmin {
 }
 interface EnvironmentForProvisioning {
   cspName: string;
-  operators: CSPAdmin[]
+  operators: CSPAdmin[];
+  isMigration?: boolean;
 }
 
 export interface CSPProvisioningData {
