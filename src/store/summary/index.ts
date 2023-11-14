@@ -1899,8 +1899,8 @@ export class SummaryStore extends VuexModule {
     const contractConsiderations =
         AcquisitionPackage.contractConsiderations as ContractConsiderationsDTO;
 
-    const coi = contractConsiderations.potential_conflict_of_interest;
-    const coiInfo = contractConsiderations.conflict_of_interest_explanation;
+    const coi = contractConsiderations?.potential_conflict_of_interest;
+    const coiInfo = contractConsiderations?.conflict_of_interest_explanation;
     const isTouched = coi === "YES" ? true : coi === "NO";
     const isComplete =  coi === "NO" || (coiInfo !== undefined && coiInfo.length > 0);
     let description = ""

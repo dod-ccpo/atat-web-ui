@@ -1,19 +1,29 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect, vi} from 'vitest';
+import { VueWrapper, mount } from '@vue/test-utils';
+//import { DefaultProps } from "vue/types/options";
 import SummaryStepSix from "@/steps/07-OtherContractConsiderations/SummaryStepSix.vue"
 import { SummaryItem } from "types/Global";
 import Summary,  * as SummaryExportedFunctions from "@/store/summary";
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import validators from "@/plugins/validation";
+
+const vuetify = createVuetify({
+  components,
+  directives,
+})
+
+const wrapper: VueWrapper = mount(SummaryStepSix, {
+  global: {
+    plugins: [vuetify, validators]
+  }
+});
+const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
 
-Vue.use(Vuetify);
 
 describe("Testing SummaryStepSix Component", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
- 
 
   const touchedSummaryItem: SummaryItem[] = [{ 
     "title": "TouchedSummaryItem", 
@@ -40,12 +50,7 @@ describe("Testing SummaryStepSix Component", () => {
   }]
  
   beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(SummaryStepSix, {
-      vuetify,
-      localVue
-    });
-    jest.spyOn(Summary, "validateStepSix").mockImplementation();
+    vi.spyOn(Summary, "validateStepSix").mockImplementation(()=> Promise.resolve());
   });
 
   describe("testing SummaryStepSix render", () => {
@@ -57,24 +62,24 @@ describe("Testing SummaryStepSix Component", () => {
   describe("GETTERS", () => {
     describe("introParagraph()=> ", () => {
       it("returns `We need some more details` statement", async () => {
-        jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(false);
-        wrapper.vm.setIntroParagraph()
-        expect(wrapper.vm.$data.introParagraph).toContain("We need some more details");
+        vi.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(false);
+        vm.setIntroParagraph()
+        expect(vm.$data.introParagraph).toContain("We need some more details");
       });
       it("returns `You are all done` statement", async () => {
-        jest.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
-        wrapper.vm.setIntroParagraph()
-        expect(wrapper.vm.$data.introParagraph).toContain("You are all done");
+        vi.spyOn(SummaryExportedFunctions,"isStepComplete").mockReturnValueOnce(true);
+        vm.setIntroParagraph()
+        expect(vm.$data.introParagraph).toContain("You are all done");
       });
     })
   })
 
   describe("FUNCTIONS", () => {
     it("saveOnLeave()=> expect function to be called", async () => {
-      const toggleButtonColorMock = jest.spyOn(Summary, "toggleButtonColor").mockImplementation(
+      const toggleButtonColorMock = vi.spyOn(Summary, "toggleButtonColor").mockImplementation(
         ()=> Promise.resolve()
       );
-      await wrapper.vm.saveOnLeave();
+      await vm.saveOnLeave();
       expect(toggleButtonColorMock).toHaveBeenCalled();
     });
   })
