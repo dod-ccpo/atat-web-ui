@@ -171,7 +171,7 @@ class ATATSideStepper extends Vue {
       })
     }else{
       this.$router.push({
-        path: step?.route + "/" + lastSubStep?.route,
+        path: lastSubStep?.route,
         query: {
           direction: "next"
         },
