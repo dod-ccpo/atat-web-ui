@@ -25,7 +25,7 @@
               label="Briefly discuss any other
               facts or details supporting the use of this exception"
               :value="exceptionDiscussion"
-              @update:value="exceptionDiscussion"
+              @update:value="exceptionDiscussion = $event"
               :maxChars="1000"
               :rows="6"
               :validateItOnBlur="true"

@@ -42,7 +42,7 @@
         :isDifferentiator="false"
         :isOptional="true"
         :customSpecifications="customSpecifications"
-        @update:customSpecifications="customSpecifications = $event"
+        @update:customSpecifications="onCustomSpecsChange"
       />
 
     </div>
@@ -161,7 +161,6 @@ class EvalPlanDetails extends Vue {
   public customSpecifications: string[] = [];
 
   public initCustomSpecs(): void {
-    console.log('custom: ', this.customSpecifications)
     this.customSpecifications = this.evalPlan.custom_specifications?.split(",") || [];
     if (!this.isLoading) {
       this.$nextTick(() => {
@@ -183,8 +182,8 @@ class EvalPlanDetails extends Vue {
     newVal === "YES" ? this.initCustomSpecs() : this.clearCustomSpecs();
   }
 
-  @Watch("customSpecifications")
-  public customSpecificationsChange(newVal: string[]): void {
+  public onCustomSpecsChange(newVal: string[]): void {
+    console.log('newVal: ', newVal)
     this.evalPlan.custom_specifications = newVal.join(",")
   }
 
@@ -224,9 +223,9 @@ class EvalPlanDetails extends Vue {
       this.evalPlan = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);
       if (this.evalPlan.source_selection === "SET_LUMP_SUM") {
-        this.selectedSetLumpSumOptions = this.evalPlan.standard_specifications?.split(",") || [];
+        this.selectedSetLumpSumOptions = this.evalPlan.standard_specifications?.split(",") ?? [];
       }
-      this.selectedStandardsRadioItem = this.evalPlan.has_custom_specifications || "";
+      this.selectedStandardsRadioItem = this.evalPlan.has_custom_specifications ?? "";
 
       this.lumpSumCheckboxOptions = this.setLumpSumCheckboxOptions();
     }
@@ -244,6 +243,10 @@ class EvalPlanDetails extends Vue {
 
   public async saveOnLeave(): Promise<boolean> {
     try {
+      /* eslint-disable camelcase */
+      this.evalPlan.custom_specifications = this.customSpecifications.join(",");
+      /* eslint-enable camelcase */
+
       if (this.hasChanged) {
         await EvaluationPlan.setEvaluationPlan(this.currentData);
         await EvaluationPlan.saveEvaluationPlan();

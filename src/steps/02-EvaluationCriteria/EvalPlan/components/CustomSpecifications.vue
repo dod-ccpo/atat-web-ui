@@ -20,7 +20,7 @@
         :id="'CustomSpec' + index" 
         class="width-100"
         :value="_customSpecifications[index]"
-        @update:value="_customSpecifications[index] = $event"
+        @update:value="onCustomSpecsChange($event, index)"
         :rules="!isOptional
           ? [$validators.required('Please enter a custom ' + specificationType + '.')]
           : []"
@@ -87,6 +87,10 @@ class CustomSpecifications extends Vue {
       return "differentiator";
     }
     return this.isStandards ? "compliance standard" : "assessment area";
+  }
+
+  public onCustomSpecsChange(newVal: string, index: number): void {
+    this._customSpecifications[index] = newVal
   }
 
   public addCustomSpec(): void {

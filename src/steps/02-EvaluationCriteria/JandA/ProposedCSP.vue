@@ -130,8 +130,8 @@ class ProposedCSP extends Vue {
 
   @Watch('validateFormNow')
   public validateNowChange(): void {
-    if(!this.$refs.radioButtonGroup.validate())
-      this.setErrorMessage();
+    // if(!this.$refs.radioButtonGroup.validate())
+    //   this.setErrorMessage();
   }
   public setErrorMessage(): void {
     this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
