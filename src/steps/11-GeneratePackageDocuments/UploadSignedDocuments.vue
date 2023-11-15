@@ -32,9 +32,8 @@
             </p>
           </template>
         </ATATAlert>
-      <div class="d-flex">
+      <div class="d-flex" style="width:968px">
         <div
-          style="width: 588px;"
         >
           <ATATFileUpload
             :validFileFormats="validFileFormats"
@@ -56,7 +55,7 @@
         </div>
         <div>
           <div
-            style="width: 380px;"
+            style="width: 300px;"
             class="pl-5">
             <ATATAlert
               v-if="!isCompleted && uploadedFiles.length>0"
@@ -99,7 +98,7 @@
                 <li
                   v-for="(item,idx) in filesNeeded"
                   :key="idx"
-                  class="pb-1"
+                  class="pb-1 mx-7"
                 >
                   {{item}}
                 </li>
