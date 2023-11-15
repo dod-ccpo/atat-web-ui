@@ -58,6 +58,11 @@
       }
     }
   }
+
+  &._disabled.v-theme--light{
+    background-color:  $disabled-darker !important;
+    color: #fff !important;
+  }
   
   &._error.v-theme--light{
     background-color:  $error !important;
