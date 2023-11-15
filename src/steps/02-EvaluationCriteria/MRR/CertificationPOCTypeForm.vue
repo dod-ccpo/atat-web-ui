@@ -4,10 +4,12 @@
     <ATATRadioGroup
         v-if="loaded"
         :id="POCType + 'certificationPOCType'"
+        :ref="POCType + 'certificationPOCTypeRef'"
         :legend="'Will any of these individuals serve as the '
               + POCType + ' Certifier for your J&A?'"
         :legend-font-normal-weight="true"
-        :value.sync="_selectedSysId"
+        :value="_selectedSysId"
+        @update:value="_selectedSysId = $event"
         :items="certificationPOCTypeOptions"
         :name="'certification-poc-' + POCType + '-radio-group'"
         class="copy-max-width mb-10 mt-3"
@@ -16,24 +18,38 @@
     <ATATContactForm
         v-if="showContactForm"
         :id-prefix="POCType"
+        :ref="POCType + 'ContactFormRef'"
         role-legend="What role best describes this individual’s affiliation with the DoD?"
         :role-legend-font-normal-weight="true"
+        :roles="contactRoles"
+        :selectedRole="_newContactData.role"
+        @update:selectedRole="_newContactData.role = $event"
+        @update:roles="contactRoles = $event"
         :show-job-title="true"
-        :title.sync="_newContactData.title"
+        :title="_newContactData.title"
+        @update:title="_newContactData.title = $event"
         :show-email="false"
-        :firstName.sync="_newContactData.first_name"
-        :lastName.sync="_newContactData.last_name"
-        :middleName.sync="_newContactData.middle_name"
-        :phone.sync="phone"
-        :phoneExt.sync="_newContactData.phone_extension"
-        :selectedBranch.sync="selectedBranch"
-        :selectedPhoneCountry.sync="selectedPhoneCountry"
-        :selectedRank.sync="selectedRank"
-        :selectedRole.sync="_newContactData.role"
-        :selectedSalutation.sync="_newContactData.salutation"
-        :suffix.sync="_newContactData.suffix"
+        :firstName="_newContactData.first_name"
+        @update:firstName="_newContactData.first_name = $event"
+        :lastName="_newContactData.last_name"
+        @update:lastName="_newContactData.last_name = $event"
+        :middleName="_newContactData.middle_name"
+        @update:middleName="_newContactData.middle_name = $event"
+        :phone="phone"
+        @update:phone="phone = $event"
+        :phoneExt="_newContactData.phone_extension"
+        @update:phoneExt="_newContactData.phone_extension = $event"
+        :selectedBranch="selectedBranch"
+        @update:selectedBranch="selectedBranch = $event"
+        :selectedPhoneCountry="selectedPhoneCountry"
+        @update:selectedPhoneCountry="selectedPhoneCountry = $event"
+        :selectedRank="selectedRank"
+        @update:selectedRank="selectedRank = $event"
+        :selectedSalutation="_newContactData.salutation"
+        @update:selectedSalutation="_newContactData.salutation = $event"
+        :suffix="_newContactData.suffix"
+        @update:suffix="_newContactData.suffix = $event"
         :loaded="loaded"
-        :roles.sync="contactRoles"
         :validation-msg-custom="'your ' + POCType + ' POC’s'"
         @resetContactForm="resetContactForm"
     />
@@ -43,15 +59,15 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Prop,  Watch, Vue, toNative } from "vue-facing-decorator";
-import {CountryObj, RadioButton, RankData, SelectData} from "../../../../types/Global";
+import { CountryObj, RadioButton, RankData, SelectData } from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import {ContactDTO, FinancialPOCType} from "@/api/models";
+import { ContactDTO, FinancialPOCType } from "@/api/models";
 import ContactData from "@/store/contactData";
-import parsePhoneNumber, {AsYouType, CountryCode} from "libphonenumber-js";
-import {Countries} from "@/components/ATATPhoneInput.vue";
+import parsePhoneNumber, { AsYouType, CountryCode } from "libphonenumber-js";
+import { Countries } from "@/components/ATATPhoneInput.vue";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { PropSync } from "@/decorators/custom"
- 
+
 
 @Component({
   components: {
@@ -77,7 +93,7 @@ class CertificationPOCTypeForm extends Vue {
   private loaded = false;
 
   private phone = "";
-  private selectedBranch: SelectData = {};
+  private selectedBranch: SelectData = { text: "", value: "" };
   private selectedRank: RankData = {grade: "", name: "", sysId: ""};
   
   public resetContactForm(): void {

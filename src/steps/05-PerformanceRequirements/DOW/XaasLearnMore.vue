@@ -29,7 +29,7 @@
             </p>
             <div v-if="requirement.categories">
               <p class="mb-4">This category includes the following:</p>
-              <ul>
+              <ul class="_atat-ul">
                 <li 
                   v-for="(category, index) in requirement.categories"
                   :key="index + '-' + category"

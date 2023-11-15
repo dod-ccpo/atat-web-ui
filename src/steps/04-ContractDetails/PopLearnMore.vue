@@ -14,7 +14,7 @@
     <p>
       Use the following guidelines when determining your task order PoP:
     </p>
-    <ul>
+    <ul class="_atat-ul">
       <li>
         A single base and/or option period cannot exceed one calendar year.
       </li>

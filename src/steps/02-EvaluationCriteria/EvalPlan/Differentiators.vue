@@ -17,10 +17,12 @@
 
         <ATATCheckboxGroup
           id="DifferentiatorOptions"
+          ref="DifferentiatorOptionsRef"
           :card="true"
           :noDescriptions="true"
           :items="differentiators"
-          :value.sync="selectedDifferentiators"
+          :value="selectedDifferentiators"
+          @update:value="selectedDifferentiators = $event"
           :rules="[
             $validators.required('Please select at least one differentiator.'),
           ]"
@@ -29,11 +31,13 @@
 
         <CustomSpecifications 
           id="CustomDifferentiatorEntry"
+          ref="CustomDifferentiatorEntry"
           v-if="showCustomDifferentiators"
           sourceSelection="TechProposal"
           :isDifferentiator="true"
           :isOptional="customDiffsOptional"
-          :customSpecifications.sync="customDifferentiators"
+          :customSpecifications="customDifferentiators"
+          @update:customSpecifications="customDifferentiators = $event"
         />     
 
       </div>
@@ -49,7 +53,8 @@ import CustomSpecifications from "./components/CustomSpecifications.vue"
 import { Checkbox } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { EvaluationPlanDTO } from "@/api/models";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import { convertEvalPlanDifferentiatorToCheckbox, hasChanges } from "@/helpers";
 
 import _ from "lodash";
@@ -64,13 +69,13 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 class Differentiators extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   /* eslint-disable camelcase */

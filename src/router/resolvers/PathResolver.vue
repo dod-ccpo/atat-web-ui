@@ -20,9 +20,6 @@ class RouteResolver extends Vue {
       throw new Error("could not obtain step resolver");
     }
 
-    console.log('route resolver: ', routeResolver)
-    console.log('current: ', current)
-
     const pathName = InvokePathResolver(routeResolver, current, direction);
     this.$router.push({ path: pathName });
   }

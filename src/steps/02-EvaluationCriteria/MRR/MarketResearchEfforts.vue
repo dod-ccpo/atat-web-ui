@@ -30,10 +30,12 @@
           <div class="max-width-740">
             <ATATRadioGroup 
               id="OnlyCapableSource"
+              ref="OnlyCapableSourceRef"
               name="OnlyCapableSource"
               :legend="onlySourceCapableLegend"
               @radioButtonSelected="onlyCapableSourceClicked"
-              :value.sync="cspIsOnlySourceCapable"
+              :value="cspIsOnlySourceCapable"
+              @update:value="cspIsOnlySourceCapable = $event"
               :items="onlySourceCapableOptions"
               :rules="[$validators.required('Please select an option.')]"
             />
@@ -49,12 +51,14 @@
                   <div style="width: 270px; max-width: 270px;">
                     <ATATDatePicker
                       id="ResearchStartDate"
+                      ref="ResearchStartDateRef"
                       class="mr-10"
                       :rules="[
                         $validators.required('Enter a start date using the format MM/DD/YYYY.'),
                         $validators.isDateValid('Please enter a valid date.'),
                       ]"
-                      :value.sync="researchStartDate"
+                      :value="researchStartDate"
+                      @update:value="researchStartDate = $event"
                       :min="minResearchStartDate"
                       :max="today"
                       label="Start date"
@@ -62,6 +66,7 @@
                     />
                     <v-btn 
                       id="ResearchAddEndDate"
+                      ref="ResearchAddEndDateRef"
                       @click="toggleResearchEndDate()"
                       @keydown.space="toggleResearchEndDate()"
                       @keydown.enter="toggleResearchEndDate()"
@@ -79,6 +84,7 @@
                   </div>
                   <ATATDatePicker
                     id="ResearchEndDate"
+                    ref="ResearchEndDateRef"
                     v-if="showResearchEndDate"
                     :min="minResearchEndDate"
                     :max="today"
@@ -86,7 +92,8 @@
                       $validators.required('Enter an end date using the format MM/DD/YYYY.'),
                       $validators.isDateValid('Please enter a valid date.'),
                     ]"
-                    :value.sync="researchEndDate"
+                    :value="researchEndDate"
+                    @update:value="researchEndDate = $event"
                     label="End date"
                     placeHolder="MM/DD/YYYY"
                   />
@@ -95,11 +102,13 @@
 
                 <ATATTextArea 
                   id="SupportingData"
+                  ref="SupportingDataRef"
                   class="mt-10"
                   label="Briefly discuss the market research data that supports your 
                     sole source determination"
                   helpText="Include the who, what, when, where, why, and outcome of your research."
-                  :value.sync="supportingData"
+                  :value="supportingData"
+                  @update:value="supportingData = $event"
                   :maxChars="1000"
                   :rows="6"
                   :validateItOnBlur="true"
@@ -120,9 +129,11 @@
 
               <ATATRadioGroup 
                 id="ReviewedCatalogs"
+                ref="ReviewedCatalogsRef"
                 name="ReviewedCatalogs"
                 :legend="reviewedCatalogsLegend"
-                :value.sync="reviewedCatalogs"
+                :value="reviewedCatalogs"
+                @update:value="reviewedCatalogs = $event"
                 :items="reviewedCatalogsOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -131,12 +142,14 @@
                 <div v-if="wereCatalogsReviewed" class="mt-8" id="ReviewedCatalogsForm">
                   <ATATRadioGroup 
                     id="ReviewedCatalogsSameDates"
+                    ref="ReviewedCatalogsSameDatesRef"
                     name="ReviewedCatalogsSameDates"
                     class="mb-8"
                     v-if="hasResearchDates"
                     legend="Was this research conducted on the same date or date range 
                       as indicated above?"
-                    :value.sync="sameAsResearchDate"
+                    :value="sameAsResearchDate"
+                    @update:value="sameAsResearchDate = $event"
                     :items="sameDatesOptions"
                     :rules="[$validators.required('Please select an option.')]"
                   />
@@ -152,6 +165,7 @@
                       <div style="width: 270px; max-width: 270px;">
                         <ATATDatePicker
                           id="CatalogReviewStartDate"
+                          ref="CatalogReviewStartDateRef"
                           class="mr-10"
                           :rules="[
                             $validators.required(
@@ -159,7 +173,8 @@
                             ),
                             $validators.isDateValid('Please enter a valid date.'),
                           ]"
-                          :value.sync="catalogReviewStartDate"
+                          :value="catalogReviewStartDate"
+                          @update:value="catalogReviewStartDate = $event"
                           :min="minResearchStartDate"
                           :max="today"
                           label="Start date"
@@ -167,6 +182,7 @@
                         />
                         <v-btn 
                           id="CatalogReviewAddEndDate"
+                          ref="CatalogReviewAddEndDateRef"
                           @click="toggleCatalogReviewEndDate()"
                           @keydown.space="toggleCatalogReviewEndDate()"
                           @keydown.enter="toggleCatalogReviewEndDate()"
@@ -185,12 +201,14 @@
 
                       <ATATDatePicker
                         id="CatalogReviewEndDate"
+                        ref="CatalogReviewEndDateRef"
                         v-if="showCatalogReviewEndDate"
                         :rules="[
                           $validators.required('Enter an end date using the format MM/DD/YYYY.'),
                           $validators.isDateValid('Please enter a valid date.'),
                         ]"
-                        :value.sync="catalogReviewEndDate"
+                        :value="catalogReviewEndDate"
+                        @update:value="catalogReviewEndDate = $event"
                         :min="minCatalogReviewEndDate"
                         :max="today"
                         label="End date"
@@ -200,11 +218,13 @@
                   </div>
                   <ATATTextArea 
                     id="CatalogReviewResults"
+                    ref="CatalogReviewResultsRef"
                     class="mt-10"
                     label="Briefly discuss the results from your JWCC catalog review"
                     helpText="Fill in the blank to complete the suggested sentence below 
                       or write your own description."
-                    :value.sync="catalogReviewResults"
+                    :value="catalogReviewResults"
+                    @update:value="catalogReviewResults = $event"
                     :maxChars="1000"
                     :rows="6"
                     :validateItOnBlur="true"
@@ -225,13 +245,16 @@
               <hr />
               <ATATCheckboxGroup 
                 id="OtherTechniques"
+                ref="OtherTechniquesRef"
                 groupLabel="What other techniques did you use?"
                 :optional="otherTechniquesOptional"
                 :items="otherTechniquesOptions"
-                :value.sync="selectedTechniquesUsed"
+                :value="selectedTechniquesUsed"
+                @update:value="selectedTechniquesUsed = $event"
                 :rules="techniquesRules"
                 :hasOtherValue="true"
-                :otherValueEntered.sync="otherTechnique"
+                :otherValueEntered="otherTechnique"
+                @update:otherValueEntered="otherTechnique = $event"
                 otherValueRequiredMessage="Enter your other technique."
                 :validateOtherOnBlur="true"
                 :otherValue="getOtherTechniqueSysId"
@@ -241,8 +264,10 @@
                 <ATATTextField 
                   v-if="showPersonalKnowledgePerson"
                   id="PersonReliedUpon"
+                  ref="PersonReliedUponRef"
                   :class="personalKnowledgeInputClass"
-                  :value.sync="personalKnowledgePerson"
+                  :value="personalKnowledgePerson"
+                  @update:value="personalKnowledgePerson = $event"
                   label="Name and/or position of the person relied upon"
                   tooltipText="This refers to the following technique you selected: 
                     “Personal knowledge in procuring supplies/services of this type”"
@@ -258,8 +283,10 @@
                 <ATATTextArea
                   v-if="showTechniquesSummary"
                   id="TechniquesSummary"
+                  ref="TechniquesSummaryRef"
                   :class="techniquesSummaryInputClass"
-                  :value.sync="techniquesSummary"
+                  :value="techniquesSummary"
+                  @update:value="techniquesSummary = $event"
                   label="Summarize the market research performed using the technique(s) 
                     selected above"
                   helpText="Include the who, what, when, where, why, and outcome of your research."
@@ -306,9 +333,9 @@ import {
 } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { Checkbox, RadioButton, YesNo } from "types/Global";
+import { Checkbox, RadioButton, YesNo, SaveOnLeaveRefs } from "types/Global";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { addDays, format, isAfter, isSameDay, parseISO, sub } from "date-fns";
 
 import SlideoutPanel from "@/store/slideoutPanel";
@@ -335,13 +362,13 @@ import MarketResearchEffortsLearnMore
 
 class MarketResearchEfforts extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public cspName = "";  
