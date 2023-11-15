@@ -19,7 +19,9 @@
                     :key="index"
                   >
                     <span class="_step-circle">{{ index + 1 }}</span>
+                    <v-list-item-content>
                     {{ stepText }}
+                    </v-list-item-content>
                   </v-list-item>
                 </v-list>
                 <v-btn 
