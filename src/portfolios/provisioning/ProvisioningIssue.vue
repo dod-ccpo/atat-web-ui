@@ -9,9 +9,9 @@
                 <p>
                   We encountered an issue while retrieving your task order details
                   from Electronic Data Access (EDA). To successfully provision a new
-                  portfolio and track cloud spending within ATAT, we need to gather
-                  missing information about your contract line item numbers (CLINs),
-                  including period of performance dates and total/obligated values.
+                  portfolio and track cloud spending within ATAT, we need to gather missing
+                  information about your contract line item numbers (CLINs), including period
+                  of performance dates and total/obligated values.
                 </p>
                 <v-list class="_atat-stepper mb-15">
                   <v-list-item 
@@ -66,11 +66,10 @@ import AppSections from '@/store/appSections';
 class ProvisioningIssue extends Vue {
   
     public stepsText =[
-      `Contact your Contracting Officer to ensure all information
-       is accurately entered within EDA. Updating improperly formatted
-       data within that system can resolve this issue.`,
-      `A support ticket has been generated, and a member of our
-        Support Team will reach out within one business day.`
+      `Contact your Contracting Officer to ensure all 
+      information is accurately transmitted to EDA.`,
+      `A support ticket has been generated, 
+      and a member of our Support Team will reach out within one business day.`
     ]
   
     public get activeTaskOrder(){
