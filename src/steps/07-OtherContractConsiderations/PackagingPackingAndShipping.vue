@@ -23,6 +23,7 @@
             <ATATCheckboxGroup
               :key="selectedOptions.toString()"
               id="PackagingEtcCheckboxes"
+              ref="PackagingEtcCheckboxesRef"
               :value="selectedOptions"
               @update:value="selectedOptions = $event"
               :hasOtherValue="true"
@@ -66,7 +67,6 @@ import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 })
 
 class PackagingPackingAndShipping extends Vue {
-
  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {

@@ -10,6 +10,11 @@
     margin-bottom: 0;
   }
 
+  .v-list-item__content{
+    display: flex !important;
+    align-items: center;
+  }
+
 }
 .package-title {
   font-family: 'Roboto';
@@ -19,6 +24,7 @@
   line-height: 24px;
   letter-spacing: 0.25px;
   color: #161B1E;
+  margin-left: 24px;
 }
 .signature-required {
   display: flex;
