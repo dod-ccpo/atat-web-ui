@@ -162,8 +162,6 @@ class GatherPriceEstimates extends Vue {
       acc[current.classification_display || ""].push(current);
       return acc;
     }, Object.create(null));
-    console.log(165)
-    console.log(this.tempEstimateDataSource)
   }
 
   public async createPopString(): Promise<string> {
