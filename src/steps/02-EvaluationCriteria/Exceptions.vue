@@ -34,13 +34,14 @@
               </template>
             </ATATAlert>
 
-            <FairOppExceptions 
+            <FairOppExceptions
+              ref="FairOppExceptionsRef"
               legend="Based on your market research, do any of the following exceptions to fair 
                 opportunity apply to your acquisition?"
               classes="copy-max-width mb-10 mt-3"
-              :value="selectedException"
-              @update:value="selectedException = $event"
-              :rules="[$validators.required('Please select an option')]"            
+              :selectedException="selectedException"
+              @onSelected="selectedException = $event"
+              :rules="[$validators.required('Please select an option')]"  
             />
 
             <ATATAlert
@@ -87,12 +88,11 @@
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import FairOppExceptions from "./components/FairOppExceptions.vue"
-
+import { SaveOnLeaveRefs } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
-import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -103,13 +103,13 @@ import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 class Exceptions extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private selectedException 
@@ -160,11 +160,9 @@ class Exceptions extends Vue {
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity as string;
     }
-
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)

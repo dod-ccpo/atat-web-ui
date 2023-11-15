@@ -22,9 +22,11 @@
 
           <ATATRadioGroup
             id="FairOpportunityFollowOn"
+            ref="FairOpportunityFollowOnRef"
             name="FairOpportunityFollowOn"
             legend="Is your agency preparing a fair opportunity competitive follow-on requirement?"
-            :value.sync="selectedRequirement"
+            :value="selectedRequirement"
+            @update:value="selectedRequirement = $event"
             :items="followOnRequirement"
             :rules="[$validators.required('Please select an option.')]"
           />
@@ -32,6 +34,7 @@
             <div v-if="needFollowOnDate">
               <ATATDatePicker
                 id="FollowOnDate"
+                ref="FollowOnDateRef"
                 class="mt-8"
                 :rules="[
                   $validators.required(
@@ -39,7 +42,8 @@
                   ),
                   $validators.isDateValid(`Enter a date using the format 'MM/DD/YYYY`),
                 ]"
-                :value.sync="followOnDate"
+                :value="followOnDate"
+                @update:value="followOnDate = $event"
                 label="When do you expect to have this follow-on competed, solicited
                  and awarded by?"
                 placeHolder="MM/DD/YYYY"
@@ -49,33 +53,39 @@
           <hr />
           <ATATRadioGroup
             id="PursuingTraining"
+            ref="PursuingTrainingRef"
             name="PursuingTraining"
             legend="Is your agency pursuing training and/or certifications for Government engineers
              in other technologies?"
-            :value.sync="selectedTrainingRequirement"
+            :value="selectedTrainingRequirement"
+            @update:value="selectedTrainingRequirement = $event"
             :items="trainingRequirement"
             :rules="[$validators.required('Please select an option.')]"
           />
           <hr />
           <ATATRadioGroup
             id="IaaSRequirement"
+            ref="IaaSRequirementRef"
             name="IaaSRequirement"
             legend="Are you planning future development and enhancement of Infrastructure as a
              Service (IaaS) components that will shift to a containerized platform?"
             helpText="This does not apply to Software as a Service (SasS) or Platform as a Service
              (PaaS) requirements."
-            :value.sync="selectedIaaSRequirement"
+            :value="selectedIaaSRequirement"
+            @update:value="selectedIaaSRequirement = $event"
             :items="IaaSRequirement"
             :rules="[$validators.required('Please select an option.')]"
           />
           <hr />
           <ATATRadioGroup
             id="PriorProcurement"
+            ref="PriorProcurementRef"
             name="PriorProcurement"
             tooltipText="If there are no previous contracts related to this effort, select “No.”
              We’ll find out more about your procurement history in the Background section."
             legend="Was a J&A prepared to support any prior procurements related to this effort?"
-            :value.sync="selectedProcurement"
+            :value="selectedProcurement"
+            @update:value="selectedProcurement = $event"
             :items="priorProcurement"
             :rules="[$validators.required('Please select an option.')]"
           />
@@ -84,9 +94,11 @@
               <ATATTextArea
                 class="textarea-max-width mt-8"
                 id="ProcurementTextArea"
+                ref="ProcurementTextAreaRef"
                 label="Briefly explain the results of any actions taken to remove barriers from
                  previous J&As"
-                :value.sync="procurementDiscussion"
+                :value="procurementDiscussion"
+                @update:value="procurementDiscussion = $event"
                 :maxChars="1000"
                 :rows="6"
                 :validateItOnBlur="true"
@@ -105,7 +117,7 @@
 </template>
 
 <script lang="ts">
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import AlertForForms from "../components/AlertForForms.vue";
@@ -117,7 +129,7 @@ import { FairOppDocGenType, FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
 import { getYesNoRadioOptions, hasChanges } from "@/helpers";
-import { YesNo } from "types/Global";
+import { YesNo, SaveOnLeaveRefs } from "types/Global";
  
 
 
@@ -132,13 +144,13 @@ import { YesNo } from "types/Global";
 
 class RemoveBarriers extends Vue {
   
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   /* eslint-disable camelcase */

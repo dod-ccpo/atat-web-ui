@@ -28,7 +28,7 @@
             <p>
               In order to start the Requirements Cost Estimate section, you need
               to:
-            <ul>
+            <ul class="_atat-ul">
               <li v-show="isPoPIncomplete" class="my-2">
                 <router-link 
                     id="CompletePOP"

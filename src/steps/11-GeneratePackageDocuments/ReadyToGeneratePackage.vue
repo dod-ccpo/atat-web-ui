@@ -16,7 +16,7 @@
             </h2>
             <br/>
             <span class="mt-2 mb-0">
-              <ul>
+              <ul class="_atat-ul">
                 <li class="mb-5">
                   We’ll use the information that you provided to generate your required 
                   documents for this acquisition package. This process will take a few minutes.
