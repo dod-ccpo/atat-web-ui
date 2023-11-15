@@ -23,7 +23,7 @@
                   </v-list-item>
                 </v-list>
                 <v-btn 
-                  class="v-btn _primary d-inline-block"
+                  class="v-btn primary d-inline-block"
                   @click="returnToDashboard"
                 >
                 <ATATSVGIcon
@@ -51,7 +51,7 @@
   
 <script lang="ts">
 import Vue from "vue";
-import {Component } from 'vue-property-decorator'
+import {Component} from 'vue-property-decorator'
 import ATATSVGIcon from '@/components/icons/ATATSVGIcon.vue';
 import PortfolioStore from '@/store/portfolio';
 import AppSections from '@/store/appSections';
