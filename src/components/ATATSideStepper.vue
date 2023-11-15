@@ -178,7 +178,7 @@ class ATATSideStepper extends Vue {
       })
     }
   }
-
+  
   private get getCurrentStepperStep(): StepInfo {
     this.activeStep = Steps.currentStep?.stepNumber||"";
     return Steps.currentStep as StepInfo;
