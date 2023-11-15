@@ -306,6 +306,7 @@ import {
   DataTableHeader,
   PortfolioAdmin,
   PortfolioProvisioning,
+  SelectedPortfolioEnv,
   SlideoutPanelContent,
 } from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
@@ -634,11 +635,11 @@ class AddCSPAdmin extends Vue {
     })
   }
 
-  public createILCheckboxes(impactLevels:string[]): void {
+  public createILCheckboxes(impactLevels:SelectedPortfolioEnv[]): void {
     impactLevels.forEach(value => {
-      const il = value.split('_')[1].toUpperCase();
-      this.impactLevelCompareArray.push(value)
-      this.impactLevelOptions.push({id: il, label: il, value});
+      const il = value.value.split('_')[1].toUpperCase();
+      this.impactLevelCompareArray.push(value.value)
+      this.impactLevelOptions.push({id: il, label: il, value: value.value});
     })
   }
 

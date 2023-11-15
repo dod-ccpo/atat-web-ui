@@ -677,7 +677,7 @@ export interface PortfolioAdmin {
   scrtEmail?: string;
   hasTSAccess?: YesNo;
   tsEmail?: string;
-  impactLevels?:string[]
+  impactLevels?:SelectedPortfolioEnv []
 }
 
 export interface PortfolioProvisioning extends EDAResponse {

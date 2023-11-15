@@ -110,7 +110,11 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 
 import PortfolioStore from "@/store/portfolio";
-import { ClassificationLevels, PortfolioProvisioning } from "../../../types/Global";
+import { 
+  ClassificationLevels, 
+  PortfolioProvisioning, 
+  SelectedPortfolioEnv 
+} from "../../../types/Global";
 import _ from "lodash";
 
 interface CSPAdmins {
@@ -176,7 +180,7 @@ class ReadyToProvision extends Vue {
         if (hasILs) {
           debugger;
           admin.impactLevels?.forEach(async value => {
-            const il = value.split('_')[1].toUpperCase();
+            const il = value.value.split('_')[1].toUpperCase();
             const i = this.cspAdmins.findIndex(obj => obj.env === "Unclassified/" + il);
             const sort = parseInt(il.replace(/\D/g, "")); // get the number from the IL string
             await this.addCSPAdminToEnv(i, "Unclassified/" + il, sort);

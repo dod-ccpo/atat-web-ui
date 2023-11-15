@@ -246,6 +246,7 @@ export class PortfolioDataStore extends VuexModule {
   public addEnvForProvisioning(data: { 
     cspName: string, admin: CSPAdmin}
   ): void {
+    debugger
     const i = this.envsForProvisioning.findIndex(obj => obj.cspName === data.cspName);
     if (i > -1) {
       this.envsForProvisioning[i].operators.push(data.admin);
@@ -296,6 +297,7 @@ export class PortfolioDataStore extends VuexModule {
       console.log(this.portfolioProvisioningObj)
       this.portfolioProvisioningObj.admins?.forEach(admin => {
         if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
+          debugger
           if (admin.impactLevels && admin.impactLevels.length) {
             const dodId = admin.DoDId;
             const email = admin.unclassifiedEmail;
