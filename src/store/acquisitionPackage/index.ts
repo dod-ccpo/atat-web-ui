@@ -607,6 +607,22 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  public showContinueSpinner = false;
+
+  public get getShowContinueSpinner(): boolean{
+    return this.showContinueSpinner
+  }
+
+  @Action
+  public setShowContinueSpinner(show: boolean): void{
+    this.doSetShowContinueSpinner(show)
+  }
+
+  @Mutation
+  public doSetShowContinueSpinner(show: boolean): void{
+    this.showContinueSpinner = show
+  }
+
   public showInviteContributorsModal = false;
   public get getShowInviteContributorsModal(): boolean {
     return this.showInviteContributorsModal;

@@ -18,8 +18,10 @@
 
       <ATATTextField 
         :id="'CustomSpec' + index" 
+        :ref="'CustomSpec' + index + 'Ref'" 
         class="width-100"
-        :value.sync="_customSpecifications[index]"
+        :value="_customSpecifications[index]"
+        @update:value="onCustomSpecsChange($event, index)"
         :rules="!isOptional
           ? [$validators.required('Please enter a custom ' + specificationType + '.')]
           : []"
@@ -86,6 +88,10 @@ class CustomSpecifications extends Vue {
       return "differentiator";
     }
     return this.isStandards ? "compliance standard" : "assessment area";
+  }
+
+  public onCustomSpecsChange(newVal: string, index: number): void {
+    this._customSpecifications[index] = newVal
   }
 
   public addCustomSpec(): void {

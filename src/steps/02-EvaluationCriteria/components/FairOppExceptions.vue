@@ -2,23 +2,24 @@
   <div>
     <ATATRadioGroup
       v-if="isForm"
-      id="ExceptionRadioOptions"
+      id="ExceptionRadioOptions1"
+      ref="ExceptionRadioOptions1Ref"
       :legend="legend" 
       :value="_selectedException"
       @update:value = "_selectedException = $event"
       :items="exceptionOptions"
-      name="fair-opportunity-exceptions-radio-group"
+      name="fair-opportunity-exceptions-radio-group1"
       :class="classes"
       :rules="rules"
-      :isForm="true"
     />
     <ATATRadioGroup
       v-if="!isForm"
-      id="ExceptionRadioOptions"
+      id="ExceptionRadioOptions2"
+      ref="ExceptionRadioOptions2Ref"
       :legend="legend" 
       :value="selectedExceptionReadOnly"
       :items="exceptionOptionsReadOnly"
-      name="fair-opportunity-exceptions-radio-group"
+      name="fair-opportunity-exceptions-radio-group2"
       :class="classes"
       :isForm="false"
     />
@@ -27,12 +28,12 @@
 
 <script lang="ts">
  
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
-import { PropSync } from "@/decorators/custom"
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { RadioButton } from "types/Global";
 
 @Component({
+  emits: ['onSelected'],
   components: {
     ATATRadioGroup,
   },
@@ -42,8 +43,23 @@ class FairOppExceptions extends Vue {
   @Prop({default: true}) private isForm!: boolean;
   @Prop({default: ""}) private legend!: string;
   @Prop({default: ""}) private classes!: string;
-  @PropSync("selectedException", { default: "" }) public _selectedException!: string | null;
+  @Prop({ default: "" }) public selectedException!: string | null;
+  private _selectedException: string | null = ''
   @Prop() private rules?: [];
+
+  @Watch('selectedException')
+  private onExternalSelectedChange() {
+    if (this.selectedException !== this._selectedException) {
+      this._selectedException = this.selectedException
+    }
+  }
+
+  @Watch('_selectedException')
+  private onInternalSelectedChange() {
+    if (this.selectedException !== this._selectedException) {
+      this.$emit('onSelected', this._selectedException)
+    }
+  }
   
   private selectedExceptionReadOnly = "";
 
@@ -107,6 +123,9 @@ class FairOppExceptions extends Vue {
 
   public async mounted(): Promise<void> {
     await this.setReadOnly();
+    if (this.selectedException !== this._selectedException) {
+      this._selectedException = this.selectedException
+    }
   }
 }
 export default toNative(FairOppExceptions)

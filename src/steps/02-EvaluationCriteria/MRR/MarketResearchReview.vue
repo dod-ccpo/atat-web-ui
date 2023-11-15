@@ -54,20 +54,29 @@
 
             <ATATTextArea 
               id="ResearchDetails"
+              ref="ResearchDetailsRef"
               class="mt-6 textarea-max-width"
               label="Market research details"
               :labelSrOnly="true"
-              :value.sync="researchDetails"
+              :value="researchDetails"
+              @update:value="researchDetails = $event"
               :autoGrow="true"
               :rows="10"
               minHeight="200"
               :maxChars="4000"
               :validateItOnBlur="true"
               :noResize="false"
-              :rules="textAreaRules"
+              :rules="[
+                $validators.required(`Describe the market research that was 
+                  conducted for this effort.`),
+                $validators.maxLength(
+                  4000, 'Limit your description to 4,000 characters or less.'
+                )
+              ]"
             />
 
             <ExplanationButtons 
+              ref="ExplanationButtonsRef"
               :showChangeToCustomButton="showChangeToCustomButton"
               :showChangeToDAPPSButton="showChangeToDAPPSButton"
               :showRestoreSuggestionButton="showRestoreSuggestionButton"
@@ -115,7 +124,8 @@ import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import { routeNames } from "@/router/stepper";
 
 @Component({
@@ -133,13 +143,13 @@ import { routeNames } from "@/router/stepper";
 
 class MarketResearchReview extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public defaultSuggestion = "";
@@ -157,13 +167,6 @@ class MarketResearchReview extends Vue {
   public hasFormBeenEdited = false;
   public hasSuggestedTextBeenEdited = false;
   public explanation = AcquisitionPackage.fairOppExplanations.researchDetails;
-  public textAreaRules = [
-    this.$validators.required(`Describe the market research that was 
-                  conducted for this effort.`),
-    this.$validators.maxLength(
-      4000, 'Limit your description to 4,000 characters or less.'
-    )
-  ]
 
   public get pagewHeaderIntro(): string {
     return this.useCustomTextOnLoad ? "Tell us about" : "Let’s review";

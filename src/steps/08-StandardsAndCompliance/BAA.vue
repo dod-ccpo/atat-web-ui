@@ -129,9 +129,9 @@ import BAALearnMore from "./BAALearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { RadioButton, SaveOnLeaveRefs, SlideoutPanelContent } from "types/Global";
-import {SensitiveInformationDTO} from "@/api/models";
+import { SensitiveInformationDTO } from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import {hasChanges} from "@/helpers";
+import { hasChanges } from "@/helpers";
 import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import LoadOnEnter from "@/mixins/loadOnEnter";
 

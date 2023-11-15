@@ -21,6 +21,7 @@
           <div v-if="!selectedPackage" class="copy-max-width">
           <div class="h2 mb-6">1. Portfolio Details</div>
           <ATATTextField 
+            ref="PortfolioTitleRef"
             label="Portfolio title"
             class="_input-max-width mb-10"
             :value="portfolioTitle"
@@ -32,6 +33,7 @@
           />
 
           <ATATAutoComplete
+            ref="AgencyRef"
             id="Agency"
             class="_input-max-width mb-10"
             label="What service or agency is this portfolio affiliated with?"
@@ -48,6 +50,7 @@
           </div>
           <!-- <ATATCheckboxGroup
             v-if="showCheckbox"
+            ref="PortfolioCheckboxRef"
             :groupLabel="checkboxLabel"
             :groupLabelHelpText="checkboxHelpText"
             id="ImpactLevelCheckboxes"
@@ -170,8 +173,8 @@ import { Component,  Hook,  Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import PortfolioStore from "@/store/portfolio";
-import { Checkbox, PortfolioProvisioning, SelectData } from "types/Global";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { Checkbox, PortfolioProvisioning, SaveOnLeaveRefs, SelectData } from "types/Global";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -186,14 +189,16 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 })
 
 class PortfolioDetails extends Vue {
-  $refs!: SaveOnLeaveRefs
-  
+
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    }).catch()
   }
+
 
   public portfolioTitle = "";
   public serviceOrAgency: SelectData = { text: "", value: "" };

@@ -1013,14 +1013,17 @@ export type SaveOnLeaveRefs  =  {
   [key: string]: ComponentPublicInstance & {
       setErrorMessage: ()=> Promise<void>;
       validate: ()=> Promise<SubmitEventPromise>;
+      resetValidation: () => void;
         $refs:{
           [key: string]: ComponentPublicInstance & {
             setErrorMessage: ()=> Promise<void>;
             validate: () => Promise<SubmitEventPromise>;
+            resetValidation: () => void;
             $refs:{
               [key: string]: ComponentPublicInstance & {
                 setErrorMessage: ()=> Promise<void>;
                 validate: () => Promise<SubmitEventPromise>;
+                resetValidation: () => void;
             }
         }
       }

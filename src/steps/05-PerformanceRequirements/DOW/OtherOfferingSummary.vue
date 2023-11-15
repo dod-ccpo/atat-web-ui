@@ -51,7 +51,7 @@
             <tbody>
               <tr
                 v-for="item in tableData"
-                :key="item.type"
+                :key="item.typeOrTitle"
               >
                 <td>
                   {{item.instanceNumber}}
@@ -182,7 +182,7 @@
 
 <script lang="ts">
 /*eslint prefer-const: 1 */
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -200,6 +200,7 @@ import {
   DataTableHeader, 
   OtherServiceOfferingData, 
   OtherServiceSummaryTableData,
+  SaveOnLeaveRefs,
 } from "../../../../types/Global";
 import { buildClassificationLabel, toTitleCase } from "@/helpers";
 import _ from 'lodash';
@@ -216,13 +217,13 @@ import Summary from "@/store/summary";
 
 class OtherOfferingSummary extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public isCompute = false;

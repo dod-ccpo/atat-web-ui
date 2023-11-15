@@ -73,7 +73,7 @@
 import { ComponentPublicInstance } from "vue";
 import { AutoCompleteItem, ValidationRule } from "types/Global";
 
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import { PropSync } from "@/decorators/custom";
 
@@ -114,6 +114,11 @@ class ATATAutoComplete extends Vue {
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
   @PropSync("selectedItem") private _selectedItem!: AutoCompleteItem;
+
+  @Watch('_selectedItem', { deep: true })
+  private thing(newVal: any) {
+    console.log('thing: ', newVal)
+  }
 
   public emptySelectedItem = { [this.titleKey]: "", [this.valueKey]: "" };
 
