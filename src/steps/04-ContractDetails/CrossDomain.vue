@@ -15,7 +15,7 @@
               :value="domainInfo.crossDomainSolutionRequired"
               @update:value="domainInfo.crossDomainSolutionRequired = $event"
               :items="cdsOptions"
-              :rules="[$validators.required('Please select Yes or No.')]"
+              :rules="[$validators.required('Please select an option.')]"
               name="needsCDSGroup"
               class="mt-3 mb-8"
               width="180"
@@ -47,7 +47,9 @@
                         .required('Please select at least one type of cross-domain solution.')
                       ]"
                       :textfieldRules="[
-                        $validators.required('Enter the approximate quantity of data/month.')
+                        $validators.required(
+                          'Enter the number of GB you expect to transfer each month.'
+                        )
                         ]"
                       @checkboxTextfieldDataUpdate="solutionTypeDataUpdate"
                     />
@@ -63,7 +65,7 @@
                       @update:value="domainInfo.projectedFileStream = $event"
                       :rules="[
                         $validators
-                        .required('Enter a projected file stream/type')
+                        .required('Enter a projected file stream/type.')
                       ]"
                     />
                   </v-col>

@@ -20,7 +20,10 @@
       z-index: 1;
     }
 
-
+    .v-field__field {
+      display: flex;
+      align-items: center;
+    }
     
     &:not(.v-textarea).v-field__field {
       max-height: 40px;
@@ -60,11 +63,19 @@
     }
 
     ._append-text {
-      color: $base-light;
+      color: $base-darkest;
       line-height: 1.67em;
       margin-right: 2px;
       z-index: 1;
     }
+    ._append-text-error {
+      color: $error !important;
+    }
+    ._append-text-empty {
+      color: $base-light;
+    }
+
+
     &.v-input--is-focused {
       ._append-text {
         color: $primary;

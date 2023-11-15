@@ -61,7 +61,10 @@
           />
         </template>
         <template v-slot:append-inner v-if="appendText">
-          <span class="_append-text">
+          <span :class="`_append-text 
+            ${_value.length === 0 && '_append-text-empty'} 
+            ${errorMessages.length > 0 && '_append-text-error'}`"
+          >
             {{ appendText }}
           </span>
         </template>
