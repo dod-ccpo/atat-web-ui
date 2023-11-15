@@ -684,7 +684,7 @@ export interface PortfolioProvisioning extends EDAResponse {
   portfolioTitle?: string;
   serviceOrAgency?: string;
   admins?: PortfolioAdmin[];
-  selectedILs?: string[];
+  selectedEnvs?: string[];
 }
 
 export interface PortfolioTaskOrder{
