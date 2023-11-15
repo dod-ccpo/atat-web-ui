@@ -74,13 +74,15 @@ import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import JustificationLearnMore from "./JustificationLearnMore.vue";
 
-import { Checkbox, SaveOnLeaveRefs } from "../../../types/Global";
+import { Checkbox, SaveOnLeaveRefs, SlideoutPanelContent } from "../../../types/Global";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { ContractTypeDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 import IGCE  from "@/store/IGCE";
+import SlideoutPanel from "@/store/slideoutPanel";
 
 @Component({
   components: {
@@ -117,6 +119,18 @@ class ContractType extends Vue {
     if (newVal === "false") {
       this.justification = "";
     }
+
+    setTimeout(() => {
+      const learnMoreButton = document.getElementById('JustificationLearnMore')
+      if (learnMoreButton) {
+        learnMoreButton.onclick = function(this, ev) {
+          if (ev && ev.currentTarget) {
+            const opener = ev.currentTarget as HTMLElement;
+            SlideoutPanel.openSlideoutPanel(opener.id);
+          }
+        }
+      }
+    }, 0)
   }
 
   public get hasTM(): boolean {
@@ -157,6 +171,11 @@ class ContractType extends Vue {
   };
 
   public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: JustificationLearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 
