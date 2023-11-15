@@ -11,7 +11,6 @@ import { SlideoutPanelContent } from "types/Global";
 })
 
 export class SlideoutPanelStore extends VuexModule {
-  
   slideoutPanelIsOpen = false;
   // slideoutPanelOpenerId for 508 return focus. set when link clicked to open panel
   slideoutPanelOpenerId = ""; 
@@ -59,6 +58,19 @@ export class SlideoutPanelStore extends VuexModule {
     if (openerId) {
       this.slideoutPanelOpenerId = openerId;
     }
+  }
+
+  @Action
+  public async reset(): Promise<void> {
+    await this.doReset();
+  }  
+  
+  @Mutation
+  public async doReset(): Promise<void> {
+    this.slideoutPanelIsOpen = false;
+    this.slideoutPanelOpenerId = "";
+    this.slideoutPanelComponent = {};
+    this.slideoutPanelHasComponent = false;  
   }
 
 }

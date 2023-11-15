@@ -18,6 +18,9 @@ import {
 } from "@/api/models";
 
 import { RouteRecordName, RouteRecordSingleViewWithChildren } from "vue-router";
+import { ComponentPublicInstance } from "vue";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
+import { ref } from "vue";
 
 export interface DocReviewData {
   projectOverview: ProjectOverviewDTO;
@@ -103,7 +106,11 @@ export interface SelectData {
   isSelectable?: boolean;
   sys_id?: string;
   name?:string;
+  type?: "subheader" | "divider";
 }
+
+export type MenuVariant = "outlined" | "plain" | "filled" | "underlined" 
+  | "solo" | "solo-inverted" | "solo-filled" | undefined;
 
 /**
  * interface for autocomplete Items
@@ -928,6 +935,107 @@ export enum ClassificationLevels {
   TSCRT = "Top Secret"
 }
 export type CSP = undefined | "" | "AWS" | "GCP" | "AZURE" | "ORACLE";
+export interface FormRef {
+  [key: string]: ComponentPublicInstance & {
+    setErrorMessage: ()=> Promise<void>;
+    validate: ()=> Promise<SubmitEventPromise>;
+    resetValidation?: () => void;
+    reset?: () => void;
+  }
+}
+export interface RadioFormRef{
+  [key: string]: ComponentPublicInstance & {
+    setErrorMessage: ()=> void,
+    $refs:{
+      radioButtonGroup: ComponentPublicInstance & {
+        validate: () => Promise<SubmitEventPromise>;
+      }
+    }
+  }
+}
+
+export interface RadioFormRefAsExternalComponent{
+  [key: string]: ComponentPublicInstance & {
+    $refs:{
+      radioButtonGroup: ComponentPublicInstance & {
+        setErrorMessage: ()=> void,
+        $refs:{
+          radioButtonGroup: ComponentPublicInstance & {
+            validate: () => Promise<SubmitEventPromise>;
+          }
+        }
+      }
+    }
+  }
+}
+
+export interface DatePickerRef{
+  [key: string]: ComponentPublicInstance & {
+    setErrorMessage: ()=> void,
+    $refs:{
+      atatDatePicker: ComponentPublicInstance & {
+        validate: () => Promise<SubmitEventPromise>;
+      }
+    }
+  }
+}
+
+export interface CheckboxGroupRef{
+  [key: string]: ComponentPublicInstance & {
+    setErrorMessage: ()=> void,
+    $refs:{
+      [key: string]: ComponentPublicInstance & {
+        setErrorMessage: ()=> void,
+        validate: () => Promise<SubmitEventPromise>;
+        $refs:{
+          [key: string]: ComponentPublicInstance & {
+            setErrorMessage: ()=> void,
+            validate: () => Promise<SubmitEventPromise>;
+          }
+        }
+      }
+    }
+  }
+}
+
+// export interface CheckboxGroupRef{
+//   [key: string]: ComponentPublicInstance & {
+//     setErrorMessage: ()=> void,
+//     $refs:{
+//       checkboxGroupForm: ComponentPublicInstance & {
+//         validate: () => Promise<SubmitEventPromise>;
+//       }
+//     }
+//   }
+// }
+
+export type SaveOnLeaveRefs  =  {
+  [key: string]: ComponentPublicInstance & {
+      setErrorMessage: ()=> Promise<void>;
+      validate: ()=> Promise<SubmitEventPromise>;
+        $refs:{
+          [key: string]: ComponentPublicInstance & {
+            setErrorMessage: ()=> Promise<void>;
+            validate: () => Promise<SubmitEventPromise>;
+            $refs:{
+              [key: string]: ComponentPublicInstance & {
+                setErrorMessage: ()=> Promise<void>;
+                validate: () => Promise<SubmitEventPromise>;
+            }
+        }
+      }
+    }
+    // "RadioForm" : ComponentPublicInstance & {
+    //   setErrorMessage: ()=> void,
+    //   $refs:{
+    //     radioButtonGroup: ComponentPublicInstance & {
+    //       validate: () => Promise<SubmitEventPromise>;
+    //     }
+    //   }
+    // };
+  }
+};
+
 
 // Unexposed Vuetify types below
 export type SelectItemKey = boolean | null | undefined | string | (string | number)[] | 

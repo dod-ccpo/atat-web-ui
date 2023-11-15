@@ -11,8 +11,9 @@
       outline: 2px solid $primary;
       outline-offset: -1px;
     }
-    
-
+  }
+  .v-field {
+    background-color: white;
   }
   .v-field__field {
     max-height: 36px;

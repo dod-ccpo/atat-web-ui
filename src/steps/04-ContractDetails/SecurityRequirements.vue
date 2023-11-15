@@ -1,6 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation>
-  <div>
+    <v-form ref="form" lazy-validation>
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
@@ -27,6 +26,7 @@
             </p>
           </div>
          <SecurityRequirementsForm
+           ref="SecurityRequirementsFormRef"
            :hasSecret="hasSecret"
            :hasTopSecret="hasTopSecret"
            :isDOW="false"
@@ -40,7 +40,6 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
   </v-form>
 </template>
 <script lang="ts">
@@ -50,10 +49,10 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
-import { SecurityRequirement, SlideoutPanelContent } from "types/Global";
+import { SaveOnLeaveRefs, SecurityRequirement, SlideoutPanelContent } from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import SecurityRequirementsForm from "@/components/DOW/SecurityRequirementsForm.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import SecurityRequirementsLearnMore
@@ -70,14 +69,15 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 })
 class SecurityRequirements extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
+
 
   private storedClassification: ClassificationLevelDTO[] = [];
   private selectedSecretSecurityRequirements: string[] = [];
@@ -114,7 +114,6 @@ class SecurityRequirements extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    await AcquisitionPackage.setValidateNow(true);
     try {
       if (this.hasChanged()) {
         await classificationRequirements.setSecurityRequirements(this.currentData);

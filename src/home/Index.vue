@@ -81,7 +81,7 @@
       @update:showTOSearchModal="showTOSearchModal = $event"
       :TONumber="TONumber"
       @update:TONumber="TONumber = $event"
-      :resetValidationNow ="resetValidationNow"
+      :resetValidationNow="resetValidationNow"
       @update:resetValidationNow="resetValidationNow = $event"
       @TOSearchCancelled="TOSearchCancelled"
       @startProvisionWorkflow="startProvisionWorkflow"

@@ -202,8 +202,8 @@ class PortfolioSummary extends Vue {
       this.portfolioSysId = portfolio.sysId;
       this.taskOrder = portfolio.taskOrder as PortfolioTaskOrder;
       portfolio.environments?.forEach((environment) =>{
-        if(environment.dashboard_link !== '' && environment.classification_level === "U"){
-          const linkDisplay = environment.csp_display.split("_")[1].toUpperCase()
+        if(environment.dashboard_link && environment.classification_level === "U"){
+          const linkDisplay = environment.csp_display.split("_")[1].toUpperCase();
           this.environmentLinks.push({
             display: linkDisplay,
             link: environment.dashboard_link

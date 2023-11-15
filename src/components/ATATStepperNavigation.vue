@@ -41,9 +41,17 @@
                 role="link" 
                 class="ml-4"
                 id="ContinueButton"
-                :disabled="disableContinue"
+                :disabled="disableContinue || showSpinner"
               >
-                {{ continueButtonText }}
+              <span v-if="showSpinner">
+                <v-progress-circular  
+                  indeterminate 
+                  color="#afafaf" size="20" width="3" 
+                  class="mr-2" 
+                />
+                Submitting
+              </span>
+              <span v-else>{{ continueButtonText }}</span>
               </v-btn>
             </span>
           </div>
@@ -56,8 +64,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative, Watch } from "vue-facing-decorator";
 import { AdditionalButton } from "@/store/steps/types";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   emits:["next", "additionalButtonClick", "takeAltContinueAction", "previous"]
@@ -73,12 +82,29 @@ class ATATStepperNavigation extends Vue {
   @Prop({ default: false }) private disableContinue!: boolean;
   @Prop({ default: "" }) private continueButtonColor?: string;
   @Prop({ default: "" }) private altContinueAction?: string;
+  
+  public showSpinner = false;
+
+  public get getShowContinueSpinner(): boolean{
+    return AcquisitionPackage.getShowContinueSpinner
+  }
+
+  @Watch("getShowContinueSpinner")
+  public setShowSpinner(newVal: boolean): void{
+    console.log(newVal, 'newVal')
+    this.showSpinner = newVal;
+  }
+
+
 
   private getButtonClass(button: AdditionalButton) {
     return button.buttonClass ?? "_secondary";
   }
 
   get getContinueButtonColor():string{
+    if(this.getShowContinueSpinner){
+      return "_disabled"
+    }
     return this.continueButtonColor !== ""
       ? this.continueButtonColor as string
       : this.continueButtonText === 'Continue'? '_primary' : '_secondary'

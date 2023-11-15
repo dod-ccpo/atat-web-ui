@@ -2,57 +2,83 @@ import { Vue } from 'vue-facing-decorator'
 import { RouteLocationNormalized } from "vue-router";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Steps from "@/store/steps";
-import { ComponentPublicInstance } from "vue";
-
-import { SubmitEventPromise } from 'vuetify/lib/framework.mjs';
-
-export type SaveOnLeaveRefs = ComponentPublicInstance['$refs'] & {
-  form: ComponentPublicInstance & {
-    validate: ()=> Promise<boolean>;
-    resetValidation?: () => void;
-    reset?: () => void;
-  };
-};
+import { 
+  FormRef, 
+  SaveOnLeaveRefs 
+} from 'types/Global';
+import { ComponentPublicInstance } from 'vue';
 
 export type To = RouteLocationNormalized
 export type From = RouteLocationNormalized
 
+export let isFormsValid:boolean[] = []
+ 
+export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> => {
+  isFormsValid = [];
+  for (const f in forms){
+    const form = (forms as unknown as FormRef)[f];
+    if (form){
+      console.log('22: => ' + f)
+      if (Object.prototype?.hasOwnProperty?.call(form, "setErrorMessage")){
+        form.setErrorMessage();
+      } 
+      if (Object.prototype?.hasOwnProperty?.call(form, "validate")){
+        const isFormValid = (await form.validate())?.valid;
+        isFormsValid.push(isFormValid);
+      } else {
+        await(getRef(form))
+      }
+    }
+  }
+  console.log(isFormsValid)
+  return isFormsValid.every(f=>f===true)
+}
+
+async function getRef(form:ComponentPublicInstance):Promise<void>{
+  const refs = form?.$refs || form;
+  if (refs){
+    for (const ref in refs){
+      console.log('42: => ' + ref)
+      const _formRef = (refs as unknown as FormRef)[ref];
+      if (_formRef){
+        if (Object.prototype?.hasOwnProperty?.call(_formRef, "validate")){
+          isFormsValid.push((await(_formRef.validate())).valid);
+        }
+        if (Object.prototype?.hasOwnProperty?.call(_formRef, "setErrorMessage")){
+          (_formRef).setErrorMessage()
+        }
+      }
+
+      await getRef(_formRef);
+    }
+  }
+}
+
 export async function beforeRouteLeaveFunction(p: {
   to: To, from: From,
   saveOnLeave: () => Promise<boolean>, 
-  form: SaveOnLeaveRefs['form'],
+  form: SaveOnLeaveRefs,
   nextTick: (f: () => void) => Promise<void>,
-  // this is an easy way to test the validation state 
-  // while we work on our pages before it gets fixed
-  // it can be removed after validation is fixed
-  isValidOverrideForTesting?: boolean,
+  isValid?: boolean,
 }) {
-  const goNext = await p.saveOnLeave();
-  const formToValidate = p.form;
-  const skipValidation = AcquisitionPackage.skipValidation;
-
+ 
   let isValid = true;
+  const goNext = await p.saveOnLeave();
+  const skipValidation = AcquisitionPackage.skipValidation;
   const direction = p.to.query.direction;
-  if(direction === "next" && formToValidate && !skipValidation){
-    AcquisitionPackage.setValidateNow(true);
-    p.form.validate().then(
-      (response:unknown) => {
-        isValid = (response as string[]).length === 0
-      })
-  }
-
-  // this is an easy way to test the validation state 
-  // while we work on our pages before it gets fixed
-  // it can be removed after validation is fixed
-  if (typeof p.isValidOverrideForTesting !== 'undefined') {
-    isValid = p.isValidOverrideForTesting
+  if(direction === "next" && isValid && !skipValidation){
+    AcquisitionPackage.setValidateNow(isValid);
+    isValid = await validateAllForms(p.form)
   }
 
   return p.nextTick(()=> {
     AcquisitionPackage.setValidateNow(false);
     AcquisitionPackage.setSkipValidation(false);
-    if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
-      const el = document.getElementsByClassName("v-input--error")[0];
+    if (direction === "previous"){
+      //add something here
+
+    } else if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
+      const el = document.getElementsByClassName("error--text")[0];
       if (el) {
         el.scrollIntoView({
           behavior: "smooth"

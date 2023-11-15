@@ -10,6 +10,7 @@
             <div class="mt-10">
               <ATATTextField
                 id="SystemName"
+                ref="SystemNameRef"
                 label="System name"
                 class="_input-max-width"
                 :value="systemName"
@@ -20,6 +21,7 @@
             <div class="d-flex align-start flex-column mt-10 textarea-max-width">
               <ATATTextArea
                 id="OperationToBePerformed"
+                ref="OperationToBePerformedRef"
                 label="What is the operation of work to be performed?"
                 class="width-100"
                 :rows="7"
@@ -53,7 +55,8 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import {SensitiveInformationDTO} from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from "types/Global";
 
 @Component({
   components: {
@@ -64,13 +67,14 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class PIIRecord extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private systemName = "";

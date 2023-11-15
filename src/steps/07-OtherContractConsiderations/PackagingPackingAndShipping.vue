@@ -21,6 +21,7 @@
               </p>
             </div>
             <ATATCheckboxGroup
+              :key="selectedOptions.toString()"
               id="PackagingEtcCheckboxes"
               :value="selectedOptions"
               @update:value="selectedOptions = $event"
@@ -54,9 +55,9 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { ContractConsiderationsDTO } from "@/api/models";
-import { Checkbox } from "types/Global";
+import { Checkbox, SaveOnLeaveRefs } from "types/Global";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -66,15 +67,15 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class PackagingPackingAndShipping extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+ 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
   public otherValueRequiredMessage 
     = "Please enter your packaging, packing and shipping instructions."
   
@@ -147,12 +148,15 @@ class PackagingPackingAndShipping extends Vue {
         packaging_shipping_none_apply: storeData.packaging_shipping_none_apply
       }
 
-      this.savedData.contractor_provided_transfer === "true" 
-        ? this.selectedOptions.push(this.contractorProvidedTransportValue) : null; 
-      this.savedData.packaging_shipping_other === "true" 
-        ? this.selectedOptions.push(this.otherValue) : null; 
-      this.savedData.packaging_shipping_none_apply === "true" 
-        ? this.selectedOptions.push(this.noneApplyValue) : null; 
+      if (this.savedData.contractor_provided_transfer === "true")
+        this.selectedOptions.push(this.contractorProvidedTransportValue)
+
+      if (this.savedData.packaging_shipping_other === "true")
+        this.selectedOptions.push(this.otherValue)
+
+      if (this.savedData.packaging_shipping_none_apply === "true")
+        this.selectedOptions.push(this.noneApplyValue)
+
       this.otherValueEntered = this.savedData.packaging_shipping_other_explanation as string;
     } else {
       AcquisitionPackage.setCurrentContract(this.currentData);

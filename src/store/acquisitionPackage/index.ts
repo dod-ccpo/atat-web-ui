@@ -75,6 +75,7 @@ import {TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSign
 import {TABLENAME as PACKAGE_DOCUMENTS_UNSIGNED } from "@/api/packageDocumentsUnsigned";
 import Summary from "../summary";
 import { compareAsc, format } from "date-fns";
+import SlideoutPanel from "../slideoutPanel";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 export const StoreProperties = {
@@ -604,6 +605,22 @@ export class AcquisitionPackageStore extends VuexModule {
 
       await this.updateAcquisitionPackage();
     }
+  }
+
+  public showContinueSpinner = false;
+
+  public get getShowContinueSpinner(): boolean{
+    return this.showContinueSpinner
+  }
+
+  @Action
+  public setShowContinueSpinner(show: boolean): void{
+    this.doSetShowContinueSpinner(show)
+  }
+
+  @Mutation
+  public doSetShowContinueSpinner(show: boolean): void{
+    this.showContinueSpinner = show
   }
 
   public showInviteContributorsModal = false;
@@ -2689,6 +2706,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await TaskOrder.reset();
     await ClassificationRequirements.reset();
     await EvaluationPlan.reset();
+    await SlideoutPanel.reset();
     Steps.clearAltBackButtonText();
     sessionStorage.removeItem(ATAT_ACQUISTION_PACKAGE_KEY);
     DescriptionOfWork.setIsDOWSummaryAlertOpen(true);

@@ -10,6 +10,7 @@
 
             <ATATRadioGroup
               id="needsCDSGroup"
+              ref="needsCDSGroup"
               card="true"
               :value="domainInfo.crossDomainSolutionRequired"
               @update:value="domainInfo.crossDomainSolutionRequired = $event"
@@ -28,6 +29,7 @@
                   <v-col>
                     <ATATCheckboxGroup
                       id="cdsSolutions"
+                      ref="cdsSolutions"
                       :items="cdsSolutionItems"
                       @update:items="cdsSolutionItems = $event"
                       textFieldAppendText="GB/month"  
@@ -55,6 +57,7 @@
                   <v-col class="col-sm-12 col-md-6">
                     <ATATTextField 
                       id="projectedFileStreamType"
+                      ref="projectedFileStreamType"
                       label="Projected file stream/type"
                       :value="domainInfo.projectedFileStream"
                       @update:value="domainInfo.projectedFileStream = $event"
@@ -69,6 +72,7 @@
                 <v-row>
                   <v-col>
                     <AnticipatedDurationandUsage
+                      ref="AnticipatedDurationandUsageRef"
                       typeForUsage="cds"
                       typeForDuration="requirement"
                       :anticipatedNeedUsage="
@@ -108,7 +112,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -119,6 +123,7 @@ import {
   Checkbox,
   CrossDomainSolution,
   RadioButton,
+  SaveOnLeaveRefs,
 } from "types/Global";
 import { createPeriodCheckboxItems } from "@/helpers";
 import Periods from "@/store/periods";
@@ -137,12 +142,12 @@ import ATATAlert from "@/components/ATATAlert.vue";
 })
 class CrossDomain extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

@@ -48,7 +48,6 @@ class UserSearch extends Vue {
         }
         /* eslint-enable camelcase */
       });
-  
       this.searchObj.noResults = this.searchObj.searchResults.length === 0;
       this.searchObj.isLoading = false;
       this.isSearching = false;

@@ -1,53 +1,7 @@
 <template>
   <div class="pt-0">
-    <!-- TODO - REINSTATE AFTER AUTOCOMPLETE IS POPULATED WITH ACTUAL DATA FROM SNOW -->
-    <!-- <div class="max-width-640" v-if="isWizard">
-      <ATATAutoComplete
-        id="SearchContact"
-        :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
-        :label-sr-only="true"
-        :label="'Search for your ' + corOrAcor"
-        titleKey="fullName"
-        subtitleKey="email"
-        :items="contactList"
-        :searchFields="['fullName', 'email']"
-        :selectedItem.sync="selectedContact"
-        placeholder="Search by name or email"
-        icon="search"
-        :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
-        :rules="getRules"
-        @autocompleteInputUpdate="autocompleteInputUpdate"
-      />
-
-      <PersonCard
-        v-if="haveSelectedContact"
-        :isACOR="isACOR"
-        :selectedContact.sync="selectedContact"
-        :showContactForm.sync="showContactForm"
-        id="SelectedContactCard"
-      />
-    </div>
-
-    <a
-      id="ContactFormToggle"
-      v-if="!haveSelectedContact && isWizard"
-      role="button"
-      class="expandable-content-opener"
-      :class="showContactForm ? 'open' : 'closed'"
-      tabindex="0"
-      @click="toggleContactForm"
-      @keypress="toggleContactForm"
-    >
-      Manually enter your {{ corOrAcor }}’s contact information
-    </a> 
-    
-    -->
-
-    <!--
-    ADD THIS PROP BACK TO CorAcorContactInfoForm BELOW AFTER CARD ABOVE IS REINSTATED
-      v-if="!isWizard || (showContactForm && !haveSelectedContact)"
-    -->
     <CorAcorContactInfoForm
+      ref="CorAcorContactInfoFormRef"
       :isWizard="isWizard"
       :isForm="isForm"
       :corOrAcor="corOrAcor"
@@ -86,25 +40,10 @@
       :branchData="branchData"
       :selectedBranchRanksData="selectedBranchRanksData"
     />
-
-    <!-- ADD BACK TO <section> TAG AFTER CARD/AUTOCOMPLETE ABOVE IS REINSTATED
-      v-if="isWizard && ((showContactForm && showAccessRadioButtons) || haveSelectedContact)"
-    -->
-
     <section
       id="AccessRadioButtons"
       v-if="isWizard && showAccessRadioButtons"
     >
-    <!--TODO determine if this section is necessary-->
-     <!--  <hr/>
-     <ATATRadioGroup
-        legend="Does this individual need access to help you create this
-          acquisition package in ATAT?"
-        id="AccessToEdit"
-        :items="accessToEditOptions"
-        :value.sync="selectedAccessToEdit"
-        :rules="[$validators.required('Please select Yes or No.')]"
-      />-->
     </section>
   </div>
 </template>

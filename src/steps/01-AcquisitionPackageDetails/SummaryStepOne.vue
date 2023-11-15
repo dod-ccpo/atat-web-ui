@@ -32,8 +32,7 @@ import Summary, {
   isStepComplete,
   isStepValidatedAndTouched
 } from "@/store/summary";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
- 
+
 
 @Component({
   components: {
@@ -41,15 +40,6 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
   },
 })
 class SummaryStepOne extends Vue {
-
-  $refs!: SaveOnLeaveRefs
-  
-  @Hook
-  public async beforeRouteLeave(to: To, from: From) {
-    return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
-  }
 
   public summaryItems: SummaryItem[] = [];
   public introParagraph = "";

@@ -1,7 +1,7 @@
-<template>
+f<template>
   <div :id="id">
     <v-form :id="id" 
-      ref="checkboxGroupForm"
+      ref="atatCheckBoxGroupRef"
       :lazy-validation="true"
       @blur="setErrorMessage">
     <p
@@ -48,9 +48,6 @@
         :ref="index === 0 ? 'checkboxGroup' : ''"
         :data-group-id="id + '_Group'"
       >
-      <!-- @mouseup="checkBoxClicked(item.value)" -->
-
-
         <template
           v-if="
             card ||
@@ -172,7 +169,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 
 @Component({
-  emits: ["update:value"],
+  emits: ["update:value", "checkboxTextfieldDataUpdate"],
   components: {
     ATATTextArea,
     ATATTextField,
@@ -184,20 +181,16 @@ import { SubmitEventPromise } from "vuetify/lib/index.mjs";
 class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
-    checkboxGroupForm: (ComponentPublicInstance)& {
+    atatCheckBoxGroupRef: (ComponentPublicInstance)& {
       validate: () => Promise<SubmitEventPromise>
-    },
-    checkboxGroup: (ComponentPublicInstance & {
-      errorBucket: string[];
-      errorCount: number;
-      validate: () => Promise<boolean>;
-    })[];
-    atatTextInput: (ComponentPublicInstance & { errorBucket: string[]; errorCount: number })[];
+    }
   };
 
   // props
   @Prop({ default: [] }) private value!: string[];
   public _selected: string[] = [];
+  @PropSync("resetSelected") private _resetSelected!: boolean;
+
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
   @PropSync("items") private _items!: Checkbox[];
 
@@ -271,9 +264,11 @@ class ATATCheckboxGroup extends Vue {
     return [this.showPerformanceRequirementTotal].includes(true);
   }
 
-  private otherRequiredRule = this.otherValueRequiredMessage
-    ? [this.$validators?.required(this.otherValueRequiredMessage)]
-    : [];
+  get otherRequiredRule(): ValidationRule[] {
+    return this.otherValueRequiredMessage
+      ? [this.$validators.required(this.otherValueRequiredMessage)]
+      : [];
+  }
 
   get otherId(): string {
     return "Other_" + getIdText(this.otherValue);
@@ -298,6 +293,12 @@ class ATATCheckboxGroup extends Vue {
     return document.getElementById(
       `${this.id}_TextField${index}_text_field`
     ) as HTMLInputElement;
+  }
+
+  @Watch("resetSelected")
+  public resetSelectedNow(): void {
+    this._selected = [];
+    this._resetSelected = false;
   }
 
   @Watch("_selected")
@@ -356,7 +357,7 @@ class ATATCheckboxGroup extends Vue {
       }      
     });
     if (newVal.length || oldVal.length) {
-      this.setErrorMessage();
+      this.setErrorMessage().finally();
     }
   }
 
@@ -367,22 +368,17 @@ class ATATCheckboxGroup extends Vue {
     return this._selected.includes(this.otherValue)
   }
 
-  private setErrorMessage(): void {
+  private async setErrorMessage(): Promise<void> {
     if (this._selected.length) {
       this.clearErrorMessage();
     } else {
-      setTimeout(() => {
-        const checkbox = this.$refs.checkboxGroup;
-        // if (checkbox && checkbox.length) {
-        //   this.errorMessages = checkbox[0].errorBucket;
-        // }
-        this.$refs.checkboxGroupForm.validate().then(
-          async (response:SubmitEventPromise)=>{
-            this.errorMessages = (await (response)).errors[0].errorMessages;
-          }
-        )
-        AcquisitionPackage.setValidateNow(false);
-      }, 0);
+      AcquisitionPackage.setValidateNow(true);
+      this.$refs.atatCheckBoxGroupRef.validate().then(
+        async (response:SubmitEventPromise)=>{
+          this.errorMessages = (await (response)).errors[0]?.errorMessages;
+        }
+      )
+      AcquisitionPackage.setValidateNow(false);
     }
     this.isLoading = false;
   }
@@ -422,7 +418,7 @@ class ATATCheckboxGroup extends Vue {
       this.checkboxRules = this.rules;
     }
 
-    this.setErrorMessage();
+    this.setErrorMessage().finally();
   }
 
   @Watch("_items")
@@ -459,12 +455,22 @@ class ATATCheckboxGroup extends Vue {
     if (this.validateOnLoad){
       this.validateCheckboxesNow = true;
       setTimeout(()=>{
-        this.setErrorMessage();
+        this.setErrorMessage().finally();
       }, 0)
     }
-    setTimeout(()=>{
-      this._selected = this.value;
-    }, 0)
+    // if the parent is still empty, try to load again on next render
+    if (this.value.length === 0) {
+      setTimeout(()=>{
+        this._selected = this.value
+      }, 0)
+    // if the parent has the value set, then try setting it now
+    } else {
+      this._selected = this.value
+    }
+    // if this checkbox group still refuses to update with the latest
+    // value given by the parent, you can set this element's :key
+    // to change when the parent's value changes, doing so forces
+    // this element to rerender.
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {
@@ -490,7 +496,7 @@ class ATATCheckboxGroup extends Vue {
           this.checkboxRules = this.rules;
           this.validateCheckboxesNow = true;
         }
-        this.setErrorMessage();
+        this.setErrorMessage().finally();
       }
     }
   }

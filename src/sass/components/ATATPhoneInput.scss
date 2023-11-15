@@ -1,14 +1,33 @@
 ._atat-phone-field {
+  .v-list {
+    max-height: 320px !important;
+  }
+
+  ._country-select-button {
+    border: 1px solid $base;
+    height: 42px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: 8px;
+    
+    &:focus-visible {
+      border-color: $primary;
+      outline: 1px solid $primary;
+      &:after {
+        opacity: 0;
+      }
+    }
+  }  
   ._country-select {
     padding-right: 0;
     max-width: 67px;
     width: 67px;
+
     &.error--text{
       fieldset{
         border-right-width: 0px;
       }
     }
-
 
     .v-input__control > {
 
@@ -53,117 +72,69 @@
     }
     
   }
+
+  .v-list {
+    position: relative;
+    padding-top: 60px;
+  }
+
+  ._country-search {
+    background-color: white !important;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    .v-field__overlay {
+      background-color: transparent !important;
+    }
+    .v-field__append-inner {
+      padding-right: 8px;
+    }
+  }
+    
   ._phone-number-input {
     max-width: 351px;
     width: 351px;
     &.v-text-field--outlined.v-input--is-focused {
-      fieldset {
+      .v-field {
         border-left-width: 2px;
         border-color: $primary !important;
       }
     }
-    fieldset {
+    .v-field {
       border-left-width: 0;
       border-radius: 0 4px 4px 0;
     }
     .v-text-field__prefix {
-      padding-left: 4px;
+      padding-left: 8px;
       color: $base-darkest;
     }
   }
 
-  .v-menu__content.v-theme--light.menuable__content__active {
-    padding-top: 0;
-    min-width: 420px !important;
-    width: 420px;
-    ._dropdown-text-field + ._suggested {
-      .v-list-item__content {
-        overflow: visible;
-        position: relative;
-        &:before {
-          content: "SUGGESTED";
-          color: $base;
-          position: absolute;
-          top: -33px;
-          font-size: 12px;
-          font-weight: 500;
-        }
+  .v-list {
+    min-width: 320px;
+
+    ._suggested-label {
+      margin-top: 24px;
+      position: relative;
+      &:before {
+        content: "SUGGESTED";
+        color: $base;
+        position: absolute;
+        top: -20px;
+        left: 15px;
+        font-size: 12px;
+        font-weight: 500;
       }
     }
-    .v-input__append-inner {
 
-      margin-top: 0;
-    }
-    ._country-list {
-      padding-top: 6px;
-      padding-bottom: 6px
-    }
     ._suggested {
       + ._suggested {
         border-bottom: 1px solid $base-lighter;
       }
     }
-    .v-select-list {
-      padding-top: 0;
-      position: relative;
-    }
-    ._dropdown-text-field {
-      align-items: center;
-      background-color: white;
-      position: sticky;
-      height: 48px;
-      width: 100%;
-      top: 0;
-      z-index: 1;
-      padding-top: 0;
-      padding-right: 12px;
-      padding-left: 12px;
-      margin-top: 0;
-      margin-bottom: 36px;
-      color: $primary;
-      border-bottom: 1px solid $base-lighter;
-      .v-input__icon {
-        &.v-input__icon--append {
-          i.v-icon {
-
-            padding-top: 8px;
-            transform: none !important;
-            color: $base-dark !important;
-          }
-        }
-        &.v-input__icon--clear {
-          button.v-icon {
-            padding-top: 4px;
-            transform: none !important;
-            color: $base-dark !important;
-          }
-        }
-      }
-      &.v-input--is-focused {
-        .v-input__icon {
-          &.v-input__icon--append {
-            i.v-icon {
-              transform: none !important;
-              color: $base-dark !important;
-            }
-          }
-        }
-
-      }
-      .v-input__slot {
-        &:after, &:before {
-          border: none;
-        }
-      }
-    }
-    ._active {
-      background-color: $base-lightest;
-      ._country-name {
-        font-weight: 700;
-      }
-    }
   }
-
 }
 
 ._atat-phone-extension-field {
@@ -172,4 +143,8 @@
   }
 }
 
-
+._country-item {
+  min-width: 300px !important;
+  padding-top: 6px;
+  padding-bottom: 6px
+}

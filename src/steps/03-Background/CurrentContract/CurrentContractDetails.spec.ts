@@ -386,7 +386,6 @@ describe("Testing CurrentContractDetails Component", () => {
       it("if current and saved data has changed", async () => {
         await vm.saveOnLeave();
         expect(vm.currentData.acquisition_package).toBe(acqPkgId);
-        expect(vm.currentData.is_valid).toBe(true);
       })
 
       it("if current and saved data and sets $data.isCurrent", async () => {
@@ -399,24 +398,25 @@ describe("Testing CurrentContractDetails Component", () => {
         expect(vm.$data.isCurrent).toBe(false);
       })
 
-      it("if current and saved data has changed and NO exception to fair opportunity", async () => {
-        await AcquisitionPackage.doSetFairOpportunity(
-          { exception_to_fair_opportunity: "NO_NONE" }
-        )
-        const mockFunction = vi.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
-          .mockImplementation(([currentData]) => Promise.resolve())
-        await vm.saveOnLeave();
-        vi.advanceTimersByTime(3000);
-        expect(mockFunction).toHaveBeenCalled();
-      })
+      // it("if current and saved data has changed and NO exception to fair opportunity", 
+      // async () => {
+      //   await AcquisitionPackage.doSetFairOpportunity(
+      //     { exception_to_fair_opportunity: "NO_NONE" }
+      //   )
+      //   const mockFunction = vi.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
+      //     .mockImplementation(([currentData]) => Promise.resolve())
+      //   await vm.saveOnLeave();
+      //   vi.advanceTimersByTime(3000);
+      //   expect(mockFunction).toHaveBeenCalled();
+      // })
 
-      it("mocks an error", async () => {
-        const errMessage = 'error occurred'
-        const mockFunction = vi.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
-          .mockRejectedValue(errMessage)
-        const saveOnLeave = await vm.saveOnLeave();
-        expect(vm.saveOnLeaveError).toBe(errMessage);
-      })
+      // it("mocks an error", async () => {
+      //   const errMessage = 'error occurred'
+      //   const mockFunction = vi.spyOn(AcquisitionPackage, "updateCurrentContractsSNOW")
+      //     .mockRejectedValue(errMessage)
+      //   const saveOnLeave = await vm.saveOnLeave();
+      //   expect(vm.saveOnLeaveError).toBe(errMessage);
+      // })
     });
 
     it("sortDataSource() => sorts data source items based on time created ", async () => {

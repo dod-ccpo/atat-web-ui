@@ -13,7 +13,8 @@
       otherValueRequiredMessage="Enter your other database type."
       :validateOtherOnBlur="true"
       otherValue="OTHER"
-      :otherValueEntered.sync="offeringData.databaseTypeOther"
+      :otherValueEntered="offeringData.databaseTypeOther"
+      @update:otherValueEntered="offeringData.databaseTypeOther = $event"
     />
 
     <ATATRadioGroup

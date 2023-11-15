@@ -98,7 +98,7 @@
                 role="button"
                 :href="downloadPackageLink" >
                 Download 
-                <v-icon class="ml-2">download</v-icon>
+                <v-icon class="ml-2">mdi-download</v-icon>
             </v-btn>
             </v-col>
           </v-row>

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-base-lightest mt-4 pa-4 border-rounded">
+  <div class="bg-base-lightest mt-4 pa-4 _border-rounded">
     <div class="d-flex justify-space-between align-center">
       <ATATSearch
         id="SearchPackages"
@@ -7,19 +7,20 @@
         width="450px"
         @search="searchPackages"
         @clear="clearSearch"
-        :value.sync="_searchString"
+        :value="_searchString"
+        @update:value="_searchString = $event"
       />
       <div class="d-flex align-center">
-        <div>
-          <ATATSelect
-            id="PackageSort"
-            class="_small _alt-style-clean _search-bar-sort"
-            width="167"
-            iconType="chevron"
-            :items="sortOptions"
-            :selectedValue.sync="_selectedSort"
-          />
-        </div>
+        <ATATSelect
+          id="PackageSort"
+          class="_small _alt-style-clean _search-bar-sort"
+          width="167"
+          iconType="chevron"
+          :items="sortOptions"
+          :selectedValue="_selectedSort"
+          @update:selectedValue="_selectedSort = $event"
+          variant="none"
+        />
       </div>
     </div>
   </div>
@@ -39,7 +40,7 @@ import { SelectData } from "../../../types/Global";
     ATATSelect
   }
 })
-class Search extends Vue {
+class PackageSearch extends Vue {
   @PropSync("searchString") private _searchString!: string;
   @PropSync("selectedSort") private _selectedSort!: 'project_overview' | 'DESCsys_updated_on';
 
@@ -58,7 +59,7 @@ class Search extends Vue {
   }
 }
 
-export default toNative(Search)
+export default toNative(PackageSearch)
 
 </script>
 

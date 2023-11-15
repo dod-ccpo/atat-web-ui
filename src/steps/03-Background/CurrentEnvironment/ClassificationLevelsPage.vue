@@ -14,6 +14,7 @@
             </p>
             <ClassificationLevelForm
               v-if="isCloud || isHybrid"
+              ref="ClassificationLevelFormRef"
               hybridText="1. Your cloud instances"
               :isHybrid="isHybrid"
               :isCloud="isCloud"
@@ -23,6 +24,7 @@
             <hr v-if="isHybrid" />
             <ClassificationLevelForm
               v-if="isOnPrem || isHybrid"
+              ref="ClassificationLevelFormHybridRef"
               hybridText="2. Your on-premise instances"
               :isHybrid="isHybrid"
               :isOnPrem="isOnPrem"
@@ -40,12 +42,13 @@
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ClassificationLevelForm
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelForm.vue";
 import CurrentEnvironment, 
 { defaultCurrentEnvironment } from "@/store/acquisitionPackage/currentEnvironment";
+import { SaveOnLeaveRefs } from "types/Global";
 
 
 @Component({
@@ -56,12 +59,13 @@ import CurrentEnvironment,
 })
 class ClassificationLevelsPage extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+ 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

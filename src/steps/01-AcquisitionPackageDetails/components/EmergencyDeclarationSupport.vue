@@ -1,6 +1,7 @@
 <template>
   <div class="d-flex align-start flex-column">
     <ATATRadioGroup
+      ref="radioButtonGroup"
       :id="id"
       :legend="legend" 
       :value="_emergencyDeclaration"

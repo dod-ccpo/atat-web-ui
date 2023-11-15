@@ -1,9 +1,11 @@
 <template>
   <div>
+
+
     <!-- ATAT TODO * Q1 FY24 - reinstate after MVP when new single portfolio 
       summary API is available that prevents multiple calls per portfolio
 
-    <div v-if="!isHomeView" class="bg-base-lightest pa-4 border-rounded">
+    <div v-if="!isHomeView" class="bg-base-lightest pa-4 _border-rounded">
       <div class="d-flex justify-space-between align-center">
         <ATATSearch 
           id="SearchPortfolios"
@@ -11,7 +13,8 @@
           width="450px"
           @search="searchPortfolios"
           @clear="clearSearch"
-          :value.sync="searchString"
+          :value="searchString"
+          @update:value="searchString = $event"
         />
         <div class="d-flex align-center">
           <div>
@@ -20,7 +23,8 @@
               class="_small _alt-style-clean _search-bar-sort"
               :items="sortOptions"
               width="167"
-              :selectedValue.sync="selectedSort"
+              :selectedValue="selectedSort"
+              @update:selectedValue="selectedSort = $event"
               iconType="chevron"
               @selectValueChange="sortPortfolios"
             />

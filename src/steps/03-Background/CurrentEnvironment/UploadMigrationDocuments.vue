@@ -27,6 +27,7 @@
               <hr />
               <ATATFileUpload
                 id="FundingPlan"
+                ref="FundingPlanRef"
                 tabindex="-1"
                 :maxNumberOfFiles="100"
                 :maxFileSizeInBytes="maxFileSizeInBytes"
@@ -52,7 +53,13 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { invalidFile, RadioButton, uploadingFile, ValidationRule, YesNo } 
+import { 
+  invalidFile, 
+  RadioButton, 
+  SaveOnLeaveRefs, 
+  uploadingFile, 
+  ValidationRule, 
+  YesNo } 
   from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {AttachmentDTO} from "@/api/models";
@@ -64,7 +71,7 @@ import CurrentEnvironment,
 import Attachments from "@/store/attachments";
 import {AttachmentServiceCallbacks} from "@/services/attachment";
 import {TABLENAME as CURRENT_ENVIRONMENT_TABLE} from "@/api/currentEnvironment";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -73,13 +80,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
   },
 })
 class UploadMigrationDocuments extends Vue {
-
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

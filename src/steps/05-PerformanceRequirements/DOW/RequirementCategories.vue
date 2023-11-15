@@ -54,13 +54,14 @@
                   >Architectural Design Solution</router-link>
 
                   to define performance requirements for your Description of Work.
-                </p>
+              </p>
               </template>
             </ATATAlert>
           </div>
-          <v-form ref="form" class="copy-max-width">
+          <v-form ref="form" class="copy-max-width lazy-validation">
             <ATATCheckboxGroup
               v-if="currentDOWSection === 'XaaS'"
+              ref="XaaSCheckboxesRef"
               id="XaaSCheckboxes"
               :card="false"
               :items="xaasCheckboxItems"
@@ -79,6 +80,7 @@
             <ATATCheckboxGroup
               v-if="currentDOWSection === 'CloudSupport'"
               id="CloudSupportCheckboxes"
+              ref="CloudSupportCheckboxesRef"
               :card="false"
               :items="cloudSupportCheckboxItems"
               :noneValue="cloudNoneValue"
@@ -129,7 +131,7 @@ import CloudSupportLearnMore from "./CloudSupportLearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
-import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
+import { Checkbox, SaveOnLeaveRefs, SlideoutPanelContent } from "../../../../types/Global";
 import { SystemChoiceDTO } from "@/api/models";
 import { routeNames } from "../../../router/stepper";
 
@@ -141,7 +143,7 @@ import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import CurrentEnvironment from "@/store/acquisitionPackage/currentEnvironment";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/saveOnLeave";
+import { beforeRouteLeaveFunction, From, To } from "@/mixins/saveOnLeave";
  
 
 @Component({
@@ -156,12 +158,14 @@ import { beforeRouteLeaveFunction, From, SaveOnLeaveRefs, To } from "@/mixins/sa
 })
 
 class RequirementCategories extends Vue{
-  $refs!: SaveOnLeaveRefs
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
-    return await beforeRouteLeaveFunction({ to, from,
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
   public selectedXaasOptions: string[] = [];
   public selectedCloudOptions: string[] = [];
