@@ -54,8 +54,8 @@
             :groupLabel="checkboxLabel"
             :groupLabelHelpText="checkboxHelpText"
             id="ImpactLevelCheckboxes"
-            :value="selectedEnvs"
-            @update:value="selectedEnvs = $event"
+            :value="selectedILs"
+            @update:value="selectedILs = $event"
             :items="checkboxItems"
             :descriptionNormal="true"
             name="checkbox-card"
@@ -173,7 +173,13 @@ import { Component,  Hook,  Vue, toNative } from "vue-facing-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import PortfolioStore from "@/store/portfolio";
-import { Checkbox, PortfolioProvisioning, SaveOnLeaveRefs, SelectData } from "types/Global";
+import { 
+  Checkbox, 
+  PortfolioProvisioning, 
+  SaveOnLeaveRefs, 
+  SelectData, 
+  SelectedPortfolioEnv 
+} from "types/Global";
 import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
@@ -207,7 +213,7 @@ class PortfolioDetails extends Vue {
   public checkboxHelpText = ""
   public classificationLevels:string[] = []
   private agencyData: SelectData[] = [];
-  private selectedEnvs: string[] = [];
+  private selectedILs: SelectedPortfolioEnv[] = [];
   private optionalEnvs: Record<string, Record<string ,boolean | null | undefined>> = {}
   
   public CSPProvisioningData = PortfolioStore.CSPProvisioningData;
@@ -249,7 +255,7 @@ class PortfolioDetails extends Vue {
     return {
       portfolioTitle: this.portfolioTitle,
       serviceOrAgency: this.serviceOrAgency.value,
-      selectedEnvs: this.selectedEnvs,
+      selectedILs: this.selectedILs,
     }
   }
   public get pageHeaderText():string{
@@ -261,7 +267,7 @@ class PortfolioDetails extends Vue {
   public savedData: PortfolioProvisioning = {
     portfolioTitle: "",
     serviceOrAgency: "",
-    selectedEnvs: [],
+    selectedILs: [],
   }
 
   public environmentHeaders = [
@@ -296,7 +302,7 @@ class PortfolioDetails extends Vue {
       this.savedData = {
         portfolioTitle:  this.portfolioTitle,
         serviceOrAgency: this.serviceOrAgency.value,
-        selectedEnvs: this.selectedEnvs,
+        selectedILs: this.selectedILs,
       }
       this.selectedCSPProvider = storeData.csp ?? ""
       this.checkboxHelpText = this.selectedPackage? "": `Based on your task order details, you have
@@ -305,7 +311,7 @@ class PortfolioDetails extends Vue {
       transfer billing for an existing cloud environment to your JWCC task order.`
       this.checkboxLabel = this.selectedPackage? "": `2. Tell us about your cloud environments`
 
-      this.selectedEnvs = storeData.selectedEnvs ?? [];
+      this.selectedILs = storeData.selectedILs ?? [];
     }
   }
 
@@ -330,8 +336,18 @@ class PortfolioDetails extends Vue {
 
   public async saveOnLeave(): Promise<boolean> {
     try {
-      this.selectedEnvs.sort(); // ensure correct order e.g., IL2, IL4, IL5
-      console.log(this.currentData, 'current') 
+      
+      this.checkboxItems.forEach((item: Checkbox) =>{
+        if(this.optionalEnvs[item.id].isMigration !== undefined){
+          return this.selectedILs.push(
+            /* eslint-disable camelcase */
+            { value: item.value, is_migration: this.optionalEnvs[item.id].isMigration }
+          )
+        }
+      })
+      // ensure correct order e.g., IL2, IL4, IL5
+      this.selectedILs.sort((a, b) => a.value.localeCompare(b.value)); 
+      console.log(this.selectedILs)
       await PortfolioStore.setPortfolioProvisioning(this.currentData);
     } catch (error) {
       console.error(error);
