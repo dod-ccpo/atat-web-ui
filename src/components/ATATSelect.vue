@@ -186,7 +186,6 @@ class ATATSelect extends Vue {
   }
 
   private setErrorMessage(): void {
-    debugger;
     this.$refs.atatSelect.validate().then(
       async (response: string[]) => {
         if (response.length>0){

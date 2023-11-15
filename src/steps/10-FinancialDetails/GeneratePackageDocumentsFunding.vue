@@ -129,7 +129,6 @@ class GeneratePackageDocumentsFunding extends Vue {
   }
 
   public async saveOnLeave(): Promise<boolean> {
-    debugger;
     this.isGenerating = false; // restores bottom navigation
     await AcquisitionPackage.setValidateNow(true);
     await AcquisitionPackage.saveDocGenStatus("NOT_STARTED")
