@@ -25,7 +25,7 @@
             </p>
             <div v-if="requirement.categories">
               <p class="mb-4">This category includes the following:</p>
-              <ul>
+              <ul class="_atat-ul">
                 <li 
                   v-for="(category, index) in requirement.categories"
                   :key="index + '-' + category"
@@ -50,7 +50,7 @@
           you must define at least one requirement from the following performance areas:
         </p>
         <div class="mb-0">
-          <ul>
+          <ul class="_atat-ul">
             <!-- TODO: pass in prop to determine if current environment exists -->
             <li v-if="true">Your Current Functions</li> 
             <li>Architectural Design Solutions</li>

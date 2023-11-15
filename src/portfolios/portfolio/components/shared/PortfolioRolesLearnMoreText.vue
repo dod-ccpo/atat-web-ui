@@ -5,7 +5,7 @@
       and <strong>Viewer.</strong> The user who creates a portfolio is automatically 
       set as a manager.
     </p>
-    <ul>
+    <ul class="_atat-ul">
       <li class="mb-2">
         <strong>Manager:</strong> In addition to viewing a portfolio’s reporting 
         data within the Funding Tracker, managers can edit all portfolio details. 

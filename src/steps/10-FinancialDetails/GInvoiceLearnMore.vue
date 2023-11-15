@@ -8,7 +8,7 @@
     <p>
       G‑Invoicing helps agencies and their trading partners:
     </p>
-    <ul>
+    <ul class="_atat-ul">
       <li class="mb-2">
         Negotiate and accept General Terms and Conditions (GT&amp;Cs) agreements
       </li>
@@ -31,7 +31,7 @@
     <p>
       For more information, visit:
     </p>
-    <ul>
+    <ul class="_atat-ul">
       <li>
         <a
           :href="$sanitize(fiscalServiceHref)"

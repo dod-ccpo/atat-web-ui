@@ -13,10 +13,12 @@
       <ATATRadioGroup
         v-if="isStandards"
         id="CustomStandards"
+        ref="CustomStandardsRef"
         class="copy-max-width"
         :items="standardsRadioGroupItems"
         :legend="radioGroupLegend"
-        :value.sync="selectedStandardsRadioItem"
+        :value="selectedStandardsRadioItem"
+        @update:value="selectedStandardsRadioItem = $event"
         :rules="[
           $validators.required('Please select an option.'),
         ]"
@@ -25,21 +27,25 @@
       <ATATCheckboxGroup 
         v-if="evalPlan.source_selection === 'SET_LUMP_SUM'"
         id="SetLumpSumCheckboxes"
+        ref="SetLumpSumCheckboxesRef"
         groupLabel="In addition to the required criteria listed above, what other 
           assessment areas would you like to evaluate?"
         groupLabelId="OtherAssessmentAreasLabel"
         :items="lumpSumCheckboxOptions"
-        :value.sync="selectedSetLumpSumOptions"
+        :value="selectedSetLumpSumOptions"
+        @update:value="selectedSetLumpSumOptions = $event"
         :optional="true"
       />
 
       <CustomSpecifications 
-      v-if="showCustomSpecifications"
+        v-if="showCustomSpecifications"
         id="CustomSpecEntry"
+        ref="CustomSpecEntryRef"
         :sourceSelection="evalPlan.source_selection"
         :isDifferentiator="false"
         :isOptional="true"
-        :customSpecifications.sync="customSpecifications"
+        :customSpecifications="customSpecifications"
+        @update:customSpecifications="onCustomSpecsChange"
       />
 
     </div>
@@ -58,7 +64,8 @@ import { EvaluationPlanDTO } from "@/api/models";
 import { Checkbox, RadioButton } from "types/Global";
 import { convertEvalPlanAssessmentAreaToCheckbox, hasChanges, scrollToId } from "@/helpers";
 import _ from "lodash";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 @Component({
@@ -72,13 +79,13 @@ import EvaluationPlan from "@/store/acquisitionPackage/evaluationPlan";
 
 class EvalPlanDetails extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public isLoading = false;
@@ -157,7 +164,7 @@ class EvalPlanDetails extends Vue {
 
   public customSpecifications: string[] = [];
 
-  public initCustomSpecs(): void {  
+  public initCustomSpecs(): void {
     this.customSpecifications = this.evalPlan.custom_specifications?.split(",") || [];
     if (!this.isLoading) {
       this.$nextTick(() => {
@@ -179,8 +186,8 @@ class EvalPlanDetails extends Vue {
     newVal === "YES" ? this.initCustomSpecs() : this.clearCustomSpecs();
   }
 
-  @Watch("customSpecifications")
-  public customSpecificationsChange(newVal: string[]): void {
+  public onCustomSpecsChange(newVal: string[]): void {
+    console.log('newVal: ', newVal)
     this.evalPlan.custom_specifications = newVal.join(",")
   }
 
@@ -220,12 +227,11 @@ class EvalPlanDetails extends Vue {
       this.evalPlan = _.cloneDeep(storeData);
       this.savedData = _.cloneDeep(storeData);
       if (this.evalPlan.source_selection === "SET_LUMP_SUM") {
-        this.selectedSetLumpSumOptions = this.evalPlan.standard_specifications?.split(",") || [];
+        this.selectedSetLumpSumOptions = this.evalPlan.standard_specifications?.split(",") ?? [];
       }
-      this.selectedStandardsRadioItem = this.evalPlan.has_custom_specifications || "";
+      this.selectedStandardsRadioItem = this.evalPlan.has_custom_specifications ?? "";
 
       this.lumpSumCheckboxOptions = this.setLumpSumCheckboxOptions();
-
     }
   }
 
@@ -241,6 +247,10 @@ class EvalPlanDetails extends Vue {
 
   public async saveOnLeave(): Promise<boolean> {
     try {
+      /* eslint-disable camelcase */
+      this.evalPlan.custom_specifications = this.customSpecifications.join(",");
+      /* eslint-enable camelcase */
+
       if (this.hasChanged) {
         await EvaluationPlan.setEvaluationPlan(this.currentData);
         await EvaluationPlan.saveEvaluationPlan();
