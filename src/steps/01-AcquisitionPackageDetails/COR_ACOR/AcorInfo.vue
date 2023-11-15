@@ -13,7 +13,7 @@
             manually enter their contact information. For more guidance about 
             CORs, visit 
             <a 
-              href="https://www.ditco.disa.mil/hq/cor/index.asp" 
+              href="https://www.ditco.disa.mil/hq/cor/" 
               class="_text-link" 
               target="_blank"
               rel="noopener"

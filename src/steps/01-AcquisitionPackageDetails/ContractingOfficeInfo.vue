@@ -17,6 +17,7 @@
             <section id="Section2">
               <ATATTextField
                 id="ContractingOffice"
+                ref="ContractingOfficeRef"
                 label="Contracting Office name"
                 class="_input-max-width mb-10"
                 :value="name"
@@ -25,6 +26,8 @@
               />
 
               <ATATAddressForm
+                id="AddressFormContractingOffice"
+                ref="AddressFormContractingOfficeRef"
                 :selectedAddressType="selectedAddressType"
                 @update:selectedAddressType="selectedAddressType = $event"
                 :streetAddress1="streetAddress1"
@@ -91,14 +94,14 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component , Hook, toNative, Vue } from "vue-facing-decorator";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
-import { RadioButton, SelectData } from "types/Global";
+import { RadioButton, SelectData, SaveOnLeaveRefs } from "types/Global";
 
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { AddressDTO } from "@/api/models";
@@ -118,13 +121,13 @@ import ContactData from "@/store/contactData";
 
 class ContractingOfficeInfo extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    })
   }
 
   get inputClass(): string {

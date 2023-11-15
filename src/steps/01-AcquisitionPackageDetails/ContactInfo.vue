@@ -19,6 +19,7 @@
       <v-col>
         <ATATSelect
           id="Branch"
+          ref="BranchRef"
           v-model="selectedBranch"
           v-if="selectedRole === 'MILITARY'"
           class="_input-max-width mb-10"
@@ -106,6 +107,7 @@
           <ATATTextField
             label="Suffix"
             id="Suffix"
+            ref="SuffixRef"
             :optional="true"
             width="80"
             :value="suffix"
@@ -160,6 +162,7 @@
           <ATATAutoComplete
             v-if="selectedRole === 'CIVILIAN'"
             id="ContactGrade"
+            ref="ContactGradeRef"
             :optional="true"
             class="_input-max-width mb-10"
             label="Grade"
