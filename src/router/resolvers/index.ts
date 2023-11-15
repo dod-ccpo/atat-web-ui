@@ -1466,7 +1466,7 @@ export const IGCETrainingPathResolver = (
   current: string,
   direction: string
 ): string => {
-  const basePath = 'requirements-cost-estimate/'
+  const basePath = '/'
   const createPriceEstimatePath = basePath + 'create-price-estimate'
   const repOptimizePath = basePath + 'optimize-or-replicate'
   const archDesignPath = basePath + 'architectural-design-solutions'

@@ -23,6 +23,7 @@
                 <label for="InitialAmount"> Initial funding increment </label>
                 <ATATTextField
                   id="InitialAmount"
+                  ref="InitialAmountRef"
                   :value="initialAmountStr"
                   @update:value="initialAmountStr = $event"
                   :alignRight="true"
@@ -95,6 +96,7 @@
 
                       <ATATSelect
                         :id="'IncrementPeriod' + index"
+                        :ref="'IncrementPeriod' + index + 'Ref'"
                         :items="getFiscalQuarters(index)"
                         width="190"
                         :selectedValue="selectedQuarters[index]"
@@ -176,6 +178,7 @@
 
                 <ATATTextField
                   id="TotalAmount"
+                  ref="TotalAmountRef"
                   :value="totalAmount"
                   @update:value="totalAmount = $event"
                   :alignRight="true"
@@ -277,10 +280,10 @@ import Periods from "@/store/periods";
 import PeriodOfPerformance from "@/store/periods";
 
 import { CostEstimateDTO, PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models";
-import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
+import { SelectData, fundingIncrement, IFPData, SaveOnLeaveRefs } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber, roundDecimal } from "@/helpers";
 
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import { format } from "date-fns";
 import { parseISO } from "date-fns/fp";
@@ -302,13 +305,14 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 
 class IncrementalFunding extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public today = new Date();

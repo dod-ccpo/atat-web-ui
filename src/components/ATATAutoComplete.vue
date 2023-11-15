@@ -139,6 +139,7 @@ class ATATAutoComplete extends Vue {
   private setErrorMessage(): void {
     this.$refs.atatAutoComplete.validate().then(
       async (response: string[]) => {
+        debugger;
         this.errorMessages = response;
       }
     );

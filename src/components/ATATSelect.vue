@@ -35,7 +35,7 @@
         offset="0"
         anchor="bottom end"
         :disabled="menuDisabled"
-        :eager="true"
+        
         menu-icon="mdi-chevron-down"
       >
         <template v-if="showSelectedValue" v-slot:selection="{ item }">
@@ -104,11 +104,8 @@ import { getIdText } from "@/helpers";
   }
 })
 class ATATSelect extends Vue {
-  // refs
   $refs!: {
     atatSelect: ComponentPublicInstance & {
-      errorBucket: string[]; 
-      errorCount: number;
       blur: ()=> void;
       focus: ()=> void;
       validate: () => Promise<string[]>;
@@ -183,32 +180,13 @@ class ATATSelect extends Vue {
   //   }
   // }
 
-  public get validateFormNow(): boolean {
-    return AcquisitionPackage.getValidateNow;
-  }
-
-  @Watch('validateFormNow')
-  public validateNowChange(): void {
-    // this.addRequiredRule();
-    // if(!this.$refs.atatSelect.validate()){
-    //   this.setErrorMessage();
-    //   this.$emit('errorMessage', this.errorMessages);
-    // }
-  }
-
-  public addRequiredRule(): void {
-    // accommodates for dropdowns that are loaded
-    // with no preselected value but required validation saveOnLeave
-    this.$nextTick(()=>{
-      this._rules.push((v:string)=>v !== "" || "")
-    })
-  }
-
+ 
   private onInput(v: string) {
     this._selectedValue = v;
   }
 
   private setErrorMessage(): void {
+    debugger;
     this.$refs.atatSelect.validate().then(
       async (response: string[]) => {
         if (response.length>0){

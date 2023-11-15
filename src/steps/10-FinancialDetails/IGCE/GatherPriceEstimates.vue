@@ -30,6 +30,7 @@
            
             v-for="(value, name, index) in estimateDataSource"
             :id="'AnticipatedUserAndDataNeedsAccordion' + index"
+            :ref="'AnticipatedUserAndDataNeedsAccordion' + index + 'Ref'"
             :key="index"
             class="mb-4"
             borderless
@@ -55,6 +56,7 @@
                   </div>
                   <Card_Requirement
                     v-for="(requirement, idx) in value"
+                    :ref="'AnticipatedUserAndDataNeedsAccordion' + index + 'Card' + idx + 'Ref'"
                     :cardData="value[idx]"
                     :key="idx"
                     :index="idx + 1"
@@ -75,6 +77,7 @@
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import SlideoutPanel from "@/store/slideoutPanel";
 import {
+  SaveOnLeaveRefs,
   SlideoutPanelContent,
 } from "../../../../types/Global";
 // eslint-disable-next-line camelcase
@@ -83,7 +86,7 @@ import SlideOut_GatherPricesEstimates from
   "@/steps/10-FinancialDetails/IGCE/components/SlideOut_GatherPricesEstimates.vue";
 import Card_Requirement from "@/steps/10-FinancialDetails/IGCE/components/Card_Requirement.vue";
 import IGCE from "@/store/IGCE";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CrossDomainSolutionDTO, IgceEstimateDTO, ReferenceColumn } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements";
@@ -95,14 +98,14 @@ import Periods from "@/store/periods";
   },
 })
 class GatherPriceEstimates extends Vue {
-
-  $refs!: SaveOnLeaveRefs
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   igceEstimateData: IgceEstimateDTO[] = [];
@@ -112,10 +115,6 @@ class GatherPriceEstimates extends Vue {
   cdsClassifications = ClassificationRequirements.cdsSolution?.selected_periods
   isPanelOpen = [0]; //0 is open; 1 is closed.
   cdsSNOWRecord: CrossDomainSolutionDTO|null|undefined ;
-
-  get Form(): SaveOnLeaveRefs['form'] {
-    return this.$refs.form
-  }
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -134,6 +133,7 @@ class GatherPriceEstimates extends Vue {
     this.igceEstimateData = await IGCE.igceEstimateList.filter(
       iel => iel.title?.toLowerCase().indexOf("cross domain") === -1
     )
+
     await this.populateClassificationDisplay();
     await this.groupByClassificationDisplay();
     await this.sortDataSource();
@@ -162,6 +162,8 @@ class GatherPriceEstimates extends Vue {
       acc[current.classification_display || ""].push(current);
       return acc;
     }, Object.create(null));
+    console.log(165)
+    console.log(this.tempEstimateDataSource)
   }
 
   public async createPopString(): Promise<string> {

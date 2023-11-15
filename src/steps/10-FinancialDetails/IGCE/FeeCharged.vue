@@ -18,6 +18,7 @@
           </div>
           <ATATRadioGroup 
             id="isFeeChargedOptions" 
+            ref="isFeeChargedOptionsRef" 
             width="180" 
             :value="isCharged"
             @update:value="isCharged = $event"
@@ -27,7 +28,8 @@
             :rules="[$validators.required('Please select an option')]">
           </ATATRadioGroup>
           <hr class="mt-7" v-if="isCharged === 'YES'" />
-          <ATATTextField v-if="isCharged === 'YES'" ref="PercentageTextbox"
+          <ATATTextField v-if="isCharged === 'YES'" 
+            ref="PercentageTextbox"
             label="What percentage of the total price does your contracting office charge?" 
             id="ContractPricePercentage"
             placeHolder="1-20" suffix="%" width="150"
@@ -52,7 +54,6 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 import IGCEStore from "@/store/IGCE";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { YesNo } from "../../../../types/Global";
-import { ComponentPublicInstance } from "vue";
 
 @Component({
   components: {
@@ -62,17 +63,13 @@ import { ComponentPublicInstance } from "vue";
 })
 class FeeCharged extends Vue {
 
-  $refs!: SaveOnLeaveRefs & {
-    PercentageTextbox: ComponentPublicInstance & {
-      errorMessages: () => [];
-    };
-  }
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private isCharged: YesNo = "";

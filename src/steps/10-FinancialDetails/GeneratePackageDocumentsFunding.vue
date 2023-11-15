@@ -25,7 +25,7 @@ import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GeneratingDocumentsFunding from "./components/GeneratingDocumentsFunding.vue";
 import ReviewDocumentsFunding from "./components/ReviewDocumentsFunding.vue";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -36,13 +36,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class GeneratePackageDocumentsFunding extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public isGenerating = false;
@@ -129,8 +129,10 @@ class GeneratePackageDocumentsFunding extends Vue {
   }
 
   public async saveOnLeave(): Promise<boolean> {
+    debugger;
     this.isGenerating = false; // restores bottom navigation
     await AcquisitionPackage.setValidateNow(true);
+    await AcquisitionPackage.saveDocGenStatus("NOT_STARTED")
     return true;
   }
 }
