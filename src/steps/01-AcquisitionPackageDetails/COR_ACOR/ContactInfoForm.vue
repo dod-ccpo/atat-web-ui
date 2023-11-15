@@ -16,7 +16,7 @@
       </h3>
 
       <ATATRadioGroup
-        v-show="isWizard"
+        v-if="isWizard"
         id="ContactAffiliation"
         ref="ContactAffiliationRef"
         :legend="

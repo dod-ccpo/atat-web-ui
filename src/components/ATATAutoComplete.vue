@@ -153,6 +153,7 @@ class ATATAutoComplete extends Vue {
   private valueUpdate(val: any): void {
     this._selectedItem[this.titleKey] = val ? val[this.titleKey] : "";
     this._selectedItem[this.valueKey] = val ? val[this.valueKey] : "";
+    this.setErrorMessage();
   }
 
 }
