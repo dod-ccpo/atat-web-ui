@@ -16,8 +16,8 @@
           <div>
             <section id="Section2">
               <ATATTextField
-                id="ContractingOffice"
                 ref="ContractingOfficeRef"
+                id="ContractingOffice"
                 label="Contracting Office name"
                 class="_input-max-width mb-10"
                 :value="name"
@@ -51,17 +51,17 @@
                 :requiredFields='[
                 {field:"StreetAddress", message: "Please enter an address."},
                 {field:"City", message:  "Enter a city."},
-              {field:"State" , message: "Select a state code."},
-              {field:"ZIPCode" , message: "Please enter a ZIP code."},
-              {
-                field:"APO_FPO_DPO",
-                message: "Select a military or diplomatic post office (APO, FPO, or DPO)."
-                },
-              {field:"StateCode", message:  "Select a state code."},
-              {field:"StateProvince", message: "Enter a state/province."},
-              {field:"Country", message: "Select a country."},
-              {field:"PostalCode" , message: "Please enter a postal code."},
-              ]'
+                {field:"State" , message: "Select a state code."},
+                {field:"ZIPCode" , message: "Please enter a ZIP code."},
+                {
+                  field:"APO_FPO_DPO",
+                  message: "Select a military or diplomatic post office (APO, FPO, or DPO)."
+                  },
+                {field:"StateCode", message:  "Select a state code."},
+                {field:"StateProvince", message: "Enter a state/province."},
+                {field:"Country", message: "Select a country."},
+                {field:"PostalCode" , message: "Please enter a postal code."},
+                ]'
                 :isValidRules='[
                 {
                   field:"ZIPCode",
@@ -125,11 +125,10 @@ class ContractingOfficeInfo extends Vue {
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
-      form: this.$refs as SaveOnLeaveRefs,
+      form: this.$refs as SaveOnLeaveRefs, 
       nextTick: this.$nextTick,
-    })
+    }).catch()
   }
-
   get inputClass(): string {
     return this.$vuetify.display.mdAndDown
       ? "_input-max-width my-2"

@@ -14,7 +14,7 @@
       @radioButtonSelected="contactTypeChange"
       :rules="[$validators.required('Please select your role.')]"
     />
-    <v-form ref="form" v-if="selectedRole !== ''">
+    <div v-if="selectedRole !== ''">
       <v-row class="form-section">
       <v-col>
         <ATATSelect
@@ -178,7 +178,7 @@
           />
         </v-col>
       </v-row>
-    </v-form>
+    </div>
   </v-container>
 </template>
 
@@ -218,7 +218,6 @@ import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
   },
 })
 class ContactInfo extends Vue {
-
  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
@@ -244,7 +243,7 @@ class ContactInfo extends Vue {
   @Watch("selectedBranch")
   protected branchChange(newVal: string): void {
     if (newVal !== null){
-      this.setRankData();
+      // this.setRankData();
       AcquisitionPackage.setSelectedContactBranch(this.selectedBranch);
     }
   }
@@ -293,7 +292,7 @@ class ContactInfo extends Vue {
     sysId: "",
   };
 
-  private selectedBranchRanksData: AutoCompleteItem[] = [];
+  // private selectedBranchRanksData: AutoCompleteItem[] = [];
   private branchRanksData: AutoCompleteItemGroups = {};
 
   private selectedRole = "";
@@ -384,11 +383,16 @@ class ContactInfo extends Vue {
 
   // methods
 
-  private setRankData(): void {
-    if (this.selectedBranch.value) {
-      this.selectedBranchRanksData =
-        this.branchRanksData[this.selectedBranch.value];
-    }
+  // private setRankData(): void {
+  //   if (this.selectedBranch.value) {
+  //     this.selectedBranchRanksData =
+  //       this.branchRanksData[this.selectedBranch.value];
+  //   }
+  // }
+
+  get selectedBranchRanksData(): AutoCompleteItem[]{
+    // this.selectedBranchRanksData =
+    return this.branchRanksData[this.selectedBranch.value as string];
   }
 
   public async loadOnEnter(): Promise<void> {

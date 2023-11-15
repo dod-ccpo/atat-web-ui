@@ -161,7 +161,7 @@
                           </h2>
                           <ATATCheckboxGroup
                             v-if="DAPPSExperience > 3"
-                            id="CustomerFeedback"
+                            id="CustomerFeedback0"
                             :value="selectedFeedbackOptions"
                             @update:value="selectedFeedbackOptions = $event"
                             :items="positiveFeedbackOptions"
@@ -169,7 +169,7 @@
                           />
                           <ATATCheckboxGroup
                             v-if="DAPPSExperience <= 3"
-                            id="CustomerFeedback"
+                            id="CustomerFeedback1"
                             :value="selectedFeedbackOptions"
                             @update:value="selectedFeedbackOptions = $event"
                             :items="negativeFeedbackOptions"
@@ -177,7 +177,7 @@
                           />
                           <p class="mb-2">Other, please specify </p>
                           <ATATTextArea
-                            id="otherFeedback"
+                            id="otherFeedback2"
                             class="width-100 mb-10"
                             :rows="3"
                             :value="otherFeedbackValue"

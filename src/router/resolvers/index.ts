@@ -596,26 +596,25 @@ const setDontNeedButton = (groupId: string) => {
 
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings
 
-const basePerformanceRequirementsPath = 'performance-requirements'
+const basePerformanceRequirementsPath = '/performance-requirements'
 const requirementCategories = '/requirement-categories'
-const descriptionOfWorkSummaryPath = 'performance-requirements/dow-summary'
-const DOWSecurityRequitementsPath =
-	'performance-requirements/dow-security-requirements'
-const otherServiceOfferingSummaryPath =
-	'performance-requirements/service-offerings/other/summary'
+const descriptionOfWorkSummaryPath = '/dow-summary'
+const DOWSecurityRequitementsPath ='/dow-security-requirements'
+const otherServiceOfferingSummaryPath ='/service-offerings/other/summary'
 
-const baseOfferingDetailsPath = `${basePerformanceRequirementsPath}/service-offering-details/`
+const baseOfferingDetailsPath = `/service-offering-details/`
+
 const getServiceOfferingsDetailsPath = (
   groupId: string,
   serviceName: string
 ) => {
-  let path = `${baseOfferingDetailsPath}${groupId.toLowerCase()}/`
+  let path = `/${groupId.toLowerCase()}`
   path += `${sanitizeOfferingName(serviceName)}`
   return path
 }
 
 const getOfferingGroupServicesPath = (groupId: string) =>
-  `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
+  `/service-offerings`
 
 /****************************************************************************
 
@@ -1138,7 +1137,10 @@ export const OfferingDetailsPathResolver = (
     return descriptionOfWorkSummaryPath
   }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
-    const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName)
+    const offering = !(groupId.toLowerCase().includes('portability'))
+      ? sanitizeOfferingName(DescriptionOfWork.currentOfferingName)
+      : "";
+      
     if (offering) {
       return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`
     }
@@ -1466,7 +1468,7 @@ export const IGCETrainingPathResolver = (
   current: string,
   direction: string
 ): string => {
-  const basePath = 'requirements-cost-estimate/'
+  const basePath = '/'
   const createPriceEstimatePath = basePath + 'create-price-estimate'
   const repOptimizePath = basePath + 'optimize-or-replicate'
   const archDesignPath = basePath + 'architectural-design-solutions'
