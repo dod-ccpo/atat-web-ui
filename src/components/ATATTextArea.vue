@@ -68,8 +68,8 @@
 
 <script lang="ts">
 import { ComponentPublicInstance } from "vue";
-import { Component, Prop, Watch, Vue, toNative, Emit } from "vue-facing-decorator";
-import {PropSync} from "@/decorators/custom"
+import { Component, Prop, Watch, Vue, toNative } from "vue-facing-decorator";
+import { PropSync } from "@/decorators/custom"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { ValidationRule } from "types/Global";
@@ -145,6 +145,10 @@ class ATATTextArea extends Vue {
   @Watch('validateFormNow')
   public validateNowChange(): void {
     this.setErrorMessage();
+  }
+
+  public openSlideoutPanel() {
+    console.log('clicked2')
   }
 
   // @Watch('rules')

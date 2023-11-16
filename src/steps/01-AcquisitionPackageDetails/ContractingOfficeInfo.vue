@@ -16,6 +16,7 @@
           <div>
             <section id="Section2">
               <ATATTextField
+                ref="ContractingOfficeRef"
                 id="ContractingOffice"
                 label="Contracting Office name"
                 class="_input-max-width mb-10"
@@ -25,6 +26,7 @@
               />
 
               <ATATAddressForm
+                ref="ATATAddressFormRef"
                 :selectedAddressType="selectedAddressType"
                 @update:selectedAddressType="selectedAddressType = $event"
                 :streetAddress1="streetAddress1"
@@ -48,17 +50,17 @@
                 :requiredFields='[
                 {field:"StreetAddress", message: "Please enter an address."},
                 {field:"City", message:  "Enter a city."},
-              {field:"State" , message: "Select a state code."},
-              {field:"ZIPCode" , message: "Please enter a ZIP code."},
-              {
-                field:"APO_FPO_DPO",
-                message: "Select a military or diplomatic post office (APO, FPO, or DPO)."
-                },
-              {field:"StateCode", message:  "Select a state code."},
-              {field:"StateProvince", message: "Enter a state/province."},
-              {field:"Country", message: "Select a country."},
-              {field:"PostalCode" , message: "Please enter a postal code."},
-              ]'
+                {field:"State" , message: "Select a state code."},
+                {field:"ZIPCode" , message: "Please enter a ZIP code."},
+                {
+                  field:"APO_FPO_DPO",
+                  message: "Select a military or diplomatic post office (APO, FPO, or DPO)."
+                  },
+                {field:"StateCode", message:  "Select a state code."},
+                {field:"StateProvince", message: "Enter a state/province."},
+                {field:"Country", message: "Select a country."},
+                {field:"PostalCode" , message: "Please enter a postal code."},
+                ]'
                 :isValidRules='[
                 {
                   field:"ZIPCode",
@@ -91,14 +93,14 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component , Hook, toNative, Vue } from "vue-facing-decorator";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From,  To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
-import { RadioButton, SelectData } from "types/Global";
+import { RadioButton, SaveOnLeaveRefs, SelectData } from "types/Global";
 
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { AddressDTO } from "@/api/models";
@@ -118,15 +120,15 @@ import ContactData from "@/store/contactData";
 
 class ContractingOfficeInfo extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
   get inputClass(): string {
     return this.$vuetify.display.mdAndDown
       ? "_input-max-width my-2"

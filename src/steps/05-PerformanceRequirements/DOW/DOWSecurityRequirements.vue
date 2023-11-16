@@ -45,10 +45,12 @@ import {
   DOWClassificationInstance,
   OtherServiceOfferingData, 
   SecurityRequirement, 
-  SlideoutPanelContent } from "types/Global";
+  SlideoutPanelContent,
+  SaveOnLeaveRefs,
+} from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import SecurityRequirementsForm from "@/components/DOW/SecurityRequirementsForm.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import SecurityRequirementsLearnMore
@@ -70,13 +72,13 @@ import _ from "lodash";
 
 class DOWSecurityRequirements extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private selectedClassifications: ClassificationLevelDTO[] = [];

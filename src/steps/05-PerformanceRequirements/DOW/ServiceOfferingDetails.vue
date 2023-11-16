@@ -470,7 +470,7 @@ class ServiceOfferingDetails extends Vue {
 
   protected async saveOnLeave(): Promise<boolean> {
     await AcquisitionPackage.setValidateNow(true);
-    const isValid = await this.$refs.form.validate();
+    const isValid = await (this.$refs.form as SaveOnLeaveRefs['form']).validate();
     try {
       this.instancesFormData.forEach((instance, index) => {
         if (instance.entireDuration.toLowerCase() === "yes") {

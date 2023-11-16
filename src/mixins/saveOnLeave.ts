@@ -78,12 +78,12 @@ export async function beforeRouteLeaveFunction(p: {
       //add something here
 
     } else if (!isValid && !AcquisitionPackage.getAllowDeveloperNavigation) {
-      const el = document.getElementsByClassName("error--text")[0];
-      if (el) {
-        el.scrollIntoView({
-          behavior: "smooth"
-        });
-      }
+      // const el = document.getElementsByClassName("error--text")[0];
+      // if (el) {
+      //   el.scrollIntoView({
+      //     behavior: "smooth"
+      //   });
+      // }
       return false
     } else if (goNext && (isValid || AcquisitionPackage.getAllowDeveloperNavigation)) { 
       Steps.setLeaveStepComplete(p.from.name as string);  

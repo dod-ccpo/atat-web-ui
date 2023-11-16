@@ -1,11 +1,11 @@
 <template>
   <v-card class="package-item-card _border-rounded-more">
-    <v-list-item>
+    <v-list-item class="d-flex align-center">
       <v-avatar>
         <span class="list-circle">{{itemNumber}}</span>
       </v-avatar>
       <v-list-item-title>
-        <span class="text-wrap package-title">{{itemName}}</span>
+        <span class="text-wrap package-title">{{itemName}} </span>
       </v-list-item-title>
       <v-list-item-subtitle v-if="additionalInfo">
         <span class="font-size-14 font-weight-400 text-base-light">

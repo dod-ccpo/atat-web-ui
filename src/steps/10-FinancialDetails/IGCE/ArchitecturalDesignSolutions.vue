@@ -19,6 +19,7 @@
               <ATATRadioGroup
                 class="copy-max-width max-width-740"
                 id="perfReqArchEstimates"
+                ref="perfReqArchEstimatesRef"
                 legend="How do you want to estimate a price for this requirement?"
                 :items="estimateOptions"
                 :value="perfReqOption"
@@ -29,6 +30,7 @@
 
             <div v-if="perfReqOption !== ''" class="mt-8">
               <ATATSingleAndMultiplePeriods
+                ref="ATATSingleAndMultiplePeriodsRef"
                 :periods="periods"
                 @update:periods="periods = $event"
                 :isMultiple="perfReqOption === 'MULTIPLE'"
@@ -49,9 +51,9 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {RadioButton, SingleMultiple} from "types/Global";
+import {RadioButton, SaveOnLeaveRefs, SingleMultiple} from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 import { hasChanges } from "@/helpers";
@@ -68,15 +70,15 @@ import _ from "lodash";
 })
 class ArchitecturalDesignSolutions extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
   private periods: PeriodDTO[] | null = [];
   private singlePeriodTooltipText = "This estimate will be applied to all performance periods.";
   private multiplePeriodTooltipText = `Customize a price estimate for 

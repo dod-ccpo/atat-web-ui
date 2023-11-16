@@ -15,10 +15,12 @@
           </p>
           <ATATRadioGroup
             id="MRRNeed"
+            ref="MRRNeedRef"
             legend="Do any of the following contract actions apply to this acquisition?"
             tooltipText="DISA does not require MRRs for undefinitized contract actions (UCAs),
               bridge contract actions, or FAR 52.217-8 Option to Extend Services."
-            :value.sync="selectedMRRNeed"
+            :value="selectedMRRNeed"
+            @update:value="selectedMRRNeed = $event"
             :items="mrrNeedOptions"
             name="fair-opportunity-exceptions-radio-group"
             class="copy-max-width mb-10 mt-3"
@@ -27,6 +29,7 @@
           <ATATAlert
             v-if="displayNotNoneAlert || displayNoneApplyAlert"
             id="MRRNeedInfoAlert"
+            ref="MRRNeedInfoAlertRef"
             :type="mrrNeedInfoAlertType"
             :showIcon="false"
             class="copy-max-width my-10"
@@ -55,9 +58,9 @@
 /* eslint-disable camelcase */
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import {RadioButton} from "../../../../types/Global";
+import { RadioButton, SaveOnLeaveRefs } from "../../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import {FairOpportunityDTO, PeriodOfPerformanceDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
@@ -73,13 +76,13 @@ import Periods  from "@/store/periods";
 
 class MRRNeed extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private selectedMRRNeed:

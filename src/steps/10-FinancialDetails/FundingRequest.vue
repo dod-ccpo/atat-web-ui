@@ -23,6 +23,7 @@
           </p>
           <ATATRadioGroup
             id="FundingTypesRadioGroup"
+            ref="FundingTypesRadioGroupRef"
             :card="true"
             :items="radioButtonItems"
             :rules="[$validators.required('Please select a type of funding request.')]"
@@ -44,13 +45,17 @@ import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
-import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import { 
+  RadioButton, 
+  SlideoutPanelContent, 
+  SaveOnLeaveRefs 
+} from "../../../types/Global";
 import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import { hasChanges } from "@/helpers";
 import FinancialDetails from "@/store/financialDetails";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -62,14 +67,14 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 
 class FundingPlanType extends Vue {
-
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private selectedFundingTypes = "";

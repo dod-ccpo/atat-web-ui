@@ -1033,7 +1033,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Service Offerings",
-        path: "/service-offerings/:groupName",
+        path: "/service-offerings",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferings,
         completePercentageWeight: 1,
@@ -1048,6 +1048,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             emitText: "confirmDeleteService",
           },
         ],
+      },
+      {
+        menuText: "Service Offering Details",
+        path: "/service-offering-details/:groupName",
+        excludeFromMenu: true,
+        name: routeNames.ServiceOfferingDetails,
+        completePercentageWeight: 1,
+        component: ServiceOfferingDetails,
+        routeResolver: OfferingDetailsPathResolver,
       },
       {
         menuText: "Service Offering Details",

@@ -25,10 +25,12 @@
 
               <ATATRadioGroup 
                 id="AddlTimeCost"
+                ref="AddlTimeCostRef"
                 name="AddlTimeCost"
                 legend="Would a fair opportunity competition require your project to 
                   migrate from one platform to another, resulting in additional time and cost?"
-                :value.sync="migrAddlTimeCost"
+                :value="migrAddlTimeCost"
+                @update:value="migrAddlTimeCost = $event"
                 :items="addlTimeCostOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -36,8 +38,10 @@
                 <div v-if="requiresAddlTimeCost">
                   <ATATTextField
                     id="MigrationEstimatedCost"
+                    ref="MigrationEstimatedCostRef"
                     class="mt-10 mb-10"
-                    :value.sync="migrEstCost"
+                    :value="migrEstCost"
+                    @update:value="migrEstCost = $event"
                     label="Estimated cost to migrate"
                     :isCurrency="true"
                     :width="400"
@@ -50,8 +54,10 @@
                     <div class="d-flex justify-space-between">  
                       <ATATTextField
                         id="MigrationEstimatedDelay"
+                        ref="MigrationEstimatedDelayRef"
                         class="mt-0"
-                        :value.sync="migrEstDelayAmt"
+                        :value="migrEstDelayAmt"
+                        @update:value="migrEstDelayAmt = $event"
                         label="Estimated delay amount"
                         :labelSrOnly="true"
                         type="number"
@@ -62,8 +68,11 @@
                       />      
                       
                       <ATATSelect 
+                        id="MigrationSelect"
+                        ref="MigrationSelectRef"
                         :items="unitsOfTime"
-                        :selectedValue.sync="migrEstDelayUnit"
+                        :selectedValue="migrEstDelayUnit"
+                        @update:selectedValue="migrEstDelayUnit = $event"
                         label="Estimated delay unit of time"
                         :labelSrOnly="true"
                         :returnObject="false"
@@ -73,6 +82,7 @@
 
                     <ATATErrorValidation
                       id="MigrationEstimatedDelayValidation"
+                      ref="MigrationEstimatedDelayValidationRef"
                       class="atat-text-field-error"
                       v-if="migrationError"
                       :errorMessages="[migrationErrorMessage]"
@@ -85,10 +95,12 @@
 
               <ATATRadioGroup 
                 id="GovtEngineers"
+                ref="GovtEngineersRef"
                 name="GovtEngineers"
                 :legend="`Are your Government engineers trained and certified in a 
                   specific cloud platform or technology that is unique to ${cspName}?`"
-                :value.sync="geCertified"
+                :value="geCertified"
+                @update:value="geCertified = $event"
                 :items="govtEngineersOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -97,8 +109,10 @@
 
                   <ATATTextField
                     id="PlatformOrTechName"
+                    ref="PlatformOrTechNameRef"
                     class="mt-10 mb-10"
-                    :value.sync="gePlatformName"
+                    :value="gePlatformName"
+                    @update:value="gePlatformName = $event"
                     label="Name of unique cloud platform/technology"
                     :rules="[
                       $validators.required('Enter the name of the cloud platform/technology.')
@@ -106,11 +120,13 @@
                   />
                   <ATATTextArea 
                     id="InsufficientTimeReason"
+                    ref="InsufficientTimeReasonRef"
                     label="Why is there insufficient time to retrain and obtain certifications 
                       in another platform?"
                     helpText="Fill in the blank to complete the suggested sentence 
                       below or write your own reason."
-                    :value.sync="geInsufficientTimeReason"
+                    :value="geInsufficientTimeReason"
+                    @update:value="geInsufficientTimeReason = $event"
                     :maxChars="500"
                     :rows="6"
                     :validateItOnBlur="true"
@@ -131,9 +147,11 @@
 
               <ATATRadioGroup 
                 id="ProductFeature"
+                ref="ProductFeatureRef"
                 name="ProductFeature"
                 :legend="`Is there a specific product or feature that is peculiar to ${cspName}?`"
-                :value.sync="pfPeculiarToCSP"
+                :value="pfPeculiarToCSP"
+                @update:value="pfPeculiarToCSP = $event"
                 :items="isPeculiarOptions"
                 :rules="[$validators.required('Please select an option.')]"
               />
@@ -141,9 +159,11 @@
                 <div class="mt-10" v-if="hasPeculiarProduct">
                   <ATATRadioGroup 
                     id="IsProductOrFeature"
+                    ref="IsProductOrFeatureRef"
                     name="IsProductOrFeature"
                     legend="Is it a product or feature?"
-                    :value.sync="pfType"
+                    :value="pfType"
+                    @update:value="pfType = $event"
                     :items="productOrFeatureOptions"
                     :rules="[$validators.required('Please select an option.')]"
                   />
@@ -151,8 +171,10 @@
                     <div class="mt-10" v-if="productOrFeatureSelected">
                       <ATATTextField
                         id="UniqueProduct"
+                        ref="UniqueProductRef"
                         class="mt-10 mb-10"
-                        :value.sync="pfName"
+                        :value="pfName"
+                        @update:value="pfName = $event"
                         :label="`Name of the unique ${productOrFeatureStr}`"
                         :rules="[
                           $validators.required(`Enter the name of your ${productOrFeatureStr}.`)
@@ -161,15 +183,18 @@
 
                       <ATATTextArea 
                         id="WhyEssential"
+                        ref="WhyEssentialRef"
                         :label="`Why is this ${productOrFeatureStr} essential to 
                           the Government’s requirements?`"
                         helpText="Fill in the blank to complete the suggested sentence 
                           below or write your own reason."
-                        :value.sync="pfWhyEssential"
+                        :value="pfWhyEssential"
+                        @update:value="pfWhyEssential = $event"
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
-                        :turnRulesOff.sync="whyEssentialRulesOff"
+                        :turnRulesOff="whyEssentialRulesOff"
+                        @update:turnRulesOff="whyEssentialRulesOff = $event"
                         :rules="[
                           $validators.required(whyEssentialErrorMessage),
                           $validators.notSameAsDefault(
@@ -182,16 +207,19 @@
 
                       <ATATTextArea 
                         id="WhyInadequate"
+                        ref="WhyInadequateRef"
                         class="mt-10"
                         :label="`Why do other similar ${productOrFeatureStr}s not 
                           meet the Government’s requirements?`"
                         helpText="Fill in the blank to complete the suggested sentence 
                           below or write your own reason."
-                        :value.sync="pfWhyOthersInadequate"
+                        :value="pfWhyOthersInadequate"
+                        @update:value="pfWhyOthersInadequate = $event"
                         :maxChars="500"
                         :rows="6"
                         :validateItOnBlur="true"
-                        :turnRulesOff.sync="whyInadequateRulesOff"
+                        :turnRulesOff="whyInadequateRulesOff"
+                        @update:turnRulesOff="whyInadequateRulesOff = $event"
                         :rules="[
                           $validators.required(whyOthersInadequateErrorMessage),
                           $validators.notSameAsDefault(
@@ -233,8 +261,8 @@ import { FairOppDocGenType, FairOpportunityDTO } from "@/api/models";
 import { getCSPCompanyName, getYesNoRadioOptions, hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import _ from "lodash";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
- 
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 
 @Component({
   components: {
@@ -250,13 +278,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class SoleSourceCause extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public cspName = "";
