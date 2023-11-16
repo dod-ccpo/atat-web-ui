@@ -271,7 +271,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { Checkbox, DataTableHeader, TravelSummaryTableData } from "types/Global";
+import { Checkbox, DataTableHeader, SaveOnLeaveRefs, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -280,8 +280,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { createPeriodCheckboxItems } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {routeNames} from "@/router/stepper";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -293,13 +293,14 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 })
 class Travel extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public tableHeaders: Record<string, string>[] = [];
