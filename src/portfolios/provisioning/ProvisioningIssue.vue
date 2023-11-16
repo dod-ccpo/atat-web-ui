@@ -64,7 +64,6 @@ import AppSections from '@/store/appSections';
     }
   })
 class ProvisioningIssue extends Vue {
-  
     public stepsText =[
       `Contact your Contracting Officer to ensure all 
       information is accurately transmitted to EDA.`,
