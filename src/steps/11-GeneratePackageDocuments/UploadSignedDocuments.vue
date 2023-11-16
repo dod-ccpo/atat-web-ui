@@ -36,6 +36,7 @@
         <div
         >
           <ATATFileUpload
+            width="725"
             :validFileFormats="validFileFormats"
             :attachmentServiceName="attachmentServiceName"
             :maxFileSizeInBytes="maxFileSizeInBytes"
@@ -122,13 +123,19 @@ import ATATLoadingPackageModal from "@/components/ATATLoadingPackageModal.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import { TABLENAME as PACKAGE_DOCUMENTS_SIGNED } from "@/api/packageDocumentsSigned";
-import { ValidationRule, invalidFile, signedDocument, uploadingFile } from "../../../types/Global";
+import { 
+  SaveOnLeaveRefs, 
+  ValidationRule, 
+  invalidFile,
+  signedDocument, 
+  uploadingFile 
+} from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import Attachments from "@/store/attachments";
 import FinancialDetails from "@/store/financialDetails";
 import { PackageDocumentsSignedDTO } from "@/api/models";
 import { routeNames } from "../../router/stepper"
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components:{
@@ -140,15 +147,15 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 class UploadSignedDocuments extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
   public packageNotInitialized = false;
   public routeNames = routeNames;
 
