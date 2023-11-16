@@ -761,7 +761,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "03",
     completePercentageWeight: 7,
     menuText: "Contract Details",
-    path: "/period-of-performance",
+    path: "/",
     component: ContractDetails,
     children: [
       {
@@ -841,7 +841,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "04",
     menuText: "Background",
-    path: "/current-contract",
+    path: "/",
     completePercentageWeight: 10,
     component: Background,
     stepCompleteOnEnter: routeNames.ClassificationRequirements,
@@ -1120,7 +1120,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "06",
     completePercentageWeight: 7,
     menuText: "Other Contract Considerations",
-    path: "/conflict-of-interest",
+    path: "/",
     component: OtherContractConsiderations,
     children: [
       {
@@ -1176,7 +1176,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "07",
     completePercentageWeight: 7,
     menuText: "Standards and Compliance",
-    path: "/personally-identifiable-information",
+    path: "/",
     component: OtherContractConsiderations,
     children: [
       {
