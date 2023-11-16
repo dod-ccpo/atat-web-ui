@@ -48,23 +48,6 @@
             icon="arrow_drop_down"
           />
           </div>
-          <!-- <ATATCheckboxGroup
-            v-if="showCheckbox"
-            ref="PortfolioCheckboxRef"
-            :groupLabel="checkboxLabel"
-            :groupLabelHelpText="checkboxHelpText"
-            id="ImpactLevelCheckboxes"
-            :value="selectedILs"
-            @update:value="selectedILs = $event"
-            :items="checkboxItems"
-            :descriptionNormal="true"
-            name="checkbox-card"
-            :card="true"
-            cardWidth="800"
-            :rules="checkboxRules"
-            :validateOnLoad="false"
-            :largeLabel="true"
-          /> -->
           <div 
           v-if="showCheckbox"
           >
@@ -79,8 +62,7 @@
               to your JWCC task order.
             </div>
             <v-table
-            class="_environments-table"
-            >
+            class="_environments-table">
               <thead>
                 <th 
                 v-for="header in environmentHeaders"
@@ -97,7 +79,11 @@
                   </div>
               </th>
               </thead>
-              <tbody>
+              <tbody
+              :class="[
+              {'_validation-error': noUnclassifiedILsSelected}
+              ]"
+              >
                 <tr
                 v-for="item in checkboxItems"
                 :key="item.id"
@@ -110,28 +96,43 @@
                 </td>
                 <td>
                   <v-radio
-                  class="d-flex justify-center"
+                  class="d-flex justify-center _radio-button"
                   @click="onRadioClick(false, item.id)"
-                  :model-value="optionalEnvs[item.id].isMigration === false"
+                  :model-value="availableUnclassEnvs[item.id].isMigration === false"
                   >
                   </v-radio>
                 </td>
                 <td>
                   <v-radio
-                  class="d-flex justify-center"
+                  class="d-flex justify-center _radio-button"
                   @click="onRadioClick(true, item.id)"
-                  :model-value="optionalEnvs[item.id].isMigration === true"
+                  :model-value="availableUnclassEnvs[item.id].isMigration === true"
                   ></v-radio>
                 </td>
                 <td>
                   <v-radio
-                  class="d-flex justify-center"
+                  class="d-flex justify-center _radio-button"
                   @click="onRadioClick(null, item.id)"
-                  :model-value="optionalEnvs[item.id].isMigration === null"
+                  :model-value="availableUnclassEnvs[item.id].isMigration === null"
                   ></v-radio>
                 </td>
                 </tr>
-             
+                <tr v-if="noUnclassifiedILsSelected">
+                  <td colspan="4">
+                    <ATATAlert
+                    id="SelectAnEnvironment"
+                    type="error"
+                    >
+                    <template v-slot:content>
+                      <span class="_error-message">
+                        Select <span class="emphasis">New Environment</span> 
+                        or <span class="emphasis">Transfer Billing</span> for
+                        at least one Unclassified environment.
+                      </span>
+                    </template>
+                    </ATATAlert>
+                  </td>
+                </tr>
                 <tr
                 v-for="item in classificationLevels"
                 :key="item"
@@ -143,19 +144,19 @@
                 </td>
                 <td>
                   <v-radio
-                  class="d-flex justify-center"
+                  class="d-flex justify-center _radio-button"
                   >
                   </v-radio>
                 </td>
                 <td>
                   <v-radio
-                  class="d-flex justify-center"
+                  class="d-flex justify-center _radio-button"
                   ></v-radio>
                 </td>
                 <td>
                   <v-radio
                   :disabled="true"
-                  class="d-flex justify-center"
+                  class="d-flex justify-center _radio-button"
                   ></v-radio>
                 </td>
                 </tr>
@@ -184,6 +185,7 @@ import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { convertAgencyRecordToSelect } from "@/helpers";
 import OrganizationData from "@/store/organizationData";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 
 @Component({
@@ -191,6 +193,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
     ATATTextField,
     ATATAutoComplete,
     ATATCheckboxGroup,
+    ATATAlert
   }
 })
 
@@ -214,7 +217,8 @@ class PortfolioDetails extends Vue {
   public classificationLevels:string[] = []
   private agencyData: SelectData[] = [];
   private selectedILs: SelectedPortfolioEnv[] = [];
-  private optionalEnvs: Record<string, Record<string ,boolean | null | undefined>> = {}
+  private availableUnclassEnvs: Record<string, Record<string ,boolean | null | undefined>> = {}
+  private noUnclassifiedILsSelected = false
   
   public CSPProvisioningData = PortfolioStore.CSPProvisioningData;
 
@@ -236,7 +240,7 @@ class PortfolioDetails extends Vue {
           description: obj.cloud_distinguisher.description,
         }
         this.checkboxItems.push(checkboxItem);
-        this.optionalEnvs[checkboxItem.id] = {isMigration: undefined}
+        this.availableUnclassEnvs[checkboxItem.id] = {isMigration: undefined}
       }
     });
     this.checkboxRulesOn = true;
@@ -288,7 +292,7 @@ class PortfolioDetails extends Vue {
   ]
   
   public onRadioClick(val: any, id: any): void{
-    this.optionalEnvs[id].isMigration = val
+    this.availableUnclassEnvs[id].isMigration = val
   }
   public async setTaskOrderData(): Promise<void> {
     const storeData = PortfolioStore.portfolioProvisioningObj;
@@ -336,12 +340,17 @@ class PortfolioDetails extends Vue {
 
   public async saveOnLeave(): Promise<boolean> {
     try {
-      
+      for(const env in this.availableUnclassEnvs){
+        if(this.availableUnclassEnvs[env].isMigration === undefined){
+          this.noUnclassifiedILsSelected = true;
+          return false;
+        }
+      }
       this.checkboxItems.forEach((item: Checkbox) =>{
-        if(this.optionalEnvs[item.id].isMigration !== undefined){
+        if(this.availableUnclassEnvs[item.id].isMigration !== undefined){
           return this.selectedILs.push(
             /* eslint-disable camelcase */
-            { value: item.value, is_migration: this.optionalEnvs[item.id].isMigration }
+            { value: item.value, is_migration: this.availableUnclassEnvs[item.id].isMigration }
           )
         }
       })

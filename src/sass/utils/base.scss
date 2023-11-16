@@ -347,6 +347,10 @@ textarea {
   }
 }
 ._environments-table{
+  table{
+    border-collapse: collapse;
+    border: solid 2px transparent;
+  }
   ._environment{
   &-description{
     font-weight: 400;
@@ -381,6 +385,27 @@ textarea {
   }
   td{
     padding: 0px !important;
+  }
+
+
+  ._validation-error{
+    border:2px solid $error;
+    ._atat-alert{
+      border:none;
+      border-radius: 0;
+      border-top: 2px solid $error;
+    }
+    ._error-message{
+    color: $error;
+    .emphasis{
+      font-size: 16px;
+      font-weight: 700;
+      text-align: left;
+    }
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    }
   }
 }
 
