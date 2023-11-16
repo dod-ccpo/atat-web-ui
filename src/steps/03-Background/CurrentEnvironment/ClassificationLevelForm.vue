@@ -10,8 +10,8 @@
       Select all that apply to your current environment.
     </p>
     <ATATCheckboxGroup
-      ref="ClassificationLevelCheckboxesRef"
-      id="ClassificationLevelCheckboxes"
+      :ref="'ClassificationLevelCheckboxesRef' + id"
+      :id="'ClassificationLevelCheckboxes' + id"
       :card="false"
       :hasOtherValue="true"
       :items="topLevelClassifications"
@@ -21,7 +21,7 @@
       :value="selectedTopLevelClassifications"
       @update:value="selectedTopLevelClassifications = $event"
       class="copy-max-width mb-10"
-      name="classificationTypesCheckboxes"
+      :name="'classificationTypesCheckboxes' + id"
     />
     <div v-if="showImpactLevels">
       <p id="DeployedP" class="mb-3 font-weight-500">
@@ -38,8 +38,8 @@
       </p>
 
       <ATATCheckboxGroup
-        ref="ImpactLevelId"
-        :id="impactLevelId"
+        :ref="'ImpactLevelId' + id"
+        :id="impactLevelId + id"
         :card="false"
         :hasOtherValue="true"
         :items="impactLevelOptions"
@@ -47,7 +47,7 @@
         :value="selectedImpactLevels"
         @update:value="selectedImpactLevels = $event"
         class="copy-max-width mb-10"
-        :name="impactLevelId"
+        :name="impactLevelId + id"
       />
 
     </div>
@@ -71,6 +71,7 @@ import { buildClassificationCheckboxList } from "@/helpers";
 class ClassificationLevelForm extends Vue {
   @Prop() public isCloud?:boolean;
   @Prop() public isOnPrem?:boolean;
+  @Prop() public id?: string;
   @Prop({required: true}) public isHybrid?:boolean;
   @Prop({required: true}) public hybridText?:string;
   @PropSync("selectedClassifications") private _selectedClassifications!: string[];

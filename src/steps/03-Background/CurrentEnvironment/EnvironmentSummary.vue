@@ -16,7 +16,7 @@
 
           <div 
             class="mt-4 _light-gray-card"
-            v-if="environmentTypeText && classificationsText"
+            v-if="environmentTypeText && classificationsText && tableData.length > 0"
           >
             <div class="d-flex" id="EnvironmentSummaryBox">
               <div>

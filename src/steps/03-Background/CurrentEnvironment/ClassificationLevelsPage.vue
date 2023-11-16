@@ -14,6 +14,7 @@
             </p>
             <ClassificationLevelForm
               v-if="isCloud || isHybrid"
+              id="cloudandhybrid"
               ref="ClassificationLevelFormRef"
               hybridText="1. Your cloud instances"
               :isHybrid="isHybrid"
@@ -24,6 +25,7 @@
             <hr v-if="isHybrid" />
             <ClassificationLevelForm
               v-if="isOnPrem || isHybrid"
+              id="hybridonly"
               ref="ClassificationLevelFormHybridRef"
               hybridText="2. Your on-premise instances"
               :isHybrid="isHybrid"
@@ -59,7 +61,6 @@ import { SaveOnLeaveRefs } from "types/Global";
 })
 class ClassificationLevelsPage extends Vue {
 
- 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
@@ -111,15 +112,18 @@ class ClassificationLevelsPage extends Vue {
   }
 
   private hasChanged(): boolean {
+    console.log('current: ',this.currentData)
+    console.log('savedc: ', this.savedData)
     return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
 
     await AcquisitionPackage.setValidateNow(true);
-
+    console.log('here1')
     try {
       if (this.hasChanged()) {
+        console.log('here2')
         /* eslint-disable camelcase */
         this.currEnvDTO.env_classifications_cloud = this.envClassificationsCloud;
         this.currEnvDTO.env_classifications_onprem = this.envClassificationsOnPrem;

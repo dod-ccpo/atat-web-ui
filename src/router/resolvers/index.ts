@@ -384,6 +384,9 @@ export const ProcurementHistorySummaryRouteResolver = (
   } else if (doesNotNeedContract && fromCurrentEnvironment) {
     return routeNames.CurrentContract
   } else if (!hasExceptionToFairOpp()) {
+    if (isStepTouched(4)) {
+      return routeNames.SummaryStepFour
+    }
     return !fromCurrentEnvironment
       ? routeNames.CurrentEnvironment
       : routeNames.CurrentContractDetails
@@ -432,6 +435,17 @@ export const CurrentEnvRouteResolver = (current: string): string => {
   return current === routeNames.CurrentEnvironment
     ? routeNames.SummaryStepFour
     : routeNames.CurrentEnvironment
+}
+
+export const CurrentEnvironmentLocationResolver = (current: string): string => {
+  if (
+    current === routeNames.UploadMigrationDocuments && 
+    isStepTouched(4) &&
+    CurrentEnvironment.currEnvInstances?.length !== 0
+  ) {
+    return routeNames.EnvironmentSummary
+  }
+  return routeNames.CurrentEnvironmentLocation
 }
 
 export const CurrentEnvironmentSummaryResolver = (current: string): string => {
@@ -2174,7 +2188,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SummaryStepTwoRouteResolver,
   FundingPlanTypeResolver,
   SeverabilityAndIncrementalFundingResolver,
-  CreatePriceEstimateResolver
+  CreatePriceEstimateResolver,
+  CurrentEnvironmentLocationResolver,
 }
 
 // add path resolvers here

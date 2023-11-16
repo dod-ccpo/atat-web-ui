@@ -177,8 +177,8 @@ import { formatDate, getIdText } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
-import { DataTableHeader } from "types/Global";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { DataTableHeader, SaveOnLeaveRefs } from "types/Global";
 
 @Component({
   components: {
@@ -188,12 +188,12 @@ import { DataTableHeader } from "types/Global";
 })
 class ProcurementHistorySummary extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 
@@ -255,12 +255,12 @@ class ProcurementHistorySummary extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     await this.setDataSource();
-    await this.resetDataSource();
+    // await this.resetDataSource();
   }
 
   public async setDataSource():Promise<void>{
-    this.dataSource = 
-      await AcquisitionPackage.currentContracts as CurrentContractDTO[] || [];
+    // this.dataSource = 
+    //   AcquisitionPackage.currentContracts as CurrentContractDTO[] || [];
   }
 
   public setHeaderId(column: string): string {
@@ -269,9 +269,9 @@ class ProcurementHistorySummary extends Vue {
 
   public async editInstance(contract: CurrentContractDTO): Promise<void> {
 
-    await AcquisitionPackage.setCurrentContractInstanceNumber(
-        contract.instance_number as number);
-    await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
+    // await AcquisitionPackage.setCurrentContractInstanceNumber(
+    //     contract.instance_number as number);
+    // await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
     this.navigate();
   }
 
@@ -285,22 +285,22 @@ class ProcurementHistorySummary extends Vue {
    */
   public async initializeDataSource(): Promise<void>{
     if (!this.dataSource){ 
-      await AcquisitionPackage.setCurrentContractInstanceNumber(0);
-      this.dataSource=[];
-      this.dataSource.push(initialCurrentContract())
+      // await AcquisitionPackage.setCurrentContractInstanceNumber(0);
+      // this.dataSource=[];
+      // this.dataSource.push(initialCurrentContract())
     }
   }
 
   public async resetDataSource():Promise<void>{
     if (this.dataSource && this.dataSource.length>0){
       // sort
-      await this.dataSource.sort();
+      this.dataSource.sort();
       // reconfigure instance numbers
-      await this.dataSource.forEach((c,idx)=> c.instance_number = idx)
-      // set current contract instance number
-      await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
-      // set current contracts instore
-      await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
+      this.dataSource.forEach((c,idx)=> c.instance_number = idx)
+      // // set current contract instance number
+      // await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
+      // // set current contracts instore
+      // await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
     }
   }
 
@@ -315,6 +315,8 @@ class ProcurementHistorySummary extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    console.log('datasource', this.dataSource)
+
     try {
       if (this.dataSource.length > 0){
         await AcquisitionPackage.doSetHasCurrentOrPreviousContracts("YES");

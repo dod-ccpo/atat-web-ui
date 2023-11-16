@@ -232,6 +232,7 @@ import {
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
   ProjectOverviewResolver,
+  CurrentEnvironmentLocationResolver,
   OrganizationResolver,
   ContactInformationResolver,
   CorInformationResolver,
@@ -923,6 +924,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CurrentEnvironmentLocation,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: CurrentEnvironmentLocationResolver,
       },
       {
         menuText: "Classification Levels",
@@ -1051,7 +1053,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Service Offering Details",
-        path: "/service-offering-details/:groupName",
+        path: "/service-offering-details/:groupName/:serviceOffering",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferingDetails,
         completePercentageWeight: 1,
@@ -1060,7 +1062,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Service Offering Details",
-        path: "/service-offering-details/:groupName/:serviceOffering",
+        path: "/service-offering-details/:groupName",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferingDetails,
         completePercentageWeight: 1,

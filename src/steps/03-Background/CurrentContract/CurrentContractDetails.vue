@@ -16,7 +16,9 @@
             <h2 class="mb-5">
               1. Contract overview
             </h2>
-            <ContractNumber id="ContractNumber" 
+            <ContractNumber 
+              id="ContractNumber" 
+              ref="ContractNumberRef"
               :rules="[
                 $validators.required('Please enter a contract number.'),
                 $validators.isMaskValid(
@@ -33,7 +35,8 @@
               found on your awarded contract." />
 
             <TaskOrderNumber 
-            id="TaskOrderNumber" 
+            id="TaskOrderNumber"
+            ref="TaskOrderNumberRef"
             :value="currentContract.task_delivery_order_number" 
             @update:value="currentContract.task_delivery_order_number = $event"
             :optional="true"
@@ -50,7 +53,9 @@
                 spaces). Leave this field empty if your previous acquisition was only a contract, 
                 not an order placed under a contract." />
 
-            <LevelOfCompetition legend="What level of competition was used in this procurement?"
+            <LevelOfCompetition 
+              ref="LevelOfCompetitionRef"
+              legend="What level of competition was used in this procurement?"
               classes="copy-max-width mb-4 mt-3" 
               :competitiveStatus="currentContract.competitive_status"
               @update:competitiveStatus="currentContract.competitive_status = $event"
@@ -68,7 +73,7 @@
             </span>
             <div class="d-flex mt-4">
               <ATATDatePicker 
-                
+                ref="StartRef"
                 id="Start" 
                 :value="currentContract.contract_order_start_date" 
                 @update:value="currentContract.contract_order_start_date = $event"
@@ -96,6 +101,7 @@
                 
                <!-- NOTE: max date to be determined -->
               <ATATDatePicker 
+                ref="ExpirationARef"
                 id="Expiration" 
                 :value="currentContract.contract_order_expiration_date" 
                 @update:value="currentContract.contract_order_expiration_date = $event"
@@ -122,20 +128,23 @@
                 
             </div>
             <ATATErrorValidation
-                id="PoPValidation"
-                  :errorMessages=" [
-                    ...startDPSharedErrorMessages, 
-                    ...expirationDPSharedErrorMessages
-                  ]"
-                  :showAllErrors="false"
-                ></ATATErrorValidation>
+              id="PoPValidation"
+              :errorMessages=" [
+                ...startDPSharedErrorMessages, 
+                ...expirationDPSharedErrorMessages
+              ]"
+              :showAllErrors="false"
+            >
+            </ATATErrorValidation>
             <hr />
 
             <h2 class="mb-4">
               3. Contractor details
             </h2>
             <IncumbentContractorName 
-            id="IncumbentContractorName" :rules="[
+              id="IncumbentContractorName"
+              ref="IncumbentContractorNameRef"
+              :rules="[
                 $validators.required(
                   'Please enter the contractor’s name.'
                 ),
@@ -156,7 +165,8 @@
           </div>
           <div v-else class="copy-max-width">
             <IncumbentContractorName 
-            id="IncumbentContractorName" 
+              id="IncumbentContractorName"
+              ref="IncumbentContractorNameRef"
               :rules="[
                 $validators.required(
                   'Enter the contractor’s name.'
@@ -181,24 +191,28 @@
               class="_input-max-width mb-10" 
               label="Contract number" />
 
-            <TaskOrderNumber id="TaskDeliveryOrderNumber" 
-            :value="currentContract.task_delivery_order_number" 
-            @update:value="currentContract.task_delivery_order_number = $event"
-            :optional="true"
-            class="_input-max-width mb-10" 
-            label="Task/Delivery order number" 
-            :rules="[
-                $validators.isMaskValid(
-                  ['^([0-9a-zA-Z]{13})?$'],
-                  `Your task order number must be 13 alphanumeric characters.`,
-                  true
-                ),
-              ]"
-            tooltipText="Leave this field empty if your previous acquisition
-            was only a contract, not an order placed under a contract." />
+            <TaskOrderNumber 
+              id="TaskDeliveryOrderNumber"
+              ref="TaskDeliveryOrderNumberRef"
+              :value="currentContract.task_delivery_order_number" 
+              @update:value="currentContract.task_delivery_order_number = $event"
+              :optional="true"
+              class="_input-max-width mb-10" 
+              label="Task/Delivery order number" 
+              :rules="[
+                  $validators.isMaskValid(
+                    ['^([0-9a-zA-Z]{13})?$'],
+                    `Your task order number must be 13 alphanumeric characters.`,
+                    true
+                  ),
+                ]"
+              tooltipText="Leave this field empty if your previous acquisition
+              was only a contract, not an order placed under a contract."
+            />
 
             <ATATDatePicker 
               id="Expiration"
+              ref="ExpirationBRef"
               :key="'Expiration'+rerenderExpirationComponent"
               :rules="[
                 $validators.required(
@@ -217,7 +231,8 @@
               :min="tomorrowDateISO"
               placeHolder="MM/DD/YYYY" 
               tooltipText="Use the period of performance end date for your task order. If you
-                  do not have a task order, use your contract end date." />
+                  do not have a task order, use your contract end date." 
+            />
           </div>
         </v-col>
       </v-row>
@@ -461,6 +476,7 @@ class CurrentContract extends Vue {
       this.saveOnLeaveError = error as string;
       console.log(error);
     }
+    console.log(AcquisitionPackage.currentContracts)
     return true;
   }
 
