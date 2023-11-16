@@ -22,7 +22,7 @@ export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> 
       if (Object.prototype?.hasOwnProperty?.call(form, "setErrorMessage")){
         form.setErrorMessage();
       } 
-      if (Object.prototype?.hasOwnProperty?.call(form, "validate")){
+      if (form.$?.type.name?.toLowerCase() === "vform"){
         const isFormValid = (await form.validate())?.valid;
         isFormsValid.push(isFormValid);
       } else {
@@ -41,7 +41,7 @@ async function getRef(form:ComponentPublicInstance):Promise<void>{
       console.log('42: => ' + ref)
       const _formRef = (refs as unknown as FormRef)[ref];
       if (_formRef){
-        if (Object.prototype?.hasOwnProperty?.call(_formRef, "validate")){
+        if (_formRef.$?.type.name?.toLowerCase() === "vform"){
           isFormsValid.push((await(_formRef.validate())).valid);
         }
         if (Object.prototype?.hasOwnProperty?.call(_formRef, "setErrorMessage")){
