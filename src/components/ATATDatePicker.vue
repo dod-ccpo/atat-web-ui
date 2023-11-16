@@ -34,7 +34,7 @@
       @blur="onBlur"
       validate-on="blur"
       autocomplete="off"
-    ></v-text-field>  
+    />
        
      
     <ATATErrorValidation v-if="showErrors" :errorMessages="errorMessages" />
@@ -85,8 +85,8 @@ class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: "220" }) private width!: string;
-  @Prop({ default: "mm/dd/yyyy" }) private helpText!: string;
+  @Prop({ default: "140" }) private width!: string;
+  @Prop({ default: "MM/DD/YYYY" }) private helpText!: string;
   @Prop({ default: true }) private showHelpText!: boolean;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;

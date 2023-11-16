@@ -197,12 +197,19 @@
             tooltipText="Leave this field empty if your previous acquisition
             was only a contract, not an order placed under a contract." />
 
-            <ATATDatePicker id="Expiration" 
+            <ATATDatePicker 
+              id="Expiration"
+              :key="'Expiration'+rerenderExpirationComponent"
               :rules="[
                 $validators.required(
                   'Please enter your contract/order expiration date.'
                 ),
                 $validators.isDateValid('Please enter a valid date.'),
+                $validators.compareDatesAsc(
+                  new Date().toISOString(), 
+                  'The expiration date must be after today.',
+                  false,
+                ),
               ]" 
               :value="currentContract.contract_order_expiration_date" 
               @update:value="currentContract.contract_order_expiration_date = $event"
@@ -250,8 +257,6 @@ import { SaveOnLeaveRefs } from "types/Global";
 })
 
 class CurrentContract extends Vue {
-
- 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
@@ -270,6 +275,7 @@ class CurrentContract extends Vue {
   private isCurrent = false;
   private headline = "";
   private saveOnLeaveError: string| unknown = "";
+  private rerenderExpirationComponent = '';
 
   private setHeadline(): void {
     let contractState = "previous or current";
@@ -375,6 +381,7 @@ class CurrentContract extends Vue {
       this.isCurrent = this.currentContract.is_current as boolean;
     }
     this.setMinAndMaxDates();
+    this.rerenderExpirationComponent = 'rerender'
   }
 
   public async sortDataSource():Promise<void>{
