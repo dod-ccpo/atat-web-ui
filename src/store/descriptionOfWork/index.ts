@@ -591,8 +591,7 @@ export const createDOWTaskNumber = async(
   
   return section +
     "." + classificationDOWTaskNumberComponent +
-    "." + dow_task_number_component +
-    "." + instanceNumber
+    "." + dow_task_number_component
 }
 
 
