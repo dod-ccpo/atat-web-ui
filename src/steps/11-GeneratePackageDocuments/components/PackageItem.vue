@@ -4,13 +4,14 @@
       <v-avatar>
         <span class="list-circle">{{itemNumber}}</span>
       </v-avatar>
-      <v-list-item-title>
-        <span class="text-wrap package-title">{{itemName}} </span>
+      <v-list-item-title class="ml-6 me-auto">
+        <div class="text-wrap package-title">{{itemName}} </div>
+        <div class="font-size-14 font-weight-400 text-base-light additional-info my-1">
+          {{additionalInfo}}
+        </div>
       </v-list-item-title>
       <v-list-item-subtitle v-if="additionalInfo">
-        <span class="font-size-14 font-weight-400 text-base-light">
-          {{additionalInfo}}
-        </span>
+        
       </v-list-item-subtitle>
       <v-list-item-action v-if="requiresSignature">
         <span class="d-flex signature-required">
@@ -22,7 +23,7 @@
               height="15"
               color="warning-dark2"
             />
-          <span>{{alertText}}</span>
+            <span>{{alertText}}</span>
           </div>
         </span>
       </v-list-item-action>

@@ -19,11 +19,13 @@ export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> 
     const form = (forms as unknown as FormRef)[f];
     if (form){
       if (Object.prototype?.hasOwnProperty?.call(form, "setErrorMessage")){
+        console.log('ref1: => ' + f  + ': setErrorMessage');
         form.setErrorMessage();
       } 
-      if (Object.prototype?.hasOwnProperty?.call(form, "validate")){
+      if (form.$?.type.name?.toLowerCase() === "vform"){
         const isFormValid = (await form.validate())?.valid;
         isFormsValid.push(isFormValid);
+        console.log('ref1: => ' + f  + ': form.validate');
       } else {
         await(getRef(form))
       }
@@ -38,14 +40,15 @@ async function getRef(form:ComponentPublicInstance):Promise<void>{
     for (const ref in refs){
       const _formRef = (refs as unknown as FormRef)[ref];
       if (_formRef){
-        if (Object.prototype?.hasOwnProperty?.call(_formRef, "validate")){
-          isFormsValid.push((await(_formRef.validate())).valid);
-        }
         if (Object.prototype?.hasOwnProperty?.call(_formRef, "setErrorMessage")){
+          console.log('ref2: => ' + ref  + ': setErrorMessage');
           (_formRef).setErrorMessage()
         }
+        if (_formRef.$?.type.name?.toLowerCase() === "vform"){
+          isFormsValid.push((await(_formRef.validate())).valid);
+          console.log('ref2: => ' + ref  + ': form.validate');
+        }
       }
-
       await getRef(_formRef);
     }
   }

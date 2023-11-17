@@ -622,6 +622,7 @@ const setDontNeedButton = (groupId: string) => {
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings
 
 const basePerformanceRequirementsPath = '/performance-requirements'
+const DOWLandingPagePath = 'dow-landing-page'
 const requirementCategories = '/requirement-categories'
 const descriptionOfWorkSummaryPath = '/dow-summary'
 const DOWSecurityRequitementsPath ='/dow-security-requirements'
@@ -756,6 +757,10 @@ export const RequirementsPathResolver = (
       previousGroup,
       lastOfferingForGroup.name
     )
+  }
+
+  if (current === routeNames.ArchitecturalDesignDetails){
+    return DOWLandingPagePath;
   }
 
   return basePerformanceRequirementsPath

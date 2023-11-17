@@ -1,4 +1,4 @@
-f<template>
+<template>
   <div :id="id">
     <v-form :id="id" 
       ref="atatCheckBoxGroupRef"

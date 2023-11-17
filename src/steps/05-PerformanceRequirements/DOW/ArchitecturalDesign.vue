@@ -176,7 +176,7 @@ class ArchitecturalDesign extends Vue {
     source: "DOW",
     statement: "",
     applications_needing_design: "",
-    data_classification_levels: "",
+    data_classification_levels: [],
     external_factors: "",
     acquisition_package: AcquisitionPackage.packageId,
     needs_architectural_design_services:""
@@ -203,7 +203,7 @@ class ArchitecturalDesign extends Vue {
     const emptyArchObject = {
       statement: "",
       applications_needing_design: "",
-      data_classification_levels: "",
+      data_classification_levels: [],
       external_factors: "",
     }
     try {
