@@ -11,7 +11,9 @@
             generated, will be included in your Justification and Approval (J&A).
           </p>
           <div class="max-width-740">
-            <ATATRadioGroup id="fundTypes" 
+            <ATATRadioGroup 
+              id="fundTypes" 
+              ref="fundTypesRef"
               legend="What type of funds are planned for this acquisition?" 
               :items="fundTypes" 
               :value="selectedFundType"
@@ -22,7 +24,9 @@
               class="mb-10" 
               >
             </ATATRadioGroup>
-            <ATATRadioGroup id="ContactAffiliation" 
+            <ATATRadioGroup 
+              id="ContactAffiliation" 
+              ref="ContactAffiliationRef"
               legend="What fiscal year funds are planned for this acquisition?" 
               :items="fiscalYearFunds" 
               :value="selectedFiscalYear"
