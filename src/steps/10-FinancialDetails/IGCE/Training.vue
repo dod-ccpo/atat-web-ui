@@ -17,6 +17,7 @@
             <div class="mr-10">
               <ATATRadioGroup
                 id="trainingEstimateType"
+                ref="trainingEstimateTypeRef"
                 class="mb-8"
                 legend="How do you want to estimate your cost for this training?"
                 :items="trainingEstimateTypeOptions"
@@ -64,6 +65,7 @@
           <div v-if="instanceData.costEstimateType !== ''">
             <ATATTextField
               id="CostEstimatePrice"
+              ref="CostEstimatePriceRef"
               name="CostEstimatePrice"
               class="mb-10"
               :label="costEstimateLabel"
@@ -81,6 +83,7 @@
               <ATATRadioGroup
                 class="mb-8"
                 id="TrainingType"
+                ref="TrainingTypeRef"
                 :legend="periodTypeLabel"
                 :items="periodTypeOptions"
                 :value="instanceData.trainingOption"
@@ -93,6 +96,7 @@
 
               <div v-if="instanceData.trainingOption !== ''">
                 <ATATSingleAndMultiplePeriods
+                  ref="SingleAndMultiplePeriodsRef"
                   :periods="periods"
                   :textboxSuffix="periodsSuffix"
                   :singlePeriodLabel="periodsLabel"
