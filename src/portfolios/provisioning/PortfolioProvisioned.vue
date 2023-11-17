@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-container fluid class="container-max-width mb-15">
-      <v-row>
+      <v-row class="mb-10">
         <v-col>
           <h1 class="page-header mb-3 mt-5">Your portfolio is being provisioned!</h1>
           <div class="copy-max-width">
-            <p class="mb-6">
+            <p class="mb-0">
               We’re working with {{ provisioningData.cspLong }} to provision your cloud 
               resources. This process can take up to {{ processLength }}, but you can 
               come back here anytime to see your portfolio status.
@@ -15,11 +15,11 @@
       </v-row>
       <v-row>
         <v-col>
-          <div v-if="cardData.length" class="provisioned d-flex justify-space-between width-100">
+          <div v-if="cardData.length" class="provisioned d-flex mr-15 flex-column">
             <v-card 
               v-for="(item, idx) in cardData"
               :key=idx
-              :id="'ProvisioningCard' + idx" class="d-flex align-start pa-6 mr-6">
+              :id="'ProvisioningCard' + idx" class="d-flex align-start pa-6 mb-6">
              <div class="mt-1">
              <ATATSVGIcon
                 :name="item.icon"
@@ -35,6 +35,14 @@
             </div>
             </v-card>
           </div>
+        </v-col>
+        <v-col class="pa-0 pb-3 pt-3">
+          <ATATSVGIcon 
+            name="PortfolioProvisionedIcon"
+            color="white"
+            width="360"
+            height="370"
+            />
         </v-col>
       </v-row>
     </v-container>
@@ -68,30 +76,34 @@ class PortfolioProvisioned extends Vue {
   public buildCardData(): void {
     this.cardData = [
       {
-        icon: "CloudUpload",
-        iconWidth: "36",
-        iconHeight: "24",
-        headline: "Provisioning",
-        text: "We’re taking care of everything to set up your cloud resources and administrator " +
-              "access, so there is nothing else you need to do."
+        headline: "Provisioning new environments",
+        text: `{CSP Name} is taking care of everything to set up
+        your cloud resources and administrator access. This process
+        could take up to {2 or 72} hours. There is nothing further
+        you need to do at this time. `
       },  {
-        icon: "People",
-        iconWidth: "33",
-        iconHeight: "21",
-        headline: "CSP portal access",
-        text: `Once provisioned, ${this.provisioningData.csp} will notify your 
-          administrators with instructions for obtaining access to the cloud console.`
-      },  {
-        icon: "HelpOutline",
-        iconWidth: "30",
-        iconHeight: "30",
+        headline: "Transfer billing",
+        text: `{CSP Name} is working to update billing information for your
+        existing cloud environments to your JWCC task order. A representative
+        from {CSP Name} will contact your task order POC directly, if
+        additional information is needed.`
+      }, {
+        headline: "What can you expect next?",
+        text: `Once provisioning is complete, {CSP Name} will contact your administrators with
+        instructions for accessing the cloud console. </br> </br> {CSP Name} will contact your 
+        task order POC once the billing transfer is complete. Throughout the duration of the
+        task order, you’ll be able to track cloud usage and manage spending within your ATAT
+        portfolio.`
+      }, {
         headline: "Need help?",
-        text: `Feel free to <a href='https://community.hacc.mil/s/contact' target='blank'>contact
-          us</a> if you have any questions. We are here to help!`
+        text: `For questions about transferring your billing information, contact {CSP Name}
+        at {CSP support email address}.</br> </br>
+        Feel free to <a href='https://community.hacc.mil/s/contact' target='blank'>contact us</a>
+        if you have any questions. We are here to help!`
       }
     ];
   }
-
+  // <a href='https://community.hacc.mil/s/contact' target='blank'>contact us</a>
   public async loadOnEnter(): Promise<void> {
     const storeData = await PortfolioStore.getPortfolioProvisioningObj();
     if (storeData.contractor) {

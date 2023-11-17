@@ -62,6 +62,7 @@ import PersonAddAlt from "@/components/icons/PersonAddAlt.vue";
 import Phone from "@/components/icons/Phone.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
 import Processing from "@/components/icons/Processing.vue";
+import PortfolioProvisionedIcon from "@/components/icons/PortfolioProvisionedIcon.vue"
 import Provisioned from "@/components/icons/Provisioned.vue";
 import ProvisioningIssue from "@/components/icons/ProvisioningIssue.vue"
 import Role from "@/components/icons/Role.vue";
@@ -188,6 +189,7 @@ import HomeWork from "@/components/icons/HomeWork.vue";
     Processing,
     ProvisionAWS,
     ProvisionAzure,
+    PortfolioProvisionedIcon,
     Provisioned,
     ProvisionGCP,
     ProvisionOracle,
