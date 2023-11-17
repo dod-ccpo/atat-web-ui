@@ -1050,7 +1050,7 @@ export const OfferingDetailsPathResolver = (
 
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false)
-    return 'current-contract/current-contract'
+    return '/current-contract'
   }
 
   const missingClassification = DescriptionOfWork.missingClassificationLevels
@@ -1264,18 +1264,10 @@ export const DowSummaryPathResolver = (
   )
   Steps.clearAltBackButtonText()
   if (current === routeNames.DOWLandingPage) {
-    const hasCurrentContract =
-      AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
-    if (hasCurrentContract) {
-      return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
-        && CurrentEnvironment.currentEnvInstances.length > 0
-        ? "/current-contract/environment-summary"
-        : "/current-contract/summary-step-four"
-    } else {
-      return "/current-contract/current-contract"
-    }
-    // TODO - check if this is needed when routing fixed
-    return '/current-contract/summary-step-four'
+    Summary.setHasCurrentStepBeenVisited(isStepTouched(4))
+    return isStepTouched(4)
+      ? "/summary-step-four"
+      : "/current-contract"
   }
 
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings
