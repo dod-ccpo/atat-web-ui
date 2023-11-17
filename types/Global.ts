@@ -174,6 +174,12 @@ export interface StepperRouteMultipleConfig extends
  */
 export type StepperRouteConfig = StepperRouteSingleConfig | StepperRouteMultipleConfig;
 
+
+
+
+
+
+// EJY
 export interface Checkbox {
   id: string;
   label: string;
@@ -187,6 +193,13 @@ export interface RadioButton extends Checkbox {
   disabled?: boolean;
   readonly?: boolean;
 }
+
+
+
+
+
+
+
 
 export interface FilterOption extends RadioButton {
   abbreviation?: string;
@@ -677,19 +690,34 @@ export interface PortfolioAdmin {
   scrtEmail?: string;
   hasTSAccess?: YesNo;
   tsEmail?: string;
-  impactLevels?:SelectedPortfolioEnv []
+
+  envs: string[];
+  // impactLevels?: string[]
 }
 
-export interface PortfolioProvisioning extends EDAResponse {
-  portfolioTitle?: string;
-  serviceOrAgency?: string;
-  admins?: PortfolioAdmin[];
-  selectedILs?: SelectedPortfolioEnv[];
+// =========================================================
+// =========================================================
+// =========================================================
+// =========================================================
+// =========================================================
+// EJY ALL ABOUT THOSE PORTFOLIO SCHTUFF
+
+export interface PortfolioProvisioningObj extends EDAResponse {
+  portfolioTitle: string;
+  serviceOrAgency: string;
+  environments: Partial<ProvisioningEnv>[];
 }
 
-export interface SelectedPortfolioEnv {
-  value: string;
-  is_migration: boolean | null | undefined
+export interface ProvisioningEnv {
+  cspName: string; // e.g., azure_il2_dev, azure_il6_dev, azure_ts_dev
+  operators: PortfolioAdmin[];
+
+  // if isMigration null/undefined, DO NOT send env obj in provisioning API POST 
+  isMigration: boolean | null | undefined; 
+  distroListEmailAddress: string;
+  accountName: string;
+
+
 }
 
 export interface PortfolioTaskOrder{
