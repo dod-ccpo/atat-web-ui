@@ -218,6 +218,7 @@
     </v-form>
 
     <ClassificationsModal 
+      ref="ClassificationModalRef"
       :showDialog="showDialog"
       @cancelClicked="modalCancelClicked"
       @okClicked="classificationLevelsChanged"
@@ -325,7 +326,6 @@ class OtherOfferings extends Vue
   public availablePeriodCheckboxItems: Checkbox[] = [];
   public formHasBeenTouched = false;
   public formHasErrors = false;
-  public errorBagValues: boolean[] = []
   public hasErrorsOnLoad = false;
   public validateOtherTierNow = false;
   public validateOtherTierOnBlur = false;
@@ -532,7 +532,6 @@ class OtherOfferings extends Vue
       ? await this.setErrorMessages()
       : this.validateOtherTierOnBlur = true;
 
-    return;
   }
 
   public async mounted(): Promise<void> {
@@ -540,17 +539,12 @@ class OtherOfferings extends Vue
     await this.setComponentSpecificData();
   }
 
-  @Watch("errorBagValues")
-  public errorBagChange(): void {
-    this.setErrorMessages();
-  }
 
   private setErrorMessages(): void {
     this.$nextTick(() => {
       this.$refs.form.validate().then(
         async (response:SubmitEventPromise)=>{
-          this.errorBagValues = [(await (response)).valid]; 
-          this.formHasErrors = this.errorBagValues.includes(true);
+          this.formHasErrors = (await (response)).valid === false;
         }
       );
     });

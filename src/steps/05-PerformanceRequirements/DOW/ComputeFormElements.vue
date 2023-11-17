@@ -2,6 +2,7 @@
   <div>
     <ATATRadioGroup
       id="EnvironmentType"
+      ref="EnvironmentTypeRef"
       legend="What type of environment is this instance?"
       :value="offeringData.environmentType"
       @update:value="offeringData.environmentType = $event"
@@ -13,6 +14,7 @@
 
     <ATATRadioGroup
       id="OperatingEnvType"
+      ref="OperatingEnvTypeRef"
       legend="What type of operating environment do you need?"
       :value="offeringData.operatingEnvironment"
       @update:value="offeringData.operatingEnvironment = $event"
@@ -24,6 +26,7 @@
 
     <ATATRadioGroup
       id="OSLicensingType"
+      ref="OSLicensingTypeRef"
       legend="Operating system licensing"
       :value="offeringData.operatingSystemAndLicensing"
       @update:value="offeringData.operatingSystemAndLicensing = $event"
