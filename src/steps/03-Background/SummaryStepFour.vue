@@ -23,14 +23,14 @@
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
-import { SummaryItem } from "types/Global";
+import { SummaryItem, SaveOnLeaveRefs } from "types/Global";
 import ATATSummaryItems from "@/components/ATATSummaryItem.vue";
 import Summary, {
   getSummaryItemsforStep,
   isStepComplete,
   isStepValidatedAndTouched
 } from "@/store/summary";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -39,12 +39,12 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 })
 class SummaryStepFour extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 

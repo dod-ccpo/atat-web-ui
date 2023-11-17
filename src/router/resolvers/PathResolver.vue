@@ -21,11 +21,6 @@ class RouteResolver extends Vue {
     }
 
     const pathName = InvokePathResolver(routeResolver, current, direction);
-
-    console.log('routeResolver: ', routeResolver)
-    console.log('pathName: ', pathName)
-    console.log('current: ', current)
-
     this.$router.push({ path: pathName });
   }
   @Hook

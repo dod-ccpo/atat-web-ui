@@ -476,7 +476,7 @@ class CurrentContract extends Vue {
       this.saveOnLeaveError = error as string;
       console.log(error);
     }
-    console.log(AcquisitionPackage.currentContracts)
+    console.log('saveonleave-current-contract-details: ', AcquisitionPackage.currentContracts)
     return true;
   }
 

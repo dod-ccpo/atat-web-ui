@@ -64,6 +64,7 @@ class CurrentContract extends Vue {
   public currentContractExists = "";
   public noContract: CurrentContractDTO = {};
   private saveOnLeaveError: string| unknown = "";
+  private hasLoaded = false
 
   private get currentData(): CurrentContractDTO {
     return {
@@ -117,13 +118,14 @@ class CurrentContract extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.savedData.current_contract_exists =
-      await AcquisitionPackage.hasCurrentOrPreviousContracts;
-    this.currentContractExists = this.savedData.current_contract_exists as string;
+    this.savedData.current_contract_exists = AcquisitionPackage.hasCurrentOrPreviousContracts;
+    this.currentContractExists = this.savedData.current_contract_exists;
+    this.hasLoaded = true
   }
 
   private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
+    if (!this.hasLoaded) return false
+    return hasChanges(this.currentData, this.savedData)
   }
 
   protected async saveOnLeave(): Promise<boolean> {

@@ -20,11 +20,6 @@ class RouteResolver extends Vue {
     }
 
     const routeName = InvokeRouteResolver(routeResolver, current);
-
-    console.log('routeResolver: ', routeResolver)
-    console.log('routeName: ', routeName)
-    console.log('current: ', current)
-
     this.$router.push({ name: routeName });
   }
 

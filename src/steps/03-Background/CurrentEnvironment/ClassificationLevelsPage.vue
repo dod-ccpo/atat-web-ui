@@ -112,18 +112,14 @@ class ClassificationLevelsPage extends Vue {
   }
 
   private hasChanged(): boolean {
-    console.log('current: ',this.currentData)
-    console.log('savedc: ', this.savedData)
     return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
 
     await AcquisitionPackage.setValidateNow(true);
-    console.log('here1')
     try {
       if (this.hasChanged()) {
-        console.log('here2')
         /* eslint-disable camelcase */
         this.currEnvDTO.env_classifications_cloud = this.envClassificationsCloud;
         this.currEnvDTO.env_classifications_onprem = this.envClassificationsOnPrem;
