@@ -668,6 +668,7 @@ export interface EDAResponse {
   // if 400 error, will have code and message
   code?: string;
   message?: string;
+  provisioningIssue?: boolean;
   // if 200 success, will have data below
   taskOrderNumber?: string;
   contractor?: string; // "Microsoft Corporation",
@@ -679,7 +680,6 @@ export interface EDAResponse {
   popStartDate?: string; // "2021-07-01",
   popEndDate?: string; // "2026-07-01",
   classificationLevels?: string[]; // ["Unclassified", "Secret", "Top Secret"]
-
 }
 
 

@@ -64,6 +64,7 @@ import Phone from "@/components/icons/Phone.vue";
 import PlusSign from "@/components/icons/PlusSign.vue";
 import Processing from "@/components/icons/Processing.vue";
 import Provisioned from "@/components/icons/Provisioned.vue";
+import ProvisioningIssue from "@/components/icons/ProvisioningIssue.vue"
 import Role from "@/components/icons/Role.vue";
 import Remove from "@/components/icons/Remove.vue";
 import RemoveCircle from "@/components/icons/RemoveCircle.vue"
@@ -187,6 +188,7 @@ import HomeWork from "@/components/icons/HomeWork.vue";
     Provisioned,
     ProvisionGCP,
     ProvisionOracle,
+    ProvisioningIssue,
     ReadyToGeneratePackage,
     Remove,
     RemoveCircle,
