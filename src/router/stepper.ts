@@ -1106,7 +1106,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Landing Page",
-        path: "/",
+        path: "/dow-landing-page",
         excludeFromMenu: true,
         name: routeNames.DOWLandingPage,
         completePercentageWeight: 1,
