@@ -5,6 +5,7 @@
         <ATATTextField
           v-if="!isDOW"
           id="Licensing"
+          ref="LicensingRef"
           label="Licensing"
           :value="offeringData.licensing"
           @update:value="offeringData.licensing = $event"
@@ -20,6 +21,7 @@
       <v-col class="col-sm-12 col-md-3">
         <ATATTextField
           id="NumberOfVCPUs"
+          ref="NumberOfVCPUsRef"
           label="Number of vCPUs"
           :value="offeringData.numberOfVCPUs"
           @update:value="offeringData.numberOfVCPUs = $event"
@@ -36,6 +38,7 @@
       <v-col class="col-sm-12 col-md-3">
         <ATATTextField
           id="ProcessorSpeed"
+          ref="ProcessorSpeedRef"
           label="Processor speed"
           :value="offeringData.processorSpeed"
           @update:value="offeringData.processorSpeed = $event"
@@ -52,6 +55,7 @@
       <v-col class="col-sm-12 col-md-6">
         <ATATTextField
           id="OperatingSystem"
+          ref="OperatingSystemRef"
           label="Operating system"
           :value="offeringData.operatingSystem"
           @update:value="offeringData.operatingSystem = $event"
@@ -67,6 +71,7 @@
       <v-col class="col-sm-12 col-md-3">
         <ATATTextField
           id="Memory"
+          ref="MemoryRef"
           label="Memory"
           :value="offeringData.memoryAmount"
           @update:value="offeringData.memoryAmount = $event"
@@ -86,6 +91,7 @@
       <v-col class="col-sm-12 col-md-3">
         <ATATSelect
           id="StorageType"
+          ref="StorageTypeRef"
           label="Storage type"
           :items="storageTypes"
           :selectedValue="offeringData.storageType"
@@ -100,6 +106,7 @@
       <v-col class="col-sm-12 col-md-3">
         <ATATTextField
           id="StorageAmount"
+          ref="StorageAmountRef"
           label="Storage size"
           :value="offeringData.storageAmount"
           @update:value="offeringData.storageAmount = $event"
