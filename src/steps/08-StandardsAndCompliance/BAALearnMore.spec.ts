@@ -1,25 +1,9 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect} from 'vitest';
+import { VueWrapper, shallowMount } from '@vue/test-utils';
 import BAALearnMore from "./BAALearnMore.vue";
 
-
-
-Vue.use(Vuetify);
-
 describe("Testing BAALearnMore Page", () => {
-  const localVue = createLocalVue();
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(BAALearnMore, {
-      vuetify,
-      localVue,
-    });
-  });
+  const wrapper: VueWrapper = shallowMount(BAALearnMore);
 
   describe("testing BAALearnMore.vue", () => {
     it("renders successfully", async () => {

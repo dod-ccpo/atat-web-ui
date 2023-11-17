@@ -1,14 +1,17 @@
 /*eslint-disable camelcase*/
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect, vi} from 'vitest';
+import { VueWrapper, shallowMount, mount } from '@vue/test-utils';
 import FOIACoordinator from "./FOIACoordinator.vue";
 import validators from "@/plugins/validation";
 import { SelectData } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
-Vue.use(Vuetify);
+const wrapper: VueWrapper = shallowMount(FOIACoordinator, {
+  global: {
+    plugins: [ validators]
+  }
+});
+const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
 
 const sensitiveInformationMock = {
@@ -33,23 +36,14 @@ const sensitiveInformationMock = {
   // accessibility_reqs_508?: string;
 }
 
-const localVue = createLocalVue();
-let vuetify: Vuetify;
-let wrapper: Wrapper<DefaultProps & Vue, Element>;
-localVue.use(validators);
 const emptySelectData: SelectData = { text: "", value: "" };
 describe("Testing FOIA Coordinator Page", () => {
   beforeEach(() => {
  
-    vuetify = new Vuetify();
-    wrapper = mount(FOIACoordinator, {
-      vuetify,
-      localVue,
-    });
-    jest.spyOn(AcquisitionPackage, "loadSensitiveInformation")
+    vi.spyOn(AcquisitionPackage, "loadSensitiveInformation")
       .mockReturnValue(
         new Promise(resolve=>resolve(sensitiveInformationMock)));
-    jest.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
+    vi.spyOn(AcquisitionPackage, 'saveData').mockImplementation(
       () => Promise.resolve());
   });
 
@@ -61,16 +55,16 @@ describe("Testing FOIA Coordinator Page", () => {
 
   describe("testing initial data", () => {
     it("checks initial data properties", () => {
-      expect(wrapper.vm.$data.selectedMilitaryPO).toEqual(emptySelectData);
+      expect(vm.$data.selectedMilitaryPO).toEqual(emptySelectData);
     });
   });
 
   describe("testing setSelectedData =>", () => {
     it("sets selectedCountry for foreign addresses", async () => {
       wrapper.setData({ selectedAddressType: "FOREIGN" });
-      await wrapper.vm.setSelectedData();
-      await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$data.selectedCountry).not.toBe(emptySelectData);
+      await vm.setSelectedData();
+      await vm.$nextTick();
+      expect(vm.$data.selectedCountry).not.toBe(emptySelectData);
     });
 
     describe("setSelectedData method", () => {
@@ -83,59 +77,59 @@ describe("Testing FOIA Coordinator Page", () => {
         });
         
     
-        await wrapper.vm.setSelectedData();
-        await wrapper.vm.$nextTick();
-        expect(wrapper.vm.selectedCountry).toEqual({ text: "Canada", value: "CA" });
+        await vm.setSelectedData();
+        await vm.$nextTick();
+        expect(vm.selectedCountry).toEqual({ text: "Canada", value: "CA" });
       });
     
       it("sets selectedCountry to USA for US or Military addresses", async () => {
         await wrapper.setData({
-          selectedAddressType: wrapper.vm.addressTypes.USA,
+          selectedAddressType: vm.addressTypes.USA,
         });
     
-        await wrapper.vm.setSelectedData();
+        await vm.setSelectedData();
     
-        expect(wrapper.vm.selectedCountry).toEqual(
+        expect(vm.selectedCountry).toEqual(
           { text: "United States of America", value: "US" });
       });
     
       it("sets selectedStateCode and selectedMilitaryPO for military addresses", async () => {
         await wrapper.setData({
-          selectedAddressType: wrapper.vm.addressTypes.MIL,
+          selectedAddressType: vm.addressTypes.MIL,
           stateOrProvince: "TX",
           city: "APO",
           stateCodeListData: [{ text: "Texas", value: "TX" }],
           militaryPostOfficeOptions: [{ text: "Army Post Office", value: "APO" }],
         });
     
-        await wrapper.vm.setSelectedData();
+        await vm.setSelectedData();
     
-        expect(wrapper.vm.selectedStateCode).toEqual({ text: "Texas", value: "TX" });
-        expect(wrapper.vm.selectedMilitaryPO).toEqual({ text: "Army Post Office", value: "APO" });
+        expect(vm.selectedStateCode).toEqual({ text: "Texas", value: "TX" });
+        expect(vm.selectedMilitaryPO).toEqual({ text: "Army Post Office", value: "APO" });
       });
     
       it("sets selectedState for US addresses", async () => {
         await wrapper.setData({
-          selectedAddressType: wrapper.vm.addressTypes.USA,
+          selectedAddressType: vm.addressTypes.USA,
           stateOrProvince: "CA",
           stateListData: [{ text: "California", value: "CA" }],
         });
     
-        await wrapper.vm.setSelectedData();
+        await vm.setSelectedData();
     
-        expect(wrapper.vm.selectedState).toEqual({ text: "California", value: "CA" });
+        expect(vm.selectedState).toEqual({ text: "California", value: "CA" });
       });
 
       it("sets selectedCountry to emptySelectData if foreign country not found", async () => {
         await wrapper.setData({
-          selectedAddressType: wrapper.vm.addressTypes.FOR,
+          selectedAddressType: vm.addressTypes.FOR,
           savedData: { foia_country: "NonExistentCountry" },
           countryListData: [{ text: "SomeCountry", value: "SC" }]
         });
     
-        await wrapper.vm.setSelectedData();
+        await vm.setSelectedData();
     
-        expect(wrapper.vm.selectedCountry).toEqual(wrapper.vm.emptySelectData);
+        expect(vm.selectedCountry).toEqual(vm.emptySelectData);
       });
     
     });
@@ -149,8 +143,8 @@ describe("Testing FOIA Coordinator Page", () => {
         selectedAddressType: "US", 
         selectedState: { value: "CA" } 
       });
-      await wrapper.vm.$nextTick();
-      expect(wrapper.vm.currentData.foia_state_province_state_code).toBe("CA");
+      await vm.$nextTick();
+      expect(vm.currentData.foia_state_province_state_code).toBe("CA");
     });
 
     it("should set the state based on selectedAddressType for foreign address ", async () => {
@@ -159,8 +153,8 @@ describe("Testing FOIA Coordinator Page", () => {
         selectedAddressType: "FOREIGN", 
         stateOrProvince: "Some Foreign State"
       });
-      await wrapper.vm.$nextTick();
-      expect(wrapper.vm.currentData.foia_state_province_state_code).toBe("Some Foreign State");
+      await vm.$nextTick();
+      expect(vm.currentData.foia_state_province_state_code).toBe("Some Foreign State");
     });
 
     it("should set the state based on selectedAddressType for Military address ", async () => {
@@ -168,7 +162,7 @@ describe("Testing FOIA Coordinator Page", () => {
       await wrapper.setData({ 
         selectedAddressType: "MILITARY", 
       });
-      const result = wrapper.vm.currentData;
+      const result = vm.currentData;
       expect(result.foia_address_type).toBe("MILITARY");
     });
 
@@ -176,21 +170,22 @@ describe("Testing FOIA Coordinator Page", () => {
 
   describe("testing saveOnLeave method", () => {
     it("should save changes on leave", async () => {
-      const saveDataSpy = jest.spyOn(AcquisitionPackage, "saveData").mockImplementation()
+      const saveDataSpy = vi.spyOn(AcquisitionPackage, "saveData")
+        .mockImplementation(()=> Promise.resolve())
 
       await wrapper.setData({ fullName: "New Name" });
-      await wrapper.vm.saveOnLeave();
+      await vm.saveOnLeave();
       expect(saveDataSpy).toHaveBeenCalled();
     });
 
     it("mocks an error", async () => {
       const errMessage = 'errMessage'
 
-      jest.spyOn(AcquisitionPackage,"saveData")
+      vi.spyOn(AcquisitionPackage,"saveData")
         .mockRejectedValue(errMessage)
 
-      await wrapper.vm.saveOnLeave();
-      expect(wrapper.vm.$data.saveOnLeaveError).toBe(errMessage)
+      await vm.saveOnLeave();
+      expect(vm.$data.saveOnLeaveError).toBe(errMessage)
     });
 
   });

@@ -1,27 +1,60 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import { createLocalVue, mount, Wrapper } from "@vue/test-utils";
-import { DefaultProps } from "vue/types/options";
+import { describe, it, expect} from 'vitest';
+import { VueWrapper, shallowMount, mount } from '@vue/test-utils';
 import BAA from "./BAA.vue";
 import validators from "@/plugins/validation";
 import SlideoutPanel from "@/store/slideoutPanel";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import { createVuetify } from 'vuetify'
 
-Vue.use(Vuetify);
+describe("Testing BAA Page with full mount", () => {
+  const vuetify = createVuetify({
+    components,
+    directives,
+  })
+
+  
+  const wrapper: VueWrapper = mount(BAA, {
+    global: {
+      plugins: [vuetify, validators]
+    }
+  });
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
+  it("testing @keydown.space to trigger openSlideoutPanel ", async () => {
+    vi.spyOn(SlideoutPanel, "openSlideoutPanel").mockImplementation(()=> Promise.resolve());
+    const anchorLink = wrapper.find("#LearnMoreBAA");
+    anchorLink.trigger('keydown.space'); // trigger openSlideoutPanel;
+    const currentTargetId = 1;
+    vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
+    expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
+      currentTargetId
+    );
+  });
+
+  it("testing @keydown.enter to trigger openSlideoutPanel ", async () => {
+    vi.spyOn(SlideoutPanel, "openSlideoutPanel").mockImplementation(()=> Promise.resolve());
+    const anchorLink = wrapper.find("#LearnMoreBAA");
+    anchorLink.trigger('keydown.enter'); // trigger openSlideoutPanel;
+    const currentTargetId = 1;
+    vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
+    expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
+      currentTargetId
+    );
+  });
+
+})
+
 
 describe("Testing BAA Page", () => {
-  const localVue = createLocalVue();
-  localVue.use(validators);
-  let vuetify: Vuetify;
-  let wrapper: Wrapper<DefaultProps & Vue, Element>;
 
-  beforeEach(() => {
-    vuetify = new Vuetify();
-    wrapper = mount(BAA, {
-      vuetify,
-      localVue,
-    });
+  
+  const wrapper: VueWrapper = shallowMount(BAA, {
+    global: {
+      plugins: [ validators]
+    }
   });
+  const vm =  (wrapper.vm as typeof wrapper.vm.$options)
 
   describe("testing BAA.vue", () => {
     it("renders successfully", async () => {
@@ -29,38 +62,19 @@ describe("Testing BAA Page", () => {
     });
 
     it("opens slideout panel", () => {
-      jest.spyOn(SlideoutPanel, "openSlideoutPanel").mockImplementation();
+      vi.spyOn(SlideoutPanel, "openSlideoutPanel").mockImplementation(()=> Promise.resolve());
       const currentTargetId = 1;
-      wrapper.vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
+      vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
       expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
         currentTargetId
       );
     });
-
-    it("testing @keydown.space to trigger openSlideoutPanel ", async () => {
-      const anchorLink = wrapper.find("#LearnMoreBAA");
-      anchorLink.trigger('keydown.space'); // trigger openSlideoutPanel;
-      const currentTargetId = 1;
-      wrapper.vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
-      expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
-        currentTargetId
-      );
-    });
-
-    it("testing @keydown.enter to trigger openSlideoutPanel ", async () => {
-      const anchorLink = wrapper.find("#LearnMoreBAA");
-      anchorLink.trigger('keydown.enter'); // trigger openSlideoutPanel;
-      const currentTargetId = 1;
-      wrapper.vm.openSlideoutPanel({ currentTarget: { id: currentTargetId } });
-      expect(SlideoutPanel.openSlideoutPanel).toHaveBeenCalledWith(
-        currentTargetId
-      );
-    });
+    
 
     it("gets current data", () => {
       const mockPackageId = "1";
       AcquisitionPackage.doSetPackageId(mockPackageId)
-      const currentData = wrapper.vm.currentData;
+      const currentData = vm.currentData;
       expect(currentData.baa_required).toBe("");
       expect(currentData.acquisition_package).toBe(mockPackageId);
     });
@@ -78,12 +92,12 @@ describe("Testing BAA Page", () => {
           }
         }
       )
-      const hasChanges = wrapper.vm.hasChanged()
+      const hasChanges = vm.hasChanged()
       expect(hasChanges).toBe(true)
     })
 
     it("checks saveOnLeave", async () =>{
-      const hasChanges = await wrapper.vm.saveOnLeave()
+      const hasChanges = await vm.saveOnLeave()
       expect(hasChanges).toBe(true)
     })
   });
