@@ -105,6 +105,7 @@ import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import IGCEStore from "@/store/IGCE";
 import {RequirementsCostEstimateDTO} from "@/api/models";
 import {hasChanges} from "@/helpers";
+import { ComponentPublicInstance } from "vue";
 
 @Component({
   components: {
@@ -117,12 +118,17 @@ import {hasChanges} from "@/helpers";
 
 class EstimatesDeveloped extends Vue {
 
-  
+  $refs!: SaveOnLeaveRefs & {
+    percentOverUnder: ComponentPublicInstance & {
+      resetValidation(): void
+    };
+  }
+
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
-      form: this.$refs as SaveOnLeaveRefs, 
+      form: this.$refs, 
       nextTick: this.$nextTick,
     }).catch()
   }
