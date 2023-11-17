@@ -441,11 +441,22 @@ export const CurrentEnvironmentLocationResolver = (current: string): string => {
   if (
     current === routeNames.UploadMigrationDocuments && 
     isStepTouched(4) &&
-    CurrentEnvironment.currEnvInstances?.length !== 0
+    CurrentEnvironment.currEnvInstances?.length > 0
   ) {
     return routeNames.EnvironmentSummary
   }
   return routeNames.CurrentEnvironmentLocation
+}
+
+export const InstanceDetailsResolver = (current: string): string => {
+  if (
+    current === routeNames.ClassificationLevels &&
+    isStepTouched(4) &&
+    CurrentEnvironment.currEnvInstances?.length > 0
+  ) {
+    return routeNames.EnvironmentSummary
+  }
+  return routeNames.InstanceDetails
 }
 
 export const CurrentEnvironmentSummaryResolver = (current: string): string => {
@@ -2190,6 +2201,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
   CurrentEnvironmentLocationResolver,
+  InstanceDetailsResolver,
 }
 
 // add path resolvers here

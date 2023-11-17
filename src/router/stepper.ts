@@ -233,6 +233,7 @@ import {
   CreatePriceEstimateResolver,
   ProjectOverviewResolver,
   CurrentEnvironmentLocationResolver,
+  InstanceDetailsResolver,
   OrganizationResolver,
   ContactInformationResolver,
   CorInformationResolver,
@@ -943,6 +944,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: InstanceDetails,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: InstanceDetailsResolver,
       },
       {
         menuText: "Environment Summary",
