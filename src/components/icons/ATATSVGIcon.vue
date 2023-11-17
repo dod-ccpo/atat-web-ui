@@ -116,6 +116,7 @@ import VeryDissatisfied from "@/components/icons/VeryDissatisfied.vue";
 import FeedbackThankYou from "@/components/icons/FeedbackThankYou.vue";
 import Article from "@/components/icons/Article.vue";
 import HomeWork from "@/components/icons/HomeWork.vue";
+import Shield from "@/components/icons/Shield.vue";
 
 
 @Component({
@@ -199,6 +200,7 @@ import HomeWork from "@/components/icons/HomeWork.vue";
     Restore,
     Role,
     Satisfied,
+    Shield,
     Search,
     SendEmail,
     Service,

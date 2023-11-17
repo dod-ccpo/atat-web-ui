@@ -2,7 +2,7 @@
   <v-container fluid class="container-max-width">
     <v-row>
       <v-col>
-        <h1 class="page-header">
+      <h1 class="page-header">
           Ready to provision your new ATAT portfolio?
         </h1>
         <p class="page-intro copy-max-width">
@@ -11,12 +11,34 @@
           information to  {{ provisioningData.cspLong }} to create your portfolio. 
           <strong>The provisioning process cannot be undone.</strong>    
         </p>
-
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="pa-0">
       <div class="d-flex width-100">
-          <div class="flex-grow-1" style="margin-right: 80px;">
-            <div class="border1 _border-rounded border-base-lighter pa-8">
-              <h2 class="mb-6">Provisioning details</h2>
-
+          <div 
+          class="flex-grow-1 _card-background _border-rounded-more" 
+          style="margin-right: 80px;
+          ">
+            <div style="max-width: 420px;">
+              <div class="pa-8">
+              <h2 class="mb-6">Provisioning overview</h2>
+              <div class="d-flex mb-6">
+                <div style="width: 30px;" class="d-flex justify-center mr-2">
+                  <ATATSVGIcon 
+                    name="Shield"
+                    width="20"
+                    height="20"
+                    color="base-light"
+                  />
+                </div>
+                <div>
+                  <span class="_line-height-1 font-size-12 font-weight-700 text-base-light d-block">
+                    PORTFOLIO NAME
+                  </span>
+                  {{ provisioningData.csp }}
+                </div>                
+              </div>
               <div class="d-flex mb-6">
                 <div style="width: 30px;" class="d-flex justify-center mr-2">
                   <ATATSVGIcon 
@@ -49,33 +71,12 @@
                   {{ provisioningData.cspLong }}
                 </div>                
               </div>
-              <div class="d-flex">
-                <div style="width: 30px;" class="d-flex justify-center mr-2">
-                  <ATATSVGIcon 
-                    name="manageAccount"
-                    width="20"
-                    height="17"
-                    color="base-light"
-                  />
-                </div>
-                <div>
-                  <span class="_line-height-1 font-size-12 font-weight-700 text-base-light d-block">
-                    ENVIRONMENTS AND ADMINISTRATORS
-                  </span>
-                  <div v-for="(obj, i) in cspAdmins" :key="i">
-                    <span class="mr-10 d-inline-block mb-2" style="width: 140px;">
-                      {{ obj.env }}
-                    </span>
-                    <span class="nowrap">
-                      {{ obj.admins }} administrator<span v-if="obj.admins > 1">s</span>
-                    </span>
-                  </div>
-
-                </div>                
               </div>
-            </div>
-          
-            <ATATExpandableLink aria-id="DataRetrievedFrom" class="mt-10">
+              <ATATSVGIcon :name="cspLogoName" width="420px" height="328px" />
+            </div>        
+          </div>
+        </div>    
+        <ATATExpandableLink aria-id="DataRetrievedFrom" class="mt-10">
               <template v-slot:header>
                 What can I expect after provisioning starts?
               </template>
@@ -92,13 +93,9 @@
                   of your task order.
                 </p>
               </template>
-            </ATATExpandableLink>          
-          </div>
-
-          <ATATSVGIcon :name="cspLogoName" width="460px" height="406px" />
-        </div>      
-
+            </ATATExpandableLink>    
       </v-col>
+      <v-col></v-col>
     </v-row>
   </v-container>
 </template>
