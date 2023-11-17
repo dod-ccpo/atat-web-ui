@@ -13,6 +13,7 @@
             this individual for approval and signature.
           </p>
           <ATATContactForm
+            ref="ATATContactFormRef"
             role-legend="What role best describes your Financial POC's affiliation?"
             :email="email"
             @update:email="email = $event"
@@ -52,14 +53,20 @@
 
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATContactForm from "@/components/ATATContactForm.vue";
-import { CountryObj, RadioButton, RankData, SelectData } from "../../../types/Global";
+import { 
+  CountryObj, 
+  RadioButton, 
+  RankData, 
+  SaveOnLeaveRefs, 
+  SelectData 
+} from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import { ContactDTO } from "@/api/models";
 import parsePhoneNumber, { AsYouType, CountryCode } from "libphonenumber-js";
 import ContactData from "@/store/contactData";
 import { Countries } from "@/components/ATATPhoneInput.vue";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -69,13 +76,14 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class FinancialPOCForm extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private loaded = false;

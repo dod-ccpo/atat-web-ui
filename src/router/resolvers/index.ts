@@ -596,26 +596,26 @@ const setDontNeedButton = (groupId: string) => {
 
 const otherServiceOfferings = DescriptionOfWork.otherServiceOfferings
 
-const basePerformanceRequirementsPath = 'performance-requirements'
+const basePerformanceRequirementsPath = '/performance-requirements'
+const DOWLandingPagePath = 'dow-landing-page'
 const requirementCategories = '/requirement-categories'
-const descriptionOfWorkSummaryPath = 'performance-requirements/dow-summary'
-const DOWSecurityRequitementsPath =
-	'performance-requirements/dow-security-requirements'
-const otherServiceOfferingSummaryPath =
-	'performance-requirements/service-offerings/other/summary'
+const descriptionOfWorkSummaryPath = '/dow-summary'
+const DOWSecurityRequitementsPath ='/dow-security-requirements'
+const otherServiceOfferingSummaryPath ='/service-offerings/other/summary'
 
-const baseOfferingDetailsPath = `${basePerformanceRequirementsPath}/service-offering-details/`
+const baseOfferingDetailsPath = `/service-offering-details/`
+
 const getServiceOfferingsDetailsPath = (
   groupId: string,
   serviceName: string
 ) => {
-  let path = `${baseOfferingDetailsPath}${groupId.toLowerCase()}/`
+  let path = `/${groupId.toLowerCase()}`
   path += `${sanitizeOfferingName(serviceName)}`
   return path
 }
 
 const getOfferingGroupServicesPath = (groupId: string) =>
-  `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
+  `/service-offerings`
 
 /****************************************************************************
 
@@ -732,6 +732,10 @@ export const RequirementsPathResolver = (
       previousGroup,
       lastOfferingForGroup.name
     )
+  }
+
+  if (current === routeNames.ArchitecturalDesignDetails){
+    return DOWLandingPagePath;
   }
 
   return basePerformanceRequirementsPath
@@ -1051,7 +1055,7 @@ export const OfferingDetailsPathResolver = (
 
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false)
-    return 'current-contract/current-contract'
+    return '/current-contract'
   }
 
   const missingClassification = DescriptionOfWork.missingClassificationLevels
@@ -1138,7 +1142,10 @@ export const OfferingDetailsPathResolver = (
     return descriptionOfWorkSummaryPath
   }
   if (!missingClassification && current !== routeNames.OtherOfferingSummary) {
-    const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName)
+    const offering = !(groupId.toLowerCase().includes('portability'))
+      ? sanitizeOfferingName(DescriptionOfWork.currentOfferingName)
+      : "";
+      
     if (offering) {
       return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`
     }
@@ -1262,18 +1269,10 @@ export const DowSummaryPathResolver = (
   )
   Steps.clearAltBackButtonText()
   if (current === routeNames.DOWLandingPage) {
-    const hasCurrentContract =
-      AcquisitionPackage.currentContracts && AcquisitionPackage.currentContracts.length>0;
-    if (hasCurrentContract) {
-      return CurrentEnvironment.currentEnvironment.current_environment_exists === "YES"
-        && CurrentEnvironment.currentEnvInstances.length > 0
-        ? "/current-contract/environment-summary"
-        : "/current-contract/summary-step-four"
-    } else {
-      return "/current-contract/current-contract"
-    }
-    // TODO - check if this is needed when routing fixed
-    return '/current-contract/summary-step-four'
+    Summary.setHasCurrentStepBeenVisited(isStepTouched(4))
+    return isStepTouched(4)
+      ? "/summary-step-four"
+      : "/current-contract"
   }
 
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings
@@ -1466,7 +1465,7 @@ export const IGCETrainingPathResolver = (
   current: string,
   direction: string
 ): string => {
-  const basePath = 'requirements-cost-estimate/'
+  const basePath = '/'
   const createPriceEstimatePath = basePath + 'create-price-estimate'
   const repOptimizePath = basePath + 'optimize-or-replicate'
   const archDesignPath = basePath + 'architectural-design-solutions'

@@ -16,7 +16,7 @@
       </h3>
 
       <ATATRadioGroup
-        v-show="isWizard"
+        v-if="isWizard"
         id="ContactAffiliation"
         ref="ContactAffiliationRef"
         :legend="
@@ -55,7 +55,7 @@
         />
 
         <div v-if="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
-          <!-- <ATATAutoComplete
+          <ATATAutoComplete
             :id="corOrAcor + '_Rank'"
             :ref="corOrAcor + '_RankRef'"
             v-if="_selectedRole === 'MILITARY'"
@@ -73,7 +73,7 @@
             ]"
             class="_input-max-width mb-7"
             icon="arrow_drop_down"
-          /> -->
+          />
 
           <ATATSelect
             :id="corOrAcor + '_Salutation'"

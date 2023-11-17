@@ -1,5 +1,5 @@
 <template>
-  <v-form lazy-validation>
+  <v-form ref="form" lazy-validation>
     <ArchitecturalDesignForm
       ref="ArchitecturalDesignFormRef"
       :isDOW="true"
@@ -60,7 +60,7 @@ class ArchitectureDesignDOW extends Vue {
     source: "DOW",
     statement: "",
     applications_needing_design: "",
-    data_classification_levels: "",
+    data_classification_levels: [],
     external_factors: "",
     acquisition_package: AcquisitionPackage.packageId,
     needs_architectural_design_services:""

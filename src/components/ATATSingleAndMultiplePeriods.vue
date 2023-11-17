@@ -13,6 +13,7 @@
      
     </div>
       <ATATTextField
+        :ref="`SingleAmount_${needs}_${index}Ref`"
         :id="`SingleAmount_${needs}_${index}`"
         width="190"
         class="mr-2"
@@ -57,6 +58,7 @@
         <div>
           <ATATTextField
             :id="period.period_type + '_' + idx + '_' + needs + '_' + index"
+            :ref="period.period_type + '_' + idx + '_' + needs + '_' + index + 'Ref'"
             width="190"
             class="ml-5"
             :alignRight="true"
