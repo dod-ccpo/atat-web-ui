@@ -9,15 +9,31 @@ import ReadyToProvision from "@/portfolios/provisioning/ReadyToProvision.vue";
 import AddToExistingPortfolio from "@/portfolios/provisioning/AddToExistingPortfolio.vue"
 import ProvisioningIssue from "@/portfolios/provisioning/ProvisioningIssue.vue"
 
-const GeneratedFromPackageRouteResolver = (): string => {
-  return "";
-}
-const PortfolioDetailsRouteResolver = (): string => {
-  return "";
-}
-const AddToExistingPortfolioResolver = (): string => {
-  return "";
-}
+
+// const GeneratedFromPackageRouteResolver = (): string => {
+//   debugger;
+//   return "";
+// }
+// const PortfolioDetailsRouteResolver = (): string => {
+  
+//   return "";
+// }
+// const AddToExistingPortfolioResolver = (): string => {
+//   debugger;
+//   return "";
+// }
+
+import {
+  AddToExistingPortfolioResolver,
+  GeneratedFromPackageRouteResolver,
+  PortfolioDetailsRouteResolver
+} from "./resolvers"
+
+// let foo;
+// setTimeout(() => {
+//   debugger;
+//   foo = AddToExistingPortfolioResolver;
+// }, 0)
 
 export const provWorkflowRouteNames = {
   ProvisioningIndex: "Provisioning_Index",
@@ -42,7 +58,7 @@ export const provWorkflowRouteNames = {
  * 3. All steps needs to have unique names
  * 4. If a stepper route isn't meant to be rendered set it's 'excludeFromMenu' value to true
  */
-export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
+export const provisioningStepperRoutes: Array<StepperRouteConfig> = [
   {
     path: "/provisioning",
     component: ProvisioningIndex,
@@ -78,7 +94,7 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
         name: provWorkflowRouteNames.GeneratedFromPackage,
         path: "/generated-from-package",
         component: GeneratedFromPackage, 
-        routeResolver: GeneratedFromPackageRouteResolver,
+        // routeResolver: GeneratedFromPackageRouteResolver,
         additionalButtons: [
           {
             buttonText: "I didn’t use DAPPS for this task order",
@@ -92,7 +108,7 @@ export const provisionWorkFlowRoutes: Array<StepperRouteConfig> = [
         name: provWorkflowRouteNames.PortfolioDetails,
         path: "/portfolio-details",
         component: PortfolioDetails,
-        routeResolver: PortfolioDetailsRouteResolver,
+        // routeResolver: PortfolioDetailsRouteResolver,
       },
       {
         name: provWorkflowRouteNames.AddCSPAdmin,
@@ -138,7 +154,7 @@ const mapStepRouteToStepperData = (
     altContinueAction,
   } = stepperRouteConfig;
   let {name} = stepperRouteConfig;
-  name = name || "";
+  name = name as string || "";
 
   const stepperStep: StepperStep = {
     stepNumber,
@@ -147,7 +163,7 @@ const mapStepRouteToStepperData = (
     name,
     completed,
     completePercentageWeight,
-    route: path ?? "",
+    route: path as string,
     subSteps: stepperRouteConfig.children?.map((child) =>
       mapStepRouteToStepperData(child)
     ),
@@ -159,5 +175,5 @@ const mapStepRouteToStepperData = (
   return stepperStep;
 };
 
-export const buildProvisionWorkflowRouterData = (): StepperStep[] =>
-  provisionWorkFlowRoutes.map((step) => mapStepRouteToStepperData(step));
+export const buildProvisioningStepperData = (): StepperStep[] =>
+  provisioningStepperRoutes.map((step) => mapStepRouteToStepperData(step));

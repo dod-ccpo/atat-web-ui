@@ -82,9 +82,10 @@ import {
 
 import actionHandler from "@/action-handlers/index";
 import AppSections from "@/store/appSections";
+import { buildStepperData } from '@/router/stepper'
 import {
-  buildProvisionWorkflowRouterData, 
-  provisionWorkFlowRoutes, 
+  buildProvisioningStepperData, 
+  provisioningStepperRoutes, 
   provWorkflowRouteNames 
 } from "@/router/provisionWorkflow";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -117,7 +118,8 @@ class ProvisionWorkflow extends Vue {
     return SlideoutPanel.slideoutPanelComponent || undefined;
   };
 
-  private stepperData = buildProvisionWorkflowRouterData();
+  private foo = buildStepperData();
+  private stepperData = buildProvisioningStepperData();
   private additionalButtons: AdditionalButton[] = [];
   private noPrevious = false;
   private backButtonText = "Back";
@@ -138,7 +140,8 @@ class ProvisionWorkflow extends Vue {
   }  
 
   async mounted(): Promise<void> {
-    Steps.setSteps(provisionWorkFlowRoutes);
+    const foo = buildStepperData();
+    Steps.setSteps(provisioningStepperRoutes);
     
     this.routeNames = provWorkflowRouteNames;
     //get first step and intitialize store to first step;
