@@ -52,6 +52,7 @@ export interface CSPProvisioningData {
   name: string;
   classification_level?: string;
   cloud_distinguisher?: CloudDistinguisher;
+  highest_information_protection_level: string;
 }
 
 interface CloudDistinguisher {
@@ -179,11 +180,11 @@ export class PortfolioDataStore extends VuexModule {
     return this.selectedPortfolioPackageSysId;
   }
   
-  public portfolioProvisioningObj: PortfolioProvisioningObj 
+  public portfolioProvisioningObj: Partial<PortfolioProvisioningObj>
     = _.cloneDeep(initialPortfolioProvisioningObj());
  
   @Action({rawError: true})
-  public async getPortfolioProvisioningObj(): Promise<PortfolioProvisioningObj> {
+  public async getPortfolioProvisioningObj(): Promise<Partial<PortfolioProvisioningObj>> {
     return this.portfolioProvisioningObj;
   }
 
@@ -205,7 +206,8 @@ export class PortfolioDataStore extends VuexModule {
       const csp = this.portfolioProvisioningObj.csp?.toUpperCase();
       const response = await api.cloudServiceProviderTable.getQuery({
         params: {
-          sysparm_fields: "name,cloud_distinguisher,classification_level",
+          sysparm_fields: 
+            "name,cloud_distinguisher,classification_level,highest_information_protection_level",
           sysparm_query: "vendorIN" + csp
         }
       });
@@ -213,7 +215,8 @@ export class PortfolioDataStore extends VuexModule {
         const csp: CSPProvisioningData = { 
           name: obj.name, 
           classification_level: obj.classification_level,
-          cloud_distinguisher: undefined
+          cloud_distinguisher: undefined,
+          highest_information_protection_level: obj.highest_information_protection_level,
         };
         const cd = obj.cloud_distinguisher;
         if (cd && cd.length) {
@@ -225,7 +228,9 @@ export class PortfolioDataStore extends VuexModule {
       });
       const unclassCount = cspData.filter(e => e.classification_level === "U").length;
       hasCloudDistinguishers = unclassCount > 1 ? hasCloudDistinguishers : false;
-      cspData = cspData.sort((a,b) => a.name > b.name ? 1 : -1)
+      cspData = cspData.sort((a,b) => 
+        a.highest_information_protection_level > b.highest_information_protection_level ? 1 : -1
+      );
       await this.doSetCSPProvisioningData({cspData, hasCloudDistinguishers});
     } catch (error) {
       console.error(error);
@@ -534,12 +539,12 @@ export class PortfolioDataStore extends VuexModule {
   }
   
   @Action({rawError: true}) 
-  public async setPortfolioProvisioning(data: PortfolioProvisioningObj): Promise<void> {
+  public async setPortfolioProvisioning(data: Partial<PortfolioProvisioningObj>): Promise<void> {
     await this.doSetPortfolioProvisioning(data);
   }
 
   @Mutation
-  public async doSetPortfolioProvisioning(data: PortfolioProvisioningObj): Promise<void> {
+  public async doSetPortfolioProvisioning(data: Partial<PortfolioProvisioningObj>): Promise<void> {
     this.portfolioProvisioningObj = this.portfolioProvisioningObj
       ? Object.assign(this.portfolioProvisioningObj, data)
       : data; 

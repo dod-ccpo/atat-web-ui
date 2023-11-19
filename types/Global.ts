@@ -187,6 +187,7 @@ export interface Checkbox {
   description?: string;
   textfieldValue?: string;
   optionType?: string;
+  additionalData?: string;
 }
 
 export interface RadioButton extends Checkbox {

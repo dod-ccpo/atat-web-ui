@@ -2,116 +2,132 @@
   <v-form ref="form">
     <v-container fluid class="container-max-width">
       <v-row>
-        <div>
-          <h1 class="page-header mb-1 py-0">
-            {{ pageHeaderText }}
-          </h1>
-          <div class="copy-max-width">
-            <p v-if="!selectedPackage">
-              The following information will be used to refer to this project throughout ATAT and
-              will be sent to your CSP during provisioning.<strong>
-              Do not include any Controlled Unclassified Information (CUI) or classified
-              information.
-            </strong>
-            </p>
-            <p v-else v-html="envSectionHelpText">
-            </p>
-          </div>
+        <v-col>
+          <div>
+            <h1 class="page-header mb-1 py-0">
+              {{ pageHeaderText }}
+            </h1>
+            <div class="copy-max-width">
+              <p v-if="!selectedPackage">
+                The following information will be used to refer to this project throughout ATAT and
+                will be sent to your CSP during provisioning.<strong>
+                Do not include any Controlled Unclassified Information (CUI) or classified
+                information.
+              </strong>
+              </p>
+              <p v-else v-html="envSectionHelpText">
+              </p>
+            </div>
 
-          <!-- if user didn't select an existing aquisition package with status "Waiting
-            for taskorder" in previous step, get the portfolio name and associated agency -->
-          <div v-if="!selectedPackage" class="copy-max-width">
-            <h2>1. Portfolio Details</h2>
-            <ATATTextField 
-              ref="PortfolioTitleRef"
-              label="Portfolio title"
-              class="_input-max-width mb-10"
-              :value="portfolioTitle"
-              @update:value="portfolioTitle = $event"
-              :rules="[
-                $validators.required('Please enter your project title.'),
-                $validators.maxLength(60, 'Title cannot exceed 60 characters')
-              ]"
-            />
+            <!-- if user didn't select an existing aquisition package with status "Waiting
+              for taskorder" in previous step, get the portfolio name and associated agency -->
+            <div v-if="!selectedPackage" class="copy-max-width">
+              <h2>1. Portfolio Details</h2>
+              <ATATTextField 
+                ref="PortfolioTitleRef"
+                label="Portfolio title"
+                class="_input-max-width mb-10"
+                :value="portfolioTitle"
+                @update:value="portfolioTitle = $event"
+                :rules="[
+                  $validators.required('Please enter your project title.'),
+                  $validators.maxLength(60, 'Title cannot exceed 60 characters')
+                ]"
+              />
 
-            <ATATAutoComplete
-              ref="AgencyRef"
-              id="Agency"
-              class="_input-max-width mb-10"
-              label="What service or agency is this portfolio affiliated with?"
-              :label-sr-only="false"
-              titleKey="text"
-              :searchFields="['text']"
-              :items="agencyData"
-              :selectedItem="serviceOrAgency"
-              @update:selectedItem="serviceOrAgency = $event"
-              :rules="[$validators.required('Please select your service or agency.')]"
-              placeholder="Find your service/agency"
-              icon="arrow_drop_down"
-            />
-          </div>
+              <ATATAutoComplete
+                ref="AgencyRef"
+                id="Agency"
+                class="_input-max-width mb-10"
+                label="What service or agency is this portfolio affiliated with?"
+                :label-sr-only="false"
+                titleKey="text"
+                :searchFields="['text']"
+                :items="agencyData"
+                :selectedItem="serviceOrAgency"
+                @update:selectedItem="serviceOrAgency = $event"
+                :rules="[$validators.required('Please select your service or agency.')]"
+                placeholder="Find your service/agency"
+                icon="arrow_drop_down"
+              />
+            </div>
 
             <div class="h2">2. Tell us about your cloud environments</div>
-            <div class="text-base font-size-14 mb-10 copy-max-width" v-html="envSectionHelpText">
-            </div>
-            <v-table
-            class="_environments-table">
-              <thead>
-                <th 
-                v-for="header in environmentHeaders"
-                :key="header.label"
+            <div 
+              class="text-base font-size-14 mb-10 copy-max-width" 
+              v-html="envSectionHelpText"
+            ></div>
+
+            <div class="_radio-grid">
+              <v-row class="_grid-header-row">
+                <v-col
+                  v-for="(header, index) in environmentHeaders"
+                  :key="index"
+                  class="_grid-header-col"
+                  :class="{'': index > 0}"
                 >
-                  <div class="d-flex align-center justify-center">
-                    <span :class="[{'mr-2': header.tooltip}]">{{ header.label }}</span>
-                    <ATATTooltip
-                      v-if="header.tooltip"
-                      id="PortfolioEnvironmentsTooltip"
-                      :tooltipText="header.tooltip"
-                      label="PortfolioEnvironments"
-                    />
-                  </div>
-              </th>
-              </thead>
-              <tbody
-              :class="[
-              {'_validation-error': noUnclassifiedILsSelected}
-              ]"
-              >
-                <tr
+                  <span class="_header-text">
+                    {{ header.label }}
+                  </span>
+                  <ATATTooltip
+                    v-if="header.tooltip"
+                    id="PortfolioEnvironmentsTooltip"
+                    :tooltipText="header.tooltip"
+                    label="PortfolioEnvironments"
+                  />
+                </v-col>
+              </v-row>
+
+              <v-row 
                 v-for="(item, index) in envRadioGroups"
                 :key="index"
+                class="_radio-row"
+                :class="[
+                  {'_unclassified': isILUnclassified(item)},
+                  {'_section-error': showUnclassifiedSelectionError},
+                  {'_first-row': index === 0},
+                  {'_last-row': index === CSPProvisioningData.length - 1}
+                ]"
+              >
+                <v-radio-group 
+                  v-model="envsInTaskOrder[index].isMigration"
+                  @update:modelValue="radioGroupUpdate(index)"
                 >
-                <td>
-                  <div class="d-flex flex-column _environment-info">
-                    <span class="_environment-label">{{ item.label }}</span>
-                    <span class="_environment-description">{{ item.description }}</span>
-                  </div>
-                </td>
-                <td>
-                  <v-radio
-                    :name="item.groupName"
-                    class="d-flex justify-center _radio-button"
-                    @click="onRadioClick(false, item.id)"
-                    :model-value="envRadioGroups[item.id].isMigration === false"
-                  >
-                  </v-radio>
-                </td>
-                <td>
-                  <v-radio
-                  class="d-flex justify-center _radio-button"
-                  @click="onRadioClick(true, item.id)"
-                  :model-value="availableUnclassEnvs[item.id].isMigration === true"
-                  ></v-radio>
-                </td>
-                <td>
-                  <v-radio
-                  class="d-flex justify-center _radio-button"
-                  @click="onRadioClick(null, item.id)"
-                  :model-value="availableUnclassEnvs[item.id].isMigration === null"
-                  ></v-radio>
-                </td>
-                </tr>
-                <tr v-if="noUnclassifiedILsSelected">
+                  <v-col>
+                    <span class="_label">{{ item.label }}</span>
+                    <span class="_description">{{ item.description }}</span>
+                  </v-col>
+                  <v-col>
+                    <v-radio
+                      :name="item.id + 'Group'"
+                      :value="false"
+                      @blur="radioGroupBlurred(index)"
+                    ></v-radio>
+                  </v-col>
+                  <v-col>
+                    <v-radio
+                      :name="item.id + 'Group'"
+                      :value="true"
+                    ></v-radio>
+                  </v-col>
+                  <v-col>
+                    <v-radio
+                      :name="item.id + 'Group'"
+                      :value="null"
+                      :disabled="isRadioDisabled(item.value)"
+                    ></v-radio>
+                  </v-col>
+                </v-radio-group>
+
+                <div class="_section-error-message" 
+                  v-if="isLastUnclassified(item, index)"
+                  v-show="showUnclassifiedSelectionError"  
+                >
+                  Select <strong>New Environment</strong> or <strong>Transfer Billing</strong>
+                  for at least one Unclassified environment.
+                </div>
+              </v-row>
+                <!-- <tr v-if="noUnclassifiedILsSelected">
                   <td colspan="4">
                     <ATATAlert
                     id="SelectAnEnvironment"
@@ -126,13 +142,14 @@
                     </template>
                     </ATATAlert>
                   </td>
-                </tr>
+                </tr> -->
 
-              </tbody>
-            </v-table>
+
+            </div>
           </div>
         </v-col>
       </v-row>
+
     </v-container>
   </v-form>
 </template>
@@ -170,6 +187,7 @@ class PortfolioDetails extends Vue {
 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
+    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs,
@@ -177,10 +195,8 @@ class PortfolioDetails extends Vue {
     }).catch()
   }
 
-
   public portfolioTitle = "";
   public serviceOrAgency: SelectData = {};
-  // public selectedCSPProvider = "";
   public envSectionLabel = "";
   public envSectionHelpText = "";
 
@@ -189,50 +205,40 @@ class PortfolioDetails extends Vue {
 
   public portfolioProvisioningObj: Partial<PortfolioProvisioningObj> = {};
   public envsInTaskOrder: Partial<ProvisioningEnv>[] = [];
-  
-  public envRadioGroups: Record<string, RadioButton>[] = [];
-  public hasUnclassILs = false;
+  public hasUnclassified = false;
+  public envRadioGroups: RadioButton[] = [];
 
   private agencyData: SelectData[] = [];
-  // private selectedEnvs: SelectedProvisioningEnv[] = [];
-  // private availableUnclassEnvs: Record<string, Record<string ,boolean | null | undefined>> = {}
   private noUnclassifiedILsSelected = false;
   
   public CSPProvisioningData = PortfolioStore.CSPProvisioningData; // all CLs (with U ILs) in T.O.
 
-  // private checkboxItems: Checkbox[] = [];
-  // private checkboxRulesOn = false;
-  // public get checkboxRules(): unknown[] {
-  //   return this.checkboxRulesOn
-  //     ? [this.$validators.required('Select at least one impact level')]
-  //     : []
-  // }
+  public unclassifiedILs = ["IL2", "IL4", "IL5"];
+  public isILUnclassified(radio: RadioButton): boolean {
+    return this.unclassifiedILs.includes(radio.additionalData as string);
+  }
 
-  // public async buildILCheckboxItems(): Promise<void> {
-  //   this.CSPProvisioningData.forEach(obj => {
-  //     if (obj.classification_level === "U" && obj.cloud_distinguisher) {
-  //       const checkboxItem: Checkbox = {
-  //         id: obj.cloud_distinguisher.name as string,
-  //         label: obj.cloud_distinguisher.name + " – " + obj.cloud_distinguisher.display_name,
-  //         value: obj.name,
-  //         description: obj.cloud_distinguisher.description,
-  //       }
-  //       this.checkboxItems.push(checkboxItem);
-  //       this.availableUnclassEnvs[checkboxItem.id] = {isMigration: undefined}
-  //     }
-  //   });
-  //   this.checkboxRulesOn = true;
-  // }
+  public isLastUnclassified(radio: RadioButton, index: number): boolean {
+    const hasNextEnv = this.CSPProvisioningData.length > index + 1;
+    const lastEnvIsUnclass = index + 1 === this.CSPProvisioningData.length 
+      && this.unclassifiedILs.includes(radio.additionalData as string);
+    if (this.hasUnclassified 
+      && (lastEnvIsUnclass || (this.unclassifiedILs.includes(radio.additionalData as string) 
+      && hasNextEnv && !this.unclassifiedILs.includes(
+        this.CSPProvisioningData[index + 1].highest_information_protection_level)
+      ))
+    ) {
+      return true; 
+    }
+    return false;
+  }
+
 
   public get selectedPackage():string {
     return PortfolioStore.selectedAcquisitionPackageSysId
   }
 
-  // public get showCheckbox():boolean {
-  //   return PortfolioStore.doesCSPHaveImpactLevels 
-  //     && PortfolioStore.doesTaskOrderHaveUnclassified 
-  //     && this.checkboxItems.length > 0;
-  // }
+
 
   public get currentData(): Partial<PortfolioProvisioningObj> {
     return {
@@ -269,11 +275,39 @@ class PortfolioDetails extends Vue {
     },
     {label: "Not applicable"},
   ]
-  
-  public onRadioClick(val: any, id: any): void{
-    // EJY come back to this!!!!
-    // this.availableUnclassEnvs[id].isMigration = val
+
+  public hasUnclassifiedSelection = false;
+  public unclassifiedILsBlurredCount = 0;
+  public unclassifiedILsBlurred: string[] = [];
+  public unclassifiedILsSelected: string[] = [];
+  public unclassifiedILsInTaskOrder: string[] = [];
+  public unclassifiedErrorOnContinue = false;
+
+  public radioGroupUpdate(index: number): void {
+    const IL = this.CSPProvisioningData[index].highest_information_protection_level;
+    const isUnclass = this.CSPProvisioningData[index].classification_level === "U";
+    if (isUnclass && !this.unclassifiedILsSelected.includes(IL)) {
+      this.unclassifiedILsSelected.push(IL);
+      this.unclassifiedErrorOnContinue = false;
+    }
   }
+
+  public radioGroupBlurred(index: number): void {
+    const blurredIL = this.CSPProvisioningData[index].highest_information_protection_level;
+    const isUnclass = this.CSPProvisioningData[index].classification_level === "U";
+    if (isUnclass && !this.unclassifiedILsBlurred.includes(blurredIL)) {
+      this.unclassifiedILsBlurred.push(blurredIL);
+    }
+  }
+
+  public get showUnclassifiedSelectionError(): boolean {  
+    debugger;  
+    return this.unclassifiedErrorOnContinue 
+      ||  (this.unclassifiedILsBlurred.length === this.unclassifiedILsInTaskOrder.length
+      && this.unclassifiedILsSelected.length === 0);
+  }
+
+  
 
   public getClassificationLevelsInTOString(): string {
     return convertStringArrayToCommaList(this.classificationLevelsInTaskOrder, "and", true);
@@ -295,9 +329,7 @@ class PortfolioDetails extends Vue {
         serviceOrAgency: this.serviceOrAgency.value,
         environments: storeData.environments,
       }
-
-      // this.selectedCSPProvider = storeData.csp ?? ""
-
+ 
       this.classificationLevelsInTaskOrder = storeData.classificationLevels as string[];
       
       this.envSectionHelpText = `Based on your task order details, you have
@@ -331,50 +363,44 @@ class PortfolioDetails extends Vue {
   }
   
   public async buildEnvironmentRadioGropus(): Promise<void> {
-
     this.CSPProvisioningData.forEach(env => {
       let label = "";
       let description = undefined;
+ 
       if (env.classification_level === "U") {
-        label = this.hasUnclassILs
-          ? env.cloud_distinguisher?.name + ": " + env.cloud_distinguisher?.display_name
+        this.hasUnclassified = true;
+        this.unclassifiedILsInTaskOrder.push(env.highest_information_protection_level);
+        label = env.cloud_distinguisher?.display_name 
+          ? env.cloud_distinguisher?.display_name
           : "Unclassified";
         description = env.cloud_distinguisher?.description;
       } else {
         label = env.classification_level === "S" ? "Secret" : "Top Secret";
       }
       const radioData = { 
-        isMigration: undefined,
+        id: env.name,
         label,
         description,
-        id: env.name,
-        value: "foo",
+        value: env.classification_level as string,
+        additionalData: env.highest_information_protection_level,
       };
-      const radioGroup = {
-        [env.name]: radioData
-      }
-      this.envRadioGroups.push(radioGroup)
+
+      this.envRadioGroups.push(radioData)
     })
+  }
+  public isRadioDisabled(classificationLevel: string): boolean {
+    return classificationLevel === "S" || classificationLevel === "TS";
   }
 
 
   public async loadOnEnter(): Promise<void> {
-    debugger;
     if (!OrganizationData.agency_data || OrganizationData.agency_data.length === 0) {
       await OrganizationData.getAgencyData();
     }
-    this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data); 
-    this.hasUnclassILs = this.CSPProvisioningData.filter(
-      obj => obj.classification_level === "U"
-    ).length > 1;
-
-    // const unclassEnvs 
-    //    = this.CSPProvisioningData.filter((csp) => csp.classification_level === 'U')
+    debugger;
     
+    this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data); 
     await this.setTaskOrderData();
-    // if (PortfolioStore.CSPHasImpactLevels && unclassEnvs.length > 1) {
-    //   await this.buildILCheckboxItems();
-    // }
   }
 
   public async mounted(): Promise<void> {
@@ -382,29 +408,18 @@ class PortfolioDetails extends Vue {
   }
 
   public async saveOnLeave(): Promise<boolean> {
+    debugger;
     try {
-      for(const env in this.availableUnclassEnvs){
-        if(this.availableUnclassEnvs[env].isMigration === undefined){
-          this.noUnclassifiedILsSelected = true;
-          return false;
-        }
-      }
-      this.checkboxItems.forEach((item: Checkbox) =>{
-        if(this.availableUnclassEnvs[item.id].isMigration !== undefined){
-          return this.selectedEnvs.push(
-            /* eslint-disable camelcase */
-            { value: item.value, isMigration: this.availableUnclassEnvs[item.id].isMigration }
-          )
-        }
-      })
-      // ensure correct order e.g., IL2, IL4, IL5
-      this.selectedEnvs.sort((a, b) => a.value.localeCompare(b.value)); 
-      console.log(this.selectedEnvs)
+      this.unclassifiedErrorOnContinue = 
+        this.hasUnclassified && this.unclassifiedILsSelected.length === 0;;
+      debugger;
+      if (this.unclassifiedErrorOnContinue) return false;
       await PortfolioStore.setPortfolioProvisioning(this.currentData);
     } catch (error) {
       console.error(error);
     }
-    return true;
+    // return true;
+    return false;
   }
 
 }
