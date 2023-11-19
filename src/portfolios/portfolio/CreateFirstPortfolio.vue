@@ -84,7 +84,7 @@ import ATATFooter from "../../components/ATATFooter.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { Component,  Vue, toNative } from "vue-facing-decorator";
 import PortfolioStore from "@/store/portfolio";
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import { provWorkflowRouteNames } from "@/router/provisioningStepper";
 import { routeNames } from "@/router/stepper";
 import Steps from "@/store/steps";
 import TaskOrderSearch from "../components/TaskOrderSearch.vue";
@@ -150,3 +150,4 @@ class CreateFirstPortfolio extends Vue {
 }
 export default toNative(CreateFirstPortfolio)
 </script>
+@/router/provisioningStepper

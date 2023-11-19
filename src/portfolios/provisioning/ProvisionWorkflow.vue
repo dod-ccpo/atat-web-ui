@@ -82,12 +82,11 @@ import {
 
 import actionHandler from "@/action-handlers/index";
 import AppSections from "@/store/appSections";
-import { buildStepperData } from '@/router/stepper'
 import {
   buildProvisioningStepperData, 
   provisioningStepperRoutes, 
   provWorkflowRouteNames 
-} from "@/router/provisionWorkflow";
+} from "../../router/provisioningStepper";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
 import api from "@/api";
@@ -118,7 +117,6 @@ class ProvisionWorkflow extends Vue {
     return SlideoutPanel.slideoutPanelComponent || undefined;
   };
 
-  private foo = buildStepperData();
   private stepperData = buildProvisioningStepperData();
   private additionalButtons: AdditionalButton[] = [];
   private noPrevious = false;
@@ -140,7 +138,6 @@ class ProvisionWorkflow extends Vue {
   }  
 
   async mounted(): Promise<void> {
-    const foo = buildStepperData();
     Steps.setSteps(provisioningStepperRoutes);
     
     this.routeNames = provWorkflowRouteNames;
@@ -320,3 +317,4 @@ class ProvisionWorkflow extends Vue {
 }
 export default toNative(ProvisionWorkflow)
 </script>
+@/router/provisioningStepper

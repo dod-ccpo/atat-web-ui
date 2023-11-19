@@ -1,6 +1,6 @@
 import { RouteRecordRaw, createRouter, createWebHashHistory } from "vue-router";
 import {stepperRoutes} from "./stepper";
-import { provisioningStepperRoutes } from "./provisionWorkflow";
+import { provisioningStepperRoutes } from "./provisioningStepper";
 import PathResolver from "./resolvers/PathResolver.vue";
 import RouteResolver from "./resolvers/RouteResolver.vue";
 import Home from "../home/Index.vue";

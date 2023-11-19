@@ -194,7 +194,7 @@ import { ValidationRule, mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import { provWorkflowRouteNames } from "@/router/provisioningStepper";
 import AppSections from "@/store/appSections";
 
 @Component({
@@ -495,3 +495,4 @@ class ATATSearch extends Vue {
 }
 export default toNative(ATATSearch)
 </script>
+@/router/provisioningStepper

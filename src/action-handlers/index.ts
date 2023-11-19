@@ -5,7 +5,7 @@ import router from "@/router";
 import PortfolioStore from "@/store/portfolio";
 import AppSections from "@/store/appSections";
 import PortfolioSummary from "@/portfolios/portfolio/components/Index.vue"
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import { provWorkflowRouteNames } from "@/router/provisioningStepper";
 import { FairOpportunityDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";

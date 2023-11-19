@@ -104,7 +104,7 @@ import HelpfulResourcesCards from "./components/HelpfulResourcesCards.vue";
 import Steps from "@/store/steps";
 import AppSections from "@/store/appSections";
 import { routeNames } from "@/router/stepper";
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import { provWorkflowRouteNames } from "@/router/provisioningStepper";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -242,3 +242,4 @@ class Home extends Vue {
 }
 export default toNative(Home)
 </script>
+@/router/provisioningStepper

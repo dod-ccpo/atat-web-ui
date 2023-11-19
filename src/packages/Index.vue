@@ -134,7 +134,7 @@ import ATATNoResults from "@/components/ATATNoResults.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import acquisitionPackage from "@/store/acquisitionPackage";
 import PortfolioStore from "@/store/portfolio";
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
+import { provWorkflowRouteNames } from "@/router/provisioningStepper";
 
 @Component({
   components: {
@@ -388,3 +388,4 @@ class Packages extends Vue {
 export default toNative(Packages)
 </script>
 
+@/router/provisioningStepper

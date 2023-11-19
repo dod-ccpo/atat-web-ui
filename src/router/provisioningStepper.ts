@@ -8,6 +8,9 @@ import AddCSPAdmin from "@/portfolios/provisioning/AddCSPAdmin.vue";
 import ReadyToProvision from "@/portfolios/provisioning/ReadyToProvision.vue";
 import AddToExistingPortfolio from "@/portfolios/provisioning/AddToExistingPortfolio.vue"
 import ProvisioningIssue from "@/portfolios/provisioning/ProvisioningIssue.vue"
+import PortfolioStore from "@/store/portfolio";
+import AcquisitionPackageSummary from "@/store/acquisitionPackageSummary";
+import PortfolioSummary from "@/store/portfolioSummary";
 
 
 // const GeneratedFromPackageRouteResolver = (): string => {
@@ -23,17 +26,119 @@ import ProvisioningIssue from "@/portfolios/provisioning/ProvisioningIssue.vue"
 //   return "";
 // }
 
-import {
-  AddToExistingPortfolioResolver,
-  GeneratedFromPackageRouteResolver,
-  PortfolioDetailsRouteResolver
-} from "./resolvers"
+// import {
+//   AddToExistingPortfolioResolver,
+//   GeneratedFromPackageRouteResolver,
+//   PortfolioDetailsRouteResolver
+// } from "./resolvers"
 
 // let foo;
 // setTimeout(() => {
 //   debugger;
 //   foo = AddToExistingPortfolioResolver;
 // }, 0)
+
+const provFromMeatball = (): boolean => {
+  return PortfolioStore.provisioningFromMeatball
+}
+const cspHasILs = (): boolean => {
+  return PortfolioStore.CSPHasImpactLevels
+}
+const taskOrderHasUnclass = (): boolean => {
+  return PortfolioStore.doesTaskOrderHaveUnclassified
+}
+const userHasActivePortfolios = (): boolean => {
+  return PortfolioSummary.hasActivePortfolios
+}
+
+export const AddToExistingPortfolioResolver = (current: string): string => {
+  debugger;
+  const hasActivePortfolios: boolean = userHasActivePortfolios()
+  // moving backward
+  if (
+    current === provWorkflowRouteNames.GeneratedFromPackage ||
+		current === provWorkflowRouteNames.PortfolioDetails
+  ) {
+    return hasActivePortfolios
+      ? provWorkflowRouteNames.AddToExistingPortfolio
+      : provWorkflowRouteNames.AwardedTaskOrder
+  }
+
+  // moving forward
+  if (provFromMeatball()) {
+    return taskOrderHasUnclass() && cspHasILs()
+      ? provWorkflowRouteNames.PortfolioDetails
+      : provWorkflowRouteNames.AddCSPAdmin
+  }
+
+  if (hasActivePortfolios) return provWorkflowRouteNames.AddToExistingPortfolio
+
+  return GeneratedFromPackageRouteResolver(current)
+}
+
+export const GeneratedFromPackageRouteResolver = (current: string): string => {
+  debugger;
+  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
+  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId
+  const showPackageSelection = PortfolioStore.showTOPackageSelection
+
+  if (packageCount && (!acqPkgSysId || showPackageSelection)) {
+    return provWorkflowRouteNames.GeneratedFromPackage
+  }
+
+  if (current !== provWorkflowRouteNames.PortfolioDetails && acqPkgSysId && !cspHasILs()) {
+    return provWorkflowRouteNames.AddCSPAdmin
+  }
+
+  if (current === provWorkflowRouteNames.PortfolioDetails) {
+    if (provFromMeatball()) return provWorkflowRouteNames.AwardedTaskOrder;
+    return userHasActivePortfolios()
+      ? provWorkflowRouteNames.AddToExistingPortfolio
+      : provWorkflowRouteNames.AwardedTaskOrder
+  }
+
+  if (!acqPkgSysId && current === provWorkflowRouteNames.AwardedTaskOrder) {
+    return provWorkflowRouteNames.PortfolioDetails;
+  }
+
+  return taskOrderHasUnclass() && cspHasILs()
+    ? provWorkflowRouteNames.PortfolioDetails
+    : provWorkflowRouteNames.AddCSPAdmin
+}
+
+export const PortfolioDetailsRouteResolver = (current: string): string => {
+  if (current === provWorkflowRouteNames.AddCSPAdmin && provFromMeatball()) {
+    return taskOrderHasUnclass() && cspHasILs()
+      ? provWorkflowRouteNames.PortfolioDetails
+      : provWorkflowRouteNames.AwardedTaskOrder
+  }
+  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId
+  if (!acqPkgSysId || (taskOrderHasUnclass() && cspHasILs())) {
+    return provWorkflowRouteNames.PortfolioDetails
+  }
+  if (
+    current === provWorkflowRouteNames.AddCSPAdmin &&
+		acqPkgSysId &&
+		!taskOrderHasUnclass()
+  ) {
+    return provWorkflowRouteNames.GeneratedFromPackage
+  }
+  if (
+    current === provWorkflowRouteNames.AddCSPAdmin &&
+		!acqPkgSysId &&
+		!taskOrderHasUnclass()
+  ) {
+    return userHasActivePortfolios()
+      ? provWorkflowRouteNames.AddToExistingPortfolio
+      : provWorkflowRouteNames.AwardedTaskOrder
+  }
+  // eslint-disable-next-line max-len
+  return current === provWorkflowRouteNames.GeneratedFromPackage ||
+		provWorkflowRouteNames.AddToExistingPortfolio
+    ? provWorkflowRouteNames.AddCSPAdmin
+    : provWorkflowRouteNames.GeneratedFromPackage
+}
+
 
 export const provWorkflowRouteNames = {
   ProvisioningIndex: "Provisioning_Index",
@@ -153,6 +258,7 @@ const mapStepRouteToStepperData = (
     continueButtonText,
     altContinueAction,
   } = stepperRouteConfig;
+  
   let {name} = stepperRouteConfig;
   name = name as string || "";
 
@@ -177,3 +283,5 @@ const mapStepRouteToStepperData = (
 
 export const buildProvisioningStepperData = (): StepperStep[] =>
   provisioningStepperRoutes.map((step) => mapStepRouteToStepperData(step));
+
+  
