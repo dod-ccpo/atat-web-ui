@@ -15,6 +15,7 @@
             </p>
             <ATATRadioGroup
               id="ExistingEnvOptions"
+              ref="ExistingEnvOptions"
               :card="true"
               :items="uploadOptions"
               :rules="[$validators.required('Please select an option')]"

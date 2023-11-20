@@ -190,10 +190,10 @@
 
 <script lang="ts">
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import acquisitionPackage from "@/store/acquisitionPackage";
-import { SlideoutPanelContent } from "../../../types/Global";
+import { SlideoutPanelContent, SaveOnLeaveRefs } from "../../../types/Global";
 import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -208,13 +208,13 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 
 class DAPPSChecklist extends Vue {
   
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    })
   }
 
   public requestAccessURL = "https://community.hacc.mil/s/jwcc/pricing-calculator-request"

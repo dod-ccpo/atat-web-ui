@@ -384,6 +384,9 @@ export const ProcurementHistorySummaryRouteResolver = (
   } else if (doesNotNeedContract && fromCurrentEnvironment) {
     return routeNames.CurrentContract
   } else if (!hasExceptionToFairOpp()) {
+    if (isStepTouched(4)) {
+      return routeNames.SummaryStepFour
+    }
     return !fromCurrentEnvironment
       ? routeNames.CurrentEnvironment
       : routeNames.CurrentContractDetails
@@ -432,6 +435,28 @@ export const CurrentEnvRouteResolver = (current: string): string => {
   return current === routeNames.CurrentEnvironment
     ? routeNames.SummaryStepFour
     : routeNames.CurrentEnvironment
+}
+
+export const CurrentEnvironmentLocationResolver = (current: string): string => {
+  if (
+    current === routeNames.UploadMigrationDocuments && 
+    isStepTouched(4) &&
+    CurrentEnvironment.currEnvInstances?.length > 0
+  ) {
+    return routeNames.EnvironmentSummary
+  }
+  return routeNames.CurrentEnvironmentLocation
+}
+
+export const InstanceDetailsResolver = (current: string): string => {
+  if (
+    current === routeNames.ClassificationLevels &&
+    isStepTouched(4) &&
+    CurrentEnvironment.currEnvInstances?.length > 0
+  ) {
+    return routeNames.EnvironmentSummary
+  }
+  return routeNames.InstanceDetails
 }
 
 export const CurrentEnvironmentSummaryResolver = (current: string): string => {
@@ -1993,110 +2018,11 @@ export const SummaryStepThreeRouteResolver = (current: string): string => {
   return routeNames.SummaryStepThree
 }
 
-const provFromMeatball = (): boolean => {
-  return PortfolioStore.provisioningFromMeatball
-}
-const cspHasILs = (): boolean => {
-  return PortfolioStore.CSPHasImpactLevels
-}
-const taskOrderHasUnclass = (): boolean => {
-  return PortfolioStore.doesTaskOrderHaveUnclassified
-}
-const userHasActivePortfolios = (): boolean => {
-  return PortfolioSummary.hasActivePortfolios
-}
-
-export const AddToExistingPortfolioResolver = (current: string): string => {
-  const hasActivePortfolios: boolean = userHasActivePortfolios()
-  // moving backward
-  if (
-    current === provWorkflowRouteNames.GeneratedFromPackage ||
-		current === provWorkflowRouteNames.PortfolioDetails
-  ) {
-    return hasActivePortfolios
-      ? provWorkflowRouteNames.AddToExistingPortfolio
-      : provWorkflowRouteNames.AwardedTaskOrder
-  }
-
-  // moving forward
-  if (provFromMeatball()) {
-    return taskOrderHasUnclass() && cspHasILs()
-      ? provWorkflowRouteNames.PortfolioDetails
-      : provWorkflowRouteNames.AddCSPAdmin
-  }
-
-  if (hasActivePortfolios) return provWorkflowRouteNames.AddToExistingPortfolio
-
-  return GeneratedFromPackageRouteResolver(current)
-}
-
-export const GeneratedFromPackageRouteResolver = (current: string): string => {
-  const packageCount = AcquisitionPackageSummary.packagesWaitingForTaskOrderCount;
-  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId
-  const showPackageSelection = PortfolioStore.showTOPackageSelection
-
-  if (packageCount && (!acqPkgSysId || showPackageSelection)) {
-    return provWorkflowRouteNames.GeneratedFromPackage
-  }
-
-  if (current !== provWorkflowRouteNames.PortfolioDetails && acqPkgSysId && !cspHasILs()) {
-    return provWorkflowRouteNames.AddCSPAdmin
-  }
-
-  if (current === provWorkflowRouteNames.PortfolioDetails) {
-    if (provFromMeatball()) return provWorkflowRouteNames.AwardedTaskOrder;
-    return userHasActivePortfolios()
-      ? provWorkflowRouteNames.AddToExistingPortfolio
-      : provWorkflowRouteNames.AwardedTaskOrder
-  }
-
-  if (!acqPkgSysId && current === provWorkflowRouteNames.AwardedTaskOrder) {
-    return provWorkflowRouteNames.PortfolioDetails;
-  }
-
-  return taskOrderHasUnclass() && cspHasILs()
-    ? provWorkflowRouteNames.PortfolioDetails
-    : provWorkflowRouteNames.AddCSPAdmin
-}
-
 export const GeneratingPackageDocumentsFundingResolver = (current: string): string => {
   if (current === routeNames.MIPR){
     return routeNames.SummaryStepEight;
   }
   return routeNames.GeneratingPackageDocumentsFunding;
-}
-
-export const PortfolioDetailsRouteResolver = (current: string): string => {
-  if (current === provWorkflowRouteNames.AddCSPAdmin && provFromMeatball()) {
-    return taskOrderHasUnclass() && cspHasILs()
-      ? provWorkflowRouteNames.PortfolioDetails
-      : provWorkflowRouteNames.AwardedTaskOrder
-  }
-  const acqPkgSysId = PortfolioStore.getSelectedAcquisitionPackageSysId
-  if (!acqPkgSysId || (taskOrderHasUnclass() && cspHasILs())) {
-    return provWorkflowRouteNames.PortfolioDetails
-  }
-  if (
-    current === provWorkflowRouteNames.AddCSPAdmin &&
-		acqPkgSysId &&
-		!taskOrderHasUnclass()
-  ) {
-    return provWorkflowRouteNames.GeneratedFromPackage
-  }
-  if (
-    current === provWorkflowRouteNames.AddCSPAdmin &&
-		!acqPkgSysId &&
-		!taskOrderHasUnclass()
-  ) {
-    return userHasActivePortfolios()
-      ? provWorkflowRouteNames.AddToExistingPortfolio
-      : provWorkflowRouteNames.AwardedTaskOrder
-  }
-  // eslint-disable-next-line max-len
-  return current === provWorkflowRouteNames.GeneratedFromPackage ||
-		provWorkflowRouteNames.AddToExistingPortfolio
-    ? provWorkflowRouteNames.AddCSPAdmin
-    : provWorkflowRouteNames.GeneratedFromPackage
 }
 
 // add resolver here so that it can be found by invoker
@@ -2154,11 +2080,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SecurityRequirementsResolver,
   CrossDomainResolver,
   AnticipatedUserAndDataNeedsResolver,
-  GeneratedFromPackageRouteResolver,
-  AddToExistingPortfolioResolver,
   ContractingInfoResolver,
   SummaryStepThreeRouteResolver,
-  PortfolioDetailsRouteResolver,
   ClassificationRequirementsResolver,
   ContractTypeResolver,
   PIIRecordSummaryResolver,
@@ -2171,7 +2094,9 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   SummaryStepTwoRouteResolver,
   FundingPlanTypeResolver,
   SeverabilityAndIncrementalFundingResolver,
-  CreatePriceEstimateResolver
+  CreatePriceEstimateResolver,
+  CurrentEnvironmentLocationResolver,
+  InstanceDetailsResolver,
 }
 
 // add path resolvers here

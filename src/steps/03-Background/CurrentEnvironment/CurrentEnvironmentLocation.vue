@@ -50,6 +50,7 @@
       width="450"
       @ok="deleteInstances"
       @cancelClicked="cancelDeleteInstances"
+      :disableClickingOutside="true"
     >    
       <template #content>
         <p class="body" :class="{'mb-0' : changeFromEnv === 'HYBRID' }">
@@ -124,8 +125,8 @@ class CurrentEnvironmentLocation extends Vue {
     },
   ];
 
-  public changeFromEnv = "";
-  public changeToEnv = "";
+  public changeFromEnv: EnvironmentLocation = "";
+  public changeToEnv: EnvironmentLocation = "";
 
   public warningMessage = "";
   public warningMessages: Record<string, string> = {
@@ -167,7 +168,7 @@ class CurrentEnvironmentLocation extends Vue {
 
 
   @Watch("currentEnvironmentLocation")
-  public locationChange(newVal: string): void {
+  public locationChange(newVal: EnvironmentLocation): void {
     this.changeToEnv = newVal;
     if (
       newVal === "ON_PREM" && this.hasCloudInstances || 
@@ -179,6 +180,11 @@ class CurrentEnvironmentLocation extends Vue {
 
   public cancelDeleteInstances(): void {
     this.showConfirmDialog = false;
+    // setTimeout - waiting for dialog close animation to finish before changing it back
+    setTimeout(() => {
+      this.changeToEnv = this.changeFromEnv
+      this.currentEnvironmentLocation = this.changeFromEnv
+    }, 100)
   }
 
   public async deleteInstances(): Promise<void> {

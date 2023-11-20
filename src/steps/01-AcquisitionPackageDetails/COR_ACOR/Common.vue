@@ -5,6 +5,7 @@
       :isWizard="isWizard"
       :isForm="isForm"
       :corOrAcor="corOrAcor"
+      :isPrimaryContact="isPrimaryContact"
       :sectionHeader="sectionHeader"
       
       :selectedRole="selectedRole"
@@ -26,7 +27,10 @@
       :formalName="formalName"
       @update:formalName="formalName = $event"
       :email="email"
-      @update:email="email = $event"
+      @update:email="email = $event" 
+      :showTitle = "showTitle"
+      :title="title"
+      @update:title="title = $event"
       :phone="phone"
       @update:phone="phone = $event"
       :selectedPhoneCountry="selectedPhoneCountry"
@@ -66,9 +70,6 @@ import { ContactDTO } from "@/api/models";
 import { Countries } from "@/components/ATATPhoneInput.vue";
 
 import {
-  AutoCompleteItem,
-  AutoCompleteItemGroups,
-  CorAcorSelectData,
   CountryObj,
   RadioButton,
   RankData,
@@ -93,10 +94,15 @@ class CommonCorAcor extends Vue {
   @Prop({default: false}) private isACOR!: boolean;
   @PropSync("currentContactData") private _currentContactData!: ContactDTO;
   @PropSync("savedContactData") private _savedContactData!: ContactDTO;
+  @Prop({default: false}) private showTitle!: boolean;
+  @Prop({default: false}) private isPrimaryContact!: boolean;
 
   // computed
 
   get sectionHeader(): string {
+    if (this.isPrimaryContact){
+      return "";
+    }
     return this.isWizard 
       ? "Your "+ this.corOrAcor + "’s Contact Information"
       : this.corOrAcor === "COR"
@@ -108,15 +114,20 @@ class CommonCorAcor extends Vue {
     return this.isACOR ? "ACOR" : "COR";
   }
 
-  get haveSelectedContact(): boolean {
-    return this.selectedContact
-      && Object.prototype.hasOwnProperty.call(this.selectedContact, "firstName")
-      && this.selectedContact.firstName !== "";
-  }
 
   // data
   public showAccessRadioButtons = false;
   public showContactForm = false;
+  private emptyBranch: SelectData = {
+    text: "",
+    value: ""
+  };
+
+  private emptyRank: RankData = {
+    grade: "",
+    name: "",
+    sysId: ""
+  }
 
   private selectedAccessToEdit = "";
   private accessToEditOptions: RadioButton[] = [
@@ -132,46 +143,6 @@ class CommonCorAcor extends Vue {
     },
   ];
 
-  public selectedContact: CorAcorSelectData = {
-    id: "",
-    firstName: "",
-    lastName: "",
-    fullName: "",
-    email: "",
-    phone: "",
-    orgName: "",
-  };
-
-  private contactList: CorAcorSelectData[] = [
-    {
-      id: "1",
-      firstName: "Test0",
-      lastName: "Adamson",
-      fullName: "Test0 Adamson",
-      email: "test.adamson-civ@mail.mil",
-      phone: "333-333-3333",
-      orgName: "HQ1234 - Corresponding Organization Name"
-    },
-    {
-      id: "2",
-      firstName: "Test1",
-      lastName: "Contractingofficerep",
-      fullName: "Test1 Contractingofficerep",
-      email: "test.contractingofficerrep-civ@mail.mil",
-      phone: "555-555-5555",
-      orgName: "HQ1234 - Corresponding Organization Name"
-    },
-    {
-      id: "3",
-      firstName: "Test2",
-      lastName: "Wentzel",
-      fullName: "Test2 Wentzel",
-      email: "test.wentz@acusage.net",
-      phone: "444-444-4444",
-      orgName: "HQ567 - Other Organization Name"
-    },
-  ];
-
   private branchData: SelectData[] = [];
   private selectedBranch: SelectData = {text: "", value: ""};
   private selectedRank: RankData = {
@@ -179,8 +150,8 @@ class CommonCorAcor extends Vue {
     name: "",
     sysId: "",
   };
-  private selectedBranchRanksData: AutoCompleteItem[] = [];
-  private branchRanksData: AutoCompleteItemGroups = {};
+  private selectedBranchRanksData: RankData[] = [];
+  private branchRanksData: {[key: string]: RankData[]} = {};
 
   private roleIndices = {
     CIVILIAN: 0,
@@ -209,6 +180,7 @@ class CommonCorAcor extends Vue {
   private suffix = "";
   private formalName = "";
   private email = "";
+  private title = "";
   private phone = "";
   private phoneExt = "";
   private dodaac = "";
@@ -246,17 +218,16 @@ class CommonCorAcor extends Vue {
     const acqPkgId = AcquisitionPackage.acquisitionPackage
       ? AcquisitionPackage.acquisitionPackage.sys_id as string
       : "";
-
     return {
       type: this.corOrAcor, // COR, ACOR
       role: this.selectedRole, // Military, Civilian
-      rank_components: this.selectedRank && this.selectedRank.sysId,
+      rank_components:  this.selectedRank && this.selectedRank.sysId,
       salutation: this.selectedSalutation,
       first_name: this.firstName,
       middle_name: this.middleName,
       last_name: this.lastName,
       suffix: this.suffix,
-      title: "",     // not used on COR/ACOR form
+      title: this.title,     // not used on COR/ACOR form
       phone: phone || "",
       phone_extension: this.phoneExt,
       email: this.email,
@@ -282,11 +253,9 @@ class CommonCorAcor extends Vue {
   protected selectedRoleChange(newRole: string): void {
     this.setShowAccessRadioButtons();
 
-    if (newRole === "MILITARY") {
-      this.selectedBranch = AcquisitionPackage.selectedContactBranch;
-    } else {
-      this.selectedBranch = {text: "", value: ""};
-    }
+    this.selectedBranch = newRole === "MILITARY" 
+      ? AcquisitionPackage.selectedContactBranch
+      : {text: "", value: ""};
   }
 
   @Watch("currentData")
@@ -299,32 +268,6 @@ class CommonCorAcor extends Vue {
     this._savedContactData = this.savedData;
   }
 
-  @Watch("selectedContact")
-  protected selectedContactChange(newSelectedContact: CorAcorSelectData): void {
-    this.showContactForm = false;
-    if (newSelectedContact) {
-      this.firstName = newSelectedContact.firstName;
-      this.lastName = newSelectedContact.lastName;
-      this.email = newSelectedContact.email;
-      this.phone = "+1" + newSelectedContact.phone;
-    } else {
-      this.selectedRole = "";
-      this.selectedSalutation = "";
-      this.firstName = "";
-      this.middleName = "";
-      this.lastName = "";
-      this.suffix = "";
-      this.email = "";
-      this.phone = "";
-      this.phoneExt = "";
-      this.dodaac = "";
-      this.selectedPhoneCountry
-        = {name: '', countryCode: '', abbreviation: '', active: false};
-      this.selectedBranch = {text: "", value: ""};
-      this.selectedRank = {grade: "", name: "", sysId: ""};
-      this.selectedAccessToEdit = "";
-    }
-  }
 
   // methods
 
@@ -342,9 +285,9 @@ class CommonCorAcor extends Vue {
   }
 
   private setRankData(): void {
-    if (this.selectedBranch !== null) {
+    if (Object.values(this.selectedBranch).every(v=>v!=="")) {
       this.selectedBranchRanksData =
-        this.branchRanksData[this.selectedBranch.value || ''];
+        this.branchRanksData[this.selectedBranch.value as string];
     }
   }
 
@@ -357,7 +300,6 @@ class CommonCorAcor extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-
     const branches = await ContactData.LoadMilitaryBranches();
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
@@ -369,41 +311,41 @@ class CommonCorAcor extends Vue {
     });
 
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
-
-    let storeData = await AcquisitionPackage.getContact(this.corOrAcor);
+    
+    const contactType = this.isPrimaryContact ? "" : this.corOrAcor
+    let storeData = await AcquisitionPackage.getContact(contactType);
     storeData = convertColumnReferencesToValues(storeData);
     this.savedData = storeData;
-
     if (storeData) {
       this.selectedRole = storeData.role;
-
-      if (this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value) {
+      if (this.selectedRole === "MILITARY") {
         const rankComp = storeData.rank_components;
         if (rankComp) {
           this.savedData.rank_components = rankComp;
         }
 
-        const emptyBranch: Record<string, string> = {text: "", value: ""};
-
         //retrieve selected Military Rank from rank component
         const rank = await ContactData.GetMilitaryRank(rankComp || "");
 
         this.selectedBranch = rank !== undefined
-          ? this.branchData.find((branch) => branch.value === rank.branch) || emptyBranch
-          : emptyBranch;
+          ? this.branchData.find((branch) => branch.value === rank.branch) || this.emptyBranch
+          : this.emptyBranch;
 
         this.selectedRank = rank !== undefined
-          ? {name: rank.name || "", grade: rank.grade || "", sysId: rank.sys_id || ""}
-          : {grade: "", name: "", sysId: ""};
+          ? {name: rank.name, grade: rank.grade, sysId: rank.sys_id as string}
+          : this.emptyRank
+
+      } else if (this.selectedRole === "CIVILIAN"){
+        this.selectedSalutation = storeData.salutation;
       }
 
-      this.selectedSalutation = storeData.salutation;
 
       this.firstName = storeData.first_name;
       this.middleName = storeData.middle_name;
       this.lastName = storeData.last_name;
       this.suffix = storeData.suffix;
       this.formalName = storeData.formal_name || "";
+      this.title = storeData.title;
 
       this.email = storeData.email;
 
@@ -438,13 +380,6 @@ class CommonCorAcor extends Vue {
     if(this.savedData){
       if (this.savedData.manually_entered === "true") {
         this.showContactForm = true;
-      } else {
-        const foundContact = this.contactList.find(val =>
-          val.email === this.savedData.email
-        );
-        if (foundContact) {
-          this.selectedContact = foundContact;
-        }
       }
     } 
   }

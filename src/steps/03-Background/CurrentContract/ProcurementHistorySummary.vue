@@ -177,8 +177,8 @@ import { formatDate, getIdText } from "@/helpers";
 import { routeNames } from "@/router/stepper";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
-import { DataTableHeader } from "types/Global";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { DataTableHeader, SaveOnLeaveRefs } from "types/Global";
 
 @Component({
   components: {
@@ -188,12 +188,12 @@ import { DataTableHeader } from "types/Global";
 })
 class ProcurementHistorySummary extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
     }).catch(() => false)
   }
 
@@ -210,6 +210,7 @@ class ProcurementHistorySummary extends Vue {
   public showDeleteInstanceDialog = false;
   public instanceToDelete: CurrentContractDTO = {};
   public dataSource:CurrentContractDTO[] = [];
+  public savedDataSource: CurrentContractDTO[] = [];
   private saveOnLeaveError: string| unknown = "";
 
   public formatContractDate(dt: string){
@@ -231,7 +232,7 @@ class ProcurementHistorySummary extends Vue {
   }
 
   public async deleteInstance(): Promise<void> {
-    await AcquisitionPackage.deleteContract(this.instanceToDelete);
+    // await AcquisitionPackage.deleteContract(this.instanceToDelete);
     /**
      * async is necessary this $nextTick b/c `await this.resetDataSource();`
      * is needed in the function
@@ -254,13 +255,9 @@ class ProcurementHistorySummary extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    await this.setDataSource();
-    await this.resetDataSource();
-  }
-
-  public async setDataSource():Promise<void>{
-    this.dataSource = 
-      await AcquisitionPackage.currentContracts as CurrentContractDTO[] || [];
+    this.savedDataSource = AcquisitionPackage.currentContracts ?? []
+    this.dataSource = this.savedDataSource
+    await this.resetDataSource()
   }
 
   public setHeaderId(column: string): string {
@@ -268,7 +265,6 @@ class ProcurementHistorySummary extends Vue {
   }
 
   public async editInstance(contract: CurrentContractDTO): Promise<void> {
-
     await AcquisitionPackage.setCurrentContractInstanceNumber(
         contract.instance_number as number);
     await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
@@ -294,12 +290,12 @@ class ProcurementHistorySummary extends Vue {
   public async resetDataSource():Promise<void>{
     if (this.dataSource && this.dataSource.length>0){
       // sort
-      await this.dataSource.sort();
+      this.dataSource.sort();
       // reconfigure instance numbers
-      await this.dataSource.forEach((c,idx)=> c.instance_number = idx)
-      // set current contract instance number
+      this.dataSource.forEach((c,idx)=> c.instance_number = idx)
+      // // set current contract instance number
       await AcquisitionPackage.setCurrentContractInstanceNumber(this.dataSource.length)
-      // set current contracts instore
+      // // set current contracts instore
       await AcquisitionPackage.doSetCurrentContracts(this.dataSource);
     }
   }
