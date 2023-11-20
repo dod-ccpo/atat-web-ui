@@ -671,6 +671,14 @@ export class SummaryStore extends VuexModule {
     // validates why CSP is only source capable
     const whyCSPIsOnlyCapableSource = fairOpp.why_csp_is_only_capable_source !== "";
 
+    console.log('stuff: ', {
+      isCauseMigrationSelection,
+      isCauseGovtEngineersComplete,
+      isCauseProductFeaturePeculiarToCSP,
+      isSoleSourceCause,
+      whyCSPIsOnlyCapableSource,
+    })
+
     return isCauseMigrationSelection
         && isCauseGovtEngineersComplete
         && isCauseProductFeaturePeculiarToCSP

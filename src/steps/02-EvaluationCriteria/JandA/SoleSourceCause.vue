@@ -23,7 +23,7 @@
 
             <div class="max-width-740">
 
-              <ATATRadioGroup 
+              <ATATRadioGroup
                 id="AddlTimeCost"
                 ref="AddlTimeCostRef"
                 name="AddlTimeCost"
