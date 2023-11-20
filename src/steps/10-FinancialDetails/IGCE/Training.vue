@@ -17,6 +17,7 @@
             <div class="mr-10">
               <ATATRadioGroup
                 id="trainingEstimateType"
+                ref="trainingEstimateTypeRef"
                 class="mb-8"
                 legend="How do you want to estimate your cost for this training?"
                 :items="trainingEstimateTypeOptions"
@@ -64,6 +65,7 @@
           <div v-if="instanceData.costEstimateType !== ''">
             <ATATTextField
               id="CostEstimatePrice"
+              ref="CostEstimatePriceRef"
               name="CostEstimatePrice"
               class="mb-10"
               :label="costEstimateLabel"
@@ -81,6 +83,7 @@
               <ATATRadioGroup
                 class="mb-8"
                 id="TrainingType"
+                ref="TrainingTypeRef"
                 :legend="periodTypeLabel"
                 :items="periodTypeOptions"
                 :value="instanceData.trainingOption"
@@ -93,6 +96,7 @@
 
               <div v-if="instanceData.trainingOption !== ''">
                 <ATATSingleAndMultiplePeriods
+                  ref="SingleAndMultiplePeriodsRef"
                   :periods="periods"
                   :textboxSuffix="periodsSuffix"
                   :singlePeriodLabel="periodsLabel"
@@ -119,13 +123,14 @@
 <script lang="ts">
 /* eslint camelcase: 0, prefer-const: 1 */
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { 
   RadioButton, 
   SingleMultiple, 
   TrainingEstimate,
   TRAINING_TYPE,
-  TRAINING_FACILITY_TYPE
+  TRAINING_FACILITY_TYPE,
+  SaveOnLeaveRefs
 } from "../../../../types/Global";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -151,13 +156,13 @@ import { hasChanges, convertEstimateData } from "@/helpers";
 })
 class IGCETraining extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public trainingEstimateTypeOptions: RadioButton[] = [
