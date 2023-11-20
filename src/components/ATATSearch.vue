@@ -194,7 +194,6 @@ import { ValidationRule, mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import AppSections from "@/store/appSections";
 
 @Component({
@@ -347,7 +346,7 @@ class ATATSearch extends Vue {
           if(response.provisioningIssue){
             PortfolioStore.setActiveTaskOrderNumber(this._value)
             await this.$router.push({
-              name: provWorkflowRouteNames.ProvisioningIssue
+              name: "Provisioning_Issue",
             })
             AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
             return;
