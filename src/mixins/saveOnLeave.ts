@@ -25,7 +25,7 @@ export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> 
       if (form.$?.type.name?.toLowerCase() === "vform"){
         const isFormValid = (await form.validate())?.valid;
         isFormsValid.push(isFormValid);
-        console.log('ref1: => ' + f  + ': form.validate');
+        console.log('ref1: => ' + f  + ': form.validate =>'  + isFormValid);
       } else {
         await(getRef(form))
       }
@@ -45,8 +45,9 @@ async function getRef(form:ComponentPublicInstance):Promise<void>{
           (_formRef).setErrorMessage()
         }
         if (_formRef.$?.type.name?.toLowerCase() === "vform"){
-          isFormsValid.push((await(_formRef.validate())).valid);
-          console.log('ref2: => ' + ref  + ': form.validate');
+          const isFormValid = (await(_formRef.validate())).valid;
+          isFormsValid.push(isFormValid);
+          console.log('ref2: => ' + ref + ': form.validate =>'  + isFormValid);
         }
       }
       await getRef(_formRef);
