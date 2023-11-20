@@ -55,12 +55,11 @@
 /* eslint-disable camelcase */
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import { hasChanges } from "@/helpers";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATAlert from "../../../components/ATATAlert.vue";
 import ATATTextField from "../../../components/ATATTextField.vue";
 import IGCEStore from "@/store/IGCE";
-import { YesNo, SurgeRequirements } from "../../../../types/Global";
-import { ComponentPublicInstance } from "vue";
+import { YesNo, SurgeRequirements, SaveOnLeaveRefs } from "../../../../types/Global";
 
 @Component({
   components: {
@@ -69,20 +68,16 @@ import { ComponentPublicInstance } from "vue";
   },
 })
 class SurgeCapabilities extends Vue {
-
-  $refs!: SaveOnLeaveRefs & {
-    PercentageTextbox: ComponentPublicInstance & {
-      errorMessages: [];
-    };
-  }
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
+  
   public capacity: number | null = null;
   public capabilities: YesNo = "";
   private get currentData(): SurgeRequirements {

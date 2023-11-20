@@ -1,9 +1,8 @@
 <template>
-  <v-container>
+  <v-container  :class="[{ 'bg-error-lighter': showErrors}]">
     <v-row
       style="flex-wrap: nowrap;"
       class=" _requirement-card"
-      :class="[{ 'bg-error-lighter': showErrors}]"
     >
       <v-col class="font-size-14 font-weight-700 pt-5 pl-6 pr-5 flex-grow-0 flex-shrink-0">
         {{index}}
@@ -11,9 +10,11 @@
       <v-col class="flex-grow-1 flex-shrink-1">
         <v-text-field
           :id="'HeaderTextField_' + index"
+          :ref="'HeaderTextField_' + index + 'Ref'"
           density="compact"
           class="_requirement-head my-1 width-100"
           hide-details
+          variant="plain"
           autocomplete="off"
           width="100%"
           v-model="title"
@@ -21,19 +22,15 @@
         />
         <v-textarea
           :id="'Description_' + index"
+          :ref="'Description_' + index + 'Ref'"
           class="_requirement-description pt-0 width-100"
           auto-grow
+          variant="plain"
           rows="1"
           hide-details
           v-model="description"
           @blur="saveDescription()"
 
-        />
-        <ATATErrorValidation
-          id="MonthlyValueMissing"
-          class="atat-text-field-error"
-          :errorMessages="['Enter your estimated monthly price for this requirement.']"
-          v-if="showErrors"
         />
       </v-col>
       <v-col class="flex-grow-0 flex-shrink-0">
@@ -45,16 +42,25 @@
           :appendText=type
           width="220"
           :id="'EstimateTextField_' + index"
+          :ref="'EstimateTextField_' + index + 'Ref'"
           @blur="checkMonthlyValue()"
           :alignRight="true"
           :rules="[
             $validators.required(''),
           ]"
           class="ml-auto pt-3 _requirement-currency"
-          :class="[{ 'error--text': noMonthlyValue},]"
+          :class="[{ 'error--text': !hasMonthlyValue},]"
           @errorMessage="setErrorMessage"
         />
       </v-col>
+    </v-row>
+    <v-row class="mt-0">
+      <ATATErrorValidation
+          id="MonthlyValueMissing"
+          class="atat-text-field-error mt-0 mb-2"
+          :errorMessages="['Enter your estimated monthly price for this requirement.']"
+          v-if="showErrors"
+        />
     </v-row>
   </v-container>
 </template>
@@ -67,6 +73,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import { currencyStringToNumber, toCurrencyString } from "@/helpers";
 import { IgceEstimateDTO } from "@/api/models";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import { toDateWithOptions } from "date-fns-tz/fp";
 
 
 @Component({
@@ -83,7 +90,7 @@ class CardRequirement extends Vue {
   public title = ""
   public description = ""
   public type = ""
-  public noMonthlyValue = false
+  // public hasMonthlyValue = false
   public estimate = "";
   public moneyNumber = 0;
   public errorMessage = "";
@@ -110,9 +117,9 @@ class CardRequirement extends Vue {
   public checkMonthlyValue(): void {
     // eslint-disable-next-line camelcase
     this._cardData.unit_price = currencyStringToNumber(this.estimate);
-    if(this._cardData.unit_price !== null){
-      this.noMonthlyValue = this._cardData.unit_price < 1;
-    }
+    // if(this._cardData.unit_price !== null){
+    //   this.hasMonthlyValue = this._cardData.unit_price > 0;
+    // }
   }
   public async loadOnEnter(): Promise<void> {
     this.title = this._cardData.title as string
@@ -128,8 +135,18 @@ class CardRequirement extends Vue {
     this.errorMessage = message;
   }
 
+  get hasMonthlyValue(): boolean {
+    return this._cardData.unit_price 
+      ? this._cardData.unit_price > 0
+      : false;
+  }
+
   get showErrors(): boolean {
-    return this.noMonthlyValue || this.errorMessage.length>0 
+    if (this.hasMonthlyValue){
+      this.errorMessage = "";
+      return false;
+    }
+    return !this.hasMonthlyValue && this.errorMessage !== ""
   }
 
   @Watch("estimate")

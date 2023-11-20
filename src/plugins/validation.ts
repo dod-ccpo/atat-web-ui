@@ -66,11 +66,13 @@ export class ValidationPlugin {
   };
 
   required(
-    message?: string, isCurrency?: string
+    message?: string, isCurrency?: string, isAutoComplete?: boolean
   ): ((v: string | [] | undefined  ) => ValidationResult) {
     message = message || "This field is required.";
     return (v: string | [] | undefined  ) => {
-      if (typeof v === "object") { // if typeof 'selectData(dropdown)' or string[]
+      if (isAutoComplete){
+        return v && Object.values(v).some((val) => val !== "") || message as string;
+      } else if (typeof v === "object") { // if typeof 'selectData(dropdown)' or string[]
         if (v && Array.isArray(v) === false) {
           // array of objects
           return v && Object.values(v).every((val) => val !== "") || message as string;

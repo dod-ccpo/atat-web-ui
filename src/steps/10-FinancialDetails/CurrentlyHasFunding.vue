@@ -14,12 +14,14 @@
               (MIPR)) to procure cloud service offerings from JWCC on your agency’s behalf.
             </p>
             <ATATRadioGroup
-                :card="true"
-                :items="radioButtonItems"
-                :rules="[$validators.required('Please select an option.')]"
-                :value="selectedHasFunding"
-                @update:value="selectedHasFunding = $event"
-                class="max-width-640 mb-5"
+              id="currentlyHasFundingRadioButtons"
+              ref="currentlyHasFundingRadioButtonsRef"
+              :card="true"
+              :items="radioButtonItems"
+              :rules="[$validators.required('Please select an option.')]"
+              :value="selectedHasFunding"
+              @update:value="selectedHasFunding = $event"
+              class="max-width-640 mb-5"
             />
           </div>
         </v-col>
@@ -33,10 +35,10 @@
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { RadioButton } from "../../../types/Global";
+import { RadioButton, SaveOnLeaveRefs } from "../../../types/Global";
 import { hasChanges } from "@/helpers";
 import FinancialDetails from "@/store/financialDetails";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import {isDitcoUser} from "@/store/acquisitionPackage";
 import {routeNames} from "@/router/stepper";
 import Steps from "@/store/steps";
@@ -49,13 +51,14 @@ import Steps from "@/store/steps";
 
 class CurrentlyHasFunding extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private selectedHasFunding = "";
