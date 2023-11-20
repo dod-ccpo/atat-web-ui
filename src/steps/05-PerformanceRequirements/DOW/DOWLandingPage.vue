@@ -156,6 +156,15 @@ import {buildClassificationLabel} from "@/helpers";
   }
 })
 class DOWLandingPage extends Vue {
+  
+  @Hook
+  public async beforeRouteLeave(to: To, from: From) {
+    return await beforeRouteLeaveFunction({ to, from, 
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
+  }
 
   displayWarning = false;
   totalSections = 3;

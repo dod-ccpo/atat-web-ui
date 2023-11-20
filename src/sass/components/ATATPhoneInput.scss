@@ -5,7 +5,7 @@
 
   ._country-select-button {
     border: 1px solid $base;
-    height: 42px;
+    height: 40px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     padding: 8px;
@@ -96,6 +96,8 @@
   ._phone-number-input {
     max-width: 351px;
     width: 351px;
+ 
+    
     &.v-text-field--outlined.v-input--is-focused {
       .v-field {
         border-left-width: 2px;
@@ -105,10 +107,18 @@
     .v-field {
       border-left-width: 0;
       border-radius: 0 4px 4px 0;
+      height: 40px !important;
+     
     }
     .v-text-field__prefix {
-      padding-left: 8px;
       color: $base-darkest;
+      padding-left: 12px; 
+      .v-text-field__prefix__text{
+        margin: 0px !important;
+      }
+    }
+    .v-field__input{
+      padding: 8px 4px !important;
     }
   }
 

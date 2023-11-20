@@ -172,6 +172,9 @@
                 label="Trip Location"
                 :value="travelItem.trip_location"
                 @update:value="travelItem.trip_location = $event"
+                :rules="[
+                    $validators.required('Enter your trip location'),
+                ]"
               />
             </v-col>
           </v-row>
@@ -184,6 +187,9 @@
                 :value="travelItem.duration_in_days"
                 @update:value="travelItem.duration_in_days = $event"
                 type="number"
+                :rules="[
+                    $validators.required('Enter the number of days for your trip'),
+                ]"
               />
             </v-col>
             <v-col class="col-sm-4">
@@ -194,6 +200,9 @@
                 :value="travelItem.number_of_travelers"
                 @update:value="travelItem.number_of_travelers = $event"
                 type="number"
+                :rules="[
+                  $validators.required('Enter the number of people traveling'),
+                ]"
               />
             </v-col>
             <v-col class="col-sm-4">
@@ -205,6 +214,9 @@
                 @update:value="travelItem.number_of_trips = $event"
                 tooltipText="This number of trips will be applied to each period selected below."
                 type="number"
+                :rules="[
+                    $validators.required('Enter the number of trips needed per period'),
+                ]"
               />
             </v-col>
           </v-row>
@@ -224,13 +236,19 @@
                 id="PeriodsCheckboxes"
                 aria-describedby="PeriodsLabel"
                 ref="periodsCheckboxes"
+                name="periodsCheckboxes"
                 :hasOtherValue="false"
                 :items="availablePeriodCheckboxItems"
                 :value="travelItem.selected_periods"
                 @update:value="travelItem.selected_periods = $event"
+                :resetSelected="resetSelectedPeriods"
                 :card="false"
                 class="copy-max-width"
+                :rules="[
+                    $validators.required('Select at least once performance period.'),
+                ]"
               />
+
             </v-col>
           </v-row>
         </div>
@@ -271,7 +289,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { Checkbox, DataTableHeader, TravelSummaryTableData } from "types/Global";
+import { Checkbox, DataTableHeader, SaveOnLeaveRefs, TravelSummaryTableData } from "types/Global";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -280,8 +298,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { createPeriodCheckboxItems } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import {routeNames} from "@/router/stepper";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import acquisitionPackage from "@/store/acquisitionPackage";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -293,13 +311,14 @@ import acquisitionPackage from "@/store/acquisitionPackage";
 })
 class Travel extends Vue {
 
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public tableHeaders: Record<string, string>[] = [];
@@ -318,6 +337,11 @@ class Travel extends Vue {
   public deleteInstanceModalTitle = "";
   public availablePeriodCheckboxItems: Checkbox[] = [];
   public isLoading = true;
+
+
+  get resetSelectedPeriods():boolean{
+    return this.isCreate;
+  }
 
   get isAddTripsDisabled(): boolean {
     return Object.values(this.travelItem).some(
@@ -374,15 +398,15 @@ class Travel extends Vue {
     }
   }
 
-  public createInstance(): TravelSummaryTableData {
+  public createInstance(): void {
     this.isCreate = true;
-    this.showTravelFormDialog = true;
     this.resetTravelItem();
-    return this.travelItem;
+    this.showTravelFormDialog = true;
   }
 
   public cancelDialog(): void {
     this.showTravelFormDialog = false;
+    this.isCreate = false;
     this.resetTravelItem();
   }
 
@@ -464,6 +488,7 @@ class Travel extends Vue {
     if (this.isCreate) {
       this.tableData.push(this.travelItem);
       this.setTableData();
+      this.isCreate = false;
     }
     this.showTravelFormDialog = false;
     acquisitionPackage.setIsTravelNeeded("YES")

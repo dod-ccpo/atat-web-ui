@@ -2,6 +2,7 @@
   <div id="PerformanceTier" class="mt-10">
     <ATATRadioGroup 
       id="PerformanceTierOptions"
+      ref="PerformanceTierOptions"
       v-if="!isDatabase"
       :items="performanceTiers"
       legend="Performance tier"
@@ -15,6 +16,7 @@
 
     <ATATTextField
       id="NetworkPerformance"
+      ref="NetworkPerformance"
       v-if="isDatabase"
       class="mt-8 _input-max-width-240"
       :value="(offeringData as OtherServiceOfferingData).networkPerformance"
@@ -28,6 +30,7 @@
 
     <ATATTextField
       id="NumberOfInstances"
+      ref="NumberOfInstances"
       class="mt-8 _input-max-width-240"
       :value="offeringData.numberOfInstances"
       @update:value="offeringData.numberOfInstances = $event"
@@ -41,6 +44,7 @@
 
     <ATATTextField
       id="MonthlyDataEgress"
+      ref="MonthlyDataEgress"
       v-if="!isDOW"
       class="mt-8 _input-max-width-240 _has-appended-dropdown"
       label="Approximate data/internet egress per month"
