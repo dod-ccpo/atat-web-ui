@@ -545,6 +545,7 @@ export class PortfolioDataStore extends VuexModule {
 
   @Mutation
   public async doSetPortfolioProvisioning(data: Partial<PortfolioProvisioningObj>): Promise<void> {
+    debugger;
     this.portfolioProvisioningObj = this.portfolioProvisioningObj
       ? Object.assign(this.portfolioProvisioningObj, data)
       : data; 

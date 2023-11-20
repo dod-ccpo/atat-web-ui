@@ -44,6 +44,7 @@
                 titleKey="text"
                 :searchFields="['text']"
                 :items="agencyData"
+                :returnObject="true"
                 :selectedItem="serviceOrAgency"
                 @update:selectedItem="serviceOrAgency = $event"
                 :rules="[$validators.required('Please select your service or agency.')]"
@@ -95,7 +96,7 @@
                 >
                   <v-col>
                     <span class="_label">{{ item.label }}</span>
-                    <span class="_description">{{ item.description }}</span>
+                    <span class="_description" v-html="item.description"></span>
                   </v-col>
                   <v-col>
                     <v-radio
@@ -127,23 +128,6 @@
                   for at least one Unclassified environment.
                 </div>
               </v-row>
-                <!-- <tr v-if="noUnclassifiedILsSelected">
-                  <td colspan="4">
-                    <ATATAlert
-                    id="SelectAnEnvironment"
-                    type="error"
-                    >
-                    <template v-slot:content>
-                      <span class="_error-message">
-                        Select <span class="emphasis">New Environment</span> 
-                        or <span class="emphasis">Transfer Billing</span> for
-                        at least one Unclassified environment.
-                      </span>
-                    </template>
-                    </ATATAlert>
-                  </td>
-                </tr> -->
-
 
             </div>
           </div>
@@ -209,7 +193,12 @@ class PortfolioDetails extends Vue {
   public envRadioGroups: RadioButton[] = [];
 
   private agencyData: SelectData[] = [];
-  private noUnclassifiedILsSelected = false;
+
+  public unclassifiedILDescriptions: Record<string, string> = {
+    IL2: "Unclassified environment for workloads <strong>only within IL2</strong>",
+    IL4: "Unclassified environment for workloads <strong>up to IL4</strong>",
+    IL5: "Unclassified environment for workloads <strong>up to IL5</strong>",
+  }
   
   public CSPProvisioningData = PortfolioStore.CSPProvisioningData; // all CLs (with U ILs) in T.O.
 
@@ -286,7 +275,9 @@ class PortfolioDetails extends Vue {
   public radioGroupUpdate(index: number): void {
     const IL = this.CSPProvisioningData[index].highest_information_protection_level;
     const isUnclass = this.CSPProvisioningData[index].classification_level === "U";
-    if (isUnclass && !this.unclassifiedILsSelected.includes(IL)) {
+    const selectionNotNull = this.envsInTaskOrder[index].isMigration !== null;
+    debugger;
+    if (isUnclass && !this.unclassifiedILsSelected.includes(IL) && selectionNotNull) {
       this.unclassifiedILsSelected.push(IL);
       this.unclassifiedErrorOnContinue = false;
     }
@@ -373,7 +364,8 @@ class PortfolioDetails extends Vue {
         label = env.cloud_distinguisher?.display_name 
           ? env.cloud_distinguisher?.display_name
           : "Unclassified";
-        description = env.cloud_distinguisher?.description;
+        description = 
+          this.unclassifiedILDescriptions[env.highest_information_protection_level as string];
       } else {
         label = env.classification_level === "S" ? "Secret" : "Top Secret";
       }
@@ -398,7 +390,7 @@ class PortfolioDetails extends Vue {
       await OrganizationData.getAgencyData();
     }
     debugger;
-    
+
     this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data); 
     await this.setTaskOrderData();
   }
