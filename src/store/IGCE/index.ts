@@ -582,7 +582,6 @@ export class IGCEStore extends VuexModule {
         title: costEstimateRowData[0].title
       }
       await api.igceEstimateTable.update(costEstimateSysId, estimateToBeUpdated);
-      await this.reorderInstanceNumbersInSNOW(estimateToBeUpdated)
     }
   }
 
@@ -724,55 +723,9 @@ export class IGCEStore extends VuexModule {
     if (igceEstimate) {
       // delete IGCE row from the database
       await api.igceEstimateTable.remove(igceEstimate.sys_id as string);
-      // reorder Instance numbers in IGCE table after deletion
-      await this.reorderInstanceNumbersInSNOW(igceEstimate);
     }
   }
 
-  /**
-   * reorders instance numbers for both `IGCE Estimate` table columns 
-   * 1) `DOW Task Number` - items with NO environmental instance 
-   * 2) `Title` = items with enviornmental instance
-   * 
-   * @param igceEstimate IGCEEstimateDTO
-   */
-  @Action({ rawError: true })
-  public async reorderInstanceNumbersInSNOW(estimate: IgceEstimateDTO):Promise<void>{
-    if(estimate.title === 'Portability Plan') return
-    const serviceOfferingGroup = estimate.title?.substring(
-      0, estimate.title?.indexOf(" -")
-    ) || "";
-    const classificationLevel = getStringFromReferenceColumn(estimate.classification_level)
-    const igceEstimateListToBeReordered = await api.igceEstimateTable.getQuery({
-      params: {
-        sysparm_query: "titleLIKE" + serviceOfferingGroup 
-          + "^acquisition_package=" + AcquisitionPackage.packageId 
-          + "^classification_level=" + classificationLevel
-          + "^ORDERBYsys_created_on"
-      }
-    });
-    igceEstimateListToBeReordered.forEach(
-      async (est, idx)=>{
-        if (est.sys_id){
-          // create NEW DOW task order number
-          const reorderedDOWTaskNumber = (est.dow_task_number?.substring(
-            0 ,est.dow_task_number?.lastIndexOf(".") + 1
-          ) || "") + (idx + 1);
-
-          // create new title 
-          const reorderedTitle = (est.title?.substring(
-            0 ,est.title.lastIndexOf("#") + 1
-          ) || "") + (idx + 1);
-          const hasEnvironmentInstances = est.environment_instance !=="";
-
-          await api.igceEstimateTable.update(est.sys_id,{
-            title: hasEnvironmentInstances ? reorderedTitle : est.title,
-            dow_task_number: reorderedDOWTaskNumber
-          }) 
-        }
-      }
-    )
-  }
 
   /**
    * This is expected to be called whenever a record gets deleted from Environment Instance

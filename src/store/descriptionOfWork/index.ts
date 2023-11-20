@@ -268,6 +268,7 @@ export const saveOrUpdateOtherServiceOffering =
         tempObject.sys_id = serviceOffering.sysId;
       let title = serviceGroupVerbiageInfo[offeringType.toUpperCase()].offeringName;
       let instanceType = "Instance";
+      console.log("here's offeringType", offeringType);
       switch(offeringType){
       case "compute":
         tempObject.instance_name = "Compute Instance #" + serviceOffering.instanceNumber;
@@ -591,8 +592,8 @@ export const createDOWTaskNumber = async(
   
   return section +
     "." + classificationDOWTaskNumberComponent +
-    "." + dow_task_number_component +
-    "." + instanceNumber
+    "." + dow_task_number_component
+    
 }
 
 
