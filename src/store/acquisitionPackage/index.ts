@@ -2184,7 +2184,7 @@ export class AcquisitionPackageStore extends VuexModule {
       case "Primary Contact":
         acqPkgKey = "contactInfo";
         break;
-      case "FinancialPocInfo": 
+      case "Financial POC": 
         acqPkgKey = "financialPocInfo";
         break;
       case "COR": 
