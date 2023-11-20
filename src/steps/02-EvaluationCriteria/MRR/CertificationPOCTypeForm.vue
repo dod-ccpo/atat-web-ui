@@ -1,4 +1,5 @@
 <template>
+  <v-form :ref="POCType + 'ContactForm'">
   <div>
     <h2>{{ sequence }}. Tell us about your {{ POCType }} POC</h2>
     <ATATRadioGroup
@@ -54,6 +55,7 @@
         @resetContactForm="resetContactForm"
     />
   </div>
+</v-form>
 </template>
 
 <script lang="ts">
